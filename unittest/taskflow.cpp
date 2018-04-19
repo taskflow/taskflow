@@ -10,18 +10,21 @@
 #include <thread>
 #include <chrono>
 
-TEST_CASE("TaskFlow"){
+TEST_CASE("TaskFlow.Basics"){
 
-  tf::Taskflow tf(std::thread::hardware_concurrency());
-  REQUIRE(tf.num_workers() == std::thread::hardware_concurrency());
+  const auto num_workers = std::max(4u, std::thread::hardware_concurrency());
+
+  tf::Taskflow<> tf(num_workers);
+  REQUIRE(tf.num_workers() == num_workers);
   
-  const size_t nof_tasks {100};
+  constexpr size_t num_tasks {100};
+
   std::atomic<int> counter {0};
-  std::vector<int64_t> keys;
-  std::vector<std::tuple<int64_t,std::future<void>>> tasks;
+  std::vector<tf::Taskflow<>::TaskBuilder> keys;
+  std::vector<std::pair<tf::Taskflow<>::TaskBuilder, std::future<void>>> tasks;
 
   SUBCASE("Sequential tasks"){
-    for(size_t i=0;i<nof_tasks;i++){
+    for(size_t i=0;i<num_tasks;i++){
       if(i%2 == 0){
         tasks.emplace_back( std::move(tf.emplace([&counter]() { REQUIRE(counter == 0); counter += 1;})) );
       }
@@ -35,77 +38,77 @@ TEST_CASE("TaskFlow"){
     tf.wait_for_all();
   }
 
+  ///*
   SUBCASE("Without precedence"){
-    for(size_t i=0;i<nof_tasks;i++){
+    for(size_t i=0;i<num_tasks;i++){
       tasks.emplace_back( std::move(tf.emplace([&counter]() {counter += 1;})) );
     }
-    REQUIRE(tf.num_tasks() == nof_tasks);
+    REQUIRE(tf.num_tasks() == num_tasks);
 
     tf.wait_for_all();
-    REQUIRE(counter == nof_tasks);
+    REQUIRE(counter == num_tasks);
     REQUIRE(tf.num_tasks() == 0);
   }
 
   SUBCASE("With precedence"){
-    for(size_t i=0;i<nof_tasks;i++){
-      tasks.emplace_back( std::move(tf.emplace([&counter]() {counter += 1;})) );
+    for(size_t i=0;i<num_tasks;i++){
+      tasks.emplace_back( std::move(tf.emplace([&counter, i]() { REQUIRE(counter == i); counter += 1;})) );
       if(i>0){
         tf.precede(std::get<0>(tasks[i-1]), std::get<0>(tasks[i]));
       }
     }
     tf.wait_for_all();
-    REQUIRE(counter == nof_tasks);
+    REQUIRE(counter == num_tasks);
     REQUIRE(tf.num_tasks() == 0);
   }
 
   SUBCASE("Silent emplace without precedence"){
-    for(size_t i=0;i<nof_tasks;i++){
+    for(size_t i=0;i<num_tasks;i++){
       keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
     }
     tf.wait_for_all();
-    REQUIRE(counter == nof_tasks);
+    REQUIRE(counter == num_tasks);
     REQUIRE(tf.num_tasks() == 0);
   }
 
   SUBCASE("Silent emplace with precedence"){
-    for(size_t i=0;i<nof_tasks;i++){
-      keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
+    for(size_t i=0;i<num_tasks;i++){
+      keys.emplace_back(tf.silent_emplace([&counter, i]() { REQUIRE(i == counter); counter += 1;}));
       if(i>0){
         tf.precede(keys[i-1], keys[i]);
       }
     }
     tf.wait_for_all();
-    REQUIRE(counter == nof_tasks);
+    REQUIRE(counter == num_tasks);
     REQUIRE(tf.num_tasks() == 0);
   }
 
   SUBCASE("Dispatch"){
-    using namespace std::chrono_literals;
-    for(size_t i=0;i<nof_tasks;i++){
+    for(size_t i=0;i<num_tasks;i++){
       keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
     }
     auto fu = tf.dispatch();
     fu.get();
-    REQUIRE(counter == nof_tasks);
+    REQUIRE(counter == num_tasks);
     REQUIRE(tf.num_tasks() == 0);
   }
 
   SUBCASE("Silent dispatch"){
     using namespace std::chrono_literals;
-    for(size_t i=0;i<nof_tasks;i++){
+    for(size_t i=0;i<num_tasks;i++){
       keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
     }
     tf.silent_dispatch();
-    std::this_thread::sleep_for(1ms);
-    REQUIRE(counter == nof_tasks);
+    std::this_thread::sleep_for(1s);
+    REQUIRE(counter == num_tasks);
     REQUIRE(tf.num_tasks() == 0);
   }
  
   SUBCASE("Broadcast"){
     using namespace std::chrono_literals;
     auto src = tf.silent_emplace([&counter]() {counter -= 1;});
-    for(size_t i=1;i<nof_tasks;i++){
-      keys.emplace_back(tf.silent_emplace([&counter]() {REQUIRE(counter < 0);}));
+    for(size_t i=1;i<num_tasks;i++){
+      keys.emplace_back(tf.silent_emplace([&counter]() {REQUIRE(counter == -1);}));
     }
     tf.broadcast(src, keys);
     tf.wait_for_all();
@@ -114,39 +117,50 @@ TEST_CASE("TaskFlow"){
   }
 
   SUBCASE("Gather"){
-    using namespace std::chrono_literals;
-    auto dst = tf.silent_emplace([&counter, nof_tasks]() { REQUIRE(counter == nof_tasks - 1);});
-    for(size_t i=1;i<nof_tasks;i++){
+    auto dst = tf.silent_emplace([&counter]() { REQUIRE(counter == num_tasks - 1);});
+    for(size_t i=1;i<num_tasks;i++){
       keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
     }
     tf.gather(keys,dst);
     tf.wait_for_all();
-    REQUIRE(counter == nof_tasks - 1);
+    REQUIRE(counter == num_tasks - 1);
     REQUIRE(tf.num_tasks() == 0);
   }
 
   SUBCASE("Broadcast + Gather"){
-    using namespace std::chrono_literals;
-    auto src = tf.silent_emplace([&counter]() {counter -= 1;});
-    for(size_t i=0;i<nof_tasks;i++){
+    auto src = tf.silent_emplace([&counter]() {counter = 0;});
+    for(size_t i=0;i<num_tasks;i++){
       keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
     }
     tf.broadcast(src, keys);
-    auto dst = tf.silent_emplace([&counter, nof_tasks]() { REQUIRE(counter == nof_tasks - 1);});
+    auto dst = tf.silent_emplace([&counter]() { REQUIRE(counter == num_tasks);});
     tf.gather(keys, dst);
     tf.wait_for_all();
     REQUIRE(tf.num_tasks() == 0);
   }
 
-
   SUBCASE("Linearize"){
     using namespace std::chrono_literals;
-    for(size_t i=0;i<nof_tasks;i++){
+    for(size_t i=0;i<num_tasks;i++){
       keys.emplace_back(tf.silent_emplace([&counter, i]() { REQUIRE(counter == i); counter += 1;}));
     }
     tf.linearize(keys);
     tf.wait_for_all();
-    REQUIRE(counter == nof_tasks);
+    REQUIRE(counter == num_tasks);
+    REQUIRE(tf.num_tasks() == 0);
+  }
+
+  SUBCASE("Broadcast + Linearize + Gather "){
+    using namespace std::chrono_literals;
+    auto src = tf.silent_emplace([&counter]() {counter = 0;});
+    for(size_t i=0;i<num_tasks;i++){
+      keys.emplace_back(tf.silent_emplace([&counter, i]() { REQUIRE(counter == i); counter += 1; }));
+    }
+    tf.broadcast(src, keys);
+    tf.linearize(keys);
+    auto dst = tf.silent_emplace([&counter]() { REQUIRE(counter == num_tasks);});
+    tf.gather(keys, dst);
+    tf.wait_for_all();
     REQUIRE(tf.num_tasks() == 0);
   }
 

@@ -18,12 +18,6 @@ message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 message(STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER})
 message(STATUS "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS})
 
-find_package(OpenMP)
-if (OPENMP_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-endif()
 
 # The version number
 set (TASKFLOW_MAJOR_VERSION "0")
@@ -36,21 +30,32 @@ include_directories(doctest)
 
 
 # Find package
-#set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 MESSAGE(STATUS "CMAKE_THREAD_LIBS_INIT: " ${CMAKE_THREAD_LIBS_INIT})
 
+
+# -----------------------------------------------------------------------------
 # Example program 
+# -----------------------------------------------------------------------------
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
+
+# todo: make OpenMP flag private to the example target
+find_package(OpenMP REQUIRED)
+
 add_executable(simple example/simple.cpp)
-target_link_libraries(simple ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(simple Threads::Threads)
 
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
 add_executable(matrix example/matrix.cpp)
-target_link_libraries(matrix ${CMAKE_THREAD_LIBS_INIT})
+target_compile_options(matrix PRIVATE ${OpenMP_CXX_FLAGS})
+target_link_libraries(matrix ${OpenMP_CXX_FLAGS} Threads::Threads)
 
+
+# -----------------------------------------------------------------------------
+# Unittest
+# -----------------------------------------------------------------------------
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/unittest)
 add_executable(taskflow unittest/taskflow.cpp)
-target_link_libraries(taskflow ${CMAKE_THREAD_LIBS_INIT})
-
+target_link_libraries(taskflow Threads::Threads)
 
