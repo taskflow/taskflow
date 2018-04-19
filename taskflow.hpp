@@ -426,6 +426,7 @@ class Taskflow {
 
     
     Taskflow(unsigned);
+    ~Taskflow();
     
     template <typename C>
     auto emplace(C&&);
@@ -499,7 +500,7 @@ Taskflow<F>::TaskBuilder::TaskBuilder(const TaskBuilder& rhs) : _task{rhs._task}
 
 template <typename F>
 typename Taskflow<F>::TaskBuilder& Taskflow<F>::TaskBuilder::precede(TaskBuilder tgt) {
-  _task->precede(tgt._task);
+  _task->precede(*(tgt._task));
   return *this;
 }
 
@@ -580,6 +581,12 @@ Taskflow<F>::TaskBuilder::TaskBuilder(task_type* t) : _task {t} {
 // Constructor
 template <typename F>
 Taskflow<F>::Taskflow(unsigned N) : _threadpool{N} {
+}
+
+// Destructor
+template <typename F>
+Taskflow<F>::~Taskflow() {
+  wait_for_all();
 }
 
 // Function: num_tasks

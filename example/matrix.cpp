@@ -120,8 +120,8 @@ auto func2(const matrix_t& a, auto&& b) {
   return dummy;
 }
 
-// Procedure: sequential
-void sequential(size_t N) {
+// Procedure: baseline
+void baseline(size_t N) {
 
   generate_test(N);
 
@@ -148,13 +148,13 @@ void sequential(size_t N) {
   
   auto tend = std::chrono::steady_clock::now();
 
-  std::cout << "sequential version takes " 
+  std::cout << "Baseline takes " 
             << std::chrono::duration_cast<std::chrono::seconds>(tend-tbeg).count() 
             << " seconds\n";
 }
 
-// Procedure: naive_parallel
-void naive_parallel(size_t N, size_t num_threads = std::thread::hardware_concurrency()) {
+// Procedure: openmp_parallel
+void openmp_parallel(size_t N, size_t num_threads = std::thread::hardware_concurrency()) {
   
   generate_test(N);
 
@@ -184,13 +184,13 @@ void naive_parallel(size_t N, size_t num_threads = std::thread::hardware_concurr
   
   auto tend = std::chrono::steady_clock::now();
 
-  std::cout << "naive parallel version takes " 
+  std::cout << "OpenMP takes " 
             << std::chrono::duration_cast<std::chrono::seconds>(tend-tbeg).count() 
             << " seconds\n";
 }
 
-// Procedure: parallel
-void parallel(size_t N, size_t num_threads = std::thread::hardware_concurrency()) {
+// Procedure: taskflow_parallel
+void taskflow_parallel(size_t N, size_t num_threads = std::thread::hardware_concurrency()) {
   
   generate_test(N);
 
@@ -279,7 +279,7 @@ void parallel(size_t N, size_t num_threads = std::thread::hardware_concurrency()
   tf.wait_for_all();
 
   auto tend = std::chrono::steady_clock::now();
-  std::cout << "parallel version takes " 
+  std::cout << "Taskflow takes " 
             << std::chrono::duration_cast<std::chrono::seconds>(tend-tbeg).count() 
             << " seconds\n";
 }
@@ -290,21 +290,21 @@ void parallel(size_t N, size_t num_threads = std::thread::hardware_concurrency()
 int main(int argc, char* argv[]) {
 
   if(argc != 3) {
-    std::cerr << "usage: ./matrix N [seq|naive|taskflow]\n";
+    std::cerr << "usage: ./matrix N [baseline|openmp|taskflow]\n";
     std::exit(EXIT_FAILURE);
   }
 
-  if(std::strcmp(argv[2], "seq") == 0) {
-    sequential(std::stoi(argv[1]));
+  if(std::string_view method(argv[2]); method == "baseline") {
+    baseline(std::stoi(argv[1]));
   }
-  else if(std::strcmp(argv[2], "naive") == 0) {
-    naive_parallel(std::stoi(argv[1]));
+  else if(method == "openmp") {
+    openmp_parallel(std::stoi(argv[1]));
   }
-  else if(std::strcmp(argv[2], "taskflow") == 0) {
-    parallel(std::stof(argv[1]));
+  else if(method == "taskflow") {
+    taskflow_parallel(std::stof(argv[1]));
   }
   else {
-    std::cerr << "wrong method\n";
+    std::cerr << "wrong method, shoud be [baseline|openmp|taskflow]\n";
   }
 
   return 0;
