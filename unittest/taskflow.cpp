@@ -125,6 +125,19 @@ TEST_CASE("TaskFlow"){
     REQUIRE(tf.num_tasks() == 0);
   }
 
+  SUBCASE("Broadcast + Gather"){
+    using namespace std::chrono_literals;
+    auto src = tf.silent_emplace([&counter]() {counter -= 1;});
+    for(size_t i=0;i<nof_tasks;i++){
+      keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
+    }
+    tf.broadcast(src, keys);
+    auto dst = tf.silent_emplace([&counter, nof_tasks]() { REQUIRE(counter == nof_tasks - 1);});
+    tf.gather(keys, dst);
+    tf.wait_for_all();
+    REQUIRE(tf.num_tasks() == 0);
+  }
+
 
   SUBCASE("Linearize"){
     using namespace std::chrono_literals;
