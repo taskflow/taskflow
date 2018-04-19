@@ -20,6 +20,21 @@ TEST_CASE("TaskFlow"){
   std::vector<int64_t> keys;
   std::vector<std::tuple<int64_t,std::future<void>>> tasks;
 
+  SUBCASE("Sequential tasks"){
+    for(size_t i=0;i<nof_tasks;i++){
+      if(i%2 == 0){
+        tasks.emplace_back( std::move(tf.emplace([&counter]() { REQUIRE(counter == 0); counter += 1;})) );
+      }
+      else{
+        tasks.emplace_back( std::move(tf.emplace([&counter]() { REQUIRE(counter == 1); counter -= 1;})) );
+      }
+      if(i>0){
+        tf.precede(std::get<0>(tasks[i-1]), std::get<0>(tasks[i]));
+      }
+    }
+    tf.wait_for_all();
+  }
+
   SUBCASE("Without precedence"){
     for(size_t i=0;i<nof_tasks;i++){
       tasks.emplace_back( std::move(tf.emplace([&counter]() {counter += 1;})) );
@@ -107,6 +122,18 @@ TEST_CASE("TaskFlow"){
     tf.gather(keys,dst);
     tf.wait_for_all();
     REQUIRE(counter == nof_tasks - 1);
+    REQUIRE(tf.num_tasks() == 0);
+  }
+
+
+  SUBCASE("Linearize"){
+    using namespace std::chrono_literals;
+    for(size_t i=0;i<nof_tasks;i++){
+      keys.emplace_back(tf.silent_emplace([&counter, i]() { REQUIRE(counter == i); counter += 1;}));
+    }
+    tf.linearize(keys);
+    tf.wait_for_all();
+    REQUIRE(counter == nof_tasks);
     REQUIRE(tf.num_tasks() == 0);
   }
 
