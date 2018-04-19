@@ -25,7 +25,7 @@ set (TASKFLOW_MINOR_VERSION "1")
 
 # add the binayr tree to the search path for include files so we can find TutorialConfig.h
 include_directories("${PROJECT_SOURCE_DIR}")
-
+include_directories(doctest)
 
 
 # Find package
@@ -37,5 +37,9 @@ MESSAGE(STATUS "CMAKE_THREAD_LIBS_INIT: " ${CMAKE_THREAD_LIBS_INIT})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
 add_executable(simple example/simple.cpp)
 target_link_libraries(simple ${CMAKE_THREAD_LIBS_INIT})
+
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/unittest)
+add_executable(taskflow unittest/taskflow.cpp)
+target_link_libraries(taskflow ${CMAKE_THREAD_LIBS_INIT})
 
 

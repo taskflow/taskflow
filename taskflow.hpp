@@ -35,6 +35,8 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <sstream>
+#include <list>
+#include <optional>
 
 namespace tf {
 
@@ -275,7 +277,8 @@ class Taskflow {
   struct Task {
 
     const int64_t key {-1};
-    const std::function<void()> work;
+    //const std::function<void()> work;
+    std::function<void()> work;
     
     std::vector<Task*> successors;
     std::atomic<int> dependents {0};
@@ -289,7 +292,23 @@ class Taskflow {
     Task(C&&);
 
     inline void precede(Task&);
+
+    template <typename C>
+    Task(Task&&);  // Move constructor
+
   };
+
+
+  struct Topology{
+    Topology(std::unordered_map<int64_t, Task>&&);
+
+    std::unordered_map<int64_t, Task> tasks;
+    Task source;
+    Task target;
+    std::shared_future<void> future;
+  };
+
+
 
   public:
     
@@ -301,7 +320,8 @@ class Taskflow {
     template <typename C>
     auto silent_emplace(C&&);
 
-    auto dispatch();
+    inline auto dispatch();
+    inline auto silent_dispatch();
 
     inline void precede(int64_t, int64_t);
     inline void wait_for_all();
@@ -320,8 +340,34 @@ class Taskflow {
     inline void _schedule(Task&);
 
     std::unordered_map<int64_t, Task> _tasks;
+
+    std::list<Topology> _topologies;
 };
-    
+ 
+
+
+Taskflow::Topology::Topology(std::unordered_map<int64_t, Task>&& t) : 
+  tasks(std::move(t)) {
+  
+  std::promise<void> promise;
+
+  future = promise.get_future().share();
+  target.work = [p=MoveOnCopy{std::move(promise)}] () mutable { p.get().set_value(); };
+
+  source.precede(target);
+
+  // Build the super source and super target.
+  for(auto& kvp : tasks) {
+    if(kvp.second.dependents == 0) {
+      source.precede(kvp.second);
+    }
+    if(kvp.second.successors.size() == 0) {
+      kvp.second.precede(target);
+    }
+  }
+}
+
+
 template <typename C>
 Taskflow::Task::Task(int64_t k, C&& c) : key {k}, work {std::forward<C>(c)} {
 }
@@ -329,6 +375,7 @@ Taskflow::Task::Task(int64_t k, C&& c) : key {k}, work {std::forward<C>(c)} {
 template <typename C>
 Taskflow::Task::Task(C&& c) : work {std::forward<C>(c)} {
 }
+
 
 // Procedure: precede
 inline void Taskflow::Task::precede(Task& v) {
@@ -369,41 +416,40 @@ inline void Taskflow::precede(int64_t from, int64_t to) {
   fitr->second.precede(titr->second);
 }
 
-// Procedure: wait_for_all
-inline void Taskflow::wait_for_all() {
+// Procedure: silent_dispatch
+inline auto Taskflow::silent_dispatch() {
 
   if(_tasks.empty()) return;
 
-  // TODO: add code to detect cycle
-  
-  // Create a barrier.
-  std::promise<void> barrier;
-  auto future = barrier.get_future();
-  
-  // Create a source/target
-  Task source;
-  Task target{-1, [&barrier] () mutable { barrier.set_value(); }};
-
-  source.precede(target);
-  
-  // Build the super source and super target.
-  for(auto& kvp : _tasks) {
-    if(kvp.second.dependents == 0) {
-      source.precede(kvp.second);
-    }
-    if(kvp.second.successors.size() == 0) {
-      kvp.second.precede(target);
-    }
-  }
+  auto& topology = _topologies.emplace_back(std::move(_tasks));
 
   // Start the taskflow
-  _schedule(source);
-  
-  // Wait until all finishes.
-  future.get();
+  _schedule(topology.source);
+}
 
-  // clean up the tasks
-  _tasks.clear();
+
+// Procedure: dispatch
+inline auto Taskflow::dispatch() {
+
+  if(_tasks.empty()) {
+    return std::async(std::launch::deferred, [](){}).share();
+  }
+
+  auto& topology = _topologies.emplace_back(std::move(_tasks));
+
+  // Start the taskflow
+  _schedule(topology.source);
+  
+  return topology.future;
+}
+
+
+// Procedure: wait_for_all
+inline void Taskflow::wait_for_all() {
+  silent_dispatch();
+  for(auto& t: _topologies){
+    t.future.get();
+  }
 }
 
 // Function: silent_emplace
@@ -478,19 +524,12 @@ inline std::string Taskflow::dump() const {
 
 
 
+
+
 };  // end of namespace tf. -----------------------------------------------------------------------
 
 
 #endif
-
-
-
-
-
-
-
-
-
 
 
 
