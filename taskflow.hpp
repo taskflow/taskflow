@@ -353,6 +353,30 @@ class Taskflow {
     template <typename L>
     void _gather(const L&, const KeyT&);
 };
+
+
+template<typename KeyT>
+Taskflow<KeyT>::Topology::Topology(std::unordered_map<KeyT, Task>&& t) : 
+  tasks(std::move(t)) {
+  
+  std::promise<void> promise;
+
+  future = promise.get_future().share();
+  target.work = [p=MoveOnCopy{std::move(promise)}] () mutable { p.get().set_value(); };
+
+  source.precede(target);
+
+  // Build the super source and super target.
+  for(auto& kvp : tasks) {
+    if(kvp.second.dependents == 0) {
+      source.precede(kvp.second);
+    }
+    if(kvp.second.successors.size() == 0) {
+      kvp.second.precede(target);
+    }
+  }
+}
+
     
 template <typename KeyT>
 template <typename C>
