@@ -85,7 +85,30 @@ TEST_CASE("TaskFlow"){
     REQUIRE(counter == nof_tasks);
     REQUIRE(tf.num_tasks() == 0);
   }
-  
+ 
+  SUBCASE("Broadcast"){
+    using namespace std::chrono_literals;
+    auto src = tf.silent_emplace([&counter]() {counter -= 1;});
+    for(size_t i=1;i<nof_tasks;i++){
+      keys.emplace_back(tf.silent_emplace([&counter]() {REQUIRE(counter < 0);}));
+    }
+    tf.broadcast(src, keys);
+    tf.wait_for_all();
+    REQUIRE(counter == - 1);
+    REQUIRE(tf.num_tasks() == 0);
+  }
+
+  SUBCASE("Gather"){
+    using namespace std::chrono_literals;
+    auto dst = tf.silent_emplace([&counter, nof_tasks]() { REQUIRE(counter == nof_tasks - 1);});
+    for(size_t i=1;i<nof_tasks;i++){
+      keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
+    }
+    tf.gather(keys,dst);
+    tf.wait_for_all();
+    REQUIRE(counter == nof_tasks - 1);
+    REQUIRE(tf.num_tasks() == 0);
+  }
 
 }
 
