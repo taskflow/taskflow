@@ -36,24 +36,19 @@
 #include <unordered_set>
 #include <sstream>
 #include <list>
-#include <optional>
 
 namespace tf {
 
-//template <typename T>
-//struct UniqueKeyGenerator {
-//
-//	T operator ()() const {
-//    
-//    if(std::is_integral_v<T>) {
-//      static std::atomic<T> key {0};
-//      return key++;
-//    }
-//
-//  }
-//
-//};
+inline void __throw__(const char* fname, const size_t line, auto&&... args) {
+  std::ostringstream oss;
+  oss << "[" << fname << ":" << line << "] ";
+  (oss << ... << args);
+  throw std::runtime_error(oss.str());
+}
 
+#define TF_THROW(...) __throw__(__FILE__, __LINE__, __VA_ARGS__);
+
+// ------------------------------------------------------------------------------------------------
 
 // Struct: MoveOnCopy
 template <typename T>
@@ -272,12 +267,12 @@ inline void Threadpool::shutdown() {
 //  -----------------------------------------------------------------------------------------------
 
 // Class: Taskflow
+template <typename KeyT = int64_t>
 class Taskflow {
 
   struct Task {
 
-    const int64_t key {-1};
-    //const std::function<void()> work;
+    KeyT key;
     std::function<void()> work;
     
     std::vector<Task*> successors;
@@ -286,28 +281,22 @@ class Taskflow {
     Task() = default;
 
     template <typename C>
-    Task(int64_t, C&&);
+    Task(KeyT, C&&);
 
     template <typename C>
     Task(C&&);
 
     inline void precede(Task&);
-
-    template <typename C>
-    Task(Task&&);  // Move constructor
-
   };
-
 
   struct Topology{
-    Topology(std::unordered_map<int64_t, Task>&&);
+    Topology(std::unordered_map<KeyT, Task>&&);
 
-    std::unordered_map<int64_t, Task> tasks;
+    std::unordered_map<KeyT, Task> tasks;
+    std::shared_future<void> future;
     Task source;
     Task target;
-    std::shared_future<void> future;
   };
-
 
 
   public:
@@ -317,47 +306,233 @@ class Taskflow {
     template <typename C>
     auto emplace(C&&);
 
+    template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
+    auto emplace(C&&...);
+
     template <typename C>
     auto silent_emplace(C&&);
+
+    template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
+    auto silent_emplace(C&&...);
 
     inline auto dispatch();
     inline auto silent_dispatch();
 
-    inline void precede(int64_t, int64_t);
-    inline void wait_for_all();
 
-    inline size_t num_tasks() const;
-    inline size_t num_workers() const;
+    Taskflow& precede(const KeyT&, const KeyT&);
+    Taskflow& linearize(const std::vector<KeyT>&);
+    Taskflow& linearize(std::initializer_list<KeyT>);
+    Taskflow& broadcast(const KeyT&, const std::vector<KeyT>&);
+    Taskflow& broadcast(const KeyT&, std::initializer_list<KeyT>);
+    Taskflow& gather(const std::vector<KeyT>&, const KeyT&);
+    Taskflow& gather(std::initializer_list<KeyT>, const KeyT&);
+    Taskflow& wait_for_all();
 
-    inline std::string dump() const;
+    size_t num_tasks() const;
+    size_t num_workers() const;
+
+    std::string dump() const;
 
   private:
 
     Threadpool _threadpool;
 
-    inline int64_t _unique_key() const;
-    
-    inline void _schedule(Task&);
+    KeyT _gen {0};
 
-    std::unordered_map<int64_t, Task> _tasks;
-
+    std::unordered_map<KeyT, Task> _tasks;
     std::list<Topology> _topologies;
+    
+    void _schedule(Task&);
+
+    template <typename L>
+    void _linearize(const L&);
+
+    template <typename L>
+    void _broadcast(const KeyT&, const L&);
+
+    template <typename L>
+    void _gather(const L&, const KeyT&);
 };
- 
+    
+template <typename KeyT>
+template <typename C>
+Taskflow<KeyT>::Task::Task(KeyT k, C&& c) : key {k}, work {std::forward<C>(c)} {
+}
 
+template <typename KeyT>
+template <typename C>
+Taskflow<KeyT>::Task::Task(C&& c) : work {std::forward<C>(c)} {
+}
 
-Taskflow::Topology::Topology(std::unordered_map<int64_t, Task>&& t) : 
-  tasks(std::move(t)) {
+// Procedure: precede
+template <typename KeyT>
+void Taskflow<KeyT>::Task::precede(Task& v) {
+  successors.push_back(&v);
+  v.dependents++;
+}
+
+// Constructor
+template <typename KeyT>
+Taskflow<KeyT>::Taskflow(auto N) : _threadpool{N} {
+}
+
+// Function: num_tasks
+template <typename KeyT>
+size_t Taskflow<KeyT>::num_tasks() const {
+  return _tasks.size();
+}
+
+// Function: num_workers
+template <typename KeyT>
+size_t Taskflow<KeyT>::num_workers() const {
+  return _threadpool.num_workers();
+}
+
+// Procedure: precede
+template <typename KeyT>
+Taskflow<KeyT>& Taskflow<KeyT>::precede(const KeyT& from, const KeyT& to) {
+
+  auto fitr = _tasks.find(from);
+  auto titr = _tasks.find(to);
+
+  if(fitr == _tasks.end() or titr == _tasks.end()) {
+    TF_THROW("precede error (invalid pair ", from, "->", to, ")");
+  }
+
+  fitr->second.precede(titr->second);
+
+  return *this;
+}
+
+// Procedure: _linearize
+template <typename KeyT>
+template <typename L>
+void Taskflow<KeyT>::_linearize(const L& keys) {
+
+  std::adjacent_find(keys.begin(), keys.end(), [this] (const KeyT& from, const KeyT& to) {
+
+    auto fitr = _tasks.find(from);
+    auto titr = _tasks.find(to);
+
+    if(fitr == _tasks.end() or titr == _tasks.end()) {
+      TF_THROW("linearize error (invalid key ", from, "->", to, ")");
+    }
+    fitr->second.precede(titr->second); 
+    return false;
+  });
+
+}
+
+// Procedure: linearize
+template <typename KeyT>
+Taskflow<KeyT>& Taskflow<KeyT>::linearize(const std::vector<KeyT>& keys) {
+  _linearize(keys); 
+  return *this;
+}
+
+// Procedure: linearize
+template <typename KeyT>
+Taskflow<KeyT>& Taskflow<KeyT>::linearize(std::initializer_list<KeyT> keys) {
+  _linearize(keys);
+  return *this;
+}
+
+// Procedure: broadcast
+template <typename KeyT>
+template <typename S>
+void Taskflow<KeyT>::_broadcast(const KeyT& from, const S& keys) {
+
+  auto fitr = _tasks.find(from);
+
+  if(fitr == _tasks.end()) {
+    TF_THROW("broadcast error (invalid from key ", from, ")");
+  }
+
+  for(const auto& to : keys) {
+    if(auto titr = _tasks.find(to); titr == _tasks.end()) {
+      TF_THROW("broadcast error (invalid to key ", to, ")");
+    }
+    else {
+      fitr->second.precede(titr->second);
+    }
+  }
+}
+
+// Procedure: broadcast
+template <typename KeyT>
+Taskflow<KeyT>& Taskflow<KeyT>::broadcast(const KeyT& from, const std::vector<KeyT>& keys) {
+  _broadcast(from, keys);
+  return *this;
+}
+
+// Procedure: broadcast
+template <typename KeyT>
+Taskflow<KeyT>& Taskflow<KeyT>::broadcast(const KeyT& from, std::initializer_list<KeyT> keys) {
+  _broadcast(from, keys);
+  return *this;
+}
+
+// Procedure: gather
+template <typename KeyT>
+template <typename S>
+void Taskflow<KeyT>::_gather(const S& keys, const KeyT& to) {
+
+  auto titr = _tasks.find(to);
+
+  if(titr == _tasks.end()) {
+    TF_THROW("gather error (invalid to key ", to, ")");
+  }
+
+  for(const auto& from : keys) {
+    if(auto fitr = _tasks.find(from); fitr == _tasks.end()) {
+      TF_THROW("gather error (invalid from key ", from, ")");
+    }
+    else {
+      fitr->second.precede(titr->second);
+    }
+  }
+}
+
+// Function: gather
+template <typename KeyT>
+Taskflow<KeyT>& Taskflow<KeyT>::gather(const std::vector<KeyT>& keys, const KeyT& to) {
+  _gather(keys, to);
+  return *this;
+}
+
+// Function: gather
+template <typename KeyT>
+Taskflow<KeyT>& Taskflow<KeyT>::gather(std::initializer_list<KeyT> keys, const KeyT& to) {
+  _gather(keys, to);
+  return *this;
+}
+
+// Procedure: wait_for_all
+template <typename KeyT>
+Taskflow<KeyT>& Taskflow<KeyT>::wait_for_all() {
+  silent_dispatch();
+  for(auto& t: _topologies){
+    t.future.get();
+  }
+  return *this;
+
+  /*
+  if(_tasks.empty()) return *this;
+
+  // TODO: add code to detect cycle
   
-  std::promise<void> promise;
-
-  future = promise.get_future().share();
-  target.work = [p=MoveOnCopy{std::move(promise)}] () mutable { p.get().set_value(); };
+  // Create a barrier.
+  std::promise<void> barrier;
+  auto future = barrier.get_future();
+  
+  // Create a source/target
+  Task source;
+  Task target{-1, [&barrier] () mutable { barrier.set_value(); }};
 
   source.precede(target);
-
+  
   // Build the super source and super target.
-  for(auto& kvp : tasks) {
+  for(auto& kvp : _tasks) {
     if(kvp.second.dependents == 0) {
       source.precede(kvp.second);
     }
@@ -365,111 +540,46 @@ Taskflow::Topology::Topology(std::unordered_map<int64_t, Task>&& t) :
       kvp.second.precede(target);
     }
   }
-}
-
-
-template <typename C>
-Taskflow::Task::Task(int64_t k, C&& c) : key {k}, work {std::forward<C>(c)} {
-}
-
-template <typename C>
-Taskflow::Task::Task(C&& c) : work {std::forward<C>(c)} {
-}
-
-
-// Procedure: precede
-inline void Taskflow::Task::precede(Task& v) {
-  successors.push_back(&v);
-  v.dependents++;
-}
-
-// Constructor
-inline Taskflow::Taskflow(auto N) : _threadpool{N} {
-}
-
-// Function: _unique_key
-inline int64_t Taskflow::_unique_key() const {
-  static int64_t _key {0};
-  return _key++;
-}
-
-// Function: num_tasks
-inline size_t Taskflow::num_tasks() const {
-  return _tasks.size();
-}
-
-// Function: num_workers
-inline size_t Taskflow::num_workers() const {
-  return _threadpool.num_workers();
-}
-
-// Procedure: precede
-inline void Taskflow::precede(int64_t from, int64_t to) {
-
-  auto fitr = _tasks.find(from);
-  auto titr = _tasks.find(to);
-
-  if(fitr == _tasks.end() or titr == _tasks.end()) {
-    throw std::runtime_error("task not found in the taskflow");
-  }
-
-  fitr->second.precede(titr->second);
-}
-
-// Procedure: silent_dispatch
-inline auto Taskflow::silent_dispatch() {
-
-  if(_tasks.empty()) return;
-
-  auto& topology = _topologies.emplace_back(std::move(_tasks));
 
   // Start the taskflow
-  _schedule(topology.source);
-}
-
-
-// Procedure: dispatch
-inline auto Taskflow::dispatch() {
-
-  if(_tasks.empty()) {
-    return std::async(std::launch::deferred, [](){}).share();
-  }
-
-  auto& topology = _topologies.emplace_back(std::move(_tasks));
-
-  // Start the taskflow
-  _schedule(topology.source);
+  _schedule(source);
   
-  return topology.future;
-}
+  // Wait until all finishes.
+  future.get();
 
+  // clean up the tasks
+  _tasks.clear();
 
-// Procedure: wait_for_all
-inline void Taskflow::wait_for_all() {
-  silent_dispatch();
-  for(auto& t: _topologies){
-    t.future.get();
-  }
+  return *this;
+  */
 }
 
 // Function: silent_emplace
+template <typename KeyT>
 template <typename C>
-auto Taskflow::silent_emplace(C&& c) {
+auto Taskflow<KeyT>::silent_emplace(C&& c) {
   
-  const auto key = _unique_key();  
+  const auto key = ++_gen;  
   
   if(auto ret = _tasks.try_emplace(key, key, std::forward<C>(c)); !ret.second) {
-    throw std::runtime_error("failed to insert task to taskflow");
+    TF_THROW("silent_emplace failed (dumplicate key ", key, ")");
   }
   
   return key;
 }
 
+template <typename KeyT>
+template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
+auto Taskflow<KeyT>::silent_emplace(C&&... cs) {
+  return std::make_tuple(silent_emplace(std::forward<C>(cs))...);
+}
+
 // Function: emplace
+template <typename KeyT>
 template <typename C>
-auto Taskflow::emplace(C&& c) {
+auto Taskflow<KeyT>::emplace(C&& c) {
   
-  const auto key = _unique_key();  
+  const auto key = ++_gen;
   
   using R = std::invoke_result_t<C>;
   
@@ -489,14 +599,21 @@ auto Taskflow::emplace(C&& c) {
   );
   
   if(ret.second == false) {
-    throw std::runtime_error("failed to insert task to taskflow");
+    TF_THROW("emplace failed (dumplicate key ", key, ")");
   }
   
-  return std::make_tuple(key, std::move(fu));
+  return std::make_pair(key, std::move(fu));
+}
+
+template <typename KeyT>
+template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
+auto Taskflow<KeyT>::emplace(C&&... cs) {
+  return std::make_tuple(emplace(std::forward<C>(cs))...);
 }
 
 // Procedure: _schedule
-inline void Taskflow::_schedule(Task& task) {
+template <typename KeyT>
+void Taskflow<KeyT>::_schedule(Task& task) {
   _threadpool.silent_async([this, &task](){
     if(task.work) {
       task.work();
@@ -510,12 +627,13 @@ inline void Taskflow::_schedule(Task& task) {
 }
 
 // Function: dump
-inline std::string Taskflow::dump() const {
+template <typename KeyT>
+std::string Taskflow<KeyT>::dump() const {
   std::ostringstream oss;  
-  for(const auto& t : _tasks) {
-    oss << "Task \"" << t.second.key << "\" [dependents:" << t.second.dependents.load()
-        << "|successors:" << t.second.successors.size() << "]\n";
-    for(const auto s : t.second.successors) {
+  for(const auto& [key, t] : _tasks) {
+    oss << "Task \"" << key << "\" [dependents:" << t.dependents.load()
+        << "|successors:" << t.successors.size() << "]\n";
+    for(const auto s : t.successors) {
       oss << "  |--> " << "task \"" << s->key << "\"\n";
     }
   }
@@ -524,12 +642,51 @@ inline std::string Taskflow::dump() const {
 
 
 
+// Procedure: silent_dispatch 
+template <typename KeyT>
+inline auto Taskflow<KeyT>::silent_dispatch() {
+
+  if(_tasks.empty()) return;
+
+  auto& topology = _topologies.emplace_back(std::move(_tasks));
+
+  // Start the taskflow
+  _schedule(topology.source);
+}
+
+
+// Procedure: dispatch 
+template <typename KeyT>
+inline auto Taskflow<KeyT>::dispatch() {
+
+  if(_tasks.empty()) {
+    return std::async(std::launch::deferred, [](){}).share();
+  }
+
+  auto& topology = _topologies.emplace_back(std::move(_tasks));
+
+  // Start the taskflow
+  _schedule(topology.source);
+  
+  return topology.future;
+}
+
+
 
 
 };  // end of namespace tf. -----------------------------------------------------------------------
 
 
 #endif
+
+
+
+
+
+
+
+
+
 
 
 
