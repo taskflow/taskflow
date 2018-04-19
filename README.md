@@ -1,2 +1,2 @@
 # Taskflow
-Fast C++ Taskflow Scheduler
+Fast C++ Taskflow Executor
