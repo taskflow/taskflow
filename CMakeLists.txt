@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.9)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
 # Project name
@@ -29,20 +29,18 @@ include_directories("${PROJECT_SOURCE_DIR}")
 include_directories(doctest)
 
 
-# Find package
+# Find pthread package
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
-MESSAGE(STATUS "CMAKE_THREAD_LIBS_INIT: " ${CMAKE_THREAD_LIBS_INIT})
 
+# Find OpenMP package
+find_package(OpenMP REQUIRED)
 
 # -----------------------------------------------------------------------------
 # Example program 
 # -----------------------------------------------------------------------------
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
-
-# todo: make OpenMP flag private to the example target
-find_package(OpenMP REQUIRED)
 
 add_executable(simple example/simple.cpp)
 target_link_libraries(simple Threads::Threads)

@@ -1,15 +1,3 @@
-// Cubist programming assignment.
-//
-// Author: Tsung-Wei Huang
-//
-// This program is accomplished by my self, without any advice or help from 
-// other individuals. This is my own products.
-//
-// Dependency: taskflow.hpp
-// taskflow.hpp is a c++ DAG-based task scheduler. It has been used in my open-source
-// projects DtCraft and OpenTimer. 
-// Check my github for more details: https://github.com/twhuang-uiuc
-
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
@@ -208,7 +196,7 @@ void parallel(size_t N, size_t num_threads = std::thread::hardware_concurrency()
 
   auto tbeg = std::chrono::steady_clock::now();
 
-  tf::Taskflow<int> tf(num_threads);
+  tf::Taskflow<> tf(num_threads);
 
   // Parallelize the following tasks.
   // auto a = load_matrix("a.csv");
@@ -222,27 +210,28 @@ void parallel(size_t N, size_t num_threads = std::thread::hardware_concurrency()
   //   save_matrix(std::string("b") + std::to_string(j) + ".csv", tmp);
   // }
   matrix_t a;
-  auto load_a  = tf.silent_emplace([&] () { a = load_matrix("a.csv"); });
-  auto save_a1 = tf.silent_emplace([&] () { save_matrix("a1.csv", func1(a, 1)); });
-  auto save_a2 = tf.silent_emplace([&] () { save_matrix("a2.csv", func1(a, 2)); });
-  auto save_a3 = tf.silent_emplace([&] () { save_matrix("a3.csv", func1(a, 3)); });
-  auto save_a4 = tf.silent_emplace([&] () { save_matrix("a4.csv", func1(a, 4)); });
-  auto save_a5 = tf.silent_emplace([&] () { save_matrix("a5.csv", func1(a, 5)); });
+  auto load_a  = tf.silent_emplace([&] () { a = load_matrix("a.csv"); }).name("load_a");
+  auto save_a1 = tf.silent_emplace([&] () { save_matrix("a1.csv", func1(a, 1)); }).name("save_a1");
+  auto save_a2 = tf.silent_emplace([&] () { save_matrix("a2.csv", func1(a, 2)); }).name("save_a2");
+  auto save_a3 = tf.silent_emplace([&] () { save_matrix("a3.csv", func1(a, 3)); }).name("save_a3");
+  auto save_a4 = tf.silent_emplace([&] () { save_matrix("a4.csv", func1(a, 4)); }).name("save_a4");
+  auto save_a5 = tf.silent_emplace([&] () { save_matrix("a5.csv", func1(a, 5)); }).name("save_a5");
 
-  tf.broadcast(load_a, {save_a1, save_a2, save_a3, save_a4, save_a5});
+  //tf.broadcast(load_a, {save_a1, save_a2, save_a3, save_a4, save_a5});
+  load_a.broadcast({save_a1, save_a2, save_a3, save_a4, save_a5});
 
   matrix_t b;
-  auto load_b  = tf.silent_emplace([&] () { b = load_matrix("b.csv"); });
-  auto save_b1 = tf.silent_emplace([&] () { save_matrix("b1.csv", func1(b, 1)); });
-  auto save_b2 = tf.silent_emplace([&] () { save_matrix("b2.csv", func1(b, 2)); });
-  auto save_b3 = tf.silent_emplace([&] () { save_matrix("b3.csv", func1(b, 3)); });
-  auto save_b4 = tf.silent_emplace([&] () { save_matrix("b4.csv", func1(b, 4)); });
-  auto save_b5 = tf.silent_emplace([&] () { save_matrix("b5.csv", func1(b, 5)); });
+  auto load_b  = tf.silent_emplace([&] () { b = load_matrix("b.csv"); }).name("load_b");
+  auto save_b1 = tf.silent_emplace([&] () { save_matrix("b1.csv", func1(b, 1)); }).name("save_b1");
+  auto save_b2 = tf.silent_emplace([&] () { save_matrix("b2.csv", func1(b, 2)); }).name("save_b2");
+  auto save_b3 = tf.silent_emplace([&] () { save_matrix("b3.csv", func1(b, 3)); }).name("save_b3");
+  auto save_b4 = tf.silent_emplace([&] () { save_matrix("b4.csv", func1(b, 4)); }).name("save_b4");
+  auto save_b5 = tf.silent_emplace([&] () { save_matrix("b5.csv", func1(b, 5)); }).name("save_b5");
   
   tf.broadcast(load_b, {save_b1, save_b2, save_b3, save_b4, save_b5});
   
   // Synchronize
-  auto sync = tf.silent_emplace([&]() {std::cout << "a[1:5].csv and b[1:5].csv written\n";});
+  auto sync = tf.silent_emplace([&]() {std::cout << "a[1:5].csv and b[1:5].csv written\n";}).name("sync");
 
   tf.gather({save_a1, save_a2, save_a3, save_a4, save_a5, 
              save_b1, save_b2, save_b3, save_b4, save_b5}, sync);
@@ -255,21 +244,21 @@ void parallel(size_t N, size_t num_threads = std::thread::hardware_concurrency()
   //   save_matrix(std::string("c") + std::to_string(j) + ".csv", c);
   // }
   matrix_t a1, a2, a3, a4, a5, b1, b2, b3, b4, b5;
-  auto load_a1 = tf.silent_emplace([&](){ a1 = load_matrix("a1.csv"); });
-  auto load_a2 = tf.silent_emplace([&](){ a2 = load_matrix("a2.csv"); });
-  auto load_a3 = tf.silent_emplace([&](){ a3 = load_matrix("a3.csv"); });
-  auto load_a4 = tf.silent_emplace([&](){ a4 = load_matrix("a4.csv"); });
-  auto load_a5 = tf.silent_emplace([&](){ a5 = load_matrix("a5.csv"); });
-  auto load_b1 = tf.silent_emplace([&](){ a1 = load_matrix("b1.csv"); });
-  auto load_b2 = tf.silent_emplace([&](){ a2 = load_matrix("b2.csv"); });
-  auto load_b3 = tf.silent_emplace([&](){ a3 = load_matrix("b3.csv"); });
-  auto load_b4 = tf.silent_emplace([&](){ a4 = load_matrix("b4.csv"); });
-  auto load_b5 = tf.silent_emplace([&](){ a5 = load_matrix("b5.csv"); });
-  auto save_c1 = tf.silent_emplace([&](){ save_matrix("c1.csv", func2(a1, b1)); });
-  auto save_c2 = tf.silent_emplace([&](){ save_matrix("c2.csv", func2(a2, b2)); });
-  auto save_c3 = tf.silent_emplace([&](){ save_matrix("c3.csv", func2(a3, b3)); });
-  auto save_c4 = tf.silent_emplace([&](){ save_matrix("c4.csv", func2(a4, b4)); });
-  auto save_c5 = tf.silent_emplace([&](){ save_matrix("c5.csv", func2(a5, b5)); });
+  auto load_a1 = tf.silent_emplace([&](){ a1 = load_matrix("a1.csv"); }).name("load_a1");
+  auto load_a2 = tf.silent_emplace([&](){ a2 = load_matrix("a2.csv"); }).name("load_a2");
+  auto load_a3 = tf.silent_emplace([&](){ a3 = load_matrix("a3.csv"); }).name("load_a3");
+  auto load_a4 = tf.silent_emplace([&](){ a4 = load_matrix("a4.csv"); }).name("load_a4");
+  auto load_a5 = tf.silent_emplace([&](){ a5 = load_matrix("a5.csv"); }).name("load_a5");
+  auto load_b1 = tf.silent_emplace([&](){ a1 = load_matrix("b1.csv"); }).name("load_b1");
+  auto load_b2 = tf.silent_emplace([&](){ a2 = load_matrix("b2.csv"); }).name("load_b2");
+  auto load_b3 = tf.silent_emplace([&](){ a3 = load_matrix("b3.csv"); }).name("load_b3");
+  auto load_b4 = tf.silent_emplace([&](){ a4 = load_matrix("b4.csv"); }).name("load_b4");
+  auto load_b5 = tf.silent_emplace([&](){ a5 = load_matrix("b5.csv"); }).name("load_b5");
+  auto save_c1 = tf.silent_emplace([&](){ save_matrix("c1.csv", func2(a1, b1)); }).name("save_c1");
+  auto save_c2 = tf.silent_emplace([&](){ save_matrix("c2.csv", func2(a2, b2)); }).name("save_c2");
+  auto save_c3 = tf.silent_emplace([&](){ save_matrix("c3.csv", func2(a3, b3)); }).name("save_c3");
+  auto save_c4 = tf.silent_emplace([&](){ save_matrix("c4.csv", func2(a4, b4)); }).name("save_c4");
+  auto save_c5 = tf.silent_emplace([&](){ save_matrix("c5.csv", func2(a5, b5)); }).name("save_c5");
 
   tf.broadcast(sync, {load_a1, load_a2, load_a3, load_a4, load_a5,
                       load_b1, load_b2, load_b3, load_b4, load_b5});
@@ -283,8 +272,11 @@ void parallel(size_t N, size_t num_threads = std::thread::hardware_concurrency()
     .precede(load_a4, save_c4)
     .precede(load_b4, save_c4)
     .precede(load_a5, save_c5)
-    .precede(load_b5, save_c5)
-    .wait_for_all();
+    .precede(load_b5, save_c5);
+
+  std::cout << tf.dump() << std::endl;
+
+  tf.wait_for_all();
 
   auto tend = std::chrono::steady_clock::now();
   std::cout << "parallel version takes " 
@@ -296,9 +288,9 @@ void parallel(size_t N, size_t num_threads = std::thread::hardware_concurrency()
 
 // Function: main
 int main(int argc, char* argv[]) {
-  
+
   if(argc != 3) {
-    std::cerr << "usage: ./cubist N [seq|naive|taskflow]\n";
+    std::cerr << "usage: ./matrix N [seq|naive|taskflow]\n";
     std::exit(EXIT_FAILURE);
   }
 
@@ -317,14 +309,5 @@ int main(int argc, char* argv[]) {
 
   return 0;
 }
-
-
-
-
-
-
-
-
-
 
 
