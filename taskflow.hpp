@@ -538,6 +538,7 @@ Taskflow<KeyT>& Taskflow<KeyT>::wait_for_all() {
   for(auto& t: _topologies){
     t.future.get();
   }
+  _topologies.clear();
   return *this;
 
   /*
@@ -672,6 +673,14 @@ inline auto Taskflow<KeyT>::silent_dispatch() {
 
   if(_tasks.empty()) return;
 
+  _topologies.remove_if([](auto &t){ 
+     auto status = t.future.wait_for(std::chrono::seconds(0));
+     if(status == std::future_status::ready){
+       return true;
+     }
+    return false; 
+  });
+
   auto& topology = _topologies.emplace_back(std::move(_tasks));
 
   // Start the taskflow
@@ -686,6 +695,14 @@ inline auto Taskflow<KeyT>::dispatch() {
   if(_tasks.empty()) {
     return std::async(std::launch::deferred, [](){}).share();
   }
+
+  _topologies.remove_if([](auto &t){ 
+     auto status = t.future.wait_for(std::chrono::seconds(0));
+     if(status == std::future_status::ready){
+       return true;
+     }
+    return false; 
+  });
 
   auto& topology = _topologies.emplace_back(std::move(_tasks));
 
@@ -702,15 +719,5 @@ inline auto Taskflow<KeyT>::dispatch() {
 
 
 #endif
-
-
-
-
-
-
-
-
-
-
 
 
