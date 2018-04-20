@@ -6,8 +6,6 @@ A fast C++ header-only library to develop complex and parallel task dependency g
 The following example (`simple.cpp`) contains the basic syntax you need to use Cpp-Taskflow.
 
 ```cpp
-// A simple example to capture the following task dependencies.
-//
 // TaskA---->TaskB---->TaskD
 // TaskA---->TaskC---->TaskD
 
