@@ -75,7 +75,7 @@ auto [A, B, C, D] = tf.silent_emplace(
 ## Step 2: Define Task Dependencies
 Once tasks are created in the pool, you need to specify task dependencies in a 
 [Directed Acyclic Graph (DAG)](https://en.wikipedia.org/wiki/Directed_acyclic_graph) fashion.
-The `TaskBuilder` object returned upon task creation support methods for you to describe dependencies.
+The `TaskBuilder` supports different methods for you to describe task dependencies.
 
 ### Precede
 Adding a preceding link forces one task to run ahead of one another.
