@@ -8,9 +8,9 @@
 #include <chrono>
 
 // --------------------------------------------------------
-// Testcase: TaskFlow.Builder
+// Testcase: Taskflow.Builder
 // --------------------------------------------------------
-TEST_CASE("TaskFlow.Builder"){
+TEST_CASE("Taskflow.Builder"){
 
   constexpr auto num_workers = 4;
   constexpr auto num_tasks = 100;
@@ -129,9 +129,9 @@ TEST_CASE("TaskFlow.Builder"){
 }
 
 // --------------------------------------------------------
-// Testcase: Taskflow.Execution
+// Testcase: Taskflow.Dispatch
 // --------------------------------------------------------
-TEST_CASE("TaskFlow.Execution") {
+TEST_CASE("Taskflow.Dispatch") {
     
   using namespace std::chrono_literals;
   
@@ -143,11 +143,12 @@ TEST_CASE("TaskFlow.Execution") {
 
   std::atomic<int> counter {0};
   std::vector<tf::Taskflow::TaskBuilder> keys;
+    
+  for(size_t i=0;i<num_tasks;i++){
+    keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
+  }
 
   SUBCASE("Dispatch"){
-    for(size_t i=0;i<num_tasks;i++){
-      keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
-    }
     auto fu = tf.dispatch();
     REQUIRE(tf.num_tasks() == 0);
     REQUIRE(fu.wait_for(1s) == std::future_status::ready);
@@ -155,17 +156,18 @@ TEST_CASE("TaskFlow.Execution") {
   }
 
   SUBCASE("SilentDispatch"){
-    for(size_t i=0; i<num_tasks; i++){
-      keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
-    }
     tf.silent_dispatch();
     REQUIRE(tf.num_tasks() == 0);
     std::this_thread::sleep_for(1s);
     REQUIRE(counter == num_tasks);
   }
+
+  SUBCASE("WaitForAll") {
+    tf.wait_for_all();
+    REQUIRE(tf.num_tasks() == 0);
+    REQUIRE(counter == num_tasks); 
+  }
 }
-
-
 
 
 

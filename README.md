@@ -1,5 +1,5 @@
 # Cpp-Taskflow
-A fast C++ header-only library to develop complex and parallel task dependency graph algorithms.
+A fast C++ header-only library to develop complex and parallel task dependency graphs.
 
 # Get Started with Cpp-Taskflow
 

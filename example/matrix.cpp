@@ -54,7 +54,7 @@ void baseline(const std::vector<size_t>& dimensions) {
     Bs[j] = random_vector(dimensions[j]);
   }
   
-  std::cout << "Generating inner product values Cs ...\n";
+  std::cout << "Computing inner product values Cs ...\n";
   std::vector<float> Cs(dimensions.size());
   for(size_t j=0; j<dimensions.size(); ++j) {
     Cs[j] = std::inner_product(As[j].begin(), As[j].end(), Bs[j].begin(), 0.0f);
@@ -89,7 +89,7 @@ void openmp_parallel(const std::vector<size_t>& dimensions) {
     Bs[j] = random_vector(dimensions[j]);
   }
   
-  std::cout << "Generating inner product values Cs ...\n";
+  std::cout << "Computing inner product values Cs ...\n";
   std::vector<float> Cs(dimensions.size());
   #pragma omp parallel for num_threads(4)
   for(size_t j=0; j<dimensions.size(); ++j) {
@@ -111,30 +111,30 @@ void taskflow_parallel(const std::vector<size_t>& dimensions) {
   using builder_t  = typename tf::Taskflow::TaskBuilder;
 
   tf::Taskflow tf(4);
-
+  
+  std::cout << "Generating task As ...\n";
   std::vector<std::vector<float>> As(dimensions.size());
   std::vector<builder_t> TaskAs;
   for(size_t j=0; j<dimensions.size(); ++j) {
     TaskAs.push_back(tf.silent_emplace([&, j] () { 
       As[j] = random_vector(dimensions[j]); 
-      printf("Generating A[%lu] ...\n", j);
     }));
   }
 
+  std::cout << "Generating task Bs ...\n";
   std::vector<std::vector<float>> Bs(dimensions.size());
   std::vector<builder_t> TaskBs;
   for(size_t j=0; j<dimensions.size(); ++j) {
     TaskBs.push_back(tf.silent_emplace([&, j] () {
       Bs[j] = random_vector(dimensions[j]);
-      printf("Generating B[%lu] ...\n", j);
     }));
   }
 
+  std::cout << "Generating task Cs ...\n";
   std::vector<float> Cs(dimensions.size());
   std::vector<builder_t> TaskCs;
   for(size_t j=0; j<dimensions.size(); ++j) {
     TaskCs.push_back(tf.silent_emplace([&, j] () {
-      printf("Computing C[%lu] ...\n", j);
       Cs[j] = std::inner_product(As[j].begin(), As[j].end(), Bs[j].begin(), 0.0f);
     }));
   }
@@ -163,17 +163,18 @@ int main(int argc, char* argv[]) {
   }
   
   // Create a unbalanced dimension for vector products.
-  const auto N = std::stoi(argv[1]);
+  const auto N = std::stoul(argv[1]);
 
   std::vector<size_t> vector_sizes(N);
   
   std::default_random_engine engine(0);
-  std::uniform_int_distribution dis(1000000, 4000000);
+  std::uniform_int_distribution dis(1, 4000000);
 
   std::cout << "vector sizes = [";
-  for(auto& vs : vector_sizes)  {
-    vs = dis(engine);
-    std::cout << vs << " ";
+  for(size_t i=0; i<N; ++i) {
+    vector_sizes[i] = dis(engine);
+    if(i) std::cout << ' ';
+    std::cout << vector_sizes[i];
   }
   std::cout << "]\n";
 

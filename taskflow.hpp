@@ -1,6 +1,6 @@
 // MIT License
 // 
-// Copyright (c) 2018 Dr. Tsung-Wei Huang, and Chun-Xun Lin
+// Copyright (c) 2018 Dr. Tsung-Wei Huang, Chun-Xun Lin, and Martin Wong
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -374,10 +374,6 @@ std::string Task<F>::dump() const {
 
 // ------------------------------------------------------------------------------------------------
 
-// Class: TaskBuilder
-
-// ------------------------------------------------------------------------------------------------
-
 // Class: BasicTaskflow
 template <typename F>
 class BasicTaskflow {
@@ -412,21 +408,21 @@ class BasicTaskflow {
       operator const auto ();
       const auto operator -> ();
 
-      TaskBuilder& name(const std::string&);
-      TaskBuilder& precede(TaskBuilder);
-      TaskBuilder& broadcast(std::vector<TaskBuilder>&);
-      TaskBuilder& broadcast(std::initializer_list<TaskBuilder>);
-      TaskBuilder& gather(std::vector<TaskBuilder>&);
-      TaskBuilder& gather(std::initializer_list<TaskBuilder>);
+      auto& name(const std::string&);
+      auto& precede(TaskBuilder);
+      auto& broadcast(std::vector<TaskBuilder>&);
+      auto& broadcast(std::initializer_list<TaskBuilder>);
+      auto& gather(std::vector<TaskBuilder>&);
+      auto& gather(std::initializer_list<TaskBuilder>);
 
       template <typename C>
-      TaskBuilder& work(C&&);
+      auto& work(C&&);
     
       template <typename... Bs>
-      TaskBuilder& broadcast(Bs&&...);
+      auto& broadcast(Bs&&...);
 
       template <typename... Bs>
-      TaskBuilder& gather(Bs&&...);
+      auto& gather(Bs&&...);
 
     private:
   
@@ -461,14 +457,14 @@ class BasicTaskflow {
     auto dispatch();
     auto silent_dispatch();
 
-    BasicTaskflow& precede(TaskBuilder, TaskBuilder);
-    BasicTaskflow& linearize(std::vector<TaskBuilder>&);
-    BasicTaskflow& linearize(std::initializer_list<TaskBuilder>);
-    BasicTaskflow& broadcast(TaskBuilder, std::vector<TaskBuilder>&);
-    BasicTaskflow& broadcast(TaskBuilder, std::initializer_list<TaskBuilder>);
-    BasicTaskflow& gather(std::vector<TaskBuilder>&, TaskBuilder);
-    BasicTaskflow& gather(std::initializer_list<TaskBuilder>, TaskBuilder);
-    BasicTaskflow& wait_for_all();
+    auto& precede(TaskBuilder, TaskBuilder);
+    auto& linearize(std::vector<TaskBuilder>&);
+    auto& linearize(std::initializer_list<TaskBuilder>);
+    auto& broadcast(TaskBuilder, std::vector<TaskBuilder>&);
+    auto& broadcast(TaskBuilder, std::initializer_list<TaskBuilder>);
+    auto& gather(std::vector<TaskBuilder>&, TaskBuilder);
+    auto& gather(std::initializer_list<TaskBuilder>, TaskBuilder);
+    auto& wait_for_all();
 
     size_t num_tasks() const;
     size_t num_workers() const;
@@ -518,7 +514,7 @@ BasicTaskflow<F>::TaskBuilder::TaskBuilder(const TaskBuilder& rhs) : _task{rhs._
 }
 
 template <typename F>
-typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::precede(TaskBuilder tgt) {
+auto& BasicTaskflow<F>::TaskBuilder::precede(TaskBuilder tgt) {
   _task->precede(*(tgt._task));
   return *this;
 }
@@ -526,7 +522,7 @@ typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::precede(T
 // Function: broadcast
 template <typename F>
 template <typename... Bs>
-typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::broadcast(Bs&&... tgts) {
+auto& BasicTaskflow<F>::TaskBuilder::broadcast(Bs&&... tgts) {
   (_task->precede(*(tgts._task)), ...);
   return *this;
 }
@@ -542,14 +538,14 @@ void BasicTaskflow<F>::TaskBuilder::_broadcast(S& tgts) {
       
 // Function: broadcast
 template <typename F>
-typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::broadcast(std::vector<TaskBuilder>& tgts) {
+auto& BasicTaskflow<F>::TaskBuilder::broadcast(std::vector<TaskBuilder>& tgts) {
   _broadcast(tgts);
   return *this;
 }
 
 // Function: broadcast
 template <typename F>
-typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::broadcast(std::initializer_list<TaskBuilder> tgts) {
+auto& BasicTaskflow<F>::TaskBuilder::broadcast(std::initializer_list<TaskBuilder> tgts) {
   _broadcast(tgts);
   return *this;
 }
@@ -557,7 +553,7 @@ typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::broadcast
 // Function: broadcast
 template <typename F>
 template <typename... Bs>
-typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::gather(Bs&&... tgts) {
+auto& BasicTaskflow<F>::TaskBuilder::gather(Bs&&... tgts) {
   (tgts->precede(*_task), ...);
   return *this;
 }
@@ -573,14 +569,14 @@ void BasicTaskflow<F>::TaskBuilder::_gather(S& tgts) {
 
 // Function: gather
 template <typename F>
-typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::gather(std::vector<TaskBuilder>& tgts) {
+auto& BasicTaskflow<F>::TaskBuilder::gather(std::vector<TaskBuilder>& tgts) {
   _gather(tgts);
   return *this;
 }
 
 // Function: gather
 template <typename F>
-typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::gather(std::initializer_list<TaskBuilder> tgts) {
+auto& BasicTaskflow<F>::TaskBuilder::gather(std::initializer_list<TaskBuilder> tgts) {
   _gather(tgts);
   return *this;
 }
@@ -606,7 +602,7 @@ const auto BasicTaskflow<F>::TaskBuilder::operator -> () {
 // Function: work
 template <typename F>
 template <typename C>
-typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::work(C&& c) {
+auto& BasicTaskflow<F>::TaskBuilder::work(C&& c) {
 
   if(_task->_work != nullptr) {
     TF_THROW("cannot rebind work to a task");
@@ -618,7 +614,7 @@ typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::work(C&& 
 
 // Function: name
 template <typename F>
-typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::name(const std::string& name) {
+auto& BasicTaskflow<F>::TaskBuilder::name(const std::string& name) {
   _task->name(name);
   return *this;
 }
@@ -659,7 +655,7 @@ size_t BasicTaskflow<F>::num_topologies() const {
 
 // Procedure: precede
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::precede(TaskBuilder from, TaskBuilder to) {
+auto& BasicTaskflow<F>::precede(TaskBuilder from, TaskBuilder to) {
   from._task->precede(*(to._task));
   return *this;
 }
@@ -679,42 +675,42 @@ void BasicTaskflow<F>::_linearize(L& keys) {
 
 // Procedure: linearize
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::linearize(std::vector<TaskBuilder>& keys) {
+auto& BasicTaskflow<F>::linearize(std::vector<TaskBuilder>& keys) {
   _linearize(keys); 
   return *this;
 }
 
 // Procedure: linearize
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::linearize(std::initializer_list<TaskBuilder> keys) {
+auto& BasicTaskflow<F>::linearize(std::initializer_list<TaskBuilder> keys) {
   _linearize(keys);
   return *this;
 }
 
 // Procedure: broadcast
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::broadcast(TaskBuilder from, std::vector<TaskBuilder>& keys) {
+auto& BasicTaskflow<F>::broadcast(TaskBuilder from, std::vector<TaskBuilder>& keys) {
   from.broadcast(keys);
   return *this;
 }
 
 // Procedure: broadcast
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::broadcast(TaskBuilder from, std::initializer_list<TaskBuilder> keys) {
+auto& BasicTaskflow<F>::broadcast(TaskBuilder from, std::initializer_list<TaskBuilder> keys) {
   from.broadcast(keys);
   return *this;
 }
 
 // Function: gather
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::gather(std::vector<TaskBuilder>& keys, TaskBuilder to) {
+auto& BasicTaskflow<F>::gather(std::vector<TaskBuilder>& keys, TaskBuilder to) {
   to.gather(keys);
   return *this;
 }
 
 // Function: gather
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::gather(std::initializer_list<TaskBuilder> keys, TaskBuilder to) {
+auto& BasicTaskflow<F>::gather(std::initializer_list<TaskBuilder> keys, TaskBuilder to) {
   to.gather(keys);
   return *this;
 }
@@ -765,7 +761,7 @@ auto BasicTaskflow<F>::dispatch() {
 
 // Procedure: wait_for_all
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::wait_for_all() {
+auto& BasicTaskflow<F>::wait_for_all() {
 
   if(!_tasks.empty()) {
     silent_dispatch();
