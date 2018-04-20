@@ -1,21 +1,21 @@
 # Cpp-Taskflow
-An easy-to-use and fast header-only library written in C++17 for task-based parallel programming.
+An fast header-only library for task-based parallel programming.
 
-# Scale up Your Program with Cpp-Taskflow
+# Get Started with Cpp-Taskflow
 
-The following example contains most of the syntax you need to use Cpp-Taskflow.
+The following example (simple.cpp) contains the basic syntax you need to use Cpp-Taskflow.
 
 ```cpp
-#include <taskflow.hpp>
-
 // A simple example to capture the following task dependencies.
 //
 // TaskA---->TaskB---->TaskD
 // TaskA---->TaskC---->TaskD
-//
+
+#include "taskflow.hpp"
+
 int main(){
   
-  tf::Taskflow<> tf(std::thread::hardware_concurrency());
+  tf::Taskflow tf(std::thread::hardware_concurrency());
 
   auto [A, B, C, D] = tf.silent_emplace(
     [] () { std::cout << "TaskA\n"; },
@@ -24,16 +24,24 @@ int main(){
     [] () { std::cout << "TaskD\n"; }
   );  
 
-  A.precede(B);
-  A.precede(C);
-  B.precede(D);
-  C.precede(D);
+  A.precede(B);  // B runs after A
+  A.precede(C);  // C runs after A
+  B.precede(D);  // D runs after B
+  C.precede(D);  // C runs after D
 
-  tf.wait_for_all(); 
+  tf.wait_for_all();  // block until all tasks finish
 
   return 0;
 }
 
+```
+```console
+~$ g++ simple.cpp -O2 -lpthread -o simple
+~$ ./simple
+TaskA
+TaskC  <-- concurrent with TaskB
+TaskB  <-- concurrent with TaskC
+TaskD
 ```
 
 # System Requirements
@@ -51,5 +59,6 @@ To use Cpp-Taskflow, you only need a C++17 compiler:
 
 # License
 
-Copyright © 2018, [Tsung-Wei Huang](http://web.engr.illinois.edu/~thuang19/) and Chun-Xun Lin.
+Copyright © 2018, [Tsung-Wei Huang](http://web.engr.illinois.edu/~thuang19/) and [Chun-Xun Lin](https://github.com/clin99).
 Released under the [MIT license](https://github.com/twhuang-uiuc/cpp-taskflow/blob/master/LICENSE).
+

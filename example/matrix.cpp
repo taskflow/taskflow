@@ -1,287 +1,155 @@
-#include <iostream>
-#include <cstdlib>
-#include <cstdio>
-#include <thread>
-#include <cmath>
-#include <random>
-#include <vector>
-#include <fstream>
-#include <cstring>
+// This program computes the dot products over a set of independent vectors
+// and compares the runtime between sequential, OpenMP, and Taskflow 
+// implementations.
+
 #include <taskflow.hpp>
+#include <random>
+#include <numeric>
+#include <fstream>
 
 // ----------------------------------------------------------------------------
 // Utility section
 // ----------------------------------------------------------------------------
 
-using matrix_t = std::vector<std::vector<float>>;
-
-// Function: random_matrix
-// Generate a matrix between 0 and 1
-matrix_t random_matrix(size_t rows, size_t cols) {
+// Function: random_vector
+// Generate a vector between 0 and 1
+std::vector<float> random_vector(size_t N) {
   
-  matrix_t mat;
+  // avoid global state race condition.
+  thread_local std::default_random_engine gen(0);
 
-  mat.resize(rows);
-  for(size_t r=0; r<rows; ++r) {
-    mat[r].resize(cols);
-    for(size_t c=0; c<cols; ++c) {
-      mat[r][c] = ::rand() / static_cast<float>(RAND_MAX);
-    }
+  std::normal_distribution<float> d{0.0f, 1.0f};
+
+  std::ostringstream oss;
+  oss << "|----> generating vector by thread " << std::this_thread::get_id() << "\n";
+  std::cout << oss.str();
+
+  std::vector<float> vec(N);
+  for(auto& v : vec) {
+    v = d(gen);
   }
-
-  return mat;
+  return vec;
 }
-
-// Procedure: save_matrix
-// save a give matrix to a path
-void save_matrix(const std::string& path, const matrix_t& mat) {
-  
-  std::cout << std::string("saving matrix ") + path.c_str() + "\n";
-  
-  std::ofstream ofs(path);
-
-  if(!ofs.good() || mat.empty()) {
-    throw std::invalid_argument("failed to save matrix");
-  }
-
-  ofs << mat.size() << ' ' << mat[0].size() << '\n';
-
-  for(size_t r=0; r<mat.size(); ++r) {
-    for(size_t c=0; c<mat[r].size(); ++c) {
-      ofs << mat[r][c] << ' '; 
-    }
-    ofs << '\n';
-  }
-}
-
-// Function: load_matrix
-matrix_t load_matrix(const std::string& path) {
-
-  std::cout << std::string("loading matrix ") + path.c_str() + "\n";
-  
-  std::ifstream ifs(path);
-
-  if(!ifs.good()) {
-    throw std::invalid_argument("failed to load matrix");
-  }
-
-  size_t rows, cols;
-
-  ifs >> rows >> cols;
-
-  matrix_t mat;
-  mat.resize(rows);
-  for(size_t r=0; r<rows; ++r) {
-    mat[r].resize(cols);
-  }
-
-  for(size_t r=0; r<rows; ++r) {
-    for(size_t c=0; c<cols; ++c) {
-      ifs >> mat[r][c]; 
-    }
-  }
-  
-  return mat;
-}
-
-// Dummy caculation
-matrix_t operator + (const matrix_t& a, auto b) {
-  matrix_t res = a;
-  return res;
-}
-
 
 // ----------------------------------------------------------------------------
 // Task section
 // ----------------------------------------------------------------------------
 
-// Procedure: generate_test
-void generate_test(size_t N) {
-  // generate test data
-  auto a = random_matrix(N, N);
-  save_matrix("a.csv", a);
-  auto b = random_matrix(N, N);
-  save_matrix("b.csv", b);
-}
-
-// Procedure: function1
-matrix_t func1(const matrix_t& x, auto&& j) {
-  std::cout << "computing1 ...\n";
-  matrix_t dummy = x;
-  std::this_thread::sleep_for(std::chrono::seconds(2));
-  return dummy;
-}
-
-// Procedure: function2
-auto func2(const matrix_t& a, auto&& b) {
-  std::cout << "computing2 ...\n";
-  matrix_t dummy = a;
-  std::this_thread::sleep_for(std::chrono::seconds(2));
-  return dummy;
-}
-
 // Procedure: baseline
-void baseline(size_t N) {
-
-  generate_test(N);
+void baseline(const std::vector<size_t>& dimensions) {
+  
+  std::cout << "========== baseline ==========\n";
 
   auto tbeg = std::chrono::steady_clock::now();
 
-  auto a = load_matrix("a.csv");
-  for(int j=1; j<=5; ++j) {
-    auto tmp = func1(a, j);  
-    save_matrix(std::string("a") + std::to_string(j) + ".csv", tmp);
+  std::cout << "Generating vector As ...\n";
+  std::vector<std::vector<float>> As(dimensions.size());
+  for(size_t j=0; j<dimensions.size(); ++j) {
+    As[j] = random_vector(dimensions[j]);
   }
-
-  auto b = load_matrix("b.csv");
-  for(int j=1; j<=5; ++j) {
-    auto tmp = func2(b, j);
-    save_matrix(std::string("b") + std::to_string(j) + ".csv", tmp);
+  
+  std::cout << "Generating vector Bs ...\n";
+  std::vector<std::vector<float>> Bs(dimensions.size());
+  for(size_t j=0; j<dimensions.size(); ++j) {
+    Bs[j] = random_vector(dimensions[j]);
   }
-
-  for(int j=1; j<=5; ++j) {
-    auto a = load_matrix(std::string("a") + std::to_string(j) + ".csv");
-    auto b = load_matrix(std::string("b") + std::to_string(j) + ".csv");
-    auto c = func2(a, b);
-    save_matrix(std::string("c") + std::to_string(j) + ".csv", c);
+  
+  std::cout << "Generating inner product values Cs ...\n";
+  std::vector<float> Cs(dimensions.size());
+  for(size_t j=0; j<dimensions.size(); ++j) {
+    Cs[j] = std::inner_product(As[j].begin(), As[j].end(), Bs[j].begin(), 0.0f);
   }
   
   auto tend = std::chrono::steady_clock::now();
 
   std::cout << "Baseline takes " 
-            << std::chrono::duration_cast<std::chrono::seconds>(tend-tbeg).count() 
-            << " seconds\n";
+            << std::chrono::duration_cast<std::chrono::milliseconds>(tend-tbeg).count() 
+            << " ms\n";
 }
 
 // Procedure: openmp_parallel
-void openmp_parallel(size_t N, size_t num_threads = std::thread::hardware_concurrency()) {
+void openmp_parallel(const std::vector<size_t>& dimensions) {
   
-  generate_test(N);
+  std::cout << "========== OpenMP ==========\n";
 
   auto tbeg = std::chrono::steady_clock::now();
 
-  auto a = load_matrix("a.csv");
-  #pragma omp parallel for num_threads(num_threads)
-  for(int j=1; j<=5; ++j) {
-    auto tmp = func1(a, j);  
-    save_matrix(std::string("a") + std::to_string(j) + ".csv", tmp);
-  }
+  std::cout << "Generating vector As ...\n";
+  std::vector<std::vector<float>> As(dimensions.size());
 
-  auto b = load_matrix("b.csv");
-  #pragma omp parallel for num_threads(num_threads)
-  for(int j=1; j<=5; ++j) {
-    auto tmp = func2(b, j);
-    save_matrix(std::string("b") + std::to_string(j) + ".csv", tmp);
+  #pragma omp parallel for num_threads(4)
+  for(size_t j=0; j<dimensions.size(); ++j) {
+    As[j] = random_vector(dimensions[j]);
   }
-
-  #pragma omp parallel for num_threads(num_threads)
-  for(int j=1; j<=5; ++j) {
-    auto a = load_matrix(std::string("a") + std::to_string(j) + ".csv");
-    auto b = load_matrix(std::string("b") + std::to_string(j) + ".csv");
-    auto c = func2(a, b);
-    save_matrix(std::string("c") + std::to_string(j) + ".csv", c);
+  
+  std::cout << "Generating vector Bs ...\n";
+  std::vector<std::vector<float>> Bs(dimensions.size());
+  #pragma omp parallel for num_threads(4)
+  for(size_t j=0; j<dimensions.size(); ++j) {
+    Bs[j] = random_vector(dimensions[j]);
+  }
+  
+  std::cout << "Generating inner product values Cs ...\n";
+  std::vector<float> Cs(dimensions.size());
+  #pragma omp parallel for num_threads(4)
+  for(size_t j=0; j<dimensions.size(); ++j) {
+    Cs[j] = std::inner_product(As[j].begin(), As[j].end(), Bs[j].begin(), 0.0f);
   }
   
   auto tend = std::chrono::steady_clock::now();
 
   std::cout << "OpenMP takes " 
-            << std::chrono::duration_cast<std::chrono::seconds>(tend-tbeg).count() 
-            << " seconds\n";
+            << std::chrono::duration_cast<std::chrono::milliseconds>(tend-tbeg).count() 
+            << " ms\n";
 }
 
 // Procedure: taskflow_parallel
-void taskflow_parallel(size_t N, size_t num_threads = std::thread::hardware_concurrency()) {
+void taskflow_parallel(const std::vector<size_t>& dimensions) {
   
-  generate_test(N);
-
   auto tbeg = std::chrono::steady_clock::now();
 
-  tf::Taskflow<> tf(num_threads);
+  using builder_t  = typename tf::Taskflow::TaskBuilder;
 
-  // Parallelize the following tasks.
-  // auto a = load_matrix("a.csv");
-  // for(int j=1; j<=5; ++j) {
-  //   auto tmp = func1(a, j);  
-  //   save_matrix(std::string("a") + std::to_string(j) + ".csv", tmp);
-  // }
-  // auto b = load_matrix("b.csv");
-  // for(int j=1; j<=5; ++j) {
-  //   auto tmp = func2(b, j);
-  //   save_matrix(std::string("b") + std::to_string(j) + ".csv", tmp);
-  // }
-  matrix_t a;
-  auto load_a  = tf.silent_emplace([&] () { a = load_matrix("a.csv"); }).name("load_a");
-  auto save_a1 = tf.silent_emplace([&] () { save_matrix("a1.csv", func1(a, 1)); }).name("save_a1");
-  auto save_a2 = tf.silent_emplace([&] () { save_matrix("a2.csv", func1(a, 2)); }).name("save_a2");
-  auto save_a3 = tf.silent_emplace([&] () { save_matrix("a3.csv", func1(a, 3)); }).name("save_a3");
-  auto save_a4 = tf.silent_emplace([&] () { save_matrix("a4.csv", func1(a, 4)); }).name("save_a4");
-  auto save_a5 = tf.silent_emplace([&] () { save_matrix("a5.csv", func1(a, 5)); }).name("save_a5");
+  tf::Taskflow tf(4);
 
-  //tf.broadcast(load_a, {save_a1, save_a2, save_a3, save_a4, save_a5});
-  load_a.broadcast({save_a1, save_a2, save_a3, save_a4, save_a5});
+  std::vector<std::vector<float>> As(dimensions.size());
+  std::vector<builder_t> TaskAs;
+  for(size_t j=0; j<dimensions.size(); ++j) {
+    TaskAs.push_back(tf.silent_emplace([&, j] () { 
+      As[j] = random_vector(dimensions[j]); 
+      printf("Generating A[%lu] ...\n", j);
+    }));
+  }
 
-  matrix_t b;
-  auto load_b  = tf.silent_emplace([&] () { b = load_matrix("b.csv"); }).name("load_b");
-  auto save_b1 = tf.silent_emplace([&] () { save_matrix("b1.csv", func1(b, 1)); }).name("save_b1");
-  auto save_b2 = tf.silent_emplace([&] () { save_matrix("b2.csv", func1(b, 2)); }).name("save_b2");
-  auto save_b3 = tf.silent_emplace([&] () { save_matrix("b3.csv", func1(b, 3)); }).name("save_b3");
-  auto save_b4 = tf.silent_emplace([&] () { save_matrix("b4.csv", func1(b, 4)); }).name("save_b4");
-  auto save_b5 = tf.silent_emplace([&] () { save_matrix("b5.csv", func1(b, 5)); }).name("save_b5");
-  
-  tf.broadcast(load_b, {save_b1, save_b2, save_b3, save_b4, save_b5});
-  
-  // Synchronize
-  auto sync = tf.silent_emplace([&]() {std::cout << "a[1:5].csv and b[1:5].csv written\n";}).name("sync");
+  std::vector<std::vector<float>> Bs(dimensions.size());
+  std::vector<builder_t> TaskBs;
+  for(size_t j=0; j<dimensions.size(); ++j) {
+    TaskBs.push_back(tf.silent_emplace([&, j] () {
+      Bs[j] = random_vector(dimensions[j]);
+      printf("Generating B[%lu] ...\n", j);
+    }));
+  }
 
-  tf.gather({save_a1, save_a2, save_a3, save_a4, save_a5, 
-             save_b1, save_b2, save_b3, save_b4, save_b5}, sync);
+  std::vector<float> Cs(dimensions.size());
+  std::vector<builder_t> TaskCs;
+  for(size_t j=0; j<dimensions.size(); ++j) {
+    TaskCs.push_back(tf.silent_emplace([&, j] () {
+      printf("Computing C[%lu] ...\n", j);
+      Cs[j] = std::inner_product(As[j].begin(), As[j].end(), Bs[j].begin(), 0.0f);
+    }));
+  }
 
-  // Parallelize the following
-  // for(int j=1; j<=5; ++j) {
-  //   auto a = load_matrix(std::string("a") + std::to_string(j) + ".csv");
-  //   auto b = load_matrix(std::string("b") + std::to_string(j) + ".csv");
-  //   auto c = func2(a, b);
-  //   save_matrix(std::string("c") + std::to_string(j) + ".csv", c);
-  // }
-  matrix_t a1, a2, a3, a4, a5, b1, b2, b3, b4, b5;
-  auto load_a1 = tf.silent_emplace([&](){ a1 = load_matrix("a1.csv"); }).name("load_a1");
-  auto load_a2 = tf.silent_emplace([&](){ a2 = load_matrix("a2.csv"); }).name("load_a2");
-  auto load_a3 = tf.silent_emplace([&](){ a3 = load_matrix("a3.csv"); }).name("load_a3");
-  auto load_a4 = tf.silent_emplace([&](){ a4 = load_matrix("a4.csv"); }).name("load_a4");
-  auto load_a5 = tf.silent_emplace([&](){ a5 = load_matrix("a5.csv"); }).name("load_a5");
-  auto load_b1 = tf.silent_emplace([&](){ a1 = load_matrix("b1.csv"); }).name("load_b1");
-  auto load_b2 = tf.silent_emplace([&](){ a2 = load_matrix("b2.csv"); }).name("load_b2");
-  auto load_b3 = tf.silent_emplace([&](){ a3 = load_matrix("b3.csv"); }).name("load_b3");
-  auto load_b4 = tf.silent_emplace([&](){ a4 = load_matrix("b4.csv"); }).name("load_b4");
-  auto load_b5 = tf.silent_emplace([&](){ a5 = load_matrix("b5.csv"); }).name("load_b5");
-  auto save_c1 = tf.silent_emplace([&](){ save_matrix("c1.csv", func2(a1, b1)); }).name("save_c1");
-  auto save_c2 = tf.silent_emplace([&](){ save_matrix("c2.csv", func2(a2, b2)); }).name("save_c2");
-  auto save_c3 = tf.silent_emplace([&](){ save_matrix("c3.csv", func2(a3, b3)); }).name("save_c3");
-  auto save_c4 = tf.silent_emplace([&](){ save_matrix("c4.csv", func2(a4, b4)); }).name("save_c4");
-  auto save_c5 = tf.silent_emplace([&](){ save_matrix("c5.csv", func2(a5, b5)); }).name("save_c5");
-
-  tf.broadcast(sync, {load_a1, load_a2, load_a3, load_a4, load_a5,
-                      load_b1, load_b2, load_b3, load_b4, load_b5});
-
-  tf.precede(load_a1, save_c1)
-    .precede(load_b1, save_c1)
-    .precede(load_a2, save_c2)
-    .precede(load_b2, save_c2)
-    .precede(load_a3, save_c3)
-    .precede(load_b3, save_c3)
-    .precede(load_a4, save_c4)
-    .precede(load_b4, save_c4)
-    .precede(load_a5, save_c5)
-    .precede(load_b5, save_c5);
-
-  std::cout << tf.dump() << std::endl;
+  // Build task dependency
+  for(size_t j=0; j<dimensions.size(); ++j) {
+    TaskCs[j].gather({TaskAs[j], TaskBs[j]});
+  }
 
   tf.wait_for_all();
 
   auto tend = std::chrono::steady_clock::now();
   std::cout << "Taskflow takes " 
-            << std::chrono::duration_cast<std::chrono::seconds>(tend-tbeg).count() 
-            << " seconds\n";
+            << std::chrono::duration_cast<std::chrono::milliseconds>(tend-tbeg).count() 
+            << " ms\n";
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -293,15 +161,31 @@ int main(int argc, char* argv[]) {
     std::cerr << "usage: ./matrix N [baseline|openmp|taskflow]\n";
     std::exit(EXIT_FAILURE);
   }
+  
+  // Create a unbalanced dimension for vector products.
+  const auto N = std::stoi(argv[1]);
 
+  std::vector<size_t> vector_sizes(N);
+  
+  std::default_random_engine engine(0);
+  std::uniform_int_distribution dis(1000000, 4000000);
+
+  std::cout << "vector sizes = [";
+  for(auto& vs : vector_sizes)  {
+    vs = dis(engine);
+    std::cout << vs << " ";
+  }
+  std::cout << "]\n";
+
+  // Run methods
   if(std::string_view method(argv[2]); method == "baseline") {
-    baseline(std::stoi(argv[1]));
+    baseline(vector_sizes);
   }
   else if(method == "openmp") {
-    openmp_parallel(std::stoi(argv[1]));
+    openmp_parallel(vector_sizes);
   }
   else if(method == "taskflow") {
-    taskflow_parallel(std::stof(argv[1]));
+    taskflow_parallel(vector_sizes);
   }
   else {
     std::cerr << "wrong method, shoud be [baseline|openmp|taskflow]\n";
