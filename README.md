@@ -3,7 +3,7 @@ An fast header-only library for task-based parallel programming.
 
 # Get Started with Cpp-Taskflow
 
-The following example (simple.cpp) contains the basic syntax you need to use Cpp-Taskflow.
+The following example (`simple.cpp`) contains the basic syntax you need to use Cpp-Taskflow.
 
 ```cpp
 // A simple example to capture the following task dependencies.
@@ -35,8 +35,9 @@ int main(){
 }
 
 ```
-```console
-~$ g++ simple.cpp -O2 -lpthread -o simple
+Compile and run the code with the following commands:
+```bash
+~$ g++ simple.cpp -std=c++1z -O2 -lpthread -o simple
 ~$ ./simple
 TaskA
 TaskC  <-- concurrent with TaskB
