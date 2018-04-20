@@ -48,7 +48,9 @@ inline void __throw__(const char* fname, const size_t line, auto&&... args) {
 
 #define TF_THROW(...) __throw__(__FILE__, __LINE__, __VA_ARGS__);
 
-// ------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+// Threadpool definition
+//-------------------------------------------------------------------------------------------------
 
 // Struct: MoveOnCopy
 template <typename T>
@@ -264,7 +266,9 @@ inline void Threadpool::shutdown() {
   _threads.clear();
 }
 
-//  -----------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+// Taskflow definition
+//-------------------------------------------------------------------------------------------------
 
 // Struct: Task
 template <typename F>
@@ -411,6 +415,15 @@ class BasicTaskflow {
       TaskBuilder& gather(std::vector<TaskBuilder>&);
       TaskBuilder& gather(std::initializer_list<TaskBuilder>);
 
+      template <typename C>
+      TaskBuilder& work(C&&);
+    
+      template <typename... Bs>
+      TaskBuilder& broadcast(Bs&&...);
+
+      template <typename... Bs>
+      TaskBuilder& gather(Bs&&...);
+
     private:
   
       TaskBuilder(task_type*);
@@ -440,6 +453,7 @@ class BasicTaskflow {
     template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
     auto silent_emplace(C&&...);
 
+    auto placeholder();
     auto dispatch();
     auto silent_dispatch();
 
@@ -454,6 +468,7 @@ class BasicTaskflow {
 
     size_t num_tasks() const;
     size_t num_workers() const;
+    size_t num_topologies() const;
 
     std::string dump() const;
 
@@ -504,6 +519,15 @@ typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::precede(T
   return *this;
 }
 
+// Function: broadcast
+template <typename F>
+template <typename... Bs>
+typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::broadcast(Bs&&... tgts) {
+  (_task->precede(*(tgts._task)), ...);
+  return *this;
+}
+
+// Procedure: _broadcast
 template <typename F>
 template <typename S>
 void BasicTaskflow<F>::TaskBuilder::_broadcast(S& tgts) {
@@ -526,6 +550,15 @@ typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::broadcast
   return *this;
 }
 
+// Function: broadcast
+template <typename F>
+template <typename... Bs>
+typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::gather(Bs&&... tgts) {
+  (tgts->precede(*_task), ...);
+  return *this;
+}
+
+// Procedure: _gather
 template <typename F>
 template <typename S>
 void BasicTaskflow<F>::TaskBuilder::_gather(S& tgts) {
@@ -566,6 +599,19 @@ const auto BasicTaskflow<F>::TaskBuilder::operator -> () {
   return _task; 
 }
 
+// Function: work
+template <typename F>
+template <typename C>
+typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::work(C&& c) {
+
+  if(_task->_work != nullptr) {
+    TF_THROW("cannot rebind work to a task");
+  }
+
+  _task->_work = std::forward<C>(c);
+  return *this;
+}
+
 // Function: name
 template <typename F>
 typename BasicTaskflow<F>::TaskBuilder& BasicTaskflow<F>::TaskBuilder::name(const std::string& name) {
@@ -599,6 +645,12 @@ size_t BasicTaskflow<F>::num_tasks() const {
 template <typename F>
 size_t BasicTaskflow<F>::num_workers() const {
   return _threadpool.num_workers();
+}
+
+// Function: num_topologies
+template <typename F>
+size_t BasicTaskflow<F>::num_topologies() const {
+  return _topologies.size();
 }
 
 // Procedure: precede
@@ -722,6 +774,13 @@ BasicTaskflow<F>& BasicTaskflow<F>::wait_for_all() {
   _topologies.clear();
 
   return *this;
+}
+
+// Function: placeholder
+template <typename F>
+auto BasicTaskflow<F>::placeholder() {
+  auto& task = _tasks.emplace_back();
+  return TaskBuilder(&task);
 }
 
 // Function: silent_emplace

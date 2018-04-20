@@ -1,5 +1,5 @@
 # Cpp-Taskflow
-An fast header-only library for task-based parallel programming.
+A fast header-only library for task-based parallel programming.
 
 # Get Started with Cpp-Taskflow
 
