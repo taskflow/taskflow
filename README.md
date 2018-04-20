@@ -35,8 +35,8 @@ int main(){
 }
 
 ```
-```console
-~$ g++ simple.cpp -O2 -lpthread -o simple
+```bash
+~$ g++ simple.cpp -std=c++1z -O2 -lpthread -o simple
 ~$ ./simple
 TaskA
 TaskC  <-- concurrent with TaskB
