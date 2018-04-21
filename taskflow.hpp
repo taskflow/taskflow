@@ -674,7 +674,7 @@ template <typename L>
 void BasicTaskflow<F>::_linearize(L& keys) {
   std::adjacent_find(
     keys.begin(), keys.end(), 
-    [this] (auto& from, auto& to) {
+    [] (auto& from, auto& to) {
       from._task->precede(*(to._task));
       return false;
     }

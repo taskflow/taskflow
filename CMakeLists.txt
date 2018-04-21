@@ -26,7 +26,7 @@ set (TASKFLOW_MAJOR_VERSION "0")
 set (TASKFLOW_MINOR_VERSION "1")
 
 # add the binayr tree to the search path for include files
-include_directories("${PROJECT_SOURCE_DIR}")
+include_directories(${PROJECT_SOURCE_DIR})
 include_directories(doctest)
 
 # Find pthread package
@@ -45,8 +45,8 @@ message(STATUS "Building examples ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
 
 if (OpenMP_FOUND)
-  set(EXAMPLE_CXX_FLAGS "${OpenMP_CXX_FLAGS}")
-  set(EXAMPLE_EXE_LINKER_FLAGS "${OpenMP_CXX_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+  set(EXAMPLE_CXX_FLAGS ${OpenMP_CXX_FLAGS})
+  set(EXAMPLE_EXE_LINKER_FLAGS ${OpenMP_CXX_FLAGS} ${OpenMP_EXE_LINKER_FLAGS})
 else(OpenMP_FOUND)
   set(EXAMPLE_CXX_FLAGS "-fopenmp")
   set(EXAMPLE_EXE_LINKER_FLAGS "-fopenmp")
@@ -59,7 +59,7 @@ add_executable(simple example/simple.cpp)
 target_link_libraries(simple Threads::Threads)
 
 add_executable(matrix example/matrix.cpp)
-target_compile_options(matrix PRIVATE "${EXAMPLE_CXX_FLAGS}")
+target_compile_options(matrix PRIVATE ${EXAMPLE_CXX_FLAGS})
 target_link_libraries(matrix ${EXAMPLE_EXE_LINKER_FLAGS} Threads::Threads)
 
 

@@ -124,9 +124,9 @@ Run the program and inspect whether dependencies are expressed in the right way.
 ```bash
 ~$ ./debug
 # dumped graph
-Task "A" [dependents:0|successors:1]
+Task 0x540000 [dependents:0|successors:1] "A"
   |--> task "B"
-Task "B" [dependents:1|successors:0]
+Task 0x540064 [dependents:1|successors:0] "B"
 # runtime message
 TaskA
 TaskB
@@ -147,6 +147,7 @@ Please report to us if any.
 # System Requirements
 To use Cpp-Taskflow, you only need a C++17 compiler:
 + GNU C++ Compiler G++ v7.2 with -std=c++1z
++ Clang 5.0 C++ Compiler with -std=c++17
 
 # Compile Unit Tests and Examples
 Cpp-Taskflow uses [CMake](https://cmake.org/) to build examples and unit tests.
