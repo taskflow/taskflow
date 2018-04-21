@@ -25,7 +25,7 @@ set (TASKFLOW_MAJOR_VERSION "0")
 set (TASKFLOW_MINOR_VERSION "1")
 
 
-# add the binayr tree to the search path for include files so we can find TutorialConfig.h
+# add the binayr tree to the search path for include files
 include_directories("${PROJECT_SOURCE_DIR}")
 include_directories(doctest)
 
