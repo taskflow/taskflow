@@ -351,27 +351,12 @@ std::string Task<F>::dump() const {
 
   std::ostringstream oss;
 
-  oss << "Task \"";
-
-  if(_name.empty()) {
-    oss << this;
-  }
-  else {
-    oss << _name;
-  }
-  
-  oss << "\" [dependents:" << dependents()
-      << "|successors:" << num_successors() << "]\n";
+  oss << "Task " << this 
+      << " [dependents:" << dependents()
+      << "|successors:" << num_successors() << "] \"" << _name << "\"\n" ;
 
   for(const auto s : _successors) {
-    oss << "  |--> " << "task \"";
-    if(s->_name.empty()) {
-      oss << s;
-    }
-    else {
-      oss << s->_name;
-    }
-    oss << "\"\n";
+    oss << "  |--> " << "Task " << s << " \"" << s->_name << "\"\n";
   }
 
   return oss.str();
@@ -406,9 +391,12 @@ class BasicTaskflow {
   
     public:
       
-      TaskBuilder() = delete;
+      TaskBuilder() = default;
       TaskBuilder(const TaskBuilder&);
       TaskBuilder(TaskBuilder&&);
+
+      auto& operator = (const TaskBuilder&);
+      auto& operator = (TaskBuilder&&);
   
       operator const auto ();
       const auto operator -> ();
@@ -583,6 +571,21 @@ auto& BasicTaskflow<F>::TaskBuilder::gather(std::vector<TaskBuilder>& tgts) {
 template <typename F>
 auto& BasicTaskflow<F>::TaskBuilder::gather(std::initializer_list<TaskBuilder> tgts) {
   _gather(tgts);
+  return *this;
+}
+
+// Operator =
+template <typename F>
+auto& BasicTaskflow<F>::TaskBuilder::operator = (const TaskBuilder& rhs) {
+  _task = rhs._task;
+  return *this;
+}
+
+// Operator =
+template <typename F>
+auto& BasicTaskflow<F>::TaskBuilder::operator = (TaskBuilder&& rhs) {
+  _task = rhs._task;
+  rhs._task = nullptr;
   return *this;
 }
 
@@ -865,4 +868,5 @@ using Taskflow = BasicTaskflow<std::function<void()>>;
 
 
 #endif
+
 
