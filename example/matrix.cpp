@@ -1,34 +1,75 @@
 // This program computes the dot products over a set of independent vectors
-// and compares the runtime between sequential, OpenMP, and Taskflow 
-// implementations.
+// and compares the runtime between baseline (sequential), OpenMP, C++ thread,
+// and Taskflow implementations.
 
 #include "taskflow.hpp"
 #include <random>
 #include <numeric>
 #include <fstream>
 
+using matrix_t = std::vector<std::vector<float>>;
+
 // ----------------------------------------------------------------------------
 // Utility section
 // ----------------------------------------------------------------------------
 
-// Function: random_vector
-// Generate a vector between 0 and 1
-std::vector<float> random_vector(size_t N) {
+// Function: random_matrix
+matrix_t random_matrix(size_t N) {
   
-  // avoid global state race condition.
   thread_local std::default_random_engine gen(0);
-
   std::normal_distribution<float> d{0.0f, 1.0f};
 
   std::ostringstream oss;
-  oss << "|----> generating vector by thread " << std::this_thread::get_id() << "\n";
+  oss << "|----> generating " << N << "x" << N << " matrix by thread " 
+      << std::this_thread::get_id() << "\n";
   std::cout << oss.str();
-
-  std::vector<float> vec(N);
-  for(auto& v : vec) {
-    v = d(gen);
+  
+  matrix_t mat(N);
+  for(auto& r : mat) {
+    r.resize(N);
+    for(auto& c : r) {
+      c = d(gen);
+    }
   }
-  return vec;
+  
+  return mat;
+}
+
+// Operator: multiplication
+matrix_t operator * (const matrix_t& A, const matrix_t& B) {
+
+  if(A.empty() || B.empty() || A[0].size() != B.size()) {
+    std::cout << A[0].size() << " " << B.size() << std::endl;
+    throw std::runtime_error("Dimension mismatched in matrix multiplication\n");
+  }
+  
+  size_t M, K, N;
+
+  N = A.size();
+  K = A[0].size();
+  M = B[0].size();
+
+  printf("A[%lux%lu] * B[%lux%lu]\n", N, K, K, M);
+  
+  // Initialize the matrix
+  matrix_t ret(N);
+  for(auto& r : ret) {
+    r.resize(M);
+    for(auto& c : r) {
+      c = 0.0f;
+    }
+  }
+
+  // Matrix multiplication
+  for(size_t i=0; i<N; ++i) {
+    for(size_t j=0; j<M; ++j) {
+      for(size_t k=0; k<K; ++k) {
+        ret[i][j] += A[i][k] * B[k][j];
+      }
+    }
+  }
+  
+  return ret;
 }
 
 // ----------------------------------------------------------------------------
@@ -36,28 +77,28 @@ std::vector<float> random_vector(size_t N) {
 // ----------------------------------------------------------------------------
 
 // Procedure: baseline
-void baseline(const std::vector<size_t>& dimensions) {
+void baseline(const std::vector<size_t>& D) {
   
   std::cout << "========== baseline ==========\n";
 
   auto tbeg = std::chrono::steady_clock::now();
 
-  std::cout << "Generating vector As ...\n";
-  std::vector<std::vector<float>> As(dimensions.size());
-  for(size_t j=0; j<dimensions.size(); ++j) {
-    As[j] = random_vector(dimensions[j]);
+  std::cout << "Generating matrix As ...\n";
+  std::vector<matrix_t> As(D.size());
+  for(size_t j=0; j<D.size(); ++j) {
+    As[j] = random_matrix(D[j]);
   }
   
-  std::cout << "Generating vector Bs ...\n";
-  std::vector<std::vector<float>> Bs(dimensions.size());
-  for(size_t j=0; j<dimensions.size(); ++j) {
-    Bs[j] = random_vector(dimensions[j]);
+  std::cout << "Generating matrix Bs ...\n";
+  std::vector<matrix_t> Bs(D.size());
+  for(size_t j=0; j<D.size(); ++j) {
+    Bs[j] = random_matrix(D[j]);
   }
   
-  std::cout << "Computing inner product values Cs ...\n";
-  std::vector<float> Cs(dimensions.size());
-  for(size_t j=0; j<dimensions.size(); ++j) {
-    Cs[j] = std::inner_product(As[j].begin(), As[j].end(), Bs[j].begin(), 0.0f);
+  std::cout << "Computing matrix product values Cs ...\n";
+  std::vector<matrix_t> Cs(D.size());
+  for(size_t j=0; j<D.size(); ++j) {
+    Cs[j] = As[j] * Bs[j];
   }
   
   auto tend = std::chrono::steady_clock::now();
@@ -68,34 +109,33 @@ void baseline(const std::vector<size_t>& dimensions) {
 }
 
 // Procedure: openmp_parallel
-void openmp_parallel(const std::vector<size_t>& dimensions) {
+void openmp_parallel(const std::vector<size_t>& D) {
   
   std::cout << "========== OpenMP ==========\n";
 
   auto tbeg = std::chrono::steady_clock::now();
 
-  std::cout << "Generating vector As ...\n";
-  std::vector<std::vector<float>> As(dimensions.size());
+  std::cout << "Generating matrix As ...\n";
+  std::vector<matrix_t> As(D.size());
+  #pragma omp parallel for num_threads(4)
+  for(size_t j=0; j<D.size(); ++j) {
+    As[j] = random_matrix(D[j]);
+  }
+  
+  std::cout << "Generating matrix Bs ...\n";
+  std::vector<matrix_t> Bs(D.size());
+  #pragma omp parallel for num_threads(4)
+  for(size_t j=0; j<D.size(); ++j) {
+    Bs[j] = random_matrix(D[j]);
+  }
+  
+  std::cout << "Computing matrix product values Cs ...\n";
+  std::vector<matrix_t> Cs(D.size());
+  #pragma omp parallel for num_threads(4)
+  for(size_t j=0; j<D.size(); ++j) {
+    Cs[j] = As[j] * Bs[j];
+  }
 
-  #pragma omp parallel for num_threads(4)
-  for(size_t j=0; j<dimensions.size(); ++j) {
-    As[j] = random_vector(dimensions[j]);
-  }
-  
-  std::cout << "Generating vector Bs ...\n";
-  std::vector<std::vector<float>> Bs(dimensions.size());
-  #pragma omp parallel for num_threads(4)
-  for(size_t j=0; j<dimensions.size(); ++j) {
-    Bs[j] = random_vector(dimensions[j]);
-  }
-  
-  std::cout << "Computing inner product values Cs ...\n";
-  std::vector<float> Cs(dimensions.size());
-  #pragma omp parallel for num_threads(4)
-  for(size_t j=0; j<dimensions.size(); ++j) {
-    Cs[j] = std::inner_product(As[j].begin(), As[j].end(), Bs[j].begin(), 0.0f);
-  }
-  
   auto tend = std::chrono::steady_clock::now();
 
   std::cout << "OpenMP takes " 
@@ -103,8 +143,55 @@ void openmp_parallel(const std::vector<size_t>& dimensions) {
             << " ms\n";
 }
 
+// Procedure: cppthread_parallel
+void cppthread_parallel(const std::vector<size_t>& D) {
+  
+  std::cout << "========== CppThread ==========\n";
+
+  auto tbeg = std::chrono::steady_clock::now();
+
+  tf::Threadpool tpl(4);
+
+  std::cout << "Generating matrix As ...\n";
+  std::vector<matrix_t> As(D.size());
+  std::vector<std::future<void>> futures;
+
+  for(size_t j=0; j<D.size(); ++j) {
+    futures.push_back(tpl.async([&, j] () { As[j] = random_matrix(D[j]); }));
+  }
+  
+  std::cout << "Generating matrix Bs ...\n";
+  std::vector<matrix_t> Bs(D.size());
+  for(size_t j=0; j<D.size(); ++j) {
+    futures.push_back(tpl.async([&, j] () { Bs[j] = random_matrix(D[j]); }));
+  }
+
+  std::cout << "Synchronizing As and Bs ...\n";
+  for(auto& fu : futures) {
+    fu.get();
+  }
+  futures.clear();
+  
+  std::cout << "Computing matrix product values Cs ...\n";
+  std::vector<matrix_t> Cs(D.size());
+  for(size_t j=0; j<D.size(); ++j) {
+    futures.push_back(tpl.async([&, j] () { Cs[j] = As[j] * Bs[j]; }));
+  }
+  
+  std::cout << "Synchronizing Cs ...\n";
+  for(auto& fu : futures) {
+    fu.get();
+  }
+  
+  auto tend = std::chrono::steady_clock::now();
+
+  std::cout << "CppThread takes " 
+            << std::chrono::duration_cast<std::chrono::milliseconds>(tend-tbeg).count() 
+            << " ms\n";
+}
+
 // Procedure: taskflow_parallel
-void taskflow_parallel(const std::vector<size_t>& dimensions) {
+void taskflow_parallel(const std::vector<size_t>& D) {
   
   auto tbeg = std::chrono::steady_clock::now();
 
@@ -113,34 +200,34 @@ void taskflow_parallel(const std::vector<size_t>& dimensions) {
   tf::Taskflow tf(4);
   
   std::cout << "Generating task As ...\n";
-  std::vector<std::vector<float>> As(dimensions.size());
+  std::vector<matrix_t> As(D.size());
   std::vector<builder_t> TaskAs;
-  for(size_t j=0; j<dimensions.size(); ++j) {
+  for(size_t j=0; j<D.size(); ++j) {
     TaskAs.push_back(tf.silent_emplace([&, j] () { 
-      As[j] = random_vector(dimensions[j]); 
+      As[j] = random_matrix(D[j]); 
     }));
   }
 
   std::cout << "Generating task Bs ...\n";
-  std::vector<std::vector<float>> Bs(dimensions.size());
+  std::vector<matrix_t> Bs(D.size());
   std::vector<builder_t> TaskBs;
-  for(size_t j=0; j<dimensions.size(); ++j) {
+  for(size_t j=0; j<D.size(); ++j) {
     TaskBs.push_back(tf.silent_emplace([&, j] () {
-      Bs[j] = random_vector(dimensions[j]);
+      Bs[j] = random_matrix(D[j]);
     }));
   }
 
   std::cout << "Generating task Cs ...\n";
-  std::vector<float> Cs(dimensions.size());
+  std::vector<matrix_t> Cs(D.size());
   std::vector<builder_t> TaskCs;
-  for(size_t j=0; j<dimensions.size(); ++j) {
+  for(size_t j=0; j<D.size(); ++j) {
     TaskCs.push_back(tf.silent_emplace([&, j] () {
-      Cs[j] = std::inner_product(As[j].begin(), As[j].end(), Bs[j].begin(), 0.0f);
+      Cs[j] = As[j] * Bs[j];
     }));
   }
 
   // Build task dependency
-  for(size_t j=0; j<dimensions.size(); ++j) {
+  for(size_t j=0; j<D.size(); ++j) {
     TaskCs[j].gather({TaskAs[j], TaskBs[j]});
   }
 
@@ -158,38 +245,41 @@ void taskflow_parallel(const std::vector<size_t>& dimensions) {
 int main(int argc, char* argv[]) {
 
   if(argc != 3) {
-    std::cerr << "usage: ./matrix N [baseline|openmp|taskflow]\n";
+    std::cerr << "usage: ./matrix N [baseline|openmp|cppthread|taskflow]\n";
     std::exit(EXIT_FAILURE);
   }
   
   // Create a unbalanced dimension for vector products.
   const auto N = std::stoul(argv[1]);
 
-  std::vector<size_t> vector_sizes(N);
+  std::vector<size_t> dimensions(N);
   
   std::default_random_engine engine(0);
-  std::uniform_int_distribution dis(1, 4000000);
+  std::uniform_int_distribution dis(1, 1000);
 
-  std::cout << "vector sizes = [";
-  for(size_t i=0; i<N; ++i) {
-    vector_sizes[i] = dis(engine);
+  std::cout << "matrix sizes = [";
+  for(size_t i=0; i<dimensions.size(); ++i) {
+    dimensions[i] = dis(engine);
     if(i) std::cout << ' ';
-    std::cout << vector_sizes[i];
+    std::cout << dimensions[i];
   }
   std::cout << "]\n";
 
   // Run methods
   if(std::string_view method(argv[2]); method == "baseline") {
-    baseline(vector_sizes);
+    baseline(dimensions);
   }
   else if(method == "openmp") {
-    openmp_parallel(vector_sizes);
+    openmp_parallel(dimensions);
+  }
+  else if(method == "cppthread") {
+    cppthread_parallel(dimensions);
   }
   else if(method == "taskflow") {
-    taskflow_parallel(vector_sizes);
+    taskflow_parallel(dimensions);
   }
   else {
-    std::cerr << "wrong method, shoud be [baseline|openmp|taskflow]\n";
+    std::cerr << "wrong method, shoud be [baseline|openmp|cppthread|taskflow]\n";
   }
 
   return 0;

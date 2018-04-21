@@ -77,22 +77,24 @@ Once tasks are created in the pool, you need to specify task dependencies in a
 [Directed Acyclic Graph (DAG)](https://en.wikipedia.org/wiki/Directed_acyclic_graph) fashion.
 The `TaskBuilder` supports different methods for you to describe task dependencies.
 
-### Precede
-Adding a preceding link forces one task to run ahead of one another.
+**Precede**: Adding a preceding link forces one task to run ahead of one another.
 ```cpp
 A.precede(B);  // A runs before B.
 ```
 
-### Broadcast
-Adding a broadcast link forces one task to run ahead of other(s).
+**Broadcast**: Adding a broadcast link forces one task to run ahead of other(s).
 ```cpp
 A.broadcast(B, C, D);  // A runs before B, C, and D.
 ```
 
-### Gather
-Adding a gathering link forces one task to run after other(s).
+**Gather**: Adding a gathering link forces one task to run after other(s).
 ```cpp
 A.gather(B, C, D);  // A runs after B, C, and D.
+```
+
+**Linearize**: Linearizing a task sequence adds a  preceding link to each adjacent pair.
+```cpp
+tf.linearize(A, B, C, D);  // A runs before A, B runs before C, and C runs before D.
 ```
 
 ## Step 3: Execute the Tasks

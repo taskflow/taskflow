@@ -52,7 +52,7 @@ TEST_CASE("Taskflow.Builder"){
         tasks.emplace_back(tf.emplace([&counter]() { REQUIRE(counter == 1); counter -= 1;}));
       }
       if(i>0){
-        tf.precede(std::get<0>(tasks[i-1]), std::get<0>(tasks[i]));
+        tasks[i-1].first.precede(tasks[i].first);
       }
     }
     tf.wait_for_all();
@@ -86,7 +86,7 @@ TEST_CASE("Taskflow.Builder"){
     for(size_t i=1;i<num_tasks;i++){
       keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
     }
-    tf.gather(keys,dst);
+    dst.gather(keys);
     tf.wait_for_all();
     REQUIRE(counter == num_tasks - 1);
     REQUIRE(tf.num_tasks() == 0);
