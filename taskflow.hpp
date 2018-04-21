@@ -28,6 +28,7 @@
 #include <cstdlib>
 #include <mutex>
 #include <deque>
+#include <vector>
 #include <algorithm>
 #include <thread>
 #include <future>
@@ -39,10 +40,11 @@
 
 namespace tf {
 
-inline void __throw__(const char* fname, const size_t line, auto&&... args) {
+template <typename... ArgsT>
+inline void __throw__(const char* fname, const size_t line, ArgsT&&... args) {
   std::ostringstream oss;
   oss << "[" << fname << ":" << line << "] ";
-  (oss << ... << args);
+  (oss << ... << std::forward<ArgsT>(args));
   throw std::runtime_error(oss.str());
 }
 
@@ -64,6 +66,9 @@ struct MoveOnCopy {
   mutable T object; 
 };
 
+template <typename T>
+MoveOnCopy(T&&) -> MoveOnCopy<T>;
+
 // ------------------------------------------------------------------------------------------------
 
 // Class: Threadpool
@@ -76,7 +81,7 @@ class Threadpool {
 
   public:
 
-    inline Threadpool(auto);
+    inline Threadpool(unsigned);
     inline ~Threadpool();
     
     template <typename C>
@@ -104,7 +109,7 @@ class Threadpool {
 };
 
 // Constructor
-inline Threadpool::Threadpool(auto N) {
+inline Threadpool::Threadpool(unsigned N) {
   spawn(N);
 }
 

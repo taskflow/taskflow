@@ -14,9 +14,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
+message(STATUS "CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
 message(STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER})
 message(STATUS "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS})
+message(STATUS "CMAKE_EXE_LINKER_FLAGS: " ${CMAKE_EXE_LINKER_FLAGS})
 
 
 # The version number
@@ -28,32 +29,48 @@ set (TASKFLOW_MINOR_VERSION "1")
 include_directories("${PROJECT_SOURCE_DIR}")
 include_directories(doctest)
 
-
 # Find pthread package
-set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
-set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+#set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+#set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 
 # Find OpenMP package
-find_package(OpenMP REQUIRED)
+find_package(OpenMP)
 
 # -----------------------------------------------------------------------------
 # Example program 
 # -----------------------------------------------------------------------------
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
+message(STATUS "Building examples ...")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
+set(EXAMPLE_CXX_FLAGS)
+set(EXAMPLE_EXE_LINKER_FLAGS)
+
+if(OPENMP_FOUND)
+  set(EXAMPLE_CXX_FLAGS "${EXAMPLE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  set(EXAMPLE_EXE_LINKER_FLAGS "${EXAMPLE_EXE_LINKER_FLAGS} ${OpenMP_CXX_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+else(OPENMP_FOUND)
+endif(OPENMP_FOUND)
+
+message(STATUS "EXAMPLE_CXX_FLAGS: " ${EXAMPLE_CXX_FLAGS})
+message(STATUS "EXAMPLE_EXE_LINKER_FLAGS: " ${EXAMPLE_EXE_LINKER_FLAGS})
 
 add_executable(simple example/simple.cpp)
 target_link_libraries(simple Threads::Threads)
 
 add_executable(matrix example/matrix.cpp)
-target_compile_options(matrix PRIVATE ${OpenMP_CXX_FLAGS})
-target_link_libraries(matrix ${OpenMP_CXX_FLAGS} Threads::Threads)
+target_compile_options(matrix PRIVATE ${EXAMPLE_CXX_FLAGS})
+target_link_libraries(matrix ${EXAMPLE_EXE_LINKER_FLAGS} Threads::Threads)
 
 
 # -----------------------------------------------------------------------------
 # Unittest
 # -----------------------------------------------------------------------------
+message(STATUS "Building unit tests ...")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/unittest)
 add_executable(taskflow unittest/taskflow.cpp)
 target_link_libraries(taskflow Threads::Threads)
+
+
+
+
 
