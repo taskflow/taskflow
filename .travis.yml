@@ -1,0 +1,34 @@
+sudo: required
+  
+# Enable C++ support
+language: cpp
+
+# Compiler selection
+compiler:
+  - gcc
+ 
+matrix:
+  include:
+    os: linux
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - g++-7
+    env:
+      - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
+before_install:
+  # Install gcc 7 && cmake 3.10
+  - eval "${MATRIX_EVAL}"
+  - wget -O cmake.sh https://cmake.org/files/v3.10/cmake-3.10.0-rc1-Linux-x86_64.sh 
+  - sudo sh cmake.sh --skip-license --exclude-subdir --prefix=/usr/local
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90
+
+# Build steps
+script:
+  - mkdir build
+  - cd build
+  - cmake ../ && make  
+  - ../unittest/taskflow
