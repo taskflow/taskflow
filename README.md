@@ -1,5 +1,7 @@
 # Cpp-Taskflow
+
 [![Build Status](https://travis-ci.org/twhuang-uiuc/cpp-taskflow.svg?branch=master)](https://travis-ci.org/twhuang-uiuc/cpp-taskflow)
+
 A fast C++ header-only library to develop complex and parallel task dependency graphs.
 
 # Get Started with Cpp-Taskflow
