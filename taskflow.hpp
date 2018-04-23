@@ -403,12 +403,12 @@ class BasicTaskflow {
   
     public:
       
-      TaskBuilder() = delete;
+      TaskBuilder() = default;
       TaskBuilder(const TaskBuilder&);
-      //TaskBuilder(TaskBuilder&&);
+      TaskBuilder(TaskBuilder&&);
 
       auto& operator = (const TaskBuilder&);
-      //auto& operator = (TaskBuilder&&);
+      auto& operator = (TaskBuilder&&);
   
       operator const auto ();
       const auto operator -> ();
@@ -593,19 +593,19 @@ auto& BasicTaskflow<F>::TaskBuilder::operator = (const TaskBuilder& rhs) {
   return *this;
 }
 
-//// Operator =
-//template <typename F>
-//auto& BasicTaskflow<F>::TaskBuilder::operator = (TaskBuilder&& rhs) {
-//  _task = rhs._task;
-//  rhs._task = nullptr;
-//  return *this;
-//}
+// Operator =
+template <typename F>
+auto& BasicTaskflow<F>::TaskBuilder::operator = (TaskBuilder&& rhs) {
+  _task = rhs._task;
+  rhs._task = nullptr;
+  return *this;
+}
 
-//// Constructor
-//template <typename F>
-//BasicTaskflow<F>::TaskBuilder::TaskBuilder(TaskBuilder&& rhs) : _task{rhs._task} { 
-//  rhs._task = nullptr; 
-//}
+// Constructor
+template <typename F>
+BasicTaskflow<F>::TaskBuilder::TaskBuilder(TaskBuilder&& rhs) : _task{rhs._task} { 
+  rhs._task = nullptr; 
+}
 
 // Operator
 template <typename F>  
@@ -852,12 +852,15 @@ auto BasicTaskflow<F>::emplace(C&&... cs) {
 template <typename F>
 void BasicTaskflow<F>::_schedule(task_type& task) {
   _threadpool.silent_async([this, &task](){
+    // Here we need to fetch the num_successors first to avoid the invalid memory
+    // access caused by topology clear.
+    const auto num_successors = task.num_successors();
     if(task._work) {
       task._work();
     }
-    for(const auto& succ : task._successors) {
-      if(--(succ->_dependents) == 0) {
-        _schedule(*succ);
+    for(size_t i=0; i<num_successors; ++i) {
+      if(--(task._successors[i]->_dependents) == 0) {
+        _schedule(*(task._successors[i]));
       }
     }
   });
