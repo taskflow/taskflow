@@ -281,6 +281,9 @@ struct Task {
 
   template <typename T> friend class BasicTaskflow;
 
+  template <typename G>
+  friend std::ostream& operator << (std::ostream&, const Task<G>&);
+
   public:
     
     Task() = default;
@@ -345,20 +348,26 @@ size_t Task<F>::dependents() const {
   return _dependents.load();
 }
 
+// Operator <<
+template <typename F>
+std::ostream& operator << (std::ostream& os, const Task<F>& task) {
+  
+  os << "Task " << &task << " \"" << task.name() << "\""
+     << " [dependents:" << task.dependents()
+     << "|successors:" << task.num_successors() << "]\n";
+
+  for(const auto s : task._successors) {
+    os << "  |--> " << "Task " << s << " \"" << s->name() << "\"\n";
+  }
+
+  return os;
+}
+
 // Procedure: dump
 template <typename F>
 std::string Task<F>::dump() const {
-
   std::ostringstream oss;
-
-  oss << "Task " << this 
-      << " [dependents:" << dependents()
-      << "|successors:" << num_successors() << "] \"" << _name << "\"\n" ;
-
-  for(const auto s : _successors) {
-    oss << "  |--> " << "Task " << s << " \"" << s->_name << "\"\n";
-  }
-
+  oss << *this;
   return oss.str();
 }
 
@@ -367,6 +376,9 @@ std::string Task<F>::dump() const {
 // Class: BasicTaskflow
 template <typename F>
 class BasicTaskflow {
+  
+  template <typename G>
+  friend std::ostream& operator << (std::ostream&, const BasicTaskflow<G>&);
   
   public:
   
@@ -391,12 +403,12 @@ class BasicTaskflow {
   
     public:
       
-      TaskBuilder() = default;
+      TaskBuilder() = delete;
       TaskBuilder(const TaskBuilder&);
-      TaskBuilder(TaskBuilder&&);
+      //TaskBuilder(TaskBuilder&&);
 
       auto& operator = (const TaskBuilder&);
-      auto& operator = (TaskBuilder&&);
+      //auto& operator = (TaskBuilder&&);
   
       operator const auto ();
       const auto operator -> ();
@@ -581,19 +593,19 @@ auto& BasicTaskflow<F>::TaskBuilder::operator = (const TaskBuilder& rhs) {
   return *this;
 }
 
-// Operator =
-template <typename F>
-auto& BasicTaskflow<F>::TaskBuilder::operator = (TaskBuilder&& rhs) {
-  _task = rhs._task;
-  rhs._task = nullptr;
-  return *this;
-}
+//// Operator =
+//template <typename F>
+//auto& BasicTaskflow<F>::TaskBuilder::operator = (TaskBuilder&& rhs) {
+//  _task = rhs._task;
+//  rhs._task = nullptr;
+//  return *this;
+//}
 
-// Constructor
-template <typename F>
-BasicTaskflow<F>::TaskBuilder::TaskBuilder(TaskBuilder&& rhs) : _task{rhs._task} { 
-  rhs._task = nullptr; 
-}
+//// Constructor
+//template <typename F>
+//BasicTaskflow<F>::TaskBuilder::TaskBuilder(TaskBuilder&& rhs) : _task{rhs._task} { 
+//  rhs._task = nullptr; 
+//}
 
 // Operator
 template <typename F>  
@@ -799,6 +811,7 @@ auto BasicTaskflow<F>::silent_emplace(C&& c) {
   return TaskBuilder(&task);
 }
 
+// Function: silent_emplace
 template <typename F>
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
 auto BasicTaskflow<F>::silent_emplace(C&&... cs) {
@@ -828,6 +841,7 @@ auto BasicTaskflow<F>::emplace(C&& c) {
   return std::make_pair(TaskBuilder(&task), std::move(fu));
 }
 
+// Function: emplace
 template <typename F>
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
 auto BasicTaskflow<F>::emplace(C&&... cs) {
@@ -849,13 +863,24 @@ void BasicTaskflow<F>::_schedule(task_type& task) {
   });
 }
 
+// Operator <<
+template <typename F>  
+std::ostream& operator << (std::ostream& os, const BasicTaskflow<F>& tf) {
+  os << "Taskflow " << &tf << '\n'
+     << "# workers: " << tf._threadpool.num_workers() << '\n'
+     << "# tasks: " << tf.num_tasks() << '\n'
+     << "# topologies: " << tf.num_topologies() << '\n';
+  for(const auto& t : tf._tasks) {
+    os << t;
+  }
+  return os;
+}
+
 //// Function: dump
 template <typename F>
 std::string BasicTaskflow<F>::dump() const {
   std::ostringstream oss;  
-  for(const auto& t : _tasks) {
-    oss << t.dump();
-  }
+  oss << *this;
   return oss.str();
 }
 
