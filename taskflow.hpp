@@ -474,6 +474,7 @@ class BasicTaskflow {
 
     void _schedule(task_type&);
 
+
     template <typename L>
     void _linearize(L&);
 };
@@ -837,7 +838,7 @@ auto BasicTaskflow<F>::emplace(C&&... cs) {
 // Procedure: _schedule
 template <typename F>
 void BasicTaskflow<F>::_schedule(task_type& task) {
-  _threadpool.silent_async([this, &task](){
+  _threadpool.silent_async([this, &task]() {
     if(task._work) {
       task._work();
     }
