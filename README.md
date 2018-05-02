@@ -121,7 +121,7 @@ tf::Taskflow tf(0);  // force the master thread to execute all tasks
 auto A = tf.silent_emplace([] () { std::cout << "Task A\n"; }).name("A");
 auto B = tf.silent_emplace([] () { std::cout << "Task B\n"; }).name("B");
 A.precede(B);
-std::cout << tf.dump();
+std::cout << tf;
 ```
 Run the program and inspect whether dependencies are expressed in the right way.
 ```bash
