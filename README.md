@@ -57,7 +57,7 @@ to carry out tasks.
 ```cpp
 tf::Taskflow tf(std::max(1u, std::thread::hardware_concurrency()));
 ```
-Create a task via the method `emplace` and get a pair of `TaskBuilder` and `future`.
+Create a task via the method `emplace` and get a pair of `Task` and `future`.
 ```cpp
 auto [A, F] = tf.emplace([](){ std::cout << "Task A\n"; return 1; });
 ```
@@ -78,7 +78,7 @@ auto [A, B, C, D] = tf.silent_emplace(
 ## Step 2: Define Task Dependencies
 Once tasks are created in the pool, you need to specify task dependencies in a 
 [Directed Acyclic Graph (DAG)](https://en.wikipedia.org/wiki/Directed_acyclic_graph) fashion.
-The `TaskBuilder` supports different methods for you to describe task dependencies.
+The class `Task` supports different methods for you to describe task dependencies.
 
 **Precede**: Adding a preceding link forces one task to run ahead of one another.
 ```cpp

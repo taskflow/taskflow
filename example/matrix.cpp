@@ -195,7 +195,7 @@ void taskflow_parallel(const std::vector<size_t>& D) {
   
   auto tbeg = std::chrono::steady_clock::now();
 
-  using builder_t  = typename tf::Taskflow::TaskBuilder;
+  using builder_t  = typename tf::Taskflow::Task;
 
   tf::Taskflow tf(4);
   

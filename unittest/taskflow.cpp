@@ -19,28 +19,50 @@ TEST_CASE("Taskflow.Builder"){
   REQUIRE(tf.num_workers() == num_workers);
 
   std::atomic<int> counter {0};
-  std::vector<tf::Taskflow::TaskBuilder> keys;
-  std::vector<std::pair<tf::Taskflow::TaskBuilder, std::future<void>>> tasks;
+  std::vector<tf::Taskflow::Task> silent_tasks;
+  std::vector<std::pair<tf::Taskflow::Task, std::future<void>>> tasks;
+
+  SUBCASE("Placeholder") {
+    
+    for(size_t i=0; i<num_tasks; ++i) {
+      silent_tasks.emplace_back(tf.placeholder().name(std::to_string(i)));
+    }
+
+    for(size_t i=0; i<num_tasks; ++i) {
+      REQUIRE(silent_tasks[i].name() == std::to_string(i));
+      REQUIRE(silent_tasks[i].num_dependents() == 0);
+      REQUIRE(silent_tasks[i].num_successors() == 0);
+    }
+
+    for(auto& task : silent_tasks) {
+      task.work([&counter](){ counter++; });
+    }
+
+    tf.wait_for_all();
+    REQUIRE(counter == num_tasks);
+  }
 
   SUBCASE("EmbarrassinglyParallel"){
 
     for(size_t i=0;i<num_tasks;i++) {
       tasks.emplace_back(tf.emplace([&counter]() {counter += 1;}));
     }
-    REQUIRE(tf.num_tasks() == num_tasks);
+
+    REQUIRE(tf.num_nodes() == num_tasks);
     tf.wait_for_all();
     REQUIRE(counter == num_tasks);
-    REQUIRE(tf.num_tasks() == 0);
+    REQUIRE(tf.num_nodes() == 0);
 
     counter = 0;
     
     for(size_t i=0;i<num_tasks;i++){
-      keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
+      silent_tasks.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
     }
-    REQUIRE(tf.num_tasks() == num_tasks);
+
+    REQUIRE(tf.num_nodes() == num_tasks);
     tf.wait_for_all();
     REQUIRE(counter == num_tasks);
-    REQUIRE(tf.num_tasks() == 0);
+    REQUIRE(tf.num_nodes() == 0);
   }
   
   SUBCASE("BinarySequence"){
@@ -53,6 +75,13 @@ TEST_CASE("Taskflow.Builder"){
       }
       if(i>0){
         tasks[i-1].first.precede(tasks[i].first);
+      }
+
+      if(i==0) {
+        REQUIRE(tasks[i].first.num_dependents() == 0);
+      }
+      else {
+        REQUIRE(tasks[i].first.num_dependents() == 1);
       }
     }
     tf.wait_for_all();
@@ -67,64 +96,64 @@ TEST_CASE("Taskflow.Builder"){
     }
     tf.wait_for_all();
     REQUIRE(counter == num_tasks);
-    REQUIRE(tf.num_tasks() == 0);
+    REQUIRE(tf.num_nodes() == 0);
   }
  
   SUBCASE("Broadcast"){
     auto src = tf.silent_emplace([&counter]() {counter -= 1;});
     for(size_t i=1; i<num_tasks; i++){
-      keys.emplace_back(tf.silent_emplace([&counter]() {REQUIRE(counter == -1);}));
+      silent_tasks.emplace_back(tf.silent_emplace([&counter]() {REQUIRE(counter == -1);}));
     }
-    tf.broadcast(src, keys);
+    tf.broadcast(src, silent_tasks);
     tf.wait_for_all();
     REQUIRE(counter == - 1);
-    REQUIRE(tf.num_tasks() == 0);
+    REQUIRE(tf.num_nodes() == 0);
   }
 
   SUBCASE("Gather"){
     auto dst = tf.silent_emplace([&counter]() { REQUIRE(counter == num_tasks - 1);});
     for(size_t i=1;i<num_tasks;i++){
-      keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
+      silent_tasks.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
     }
-    dst.gather(keys);
+    dst.gather(silent_tasks);
     tf.wait_for_all();
     REQUIRE(counter == num_tasks - 1);
-    REQUIRE(tf.num_tasks() == 0);
+    REQUIRE(tf.num_nodes() == 0);
   }
 
   SUBCASE("MapReduce"){
     auto src = tf.silent_emplace([&counter]() {counter = 0;});
     for(size_t i=0;i<num_tasks;i++){
-      keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
+      silent_tasks.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
     }
-    tf.broadcast(src, keys);
+    tf.broadcast(src, silent_tasks);
     auto dst = tf.silent_emplace([&counter]() { REQUIRE(counter == num_tasks);});
-    tf.gather(keys, dst);
+    tf.gather(silent_tasks, dst);
     tf.wait_for_all();
-    REQUIRE(tf.num_tasks() == 0);
+    REQUIRE(tf.num_nodes() == 0);
   }
 
   SUBCASE("Linearize"){
     for(size_t i=0;i<num_tasks;i++){
-      keys.emplace_back(tf.silent_emplace([&counter, i]() { REQUIRE(counter == i); counter += 1;}));
+      silent_tasks.emplace_back(tf.silent_emplace([&counter, i]() { REQUIRE(counter == i); counter += 1;}));
     }
-    tf.linearize(keys);
+    tf.linearize(silent_tasks);
     tf.wait_for_all();
     REQUIRE(counter == num_tasks);
-    REQUIRE(tf.num_tasks() == 0);
+    REQUIRE(tf.num_nodes() == 0);
   }
 
   SUBCASE("Kite"){
     auto src = tf.silent_emplace([&counter]() {counter = 0;});
     for(size_t i=0;i<num_tasks;i++){
-      keys.emplace_back(tf.silent_emplace([&counter, i]() { REQUIRE(counter == i); counter += 1; }));
+      silent_tasks.emplace_back(tf.silent_emplace([&counter, i]() { REQUIRE(counter == i); counter += 1; }));
     }
-    tf.broadcast(src, keys);
-    tf.linearize(keys);
+    tf.broadcast(src, silent_tasks);
+    tf.linearize(silent_tasks);
     auto dst = tf.silent_emplace([&counter]() { REQUIRE(counter == num_tasks);});
-    tf.gather(keys, dst);
+    tf.gather(silent_tasks, dst);
     tf.wait_for_all();
-    REQUIRE(tf.num_tasks() == 0);
+    REQUIRE(tf.num_nodes() == 0);
   }
 }
 
@@ -142,33 +171,32 @@ TEST_CASE("Taskflow.Dispatch") {
   REQUIRE(tf.num_workers() == num_workers);
 
   std::atomic<int> counter {0};
-  std::vector<tf::Taskflow::TaskBuilder> keys;
+  std::vector<tf::Taskflow::Task> silent_tasks;
     
   for(size_t i=0;i<num_tasks;i++){
-    keys.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
+    silent_tasks.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
   }
 
   SUBCASE("Dispatch"){
     auto fu = tf.dispatch();
-    REQUIRE(tf.num_tasks() == 0);
+    REQUIRE(tf.num_nodes() == 0);
     REQUIRE(fu.wait_for(1s) == std::future_status::ready);
     REQUIRE(counter == num_tasks);
   }
 
   SUBCASE("SilentDispatch"){
     tf.silent_dispatch();
-    REQUIRE(tf.num_tasks() == 0);
+    REQUIRE(tf.num_nodes() == 0);
     std::this_thread::sleep_for(1s);
     REQUIRE(counter == num_tasks);
   }
 
   SUBCASE("WaitForAll") {
     tf.wait_for_all();
-    REQUIRE(tf.num_tasks() == 0);
+    REQUIRE(tf.num_nodes() == 0);
     REQUIRE(counter == num_tasks); 
   }
 }
-
 
 
 
