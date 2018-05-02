@@ -334,7 +334,6 @@ class BasicTaskflow {
       Task(Task&&);
 
       auto& operator = (const Task&);
-      auto& operator = (Task&&);
   
       const std::string& name() const;
 
@@ -558,14 +557,6 @@ auto& BasicTaskflow<F>::Task::gather(std::initializer_list<Task> tgts) {
 template <typename F>
 auto& BasicTaskflow<F>::Task::operator = (const Task& rhs) {
   _node = rhs._node;
-  return *this;
-}
-
-// Operator =
-template <typename F>
-auto& BasicTaskflow<F>::Task::operator = (Task&& rhs) {
-  _node = rhs._node;
-  rhs._node = nullptr;
   return *this;
 }
 
