@@ -1,6 +1,7 @@
 # Cpp-Taskflow
 
 [![Build Status](https://travis-ci.org/twhuang-uiuc/cpp-taskflow.svg?branch=master)](https://travis-ci.org/twhuang-uiuc/cpp-taskflow)
+[![Gitter chat][Gitter badge]][Gitter]
 [![License: MIT](./image/license_badge.svg)](./LICENSE)
 
 A fast C++ header-only library to develop complex and parallel task dependency graphs.
@@ -193,6 +194,7 @@ The folder `example/` contains a rich set of practices of how to use Cpp-Taskflo
 # Get Involved
 + Report bugs/issues by submitting a [Github issue][Github issues].
 + Submit contributions using [pull requests][Github pull requests].
++ Live chat and ask questions on [Gitter][Gitter].
 
 # Contributors
 
@@ -206,7 +208,8 @@ Copyright © 2018, [Tsung-Wei Huang](http://web.engr.illinois.edu/~thuang19/), [
 Released under the [MIT license](https://github.com/twhuang-uiuc/cpp-taskflow/blob/master/LICENSE).
 
 
-
+[Gitter]:                https://gitter.im/cpp-taskflow/Lobby
+[Gitter badge]:          ./image/gitter_badge.svg
 [Github releases]:       https://github.com/twhuang-uiuc/cpp-taskflow/releases
 [Github issues]:         https://github.com/twhuang-uiuc/cpp-taskflow/issues
 [Github pull requests]:  https://github.com/twhuang-uiuc/cpp-taskflow/pulls
@@ -214,3 +217,5 @@ Released under the [MIT license](https://github.com/twhuang-uiuc/cpp-taskflow/bl
 [AwesomeGraphViz]:       https://github.com/CodeFreezr/awesome-graphviz
 [OpenMP]:                http://www.openmp.org/
 [TBB FlowGraph]:         https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph
+
+
