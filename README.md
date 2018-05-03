@@ -4,6 +4,12 @@
 
 A fast C++ header-only library to develop complex and parallel task dependency graphs.
 
+# Why Cpp-Taskflow?
+
+Cpp-Taskflow helps you build efficient computational graphs quickly using modern C++17.
+It is by far faster and more expressive than existing libraries such as [OpenMP](http://www.openmp.org/) and 
+[TBB FlowGraph](https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph).
+
 # Get Started with Cpp-Taskflow
 
 The following example (`simple.cpp`) contains the basic syntax you need to use Cpp-Taskflow.
@@ -175,7 +181,7 @@ We recommend using out-of-source build.
 ~$ make 
 ```
 ## Unit Tests
-Cpp-Taskflow uses doctest for unit tests.
+Cpp-Taskflow uses [Doctest](https://github.com/onqtam/doctest) for unit tests.
 ```bash
 ~$ ./unittest/taskflow
 ```
