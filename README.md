@@ -9,7 +9,7 @@ A fast C++ header-only library to develop complex and parallel task dependency g
 # Why Cpp-Taskflow?
 
 Cpp-Taskflow helps you build efficient computational graphs quickly using modern C++17.
-It is by far faster and more expressive than existing libraries such as [OpenMP][OpenMP Task] and 
+It is by far faster and more expressive than existing libraries such as [OpenMP Tasking][OpenMP Tasking] and 
 [TBB FlowGraph][TBB FlowGraph].
 
 # Get Started with Cpp-Taskflow
@@ -215,7 +215,7 @@ Released under the [MIT license](https://github.com/twhuang-uiuc/cpp-taskflow/bl
 [Github pull requests]:  https://github.com/twhuang-uiuc/cpp-taskflow/pulls
 [GraphViz]:              https://www.graphviz.org/
 [AwesomeGraphViz]:       https://github.com/CodeFreezr/awesome-graphviz
-[OpenMP]:                http://www.nersc.gov/users/software/programming-models/openmp/openmp-tasking/
+[OpenMP Tasking]:        http://www.nersc.gov/users/software/programming-models/openmp/openmp-tasking/
 [TBB FlowGraph]:         https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph
 
 
