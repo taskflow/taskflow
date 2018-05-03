@@ -402,7 +402,7 @@ class BasicTaskflow {
     size_t num_workers() const;
     size_t num_topologies() const;
 
-    std::string dump() const;
+    std::string dump_graphviz() const;
 
   private:
 
@@ -830,6 +830,32 @@ void BasicTaskflow<F>::_schedule(Node& task) {
   });
 }
 
+// Function: dump
+// Dumps the taskflow in graphviz. The result can be viewed at http://www.webgraphviz.com/.
+template <typename F>
+std::string BasicTaskflow<F>::dump_graphviz() const {
+
+  std::ostringstream os;
+
+  os << "digraph Taskflow {\n";
+  
+  for(const auto& node : _nodes) {
+    for(const auto s : node._successors) {
+      os << "  \"";
+      if(node.name() != "") os << node.name();
+      else os << &node;
+      os << "\" -> \"";
+      if(s->name() != "") os << s->name();
+      else os << s;
+      os << "\"\n";  
+    }
+  }
+
+  os << "}\n";
+  
+  return os.str();
+}
+
 // Operator <<
 template <typename F>  
 std::ostream& operator << (std::ostream& os, const BasicTaskflow<F>& tf) {
@@ -848,14 +874,6 @@ std::ostream& operator << (std::ostream& os, const BasicTaskflow<F>& tf) {
     }
   }
   return os;
-}
-
-//// Function: dump
-template <typename F>
-std::string BasicTaskflow<F>::dump() const {
-  std::ostringstream oss;  
-  oss << *this;
-  return oss.str();
 }
 
 //-------------------------------------------------------------------------------------------------

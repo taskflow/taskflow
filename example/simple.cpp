@@ -16,10 +16,12 @@ int main(){
     [] () { std::cout << "TaskD\n"; }
   );
 
-  A.precede(B);  // B runs after A
+  A.name("A").precede(B);  // B runs after A
   A.precede(C);  // C runs after A
   B.precede(D);  // D runs after B
   C.precede(D);  // C runs after D
+
+  std::cout << tf.dump_graphviz();
 
   tf.wait_for_all();  // block until all task finish
 
