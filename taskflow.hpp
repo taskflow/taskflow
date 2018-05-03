@@ -856,7 +856,7 @@ std::string BasicTaskflow<F>::dump_graphviz() const {
   return os.str();
 }
 
-// Operator <<
+/*// Operator <<
 template <typename F>  
 std::ostream& operator << (std::ostream& os, const BasicTaskflow<F>& tf) {
 
@@ -874,7 +874,7 @@ std::ostream& operator << (std::ostream& os, const BasicTaskflow<F>& tf) {
     }
   }
   return os;
-}
+} */
 
 //-------------------------------------------------------------------------------------------------
 
