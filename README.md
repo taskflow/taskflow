@@ -13,7 +13,7 @@ It is by far faster and more expressive than existing libraries such as [OpenMP]
 
 # Get Started with Cpp-Taskflow
 
-The following example (`simple.cpp`) contains the basic syntax you need to use Cpp-Taskflow.
+The following example [simple.cpp](./example/simple.cpp) contains the basic syntax you need to use Cpp-Taskflow.
 
 ```cpp
 // TaskA---->TaskB---->TaskD
