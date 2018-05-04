@@ -44,6 +44,8 @@ find_package(OpenMP)
 message(STATUS "Building examples ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
 
+set(EXAMPLE_EXE_LINKER_FLAGS Threads::Threads)
+
 if (OpenMP_FOUND)
   set(EXAMPLE_CXX_FLAGS ${OpenMP_CXX_FLAGS})
   set(EXAMPLE_EXE_LINKER_FLAGS ${OpenMP_CXX_FLAGS} ${OpenMP_EXE_LINKER_FLAGS})
@@ -56,11 +58,15 @@ message(STATUS "EXAMPLE_CXX_FLAGS: " ${EXAMPLE_CXX_FLAGS})
 message(STATUS "EXAMPLE_EXE_LINKER_FLAGS: " ${EXAMPLE_EXE_LINKER_FLAGS})
 
 add_executable(simple example/simple.cpp)
-target_link_libraries(simple Threads::Threads)
+target_link_libraries(simple ${EXAMPLE_EXE_LINKER_FLAGS})
 
 add_executable(matrix example/matrix.cpp)
 target_compile_options(matrix PRIVATE ${EXAMPLE_CXX_FLAGS})
-target_link_libraries(matrix ${EXAMPLE_EXE_LINKER_FLAGS} Threads::Threads)
+target_link_libraries(matrix ${EXAMPLE_EXE_LINKER_FLAGS})
+
+add_executable(dag example/dag.cpp)
+target_compile_options(dag PRIVATE ${EXAMPLE_CXX_FLAGS})
+target_link_libraries(matrix ${EXAMPLE_EXE_LINKER_FLAGS})
 
 
 # -----------------------------------------------------------------------------
