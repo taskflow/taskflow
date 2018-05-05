@@ -844,7 +844,7 @@ std::string BasicTaskflow<F>::dump() const {
     os << "  \"";
     if(!node.name().empty()) os << node.name();
     else os << &node;
-    os << "\"\n";
+    os << "\";\n";
 
     for(const auto s : node._successors) {
       os << "  \"";
@@ -853,7 +853,7 @@ std::string BasicTaskflow<F>::dump() const {
       os << "\" -> \"";
       if(s->name() != "") os << s->name();
       else os << s;
-      os << "\"\n";  
+      os << "\";\n";  
     }
   }
 
