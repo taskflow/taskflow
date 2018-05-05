@@ -137,7 +137,7 @@ A.broadcast(B, C, E);
 C.precede(D);
 B.broadcast(D, E); 
 
-std::cout << tf.dump_graphviz();
+std::cout << tf.dump();
 ```
 Run the program and inspect whether dependencies are expressed in the right way.
 ```bash

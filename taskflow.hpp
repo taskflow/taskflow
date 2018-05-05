@@ -402,7 +402,7 @@ class BasicTaskflow {
     size_t num_workers() const;
     size_t num_topologies() const;
 
-    std::string dump_graphviz() const;
+    std::string dump() const;
 
   private:
 
@@ -833,7 +833,7 @@ void BasicTaskflow<F>::_schedule(Node& task) {
 // Function: dump
 // Dumps the taskflow in graphviz. The result can be viewed at http://www.webgraphviz.com/.
 template <typename F>
-std::string BasicTaskflow<F>::dump_graphviz() const {
+std::string BasicTaskflow<F>::dump() const {
 
   std::ostringstream os;
 
