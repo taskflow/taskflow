@@ -840,9 +840,15 @@ std::string BasicTaskflow<F>::dump() const {
   os << "digraph Taskflow {\n";
   
   for(const auto& node : _nodes) {
+
+    os << "  \"";
+    if(!node.name().empty()) os << node.name();
+    else os << &node;
+    os << "\"\n";
+
     for(const auto s : node._successors) {
       os << "  \"";
-      if(node.name() != "") os << node.name();
+      if(!node.name().empty()) os << node.name();
       else os << &node;
       os << "\" -> \"";
       if(s->name() != "") os << s->name();
