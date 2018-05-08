@@ -412,7 +412,7 @@ class BasicTaskflow {
     std::list<Topology> _topologies;
 
     void _schedule(Node&);
-
+    void _wait_for_topologies();
 
     template <typename L>
     void _linearize(L&);
@@ -616,7 +616,7 @@ BasicTaskflow<F>::BasicTaskflow(unsigned N) : _threadpool{N} {
 // Destructor
 template <typename F>
 BasicTaskflow<F>::~BasicTaskflow() {
-  wait_for_all();
+  _wait_for_topologies();
 }
 
 // Function: num_nodes
@@ -746,18 +746,20 @@ auto BasicTaskflow<F>::dispatch() {
 // Procedure: wait_for_all
 template <typename F>
 auto& BasicTaskflow<F>::wait_for_all() {
-
   if(!_nodes.empty()) {
     silent_dispatch();
   }
+  _wait_for_topologies();
+  return *this;
+}
 
+// Procedure: _wait_for_topologies
+template <typename F>
+void BasicTaskflow<F>::_wait_for_topologies() {
   for(auto& t: _topologies){
     t.future.get();
   }
-
   _topologies.clear();
-
-  return *this;
 }
 
 // Function: placeholder
