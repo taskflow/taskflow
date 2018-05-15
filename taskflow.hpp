@@ -864,26 +864,6 @@ std::string BasicTaskflow<F>::dump() const {
   return os.str();
 }
 
-/*// Operator <<
-template <typename F>  
-std::ostream& operator << (std::ostream& os, const BasicTaskflow<F>& tf) {
-
-  os << "Taskflow " << &tf << '\n'
-     << "# workers: " << tf._threadpool.num_workers() << '\n'
-     << "# nodes: " << tf.num_nodes() << '\n'
-     << "# topologies: " << tf.num_topologies() << '\n';
-
-  for(const auto& node : tf._nodes) {
-    os << "Node " << &node << " \"" << node.name() << "\" "
-       << "[dependents:" << node.dependents()
-       << "|successors:" << node.num_successors() << "]\n";
-    for(const auto s : node._successors) {
-      os << "  |--> " << "Node " << s << " \"" << s->name() << "\"\n";
-    }
-  }
-  return os;
-} */
-
 //-------------------------------------------------------------------------------------------------
 
 using Taskflow = BasicTaskflow<std::function<void()>>;
