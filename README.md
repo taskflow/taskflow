@@ -114,7 +114,7 @@ There are three methods to carry out a task dependency graph, `dispatch`, `silen
 auto future = tf.dispatch();  // non-blocking, returns with a future immediately.
 tf.dispatch();                // non-blocking, no return
 ```
-Only when all tasks are complete does the call to `wait_for_all` return.
+Calling `wait_for_all` will block until all tasks complete.
 ```cpp
 tf.wait_for_all();
 ```
