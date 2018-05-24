@@ -64,10 +64,6 @@ add_executable(matrix example/matrix.cpp)
 target_compile_options(matrix PRIVATE ${EXAMPLE_CXX_FLAGS})
 target_link_libraries(matrix ${EXAMPLE_EXE_LINKER_FLAGS})
 
-add_executable(dag example/dag.cpp)
-target_compile_options(dag PRIVATE ${EXAMPLE_CXX_FLAGS})
-target_link_libraries(matrix ${EXAMPLE_EXE_LINKER_FLAGS})
-
 
 # -----------------------------------------------------------------------------
 # Unittest
