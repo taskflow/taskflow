@@ -705,14 +705,6 @@ auto BasicTaskflow<F>::silent_dispatch() {
 
   if(_nodes.empty()) return;
 
-  //_topologies.remove_if([](auto &t){ 
-  //   auto status = t.future.wait_for(std::chrono::seconds(0));
-  //   if(status == std::future_status::ready){
-  //     return true;
-  //   }
-  //  return false; 
-  //});
-
   auto& topology = _topologies.emplace_back(std::move(_nodes));
 
   // Start the taskflow
