@@ -108,8 +108,8 @@ void baseline(const std::vector<size_t>& D) {
             << " ms\n";
 }
 
-// Procedure: openmp_parallel
-void openmp_parallel(const std::vector<size_t>& D) {
+// Procedure: openmp
+void openmp(const std::vector<size_t>& D) {
   
   std::cout << "========== OpenMP ==========\n";
 
@@ -143,8 +143,8 @@ void openmp_parallel(const std::vector<size_t>& D) {
             << " ms\n";
 }
 
-// Procedure: cppthread_parallel
-void cppthread_parallel(const std::vector<size_t>& D) {
+// Procedure: cppthread
+void cppthread(const std::vector<size_t>& D) {
   
   std::cout << "========== CppThread ==========\n";
 
@@ -190,8 +190,8 @@ void cppthread_parallel(const std::vector<size_t>& D) {
             << " ms\n";
 }
 
-// Procedure: taskflow_parallel
-void taskflow_parallel(const std::vector<size_t>& D) {
+// Procedure: taskflow
+void taskflow(const std::vector<size_t>& D) {
   
   auto tbeg = std::chrono::steady_clock::now();
 
@@ -270,13 +270,13 @@ int main(int argc, char* argv[]) {
     baseline(dimensions);
   }
   else if(method == "openmp") {
-    openmp_parallel(dimensions);
+    openmp(dimensions);
   }
   else if(method == "cppthread") {
-    cppthread_parallel(dimensions);
+    cppthread(dimensions);
   }
   else if(method == "taskflow") {
-    taskflow_parallel(dimensions);
+    taskflow(dimensions);
   }
   else {
     std::cerr << "wrong method, shoud be [baseline|openmp|cppthread|taskflow]\n";
