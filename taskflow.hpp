@@ -370,6 +370,7 @@ class BasicTaskflow {
   };
 
     
+    BasicTaskflow();
     BasicTaskflow(unsigned);
     ~BasicTaskflow();
     
@@ -388,15 +389,17 @@ class BasicTaskflow {
     auto placeholder();
     auto dispatch();
     auto silent_dispatch();
+    auto precede(Task, Task);
+    auto linearize(std::vector<Task>&);
+    auto linearize(std::initializer_list<Task>);
+    auto broadcast(Task, std::vector<Task>&);
+    auto broadcast(Task, std::initializer_list<Task>);
+    auto gather(std::vector<Task>&, Task);
+    auto gather(std::initializer_list<Task>, Task);
+    auto wait_for_all();
 
-    BasicTaskflow& precede(Task, Task);
-    BasicTaskflow& linearize(std::vector<Task>&);
-    BasicTaskflow& linearize(std::initializer_list<Task>);
-    BasicTaskflow& broadcast(Task, std::vector<Task>&);
-    BasicTaskflow& broadcast(Task, std::initializer_list<Task>);
-    BasicTaskflow& gather(std::vector<Task>&, Task);
-    BasicTaskflow& gather(std::initializer_list<Task>, Task);
-    BasicTaskflow& wait_for_all();
+    template<typename I, class C>
+    auto parallel_for(I, I, C&&);
 
     size_t num_nodes() const;
     size_t num_workers() const;
@@ -610,6 +613,11 @@ BasicTaskflow<F>::Task::Task(Node* t) : _node {t} {
 
 // Constructor
 template <typename F>
+BasicTaskflow<F>::BasicTaskflow() : _threadpool{std::thread::hardware_concurrency()} {
+}
+
+// Constructor
+template <typename F>
 BasicTaskflow<F>::BasicTaskflow(unsigned N) : _threadpool{N} {
 }
 
@@ -639,9 +647,8 @@ size_t BasicTaskflow<F>::num_topologies() const {
 
 // Procedure: precede
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::precede(Task from, Task to) {
+auto BasicTaskflow<F>::precede(Task from, Task to) {
   from._node->precede(*(to._node));
-  return *this;
 }
 
 // Procedure: _linearize
@@ -659,44 +666,38 @@ void BasicTaskflow<F>::_linearize(L& keys) {
 
 // Procedure: linearize
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::linearize(std::vector<Task>& keys) {
+auto BasicTaskflow<F>::linearize(std::vector<Task>& keys) {
   _linearize(keys); 
-  return *this;
 }
 
 // Procedure: linearize
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::linearize(std::initializer_list<Task> keys) {
+auto BasicTaskflow<F>::linearize(std::initializer_list<Task> keys) {
   _linearize(keys);
-  return *this;
 }
 
 // Procedure: broadcast
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::broadcast(Task from, std::vector<Task>& keys) {
+auto BasicTaskflow<F>::broadcast(Task from, std::vector<Task>& keys) {
   from.broadcast(keys);
-  return *this;
 }
 
 // Procedure: broadcast
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::broadcast(Task from, std::initializer_list<Task> keys) {
+auto BasicTaskflow<F>::broadcast(Task from, std::initializer_list<Task> keys) {
   from.broadcast(keys);
-  return *this;
 }
 
 // Function: gather
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::gather(std::vector<Task>& keys, Task to) {
+auto BasicTaskflow<F>::gather(std::vector<Task>& keys, Task to) {
   to.gather(keys);
-  return *this;
 }
 
 // Function: gather
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::gather(std::initializer_list<Task> keys, Task to) {
+auto BasicTaskflow<F>::gather(std::initializer_list<Task> keys, Task to) {
   to.gather(keys);
-  return *this;
 }
 
 // Procedure: silent_dispatch 
@@ -737,12 +738,11 @@ auto BasicTaskflow<F>::dispatch() {
 
 // Procedure: wait_for_all
 template <typename F>
-BasicTaskflow<F>& BasicTaskflow<F>::wait_for_all() {
+auto BasicTaskflow<F>::wait_for_all() {
   if(!_nodes.empty()) {
     silent_dispatch();
   }
   _wait_for_topologies();
-  return *this;
 }
 
 // Procedure: _wait_for_topologies
@@ -804,6 +804,23 @@ template <typename F>
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
 auto BasicTaskflow<F>::emplace(C&&... cs) {
   return std::make_tuple(emplace(std::forward<C>(cs))...);
+}
+
+// Function: parallel_for    
+template <typename F>
+template <typename I, class C>
+auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c) {
+
+  auto source = placeholder();
+  auto target = placeholder();
+
+  for(; beg != end; ++beg) {
+    auto task = silent_emplace([&, itr=beg](){ c(*itr); });
+    source.precede(task);
+    task.precede(target);
+  }
+
+  return std::make_pair(source, target); 
 }
 
 // Procedure: _schedule

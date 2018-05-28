@@ -245,12 +245,12 @@ void taskflow_parallel(const std::vector<size_t>& D) {
 int main(int argc, char* argv[]) {
 
   if(argc != 3) {
-    std::cerr << "usage: ./matrix N [baseline|openmp|cppthread|taskflow]\n";
+    std::cerr << "usage: ./matrix [baseline|openmp|cppthread|taskflow] N\n";
     std::exit(EXIT_FAILURE);
   }
   
   // Create a unbalanced dimension for vector products.
-  const auto N = std::stoul(argv[1]);
+  const auto N = std::stoul(argv[2]);
 
   std::vector<size_t> dimensions(N);
   
@@ -266,7 +266,7 @@ int main(int argc, char* argv[]) {
   std::cout << "]\n";
 
   // Run methods
-  if(std::string_view method(argv[2]); method == "baseline") {
+  if(std::string_view method(argv[1]); method == "baseline") {
     baseline(dimensions);
   }
   else if(method == "openmp") {

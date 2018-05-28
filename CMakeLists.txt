@@ -64,6 +64,10 @@ add_executable(matrix example/matrix.cpp)
 target_compile_options(matrix PRIVATE ${EXAMPLE_CXX_FLAGS})
 target_link_libraries(matrix ${EXAMPLE_EXE_LINKER_FLAGS})
 
+add_executable(parallel_for example/parallel_for.cpp)
+target_compile_options(parallel_for PRIVATE ${EXAMPLE_CXX_FLAGS})
+target_link_libraries(parallel_for ${EXAMPLE_EXE_LINKER_FLAGS})
+
 
 # -----------------------------------------------------------------------------
 # Unittest
