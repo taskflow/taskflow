@@ -6,6 +6,8 @@ int fib(int n) {
   return (fib(n-1) + fib(n-2))%1024;
 }
 
+// ------------------------------------------------------------------------------------------------
+
 // Procedure: sequential
 void sequential(int N) {
   auto tbeg = std::chrono::steady_clock::now();
