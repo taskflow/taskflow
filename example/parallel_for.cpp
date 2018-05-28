@@ -28,7 +28,7 @@ void taskflow(int N) {
   for(int n=0; n<N; ++n) {
     range[n] = n;
   }
-  tf.parallel_for(range.begin(), range.end(), [&] (int i) { 
+  tf.parallel_for(range.begin(), range.end(), [&] (int& i) { 
     printf("fib[%d]=%d\n", i, fib(i));
   });
   tf.wait_for_all();

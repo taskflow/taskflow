@@ -815,7 +815,7 @@ auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c) {
   auto target = placeholder();
 
   for(; beg != end; ++beg) {
-    auto task = silent_emplace([&, itr=beg](){ c(*itr); });
+    auto task = silent_emplace([&, itr=beg] (){ c(*itr); });
     source.precede(task);
     task.precede(target);
   }
