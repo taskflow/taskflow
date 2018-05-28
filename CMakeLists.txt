@@ -68,11 +68,14 @@ target_link_libraries(matrix ${EXAMPLE_EXE_LINKER_FLAGS})
 # -----------------------------------------------------------------------------
 # Unittest
 # -----------------------------------------------------------------------------
+enable_testing()
+
 message(STATUS "Building unit tests ...")
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/unittest)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/unittest)
 add_executable(taskflow unittest/taskflow.cpp)
 target_link_libraries(taskflow Threads::Threads)
 
+add_test(unittest ${PROJECT_SOURCE_DIR}/unittest/taskflow)
 
 
 
