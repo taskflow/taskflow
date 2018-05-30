@@ -46,7 +46,7 @@ void openmp(int N) {
     printf("fib[%d]=%d\n", i, fib(i));
   }
   auto tend = std::chrono::steady_clock::now();
-  std::cout << "taskflow version takes " 
+  std::cout << "openmp version takes " 
             << std::chrono::duration_cast<std::chrono::milliseconds>(tend-tbeg).count() 
             << " ms\n";
 }
