@@ -387,8 +387,6 @@ class BasicTaskflow {
     auto silent_emplace(C&&...);
 
     auto placeholder();
-    auto dispatch();
-    auto silent_dispatch();
     auto precede(Task, Task);
     auto linearize(std::vector<Task>&);
     auto linearize(std::initializer_list<Task>);
@@ -396,6 +394,8 @@ class BasicTaskflow {
     auto broadcast(Task, std::initializer_list<Task>);
     auto gather(std::vector<Task>&, Task);
     auto gather(std::initializer_list<Task>, Task);
+    auto dispatch();
+    auto silent_dispatch();
     auto wait_for_all();
 
     template<typename I, class C>
