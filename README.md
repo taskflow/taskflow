@@ -233,6 +233,12 @@ Alternatively, you can use CMake's testing framework to run the unittest.
 ## Examples
 The folder `example/` contains several examples and is a great place to learn to use Cpp-Taskflow.
 
+| Example |  What you will learn |
+| ------- |  ----------- |
+| [simple.cpp](./example/simple.cpp) | create a trivial taskflow graph |
+| [matrix.cpp](./example/matrix.cpp) | create two set of matrices and multiply each in parallel |
+| [parallel_for.cpp](./example/parallel_for.cpp)| parallelize a for loop with unbalanced workload |
+
 # Get Involved
 + Report bugs/issues by submitting a [Github issue][Github issues].
 + Submit contributions using [pull requests][Github pull requests].

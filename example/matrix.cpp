@@ -117,21 +117,21 @@ void openmp(const std::vector<size_t>& D) {
 
   std::cout << "Generating matrix As ...\n";
   std::vector<matrix_t> As(D.size());
-  #pragma omp parallel for num_threads(4)
+  #pragma omp parallel for
   for(size_t j=0; j<D.size(); ++j) {
     As[j] = random_matrix(D[j]);
   }
   
   std::cout << "Generating matrix Bs ...\n";
   std::vector<matrix_t> Bs(D.size());
-  #pragma omp parallel for num_threads(4)
+  #pragma omp parallel for
   for(size_t j=0; j<D.size(); ++j) {
     Bs[j] = random_matrix(D[j]);
   }
   
   std::cout << "Computing matrix product values Cs ...\n";
   std::vector<matrix_t> Cs(D.size());
-  #pragma omp parallel for num_threads(4)
+  #pragma omp parallel for
   for(size_t j=0; j<D.size(); ++j) {
     Cs[j] = As[j] * Bs[j];
   }
@@ -150,7 +150,7 @@ void cppthread(const std::vector<size_t>& D) {
 
   auto tbeg = std::chrono::steady_clock::now();
 
-  tf::Threadpool tpl(4);
+  tf::Threadpool tpl(std::thread::hardware_concurrency());
 
   std::cout << "Generating matrix As ...\n";
   std::vector<matrix_t> As(D.size());
@@ -197,7 +197,7 @@ void taskflow(const std::vector<size_t>& D) {
 
   using builder_t  = typename tf::Taskflow::Task;
 
-  tf::Taskflow tf(4);
+  tf::Taskflow tf;
   
   std::cout << "Generating task As ...\n";
   std::vector<matrix_t> As(D.size());
