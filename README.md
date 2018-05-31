@@ -4,7 +4,7 @@
 [![Gitter chat][Gitter badge]][Gitter]
 [![License: MIT](./image/license_badge.svg)](./LICENSE)
 
-A fast C++ header-only library to develop complex and parallel task dependency graphs.
+A fast C++ header-only library to help you easily develop parallel programs with complex task dependencies.
 
 # Why Cpp-Taskflow?
 
@@ -20,7 +20,7 @@ The following example [simple.cpp](./example/simple.cpp) contains the basic synt
 // TaskA---->TaskB---->TaskD
 // TaskA---->TaskC---->TaskD
 
-#include "taskflow.hpp"
+#include "taskflow.hpp"  // the only include you need
 
 int main(){
   
@@ -201,9 +201,8 @@ thousands of task nodes and links, there are a few amateur pitfalls and mistakes
 + Trying to modify a dispatched task can result in undefined behavior.
 + Touching a taskflow from multiple threads are not safe.
 
-The current version is known to work on most Linux distributions and OSX.
-We havn't found issues in a particular platform.
-Please report to us if any.
+Cpp-Taskflow is known to work on most Linux distributions and OSX.
+Please [let me know](mailto:twh760812@gmail.com) if you found any issues in a particular platform.
 
 # System Requirements
 To use Cpp-Taskflow, you only need a C++17 compiler:
@@ -240,20 +239,43 @@ The folder `example/` contains several examples and is a great place to learn to
 + Live chat and ask questions on [Gitter][Gitter].
 
 # Contributors
-I deeply appreciate the help of the following people:
-- [Chun-Xun Lin](https://github.com/clin99) implemented the core of Cpp-Taskflow, continuous integration, and unittest.
+Cpp-Taskflow is being actively developed and contributed by the following people:
+- [Tsung-Wei Huang][Tsung-Wei Huang] created the Cpp-Taskflow project and implemented the core routines.
+- [Chun-Xun Lin][Chun-Xun Lin] implemented the core of Cpp-Taskflow, continuous integration, and unittest.
 - [Nan Xiao](https://github.com/NanXiao) fixed compilation error of unittest on the Arch platform.
 
 
 See also the list of [contributors](./CONTRIBUTORS.txt) who participated in this project. 
 Please [let me know](mailto:twh760812@gmail.com) if I forgot someone!
 
+# Who is Using Cpp-Taskflow?
+
+Cpp-Taskflow is being used in both industry and academic projects to scale up existing workloads that incorporate complex task dependencies. 
+Research evidence has shown over 10x improvements by switching to Cpp-Taskflow.
+
+- [OpenTimer][OpenTimer]: A High-performance Timing Analysis Tool for VLSI Systems.
+- [DtCraft][DtCraft]: A General-purpose Distributed Programming Systems.
+
+Please [let me know][email me] if I forgot your project!
+
 # License
 
-Copyright © 2018, [Tsung-Wei Huang](http://web.engr.illinois.edu/~thuang19/), [Chun-Xun Lin](https://github.com/clin99), and Martin Wong.
-Released under the [MIT license](https://github.com/twhuang-uiuc/cpp-taskflow/blob/master/LICENSE).
+<img align="right" src="http://opensource.org/trademarks/opensource/OSI-Approved-License-100x137.png">
 
+Cpp-Taskflow is licensed under the [MIT License](./LICENSE):
 
+Copyright &copy; 2018 [Tsung-Wei Huang][Tsung-Wei Huang], [Chun-Xun Lin](https://github.com/clin99), and Martin Wong.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+* * *
+
+[Tsung-Wei Huang]:       http://web.engr.illinois.edu/~thuang19/
+[Chun-Xun Lin]:          https://github.com/clin99
 [Gitter]:                https://gitter.im/cpp-taskflow/Lobby
 [Gitter badge]:          ./image/gitter_badge.svg
 [Github releases]:       https://github.com/twhuang-uiuc/cpp-taskflow/releases
@@ -263,5 +285,6 @@ Released under the [MIT license](https://github.com/twhuang-uiuc/cpp-taskflow/bl
 [AwesomeGraphViz]:       https://github.com/CodeFreezr/awesome-graphviz
 [OpenMP Tasking]:        http://www.nersc.gov/users/software/programming-models/openmp/openmp-tasking/
 [TBB FlowGraph]:         https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph
-
-
+[OpenTimer]:             https://web.engr.illinois.edu/~thuang19/software/timer/OpenTimer.html
+[DtCraft]:               http://dtcraft.web.engr.illinois.edu/
+[email me]:              mailto:twh760812@gmail.com
