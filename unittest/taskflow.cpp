@@ -127,7 +127,7 @@ TEST_CASE("Taskflow.Builder"){
       silent_tasks.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
     }
     tf.broadcast(src, silent_tasks);
-    auto dst = tf.silent_emplace([&counter]() { REQUIRE(counter == num_tasks);});
+    auto dst = tf.silent_emplace([&counter, num_tasks]() { REQUIRE(counter == num_tasks);});
     tf.gather(silent_tasks, dst);
     tf.wait_for_all();
     REQUIRE(tf.num_nodes() == 0);
@@ -150,7 +150,7 @@ TEST_CASE("Taskflow.Builder"){
     }
     tf.broadcast(src, silent_tasks);
     tf.linearize(silent_tasks);
-    auto dst = tf.silent_emplace([&counter]() { REQUIRE(counter == num_tasks);});
+    auto dst = tf.silent_emplace([&counter, num_tasks]() { REQUIRE(counter == num_tasks);});
     tf.gather(silent_tasks, dst);
     tf.wait_for_all();
     REQUIRE(tf.num_nodes() == 0);
