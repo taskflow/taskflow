@@ -240,10 +240,13 @@ The folder `example/` contains several examples and is a great place to learn to
 + Live chat and ask questions on [Gitter][Gitter].
 
 # Contributors
+I deeply appreciate the help of the following people:
+- [Chun-Xun Lin](https://github.com/clin99) implemented the core of Cpp-Taskflow, continuous integration, and unittest.
+- [Nan Xiao](https://github.com/NanXiao) fixed compilation error of unittest on the Arch platform.
 
-+ Tsung-Wei Huang
-+ Chun-Xun Lin
-+ You!
+
+See also the list of [contributors](./CONTRIBUTORS.txt) who participated in this project. 
+Please [let me know](mailto:twh760812@gmail.com) if I forgot someone!
 
 # License
 
