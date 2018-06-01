@@ -248,7 +248,7 @@ The folder `example/` contains several examples and is a great place to learn to
 # Contributors
 Cpp-Taskflow is being actively developed and contributed by the following people:
 - [Tsung-Wei Huang][Tsung-Wei Huang] created the Cpp-Taskflow project and implemented the core routines.
-- [Chun-Xun Lin][Chun-Xun Lin] implemented the core of Cpp-Taskflow, continuous integration, and unittest.
+- [Chun-Xun Lin][Chun-Xun Lin] co-created the Cpp-Taskflow project and implemented the core routines.
 - [Nan Xiao](https://github.com/NanXiao) fixed compilation error of unittest on the Arch platform.
 
 
