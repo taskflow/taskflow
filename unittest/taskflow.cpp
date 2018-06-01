@@ -198,6 +198,40 @@ TEST_CASE("Taskflow.Dispatch") {
   }
 }
 
+// --------------------------------------------------------
+// Testcase: Taskflow.ParallelFor
+// --------------------------------------------------------
+TEST_CASE("Taskflow.ParallelFor") {
+    
+  using namespace std::chrono_literals;
+
+  std::vector<int> vec(1024, 0);
+
+  tf::Taskflow tf;
+
+  // map
+  SUBCASE("Map") {
+    tf.parallel_for(vec.begin(), vec.end(), [] (int& v) { v = 64; });
+    for(const auto v : vec) {
+      REQUIRE(v == 0);
+    }
+    tf.wait_for_all();
+    for(const auto v : vec) {
+      REQUIRE(v == 64);
+    }
+  }
+
+  // reduce
+  SUBCASE("Reduce") {
+    std::atomic<int> sum(0);
+    tf.parallel_for(vec.begin(), vec.end(), [&](auto) { ++sum; });
+    REQUIRE(sum == 0);
+    tf.wait_for_all();
+    REQUIRE(sum == vec.size());
+  }
+}
+  
+
 
 
 

@@ -79,7 +79,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/unittest)
 add_executable(taskflow unittest/taskflow.cpp)
 target_link_libraries(taskflow Threads::Threads)
 
-add_test(unittest ${PROJECT_SOURCE_DIR}/unittest/taskflow)
+add_test(builder ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Builder)
+add_test(dispatch ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Dispatch)
+add_test(parallel_for ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ParallelFor)
 
 
 
