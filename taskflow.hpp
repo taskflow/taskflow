@@ -833,6 +833,7 @@ void BasicTaskflow<F>::_schedule(Node& task) {
     if(task._work) {
       task._work();
     }
+    // At this point, the task/node storage might be destructed.
     for(size_t i=0; i<num_successors; ++i) {
       if(--(task._successors[i]->_dependents) == 0) {
         _schedule(*(task._successors[i]));

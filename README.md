@@ -184,14 +184,14 @@ Each `tf::Taskflow::Task` object is a light-weight handle for you to create depe
 The table below summarizes its methods.
 
 | Method         | Argument    | Return | Description |
-| -------------- | ----------- | ------- | ----------- |
-| name           | string    | self    | assign a human-readable name to the task |
-| work           | callable  | self    | assign a work of a callable object to the task |
-| precede        | task      | self    | enable this task to run *before* the given task |
-| broadcast      | task list | self    | enable this task to run *before* the given tasks |
-| gather         | task list | self    | enable this task to run *after* the given tasks |
-| num_dependents | none        | size | return the number of dependents (inputs) of this task |
-| num_successors | none        | size | return the number of successors (outputs) of this task |
+| -------------- | ----------- | ------ | ----------- |
+| name           | string      | self   | assign a human-readable name to the task |
+| work           | callable    | self   | assign a work of a callable object to the task |
+| precede        | task        | self   | enable this task to run *before* the given task |
+| broadcast      | task list   | self   | enable this task to run *before* the given tasks |
+| gather         | task list   | self   | enable this task to run *after* the given tasks |
+| num_dependents | none        | size   | return the number of dependents (inputs) of this task |
+| num_successors | none        | size   | return the number of successors (outputs) of this task |
 
 # Caveats
 While Cpp-Taskflow enables the expression of very complex task dependency graph that might contain 
@@ -202,7 +202,7 @@ thousands of task nodes and links, there are a few amateur pitfalls and mistakes
 + Touching a taskflow from multiple threads are not safe.
 
 Cpp-Taskflow is known to work on most Linux distributions and OSX.
-Please [let me know](mailto:twh760812@gmail.com) if you found any issues in a particular platform.
+Please [let me know][email me] if you found any issues in a particular platform.
 
 # System Requirements
 To use Cpp-Taskflow, you only need a C++17 compiler:
@@ -234,10 +234,10 @@ Alternatively, you can use CMake's testing framework to run the unittest.
 ## Examples
 The folder `example/` contains several examples and is a great place to learn to use Cpp-Taskflow.
 
-| Example |  What you will learn |
-| ------- |  ----------- |
-| [simple.cpp](./example/simple.cpp) | create a trivial taskflow graph |
-| [matrix.cpp](./example/matrix.cpp) | create two set of matrices and multiply each in parallel |
+| Example |  Description |
+| ------- |  ----------- | 
+| [simple.cpp](./example/simple.cpp) | use basic task building blocks to create a trivial taskflow  graph |
+| [matrix.cpp](./example/matrix.cpp) | create two set of matrices and multiply each individually in parallel |
 | [parallel_for.cpp](./example/parallel_for.cpp)| parallelize a for loop with unbalanced workload |
 
 # Get Involved
@@ -253,7 +253,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 
 
 See also the list of [contributors](./CONTRIBUTORS.txt) who participated in this project. 
-Please [let me know](mailto:twh760812@gmail.com) if I forgot someone!
+Please [let me know][email me] if I forgot someone!
 
 # Who is Using Cpp-Taskflow?
 
