@@ -215,6 +215,7 @@ We recommend using out-of-source build.
 ```bash
 ~$ cmake --version  # must be at least 3.9 or higher
 ~$ mkdir build
+~$ cd build
 ~$ cmake ../
 ~$ make 
 ```
