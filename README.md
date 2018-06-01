@@ -258,7 +258,7 @@ Please [let me know](mailto:twh760812@gmail.com) if I forgot someone!
 # Who is Using Cpp-Taskflow?
 
 Cpp-Taskflow is being used in both industry and academic projects to scale up existing workloads that incorporate complex task dependencies. 
-A proprietary research case has shown over 10x improvements by switching to Cpp-Taskflow.
+A proprietary research case has shown over 10x improvement by switching to Cpp-Taskflow.
 
 - [OpenTimer][OpenTimer]: A High-performance Timing Analysis Tool for VLSI Systems.
 - [DtCraft][DtCraft]: A General-purpose Distributed Programming Systems.
