@@ -89,7 +89,7 @@ TEST_CASE("Taskflow.Builder"){
 
   SUBCASE("LinearCounter"){
     for(size_t i=0;i<num_tasks;i++){
-      tasks.emplace_back( std::move(tf.emplace([&counter, i]() { REQUIRE(counter == i); counter += 1;})) );
+      tasks.emplace_back( tf.emplace([&counter, i]() { REQUIRE(counter == i); counter += 1;}) );
       if(i>0){
         tf.precede(std::get<0>(tasks[i-1]), std::get<0>(tasks[i]));
       }
