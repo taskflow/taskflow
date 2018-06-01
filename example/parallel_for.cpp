@@ -29,10 +29,11 @@ void taskflow(int N) {
   for(int n=0; n<N; ++n) {
     range[n] = n;
   }
-  tf.parallel_for(range.begin(), range.end(), [&range] (int& i) { 
+  tf.parallel_for(range.begin(), range.end(), [&] (int& i) { 
     printf("fib[%d]=%d\n", i, fib(i));
   });
   tf.wait_for_all();
+
   auto tend = std::chrono::steady_clock::now();
   std::cout << "taskflow version takes " 
             << std::chrono::duration_cast<std::chrono::milliseconds>(tend-tbeg).count() 

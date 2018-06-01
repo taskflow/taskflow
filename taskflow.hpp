@@ -488,6 +488,7 @@ template <typename F>
 BasicTaskflow<F>::Task::Task(const Task& rhs) : _node {rhs._node} {
 }
 
+// Function: precede
 template <typename F>
 typename BasicTaskflow<F>::Task& BasicTaskflow<F>::Task::precede(Task tgt) {
   _node->precede(*(tgt._node));
