@@ -40,15 +40,18 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
 
 set(EXAMPLE_EXE_LINKER_FLAGS Threads::Threads)
 
-if (OpenMP_FOUND)
+if(OpenMP_CXX_FOUND)
   set(EXAMPLE_CXX_FLAGS ${OpenMP_CXX_FLAGS})
   set(EXAMPLE_EXE_LINKER_FLAGS ${OpenMP_CXX_FLAGS} ${OpenMP_EXE_LINKER_FLAGS})
-else(OpenMP_FOUND)
-  message(WARNING "compile example without the OpenMP library")
-endif(OpenMP_FOUND)
+  message(STATUS "OpenMP_CXX_FLAGS: " ${OpenMP_CXX_FLAGS})
+  message(STATUS "OpenMP_EXE_LINKER_FLAGS: " ${OpenMP_EXE_LINKER_FLAGS})
+else(OpenMP_CXX_FOUND)
+  message(WARNING "OpenMP not found for")
+endif(OpenMP_CXX_FOUND)
 
 message(STATUS "EXAMPLE_CXX_FLAGS: " ${EXAMPLE_CXX_FLAGS})
 message(STATUS "EXAMPLE_EXE_LINKER_FLAGS: " ${EXAMPLE_EXE_LINKER_FLAGS})
+message(STATUS "EXAMPLE_EXE_LINKER_FLAGS: " OpenMP::OpenMP_CXX)
 
 add_executable(simple example/simple.cpp)
 target_link_libraries(simple ${EXAMPLE_EXE_LINKER_FLAGS})
