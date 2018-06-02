@@ -32,21 +32,24 @@ find_package(Threads REQUIRED)
 # Find OpenMP package
 include(FindOpenMP)
 
+if(OpenMP_CXX_FOUND)
+  message(STATUS "OpenMP_CXX_SPEC_DATE: ${OpenMP_CXX_SPEC_DATE}")
+  message(STATUS "OpenMP_CXX_VERSION: ${OpenMP_CXX_VERSION}")
+else(OpenMP_CXX_FOUND)
+  message(WARNING "OpenMP CXX not found")
+endif(OpenMP_CXX_FOUND)
+
 # -----------------------------------------------------------------------------
 # Example program 
 # -----------------------------------------------------------------------------
 message(STATUS "Building examples ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
 
+set(EXAMPLE_CXX_FLAGS ${OpenMP_CXX_FLAGS})
+
 list(APPEND EXAMPLE_EXE_LINKER_FLAGS "")
 list(APPEND EXAMPLE_EXE_LINKER_FLAGS Threads::Threads)
-
-if(OpenMP_CXX_FOUND)
-  set(EXAMPLE_CXX_FLAGS ${OpenMP_CXX_FLAGS})
-  list(APPEND EXAMPLE_EXE_LINKER_FLAGS OpenMP::OpenMP_CXX)
-else(OpenMP_CXX_FOUND)
-  message(WARNING "OpenMP CXX not found")
-endif(OpenMP_CXX_FOUND)
+list(APPEND EXAMPLE_EXE_LINKER_FLAGS OpenMP::OpenMP_CXX)
 
 message(STATUS "EXAMPLE_CXX_FLAGS: " ${EXAMPLE_CXX_FLAGS})
 message(STATUS "EXAMPLE_EXE_LINKER_FLAGS: " ${EXAMPLE_EXE_LINKER_FLAGS})
