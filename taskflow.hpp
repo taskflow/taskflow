@@ -398,8 +398,12 @@ class BasicTaskflow {
     auto silent_dispatch();
     auto wait_for_all();
 
+
     template<typename I, class C>
-    auto parallel_for(I, I, C&&);
+    auto parallel_for(I, I, C&&, size_t = 1);
+
+    template<typename I, class C>
+    auto parallel_range(const I, const I, C&&, size_t = 1);
 
     size_t num_nodes() const;
     size_t num_workers() const;
@@ -807,22 +811,66 @@ auto BasicTaskflow<F>::emplace(C&&... cs) {
   return std::make_tuple(emplace(std::forward<C>(cs))...);
 }
 
+
 // Function: parallel_for    
 template <typename F>
 template <typename I, class C>
-auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c) {
+auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, size_t chunk) {
+  
+  if(chunk == 0) {
+    chunk = 1;
+  }
 
   auto source = placeholder();
   auto target = placeholder();
+  auto len = std::distance(beg, end);
+ 
+  for(; beg != end;) {
+    auto e = beg;
+    std::advance(e, static_cast<ssize_t>(chunk) < len ? chunk : len);
+    len -= chunk;
 
-  for(; beg != end; ++beg) {
-    auto task = silent_emplace([c, itr=beg] (){ c(*itr); });
+    auto task = silent_emplace([c, itr=beg, e]() mutable { 
+      for(;itr!=e; itr++){
+        c(*itr); 
+      }
+    });
+    beg = e;
+
     source.precede(task);
     task.precede(target);
   }
 
   return std::make_pair(source, target); 
 }
+
+// Function: parallel_range    
+template <typename F>
+template <typename I, class C>
+auto BasicTaskflow<F>::parallel_range(const I beg, const I end, C&& c, size_t chunk) {
+
+  if(chunk == 0){
+    chunk = 1;
+  }
+
+  auto source = placeholder();
+  auto target = placeholder();
+
+  for(auto i=beg;i<end;i+=chunk){
+    auto b = i;
+    auto e = std::min(b+chunk, end);
+    auto task = silent_emplace([c, b, e] (){ 
+      for(auto j=b;j<e; j++){
+        c(j);
+      }
+    });
+    source.precede(task);
+    task.precede(target);
+  }
+
+  return std::make_pair(source, target); 
+}
+
 
 // Procedure: _schedule
 template <typename F>
