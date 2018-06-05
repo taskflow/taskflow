@@ -15,12 +15,9 @@ It is by far faster, more expressive, and easier for drop-in integration than ex
 
 # Get Started with Cpp-Taskflow
 
-The following example [simple.cpp](./example/simple.cpp) contains the basic syntax you need to use Cpp-Taskflow.
+The following example [simple.cpp](./example/simple.cpp) shows the basic API you need to use Cpp-Taskflow.
 
 ```cpp
-// TaskA---->TaskB---->TaskD
-// TaskA---->TaskC---->TaskD
-
 #include "taskflow.hpp"  // the only include you need
 
 int main(){
@@ -28,18 +25,18 @@ int main(){
   tf::Taskflow tf(std::thread::hardware_concurrency());
 
   auto [A, B, C, D] = tf.silent_emplace(
-    [] () { std::cout << "TaskA\n"; },
-    [] () { std::cout << "TaskB\n"; },
-    [] () { std::cout << "TaskC\n"; },
-    [] () { std::cout << "TaskD\n"; }
-  );  
-
-  A.precede(B);  // B runs after A
-  A.precede(C);  // C runs after A
-  B.precede(D);  // D runs after B
-  C.precede(D);  // C runs after D
-
-  tf.wait_for_all();  // block until all tasks finish
+    [] () { std::cout << "TaskA\n"; },               //  the taskflow graph
+    [] () { std::cout << "TaskB\n"; },               // 
+    [] () { std::cout << "TaskC\n"; },               //          +---+          
+    [] () { std::cout << "TaskD\n"; }                //    +---->| B |-----+   
+  );                                                 //    |     +---+     |
+                                                     //  +---+           +-v-+ 
+  A.precede(B);  // B runs after A                   //  | A |           | D | 
+  A.precede(C);  // C runs after A                   //  +---+           +-^-+ 
+  B.precede(D);  // D runs after B                   //    |     +---+     |    
+  C.precede(D);  // C runs after D                   //    +---->| C |-----+    
+                                                     //          +---+          
+  tf.wait_for_all();  // block until finished
 
   return 0;
 }
