@@ -9,7 +9,7 @@ A fast C++ header-only library to help you easily develop parallel programs with
 # Why Cpp-Taskflow?
 
 Cpp-Taskflow helps you quickly build efficient computational graphs using modern C++17.
-It is by far faster and more expressive than existing libraries such as [OpenMP Tasking][OpenMP Tasking] and 
+It is by far faster and neater than existing libraries such as [OpenMP Tasking][OpenMP Tasking] and 
 [TBB FlowGraph][TBB FlowGraph].
 
 
