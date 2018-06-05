@@ -169,7 +169,8 @@ The table below summarizes its commonly used methods.
 | silent_emplace  | callables | tasks         | insert nodes to execute the given callables |
 | placeholder     | none        | task         | insert a node without any work; work can be assigned later |
 | linearize       | task list   | none         | create a linear dependency in the given task list |
-| parallel_for    | range, callable, group | task pair | apply the callable in parallel and group-by-group to the result of dereferencing every iterator in the range | 
+| parallel_for    | beg, end, callable, group | task pair | apply the callable in parallel and group-by-group to the result of dereferencing every iterator in the range | 
+| parallel_for    | container, callable, group | task pair | apply the callable in parallel and group-by-group to each element in the container | 
 | dispatch        | none        | future | dispatch the current graph and return a shared future to block on completeness |
 | silent_dispatch | none        | none | dispatch the current graph | 
 | wait_for_all    | none        | none | dispatch the current graph and block until all graphs including previously dispatched ones finish |
