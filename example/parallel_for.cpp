@@ -1,5 +1,6 @@
 #include "taskflow.hpp"
 #include <cassert>
+#include <numeric>
 
 // Function: fib
 int fib(int n) {
@@ -23,13 +24,13 @@ void sequential(int N) {
 
 // Procedure: taskflow
 void taskflow(int N) {
+
+  std::vector<int> range(N);
+  std::iota(range.begin(), range.end(), 0);
+
   auto tbeg = std::chrono::steady_clock::now();
   tf::Taskflow tf;
-  std::vector<int> range(N);
-  for(int n=0; n<N; ++n) {
-    range[n] = n;
-  }
-  tf.parallel_for(range.begin(), range.end(), [&] (int& i) { 
+  tf.parallel_for(range, [&] (const int i) { 
     printf("fib[%d]=%d\n", i, fib(i));
   });
   tf.wait_for_all();
@@ -42,10 +43,14 @@ void taskflow(int N) {
 
 // Procedure: openmp
 void openmp(int N) {
+  
+  std::vector<int> range(N);
+  std::iota(range.begin(), range.end(), 0);
+
   auto tbeg = std::chrono::steady_clock::now();
   #pragma omp parallel for
-  for(int i=0; i<N; ++i) {
-    printf("fib[%d]=%d\n", i, fib(i));
+  for(size_t i=0; i<N; ++i) {
+    printf("fib[%d]=%d\n", range[i], fib(range[i]));
   }
   auto tend = std::chrono::steady_clock::now();
   std::cout << "openmp version takes " 

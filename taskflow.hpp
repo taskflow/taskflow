@@ -438,10 +438,10 @@ class BasicTaskflow {
     auto wait_for_all();
 
     template <typename I, typename C>
-    auto parallel_for(I, I, C&&, ssize_t = 1);
+    auto parallel_for(I, I, C&&, size_t = 1);
 
     template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>* = nullptr>
-    auto parallel_for(T&, C&&, ssize_t = 1);
+    auto parallel_for(T&, C&&, size_t = 1);
 
     //template<typename I, class C>
     //auto parallel_range(const I, const I, C&&, ssize_t = 1);
@@ -847,7 +847,7 @@ auto BasicTaskflow<F>::emplace(C&&... cs) {
 // Function: parallel_for    
 template <typename F>
 template <typename I, class C>
-auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, ssize_t group) {
+auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, size_t group) {
 
   if(group <= 0) {
     group = 1;
@@ -855,20 +855,17 @@ auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, ssize_t group) {
 
   auto source = placeholder();
   auto target = placeholder();
-  auto len = std::distance(beg, end);
 
-  for(; beg != end;) {
+  for(; beg != end; ) {
     auto e = beg;
-    std::advance(e, group < len ? group : len);
-    len -= group;
-
-    auto task = silent_emplace([c, itr=beg, e]() mutable { 
-      for(;itr!=e; itr++){
-        c(*itr); 
+    for(size_t i=0; i<group && e != end; ++e, ++i);
+    auto task = silent_emplace([c, beg, e] () mutable {
+      for(auto itr = beg; itr != e; ++itr) {
+        c(*itr);
       }
     });
     beg = e;
-
+    
     source.precede(task);
     task.precede(target);
   }
@@ -879,7 +876,7 @@ auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, ssize_t group) {
 // Function: parallel_for
 template <typename F>
 template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>*>
-auto BasicTaskflow<F>::parallel_for(T& t, C&& c, ssize_t group) {
+auto BasicTaskflow<F>::parallel_for(T& t, C&& c, size_t group) {
   return parallel_for(t.begin(), t.end(), std::forward<C>(c), group);
 }
 
