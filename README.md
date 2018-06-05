@@ -164,9 +164,11 @@ to visualize your Taskflow graph.
 The class `tf::Taskflow` is the main place to create taskflow graphs and carry out task dependencies.
 The table below summarizes its commonly used methods.
 
-| Method          | Argument    | Return                           | Description |
-| --------------- | ----------- | ------------ | ----------- |
-| emplace         | callables | tasks, futures | insert nodes to execute the given callables; results can be retrieved from the returned futures |
+| Method   | Argument  | Return  | Description |
+| -------- | --------- | ------- | ----------- |
+| Taskflow | none      | none    | construct a taskflow with the worker count equal to max hardware concurrency |
+| Taskflow | size      | none    | construct a taskflow with a given number of workers |
+| emplace  | callables | tasks, futures | insert nodes to execute the given callables; results can be retrieved from the returned futures |
 | silent_emplace  | callables | tasks         | insert nodes to execute the given callables |
 | placeholder     | none        | task         | insert a node without any work; work can be assigned later |
 | linearize       | task list   | none         | create a linear dependency in the given task list |
