@@ -206,7 +206,7 @@ TEST_CASE("Taskflow.ParallelFor") {
     
   using namespace std::chrono_literals;
 
-  const auto map_lambda = [](size_t num_threads, size_t num_data){
+  const auto mapper = [](size_t num_threads, size_t num_data){
     tf::Taskflow tf(num_threads);
     std::vector<int> vec(num_data, 0);
     tf.parallel_for(vec.begin(), vec.end(), [] (int& v) { v = 64; });
@@ -219,13 +219,11 @@ TEST_CASE("Taskflow.ParallelFor") {
     }
   };
 
-  const auto reduce_lambda = [](size_t num_threads, size_t num_data){
+  const auto reducer = [](size_t num_threads, size_t num_data){
     tf::Taskflow tf(num_threads);
     std::vector<int> vec(num_data, 0);
-
     std::atomic<int> sum(0);
     tf.parallel_for(vec.begin(), vec.end(), [&](auto) { ++sum; });
-
     REQUIRE(sum == 0);
     tf.wait_for_all();
     REQUIRE(sum == vec.size());
@@ -235,7 +233,7 @@ TEST_CASE("Taskflow.ParallelFor") {
   SUBCASE("Map") {
     for(size_t i=0;i<std::thread::hardware_concurrency(); ++i){
       for(size_t j=1;j<1024; j++){
-        map_lambda(i, j);
+        mapper(i, j);
       }
     }
   }
@@ -244,7 +242,7 @@ TEST_CASE("Taskflow.ParallelFor") {
   SUBCASE("Reduce") {
     for(size_t i=0;i<std::thread::hardware_concurrency(); ++i){
       for(size_t j=1;j<1024; j++){
-        reduce_lambda(i, j);
+        reducer(i, j);
       }
     }
   }

@@ -398,12 +398,11 @@ class BasicTaskflow {
     auto silent_dispatch();
     auto wait_for_all();
 
+    template<typename I, class C>
+    auto parallel_for(I, I, C&&, ssize_t = 1);
 
     template<typename I, class C>
-    auto parallel_for(I, I, C&&, size_t = 1);
-
-    template<typename I, class C>
-    auto parallel_range(const I, const I, C&&, size_t = 1);
+    auto parallel_range(const I, const I, C&&, ssize_t = 1);
 
     size_t num_nodes() const;
     size_t num_workers() const;
@@ -811,13 +810,12 @@ auto BasicTaskflow<F>::emplace(C&&... cs) {
   return std::make_tuple(emplace(std::forward<C>(cs))...);
 }
 
-
 // Function: parallel_for    
 template <typename F>
 template <typename I, class C>
-auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, size_t chunk) {
+auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, ssize_t chunk) {
   
-  if(chunk == 0) {
+  if(chunk <= 0) {
     chunk = 1;
   }
 
@@ -827,7 +825,7 @@ auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, size_t chunk) {
  
   for(; beg != end;) {
     auto e = beg;
-    std::advance(e, static_cast<ssize_t>(chunk) < len ? chunk : len);
+    std::advance(e, chunk < len ? chunk : len);
     len -= chunk;
 
     auto task = silent_emplace([c, itr=beg, e]() mutable { 
@@ -847,9 +845,9 @@ auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, size_t chunk) {
 // Function: parallel_range    
 template <typename F>
 template <typename I, class C>
-auto BasicTaskflow<F>::parallel_range(const I beg, const I end, C&& c, size_t chunk) {
+auto BasicTaskflow<F>::parallel_range(const I beg, const I end, C&& c, ssize_t chunk) {
 
-  if(chunk == 0){
+  if(chunk <= 0){
     chunk = 1;
   }
 
