@@ -253,6 +253,7 @@ The folder `example/` contains several examples and is a great place to learn to
 Cpp-Taskflow is being actively developed and contributed by the following people:
 - [Tsung-Wei Huang][Tsung-Wei Huang] created the Cpp-Taskflow project and implemented the core routines.
 - [Chun-Xun Lin][Chun-Xun Lin] co-created the Cpp-Taskflow project and implemented the core routines.
+- [Martin Wong][Martin Wong] supported the Cpp-Taskflow project through NSF and DARPA funding.
 - [Nan Xiao](https://github.com/NanXiao) fixed compilation error of unittest on the Arch platform.
 
 
@@ -275,7 +276,7 @@ Please [let me know][email me] if I forgot your project!
 
 Cpp-Taskflow is licensed under the [MIT License](./LICENSE):
 
-Copyright &copy; 2018 [Tsung-Wei Huang][Tsung-Wei Huang], [Chun-Xun Lin](https://github.com/clin99), and Martin Wong.
+Copyright &copy; 2018 [Tsung-Wei Huang][Tsung-Wei Huang], [Chun-Xun Lin][Chun-Xun Lin], [Martin Wong][Martin Wong].
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -287,6 +288,7 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
 [Tsung-Wei Huang]:       http://web.engr.illinois.edu/~thuang19/
 [Chun-Xun Lin]:          https://github.com/clin99
+[Martin Wong]:           https://ece.illinois.edu/directory/profile/mdfwong
 [Gitter]:                https://gitter.im/cpp-taskflow/Lobby
 [Gitter badge]:          ./image/gitter_badge.svg
 [Github releases]:       https://github.com/twhuang-uiuc/cpp-taskflow/releases
