@@ -206,10 +206,10 @@ TEST_CASE("Taskflow.ParallelFor") {
     
   using namespace std::chrono_literals;
 
-  const auto mapper = [](size_t num_threads, size_t num_data){
-    tf::Taskflow tf(num_threads);
+  const auto mapper = [](size_t num_workers, size_t num_data, bool group){
+    tf::Taskflow tf(num_workers);
     std::vector<int> vec(num_data, 0);
-    tf.parallel_for(vec.begin(), vec.end(), [] (int& v) { v = 64; });
+    tf.parallel_for(vec, [] (int& v) { v = 64; }, group ? ::rand() : 0);
     for(const auto v : vec) {
       REQUIRE(v == 0);
     }
@@ -219,11 +219,11 @@ TEST_CASE("Taskflow.ParallelFor") {
     }
   };
 
-  const auto reducer = [](size_t num_threads, size_t num_data){
-    tf::Taskflow tf(num_threads);
+  const auto reducer = [](size_t num_workers, size_t num_data, bool group){
+    tf::Taskflow tf(num_workers);
     std::vector<int> vec(num_data, 0);
     std::atomic<int> sum(0);
-    tf.parallel_for(vec.begin(), vec.end(), [&](auto) { ++sum; });
+    tf.parallel_for(vec, [&](auto) { ++sum; }, group ? ::rand() : 0);
     REQUIRE(sum == 0);
     tf.wait_for_all();
     REQUIRE(sum == vec.size());
@@ -231,20 +231,71 @@ TEST_CASE("Taskflow.ParallelFor") {
 
   // map
   SUBCASE("Map") {
-    for(size_t i=0;i<std::thread::hardware_concurrency(); ++i){
-      for(size_t j=1;j<1024; j++){
-        mapper(i, j);
+    for(size_t num_workers=0; num_workers<=4; ++num_workers){
+      for(size_t num_data=1; num_data<=59049; num_data *= 3){
+        mapper(num_workers, num_data, true);
+        mapper(num_workers, num_data, false);
       }
     }
   }
 
   // reduce
   SUBCASE("Reduce") {
-    for(size_t i=0;i<std::thread::hardware_concurrency(); ++i){
-      for(size_t j=1;j<1024; j++){
-        reducer(i, j);
+    for(size_t num_workers=0; num_workers<=4; ++num_workers){
+      for(size_t num_data=1; num_data<=59049; num_data *= 3){
+        reducer(num_workers, num_data, true);
+        reducer(num_workers, num_data, false);
       }
     }
   }
 }
 
+/*// --------------------------------------------------------
+// Testcase: Taskflow.ParallelRange
+// --------------------------------------------------------
+TEST_CASE("Taskflow.ParallelRange") {
+    
+  using namespace std::chrono_literals;
+
+  const auto mapper = [](size_t num_workers, size_t num_data, bool group){
+    tf::Taskflow tf(num_workers);
+    std::vector<int> vec(num_data, 0);
+    tf.parallel_range(0ul, num_data, [&] (size_t i) { vec[i] = 64; }, group ? ::rand() : 0);
+    for(const auto v : vec) {
+      REQUIRE(v == 0);
+    }
+    tf.wait_for_all();
+    for(const auto v : vec) {
+      REQUIRE(v == 64);
+    }
+  };
+
+  const auto reducer = [](size_t num_workers, size_t num_data, bool group){
+    tf::Taskflow tf(num_workers);
+    std::atomic<int> sum(0);
+    tf.parallel_range(0ul, num_data, [&](size_t i) { sum += i; }, group ? ::rand() : 0);
+    REQUIRE(sum == 0);
+    tf.wait_for_all();
+    REQUIRE(sum == (num_data-1)*num_data/2);
+  };
+
+  // map
+  SUBCASE("Map") {
+    for(size_t num_workers=0; num_workers<=4; ++num_workers){
+      for(size_t num_data=1; num_data<=59049; num_data *= 3){
+        mapper(num_workers, num_data, true);
+        mapper(num_workers, num_data, false);
+      }
+    }
+  }
+
+  // reduce
+  SUBCASE("Reduce") {
+    for(size_t num_workers=0; num_workers<=4; ++num_workers){
+      for(size_t num_data=1; num_data<=59049; num_data *= 3){
+        reducer(num_workers, num_data, true);
+        reducer(num_workers, num_data, false);
+      }
+    }
+  }
+}*/

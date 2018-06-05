@@ -51,6 +51,45 @@ inline void __throw__(const char* fname, const size_t line, ArgsT&&... args) {
 #define TF_THROW(...) __throw__(__FILE__, __LINE__, __VA_ARGS__);
 
 //-------------------------------------------------------------------------------------------------
+// Traits
+//-------------------------------------------------------------------------------------------------
+
+// Struct: dependent_false
+template <typename... T>
+struct dependent_false { 
+  static constexpr bool value = false; 
+};
+
+// Struct: is_iterator
+template <typename T, typename = void>
+struct is_iterator {
+  static constexpr bool value = false;
+};
+
+template <typename T>
+struct is_iterator<T, std::enable_if_t<!std::is_same_v<typename std::iterator_traits<T>::value_type, void>>> {
+  static constexpr bool value = true;
+};
+
+template <typename T>
+inline constexpr bool is_iterator_v = is_iterator<T>::value;
+
+// Struct: is_iterable
+template <typename T, typename = void>
+struct is_iterable : std::false_type {
+};
+
+template <typename T>
+struct is_iterable<T, std::void_t<decltype(std::declval<T>().begin()),
+                                  decltype(std::declval<T>().end())>>
+  : std::true_type {
+};
+
+template <typename T>
+inline constexpr bool is_iterable_v = is_iterable<T>::value;
+
+
+//-------------------------------------------------------------------------------------------------
 // Threadpool definition
 //-------------------------------------------------------------------------------------------------
 
@@ -398,11 +437,14 @@ class BasicTaskflow {
     auto silent_dispatch();
     auto wait_for_all();
 
-    template<typename I, class C>
+    template <typename I, typename C>
     auto parallel_for(I, I, C&&, ssize_t = 1);
 
-    template<typename I, class C>
-    auto parallel_range(const I, const I, C&&, ssize_t = 1);
+    template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>* = nullptr>
+    auto parallel_for(T&, C&&, ssize_t = 1);
+
+    //template<typename I, class C>
+    //auto parallel_range(const I, const I, C&&, ssize_t = 1);
 
     size_t num_nodes() const;
     size_t num_workers() const;
@@ -724,14 +766,6 @@ auto BasicTaskflow<F>::dispatch() {
     return std::async(std::launch::deferred, [](){}).share();
   }
 
-  //_topologies.remove_if([](auto &t){ 
-  //   auto status = t.future.wait_for(std::chrono::seconds(0));
-  //   if(status == std::future_status::ready){
-  //     return true;
-  //   }
-  //  return false; 
-  //});
-
   auto& topology = _topologies.emplace_back(std::move(_nodes));
 
   // Start the taskflow
@@ -813,20 +847,20 @@ auto BasicTaskflow<F>::emplace(C&&... cs) {
 // Function: parallel_for    
 template <typename F>
 template <typename I, class C>
-auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, ssize_t chunk) {
-  
-  if(chunk <= 0) {
-    chunk = 1;
+auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, ssize_t group) {
+
+  if(group <= 0) {
+    group = 1;
   }
 
   auto source = placeholder();
   auto target = placeholder();
   auto len = std::distance(beg, end);
- 
+
   for(; beg != end;) {
     auto e = beg;
-    std::advance(e, chunk < len ? chunk : len);
-    len -= chunk;
+    std::advance(e, group < len ? group : len);
+    len -= group;
 
     auto task = silent_emplace([c, itr=beg, e]() mutable { 
       for(;itr!=e; itr++){
@@ -842,21 +876,28 @@ auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, ssize_t chunk) {
   return std::make_pair(source, target); 
 }
 
-// Function: parallel_range    
+// Function: parallel_for
+template <typename F>
+template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>*>
+auto BasicTaskflow<F>::parallel_for(T& t, C&& c, ssize_t group) {
+  return parallel_for(t.begin(), t.end(), std::forward<C>(c), group);
+}
+
+/*// Function: parallel_range    
 template <typename F>
 template <typename I, class C>
-auto BasicTaskflow<F>::parallel_range(const I beg, const I end, C&& c, ssize_t chunk) {
+auto BasicTaskflow<F>::parallel_range(const I beg, const I end, C&& c, ssize_t group) {
 
-  if(chunk <= 0){
-    chunk = 1;
+  if(group <= 0){
+    group = 1;
   }
 
   auto source = placeholder();
   auto target = placeholder();
-
-  for(auto i=beg;i<end;i+=chunk){
+  
+  for(auto i=beg; i<end; i+=group){
     auto b = i;
-    auto e = std::min(b+chunk, end);
+    auto e = std::min(b+group, end);
     auto task = silent_emplace([c, b, e] (){ 
       for(auto j=b;j<e; j++){
         c(j);
@@ -867,7 +908,7 @@ auto BasicTaskflow<F>::parallel_range(const I beg, const I end, C&& c, ssize_t c
   }
 
   return std::make_pair(source, target); 
-}
+}*/
 
 
 // Procedure: _schedule
