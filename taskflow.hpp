@@ -37,6 +37,7 @@
 #include <unordered_set>
 #include <sstream>
 #include <list>
+#include <forward_list>
 
 namespace tf {
 
@@ -180,7 +181,7 @@ inline bool Threadpool::is_worker() const {
 inline void Threadpool::spawn(unsigned N) {
 
   if(is_worker()) {
-    throw std::runtime_error("Worker cannot spawn threads");
+    throw std::runtime_error("Worker thread cannot spawn threads");
   }
   
   for(size_t i=0; i<N; ++i) {
@@ -296,7 +297,7 @@ auto Threadpool::async(C&& c, Signal sig) {
 inline void Threadpool::shutdown() {
   
   if(is_worker()) {
-    throw std::runtime_error("Worker cannot shut down thread pool");
+    throw std::runtime_error("Worker thread cannot shut down the thread pool");
   }
 
   for(size_t i=0; i<_threads.size(); ++i) {
@@ -351,9 +352,9 @@ class BasicTaskflow {
   // Struct: Topology
   struct Topology{
 
-    Topology(std::list<Node>&&);
+    Topology(std::forward_list<Node>&&);
 
-    std::list<Node> nodes;
+    std::forward_list<Node> nodes;
     std::shared_future<void> future;
 
     Node source;
@@ -407,7 +408,6 @@ class BasicTaskflow {
       template<typename S>
       void _gather(S&);
   };
-
     
     BasicTaskflow();
     BasicTaskflow(unsigned);
@@ -425,6 +425,12 @@ class BasicTaskflow {
     template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
     auto silent_emplace(C&&...);
 
+    template <typename I, typename C>
+    auto parallel_for(I, I, C&&, size_t = 1);
+
+    template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>* = nullptr>
+    auto parallel_for(T&, C&&, size_t = 1);
+
     auto placeholder();
     auto precede(Task, Task);
     auto linearize(std::vector<Task>&);
@@ -437,14 +443,10 @@ class BasicTaskflow {
     auto silent_dispatch();
     auto wait_for_all();
 
-    template <typename I, typename C>
-    auto parallel_for(I, I, C&&, size_t = 1);
-
-    template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>* = nullptr>
-    auto parallel_for(T&, C&&, size_t = 1);
-
     //template<typename I, class C>
     //auto parallel_range(const I, const I, C&&, ssize_t = 1);
+
+    void num_workers(size_t);
 
     size_t num_nodes() const;
     size_t num_workers() const;
@@ -456,8 +458,8 @@ class BasicTaskflow {
 
     Threadpool _threadpool;
 
-    std::list<Node> _nodes;
-    std::list<Topology> _topologies;
+    std::forward_list<Node> _nodes;
+    std::forward_list<Topology> _topologies;
 
     void _schedule(Node&);
     void _wait_for_topologies();
@@ -503,7 +505,7 @@ const std::string& BasicTaskflow<F>::Node::name() const {
 
 // Constructor
 template <typename F>
-BasicTaskflow<F>::Topology::Topology(std::list<Node>&& t) : 
+BasicTaskflow<F>::Topology::Topology(std::forward_list<Node>&& t) : 
   nodes(std::move(t)) {
   
   std::promise<void> promise;
@@ -673,10 +675,18 @@ BasicTaskflow<F>::~BasicTaskflow() {
   _wait_for_topologies();
 }
 
+// Procedure: num_workers
+template <typename F>
+void BasicTaskflow<F>::num_workers(size_t W) {
+  _threadpool.shutdown();
+  _threadpool.spawn(W);
+}
+
 // Function: num_nodes
 template <typename F>
 size_t BasicTaskflow<F>::num_nodes() const {
-  return _nodes.size();
+  //return _nodes.size();
+  return std::distance(_nodes.begin(), _nodes.end());
 }
 
 // Function: num_workers
@@ -752,7 +762,7 @@ auto BasicTaskflow<F>::silent_dispatch() {
 
   if(_nodes.empty()) return;
 
-  auto& topology = _topologies.emplace_back(std::move(_nodes));
+  auto& topology = _topologies.emplace_front(std::move(_nodes));
 
   // Start the taskflow
   _schedule(topology.source);
@@ -766,7 +776,7 @@ auto BasicTaskflow<F>::dispatch() {
     return std::async(std::launch::deferred, [](){}).share();
   }
 
-  auto& topology = _topologies.emplace_back(std::move(_nodes));
+  auto& topology = _topologies.emplace_front(std::move(_nodes));
 
   // Start the taskflow
   _schedule(topology.source);
@@ -795,7 +805,7 @@ void BasicTaskflow<F>::_wait_for_topologies() {
 // Function: placeholder
 template <typename F>
 auto BasicTaskflow<F>::placeholder() {
-  auto& node = _nodes.emplace_back();
+  auto& node = _nodes.emplace_front();
   return Task(&node);
 }
 
@@ -803,7 +813,7 @@ auto BasicTaskflow<F>::placeholder() {
 template <typename F>
 template <typename C>
 auto BasicTaskflow<F>::silent_emplace(C&& c) {
-  auto& node = _nodes.emplace_back(std::forward<C>(c));
+  auto& node = _nodes.emplace_front(std::forward<C>(c));
   return Task(&node);
 }
 
@@ -824,7 +834,7 @@ auto BasicTaskflow<F>::emplace(C&& c) {
   std::promise<R> p;
   auto fu = p.get_future();
 
-  auto& node = _nodes.emplace_back([p=MoveOnCopy(std::move(p)), c=std::forward<C>(c)] () mutable { 
+  auto& node = _nodes.emplace_front([p=MoveOnCopy(std::move(p)), c=std::forward<C>(c)] () mutable { 
     if constexpr(std::is_same_v<void, R>) {
       c();
       p.get().set_value();
