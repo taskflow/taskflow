@@ -573,7 +573,7 @@ typename BasicTaskflow<F>::Task& BasicTaskflow<F>::Task::broadcast(std::initiali
   return *this;
 }
 
-// Function: broadcast
+// Function: gather
 template <typename F>
 template <typename... Bs>
 typename BasicTaskflow<F>::Task& BasicTaskflow<F>::Task::gather(Bs&&... tgts) {
