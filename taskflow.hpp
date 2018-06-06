@@ -89,7 +89,6 @@ struct is_iterable<T, std::void_t<decltype(std::declval<T>().begin()),
 template <typename T>
 inline constexpr bool is_iterable_v = is_iterable<T>::value;
 
-
 //-------------------------------------------------------------------------------------------------
 // Threadpool definition
 //-------------------------------------------------------------------------------------------------
