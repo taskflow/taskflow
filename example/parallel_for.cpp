@@ -49,7 +49,7 @@ void openmp(int N) {
 
   auto tbeg = std::chrono::steady_clock::now();
   #pragma omp parallel for
-  for(size_t i=0; i<N; ++i) {
+  for(int i=0; i<N; ++i) {
     printf("fib[%d]=%d\n", range[i], fib(range[i]));
   }
   auto tend = std::chrono::steady_clock::now();

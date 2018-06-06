@@ -300,7 +300,7 @@ inline void Threadpool::shutdown() {
   }
 
   for(size_t i=0; i<_threads.size(); ++i) {
-    async([](){}, Signal::SHUTDOWN);
+    silent_async([](){}, Signal::SHUTDOWN);
   }
   
   for(auto& t : _threads) {
