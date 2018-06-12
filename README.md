@@ -69,7 +69,7 @@ auto [A, F] = tf.emplace([](){ std::cout << "Task A\n"; return 1; });
 ```
 Or create a task via the method `silent_emplace`, if you don't need a `future` to retrieve the result.
 ```cpp
-auto [A] = tf.silent_emplace([](){ std::cout << "Task A\n"; });
+auto A = tf.silent_emplace([](){ std::cout << "Task A\n"; });
 ```
 Both methods implement variadic templates and can take arbitrary numbers of arguments to create multiple tasks at one time.
 ```cpp
