@@ -4,11 +4,11 @@
 [![Gitter chat][Gitter badge]][Gitter]
 [![License: MIT](./image/license_badge.svg)](./LICENSE)
 
-A fast C++ header-only library to help you easily develop parallel programs with complex task dependencies.
+A fast C++ header-only library to help you quickly build parallel programs with complex task dependencies.
 
 # Why Cpp-Taskflow?
 
-Cpp-Taskflow helps you quickly build parallel computation graphs using modern C++17.
+Cpp-Taskflow lets you quickly build parallel dependency graphs using modern C++17.
 It is by far faster, more expressive, and easier for drop-in integration than existing libraries such as [OpenMP Tasking][OpenMP Tasking] and 
 [TBB FlowGraph][TBB FlowGraph].
 
