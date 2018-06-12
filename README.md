@@ -53,7 +53,7 @@ TaskD
 ```
 
 # Create a Taskflow Graph
-Cpp-Taskflow has very expressive, neat, and clear methods to create complex dependency graphs.
+Cpp-Taskflow has very expressive and neat methods to create dependency graphs.
 Most applications are developed through the following three steps.
 
 ## Step 1: Create a Task
