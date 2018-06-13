@@ -269,7 +269,7 @@ future.get();
 std::cout << "all tasks complete" << '\n';
 ```
 
-If you need to block the control flow until all tasks finish, use `wait_for_all` instead.
+If you need to block your program flow until all tasks finish, use `wait_for_all` instead.
 ```cpp
 tf.wait_for_all();
 std::cout << "all tasks complete" << '\n';
