@@ -212,6 +212,7 @@ B.work([](){ /* do something */ });
 The method `linearize` lets you add a linear dependency between each adjacent pair of a task sequence.
 
 <img align="right" width="40%" src="image/linearize.png">
+
 ```cpp
 // linearize five tasks
 tf.linearize(A, B, C, D, E);
@@ -223,6 +224,7 @@ The method `parallel_for` creates a subgraph that applies the callable to each i
 a container.
 
 <img align="right" width="40%" src="image/parallel_for.png">
+
 ```cpp
 // apply callable to each container item in parallel
 auto v = {1, 2, 3, 4};
@@ -242,6 +244,7 @@ and inter-group tasks to run in parallel.
 Depending on applications, different group sizes can result in significant performance hit.
 
 <img align="right" height="40%" src="image/parallel_for_2.png">
+
 ```cpp
 // apply callable to two container items at a time in parallel
 auto v = {1, 2, 3, 4};
