@@ -243,7 +243,7 @@ By default, the group size is 1. Changing the group size can force intra-group t
 and inter-group tasks to run in parallel.
 Depending on applications, different group sizes can result in significant performance hit.
 
-<img align="right" height="40%" src="image/parallel_for_2.png">
+<img align="right" width="20%" src="image/parallel_for_2.png">
 
 ```cpp
 // apply callable to two container items at a time in parallel
