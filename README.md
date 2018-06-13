@@ -1,4 +1,4 @@
-# Cpp-Taskflow
+# Cpp-Taskflow <img align="right" width="10%" src="image/cpp-taskflow_logo.png">
 
 [![Build Status](https://travis-ci.org/twhuang-uiuc/cpp-taskflow.svg?branch=master)](https://travis-ci.org/twhuang-uiuc/cpp-taskflow)
 [![Gitter chat][Gitter badge]][Gitter]
