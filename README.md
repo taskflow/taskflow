@@ -308,10 +308,10 @@ A.precede(B);
 
 The method `broadcast` lets you precede a task to multiple tasks.
 
-<img align="right" height="20%" src="image/broadcast.png">
+<img align="right" width="30%" src="image/broadcast.png">
 
 ```cpp
-// make A runs before B, C, D, and E
+// make A run before B, C, D, and E
 // B, C, D, and E run in parallel
 A.broadcast(B, C, D, E);
 ```
@@ -320,7 +320,7 @@ A.broadcast(B, C, D, E);
 
 The method `gather` lets you add multiple precedences to a task.
 
-<img align="right" height="20%" src="image/gather.png">
+<img align="right" width="30%" src="image/gather.png">
 
 ```cpp
 // B, C, D, and E run in parallel
