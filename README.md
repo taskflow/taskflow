@@ -154,7 +154,7 @@ to visualize your Taskflow graph.
 
 # API Reference
 
-## Taskflow
+## Taskflow API
 
 The class `tf::Taskflow` is the main place to create taskflow graphs and carry out task dependencies.
 The table below summarizes its commonly used methods.
@@ -177,7 +177,105 @@ The table below summarizes its commonly used methods.
 | num_topologies  | none        | size | return the number of dispatched graphs |
 | dump            | none        | string | dump the current graph to a string of GraphViz format |
 
-## Task
+### *emplace/silent_emplace/placeholder*
+
+The main different between `emplace` and `silent_emplace` is the return value.
+The method `emplace` gives you a future object to retrieve the result of the callable 
+when the task completes.
+```cpp
+// create a task through emplace
+auto [task, future] = tf.emplace([](){ return 1; });
+tf.wait_for_all();
+assert(future.get() == 1);
+```
+
+If you don't care the return result, using `silent_emplace` to create a task can give you slightly better performance.
+```cpp
+// create a task through silent_emplace
+auto task = tf.emplace([](){ return; });
+tf.wait_for_all();
+```
+
+When task cannot be determined beforehand, you can create a placeholder and assign the calalble later.
+```cpp
+// create a placeholder and use it to build dependency
+auto A = tf.silent_emplace([](){});
+auto B = tf.placeholder();
+A.precede(B);
+
+// assign the callable later in the control flow
+B.work([](){ /* do something */ });
+```
+
+### *linearize*
+
+The method `linearize` lets you add a linear dependency between each adjacent pair of a task sequence.
+
+<img align="right" width="40%" src="image/linearize.png">
+```cpp
+// linearize five tasks
+tf.linearize(A, B, C, D, E);
+```
+
+### *parallel_for*
+
+The method `parallel_for` creates a subgraph that applies the callable to each item in the given range of
+a container.
+
+<img align="right" width="40%" src="image/parallel_for.png">
+```cpp
+// apply callable to each container item in parallel
+auto v = {1, 2, 3, 4};
+auto [S, T] = tf.parallel_for(
+  v.begin(),    // beg of range
+  v.end(),      // end of range
+  [] (int i) { 
+    std::cout << "parallel in " << i << '\n';
+  }
+);
+
+// add dependencies to this subgraph via S and T.
+```
+
+By default, the group size is 1. Changing the group size can force intra-group tasks to run sequentially
+and inter-group tasks to run in parallel.
+Depending on applications, different group sizes can result in significant performance hit.
+
+<img align="right" height="40%" src="image/parallel_for_2.png">
+```cpp
+// apply callable to two container items at a time in parallel
+auto v = {1, 2, 3, 4};
+auto [S, T] = tf.parallel_for(
+  v.begin(),    // beg of range
+  v.end(),      // end of range
+  [] (int i) { 
+    std::cout << "AB and CD run in parallel" << '\n';
+  },
+  2  // group to execute two tasks at a time
+);
+```
+
+### *dispatch/silent_dispatch/wait_for_all*
+Dispatching a taskflow graph will schedule threads to execute the current graph and return immediately.
+The method `dispatch` gives you a future object to probe the execution progress while
+`silent_dispatch` doesn't.
+
+```cpp
+auto future = tf.dispatch();
+// do something else to overlap with the execution 
+// ...
+std::cout << "now I need to block on completion" << '\n';
+future.get();
+std::cout << "all tasks complete" << '\n';
+```
+
+If you need to block the control flow until all tasks finish, use `wait_for_all` instead.
+```cpp
+tf.wait_for_all();
+std::cout << "all tasks complete" << '\n';
+```
+
+## Task API
 
 Each `tf::Taskflow::Task` object is a lightweight handle for you to create dependencies in its associated graph. 
 The table below summarizes its methods.
