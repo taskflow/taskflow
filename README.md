@@ -293,6 +293,22 @@ The table below summarizes its methods.
 | num_dependents | none        | size   | return the number of dependents (inputs) of this task |
 | num_successors | none        | size   | return the number of successors (outputs) of this task |
 
+### *name*
+
+The method `name` lets you assign a human-readable string to a task.
+
+```cpp
+A.name("my name is A");
+```
+
+### *work*
+
+The method `work` lets you assign a callable to a task.
+
+```cpp
+A.work([] () { std::cout << "hello world!"; });
+```
+
 ### *precede*
 
 The method `precede` is the basic building block to add a precedence between two tasks.
