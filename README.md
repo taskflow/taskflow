@@ -293,6 +293,35 @@ The table below summarizes its methods.
 | num_dependents | none        | size   | return the number of dependents (inputs) of this task |
 | num_successors | none        | size   | return the number of successors (outputs) of this task |
 
+### *precede*
+
+<img align="right" width="20%" src="image/precede.png">
+
+```cpp
+// make A runs before B
+A.precede(B);
+```
+
+### *broadcast*
+
+<img align="right" height="20%" src="image/broadcast.png">
+
+```cpp
+// make A runs before B, C, D, and E
+// B, C, D, and E run in parallel
+A.broadcast(B, C, D, E);
+```
+
+### *gather*
+
+<img align="right" height="20%" src="image/gather.png">
+
+```cpp
+// B, C, D, and E run in parallel
+// A runs after B, C, D, and E complete
+A.gather(B, C, D, E);
+```
+
 # Caveats
 While Cpp-Taskflow enables the expression of very complex task dependency graph that might contain 
 thousands of task nodes and links, there are a few amateur pitfalls and mistakes to be aware of.
