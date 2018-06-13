@@ -107,10 +107,9 @@ tf.linearize(A, B, C, D);  // A runs before A, B runs before C, and C runs befor
 
 ## Step 3: Execute the Tasks
 There are three methods to carry out a task dependency graph, `dispatch`, `silent_dispatch`, and `wait_for_all`.
-
 ```cpp
 auto future = tf.dispatch();  // non-blocking, returns with a future immediately.
-tf.silent_dispatch();                // non-blocking, no return
+tf.silent_dispatch();         // non-blocking, no return
 ```
 Calling `wait_for_all` will block until all tasks complete.
 ```cpp
