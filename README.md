@@ -295,6 +295,8 @@ The table below summarizes its methods.
 
 ### *precede*
 
+The method `precede` is the basic function to add a precedence between two tasks.
+
 <img align="right" width="20%" src="image/precede.png">
 
 ```cpp
@@ -303,6 +305,8 @@ A.precede(B);
 ```
 
 ### *broadcast*
+
+The method `broadcast` lets you precede a task to multiple tasks.
 
 <img align="right" height="20%" src="image/broadcast.png">
 
@@ -313,6 +317,8 @@ A.broadcast(B, C, D, E);
 ```
 
 ### *gather*
+
+The method `gather` lets you add multiple precedences to a task.
 
 <img align="right" height="20%" src="image/gather.png">
 
