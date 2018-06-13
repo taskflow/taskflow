@@ -58,8 +58,7 @@ Most applications are developed through the following three steps.
 
 ## Step 1: Create a Task
 To start a task dependency graph, 
-create a taskflow object and specify the number of working threads in a shared thread pool
-to carry out tasks.
+create a taskflow object and specify the number of working threads.
 ```cpp
 tf::Taskflow tf(std::max(1u, std::thread::hardware_concurrency()));
 ```
@@ -67,11 +66,11 @@ Create a task via the method `emplace` and get a pair of `Task` and `future`.
 ```cpp
 auto [A, F] = tf.emplace([](){ std::cout << "Task A\n"; return 1; });
 ```
-Or create a task via the method `silent_emplace`, if you don't need a `future` to retrieve the result.
+If you don't need a `future` to retrieve the result, use the method `silent_emplace` instead.
 ```cpp
 auto A = tf.silent_emplace([](){ std::cout << "Task A\n"; });
 ```
-Both methods implement variadic templates and can take arbitrary numbers of arguments to create multiple tasks at one time.
+Both methods implement variadic templates and can take arbitrary numbers of callables to create multiple tasks at one time.
 ```cpp
 auto [A, B, C, D] = tf.silent_emplace(
   [] () { std::cout << "Task A\n"; },
@@ -84,7 +83,7 @@ auto [A, B, C, D] = tf.silent_emplace(
 ## Step 2: Define Task Dependencies
 Once tasks are created in the pool, you need to specify task dependencies in a 
 [Directed Acyclic Graph (DAG)](https://en.wikipedia.org/wiki/Directed_acyclic_graph) fashion.
-The class `Task` supports different methods for you to describe task dependencies.
+The handle `Task` supports different methods for you to describe task dependencies.
 
 **Precede**: Adding a preceding link forces one task to run ahead of one another.
 ```cpp
