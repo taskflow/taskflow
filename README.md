@@ -295,7 +295,7 @@ The table below summarizes its methods.
 
 ### *precede*
 
-The method `precede` is the basic function to add a precedence between two tasks.
+The method `precede` is the basic building block to add a precedence between two tasks.
 
 <img align="right" width="20%" src="image/precede.png">
 
