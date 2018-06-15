@@ -254,7 +254,7 @@ The method `linearize` lets you add a linear dependency between each adjacent pa
 
 ```cpp
 // linearize five tasks
-tf.linearize(A, B, C, D, E);
+tf.linearize(A, B, C, D);
 ```
 
 ### *parallel_for*
