@@ -441,7 +441,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Chun-Xun Lin][Chun-Xun Lin] co-created the Cpp-Taskflow project and implemented the core routines.
 - [Martin Wong][Martin Wong] supported the Cpp-Taskflow project through NSF and DARPA funding.
 - [Nan Xiao](https://github.com/NanXiao) fixed compilation error of unittest on the Arch platform.
-
+- [Vladyslav](https://github.com/innermous) fixed comment errors in README.md and examples.
 
 See also the list of [contributors](./CONTRIBUTORS.txt) who participated in this project. 
 Please [let me know][email me] if I forgot someone!
