@@ -207,7 +207,7 @@ The table below summarizes its commonly used methods.
 | placeholder     | none        | task         | insert a node without any work; work can be assigned later |
 | linearize       | task list   | none         | create a linear dependency in the given task list |
 | parallel_for    | beg, end, callable, group | task pair | apply the callable in parallel and group-by-group to the result of dereferencing every iterator in the range | 
-| parallel_for    | container, callable, group | task pair | apply the callable in parallel and group-by-group to each element in the container | 
+| reduce | beg, end, res, op, group | task pair | apply a binary operator group-by-group to reduce a range of elements to a single result | 
 | dispatch        | none        | future | dispatch the current graph and return a shared future to block on completeness |
 | silent_dispatch | none        | none | dispatch the current graph | 
 | wait_for_all    | none        | none | dispatch the current graph and block until all graphs including previously dispatched ones finish |
@@ -266,7 +266,7 @@ a container.
 
 ```cpp
 // apply callable to each container item in parallel
-auto v = {1, 2, 3, 4};
+auto v = {'A', 'B', 'C', 'D'};
 auto [S, T] = tf.parallel_for(
   v.begin(),    // beg of range
   v.end(),      // end of range
@@ -275,7 +275,7 @@ auto [S, T] = tf.parallel_for(
   }
 );
 
-// add dependencies to this subgraph via S and T.
+// add dependencies via S and T.
 ```
 
 By default, the group size is 1. Changing the group size can force intra-group tasks to run sequentially
@@ -286,7 +286,7 @@ Depending on applications, different group sizes can result in significant perfo
 
 ```cpp
 // apply callable to two container items at a time in parallel
-auto v = {1, 2, 3, 4};
+auto v = {'A', 'B', 'C', 'D'};
 auto [S, T] = tf.parallel_for(
   v.begin(),    // beg of range
   v.end(),      // end of range
@@ -295,6 +295,41 @@ auto [S, T] = tf.parallel_for(
   },
   2  // group to execute two tasks at a time
 );
+```
+
+### *reduce*
+
+The method `reduce` creates a subgraph that applies a binary operator to a range of items in a container.
+The result will be stored in the referenced `res` object passed to the method. 
+It is your responsibility to assign it a correct initial value to reduce.
+
+<img align="right" width="50%" src="image/reduce.png">
+
+```cpp
+auto v = {1, 2, 3, 4};
+int sum {0};    // initial value
+auto [S, T] = tf.reduce(
+  v.begin(),    // beg of range
+  v.end(),      // end of range
+  sum,          // pass by reference
+  std::plus<int>()
+);
+
+// add dependencies via S and T.
+```
+
+By default, the group size is 1. Changing the group size can force intra-group tasks to run sequentially
+and inter-group tasks to run in parallel.
+Depending on applications, different group sizes can result in significant performance hit.
+
+<img align="right" width="45%" src="image/reduce_2.png">
+
+```cpp
+auto v = {1, 2, 3, 4}; 
+int sum {0};
+auto [S, T] = tf.reduce(
+  v.begin(), v.end(), sum, std::plus<int>(), 2
+);  
 ```
 
 ### *dispatch/silent_dispatch/wait_for_all*
