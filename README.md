@@ -12,6 +12,9 @@ Cpp-Taskflow lets you quickly build parallel dependency graphs using modern C++1
 It is by far faster, more expressive, and easier for drop-in integration than existing libraries such as [OpenMP Tasking][OpenMP Tasking] and 
 [TBB FlowGraph][TBB FlowGraph].
 
+*"Cpp-Taskflow is the cleanest Task API I've ever seen," Damien*
+
+*"Cpp-Taskflow allows us to explore more parallelism that wouldn't be possible without it," OpenTimer developers*
 
 # Get Started with Cpp-Taskflow
 
@@ -51,6 +54,38 @@ TaskC  <-- concurrent with TaskB
 TaskB  <-- concurrent with TaskC
 TaskD
 ```
+
+It is clear now Cpp-Taskflow is powerful in parallelizing tasks with complex dependencies.
+The following example demonstrates a concurrent execution of 10 tasks with 15 dependencies.
+With Cpp-Taskflow, you only need *15 lines of code*.
+
+<img align="right" src="image/complex.png" width="30%">
+
+```cpp
+// source dependencies
+S.precede(a0);    // S runs before a0
+S.precede(b0);    // S runs before b0
+S.precede(a1);    // S runs before a1
+
+// a_ -> others
+a0.precede(a1);   // a0 runs before a1
+a0.precede(b2);   // a0 runs before b2
+a1.precede(a2);   // a1 runs before a2
+a1.precede(b3);   // a1 runs before b3
+a2.precede(a3);   // a2 runs before a3
+
+// b_ -> others
+b0.precede(b1);   // b0 runs before b1
+b1.precede(b2);   // b1 runs before b2
+b2.precede(b3);   // b2 runs before b3
+b2.precede(a3);   // b2 runs before a3
+
+// target dependencies
+a3.precede(T);    // a3 runs before T
+b1.precede(T);    // b1 runs before T
+b3.precede(T);    // b3 runs before T
+```
+
 
 # Create a Taskflow Graph
 Cpp-Taskflow has very expressive and neat methods to create dependency graphs.
