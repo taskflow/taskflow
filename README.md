@@ -14,7 +14,7 @@ It is by far faster, more expressive, and easier for drop-in integration than ex
 
 *"Cpp-Taskflow is the cleanest Task API I've ever seen," Damien*
 
-*"Cpp-Taskflow allows us to explore more parallelism that wouldn't be possible without it," OpenTimer developers*
+*"Cpp-Taskflow allows us to explore more parallelism and go beyond the scale we had," OpenTimer developers*
 
 # Get Started with Cpp-Taskflow
 
