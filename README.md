@@ -57,7 +57,7 @@ TaskD
 
 It is clear now Cpp-Taskflow is powerful in parallelizing tasks with complex dependencies.
 The following example demonstrates a concurrent execution of 10 tasks with 15 dependencies.
-With Cpp-Taskflow, you only need *15 lines of code*.
+With Cpp-Taskflow, you only need ***15 lines of code***.
 
 <img align="right" src="image/complex.png" width="30%">
 
