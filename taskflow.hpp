@@ -38,6 +38,7 @@
 #include <sstream>
 #include <list>
 #include <forward_list>
+#include <numeric>
 
 namespace tf {
 
@@ -430,6 +431,10 @@ class BasicTaskflow {
     template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>* = nullptr>
     auto parallel_for(T&, C&&, size_t = 1);
 
+    template <typename I, typename T, class O>
+    auto reduce(I, I, T&, O&&, size_t = 1);
+
+
     auto placeholder();
     auto precede(Task, Task);
     auto linearize(std::vector<Task>&);
@@ -465,6 +470,9 @@ class BasicTaskflow {
 
     template <typename L>
     void _linearize(L&);
+
+    template <typename I, class O>
+    auto _reduce_impl(I, O, const size_t, const size_t, const size_t, const int, Task&);
 };
 
 // Constructor
@@ -888,6 +896,69 @@ template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>*>
 auto BasicTaskflow<F>::parallel_for(T& t, C&& c, size_t group) {
   return parallel_for(t.begin(), t.end(), std::forward<C>(c), group);
 }
+
+
+// Function: _reduce_impl
+template <typename F>
+template <typename I, class O>
+auto BasicTaskflow<F>::_reduce_impl(
+  I beg, 
+  O op, 
+  const size_t start, 
+  const size_t group, 
+  const size_t num_chunks, 
+  const int total, 
+  Task& source
+) {
+  if(num_chunks == 1){
+    // Base case
+    const auto len {std::min(group, total-start)};
+    auto kvp = emplace([op, b=beg, len]() mutable{ 
+         auto e = b;
+         std::advance(e, len);
+         return std::accumulate(std::next(b), e, *b, op);
+       });
+    source.precede(std::get<Task>(kvp));
+    return kvp;
+  }
+  else{
+    // Recursion
+    const auto l_length {num_chunks/2};
+    const auto r_length {num_chunks-l_length};
+    const auto rbeg {l_length*group};
+    auto [L, lfu] = _reduce_impl(beg                 , op, start     , group, l_length, total, source);
+    auto [R, rfu] = _reduce_impl(std::next(beg, rbeg), op, start+rbeg, group, r_length, total, source);
+    auto kvp {emplace(
+      [op, l=MoveOnCopy{std::move(lfu)}, r=MoveOnCopy{std::move(rfu)}] () {
+        return op(l.object.get(), r.object.get()); 
+      }
+    )};
+    L.precede(std::get<Task>(kvp));
+    R.precede(std::get<Task>(kvp));
+    return kvp;
+  }
+}
+
+// Function: reduce 
+template <typename F>
+template <typename I, typename T, class O>
+auto BasicTaskflow<F>::reduce(I beg, I end, T& result, O&& op, size_t group) {
+
+  if(group == 0) {
+    group = 1;
+  }
+
+  const auto length = std::distance(beg, end);
+  const size_t num_chunks = length%group == 0 ? length/group : length/group+1; 
+  auto source = placeholder();
+  auto [root, fu] = _reduce_impl(beg, op, 0, group, num_chunks, length, source);
+  auto target = silent_emplace([op, fu=MoveOnCopy{std::move(fu)}, &result]() {
+    result = op(result, fu.object.get());
+  });
+  root.precede(target);
+  return std::make_pair(source, target); 
+}
+
 
 /*// Function: parallel_range    
 template <typename F>
