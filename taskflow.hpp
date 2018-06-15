@@ -42,14 +42,14 @@
 namespace tf {
 
 template <typename... ArgsT>
-inline void __throw__(const char* fname, const size_t line, ArgsT&&... args) {
+inline void throw_re(const char* fname, const size_t line, ArgsT&&... args) {
   std::ostringstream oss;
   oss << "[" << fname << ":" << line << "] ";
   (oss << ... << std::forward<ArgsT>(args));
   throw std::runtime_error(oss.str());
 }
 
-#define TF_THROW(...) __throw__(__FILE__, __LINE__, __VA_ARGS__);
+#define TF_THROW(...) throw_re(__FILE__, __LINE__, __VA_ARGS__);
 
 //-------------------------------------------------------------------------------------------------
 // Traits
