@@ -79,6 +79,7 @@ target_link_libraries(taskflow Threads::Threads)
 add_test(builder ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Builder)
 add_test(dispatch ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Dispatch)
 add_test(parallel_for ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ParallelFor)
+add_test(reduce ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Reduce)
 #add_test(parallel_range ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ParallelRange)
 
 
