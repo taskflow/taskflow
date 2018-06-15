@@ -137,7 +137,7 @@ A.gather(B, C, D);  // A runs after B, C, and D.
 
 **Linearize**: Linearizing a task sequence adds a  preceding link to each adjacent pair.
 ```cpp
-tf.linearize(A, B, C, D);  // A runs before A, B runs before C, and C runs before D.
+tf.linearize(A, B, C, D);  // A runs before B, B runs before C, and C runs before D.
 ```
 
 ## Step 3: Execute the Tasks
