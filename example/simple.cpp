@@ -19,7 +19,7 @@ int main(){
   A.precede(B);  // B runs after A                   //  | A |           | D | 
   A.precede(C);  // C runs after A                   //  +---+           +-^-+ 
   B.precede(D);  // D runs after B                   //    |     +---+     |    
-  C.precede(D);  // C runs after D                   //    +---->| C |-----+    
+  C.precede(D);  // D runs after C                   //    +---->| C |-----+    
                                                      //          +---+          
   tf.wait_for_all();  // block until finished
 
