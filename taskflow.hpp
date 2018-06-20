@@ -274,7 +274,26 @@ auto Threadpool::async(C&& c, Signal sig) {
   else {
     {
       std::unique_lock lock(_mutex);
-      _task_queue.emplace_back(
+
+      if constexpr(std::is_same_v<void, R>) {
+        _task_queue.emplace_back(
+          [p = MoveOnCopy(std::move(p)), c = std::forward<C>(c), ret = sig]() mutable {
+            c();
+            p.get().set_value();
+            return ret;
+          }
+        );
+      }
+      else {
+        _task_queue.emplace_back(
+          [p = MoveOnCopy(std::move(p)), c = std::forward<C>(c), ret = sig]() mutable {
+            p.get().set_value(c());
+            return ret;
+          }
+        );
+      }
+
+      /*_task_queue.emplace_back(
         [p=MoveOnCopy(std::move(p)), c=std::forward<C>(c), ret=sig] () mutable { 
           if constexpr(std::is_same_v<void, R>) {
             c();
@@ -285,7 +304,7 @@ auto Threadpool::async(C&& c, Signal sig) {
           }
           return ret;
         }
-      );
+      );*/
     }
     _worker_signal.notify_one();
   }
@@ -319,15 +338,11 @@ inline void Threadpool::shutdown() {
 template <typename F>
 class BasicTaskflow {
   
-  template <typename G>
-  friend std::ostream& operator << (std::ostream&, const BasicTaskflow<G>&);
+  //template <typename G>
+  //friend std::ostream& operator << (std::ostream&, const BasicTaskflow<G>&);
   
   // Struct: Node
   struct Node {
-  
-    friend class BasicTaskflow;
-    friend class Topology;
-    friend class Task;
   
     Node() = default;
   
