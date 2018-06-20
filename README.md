@@ -433,6 +433,7 @@ Please [let me know][email me] if you found any issues in a particular platform.
 To use Cpp-Taskflow, you only need a C++17 compiler:
 + GNU C++ Compiler G++ v7.2 with -std=c++1z
 + Clang 5.0 C++ Compiler with -std=c++17
++ Microsoft Visual Studio Version 15.7.4
 
 # Compile Unit Tests and Examples
 Cpp-Taskflow uses [CMake](https://cmake.org/) to build examples and unit tests.
@@ -477,6 +478,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Martin Wong][Martin Wong] supported the Cpp-Taskflow project through NSF and DARPA funding.
 - [Nan Xiao](https://github.com/NanXiao) fixed compilation error of unittest on the Arch platform.
 - [Vladyslav](https://github.com/innermous) fixed comment errors in README.md and examples.
+- [vblanco20-1](https://github.com/vblanco20-1) fixed compilation error on Microsoft Visual Studio.
 
 See also the list of [contributors](./CONTRIBUTORS.txt) who participated in this project. 
 Please [let me know][email me] if I forgot someone!
