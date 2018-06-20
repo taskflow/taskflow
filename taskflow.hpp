@@ -45,7 +45,7 @@ namespace tf {
 template <typename... ArgsT>
 inline void throw_re(const char* fname, const size_t line, ArgsT&&... args) {
   std::ostringstream oss;
-  oss << "[" << fname << ":" << line << "] ";
+  oss << '[' << fname << ':' << line << "] ";
   (oss << ... << std::forward<ArgsT>(args));
   throw std::runtime_error(oss.str());
 }
@@ -250,18 +250,6 @@ auto Threadpool::silent_async(C&& c, Signal sig) {
   }
 }
 
-template<typename T, typename C>
-void set_promise_value(std::promise<T>& p, C &c)
-{
-	p.set_value(c());
-}
-template< typename C>
-void set_promise_value(std::promise<void>& p, C &c)
-{
-	p.set_value();
-}
-
-
 // Function: async
 // Insert a callable task and return a future representing the task.
 template<typename C>
@@ -286,22 +274,37 @@ auto Threadpool::async(C&& c, Signal sig) {
   else {
     {
       std::unique_lock lock(_mutex);
-      _task_queue.emplace_back(
+
+      if constexpr(std::is_same_v<void, R>) {
+        _task_queue.emplace_back(
+          [p = MoveOnCopy(std::move(p)), c = std::forward<C>(c), ret = sig]() mutable {
+            c();
+            p.get().set_value();
+            return ret;
+          }
+        );
+      }
+      else {
+        _task_queue.emplace_back(
+          [p = MoveOnCopy(std::move(p)), c = std::forward<C>(c), ret = sig]() mutable {
+            p.get().set_value(c());
+            return ret;
+          }
+        );
+      }
+
+      /*_task_queue.emplace_back(
         [p=MoveOnCopy(std::move(p)), c=std::forward<C>(c), ret=sig] () mutable { 
-          
-          //VS compile fix
-          set_promise_value(p.get(), c);
-          /*
           if constexpr(std::is_same_v<void, R>) {
             c();
             p.get().set_value();
           }
           else {
             p.get().set_value(c());
-          }*/
+          }
           return ret;
         }
-      );
+      );*/
     }
     _worker_signal.notify_one();
   }
@@ -335,15 +338,11 @@ inline void Threadpool::shutdown() {
 template <typename F>
 class BasicTaskflow {
   
-  template <typename G>
-  friend std::ostream& operator << (std::ostream&, const BasicTaskflow<G>&);
+  //template <typename G>
+  //friend std::ostream& operator << (std::ostream&, const BasicTaskflow<G>&);
   
   // Struct: Node
   struct Node {
-  
-    friend class BasicTaskflow;
-    friend class Topology;
-    friend class Task;
   
     Node() = default;
   
@@ -1064,5 +1063,4 @@ using Taskflow = BasicTaskflow<std::function<void()>>;
 
 
 #endif
-
 
