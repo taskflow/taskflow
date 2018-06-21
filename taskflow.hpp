@@ -1033,19 +1033,13 @@ std::string BasicTaskflow<F>::dump() const {
   
   for(const auto& node : _nodes) {
 
-    os << "  \"";
-    if(!node.name().empty()) os << node.name();
-    else os << &node;
-    os << "\";\n";
+    os << "  \"" << (node.name().empty() ? &node : node.name()) << "\";\n";
 
     for(const auto s : node._successors) {
-      os << "  \"";
-      if(!node.name().empty()) os << node.name();
-      else os << &node;
-      os << "\" -> \"";
-      if(s->name() != "") os << s->name();
-      else os << s;
-      os << "\";\n";  
+      os << "  \"" << (node.name().empty() ? &node : node.name())
+      << "\" -> \""
+      << (s->name().empty() ? s : s->name())
+      << "\";\n";
     }
   }
 
