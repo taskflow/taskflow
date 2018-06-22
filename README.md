@@ -50,9 +50,10 @@ int main(){
 
   return 0;
 }
-
 ```
+
 Compile and run the code with the following commands:
+
 ```bash
 ~$ g++ simple.cpp -std=c++1z -O2 -lpthread -o simple
 ~$ ./simple
