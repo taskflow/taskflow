@@ -25,7 +25,7 @@ It is by far faster, more expressive, and easier for drop-in integration than ex
 
 The following example [simple.cpp](./example/simple.cpp) shows the basic API you need to use Cpp-Taskflow.
 
-<img align="right" width="20%" src="image/simple.png">
+<img align="right" height="60%" src="image/simple.png">
 
 ```cpp
 #include "taskflow.hpp"  // the only include you need
