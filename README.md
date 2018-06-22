@@ -12,9 +12,9 @@ Cpp-Taskflow lets you quickly build parallel dependency graphs using modern C++1
 It is by far faster, more expressive, and easier for drop-in integration than existing libraries such as [OpenMP Tasking][OpenMP Tasking] and 
 [TBB FlowGraph][TBB FlowGraph].
 
-| Without Cpp-Taskflow | With Cpp-Taskflow |
-| -------------------- | ----------------- |
-| ![](image/profile_without_taskflow.gif) | ![](image/profile_with_taskflow.gif) |
+ Without Cpp-Taskflow | With Cpp-Taskflow 
+ -------------------- | ----------------- 
+ ![](image/profile_without_taskflow.gif) | ![](image/profile_with_taskflow.gif)
 
 *"Cpp-Taskflow is the cleanest Task API I've ever seen," Damien*
 
