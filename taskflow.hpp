@@ -39,6 +39,7 @@
 #include <list>
 #include <forward_list>
 #include <numeric>
+#include <iomanip>
 
 namespace tf {
 
@@ -1032,18 +1033,26 @@ std::string BasicTaskflow<F>::dump() const {
   os << "digraph Taskflow {\n";
   
   for(const auto& node : _nodes) {
-
-    os << "  \"" << (node.name().empty() ? &node : node.name()) << "\";\n";
+    
+    if(node.name().empty()) os << '\"' << &node << '\"';
+    else os << std::quoted(node.name());
+    os << ";\n";
 
     for(const auto s : node._successors) {
-      os << "  \"" << (node.name().empty() ? &node : node.name())
-      << "\" -> \""
-      << (s->name().empty() ? s : s->name())
-      << "\";\n";
+
+      if(node.name().empty()) os << '\"' << &node << '\"';
+      else os << std::quoted(node.name());
+
+      os << " -> ";
+      
+      if(s->name().empty()) os << '\"' << &node << '\"';
+      else os << std::quoted(s->name());
+
+      os << ";\n";
     }
   }
 
-  os << "}\n";
+  os << "}";
   
   return os.str();
 }

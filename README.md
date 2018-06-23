@@ -471,6 +471,7 @@ The folder `example/` contains several examples and is a great place to learn to
 | [simple.cpp](./example/simple.cpp) | use basic task building blocks to create a trivial taskflow  graph |
 | [matrix.cpp](./example/matrix.cpp) | create two set of matrices and multiply each individually in parallel |
 | [parallel_for.cpp](./example/parallel_for.cpp)| parallelize a for loop with unbalanced workload |
+| [debug.cpp](./example/debug.cpp)| inspect a taskflow through the dump method |
 
 # Get Involved
 + Report bugs/issues by submitting a [Github issue][Github issues].
