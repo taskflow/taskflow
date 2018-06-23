@@ -1,6 +1,6 @@
 // MIT License
 // 
-// Copyright (c) 2018 Dr. Tsung-Wei Huang, Chun-Xun Lin, and Martin Wong
+// Copyright (c) 2018 Tsung-Wei Huang, Chun-Xun Lin, and Martin Wong
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -199,12 +199,12 @@ inline void Threadpool::spawn(unsigned N) {
       while(!stop) {
         decltype(_task_queue)::value_type task;
 
-        { // Acquire lock. --------------------------------------------------------------------------
+        { // Acquire lock. --------------------------------
           std::unique_lock<std::mutex> lock(_mutex);
           _worker_signal.wait(lock, [this] () { return _task_queue.size() != 0; });
           task = std::move(_task_queue.front());
           _task_queue.pop_front();
-        } // Release lock. --------------------------------------------------------------------------
+        } // Release lock. --------------------------------
 
         // Execute the task and react to the returned signal.
         switch(task()) {
@@ -275,7 +275,7 @@ auto Threadpool::async(C&& c, Signal sig) {
   else {
     {
       std::unique_lock lock(_mutex);
-
+      
       if constexpr(std::is_same_v<void, R>) {
         _task_queue.emplace_back(
           [p = MoveOnCopy(std::move(p)), c = std::forward<C>(c), ret = sig]() mutable {
@@ -293,7 +293,8 @@ auto Threadpool::async(C&& c, Signal sig) {
           }
         );
       }
-
+      
+      // This can cause MSVS not to compile ...
       /*_task_queue.emplace_back(
         [p=MoveOnCopy(std::move(p)), c=std::forward<C>(c), ret=sig] () mutable { 
           if constexpr(std::is_same_v<void, R>) {
@@ -338,9 +339,6 @@ inline void Threadpool::shutdown() {
 // Class: BasicTaskflow
 template <typename F>
 class BasicTaskflow {
-  
-  //template <typename G>
-  //friend std::ostream& operator << (std::ostream&, const BasicTaskflow<G>&);
   
   // Struct: Node
   struct Node {
@@ -450,7 +448,6 @@ class BasicTaskflow {
     template <typename I, typename T, class O>
     auto reduce(I, I, T&, O&&, size_t = 1);
 
-
     auto placeholder();
     auto precede(Task, Task);
     auto linearize(std::vector<Task>&);
@@ -488,7 +485,7 @@ class BasicTaskflow {
     void _linearize(L&);
 
     template <typename I, class O>
-    auto _reduce_impl(I, O, const size_t, const size_t, const size_t, const int, Task&);
+    auto _reduce(I, O, const size_t, const size_t, const size_t, const int, Task&);
 };
 
 // Constructor
@@ -914,36 +911,37 @@ auto BasicTaskflow<F>::parallel_for(T& t, C&& c, size_t group) {
 }
 
 
-// Function: _reduce_impl
+// Function: _reduce
 template <typename F>
 template <typename I, class O>
-auto BasicTaskflow<F>::_reduce_impl(
+auto BasicTaskflow<F>::_reduce(
   I beg, 
   O op, 
   const size_t start, 
   const size_t group, 
-  const size_t num_chunks, 
+  const size_t num_groups, 
   const int total, 
   Task& source
 ) {
-  if(num_chunks == 1){
+
+  if(num_groups == 1){
     // Base case
     const auto len {std::min(group, total-start)};
-    auto kvp = emplace([op, b=beg, len]() mutable{ 
-         auto e = b;
-         std::advance(e, len);
-         return std::accumulate(std::next(b), e, *b, op);
-       });
+    auto kvp = emplace([op, b=beg, len]() mutable { 
+      auto e = b;
+      std::advance(e, len);
+      return std::accumulate(std::next(b), e, *b, op);
+    });
     source.precede(std::get<Task>(kvp));
     return kvp;
   }
-  else{
+  else {
     // Recursion
-    const auto l_length {num_chunks/2};
-    const auto r_length {num_chunks-l_length};
-    const auto rbeg {l_length*group};
-    auto [L, lfu] = _reduce_impl(beg                 , op, start     , group, l_length, total, source);
-    auto [R, rfu] = _reduce_impl(std::next(beg, rbeg), op, start+rbeg, group, r_length, total, source);
+    const auto l_len {num_groups/2};
+    const auto r_len {num_groups-l_len};
+    const auto rbeg {l_len*group};
+    auto [L, lfu] = _reduce(beg, op, start, group, l_len, total, source);
+    auto [R, rfu] = _reduce(std::next(beg, rbeg), op, start+rbeg, group, r_len, total, source);
     auto kvp {emplace(
       [op, l=MoveOnCopy{std::move(lfu)}, r=MoveOnCopy{std::move(rfu)}] () {
         return op(l.object.get(), r.object.get()); 
@@ -965,9 +963,9 @@ auto BasicTaskflow<F>::reduce(I beg, I end, T& result, O&& op, size_t group) {
   }
 
   const auto length = std::distance(beg, end);
-  const size_t num_chunks = length%group == 0 ? length/group : length/group+1; 
+  const size_t num_groups = length%group == 0 ? length/group : length/group+1; 
   auto source = placeholder();
-  auto [root, fu] = _reduce_impl(beg, op, 0, group, num_chunks, length, source);
+  auto [root, fu] = _reduce(beg, op, 0, group, num_groups, length, source);
   auto target = silent_emplace([op, fu=MoveOnCopy{std::move(fu)}, &result]() {
     result = op(result, fu.object.get());
   });

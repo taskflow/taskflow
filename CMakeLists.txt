@@ -60,6 +60,9 @@ target_link_libraries(simple ${EXAMPLE_EXE_LINKER_FLAGS})
 add_executable(debug example/debug.cpp)
 target_link_libraries(debug ${EXAMPLE_EXE_LINKER_FLAGS})
 
+add_executable(emplace example/emplace.cpp)
+target_link_libraries(emplace ${EXAMPLE_EXE_LINKER_FLAGS})
+
 add_executable(matrix example/matrix.cpp)
 target_compile_options(matrix PRIVATE ${EXAMPLE_CXX_FLAGS})
 target_link_libraries(matrix ${EXAMPLE_EXE_LINKER_FLAGS})
