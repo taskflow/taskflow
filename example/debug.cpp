@@ -19,10 +19,10 @@ int main(){
   C.precede(D);
   B.broadcast(D, E); 
   
-  std::cout << "dumpe without name assignment\n";
+  std::cout << "[dump without name assignment]\n";
   std::cout << tf.dump() << std::endl;
   
-  std::cout << "dumpe with name assignment\n";
+  std::cout << "[dump with name assignment]\n";
   A.name("A");
   B.name("B");
   C.name("C");
