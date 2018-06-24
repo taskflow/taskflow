@@ -447,7 +447,7 @@ class BasicTaskflow {
 
     template <typename I, typename T, class O>
     auto reduce(I, I, T&, O&&, size_t = 1);
-
+    
     auto placeholder();
     auto precede(Task, Task);
     auto linearize(std::vector<Task>&);
