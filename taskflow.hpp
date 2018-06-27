@@ -447,6 +447,12 @@ class BasicTaskflow {
 
     template <typename I, typename T, class O>
     auto reduce(I, I, T&, O&&, size_t = 1);
+
+    template <typename I, typename T>
+    auto reduce_min(I, I, T&);
+    
+    template <typename I, typename T>
+    auto reduce_max(I, I, T&);
     
     auto placeholder();
     auto precede(Task, Task);
@@ -937,11 +943,11 @@ auto BasicTaskflow<F>::_reduce(
   }
   else {
     // Recursion
-    const auto l_len {num_groups/2};
-    const auto r_len {num_groups-l_len};
-    const auto rbeg {l_len*group};
-    auto [L, lfu] = _reduce(beg, op, start, group, l_len, total, source);
-    auto [R, rfu] = _reduce(std::next(beg, rbeg), op, start+rbeg, group, r_len, total, source);
+    auto llen {num_groups/2};
+    auto rlen {num_groups-llen};
+    auto rbeg {llen*group};
+    auto [L, lfu] = _reduce(beg, op, start, group, llen, total, source);
+    auto [R, rfu] = _reduce(std::next(beg, rbeg), op, start+rbeg, group, rlen, total, source);
     auto kvp {emplace(
       [op, l=MoveOnCopy{std::move(lfu)}, r=MoveOnCopy{std::move(rfu)}] () {
         return op(l.object.get(), r.object.get()); 
@@ -962,15 +968,30 @@ auto BasicTaskflow<F>::reduce(I beg, I end, T& result, O&& op, size_t group) {
     group = 1;
   }
 
-  const auto length = std::distance(beg, end);
-  const size_t num_groups = length%group == 0 ? length/group : length/group+1; 
+  auto length = std::distance(beg, end);
+  auto num_groups = (length + group - 1) / group;
   auto source = placeholder();
   auto [root, fu] = _reduce(beg, op, 0, group, num_groups, length, source);
-  auto target = silent_emplace([op, fu=MoveOnCopy{std::move(fu)}, &result]() {
+  auto target = silent_emplace([op, fu=MoveOnCopy{std::move(fu)}, &result] () {
     result = op(result, fu.object.get());
   });
   root.precede(target);
   return std::make_pair(source, target); 
+}
+
+// Function: reduce_min
+// Find the minimum element over a range of items.
+template <typename F>
+template <typename I, typename T>
+auto BasicTaskflow<F>::reduce_min(I beg, I end, T& result) {
+  
+  auto d = std::distance(beg, end);
+  auto w = num_workers();
+  auto g = (d + w - 1) / w;
+  
+  return reduce(beg, end, result, [] (const auto& l, const auto& r) {
+    return std::min(l, r);
+  }, g);
 }
 
 

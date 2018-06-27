@@ -6,6 +6,7 @@
 #include <vector>
 #include <utility>
 #include <chrono>
+#include <limits.h>
 
 // --------------------------------------------------------
 // Testcase: Taskflow.Builder
@@ -250,7 +251,6 @@ TEST_CASE("Taskflow.ParallelFor") {
   }
 }
 
-
 // --------------------------------------------------------
 // Testcase: Taskflow.Reduce
 // --------------------------------------------------------
@@ -278,7 +278,7 @@ TEST_CASE("Taskflow.Reduce") {
     tf::Taskflow tf(num_workers);
     std::iota(data.begin(), data.end(), 1);
     int result {0};
-    auto lambda = [](const auto l, const auto r){return std::max(l, r);};
+    auto lambda = [](const auto& l, const auto& r){return std::max(l, r);};
     tf.reduce(data.begin(), data.end(), result, lambda, group);
     tf.wait_for_all();
     REQUIRE(result == std::accumulate(data.begin(), data.end(), 0, lambda));
@@ -288,10 +288,12 @@ TEST_CASE("Taskflow.Reduce") {
     tf::Taskflow tf(num_workers);
     std::iota(data.begin(), data.end(), 1);
     int result {std::numeric_limits<int>::max()};
-    auto lambda = [](const auto l, const auto r){return std::min(l, r);};
+    auto lambda = [](const auto& l, const auto& r){return std::min(l, r);};
     tf.reduce(data.begin(), data.end(), result, lambda, group);
     tf.wait_for_all();
-    REQUIRE(result == std::accumulate(data.begin(), data.end(), std::numeric_limits<int>::max(), lambda));
+    REQUIRE(result == std::accumulate(
+      data.begin(), data.end(), std::numeric_limits<int>::max(), lambda)
+    );
   };
 
   for(size_t i=0; i<4; ++i){
@@ -315,6 +317,17 @@ TEST_CASE("Taskflow.Reduce") {
       }
     }
   }
+}
+
+// --------------------------------------------------------
+// Testcase: Taskflow.ReduceMin
+// --------------------------------------------------------
+TEST_CASE("Taskflow.ReduceMin") {
+
+  tf::Taskflow tf; 
+  
+  //tf.reduce_min(data.begin(), data.end(), res);
+
 }
 
 /*// --------------------------------------------------------

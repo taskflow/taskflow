@@ -218,6 +218,7 @@ The table below summarizes its commonly used methods.
 | silent_dispatch | none        | none | dispatch the current graph | 
 | wait_for_all    | none        | none | dispatch the current graph and block until all graphs including previously dispatched ones finish |
 | num_nodes       | none        | size | return the number of nodes in the current graph |  
+| num_workers     | size        | none | set the number of worker threads in the pool |  
 | num_workers     | none        | size | return the number of working threads in the pool |  
 | num_topologies  | none        | size | return the number of dispatched graphs |
 | dump            | none        | string | dump the current graph to a string of GraphViz format |
