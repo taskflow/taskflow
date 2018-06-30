@@ -214,7 +214,7 @@ The table below summarizes its commonly used methods.
 | linearize       | task list   | none         | create a linear dependency in the given task list |
 | parallel_for    | beg, end, callable, group | task pair | apply the callable in parallel and group-by-group to the result of dereferencing every iterator in the range | 
 | reduce | beg, end, res, bop, group | task pair | apply a binary operator group-by-group to reduce a range of elements to a single result | 
-| transform_reduce | beg, end, res, bop, uop, group | task pair | apply a unary operator to each element in the range and reduce the returns to a single result group-by-group through a binary operator | 
+| transform_reduce | beg, end, res, bop, uop, group | task pair | apply a unary operator to each element in the range and reduce them to a single result group-by-group through a binary operator | 
 | dispatch        | none        | future | dispatch the current graph and return a shared future to block on completeness |
 | silent_dispatch | none        | none | dispatch the current graph | 
 | wait_for_all    | none        | none | dispatch the current graph and block until all graphs including previously dispatched ones finish |

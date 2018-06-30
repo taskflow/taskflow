@@ -21,9 +21,10 @@ void reduce() {
   for(int i=0; i<40000000; ++i) {
     data.push_back(::rand());
   }
+  
+  std::cout << "Benchmark: reduce" << std::endl;
 
   // sequential method
-  std::cout << "running sequential method ..." << std::endl;
   auto sbeg = std::chrono::steady_clock::now();
   auto smin = std::numeric_limits<int>::max();
   for(auto& d : data) {
@@ -35,7 +36,6 @@ void reduce() {
             << std::endl;
 
   // taskflow
-  std::cout << "running taskflow method ..." << std::endl;
   auto tbeg = std::chrono::steady_clock::now();
   tf::Taskflow tf;
   auto tmin = std::numeric_limits<int>::max();
@@ -57,7 +57,7 @@ void transform_reduce() {
 
   std::cout << "Benchmark: transform_reduce" << std::endl;
   
-  std::vector<Data> data(40000000);
+  std::list<Data> data(40000000);
   
   // sequential method
   auto sbeg = std::chrono::steady_clock::now();
