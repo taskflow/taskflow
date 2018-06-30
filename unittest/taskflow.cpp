@@ -296,24 +296,20 @@ TEST_CASE("Taskflow.Reduce") {
     );
   };
 
-  for(size_t i=0; i<4; ++i){
-    for(size_t j=1; j<128; j++){
-      for(size_t k=1; k<=j; k++){
+  for(size_t i=0; i<=4; ++i){
+    for(size_t j=0; j<=256; j=j*2+1){
+      for(size_t k=0; k<=256; k++){
         plus_test(i, std::vector<int>(j), k);
         plus_test(i, std::list<int>(j)  , k);
-        plus_test(i, std::deque<int>(j) , k);
 
         multiply_test(i, std::vector<double>(j), k);
         multiply_test(i, std::list<double>(j),   k);
-        multiply_test(i, std::deque<double>(j),  k);
 
         max_test(i, std::vector<int>(j), k);
         max_test(i, std::list<int>(j),   k);
-        max_test(i, std::deque<int>(j),  k);
 
         min_test(i, std::vector<int>(j), k);
         min_test(i, std::list<int>(j),   k);
-        min_test(i, std::deque<int>(j),  k);
       }
     }
   }
@@ -324,9 +320,44 @@ TEST_CASE("Taskflow.Reduce") {
 // --------------------------------------------------------
 TEST_CASE("Taskflow.ReduceMin") {
 
-  tf::Taskflow tf; 
-  
-  //tf.reduce_min(data.begin(), data.end(), res);
+  for(int w=0; w<=4; w++) {
+    tf::Taskflow tf(w);
+    for(int i=0; i<=65536; i = (i <= 1024) ? i + 1 : i*2 + 1) {
+      std::vector<int> data(i);
+      int gold = std::numeric_limits<int>::max();
+      int test = std::numeric_limits<int>::max();
+      for(auto& d : data) {
+        d = ::rand();
+        gold = std::min(gold, d);
+      }
+      tf.reduce_min(data.begin(), data.end(), test);
+      tf.wait_for_all();
+      REQUIRE(test == gold);
+    }
+  }
+
+}
+
+// --------------------------------------------------------
+// Testcase: Taskflow.ReduceMax
+// --------------------------------------------------------
+TEST_CASE("Taskflow.ReduceMax") {
+
+  for(int w=0; w<=4; w++) {
+    tf::Taskflow tf(w);
+    for(int i=0; i<=65536; i = (i <= 1024) ? i + 1 : i*2 + 1) {
+      std::vector<int> data(i);
+      int gold = std::numeric_limits<int>::min();
+      int test = std::numeric_limits<int>::min();
+      for(auto& d : data) {
+        d = ::rand();
+        gold = std::max(gold, d);
+      }
+      tf.reduce_max(data.begin(), data.end(), test);
+      tf.wait_for_all();
+      REQUIRE(test == gold);
+    }
+  }
 
 }
 

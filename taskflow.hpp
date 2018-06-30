@@ -40,6 +40,7 @@
 #include <forward_list>
 #include <numeric>
 #include <iomanip>
+#include <cassert>
 
 namespace tf {
 
@@ -445,14 +446,23 @@ class BasicTaskflow {
     template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>* = nullptr>
     auto parallel_for(T&, C&&, size_t = 1);
 
-    template <typename I, typename T, class O>
-    auto reduce(I, I, T&, O&&, size_t = 1);
+    template <typename I, typename T, typename B>
+    auto reduce(I, I, T&, B&&, size_t);
+    
+    template <typename I, typename T, typename B>
+    auto reduce(I, I, T&, B&&);
 
     template <typename I, typename T>
     auto reduce_min(I, I, T&);
     
     template <typename I, typename T>
     auto reduce_max(I, I, T&);
+
+    template <typename I, typename T, typename B, typename U>
+    auto transform_reduce(I, I, T&, B&&, U&&, size_t);
+
+    template <typename I, typename T, typename B, typename U>
+    auto transform_reduce(I, I, T&, B&&, U&&);
     
     auto placeholder();
     auto precede(Task, Task);
@@ -466,7 +476,7 @@ class BasicTaskflow {
     auto silent_dispatch();
     auto wait_for_all();
 
-    //template<typename I, class C>
+    //template<typename I, typename C>
     //auto parallel_range(const I, const I, C&&, ssize_t = 1);
 
     void num_workers(size_t);
@@ -490,8 +500,8 @@ class BasicTaskflow {
     template <typename L>
     void _linearize(L&);
 
-    template <typename I, class O>
-    auto _reduce(I, O, const size_t, const size_t, const size_t, const int, Task&);
+    //template <typename I, typename O>
+    //auto _reduce(I, size_t, O, size_t, Task&);
 };
 
 // Constructor
@@ -882,28 +892,43 @@ auto BasicTaskflow<F>::emplace(C&&... cs) {
 
 // Function: parallel_for    
 template <typename F>
-template <typename I, class C>
-auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, size_t group) {
+template <typename I, typename C>
+auto BasicTaskflow<F>::parallel_for(I beg, I end, C&& c, size_t g) {
 
-  if(group <= 0) {
-    group = 1;
+  using category = typename std::iterator_traits<I>::iterator_category;
+
+  if(g == 0) {
+    auto d = std::distance(beg, end);
+    auto w = std::max(size_t{1}, num_workers());
+    g = (d + w - 1) / w;
   }
 
   auto source = placeholder();
   auto target = placeholder();
+  
+  while(beg != end) {
 
-  for(; beg != end; ) {
     auto e = beg;
-    for(size_t i=0; i<group && e != end; ++e, ++i);
-    auto task = silent_emplace([c, beg, e] () mutable {
-      for(auto itr = beg; itr != e; ++itr) {
-        c(*itr);
-      }
-    });
-    beg = e;
     
+    // Case 1: random access iterator
+    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
+      size_t r = std::distance(beg, end);
+      std::advance(e, std::min(r, g));
+    }
+    // Case 2: non-random access iterator
+    else {
+      for(size_t i=0; i<g && e != end; ++e, ++i);
+    }
+      
+    // Create a task
+    auto task = silent_emplace([beg, e, c] () mutable {
+      std::for_each(beg, e, c);
+    });
     source.precede(task);
     task.precede(target);
+
+    // adjust the pointer
+    beg = e;
   }
 
   return std::make_pair(source, target); 
@@ -916,67 +941,128 @@ auto BasicTaskflow<F>::parallel_for(T& t, C&& c, size_t group) {
   return parallel_for(t.begin(), t.end(), std::forward<C>(c), group);
 }
 
-
-// Function: _reduce
+/*// Function: _reduce
+// beg: begining position of this segment
+// n  : size of this segment
+// g  : chunk (group) size
+// op : operator
+// S  : source task
 template <typename F>
-template <typename I, class O>
-auto BasicTaskflow<F>::_reduce(
-  I beg, 
-  O op, 
-  const size_t start, 
-  const size_t group, 
-  const size_t num_groups, 
-  const int total, 
-  Task& source
-) {
+template <typename I, typename O>
+auto BasicTaskflow<F>::_reduce(I beg, size_t n, O op, size_t g, Task& S) {
 
-  if(num_groups == 1){
-    // Base case
-    const auto len {std::min(group, total-start)};
-    auto kvp = emplace([op, b=beg, len]() mutable { 
-      auto e = b;
-      std::advance(e, len);
-      return std::accumulate(std::next(b), e, *b, op);
+  //assert(n > 0);
+
+  // base case
+  if(n <= g) {  
+    auto kvp = emplace([beg, n, op] () mutable { 
+      auto init = *beg++;
+      for(size_t i=1; i<n; ++i, ++beg) {
+        init = op(std::move(init), *beg);
+      }
+      return init;
     });
-    source.precede(std::get<Task>(kvp));
+    S.precede(std::get<Task>(kvp));
     return kvp;
   }
+  // recursion
   else {
-    // Recursion
-    auto llen {num_groups/2};
-    auto rlen {num_groups-llen};
-    auto rbeg {llen*group};
-    auto [L, lfu] = _reduce(beg, op, start, group, llen, total, source);
-    auto [R, rfu] = _reduce(std::next(beg, rbeg), op, start+rbeg, group, rlen, total, source);
-    auto kvp {emplace(
+    auto llen = n / 2;
+    auto rlen = n - llen;
+    auto [ltask, lfu] = _reduce(beg, llen, op, g, S);
+    auto [rtask, rfu] = _reduce(std::next(beg, llen), rlen, op, g, S);
+    auto kvp = emplace(
       [op, l=MoveOnCopy{std::move(lfu)}, r=MoveOnCopy{std::move(rfu)}] () {
         return op(l.object.get(), r.object.get()); 
       }
-    )};
-    L.precede(std::get<Task>(kvp));
-    R.precede(std::get<Task>(kvp));
+    );
+    ltask.precede(std::get<Task>(kvp));
+    rtask.precede(std::get<Task>(kvp));
     return kvp;
   }
+} */
+
+// Function: reduce 
+template <typename F>
+template <typename I, typename T, typename B>
+auto BasicTaskflow<F>::reduce(I beg, I end, T& result, B&& op, size_t g) {
+  
+  using category = typename std::iterator_traits<I>::iterator_category;
+  
+  // Evenly partition
+  if(g == 0) {
+    auto d = std::distance(beg, end);
+    auto w = std::max(size_t{1}, num_workers());
+    g = (d + w - 1) / w;
+  }
+
+  auto source = placeholder();
+  auto target = placeholder();
+
+  std::vector<std::future<T>> futures;
+  
+  while(beg != end) {
+
+    auto e = beg;
+    
+    // Case 1: random access iterator
+    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
+      size_t r = std::distance(beg, end);
+      std::advance(e, std::min(r, g));
+    }
+    // Case 2: non-random access iterator
+    else {
+      for(size_t i=0; i<g && e != end; ++e, ++i);
+    }
+      
+    // Create a task
+    auto [task, future] = emplace([beg, e, op] () mutable {
+      auto init = *beg;
+      for(++beg; beg != e; ++beg) {
+        init = op(std::move(init), *beg);          
+      }
+      return init;
+    });
+    source.precede(task);
+    task.precede(target);
+    futures.push_back(std::move(future));
+
+    // adjust the pointer
+    beg = e;
+  }
+  
+  // target synchronizer
+  target.work([&result, futures=MoveOnCopy{std::move(futures)}, op] () {
+    for(auto& fu : futures.object) {
+      result = op(std::move(result), fu.get());
+    }
+  });
+
+  return std::make_pair(source, target); 
+
+  /*if(g == 0) {
+    g = 1;
+  }
+
+  if(auto n = std::distance(beg, end); n==0) {
+    return std::make_pair(placeholder(), placeholder());
+  }
+  else {
+    auto src = placeholder();
+    auto [root, fu] = _reduce(beg, n, op, g, src);
+    auto tgt = silent_emplace([op, fu=MoveOnCopy{std::move(fu)}, &result] () {
+      result = op(std::move(result), fu.object.get());
+    });  
+    root.precede(tgt);
+    return std::make_pair(src, tgt);
+  }*/
 }
 
 // Function: reduce 
 template <typename F>
-template <typename I, typename T, class O>
-auto BasicTaskflow<F>::reduce(I beg, I end, T& result, O&& op, size_t group) {
-
-  if(group == 0) {
-    group = 1;
-  }
-
-  auto length = std::distance(beg, end);
-  auto num_groups = (length + group - 1) / group;
-  auto source = placeholder();
-  auto [root, fu] = _reduce(beg, op, 0, group, num_groups, length, source);
-  auto target = silent_emplace([op, fu=MoveOnCopy{std::move(fu)}, &result] () {
-    result = op(result, fu.object.get());
-  });
-  root.precede(target);
-  return std::make_pair(source, target); 
+template <typename I, typename T, typename B>
+auto BasicTaskflow<F>::reduce(I beg, I end, T& result, B&& op) {
+  return reduce(beg, end, result, std::forward<B>(op), 0);
 }
 
 // Function: reduce_min
@@ -984,20 +1070,91 @@ auto BasicTaskflow<F>::reduce(I beg, I end, T& result, O&& op, size_t group) {
 template <typename F>
 template <typename I, typename T>
 auto BasicTaskflow<F>::reduce_min(I beg, I end, T& result) {
-  
-  auto d = std::distance(beg, end);
-  auto w = num_workers();
-  auto g = (d + w - 1) / w;
-  
   return reduce(beg, end, result, [] (const auto& l, const auto& r) {
     return std::min(l, r);
-  }, g);
+  }, 0);
+}
+
+// Function: reduce_max
+// Find the maximum element over a range of items.
+template <typename F>
+template <typename I, typename T>
+auto BasicTaskflow<F>::reduce_max(I beg, I end, T& result) {
+  return reduce(beg, end, result, [] (const auto& l, const auto& r) {
+    return std::max(l, r);
+  }, 0);
+}
+
+// Function: transform_reduce    
+template <typename F>
+template <typename I, typename T, typename B, typename U>
+auto BasicTaskflow<F>::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop, size_t g) {
+
+  using category = typename std::iterator_traits<I>::iterator_category;
+  
+  // Even partition
+  if(g == 0) {
+    auto d = std::distance(beg, end);
+    auto w = std::max(size_t{1}, num_workers());
+    g = (d + w - 1) / w;
+  }
+
+  auto source = placeholder();
+  auto target = placeholder();
+
+  std::vector<std::future<T>> futures;
+
+  while(beg != end) {
+
+    auto e = beg;
+    
+    // Case 1: random access iterator
+    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
+      size_t r = std::distance(beg, end);
+      std::advance(e, std::min(r, g));
+    }
+    // Case 2: non-random access iterator
+    else {
+      for(size_t i=0; i<g && e != end; ++e, ++i);
+    }
+      
+    // Create a task
+    auto [task, future] = emplace([beg, e, bop, uop] () mutable {
+      auto init = uop(*beg);
+      for(++beg; beg != e; ++beg) {
+        init = bop(std::move(init), uop(*beg));          
+      }
+      return init;
+    });
+    source.precede(task);
+    task.precede(target);
+    futures.push_back(std::move(future));
+
+    // adjust the pointer
+    beg = e;
+  }
+
+  // target synchronizer
+  target.work([&result, futures=MoveOnCopy{std::move(futures)}, bop] () {
+    for(auto& fu : futures.object) {
+      result = bop(std::move(result), fu.get());
+    }
+  });
+
+  return std::make_pair(source, target); 
+}
+
+// Function: transform_reduce    
+template <typename F>
+template <typename I, typename T, typename B, typename U>
+auto BasicTaskflow<F>::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop) {
+  return transform_reduce(beg, end, result, std::forward<B>(bop), std::forward<U>(uop), 0);
 }
 
 
 /*// Function: parallel_range    
 template <typename F>
-template <typename I, class C>
+template <typename I, typename C>
 auto BasicTaskflow<F>::parallel_range(const I beg, const I end, C&& c, ssize_t group) {
 
   if(group <= 0){
