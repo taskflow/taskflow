@@ -57,7 +57,7 @@ void transform_reduce() {
 
   std::cout << "Benchmark: transform_reduce" << std::endl;
   
-  std::list<Data> data(40000000);
+  std::vector<Data> data(40000000);
   
   // sequential method
   auto sbeg = std::chrono::steady_clock::now();
