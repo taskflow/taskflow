@@ -352,7 +352,7 @@ auto [S, T] = tf.transform_reduce(v.begin(), v.end(), min,
 );
 ```
 
-All reduce methods have overloads of no group size, 
+All reduce methods have overloads with no group size, 
 in which the workload is evenly partitioned across threads.
 
 ### *dispatch/silent_dispatch/wait_for_all*
