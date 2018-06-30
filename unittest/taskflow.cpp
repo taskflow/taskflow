@@ -358,7 +358,6 @@ TEST_CASE("Taskflow.ReduceMax") {
       REQUIRE(test == gold);
     }
   }
-
 }
 
 /*// --------------------------------------------------------
