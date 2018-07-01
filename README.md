@@ -491,6 +491,7 @@ The folder `example/` contains several examples and is a great place to learn to
 | [emplace.cpp](./example/emplace.cpp)| demonstrate the difference between the emplace method and the silent_emplace method |
 | [matrix.cpp](./example/matrix.cpp) | create two set of matrices and multiply each individually in parallel |
 | [parallel_for.cpp](./example/parallel_for.cpp)| parallelize a for loop with unbalanced workload |
+| [reduce.cpp](./example/reduce.cpp)| perform reduce operations over linear containers |
 
 
 # Get Involved
