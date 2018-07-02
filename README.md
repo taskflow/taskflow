@@ -311,7 +311,7 @@ The method `reduce` creates a subgraph that applies a binary operator to a range
 The result will be stored in the referenced `res` object passed to the method. 
 It is your responsibility to assign it a correct initial value to reduce.
 
-<img align="right" width="45%" src="image/reduce_2.png">
+<img align="right" width="45%" src="image/reduce.png">
 
 ```cpp
 auto v = {1, 2, 3, 4}; 
