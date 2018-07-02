@@ -449,9 +449,6 @@ class BasicTaskflow {
     auto parallel_for(T&, C&&, size_t = 1);
 
     template <typename I, typename T, typename B>
-    auto reduce(I, I, T&, B&&, size_t);
-    
-    template <typename I, typename T, typename B>
     auto reduce(I, I, T&, B&&);
 
     template <typename I, typename T>
@@ -459,9 +456,6 @@ class BasicTaskflow {
     
     template <typename I, typename T>
     auto reduce_max(I, I, T&);
-
-    template <typename I, typename T, typename B, typename U>
-    auto transform_reduce(I, I, T&, B&&, U&&, size_t);
 
     template <typename I, typename T, typename B, typename U>
     auto transform_reduce(I, I, T&, B&&, U&&);
@@ -987,16 +981,16 @@ auto BasicTaskflow<F>::_reduce(I beg, size_t n, O op, size_t g, Task& S) {
 // Function: reduce 
 template <typename F>
 template <typename I, typename T, typename B>
-auto BasicTaskflow<F>::reduce(I beg, I end, T& result, B&& op, size_t g) {
+auto BasicTaskflow<F>::reduce(I beg, I end, T& result, B&& op/*, size_t g*/) {
   
   using category = typename std::iterator_traits<I>::iterator_category;
   
   // Evenly partition
-  if(g == 0) {
-    auto d = std::distance(beg, end);
-    auto w = std::max(size_t{1}, num_workers());
-    g = (d + w - 1) / w;
-  }
+  //if(g == 0) {
+  size_t d = std::distance(beg, end);
+  size_t w = std::max(size_t{1}, num_workers());
+  size_t g = std::max((d + w - 1) / w, size_t{2});
+  //}
 
   auto source = placeholder();
   auto target = placeholder();
@@ -1060,13 +1054,6 @@ auto BasicTaskflow<F>::reduce(I beg, I end, T& result, B&& op, size_t g) {
   }*/
 }
 
-// Function: reduce 
-template <typename F>
-template <typename I, typename T, typename B>
-auto BasicTaskflow<F>::reduce(I beg, I end, T& result, B&& op) {
-  return reduce(beg, end, result, std::forward<B>(op), 0);
-}
-
 // Function: reduce_min
 // Find the minimum element over a range of items.
 template <typename F>
@@ -1074,7 +1061,7 @@ template <typename I, typename T>
 auto BasicTaskflow<F>::reduce_min(I beg, I end, T& result) {
   return reduce(beg, end, result, [] (const auto& l, const auto& r) {
     return std::min(l, r);
-  }, 0);
+  });
 }
 
 // Function: reduce_max
@@ -1084,22 +1071,20 @@ template <typename I, typename T>
 auto BasicTaskflow<F>::reduce_max(I beg, I end, T& result) {
   return reduce(beg, end, result, [] (const auto& l, const auto& r) {
     return std::max(l, r);
-  }, 0);
+  });
 }
 
 // Function: transform_reduce    
 template <typename F>
 template <typename I, typename T, typename B, typename U>
-auto BasicTaskflow<F>::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop, size_t g) {
+auto BasicTaskflow<F>::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop) {
 
   using category = typename std::iterator_traits<I>::iterator_category;
   
   // Even partition
-  if(g == 0) {
-    auto d = std::distance(beg, end);
-    auto w = std::max(size_t{1}, num_workers());
-    g = (d + w - 1) / w;
-  }
+  size_t d = std::distance(beg, end);
+  size_t w = std::max(size_t{1}, num_workers());
+  size_t g = std::max((d + w - 1) / w, size_t{2});
 
   auto source = placeholder();
   auto target = placeholder();
@@ -1145,14 +1130,6 @@ auto BasicTaskflow<F>::transform_reduce(I beg, I end, T& result, B&& bop, U&& uo
 
   return std::make_pair(source, target); 
 }
-
-// Function: transform_reduce    
-template <typename F>
-template <typename I, typename T, typename B, typename U>
-auto BasicTaskflow<F>::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop) {
-  return transform_reduce(beg, end, result, std::forward<B>(bop), std::forward<U>(uop), 0);
-}
-
 
 /*// Function: parallel_range    
 template <typename F>

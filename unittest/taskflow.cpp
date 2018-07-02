@@ -256,40 +256,40 @@ TEST_CASE("Taskflow.ParallelFor") {
 // --------------------------------------------------------
 TEST_CASE("Taskflow.Reduce") {
 
-  const auto plus_test = [](const size_t num_workers, auto &&data, size_t group){
+  const auto plus_test = [](const size_t num_workers, auto &&data){
     tf::Taskflow tf(num_workers);
     int result {0};
     std::iota(data.begin(), data.end(), 1);
-    tf.reduce(data.begin(), data.end(), result, std::plus<int>(), group);
+    tf.reduce(data.begin(), data.end(), result, std::plus<int>());
     tf.wait_for_all();
     REQUIRE(result == std::accumulate(data.begin(), data.end(), 0, std::plus<int>()));
   };
 
-  const auto multiply_test = [](const size_t num_workers, auto &&data, size_t group){
+  const auto multiply_test = [](const size_t num_workers, auto &&data){
     tf::Taskflow tf(num_workers);
     std::fill(data.begin(), data.end(), 1.0);
     double result {2.0};
-    tf.reduce(data.begin(), data.end(), result, std::multiplies<double>(), group);
+    tf.reduce(data.begin(), data.end(), result, std::multiplies<double>());
     tf.wait_for_all();
     REQUIRE(result == std::accumulate(data.begin(), data.end(), 2.0, std::multiplies<double>()));
   };
 
-  const auto max_test = [](const size_t num_workers, auto &&data, size_t group){
+  const auto max_test = [](const size_t num_workers, auto &&data){
     tf::Taskflow tf(num_workers);
     std::iota(data.begin(), data.end(), 1);
     int result {0};
     auto lambda = [](const auto& l, const auto& r){return std::max(l, r);};
-    tf.reduce(data.begin(), data.end(), result, lambda, group);
+    tf.reduce(data.begin(), data.end(), result, lambda);
     tf.wait_for_all();
     REQUIRE(result == std::accumulate(data.begin(), data.end(), 0, lambda));
   };
 
-  const auto min_test = [](const size_t num_workers, auto &&data, size_t group){
+  const auto min_test = [](const size_t num_workers, auto &&data){
     tf::Taskflow tf(num_workers);
     std::iota(data.begin(), data.end(), 1);
     int result {std::numeric_limits<int>::max()};
     auto lambda = [](const auto& l, const auto& r){return std::min(l, r);};
-    tf.reduce(data.begin(), data.end(), result, lambda, group);
+    tf.reduce(data.begin(), data.end(), result, lambda);
     tf.wait_for_all();
     REQUIRE(result == std::accumulate(
       data.begin(), data.end(), std::numeric_limits<int>::max(), lambda)
@@ -298,19 +298,17 @@ TEST_CASE("Taskflow.Reduce") {
 
   for(size_t i=0; i<=4; ++i){
     for(size_t j=0; j<=256; j=j*2+1){
-      for(size_t k=0; k<=256; k++){
-        plus_test(i, std::vector<int>(j), k);
-        plus_test(i, std::list<int>(j)  , k);
+      plus_test(i, std::vector<int>(j));
+      plus_test(i, std::list<int>(j));
 
-        multiply_test(i, std::vector<double>(j), k);
-        multiply_test(i, std::list<double>(j),   k);
+      multiply_test(i, std::vector<double>(j));
+      multiply_test(i, std::list<double>(j));
 
-        max_test(i, std::vector<int>(j), k);
-        max_test(i, std::list<int>(j),   k);
+      max_test(i, std::vector<int>(j));
+      max_test(i, std::list<int>(j));
 
-        min_test(i, std::vector<int>(j), k);
-        min_test(i, std::list<int>(j),   k);
-      }
+      min_test(i, std::vector<int>(j));
+      min_test(i, std::list<int>(j));
     }
   }
 }

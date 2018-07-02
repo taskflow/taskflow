@@ -213,8 +213,8 @@ The table below summarizes its commonly used methods.
 | placeholder     | none        | task         | insert a node without any work; work can be assigned later |
 | linearize       | task list   | none         | create a linear dependency in the given task list |
 | parallel_for    | beg, end, callable, group | task pair | apply the callable in parallel and group-by-group to the result of dereferencing every iterator in the range | 
-| reduce | beg, end, res, bop, group | task pair | apply a binary operator group-by-group to reduce a range of elements to a single result | 
-| transform_reduce | beg, end, res, bop, uop, group | task pair | apply a unary operator to each element in the range and reduce them to a single result group-by-group through a binary operator | 
+| reduce | beg, end, res, bop | task pair | reduce a range of elements to a single result through a binary operator | 
+| transform_reduce | beg, end, res, bop, uop | task pair | apply a unary operator to each element in the range and reduce them to a single result through a binary operator | 
 | dispatch        | none        | future | dispatch the current graph and return a shared future to block on completeness |
 | silent_dispatch | none        | none | dispatch the current graph | 
 | wait_for_all    | none        | none | dispatch the current graph and block until all graphs including previously dispatched ones finish |
@@ -307,36 +307,17 @@ auto [S, T] = tf.parallel_for(
 
 ### *reduce/transform_reduce*
 
-The method `reduce` creates a subgraph that applies a binary operator to a range of items in a container.
+The method `reduce` creates a subgraph that applies a binary operator to a range of items.
 The result will be stored in the referenced `res` object passed to the method. 
 It is your responsibility to assign it a correct initial value to reduce.
-
-<img align="right" width="45%" src="image/reduce.png">
-
-```cpp
-auto v = {1, 2, 3, 4};
-int sum {0};    // initial value
-auto [S, T] = tf.reduce(
-  v.begin(),    // beg of range
-  v.end(),      // end of range
-  sum,          // pass by reference
-  std::plus<int>(),
-  1             // execute one task at a time
-);
-// add dependencies via S and T.
-```
-
-Changing the group size can force intra-group tasks to run sequentially
-and inter-group tasks to run in parallel.
-Depending on applications, different group sizes can result in significant performance hit.
 
 <img align="right" width="45%" src="image/reduce_2.png">
 
 ```cpp
 auto v = {1, 2, 3, 4}; 
 int sum {0};
-auto [S, T] = tf.reduce(
-  v.begin(), v.end(), sum, std::plus<int>(), 2
+auto [S, T] = tf.reduce(    // for example, 2 threads
+  v.begin(), v.end(), sum, std::plus<int>()
 );  
 ```
 
@@ -352,8 +333,7 @@ auto [S, T] = tf.transform_reduce(v.begin(), v.end(), min,
 );
 ```
 
-All reduce methods have overloads with no group size, 
-in which the workload is evenly partitioned across threads.
+By default, all reduce methods distribute the workload evenly across threads.
 
 ### *dispatch/silent_dispatch/wait_for_all*
 Dispatching a taskflow graph will schedule threads to execute the current graph and return immediately.
@@ -370,6 +350,7 @@ std::cout << "all tasks complete" << '\n';
 ```
 
 If you need to block your program flow until all tasks finish, use `wait_for_all` instead.
+
 ```cpp
 tf.wait_for_all();
 std::cout << "all tasks complete" << '\n';
