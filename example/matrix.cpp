@@ -118,21 +118,21 @@ void openmp(const std::vector<size_t>& D) {
   std::cout << "Generating matrix As ...\n";
   std::vector<matrix_t> As(D.size());
   #pragma omp parallel for
-  for(int j=0; j<D.size(); ++j) {
+  for(int j=0; j<(int)D.size(); ++j) {
     As[j] = random_matrix(D[j]);
   }
   
   std::cout << "Generating matrix Bs ...\n";
   std::vector<matrix_t> Bs(D.size());
   #pragma omp parallel for
-  for(int j=0; j<D.size(); ++j) {
+  for(int j=0; j<(int)D.size(); ++j) {
     Bs[j] = random_matrix(D[j]);
   }
   
   std::cout << "Computing matrix product values Cs ...\n";
   std::vector<matrix_t> Cs(D.size());
   #pragma omp parallel for
-  for(int j=0; j<D.size(); ++j) {
+  for(int j=0; j<(int)D.size(); ++j) {
     Cs[j] = As[j] * Bs[j];
   }
 

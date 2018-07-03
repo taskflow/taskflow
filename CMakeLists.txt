@@ -57,6 +57,15 @@ message(STATUS "EXAMPLE_EXE_LINKER_FLAGS: " ${EXAMPLE_EXE_LINKER_FLAGS})
 add_executable(simple example/simple.cpp)
 target_link_libraries(simple ${EXAMPLE_EXE_LINKER_FLAGS})
 
+add_executable(debug example/debug.cpp)
+target_link_libraries(debug ${EXAMPLE_EXE_LINKER_FLAGS})
+
+add_executable(emplace example/emplace.cpp)
+target_link_libraries(emplace ${EXAMPLE_EXE_LINKER_FLAGS})
+
+add_executable(reduce example/reduce.cpp)
+target_link_libraries(reduce ${EXAMPLE_EXE_LINKER_FLAGS})
+
 add_executable(matrix example/matrix.cpp)
 target_compile_options(matrix PRIVATE ${EXAMPLE_CXX_FLAGS})
 target_link_libraries(matrix ${EXAMPLE_EXE_LINKER_FLAGS})
@@ -80,6 +89,8 @@ add_test(builder ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Builder)
 add_test(dispatch ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Dispatch)
 add_test(parallel_for ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ParallelFor)
 add_test(reduce ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Reduce)
+add_test(reduce_min ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ReduceMin)
+add_test(reduce_max ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ReduceMax)
 #add_test(parallel_range ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ParallelRange)
 
 

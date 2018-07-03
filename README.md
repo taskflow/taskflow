@@ -12,9 +12,14 @@ Cpp-Taskflow lets you quickly build parallel dependency graphs using modern C++1
 It is by far faster, more expressive, and easier for drop-in integration than existing libraries such as [OpenMP Tasking][OpenMP Tasking] and 
 [TBB FlowGraph][TBB FlowGraph].
 
+| Without Cpp-Taskflow | With Cpp-Taskflow |
+| -------------------- | ----------------- |
+| ![](image/profile_without_taskflow.gif) | ![](image/profile_with_taskflow.gif) |
+
 *"Cpp-Taskflow is the cleanest Task API I've ever seen," Damien*
 
 *"Cpp-Taskflow allows us to explore more parallelism and go beyond the scale we had," OpenTimer developers*
+
 
 # Get Started with Cpp-Taskflow
 
@@ -43,9 +48,10 @@ int main(){
 
   return 0;
 }
-
 ```
+
 Compile and run the code with the following commands:
+
 ```bash
 ~$ g++ simple.cpp -std=c++1z -O2 -lpthread -o simple
 ~$ ./simple
@@ -207,11 +213,13 @@ The table below summarizes its commonly used methods.
 | placeholder     | none        | task         | insert a node without any work; work can be assigned later |
 | linearize       | task list   | none         | create a linear dependency in the given task list |
 | parallel_for    | beg, end, callable, group | task pair | apply the callable in parallel and group-by-group to the result of dereferencing every iterator in the range | 
-| reduce | beg, end, res, op, group | task pair | apply a binary operator group-by-group to reduce a range of elements to a single result | 
+| reduce | beg, end, res, bop | task pair | reduce a range of elements to a single result through a binary operator | 
+| transform_reduce | beg, end, res, bop, uop | task pair | apply a unary operator to each element in the range and reduce them to a single result through a binary operator | 
 | dispatch        | none        | future | dispatch the current graph and return a shared future to block on completeness |
 | silent_dispatch | none        | none | dispatch the current graph | 
 | wait_for_all    | none        | none | dispatch the current graph and block until all graphs including previously dispatched ones finish |
 | num_nodes       | none        | size | return the number of nodes in the current graph |  
+| num_workers     | size        | none | set the number of worker threads in the pool |  
 | num_workers     | none        | size | return the number of working threads in the pool |  
 | num_topologies  | none        | size | return the number of dispatched graphs |
 | dump            | none        | string | dump the current graph to a string of GraphViz format |
@@ -272,13 +280,13 @@ auto [S, T] = tf.parallel_for(
   v.end(),      // end of range
   [] (int i) { 
     std::cout << "parallel in " << i << '\n';
-  }
+  },
+  1  // execute one task at a time
 );
-
 // add dependencies via S and T.
 ```
 
-By default, the group size is 1. Changing the group size can force intra-group tasks to run sequentially
+Changing the group size can force intra-group tasks to run sequentially
 and inter-group tasks to run in parallel.
 Depending on applications, different group sizes can result in significant performance hit.
 
@@ -297,40 +305,35 @@ auto [S, T] = tf.parallel_for(
 );
 ```
 
-### *reduce*
+### *reduce/transform_reduce*
 
-The method `reduce` creates a subgraph that applies a binary operator to a range of items in a container.
+The method `reduce` creates a subgraph that applies a binary operator to a range of items.
 The result will be stored in the referenced `res` object passed to the method. 
 It is your responsibility to assign it a correct initial value to reduce.
 
-<img align="right" width="50%" src="image/reduce.png">
-
-```cpp
-auto v = {1, 2, 3, 4};
-int sum {0};    // initial value
-auto [S, T] = tf.reduce(
-  v.begin(),    // beg of range
-  v.end(),      // end of range
-  sum,          // pass by reference
-  std::plus<int>()
-);
-
-// add dependencies via S and T.
-```
-
-By default, the group size is 1. Changing the group size can force intra-group tasks to run sequentially
-and inter-group tasks to run in parallel.
-Depending on applications, different group sizes can result in significant performance hit.
-
-<img align="right" width="45%" src="image/reduce_2.png">
+<img align="right" width="45%" src="image/reduce.png">
 
 ```cpp
 auto v = {1, 2, 3, 4}; 
 int sum {0};
-auto [S, T] = tf.reduce(
-  v.begin(), v.end(), sum, std::plus<int>(), 2
+auto [S, T] = tf.reduce(    // for example, 2 threads
+  v.begin(), v.end(), sum, std::plus<int>()
 );  
 ```
+
+The method `transform_reduce` is similar to reduce, except it applies a unary operator before reduction.
+This is particular useful when you need additional data processing to reduce a range of elements.
+
+```cpp
+auto v = { {1, 5}, {6, 4}, {-6, 4} };
+int min = std::numeric_limits<int>::max();
+auto [S, T] = tf.transform_reduce(v.begin(), v.end(), min, 
+  [] (int l, int r)  { return std::min(l, r); },
+  [] (const Data& d) { return a*a + 2*a*b + b*b; }
+);
+```
+
+By default, all reduce methods distribute the workload evenly across threads.
 
 ### *dispatch/silent_dispatch/wait_for_all*
 Dispatching a taskflow graph will schedule threads to execute the current graph and return immediately.
@@ -347,6 +350,7 @@ std::cout << "all tasks complete" << '\n';
 ```
 
 If you need to block your program flow until all tasks finish, use `wait_for_all` instead.
+
 ```cpp
 tf.wait_for_all();
 std::cout << "all tasks complete" << '\n';
@@ -433,10 +437,12 @@ Please [let me know][email me] if you found any issues in a particular platform.
 To use Cpp-Taskflow, you only need a C++17 compiler:
 + GNU C++ Compiler G++ v7.2 with -std=c++1z
 + Clang 5.0 C++ Compiler with -std=c++17
++ Microsoft Visual Studio Version 15.7.4
 
 # Compile Unit Tests and Examples
 Cpp-Taskflow uses [CMake](https://cmake.org/) to build examples and unit tests.
 We recommend using out-of-source build.
+
 ```bash
 ~$ cmake --version  # must be at least 3.9 or higher
 ~$ mkdir build
@@ -462,8 +468,12 @@ The folder `example/` contains several examples and is a great place to learn to
 | Example |  Description |
 | ------- |  ----------- | 
 | [simple.cpp](./example/simple.cpp) | use basic task building blocks to create a trivial taskflow  graph |
+| [debug.cpp](./example/debug.cpp)| inspect a taskflow through the dump method |
+| [emplace.cpp](./example/emplace.cpp)| demonstrate the difference between the emplace method and the silent_emplace method |
 | [matrix.cpp](./example/matrix.cpp) | create two set of matrices and multiply each individually in parallel |
 | [parallel_for.cpp](./example/parallel_for.cpp)| parallelize a for loop with unbalanced workload |
+| [reduce.cpp](./example/reduce.cpp)| perform reduce operations over linear containers |
+
 
 # Get Involved
 + Report bugs/issues by submitting a [Github issue][Github issues].
@@ -477,6 +487,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Martin Wong][Martin Wong] supported the Cpp-Taskflow project through NSF and DARPA funding.
 - [Nan Xiao](https://github.com/NanXiao) fixed compilation error of unittest on the Arch platform.
 - [Vladyslav](https://github.com/innermous) fixed comment errors in README.md and examples.
+- [vblanco20-1](https://github.com/vblanco20-1) fixed compilation error on Microsoft Visual Studio.
 
 See also the list of [contributors](./CONTRIBUTORS.txt) who participated in this project. 
 Please [let me know][email me] if I forgot someone!
