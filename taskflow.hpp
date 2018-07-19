@@ -1216,7 +1216,6 @@ std::string BasicTaskflow<F>::dump() const {
 
 using Taskflow = BasicTaskflow<std::function<void()>>;
 
-
 };  // end of namespace tf. -----------------------------------------------------------------------
 
 
