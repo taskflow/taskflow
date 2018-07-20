@@ -609,7 +609,7 @@ typename BasicTaskflow<F>::Task& BasicTaskflow<F>::Task::broadcast(std::initiali
 template <typename F>
 template <typename... Bs>
 typename BasicTaskflow<F>::Task& BasicTaskflow<F>::Task::gather(Bs&&... tgts) {
-  (tgts->precede(*_node), ...);
+  (tgts.precede(*_node), ...);
   return *this;
 }
 
