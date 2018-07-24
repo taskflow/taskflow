@@ -22,7 +22,7 @@ message(STATUS "CMAKE_EXE_LINKER_FLAGS: " ${CMAKE_EXE_LINKER_FLAGS})
 set (TASKFLOW_MAJOR_VERSION "1")
 set (TASKFLOW_MINOR_VERSION "0")
 
-# add the binayr tree to the search path for include files
+# add the binary tree to the search path for include files
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(doctest)
 

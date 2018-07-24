@@ -609,7 +609,7 @@ typename BasicTaskflow<F>::Task& BasicTaskflow<F>::Task::broadcast(std::initiali
 template <typename F>
 template <typename... Bs>
 typename BasicTaskflow<F>::Task& BasicTaskflow<F>::Task::gather(Bs&&... tgts) {
-  (tgts->precede(*_node), ...);
+  (tgts.precede(*this), ...);
   return *this;
 }
 
@@ -1215,7 +1215,6 @@ std::string BasicTaskflow<F>::dump() const {
 //-------------------------------------------------------------------------------------------------
 
 using Taskflow = BasicTaskflow<std::function<void()>>;
-
 
 };  // end of namespace tf. -----------------------------------------------------------------------
 
