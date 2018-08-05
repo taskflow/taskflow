@@ -471,6 +471,9 @@ class BasicTaskflow {
     auto dispatch();
     auto silent_dispatch();
     auto wait_for_all();
+    
+    void wait_for_topologies();
+
 
     //template<typename I, typename C>
     //auto parallel_range(const I, const I, C&&, ssize_t = 1);
@@ -491,7 +494,7 @@ class BasicTaskflow {
     std::forward_list<Topology> _topologies;
 
     void _schedule(Node&);
-    void _wait_for_topologies();
+
 
     template <typename L>
     void _linearize(L&);
@@ -704,7 +707,7 @@ BasicTaskflow<F>::BasicTaskflow(unsigned N) : _threadpool{N} {
 // Destructor
 template <typename F>
 BasicTaskflow<F>::~BasicTaskflow() {
-  _wait_for_topologies();
+  wait_for_topologies();
 }
 
 // Procedure: num_workers
@@ -822,12 +825,12 @@ auto BasicTaskflow<F>::wait_for_all() {
   if(!_nodes.empty()) {
     silent_dispatch();
   }
-  _wait_for_topologies();
+  wait_for_topologies();
 }
 
-// Procedure: _wait_for_topologies
+// Procedure: wait_for_topologies
 template <typename F>
-void BasicTaskflow<F>::_wait_for_topologies() {
+void BasicTaskflow<F>::wait_for_topologies() {
   for(auto& t: _topologies){
     t.future.get();
   }
