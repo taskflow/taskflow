@@ -1,7 +1,10 @@
 # Cpp-Taskflow <img align="right" width="10%" src="image/cpp-taskflow_logo.png">
 
 [![Build Status](https://travis-ci.org/cpp-taskflow/cpp-taskflow.svg?branch=master)](https://travis-ci.org/cpp-taskflow/cpp-taskflow)
-[![Gitter chat][Gitter badge]][Gitter]
+[![Standard](image/cpp17.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
+[![Download](image/download.svg)](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip)
+[![AskMe](image/askme.svg)][Github issues]
+[![Insights](image/maintained.svg)][Github insights]
 [![License: MIT](./image/license_badge.svg)](./LICENSE)
 
 A fast C++ header-only library to help you quickly build parallel programs with complex task dependencies.
@@ -328,8 +331,8 @@ This is particular useful when you need additional data processing to reduce a r
 auto v = { {1, 5}, {6, 4}, {-6, 4} };
 int min = std::numeric_limits<int>::max();
 auto [S, T] = tf.transform_reduce(v.begin(), v.end(), min, 
-  [] (int l, int r)  { return std::min(l, r); },
-  [] (const Data& d) { return a*a + 2*a*b + b*b; }
+  [] (int l, int r)     { return std::min(l, r); },
+  [] (const auto& pair) { return std::min(p.first, p.second); }
 );
 ```
 
@@ -523,9 +526,10 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 [Martin Wong]:           https://ece.illinois.edu/directory/profile/mdfwong
 [Gitter]:                https://gitter.im/cpp-taskflow/Lobby
 [Gitter badge]:          ./image/gitter_badge.svg
-[Github releases]:       https://github.com/twhuang-uiuc/cpp-taskflow/releases
-[Github issues]:         https://github.com/twhuang-uiuc/cpp-taskflow/issues
-[Github pull requests]:  https://github.com/twhuang-uiuc/cpp-taskflow/pulls
+[Github releases]:       https://github.com/coo-taskflow/cpp-taskflow/releases
+[Github issues]:         https://github.com/cpp-taskflow/cpp-taskflow/issues
+[Github insights]:       https://github.com/cpp-taskflow/cpp-taskflow/pulse
+[Github pull requests]:  https://github.com/cpp-taskflow/cpp-taskflow/pulls
 [GraphViz]:              https://www.graphviz.org/
 [AwesomeGraphViz]:       https://github.com/CodeFreezr/awesome-graphviz
 [OpenMP Tasking]:        http://www.nersc.gov/users/software/programming-models/openmp/openmp-tasking/
@@ -533,3 +537,4 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 [OpenTimer]:             https://web.engr.illinois.edu/~thuang19/software/timer/OpenTimer.html
 [DtCraft]:               http://dtcraft.web.engr.illinois.edu/
 [email me]:              mailto:twh760812@gmail.com
+
