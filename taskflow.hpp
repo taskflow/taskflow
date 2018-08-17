@@ -1170,7 +1170,7 @@ std::string BasicTaskflow<Traits>::dump() const {
 
       os << " -> ";
       
-      if(s->name().empty()) os << '\"' << &node << '\"';
+      if(s->name().empty()) os << '\"' << s << '\"';
       else os << std::quoted(s->name());
 
       os << ";\n";
