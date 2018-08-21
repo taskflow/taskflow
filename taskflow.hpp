@@ -41,6 +41,7 @@
 #include <numeric>
 #include <iomanip>
 #include <cassert>
+#include <variant>
 
 namespace tf {
 
@@ -337,37 +338,168 @@ inline void Threadpool::shutdown() {
 
 //-------------------------------------------------------------------------------------------------
 // Taskflow definition
-//-------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------- 
+
+
+template <typename Traits>
+class BasicTaskflow;
+
+class FlowBuilder;
+
+using WorkType = std::function<void()>;
+using SubworkType = std::function<void(FlowBuilder&)>;
+
+// ------------------------------------------------------------------------------------------------
+
+// Struct: Node
+class Node {
+  
+  template <typename Traits> friend class BasicTaskflow;
+
+  public:
+
+  Node() = default;
+
+  template <typename C>
+  Node(C&&);
+
+  const std::string& name() const;
+  
+  void precede(Node&);
+
+  size_t num_successors() const;
+  size_t dependents() const;
+
+  std::string _name;
+
+  std::variant<WorkType, SubworkType> _work;
+  
+  std::vector<Node*> _successors;
+  std::atomic<int> _dependents {0};
+
+  private:
+
+    std::forward_list<Node> _subnodes;
+};
+
+// ------------------------------------------------------------------------------------------------
+
+// Class: Task
+class Task {
+
+  friend class FlowBuilder;
+  template<typename Traits> friend class BasicTaskflow;
+
+  public:
+    
+    Task(const Task&);
+    Task(Task&&);
+
+    Task& operator = (const Task&);
+
+    const std::string& name() const;
+
+    size_t num_successors() const;
+    size_t num_dependents() const;
+
+    Task& name(const std::string&);
+    Task& precede(Task);
+    Task& broadcast(std::vector<Task>&);
+    Task& broadcast(std::initializer_list<Task>);
+    Task& gather(std::vector<Task>&);
+    Task& gather(std::initializer_list<Task>);
+
+    template <typename C>
+    Task& work(C&&);
+  
+    template <typename... Bs>
+    Task& broadcast(Bs&&...);
+
+    template <typename... Bs>
+    Task& gather(Bs&&...);
+
+  private:
+
+    Task(Node*);
+
+    Node* _node {nullptr};
+
+    template<typename S>
+    void _broadcast(S&);
+
+    template<typename S>
+    void _gather(S&);
+};
+
+// ------------------------------------------------------------------------------------------------
+
+class FlowBuilder{
+  public:
+
+   FlowBuilder(std::forward_list<Node>& nodes, size_t num_workers) : 
+     _nodes {nodes}, _num_workers{num_workers} {
+   }    
+
+   template <typename C>
+   auto emplace(C&&);
+
+   template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
+   auto emplace(C&&...);
+
+   template <typename C>
+   auto silent_emplace(C&&);
+
+   template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
+   auto silent_emplace(C&&...);
+
+   template <typename I, typename C>
+   auto parallel_for(I, I, C&&, size_t = 1);
+
+   template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>* = nullptr>
+   auto parallel_for(T&, C&&, size_t = 1);
+
+   template <typename I, typename T, typename B>
+   std::pair<Task, Task> reduce(I, I, T&, B&&);
+
+   template <typename I, typename T>
+   auto reduce_min(I, I, T&);
+   
+   template <typename I, typename T>
+   auto reduce_max(I, I, T&);
+
+   template <typename I, typename T, typename B, typename U>
+   std::pair<Task, Task> transform_reduce(I, I, T&, B&&, U&&);
+
+   template <typename I, typename T, typename B, typename P, typename U>
+   std::pair<Task, Task> transform_reduce(I, I, T&, B&&, P&&, U&&);
+   
+   Task placeholder();
+   
+   std::shared_future<void> dispatch();
+
+   void precede(Task, Task);
+   void linearize(std::vector<Task>&);
+   void linearize(std::initializer_list<Task>);
+   void broadcast(Task, std::vector<Task>&);
+   void broadcast(Task, std::initializer_list<Task>);
+   void gather(std::vector<Task>&, Task);
+   void gather(std::initializer_list<Task>, Task);  
+
+  private:
+
+    std::forward_list<Node>& _nodes;
+    size_t _num_workers;
+
+    template <typename L>
+    void _linearize(L&);
+};
+
+// ------------------------------------------------------------------------------------------------
 
 // Class: BasicTaskflow
 template <typename Traits>
 class BasicTaskflow {
-
-  using WorkType = typename Traits::WorkType;
-  
-  // Struct: Node
-  struct Node {
-  
-    Node() = default;
-  
-    template <typename C>
-    Node(C&&);
-
-    const std::string& name() const;
-    
-    void precede(Node&);
-  
-    size_t num_successors() const;
-    size_t dependents() const;
-  
-    std::string _name;
-  
-    WorkType _work;
-    
-    std::vector<Node*> _successors;
-    std::atomic<int> _dependents {0};
-  };
-  
+ 
   // Struct: Topology
   struct Topology{
 
@@ -376,58 +508,12 @@ class BasicTaskflow {
     std::forward_list<Node> nodes;
     std::shared_future<void> future;
 
-    Node source;
-    Node target;
+    Node source ;
+    Node target ;
   };
 
   public:
   
-  // Class: Task
-  class Task {
-
-    friend class BasicTaskflow;
-  
-    public:
-      
-      Task(const Task&);
-      Task(Task&&);
-
-      Task& operator = (const Task&);
-  
-      const std::string& name() const;
-
-      size_t num_successors() const;
-      size_t num_dependents() const;
-
-      Task& name(const std::string&);
-      Task& precede(Task);
-      Task& broadcast(std::vector<Task>&);
-      Task& broadcast(std::initializer_list<Task>);
-      Task& gather(std::vector<Task>&);
-      Task& gather(std::initializer_list<Task>);
-
-      template <typename C>
-      Task& work(C&&);
-    
-      template <typename... Bs>
-      Task& broadcast(Bs&&...);
-
-      template <typename... Bs>
-      Task& gather(Bs&&...);
-
-    private:
-  
-      Task(Node*);
-  
-      Node* _node {nullptr};
-
-      template<typename S>
-      void _broadcast(S&);
-
-      template<typename S>
-      void _gather(S&);
-  };
-    
     BasicTaskflow();
     BasicTaskflow(unsigned);
     ~BasicTaskflow();
@@ -443,6 +529,7 @@ class BasicTaskflow {
 
     template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
     auto silent_emplace(C&&...);
+
 
     template <typename I, typename C>
     auto parallel_for(I, I, C&&, size_t = 1);
@@ -460,13 +547,13 @@ class BasicTaskflow {
     auto reduce_max(I, I, T&);
 
     template <typename I, typename T, typename B, typename U>
-    auto transform_reduce(I, I, T&, B&&, U&&);
+    std::pair<Task, Task> transform_reduce(I, I, T&, B&&, U&&);
 
     template <typename I, typename T, typename B, typename P, typename U>
-    auto transform_reduce(I, I, T&, B&&, P&&, U&&);
-    
+    std::pair<Task, Task> transform_reduce(I, I, T&, B&&, P&&, U&&);
+
     Task placeholder();
-    
+
     std::shared_future<void> dispatch();
 
     void precede(Task, Task);
@@ -475,7 +562,7 @@ class BasicTaskflow {
     void broadcast(Task, std::vector<Task>&);
     void broadcast(Task, std::initializer_list<Task>);
     void gather(std::vector<Task>&, Task);
-    void gather(std::initializer_list<Task>, Task);
+    void gather(std::initializer_list<Task>, Task);  
     void silent_dispatch();
     void wait_for_all();
     void wait_for_topologies();
@@ -500,36 +587,37 @@ class BasicTaskflow {
     void _linearize(L&);
 };
 
+//---------------------------------------------------------
+// Node
+//---------------------------------------------------------
+
 // Constructor
-template <typename Traits>
 template <typename C>
-BasicTaskflow<Traits>::Node::Node(C&& c) : _work {std::forward<C>(c)} {
+Node::Node(C&& c) : _work {std::forward<C>(c)} {
 }
 
 // Procedure:
-template <typename Traits>
-void BasicTaskflow<Traits>::Node::precede(Node& v) {
+void Node::precede(Node& v) {
   _successors.push_back(&v);
   v._dependents++;
 }
 
 // Function: num_successors
-template <typename Traits>
-size_t BasicTaskflow<Traits>::Node::num_successors() const {
+size_t Node::num_successors() const {
   return _successors.size();
 }
 
 // Function: dependents
-template <typename Traits>
-size_t BasicTaskflow<Traits>::Node::dependents() const {
+size_t Node::dependents() const {
   return _dependents.load();
 }
 
 // Function: name
-template <typename Traits>
-const std::string& BasicTaskflow<Traits>::Node::name() const {
+const std::string& Node::name() const {
   return _name;
 }
+
+
 
 //---------------------------------------------------------
 // BasicTaskflow::Topology
@@ -559,133 +647,477 @@ BasicTaskflow<Traits>::Topology::Topology(std::forward_list<Node>&& t) :
 }
 
 //---------------------------------------------------------
-// BasicTaskflow::Task
+// Task
 //---------------------------------------------------------
     
 // Constructor
-template <typename Traits>
-BasicTaskflow<Traits>::Task::Task(const Task& rhs) : _node {rhs._node} {
+Task::Task(const Task& rhs) : _node {rhs._node} {
 }
 
 // Function: precede
-template <typename Traits>
-typename BasicTaskflow<Traits>::Task& BasicTaskflow<Traits>::Task::precede(Task tgt) {
+Task& Task::precede(Task tgt) {
   _node->precede(*(tgt._node));
   return *this;
 }
 
 // Function: broadcast
-template <typename Traits>
 template <typename... Bs>
-typename BasicTaskflow<Traits>::Task& BasicTaskflow<Traits>::Task::broadcast(Bs&&... tgts) {
+Task& Task::broadcast(Bs&&... tgts) {
   (_node->precede(*(tgts._node)), ...);
   return *this;
 }
 
 // Procedure: _broadcast
-template <typename Traits>
 template <typename S>
-void BasicTaskflow<Traits>::Task::_broadcast(S& tgts) {
+void Task::_broadcast(S& tgts) {
   for(auto& to : tgts) {
     _node->precede(*(to._node));
   }
 }
       
 // Function: broadcast
-template <typename Traits>
-typename BasicTaskflow<Traits>::Task& BasicTaskflow<Traits>::Task::broadcast(std::vector<Task>& tgts) {
+Task& Task::broadcast(std::vector<Task>& tgts) {
   _broadcast(tgts);
   return *this;
 }
 
 // Function: broadcast
-template <typename Traits>
-typename BasicTaskflow<Traits>::Task& BasicTaskflow<Traits>::Task::broadcast(std::initializer_list<Task> tgts) {
+Task& Task::broadcast(std::initializer_list<Task> tgts) {
   _broadcast(tgts);
   return *this;
 }
 
 // Function: gather
-template <typename Traits>
 template <typename... Bs>
-typename BasicTaskflow<Traits>::Task& BasicTaskflow<Traits>::Task::gather(Bs&&... tgts) {
+Task& Task::gather(Bs&&... tgts) {
   (tgts.precede(*this), ...);
   return *this;
 }
 
 // Procedure: _gather
-template <typename Traits>
 template <typename S>
-void BasicTaskflow<Traits>::Task::_gather(S& tgts) {
+void Task::_gather(S& tgts) {
   for(auto& from : tgts) {
     from._node->precede(*_node);
   }
 }
 
 // Function: gather
-template <typename Traits>
-typename BasicTaskflow<Traits>::Task& BasicTaskflow<Traits>::Task::gather(std::vector<Task>& tgts) {
+Task& Task::gather(std::vector<Task>& tgts) {
   _gather(tgts);
   return *this;
 }
 
 // Function: gather
-template <typename Traits>
-typename BasicTaskflow<Traits>::Task& BasicTaskflow<Traits>::Task::gather(std::initializer_list<Task> tgts) {
+Task& Task::gather(std::initializer_list<Task> tgts) {
   _gather(tgts);
   return *this;
 }
 
 // Operator =
-template <typename Traits>
-typename BasicTaskflow<Traits>::Task& BasicTaskflow<Traits>::Task::operator = (const Task& rhs) {
+Task& Task::operator = (const Task& rhs) {
   _node = rhs._node;
   return *this;
 }
 
 // Constructor
-template <typename Traits>
-BasicTaskflow<Traits>::Task::Task(Task&& rhs) : _node{rhs._node} { 
+Task::Task(Task&& rhs) : _node{rhs._node} { 
   rhs._node = nullptr; 
 }
 
 // Function: work
-template <typename Traits>
 template <typename C>
-typename BasicTaskflow<Traits>::Task& BasicTaskflow<Traits>::Task::work(C&& c) {
+Task& Task::work(C&& c) {
   _node->_work = std::forward<C>(c);
   return *this;
 }
 
 // Function: name
-template <typename Traits>
-typename BasicTaskflow<Traits>::Task& BasicTaskflow<Traits>::Task::name(const std::string& name) {
+Task& Task::name(const std::string& name) {
   _node->_name = name;
   return *this;
 }
 
 // Function: name
-template <typename Traits>
-const std::string& BasicTaskflow<Traits>::Task::name() const {
+const std::string& Task::name() const {
   return _node->_name;
 }
 
 // Function: num_dependents
-template <typename Traits>
-size_t BasicTaskflow<Traits>::Task::num_dependents() const {
+size_t Task::num_dependents() const {
   return _node->_dependents;
 }
 
 // Function: num_successors
-template <typename Traits>
-size_t BasicTaskflow<Traits>::Task::num_successors() const {
+size_t Task::num_successors() const {
   return _node->_successors.size();
 }
 
 // Constructor
-template <typename Traits>
-BasicTaskflow<Traits>::Task::Task(Node* t) : _node {t} {
+Task::Task(Node* t) : _node {t} {
 }
+
+
+
+//---------------------------------------------------------
+// FlowBuilder
+//---------------------------------------------------------
+
+// Procedure: precede
+void FlowBuilder::precede(Task from, Task to) {
+    from._node->precede(*(to._node));
+}
+
+//// Procedure: _broadcast
+//template <typename S>
+//void FlowBuilder::_broadcast(S& tgts) {
+//  for(auto& to : tgts) {
+//    _node->precede(*(to._node));
+//  }
+//}
+
+// Procedure: broadcast
+void FlowBuilder::broadcast(Task from, std::vector<Task>& keys) {
+  from.broadcast(keys);
+}
+
+// Procedure: broadcast
+void FlowBuilder::broadcast(Task from, std::initializer_list<Task> keys) {
+  from.broadcast(keys);
+}
+
+//// Procedure: _gather
+//template <typename S>
+//void FlowBuilder::_gather(S& tgts) {
+//  for(auto& from : tgts) {
+//    from._node->precede(*_node);
+//  }
+//}
+
+
+// Function: gather
+void FlowBuilder::gather(std::vector<Task>& keys, Task to) {
+  to.gather(keys);
+}
+
+// Function: gather
+void FlowBuilder::gather(std::initializer_list<Task> keys, Task to) {
+  to.gather(keys);
+}
+
+// Function: placeholder
+Task FlowBuilder::placeholder() {
+  auto& node = _nodes.emplace_front();
+  return Task(&node);
+}
+
+// Function: emplace
+template <typename C>
+auto FlowBuilder::emplace(C&& c) {
+  
+  using R = std::invoke_result_t<C>;
+  
+  std::promise<R> p;
+  auto fu = p.get_future();
+
+  auto& node = _nodes.emplace_front([p=MoveOnCopy(std::move(p)), c=std::forward<C>(c)] () mutable { 
+    if constexpr(std::is_same_v<void, R>) {
+      c();
+      p.get().set_value();
+    }
+    else {
+      p.get().set_value(c());
+    }
+  });
+  
+  return std::make_pair(Task(&node), std::move(fu));
+}
+
+// Function: emplace
+template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
+auto FlowBuilder::emplace(C&&... cs) {
+  return std::make_tuple(emplace(std::forward<C>(cs))...);
+}
+
+// Function: silent_emplace
+template <typename C>
+auto FlowBuilder::silent_emplace(C&& c) {
+  auto& node = _nodes.emplace_front(std::forward<C>(c));
+  return Task(&node);
+}
+
+// Function: silent_emplace
+template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
+auto FlowBuilder::silent_emplace(C&&... cs) {
+  return std::make_tuple(silent_emplace(std::forward<C>(cs))...);
+}
+
+
+// Function: parallel_for    
+template <typename I, typename C>
+auto FlowBuilder::parallel_for(I beg, I end, C&& c, size_t g) {
+
+  using category = typename std::iterator_traits<I>::iterator_category;
+
+  if(g == 0) {
+    auto d = std::distance(beg, end);
+    auto w = std::max(size_t{1}, _num_workers);
+    g = (d + w - 1) / w;
+  }
+
+  auto source = placeholder();
+  auto target = placeholder();
+  
+  while(beg != end) {
+
+    auto e = beg;
+    
+    // Case 1: random access iterator
+    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
+      size_t r = std::distance(beg, end);
+      std::advance(e, std::min(r, g));
+    }
+    // Case 2: non-random access iterator
+    else {
+      for(size_t i=0; i<g && e != end; ++e, ++i);
+    }
+      
+    // Create a task
+    auto task = silent_emplace([beg, e, c] () mutable {
+      std::for_each(beg, e, c);
+    });
+    source.precede(task);
+    task.precede(target);
+
+    // adjust the pointer
+    beg = e;
+  }
+
+  return std::make_pair(source, target); 
+}
+
+// Function: parallel_for
+template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>*>
+auto FlowBuilder::parallel_for(T& t, C&& c, size_t group) {
+  return parallel_for(t.begin(), t.end(), std::forward<C>(c), group);
+}
+
+
+
+// Function: reduce_min
+// Find the minimum element over a range of items.
+template <typename I, typename T>
+auto FlowBuilder::reduce_min(I beg, I end, T& result) {
+  return reduce(beg, end, result, [] (const auto& l, const auto& r) {
+    return std::min(l, r);
+  });
+}
+
+// Function: reduce_max
+// Find the maximum element over a range of items.
+template <typename I, typename T>
+auto FlowBuilder::reduce_max(I beg, I end, T& result) {
+  return reduce(beg, end, result, [] (const auto& l, const auto& r) {
+    return std::max(l, r);
+  });
+}
+
+// Function: transform_reduce    
+template <typename I, typename T, typename B, typename U>
+std::pair<Task, Task> FlowBuilder::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop) {
+
+  using category = typename std::iterator_traits<I>::iterator_category;
+  
+  // Even partition
+  size_t d = std::distance(beg, end);
+  size_t w = std::max(size_t{1}, _num_workers);
+  size_t g = std::max((d + w - 1) / w, size_t{2});
+
+  auto source = placeholder();
+  auto target = placeholder();
+
+  std::vector<std::future<T>> futures;
+
+  while(beg != end) {
+
+    auto e = beg;
+    
+    // Case 1: random access iterator
+    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
+      size_t r = std::distance(beg, end);
+      std::advance(e, std::min(r, g));
+    }
+    // Case 2: non-random access iterator
+    else {
+      for(size_t i=0; i<g && e != end; ++e, ++i);
+    }
+      
+    // Create a task
+    auto [task, future] = emplace([beg, e, bop, uop] () mutable {
+      auto init = uop(*beg);
+      for(++beg; beg != e; ++beg) {
+        init = bop(std::move(init), uop(*beg));          
+      }
+      return init;
+    });
+    source.precede(task);
+    task.precede(target);
+    futures.push_back(std::move(future));
+
+    // adjust the pointer
+    beg = e;
+  }
+
+  // target synchronizer
+  target.work([&result, futures=MoveOnCopy{std::move(futures)}, bop] () {
+    for(auto& fu : futures.object) {
+      result = bop(std::move(result), fu.get());
+    }
+  });
+
+  return std::make_pair(source, target); 
+}
+
+// Function: transform_reduce    
+template <typename I, typename T, typename B, typename P, typename U>
+std::pair<Task, Task> FlowBuilder::transform_reduce(
+  I beg, I end, T& result, B&& bop, P&& pop, U&& uop
+) {
+
+  using category = typename std::iterator_traits<I>::iterator_category;
+  
+  // Even partition
+  size_t d = std::distance(beg, end);
+  size_t w = std::max(size_t{1}, _num_workers);
+  size_t g = std::max((d + w - 1) / w, size_t{2});
+
+  auto source = placeholder();
+  auto target = placeholder();
+
+  std::vector<std::future<T>> futures;
+
+  while(beg != end) {
+
+    auto e = beg;
+    
+    // Case 1: random access iterator
+    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
+      size_t r = std::distance(beg, end);
+      std::advance(e, std::min(r, g));
+    }
+    // Case 2: non-random access iterator
+    else {
+      for(size_t i=0; i<g && e != end; ++e, ++i);
+    }
+      
+    // Create a task
+    auto [task, future] = emplace([beg, e, uop, pop] () mutable {
+      auto init = uop(*beg);
+      for(++beg; beg != e; ++beg) {
+        init = pop(std::move(init), *beg);
+      }
+      return init;
+    });
+    source.precede(task);
+    task.precede(target);
+    futures.push_back(std::move(future));
+
+    // adjust the pointer
+    beg = e;
+  }
+
+  // target synchronizer
+  target.work([&result, futures=MoveOnCopy{std::move(futures)}, bop] () {
+    for(auto& fu : futures.object) {
+      result = bop(std::move(result), fu.get());
+    }
+  });
+
+  return std::make_pair(source, target); 
+}
+
+
+// Procedure: _linearize
+template <typename L>
+void FlowBuilder::_linearize(L& keys) {
+  std::adjacent_find(
+    keys.begin(), keys.end(), 
+    [] (auto& from, auto& to) {
+      from._node->precede(*(to._node));
+      return false;
+    }
+  );
+}
+
+// Procedure: linearize
+void FlowBuilder::linearize(std::vector<Task>& keys) {
+  _linearize(keys); 
+}
+
+// Procedure: linearize
+void FlowBuilder::linearize(std::initializer_list<Task> keys) {
+  _linearize(keys);
+}
+
+
+
+// Proceduer: reduce
+template <typename I, typename T, typename B>
+std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
+  
+  using category = typename std::iterator_traits<I>::iterator_category;
+  
+  size_t d = std::distance(beg, end);
+  size_t w = std::max(size_t{1}, _num_workers);
+  size_t g = std::max((d + w - 1) / w, size_t{2});
+
+  auto source = placeholder();
+  auto target = placeholder();
+
+  std::vector<std::future<T>> futures;
+  
+  while(beg != end) {
+
+    auto e = beg;
+    
+    // Case 1: random access iterator
+    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
+      size_t r = std::distance(beg, end);
+      std::advance(e, std::min(r, g));
+    }
+    // Case 2: non-random access iterator
+    else {
+      for(size_t i=0; i<g && e != end; ++e, ++i);
+    }
+      
+    // Create a task
+    auto [task, future] = emplace([beg, e, op] () mutable {
+      auto init = *beg;
+      for(++beg; beg != e; ++beg) {
+        init = op(std::move(init), *beg);          
+      }
+      return init;
+    });
+    source.precede(task);
+    task.precede(target);
+    futures.push_back(std::move(future));
+
+    // adjust the pointer
+    beg = e;
+  }
+  
+  // target synchronizer
+  target.work([&result, futures=MoveOnCopy{std::move(futures)}, op] () {
+    for(auto& fu : futures.object) {
+      result = op(std::move(result), fu.get());
+    }
+  });
+
+  return std::make_pair(source, target); 
+}
+
+
+
 
 //---------------------------------------------------------
 // BasicTaskflow
@@ -740,28 +1172,30 @@ void BasicTaskflow<Traits>::precede(Task from, Task to) {
 }
 
 // Procedure: _linearize
-template <typename Traits>
-template <typename L>
-void BasicTaskflow<Traits>::_linearize(L& keys) {
-  std::adjacent_find(
-    keys.begin(), keys.end(), 
-    [] (auto& from, auto& to) {
-      from._node->precede(*(to._node));
-      return false;
-    }
-  );
-}
+//template <typename Traits>
+//template <typename L>
+//void BasicTaskflow<Traits>::_linearize(L& keys) {
+//  std::adjacent_find(
+//    keys.begin(), keys.end(), 
+//    [] (auto& from, auto& to) {
+//      from._node->precede(*(to._node));
+//      return false;
+//    }
+//  );
+//}
 
 // Procedure: linearize
 template <typename Traits>
 void BasicTaskflow<Traits>::linearize(std::vector<Task>& keys) {
-  _linearize(keys); 
+  FlowBuilder(_nodes, num_workers()).linearize(keys);
+  //_linearize(keys); 
 }
 
 // Procedure: linearize
 template <typename Traits>
 void BasicTaskflow<Traits>::linearize(std::initializer_list<Task> keys) {
-  _linearize(keys);
+  FlowBuilder(_nodes, num_workers()).linearize(keys);
+  //_linearize(keys);
 }
 
 // Procedure: broadcast
@@ -775,6 +1209,7 @@ template <typename Traits>
 void BasicTaskflow<Traits>::broadcast(Task from, std::initializer_list<Task> keys) {
   from.broadcast(keys);
 }
+
 
 // Function: gather
 template <typename Traits>
@@ -836,161 +1271,81 @@ void BasicTaskflow<Traits>::wait_for_topologies() {
 
 // Function: placeholder
 template <typename Traits>
-typename BasicTaskflow<Traits>::Task BasicTaskflow<Traits>::placeholder() {
-  auto& node = _nodes.emplace_front();
-  return Task(&node);
+Task BasicTaskflow<Traits>::placeholder() {
+  return FlowBuilder(_nodes, num_workers()).placeholder();
+  //auto& node = _nodes.emplace_front();
+  //return Task(&node);
 }
 
 // Function: silent_emplace
 template <typename Traits>
 template <typename C>
 auto BasicTaskflow<Traits>::silent_emplace(C&& c) {
-  auto& node = _nodes.emplace_front(std::forward<C>(c));
-  return Task(&node);
+  return FlowBuilder(_nodes, num_workers()).silent_emplace(std::forward<C>(c));
+  //auto& node = _nodes.emplace_front(std::forward<C>(c));
+  //return Task(&node);
 }
 
 // Function: silent_emplace
 template <typename Traits>
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
 auto BasicTaskflow<Traits>::silent_emplace(C&&... cs) {
-  return std::make_tuple(silent_emplace(std::forward<C>(cs))...);
+  return FlowBuilder(_nodes, num_workers()).silent_emplace(std::forward<C>(cs)...);
+  //return std::make_tuple(silent_emplace(std::forward<C>(cs))...);
 }
 
 // Function: emplace
 template <typename Traits>
 template <typename C>
 auto BasicTaskflow<Traits>::emplace(C&& c) {
+  return FlowBuilder(_nodes, num_workers()).emplace(std::forward<C>(c));
   
-  using R = std::invoke_result_t<C>;
-  
-  std::promise<R> p;
-  auto fu = p.get_future();
+  //using R = std::invoke_result_t<C>;
+  //
+  //std::promise<R> p;
+  //auto fu = p.get_future();
 
-  auto& node = _nodes.emplace_front([p=MoveOnCopy(std::move(p)), c=std::forward<C>(c)] () mutable { 
-    if constexpr(std::is_same_v<void, R>) {
-      c();
-      p.get().set_value();
-    }
-    else {
-      p.get().set_value(c());
-    }
-  });
-  
-  return std::make_pair(Task(&node), std::move(fu));
+  //auto& node = _nodes.emplace_front([p=MoveOnCopy(std::move(p)), c=std::forward<C>(c)] () mutable { 
+  //  if constexpr(std::is_same_v<void, R>) {
+  //    c();
+  //    p.get().set_value();
+  //  }
+  //  else {
+  //    p.get().set_value(c());
+  //  }
+  //});
+  //
+  //return std::make_pair(Task(&node), std::move(fu));
 }
 
 // Function: emplace
 template <typename Traits>
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
 auto BasicTaskflow<Traits>::emplace(C&&... cs) {
-  return std::make_tuple(emplace(std::forward<C>(cs))...);
+  return FlowBuilder(_nodes, num_workers()).emplace(std::forward<C>(cs)...);
+  //return std::make_tuple(emplace(std::forward<C>(cs))...);
 }
 
 // Function: parallel_for    
 template <typename Traits>
 template <typename I, typename C>
 auto BasicTaskflow<Traits>::parallel_for(I beg, I end, C&& c, size_t g) {
-
-  using category = typename std::iterator_traits<I>::iterator_category;
-
-  if(g == 0) {
-    auto d = std::distance(beg, end);
-    auto w = std::max(size_t{1}, num_workers());
-    g = (d + w - 1) / w;
-  }
-
-  auto source = placeholder();
-  auto target = placeholder();
-  
-  while(beg != end) {
-
-    auto e = beg;
-    
-    // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
-      size_t r = std::distance(beg, end);
-      std::advance(e, std::min(r, g));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<g && e != end; ++e, ++i);
-    }
-      
-    // Create a task
-    auto task = silent_emplace([beg, e, c] () mutable {
-      std::for_each(beg, e, c);
-    });
-    source.precede(task);
-    task.precede(target);
-
-    // adjust the pointer
-    beg = e;
-  }
-
-  return std::make_pair(source, target); 
+  return FlowBuilder(_nodes, num_workers()).parallel_for(beg, end, std::forward<C>(c), g);
 }
 
 // Function: parallel_for
 template <typename Traits>
 template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>*>
 auto BasicTaskflow<Traits>::parallel_for(T& t, C&& c, size_t group) {
-  return parallel_for(t.begin(), t.end(), std::forward<C>(c), group);
+  return FlowBuilder(_nodes, num_workers()).parallel_for(t, std::forward<C>(c), group);
+  //return parallel_for(t.begin(), t.end(), std::forward<C>(c), group);
 }
 
 // Function: reduce 
 template <typename Traits>
 template <typename I, typename T, typename B>
 auto BasicTaskflow<Traits>::reduce(I beg, I end, T& result, B&& op) {
-  
-  using category = typename std::iterator_traits<I>::iterator_category;
-  
-  size_t d = std::distance(beg, end);
-  size_t w = std::max(size_t{1}, num_workers());
-  size_t g = std::max((d + w - 1) / w, size_t{2});
-
-  auto source = placeholder();
-  auto target = placeholder();
-
-  std::vector<std::future<T>> futures;
-  
-  while(beg != end) {
-
-    auto e = beg;
-    
-    // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
-      size_t r = std::distance(beg, end);
-      std::advance(e, std::min(r, g));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<g && e != end; ++e, ++i);
-    }
-      
-    // Create a task
-    auto [task, future] = emplace([beg, e, op] () mutable {
-      auto init = *beg;
-      for(++beg; beg != e; ++beg) {
-        init = op(std::move(init), *beg);          
-      }
-      return init;
-    });
-    source.precede(task);
-    task.precede(target);
-    futures.push_back(std::move(future));
-
-    // adjust the pointer
-    beg = e;
-  }
-  
-  // target synchronizer
-  target.work([&result, futures=MoveOnCopy{std::move(futures)}, op] () {
-    for(auto& fu : futures.object) {
-      result = op(std::move(result), fu.get());
-    }
-  });
-
-  return std::make_pair(source, target); 
+  return FlowBuilder(_nodes, num_workers()).reduce(beg, end, result, std::forward<B>(op));
 }
 
 // Function: reduce_min
@@ -1016,129 +1371,67 @@ auto BasicTaskflow<Traits>::reduce_max(I beg, I end, T& result) {
 // Function: transform_reduce    
 template <typename Traits>
 template <typename I, typename T, typename B, typename U>
-auto BasicTaskflow<Traits>::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop) {
-
-  using category = typename std::iterator_traits<I>::iterator_category;
-  
-  // Even partition
-  size_t d = std::distance(beg, end);
-  size_t w = std::max(size_t{1}, num_workers());
-  size_t g = std::max((d + w - 1) / w, size_t{2});
-
-  auto source = placeholder();
-  auto target = placeholder();
-
-  std::vector<std::future<T>> futures;
-
-  while(beg != end) {
-
-    auto e = beg;
-    
-    // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
-      size_t r = std::distance(beg, end);
-      std::advance(e, std::min(r, g));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<g && e != end; ++e, ++i);
-    }
-      
-    // Create a task
-    auto [task, future] = emplace([beg, e, bop, uop] () mutable {
-      auto init = uop(*beg);
-      for(++beg; beg != e; ++beg) {
-        init = bop(std::move(init), uop(*beg));          
-      }
-      return init;
-    });
-    source.precede(task);
-    task.precede(target);
-    futures.push_back(std::move(future));
-
-    // adjust the pointer
-    beg = e;
-  }
-
-  // target synchronizer
-  target.work([&result, futures=MoveOnCopy{std::move(futures)}, bop] () {
-    for(auto& fu : futures.object) {
-      result = bop(std::move(result), fu.get());
-    }
-  });
-
-  return std::make_pair(source, target); 
+std::pair<Task, Task> BasicTaskflow<Traits>::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop) {
+  return FlowBuilder(_nodes, num_workers()).
+           transform_reduce(beg, end, result, std::forward<B>(bop), std::forward<U>(uop));
 }
 
 // Function: transform_reduce    
 template <typename Traits>
 template <typename I, typename T, typename B, typename P, typename U>
-auto BasicTaskflow<Traits>::transform_reduce(
+std::pair<Task, Task> BasicTaskflow<Traits>::transform_reduce(
   I beg, I end, T& result, B&& bop, P&& pop, U&& uop
 ) {
-
-  using category = typename std::iterator_traits<I>::iterator_category;
-  
-  // Even partition
-  size_t d = std::distance(beg, end);
-  size_t w = std::max(size_t{1}, num_workers());
-  size_t g = std::max((d + w - 1) / w, size_t{2});
-
-  auto source = placeholder();
-  auto target = placeholder();
-
-  std::vector<std::future<T>> futures;
-
-  while(beg != end) {
-
-    auto e = beg;
-    
-    // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
-      size_t r = std::distance(beg, end);
-      std::advance(e, std::min(r, g));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<g && e != end; ++e, ++i);
-    }
-      
-    // Create a task
-    auto [task, future] = emplace([beg, e, uop, pop] () mutable {
-      auto init = uop(*beg);
-      for(++beg; beg != e; ++beg) {
-        init = pop(std::move(init), *beg);
-      }
-      return init;
-    });
-    source.precede(task);
-    task.precede(target);
-    futures.push_back(std::move(future));
-
-    // adjust the pointer
-    beg = e;
-  }
-
-  // target synchronizer
-  target.work([&result, futures=MoveOnCopy{std::move(futures)}, bop] () {
-    for(auto& fu : futures.object) {
-      result = bop(std::move(result), fu.get());
-    }
-  });
-
-  return std::make_pair(source, target); 
+  return FlowBuilder(_nodes, num_workers()).
+           transform_reduce(beg, end, result, std::forward<B>(bop), std::forward<P>(pop), std::forward<U>(uop));
 }
 
 // Procedure: _schedule
 template <typename Traits>
 void BasicTaskflow<Traits>::_schedule(Node& task) {
   _threadpool.silent_async([this, &task](){
+
     // Here we need to fetch the num_successors first to avoid the invalid memory
     // access caused by topology clear.
     const auto num_successors = task.num_successors();
-    if(task._work) {
-      task._work();
+    
+    // regular task type
+    if(auto index=task._work.index(); index == 0){
+      //const auto num_successors = task.num_successors();
+      if(auto &f = std::get<WorkType>(task._work); f != nullptr){
+        f();
+      }
     }
+    // subflow task type 
+    // The first time we enter into the subflow context, "subnodes" must be empty.
+    // After executing the user's callback on subflow, there will be at least one
+    // task node used as "super source". The second time we enter this context we 
+    // don't have to reexecute the work again.
+    else if (task._subnodes.empty()){
+
+      assert(std::holds_alternative<SubworkType>(task._work));
+
+      FlowBuilder fb(task._subnodes, num_workers());
+
+      std::invoke(std::get<SubworkType>(task._work), fb);
+
+      auto& super = task._subnodes.emplace_front([](){});
+
+      for(auto itr = std::next(task._subnodes.begin()); itr != task._subnodes.end(); ++itr) {
+        if(itr->num_successors() == 0) {
+          itr->precede(task);
+        }
+        if(itr->dependents() == 0) {
+          super.precede(*itr);
+        }
+      }
+
+      super.precede(task);
+      _schedule(super);
+
+      return;
+    }
+    
     // At this point, the task/node storage might be destructed.
     for(size_t i=0; i<num_successors; ++i) {
       if(--(task._successors[i]->_dependents) == 0) {
@@ -1186,7 +1479,7 @@ std::string BasicTaskflow<Traits>::dump() const {
 
 // Taskflow traits
 struct Traits {
-  using WorkType = std::function<void()>;
+  using ThreadpoolType = Threadpool;
 };
 
 using Taskflow = BasicTaskflow<Traits>;

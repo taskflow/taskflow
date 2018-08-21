@@ -20,8 +20,8 @@ TEST_CASE("Taskflow.Builder"){
   REQUIRE(tf.num_workers() == num_workers);
 
   std::atomic<int> counter {0};
-  std::vector<tf::Taskflow::Task> silent_tasks;
-  std::vector<std::pair<tf::Taskflow::Task, std::future<void>>> tasks;
+  std::vector<tf::Task> silent_tasks;
+  std::vector<std::pair<tf::Task, std::future<void>>> tasks;
 
   SUBCASE("Placeholder") {
     
@@ -172,7 +172,7 @@ TEST_CASE("Taskflow.Dispatch") {
   REQUIRE(tf.num_workers() == num_workers);
 
   std::atomic<int> counter {0};
-  std::vector<tf::Taskflow::Task> silent_tasks;
+  std::vector<tf::Task> silent_tasks;
     
   for(size_t i=0;i<num_tasks;i++){
     silent_tasks.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
@@ -357,6 +357,72 @@ TEST_CASE("Taskflow.ReduceMax") {
     }
   }
 }
+
+
+// --------------------------------------------------------
+// Testcase: Taskflow.Subflow
+// -------------------------------------------------------- 
+TEST_CASE("Taskflow.Subflow"){
+  constexpr auto num_workers = 4;
+  tf::Taskflow tf(num_workers);
+
+  std::vector<int> data(10, 1);
+  int sum {0};
+
+  {
+    std::atomic<size_t> count = 0;
+    tf.silent_emplace(
+      [&count, &data, &sum](tf::FlowBuilder& fb){
+
+        auto [src, tgt] = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
+        fb.silent_emplace([&sum](){REQUIRE(sum == 0);}).precede(src);
+        tgt.precede(fb.silent_emplace([&sum](){REQUIRE(sum == 10);}));
+
+        for(size_t i=0; i<10; i ++){
+          ++ count;
+        }
+
+        auto n = fb.silent_emplace(
+          [&count](tf::FlowBuilder& fb){
+            REQUIRE(count == 20);
+            ++ count;
+
+            auto prev = fb.silent_emplace(
+              [&count](){
+                REQUIRE(count == 21);
+                ++ count;
+              }
+            );
+
+            for(size_t i=0; i<10; i++){
+              auto next = fb.silent_emplace(
+                [&count, i=i](){
+                  REQUIRE(count == 22+i);
+                  ++ count;
+                }
+              );
+              prev.precede(next);
+              prev = next;
+            }
+          }
+        );
+        for(size_t i=0; i<10; i++){
+          fb.silent_emplace(
+            [&count](){
+              ++ count;
+            }
+          ).precede(n);
+        }
+
+      }
+    );
+
+    tf.wait_for_all();
+    REQUIRE(count == 32);
+    REQUIRE(sum == 10);
+  }
+}
+
 
 /*// --------------------------------------------------------
 // Testcase: Taskflow.ParallelRange

@@ -195,7 +195,7 @@ void taskflow(const std::vector<size_t>& D) {
   
   auto tbeg = std::chrono::steady_clock::now();
 
-  using builder_t  = typename tf::Taskflow::Task;
+  using builder_t  = typename tf::Task;
 
   tf::Taskflow tf;
   

@@ -4,6 +4,9 @@ MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 # Project name
 project(Cpp-TaskFlow)
 
+# Enable memory test
+include(CTest)
+
 # Turn on the verbose
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -19,7 +22,7 @@ message(STATUS "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS})
 message(STATUS "CMAKE_EXE_LINKER_FLAGS: " ${CMAKE_EXE_LINKER_FLAGS})
 
 # The version number
-set (TASKFLOW_MAJOR_VERSION "1")
+set (TASKFLOW_MAJOR_VERSION "2")
 set (TASKFLOW_MINOR_VERSION "0")
 
 # add the binary tree to the search path for include files
@@ -54,8 +57,13 @@ list(APPEND EXAMPLE_EXE_LINKER_FLAGS OpenMP::OpenMP_CXX)
 message(STATUS "EXAMPLE_CXX_FLAGS: " ${EXAMPLE_CXX_FLAGS})
 message(STATUS "EXAMPLE_EXE_LINKER_FLAGS: " ${EXAMPLE_EXE_LINKER_FLAGS})
 
+
+
 add_executable(simple example/simple.cpp)
 target_link_libraries(simple ${EXAMPLE_EXE_LINKER_FLAGS})
+
+add_executable(subflow example/subflow.cpp)
+target_link_libraries(subflow ${EXAMPLE_EXE_LINKER_FLAGS})
 
 add_executable(debug example/debug.cpp)
 target_link_libraries(debug ${EXAMPLE_EXE_LINKER_FLAGS})
