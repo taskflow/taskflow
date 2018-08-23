@@ -93,14 +93,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/unittest)
 add_executable(taskflow unittest/taskflow.cpp)
 target_link_libraries(taskflow Threads::Threads)
 
-
 add_test(builder ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Builder)
 add_test(dispatch ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Dispatch)
 add_test(parallel_for ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ParallelFor)
 add_test(reduce ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Reduce)
 add_test(reduce_min ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ReduceMin)
 add_test(reduce_max ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ReduceMax)
-#add_test(parallel_range ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ParallelRange)
+add_test(subflow ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Subflow)
 
 
 

@@ -11,7 +11,7 @@
 // --------------------------------------------------------
 // Testcase: Taskflow.Builder
 // --------------------------------------------------------
-TEST_CASE("Taskflow.Builder"){
+TEST_CASE("Taskflow.Builder" * doctest::timeout(5)){
 
   constexpr auto num_workers = 4;
   constexpr auto num_tasks = 100;
@@ -69,10 +69,14 @@ TEST_CASE("Taskflow.Builder"){
   SUBCASE("BinarySequence"){
     for(size_t i=0;i<num_tasks;i++){
       if(i%2 == 0){
-        tasks.emplace_back(tf.emplace([&counter]() { REQUIRE(counter == 0); counter += 1;}));
+        tasks.emplace_back(
+          tf.emplace([&counter]() { REQUIRE(counter == 0); counter += 1;})
+        );
       }
       else{
-        tasks.emplace_back(tf.emplace([&counter]() { REQUIRE(counter == 1); counter -= 1;}));
+        tasks.emplace_back(
+          tf.emplace([&counter]() { REQUIRE(counter == 1); counter -= 1;})
+        );
       }
       if(i>0){
         tasks[i-1].first.precede(tasks[i].first);
@@ -90,7 +94,9 @@ TEST_CASE("Taskflow.Builder"){
 
   SUBCASE("LinearCounter"){
     for(size_t i=0;i<num_tasks;i++){
-      tasks.emplace_back( tf.emplace([&counter, i]() { REQUIRE(counter == i); counter += 1;}) );
+      tasks.emplace_back(
+        tf.emplace([&counter, i]() { REQUIRE(counter == i); counter += 1;})
+      );
       if(i>0){
         tf.precede(std::get<0>(tasks[i-1]), std::get<0>(tasks[i]));
       }
@@ -103,7 +109,9 @@ TEST_CASE("Taskflow.Builder"){
   SUBCASE("Broadcast"){
     auto src = tf.silent_emplace([&counter]() {counter -= 1;});
     for(size_t i=1; i<num_tasks; i++){
-      silent_tasks.emplace_back(tf.silent_emplace([&counter]() {REQUIRE(counter == -1);}));
+      silent_tasks.emplace_back(
+        tf.silent_emplace([&counter]() {REQUIRE(counter == -1);})
+      );
     }
     tf.broadcast(src, silent_tasks);
     tf.wait_for_all();
@@ -128,7 +136,9 @@ TEST_CASE("Taskflow.Builder"){
       silent_tasks.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
     }
     tf.broadcast(src, silent_tasks);
-    auto dst = tf.silent_emplace([&counter, num_tasks]() { REQUIRE(counter == num_tasks);});
+    auto dst = tf.silent_emplace(
+      [&counter, num_tasks]() { REQUIRE(counter == num_tasks);}
+    );
     tf.gather(silent_tasks, dst);
     tf.wait_for_all();
     REQUIRE(tf.num_nodes() == 0);
@@ -136,7 +146,9 @@ TEST_CASE("Taskflow.Builder"){
 
   SUBCASE("Linearize"){
     for(size_t i=0;i<num_tasks;i++){
-      silent_tasks.emplace_back(tf.silent_emplace([&counter, i]() { REQUIRE(counter == i); counter += 1;}));
+      silent_tasks.emplace_back(
+        tf.silent_emplace([&counter, i]() { REQUIRE(counter == i); counter += 1;})
+      );
     }
     tf.linearize(silent_tasks);
     tf.wait_for_all();
@@ -147,11 +159,15 @@ TEST_CASE("Taskflow.Builder"){
   SUBCASE("Kite"){
     auto src = tf.silent_emplace([&counter]() {counter = 0;});
     for(size_t i=0;i<num_tasks;i++){
-      silent_tasks.emplace_back(tf.silent_emplace([&counter, i]() { REQUIRE(counter == i); counter += 1; }));
+      silent_tasks.emplace_back(
+        tf.silent_emplace([&counter, i]() { REQUIRE(counter == i); counter += 1; })
+      );
     }
     tf.broadcast(src, silent_tasks);
     tf.linearize(silent_tasks);
-    auto dst = tf.silent_emplace([&counter, num_tasks]() { REQUIRE(counter == num_tasks);});
+    auto dst = tf.silent_emplace(
+      [&counter, num_tasks]() { REQUIRE(counter == num_tasks);}
+    );
     tf.gather(silent_tasks, dst);
     tf.wait_for_all();
     REQUIRE(tf.num_nodes() == 0);
@@ -161,7 +177,7 @@ TEST_CASE("Taskflow.Builder"){
 // --------------------------------------------------------
 // Testcase: Taskflow.Dispatch
 // --------------------------------------------------------
-TEST_CASE("Taskflow.Dispatch") {
+TEST_CASE("Taskflow.Dispatch" * doctest::timeout(5)) {
     
   using namespace std::chrono_literals;
   
@@ -203,7 +219,7 @@ TEST_CASE("Taskflow.Dispatch") {
 // --------------------------------------------------------
 // Testcase: Taskflow.ParallelFor
 // --------------------------------------------------------
-TEST_CASE("Taskflow.ParallelFor") {
+TEST_CASE("Taskflow.ParallelFor" * doctest::timeout(5)) {
     
   using namespace std::chrono_literals;
 
@@ -254,7 +270,7 @@ TEST_CASE("Taskflow.ParallelFor") {
 // --------------------------------------------------------
 // Testcase: Taskflow.Reduce
 // --------------------------------------------------------
-TEST_CASE("Taskflow.Reduce") {
+TEST_CASE("Taskflow.Reduce" * doctest::timeout(5)) {
 
   const auto plus_test = [](const size_t num_workers, auto &&data){
     tf::Taskflow tf(num_workers);
@@ -316,7 +332,7 @@ TEST_CASE("Taskflow.Reduce") {
 // --------------------------------------------------------
 // Testcase: Taskflow.ReduceMin
 // --------------------------------------------------------
-TEST_CASE("Taskflow.ReduceMin") {
+TEST_CASE("Taskflow.ReduceMin" * doctest::timeout(5)) {
 
   for(int w=0; w<=4; w++) {
     tf::Taskflow tf(w);
@@ -339,7 +355,7 @@ TEST_CASE("Taskflow.ReduceMin") {
 // --------------------------------------------------------
 // Testcase: Taskflow.ReduceMax
 // --------------------------------------------------------
-TEST_CASE("Taskflow.ReduceMax") {
+TEST_CASE("Taskflow.ReduceMax" * doctest::timeout(5)) {
 
   for(int w=0; w<=4; w++) {
     tf::Taskflow tf(w);
@@ -358,76 +374,105 @@ TEST_CASE("Taskflow.ReduceMax") {
   }
 }
 
-
 // --------------------------------------------------------
 // Testcase: Taskflow.Subflow
 // -------------------------------------------------------- 
-TEST_CASE("Taskflow.Subflow"){
-  constexpr auto num_workers = 4;
-  tf::Taskflow tf(num_workers);
+TEST_CASE("Taskflow.Subflow" * doctest::timeout(5)){
 
-  std::vector<int> data(10, 1);
-  int sum {0};
+  // Empty subflow test
+  for(unsigned W=0; W<=4; ++W) {
+    tf::Taskflow tf(W);
+    
+    // empty group
+    auto subflow1 = tf.silent_emplace([] (auto& fb) {
+    });
+    
+    // create
+    auto subflow2 = tf.silent_emplace([] (auto& fb) {
+      fb.silent_emplace([] (auto& fb) {
+        fb.silent_emplace( [] (auto& fb) {
+        });
+      });
+    });
 
-  {
+    subflow1.precede(subflow2);
+  }
+
+  
+  // Nested subflow
+  for(unsigned W=0; W<=4; ++W) {
+
+    tf::Taskflow tf(W);
+
+    const std::vector<int> data(10, 1);
+    int sum {0};
+
     std::atomic<size_t> count = 0;
-    tf.silent_emplace(
-      [&count, &data, &sum](tf::FlowBuilder& fb){
+    tf.silent_emplace([&count, &data, &sum](auto& fb){
 
-        auto [src, tgt] = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
-        fb.silent_emplace([&sum](){REQUIRE(sum == 0);}).precede(src);
-        tgt.precede(fb.silent_emplace([&sum](){REQUIRE(sum == 10);}));
+      auto [src, tgt] = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
 
-        for(size_t i=0; i<10; i ++){
-          ++ count;
-        }
+      fb.silent_emplace([&sum] () { REQUIRE(sum == 0); }).precede(src);
 
-        auto n = fb.silent_emplace(
-          [&count](tf::FlowBuilder& fb){
-            REQUIRE(count == 20);
-            ++ count;
+      tgt.precede(fb.silent_emplace([&sum] () { REQUIRE(sum == 10); }));
 
-            auto prev = fb.silent_emplace(
-              [&count](){
-                REQUIRE(count == 21);
-                ++ count;
-              }
-            );
-
-            for(size_t i=0; i<10; i++){
-              auto next = fb.silent_emplace(
-                [&count, i=i](){
-                  REQUIRE(count == 22+i);
-                  ++ count;
-                }
-              );
-              prev.precede(next);
-              prev = next;
-            }
-          }
-        );
-        for(size_t i=0; i<10; i++){
-          fb.silent_emplace(
-            [&count](){
-              ++ count;
-            }
-          ).precede(n);
-        }
-
+      for(size_t i=0; i<10; i ++){
+        ++count;
       }
-    );
+
+      auto n = fb.silent_emplace([&count](auto& fb){
+
+        REQUIRE(count == 20);
+        ++count;
+
+        auto prev = fb.silent_emplace([&count](){
+          REQUIRE(count == 21);
+          ++count;
+        });
+
+        for(size_t i=0; i<10; i++){
+          auto next = fb.silent_emplace([&count, i](){
+            REQUIRE(count == 22+i);
+            ++count;
+          });
+          prev.precede(next);
+          prev = next;
+        }
+      });
+
+      for(size_t i=0; i<10; i++){
+        fb.silent_emplace([&count](){ ++count; }).precede(n);
+      }
+    });
 
     tf.wait_for_all();
     REQUIRE(count == 32);
     REQUIRE(sum == 10);
   }
+
+  // Fib
+  //for(unsigned W=0; W<=4; ++W) {
+
+  //  tf::Taskflow tf(W);
+
+  //  //for(int N=2; N<=40; ++N) {
+  //  //  tf.emplace([N] (auto& fb) {
+  //  //    if(N<=2) {
+  //  //      return N; 
+  //  //    }
+  //  //    
+  //  //  })
+  //  //}
+
+  //}
+  
 }
 
 
 /*// --------------------------------------------------------
 // Testcase: Taskflow.ParallelRange
 // --------------------------------------------------------
-TEST_CASE("Taskflow.ParallelRange") {
+TEST_CASE("Taskflow.ParallelRange" * doctest::timeout(5)) {
     
   using namespace std::chrono_literals;
 
