@@ -472,11 +472,7 @@ TEST_CASE("Taskflow.JoinedSubflow" * doctest::timeout(5)){
       subflow2.precede(subflow3);
       subflow3.precede(subflow4);
 
-      //tf.wait_for_all();
-
       tf.dispatch().get();
-      std::cout << tf.dump_topologies();
-      assert(false);
 
       REQUIRE(fu3v  == 10);
       REQUIRE(fu3v_ == 4);
@@ -651,11 +647,7 @@ TEST_CASE("Taskflow.DetachedSubflow" * doctest::timeout(5)) {
       subflow2.precede(subflow3);
       subflow3.precede(subflow4);
 
-      //tf.wait_for_all();
-
       tf.dispatch().get();
-      std::cout << tf.dump_topologies();
-      assert(false);
 
       REQUIRE(fu3v  == 10);
       REQUIRE(fu3v_ == 4);
