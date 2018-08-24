@@ -43,6 +43,7 @@
 #include <cassert>
 #include <variant>
 
+// Namespace of taskflow. -----------------------------------------------------
 namespace tf {
 
 // Procedure: throw_re
@@ -116,12 +117,12 @@ inline constexpr bool is_iterable_v = is_iterable<T>::value;
 // Utility
 //------------------------------------------------------------------------------
 
-// Struct: MoveOnCopy
+// Struct: MoC
 template <typename T>
-struct MoveOnCopy {
+struct MoC {
 
-  MoveOnCopy(T&& rhs) : object(std::move(rhs)) {}
-  MoveOnCopy(const MoveOnCopy& other) : object(std::move(other.object)) {}
+  MoC(T&& rhs) : object(std::move(rhs)) {}
+  MoC(const MoC& other) : object(std::move(other.object)) {}
 
   T& get() { return object; }
   
@@ -129,7 +130,18 @@ struct MoveOnCopy {
 };
 
 template <typename T>
-MoveOnCopy(T&&) -> MoveOnCopy<T>;
+MoC(T&&) -> MoC<T>;
+
+template <typename T, typename C, typename... Args>
+void set_promise_on_invoke(std::promise<T>& p, C&& c, Args&&... args) {
+  p.set_value(std::invoke(c, args...));
+}
+
+template <typename C, typename... Args>
+void set_promise_on_invoke(std::promise<void>&p, C&& c, Args&&... args) {
+  std::invoke(c, args...);
+  p.set_value();
+}
 
 //------------------------------------------------------------------------------
 // Threadpool definition
@@ -302,7 +314,7 @@ auto Threadpool::async(C&& c, Signal sig) {
       
       if constexpr(std::is_same_v<void, R>) {
         _task_queue.emplace_back(
-          [p = MoveOnCopy(std::move(p)), c = std::forward<C>(c), ret = sig]() mutable {
+          [p = MoC(std::move(p)), c = std::forward<C>(c), ret = sig]() mutable {
             c();
             p.get().set_value();
             return ret;
@@ -311,7 +323,7 @@ auto Threadpool::async(C&& c, Signal sig) {
       }
       else {
         _task_queue.emplace_back(
-          [p = MoveOnCopy(std::move(p)), c = std::forward<C>(c), ret = sig]() mutable {
+          [p = MoC(std::move(p)), c = std::forward<C>(c), ret = sig]() mutable {
             p.get().set_value(c());
             return ret;
           }
@@ -320,7 +332,7 @@ auto Threadpool::async(C&& c, Signal sig) {
       
       // This can cause MSVS not to compile ...
       /*_task_queue.emplace_back(
-        [p=MoveOnCopy(std::move(p)), c=std::forward<C>(c), ret=sig] () mutable { 
+        [p=MoC(std::move(p)), c=std::forward<C>(c), ret=sig] () mutable { 
           if constexpr(std::is_same_v<void, R>) {
             c();
             p.get().set_value();
@@ -403,7 +415,7 @@ class BasicNode {
     void precede(BasicNode&);
 
     size_t num_successors() const;
-    size_t dependents() const;
+    size_t num_dependents() const;
 
   private:
     
@@ -440,7 +452,7 @@ size_t BasicNode<FuncType>::num_successors() const {
 
 // Function: dependents
 template <template<typename, typename...> class FuncType>
-size_t BasicNode<FuncType>::dependents() const {
+size_t BasicNode<FuncType>::num_dependents() const {
   return _dependents.load();
 }
 
@@ -483,7 +495,7 @@ BasicTopology<NodeType>::BasicTopology(std::forward_list<NodeType>&& t) :
 
   _future = promise.get_future().share();
 
-  _target._work = [p=MoveOnCopy{std::move(promise)}] () mutable { 
+  _target._work = [p=MoC{std::move(promise)}] () mutable { 
     p.get().set_value(); 
   };
   
@@ -495,7 +507,7 @@ BasicTopology<NodeType>::BasicTopology(std::forward_list<NodeType>&& t) :
 
     node._topology = this;
 
-    if(node.dependents() == 0) {
+    if(node.num_dependents() == 0) {
       _source.precede(node);
     }
 
@@ -737,13 +749,16 @@ class BasicFlowBuilder {
     void broadcast(TaskType, std::initializer_list<TaskType>);
     void gather(std::vector<TaskType>&, TaskType);
     void gather(std::initializer_list<TaskType>, TaskType);  
-    void detach();
+    void detach(bool);
+
+    bool detached() const;
 
   private:
 
     std::forward_list<NodeType>& _nodes;
-
     size_t _num_workers;
+
+    bool _detached {false};
 
     template <typename L>
     void _linearize(L&);
@@ -756,6 +771,18 @@ BasicFlowBuilder<NodeType>::BasicFlowBuilder(
   _nodes       {nodes}, 
   _num_workers {num_workers} {
 }    
+
+// Procedure: detach
+template <typename NodeType>
+void BasicFlowBuilder<NodeType>::detach(bool flag) {
+  _detached = flag;
+}
+
+// Function: detached
+template <typename NodeType>
+bool BasicFlowBuilder<NodeType>::detached() const {
+  return _detached;
+}
 
 // Procedure: precede
 template <typename NodeType>
@@ -808,23 +835,63 @@ template <typename C>
 auto BasicFlowBuilder<NodeType>::emplace(C&& c) {
   
   using R = std::invoke_result_t<C>;
-  
+    
   std::promise<R> p;
   auto fu = p.get_future();
-
-  auto& node = _nodes.emplace_front(
-    [p=MoveOnCopy(std::move(p)), c=std::forward<C>(c)] () mutable { 
-      if constexpr(std::is_same_v<void, R>) {
-        c();
-        p.get().set_value();
-      }
-      else {
-        p.get().set_value(c());
-      }
-    }
-  );
   
-  return std::make_pair(TaskType(&node), std::move(fu));
+  // subflow task
+  if constexpr(std::is_invocable_v<C, BasicFlowBuilder&>) {
+  
+    if constexpr(std::is_same_v<void, R>) {
+      auto& node = _nodes.emplace_front([p=MoC(std::move(p)), c=std::forward<C>(c)]
+      (BasicFlowBuilder& fb) mutable {
+        if(fb._nodes.empty()) {
+          c(fb);
+          if(fb.detached()) {
+            p.get().set_value();
+          }
+        }
+        else {
+          p.get().set_value();
+        }
+      });
+      return std::make_pair(TaskType(&node), std::move(fu));
+    }
+    else {
+      auto& node = _nodes.emplace_front(
+      [p=MoC(std::move(p)), c=std::forward<C>(c), r=std::optional<R>()]
+      (BasicFlowBuilder& fb) mutable {
+        if(fb._nodes.empty()) {
+          if(fb.detached()) {
+            p.get().set_value(c(fb)); 
+          }
+          else {
+            r = c(fb);
+          }
+        }
+        else {
+          assert(r);
+          p.get().set_value(std::move(*r));
+        }
+      });
+      return std::make_pair(TaskType(&node), std::move(fu));
+    }
+  }
+  // regular task
+  else {
+    auto& node = _nodes.emplace_front(
+      [p=MoC(std::move(p)), c=std::forward<C>(c)] () mutable { 
+        if constexpr(std::is_same_v<void, R>) {
+          c();
+          p.get().set_value();
+        }
+        else {
+          p.get().set_value(c());
+        }
+      }
+    );
+    return std::make_pair(TaskType(&node), std::move(fu));
+  }
 }
 
 // Function: emplace
@@ -838,8 +905,21 @@ auto BasicFlowBuilder<NodeType>::emplace(C&&... cs) {
 template <typename NodeType>
 template <typename C>
 auto BasicFlowBuilder<NodeType>::silent_emplace(C&& c) {
-  auto& node = _nodes.emplace_front(std::forward<C>(c));
-  return TaskType(&node);
+  // subflow task
+  if constexpr(std::is_invocable_v<C, BasicFlowBuilder&>) {
+    auto& n = _nodes.emplace_front([c=std::forward<C>(c)] (BasicFlowBuilder& fb) {
+      // first time execution
+      if(fb._nodes.empty()) {
+        c(fb);
+      }
+    });
+    return TaskType(&n);
+  }
+  // regular task
+  else {
+    auto& n = _nodes.emplace_front(std::forward<C>(c));
+    return TaskType(&n);
+  }
 }
 
 // Function: silent_emplace
@@ -971,7 +1051,7 @@ auto BasicFlowBuilder<NodeType>::transform_reduce(
   }
 
   // target synchronizer
-  target.work([&result, futures=MoveOnCopy{std::move(futures)}, bop] () {
+  target.work([&result, futures=MoC{std::move(futures)}, bop] () {
     for(auto& fu : futures.object) {
       result = bop(std::move(result), fu.get());
     }
@@ -1030,7 +1110,7 @@ auto BasicFlowBuilder<NodeType>::transform_reduce(
   }
 
   // target synchronizer
-  target.work([&result, futures=MoveOnCopy{std::move(futures)}, bop] () {
+  target.work([&result, futures=MoC{std::move(futures)}, bop] () {
     for(auto& fu : futures.object) {
       result = bop(std::move(result), fu.get());
     }
@@ -1112,7 +1192,7 @@ auto BasicFlowBuilder<NodeType>::reduce(I beg, I end, T& result, B&& op) {
   }
   
   // target synchronizer
-  target.work([&result, futures=MoveOnCopy{std::move(futures)}, op] () {
+  target.work([&result, futures=MoC{std::move(futures)}, op] () {
     for(auto& fu : futures.object) {
       result = op(std::move(result), fu.get());
     }
@@ -1469,29 +1549,34 @@ void BasicTaskflow<Traits>::_schedule(NodeType& node) {
     // After executing the user's callback on subflow, there will be at least one
     // node node used as "super source". The second time we enter this context we 
     // don't have to reexecute the work again.
-    else if (node._children.empty()) {
-
+    else {
       assert(std::holds_alternative<SubworkType>(node._work));
-
+      
       FlowBuilderType fb(node._children, num_workers());
 
+      bool empty_graph = node._children.empty();
+
       std::invoke(std::get<SubworkType>(node._work), fb);
+      
+      // Need to create a subflow
+      if(empty_graph) {
 
-      auto& super = node._children.emplace_front([](){});
+        auto& S = node._children.emplace_front([](){});
 
-      for(auto i = std::next(node._children.begin()); i != node._children.end(); ++i) {
-        if(i->num_successors() == 0) {
-          i->precede(node);
+        for(auto i = std::next(node._children.begin()); i != node._children.end(); ++i) {
+          if(i->num_successors() == 0) {
+            i->precede(fb.detached() ? node._topology->_target : node);
+          }
+          if(i->num_dependents() == 0) {
+            S.precede(*i);
+          }
         }
-        if(i->dependents() == 0) {
-          super.precede(*i);
+        _schedule(S);
+
+        if(!fb.detached()) {
+          return;
         }
       }
-
-      super.precede(node);
-      _schedule(super);
-
-      return;
     }
     
     // At this point, the node/node storage might be destructed.
