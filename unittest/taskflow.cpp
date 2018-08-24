@@ -375,7 +375,7 @@ TEST_CASE("Taskflow.ReduceMax" * doctest::timeout(5)) {
 }
 
 // --------------------------------------------------------
-// Testcase: Taskflow.Subflow
+// Testcase: Taskflow.JoinedSubflow
 // -------------------------------------------------------- 
 TEST_CASE("Taskflow.JoinedSubflow" * doctest::timeout(5)){
 
@@ -545,7 +545,9 @@ TEST_CASE("Taskflow.JoinedSubflow" * doctest::timeout(5)){
   }
 }
 
-// Testcase: Subflow.Detach
+// --------------------------------------------------------
+// Testcase: Taskflow.DetachedSubflow
+// --------------------------------------------------------
 TEST_CASE("Taskflow.DetachedSubflow" * doctest::timeout(5)) {
   
   using namespace std::literals::chrono_literals;

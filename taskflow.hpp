@@ -20,8 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef TASKFLOW_HPP_
-#define TASKFLOW_HPP_
+#pragma once
 
 #include <iostream>
 #include <cstdio>
@@ -1756,14 +1755,6 @@ using Task        = typename Taskflow::TaskType;
 using FlowBuilder = typename Taskflow::FlowBuilderType;
 
 };  // end of namespace tf. ---------------------------------------------------
-
-
-#endif
-
-
-
-
-
 
 
 

@@ -4,6 +4,11 @@
 // We first create four tasks A, B, C, and D. During the execution
 // of B, it uses flow builder to creates another three tasks
 // B1, B2, and B3, and adds dependencies from B1 and B2 to B3.
+//
+// We use dispatch and get to wait until the graph finished.
+// Do so is difference from "wait_for_all" which will clean up the
+// finished graphs. After the graph finished, we dump the topology
+// for inspection.
 
 #include <taskflow.hpp>  
 
@@ -53,9 +58,13 @@ int main() {
   B.precede(D);  // D runs after B 
   C.precede(D);  // D runs after C 
                                    
-  tf.wait_for_all();  // block until finished
+  tf.dispatch().get();  // block until finished
+
+  // Now we can dump the topology
+  std::cout << tf.dump_topologies();
 
   return 0;
 }
+
 
 
