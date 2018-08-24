@@ -7,7 +7,7 @@
 
 #include <taskflow.hpp>  
 
-int main(){
+int main() {
 
   tf::Taskflow tf(std::thread::hardware_concurrency());
 
@@ -15,20 +15,21 @@ int main(){
     // Task A
     [] () { std::cout << "TaskA\n"; },              
     // Task B
-    [cap=std::vector<int>{1,2,3,4,5,6,7,8}] (auto& Subflow) {                             
+    [cap=std::vector<int>{1,2,3,4,5,6,7,8}] (auto& subflow) {                             
+
       std::cout << "TaskB\n";                                  
 
-      auto B1 = Subflow.silent_emplace([&]() { 
+      auto B1 = subflow.silent_emplace([&]() { 
         printf("  Subtask B1: reduce sum = %d\n", 
                 std::accumulate(cap.begin(), cap.end(), 0, std::plus<int>()));
       }).name("B1");        
       
-      auto B2 = Subflow.silent_emplace([&]() { 
+      auto B2 = subflow.silent_emplace([&]() { 
         printf("  Subtask B2: reduce multiply = %d\n", 
                 std::accumulate(cap.begin(), cap.end(), 1, std::multiplies<int>()));
       }).name("B2");        
                                                               
-      auto B3 = Subflow.silent_emplace([&]() { 
+      auto B3 = subflow.silent_emplace([&]() { 
         printf("  Subtask B3: reduce minus = %d\n", 
                 std::accumulate(cap.begin(), cap.end(), 0, std::minus<int>()));
       }).name("B3");        

@@ -21,6 +21,9 @@ int main(){
   B.precede(D);  // D runs after B                   //    |     +---+     |    
   C.precede(D);  // D runs after C                   //    +---->| C |-----+    
                                                      //          +---+          
+  
+  std::cout << tf.dump();
+
   tf.wait_for_all();  // block until finished
 
   return 0;

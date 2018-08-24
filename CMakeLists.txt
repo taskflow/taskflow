@@ -18,6 +18,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2")
 message(STATUS "CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
 message(STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER})
+message(STATUS "CMAKE_CXX_COMPILER_VERSION: " ${CMAKE_CXX_COMPILER_VERSION})
 message(STATUS "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS})
 message(STATUS "CMAKE_EXE_LINKER_FLAGS: " ${CMAKE_EXE_LINKER_FLAGS})
 
@@ -99,7 +100,8 @@ add_test(parallel_for ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Paral
 add_test(reduce ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Reduce)
 add_test(reduce_min ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ReduceMin)
 add_test(reduce_max ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ReduceMax)
-add_test(subflow ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Subflow)
+add_test(joined_subflow ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.JoinedSubflow)
+add_test(detached_subflow ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.DetachedSubflow)
 
 
 

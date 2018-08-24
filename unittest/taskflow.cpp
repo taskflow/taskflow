@@ -377,95 +377,293 @@ TEST_CASE("Taskflow.ReduceMax" * doctest::timeout(5)) {
 // --------------------------------------------------------
 // Testcase: Taskflow.Subflow
 // -------------------------------------------------------- 
-TEST_CASE("Taskflow.Subflow" * doctest::timeout(5)){
+TEST_CASE("Taskflow.JoinedSubflow" * doctest::timeout(5)){
 
-  // Empty subflow test
-  for(unsigned W=0; W<=4; ++W) {
-    tf::Taskflow tf(W);
-    
-    // empty group
-    auto subflow1 = tf.silent_emplace([] (auto& fb) {
-    });
-    
-    // create
-    auto subflow2 = tf.silent_emplace([] (auto& fb) {
-      fb.silent_emplace([] (auto& fb) {
-        fb.silent_emplace( [] (auto& fb) {
-        });
-      });
-    });
-
-    subflow1.precede(subflow2);
-  }
-
+  using namespace std::literals::chrono_literals;
   
-  // Nested subflow
-  for(unsigned W=0; W<=4; ++W) {
+  SUBCASE("Trivial") {
+    // Empty subflow test
+    for(unsigned W=0; W<=4; ++W) {
 
-    tf::Taskflow tf(W);
+      tf::Taskflow tf(W);
+      
+      // empty flow with future
+      tf::Task subflow3, subflow3_;
+      std::future<int> fu3, fu3_;
+      std::atomic<int> fu3v{0}, fu3v_{0};
+      
+      // empty flow
+      auto subflow1 = tf.silent_emplace([&] (auto& fb) {
+        fu3v++;
+      }).name("subflow1");
+      
+      // nested empty flow
+      auto subflow2 = tf.silent_emplace([&] (auto& fb) {
+        fu3v++;
+        fb.silent_emplace([&] (auto& fb) {
+          fu3v++;
+          fb.silent_emplace( [&] (auto& fb) {
+            fu3v++;
+          }).name("subflow2_1_1");
+        }).name("subflow2_1");
+      }).name("subflow2");
+      
+      std::tie(subflow3, fu3) = tf.emplace([&] (auto& fb) {
 
-    const std::vector<int> data(10, 1);
-    int sum {0};
+        REQUIRE(fu3v == 4);
 
-    std::atomic<size_t> count = 0;
-    tf.silent_emplace([&count, &data, &sum](auto& fb){
-
-      auto [src, tgt] = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
-
-      fb.silent_emplace([&sum] () { REQUIRE(sum == 0); }).precede(src);
-
-      tgt.precede(fb.silent_emplace([&sum] () { REQUIRE(sum == 10); }));
-
-      for(size_t i=0; i<10; i ++){
-        ++count;
-      }
-
-      auto n = fb.silent_emplace([&count](auto& fb){
-
-        REQUIRE(count == 20);
-        ++count;
-
-        auto prev = fb.silent_emplace([&count](){
-          REQUIRE(count == 21);
-          ++count;
+        fu3v++;
+        fu3v_++;
+        
+        std::tie(subflow3_, fu3_) = fb.emplace([&] (auto& fb) {
+          REQUIRE(fu3v_ == 3);
+          fu3v++;
+          fu3v_++;
+          return 200;
         });
+        subflow3_.name("subflow3_");
 
-        for(size_t i=0; i<10; i++){
-          auto next = fb.silent_emplace([&count, i](){
-            REQUIRE(count == 22+i);
-            ++count;
-          });
-          prev.precede(next);
-          prev = next;
+        // hereafter we use 100us to avoid dangling reference ...
+        auto s1 = fb.silent_emplace([&] () { 
+          fu3v_++;
+          fu3v++;
+          REQUIRE(fu3.valid());
+          REQUIRE(fu3.wait_for (100us) != std::future_status::ready);
+          REQUIRE(fu3_.valid());
+          REQUIRE(fu3_.wait_for(100us) != std::future_status::ready);
+        }).name("s1");
+        
+        auto s2 = fb.silent_emplace([&] () {
+          fu3v_++;
+          fu3v++;
+          REQUIRE(fu3.valid());
+          REQUIRE(fu3.wait_for (100us) != std::future_status::ready);
+          REQUIRE(fu3_.valid());
+          REQUIRE(fu3_.wait_for(100us) != std::future_status::ready);
+        }).name("s2");
+        
+        auto s3 = fb.silent_emplace([&] () {
+          fu3v++;
+          REQUIRE(fu3v_ == 4);
+          REQUIRE(fu3.valid());
+          REQUIRE(fu3.wait_for (100us) != std::future_status::ready);
+          REQUIRE(fu3_.valid());
+          REQUIRE(fu3_.wait_for(100us) == std::future_status::ready);
+        }).name("s3");
+
+        s1.precede(subflow3_);
+        s2.precede(subflow3_);
+        subflow3_.precede(s3);
+
+        REQUIRE(fu3v_ == 1);
+
+        return 100;
+      });
+      subflow3.name("subflow3");
+
+      // empty flow to test future
+      auto subflow4 = tf.silent_emplace([&] () {
+        REQUIRE(fu3v == 9);
+        REQUIRE(fu3.wait_for(std::chrono::seconds(0)) == std::future_status::ready);
+        fu3v++;
+      }).name("subflow4");
+
+      subflow1.precede(subflow2);
+      subflow2.precede(subflow3);
+      subflow3.precede(subflow4);
+
+      //tf.wait_for_all();
+
+      tf.dispatch().get();
+      std::cout << tf.dump_topologies();
+      assert(false);
+
+      REQUIRE(fu3v  == 10);
+      REQUIRE(fu3v_ == 4);
+      REQUIRE(fu3.get()  == 100);
+      REQUIRE(fu3_.get() == 200);
+    } // End of for loop
+  }
+  
+  // Mixed intra- and inter- operations
+  SUBCASE("Complex") {
+
+    for(unsigned W=0; W<=4; ++W) {
+
+      tf::Taskflow tf(W);
+
+      std::vector<int> data;
+      int sum {0};
+
+      auto A = tf.silent_emplace([&data] () {
+        for(int i=0; i<10; ++i) {
+          data.push_back(1);
         }
       });
 
-      for(size_t i=0; i<10; i++){
-        fb.silent_emplace([&count](){ ++count; }).precede(n);
-      }
-    });
+      std::atomic<size_t> count = 0;
 
-    tf.wait_for_all();
-    REQUIRE(count == 32);
-    REQUIRE(sum == 10);
+      auto B = tf.silent_emplace([&count, &data, &sum](auto& fb){
+
+        auto [src, tgt] = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
+
+        fb.silent_emplace([&sum] () { REQUIRE(sum == 0); }).precede(src);
+
+        tgt.precede(fb.silent_emplace([&sum] () { REQUIRE(sum == 10); }));
+
+        for(size_t i=0; i<10; i ++){
+          ++count;
+        }
+
+        auto n = fb.silent_emplace([&count](auto& fb){
+
+          REQUIRE(count == 20);
+          ++count;
+
+          auto prev = fb.silent_emplace([&count](){
+            REQUIRE(count == 21);
+            ++count;
+          });
+
+          for(size_t i=0; i<10; i++){
+            auto next = fb.silent_emplace([&count, i](){
+              REQUIRE(count == 22+i);
+              ++count;
+            });
+            prev.precede(next);
+            prev = next;
+          }
+        });
+
+        for(size_t i=0; i<10; i++){
+          fb.silent_emplace([&count](){ ++count; }).precede(n);
+        }
+      });
+
+      A.precede(B);
+
+      tf.wait_for_all();
+      REQUIRE(count == 32);
+      REQUIRE(sum == 10);
+    }
+  }
+}
+
+// Testcase: Subflow.Detach
+TEST_CASE("Taskflow.DetachedSubflow" * doctest::timeout(5)) {
+  
+  using namespace std::literals::chrono_literals;
+
+  SUBCASE("Trivial") {
+
+    // Empty subflow test
+    for(unsigned W=0; W<=4; ++W) {
+
+      tf::Taskflow tf(W);
+      
+      // empty flow with future
+      tf::Task subflow3, subflow3_;
+      std::future<int> fu3, fu3_;
+      std::atomic<int> fu3v{0}, fu3v_{0};
+      
+      // empty flow
+      auto subflow1 = tf.silent_emplace([&] (auto& fb) {
+        fu3v++;
+        fb.detach();
+      }).name("subflow1");
+      
+      // nested empty flow
+      auto subflow2 = tf.silent_emplace([&] (auto& fb) {
+        fu3v++;
+        fb.silent_emplace([&] (auto& fb) {
+          fu3v++;
+          fb.silent_emplace( [&] (auto& fb) {
+            fu3v++;
+          }).name("subflow2_1_1");
+          fb.detach();
+        }).name("subflow2_1");
+        fb.detach();
+      }).name("subflow2");
+      
+      std::tie(subflow3, fu3) = tf.emplace([&] (auto& fb) {
+
+        REQUIRE((fu3v >= 2 && fu3v <= 4));
+
+        fu3v++;
+        fu3v_++;
+        
+        std::tie(subflow3_, fu3_) = fb.emplace([&] (auto& fb) {
+          REQUIRE(fu3v_ == 3);
+          fu3v++;
+          fu3v_++;
+          return 200;
+        });
+        subflow3_.name("subflow3_");
+
+        // hereafter we use 100us to avoid dangling reference ...
+        auto s1 = fb.silent_emplace([&] () { 
+          fu3v_++;
+          fu3v++;
+          REQUIRE(fu3.valid());
+          REQUIRE(fu3.wait_for (100us) == std::future_status::ready);
+          REQUIRE(fu3_.valid());
+          REQUIRE(fu3_.wait_for(100us) != std::future_status::ready);
+        }).name("s1");
+        
+        auto s2 = fb.silent_emplace([&] () {
+          fu3v_++;
+          fu3v++;
+          REQUIRE(fu3.valid());
+          REQUIRE(fu3.wait_for (100us) == std::future_status::ready);
+          REQUIRE(fu3_.valid());
+          REQUIRE(fu3_.wait_for(100us) != std::future_status::ready);
+        }).name("s2");
+        
+        auto s3 = fb.silent_emplace([&] () {
+          fu3v++;
+          REQUIRE(fu3v_ == 4);
+          REQUIRE(fu3.valid());
+          REQUIRE(fu3.wait_for (100us) == std::future_status::ready);
+          REQUIRE(fu3_.valid());
+          REQUIRE(fu3_.wait_for(100us) == std::future_status::ready);
+        }).name("s3");
+
+        s1.precede(subflow3_);
+        s2.precede(subflow3_);
+        subflow3_.precede(s3);
+
+        REQUIRE(fu3v_ == 1);
+
+        fb.detach();
+
+        return 100;
+      });
+      subflow3.name("subflow3");
+
+      // empty flow to test future
+      auto subflow4 = tf.silent_emplace([&] () {
+        REQUIRE((fu3v >= 3 && fu3v <= 9));
+        REQUIRE(fu3.wait_for(std::chrono::seconds(0)) == std::future_status::ready);
+        fu3v++;
+      }).name("subflow4");
+
+      subflow1.precede(subflow2);
+      subflow2.precede(subflow3);
+      subflow3.precede(subflow4);
+
+      //tf.wait_for_all();
+
+      tf.dispatch().get();
+      std::cout << tf.dump_topologies();
+      assert(false);
+
+      REQUIRE(fu3v  == 10);
+      REQUIRE(fu3v_ == 4);
+      REQUIRE(fu3.get()  == 100);
+      REQUIRE(fu3_.get() == 200);
+    }
   }
 
-  // Fib
-  //for(unsigned W=0; W<=4; ++W) {
-
-  //  tf::Taskflow tf(W);
-
-  //  //for(int N=2; N<=40; ++N) {
-  //  //  tf.emplace([N] (auto& fb) {
-  //  //    if(N<=2) {
-  //  //      return N; 
-  //  //    }
-  //  //    
-  //  //  })
-  //  //}
-
-  //}
-  
 }
 
 

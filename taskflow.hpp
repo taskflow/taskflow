@@ -82,6 +82,9 @@ struct dependent_false {
   static constexpr bool value = false; 
 };
 
+template <typename... T>
+constexpr auto dependent_false_v = dependent_false<T...>::value;
+
 // Struct: is_iterator
 template <typename T, typename = void>
 struct is_iterator {
@@ -417,6 +420,8 @@ class BasicNode {
     size_t num_successors() const;
     size_t num_dependents() const;
 
+    std::string dump() const;
+
   private:
     
     std::string _name;
@@ -429,6 +434,8 @@ class BasicNode {
     std::forward_list<BasicNode> _children;
 
     TopologyType* _topology {nullptr};
+
+    void _dump(std::ostream&) const;
 };
 
 // Constructor
@@ -462,6 +469,59 @@ const std::string& BasicNode<FuncType>::name() const {
   return _name;
 }
 
+// Function: dump
+template <template<typename, typename...> class FuncType>
+std::string BasicNode<FuncType>::dump() const {
+  std::ostringstream os;  
+  _dump(os);
+  return os.str();
+}
+
+// Function: _dump
+template <template<typename, typename...> class FuncType>
+void BasicNode<FuncType>::_dump(std::ostream& os) const {
+  
+  if(_name.empty()) os << '\"' << this << '\"';
+  else os << std::quoted(_name);
+  os << ";\n";
+
+  for(const auto s : _successors) {
+
+    if(_name.empty()) os << '\"' << this << '\"';
+    else os << std::quoted(_name);
+
+    os << " -> ";
+    
+    if(s->name().empty()) os << '\"' << s << '\"';
+    else os << std::quoted(s->name());
+
+    os << ";\n";
+  }
+  
+  if(!_children.empty()) {
+
+    os << "subgraph cluster_";
+    if(_name.empty()) os << this;
+    else os << _name;
+    os << " {\n";
+
+    os << "label = \"Subflow ";
+    if(_name.empty()) os << this;
+    else os << _name;
+
+    os << "\";\n";
+
+    //// Skip the super source
+    //for(auto n=std::next(_children.begin()); n!=_children.end(); n++){
+    //  n->_dump(os);
+    //}
+    for(const auto& n : _children) {
+      n._dump(os);
+    }
+    os << "}\n";
+  }
+}
+
 // ----------------------------------------------------------------------------
   
 // class: BasicTopology
@@ -474,6 +534,8 @@ class BasicTopology {
 
     BasicTopology(std::forward_list<NodeType>&&);
 
+    std::string dump() const;
+
   private:
 
     std::forward_list<NodeType> _nodes;
@@ -481,6 +543,8 @@ class BasicTopology {
 
     NodeType _source;
     NodeType _target;
+
+    void _dump(std::ostream&) const;
 };
 
 // Constructor
@@ -517,6 +581,29 @@ BasicTopology<NodeType>::BasicTopology(std::forward_list<NodeType>&& t) :
   }
 }
 
+// Procedure: _dump
+template <typename NodeType>
+void BasicTopology<NodeType>::_dump(std::ostream& os) const {
+  
+  os << "digraph Topology {\n"
+     << _source.dump() 
+     << _target.dump();
+
+  for(const auto& node : _nodes) {
+    os << node.dump();
+  }
+
+  os << "}\n";
+}
+  
+// Function: dump
+template <typename NodeType>
+std::string BasicTopology<NodeType>::dump() const { 
+  std::ostringstream os;
+  _dump(os);
+  return os.str();
+}
+
 // ----------------------------------------------------------------------------
 
 // Class: BasicTask
@@ -528,7 +615,8 @@ class BasicTask {
 
   public:
     
-    BasicTask(NodeType*);
+    BasicTask() = default;
+    BasicTask(NodeType&);
     BasicTask(const BasicTask&);
     BasicTask(BasicTask&&);
 
@@ -568,7 +656,7 @@ class BasicTask {
 
 // Constructor
 template <typename NodeType>
-BasicTask<NodeType>::BasicTask(NodeType* t) : _node {t} {
+BasicTask<NodeType>::BasicTask(NodeType& t) : _node {&t} {
 }
 
 // Constructor
@@ -749,9 +837,12 @@ class BasicFlowBuilder {
     void broadcast(TaskType, std::initializer_list<TaskType>);
     void gather(std::vector<TaskType>&, TaskType);
     void gather(std::initializer_list<TaskType>, TaskType);  
-    void detach(bool);
+    void detach();
+    void join();
 
     bool detached() const;
+
+    size_t num_nodes() const;
 
   private:
 
@@ -774,8 +865,20 @@ BasicFlowBuilder<NodeType>::BasicFlowBuilder(
 
 // Procedure: detach
 template <typename NodeType>
-void BasicFlowBuilder<NodeType>::detach(bool flag) {
-  _detached = flag;
+void BasicFlowBuilder<NodeType>::detach() {
+  _detached = true;
+}
+
+// Procedure: join
+template <typename NodeType>
+void BasicFlowBuilder<NodeType>::join() {
+  _detached = false;
+}
+
+// Procedure: num_nodes
+template <typename NodeType>
+size_t BasicFlowBuilder<NodeType>::num_nodes() const {
+  return std::distance(_nodes.begin(), _nodes.end());
 }
 
 // Function: detached
@@ -826,21 +929,20 @@ void BasicFlowBuilder<NodeType>::gather(
 template <typename NodeType>
 auto BasicFlowBuilder<NodeType>::placeholder() {
   auto& node = _nodes.emplace_front();
-  return TaskType(&node);
+  return TaskType(node);
 }
 
 // Function: emplace
 template <typename NodeType>
 template <typename C>
 auto BasicFlowBuilder<NodeType>::emplace(C&& c) {
-  
-  using R = std::invoke_result_t<C>;
     
-  std::promise<R> p;
-  auto fu = p.get_future();
-  
   // subflow task
   if constexpr(std::is_invocable_v<C, BasicFlowBuilder&>) {
+
+    using R = std::invoke_result_t<C, BasicFlowBuilder&>;
+    std::promise<R> p;
+    auto fu = p.get_future();
   
     if constexpr(std::is_same_v<void, R>) {
       auto& node = _nodes.emplace_front([p=MoC(std::move(p)), c=std::forward<C>(c)]
@@ -855,18 +957,16 @@ auto BasicFlowBuilder<NodeType>::emplace(C&& c) {
           p.get().set_value();
         }
       });
-      return std::make_pair(TaskType(&node), std::move(fu));
+      return std::make_pair(TaskType(node), std::move(fu));
     }
     else {
       auto& node = _nodes.emplace_front(
       [p=MoC(std::move(p)), c=std::forward<C>(c), r=std::optional<R>()]
       (BasicFlowBuilder& fb) mutable {
         if(fb._nodes.empty()) {
+          r = c(fb);
           if(fb.detached()) {
-            p.get().set_value(c(fb)); 
-          }
-          else {
-            r = c(fb);
+            p.get().set_value(std::move(*r)); 
           }
         }
         else {
@@ -874,11 +974,16 @@ auto BasicFlowBuilder<NodeType>::emplace(C&& c) {
           p.get().set_value(std::move(*r));
         }
       });
-      return std::make_pair(TaskType(&node), std::move(fu));
+      return std::make_pair(TaskType(node), std::move(fu));
     }
   }
   // regular task
-  else {
+  else if constexpr(std::is_invocable_v<C>) {
+
+    using R = std::invoke_result_t<C>;
+    std::promise<R> p;
+    auto fu = p.get_future();
+
     auto& node = _nodes.emplace_front(
       [p=MoC(std::move(p)), c=std::forward<C>(c)] () mutable { 
         if constexpr(std::is_same_v<void, R>) {
@@ -890,7 +995,10 @@ auto BasicFlowBuilder<NodeType>::emplace(C&& c) {
         }
       }
     );
-    return std::make_pair(TaskType(&node), std::move(fu));
+    return std::make_pair(TaskType(node), std::move(fu));
+  }
+  else {
+    static_assert(dependent_false_v<C>, "invalid task work type");
   }
 }
 
@@ -913,12 +1021,15 @@ auto BasicFlowBuilder<NodeType>::silent_emplace(C&& c) {
         c(fb);
       }
     });
-    return TaskType(&n);
+    return TaskType(n);
   }
   // regular task
-  else {
+  else if constexpr(std::is_invocable_v<C>) {
     auto& n = _nodes.emplace_front(std::forward<C>(c));
-    return TaskType(&n);
+    return TaskType(n);
+  }
+  else {
+    static_assert(dependent_false_v<C>, "invalid task work type");
   }
 }
 
@@ -1275,6 +1386,7 @@ class BasicTaskflow {
     size_t num_topologies() const;
 
     std::string dump() const;
+    std::string dump_topologies() const;
 
   private:
 
@@ -1563,14 +1675,26 @@ void BasicTaskflow<Traits>::_schedule(NodeType& node) {
 
         auto& S = node._children.emplace_front([](){});
 
+        S._topology = node._topology;
+
         for(auto i = std::next(node._children.begin()); i != node._children.end(); ++i) {
+
+          i->_topology = node._topology;
+
           if(i->num_successors() == 0) {
             i->precede(fb.detached() ? node._topology->_target : node);
           }
+
           if(i->num_dependents() == 0) {
             S.precede(*i);
           }
         }
+        
+        // this is for the case where subflow graph might be empty
+        if(!fb.detached()) {
+          S.precede(node);
+        }
+
         _schedule(S);
 
         if(!fb.detached()) {
@@ -1588,6 +1712,19 @@ void BasicTaskflow<Traits>::_schedule(NodeType& node) {
   });
 }
 
+// Function: dump_topology
+template <typename Traits>
+std::string BasicTaskflow<Traits>::dump_topologies() const {
+  
+  std::ostringstream os;
+
+  for(const auto& tpg : _topologies) {
+    os << tpg.dump();
+  }
+  
+  return os.str();
+}
+
 // Function: dump
 // Dumps the taskflow in graphviz. The result can be viewed at http://www.webgraphviz.com/.
 template <typename Traits>
@@ -1598,26 +1735,10 @@ std::string BasicTaskflow<Traits>::dump() const {
   os << "digraph Taskflow {\n";
   
   for(const auto& node : _nodes) {
-    
-    if(node.name().empty()) os << '\"' << &node << '\"';
-    else os << std::quoted(node.name());
-    os << ";\n";
-
-    for(const auto s : node._successors) {
-
-      if(node.name().empty()) os << '\"' << &node << '\"';
-      else os << std::quoted(node.name());
-
-      os << " -> ";
-      
-      if(s->name().empty()) os << '\"' << s << '\"';
-      else os << std::quoted(s->name());
-
-      os << ";\n";
-    }
+    node._dump(os);
   }
 
-  os << "}";
+  os << "}\n";
   
   return os.str();
 }
