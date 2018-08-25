@@ -39,6 +39,8 @@ include(FindOpenMP)
 if(OpenMP_CXX_FOUND)
   message(STATUS "OpenMP_CXX_SPEC_DATE: ${OpenMP_CXX_SPEC_DATE}")
   message(STATUS "OpenMP_CXX_VERSION: ${OpenMP_CXX_VERSION}")
+  message(STATUS "OpenMP_CXX_FLAGS: ${OpenMP_CXX_FLAGS}")
+  message(STATUS "OpenMP_CXX_LIB_NAMES: ${OpenMP_CXX_LIB_NAMES}")
 else(OpenMP_CXX_FOUND)
   message(WARNING "OpenMP CXX not found")
 endif(OpenMP_CXX_FOUND)
@@ -51,36 +53,35 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
 
 set(EXAMPLE_CXX_FLAGS ${OpenMP_CXX_FLAGS})
 
-list(APPEND EXAMPLE_EXE_LINKER_FLAGS "")
-list(APPEND EXAMPLE_EXE_LINKER_FLAGS Threads::Threads)
-list(APPEND EXAMPLE_EXE_LINKER_FLAGS OpenMP::OpenMP_CXX)
+#list(APPEND EXAMPLE_EXE_LINKER_FLAGS "")
+#list(APPEND EXAMPLE_EXE_LINKER_FLAGS Threads::Threads)
+#list(APPEND EXAMPLE_EXE_LINKER_FLAGS OpenMP::OpenMP_CXX)
 
 message(STATUS "EXAMPLE_CXX_FLAGS: " ${EXAMPLE_CXX_FLAGS})
 message(STATUS "EXAMPLE_EXE_LINKER_FLAGS: " ${EXAMPLE_EXE_LINKER_FLAGS})
 
 add_executable(simple example/simple.cpp)
-target_link_libraries(simple ${EXAMPLE_EXE_LINKER_FLAGS})
+target_link_libraries(simple Threads::Threads)
 
 add_executable(subflow example/subflow.cpp)
-target_link_libraries(subflow ${EXAMPLE_EXE_LINKER_FLAGS})
+target_link_libraries(subflow Threads::Threads)
 
 add_executable(debug example/debug.cpp)
-target_link_libraries(debug ${EXAMPLE_EXE_LINKER_FLAGS})
+target_link_libraries(debug Threads::Threads)
 
 add_executable(emplace example/emplace.cpp)
-target_link_libraries(emplace ${EXAMPLE_EXE_LINKER_FLAGS})
+target_link_libraries(emplace Threads::Threads)
 
 add_executable(reduce example/reduce.cpp)
-target_link_libraries(reduce ${EXAMPLE_EXE_LINKER_FLAGS})
+target_link_libraries(reduce Threads::Threads)
 
 add_executable(matrix example/matrix.cpp)
-target_compile_options(matrix PRIVATE ${EXAMPLE_CXX_FLAGS})
-target_link_libraries(matrix ${EXAMPLE_EXE_LINKER_FLAGS})
+target_compile_options(matrix PRIVATE ${OpenMP_CXX_FLAGS})
+target_link_libraries(matrix Threads::Threads OpenMP::OpenMP_CXX)
 
 add_executable(parallel_for example/parallel_for.cpp)
-target_compile_options(parallel_for PRIVATE ${EXAMPLE_CXX_FLAGS})
-target_link_libraries(parallel_for ${EXAMPLE_EXE_LINKER_FLAGS})
-
+target_compile_options(parallel_for PRIVATE ${OpenMP_CXX_FLAGS})
+target_link_libraries(parallel_for Threads::Threads OpenMP::OpenMP_CXX)
 
 # -----------------------------------------------------------------------------
 # Unittest
