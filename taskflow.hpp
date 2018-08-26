@@ -866,7 +866,23 @@ auto BasicTaskflow<Traits>::emplace(C&& c) {
   std::promise<R> p;
   auto fu = p.get_future();
 
-  auto& node = _nodes.emplace_front([p=MoveOnCopy(std::move(p)), c=std::forward<C>(c)] () mutable { 
+  Node* nodePtr = nullptr;
+  if constexpr(std::is_same_v<void, R>) {
+    auto& node = _nodes.emplace_front([p = MoveOnCopy(std::move(p)), c = std::forward<C>(c)]() mutable {
+      c();
+      p.get().set_value();
+    });
+    nodePtr = &node;
+  }
+  else {
+    auto& node = _nodes.emplace_front([p = MoveOnCopy(std::move(p)), c = std::forward<C>(c)]() mutable {
+      p.get().set_value(c());
+    });
+    nodePtr = &node;
+  }
+
+  // This can cause MSVS not to compile ...
+  /*auto& node = _nodes.emplace_front([p=MoveOnCopy(std::move(p)), c=std::forward<C>(c)] () mutable {
     if constexpr(std::is_same_v<void, R>) {
       c();
       p.get().set_value();
@@ -874,9 +890,9 @@ auto BasicTaskflow<Traits>::emplace(C&& c) {
     else {
       p.get().set_value(c());
     }
-  });
+  });*/
   
-  return std::make_pair(Task(&node), std::move(fu));
+  return std::make_pair(Task(nodePtr), std::move(fu));
 }
 
 // Function: emplace
