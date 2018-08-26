@@ -1762,7 +1762,7 @@ std::string BasicTaskflow<Traits>::dump_topologies() const {
   std::ostringstream os;
 
   for(const auto& tpg : _topologies) {
-    os << tpg.dump();
+    tpg._dump(os);
   }
   
   return os.str();
@@ -1796,7 +1796,6 @@ struct TaskflowTraits {
 
 using Taskflow       = BasicTaskflow<TaskflowTraits>;
 using Task           = typename Taskflow::TaskType;
-using FlowBuilder    = typename Taskflow::FlowBuilderType;
 using SubflowBuilder = typename Taskflow::SubflowBuilderType;
 
 };  // end of namespace tf. ---------------------------------------------------
