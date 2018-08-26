@@ -492,7 +492,6 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Vladyslav](https://github.com/innermous) fixed comment errors in README.md and examples.
 - [vblanco20-1](https://github.com/vblanco20-1) fixed compilation error on Microsoft Visual Studio.
 
-See also the list of [contributors](./CONTRIBUTORS.txt) who participated in this project. 
 Please [let me know][email me] if I forgot someone!
 
 # Who is Using Cpp-Taskflow?

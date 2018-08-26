@@ -10,6 +10,23 @@ include(CTest)
 # Turn on the verbose
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
+# Compiler vendors
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+  if(${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS "7.2")
+    message(FATAL_ERROR "\nCpp-Taskflow requires g++ at least v7.2")
+  endif()
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+  if(${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS "5.0")
+    message(FATAL_ERROR "\nCpp-Taskflow requires clang++ at least v5.0")
+  endif()
+else()
+  message(FATAL_ERROR "\n\
+Cpp-Taskflow currently supports the following compilers:\n\
+- g++ v7.2 or above\n\
+- clang++ v5.0\n\
+")
+endif()
+
 # CXX target properties
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -52,10 +69,6 @@ message(STATUS "Building examples ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
 
 set(EXAMPLE_CXX_FLAGS ${OpenMP_CXX_FLAGS})
-
-#list(APPEND EXAMPLE_EXE_LINKER_FLAGS "")
-#list(APPEND EXAMPLE_EXE_LINKER_FLAGS Threads::Threads)
-#list(APPEND EXAMPLE_EXE_LINKER_FLAGS OpenMP::OpenMP_CXX)
 
 message(STATUS "EXAMPLE_CXX_FLAGS: " ${EXAMPLE_CXX_FLAGS})
 message(STATUS "EXAMPLE_EXE_LINKER_FLAGS: " ${EXAMPLE_EXE_LINKER_FLAGS})

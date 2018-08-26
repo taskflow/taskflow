@@ -23,8 +23,6 @@
 #pragma once
 
 #include <iostream>
-#include <cstdio>
-#include <cstdlib>
 #include <mutex>
 #include <deque>
 #include <vector>
@@ -40,7 +38,17 @@
 #include <numeric>
 #include <iomanip>
 #include <cassert>
-#include <variant>
+
+// Clang mis-interprets variant's get as a non-friend of variant and cannot
+// get compiled correctly. We use the patch: 
+// https://gcc.gnu.org/viewcvs/gcc?view=revision&revision=258854
+// to get rid of this.
+#if defined(__clang__)
+  #include <patch/clang_variant.hpp>
+#else
+  #include <variant>
+#endif
+
 
 // Namespace of taskflow. -----------------------------------------------------
 namespace tf {
@@ -388,6 +396,9 @@ class BasicTask;
 template <typename NodeType>
 class BasicFlowBuilder;
 
+template <typename NodeType>
+class BasicSubflowBuilder;
+
 template <typename Traits>
 class BasicTaskflow;
 
@@ -402,7 +413,7 @@ class BasicNode {
   template <typename S> friend class BasicTopology;
 
   using WorkType     = FuncType<void()>;
-  using SubworkType  = FuncType<void(BasicFlowBuilder<BasicNode>&)>;
+  using SubworkType  = FuncType<void(BasicSubflowBuilder<BasicNode>&)>;
   using TopologyType = BasicTopology<BasicNode>;
 
   public:
@@ -510,10 +521,6 @@ void BasicNode<FuncType>::_dump(std::ostream& os) const {
 
     os << "\";\n";
 
-    //// Skip the super source
-    //for(auto n=std::next(_children.begin()); n!=_children.end(); n++){
-    //  n->_dump(os);
-    //}
     for(const auto& n : _children) {
       n._dump(os);
     }
@@ -836,19 +843,15 @@ class BasicFlowBuilder {
     void broadcast(TaskType, std::initializer_list<TaskType>);
     void gather(std::vector<TaskType>&, TaskType);
     void gather(std::initializer_list<TaskType>, TaskType);  
-    void detach();
-    void join();
-
-    bool detached() const;
 
     size_t num_nodes() const;
 
-  private:
+    bool empty() const;
+
+  protected:
 
     std::forward_list<NodeType>& _nodes;
     size_t _num_workers;
-
-    bool _detached {false};
 
     template <typename L>
     void _linearize(L&);
@@ -862,28 +865,16 @@ BasicFlowBuilder<NodeType>::BasicFlowBuilder(
   _num_workers {num_workers} {
 }    
 
-// Procedure: detach
-template <typename NodeType>
-void BasicFlowBuilder<NodeType>::detach() {
-  _detached = true;
-}
-
-// Procedure: join
-template <typename NodeType>
-void BasicFlowBuilder<NodeType>::join() {
-  _detached = false;
-}
-
 // Procedure: num_nodes
 template <typename NodeType>
 size_t BasicFlowBuilder<NodeType>::num_nodes() const {
   return std::distance(_nodes.begin(), _nodes.end());
 }
 
-// Function: detached
+// Function: empty
 template <typename NodeType>
-bool BasicFlowBuilder<NodeType>::detached() const {
-  return _detached;
+bool BasicFlowBuilder<NodeType>::empty() const {
+  return _nodes.empty();
 }
 
 // Procedure: precede
@@ -937,15 +928,15 @@ template <typename C>
 auto BasicFlowBuilder<NodeType>::emplace(C&& c) {
     
   // subflow task
-  if constexpr(std::is_invocable_v<C, BasicFlowBuilder&>) {
+  if constexpr(std::is_invocable_v<C, BasicSubflowBuilder<NodeType>&>) {
 
-    using R = std::invoke_result_t<C, BasicFlowBuilder&>;
+    using R = std::invoke_result_t<C, BasicSubflowBuilder<NodeType>&>;
     std::promise<R> p;
     auto fu = p.get_future();
   
     if constexpr(std::is_same_v<void, R>) {
       auto& node = _nodes.emplace_front([p=MoC(std::move(p)), c=std::forward<C>(c)]
-      (BasicFlowBuilder& fb) mutable {
+      (BasicSubflowBuilder<NodeType>& fb) mutable {
         if(fb._nodes.empty()) {
           c(fb);
           if(fb.detached()) {
@@ -961,7 +952,7 @@ auto BasicFlowBuilder<NodeType>::emplace(C&& c) {
     else {
       auto& node = _nodes.emplace_front(
       [p=MoC(std::move(p)), c=std::forward<C>(c), r=std::optional<R>()]
-      (BasicFlowBuilder& fb) mutable {
+      (BasicSubflowBuilder<NodeType>& fb) mutable {
         if(fb._nodes.empty()) {
           r = c(fb);
           if(fb.detached()) {
@@ -1013,8 +1004,9 @@ template <typename NodeType>
 template <typename C>
 auto BasicFlowBuilder<NodeType>::silent_emplace(C&& c) {
   // subflow task
-  if constexpr(std::is_invocable_v<C, BasicFlowBuilder&>) {
-    auto& n = _nodes.emplace_front([c=std::forward<C>(c)] (BasicFlowBuilder& fb) {
+  if constexpr(std::is_invocable_v<C, BasicSubflowBuilder<NodeType>&>) {
+    auto& n = _nodes.emplace_front(
+    [c=std::forward<C>(c)] (BasicSubflowBuilder<NodeType>& fb) {
       // first time execution
       if(fb._nodes.empty()) {
         c(fb);
@@ -1313,19 +1305,75 @@ auto BasicFlowBuilder<NodeType>::reduce(I beg, I end, T& result, B&& op) {
 
 // ----------------------------------------------------------------------------
 
+// Class: BasicSubflowBuilder
+template <typename NodeType>
+class BasicSubflowBuilder : public BasicFlowBuilder<NodeType> {
+
+  using BaseType = BasicFlowBuilder<NodeType>;
+
+  public:
+    
+    template <typename... Args>
+    BasicSubflowBuilder(Args&&...);
+
+    void join();
+    void detach();
+
+    bool detached() const;
+    bool joined() const;
+
+  private:
+
+    bool _detached {false};
+};
+
+// Constructor
+template <typename NodeType>
+template <typename... Args>
+BasicSubflowBuilder<NodeType>::BasicSubflowBuilder(Args&&... args) :
+  BaseType {std::forward<Args>(args)...} {
+}
+
+// Procedure: join
+template <typename NodeType>
+void BasicSubflowBuilder<NodeType>::join() {
+  _detached = false;
+}
+
+// Procedure: detach
+template <typename NodeType>
+void BasicSubflowBuilder<NodeType>::detach() {
+  _detached = true;
+}
+
+// Function: detached
+template <typename NodeType>
+bool BasicSubflowBuilder<NodeType>::detached() const {
+  return _detached;
+}
+
+// Function: joined
+template <typename NodeType>
+bool BasicSubflowBuilder<NodeType>::joined() const {
+  return !_detached;
+}
+
+// ----------------------------------------------------------------------------
+
 // Class: BasicTaskflow
 template <typename Traits>
 class BasicTaskflow {
   
   public:
 
-  using ThreadpoolType  = typename Traits::ThreadpoolType;
-  using NodeType        = typename Traits::NodeType;
-  using WorkType        = typename Traits::NodeType::WorkType;
-  using SubworkType     = typename Traits::NodeType::SubworkType;
-  using TaskType        = BasicTask<NodeType>;
-  using FlowBuilderType = BasicFlowBuilder<NodeType>;
-  using TopologyType    = BasicTopology<NodeType>;
+  using ThreadpoolType     = typename Traits::ThreadpoolType;
+  using NodeType           = typename Traits::NodeType;
+  using WorkType           = typename Traits::NodeType::WorkType;
+  using SubworkType        = typename Traits::NodeType::SubworkType;
+  using TaskType           = BasicTask<NodeType>;
+  using FlowBuilderType    = BasicFlowBuilder<NodeType>;
+  using SubflowBuilderType = BasicSubflowBuilder<NodeType>;
+  using TopologyType       = BasicTopology<NodeType>;
  
     BasicTaskflow();
     BasicTaskflow(unsigned);
@@ -1395,9 +1443,6 @@ class BasicTaskflow {
     std::forward_list<TopologyType> _topologies;
 
     void _schedule(NodeType&);
-
-    template <typename L>
-    void _linearize(L&);
 };
 
 // Constructor
@@ -1453,14 +1498,12 @@ void BasicTaskflow<Traits>::precede(TaskType from, TaskType to) {
 template <typename Traits>
 void BasicTaskflow<Traits>::linearize(std::vector<TaskType>& keys) {
   FlowBuilderType(_nodes, num_workers()).linearize(keys);
-  //_linearize(keys); 
 }
 
 // Procedure: linearize
 template <typename Traits>
 void BasicTaskflow<Traits>::linearize(std::initializer_list<TaskType> keys) {
   FlowBuilderType(_nodes, num_workers()).linearize(keys);
-  //_linearize(keys);
 }
 
 // Procedure: broadcast
@@ -1639,6 +1682,7 @@ auto BasicTaskflow<Traits>::transform_reduce(
 
 // Procedure: _schedule
 // The main procedure to schedule a give task node.
+// Each task node has two types of tasks - regular and subflow.
 template <typename Traits>
 void BasicTaskflow<Traits>::_schedule(NodeType& node) {
 
@@ -1663,7 +1707,7 @@ void BasicTaskflow<Traits>::_schedule(NodeType& node) {
     else {
       assert(std::holds_alternative<SubworkType>(node._work));
       
-      FlowBuilderType fb(node._children, num_workers());
+      SubflowBuilderType fb(node._children, num_workers());
 
       bool empty_graph = node._children.empty();
 
@@ -1750,9 +1794,10 @@ struct TaskflowTraits {
   using ThreadpoolType = Threadpool;
 };
 
-using Taskflow    = BasicTaskflow<TaskflowTraits>;
-using Task        = typename Taskflow::TaskType;
-using FlowBuilder = typename Taskflow::FlowBuilderType;
+using Taskflow       = BasicTaskflow<TaskflowTraits>;
+using Task           = typename Taskflow::TaskType;
+using FlowBuilder    = typename Taskflow::FlowBuilderType;
+using SubflowBuilder = typename Taskflow::SubflowBuilderType;
 
 };  // end of namespace tf. ---------------------------------------------------
 
