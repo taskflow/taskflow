@@ -12,8 +12,7 @@ A fast C++ header-only library to help you quickly build parallel programs with 
 # Why Cpp-Taskflow?
 
 Cpp-Taskflow lets you quickly build parallel dependency graphs using modern C++17.
-It is by far faster, more expressive, and easier for drop-in integration than existing libraries such as [OpenMP Tasking][OpenMP Tasking] and 
-[TBB FlowGraph][TBB FlowGraph].
+It is by far faster, more expressive, and easier for drop-in integration than existing libraries.
 
 | Without Cpp-Taskflow | With Cpp-Taskflow |
 | -------------------- | ----------------- |
@@ -476,12 +475,12 @@ The folder `example/` contains several examples and is a great place to learn to
 | [matrix.cpp](./example/matrix.cpp) | create two set of matrices and multiply each individually in parallel |
 | [parallel_for.cpp](./example/parallel_for.cpp)| parallelize a for loop with unbalanced workload |
 | [reduce.cpp](./example/reduce.cpp)| perform reduce operations over linear containers |
+| [subflow.cpp](./example/subflow.cpp)| create a taskflow graph that spawns dynamic tasks |
 
 
 # Get Involved
 + Report bugs/issues by submitting a [Github issue][Github issues].
 + Submit contributions using [pull requests][Github pull requests].
-+ Live chat and ask questions on [Gitter][Gitter].
 
 # Contributors
 Cpp-Taskflow is being actively developed and contributed by the following people:

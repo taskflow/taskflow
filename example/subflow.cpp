@@ -9,20 +9,40 @@
 // Do so is difference from "wait_for_all" which will clean up the
 // finished graphs. After the graph finished, we dump the topology
 // for inspection.
+//
+// Usage: ./subflow detach|join
+//
 
 #include <taskflow.hpp>  
 
-int main() {
+const auto usage = "usage: ./subflow detach|join";
 
+int main(int argc, char* argv[]) {
+
+  if(argc != 2) {
+    std::cerr << usage << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+
+  std::string_view opt(argv[1]);
+
+  if(opt != "detach" && opt != "join") {
+    std::cerr << usage << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+
+  auto detached = (opt == "detach") ? true : false;
+
+  // Create a taskflow graph with three regular tasks and one subflow task.
   tf::Taskflow tf(std::thread::hardware_concurrency());
 
   auto [A, B, C, D] = tf.silent_emplace(
     // Task A
     [] () { std::cout << "TaskA\n"; },              
     // Task B
-    [cap=std::vector<int>{1,2,3,4,5,6,7,8}] (auto& subflow) {                             
+    [cap=std::vector<int>{1,2,3,4,5,6,7,8}, detached] (auto& subflow) {                             
 
-      std::cout << "TaskB\n";                                  
+      std::cout << "TaskB is spawning B1, B2, and B3 ...\n";
 
       auto B1 = subflow.silent_emplace([&]() { 
         printf("  Subtask B1: reduce sum = %d\n", 
@@ -41,6 +61,9 @@ int main() {
                                                               
       B1.precede(B3);
       B2.precede(B3);
+
+      // detach or join the subflow (by default the subflow join at B)
+      if(detached) subflow.detach();
     },
     // Task C
     [] () { std::cout << "TaskC\n"; },               
@@ -60,8 +83,8 @@ int main() {
                                    
   tf.dispatch().get();  // block until finished
 
-  // Now we can dump the topology
-  std::cout << tf.dump_topologies();
+  // examine the graph
+  std::cout << '\n' << tf.dump_topologies();
 
   return 0;
 }
