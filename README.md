@@ -32,7 +32,7 @@ and is by far faster, more expressive, and easier for drop-in integration than e
 The following example [simple.cpp](./example/simple.cpp) shows the basic API you need to use Cpp-Taskflow.
 
 ```cpp
-#include "taskflow.hpp"  // the only include you need
+#include <taskflow.hpp>  // the only include you need
 
 int main(){
   
@@ -195,7 +195,7 @@ auto B = tf.silent_emplace([] (auto& subflow) {
   auto B3 = subflow.silent_emplace([](){}).name("B3");
   B1.precede(B3);
   B2.precede(B3);
-}).name("TaskB");
+}).name("B");
             
 A.precede(B);  // B runs after A 
 A.precede(C);  // C runs after A 
@@ -208,7 +208,7 @@ std::cout << tf.dump_topologies();
 ```
 
 By default, a subflow graph joins to its parent node. 
-This guarantees a subflow graph to finish before executing the successors of 
+This guarantees a subflow graph to finish before the successors of 
 its parent node.
 You can disable this feature by calling `subflow.detach()`.
 Detaching the above subflow will result in the following execution flow.
@@ -231,7 +231,7 @@ Detaching the above subflow will result in the following execution flow.
 
 Cpp-Taskflow has an unified interface for static and dynamic tasking.
 To create a subflow for dynamic tasking, 
-emplace a task callable with one argument of type `tf::SubflowBuilder`.
+emplace a callable on one argument of type `tf::SubflowBuilder`.
 
 ```cpp
 auto A = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {});

@@ -11,6 +11,14 @@ If you cannot find a solution here, please post an issue [here][Github issues].
 It has been applied in many academic and industry projects to scale up their existing workload.
 A research project [OpenTimer][OpenTimer] has used Cpp-Taskflow to deal with hundreds of millions of tasks.
 
+### Q: What are the differences between Cpp-Taskflow and other tasking libraries?
+
+**A:** From our humble opinion, Cpp-Taskflow is superior in its tasking API, interface, and performance.
+In most cases, users can quickly master Cpp-Taskflow to create large and complex dependency graphs
+in just a few minutes.
+The performance scales very well and is comparable to hard-coded multi-threading.
+Of course, the judge is always left for users -:)
+
 ## Compile Issues
 
 ### Q: I can't get Cpp-Taskflow compiled in my project!
@@ -58,10 +66,6 @@ If there is no worker threads in the pool, the master thread will do all the wor
 Try the `dump` method to debug the graph before dispatching your taskflow graph.
 If there is no cycle, make sure you are using `future.get()` in the right way, 
 i.e., not blocking your control flow.
-
-
-
-
 
 * * *
 [Github issues]:         https://github.com/cpp-taskflow/cpp-taskflow/issues
