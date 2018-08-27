@@ -25,7 +25,7 @@ and is by far faster, more expressive, and easier for drop-in integration than e
 
 *"Cpp-Taskflow is the cleanest Task API I've ever seen," Damien*
 
-*"Cpp-Taskflow allows us to explore more parallelism and go beyond the scale we had," OpenTimer*
+*"Cpp-Taskflow has very a simple and elegant interface. The performance also scales very well." Glen F*
 
 # Get Started with Cpp-Taskflow
 
@@ -266,17 +266,18 @@ the execution of a subflow and so on.
 <img align="right" src="image/nested_subflow.png" width="45%">
 
 ```cpp
-auto A = tf.silent_emplace([] (auto& subflow) {
-  std::cout << "Task A spawns A1 and subflow A2\n";
-  auto A1 = subflow.silent_emplace([] () { 
+auto A = tf.silent_emplace([] (auto& sbf){
+  std::cout << "A spawns A1 & subflow A2\n";
+  auto A1 = sbf.silent_emplace([] () { 
     std::cout << "subtask A1\n"; 
   }).name("A1");
-  auto A2 = subflow.silent_emplace([] (auto& subflow2) {
-    std::cout << "subflow A2 spawns A2_1 and A2_2\n";
-    auto A2_1 = subflow2.silent_emplace([] () { 
+
+  auto A2 = sbf.silent_emplace([] (auto& sbf2){
+    std::cout << "A2 spawns A2_1 & A2_2\n";
+    auto A2_1 = sbf2.silent_emplace([] () { 
       std::cout << "subtask A2_1\n"; 
     }).name("A2_1");
-    auto A2_2 = subflow2.silent_emplace([] () { 
+    auto A2_2 = sbf2.silent_emplace([] () { 
       std::cout << "subtask A2_2\n"; 
     }).name("A2_2");
     A2_1.precede(A2_2);
@@ -310,7 +311,7 @@ inside the subflow (possibly nested) finish.
 int value {0};
 
 // create a joined subflow
-auto [A, fuA] = tf.emplace([&] (tf::SubflowBuilder& subflow) {
+auto [A, fuA] = tf.emplace([&] (auto& subflow) {
   subflow.silent_emplace([&]() { 
     value = 10; 
   });
@@ -337,7 +338,7 @@ join to the same topology.
 int value {0};
 
 // create a detached subflow
-auto [A, fuA] = tf.emplace([&] (tf::SubflowBuilder& subflow) {
+auto [A, fuA] = tf.emplace([&] (auto& subflow) {
   subflow.silent_emplace([&]() { value = 10; });
   subflow.detach();
   return 100;   // some arbitrary value
@@ -345,7 +346,7 @@ auto [A, fuA] = tf.emplace([&] (tf::SubflowBuilder& subflow) {
 
 // create a task B after A
 auto B = tf.silent_emplace([&] () { 
-  // no guarantee for value to be 10 nor fuA to be ready
+  // no guarantee for value to be 10 nor fuA ready
 });
 A.precede(B);
 ```
@@ -414,12 +415,12 @@ and then use the `dump_topologies` method.
 ```cpp
 tf::Taskflow tf(0);  // use only the master thread
 
-auto A = tf.silent_emplace([] () {}).name("A");
+auto A = tf.silent_emplace([](){}).name("A");
 
 // create a subflow of two tasks B1->B2
 auto B = tf.silent_emplace([] (auto& subflow) {
-  auto B1 = subflow.silent_emplace([] () {}).name("B1");
-  auto B2 = subflow.silent_emplace([] () {}).name("B2");
+  auto B1 = subflow.silent_emplace([](){}).name("B1");
+  auto B2 = subflow.silent_emplace([](){}).name("B2");
   B1.precede(B2);
 }).name("B");
 
@@ -667,7 +668,7 @@ thousands of task nodes and links, there are a few amateur pitfalls and mistakes
 + Trying to modify a dispatched task can result in undefined behavior.
 + Touching a taskflow from multiple threads are not safe.
 
-Cpp-Taskflow is known to work on most Linux distributions and OSX.
+Cpp-Taskflow is known to work on most Linux distributions and MAC OSX.
 Please [let me know][email me] if you found any issues in a particular platform.
 
 # System Requirements
