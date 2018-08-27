@@ -223,7 +223,7 @@ Detaching the above subflow will result in the following execution flow.
   B1.precede(B3);
   B2.precede(B3);
 
-  // detach this from its parent B
+  // detach from B 
   subflow.detach();
 }).name("TaskB");
 ```
