@@ -23,9 +23,9 @@ and is by far faster, more expressive, and easier for drop-in integration than e
 | :------------: | :-------------: |
 | ![](image/static_graph.png) | ![](image/dynamic_graph.png) |
 
-*"Cpp-Taskflow is the cleanest Task API I've ever seen," Damien*
+*"Cpp-Taskflow is the cleanest Task API I've ever seen." [damienhocking][damienhocking]*
 
-*"Cpp-Taskflow has very a simple and elegant interface. The performance also scales very well." Glen F*
+*"Cpp-Taskflow has very a simple and elegant interface. The performance also scales very well." [totalgee][totalgee]*
 
 # Get Started with Cpp-Taskflow
 
@@ -97,7 +97,6 @@ a3.precede(T);    // a3 runs before T
 b1.precede(T);    // b1 runs before T
 b3.precede(T);    // b3 runs before T
 ```
-
 
 # Create a Taskflow Graph
 Cpp-Taskflow has very expressive and neat methods to create dependency graphs.
@@ -715,8 +714,9 @@ The folder `example/` contains several examples and is a great place to learn to
 
 
 # Get Involved
-+ Report bugs/issues by submitting a [Github issue][Github issues].
-+ Submit contributions using [pull requests][Github pull requests].
++ Report bugs/issues by submitting a [Github issue][Github issues]
++ Submit contributions using [pull requests][Github pull requests]
++ Find a solution to your question at [Frequently Asked Questions][FAQ]
 
 # Contributors
 Cpp-Taskflow is being actively developed and contributed by the following people:
@@ -769,5 +769,8 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE):
 [TBB FlowGraph]:         https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph
 [OpenTimer]:             https://github.com/OpenTimer/OpenTimer
 [DtCraft]:               http://dtcraft.web.engr.illinois.edu/
+[totalgee]:              https://github.com/totalgee
+[damienhocking]:         https://github.com/damienhocking
+[FAQ]:                   ./doc/faq.md
 [email me]:              mailto:twh760812@gmail.com
 
