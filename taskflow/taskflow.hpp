@@ -982,7 +982,7 @@ auto BasicFlowBuilder<NodeType>::emplace(C&& c) {
       auto& node = _nodes.emplace_front([p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
         c(); 
         p.get().set_value();
-			});
+      });
       return std::make_pair(TaskType(node), std::move(fu));
     }
     else {

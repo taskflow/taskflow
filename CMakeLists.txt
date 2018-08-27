@@ -11,19 +11,25 @@ include(CTest)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Compiler vendors
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-  if(${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS "7.2")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.2")
     message(FATAL_ERROR "\nCpp-Taskflow requires g++ at least v7.2")
   endif()
-elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-  if(${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS "5.0")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.0")
     message(FATAL_ERROR "\nCpp-Taskflow requires clang++ at least v5.0")
+  endif()
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  if(NOT MSVC_VERSION GREATER_EQUAL 1914)
+    message(FATAL_ERROR "\nCpp-Taskflow requires MSVC++ at least v14.14 (Visual Studio
+    2017 version 15.7)") 
   endif()
 else()
   message(FATAL_ERROR "\n\
 Cpp-Taskflow currently supports the following compilers:\n\
 - g++ v7.2 or above\n\
 - clang++ v5.0\n\
+- MSVC++ v14.14\n\
 ")
 endif()
 
