@@ -120,7 +120,7 @@ TEST_CASE("Taskflow.Builder" * doctest::timeout(5)){
   }
 
   SUBCASE("Gather"){
-    auto dst = tf.silent_emplace([&counter]() { REQUIRE(counter == num_tasks - 1);});
+    auto dst = tf.silent_emplace([&counter, num_tasks]() { REQUIRE(counter == num_tasks - 1);});
     for(size_t i=1;i<num_tasks;i++){
       silent_tasks.emplace_back(tf.silent_emplace([&counter]() {counter += 1;}));
     }
