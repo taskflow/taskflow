@@ -5,13 +5,13 @@ If you cannot find a solution here, please post an issue [here][Github issues].
 
 ## General Questions
 
-### Q: How many tasks can Cpp-Taskflow handle?
+#### Q: How many tasks can Cpp-Taskflow handle?
 
 **A:** Cpp-Taskflow is a very lightweight and efficient tasking library.
 It has been applied in many academic and industry projects to scale up their existing workload.
 A research project [OpenTimer][OpenTimer] has used Cpp-Taskflow to deal with hundreds of millions of tasks.
 
-### Q: What are the differences between Cpp-Taskflow and other tasking libraries?
+#### Q: What are the differences between Cpp-Taskflow and other tasking libraries?
 
 **A:** From our humble opinion, Cpp-Taskflow is superior in its tasking API, interface, and performance.
 In most cases, users can quickly master Cpp-Taskflow to create large and complex dependency graphs
@@ -21,12 +21,12 @@ Of course, the judge is always left for users -:)
 
 ## Compile Issues
 
-### Q: I can't get Cpp-Taskflow compiled in my project!
+#### Q: I can't get Cpp-Taskflow compiled in my project!
 
 **A:** Please make sure your compile supports the latest version of C++17. 
 Make sure your project meets the System Requirements described at [README][README].
 
-### Q: Clang can't compile due to the use of std::variant.
+#### Q: Clang can't compile due to the use of std::variant.
 
 **A:** Cpp-Taskflow uses `std::variant` to enable uniform interface between static and dynamic tasking.
 However it has been reported in 
@@ -47,7 +47,7 @@ For clang users, you will need to use this patch in `taskflow.hpp` as follows:
 
 ## Programming Questions
 
-### Q: What is the difference between Cpp-Taskflow threads and workers?
+#### Q: What is the difference between Cpp-Taskflow threads and workers?
 
 **A:** The master thread owns the thread pool and can spawn workers to run tasks 
 or shutdown the pool. 
@@ -60,7 +60,11 @@ tf::Taskflow(N);    // N workers, N+1 threads in the program.
 
 If there is no worker threads in the pool, the master thread will do all the works by itself.
 
-### Q: My program hangs and never returns after dispatching a taskflow graph.
+#### Q: Is taskflow thread-safe?
+**A:** No, the taskflow object is not thread-safe. You can't create tasks from multiple threads
+at the same time.
+
+#### Q: My program hangs and never returns after dispatching a taskflow graph. What's wrong?
 
 **A:** When the program hangs forever it is very likely your taskflow graph has a cycle.
 Try the `dump` method to debug the graph before dispatching your taskflow graph.

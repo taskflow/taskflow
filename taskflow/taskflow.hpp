@@ -979,16 +979,20 @@ auto BasicFlowBuilder<NodeType>::emplace(C&& c) {
     auto fu = p.get_future();
 
     if constexpr(std::is_same_v<void, R>) {
-      auto& node = _nodes.emplace_front([p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
-        c(); 
-        p.get().set_value();
-      });
+      auto& node = _nodes.emplace_front(
+        [p=MoC(std::move(p)), c=std::forward<C>(c)]() mutable {
+          c(); 
+          p.get().set_value();
+        }
+      );
       return std::make_pair(TaskType(node), std::move(fu));
     }
     else {
-      auto& node = _nodes.emplace_front([p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
-        p.get().set_value(c());
-      });
+      auto& node = _nodes.emplace_front(
+        [p=MoC(std::move(p)), c=std::forward<C>(c)]() mutable {
+          p.get().set_value(c());
+        }
+      );
       return std::make_pair(TaskType(node), std::move(fu));
     }
   }

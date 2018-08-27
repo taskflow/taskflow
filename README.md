@@ -154,7 +154,8 @@ tf.linearize(A, B, C, D);  // A runs before B, B runs before C, and C runs befor
 
 ## Step 3: Execute the Tasks
 
-There are three methods to carry out a task dependency graph, `dispatch`, `silent_dispatch`, and `wait_for_all`.
+There are three methods to carry out a task dependency graph, 
+`dispatch`, `silent_dispatch`, and `wait_for_all`.
 
 ```cpp
 auto future = tf.dispatch();  // non-blocking, returns with a future immediately.
@@ -572,7 +573,7 @@ auto [S, T] = tf.transform_reduce(v.begin(), v.end(), min,
 
 By default, all reduce methods distribute the workload evenly across threads.
 
-### *dispatch/silent_dispatch/wait_for_all*
+### *dispatch/silent_dispatch/wait_for_topologies/wait_for_all*
 Dispatching a taskflow graph will schedule threads to execute the current graph and return immediately.
 The method `dispatch` gives you a future object to probe the execution progress while
 `silent_dispatch` doesn't.
@@ -586,11 +587,20 @@ future.get();
 std::cout << "all tasks complete" << '\n';
 ```
 
-If you need to block your program flow until all tasks finish, use `wait_for_all` instead.
+If you need to block your program flow until all tasks finish 
+(including the present taskflow graph), use `wait_for_all` instead.
 
 ```cpp
 tf.wait_for_all();
 std::cout << "all tasks complete" << '\n';
+```
+
+If you only need to block your program flow until all dispatched taskflow graphs finish,
+use `wait_for_topologies`.
+
+```cpp
+tf.wait_for_topologies();
+std::cout << "all topologies complete" << '\n';
 ```
 
 ## Task API
