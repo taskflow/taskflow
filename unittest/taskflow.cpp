@@ -13,8 +13,8 @@
 // --------------------------------------------------------
 TEST_CASE("Taskflow.Builder" * doctest::timeout(5)){
 
-  auto num_workers = 4;
-  auto num_tasks = 100;
+  size_t num_workers = 4;
+  size_t num_tasks = 100;
 
   tf::Taskflow tf(num_workers);
   REQUIRE(tf.num_workers() == num_workers);
@@ -181,8 +181,8 @@ TEST_CASE("Taskflow.Dispatch" * doctest::timeout(5)) {
     
   using namespace std::chrono_literals;
   
-  auto num_workers = 4;
-  auto num_tasks = 100;
+  size_t num_workers = 4;
+  size_t num_tasks = 100;
   
   tf::Taskflow tf(num_workers);
   REQUIRE(tf.num_workers() == num_workers);

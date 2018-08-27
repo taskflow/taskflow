@@ -736,6 +736,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Nan Xiao](https://github.com/NanXiao) fixed compilation error of unittest on the Arch platform.
 - [Vladyslav](https://github.com/innermous) fixed comment errors in README.md and examples.
 - [vblanco20-1](https://github.com/vblanco20-1) fixed compilation error on Microsoft Visual Studio.
+- [Glen Fraser](https://github.com/totalgee) helped edit a standalone and C++14-compatible threadpool for taskflow.
 
 Please [let me know][email me] if I forgot someone!
 
