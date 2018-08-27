@@ -75,7 +75,7 @@ void transform_reduce() {
   tf::Taskflow tf;
   auto tmin = std::numeric_limits<int>::max();
   tf.transform_reduce(data.begin(), data.end(), tmin, 
-    [] (float l, float r) { return std::min(l, r); },
+    [] (int l, int r) { return std::min(l, r); },
     [] (const Data& d) { return d.transform(); }
   );
   tf.wait_for_all();

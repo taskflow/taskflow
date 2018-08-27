@@ -978,18 +978,19 @@ auto BasicFlowBuilder<NodeType>::emplace(C&& c) {
     std::promise<R> p;
     auto fu = p.get_future();
 
-    auto& node = _nodes.emplace_front(
-      [p=MoC(std::move(p)), c=std::forward<C>(c)] () mutable { 
-        if constexpr(std::is_same_v<void, R>) {
-          c();
-          p.get().set_value();
-        }
-        else {
-          p.get().set_value(c());
-        }
-      }
-    );
-    return std::make_pair(TaskType(node), std::move(fu));
+    if constexpr(std::is_same_v<void, R>) {
+      auto& node = _nodes.emplace_front([p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
+        c(); 
+        p.get().set_value();
+			});
+      return std::make_pair(TaskType(node), std::move(fu));
+    }
+    else {
+      auto& node = _nodes.emplace_front([p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
+        p.get().set_value(c());
+      });
+      return std::make_pair(TaskType(node), std::move(fu));
+    }
   }
   else {
     static_assert(dependent_false_v<C>, "invalid task work type");
