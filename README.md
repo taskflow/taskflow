@@ -175,7 +175,7 @@ Another powerful feature of Taskflow is *dynamic* tasking.
 A dynamic task is created during the execution of a dispatched taskflow graph, i.e.,
 topology.
 These tasks are spawned by a parent task and are grouped together to a *subflow* graph.
-The example below demonstrates how to create a subflow node
+The example below demonstrates how to create a subflow
 that spawns three tasks during its execution.
 
 <img align="right" src="image/subflow_join.png" width="40%">
