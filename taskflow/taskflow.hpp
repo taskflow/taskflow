@@ -38,6 +38,7 @@
 #include <numeric>
 #include <iomanip>
 #include <cassert>
+#include <optional>
 
 // Clang mis-interprets variant's get as a non-friend of variant and cannot
 // get compiled correctly. We use the patch: 
