@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
     transform_reduce();
   }
   else {
-    std::cerr << "invalid method " << method << std::endl;
+    std::cerr << "invalid method " << method.data() << std::endl;
     std::exit(EXIT_FAILURE);
   }
 
