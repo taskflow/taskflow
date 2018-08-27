@@ -12,7 +12,8 @@ A fast C++ header-only library to help you quickly build parallel programs with 
 # Why Cpp-Taskflow?
 
 Cpp-Taskflow lets you quickly build parallel dependency graphs using modern C++17.
-It is by far faster, more expressive, and easier for drop-in integration than existing libraries.
+It can create both *static and dynamic* tasks,
+and is by far faster, more expressive, and easier for drop-in integration than existing libraries.
 
 | Without Cpp-Taskflow | With Cpp-Taskflow |
 | -------------------- | ----------------- |
@@ -144,24 +145,214 @@ A.gather(B, C, D);  // A runs after B, C, and D.
 ```
 
 **Linearize**: Linearizing a task sequence adds a  preceding link to each adjacent pair.
+
 ```cpp
 tf.linearize(A, B, C, D);  // A runs before B, B runs before C, and C runs before D.
 ```
 
 ## Step 3: Execute the Tasks
+
 There are three methods to carry out a task dependency graph, `dispatch`, `silent_dispatch`, and `wait_for_all`.
+
 ```cpp
 auto future = tf.dispatch();  // non-blocking, returns with a future immediately.
 tf.silent_dispatch();         // non-blocking, no return
 ```
+
 Calling `wait_for_all` will block until all tasks complete.
+
 ```cpp
 tf.wait_for_all();
 ```
 
+Each of these methods will dispatch the current graph to the work queue
+and create a data structure called *topology* to store the execution state.
+
+
+# Dynamic Tasking
+
+Another powerful feature of Taskflow is *dynamic* tasking.
+A dynamic task is created during the execution of a dispatched taskflow graph, i.e.,
+topology.
+These tasks are spawned by a parent task and are grouped together to a *subflow* graph.
+The example below demonstrates how to create a subflow node
+that spawns three tasks during its execution.
+
+<img align="right" src="image/subflow_join.png" width="40%">
+
+```cpp
+// create three regular tasks
+auto A = tf.silent_emplace([](){}).name("A");
+auto C = tf.silent_emplace([](){}).name("C");
+auto D = tf.silent_emplace([](){}).name("D");
+
+// create a subflow graph (dynamic tasking)
+auto B = tf.silent_emplace([] (auto& subflow) {
+  auto B1 = subflow.silent_emplace([](){}).name("B1");
+  auto B2 = subflow.silent_emplace([](){}).name("B2");
+  auto B3 = subflow.silent_emplace([](){}).name("B3");
+  B1.precede(B3);
+  B2.precede(B3);
+}).name("TaskB");
+            
+A.precede(B);  // B runs after A 
+A.precede(C);  // C runs after A 
+B.precede(D);  // D runs after B 
+C.precede(D);  // D runs after C 
+
+// execute the graph without cleanning up topologies
+tf.dispatch().get();
+std::cout << tf.dump_topologies();
+```
+
+By default, a subflow graph joins to its parent node. 
+This guarantees a subflow graph to finish before executing the successors of 
+its parent node.
+You can disable this feature by calling `subflow.detach()`.
+Detaching the above subflow will result in the following execution flow.
+
+<img align="right" src="image/subflow_detach.png" width="65%">
+
+```cpp
+// detach a subflow graph
+[] (auto& subflow) {
+  ...
+  B1.precede(B3);
+  B2.precede(B3);
+
+  // detach this from its parent B
+  subflow.detach();
+}).name("TaskB");
+```
+
+## Step 1: Create a Subflow
+
+Cpp-Taskflow has an unified interface for static and dynamic tasking.
+To create a subflow for dynamic tasking, 
+emplace a task callable with one argument of type `tf::SubflowBuilder`.
+
+```cpp
+auto A = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {});
+```
+
+Similarly, you can get a future object to the execution status of the subflow.
+
+```cpp
+auto [A, fu] = tf.emplace([] (tf::SubflowBuilder& subflow) {});
+```
+
+A subflow builder is a lightweight object that allows you to create 
+arbitrary dependency graphs on the fly.
+All graph building methods defined in taskflow
+can be used in a subflow builder.
+
+```cpp
+auto A = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {
+  std::cout << "Task A is spawning two subtasks A1 and A2" << '\n';
+  auto [A1, A2] = subflow.silent_emplace(
+    [] () { std::cout << "subtask A1" << '\n'; },
+    [] () { std::cout << "subtask A2" << '\n'; }
+    A1.precede(A2);
+  );
+});
+```
+
+A subflow can also be nested or recursive. You can create another subflow from
+the execution of a subflow and so on.
+
+```cpp
+auto A = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {
+  std::cout << "Task A is spawning one task A1 and one subflow A2" << '\n';
+  auto A1 = subflow.silent_emplace([] () { 
+    std::cout << "subtask A1" << '\n'; 
+  });
+  auto A2 = subflow.silent_emplace([] (tf::SubflowBuilder& subflow2) {
+    std::cout << "subflow A2 is spawning two tasks A2_1 and A2_2" << '\n';
+    auto A2_1 = subflow2.silent_emplace([] () { 
+      std::cout << "subtask A2_1" << '\n'; 
+    });
+    auto A2_2 = subflow2.silent_emplace([] () { 
+      std::cout << "subtask A2_2" << '\n'; 
+    });
+    A2_1.precede(A2_2);
+  });
+  A1.precede(A2);
+});
+```
+
+## Step 2: Detach or Join a Subflow
+
+A subflow has no methods to dispatch its tasks.
+Instead, a subflow will be executed after leaving the context of the callable.
+By default, a subflow joins to its parent task.
+Depending on applications, you can detach a subflow to enable more parallelism.
+
+```cpp
+auto A = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {
+  subflow.detach();  // detach this subflow from its parent task A
+});  // subflow starts to run after the callable scope
+```
+
+Detaching or Joining a subflow has different meaning in the ready status of 
+the future object referred to it.
+In a joined subflow, 
+the completion of its parent node is defined as when all tasks
+inside the subflow (possibly nested) finish.
+
+<img align="right" src="image/joined_subflow_future.png" width="40%">
+
+```cpp
+int value {0};
+
+// create a joined subflow
+auto [A, fuA] = tf.emplace([&] (tf::SubflowBuilder& subflow) {
+  subflow.silent_emplace([&]() { 
+    value = 10; 
+  });
+  return 100;   // some arbitrary value
+});
+
+// create a task B after A
+auto B = tf.silent_emplace([&] () { 
+  assert(value == 10); 
+  assert(fuA.wait_for(0s) == std::future_status::ready);
+});
+
+// A1 must finish before A and therefore before B
+A.precede(B);
+```
+
+When a subflow is detached from its parent task, it becomes a parallel
+execution line to the current flow graph and will eventually
+join to the same topology.
+
+<img align="right" src="image/detached_subflow_future.png" width="40%">
+
+```cpp
+int value {0};
+
+// create a detached subflow
+auto [A, fuA] = tf.emplace([&] (tf::SubflowBuilder& subflow) {
+  subflow.silent_emplace([&]() { value = 10; });
+  subflow.detach();
+  return 100;   // some arbitrary value
+});
+
+// create a task B after A
+auto B = tf.silent_emplace([&] () { 
+  // no guarantee for value to be 10 nor fuA to be ready
+});
+A.precede(B);
+```
+
+
 # Debug a Taskflow Graph
-Concurrent programs are notoriously difficult to debug. 
-We suggest (1) naming tasks and dumping the graph, and (2) starting with single thread before going multiple.
+
+Concurrent programs are notoriously difficult to debug.
+Cpp-Taskflow leverages the graph properties to relief the debugging pain.
+To debug a taskflow graph,
+(1) name tasks and dump the graph, and
+(2) start with one thread before going multiple.
 Currently, Cpp-Taskflow supports [GraphViz][GraphViz] format.
 
 ```cpp
@@ -179,6 +370,7 @@ B.broadcast(D, E);
 
 std::cout << tf.dump();
 ```
+
 Run the program and inspect whether dependencies are expressed in the right way. 
 There are a number of free [GraphViz tools][AwesomeGraphViz] you could find online
 to visualize your Taskflow graph.
@@ -204,7 +396,7 @@ digraph Taskflow {
 ## Taskflow API
 
 The class `tf::Taskflow` is the main place to create taskflow graphs and carry out task dependencies.
-The table below summarizes its commonly used methods.
+The table below summarizes a list of commonly used methods.
 
 | Method   | Argument  | Return  | Description |
 | -------- | --------- | ------- | ----------- |
@@ -225,6 +417,7 @@ The table below summarizes its commonly used methods.
 | num_workers     | none        | size | return the number of working threads in the pool |  
 | num_topologies  | none        | size | return the number of dispatched graphs |
 | dump            | none        | string | dump the current graph to a string of GraphViz format |
+| dump_topologies | none        | string | dump dispatched topologies to a string of GraphViz format |
 
 ### *emplace/silent_emplace/placeholder*
 
@@ -327,11 +520,11 @@ The method `transform_reduce` is similar to reduce, except it applies a unary op
 This is particular useful when you need additional data processing to reduce a range of elements.
 
 ```cpp
-auto v = { {1, 5}, {6, 4}, {-6, 4} };
+std::vector<std::pari<int, int>> v = { {1, 5}, {6, 4}, {-6, 4} };
 int min = std::numeric_limits<int>::max();
 auto [S, T] = tf.transform_reduce(v.begin(), v.end(), min, 
   [] (int l, int r)     { return std::min(l, r); },
-  [] (const auto& pair) { return std::min(p.first, p.second); }
+  [] (const std::pair<int, int>& pair) { return std::min(p.first, p.second); }
 );
 ```
 
@@ -469,13 +662,13 @@ The folder `example/` contains several examples and is a great place to learn to
 
 | Example |  Description |
 | ------- |  ----------- | 
-| [simple.cpp](./example/simple.cpp) | use basic task building blocks to create a trivial taskflow  graph |
-| [debug.cpp](./example/debug.cpp)| inspect a taskflow through the dump method |
-| [emplace.cpp](./example/emplace.cpp)| demonstrate the difference between the emplace method and the silent_emplace method |
-| [matrix.cpp](./example/matrix.cpp) | create two set of matrices and multiply each individually in parallel |
-| [parallel_for.cpp](./example/parallel_for.cpp)| parallelize a for loop with unbalanced workload |
-| [reduce.cpp](./example/reduce.cpp)| perform reduce operations over linear containers |
-| [subflow.cpp](./example/subflow.cpp)| create a taskflow graph that spawns dynamic tasks |
+| [simple.cpp](./example/simple.cpp) | uses basic task building blocks to create a trivial taskflow  graph |
+| [debug.cpp](./example/debug.cpp)| inspects a taskflow through the dump method |
+| [emplace.cpp](./example/emplace.cpp)| demonstrates the difference between the emplace method and the silent_emplace method |
+| [matrix.cpp](./example/matrix.cpp) | creates two set of matrices and multiply each individually in parallel |
+| [parallel_for.cpp](./example/parallel_for.cpp)| parallelizes a for loop with unbalanced workload |
+| [reduce.cpp](./example/reduce.cpp)| performs reduce operations over linear containers |
+| [subflow.cpp](./example/subflow.cpp)| demonstrates how to create a subflow graph that spawns three dynamic tasks |
 
 
 # Get Involved
@@ -496,7 +689,6 @@ Please [let me know][email me] if I forgot someone!
 # Who is Using Cpp-Taskflow?
 
 Cpp-Taskflow is being used in both industry and academic projects to scale up existing workloads that incorporate complex task dependencies. 
-A proprietary research report has shown over 10x improvement by switching to Cpp-Taskflow.
 
 - [OpenTimer][OpenTimer]: A High-performance Timing Analysis Tool for VLSI Systems.
 - [DtCraft][DtCraft]: A General-purpose Distributed Programming Systems.
@@ -509,13 +701,13 @@ Please [let me know][email me] if I forgot your project!
 
 Cpp-Taskflow is licensed under the [MIT License](./LICENSE):
 
-Copyright &copy; 2018 [Tsung-Wei Huang][Tsung-Wei Huang], [Chun-Xun Lin][Chun-Xun Lin], [Martin Wong][Martin Wong].
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+>Copyright &copy; 2018 [Tsung-Wei Huang][Tsung-Wei Huang], [Chun-Xun Lin][Chun-Xun Lin], [Martin Wong][Martin Wong].
+>
+>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+>
+>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+>
+>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 * * *
 
@@ -532,7 +724,7 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 [AwesomeGraphViz]:       https://github.com/CodeFreezr/awesome-graphviz
 [OpenMP Tasking]:        http://www.nersc.gov/users/software/programming-models/openmp/openmp-tasking/
 [TBB FlowGraph]:         https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph
-[OpenTimer]:             https://web.engr.illinois.edu/~thuang19/software/timer/OpenTimer.html
+[OpenTimer]:             https://github.com/OpenTimer/OpenTimer
 [DtCraft]:               http://dtcraft.web.engr.illinois.edu/
 [email me]:              mailto:twh760812@gmail.com
 

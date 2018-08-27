@@ -36,11 +36,21 @@ int main(int argc, char* argv[]) {
   // Create a taskflow graph with three regular tasks and one subflow task.
   tf::Taskflow tf(std::thread::hardware_concurrency());
 
-  auto [A, B, C, D] = tf.silent_emplace(
+  int value {0};
+auto [A, fuA] = tf.emplace([&] (tf::SubflowBuilder& subflow) {
+  subflow.silent_emplace([&]() { value = 10; }).name("A1");
+  subflow.detach();
+});
+auto B = tf.silent_emplace([&] () { /*assert(value == 10);*/ });
+A.precede(B);
+A.name("A");
+B.name("B");
+
+  /*auto [A, B, C, D] = tf.silent_emplace(
     // Task A
     [] () { std::cout << "TaskA\n"; },              
     // Task B
-    [cap=std::vector<int>{1,2,3,4,5,6,7,8}, detached] (auto& subflow) {                             
+    [cap=std::vector<int>{1,2,3,4,5,6,7,8}, detached] (auto& subflow) {
 
       std::cout << "TaskB is spawning B1, B2, and B3 ...\n";
 
@@ -80,6 +90,9 @@ int main(int argc, char* argv[]) {
   A.precede(C);  // C runs after A 
   B.precede(D);  // D runs after B 
   C.precede(D);  // D runs after C 
+  */
+  // examine the graph
+  std::cout << tf.dump() << '\n';
                                    
   tf.dispatch().get();  // block until finished
 

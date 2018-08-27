@@ -515,11 +515,11 @@ void BasicNode<FuncType>::_dump(std::ostream& os) const {
     else os << _name;
     os << " {\n";
 
-    os << "label = \"Subflow ";
+    os << "label = \"Subflow_";
     if(_name.empty()) os << this;
     else os << _name;
 
-    os << "\";\n";
+    os << "\";\n" << "color=blue\n";
 
     for(const auto& n : _children) {
       n._dump(os);
@@ -590,6 +590,9 @@ BasicTopology<NodeType>::BasicTopology(std::forward_list<NodeType>&& t) :
 // Procedure: _dump
 template <typename NodeType>
 void BasicTopology<NodeType>::_dump(std::ostream& os) const {
+
+  assert(_source._children.empty());
+  assert(_target._children.empty());
   
   os << "digraph Topology {\n"
      << _source.dump() 
