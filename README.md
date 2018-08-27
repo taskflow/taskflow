@@ -12,17 +12,20 @@ A fast C++ header-only library to help you quickly build parallel programs with 
 # Why Cpp-Taskflow?
 
 Cpp-Taskflow lets you quickly build parallel dependency graphs using modern C++17.
-It can create both *static and dynamic* tasks,
+It supports both *static and dynamic* tasking,
 and is by far faster, more expressive, and easier for drop-in integration than existing libraries.
 
 | Without Cpp-Taskflow | With Cpp-Taskflow |
 | -------------------- | ----------------- |
 | ![](image/profile_without_taskflow.gif) | ![](image/profile_with_taskflow.gif) |
 
+| Static Tasking | Dynamic Tasking |
+| -------------------- | ----------------- |
+| ![](image/static_graph.png) | ![](image/dynamic_graph.png) |
+
 *"Cpp-Taskflow is the cleanest Task API I've ever seen," Damien*
 
-*"Cpp-Taskflow allows us to explore more parallelism and go beyond the scale we had," OpenTimer developers*
-
+*"Cpp-Taskflow allows us to explore more parallelism and go beyond the scale we had," OpenTimer*
 
 # Get Started with Cpp-Taskflow
 
@@ -260,24 +263,26 @@ auto A = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {
 A subflow can also be nested or recursive. You can create another subflow from
 the execution of a subflow and so on.
 
+<img align="right" src="image/nested_subflow.png" width="45%">
+
 ```cpp
-auto A = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {
-  std::cout << "Task A is spawning one task A1 and one subflow A2" << '\n';
+auto A = tf.silent_emplace([] (auto& subflow) {
+  std::cout << "Task A spawns A1 and subflow A2\n";
   auto A1 = subflow.silent_emplace([] () { 
-    std::cout << "subtask A1" << '\n'; 
-  });
-  auto A2 = subflow.silent_emplace([] (tf::SubflowBuilder& subflow2) {
-    std::cout << "subflow A2 is spawning two tasks A2_1 and A2_2" << '\n';
+    std::cout << "subtask A1\n"; 
+  }).name("A1");
+  auto A2 = subflow.silent_emplace([] (auto& subflow2) {
+    std::cout << "subflow A2 spawns A2_1 and A2_2\n";
     auto A2_1 = subflow2.silent_emplace([] () { 
-      std::cout << "subtask A2_1" << '\n'; 
-    });
+      std::cout << "subtask A2_1\n"; 
+    }).name("A2_1");
     auto A2_2 = subflow2.silent_emplace([] () { 
-      std::cout << "subtask A2_2" << '\n'; 
-    });
+      std::cout << "subtask A2_2\n"; 
+    }).name("A2_2");
     A2_1.precede(A2_2);
-  });
+  }).name("A2");
   A1.precede(A2);
-});
+}).name("A");
 ```
 
 ## Step 2: Detach or Join a Subflow
@@ -355,14 +360,20 @@ To debug a taskflow graph,
 (2) start with one thread before going multiple.
 Currently, Cpp-Taskflow supports [GraphViz][GraphViz] format.
 
+## Dump the Present Taskflow Graph
+
+Each time you create a task or add a dependency, 
+it adds a node or an edge to the present taskflow graph.
+The graph is not dispatched yet and you can dump it to a GraphViz format.
+
 ```cpp
 // debug.cpp
-tf::Taskflow tf(0);  // force the master thread to execute all tasks
-auto A = tf.silent_emplace([] () { /* ... */ }).name("A");
-auto B = tf.silent_emplace([] () { /* ... */ }).name("B");
-auto C = tf.silent_emplace([] () { /* ... */ }).name("C");
-auto D = tf.silent_emplace([] () { /* ... */ }).name("D");
-auto E = tf.silent_emplace([] () { /* ... */ }).name("E");
+tf::Taskflow tf(0);  // use only the master thread
+auto A = tf.silent_emplace([] () {}).name("A");
+auto B = tf.silent_emplace([] () {}).name("B");
+auto C = tf.silent_emplace([] () {}).name("C");
+auto D = tf.silent_emplace([] () {}).name("D");
+auto E = tf.silent_emplace([] () {}).name("E");
 
 A.broadcast(B, C, E); 
 C.precede(D);
@@ -391,6 +402,36 @@ digraph Taskflow {
 }
 ```
 
+## Dump the Dispatched Graphs
+
+When you have dynamic tasks (subflows),
+you cannot simply use the `dump` method because it displays only the static portion.
+Instead, you need to execute the graph first to include dynamic tasks
+and then use the `dump_topologies` method.
+
+<img align="right" src="image/debug_subflow.png" width="40%">
+
+```cpp
+tf::Taskflow tf(0);  // use only the master thread
+
+auto A = tf.silent_emplace([] () {}).name("A");
+
+// create a subflow of two tasks B1->B2
+auto B = tf.silent_emplace([] (auto& subflow) {
+  auto B1 = subflow.silent_emplace([] () {}).name("B1");
+  auto B2 = subflow.silent_emplace([] () {}).name("B2");
+  B1.precede(B2);
+}).name("B");
+
+A.precede(B);
+
+// dispatch the graph without cleanning up topologies
+tf.dispatch().get();
+
+// dump the entire graph (including dynamic tasks)
+std::cout << tf.dump_topologies();
+```
+
 # API Reference
 
 ## Taskflow API
@@ -409,9 +450,10 @@ The table below summarizes a list of commonly used methods.
 | parallel_for    | beg, end, callable, group | task pair | apply the callable in parallel and group-by-group to the result of dereferencing every iterator in the range | 
 | reduce | beg, end, res, bop | task pair | reduce a range of elements to a single result through a binary operator | 
 | transform_reduce | beg, end, res, bop, uop | task pair | apply a unary operator to each element in the range and reduce them to a single result through a binary operator | 
-| dispatch        | none        | future | dispatch the current graph and return a shared future to block on completeness |
+| dispatch        | none        | future | dispatch the current graph and return a shared future to block on completion |
 | silent_dispatch | none        | none | dispatch the current graph | 
-| wait_for_all    | none        | none | dispatch the current graph and block until all graphs including previously dispatched ones finish |
+| wait_for_all    | none        | none | dispatch the current graph and block until all graphs finish, including all previously dispatched ones, and then clear all graphs |
+| wait_for_topologies | none    | none | block until all dispatched graphs (topologies) finish, and then clear these graphs |
 | num_nodes       | none        | size | return the number of nodes in the current graph |  
 | num_workers     | size        | none | set the number of worker threads in the pool |  
 | num_workers     | none        | size | return the number of working threads in the pool |  
@@ -523,7 +565,7 @@ This is particular useful when you need additional data processing to reduce a r
 std::vector<std::pari<int, int>> v = { {1, 5}, {6, 4}, {-6, 4} };
 int min = std::numeric_limits<int>::max();
 auto [S, T] = tf.transform_reduce(v.begin(), v.end(), min, 
-  [] (int l, int r)     { return std::min(l, r); },
+  [] (int l, int r) { return std::min(l, r); },
   [] (const std::pair<int, int>& pair) { return std::min(p.first, p.second); }
 );
 ```

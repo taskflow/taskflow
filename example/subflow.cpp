@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
   A.precede(C);  // C runs after A 
   B.precede(D);  // D runs after B 
   C.precede(D);  // D runs after C 
-                                   
+                                 
   tf.dispatch().get();  // block until finished
 
   // examine the graph
