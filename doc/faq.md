@@ -11,7 +11,6 @@ If you cannot find a solution here, please post an issue [here][Github issues].
 It has been applied in many academic and industry projects to scale up their existing workload.
 A research project [OpenTimer][OpenTimer] has used Cpp-Taskflow to deal with hundreds of millions of tasks.
 
-
 ## Compile Issues
 
 ### Q: I can't get Cpp-Taskflow compiled in my project!

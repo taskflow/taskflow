@@ -46,6 +46,7 @@ set (TASKFLOW_MINOR_VERSION "0")
 # add the binary tree to the search path for include files
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(doctest)
+include_directories(taskflow)
 
 # Find pthread package
 find_package(Threads REQUIRED)
