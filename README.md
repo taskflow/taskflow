@@ -20,7 +20,7 @@ and is by far faster, more expressive, and easier for drop-in integration than e
 | ![](image/profile_without_taskflow.gif) | ![](image/profile_with_taskflow.gif) |
 
 | Static Tasking | Dynamic Tasking |
-| -------------------- | ----------------- |
+| :------------: | :-------------: |
 | ![](image/static_graph.png) | ![](image/dynamic_graph.png) |
 
 *"Cpp-Taskflow is the cleanest Task API I've ever seen," Damien*
