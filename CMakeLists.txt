@@ -35,7 +35,7 @@ else()
 Cpp-Taskflow currently supports the following compilers:\n\
 - g++ v7.2 or above\n\
 - clang++ v5.0 or above\n\
-- MSVC++ v14.14 or above\n\
+- MSVC++ v19.14 or above\n\
 ")
 endif()
 

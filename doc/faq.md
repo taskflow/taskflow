@@ -5,6 +5,26 @@ If you cannot find a solution here, please post an issue [here][Github issues].
 
 ## General Questions
 
+#### Q: How do I use Cpp-Taskflow in my projects?
+
+**A:** Cpp-Taskflow is a header-only library with zero dependencies. 
+The only thing you need is a [C++17][C++17] compiler.
+To use Cpp-Taskflow, simply drop the folder 
+[taskflow](../taskflow) to your project and include [taskflow.hpp](../taskflow/taskflow.hpp).
+
+#### Q: What is the difference between static tasking and dynamic tasking?
+
+**A:** Static tasking refers to those tasks created before execution,
+while dynamic tasking refers to those tasks created during the execution of static tasks
+or dynamic tasks (nested).
+Dynamic tasks created by the same task node are grouped together to a subflow.
+
+| Static Tasking | Dynamic Tasking |
+| :------------: | :-------------: |
+| ![](../image/static_graph.png) | ![](../image/dynamic_graph.png) |
+
+
+
 #### Q: How many tasks can Cpp-Taskflow handle?
 
 **A:** Cpp-Taskflow is a very lightweight and efficient tasking library.
@@ -23,7 +43,7 @@ Of course, the judge is always left for users -:)
 
 #### Q: I can't get Cpp-Taskflow compiled in my project!
 
-**A:** Please make sure your compile supports the latest version of C++17. 
+**A:** Please make sure your compile supports the latest version of [C++17][C++17]. 
 Make sure your project meets the System Requirements described at [README][README].
 
 #### Q: Clang can't compile due to the use of std::variant.
@@ -71,8 +91,25 @@ Try the `dump` method to debug the graph before dispatching your taskflow graph.
 If there is no cycle, make sure you are using `future.get()` in the right way, 
 i.e., not blocking your control flow.
 
+#### Q: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?
+
+![](../image/dynamic_graph.png)
+
+**A:** No. The subflow is spawned during the execution of B, and at this point A must finish
+because A precedes B. This gives rise to the fact B1 and B2 must run after A. 
+This graph may looks strange because B seems to run twice!
+However, Cpp-Taskflow will schedule B only once to create its subflow.
+Whether this subflow joins or detaches from B only affects the future object returned from B.
+
+
+
+
+
 * * *
 [Github issues]:         https://github.com/cpp-taskflow/cpp-taskflow/issues
 [OpenTimer]:             https://github.com/OpenTimer/OpenTimer
 [README]:                ../README.md
-                         
+[C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
+
+
+

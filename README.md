@@ -683,10 +683,10 @@ Cpp-Taskflow is known to work on most Linux distributions and MAC OSX.
 Please [let me know][email me] if you found any issues in a particular platform.
 
 # System Requirements
-To use Cpp-Taskflow, you only need a C++17 compiler:
+To use Cpp-Taskflow, you only need a [C++17][C++17] compiler:
 + GNU C++ Compiler G++ v7.2 with -std=c++1z
 + Clang 5.0 C++ Compiler with -std=c++17
-+ Microsoft Visual Studio Version 15.7 (MSVC++ 14.14)
++ Microsoft Visual Studio Version 15.7 (MSVC++ 19.14)
 
 # Compile Unit Tests and Examples
 Cpp-Taskflow uses [CMake](https://cmake.org/) to build examples and unit tests.
@@ -738,7 +738,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Nan Xiao](https://github.com/NanXiao) fixed compilation error of unittest on the Arch platform.
 - [Vladyslav](https://github.com/innermous) fixed comment errors in README.md and examples.
 - [vblanco20-1](https://github.com/vblanco20-1) fixed compilation error on Microsoft Visual Studio.
-- [Glen Fraser](https://github.com/totalgee) helped edit a standalone and C++14-compatible [threadpool](./taskflow/threadpool/threadpool_cxx14.hpp) for taskflow.
+- [Glen Fraser](https://github.com/totalgee) created a standalone C++14-compatible [threadpool](./taskflow/threadpool/threadpool_cxx14.hpp) for taskflow.
 
 Please [let me know][email me] if I forgot someone!
 
@@ -790,5 +790,6 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE):
 [damienhocking]:         https://github.com/damienhocking
 [FAQ]:                   ./doc/faq.md
 [PayMe]:                 https://www.paypal.me/twhuang/10
+[C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
 [email me]:              mailto:twh760812@gmail.com
 
