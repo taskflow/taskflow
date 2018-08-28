@@ -138,4 +138,3 @@ target_link_libraries(threadpool_cxx14_tmp Threads::Threads)
 set_target_properties(threadpool_cxx14_tmp PROPERTIES OUTPUT_NAME "threadpool_cxx14")
 add_test(threadpool_cxx14 ${PROJECT_SOURCE_DIR}/unittest/threadpool_cxx14 -tc=Threadpool)
 
-
