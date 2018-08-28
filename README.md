@@ -4,8 +4,8 @@
 [![Standard](image/cpp17.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![Download](image/download.svg)](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip)
 [![AskMe](image/askme.svg)][Github issues]
+[![Insights](image/maintained.svg)][Github insights]
 [![License: MIT](./image/license_badge.svg)](./LICENSE)
-[![Donate](image/donate.svg)][PayMe]
 
 A fast C++ header-only library to help you quickly build parallel programs with complex task dependencies.
 
