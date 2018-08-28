@@ -132,6 +132,9 @@ add_test(reduce_max ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ReduceM
 add_test(joined_subflow ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.JoinedSubflow)
 add_test(detached_subflow ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.DetachedSubflow)
 
-
+add_executable(cxx14 unittest/cxx14.cpp)
+set_property(TARGET cxx14 PROPERTY CXX_STANDARD 14)
+target_link_libraries(cxx14 Threads::Threads)
+add_test(cxx14-threadpool ${PROJECT_SOURCE_DIR}/unittest/cxx14 -tc=Cxx14.Threadpool)
 
 
