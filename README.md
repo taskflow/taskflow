@@ -1,6 +1,6 @@
 # Cpp-Taskflow <img align="right" width="10%" src="image/cpp-taskflow_logo.png">
 
-[![Linux Build Status](https://travis-ci.org/cpp-taskflow/cpp-taskflow.svg?branch=master)](https://travis-ci.org/cpp-taskflow/cpp-taskflow)
+[![Linux Build Status](https://travis-ci.com/cpp-taskflow/cpp-taskflow.svg?branch=master)](https://travis-ci.com/cpp-taskflow/cpp-taskflow)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/te9bjp4yfhq7f8hq?svg=true)](https://ci.appveyor.com/project/TsungWeiHuang/cpp-taskflow)
 [![Standard](image/cpp17.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![Download](image/download.svg)](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip)
