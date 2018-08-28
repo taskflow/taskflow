@@ -42,6 +42,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 #set(USE_WERROR ON)
+
 message(STATUS "CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
 message(STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER})
 message(STATUS "CMAKE_CXX_COMPILER_VERSION: " ${CMAKE_CXX_COMPILER_VERSION})
@@ -106,6 +107,10 @@ add_executable(parallel_for example/parallel_for.cpp)
 target_compile_options(parallel_for PRIVATE ${OpenMP_CXX_FLAGS})
 target_link_libraries(parallel_for Threads::Threads OpenMP::OpenMP_CXX)
 
+add_executable(threadpool_cxx14 example/threadpool_cxx14.cpp)
+set_property(TARGET threadpool_cxx14 PROPERTY CXX_STANDARD 14)
+target_link_libraries(threadpool_cxx14 Threads::Threads)
+
 # -----------------------------------------------------------------------------
 # Unittest
 # -----------------------------------------------------------------------------
@@ -125,6 +130,9 @@ add_test(reduce_max ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ReduceM
 add_test(joined_subflow ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.JoinedSubflow)
 add_test(detached_subflow ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.DetachedSubflow)
 
-
+add_executable(cxx14 unittest/cxx14.cpp)
+set_property(TARGET cxx14 PROPERTY CXX_STANDARD 14)
+target_link_libraries(cxx14 Threads::Threads)
+add_test(cxx14-threadpool ${PROJECT_SOURCE_DIR}/unittest/cxx14 -tc=Cxx14.Threadpool)
 
 

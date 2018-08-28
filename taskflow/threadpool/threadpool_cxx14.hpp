@@ -2,7 +2,7 @@
 
 // 2018/08/27 - contributed by Glen Fraser
 // taskflow.hpp was modified by Glen Fraser to produce this file
-// (threadpool.hpp), which is a "light" version of the library with
+// (threadpool_cxx14.hpp), which is a "light" version of the library with
 // restricted functionality -- it only exposes the tf::Threadpool class.
 // However, it has also been reworked to support compilation with C++14
 // (instead of requiring C++17, as the main Taskflow library does).
@@ -15,24 +15,13 @@
 
 #pragma once
 
-#include <iostream>
-#include <cstdio>
-#include <cstdlib>
-#include <mutex>
 #include <deque>
 #include <vector>
-#include <algorithm>
 #include <thread>
 #include <future>
-#include <functional>
-#include <unordered_map>
 #include <unordered_set>
-#include <sstream>
-#include <list>
-#include <forward_list>
-#include <numeric>
-#include <iomanip>
-#include <cassert>
+#include <type_traits>
+#include <utility>
 
 //-------------------------------------------------------------------------------------------------
 // C++14 implementation of C++17's std::invoke_result, taken from:
@@ -107,8 +96,6 @@ namespace std {
   using invoke_result_t = typename invoke_result<F, ArgTypes...>::type;
 }
 
-#endif
-
 // ------------------------------------------------------------------------------------------------
 
 namespace tf {
@@ -125,8 +112,8 @@ struct MoC {
   MoC(const MoC& other) : object(std::move(other.object)) {}
 
   T& get() { return object; }
-  
-  mutable T object; 
+
+  mutable T object;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -148,24 +135,24 @@ class Threadpool {
 
     template<typename C>
     std::enable_if_t<
-      std::is_same<void, std::invoke_result_t<C>>::value, 
+      std::is_same<void, std::invoke_result_t<C>>::value,
       std::future<std::invoke_result_t<C>>
-    > 
+    >
     async(C&&, Signal = Signal::STANDARD);
 
     template<typename C>
     std::enable_if_t<
-      !std::is_same<void, std::invoke_result_t<C>>::value, 
+      !std::is_same<void, std::invoke_result_t<C>>::value,
       std::future<std::invoke_result_t<C>>
-    > 
+    >
     async(C&&, Signal = Signal::STANDARD);
 
     template <typename C>
     auto silent_async(C&&, Signal = Signal::STANDARD);
-    
+
     inline void shutdown();
     inline void spawn(unsigned);
-    
+
     inline size_t num_tasks() const;
     inline size_t num_workers() const;
 
@@ -193,7 +180,7 @@ inline Threadpool::~Threadpool() {
 
 // Function: num_tasks
 // Return the number of "unfinished" tasks. Notice that this value is not necessary equal to
-// the size of the task_queue since the task can be popped out from the task queue while 
+// the size of the task_queue since the task can be popped out from the task queue while
 // not yet finished.
 inline size_t Threadpool::num_tasks() const {
   return _task_queue.size();
@@ -216,17 +203,17 @@ inline void Threadpool::spawn(unsigned N) {
   if(is_worker()) {
     throw std::runtime_error("Worker thread cannot spawn threads");
   }
-  
+
   for(size_t i=0; i<N; ++i) {
 
-    _threads.emplace_back([this] () -> void { 
+    _threads.emplace_back([this] () -> void {
 
       {  // Acquire lock
         std::lock_guard<std::mutex> lock(_mutex);
-        _worker_ids.insert(std::this_thread::get_id());         
+        _worker_ids.insert(std::this_thread::get_id());
       }
 
-      bool stop {false}; 
+      bool stop {false};
 
       while(!stop) {
         decltype(_task_queue)::value_type task;
@@ -242,7 +229,7 @@ inline void Threadpool::spawn(unsigned N) {
         switch(task()) {
           case Signal::SHUTDOWN:
             stop = true;
-          break;      
+          break;
 
           default:
           break;
@@ -252,7 +239,7 @@ inline void Threadpool::spawn(unsigned N) {
 
       {  // Acquire lock
         std::lock_guard<std::mutex> lock(_mutex);
-        _worker_ids.erase(std::this_thread::get_id());         
+        _worker_ids.erase(std::this_thread::get_id());
       }
 
     });
@@ -263,7 +250,7 @@ inline void Threadpool::spawn(unsigned N) {
 // Insert a task without giving future.
 template <typename C>
 auto Threadpool::silent_async(C&& c, Signal sig) {
-  
+
   // No worker, do this right away.
   if(num_workers() == 0) {
     c();
@@ -273,7 +260,7 @@ auto Threadpool::silent_async(C&& c, Signal sig) {
     {
       std::lock_guard<std::mutex> lock(_mutex);
       _task_queue.emplace_back(
-        [c=std::forward<C>(c), ret=sig] () mutable { 
+        [c=std::forward<C>(c), ret=sig] () mutable {
           c();
           return ret;
         }
@@ -288,15 +275,15 @@ auto Threadpool::silent_async(C&& c, Signal sig) {
 // Version for tasks returning void.
 template<typename C>
 std::enable_if_t<
-  std::is_same<void, std::invoke_result_t<C>>::value, 
+  std::is_same<void, std::invoke_result_t<C>>::value,
   std::future<std::invoke_result_t<C>>
 > Threadpool::async(C&& c, Signal sig) {
 
   using R = std::invoke_result_t<C>;
-  
+
   std::promise<R> p;
   auto fu = p.get_future();
-  
+
   // No worker, do this immediately.
   if(_threads.empty()) {
     c();
@@ -323,7 +310,7 @@ std::enable_if_t<
 // Version for tasks returning anything other than void.
 template<typename C>
 std::enable_if_t<
-  !std::is_same<void, std::invoke_result_t<C>>::value, 
+  !std::is_same<void, std::invoke_result_t<C>>::value,
   std::future<std::invoke_result_t<C>>
 > Threadpool::async(C&& c, Signal sig) {
 
@@ -356,7 +343,7 @@ std::enable_if_t<
 // Procedure: shutdown
 // Remove a given number of workers. Notice that only the master can call this procedure.
 inline void Threadpool::shutdown() {
-  
+
   if(is_worker()) {
     throw std::runtime_error("Worker thread cannot shut down the thread pool");
   }
@@ -364,7 +351,7 @@ inline void Threadpool::shutdown() {
   for(size_t i=0; i<_threads.size(); ++i) {
     silent_async([](){}, Signal::SHUTDOWN);
   }
-  
+
   for(auto& t : _threads) {
     t.join();
   }
@@ -373,6 +360,3 @@ inline void Threadpool::shutdown() {
 }
 
 };  // end of namespace tf. ---------------------------------------------------
-
-
-
