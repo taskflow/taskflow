@@ -1,6 +1,7 @@
 // A C++-14 based threadpool implementation inspired by Taskflow Threadpool.
 
 // 2018/08/27 - contributed by Glen Fraser
+//
 // taskflow.hpp was modified by Glen Fraser to produce this file
 // (threadpool_cxx14.hpp), which is a "light" version of the library with
 // restricted functionality -- it only exposes the tf::Threadpool class.

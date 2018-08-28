@@ -1,3 +1,5 @@
+// 2018/08/28 - contributed by Glen Fraser
+//
 // Simple example showing use of the C++14-compatible threadpool
 // implementation. The threadpool (alone) may be used when you have
 // no inter-task dependencies to express, and when you require
@@ -70,7 +72,8 @@ int main()
   std::cout << "...ran in "
     << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
     << " milliseconds\n";
-  std::cout << "Remaining scheduled tasks: " << tp.num_tasks() << "\tWorker threads: " << tp.num_workers() << '\n';
+  std::cout << "Remaining scheduled tasks: " << tp.num_tasks() 
+            << "\tWorker threads: " << tp.num_workers() << '\n';
   std::cout << intFutures.size() << " int futures summed to: " << sum << '\n';
   std::cout << "(also ran " << voidFutures.size() << " void futures)\n";
 
