@@ -25,7 +25,7 @@ and is by far faster, more expressive, and easier for drop-in integration than e
 
 *"Cpp-Taskflow is the cleanest Task API I've ever seen." [damienhocking][damienhocking]*
 
-*"Cpp-Taskflow has very a simple and elegant interface. The performance also scales very well." [totalgee][totalgee]*
+*"Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [totalgee][totalgee]*
 
 # Get Started with Cpp-Taskflow
 
@@ -467,6 +467,7 @@ The table below summarizes a list of commonly used methods.
 The main different between `emplace` and `silent_emplace` is the return value.
 The method `emplace` gives you a future object to retrieve the result of the callable 
 when the task completes.
+
 ```cpp
 // create a task through emplace
 auto [task, future] = tf.emplace([](){ return 1; });
