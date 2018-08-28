@@ -1,6 +1,6 @@
 // This example demonstrates how to use 'reduce' method.
 
-#include "taskflow.hpp"
+#include <taskflow/taskflow.hpp>
 
 #include <chrono>
 #include <limits.h>

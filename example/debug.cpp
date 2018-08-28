@@ -1,7 +1,7 @@
 // This example demonstrates how to use 'dump' method to inspect 
 // a taskflow graph.
 
-#include "taskflow.hpp"
+#include <taskflow/taskflow.hpp>
 
 int main(){
 

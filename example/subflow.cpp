@@ -13,7 +13,7 @@
 // Usage: ./subflow detach|join
 //
 
-#include <taskflow.hpp>  
+#include <taskflow/taskflow.hpp>  
 
 const auto usage = "usage: ./subflow detach|join";
 

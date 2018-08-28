@@ -4,8 +4,8 @@
 [![Standard](image/cpp17.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![Download](image/download.svg)](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip)
 [![AskMe](image/askme.svg)][Github issues]
-[![Insights](image/maintained.svg)][Github insights]
 [![License: MIT](./image/license_badge.svg)](./LICENSE)
+[![Donate](image/donate.svg)][PayMe]
 
 A fast C++ header-only library to help you quickly build parallel programs with complex task dependencies.
 
@@ -32,7 +32,7 @@ and is by far faster, more expressive, and easier for drop-in integration than e
 The following example [simple.cpp](./example/simple.cpp) shows the basic API you need to use Cpp-Taskflow.
 
 ```cpp
-#include <taskflow.hpp>  // the only include you need
+#include <taskflow/taskflow.hpp>  // Cpp-Taskflow is header-only
 
 int main(){
   
@@ -751,6 +751,9 @@ that incorporate complex task dependencies.
 
 Please [let me know][email me] if I forgot your project!
 
+If you work for a company using Cpp-Taskflow or has the means to do so,
+please consider [financial support][PayMe].
+
 # License
 
 <img align="right" src="http://opensource.org/trademarks/opensource/OSI-Approved-License-100x137.png">
@@ -785,5 +788,6 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE):
 [totalgee]:              https://github.com/totalgee
 [damienhocking]:         https://github.com/damienhocking
 [FAQ]:                   ./doc/faq.md
+[PayMe]:                 https://www.paypal.me/twhuang/10
 [email me]:              mailto:twh760812@gmail.com
 

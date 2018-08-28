@@ -2,7 +2,7 @@
 
 #include "doctest.h"
 
-#include <taskflow.hpp>
+#include <taskflow/taskflow.hpp>
 #include <vector>
 #include <utility>
 #include <chrono>

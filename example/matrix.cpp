@@ -2,7 +2,7 @@
 // and compares the runtime between baseline (sequential), OpenMP, C++ thread,
 // and Taskflow implementations.
 
-#include "taskflow.hpp"
+#include <taskflow/taskflow.hpp>
 #include <random>
 #include <numeric>
 #include <fstream>
