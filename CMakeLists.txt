@@ -1,3 +1,4 @@
+# CMake version
 cmake_minimum_required (VERSION 3.9)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
@@ -26,8 +27,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 ## microsoft visual c++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   if(NOT MSVC_VERSION GREATER_EQUAL 1914)
-    message(FATAL_ERROR "\nCpp-Taskflow requires MSVC++ at least v14.14 (Visual Studio
-    2017 version 15.7)") 
+    message(FATAL_ERROR "\nCpp-Taskflow requires MSVC++ at least v14.14") 
   endif()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2 /W3")
 else()
@@ -50,10 +50,6 @@ message(STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER})
 message(STATUS "CMAKE_CXX_COMPILER_VERSION: " ${CMAKE_CXX_COMPILER_VERSION})
 message(STATUS "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS})
 message(STATUS "CMAKE_EXE_LINKER_FLAGS: " ${CMAKE_EXE_LINKER_FLAGS})
-
-# The version number
-set (TASKFLOW_MAJOR_VERSION "2")
-set (TASKFLOW_MINOR_VERSION "0")
 
 # add the binary tree to the search path for include files
 include_directories(${PROJECT_SOURCE_DIR})
@@ -123,6 +119,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/unittest)
 add_executable(taskflow unittest/taskflow.cpp)
 target_link_libraries(taskflow Threads::Threads)
 
+# unittest for taskflow
 add_test(builder ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Builder)
 add_test(dispatch ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Dispatch)
 add_test(parallel_for ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ParallelFor)
@@ -132,9 +129,13 @@ add_test(reduce_max ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.ReduceM
 add_test(joined_subflow ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.JoinedSubflow)
 add_test(detached_subflow ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.DetachedSubflow)
 
-add_executable(cxx14 unittest/cxx14.cpp)
-set_property(TARGET cxx14 PROPERTY CXX_STANDARD 14)
-target_link_libraries(cxx14 Threads::Threads)
-add_test(cxx14-threadpool ${PROJECT_SOURCE_DIR}/unittest/cxx14 -tc=Cxx14.Threadpool)
+# unittest for threadpool 
+
+## threadpool_cxx14 unittest (contributed by Glen Fraser)
+add_executable(threadpool_cxx14_tmp unittest/threadpool_cxx14.cpp)
+set_target_properties(threadpool_cxx14_tmp PROPERTIES CXX_STANDARD 14)
+target_link_libraries(threadpool_cxx14_tmp Threads::Threads)
+set_target_properties(threadpool_cxx14_tmp PROPERTIES OUTPUT_NAME "threadpool_cxx14")
+add_test(threadpool_cxx14 ${PROJECT_SOURCE_DIR}/unittest/threadpool_cxx14 -tc=Threadpool)
 
 

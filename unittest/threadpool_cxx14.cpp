@@ -1,6 +1,8 @@
+// 2018/08/28 - contributed by Glen Fraser
+
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
-#include "doctest.h"
+#include <doctest.h>
 
 #include <taskflow/threadpool/threadpool_cxx14.hpp>
 #include <vector>
@@ -9,9 +11,9 @@
 #include <limits.h>
 
 // --------------------------------------------------------
-// Testcase: Cxx14.Threadpool
+// Testcase: Threadpool
 // --------------------------------------------------------
-TEST_CASE("Cxx14.Threadpool" * doctest::timeout(5)) {
+TEST_CASE("Threadpool" * doctest::timeout(5)) {
     
   using namespace std::chrono_literals;
   

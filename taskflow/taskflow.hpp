@@ -42,6 +42,13 @@
 
 #include "threadpool/threadpool.hpp"
 
+// ============================================================================
+// version
+#define TASKFLOW_VERSION_MAJOR 2
+#define TASKFLOW_VERSION_MINOR 0
+#define TASKFLOW_VERSION_PATCH 1
+// ============================================================================
+
 // Clang mis-interprets variant's get as a non-friend of variant and cannot
 // get compiled correctly. We use the patch: 
 // https://gcc.gnu.org/viewcvs/gcc?view=revision&revision=258854
