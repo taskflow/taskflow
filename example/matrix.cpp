@@ -49,7 +49,7 @@ matrix_t operator * (const matrix_t& A, const matrix_t& B) {
   K = A[0].size();
   M = B[0].size();
 
-  printf("A[%lux%lu] * B[%lux%lu]\n", N, K, K, M);
+  printf("A[%zux%zu] * B[%zux%zu]\n", N, K, K, M);
   
   // Initialize the matrix
   matrix_t ret(N);

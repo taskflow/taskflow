@@ -982,7 +982,7 @@ auto BasicFlowBuilder<NodeType>::transform_reduce(
 template <typename NodeType>
 template <typename L>
 void BasicFlowBuilder<NodeType>::_linearize(L& keys) {
-  std::adjacent_find(
+  (void) std::adjacent_find(
     keys.begin(), keys.end(), 
     [] (auto& from, auto& to) {
       from._node->precede(*(to._node));

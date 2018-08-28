@@ -16,7 +16,7 @@ TEST_CASE("Taskflow.Builder" * doctest::timeout(5)){
   size_t num_workers = 4;
   size_t num_tasks = 100;
 
-  tf::Taskflow tf(num_workers);
+  tf::Taskflow tf(static_cast<unsigned>(num_workers));
   REQUIRE(tf.num_workers() == num_workers);
 
   std::atomic<int> counter {0};
@@ -184,7 +184,7 @@ TEST_CASE("Taskflow.Dispatch" * doctest::timeout(5)) {
   size_t num_workers = 4;
   size_t num_tasks = 100;
   
-  tf::Taskflow tf(num_workers);
+  tf::Taskflow tf(static_cast<unsigned>(num_workers));
   REQUIRE(tf.num_workers() == num_workers);
 
   std::atomic<int> counter {0};
@@ -224,7 +224,7 @@ TEST_CASE("Taskflow.ParallelFor" * doctest::timeout(5)) {
   using namespace std::chrono_literals;
 
   const auto mapper = [](size_t num_workers, size_t num_data, bool group){
-    tf::Taskflow tf(num_workers);
+    tf::Taskflow tf(static_cast<unsigned>(num_workers));
     std::vector<int> vec(num_data, 0);
     tf.parallel_for(vec, [] (int& v) { v = 64; }, group ? ::rand() : 0);
     for(const auto v : vec) {
@@ -237,7 +237,7 @@ TEST_CASE("Taskflow.ParallelFor" * doctest::timeout(5)) {
   };
 
   const auto reducer = [](size_t num_workers, size_t num_data, bool group){
-    tf::Taskflow tf(num_workers);
+    tf::Taskflow tf(static_cast<unsigned>(num_workers));
     std::vector<int> vec(num_data, 0);
     std::atomic<int> sum(0);
     tf.parallel_for(vec, [&](auto) { ++sum; }, group ? ::rand() : 0);
@@ -273,7 +273,7 @@ TEST_CASE("Taskflow.ParallelFor" * doctest::timeout(5)) {
 TEST_CASE("Taskflow.Reduce" * doctest::timeout(5)) {
 
   const auto plus_test = [](const size_t num_workers, auto &&data){
-    tf::Taskflow tf(num_workers);
+    tf::Taskflow tf(static_cast<unsigned>(num_workers));
     int result {0};
     std::iota(data.begin(), data.end(), 1);
     tf.reduce(data.begin(), data.end(), result, std::plus<int>());
@@ -282,7 +282,7 @@ TEST_CASE("Taskflow.Reduce" * doctest::timeout(5)) {
   };
 
   const auto multiply_test = [](const size_t num_workers, auto &&data){
-    tf::Taskflow tf(num_workers);
+    tf::Taskflow tf(static_cast<unsigned>(num_workers));
     std::fill(data.begin(), data.end(), 1.0);
     double result {2.0};
     tf.reduce(data.begin(), data.end(), result, std::multiplies<double>());
@@ -291,7 +291,7 @@ TEST_CASE("Taskflow.Reduce" * doctest::timeout(5)) {
   };
 
   const auto max_test = [](const size_t num_workers, auto &&data){
-    tf::Taskflow tf(num_workers);
+    tf::Taskflow tf(static_cast<unsigned>(num_workers));
     std::iota(data.begin(), data.end(), 1);
     int result {0};
     auto lambda = [](const auto& l, const auto& r){return std::max(l, r);};
@@ -301,7 +301,7 @@ TEST_CASE("Taskflow.Reduce" * doctest::timeout(5)) {
   };
 
   const auto min_test = [](const size_t num_workers, auto &&data){
-    tf::Taskflow tf(num_workers);
+    tf::Taskflow tf(static_cast<unsigned>(num_workers));
     std::iota(data.begin(), data.end(), 1);
     int result {std::numeric_limits<int>::max()};
     auto lambda = [](const auto& l, const auto& r){return std::min(l, r);};
