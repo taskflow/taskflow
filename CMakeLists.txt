@@ -103,6 +103,10 @@ add_executable(parallel_for example/parallel_for.cpp)
 target_compile_options(parallel_for PRIVATE ${OpenMP_CXX_FLAGS})
 target_link_libraries(parallel_for Threads::Threads OpenMP::OpenMP_CXX)
 
+add_executable(threadpool_cxx14 example/threadpool_cxx14.cpp)
+set_property(TARGET threadpool_cxx14 PROPERTY CXX_STANDARD 14)
+target_link_libraries(threadpool_cxx14 Threads::Threads)
+
 # -----------------------------------------------------------------------------
 # Unittest
 # -----------------------------------------------------------------------------
