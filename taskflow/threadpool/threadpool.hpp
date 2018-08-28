@@ -38,7 +38,6 @@
 #include <numeric>
 #include <iomanip>
 #include <cassert>
-#include <optional>
 
 namespace tf {
 

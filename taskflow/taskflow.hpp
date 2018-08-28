@@ -40,14 +40,14 @@
 #include <cassert>
 #include <optional>
 
-#include <threadpool/threadpool.hpp>
+#include "threadpool/threadpool.hpp"
 
 // Clang mis-interprets variant's get as a non-friend of variant and cannot
 // get compiled correctly. We use the patch: 
 // https://gcc.gnu.org/viewcvs/gcc?view=revision&revision=258854
 // to get rid of this.
 #if defined(__clang__)
-  #include <patch/clang_variant.hpp>
+  #include "patch/clang_variant.hpp"
 #else
   #include <variant>
 #endif
