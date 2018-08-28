@@ -740,7 +740,11 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [vblanco20-1](https://github.com/vblanco20-1) fixed compilation error on Microsoft Visual Studio.
 - [Glen Fraser](https://github.com/totalgee) created a standalone C++14-compatible [threadpool](./taskflow/threadpool/threadpool_cxx14.hpp) for taskflow.
 
+Meanwhile, we appreciate the support from many organizations for our development on Cpp-Taskflow.
 Please [let me know][email me] if I forgot someone!
+
+| [<img src="image/uiuc.png" width="100px">][UIUC] | [<img src="image/csl.png" width="100px">][CSL] | [<img src="image/nsf.png" width="100px">][NSF] | [<img src="image/darpa.png" width="100px">][DARPA IDEA] |
+| :---: | :---: | :---: | :---: |
 
 # Who is Using Cpp-Taskflow?
 
@@ -788,6 +792,10 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE):
 [DtCraft]:               http://dtcraft.web.engr.illinois.edu/
 [totalgee]:              https://github.com/totalgee
 [damienhocking]:         https://github.com/damienhocking
+[DARPA IDEA]:            https://www.darpa.mil/news-events/2017-09-13
+[NSF]:                   https://www.nsf.gov/
+[UIUC]:                  https://illinois.edu/
+[CSL]:                   https://csl.illinois.edu/
 [FAQ]:                   ./doc/faq.md
 [PayMe]:                 https://www.paypal.me/twhuang/10
 [C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
