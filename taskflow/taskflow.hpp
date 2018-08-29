@@ -46,7 +46,7 @@
 // version
 #define TASKFLOW_VERSION_MAJOR 2
 #define TASKFLOW_VERSION_MINOR 0
-#define TASKFLOW_VERSION_PATCH 1
+#define TASKFLOW_VERSION_PATCH 2
 // ============================================================================
 
 // Clang mis-interprets variant's get as a non-friend of variant and cannot
@@ -58,6 +58,63 @@
 #else
   #include <variant>
 #endif
+
+// ============================================================================
+
+/*// Class: ObjectPool
+template <typename T>
+class ObjectPool {
+  
+  struct Deleter {
+    Deleter(std::vector<T*>&);
+    void operator()(T*);
+    std::vector<T*>& recycle;
+  };
+  
+  public:
+  
+  using HandleType = std::unique_ptr<T, Deleter>;
+    
+    template <typename... ArgsT>
+    auto get(ArgsT&&...);
+
+  private:
+  
+    std::forward_list<T> _pool;
+    std::vector<T*> _recycle; 
+};
+
+// Constructor
+template <typename T>
+ObjectPool<T>::Deleter::Deleter(std::vector<T*>& r) : recycle(r) {
+}
+
+// Operator
+template <typename T>
+void ObjectPool<T>::Deleter::operator()(T* item) {
+  if(item != nullptr) {
+    item->~T();
+    recycle.push_back(item);
+  }
+}
+
+// Constructor
+template <typename T>
+template <typename... ArgsT>
+auto ObjectPool<T>::get(ArgsT&&... args) {
+  // Pool is full
+  if(_recycle.empty()) {
+    T& item = _pool.emplace_front(std::forward<ArgsT>(args)...);
+    return HandleType(&item, Deleter(_recycle));
+  }
+  // Get item from the recycle box
+  else {
+    auto item = _recycle.back(); 
+    _recycle.pop_back();
+    new (item) T(std::forward<ArgsT>(args)...);
+    return HandleType(item, Deleter(_recycle));
+  }
+}*/
 
 
 // Namespace of taskflow. -----------------------------------------------------
@@ -190,14 +247,10 @@ class BasicNode {
   private:
     
     std::string _name;
-
     std::variant<WorkType, SubworkType> _work;
-    
     std::vector<BasicNode*> _successors;
     std::atomic<int> _dependents {0};
-
     std::forward_list<BasicNode> _children;
-
     TopologyType* _topology {nullptr};
 
     void _dump(std::ostream&) const;
