@@ -93,7 +93,9 @@ i.e., not blocking your control flow.
 
 #### Q: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?
 
-![](../image/dynamic_graph.png)
+<p>
+<img src="../image/dynamic_graph.png" width="60%">
+</p>
 
 **A:** No. The subflow is spawned during the execution of B, and at this point A must finish
 because A precedes B. This gives rise to the fact B1 and B2 must run after A. 
