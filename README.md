@@ -737,6 +737,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Tsung-Wei Huang][Tsung-Wei Huang] created the Cpp-Taskflow project and implemented the core routines.
 - [Chun-Xun Lin][Chun-Xun Lin] co-created the Cpp-Taskflow project and implemented the core routines.
 - [Martin Wong][Martin Wong] supported the Cpp-Taskflow project through NSF and DARPA funding.
+- [Andreas Olofsson][Andreas Olofsson] supported the Cpp-Taskflow project through the DARPA IDEA project.
 - [Nan Xiao](https://github.com/NanXiao) fixed compilation error of unittest on the Arch platform.
 - [Vladyslav](https://github.com/innermous) fixed comment errors in README.md and examples.
 - [vblanco20-1](https://github.com/vblanco20-1) fixed compilation error on Microsoft Visual Studio.
@@ -780,6 +781,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE):
 [Tsung-Wei Huang]:       http://web.engr.illinois.edu/~thuang19/
 [Chun-Xun Lin]:          https://github.com/clin99
 [Martin Wong]:           https://ece.illinois.edu/directory/profile/mdfwong
+[Andreas Olofsson]:      https://github.com/aolofsson
 [Gitter]:                https://gitter.im/cpp-taskflow/Lobby
 [Gitter badge]:          ./image/gitter_badge.svg
 [Github releases]:       https://github.com/coo-taskflow/cpp-taskflow/releases
