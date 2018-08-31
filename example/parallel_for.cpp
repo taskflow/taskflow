@@ -32,7 +32,7 @@ void taskflow(int N) {
   tf::Taskflow tf;
   tf.parallel_for(range, [&] (const int i) { 
     printf("fib[%d]=%d\n", i, fib(i));
-  });
+  }, 1);
   tf.wait_for_all();
 
   auto tend = std::chrono::steady_clock::now();

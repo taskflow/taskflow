@@ -520,8 +520,7 @@ auto [S, T] = tf.parallel_for(
   v.end(),      // end of range
   [] (int i) { 
     std::cout << "parallel in " << i << '\n';
-  },
-  1  // execute one task at a time
+  }
 );
 // add dependencies via S and T.
 ```
@@ -544,6 +543,9 @@ auto [S, T] = tf.parallel_for(
   2  // group to execute two tasks at a time
 );
 ```
+
+By default, taskflow performs an even partition over worker threads
+if the group size is not specified.
 
 ### *reduce/transform_reduce*
 

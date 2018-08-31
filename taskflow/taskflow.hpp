@@ -625,10 +625,10 @@ class BasicFlowBuilder {
     auto silent_emplace(C&&...);
 
     template <typename I, typename C>
-    auto parallel_for(I, I, C&&, size_t = 1);
+    auto parallel_for(I, I, C&&, size_t = 0);
 
     template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>* = nullptr>
-    auto parallel_for(T&, C&&, size_t = 1);
+    auto parallel_for(T&, C&&, size_t = 0);
 
     template <typename I, typename T, typename B>
     auto reduce(I, I, T&, B&&);
@@ -854,7 +854,7 @@ template <typename I, typename C>
 auto BasicFlowBuilder<NodeType>::parallel_for(I beg, I end, C&& c, size_t g) {
 
   using category = typename std::iterator_traits<I>::iterator_category;
-
+  
   if(g == 0) {
     auto d = std::distance(beg, end);
     auto w = std::max(size_t{1}, _num_workers);
@@ -1208,10 +1208,10 @@ class BasicTaskflow {
     auto silent_emplace(C&&...);
 
     template <typename I, typename C>
-    auto parallel_for(I, I, C&&, size_t = 1);
+    auto parallel_for(I, I, C&&, size_t = 0);
 
     template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>* = nullptr>
-    auto parallel_for(T&, C&&, size_t = 1);
+    auto parallel_for(T&, C&&, size_t = 0);
 
     template <typename I, typename T, typename B>
     auto reduce(I, I, T&, B&&);
