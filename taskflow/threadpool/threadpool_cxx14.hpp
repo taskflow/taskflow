@@ -154,6 +154,7 @@ class Threadpool {
     inline void shutdown();
     inline void spawn(unsigned);
 
+    inline void wait_for_all();
     inline size_t num_tasks() const;
     inline size_t num_workers() const;
 
@@ -177,6 +178,15 @@ inline Threadpool::Threadpool(unsigned N) {
 // Destructor
 inline Threadpool::~Threadpool() {
   shutdown();
+}
+
+// Procedure: wait_for_all
+// After this method returns, all previously-scheduled tasks in the pool
+// will have been executed.
+inline void Threadpool::wait_for_all() {
+  auto const orig_num_threads = static_cast<unsigned>(_threads.size());
+  shutdown();
+  spawn(orig_num_threads);
 }
 
 // Function: num_tasks
