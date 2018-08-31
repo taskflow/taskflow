@@ -180,15 +180,6 @@ inline Threadpool::~Threadpool() {
   shutdown();
 }
 
-// Procedure: wait_for_all
-// After this method returns, all previously-scheduled tasks in the pool
-// will have been executed.
-inline void Threadpool::wait_for_all() {
-  auto const orig_num_threads = static_cast<unsigned>(_threads.size());
-  shutdown();
-  spawn(orig_num_threads);
-}
-
 // Function: num_tasks
 // Return the number of "unfinished" tasks. Notice that this value is not necessary equal to
 // the size of the task_queue since the task can be popped out from the task queue while
@@ -349,6 +340,38 @@ std::enable_if_t<
     _worker_signal.notify_one();
   }
   return fu;
+}
+
+// Procedure: wait_for_all
+// After this method returns, all previously-scheduled tasks in the pool
+// will have been executed.
+inline void Threadpool::wait_for_all() {
+
+  std::mutex barrier_mutex;
+  std::condition_variable barrier_cv;
+  auto threads_to_sync{_threads.size()};
+  std::vector<std::future<void>> futures;
+
+  auto barrier_task = [&] {
+    std::unique_lock<std::mutex> lock(barrier_mutex);
+    if (--threads_to_sync == 0) {
+      barrier_cv.notify_all();
+    }
+    else {
+      barrier_cv.wait(lock, [&threads_to_sync] {
+        return threads_to_sync == 0;
+      });
+    }
+  };
+
+  for(size_t i=0; i<_threads.size(); ++i) {
+    futures.emplace_back(async(barrier_task));
+  }
+
+  // Wait for all threads to have finished synchronization
+  for (auto& fu : futures) {
+    fu.get();
+  }
 }
 
 // Procedure: shutdown
