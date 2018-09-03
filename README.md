@@ -30,7 +30,8 @@ and is by far faster, more expressive, and easier for drop-in integration than e
 
 # Get Started with Cpp-Taskflow
 
-The following example [simple.cpp](./example/simple.cpp) shows the basic API you need to use Cpp-Taskflow.
+The following example [simple.cpp](./example/simple.cpp) shows the basic Cpp-Taskflow API
+you need in most applications.
 
 ```cpp
 #include <taskflow/taskflow.hpp>  // Cpp-Taskflow is header-only
