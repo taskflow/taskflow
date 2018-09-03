@@ -95,6 +95,11 @@ class ProactiveThreadpool {
             if(_task_queue.empty()){
               w.ready = false;
               _workers.push_back(&w);
+
+              if(_workers.size() == num_workers()){
+                _complete.notify_one();
+              }
+
               w.cv.wait(lock, [&w](){ return w.ready; });              
               t = std::move(w.task);
             }
@@ -215,6 +220,18 @@ class ProactiveThreadpool {
   
   }
 
+  void wait_for_all(){
+
+    if(is_worker()){
+      throw std::runtime_error("Worker thread cannot wait for all");
+    }
+
+    std::unique_lock<std::mutex> lock(_mutex);
+    _complete.wait(lock, [this](){ return _workers.size() == num_workers(); }); 
+
+  }
+
+
   private:
     
     template <typename T>
@@ -238,6 +255,8 @@ class ProactiveThreadpool {
     mutable std::mutex _mutex;
 
     std::condition_variable _empty;
+    std::condition_variable _complete;
+
     std::deque<UnitTask> _task_queue;
     std::vector<std::thread> _threads;
     std::vector<Worker*> _workers; 

@@ -54,7 +54,38 @@ void test_threadpool_async(ThreadpoolType& tp, const size_t task_num){
   for(size_t i=0; i<int_future.size(); i++){
     CHECK(int_future[i].get() == int_result[i]);
   } 
- 
+}
+
+template <typename ThreadpoolType>
+void test_threadpool_wait_for_all(ThreadpoolType& tp){
+
+  const size_t worker_num = tp.num_workers();
+  const size_t task_num = 20;
+  std::atomic<size_t> counter{0};
+  
+  for(size_t i=0; i<task_num; i++){
+    tp.silent_async([&counter](){ 
+      std::this_thread::sleep_for(std::chrono::milliseconds(200));
+      counter++; 
+    });
+  }
+  CHECK(counter < task_num);
+  //std::cout << "counter: " << counter << std::endl;
+
+  tp.shutdown();
+  tp.spawn(worker_num);
+
+  counter = 0;
+  for(size_t i=0; i<task_num; i++){
+    tp.silent_async([&counter](){ 
+      std::this_thread::sleep_for(std::chrono::milliseconds(200));
+      counter++; 
+    });
+  }
+  tp.wait_for_all();
+  //std::cout << "counter:" << counter << std::endl;
+  CHECK(counter == task_num);
+
 }
 
 // --------------------------------------------------------
@@ -74,6 +105,11 @@ TEST_CASE("Threadpool.ProactiveThreadpool" * doctest::timeout(5)) {
     tf::ProactiveThreadpool tp(4);
     test_threadpool_async(tp, task_num);
     test_threadpool_silent_async(tp, task_num);
+  }
+
+  SUBCASE("WaitForAll"){
+    tf::ProactiveThreadpool tp(4);
+    test_threadpool_wait_for_all(tp);
   }
 
 }
