@@ -24,7 +24,6 @@ Dynamic tasks created by the same task node are grouped together to a subflow.
 | ![](../image/static_graph.png) | ![](../image/dynamic_graph.png) |
 
 
-
 #### Q: How many tasks can Cpp-Taskflow handle?
 
 **A:** Cpp-Taskflow is a very lightweight and efficient tasking library.
@@ -38,6 +37,13 @@ In most cases, users can quickly master Cpp-Taskflow to create large and complex
 in just a few minutes.
 The performance scales very well and is comparable to hard-coded multi-threading.
 Of course, the judge is always left for users -:)
+
+#### Q: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?
+
+**A:** Each task has a method `name(const std::string&)` for user to assign a human readable string
+to ease the debugging process. 
+If a task is not assigned a name or is an internal node,
+its address value in the memory is used instead.
 
 ## Compile Issues
 
@@ -103,8 +109,27 @@ This graph may looks strange because B seems to run twice!
 However, Cpp-Taskflow will schedule B only once to create its subflow.
 Whether this subflow joins or detaches from B only affects the future object returned from B.
 
+#### Q: How can I parallelize multiple runs on the same function with different arguments?
 
+```cpp
+for(int i=0; i<N; ++i) {
+  func(i);  // each call to func is independent of each other
+}
+```
 
+**A:** Many people have been asking how to apply Taskflow's `parallel_for` method
+to parallelize a sequential loop over an index sequence.
+This can be done by using the capture property of a C++ lambda.
+
+```cpp
+tf::Taskflow tf(std::thread::hardware_concurrency()); 
+for(int i=0; i<N; ++i) {
+  tf.silent_emplace([i, &func](){
+    func(i);
+  });
+}
+tf.wait_for_all();
+```
 
 
 * * *
