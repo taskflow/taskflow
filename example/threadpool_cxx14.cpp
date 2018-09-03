@@ -76,6 +76,26 @@ int main()
             << "\tWorker threads: " << tp.num_workers() << '\n';
   std::cout << intFutures.size() << " int futures summed to: " << sum << '\n';
   std::cout << "(also ran " << voidFutures.size() << " void futures)\n";
+  std::cout << "\n";
+
+  // You may also use Threadpool::wait_for_all() to synchronize -- it
+  // will return when all scheduled tasks have completed (even tasks
+  // scheduled "silently" without a future).
+  auto const numSilentTasks = 10;
+  std::mutex printMutex;
+  for (auto i = 0; i < numSilentTasks; ++i) {
+    tp.silent_async([=, &printMutex]() {
+      // Simulate a small task
+      std::this_thread::sleep_for(std::chrono::microseconds(5) * (numSilentTasks - i));
+      std::lock_guard<std::mutex> lock(printMutex);
+      std::cout << "Silent task " << i << " returning\n";
+    });
+  }
+  tp.wait_for_all();
+  {
+    std::lock_guard<std::mutex> lock(printMutex);
+    std::cout << "Main thread: all scheduled tasks are done\n";
+  }
 
   return 0;
 }
