@@ -96,6 +96,9 @@ target_link_libraries(emplace Threads::Threads)
 add_executable(reduce example/reduce.cpp)
 target_link_libraries(reduce Threads::Threads)
 
+add_executable(threadpool example/threadpool.cpp)
+target_link_libraries(threadpool Threads::Threads)
+
 add_executable(matrix example/matrix.cpp)
 target_compile_options(matrix PRIVATE ${OpenMP_CXX_FLAGS})
 target_link_libraries(matrix Threads::Threads OpenMP::OpenMP_CXX)
@@ -129,6 +132,10 @@ add_test(joined_subflow ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.Joi
 add_test(detached_subflow ${PROJECT_SOURCE_DIR}/unittest/taskflow -tc=Taskflow.DetachedSubflow)
 
 # unittest for threadpool 
+add_executable(threadpool_test unittest/threadpool.cpp)
+target_link_libraries(threadpool_test Threads::Threads)
+
+add_test(proactivethreadpool ${PROJECT_SOURCE_DIR}/unittest/threadpool_test -tc=Threadpool.ProactiveThreadpool)
 
 ## threadpool_cxx14 unittest (contributed by Glen Fraser)
 add_executable(threadpool_cxx14_tmp unittest/threadpool_cxx14.cpp)
