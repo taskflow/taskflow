@@ -45,12 +45,13 @@ class ProactiveThreadpool {
     size_t num_workers() const { return _threads.size();  }
 
     void shutdown(){
+
       { 
         std::unique_lock<std::mutex> lock(_mutex);
         _shutdown = true;
         _empty.wait(lock, [this](){ return _task_queue.empty(); });
         _exiting = true;
-
+        
         for(auto w : _workers){
           w->ready = true;
           w->task = nullptr;
@@ -119,7 +120,6 @@ class ProactiveThreadpool {
       } 
     }
 
-  // TODO: rename to silent_async
   template <typename C>
   void silent_async(C&& c){
 
@@ -128,6 +128,7 @@ class ProactiveThreadpool {
     //no worker thread available
     if(num_workers() == 0){
       t();
+      return;
     }
 
     std::unique_lock<std::mutex> lock(_mutex);
@@ -144,7 +145,6 @@ class ProactiveThreadpool {
 
   }
 
-  // TODO: add a function "async" which returns the future
   template <typename C>
   auto async(C&& c){
 
