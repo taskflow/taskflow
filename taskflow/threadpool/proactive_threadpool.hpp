@@ -96,7 +96,7 @@ class ProactiveThreadpool {
               w.ready = false;
               _workers.push_back(&w);
 
-              if(_workers.size() == num_workers()){
+              if(_wait_for_all && _workers.size() == num_workers()){
                 _complete.notify_one();
               }
 
@@ -227,8 +227,9 @@ class ProactiveThreadpool {
     }
 
     std::unique_lock<std::mutex> lock(_mutex);
+    _wait_for_all = true;
     _complete.wait(lock, [this](){ return _workers.size() == num_workers(); }); 
-
+    _wait_for_all = false;
   }
 
 
@@ -262,8 +263,9 @@ class ProactiveThreadpool {
     std::vector<Worker*> _workers; 
     std::unordered_set<std::thread::id> _worker_ids;    
 
-    bool _exiting {false};
-    bool _shutdown{false};
+    bool _exiting      {false};
+    bool _shutdown     {false};
+    bool _wait_for_all {false};
 
 };
 
