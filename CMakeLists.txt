@@ -135,5 +135,6 @@ add_executable(threadpool_cxx14_tmp unittest/threadpool_cxx14.cpp)
 set_target_properties(threadpool_cxx14_tmp PROPERTIES CXX_STANDARD 14)
 target_link_libraries(threadpool_cxx14_tmp Threads::Threads)
 set_target_properties(threadpool_cxx14_tmp PROPERTIES OUTPUT_NAME "threadpool_cxx14")
-add_test(threadpool_cxx14 ${PROJECT_SOURCE_DIR}/unittest/threadpool_cxx14 -tc=Threadpool)
+add_test(threadpool_cxx14_basic ${PROJECT_SOURCE_DIR}/unittest/threadpool_cxx14 -tc=Threadpool.Basic)
+add_test(threadpool_cxx14_wait_for_all ${PROJECT_SOURCE_DIR}/unittest/threadpool_cxx14 -tc=Threadpool.WaitForAll)
 

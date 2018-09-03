@@ -79,6 +79,7 @@ class Threadpool {
     inline void shutdown();
     inline void spawn(unsigned);
     
+    inline void wait_for_all();
     inline size_t num_tasks() const;
     inline size_t num_workers() const;
 
@@ -243,6 +244,38 @@ auto Threadpool::async(C&& c, Signal sig) {
     _worker_signal.notify_one();
   }
   return fu;
+}
+
+// Procedure: wait_for_all
+// After this method returns, all previously-scheduled tasks in the pool
+// will have been executed.
+inline void Threadpool::wait_for_all() {
+
+  std::mutex barrier_mutex;
+  std::condition_variable barrier_cv;
+  auto threads_to_sync{_threads.size()};
+  std::vector<std::future<void>> futures;
+
+  auto barrier_task = [&] {
+    std::unique_lock<std::mutex> lock(barrier_mutex);
+    if (--threads_to_sync == 0) {
+      barrier_cv.notify_all();
+    }
+    else {
+      barrier_cv.wait(lock, [&threads_to_sync] {
+        return threads_to_sync == 0;
+      });
+    }
+  };
+
+  for(size_t i=0; i<_threads.size(); ++i) {
+    futures.emplace_back(async(barrier_task));
+  }
+
+  // Wait for all threads to have finished synchronization
+  for (auto& fu : futures) {
+    fu.get();
+  }
 }
 
 // Procedure: shutdown
