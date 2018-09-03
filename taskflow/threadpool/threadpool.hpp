@@ -250,26 +250,28 @@ auto Threadpool::async(C&& c, Signal sig) {
 // After this method returns, all previously-scheduled tasks in the pool
 // will have been executed.
 inline void Threadpool::wait_for_all() {
+  
+  if(is_worker()) {
+    throw std::runtime_error("Worker thread cannot wait for all");
+  }
 
   std::mutex barrier_mutex;
   std::condition_variable barrier_cv;
   auto threads_to_sync{_threads.size()};
   std::vector<std::future<void>> futures;
 
-  auto barrier_task = [&] {
-    std::unique_lock<std::mutex> lock(barrier_mutex);
-    if (--threads_to_sync == 0) {
-      barrier_cv.notify_all();
-    }
-    else {
-      barrier_cv.wait(lock, [&threads_to_sync] {
-        return threads_to_sync == 0;
-      });
-    }
-  };
-
   for(size_t i=0; i<_threads.size(); ++i) {
-    futures.emplace_back(async(barrier_task));
+    futures.emplace_back(async([&] () {
+      std::unique_lock<std::mutex> lock(barrier_mutex);
+      if (--threads_to_sync; threads_to_sync == 0) {
+        barrier_cv.notify_all();
+      }
+      else {
+        barrier_cv.wait(lock, [&threads_to_sync] {
+          return threads_to_sync == 0;
+        });
+      }
+    }));
   }
 
   // Wait for all threads to have finished synchronization

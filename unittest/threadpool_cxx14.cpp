@@ -1,4 +1,8 @@
+// 2018/09/02 - contributed by Glen Fraser
+//   - added wait_for_all test
+//
 // 2018/08/28 - contributed by Glen Fraser
+//   - added basic test
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 

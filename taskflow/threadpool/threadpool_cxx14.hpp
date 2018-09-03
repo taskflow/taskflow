@@ -1,7 +1,9 @@
 // A C++-14 based threadpool implementation inspired by Taskflow Threadpool.
-
-// 2018/08/27 - contributed by Glen Fraser
+// 
+// 2018/09/02 - contributed by Glen Fraser
+//   - added wait_for_all method
 //
+// 2018/08/27 - contributed by Glen Fraser
 // taskflow.hpp was modified by Glen Fraser to produce this file
 // (threadpool_cxx14.hpp), which is a "light" version of the library with
 // restricted functionality -- it only exposes the tf::Threadpool class.
@@ -346,6 +348,10 @@ std::enable_if_t<
 // After this method returns, all previously-scheduled tasks in the pool
 // will have been executed.
 inline void Threadpool::wait_for_all() {
+
+  if(is_worker()) {
+    throw std::runtime_error("Worker thread cannot wait for all");
+  }
 
   std::mutex barrier_mutex;
   std::condition_variable barrier_cv;
