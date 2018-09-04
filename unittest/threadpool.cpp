@@ -40,7 +40,7 @@ void test_async(ThreadpoolType& tp, const size_t task_num){
     int_future.emplace_back(tp.async(
       [size = i](){
         int sum = 0;
-        for(size_t i=0; i<=size; i++){
+        for(int i=0; i<=static_cast<int>(size); i++){
           sum += i;
         }       
         return sum;
@@ -83,7 +83,7 @@ void test_wait_for_all(ThreadpoolType& tp){
   REQUIRE(counter == task_num);
   REQUIRE(tp.num_workers() == 0);
 
-  tp.spawn(worker_num);
+  tp.spawn(static_cast<unsigned>(worker_num));
   REQUIRE(tp.num_workers() == worker_num);
 
   counter = 0;
@@ -107,7 +107,7 @@ TEST_CASE("SimpleThreadpool" * doctest::timeout(300)) {
   const size_t task_num = 100;
 
   SUBCASE("PlaceTask"){
-    for(size_t i=0; i<=4; ++i) {
+    for(unsigned i=0; i<=4; ++i) {
       tf::SimpleThreadpool tp(i);
       test_async(tp, task_num);
       test_silent_async(tp, task_num);
@@ -115,7 +115,7 @@ TEST_CASE("SimpleThreadpool" * doctest::timeout(300)) {
   }
   
   SUBCASE("WaitForAll"){
-    for(size_t i=0; i<=4; ++i) {
+    for(unsigned i=0; i<=4; ++i) {
       tf::SimpleThreadpool tp(i);
       test_wait_for_all(tp);
     }
@@ -130,7 +130,7 @@ TEST_CASE("ProactiveThreadpool" * doctest::timeout(300)) {
   const size_t task_num = 100;
 
   SUBCASE("PlaceTask"){
-    for(size_t i=0; i<=4; ++i) {
+    for(unsigned i=0; i<=4; ++i) {
       tf::ProactiveThreadpool tp(i);
       test_async(tp, task_num);
       test_silent_async(tp, task_num);
@@ -138,7 +138,7 @@ TEST_CASE("ProactiveThreadpool" * doctest::timeout(300)) {
   }
   
   SUBCASE("WaitForAll"){
-    for(size_t i=0; i<=4; ++i) {
+    for(unsigned i=0; i<=4; ++i) {
       tf::ProactiveThreadpool tp(i);
       test_wait_for_all(tp);
     }

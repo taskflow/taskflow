@@ -57,7 +57,7 @@ TEST_CASE("Threadpool.Basic" * doctest::timeout(5)) {
   tp.shutdown();
   REQUIRE(tp.num_workers() == 0);
 
-  tp.spawn(num_workers);
+  tp.spawn(static_cast<unsigned>(num_workers));
   REQUIRE(tp.num_workers() == num_workers);
 }
 
