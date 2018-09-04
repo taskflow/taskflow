@@ -114,7 +114,6 @@ target_link_libraries(threadpool_cxx14 Threads::Threads)
 add_executable(multiple_dispatch example/multiple_dispatch.cpp)
 target_link_libraries(multiple_dispatch Threads::Threads)
 
-
 # -----------------------------------------------------------------------------
 # Unittest
 # -----------------------------------------------------------------------------

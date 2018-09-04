@@ -1,3 +1,5 @@
+// 2018/09/04 - contributed by Glen F.
+//
 // An example to show dispatching multiple Taskflow graphs as
 // separate batches (which will all run on the same Threadpool).
 //
@@ -8,6 +10,8 @@
 
 #include <taskflow/taskflow.hpp>
 
+// Procedure: syncLog
+// synchronize cout across threads
 void syncLog(std::string const& msg)
 {
   static std::mutex logMutex;
@@ -15,8 +19,8 @@ void syncLog(std::string const& msg)
   std::cout << msg << '\n';
 }
 
-void dispatchBatch(tf::Taskflow& tf, int batch)
-{
+void dispatchBatch(tf::Taskflow& tf, int batch) {
+
   auto taskMaker = [](std::string const& taskName, int batch) {
     return [=]() {
       // Simulate some work
@@ -37,6 +41,7 @@ void dispatchBatch(tf::Taskflow& tf, int batch)
   C.precede(D);  // D runs after C
 
   // Schedule this independent graph of tasks (so they start running)
+  // We use silent_dispatch because we don't care when it finishes.
   tf.silent_dispatch();
 }
 
