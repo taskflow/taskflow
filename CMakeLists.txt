@@ -111,6 +111,10 @@ add_executable(threadpool_cxx14 example/threadpool_cxx14.cpp)
 set_property(TARGET threadpool_cxx14 PROPERTY CXX_STANDARD 14)
 target_link_libraries(threadpool_cxx14 Threads::Threads)
 
+add_executable(multiple_dispatch example/multiple_dispatch.cpp)
+target_link_libraries(multiple_dispatch Threads::Threads)
+
+
 # -----------------------------------------------------------------------------
 # Unittest
 # -----------------------------------------------------------------------------
