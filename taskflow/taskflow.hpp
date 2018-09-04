@@ -1,6 +1,6 @@
 // MIT License
 // 
-// Copyright (c) 2018 Tsung-Wei Huang, Chun-Xun Lin, and Martin Wong
+// Copyright (c) 2018 Tsung-Wei Huang, Chun-Xun Lin, Guannan Guo, and Martin Wong
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -45,8 +45,8 @@
 // ============================================================================
 // version
 #define TASKFLOW_VERSION_MAJOR 2
-#define TASKFLOW_VERSION_MINOR 0
-#define TASKFLOW_VERSION_PATCH 2
+#define TASKFLOW_VERSION_MINOR 1
+#define TASKFLOW_VERSION_PATCH 0
 // ============================================================================
 
 // Clang mis-interprets variant's get as a non-friend of variant and cannot
@@ -194,8 +194,19 @@ inline constexpr bool is_iterable_v = is_iterable<T>::value;
 // Taskflow definition
 //-----------------------------------------------------------------------------
 
-// Forward declaration
+// Struct: MoC
+template <typename T>
+struct MoC {
 
+  MoC(T&& rhs) : object(std::move(rhs)) {}
+  MoC(const MoC& other) : object(std::move(other.object)) {}
+
+  T& get() { return object; }
+  
+  mutable T object; 
+};
+
+// Forward declaration
 template <template<typename, typename...> class FuncType>
 class BasicNode;
 
@@ -1607,7 +1618,7 @@ std::string BasicTaskflow<Traits>::dump() const {
 // Taskflow traits
 struct TaskflowTraits {
   using NodeType       = BasicNode<std::function>;
-  using ThreadpoolType = Threadpool;
+  using ThreadpoolType = SimpleThreadpool;
 };
 
 using Taskflow       = BasicTaskflow<TaskflowTraits>;

@@ -1,49 +1,50 @@
-//2018/8/31 contributed by Guannan
-// Examples to test throughput of various theadpools
+// 2018/8/31 contributed by Guannan
+//
+// Examples to test different threadpool implementations:
+//   - SimpleThreadpool
+//   - ProactiveThreadpool
 
 #include <taskflow/threadpool/threadpool.hpp>
-#include <taskflow/threadpool/proactive_threadpool.hpp>
 #include <chrono>
-#include <atomic>
-#include <thread>
+#include <random>
 
+// Procedure: benchmark_empty_jobs
 void benchmark_empty_jobs() {
 
-  std::cout << "Testing threadpool throughput on empty jobs..." << std::endl;
+  std::cout << "Benchmarking threadpool throughput on empty jobs ...\n";
 
   unsigned thread_num = 4;
   unsigned int task_num = 10000000;
   
   auto start = std::chrono::high_resolution_clock::now();
 
-  tf::ProactiveThreadpool pool(thread_num);
+  tf::ProactiveThreadpool proactive(thread_num);
   for(size_t i=0; i<task_num; i++){
-    pool.silent_async([](){}); 
+    proactive.silent_async([](){}); 
   }
-  pool.shutdown();
+  proactive.shutdown();
   
   auto end = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> elapsed = end - start;
-  std::cout << "ProactiveThreadpool elapsed time: " << elapsed.count() << std::endl;
+  auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  std::cout << "ProactiveThreadpool elapsed time: " << elapsed.count() << " ms\n";
 
   start = std::chrono::high_resolution_clock::now();
 
-  tf::Threadpool tf_pool(thread_num);
+  tf::SimpleThreadpool simple(thread_num);
   for(size_t i=0; i<task_num; i++){
-    tf_pool.silent_async([](){}); 
+    simple.silent_async([](){}); 
   }
-  tf_pool.shutdown();
+  simple.shutdown();
   
   end = std::chrono::high_resolution_clock::now();
-  elapsed = end - start;
-  std::cout << "Basic elapsed time: " << elapsed.count() << std::endl;
-  std::cout << std::endl;
+  elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  std::cout << "SimpleThreadpool elapsed time: " << elapsed.count() << " ms\n";
 }
 
-
+// Procedure: benchmark_atomic_add
 void benchmark_atomic_add() {
 
-  std::cout << "Testing threadpool throughput on atomic add..." << std::endl;
+  std::cout << "Benchmarking threadpool throughput on atomic add ...\n";
   
   unsigned thread_num = 4;
   unsigned int task_num = 10000000;
@@ -51,34 +52,35 @@ void benchmark_atomic_add() {
   std::atomic<int> counter(0);
   auto start = std::chrono::high_resolution_clock::now();
   
-  tf::ProactiveThreadpool pool(thread_num);
+  tf::ProactiveThreadpool proactive(thread_num);
   for(size_t i=0; i<task_num; i++){
-    pool.silent_async([&counter](){ counter++; }); 
+    proactive.silent_async([&counter](){ counter++; }); 
   }
-  pool.shutdown();
+  proactive.shutdown();
   
   auto end = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> elapsed = end - start;
-  std::cout << "ProactiveThreadpool elapsed time: " << elapsed.count() << std::endl;
+  auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  std::cout << "ProactiveThreadpool elapsed time: " << elapsed.count() << " ms\n";
 
   counter = 0;
   start = std::chrono::high_resolution_clock::now();
-  tf::Threadpool tf_pool(thread_num);
+  tf::SimpleThreadpool simple(thread_num);
 
   for(size_t i=0; i<task_num; i++){
-    tf_pool.silent_async([&counter](){ counter++; }); 
+    simple.silent_async([&counter](){ counter++; }); 
   }
-  tf_pool.shutdown();
+  simple.shutdown();
   
   end = std::chrono::high_resolution_clock::now();
-  elapsed = end - start;
-  std::cout << "Basic elapsed time: " << elapsed.count() << std::endl;
-  std::cout << std::endl;
+  elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  std::cout << "SimpleThreadpool elapsed time: " << elapsed.count() << " ms\n";
 }
 
+// Function: main
 int main(int argc, char* argv[]) {
 
   benchmark_empty_jobs();
   benchmark_atomic_add();
-
+  
+  return 0;
 }

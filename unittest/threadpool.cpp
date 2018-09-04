@@ -1,17 +1,20 @@
-// conbributed by Guannan
+// 2018/09/03 - added by Tsung-Wei Huang
+//   - refactored ProactiveThreadpool unittest
+//   - added tests for SimpleThreadpool
+//
+// 2018/09/02 - created by Guannan
+//   - test_silent_async
+//   - test_async
+//   - test_wait_for_all
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include <doctest.h>
-
 #include <taskflow/threadpool/threadpool.hpp>
-#include <taskflow/threadpool/proactive_threadpool.hpp>
-#include <atomic>
-#include <future>
-#include <vector>
 
+// Procedure: test_silent_async
 template <typename ThreadpoolType>
-void test_threadpool_silent_async(ThreadpoolType& tp, const size_t task_num) {
+void test_silent_async(ThreadpoolType& tp, const size_t task_num) {
 
   std::atomic<size_t> counter{0};
   
@@ -22,12 +25,13 @@ void test_threadpool_silent_async(ThreadpoolType& tp, const size_t task_num) {
   }
   tp.shutdown(); //make sure all silent threads end
 
-  CHECK(counter == sum);
+  REQUIRE(counter == sum);
 
 }
 
+// Procedure: test_async
 template <typename ThreadpoolType>
-void test_threadpool_async(ThreadpoolType& tp, const size_t task_num){
+void test_async(ThreadpoolType& tp, const size_t task_num){
  
   std::vector<std::future<int>> int_future;
   std::vector<int> int_result;
@@ -49,15 +53,18 @@ void test_threadpool_async(ThreadpoolType& tp, const size_t task_num){
     int_result.push_back(sum_result);
   }
   
-  CHECK(int_future.size() == int_result.size());
+  REQUIRE(int_future.size() == int_result.size());
 
   for(size_t i=0; i<int_future.size(); i++){
-    CHECK(int_future[i].get() == int_result[i]);
+    REQUIRE(int_future[i].get() == int_result[i]);
   } 
 }
 
+// Procedure: test_wait_for_all
 template <typename ThreadpoolType>
-void test_threadpool_wait_for_all(ThreadpoolType& tp){
+void test_wait_for_all(ThreadpoolType& tp){
+
+  using namespace std::literals::chrono_literals;
 
   const size_t worker_num = tp.num_workers();
   const size_t task_num = 20;
@@ -65,52 +72,78 @@ void test_threadpool_wait_for_all(ThreadpoolType& tp){
   
   for(size_t i=0; i<task_num; i++){
     tp.silent_async([&counter](){ 
-      std::this_thread::sleep_for(std::chrono::milliseconds(200));
+      std::this_thread::sleep_for(200us);
       counter++; 
     });
   }
-  CHECK(counter < task_num);
-  //std::cout << "counter: " << counter << std::endl;
+  REQUIRE(counter <= task_num);  // pay attention to the case of 0 worker
 
   tp.shutdown();
+
+  REQUIRE(counter == task_num);
+  REQUIRE(tp.num_workers() == 0);
+
   tp.spawn(worker_num);
+  REQUIRE(tp.num_workers() == worker_num);
 
   counter = 0;
   for(size_t i=0; i<task_num; i++){
     tp.silent_async([&counter](){ 
-      std::this_thread::sleep_for(std::chrono::milliseconds(200));
+      std::this_thread::sleep_for(200us);
       counter++; 
     });
   }
   tp.wait_for_all();
-  //std::cout << "counter:" << counter << std::endl;
-  CHECK(counter == task_num);
 
+  REQUIRE(counter == task_num);
+  REQUIRE(tp.num_workers() == worker_num);
+}
+
+// --------------------------------------------------------
+// Testcase: SimpleThreadpool
+// --------------------------------------------------------
+TEST_CASE("SimpleThreadpool" * doctest::timeout(300)) {
+
+  const size_t task_num = 100;
+
+  SUBCASE("PlaceTask"){
+    for(size_t i=0; i<=4; ++i) {
+      tf::SimpleThreadpool tp(i);
+      test_async(tp, task_num);
+      test_silent_async(tp, task_num);
+    }
+  }
+  
+  SUBCASE("WaitForAll"){
+    for(size_t i=0; i<=4; ++i) {
+      tf::SimpleThreadpool tp(i);
+      test_wait_for_all(tp);
+    }
+  }
 }
 
 // --------------------------------------------------------
 // Testcase: ProactiveThreadpool
 // --------------------------------------------------------
-TEST_CASE("Threadpool.ProactiveThreadpool" * doctest::timeout(5)) {
+TEST_CASE("ProactiveThreadpool" * doctest::timeout(300)) {
 
-  size_t task_num = 100;
+  const size_t task_num = 100;
 
-  SUBCASE("EmptyWorkers"){
-    tf::ProactiveThreadpool tp(0);
-    test_threadpool_async(tp, task_num);
-    test_threadpool_silent_async(tp, task_num); 
+  SUBCASE("PlaceTask"){
+    for(size_t i=0; i<=4; ++i) {
+      tf::ProactiveThreadpool tp(i);
+      test_async(tp, task_num);
+      test_silent_async(tp, task_num);
+    }
   }
-
-  SUBCASE("NoneEmptyWorkers"){
-    tf::ProactiveThreadpool tp(4);
-    test_threadpool_async(tp, task_num);
-    test_threadpool_silent_async(tp, task_num);
-  }
-
+  
   SUBCASE("WaitForAll"){
-    tf::ProactiveThreadpool tp(4);
-    test_threadpool_wait_for_all(tp);
+    for(size_t i=0; i<=4; ++i) {
+      tf::ProactiveThreadpool tp(i);
+      test_wait_for_all(tp);
+    }
   }
-
 }
+
+
 

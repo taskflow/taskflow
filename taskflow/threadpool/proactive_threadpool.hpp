@@ -1,5 +1,4 @@
-// 
-// contributed by Guannan
+// 2018/09/03 - contributed by Guannan Guo
 // 
 // ProactiveThreadpool schedules independent jobs in a greedy manner.
 // Whenever a job is inserted into the threadpool, the threadpool will check if there
@@ -23,12 +22,28 @@
 
 namespace tf {
 
-
 // template < template<typename...> class FuncType >
-
 class ProactiveThreadpool {
 
-  using UnitTask = std::function<void()>;
+  using TaskType = std::function<void()>;
+  
+  template <typename T>
+  struct MoC {
+  
+    MoC(T&& rhs): object(std::move(rhs)) {}
+    MoC(const MoC& other) : object(std::move(other.object)) {}
+  
+    T& get() {return object; }
+    
+    mutable T object;
+  };
+
+
+  struct Worker{
+    std::condition_variable cv;
+    TaskType task;
+    bool ready;
+  };
 
   public:
 
@@ -89,7 +104,7 @@ class ProactiveThreadpool {
           }
 
           Worker w;
-          UnitTask t; 
+          TaskType t; 
           std::unique_lock<std::mutex> lock(_mutex);
           while(!_exiting){
             if(_task_queue.empty()){
@@ -128,7 +143,7 @@ class ProactiveThreadpool {
   template <typename C>
   void silent_async(C&& c){
 
-    UnitTask t {std::forward<C>(c)};
+    TaskType t {std::forward<C>(c)};
 
     //no worker thread available
     if(num_workers() == 0){
@@ -175,7 +190,7 @@ class ProactiveThreadpool {
         // all workers are busy.
         if(_workers.empty()){
           _task_queue.emplace_back(
-            [p = MoveOnCopy(std::move(p)), c = std::forward<C>(c)]() mutable {
+            [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
               c();
               p.get().set_value(); 
             }
@@ -186,7 +201,7 @@ class ProactiveThreadpool {
           Worker* w = _workers.back();
           _workers.pop_back();
           w->ready = true;
-          w->task = [p = MoveOnCopy(std::move(p)), c = std::forward<C>(c)]() mutable {
+          w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
             c();
             p.get().set_value(); 
           };
@@ -197,7 +212,7 @@ class ProactiveThreadpool {
 
         if(_workers.empty()){
           _task_queue.emplace_back(
-            [p = MoveOnCopy(std::move(p)), c = std::forward<C>(c)]() mutable {
+            [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
               p.get().set_value(c());
               return; 
             }
@@ -207,7 +222,7 @@ class ProactiveThreadpool {
           Worker* w = _workers.back();
           _workers.pop_back();
           w->ready = true;
-          w->task = [p = MoveOnCopy(std::move(p)), c = std::forward<C>(c)]() mutable {
+          w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
             p.get().set_value(c()); 
             return;
           };
@@ -234,31 +249,13 @@ class ProactiveThreadpool {
 
 
   private:
-    
-    template <typename T>
-    struct MoveOnCopy{
-    
-      MoveOnCopy(T&& rhs): object(std::move(rhs)) {}
-      MoveOnCopy(const MoveOnCopy& other) : object(std::move(other.object)) {}
-    
-      T& get() {return object; }
-      
-      mutable T object;
-    };
-
-
-    struct Worker{
-      std::condition_variable cv;
-      UnitTask task;
-      bool ready;
-    };
 
     mutable std::mutex _mutex;
 
     std::condition_variable _empty;
     std::condition_variable _complete;
 
-    std::deque<UnitTask> _task_queue;
+    std::deque<TaskType> _task_queue;
     std::vector<std::thread> _threads;
     std::vector<Worker*> _workers; 
     std::unordered_set<std::thread::id> _worker_ids;    
@@ -270,8 +267,7 @@ class ProactiveThreadpool {
 };
 
 
-
-};
+};  // namespace tf. ----------------------------------------------------------
 
 
 

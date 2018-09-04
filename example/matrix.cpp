@@ -150,7 +150,7 @@ void cppthread(const std::vector<size_t>& D) {
 
   auto tbeg = std::chrono::steady_clock::now();
 
-  tf::Threadpool tpl(std::thread::hardware_concurrency());
+  tf::SimpleThreadpool tpl(std::thread::hardware_concurrency());
 
   std::cout << "Generating matrix As ...\n";
   std::vector<matrix_t> As(D.size());
