@@ -723,7 +723,7 @@ The folder `example/` contains several examples and is a great place to learn to
 | [debug.cpp](./example/debug.cpp)| inspects a taskflow through the dump method |
 | [emplace.cpp](./example/emplace.cpp)| demonstrates the difference between the emplace method and the silent_emplace method |
 | [matrix.cpp](./example/matrix.cpp) | creates two set of matrices and multiply each individually in parallel |
-| [multiple_dispatch.cpp](./example/multiple_dispatch.cpp) | illustrates dispatching multiple taskflow graphs as independent batches (which all run on the same taskpool) |
+| [multiple_dispatch.cpp](./example/multiple_dispatch.cpp) | illustrates dispatching multiple taskflow graphs as independent batches (which all run on the same threadpool) |
 | [parallel_for.cpp](./example/parallel_for.cpp)| parallelizes a for loop with unbalanced workload |
 | [reduce.cpp](./example/reduce.cpp)| performs reduce operations over linear containers |
 | [subflow.cpp](./example/subflow.cpp)| demonstrates how to create a subflow graph that spawns three dynamic tasks |

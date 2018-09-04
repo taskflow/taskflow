@@ -1,5 +1,5 @@
 // An example to show dispatching multiple Taskflow graphs as
-// separate batches (which will all run on the same Taskpool).
+// separate batches (which will all run on the same Threadpool).
 //
 // It first dispatches 5 "independent" tasks (#100-104),
 // then launches four batches (0-3) of a task graph with inter-dependencies,
