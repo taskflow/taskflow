@@ -357,7 +357,7 @@ A.precede(B);
 # Debug a Taskflow Graph
 
 Concurrent programs are notoriously difficult to debug.
-Cpp-Taskflow leverages the graph properties to relief the debugging pain.
+Cpp-Taskflow leverages the graph properties to relieve the debugging pain.
 To debug a taskflow graph,
 (1) name tasks and dump the graph, and
 (2) start with one thread before going multiple.
