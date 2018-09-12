@@ -93,10 +93,9 @@ void test_wait_for_all(ThreadpoolType& tp){
       counter++; 
     });
   }
-  tp.wait_for_all();
+  tp.shutdown();
 
   REQUIRE(counter == task_num);
-  REQUIRE(tp.num_workers() == worker_num);
 }
 
 // --------------------------------------------------------
