@@ -245,7 +245,7 @@ auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
       // speculation
       if(std::this_thread::get_id() != _owner){
         auto iter = _lookahead();
-        if(iter != _worker_local.end() and iter->second->task == nullptr){
+        if(iter != _worker_local.end() && iter->second->task == nullptr){
           iter->second->task =
             [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
               c();
@@ -281,7 +281,7 @@ auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
       // speculation
       if(std::this_thread::get_id() != _owner){
         auto iter = _lookahead();
-        if(iter != _worker_local.end() and iter->second->task == nullptr){
+        if(iter != _worker_local.end() && iter->second->task == nullptr){
           iter->second->task = 
             [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
               p.get().set_value(c());
@@ -328,7 +328,7 @@ void BasicSpeculativeThreadpool<TaskType>::silent_async(C&& c){
   // speculation
   if(std::this_thread::get_id() != _owner){
     auto iter = _lookahead();
-    if(iter != _worker_local.end() and iter->second->task == nullptr){
+    if(iter != _worker_local.end() && iter->second->task == nullptr){
       iter->second->task = std::move(t);
       return ;
     }
