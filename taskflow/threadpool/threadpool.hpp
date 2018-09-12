@@ -19,5 +19,6 @@
 
 #include "simple_threadpool.hpp"
 #include "proactive_threadpool.hpp"
+#include "speculative_threadpool.hpp"
 
 

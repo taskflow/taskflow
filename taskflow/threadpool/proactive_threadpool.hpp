@@ -297,7 +297,6 @@ auto BasicProactiveThreadpool<TaskType>::async(C&& c) {
         _task_queue.emplace_back(
           [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
             p.get().set_value(c());
-            return; 
           }
         );
       }
@@ -307,7 +306,6 @@ auto BasicProactiveThreadpool<TaskType>::async(C&& c) {
         w->ready = true;
         w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
           p.get().set_value(c()); 
-          return;
         };
         w->cv.notify_one(); 
       }

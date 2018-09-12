@@ -145,6 +145,7 @@ target_link_libraries(threadpool_test_tmp Threads::Threads)
 set_target_properties(threadpool_test_tmp PROPERTIES OUTPUT_NAME "threadpool")
 add_test(simple_threadpool    ${TF_UTEST_DIR}/threadpool -tc=SimpleThreadpool)
 add_test(proactive_threadpool ${TF_UTEST_DIR}/threadpool -tc=ProactiveThreadpool)
+add_test(speculative_threadpool ${TF_UTEST_DIR}/threadpool -tc=SpeculativeThreadpool)
 
 ## threadpool_cxx14 unittest (contributed by Glen Fraser)
 add_executable(threadpool_cxx14_tmp unittest/threadpool_cxx14.cpp)

@@ -74,19 +74,17 @@ class BasicSpeculativeThreadpool {
     std::deque<TaskType> _task_queue;
     std::vector<std::thread> _threads;
     std::vector<Worker*> _idlers; 
-    std::unordered_set<std::thread::id> _worker_ids;    
     std::unordered_map<std::thread::id, Worker*> _worker_local;    
     
-    // TODO
     const std::thread::id _owner {std::this_thread::get_id()};
 
     bool _exiting      {false};
     bool _wait_for_all {false};
 
-    typename std::unordered_map<std::thread::id, Worker*>::iterator 
-    _lookahead(){
+    auto _lookahead(){
+      auto id = std::this_thread::get_id();
       std::scoped_lock<std::mutex> lock(_mutex);
-      return _worker_local.find(std::this_thread::get_id());
+      return _worker_local.find(id);
     }
 
 };  // class BasicSpeculativeThreadpool. --------------------------------------
@@ -156,7 +154,8 @@ void BasicSpeculativeThreadpool<TaskType>::shutdown(){
   
   _wait_for_all = false;
   _exiting = false;
-  // task queue might have tasks that are added dynamically...
+  
+  // task queue might have tasks added by threads outside this pool...
   //while(not _task_queue.empty()) {
   //  std::invoke(_task_queue.front());
   //  _task_queue.pop_front();
@@ -174,17 +173,15 @@ void BasicSpeculativeThreadpool<TaskType>::spawn(unsigned N) {
 
   for(size_t i=0; i<N; ++i){
     _threads.emplace_back([this]()->void{
+
        Worker w;
        TaskType t; 
-
-       {
-         std::scoped_lock<std::mutex> lock(_mutex);
-         // TODO
-         //_worker_ids.insert(std::this_thread::get_id());
-         _worker_local.insert({std::this_thread::get_id(), &w});
-       }
+       auto id = std::this_thread::get_id();
 
        std::unique_lock<std::mutex> lock(_mutex);
+
+       _worker_local.insert({id, &w}); 
+
        while(!_exiting){
          if(_task_queue.empty()){
            w.ready = false;
@@ -198,21 +195,16 @@ void BasicSpeculativeThreadpool<TaskType>::spawn(unsigned N) {
              w.cv.wait(lock);
            }
 
-           // TODO?
            t = std::move(w.task);
          }
          else{
            t = std::move(_task_queue.front());
            _task_queue.pop_front();
-
-          //if(_task_queue.empty() && _wait_for_all) {
-          //  _empty_cv.notify_one();
-          //}  
          } 
 
          if(t){
            _mutex.unlock();
-           // TODO:
+           // speculation loop
            while(t) {
              t();
              t = std::move(w.task);
@@ -222,7 +214,6 @@ void BasicSpeculativeThreadpool<TaskType>::spawn(unsigned N) {
        } // End of while --------------------------------------------------------------------------
     });     
 
-    _worker_ids.insert(_threads.back().get_id());
   } // End of For ---------------------------------------------------------------------------------
 }
 
@@ -249,19 +240,18 @@ auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
   }
   // have worker(s)
   else{
-    //std::scoped_lock<std::mutex> lock(_mutex);     
     if constexpr(std::is_same_v<void, R>){
-      // all workers are busy. 
-
+      
+      // speculation
       if(std::this_thread::get_id() != _owner){
         auto iter = _lookahead();
         if(iter != _worker_local.end() and iter->second->task == nullptr){
-          iter->second->task = std::move(
+          iter->second->task =
             [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
               c();
               p.get().set_value(); 
-            });
-          return ;
+            };
+          return fu;
         }
       }
 
@@ -288,14 +278,15 @@ auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
     }
     else{
 
+      // speculation
       if(std::this_thread::get_id() != _owner){
         auto iter = _lookahead();
         if(iter != _worker_local.end() and iter->second->task == nullptr){
-          iter->second->task = std::move(
+          iter->second->task = 
             [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
               p.get().set_value(c());
-            });
-          return ;
+            };
+          return fu;
         }
       }
 
@@ -304,7 +295,6 @@ auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
         _task_queue.emplace_back(
           [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
             p.get().set_value(c());
-            return; 
           }
         );
       }
@@ -314,7 +304,6 @@ auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
         w->ready = true;
         w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
           p.get().set_value(c()); 
-          return;
         };
         w->cv.notify_one(); 
       }
@@ -336,6 +325,7 @@ void BasicSpeculativeThreadpool<TaskType>::silent_async(C&& c){
     return;
   }
 
+  // speculation
   if(std::this_thread::get_id() != _owner){
     auto iter = _lookahead();
     if(iter != _worker_local.end() and iter->second->task == nullptr){
@@ -343,16 +333,6 @@ void BasicSpeculativeThreadpool<TaskType>::silent_async(C&& c){
       return ;
     }
   }
-
-  // TODO
-  //std::scoped_lock<std::mutex> lock(_mutex);
-  //if(auto iter = _worker_local.find(std::this_thread::get_id()); 
-  //  iter != _worker_local.end()){
-  //  if(iter->second->task == nullptr){
-  //    iter->second->task = std::move(t);
-  //    return ;
-  //  }
-  //}
 
   std::scoped_lock<std::mutex> lock(_mutex);
   if(_idlers.empty()){

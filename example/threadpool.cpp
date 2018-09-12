@@ -57,11 +57,14 @@ auto linear_insertions() {
 void benchmark_linear_insertions() {
 
   std::cout << "==== Linear Insertions ====\n";
+  
+  std::cout << "Speculative threadpool elapsed time: " 
+            << linear_insertions<tf::SpeculativeThreadpool>() << " ms\n";
 
-  std::cout << "Proactive threadpool takes: " 
+  std::cout << "Proactive threadpool elapsed time: " 
             << linear_insertions<tf::ProactiveThreadpool>() << " ms\n";
 
-  std::cout << "Simple threadpool takes: " 
+  std::cout << "Simple threadpool elapsed time: " 
             << linear_insertions<tf::SimpleThreadpool>() << " ms\n";
 }
 
@@ -93,11 +96,14 @@ auto empty_jobs() {
 void benchmark_empty_jobs() {
 
   std::cout << "==== Empty Jobs ====\n";
+  
+  std::cout << "Speculative threadpool elapsed time: " 
+            << empty_jobs<tf::SpeculativeThreadpool>() << " ms\n";
 
-  std::cout << "Proactive threadpool takes: " 
+  std::cout << "Proactive threadpool elapsed time: " 
             << empty_jobs<tf::ProactiveThreadpool>() << " ms\n";
 
-  std::cout << "Simple threadpool takes: " 
+  std::cout << "Simple threadpool elapsed time: " 
             << empty_jobs<tf::SimpleThreadpool>() << " ms\n";
 }
 
@@ -129,11 +135,14 @@ auto atomic_add() {
 void benchmark_atomic_add() {
 
   std::cout << "==== Atomic Add ====\n";
+  
+  std::cout << "Speculative threadpool elapsed time: " 
+            << atomic_add<tf::SpeculativeThreadpool>() << " ms\n";
 
-  std::cout << "Proactive threadpool takes: " 
+  std::cout << "Proactive threadpool elapsed time: " 
             << atomic_add<tf::ProactiveThreadpool>() << " ms\n";
 
-  std::cout << "Simple threadpool takes: " 
+  std::cout << "Simple threadpool elapsed time: " 
             << atomic_add<tf::SimpleThreadpool>() << " ms\n";
 }
 

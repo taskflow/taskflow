@@ -93,13 +93,15 @@ template <typename T>
 void test_dynamic_tasking(T& threadpool) {
 
   std::atomic<size_t> sum {0};
+  std::atomic<size_t> cnt {0};
 
   std::function<void(int)> insert;
   std::promise<int> promise;
   auto future = promise.get_future();
   
-  insert = [&threadpool, &insert, &sum, &promise] (int i) {
+  insert = [&threadpool, &insert, &sum, &promise, &cnt] (int i) {
     if(i > 0) {
+      ++cnt;
       threadpool.silent_async([i=i-1, &insert] () {
         insert(i);
       });
@@ -122,7 +124,8 @@ void test_dynamic_tasking(T& threadpool) {
 
   // synchronize until all tasks finish
   threadpool.wait_for_all();
-
+  
+  REQUIRE(cnt == 100 * threadpool.num_workers());
   REQUIRE(future.get() == 1);
   REQUIRE(sum == threadpool.num_workers());
 }
@@ -180,5 +183,33 @@ TEST_CASE("ProactiveThreadpool" * doctest::timeout(300)) {
   }
 }
 
+// --------------------------------------------------------
+// Testcase: SpeculativeThreadpool
+// --------------------------------------------------------
+TEST_CASE("SpeculativeThreadpool" * doctest::timeout(300)) {
 
+  const size_t task_num = 100;
+
+  SUBCASE("PlaceTask"){
+    for(unsigned i=0; i<=4; ++i) {
+      tf::SpeculativeThreadpool tp(i);
+      test_async(tp, task_num);
+      test_silent_async(tp, task_num);
+    }
+  }
+  
+  SUBCASE("WaitForAll"){
+    for(unsigned i=0; i<=4; ++i) {
+      tf::SpeculativeThreadpool tp(i);
+      test_wait_for_all(tp);
+    }
+  }
+
+  SUBCASE("DynamicTasking") {
+    for(unsigned i=0; i<=4; ++i) {
+      tf::SpeculativeThreadpool tp(i);
+      test_dynamic_tasking(tp);
+    }
+  }
+}
 
