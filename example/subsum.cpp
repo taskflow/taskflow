@@ -15,7 +15,7 @@ constexpr auto total = 1u << tree_height;
 void update_max(std::atomic<int>& max_val, int const& value)
 {
   int old = max_val;
-  while(old < value and not max_val.compare_exchange_weak(old, value));
+  while(old < value && !max_val.compare_exchange_weak(old, value));
 }
 
 int maxCrossingSum(std::vector<int>& vec, int l, int m, int r){  
@@ -49,7 +49,7 @@ void maxSubArraySum(std::vector<int>& vec, int l, int r, std::atomic<int>& max_n
   // Base Case: Only one element 
   if (l == r) {
     update_max(max_num, vec[l]);  
-    if(++counter == total){
+    if(++counter == total*2-1){
       promise.set_value();
     }
     return ;
@@ -62,7 +62,7 @@ void maxSubArraySum(std::vector<int>& vec, int l, int r, std::atomic<int>& max_n
   tp.silent_async([&, m=m, r=r](){ maxSubArraySum(vec, m+1, r, max_num, tp, counter, promise); });
 
   update_max(max_num, maxCrossingSum(vec, l, m, r));
-  if(++counter == total){
+  if(++counter == total*2-1){
     promise.set_value();
   }
 } 
@@ -82,7 +82,7 @@ auto subsum(std::vector<int>& vec){
   }
   auto end = std::chrono::high_resolution_clock::now();
   auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  //std::cout << result << '\n';
+  //std::cout << counter << '\n';
   return elapsed.count();
 }
 
