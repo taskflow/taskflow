@@ -88,7 +88,7 @@ class BasicProactiveThreadpool {
     std::vector<std::thread> _threads;
     std::vector<Worker*> _workers; 
 
-    bool _exiting  {false};
+    bool _exiting {false};
     bool _wait_for_all {false};
 };
     
@@ -138,10 +138,6 @@ void BasicProactiveThreadpool<TaskType>::shutdown() {
     std::unique_lock<std::mutex> lock(_mutex);
 
     _wait_for_all = true;
-
-    //while(!_task_queue.empty()) {
-    //  _empty_cv.wait(lock);
-    //}
 
     while(_workers.size() != num_workers()) {
       _empty_cv.wait(lock);
@@ -339,7 +335,6 @@ void BasicProactiveThreadpool<TaskType>::wait_for_all() {
 }
 
 };  // namespace proactive_threadpool -----------------------------------------
-
 
 namespace tf {
 

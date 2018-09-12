@@ -91,7 +91,7 @@ void test_wait_for_all(ThreadpoolType& tp){
 // Procedure: test_dynamic_tasking
 template <typename T>
 void test_dynamic_tasking(T& threadpool) {
-  
+
   std::atomic<size_t> sum {0};
 
   std::function<void(int)> insert;
@@ -119,7 +119,7 @@ void test_dynamic_tasking(T& threadpool) {
   else {
     promise.set_value(1);
   }
-  
+
   // synchronize until all tasks finish
   threadpool.wait_for_all();
 

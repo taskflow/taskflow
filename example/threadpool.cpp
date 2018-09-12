@@ -8,14 +8,14 @@
 #include <chrono>
 #include <random>
 
-const int num_threads = 4;
-const int num_tasks   = 100;
-
 // ----------------------------------------------------------------------------
 
 // Procedure: linear_insertions
 template <typename T>
 auto linear_insertions() {
+
+  const int num_threads = 4;
+  const int num_tasks   = 2000000;
   
   auto beg = std::chrono::high_resolution_clock::now();
   
@@ -45,8 +45,6 @@ auto linear_insertions() {
   }
   
   // synchronize until all tasks finish
-  //threadpool.shutdown();
-
   future.get();
   assert(sum == num_threads);
   
@@ -72,6 +70,9 @@ void benchmark_linear_insertions() {
 // Function: empty_jobs
 template <typename T>
 auto empty_jobs() {
+  
+  const int num_threads = 4;
+  const int num_tasks   = 1000000;
   
   auto beg = std::chrono::high_resolution_clock::now();
 
@@ -106,6 +107,9 @@ void benchmark_empty_jobs() {
 template <typename T>
 auto atomic_add() {
   
+  const int num_threads = 4;
+  const int num_tasks   = 1000000;
+  
   std::atomic<int> counter(0);
   auto beg = std::chrono::high_resolution_clock::now();
   
@@ -139,8 +143,8 @@ void benchmark_atomic_add() {
 int main(int argc, char* argv[]) {
 
   benchmark_linear_insertions();
-  //benchmark_empty_jobs();
-  //benchmark_atomic_add();
+  benchmark_empty_jobs();
+  benchmark_atomic_add();
   
   return 0;
 }
