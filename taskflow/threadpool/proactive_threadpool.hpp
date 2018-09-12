@@ -66,9 +66,9 @@ class ProactiveThreadpool {
       { 
         std::unique_lock<std::mutex> lock(_mutex);
         _shutdown = true;
-        _empty.wait(lock, [this](){ return _task_queue.empty(); });
+        _complete.wait(lock, [this](){ return _workers.size() == num_workers(); }); 
         _exiting = true;
-        
+       
         for(auto w : _workers){
           w->ready = true;
           w->task = nullptr;
@@ -115,7 +115,7 @@ class ProactiveThreadpool {
               w.ready = false;
               _workers.push_back(&w);
 
-              if(_wait_for_all && _workers.size() == num_workers()){
+              if(_shutdown && _workers.size() == num_workers()){
                 _complete.notify_one();
               }
 
@@ -125,10 +125,6 @@ class ProactiveThreadpool {
             else{
               t= std::move(_task_queue.front());
               _task_queue.pop_front();
-              
-              if(_task_queue.empty() && _shutdown) {
-                _empty.notify_one();
-              }  
             } 
 
             if(t){
@@ -240,18 +236,6 @@ class ProactiveThreadpool {
     
     }
 
-    void wait_for_all(){
-
-      if(is_worker()){
-        throw std::runtime_error("Worker thread cannot wait for all");
-      }
-
-      std::unique_lock<std::mutex> lock(_mutex);
-      _wait_for_all = true;
-      _complete.wait(lock, [this](){ return _workers.size() == num_workers(); }); 
-      _wait_for_all = false;
-    }
-
 
   private:
 
@@ -267,8 +251,6 @@ class ProactiveThreadpool {
 
     bool _exiting      {false};
     bool _shutdown     {false};
-    bool _wait_for_all {false};
-
 };
 
 
