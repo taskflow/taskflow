@@ -42,7 +42,7 @@ class BasicSpeculativeThreadpool {
   struct Worker{
     std::condition_variable cv;
     TaskType task;
-    bool ready;
+    bool ready {false};
   };
 
   public:
@@ -83,9 +83,11 @@ class BasicSpeculativeThreadpool {
 
     auto _lookahead(){
       auto id = std::this_thread::get_id();
-      std::scoped_lock<std::mutex> lock(_mutex);
       return _worker_local.find(id);
     }
+
+    std::unique_ptr<Worker[]> _works;
+    std::unique_ptr<TaskType[]> _tasks;
 
 };  // class BasicSpeculativeThreadpool. --------------------------------------
 
@@ -101,19 +103,19 @@ BasicSpeculativeThreadpool<TaskType>::~BasicSpeculativeThreadpool(){
   shutdown();
 }
 
-
 // Function: is_owner
 template < template<typename...> class TaskType >
 bool BasicSpeculativeThreadpool<TaskType>::is_owner() const {
   return std::this_thread::get_id() == _owner;
 }
 
-
+// Function: num_tasks
 template < template<typename...> class TaskType >
 size_t BasicSpeculativeThreadpool<TaskType>::num_tasks() const { 
   return _task_queue.size(); 
 }
 
+// Function: num_workers
 template < template<typename...> class TaskType >
 size_t BasicSpeculativeThreadpool<TaskType>::num_workers() const { 
   return _threads.size();  
@@ -171,16 +173,18 @@ void BasicSpeculativeThreadpool<TaskType>::spawn(unsigned N) {
     throw std::runtime_error("Worker thread cannot spawn threads");
   }
 
-  for(size_t i=0; i<N; ++i){
-    _threads.emplace_back([this]()->void{
+  // Lock to synchronize all workers before creating _worker_locals
+  std::scoped_lock<std::mutex> lock(_mutex);
+  _works.reset(new Worker[N]);
+  _tasks.reset(new TaskType[N]);
 
-       Worker w;
-       TaskType t; 
-       auto id = std::this_thread::get_id();
+  for(size_t i=0; i<N; ++i){
+    _threads.emplace_back([this, i=i]()->void{
+
+       Worker& w = _works[i]; 
+       TaskType& t = _tasks[i]; 
 
        std::unique_lock<std::mutex> lock(_mutex);
-
-       _worker_local.insert({id, &w}); 
 
        while(!_exiting){
          if(_task_queue.empty()){
@@ -214,11 +218,12 @@ void BasicSpeculativeThreadpool<TaskType>::spawn(unsigned N) {
        } // End of while --------------------------------------------------------------------------
     });     
 
+    _worker_local.insert({_threads.back().get_id(), &_works[i]});
   } // End of For ---------------------------------------------------------------------------------
 }
 
 
-
+// Function: async
 template < template<typename...> class TaskType >
 template <typename C>
 auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
@@ -313,6 +318,7 @@ auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
   return fu;
 }
 
+// Function: silent_async
 template < template<typename...> class TaskType >
 template <typename C>
 void BasicSpeculativeThreadpool<TaskType>::silent_async(C&& c){
