@@ -123,7 +123,7 @@ size_t BasicSpeculativeThreadpool<TaskType>::num_workers() const {
 template < template<typename...> class TaskType >
 void BasicSpeculativeThreadpool<TaskType>::shutdown(){
 
-  if(not is_owner()){
+  if(! is_owner()){
     throw std::runtime_error("Worker thread cannot shut down the pool");
   }
 
@@ -167,7 +167,7 @@ template < template<typename...> class TaskType >
 void BasicSpeculativeThreadpool<TaskType>::spawn(unsigned N) {
 
   // TODO: is_owner
-  if(not is_owner()){
+  if(! is_owner()){
     throw std::runtime_error("Worker thread cannot spawn threads");
   }
 
