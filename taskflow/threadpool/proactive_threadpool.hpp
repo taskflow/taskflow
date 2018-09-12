@@ -27,6 +27,8 @@ class ProactiveThreadpool {
 
   using TaskType = std::function<void()>;
   
+  // Struct: MoC
+  // Move-on-copy wrapper.
   template <typename T>
   struct MoC {
   
@@ -84,11 +86,13 @@ class ProactiveThreadpool {
       _exiting = false;
     }
     
+    // Function: is_worker
     bool is_worker() const{
       std::scoped_lock<std::mutex> lock(_mutex);
       return _worker_ids.find(std::this_thread::get_id()) != _worker_ids.end();
     }
-
+    
+    // Procedure: spawn
     void spawn(unsigned N){
       if(is_worker()){
         throw std::runtime_error("Worker thread cannot spawn threads");
@@ -139,113 +143,114 @@ class ProactiveThreadpool {
 
       } 
     }
-
-  template <typename C>
-  void silent_async(C&& c){
-
-    TaskType t {std::forward<C>(c)};
-
-    //no worker thread available
-    if(num_workers() == 0){
-      t();
-      return;
-    }
-
-    std::unique_lock<std::mutex> lock(_mutex);
-    if(_workers.empty()){
-      _task_queue.push_back(std::move(t));
-    } 
-    else{
-      Worker* w = _workers.back();
-      _workers.pop_back();
-      w->ready = true;
-      w->task = std::move(t);
-      w->cv.notify_one();   
-    }
-
-  }
-
-  template <typename C>
-  auto async(C&& c){
-
-    using R = std::invoke_result_t<C>;
-
-    std::promise<R> p;
-    auto fu = p.get_future();
     
-    // master thread
-    if(num_workers() == 0){
-      if constexpr(std::is_same_v<void, R>){
-        c();
-        p.set_value();
+    // Procedure: silent_async
+    template <typename C>
+    void silent_async(C&& c){
+
+      TaskType t {std::forward<C>(c)};
+
+      //no worker thread available
+      if(num_workers() == 0){
+        t();
+        return;
       }
-      else{
-        p.set_value(c());
+
+      std::unique_lock<std::mutex> lock(_mutex);
+      if(_workers.empty()){
+        _task_queue.push_back(std::move(t));
       } 
+      else{
+        Worker* w = _workers.back();
+        _workers.pop_back();
+        w->ready = true;
+        w->task = std::move(t);
+        w->cv.notify_one();   
+      }
+
     }
-    // have worker(s)
-    else{
-      std::unique_lock<std::mutex> lock(_mutex);     
-      if constexpr(std::is_same_v<void, R>){
-        // all workers are busy.
-        if(_workers.empty()){
-          _task_queue.emplace_back(
-            [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
+
+    template <typename C>
+    auto async(C&& c){
+
+      using R = std::invoke_result_t<C>;
+
+      std::promise<R> p;
+      auto fu = p.get_future();
+      
+      // master thread
+      if(num_workers() == 0){
+        if constexpr(std::is_same_v<void, R>){
+          c();
+          p.set_value();
+        }
+        else{
+          p.set_value(c());
+        } 
+      }
+      // have worker(s)
+      else{
+        std::unique_lock<std::mutex> lock(_mutex);     
+        if constexpr(std::is_same_v<void, R>){
+          // all workers are busy.
+          if(_workers.empty()){
+            _task_queue.emplace_back(
+              [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
+                c();
+                p.get().set_value(); 
+              }
+            );
+          }
+          // Got an idle work
+          else{
+            Worker* w = _workers.back();
+            _workers.pop_back();
+            w->ready = true;
+            w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
               c();
               p.get().set_value(); 
-            }
-          );
-        }
-        // Got an idle work
-        else{
-          Worker* w = _workers.back();
-          _workers.pop_back();
-          w->ready = true;
-          w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
-            c();
-            p.get().set_value(); 
-          };
-          w->cv.notify_one(); 
-        }
-      }
-      else{
-
-        if(_workers.empty()){
-          _task_queue.emplace_back(
-            [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
-              p.get().set_value(c());
-              return; 
-            }
-          );
+            };
+            w->cv.notify_one(); 
+          }
         }
         else{
-          Worker* w = _workers.back();
-          _workers.pop_back();
-          w->ready = true;
-          w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
-            p.get().set_value(c()); 
-            return;
-          };
-          w->cv.notify_one(); 
+
+          if(_workers.empty()){
+            _task_queue.emplace_back(
+              [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
+                p.get().set_value(c());
+                return; 
+              }
+            );
+          }
+          else{
+            Worker* w = _workers.back();
+            _workers.pop_back();
+            w->ready = true;
+            w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
+              p.get().set_value(c()); 
+              return;
+            };
+            w->cv.notify_one(); 
+          }
         }
       }
-    }
-  
-    return fu;
-  
-  }
-
-  void wait_for_all(){
-
-    if(is_worker()){
-      throw std::runtime_error("Worker thread cannot wait for all");
+    
+      return fu;
+    
     }
 
-    std::unique_lock<std::mutex> lock(_mutex);
-    _wait_for_all = true;
-    _complete.wait(lock, [this](){ return _workers.size() == num_workers(); }); 
-    _wait_for_all = false;
-  }
+    void wait_for_all(){
+
+      if(is_worker()){
+        throw std::runtime_error("Worker thread cannot wait for all");
+      }
+
+      std::unique_lock<std::mutex> lock(_mutex);
+      _wait_for_all = true;
+      _complete.wait(lock, [this](){ return _workers.size() == num_workers(); }); 
+      _wait_for_all = false;
+    }
 
 
   private:
