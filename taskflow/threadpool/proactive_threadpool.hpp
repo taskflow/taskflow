@@ -1,10 +1,8 @@
-// 2018/09/11 - modified by Tsung-Wei Huang
+// 2018/09/11 - modified by Tsung-Wei Huang & Guannan
 //   - bug fix: shutdown method might hang due to dynamic tasking;
 //     it can be non-empty task queue while all threads are gone;
 //     workers need to be cleared as well under lock, since *_async
 //     will access the worker data structure;
-//   - change : removed wait_for_all - this is problematic when task
-//     can add tasks to the queue.
 //     
 // 2018/09/03 - modified by Guannan Guo
 // 
