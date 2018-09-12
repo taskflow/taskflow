@@ -117,6 +117,9 @@ target_link_libraries(multiple_dispatch Threads::Threads)
 add_executable(subsum example/subsum.cpp)
 target_link_libraries(subsum Threads::Threads)
 
+add_executable(taskflow_subsum example/taskflow_subsum.cpp)
+target_link_libraries(taskflow_subsum Threads::Threads)
+
 
 # -----------------------------------------------------------------------------
 # Unittest
