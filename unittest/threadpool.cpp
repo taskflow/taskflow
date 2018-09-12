@@ -23,10 +23,9 @@ void test_silent_async(ThreadpoolType& tp, const size_t task_num) {
     sum += i;
     tp.silent_async([i=i, &counter](){ counter += i; });
   }
-  tp.shutdown(); //make sure all silent threads end
+  tp.wait_for_all(); //make sure all silent threads end
 
   REQUIRE(counter == sum);
-
 }
 
 // Procedure: test_async
@@ -68,35 +67,64 @@ void test_wait_for_all(ThreadpoolType& tp){
 
   const size_t worker_num = tp.num_workers();
   const size_t task_num = 20;
-  std::atomic<size_t> counter{0};
+  std::atomic<size_t> counter;
+
+  for(int i=0; i<10; ++i) {
+
+    counter = 0;
+    
+    for(size_t i=0; i<task_num; i++){
+      tp.silent_async([&counter](){ 
+        std::this_thread::sleep_for(200us);
+        counter++; 
+      });
+    }
+    REQUIRE(counter <= task_num);  // pay attention to the case of 0 worker
+
+    tp.wait_for_all();
+
+    REQUIRE(counter == task_num);
+    REQUIRE(tp.num_workers() == worker_num);
+  }
+}
+
+// Procedure: test_dynamic_tasking
+template <typename T>
+void test_dynamic_tasking(T& threadpool) {
   
-  for(size_t i=0; i<task_num; i++){
-    tp.silent_async([&counter](){ 
-      std::this_thread::sleep_for(200us);
-      counter++; 
-    });
+  std::atomic<size_t> sum {0};
+
+  std::function<void(int)> insert;
+  std::promise<int> promise;
+  auto future = promise.get_future();
+  
+  insert = [&threadpool, &insert, &sum, &promise] (int i) {
+    if(i > 0) {
+      threadpool.silent_async([i=i-1, &insert] () {
+        insert(i);
+      });
+    }
+    else {
+      if(auto s = ++sum; s == threadpool.num_workers()) {
+        promise.set_value(1);
+      }
+    }
+  };
+
+  if(auto W = threadpool.num_workers(); W > 0) {
+    for(size_t i=0; i<threadpool.num_workers(); i++){
+      insert(100);
+    }
   }
-  REQUIRE(counter <= task_num);  // pay attention to the case of 0 worker
-
-  tp.shutdown();
-
-  REQUIRE(counter == task_num);
-  REQUIRE(tp.num_workers() == 0);
-
-  tp.spawn(static_cast<unsigned>(worker_num));
-  REQUIRE(tp.num_workers() == worker_num);
-
-  counter = 0;
-  for(size_t i=0; i<task_num; i++){
-    tp.silent_async([&counter](){ 
-      std::this_thread::sleep_for(200us);
-      counter++; 
-    });
+  else {
+    promise.set_value(1);
   }
-  tp.wait_for_all();
+  
+  // synchronize until all tasks finish
+  threadpool.wait_for_all();
 
-  REQUIRE(counter == task_num);
-  REQUIRE(tp.num_workers() == worker_num);
+  REQUIRE(future.get() == 1);
+  REQUIRE(sum == threadpool.num_workers());
 }
 
 // --------------------------------------------------------
@@ -141,6 +169,13 @@ TEST_CASE("ProactiveThreadpool" * doctest::timeout(300)) {
     for(unsigned i=0; i<=4; ++i) {
       tf::ProactiveThreadpool tp(i);
       test_wait_for_all(tp);
+    }
+  }
+
+  SUBCASE("DynamicTasking") {
+    for(unsigned i=0; i<=4; ++i) {
+      tf::ProactiveThreadpool tp(i);
+      test_dynamic_tasking(tp);
     }
   }
 }

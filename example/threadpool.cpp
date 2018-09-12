@@ -8,8 +8,8 @@
 #include <chrono>
 #include <random>
 
-const int thread_num = 4;
-const int task_num   = 16;
+const int num_threads = 4;
+const int num_tasks   = 100;
 
 // ----------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ auto linear_insertions() {
   
   auto beg = std::chrono::high_resolution_clock::now();
   
-  T threadpool(thread_num);
+  T threadpool(num_threads);
 
   std::atomic<size_t> sum {0};
 
@@ -34,21 +34,21 @@ auto linear_insertions() {
       });
     }
     else {
-      if(++sum; sum == thread_num) {
+      if(auto s = ++sum; s == num_threads) {
         promise.set_value();
       }
     }
   };
 
-  for(size_t i=0; i<thread_num; i++){
-    insert(task_num / thread_num);
+  for(size_t i=0; i<num_threads; i++){
+    insert(num_tasks / num_threads);
   }
   
   // synchronize until all tasks finish
-  threadpool.shutdown();
+  //threadpool.shutdown();
 
-  //future.get();
-  //assert(sum == thread_num);
+  future.get();
+  assert(sum == num_threads);
   
   auto end = std::chrono::high_resolution_clock::now();
 
@@ -60,8 +60,8 @@ void benchmark_linear_insertions() {
 
   std::cout << "==== Linear Insertions ====\n";
 
-  //std::cout << "Proactive threadpool takes: " 
-  //          << linear_insertions<tf::ProactiveThreadpool>() << " ms\n";
+  std::cout << "Proactive threadpool takes: " 
+            << linear_insertions<tf::ProactiveThreadpool>() << " ms\n";
 
   std::cout << "Simple threadpool takes: " 
             << linear_insertions<tf::SimpleThreadpool>() << " ms\n";
@@ -75,9 +75,9 @@ auto empty_jobs() {
   
   auto beg = std::chrono::high_resolution_clock::now();
 
-  T threadpool(thread_num);
+  T threadpool(num_threads);
 
-  for(size_t i=0; i<task_num; i++){
+  for(size_t i=0; i<num_tasks; i++){
     threadpool.silent_async([](){}); 
   }
 
@@ -90,6 +90,7 @@ auto empty_jobs() {
 
 // Procedure: benchmark_empty_jobs
 void benchmark_empty_jobs() {
+
   std::cout << "==== Empty Jobs ====\n";
 
   std::cout << "Proactive threadpool takes: " 
@@ -108,13 +109,13 @@ auto atomic_add() {
   std::atomic<int> counter(0);
   auto beg = std::chrono::high_resolution_clock::now();
   
-  T threadpool(thread_num);
-  for(size_t i=0; i<task_num; i++){
+  T threadpool(num_threads);
+  for(size_t i=0; i<num_tasks; i++){
     threadpool.silent_async([&counter](){ counter++; }); 
   }
   threadpool.shutdown();
 
-  assert(counter == task_num);
+  assert(counter == num_tasks);
   
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
@@ -122,6 +123,7 @@ auto atomic_add() {
 
 // Procedure: benchmark_atomic_add
 void benchmark_atomic_add() {
+
   std::cout << "==== Atomic Add ====\n";
 
   std::cout << "Proactive threadpool takes: " 
@@ -130,6 +132,8 @@ void benchmark_atomic_add() {
   std::cout << "Simple threadpool takes: " 
             << atomic_add<tf::SimpleThreadpool>() << " ms\n";
 }
+
+// ----------------------------------------------------------------------------
 
 // Function: main
 int main(int argc, char* argv[]) {
