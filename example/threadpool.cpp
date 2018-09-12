@@ -34,7 +34,7 @@ auto linear_insertions() {
       });
     }
     else {
-      if(auto s = ++sum; s == num_threads) {
+      if(auto s = ++sum; s == threadpool.num_workers()) {
         promise.set_value();
       }
     }

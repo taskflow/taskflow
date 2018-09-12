@@ -3,6 +3,7 @@
 //     it can be non-empty task queue while all threads are gone;
 //     workers need to be cleared as well under lock, since *_async
 //     will access the worker data structure;
+//   - renamed _worker to _idler
 //     
 // 2018/09/03 - modified by Guannan Guo
 // 
@@ -48,7 +49,7 @@ class BasicProactiveThreadpool {
   using TaskType = Func<void()>;
 
   // Struct: Worker
-  struct Worker{
+  struct Worker {
     std::condition_variable cv;
     TaskType task;
     bool ready;
@@ -84,7 +85,7 @@ class BasicProactiveThreadpool {
 
     std::deque<TaskType> _task_queue;
     std::vector<std::thread> _threads;
-    std::vector<Worker*> _workers; 
+    std::vector<Worker*> _idlers; 
 
     bool _exiting {false};
     bool _wait_for_all {false};
@@ -137,19 +138,19 @@ void BasicProactiveThreadpool<TaskType>::shutdown() {
 
     _wait_for_all = true;
 
-    while(_workers.size() != num_workers()) {
+    while(_idlers.size() != num_workers()) {
       _empty_cv.wait(lock);
     }
 
     _exiting = true;
     
     // we need to clear the workers under lock
-    for(auto w : _workers){
+    for(auto w : _idlers){
       w->ready = true;
       w->task = nullptr;
       w->cv.notify_one();
     }
-    _workers.clear();
+    _idlers.clear();
   }
   
   for(auto& t : _threads){
@@ -189,9 +190,9 @@ void BasicProactiveThreadpool<TaskType>::spawn(unsigned N) {
 
         if(_task_queue.empty()){
           w.ready = false;
-          _workers.push_back(&w);
+          _idlers.push_back(&w);
 
-          if(_wait_for_all && _workers.size() == num_workers()) {
+          if(_wait_for_all && _idlers.size() == num_workers()) {
             _empty_cv.notify_one();
           }
 
@@ -233,12 +234,12 @@ void BasicProactiveThreadpool<TaskType>::silent_async(C&& c){
   }
 
   std::scoped_lock<std::mutex> lock(_mutex);
-  if(_workers.empty()){
+  if(_idlers.empty()){
     _task_queue.push_back(std::move(t));
   } 
   else{
-    Worker* w = _workers.back();
-    _workers.pop_back();
+    Worker* w = _idlers.back();
+    _idlers.pop_back();
     w->ready = true;
     w->task = std::move(t);
     w->cv.notify_one();   
@@ -270,7 +271,7 @@ auto BasicProactiveThreadpool<TaskType>::async(C&& c) {
     std::scoped_lock<std::mutex> lock(_mutex);     
     if constexpr(std::is_same_v<void, R>){
       // all workers are busy.
-      if(_workers.empty()){
+      if(_idlers.empty()){
         _task_queue.emplace_back(
           [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
             c();
@@ -280,8 +281,8 @@ auto BasicProactiveThreadpool<TaskType>::async(C&& c) {
       }
       // Got an idle work
       else{
-        Worker* w = _workers.back();
-        _workers.pop_back();
+        Worker* w = _idlers.back();
+        _idlers.pop_back();
         w->ready = true;
         w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
           c();
@@ -292,7 +293,7 @@ auto BasicProactiveThreadpool<TaskType>::async(C&& c) {
     }
     else{
 
-      if(_workers.empty()){
+      if(_idlers.empty()){
         _task_queue.emplace_back(
           [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
             p.get().set_value(c());
@@ -301,8 +302,8 @@ auto BasicProactiveThreadpool<TaskType>::async(C&& c) {
         );
       }
       else{
-        Worker* w = _workers.back();
-        _workers.pop_back();
+        Worker* w = _idlers.back();
+        _idlers.pop_back();
         w->ready = true;
         w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
           p.get().set_value(c()); 
@@ -326,7 +327,7 @@ void BasicProactiveThreadpool<TaskType>::wait_for_all() {
 
   std::unique_lock<std::mutex> lock(_mutex);
   _wait_for_all = true;
-  while(_workers.size() != num_workers()) {
+  while(_idlers.size() != num_workers()) {
     _empty_cv.wait(lock);
   }
   _wait_for_all = false;

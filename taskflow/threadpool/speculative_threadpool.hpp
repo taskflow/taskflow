@@ -1,10 +1,9 @@
-// 2018/09/03 - contributed by Guannan Guo
-// 
-// SpeculativeThreadpool schedules independent jobs in a greedy manner.
-// Whenever a job is inserted into the threadpool, the threadpool will check if there
-// are any spare threads available. The spare thread will be woken through its local 
-// condition variable. The new job will be directly moved into
-// this thread instead of pushed at the back of the pending queue.
+// 2018/09/12 - Created by Chun-Xun Lin
+//
+// Speculative threadpool is similar to proactive threadpool except
+// each thread will speculatively move a new task to its local worker
+// data structure to reduce extract hit to the task queue.
+// This can save time from locking the mutex during dynamic tasking.
 
 #pragma once
 
@@ -21,7 +20,7 @@
 #include <unordered_set>
 #include <unordered_map>
 
-namespace speculative_threadpool{
+namespace speculative_threadpool {
 
 template <typename T>
 struct MoC {
@@ -74,7 +73,7 @@ class BasicSpeculativeThreadpool {
 
     std::deque<TaskType> _task_queue;
     std::vector<std::thread> _threads;
-    std::vector<Worker*> _workers; 
+    std::vector<Worker*> _idlers; 
     std::unordered_set<std::thread::id> _worker_ids;    
     std::unordered_map<std::thread::id, Worker*> _worker_local;    
     
@@ -137,17 +136,17 @@ void BasicSpeculativeThreadpool<TaskType>::shutdown(){
   { 
     std::unique_lock<std::mutex> lock(_mutex);
     _wait_for_all = true;
-    while(_workers.size() != num_workers()) {
+    while(_idlers.size() != num_workers()) {
       _empty_cv.wait(lock);
     }
     _exiting = true;
     
-    for(auto w : _workers){
+    for(auto w : _idlers){
       w->ready = true;
       w->task = nullptr;
       w->cv.notify_one();
     }
-    _workers.clear();
+    _idlers.clear();
   }
 
   for(auto& t : _threads){
@@ -189,9 +188,9 @@ void BasicSpeculativeThreadpool<TaskType>::spawn(unsigned N) {
        while(!_exiting){
          if(_task_queue.empty()){
            w.ready = false;
-           _workers.push_back(&w);
+           _idlers.push_back(&w);
 
-           if(_wait_for_all && _workers.size() == num_workers()){
+           if(_wait_for_all && _idlers.size() == num_workers()){
              _empty_cv.notify_one();
            } 
 
@@ -267,7 +266,7 @@ auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
       }
 
       std::scoped_lock<std::mutex> lock(_mutex);     
-      if(_workers.empty()){
+      if(_idlers.empty()){
         _task_queue.emplace_back(
           [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
             c();
@@ -277,8 +276,8 @@ auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
       }
       // Got an idle work
       else{
-        Worker* w = _workers.back();
-        _workers.pop_back();
+        Worker* w = _idlers.back();
+        _idlers.pop_back();
         w->ready = true;
         w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
           c();
@@ -301,7 +300,7 @@ auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
       }
 
       std::scoped_lock<std::mutex> lock(_mutex);     
-      if(_workers.empty()){
+      if(_idlers.empty()){
         _task_queue.emplace_back(
           [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
             p.get().set_value(c());
@@ -310,8 +309,8 @@ auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
         );
       }
       else{
-        Worker* w = _workers.back();
-        _workers.pop_back();
+        Worker* w = _idlers.back();
+        _idlers.pop_back();
         w->ready = true;
         w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
           p.get().set_value(c()); 
@@ -356,12 +355,12 @@ void BasicSpeculativeThreadpool<TaskType>::silent_async(C&& c){
   //}
 
   std::scoped_lock<std::mutex> lock(_mutex);
-  if(_workers.empty()){
+  if(_idlers.empty()){
     _task_queue.push_back(std::move(t));
   } 
   else{
-    Worker* w = _workers.back();
-    _workers.pop_back();
+    Worker* w = _idlers.back();
+    _idlers.pop_back();
     w->ready = true;
     w->task = std::move(t);
     w->cv.notify_one();   
@@ -379,7 +378,7 @@ void BasicSpeculativeThreadpool<TaskType>::wait_for_all() {
 
   std::unique_lock<std::mutex> lock(_mutex);
   _wait_for_all = true;
-  while(_workers.size() != num_workers()) {
+  while(_idlers.size() != num_workers()) {
     _empty_cv.wait(lock);
   }
   _wait_for_all = false;
