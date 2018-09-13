@@ -134,7 +134,7 @@ void BasicProactiveThreadpool<Func>::shutdown() {
   }
 
   { 
-    std::unique_lock<std::mutex> lock(_mutex);
+    std::unique_lock lock(_mutex);
 
     _wait_for_all = true;
 
@@ -184,7 +184,7 @@ void BasicProactiveThreadpool<Func>::spawn(unsigned N) {
       Worker w;
       TaskType t; 
 
-      std::unique_lock<std::mutex> lock(_mutex);
+      std::unique_lock lock(_mutex);
 
       while(!_exiting){
 
@@ -233,7 +233,7 @@ void BasicProactiveThreadpool<Func>::silent_async(C&& c){
     return;
   }
 
-  std::scoped_lock<std::mutex> lock(_mutex);
+  std::scoped_lock lock(_mutex);
   if(_idlers.empty()){
     _task_queue.push_back(std::move(t));
   } 
@@ -268,7 +268,7 @@ auto BasicProactiveThreadpool<Func>::async(C&& c) {
   }
   // have worker(s)
   else{
-    std::scoped_lock<std::mutex> lock(_mutex);     
+    std::scoped_lock lock(_mutex);     
     if constexpr(std::is_same_v<void, R>){
       // all workers are busy.
       if(_idlers.empty()){
@@ -323,7 +323,7 @@ void BasicProactiveThreadpool<Func>::wait_for_all() {
     throw std::runtime_error("Worker thread cannot wait for all");
   }
 
-  std::unique_lock<std::mutex> lock(_mutex);
+  std::unique_lock lock(_mutex);
   _wait_for_all = true;
   while(_idlers.size() != num_workers()) {
     _empty_cv.wait(lock);

@@ -33,7 +33,7 @@ struct MoC {
   mutable T object;
 };
 
-
+// Class: BasicSpeculativeThreadpool
 template < template<typename...> class Func >
 class BasicSpeculativeThreadpool {
 
@@ -133,7 +133,7 @@ void BasicSpeculativeThreadpool<Func>::shutdown(){
   }
 
   { 
-    std::unique_lock<std::mutex> lock(_mutex);
+    std::unique_lock lock(_mutex);
     _wait_for_all = true;
     while(_idlers.size() != num_workers()) {
       _empty_cv.wait(lock);
@@ -173,7 +173,7 @@ void BasicSpeculativeThreadpool<Func>::spawn(unsigned N) {
   }
 
   // Lock to synchronize all workers before creating _worker_locals
-  std::scoped_lock<std::mutex> lock(_mutex);
+  std::scoped_lock lock(_mutex);
   _works.reset(new Worker[N]);
 
   for(size_t i=0; i<N; ++i){
@@ -182,7 +182,7 @@ void BasicSpeculativeThreadpool<Func>::spawn(unsigned N) {
        Worker& w = _works[i]; 
        TaskType t;
 
-       std::unique_lock<std::mutex> lock(_mutex);
+       std::unique_lock lock(_mutex);
 
        while(!_exiting){
          if(_task_queue.empty()){
@@ -258,7 +258,7 @@ auto BasicSpeculativeThreadpool<Func>::async(C&& c){
         }
       }
 
-      std::scoped_lock<std::mutex> lock(_mutex);     
+      std::scoped_lock lock(_mutex);     
       if(_idlers.empty()){
         _task_queue.emplace_back(
           [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
@@ -293,7 +293,7 @@ auto BasicSpeculativeThreadpool<Func>::async(C&& c){
         }
       }
 
-      std::scoped_lock<std::mutex> lock(_mutex);     
+      std::scoped_lock lock(_mutex);     
       if(_idlers.empty()){
         _task_queue.emplace_back(
           [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
@@ -337,7 +337,7 @@ void BasicSpeculativeThreadpool<Func>::silent_async(C&& c){
     }
   }
 
-  std::scoped_lock<std::mutex> lock(_mutex);
+  std::scoped_lock lock(_mutex);
   if(_idlers.empty()){
     _task_queue.push_back(std::move(t));
   } 
@@ -359,7 +359,7 @@ void BasicSpeculativeThreadpool<Func>::wait_for_all() {
     throw std::runtime_error("Worker thread cannot wait for all");
   }
 
-  std::unique_lock<std::mutex> lock(_mutex);
+  std::unique_lock lock(_mutex);
   _wait_for_all = true;
   while(_idlers.size() != num_workers()) {
     _empty_cv.wait(lock);

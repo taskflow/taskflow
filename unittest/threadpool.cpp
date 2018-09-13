@@ -1,4 +1,7 @@
-// 2018/09/10 - added by Tsung-Wei Huang
+// 2018/09/13 - modified by Tsung-Wei Huang
+//   - added tests for ownership
+//
+// 2018/09/10 - modified by Tsung-Wei Huang
 //   - added tests for SpeculativeThreadpool
 //   - added dynamic tasking tests
 //   - added spawn and shutdown tests
@@ -13,9 +16,9 @@
 #include <doctest.h>
 #include <taskflow/threadpool/threadpool.hpp>
 
-// Procedure: test_owner
+// Procedure: test_ownership
 template <typename ThreadpoolType>
-void test_owner(ThreadpoolType& tp) {
+void test_ownership(ThreadpoolType& tp) {
   
   REQUIRE(tp.is_owner()); 
   
@@ -25,6 +28,9 @@ void test_owner(ThreadpoolType& tp) {
     }
     else {
       REQUIRE(!tp.is_owner());
+      REQUIRE_THROWS(tp.shutdown());
+      REQUIRE_THROWS(tp.spawn(4));
+      REQUIRE_THROWS(tp.wait_for_all());
     }
   });
 
@@ -32,6 +38,9 @@ void test_owner(ThreadpoolType& tp) {
   for(int i=0; i<10; ++i) {
     threads.emplace_back([&] () {
       REQUIRE(!tp.is_owner());
+      REQUIRE_THROWS(tp.shutdown());
+      REQUIRE_THROWS(tp.spawn(4));
+      REQUIRE_THROWS(tp.wait_for_all());
     });
   }
   for(auto& t : threads) {
@@ -241,10 +250,10 @@ TEST_CASE("ProactiveThreadpool" * doctest::timeout(300)) {
 
   const size_t num_tasks = 100;
 
-  SUBCASE("Owner") {
+  SUBCASE("Ownership") {
     for(unsigned i=0; i<=4; ++i) {
       tf::ProactiveThreadpool tp(i);
-      test_owner(tp);
+      test_ownership(tp);
     }
   }
 
@@ -285,10 +294,10 @@ TEST_CASE("SpeculativeThreadpool" * doctest::timeout(300)) {
 
   const size_t num_tasks = 100;
   
-  SUBCASE("Owner") {
+  SUBCASE("Ownership") {
     for(unsigned i=0; i<=4; ++i) {
       tf::ProactiveThreadpool tp(i);
-      test_owner(tp);
+      test_ownership(tp);
     }
   }
 
