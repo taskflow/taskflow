@@ -22,3 +22,10 @@
 #include "speculative_threadpool.hpp"
 
 
+namespace tf {
+
+using ProactiveThreadpool = proactive_threadpool::BasicProactiveThreadpool<std::function>;
+using SpeculativeThreadpool = speculative_threadpool::BasicSpeculativeThreadpool<std::function>;
+
+};  // namespace tf. ----------------------------------------------------------
+

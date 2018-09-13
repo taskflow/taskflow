@@ -92,38 +92,38 @@ class BasicProactiveThreadpool {
 };
     
 // Constructor
-template < template<typename...> class TaskType >
-BasicProactiveThreadpool<TaskType>::BasicProactiveThreadpool(unsigned N){
+template < template<typename...> class Func >
+BasicProactiveThreadpool<Func>::BasicProactiveThreadpool(unsigned N){
   spawn(N);
 }
 
 // Destructor
-template < template<typename...> class TaskType >
-BasicProactiveThreadpool<TaskType>::~BasicProactiveThreadpool(){
+template < template<typename...> class Func >
+BasicProactiveThreadpool<Func>::~BasicProactiveThreadpool(){
   shutdown();
 }
 
 // Function: is_owner
-template < template<typename...> class TaskType >
-bool BasicProactiveThreadpool<TaskType>::is_owner() const {
+template < template<typename...> class Func >
+bool BasicProactiveThreadpool<Func>::is_owner() const {
   return std::this_thread::get_id() == _owner;
 }
 
 // Function: num_tasks    
-template < template<typename...> class TaskType >
-size_t BasicProactiveThreadpool<TaskType>::num_tasks() const { 
+template < template<typename...> class Func >
+size_t BasicProactiveThreadpool<Func>::num_tasks() const { 
   return _task_queue.size(); 
 }
 
 // Function: num_workers
-template < template<typename...> class TaskType >
-size_t BasicProactiveThreadpool<TaskType>::num_workers() const { 
+template < template<typename...> class Func >
+size_t BasicProactiveThreadpool<Func>::num_workers() const { 
   return _threads.size();  
 }
 
 // Procedure: shutdown
-template < template<typename...> class TaskType >
-void BasicProactiveThreadpool<TaskType>::shutdown() {
+template < template<typename...> class Func >
+void BasicProactiveThreadpool<Func>::shutdown() {
   
   if(!is_owner()){
     throw std::runtime_error("Worker thread cannot shut down the pool");
@@ -170,8 +170,8 @@ void BasicProactiveThreadpool<TaskType>::shutdown() {
 }
 
 // Procedure: spawn
-template < template<typename...> class TaskType >
-void BasicProactiveThreadpool<TaskType>::spawn(unsigned N) {
+template < template<typename...> class Func >
+void BasicProactiveThreadpool<Func>::spawn(unsigned N) {
 
   if(!is_owner()){
     throw std::runtime_error("Worker thread cannot spawn threads");
@@ -221,9 +221,9 @@ void BasicProactiveThreadpool<TaskType>::spawn(unsigned N) {
 }
 
 // Procedure: silent_async
-template < template<typename...> class TaskType >
+template < template<typename...> class Func >
 template <typename C>
-void BasicProactiveThreadpool<TaskType>::silent_async(C&& c){
+void BasicProactiveThreadpool<Func>::silent_async(C&& c){
 
   TaskType t {std::forward<C>(c)};
 
@@ -247,9 +247,9 @@ void BasicProactiveThreadpool<TaskType>::silent_async(C&& c){
 }
 
 // Function: async
-template < template<typename...> class TaskType >
+template < template<typename...> class Func >
 template <typename C>
-auto BasicProactiveThreadpool<TaskType>::async(C&& c) {
+auto BasicProactiveThreadpool<Func>::async(C&& c) {
 
   using R = std::invoke_result_t<C>;
 
@@ -316,8 +316,8 @@ auto BasicProactiveThreadpool<TaskType>::async(C&& c) {
 }
 
 // Function: wait_for_all
-template < template<typename...> class TaskType >
-void BasicProactiveThreadpool<TaskType>::wait_for_all() {
+template < template<typename...> class Func >
+void BasicProactiveThreadpool<Func>::wait_for_all() {
 
   if(!is_owner()){
     throw std::runtime_error("Worker thread cannot wait for all");
@@ -332,12 +332,6 @@ void BasicProactiveThreadpool<TaskType>::wait_for_all() {
 }
 
 };  // namespace proactive_threadpool -----------------------------------------
-
-namespace tf {
-
-using ProactiveThreadpool = proactive_threadpool::BasicProactiveThreadpool<std::function>;
-
-};  // namespace tf. ----------------------------------------------------------
 
 
 

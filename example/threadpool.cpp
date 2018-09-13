@@ -43,7 +43,7 @@ auto linear_insertions() {
   for(size_t i=0; i<num_threads; i++){
     insert(num_tasks / num_threads);
   }
-  
+
   // synchronize until all tasks finish
   future.get();
   assert(sum == num_threads);
@@ -57,7 +57,7 @@ auto linear_insertions() {
 void benchmark_linear_insertions() {
 
   std::cout << "==== Linear Insertions ====\n";
-  
+
   std::cout << "Speculative threadpool elapsed time: " 
             << linear_insertions<tf::SpeculativeThreadpool>() << " ms\n";
 

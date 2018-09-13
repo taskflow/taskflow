@@ -1,6 +1,7 @@
-// 2018/09/03 - added by Tsung-Wei Huang
-//   - refactored ProactiveThreadpool unittest
-//   - added tests for SimpleThreadpool
+// 2018/09/10 - added by Tsung-Wei Huang
+//   - added tests for SpeculativeThreadpool
+//   - added dynamic tasking tests
+//   - added spawn and shutdown tests
 //
 // 2018/09/02 - created by Guannan
 //   - test_silent_async
@@ -12,14 +13,40 @@
 #include <doctest.h>
 #include <taskflow/threadpool/threadpool.hpp>
 
+// Procedure: test_owner
+template <typename ThreadpoolType>
+void test_owner(ThreadpoolType& tp) {
+  
+  REQUIRE(tp.is_owner()); 
+  
+  tp.silent_async([&](){
+    if(tp.num_workers() == 0) {
+      REQUIRE(tp.is_owner());
+    }
+    else {
+      REQUIRE(!tp.is_owner());
+    }
+  });
+
+  std::vector<std::thread> threads;
+  for(int i=0; i<10; ++i) {
+    threads.emplace_back([&] () {
+      REQUIRE(!tp.is_owner());
+    });
+  }
+  for(auto& t : threads) {
+    t.join();
+  }
+}
+
 // Procedure: test_silent_async
 template <typename ThreadpoolType>
-void test_silent_async(ThreadpoolType& tp, const size_t task_num) {
+void test_silent_async(ThreadpoolType& tp, const size_t num_tasks) {
 
   std::atomic<size_t> counter{0};
   
   size_t sum = 0;
-  for(size_t i=0; i<task_num; i++){
+  for(size_t i=0; i<num_tasks; i++){
     sum += i;
     tp.silent_async([i=i, &counter](){ counter += i; });
   }
@@ -30,12 +57,12 @@ void test_silent_async(ThreadpoolType& tp, const size_t task_num) {
 
 // Procedure: test_async
 template <typename ThreadpoolType>
-void test_async(ThreadpoolType& tp, const size_t task_num){
+void test_async(ThreadpoolType& tp, const size_t num_tasks){
  
   std::vector<std::future<int>> int_future;
   std::vector<int> int_result;
 
-  for(size_t i=0; i<task_num; i++){
+  for(size_t i=0; i<num_tasks; i++){
     int_future.emplace_back(tp.async(
       [size = i](){
         int sum = 0;
@@ -65,26 +92,80 @@ void test_wait_for_all(ThreadpoolType& tp){
 
   using namespace std::literals::chrono_literals;
 
-  const size_t worker_num = tp.num_workers();
-  const size_t task_num = 20;
+  const size_t num_workers = tp.num_workers();
+  const size_t num_tasks = 20;
   std::atomic<size_t> counter;
 
   for(int i=0; i<10; ++i) {
 
     counter = 0;
     
-    for(size_t i=0; i<task_num; i++){
+    for(size_t i=0; i<num_tasks; i++){
       tp.silent_async([&counter](){ 
         std::this_thread::sleep_for(200us);
         counter++; 
       });
     }
-    REQUIRE(counter <= task_num);  // pay attention to the case of 0 worker
+    REQUIRE(counter <= num_tasks);  // pay attention to the case of 0 worker
 
     tp.wait_for_all();
 
-    REQUIRE(counter == task_num);
-    REQUIRE(tp.num_workers() == worker_num);
+    REQUIRE(counter == num_tasks);
+    REQUIRE(tp.num_workers() == num_workers);
+  }
+}
+
+// Procedure: test_spawn_shutdown
+template <typename T>
+void test_spawn_shutdown(T& tp) {
+  
+  using namespace std::literals::chrono_literals;
+
+  const size_t num_workers = tp.num_workers();
+  const size_t num_tasks = 1024;
+
+  tp.spawn(num_workers);
+  REQUIRE(tp.num_workers() == num_workers * 2);
+
+  tp.shutdown();
+  REQUIRE(tp.num_workers() == 0);
+  REQUIRE(tp.num_tasks() == 0);
+
+  tp.spawn(num_workers);
+  REQUIRE(tp.num_workers() == num_workers);
+
+  for(int k=0; k<5; ++k) {
+
+    REQUIRE(tp.num_workers() == num_workers);
+    
+    std::atomic<size_t> counter {0};
+
+    for(size_t i=0; i<num_tasks; i++){
+      tp.silent_async([&] () { 
+        counter++;
+        tp.silent_async([&] () {
+          counter++;
+          tp.silent_async([&] () {
+            counter++;
+            tp.silent_async([&] () {
+              counter++;
+            }); 
+          });
+        });
+      });
+    }
+
+    REQUIRE(counter <= num_tasks * 4);
+
+    tp.shutdown();
+
+    REQUIRE(counter == num_tasks * 4);
+    REQUIRE(tp.num_workers() == 0);
+    REQUIRE(tp.num_tasks() == 0);
+
+    tp.spawn(num_workers);
+    REQUIRE(tp.num_workers() == num_workers);
+    REQUIRE(tp.num_tasks() == 0);
   }
 }
 
@@ -135,13 +216,13 @@ void test_dynamic_tasking(T& threadpool) {
 // --------------------------------------------------------
 TEST_CASE("SimpleThreadpool" * doctest::timeout(300)) {
 
-  const size_t task_num = 100;
+  const size_t num_tasks = 100;
 
   SUBCASE("PlaceTask"){
     for(unsigned i=0; i<=4; ++i) {
       tf::SimpleThreadpool tp(i);
-      test_async(tp, task_num);
-      test_silent_async(tp, task_num);
+      test_async(tp, num_tasks);
+      test_silent_async(tp, num_tasks);
     }
   }
   
@@ -158,13 +239,20 @@ TEST_CASE("SimpleThreadpool" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("ProactiveThreadpool" * doctest::timeout(300)) {
 
-  const size_t task_num = 100;
+  const size_t num_tasks = 100;
+
+  SUBCASE("Owner") {
+    for(unsigned i=0; i<=4; ++i) {
+      tf::ProactiveThreadpool tp(i);
+      test_owner(tp);
+    }
+  }
 
   SUBCASE("PlaceTask"){
     for(unsigned i=0; i<=4; ++i) {
       tf::ProactiveThreadpool tp(i);
-      test_async(tp, task_num);
-      test_silent_async(tp, task_num);
+      test_async(tp, num_tasks);
+      test_silent_async(tp, num_tasks);
     }
   }
   
@@ -172,6 +260,13 @@ TEST_CASE("ProactiveThreadpool" * doctest::timeout(300)) {
     for(unsigned i=0; i<=4; ++i) {
       tf::ProactiveThreadpool tp(i);
       test_wait_for_all(tp);
+    }
+  }
+  
+  SUBCASE("SpawnShutdown") {
+    for(unsigned i=0; i<=4; ++i) {
+      tf::ProactiveThreadpool tp(i);
+      test_spawn_shutdown(tp);
     }
   }
 
@@ -188,13 +283,20 @@ TEST_CASE("ProactiveThreadpool" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("SpeculativeThreadpool" * doctest::timeout(300)) {
 
-  const size_t task_num = 100;
+  const size_t num_tasks = 100;
+  
+  SUBCASE("Owner") {
+    for(unsigned i=0; i<=4; ++i) {
+      tf::ProactiveThreadpool tp(i);
+      test_owner(tp);
+    }
+  }
 
   SUBCASE("PlaceTask"){
     for(unsigned i=0; i<=4; ++i) {
       tf::SpeculativeThreadpool tp(i);
-      test_async(tp, task_num);
-      test_silent_async(tp, task_num);
+      test_async(tp, num_tasks);
+      test_silent_async(tp, num_tasks);
     }
   }
   
@@ -202,6 +304,13 @@ TEST_CASE("SpeculativeThreadpool" * doctest::timeout(300)) {
     for(unsigned i=0; i<=4; ++i) {
       tf::SpeculativeThreadpool tp(i);
       test_wait_for_all(tp);
+    }
+  }
+  
+  SUBCASE("SpawnShutdown") {
+    for(unsigned i=0; i<=4; ++i) {
+      tf::SpeculativeThreadpool tp(i);
+      test_spawn_shutdown(tp);
     }
   }
 

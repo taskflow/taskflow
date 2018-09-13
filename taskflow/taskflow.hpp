@@ -45,7 +45,7 @@
 // ============================================================================
 // version
 #define TASKFLOW_VERSION_MAJOR 2
-#define TASKFLOW_VERSION_MINOR 1
+#define TASKFLOW_VERSION_MINOR 2
 #define TASKFLOW_VERSION_PATCH 0
 // ============================================================================
 
@@ -207,7 +207,7 @@ struct MoC {
 };
 
 // Forward declaration
-template <template<typename, typename...> class FuncType>
+template <template<typename...> class FuncType>
 class BasicNode;
 
 template <typename NodeType>
@@ -228,7 +228,7 @@ class BasicTaskflow;
 // ----------------------------------------------------------------------------
 
 // Class: BasicNode
-template <template<typename, typename...> class FuncType>
+template <template<typename...> class FuncType>
 class BasicNode {
 
   template <typename U> friend class BasicTask;
@@ -268,38 +268,38 @@ class BasicNode {
 };
 
 // Constructor
-template <template<typename, typename...> class FuncType>
+template <template<typename...> class FuncType>
 template <typename C>
 BasicNode<FuncType>::BasicNode(C&& c) : _work {std::forward<C>(c)} {
 }
 
 // Procedure:
-template <template<typename, typename...> class FuncType>
+template <template<typename...> class FuncType>
 void BasicNode<FuncType>::precede(BasicNode& v) {
   _successors.push_back(&v);
   ++v._dependents;
 }
 
 // Function: num_successors
-template <template<typename, typename...> class FuncType>
+template <template<typename...> class FuncType>
 size_t BasicNode<FuncType>::num_successors() const {
   return _successors.size();
 }
 
 // Function: dependents
-template <template<typename, typename...> class FuncType>
+template <template<typename...> class FuncType>
 size_t BasicNode<FuncType>::num_dependents() const {
   return _dependents.load();
 }
 
 // Function: name
-template <template<typename, typename...> class FuncType>
+template <template<typename...> class FuncType>
 const std::string& BasicNode<FuncType>::name() const {
   return _name;
 }
 
 // Function: dump
-template <template<typename, typename...> class FuncType>
+template <template<typename...> class FuncType>
 std::string BasicNode<FuncType>::dump() const {
   std::ostringstream os;  
   _dump(os);
@@ -307,7 +307,7 @@ std::string BasicNode<FuncType>::dump() const {
 }
 
 // Function: _dump
-template <template<typename, typename...> class FuncType>
+template <template<typename...> class FuncType>
 void BasicNode<FuncType>::_dump(std::ostream& os) const {
   
   if(_name.empty()) os << '\"' << this << '\"';

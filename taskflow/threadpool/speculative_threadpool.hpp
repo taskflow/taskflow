@@ -1,4 +1,4 @@
-// 2018/09/12 - Created by Chun-Xun Lin
+// 2018/09/12 - created by Chun-Xun Lin
 //
 // Speculative threadpool is similar to proactive threadpool except
 // each thread will speculatively move a new task to its local worker
@@ -90,38 +90,38 @@ class BasicSpeculativeThreadpool {
 };  // class BasicSpeculativeThreadpool. --------------------------------------
 
 // Constructor
-template < template<typename...> class TaskType >
-BasicSpeculativeThreadpool<TaskType>::BasicSpeculativeThreadpool(unsigned N){
+template < template<typename...> class Func >
+BasicSpeculativeThreadpool<Func>::BasicSpeculativeThreadpool(unsigned N){
   spawn(N);
 }
 
 // Destructor
-template < template<typename...> class TaskType >
-BasicSpeculativeThreadpool<TaskType>::~BasicSpeculativeThreadpool(){
+template < template<typename...> class Func >
+BasicSpeculativeThreadpool<Func>::~BasicSpeculativeThreadpool(){
   shutdown();
 }
 
 
 // Function: is_owner
-template < template<typename...> class TaskType >
-bool BasicSpeculativeThreadpool<TaskType>::is_owner() const {
+template < template<typename...> class Func >
+bool BasicSpeculativeThreadpool<Func>::is_owner() const {
   return std::this_thread::get_id() == _owner;
 }
 
 
-template < template<typename...> class TaskType >
-size_t BasicSpeculativeThreadpool<TaskType>::num_tasks() const { 
+template < template<typename...> class Func >
+size_t BasicSpeculativeThreadpool<Func>::num_tasks() const { 
   return _task_queue.size(); 
 }
 
-template < template<typename...> class TaskType >
-size_t BasicSpeculativeThreadpool<TaskType>::num_workers() const { 
+template < template<typename...> class Func >
+size_t BasicSpeculativeThreadpool<Func>::num_workers() const { 
   return _threads.size();  
 }
 
 // Function: shutdown
-template < template<typename...> class TaskType >
-void BasicSpeculativeThreadpool<TaskType>::shutdown(){
+template < template<typename...> class Func >
+void BasicSpeculativeThreadpool<Func>::shutdown(){
 
   if(not is_owner()){
     throw std::runtime_error("Worker thread cannot shut down the pool");
@@ -163,8 +163,8 @@ void BasicSpeculativeThreadpool<TaskType>::shutdown(){
 }
 
 // Function: spawn 
-template < template<typename...> class TaskType >
-void BasicSpeculativeThreadpool<TaskType>::spawn(unsigned N) {
+template < template<typename...> class Func >
+void BasicSpeculativeThreadpool<Func>::spawn(unsigned N) {
 
   // TODO: is_owner
   if(not is_owner()){
@@ -211,17 +211,16 @@ void BasicSpeculativeThreadpool<TaskType>::spawn(unsigned N) {
            }
            _mutex.lock();
          }
-       } // End of while --------------------------------------------------------------------------
+       } // End of while ------------------------------------------------------
     });     
 
-  } // End of For ---------------------------------------------------------------------------------
+  } // End of For -------------------------------------------------------------
 }
 
 
-
-template < template<typename...> class TaskType >
+template < template<typename...> class Func >
 template <typename C>
-auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
+auto BasicSpeculativeThreadpool<Func>::async(C&& c){
 
   using R = std::invoke_result_t<C>;
 
@@ -313,9 +312,9 @@ auto BasicSpeculativeThreadpool<TaskType>::async(C&& c){
   return fu;
 }
 
-template < template<typename...> class TaskType >
+template < template<typename...> class Func >
 template <typename C>
-void BasicSpeculativeThreadpool<TaskType>::silent_async(C&& c){
+void BasicSpeculativeThreadpool<Func>::silent_async(C&& c){
 
   TaskType t {std::forward<C>(c)};
 
@@ -349,8 +348,8 @@ void BasicSpeculativeThreadpool<TaskType>::silent_async(C&& c){
 
 
 // Function: wait_for_all
-template < template<typename...> class TaskType >
-void BasicSpeculativeThreadpool<TaskType>::wait_for_all() {
+template < template<typename...> class Func >
+void BasicSpeculativeThreadpool<Func>::wait_for_all() {
 
   if(!is_owner()){
     throw std::runtime_error("Worker thread cannot wait for all");
@@ -369,10 +368,6 @@ void BasicSpeculativeThreadpool<TaskType>::wait_for_all() {
 };  // namespace speculative_threadpool. --------------------------------------
 
 
-namespace tf {
 
-using SpeculativeThreadpool = speculative_threadpool::BasicSpeculativeThreadpool<std::function>;
-
-};  // namespace tf. ----------------------------------------------------------
 
 
