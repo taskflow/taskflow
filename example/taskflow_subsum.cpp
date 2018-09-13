@@ -72,6 +72,7 @@ void maxSubArraySum(std::vector<int>& vec, int l, int r, std::atomic<int>& max_n
 
 // Function: main
 int main(int argc, char* argv[]) {
+
   ::srand(1);
 
   std::vector<int> vec(total, 0);

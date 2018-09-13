@@ -232,39 +232,6 @@ auto SimpleThreadpool::async(C&& c, Signal sig) {
 }
 
 // Procedure: wait_for_all
-// After this method returns, all previously-scheduled tasks in the pool
-// will have been executed.
-//inline void SimpleThreadpool::wait_for_all() {
-//  
-//  if(is_worker()) {
-//    throw std::runtime_error("Worker thread cannot wait for all");
-//  }
-//
-//  std::mutex barrier_mutex;
-//  std::condition_variable barrier_cv;
-//  auto threads_to_sync{_threads.size()};
-//  std::vector<std::future<void>> futures;
-//
-//  for(size_t i=0; i<_threads.size(); ++i) {
-//    futures.emplace_back(async([&] () {
-//      std::unique_lock<std::mutex> lock(barrier_mutex);
-//      if (--threads_to_sync; threads_to_sync == 0) {
-//        barrier_cv.notify_all();
-//      }
-//      else {
-//        barrier_cv.wait(lock, [&threads_to_sync] {
-//          return threads_to_sync == 0;
-//        });
-//      }
-//    }));
-//  }
-//
-//  // Wait for all threads to have finished synchronization
-//  for (auto& fu : futures) {
-//    fu.get();
-//  }
-//}
-
 inline void SimpleThreadpool::wait_for_all(){
 
   if(is_worker()) {
@@ -275,7 +242,6 @@ inline void SimpleThreadpool::wait_for_all(){
   _wait_for_all = true;
   _complete.wait(lock, [this](){ return _idle_workers == num_workers() && _task_queue.size() == 0; });
   _wait_for_all = false;
-
 }
 
 // Procedure: shutdown

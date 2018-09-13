@@ -229,6 +229,13 @@ void test_dynamic_tasking(T& threadpool) {
 TEST_CASE("SimpleThreadpool" * doctest::timeout(300)) {
 
   const size_t num_tasks = 100;
+  
+  //SUBCASE("Ownership") {
+  //  for(unsigned i=0; i<=4; ++i) {
+  //    tf::SimpleThreadpool tp(i);
+  //    test_ownership(tp);
+  //  }
+  //}
 
   SUBCASE("PlaceTask"){
     for(unsigned i=0; i<=4; ++i) {
@@ -242,6 +249,20 @@ TEST_CASE("SimpleThreadpool" * doctest::timeout(300)) {
     for(unsigned i=0; i<=4; ++i) {
       tf::SimpleThreadpool tp(i);
       test_wait_for_all(tp);
+    }
+  }
+  
+  SUBCASE("SpawnShutdown") {
+    for(unsigned i=0; i<=4; ++i) {
+      tf::SimpleThreadpool tp(i);
+      test_spawn_shutdown(tp);
+    }
+  }
+
+  SUBCASE("DynamicTasking") {
+    for(unsigned i=0; i<=4; ++i) {
+      tf::SimpleThreadpool tp(i);
+      test_dynamic_tasking(tp);
     }
   }
 }
