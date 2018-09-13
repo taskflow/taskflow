@@ -51,13 +51,13 @@ void maxSubArraySum(std::vector<int>& vec, int l, int r, std::atomic<int>& max_n
   int m = (l + r)/2; 
 
   subflow.silent_emplace(
-    [l=l, r=r, m=m, &vec, &max_num](auto& subflow){
+    [l=l, m=m, &vec, &max_num](auto& subflow){
       maxSubArraySum(vec, l, m, max_num, subflow);
     }
   );
 
   subflow.silent_emplace(
-    [l=l, r=r, m=m, &vec, &max_num](auto& subflow){
+    [r=r, m=m, &vec, &max_num](auto& subflow){
       maxSubArraySum(vec, m+1, r, max_num, subflow);
     }
   );

@@ -1,3 +1,6 @@
+// 2018/09/13 - created by Chun-Xun Lin
+// 
+
 #include <atomic>
 #include <chrono>
 #include <random>
@@ -43,8 +46,15 @@ int maxCrossingSum(std::vector<int>& vec, int l, int m, int r){
 } 
 
 template<typename T>
-void maxSubArraySum(std::vector<int>& vec, int l, int r, std::atomic<int>& max_num, T& tp, 
-  std::atomic<size_t>& counter, std::promise<void>& promise) 
+void maxSubArraySum(
+  std::vector<int>& vec, 
+  int l, 
+  int r, 
+  std::atomic<int>& max_num, 
+  T& tp, 
+  std::atomic<size_t>& counter, 
+  std::promise<void>& promise
+) 
 { 
   // Base Case: Only one element 
   if (l == r) {
@@ -69,6 +79,7 @@ void maxSubArraySum(std::vector<int>& vec, int l, int r, std::atomic<int>& max_n
 
 template<typename T>
 auto subsum(std::vector<int>& vec){
+
   std::atomic<int> result {INT_MIN};
   std::atomic<size_t> counter{0};
   std::promise<void> promise;
@@ -82,7 +93,6 @@ auto subsum(std::vector<int>& vec){
   }
   auto end = std::chrono::high_resolution_clock::now();
   auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  //std::cout << counter << '\n';
   return elapsed.count();
 }
 

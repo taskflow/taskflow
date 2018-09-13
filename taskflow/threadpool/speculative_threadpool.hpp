@@ -1,4 +1,4 @@
-// 2018/09/12 - created by Chun-Xun Lin
+// 2018/09/12 - created by Tsung-Wei Huang and Chun-Xun Lin
 //
 // Speculative threadpool is similar to proactive threadpool except
 // each thread will speculatively move a new task to its local worker
@@ -19,6 +19,7 @@
 #include <future>
 #include <unordered_set>
 #include <unordered_map>
+
 
 namespace speculative_threadpool {
 
@@ -74,19 +75,16 @@ class BasicSpeculativeThreadpool {
     std::deque<TaskType> _task_queue;
     std::vector<std::thread> _threads;
     std::vector<Worker*> _idlers; 
-    std::unordered_map<std::thread::id, Worker*> _worker_local;    
+    std::unordered_map<std::thread::id, Worker*> _worker_maps;    
     
     const std::thread::id _owner {std::this_thread::get_id()};
 
     bool _exiting      {false};
     bool _wait_for_all {false};
 
-    auto _lookahead(){
-      auto id = std::this_thread::get_id();
-      return _worker_local.find(id);
-    }
+    std::vector<std::unique_ptr<Worker>> _works;
 
-    std::unique_ptr<Worker[]> _works;
+    auto _this_worker() const;
 
 };  // class BasicSpeculativeThreadpool. --------------------------------------
 
@@ -118,6 +116,13 @@ size_t BasicSpeculativeThreadpool<Func>::num_tasks() const {
 template < template<typename...> class Func >
 size_t BasicSpeculativeThreadpool<Func>::num_workers() const { 
   return _threads.size();  
+}
+    
+// Function: _this_worker
+template < template<typename...> class Func >
+auto BasicSpeculativeThreadpool<Func>::_this_worker() const {
+  auto id = std::this_thread::get_id();
+  return _worker_maps.find(id);
 }
 
 // Function: shutdown
@@ -152,6 +157,9 @@ void BasicSpeculativeThreadpool<Func>::shutdown(){
     t.join();
   } 
   _threads.clear();  
+
+  _works.clear();
+  _worker_maps.clear();
   
   _wait_for_all = false;
   _exiting = false;
@@ -167,22 +175,32 @@ void BasicSpeculativeThreadpool<Func>::shutdown(){
 template < template<typename...> class Func >
 void BasicSpeculativeThreadpool<Func>::spawn(unsigned N) {
 
-  // TODO: is_owner
   if(! is_owner()){
     throw std::runtime_error("Worker thread cannot spawn threads");
   }
 
-  // Lock to synchronize all workers before creating _worker_locals
-  std::scoped_lock lock(_mutex);
-  _works.reset(new Worker[N]);
+  // Wait untill all workers become idle if any
+  if(!_threads.empty()){
+    wait_for_all();
+  }
 
   for(size_t i=0; i<N; ++i){
-    _threads.emplace_back([this, i=i]()->void{
+    _works.push_back(std::make_unique<Worker>());
+  }
+  
+  const size_t sz = _threads.size();
 
-       Worker& w = _works[i]; 
-       TaskType t;
+  // Lock to synchronize all workers before creating _worker_mapss
+  std::scoped_lock<std::mutex> lock(_mutex);
 
-       std::unique_lock lock(_mutex);
+  for(size_t i=0; i<N; ++i){
+
+    _threads.emplace_back([this, i=i+sz]() -> void {
+
+       TaskType t {nullptr};
+       Worker& w = *(_works[i]);
+
+       std::unique_lock<std::mutex> lock(_mutex);
 
        while(!_exiting){
          if(_task_queue.empty()){
@@ -216,8 +234,9 @@ void BasicSpeculativeThreadpool<Func>::spawn(unsigned N) {
        } // End of while ------------------------------------------------------
     });     
 
-    _worker_local.insert({_threads.back().get_id(), &_works[i]});
+    _worker_maps.insert({_threads.back().get_id(), _works[i+sz].get()});
   } // End of For ---------------------------------------------------------------------------------
+
 }
 
 
@@ -247,8 +266,8 @@ auto BasicSpeculativeThreadpool<Func>::async(C&& c){
       
       // speculation
       if(std::this_thread::get_id() != _owner){
-        auto iter = _lookahead();
-        if(iter != _worker_local.end() && iter->second->task == nullptr){
+        auto iter = _this_worker();
+        if(iter != _worker_maps.end() && iter->second->task == nullptr){
           iter->second->task =
             [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
               c();
@@ -283,8 +302,8 @@ auto BasicSpeculativeThreadpool<Func>::async(C&& c){
 
       // speculation
       if(std::this_thread::get_id() != _owner){
-        auto iter = _lookahead();
-        if(iter != _worker_local.end() && iter->second->task == nullptr){
+        auto iter = _this_worker();
+        if(iter != _worker_maps.end() && iter->second->task == nullptr){
           iter->second->task = 
             [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
               p.get().set_value(c());
@@ -330,8 +349,8 @@ void BasicSpeculativeThreadpool<Func>::silent_async(C&& c){
 
   // speculation
   if(std::this_thread::get_id() != _owner){
-    auto iter = _lookahead();
-    if(iter != _worker_local.end() && iter->second->task == nullptr){
+    auto iter = _this_worker();
+    if(iter != _worker_maps.end() && iter->second->task == nullptr){
       iter->second->task = std::move(t);
       return ;
     }

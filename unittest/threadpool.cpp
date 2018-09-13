@@ -1,5 +1,6 @@
-// 2018/09/13 - modified by Tsung-Wei Huang
+// 2018/09/13 - modified by Tsung-Wei Huang & Chun-Xun
 //   - added tests for ownership
+//   - modified spawn-shutdown tests
 //
 // 2018/09/10 - modified by Tsung-Wei Huang
 //   - added tests for SpeculativeThreadpool
@@ -164,6 +165,8 @@ void test_spawn_shutdown(T& tp) {
       });
     }
 
+    tp.spawn(num_workers);
+
     REQUIRE(counter <= num_tasks * 4);
 
     tp.shutdown();
@@ -296,7 +299,7 @@ TEST_CASE("SpeculativeThreadpool" * doctest::timeout(300)) {
   
   SUBCASE("Ownership") {
     for(unsigned i=0; i<=4; ++i) {
-      tf::ProactiveThreadpool tp(i);
+      tf::SpeculativeThreadpool tp(i);
       test_ownership(tp);
     }
   }
