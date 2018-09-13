@@ -92,11 +92,14 @@ void benchmark_subsum(){
   auto gen = [](){return rand()%(max_num-min_num) + min_num;};
   std::generate(std::begin(vec), std::end(vec), gen);
 
-  std::cout << "Proactive threadpool takes: " 
+  std::cout << "Simple threadpool elapesed: " 
+            << subsum<tf::SimpleThreadpool>(vec) << " ms\n";
+
+  std::cout << "Proactive threadpool elapesed: " 
             << subsum<tf::ProactiveThreadpool>(vec) << " ms\n";
 
-  std::cout << "Simple threadpool takes: " 
-            << subsum<tf::SimpleThreadpool>(vec) << " ms\n";
+  std::cout << "Speculative threadpool elapesed: " 
+            << subsum<tf::SpeculativeThreadpool>(vec) << " ms\n";
 }
 
 

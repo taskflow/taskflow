@@ -42,7 +42,7 @@ class BasicSpeculativeThreadpool {
   struct Worker{
     std::condition_variable cv;
     TaskType task;
-    bool ready;
+    bool ready {false};
   };
 
   public:
@@ -83,9 +83,10 @@ class BasicSpeculativeThreadpool {
 
     auto _lookahead(){
       auto id = std::this_thread::get_id();
-      std::scoped_lock<std::mutex> lock(_mutex);
       return _worker_local.find(id);
     }
+
+    std::unique_ptr<Worker[]> _works;
 
 };  // class BasicSpeculativeThreadpool. --------------------------------------
 
@@ -101,19 +102,19 @@ BasicSpeculativeThreadpool<Func>::~BasicSpeculativeThreadpool(){
   shutdown();
 }
 
-
 // Function: is_owner
 template < template<typename...> class Func >
 bool BasicSpeculativeThreadpool<Func>::is_owner() const {
   return std::this_thread::get_id() == _owner;
 }
 
-
+// Function: num_tasks
 template < template<typename...> class Func >
 size_t BasicSpeculativeThreadpool<Func>::num_tasks() const { 
   return _task_queue.size(); 
 }
 
+// Function: num_workers
 template < template<typename...> class Func >
 size_t BasicSpeculativeThreadpool<Func>::num_workers() const { 
   return _threads.size();  
@@ -123,7 +124,7 @@ size_t BasicSpeculativeThreadpool<Func>::num_workers() const {
 template < template<typename...> class Func >
 void BasicSpeculativeThreadpool<Func>::shutdown(){
 
-  if(not is_owner()){
+  if(!is_owner()){
     throw std::runtime_error("Worker thread cannot shut down the pool");
   }
 
@@ -167,20 +168,21 @@ template < template<typename...> class Func >
 void BasicSpeculativeThreadpool<Func>::spawn(unsigned N) {
 
   // TODO: is_owner
-  if(not is_owner()){
+  if(! is_owner()){
     throw std::runtime_error("Worker thread cannot spawn threads");
   }
 
-  for(size_t i=0; i<N; ++i){
-    _threads.emplace_back([this]()->void{
+  // Lock to synchronize all workers before creating _worker_locals
+  std::scoped_lock<std::mutex> lock(_mutex);
+  _works.reset(new Worker[N]);
 
-       Worker w;
-       TaskType t; 
-       auto id = std::this_thread::get_id();
+  for(size_t i=0; i<N; ++i){
+    _threads.emplace_back([this, i=i]()->void{
+
+       Worker& w = _works[i]; 
+       TaskType t;
 
        std::unique_lock<std::mutex> lock(_mutex);
-
-       _worker_local.insert({id, &w}); 
 
        while(!_exiting){
          if(_task_queue.empty()){
@@ -214,10 +216,12 @@ void BasicSpeculativeThreadpool<Func>::spawn(unsigned N) {
        } // End of while ------------------------------------------------------
     });     
 
-  } // End of For -------------------------------------------------------------
+    _worker_local.insert({_threads.back().get_id(), &_works[i]});
+  } // End of For ---------------------------------------------------------------------------------
 }
 
 
+// Function: async
 template < template<typename...> class Func >
 template <typename C>
 auto BasicSpeculativeThreadpool<Func>::async(C&& c){
@@ -244,7 +248,7 @@ auto BasicSpeculativeThreadpool<Func>::async(C&& c){
       // speculation
       if(std::this_thread::get_id() != _owner){
         auto iter = _lookahead();
-        if(iter != _worker_local.end() and iter->second->task == nullptr){
+        if(iter != _worker_local.end() && iter->second->task == nullptr){
           iter->second->task =
             [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
               c();
@@ -280,7 +284,7 @@ auto BasicSpeculativeThreadpool<Func>::async(C&& c){
       // speculation
       if(std::this_thread::get_id() != _owner){
         auto iter = _lookahead();
-        if(iter != _worker_local.end() and iter->second->task == nullptr){
+        if(iter != _worker_local.end() && iter->second->task == nullptr){
           iter->second->task = 
             [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
               p.get().set_value(c());
@@ -327,7 +331,7 @@ void BasicSpeculativeThreadpool<Func>::silent_async(C&& c){
   // speculation
   if(std::this_thread::get_id() != _owner){
     auto iter = _lookahead();
-    if(iter != _worker_local.end() and iter->second->task == nullptr){
+    if(iter != _worker_local.end() && iter->second->task == nullptr){
       iter->second->task = std::move(t);
       return ;
     }
