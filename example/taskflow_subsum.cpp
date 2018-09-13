@@ -1,3 +1,7 @@
+// 2018/09/13 - created by Chun-Xun Lin
+//
+// This example is from https://www.geeksforgeeks.org/divide-and-conquer-maximum-sum-subarray/
+
 #include <climits>
 
 #include <taskflow/taskflow.hpp>  // the only include you need
@@ -37,7 +41,7 @@ int maxCrossingSum(std::vector<int>& vec, int l, int m, int r){
   return left_sum + right_sum; 
 } 
 
-// This example is from https://www.geeksforgeeks.org/divide-and-conquer-maximum-sum-subarray/
+
 template<typename T>
 void maxSubArraySum(std::vector<int>& vec, int l, int r, std::atomic<int>& max_num, T& subflow) 
 { 
