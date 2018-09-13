@@ -155,6 +155,8 @@ void test_spawn_shutdown(T& tp) {
       });
     }
 
+    tp.spawn(num_workers);
+
     REQUIRE(counter <= num_tasks * 4);
 
     tp.shutdown();
@@ -287,7 +289,7 @@ TEST_CASE("SpeculativeThreadpool" * doctest::timeout(300)) {
   
   SUBCASE("Owner") {
     for(unsigned i=0; i<=4; ++i) {
-      tf::ProactiveThreadpool tp(i);
+      tf::SpeculativeThreadpool tp(i);
       test_owner(tp);
     }
   }

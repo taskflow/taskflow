@@ -1,4 +1,4 @@
-// 2018/09/12 - created by Chun-Xun Lin
+// 2018/09/12 - created by Tsung-Wei Huang and Chun-Xun Lin
 //
 // Speculative threadpool is similar to proactive threadpool except
 // each thread will speculatively move a new task to its local worker
@@ -19,6 +19,7 @@
 #include <future>
 #include <unordered_set>
 #include <unordered_map>
+
 
 namespace speculative_threadpool {
 
@@ -86,7 +87,7 @@ class BasicSpeculativeThreadpool {
       return _worker_local.find(id);
     }
 
-    std::unique_ptr<Worker[]> _works;
+    std::vector<std::unique_ptr<Worker>> _works;
 
 };  // class BasicSpeculativeThreadpool. --------------------------------------
 
@@ -152,6 +153,9 @@ void BasicSpeculativeThreadpool<Func>::shutdown(){
     t.join();
   } 
   _threads.clear();  
+
+  _works.clear();
+  _worker_local.clear();
   
   _wait_for_all = false;
   _exiting = false;
@@ -167,21 +171,29 @@ void BasicSpeculativeThreadpool<Func>::shutdown(){
 template < template<typename...> class Func >
 void BasicSpeculativeThreadpool<Func>::spawn(unsigned N) {
 
-  // TODO: is_owner
   if(! is_owner()){
     throw std::runtime_error("Worker thread cannot spawn threads");
   }
 
+  // Wait untill all workers become idle if any
+  if(!_threads.empty()){
+    wait_for_all();
+  }
+
   // Lock to synchronize all workers before creating _worker_locals
   std::scoped_lock<std::mutex> lock(_mutex);
-  _works.reset(new Worker[N]);
-
+  _works.reserve(N+_works.size());
   for(size_t i=0; i<N; ++i){
-    _threads.emplace_back([this, i=i]()->void{
+    _works.emplace_back(new Worker);
+  }
 
-       Worker& w = _works[i]; 
-       TaskType t;
+  const size_t sz = _threads.size();
+  for(size_t i=0; i<N; ++i){
 
+    _threads.emplace_back([this, i=i+sz]() -> void {
+
+       TaskType t {nullptr};
+       Worker& w = *(_works[i]);
        std::unique_lock<std::mutex> lock(_mutex);
 
        while(!_exiting){
@@ -216,8 +228,9 @@ void BasicSpeculativeThreadpool<Func>::spawn(unsigned N) {
        } // End of while ------------------------------------------------------
     });     
 
-    _worker_local.insert({_threads.back().get_id(), &_works[i]});
+    _worker_local.insert({_threads.back().get_id(), _works[i+sz].get()});
   } // End of For ---------------------------------------------------------------------------------
+
 }
 
 
