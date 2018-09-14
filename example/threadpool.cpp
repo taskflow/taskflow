@@ -24,7 +24,7 @@ auto linear_insertions() {
   std::atomic<size_t> sum {0};
 
   std::function<void(int)> insert;
-  std::promise<void> promise;
+  std::promise<int> promise;
   auto future = promise.get_future();
   
   insert = [&threadpool, &insert, &sum, &promise] (int i) {
@@ -35,7 +35,7 @@ auto linear_insertions() {
     }
     else {
       if(auto s = ++sum; s == threadpool.num_workers()) {
-        promise.set_value();
+        promise.set_value(1);
       }
     }
   };
@@ -45,7 +45,10 @@ auto linear_insertions() {
   }
 
   // synchronize until all tasks finish
-  future.get();
+  threadpool.wait_for_all();
+  
+  assert(future.wait_for(std::chrono::seconds(0)) == std::future_status::ready);
+  assert(future.get() == 1); 
   assert(sum == num_threads);
   
   auto end = std::chrono::high_resolution_clock::now();
