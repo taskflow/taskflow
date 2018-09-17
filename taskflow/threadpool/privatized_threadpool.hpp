@@ -247,7 +247,10 @@ class BasicPrivatizedThreadpool {
 
     std::deque<TaskType> _task_queue;
     std::vector<std::thread> _threads;
+
+    // TODO: do we need atomic variable here?
     std::atomic<size_t> _idle_workers {0}; 
+
     std::unordered_map<std::thread::id, size_t> _worker_map;    
     
     const std::thread::id _owner {std::this_thread::get_id()};
@@ -256,6 +259,9 @@ class BasicPrivatizedThreadpool {
     bool _wait_for_all {false};
 
     std::vector<std::unique_ptr<Worker>> _works;
+
+    // TODO: can we just use some hacky method to replace atomic
+    // or make it relaxed
     std::atomic<size_t> _next_queue {0};
 
     size_t _nonempty_queue() const;
@@ -370,6 +376,7 @@ void BasicPrivatizedThreadpool<Func>::shutdown(){
     _exiting = true;
 
     for(auto& w : _works){
+      // TODO: can we replace this dummy task with state?
       w->queue.push_back([](){});
       w->cv.notify_one();
     }
@@ -425,48 +432,109 @@ void BasicPrivatizedThreadpool<Func>::spawn(unsigned N) {
   for(size_t i=0; i<N; ++i){
     _threads.emplace_back([this, i=i+sz]() -> void {
 
-       TaskType t {nullptr};
-       Worker& w = *(_works[i]);
-       uint32_t dice = i+1;
-       std::unique_lock<std::mutex> lock(_mutex);
+      TaskType t {nullptr};
+      Worker& w = *(_works[i]);
+      uint32_t dice = i+1;
+      std::unique_lock<std::mutex> lock(_mutex);
 
-       while(!_exiting){
-         if(!w.queue.pop_front(t)){
-           if(_steal(t, dice)){}
-           else if(!_task_queue.empty()) {
-           //if(!_task_queue.empty()){
-             t = std::move(_task_queue.front());
-             _task_queue.pop_front();
-           } 
-           else {
-             while(!w.queue.pop_front(t) && _task_queue.empty()){
-               if(++_idle_workers == num_workers() && _wait_for_all){
-                 // Last active thread checks if all queues are empty
-                 if(auto ret = _nonempty_queue(); ret == num_workers()){
-                   _sync = true;
-                   _empty_cv.notify_one();
-                 }
-                 else{
-                   if(ret == i){
-                     -- _idle_workers;
-                     continue;
-                   }
-                   _works[ret]->cv.notify_one();
-                 }
-               } 
-               w.cv.wait(lock);
-               -- _idle_workers;
-             }
-           }
-         } // End of first if
+      while(!_exiting){
 
-         if(t){
-           _mutex.unlock();
-           t();
-           t = nullptr;
-           _mutex.lock();
-         }
-       } // End of while ------------------------------------------------------
+        //// TODO: assume exisint is atomic variable and defer lock
+        //if(!w.queue.pop_front(t)) {
+        //  if(!_steal(t, dice)) {
+        //    lock.lock();
+        //    // ... as follows...
+        //    lock.unlock();
+        //  }
+        //}
+
+
+        /*// TODO:
+        lock.unlock();
+        
+        // step 1: check my own queue
+        if(!w.queue.pop_front(t)) {
+          if(!_steal(t, dice)) {
+            lock.lock();
+            if(_task_queue.empty()) {
+              // Idle worker does not imply its queue is empty.
+              if(++_idle_workers == num_workers() && _wait_for_all) {
+                // Last active thread checks if all queues are empty
+                // TODO: optional
+                if(auto ret = _nonempty_queue(); ret == num_workers()){
+                  // TODO: here only one thread will do so
+                  _sync = true;
+                  _empty_cv.notify_one();
+                }
+                else{
+                  // if the nonempty queue is myself
+                  if(ret == i){
+                    --_idle_workers;
+                    continue;
+                  }
+                  _works[ret]->cv.notify_one();
+                }
+              } 
+              w.cv.wait(lock);
+              --_idle_workers;
+            }
+            else {
+              t = std::move(_task_queue.front());
+              _task_queue.pop_front();
+            }
+            lock.unlock();
+          }
+        }
+        
+        if(t) {
+          t();
+          t = nullptr;
+        }
+        lock.lock();
+
+
+        // end of TODO 
+        */
+
+
+        if(!w.queue.pop_front(t)){
+          if(_steal(t, dice)){}
+          else if(!_task_queue.empty()) {
+          //if(!_task_queue.empty()){
+            t = std::move(_task_queue.front());
+            _task_queue.pop_front();
+          } 
+          else {
+            // TODO: do we need another while loop here?
+            while(!w.queue.pop_front(t) && _task_queue.empty()){
+              if(++_idle_workers == num_workers() && _wait_for_all){
+                // Last active thread checks if all queues are empty
+                if(auto ret = _nonempty_queue(); ret == num_workers()){
+                  // TODO: here only one thread will do so
+                  _sync = true;
+                  _empty_cv.notify_one();
+                }
+                else{
+                  if(ret == i){
+                    -- _idle_workers;
+                    continue;
+                  }
+                  _works[ret]->cv.notify_one();
+                }
+              } 
+              w.cv.wait(lock);
+              --_idle_workers;
+            }
+          }
+        } // End of first if
+
+        if(t){
+          _mutex.unlock();
+          t();
+          t = nullptr;
+          _mutex.lock();
+        }
+      } // End of while ------------------------------------------------------
     });     
 
     _worker_map.insert({_threads.back().get_id(), i+sz});
@@ -576,6 +644,8 @@ void BasicPrivatizedThreadpool<Func>::silent_async(C&& c){
     }
   }
 
+  // owner thread or other threads
+  // TODO: use random for load balancing?
   auto id = (++_next_queue)%_works.size();
   if(!_works[id]->queue.push_back(t)){
     std::scoped_lock<std::mutex> lock(_mutex);
@@ -603,7 +673,8 @@ void BasicPrivatizedThreadpool<Func>::wait_for_all() {
   for(const auto& w : _works){
     w->cv.notify_one();
   }
-
+  
+  // TODO: can we use a single wait_for_all?
   while(!_sync){
     _empty_cv.wait(lock);
   }

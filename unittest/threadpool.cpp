@@ -355,3 +355,49 @@ TEST_CASE("SpeculativeThreadpool" * doctest::timeout(300)) {
   }
 }
 
+// --------------------------------------------------------
+// Testcase: PrivatizedThreadpool
+// --------------------------------------------------------
+TEST_CASE("PrivatizedThreadpool" * doctest::timeout(300)) {
+
+  const size_t num_tasks = 100;
+  
+  SUBCASE("Ownership") {
+    for(unsigned i=0; i<=4; ++i) {
+      tf::PrivatizedThreadpool tp(i);
+      test_ownership(tp);
+    }
+  }
+
+  SUBCASE("PlaceTask"){
+    for(unsigned i=0; i<=4; ++i) {
+      tf::PrivatizedThreadpool tp(i);
+      test_async(tp, num_tasks);
+      test_silent_async(tp, num_tasks);
+    }
+  }
+  
+  SUBCASE("WaitForAll"){
+    for(unsigned i=0; i<=4; ++i) {
+      tf::PrivatizedThreadpool tp(i);
+      test_wait_for_all(tp);
+    }
+  }
+  
+  SUBCASE("SpawnShutdown") {
+    for(unsigned i=0; i<=4; ++i) {
+      tf::PrivatizedThreadpool tp(i);
+      test_spawn_shutdown(tp);
+    }
+  }
+
+  SUBCASE("DynamicTasking") {
+    for(unsigned i=0; i<=4; ++i) {
+      tf::PrivatizedThreadpool tp(i);
+      test_dynamic_tasking(tp);
+    }
+  }
+}
+
+
+
