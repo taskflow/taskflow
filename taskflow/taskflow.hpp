@@ -241,7 +241,7 @@ class BasicNode {
 
   public:
 
-    BasicNode() = default;
+    BasicNode();
 
     template <typename C>
     BasicNode(C&&);
@@ -260,24 +260,34 @@ class BasicNode {
     std::string _name;
     std::variant<WorkType, SubworkType> _work;
     std::vector<BasicNode*> _successors;
-    std::atomic<int> _dependents {0};
+    std::atomic<int> _dependents;
     std::forward_list<BasicNode> _children;
-    TopologyType* _topology {nullptr};
+    TopologyType* _topology;
 
     void _dump(std::ostream&) const;
 };
 
 // Constructor
 template <template<typename...> class FuncType>
+BasicNode<FuncType>::BasicNode() {
+  _dependents.store(0, std::memory_order_relaxed);
+  _topology = nullptr;
+}
+
+// Constructor
+template <template<typename...> class FuncType>
 template <typename C>
 BasicNode<FuncType>::BasicNode(C&& c) : _work {std::forward<C>(c)} {
+  _dependents.store(0, std::memory_order_relaxed);
+  _topology = nullptr;
 }
 
 // Procedure:
 template <template<typename...> class FuncType>
 void BasicNode<FuncType>::precede(BasicNode& v) {
   _successors.push_back(&v);
-  ++v._dependents;
+  //++v._dependents;
+  v._dependents.fetch_add(1, std::memory_order_relaxed);
 }
 
 // Function: num_successors
@@ -289,7 +299,7 @@ size_t BasicNode<FuncType>::num_successors() const {
 // Function: dependents
 template <template<typename...> class FuncType>
 size_t BasicNode<FuncType>::num_dependents() const {
-  return _dependents.load();
+  return _dependents.load(std::memory_order_relaxed);
 }
 
 // Function: name
@@ -387,7 +397,7 @@ BasicTopology<NodeType>::BasicTopology(std::forward_list<NodeType>&& t) :
   _target._work = [p=MoC{std::move(promise)}] () mutable { 
     p.get().set_value(); 
   };
-  
+
   // ensure the topology is connected
   _source.precede(_target);
 
@@ -602,7 +612,7 @@ const std::string& BasicTask<NodeType>::name() const {
 // Function: num_dependents
 template <typename NodeType>
 size_t BasicTask<NodeType>::num_dependents() const {
-  return _node->_dependents;
+  return _node->_dependents.load(std::memory_order_relaxed);
 }
 
 // Function: num_successors
@@ -1521,7 +1531,7 @@ void BasicTaskflow<Traits>::_schedule(NodeType& node) {
     
     // regular node type
     // The default node work type. We only need to execute the callback if any.
-    if(auto index=node._work.index(); index == 0){
+    if(auto index=node._work.index(); index == 0) {
       if(auto &f = std::get<WorkType>(node._work); f != nullptr){
         std::invoke(f);
       }
@@ -1575,9 +1585,12 @@ void BasicTaskflow<Traits>::_schedule(NodeType& node) {
     
     // At this point, the node/node storage might be destructed.
     for(size_t i=0; i<num_successors; ++i) {
-      if(--(node._successors[i]->_dependents) == 0) {
+      if(node._successors[i]->_dependents.fetch_sub(1, std::memory_order_release) - 1 == 0) {
         _schedule(*(node._successors[i]));
       }
+      //if(--(node._successors[i]->_dependents) == 0) {
+      //  _schedule(*(node._successors[i]));
+      //}
     }
   });
 }

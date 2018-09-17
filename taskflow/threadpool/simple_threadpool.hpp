@@ -1,3 +1,6 @@
+// 2018/09/14 - modified by Guannan
+//   - added wait_for_all method
+//
 // 2018/04/01 - contributed by Tsung-Wei Huang and Chun-Xun Lin
 // 
 // The basic threadpool implementation based on C++17.
