@@ -332,7 +332,7 @@ auto empty_jobs() {
     threadpool.silent_async([](){}); 
   }
 
-  threadpool.shutdown();
+  threadpool.wait_for_all();
   
   auto end = std::chrono::high_resolution_clock::now();
 

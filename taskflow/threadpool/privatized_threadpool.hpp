@@ -68,7 +68,11 @@ class RunQueue {
 
 // Constructor    
 template <typename T, unsigned N>
-RunQueue<T, N>::RunQueue() : _front(0), _back(0) {
+RunQueue<T, N>::RunQueue() {
+
+  _front.store(0, std::memory_order_relaxed);
+  _back.store(0, std::memory_order_relaxed);
+
   for(unsigned i=0; i<N; ++i) {
     _array[i].state.store(EMPTY, std::memory_order_relaxed);
   }
