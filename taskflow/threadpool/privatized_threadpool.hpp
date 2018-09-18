@@ -46,15 +46,14 @@ class RunQueue {
   public:
 
     RunQueue();
-
+    
+    bool push_back(T&&);
     bool push_front(T&&);
+
     bool push_front(T&);
     bool pop_front(T&);
-
-    bool push_back(T&&);
     bool push_back(T&);
     bool pop_back(T&);
-
     bool empty() const;
 
   private:
@@ -101,7 +100,6 @@ template <typename T, unsigned N>
 bool RunQueue<T, N>::push_front(T&& w) {
   return push_front(w);
 }
-
 
 // pop the first item out of the queue and store it to w
 template <typename T, unsigned N>
@@ -154,7 +152,6 @@ template <typename T, unsigned N>
 bool RunQueue<T, N>::push_back(T&& w) {
   return push_back(w);
 }
-
 
 // pop_back removes and returns the last elements in the queue.
 // Can fail spuriously.

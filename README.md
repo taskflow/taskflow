@@ -727,7 +727,7 @@ The folder `example/` contains several examples and is a great place to learn to
 | [parallel_for.cpp](./example/parallel_for.cpp)| parallelizes a for loop with unbalanced workload |
 | [reduce.cpp](./example/reduce.cpp)| performs reduce operations over linear containers |
 | [subflow.cpp](./example/subflow.cpp)| demonstrates how to create a subflow graph that spawns three dynamic tasks |
-| [threadpool.cpp](./example/threadpool.cpp)| tests different threadpool implementations |
+| [threadpool.cpp](./example/threadpool.cpp)| benchmarks different threadpool implementations |
 | [threadpool_cxx14.cpp](./example/threadpool_cxx14.cpp)| shows use of the C++14-compatible threadpool implementation, which may be used when you have no inter-task (taskflow) dependencies to express |
 
 # Get Involved

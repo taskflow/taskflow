@@ -113,11 +113,8 @@ target_link_libraries(threadpool_cxx14 Threads::Threads)
 add_executable(multiple_dispatch example/multiple_dispatch.cpp)
 target_link_libraries(multiple_dispatch Threads::Threads)
 
-add_executable(subsum example/subsum.cpp)
-target_link_libraries(subsum Threads::Threads)
-
-add_executable(taskflow_subsum example/taskflow_subsum.cpp)
-target_link_libraries(taskflow_subsum Threads::Threads)
+#add_executable(subsum example/subsum.cpp)
+#target_link_libraries(subsum Threads::Threads)
 
 
 # -----------------------------------------------------------------------------
@@ -145,6 +142,9 @@ add_test(detached_subflow ${TF_UTEST_DIR}/taskflow -tc=Taskflow.DetachedSubflow)
 add_executable(threadpool_test_tmp unittest/threadpool.cpp)
 target_link_libraries(threadpool_test_tmp Threads::Threads)
 set_target_properties(threadpool_test_tmp PROPERTIES OUTPUT_NAME "threadpool")
+add_test(WorkerQueue.OneThread  ${TF_UTEST_DIR}/threadpool -tc=WorkerQueue.OneThread)
+add_test(WorkerQueue.TwoThread  ${TF_UTEST_DIR}/threadpool -tc=WorkerQueue.TwoThread)
+add_test(WorkerQueue.TriThread  ${TF_UTEST_DIR}/threadpool -tc=WorkerQueue.TriThread)
 add_test(simple_threadpool      ${TF_UTEST_DIR}/threadpool -tc=SimpleThreadpool)
 add_test(proactive_threadpool   ${TF_UTEST_DIR}/threadpool -tc=ProactiveThreadpool)
 add_test(speculative_threadpool ${TF_UTEST_DIR}/threadpool -tc=SpeculativeThreadpool)

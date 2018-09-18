@@ -59,16 +59,17 @@ class SimpleThreadpool {
     inline size_t num_tasks() const;
     inline size_t num_workers() const;
 
-    inline bool is_worker() const;
+    inline bool is_owner() const;
 
   private:
+
+    const std::thread::id _owner {std::this_thread::get_id()};
 
     mutable std::mutex _mutex;
 
     std::condition_variable _worker_signal;
     std::deque<std::function<Signal()>> _task_queue;
     std::vector<std::thread> _threads;
-    std::unordered_set<std::thread::id> _worker_ids;
 
     //variables for wait_for_all
     std::condition_variable _complete;
@@ -99,9 +100,9 @@ inline size_t SimpleThreadpool::num_workers() const {
   return _threads.size();
 }
 
-inline bool SimpleThreadpool::is_worker() const {
-  std::scoped_lock<std::mutex> lock(_mutex);
-  return _worker_ids.find(std::this_thread::get_id()) != _worker_ids.end();
+// Function: is_owner
+inline bool SimpleThreadpool::is_owner() const {
+  return std::this_thread::get_id() == _owner;
 }
 
 // Procedure: spawn
@@ -109,18 +110,13 @@ inline bool SimpleThreadpool::is_worker() const {
 // After the task is finished, the thread reacts to the returned signal.
 inline void SimpleThreadpool::spawn(unsigned N) {
 
-  if(is_worker()) {
+  if(!is_owner()) {
     throw std::runtime_error("Worker thread cannot spawn threads");
   }
   
   for(size_t i=0; i<N; ++i) {
 
     _threads.emplace_back([this] () -> void { 
-
-      {  // Acquire lock
-        std::scoped_lock<std::mutex> lock(_mutex);
-        _worker_ids.insert(std::this_thread::get_id());         
-      }
 
       bool stop {false}; 
 
@@ -152,11 +148,6 @@ inline void SimpleThreadpool::spawn(unsigned N) {
         };
 
       } // End of worker loop.
-
-      {  // Acquire lock
-        std::scoped_lock<std::mutex> lock(_mutex);
-        _worker_ids.erase(std::this_thread::get_id());         
-      }
 
     });
   }
@@ -237,7 +228,7 @@ auto SimpleThreadpool::async(C&& c, Signal sig) {
 // Procedure: wait_for_all
 inline void SimpleThreadpool::wait_for_all(){
 
-  if(is_worker()) {
+  if(!is_owner()) {
     throw std::runtime_error("Worker thread cannot wait for all");
   }
   
@@ -251,7 +242,7 @@ inline void SimpleThreadpool::wait_for_all(){
 // Remove a given number of workers. Notice that only the master can call this procedure.
 inline void SimpleThreadpool::shutdown() {
   
-  if(is_worker()) {
+  if(!is_owner()) {
     throw std::runtime_error("Worker thread cannot shut down the thread pool");
   }
 

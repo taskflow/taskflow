@@ -43,11 +43,6 @@
 #include "threadpool/threadpool.hpp"
 
 // ============================================================================
-// version
-#define TASKFLOW_VERSION_MAJOR 2
-#define TASKFLOW_VERSION_MINOR 2
-#define TASKFLOW_VERSION_PATCH 0
-// ============================================================================
 
 // Clang mis-interprets variant's get as a non-friend of variant and cannot
 // get compiled correctly. We use the patch: 
@@ -786,7 +781,7 @@ auto BasicFlowBuilder<NodeType>::emplace(C&& c) {
       [p=MoC(std::move(p)), c=std::forward<C>(c), r=std::optional<R>()]
       (BasicSubflowBuilder<NodeType>& fb) mutable {
         if(fb._nodes.empty()) {
-          r = c(fb);
+          r.emplace(c(fb));
           if(fb.detached()) {
             p.get().set_value(std::move(*r)); 
           }
@@ -1585,12 +1580,9 @@ void BasicTaskflow<Traits>::_schedule(NodeType& node) {
     
     // At this point, the node/node storage might be destructed.
     for(size_t i=0; i<num_successors; ++i) {
-      if(node._successors[i]->_dependents.fetch_sub(1, std::memory_order_release) - 1 == 0) {
+      if(--(node._successors[i]->_dependents) == 0) {
         _schedule(*(node._successors[i]));
       }
-      //if(--(node._successors[i]->_dependents) == 0) {
-      //  _schedule(*(node._successors[i]));
-      //}
     }
   });
 }
