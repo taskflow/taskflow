@@ -380,13 +380,6 @@ TEST_CASE("WorkerQueue.OneThread" * doctest::timeout(300)) {
 
   REQUIRE(queue.empty());
 
-  //// R value test
-  //REQUIRE(queue.push_front(1));
-  //REQUIRE(queue.push_back(2));
-  //REQUIRE(!queue.empty());
-  //REQUIRE((queue.pop_back(data) && data == 2));
-  //REQUIRE((queue.pop_front(data) && data == 1));
-  
   // push_front + pop_back
   SUBCASE("PFPB") {
     for(int i=0; i<N; ++i) {
@@ -615,7 +608,7 @@ TEST_CASE("WorkerQueue.TwoThread" * doctest::timeout(300)) {
 // ----------------------------------------------------------------------------
 TEST_CASE("WorkerQueue.TriThread" * doctest::timeout(300)) {
 
-  constexpr size_t N = (1 << 21);
+  constexpr int N = (1 << 21);
 
   privatized_threadpool::RunQueue<int, 64> queue; 
 
