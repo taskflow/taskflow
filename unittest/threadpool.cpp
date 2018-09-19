@@ -507,7 +507,7 @@ TEST_CASE("WorkerQueue.OneThread" * doctest::timeout(300)) {
 // ----------------------------------------------------------------------------
 TEST_CASE("WorkerQueue.TwoThread" * doctest::timeout(300)) {
 
-  constexpr size_t N = (1 << 20);
+  const static size_t N = (1 << 20);
 
   privatized_threadpool::RunQueue<int, 64> queue; 
 
@@ -517,7 +517,7 @@ TEST_CASE("WorkerQueue.TwoThread" * doctest::timeout(300)) {
 
     REQUIRE(queue.empty());
 
-    std::thread t1([&queue, i=0] () mutable {
+    std::thread t1([&, i=0] () mutable {
       while(i < N) {
         if(queue.push_front(i)) {
           ++i;
@@ -525,7 +525,7 @@ TEST_CASE("WorkerQueue.TwoThread" * doctest::timeout(300)) {
       }
     });
 
-    std::thread t2([&queue, i=0] () mutable {
+    std::thread t2([&, i=0] () mutable {
       int data;
       while(i < N) {
         if(queue.pop_back(data)) {
@@ -546,7 +546,7 @@ TEST_CASE("WorkerQueue.TwoThread" * doctest::timeout(300)) {
 
     REQUIRE(queue.empty());
 
-    std::thread t1([&queue, i=0] () mutable {
+    std::thread t1([&, i=0] () mutable {
       while(i < N) {
         if(queue.push_back(i)) {
           ++i;
@@ -554,7 +554,7 @@ TEST_CASE("WorkerQueue.TwoThread" * doctest::timeout(300)) {
       }
     });
 
-    std::thread t2([&queue, i=0] () mutable {
+    std::thread t2([&, i=0] () mutable {
       int data;
       while(i < N) {
         if(queue.pop_front(data)) {
@@ -577,7 +577,7 @@ TEST_CASE("WorkerQueue.TwoThread" * doctest::timeout(300)) {
 
     REQUIRE(queue.empty());
 
-    std::thread t1([&queue, i=0] () mutable {
+    std::thread t1([&, i=0] () mutable {
       while(i < N) {
         if(queue.push_back(i)) {
           ++i;
@@ -585,7 +585,7 @@ TEST_CASE("WorkerQueue.TwoThread" * doctest::timeout(300)) {
       }
     });
 
-    std::thread t2([&queue, i=0, &res] () mutable {
+    std::thread t2([&, i=0] () mutable {
       int data;
       while(i < N) {
         if(queue.pop_back(data)) {
@@ -624,7 +624,7 @@ TEST_CASE("WorkerQueue.TriThread" * doctest::timeout(300)) {
   // push front + push back + pop back
   REQUIRE(queue.empty());
 
-  std::thread t1([&queue, i=0] () mutable {
+  std::thread t1([&, i=0] () mutable {
     while(i < N/2) {
       if(queue.push_front(i)) {
         ++i;
@@ -632,7 +632,7 @@ TEST_CASE("WorkerQueue.TriThread" * doctest::timeout(300)) {
     }
   });
   
-  std::thread t2([&queue, i=N/2] () mutable {
+  std::thread t2([&, i=N/2] () mutable {
     while(i < N) {
       if(queue.push_back(i)) {
         ++i;
@@ -640,7 +640,7 @@ TEST_CASE("WorkerQueue.TriThread" * doctest::timeout(300)) {
     }
   });
 
-  std::thread t3([&queue, i=0, &res] () mutable {
+  std::thread t3([&, i=0] () mutable {
     int data;
     while(i < N) {
       if(queue.pop_back(data)) {

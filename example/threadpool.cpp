@@ -143,7 +143,7 @@ auto binary_tree() {
   std::atomic<size_t> sum {0};
   std::function<void(int)> insert;
   
-  insert = [&threadpool, &insert, &sum] (int l) {
+  insert = [&] (int l) {
     sum.fetch_add(1, std::memory_order_relaxed);
     if(l < num_levels) {
       for(int i=0; i<2; ++i) {
@@ -279,7 +279,7 @@ auto linear_insertions() {
     }
   };
 
-  for(size_t i=0; i<num_threads; i++){
+  for(int i=0; i<num_threads; i++){
     insert(num_tasks / num_threads);
   }
 
