@@ -20,8 +20,9 @@
 #include <unordered_set>
 #include <unordered_map>
 
+#include "move_on_copy.hpp"
 
-namespace privatized_threadpool {
+namespace tf {
 
 template <typename T, unsigned N>
 class RunQueue {
@@ -196,19 +197,7 @@ bool RunQueue<T, N>::empty() const {
          _back.load(std::memory_order_relaxed);
 }
 
-
-template <typename T>
-struct MoC {
-
-  MoC(T&& rhs): object(std::move(rhs)) {}
-  MoC(const MoC& other) : object(std::move(other.object)) {}
-
-  T& get() {return object; }
-  
-  mutable T object;
-};
-
-
+// Class: BasicPrivatizedThreadpool
 template < template<typename...> class Func >
 class BasicPrivatizedThreadpool {
 
@@ -686,7 +675,7 @@ void BasicPrivatizedThreadpool<Func>::wait_for_all() {
 
 
 
-};  // namespace privatized_threadpool. --------------------------------------
+};  // namespace tf -----------------------------------------------------------
 
 
 

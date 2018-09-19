@@ -189,17 +189,7 @@ inline constexpr bool is_iterable_v = is_iterable<T>::value;
 // Taskflow definition
 //-----------------------------------------------------------------------------
 
-// Struct: MoC
-template <typename T>
-struct MoC {
 
-  MoC(T&& rhs) : object(std::move(rhs)) {}
-  MoC(const MoC& other) : object(std::move(other.object)) {}
-
-  T& get() { return object; }
-  
-  mutable T object; 
-};
 
 // Forward declaration
 template <template<typename...> typename Func>
@@ -1622,9 +1612,12 @@ std::string BasicTaskflow<F, P>::dump() const {
 
 //-----------------------------------------------------------------------------
 
-using Taskflow       = BasicTaskflow<std::function, SimpleThreadpool>;
-using Task           = typename Taskflow::TaskType;
+using Taskflow = BasicTaskflow<std::function, SimpleThreadpool>;
+using Task = typename Taskflow::TaskType;
 using SubflowBuilder = typename Taskflow::SubflowBuilderType;
 
 };  // end of namespace tf. ---------------------------------------------------
+
+
+
 

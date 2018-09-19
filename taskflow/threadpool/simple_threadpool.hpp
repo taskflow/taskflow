@@ -19,22 +19,12 @@
 #include <future>
 #include <unordered_set>
 
+#include "move_on_copy.hpp"
+
 namespace tf {
 
 // Class: SimpleThreadpool
 class SimpleThreadpool {
-
-  // Struct: MoC
-  template <typename T>
-  struct MoC {
-  
-    MoC(T&& rhs) : object(std::move(rhs)) {}
-    MoC(const MoC& other) : object(std::move(other.object)) {}
-  
-    T& get() { return object; }
-    
-    mutable T object; 
-  };
 
   enum class Signal {
     STANDARD,

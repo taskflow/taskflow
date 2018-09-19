@@ -376,7 +376,7 @@ TEST_CASE("WorkerQueue.OneThread" * doctest::timeout(300)) {
 
   int data;
 
-  privatized_threadpool::RunQueue<int, N> queue; 
+  tf::RunQueue<int, N> queue; 
 
   REQUIRE(queue.empty());
 
@@ -502,7 +502,7 @@ TEST_CASE("WorkerQueue.TwoThread" * doctest::timeout(300)) {
 
   const static size_t N = (1 << 20);
 
-  privatized_threadpool::RunQueue<int, 64> queue; 
+  tf::RunQueue<int, 64> queue; 
 
   // push front + pop back
   // notice that there is no test of push front + pop front
@@ -610,7 +610,7 @@ TEST_CASE("WorkerQueue.TriThread" * doctest::timeout(300)) {
 
   constexpr int N = (1 << 21);
 
-  privatized_threadpool::RunQueue<int, 64> queue; 
+  tf::RunQueue<int, 64> queue; 
 
   std::vector<int> res;
 

@@ -27,21 +27,10 @@
 #include <future>
 #include <unordered_set>
 
-namespace proactive_threadpool {
+#include "move_on_copy.hpp"
+
+namespace tf {
   
-// Struct: MoC
-// Move-on-copy wrapper.
-template <typename T>
-struct MoC {
-
-  MoC(T&& rhs): object(std::move(rhs)) {}
-  MoC(const MoC& other) : object(std::move(other.object)) {}
-
-  T& get() {return object; }
-  
-  mutable T object;
-};
-
 // Class: BasicProactiveThreadpool
 template < template<typename...> class Func >
 class BasicProactiveThreadpool {

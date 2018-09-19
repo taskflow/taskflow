@@ -20,19 +20,9 @@
 #include <unordered_set>
 #include <unordered_map>
 
+#include "move_on_copy.hpp"
 
-namespace speculative_threadpool {
-
-template <typename T>
-struct MoC {
-
-  MoC(T&& rhs): object(std::move(rhs)) {}
-  MoC(const MoC& other) : object(std::move(other.object)) {}
-
-  T& get() {return object; }
-  
-  mutable T object;
-};
+namespace tf {
 
 // Class: BasicSpeculativeThreadpool
 template < template<typename...> class Func >
@@ -388,7 +378,7 @@ void BasicSpeculativeThreadpool<Func>::wait_for_all() {
 
 
 
-};  // namespace speculative_threadpool. --------------------------------------
+};  // end of namespace tf. ---------------------------------------------------
 
 
 
