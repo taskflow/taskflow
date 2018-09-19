@@ -33,7 +33,7 @@ void reduce() {
   auto send = std::chrono::steady_clock::now();
   std::cout << "[sequential] reduce: " 
             << std::chrono::duration_cast<std::chrono::milliseconds>(send - sbeg).count()
-            << std::endl;
+            << " ms\n";
 
   // taskflow
   auto tbeg = std::chrono::steady_clock::now();
@@ -46,7 +46,7 @@ void reduce() {
   auto tend = std::chrono::steady_clock::now();
   std::cout << "[taskflow] reduce: " 
             << std::chrono::duration_cast<std::chrono::milliseconds>(tend - tbeg).count()
-            << std::endl;
+            << " ms\n";
   
   // assertion
   assert(tmin == smin);
@@ -68,7 +68,7 @@ void transform_reduce() {
   auto send = std::chrono::steady_clock::now();
   std::cout << "[sequential] transform_reduce " 
             << std::chrono::duration_cast<std::chrono::milliseconds>(send - sbeg).count()
-            << std::endl;
+            << " ms\n";
   
   // taskflow
   auto tbeg = std::chrono::steady_clock::now();
@@ -82,7 +82,7 @@ void transform_reduce() {
   auto tend = std::chrono::steady_clock::now();
   std::cout << "[taskflow] transform_reduce " 
             << std::chrono::duration_cast<std::chrono::milliseconds>(tend - tbeg).count()
-            << std::endl;
+            << " ms\n";
 
   // assertion
   assert(tmin == smin);

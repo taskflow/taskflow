@@ -372,11 +372,11 @@ void test_threadpool() {
 // ----------------------------------------------------------------------------
 TEST_CASE("WorkerQueue.OneThread" * doctest::timeout(300)) {
 
-  constexpr size_t N = 1024;
+  constexpr int N = 1024;
 
   int data;
 
-  tf::RunQueue<int, N> queue; 
+  tf::RunQueue<int, 1024> queue; 
 
   REQUIRE(queue.empty());
 
@@ -500,7 +500,7 @@ TEST_CASE("WorkerQueue.OneThread" * doctest::timeout(300)) {
 // ----------------------------------------------------------------------------
 TEST_CASE("WorkerQueue.TwoThread" * doctest::timeout(300)) {
 
-  const static size_t N = (1 << 20);
+  constexpr int N = (1 << 20);
 
   tf::RunQueue<int, 64> queue; 
 
