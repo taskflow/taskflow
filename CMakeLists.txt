@@ -99,6 +99,9 @@ target_link_libraries(reduce Threads::Threads)
 add_executable(threadpool example/threadpool.cpp)
 target_link_libraries(threadpool Threads::Threads)
 
+add_executable(taskflow example/taskflow.cpp)
+target_link_libraries(taskflow Threads::Threads)
+
 add_executable(matrix example/matrix.cpp)
 target_compile_options(matrix PRIVATE ${OpenMP_CXX_FLAGS})
 target_link_libraries(matrix Threads::Threads OpenMP::OpenMP_CXX)
@@ -121,10 +124,11 @@ enable_testing()
 message(STATUS "Building unit tests ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/unittest)
 set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittest)
-add_executable(taskflow unittest/taskflow.cpp)
-target_link_libraries(taskflow Threads::Threads)
 
 # unittest for taskflow
+add_executable(taskflow_test_tmp unittest/taskflow.cpp)
+target_link_libraries(taskflow_test_tmp Threads::Threads)
+set_target_properties(taskflow_test_tmp PROPERTIES OUTPUT_NAME "taskflow")
 add_test(builder          ${TF_UTEST_DIR}/taskflow -tc=Taskflow.Builder)
 add_test(dispatch         ${TF_UTEST_DIR}/taskflow -tc=Taskflow.Dispatch)
 add_test(parallel_for     ${TF_UTEST_DIR}/taskflow -tc=Taskflow.ParallelFor)

@@ -1,17 +1,37 @@
-// 2018/09/17 modified by Tsung-Wei Huang
+// 2018/09/19 modified by Tsung-Wei Huang
 //   - added binary_tree benchmark
 //   - added modulo_insertions benchmark
+//   - refactored benchmark calls
 //
 // 2018/08/31 contributed by Guannan
 //
 // Examples to test different threadpool implementations:
 //   - SimpleThreadpool
 //   - ProactiveThreadpool
+//   - SpeculativeThreadpool
+//   - PrivatizedThreadpool
 
 #include <taskflow/threadpool/threadpool.hpp>
 #include <chrono>
 #include <random>
+#include <numeric>
 #include <climits>
+
+// Procedure: benchmark
+#define BENCHMARK(TITLE, F)                                 \
+  std::cout << "========== " << TITLE << " ==========\n";   \
+                                                            \
+  std::cout << "simple threadpool elapsed time     : "      \
+            << F<tf::SimpleThreadpool>() << " ms\n";        \
+                                                            \
+  std::cout << "proactive threadpool elapsed time  : "      \
+            << F<tf::ProactiveThreadpool>() << " ms\n";     \
+                                                            \
+  std::cout << "speculative threadpool elapsed time: "      \
+            << F<tf::SpeculativeThreadpool>() << " ms\n";   \
+                                                            \
+  std::cout << "privatized threadpool elapsed time : "      \
+            << F<tf::PrivatizedThreadpool>() << " ms\n";    \
 
 // ============================================================================
 // Divide and conquer to solve max subarray sum problem
@@ -87,7 +107,10 @@ void max_subsum(
 } 
 
 template<typename T>
-auto subsum(const std::vector<int>& vec){
+auto subsum(){
+  
+  std::vector<int> vec(total_nodes);
+  std::iota(vec.begin(), vec.end(), -50);
 
   std::atomic<int> result {INT_MIN};
   std::atomic<size_t> counter{0};
@@ -101,28 +124,6 @@ auto subsum(const std::vector<int>& vec){
   auto end = std::chrono::high_resolution_clock::now();
   auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   return elapsed.count();
-}
-
-// Procedure: benchmark_divide_and_conquer
-void benchmark_divide_and_conquer(){
-
-  std::vector<int> vec(total_nodes, 0);
-  auto gen = [] () {return ::rand()%(100) + 50;};
-  std::generate(std::begin(vec), std::end(vec), gen);
-
-  std::cout << "==== Divide and Conquer ====\n";
-  
-  std::cout << "Privatized threadpool elapsed time : " 
-            << subsum<tf::PrivatizedThreadpool>(vec) << " ms\n";
-  
-  std::cout << "Speculative threadpool elapsed time: " 
-            << subsum<tf::SpeculativeThreadpool>(vec) << " ms\n";
-
-  std::cout << "Proactive threadpool elapsed time  : " 
-            << subsum<tf::ProactiveThreadpool>(vec) << " ms\n";
-
-  std::cout << "Simple threadpool elapsed time     : " 
-            << subsum<tf::SimpleThreadpool>(vec) << " ms\n";
 }
 
 // ============================================================================
@@ -164,24 +165,6 @@ auto binary_tree() {
   auto end = std::chrono::high_resolution_clock::now();
 
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
-}
-
-// Procedure: benchmark_binary_tree
-void benchmark_binary_tree() {
-
-  std::cout << "==== Binary Tree ====\n";
-  
-  std::cout << "Privatized threadpool elapsed time : " 
-            << binary_tree<tf::PrivatizedThreadpool>() << " ms\n";
-
-  std::cout << "Speculative threadpool elapsed time: " 
-            << binary_tree<tf::SpeculativeThreadpool>() << " ms\n";
-
-  std::cout << "Proactive threadpool elapsed time  : " 
-            << binary_tree<tf::ProactiveThreadpool>() << " ms\n";
-
-  std::cout << "Simple threadpool elapsed time     : " 
-            << binary_tree<tf::SimpleThreadpool>() << " ms\n";
 }
 
 // ============================================================================
@@ -227,24 +210,6 @@ auto modulo_insertions() {
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
 }
 
-// Procedure: benchmark_modulo_insertions
-void benchmark_modulo_insertions() {
-
-  std::cout << "==== Modulo Insertions ====\n";
-  
-  std::cout << "Privatized threadpool elapsed time : " 
-            << modulo_insertions<tf::PrivatizedThreadpool>() << " ms\n";
-
-  std::cout << "Speculative threadpool elapsed time: " 
-            << modulo_insertions<tf::SpeculativeThreadpool>() << " ms\n";
-
-  std::cout << "Proactive threadpool elapsed time  : " 
-            << modulo_insertions<tf::ProactiveThreadpool>() << " ms\n";
-
-  std::cout << "Simple threadpool elapsed time     : " 
-            << modulo_insertions<tf::SimpleThreadpool>() << " ms\n";
-}
-
 // ============================================================================
 // Dynamic tasking through linear insertions
 // ============================================================================
@@ -260,7 +225,7 @@ auto linear_insertions() {
   
   T threadpool(num_threads);
 
-  std::atomic<size_t> sum {0};
+  std::atomic<int> sum {0};
 
   std::function<void(int)> insert;
   std::promise<int> promise;
@@ -273,7 +238,7 @@ auto linear_insertions() {
       });
     }
     else {
-      if(auto s = ++sum; s == threadpool.num_workers()) {
+      if(size_t s = ++sum; s == threadpool.num_workers()) {
         promise.set_value(1);
       }
     }
@@ -293,24 +258,6 @@ auto linear_insertions() {
   auto end = std::chrono::high_resolution_clock::now();
 
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
-}
-
-// Procedure: benchmark_linear_insertions
-void benchmark_linear_insertions() {
-
-  std::cout << "==== Linear Insertions ====\n";
-  
-  std::cout << "Privatized threadpool elapsed time : " 
-            << linear_insertions<tf::PrivatizedThreadpool>() << " ms\n";
-
-  std::cout << "Speculative threadpool elapsed time: " 
-            << linear_insertions<tf::SpeculativeThreadpool>() << " ms\n";
-
-  std::cout << "Proactive threadpool elapsed time  : " 
-            << linear_insertions<tf::ProactiveThreadpool>() << " ms\n";
-
-  std::cout << "Simple threadpool elapsed time     : " 
-            << linear_insertions<tf::SimpleThreadpool>() << " ms\n";
 }
 
 // ============================================================================
@@ -337,24 +284,6 @@ auto empty_jobs() {
   auto end = std::chrono::high_resolution_clock::now();
 
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
-}
-
-// Procedure: benchmark_empty_jobs
-void benchmark_empty_jobs() {
-
-  std::cout << "==== Empty Jobs ====\n";
-  
-  std::cout << "Privatized threadpool elapsed time : " 
-            << empty_jobs<tf::PrivatizedThreadpool>() << " ms\n";
-  
-  std::cout << "Speculative threadpool elapsed time: " 
-            << empty_jobs<tf::SpeculativeThreadpool>() << " ms\n";
-
-  std::cout << "Proactive threadpool elapsed time  : " 
-            << empty_jobs<tf::ProactiveThreadpool>() << " ms\n";
-
-  std::cout << "Simple threadpool elapsed time     : " 
-            << empty_jobs<tf::SimpleThreadpool>() << " ms\n";
 }
 
 // ============================================================================
@@ -385,35 +314,17 @@ auto atomic_add() {
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
 }
 
-// Procedure: benchmark_atomic_add
-void benchmark_atomic_add() {
-
-  std::cout << "==== Atomic Add ====\n";
-  
-  std::cout << "Privatized threadpool elapsed time : " 
-            << atomic_add<tf::PrivatizedThreadpool>() << " ms\n";
-  
-  std::cout << "Speculative threadpool elapsed time: " 
-            << atomic_add<tf::SpeculativeThreadpool>() << " ms\n";
-
-  std::cout << "Proactive threadpool elapsed time  : " 
-            << atomic_add<tf::ProactiveThreadpool>() << " ms\n";
-
-  std::cout << "Simple threadpool elapsed time     : " 
-            << atomic_add<tf::SimpleThreadpool>() << " ms\n";
-}
-
 // ----------------------------------------------------------------------------
 
 // Function: main
 int main(int argc, char* argv[]) {
 
-  benchmark_empty_jobs();
-  benchmark_atomic_add();
-  benchmark_linear_insertions();
-  benchmark_modulo_insertions();
-  benchmark_binary_tree();
-  benchmark_divide_and_conquer();
+  BENCHMARK("Atomic Add", atomic_add);
+  BENCHMARK("Empty Jobs", empty_jobs);
+  BENCHMARK("Linear Insertions", linear_insertions);
+  BENCHMARK("Modulo Insertions", modulo_insertions);
+  BENCHMARK("Binary Tree", binary_tree);
+  BENCHMARK("Divide and Conquer", subsum);
   
   return 0;
 }
