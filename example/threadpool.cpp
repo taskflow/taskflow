@@ -21,16 +21,16 @@
 #define BENCHMARK(TITLE, F)                                 \
   std::cout << "========== " << TITLE << " ==========\n";   \
                                                             \
-  std::cout << "simple threadpool elapsed time     : "      \
+  std::cout << "Threadpool [simple     ] elapsed time: "    \
             << F<tf::SimpleThreadpool>() << " ms\n";        \
                                                             \
-  std::cout << "proactive threadpool elapsed time  : "      \
+  std::cout << "Threadpool [proactive  ] elapsed time: "    \
             << F<tf::ProactiveThreadpool>() << " ms\n";     \
                                                             \
-  std::cout << "speculative threadpool elapsed time: "      \
+  std::cout << "Threadpool [speculative] elapsed time: "    \
             << F<tf::SpeculativeThreadpool>() << " ms\n";   \
                                                             \
-  std::cout << "privatized threadpool elapsed time : "      \
+  std::cout << "Threadpool [privatized ] elapsed time: "    \
             << F<tf::PrivatizedThreadpool>() << " ms\n";    \
 
 // ============================================================================
