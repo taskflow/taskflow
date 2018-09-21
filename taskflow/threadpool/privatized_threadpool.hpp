@@ -29,6 +29,8 @@
 
 namespace tf {
 
+// ---------------------------------------------------------------------------- 
+
 template <typename T, unsigned N>
 class RunQueue {
 
@@ -203,7 +205,7 @@ bool RunQueue<T, N>::empty() const {
 }
 
 // Class: BasicPrivatizedThreadpool
-/*template < template<typename...> class Func >
+template < template<typename...> class Func >
 class BasicPrivatizedThreadpool {
 
   using TaskType = Func<void()>;
@@ -236,34 +238,28 @@ class BasicPrivatizedThreadpool {
 
   private:
 
+    const std::thread::id _owner {std::this_thread::get_id()};
+
     mutable std::mutex _mutex;
 
     std::condition_variable _empty_cv;
 
     std::deque<TaskType> _task_queue;
-    std::vector<std::thread> _threads;
 
-    // TODO: do we need atomic variable here?
-    std::atomic<size_t> _idle_workers {0}; 
+    std::vector<std::thread> _threads;
+    std::vector<std::unique_ptr<Worker>> _workers;
+    std::vector<size_t> _coprimes;
+
+    size_t _num_idlers {0}; 
+    size_t _next_queue {0};
 
     std::unordered_map<std::thread::id, size_t> _worker_maps;    
     
-    const std::thread::id _owner {std::this_thread::get_id()};
-
     bool _exiting      {false};
     bool _wait_for_all {false};
 
-    std::vector<std::unique_ptr<Worker>> _works;
-
-    // TODO: can we just use some hacky method to replace atomic
-    // or make it relaxed
-    std::atomic<size_t> _next_queue {0};
-
     size_t _nonempty_worker_queue() const;
 
-    bool _sync {false};
-
-    std::vector<size_t> _coprimes;
     void _xorshift32(uint32_t&);
     bool _steal(TaskType&, uint32_t&);
 
@@ -273,12 +269,12 @@ class BasicPrivatizedThreadpool {
 // Function: _nonempty_worker_queue
 template < template<typename...> class Func >
 size_t BasicPrivatizedThreadpool<Func>::_nonempty_worker_queue() const {
-  for(size_t i=0;i <_works.size(); ++i){
-    if(!_works[i]->queue.empty()){
+  for(size_t i=0;i <_workers.size(); ++i){
+    if(!_workers[i]->queue.empty()){
       return i;
     }
   }
-  return _works.size();
+  return _workers.size();
 }
 
 // Function: _xorshift32
@@ -299,7 +295,7 @@ bool BasicPrivatizedThreadpool<Func>::_steal(TaskType& w, uint32_t& dice){
   const auto queue_num = num_workers();
   auto victim = dice % queue_num;
   for(size_t i=0; i<queue_num; i++){
-    if(_works[victim]->queue.pop_back(w)){
+    if(_workers[victim]->queue.pop_back(w)){
       return true;
     }
     victim += inc;
@@ -359,18 +355,17 @@ void BasicPrivatizedThreadpool<Func>::shutdown(){
     _wait_for_all = true;
 
     // Wake up all workers in case they are already idle
-    for(const auto& w : _works){
+    for(const auto& w : _workers){
       w->cv.notify_one();
     }
 
-    //while(_idle_workers != num_workers()) {
-    while(!_sync){
+    //while(_num_idlers != num_workers()) {
+    while(_wait_for_all){
       _empty_cv.wait(lock);
     }
-    _sync = false;
     _exiting = true;
 
-    for(auto& w : _works){
+    for(auto& w : _workers){
       // TODO: can we replace this dummy task with state?
       w->queue.push_back([](){});
       w->cv.notify_one();
@@ -382,7 +377,7 @@ void BasicPrivatizedThreadpool<Func>::shutdown(){
   } 
   _threads.clear();  
 
-  _works.clear();
+  _workers.clear();
   _worker_maps.clear();
   
   _wait_for_all = false;
@@ -421,53 +416,53 @@ void BasicPrivatizedThreadpool<Func>::spawn(unsigned N) {
   }
 
   for(size_t i=0; i<N; ++i){
-    _works.push_back(std::make_unique<Worker>());
+    _workers.push_back(std::make_unique<Worker>());
   }
 
   for(size_t i=0; i<N; ++i){
     _threads.emplace_back([this, i=i+sz]() -> void {
 
       TaskType t {nullptr};
-      Worker& w = *(_works[i]);
+      Worker& w = *(_workers[i]);
       uint32_t dice = i+1;
       std::unique_lock<std::mutex> lock(_mutex);
 
       while(!_exiting){
 
         if(!w.queue.pop_front(t)){
-          if(_steal(t, dice)){}
+          if(_steal(t, dice)) {
+          }
           else if(!_task_queue.empty()) {
             t = std::move(_task_queue.front());
             _task_queue.pop_front();
           } 
           else {
-            // TODO: do we need another while loop here?
-            //while(!w.queue.pop_front(t) && _task_queue.empty()){
-              if(++_idle_workers == num_workers() && _wait_for_all){
-                // Last active thread checks if all queues are empty
-                if(auto ret = _nonempty_worker_queue(); ret == num_workers()){
-                  // TODO: here only one thread will do so
-                  _sync = true;
-                  _empty_cv.notify_one();
+            if(++_num_idlers == num_workers() && _wait_for_all){
+              // Last active thread checks if all queues are empty
+              if(auto ret = _nonempty_worker_queue(); ret == num_workers()){
+                _wait_for_all = false;
+                _empty_cv.notify_one();
+              }
+              else{
+                if(ret == i){
+                  --_num_idlers;
+                  continue;
                 }
-                else{
-                  if(ret == i){
-                    -- _idle_workers;
-                    continue;
-                  }
-                  _works[ret]->cv.notify_one();
-                }
-              } 
-              w.cv.wait(lock);
-              --_idle_workers;
-            //}
+                _workers[ret]->cv.notify_one();
+              }
+            } 
+            w.cv.wait(lock);
+            --_num_idlers;
           }
         } // End of first if
 
         if(t){
           _mutex.unlock();
-          t();
-          t = nullptr;
+          // speculation
+          do {
+            t();
+            t = nullptr;
+          } while(w.queue.pop_front(t));
           _mutex.lock();
         }
       } // End of while ------------------------------------------------------
@@ -535,7 +530,7 @@ void BasicPrivatizedThreadpool<Func>::silent_async(C&& c){
   if(std::this_thread::get_id() != _owner){
     auto tid = std::this_thread::get_id();
     if(_worker_maps.find(tid) != _worker_maps.end()){
-      if(!_works[_worker_maps.at(tid)]->queue.push_front(t)){
+      if(!_workers[_worker_maps.at(tid)]->queue.push_front(t)){
         std::scoped_lock<std::mutex> lock(_mutex);       
         _task_queue.push_back(std::move(t));
       }
@@ -545,14 +540,14 @@ void BasicPrivatizedThreadpool<Func>::silent_async(C&& c){
 
   // owner thread or other threads
   // TODO: use random for load balancing?
-  auto id = (++_next_queue)%_works.size();
-  if(!_works[id]->queue.push_back(t)){
+  auto id = (++_next_queue)%_workers.size();
+  if(!_workers[id]->queue.push_back(t)){
     std::scoped_lock<std::mutex> lock(_mutex);
     _task_queue.push_back(std::move(t));
   }
 
   // Make sure at least one worker will handle the task
-  _works[id]->cv.notify_one();
+  _workers[id]->cv.notify_one();
 }
 
 
@@ -567,23 +562,20 @@ void BasicPrivatizedThreadpool<Func>::wait_for_all() {
   if(num_workers() == 0) return ;
 
   std::unique_lock<std::mutex> lock(_mutex);
+
   _wait_for_all = true;
+
   // Wake up all workers in case they are already idle
-  for(const auto& w : _works){
+  for(const auto& w : _workers){
     w->cv.notify_one();
   }
   
-  // TODO: can we use a single wait_for_all?
-  while(!_sync){
+  while(_wait_for_all) {
     _empty_cv.wait(lock);
   }
+} 
 
-  _sync = false;
-  _wait_for_all = false;
-} */
-
-
-  
+/*  
 template < template<typename...> class Func >
 class BasicPrivatizedThreadpool {
 
@@ -638,7 +630,7 @@ class BasicPrivatizedThreadpool {
     // TODO: do we need atomic variable here?
     std::atomic<bool> _allow_steal {true};
 
-    size_t _idle_workers {0};
+    size_t _num_idlers {0};
     size_t _next_queue {0};
     
     bool _wait_for_all {false};
@@ -648,8 +640,6 @@ class BasicPrivatizedThreadpool {
 
     void _xorshift32(uint32_t&);
     bool _steal(TaskType&, uint32_t&);
-
-
 
 };  // class BasicPrivatizedThreadpool. --------------------------------------
 
@@ -678,19 +668,37 @@ void BasicPrivatizedThreadpool<Func>::_xorshift32(uint32_t& x){
 // Function: _steal
 template < template<typename...> class Func >
 bool BasicPrivatizedThreadpool<Func>::_steal(TaskType& w, uint32_t& dice){
+
   _xorshift32(dice);
   const auto inc = _coprimes[dice % _coprimes.size()];
   const auto queue_num = _workers.size();
   auto victim = dice % queue_num;
+  //for(size_t i=0; i<queue_num; i++){
+  //  if(_workers[victim]->queue.pop_back(w)){
+  //    return true;
+  //  }
+  //  victim += inc;
+  //  if(victim >= queue_num){
+  //    victim -= queue_num;
+  //  }
+  //}
+  //return false;
+
+  static std::atomic_flag locked {ATOMIC_FLAG_INIT};
+  while (locked.test_and_set(std::memory_order_acquire));
+
   for(size_t i=0; i<queue_num; i++){
     if(_workers[victim]->queue.pop_back(w)){
+      locked.clear(std::memory_order_release);                                                                                         
       return true;
-    }
-    victim += inc;
+    }    
+    victim += inc; 
     if(victim >= queue_num){
       victim -= queue_num;
-    }
+    }    
   }
+
+  locked.clear(std::memory_order_release);
   return false;
 }
 
@@ -742,7 +750,7 @@ void BasicPrivatizedThreadpool<Func>::shutdown(){
     std::unique_lock<std::mutex> lock(_mutex);
     // If all workers are idle && all queues are empty, then master
     // can directly wake up workers without waiting for notified
-    if(_idle_workers != num_workers() || _nonempty_worker_queue().has_value()){
+    if(_num_idlers != num_workers() || _nonempty_worker_queue().has_value()){
       _wait_for_all = true;
 
       // Wake up all workers in case their queues are not empty
@@ -767,7 +775,6 @@ void BasicPrivatizedThreadpool<Func>::shutdown(){
   } 
 
   _threads.clear();  
-
   _workers.clear();
   _worker_maps.clear();
 }
@@ -821,12 +828,12 @@ void BasicPrivatizedThreadpool<Func>::spawn(unsigned N) {
               _task_queue.pop_front();
             }
             else{
-              if(++_idle_workers == num_workers()){
+              if(++_num_idlers == num_workers()){
                 // Last active thread checks if all queues are empty
                 if(auto ret = _nonempty_worker_queue(); ret.has_value()){
                   // if the nonempty queue is mine, continue to process tasks in queue
                   if(*ret == i){
-                    --_idle_workers;
+                    --_num_idlers;
                     lock.unlock();
                     continue;
                   }
@@ -847,7 +854,7 @@ void BasicPrivatizedThreadpool<Func>::spawn(unsigned N) {
               while(w.state == Worker::ALIVE && w.queue.empty()){
                 w.cv.wait(lock);
               }
-              --_idle_workers;
+              --_num_idlers;
             } 
             lock.unlock();
           } // End of Steal
@@ -862,6 +869,7 @@ void BasicPrivatizedThreadpool<Func>::spawn(unsigned N) {
 
     _worker_maps.insert({_threads.back().get_id(), i+sz});
   } // End of For ---------------------------------------------------------------------------------
+
   _allow_steal = true;
 }
 
@@ -959,7 +967,7 @@ void BasicPrivatizedThreadpool<Func>::wait_for_all() {
   std::unique_lock lock(_mutex);
   // If all workers are idle && all queues are empty, 
   // then wait_for_all is done.
-  if(_idle_workers == num_workers() && !_nonempty_worker_queue()){
+  if(_num_idlers == num_workers() && !_nonempty_worker_queue()){
     return ;
   }
 
@@ -973,7 +981,7 @@ void BasicPrivatizedThreadpool<Func>::wait_for_all() {
     _empty_cv.wait(lock);
   }
 }
-
+*/
 
 };  // namespace tf -----------------------------------------------------------
 
