@@ -1020,7 +1020,7 @@ void BasicPrivatizedThreadpool<Func>::silent_async(C&& c){
     return;
   }
 
-  if(auto tid = std::this_thread::get_id(); tid != _master){
+  if(auto tid = std::this_thread::get_id(); tid != _owner){
     if(auto itr = _worker_map.find(tid); itr != _worker_map.end()){
       if(!_workers[itr->second]->queue.push_front(t)){
         std::scoped_lock<std::mutex> lock(_mutex);       
