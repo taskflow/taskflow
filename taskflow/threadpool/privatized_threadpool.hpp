@@ -21,6 +21,7 @@
 #include <condition_variable>
 #include <memory>
 #include <future>
+#include <optional>
 #include <unordered_set>
 #include <unordered_map>
 
