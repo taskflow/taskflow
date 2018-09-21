@@ -610,7 +610,7 @@ std::cout << "all topologies complete" << '\n';
 
 ## Task API
 
-Each `tf::Taskflow::Task` object is a lightweight handle for you to create dependencies in its associated graph. 
+Each task object is a lightweight handle for you to create dependencies in its associated graph. 
 The table below summarizes its methods.
 
 | Method         | Argument    | Return | Description |

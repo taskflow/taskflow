@@ -1,4 +1,4 @@
-// 2018/09/18 - created by Tsung-Wei Huang
+// 2018/09/19 - created by Tsung-Wei Huang
 //
 // This program is used to benchmark the taskflow under different types 
 // of workloads.
@@ -30,6 +30,57 @@ using tf_privatized_t  = tf::BasicTaskflow<std::function, tf::PrivatizedThreadpo
             << F<tf_privatized_t>() << " ms\n";                         \
 
 // ============================================================================
+// Dynamic Stem
+// ============================================================================
+
+// Function: dynamic_stem
+template <typename T>
+auto dynamic_stem() {
+  
+  auto beg = std::chrono::high_resolution_clock::now();
+  
+  const int L = 1024;
+
+  std::atomic<size_t> sum {0};
+
+  T tf;
+
+  std::optional<tf::Task> prev;
+
+  for(int l=0; l<L; ++l) {
+    auto curr = tf.silent_emplace([&, l] (auto& subflow) {
+      sum.fetch_add(1, std::memory_order_relaxed);
+      std::optional<tf::Task> p;
+      for(int k=0; k<L; k++) {
+        auto c = subflow.silent_emplace([&] () {
+          sum.fetch_add(1, std::memory_order_relaxed);
+        });
+        if(p) {
+          p->precede(c);
+        }
+        p = c;
+      }
+      if(l & 1) {
+        subflow.detach();
+      }
+    });
+
+    if(prev) {
+      prev->precede(curr);
+    }
+    prev = curr;
+  }
+
+  tf.wait_for_all();
+
+  assert(sum == L*(L+1));
+
+  auto end = std::chrono::high_resolution_clock::now();
+
+  return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
+}
+
+// ============================================================================
 // Map-Reduce
 // ============================================================================
 
@@ -46,7 +97,7 @@ auto map_reduce() {
 
   T tf;
 
-  std::optional<typename T::TaskType> prev;
+  std::optional<typename T::Task> prev;
 
   for(int i=0; i<num_batches; ++i) {
     
@@ -87,7 +138,7 @@ auto level_graph() {
 
   T tf;
 
-  std::vector< std::vector<typename T::TaskType> > tasks;
+  std::vector< std::vector<typename T::Task> > tasks;
 
   tasks.resize(num_levels);
   for(int l=0; l<num_levels; ++l) {
@@ -132,7 +183,7 @@ auto linear_graph() {
 
   T tf;
 
-  std::vector<typename T::TaskType> tasks;
+  std::vector<typename T::Task> tasks;
 
   for(int i=0; i<num_nodes; ++i) {
     tasks.push_back(tf.silent_emplace([&] () { ++sum; }));
@@ -163,9 +214,9 @@ auto binary_tree() {
   T tf;
   
   std::atomic<size_t> sum {0};
-  std::function<void(int, typename T::TaskType)> insert;
+  std::function<void(int, typename T::Task)> insert;
   
-  insert = [&] (int l, typename T::TaskType parent) {
+  insert = [&] (int l, typename T::Task parent) {
 
     if(l < num_levels) {
 
@@ -257,13 +308,14 @@ auto atomic_add() {
 
 // Function: main
 int main(int argc, char* argv[]) {
-  
+
   BENCHMARK("Empty Jobs", empty_jobs);
   BENCHMARK("Atomic Add", atomic_add);
   BENCHMARK("Binary Tree", binary_tree);
   BENCHMARK("Linear Graph", linear_graph);
   BENCHMARK("Level Graph", level_graph);
   BENCHMARK("Map Reduce", map_reduce);
+  BENCHMARK("Dynamic Stem", dynamic_stem);
   
   return 0;
 }

@@ -72,7 +72,7 @@ class BasicSpeculativeThreadpool {
     bool _exiting      {false};
     bool _wait_for_all {false};
 
-    std::vector<std::unique_ptr<Worker>> _works;
+    std::vector<std::unique_ptr<Worker>> _workers;
 
     auto _this_worker() const;
 
@@ -148,7 +148,7 @@ void BasicSpeculativeThreadpool<Func>::shutdown(){
   } 
   _threads.clear();  
 
-  _works.clear();
+  _workers.clear();
   _worker_maps.clear();
   
   _wait_for_all = false;
@@ -175,7 +175,7 @@ void BasicSpeculativeThreadpool<Func>::spawn(unsigned N) {
   }
 
   for(size_t i=0; i<N; ++i){
-    _works.push_back(std::make_unique<Worker>());
+    _workers.push_back(std::make_unique<Worker>());
   }
   
   const size_t sz = _threads.size();
@@ -188,7 +188,7 @@ void BasicSpeculativeThreadpool<Func>::spawn(unsigned N) {
     _threads.emplace_back([this, i=i+sz]() -> void {
 
        TaskType t {nullptr};
-       Worker& w = *(_works[i]);
+       Worker& w = *(_workers[i]);
 
        std::unique_lock<std::mutex> lock(_mutex);
 
@@ -224,7 +224,7 @@ void BasicSpeculativeThreadpool<Func>::spawn(unsigned N) {
        } // End of while ------------------------------------------------------
     });     
 
-    _worker_maps.insert({_threads.back().get_id(), _works[i+sz].get()});
+    _worker_maps.insert({_threads.back().get_id(), _workers[i+sz].get()});
   } // End of For ---------------------------------------------------------------------------------
 
 }

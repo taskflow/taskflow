@@ -394,7 +394,7 @@ void BasicPrivatizedThreadpool<Func>::shutdown(){
 template < template<typename...> class Func >
 void BasicPrivatizedThreadpool<Func>::spawn(unsigned N) {
 
-  if(! is_owner()){
+  if(!is_owner()){
     throw std::runtime_error("Worker thread cannot spawn threads");
   }
 
@@ -429,74 +429,15 @@ void BasicPrivatizedThreadpool<Func>::spawn(unsigned N) {
 
       while(!_exiting){
 
-        //// TODO: assume exisint is atomic variable and defer lock
-        //if(!w.queue.pop_front(t)) {
-        //  if(!_steal(t, dice)) {
-        //    lock.lock();
-        //    // ... as follows...
-        //    lock.unlock();
-        //  }
-        //}
-
-
-        /*// TODO:
-        lock.unlock();
-        
-        // step 1: check my own queue
-        if(!w.queue.pop_front(t)) {
-          if(!_steal(t, dice)) {
-            lock.lock();
-            if(_task_queue.empty()) {
-              // Idle worker does not imply its queue is empty.
-              if(++_idle_workers == num_workers() && _wait_for_all) {
-                // Last active thread checks if all queues are empty
-                // TODO: optional
-                if(auto ret = _nonempty_queue(); ret == num_workers()){
-                  // TODO: here only one thread will do so
-                  _sync = true;
-                  _empty_cv.notify_one();
-                }
-                else{
-                  // if the nonempty queue is myself
-                  if(ret == i){
-                    --_idle_workers;
-                    continue;
-                  }
-                  _works[ret]->cv.notify_one();
-                }
-              } 
-              w.cv.wait(lock);
-              --_idle_workers;
-            }
-            else {
-              t = std::move(_task_queue.front());
-              _task_queue.pop_front();
-            }
-            lock.unlock();
-          }
-        }
-        
-        if(t) {
-          t();
-          t = nullptr;
-        }
-        lock.lock();
-
-
-        // end of TODO 
-        */
-
-
         if(!w.queue.pop_front(t)){
           if(_steal(t, dice)){}
           else if(!_task_queue.empty()) {
-          //if(!_task_queue.empty()){
             t = std::move(_task_queue.front());
             _task_queue.pop_front();
           } 
           else {
             // TODO: do we need another while loop here?
-            while(!w.queue.pop_front(t) && _task_queue.empty()){
+            //while(!w.queue.pop_front(t) && _task_queue.empty()){
               if(++_idle_workers == num_workers() && _wait_for_all){
                 // Last active thread checks if all queues are empty
                 if(auto ret = _nonempty_queue(); ret == num_workers()){
@@ -514,7 +455,7 @@ void BasicPrivatizedThreadpool<Func>::spawn(unsigned N) {
               } 
               w.cv.wait(lock);
               --_idle_workers;
-            }
+            //}
           }
         } // End of first if
 
@@ -562,26 +503,6 @@ auto BasicPrivatizedThreadpool<Func>::async(C&& c){
           p.get().set_value(); 
         }
       );
-      //std::scoped_lock<std::mutex> lock(_mutex);     
-      //if(_idle_workers.empty()){
-      //  _task_queue.emplace_back(
-      //    [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
-      //      c();
-      //      p.get().set_value(); 
-      //    }
-      //  );
-      //}
-      //// Got an idle work
-      //else{
-      //  Worker* w = _idle_workers.back();
-      //  _idle_workers.pop_back();
-      //  w->ready = true;
-      //  w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
-      //    c();
-      //    p.get().set_value(); 
-      //  };
-      //  w->cv.notify_one(); 
-      //}
     }
     else{
       silent_async( 
@@ -589,23 +510,6 @@ auto BasicPrivatizedThreadpool<Func>::async(C&& c){
           p.get().set_value(c()); 
         }
       );
-      //std::scoped_lock<std::mutex> lock(_mutex);     
-      //if(_idle_workers.empty()){
-      //  _task_queue.emplace_back(
-      //    [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
-      //      p.get().set_value(c());
-      //    }
-      //  );
-      //}
-      //else{
-      //  Worker* w = _idle_workers.back();
-      //  _idle_workers.pop_back();
-      //  w->ready = true;
-      //  w->task = [p = MoC(std::move(p)), c = std::forward<C>(c)]() mutable {
-      //    p.get().set_value(c()); 
-      //  };
-      //  w->cv.notify_one(); 
-      //}
     }
   }
   return fu;
