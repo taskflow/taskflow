@@ -677,6 +677,7 @@ void BasicPrivatizedThreadpool<Func>::wait_for_all() {
   
 /* A different implementation
 
+
 template < template<typename...> class Func >
 class BasicPrivatizedThreadpool {
 
@@ -1036,13 +1037,12 @@ void BasicPrivatizedThreadpool<Func>::silent_async(C&& c){
   if(!_workers[id]->queue.push_back(t)){
     std::scoped_lock<std::mutex> lock(_mutex);
     _task_queue.push_back(std::move(t));
-    _workers[id]->cv.notify_one();
   }
   else{
     // Lock to make sure the worker will be notified
     std::scoped_lock<std::mutex> lock(_mutex);
-    _workers[id]->cv.notify_one();
   }
+  _workers[id]->cv.notify_one();
 }
 
 
@@ -1073,6 +1073,7 @@ void BasicPrivatizedThreadpool<Func>::wait_for_all() {
     _empty_cv.wait(lock);
   }
 }
+
 */ 
   
 
