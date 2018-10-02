@@ -8,25 +8,25 @@
 #include <random>
 #include <climits>
   
-using tf_simple_t      = tf::BasicTaskflow<std::function, tf::SimpleThreadpool>;
-using tf_proactive_t   = tf::BasicTaskflow<std::function, tf::ProactiveThreadpool>;
-using tf_speculative_t = tf::BasicTaskflow<std::function, tf::SpeculativeThreadpool>;
-using tf_privatized_t  = tf::BasicTaskflow<std::function, tf::PrivatizedThreadpool>;
+using tf_simple_t      = tf::BasicTaskflow<tf::SimpleThreadpool>;
+using tf_proactive_t   = tf::BasicTaskflow<tf::ProactiveThreadpool>;
+using tf_speculative_t = tf::BasicTaskflow<tf::SpeculativeThreadpool>;
+using tf_privatized_t  = tf::BasicTaskflow<tf::PrivatizedThreadpool>;
 
 // Procedure: benchmark
 #define BENCHMARK(TITLE, F)                                             \
   std::cout << "========== " << TITLE << " ==========\n";               \
                                                                         \
-  std::cout << "Taskflow [simple      + std::func] elapsed time: "      \
+  std::cout << "Taskflow [simple     ] elapsed time: "      \
             << F<tf_simple_t>() << " ms\n";                             \
                                                                         \
-  std::cout << "Taskflow [proactive   + std::func] elapsed time: "      \
+  std::cout << "Taskflow [proactive  ] elapsed time: "      \
             << F<tf_proactive_t>() << " ms\n";                          \
                                                                         \
-  std::cout << "Taskflow [speculative + std::func] elapsed time: "      \
+  std::cout << "Taskflow [speculative] elapsed time: "      \
             << F<tf_speculative_t>() << " ms\n";                        \
                                                                         \
-  std::cout << "Taskflow [privatized  + std::func] elapsed time: "      \
+  std::cout << "Taskflow [privatized ] elapsed time: "      \
             << F<tf_privatized_t>() << " ms\n";                         \
 
 // ============================================================================
@@ -97,7 +97,7 @@ auto map_reduce() {
 
   T tf;
 
-  std::optional<typename T::Task> prev;
+  std::optional<tf::Task> prev;
 
   for(int i=0; i<num_batches; ++i) {
     
@@ -138,7 +138,7 @@ auto level_graph() {
 
   T tf;
 
-  std::vector< std::vector<typename T::Task> > tasks;
+  std::vector< std::vector<tf::Task> > tasks;
 
   tasks.resize(num_levels);
   for(int l=0; l<num_levels; ++l) {
@@ -183,7 +183,7 @@ auto linear_graph() {
 
   T tf;
 
-  std::vector<typename T::Task> tasks;
+  std::vector<tf::Task> tasks;
 
   for(int i=0; i<num_nodes; ++i) {
     tasks.push_back(tf.silent_emplace([&] () { ++sum; }));
@@ -214,9 +214,9 @@ auto binary_tree() {
   T tf;
   
   std::atomic<size_t> sum {0};
-  std::function<void(int, typename T::Task)> insert;
+  std::function<void(int, tf::Task)> insert;
   
-  insert = [&] (int l, typename T::Task parent) {
+  insert = [&] (int l, tf::Task parent) {
 
     if(l < num_levels) {
 

@@ -316,8 +316,43 @@ auto atomic_add() {
 
 // ----------------------------------------------------------------------------
 
+struct Work {
+  
+  Work() {
+  }
+
+  Work(std::atomic<int>& in) : ptr {&in} {
+  }
+
+  std::atomic<int>* ptr {nullptr};
+
+  void operator () () {
+    ptr->fetch_add(1, std::memory_order_relaxed);
+  }
+};
+
+void test_work() {
+  
+  const int num_threads = std::thread::hardware_concurrency();
+  const int num_tasks = 1000000;
+  
+  std::atomic<int> counter(0);
+  auto beg = std::chrono::high_resolution_clock::now();
+  
+  tf::SimpleThreadpool2<Work> threadpool(num_threads);
+  for(size_t i=0; i<num_tasks; i++){
+    threadpool.emplace(counter); 
+  }
+
+  auto end = std::chrono::high_resolution_clock::now();
+  std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count() 
+            << " ms... " << counter << '\n';
+}
+
 // Function: main
 int main(int argc, char* argv[]) {
+
+  test_work();
 
   BENCHMARK("Atomic Add", atomic_add);
   BENCHMARK("Empty Jobs", empty_jobs);
@@ -325,6 +360,8 @@ int main(int argc, char* argv[]) {
   BENCHMARK("Modulo Insertions", modulo_insertions);
   BENCHMARK("Binary Tree", binary_tree);
   BENCHMARK("Divide and Conquer", subsum);
+
+
   
   return 0;
 }
