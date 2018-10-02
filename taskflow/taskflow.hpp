@@ -139,8 +139,6 @@ class Topology;
 class Task;
 class FlowBuilder;
 class SubflowBuilder;
-
-template <typename Threadpool>
 class BasicTaskflow;
     
 using Graph = std::forward_list<Node>;
@@ -152,8 +150,7 @@ class Node {
 
   friend class Task;
   friend class Topology;
-
-  template <typename Executor> friend class BasicTaskflow;
+  friend class BasicTaskflow;
 
   using StaticWork   = std::function<void()>;
   using DynamicWork  = std::function<void(SubflowBuilder&)>;
@@ -274,7 +271,7 @@ inline void Node::_dump(std::ostream& os) const {
 // class: Topology
 class Topology {
   
-  template <typename Executor> friend class BasicTaskflow;
+  friend class BasicTaskflow;
 
   public:
 
@@ -357,8 +354,7 @@ inline std::string Topology::dump() const {
 class Task {
 
   friend class FlowBuilder;
-
-  template <typename Executor> friend class BasicTaskflow;
+  friend class BasicTaskflow;
 
   public:
     
@@ -1050,14 +1046,39 @@ inline auto FlowBuilder::silent_emplace(C&& c) {
 // ============================================================================
 // Taskflow Definition
 // ============================================================================
-
-// Class: BasicTaskflow
-template <typename Executor>
-class BasicTaskflow : public FlowBuilder {
   
+// Class: BasicTaskflow
+class BasicTaskflow : public FlowBuilder {
+
+  struct Work {
+  
+    Work() = default;
+    Work(const Work&) = delete;
+
+    Work(Work&& rhs) : taskflow {rhs.taskflow}, node {rhs.node} { 
+      rhs.taskflow = nullptr;
+      rhs.node     = nullptr;
+    }
+
+    Work(BasicTaskflow& t, Node& n) : taskflow{&t}, node {&n} {}
+    
+    BasicTaskflow* taskflow {nullptr};
+    Node* node {nullptr};
+    
+    void operator () ();
+
+    Work& operator = (Work&& rhs) {
+      taskflow = rhs.taskflow;
+      node     = rhs.node;
+      rhs.taskflow = nullptr;
+      rhs.node     = nullptr;
+      return *this;
+    }
+  };
+
   public:
 
-  using StaticWork    = typename Node::StaticWork;
+  using StaticWork  = typename Node::StaticWork;
   using DynamicWork = typename Node::DynamicWork;
  
     explicit BasicTaskflow();
@@ -1070,7 +1091,6 @@ class BasicTaskflow : public FlowBuilder {
     void silent_dispatch();
     void wait_for_all();
     void wait_for_topologies();
-    void num_workers(size_t);
 
     size_t num_nodes() const;
     size_t num_workers() const;
@@ -1081,7 +1101,7 @@ class BasicTaskflow : public FlowBuilder {
 
   private:
 
-    Executor _executor;
+    SimpleThreadpool2<Work> _executor;
 
     Graph _graph;
 
@@ -1090,56 +1110,112 @@ class BasicTaskflow : public FlowBuilder {
     void _schedule(Node&);
 };
 
+// Operator
+void BasicTaskflow::Work::operator () () {
+  
+  assert(taskflow && node);
+
+  // Here we need to fetch the num_successors first to avoid the invalid memory
+  // access caused by topology clear.
+  const auto num_successors = node->num_successors();
+  
+  // regular node type
+  // The default node work type. We only need to execute the callback if any.
+  if(auto index=node->_work.index(); index == 0) {
+    if(auto &f = std::get<StaticWork>(node->_work); f != nullptr){
+      std::invoke(f);
+    }
+  }
+  // subflow node type 
+  // The first time we enter into the subflow context, "subnodes" must be empty.
+  // After executing the user's callback on subflow, there will be at least one
+  // node node used as "super source". The second time we enter this context we 
+  // don't have to reexecute the work again.
+  else {
+    assert(std::holds_alternative<DynamicWork>(node->_work));
+    
+    SubflowBuilder fb(node->_subgraph, taskflow->num_workers());
+
+    bool empty_graph = node->_subgraph.empty();
+
+    std::invoke(std::get<DynamicWork>(node->_work), fb);
+    
+    // Need to create a subflow
+    if(empty_graph) {
+
+      auto& S = node->_subgraph.emplace_front([](){});
+
+      S._topology = node->_topology;
+
+      for(auto i = std::next(node->_subgraph.begin()); i != node->_subgraph.end(); ++i) {
+
+        i->_topology = node->_topology;
+
+        if(i->num_successors() == 0) {
+          i->precede(fb.detached() ? node->_topology->_target : *node);
+        }
+
+        if(i->num_dependents() == 0) {
+          S.precede(*i);
+        }
+      }
+      
+      // this is for the case where subflow graph might be empty
+      if(!fb.detached()) {
+        S.precede(*node);
+      }
+
+      taskflow->_schedule(S);
+
+      if(!fb.detached()) {
+        return;
+      }
+    }
+  }
+  
+  // At this point, the node/node storage might be destructed.
+  for(size_t i=0; i<num_successors; ++i) {
+    if(--(node->_successors[i]->_dependents) == 0) {
+      taskflow->_schedule(*(node->_successors[i]));
+    }
+  }
+}
+
 // Constructor
-template <typename Executor>
-BasicTaskflow<Executor>::BasicTaskflow() : 
+inline BasicTaskflow::BasicTaskflow() : 
   FlowBuilder {_graph, std::thread::hardware_concurrency()},
   _executor   {std::thread::hardware_concurrency()} {
 }
 
 // Constructor
-template <typename Executor>
-BasicTaskflow<Executor>::BasicTaskflow(unsigned N) : 
+inline BasicTaskflow::BasicTaskflow(unsigned N) : 
   FlowBuilder {_graph, std::thread::hardware_concurrency()},
   _executor   {N} {
 }
 
 // Destructor
-template <typename Executor>
-BasicTaskflow<Executor>::~BasicTaskflow() {
+inline BasicTaskflow::~BasicTaskflow() {
   wait_for_topologies();
 }
 
-// Procedure: num_workers
-template <typename Executor>
-void BasicTaskflow<Executor>::num_workers(size_t W) {
-  _executor.shutdown();
-  _executor.spawn(W);
-  _partition_factor = W;
-}
-
 // Function: num_nodes
-template <typename Executor>
-size_t BasicTaskflow<Executor>::num_nodes() const {
+inline size_t BasicTaskflow::num_nodes() const {
   //return _nodes.size();
   return std::distance(_graph.begin(), _graph.end());
 }
 
 // Function: num_workers
-template <typename Executor>
-size_t BasicTaskflow<Executor>::num_workers() const {
+inline size_t BasicTaskflow::num_workers() const {
   return _executor.num_workers();
 }
 
 // Function: num_topologies
-template <typename Executor>
-size_t BasicTaskflow<Executor>::num_topologies() const {
+inline size_t BasicTaskflow::num_topologies() const {
   return std::distance(_topologies.begin(), _topologies.end());
 }
 
 // Procedure: silent_dispatch 
-template <typename Executor>
-void BasicTaskflow<Executor>::silent_dispatch() {
+inline void BasicTaskflow::silent_dispatch() {
 
   if(_graph.empty()) return;
 
@@ -1150,8 +1226,7 @@ void BasicTaskflow<Executor>::silent_dispatch() {
 }
 
 // Procedure: dispatch 
-template <typename Executor>
-std::shared_future<void> BasicTaskflow<Executor>::dispatch() {
+inline std::shared_future<void> BasicTaskflow::dispatch() {
 
   if(_graph.empty()) {
     return std::async(std::launch::deferred, [](){}).share();
@@ -1166,8 +1241,7 @@ std::shared_future<void> BasicTaskflow<Executor>::dispatch() {
 }
 
 // Procedure: wait_for_all
-template <typename Executor>
-void BasicTaskflow<Executor>::wait_for_all() {
+inline void BasicTaskflow::wait_for_all() {
   if(!_graph.empty()) {
     silent_dispatch();
   }
@@ -1175,8 +1249,7 @@ void BasicTaskflow<Executor>::wait_for_all() {
 }
 
 // Procedure: wait_for_topologies
-template <typename Executor>
-void BasicTaskflow<Executor>::wait_for_topologies() {
+inline void BasicTaskflow::wait_for_topologies() {
   for(auto& t: _topologies){
     t._future.get();
   }
@@ -1186,81 +1259,12 @@ void BasicTaskflow<Executor>::wait_for_topologies() {
 // Procedure: _schedule
 // The main procedure to schedule a give task node.
 // Each task node has two types of tasks - regular and subflow.
-template <typename Executor>
-void BasicTaskflow<Executor>::_schedule(Node& node) {
-
-  _executor.silent_async([this, &node](){
-
-    // Here we need to fetch the num_successors first to avoid the invalid memory
-    // access caused by topology clear.
-    const auto num_successors = node.num_successors();
-    
-    // regular node type
-    // The default node work type. We only need to execute the callback if any.
-    if(auto index=node._work.index(); index == 0) {
-      if(auto &f = std::get<StaticWork>(node._work); f != nullptr){
-        std::invoke(f);
-      }
-    }
-    // subflow node type 
-    // The first time we enter into the subflow context, "subnodes" must be empty.
-    // After executing the user's callback on subflow, there will be at least one
-    // node node used as "super source". The second time we enter this context we 
-    // don't have to reexecute the work again.
-    else {
-      assert(std::holds_alternative<DynamicWork>(node._work));
-      
-      SubflowBuilder fb(node._subgraph, num_workers());
-
-      bool empty_graph = node._subgraph.empty();
-
-      std::invoke(std::get<DynamicWork>(node._work), fb);
-      
-      // Need to create a subflow
-      if(empty_graph) {
-
-        auto& S = node._subgraph.emplace_front([](){});
-
-        S._topology = node._topology;
-
-        for(auto i = std::next(node._subgraph.begin()); i != node._subgraph.end(); ++i) {
-
-          i->_topology = node._topology;
-
-          if(i->num_successors() == 0) {
-            i->precede(fb.detached() ? node._topology->_target : node);
-          }
-
-          if(i->num_dependents() == 0) {
-            S.precede(*i);
-          }
-        }
-        
-        // this is for the case where subflow graph might be empty
-        if(!fb.detached()) {
-          S.precede(node);
-        }
-
-        _schedule(S);
-
-        if(!fb.detached()) {
-          return;
-        }
-      }
-    }
-    
-    // At this point, the node/node storage might be destructed.
-    for(size_t i=0; i<num_successors; ++i) {
-      if(--(node._successors[i]->_dependents) == 0) {
-        _schedule(*(node._successors[i]));
-      }
-    }
-  });
+inline void BasicTaskflow::_schedule(Node& node) {
+  _executor.emplace(*this, node);
 }
 
 // Function: dump_topology
-template <typename Executor>
-std::string BasicTaskflow<Executor>::dump_topologies() const {
+inline std::string BasicTaskflow::dump_topologies() const {
   
   std::ostringstream os;
 
@@ -1273,8 +1277,7 @@ std::string BasicTaskflow<Executor>::dump_topologies() const {
 
 // Function: dump
 // Dumps the taskflow in graphviz. The result can be viewed at http://www.webgraphviz.com/.
-template <typename Executor>
-std::string BasicTaskflow<Executor>::dump() const {
+inline std::string BasicTaskflow::dump() const {
 
   std::ostringstream os;
 
@@ -1291,7 +1294,7 @@ std::string BasicTaskflow<Executor>::dump() const {
 
 //-----------------------------------------------------------------------------
 
-using Taskflow = BasicTaskflow<SimpleThreadpool>;
+using Taskflow = BasicTaskflow;
 
 };  // end of namespace tf. ---------------------------------------------------
 

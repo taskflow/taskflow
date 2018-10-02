@@ -8,26 +8,14 @@
 #include <random>
 #include <climits>
   
-using tf_simple_t      = tf::BasicTaskflow<tf::SimpleThreadpool>;
-using tf_proactive_t   = tf::BasicTaskflow<tf::ProactiveThreadpool>;
-using tf_speculative_t = tf::BasicTaskflow<tf::SpeculativeThreadpool>;
-using tf_privatized_t  = tf::BasicTaskflow<tf::PrivatizedThreadpool>;
+using tf_simple_t = tf::Taskflow;
 
 // Procedure: benchmark
 #define BENCHMARK(TITLE, F)                                             \
   std::cout << "========== " << TITLE << " ==========\n";               \
                                                                         \
-  std::cout << "Taskflow [simple     ] elapsed time: "      \
+  std::cout << "Taskflow elapsed time: "      \
             << F<tf_simple_t>() << " ms\n";                             \
-                                                                        \
-  std::cout << "Taskflow [proactive  ] elapsed time: "      \
-            << F<tf_proactive_t>() << " ms\n";                          \
-                                                                        \
-  std::cout << "Taskflow [speculative] elapsed time: "      \
-            << F<tf_speculative_t>() << " ms\n";                        \
-                                                                        \
-  std::cout << "Taskflow [privatized ] elapsed time: "      \
-            << F<tf_privatized_t>() << " ms\n";                         \
 
 // ============================================================================
 // Dynamic Stem
