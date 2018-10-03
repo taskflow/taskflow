@@ -139,7 +139,7 @@ class Topology;
 class Task;
 class FlowBuilder;
 class SubflowBuilder;
-class BasicTaskflow;
+class Taskflow;
     
 using Graph = std::forward_list<Node>;
 
@@ -150,7 +150,7 @@ class Node {
 
   friend class Task;
   friend class Topology;
-  friend class BasicTaskflow;
+  friend class Taskflow;
 
   using StaticWork   = std::function<void()>;
   using DynamicWork  = std::function<void(SubflowBuilder&)>;
@@ -271,7 +271,7 @@ inline void Node::_dump(std::ostream& os) const {
 // class: Topology
 class Topology {
   
-  friend class BasicTaskflow;
+  friend class Taskflow;
 
   public:
 
@@ -354,7 +354,7 @@ inline std::string Topology::dump() const {
 class Task {
 
   friend class FlowBuilder;
-  friend class BasicTaskflow;
+  friend class Taskflow;
 
   public:
     
@@ -1047,33 +1047,24 @@ inline auto FlowBuilder::silent_emplace(C&& c) {
 // Taskflow Definition
 // ============================================================================
   
-// Class: BasicTaskflow
-class BasicTaskflow : public FlowBuilder {
-
-  struct Work {
+// Class: Taskflow
+class Taskflow : public FlowBuilder {
   
-    Work() = default;
-    Work(const Work&) = delete;
+  // Closure
+  struct Closure {
+  
+    Closure() = default;
+    Closure(const Closure&) = delete;
+    Closure(Closure&&);
+    Closure(Taskflow&, Node&);
 
-    Work(Work&& rhs) : taskflow {rhs.taskflow}, node {rhs.node} { 
-      rhs.taskflow = nullptr;
-      rhs.node     = nullptr;
-    }
-
-    Work(BasicTaskflow& t, Node& n) : taskflow{&t}, node {&n} {}
+    Closure& operator = (Closure&&);
+    Closure& operator = (const Closure&) = delete;
     
-    BasicTaskflow* taskflow {nullptr};
-    Node* node {nullptr};
-    
-    void operator () ();
+    void operator ()() const;
 
-    Work& operator = (Work&& rhs) {
-      taskflow = rhs.taskflow;
-      node     = rhs.node;
-      rhs.taskflow = nullptr;
-      rhs.node     = nullptr;
-      return *this;
-    }
+    Taskflow* taskflow {nullptr};
+    Node*          node     {nullptr};
   };
 
   public:
@@ -1081,10 +1072,10 @@ class BasicTaskflow : public FlowBuilder {
   using StaticWork  = typename Node::StaticWork;
   using DynamicWork = typename Node::DynamicWork;
  
-    explicit BasicTaskflow();
-    explicit BasicTaskflow(unsigned);
+    explicit Taskflow();
+    explicit Taskflow(unsigned);
 
-    ~BasicTaskflow();
+    ~Taskflow();
     
     std::shared_future<void> dispatch();
 
@@ -1101,7 +1092,7 @@ class BasicTaskflow : public FlowBuilder {
 
   private:
 
-    SimpleThreadpool2<Work> _executor;
+    SimpleThreadpool2<Closure> _executor;
 
     Graph _graph;
 
@@ -1110,8 +1101,29 @@ class BasicTaskflow : public FlowBuilder {
     void _schedule(Node&);
 };
 
-// Operator
-void BasicTaskflow::Work::operator () () {
+// Constructor    
+inline Taskflow::Closure::Closure(Closure&& rhs) : 
+  taskflow {rhs.taskflow}, node {rhs.node} { 
+  rhs.taskflow = nullptr;
+  rhs.node     = nullptr;
+}
+
+// Constructor
+inline Taskflow::Closure::Closure(Taskflow& t, Node& n) : 
+  taskflow{&t}, node {&n} {
+}
+
+// Move assignment
+inline Taskflow::Closure& Taskflow::Closure::operator = (Closure&& rhs) {
+  taskflow = rhs.taskflow;
+  node     = rhs.node;
+  rhs.taskflow = nullptr;
+  rhs.node     = nullptr;
+  return *this;
+}
+
+// Operator ()
+inline void Taskflow::Closure::operator () () const {
   
   assert(taskflow && node);
 
@@ -1182,40 +1194,40 @@ void BasicTaskflow::Work::operator () () {
 }
 
 // Constructor
-inline BasicTaskflow::BasicTaskflow() : 
+inline Taskflow::Taskflow() : 
   FlowBuilder {_graph, std::thread::hardware_concurrency()},
   _executor   {std::thread::hardware_concurrency()} {
 }
 
 // Constructor
-inline BasicTaskflow::BasicTaskflow(unsigned N) : 
+inline Taskflow::Taskflow(unsigned N) : 
   FlowBuilder {_graph, std::thread::hardware_concurrency()},
   _executor   {N} {
 }
 
 // Destructor
-inline BasicTaskflow::~BasicTaskflow() {
+inline Taskflow::~Taskflow() {
   wait_for_topologies();
 }
 
 // Function: num_nodes
-inline size_t BasicTaskflow::num_nodes() const {
+inline size_t Taskflow::num_nodes() const {
   //return _nodes.size();
   return std::distance(_graph.begin(), _graph.end());
 }
 
 // Function: num_workers
-inline size_t BasicTaskflow::num_workers() const {
+inline size_t Taskflow::num_workers() const {
   return _executor.num_workers();
 }
 
 // Function: num_topologies
-inline size_t BasicTaskflow::num_topologies() const {
+inline size_t Taskflow::num_topologies() const {
   return std::distance(_topologies.begin(), _topologies.end());
 }
 
 // Procedure: silent_dispatch 
-inline void BasicTaskflow::silent_dispatch() {
+inline void Taskflow::silent_dispatch() {
 
   if(_graph.empty()) return;
 
@@ -1226,7 +1238,7 @@ inline void BasicTaskflow::silent_dispatch() {
 }
 
 // Procedure: dispatch 
-inline std::shared_future<void> BasicTaskflow::dispatch() {
+inline std::shared_future<void> Taskflow::dispatch() {
 
   if(_graph.empty()) {
     return std::async(std::launch::deferred, [](){}).share();
@@ -1241,7 +1253,7 @@ inline std::shared_future<void> BasicTaskflow::dispatch() {
 }
 
 // Procedure: wait_for_all
-inline void BasicTaskflow::wait_for_all() {
+inline void Taskflow::wait_for_all() {
   if(!_graph.empty()) {
     silent_dispatch();
   }
@@ -1249,7 +1261,7 @@ inline void BasicTaskflow::wait_for_all() {
 }
 
 // Procedure: wait_for_topologies
-inline void BasicTaskflow::wait_for_topologies() {
+inline void Taskflow::wait_for_topologies() {
   for(auto& t: _topologies){
     t._future.get();
   }
@@ -1259,12 +1271,12 @@ inline void BasicTaskflow::wait_for_topologies() {
 // Procedure: _schedule
 // The main procedure to schedule a give task node.
 // Each task node has two types of tasks - regular and subflow.
-inline void BasicTaskflow::_schedule(Node& node) {
+inline void Taskflow::_schedule(Node& node) {
   _executor.emplace(*this, node);
 }
 
 // Function: dump_topology
-inline std::string BasicTaskflow::dump_topologies() const {
+inline std::string Taskflow::dump_topologies() const {
   
   std::ostringstream os;
 
@@ -1277,7 +1289,7 @@ inline std::string BasicTaskflow::dump_topologies() const {
 
 // Function: dump
 // Dumps the taskflow in graphviz. The result can be viewed at http://www.webgraphviz.com/.
-inline std::string BasicTaskflow::dump() const {
+inline std::string Taskflow::dump() const {
 
   std::ostringstream os;
 
@@ -1293,8 +1305,6 @@ inline std::string BasicTaskflow::dump() const {
 }
 
 //-----------------------------------------------------------------------------
-
-using Taskflow = BasicTaskflow;
 
 };  // end of namespace tf. ---------------------------------------------------
 
