@@ -216,6 +216,7 @@ TEST_CASE("SpeculativeThreadpool" * doctest::timeout(300)) {
   test_threadpool<tf::SpeculativeThreadpool<std::function<void()>>>();
 }
 
+/*
 // ============================================================================
 // WorkerQueue Tests
 // ============================================================================
@@ -511,7 +512,7 @@ TEST_CASE("WorkerQueue.TriThread" * doctest::timeout(300)) {
   }
   
 }
-
+*/
 
 
 
