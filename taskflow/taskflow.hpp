@@ -1046,7 +1046,7 @@ inline auto FlowBuilder::silent_emplace(C&& c) {
 // ============================================================================
 // Taskflow Definition
 // ============================================================================
-  
+
 // Class: Taskflow
 class Taskflow : public FlowBuilder {
   
@@ -1064,7 +1064,7 @@ class Taskflow : public FlowBuilder {
     void operator ()() const;
 
     Taskflow* taskflow {nullptr};
-    Node*          node     {nullptr};
+    Node*     node     {nullptr};
   };
 
   public:
@@ -1092,7 +1092,9 @@ class Taskflow : public FlowBuilder {
 
   private:
 
-    SimpleThreadpool2<Closure> _executor;
+    //SimpleThreadpool<Closure> _executor;
+    //ProactiveThreadpool<Closure> _executor;
+    SpeculativeThreadpool<Closure> _executor;
 
     Graph _graph;
 
@@ -1139,10 +1141,12 @@ inline void Taskflow::Closure::operator () () const {
     }
   }
   // subflow node type 
-  // The first time we enter into the subflow context, "subnodes" must be empty.
-  // After executing the user's callback on subflow, there will be at least one
-  // node node used as "super source". The second time we enter this context we 
-  // don't have to reexecute the work again.
+  // The first time we enter into the subflow context, 
+  // "subnodes" must be empty.
+  // After executing the user's callback on subflow, 
+  // there will be at least one node node used as "super source". 
+  // The second time we enter this context there is no need
+  // to re-execute the work.
   else {
     assert(std::holds_alternative<DynamicWork>(node->_work));
     
@@ -1303,8 +1307,6 @@ inline std::string Taskflow::dump() const {
   
   return os.str();
 }
-
-//-----------------------------------------------------------------------------
 
 };  // end of namespace tf. ---------------------------------------------------
 

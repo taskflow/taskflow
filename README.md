@@ -4,8 +4,8 @@
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/te9bjp4yfhq7f8hq?svg=true)](https://ci.appveyor.com/project/TsungWeiHuang/cpp-taskflow)
 [![Standard](image/cpp17.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![Download](image/download.svg)](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip)
-[![AskMe](image/askme.svg)][Github issues]
-[![Insights](image/maintained.svg)][Github insights]
+[![Wiki](image/doc-wiki.svg)][wiki]
+[![Insights](image/maintained.svg)][GitHub insights]
 [![License: MIT](./image/license_badge.svg)](./LICENSE)
 
 A fast C++ header-only library to help you quickly build parallel programs with complex task dependencies.
@@ -27,6 +27,8 @@ and is by far faster, more expressive, and easier for drop-in integration than e
 *"Cpp-Taskflow is the cleanest Task API I've ever seen." [damienhocking][damienhocking]*
 
 *"Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [totalgee][totalgee]*
+
+*"Best poster award for open-source parallel programming library." Cpp Conference 2018*
 
 # Get Started with Cpp-Taskflow
 
@@ -732,8 +734,9 @@ The folder `example/` contains several examples and is a great place to learn to
 | [threadpool_cxx14.cpp](./example/threadpool_cxx14.cpp)| shows use of the C++14-compatible threadpool implementation, which may be used when you have no inter-task (taskflow) dependencies to express |
 
 # Get Involved
-+ Report bugs/issues by submitting a [Github issue][Github issues]
-+ Submit contributions using [pull requests][Github pull requests]
++ Report bugs/issues by submitting a [GitHub issue][GitHub issues]
++ Submit contributions using [pull requests][GitHub pull requests]
++ Learn more about Cpp-Taskflow by visitng our [wiki][wiki]
 + Find a solution to your question at [Frequently Asked Questions][FAQ]
 
 # Contributors
@@ -779,10 +782,10 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [Andreas Olofsson]:      https://github.com/aolofsson
 [Gitter]:                https://gitter.im/cpp-taskflow/Lobby
 [Gitter badge]:          ./image/gitter_badge.svg
-[Github releases]:       https://github.com/coo-taskflow/cpp-taskflow/releases
-[Github issues]:         https://github.com/cpp-taskflow/cpp-taskflow/issues
-[Github insights]:       https://github.com/cpp-taskflow/cpp-taskflow/pulse
-[Github pull requests]:  https://github.com/cpp-taskflow/cpp-taskflow/pulls
+[GitHub releases]:       https://github.com/coo-taskflow/cpp-taskflow/releases
+[GitHub issues]:         https://github.com/cpp-taskflow/cpp-taskflow/issues
+[GitHub insights]:       https://github.com/cpp-taskflow/cpp-taskflow/pulse
+[GitHub pull requests]:  https://github.com/cpp-taskflow/cpp-taskflow/pulls
 [GraphViz]:              https://www.graphviz.org/
 [AwesomeGraphViz]:       https://github.com/CodeFreezr/awesome-graphviz
 [OpenMP Tasking]:        http://www.nersc.gov/users/software/programming-models/openmp/openmp-tasking/
@@ -796,7 +799,9 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [UIUC]:                  https://illinois.edu/
 [CSL]:                   https://csl.illinois.edu/
 [FAQ]:                   ./doc/faq.md
+[wiki]:                  ./doc/home.md
 [PayMe]:                 https://www.paypal.me/twhuang/10
 [C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
 [email me]:              mailto:twh760812@gmail.com
+
 

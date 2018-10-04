@@ -1,3 +1,8 @@
+// 2018/10/04 modified by Tsung-Wei Huang
+//   - removed binary_tree
+//   - removed modulo_insertions
+//   - adopted to the new threadpool implementation
+//
 // 2018/09/19 modified by Tsung-Wei Huang
 //   - added binary_tree benchmark
 //   - added modulo_insertions benchmark
@@ -18,20 +23,17 @@
 #include <climits>
 
 // Procedure: benchmark
-#define BENCHMARK(TITLE, F)                                 \
-  std::cout << "========== " << TITLE << " ==========\n";   \
-                                                            \
-  std::cout << "Threadpool [simple     ] elapsed time: "    \
-            << F<tf::SimpleThreadpool>() << " ms\n";        \
-                                                            \
-  std::cout << "Threadpool [proactive  ] elapsed time: "    \
-            << F<tf::ProactiveThreadpool>() << " ms\n";     \
-                                                            \
-  std::cout << "Threadpool [speculative] elapsed time: "    \
-            << F<tf::SpeculativeThreadpool>() << " ms\n";   \
-                                                            \
-  std::cout << "Threadpool [privatized ] elapsed time: "    \
-            << F<tf::PrivatizedThreadpool>() << " ms\n";    \
+#define BENCHMARK(TITLE, F)                                                        \
+  std::cout << "========== " << TITLE << " ==========\n";                          \
+                                                                                   \
+  std::cout << "Threadpool [simple     ] elapsed time: "                           \
+            << F<tf::SimpleThreadpool<std::function<void()>>>() << " ms\n";        \
+                                                                                   \
+  std::cout << "Threadpool [proactive  ] elapsed time: "                           \
+            << F<tf::ProactiveThreadpool<std::function<void()>>>() << " ms\n";     \
+                                                                                   \
+  std::cout << "Threadpool [speculative] elapsed time: "                           \
+            << F<tf::SpeculativeThreadpool<std::function<void()>>>() << " ms\n";   \
 
 // ============================================================================
 // Divide and conquer to solve max subarray sum problem
@@ -91,11 +93,11 @@ void max_subsum(
   // Find middle point 
   int m = (l + r)/2; 
 
-  tp.silent_async([&, l=l, m=m] () { 
+  tp.emplace([&, l=l, m=m] () { 
     max_subsum(vec, l, m, max_num, tp, counter, promise); 
   });
 
-  tp.silent_async([&, m=m, r=r] () { 
+  tp.emplace([&, m=m, r=r] () { 
     max_subsum(vec, m+1, r, max_num, tp, counter, promise); 
   });
 
@@ -127,90 +129,6 @@ auto subsum(){
 }
 
 // ============================================================================
-// Binary tree computation pattern
-// ============================================================================
-
-// Function: binary_tree
-template <typename T>
-auto binary_tree() {
-  
-  const int num_threads = std::thread::hardware_concurrency();
-  const int num_levels  = 20;
-
-  auto beg = std::chrono::high_resolution_clock::now();
-  
-  T threadpool(num_threads);
-  
-  std::atomic<size_t> sum {0};
-  std::function<void(int)> insert;
-  
-  insert = [&] (int l) {
-    sum.fetch_add(1, std::memory_order_relaxed);
-    if(l < num_levels) {
-      for(int i=0; i<2; ++i) {
-        threadpool.silent_async([&insert, l] () {
-          insert(l+1);
-        });
-      }
-    }
-  };
-  
-  insert(0);
-
-  // synchronize until all tasks finish
-  threadpool.wait_for_all();
-
-  assert(sum == (1 << (num_levels + 1)) - 1);
-
-  auto end = std::chrono::high_resolution_clock::now();
-
-  return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
-}
-
-// ============================================================================
-// Dynamic tasking through module operations
-// ============================================================================
-
-// Procedure: modulo_insertions
-template <typename T>
-auto modulo_insertions() {
-  
-  const int num_threads = std::thread::hardware_concurrency();
-  const int num_tasks   = 1000000;
-
-  auto beg = std::chrono::high_resolution_clock::now();
-  
-  T threadpool(num_threads);
-  
-  std::atomic<size_t> sum {0};
-  std::function<void(int)> insert;
-  
-  insert = [&threadpool, &insert, &sum] (int i) {
-    if(i % 8 != 0) {
-      threadpool.silent_async([&insert, i] () {
-        insert(i+1);
-      });
-    }
-    else {
-      sum.fetch_add(1, std::memory_order_relaxed);
-    }
-  };
-
-  for(size_t i=0; i<num_tasks; i++){
-    insert(i);
-  }
-
-  // synchronize until all tasks finish
-  threadpool.wait_for_all();
-
-  assert(sum == num_tasks);
-
-  auto end = std::chrono::high_resolution_clock::now();
-
-  return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
-}
-
-// ============================================================================
 // Dynamic tasking through linear insertions
 // ============================================================================
 
@@ -233,7 +151,7 @@ auto linear_insertions() {
   
   insert = [&threadpool, &insert, &sum, &promise] (int i) {
     if(i > 0) {
-      threadpool.silent_async([i=i-1, &insert] () {
+      threadpool.emplace([i=i-1, &insert] () {
         insert(i);
       });
     }
@@ -249,45 +167,15 @@ auto linear_insertions() {
   }
 
   // synchronize until all tasks finish
-  threadpool.wait_for_all();
-  
-  assert(future.wait_for(std::chrono::seconds(0)) == std::future_status::ready);
-  assert(future.get() == 1); 
+  assert(future.get() == 1);
   assert(sum == num_threads);
-  
   auto end = std::chrono::high_resolution_clock::now();
 
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
 }
 
 // ============================================================================
-// Insertions with empty jobs
-// ============================================================================
-
-// Function: empty_jobs
-template <typename T>
-auto empty_jobs() {
-  
-  const int num_threads = std::thread::hardware_concurrency();
-  const int num_tasks   = 1000000;
-  
-  auto beg = std::chrono::high_resolution_clock::now();
-
-  T threadpool(num_threads);
-
-  for(size_t i=0; i<num_tasks; i++){
-    threadpool.silent_async([](){}); 
-  }
-
-  threadpool.wait_for_all();
-  
-  auto end = std::chrono::high_resolution_clock::now();
-
-  return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
-}
-
-// ============================================================================
-// Insertions with simple summation jobs
+// Insertions with atomic summation
 // ============================================================================
 
 // Function: atomic_add
@@ -299,14 +187,20 @@ auto atomic_add() {
   
   std::atomic<int> counter(0);
   auto beg = std::chrono::high_resolution_clock::now();
+
+  std::promise<void> promise;
+  auto future = promise.get_future();
   
   T threadpool(num_threads);
   for(size_t i=0; i<num_tasks; i++){
-    threadpool.silent_async([&counter](){ 
-      counter.fetch_add(1, std::memory_order_relaxed);
+    threadpool.emplace([&](){ 
+      if(counter.fetch_add(1, std::memory_order_relaxed) + 1 == num_tasks) {
+        promise.set_value();
+      }
     }); 
   }
-  threadpool.shutdown();
+
+  future.get();
 
   assert(counter == num_tasks);
   
@@ -314,54 +208,12 @@ auto atomic_add() {
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
 }
 
-// ----------------------------------------------------------------------------
-
-struct Work {
-  
-  Work() {
-  }
-
-  Work(std::atomic<int>& in) : ptr {&in} {
-  }
-
-  std::atomic<int>* ptr {nullptr};
-
-  void operator () () {
-    ptr->fetch_add(1, std::memory_order_relaxed);
-  }
-};
-
-void test_work() {
-  
-  const int num_threads = std::thread::hardware_concurrency();
-  const int num_tasks = 1000000;
-  
-  std::atomic<int> counter(0);
-  auto beg = std::chrono::high_resolution_clock::now();
-  
-  tf::SimpleThreadpool2<Work> threadpool(num_threads);
-  for(size_t i=0; i<num_tasks; i++){
-    threadpool.emplace(counter); 
-  }
-
-  auto end = std::chrono::high_resolution_clock::now();
-  std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count() 
-            << " ms... " << counter << '\n';
-}
-
 // Function: main
 int main(int argc, char* argv[]) {
 
-  test_work();
-
   BENCHMARK("Atomic Add", atomic_add);
-  BENCHMARK("Empty Jobs", empty_jobs);
   BENCHMARK("Linear Insertions", linear_insertions);
-  BENCHMARK("Modulo Insertions", modulo_insertions);
-  BENCHMARK("Binary Tree", binary_tree);
   BENCHMARK("Divide and Conquer", subsum);
-
-
   
   return 0;
 }

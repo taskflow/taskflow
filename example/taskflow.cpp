@@ -8,14 +8,12 @@
 #include <random>
 #include <climits>
   
-using tf_simple_t = tf::Taskflow;
-
 // Procedure: benchmark
 #define BENCHMARK(TITLE, F)                                             \
   std::cout << "========== " << TITLE << " ==========\n";               \
                                                                         \
-  std::cout << "Taskflow elapsed time: "      \
-            << F<tf_simple_t>() << " ms\n";                             \
+  std::cout << "Taskflow elapsed time: "                                \
+            << F<tf::Taskflow>() << " ms\n";                            \
 
 // ============================================================================
 // Dynamic Stem

@@ -25,9 +25,5 @@
 
 namespace tf {
 
-using ProactiveThreadpool   = tf::BasicProactiveThreadpool<std::function>;
-using SpeculativeThreadpool = tf::BasicSpeculativeThreadpool<std::function>;
-using PrivatizedThreadpool  = tf::BasicPrivatizedThreadpool<std::function>;
-
 };  // namespace tf. ----------------------------------------------------------
 

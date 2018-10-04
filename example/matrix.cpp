@@ -108,88 +108,6 @@ void baseline(const std::vector<size_t>& D) {
             << " ms\n";
 }
 
-// Procedure: openmp
-void openmp(const std::vector<size_t>& D) {
-  
-  std::cout << "========== OpenMP ==========\n";
-
-  auto tbeg = std::chrono::steady_clock::now();
-
-  std::cout << "Generating matrix As ...\n";
-  std::vector<matrix_t> As(D.size());
-  #pragma omp parallel for
-  for(int j=0; j<(int)D.size(); ++j) {
-    As[j] = random_matrix(D[j]);
-  }
-  
-  std::cout << "Generating matrix Bs ...\n";
-  std::vector<matrix_t> Bs(D.size());
-  #pragma omp parallel for
-  for(int j=0; j<(int)D.size(); ++j) {
-    Bs[j] = random_matrix(D[j]);
-  }
-  
-  std::cout << "Computing matrix product values Cs ...\n";
-  std::vector<matrix_t> Cs(D.size());
-  #pragma omp parallel for
-  for(int j=0; j<(int)D.size(); ++j) {
-    Cs[j] = As[j] * Bs[j];
-  }
-
-  auto tend = std::chrono::steady_clock::now();
-
-  std::cout << "OpenMP takes " 
-            << std::chrono::duration_cast<std::chrono::milliseconds>(tend-tbeg).count() 
-            << " ms\n";
-}
-
-// Procedure: cppthread
-void cppthread(const std::vector<size_t>& D) {
-  
-  std::cout << "========== CppThread ==========\n";
-
-  auto tbeg = std::chrono::steady_clock::now();
-
-  tf::SimpleThreadpool tpl(std::thread::hardware_concurrency());
-
-  std::cout << "Generating matrix As ...\n";
-  std::vector<matrix_t> As(D.size());
-  std::vector<std::future<void>> futures;
-
-  for(size_t j=0; j<D.size(); ++j) {
-    futures.push_back(tpl.async([&, j] () { As[j] = random_matrix(D[j]); }));
-  }
-  
-  std::cout << "Generating matrix Bs ...\n";
-  std::vector<matrix_t> Bs(D.size());
-  for(size_t j=0; j<D.size(); ++j) {
-    futures.push_back(tpl.async([&, j] () { Bs[j] = random_matrix(D[j]); }));
-  }
-
-  std::cout << "Synchronizing As and Bs ...\n";
-  for(auto& fu : futures) {
-    fu.get();
-  }
-  futures.clear();
-  
-  std::cout << "Computing matrix product values Cs ...\n";
-  std::vector<matrix_t> Cs(D.size());
-  for(size_t j=0; j<D.size(); ++j) {
-    futures.push_back(tpl.async([&, j] () { Cs[j] = As[j] * Bs[j]; }));
-  }
-  
-  std::cout << "Synchronizing Cs ...\n";
-  for(auto& fu : futures) {
-    fu.get();
-  }
-  
-  auto tend = std::chrono::steady_clock::now();
-
-  std::cout << "CppThread takes " 
-            << std::chrono::duration_cast<std::chrono::milliseconds>(tend-tbeg).count() 
-            << " ms\n";
-}
-
 // Procedure: taskflow
 void taskflow(const std::vector<size_t>& D) {
   
@@ -267,17 +185,11 @@ int main(int argc, char* argv[]) {
   if(std::string_view method(argv[1]); method == "baseline") {
     baseline(dimensions);
   }
-  else if(method == "openmp") {
-    openmp(dimensions);
-  }
-  else if(method == "cppthread") {
-    cppthread(dimensions);
-  }
   else if(method == "taskflow") {
     taskflow(dimensions);
   }
   else {
-    std::cerr << "wrong method, shoud be [baseline|openmp|cppthread|taskflow]\n";
+    std::cerr << "wrong method, shoud be [baseline|taskflow]\n";
   }
 
   return 0;

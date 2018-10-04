@@ -142,9 +142,9 @@ for(int i=0; i<N; ++i) {
 tf.wait_for_all();
 ```
 
-### Q: What is a Taskflow::Task?
+### Q: What is a Task?
 
-A `Taskflow::Task` is a lightweight handle associated with an internal graph node
+A `Task` is a lightweight handle associated with an internal graph node
 for users to build task dependencies.
 We do not allow users to explicitly access the internal node but using this wrapper
 to assign different attributes to a graph node.

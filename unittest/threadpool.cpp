@@ -1,4 +1,11 @@
-// 2018/09/? - modified by Tsung-Wei Huang
+// 2018/10/04 - modified by Tsung-Wei Huang
+//   - removed binary tree tests
+//   - removed spawn/shutdown tests
+//   - removed siltne_async and async tests
+//   - added emplace test
+//   - adopted the new thread pool implementation
+//
+// 2018/09/29 - modified by Tsung-Wei Huang
 //   - added binary tree tests
 //   - added worker queue tests
 //   - added external thread tests
@@ -29,15 +36,12 @@ void test_ownership(ThreadpoolType& tp) {
   
   REQUIRE(tp.is_owner()); 
   
-  tp.silent_async([&](){
+  tp.emplace([&](){
     if(tp.num_workers() == 0) {
       REQUIRE(tp.is_owner());
     }
     else {
       REQUIRE(!tp.is_owner());
-      REQUIRE_THROWS(tp.shutdown());
-      REQUIRE_THROWS(tp.spawn(4));
-      REQUIRE_THROWS(tp.wait_for_all());
     }
   });
 
@@ -45,9 +49,6 @@ void test_ownership(ThreadpoolType& tp) {
   for(int i=0; i<10; ++i) {
     threads.emplace_back([&] () {
       REQUIRE(!tp.is_owner());
-      REQUIRE_THROWS(tp.shutdown());
-      REQUIRE_THROWS(tp.spawn(4));
-      REQUIRE_THROWS(tp.wait_for_all());
     });
   }
   for(auto& t : threads) {
@@ -55,145 +56,21 @@ void test_ownership(ThreadpoolType& tp) {
   }
 }
 
-// Procedure: test_silent_async
+// Procedure: test_emplace
 template <typename ThreadpoolType>
-void test_silent_async(ThreadpoolType& tp) {
+void test_emplace(ThreadpoolType& tp) {
 
   constexpr size_t num_tasks = 1024;
 
   std::atomic<size_t> counter{0};
   
-  size_t sum = 0;
   for(size_t i=0; i<num_tasks; i++){
-    sum += i;
-    tp.silent_async([i=i, &counter](){ counter += i; });
-  }
-  tp.wait_for_all(); //make sure all silent threads end
-
-  REQUIRE(counter == sum);
-}
-
-// Procedure: test_async
-template <typename ThreadpoolType>
-void test_async(ThreadpoolType& tp){
-  
-  constexpr size_t num_tasks = 1024;
- 
-  std::vector<std::future<int>> int_future;
-  std::vector<int> int_result;
-
-  for(size_t i=0; i<num_tasks; i++){
-    int_future.emplace_back(tp.async(
-      [size = i](){
-        int sum = 0;
-        for(int i=0; i<=static_cast<int>(size); i++){
-          sum += i;
-        }       
-        return sum;
-      }
-      )
+    tp.emplace([&counter](){ 
+      counter.fetch_add(1, std::memory_order_relaxed); }
     );
-    
-    int sum_result = 0;
-    for(int j=0; j<=static_cast<int>(i); j++) sum_result += j;
-    int_result.push_back(sum_result);
   }
-  
-  REQUIRE(int_future.size() == int_result.size());
 
-  for(size_t i=0; i<int_future.size(); i++){
-    REQUIRE(int_future[i].get() == int_result[i]);
-  } 
-}
-
-// Procedure: test_wait_for_all
-template <typename ThreadpoolType>
-void test_wait_for_all(ThreadpoolType& tp){
-
-  using namespace std::literals::chrono_literals;
-
-  const size_t num_workers = tp.num_workers();
-  const size_t num_tasks = 20;
-  std::atomic<size_t> counter;
-
-  for(int i=0; i<10; ++i) {
-
-    counter = 0;
-    
-    for(size_t i=0; i<num_tasks; i++){
-      tp.silent_async([&counter](){ 
-        std::this_thread::sleep_for(200us);
-        counter++; 
-      });
-    }
-    REQUIRE(counter <= num_tasks);  // pay attention to the case of 0 worker
-
-    tp.wait_for_all();
-
-    REQUIRE(counter == num_tasks);
-    REQUIRE(tp.num_workers() == num_workers);
-
-    tp.wait_for_all();
-  }
-}
-
-// Procedure: test_spawn_shutdown
-template <typename T>
-void test_spawn_shutdown(T& tp) {
-  
-  using namespace std::literals::chrono_literals;
-
-  const size_t num_workers = tp.num_workers();
-  const size_t num_tasks = 1024;
-
-  tp.spawn(num_workers);
-  REQUIRE(tp.num_workers() == num_workers * 2);
-
-  tp.shutdown();
-  REQUIRE(tp.num_workers() == 0);
-  REQUIRE(tp.num_tasks() == 0);
-
-  tp.spawn(num_workers);
-  REQUIRE(tp.num_workers() == num_workers);
-
-  for(int k=0; k<5; ++k) {
-
-    REQUIRE(tp.num_workers() == num_workers);
-    
-    std::atomic<size_t> counter {0};
-
-    for(size_t i=0; i<num_tasks; i++){
-      tp.silent_async([&] () { 
-        counter++;
-        tp.silent_async([&] () {
-          counter++;
-          tp.silent_async([&] () {
-            counter++;
-            tp.silent_async([&] () {
-              counter++;
-            }); 
-          });
-        });
-      });
-    }
-
-    tp.spawn(num_workers);
-
-    REQUIRE(counter <= num_tasks * 4);
-
-    tp.shutdown();
-
-    REQUIRE(counter == num_tasks * 4);
-    REQUIRE(tp.num_workers() == 0);
-    REQUIRE(tp.num_tasks() == 0);
-
-    tp.shutdown();
-    REQUIRE(tp.num_workers() == 0);
-
-    tp.spawn(num_workers);
-    REQUIRE(tp.num_workers() == num_workers);
-    REQUIRE(tp.num_tasks() == 0);
-  }
+  while(counter != num_tasks);
 }
 
 // Procedure: test_dynamic_tasking
@@ -210,7 +87,7 @@ void test_dynamic_tasking(T& threadpool) {
   insert = [&threadpool, &insert, &sum, &promise, &cnt] (int i) {
     if(i > 0) {
       ++cnt;
-      threadpool.silent_async([i=i-1, &insert] () {
+      threadpool.emplace([i=i-1, &insert] () {
         insert(i);
       });
     }
@@ -231,34 +108,9 @@ void test_dynamic_tasking(T& threadpool) {
   }
 
   // synchronize until all tasks finish
-  threadpool.wait_for_all();
-  
-  REQUIRE(cnt == 100 * threadpool.num_workers());
   REQUIRE(future.get() == 1);
+  REQUIRE(cnt == 100 * threadpool.num_workers());
   REQUIRE(sum == threadpool.num_workers());
-}
-
-// Procedure: test_binary_tree
-template <typename T>
-void test_binary_tree(T& threadpool) {
-  
-  for(int num_levels = 0; num_levels <= 8; ++num_levels) {
-    std::atomic<size_t> sum {0};
-    std::function<void(int)> insert;
-    insert = [&threadpool, &insert, &sum, num_levels] (int l) {
-      sum.fetch_add(1, std::memory_order_relaxed);
-      if(l < num_levels) {
-        for(int i=0; i<2; ++i) {
-          threadpool.silent_async([&insert, l] () {
-            insert(l+1);
-          });
-        }
-      }
-    };
-    insert(0);
-    threadpool.wait_for_all();
-    REQUIRE(sum == (1 << (num_levels + 1)) - 1);
-  }
 }
 
 // Procedure: test_external_threads
@@ -274,7 +126,7 @@ void test_external_threads(T& threadpool) {
     threads.emplace_back([&] () {
       std::this_thread::sleep_for(std::chrono::microseconds(100));
       for(int j=0; j<num_tasks; ++j) {
-        threadpool.silent_async([&] () { 
+        threadpool.emplace([&] () { 
           sum.fetch_add(1, std::memory_order_relaxed);
         });
       }
@@ -283,16 +135,16 @@ void test_external_threads(T& threadpool) {
   
   // master thread to insert
   for(int j=0; j<num_tasks; ++j) {
-    threadpool.silent_async([&] () {
+    threadpool.emplace([&] () {
       sum.fetch_add(1, std::memory_order_relaxed);
     });
   }
 
   // worker thread to insert
   for(int i=0; i<10; ++i) {
-    threadpool.silent_async([&] () {
+    threadpool.emplace([&] () {
       for(int j=0; j<num_tasks; ++j) {
-        threadpool.silent_async([&] () {
+        threadpool.emplace([&] () {
           sum.fetch_add(1, std::memory_order_relaxed);
         });
       }
@@ -303,9 +155,7 @@ void test_external_threads(T& threadpool) {
     t.join();
   }
 
-  threadpool.wait_for_all();
-
-  REQUIRE(sum == num_tasks * 10 * 2 + num_tasks);
+  while(sum != num_tasks * 10 * 2 + num_tasks) ;
 }
   
 // Procedure: test_threadpool
@@ -319,25 +169,10 @@ void test_threadpool() {
     }
   }
 
-  SUBCASE("PlaceTask"){
+  SUBCASE("Emplace") {
     for(unsigned i=0; i<=4; ++i) {
       T tp(i);
-      test_async(tp);
-      test_silent_async(tp);
-    }
-  }
-  
-  SUBCASE("WaitForAll"){
-    for(unsigned i=0; i<=4; ++i) {
-      T tp(i);
-      test_wait_for_all(tp);
-    }
-  }
-  
-  SUBCASE("SpawnShutdown") {
-    for(unsigned i=0; i<=4; ++i) {
-      T tp(i);
-      test_spawn_shutdown(tp);
+      test_emplace(tp);
     }
   }
 
@@ -348,19 +183,37 @@ void test_threadpool() {
     }
   }
 
-  SUBCASE("BinaryTree") {
-    for(unsigned i=0; i<=4; ++i) {
-      T tp(i);
-      test_binary_tree(tp);
-    }
-  }
-
   SUBCASE("ExternalThreads") {
     for(unsigned i=0; i<=4; ++i) {
       T tp(i);
       test_external_threads(tp);
     }
   }
+}
+
+// ============================================================================
+// Threadpool tests
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Testcase: SimpleThreadpool
+// ----------------------------------------------------------------------------
+TEST_CASE("SimpleThreadpool" * doctest::timeout(300)) {
+  test_threadpool<tf::SimpleThreadpool<std::function<void()>>>();
+}
+
+// ----------------------------------------------------------------------------
+// Testcase: ProactiveThreadpool
+// ----------------------------------------------------------------------------
+TEST_CASE("ProactiveThreadpool" * doctest::timeout(300)) {
+  test_threadpool<tf::ProactiveThreadpool<std::function<void()>>>();
+}
+
+// ----------------------------------------------------------------------------
+// Testcase: SpeculativeThreadpool
+// ----------------------------------------------------------------------------
+TEST_CASE("SpeculativeThreadpool" * doctest::timeout(300)) {
+  test_threadpool<tf::SpeculativeThreadpool<std::function<void()>>>();
 }
 
 // ============================================================================
@@ -659,37 +512,7 @@ TEST_CASE("WorkerQueue.TriThread" * doctest::timeout(300)) {
   
 }
 
-// ============================================================================
-// Threadpool tests
-// ============================================================================
 
-// ----------------------------------------------------------------------------
-// Testcase: SimpleThreadpool
-// ----------------------------------------------------------------------------
-TEST_CASE("SimpleThreadpool" * doctest::timeout(300)) {
-  test_threadpool<tf::SimpleThreadpool>();
-}
-
-// ----------------------------------------------------------------------------
-// Testcase: ProactiveThreadpool
-// ----------------------------------------------------------------------------
-TEST_CASE("ProactiveThreadpool" * doctest::timeout(300)) {
-  test_threadpool<tf::ProactiveThreadpool>();
-}
-
-// ----------------------------------------------------------------------------
-// Testcase: SpeculativeThreadpool
-// ----------------------------------------------------------------------------
-TEST_CASE("SpeculativeThreadpool" * doctest::timeout(300)) {
-  test_threadpool<tf::SpeculativeThreadpool>();
-}
-
-// ----------------------------------------------------------------------------
-// Testcase: PrivatizedThreadpool
-// ----------------------------------------------------------------------------
-TEST_CASE("PrivatizedThreadpool" * doctest::timeout(300)) {
-  test_threadpool<tf::PrivatizedThreadpool>();
-}
 
 
 
