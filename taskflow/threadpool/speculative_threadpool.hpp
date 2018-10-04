@@ -25,6 +25,7 @@
 #include <future>
 #include <unordered_set>
 #include <unordered_map>
+#include <optional>
 
 #include "move_on_copy.hpp"
 

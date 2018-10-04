@@ -32,6 +32,7 @@
 #include <memory>
 #include <future>
 #include <unordered_set>
+#include <optional>
 
 #include "move_on_copy.hpp"
 
