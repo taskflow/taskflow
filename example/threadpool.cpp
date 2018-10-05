@@ -34,6 +34,9 @@
                                                                                    \
   std::cout << "Threadpool [speculative] elapsed time: "                           \
             << F<tf::SpeculativeThreadpool<std::function<void()>>>() << " ms\n";   \
+                                                                                   \
+  std::cout << "Threadpool [privatized ] elapsed time: "                           \
+            << F<tf::PrivatizedThreadpool<std::function<void()>>>() << " ms\n";    \
 
 // ============================================================================
 // Divide and conquer to solve max subarray sum problem
