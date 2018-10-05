@@ -1095,6 +1095,7 @@ class Taskflow : public FlowBuilder {
     //SimpleThreadpool<Closure> _executor;
     //ProactiveThreadpool<Closure> _executor;
     SpeculativeThreadpool<Closure> _executor;
+    //PrivatizedThreadpool<Closure> _executor;
 
     Graph _graph;
 

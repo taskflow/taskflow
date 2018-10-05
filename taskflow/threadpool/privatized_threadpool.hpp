@@ -1,13 +1,20 @@
+// 2018/10/05 - modified by Chun-Xun
+//   - adopted the new threadpool model   
+//
 // 2018/09/21 - modified by Tsung-Wei and Chun-Xun
 //   - refactored the code
 //  
-// TODO:
-//   - Problems can occur when external threads insert tasks during spawn.
-//
 // 2018/09/12 - created by Tsung-Wei Huang and Chun-Xun Lin
 //
 // Implemented PrivatizedThreadpool using the data structre inspired
 // Eigen CXX/Threadpool.
+
+// TODO
+// - double check whether we can use std::forward<Args>(args)... in enqueue/dequeue
+// - can we replace lock with CAS
+// - refactored the WorkQueue class ...
+// - add more example to threadpool and use std::future to mimic the control flow
+// - atomic add problem (extremely slow)
 
 #pragma once
 
@@ -30,10 +37,13 @@ namespace tf {
 
 // ---------------------------------------------------------------------------- 
 // Privatized queue of worker. The lock-free queue is inspired by 
-//   http://www.1024cores.net/home/lock-free-algorithms/queues/bounded-mpmc-queue
+// http://www.1024cores.net/home/lock-free-algorithms/queues/bounded-mpmc-queue
 template<typename T, size_t buffer_size>
 class PrivatizedTaskQueue {
-public:
+
+  public:
+
+  // TODO replaced the new with std::array
   PrivatizedTaskQueue()
     : buffer_(new cell_t [buffer_size])
     , buffer_mask_(buffer_size - 1)
@@ -106,7 +116,8 @@ public:
            dequeue_pos_.load(std::memory_order_relaxed);
   };
 
-private:
+  private:
+  
   struct cell_t {
     std::atomic<size_t>   sequence_;
     T                     data_;
@@ -123,12 +134,10 @@ private:
   cacheline_pad_t         pad2_;
   std::atomic<size_t>     dequeue_pos_;
   cacheline_pad_t         pad3_;
-
-  PrivatizedTaskQueue(PrivatizedTaskQueue const&);
-  void operator = (PrivatizedTaskQueue const&);
 }; 
 
 
+// ----------------------------------------------------------------------------
 
 // Class: PrivatizedThreadpool
 template <typename Task>
@@ -159,13 +168,12 @@ class PrivatizedThreadpool {
     const std::thread::id _owner {std::this_thread::get_id()};
 
     mutable std::mutex _mutex;
-    std::condition_variable _empty_cv;
 
     std::vector<Task> _tasks;
     std::vector<std::thread> _threads;
+    std::vector<Worker> _workers;
     
     std::unordered_map<std::thread::id, size_t> _worker_maps;
-    std::vector<Worker> _workers;
 
     size_t _num_idlers {0};
     size_t _next_queue {0};
@@ -254,22 +262,15 @@ size_t PrivatizedThreadpool<Task>::num_workers() const {
 template <typename Task>
 void PrivatizedThreadpool<Task>::_shutdown(){
 
-  if(!is_owner()){
-    throw std::runtime_error("Worker thread cannot shut down the pool");
-  }
-
-  if(_threads.empty()) {
-    return;
-  }
+  assert(is_owner());
 
   {
-    std::scoped_lock<std::mutex> lock(_mutex);
-    // Notify workers to exit
+    std::scoped_lock lock(_mutex);
     for(auto& w : _workers){
       w.exit = true;
       w.cv.notify_one();
     }
-  } // Release lock
+  } 
 
   for(auto& t : _threads){
     t.join();
@@ -284,9 +285,7 @@ void PrivatizedThreadpool<Task>::_shutdown(){
 template <typename Task>
 void PrivatizedThreadpool<Task>::_spawn(unsigned N) {
 
-  if(! is_owner()){
-    throw std::runtime_error("Worker thread cannot spawn threads");
-  }
+  assert(is_owner());
 
   // Lock to synchronize all workers before creating _worker_mapss
   std::scoped_lock lock(_mutex);
@@ -329,10 +328,15 @@ void PrivatizedThreadpool<Task>::_spawn(unsigned N) {
           lock.unlock();
         } // End of pop_front 
 
-        while(t){
+        while(t) {
           (*t)();
-          std::swap(t, w.cache);
-          w.cache = std::nullopt;
+          if(w.cache) {
+            t = std::move(w.cache);
+            w.cache = std::nullopt;
+          }
+          else {
+            t = std::nullopt;
+          }
         }
       } // End of while ------------------------------------------------------
     });     
@@ -353,15 +357,17 @@ void PrivatizedThreadpool<Task>::emplace(ArgsT&&... args){
   }
 
   Task t {std::forward<ArgsT>(args)...};
-
+  
+  // caller is not the owner
   if(auto tid = std::this_thread::get_id(); tid != _owner){
+    // the caller is the worker of the threadpool
     if(auto itr = _worker_maps.find(tid); itr != _worker_maps.end()){
       if(!_workers[itr->second].cache.has_value()){
         _workers[itr->second].cache = std::move(t);
         return ;
       }
       if(!_workers[itr->second].queue.enqueue(t)){
-        std::scoped_lock<std::mutex> lock(_mutex);       
+        std::scoped_lock lock(_mutex);       
         _tasks.push_back(std::move(t));
       }
       return ;
