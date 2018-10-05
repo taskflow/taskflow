@@ -216,6 +216,13 @@ TEST_CASE("SpeculativeThreadpool" * doctest::timeout(300)) {
   test_threadpool<tf::SpeculativeThreadpool<std::function<void()>>>();
 }
 
+// ----------------------------------------------------------------------------
+// Testcase: PrivatizedThreadpool
+// ----------------------------------------------------------------------------
+TEST_CASE("PrivatizedThreadpool" * doctest::timeout(300)) {
+  test_threadpool<tf::PrivatizedThreadpool<std::function<void()>>>();
+}
+
 /*
 // ============================================================================
 // WorkerQueue Tests
