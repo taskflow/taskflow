@@ -5,21 +5,18 @@ write fast parallel programs with task dependencies.
 This wiki provides detailed explanation about Cpp-Taskflow's
 software architecture, C++ API, and library usages.
 
-# Get Started with Cpp-Taskflow
+# Cpp-Taskflow Cookbook
 
-+ [Write your First Cpp-Taskflow Application](examples/hello_world.md)
++ [Write your First Cpp-Taskflow Program](examples/hello_world.md)
 + [Understand the Task Construct](examples/task.md)
 + [Execute a Task Dependency Graph](examples/exec.md)
 + [Parallelize a For Loop](examples/parallel_for.md)
 + [Reduce a Container of Items in Parallel](examples/reduce.md)
 + [Spawn a Task Dependency Graph at Runtime](examples/dynamic_tasking.md)
 
-# Software Architecture of Cpp-Taskflow
-
-+ Graph Model and Execution Flow
-
 # Application Programming Interface (API)
 
++ C++ API
 
 # Get More Help
 

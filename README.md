@@ -443,6 +443,7 @@ std::cout << tf.dump_topologies();
 
 The class `tf::Taskflow` is the main place to create taskflow graphs and carry out task dependencies.
 The table below summarizes a list of commonly used methods.
+Visit [documentation][wiki] to see the complete list.
 
 | Method   | Argument  | Return  | Description |
 | -------- | --------- | ------- | ----------- |
@@ -613,7 +614,8 @@ std::cout << "all topologies complete" << '\n';
 ## Task API
 
 Each task object is a lightweight handle for you to create dependencies in its associated graph. 
-The table below summarizes its methods.
+The table below summarizes the list of commonly used methods.
+Visit [documentation][wiki] to see the complete list.
 
 | Method         | Argument    | Return | Description |
 | -------------- | ----------- | ------ | ----------- |
@@ -736,7 +738,7 @@ The folder `example/` contains several examples and is a great place to learn to
 # Get Involved
 + Report bugs/issues by submitting a [GitHub issue][GitHub issues]
 + Submit contributions using [pull requests][GitHub pull requests]
-+ Learn more about Cpp-Taskflow by visitng our [wiki][wiki]
++ Learn more about Cpp-Taskflow by reading the [documentation][wiki]
 + Find a solution to your question at [Frequently Asked Questions][FAQ]
 
 # Contributors

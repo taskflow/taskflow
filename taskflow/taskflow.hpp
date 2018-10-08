@@ -1050,6 +1050,9 @@ inline auto FlowBuilder::silent_emplace(C&& c) {
 // Class: Taskflow
 class Taskflow : public FlowBuilder {
   
+  using StaticWork  = typename Node::StaticWork;
+  using DynamicWork = typename Node::DynamicWork;
+  
   // Closure
   struct Closure {
   
@@ -1069,9 +1072,6 @@ class Taskflow : public FlowBuilder {
 
   public:
 
-  using StaticWork  = typename Node::StaticWork;
-  using DynamicWork = typename Node::DynamicWork;
- 
     explicit Taskflow();
     explicit Taskflow(unsigned);
 
@@ -1082,6 +1082,7 @@ class Taskflow : public FlowBuilder {
     void silent_dispatch();
     void wait_for_all();
     void wait_for_topologies();
+    void dump(std::ostream&) const;
 
     size_t num_nodes() const;
     size_t num_workers() const;
@@ -1293,10 +1294,7 @@ inline std::string Taskflow::dump_topologies() const {
 }
 
 // Function: dump
-// Dumps the taskflow in graphviz. The result can be viewed at http://www.webgraphviz.com/.
-inline std::string Taskflow::dump() const {
-
-  std::ostringstream os;
+inline void Taskflow::dump(std::ostream& os) const {
 
   os << "digraph Taskflow {\n";
   
@@ -1305,7 +1303,13 @@ inline std::string Taskflow::dump() const {
   }
 
   os << "}\n";
-  
+}
+
+// Function: dump
+// Dumps the taskflow in graphviz. The result can be viewed at http://www.webgraphviz.com/.
+inline std::string Taskflow::dump() const {
+  std::ostringstream os;
+  dump(os); 
   return os.str();
 }
 

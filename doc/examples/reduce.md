@@ -7,6 +7,9 @@ to parallelize a reduction workload.
 
 + [Reduce](#Reduce-through-an-Operator)
 + [Transform and Reduce](#Transform-and-Reduce)
++ [Example 1: Find the Min/Max Element](#Example-1-Find-the-Min-Max-Element)
++ [Example 2: Pipeline a Reducer Graph](#Example-2-Pipeline-a-Reducer-Graph)
++ [Example 3: Find the Minimum L1-norm](#Example-3-Find-the-Minimum-L1-norm)
 
 # Reduce
 
@@ -122,7 +125,148 @@ The difference between the two overloads appears in the second binary operator.
 Instead of converting every item to the reduced data type,
 this binary operator provides a more fine-grained control over reduction.
 
+---
 
+# Example 1: Find the Min/Max Element
 
+One common workload of using reduce is to find the minimum or the maximum
+element in a range of items.
+This example demonstrates how to use the method `reduce` to find the 
+minimum element out of a set of items.
 
+```cpp
+ 1: #include <taskflow/taskflow.hpp>
+ 2:
+ 3: int main() {
+ 4:
+ 5:   tf::Taskflow tf(4);
+ 6:
+ 7:   std::vector<int> items {4, 2, 1, 3, 7, 8, 6, 5};
+ 8:   int min = std::numeric_limits<int>::max();
+ 9:
+10:   tf.reduce(items.begin(), items.end(), min, [] (int a, int b) {
+11:     return std::min(a, b);
+12:   });
+13:
+14:   tf.wait_for_all();
+15:
+16:   std::cout << min << std::endl;  // 1
+17:
+18:   return 0;
+19: }
+```
 
+Similarly, the example below uses the method `reduce` to find
+the maximum element in an item set.
+
+```cpp
+ 1: #include <taskflow/taskflow.hpp>
+ 2:
+ 3: int main() {
+ 4:
+ 5:   tf::Taskflow tf(4);
+ 6:
+ 7:   std::vector<int> items {4, 2, 1, 3, 7, 8, 6, 5};
+ 8:   int max = std::numeric_limits<int>::min();
+ 9:
+10:   tf.reduce(items.begin(), items.end(), max, [] (int a, int b) {
+11:     return std::max(a, b);
+12:   });
+13:
+14:   tf.wait_for_all();
+15:
+16:   std::cout << max << std::endl;  // 8
+17:
+18:   return 0;
+19: }
+```
+
+# Example 2: Pipeline a Reducer Graph
+
+The `reduce` method returns a task pair as two synchronization points
+which can be used to pipeline with other tasks.
+The example below demonstrates how to pipeline a reducer with two tasks.
+
+```cpp
+ 1: #include <taskflow/taskflow.hpp>
+ 2:
+ 3: int main() {
+ 4:
+ 5:   tf::Taskflow tf(4);
+ 6:
+ 7:   std::vector<int> items{1024};
+ 8:   int min = std::numeric_limits<int>::max();
+ 9:
+10:   auto T1 = tf.silent_emplace([&] () {  // modifier task
+11:     for(auto& item : items) {
+12:       item = ::rand();
+13:     }
+14:   });
+15:
+16:   auto [S, T] = tf.reduce(items.begin(), items.end(), min, [] (int a, int b) {
+17:     return std::min(a, b);
+18:   });
+19:
+20:   auto T2 = tf.silent_emplace([&] () {  // printer task
+21:     std::cout << "min is " << min << std::endl;
+22:   });
+23:
+24:   T1.precede(S);    // modifier task precedes the reducer
+25:   T.precede(T2);    // reducer precedes the printer task
+26:
+27:   tf.wait_for_all();
+28:
+29:   return 0;
+30: }
+```
+
+Debrief:
++ Line 5 creates a taskflow object with four worker threads
++ Line 7 creates a vector of 1024 uninitialized integers
++ Line 8 creates an integer value initialized to the maximum value of its range
++ Line 10-14 creates a modifier task that initializes the vector to random integer values
++ Line 16-18 creates a reducer graph to find the minimum element in the vector
++ Line 20-22 creates a task that prints the minimum value found after reducer finishes
++ Line 24-25 adds two dependency links to implement our control flow
++ Line 27 dispatches the dependency graph into threads and waits until the execution completes
+
+Each worker thread will apply the give reduce operator
+to a partition of 1024/4 = 512 items inside the reducer graph,
+and store the minimum element in the variable `min`.
+Since the variable `min` also participates in the reduce operation,
+it is your responsibility to initialize it to a proper value.
+
+# Example 3: Find the Minimum L1-norm
+
+The example below applies the method `transform_reduce`
+to find the minimum L1-norm out of a point set.
+
+```cpp
+ 1: #include <taskflow/taskflow.hpp>
+ 2: 
+ 3: struct Point {
+ 4:   int x1 {::rand() % 10 - 5};   // random value
+ 5:   int x2 {::rand() % 10 - 5};   // random value
+ 6: };
+ 7: 
+ 8: int main() {
+ 9: 
+10:   tf::Taskflow tf(4);
+11: 
+12:   std::vector<Point> points {1024};
+13:   int min = std::numeric_limits<int>::max();
+14: 
+15:   tf.transform_reduce(points.begin(), points.end(), min,
+16:     [] (int a, int b) {
+17:       return std::min(a, b);
+18:     },
+19:     [] (const Point& point) -> int {    // Find the L1-norm of the point
+20:       return std::abs(point.x1) + std::abs(point.x2);
+21:     }
+22:   );
+23: 
+24:   tf.wait_for_all();
+25: 
+26:   return 0;
+27: }
+```
