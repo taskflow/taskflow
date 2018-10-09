@@ -9,14 +9,16 @@ software architecture, C++ API, and library usages.
 
 + [Write your First Cpp-Taskflow Program](examples/hello_world.md)
 + [Understand the Task Construct](examples/task.md)
-+ [Execute a Task Dependency Graph](examples/exec.md)
++ [Execute a Task Dependency Graph](examples/dispatch.md)
 + [Parallelize a For Loop](examples/parallel_for.md)
 + [Reduce a Container of Items in Parallel](examples/reduce.md)
 + [Spawn a Task Dependency Graph at Runtime](examples/dynamic_tasking.md)
 
 # Application Programming Interface (API)
 
-+ C++ API
++ Task
++ Taskflow
++ Threadpool
 
 # Get More Help
 

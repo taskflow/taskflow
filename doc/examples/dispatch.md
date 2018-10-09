@@ -10,6 +10,7 @@ task dependency graph.
 + [Non-blocking Execution](#Non-blocking-Execution)
 + [Wait on Topologies](#Wait-on-Topologies)
 + [Example 1: Multiple Dispatches](#Example-1-Multiple-Dispatches)
++ [Example 2: Connect Two Dependency Graphs](#Example-2-Connect-Two-Dependency-Graphs)
 
 # Graph and Topology
 
@@ -174,5 +175,74 @@ Notice in Line 24 the counter ends up with 20.
 The destructor of a taskflow object will not leave until all running
 topologies finish.
 
+# Example 2: Connect Two Dependency Graphs
+
+The example demonstrates how to use the `std::future` to manually impose a dependency link
+on two dispatched graphs.
+
+```cpp
+ 1: #include <taskflow/taskflow.hpp>
+ 2:
+ 3: int main() {
+ 4:
+ 5:   tf::Taskflow tf(4);
+ 6:
+ 7:   std::vector<int> items;   // uninitialized
+ 8:   int sum;                  // uninitialized
+ 9:
+10:   // the first dependency graph
+11:   // task C to resize the item vector
+12:   auto A = tf.silent_emplace([&] () { items.resize(1024); });
+13:  
+14:   // task B to initialize the item vector
+15:   auto B = tf.silent_emplace([&] () { std::iota(items.begin(), items.end(), 0); });
+16:
+17:   // A must run before B
+18:   A.precede(B);
+19:   
+20:   // dispatch the graph asynchronously and obtain the future to access its status
+21:   auto fu1 = tf.dispatch();
+22:
+23:   // the second dependency graph
+24:   // task C to overlap the exeuction of the first graph
+25:   auto C = tf.silent_emplace([&] () {
+26:     sum = 0;  // in practice, this can be some expensive initializations
+27:   });
+28:
+29:   // task D can't start until the first graph completes
+30:   auto D = tf.silent_emplace([&] () {
+31:     fu1.get();
+32:     for(auto item : items) {
+33:       sum += item;
+34:     }
+35:   });
+36: 
+37:   C.precede(D);
+38: 
+39:   auto fu2 = tf.dispatch();
+40: 
+41:   // wait on the second dependency graph to finish
+42:   fu2.get();
+43: 
+44:   assert(sum == (0 + 1023) * 1024 / 2);
+45: 
+46:   return 0;
+47: }
+```
+
+Debrief:
++ Line 5 creates a taskflow object with four worker threads
++ Line 7-8 creates a vector of integer items and an integer variable to store the summation value
++ Line 10-21 creates a dependency graph that resizes the vector size and fills it with sequentially increasing values starting with zero
++ Line 23-39 creates another dependency graph that sums up the values in the vector
++ Line 25-27 creates a task that initializes the variable `sum` to zero, and overlaps its execution with the first dependency graph
++ Line 30-35 creates a task that blocks until the first dependency graph completes and then sums up all integer values in the propertly initialized vector
++ Line 42 blocks until the second dependency graph finishes
++ Line 44 puts an assertion guard on the final summation value
+
+By the time the second dependency graph finishes, 
+the first dependency graph must have already finished due to Line 31.
+The result of the variable `sum` ends up being the summation over 
+the integer sequence `[0, 1, 2, ..., 1024)`.
 
 
