@@ -162,8 +162,6 @@ void test_external_threads(T& threadpool) {
 template <typename T>
 void test_threadpool() {  
 
-  for(int k=0; k<20000000; ++k) {
-
   SUBCASE("Ownership") {
     for(unsigned i=0; i<=4; ++i) {
       T tp(i);
@@ -190,7 +188,6 @@ void test_threadpool() {
       T tp(i);
       test_external_threads(tp);
     }
-  }
   }
 }
 
