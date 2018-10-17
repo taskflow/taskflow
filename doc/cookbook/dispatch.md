@@ -1,7 +1,7 @@
 # Execute a Task Dependency Graph
 
 After you create a task dependency graph,
-you need to dispatch it for execution.
+you need to dispatch it to threads for execution
 In this tutorial, we will show you how to execute a 
 task dependency graph.
 
@@ -14,20 +14,27 @@ task dependency graph.
 
 # Graph and Topology
 
-Each taskflow object has exactly one graph at a time to represent
-task dependencies constructed so far.
+Each taskflow object has exactly one graph at a time that represents
+the tasks and the dependencies constructed so far.
 The graph exists until users dispatch it for execution.
-We call a dispatched graph a *topology*.
+In Cpp-Taskflow, we call a dispatched graph a *topology*.
+A topology is a data structure that wraps up a dispatched graph 
+and stores a few metadata obtained at runtime.
 Each taskflow object has a list of topologies to keep track of the 
 execution status of dispatched graphs.
-All tasks are executed in a shared thread pool.
+Users can retrieve this information later on for graph inspection and debugging.
+
+All tasks are executed in a shared thread storage coupled with a
+*task scheduler* to decide which thread runs which task.
+Cpp-Taskflow provides two ways to dispatch a task dependency graph,
+*blocking* and *non-blocking*.
 
 # Blocking Execution
 
 One way to dispatch the present task dependency graph
 is to use the method `wait_for_all`.
-Calling `wait_for_all` will dispatch the present graph to a shared thread storage
-and block the program until all tasks finish.
+Calling `wait_for_all` dispatches the graph to threads and blocks the program flow
+until all tasks finish.
 
 ```cpp
 1: tf::Taskflow tf(4);
@@ -47,16 +54,16 @@ All topologies will be cleaned up as well.
 
 Another way to dispatch the present task dependency graph
 is to use the method `dispatch` or `silent_dispatch`.
-These two methods will dispatch the present graph to threads
-and returns immediately without blocking the program.
-Non-blocking methods allows the program to perform other computations
-that can overlap with the execution of topologies.
+These two methods both dispatch the present graph to threads
+and return immediately without blocking the program flow.
+Non-blocking methods allow the program to perform other computations
+that can overlap the graph execution.
 
 ```cpp
  1: tf::Taskflow tf(4);
  2:
- 3: auto A = tf.silent_emplace([] () { std::cout << "TaskA\n"; });
- 4: auto B = tf.silent_emplace([] () { std::cout << "TaskB\n"; });
+ 3: auto A = tf.silent_emplace([] () { std::cout << "Task A\n"; });
+ 4: auto B = tf.silent_emplace([] () { std::cout << "Task B\n"; });
  5: A.precede(B);
  6:
  7: auto F = tf.dispatch();
@@ -68,15 +75,14 @@ that can overlap with the execution of topologies.
 Debrief:
 
 + Line 1-5 creates a graph with two tasks and one dependency
-+ Line 7 dispatches this graph to a topology 
-  and obtains a `std::future` to access its execution status
-+ Line 8-9 performs some computations to overlap the execution of this topology
++ Line 7 dispatches this graph 
+  and obtains a `std::future` object to access its execution status
++ Line 8-9 performs some computations to overlap the execution of task A and task B
 + Line 10 blocks the program until this topology finishes
 
 If you do not care the status of a dispatched graph, 
 use the method `silent_dispatch`.
 This method does not return anything.
-
 
 ```cpp
 1: tf::Taskflow tf(4);
@@ -92,11 +98,12 @@ This method does not return anything.
 
 # Wait on Topologies
 
-When you call `dispatch` or `silent_dispatch`,
-the taskflow object will dispatch the present graph to threads
-and maintain a list of data structures called *topology* 
-to store the execution status.
-These topologies are not cleaned up automatically on completion.
+Unlike `wait_for_all`, calling `dispatch` or `silent_dispatch`
+will not clean up the topologies upon completion.
+This allows users to dump the graph structure, in particular, created from dynamic tasking.
+However, it may be necessary at some points of the program
+to synchronize with the previously dispatched graphs.
+Cpp-Taskflow provides a method `wait_for_topologies` for this purpose.
 
 
 ```cpp
@@ -120,20 +127,21 @@ These topologies are not cleaned up automatically on completion.
 Debrief
 + Line 1 creates a taskflow object with four worker threads
 + Line 3-5 creates a dependency graph of two tasks and one dependency
-+ Line 7 dispatches the present graph to threads and obtains a future object
++ Line 7 dispatches this graph to threads and obtains a future object for users
   to access the execution status
 + Line 9 starts with a new dependency graph with one task
-+ Line 11 dispatches the present graph to threads
-+ Line 13 blocks the program until all running topologies finish
++ Line 11 dispatches the graph to threads
++ Line 13 blocks the program until both graphs finish
 
-It's clear now Line 9 overlaps the execution of the first graph.
-After Line 11, there are two topologies running inside the taskflow object.
+It is clear now Line 9 overlaps the execution of the first graph.
+After Line 11, there are two topologies in the taskflow object.
 Calling the method `wait_for_topologies` blocks the
-program until both complete.
+program until both graph complete.
 
 # Example 1: Multiple Dispatches
 
-The example below demonstrates how to create multiple task dependency graphs and dispatch each of them asynchronously.
+The example below demonstrates how to create multiple task dependency graphs and 
+dispatch each of them asynchronously.
 
 ```cpp
  1: #include <taskflow/taskflow.hpp>
@@ -171,14 +179,13 @@ Debrief:
 + Line 12-19 defines a function that iteratively creates a task dependency graph and dispatches it asynchronously
 + Line 23 starts the procedure of multiple dispatches
 
-Notice in Line 24 the counter ends up with 20. 
-The destructor of a taskflow object will not leave until all running
-topologies finish.
+Notice in Line 24 the counter ends up being 20. 
+By default, destructing a taskflow object will wait on all topologies to finish.
 
 # Example 2: Connect Two Dependency Graphs
 
-The example demonstrates how to use the `std::future` to manually impose a dependency link
-on two dispatched graphs.
+The example demonstrates how to use the `std::future` to explicitly impose a dependency 
+link on two dispatched graphs.
 
 ```cpp
  1: #include <taskflow/taskflow.hpp>
@@ -233,10 +240,10 @@ on two dispatched graphs.
 Debrief:
 + Line 5 creates a taskflow object with four worker threads
 + Line 7-8 creates a vector of integer items and an integer variable to store the summation value
-+ Line 10-21 creates a dependency graph that resizes the vector size and fills it with sequentially increasing values starting with zero
++ Line 10-21 creates a dependency graph that resizes the vector and fills it with sequentially increasing values starting with zero
 + Line 23-39 creates another dependency graph that sums up the values in the vector
 + Line 25-27 creates a task that initializes the variable `sum` to zero, and overlaps its execution with the first dependency graph
-+ Line 30-35 creates a task that blocks until the first dependency graph completes and then sums up all integer values in the propertly initialized vector
++ Line 30-35 creates a task that blocks until the first dependency graph completes and then sums up all integer values in the properly initialized vector
 + Line 42 blocks until the second dependency graph finishes
 + Line 44 puts an assertion guard on the final summation value
 

@@ -8,7 +8,7 @@ to parallelize a reduction workload.
 + [Reduce](#Reduce-through-an-Operator)
 + [Transform and Reduce](#Transform-and-Reduce)
 + [Example 1: Find the Min/Max Element](#Example-1-Find-the-Min-Max-Element)
-+ [Example 2: Pipeline a Reducer Graph](#Example-2-Pipeline-a-Reducer-Graph)
++ [Example 2: Pipeline a Reduction Graph](#Example-2-Pipeline-a-Reduction-Graph)
 + [Example 3: Find the Minimum L1-norm](#Example-3-Find-the-Minimum-L1-norm)
 
 # Reduce
@@ -41,7 +41,7 @@ Debrief:
 + Line 1 creates a taskflow object with 4 worker threads
 + Line 3 creates a vector of integers
 + Line 4 declares an integer variable `sum` and initializes it to zero
-+ Line 6-8 constructs a reduction graph that sum up all integer itmes and stores the final 
++ Line 6-8 constructs a reduction graph that sums up all integer itmes and stores the final 
   result in `sum`
 + Line 10-11 names the two synchronization points
 + Line 13 dispatches the graph for execution
@@ -53,8 +53,8 @@ The task dependency graph of this example is shown below:
 
 Taskflow partitions and distributes the workload evenly across all workers
 for all reduction methods.
-In this example, each internal node applies reduction to two items and 
-the target node `T` will reduce all results returned by the internal nodes to a single value.
+In this example, each internal node sums up two integers and 
+the target node `T` combine all results returned by the internal nodes to a single value.
 
 # Transform and Reduce
 
@@ -181,11 +181,11 @@ the maximum element in an item set.
 19: }
 ```
 
-# Example 2: Pipeline a Reducer Graph
+# Example 2: Pipeline a Reduction Graph
 
 The `reduce` method returns a task pair as two synchronization points
 which can be used to pipeline with other tasks.
-The example below demonstrates how to pipeline a reducer with two tasks.
+The example below demonstrates how to pipeline a reduction graph with two tasks.
 
 ```cpp
  1: #include <taskflow/taskflow.hpp>
@@ -223,18 +223,19 @@ The example below demonstrates how to pipeline a reducer with two tasks.
 Debrief:
 + Line 5 creates a taskflow object with four worker threads
 + Line 7 creates a vector of 1024 uninitialized integers
-+ Line 8 creates an integer value initialized to the maximum value of its range
++ Line 8 creates an integer value and initializes it to the maximum representable value of `int`
 + Line 10-14 creates a modifier task that initializes the vector to random integer values
-+ Line 16-18 creates a reducer graph to find the minimum element in the vector
-+ Line 20-22 creates a task that prints the minimum value found after reducer finishes
++ Line 16-18 creates a reduction graph to find the minimum element in the vector
++ Line 20-22 creates a task that prints the minimum value found after the reduction finishes
 + Line 24-25 adds two dependency links to implement our control flow
-+ Line 27 dispatches the dependency graph into threads and waits until the execution completes
++ Line 27 dispatches the task dependency graph to threads and waits until the execution completes
 
-Each worker thread will apply the give reduce operator
-to a partition of 1024/4 = 512 items inside the reducer graph,
-and store the minimum element in the variable `min`.
-Since the variable `min` also participates in the reduce operation,
-it is your responsibility to initialize it to a proper value.
+In the reduction graph,
+each worker thread applies the give reduce operator
+to a partition of 1024/4 = 512 items.
+The final minimum value is stored in the variable `min`.
+Since the variable `min` participates in the reduction process,
+it is users' responsibility to initialize it to a proper value.
 
 # Example 3: Find the Minimum L1-norm
 

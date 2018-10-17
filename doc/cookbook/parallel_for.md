@@ -13,7 +13,7 @@ to run a for loop in parallel.
 Cpp-Taskflow has a STL-style method `parallel_for` 
 that takes a range of items and applies a callable to each of the item in parallel.
 The method constructs a sub-graph representing this workload
-and returns a task pair as synchronization points.
+and returns a task pair as two synchronization points to this task pattern.
 
 ```cpp
  1:   tf::Taskflow tf(4);
@@ -32,8 +32,8 @@ and returns a task pair as synchronization points.
 14:   tf.wait_for_all();
 ```
 
-The above code generate the following task dependency graph. 
-The label 0x56\* represents an internal node to execute the callable.
+The above code generates the following task dependency graph. 
+The label 0x56\* represents an internal task node to execute the callable object.
 By default, Cpp-Taskflow evenly partitions and distributes the workload 
 to all threads.
 In our example of eight tasks and four workers, each internal node is responsible for two items.
@@ -82,10 +82,10 @@ and would like to enable more efficient parallelization.
 
 ![](parallel_for2.png)
 
-## Construct the Graph Manually
+## Construct the Graph Explicitly
 
-You can manually construct a dependency graph that represents a parallel execution 
-of a for loop
+You can explicitly construct a dependency graph that represents a parallel execution 
+of a for loop.
 using only the basic methods `silent_emplace` and `precede`.
 
 
@@ -210,14 +210,12 @@ The output of this programs is:
 sum is: 1024
 ```
 
-
-
 Debrief:
 + Line 5 creates a taskflow object with four worker threads
 + Line 7 creates a vector of 1024 uninitialized integers
 + Line 8 creates an atomic integer variable
 + Line 10-14 creates a task that captures the vector to initialize all items to one
-+ Line 16-18 sums up all items with each partition of 128 items (total 1024/128=8 partitions)
++ Line 16-18 sums up all items with each thread running on a partition of 128 items (total 1024/128=8 partitions)
 + Line 20-22 creates a task that outputs the summation value
 + Line 24-25 pipelines the parallel-for workload with the two tasks
 + Line 27 dispatches the graph to threads and blocks until the execution completes

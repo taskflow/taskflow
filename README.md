@@ -28,7 +28,7 @@ and is by far faster, more expressive, and easier for drop-in integration than e
 
 *"Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [totalgee][totalgee]*
 
-*"Best poster award for open-source parallel programming library." Cpp Conference 2018*
+*"Best poster award for open-source parallel programming library." [Cpp Conference 2018][Cpp Conference 2018]*
 
 # Get Started with Cpp-Taskflow
 
@@ -43,18 +43,18 @@ int main(){
   tf::Taskflow tf(std::thread::hardware_concurrency());
 
   auto [A, B, C, D] = tf.silent_emplace(
-    [] () { std::cout << "TaskA\n"; },               //  the taskflow graph
+    [] () { std::cout << "TaskA\n"; },               //  task dependency graph
     [] () { std::cout << "TaskB\n"; },               // 
     [] () { std::cout << "TaskC\n"; },               //          +---+          
     [] () { std::cout << "TaskD\n"; }                //    +---->| B |-----+   
   );                                                 //    |     +---+     |
                                                      //  +---+           +-v-+ 
-  A.precede(B);  // B runs after A                   //  | A |           | D | 
-  A.precede(C);  // C runs after A                   //  +---+           +-^-+ 
-  B.precede(D);  // D runs after B                   //    |     +---+     |    
-  C.precede(D);  // D runs after C                   //    +---->| C |-----+    
+  A.precede(B);  // A runs before B                  //  | A |           | D | 
+  A.precede(C);  // A runs before C                  //  +---+           +-^-+ 
+  B.precede(D);  // B runs before D                  //    |     +---+     |    
+  C.precede(D);  // C runs before D                  //    +---->| C |-----+    
                                                      //          +---+          
-  tf.wait_for_all();  // block until finished
+  tf.wait_for_all();  // block until finish
 
   return 0;
 }
@@ -732,7 +732,7 @@ The folder `example/` contains several examples and is a great place to learn to
 | [reduce.cpp](./example/reduce.cpp)| performs reduce operations over linear containers |
 | [subflow.cpp](./example/subflow.cpp)| demonstrates how to create a subflow graph that spawns three dynamic tasks |
 | [threadpool.cpp](./example/threadpool.cpp)| benchmarks different threadpool implementations |
-| [taskflow.cpp](./example/taskflow.cpp)| benchmarks different threadpool implementations |
+| [taskflow.cpp](./example/taskflow.cpp)| benchmarks taskflow on different task dependency graphs |
 | [threadpool_cxx14.cpp](./example/threadpool_cxx14.cpp)| shows use of the C++14-compatible threadpool implementation, which may be used when you have no inter-task (taskflow) dependencies to express |
 
 # Get Involved
@@ -769,16 +769,13 @@ that incorporate complex task dependencies.
 
 Please [let me know][email me] if I forgot your project!
 
-If you work for a company using Cpp-Taskflow or has the means to do so,
-please consider [financial support][PayMe].
-
 # License
 
 Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 
 * * *
 
-[Tsung-Wei Huang]:       http://web.engr.illinois.edu/~thuang19/
+[Tsung-Wei Huang]:       https://twhuang.ece.illinois.edu/
 [Chun-Xun Lin]:          https://github.com/clin99
 [Martin Wong]:           https://ece.illinois.edu/directory/profile/mdfwong
 [Andreas Olofsson]:      https://github.com/aolofsson
@@ -805,5 +802,5 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [PayMe]:                 https://www.paypal.me/twhuang/10
 [C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
 [email me]:              mailto:twh760812@gmail.com
-
+[Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
 

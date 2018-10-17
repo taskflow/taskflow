@@ -22,7 +22,6 @@
 #include "speculative_threadpool.hpp"
 #include "privatized_threadpool.hpp"
 
-
 namespace tf {
 
 };  // namespace tf. ----------------------------------------------------------

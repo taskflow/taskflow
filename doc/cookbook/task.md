@@ -9,7 +9,11 @@ a task dependency graph - *Task*.
 + [Example 1: Create Multiple Dependency Graphs](#Example-1-Create-Multiple-Dependency-Graphs)
 + [Example 2: Modify Task Attributes](#Example-2-Modify-Task-Attributes)
 
-# Create a Task
+# What is a Task?
+
+A task in Cpp-Taskflow is a callable object for which the operation [std::invoke][std::invoke] is applicable.
+It can be either 
+a functor, a lambda expression, a bind expression, or a class objects with `operator()` overloaded.
 
 Cpp-Taskflow provides three methods, `placeholder`, `silent_emplace`, and `emplace`
 to create a task.
@@ -17,21 +21,22 @@ to create a task.
 ```cpp
  1: auto A = tf.placeholder();           // create an empty task
  2: auto B = tf.silent_emplace([](){});  // create a task on top of a callable
- 3: auto [C, FuC] = tf.emplace([](){});  // create a accessible task on top of a callable
+ 3: auto [C, FuC] = tf.emplace([](){ return 1; });  // create a accessible task on top of a callable
 ```
 
 Debrief:
-+ Line 1 creates an empty task that will execute nothing
-+ Line 2 creates a task to execute a given callable 
-+ Line 3 creates a task to execute a given callable with result accessible through a 
-  `std::future` object
++ Line 1 creates an empty task 
++ Line 2 creates a task from a given callable object
++ Line 3 creates a task from a given callable object and returns an additional [std::future][std::future] object for users
+  to access the return value when the task finishes
 
+Each time you create a task, the taskflow object adds a node to the present graph
+and returns a *task handle* of type `tf::Task`.
+A task handle is a lightweight object
+that wraps up a particular node in a graph
+and provides a set of methods for you to assign different attributes to the task
+such as adding dependencies, naming, and assigning a new work.
 
-Each time you creates a task, the taskflow object will create a new node binding to 
-the given callable and return to you a `tf::Task` handle that wraps around the internal node.
-A task handler is a lightweight object that provides a set of methods
-for you to assign different attributes such as
-adding dependencies, naming, and assigning work.
 
 ```cpp
  1: auto A = tf.silent_emplace([] () { std::cout << "create a task A\n"; });
@@ -51,13 +56,14 @@ adding dependencies, naming, and assigning work.
 
 Debrief:
 + Line 1-2 creates two tasks A and B
-+ Line 4-5 assigns attributes to task A
++ Line 4-5 assigns names and work to task A, and add a precedence link to task B
 + Line 6 adds a dependency link from A to B
 + Line 8-13 dumps the task attributes 
 
-Cpp-Taskflow uses `std::function` to store the callable of each task.
-You will have to follow the contract defined by [std::function][std::function].
-For instance, the callable must be copy constructible.
+Cpp-Taskflow uses the general-purpose polymorphic function wrapper
+[std::function][std::function] to store and invoke any callable target in a task.
+You will have to follow its contract to create a task.
+For instance, the callable object must be copy constructible.
 
 # Access the Result of a Task
 
@@ -73,8 +79,8 @@ This is particularly useful when you would like to pass data between tasks.
 4: std::cout << FuA.get() << std::endl;   // 1
 ```
 
-You should be aware that every time you add a task or a dependency, 
-one node or one edge will be created and included to the present task dependency graph.
+You should be aware that every time you add a task or a dependency,
+it creates only a node or an edge to the present graph.
 The execution does not start until you dispatch the graph.
 For example, the following code will block and never finish:
 
@@ -87,9 +93,10 @@ For example, the following code will block and never finish:
 
 # Create Multiple Tasks at One Time
 
-Cpp-Taskflow leverages the power of modern C++ to make its API easier to use.
-You can create a batch of tasks within a single call
-and apply structured binding to capture the return tasks.
+Cpp-Taskflow uses C++ structured binding coupled with tuple
+to make the creation of tasks simple.
+Both `silent_emplace` and `emplace` can accept arbitrary numbers of callable objects
+and create multiple tasks at one time.
 
 ```cpp
 1: auto [A, B, C] = tf.silent_emplace(  // create three tasks in one call
@@ -152,14 +159,14 @@ Debrief:
 + Line 9-12 creates four tasks
 + Line 15-18 adds four task dependency links
 + Line 20 dispatches the graph and blocks until it completes
-+ Line 23-28 creates four new tasks and reassign the task array to these four tasks
++ Line 23-28 creates four new tasks and reassigns the task array to these four tasks
 + Line 30-32 adds a linear dependency to these four tasks
 + Line 34 dispatches the graph and blocks until it completes
 
-Notice that trying to modify a task handle which refers to a node in a dispatched graph 
+Notice that trying to modify a task in a dispatched graph 
 results in undefined behavior.
 For examples, starting from Line 21, you should not modify any tasks 
-until assigning them to new nodes (Line 23-28).
+but assign them to new targets (Line 23-28).
 
 # Example 2: Modify Task Attributes
 
@@ -215,24 +222,25 @@ got a new work!
 
 Debrief:
 + Line 5 creates a taskflow object of four worker threads
-+ Line 7-10 creates two tasks with empty works and store the corresponding task handles
++ Line 7-10 creates two tasks with empty target and stores the corresponding task handles
   in a vector
 + Line 12-13 names the two tasks with human-readable strings 
 + Line 14 adds a dependency link from the first task to the second task
-+ Line 16-20 prints out each task's name, the number of dependents, 
++ Line 16-20 prints out the name of each task, the number of dependents, 
   and the number of successors
-+ Line 22 dumps the task dependency graph to a [GraphViz][GraphViz] format
-+ Line 24-25 assigns a callable to each task
++ Line 22 dumps the task dependency graph to a [GraphViz][GraphViz] format (dot)
++ Line 24-25 assigns a new target to each task
 + Line 27 dispatches the graph and blocks until the execution finishes
 
-You can change the name and work of a task anytime before dispatching the graph.
-Only the latest information will be used in executing a task.
+You can change the name and work of a task at anytime before dispatching the graph.
+The later assignment overwrites the previous values.
+Only the latest information will be used.
 
 * * *
 
 [GraphViz]:              https://www.graphviz.org/
 [GraphVizOnline]:        https://dreampuf.github.io/GraphvizOnline/
 [std::function]:         https://en.cppreference.com/w/cpp/utility/functional/function
-
-
+[std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
+[std::future]:           https://en.cppreference.com/w/cpp/thread/future
 

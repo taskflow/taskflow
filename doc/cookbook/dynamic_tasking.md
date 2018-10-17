@@ -1,10 +1,8 @@
 # Spawn a Task Dependency Graph at Runtime
 
 It is very common for a parallel program to 
-spawn tasks at runtime.
-In Cpp-Taskflow, we call this *dynamic tasking* - 
-creating another task dependency graph 
-during the execution of a task.
+spawn task dependency graphs at runtime.
+In Cpp-Taskflow, we call this *dynamic tasking*.
 In this tutorial, we are going to demonstrate how to enable dynamic tasking
 in Cpp-Taskflow.
 
@@ -19,10 +17,10 @@ These tasks are spawned from a parent task and are grouped together to a
 *subflow* dependency graph.
 Cpp-Taskflow has an unified interface for static and dynamic tasking.
 To create a subflow for dynamic tasking, emplace a callable 
-that takes one argument of type `SubflowBuilder`.
-A `SubflowBuilder` object will be created during the runtime and
+that takes one argument of type `tf::SubflowBuilder`.
+A `tf::SubflowBuilder` object will be created during the runtime and
 passed to the task.
-All graph building methods you find in taskflow can be also used in a subflow builder.
+All graph building methods you find in taskflow are applicable for a subflow builder.
 
 ```cpp
  1: tf::Taskflow tf(4);  // create a taskflow object with four worker threads
@@ -59,7 +57,8 @@ Debrief:
 + Line 21 dumps the topology that represents the entire task dependency graph
 
 Line 7-13 is the main coding block to enable dynamic tasking.
-Cpp-Taskflow uses a variant date type to unify the interface of static tasking and dynamic tasking.
+Cpp-Taskflow uses a [std::variant][std::variant] date type to 
+unify the interface of static tasking and dynamic tasking.
 The runtime will create a *subflow builder* passing it to task B,
 and spawn a dependency graph as described by the associated callable.
 This new subflow graph will be added to the topology to which its parent task B belongs to.
@@ -151,5 +150,7 @@ A detached subflow will run independently and eventually join the topology
 of its parent subflow.
 
 
+* * *
 
+[std::variant]:    https://en.cppreference.com/w/cpp/header/variant
 
