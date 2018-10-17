@@ -36,6 +36,7 @@
 #include <optional>
 #include <unordered_set>
 #include <unordered_map>
+#include <array>
 
 #include "move_on_copy.hpp"
 
