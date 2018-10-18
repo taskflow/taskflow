@@ -111,23 +111,22 @@ and calling `wait_for_all` to wait until all computations complete.
 3:  // tasks: the placeholders for tasks in Taskflow
 4:  // tf: Taskflow object
 5:  void wavefront(size_t MB, size_t NB, size_t B, double** matrix, std::vector<std::vector<tf::Task>>& tasks, tf::Taskflow& tf){ 
-6:  for(int i=MB; --i>=0;) { 
-7:     for(int j=NB; --j>=0;) { 
-8:       task[i][j].work([=]() {
-9:           block_computation(matrix, B, i, j); 
-10:        }
-11:      );  
-12:      if(j+1 < NB) {
-13:        task[i][j].precede(task[i][j+1]);
-14:      }
-15:      if(i+1 < MB) {
-16:        task[i][j].precede(task[i+1][j]);
-17:      }
-18:    } // End of inner loop
-19:  } // End of outer loop
-20:
-21:  tf.wait_for_all();
-22: }
+6:    for(int i=MB; --i>=0;) { 
+7:      for(int j=NB; --j>=0;) { 
+8:        task[i][j].work([=]() {
+9:          block_computation(matrix, B, i, j); 
+10:       });  
+11:       if(j+1 < NB) {
+12:         task[i][j].precede(task[i][j+1]);
+13:       }
+14:       if(i+1 < MB) {
+15:         task[i][j].precede(task[i+1][j]);
+16:       }
+17:     } // End of inner loop
+18:   } // End of outer loop
+19:
+20:   tf.wait_for_all();
+21: }
 ```
 This function shows the wavefront computing implemented using Cpp-Taskflow. We
 delegate each block to a `tf::Task` and use the `precede` function to specify
