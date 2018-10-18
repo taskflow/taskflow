@@ -5,11 +5,11 @@ through particular operations, for instance, sum.
 In this example, we are going to demonstrate how to use Cpp-Taskflow
 to parallelize a reduction workload.
 
-+ [Reduce](#Reduce-through-an-Operator)
-+ [Transform and Reduce](#Transform-and-Reduce)
-+ [Example 1: Find the Min/Max Element](#Example-1-Find-the-Min-Max-Element)
-+ [Example 2: Pipeline a Reduction Graph](#Example-2-Pipeline-a-Reduction-Graph)
-+ [Example 3: Find the Minimum L1-norm](#Example-3-Find-the-Minimum-L1-norm)
++ [Reduce](#reduce-through-an-operator)
++ [Transform and Reduce](#transform-and-reduce)
++ [Example 1: Find the Min/Max Element](#example-1-find-the-min-max-element)
++ [Example 2: Pipeline a Reducer Graph](#example-2-pipeline-a-reducer-graph)
++ [Example 3: Find the Minimum L1-norm](#example-3-find-the-minimum-L1-norm)
 
 # Reduce
 

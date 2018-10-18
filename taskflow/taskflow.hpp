@@ -433,9 +433,7 @@ inline Task& Task::broadcast(std::vector<Task>& tgts) {
 }
 
 // Function: broadcast
-inline Task& Task::broadcast(
-  std::initializer_list<Task> tgts
-) {
+inline Task& Task::broadcast(std::initializer_list<Task> tgts) {
   _broadcast(tgts);
   return *this;
 }
@@ -1204,7 +1202,7 @@ inline Taskflow::Taskflow() :
 
 // Constructor
 inline Taskflow::Taskflow(unsigned N) : 
-  FlowBuilder {_graph, std::thread::hardware_concurrency()},
+  FlowBuilder {_graph, N},
   _executor   {N} {
 }
 
