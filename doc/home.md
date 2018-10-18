@@ -19,8 +19,8 @@ software architecture, C++ API, and library usages.
 + [Reduce a Container of Items in Parallel](cookbook/reduce.md)
 + [Spawn a Task Dependency Graph at Runtime](cookbook/dynamic_tasking.md)
 
-# Application 
-+ [Wavefront pattern](app/wavefront.md)
+# Application Gallery
++ [Wavefront Computation](app/wavefront/wavefront.md)
 
 # Get More Help
 
