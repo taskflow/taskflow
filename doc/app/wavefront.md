@@ -102,7 +102,7 @@ created for this purpose.
 This function shows the wavefront computing implemented using Intel-TBB flow graph. We 
 build a depedency graph using the `continue_node` type in TBB flow graph and delegate 
 each block to a node. The `make_edge` function specifies the depedency between two nodes 
-and calling `wait_for_all` to wait until all computations complete.
+and calling `wait_for_all` waits until all computations complete.
 
 # Cpp-Taskflow
 
