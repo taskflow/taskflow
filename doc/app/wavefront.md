@@ -12,9 +12,9 @@ from the top-left submatrix to the bottom-right submatrix. Each block precedes t
 right and another below. The blocks with the same color can run concurrently.
 
 
-+ [openmp](#OpenMP)
-+ [intel-tbb](#TBB)
-+ [cpp-taskflow](#cpp-taskflow)
++ [openmp](#openmp)
++ [intel-tbb](#tbb)
++ [Cpp-Taskflow](#cpp-taskflow)
 
 
 # OpenMP 
