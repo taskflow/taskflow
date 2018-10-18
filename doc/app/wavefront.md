@@ -19,46 +19,46 @@ right and another below. The blocks with the same color can run concurrently.
 # OpenMP 
 
 ```cpp
-// MB, NB: number of blocks in the two dimensions. B: dimension of a block
-// matrix: the given 2D matrix 
-// D: dependency matrix 
-1:  void wavefront(size_t MB, size_t NB, size_t B, double** matrix, int** D){
-2:    omp_set_num_threads(std::thread::hardware_concurrency());
-3:    #pragma omp parallel
-4:    {
-5:      #pragma omp single
-6:      {
-7:        for(int i=0; i<MB; i++){
-8:          for(int j=0; j<NB; j++) {
-9:            if(i > 0 && j > 0){
-10:             #pragma omp task depend(in:D[i-1][j], D[i][j-1]) depend(out:D[i][j]) firstprivate(i, j)
-11:             block_computation(matrix, B, i, j);
-12:           }
-13:           // Top left corner
-14:           else if(i == 0 && j == 0){
-15:             #pragma omp task depend(out:D[i][j]) firstprivate(i, j)
-16:             block_computation(matrix, B, i, j);
-17:           }
-18:           // Top edge  
-19:           else if(j+1 <= NB && i == 0 && j > 0){
-20:             #pragma omp task depend(in:D[i][j-1]) depend(out:D[i][j]) firstprivate(i, j)
-21:             block_computation(matrix, B, i, j);
-22:           }
-23:           // Left edge
-24:           else if(i+1 <= MB && i > 0 && j == 0){
-25:             #pragma omp task depend(in:D[i-1][j]) depend(out:D[i][j]) firstprivate(i, j)
-26:             block_computation(matrix, B, i, j);
-27:           }
-28:           // Bottom right corner
-29:           else{
-30:             #pragma omp task depend(in:D[i-1][j] ,D[i][j-1]) firstprivate(i, j)
-31:             block_computation(matrix, B, i, j);
-32:           }
-33:         } // End of inner loop
-34:       }  // End of outer loop
-35:     } // End of omp single 
-36:   } // End of omp parallel 
-37: }
+1:  // MB, NB: number of blocks in the two dimensions. B: dimension of a block
+2:  // matrix: the given 2D matrix 
+3:  // D: dependency matrix 
+4:  void wavefront(size_t MB, size_t NB, size_t B, double** matrix, int** D){
+5:    omp_set_num_threads(std::thread::hardware_concurrency());
+6:    #pragma omp parallel
+7:    {
+8:      #pragma omp single
+9:      {
+10:       for(int i=0; i<MB; i++){
+11:         for(int j=0; j<NB; j++) {
+12:           if(i > 0 && j > 0){
+13:             #pragma omp task depend(in:D[i-1][j], D[i][j-1]) depend(out:D[i][j]) firstprivate(i, j)
+14:             block_computation(matrix, B, i, j);
+15:           }
+16:           // Top left corner
+17:           else if(i == 0 && j == 0){
+18:             #pragma omp task depend(out:D[i][j]) firstprivate(i, j)
+19:             block_computation(matrix, B, i, j);
+20:           }
+21:           // Top edge  
+22:           else if(j+1 <= NB && i == 0 && j > 0){
+23:             #pragma omp task depend(in:D[i][j-1]) depend(out:D[i][j]) firstprivate(i, j)
+24:             block_computation(matrix, B, i, j);
+25:           }
+26:           // Left edge
+27:           else if(i+1 <= MB && i > 0 && j == 0){
+28:             #pragma omp task depend(in:D[i-1][j]) depend(out:D[i][j]) firstprivate(i, j)
+29:             block_computation(matrix, B, i, j);
+30:           }
+31:           // Bottom right corner
+32:           else{
+33:             #pragma omp task depend(in:D[i-1][j] ,D[i][j-1]) firstprivate(i, j)
+34:             block_computation(matrix, B, i, j);
+35:           }
+36:         } // End of inner loop
+37:       }  // End of outer loop
+38:     } // End of omp single 
+39:   } // End of omp parallel 
+40: }
 ```
 
 This function shows the wavefront computing implemented using OpenMP. Each
