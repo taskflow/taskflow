@@ -117,7 +117,7 @@ and use it to explicitly specify both input and output task dependencies.
 10:     for(int j=NB; --j>=0;) {
 11:       node[i][j] = new continue_node<continue_msg>(G,
 12:         [=](const continue_msg&) {
-13:           block_computation(matrix, i, j); 
+13:           block_computation(matrix, B, i, j); 
 14:       });
 15:       if(i+1 < MB) {
 16:          make_edge(*node[i][j], *node[i+1][j]);
