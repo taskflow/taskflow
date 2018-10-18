@@ -81,7 +81,7 @@ created for this purpose.
 8:  void wavefront(size_t MB, size_t NB, size_t B, double** matrix, continue_node<continue_msg> ***nodes, Graph& G){ 
 9:   for(int i=MB; --i>=0;) { 
 10:     for(int j=NB; --j>=0;) {
-11:       node[i][j] = new tbb::flow::continue_node<tbb::flow::continue_msg>(G,
+11:       node[i][j] = new continue_node<continue_msg>(G,
 12:         [=](const continue_msg&) {
 13:           block_computation(matrix, i, j); 
 14:       });
