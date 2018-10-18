@@ -14,6 +14,10 @@ software architecture, C++ API, and library usages.
 + [Reduce a Container of Items in Parallel](examples/reduce.md)
 + [Spawn a Task Dependency Graph at Runtime](examples/dynamic_tasking.md)
 
+
+# Application 
++ [Wavefront pattern](app/wavefront.md)
+
 # Application Programming Interface (API)
 
 + Task
