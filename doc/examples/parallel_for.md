@@ -3,10 +3,10 @@
 In this tutorial, we are going to demonstrate how to use Cpp-Taskflow
 to run a for loop in parallel.
 
-+ [Range-based For Loop](#Range-based-For-Loop)
-+ [Index-based For Loop](#Index-based-For-Loop)
-+ [Example 1: Parallel Map](#Example-1-Parallel-Map)
-+ [Example 2: Pipeline a Parallel For](#Example-2-Pipeline-a-Parallel-For)
++ [Range-based For Loop](#range-based-for-loop)
++ [Index-based For Loop](#index-based-for-loop)
++ [Example 1: Parallel Map](#example-1-parallel-map)
++ [Example 2: Pipeline a Parallel For](#example-2-pipeline-a-parallel-for)
 
 # Range-based For Loop
 

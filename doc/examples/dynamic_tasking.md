@@ -8,9 +8,9 @@ during the execution of a task.
 In this tutorial, we are going to demonstrate how to enable dynamic tasking
 in Cpp-Taskflow.
 
-+ [Subflow Dependency Graph](#Subflow-Dependency-Graph)
-+ [Detach a Subflow Dependency Graph](#Detach-a-Subflow-Dependency-Graph)
-+ [Nested Subflow](#Nested-Subflow)
++ [Subflow Dependency Graph](#subflow-dependency-graph)
++ [Detach a Subflow Dependency Graph](#detach-a-subflow-dependency-graph)
++ [Nested Subflow](#nested-subflow)
 
 # Subflow Dependency Graph
 

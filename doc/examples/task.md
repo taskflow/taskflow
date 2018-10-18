@@ -3,11 +3,11 @@
 In this tutorial, we are going to demonstrate the basic construct of 
 a task dependency graph - *Task*.
 
-+ [Create a Task](#Create-a-Task)
-+ [Access the Result of a Task](#Access-the-Result-of-a-Task)
-+ [Create Multiple Tasks at One Time](#Create-Multiple-Tasks-at-One-Time)
-+ [Example 1: Create Multiple Dependency Graphs](#Example-1-Create-Multiple-Dependency-Graphs)
-+ [Example 2: Modify Task Attributes](#Example-2-Modify-Task-Attributes)
++ [Create a Task](#create-a-task)
++ [Access the Result of a Task](#access-the-result-of-a-task)
++ [Create Multiple Tasks at One Time](#create-multiple-tasks-at-one-time)
++ [Example 1: Create Multiple Dependency Graphs](#example-1-create-multiple-dependency-graphs)
++ [Example 2: Modify Task Attributes](#example-2-modify-task-attributes)
 
 # Create a Task
 

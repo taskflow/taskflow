@@ -3,9 +3,9 @@
 In this tutorial, we are going to demonstrate how to write a Cpp-Taskflow's
 "hello world" program.
 
-+ [Set up Cpp-Taskflow](#Set-up-Cpp-Taskflow)
-+ [Create a Simple Taskflow Graph](#Create-a-Simple-Taskflow-Graph)
-+ [Compile and Run](#Compile-and-Run)
++ [Set up Cpp-Taskflow](#set-up-cpp-taskflow)
++ [Create a Simple Taskflow Graph](#create-a-simple-taskflow-graph)
++ [Compile and Run](#compile-and-run)
 
 # Set up Cpp-Taskflow
 
