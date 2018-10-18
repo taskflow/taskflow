@@ -81,8 +81,8 @@ created for this purpose.
 9:   for(int i=MB; --i>=0;) { 
 10:     for(int j=NB; --j>=0;) {
 11:       node[i][j] = new tbb::flow::continue_node<tbb::flow::continue_msg>(G,
-12:           [=](const continue_msg&) {
-13:            block_computation(matrix, i, j); 
+12:         [=](const continue_msg&) {
+13:           block_computation(matrix, i, j); 
 14:       });
 15:       if(i+1 < MB) {
 16:          make_edge(*node[i][j], *node[i+1][j]);
