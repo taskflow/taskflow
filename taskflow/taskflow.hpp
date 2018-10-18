@@ -178,7 +178,7 @@ class Node {
     std::vector<Node*> _successors;
     std::atomic<int> _dependents;
 
-    Graph _subgraph;
+    std::optional<Graph> _subgraph;
 
     Topology* _topology;
 
@@ -246,7 +246,7 @@ inline void Node::_dump(std::ostream& os) const {
     os << ";\n";
   }
   
-  if(!_subgraph.empty()) {
+  if(_subgraph && !_subgraph->empty()) {
 
     os << "subgraph cluster_";
     if(_name.empty()) os << this;
@@ -259,7 +259,7 @@ inline void Node::_dump(std::ostream& os) const {
 
     os << "\";\n" << "color=blue\n";
 
-    for(const auto& n : _subgraph) {
+    for(const auto& n : *_subgraph) {
       n._dump(os);
     }
     os << "}\n";
@@ -327,8 +327,8 @@ inline Topology::Topology(Graph&& t) :
 // Procedure: _dump
 inline void Topology::_dump(std::ostream& os) const {
 
-  assert(_source._subgraph.empty());
-  assert(_target._subgraph.empty());
+  assert(_source._subgraph->empty());
+  assert(_target._subgraph->empty());
   
   os << "digraph Topology {\n"
      << _source.dump() 
@@ -1146,21 +1146,25 @@ inline void Taskflow::Closure::operator () () const {
   // to re-execute the work.
   else {
     assert(std::holds_alternative<DynamicWork>(node->_work));
+		
+    if(!node->_subgraph.has_value()){
+      node->_subgraph.emplace();  // Initialize the _subgraph		
+		}
     
-    SubflowBuilder fb(node->_subgraph, taskflow->num_workers());
+    SubflowBuilder fb(*(node->_subgraph), taskflow->num_workers());
 
-    bool empty_graph = node->_subgraph.empty();
+    bool empty_graph = node->_subgraph->empty();
 
     std::invoke(std::get<DynamicWork>(node->_work), fb);
     
     // Need to create a subflow
     if(empty_graph) {
 
-      auto& S = node->_subgraph.emplace_front([](){});
+      auto& S = node->_subgraph->emplace_front([](){});
 
       S._topology = node->_topology;
 
-      for(auto i = std::next(node->_subgraph.begin()); i != node->_subgraph.end(); ++i) {
+      for(auto i = std::next(node->_subgraph->begin()); i != node->_subgraph->end(); ++i) {
 
         i->_topology = node->_topology;
 
