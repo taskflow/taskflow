@@ -6,6 +6,8 @@
 #include <taskflow/taskflow.hpp>  // the only include you need
 
 int main(){
+
+  tf::Taskflow tf;
   
   auto [A, B, C, D] = tf.silent_emplace(   //  the taskflow graph
     [] () { std::cout << "TaskA\n"; },     //                                 
