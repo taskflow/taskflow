@@ -20,6 +20,7 @@ We consider three implementations for comparison purpose:
 + [Cpp-Taskflow](#cpp-taskflow)
 + [OpenMp](#openmp)
 + [Intel Thread Building Blocks (TBB)](#intel-thread-building-blocks)
++ [Comparison](#comparison)
 
 # Cpp-Taskflow
 
@@ -137,6 +138,39 @@ This function shows the wavefront computing implemented using Intel-TBB flow gra
 build a dependency graph using the `continue_node` type in TBB flow graph and delegate 
 each block to a node. The `make_edge` function specifies the dependency between two nodes 
 and calling `wait_for_all` waits until all computations complete.
+
+
+# Comparison 
+We compare the three implementations on development effort and performance:
+
+### Development effort
+OpenMP (37) has more lines of code (LOC) than Intel-TBB (19) and Cpp-Taskflow (17) because of
+specifying the dependency. OpenMP requires programmers to explicitly annotate
+full dependency list (in and out) using additional variables (`D` in
+this example). Intel-TBB and Cpp-Taskflow have similar LOC but Cpp-Taskflow is 
+less verbose. 
+
+
+### Performance
+We conduct two experiments: *varying the matrix size (number of tasks (blocks))* and
+*varying the block size (workload per task)* to compare the performance between the 
+three implementations and a sequential implementation. All experiments run on a
+Linux machine of 4 Intel CPUs 3.2GHz and 24 GB memory. For the first
+experiment, we fix the block size to 100x100 and test four matrix sizes:
+10Kx10K, 20Kx20K, 30Kx30K and 40Kx40K.  For the second experiment, we fix the
+matrix size to 40Kx40K and test four block sizes: 20x20, 40x40, 80x80 and 160x160.
+![](experiment.png)
+The left figure summarizes the runtime of varying the matrix size and the right 
+figure shows the runtime of varying the block size. In the first experiment the
+three implementations have very close runtime and are significantly faster
+than the sequential implementation. In the second experiment, Intel-TBB achieves 
+the fastest runtime across all cases and OpenMP is the slowest among the three.
+The performance margin of Cpp-Taskflow to Intel-TBB is only about 5%.
+The dependency check could be the reason for slower performance of OpenMP. 
+There may be a better solution using OpenMP and here we just stick to 
+the straightforward implementation.
+
+
 
 
 
