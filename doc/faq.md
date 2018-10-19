@@ -96,6 +96,19 @@ tf::Taskflow(N);    // N workers, N+1 threads in the program.
 
 If there is no worker threads in the pool, the master thread will do all the works by itself.
 
+## Q: What is the difference between a Task and a Task Handle?
+
+A task in Cpp-Taskflow is a callable object 
+for which the operation [std::invoke][std::invoke] is applicable.
+It can be either 
+a functor, a lambda expression, a bind expression, 
+or a class objects with `operator()` overloaded.
+
+A task handle is a lightweight object
+that wraps up a particular node in a graph
+and provides a set of methods for you to assign different attributes to the task
+such as adding dependencies, naming, and assigning a new work.
+
 ## Q: Is taskflow thread-safe?
 
 No, the taskflow object is not thread-safe. You can't create tasks from multiple threads
@@ -143,18 +156,13 @@ for(int i=0; i<N; ++i) {
 tf.wait_for_all();
 ```
 
-## Q: What is a Task?
-
-A `Task` is a lightweight handle associated with an internal graph node
-for users to build task dependencies.
-We do not allow users to explicitly access the internal node but using this wrapper
-to assign different attributes to a graph node.
 
 * * *
 [Github issues]:         https://github.com/cpp-taskflow/cpp-taskflow/issues
 [OpenTimer]:             https://github.com/OpenTimer/OpenTimer
 [README]:                ../README.md
 [C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
+[std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
 
 
 

@@ -1,4 +1,4 @@
-# Understand the Task Construct
+# Understand the Task
 
 In this tutorial, we are going to demonstrate the basic construct of 
 a task dependency graph - *Task*.
@@ -6,6 +6,7 @@ a task dependency graph - *Task*.
 + [Create a Task](#create-a-task)
 + [Access the Result of a Task](#access-the-result-of-a-task)
 + [Create Multiple Tasks at One Time](#create-multiple-tasks-at-one-time)
++ [Lifetime of a Task](#lifetime-of-a-task)
 + [Example 1: Create Multiple Dependency Graphs](#example-1-create-multiple-dependency-graphs)
 + [Example 2: Modify Task Attributes](#example-2-modify-task-attributes)
 
@@ -26,11 +27,13 @@ to create a task.
 
 Debrief:
 + Line 1 creates an empty task 
-+ Line 2 creates a task from a given callable object
-+ Line 3 creates a task from a given callable object and returns an additional [std::future][std::future] object for users
++ Line 2 creates a task from a given callable object and returns a task handle
++ Line 3 creates a task from a given callable object and returns, in addition to a task handle,
+  a [std::future][std::future] object for the program
   to access the return value when the task finishes
 
-Each time you create a task, the taskflow object adds a node to the present graph
+Each time you create a task, including an empty one, 
+the taskflow object adds a node to the present graph
 and returns a *task handle* of type `tf::Task`.
 A task handle is a lightweight object
 that wraps up a particular node in a graph
@@ -105,6 +108,17 @@ and create multiple tasks at one time.
 4:   [](){ std::cout << "Task C\n"; }
 5: );
 ```
+
+# Lifetime of A Task
+
+A task lives with its graph, and is not destroyed until its parent graph
+gets cleaned up.
+A task belongs to only a graph at a time.
+The lifetime of a task mostly refers to the user-given callable object,
+including captured values.
+As long as the graph is alive,
+all the associated tasks remain their existence.
+
 
 ---
 

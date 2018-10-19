@@ -1,14 +1,14 @@
-# Parallelize a For Loop
+# Create a Paralle For-loop Graph
 
 In this tutorial, we are going to demonstrate how to use Cpp-Taskflow
-to run a for loop in parallel.
+to run a for-loop in parallel.
 
-+ [Range-based For Loop](#range-based-for-loop)
-+ [Index-based For Loop](#index-based-for-loop)
++ [Range-based For-loop](#range-based-for-loop)
++ [Index-based For-loop](#index-based-for-loop)
 + [Example 1: Parallel Map](#example-1-parallel-map)
 + [Example 2: Pipeline a Parallel For](#example-2-pipeline-a-parallel-for)
 
-# Range-based For Loop
+# Range-based For-loop
 
 Cpp-Taskflow has a STL-style method `parallel_for` 
 that takes a range of items and applies a callable to each of the item in parallel.
@@ -85,7 +85,7 @@ and would like to enable more efficient parallelization.
 ## Construct the Graph Explicitly
 
 You can explicitly construct a dependency graph that represents a parallel execution 
-of a for loop.
+of a for-loop.
 using only the basic methods `silent_emplace` and `precede`.
 
 
@@ -102,9 +102,9 @@ for(auto item : items) {
 }
 ```
 
-# Index-based For Loop
+# Index-based For-loop
 
-To parallelize a for loop based on index, you can use the capture feature of C++ lambda.
+To parallelize a for-loop based on index, you can use the capture feature of C++ lambda.
 
 ```cpp
  1: auto S = tf.silent_emplace([] () {}).name("S");
