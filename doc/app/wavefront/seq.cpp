@@ -57,14 +57,6 @@ int main(int argc, char *argv[]) {
   std::cout << "Seq: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count() << " ms, Result = "
             << value[M-1][N-1] << '\n';
 
-  //for( int i=0; i<M; ++i){
-  //    for( int j=0; j<N; ++j) {
-  //      std::cout << value[i][j] << ' ';
-  //    }
-  //    std::cout << '\n';
-  //}
-
-
   for ( int i = 0; i < M; ++i ) delete [] value[i];
   delete [] value;
   return 0;

@@ -15,12 +15,14 @@ In other word, each block precedes two blocks, one to the
 right and another below. 
 The blocks with the same color can run concurrently.
 
-We consider three implementations for comparison purpose:
+We consider a baseline sequential program and 
+compare with three parallel implementations with Cpp-Taskflow, OpenMP, 
+and Intel Thread Building Blocks (TBB).
 
 + [Cpp-Taskflow](#cpp-taskflow)
-+ [OpenMp](#openmp)
++ [OpenMP](#openmp)
 + [Intel Thread Building Blocks (TBB)](#intel-thread-building-blocks)
-+ [Comparison](#comparison)
++ [Debrief](#debrief)
 
 # Cpp-Taskflow
 
@@ -140,43 +142,71 @@ each block to a node. The `make_edge` function specifies the dependency between 
 and calling `wait_for_all` waits until all computations complete.
 
 
-# Comparison 
-We compare the three implementations on development effort and performance:
+# Debrief
 
-### Development effort
-OpenMP (37) has more lines of code (LOC) than Intel-TBB (19) and Cpp-Taskflow (17) because of
-specifying the dependency. OpenMP requires programmers to explicitly annotate
-full dependency list (in and out) using additional variables (`D` in
-this example). Intel-TBB and Cpp-Taskflow have similar LOC but Cpp-Taskflow is 
-less verbose. 
+We evaluate our implementations on a 
+Linux Ubuntu machine of 4 Intel CPUs 3.2GHz and 24 GB memory. 
 
+## Software Cost
 
-### Performance
-We conduct two experiments: *varying the matrix size (number of tasks (blocks))* and
-*varying the block size (workload per task)* to compare the performance between the 
-three implementations and a sequential implementation. All experiments run on a
-Linux machine of 4 Intel CPUs 3.2GHz and 24 GB memory. For the first
+We use the famous Linux tool [SLOCCount][SLOCCount] to measure the software cost of
+each implementation.
+The cost model is based on the *constructive cost model* (COCOMO).
+In the table below, **SLOC** denotes souce lines of code, 
+**Dev Effort** denotes development effort estimate (person-months),
+**Sched Estimate** denotes schedule estimate (years),
+**Developers** denotes the estimate number of developers,
+**Dev Cost** denotes total estimated cost to develop.
+All quantities are better with fewer values.
+
+| Task Model   | SLOC | Dev Effort | Sched Estimate | Developers | Dev Cost |
+| ------------ | ---- | ---------- | -------------- | ---------- | -------- |
+| Sequential   | 55   | 0.01       | 0.09           | 0.10       | $1,285   |
+| Cpp-Taskflow | 78   | 0.01       | 0.10           | 0.13       | $1,855   |
+| OpenMP 4.5   | 109  | 0.02       | 0.12           | 0.16       | $2,636   |
+| Intel TBB    | 87   | 0.02       | 0.11           | 0.14       | $2,080   |
+
+The sequential program obviously has the least software cost.
+In terms of parallel implementations,
+Cpp-Taskflow is the most cost-efficient compared with OpenMP and TBB.
+Our task model facilitates the implementations of parallel decomposition strategies
+and algorithms.
+
+## Performance
+
+We alter the matrix size and the block size
+to compare the performance between the sequential program, Cpp-Taskflow, OpenMP, and Intel TBB.
+For the first
 experiment, we fix the block size to 100x100 and test four matrix sizes:
-10Kx10K, 20Kx20K, 30Kx30K and 40Kx40K.  For the second experiment, we fix the
+10Kx10K, 20Kx20K, 30Kx30K and 40Kx40K. 
+For the second experiment, we fix the
 matrix size to 40Kx40K and test four block sizes: 20x20, 40x40, 80x80 and 160x160.
+
 ![](experiment.png)
-The left figure summarizes the runtime of varying the matrix size and the right 
-figure shows the runtime of varying the block size. In the first experiment the
-three implementations have very close runtime and are significantly faster
-than the sequential implementation. In the second experiment, Intel-TBB achieves 
-the fastest runtime across all cases and OpenMP is the slowest among the three.
-The performance margin of Cpp-Taskflow to Intel-TBB is only about 5%.
-The dependency check could be the reason for slower performance of OpenMP. 
-There may be a better solution using OpenMP and here we just stick to 
-the straightforward implementation.
 
+The left figure shows the first experiment under different matrix sizes and
+the right figure shows the second experiment under different block sizes.
+In general,
+both Cpp-Taskflow and TBB outperforms OpenMP.
+TBB is the fastest across all benchmarks but the performance margin to Cpp-Taskflow
+is only about 1-5%.
+We believe the slowness of OpenMP attributes to the static property of its dependency clauses.
+We need to explicitly specify all possible dependency constraints
+in order to cover all conditions.
+This gives rise to a number of if-else and switch statements
+that can potentially slow down the runtime.
 
+## Remark
 
+We expect TBB to be a bit faster than Cpp-Taskflow as the flexibility and programmability
+of our graph model takes a few overhead - there is no free lunch!
+However, the performance difference between Cpp-Taskflow and TBB is very tiny
+in this workload.
 
 
 * * *
 
 [GraphvizOnline]:        https://dreampuf.github.io/GraphvizOnline/
 [Intel Developer Zone]:  https://software.intel.com/en-us/blogs/2011/09/09/implementing-a-wave-front-computation-using-the-intel-threading-building-blocks-flow-graph
-
+[SLOCCount]:             https://dwheeler.com/sloccount/
 
