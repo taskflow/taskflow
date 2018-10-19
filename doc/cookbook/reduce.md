@@ -1,4 +1,4 @@
-# Reduce a Container of Items in Parallel
+# Create a Parallel Reduction Graph
 
 Parallel tasks normally produce some quantity that needs to be combined or *reduced*
 through particular operations, for instance, sum.

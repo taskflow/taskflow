@@ -5,12 +5,13 @@ you need to dispatch it to threads for execution
 In this tutorial, we will show you how to execute a 
 task dependency graph.
 
-+ [Graph and Topology](#Graph-and-Topology)
-+ [Blocking Execution](#Blocking-Execution)
-+ [Non-blocking Execution](#Non-blocking-Execution)
-+ [Wait on Topologies](#Wait-on-Topologies)
-+ [Example 1: Multiple Dispatches](#Example-1-Multiple-Dispatches)
-+ [Example 2: Connect Two Dependency Graphs](#Example-2-Connect-Two-Dependency-Graphs)
++ [Graph and Topology](#graph-and-topology)
++ [Blocking Execution](#blocking-execution)
++ [Non-blocking Execution](#non-blocking-execution)
++ [Wait on Topologies](#wait-on-topologies)
++ [Lifetime of a Graph](#lifetime-of-a-graph)
++ [Example 1: Multiple Dispatches](#example-1-multiple-dispatches)
++ [Example 2: Connect Two Dependency Graphs](#example-2-connect-two-dependency-graphs)
 
 # Graph and Topology
 
@@ -138,6 +139,98 @@ After Line 11, there are two topologies in the taskflow object.
 Calling the method `wait_for_topologies` blocks the
 program until both graph complete.
 
+# Lifetime of a Graph
+
+In Cpp-Taskflow, the lifetime of a task sticks with its parent graph.
+The lifetime of a task mostly refers to the user-given callable objects,
+including those captured by a lambda expression.
+When a graph is destroyed, all of its tasks are destroyed.
+Consider the following example that uses 
+[std::shared_ptr][std::shared_ptr] to demonstrate the lifetime of a graph and
+the impact on its task.
+
+```cpp
+ 1: tf::Taskflow tf;
+ 2:
+ 3: auto ptr = std::make_shared<int>(0);
+ 4:
+ 5: std::cout << "reference count before A and B: " << ptr.use_count() << '\n';
+ 6:
+ 7: auto A = tf.silent_emplace([ptr] () {
+ 8:   std::cout << "reference count at A: " << ptr.use_count() << '\n';
+ 9: });
+10:
+11: auto B = tf.silent_emplace([ptr] () {
+12:   std::cout << "reference count at B: " << ptr.use_count() << '\n';
+13: });
+14:
+15: A.precede(B);
+16:
+17: std::cout << "reference count after A and B: " << ptr.use_count() << '\n';
+18:
+19: tf.wait_for_all();
+20:
+21: std::cout << "reference count after A and B: " << ptr.use_count() << '\n';
+```
+
+The output is as follows:
+
+```bash
+reference count before A and B: 1
+reference count after A and B: 3
+reference count at A: 3
+reference count at B: 3
+reference count after A and B: 1
+```
+
+In Line 5, we created a shared pointer object with one reference count on itself.
+After Line 7-13, the reference count increases by two because
+task A and task B both capture a copy of the shared pointer.
+The lifetime of a task has nothing to do with its dependency constraints,
+as shown in Line 8, Line 12, and Line 17.
+However, Line 19 dispatches the graph to threads and cleans up its data structure
+upon finish, including all associated tasks.
+Therefore, the reference count in Line 21 drops down to one (owner at Line 3).
+
+Now let's use the same example but dispatch the graph asynchronously.
+
+```cpp
+ 1: tf::Taskflow tf;
+ 2:
+ 3: auto ptr = std::make_shared<int>(0);
+ 4:
+ 5: std::cout << "reference count before A and B: " << ptr.use_count() << '\n';
+ 6:
+ 7: auto A = tf.silent_emplace([ptr] () {
+ 8:   std::cout << "reference count at A: " << ptr.use_count() << '\n';
+ 9: });
+10:
+11: auto B = tf.silent_emplace([ptr] () {
+12:   std::cout << "reference count at B: " << ptr.use_count() << '\n';
+13: });
+14:
+15: A.precede(B);
+16:
+17: std::cout << "reference count after A and B: " << ptr.use_count() << '\n';
+18:
+19: tf.dispatch().get();  // dispatch the graph without destroying it
+20:
+21: std::cout << "reference count after A and B: " << ptr.use_count() << '\n';
+```
+
+In Line 19, we replace `wait_for_all` with `disaptch` to dispatch the graph asynchronously
+without cleaning up its data structures upon completion.
+In other words, task A and task B remains un-destructed after Line 19,
+and the reference count at this point remains three.
+
+```bash
+reference count before A and B: 1
+reference count after A and B: 3
+reference count at A: 3
+reference count at B: 3
+reference count after A and B: 3
+```
+
 # Example 1: Multiple Dispatches
 
 The example below demonstrates how to create multiple task dependency graphs and 
@@ -252,4 +345,8 @@ the first dependency graph must have already finished due to Line 31.
 The result of the variable `sum` ends up being the summation over 
 the integer sequence `[0, 1, 2, ..., 1024)`.
 
+
+* * *
+
+[std::shared_ptr]:  https://en.cppreference.com/w/cpp/memory/shared_ptr
 
