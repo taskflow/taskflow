@@ -118,6 +118,7 @@ The lifetime of a task mostly refers to the user-given callable object,
 including captured values.
 As long as the graph is alive,
 all the associated tasks remain their existence.
+We recommend the users to read [Lifetime of a Graph][Lifetime of a Graph].
 
 
 ---
@@ -257,4 +258,5 @@ Only the latest information will be used.
 [std::function]:         https://en.cppreference.com/w/cpp/utility/functional/function
 [std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
 [std::future]:           https://en.cppreference.com/w/cpp/thread/future
+[Lifetime of a Graph]:   dispatch.md#lifetime-of-a-graph
 

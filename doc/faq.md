@@ -3,9 +3,9 @@
 This page summarizes a list of frequently asked questions about Cpp-Taskflow.
 If you cannot find a solution here, please post an issue [here][Github issues].
 
-+ [General Questions](#General-Questions)
-+ [Compilation Issues](#Compilation-Issues)
-+ [Programming Questions](#Programming-Questions)
++ [General Questions](#general-questions)
++ [Compilation Issues](#compilation-issues)
++ [Programming Questions](#programming-questions)
 
 ---
 
@@ -108,6 +108,11 @@ A task handle is a lightweight object
 that wraps up a particular node in a graph
 and provides a set of methods for you to assign different attributes to the task
 such as adding dependencies, naming, and assigning a new work.
+
+## Q: What is the Lifetime of a Task and a Graph?
+
+The lifetime of a task sticks with its parent graph. A task is not destroyed until its parent
+graph is destroyed.
 
 ## Q: Is taskflow thread-safe?
 

@@ -12,7 +12,7 @@ software architecture, C++ API, and library usages.
 
 # Cookbook
 
-+ [Write your First Cpp-Taskflow Program](cookbook/hello_world.md)
++ [Write Your First Cpp-Taskflow Program](cookbook/hello_world.md)
 + [Understand the Task](cookbook/task.md)
 + [Execute a Task Dependency Graph](cookbook/dispatch.md)
 + [Create a Parallel For-loop Graph](cookbook/parallel_for.md)

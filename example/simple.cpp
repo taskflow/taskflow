@@ -7,8 +7,6 @@
 
 int main(){
   
-  tf::Taskflow tf(std::thread::hardware_concurrency());
-
   auto [A, B, C, D] = tf.silent_emplace(   //  the taskflow graph
     [] () { std::cout << "TaskA\n"; },     //                                 
     [] () { std::cout << "TaskB\n"; },     //          +---+                  
