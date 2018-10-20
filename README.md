@@ -40,7 +40,7 @@ you need in most applications.
 
 int main(){
   
-  tf::Taskflow tf(std::thread::hardware_concurrency());
+  tf::Taskflow tf;
 
   auto [A, B, C, D] = tf.silent_emplace(
     [] () { std::cout << "TaskA\n"; },               //  task dependency graph
@@ -103,24 +103,35 @@ b3.precede(T);    // b3 runs before T
 ```
 
 # Create a Taskflow Graph
+
 Cpp-Taskflow has very expressive and neat methods to create dependency graphs.
 Most applications are developed through the following three steps.
 
 ## Step 1: Create a Task
-To start a task dependency graph, 
-create a taskflow object and specify the number of working threads.
+
+A task is a callable object for which [std::invoke][std::invoke] is applicable.
+Create a taskflow object to start a task dependency graph.
+
 ```cpp
-tf::Taskflow tf(std::max(1u, std::thread::hardware_concurrency()));
+tf::Taskflow tf;
 ```
-Create a task via the method `emplace` and get a pair of `Task` and `future`.
+
+
+Create a task from a callable object via the method `emplace` and 
+get a pair of a task handle and a [std::future][std::future] object.
+
 ```cpp
 auto [A, F] = tf.emplace([](){ std::cout << "Task A\n"; return 1; });
 ```
-If you don't need a `future` to retrieve the result, use the method `silent_emplace` instead.
+
+If you don't need to access the returned result, use the method `silent_emplace` instead.
+
 ```cpp
 auto A = tf.silent_emplace([](){ std::cout << "Task A\n"; });
 ```
-Both methods implement variadic templates and can take arbitrary numbers of callables to create multiple tasks at one time.
+
+Both methods can take arbitrary numbers of callables to create multiple tasks at one time.
+
 ```cpp
 auto [A, B, C, D] = tf.silent_emplace(
   [] () { std::cout << "Task A\n"; },
@@ -131,6 +142,7 @@ auto [A, B, C, D] = tf.silent_emplace(
 ```
 
 ## Step 2: Define Task Dependencies
+
 Once tasks are created in the pool, you need to specify task dependencies in a 
 [Directed Acyclic Graph (DAG)](https://en.wikipedia.org/wiki/Directed_acyclic_graph) fashion.
 The handle `Task` supports different methods for you to describe task dependencies.
@@ -158,7 +170,7 @@ tf.linearize(A, B, C, D);  // A runs before B, B runs before C, and C runs befor
 
 ## Step 3: Execute the Tasks
 
-There are three methods to carry out a task dependency graph, 
+There are three methods to execute a task dependency graph, 
 `dispatch`, `silent_dispatch`, and `wait_for_all`.
 
 ```cpp
@@ -172,8 +184,8 @@ Calling `wait_for_all` will block until all tasks complete.
 tf.wait_for_all();
 ```
 
-Each of these methods will dispatch the current graph to the work queue
-and create a data structure called *topology* to store the execution state.
+Each of these methods dispatches the current graph to threads for execution
+and create a data structure called *topology* to store the execution status.
 
 
 # Dynamic Tasking
@@ -242,7 +254,7 @@ emplace a callable on one argument of type `tf::SubflowBuilder`.
 auto A = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {});
 ```
 
-Similarly, you can get a future object to the execution status of the subflow.
+Similarly, you can get a [std::future][std::future] object to the execution status of the subflow.
 
 ```cpp
 auto [A, fu] = tf.emplace([] (tf::SubflowBuilder& subflow) {});
@@ -441,7 +453,7 @@ std::cout << tf.dump_topologies();
 
 ## Taskflow API
 
-The class `tf::Taskflow` is the main place to create taskflow graphs and carry out task dependencies.
+The class `tf::Taskflow` is the main place to create and execute task dependency graph.
 The table below summarizes a list of commonly used methods.
 Visit [documentation][wiki] to see the complete list.
 
@@ -470,7 +482,7 @@ Visit [documentation][wiki] to see the complete list.
 ### *emplace/silent_emplace/placeholder*
 
 The main different between `emplace` and `silent_emplace` is the return value.
-The method `emplace` gives you a future object to retrieve the result of the callable 
+The method `emplace` gives you a [std::future][std::future] object to retrieve the result of the callable 
 when the task completes.
 
 ```cpp
@@ -582,8 +594,9 @@ auto [S, T] = tf.transform_reduce(v.begin(), v.end(), min,
 By default, all reduce methods distribute the workload evenly across threads.
 
 ### *dispatch/silent_dispatch/wait_for_topologies/wait_for_all*
+
 Dispatching a taskflow graph will schedule threads to execute the current graph and return immediately.
-The method `dispatch` gives you a future object to probe the execution progress while
+The method `dispatch` gives you a [std::future][std::future] object to probe the execution progress while
 `silent_dispatch` doesn't.
 
 ```cpp
@@ -613,7 +626,10 @@ std::cout << "all topologies complete" << '\n';
 
 ## Task API
 
-Each task object is a lightweight handle for you to create dependencies in its associated graph. 
+Each time you create a task, the taskflow object adds a node to the present task dependency graph
+and return a *task handle* to you.
+A task handle is a lightweight object that defines a set of methods for users to
+access and modify the attributes of the associated task.
 The table below summarizes the list of commonly used methods.
 Visit [documentation][wiki] to see the complete list.
 
@@ -679,6 +695,7 @@ A.gather(B, C, D, E);
 ```
 
 # Caveats
+
 While Cpp-Taskflow enables the expression of very complex task dependency graph that might contain 
 thousands of task nodes and links, there are a few amateur pitfalls and mistakes to be aware of.
 
@@ -690,12 +707,14 @@ Cpp-Taskflow is known to work on most Linux distributions and MAC OSX.
 Please [let me know][email me] if you found any issues in a particular platform.
 
 # System Requirements
+
 To use Cpp-Taskflow, you only need a [C++17][C++17] compiler:
 + GNU C++ Compiler G++ v7.2 with -std=c++1z
 + Clang 5.0 C++ Compiler with -std=c++17
 + Microsoft Visual Studio Version 15.7 (MSVC++ 19.14)
 
 # Compile Unit Tests and Examples
+
 Cpp-Taskflow uses [CMake](https://cmake.org/) to build examples and unit tests.
 We recommend using out-of-source build.
 
@@ -706,19 +725,24 @@ We recommend using out-of-source build.
 ~$ cmake ../
 ~$ make 
 ```
+
 ## Unit Tests
+
 Cpp-Taskflow uses [Doctest](https://github.com/onqtam/doctest) for unit tests.
+
 ```bash
 ~$ ./unittest/taskflow
 ```
 
 Alternatively, you can use CMake's testing framework to run the unittest.
+
 ```bash
 ~$ cd build
 ~$ make test
 ```
 
 ## Examples
+
 The folder `example/` contains several examples and is a great place to learn to use Cpp-Taskflow.
 
 | Example |  Description |
@@ -804,3 +828,6 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [email me]:              mailto:twh760812@gmail.com
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
 
+
+[std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
+[std::future]:           https://en.cppreference.com/w/cpp/thread/future
