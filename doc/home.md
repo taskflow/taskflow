@@ -1,14 +1,8 @@
-# Welcome to the Cpp-Taskflow Wiki!
 
-Cpp-Taskflow is a C++ header-only library to help you quickly
-write fast parallel programs with task dependencies.
-This wiki provides detailed explanation about Cpp-Taskflow's
-software architecture, C++ API, and library usages.
+# Cpp-Taskflow Project
 
-<!--# Introduction
-
-+ [Motivation behind Cpp-Taskflow](introduction/motivation.md)
--->
++ [Motivation behind Cpp-Taskflow](project/motivation.md)
++ [Necessity of a New Tasking Library](project/necessity.md)
 
 # Cookbook
 
