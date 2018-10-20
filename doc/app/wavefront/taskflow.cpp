@@ -1,27 +1,51 @@
-#include <algorithm> // for std::max
-#include <cstdio>
 #include <cmath>
 #include <taskflow/taskflow.hpp> 
 
-
-int M=40000, N=40000;
+int M = 40000, N = 40000;
 int B = 160;
 int MB = (M/B) + (M%B>0);
 int NB = (N/B) + (N%B>0);
 
-double **value;
+double **matrix {nullptr};
 
-
-inline double calc(double v0, double v1) {
-  if(v0 == v1)
-    return std::pow(v0/v1, 4.0f);
-  else
-    return std::max(v0,v1);
+// nominal operations
+double calc(double v0, double v1) {
+  return (v0 == v1) ? std::pow(v0/v1, 4.0f) : std::max(v0,v1);
 }
 
+// initialize the matrix
+void init_matrix(){
+  matrix = new double *[M];
+  for ( int i = 0; i < M; ++i ) matrix[i] = new double [N];
+  for(int i=0; i<M; ++i){
+    for(int j=0; j<N ; ++j){
+      matrix[i][j] = i*N + j;
+    }   
+  }
+}
 
-void BuildGraph(std::vector<std::vector<tf::Task>>& node) {
-  value[M-1][N-1] = 0;
+// destroy the matrix
+void destroy_matrix() {
+  for ( int i = 0; i < M; ++i ) {
+    delete [] matrix[i];
+  }
+  delete [] matrix;
+}
+
+// wavefront computing
+void wavefront() {
+
+  tf::Taskflow tf;
+
+  std::vector<std::vector<tf::Task>> node(MB);
+
+  for(auto &n : node){
+    for(size_t i=0; i<NB; i++){
+      n.emplace_back(tf.placeholder());
+    }
+  }
+  
+  matrix[M-1][N-1] = 0;
   for( int i=MB; --i>=0; ) {
     for( int j=NB; --j>=0; ) {
       node[i][j].work(
@@ -32,66 +56,37 @@ void BuildGraph(std::vector<std::vector<tf::Task>>& node) {
           int end_j = (j*B+B > N) ? N : j*B+B;
           for ( int ii = start_i; ii < end_i; ++ii ) {
             for ( int jj = start_j; jj < end_j; ++jj ) {
-              double v0 = ii == 0 ? 0 : value[ii-1][jj];
-              double v1 = jj == 0 ? 0 : value[ii][jj-1];
-              value[ii][jj] = ii==0 && jj==0 ? 1 : calc(v0,v1);
+              double v0 = ii == 0 ? 0 : matrix[ii-1][jj];
+              double v1 = jj == 0 ? 0 : matrix[ii][jj-1];
+              matrix[ii][jj] = ii==0 && jj==0 ? 1 : calc(v0,v1);
             }
           }
         }
       );
-
       if(j+1 < NB) node[i][j].precede(node[i][j+1]);
       if(i+1 < MB) node[i][j].precede(node[i+1][j]);
     }
   }
+
+  tf.wait_for_all();
 }
 
-double EvaluateGraph(tf::Taskflow &tf) {
-  tf.wait_for_all(); 
-  return value[M-1][N-1];
-}
-
-void CleanupGraph(std::vector<std::vector<tf::Task>>& node) {
-  node.clear();
-}
-
-void init_data(){
-  value = new double *[M];
-  for ( int i = 0; i < M; ++i ) value[i] = new double [N];
-  for(int i=0; i<M; ++i){
-    for(int j=0; j<N ; ++j){
-      value[i][j] = i*N + j;
-    }   
-  }
-}
-
-
+// main function
 int main(int argc, char *argv[]) {
-  init_data();
 
-  double result;
+  init_matrix();
+
   auto beg = std::chrono::high_resolution_clock::now();
-  {
-    tf::Taskflow tf(std::thread::hardware_concurrency());
-    std::vector<std::vector<tf::Task>> node(MB);
-    for(auto &n : node){
-      for(size_t i=0; i<NB; i++){
-        n.emplace_back(tf.placeholder());
-      }
-    }
-    BuildGraph(node);
-    result = EvaluateGraph(tf);
-    CleanupGraph(node);
-  }
+  wavefront();
   auto end = std::chrono::high_resolution_clock::now();
-  std::cout << "Taskflow: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count() << " ms, Result=" << 
-     result << "\n";
+	
+  std::cout << "Taskflow wavefront elapsed time: " 
+            << std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count() 
+            << " ms\n"
+            << "result: " << matrix[M-1][N-1] << std::endl;
 
+  destroy_matrix();
 
-
-
-  for ( int i = 0; i < M; ++i ) delete [] value[i];
-  delete [] value;
   return 0;
 }
 

@@ -1,35 +1,47 @@
-#include <cstdio>
 #include <iostream>
-#include <string>
-#include <array>
-#include <vector>
 #include <random>
-#include <algorithm>
-#include <iterator>
-#include <tuple>
+#include <thread>
 #include <chrono>
 #include <cmath>
-
+#include <cassert>
 #include <omp.h>
 
-int M= 40000, N=40000;
+int M = 40000, N = 40000;
 int B = 160;
 int MB = (M/B) + (M%B>0);
 int NB = (N/B) + (N%B>0);
 
-int **D;       //dependency matrix
+int **D {nullptr};
+double **matrix {nullptr};
 
-double **value;
+// initialize the matrix
+void init_matrix(){
+  matrix = new double *[M];
+  for (int i = 0; i < M; ++i ) {
+    matrix[i] = new double [N];
+  }
+  for (int i=0; i<M; ++i){
+    for(int j=0; j<N ; ++j){
+      matrix[i][j] = i*N + j;
+    }   
+  }
+}
 
-inline double calc(double v0, double v1) {
-  if(v0 == v1)
-    return std::pow(v0/v1, 4.0f);
-  else
-    return std::max(v0,v1);
+// destroy the matrix
+void destroy_matrix() {
+  for ( int i = 0; i < M; ++i ) {
+    delete [] matrix[i];
+  }
+  delete [] matrix;
+}
+
+// perform some nominal computations
+double calc(double v0, double v1) {
+  return (v0 == v1) ? std::pow(v0/v1, 4.0f) : std::max(v0,v1);
 }
 
 //computation given block row index i, block col index j
-inline void block_computation(int i, int j){
+void block_computation(int i, int j){
 
   int start_i = i*B;
   int end_i = (i*B+B > M) ? M : i*B+B;
@@ -38,24 +50,33 @@ inline void block_computation(int i, int j){
 
   for ( int ii = start_i; ii < end_i; ++ii ) {
     for ( int jj = start_j; jj < end_j; ++jj ) {
-      double v0 = ii == 0 ? 0 : value[ii-1][jj];
-      double v1 = jj == 0 ? 0 : value[ii][jj-1];
-      value[ii][jj] = ii==0 && jj==0 ? 1 : calc(v0,v1);
+      double v0 = ii == 0 ? 0 : matrix[ii-1][jj];
+      double v1 = jj == 0 ? 0 : matrix[ii][jj-1];
+      matrix[ii][jj] = ii==0 && jj==0 ? 1 : calc(v0,v1);
     }
   }
 
 }
 
-
-void RunGraph() {
+// wavefront computation
+void wavefront() {
   
-  omp_set_num_threads(4); 
+  // set up the dependency matrix
+  D = new int *[MB];
+  for(int i=0; i<MB; ++i) D[i] = new int [NB];
+  for(int i=0; i<MB; ++i){
+    for(int j=0; j<NB; ++j){
+      D[i][j] = 0;
+    }
+  }
+  
+  omp_set_num_threads(std::thread::hardware_concurrency());
 
   #pragma omp parallel
   {
     #pragma omp single
     {
-	    value[M-1][N-1] = 0;
+	    matrix[M-1][N-1] = 0;
 	    for( int k=1; k <= 2*MB-1; k++) {
         int i, j;
         if(k <= MB){
@@ -95,50 +116,32 @@ void RunGraph() {
               block_computation(i, j); 
           }
           else{
-            std::cout << "There is some case not covered!!!" << std::endl;
+            assert(false);
           }
-                
-
         }
-
-       // #pragma omp taskwait 
-
 	    }
     }
   }
-}
-
-int main(int argc, char *argv[]) {
-
-  D = new int *[MB];
-  for(int i=0; i<MB; ++i) D[i] = new int [NB];
-  for(int i=0; i<MB; ++i){
-    for(int j=0; j<NB; ++j){
-      D[i][j] = 0;
-    }
-  }
-
-  value = new double *[M];
-  for(int i = 0; i<M; ++i) value[i] = new double [N];
-	for(int i=0; i<M; ++i){
-		for(int j=0; j<N ; ++j){
-			value[i][j] = i*N + j;
-		}
-	}
-
-  auto beg = std::chrono::high_resolution_clock::now();
-	
-  RunGraph();
-
-  auto end = std::chrono::high_resolution_clock::now();
-	std::cout << "OMP: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count() << " ms, ";
-  std::cout << "The result is:" << value[M-1][N-1] << std::endl;
-
-  for ( int i = 0; i < M; ++i ) delete [] value[i];
-  delete [] value;
-
+  
   for ( int i = 0; i < MB; ++i ) delete [] D[i];
   delete [] D;
+}
+
+// main function
+int main(int argc, char *argv[]) {
+
+  init_matrix();
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  wavefront();
+  auto end = std::chrono::high_resolution_clock::now();
+
+	std::cout << "OpenMP wavefront elapsed time: " 
+            << std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count() 
+            << " ms\n"
+            << "result: " << matrix[M-1][N-1] << std::endl;
+
+  destroy_matrix();
 
   return 0;
 }
