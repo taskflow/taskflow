@@ -104,8 +104,8 @@ and use it to explicitly specify both input and output task dependencies.
 13:  {
 14:    #pragma omp single
 15:    {
-16:	      matrix[M-1][N-1] = 0;
-17:	      for( int k=1; k <= 2*MB-1; k++) {
+16:       matrix[M-1][N-1] = 0;
+17:       for( int k=1; k <= 2*MB-1; k++) {
 18:         int i, j;
 19:         if(k <= MB){
 20:           i = k-1;
@@ -127,8 +127,8 @@ and use it to explicitly specify both input and output task dependencies.
 36:           else if(i == 0 && j == 0){
 37:             #pragma omp task depend(out:D[i][j]) firstprivate(i, j)
 38:               block_computation(i, j); 
-39:           }	
-40:           //top edge	
+39:           } 
+40:           //top edge  
 41:           else if(j+1 <= NB && i == 0 && j > 0){
 42:             #pragma omp task depend(in:D[i][j-1]) depend(out:D[i][j]) firstprivate(i, j)
 43:               block_computation(i, j); 
@@ -147,7 +147,7 @@ and use it to explicitly specify both input and output task dependencies.
 56:             assert(false);
 57:           }
 58:         }
-59:	      }
+59:       }
 60:    }
 61:  }
 62:  
