@@ -111,7 +111,7 @@ and use it to explicitly specify both input and output task dependencies.
 20:           i = k-1;
 21:           j = 0;
 22:         }
-23:         else{
+23:         else {
 24:           //assume matrix is square
 25:           i = MB-1;
 26:           j = k-MB;
