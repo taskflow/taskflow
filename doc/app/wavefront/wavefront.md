@@ -104,50 +104,50 @@ and use it to explicitly specify both input and output task dependencies.
 13:  {
 14:    #pragma omp single
 15:    {
-16:	    matrix[M-1][N-1] = 0;
-17:	    for( int k=1; k <= 2*MB-1; k++) {
-18:        int i, j;
-19:        if(k <= MB){
-20:          i = k-1;
-21:          j = 0;
-22:        }
-23:        else{
-24:          //assume matrix is square
-25:          i = MB-1;
-26:          j = k-MB;
-27:        }       
-28:        
-29:        for(; (k <= MB && i>=0) || (k > MB && j <= NB-1) ; i--, j++){
+16:	      matrix[M-1][N-1] = 0;
+17:	      for( int k=1; k <= 2*MB-1; k++) {
+18:         int i, j;
+19:         if(k <= MB){
+20:           i = k-1;
+21:           j = 0;
+22:         }
+23:         else{
+24:           //assume matrix is square
+25:           i = MB-1;
+26:           j = k-MB;
+27:         }       
+28:         
+29:         for(; (k <= MB && i>=0) || (k > MB && j <= NB-1) ; i--, j++){
 30:
-31:          if(i > 0 && j > 0){
-32:            #pragma omp task depend(in:D[i-1][j], D[i][j-1]) depend(out:D[i][j]) firstprivate(i, j)
-33:              block_computation(i, j); 
-34:          }
-35:          //top left corner
-36:          else if(i == 0 && j == 0){
-37:            #pragma omp task depend(out:D[i][j]) firstprivate(i, j)
-38:              block_computation(i, j); 
-39:          }	
-40:          //top edge	
-41:          else if(j+1 <= NB && i == 0 && j > 0){
-42:            #pragma omp task depend(in:D[i][j-1]) depend(out:D[i][j]) firstprivate(i, j)
-43:              block_computation(i, j); 
-44:          }
-45:          //left edge
-46:          else if(i+1 <= MB && i > 0 && j == 0){
-47:            #pragma omp task depend(in:D[i-1][j]) depend(out:D[i][j]) firstprivate(i, j)
-48:              block_computation(i, j); 
-49:          }
-50:          //bottom right corner
-51:          else if(i == MB-1 && j == NB-1){
-52:            #pragma omp task depend(in:D[i-1][j] ,D[i][j-1]) firstprivate(i, j)
-53:              block_computation(i, j); 
-54:          }
-55:          else{
-56:            assert(false);
-57:          }
-58:        }
-59:	    }
+31:           if(i > 0 && j > 0){
+32:             #pragma omp task depend(in:D[i-1][j], D[i][j-1]) depend(out:D[i][j]) firstprivate(i, j)
+33:               block_computation(i, j); 
+34:           }
+35:           //top left corner
+36:           else if(i == 0 && j == 0){
+37:             #pragma omp task depend(out:D[i][j]) firstprivate(i, j)
+38:               block_computation(i, j); 
+39:           }	
+40:           //top edge	
+41:           else if(j+1 <= NB && i == 0 && j > 0){
+42:             #pragma omp task depend(in:D[i][j-1]) depend(out:D[i][j]) firstprivate(i, j)
+43:               block_computation(i, j); 
+44:           }
+45:           //left edge
+46:           else if(i+1 <= MB && i > 0 && j == 0){
+47:             #pragma omp task depend(in:D[i-1][j]) depend(out:D[i][j]) firstprivate(i, j)
+48:               block_computation(i, j); 
+49:           }
+50:           //bottom right corner
+51:           else if(i == MB-1 && j == NB-1){
+52:             #pragma omp task depend(in:D[i-1][j] ,D[i][j-1]) firstprivate(i, j)
+53:               block_computation(i, j); 
+54:           }
+55:           else{
+56:             assert(false);
+57:           }
+58:         }
+59:	      }
 60:    }
 61:  }
 62:  
