@@ -76,8 +76,8 @@ void wavefront() {
   {
     #pragma omp single
     {
-	    matrix[M-1][N-1] = 0;
-	    for( int k=1; k <= 2*MB-1; k++) {
+      matrix[M-1][N-1] = 0;
+      for( int k=1; k <= 2*MB-1; k++) {
         int i, j;
         if(k <= MB){
           i = k-1;
@@ -99,8 +99,8 @@ void wavefront() {
           else if(i == 0 && j == 0){
             #pragma omp task depend(out:D[i][j]) firstprivate(i, j)
               block_computation(i, j); 
-          }	
-          //top edge	
+          } 
+          //top edge  
           else if(j+1 <= NB && i == 0 && j > 0){
             #pragma omp task depend(in:D[i][j-1]) depend(out:D[i][j]) firstprivate(i, j)
               block_computation(i, j); 
@@ -119,7 +119,7 @@ void wavefront() {
             assert(false);
           }
         }
-	    }
+      }
     }
   }
   
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
   wavefront();
   auto end = std::chrono::high_resolution_clock::now();
 
-	std::cout << "OpenMP wavefront elapsed time: " 
+  std::cout << "OpenMP wavefront elapsed time: " 
             << std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count() 
             << " ms\n"
             << "result: " << matrix[M-1][N-1] << std::endl;
