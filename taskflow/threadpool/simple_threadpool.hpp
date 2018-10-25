@@ -25,8 +25,6 @@
 #include <future>
 #include <unordered_set>
 
-#include "move_on_copy.hpp"
-
 namespace tf {
 
 // Class: SimpleThreadpool

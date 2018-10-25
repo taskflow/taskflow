@@ -70,6 +70,7 @@ inline void throw_re(const char* fname, const size_t line, ArgsT&&... args) {
 
 #define TF_THROW(...) throw_re(__FILE__, __LINE__, __VA_ARGS__);
 
+
 //-----------------------------------------------------------------------------
 // Traits
 //-----------------------------------------------------------------------------
@@ -129,6 +130,18 @@ struct is_iterable<T, std::void_t<decltype(std::declval<T>().begin()),
 template <typename T>
 inline constexpr bool is_iterable_v = is_iterable<T>::value;
 
+// Struct: MoC
+template <typename T>
+struct MoC {
+
+  MoC(T&& rhs) : object(std::move(rhs)) {}
+  MoC(const MoC& other) : object(std::move(other.object)) {}
+
+  T& get() { return object; }
+  
+  mutable T object; 
+};
+
 //-----------------------------------------------------------------------------
 // Taskflow definition
 //-----------------------------------------------------------------------------
@@ -139,7 +152,8 @@ class Topology;
 class Task;
 class FlowBuilder;
 class SubflowBuilder;
-class Taskflow;
+
+template <template<typename...> class E> class BasicTaskflow;
     
 using Graph = std::forward_list<Node>;
 
@@ -150,7 +164,9 @@ class Node {
 
   friend class Task;
   friend class Topology;
-  friend class Taskflow;
+
+  template <template<typename...> class E> 
+  friend class BasicTaskflow;
 
   using StaticWork   = std::function<void()>;
   using DynamicWork  = std::function<void(SubflowBuilder&)>;
@@ -271,7 +287,8 @@ inline void Node::_dump(std::ostream& os) const {
 // class: Topology
 class Topology {
   
-  friend class Taskflow;
+  template <template<typename...> class E> 
+  friend class BasicTaskflow;
 
   public:
 
@@ -354,7 +371,9 @@ inline std::string Topology::dump() const {
 class Task {
 
   friend class FlowBuilder;
-  friend class Taskflow;
+
+  template <template<typename...> class E> 
+  friend class BasicTaskflow;
 
   public:
     
@@ -1045,8 +1064,10 @@ inline auto FlowBuilder::silent_emplace(C&& c) {
 // Taskflow Definition
 // ============================================================================
 
-// Class: Taskflow
-class Taskflow : public FlowBuilder {
+// Class: BasicTaskflow
+// template argument E: executor, the threadpool implementation
+template <template <typename...> class E>
+class BasicTaskflow : public FlowBuilder {
   
   using StaticWork  = typename Node::StaticWork;
   using DynamicWork = typename Node::DynamicWork;
@@ -1057,23 +1078,23 @@ class Taskflow : public FlowBuilder {
     Closure() = default;
     Closure(const Closure&) = delete;
     Closure(Closure&&);
-    Closure(Taskflow&, Node&);
+    Closure(BasicTaskflow&, Node&);
 
     Closure& operator = (Closure&&);
     Closure& operator = (const Closure&) = delete;
     
     void operator ()() const;
 
-    Taskflow* taskflow {nullptr};
-    Node*     node     {nullptr};
+    BasicTaskflow* taskflow {nullptr};
+    Node*          node     {nullptr};
   };
 
   public:
 
-    explicit Taskflow();
-    explicit Taskflow(unsigned);
+    explicit BasicTaskflow();
+    explicit BasicTaskflow(unsigned);
 
-    ~Taskflow();
+    ~BasicTaskflow();
     
     std::shared_future<void> dispatch();
 
@@ -1091,7 +1112,7 @@ class Taskflow : public FlowBuilder {
 
   private:
 
-    SpeculativeThreadpool<Closure> _executor;
+    E<Closure> _executor;
 
     Graph _graph;
 
@@ -1101,19 +1122,22 @@ class Taskflow : public FlowBuilder {
 };
 
 // Constructor    
-inline Taskflow::Closure::Closure(Closure&& rhs) : 
+template <template <typename...> class E>
+BasicTaskflow<E>::Closure::Closure(Closure&& rhs) : 
   taskflow {rhs.taskflow}, node {rhs.node} { 
   rhs.taskflow = nullptr;
   rhs.node     = nullptr;
 }
 
 // Constructor
-inline Taskflow::Closure::Closure(Taskflow& t, Node& n) : 
+template <template <typename...> class E>
+BasicTaskflow<E>::Closure::Closure(BasicTaskflow& t, Node& n) : 
   taskflow{&t}, node {&n} {
 }
 
 // Move assignment
-inline Taskflow::Closure& Taskflow::Closure::operator = (Closure&& rhs) {
+template <template <typename...> class E>
+typename BasicTaskflow<E>::Closure& BasicTaskflow<E>::Closure::operator = (Closure&& rhs) {
   taskflow = rhs.taskflow;
   node     = rhs.node;
   rhs.taskflow = nullptr;
@@ -1122,7 +1146,8 @@ inline Taskflow::Closure& Taskflow::Closure::operator = (Closure&& rhs) {
 }
 
 // Operator ()
-inline void Taskflow::Closure::operator () () const {
+template <template <typename...> class E>
+void BasicTaskflow<E>::Closure::operator () () const {
   
   assert(taskflow && node);
 
@@ -1199,40 +1224,47 @@ inline void Taskflow::Closure::operator () () const {
 }
 
 // Constructor
-inline Taskflow::Taskflow() : 
+template <template <typename...> class E>
+BasicTaskflow<E>::BasicTaskflow() : 
   FlowBuilder {_graph, std::thread::hardware_concurrency()},
   _executor   {std::thread::hardware_concurrency()} {
 }
 
 // Constructor
-inline Taskflow::Taskflow(unsigned N) : 
+template <template <typename...> class E>
+BasicTaskflow<E>::BasicTaskflow(unsigned N) : 
   FlowBuilder {_graph, N},
   _executor   {N} {
 }
 
 // Destructor
-inline Taskflow::~Taskflow() {
+template <template <typename...> class E>
+BasicTaskflow<E>::~BasicTaskflow() {
   wait_for_topologies();
 }
 
 // Function: num_nodes
-inline size_t Taskflow::num_nodes() const {
+template <template <typename...> class E>
+size_t BasicTaskflow<E>::num_nodes() const {
   //return _nodes.size();
   return std::distance(_graph.begin(), _graph.end());
 }
 
 // Function: num_workers
-inline size_t Taskflow::num_workers() const {
+template <template <typename...> class E>
+size_t BasicTaskflow<E>::num_workers() const {
   return _executor.num_workers();
 }
 
 // Function: num_topologies
-inline size_t Taskflow::num_topologies() const {
+template <template <typename...> class E>
+size_t BasicTaskflow<E>::num_topologies() const {
   return std::distance(_topologies.begin(), _topologies.end());
 }
 
 // Procedure: silent_dispatch 
-inline void Taskflow::silent_dispatch() {
+template <template <typename...> class E>
+void BasicTaskflow<E>::silent_dispatch() {
 
   if(_graph.empty()) return;
 
@@ -1243,7 +1275,8 @@ inline void Taskflow::silent_dispatch() {
 }
 
 // Procedure: dispatch 
-inline std::shared_future<void> Taskflow::dispatch() {
+template <template <typename...> class E>
+std::shared_future<void> BasicTaskflow<E>::dispatch() {
 
   if(_graph.empty()) {
     return std::async(std::launch::deferred, [](){}).share();
@@ -1258,7 +1291,8 @@ inline std::shared_future<void> Taskflow::dispatch() {
 }
 
 // Procedure: wait_for_all
-inline void Taskflow::wait_for_all() {
+template <template <typename...> class E>
+void BasicTaskflow<E>::wait_for_all() {
   if(!_graph.empty()) {
     silent_dispatch();
   }
@@ -1266,7 +1300,8 @@ inline void Taskflow::wait_for_all() {
 }
 
 // Procedure: wait_for_topologies
-inline void Taskflow::wait_for_topologies() {
+template <template <typename...> class E>
+void BasicTaskflow<E>::wait_for_topologies() {
   for(auto& t: _topologies){
     t._future.get();
   }
@@ -1276,12 +1311,14 @@ inline void Taskflow::wait_for_topologies() {
 // Procedure: _schedule
 // The main procedure to schedule a give task node.
 // Each task node has two types of tasks - regular and subflow.
-inline void Taskflow::_schedule(Node& node) {
+template <template <typename...> class E>
+void BasicTaskflow<E>::_schedule(Node& node) {
   _executor.emplace(*this, node);
 }
 
 // Function: dump_topology
-inline std::string Taskflow::dump_topologies() const {
+template <template <typename...> class E>
+std::string BasicTaskflow<E>::dump_topologies() const {
   
   std::ostringstream os;
 
@@ -1293,9 +1330,10 @@ inline std::string Taskflow::dump_topologies() const {
 }
 
 // Function: dump
-inline void Taskflow::dump(std::ostream& os) const {
+template <template <typename...> class E>
+void BasicTaskflow<E>::dump(std::ostream& os) const {
 
-  os << "digraph Taskflow {\n";
+  os << "digraph BasicTaskflow {\n";
   
   for(const auto& node : _graph) {
     node._dump(os);
@@ -1306,11 +1344,16 @@ inline void Taskflow::dump(std::ostream& os) const {
 
 // Function: dump
 // Dumps the taskflow in graphviz. The result can be viewed at http://www.webgraphviz.com/.
-inline std::string Taskflow::dump() const {
+template <template <typename...> class E>
+std::string BasicTaskflow<E>::dump() const {
   std::ostringstream os;
   dump(os); 
   return os.str();
 }
+
+// ----------------------------------------------------------------------------
+
+using Taskflow = BasicTaskflow<SpeculativeThreadpool>;
 
 };  // end of namespace tf. ---------------------------------------------------
 

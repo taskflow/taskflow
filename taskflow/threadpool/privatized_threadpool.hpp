@@ -38,8 +38,6 @@
 #include <unordered_map>
 #include <array>
 
-#include "move_on_copy.hpp"
-
 namespace tf {
 
 /*// ========

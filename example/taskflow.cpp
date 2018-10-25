@@ -12,8 +12,17 @@
 #define BENCHMARK(TITLE, F)                                             \
   std::cout << "========== " << TITLE << " ==========\n";               \
                                                                         \
-  std::cout << "Taskflow elapsed time: "                                \
-            << F<tf::Taskflow>() << " ms\n";                            \
+  std::cout << "Taskflow [simple executor     ]: "                      \
+            << F<tf::BasicTaskflow<tf::SimpleThreadpool>>()             \
+            << " ms\n";                                                 \
+                                                                        \
+  std::cout << "Taskflow [practive executor   ]: "                      \
+            << F<tf::BasicTaskflow<tf::ProactiveThreadpool>>()          \
+            << " ms\n";                                                 \
+                                                                        \
+  std::cout << "Taskflow [speculative executor]: "                      \
+            << F<tf::BasicTaskflow<tf::SpeculativeThreadpool>>()        \
+            << " ms\n";                                                 \
 
 // ============================================================================
 // Dynamic Stem

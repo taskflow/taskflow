@@ -34,8 +34,6 @@
 #include <unordered_set>
 #include <optional>
 
-#include "move_on_copy.hpp"
-
 namespace tf {
   
 // Class: ProactiveThreadpool

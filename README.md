@@ -788,8 +788,9 @@ Please [let me know][email me] if I forgot someone!
 Cpp-Taskflow is being used in both industry and academic projects to scale up existing workloads 
 that incorporate complex task dependencies. 
 
-- [OpenTimer][OpenTimer]: A High-performance Timing Analysis Tool for VLSI Systems.
-- [DtCraft][DtCraft]: A General-purpose Distributed Programming Systems.
+- [OpenTimer][OpenTimer]: A High-performance Timing Analysis Tool for Very Large Scale Integration (VLSI) Systems
+- [DtCraft][DtCraft]: A General-purpose Distributed Programming Systems using Data-parallel Streams
+- [Firestorm][Firestorm]: Fighting Game Engine by [ForgeMistress][ForgeMistress]
 
 Please [let me know][email me] if I forgot your project!
 
@@ -817,6 +818,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [DtCraft]:               http://dtcraft.web.engr.illinois.edu/
 [totalgee]:              https://github.com/totalgee
 [damienhocking]:         https://github.com/damienhocking
+[ForgeMistress]:         https://github.com/ForgeMistress
 [DARPA IDEA]:            https://www.darpa.mil/news-events/2017-09-13
 [NSF]:                   https://www.nsf.gov/
 [UIUC]:                  https://illinois.edu/
@@ -828,6 +830,9 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [email me]:              mailto:twh760812@gmail.com
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
 
-
 [std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
 [std::future]:           https://en.cppreference.com/w/cpp/thread/future
+
+[Firestorm]:             https://github.com/ForgeMistress/Firestorm
+
+
