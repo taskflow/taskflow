@@ -109,6 +109,9 @@ target_link_libraries(threadpool_cxx14 Threads::Threads)
 add_executable(multiple_dispatch example/multiple_dispatch.cpp)
 target_link_libraries(multiple_dispatch Threads::Threads)
 
+add_executable(executor example/executor.cpp)
+target_link_libraries(executor Threads::Threads)
+
 # -----------------------------------------------------------------------------
 # Unittest
 # -----------------------------------------------------------------------------
@@ -122,14 +125,15 @@ set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittest)
 add_executable(taskflow_test_tmp unittest/taskflow.cpp)
 target_link_libraries(taskflow_test_tmp Threads::Threads)
 set_target_properties(taskflow_test_tmp PROPERTIES OUTPUT_NAME "taskflow")
-add_test(builder          ${TF_UTEST_DIR}/taskflow -tc=Taskflow.Builder)
-add_test(dispatch         ${TF_UTEST_DIR}/taskflow -tc=Taskflow.Dispatch)
-add_test(parallel_for     ${TF_UTEST_DIR}/taskflow -tc=Taskflow.ParallelFor)
-add_test(reduce           ${TF_UTEST_DIR}/taskflow -tc=Taskflow.Reduce)
-add_test(reduce_min       ${TF_UTEST_DIR}/taskflow -tc=Taskflow.ReduceMin)
-add_test(reduce_max       ${TF_UTEST_DIR}/taskflow -tc=Taskflow.ReduceMax)
-add_test(joined_subflow   ${TF_UTEST_DIR}/taskflow -tc=Taskflow.JoinedSubflow)
-add_test(detached_subflow ${TF_UTEST_DIR}/taskflow -tc=Taskflow.DetachedSubflow)
+add_test(builder          ${TF_UTEST_DIR}/taskflow -tc=Builder)
+add_test(dispatch         ${TF_UTEST_DIR}/taskflow -tc=Dispatch)
+add_test(executor         ${TF_UTEST_DIR}/taskflow -tc=Executor)
+add_test(parallel_for     ${TF_UTEST_DIR}/taskflow -tc=ParallelFor)
+add_test(reduce           ${TF_UTEST_DIR}/taskflow -tc=Reduce)
+add_test(reduce_min       ${TF_UTEST_DIR}/taskflow -tc=ReduceMin)
+add_test(reduce_max       ${TF_UTEST_DIR}/taskflow -tc=ReduceMax)
+add_test(joined_subflow   ${TF_UTEST_DIR}/taskflow -tc=JoinedSubflow)
+add_test(detached_subflow ${TF_UTEST_DIR}/taskflow -tc=DetachedSubflow)
 
 # unittest for threadpool 
 add_executable(threadpool_test_tmp unittest/threadpool.cpp)

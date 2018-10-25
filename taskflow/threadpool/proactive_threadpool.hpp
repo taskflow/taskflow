@@ -37,13 +37,13 @@
 namespace tf {
   
 // Class: ProactiveThreadpool
-template <typename Task>
+template <typename Closure>
 class ProactiveThreadpool {
 
   // Struct: Worker
   struct Worker {
     std::condition_variable cv;
-    std::optional<Task> task;
+    std::optional<Closure> task;
     bool ready;
   };
 
@@ -66,7 +66,7 @@ class ProactiveThreadpool {
 
     mutable std::mutex _mutex;
 
-    std::vector<Task> _tasks;
+    std::vector<Closure> _tasks;
     std::vector<std::thread> _threads;
     std::vector<Worker*> _idlers; 
 
@@ -77,38 +77,38 @@ class ProactiveThreadpool {
 };
     
 // Constructor
-template <typename Task>
-ProactiveThreadpool<Task>::ProactiveThreadpool(unsigned N){
+template <typename Closure>
+ProactiveThreadpool<Closure>::ProactiveThreadpool(unsigned N){
   _spawn(N);
 }
 
 // Destructor
-template <typename Task>
-ProactiveThreadpool<Task>::~ProactiveThreadpool(){
+template <typename Closure>
+ProactiveThreadpool<Closure>::~ProactiveThreadpool(){
   _shutdown();
 }
 
 // Ftion: is_owner
-template <typename Task>
-bool ProactiveThreadpool<Task>::is_owner() const {
+template <typename Closure>
+bool ProactiveThreadpool<Closure>::is_owner() const {
   return std::this_thread::get_id() == _owner;
 }
 
 // Ftion: num_tasks    
-template <typename Task>
-size_t ProactiveThreadpool<Task>::num_tasks() const { 
+template <typename Closure>
+size_t ProactiveThreadpool<Closure>::num_tasks() const { 
   return _tasks.size(); 
 }
 
 // Ftion: num_workers
-template <typename Task>
-size_t ProactiveThreadpool<Task>::num_workers() const { 
+template <typename Closure>
+size_t ProactiveThreadpool<Closure>::num_workers() const { 
   return _threads.size();  
 }
 
 // Procedure: shutdown
-template <typename Task>
-void ProactiveThreadpool<Task>::_shutdown() {
+template <typename Closure>
+void ProactiveThreadpool<Closure>::_shutdown() {
   
   assert(is_owner());
 
@@ -135,8 +135,8 @@ void ProactiveThreadpool<Task>::_shutdown() {
 }
 
 // Procedure: spawn
-template <typename Task>
-void ProactiveThreadpool<Task>::_spawn(unsigned N) {
+template <typename Closure>
+void ProactiveThreadpool<Closure>::_spawn(unsigned N) {
 
   assert(is_owner());
 
@@ -168,7 +168,7 @@ void ProactiveThreadpool<Task>::_spawn(unsigned N) {
           }
         }
         else{
-          Task t{std::move(_tasks.back())};
+          Closure t{std::move(_tasks.back())};
           _tasks.pop_back();
           lock.unlock();
           t();
@@ -181,13 +181,13 @@ void ProactiveThreadpool<Task>::_spawn(unsigned N) {
 }
 
 // Procedure: silent_async
-template <typename Task>
+template <typename Closure>
 template <typename... ArgsT>
-void ProactiveThreadpool<Task>::emplace(ArgsT&&... args) {
+void ProactiveThreadpool<Closure>::emplace(ArgsT&&... args) {
 
   //no worker thread available
   if(num_workers() == 0){
-    Task{std::forward<ArgsT>(args)...}();
+    Closure{std::forward<ArgsT>(args)...}();
   }
   // ask one worker to run the task
   else {

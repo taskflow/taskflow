@@ -31,12 +31,12 @@
 namespace tf {
 
 // Class: SpeculativeThreadpool
-template <typename Task>
+template <typename Closure>
 class SpeculativeThreadpool {
 
   struct Worker {
     std::condition_variable cv;
-    std::optional<Task> task;
+    std::optional<Closure> task;
     bool ready {false};
   };
 
@@ -59,7 +59,7 @@ class SpeculativeThreadpool {
 
     mutable std::mutex _mutex;
 
-    std::vector<Task> _tasks;
+    std::vector<Closure> _tasks;
     std::vector<std::thread> _threads;
     std::vector<Worker*> _idlers; 
     std::vector<Worker> _workers;
@@ -75,46 +75,46 @@ class SpeculativeThreadpool {
 };  // class BasicSpeculativeThreadpool. --------------------------------------
 
 // Constructor
-template <typename Task>
-SpeculativeThreadpool<Task>::SpeculativeThreadpool(unsigned N) : 
+template <typename Closure>
+SpeculativeThreadpool<Closure>::SpeculativeThreadpool(unsigned N) : 
   _workers {N} {
   _spawn(N);
 }
 
 // Destructor
-template <typename Task>
-SpeculativeThreadpool<Task>::~SpeculativeThreadpool(){
+template <typename Closure>
+SpeculativeThreadpool<Closure>::~SpeculativeThreadpool(){
   _shutdown();
 }
 
 // Function: is_owner
-template <typename Task>
-bool SpeculativeThreadpool<Task>::is_owner() const {
+template <typename Closure>
+bool SpeculativeThreadpool<Closure>::is_owner() const {
   return std::this_thread::get_id() == _owner;
 }
 
 // Function: num_tasks
-template <typename Task>
-size_t SpeculativeThreadpool<Task>::num_tasks() const { 
+template <typename Closure>
+size_t SpeculativeThreadpool<Closure>::num_tasks() const { 
   return _tasks.size(); 
 }
 
 // Function: num_workers
-template <typename Task>
-size_t SpeculativeThreadpool<Task>::num_workers() const { 
+template <typename Closure>
+size_t SpeculativeThreadpool<Closure>::num_workers() const { 
   return _threads.size();  
 }
     
 // Function: _this_worker
-template <typename Task>
-auto SpeculativeThreadpool<Task>::_this_worker() const {
+template <typename Closure>
+auto SpeculativeThreadpool<Closure>::_this_worker() const {
   auto id = std::this_thread::get_id();
   return _worker_maps.find(id);
 }
 
 // Function: shutdown
-template <typename Task>
-void SpeculativeThreadpool<Task>::_shutdown(){
+template <typename Closure>
+void SpeculativeThreadpool<Closure>::_shutdown(){
 
   assert(is_owner());
 
@@ -143,8 +143,8 @@ void SpeculativeThreadpool<Task>::_shutdown(){
 }
 
 // Function: spawn 
-template <typename Task>
-void SpeculativeThreadpool<Task>::_spawn(unsigned N) {
+template <typename Closure>
+void SpeculativeThreadpool<Closure>::_spawn(unsigned N) {
 
   assert(is_owner() && _workers.size() == N);
 
@@ -155,7 +155,7 @@ void SpeculativeThreadpool<Task>::_spawn(unsigned N) {
 
     _threads.emplace_back([this, &w=_workers[i]]() -> void {
 
-       std::optional<Task> t;
+       std::optional<Closure> t;
 
        std::unique_lock lock(_mutex);
        
@@ -198,13 +198,13 @@ void SpeculativeThreadpool<Task>::_spawn(unsigned N) {
   } // End of For ---------------------------------------------------------------------------------
 }
 
-template <typename Task>
+template <typename Closure>
 template <typename... ArgsT>
-void SpeculativeThreadpool<Task>::emplace(ArgsT&&... args){
+void SpeculativeThreadpool<Closure>::emplace(ArgsT&&... args){
 
   //no worker thread available
   if(num_workers() == 0){
-    Task{std::forward<ArgsT>(args)...}();
+    Closure{std::forward<ArgsT>(args)...}();
     return;
   }
 

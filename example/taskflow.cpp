@@ -1,3 +1,7 @@
+// 2018/10/24 - modified by Tsung-Wei Huang
+//   - Taskflow is templated at threadpool
+//   - added graph-level comparison with different thread pools
+//
 // 2018/09/19 - created by Tsung-Wei Huang
 //
 // This program is used to benchmark the taskflow under different types 
