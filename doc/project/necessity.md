@@ -1,4 +1,4 @@
-# Necessity of a New Tasking Library
+# Toward a New Task Parallel Library
 
 We discuss in this page why we decide to develop a new tasking library,
 rather than sticking with existing frameworks.

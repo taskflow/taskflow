@@ -1,8 +1,8 @@
-# Create a Parallel Reduction Graph
+# C4: Create a Parallel Reduction Graph
 
 Parallel tasks normally produce some quantity that needs to be combined or *reduced*
 through particular operations, for instance, sum.
-In this example, we are going to demonstrate how to use Cpp-Taskflow
+In this chapter, we are going to demonstrate how to use Cpp-Taskflow
 to parallelize a reduction workload.
 
 + [Reduce](#reduce-through-an-operator)

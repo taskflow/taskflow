@@ -122,6 +122,8 @@ namespace std {
 
 namespace tf {
 
+// Procedure: throw_se
+// Throws the system error under a given error code.
 template <typename... ArgsT>
 void throw_se(const char* fname, const size_t line, Error::Code c, ArgsT&&... args) {
   std::ostringstream oss;
@@ -136,18 +138,6 @@ void throw_se(const char* fname, const size_t line, Error::Code c, ArgsT&&... ar
 
 
 namespace tf {
-
-//// Procedure: throw_re
-//template <typename... ArgsT>
-//inline void throw_re(const char* fname, const size_t line, ArgsT&&... args) {
-//  std::ostringstream oss(std::ios_base::out);
-//  oss << '[' << fname << ':' << line << "] ";
-//  (oss << ... << std::forward<ArgsT>(args));
-//  throw std::runtime_error(oss.str());
-//}
-//
-//#define TF_THROW(...) throw_re(__FILE__, __LINE__, __VA_ARGS__);
-
 
 //-----------------------------------------------------------------------------
 // Traits

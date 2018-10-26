@@ -1,9 +1,9 @@
-# Spawn a Task Dependency Graph at Runtime
+# C5: Spawn a Task Dependency Graph at Runtime
 
 It is very common for a parallel program to 
 spawn task dependency graphs at runtime.
 In Cpp-Taskflow, we call this *dynamic tasking*.
-In this tutorial, we are going to demonstrate how to enable dynamic tasking
+In this chapter, we are going to demonstrate how to enable dynamic tasking
 in Cpp-Taskflow.
 
 + [Subflow Dependency Graph](#subflow-dependency-graph)
