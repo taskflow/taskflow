@@ -15,7 +15,7 @@
 
 # Advanced Usage
 
-+ [A1: Thread Management and Task Execution](advanced/thread.md)
++ [A1: Thread Management and Executor](advanced/thread.md)
 
 # Application Gallery
 

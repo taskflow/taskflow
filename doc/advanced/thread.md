@@ -1,4 +1,4 @@
-# A1: Thread Management and Task Execution
+# A1: Thread Management and Executor
 
 We discuss in this tutorial the thread management and task execution schemes
 of Cpp-Taskflow.

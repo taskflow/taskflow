@@ -709,7 +709,7 @@ Please [let me know][email me] if you found any issues in a particular platform.
 # System Requirements
 
 To use Cpp-Taskflow, you only need a [C++17][C++17] compiler:
-+ GNU C++ Compiler G++ v7.2 with -std=c++1z
++ GNU C++ Compiler G++ v7.3 with -std=c++1z
 + Clang 5.0 C++ Compiler with -std=c++17
 + Microsoft Visual Studio Version 15.7 (MSVC++ 19.14)
 

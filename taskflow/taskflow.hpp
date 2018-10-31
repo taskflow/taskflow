@@ -250,6 +250,7 @@ class Node {
     const std::string& name() const;
     
     void precede(Node&);
+    void dump(std::ostream&) const;
 
     size_t num_successors() const;
     size_t num_dependents() const;
@@ -266,8 +267,6 @@ class Node {
     std::optional<Graph> _subgraph;
 
     Topology* _topology;
-
-    void _dump(std::ostream&) const;
 };
 
 // Constructor
@@ -307,12 +306,12 @@ inline const std::string& Node::name() const {
 // Function: dump
 inline std::string Node::dump() const {
   std::ostringstream os;  
-  _dump(os);
+  dump(os);
   return os.str();
 }
 
-// Function: _dump
-inline void Node::_dump(std::ostream& os) const {
+// Function: dump
+inline void Node::dump(std::ostream& os) const {
   
   if(_name.empty()) os << '\"' << this << '\"';
   else os << std::quoted(_name);
@@ -345,7 +344,7 @@ inline void Node::_dump(std::ostream& os) const {
     os << "\";\n" << "color=blue\n";
 
     for(const auto& n : *_subgraph) {
-      n._dump(os);
+      n.dump(os);
     }
     os << "}\n";
   }
@@ -364,6 +363,7 @@ class Topology {
     Topology(Graph&&);
 
     std::string dump() const;
+    void dump(std::ostream&) const;
 
   private:
 
@@ -373,8 +373,6 @@ class Topology {
 
     Node _source;
     Node _target;
-
-    void _dump(std::ostream&) const;
 };
 
 // Constructor
@@ -410,8 +408,8 @@ inline Topology::Topology(Graph&& t) :
   }
 }
 
-// Procedure: _dump
-inline void Topology::_dump(std::ostream& os) const {
+// Procedure: dump
+inline void Topology::dump(std::ostream& os) const {
 
   assert(_source._subgraph->empty());
   assert(_target._subgraph->empty());
@@ -430,7 +428,7 @@ inline void Topology::_dump(std::ostream& os) const {
 // Function: dump
 inline std::string Topology::dump() const { 
   std::ostringstream os;
-  _dump(os);
+  dump(os);
   return os.str();
 }
 
@@ -1424,7 +1422,7 @@ std::string BasicTaskflow<E>::dump_topologies() const {
   std::ostringstream os;
 
   for(const auto& tpg : _topologies) {
-    tpg._dump(os);
+    tpg.dump(os);
   }
   
   return os.str();
@@ -1437,7 +1435,7 @@ void BasicTaskflow<E>::dump(std::ostream& os) const {
   os << "digraph Taskflow {\n";
   
   for(const auto& node : _graph) {
-    node._dump(os);
+    node.dump(os);
   }
 
   os << "}\n";
