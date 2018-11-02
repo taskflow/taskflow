@@ -9,9 +9,103 @@
 #include <limits.h>
 
 // --------------------------------------------------------
-// Testcase: Taskflow.Builder
+// Testcase: Executor
 // --------------------------------------------------------
-TEST_CASE("Taskflow.Builder" * doctest::timeout(5)){
+TEST_CASE("Executor" * doctest::timeout(5)) {
+
+  SUBCASE("Empty Executor") {
+    REQUIRE_THROWS(tf::Taskflow{nullptr});
+  }
+
+  SUBCASE("Default Executor") {
+    tf::Taskflow tf1;
+    tf::Taskflow tf2;
+    REQUIRE(tf1.share_executor() != nullptr);
+    REQUIRE(tf2.share_executor() != nullptr);
+    REQUIRE(tf1.share_executor() != tf2.share_executor());
+  }
+
+  SUBCASE("Shared Executor") {
+    tf::Taskflow tf1;
+    tf::Taskflow tf2(tf1.share_executor());
+    REQUIRE(tf1.share_executor() == tf2.share_executor());
+  }
+
+  SUBCASE("Custom Executor") {
+    auto executor = std::make_shared<tf::Taskflow::Executor>(4);
+    tf::Taskflow tf1(executor);
+    tf::Taskflow tf2(executor);
+    REQUIRE(executor != nullptr);
+    REQUIRE(executor.use_count() == 3);
+    auto e1 = tf1.share_executor();
+    auto e2 = tf2.share_executor();
+    REQUIRE(e1 == executor);
+    REQUIRE(e2 == executor);
+    REQUIRE(executor.use_count() == 5);
+  }
+
+  SUBCASE("Shared Dispatch") {
+    
+    for(int t=0; t<=4; ++t) {
+
+      std::mutex mutex;
+      std::unordered_set<std::thread::id> threads;
+      std::atomic<int> counter {0};
+
+      tf::Taskflow tf1(t);
+      tf::Taskflow tf2(tf1.share_executor());
+      tf::Taskflow tf3(tf2.share_executor());
+      tf::Taskflow tf4(tf2.share_executor());
+
+      for(int n = 0; n<10000; ++n) {
+
+        tf1.silent_emplace([&] () {
+          std::scoped_lock lock(mutex);
+          threads.insert(std::this_thread::get_id());
+          counter.fetch_add(1, std::memory_order_relaxed);
+        });
+
+        tf2.silent_emplace([&] () {
+          std::scoped_lock lock(mutex);
+          threads.insert(std::this_thread::get_id());
+          counter.fetch_add(1, std::memory_order_relaxed);
+        });
+        
+        tf3.silent_emplace([&] () {
+          std::scoped_lock lock(mutex);
+          threads.insert(std::this_thread::get_id());
+          counter.fetch_add(1, std::memory_order_relaxed);
+        });
+        
+        tf4.silent_emplace([&] () {
+          std::scoped_lock lock(mutex);
+          threads.insert(std::this_thread::get_id());
+          counter.fetch_add(1, std::memory_order_relaxed);
+        });
+      }
+
+      auto f1 = tf1.dispatch();
+      auto f2 = tf2.dispatch();
+      auto f3 = tf3.dispatch();
+      auto f4 = tf4.dispatch();
+
+      f1.get();
+      f2.get();
+      f3.get();
+      f4.get();
+
+      auto max = t == 0 ? 1 : t;
+
+      REQUIRE(counter == 40000);
+      REQUIRE(threads.size() <= max);
+    }
+  }
+}
+
+// --------------------------------------------------------
+// Testcase: Builder
+// --------------------------------------------------------
+TEST_CASE("Builder" * doctest::timeout(5)) {
 
   size_t num_workers = 4;
   size_t num_tasks = 100;
@@ -175,9 +269,9 @@ TEST_CASE("Taskflow.Builder" * doctest::timeout(5)){
 }
 
 // --------------------------------------------------------
-// Testcase: Taskflow.Dispatch
+// Testcase: Dispatch
 // --------------------------------------------------------
-TEST_CASE("Taskflow.Dispatch" * doctest::timeout(5)) {
+TEST_CASE("Dispatch" * doctest::timeout(5)) {
     
   using namespace std::chrono_literals;
   
@@ -217,9 +311,9 @@ TEST_CASE("Taskflow.Dispatch" * doctest::timeout(5)) {
 
 
 // --------------------------------------------------------
-// Testcase: Taskflow.ParallelFor
+// Testcase: ParallelFor
 // --------------------------------------------------------
-TEST_CASE("Taskflow.ParallelFor" * doctest::timeout(5)) {
+TEST_CASE("ParallelFor" * doctest::timeout(5)) {
     
   using namespace std::chrono_literals;
 
@@ -268,9 +362,9 @@ TEST_CASE("Taskflow.ParallelFor" * doctest::timeout(5)) {
 }
 
 // --------------------------------------------------------
-// Testcase: Taskflow.Reduce
+// Testcase: Reduce
 // --------------------------------------------------------
-TEST_CASE("Taskflow.Reduce" * doctest::timeout(5)) {
+TEST_CASE("Reduce" * doctest::timeout(5)) {
 
   const auto plus_test = [](const size_t num_workers, auto &&data){
     tf::Taskflow tf(static_cast<unsigned>(num_workers));
@@ -330,9 +424,9 @@ TEST_CASE("Taskflow.Reduce" * doctest::timeout(5)) {
 }
 
 // --------------------------------------------------------
-// Testcase: Taskflow.ReduceMin
+// Testcase: ReduceMin
 // --------------------------------------------------------
-TEST_CASE("Taskflow.ReduceMin" * doctest::timeout(5)) {
+TEST_CASE("ReduceMin" * doctest::timeout(5)) {
 
   for(int w=0; w<=4; w++) {
     tf::Taskflow tf(w);
@@ -353,9 +447,9 @@ TEST_CASE("Taskflow.ReduceMin" * doctest::timeout(5)) {
 }
 
 // --------------------------------------------------------
-// Testcase: Taskflow.ReduceMax
+// Testcase: ReduceMax
 // --------------------------------------------------------
-TEST_CASE("Taskflow.ReduceMax" * doctest::timeout(5)) {
+TEST_CASE("ReduceMax" * doctest::timeout(5)) {
 
   for(int w=0; w<=4; w++) {
     tf::Taskflow tf(w);
@@ -375,9 +469,9 @@ TEST_CASE("Taskflow.ReduceMax" * doctest::timeout(5)) {
 }
 
 // --------------------------------------------------------
-// Testcase: Taskflow.JoinedSubflow
+// Testcase: JoinedSubflow
 // -------------------------------------------------------- 
-TEST_CASE("Taskflow.JoinedSubflow" * doctest::timeout(5)){
+TEST_CASE("JoinedSubflow" * doctest::timeout(5)){
 
   using namespace std::literals::chrono_literals;
   
@@ -546,9 +640,9 @@ TEST_CASE("Taskflow.JoinedSubflow" * doctest::timeout(5)){
 }
 
 // --------------------------------------------------------
-// Testcase: Taskflow.DetachedSubflow
+// Testcase: DetachedSubflow
 // --------------------------------------------------------
-TEST_CASE("Taskflow.DetachedSubflow" * doctest::timeout(5)) {
+TEST_CASE("DetachedSubflow" * doctest::timeout(5)) {
   
   using namespace std::literals::chrono_literals;
 
@@ -660,53 +754,3 @@ TEST_CASE("Taskflow.DetachedSubflow" * doctest::timeout(5)) {
 
 }
 
-
-/*// --------------------------------------------------------
-// Testcase: Taskflow.ParallelRange
-// --------------------------------------------------------
-TEST_CASE("Taskflow.ParallelRange" * doctest::timeout(5)) {
-    
-  using namespace std::chrono_literals;
-
-  const auto mapper = [](size_t num_workers, size_t num_data, bool group){
-    tf::Taskflow tf(num_workers);
-    std::vector<int> vec(num_data, 0);
-    tf.parallel_range(0ul, num_data, [&] (size_t i) { vec[i] = 64; }, group ? ::rand() : 0);
-    for(const auto v : vec) {
-      REQUIRE(v == 0);
-    }
-    tf.wait_for_all();
-    for(const auto v : vec) {
-      REQUIRE(v == 64);
-    }
-  };
-
-  const auto reducer = [](size_t num_workers, size_t num_data, bool group){
-    tf::Taskflow tf(num_workers);
-    std::atomic<int> sum(0);
-    tf.parallel_range(0ul, num_data, [&](size_t i) { sum += i; }, group ? ::rand() : 0);
-    REQUIRE(sum == 0);
-    tf.wait_for_all();
-    REQUIRE(sum == (num_data-1)*num_data/2);
-  };
-
-  // map
-  SUBCASE("Map") {
-    for(size_t num_workers=0; num_workers<=4; ++num_workers){
-      for(size_t num_data=1; num_data<=59049; num_data *= 3){
-        mapper(num_workers, num_data, true);
-        mapper(num_workers, num_data, false);
-      }
-    }
-  }
-
-  // reduce
-  SUBCASE("Reduce") {
-    for(size_t num_workers=0; num_workers<=4; ++num_workers){
-      for(size_t num_data=1; num_data<=59049; num_data *= 3){
-        reducer(num_workers, num_data, true);
-        reducer(num_workers, num_data, false);
-      }
-    }
-  }
-}*/

@@ -25,12 +25,10 @@
 #include <future>
 #include <unordered_set>
 
-#include "move_on_copy.hpp"
-
 namespace tf {
 
 // Class: SimpleThreadpool
-template <typename Task>
+template <typename Closure>
 class SimpleThreadpool {
 
   public:
@@ -54,7 +52,7 @@ class SimpleThreadpool {
     mutable std::mutex _mutex;
 
     std::condition_variable _worker_signal;
-    std::vector<Task> _tasks;
+    std::vector<Closure> _tasks;
     std::vector<std::thread> _threads;
     
     bool _stop {false};
@@ -64,14 +62,14 @@ class SimpleThreadpool {
 };
 
 // Constructor
-template <typename Task>
-SimpleThreadpool<Task>::SimpleThreadpool(unsigned N) {
+template <typename Closure>
+SimpleThreadpool<Closure>::SimpleThreadpool(unsigned N) {
   _spawn(N);
 }
 
 // Destructor
-template <typename Task>
-SimpleThreadpool<Task>::~SimpleThreadpool() {
+template <typename Closure>
+SimpleThreadpool<Closure>::~SimpleThreadpool() {
   _shutdown();
 }
 
@@ -80,27 +78,27 @@ SimpleThreadpool<Task>::~SimpleThreadpool() {
 // Notice that this value is not necessary equal to the size of the task_queue 
 // since the task can be popped out from the task queue while 
 // not yet finished.
-template <typename Task>
-size_t SimpleThreadpool<Task>::num_tasks() const {
+template <typename Closure>
+size_t SimpleThreadpool<Closure>::num_tasks() const {
   return _tasks.size();
 }
 
-template <typename Task>
-size_t SimpleThreadpool<Task>::num_workers() const {
+template <typename Closure>
+size_t SimpleThreadpool<Closure>::num_workers() const {
   return _threads.size();
 }
 
 // Function: is_owner
-template <typename Task>
-bool SimpleThreadpool<Task>::is_owner() const {
+template <typename Closure>
+bool SimpleThreadpool<Closure>::is_owner() const {
   return std::this_thread::get_id() == _owner;
 }
 
 // Procedure: spawn
 // The procedure spawns "n" threads monitoring the task queue and executing each task. 
 // After the task is finished, the thread reacts to the returned signal.
-template <typename Task>
-void SimpleThreadpool<Task>::_spawn(unsigned N) {
+template <typename Closure>
+void SimpleThreadpool<Closure>::_spawn(unsigned N) {
 
   assert(is_owner());
     
@@ -108,7 +106,7 @@ void SimpleThreadpool<Task>::_spawn(unsigned N) {
       
     _threads.emplace_back([this] () -> void { 
         
-      Task task;
+      Closure task;
           
       std::unique_lock lock(_mutex);
 
@@ -136,13 +134,13 @@ void SimpleThreadpool<Task>::_spawn(unsigned N) {
 }
 
 // Function: emplace
-template <typename Task>
+template <typename Closure>
 template <typename... ArgsT>
-void SimpleThreadpool<Task>::emplace(ArgsT&&... args) {
+void SimpleThreadpool<Closure>::emplace(ArgsT&&... args) {
   
   // No worker, do this right away.
   if(num_workers() == 0) {
-    Task{std::forward<ArgsT>(args)...}();
+    Closure{std::forward<ArgsT>(args)...}();
   }
   // Dispatch this to a thread.
   else {
@@ -154,8 +152,8 @@ void SimpleThreadpool<Task>::emplace(ArgsT&&... args) {
 
 // Procedure: shutdown
 // Shut down the threadpool - only the owner can do this.
-template <typename Task>
-void SimpleThreadpool<Task>::_shutdown() {
+template <typename Closure>
+void SimpleThreadpool<Closure>::_shutdown() {
   
   assert(is_owner());
 

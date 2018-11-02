@@ -1,8 +1,8 @@
-# Execute a Task Dependency Graph
+# C2: Execute a Task Dependency Graph
 
 After you create a task dependency graph,
 you need to dispatch it to threads for execution
-In this tutorial, we will show you how to execute a 
+In this chapter, we will show you how to execute a 
 task dependency graph.
 
 + [Graph and Topology](#graph-and-topology)

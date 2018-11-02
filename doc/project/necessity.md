@@ -1,4 +1,4 @@
-# Necessity of a New Tasking Library
+# Toward a New Task Parallel Library
 
 We discuss in this page why we decide to develop a new tasking library,
 rather than sticking with existing frameworks.
@@ -9,7 +9,7 @@ their programming models with Cpp-Taskflow.
 + [Intel TBB Flow Graph](#intel-tbb-flow-graph)
 + [Summary](#summary)
 
-# OepnMP Task Dependency Clause
+# OpenMP Task Dependency Clause
 
 In 2015, [OpenMP 4.5][OpenMP 4.5] introduced 
 the task group and dependency clause `depend(type : list)`.

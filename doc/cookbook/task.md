@@ -1,6 +1,6 @@
-# Understand the Task
+# C1: Understand the Task
 
-In this tutorial, we are going to demonstrate the basic construct of 
+In this chapter, we are going to demonstrate the basic construct of 
 a task dependency graph - *Task*.
 
 + [Create a Task](#create-a-task)

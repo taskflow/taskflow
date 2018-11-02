@@ -1,6 +1,6 @@
-# Create a Paralle For-loop Graph
+# C3: Create a Paralle For-loop Graph
 
-In this tutorial, we are going to demonstrate how to use Cpp-Taskflow
+In this chapter, we are going to demonstrate how to use Cpp-Taskflow
 to run a for-loop in parallel.
 
 + [Range-based For-loop](#range-based-for-loop)

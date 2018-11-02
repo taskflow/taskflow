@@ -699,17 +699,17 @@ A.gather(B, C, D, E);
 While Cpp-Taskflow enables the expression of very complex task dependency graph that might contain 
 thousands of task nodes and links, there are a few amateur pitfalls and mistakes to be aware of.
 
-+ Having a cycle in a graph may result in running forever.
-+ Trying to modify a dispatched task can result in undefined behavior.
-+ Touching a taskflow from multiple threads are not safe.
++ Having a cycle in a graph may result in running forever
++ Trying to modify a dispatched task can result in undefined behavior
++ Touching a taskflow from multiple threads are not safe
 
-Cpp-Taskflow is known to work on most Linux distributions and MAC OSX.
+Cpp-Taskflow is known to work on Linux distributions, MAC OSX, and Microsoft Visual Studio.
 Please [let me know][email me] if you found any issues in a particular platform.
 
 # System Requirements
 
 To use Cpp-Taskflow, you only need a [C++17][C++17] compiler:
-+ GNU C++ Compiler G++ v7.2 with -std=c++1z
++ GNU C++ Compiler G++ v7.3 with -std=c++1z
 + Clang 5.0 C++ Compiler with -std=c++17
 + Microsoft Visual Studio Version 15.7 (MSVC++ 19.14)
 
@@ -756,26 +756,43 @@ The folder `example/` contains several examples and is a great place to learn to
 | [reduce.cpp](./example/reduce.cpp)| performs reduce operations over linear containers |
 | [subflow.cpp](./example/subflow.cpp)| demonstrates how to create a subflow graph that spawns three dynamic tasks |
 | [threadpool.cpp](./example/threadpool.cpp)| benchmarks different threadpool implementations |
-| [taskflow.cpp](./example/taskflow.cpp)| benchmarks taskflow on different task dependency graphs |
 | [threadpool_cxx14.cpp](./example/threadpool_cxx14.cpp)| shows use of the C++14-compatible threadpool implementation, which may be used when you have no inter-task (taskflow) dependencies to express |
+| [taskflow.cpp](./example/taskflow.cpp)| benchmarks taskflow on different task dependency graphs |
+| [executor.cpp](./example/executor.cpp)| shows how to create multiple taskflow objects sharing one executor to avoid the thread over-subscription problem |
 
 # Get Involved
+
 + Report bugs/issues by submitting a [GitHub issue][GitHub issues]
 + Submit contributions using [pull requests][GitHub pull requests]
 + Learn more about Cpp-Taskflow by reading the [documentation][wiki]
 + Find a solution to your question at [Frequently Asked Questions][FAQ]
 
+# Who is Using Cpp-Taskflow?
+
+Cpp-Taskflow is being used in both industry and academic projects to scale up existing workloads 
+that incorporate complex task dependencies. 
+
+- [OpenTimer][OpenTimer]: A High-performance Timing Analysis Tool for Very Large Scale Integration (VLSI) Systems
+- [DtCraft][DtCraft]: A General-purpose Distributed Programming Systems using Data-parallel Streams
+- [Firestorm][Firestorm]: Fighting Game Engine with Asynchronous Resource Loaders (developed by [ForgeMistress][ForgeMistress])
+
+Please [let me know][email me] if I forgot your project!
+
 # Contributors
+
 Cpp-Taskflow is being actively developed and contributed by the following people:
-- [Tsung-Wei Huang][Tsung-Wei Huang] created the Cpp-Taskflow project and implemented the core routines.
-- [Chun-Xun Lin][Chun-Xun Lin] co-created the Cpp-Taskflow project and implemented the core routines.
-- [Martin Wong][Martin Wong] supported the Cpp-Taskflow project through NSF and DARPA funding.
-- [Andreas Olofsson][Andreas Olofsson] supported the Cpp-Taskflow project through the DARPA IDEA project.
-- [Nan Xiao](https://github.com/NanXiao) fixed compilation error of unittest on the Arch platform.
-- [Vladyslav](https://github.com/innermous) fixed comment errors in README.md and examples.
-- [vblanco20-1](https://github.com/vblanco20-1) fixed compilation error on Microsoft Visual Studio.
-- [Glen Fraser](https://github.com/totalgee) created a standalone C++14-compatible [threadpool](./taskflow/threadpool/threadpool_cxx14.hpp) for taskflow; various other fixes and examples.
-- [Guannan Guo](https://github.com/gguo4) added different threadpool implementations to enhance the performance for taskflow.
+
+- [Tsung-Wei Huang][Tsung-Wei Huang] created the Cpp-Taskflow project and implemented the core routines
+- [Chun-Xun Lin][Chun-Xun Lin] co-created the Cpp-Taskflow project and implemented the core routines
+- [Martin Wong][Martin Wong] supported the Cpp-Taskflow project through NSF and DARPA funding
+- [Andreas Olofsson][Andreas Olofsson] supported the Cpp-Taskflow project through the DARPA IDEA project
+- [Nan Xiao](https://github.com/NanXiao) fixed compilation error of unittest on the Arch platform
+- [Vladyslav](https://github.com/innermous) fixed comment errors in README.md and examples
+- [vblanco20-1](https://github.com/vblanco20-1) fixed compilation error on Microsoft Visual Studio
+- [Glen Fraser](https://github.com/totalgee) created a standalone C++14-compatible [threadpool](./taskflow/threadpool/threadpool_cxx14.hpp) for taskflow; various other fixes and examples
+- [Guannan Guo](https://github.com/gguo4) added different threadpool implementations to enhance the performance for taskflow
+- [Patrik Huber][Patrik Huber] helped fixed typos in the documentation
+- [ForgeMistress][ForgeMistress] provided API ideas about sharing the executor to avoid thread over-subscriptiong issues.
 
 Meanwhile, we appreciate the support from many organizations for our development on Cpp-Taskflow.
 Please [let me know][email me] if I forgot someone!
@@ -783,15 +800,7 @@ Please [let me know][email me] if I forgot someone!
 | [<img src="image/uiuc.png" width="100px">][UIUC] | [<img src="image/csl.png" width="100px">][CSL] | [<img src="image/nsf.png" width="100px">][NSF] | [<img src="image/darpa.png" width="100px">][DARPA IDEA] |
 | :---: | :---: | :---: | :---: |
 
-# Who is Using Cpp-Taskflow?
 
-Cpp-Taskflow is being used in both industry and academic projects to scale up existing workloads 
-that incorporate complex task dependencies. 
-
-- [OpenTimer][OpenTimer]: A High-performance Timing Analysis Tool for VLSI Systems.
-- [DtCraft][DtCraft]: A General-purpose Distributed Programming Systems.
-
-Please [let me know][email me] if I forgot your project!
 
 # License
 
@@ -817,6 +826,8 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [DtCraft]:               http://dtcraft.web.engr.illinois.edu/
 [totalgee]:              https://github.com/totalgee
 [damienhocking]:         https://github.com/damienhocking
+[ForgeMistress]:         https://github.com/ForgeMistress
+[Patrik Huber]:          https://github.com/patrikhuber
 [DARPA IDEA]:            https://www.darpa.mil/news-events/2017-09-13
 [NSF]:                   https://www.nsf.gov/
 [UIUC]:                  https://illinois.edu/
@@ -828,6 +839,9 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [email me]:              mailto:twh760812@gmail.com
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
 
-
 [std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
 [std::future]:           https://en.cppreference.com/w/cpp/thread/future
+
+[Firestorm]:             https://github.com/ForgeMistress/Firestorm
+
+

@@ -38,8 +38,6 @@
 #include <unordered_map>
 #include <array>
 
-#include "move_on_copy.hpp"
-
 namespace tf {
 
 /*// ========
@@ -224,7 +222,7 @@ bool RunQueue<T, N>::empty() const {
 //------------------------------------------------------------
 //------------------Class:: PrivatizedThreadpool-------------
 
-template <typename Task>
+template <typename Closure>
 class PrivatizedThreadpool {
 
   struct Worker{
@@ -232,8 +230,8 @@ class PrivatizedThreadpool {
     std::condition_variable cv;
     bool ready {true};
     bool exit {false};
-    std::optional<Task> task {std::nullopt};
-    RunQueue<Task, 1024> queue;
+    std::optional<Closure> task {std::nullopt};
+    RunQueue<Closure, 1024> queue;
   };
 
   struct PerThread {
@@ -261,7 +259,7 @@ class PrivatizedThreadpool {
     const std::thread::id _owner {std::this_thread::get_id()};
 
     mutable std::mutex _mutex;
-    std::vector<Task> _tasks;
+    std::vector<Closure> _tasks;
     std::vector<std::thread> _threads;
     std::vector<Worker> _workers;
    
@@ -269,9 +267,9 @@ class PrivatizedThreadpool {
     std::atomic<size_t> _next_queue {0}; 
     
     std::optional<size_t> _nonempty_worker_queue() const;
-    std::optional<Task> _try_dequeue();
+    std::optional<Closure> _try_dequeue();
 
-    bool _steal(std::optional<Task>&);
+    bool _steal(std::optional<Closure>&);
 
     void _shutdown();
     void _spawn(unsigned);
@@ -283,8 +281,8 @@ class PrivatizedThreadpool {
 };  // class PrivatizedThreadpool. --------------------------------------
 
 // Function: _nonempty_worker_queue
-template <typename Task>
-std::optional<size_t> PrivatizedThreadpool<Task>::_nonempty_worker_queue() const {
+template <typename Closure>
+std::optional<size_t> PrivatizedThreadpool<Closure>::_nonempty_worker_queue() const {
   for(size_t i=0;i <_workers.size(); ++i){
     if(!_workers[i].queue.empty()){
       return i;
@@ -294,25 +292,25 @@ std::optional<size_t> PrivatizedThreadpool<Task>::_nonempty_worker_queue() const
 }
     
 // Function: _per_thread
-template <typename Task>
-typename PrivatizedThreadpool<Task>::PerThread* 
-PrivatizedThreadpool<Task>::_per_thread() const {
+template <typename Closure>
+typename PrivatizedThreadpool<Closure>::PerThread* 
+PrivatizedThreadpool<Closure>::_per_thread() const {
   thread_local PerThread per_thread_;
   PerThread* pt = &per_thread_;
   return pt;
 }
 
 // Function: _randomize
-template <typename Task>
-unsigned PrivatizedThreadpool<Task>::_randomize(uint64_t* state) const {
+template <typename Closure>
+unsigned PrivatizedThreadpool<Closure>::_randomize(uint64_t* state) const {
   uint64_t current = *state;
   *state = current * 6364136223846793005ULL + 0xda3e39cb94b95bdbULL;
   return static_cast<unsigned>((current ^ (current >> 22)) >> (22 + (current >> 61)));
 }
 
 // Function: _steal 
-template <typename Task>
-bool PrivatizedThreadpool<Task>::_steal(std::optional<Task>& w){
+template <typename Closure>
+bool PrivatizedThreadpool<Closure>::_steal(std::optional<Closure>& w){
 
   PerThread* pt = _per_thread();
   const auto queue_num = _workers.size();
@@ -342,38 +340,38 @@ bool PrivatizedThreadpool<Task>::_steal(std::optional<Task>& w){
 }
 
 // Constructor
-template <typename Task>
-PrivatizedThreadpool<Task>::PrivatizedThreadpool(unsigned N): _workers {N} {
+template <typename Closure>
+PrivatizedThreadpool<Closure>::PrivatizedThreadpool(unsigned N): _workers {N} {
   _spawn(N);
 }
 
 // Destructor
-template <typename Task>
-PrivatizedThreadpool<Task>::~PrivatizedThreadpool(){
+template <typename Closure>
+PrivatizedThreadpool<Closure>::~PrivatizedThreadpool(){
   _shutdown();
 }
 
 // Function: is_owner
-template <typename Task>
-bool PrivatizedThreadpool<Task>::is_owner() const {
+template <typename Closure>
+bool PrivatizedThreadpool<Closure>::is_owner() const {
   return std::this_thread::get_id() == _owner;
 }
 
 // Function: num_tasks
-template <typename Task>
-size_t PrivatizedThreadpool<Task>::num_tasks() const { 
+template <typename Closure>
+size_t PrivatizedThreadpool<Closure>::num_tasks() const { 
   return _tasks.size(); 
 }
 
 // Function: num_workers
-template <typename Task>
-size_t PrivatizedThreadpool<Task>::num_workers() const { 
+template <typename Closure>
+size_t PrivatizedThreadpool<Closure>::num_workers() const { 
   return _workers.size();
 }
 
 // Function: shutdown
-template <typename Task>
-void PrivatizedThreadpool<Task>::_shutdown(){
+template <typename Closure>
+void PrivatizedThreadpool<Closure>::_shutdown(){
 
   assert(is_owner());
   
@@ -394,8 +392,8 @@ void PrivatizedThreadpool<Task>::_shutdown(){
 
 
 // Function: _spawn 
-template <typename Task>
-void PrivatizedThreadpool<Task>::_spawn(unsigned N) {
+template <typename Closure>
+void PrivatizedThreadpool<Closure>::_spawn(unsigned N) {
  
   assert(is_owner());
 
@@ -407,7 +405,7 @@ void PrivatizedThreadpool<Task>::_spawn(unsigned N) {
       pt->rand = std::hash<std::thread::id>()(std::this_thread::get_id());
       pt->thread_id = i;
 
-      std::optional<Task> t;
+      std::optional<Closure> t;
       Worker& w = _workers[i];
 
       while(!w.exit){
@@ -460,17 +458,17 @@ void PrivatizedThreadpool<Task>::_spawn(unsigned N) {
 }
 
 // Procedure: emplace
-template <typename Task>
+template <typename Closure>
 template <typename... ArgsT>
-void PrivatizedThreadpool<Task>::emplace(ArgsT&&... args){
+void PrivatizedThreadpool<Closure>::emplace(ArgsT&&... args){
 
   //no worker thread available
   if(num_workers() == 0){
-    Task{std::forward<ArgsT>(args)...}();
+    Closure{std::forward<ArgsT>(args)...}();
     return;
   }
 
-  Task t {std::forward<ArgsT>(args)...};
+  Closure t {std::forward<ArgsT>(args)...};
 
   PerThread* pt = _per_thread();
   size_t target = _next_queue; //round robin
@@ -533,11 +531,11 @@ void PrivatizedThreadpool<Task>::emplace(ArgsT&&... args){
 // Privatized queue of worker. The lock-free queue is inspired by 
 // http://www.1024cores.net/home/lock-free-algorithms/queues/bounded-mpmc-queue
 template<typename T, size_t C>
-class PrivatizedTaskQueue {
+class PrivatizedClosureQueue {
 
   public:
 
-  PrivatizedTaskQueue() : _buffer_mask(C - 1) {
+  PrivatizedClosureQueue() : _buffer_mask(C - 1) {
     for (size_t i = 0; i < C; i ++){
       _buffer[i].sequence_.store(i, std::memory_order_relaxed);
     }
@@ -545,7 +543,7 @@ class PrivatizedTaskQueue {
     _back.store(0, std::memory_order_relaxed);
   }
 
-  ~PrivatizedTaskQueue(){}
+  ~PrivatizedClosureQueue(){}
 
   bool enqueue(T& data){
     size_t pos = _front.load(std::memory_order_relaxed);
@@ -610,13 +608,13 @@ class PrivatizedTaskQueue {
 // ----------------------------------------------------------------------------
 
 // Class: PrivatizedThreadpool
-template <typename Task>
+template <typename Closure>
 class PrivatizedThreadpool {
 
   struct Worker{
     std::condition_variable cv;
-    PrivatizedTaskQueue<Task, 1024> queue;
-    std::optional<Task> cache;
+    PrivatizedClosureQueue<Closure, 1024> queue;
+    std::optional<Closure> cache;
     bool exit {false};
 
     size_t last_victim {0};
@@ -648,7 +646,7 @@ class PrivatizedThreadpool {
 
     uint64_t _seed {1};
 
-    std::vector<Task> _tasks;
+    std::vector<Closure> _tasks;
     std::vector<std::thread> _threads;
     std::vector<Worker> _workers;
     
@@ -660,7 +658,7 @@ class PrivatizedThreadpool {
     
     std::optional<size_t> _nonempty_worker_queue() const;
 
-    bool _steal(std::optional<Task>&, uint64_t&, const size_t);
+    bool _steal(std::optional<Closure>&, uint64_t&, const size_t);
 
     void _shutdown();
     void _spawn(unsigned);
@@ -672,8 +670,8 @@ class PrivatizedThreadpool {
 };
 
 // Function: _nonempty_worker_queue
-template <typename Task>
-std::optional<size_t> PrivatizedThreadpool<Task>::_nonempty_worker_queue() const {
+template <typename Closure>
+std::optional<size_t> PrivatizedThreadpool<Closure>::_nonempty_worker_queue() const {
   for(size_t i=0;i <_workers.size(); ++i){
     if(!_workers[i].queue.empty()){
       return i;
@@ -683,8 +681,8 @@ std::optional<size_t> PrivatizedThreadpool<Task>::_nonempty_worker_queue() const
 }
 
 // Function: _randomize
-template <typename Task>
-unsigned PrivatizedThreadpool<Task>::_randomize(uint64_t& state) {
+template <typename Closure>
+unsigned PrivatizedThreadpool<Closure>::_randomize(uint64_t& state) {
   uint64_t current = state;
   state = current * 6364136223846793005ULL + 0xda3e39cb94b95bdbULL;
   // Generate the random output (using the PCG-XSH-RS scheme)
@@ -692,14 +690,14 @@ unsigned PrivatizedThreadpool<Task>::_randomize(uint64_t& state) {
 }
 
 // http://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
-template <typename Task>
-uint32_t PrivatizedThreadpool<Task>::_fast_modulo(const uint32_t x, const uint32_t N) {
+template <typename Closure>
+uint32_t PrivatizedThreadpool<Closure>::_fast_modulo(const uint32_t x, const uint32_t N) {
   return ((uint64_t) x * (uint64_t) N) >> 32;
 }
 
 // Function: _steal 
-template <typename Task>
-bool PrivatizedThreadpool<Task>::_steal(std::optional<Task>& w, uint64_t& seed, const size_t id){
+template <typename Closure>
+bool PrivatizedThreadpool<Closure>::_steal(std::optional<Closure>& w, uint64_t& seed, const size_t id){
   const auto queue_num = _workers.size();
   auto victim = _workers[id].last_victim;
   for(size_t i=0; i<queue_num; i++){
@@ -716,46 +714,46 @@ bool PrivatizedThreadpool<Task>::_steal(std::optional<Task>& w, uint64_t& seed, 
 }
 
 // Constructor
-template <typename Task>
-PrivatizedThreadpool<Task>::PrivatizedThreadpool(unsigned N): _workers {N} {
+template <typename Closure>
+PrivatizedThreadpool<Closure>::PrivatizedThreadpool(unsigned N): _workers {N} {
   _spawn(N);
 }
 
 // Destructor
-template <typename Task>
-PrivatizedThreadpool<Task>::~PrivatizedThreadpool(){
+template <typename Closure>
+PrivatizedThreadpool<Closure>::~PrivatizedThreadpool(){
   _shutdown();
 }
 
 // Function: _per_thread
-template <typename Task>
-typename PrivatizedThreadpool<Task>::PerThread&
-PrivatizedThreadpool<Task>::_per_thread() const {
+template <typename Closure>
+typename PrivatizedThreadpool<Closure>::PerThread&
+PrivatizedThreadpool<Closure>::_per_thread() const {
   thread_local PerThread pt {this};
   return pt;
 }
 
 // Function: is_owner
-template <typename Task>
-bool PrivatizedThreadpool<Task>::is_owner() const {
+template <typename Closure>
+bool PrivatizedThreadpool<Closure>::is_owner() const {
   return std::this_thread::get_id() == _owner;
 }
 
 // Function: num_tasks
-template <typename Task>
-size_t PrivatizedThreadpool<Task>::num_tasks() const { 
+template <typename Closure>
+size_t PrivatizedThreadpool<Closure>::num_tasks() const { 
   return _tasks.size(); 
 }
 
 // Function: num_workers
-template <typename Task>
-size_t PrivatizedThreadpool<Task>::num_workers() const { 
+template <typename Closure>
+size_t PrivatizedThreadpool<Closure>::num_workers() const { 
   return _threads.size();  
 }
 
 // Function: shutdown
-template <typename Task>
-void PrivatizedThreadpool<Task>::_shutdown(){
+template <typename Closure>
+void PrivatizedThreadpool<Closure>::_shutdown(){
 
   assert(is_owner());
 
@@ -777,8 +775,8 @@ void PrivatizedThreadpool<Task>::_shutdown(){
 }
 
 // Function: _spawn 
-template <typename Task>
-void PrivatizedThreadpool<Task>::_spawn(unsigned N) {
+template <typename Closure>
+void PrivatizedThreadpool<Closure>::_spawn(unsigned N) {
 
   assert(is_owner());
 
@@ -788,7 +786,7 @@ void PrivatizedThreadpool<Task>::_spawn(unsigned N) {
   for(size_t i=0; i<N; ++i){
     _threads.emplace_back([this, i=i] () -> void {
 
-      std::optional<Task> t;
+      std::optional<Closure> t;
       Worker& w = (_workers[i]);
       uint64_t seed = i+1;
       std::unique_lock lock(_mutex, std::defer_lock);
@@ -827,19 +825,19 @@ void PrivatizedThreadpool<Task>::_spawn(unsigned N) {
   } // End of For ---------------------------------------------------------------------------------
 }
 
-template <typename Task>
+template <typename Closure>
 template <typename... ArgsT>
-void PrivatizedThreadpool<Task>::emplace(ArgsT&&... args){
+void PrivatizedThreadpool<Closure>::emplace(ArgsT&&... args){
 
   //no worker thread available
   if(num_workers() == 0){
-    Task{std::forward<ArgsT>(args)...}();
+    Closure{std::forward<ArgsT>(args)...}();
     return;
   }
 
   _num_tasks.fetch_add(1, std::memory_order_relaxed);
 
-  Task t {std::forward<ArgsT>(args)...};
+  Closure t {std::forward<ArgsT>(args)...};
   
   // caller is not the owner
   if(auto tid = std::this_thread::get_id(); tid != _owner){

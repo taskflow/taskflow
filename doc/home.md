@@ -2,21 +2,26 @@
 # Cpp-Taskflow Project
 
 + [Motivation behind Cpp-Taskflow](project/motivation.md)
-+ [Necessity of a New Tasking Library](project/necessity.md)
++ [Toward a New Task Parallel Library](project/necessity.md)
 
 # Cookbook
 
-+ [Write Your First Cpp-Taskflow Program](cookbook/hello_world.md)
-+ [Understand the Task](cookbook/task.md)
-+ [Execute a Task Dependency Graph](cookbook/dispatch.md)
-+ [Create a Parallel For-loop Graph](cookbook/parallel_for.md)
-+ [Create a Parallel Reduction Graph](cookbook/reduce.md)
-+ [Spawn a Task Dependency Graph at Runtime](cookbook/dynamic_tasking.md)
++ [C0: Write Your First Cpp-Taskflow Program](cookbook/hello_world.md)
++ [C1: Understand the Task](cookbook/task.md)
++ [C2: Execute a Task Dependency Graph](cookbook/dispatch.md)
++ [C3: Create a Parallel For-loop Graph](cookbook/parallel_for.md)
++ [C4: Create a Parallel Reduction Graph](cookbook/reduce.md)
++ [C5: Spawn a Task Dependency Graph at Runtime](cookbook/dynamic_tasking.md)
+
+# Advanced Usage
+
++ [A1: Thread Management and Executor](advanced/thread.md)
 
 # Application Gallery
+
 + [Wavefront Computation](app/wavefront/wavefront.md)
 
-# Get More Help
+# Get More Involved
 
 + [GitHub issue][Github issues]
 + [Frequently Asked Questions](faq.md)
