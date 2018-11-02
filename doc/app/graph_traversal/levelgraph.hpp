@@ -10,9 +10,9 @@
 #include <cmath>
 #include <memory>
 
-#include "taskflow.hpp"
-#include "tbb/task_scheduler_init.h"
-#include "tbb/flow_graph.h" 
+#include <taskflow/taskflow.hpp>
+#include <tbb/task_scheduler_init.h>
+#include <tbb/flow_graph.h>
 
 class Node{
   
@@ -24,17 +24,17 @@ class Node{
       _out_edges = std::move(next_level_nodes);
     }
    
-
     void mark(){
       _visited = true;
-      //std::cout << "Level:\t" << _level << "\tidx\t" << _idx<< std::endl;
     }
 
     void unmark(){
       _visited = false;
     }
  
-    bool check_status(){ return _visited; }
+    bool check_status() { 
+      return _visited; 
+    }
 
     void print_node(){
   
@@ -55,19 +55,12 @@ class Node{
 
     }
 
-
-
-    const int index(){ return _idx; }
+    int index() const { return _idx; }
 
     int* edge_ptr(int edge_idx) { return &_out_edges[edge_idx]; }
 
     std::vector<std::pair<int, int>> _in_edges;
     std::vector<int> _out_edges;
-    tf::Task _task;
-
-    //tbb::flow::continue_node<tbb::flow::continue_msg> *tbb_node;
-
-    std::unique_ptr<tbb::flow::continue_node<tbb::flow::continue_msg>> tbb_node;
 
   private:
 
@@ -77,17 +70,16 @@ class Node{
     bool _visited {false};
 };
 
-class RegularGraph{
+class LevelGraph {
 
   public:
 
-    RegularGraph(size_t length, size_t level){
+    LevelGraph(size_t length, size_t level){
 
       _level_num = level;
       _length_num = length;
 
-      //std::random_device rd;
-      std::mt19937 g(0); 
+      std::mt19937 g(0);  // fixed the seed
 
       for(size_t l=0; l<level; ++l){
         
@@ -182,7 +174,6 @@ class RegularGraph{
           _graph[l][i].unmark();
         }
       }
-      std::cout << "clear graph completed" << std::endl;
     }
 
 
@@ -202,14 +193,6 @@ class RegularGraph{
       return size;
     }
 
-    void reset_tbb_node(){
-      for(size_t l=0; l<_level_num; l++){
-        for(size_t i=0; i<_length_num; i++){
-          _graph[l][i].tbb_node.reset(nullptr); //invoker destructor through reset
-        }
-      }
-    }
-
   private:
     
     const size_t _edge_max = 4;
@@ -219,5 +202,13 @@ class RegularGraph{
     std::vector<std::vector<Node>> _graph;
 
 };
+
+std::chrono::microseconds measure_time_taskflow(LevelGraph&);
+std::chrono::microseconds measure_time_omp(LevelGraph&);
+std::chrono::microseconds measure_time_tbb(LevelGraph&);
+
+
+
+
 
 

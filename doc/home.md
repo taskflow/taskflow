@@ -20,6 +20,7 @@
 # Application Gallery
 
 + [Wavefront Computation](app/wavefront/wavefront.md)
++ [Graph Traversal](app/graph_traversal/graph_traversal.md)
 
 # Get More Involved
 

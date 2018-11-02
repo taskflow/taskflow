@@ -212,7 +212,7 @@ Linux Ubuntu machine of 4 Intel CPUs 3.2GHz and 24 GB memory.
 We use the famous Linux tool [SLOCCount][SLOCCount] to measure the software cost of
 each implementation.
 The cost model is based on the *constructive cost model* (COCOMO).
-In the table below, **SLOC** denotes souce lines of code, 
+In the table below, **SLOC** denotes source lines of code, 
 **Dev Effort** denotes development effort estimate (person-months),
 **Sched Estimate** denotes schedule estimate (years),
 **Developers** denotes the estimate number of developers,

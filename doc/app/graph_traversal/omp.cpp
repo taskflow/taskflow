@@ -4,10 +4,9 @@
 
 #include "levelgraph.hpp"
 
+void traverse_regular_graph_omp(LevelGraph& graph){
 
-void traverse_regular_graph_omp(RegularGraph& graph){
-
-  omp_set_num_threads(4); //4 threads
+  omp_set_num_threads(std::thread::hardware_concurrency());
   
   #pragma omp parallel
   {
@@ -263,25 +262,24 @@ void traverse_regular_graph_omp(RegularGraph& graph){
   }  
 }
 
-auto measure_time_OMP(RegularGraph& graph){
+std::chrono::microseconds measure_time_omp(LevelGraph& graph){
   auto beg = std::chrono::high_resolution_clock::now();
   traverse_regular_graph_omp(graph);
   auto end = std::chrono::high_resolution_clock::now();
-  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg).count();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-int main(int argc, char* argv[]){
+//int main(int argc, char* argv[]){
+//
+//  for(int i=1; i<=200; i++){
+//    LevelGraph graph(i, i);
+//    auto omp = measure_time_OMP(graph);
+//    std::cout << "Level graph:\t" << i << "\tby\t" << i << std::endl;
+//    std::cout << "Elasped time OMP:\t" << omp << std::endl;
+//    std::cout << "Graph is fully traversed:\t" << graph.validate_result() << std::endl;  
+//    graph.clear_graph();
+//    std::cout << std::endl;
+//  }
+//
+//}
 
-  for(int i=1; i<=200; i++){
-
-    RegularGraph graph(i, i);
-    auto omp = measure_time_OMP(graph);
-    std::cout << "Level graph:\t" << i << "\tby\t" << i << std::endl;
-    std::cout << "Elasped time OMP:\t" << omp << std::endl;
-    std::cout << "Graph is fully traversed:\t" << graph.validate_result() << std::endl;  
-    graph.clear_graph();
-    std::cout << std::endl;
-
-  }
-
-}
