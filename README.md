@@ -12,23 +12,33 @@ A fast C++ header-only library to help you quickly build parallel programs with 
 
 # Why Cpp-Taskflow?
 
-Cpp-Taskflow lets you quickly build parallel dependency graphs using modern C++17.
-It supports both *static and dynamic* tasking,
-and is by far faster, more expressive, and easier for drop-in integration than existing libraries.
+Cpp-Taskflow is by far faster, more expressive, and easier for drop-in integration
+than existing parallel task programming libraries such as [OpenMP Tasking][OpenMP Tasking] and Intel [TBB FlowGraph][TBB FlowGraph].
+
+![](image/performance.jpeg)
+
+Cpp-Taskflow enables you to implement efficient task decomposition strategies
+that incorporate both regular loop-based parallelism 
+and irregular compute patterns to optimize the cpu performance.
+
 
 | Without Cpp-Taskflow | With Cpp-Taskflow |
 | -------------------- | ----------------- |
 | ![](image/profile_without_taskflow.gif) | ![](image/profile_with_taskflow.gif) |
 
+Cpp-Taskflow has a unified interface for both *static* tasking and *dynamic* tasking,
+allowing users to quickly master our parallel task programming model in a natural idiom.
+
 | Static Tasking | Dynamic Tasking |
 | :------------: | :-------------: |
 | ![](image/static_graph.png) | ![](image/dynamic_graph.png) |
 
-*"Cpp-Taskflow is the cleanest Task API I've ever seen." [damienhocking][damienhocking]*
+Cpp-Taskflow is committed to support both academic and industry research projects,
+making it reliable and cost-effective for long-term and large-scale developments.
 
-*"Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [totalgee][totalgee]*
-
-*"Best poster award for open-source parallel programming library." [Cpp Conference 2018][Cpp Conference 2018]*
++ *"Cpp-Taskflow is the cleanest Task API I've ever seen." [damienhocking][damienhocking]*
++ *"Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [totalgee][totalgee]*
++ *"Best poster award for open-source parallel programming library." [Cpp Conference 2018][Cpp Conference 2018]*
 
 # Get Started with Cpp-Taskflow
 

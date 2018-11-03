@@ -1,43 +1,4 @@
-#include <algorithm> 
-#include <cstdio>
-#include <chrono>
-#include <iostream>
-#include <thread>
-#include <random>
-#include <cmath>
-
-int M = 40000, N = 40000;
-int B = 160;
-int MB = (M/B) + (M%B>0);
-int NB = (N/B) + (N%B>0);
-
-double **matrix {nullptr};
-
-// perform some nominal computations.
-double calc(double v0, double v1) {
-  return (v0 == v1) ? std::pow(v0/v1, 4.0f) : std::max(v0,v1);
-}
-
-// initialize the matrix
-void init_matrix(){
-  matrix = new double *[M];
-  for (int i = 0; i < M; ++i ) {
-    matrix[i] = new double [N];
-  }
-  for (int i=0; i<M; ++i){
-    for(int j=0; j<N ; ++j){
-      matrix[i][j] = i*N + j;
-    }   
-  }
-}
-
-// destroy the matrix
-void destroy_matrix() {
-  for ( int i = 0; i < M; ++i ) {
-    delete [] matrix[i];
-  }
-  delete [] matrix;
-}
+#include "matrix.hpp"
 
 // the computation inside each block
 void block_computation(int i, int j){
@@ -57,7 +18,7 @@ void block_computation(int i, int j){
 }
 
 // wavefront computation
-void wavefront() {
+void wavefront_seq() {
   for( int i=0; i<MB; ++i){
     for( int j=0; j<NB; ++j) {
       block_computation(i, j);
@@ -65,7 +26,14 @@ void wavefront() {
   }
 }
 
-// main function
+std::chrono::microseconds measure_time_seq() {
+  auto beg = std::chrono::high_resolution_clock::now();
+  wavefront_seq();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg);
+}
+
+/*// main function
 int main(int argc, char *argv[]) {
 
   init_matrix();
@@ -78,6 +46,8 @@ int main(int argc, char *argv[]) {
             << " ms\n"
             << "result: " << matrix[M-1][N-1] << '\n';
 
+  destroy_matrix();
+
   return 0;
-}
+} */
 

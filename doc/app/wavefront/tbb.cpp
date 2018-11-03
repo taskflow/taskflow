@@ -1,50 +1,14 @@
-#include <algorithm> // for std::max
-#include <cstdio>
-#include <chrono>
-#include <iostream>
-#include <thread>
-#include <random>
-#include <cmath>
-#include "tbb/task_scheduler_init.h"
-#include "tbb/flow_graph.h" 
-
-
-int M = 40000, N = 40000;
-int B = 160;
-int MB = (M/B) + (M%B>0);
-int NB = (N/B) + (N%B>0);
-
-double **matrix {nullptr};
-
-// nominal operations
-double calc(double v0, double v1) {
-  return (v0 == v1) ? std::pow(v0/v1, 4.0f) : std::max(v0,v1);
-}
-
-// initialize the matrix
-void init_matrix(){
-  matrix = new double *[M];
-  for ( int i = 0; i < M; ++i ) matrix[i] = new double [N];
-  for(int i=0; i<M; ++i){
-    for(int j=0; j<N ; ++j){
-      matrix[i][j] = i*N + j;
-    }   
-  }
-}
-
-// destroy the matrix
-void destroy_matrix() {
-  for ( int i = 0; i < M; ++i ) {
-    delete [] matrix[i];
-  }
-  delete [] matrix;
-}
+#include "matrix.hpp"
+#include <tbb/task_scheduler_init.h>
+#include <tbb/flow_graph.h>
 
 // the wavefront computation
-void wavefront() {
+void wavefront_tbb() {
 
   using namespace tbb;
   using namespace tbb::flow;
+  
+  tbb::task_scheduler_init init(std::thread::hardware_concurrency());
     
   continue_node<continue_msg> ***node = new continue_node<continue_msg> **[MB];
 
@@ -88,7 +52,14 @@ void wavefront() {
   }
 }
 
-// main function
+std::chrono::microseconds measure_time_tbb() {
+  auto beg = std::chrono::high_resolution_clock::now();
+  wavefront_tbb();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg);
+}
+
+/*// main function
 int main(int argc, char *argv[]) {
 
   init_matrix();
@@ -107,7 +78,7 @@ int main(int argc, char *argv[]) {
   destroy_matrix();
 
   return 0;
-}
+} */
 
 
 
