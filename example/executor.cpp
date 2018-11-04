@@ -29,7 +29,7 @@ void matrix_multiplication() {
     a[i].resize(MAX_COUNT);
     b[i].resize(MAX_COUNT);
     c[i].resize(MAX_COUNT);
-    for(int j=0; j<MAX_COUNT; ++j) {
+    for(size_t j=0; j<MAX_COUNT; ++j) {
       a[i][j] = dist(eng);
       b[i][j] = dist(eng);
       c[i][j] = 0;
@@ -103,7 +103,7 @@ auto shared_executor() {
   auto executor = std::make_shared<tf::Taskflow::Executor>(MAX_THREAD);
 
   for(size_t i=0; i<MAX_TASKFLOW; ++i) {
-    assert(executor.use_count() == i + 1);
+    assert((size_t)executor.use_count() == i + 1);
     auto& tf = tfs.emplace_back(executor);
     create_task_dependency_graph(tf);
   }
