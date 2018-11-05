@@ -245,7 +245,7 @@ class Node {
     Node();
 
     template <typename C>
-    explicit Node(C&&);
+    Node(C&&);
 
     const std::string& name() const;
     
@@ -457,20 +457,24 @@ class Task {
     size_t num_dependents() const;
 
     Task& name(const std::string&);
-    Task& precede(Task);
-    Task& broadcast(std::vector<Task>&);
-    Task& broadcast(std::initializer_list<Task>);
-    Task& gather(std::vector<Task>&);
-    Task& gather(std::initializer_list<Task>);
 
     template <typename C>
     Task& work(C&&);
-  
+
+    template <typename... Ts>
+    Task& precede(Ts&&...);
+    
     template <typename... Bs>
     Task& broadcast(Bs&&...);
-
+    
+    Task& broadcast(std::vector<Task>&);
+    Task& broadcast(std::initializer_list<Task>);
+  
     template <typename... Bs>
     Task& gather(Bs&&...);
+
+    Task& gather(std::vector<Task>&);
+    Task& gather(std::initializer_list<Task>);
 
   private:
 
@@ -491,15 +495,9 @@ inline Task::Task(Node& t) : _node {&t} {
 inline Task::Task(const Task& rhs) : _node {rhs._node} {
 }
 
-// Function: precede
-inline Task& Task::precede(Task tgt) {
-  _node->precede(*(tgt._node));
-  return *this;
-}
-
 // Function: broadcast
 template <typename... Bs>
-inline Task& Task::broadcast(Bs&&... tgts) {
+Task& Task::broadcast(Bs&&... tgts) {
   (_node->precede(*(tgts._node)), ...);
   return *this;
 }
@@ -524,16 +522,23 @@ inline Task& Task::broadcast(std::initializer_list<Task> tgts) {
   return *this;
 }
 
+// Function: precede
+template <typename... Ts>
+Task& Task::precede(Ts&&... tgts) {
+  (_node->precede(*(tgts._node)), ...);
+  return *this;
+}
+
 // Function: gather
 template <typename... Bs>
-inline Task& Task::gather(Bs&&... tgts) {
-  (tgts.precede(*this), ...);
+Task& Task::gather(Bs&&... tgts) {
+  (tgts._node->precede(*_node), ...);
   return *this;
 }
 
 // Procedure: _gather
 template <typename S>
-inline void Task::_gather(S& tgts) {
+void Task::_gather(S& tgts) {
   for(auto& from : tgts) {
     from._node->precede(*_node);
   }
@@ -1173,6 +1178,7 @@ class BasicTaskflow : public FlowBuilder {
     void wait_for_all();
     void wait_for_topologies();
     void dump(std::ostream&) const;
+    void dump_topologies(std::ostream&) const;
 
     size_t num_nodes() const;
     size_t num_workers() const;
@@ -1415,7 +1421,7 @@ void BasicTaskflow<E>::_schedule(Node& node) {
   _executor->emplace(*this, node);
 }
 
-// Function: dump_topology
+// Function: dump_topologies
 template <template <typename...> typename E>
 std::string BasicTaskflow<E>::dump_topologies() const {
   
@@ -1426,6 +1432,14 @@ std::string BasicTaskflow<E>::dump_topologies() const {
   }
   
   return os.str();
+}
+
+// Function: dump_topologies
+template <template <typename...> typename E>
+void BasicTaskflow<E>::dump_topologies(std::ostream& os) const {
+  for(const auto& tpg : _topologies) {
+    tpg.dump(os);
+  }
 }
 
 // Function: dump
