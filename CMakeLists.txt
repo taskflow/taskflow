@@ -155,3 +155,28 @@ set_target_properties(threadpool_cxx14_tmp PROPERTIES OUTPUT_NAME "threadpool_cx
 add_test(threadpool_cxx14_basic        ${TF_UTEST_DIR}/threadpool_cxx14 -tc=Threadpool.Basic)
 add_test(threadpool_cxx14_wait_for_all ${TF_UTEST_DIR}/threadpool_cxx14 -tc=Threadpool.WaitForAll)
 
+
+# -----------------------------------------------------------------------------
+# Benchmarking (enabled by TF_BENCHMARKING)
+# -----------------------------------------------------------------------------
+
+#if(TF_BENCHMARK EQUAL "1")
+#message(STATUS "TF_BENCHMARK: ${TF_BENCHMARK}")
+#
+## Find OpenMP package
+#include(FindOpenMP)
+#
+#if(NOT OpenMP_CXX_FOUND)
+#  message(FATAL_ERROR "")
+#  message(STATUS "OpenMP_CXX_SPEC_DATE: ${OpenMP_CXX_SPEC_DATE}")
+#  message(STATUS "OpenMP_CXX_VERSION: ${OpenMP_CXX_VERSION}")
+#  message(STATUS "OpenMP_CXX_FLAGS: ${OpenMP_CXX_FLAGS}")
+#  message(STATUS "OpenMP_CXX_LIB_NAMES: ${OpenMP_CXX_LIB_NAMES}")
+#else(OpenMP_CXX_FOUND)
+#  message(WARNING "OpenMP CXX not found")
+#endif(OpenMP_CXX_FOUND)
+#
+#endif()
+
+
+

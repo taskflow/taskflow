@@ -8,7 +8,7 @@
 [![Insights](image/maintained.svg)][GitHub insights]
 [![License: MIT](./image/license_badge.svg)](./LICENSE)
 
-A fast C++ header-only library to help you quickly build parallel programs with complex task dependencies.
+A fast C++ header-only library to help you quickly write parallel programs with complex task dependencies.
 
 # Why Cpp-Taskflow?
 
@@ -39,6 +39,9 @@ making it reliable and cost-effective for long-term and large-scale developments
 + *"Cpp-Taskflow is the cleanest Task API I've ever seen." [damienhocking][damienhocking]*
 + *"Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [totalgee][totalgee]*
 + *"Best poster award for open-source parallel programming library." [Cpp Conference 2018][Cpp Conference 2018]*
+
+See a quick [presentation][Presentation] and 
+visit the [documentation][wiki] to learn more about Cpp-Taskflow.
 
 # Get Started with Cpp-Taskflow
 
@@ -853,5 +856,6 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [std::future]:           https://en.cppreference.com/w/cpp/thread/future
 
 [Firestorm]:             https://github.com/ForgeMistress/Firestorm
+[Presentation]:          https://cpp-taskflow.github.io/
 
 
