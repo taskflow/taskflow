@@ -109,6 +109,9 @@ target_link_libraries(threadpool_cxx14 Threads::Threads)
 add_executable(multiple_dispatch example/multiple_dispatch.cpp)
 target_link_libraries(multiple_dispatch Threads::Threads)
 
+add_executable(dispatch example/dispatch.cpp)
+target_link_libraries(dispatch Threads::Threads)
+
 add_executable(executor example/executor.cpp)
 target_link_libraries(executor Threads::Threads)
 

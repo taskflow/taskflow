@@ -362,6 +362,9 @@ class Topology {
 
     Topology(Graph&&);
 
+    template <typename C>
+    Topology(Graph&&, C&&);
+
     std::string dump() const;
     void dump(std::ostream&) const;
 
@@ -407,6 +410,43 @@ inline Topology::Topology(Graph&& t) :
     }
   }
 }
+
+
+// Constructor
+template <typename C>
+inline Topology::Topology(Graph&& t, C&& c) : 
+  _graph(std::move(t)) {
+
+  _source._topology = this;
+  _target._topology = this;
+  
+  std::promise<void> promise;
+
+  _future = promise.get_future().share();
+
+  _target._work = [p=MoC{std::move(promise)}, c{std::move(c)}] () mutable { 
+    p.get().set_value();
+    c();
+  };
+
+  // ensure the topology is connected
+  _source.precede(_target);
+
+  // Build the super source and super target.
+  for(auto& node : _graph) {
+
+    node._topology = this;
+
+    if(node.num_dependents() == 0) {
+      _source.precede(node);
+    }
+
+    if(node.num_successors() == 0) {
+      node.precede(_target);
+    }
+  }
+}
+
 
 // Procedure: dump
 inline void Topology::dump(std::ostream& os) const {
@@ -1171,10 +1211,17 @@ class BasicTaskflow : public FlowBuilder {
     ~BasicTaskflow();
     
     std::shared_ptr<Executor> share_executor();
-    
+ 
     std::shared_future<void> dispatch();
 
+    template <typename C>
+    std::shared_future<void> dispatch(C&&);
+
     void silent_dispatch();
+
+    template <typename C>
+    void silent_dispatch(C&&);
+
     void wait_for_all();
     void wait_for_topologies();
     void dump(std::ostream&) const;
@@ -1379,6 +1426,23 @@ void BasicTaskflow<E>::silent_dispatch() {
   _schedule(topology._source);
 }
 
+
+// Procedure: silent_dispatch 
+template <template <typename...> typename E>
+template <typename C>
+void BasicTaskflow<E>::silent_dispatch(C&& c) {
+
+  if(_graph.empty()) {
+    c();
+    return;
+  }
+
+  auto& topology = _topologies.emplace_front(std::move(_graph), std::move(c));
+
+  // Start the taskflow
+  _schedule(topology._source);
+}
+
 // Procedure: dispatch 
 template <template <typename...> typename E>
 std::shared_future<void> BasicTaskflow<E>::dispatch() {
@@ -1394,6 +1458,26 @@ std::shared_future<void> BasicTaskflow<E>::dispatch() {
   
   return topology._future;
 }
+
+
+// Procedure: dispatch 
+template <template <typename...> typename E>
+template <typename C>
+std::shared_future<void> BasicTaskflow<E>::dispatch(C&& c) {
+
+  if(_graph.empty()) {
+    return std::async(std::launch::deferred, [c{std::move(c)}](){c();}).share();
+  }
+
+  auto& topology = _topologies.emplace_front(std::move(_graph), std::move(c));
+
+  // Start the taskflow
+  _schedule(topology._source);
+  
+  return topology._future;
+}
+
+
 
 // Procedure: wait_for_all
 template <template <typename...> typename E>
