@@ -411,8 +411,8 @@ inline Topology::Topology(Graph&& t) :
 // Procedure: dump
 inline void Topology::dump(std::ostream& os) const {
 
-  assert(_source._subgraph->empty());
-  assert(_target._subgraph->empty());
+  assert(!(_source._subgraph));
+  assert(!(_target._subgraph));
   
   os << "digraph Topology {\n"
      << _source.dump() 
