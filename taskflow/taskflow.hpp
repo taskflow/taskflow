@@ -1427,7 +1427,7 @@ void BasicTaskflow<E>::silent_dispatch() {
 }
 
 
-// Procedure: silent_dispatch 
+// Procedure: silent_dispatch with registered callback
 template <template <typename...> typename E>
 template <typename C>
 void BasicTaskflow<E>::silent_dispatch(C&& c) {
@@ -1460,7 +1460,7 @@ std::shared_future<void> BasicTaskflow<E>::dispatch() {
 }
 
 
-// Procedure: dispatch 
+// Procedure: dispatch with registered callback
 template <template <typename...> typename E>
 template <typename C>
 std::shared_future<void> BasicTaskflow<E>::dispatch(C&& c) {
