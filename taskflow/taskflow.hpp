@@ -378,6 +378,8 @@ class Topology {
     Node _target;
 };
 
+// TODO: remove duplicate code in the two constructors
+
 // Constructor
 inline Topology::Topology(Graph&& t) : 
   _graph(std::move(t)) {
@@ -424,7 +426,7 @@ inline Topology::Topology(Graph&& t, C&& c) :
 
   _future = promise.get_future().share();
 
-  _target._work = [p=MoC{std::move(promise)}, c{std::move(c)}] () mutable { 
+  _target._work = [p=MoC{std::move(promise)}, c{std::forward<C>(c)}] () mutable { 
     p.get().set_value();
     c();
   };
@@ -1437,7 +1439,7 @@ void BasicTaskflow<E>::silent_dispatch(C&& c) {
     return;
   }
 
-  auto& topology = _topologies.emplace_front(std::move(_graph), std::move(c));
+  auto& topology = _topologies.emplace_front(std::move(_graph), std::forward<C>(c));
 
   // Start the taskflow
   _schedule(topology._source);
@@ -1466,10 +1468,11 @@ template <typename C>
 std::shared_future<void> BasicTaskflow<E>::dispatch(C&& c) {
 
   if(_graph.empty()) {
-    return std::async(std::launch::deferred, [c{std::move(c)}](){c();}).share();
+    c();
+    return std::async(std::launch::deferred, [](){}).share();
   }
 
-  auto& topology = _topologies.emplace_front(std::move(_graph), std::move(c));
+  auto& topology = _topologies.emplace_front(std::move(_graph), std::forward<C>(c));
 
   // Start the taskflow
   _schedule(topology._source);
