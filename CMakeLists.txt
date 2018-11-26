@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.9)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
 # Project name
-project(Cpp-TaskFlow)
+project(Cpp-TaskFlow 0.1.0)
 
 # Enable memory test
 include(CTest)
@@ -181,5 +181,33 @@ add_test(threadpool_cxx14_wait_for_all ${TF_UTEST_DIR}/threadpool_cxx14 -tc=Thre
 #
 #endif()
 
+# -----------------------------------------------------------------------------
+# Create importable library
+# -----------------------------------------------------------------------------
 
+add_library(${PROJECT_NAME} INTERFACE)
 
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+SET(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include" CACHE PATH "The directory the headers are installed in")
+SET(LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib" CACHE STRING "Directory where lib will install")
+
+#Export as Package
+set_target_properties (${PROJECT_NAME} PROPERTIES EXPORT_NAME ${PROJECT_NAME})
+export(TARGETS ${PROJECT_NAME} NAMESPACE ${PROJECT_NAME}:: FILE ${PROJECT_NAME}Targets.cmake)
+export(PACKAGE ${PROJECT_NAME})
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file(${PROJECT_NAME}Config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+  INSTALL_DESTINATION ${LIB_INSTALL_DIR}/${PROJECT_NAME}/cmake
+  PATH_VARS INCLUDE_INSTALL_DIR)
+write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+        DESTINATION ${LIB_INSTALL_DIR}/${PROJECT_NAME}/cmake )
+
+install (TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets)
+install (EXPORT ${PROJECT_NAME}Targets NAMESPACE ${PROJECT_NAME}:: DESTINATION ${CMAKE_INSTALL_DIR})
