@@ -212,6 +212,8 @@ configure_package_config_file(${PROJECT_NAME}Config.cmake.in
   PATH_VARS INCLUDE_INSTALL_DIR)
 write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake COMPATIBILITY SameMajorVersion)
 
+
+
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
         DESTINATION ${LIB_INSTALL_DIR}/cmake )
@@ -219,4 +221,4 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/taskflow/ DESTINATION ${INCLUDE_INSTALL_DIR}/taskflow)
 
 install (TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets)
-install (EXPORT ${PROJECT_NAME}Targets NAMESPACE ${PROJECT_NAME}:: DESTINATION ${LIB_INSTALL_DIR}/${PROJECT_NAME}/cmake)
+install (EXPORT ${PROJECT_NAME}Targets NAMESPACE ${PROJECT_NAME}:: DESTINATION ${LIB_INSTALL_DIR}/cmake)
