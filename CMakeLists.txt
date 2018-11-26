@@ -194,7 +194,7 @@ add_library(${PROJECT_NAME} INTERFACE)
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
 target_include_directories(${PROJECT_NAME} INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/taskflow>
-    $<INSTALL_INTERFACE:taskflow/>  # <prefix>/include/mylib
+    $<INSTALL_INTERFACE:include/taskflow/>  # <prefix>/include/mylib
 )
 
 SET(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include" CACHE PATH "The directory the headers are installed in")
