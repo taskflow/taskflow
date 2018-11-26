@@ -214,7 +214,7 @@ write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake COMPATIBILIT
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-        DESTINATION ${LIB_INSTALL_DIR}/${PROJECT_NAME}/cmake )
+        DESTINATION ${LIB_INSTALL_DIR}/cmake )
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/taskflow/ DESTINATION ${INCLUDE_INSTALL_DIR}/taskflow)
 
