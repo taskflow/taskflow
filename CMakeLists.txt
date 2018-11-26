@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.9)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
 # Project name
-project(Cpp-TaskFlow 0.1.0)
+project(Cpp-TaskFlow VERSION 0.1.0)
 
 # Enable memory test
 include(CTest)
