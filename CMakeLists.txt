@@ -208,7 +208,7 @@ export(PACKAGE ${PROJECT_NAME})
 include(CMakePackageConfigHelpers)
 configure_package_config_file(${PROJECT_NAME}Config.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-  INSTALL_DESTINATION ${LIB_INSTALL_DIR}/${PROJECT_NAME}/cmake
+  INSTALL_DESTINATION ${LIB_INSTALL_DIR}/cmake
   PATH_VARS INCLUDE_INSTALL_DIR)
 write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake COMPATIBILITY SameMajorVersion)
 
