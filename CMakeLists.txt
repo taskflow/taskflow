@@ -72,6 +72,8 @@ find_package(Threads REQUIRED)
 # -----------------------------------------------------------------------------
 # Example program 
 # -----------------------------------------------------------------------------
+OPTION(TASKFLOW_BUILD_EXAMPLES "Enables build of examples" OFF)
+if(${TASKFLOW_BUILD_EXAMPLES})
 message(STATUS "Building examples ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
 
@@ -114,10 +116,12 @@ target_link_libraries(dispatch Threads::Threads)
 
 add_executable(executor example/executor.cpp)
 target_link_libraries(executor Threads::Threads)
-
+endif()
 # -----------------------------------------------------------------------------
 # Unittest
 # -----------------------------------------------------------------------------
+OPTION(TASKFLOW_TEST "Enables Tests" OFF)
+if(${TASKFLOW_TEST})
 enable_testing()
 
 message(STATUS "Building unit tests ...")
@@ -157,7 +161,7 @@ target_link_libraries(threadpool_cxx14_tmp Threads::Threads)
 set_target_properties(threadpool_cxx14_tmp PROPERTIES OUTPUT_NAME "threadpool_cxx14")
 add_test(threadpool_cxx14_basic        ${TF_UTEST_DIR}/threadpool_cxx14 -tc=Threadpool.Basic)
 add_test(threadpool_cxx14_wait_for_all ${TF_UTEST_DIR}/threadpool_cxx14 -tc=Threadpool.WaitForAll)
-
+endif()
 
 # -----------------------------------------------------------------------------
 # Benchmarking (enabled by TF_BENCHMARKING)
@@ -210,6 +214,4 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
         DESTINATION ${LIB_INSTALL_DIR}/${PROJECT_NAME}/cmake )
 
 install (TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets)
-install (EXPORT ${PROJECT_NAME}Targets NAMESPACE ${PROJECT_NAME}:: DESTINATION ${CMAKE_INSTALL_DIR})
-
-
+install (EXPORT ${PROJECT_NAME}Targets NAMESPACE ${PROJECT_NAME}:: DESTINATION ${LIB_INSTALL_DIR}/${PROJECT_NAME}/cmake)
