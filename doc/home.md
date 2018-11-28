@@ -2,7 +2,7 @@
 # Cpp-Taskflow Project
 
 + [Motivation behind Cpp-Taskflow](project/motivation.md)
-+ [Toward a New Task Parallel Library](project/necessity.md)
++ [Toward a New Parallel Task Programming Library](project/necessity.md)
 
 # Cookbook
 
@@ -26,11 +26,13 @@
 
 + [GitHub issue][Github issues]
 + [Frequently Asked Questions](faq.md)
++ [Showcase Presentation][Showcase]
 
 
 * * *
 
 [README]:                ../README.md
+[Showcase]:              https://cpp-taskflow.github.io/
 [Github issues]:         https://github.com/cpp-taskflow/cpp-taskflow/issues
 [Github pull requests]:  https://github.com/cpp-taskflow/cpp-taskflow/pulls
 

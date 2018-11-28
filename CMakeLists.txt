@@ -5,9 +5,6 @@ MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 # Project name
 project(Cpp-Taskflow VERSION 2.0.0)
 
-# Enable memory test
-include(CTest)
-
 # Turn on the verbose
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -40,9 +37,13 @@ Cpp-Taskflow currently supports the following compilers:\n\
 endif()
 
 # CXX target properties
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+#set(CMAKE_CXX_STANDARD 17)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CXX_EXTENSIONS OFF)
+
+# installation path
+set(TF_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
+set(TF_LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib")
 
 message(STATUS "CMAKE_HOST_SYSTEM: ${CMAKE_HOST_SYSTEM}")
 message(STATUS "CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
@@ -60,25 +61,34 @@ message(STATUS "PROJECT_NAME: " ${PROJECT_NAME})
 message(STATUS "TF_BUILD_EXAMPLES: " ${TF_BUILD_EXAMPLES})
 message(STATUS "TF_BUILD_TESTS: " ${TF_BUILD_TESTS})
 message(STATUS "TF_BUILD_BENCHMARKS: " ${TF_BUILD_BENCHMARKS})
+message(STATUS "TF_INC_INSTALL_DIR: " ${TF_INC_INSTALL_DIR})
+message(STATUS "TF_LIB_INSTALL_DIR: " ${TF_LIB_INSTALL_DIR})
 
 # add the binary tree to the search path for include files
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(doctest)
 
+# -----------------------------------------------------------------------------
+# 3rd-party package include
+# -----------------------------------------------------------------------------
+
+# Enable test
+include(CTest)
+
 # Find pthread package
 find_package(Threads REQUIRED)
 
-## Find OpenMP package
-#include(FindOpenMP)
-#
-#if(OpenMP_CXX_FOUND)
-#  message(STATUS "OpenMP_CXX_SPEC_DATE: ${OpenMP_CXX_SPEC_DATE}")
-#  message(STATUS "OpenMP_CXX_VERSION: ${OpenMP_CXX_VERSION}")
-#  message(STATUS "OpenMP_CXX_FLAGS: ${OpenMP_CXX_FLAGS}")
-#  message(STATUS "OpenMP_CXX_LIB_NAMES: ${OpenMP_CXX_LIB_NAMES}")
-#else(OpenMP_CXX_FOUND)
-#  message(WARNING "OpenMP CXX not found")
-#endif(OpenMP_CXX_FOUND)
+# -----------------------------------------------------------------------------
+# Cpp-Taskflow library interface
+# -----------------------------------------------------------------------------
+
+add_library(${PROJECT_NAME} INTERFACE)
+
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
+target_include_directories(${PROJECT_NAME} INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include/> 
+)
 
 # -----------------------------------------------------------------------------
 # Example program 
@@ -91,44 +101,44 @@ message(STATUS "Building examples ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
 
 add_executable(simple example/simple.cpp)
-target_link_libraries(simple Threads::Threads)
+target_link_libraries(simple ${PROJECT_NAME} Threads::Threads)
 
 add_executable(subflow example/subflow.cpp)
-target_link_libraries(subflow Threads::Threads)
+target_link_libraries(subflow ${PROJECT_NAME} Threads::Threads)
 
 add_executable(debug example/debug.cpp)
-target_link_libraries(debug Threads::Threads)
+target_link_libraries(debug ${PROJECT_NAME} Threads::Threads)
 
 add_executable(emplace example/emplace.cpp)
-target_link_libraries(emplace Threads::Threads)
+target_link_libraries(emplace ${PROJECT_NAME} Threads::Threads)
 
 add_executable(reduce example/reduce.cpp)
-target_link_libraries(reduce Threads::Threads)
+target_link_libraries(reduce ${PROJECT_NAME} Threads::Threads)
 
 add_executable(threadpool example/threadpool.cpp)
-target_link_libraries(threadpool Threads::Threads)
+target_link_libraries(threadpool ${PROJECT_NAME} Threads::Threads)
 
 add_executable(taskflow example/taskflow.cpp)
-target_link_libraries(taskflow Threads::Threads)
+target_link_libraries(taskflow ${PROJECT_NAME} Threads::Threads)
 
 add_executable(matrix example/matrix.cpp)
-target_link_libraries(matrix Threads::Threads)
+target_link_libraries(matrix ${PROJECT_NAME} Threads::Threads)
 
 add_executable(parallel_for example/parallel_for.cpp)
-target_link_libraries(parallel_for Threads::Threads)
+target_link_libraries(parallel_for ${PROJECT_NAME} Threads::Threads)
 
 add_executable(threadpool_cxx14 example/threadpool_cxx14.cpp)
 set_property(TARGET threadpool_cxx14 PROPERTY CXX_STANDARD 14)
 target_link_libraries(threadpool_cxx14 Threads::Threads)
 
 add_executable(multiple_dispatch example/multiple_dispatch.cpp)
-target_link_libraries(multiple_dispatch Threads::Threads)
+target_link_libraries(multiple_dispatch ${PROJECT_NAME} Threads::Threads)
 
 add_executable(dispatch example/dispatch.cpp)
-target_link_libraries(dispatch Threads::Threads)
+target_link_libraries(dispatch ${PROJECT_NAME} Threads::Threads)
 
 add_executable(executor example/executor.cpp)
-target_link_libraries(executor Threads::Threads)
+target_link_libraries(executor ${PROJECT_NAME} Threads::Threads)
 
 endif()
 
@@ -146,7 +156,7 @@ set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittest)
 
 # unittest for taskflow
 add_executable(taskflow_test_tmp unittest/taskflow.cpp)
-target_link_libraries(taskflow_test_tmp Threads::Threads)
+target_link_libraries(taskflow_test_tmp ${PROJECT_NAME} Threads::Threads)
 set_target_properties(taskflow_test_tmp PROPERTIES OUTPUT_NAME "taskflow")
 add_test(builder          ${TF_UTEST_DIR}/taskflow -tc=Builder)
 add_test(dispatch         ${TF_UTEST_DIR}/taskflow -tc=Dispatch)
@@ -160,7 +170,7 @@ add_test(detached_subflow ${TF_UTEST_DIR}/taskflow -tc=DetachedSubflow)
 
 # unittest for threadpool 
 add_executable(threadpool_test_tmp unittest/threadpool.cpp)
-target_link_libraries(threadpool_test_tmp Threads::Threads)
+target_link_libraries(threadpool_test_tmp ${PROJECT_NAME} Threads::Threads)
 set_target_properties(threadpool_test_tmp PROPERTIES OUTPUT_NAME "threadpool")
 add_test(WorkerQueue.OneThread  ${TF_UTEST_DIR}/threadpool -tc=WorkerQueue.OneThread)
 add_test(WorkerQueue.TwoThread  ${TF_UTEST_DIR}/threadpool -tc=WorkerQueue.TwoThread)
@@ -207,20 +217,6 @@ endif()
 # create find_package(Cpp-Taskflow CONFIG)
 # -----------------------------------------------------------------------------
 
-add_library(${PROJECT_NAME} INTERFACE)
-
-target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
-target_include_directories(${PROJECT_NAME} INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  $<INSTALL_INTERFACE:include/> 
-)
-
-set(TF_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
-set(TF_LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib")
-
-message(STATUS "TF_INC_INSTALL_DIR: " ${TF_INC_INSTALL_DIR})
-message(STATUS "TF_LIB_INSTALL_DIR: " ${TF_LIB_INSTALL_DIR})
-
 # install header
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/taskflow DESTINATION ${TF_INC_INSTALL_DIR})
 
@@ -235,7 +231,11 @@ export(
 export(PACKAGE ${PROJECT_NAME})
 
 install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets)
-install(EXPORT ${PROJECT_NAME}Targets NAMESPACE ${PROJECT_NAME}:: DESTINATION ${TF_LIB_INSTALL_DIR}/cmake)
+install(
+  EXPORT ${PROJECT_NAME}Targets 
+  NAMESPACE ${PROJECT_NAME}:: 
+  DESTINATION ${TF_LIB_INSTALL_DIR}/cmake
+)
 
 # set up config
 include(CMakePackageConfigHelpers)

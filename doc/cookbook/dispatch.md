@@ -8,7 +8,7 @@ task dependency graph.
 + [Graph and Topology](#graph-and-topology)
 + [Blocking Execution](#blocking-execution)
 + [Non-blocking Execution](#non-blocking-execution)
-+ [Wait on Topologies](#wait-on-topologies)
++ [Wait for Topologies](#wait-for-topologies)
 + [Lifetime of a Graph](#lifetime-of-a-graph)
 + [Example 1: Multiple Dispatches](#example-1-multiple-dispatches)
 + [Example 2: Connect Two Dependency Graphs](#example-2-connect-two-dependency-graphs)
@@ -61,7 +61,7 @@ Non-blocking methods allow the program to perform other computations
 that can overlap the graph execution.
 
 ```cpp
- 1: tf::Taskflow tf(4);
+ 1: tf::Taskflow tf;
  2:
  3: auto A = tf.silent_emplace([] () { std::cout << "Task A\n"; });
  4: auto B = tf.silent_emplace([] () { std::cout << "Task B\n"; });
@@ -81,12 +81,25 @@ Debrief:
 + Line 8-9 performs some computations to overlap the execution of task A and task B
 + Line 10 blocks the program until this topology finishes
 
+The method `dispatch` has a overload that takes a callable object to execute when
+the dispatched graph finishes.
+
+```cpp
+1: tf::Taskflow tf;
+2:
+3: int counter {0};
+4:
+5: auto A = tf.silent_emplace([&] () { counter++; });
+6:
+7: tf.dispatch([&] () { assert(counter == 1); })
+```
+
 If you do not care the status of a dispatched graph, 
 use the method `silent_dispatch`.
 This method does not return anything.
 
 ```cpp
-1: tf::Taskflow tf(4);
+1: tf::Taskflow tf;
 2:
 3: auto A = tf.silent_emplace([] () { std::cout << "TaskA\n"; });
 4: auto B = tf.silent_emplace([] () { std::cout << "TaskB\n"; });
@@ -97,7 +110,20 @@ This method does not return anything.
 9: // ...
 ```
 
-# Wait on Topologies
+Similarly, the method `silent_dispatch` has an overload that takes a cllable to execute
+when the dispatched graph finishes.
+
+```cpp
+1: tf::Taskflow tf;
+2:
+3: int counter {0};
+4:
+5: auto A = tf.silent_emplace([&] () { counter++; });
+6:
+7: tf.silent_dispatch([&] () { assert(counter == 1); })
+```
+
+# Wait for Topologies
 
 Unlike `wait_for_all`, calling `dispatch` or `silent_dispatch`
 will not clean up the topologies upon completion.

@@ -805,7 +805,8 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Glen Fraser](https://github.com/totalgee) created a standalone C++14-compatible [threadpool](./taskflow/threadpool/threadpool_cxx14.hpp) for taskflow; various other fixes and examples
 - [Guannan Guo](https://github.com/gguo4) added different threadpool implementations to enhance the performance for taskflow
 - [Patrik Huber][Patrik Huber] helped fixed typos in the documentation
-- [ForgeMistress][ForgeMistress] provided API ideas about sharing the executor to avoid thread over-subscriptiong issues.
+- [ForgeMistress][ForgeMistress] provided API ideas about sharing the executor to avoid thread over-subscriptiong issues
+- [Alexander Neumann](https://github.com/Neumann-A) helped modify the cmake build to make Cpp-Taskflow importable from external cmake projects
 
 Meanwhile, we appreciate the support from many organizations for our development on Cpp-Taskflow.
 Please [let me know][email me] if I forgot someone!
