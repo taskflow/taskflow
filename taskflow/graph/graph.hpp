@@ -161,7 +161,8 @@ class Topology {
 
     std::shared_future<void> _future;
 
-    Node _source;
+    std::vector<Node*> _sources;
+
     Node _target;
 };
 
@@ -171,7 +172,6 @@ class Topology {
 inline Topology::Topology(Graph&& t) : 
   _graph(std::move(t)) {
 
-  _source._topology = this;
   _target._topology = this;
   
   std::promise<void> promise;
@@ -182,16 +182,13 @@ inline Topology::Topology(Graph&& t) :
     p.get().set_value(); 
   };
 
-  // ensure the topology is connected
-  _source.precede(_target);
-
   // Build the super source and super target.
   for(auto& node : _graph) {
 
     node._topology = this;
 
     if(node.num_dependents() == 0) {
-      _source.precede(node);
+      _sources.push_back(&node);
     }
 
     if(node.num_successors() == 0) {
@@ -206,7 +203,7 @@ template <typename C>
 inline Topology::Topology(Graph&& t, C&& c) : 
   _graph(std::move(t)) {
 
-  _source._topology = this;
+  //_source._topology = this;
   _target._topology = this;
   
   std::promise<void> promise;
@@ -219,7 +216,7 @@ inline Topology::Topology(Graph&& t, C&& c) :
   };
 
   // ensure the topology is connected
-  _source.precede(_target);
+  //_source.precede(_target);
 
   // Build the super source and super target.
   for(auto& node : _graph) {
@@ -227,7 +224,7 @@ inline Topology::Topology(Graph&& t, C&& c) :
     node._topology = this;
 
     if(node.num_dependents() == 0) {
-      _source.precede(node);
+      _sources.push_back(&node);
     }
 
     if(node.num_successors() == 0) {
@@ -240,11 +237,9 @@ inline Topology::Topology(Graph&& t, C&& c) :
 // Procedure: dump
 inline void Topology::dump(std::ostream& os) const {
 
-  assert(!(_source._subgraph));
   assert(!(_target._subgraph));
   
   os << "digraph Topology {\n"
-     << _source.dump() 
      << _target.dump();
 
   for(const auto& node : _graph) {

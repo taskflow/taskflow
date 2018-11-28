@@ -252,7 +252,9 @@ void BasicTaskflow<E>::silent_dispatch() {
   auto& topology = _topologies.emplace_front(std::move(_graph));
 
   // Start the taskflow
-  _schedule(topology._source);
+  for(auto src : topology._sources) {
+    _schedule(*src);
+  }
 }
 
 
@@ -269,7 +271,9 @@ void BasicTaskflow<E>::silent_dispatch(C&& c) {
   auto& topology = _topologies.emplace_front(std::move(_graph), std::forward<C>(c));
 
   // Start the taskflow
-  _schedule(topology._source);
+  for(auto src : topology._sources) {
+    _schedule(*src);
+  }
 }
 
 // Procedure: dispatch 
@@ -283,7 +287,9 @@ std::shared_future<void> BasicTaskflow<E>::dispatch() {
   auto& topology = _topologies.emplace_front(std::move(_graph));
 
   // Start the taskflow
-  _schedule(topology._source);
+  for(auto src : topology._sources) {
+    _schedule(*src);
+  }
   
   return topology._future;
 }
@@ -302,12 +308,12 @@ std::shared_future<void> BasicTaskflow<E>::dispatch(C&& c) {
   auto& topology = _topologies.emplace_front(std::move(_graph), std::forward<C>(c));
 
   // Start the taskflow
-  _schedule(topology._source);
+  for(auto src : topology._sources) {
+    _schedule(*src);
+  }
   
   return topology._future;
 }
-
-
 
 // Procedure: wait_for_all
 template <template <typename...> typename E>

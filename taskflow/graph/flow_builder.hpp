@@ -503,7 +503,7 @@ auto FlowBuilder::emplace(C&&... cs) {
 // Function: silent_emplace
 template <typename C>
 auto FlowBuilder::silent_emplace(C&& c) {
-  // subflow task
+  // dynamic tasking
   if constexpr(std::is_invocable_v<C, SubflowBuilder&>) {
     auto& n = _graph.emplace_front(
     [c=std::forward<C>(c)] (SubflowBuilder& fb) {
@@ -514,7 +514,7 @@ auto FlowBuilder::silent_emplace(C&& c) {
     });
     return Task(n);
   }
-  // regular task
+  // static tasking
   else if constexpr(std::is_invocable_v<C>) {
     auto& n = _graph.emplace_front(std::forward<C>(c));
     return Task(n);
