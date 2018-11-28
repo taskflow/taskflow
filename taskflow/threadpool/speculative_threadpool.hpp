@@ -200,7 +200,7 @@ void SpeculativeThreadpool<Closure>::_spawn(unsigned N) {
 
 template <typename Closure>
 template <typename... ArgsT>
-void SpeculativeThreadpool<Closure>::emplace(ArgsT&&... args){
+void SpeculativeThreadpool<Closure>::emplace(ArgsT&&... args) {
 
   //no worker thread available
   if(num_workers() == 0){
@@ -209,8 +209,10 @@ void SpeculativeThreadpool<Closure>::emplace(ArgsT&&... args){
   }
 
   // speculation
-  if(std::this_thread::get_id() != _owner){
-    auto iter = _this_worker();
+  auto tid = std::this_thread::get_id();
+
+  if(tid != _owner){
+    auto iter = _worker_maps.find(tid);
     if(iter != _worker_maps.end() && !(iter->second->task)){
       iter->second->task.emplace(std::forward<ArgsT>(args)...);
       return ;
