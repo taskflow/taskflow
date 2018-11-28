@@ -194,24 +194,22 @@ endif()
 # Benchmarking (enabled by TF_BUILD_BENCHMARKS)
 # -----------------------------------------------------------------------------
 
-#OPTION(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
-#if(${TF_BUILD_BENCHMARKS})
-#
-## Find OpenMP package
-#include(FindOpenMP)
-#
-#if(NOT OpenMP_CXX_FOUND)
-#  message(FATAL_ERROR "")
-#  message(STATUS "OpenMP_CXX_SPEC_DATE: ${OpenMP_CXX_SPEC_DATE}")
-#  message(STATUS "OpenMP_CXX_VERSION: ${OpenMP_CXX_VERSION}")
-#  message(STATUS "OpenMP_CXX_FLAGS: ${OpenMP_CXX_FLAGS}")
-#  message(STATUS "OpenMP_CXX_LIB_NAMES: ${OpenMP_CXX_LIB_NAMES}")
-#else(OpenMP_CXX_FOUND)
-#  message(WARNING "OpenMP CXX not found")
-#endif(OpenMP_CXX_FOUND)
-#
-#endif()
-#endif()
+OPTION(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
+
+if(${TF_BUILD_BENCHMARKS})
+
+# Find OpenMP package
+include(FindOpenMP)
+
+if(NOT OpenMP_CXX_FOUND)
+  message(FATAL_ERROR "OpenMP not found")
+endif()
+  
+message(STATUS "OpenMP_VERSION: ${OpenMP_VERSION}")
+message(STATUS "OpenMP_CXX_FLAGS: ${OpenMP_CXX_FLAGS}")
+message(STATUS "OpenMP_CXX_LIBRARIES: ${OpenMP_CXX_LIBRARIES}")
+
+endif()
 
 # -----------------------------------------------------------------------------
 # create find_package(Cpp-Taskflow CONFIG)
