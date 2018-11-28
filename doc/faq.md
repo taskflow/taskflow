@@ -60,25 +60,6 @@ its address value in the memory is used instead.
 Please make sure your compile supports the latest version of [C++17][C++17]. 
 Make sure your project meets the System Requirements described at [README][README].
 
-## Q: Clang can't compile due to the use of std::variant.
-
-Cpp-Taskflow uses `std::variant` to enable uniform interface between static and dynamic tasking.
-However it has been reported in 
-[Clang Bug 31852](https://bugs.llvm.org/show_bug.cgi?id=31852) that
-clang-6.0 (and before) does not correctly pick up the friend declaration with auto-deduced return type.
-While this can be fixed in the future version of clang, 
-we use the [variant patch](../patch/clang_variant.hpp) posted
-[here](https://gcc.gnu.org/viewcvs/gcc?view=revision&revision=258854) as a workaround.
-For clang users, you will need to use this patch in `taskflow.hpp` as follows:
-
-```cpp
-#if defined(__clang__)
-  #include <patch/clang_variant.hpp>
-#else
-  #include <variant>
-#endif
-```
-
 ---
 
 # Programming Questions

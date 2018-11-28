@@ -17,8 +17,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2")
 ## clang++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.0")
-    message(FATAL_ERROR "\nCpp-Taskflow requires clang++ at least v5.0")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6.0")
+    message(FATAL_ERROR "\nCpp-Taskflow requires clang++ at least v6.0")
   endif() 
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2")
 ## microsoft visual c++
@@ -31,7 +31,7 @@ else()
   message(FATAL_ERROR "\n\
 Cpp-Taskflow currently supports the following compilers:\n\
 - g++ v7.3 or above\n\
-- clang++ v5.0 or above\n\
+- clang++ v6.0 or above\n\
 - MSVC++ v19.14 or above\n\
 ")
 endif()
@@ -44,6 +44,8 @@ endif()
 # installation path
 set(TF_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
 set(TF_LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib")
+set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittest)
+set(TF_EXAMPLE_DIR ${PROJECT_SOURCE_DIR}/example)
 
 message(STATUS "CMAKE_HOST_SYSTEM: ${CMAKE_HOST_SYSTEM}")
 message(STATUS "CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
@@ -63,10 +65,11 @@ message(STATUS "TF_BUILD_TESTS: " ${TF_BUILD_TESTS})
 message(STATUS "TF_BUILD_BENCHMARKS: " ${TF_BUILD_BENCHMARKS})
 message(STATUS "TF_INC_INSTALL_DIR: " ${TF_INC_INSTALL_DIR})
 message(STATUS "TF_LIB_INSTALL_DIR: " ${TF_LIB_INSTALL_DIR})
+message(STATUS "TF_UTEST_DIR: " ${TF_UTEST_DIR})
+message(STATUS "TF_EXAMPLE_DIR: " ${TF_EXAMPLE_DIR})
 
 # add the binary tree to the search path for include files
 include_directories(${PROJECT_SOURCE_DIR})
-include_directories(doctest)
 
 # -----------------------------------------------------------------------------
 # 3rd-party package include
@@ -98,46 +101,46 @@ OPTION(TF_BUILD_EXAMPLES "Enables build of examples" ON)
 if(${TF_BUILD_EXAMPLES})
 
 message(STATUS "Building examples ...")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR})
 
-add_executable(simple example/simple.cpp)
+add_executable(simple ${TF_EXAMPLE_DIR}/simple.cpp)
 target_link_libraries(simple ${PROJECT_NAME} Threads::Threads)
 
-add_executable(subflow example/subflow.cpp)
+add_executable(subflow ${TF_EXAMPLE_DIR}/subflow.cpp)
 target_link_libraries(subflow ${PROJECT_NAME} Threads::Threads)
 
-add_executable(debug example/debug.cpp)
+add_executable(debug ${TF_EXAMPLE_DIR}/debug.cpp)
 target_link_libraries(debug ${PROJECT_NAME} Threads::Threads)
 
-add_executable(emplace example/emplace.cpp)
+add_executable(emplace ${TF_EXAMPLE_DIR}/emplace.cpp)
 target_link_libraries(emplace ${PROJECT_NAME} Threads::Threads)
 
-add_executable(reduce example/reduce.cpp)
+add_executable(reduce ${TF_EXAMPLE_DIR}/reduce.cpp)
 target_link_libraries(reduce ${PROJECT_NAME} Threads::Threads)
 
-add_executable(threadpool example/threadpool.cpp)
+add_executable(threadpool ${TF_EXAMPLE_DIR}/threadpool.cpp)
 target_link_libraries(threadpool ${PROJECT_NAME} Threads::Threads)
 
-add_executable(taskflow example/taskflow.cpp)
+add_executable(taskflow ${TF_EXAMPLE_DIR}/taskflow.cpp)
 target_link_libraries(taskflow ${PROJECT_NAME} Threads::Threads)
 
-add_executable(matrix example/matrix.cpp)
+add_executable(matrix ${TF_EXAMPLE_DIR}/matrix.cpp)
 target_link_libraries(matrix ${PROJECT_NAME} Threads::Threads)
 
-add_executable(parallel_for example/parallel_for.cpp)
+add_executable(parallel_for ${TF_EXAMPLE_DIR}/parallel_for.cpp)
 target_link_libraries(parallel_for ${PROJECT_NAME} Threads::Threads)
 
-add_executable(threadpool_cxx14 example/threadpool_cxx14.cpp)
+add_executable(threadpool_cxx14 ${TF_EXAMPLE_DIR}/threadpool_cxx14.cpp)
 set_property(TARGET threadpool_cxx14 PROPERTY CXX_STANDARD 14)
 target_link_libraries(threadpool_cxx14 Threads::Threads)
 
-add_executable(multiple_dispatch example/multiple_dispatch.cpp)
+add_executable(multiple_dispatch ${TF_EXAMPLE_DIR}/multiple_dispatch.cpp)
 target_link_libraries(multiple_dispatch ${PROJECT_NAME} Threads::Threads)
 
-add_executable(dispatch example/dispatch.cpp)
+add_executable(dispatch ${TF_EXAMPLE_DIR}/dispatch.cpp)
 target_link_libraries(dispatch ${PROJECT_NAME} Threads::Threads)
 
-add_executable(executor example/executor.cpp)
+add_executable(executor ${TF_EXAMPLE_DIR}/executor.cpp)
 target_link_libraries(executor ${PROJECT_NAME} Threads::Threads)
 
 endif()
@@ -151,12 +154,12 @@ if(${TF_BUILD_TESTS})
  
 enable_testing()
 message(STATUS "Building unit tests ...")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/unittest)
-set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittest)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR})
 
 # unittest for taskflow
 add_executable(taskflow_test_tmp unittest/taskflow.cpp)
 target_link_libraries(taskflow_test_tmp ${PROJECT_NAME} Threads::Threads)
+target_include_directories(taskflow_test_tmp PRIVATE ${PROJECT_SOURCE_DIR}/doctest)
 set_target_properties(taskflow_test_tmp PROPERTIES OUTPUT_NAME "taskflow")
 add_test(builder          ${TF_UTEST_DIR}/taskflow -tc=Builder)
 add_test(dispatch         ${TF_UTEST_DIR}/taskflow -tc=Dispatch)
@@ -171,6 +174,7 @@ add_test(detached_subflow ${TF_UTEST_DIR}/taskflow -tc=DetachedSubflow)
 # unittest for threadpool 
 add_executable(threadpool_test_tmp unittest/threadpool.cpp)
 target_link_libraries(threadpool_test_tmp ${PROJECT_NAME} Threads::Threads)
+target_include_directories(threadpool_test_tmp PRIVATE ${PROJECT_SOURCE_DIR}/doctest)
 set_target_properties(threadpool_test_tmp PROPERTIES OUTPUT_NAME "threadpool")
 add_test(WorkerQueue.OneThread  ${TF_UTEST_DIR}/threadpool -tc=WorkerQueue.OneThread)
 add_test(WorkerQueue.TwoThread  ${TF_UTEST_DIR}/threadpool -tc=WorkerQueue.TwoThread)
@@ -180,13 +184,17 @@ add_test(proactive_threadpool   ${TF_UTEST_DIR}/threadpool -tc=ProactiveThreadpo
 add_test(speculative_threadpool ${TF_UTEST_DIR}/threadpool -tc=SpeculativeThreadpool)
 add_test(privatized_threadpool  ${TF_UTEST_DIR}/threadpool -tc=PrivatizedThreadpool)
 
-## threadpool_cxx14 unittest (contributed by Glen Fraser)
+# threadpool_cxx14 unittest (contributed by Glen Fraser)
 add_executable(threadpool_cxx14_tmp unittest/threadpool_cxx14.cpp)
 set_target_properties(threadpool_cxx14_tmp PROPERTIES CXX_STANDARD 14)
 target_link_libraries(threadpool_cxx14_tmp Threads::Threads)
+target_include_directories(threadpool_cxx14_tmp PRIVATE ${PROJECT_SOURCE_DIR}/doctest)
 set_target_properties(threadpool_cxx14_tmp PROPERTIES OUTPUT_NAME "threadpool_cxx14")
 add_test(threadpool_cxx14_basic        ${TF_UTEST_DIR}/threadpool_cxx14 -tc=Threadpool.Basic)
 add_test(threadpool_cxx14_wait_for_all ${TF_UTEST_DIR}/threadpool_cxx14 -tc=Threadpool.WaitForAll)
+
+# run all examples
+#add_test(inttest.simple )
 
 endif()
 
@@ -255,3 +263,4 @@ install(
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
   DESTINATION ${TF_LIB_INSTALL_DIR}/cmake 
 )
+
