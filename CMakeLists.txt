@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.9)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
 # Project name
-project(Cpp-TaskFlow)
+project(Cpp-Taskflow VERSION 2.0.0)
 
 # Enable memory test
 include(CTest)
@@ -44,15 +44,26 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+message(STATUS "CMAKE_HOST_SYSTEM: ${CMAKE_HOST_SYSTEM}")
 message(STATUS "CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
 message(STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER})
 message(STATUS "CMAKE_CXX_COMPILER_VERSION: " ${CMAKE_CXX_COMPILER_VERSION})
 message(STATUS "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS})
+message(STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH})
+message(STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR})
+message(STATUS "CMAKE_CURRENT_BINARY_DIR: " ${CMAKE_CURRENT_BINARY_DIR})
+message(STATUS "CMAKE_EXE_LINKER_FLAGS: " ${CMAKE_EXE_LINKER_FLAGS})
+message(STATUS "CMAKE_INSTALL_PREFIX: " ${CMAKE_INSTALL_PREFIX})
+message(STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH})
+message(STATUS "CMAKE_PREFIX_PATH: " ${CMAKE_PREFIX_PATH})
+message(STATUS "PROJECT_NAME: " ${PROJECT_NAME})
+message(STATUS "TF_BUILD_EXAMPLES: " ${TF_BUILD_EXAMPLES})
+message(STATUS "TF_BUILD_TESTS: " ${TF_BUILD_TESTS})
+message(STATUS "TF_BUILD_BENCHMARKS: " ${TF_BUILD_BENCHMARKS})
 
 # add the binary tree to the search path for include files
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(doctest)
-include_directories(taskflow)
 
 # Find pthread package
 find_package(Threads REQUIRED)
@@ -72,6 +83,10 @@ find_package(Threads REQUIRED)
 # -----------------------------------------------------------------------------
 # Example program 
 # -----------------------------------------------------------------------------
+OPTION(TF_BUILD_EXAMPLES "Enables build of examples" ON)
+
+if(${TF_BUILD_EXAMPLES})
+
 message(STATUS "Building examples ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/example)
 
@@ -115,11 +130,16 @@ target_link_libraries(dispatch Threads::Threads)
 add_executable(executor example/executor.cpp)
 target_link_libraries(executor Threads::Threads)
 
+endif()
+
 # -----------------------------------------------------------------------------
 # Unittest
 # -----------------------------------------------------------------------------
-enable_testing()
+OPTION(TF_BUILD_TESTS "Enables build of tests" ON)
 
+if(${TF_BUILD_TESTS})
+ 
+enable_testing()
 message(STATUS "Building unit tests ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/unittest)
 set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittest)
@@ -158,13 +178,14 @@ set_target_properties(threadpool_cxx14_tmp PROPERTIES OUTPUT_NAME "threadpool_cx
 add_test(threadpool_cxx14_basic        ${TF_UTEST_DIR}/threadpool_cxx14 -tc=Threadpool.Basic)
 add_test(threadpool_cxx14_wait_for_all ${TF_UTEST_DIR}/threadpool_cxx14 -tc=Threadpool.WaitForAll)
 
+endif()
 
 # -----------------------------------------------------------------------------
-# Benchmarking (enabled by TF_BENCHMARKING)
+# Benchmarking (enabled by TF_BUILD_BENCHMARKS)
 # -----------------------------------------------------------------------------
 
-#if(TF_BENCHMARK EQUAL "1")
-#message(STATUS "TF_BENCHMARK: ${TF_BENCHMARK}")
+#OPTION(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
+#if(${TF_BUILD_BENCHMARKS})
 #
 ## Find OpenMP package
 #include(FindOpenMP)
@@ -180,6 +201,59 @@ add_test(threadpool_cxx14_wait_for_all ${TF_UTEST_DIR}/threadpool_cxx14 -tc=Thre
 #endif(OpenMP_CXX_FOUND)
 #
 #endif()
+#endif()
 
+# -----------------------------------------------------------------------------
+# create find_package(Cpp-Taskflow CONFIG)
+# -----------------------------------------------------------------------------
 
+add_library(${PROJECT_NAME} INTERFACE)
 
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
+target_include_directories(${PROJECT_NAME} INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include/> 
+)
+
+set(TF_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
+set(TF_LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib")
+
+message(STATUS "TF_INC_INSTALL_DIR: " ${TF_INC_INSTALL_DIR})
+message(STATUS "TF_LIB_INSTALL_DIR: " ${TF_LIB_INSTALL_DIR})
+
+# install header
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/taskflow DESTINATION ${TF_INC_INSTALL_DIR})
+
+# export target
+set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_NAME ${PROJECT_NAME})
+
+export(
+  TARGETS ${PROJECT_NAME} 
+  NAMESPACE ${PROJECT_NAME}:: 
+  FILE ${PROJECT_NAME}Targets.cmake
+)
+export(PACKAGE ${PROJECT_NAME})
+
+install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets)
+install(EXPORT ${PROJECT_NAME}Targets NAMESPACE ${PROJECT_NAME}:: DESTINATION ${TF_LIB_INSTALL_DIR}/cmake)
+
+# set up config
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(
+  ${PROJECT_NAME}Config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+  INSTALL_DESTINATION ${TF_LIB_INSTALL_DIR}/cmake
+  PATH_VARS TF_INC_INSTALL_DIR
+)
+
+write_basic_package_version_file(
+  ${PROJECT_NAME}ConfigVersion.cmake 
+  COMPATIBILITY SameMajorVersion
+)
+
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+  DESTINATION ${TF_LIB_INSTALL_DIR}/cmake 
+)
