@@ -302,10 +302,19 @@ auto FlowBuilder::transform_reduce(I beg, I end, T& result, B&& bop, P&& pop, U&
 // Procedure: _linearize
 template <typename L>
 void FlowBuilder::_linearize(L& keys) {
-  std::adjacent_find(keys.begin(), keys.end(), [] (auto& from, auto& to) {
-    from._node->precede(*(to._node));
-    return false;
-  });
+
+  auto itr = keys.begin();
+  auto end = keys.end();
+
+  if(itr == end) {
+    return;
+  }
+
+  auto nxt = itr;
+
+  for(++nxt; nxt != end; ++nxt, ++itr) {
+    itr->_node->precede(*(nxt->_node));
+  }
 }
 
 // Procedure: linearize

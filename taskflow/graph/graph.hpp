@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../error/error.hpp"
 #include "../utility/utility.hpp"
 
 namespace tf {
