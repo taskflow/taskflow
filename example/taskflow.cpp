@@ -259,7 +259,7 @@ auto binary_tree() {
 template <typename T>
 auto empty_jobs() {
   
-  const int num_tasks = 1000000;
+  const int num_tasks = 2000000;
   
   auto beg = std::chrono::high_resolution_clock::now();
   {

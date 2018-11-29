@@ -157,6 +157,28 @@ void test_external_threads(T& threadpool) {
 
   while(sum != num_tasks * 10 * 2 + num_tasks) ;
 }
+
+
+// Procedure: test_external_threads
+template <typename T>
+void test_batch_insertion(T& threadpool) {
+  constexpr int num_iterations = 50;
+
+  size_t total {0};
+  std::atomic<size_t> count {0};
+  for(size_t i=1; i<num_iterations; i++) {
+
+    std::vector<std::function<void()>> funs;
+    for(size_t j=0; j<i; j++) {
+      funs.emplace_back([&](){count++;});
+    }
+
+    threadpool.emplace(std::move(funs));
+    total += i;
+  }
+
+  while(count != total);
+}
   
 // Procedure: test_threadpool
 template <typename T>
@@ -187,6 +209,13 @@ void test_threadpool() {
     for(unsigned i=0; i<=4; ++i) {
       T tp(i);
       test_external_threads(tp);
+    }
+  }
+
+  SUBCASE("BatchEmplace") {
+    for(unsigned i=0; i<=4; ++i) {
+      T tp(i);
+      test_batch_insertion(tp);
     }
   }
 }
