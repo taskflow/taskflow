@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.9)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
 # Project name
-project(Cpp-Taskflow VERSION 2.0.0)
+project(Cpp-Taskflow VERSION 2.0.0 LANGUAGES CXX)
 
 # Turn on the verbose
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -72,7 +72,7 @@ message(STATUS "TF_EXAMPLE_DIR: " ${TF_EXAMPLE_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
 
 # -----------------------------------------------------------------------------
-# 3rd-party package include
+# must-have package include
 # -----------------------------------------------------------------------------
 
 # Enable test
@@ -206,7 +206,7 @@ OPTION(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
 
 if(${TF_BUILD_BENCHMARKS})
 
-# Find OpenMP package
+# find OpenMP package
 include(FindOpenMP)
 
 if(NOT OpenMP_CXX_FOUND)

@@ -216,9 +216,6 @@ inline Topology::Topology(Graph&& t, C&& c) :
     c();
   };
 
-  // ensure the topology is connected
-  //_source.precede(_target);
-
   // Build the super source and super target.
   for(auto& node : _graph) {
 

@@ -2,6 +2,7 @@
 
 #include "../threadpool/threadpool.hpp"
 #include "flow_builder.hpp"
+#include "framework.hpp"
 
 namespace tf {
 
