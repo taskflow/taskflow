@@ -41,11 +41,17 @@ endif()
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_EXTENSIONS OFF)
 
+# build options
+option(TF_BUILD_EXAMPLES "Enables build of examples" ON)
+option(TF_BUILD_TESTS "Enables build of tests" ON)
+option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
+
 # installation path
 set(TF_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
 set(TF_LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib")
 set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittest)
 set(TF_EXAMPLE_DIR ${PROJECT_SOURCE_DIR}/example)
+set(TF_BENCHMARK_DIR ${PROJECT_SOURCE_DIR}/benchmark)
 
 message(STATUS "CMAKE_HOST_SYSTEM: ${CMAKE_HOST_SYSTEM}")
 message(STATUS "CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
@@ -67,6 +73,7 @@ message(STATUS "TF_INC_INSTALL_DIR: " ${TF_INC_INSTALL_DIR})
 message(STATUS "TF_LIB_INSTALL_DIR: " ${TF_LIB_INSTALL_DIR})
 message(STATUS "TF_UTEST_DIR: " ${TF_UTEST_DIR})
 message(STATUS "TF_EXAMPLE_DIR: " ${TF_EXAMPLE_DIR})
+message(STATUS "TF_BENCHMARK_DIR: " ${TF_BENCHMARK_DIR})
 
 # add the binary tree to the search path for include files
 include_directories(${PROJECT_SOURCE_DIR})
@@ -96,7 +103,6 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 # -----------------------------------------------------------------------------
 # Example program 
 # -----------------------------------------------------------------------------
-OPTION(TF_BUILD_EXAMPLES "Enables build of examples" ON)
 
 if(${TF_BUILD_EXAMPLES})
 
@@ -148,7 +154,7 @@ endif()
 # -----------------------------------------------------------------------------
 # Unittest
 # -----------------------------------------------------------------------------
-OPTION(TF_BUILD_TESTS "Enables build of tests" ON)
+
 
 if(${TF_BUILD_TESTS})
  
@@ -202,8 +208,6 @@ endif()
 # Benchmarking (enabled by TF_BUILD_BENCHMARKS)
 # -----------------------------------------------------------------------------
 
-OPTION(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
-
 if(${TF_BUILD_BENCHMARKS})
 
 # find OpenMP package
@@ -216,6 +220,52 @@ endif()
 message(STATUS "OpenMP_VERSION: ${OpenMP_VERSION}")
 message(STATUS "OpenMP_CXX_FLAGS: ${OpenMP_CXX_FLAGS}")
 message(STATUS "OpenMP_CXX_LIBRARIES: ${OpenMP_CXX_LIBRARIES}")
+
+# tbb package
+if(NOT DEFINED TBB_ROOT)
+  set(TBB_ROOT ${PROJECT_SOURCE_DIR}/3rd-party/tbb)
+endif()
+
+message(STATUS "TBB_ROOT: " ${TBB_ROOT})
+
+include(${TBB_ROOT}/cmake/TBBBuild.cmake)
+tbb_build(TBB_ROOT ${TBB_ROOT} CONFIG_DIR TBB_DIR MAKE_ARGS tbb_cpf=1)
+find_package(TBB REQUIRED tbb_preview)
+
+## benchmark 1: wavefront computing
+message(STATUS "benchmark 1: wavefront")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/wavefront)
+add_executable(
+  wavefront 
+  ${TF_BENCHMARK_DIR}/wavefront/main.cpp
+  ${TF_BENCHMARK_DIR}/wavefront/omp.cpp
+  ${TF_BENCHMARK_DIR}/wavefront/tbb.cpp
+  ${TF_BENCHMARK_DIR}/wavefront/seq.cpp
+  ${TF_BENCHMARK_DIR}/wavefront/taskflow.cpp
+)
+target_link_libraries(
+  wavefront 
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
+)
+set_target_properties(wavefront PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+## benchmark 2: graph traversal
+message(STATUS "benchmark 2: graph traversal")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/graph_traversal)
+add_executable(
+  graph_traversal 
+  ${TF_BENCHMARK_DIR}/graph_traversal/main.cpp
+  ${TF_BENCHMARK_DIR}/graph_traversal/omp.cpp
+  ${TF_BENCHMARK_DIR}/graph_traversal/tbb.cpp
+  ${TF_BENCHMARK_DIR}/graph_traversal/seq.cpp
+  ${TF_BENCHMARK_DIR}/graph_traversal/taskflow.cpp
+)
+target_link_libraries(
+  graph_traversal 
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
+)
+set_target_properties(graph_traversal PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
 
 endif()
 

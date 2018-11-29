@@ -44,7 +44,7 @@ over each element in the block.
 6: }
 ```
 
-The code of this implementation can be found at [seq.cpp](seq.cpp).
+The code of this implementation can be found at [seq.cpp](../../../benchmark/wavefront/seq.cpp).
 
 # Cpp-Taskflow
 
@@ -77,7 +77,7 @@ the dependency between tasks. The `tf.wait_for_all()` blocks until all tasks fin
 22:  tf.wait_for_all();
 ```
 
-The code of this implementation can be found at [taskflow.cpp](taskflow.cpp).
+The code of this implementation can be found at [taskflow.cpp](../../../benchmark/wavefront/taskflow.cpp).
 
 
 # OpenMP 
@@ -155,7 +155,7 @@ and use it to explicitly specify both input and output task dependencies.
 64:  delete [] D;
 ```
 
-The code of this implementation can be found at [omp.cpp](omp.cpp).
+The code of this implementation can be found at [omp.cpp](../../../benchmark/wavefront/omp.cpp).
 
 # Intel Thread Building Blocks
 
@@ -200,7 +200,7 @@ and calling `wait_for_all` waits until all computations complete.
 33: }
 ```
 
-The code of this implementation can be found at [tbb.cpp](tbb.cpp).
+The code of this implementation can be found at [tbb.cpp](../../../benchmark/wavefront/tbb.cpp).
 
 # Debrief
 

@@ -6,8 +6,14 @@ int main() {
   double tbb_time {0.0};
   double tf_time  {0.0};
   int rounds {10};
+ 
+  std::cout << std::setw(12) << "|V|+|E|"
+            << std::setw(12) << "OpenMP"
+            << std::setw(12) << "TBB"
+            << std::setw(12) << "Taskflow"
+            << std::endl;
 
-  for(int i=1; i<=400; i++){
+  for(int i=1; i<=400; i++) {
 
     LevelGraph graph(i, i);
     

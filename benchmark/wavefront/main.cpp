@@ -6,6 +6,12 @@ int main() {
   double tbb_time {0.0};
   double tf_time  {0.0};
   int rounds {10};
+
+  std::cout << std::setw(12) << "# blocks"
+            << std::setw(12) << "OpenMP"
+            << std::setw(12) << "TBB"
+            << std::setw(12) << "Taskflow"
+            << std::endl;
   
   for(int S=32; S<=4096; S += 32) {
 
@@ -23,7 +29,7 @@ int main() {
     }
 
     destroy_matrix();
-
+    
     std::cout << std::setw(12) << MB*NB
               << std::setw(12) << omp_time / rounds / 1000.0
               << std::setw(12) << tbb_time / rounds / 1000.0

@@ -45,7 +45,6 @@ struct TBB {
 
     for(int l=0; l>=0 ; l--) {
       for(size_t i=0; i<graph.length(); i++){
-        Node& n = graph.node_at(l, i);
         make_edge(*source, *tasks[l][i]);
       }
     }

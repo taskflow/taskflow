@@ -56,7 +56,8 @@ for(int l=graph.level()-2; l>=0 ; l--){
 tf.wait_for_all();
 ```
 
-The code of this implementation can be found at [taskflow.cpp](taskflow.cpp).
+The code of this implementation can be found at 
+[taskflow.cpp](../../../benchmark/graph_traversal/taskflow.cpp).
 
 
 # Intel Thread Building Blocks
@@ -111,7 +112,7 @@ source->try_put(continue_msg());
 G.wait_for_all();
 ```
 
-The code of this implementation can be found at [tbb.cpp](tbb.cpp).
+The code of this implementation can be found at [tbb.cpp](../../../benchmark/graph_traversal/tbb.cpp).
 
 
 # OpenMP
@@ -156,7 +157,7 @@ we can work around all possible combinations of input and output degrees.
 }
 ```
 
-The code of this implementation can be found at [omp.cpp](omp.cpp).
+The code of this implementation can be found at [omp.cpp](../../../benchmark/graph_traversal/omp.cpp).
 
 
 
