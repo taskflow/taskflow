@@ -73,6 +73,7 @@ class BasicTaskflow : public FlowBuilder {
     std::forward_list<Topology> _topologies;
 
     void _schedule(Node&);
+    void _schedule(std::vector<Node*>&);
 };
 
 // ============================================================================
@@ -250,10 +251,12 @@ void BasicTaskflow<E>::silent_dispatch() {
 
   auto& topology = _topologies.emplace_front(std::move(_graph));
 
-  // Start the taskflow
-  for(auto src : topology._sources) {
-    _schedule(*src);
-  }
+  // Start the taskflow 
+  //for(auto src : topology._sources) {
+  //  _schedule(*src);
+  //} 
+
+  _schedule(topology._sources);
 }
 
 
@@ -270,9 +273,11 @@ void BasicTaskflow<E>::silent_dispatch(C&& c) {
   auto& topology = _topologies.emplace_front(std::move(_graph), std::forward<C>(c));
 
   // Start the taskflow
-  for(auto src : topology._sources) {
-    _schedule(*src);
-  }
+  //for(auto src : topology._sources) {
+  //  _schedule(*src);
+  //}
+
+  _schedule(topology._sources);
 }
 
 // Procedure: dispatch 
@@ -286,10 +291,12 @@ std::shared_future<void> BasicTaskflow<E>::dispatch() {
   auto& topology = _topologies.emplace_front(std::move(_graph));
 
   // Start the taskflow
-  for(auto src : topology._sources) {
-    _schedule(*src);
-  }
-  
+  //for(auto src : topology._sources) {
+  //  _schedule(*src);
+  //}
+ 
+  _schedule(topology._sources);
+
   return topology._future;
 }
 
@@ -307,10 +314,12 @@ std::shared_future<void> BasicTaskflow<E>::dispatch(C&& c) {
   auto& topology = _topologies.emplace_front(std::move(_graph), std::forward<C>(c));
 
   // Start the taskflow
-  for(auto src : topology._sources) {
-    _schedule(*src);
-  }
+  //for(auto src : topology._sources) {
+  //  _schedule(*src);
+  //}
   
+  _schedule(topology._sources);
+
   return topology._future;
 }
 
@@ -338,6 +347,22 @@ void BasicTaskflow<E>::wait_for_topologies() {
 template <template <typename...> typename E>
 void BasicTaskflow<E>::_schedule(Node& node) {
   _executor->emplace(*this, node);
+}
+
+
+// Procedure: _schedule
+// The main procedure to schedule a set of task nodes.
+// Each task node has two types of tasks - regular and subflow.
+template <template <typename...> typename E>
+void BasicTaskflow<E>::_schedule(std::vector<Node*>& nodes) {
+  std::vector<Closure> closures;
+  closures.reserve(nodes.size());
+
+  for(auto src : nodes) {
+    closures.emplace_back(*this, *src);
+  }
+
+  _executor->emplace(std::move(closures));
 }
 
 // Function: dump_topologies

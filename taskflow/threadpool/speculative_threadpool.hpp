@@ -53,6 +53,8 @@ class SpeculativeThreadpool {
     template <typename... ArgsT>
     void emplace(ArgsT&&...);
 
+    void emplace(std::vector<Closure> &&);
+
   private:
     
     const std::thread::id _owner {std::this_thread::get_id()};
@@ -231,6 +233,45 @@ void SpeculativeThreadpool<Closure>::emplace(ArgsT&&... args) {
     w->cv.notify_one();   
   }
 }
+
+
+template <typename Closure>
+void SpeculativeThreadpool<Closure>::emplace(std::vector<Closure>&& tasks){
+  size_t consumed {0};
+
+  //no worker thread available
+  if(num_workers() == 0){
+    for(auto& c: tasks){
+      c();
+    }
+    return;
+  }
+
+  // speculation
+  if(std::this_thread::get_id() != _owner){
+    auto iter = _this_worker();
+    if(iter != _worker_maps.end() && !(iter->second->task)){
+      iter->second->task.emplace(std::move(tasks[consumed++]));
+      if(tasks.size() == consumed) {
+        return ;
+      }
+    }
+  }
+
+  std::scoped_lock lock(_mutex);
+  while(!_idlers.empty() && tasks.size() != consumed) {
+    Worker* w = _idlers.back();
+    _idlers.pop_back();
+    w->ready = true;
+    w->task.emplace(std::move(tasks[consumed ++]));
+    w->cv.notify_one();   
+  }
+
+  if(tasks.size() == consumed) return ;
+  _tasks.reserve(_tasks.size() + tasks.size() - consumed);
+  std::move(tasks.begin()+consumed, tasks.end(), std::back_inserter(_tasks));
+}
+
 
 };  // end of namespace tf. ---------------------------------------------------
 

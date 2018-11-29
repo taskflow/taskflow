@@ -638,6 +638,8 @@ class PrivatizedThreadpool {
     template <typename... ArgsT>
     void emplace(ArgsT&&...);
 
+    void emplace(std::vector<Closure>&&);
+
   private:
     
     const std::thread::id _owner {std::this_thread::get_id()};
@@ -879,6 +881,38 @@ void PrivatizedThreadpool<Closure>::emplace(ArgsT&&... args){
     std::scoped_lock lock(_mutex);
   }
   _workers[id].cv.notify_one();
+}
+
+
+
+template <typename Closure>
+void PrivatizedThreadpool<Closure>::emplace(std::vector<Closure> &&tasks){
+
+  //no worker thread available
+  if(num_workers() == 0){
+    for(auto &t: tasks){
+      t();
+    }
+    return;
+  }
+
+  _num_tasks.fetch_add(tasks.size(), std::memory_order_relaxed);
+
+  bool notify_all = tasks.size() > 1;
+  {
+    std::scoped_lock lock(_mutex);
+    std::move(tasks.begin(), tasks.end(), std::back_inserter(_tasks));
+  }
+
+  if(!notify_all) {
+    auto id = _fast_modulo(_randomize(_seed), _workers.size());
+    _workers[id].cv.notify_one();
+  }
+  else {
+    for(size_t i=0; i<_workers.size(); ++i) {
+      _workers[i].cv.notify_one();
+    }
+  }
 }
 
 
