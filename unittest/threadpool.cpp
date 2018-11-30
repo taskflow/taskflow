@@ -1,3 +1,6 @@
+// 2018/11/29 - modified by Chun-Xun Lin
+//   - added batch tests
+//
 // 2018/10/04 - modified by Tsung-Wei Huang
 //   - removed binary tree tests
 //   - removed spawn/shutdown tests
@@ -173,7 +176,7 @@ void test_batch_insertion(T& threadpool) {
       funs.emplace_back([&](){count++;});
     }
 
-    threadpool.emplace(std::move(funs));
+    threadpool.batch(std::move(funs));
     total += i;
   }
 
@@ -212,7 +215,7 @@ void test_threadpool() {
     }
   }
 
-  SUBCASE("BatchEmplace") {
+  SUBCASE("Batch") {
     for(unsigned i=0; i<=4; ++i) {
       T tp(i);
       test_batch_insertion(tp);

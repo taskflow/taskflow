@@ -252,11 +252,6 @@ void BasicTaskflow<E>::silent_dispatch() {
 
   auto& topology = _topologies.emplace_front(std::move(_graph));
 
-  // Start the taskflow 
-  //for(auto src : topology._sources) {
-  //  _schedule(*src);
-  //} 
-
   _schedule(topology._sources);
 }
 
@@ -273,11 +268,6 @@ void BasicTaskflow<E>::silent_dispatch(C&& c) {
 
   auto& topology = _topologies.emplace_front(std::move(_graph), std::forward<C>(c));
 
-  // Start the taskflow
-  //for(auto src : topology._sources) {
-  //  _schedule(*src);
-  //}
-
   _schedule(topology._sources);
 }
 
@@ -290,11 +280,6 @@ std::shared_future<void> BasicTaskflow<E>::dispatch() {
   }
 
   auto& topology = _topologies.emplace_front(std::move(_graph));
-
-  // Start the taskflow
-  //for(auto src : topology._sources) {
-  //  _schedule(*src);
-  //}
  
   _schedule(topology._sources);
 
@@ -314,11 +299,6 @@ std::shared_future<void> BasicTaskflow<E>::dispatch(C&& c) {
 
   auto& topology = _topologies.emplace_front(std::move(_graph), std::forward<C>(c));
 
-  // Start the taskflow
-  //for(auto src : topology._sources) {
-  //  _schedule(*src);
-  //}
-  
   _schedule(topology._sources);
 
   return topology._future;
@@ -358,12 +338,10 @@ template <template <typename...> typename E>
 void BasicTaskflow<E>::_schedule(std::vector<Node*>& nodes) {
   std::vector<Closure> closures;
   closures.reserve(nodes.size());
-
   for(auto src : nodes) {
     closures.emplace_back(*this, *src);
   }
-
-  _executor->emplace(std::move(closures));
+  _executor->batch(std::move(closures));
 }
 
 // Function: dump_topologies

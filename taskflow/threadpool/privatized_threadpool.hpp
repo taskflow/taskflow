@@ -1,3 +1,7 @@
+// 2018/11/28 - modified by Chun-Xun Lin
+// 
+// Added the method batch to insert a vector of tasks.
+//
 // 2018/10/10 - modified by Tsung-Wei
 //   - merged with Guannan's implementation
 //   - merged with Chun-Xun's implementation
@@ -638,7 +642,7 @@ class PrivatizedThreadpool {
     template <typename... ArgsT>
     void emplace(ArgsT&&...);
 
-    void emplace(std::vector<Closure>&&);
+    void batch(std::vector<Closure>&&);
 
   private:
     
@@ -886,7 +890,7 @@ void PrivatizedThreadpool<Closure>::emplace(ArgsT&&... args){
 
 
 template <typename Closure>
-void PrivatizedThreadpool<Closure>::emplace(std::vector<Closure> &&tasks){
+void PrivatizedThreadpool<Closure>::batch(std::vector<Closure>&& tasks){
 
   //no worker thread available
   if(num_workers() == 0){

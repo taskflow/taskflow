@@ -1,3 +1,7 @@
+// 2018/11/28 - modified by Chun-Xun Lin
+// 
+// Added the method batch to insert a vector of tasks.
+//
 // 2018/10/04 - modified by Tsung-Wei Huang
 // 
 // Removed shutdown, spawn, and wait_for_all to simplify the design
@@ -60,7 +64,7 @@ class ProactiveThreadpool {
     template <typename... ArgsT>
     void emplace(ArgsT&&...);
 
-    void emplace(std::vector<Closure> &&);
+    void batch(std::vector<Closure> &&);
 
   private:
 
@@ -208,9 +212,9 @@ void ProactiveThreadpool<Closure>::emplace(ArgsT&&... args) {
 }
 
 
-// Procedure: silent_async
+// Procedure: batch
 template <typename Closure>
-void ProactiveThreadpool<Closure>::emplace(std::vector<Closure> &&tasks) {
+void ProactiveThreadpool<Closure>::batch(std::vector<Closure> &&tasks) {
 
   //no worker thread available
   if(num_workers() == 0){

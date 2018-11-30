@@ -1,3 +1,7 @@
+// 2018/11/28 - modified by Chun-Xun Lin
+// 
+// Added the method batch to insert a vector of tasks.
+//
 // 2018/10/04 - modified by Tsung-Wei Huang
 // 
 // Removed shutdown, spawn, and wait_for_all to simplify the design
@@ -40,7 +44,7 @@ class SimpleThreadpool {
     template <typename... ArgsT>
     void emplace(ArgsT&&...);
 
-    void emplace(std::vector<Closure> &&);
+    void batch(std::vector<Closure>&&);
 
     size_t num_tasks() const;
     size_t num_workers() const;
@@ -155,7 +159,7 @@ void SimpleThreadpool<Closure>::emplace(ArgsT&&... args) {
 
 // Function: emplace
 template <typename Closure>
-void SimpleThreadpool<Closure>::emplace(std::vector<Closure> &&tasks) {
+void SimpleThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
 
   // No worker, do this right away.
   if(num_workers() == 0) {

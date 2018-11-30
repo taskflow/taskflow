@@ -1,3 +1,7 @@
+// 2018/11/28 - modified by Chun-Xun Lin
+// 
+// Added the method batch to insert a vector of tasks.
+//
 // 2018/10/04 - modified by Tsung-Wei Huang
 // 
 // Removed shutdown, spawn, and wait_for_all to simplify the design
@@ -53,7 +57,7 @@ class SpeculativeThreadpool {
     template <typename... ArgsT>
     void emplace(ArgsT&&...);
 
-    void emplace(std::vector<Closure> &&);
+    void batch(std::vector<Closure>&&);
 
   private:
     
@@ -236,7 +240,7 @@ void SpeculativeThreadpool<Closure>::emplace(ArgsT&&... args) {
 
 
 template <typename Closure>
-void SpeculativeThreadpool<Closure>::emplace(std::vector<Closure>&& tasks){
+void SpeculativeThreadpool<Closure>::batch(std::vector<Closure>&& tasks){
   size_t consumed {0};
 
   //no worker thread available
