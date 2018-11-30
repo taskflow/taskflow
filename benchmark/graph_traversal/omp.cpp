@@ -13,7 +13,7 @@ void traverse_regular_graph_omp(LevelGraph& graph){
     #pragma omp single
     {
       for(size_t l=0; l<graph.level(); l++){ 
-        for(int i=0; i<graph.length(); i++){
+        for(size_t i=0; i<graph.length(); i++){
           Node& n = graph.node_at(l, i);
           size_t out_edge_num = n._out_edges.size();
           size_t in_edge_num = n._in_edges.size();
@@ -268,18 +268,4 @@ std::chrono::microseconds measure_time_omp(LevelGraph& graph){
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
-
-//int main(int argc, char* argv[]){
-//
-//  for(int i=1; i<=200; i++){
-//    LevelGraph graph(i, i);
-//    auto omp = measure_time_OMP(graph);
-//    std::cout << "Level graph:\t" << i << "\tby\t" << i << std::endl;
-//    std::cout << "Elasped time OMP:\t" << omp << std::endl;
-//    std::cout << "Graph is fully traversed:\t" << graph.validate_result() << std::endl;  
-//    graph.clear_graph();
-//    std::cout << std::endl;
-//  }
-//
-//}
 

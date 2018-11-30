@@ -86,7 +86,7 @@ class LevelGraph {
         std::vector<Node> cur_nodes;
         std::vector<int> next_level_nodes;
 
-        for(int i=0; i<length; i++){
+        for(size_t i=0; i<length; i++){
           next_level_nodes.push_back(i);
         }
      
