@@ -27,6 +27,10 @@
   std::cout << "Taskflow [speculative executor]: "                      \
             << F<tf::BasicTaskflow<tf::SpeculativeThreadpool>>()        \
             << " ms\n";                                                 \
+                                                                        \
+  std::cout << "Taskflow [privatized executor]: "                       \
+            << F<tf::BasicTaskflow<tf::PrivatizedThreadpool>>()         \
+            << " ms\n";                                                 \
 
 // ============================================================================
 // Dynamic Stem

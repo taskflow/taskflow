@@ -535,11 +535,11 @@ void PrivatizedThreadpool<Closure>::emplace(ArgsT&&... args){
 // Privatized queue of worker. The lock-free queue is inspired by 
 // http://www.1024cores.net/home/lock-free-algorithms/queues/bounded-mpmc-queue
 template<typename T, size_t C>
-class PrivatizedClosureQueue {
+class PrivatizedWorkQueue {
 
   public:
 
-  PrivatizedClosureQueue() : _buffer_mask(C - 1) {
+  PrivatizedWorkQueue() : _buffer_mask(C - 1) {
     for (size_t i = 0; i < C; i ++){
       _buffer[i].sequence_.store(i, std::memory_order_relaxed);
     }
@@ -547,7 +547,7 @@ class PrivatizedClosureQueue {
     _back.store(0, std::memory_order_relaxed);
   }
 
-  ~PrivatizedClosureQueue(){}
+  ~PrivatizedWorkQueue(){}
 
   bool enqueue(T& data){
     size_t pos = _front.load(std::memory_order_relaxed);
@@ -617,7 +617,7 @@ class PrivatizedThreadpool {
 
   struct Worker{
     std::condition_variable cv;
-    PrivatizedClosureQueue<Closure, 1024> queue;
+    PrivatizedWorkQueue<Closure, 1024> queue;
     std::optional<Closure> cache;
     bool exit {false};
 
