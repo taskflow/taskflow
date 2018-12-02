@@ -62,12 +62,23 @@ void tf_traversal(std::vector<Node*>& src) {
 }
 
 
+
 int main(int argc, char* argv[]){
 
+  enum class Mode {TF, SEQ};
+
+  Mode mode {Mode::TF};
   bool fully_connected {false};
+
   for(auto i=0; i<argc; i++) {
     if(::strcmp(argv[i], "full") == 0) {
       fully_connected = true;
+    }
+    if(::strcmp(argv[i], "tf") == 0) {
+      mode = Mode::TF;
+    }
+    if(::strcmp(argv[i], "seq") == 0) {
+      mode = Mode::SEQ;
     }
   }
 
@@ -116,8 +127,10 @@ int main(int argc, char* argv[]){
     }
   }
 
-  //sequential_traversal(src);
-  tf_traversal(src);
+  switch(mode) {
+    case Mode::TF:  tf_traversal(src); break;
+    case Mode::SEQ: sequential_traversal(src); break;
+  };
   validate();
 
   delete[] nodes;
