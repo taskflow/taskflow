@@ -1,6 +1,7 @@
 #include <taskflow/taskflow.hpp>  
 #include <random>
 #include <chrono>
+#include <cstring>
 
 struct Node {
   size_t level {0};
@@ -61,11 +62,18 @@ void tf_traversal(std::vector<Node*>& src) {
 }
 
 
-int main(){
+int main(int argc, char* argv[]){
+
+  bool fully_connected {false};
+  for(auto i=0; i<argc; i++) {
+    if(::strcmp(argv[i], "full") == 0) {
+      fully_connected = true;
+    }
+  }
 
   std::srand(1);
   constexpr size_t max_degree {4};
-  constexpr size_t num_nodes {5000000};
+  constexpr size_t num_nodes {50000};
 
   auto nodes = new Node[num_nodes];
 
@@ -88,9 +96,11 @@ int main(){
   for(size_t i=0; i<num_nodes; i++) {
     size_t degree {0};
     for(size_t j=i+1; j<num_nodes && degree < max_degree; j++) {
-      if(rand()%2 == 1) {
+      if(fully_connected || rand()%2 == 1) {
         nodes[i].precede(nodes[j]);
-        degree ++;
+        if(!fully_connected) {
+          degree ++;
+        }
       }
     }
   }
@@ -98,7 +108,9 @@ int main(){
   // Find source nodes
   std::vector<Node*> src;
   for(size_t i=0; i<num_nodes; i++) {
-    assert(nodes[i].successors.size() <= max_degree);
+    if(!fully_connected) {
+      assert(nodes[i].successors.size() <= max_degree);
+    }
     if(nodes[i].dependents == 0) { 
       src.emplace_back(&nodes[i]);
     }
