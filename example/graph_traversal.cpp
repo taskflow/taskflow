@@ -53,7 +53,7 @@ void traverse(Node* n, tf::SubflowBuilder& subflow) {
 int main(){
 
   std::srand(1);
-  constexpr size_t degree {4};
+  constexpr size_t max_degree {4};
   constexpr size_t num_nodes {10000000};
 
   auto nodes = new Node[num_nodes];
@@ -75,11 +75,11 @@ int main(){
 
   // Create a DAG
   for(size_t i=0; i<num_nodes; i++) {
-    size_t count {0};
-    for(size_t j=i+1; j<num_nodes && count < degree; j++) {
+    size_t degree {0};
+    for(size_t j=i+1; j<num_nodes && degree < max_degree; j++) {
       if(rand()%2 == 1) {
         nodes[i].precede(nodes[j]);
-        count ++;
+        degree ++;
       }
     }
   }
@@ -95,12 +95,6 @@ int main(){
   //std::cout << "# of source = " << src.size() << '\n';
 
   //sequential_traversal(src);
-  //size_t l {0};
-  //for(size_t i=0; i<num_nodes; i++) {
-  //  auto& n = nodes[i];
-  //  l = n.level > l ? n.level : l;
-  //}
-  //std::cout << "Level = " << l << '\n';
   //validate();
   //return 0;
 
