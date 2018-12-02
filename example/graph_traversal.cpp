@@ -1,9 +1,4 @@
-// A simple example to capture the following task dependencies.
-//
-// TaskA---->TaskB---->TaskD
-// TaskA---->TaskC---->TaskD
-
-#include <taskflow/taskflow.hpp>  // the only include you need
+#include <taskflow/taskflow.hpp>  
 #include <random>
 #include <chrono>
 
