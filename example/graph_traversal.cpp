@@ -20,6 +20,20 @@ struct Node {
   }
 };
 
+
+void traverse(Node* n, tf::SubflowBuilder& subflow) {
+  assert(!n->visited);
+  n->visited = true;
+  for(size_t i=0; i<n->successors.size(); i++) {
+    if(--(n->successors[i]->dependents) == 0) {
+      n->successors[i]->level = n->level + 1;
+      subflow.silent_emplace([s=n->successors[i]](auto &subflow){ traverse(s, subflow); });
+    }
+  }
+}
+
+
+
 void sequential_traversal(std::vector<Node*>& src) {
   auto start = std::chrono::system_clock::now();
   while(!src.empty()) {
@@ -38,23 +52,25 @@ void sequential_traversal(std::vector<Node*>& src) {
   std::cout << "Seq runtime: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << '\n'; 
 }
 
-void traverse(Node* n, tf::SubflowBuilder& subflow) {
-  assert(!n->visited);
-  n->visited = true;
-  for(size_t i=0; i<n->successors.size(); i++) {
-    if(--(n->successors[i]->dependents) == 0) {
-      subflow.silent_emplace([s=n->successors[i]](auto &subflow){ traverse(s, subflow); });
-    }
-  }
-}
+void tf_traversal(std::vector<Node*>& src) {
+  auto start = std::chrono::system_clock::now();
 
+  tf::Taskflow tf(4);
+  for(size_t i=0; i<src.size(); i++) {
+    tf.silent_emplace([i=i, &src](auto& subflow){ traverse(src[i], subflow); });
+  }
+  tf.wait_for_all();  // block until finished
+
+  auto end = std::chrono::system_clock::now();
+  std::cout << "Tf runtime: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << '\n'; 
+}
 
 
 int main(){
 
   std::srand(1);
   constexpr size_t max_degree {4};
-  constexpr size_t num_nodes {10000000};
+  constexpr size_t num_nodes {5000000};
 
   auto nodes = new Node[num_nodes];
 
@@ -87,28 +103,15 @@ int main(){
   // Find source nodes
   std::vector<Node*> src;
   for(size_t i=0; i<num_nodes; i++) {
-    assert(nodes[i].successors.size() <= 4);
+    assert(nodes[i].successors.size() <= max_degree);
     if(nodes[i].dependents == 0) { 
       src.emplace_back(&nodes[i]);
     }
   }
-  //std::cout << "# of source = " << src.size() << '\n';
 
   //sequential_traversal(src);
-  //validate();
-  //return 0;
-
-
-  tf::Taskflow tf(4);
-  for(size_t i=0; i<src.size(); i++) {
-    tf.silent_emplace([i=i, &src](auto& subflow){ traverse(src[i], subflow); });
-  }
-  
-  auto start = std::chrono::system_clock::now();
-  tf.wait_for_all();  // block until finished
-  auto end = std::chrono::system_clock::now();
+  tf_traversal(src);
   validate();
-  std::cout << "Runtime: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << '\n'; 
 
   delete[] nodes;
 
