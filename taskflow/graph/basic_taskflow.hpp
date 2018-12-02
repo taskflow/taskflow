@@ -182,7 +182,6 @@ void BasicTaskflow<E>::Closure::operator () () const {
         for(auto& n: src) {
           taskflow->_schedule(*n);
         }
-        //taskflow->_schedule(src);
 
         if(!fb.detached()) {
           return;
