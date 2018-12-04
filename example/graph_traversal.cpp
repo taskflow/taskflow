@@ -84,7 +84,7 @@ int main(int argc, char* argv[]){
 
   std::srand(1);
   constexpr size_t max_degree {4};
-  constexpr size_t num_nodes {500000};
+  constexpr size_t num_nodes {100000};
 
   auto nodes = new Node[num_nodes];
 
