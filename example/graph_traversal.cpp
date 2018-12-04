@@ -10,7 +10,7 @@ struct Node {
   std::atomic<size_t> dependents {0};
   std::vector<Node*> successors;
 
-  void precede(auto& n) {
+  void precede(Node& n) {
     successors.emplace_back(&n);
     n.dependents ++;
   }
@@ -23,7 +23,7 @@ void traverse(Node* n, tf::SubflowBuilder& subflow) {
   for(size_t i=0; i<n->successors.size(); i++) {
     if(--(n->successors[i]->dependents) == 0) {
       n->successors[i]->level = n->level + 1;
-      subflow.silent_emplace([s=n->successors[i]](auto &subflow){ traverse(s, subflow); });
+      subflow.silent_emplace([s=n->successors[i]](tf::SubflowBuilder &subflow){ traverse(s, subflow); });
     }
   }
 }
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]){
   Mode mode {Mode::TF};
   bool fully_connected {false};
 
-  for(auto i=0; i<argc; i++) {
+  for(int i=0; i<argc; i++) {
     if(::strcmp(argv[i], "full") == 0) {
       fully_connected = true;
     }
@@ -86,7 +86,7 @@ int main(int argc, char* argv[]){
   constexpr size_t max_degree {4};
   constexpr size_t num_nodes {100000};
 
-  auto nodes = new Node[num_nodes];
+  Node* nodes = new Node[num_nodes];
 
   // A lambda to verify all nodes are visited
   auto validate = [&nodes](){
