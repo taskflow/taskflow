@@ -1,3 +1,6 @@
+// 2018/12/04 modified by Tsung-Wei Huang
+//   - replace privatized threadpool with work stealing threadpool
+//   
 // 2018/10/04 modified by Tsung-Wei Huang
 //   - removed binary_tree
 //   - removed modulo_insertions
@@ -35,8 +38,8 @@
   std::cout << "SpeculativeThreadpool  elapsed time: "                             \
             << F<tf::SpeculativeThreadpool<std::function<void()>>>() << " ms\n";   \
                                                                                    \
-  std::cout << "PrivatizedThreadpool   elapsed time: "                             \
-            << F<tf::PrivatizedThreadpool<std::function<void()>>>() << " ms\n";    \
+  std::cout << "WorkStealingThreadpool elapsed time: "                             \
+            << F<tf::WorkStealingThreadpool<std::function<void()>>>() << " ms\n";  \
 
 // ============================================================================
 // Divide and conquer to solve max subarray sum problem

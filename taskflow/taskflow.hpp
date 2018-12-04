@@ -4,8 +4,7 @@
 
 namespace tf {
 
-//using Taskflow = BasicTaskflow<SpeculativeThreadpool>;
-using Taskflow = BasicTaskflow<PrivatizedThreadpool>;
+using Taskflow = BasicTaskflow<WorkStealingThreadpool>;
 
 };  // end of namespace tf. ---------------------------------------------------
 

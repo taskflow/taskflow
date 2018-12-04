@@ -1,3 +1,6 @@
+// 2018/12/04 - modified by Tsung-Wei Huang
+//   - replaced privatized threadpool with work stealing threadpool
+//
 // 2018/12/03 - modified by Tsung-Wei Huang
 //   - added work stealing queue tests
 //
@@ -456,10 +459,10 @@ TEST_CASE("SpeculativeThreadpool" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
-// Testcase: PrivatizedThreadpool
+// Testcase: WorkStealingThreadpool
 // ----------------------------------------------------------------------------
-TEST_CASE("PrivatizedThreadpool" * doctest::timeout(300)) {
-  test_threadpool<tf::PrivatizedThreadpool<std::function<void()>>>();
+TEST_CASE("WorkStealingThreadpool" * doctest::timeout(300)) {
+  test_threadpool<tf::WorkStealingThreadpool<std::function<void()>>>();
 }
 
 

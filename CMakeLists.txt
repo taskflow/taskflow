@@ -194,7 +194,7 @@ add_test(WorkStealingQueue.4Thieves ${TF_UTEST_DIR}/threadpool -tc=WSQ.4Thieves)
 add_test(simple_threadpool      ${TF_UTEST_DIR}/threadpool -tc=SimpleThreadpool)
 add_test(proactive_threadpool   ${TF_UTEST_DIR}/threadpool -tc=ProactiveThreadpool)
 add_test(speculative_threadpool ${TF_UTEST_DIR}/threadpool -tc=SpeculativeThreadpool)
-add_test(privatized_threadpool  ${TF_UTEST_DIR}/threadpool -tc=PrivatizedThreadpool)
+add_test(work_stealing_threadpool  ${TF_UTEST_DIR}/threadpool -tc=WorkStealingThreadpool)
 
 # threadpool_cxx14 unittest (contributed by Glen Fraser)
 add_executable(threadpool_cxx14_tmp unittest/threadpool_cxx14.cpp)
