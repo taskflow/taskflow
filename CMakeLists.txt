@@ -27,6 +27,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     message(FATAL_ERROR "\nCpp-Taskflow requires MSVC++ at least v14.14") 
   endif()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2 /W3")
+  add_definitions(-D_ENABLE_EXTENDED_ALIGNED_STORAGE)
 else()
   message(FATAL_ERROR "\n\
 Cpp-Taskflow currently supports the following compilers:\n\
