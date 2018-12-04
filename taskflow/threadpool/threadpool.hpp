@@ -21,6 +21,7 @@
 #include "proactive_threadpool.hpp"
 #include "speculative_threadpool.hpp"
 #include "privatized_threadpool.hpp"
+#include "workstealing_threadpool.hpp"
 
 namespace tf {
 
