@@ -227,7 +227,7 @@ class WorkStealingThreadpool {
     bool exit  {false};
     bool ready {false};
     uint64_t seed;
-    unsigned last_victim;
+    unsigned victim_hint;
   };
 
   public:
@@ -255,7 +255,7 @@ class WorkStealingThreadpool {
     std::vector<Worker*> _idlers;
     std::vector<std::thread> _threads;
 
-    std::unordered_map<std::thread::id, size_t> _worker_maps;
+    std::unordered_map<std::thread::id, unsigned> _worker_maps;
 
     WorkStealingQueue<Closure> _queue;
 
@@ -284,8 +284,6 @@ WorkStealingThreadpool<Closure>::~WorkStealingThreadpool() {
 template <typename Closure>
 void WorkStealingThreadpool<Closure>::_shutdown(){
 
-  assert(is_owner());
-
   {
     std::scoped_lock lock(_mutex);
     for(auto& w : _workers){
@@ -297,21 +295,19 @@ void WorkStealingThreadpool<Closure>::_shutdown(){
   for(auto& t : _threads){
     t.join();
   } 
-
-  _threads.clear();  
-  _workers.clear();
-  _worker_maps.clear();
 }
 
 // Function: _randomize
+// Generate the random output (using the PCG-XSH-RS scheme)
 template <typename Closure>
 unsigned WorkStealingThreadpool<Closure>::_randomize(uint64_t& state) const {
   uint64_t current = state;
   state = current * 6364136223846793005ULL + 0xda3e39cb94b95bdbULL;
-  // Generate the random output (using the PCG-XSH-RS scheme)
   return static_cast<unsigned>((current ^ (current >> 22)) >> (22 + (current >> 61)));
 }
 
+// Function: _fast_modulo
+// Perfrom fast modulo operation (might be biased but it's ok for our heuristics)
 // http://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
 template <typename Closure>
 unsigned WorkStealingThreadpool<Closure>::_fast_modulo(uint32_t x, uint32_t N) const {
@@ -330,14 +326,14 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
 
       std::optional<Closure> t;
       Worker& w = (_workers[i]);
-      w.last_victim = (i + 1) % N;
+      w.victim_hint = (i + 1) % N;
       w.seed = i + 1;
 
       std::unique_lock lock(_mutex, std::defer_lock);
 
       while(!w.exit) {
         
-        assert(!t);        
+        //assert(!t);        
         
         // pop from my own queue
         if(t = w.queue.pop(); !t) {
@@ -407,13 +403,13 @@ std::optional<Closure> WorkStealingThreadpool<Closure>::_steal(unsigned thief) {
     }
 
     // try stealing a task from other workers
-    unsigned victim = _workers[thief].last_victim;
+    unsigned victim = _workers[thief].victim_hint;
 
     for(unsigned i=0; i<_workers.size(); i++){
 
       if(victim != thief) {
         if(task = _workers[victim].queue.steal(); task){
-          _workers[thief].last_victim = victim;
+          _workers[thief].victim_hint = victim;
           return task;
         }
       }
@@ -448,16 +444,18 @@ void WorkStealingThreadpool<Closure>::emplace(ArgsT&&... args){
     // the caller is the worker of the threadpool
     if(auto itr = _worker_maps.find(tid); itr != _worker_maps.end()){
 
+      unsigned me = itr->second;
+
       // dfs speculation
-      if(!_workers[itr->second].cache){
-        _workers[itr->second].cache.emplace(std::forward<ArgsT>(args)...);
+      if(!_workers[me].cache){
+        _workers[me].cache.emplace(std::forward<ArgsT>(args)...);
       }
       // bfs load balancing
       else {
-        _workers[itr->second].queue.push(Closure{std::forward<ArgsT>(args)...});
+        _workers[me].queue.push(Closure{std::forward<ArgsT>(args)...});
 
-        auto n = _workers[itr->second].queue.size();
-        auto p = _fast_modulo(_randomize(_workers[itr->second].seed), n + 1); 
+        auto n = _workers[me].queue.size();
+        auto p = _fast_modulo(_randomize(_workers[me].seed), n + 1); 
         
         // Load balancing with probability 1/(n+1)
         if(p == n) {
@@ -468,7 +466,7 @@ void WorkStealingThreadpool<Closure>::emplace(ArgsT&&... args){
             _idlers.pop_back();
             w->ready = true;
             w->cv.notify_one();
-            w->last_victim = itr->second;
+            w->victim_hint = me;
           }
         }
       }

@@ -103,7 +103,7 @@ typename BasicTaskflow<E>::Closure& BasicTaskflow<E>::Closure::operator = (const
 template <template <typename...> typename E>
 void BasicTaskflow<E>::Closure::operator () () const {
   
-  assert(taskflow && node);
+  //assert(taskflow && node);
 
   // Here we need to fetch the num_successors first to avoid the invalid memory
   // access caused by topology clear.
@@ -124,7 +124,7 @@ void BasicTaskflow<E>::Closure::operator () () const {
   // The second time we enter this context there is no need
   // to re-execute the work.
   else {
-    assert(std::holds_alternative<DynamicWork>(node->_work));
+    //assert(std::holds_alternative<DynamicWork>(node->_work));
 		
     if(!node->_subgraph.has_value()){
       node->_subgraph.emplace();  // Initialize the _subgraph		
