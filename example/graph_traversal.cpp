@@ -89,7 +89,7 @@ int main(int argc, char* argv[]){
   Node* nodes = new Node[num_nodes];
 
   // A lambda to verify all nodes are visited
-  auto validate = [&nodes](){
+  auto validate = [&nodes, &num_nodes](){
     for(size_t i=0; i<num_nodes; i++) {
       assert(nodes[i].visited);
       assert(nodes[i].dependents == 0);
