@@ -27,6 +27,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     message(FATAL_ERROR "\nCpp-Taskflow requires MSVC++ at least v14.14") 
   endif()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2 /W3")
+  add_definitions(-D_ENABLE_EXTENDED_ALIGNED_STORAGE)
 else()
   message(FATAL_ERROR "\n\
 Cpp-Taskflow currently supports the following compilers:\n\
@@ -190,7 +191,7 @@ add_test(WorkStealingQueue.4Thieves ${TF_UTEST_DIR}/threadpool -tc=WSQ.4Thieves)
 add_test(simple_threadpool      ${TF_UTEST_DIR}/threadpool -tc=SimpleThreadpool)
 add_test(proactive_threadpool   ${TF_UTEST_DIR}/threadpool -tc=ProactiveThreadpool)
 add_test(speculative_threadpool ${TF_UTEST_DIR}/threadpool -tc=SpeculativeThreadpool)
-add_test(privatized_threadpool  ${TF_UTEST_DIR}/threadpool -tc=PrivatizedThreadpool)
+add_test(work_stealing_threadpool  ${TF_UTEST_DIR}/threadpool -tc=WorkStealingThreadpool)
 
 # threadpool_cxx14 unittest (contributed by Glen Fraser)
 add_executable(threadpool_cxx14_tmp unittest/threadpool_cxx14.cpp)

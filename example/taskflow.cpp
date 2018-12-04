@@ -1,3 +1,6 @@
+// 2018/12/04 - modified by Tsung-Wei Huang
+//   - replaced privatized threadpool with work stealing threadpool
+//
 // 2018/10/24 - modified by Tsung-Wei Huang
 //   - Taskflow is templated at threadpool
 //   - added graph-level comparison with different thread pools
@@ -16,20 +19,20 @@
 #define BENCHMARK(TITLE, F)                                             \
   std::cout << "========== " << TITLE << " ==========\n";               \
                                                                         \
-  std::cout << "Taskflow [simple executor     ]: "                      \
+  std::cout << "Taskflow [simple executor       ]: "                    \
             << F<tf::BasicTaskflow<tf::SimpleThreadpool>>()             \
             << " ms\n";                                                 \
                                                                         \
-  std::cout << "Taskflow [practive executor   ]: "                      \
+  std::cout << "Taskflow [practive executor     ]: "                    \
             << F<tf::BasicTaskflow<tf::ProactiveThreadpool>>()          \
             << " ms\n";                                                 \
                                                                         \
-  std::cout << "Taskflow [speculative executor]: "                      \
+  std::cout << "Taskflow [speculative executor  ]: "                    \
             << F<tf::BasicTaskflow<tf::SpeculativeThreadpool>>()        \
             << " ms\n";                                                 \
                                                                         \
-  std::cout << "Taskflow [privatized executor]: "                       \
-            << F<tf::BasicTaskflow<tf::PrivatizedThreadpool>>()         \
+  std::cout << "Taskflow [work stealing executor]: "                    \
+            << F<tf::BasicTaskflow<tf::WorkStealingThreadpool>>()       \
             << " ms\n";                                                 \
 
 // ============================================================================
