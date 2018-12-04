@@ -126,11 +126,11 @@ void BasicTaskflow<E>::Closure::operator () () const {
   else {
 
     bool first_time {false};  // To stop creating subflow in second time 
-		
+    
     if(!node->_subgraph.has_value()){
-      node->_subgraph.emplace();  // Initialize the _subgraph		
+      node->_subgraph.emplace();  // Initialize the _subgraph   
       first_time = true;
-		}
+    }
     
     SubflowBuilder fb(*(node->_subgraph));
 
