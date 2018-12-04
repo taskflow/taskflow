@@ -33,34 +33,20 @@ struct TF {
     tf.wait_for_all(); 
   }
 
-  tf::Taskflow tf {std::thread::hardware_concurrency()};
+  tf::Taskflow tf;
   std::vector<std::vector<tf::Task>> tasks;
 
 };
 
-void traverse_regular_graph_taskflow(LevelGraph& graph){
+void traverse_level_graph_taskflow(LevelGraph& graph){
   TF tf(graph);
   tf.run();
 }
 
 std::chrono::microseconds measure_time_taskflow(LevelGraph& graph){
   auto beg = std::chrono::high_resolution_clock::now();
-  traverse_regular_graph_taskflow(graph);
+  traverse_level_graph_taskflow(graph);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-//int main(int argc, char* argv[]){
-//
-//  for(int i=1; i<=200; i++){
-//
-//    LevelGraph graph(i, i);
-//    auto taskflow = measure_time_taskflow(graph);
-//    std::cout << "Level graph:\t" << i << "\tby\t" << i << std::endl;
-//    std::cout << "Elasped time taskflow:\t" << taskflow << std::endl;
-//    std::cout << "Graph is fully traversed:\t" << graph.validate_result() << std::endl;  
-//    graph.clear_graph();
-//    std::cout << std::endl;
-//  }
-//
-//}

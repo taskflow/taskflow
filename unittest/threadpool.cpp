@@ -1,3 +1,6 @@
+// 2018/12/03 - modified by Tsung-Wei Huang
+//   - added work stealing queue tests
+//
 // 2018/11/29 - modified by Chun-Xun Lin
 //   - added batch tests
 //
@@ -32,6 +35,214 @@
 
 #include <doctest.h>
 #include <taskflow/threadpool/threadpool.hpp>
+
+// ============================================================================
+// WorkStealingQueue tests
+// ============================================================================
+
+// Procedure: wsq_test_owner
+void wsq_test_owner() {
+
+  int64_t cap = 2;
+  
+  tf::WorkStealingQueue<int> queue(cap);
+  std::deque<int> gold;
+
+  REQUIRE(queue.capacity() == 2);
+  REQUIRE(queue.empty());
+
+  for(int i=2; i<=(1<<20); i <<= 1) {
+
+    REQUIRE(queue.empty());
+
+    for(int j=0; j<i; ++j) {
+      queue.push(j);
+    }
+
+    for(int j=0; j<i; ++j) {
+      auto item = queue.pop();
+      REQUIRE((item && *item == i-j-1));
+    }
+    REQUIRE(!queue.pop());
+    
+    REQUIRE(queue.empty());
+    for(int j=0; j<i; ++j) {
+      queue.push(j);
+    }
+    
+    for(int j=0; j<i; ++j) {
+      auto item = queue.steal();
+      REQUIRE((item && *item == j));
+    }
+    REQUIRE(!queue.pop());
+
+    REQUIRE(queue.empty());
+
+    for(int j=0; j<i; ++j) {
+      // enqueue 
+      if(auto dice = ::rand()%3; dice == 0) {
+        queue.push(j);
+        gold.push_back(j);
+      }
+      // pop back
+      else if(dice == 1) {
+        auto item = queue.pop();
+        if(gold.empty()) {
+          REQUIRE(!item);
+        }
+        else {
+          REQUIRE(*item == gold.back());
+          gold.pop_back();
+        }
+      }
+      // pop front
+      else {
+        auto item = queue.steal();
+        if(gold.empty()) {
+          REQUIRE(!item);
+        }
+        else {
+          REQUIRE(*item == gold.front());
+          gold.pop_front();
+        }
+      }
+
+      REQUIRE(queue.size() == (int)gold.size());
+    }
+
+    while(!queue.empty()) {
+      auto item = queue.pop();
+      REQUIRE((item && *item == gold.back()));
+      gold.pop_back();
+    }
+
+    REQUIRE(gold.empty());
+    
+    REQUIRE(queue.capacity() == i);
+  }
+}
+
+// Procedure: wsq_test_n_thieves
+void wsq_test_n_thieves(int N) {
+
+  int64_t cap = 2;
+  
+  tf::WorkStealingQueue<int> queue(cap);
+
+  REQUIRE(queue.capacity() == 2);
+  REQUIRE(queue.empty());
+
+  for(int i=2; i<=(1<<20); i <<= 1) {
+
+    REQUIRE(queue.empty());
+
+    int p = 0;
+
+    std::vector<std::deque<int>> cdeqs(N);
+    std::vector<std::thread> consumers;
+    std::deque<int> pdeq;
+
+    auto num_stolen = [&] () {
+      int total = 0;
+      for(const auto& cdeq : cdeqs) {
+        total += cdeq.size();
+      }
+      return total;
+    };
+    
+    for(int n=0; n<N; n++) {
+      consumers.emplace_back([&, n] () {
+        while(num_stolen() + (int)pdeq.size() != i) {
+          if(auto dice = ::rand() % 4; dice == 0) {
+            if(auto item = queue.steal(); item) {
+              cdeqs[n].push_back(*item);
+            }
+          }
+        }
+      });
+    }
+
+    std::thread producer([&] () {
+      while(p < i) { 
+        if(auto dice = ::rand() % 4; dice == 0) {
+          queue.push(p++); 
+        }
+        else if(dice == 1) {
+          if(auto item = queue.pop(); item) {
+            pdeq.push_back(*item);
+          }
+        }
+      }
+    });
+
+    producer.join();
+
+    for(auto& c : consumers) {
+      c.join();
+    }
+
+    REQUIRE(queue.empty());
+    REQUIRE(queue.capacity() <= i);
+
+    std::set<int> set;
+    
+    for(const auto& cdeq : cdeqs) {
+      for(auto k : cdeq) {
+        set.insert(k);
+      }
+    }
+    
+    for(auto k : pdeq) {
+      set.insert(k);
+    }
+
+    for(int j=0; j<i; ++j) {
+      REQUIRE(set.find(j) != set.end());
+    }
+
+    REQUIRE((int)set.size() == i);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Testcase: WSQTest.Owner
+// ----------------------------------------------------------------------------
+TEST_CASE("WSQ.Owner" * doctest::timeout(300)) {
+  wsq_test_owner();
+}
+
+// ----------------------------------------------------------------------------
+// Testcase: WSQTest.1Thief
+// ----------------------------------------------------------------------------
+TEST_CASE("WSQ.1Thief" * doctest::timeout(300)) {
+  wsq_test_n_thieves(1);
+}
+
+// ----------------------------------------------------------------------------
+// Testcase: WSQTest.2Thieves
+// ----------------------------------------------------------------------------
+TEST_CASE("WSQ.2Thieves" * doctest::timeout(300)) {
+  wsq_test_n_thieves(2);
+}
+
+// ----------------------------------------------------------------------------
+// Testcase: WSQTest.3Thieves
+// ----------------------------------------------------------------------------
+TEST_CASE("WSQ.3Thieves" * doctest::timeout(300)) {
+  wsq_test_n_thieves(3);
+}
+
+// ----------------------------------------------------------------------------
+// Testcase: WSQTest.4Thieves
+// ----------------------------------------------------------------------------
+TEST_CASE("WSQ.4Thieves" * doctest::timeout(300)) {
+  wsq_test_n_thieves(4);
+}
+
+
+// ============================================================================
+// Threadpool tests
+// ============================================================================
 
 // Procedure: test_ownership
 template <typename ThreadpoolType>
@@ -223,10 +434,6 @@ void test_threadpool() {
   }
 }
 
-// ============================================================================
-// Threadpool tests
-// ============================================================================
-
 // ----------------------------------------------------------------------------
 // Testcase: SimpleThreadpool
 // ----------------------------------------------------------------------------
@@ -255,303 +462,6 @@ TEST_CASE("PrivatizedThreadpool" * doctest::timeout(300)) {
   test_threadpool<tf::PrivatizedThreadpool<std::function<void()>>>();
 }
 
-/*
-// ============================================================================
-// WorkerQueue Tests
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Testcase: OneThread
-// ----------------------------------------------------------------------------
-TEST_CASE("WorkerQueue.OneThread" * doctest::timeout(300)) {
-
-  constexpr int N = 1024;
-
-  int data;
-
-  tf::RunQueue<int, 1024> queue; 
-
-  REQUIRE(queue.empty());
-
-  // push_front + pop_back
-  SUBCASE("PFPB") {
-    for(int i=0; i<N; ++i) {
-      REQUIRE(queue.push_front(i));
-      REQUIRE(!queue.empty());
-    }
-    REQUIRE(!queue.push_front(data));
-    REQUIRE(!queue.push_back(data));
-
-    for(int i=0; i<N; ++i) {
-      REQUIRE(queue.pop_back(data));
-      REQUIRE(data == i);
-    }
-    REQUIRE(queue.empty());
-  }
-  
-  // push_front + pop_front
-  SUBCASE("PFPF") {
-    for(int i=0; i<N; ++i) {
-      REQUIRE(queue.push_front(i));
-      REQUIRE(!queue.empty());
-    }
-    REQUIRE(!queue.push_front(data));
-    REQUIRE(!queue.push_back(data));
-
-    for(int i=0; i<N; ++i) {
-      REQUIRE(queue.pop_front(data));
-      REQUIRE(data == N-i-1);
-    }
-    REQUIRE(queue.empty());
-  }
-
-  // push_back + pop_back
-  SUBCASE("PBPB") {
-    for(int i=0; i<N; ++i) {
-      REQUIRE(queue.push_back(i));
-      REQUIRE(!queue.empty());
-    }
-    REQUIRE(!queue.push_front(data));
-    REQUIRE(!queue.push_back(data));
-
-    for(int i=0; i<N; ++i) {
-      REQUIRE(queue.pop_back(data));
-      REQUIRE(data == N-i-1);
-    }
-    REQUIRE(queue.empty());
-  }
-
-  // push_back + pop_front
-  SUBCASE("PBPF") {
-    for(int i=0; i<N; ++i) {
-      REQUIRE(queue.push_back(i));
-      REQUIRE(!queue.empty());
-    }
-    REQUIRE(!queue.push_back(data));
-    REQUIRE(!queue.push_front(data));
-
-    for(int i=0; i<N; ++i) {
-      REQUIRE(queue.pop_front(data));
-      REQUIRE(data == i);
-    }
-    REQUIRE(queue.empty());
-  }
-
-  // half-half
-  SUBCASE("HalfHalf") {
-    for(int i=0; i<N; ++i) {
-      if(i < N/2) {
-        REQUIRE(queue.push_front(i));
-      }
-      else {
-        REQUIRE(queue.push_back(i));
-      }
-      REQUIRE(!queue.empty());
-    }
-    REQUIRE(!queue.push_front(data));
-    REQUIRE(!queue.push_back(data));
-
-    for(int i=0; i<N; ++i) {
-      if(i < N/2) {
-        REQUIRE(queue.pop_front(data));
-        REQUIRE(data == N/2 - i - 1);
-      }
-      else {
-        REQUIRE(queue.pop_front(data));
-        REQUIRE(data == i);
-      }
-    }
-    REQUIRE(queue.empty());
-  }
-
-  // back-and-forth
-  SUBCASE("BackAndForth") {
-    for(int i=0; i<N; ++i) {
-      if(i % 2 == 0) {
-        REQUIRE(queue.push_front(i));
-      }
-      else {
-        REQUIRE(queue.push_back(i));
-      }
-    }
-
-    for(int i=0; i<N; ++i) {
-      if(i < N/2) {
-        REQUIRE(queue.pop_back(data));
-        REQUIRE(data == N - (2*i+1));
-      }
-      else {
-        REQUIRE(queue.pop_back(data));
-        REQUIRE(data == 2*i - N);
-      }
-    }
-  }
-}
-
-// ----------------------------------------------------------------------------
-// Testcase: TwoThread
-// ----------------------------------------------------------------------------
-TEST_CASE("WorkerQueue.TwoThread" * doctest::timeout(300)) {
-
-  constexpr int N = (1 << 20);
-
-  tf::RunQueue<int, 64> queue; 
-
-  // push front + pop back
-  // notice that there is no test of push front + pop front
-  SUBCASE("PFPB") {
-
-    REQUIRE(queue.empty());
-
-    std::thread t1([&, i=0] () mutable {
-      while(i < N) {
-        if(queue.push_front(i)) {
-          ++i;
-        }
-      }
-    });
-
-    std::thread t2([&, i=0] () mutable {
-      int data;
-      while(i < N) {
-        if(queue.pop_back(data)) {
-          REQUIRE(data == i);
-          ++i;
-        }
-      }
-    });
-
-    t1.join();
-    t2.join();
-    
-    REQUIRE(queue.empty());
-  }
-  
-  // push back + pop front
-  SUBCASE("PBPF") {
-
-    REQUIRE(queue.empty());
-
-    std::thread t1([&, i=0] () mutable {
-      while(i < N) {
-        if(queue.push_back(i)) {
-          ++i;
-        }
-      }
-    });
-
-    std::thread t2([&, i=0] () mutable {
-      int data;
-      while(i < N) {
-        if(queue.pop_front(data)) {
-          REQUIRE(data == i);
-          ++i;
-        }
-      }
-    });
-
-    t1.join();
-    t2.join();
-    
-    REQUIRE(queue.empty());
-  }
-  
-  // push back + pop back
-  SUBCASE("PBPB") {
-
-    std::vector<int> res;
-
-    REQUIRE(queue.empty());
-
-    std::thread t1([&, i=0] () mutable {
-      while(i < N) {
-        if(queue.push_back(i)) {
-          ++i;
-        }
-      }
-    });
-
-    std::thread t2([&, i=0] () mutable {
-      int data;
-      while(i < N) {
-        if(queue.pop_back(data)) {
-          res.push_back(data);
-          ++i;
-        }
-      }
-    });
-
-    t1.join();
-    t2.join();
-    
-    REQUIRE(queue.empty());
-
-    std::sort(res.begin(), res.end());
-
-    REQUIRE(res.size() == N);
-
-    for(int i=0; i<N; ++i) {
-      REQUIRE(res[i] == i);
-    }
-  }
-}
-
-// ----------------------------------------------------------------------------
-// Testcase: TriThread
-// ----------------------------------------------------------------------------
-TEST_CASE("WorkerQueue.TriThread" * doctest::timeout(300)) {
-
-  constexpr int N = (1 << 21);
-
-  tf::RunQueue<int, 64> queue; 
-
-  std::vector<int> res;
-
-  // push front + push back + pop back
-  REQUIRE(queue.empty());
-
-  std::thread t1([&, i=0] () mutable {
-    while(i < N/2) {
-      if(queue.push_front(i)) {
-        ++i;
-      }
-    }
-  });
-  
-  std::thread t2([&, i=N/2] () mutable {
-    while(i < N) {
-      if(queue.push_back(i)) {
-        ++i;
-      }
-    }
-  });
-
-  std::thread t3([&, i=0] () mutable {
-    int data;
-    while(i < N) {
-      if(queue.pop_back(data)) {
-        res.push_back(data);
-        ++i;
-      }
-    }
-  });
-
-  t1.join();
-  t2.join();
-  t3.join();
-  
-  REQUIRE(queue.empty());
-
-  std::sort(res.begin(), res.end());
-
-  REQUIRE(res.size() == N);
-
-  for(int i=0; i<N; ++i) {
-    REQUIRE(res[i] == i);
-  }
-  
-}
-*/
 
 
 
