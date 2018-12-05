@@ -3,13 +3,9 @@ sudo: required
 # Enable C++ support
 language: cpp
 
-# Compiler selection
-compiler:
-  - g++
- 
+# environment 
 matrix:
-
-  # g++7
+  # Linux g++7
   include:
     os: linux
     addons:
@@ -20,9 +16,8 @@ matrix:
           - g++-7
     env:
       - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-  
-  # g++8
-  include:
+    
+    # Linux g++8
     os: linux
     addons:
       apt:
@@ -32,9 +27,31 @@ matrix:
           - g++-8
     env:
       - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+    
+    # Linux clang-6
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-6.0
+          packages:
+            - clang-6.0
+      env:
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0
+    
+    # Linux clang-7
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-7.0
+          packages:
+            - clang-7.0
+      env:
+        - MATRIX_EVAL="CC=clang-7.0 && CXX=clang++-7.0
 
 
-# Install gcc 7 && cmake 3.10
+# install cmake 3.10
 before_install:
   - eval "${MATRIX_EVAL}"
   - wget -O cmake.sh https://cmake.org/files/v3.10/cmake-3.10.0-rc1-Linux-x86_64.sh 
