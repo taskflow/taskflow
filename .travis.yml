@@ -8,6 +8,8 @@ compiler:
   - g++
  
 matrix:
+
+  # g++7
   include:
     os: linux
     addons:
@@ -18,14 +20,26 @@ matrix:
           - g++-7
     env:
       - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+  
+  # g++8
+  include:
+    os: linux
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - g++-8
+    env:
+      - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
 
+# Install gcc 7 && cmake 3.10
 before_install:
-  # Install gcc 7 && cmake 3.10
   - eval "${MATRIX_EVAL}"
   - wget -O cmake.sh https://cmake.org/files/v3.10/cmake-3.10.0-rc1-Linux-x86_64.sh 
   - sudo sh cmake.sh --skip-license --exclude-subdir --prefix=/usr/local
-  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90
+  #- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90
 
 # Build steps
 script:

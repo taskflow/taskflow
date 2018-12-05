@@ -5,7 +5,7 @@ int main() {
   double omp_time {0.0};
   double tbb_time {0.0};
   double tf_time  {0.0};
-  int rounds {10};
+  int rounds {5};
 
   std::cout << std::setw(12) << "# blocks"
             << std::setw(12) << "OpenMP"
