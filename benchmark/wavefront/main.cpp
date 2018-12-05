@@ -11,7 +11,7 @@ int main() {
             << std::setw(12) << "OpenMP"
             << std::setw(12) << "TBB"
             << std::setw(12) << "Taskflow"
-            << std::endl;
+            << '\n';
   
   for(int S=32; S<=4096; S += 32) {
 
