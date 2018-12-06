@@ -40,6 +40,7 @@ matrix:
           packages: ['clang-6.0']
       env:
         - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+        - CXXFLAGS=-std=c++1z
 
 # install cmake 3.10
 before_install:
