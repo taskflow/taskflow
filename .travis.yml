@@ -31,6 +31,12 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
     
+    # OSX
+    - os: osx
+      osx_image: xcode8
+      env:
+        - MATRIX_EVAL="brew install gcc && CC=gcc-7 && CXX=g++-7"
+
     ## Linux clang++6.0
     #- os: linux
     #  compiler: clang++
