@@ -3,6 +3,11 @@ sudo: required
 # Enable C++ support
 language: cpp
 
+# enable cache
+cache:
+  directories:
+    - ${TRAVIS_BUILD_DIR}/deps
+
 # environment 
 matrix:
   include:
@@ -31,11 +36,11 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
     
-    # OSX
-    - os: osx
-      osx_image: xcode8
-      env:
-        - MATRIX_EVAL="brew install gcc && CC=gcc-7 && CXX=g++-7"
+    ## OSX
+    #- os: osx
+    #  osx_image: xcode8
+    #  env:
+    #    - MATRIX_EVAL="brew install gcc && CC=gcc-7 && CXX=g++-7"
 
     ## Linux clang++6.0
     #- os: linux
