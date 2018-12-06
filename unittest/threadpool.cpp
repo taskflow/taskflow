@@ -376,7 +376,7 @@ void test_external_threads(T& threadpool) {
 }
 
 
-// Procedure: test_external_threads
+// Procedure: test_batch_insertion
 template <typename T>
 void test_batch_insertion(T& threadpool) {
   constexpr int num_iterations = 50;
