@@ -9,6 +9,7 @@ matrix:
 
     # Linux g++7
     - os: linux
+      compiler: g++
       addons:
         apt:
           sources:
@@ -20,6 +21,7 @@ matrix:
     
     # Linux g++8
     - os: linux
+      compiler: g++
       addons:
         apt:
           sources:
@@ -29,28 +31,15 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
     
-    # Linux clang-6
+    # Linux clang++6.0
     - os: linux
+      compiler: clang++
+      env:
+        - COMPILER=clang++-6.0
       addons:
         apt:
-          sources:
-            - llvm-toolchain-trusty-6.0
-          packages:
-            - clang-6.0
-      env:
-        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0
-    
-    # Linux clang-7
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-trusty-7.0
-          packages:
-            - clang-7.0
-      env:
-        - MATRIX_EVAL="CC=clang-7.0 && CXX=clang++-7.0
-
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+          packages: ['clang-6.0']
 
 # install cmake 3.10
 before_install:
