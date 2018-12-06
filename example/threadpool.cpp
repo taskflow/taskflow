@@ -214,12 +214,62 @@ auto atomic_add() {
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
 }
 
+// ============================================================================
+// batch insertion
+// ============================================================================
+
+// Function: batch_insertions
+template <typename T>
+auto batch_insertions() {
+  
+  const int num_threads = std::thread::hardware_concurrency();
+  const int num_batches = 512;
+  const int num_tasks   = 512;
+  
+  auto beg = std::chrono::high_resolution_clock::now();
+
+  std::atomic<int> counter(0);
+  std::vector<std::function<void()>> tasks (num_tasks);
+  
+  std::promise<void> promise;
+  auto future = promise.get_future();
+
+  for(auto & task : tasks) {
+    task = [&] () {
+      if(++counter == 2*num_tasks*num_batches) {
+        promise.set_value();
+      }
+    };
+  }
+  
+  T threadpool(num_threads);
+
+  // master to insert a batch
+  for(size_t i=0; i<num_batches; ++i) {
+    auto copy = tasks;
+    threadpool.batch(std::move(copy));
+  }
+
+  for(size_t i=0; i<num_batches; i++){
+    threadpool.emplace([&](){ 
+      auto copy = tasks;
+      threadpool.batch(std::move(copy));
+    }); 
+  }
+
+  future.get();
+  
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
+}
+
 // Function: main
 int main(int argc, char* argv[]) {
 
   BENCHMARK("Atomic Add", atomic_add);
   BENCHMARK("Linear Insertions", linear_insertions);
   BENCHMARK("Divide and Conquer", subsum);
+  BENCHMARK("Batch Insertions", batch_insertions);
   
   return 0;
 }
