@@ -227,6 +227,7 @@ class WorkStealingThreadpool {
   struct Worker {
     std::condition_variable cv;
     WorkStealingQueue<Closure> queue;
+    std::optional<Closure> cache;
     bool exit  {false};
     bool ready {false};
     uint64_t seed;
@@ -256,7 +257,6 @@ class WorkStealingThreadpool {
     mutable std::mutex _mutex;
 
     std::vector<Worker> _workers;
-    //std::vector<Worker*> _idlers;
     std::vector<std::thread> _threads;
 
     std::unordered_map<std::thread::id, unsigned> _worker_maps;
@@ -366,18 +366,27 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
           lock.lock();
           if(_queue.empty()) {
             w.ready = false;
-            //_idlers.push_back(&w);
             _idlers.push(&w);
             while(!w.ready && !w.exit) {
               w.cv.wait(lock);
             }
           }
           lock.unlock();
+
+          if(w.cache) {
+            std::swap(t, w.cache);
+          }
         }
 
         while(t) {
           (*t)();
-          t = w.queue.pop();
+          if(w.cache) {
+            t = std::move(*w.cache);
+            w.cache = std::nullopt;
+          }
+          else {
+            t = w.queue.pop();
+          }
         }
       } // End of while ------------------------------------------------------ 
 
@@ -409,6 +418,7 @@ void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
     if(auto idler = _idlers.steal(); idler) {
       (*idler)->ready = true;
       (*idler)->victim_hint = me;
+      (*idler)->cache = _workers[me].queue.steal();
       (*idler)->cv.notify_one();
       factor += load_balancing_factor;
     }
@@ -473,7 +483,12 @@ void WorkStealingThreadpool<Closure>::emplace(ArgsT&&... args){
 
       unsigned me = itr->second;
 
-      _workers[me].queue.push(Closure{std::forward<ArgsT>(args)...});
+      if(_workers[me].cache) {
+        _workers[me].queue.push(Closure{std::forward<ArgsT>(args)...});
+      }
+      else {
+        _workers[me].cache.emplace(std::forward<ArgsT>(args)...);
+      }
       
       // load balancing
       _balance_load(me);
@@ -484,7 +499,7 @@ void WorkStealingThreadpool<Closure>::emplace(ArgsT&&... args){
 
   if(auto idler = _idlers.steal(); idler) {
     (*idler)->ready = true;
-    (*idler)->queue.push(Closure{std::forward<ArgsT>(args)...});
+    (*idler)->cache.emplace(std::forward<ArgsT>(args)...);
     (*idler)->cv.notify_one(); 
   }
   else {
@@ -496,6 +511,10 @@ void WorkStealingThreadpool<Closure>::emplace(ArgsT&&... args){
 // Procedure: batch
 template <typename Closure>
 void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
+
+  if(tasks.empty()) {
+    return;
+  }
 
   //no worker thread available
   if(num_workers() == 0){
@@ -512,9 +531,15 @@ void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
     if(auto itr = _worker_maps.find(tid); itr != _worker_maps.end()){
 
       unsigned me = itr->second;
+      
+      size_t i = 0;
 
-      for(auto& t : tasks) {
-        _workers[me].queue.push(std::move(t));
+      if(!_workers[me].cache) {
+        _workers[me].cache = std::move(tasks[i++]);
+      }
+
+      for(; i<tasks.size(); ++i) {
+        _workers[me].queue.push(std::move(tasks[i]));
       }
       
       // load balancing 
@@ -535,11 +560,10 @@ void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
   while(!_queue.empty()) {
     if(auto idler = _idlers.steal(); idler) {
       (*idler)->ready = true;
+      (*idler)->cache = _queue.steal();
       (*idler)->cv.notify_one();
     }
-    else {
-      break;
-    }
+    else break;
   }
 } 
 

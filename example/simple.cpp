@@ -6,14 +6,7 @@
 #include <taskflow/taskflow.hpp>  // the only include you need
 #include <new>
 
-struct keep_apart {
-  alignas(64) std::atomic<int> cat;
-  alignas(64) std::atomic<int> dog;
-};
-
 int main(){
-
-  std::cout << sizeof(keep_apart);
 
   tf::Taskflow tf;
   

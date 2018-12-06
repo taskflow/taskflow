@@ -1,3 +1,5 @@
+// 2018/12/06 - this class is left for probation
+//
 // 2018/11/28 - modified by Chun-Xun Lin
 // 
 // Added the method batch to insert a vector of tasks.

@@ -241,7 +241,10 @@ void SpeculativeThreadpool<Closure>::emplace(ArgsT&&... args) {
 
 template <typename Closure>
 void SpeculativeThreadpool<Closure>::batch(std::vector<Closure>&& tasks){
-  size_t consumed {0};
+
+  if(tasks.empty()) {
+    return;
+  }
 
   //no worker thread available
   if(num_workers() == 0){
@@ -250,6 +253,8 @@ void SpeculativeThreadpool<Closure>::batch(std::vector<Closure>&& tasks){
     }
     return;
   }
+  
+  size_t consumed {0};
 
   // speculation
   if(std::this_thread::get_id() != _owner){
