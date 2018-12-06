@@ -34,12 +34,12 @@ matrix:
     # Linux clang++6.0
     - os: linux
       compiler: clang++
-      env:
-        - COMPILER=clang++-6.0
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
           packages: ['clang-6.0']
+      env:
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
 
 # install cmake 3.10
 before_install:
