@@ -1,3 +1,9 @@
+// 2018/12/08 modified by Tsung-Wei Huang
+//   - refactored the output format 
+//
+// 2018/12/07 modified by Tsung-Wei Huang
+//   - refactored the output format
+//
 // 2018/12/06 modified by Tsung-Wei Huang
 //   - added nested insertions test
 //
@@ -28,22 +34,21 @@
 #include <random>
 #include <numeric>
 #include <climits>
+#include <iomanip>
+
+constexpr int WIDTH = 12;
+
+using Closure = std::function<void()>;
 
 // Procedure: benchmark
-#define BENCHMARK(TITLE, F)                                                        \
-  std::cout << "========== " << TITLE << " ==========\n";                          \
-                                                                                   \
-  std::cout << "SimpleThreadpool       elapsed time: "                             \
-            << F<tf::SimpleThreadpool<std::function<void()>>>() << " ms\n";        \
-                                                                                   \
-  std::cout << "ProactiveThreadpool    elapsed time: "                             \
-            << F<tf::ProactiveThreadpool<std::function<void()>>>() << " ms\n";     \
-                                                                                   \
-  std::cout << "SpeculativeThreadpool  elapsed time: "                             \
-            << F<tf::SpeculativeThreadpool<std::function<void()>>>() << " ms\n";   \
-                                                                                   \
-  std::cout << "WorkStealingThreadpool elapsed time: "                             \
-            << F<tf::WorkStealingThreadpool<std::function<void()>>>() << " ms\n";  \
+#define BENCHMARK(TITLE, F)                                                     \
+std::cout                                                                       \
+  << std::setw(WIDTH) << TITLE << std::flush                                    \
+  << std::setw(WIDTH) << F<tf::SimpleThreadpool<Closure>>() << std::flush       \
+  << std::setw(WIDTH) << F<tf::ProactiveThreadpool<Closure>>() << std::flush    \
+  << std::setw(WIDTH) << F<tf::SpeculativeThreadpool<Closure>>() << std::flush  \
+  << std::setw(WIDTH) << F<tf::WorkStealingThreadpool<Closure>>() << std::flush \
+  << std::endl;
 
 // ============================================================================
 // Divide and conquer to solve max subarray sum problem
@@ -332,12 +337,19 @@ auto batch_insertions() {
 
 // Function: main
 int main(int argc, char* argv[]) {
+  
+  std::cout << std::setw(WIDTH) << "workload"
+            << std::setw(WIDTH) << "simple"
+            << std::setw(WIDTH) << "pro"
+            << std::setw(WIDTH) << "spec"
+            << std::setw(WIDTH) << "steal"
+            << std::endl;
 
-  BENCHMARK("Atomic Add", atomic_add);
-  BENCHMARK("Linear Insertions", linear_insertions);
-  BENCHMARK("Divide and Conquer", subsum);
-  BENCHMARK("Batch Insertions", batch_insertions);
-  BENCHMARK("Nested Insertions", nested_insertions);
+  BENCHMARK("Atomic", atomic_add);
+  BENCHMARK("Linear", linear_insertions);
+  BENCHMARK("D&Q", subsum);
+  BENCHMARK("Batch", batch_insertions);
+  BENCHMARK("Nested", nested_insertions);
   
   return 0;
 }

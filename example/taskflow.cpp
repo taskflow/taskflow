@@ -14,27 +14,20 @@
 #include <chrono>
 #include <random>
 #include <climits>
-  
-// Procedure: benchmark
-#define BENCHMARK(TITLE, F)                                             \
-  std::cout << "========== " << TITLE << " ==========\n";               \
-                                                                        \
-  std::cout << "Taskflow [simple executor       ]: "                    \
-            << F<tf::BasicTaskflow<tf::SimpleThreadpool>>()             \
-            << " ms\n";                                                 \
-                                                                        \
-  std::cout << "Taskflow [practive executor     ]: "                    \
-            << F<tf::BasicTaskflow<tf::ProactiveThreadpool>>()          \
-            << " ms\n";                                                 \
-                                                                        \
-  std::cout << "Taskflow [speculative executor  ]: "                    \
-            << F<tf::BasicTaskflow<tf::SpeculativeThreadpool>>()        \
-            << " ms\n";                                                 \
-                                                                        \
-  std::cout << "Taskflow [work stealing executor]: "                    \
-            << F<tf::BasicTaskflow<tf::WorkStealingThreadpool>>()       \
-            << " ms\n";                                                 \
+#include <iomanip>
 
+constexpr int WIDTH = 12;
+
+// Procedure: benchmark
+#define BENCHMARK(TITLE, F)                                                     \
+std::cout                                                                       \
+  << std::setw(WIDTH) << TITLE << std::flush                                    \
+  << std::setw(WIDTH) << F<tf::BasicTaskflow<tf::SimpleThreadpool>>() << std::flush \
+  << std::setw(WIDTH) << F<tf::BasicTaskflow<tf::ProactiveThreadpool>>() << std::flush    \
+  << std::setw(WIDTH) << F<tf::BasicTaskflow<tf::SpeculativeThreadpool>>() << std::flush  \
+  << std::setw(WIDTH) << F<tf::BasicTaskflow<tf::WorkStealingThreadpool>>() << std::flush \
+  << std::endl;
+  
 // ============================================================================
 // Dynamic Stem
 // ============================================================================
@@ -351,15 +344,22 @@ auto multiple_dispatches() {
 
 // Function: main
 int main(int argc, char* argv[]) {
+  
+  std::cout << std::setw(WIDTH) << "workload"
+            << std::setw(WIDTH) << "tf+simple"
+            << std::setw(WIDTH) << "tf+pro"
+            << std::setw(WIDTH) << "tf+spec"
+            << std::setw(WIDTH) << "tf+steal"
+            << std::endl;
 
-  BENCHMARK("Map Reduce", map_reduce);
-  BENCHMARK("Multiple Dispatches", multiple_dispatches);
-  BENCHMARK("Empty Jobs", empty_jobs);
-  BENCHMARK("Atomic Add", atomic_add);
-  BENCHMARK("Binary Tree", binary_tree);
-  BENCHMARK("Linear Graph", linear_graph);
-  BENCHMARK("Level Graph", level_graph);
-  BENCHMARK("Dynamic Stem", dynamic_stem);
+  BENCHMARK("map-reduce", map_reduce);
+  BENCHMARK("empty jobs", empty_jobs);
+  BENCHMARK("atomic add", atomic_add);
+  BENCHMARK("dispatches", multiple_dispatches);
+  BENCHMARK("b-tree", binary_tree);
+  BENCHMARK("linear", linear_graph);
+  BENCHMARK("dag", level_graph);
+  BENCHMARK("dynamic", dynamic_stem);
 
   
   return 0;
