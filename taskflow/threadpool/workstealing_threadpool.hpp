@@ -1,3 +1,8 @@
+// 2018/12/06- modified by Tsung-Wei Huang
+//   - refactored the code
+//   - added load balancing strategy
+//   - removed the storage alignment in WorkStealingQueue
+//
 // 2018/12/03 - created by Tsung-Wei Huang
 //   - added WorkStealingQueue class
 
@@ -234,7 +239,6 @@ class WorkStealingThreadpool {
     bool ready {false};
     uint64_t seed;
     unsigned last_victim;
-    unsigned last_partner;
   };
 
   public:
@@ -255,7 +259,7 @@ class WorkStealingThreadpool {
   private:
     
     const std::thread::id _owner {std::this_thread::get_id()};
-    const int load_balancing_factor {4};
+    const unsigned _load_balance_prob {61};
 
     mutable std::mutex _mutex;
 
@@ -340,7 +344,6 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
       std::optional<Closure> t;
       Worker& w = (_workers[i]);
       w.last_victim = (i + 1) % N;
-      w.last_partner = w.last_victim;
       w.seed = i + 1;
 
       std::unique_lock lock(_mutex, std::defer_lock);
@@ -414,19 +417,21 @@ void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
     return;
   }
         
-  auto n = _workers[me].queue.size();
-  auto p = _fast_modulo(_randomize(_workers[me].seed), n + 1); 
-  
-  // Load balancing with probability 1/(n+1)
-  if(p == n) {
+  //auto n = _workers[me].queue.size();
+  auto p = _fast_modulo(_randomize(_workers[me].seed), _load_balance_prob); 
+
+  // Load balancing 
+  if(p == 0) {
     // wake up my partner to help balance
-    std::scoped_lock lock(_mutex);
-    if(!_idlers.empty()) {
-      Worker* w = _idlers.back();
-      _idlers.pop_back();
-      w->ready = true;
-      w->cv.notify_one();
-      w->last_victim = me;
+    if(_mutex.try_lock()) {
+      if(!_idlers.empty()) {
+        Worker* w = _idlers.back();
+        _idlers.pop_back();
+        w->ready = true;
+        w->cv.notify_one();
+        w->last_victim = me;
+      }
+      _mutex.unlock();
     }
   }
 }
@@ -494,7 +499,6 @@ void WorkStealingThreadpool<Closure>::emplace(ArgsT&&... args){
       // bfs load balancing
       else {
         _workers[me].queue.push(Closure{std::forward<ArgsT>(args)...});
-        //_balance_load(me);
       }
       return;
     }
@@ -546,7 +550,6 @@ void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
 
       for(; i<tasks.size(); ++i) {
         _workers[me].queue.push(std::move(tasks[i]));
-        //_balance_load(me);
       }
 
       return;
