@@ -17,8 +17,8 @@ inline double **matrix {nullptr};
 
 // nominal operations
 inline double calc(double v0, double v1) {
-  //return (v0 == v1) ? std::pow(v0/v1, 4.0f) : std::max(v0,v1);
-  return std::max(v0, v1);
+  return (v0 == v1) ? std::pow(v0/v1, 4.0f) : std::max(v0,v1);
+  //return std::max(v0, v1);
 }
 
 // initialize the matrix
