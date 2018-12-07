@@ -1,3 +1,6 @@
+// 2018/12/06 modified by Tsung-Wei Huang
+//   - added nested insertions test
+//
 // 2018/12/04 modified by Tsung-Wei Huang
 //   - replace privatized threadpool with work stealing threadpool
 //   
@@ -21,6 +24,7 @@
 
 #include <taskflow/threadpool/threadpool.hpp>
 #include <chrono>
+#include <cmath>
 #include <random>
 #include <numeric>
 #include <climits>
@@ -215,6 +219,69 @@ auto atomic_add() {
 }
 
 // ============================================================================
+// skewed insertions
+// ============================================================================
+
+// Function: nested_insertions
+template <typename T>
+auto nested_insertions() {
+  
+  const int num_threads = std::thread::hardware_concurrency();
+  const int num_tasks = 32;
+  
+  auto beg = std::chrono::high_resolution_clock::now();
+
+  std::atomic<int64_t> counter(0);
+  
+  std::promise<void> promise;
+  auto future = promise.get_future();
+
+  auto increment = [&] () {
+    int64_t sum = 0;
+    for(int i=0; i<5; ++i) {
+      sum = (sum + 1)*num_tasks;
+    }
+    if(++counter == sum) {
+      promise.set_value();
+    }
+  };
+
+  T threadpool(num_threads);
+
+  threadpool.emplace([&] () {
+    std::this_thread::sleep_for(std::chrono::microseconds(100));
+    for(int i=0; i<num_tasks; ++i) {
+      increment();
+      threadpool.emplace([&] () {
+        for(int i=0; i<num_tasks; ++i) {
+          increment();
+          threadpool.emplace([&] () {
+            for(int i=0; i<num_tasks; ++i) {
+              increment();
+              threadpool.emplace([&] () {
+                for(int i=0; i<num_tasks; ++i) {
+                  increment();
+                  threadpool.emplace([&] () {
+                    for(int i=0; i<num_tasks; ++i) {
+                      increment();
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+  });
+
+  future.get(); 
+
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
+}
+
+// ============================================================================
 // batch insertion
 // ============================================================================
 
@@ -270,6 +337,7 @@ int main(int argc, char* argv[]) {
   BENCHMARK("Linear Insertions", linear_insertions);
   BENCHMARK("Divide and Conquer", subsum);
   BENCHMARK("Batch Insertions", batch_insertions);
+  BENCHMARK("Nested Insertions", nested_insertions);
   
   return 0;
 }
