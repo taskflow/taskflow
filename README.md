@@ -19,7 +19,7 @@ than existing parallel task programming libraries such as [OpenMP Tasking][OpenM
 
 Cpp-Taskflow enables you to implement efficient task decomposition strategies
 that incorporate both regular loop-based parallelism 
-and irregular compute patterns to optimize the cpu performance.
+and irregular compute patterns to optimize multicore performance.
 
 
 | Without Cpp-Taskflow | With Cpp-Taskflow |
