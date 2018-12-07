@@ -33,7 +33,7 @@ namespace tf {
 template <typename T>
 class WorkStealingQueue {
 
-  constexpr static int64_t cacheline_size = 64;
+  //constexpr static int64_t cacheline_size = 64;
 
   //using storage_type = std::aligned_storage_t<sizeof(T), cacheline_size>;
 
@@ -87,11 +87,11 @@ class WorkStealingQueue {
 
   };
 
-  alignas(cacheline_size) std::atomic<int64_t> _top;
-  alignas(cacheline_size) std::atomic<int64_t> _bottom;
-  alignas(cacheline_size) std::atomic<Array*> _array;
+  std::atomic<int64_t> _top;
+  std::atomic<int64_t> _bottom;
+  std::atomic<Array*> _array;
   std::vector<Array*> _garbage;
-  char _padding[cacheline_size];
+  //char _padding[cacheline_size];
 
   public:
 
@@ -230,6 +230,8 @@ int64_t WorkStealingQueue<T>::capacity() const noexcept {
 // Class: WorkStealingThreadpool
 template <typename Closure>
 class WorkStealingThreadpool {
+    
+  constexpr static unsigned _load_balance_prob {61};
 
   struct Worker {
     std::condition_variable cv;
@@ -259,7 +261,6 @@ class WorkStealingThreadpool {
   private:
     
     const std::thread::id _owner {std::this_thread::get_id()};
-    const unsigned _load_balance_prob {61};
 
     mutable std::mutex _mutex;
 
@@ -284,6 +285,7 @@ class WorkStealingThreadpool {
 // Constructor
 template <typename Closure>
 WorkStealingThreadpool<Closure>::WorkStealingThreadpool(unsigned N) : _workers {N} {
+  _worker_maps.reserve(N);
   _spawn(N);
 }
 
@@ -311,9 +313,9 @@ void WorkStealingThreadpool<Closure>::_shutdown(){
     t.join();
   } 
 
-  _threads.clear();  
-  _workers.clear();
-  _worker_maps.clear();
+  //_threads.clear();  
+  //_workers.clear();
+  //_worker_maps.clear();
 }
 
 // Function: _randomize
@@ -557,17 +559,18 @@ void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
   }
 
   std::scoped_lock lock(_mutex);
-  
-  for(auto& task : tasks) {
-    _queue.push(std::move(task));
-  }
-  
-  unsigned N = std::min(tasks.size(), _idlers.size());
 
-  for(unsigned i=0; i<N; ++i) {
+  size_t N = std::min(tasks.size(), _idlers.size());
+
+  for(size_t k=N; k<tasks.size(); ++k) {
+    _queue.push(std::move(tasks[k]));
+  }
+
+  for(size_t i=0; i<N; ++i) {
     Worker* w = _idlers.back();
     _idlers.pop_back();
     w->ready = true;
+    w->cache = std::move(tasks[i]);
     w->cv.notify_one();   
   }
 } 
