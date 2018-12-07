@@ -352,13 +352,13 @@ auto multiple_dispatches() {
 // Function: main
 int main(int argc, char* argv[]) {
 
+  BENCHMARK("Map Reduce", map_reduce);
   BENCHMARK("Multiple Dispatches", multiple_dispatches);
   BENCHMARK("Empty Jobs", empty_jobs);
   BENCHMARK("Atomic Add", atomic_add);
   BENCHMARK("Binary Tree", binary_tree);
   BENCHMARK("Linear Graph", linear_graph);
   BENCHMARK("Level Graph", level_graph);
-  BENCHMARK("Map Reduce", map_reduce);
   BENCHMARK("Dynamic Stem", dynamic_stem);
 
   

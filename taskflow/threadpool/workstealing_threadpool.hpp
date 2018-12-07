@@ -1,8 +1,3 @@
-// 2018/12/05 - modified by Tsung-Wei Huang
-//   - refactored the code
-//   - replaced idler storage with lock-free queue
-//   - added load balancing heuristics
-//
 // 2018/12/03 - created by Tsung-Wei Huang
 //   - added WorkStealingQueue class
 
@@ -35,25 +30,29 @@ class WorkStealingQueue {
 
   constexpr static int64_t cacheline_size = 64;
 
-  using storage_type = std::aligned_storage_t<sizeof(T), cacheline_size>;
+  //using storage_type = std::aligned_storage_t<sizeof(T), cacheline_size>;
 
   struct Array {
 
     int64_t C;
-    storage_type* S;
+    int64_t M;
+    //storage_type* S;
+    T* S;
 
     Array(int64_t c) : 
       C {c},
-      S {new storage_type[C]} {
-      for(int64_t i=0; i<C; ++i) {
-        ::new (std::addressof(S[i])) T();
-      }
+      M {c-1},
+      //S {new storage_type[C]} {
+      S {new T[C]} {
+      //for(int64_t i=0; i<C; ++i) {
+      //  ::new (std::addressof(S[i])) T();
+      //}
     }
 
     ~Array() {
-      for(int64_t i=0; i<C; ++i) {
-        reinterpret_cast<T*>(std::addressof(S[i]))->~T();
-      }
+      //for(int64_t i=0; i<C; ++i) {
+      //  reinterpret_cast<T*>(std::addressof(S[i]))->~T();
+      //}
       delete [] S;
     }
 
@@ -63,12 +62,14 @@ class WorkStealingQueue {
     
     template <typename O>
     void push(int64_t i, O&& o) noexcept {
-      T* ptr = reinterpret_cast<T*>(std::addressof(S[i & (C-1)]));
-      *ptr = std::forward<O>(o); 
+      //T* ptr = reinterpret_cast<T*>(std::addressof(S[i & M]));
+      //*ptr = std::forward<O>(o); 
+      S[i & M] = std::forward<O>(o);
     }
 
     T pop(int64_t i) noexcept {
-      return *reinterpret_cast<T*>(std::addressof(S[i & (C-1)]));
+      //return *reinterpret_cast<T*>(std::addressof(S[i & M]));
+      return S[i & M];
     }
 
     Array* resize(int64_t b, int64_t t) {
@@ -85,6 +86,7 @@ class WorkStealingQueue {
   alignas(cacheline_size) std::atomic<int64_t> _bottom;
   alignas(cacheline_size) std::atomic<Array*> _array;
   std::vector<Array*> _garbage;
+  char _padding[cacheline_size];
 
   public:
 
@@ -231,7 +233,8 @@ class WorkStealingThreadpool {
     bool exit  {false};
     bool ready {false};
     uint64_t seed;
-    unsigned victim_hint;
+    unsigned last_victim;
+    unsigned last_partner;
   };
 
   public:
@@ -251,24 +254,23 @@ class WorkStealingThreadpool {
 
   private:
     
-    const std::thread::id _owner  {std::this_thread::get_id()};
+    const std::thread::id _owner {std::this_thread::get_id()};
     const int load_balancing_factor {4};
 
     mutable std::mutex _mutex;
 
     std::vector<Worker> _workers;
+    std::vector<Worker*> _idlers;
     std::vector<std::thread> _threads;
 
-    std::unordered_map<std::thread::id, unsigned> _worker_maps;
+    std::unordered_map<std::thread::id, size_t> _worker_maps;
 
-    WorkStealingQueue<Worker*> _idlers;
     WorkStealingQueue<Closure> _queue;
 
     void _spawn(unsigned);
     void _shutdown();
     void _balance_load(unsigned);
-    
-    unsigned _next_power_of_2(unsigned) const;
+
     unsigned _randomize(uint64_t&) const;
     unsigned _fast_modulo(uint32_t, uint32_t) const;
 
@@ -277,9 +279,7 @@ class WorkStealingThreadpool {
 
 // Constructor
 template <typename Closure>
-WorkStealingThreadpool<Closure>::WorkStealingThreadpool(unsigned N) : 
-  _workers {N},
-  _idlers  {_next_power_of_2(std::max(2u, N))} {
+WorkStealingThreadpool<Closure>::WorkStealingThreadpool(unsigned N) : _workers {N} {
   _spawn(N);
 }
 
@@ -293,6 +293,8 @@ WorkStealingThreadpool<Closure>::~WorkStealingThreadpool() {
 template <typename Closure>
 void WorkStealingThreadpool<Closure>::_shutdown(){
 
+  assert(is_owner());
+
   {
     std::scoped_lock lock(_mutex);
     for(auto& w : _workers){
@@ -304,36 +306,25 @@ void WorkStealingThreadpool<Closure>::_shutdown(){
   for(auto& t : _threads){
     t.join();
   } 
+
+  _threads.clear();  
+  _workers.clear();
+  _worker_maps.clear();
 }
 
 // Function: _randomize
-// Generate the random output (using the PCG-XSH-RS scheme)
 template <typename Closure>
 unsigned WorkStealingThreadpool<Closure>::_randomize(uint64_t& state) const {
   uint64_t current = state;
   state = current * 6364136223846793005ULL + 0xda3e39cb94b95bdbULL;
+  // Generate the random output (using the PCG-XSH-RS scheme)
   return static_cast<unsigned>((current ^ (current >> 22)) >> (22 + (current >> 61)));
 }
 
-// Function: _fast_modulo
-// Perfrom fast modulo operation (might be biased but it's ok for our heuristics)
 // http://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
 template <typename Closure>
 unsigned WorkStealingThreadpool<Closure>::_fast_modulo(uint32_t x, uint32_t N) const {
   return ((uint64_t) x * (uint64_t) N) >> 32;
-}
-
-// Function: _next_power_of_2
-template <typename Closure>
-unsigned WorkStealingThreadpool<Closure>::_next_power_of_2(unsigned n) const {
-  n--;
-  n |= n >> 1;
-  n |= n >> 2;
-  n |= n >> 4;
-  n |= n >> 8;
-  n |= n >> 16;
-  n++;
-  return n;
 }
 
 // Procedure: _spawn
@@ -348,7 +339,8 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
 
       std::optional<Closure> t;
       Worker& w = (_workers[i]);
-      w.victim_hint = (i + 1) % N;
+      w.last_victim = (i + 1) % N;
+      w.last_partner = w.last_victim;
       w.seed = i + 1;
 
       std::unique_lock lock(_mutex, std::defer_lock);
@@ -366,7 +358,7 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
           lock.lock();
           if(_queue.empty()) {
             w.ready = false;
-            _idlers.push(&w);
+            _idlers.push_back(&w);
             while(!w.ready && !w.exit) {
               w.cv.wait(lock);
             }
@@ -381,13 +373,17 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
         while(t) {
           (*t)();
           if(w.cache) {
-            t = std::move(*w.cache);
+            t = std::move(w.cache);
             w.cache = std::nullopt;
           }
           else {
-            t = w.queue.pop();
+            t = std::nullopt;
           }
         }
+
+        // balance load
+        _balance_load(i);
+
       } // End of while ------------------------------------------------------ 
 
     });     
@@ -408,24 +404,33 @@ size_t WorkStealingThreadpool<Closure>::num_workers() const {
   return _threads.size();  
 }
 
-// Procedure: balance_load
+// Procedure: _balance_load
 template <typename Closure>
 void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
 
-  int factor = load_balancing_factor;
+  // return if no idler - this might not be the right value
+  // but it doesn't affect the correctness
+  if(_idlers.empty()) {
+    return;
+  }
+        
+  auto n = _workers[me].queue.size();
+  auto p = _fast_modulo(_randomize(_workers[me].seed), n + 1); 
   
-  while(_workers[me].queue.size() > factor) {
-    if(auto idler = _idlers.steal(); idler) {
-      (*idler)->ready = true;
-      (*idler)->victim_hint = me;
-      (*idler)->cache = _workers[me].queue.steal();
-      (*idler)->cv.notify_one();
-      factor += load_balancing_factor;
+  // Load balancing with probability 1/(n+1)
+  if(p == n) {
+    // wake up my partner to help balance
+    std::scoped_lock lock(_mutex);
+    if(!_idlers.empty()) {
+      Worker* w = _idlers.back();
+      _idlers.pop_back();
+      w->ready = true;
+      w->cv.notify_one();
+      w->last_victim = me;
     }
-    else break;
   }
 }
-  
+
 // Function: _steal
 template <typename Closure>
 std::optional<Closure> WorkStealingThreadpool<Closure>::_steal(unsigned thief) {
@@ -440,19 +445,18 @@ std::optional<Closure> WorkStealingThreadpool<Closure>::_steal(unsigned thief) {
     }
 
     // try stealing a task from other workers
-    unsigned victim = _workers[thief].victim_hint;
+    unsigned victim = _workers[thief].last_victim;
 
     for(unsigned i=0; i<_workers.size(); i++){
 
       if(victim != thief) {
         if(task = _workers[victim].queue.steal(); task){
-          _workers[thief].victim_hint = victim;
+          _workers[thief].last_victim = victim;
           return task;
         }
       }
 
-      victim += 1;
-      if(victim == _workers.size()){
+      if(++victim; victim == _workers.size()){
         victim = 0;
       }
     }
@@ -483,28 +487,30 @@ void WorkStealingThreadpool<Closure>::emplace(ArgsT&&... args){
 
       unsigned me = itr->second;
 
-      if(_workers[me].cache) {
-        _workers[me].queue.push(Closure{std::forward<ArgsT>(args)...});
-      }
-      else {
+      // dfs speculation
+      if(!_workers[me].cache){
         _workers[me].cache.emplace(std::forward<ArgsT>(args)...);
       }
-      
-      // load balancing
-      _balance_load(me);
-      
+      // bfs load balancing
+      else {
+        _workers[me].queue.push(Closure{std::forward<ArgsT>(args)...});
+        //_balance_load(me);
+      }
       return;
     }
   }
 
-  if(auto idler = _idlers.steal(); idler) {
-    (*idler)->ready = true;
-    (*idler)->cache.emplace(std::forward<ArgsT>(args)...);
-    (*idler)->cv.notify_one(); 
-  }
-  else {
-    std::scoped_lock lock(_mutex);
+  std::scoped_lock lock(_mutex);
+  
+  if(_idlers.empty()){
     _queue.push(Closure{std::forward<ArgsT>(args)...});
+  } 
+  else{
+    Worker* w = _idlers.back();
+    _idlers.pop_back();
+    w->ready = true;
+    w->cache.emplace(std::forward<ArgsT>(args)...);
+    w->cv.notify_one();   
   }
 }
 
@@ -531,7 +537,7 @@ void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
     if(auto itr = _worker_maps.find(tid); itr != _worker_maps.end()){
 
       unsigned me = itr->second;
-      
+
       size_t i = 0;
 
       if(!_workers[me].cache) {
@@ -540,30 +546,26 @@ void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
 
       for(; i<tasks.size(); ++i) {
         _workers[me].queue.push(std::move(tasks[i]));
+        //_balance_load(me);
       }
-      
-      // load balancing 
-      _balance_load(me);
 
       return;
     }
   }
-  
-  {
-    std::scoped_lock lock(_mutex);
-    
-    for(auto& task : tasks) {
-      _queue.push(std::move(task));
-    }
-  }
 
-  while(!_queue.empty()) {
-    if(auto idler = _idlers.steal(); idler) {
-      (*idler)->ready = true;
-      (*idler)->cache = _queue.steal();
-      (*idler)->cv.notify_one();
-    }
-    else break;
+  std::scoped_lock lock(_mutex);
+  
+  for(auto& task : tasks) {
+    _queue.push(std::move(task));
+  }
+  
+  unsigned N = std::min(tasks.size(), _idlers.size());
+
+  for(unsigned i=0; i<N; ++i) {
+    Worker* w = _idlers.back();
+    _idlers.pop_back();
+    w->ready = true;
+    w->cv.notify_one();   
   }
 } 
 
