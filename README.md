@@ -789,6 +789,7 @@ that incorporate complex task dependencies.
 - [OpenTimer][OpenTimer]: A High-performance Timing Analysis Tool for Very Large Scale Integration (VLSI) Systems
 - [DtCraft][DtCraft]: A General-purpose Distributed Programming Systems using Data-parallel Streams
 - [Firestorm][Firestorm]: Fighting Game Engine with Asynchronous Resource Loaders (developed by [ForgeMistress][ForgeMistress])
+- [Shiva][Shiva]: An extensible engine via an entity component system through scripts, DLLs, and header-only (C++)
 
 Please [let me know][email me] if I forgot your project!
 
@@ -858,6 +859,8 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [std::future]:           https://en.cppreference.com/w/cpp/thread/future
 
 [Firestorm]:             https://github.com/ForgeMistress/Firestorm
+[Shiva]:                 https://shiva.gitbook.io/project/shiva
+
 [Presentation]:          https://cpp-taskflow.github.io/
 
 
