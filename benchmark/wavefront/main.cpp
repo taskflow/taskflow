@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
             << std::setw(12) << "Taskflow"
             << '\n';
   
-  for(int S=1; S<=4097; S += 128) {
+  for(int S=128; S<=4096; S += 128) {
 
     M = N = S;
     B = 8;
@@ -37,9 +37,9 @@ int main(int argc, char* argv[]) {
     destroy_matrix();
     
     std::cout << std::setw(12) << MB*NB
-              << std::setw(12) << omp_time / rounds / 1000.0
-              << std::setw(12) << tbb_time / rounds / 1000.0
-              << std::setw(12) << tf_time  / rounds / 1000.0
+              << std::setw(12) << omp_time / rounds / 1e6 
+              << std::setw(12) << tbb_time / rounds / 1e6 
+              << std::setw(12) << tf_time  / rounds / 1e6 
               << std::endl;
   }
 

@@ -35,9 +35,9 @@ int main(int argc, char* argv[]) {
     }
 
     std::cout << std::setw(12) << graph.graph_size() 
-              << std::setw(12) << omp_time / rounds / 1000.0
-              << std::setw(12) << tbb_time / rounds / 1000.0
-              << std::setw(12) << tf_time  / rounds / 1000.0
+              << std::setw(12) << omp_time / rounds / 1e6
+              << std::setw(12) << tbb_time / rounds / 1e6
+              << std::setw(12) << tf_time  / rounds / 1e6
               << std::endl;
   }
 }
