@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
             << std::setw(12) << "Taskflow"
             << '\n';
   
-  for(int S=32; S<=4096; S += 32) {
+  for(int S=1; S<=4097; S += 128) {
 
     M = N = S;
     B = 8;

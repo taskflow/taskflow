@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
             << std::setw(12) << "Taskflow"
             << std::endl;
 
-  for(int i=1; i<=401; i += 10) {
+  for(int i=1; i<=451; i += 15) {
 
     LevelGraph graph(i, i);
     
