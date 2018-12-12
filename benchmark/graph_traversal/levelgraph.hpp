@@ -203,9 +203,9 @@ class LevelGraph {
 
 };
 
-std::chrono::microseconds measure_time_taskflow(LevelGraph&);
-std::chrono::microseconds measure_time_omp(LevelGraph&);
-std::chrono::microseconds measure_time_tbb(LevelGraph&);
+std::chrono::microseconds measure_time_taskflow(LevelGraph&, unsigned);
+std::chrono::microseconds measure_time_omp(LevelGraph&, unsigned);
+std::chrono::microseconds measure_time_tbb(LevelGraph&, unsigned);
 
 
 

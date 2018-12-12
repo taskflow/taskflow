@@ -2,9 +2,9 @@
 #include <taskflow/taskflow.hpp> 
 
 // wavefront computing
-void wavefront_taskflow() {
+void wavefront_taskflow(unsigned num_threads) {
 
-  tf::Taskflow tf;
+  tf::Taskflow tf{num_threads};
 
   std::vector<std::vector<tf::Task>> node(MB);
 
@@ -22,17 +22,18 @@ void wavefront_taskflow() {
           block_computation(i, j);
         }
       );
-      if(j+1 < NB) node[i][j].precede(node[i][j+1]);
+
       if(i+1 < MB) node[i][j].precede(node[i+1][j]);
+      if(j+1 < NB) node[i][j].precede(node[i][j+1]);
     }
   }
 
   tf.wait_for_all();
 }
 
-std::chrono::microseconds measure_time_taskflow() {
+std::chrono::microseconds measure_time_taskflow(unsigned num_threads) {
   auto beg = std::chrono::high_resolution_clock::now();
-  wavefront_taskflow();
+  wavefront_taskflow(num_threads);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg);
 }

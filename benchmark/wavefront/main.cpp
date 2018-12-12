@@ -1,6 +1,12 @@
 #include "matrix.hpp"
 
-int main() {
+int main(int argc, char* argv[]) {
+
+  unsigned num_threads = std::thread::hardware_concurrency();
+
+  if(argc > 1) {
+    num_threads = std::atoi(argv[1]);
+  }
 
   double omp_time {0.0};
   double tbb_time {0.0};
@@ -23,9 +29,9 @@ int main() {
     init_matrix();
 
     for(int j=0; j<rounds; ++j) {
-      omp_time += measure_time_omp().count();
-      tbb_time += measure_time_tbb().count();
-      tf_time  += measure_time_taskflow().count();
+      omp_time += measure_time_omp(num_threads).count();
+      tbb_time += measure_time_tbb(num_threads).count();
+      tf_time  += measure_time_taskflow(num_threads).count();
     }
 
     destroy_matrix();

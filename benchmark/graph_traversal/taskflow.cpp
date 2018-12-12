@@ -6,7 +6,7 @@
 
 struct TF {
   
-  TF(LevelGraph& graph) {
+  TF(LevelGraph& graph, unsigned num_threads) : tf {num_threads} {
 
     tasks.resize(graph.level()); 
     for(size_t i=0; i<tasks.size(); ++i) {
@@ -38,14 +38,14 @@ struct TF {
 
 };
 
-void traverse_level_graph_taskflow(LevelGraph& graph){
-  TF tf(graph);
+void traverse_level_graph_taskflow(LevelGraph& graph, unsigned num_threads){
+  TF tf(graph, num_threads);
   tf.run();
 }
 
-std::chrono::microseconds measure_time_taskflow(LevelGraph& graph){
+std::chrono::microseconds measure_time_taskflow(LevelGraph& graph, unsigned num_threads){
   auto beg = std::chrono::high_resolution_clock::now();
-  traverse_level_graph_taskflow(graph);
+  traverse_level_graph_taskflow(graph, num_threads);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

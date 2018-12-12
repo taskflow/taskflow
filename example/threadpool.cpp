@@ -337,7 +337,7 @@ auto batch_insertions() {
 
 // Function: main
 int main(int argc, char* argv[]) {
-  
+
   std::cout << std::setw(WIDTH) << "workload"
             << std::setw(WIDTH) << "simple"
             << std::setw(WIDTH) << "pro"

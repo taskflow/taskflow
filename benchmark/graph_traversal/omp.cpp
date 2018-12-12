@@ -4,9 +4,9 @@
 
 #include "levelgraph.hpp"
 
-void traverse_regular_graph_omp(LevelGraph& graph){
+void traverse_regular_graph_omp(LevelGraph& graph, unsigned num_threads){
 
-  omp_set_num_threads(std::thread::hardware_concurrency());
+  omp_set_num_threads(num_threads);
   
   #pragma omp parallel
   {
@@ -262,9 +262,9 @@ void traverse_regular_graph_omp(LevelGraph& graph){
   }  
 }
 
-std::chrono::microseconds measure_time_omp(LevelGraph& graph){
+std::chrono::microseconds measure_time_omp(LevelGraph& graph, unsigned num_threads){
   auto beg = std::chrono::high_resolution_clock::now();
-  traverse_regular_graph_omp(graph);
+  traverse_regular_graph_omp(graph, num_threads);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

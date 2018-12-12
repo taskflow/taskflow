@@ -11,9 +11,9 @@ using namespace tbb::flow;
 
 struct TBB {
   
-  TBB(LevelGraph& graph) {
+  TBB(LevelGraph& graph, unsigned num_threads) {
 
-    tbb::task_scheduler_init init(std::thread::hardware_concurrency());
+    tbb::task_scheduler_init init(num_threads);
 
     tasks.resize(graph.level()); 
     for(size_t i=0; i<tasks.size(); ++i) {
@@ -60,14 +60,14 @@ struct TBB {
   std::unique_ptr<continue_node<continue_msg>> source;
 };
 
-void traverse_regular_graph_tbb(LevelGraph& graph){
-  TBB tbb(graph);
+void traverse_regular_graph_tbb(LevelGraph& graph, unsigned num_threads){
+  TBB tbb(graph, num_threads);
   tbb.run();
 }
 
-std::chrono::microseconds measure_time_tbb(LevelGraph& graph){
+std::chrono::microseconds measure_time_tbb(LevelGraph& graph, unsigned num_threads){
   auto beg = std::chrono::high_resolution_clock::now();
-  traverse_regular_graph_tbb(graph);
+  traverse_regular_graph_tbb(graph, num_threads);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

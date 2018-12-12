@@ -5,7 +5,7 @@
 int **D {nullptr};
 
 // wavefront computation
-void wavefront_omp() {
+void wavefront_omp(unsigned num_threads) {
   
   // set up the dependency matrix
   D = new int *[MB];
@@ -16,7 +16,7 @@ void wavefront_omp() {
     }
   }
   
-  omp_set_num_threads(std::thread::hardware_concurrency());
+  omp_set_num_threads(num_threads);
 
   #pragma omp parallel
   {
@@ -73,9 +73,9 @@ void wavefront_omp() {
   delete [] D;
 }
 
-std::chrono::microseconds measure_time_omp() {
+std::chrono::microseconds measure_time_omp(unsigned num_threads) {
   auto beg = std::chrono::high_resolution_clock::now();
-  wavefront_omp();
+  wavefront_omp(num_threads);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg);
 }

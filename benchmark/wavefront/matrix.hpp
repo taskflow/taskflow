@@ -17,8 +17,8 @@ inline double **matrix {nullptr};
 
 // nominal operations
 inline double calc(double v0, double v1) {
-  return (v0 == v1) ? std::pow(v0/v1, 4.0f) : std::max(v0,v1);
-  //return std::max(v0, v1);
+  //return (v0 == v1) ? std::pow(v0/v1, 4.0f) : std::max(v0,v1);
+  return std::max(v0, v1);
 }
 
 // initialize the matrix
@@ -56,8 +56,8 @@ inline void block_computation(int i, int j){
 }
 
 
-std::chrono::microseconds measure_time_taskflow();
-std::chrono::microseconds measure_time_omp();
-std::chrono::microseconds measure_time_tbb();
+std::chrono::microseconds measure_time_taskflow(unsigned);
+std::chrono::microseconds measure_time_omp(unsigned);
+std::chrono::microseconds measure_time_tbb(unsigned);
 
 

@@ -3,12 +3,12 @@
 #include <tbb/flow_graph.h>
 
 // the wavefront computation
-void wavefront_tbb() {
+void wavefront_tbb(unsigned num_threads) {
 
   using namespace tbb;
   using namespace tbb::flow;
   
-  tbb::task_scheduler_init init(std::thread::hardware_concurrency());
+  tbb::task_scheduler_init init(num_threads);
     
   continue_node<continue_msg> ***node = new continue_node<continue_msg> **[MB];
 
@@ -42,9 +42,9 @@ void wavefront_tbb() {
   }
 }
 
-std::chrono::microseconds measure_time_tbb() {
+std::chrono::microseconds measure_time_tbb(unsigned num_threads) {
   auto beg = std::chrono::high_resolution_clock::now();
-  wavefront_tbb();
+  wavefront_tbb(num_threads);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg);
 }
