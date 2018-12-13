@@ -23,8 +23,8 @@ void wavefront_taskflow(unsigned num_threads) {
         }
       );
 
-      if(i+1 < MB) node[i][j].precede(node[i+1][j]);
       if(j+1 < NB) node[i][j].precede(node[i][j+1]);
+      if(i+1 < MB) node[i][j].precede(node[i+1][j]);
     }
   }
 

@@ -17,6 +17,8 @@ int main(int argc, char* argv[]) {
             << std::setw(12) << "OpenMP"
             << std::setw(12) << "TBB"
             << std::setw(12) << "Taskflow"
+            << std::setw(12) << "speedup1"
+            << std::setw(12) << "speedup2"
             << '\n';
   
   for(int S=128; S<=4096; S += 128) {
@@ -40,6 +42,8 @@ int main(int argc, char* argv[]) {
               << std::setw(12) << omp_time / rounds / 1e6 
               << std::setw(12) << tbb_time / rounds / 1e6 
               << std::setw(12) << tf_time  / rounds / 1e6 
+              << std::setw(12) << omp_time / tf_time
+              << std::setw(12) << tbb_time / tf_time
               << std::endl;
   }
 

@@ -17,8 +17,8 @@ inline double **matrix {nullptr};
 
 // nominal operations
 inline double calc(double v0, double v1) {
-  //return (v0 == v1) ? std::pow(v0/v1, 4.0f) : std::max(v0,v1);
-  return std::max(v0, v1);
+  return (v0 == v1) ? std::pow(v0/v1, 4.0f) : std::max(v0,v1);
+  //return std::max(v0, v1);
 }
 
 // initialize the matrix
@@ -41,8 +41,8 @@ inline void destroy_matrix() {
 }
 
 //computation given block row index i, block col index j
-inline void block_computation(int i, int j){
-  return;
+inline int block_computation(int i, int j){
+  return i + j;
   //int start_i = i*B;
   //int end_i = (i*B+B > M) ? M : i*B+B;
   //int start_j = j*B;
