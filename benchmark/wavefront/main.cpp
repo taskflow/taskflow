@@ -8,9 +8,6 @@ int main(int argc, char* argv[]) {
     num_threads = std::atoi(argv[1]);
   }
 
-  double omp_time {0.0};
-  double tbb_time {0.0};
-  double tf_time  {0.0};
   int rounds {5};
 
   std::cout << std::setw(12) << "# blocks"
@@ -21,12 +18,16 @@ int main(int argc, char* argv[]) {
             << std::setw(12) << "speedup2"
             << '\n';
   
-  for(int S=128; S<=4096; S += 128) {
+  for(int S=1; S<=4096; S += 128) {
 
     M = N = S;
     B = 8;
     MB = (M/B) + (M%B>0);
     NB = (N/B) + (N%B>0);
+  
+    double omp_time {0.0};
+    double tbb_time {0.0};
+    double tf_time  {0.0};
 
     init_matrix();
 
@@ -39,9 +40,9 @@ int main(int argc, char* argv[]) {
     destroy_matrix();
     
     std::cout << std::setw(12) << MB*NB
-              << std::setw(12) << omp_time / rounds / 1e6 
-              << std::setw(12) << tbb_time / rounds / 1e6 
-              << std::setw(12) << tf_time  / rounds / 1e6 
+              << std::setw(12) << omp_time / rounds / 1e3
+              << std::setw(12) << tbb_time / rounds / 1e3 
+              << std::setw(12) << tf_time  / rounds / 1e3 
               << std::setw(12) << omp_time / tf_time
               << std::setw(12) << tbb_time / tf_time
               << std::endl;
