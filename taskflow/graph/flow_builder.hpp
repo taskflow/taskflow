@@ -29,6 +29,13 @@ class FlowBuilder {
     template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>* = nullptr>
     auto parallel_for(T&, C&&, size_t = 0);
 
+    template <
+      typename I, 
+      typename C, 
+      std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr
+    >
+    auto parallel_for(I, I, I, C&&, size_t = 0);
+
     template <typename I, typename T, typename B>
     auto reduce(I, I, T&, B&&);
 
@@ -118,7 +125,6 @@ auto FlowBuilder::silent_emplace(C&&... cs) {
   return std::make_tuple(silent_emplace(std::forward<C>(cs))...);
 }
 
-
 // Function: parallel_for    
 template <typename I, typename C>
 auto FlowBuilder::parallel_for(I beg, I end, C&& c, size_t g) {
@@ -166,6 +172,47 @@ auto FlowBuilder::parallel_for(I beg, I end, C&& c, size_t g) {
 template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>*>
 auto FlowBuilder::parallel_for(T& t, C&& c, size_t group) {
   return parallel_for(t.begin(), t.end(), std::forward<C>(c), group);
+}
+
+// Function: parallel_for
+template <
+  typename I, 
+  typename C, 
+  std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr
+>
+auto FlowBuilder::parallel_for(I beg, I end, I step, C&& c, size_t g) {
+
+  if(g == 0) {
+    auto N = (end - beg + step - 1) / step;
+    auto w = std::max(unsigned{1}, std::thread::hardware_concurrency());
+    g = (N + w - 1) / w;
+  }
+
+  auto source = placeholder();
+  auto target = placeholder();
+
+  std::cout << "g is " << g << std::endl;
+  
+  while(beg < end) {
+
+    auto e = beg + static_cast<I>(g) * step;
+
+    std::cout << beg << " " << e << std::endl;
+    
+    // Create a task
+    auto task = silent_emplace([beg, e, step, c] () mutable {
+      for(auto i=beg; i<e; i+=step) {
+        c(i);
+      }
+    });
+    source.precede(task);
+    task.precede(target);
+
+    // adjust the pointer
+    beg = e;
+  }
+
+  return std::make_pair(source, target); 
 }
 
 // Function: reduce_min
