@@ -386,19 +386,18 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
     REQUIRE_THROWS(tf.parallel_for(0.0, 10.0, -1.0, [] (auto) {}));
     REQUIRE_THROWS(tf.parallel_for(10.0, 0.0, 0.0, [] (auto) {}));
     REQUIRE_THROWS(tf.parallel_for(10.0, 0.0, 1.0, [] (auto) {}));
+    REQUIRE_THROWS(tf.parallel_for(0, 0, 0, [] (auto) {}));
+    REQUIRE_THROWS(tf.parallel_for(0u, 0u, 0u, [] (auto) {}));
+    REQUIRE_THROWS(tf.parallel_for(0.0, 0.0, 0.0, [] (auto) {}));
     
     // graceful case
     REQUIRE_NOTHROW(tf.parallel_for(0, 0, -1, [] (auto) {}));
     REQUIRE_NOTHROW(tf.parallel_for(0, 0, 1, [] (auto) {}));
-    REQUIRE_NOTHROW(tf.parallel_for(0, 0, 0, [] (auto) {}));
     REQUIRE_NOTHROW(tf.parallel_for(0u, 0u, 1u, [] (auto) {}));
-    REQUIRE_NOTHROW(tf.parallel_for(0u, 0u, 0u, [] (auto) {}));
     REQUIRE_NOTHROW(tf.parallel_for(0.0f, 0.0f, -1.0f, [] (auto) {}));
     REQUIRE_NOTHROW(tf.parallel_for(0.0f, 0.0f, 1.0f, [] (auto) {}));
-    REQUIRE_NOTHROW(tf.parallel_for(0.0f, 0.0f, 0.0f, [] (auto) {}));
     REQUIRE_NOTHROW(tf.parallel_for(0.0, 0.0, -1.0, [] (auto) {}));
     REQUIRE_NOTHROW(tf.parallel_for(0.0, 0.0, 1.0, [] (auto) {}));
-    REQUIRE_NOTHROW(tf.parallel_for(0.0, 0.0, 0.0, [] (auto) {}));
   };
 
   auto positive_integer_step = [] (unsigned num_workers) {

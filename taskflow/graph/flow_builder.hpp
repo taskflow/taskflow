@@ -183,7 +183,7 @@ auto FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t g) {
 
   using T = std::decay_t<I>;
 
-  if((s == 0 && beg != end) || (beg < end && s <= 0) || (beg > end && s >=0) ) {
+  if((s == 0) || (beg < end && s <= 0) || (beg > end && s >=0) ) {
     TF_THROW(Error::FLOW_BUILDER, 
       "invalid range [", beg, ", ", end, ") with step size ", s
     );
