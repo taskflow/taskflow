@@ -12,6 +12,7 @@ struct Error : public std::error_category {
 
   enum Code : int {
     SUCCESS = 0,
+    FLOW_BUILDER,
     EXECUTOR
   };
 
@@ -37,6 +38,10 @@ inline std::string Error::message(int code) const {
   switch(auto ec = static_cast<Error::Code>(code); ec) {
     case SUCCESS:
       return "success";
+    break;
+
+    case FLOW_BUILDER:
+      return "flow builder error";
     break;
 
     case EXECUTOR:

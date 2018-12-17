@@ -479,6 +479,7 @@ Visit [documentation][wiki] to see the complete list.
 | placeholder     | none        | task         | insert a node without any work; work can be assigned later |
 | linearize       | task list   | none         | create a linear dependency in the given task list |
 | parallel_for    | beg, end, callable, group | task pair | apply the callable in parallel and group-by-group to the result of dereferencing every iterator in the range | 
+| parallel_for    | beg, end, step, callable, group | task pair | apply the callable in parallel and group-by-group to a index-based range | 
 | reduce | beg, end, res, bop | task pair | reduce a range of elements to a single result through a binary operator | 
 | transform_reduce | beg, end, res, bop, uop | task pair | apply a unary operator to each element in the range and reduce them to a single result through a binary operator | 
 | dispatch        | none        | future | dispatch the current graph and return a shared future to block on completion |
@@ -569,12 +570,42 @@ auto [S, T] = tf.parallel_for(
   [] (int i) { 
     std::cout << "AB and CD run in parallel" << '\n';
   },
-  2  // group to execute two tasks at a time
+  2  // group two tasks at a time
 );
 ```
 
 By default, taskflow performs an even partition over worker threads
-if the group size is not specified.
+if the group size is not specified (or equal to 0).
+
+In addition to range-based iterator, parallel\_for has another overload on an index-based loop.
+The first three argument to this overload indicates 
+starting index, ending index (exclusive), and step size.
+
+```cpp
+// [0, 10) with a step size of 2
+auto [S, T] = tf.parallel_for(
+  0, 10, 2, 
+  [] (int i) {
+    std::cout << "parallel_for on index " << i << std::endl;
+  }, 
+  2  // group two tasks at a time
+);
+// will print 0, 2, 4, 6, 8 (three groups, {0, 2}, {4, 6}, {8})
+```
+
+You can also go opposite direction by reversing the starting index and the ending index
+with a negative step size.
+
+```cpp
+// [10, 0) with a step size of -2
+auto [S, T] = tf.parallel_for(
+  10, 0, 2, 
+  [] (int i) {
+    std::cout << "parallel_for on index " << i << std::endl;
+  }
+);
+// will print 10, 8, 6, 4, 2 (group size decided by taskflow)
+```
 
 ### *reduce/transform_reduce*
 

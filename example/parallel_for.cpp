@@ -2,43 +2,28 @@
 #include <cassert>
 #include <numeric>
 
-// Function: fib
-int fib(int n) {
-  if(n <= 2) return n;
-  return (fib(n-1) + fib(n-2))%1024;
-}
-
-// ----------------------------------------------------------------------------
-
-// Procedure: sequential
-void sequential(int N) {
-  auto tbeg = std::chrono::steady_clock::now();
-  for(int i=0; i<N; ++i) {
-    printf("fib[%d]=%d\n", i, fib(i));
-  }
-  auto tend = std::chrono::steady_clock::now();
-  std::cout << "sequential version takes " 
-            << std::chrono::duration_cast<std::chrono::milliseconds>(tend-tbeg).count() 
-            << " ms\n";
-}
-
-// Procedure: taskflow
-void taskflow(int N) {
+// Procedure: parallel_for_on_range
+void parallel_for_on_range(int N) {
 
   std::vector<int> range(N);
   std::iota(range.begin(), range.end(), 0);
 
-  auto tbeg = std::chrono::steady_clock::now();
   tf::Taskflow tf;
   tf.parallel_for(range, [&] (const int i) { 
-    printf("fib[%d]=%d\n", i, fib(i));
-  }, 1);
+    printf("parallel_for on container item: %d\n", i);
+  });
   tf.wait_for_all();
+}
 
-  auto tend = std::chrono::steady_clock::now();
-  std::cout << "taskflow version takes " 
-            << std::chrono::duration_cast<std::chrono::milliseconds>(tend-tbeg).count() 
-            << " ms\n";
+// Procedure: parallel_for_on_index
+void parallel_for_on_index(int N) {
+  tf::Taskflow tf;
+
+  // [0, N) with step size 1
+  tf.parallel_for(0, N, 1, [] (int i) {
+    printf("parallel_for on index: %d\n", i);
+  });
+  tf.wait_for_all();
 }
 
 // ----------------------------------------------------------------------------
@@ -46,21 +31,8 @@ void taskflow(int N) {
 // Function: main
 int main(int argc, char* argv[]) {
 
-  if(argc != 3) {
-    std::cerr << "usage: ./parallel_for [baseline|taskflow] N\n";
-    std::exit(EXIT_FAILURE);
-  }
-  
-  // Run methods
-  if(std::string_view method(argv[1]); method == "baseline") {
-    sequential(std::atoi(argv[2]));
-  }
-  else if(method == "taskflow") {
-    taskflow(std::atoi(argv[2]));
-  }
-  else {
-    std::cerr << "wrong method, shoud be [baseline|taskflow]\n";
-  }
+  parallel_for_on_range(10);
+  parallel_for_on_index(10);
 
   return 0;
 }

@@ -20,6 +20,7 @@
 #include <cassert>
 #include <optional>
 #include <variant>
+#include <cmath>
 
 namespace tf {
 

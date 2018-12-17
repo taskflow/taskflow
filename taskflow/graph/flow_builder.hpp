@@ -29,11 +29,7 @@ class FlowBuilder {
     template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>* = nullptr>
     auto parallel_for(T&, C&&, size_t = 0);
 
-    template <
-      typename I, 
-      typename C, 
-      std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr
-    >
+    template <typename I, typename C, std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr >
     auto parallel_for(I, I, I, C&&, size_t = 0);
 
     template <typename I, typename T, typename B>
@@ -71,6 +67,9 @@ class FlowBuilder {
 
     template <typename L>
     void _linearize(L&);
+
+    template <typename I>
+    size_t _estimate_chunk_size(I, I, I);
 };
 
 // Constructor
@@ -178,40 +177,93 @@ auto FlowBuilder::parallel_for(T& t, C&& c, size_t group) {
 template <
   typename I, 
   typename C, 
-  std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr
+  std::enable_if_t<std::is_arithmetic_v<I>, void>*
 >
-auto FlowBuilder::parallel_for(I beg, I end, I step, C&& c, size_t g) {
+auto FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t g) {
 
-  if(g == 0) {
-    auto N = (end - beg + step - 1) / step;
-    auto w = std::max(unsigned{1}, std::thread::hardware_concurrency());
-    g = (N + w - 1) / w;
+  using T = std::decay_t<I>;
+
+  if((s == 0 && beg != end) || (beg < end && s <= 0) || (beg > end && s >=0) ) {
+    TF_THROW(Error::FLOW_BUILDER, 
+      "invalid range [", beg, ", ", end, ") with step size ", s
+    );
   }
-
+    
   auto source = placeholder();
   auto target = placeholder();
 
-  std::cout << "g is " << g << std::endl;
-  
-  while(beg < end) {
-
-    auto e = beg + static_cast<I>(g) * step;
-
-    std::cout << beg << " " << e << std::endl;
-    
-    // Create a task
-    auto task = silent_emplace([beg, e, step, c] () mutable {
-      for(auto i=beg; i<e; i+=step) {
-        c(i);
-      }
-    });
-    source.precede(task);
-    task.precede(target);
-
-    // adjust the pointer
-    beg = e;
+  if(g == 0) {
+    g = _estimate_chunk_size(beg, end, s);
   }
 
+  // Integer indices
+  if constexpr(std::is_integral_v<T>) {
+
+    auto offset = static_cast<T>(g) * s;
+
+    // positive case
+    if(beg < end) {
+      while(beg != end) {
+        auto e = std::min(beg + offset, end);
+        auto task = silent_emplace([=] () mutable {
+          for(auto i=beg; i<e; i+=s) {
+            c(i);
+          }
+        });
+        source.precede(task);
+        task.precede(target);
+        beg = e;
+      }
+    }
+    // negative case
+    else if(beg > end) {
+      while(beg != end) {
+        auto e = std::max(beg + offset, end);
+        auto task = silent_emplace([=] () mutable {
+          for(auto i=beg; i>e; i+=s) {
+            c(i);
+          }
+        });
+        source.precede(task);
+        task.precede(target);
+        beg = e;
+      }
+    }
+  }
+  // We enumerate the entire sequence to avoid floating error
+  else if constexpr(std::is_floating_point_v<T>) {
+    size_t N = 0;
+    auto B = beg;
+    for(auto i=beg; (beg<end ? i<end : i>end); i+=s, ++N) {
+      if(N == g) {
+        auto task = silent_emplace([=] () mutable {
+          auto b = B;
+          for(size_t n=0; n<N; ++n) {
+            c(b);
+            b += s; 
+          }
+        });
+        N = 0;
+        B = i;
+        source.precede(task);
+        task.precede(target);
+      }
+    }
+
+    // the last pices
+    if(N != 0) {
+      auto task = silent_emplace([=] () mutable {
+        auto b = B;
+        for(size_t n=0; n<N; ++n) {
+          c(b);
+          b += s; 
+        }
+      });
+      source.precede(task);
+      task.precede(target);
+    }
+  }
+    
   return std::make_pair(source, target); 
 }
 
@@ -343,6 +395,33 @@ auto FlowBuilder::transform_reduce(I beg, I end, T& result, B&& bop, P&& pop, U&
   });
 
   return std::make_pair(source, target); 
+}
+
+// Function: _estimate_chunk_size
+template <typename I>
+size_t FlowBuilder::_estimate_chunk_size(I beg, I end, I step) {
+
+  using T = std::decay_t<I>;
+      
+  size_t w = std::max(unsigned{1}, std::thread::hardware_concurrency());
+  size_t N = 0;
+
+  if constexpr(std::is_integral_v<T>) {
+    if(beg <= end) {  
+      N = (end - beg + step - 1) / step;
+    }
+    else {
+      N = (end - beg + step + 1) / step;
+    }
+  }
+  else if constexpr(std::is_floating_point_v<T>) {
+    N = std::ceil((end - beg) / step);
+  }
+  else {
+    static_assert(dependent_false_v<T>, "can't deduce chunk size");
+  }
+
+  return (N + w - 1) / w;
 }
 
 
