@@ -88,7 +88,7 @@ class LevelGraph {
 
   public:
 
-    LevelGraph(size_t length, size_t level, float threshold){
+    LevelGraph(size_t length, size_t level, float threshold = 0.0f){
 
       _level_num = level;
       _length_num = length;
