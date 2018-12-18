@@ -34,31 +34,63 @@
     \end{axis}
   \end{tikzpicture}
   %
-  \begin{tikzpicture}[scale=0.5]
-    \begin{axis}[
-      title=\textbf{Matrix Operation},
-      xlabel=Number of CPUs,
-      ylabel=Runtime (ms),
-      legend pos=north west,
+  %\begin{tikzpicture}[scale=0.5]
+  %  \begin{axis}[
+  %    title=\textbf{Matrix Operation},
+  %    xlabel=Number of CPUs,
+  %    ylabel=Runtime (ms),
+  %    legend pos=north west,
+  %  ]
+  %  \addplot+ [mark=*] table[x=X,y=Taskflow,col sep=space]{Fig/micro_benchmark/matrix_operation_speedup.csv};
+  %  \addplot+ [mark=square] table[x=X,y=TBB,col sep=space]{Fig/micro_benchmark/matrix_operation_speedup.csv};
+  %  \legend{Cpp-Taskflow, TBB}
+  %  \end{axis}
+  %\end{tikzpicture}
+  %%
+  %\begin{tikzpicture}[scale=0.5]
+  %  \begin{axis}[
+  %    title=\textbf{Graph Traversal},
+  %    xlabel=Number of CPUs,
+  %    ylabel=Runtime (ms),
+  %    legend pos=north west,
+  %  ]
+  %  \addplot+ [mark=*] table[x=X,y=Taskflow,col sep=space]{Fig/micro_benchmark/graph_algorithm_speedup.csv};
+  %  \addplot+ [mark=square] table[x=X,y=TBB,col sep=space]{Fig/micro_benchmark/graph_algorithm_speedup.csv};
+  %  \legend{Cpp-Taskflow, TBB}
+  %  \end{axis}
+  %\end{tikzpicture}
+  \begin{tikzpicture}[scale=0.51]
+\begin{axis}[
+    symbolic x coords={Cpp-Taskflow, OpenMP, TBB, Sequential},
+    xtick=data,
+    title=\textbf{Matrix Operation},
+    xlabel=Library,
+    ylabel=Lines of Code,
     ]
-    \addplot+ [mark=*] table[x=X,y=Taskflow,col sep=space]{Fig/micro_benchmark/matrix_operation_speedup.csv};
-    \addplot+ [mark=square] table[x=X,y=TBB,col sep=space]{Fig/micro_benchmark/matrix_operation_speedup.csv};
-    \legend{Cpp-Taskflow, TBB}
-    \end{axis}
-  \end{tikzpicture}
-  %
-  \begin{tikzpicture}[scale=0.5]
-    \begin{axis}[
-      title=\textbf{Graph Traversal},
-      xlabel=Number of CPUs,
-      ylabel=Runtime (ms),
-      legend pos=north west,
+    \addplot[ybar,fill=blue] coordinates {
+        (Cpp-Taskflow, 30)
+        (TBB, 38)
+        (OpenMP, 64)
+        (Sequential, 14)
+    };
+\end{axis}
+\end{tikzpicture}
+  \begin{tikzpicture}[scale=0.51]
+\begin{axis}[
+    symbolic x coords={Cpp-Taskflow, OpenMP, TBB, Sequential},
+    xtick=data,
+    title=\textbf{Graph Traversal},
+    xlabel=Library,
+    ylabel=Lines of Code,
     ]
-    \addplot+ [mark=*] table[x=X,y=Taskflow,col sep=space]{Fig/micro_benchmark/graph_algorithm_speedup.csv};
-    \addplot+ [mark=square] table[x=X,y=TBB,col sep=space]{Fig/micro_benchmark/graph_algorithm_speedup.csv};
-    \legend{Cpp-Taskflow, TBB}
-    \end{axis}
-  \end{tikzpicture}
+    \addplot[ybar,fill=blue] coordinates {
+        (Cpp-Taskflow, 40)
+        (TBB, 59)
+        (OpenMP, 213)
+        (Sequential, 14)
+    };
+\end{axis}
+\end{tikzpicture}
   %\caption{Performance comparisons between Cpp-Taskflow, TBB, and OpenMP on two micro-benchmarks.}
   \label{fig::micro_benchmark}
 \end{figure}
