@@ -1,0 +1,76 @@
+\begin{figure}[htb]
+  \centering
+
+  \pgfplotsset{
+    title style={font=\LARGE},
+    label style={font=\LARGE},
+    %ylabel style={rotate=-90},
+  }
+
+  %\begin{tikzpicture}[scale=0.51]
+  %\begin{axis}[
+  %  ybar,
+  %  title=Dev Cost (Wavefront),
+  %  enlarge y limits={0.15,upper},
+  %  enlarge x limits=0.25,
+  %  legend style={at={(0.5,-0.2)},
+  %  anchor=north,legend columns=-1},
+  %  ylabel={SLOC},
+  %  symbolic x coords={OpenMP,TBB,Cpp-Taskflow,Seq},
+  %  nodes near coords, nodes near coords align={vertical},
+  %]
+  %\addplot coordinates {
+  %  (OpenMP,64) (TBB,38) (Cpp-Taskflow,30) (Seq,14)
+  %};
+  %\end{axis}
+  %\end{tikzpicture}
+  %% 
+  %\begin{tikzpicture}[scale=0.51]
+  %\begin{axis}[
+  %  ybar,
+  %  title=Dev Cost (Graph Traversal),
+  %  enlarge y limits={0.15,upper},
+  %  enlarge x limits=0.25,
+  %  legend style={at={(0.5,-0.2)},
+  %  anchor=north,legend columns=-1},
+  %  ylabel={SLOC},
+  %  symbolic x coords={OpenMP,TBB,Cpp-Taskflow,Seq},
+  %  nodes near coords, nodes near coords align={vertical},
+  %]
+  %\addplot coordinates {
+  %  (OpenMP,213) (TBB,59) (Cpp-Taskflow,40) (Seq,14)
+  %};
+  %\end{axis}
+  %\end{tikzpicture}
+  %
+  \begin{tikzpicture}[scale=0.51]
+    \begin{axis}[
+      title=Wavefront,
+      xlabel=Block count ($\times10^3$ tasks),
+      ylabel=Runtime (s),
+      legend pos=north west,
+    ]
+    \addplot+ [mark=*] table[x=X,y=OpenMP,col sep=space]{Fig/micro_benchmark/matrix_operation.csv};
+    \addplot+ [mark=|] table[x=X,y=TBB,col sep=space]{Fig/micro_benchmark/matrix_operation.csv};
+    \addplot+ [mark=square*] table[x=X,y=Taskflow,col sep=space]{Fig/micro_benchmark/matrix_operation.csv};
+    \legend{OpenMP, TBB, Cpp-Taskflow}
+    \end{axis}
+  \end{tikzpicture}
+  %
+  \begin{tikzpicture}[scale=0.51]
+    \begin{axis}[
+      title=Graph Traversal,
+      xlabel=Graph Size ($|V|+|E|$),
+      ylabel=Runtime (ms),
+      legend pos=north west,
+    ]
+    \addplot+ [mark=*] table[x=X,y=OpenMP,col sep=comma]{Fig/micro_benchmark/graph_algorithm.csv};
+    \addplot+ [mark=|] table[x=X,y=TBB,col sep=comma]{Fig/micro_benchmark/graph_algorithm.csv};
+    \addplot+ [mark=square*] table[x=X,y=Taskflow,col sep=comma]{Fig/micro_benchmark/graph_algorithm.csv};
+    \legend{OpenMP, TBB, Cpp-Taskflow}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Performance comparisons (runtime vs problem size) between Cpp-Taskflow, TBB, and OpenMP on two micro-benchmarks.}
+  \label{fig::micro_benchmark}
+\end{figure}
+
