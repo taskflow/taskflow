@@ -402,8 +402,8 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
 
   auto positive_integer_step = [] (unsigned num_workers) {
     tf::Taskflow tf{num_workers};
-    for(int beg=-25; beg<=25; ++beg) {
-      for(int end=beg; end<=25; ++end) {
+    for(int beg=-10; beg<=10; ++beg) {
+      for(int end=beg; end<=10; ++end) {
         for(int s=1; s<=end-beg; ++s) {
           int n = 0;
           for(int b = beg; b<end; b+=s) {
@@ -422,8 +422,8 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
   
   auto negative_integer_step = [] (unsigned num_workers) {
     tf::Taskflow tf{num_workers};
-    for(int beg=25; beg>=-25; --beg) {
-      for(int end=beg; end>=-25; --end) {
+    for(int beg=10; beg>=-10; --beg) {
+      for(int end=beg; end>=-10; --end) {
         for(int s=1; s<=beg-end; ++s) {
           int n = 0;
           for(int b = beg; b>end; b-=s) {
@@ -442,8 +442,8 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
   
   auto positive_floating_step = [] (unsigned num_workers) {
     tf::Taskflow tf{num_workers};
-    for(float beg=-25.0f; beg<=25.0f; ++beg) {
-      for(float end=beg; end<=25.0f; ++end) {
+    for(float beg=-10.0f; beg<=10.0f; ++beg) {
+      for(float end=beg; end<=10.0f; ++end) {
         for(float s=1.0f; s<=end-beg; s+=0.1f) {
           int n = 0;
           for(float b = beg; b<end; b+=s) {
@@ -462,8 +462,8 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
   
   auto negative_floating_step = [] (unsigned num_workers) {
     tf::Taskflow tf{num_workers};
-    for(float beg=25.0f; beg>=-25.0f; --beg) {
-      for(float end=beg; end>=-25.0f; --end) {
+    for(float beg=10.0f; beg>=-10.0f; --beg) {
+      for(float end=beg; end>=-10.0f; --end) {
         for(float s=1.0f; s<=beg-end; s+=0.1f) {
           int n = 0;
           for(float b = beg; b>end; b-=s) {
