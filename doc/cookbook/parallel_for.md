@@ -104,27 +104,38 @@ for(auto item : items) {
 
 # Index-based For-loop
 
-To parallelize a for-loop based on index, you can use the capture feature of C++ lambda.
+Cpp-Taskflow provides an overload to parallelize an index-based for-loop. 
 
 ```cpp
- 1: auto S = tf.silent_emplace([] () {}).name("S");
- 2: auto T = tf.silent_emplace([] () {}).name("T");
- 3: 
- 4: for(int i=0; i<8; ++i) {
- 5:   auto task = tf.silent_emplace([i] () {
- 6:     std::cout << std::this_thread::get_id() << " runs " << i << std::endl;
- 7:   }); 
- 8:   S.precede(task);
- 9:   task.precede(T);
-10: }
+ 1: tf.parallel_for(0, 10, 2, [] (int i) {
+ 2:   std::cout << "parallel on " << i << std::endl;
+ 3: });
+ 4: // print 0, 2, 4, 6, 8
 ```
 
-Debrief:
-+ Line 1-2 creates two tasks, source and target, as the synchronization points
-+ Line 4-10 creates eight parallel tasks that print out the executing thread's ID 
-  and the iteration index
-+ Line 8-9 adds one dependency link from the source to each task and
-  one dependency link from each task to the target
+The overload `paralel_for` takes three numbers `beg`, `end`, and `step` of the same type
+and applies a callable object to each index in the range `[beg, end)` with 
+the step size `step`.
+It also works on the opposite order with negative step size.
+
+```cpp
+ 1: tf.parallel_for(10, 0, -2, [] (int i) {
+ 2:   std::cout << "parallel on " << i << std::endl;
+ 3: });
+ 4: // print 10, 8, 6, 4, 2
+```
+
+You can also specify a group size `g` to force `g` consecutive calls per thread. 
+
+```cpp
+ 1: tf.parallel_for(0, 10, 2, [] (int i) {
+ 2:   std::cout << "parallel on " << i << std::endl;
+ 3: }, 2);
+ 4: // print 0, 2, 4, 6, 8 (three groups {0, 2}, {4, 6}, {8})
+```
+
+By default, Cpp-Taskflow performs even partition across the number of available threads 
+if no group size is given.
 
 ---
 
