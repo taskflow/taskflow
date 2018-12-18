@@ -1,3 +1,6 @@
+#ifndef _LEVEL_GRAPH_HPP
+#define _LEVEL_GRAPH_HPP
+
 #include <iostream>
 #include <string>
 #include <array>
@@ -9,24 +12,30 @@
 #include <chrono>
 #include <cmath>
 #include <memory>
+#include <unordered_set>
+#include <ctime>
+#include <cstdlib>
 
 #include <taskflow/taskflow.hpp>
 #include <tbb/task_scheduler_init.h>
 #include <tbb/flow_graph.h>
 
+class LevelGraph;
+
 class Node{
   
   public:
 
-    Node(size_t level, int index, std::vector<int>& next_level_nodes){
-      _level = level;
-      _idx = index;
+    Node(LevelGraph& graph, bool chosen, size_t level, int index, std::vector<int>& next_level_nodes)
+      : _graph(graph), _chosen(chosen), _level(level), _idx(index) {
       _out_edges = std::move(next_level_nodes);
     }
    
-    void mark(){
-      _visited = true;
-    }
+    //void mark(){
+    //  _visited = true;
+    //}
+
+    inline void mark();
 
     void unmark(){
       _visited = false;
@@ -56,6 +65,7 @@ class Node{
     }
 
     int index() const { return _idx; }
+    int level() const { return _level; }
 
     int* edge_ptr(int edge_idx) { return &_out_edges[edge_idx]; }
 
@@ -64,22 +74,28 @@ class Node{
 
   private:
 
+    LevelGraph& _graph;
+    bool _chosen {false};
     size_t _level;
     int _idx;
 
     bool _visited {false};
 };
 
+
+
 class LevelGraph {
 
   public:
 
-    LevelGraph(size_t length, size_t level){
+    LevelGraph(size_t length, size_t level, float threshold){
 
       _level_num = level;
       _length_num = length;
 
-      std::mt19937 g(0);  // fixed the seed
+      std::mt19937 g(0);  // fixed the seed for graph generator
+
+      std::srand(std::time(nullptr));
 
       for(size_t l=0; l<level; ++l){
         
@@ -113,7 +129,14 @@ class LevelGraph {
           
           std::vector<int> edges(next_level_nodes.begin()+start, next_level_nodes.begin()+end);          
           
-          cur_nodes.emplace_back(l, i, edges);
+          //choose a node to do some work
+          float rv = std::rand()/(RAND_MAX + 1u);
+          bool chosen = false;
+          if(rv < threshold){
+            chosen = true;
+          }          
+
+          cur_nodes.emplace_back(*this, chosen, l, i, edges); //create nodes
 
           if(re_shuffle){
             std::shuffle(next_level_nodes.begin(), next_level_nodes.end(), g);
@@ -139,7 +162,8 @@ class LevelGraph {
           }
         } 
       }
-      
+     
+      //print_graph(); 
 
     }
 
@@ -193,6 +217,41 @@ class LevelGraph {
       return size;
     }
 
+    //backward BFS given a destinatio node
+    void BFS(const Node& dst){
+
+      std::unordered_set<int> idx_list;
+      std::queue<int> idx_queue;
+
+      int dst_idx = dst.level()*_length_num + dst.index();
+      idx_queue.push(dst_idx);
+      idx_list.insert(dst_idx);
+
+      while(!idx_queue.empty()){
+        int child = idx_queue.front();
+        int child_level = child / _length_num;
+        int child_index = child % _length_num;
+        //std::cout << "Node level: " << child_level << " idx: " << child_index << std::endl;
+  
+        idx_queue.pop(); 
+        const Node& n = _graph[child_level][child_index];
+
+        for(size_t i=0; child_level>0 && i<n._in_edges.size(); i++){
+          int parent_level = child_level-1;
+          int parent_index = n._in_edges[i].first;
+          int parent = parent_level*_length_num + parent_index;
+
+          if(idx_list.find(parent) == idx_list.end()){
+            idx_queue.push(parent);
+            idx_list.insert(parent);
+          }
+        }        
+
+      }
+    
+    }
+
+
   private:
     
     const size_t _edge_max = 4;
@@ -203,12 +262,20 @@ class LevelGraph {
 
 };
 
+
+inline void Node::mark(){
+  _visited = true;
+  if(_chosen == true){
+    _graph.BFS(*this);
+  }
+}
+
 std::chrono::microseconds measure_time_taskflow(LevelGraph&, unsigned);
 std::chrono::microseconds measure_time_omp(LevelGraph&, unsigned);
 std::chrono::microseconds measure_time_tbb(LevelGraph&, unsigned);
 
 
 
-
+#endif
 
 
