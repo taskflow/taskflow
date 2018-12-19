@@ -360,15 +360,16 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
         
         // no tasks
         if(!t) {
-          lock.lock();
-          if(_queue.empty()) {
-            w.ready = false;
-            _idlers.push_back(&w);
-            while(!w.ready && !w.exit) {
-              w.cv.wait(lock);
+          if(lock.try_lock()) {  // avoid contention
+            if(_queue.empty()) {
+              w.ready = false;
+              _idlers.push_back(&w);
+              while(!w.ready && !w.exit) {
+                w.cv.wait(lock);
+              }
             }
+            lock.unlock();
           }
-          lock.unlock();
 
           if(w.cache) {
             std::swap(t, w.cache);
@@ -415,7 +416,7 @@ void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
 
   // return if no idler - this might not be the right value
   // but it doesn't affect the correctness
-  if(_idlers.empty()) {
+  if(_idlers.empty() || _workers[me].queue.size() <= 1) {
     return;
   }
         
