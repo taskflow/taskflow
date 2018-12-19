@@ -129,21 +129,14 @@ Create a taskflow object to start a task dependency graph.
 tf::Taskflow tf;
 ```
 
-
-Create a task from a callable object via the method `emplace` and 
-get a pair of a task handle and a [std::future][std::future] object.
-
-```cpp
-auto [A, F] = tf.emplace([](){ std::cout << "Task A\n"; return 1; });
-```
-
-If you don't need to access the returned result, use the method `silent_emplace` instead.
+Create a task from a callable object via the method `silent_emplace`
+to get a task handle.
 
 ```cpp
 auto A = tf.silent_emplace([](){ std::cout << "Task A\n"; });
 ```
 
-Both methods can take arbitrary numbers of callables to create multiple tasks at one time.
+You can create multiple tasks at one time.
 
 ```cpp
 auto [A, B, C, D] = tf.silent_emplace(
@@ -165,20 +158,9 @@ The handle `Task` supports different methods for you to describe task dependenci
 A.precede(B);  // A runs before B.
 ```
 
-**Broadcast**: Adding a broadcast link forces one task to run ahead of other(s).
-```cpp
-A.broadcast(B, C, D);  // A runs before B, C, and D.
-```
-
 **Gather**: Adding a gathering link forces one task to run after other(s).
 ```cpp
-A.gather(B, C, D);  // A runs after B, C, and D.
-```
-
-**Linearize**: Linearizing a task sequence adds a  preceding link to each adjacent pair.
-
-```cpp
-tf.linearize(A, B, C, D);  // A runs before B, B runs before C, and C runs before D.
+A.gather(B);  // A runs after B
 ```
 
 ## Step 3: Execute the Tasks

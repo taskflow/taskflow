@@ -248,7 +248,6 @@ class WorkStealingThreadpool {
     WorkStealingThreadpool(unsigned);
     ~WorkStealingThreadpool();
     
-    size_t num_tasks() const;
     size_t num_workers() const;
 
     bool is_owner() const;
