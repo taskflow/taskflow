@@ -415,7 +415,7 @@ void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
 
   // return if no idler - this might not be the right value
   // but it doesn't affect the correctness
-  if(_idlers.empty() || _workers[me].queue.size() <= 1) {
+  if(_idlers.empty() || _workers[me].queue.size() <= 4) {
     return;
   }
         
