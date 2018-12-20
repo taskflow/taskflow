@@ -418,12 +418,9 @@ void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
   if(_idlers.empty() || n <= 4) {
     return;
   }
-        
-  //auto n = _workers[me].queue.size();
-  auto p = _fast_modulo(_randomize(_workers[me].seed), n); 
-
-  // Load balancing 
-  if(p == 0) {
+  
+  // try with probability 1/n
+  if(_fast_modulo(_randomize(_workers[me].seed), n) == 0) {
     // wake up my partner to help balance
     if(_mutex.try_lock()) {
       if(!_idlers.empty()) {
