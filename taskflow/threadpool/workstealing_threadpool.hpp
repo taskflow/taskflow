@@ -231,8 +231,6 @@ int64_t WorkStealingQueue<T>::capacity() const noexcept {
 template <typename Closure>
 class WorkStealingThreadpool {
     
-  constexpr static unsigned _load_balance_prob {61};
-
   struct Worker {
     std::condition_variable cv;
     WorkStealingQueue<Closure> queue;
@@ -413,14 +411,16 @@ size_t WorkStealingThreadpool<Closure>::num_workers() const {
 template <typename Closure>
 void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
 
+  auto n = _workers[me].queue.size();
+
   // return if no idler - this might not be the right value
   // but it doesn't affect the correctness
-  if(_idlers.empty() || _workers[me].queue.size() <= 4) {
+  if(_idlers.empty() || n <= 4) {
     return;
   }
         
   //auto n = _workers[me].queue.size();
-  auto p = _fast_modulo(_randomize(_workers[me].seed), _load_balance_prob); 
+  auto p = _fast_modulo(_randomize(_workers[me].seed), n); 
 
   // Load balancing 
   if(p == 0) {
