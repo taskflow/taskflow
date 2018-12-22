@@ -15,7 +15,7 @@ A fast C++ header-only library to help you quickly write parallel programs with 
 Cpp-Taskflow is by far faster, more expressive, fewer lines of code, and easier for drop-in integration
 than existing parallel task programming libraries such as [OpenMP Tasking][OpenMP Tasking] and Intel [TBB FlowGraph][TBB FlowGraph].
 
-![](image/plot/plot.jpg)
+![](image/performance.jpg)
 
 Cpp-Taskflow enables you to implement efficient task decomposition strategies
 that incorporate both regular loop-based parallelism 
@@ -387,9 +387,9 @@ auto C = tf.silent_emplace([] () {}).name("C");
 auto D = tf.silent_emplace([] () {}).name("D");
 auto E = tf.silent_emplace([] () {}).name("E");
 
-A.broadcast(B, C, E); 
+A.precede(B, C, E); 
 C.precede(D);
-B.broadcast(D, E); 
+B.precede(D, E); 
 
 std::cout << tf.dump();
 ```
@@ -664,7 +664,6 @@ Visit [documentation][wiki] to see the complete list.
 | name           | string      | self   | assign a human-readable name to the task |
 | work           | callable    | self   | assign a work of a callable object to the task |
 | precede        | task        | self   | enable this task to run *before* the given task |
-| broadcast      | task list   | self   | enable this task to run *before* the given tasks |
 | gather         | task list   | self   | enable this task to run *after* the given tasks |
 | num_dependents | none        | size   | return the number of dependents (inputs) of this task |
 | num_successors | none        | size   | return the number of successors (outputs) of this task |
@@ -696,16 +695,14 @@ The method `precede` is the basic building block to add a precedence between two
 A.precede(B);
 ```
 
-### *broadcast*
-
-The method `broadcast` lets you precede a task to multiple tasks.
+You can precede multiple tasks at one time.
 
 <img align="right" width="30%" src="image/broadcast.png">
 
 ```cpp
 // make A run before B, C, D, and E
 // B, C, D, and E run in parallel
-A.broadcast(B, C, D, E);
+A.precede(B, C, D, E);
 ```
 
 ### *gather*

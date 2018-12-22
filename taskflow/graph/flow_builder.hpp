@@ -1,6 +1,6 @@
 #pragma once
 
-#include "graph.hpp"
+#include "task.hpp"
 
 namespace tf {
 
@@ -10,43 +10,190 @@ class FlowBuilder {
   public:
     
     FlowBuilder(Graph&);
+    
+    /**
+    @brief create a task from a given callable object
+    
+    @tparam C callable type
+    
+    @param callable a callable object
 
+    @return a @std_pair of Task handle and @std_future
+    */
     template <typename C>
-    auto emplace(C&&);
+    auto emplace(C&& callable);
+    
+    /**
+    @brief create multiple tasks from a list of callable objects at one time
+    
+    @tparam C callable type
 
+    @param callables... a list of callable objects
+
+    @return a @std_tuple of pairs of Task Handle and @std_future
+    */
     template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
-    auto emplace(C&&...);
+    auto emplace(C&&... callables);
+    
+    /**
+    @brief create a task from a given callable object without access to the result
+    
+    @tparam C callable type
+    
+    @param callable a callable object 
 
+    @return a Task handle
+    */
     template <typename C>
-    auto silent_emplace(C&&);
+    auto silent_emplace(C&& callable);
 
+    /**
+    @brief create multiple tasks from a list of callable objects without access to the results
+    
+    @tparam C callable type
+    
+    @param callables... a list of callable objects
+
+    @return a tuple of Task handles
+    */
     template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
-    auto silent_emplace(C&&...);
+    auto silent_emplace(C&&... callables);
+    
+    /**
+    @brief apply a callable object to the dereferencing of every iterator in the range 
+           [beg, end) chunk-by-chunk
 
+    @tparam I input iterator type
+    @tparam C callable type
+
+    @param beg iterator to the beginning (inclusive)
+    @param end iterator to the end (exclusive)
+    @param callable a callable object to be applied to 
+    @param chunk number of works per thread
+
+    @return a pair of Task handles to the beginning and end of the graph
+    */
     template <typename I, typename C>
-    auto parallel_for(I, I, C&&, size_t = 0);
+    std::pair<Task, Task> parallel_for(I beg, I end, C&& callable, size_t chunk = 0);
+    
+    /**
+    @brief apply a callable object to every index in the range [beg, end) with a step size
+           chunk-by-chunk
 
-    template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>* = nullptr>
-    auto parallel_for(T&, C&&, size_t = 0);
+    @tparam I arithmetic index type
+    @tparam C callable type
 
+    @param beg index to the beginning (inclusive)
+    @param end index to the end (exclusive)
+    @param step step size 
+    @param callable a callable object to be applied to
+    @param chunk number of works per thread
+
+    @return a pair of Task handles to the beginning and end of the graph
+    */
     template <typename I, typename C, std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr >
-    auto parallel_for(I, I, I, C&&, size_t = 0);
+    std::pair<Task, Task> parallel_for(I beg, I end, I step, C&& callable, size_t chunk = 0);
+    
+    /**
+    @brief reduce items in the range [beg, end) to a single result
+    
+    @tparam I input iterator type
+    @tparam T data type
+    @tparam B binary operator type
 
+    @param beg    iterator to the beginning (inclusive)
+    @param end    iterator to the end (exclusive)
+    @param result reference variable to store the final result
+    @param bop    binary operator that will be applied in unspecified order to the result
+                  of dereferencing the input iterator
+    
+    @return a pair of Task handles to the beginning and end of the graph
+    */
     template <typename I, typename T, typename B>
-    auto reduce(I, I, T&, B&&);
-
-    template <typename I, typename T>
-    auto reduce_min(I, I, T&);
+    std::pair<Task, Task> reduce(I beg, I end, T& result, B&& bop);
     
-    template <typename I, typename T>
-    auto reduce_max(I, I, T&);
+    /**
+    @brief find the minimum item in the range [beg, end) through @std_min reduction
 
+    @tparam I input iterator type
+    @tparam T data type 
+
+    @param beg    iterator to the beginning (inclusive)
+    @param end    iterator to the end (exclusive)
+    @param result reference variable to store the final result
+
+    @return a pair of Task handles to the beginning and end of the graph
+    */
+    template <typename I, typename T>
+    std::pair<Task, Task> reduce_min(I beg, I end, T& result);
+    
+    /**
+    @brief find the maximum item in the range [beg, end) through @std_max reduction
+
+    @tparam I input iterator type
+    @tparam T data type 
+
+    @param beg    iterator to the beginning (inclusive)
+    @param end    iterator to the end (exclusive)
+    @param result reference variable to store the final result
+
+    @return a pair of Task handles to the beginning and end of the graph
+    */
+    template <typename I, typename T>
+    std::pair<Task, Task> reduce_max(I beg, I end, T& result);
+    
+    /** 
+    @brief transform each item in the range [beg, end) into a new data type and then
+           reduce the results
+
+    @tparam I input iterator type
+    @tparam T data type
+    @tparam B binary operator
+    @tparam U unary operator type
+
+    @param beg    iterator to the beginning (inclusive)
+    @param end    iterator to the end (exclusive)
+    @param result reference variable to store the final result
+    @param bop    binary function object that will be applied in unspecified order 
+                  to the results of @em uop; the return type must be @em T
+    @param uop    unary function object that transforms each element 
+                  in the input range; the return type must be acceptable as input to @em bop
+    
+    @return a pair of Task handles to the beginning and end of the graph
+    */
     template <typename I, typename T, typename B, typename U>
-    auto transform_reduce(I, I, T&, B&&, U&&);
-
-    template <typename I, typename T, typename B, typename P, typename U>
-    auto transform_reduce(I, I, T&, B&&, P&&, U&&);
+    std::pair<Task, Task> transform_reduce(I beg, I end, T& result, B&& bop, U&& uop);
     
+    /**
+    @brief transform each item in the range [beg, end) into a new data type and then
+           apply two-layer reductions to derive the result
+
+    @tparam I input iterator type
+    @tparam T data type
+    @tparam B binary operator type
+    @tparam P binary operator type
+    @tparam U unary operator type
+
+    @param beg    iterator to the beginning (inclusive)
+    @param end    iterator to the end (exclusive)
+    @param result reference variable to store the final result
+    @param bop1   binary function object that will be applied in the second-layer reduction
+                  to the results of @em bop2
+    @param bop2   binary function object that will be applied in the first-layer reduction
+                  to the results of @em uop and the dereferencing of input iterators
+    @param uop    unary function object that will be applied to transform an item to a new 
+                  data type that is acceptable as input to @em bop2
+    
+    @return a pair of Task handles to the beginning and end of the graph
+    */
+    template <typename I, typename T, typename B, typename P, typename U>
+    std::pair<Task, Task> transform_reduce(I beg, I end, T& result, B&& bop1, P&& bop2, U&& uop);
+    
+    /**
+    @brief create an empty task
+
+    @return a Task handle
+    */
     auto placeholder();
     
     void precede(Task, Task);
@@ -56,12 +203,8 @@ class FlowBuilder {
     void broadcast(Task, std::initializer_list<Task>);
     void gather(std::vector<Task>&, Task);
     void gather(std::initializer_list<Task>, Task);  
-
-    size_t size() const;
-
-    bool empty() const;
-
-  protected:
+    
+  private:
 
     Graph& _graph;
 
@@ -75,16 +218,6 @@ class FlowBuilder {
 // Constructor
 inline FlowBuilder::FlowBuilder(Graph& graph) :
   _graph {graph} {
-}
-
-// Procedure: size
-inline size_t FlowBuilder::size() const {
-  return std::distance(_graph.begin(), _graph.end());
-}
-
-// Function: empty
-inline bool FlowBuilder::empty() const {
-  return _graph.empty();
 }
 
 // Procedure: precede
@@ -126,7 +259,7 @@ auto FlowBuilder::silent_emplace(C&&... cs) {
 
 // Function: parallel_for    
 template <typename I, typename C>
-auto FlowBuilder::parallel_for(I beg, I end, C&& c, size_t g) {
+std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, C&& c, size_t g) {
 
   using category = typename std::iterator_traits<I>::iterator_category;
   
@@ -168,18 +301,12 @@ auto FlowBuilder::parallel_for(I beg, I end, C&& c, size_t g) {
 }
 
 // Function: parallel_for
-template <typename T, typename C, std::enable_if_t<is_iterable_v<T>, void>*>
-auto FlowBuilder::parallel_for(T& t, C&& c, size_t group) {
-  return parallel_for(t.begin(), t.end(), std::forward<C>(c), group);
-}
-
-// Function: parallel_for
 template <
   typename I, 
   typename C, 
   std::enable_if_t<std::is_arithmetic_v<I>, void>*
 >
-auto FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t g) {
+std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t g) {
 
   using T = std::decay_t<I>;
 
@@ -270,7 +397,7 @@ auto FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t g) {
 // Function: reduce_min
 // Find the minimum element over a range of items.
 template <typename I, typename T>
-auto FlowBuilder::reduce_min(I beg, I end, T& result) {
+std::pair<Task, Task> FlowBuilder::reduce_min(I beg, I end, T& result) {
   return reduce(beg, end, result, [] (const auto& l, const auto& r) {
     return std::min(l, r);
   });
@@ -279,7 +406,7 @@ auto FlowBuilder::reduce_min(I beg, I end, T& result) {
 // Function: reduce_max
 // Find the maximum element over a range of items.
 template <typename I, typename T>
-auto FlowBuilder::reduce_max(I beg, I end, T& result) {
+std::pair<Task, Task> FlowBuilder::reduce_max(I beg, I end, T& result) {
   return reduce(beg, end, result, [] (const auto& l, const auto& r) {
     return std::max(l, r);
   });
@@ -287,7 +414,7 @@ auto FlowBuilder::reduce_max(I beg, I end, T& result) {
 
 // Function: transform_reduce    
 template <typename I, typename T, typename B, typename U>
-auto FlowBuilder::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop) {
+std::pair<Task, Task> FlowBuilder::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop) {
 
   using category = typename std::iterator_traits<I>::iterator_category;
   
@@ -343,7 +470,7 @@ auto FlowBuilder::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop) {
 
 // Function: transform_reduce    
 template <typename I, typename T, typename B, typename P, typename U>
-auto FlowBuilder::transform_reduce(I beg, I end, T& result, B&& bop, P&& pop, U&& uop) {
+std::pair<Task, Task> FlowBuilder::transform_reduce(I beg, I end, T& result, B&& bop, P&& pop, U&& uop) {
 
   using category = typename std::iterator_traits<I>::iterator_category;
   
@@ -455,7 +582,7 @@ inline void FlowBuilder::linearize(std::initializer_list<Task> keys) {
 
 // Proceduer: reduce
 template <typename I, typename T, typename B>
-auto FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
+std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
   
   using category = typename std::iterator_traits<I>::iterator_category;
   

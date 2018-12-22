@@ -1,13 +1,19 @@
 #pragma once
 
-#include "../threadpool/threadpool.hpp"
-#include "flow_builder.hpp"
+#include "task.hpp"
 #include "framework.hpp"
 
 namespace tf {
 
-// Class: BasicTaskflow
-// template argument E : executor, the threadpool implementation
+/** @class BasicTaskflow
+*
+* @brief The base class to derive a taskflow class
+*
+* @tparam E: executor type to use in this taskflow
+*
+* This class is the base class to derive a taskflow class.
+*
+*/
 template <template <typename...> typename E>
 class BasicTaskflow : public FlowBuilder {
   
@@ -32,35 +38,112 @@ class BasicTaskflow : public FlowBuilder {
   public:
 
   using Executor = E<Closure>;
-
+    
+    /**
+    @brief construct the taskflow with @std_thread_hardware_concurrency worker threads
+    */
     explicit BasicTaskflow();
-    explicit BasicTaskflow(unsigned);
-    explicit BasicTaskflow(std::shared_ptr<Executor>);
+    
+    /**
+    @brief construct the taskflow with N worker threads
+    */
+    explicit BasicTaskflow(unsigned N);
+    
+    /**
+    @brief construct the taskflow with a given executor
+    */
+    explicit BasicTaskflow(std::shared_ptr<Executor> executor);
+    
+    /**
+    @brief destruct the taskflow
 
+    Destructing a taskflow object will first wait for all running topologies to finish
+    and then clean up all associated data storages.
+    */
     ~BasicTaskflow();
     
-    std::shared_ptr<Executor> share_executor();
- 
-    std::shared_future<void> dispatch();
+    /**
+    @brief share ownership of the executor associated with this taskflow object
 
+    @return a @std_shared_ptr of the executor
+    */
+    std::shared_ptr<Executor> share_executor();
+    
+    /**
+    @brief dispatch the present graph to threads and return immediately
+
+    @return a @std_shared_future to access the execution status of the dispatched graph
+    */
+    std::shared_future<void> dispatch();
+    
+    /**
+    @brief dispatch the present graph to threads and run a callaback when the graph completes
+
+    @return a @std_shared_future to access the execution status of the dispatched graph
+    */
     template <typename C>
     std::shared_future<void> dispatch(C&&);
-
+  
+    /**
+    @brief dispatch the present graph to threads and return immediately
+    */
     void silent_dispatch();
+    
+    /**
+    @brief dispatch the present graph to threads and run a callback when the graph completes
 
+    @param callable a callable object to execute on completion
+    */
     template <typename C>
-    void silent_dispatch(C&&);
-
+    void silent_dispatch(C&& callable);
+    
+    /**
+    @brief dispatch the present graph to threads and wait for all topologies to complete
+    */
     void wait_for_all();
+
+    /**
+    @brief wait for all running topologies to complete and clean them up
+    */
     void wait_for_topologies();
-    void dump(std::ostream&) const;
-    void dump_topologies(std::ostream&) const;
+    
+    /**
+    @brief dump the present task dependency graph to a @std_ostream in DOT format
 
+    @param ostream a @std_ostream target
+    */
+    void dump(std::ostream& ostream) const;
+
+    /**
+    @brief dump the present topologies to a @std_ostream in DOT format
+
+    @param ostream a @std_ostream target
+    */
+    void dump_topologies(std::ostream& ostream) const;
+    
+    /**
+    @brief return the number of nodes in the present task dependency graph
+    */
     size_t num_nodes() const;
-    size_t num_workers() const;
-    size_t num_topologies() const;
 
+    /**
+    @brief return the number of worker threads
+    */
+    size_t num_workers() const;
+
+    /**
+    @brief return the number of existing topologies
+    */
+    size_t num_topologies() const;
+    
+    /**
+    @brief dump the present task dependency graph in DOT format to a @std_string
+    */
     std::string dump() const;
+    
+    /**
+    @brief dump the existing topologies in DOT format to a @std_string
+    */
     std::string dump_topologies() const;
 
   private:

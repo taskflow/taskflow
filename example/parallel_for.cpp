@@ -9,7 +9,7 @@ void parallel_for_on_range(int N) {
   std::iota(range.begin(), range.end(), 0);
 
   tf::Taskflow tf;
-  tf.parallel_for(range, [&] (const int i) { 
+  tf.parallel_for(range.begin(), range.end(), [&] (const int i) { 
     printf("parallel_for on container item: %d\n", i);
   });
   tf.wait_for_all();
