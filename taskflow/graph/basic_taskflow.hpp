@@ -7,7 +7,7 @@ namespace tf {
 
 /** @class BasicTaskflow
 *
-* @brief The base class to derive a taskflow class
+* @brief The base class to derive a taskflow class.
 *
 * @tparam E: executor type to use in this taskflow
 *

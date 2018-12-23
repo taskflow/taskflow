@@ -30,13 +30,13 @@ Calling @c wait_for_all dispatches the graph to threads and blocks the program f
 until all tasks finish.
 
 @code{.cpp}
-tf::Taskflow tf(4);
+tf::Taskflow taskflow;
 
-auto A = tf.silent_emplace([] () { std::cout << "TaskA\n"; });
-auto B = tf.silent_emplace([] () { std::cout << "TaskB\n"; });
+auto A = taskflow.silent_emplace([] () { std::cout << "TaskA\n"; });
+auto B = taskflow.silent_emplace([] () { std::cout << "TaskB\n"; });
 A.precede(B);
 
-tf.wait_for_all();
+taskflow.wait_for_all();
 @endcode
 
 When @c wait_for_all returns, all tasks including previously dispatched ones are guaranteed to finish.
@@ -53,13 +53,13 @@ Non-blocking methods allow the program to perform other computations
 that can overlap the graph execution.
 
 @code{.cpp}
- 1: tf::Taskflow tf;
+ 1: tf::Taskflow taskflow;
  2:
- 3: auto A = tf.silent_emplace([] () { std::cout << "Task A\n"; });
- 4: auto B = tf.silent_emplace([] () { std::cout << "Task B\n"; });
+ 3: auto A = taskflow.silent_emplace([] () { std::cout << "Task A\n"; });
+ 4: auto B = taskflow.silent_emplace([] () { std::cout << "Task B\n"; });
  5: A.precede(B);
  6:
- 7: auto F = tf.dispatch();
+ 7: auto F = taskflow.dispatch();
  8: // do some computation to overlap the execution of tasks A and B
  9: // ...
 10: F.get();
@@ -67,23 +67,20 @@ that can overlap the graph execution.
 
 Debrief:
 
-+ Line 1-5 creates a graph with two tasks and one dependency
-+ Line 7 dispatches this graph 
-  and obtains a @std_shared_future object to access its execution status
-+ Line 8-9 performs some computations to overlap the execution of task A and task B
-+ Line 10 blocks the program until this topology finishes
+@li Line 1-5 creates a graph with two tasks and one dependency
+@li Line 7 dispatches this graph 
+@li and obtains a @std_shared_future object to access its execution status
+@li Line 8-9 performs some computations to overlap the execution of task A and task B
+@li Line 10 blocks the program until this topology finishes
 
 The method @c dispatch has a overload that takes a callable object to execute when
 the dispatched graph finishes.
 
 @code{.cpp}
-tf::Taskflow tf;
-
+tf::Taskflow taskflow;
 int counter {0};
-
-auto A = tf.silent_emplace([&] () { counter++; });
-
-tf.dispatch([&] () { assert(counter == 1); })
+auto A = taskflow.silent_emplace([&] () { counter++; });
+taskflow.dispatch([&] () { assert(counter == 1); })
 @endcode
 
 If you do not care the status of a dispatched graph, 
@@ -91,28 +88,26 @@ use the method Taskflow::silent_dispatch.
 This method does not return anything.
 
 @code{.cpp}
-tf::Taskflow tf;
+tf::Taskflow taskflow;
 
-auto A = tf.silent_emplace([] () { std::cout << "TaskA\n"; });
-auto B = tf.silent_emplace([] () { std::cout << "TaskB\n"; });
+auto A = taskflow.silent_emplace([] () { std::cout << "TaskA\n"; });
+auto B = taskflow.silent_emplace([] () { std::cout << "TaskB\n"; });
 A.precede(B);
 
-auto F = tf.dispatch();
+auto F = taskflow.dispatch();
 // do some computation to overlap the execution of tasks A and B
 // ...
 @endcode
 
-Similarly, the method @c silent_dispatch has an overload that takes a cllable to execute
+Similarly, the method @c silent_dispatch has an overload 
+that takes a callable object to execute
 when the dispatched graph finishes.
 
 @code{.cpp}
-tf::Taskflow tf;
-
+tf::Taskflow taskflow;
 int counter {0};
-
-auto A = tf.silent_emplace([&] () { counter++; });
-
-tf.silent_dispatch([&] () { assert(counter == 1); })
+auto A = taskflow.silent_emplace([&] () { counter++; });
+taskflow.silent_dispatch([&] () { assert(counter == 1); })
 @endcode
 
 @section WaitForTopologies Wait for Topologies
@@ -126,19 +121,19 @@ to synchronize with the previously dispatched graphs.
 Cpp-Taskflow provides a method Taskflow::wait_for_topologies for this purpose.
 
 @code{.cpp}
- 1: tf::Taskflow tf(4);
+ 1: tf::Taskflow taskflow(4);
  2: 
- 3: auto A = tf.silent_emplace([] () { std::cout << "TaskA\n"; });
- 4: auto B = tf.silent_emplace([] () { std::cout << "TaskB\n"; });
+ 3: auto A = taskflow.silent_emplace([] () { std::cout << "TaskA\n"; });
+ 4: auto B = taskflow.silent_emplace([] () { std::cout << "TaskB\n"; });
  5: A.precede(B);
  6:
- 7: auto F = tf.dispatch();    // dispatch the present graph
+ 7: auto F = taskflow.dispatch();    // dispatch the present graph
  8:
- 9: auto C = tf.silent_emplace([] () { std::cout << "TaskC\n"; });
+ 9: auto C = taskflow.silent_emplace([] () { std::cout << "TaskC\n"; });
 10:
-11: tf.silent_dispatch();      // dispatch the present graph
+11: taskflow.silent_dispatch();      // dispatch the present graph
 12:
-13: tf.wait_for_topologies();  // block until the two graphs finish
+13: taskflow.wait_for_topologies();  // block until the two graphs finish
 14: 
 15: assert(F.wait_for(std::chrono::seconds(0)) == std::future_status::ready);
 @endcode
@@ -153,7 +148,7 @@ Debrief
 
 It is clear now Line 9 overlaps the execution of the first graph.
 After Line 11, there are two topologies in the taskflow object.
-Calling the method `wait_for_topologies` blocks the
+Calling the method Taskflow::wait_for_topologies blocks the
 program until both graph complete.
 
 
@@ -168,17 +163,17 @@ Consider the following example that uses
 the impact on its task.
 
 @code{.cpp}
- 1: tf::Taskflow tf;
+ 1: tf::Taskflow taskflow;
  2:
  3: auto ptr = std::make_shared<int>(0);
  4:
  5: std::cout << "reference count before A and B: " << ptr.use_count() << '\n';
  6:
- 7: auto A = tf.silent_emplace([ptr] () {
+ 7: auto A = taskflow.silent_emplace([ptr] () {
  8:   std::cout << "reference count at A: " << ptr.use_count() << '\n';
  9: });
 10:
-11: auto B = tf.silent_emplace([ptr] () {
+11: auto B = taskflow.silent_emplace([ptr] () {
 12:   std::cout << "reference count at B: " << ptr.use_count() << '\n';
 13: });
 14:
@@ -186,7 +181,7 @@ the impact on its task.
 16:
 17: std::cout << "reference count after A and B: " << ptr.use_count() << '\n';
 18:
-19: tf.wait_for_all();
+19: taskflow.wait_for_all();
 20:
 21: std::cout << "reference count after A and B: " << ptr.use_count() << '\n';
 @endcode
@@ -213,17 +208,17 @@ Therefore, the reference count in Line 21 drops down to one (owner at Line 3).
 Now let's use the same example but dispatch the graph asynchronously.
 
 @code{.cpp}
- 1: tf::Taskflow tf;
+ 1: tf::Taskflow taskflow;
  2:
  3: auto ptr = std::make_shared<int>(0);
  4:
  5: std::cout << "reference count before A and B: " << ptr.use_count() << '\n';
  6:
- 7: auto A = tf.silent_emplace([ptr] () {
+ 7: auto A = taskflow.silent_emplace([ptr] () {
  8:   std::cout << "reference count at A: " << ptr.use_count() << '\n';
  9: });
 10:
-11: auto B = tf.silent_emplace([ptr] () {
+11: auto B = taskflow.silent_emplace([ptr] () {
 12:   std::cout << "reference count at B: " << ptr.use_count() << '\n';
 13: });
 14:
@@ -231,13 +226,13 @@ Now let's use the same example but dispatch the graph asynchronously.
 16:
 17: std::cout << "reference count after A and B: " << ptr.use_count() << '\n';
 18:
-19: tf.dispatch().get();  // dispatch the graph without destroying it
+19: taskflow.dispatch().get();  // dispatch the graph without destroying it
 20:
 21: std::cout << "reference count after A and B: " << ptr.use_count() << '\n';
 @endcode
 
-In Line 19, we replace `wait_for_all` with `disaptch` to dispatch the graph asynchronously
-without cleaning up its data structures upon completion.
+In Line 19, we replace @c wait_for_all with @c dispatch to dispatch 
+the graph asynchronously without cleaning up its data structures upon completion.
 In other words, task A and task B remains un-destructed after Line 19,
 and the reference count at this point remains three.
 
@@ -261,18 +256,18 @@ dispatch each of them asynchronously.
  3: std::atomic<int> counter {0};
  4:
  5: void create_graph(tf::Taskflow& tf) {
- 6:   auto [A, B] = tf.silent_emplace(
+ 6:   auto [A, B] = taskflow.silent_emplace(
  7:     [&] () { counter.fetch_add(1, std::memory_order_relaxed); },
  8:     [&] () { counter.fetch_add(1, std::memory_order_relaxed); }
  9:   );
 10: }
 11:
 12: void multiple_dispatches() {
-13:   tf::Taskflow tf(4);
+13:   tf::Taskflow taskflow(4);
 14:   for(int i=0; i<10; ++i) {
 15:     std::cout << "dispatch iteration " << i << std::endl;
 16:     create_graph(tf);
-17:     tf.silent_dispatch();
+17:     taskflow.silent_dispatch();
 18:   }
 19: }
 20:
@@ -297,7 +292,7 @@ By default, destructing a taskflow object will wait on all topologies to finish.
 
 @section Chapter2Example2 Example 2: Connect Two Dependency Graphs
 
-The example demonstrates how to use the `std::future` to explicitly impose a dependency 
+The example demonstrates how to use the @std_future to explicitly impose a dependency 
 link on two dispatched graphs.
 
 @code{.cpp}
@@ -305,32 +300,32 @@ link on two dispatched graphs.
  2:
  3: int main() {
  4:
- 5:   tf::Taskflow tf(4);
+ 5:   tf::Taskflow taskflow(4);
  6:
  7:   std::vector<int> items;   // uninitialized
  8:   int sum;                  // uninitialized
  9:
 10:   // the first dependency graph
 11:   // task C to resize the item vector
-12:   auto A = tf.silent_emplace([&] () { items.resize(1024); });
+12:   auto A = taskflow.silent_emplace([&] () { items.resize(1024); });
 13:  
 14:   // task B to initialize the item vector
-15:   auto B = tf.silent_emplace([&] () { std::iota(items.begin(), items.end(), 0); });
+15:   auto B = taskflow.silent_emplace([&] () { std::iota(items.begin(), items.end(), 0); });
 16:
 17:   // A must run before B
 18:   A.precede(B);
 19:   
 20:   // dispatch the graph asynchronously and obtain the future to access its status
-21:   auto fu1 = tf.dispatch();
+21:   auto fu1 = taskflow.dispatch();
 22:
 23:   // the second dependency graph
 24:   // task C to overlap the exeuction of the first graph
-25:   auto C = tf.silent_emplace([&] () {
+25:   auto C = taskflow.silent_emplace([&] () {
 26:     sum = 0;  // in practice, this can be some expensive initializations
 27:   });
 28:
 29:   // task D can't start until the first graph completes
-30:   auto D = tf.silent_emplace([&] () {
+30:   auto D = taskflow.silent_emplace([&] () {
 31:     fu1.get();
 32:     for(auto item : items) {
 33:       sum += item;
@@ -339,7 +334,7 @@ link on two dispatched graphs.
 36: 
 37:   C.precede(D);
 38: 
-39:   auto fu2 = tf.dispatch();
+39:   auto fu2 = taskflow.dispatch();
 40: 
 41:   // wait on the second dependency graph to finish
 42:   fu2.get();

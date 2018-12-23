@@ -14,20 +14,20 @@ The method constructs a sub-graph representing this workload
 and returns a task pair as two synchronization points to this task pattern.
 
 @code{.cpp}
- 1: tf::Taskflow tf(4);
+ 1: tf::Taskflow taskflow;
  2:
  3: std::vector<int> items {1, 2, 3, 4, 5, 6, 7, 8};
  4:
- 5: auto [S, T] = tf.parallel_for(items.begin(), items.end(), [] (int item) {
+ 5: auto [S, T] = taskflow.parallel_for(items.begin(), items.end(), [] (int item) {
  6:   std::cout << std::this_thread::get_id() << " runs " << item << std::endl;
  7: });
  8:
  9: S.work([] () { std::cout << "S\n"; }).name("S");
 10: T.work([] () { std::cout << "T\n"; }).name("T");
 11:
-12: std::cout << tf.dump();
+12: std::cout << taskflow.dump();
 13:
-14: tf.wait_for_all();
+14: taskflow.wait_for_all();
 @endcode
 
 The above code generates the following task dependency graph. 
@@ -69,7 +69,7 @@ The method @c parallel_for tasks an unsigned integer @c chunk as
 the number of items in each partition.
 
 @code{.cpp}
-auto [S, T] = tf.parallel_for(items.begin(), items.end(), [] (int item) {
+auto [S, T] = taskflow.parallel_for(items.begin(), items.end(), [] (int item) {
   std::cout << std::this_thread::get_id() << " runs " << item << std::endl;
 }, 1);
 @endcode
@@ -92,11 +92,11 @@ using only the basic methods Taskflow::silent_emplace and Task::precede.
 
 
 @code{.cpp}
-auto S = tf.silent_emplace([] () {}).name("S");
-auto T = tf.silent_emplace([] () {}).name("T");
+auto S = taskflow.silent_emplace([] () {}).name("S");
+auto T = taskflow.silent_emplace([] () {}).name("T");
 
 for(auto item : items) {
-  auto task = tf.silent_emplace([item] () {
+  auto task = taskflow.silent_emplace([item] () {
     std::cout << std::this_thread::get_id() << " runs " << item << std::endl;
   });
   S.precede(task);
@@ -113,7 +113,7 @@ and applies @c callable to each index in the range `[beg, end)` with
 the step size @c step.
 
 @code{.cpp}
-1: tf.parallel_for(0, 10, 2, [] (int i) {
+1: taskflow.parallel_for(0, 10, 2, [] (int i) {
 2:   std::cout << "parallel on " << i << std::endl;
 3: });
 4: // print 0, 2, 4, 6, 8
@@ -123,7 +123,7 @@ the step size @c step.
 It also works on the opposite order with negative step size.
 
 @code{.cpp}
-1: tf.parallel_for(10, 0, -2, [] (int i) {
+1: taskflow.parallel_for(10, 0, -2, [] (int i) {
 2:   std::cout << "parallel on " << i << std::endl;
 3: });
 4: // print 10, 8, 6, 4, 2
@@ -132,7 +132,7 @@ It also works on the opposite order with negative step size.
 Similarly, you can specify a chunk size to group the works per thread.
 
 @code{.cpp}
-1: tf.parallel_for(0, 10, 2, [] (int i) {
+1: taskflow.parallel_for(0, 10, 2, [] (int i) {
 2:   std::cout << "parallel on " << i << std::endl;
 3: }, 2);
 4: // print 0, 2, 4, 6, 8 (three groups {0, 2}, {4, 6}, {8})
@@ -154,15 +154,15 @@ or zero if it is an even number.
 
 int main() {
 
-  tf::Taskflow tf(4);
+  tf::Taskflow taskflow;
 
   std::vector<int> items{1, 2, 3, 4, 5, 6, 7, 8};
 
-  tf.parallel_for(items.begin(), items.end(), [] (int& item) {
+  taskflow.parallel_for(items.begin(), items.end(), [] (int& item) {
     item = (item & 1) ? 1 : 0;
   });
 
-  tf.wait_for_all();
+  taskflow.wait_for_all();
 
   for(auto item : items) {
     std::cout << item << " ";
@@ -189,29 +189,29 @@ with other tasks.
  2:
  3: int main() {
  4:
- 5:   tf::Taskflow tf(4);
+ 5:   tf::Taskflow taskflow;
  6:
  7:   std::vector<int> items(1024);
  8:   std::atomic<int> sum {0};
  9:
-10:   auto T1 = tf.silent_emplace([&] () {  // create a modifier task
+10:   auto T1 = taskflow.silent_emplace([&] () {  // create a modifier task
 11:     for(auto& item : items) {
 12:       item = 1;
 13:     }
 14:   }).name("Create Items");
 15:
-16:   auto [S, T] = tf.parallel_for(items.begin(), items.end(), [&] (int item) {
+16:   auto [S, T] = taskflow.parallel_for(items.begin(), items.end(), [&] (int item) {
 17:     sum.fetch_add(item, std::memory_order_relaxed);
 18:   }, 128);
 19:
-20:   auto T2 = tf.silent_emplace([&] () {  // create a output task
+20:   auto T2 = taskflow.silent_emplace([&] () {  // create a output task
 21:     std::cout << "sum is: " << sum << std::endl;
 22:   }).name("Print Sum");
 23:
 24:   T1.precede(S);  // modifier precedes parallel-for
 25:   T.precede(T2);  // parallel-for precedes the output task
 26:
-27:   tf.wait_for_all();
+27:   taskflow.wait_for_all();
 28:
 29:   return 0;
 30: }
@@ -228,7 +228,7 @@ sum is: 1024
 @endcode
 
 Debrief:
-@li Line 5 creates a taskflow object with four worker threads
+@li Line 5 creates a taskflow object
 @li Line 7 creates a vector of 1024 uninitialized integers
 @li Line 8 creates an atomic integer variable
 @li Line 10-14 creates a task that captures the vector to initialize all items to one

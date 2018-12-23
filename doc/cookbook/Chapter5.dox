@@ -19,16 +19,16 @@ passed to the task.
 All graph building methods you find in taskflow are applicable for a subflow builder.
 
 @code{.cpp}
- 1: tf::Taskflow tf(4);  // create a taskflow object with four worker threads
+ 1: tf::Taskflow taskflow;
  2:
- 3: auto A = tf.silent_emplace([] () {}).name("A");  // static task A
- 4: auto C = tf.silent_emplace([] () {}).name("C");  // static task C
- 5: auto D = tf.silent_emplace([] () {}).name("D");  // static task D
+ 3: auto A = taskflow.silent_emplace([] () {}).name("A");  // static task A
+ 4: auto C = taskflow.silent_emplace([] () {}).name("C");  // static task C
+ 5: auto D = taskflow.silent_emplace([] () {}).name("D");  // static task D
  6:
- 7: auto B = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {  // task B spawns a subflow
- 8:   auto B1 = subflow.silent_emplace([] () {}).name("B1");       // dynamic task B1
- 9:   auto B2 = subflow.silent_emplace([] () {}).name("B2");       // dynamic task B2
-10:   auto B3 = subflow.silent_emplace([] () {}).name("B3");       // dynamic task B3
+ 7: auto B = taskflow.silent_emplace([] (tf::SubflowBuilder& subflow) { 
+ 8:   auto B1 = subflow.silent_emplace([] () {}).name("B1");  // dynamic task B1
+ 9:   auto B2 = subflow.silent_emplace([] () {}).name("B2");  // dynamic task B2
+10:   auto B3 = subflow.silent_emplace([] () {}).name("B3");  // dynamic task B3
 11:   B1.precede(B3);  // B1 runs bofore B3
 12:   B2.precede(B3);  // B2 runs before B3
 13: }).name("B");
@@ -38,14 +38,14 @@ All graph building methods you find in taskflow are applicable for a subflow bui
 17: B.precede(D);  // D runs after B
 18: C.precede(D);  // D runs after C
 19:
-20: tf.dispatch().get();  // execute the graph without cleanning up topologies
-21: std::cout << tf.dump_topologies();
+20: taskflow.dispatch().get();  // execute the graph without cleanning up topologies
+21: std::cout << taskflow.dump_topologies();
 @endcode
 
 @image html subflow_join.png width=30%
 
 Debrief:
-@li Line 1 creates a taskflow object with four worker threads
+@li Line 1 creates a taskflow object
 @li Line 3-5 creates three tasks, A, C, and D
 @li Line 7-13 creates a task B that spawns a task dependency graph of three tasks B1, B2, and B3
 @li Line 15-18 add dependencies among A, B, C, and D
@@ -55,7 +55,7 @@ Debrief:
 Line 7-13 is the main coding block to enable dynamic tasking.
 Cpp-Taskflow uses a @std_variant date type to 
 unify the interface of static tasking and dynamic tasking.
-The runtime will create a <em>subflow builder</em> passing it to task B,
+The runtime will create a SubflowBuilder passing it to task B,
 and spawn a dependency graph as described by the associated callable.
 This new subflow graph will be added to the topology to which its parent task B belongs to.
 Due to the property of dynamic tasking,
@@ -71,13 +71,13 @@ Having said that,
 you can detach a subflow from its parent task, allowing its execution to flow independently.
 
 @code{.cpp}
- 1: tf::Taskflow tf(4);  // create a taskflow object with four worker threads
+ 1: tf::Taskflow taskflow;
  2:
- 3: auto A = tf.silent_emplace([] () {}).name("A");  // static task A
- 4: auto C = tf.silent_emplace([] () {}).name("C");  // static task C
- 5: auto D = tf.silent_emplace([] () {}).name("D");  // static task D
+ 3: auto A = taskflow.silent_emplace([] () {}).name("A");  // static task A
+ 4: auto C = taskflow.silent_emplace([] () {}).name("C");  // static task C
+ 5: auto D = taskflow.silent_emplace([] () {}).name("D");  // static task D
  6:
- 7: auto B = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {  // task B to spawn a subflow
+ 7: auto B = taskflow.silent_emplace([] (tf::SubflowBuilder& subflow) { 
  8:   auto B1 = subflow.silent_emplace([] () {}).name("B1");  // dynamic task B1
  9:   auto B2 = subflow.silent_emplace([] () {}).name("B2");  // dynamic task B2
 10:   auto B3 = subflow.silent_emplace([] () {}).name("B3");  // dynamic task B3
@@ -91,8 +91,8 @@ you can detach a subflow from its parent task, allowing its execution to flow in
 18: B.precede(D);  // D runs after B
 19: C.precede(D);  // D runs after C
 20:
-21: tf.dispatch().get();  // execute the graph without cleanning up topologies
-22: std::cout << tf.dump_topologies();
+21: taskflow.dispatch().get();  // execute the graph without cleaning up topologies
+22: std::cout << taskflow.dump_topologies();
 @endcode
 
 The figure below demonstrates a detached subflow based on the previous example.
@@ -101,16 +101,15 @@ A detached subflow will eventually join the end of the topology of its parent ta
 @image html subflow_detach.png width=60%
 
 
-
 @section NestedSubflow Nested Subflow
 
 A subflow can be nested or recursive.
 You can create another subflow from the execution of a subflow and so on.
 
 @code{.cpp}
- 1: tf::Taskflow tf;
+ 1: tf::Taskflow taskflow;
  2:
- 3: auto A = tf.silent_emplace([] (auto& sbf){
+ 3: auto A = taskflow.silent_emplace([] (auto& sbf){
  4:   std::cout << "A spawns A1 & subflow A2\n";
  5:   auto A1 = sbf.silent_emplace([] () {
  6:     std::cout << "subtask A1\n";
@@ -130,8 +129,8 @@ You can create another subflow from the execution of a subflow and so on.
 20: }).name("A");
 21:
 22: // execute the graph without cleanning up topologies
-23: tf.dispatch().get();
-24: std::cout << tf.dump_topologies();
+23: taskflow.dispatch().get();
+24: std::cout << taskflow.dump_topologies();
 @endcode
 
 @image html nested_subflow.png width=45%

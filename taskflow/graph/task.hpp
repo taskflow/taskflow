@@ -4,7 +4,11 @@
 
 namespace tf {
 
-// Class: Task
+/**
+@class Task
+
+@brief Task handle for users to modify and access a task's attributes.
+*/
 class Task {
 
   friend class FlowBuilder;

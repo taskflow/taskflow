@@ -20,7 +20,7 @@ See a quick <a href="https://cpp-taskflow.github.io/">presentation</a> and visit
 @section HowToInstallCppTaskflow How to Install Cpp-Taskflow?
 
 Cpp-Taskflow is *header-only* and there is no need for installation.
-Simply download the source and copy the headers under the `taskflow` subdirectory to your project.
+Simply download the source and copy the headers under the @c taskflow subdirectory to your project.
 
 @code{.sh}
 ~$ git clone https://github.com/cpp-taskflow/cpp-taskflow.git
@@ -37,9 +37,9 @@ Here is a rather simple program to get you started.
 
 int main(){
   
-  tf::Taskflow tf;
+  tf::Taskflow taskflow;
 
-  auto [A, B, C, D] = tf.silent_emplace(
+  auto [A, B, C, D] = taskflow.silent_emplace(
     [] () { std::cout << "TaskA\n"; },               //  task dependency graph
     [] () { std::cout << "TaskB\n"; },               // 
     [] () { std::cout << "TaskC\n"; },               //          +---+          
@@ -51,7 +51,7 @@ int main(){
   B.precede(D);  // B runs before D                  //    |     +---+     |    
   C.precede(D);  // C runs before D                  //    +---->| C |-----+    
                                                      //          +---+          
-  tf.wait_for_all();  // block until finish
+  taskflow.wait_for_all();  // block until finish
 
   return 0;
 }
@@ -76,7 +76,7 @@ TaskB
 TaskD
 @endcode
 
-The execution order of B and C might differ as they can run concurrencly.
+The execution order of B and C might differ as they can run concurrently.
 
 @section SupportedCompilers Supported Compilers
 
