@@ -1,0 +1,103 @@
+namespace tf {
+
+/** @page chapter0 C0: Project Motivation
+
+Cpp-Taskflow addresses a long-standing problem,
+<em>how can we make it easier for C++ developers to 
+write efficient parallel programs under 
+complex task dependencies?</em>
+
+@section TheEraOfMulticore The Era of Multicore
+
+In the past, we embrace *free* performance scaling on our software thanks to 
+advances in manufacturing technologies and micro-architectural innovations.
+Approximately for every 1.5 year we can speed up our programs by simply switching to new
+hardware and compiler vendors that brings 2x more transistors, faster clock rates, 
+and higher instruction-level parallelism.
+However, this paradigm was challenged by the power wall and increasing difficulties in exploiting
+instruction-level parallelism.
+The boost to computing performance has stemmed from changes to multicore chip designs.
+
+@image html era_multicore.jpg width=50%
+
+The above sweeping visualization (thanks to Prof. Mark Horowitz and his group) 
+shows the evolution of computer architectures is moving toward multicore designs.
+Today, multicore processors and multiprocessor systems are common
+in many electronic products such as mobiles, laptops, desktops, and servers.
+In order to keep up with the performance scaling, 
+it is becoming necessary for software developers to write parallel programs 
+that utilize the number of available cores.
+
+@section LoopLevelParallelism Loop-level Parallelism
+
+The most basic and simplest concept of parallel programming is *loop-level parallelism*,
+exploiting parallelism that exists among the iterations of a loop.
+The program typically partitions a loop of iterations into a set of of blocks,
+either fixed or dynamic,
+and run each block in parallel. Below the figure illustrates this pattern.
+
+@image html loop-level-parallelism.jpeg width=30%
+
+The main advantage of the loop-based approach is its simplicity in 
+speeding up a regular workload in line with Amdahl's Law.
+Programmers only need to discover independence of each iteration within a loop 
+and, once possible, the parallel decomposition strategy can be easily implemented.
+Many existing libraries have built-in support to write a parallel-for loop.
+
+
+@section html TaskBasedParallelism Task-based Parallelism
+
+The traditional loop-level parallelism is simple but hardly allows users 
+to exploit parallelism in more irregular applications such as graph algorithms,
+incremental flows, recursion, and dynamically-allocated data structures.
+To address these challenges,
+parallel programming and libraries are evolving from the tradition loop-based parallelism to
+the *task-based* model.
+
+@image html task-level-parallelism.png width=30%
+
+The above figure shows an example *task dependency graph*.
+Each node in the graph represents a task unit at function level and each
+edge indicates the task dependency between a pair of tasks.
+Task-based model offers a powerful means to express both regular 
+and irregular parallelism in a top-down manner, 
+and provides transparent scaling to large number of cores.
+In fact, it has been proven, both by the research community and 
+the evolution of parallel programming standards, 
+task-based approach scales the best with future processor generations and architectures.
+
+@section ChallengesOfTaskBasedParallelProgramming Challenges of Task-based Parallel Programming
+
+Parallel programs are notoriously hard to write correctly, 
+regardless of loop-based approach or task-based model.
+A primary reason is <em>data dependency</em>,
+some data cannot be accessed until some other data becomes available.
+This dependency constraint introduces a number of challenges
+such as data race, thread contention, and consistencies
+when writing a correct parallel program.
+Through the evolution of parallel programming standards,
+it has been proven that the most effective way to overcome 
+these obstacles is a suitable task-based programming model.
+The programming model affects software developments in various aspects, such as programmability,
+debugging effort, development costs, efficiencies, etc.
+
+
+@section TheProjectMantra The Project Mantra
+
+The goal of Cpp-Taskflow is simple -
+<em>We aim to help C++ developers quickly write parallel programs and 
+implement efficient parallel decomposition strategies using the task-based approach</em>.
+We want developers to write simple and effective parallel code, specifically with the following objectives:
+
+@li Expressiveness
+@li Readability 
+@li Transparency
+
+In a nutshell, code written with Cpp-Taskflow explains itself.
+The transparency allows developers to forget about the difficult thread managements at programming time.
+They can focus on high-level implementation of parallel decomposition algorithms,
+leaving the concurrency details and scalability handled by Cpp-Taskflow.
+
+*/
+
+}

@@ -4,7 +4,12 @@
 
 namespace tf {
 
-// Class: FlowBuilder
+/** 
+@class FlowBuilder
+
+@brief The building blocks of task dependency graphs.
+
+*/
 class FlowBuilder {
 
   public:
@@ -155,9 +160,9 @@ class FlowBuilder {
     @param end    iterator to the end (exclusive)
     @param result reference variable to store the final result
     @param bop    binary function object that will be applied in unspecified order 
-                  to the results of @em uop; the return type must be @em T
+                  to the results of @c uop; the return type must be @c T
     @param uop    unary function object that transforms each element 
-                  in the input range; the return type must be acceptable as input to @em bop
+                  in the input range; the return type must be acceptable as input to @c bop
     
     @return a pair of Task handles to the beginning and end of the graph
     */
@@ -178,11 +183,11 @@ class FlowBuilder {
     @param end    iterator to the end (exclusive)
     @param result reference variable to store the final result
     @param bop1   binary function object that will be applied in the second-layer reduction
-                  to the results of @em bop2
+                  to the results of @c bop2
     @param bop2   binary function object that will be applied in the first-layer reduction
-                  to the results of @em uop and the dereferencing of input iterators
+                  to the results of @c uop and the dereferencing of input iterators
     @param uop    unary function object that will be applied to transform an item to a new 
-                  data type that is acceptable as input to @em bop2
+                  data type that is acceptable as input to @c bop2
     
     @return a pair of Task handles to the beginning and end of the graph
     */
@@ -196,13 +201,59 @@ class FlowBuilder {
     */
     auto placeholder();
     
-    void precede(Task, Task);
-    void linearize(std::vector<Task>&);
-    void linearize(std::initializer_list<Task>);
-    void broadcast(Task, std::vector<Task>&);
-    void broadcast(Task, std::initializer_list<Task>);
-    void gather(std::vector<Task>&, Task);
-    void gather(std::initializer_list<Task>, Task);  
+    /**
+    @brief add a dependency link from task A to task B
+    
+    @param A task A
+    @param B task B
+    */
+    void precede(Task A, Task B);
+
+    /**
+    @brief add adjacent dependency links to a linear list of tasks
+
+    @param tasks a vector of tasks
+    */
+    void linearize(std::vector<Task>& tasks);
+
+    /**
+    @brief adds adjacent dependency links to a linear list of tasks
+
+    @param tasks an initializer list of tasks
+    */
+    void linearize(std::initializer_list<Task> tasks);
+
+    /**
+    @brief add dependency links from one task A to many tasks
+
+    @param A      task A
+    @param others a task set which A precedes
+    */
+    void broadcast(Task A, std::vector<Task>& others);
+
+    /**
+    @brief add dependency links from one task A to many tasks
+
+    @param A      task A
+    @param others a task set which A precedes
+    */
+    void broadcast(Task A, std::initializer_list<Task> others);
+
+    /**
+    @brief add dependency links from many tasks to one task A
+
+    @param others a task set to precede A
+    @param A task A
+    */
+    void gather(std::vector<Task>& others, Task A);
+
+    /**
+    @brief add dependency links from many tasks to one task A
+
+    @param others a task set to precede A
+    @param A task A
+    */
+    void gather(std::initializer_list<Task> others, Task A);
     
   private:
 
@@ -637,18 +688,36 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
 
 // ----------------------------------------------------------------------------
 
-// Class: SubflowBuilder
+/** 
+@class SubflowBuilder
+
+@brief The building blocks of dynamic tasking.
+*/ 
 class SubflowBuilder : public FlowBuilder {
 
   public:
     
     template <typename... Args>
     SubflowBuilder(Args&&...);
-
+    
+    /**
+    @brief enable the subflow to join its parent task
+    */
     void join();
-    void detach();
 
+    /**
+    @brief enable the subflow to detach from its parent task
+    */
+    void detach();
+    
+    /**
+    @brief query if the subflow is detached from its parent task
+    */
     bool detached() const;
+
+    /**
+    @brief query if the subflow joins its parent task
+    */
     bool joined() const;
 
   private:

@@ -1,0 +1,55 @@
+\hypertarget{error_8hpp}{}\section{/home/twhuang/\+Ph\+D/\+Code/cpp-\/taskflow/taskflow/error/error.hpp File Reference}
+\label{error_8hpp}\index{/home/twhuang/\+Ph\+D/\+Code/cpp-\/taskflow/taskflow/error/error.\+hpp@{/home/twhuang/\+Ph\+D/\+Code/cpp-\/taskflow/taskflow/error/error.\+hpp}}
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$sstream$>$}\newline
+{\ttfamily \#include $<$exception$>$}\newline
+{\ttfamily \#include $<$system\+\_\+error$>$}\newline
+Include dependency graph for error.\+hpp\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{error_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=259pt]{error_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structtf_1_1Error}{tf\+::\+Error}
+\item 
+struct \hyperlink{structstd_1_1is__error__code__enum_3_01tf_1_1Error_1_1Code_01_4}{std\+::is\+\_\+error\+\_\+code\+\_\+enum$<$ tf\+::\+Error\+::\+Code $>$}
+\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \hyperlink{namespacetf}{tf}
+\item 
+ \hyperlink{namespacestd}{std}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{error_8hpp_aecd66f17d01de60aeb9cae992c9dd4bf}{T\+F\+\_\+\+T\+H\+R\+OW}(...)~\hyperlink{namespacetf_ab9d4e31acc93431725fa1affca09e823}{tf\+::throw\+\_\+se}(\+\_\+\+\_\+\+F\+I\+L\+E\+\_\+\+\_\+, \+\_\+\+\_\+\+L\+I\+N\+E\+\_\+\+\_\+, \+\_\+\+\_\+\+V\+A\+\_\+\+A\+R\+G\+S\+\_\+\+\_\+);
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::error\+\_\+code \hyperlink{namespacetf_aba49ed1abcd24ee88f72374c706c3b87}{tf\+::make\+\_\+error\+\_\+code} (Error\+::\+Code e)
+\item 
+{\footnotesize template$<$typename... ArgsT$>$ }\\void \hyperlink{namespacetf_ab9d4e31acc93431725fa1affca09e823}{tf\+::throw\+\_\+se} (const char $\ast$fname, const size\+\_\+t line, Error\+::\+Code c, ArgsT \&\&... args)
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{error_8hpp_aecd66f17d01de60aeb9cae992c9dd4bf}\label{error_8hpp_aecd66f17d01de60aeb9cae992c9dd4bf}} 
+\index{error.\+hpp@{error.\+hpp}!T\+F\+\_\+\+T\+H\+R\+OW@{T\+F\+\_\+\+T\+H\+R\+OW}}
+\index{T\+F\+\_\+\+T\+H\+R\+OW@{T\+F\+\_\+\+T\+H\+R\+OW}!error.\+hpp@{error.\+hpp}}
+\subsubsection{\texorpdfstring{T\+F\+\_\+\+T\+H\+R\+OW}{TF\_THROW}}
+{\footnotesize\ttfamily \#define T\+F\+\_\+\+T\+H\+R\+OW(\begin{DoxyParamCaption}\item[{}]{... }\end{DoxyParamCaption})~\hyperlink{namespacetf_ab9d4e31acc93431725fa1affca09e823}{tf\+::throw\+\_\+se}(\+\_\+\+\_\+\+F\+I\+L\+E\+\_\+\+\_\+, \+\_\+\+\_\+\+L\+I\+N\+E\+\_\+\+\_\+, \+\_\+\+\_\+\+V\+A\+\_\+\+A\+R\+G\+S\+\_\+\+\_\+);}
+

@@ -1,0 +1,116 @@
+\hypertarget{classtf_1_1Node}{}\section{tf\+:\+:Node Class Reference}
+\label{classtf_1_1Node}\index{tf\+::\+Node@{tf\+::\+Node}}
+
+
+{\ttfamily \#include $<$graph.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classtf_1_1Node_a6b1092cf320099a755253a6272d71e66}{Node} ()
+\item 
+{\footnotesize template$<$typename C $>$ }\\\hyperlink{classtf_1_1Node_ac4f83d80151907262972711fdfdcb177}{Node} (C \&\&)
+\item 
+const std\+::string \& \hyperlink{classtf_1_1Node_a0214bc98366d4c24a1cae941cdffe119}{name} () const
+\item 
+void \hyperlink{classtf_1_1Node_a753839c8159372098e7f48158229865c}{precede} (\hyperlink{classtf_1_1Node}{Node} \&)
+\item 
+void \hyperlink{classtf_1_1Node_a5b52f4d47173b28917d7361ea8af06d3}{dump} (std\+::ostream \&) const
+\item 
+size\+\_\+t \hyperlink{classtf_1_1Node_a7133911e093d82e5f5edd73124b60c6a}{num\+\_\+successors} () const
+\item 
+size\+\_\+t \hyperlink{classtf_1_1Node_abbb6a85cc8f62682ce8c78ad9851c0e5}{num\+\_\+dependents} () const
+\item 
+std\+::string \hyperlink{classtf_1_1Node_a0e398a8d70354ff11619bf5e603cbeb7}{dump} () const
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classtf_1_1Node_aaa7728226b6ce66782e8816b1658dd9a}{Task}
+\item 
+class \hyperlink{classtf_1_1Node_acd2b8699ab7559c0da687cd775e2c778}{Topology}
+\item 
+{\footnotesize template$<$template$<$ typename... $>$ typename E$>$ }\\class \hyperlink{classtf_1_1Node_ab3ad8c5c7ed22c3fbd8a41b84db75083}{Basic\+Taskflow}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classtf_1_1Node_a6b1092cf320099a755253a6272d71e66}\label{classtf_1_1Node_a6b1092cf320099a755253a6272d71e66}} 
+\index{tf\+::\+Node@{tf\+::\+Node}!Node@{Node}}
+\index{Node@{Node}!tf\+::\+Node@{tf\+::\+Node}}
+\subsubsection{\texorpdfstring{Node()}{Node()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily tf\+::\+Node\+::\+Node (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtf_1_1Node_ac4f83d80151907262972711fdfdcb177}\label{classtf_1_1Node_ac4f83d80151907262972711fdfdcb177}} 
+\index{tf\+::\+Node@{tf\+::\+Node}!Node@{Node}}
+\index{Node@{Node}!tf\+::\+Node@{tf\+::\+Node}}
+\subsubsection{\texorpdfstring{Node()}{Node()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename C $>$ \\
+tf\+::\+Node\+::\+Node (\begin{DoxyParamCaption}\item[{C \&\&}]{c }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classtf_1_1Node_a5b52f4d47173b28917d7361ea8af06d3}\label{classtf_1_1Node_a5b52f4d47173b28917d7361ea8af06d3}} 
+\index{tf\+::\+Node@{tf\+::\+Node}!dump@{dump}}
+\index{dump@{dump}!tf\+::\+Node@{tf\+::\+Node}}
+\subsubsection{\texorpdfstring{dump()}{dump()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void tf\+::\+Node\+::dump (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{os }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtf_1_1Node_a0e398a8d70354ff11619bf5e603cbeb7}\label{classtf_1_1Node_a0e398a8d70354ff11619bf5e603cbeb7}} 
+\index{tf\+::\+Node@{tf\+::\+Node}!dump@{dump}}
+\index{dump@{dump}!tf\+::\+Node@{tf\+::\+Node}}
+\subsubsection{\texorpdfstring{dump()}{dump()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily std\+::string tf\+::\+Node\+::dump (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtf_1_1Node_a0214bc98366d4c24a1cae941cdffe119}\label{classtf_1_1Node_a0214bc98366d4c24a1cae941cdffe119}} 
+\index{tf\+::\+Node@{tf\+::\+Node}!name@{name}}
+\index{name@{name}!tf\+::\+Node@{tf\+::\+Node}}
+\subsubsection{\texorpdfstring{name()}{name()}}
+{\footnotesize\ttfamily const std\+::string \& tf\+::\+Node\+::name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtf_1_1Node_abbb6a85cc8f62682ce8c78ad9851c0e5}\label{classtf_1_1Node_abbb6a85cc8f62682ce8c78ad9851c0e5}} 
+\index{tf\+::\+Node@{tf\+::\+Node}!num\+\_\+dependents@{num\+\_\+dependents}}
+\index{num\+\_\+dependents@{num\+\_\+dependents}!tf\+::\+Node@{tf\+::\+Node}}
+\subsubsection{\texorpdfstring{num\+\_\+dependents()}{num\_dependents()}}
+{\footnotesize\ttfamily size\+\_\+t tf\+::\+Node\+::num\+\_\+dependents (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtf_1_1Node_a7133911e093d82e5f5edd73124b60c6a}\label{classtf_1_1Node_a7133911e093d82e5f5edd73124b60c6a}} 
+\index{tf\+::\+Node@{tf\+::\+Node}!num\+\_\+successors@{num\+\_\+successors}}
+\index{num\+\_\+successors@{num\+\_\+successors}!tf\+::\+Node@{tf\+::\+Node}}
+\subsubsection{\texorpdfstring{num\+\_\+successors()}{num\_successors()}}
+{\footnotesize\ttfamily size\+\_\+t tf\+::\+Node\+::num\+\_\+successors (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtf_1_1Node_a753839c8159372098e7f48158229865c}\label{classtf_1_1Node_a753839c8159372098e7f48158229865c}} 
+\index{tf\+::\+Node@{tf\+::\+Node}!precede@{precede}}
+\index{precede@{precede}!tf\+::\+Node@{tf\+::\+Node}}
+\subsubsection{\texorpdfstring{precede()}{precede()}}
+{\footnotesize\ttfamily void tf\+::\+Node\+::precede (\begin{DoxyParamCaption}\item[{\hyperlink{classtf_1_1Node}{Node} \&}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{classtf_1_1Node_ab3ad8c5c7ed22c3fbd8a41b84db75083}\label{classtf_1_1Node_ab3ad8c5c7ed22c3fbd8a41b84db75083}} 
+\index{tf\+::\+Node@{tf\+::\+Node}!Basic\+Taskflow@{Basic\+Taskflow}}
+\index{Basic\+Taskflow@{Basic\+Taskflow}!tf\+::\+Node@{tf\+::\+Node}}
+\subsubsection{\texorpdfstring{Basic\+Taskflow}{BasicTaskflow}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+friend class \hyperlink{classtf_1_1BasicTaskflow}{Basic\+Taskflow}\hspace{0.3cm}{\ttfamily [friend]}}
+
+\mbox{\Hypertarget{classtf_1_1Node_aaa7728226b6ce66782e8816b1658dd9a}\label{classtf_1_1Node_aaa7728226b6ce66782e8816b1658dd9a}} 
+\index{tf\+::\+Node@{tf\+::\+Node}!Task@{Task}}
+\index{Task@{Task}!tf\+::\+Node@{tf\+::\+Node}}
+\subsubsection{\texorpdfstring{Task}{Task}}
+{\footnotesize\ttfamily friend class \hyperlink{classtf_1_1Task}{Task}\hspace{0.3cm}{\ttfamily [friend]}}
+
+\mbox{\Hypertarget{classtf_1_1Node_acd2b8699ab7559c0da687cd775e2c778}\label{classtf_1_1Node_acd2b8699ab7559c0da687cd775e2c778}} 
+\index{tf\+::\+Node@{tf\+::\+Node}!Topology@{Topology}}
+\index{Topology@{Topology}!tf\+::\+Node@{tf\+::\+Node}}
+\subsubsection{\texorpdfstring{Topology}{Topology}}
+{\footnotesize\ttfamily friend class \hyperlink{classtf_1_1Topology}{Topology}\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/twhuang/\+Ph\+D/\+Code/cpp-\/taskflow/taskflow/graph/\hyperlink{graph_8hpp}{graph.\+hpp}\end{DoxyCompactItemize}

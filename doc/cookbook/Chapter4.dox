@@ -1,0 +1,285 @@
+namespace tf {
+
+/** @page chapter4 C4: Create a Parallel Reduction Graph
+
+Parallel tasks normally produce some quantity that needs to be combined or *reduced*
+through particular operations, for instance, sum.
+In this chapter, we are going to demonstrate how to use Cpp-Taskflow
+to parallelize a reduction workload.
+
+
+@section ReduceARangeOfItemsToASingleResult Reduce a Range of Items to a Single Result
+
+The most common reduction method Taskflow::reduce(I beg, I end, T& result, B&& bop) 
+create a reduction graph that 
+reduces a range of items to a single result through a binary operator.
+
+@code{.cpp}
+ 1: tf::Taskflow tf(4);
+ 2:
+ 3: std::vector<int> items {1, 2, 3, 4, 5, 6, 7, 8};
+ 4: int sum {0};
+ 5:
+ 6: auto [S, T] = tf.reduce(items.begin(), items.end(), sum, [] (int a, int b) {
+ 7:   return a + b;
+ 8: });
+ 9:
+10: S.name("S");
+11: T.name("T");
+12:
+13: tf.wait_for_all();
+14:
+15: std::cout << "sum = " << sum << std::endl;    // 36
+@endcode
+
+Debrief:
+
+@li Line 1 creates a taskflow object with 4 worker threads
+@li Line 3 creates a vector of integers
+@li Line 4 declares an integer variable @c sum and initializes it to zero
+@li Line 6-8 constructs a reduction graph that sums up all integer itmes and stores the final result in @c sum
+@li Line 10-11 names the two synchronization points
+@li Line 13 dispatches the graph for execution
+@li Line 15 prints out the final reduction value
+
+The task dependency graph of this example is shown below:
+
+@image html reduce1.png width=60%
+
+Taskflow partitions and distributes the workload evenly across all workers
+for all reduction methods.
+In this example, each internal node sums up two integers and 
+the target node @c T combine all results returned by the internal nodes to a single value.
+
+
+@section TransformAndReduce Transform and Reduce
+
+It is common to transform each item into a new data type and
+then perform reduction on the transformed sequences.
+Taskflow provides a method, Taskflow::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop), 
+that fuses these two operators together to save memory reads and writes.
+The example below takes a string and transforms each digit to an integer number,
+and then applies reduction to sum up all integer numbers.
+
+@code{.cpp}
+ 1: std::string str = "12345678";
+ 2: int sum {0};
+ 3:
+ 4: auto [S, T] = tf.transform_reduce(str.begin(), str.end(), sum,
+ 5:   [] (int a, int b) {
+ 6:     return a + b;
+ 7:   },  
+ 8:   [] (char c) -> int {
+ 9:     return c - '0';
+10:   }   
+11: ); 
+12:
+13: // sum will be 36 after execution
+@endcode
+
+Debrief:
+
+@li Line 1 creates a string of eight digits
+@li Line 2 declares an integer variables and initializes it to zero
+@li Line 4-11 constructs a reduction graph that converts each character of the string into an integer and computes the sum of all integers
+
+Taskflow has another overload 
+Taskflow::transform_reduce(I beg, I end, T& result, B&& bop1, P&& bop2, U&& uop) 
+that takes an additional binary operator @c bop2 
+to combine the result of @c uop and the dereferencing of an input iterator
+to a data type that is acceptable as input to @c bop1.
+This is useful when extra computation is required during the reduction process.
+
+@code{.cpp}
+ 1: std::string str = "12345678";
+ 2:
+ 3: double sum {0};
+ 4:
+ 5: auto [S, T] = tf.transform_reduce(str.begin(), str.end(), sum,
+ 6:   [] (double a, double b) {
+ 7:     return a + b;
+ 8:   },  
+ 9:   [] (double a, char c) -> double {
+10:     return a + (c - '0');
+11:   },  
+12:   [] (char c) -> double {
+13:     return static_cast<double>(c - '0');
+14:   }   
+15: );  
+16:
+17: // sum will be 36 after execution
+@endcode
+
+Debrief:
+
+@li Line 1 creates a string of eight digits
+@li Line 3 declares an integer variable and initializes it to zero
+@li Line 5 constructs a reduction graph that represents the reduction workload
+@li Line 6-8 takes a binary operator to combine two transformed data
+@li Line 9-11 takes a binary operator to combine one raw data together with a transformed data
+@li Line 12-14 takes a unary operator to transform one raw data to the reduced data type 
+
+The difference between the two overloads appears in the second binary operator.
+Instead of converting every item to the reduced data type,
+this binary operator provides a more fine-grained control over reduction.
+
+
+@section Chapter4Example1 Example 1: Find the Min/Max Element
+
+One common workload of using reduce is to find the minimum or the maximum
+element in a range of items.
+This example demonstrates how to use the method Taskflow::reduce to find the 
+minimum element in a data set.
+
+@code{.cpp}
+ 1: #include <taskflow/taskflow.hpp>
+ 2:
+ 3: int main() {
+ 4:
+ 5:   tf::Taskflow tf(4);
+ 6:
+ 7:   std::vector<int> items {4, 2, 1, 3, 7, 8, 6, 5};
+ 8:   int min = std::numeric_limits<int>::max();
+ 9:
+10:   tf.reduce(items.begin(), items.end(), min, [] (int a, int b) {
+11:     return std::min(a, b);
+12:   });
+13:
+14:   tf.wait_for_all();
+15:
+16:   std::cout << min << std::endl;  // 1
+17:
+18:   return 0;
+19: }
+@endcode
+
+Similarly, the example below finds the maximum element in a data set.
+
+@code{.cpp}
+ 1: #include <taskflow/taskflow.hpp>
+ 2:
+ 3: int main() {
+ 4:
+ 5:   tf::Taskflow tf(4);
+ 6:
+ 7:   std::vector<int> items {4, 2, 1, 3, 7, 8, 6, 5};
+ 8:   int max = std::numeric_limits<int>::min();
+ 9:
+10:   tf.reduce(items.begin(), items.end(), max, [] (int a, int b) {
+11:     return std::max(a, b);
+12:   });
+13:
+14:   tf.wait_for_all();
+15:
+16:   std::cout << max << std::endl;  // 8
+17:
+18:   return 0;
+19: }
+@endcode
+
+
+@section Chapter4Example2 Example 2: Pipeline a Reduction Graph
+
+The Taskflow::reduce method returns a task pair as two synchronization points 
+of the reduction graph
+which can be used to pipeline with other tasks.
+The example below demonstrates how to pipeline a reduction graph with other tasks.
+
+@code{.cpp}
+ 1: #include <taskflow/taskflow.hpp>
+ 2:
+ 3: int main() {
+ 4:
+ 5:   tf::Taskflow tf(4);
+ 6:
+ 7:   std::vector<int> items{1024};
+ 8:   int min = std::numeric_limits<int>::max();
+ 9:
+10:   auto T1 = tf.silent_emplace([&] () {  // modifier task
+11:     for(auto& item : items) {
+12:       item = ::rand();
+13:     }
+14:   });
+15:
+16:   auto [S, T] = tf.reduce(items.begin(), items.end(), min, [] (int a, int b) {
+17:     return std::min(a, b);
+18:   });
+19:
+20:   auto T2 = tf.silent_emplace([&] () {  // printer task
+21:     std::cout << "min is " << min << std::endl;
+22:   });
+23:
+24:   T1.precede(S);    // modifier task precedes the reducer
+25:   T.precede(T2);    // reducer precedes the printer task
+26:
+27:   tf.wait_for_all();
+28:
+29:   return 0;
+30: }
+@endcode
+
+Debrief:
+@li Line 5 creates a taskflow object with four worker threads
+@li Line 7 creates a vector of 1024 uninitialized integers
+@li Line 8 creates an integer value and initializes it to the maximum representable value of @c int
+@li Line 10-14 creates a modifier task that initializes the vector to random integer values
+@li Line 16-18 creates a reduction graph to find the minimum element in the vector
+@li Line 20-22 creates a task that prints the minimum value found after the reduction finishes
+@li Line 24-25 adds two dependency links to implement our control flow
+@li Line 27 dispatches the task dependency graph to threads and waits until the execution completes
+
+In the reduction graph,
+each worker thread applies the give reduce operator
+to a partition of 1024/4 = 512 items.
+The final minimum value is stored in the variable @c min.
+Since the variable @c min participates in the reduction process,
+it is users' responsibility to initialize it to a proper value.
+
+@section Chapter4Example3 Example 3: Find the Minimum L1-norm
+
+The example below applies the method Taskflow::transform_reduce
+to find the minimum L1-norm out of a point set.
+
+@code{.cpp}
+ 1: #include <taskflow/taskflow.hpp>
+ 2: 
+ 3: struct Point {
+ 4:   int x1 {::rand() % 10 - 5};   // random value
+ 5:   int x2 {::rand() % 10 - 5};   // random value
+ 6: };
+ 7: 
+ 8: int main() {
+ 9: 
+10:   tf::Taskflow tf(4);
+11: 
+12:   std::vector<Point> points {1024};
+13:   int min = std::numeric_limits<int>::max();
+14: 
+15:   tf.transform_reduce(points.begin(), points.end(), min,
+16:     [] (int a, int b) {
+17:       return std::min(a, b);
+18:     },
+19:     [] (const Point& point) -> int {    // Find the L1-norm of the point
+20:       return std::abs(point.x1) + std::abs(point.x2);
+21:     }
+22:   );
+23: 
+24:   tf.wait_for_all();
+25: 
+26:   return 0;
+27: }
+@endcode
+
+Debrief:
+@li Line 3-6 declares a point struct at 2D plane
+@li Line 10 creates a taskflow object with four worker threads
+@li Line 12 creates a vector of 1024 randomly initialized points
+@li Line 13 creates an integer value and initializes it to the maximum representable value of @c int
+@li Line 15-22 applies transform-reduce operation to find the point with the minimum L1 distance
+@li Line 24 dispatches the task dependency graph to threads and waits until the execution completes
+
+
+*/
+
+}
+

@@ -1,0 +1,94 @@
+\hypertarget{classtf_1_1SimpleThreadpool}{}\section{tf\+:\+:Simple\+Threadpool$<$ Closure $>$ Class Template Reference}
+\label{classtf_1_1SimpleThreadpool}\index{tf\+::\+Simple\+Threadpool$<$ Closure $>$@{tf\+::\+Simple\+Threadpool$<$ Closure $>$}}
+
+
+{\ttfamily \#include $<$simple\+\_\+threadpool.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classtf_1_1SimpleThreadpool_a15238417427ce5a8e80771f462e2f26e}{Simple\+Threadpool} (unsigned)
+\item 
+\hyperlink{classtf_1_1SimpleThreadpool_a673036c638ce061385c00a9f37c2151d}{$\sim$\+Simple\+Threadpool} ()
+\item 
+{\footnotesize template$<$typename... ArgsT$>$ }\\void \hyperlink{classtf_1_1SimpleThreadpool_ad64bf6fa31065d1f4ccfe22c20d29a51}{emplace} (ArgsT \&\&...)
+\item 
+void \hyperlink{classtf_1_1SimpleThreadpool_a30d6487677a85bdbe908d473ef9a9579}{batch} (std\+::vector$<$ Closure $>$ \&\&)
+\item 
+size\+\_\+t \hyperlink{classtf_1_1SimpleThreadpool_aed771a0ae0de0f30d143b122645acd46}{num\+\_\+tasks} () const
+\item 
+size\+\_\+t \hyperlink{classtf_1_1SimpleThreadpool_a4fec0216bb89a6ed2a9e59f2b1a4f01a}{num\+\_\+workers} () const
+\item 
+bool \hyperlink{classtf_1_1SimpleThreadpool_a7dedd805ca19fa696d5f6df42ae0fcf8}{is\+\_\+owner} () const
+\item 
+{\footnotesize template$<$typename... ArgsT$>$ }\\void \hyperlink{classtf_1_1SimpleThreadpool_abcd89eaa2c7bd7f4139587cb531229c2}{emplace} (ArgsT \&\&... args)
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classtf_1_1SimpleThreadpool_a15238417427ce5a8e80771f462e2f26e}\label{classtf_1_1SimpleThreadpool_a15238417427ce5a8e80771f462e2f26e}} 
+\index{tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}!Simple\+Threadpool@{Simple\+Threadpool}}
+\index{Simple\+Threadpool@{Simple\+Threadpool}!tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}}
+\subsubsection{\texorpdfstring{Simple\+Threadpool()}{SimpleThreadpool()}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+\hyperlink{classtf_1_1SimpleThreadpool}{tf\+::\+Simple\+Threadpool}$<$ Closure $>$\+::\hyperlink{classtf_1_1SimpleThreadpool}{Simple\+Threadpool} (\begin{DoxyParamCaption}\item[{unsigned}]{N }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+\mbox{\Hypertarget{classtf_1_1SimpleThreadpool_a673036c638ce061385c00a9f37c2151d}\label{classtf_1_1SimpleThreadpool_a673036c638ce061385c00a9f37c2151d}} 
+\index{tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}!````~Simple\+Threadpool@{$\sim$\+Simple\+Threadpool}}
+\index{````~Simple\+Threadpool@{$\sim$\+Simple\+Threadpool}!tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}}
+\subsubsection{\texorpdfstring{$\sim$\+Simple\+Threadpool()}{~SimpleThreadpool()}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+\hyperlink{classtf_1_1SimpleThreadpool}{tf\+::\+Simple\+Threadpool}$<$ Closure $>$\+::$\sim$\hyperlink{classtf_1_1SimpleThreadpool}{Simple\+Threadpool} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classtf_1_1SimpleThreadpool_a30d6487677a85bdbe908d473ef9a9579}\label{classtf_1_1SimpleThreadpool_a30d6487677a85bdbe908d473ef9a9579}} 
+\index{tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}!batch@{batch}}
+\index{batch@{batch}!tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}}
+\subsubsection{\texorpdfstring{batch()}{batch()}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+void \hyperlink{classtf_1_1SimpleThreadpool}{tf\+::\+Simple\+Threadpool}$<$ Closure $>$\+::batch (\begin{DoxyParamCaption}\item[{std\+::vector$<$ Closure $>$ \&\&}]{tasks }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtf_1_1SimpleThreadpool_ad64bf6fa31065d1f4ccfe22c20d29a51}\label{classtf_1_1SimpleThreadpool_ad64bf6fa31065d1f4ccfe22c20d29a51}} 
+\index{tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}!emplace@{emplace}}
+\index{emplace@{emplace}!tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}}
+\subsubsection{\texorpdfstring{emplace()}{emplace()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+template$<$typename... ArgsT$>$ \\
+void \hyperlink{classtf_1_1SimpleThreadpool}{tf\+::\+Simple\+Threadpool}$<$ Closure $>$\+::emplace (\begin{DoxyParamCaption}\item[{ArgsT \&\&}]{... }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtf_1_1SimpleThreadpool_abcd89eaa2c7bd7f4139587cb531229c2}\label{classtf_1_1SimpleThreadpool_abcd89eaa2c7bd7f4139587cb531229c2}} 
+\index{tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}!emplace@{emplace}}
+\index{emplace@{emplace}!tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}}
+\subsubsection{\texorpdfstring{emplace()}{emplace()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+template$<$typename... ArgsT$>$ \\
+void \hyperlink{classtf_1_1SimpleThreadpool}{tf\+::\+Simple\+Threadpool}$<$ Closure $>$\+::emplace (\begin{DoxyParamCaption}\item[{ArgsT \&\&...}]{args }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtf_1_1SimpleThreadpool_a7dedd805ca19fa696d5f6df42ae0fcf8}\label{classtf_1_1SimpleThreadpool_a7dedd805ca19fa696d5f6df42ae0fcf8}} 
+\index{tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}!is\+\_\+owner@{is\+\_\+owner}}
+\index{is\+\_\+owner@{is\+\_\+owner}!tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}}
+\subsubsection{\texorpdfstring{is\+\_\+owner()}{is\_owner()}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+bool \hyperlink{classtf_1_1SimpleThreadpool}{tf\+::\+Simple\+Threadpool}$<$ Closure $>$\+::is\+\_\+owner (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtf_1_1SimpleThreadpool_aed771a0ae0de0f30d143b122645acd46}\label{classtf_1_1SimpleThreadpool_aed771a0ae0de0f30d143b122645acd46}} 
+\index{tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}!num\+\_\+tasks@{num\+\_\+tasks}}
+\index{num\+\_\+tasks@{num\+\_\+tasks}!tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}}
+\subsubsection{\texorpdfstring{num\+\_\+tasks()}{num\_tasks()}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+size\+\_\+t \hyperlink{classtf_1_1SimpleThreadpool}{tf\+::\+Simple\+Threadpool}$<$ Closure $>$\+::num\+\_\+tasks (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtf_1_1SimpleThreadpool_a4fec0216bb89a6ed2a9e59f2b1a4f01a}\label{classtf_1_1SimpleThreadpool_a4fec0216bb89a6ed2a9e59f2b1a4f01a}} 
+\index{tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}!num\+\_\+workers@{num\+\_\+workers}}
+\index{num\+\_\+workers@{num\+\_\+workers}!tf\+::\+Simple\+Threadpool@{tf\+::\+Simple\+Threadpool}}
+\subsubsection{\texorpdfstring{num\+\_\+workers()}{num\_workers()}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+size\+\_\+t \hyperlink{classtf_1_1SimpleThreadpool}{tf\+::\+Simple\+Threadpool}$<$ Closure $>$\+::num\+\_\+workers (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/twhuang/\+Ph\+D/\+Code/cpp-\/taskflow/taskflow/threadpool/\hyperlink{simple__threadpool_8hpp}{simple\+\_\+threadpool.\+hpp}\end{DoxyCompactItemize}

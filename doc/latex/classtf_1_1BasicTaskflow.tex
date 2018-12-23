@@ -1,0 +1,218 @@
+\hypertarget{classtf_1_1BasicTaskflow}{}\section{tf\+:\+:Basic\+Taskflow$<$ E $>$ Class Template Reference}
+\label{classtf_1_1BasicTaskflow}\index{tf\+::\+Basic\+Taskflow$<$ E $>$@{tf\+::\+Basic\+Taskflow$<$ E $>$}}
+
+
+{\ttfamily \#include $<$basic\+\_\+taskflow.\+hpp$>$}
+
+
+
+Inheritance diagram for tf\+:\+:Basic\+Taskflow$<$ E $>$\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=198pt]{classtf_1_1BasicTaskflow__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for tf\+:\+:Basic\+Taskflow$<$ E $>$\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=198pt]{classtf_1_1BasicTaskflow__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+using \hyperlink{classtf_1_1BasicTaskflow_ab183cd063ba999ac62b5d4e9bb89247d}{Executor} = E$<$ Closure $>$
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classtf_1_1BasicTaskflow_ab077a9419b9cb6cbc9f9647c621c8c71}{Basic\+Taskflow} ()
+\item 
+\hyperlink{classtf_1_1BasicTaskflow_a005b6e5632ad3acd52406adf7d3e84e5}{Basic\+Taskflow} (unsigned)
+\item 
+\hyperlink{classtf_1_1BasicTaskflow_aa6301c0e9667a4a0ecd30f4d654ac135}{Basic\+Taskflow} (std\+::shared\+\_\+ptr$<$ \hyperlink{classtf_1_1BasicTaskflow_ab183cd063ba999ac62b5d4e9bb89247d}{Executor} $>$)
+\item 
+\hyperlink{classtf_1_1BasicTaskflow_ae820a9ab3cad471a591da4de749752ae}{$\sim$\+Basic\+Taskflow} ()
+\item 
+std\+::shared\+\_\+ptr$<$ \hyperlink{classtf_1_1BasicTaskflow_ab183cd063ba999ac62b5d4e9bb89247d}{Executor} $>$ \hyperlink{classtf_1_1BasicTaskflow_abe76e5288016861aaf1dafc0218d3084}{share\+\_\+executor} ()
+\item 
+std\+::shared\+\_\+future$<$ void $>$ \hyperlink{classtf_1_1BasicTaskflow_a848e425f67b49a8a7ac21f6b791999c5}{dispatch} ()
+\item 
+{\footnotesize template$<$typename C $>$ }\\std\+::shared\+\_\+future$<$ void $>$ \hyperlink{classtf_1_1BasicTaskflow_ae644520b734078d061e3ceafc7d982ad}{dispatch} (C \&\&)
+\item 
+void \hyperlink{classtf_1_1BasicTaskflow_a0126001a2bd8603af4827049578629cb}{silent\+\_\+dispatch} ()
+\item 
+{\footnotesize template$<$typename C $>$ }\\void \hyperlink{classtf_1_1BasicTaskflow_a8d27a4ec6768473a46460a39ba7c572c}{silent\+\_\+dispatch} (C \&\&)
+\item 
+void \hyperlink{classtf_1_1BasicTaskflow_a37ef86998f23ee7315be032c40fe815e}{wait\+\_\+for\+\_\+all} ()
+\item 
+void \hyperlink{classtf_1_1BasicTaskflow_a8f0ce2026118e97b83cbd727ed0932af}{wait\+\_\+for\+\_\+topologies} ()
+\item 
+void \hyperlink{classtf_1_1BasicTaskflow_aec75723fc4f48197bc92748ed8b12d2a}{dump} (std\+::ostream \&) const
+\item 
+void \hyperlink{classtf_1_1BasicTaskflow_a6ada71950f0e3384f2ab95814bbc7c3f}{dump\+\_\+topologies} (std\+::ostream \&) const
+\item 
+size\+\_\+t \hyperlink{classtf_1_1BasicTaskflow_a18341302575dcb719e455d84a738273f}{num\+\_\+nodes} () const
+\item 
+size\+\_\+t \hyperlink{classtf_1_1BasicTaskflow_a9cef9ee3d27ffc78bfa953c8ed25b559}{num\+\_\+workers} () const
+\item 
+size\+\_\+t \hyperlink{classtf_1_1BasicTaskflow_a7e97ed52d9d0470d2751f32748adb253}{num\+\_\+topologies} () const
+\item 
+std\+::string \hyperlink{classtf_1_1BasicTaskflow_a913a31040546bcf9d6e044580d170722}{dump} () const
+\item 
+std\+::string \hyperlink{classtf_1_1BasicTaskflow_ae4c67b7bc87564e8b5b309837f4b6d78}{dump\+\_\+topologies} () const
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_ab183cd063ba999ac62b5d4e9bb89247d}\label{classtf_1_1BasicTaskflow_ab183cd063ba999ac62b5d4e9bb89247d}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!Executor@{Executor}}
+\index{Executor@{Executor}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{Executor}{Executor}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+using \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::\hyperlink{classtf_1_1BasicTaskflow_ab183cd063ba999ac62b5d4e9bb89247d}{Executor} =  E$<$Closure$>$}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_ab077a9419b9cb6cbc9f9647c621c8c71}\label{classtf_1_1BasicTaskflow_ab077a9419b9cb6cbc9f9647c621c8c71}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!Basic\+Taskflow@{Basic\+Taskflow}}
+\index{Basic\+Taskflow@{Basic\+Taskflow}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{Basic\+Taskflow()}{BasicTaskflow()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+\hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::\hyperlink{classtf_1_1BasicTaskflow}{Basic\+Taskflow} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_a005b6e5632ad3acd52406adf7d3e84e5}\label{classtf_1_1BasicTaskflow_a005b6e5632ad3acd52406adf7d3e84e5}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!Basic\+Taskflow@{Basic\+Taskflow}}
+\index{Basic\+Taskflow@{Basic\+Taskflow}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{Basic\+Taskflow()}{BasicTaskflow()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+\hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::\hyperlink{classtf_1_1BasicTaskflow}{Basic\+Taskflow} (\begin{DoxyParamCaption}\item[{unsigned}]{N }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_aa6301c0e9667a4a0ecd30f4d654ac135}\label{classtf_1_1BasicTaskflow_aa6301c0e9667a4a0ecd30f4d654ac135}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!Basic\+Taskflow@{Basic\+Taskflow}}
+\index{Basic\+Taskflow@{Basic\+Taskflow}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{Basic\+Taskflow()}{BasicTaskflow()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+\hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::\hyperlink{classtf_1_1BasicTaskflow}{Basic\+Taskflow} (\begin{DoxyParamCaption}\item[{std\+::shared\+\_\+ptr$<$ \hyperlink{classtf_1_1BasicTaskflow_ab183cd063ba999ac62b5d4e9bb89247d}{Executor} $>$}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_ae820a9ab3cad471a591da4de749752ae}\label{classtf_1_1BasicTaskflow_ae820a9ab3cad471a591da4de749752ae}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!````~Basic\+Taskflow@{$\sim$\+Basic\+Taskflow}}
+\index{````~Basic\+Taskflow@{$\sim$\+Basic\+Taskflow}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{$\sim$\+Basic\+Taskflow()}{~BasicTaskflow()}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+\hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::$\sim$\hyperlink{classtf_1_1BasicTaskflow}{Basic\+Taskflow} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_a848e425f67b49a8a7ac21f6b791999c5}\label{classtf_1_1BasicTaskflow_a848e425f67b49a8a7ac21f6b791999c5}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!dispatch@{dispatch}}
+\index{dispatch@{dispatch}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{dispatch()}{dispatch()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+std\+::shared\+\_\+future$<$ void $>$ \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::dispatch (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_ae644520b734078d061e3ceafc7d982ad}\label{classtf_1_1BasicTaskflow_ae644520b734078d061e3ceafc7d982ad}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!dispatch@{dispatch}}
+\index{dispatch@{dispatch}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{dispatch()}{dispatch()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+template$<$typename C $>$ \\
+std\+::shared\+\_\+future$<$ void $>$ \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::dispatch (\begin{DoxyParamCaption}\item[{C \&\&}]{c }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_aec75723fc4f48197bc92748ed8b12d2a}\label{classtf_1_1BasicTaskflow_aec75723fc4f48197bc92748ed8b12d2a}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!dump@{dump}}
+\index{dump@{dump}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{dump()}{dump()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+void \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::dump (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{os }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_a913a31040546bcf9d6e044580d170722}\label{classtf_1_1BasicTaskflow_a913a31040546bcf9d6e044580d170722}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!dump@{dump}}
+\index{dump@{dump}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{dump()}{dump()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+std\+::string \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::dump (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_a6ada71950f0e3384f2ab95814bbc7c3f}\label{classtf_1_1BasicTaskflow_a6ada71950f0e3384f2ab95814bbc7c3f}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!dump\+\_\+topologies@{dump\+\_\+topologies}}
+\index{dump\+\_\+topologies@{dump\+\_\+topologies}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{dump\+\_\+topologies()}{dump\_topologies()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+void \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::dump\+\_\+topologies (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{os }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_ae4c67b7bc87564e8b5b309837f4b6d78}\label{classtf_1_1BasicTaskflow_ae4c67b7bc87564e8b5b309837f4b6d78}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!dump\+\_\+topologies@{dump\+\_\+topologies}}
+\index{dump\+\_\+topologies@{dump\+\_\+topologies}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{dump\+\_\+topologies()}{dump\_topologies()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+std\+::string \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::dump\+\_\+topologies (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_a18341302575dcb719e455d84a738273f}\label{classtf_1_1BasicTaskflow_a18341302575dcb719e455d84a738273f}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!num\+\_\+nodes@{num\+\_\+nodes}}
+\index{num\+\_\+nodes@{num\+\_\+nodes}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{num\+\_\+nodes()}{num\_nodes()}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+size\+\_\+t \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::num\+\_\+nodes (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_a7e97ed52d9d0470d2751f32748adb253}\label{classtf_1_1BasicTaskflow_a7e97ed52d9d0470d2751f32748adb253}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!num\+\_\+topologies@{num\+\_\+topologies}}
+\index{num\+\_\+topologies@{num\+\_\+topologies}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{num\+\_\+topologies()}{num\_topologies()}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+size\+\_\+t \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::num\+\_\+topologies (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_a9cef9ee3d27ffc78bfa953c8ed25b559}\label{classtf_1_1BasicTaskflow_a9cef9ee3d27ffc78bfa953c8ed25b559}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!num\+\_\+workers@{num\+\_\+workers}}
+\index{num\+\_\+workers@{num\+\_\+workers}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{num\+\_\+workers()}{num\_workers()}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+size\+\_\+t \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::num\+\_\+workers (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_abe76e5288016861aaf1dafc0218d3084}\label{classtf_1_1BasicTaskflow_abe76e5288016861aaf1dafc0218d3084}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!share\+\_\+executor@{share\+\_\+executor}}
+\index{share\+\_\+executor@{share\+\_\+executor}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{share\+\_\+executor()}{share\_executor()}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+std\+::shared\+\_\+ptr$<$ typename \hyperlink{classtf_1_1BasicTaskflow}{Basic\+Taskflow}$<$ E $>$\+::\hyperlink{classtf_1_1BasicTaskflow_ab183cd063ba999ac62b5d4e9bb89247d}{Executor} $>$ \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::share\+\_\+executor (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_a0126001a2bd8603af4827049578629cb}\label{classtf_1_1BasicTaskflow_a0126001a2bd8603af4827049578629cb}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!silent\+\_\+dispatch@{silent\+\_\+dispatch}}
+\index{silent\+\_\+dispatch@{silent\+\_\+dispatch}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{silent\+\_\+dispatch()}{silent\_dispatch()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+void \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::silent\+\_\+dispatch (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_a8d27a4ec6768473a46460a39ba7c572c}\label{classtf_1_1BasicTaskflow_a8d27a4ec6768473a46460a39ba7c572c}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!silent\+\_\+dispatch@{silent\+\_\+dispatch}}
+\index{silent\+\_\+dispatch@{silent\+\_\+dispatch}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{silent\+\_\+dispatch()}{silent\_dispatch()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+template$<$typename C $>$ \\
+void \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::silent\+\_\+dispatch (\begin{DoxyParamCaption}\item[{C \&\&}]{c }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_a37ef86998f23ee7315be032c40fe815e}\label{classtf_1_1BasicTaskflow_a37ef86998f23ee7315be032c40fe815e}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!wait\+\_\+for\+\_\+all@{wait\+\_\+for\+\_\+all}}
+\index{wait\+\_\+for\+\_\+all@{wait\+\_\+for\+\_\+all}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{wait\+\_\+for\+\_\+all()}{wait\_for\_all()}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+void \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::wait\+\_\+for\+\_\+all (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtf_1_1BasicTaskflow_a8f0ce2026118e97b83cbd727ed0932af}\label{classtf_1_1BasicTaskflow_a8f0ce2026118e97b83cbd727ed0932af}} 
+\index{tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}!wait\+\_\+for\+\_\+topologies@{wait\+\_\+for\+\_\+topologies}}
+\index{wait\+\_\+for\+\_\+topologies@{wait\+\_\+for\+\_\+topologies}!tf\+::\+Basic\+Taskflow@{tf\+::\+Basic\+Taskflow}}
+\subsubsection{\texorpdfstring{wait\+\_\+for\+\_\+topologies()}{wait\_for\_topologies()}}
+{\footnotesize\ttfamily template$<$template$<$ typename... $>$ typename E$>$ \\
+void \hyperlink{classtf_1_1BasicTaskflow}{tf\+::\+Basic\+Taskflow}$<$ E $>$\+::wait\+\_\+for\+\_\+topologies (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/twhuang/\+Ph\+D/\+Code/cpp-\/taskflow/taskflow/graph/\hyperlink{basic__taskflow_8hpp}{basic\+\_\+taskflow.\+hpp}\end{DoxyCompactItemize}

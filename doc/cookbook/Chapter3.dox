@@ -1,0 +1,243 @@
+namespace tf {
+
+/** @page chapter3 C3: Create a Parallel For-loop Graph
+
+Running a for-loop in parallel is the most fundamental building block in parallel programming.
+In this chapter, we are going to demonstrate how to use Cpp-Taskflow
+to create a task dependency graph of parallel for-loop.
+
+@section RangeBasedForLoop Range-based For-loop
+
+Cpp-Taskflow has a STL-style method Taskflow::parallel_for(I, I, C&&, size_t)
+that takes a range of items and applies a callable to each of the item in parallel.
+The method constructs a sub-graph representing this workload
+and returns a task pair as two synchronization points to this task pattern.
+
+@code{.cpp}
+ 1: tf::Taskflow tf(4);
+ 2:
+ 3: std::vector<int> items {1, 2, 3, 4, 5, 6, 7, 8};
+ 4:
+ 5: auto [S, T] = tf.parallel_for(items.begin(), items.end(), [] (int item) {
+ 6:   std::cout << std::this_thread::get_id() << " runs " << item << std::endl;
+ 7: });
+ 8:
+ 9: S.work([] () { std::cout << "S\n"; }).name("S");
+10: T.work([] () { std::cout << "T\n"; }).name("T");
+11:
+12: std::cout << tf.dump();
+13:
+14: tf.wait_for_all();
+@endcode
+
+The above code generates the following task dependency graph. 
+The label 0x56\* represents an internal task node to execute the callable object.
+By default, Cpp-Taskflow evenly partitions and distributes the workload 
+to all threads.
+In our example of eight tasks and four workers, each internal node is responsible for two items.
+
+@image html parallel_for1.png width=60%
+
+Debrief:
+@li Line 1 creates a taskflow object of four worker threads
+@li Line 3 creates a vector container of eight items
+@li Line 5-7 creates a parallel execution graph using the method @c parallel_for
+@li Line 9-10 names the synchronization tasks @c S and @c T
+@li Line 12 dumps the graph to a dot format which can be visualized through @GraphVizOnline
+@li Line 14 dispatches the graph to execution and blocks until the graph finishes
+
+Here is one possible output of this program:
+
+@code{.sh}
+S
+139931471636224 runs 1
+139931471636224 runs 2
+139931480028928 runs 7
+139931480028928 runs 8
+139931496814336 runs 3
+139931496814336 runs 4
+139931488421632 runs 5
+139931488421632 runs 6
+T
+@endcode
+
+@section PartitionTheWorkloadExplicitly Partition the Workload Explicitly
+
+By default, Cpp-Taskflow partitions the workload evenly across the workers.
+In some cases, it is useful to disable this feature and apply user-specified partition.
+The method @c parallel_for tasks an unsigned integer @c chunk as 
+the number of items in each partition.
+
+@code{.cpp}
+auto [S, T] = tf.parallel_for(items.begin(), items.end(), [] (int item) {
+  std::cout << std::this_thread::get_id() << " runs " << item << std::endl;
+}, 1);
+@endcode
+
+The above example will force each partition to run exactly one item.
+This can be useful when you have unbalanced workload
+and would like to enable more efficient parallelization.
+
+@image html parallel_for2.png width=100%
+
+You can leave the chunk size to 0 to use our default partition strategy.
+
+
+
+@section ConstructTheGraphExplicitly Construct the Graph Explicitly
+
+You can explicitly construct a dependency graph that represents a parallel execution 
+of a for-loop.
+using only the basic methods Taskflow::silent_emplace and Task::precede.
+
+
+@code{.cpp}
+auto S = tf.silent_emplace([] () {}).name("S");
+auto T = tf.silent_emplace([] () {}).name("T");
+
+for(auto item : items) {
+  auto task = tf.silent_emplace([item] () {
+    std::cout << std::this_thread::get_id() << " runs " << item << std::endl;
+  });
+  S.precede(task);
+  task.precede(T);
+}
+@endcode
+
+@section IndexBasedForLoop Index-based For-loop
+
+Cpp-Taskflow provides an overload Taskflow::parallel_for(I beg, I end, I step, C&& callable, size_t chunk) 
+to parallelize an index-based for-loop. 
+It takes three numbers @c beg, @c end, and @c step of the same type @c I
+and applies @c callable to each index in the range `[beg, end)` with 
+the step size @c step.
+
+@code{.cpp}
+1: tf.parallel_for(0, 10, 2, [] (int i) {
+2:   std::cout << "parallel on " << i << std::endl;
+3: });
+4: // print 0, 2, 4, 6, 8
+@endcode
+
+
+It also works on the opposite order with negative step size.
+
+@code{.cpp}
+1: tf.parallel_for(10, 0, -2, [] (int i) {
+2:   std::cout << "parallel on " << i << std::endl;
+3: });
+4: // print 10, 8, 6, 4, 2
+@endcode
+
+Similarly, you can specify a chunk size to group the works per thread.
+
+@code{.cpp}
+1: tf.parallel_for(0, 10, 2, [] (int i) {
+2:   std::cout << "parallel on " << i << std::endl;
+3: }, 2);
+4: // print 0, 2, 4, 6, 8 (three groups {0, 2}, {4, 6}, {8})
+@endcode
+
+By default, Cpp-Taskflow performs even partition across the number of available threads 
+if no group size is given.
+
+
+@section Chapter3Example1 Example 1: Parallel Map
+
+This example demonstrates how to use Taskflow::parallel_for
+to create a parallel map pattern.
+The map operator modifies each item in the container to one if it is an odd number,
+or zero if it is an even number.
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+
+int main() {
+
+  tf::Taskflow tf(4);
+
+  std::vector<int> items{1, 2, 3, 4, 5, 6, 7, 8};
+
+  tf.parallel_for(items.begin(), items.end(), [] (int& item) {
+    item = (item & 1) ? 1 : 0;
+  });
+
+  tf.wait_for_all();
+
+  for(auto item : items) {
+    std::cout << item << " ";
+  }
+
+  return 0;
+}
+@endcode
+
+The program outputs the following:
+
+@code{.sh}
+1 0 1 0 1 0 1 0 
+@endcode
+
+
+@section Chapter3Example2 Example 2: Pipeline a Parallel For-loop
+
+This example demonstrates how to pipeline a parallel-for workload
+with other tasks.
+
+@code{.cpp}
+ 1: #include <taskflow/taskflow.hpp>
+ 2:
+ 3: int main() {
+ 4:
+ 5:   tf::Taskflow tf(4);
+ 6:
+ 7:   std::vector<int> items(1024);
+ 8:   std::atomic<int> sum {0};
+ 9:
+10:   auto T1 = tf.silent_emplace([&] () {  // create a modifier task
+11:     for(auto& item : items) {
+12:       item = 1;
+13:     }
+14:   }).name("Create Items");
+15:
+16:   auto [S, T] = tf.parallel_for(items.begin(), items.end(), [&] (int item) {
+17:     sum.fetch_add(item, std::memory_order_relaxed);
+18:   }, 128);
+19:
+20:   auto T2 = tf.silent_emplace([&] () {  // create a output task
+21:     std::cout << "sum is: " << sum << std::endl;
+22:   }).name("Print Sum");
+23:
+24:   T1.precede(S);  // modifier precedes parallel-for
+25:   T.precede(T2);  // parallel-for precedes the output task
+26:
+27:   tf.wait_for_all();
+28:
+29:   return 0;
+30: }
+@endcode
+
+
+@image html parallel_for_example2.png width=100%
+
+
+The output of this programs is:
+
+@code{.sh}
+sum is: 1024
+@endcode
+
+Debrief:
+@li Line 5 creates a taskflow object with four worker threads
+@li Line 7 creates a vector of 1024 uninitialized integers
+@li Line 8 creates an atomic integer variable
+@li Line 10-14 creates a task that captures the vector to initialize all items to one
+@li Line 16-18 sums up all items with each thread running on a partition of 128 items (total 1024/128=8 partitions)
+@li Line 20-22 creates a task that outputs the summation value
+@li Line 24-25 pipelines the parallel-for workload with the two tasks
+@li Line 27 dispatches the graph to threads and blocks until the execution completes
+
+*/
+
+}
+

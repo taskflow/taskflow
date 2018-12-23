@@ -1,0 +1,32 @@
+\hypertarget{namespacestd_1_1detail}{}\section{std\+:\+:detail Namespace Reference}
+\label{namespacestd_1_1detail}\index{std\+::detail@{std\+::detail}}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structstd_1_1detail_1_1invoke__impl}{invoke\+\_\+impl}
+\item 
+struct \hyperlink{structstd_1_1detail_1_1invoke__impl_3_01MT_01B_1_1_5_01_4}{invoke\+\_\+impl$<$ M\+T B\+::$\ast$ $>$}
+\item 
+struct \hyperlink{structstd_1_1detail_1_1invoke__result}{invoke\+\_\+result}
+\item 
+struct \hyperlink{structstd_1_1detail_1_1invoke__result_3_01decltype_07void_07detail_1_1INVOKE_07std_1_1declval_3_86a9900dcd4a84f000244f479e0f71a8}{invoke\+\_\+result$<$ decltype(void(detail\+::\+I\+N\+V\+O\+K\+E(std\+::declval$<$ F $>$(), std\+::declval$<$ Args $>$()...))), F, Args... $>$}
+\item 
+struct \hyperlink{structstd_1_1detail_1_1is__reference__wrapper}{is\+\_\+reference\+\_\+wrapper}
+\item 
+struct \hyperlink{structstd_1_1detail_1_1is__reference__wrapper_3_01std_1_1reference__wrapper_3_01U_01_4_01_4}{is\+\_\+reference\+\_\+wrapper$<$ std\+::reference\+\_\+wrapper$<$ U $>$ $>$}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$class F , class... Args, class Fd  = typename std\+::decay$<$\+F$>$\+::type$>$ }\\auto \hyperlink{namespacestd_1_1detail_ac5263dda7d727dde5281b6b1da8ebb79}{I\+N\+V\+O\+KE} (F \&\&f, Args \&\&... args) -\/$>$ decltype(\hyperlink{structstd_1_1detail_1_1invoke__impl}{invoke\+\_\+impl}$<$ Fd $>$\+::call(std\+::forward$<$ F $>$(f), std\+::forward$<$ Args $>$(args)...))
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespacestd_1_1detail_ac5263dda7d727dde5281b6b1da8ebb79}\label{namespacestd_1_1detail_ac5263dda7d727dde5281b6b1da8ebb79}} 
+\index{std\+::detail@{std\+::detail}!I\+N\+V\+O\+KE@{I\+N\+V\+O\+KE}}
+\index{I\+N\+V\+O\+KE@{I\+N\+V\+O\+KE}!std\+::detail@{std\+::detail}}
+\subsubsection{\texorpdfstring{I\+N\+V\+O\+K\+E()}{INVOKE()}}
+{\footnotesize\ttfamily template$<$class F , class... Args, class Fd  = typename std\+::decay$<$\+F$>$\+::type$>$ \\
+auto std\+::detail\+::\+I\+N\+V\+O\+KE (\begin{DoxyParamCaption}\item[{F \&\&}]{f,  }\item[{Args \&\&...}]{args }\end{DoxyParamCaption}) -\/$>$  decltype(\hyperlink{structstd_1_1detail_1_1invoke__impl}{invoke\+\_\+impl}$<$ Fd $>$\+::call(std\+::forward$<$ F $>$(f), std\+::forward$<$ Args $>$(args)...))}
+

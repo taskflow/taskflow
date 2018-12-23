@@ -1,0 +1,94 @@
+\hypertarget{classtf_1_1WorkStealingThreadpool}{}\section{tf\+:\+:Work\+Stealing\+Threadpool$<$ Closure $>$ Class Template Reference}
+\label{classtf_1_1WorkStealingThreadpool}\index{tf\+::\+Work\+Stealing\+Threadpool$<$ Closure $>$@{tf\+::\+Work\+Stealing\+Threadpool$<$ Closure $>$}}
+
+
+{\ttfamily \#include $<$workstealing\+\_\+threadpool.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classtf_1_1WorkStealingThreadpool_a9069a604b03e3f4abd3f9e4668131581}{Work\+Stealing\+Threadpool} (unsigned)
+\item 
+\hyperlink{classtf_1_1WorkStealingThreadpool_aa18a26ff7202b289b983ce960d4ff5b9}{$\sim$\+Work\+Stealing\+Threadpool} ()
+\item 
+size\+\_\+t \hyperlink{classtf_1_1WorkStealingThreadpool_a8fab9139bf428a30f0be2b459f7a82ce}{num\+\_\+tasks} () const
+\item 
+size\+\_\+t \hyperlink{classtf_1_1WorkStealingThreadpool_a0069de0539feee6c7b211662211a81cc}{num\+\_\+workers} () const
+\item 
+bool \hyperlink{classtf_1_1WorkStealingThreadpool_ab9d2bb67582347321e44e98fa7bb95cc}{is\+\_\+owner} () const
+\item 
+{\footnotesize template$<$typename... ArgsT$>$ }\\void \hyperlink{classtf_1_1WorkStealingThreadpool_acdd4b5561fe85f1baa0afb9fd936116f}{emplace} (ArgsT \&\&...)
+\item 
+void \hyperlink{classtf_1_1WorkStealingThreadpool_af8aea2f24e9dd9de605080472568e644}{batch} (std\+::vector$<$ Closure $>$ \&\&)
+\item 
+{\footnotesize template$<$typename... ArgsT$>$ }\\void \hyperlink{classtf_1_1WorkStealingThreadpool_afc34fd5581ae10fe53bb2e388f6b9237}{emplace} (ArgsT \&\&... args)
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classtf_1_1WorkStealingThreadpool_a9069a604b03e3f4abd3f9e4668131581}\label{classtf_1_1WorkStealingThreadpool_a9069a604b03e3f4abd3f9e4668131581}} 
+\index{tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}!Work\+Stealing\+Threadpool@{Work\+Stealing\+Threadpool}}
+\index{Work\+Stealing\+Threadpool@{Work\+Stealing\+Threadpool}!tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}}
+\subsubsection{\texorpdfstring{Work\+Stealing\+Threadpool()}{WorkStealingThreadpool()}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+\hyperlink{classtf_1_1WorkStealingThreadpool}{tf\+::\+Work\+Stealing\+Threadpool}$<$ Closure $>$\+::\hyperlink{classtf_1_1WorkStealingThreadpool}{Work\+Stealing\+Threadpool} (\begin{DoxyParamCaption}\item[{unsigned}]{N }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtf_1_1WorkStealingThreadpool_aa18a26ff7202b289b983ce960d4ff5b9}\label{classtf_1_1WorkStealingThreadpool_aa18a26ff7202b289b983ce960d4ff5b9}} 
+\index{tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}!````~Work\+Stealing\+Threadpool@{$\sim$\+Work\+Stealing\+Threadpool}}
+\index{````~Work\+Stealing\+Threadpool@{$\sim$\+Work\+Stealing\+Threadpool}!tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}}
+\subsubsection{\texorpdfstring{$\sim$\+Work\+Stealing\+Threadpool()}{~WorkStealingThreadpool()}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+\hyperlink{classtf_1_1WorkStealingThreadpool}{tf\+::\+Work\+Stealing\+Threadpool}$<$ Closure $>$\+::$\sim$\hyperlink{classtf_1_1WorkStealingThreadpool}{Work\+Stealing\+Threadpool} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classtf_1_1WorkStealingThreadpool_af8aea2f24e9dd9de605080472568e644}\label{classtf_1_1WorkStealingThreadpool_af8aea2f24e9dd9de605080472568e644}} 
+\index{tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}!batch@{batch}}
+\index{batch@{batch}!tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}}
+\subsubsection{\texorpdfstring{batch()}{batch()}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+void \hyperlink{classtf_1_1WorkStealingThreadpool}{tf\+::\+Work\+Stealing\+Threadpool}$<$ Closure $>$\+::batch (\begin{DoxyParamCaption}\item[{std\+::vector$<$ Closure $>$ \&\&}]{tasks }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtf_1_1WorkStealingThreadpool_acdd4b5561fe85f1baa0afb9fd936116f}\label{classtf_1_1WorkStealingThreadpool_acdd4b5561fe85f1baa0afb9fd936116f}} 
+\index{tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}!emplace@{emplace}}
+\index{emplace@{emplace}!tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}}
+\subsubsection{\texorpdfstring{emplace()}{emplace()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+template$<$typename... ArgsT$>$ \\
+void \hyperlink{classtf_1_1WorkStealingThreadpool}{tf\+::\+Work\+Stealing\+Threadpool}$<$ Closure $>$\+::emplace (\begin{DoxyParamCaption}\item[{ArgsT \&\&}]{... }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtf_1_1WorkStealingThreadpool_afc34fd5581ae10fe53bb2e388f6b9237}\label{classtf_1_1WorkStealingThreadpool_afc34fd5581ae10fe53bb2e388f6b9237}} 
+\index{tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}!emplace@{emplace}}
+\index{emplace@{emplace}!tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}}
+\subsubsection{\texorpdfstring{emplace()}{emplace()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+template$<$typename... ArgsT$>$ \\
+void \hyperlink{classtf_1_1WorkStealingThreadpool}{tf\+::\+Work\+Stealing\+Threadpool}$<$ Closure $>$\+::emplace (\begin{DoxyParamCaption}\item[{ArgsT \&\&...}]{args }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtf_1_1WorkStealingThreadpool_ab9d2bb67582347321e44e98fa7bb95cc}\label{classtf_1_1WorkStealingThreadpool_ab9d2bb67582347321e44e98fa7bb95cc}} 
+\index{tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}!is\+\_\+owner@{is\+\_\+owner}}
+\index{is\+\_\+owner@{is\+\_\+owner}!tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}}
+\subsubsection{\texorpdfstring{is\+\_\+owner()}{is\_owner()}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+bool \hyperlink{classtf_1_1WorkStealingThreadpool}{tf\+::\+Work\+Stealing\+Threadpool}$<$ Closure $>$\+::is\+\_\+owner (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtf_1_1WorkStealingThreadpool_a8fab9139bf428a30f0be2b459f7a82ce}\label{classtf_1_1WorkStealingThreadpool_a8fab9139bf428a30f0be2b459f7a82ce}} 
+\index{tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}!num\+\_\+tasks@{num\+\_\+tasks}}
+\index{num\+\_\+tasks@{num\+\_\+tasks}!tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}}
+\subsubsection{\texorpdfstring{num\+\_\+tasks()}{num\_tasks()}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+size\+\_\+t \hyperlink{classtf_1_1WorkStealingThreadpool}{tf\+::\+Work\+Stealing\+Threadpool}$<$ Closure $>$\+::num\+\_\+tasks (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtf_1_1WorkStealingThreadpool_a0069de0539feee6c7b211662211a81cc}\label{classtf_1_1WorkStealingThreadpool_a0069de0539feee6c7b211662211a81cc}} 
+\index{tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}!num\+\_\+workers@{num\+\_\+workers}}
+\index{num\+\_\+workers@{num\+\_\+workers}!tf\+::\+Work\+Stealing\+Threadpool@{tf\+::\+Work\+Stealing\+Threadpool}}
+\subsubsection{\texorpdfstring{num\+\_\+workers()}{num\_workers()}}
+{\footnotesize\ttfamily template$<$typename Closure $>$ \\
+size\+\_\+t \hyperlink{classtf_1_1WorkStealingThreadpool}{tf\+::\+Work\+Stealing\+Threadpool}$<$ Closure $>$\+::num\+\_\+workers (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/twhuang/\+Ph\+D/\+Code/cpp-\/taskflow/taskflow/threadpool/\hyperlink{workstealing__threadpool_8hpp}{workstealing\+\_\+threadpool.\+hpp}\end{DoxyCompactItemize}
