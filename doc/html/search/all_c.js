@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['share_5fexecutor',['share_executor',['../classtf_1_1BasicTaskflow.html#abe76e5288016861aaf1dafc0218d3084',1,'tf::BasicTaskflow']]],
-  ['silent_5fdispatch',['silent_dispatch',['../classtf_1_1BasicTaskflow.html#a0126001a2bd8603af4827049578629cb',1,'tf::BasicTaskflow::silent_dispatch()'],['../classtf_1_1BasicTaskflow.html#a689a804c4d9f2afe06d558b4ef7e7d29',1,'tf::BasicTaskflow::silent_dispatch(C &amp;&amp;callable)']]],
-  ['silent_5femplace',['silent_emplace',['../classtf_1_1FlowBuilder.html#a7285613836c840e22b8511d447734c87',1,'tf::FlowBuilder::silent_emplace(C &amp;&amp;callable)'],['../classtf_1_1FlowBuilder.html#acf423e2775a25c2b8be4dce7dae8880a',1,'tf::FlowBuilder::silent_emplace(C &amp;&amp;... callables)']]],
-  ['simplethreadpool',['SimpleThreadpool',['../classtf_1_1SimpleThreadpool.html',1,'tf']]],
-  ['speculativethreadpool',['SpeculativeThreadpool',['../classtf_1_1SpeculativeThreadpool.html',1,'tf']]],
-  ['subflowbuilder',['SubflowBuilder',['../classtf_1_1SubflowBuilder.html',1,'tf']]]
+  ['parallel_5ffor',['parallel_for',['../classtf_1_1FlowBuilder.html#a84d411f16939bc158c5a90256e5d210e',1,'tf::FlowBuilder::parallel_for(I beg, I end, C &amp;&amp;callable, size_t chunk=0)'],['../classtf_1_1FlowBuilder.html#abe18f8824cba16cde03e0dea8fae14ac',1,'tf::FlowBuilder::parallel_for(I beg, I end, I step, C &amp;&amp;callable, size_t chunk=0)']]],
+  ['placeholder',['placeholder',['../classtf_1_1FlowBuilder.html#ac22f244fb2ec58809192faafa266c58c',1,'tf::FlowBuilder']]],
+  ['pop',['pop',['../classtf_1_1WorkStealingQueue.html#a1ba75ce446b149de97e62310851a243d',1,'tf::WorkStealingQueue']]],
+  ['precede',['precede',['../classtf_1_1FlowBuilder.html#af7c4a5d732d49bd63d554a92cd240f3f',1,'tf::FlowBuilder::precede()'],['../classtf_1_1Task.html#a8c78c453295a553c1c016e4062da8588',1,'tf::Task::precede()']]],
+  ['proactivethreadpool',['ProactiveThreadpool',['../classtf_1_1ProactiveThreadpool.html',1,'tf::ProactiveThreadpool&lt; Closure &gt;'],['../classtf_1_1ProactiveThreadpool.html#a103f23914e6b02b1163a74eddbce2e2d',1,'tf::ProactiveThreadpool::ProactiveThreadpool()']]],
+  ['push',['push',['../classtf_1_1WorkStealingQueue.html#aa54d323bb06b310e133820b60b3379fb',1,'tf::WorkStealingQueue']]]
 ];

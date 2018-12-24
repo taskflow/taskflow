@@ -7,7 +7,13 @@ namespace tf {
 /**
 @class Task
 
-@brief Task handle for users to modify and access a task's attributes.
+@brief Handle to modify and access a task.
+
+A Task is a wrapper of a node in a dependency graph. 
+It provides a set of methods for users to access and modify the attributes of 
+the task node,
+preventing direct access to the internal data storage.
+
 */
 class Task {
 
@@ -18,36 +24,111 @@ class Task {
 
   public:
     
+    /**
+    @brief constructs an empty task
+    */
     Task() = default;
-    Task(const Task&);
-    Task(Task&&);
 
+    /**
+    @brief constructs the task with the copy of the other task
+    */
+    Task(const Task& other);
+    
+    /**
+    @brief constructs the task with the content of the other task using move semantics
+
+    After the move, other is guaranteed to be empty
+    */
+    Task(Task&& other);
+    
+    /**
+    @brief replaces the contents with a copy of the other task
+    */
     Task& operator = (const Task&);
-
+    
+    /**
+    @brief queries the name of the task
+    */
     const std::string& name() const;
-
+    
+    /**
+    @brief queries the number of successors of the task
+    */
     size_t num_successors() const;
+
+    /**
+    @brief queries the number of predecessors of the task
+    */
     size_t num_dependents() const;
+    
+    /**
+    @brief assigns a name to the task
 
-    Task& name(const std::string&);
+    @param name a @std_string acceptable string
 
+    @return @c *this
+    */
+    Task& name(const std::string& name);
+
+    /**
+    @brief assigns a new callable object to the task
+
+    @tparam C callable object type
+
+    @param callable a callable object acceptable to @std_function
+
+    @return @c *this
+    */
     template <typename C>
-    Task& work(C&&);
+    Task& work(C&& callable);
+    
+    /**
+    @brief adds precedence links from this to other tasks
 
+    @tparam Ts... parameter pack
+
+    @param tasks... one or multiple tasks
+
+    @return @c *this
+    */
     template <typename... Ts>
-    Task& precede(Ts&&...);
+    Task& precede(Ts&&... tasks);
+    
+    /**
+    @brief adds precedence links from other tasks to this
+
+    @tparam Ts parameter pack 
+
+    @param tasks... one or multiple tasks
+
+    @return @c *this
+    */
+    template <typename... Ts>
+    Task& gather(Ts&&... tasks);
+    
+    /**
+    @brief adds precedence links from other tasks to this
+
+    @param tasks a vector of tasks
+
+    @return @c *this
+    */
+    Task& gather(std::vector<Task>& tasks);
+
+    /**
+    @brief adds precedence links from other tasks to this
+
+    @param tasks an initializer list of tasks
+
+    @return @c *this
+    */
+    Task& gather(std::initializer_list<Task> tasks);
     
     template <typename... Bs>
     Task& broadcast(Bs&&...);
     
     Task& broadcast(std::vector<Task>&);
     Task& broadcast(std::initializer_list<Task>);
-  
-    template <typename... Bs>
-    Task& gather(Bs&&...);
-
-    Task& gather(std::vector<Task>&);
-    Task& gather(std::initializer_list<Task>);
 
   private:
     

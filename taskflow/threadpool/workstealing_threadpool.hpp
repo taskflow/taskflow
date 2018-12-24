@@ -1,4 +1,7 @@
-// 2018/12/06- modified by Tsung-Wei Huang
+// 2018/12/24 - modified by Tsung-Wei Huang
+//   - refined the work balancing strategy 
+//
+// 2018/12/06 - modified by Tsung-Wei Huang
 //   - refactored the code
 //   - added load balancing strategy
 //   - removed the storage alignment in WorkStealingQueue
@@ -24,12 +27,18 @@
 
 namespace tf {
 
-// Class: WorkStealingQueue
-// Unbounded work stealing queue implementation based on the following paper:
-// David Chase and Yossi Lev. Dynamic circular work-stealing deque.
-// In SPAA ’05: Proceedings of the seventeenth annual ACM symposium
-// on Parallelism in algorithms and architectures, pages 21–28,
-// New York, NY, USA, 2005. ACM.
+/**
+@class: WorkStealingQueue
+
+@tparam T data type
+
+@brief Lock-free unbounded single-producer multiple-consumer queue.
+
+This class implements the work stealing queue described in the paper, 
+"Dynamic Circular Work-stealing Deque," SPAA, 2015.
+Only the queue owner can perform pop and push operations,
+while others can steal data from the queue.
+*/
 template <typename T>
 class WorkStealingQueue {
 
@@ -94,19 +103,62 @@ class WorkStealingQueue {
   //char _padding[cacheline_size];
 
   public:
+    
+    /**
+    @brief constructs the queue with a given capacity
 
-    WorkStealingQueue(int64_t = 4096);
+    @param capacity the capacity of the queue (must be power of 2)
+    */
+    WorkStealingQueue(int64_t capacity = 4096);
+
+    /**
+    @brief destructs the queue
+    */
     ~WorkStealingQueue();
-
+    
+    /**
+    @brief queries if the queue is empty at the time of this call
+    */
     bool empty() const noexcept;
-
+    
+    /**
+    @brief queries the number of items at the time of this call
+    */
     int64_t size() const noexcept;
+
+    /**
+    @brief queries the capacity of the queue
+    */
     int64_t capacity() const noexcept;
     
-    template <typename O>
-    void push(O&&);
+    /**
+    @brief inserts an item to the queue
 
+    Only the owner thread can insert an item to the queue. 
+    The operation can trigger the queue to resize its capacity 
+    if more space is required.
+
+    @tparam O data type 
+
+    @param item the item to perfect-forward to the queue
+    */
+    template <typename O>
+    void push(O&& item);
+    
+    /**
+    @brief pops out an item from the queue
+
+    Only the owner thread can pop out an item from the queue. 
+    The return can be a @std_nullopt if this operation failed (not necessary empty).
+    */
     std::optional<T> pop();
+
+    /**
+    @brief steals an item from the queue
+
+    Any threads can try to steal an item from the queue.
+    The return can be a @std_nullopt if this operation failed (not necessary empty).
+    */
     std::optional<T> steal();
 };
 
@@ -227,7 +279,14 @@ int64_t WorkStealingQueue<T>::capacity() const noexcept {
 // ----------------------------------------------------------------------------
 
 
-// Class: WorkStealingThreadpool
+/** 
+@class: WorkStealingThreadpool
+
+@brief Executor that implements an efficient work stealing algorithm.
+
+@tparam Closure closure type
+
+*/
 template <typename Closure>
 class WorkStealingThreadpool {
     
@@ -242,18 +301,48 @@ class WorkStealingThreadpool {
   };
 
   public:
+    
+    /**
+    @brief constructs the executor with a given number of worker threads
 
-    WorkStealingThreadpool(unsigned);
+    @param N the number of worker threads
+    */
+    explicit WorkStealingThreadpool(unsigned N);
+
+    /**
+    @brief destructs the executor
+
+    Destructing the executor will immediately force all worker threads to stop.
+    The executor does not guarantee all tasks to finish upon destruction.
+    */
     ~WorkStealingThreadpool();
     
+    /**
+    @brief queries the number of worker threads
+    */
     size_t num_workers() const;
-
+    
+    /**
+    @brief queries if the caller is the owner of the executor
+    */
     bool is_owner() const;
+    
+    /**
+    @brief constructs the closure in place in the executor
 
+    @tparam ArgsT... argument parameter pack
+
+    @param args... arguments to forward to the constructor of the closure
+    */
     template <typename... ArgsT>
-    void emplace(ArgsT&&...);
+    void emplace(ArgsT&&... args);
+    
+    /**
+    @brief moves a batch of closures to the executor
 
-    void batch(std::vector<Closure>&&);
+    @param closures a vector of closures to move
+    */
+    void batch(std::vector<Closure>&& closures);
 
   private:
     

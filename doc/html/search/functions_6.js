@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['num_5fnodes',['num_nodes',['../classtf_1_1BasicTaskflow.html#a18341302575dcb719e455d84a738273f',1,'tf::BasicTaskflow']]],
-  ['num_5ftopologies',['num_topologies',['../classtf_1_1BasicTaskflow.html#a7e97ed52d9d0470d2751f32748adb253',1,'tf::BasicTaskflow']]],
-  ['num_5fworkers',['num_workers',['../classtf_1_1BasicTaskflow.html#a9cef9ee3d27ffc78bfa953c8ed25b559',1,'tf::BasicTaskflow']]]
+  ['join',['join',['../classtf_1_1SubflowBuilder.html#a10cff676153ad0e83d15a33e8469f59e',1,'tf::SubflowBuilder']]],
+  ['joined',['joined',['../classtf_1_1SubflowBuilder.html#a7e6d76a68180e51cb4108f58a14d5216',1,'tf::SubflowBuilder']]]
 ];

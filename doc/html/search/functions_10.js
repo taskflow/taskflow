@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['wait_5ffor_5fall',['wait_for_all',['../classtf_1_1BasicTaskflow.html#a37ef86998f23ee7315be032c40fe815e',1,'tf::BasicTaskflow']]],
-  ['wait_5ffor_5ftopologies',['wait_for_topologies',['../classtf_1_1BasicTaskflow.html#a8f0ce2026118e97b83cbd727ed0932af',1,'tf::BasicTaskflow']]],
-  ['work',['work',['../classtf_1_1Task.html#a085349bd9ad5066579ce450c7bc78406',1,'tf::Task']]],
-  ['workstealingqueue',['WorkStealingQueue',['../classtf_1_1WorkStealingQueue.html#aa55d570fe0d29d68f080c328218a0421',1,'tf::WorkStealingQueue']]],
-  ['workstealingthreadpool',['WorkStealingThreadpool',['../classtf_1_1WorkStealingThreadpool.html#a9069a604b03e3f4abd3f9e4668131581',1,'tf::WorkStealingThreadpool']]]
+  ['_7ebasictaskflow',['~BasicTaskflow',['../classtf_1_1BasicTaskflow.html#ae820a9ab3cad471a591da4de749752ae',1,'tf::BasicTaskflow']]],
+  ['_7eproactivethreadpool',['~ProactiveThreadpool',['../classtf_1_1ProactiveThreadpool.html#aaf941a6716162ecc7f17978b9b2f459f',1,'tf::ProactiveThreadpool']]],
+  ['_7esimplethreadpool',['~SimpleThreadpool',['../classtf_1_1SimpleThreadpool.html#a673036c638ce061385c00a9f37c2151d',1,'tf::SimpleThreadpool']]],
+  ['_7especulativethreadpool',['~SpeculativeThreadpool',['../classtf_1_1SpeculativeThreadpool.html#a416d633cf5fa67c853473a4114fd51e8',1,'tf::SpeculativeThreadpool']]],
+  ['_7eworkstealingqueue',['~WorkStealingQueue',['../classtf_1_1WorkStealingQueue.html#acb22a49430fd235aa2ae4770d1cd662b',1,'tf::WorkStealingQueue']]],
+  ['_7eworkstealingthreadpool',['~WorkStealingThreadpool',['../classtf_1_1WorkStealingThreadpool.html#aa18a26ff7202b289b983ce960d4ff5b9',1,'tf::WorkStealingThreadpool']]]
 ];

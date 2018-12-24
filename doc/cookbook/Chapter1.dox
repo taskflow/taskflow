@@ -3,7 +3,7 @@ namespace tf {
 /** @page chapter1 C1: Understand the %Task
 
 In this chapter, we demonstrate the basic construct of 
-a task dependency graph - Task.
+a task dependency graph - tf::Task.
 
 @section WhatIsATask What is a Task?
 
@@ -12,9 +12,9 @@ It can be either
 a functor, a lambda expression, a bind expression, or a class objects with @c operator() overloaded.
 
 Cpp-Taskflow provides three methods, 
-Taskflow::placeholder, 
-Taskflow::silent_emplace, and 
-Taskflow::emplace to create a task.
+tf::Taskflow::placeholder, 
+tf::Taskflow::silent_emplace, and 
+tf::Taskflow::emplace to create a task.
 
 @code{.cpp}
 1: auto A = taskflow.placeholder();
@@ -66,7 +66,8 @@ For instance, the callable object must be copy constructible.
 
 @section AccessTheResultOfATask Access the Result of a Task
 
-Unlike Taskflow::silent_emplace, the method Taskflow::emplace returns a pair of a task handle 
+Unlike tf::Taskflow::silent_emplace, 
+the method tf::Taskflow::emplace returns a pair of a task handle 
 and a @std_future object to provide a mechanism to access the result when 
 the associated task finishes.
 This is particularly useful when you would like to pass data between tasks.
@@ -92,8 +93,8 @@ taskflow.wait_for_all();                     // never enter this line
 
 Cpp-Taskflow uses C++ structured binding coupled with tuple
 to make the creation of tasks simple.
-Both Taskflow::silent_emplace and Taskflow::emplace can accept arbitrary numbers of callable objects
-and create multiple tasks at one time.
+Both tf::Taskflow::silent_emplace and tf::Taskflow::emplace 
+accept many callable objects to create multiple tasks at one time.
 
 @code{.cpp}
 auto [A, B, C] = taskflow.silent_emplace(  // create three tasks in one call

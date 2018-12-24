@@ -1,11 +1,5 @@
 var searchData=
 [
-  ['share_5fexecutor',['share_executor',['../classtf_1_1BasicTaskflow.html#abe76e5288016861aaf1dafc0218d3084',1,'tf::BasicTaskflow']]],
-  ['silent_5fdispatch',['silent_dispatch',['../classtf_1_1BasicTaskflow.html#a0126001a2bd8603af4827049578629cb',1,'tf::BasicTaskflow::silent_dispatch()'],['../classtf_1_1BasicTaskflow.html#a8d27a4ec6768473a46460a39ba7c572c',1,'tf::BasicTaskflow::silent_dispatch(C &amp;&amp;)']]],
-  ['silent_5femplace',['silent_emplace',['../classtf_1_1FlowBuilder.html#af8cdada0684ce221c4c134e1504cabd6',1,'tf::FlowBuilder::silent_emplace(C &amp;&amp;)'],['../classtf_1_1FlowBuilder.html#ad313d46679d6e38c361dbe13c28cebf6',1,'tf::FlowBuilder::silent_emplace(C &amp;&amp;...)'],['../classtf_1_1FlowBuilder.html#abe0b13ab3bb54903c6ea6856101aae5b',1,'tf::FlowBuilder::silent_emplace(C &amp;&amp;... cs)']]],
-  ['simplethreadpool',['SimpleThreadpool',['../classtf_1_1SimpleThreadpool.html#a15238417427ce5a8e80771f462e2f26e',1,'tf::SimpleThreadpool']]],
-  ['size',['size',['../classtf_1_1FlowBuilder.html#ab0f3d86726d6e803dedeb2811bf811c3',1,'tf::FlowBuilder::size()'],['../classtf_1_1WorkStealingQueue.html#aada5323cb64e23796df418c5be124b29',1,'tf::WorkStealingQueue::size()']]],
-  ['speculativethreadpool',['SpeculativeThreadpool',['../classtf_1_1SpeculativeThreadpool.html#a53e172dd987e309b112c81072d56bf38',1,'tf::SpeculativeThreadpool']]],
-  ['steal',['steal',['../classtf_1_1WorkStealingQueue.html#a6b63dca550a2f576b92f05bdc2e03a74',1,'tf::WorkStealingQueue']]],
-  ['subflowbuilder',['SubflowBuilder',['../classtf_1_1SubflowBuilder.html#a74ae78a9e2f4c3280e39577dffecfbb6',1,'tf::SubflowBuilder::SubflowBuilder(Args &amp;&amp;...)'],['../classtf_1_1SubflowBuilder.html#a17303b7da88214fa10401d4a3e334070',1,'tf::SubflowBuilder::SubflowBuilder(Args &amp;&amp;... args)']]]
+  ['task',['Task',['../classtf_1_1Task.html#a5ed7ba63e8eeaa0f21fe08c80aa474ba',1,'tf::Task::Task()=default'],['../classtf_1_1Task.html#a53deffe60d7c758df4265aeb81063928',1,'tf::Task::Task(const Task &amp;other)'],['../classtf_1_1Task.html#ab34c47c73f97babccb6ee132fdb2661b',1,'tf::Task::Task(Task &amp;&amp;other)']]],
+  ['transform_5freduce',['transform_reduce',['../classtf_1_1FlowBuilder.html#a08d669f2286cb90fd5ba7dade1e93fef',1,'tf::FlowBuilder::transform_reduce(I beg, I end, T &amp;result, B &amp;&amp;bop, U &amp;&amp;uop)'],['../classtf_1_1FlowBuilder.html#a9b81ad3b206a63adff8b8bc423f8c425',1,'tf::FlowBuilder::transform_reduce(I beg, I end, T &amp;result, B &amp;&amp;bop1, P &amp;&amp;bop2, U &amp;&amp;uop)']]]
 ];

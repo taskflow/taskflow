@@ -35,7 +35,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Cpp-Taskflow
+   <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
    &#160;<span id="projectnumber">2.0.0</span>
    </div>
   </td>
@@ -116,7 +116,7 @@ Subflow</h1>
 <li>Line 20 dispatches the graph and waits until it finishes without cleaning up the topology </li>
 <li>Line 21 dumps the topology that represents the entire task dependency graph</li>
 </ul>
-<p>Line 7-13 is the main coding block to enable dynamic tasking. Cpp-Taskflow uses a <a href="https://en.cppreference.com/w/cpp/utility/variant">std::variant</a> date type to unify the interface of static tasking and dynamic tasking. The runtime will create a <a class="el" href="classtf_1_1SubflowBuilder.html" title="The building blocks of dynamic tasking. ">SubflowBuilder</a> passing it to task B, and spawn a dependency graph as described by the associated callable. This new subflow graph will be added to the topology to which its parent task B belongs to. Due to the property of dynamic tasking, we cannot dump its structure before execution. We will need to dispatch the graph first and call the method <a class="el" href="classtf_1_1BasicTaskflow.html#af17f2410531dfd08b0e55ef80a8f828d" title="dump the present topologies to a std::ostream in DOT format ">Taskflow::dump_topologies</a>.</p>
+<p>Line 7-13 is the main coding block to enable dynamic tasking. Cpp-Taskflow uses a <a href="https://en.cppreference.com/w/cpp/utility/variant">std::variant</a> date type to unify the interface of static tasking and dynamic tasking. The runtime will create a <a class="el" href="classtf_1_1SubflowBuilder.html" title="The building blocks of dynamic tasking. ">tf::SubflowBuilder</a> passing it to task B, and spawn a dependency graph as described by the associated callable. This new subflow graph will be added to the topology to which its parent task B belongs to. Due to the property of dynamic tasking, we cannot dump its structure before execution. We will need to dispatch the graph first and call the method <a class="el" href="classtf_1_1BasicTaskflow.html#af17f2410531dfd08b0e55ef80a8f828d" title="dumps the present topologies to a std::ostream in DOT format ">tf::Taskflow::dump_topologies</a>.</p>
 <h1><a class="anchor" id="DetachASubflow"></a>
 Detach a Subflow</h1>
 <p>By default, a spawned subflow joins its parent task. That is, all nodes of zero outgoing edges in the subflow will precede the parent task. This forces a subflow to follow the dependency constraints after its parent task. Having said that, you can detach a subflow from its parent task, allowing its execution to flow independently.</p>

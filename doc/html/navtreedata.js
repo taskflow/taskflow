@@ -25,6 +25,7 @@ var NAVTREE =
 [
   [ "Cpp-Taskflow", "index.html", [
     [ "Quick Start", "index.html", [
+      [ "Modern C++ Parallel Task Programming Library", "index.html#ModernCppParallelTaskProgrammingLibrary", null ],
       [ "How to Install Cpp-Taskflow?", "index.html#HowToInstallCppTaskflow", null ],
       [ "A Simple First Program", "index.html#ASimpleFirstProgram", null ],
       [ "Compile and Run Your First Program", "index.html#CompileAndRunYourFirstProgram", null ],
@@ -38,7 +39,9 @@ var NAVTREE =
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
-        [ "Functions", "functions_func.html", null ]
+        [ "Functions", "functions_func.html", null ],
+        [ "Typedefs", "functions_type.html", null ],
+        [ "Enumerations", "functions_enum.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [

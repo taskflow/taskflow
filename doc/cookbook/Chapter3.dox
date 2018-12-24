@@ -8,10 +8,11 @@ to create a task dependency graph of parallel for-loop.
 
 @section RangeBasedForLoop Range-based For-loop
 
-Cpp-Taskflow has a STL-style method Taskflow::parallel_for(I, I, C&&, size_t)
+Cpp-Taskflow has a STL-style method 
+tf::Taskflow::parallel_for(I beg, I end, C&& callable, size_t chunk)
 that takes a range of items and applies a callable to each of the item in parallel.
-The method constructs a sub-graph representing this workload
-and returns a task pair as two synchronization points to this task pattern.
+The method constructs a task dependency graph representing this workload
+and returns a task pair as two synchronization points to this task graph.
 
 @code{.cpp}
  1: tf::Taskflow taskflow;
@@ -32,7 +33,7 @@ and returns a task pair as two synchronization points to this task pattern.
 
 The above code generates the following task dependency graph. 
 The label 0x56\* represents an internal task node to execute the callable object.
-By default, Cpp-Taskflow evenly partitions and distributes the workload 
+By default (@c chunk=0), Cpp-Taskflow evenly partitions and distributes the workload 
 to all threads.
 In our example of eight tasks and four workers, each internal node is responsible for two items.
 
@@ -88,7 +89,7 @@ You can leave the chunk size to 0 to use our default partition strategy.
 
 You can explicitly construct a dependency graph that represents a parallel execution 
 of a for-loop.
-using only the basic methods Taskflow::silent_emplace and Task::precede.
+using only the basic methods tf::Taskflow::silent_emplace and tf::Task::precede.
 
 
 @code{.cpp}
@@ -106,7 +107,8 @@ for(auto item : items) {
 
 @section IndexBasedForLoop Index-based For-loop
 
-Cpp-Taskflow provides an overload Taskflow::parallel_for(I beg, I end, I step, C&& callable, size_t chunk) 
+Cpp-Taskflow provides an overload 
+tf::Taskflow::parallel_for(I beg, I end, I step, C&& callable, size_t chunk) 
 to parallelize an index-based for-loop. 
 It takes three numbers @c beg, @c end, and @c step of the same type @c I
 and applies @c callable to each index in the range `[beg, end)` with 
@@ -144,7 +146,7 @@ if no group size is given.
 
 @section Chapter3Example1 Example 1: Parallel Map
 
-This example demonstrates how to use Taskflow::parallel_for
+This example demonstrates how to use tf::Taskflow::parallel_for
 to create a parallel map pattern.
 The map operator modifies each item in the container to one if it is an odd number,
 or zero if it is an even number.

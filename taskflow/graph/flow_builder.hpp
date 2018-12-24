@@ -17,11 +17,11 @@ class FlowBuilder {
     FlowBuilder(Graph&);
     
     /**
-    @brief create a task from a given callable object
+    @brief creates a task from a given callable object
     
     @tparam C callable type
     
-    @param callable a callable object
+    @param callable a callable object acceptable to @std_function
 
     @return a @std_pair of Task handle and @std_future
     */
@@ -29,11 +29,11 @@ class FlowBuilder {
     auto emplace(C&& callable);
     
     /**
-    @brief create multiple tasks from a list of callable objects at one time
+    @brief creates multiple tasks from a list of callable objects at one time
     
-    @tparam C callable type
+    @tparam C... callable types
 
-    @param callables... a list of callable objects
+    @param callables one or multiple callable objects acceptable to @std_function
 
     @return a @std_tuple of pairs of Task Handle and @std_future
     */
@@ -41,11 +41,11 @@ class FlowBuilder {
     auto emplace(C&&... callables);
     
     /**
-    @brief create a task from a given callable object without access to the result
+    @brief creates a task from a given callable object without access to the result
     
     @tparam C callable type
     
-    @param callable a callable object 
+    @param callable a callable object acceptable to @std_function
 
     @return a Task handle
     */
@@ -53,11 +53,11 @@ class FlowBuilder {
     auto silent_emplace(C&& callable);
 
     /**
-    @brief create multiple tasks from a list of callable objects without access to the results
+    @brief creates multiple tasks from a list of callable objects without access to the results
     
-    @tparam C callable type
+    @tparam C... callable types
     
-    @param callables... a list of callable objects
+    @param callables one or multiple callable objects acceptable to @std_function
 
     @return a tuple of Task handles
     */
@@ -65,8 +65,11 @@ class FlowBuilder {
     auto silent_emplace(C&&... callables);
     
     /**
-    @brief apply a callable object to the dereferencing of every iterator in the range 
-           [beg, end) chunk-by-chunk
+    @brief constructs a task dependency graph of range-based parallel_for
+    
+    The task dependency graph applies a callable object 
+    to the dereferencing of every iterator 
+    in the range [beg, end) chunk-by-chunk.
 
     @tparam I input iterator type
     @tparam C callable type
@@ -76,14 +79,16 @@ class FlowBuilder {
     @param callable a callable object to be applied to 
     @param chunk number of works per thread
 
-    @return a pair of Task handles to the beginning and end of the graph
+    @return a pair of Task handles to the beginning and the end of the graph
     */
     template <typename I, typename C>
     std::pair<Task, Task> parallel_for(I beg, I end, C&& callable, size_t chunk = 0);
     
     /**
-    @brief apply a callable object to every index in the range [beg, end) with a step size
-           chunk-by-chunk
+    @brief constructs a task dependency graph of index-based parallel_for
+    
+    The task dependency graph applies a callable object to every index 
+    in the range [beg, end) with a step size chunk-by-chunk.
 
     @tparam I arithmetic index type
     @tparam C callable type
@@ -94,13 +99,15 @@ class FlowBuilder {
     @param callable a callable object to be applied to
     @param chunk number of works per thread
 
-    @return a pair of Task handles to the beginning and end of the graph
+    @return a pair of Task handles to the beginning and the end of the graph
     */
     template <typename I, typename C, std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr >
     std::pair<Task, Task> parallel_for(I beg, I end, I step, C&& callable, size_t chunk = 0);
     
     /**
-    @brief reduce items in the range [beg, end) to a single result
+    @brief construct a task dependency graph of parallel reduction
+    
+    The task dependency graph reduces items in the range [beg, end) to a single result.
     
     @tparam I input iterator type
     @tparam T data type
@@ -112,13 +119,16 @@ class FlowBuilder {
     @param bop    binary operator that will be applied in unspecified order to the result
                   of dereferencing the input iterator
     
-    @return a pair of Task handles to the beginning and end of the graph
+    @return a pair of Task handles to the beginning and the end of the graph
     */
     template <typename I, typename T, typename B>
     std::pair<Task, Task> reduce(I beg, I end, T& result, B&& bop);
     
     /**
-    @brief find the minimum item in the range [beg, end) through @std_min reduction
+    @brief constructs a task dependency graph of parallel reduction through @std_min
+    
+    The task dependency graph applies a parallel reduction
+    to find the minimum item in the range [beg, end) through @std_min reduction.
 
     @tparam I input iterator type
     @tparam T data type 
@@ -127,13 +137,16 @@ class FlowBuilder {
     @param end    iterator to the end (exclusive)
     @param result reference variable to store the final result
 
-    @return a pair of Task handles to the beginning and end of the graph
+    @return a pair of Task handles to the beginning and the end of the graph
     */
     template <typename I, typename T>
     std::pair<Task, Task> reduce_min(I beg, I end, T& result);
     
     /**
-    @brief find the maximum item in the range [beg, end) through @std_max reduction
+    @brief constructs a task dependency graph of parallel reduction through @std_max
+    
+    The task dependency graph applies a parallel reduction
+    to find the maximum item in the range [beg, end) through @std_max reduction.
 
     @tparam I input iterator type
     @tparam T data type 
@@ -142,14 +155,16 @@ class FlowBuilder {
     @param end    iterator to the end (exclusive)
     @param result reference variable to store the final result
 
-    @return a pair of Task handles to the beginning and end of the graph
+    @return a pair of Task handles to the beginning and the end of the graph
     */
     template <typename I, typename T>
     std::pair<Task, Task> reduce_max(I beg, I end, T& result);
     
     /** 
-    @brief transform each item in the range [beg, end) into a new data type and then
-           reduce the results
+    @brief constructs a task dependency graph of parallel transformation and reduction
+    
+    The task dependency graph transforms each item in the range [beg, end) 
+    into a new data type and then reduce the results.
 
     @tparam I input iterator type
     @tparam T data type
@@ -164,14 +179,16 @@ class FlowBuilder {
     @param uop    unary function object that transforms each element 
                   in the input range; the return type must be acceptable as input to @c bop
     
-    @return a pair of Task handles to the beginning and end of the graph
+    @return a pair of Task handles to the beginning and the end of the graph
     */
     template <typename I, typename T, typename B, typename U>
     std::pair<Task, Task> transform_reduce(I beg, I end, T& result, B&& bop, U&& uop);
     
     /**
-    @brief transform each item in the range [beg, end) into a new data type and then
-           apply two-layer reductions to derive the result
+    @brief constructs a task dependency graph of parallel transformation and reduction
+    
+    The task dependency graph transforms each item in the range [beg, end) 
+    into a new data type and then apply two-layer reductions to derive the result.
 
     @tparam I input iterator type
     @tparam T data type
@@ -189,20 +206,20 @@ class FlowBuilder {
     @param uop    unary function object that will be applied to transform an item to a new 
                   data type that is acceptable as input to @c bop2
     
-    @return a pair of Task handles to the beginning and end of the graph
+    @return a pair of Task handles to the beginning and the end of the graph
     */
     template <typename I, typename T, typename B, typename P, typename U>
     std::pair<Task, Task> transform_reduce(I beg, I end, T& result, B&& bop1, P&& bop2, U&& uop);
     
     /**
-    @brief create an empty task
+    @brief creates an empty task
 
     @return a Task handle
     */
     auto placeholder();
     
     /**
-    @brief add a dependency link from task A to task B
+    @brief adds a dependency link from task A to task B
     
     @param A task A
     @param B task B
@@ -210,7 +227,7 @@ class FlowBuilder {
     void precede(Task A, Task B);
 
     /**
-    @brief add adjacent dependency links to a linear list of tasks
+    @brief adds adjacent dependency links to a linear list of tasks
 
     @param tasks a vector of tasks
     */
@@ -224,7 +241,7 @@ class FlowBuilder {
     void linearize(std::initializer_list<Task> tasks);
 
     /**
-    @brief add dependency links from one task A to many tasks
+    @brief adds dependency links from one task A to many tasks
 
     @param A      task A
     @param others a task set which A precedes
@@ -232,7 +249,7 @@ class FlowBuilder {
     void broadcast(Task A, std::vector<Task>& others);
 
     /**
-    @brief add dependency links from one task A to many tasks
+    @brief adds dependency links from one task A to many tasks
 
     @param A      task A
     @param others a task set which A precedes
@@ -240,7 +257,7 @@ class FlowBuilder {
     void broadcast(Task A, std::initializer_list<Task> others);
 
     /**
-    @brief add dependency links from many tasks to one task A
+    @brief adds dependency links from many tasks to one task A
 
     @param others a task set to precede A
     @param A task A
@@ -248,7 +265,7 @@ class FlowBuilder {
     void gather(std::vector<Task>& others, Task A);
 
     /**
-    @brief add dependency links from many tasks to one task A
+    @brief adds dependency links from many tasks to one task A
 
     @param others a task set to precede A
     @param A task A
@@ -701,22 +718,22 @@ class SubflowBuilder : public FlowBuilder {
     SubflowBuilder(Args&&...);
     
     /**
-    @brief enable the subflow to join its parent task
+    @brief enables the subflow to join its parent task
     */
     void join();
 
     /**
-    @brief enable the subflow to detach from its parent task
+    @brief enables the subflow to detach from its parent task
     */
     void detach();
     
     /**
-    @brief query if the subflow is detached from its parent task
+    @brief queries if the subflow will be detached from its parent task
     */
     bool detached() const;
 
     /**
-    @brief query if the subflow joins its parent task
+    @brief queries if the subflow will join its parent task
     */
     bool joined() const;
 

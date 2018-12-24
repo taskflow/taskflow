@@ -35,7 +35,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Cpp-Taskflow
+   <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
    &#160;<span id="projectnumber">2.0.0</span>
    </div>
   </td>
@@ -106,6 +106,11 @@ $(document).ready(function(){initNavTree('structtf_1_1Error.html','');});
 <div class="title">tf::Error Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>The error category of taskflow.  
+ <a href="structtf_1_1Error.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="error_8hpp_source.html">error.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for tf::Error:</div>
 <div class="dyncontent">
@@ -119,28 +124,34 @@ Collaboration diagram for tf::Error:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:aad6732b815bfe4ae3cea402042ee43a3"><td class="memItemLeft" align="right" valign="top"><a id="aad6732b815bfe4ae3cea402042ee43a3"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Code</b> : int { <b>SUCCESS</b> = 0, 
+<tr class="memitem:aad6732b815bfe4ae3cea402042ee43a3"><td class="memItemLeft" align="right" valign="top"><a id="aad6732b815bfe4ae3cea402042ee43a3"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtf_1_1Error.html#aad6732b815bfe4ae3cea402042ee43a3">Code</a> : int { <b>SUCCESS</b> = 0, 
 <b>FLOW_BUILDER</b>, 
 <b>EXECUTOR</b>
  }</td></tr>
+<tr class="memdesc:aad6732b815bfe4ae3cea402042ee43a3"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structtf_1_1Error.html" title="The error category of taskflow. ">Error</a> code definition. <br /></td></tr>
 <tr class="separator:aad6732b815bfe4ae3cea402042ee43a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a18a5c2f16b543d5361e8a24554ebd12c"><td class="memItemLeft" align="right" valign="top"><a id="a18a5c2f16b543d5361e8a24554ebd12c"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>name</b> () const noexcept override final</td></tr>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtf_1_1Error.html#a18a5c2f16b543d5361e8a24554ebd12c">name</a> () const noexcept override final</td></tr>
+<tr class="memdesc:a18a5c2f16b543d5361e8a24554ebd12c"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the name of the taskflow error category <br /></td></tr>
 <tr class="separator:a18a5c2f16b543d5361e8a24554ebd12c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2d8630128262023502664f3cae5daab"><td class="memItemLeft" align="right" valign="top"><a id="ae2d8630128262023502664f3cae5daab"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>message</b> (int) const override final</td></tr>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtf_1_1Error.html#ae2d8630128262023502664f3cae5daab">message</a> (int) const override final</td></tr>
+<tr class="memdesc:ae2d8630128262023502664f3cae5daab"><td class="mdescLeft">&#160;</td><td class="mdescRight">query the human-readable string of each error code <br /></td></tr>
 <tr class="separator:ae2d8630128262023502664f3cae5daab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a2fdb64a058ea1ff03706d0cd69c36021"><td class="memItemLeft" align="right" valign="top"><a id="a2fdb64a058ea1ff03706d0cd69c36021"></a>
-static const std::error_category &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> ()</td></tr>
+static const std::error_category &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtf_1_1Error.html#a2fdb64a058ea1ff03706d0cd69c36021">get</a> ()</td></tr>
+<tr class="memdesc:a2fdb64a058ea1ff03706d0cd69c36021"><td class="mdescLeft">&#160;</td><td class="mdescRight">acquires the singleton instance of the taskflow error category <br /></td></tr>
 <tr class="separator:a2fdb64a058ea1ff03706d0cd69c36021"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The error category of taskflow. </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="error_8hpp_source.html">error.hpp</a></li>
 </ul>
 </div><!-- contents -->

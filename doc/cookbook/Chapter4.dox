@@ -10,8 +10,9 @@ to parallelize a reduction workload.
 
 @section ReduceARangeOfItemsToASingleResult Reduce a Range of Items to a Single Result
 
-The most common reduction method Taskflow::reduce(I beg, I end, T& result, B&& bop) 
-create a reduction graph that 
+tf::Taskflow::reduce(I beg, I end, T& result, B&& bop) 
+is the most common reduction method to
+create a task dependency graph that 
 reduces a range of items to a single result through a binary operator.
 
 @code{.cpp}
@@ -56,7 +57,8 @@ the target node @c T combine all results returned by the internal nodes to a sin
 
 It is common to transform each item into a new data type and
 then perform reduction on the transformed sequences.
-Taskflow provides a method, Taskflow::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop), 
+Taskflow provides a method, 
+tf::Taskflow::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop), 
 that fuses these two operators together to save memory reads and writes.
 The example below takes a string and transforms each digit to an integer number,
 and then applies reduction to sum up all integer numbers.
@@ -84,7 +86,7 @@ Debrief:
 @li Line 4-11 constructs a reduction graph that converts each character of the string into an integer and computes the sum of all integers
 
 Taskflow has another overload 
-Taskflow::transform_reduce(I beg, I end, T& result, B&& bop1, P&& bop2, U&& uop) 
+tf::Taskflow::transform_reduce(I beg, I end, T& result, B&& bop1, P&& bop2, U&& uop) 
 that takes an additional binary operator @c bop2 
 to combine the result of @c uop and the dereferencing of an input iterator
 to a data type that is acceptable as input to @c bop1.
@@ -128,7 +130,7 @@ this binary operator provides a more fine-grained control over reduction.
 
 One common workload of using reduce is to find the minimum or the maximum
 element in a range of items.
-This example demonstrates how to use the method Taskflow::reduce to find the 
+This example demonstrates how to use the method tf::Taskflow::reduce to find the 
 minimum element in a data set.
 
 @code{.cpp}
@@ -180,7 +182,7 @@ Similarly, the example below finds the maximum element in a data set.
 
 @section Chapter4Example2 Example 2: Pipeline a Reduction Graph
 
-The Taskflow::reduce method returns a task pair as two synchronization points 
+The tf::Taskflow::reduce method returns a task pair as two synchronization points 
 of the reduction graph
 which can be used to pipeline with other tasks.
 The example below demonstrates how to pipeline a reduction graph with other tasks.
@@ -237,7 +239,7 @@ it is users' responsibility to initialize it to a proper value.
 
 @section Chapter4Example3 Example 3: Find the Minimum L1-norm
 
-The example below applies the method Taskflow::transform_reduce
+The example below applies the method tf::Taskflow::transform_reduce
 to find the minimum L1-norm out of a point set.
 
 @code{.cpp}

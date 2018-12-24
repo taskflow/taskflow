@@ -43,5 +43,10 @@ var Cookbook =
       [ "Subflow", "chapter5.html#Subflow", null ],
       [ "Detach a Subflow", "chapter5.html#DetachASubflow", null ],
       [ "Nested Subflow", "chapter5.html#NestedSubflow", null ]
+    ] ],
+    [ "C6: Manage Threads and the Executor", "chapter6.html", [
+      [ "Master, Workers, and Executor", "chapter6.html#MasterWorkersAndExecutor", null ],
+      [ "Share an Executor among Taskflow Objects", "chapter6.html#ShareAnExecutorAmongTaskflowObjects", null ],
+      [ "Example 1: Impact of Over-subscription", "chapter6.html#Chapter6Example1", null ]
     ] ]
 ];

@@ -25,7 +25,7 @@ Cpp-Taskflow provides two ways to dispatch a task dependency graph,
 @section BlockingExecution Blocking Execution
 
 One way to dispatch the present task dependency graph
-is to use the method Taskflow::wait_for_all.
+is to use the method tf::Taskflow::wait_for_all.
 Calling @c wait_for_all dispatches the graph to threads and blocks the program flow
 until all tasks finish.
 
@@ -46,7 +46,7 @@ All topologies will be cleaned up as well.
 @section NonBlockingExecution Non-blocking Execution
 
 Another way to dispatch the present task dependency graph
-is to use the method Taskflow::dispatch or Taskflow::silent_dispatch.
+is to use the method tf::Taskflow::dispatch or tf::Taskflow::silent_dispatch.
 These two methods both dispatch the present graph to threads
 and return immediately without blocking the program flow.
 Non-blocking methods allow the program to perform other computations
@@ -84,7 +84,7 @@ taskflow.dispatch([&] () { assert(counter == 1); })
 @endcode
 
 If you do not care the status of a dispatched graph, 
-use the method Taskflow::silent_dispatch.
+use the method tf::Taskflow::silent_dispatch.
 This method does not return anything.
 
 @code{.cpp}
@@ -112,13 +112,14 @@ taskflow.silent_dispatch([&] () { assert(counter == 1); })
 
 @section WaitForTopologies Wait for Topologies
 
-Unlike Taskflow::wait_for_all, calling Taskflow::dispatch or Taskflow::silent_dispatch
+Unlike tf::Taskflow::wait_for_all, calling tf::Taskflow::dispatch or 
+tf::Taskflow::silent_dispatch
 will not clean up the topologies upon completion.
 This allows users to dump the graph structure, in particular, created from dynamic tasking
 to debug the dependency graph.
 However, it may be necessary at some points of the program
 to synchronize with the previously dispatched graphs.
-Cpp-Taskflow provides a method Taskflow::wait_for_topologies for this purpose.
+Cpp-Taskflow provides a method tf::Taskflow::wait_for_topologies for this purpose.
 
 @code{.cpp}
  1: tf::Taskflow taskflow(4);
@@ -148,7 +149,7 @@ Debrief
 
 It is clear now Line 9 overlaps the execution of the first graph.
 After Line 11, there are two topologies in the taskflow object.
-Calling the method Taskflow::wait_for_topologies blocks the
+Calling the method tf::Taskflow::wait_for_topologies blocks the
 program until both graph complete.
 
 

@@ -35,7 +35,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Cpp-Taskflow
+   <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
    &#160;<span id="projectnumber">2.0.0</span>
    </div>
   </td>
@@ -105,30 +105,171 @@ $(document).ready(function(){initNavTree('classtf_1_1WorkStealingThreadpool.html
 <div class="title">tf::WorkStealingThreadpool&lt; Closure &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Executor that implements an efficient work stealing algorithm.  
+ <a href="classtf_1_1WorkStealingThreadpool.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="workstealing__threadpool_8hpp_source.html">workstealing_threadpool.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9069a604b03e3f4abd3f9e4668131581"><td class="memItemLeft" align="right" valign="top"><a id="a9069a604b03e3f4abd3f9e4668131581"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>WorkStealingThreadpool</b> (unsigned)</td></tr>
-<tr class="separator:a9069a604b03e3f4abd3f9e4668131581"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf54ce350250acba7b632c2cdc1150bd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1WorkStealingThreadpool.html#adf54ce350250acba7b632c2cdc1150bd">WorkStealingThreadpool</a> (unsigned N)</td></tr>
+<tr class="memdesc:adf54ce350250acba7b632c2cdc1150bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs the executor with a given number of worker threads  <a href="#adf54ce350250acba7b632c2cdc1150bd">More...</a><br /></td></tr>
+<tr class="separator:adf54ce350250acba7b632c2cdc1150bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa18a26ff7202b289b983ce960d4ff5b9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1WorkStealingThreadpool.html#aa18a26ff7202b289b983ce960d4ff5b9">~WorkStealingThreadpool</a> ()</td></tr>
+<tr class="memdesc:aa18a26ff7202b289b983ce960d4ff5b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">destructs the executor  <a href="#aa18a26ff7202b289b983ce960d4ff5b9">More...</a><br /></td></tr>
+<tr class="separator:aa18a26ff7202b289b983ce960d4ff5b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0069de0539feee6c7b211662211a81cc"><td class="memItemLeft" align="right" valign="top"><a id="a0069de0539feee6c7b211662211a81cc"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>num_workers</b> () const</td></tr>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1WorkStealingThreadpool.html#a0069de0539feee6c7b211662211a81cc">num_workers</a> () const</td></tr>
+<tr class="memdesc:a0069de0539feee6c7b211662211a81cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the number of worker threads <br /></td></tr>
 <tr class="separator:a0069de0539feee6c7b211662211a81cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9d2bb67582347321e44e98fa7bb95cc"><td class="memItemLeft" align="right" valign="top"><a id="ab9d2bb67582347321e44e98fa7bb95cc"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_owner</b> () const</td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1WorkStealingThreadpool.html#ab9d2bb67582347321e44e98fa7bb95cc">is_owner</a> () const</td></tr>
+<tr class="memdesc:ab9d2bb67582347321e44e98fa7bb95cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries if the caller is the owner of the executor <br /></td></tr>
 <tr class="separator:ab9d2bb67582347321e44e98fa7bb95cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acdd4b5561fe85f1baa0afb9fd936116f"><td class="memTemplParams" colspan="2"><a id="acdd4b5561fe85f1baa0afb9fd936116f"></a>
-template&lt;typename... ArgsT&gt; </td></tr>
-<tr class="memitem:acdd4b5561fe85f1baa0afb9fd936116f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>emplace</b> (ArgsT &amp;&amp;...)</td></tr>
-<tr class="separator:acdd4b5561fe85f1baa0afb9fd936116f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8aea2f24e9dd9de605080472568e644"><td class="memItemLeft" align="right" valign="top"><a id="af8aea2f24e9dd9de605080472568e644"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>batch</b> (std::vector&lt; Closure &gt; &amp;&amp;)</td></tr>
-<tr class="separator:af8aea2f24e9dd9de605080472568e644"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc34fd5581ae10fe53bb2e388f6b9237"><td class="memTemplParams" colspan="2"><a id="afc34fd5581ae10fe53bb2e388f6b9237"></a>
-template&lt;typename... ArgsT&gt; </td></tr>
-<tr class="memitem:afc34fd5581ae10fe53bb2e388f6b9237"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>emplace</b> (ArgsT &amp;&amp;... args)</td></tr>
+<tr class="memitem:afc34fd5581ae10fe53bb2e388f6b9237"><td class="memTemplParams" colspan="2">template&lt;typename... ArgsT&gt; </td></tr>
+<tr class="memitem:afc34fd5581ae10fe53bb2e388f6b9237"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1WorkStealingThreadpool.html#afc34fd5581ae10fe53bb2e388f6b9237">emplace</a> (ArgsT &amp;&amp;... args)</td></tr>
+<tr class="memdesc:afc34fd5581ae10fe53bb2e388f6b9237"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs the closure in place in the executor  <a href="#afc34fd5581ae10fe53bb2e388f6b9237">More...</a><br /></td></tr>
 <tr class="separator:afc34fd5581ae10fe53bb2e388f6b9237"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa649c7c1faa590fe5dd5f88576c55af0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1WorkStealingThreadpool.html#aa649c7c1faa590fe5dd5f88576c55af0">batch</a> (std::vector&lt; Closure &gt; &amp;&amp;closures)</td></tr>
+<tr class="memdesc:aa649c7c1faa590fe5dd5f88576c55af0"><td class="mdescLeft">&#160;</td><td class="mdescRight">moves a batch of closures to the executor  <a href="#aa649c7c1faa590fe5dd5f88576c55af0">More...</a><br /></td></tr>
+<tr class="separator:aa649c7c1faa590fe5dd5f88576c55af0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename Closure&gt;<br />
+class tf::WorkStealingThreadpool&lt; Closure &gt;</h3>
+
+<p>Executor that implements an efficient work stealing algorithm. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Closure</td><td>closure type </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="adf54ce350250acba7b632c2cdc1150bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf54ce350250acba7b632c2cdc1150bd">&#9670;&nbsp;</a></span>WorkStealingThreadpool()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Closure &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1WorkStealingThreadpool.html">tf::WorkStealingThreadpool</a>&lt; Closure &gt;::<a class="el" href="classtf_1_1WorkStealingThreadpool.html">WorkStealingThreadpool</a> </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>N</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>constructs the executor with a given number of worker threads </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">N</td><td>the number of worker threads </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa18a26ff7202b289b983ce960d4ff5b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa18a26ff7202b289b983ce960d4ff5b9">&#9670;&nbsp;</a></span>~WorkStealingThreadpool()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Closure &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1WorkStealingThreadpool.html">tf::WorkStealingThreadpool</a>&lt; Closure &gt;::~<a class="el" href="classtf_1_1WorkStealingThreadpool.html">WorkStealingThreadpool</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>destructs the executor </p>
+<p>Destructing the executor will immediately force all worker threads to stop. The executor does not guarantee all tasks to finish upon destruction. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="aa649c7c1faa590fe5dd5f88576c55af0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa649c7c1faa590fe5dd5f88576c55af0">&#9670;&nbsp;</a></span>batch()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Closure &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classtf_1_1WorkStealingThreadpool.html">tf::WorkStealingThreadpool</a>&lt; Closure &gt;::batch </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; Closure &gt; &amp;&amp;&#160;</td>
+          <td class="paramname"><em>closures</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>moves a batch of closures to the executor </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">closures</td><td>a vector of closures to move </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="afc34fd5581ae10fe53bb2e388f6b9237"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc34fd5581ae10fe53bb2e388f6b9237">&#9670;&nbsp;</a></span>emplace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Closure &gt; </div>
+<div class="memtemplate">
+template&lt;typename... ArgsT&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classtf_1_1WorkStealingThreadpool.html">tf::WorkStealingThreadpool</a>&lt; Closure &gt;::emplace </td>
+          <td>(</td>
+          <td class="paramtype">ArgsT &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>constructs the closure in place in the executor </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">ArgsT...</td><td>argument parameter pack</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">args...</td><td>arguments to forward to the constructor of the closure </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="workstealing__threadpool_8hpp_source.html">workstealing_threadpool.hpp</a></li>
 </ul>

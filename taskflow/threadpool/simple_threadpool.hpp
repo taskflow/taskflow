@@ -31,25 +31,62 @@
 
 namespace tf {
 
-// Class: SimpleThreadpool
+/**
+@class: SimpleThreadpool
+
+@brief Executor that implements a centralized task queue with a simple 
+       execution strategy.
+
+@tparam Closure closure type
+*/
 template <typename Closure>
 class SimpleThreadpool {
 
   public:
 
-    explicit SimpleThreadpool(unsigned);
+    /**
+    @brief constructs the executor with a given number of worker threads
+    
+    @param N the number of worker threads
+    */
+    explicit SimpleThreadpool(unsigned N);
 
+    /**
+    @brief destructs the executor
+
+    Destructing the executor immediately forces all worker threads to stop.
+    The executor does not guarantee all tasks to finish upon destruction.
+    */
     ~SimpleThreadpool();
     
+    /**
+    @brief constructs the closure in place in the executor
+
+    @tparam ArgsT... argument parameter pack
+
+    @param args... arguments to forward to the constructor of the closure
+    */
     template <typename... ArgsT>
-    void emplace(ArgsT&&...);
+    void emplace(ArgsT&&... args);
 
-    void batch(std::vector<Closure>&&);
+    /**
+    @brief moves a batch of closures to the executor
 
-    size_t num_tasks() const;
+    @param closures a vector of closures to move
+    */
+    void batch(std::vector<Closure>&& closures);
+
+    /**
+    @brief queries the number of worker threads
+    */
     size_t num_workers() const;
 
+    /**
+    @brief queries if the caller is the owner of the executor
+    */
     bool is_owner() const;
+    
+    size_t num_tasks() const;
 
   private:
 

@@ -246,11 +246,14 @@ ALIASES += std_pair="<a href=\"https://en.cppreference.com/w/cpp/utility/pair\">
 ALIASES += std_tuple="<a href=\"https://en.cppreference.com/w/cpp/utility/tuple\">std::tuple</a>"
 ALIASES += std_shared_ptr="<a href=\"https://en.cppreference.com/w/cpp/memory/shared_ptr\">std::shared_ptr</a>"
 ALIASES += std_thread_hardware_concurrency="<a href=\"https://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency\">std::thread::hardware_concurrency</a>"
+ALIASES += std_thread_get_id="<a href=\"https://en.cppreference.com/w/cpp/thread/get_id\">std::thread::get_id</a>"
 ALIASES += std_ostream="<a href=\"https://en.cppreference.com/w/cpp/io/basic_ostream\">std::ostream</a>"
 ALIASES += std_string="<a href=\"https://en.cppreference.com/w/cpp/string/basic_string\">std::string</a>"
 ALIASES += std_min="<a href=\"https://en.cppreference.com/w/cpp/algorithm/min\">std::min</a>"
 ALIASES += std_max="<a href=\"https://en.cppreference.com/w/cpp/algorithm/max\">std::max</a>"
 ALIASES += std_variant="<a href=\"https://en.cppreference.com/w/cpp/utility/variant\">std::variant</a>"
+ALIASES += std_optional="<a href=\"https://en.cppreference.com/w/cpp/utility/optional\">std::optional</a>"
+ALIASES += std_nullopt="<a href=\"https://en.cppreference.com/w/cpp/utility/optional/nullopt\">std::nullopt</a>"
 ALIASES += GraphVizOnline="<a href=\"https://dreampuf.github.io/GraphvizOnline/\">GraphViz Online</a>"
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
@@ -820,6 +823,7 @@ INPUT = ../taskflow/taskflow.hpp                            \
         cookbook/Chapter3.dox                               \
         cookbook/Chapter4.dox                               \
         cookbook/Chapter5.dox                               \
+        cookbook/Chapter6.dox                               \
         header.html
 
 # This tag can be used to specify the character encoding of the source files
@@ -1189,7 +1193,7 @@ HTML_EXTRA_STYLESHEET  =
 # files will be copied as-is; there are no commands or markers available.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_FILES       =
+HTML_EXTRA_FILES       = 
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to

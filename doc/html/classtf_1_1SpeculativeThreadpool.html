@@ -35,7 +35,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Cpp-Taskflow
+   <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
    &#160;<span id="projectnumber">2.0.0</span>
    </div>
   </td>
@@ -105,33 +105,166 @@ $(document).ready(function(){initNavTree('classtf_1_1SpeculativeThreadpool.html'
 <div class="title">tf::SpeculativeThreadpool&lt; Closure &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Executor that implements a centralized task queue with a speculative execution strategy.  
+ <a href="classtf_1_1SpeculativeThreadpool.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="speculative__threadpool_8hpp_source.html">speculative_threadpool.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a53e172dd987e309b112c81072d56bf38"><td class="memItemLeft" align="right" valign="top"><a id="a53e172dd987e309b112c81072d56bf38"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>SpeculativeThreadpool</b> (unsigned)</td></tr>
-<tr class="separator:a53e172dd987e309b112c81072d56bf38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8fe143b0ce67997f249e01ef10f810a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1SpeculativeThreadpool.html#af8fe143b0ce67997f249e01ef10f810a">SpeculativeThreadpool</a> (unsigned N)</td></tr>
+<tr class="memdesc:af8fe143b0ce67997f249e01ef10f810a"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs the executor with a given number of worker threads  <a href="#af8fe143b0ce67997f249e01ef10f810a">More...</a><br /></td></tr>
+<tr class="separator:af8fe143b0ce67997f249e01ef10f810a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a416d633cf5fa67c853473a4114fd51e8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1SpeculativeThreadpool.html#a416d633cf5fa67c853473a4114fd51e8">~SpeculativeThreadpool</a> ()</td></tr>
+<tr class="memdesc:a416d633cf5fa67c853473a4114fd51e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">destructs the executor  <a href="#a416d633cf5fa67c853473a4114fd51e8">More...</a><br /></td></tr>
+<tr class="separator:a416d633cf5fa67c853473a4114fd51e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc59dc19c9029bee4a4e4d135737319d"><td class="memItemLeft" align="right" valign="top"><a id="afc59dc19c9029bee4a4e4d135737319d"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1SpeculativeThreadpool.html#afc59dc19c9029bee4a4e4d135737319d">num_workers</a> () const</td></tr>
+<tr class="memdesc:afc59dc19c9029bee4a4e4d135737319d"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the number of worker threads <br /></td></tr>
+<tr class="separator:afc59dc19c9029bee4a4e4d135737319d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d906451dc641c95550d7a5474595f5c"><td class="memItemLeft" align="right" valign="top"><a id="a0d906451dc641c95550d7a5474595f5c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1SpeculativeThreadpool.html#a0d906451dc641c95550d7a5474595f5c">is_owner</a> () const</td></tr>
+<tr class="memdesc:a0d906451dc641c95550d7a5474595f5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries if the caller is the owner of the executor <br /></td></tr>
+<tr class="separator:a0d906451dc641c95550d7a5474595f5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e412ddb8abc6b315a347348eba08567"><td class="memTemplParams" colspan="2">template&lt;typename... ArgsT&gt; </td></tr>
+<tr class="memitem:a0e412ddb8abc6b315a347348eba08567"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1SpeculativeThreadpool.html#a0e412ddb8abc6b315a347348eba08567">emplace</a> (ArgsT &amp;&amp;... args)</td></tr>
+<tr class="memdesc:a0e412ddb8abc6b315a347348eba08567"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs the closure in place in the executor  <a href="#a0e412ddb8abc6b315a347348eba08567">More...</a><br /></td></tr>
+<tr class="separator:a0e412ddb8abc6b315a347348eba08567"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5f835414866e02be8dc61e618b3e670"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1SpeculativeThreadpool.html#ac5f835414866e02be8dc61e618b3e670">batch</a> (std::vector&lt; Closure &gt; &amp;&amp;closures)</td></tr>
+<tr class="memdesc:ac5f835414866e02be8dc61e618b3e670"><td class="mdescLeft">&#160;</td><td class="mdescRight">moves a batch of closures to the executor  <a href="#ac5f835414866e02be8dc61e618b3e670">More...</a><br /></td></tr>
+<tr class="separator:ac5f835414866e02be8dc61e618b3e670"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ab5c571a1aa8eb5852a5785c611542b"><td class="memItemLeft" align="right" valign="top"><a id="a8ab5c571a1aa8eb5852a5785c611542b"></a>
 size_t&#160;</td><td class="memItemRight" valign="bottom"><b>num_tasks</b> () const</td></tr>
 <tr class="separator:a8ab5c571a1aa8eb5852a5785c611542b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc59dc19c9029bee4a4e4d135737319d"><td class="memItemLeft" align="right" valign="top"><a id="afc59dc19c9029bee4a4e4d135737319d"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>num_workers</b> () const</td></tr>
-<tr class="separator:afc59dc19c9029bee4a4e4d135737319d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d906451dc641c95550d7a5474595f5c"><td class="memItemLeft" align="right" valign="top"><a id="a0d906451dc641c95550d7a5474595f5c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_owner</b> () const</td></tr>
-<tr class="separator:a0d906451dc641c95550d7a5474595f5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5eb89fbc72d66fcdc817ce28ff437729"><td class="memTemplParams" colspan="2"><a id="a5eb89fbc72d66fcdc817ce28ff437729"></a>
-template&lt;typename... ArgsT&gt; </td></tr>
-<tr class="memitem:a5eb89fbc72d66fcdc817ce28ff437729"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>emplace</b> (ArgsT &amp;&amp;...)</td></tr>
-<tr class="separator:a5eb89fbc72d66fcdc817ce28ff437729"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf6fb1ab187875987560b61e5b85f8f2"><td class="memItemLeft" align="right" valign="top"><a id="aaf6fb1ab187875987560b61e5b85f8f2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>batch</b> (std::vector&lt; Closure &gt; &amp;&amp;)</td></tr>
-<tr class="separator:aaf6fb1ab187875987560b61e5b85f8f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e412ddb8abc6b315a347348eba08567"><td class="memTemplParams" colspan="2"><a id="a0e412ddb8abc6b315a347348eba08567"></a>
-template&lt;typename... ArgsT&gt; </td></tr>
-<tr class="memitem:a0e412ddb8abc6b315a347348eba08567"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>emplace</b> (ArgsT &amp;&amp;... args)</td></tr>
-<tr class="separator:a0e412ddb8abc6b315a347348eba08567"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename Closure&gt;<br />
+class tf::SpeculativeThreadpool&lt; Closure &gt;</h3>
+
+<p>Executor that implements a centralized task queue with a speculative execution strategy. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Closure</td><td>closure type </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="af8fe143b0ce67997f249e01ef10f810a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8fe143b0ce67997f249e01ef10f810a">&#9670;&nbsp;</a></span>SpeculativeThreadpool()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Closure &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1SpeculativeThreadpool.html">tf::SpeculativeThreadpool</a>&lt; Closure &gt;::<a class="el" href="classtf_1_1SpeculativeThreadpool.html">SpeculativeThreadpool</a> </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>N</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>constructs the executor with a given number of worker threads </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">N</td><td>the number of worker threads </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a416d633cf5fa67c853473a4114fd51e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a416d633cf5fa67c853473a4114fd51e8">&#9670;&nbsp;</a></span>~SpeculativeThreadpool()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Closure &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1SpeculativeThreadpool.html">tf::SpeculativeThreadpool</a>&lt; Closure &gt;::~<a class="el" href="classtf_1_1SpeculativeThreadpool.html">SpeculativeThreadpool</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>destructs the executor </p>
+<p>Destructing the executor immediately forces all worker threads to stop. The executor does not guarantee all tasks to finish upon destruction. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ac5f835414866e02be8dc61e618b3e670"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5f835414866e02be8dc61e618b3e670">&#9670;&nbsp;</a></span>batch()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Closure &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classtf_1_1SpeculativeThreadpool.html">tf::SpeculativeThreadpool</a>&lt; Closure &gt;::batch </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; Closure &gt; &amp;&amp;&#160;</td>
+          <td class="paramname"><em>closures</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>moves a batch of closures to the executor </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">closures</td><td>a vector of closures to move </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0e412ddb8abc6b315a347348eba08567"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e412ddb8abc6b315a347348eba08567">&#9670;&nbsp;</a></span>emplace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Closure &gt; </div>
+<div class="memtemplate">
+template&lt;typename... ArgsT&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classtf_1_1SpeculativeThreadpool.html">tf::SpeculativeThreadpool</a>&lt; Closure &gt;::emplace </td>
+          <td>(</td>
+          <td class="paramtype">ArgsT &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>constructs the closure in place in the executor </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">ArgsT...</td><td>argument parameter pack</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">args...</td><td>arguments to forward to the constructor of the closure </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="speculative__threadpool_8hpp_source.html">speculative_threadpool.hpp</a></li>
 </ul>

@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['task',['Task',['../classtf_1_1Task.html#a5ed7ba63e8eeaa0f21fe08c80aa474ba',1,'tf::Task::Task()=default'],['../classtf_1_1Task.html#a46a1b01af926c0fa699c831073b45f1c',1,'tf::Task::Task(const Task &amp;)'],['../classtf_1_1Task.html#a4783415f1b49195d34d94def88db5414',1,'tf::Task::Task(Task &amp;&amp;)']]],
-  ['throw_5fse',['throw_se',['../namespacetf.html#ab9d4e31acc93431725fa1affca09e823',1,'tf']]],
-  ['transform_5freduce',['transform_reduce',['../classtf_1_1FlowBuilder.html#ac4d38ee88ae922d3cb8c9808c418764f',1,'tf::FlowBuilder::transform_reduce(I, I, T &amp;, B &amp;&amp;, U &amp;&amp;)'],['../classtf_1_1FlowBuilder.html#a7bf4ad06f14f95bbc886ee087773712a',1,'tf::FlowBuilder::transform_reduce(I, I, T &amp;, B &amp;&amp;, P &amp;&amp;, U &amp;&amp;)']]]
+  ['wait_5ffor_5fall',['wait_for_all',['../classtf_1_1BasicTaskflow.html#a37ef86998f23ee7315be032c40fe815e',1,'tf::BasicTaskflow']]],
+  ['wait_5ffor_5ftopologies',['wait_for_topologies',['../classtf_1_1BasicTaskflow.html#a8f0ce2026118e97b83cbd727ed0932af',1,'tf::BasicTaskflow']]],
+  ['work',['work',['../classtf_1_1Task.html#a2f6f4cec42d016e5eb89390f362ffe99',1,'tf::Task']]],
+  ['workstealingqueue',['WorkStealingQueue',['../classtf_1_1WorkStealingQueue.html#aa0df9f7cd3cafa230bf1def57dc69d1d',1,'tf::WorkStealingQueue']]],
+  ['workstealingthreadpool',['WorkStealingThreadpool',['../classtf_1_1WorkStealingThreadpool.html#adf54ce350250acba7b632c2cdc1150bd',1,'tf::WorkStealingThreadpool']]]
 ];
