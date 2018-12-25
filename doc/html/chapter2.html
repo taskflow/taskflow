@@ -8,6 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Cpp-Taskflow</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link rel="icon" type="image/x-icon" href="favicon.ico" />
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <link href="navtree.css" rel="stylesheet" type="text/css"/>
@@ -105,7 +106,7 @@ $(document).ready(function(){initNavTree('chapter2.html','');});
 <h1><a class="anchor" id="GraphAndTopology"></a>
 Graph and Topology</h1>
 <p>Each taskflow object has exactly one graph at a time that represents the tasks and the dependencies constructed so far. The graph exists until users dispatch it for execution. In Cpp-Taskflow, we call a dispatched graph a <em>topology</em>. A topology is a data structure that wraps up a dispatched graph and stores a few metadata obtained at runtime. Each taskflow object has a list of topologies to keep track of the execution status of dispatched graphs. Users can retrieve this information later on for graph inspection and debugging.</p>
-<p>All tasks are executed in a shared thread storage coupled with a <em>task scheduler</em> to decide which thread runs which task. Cpp-Taskflow provides two ways to dispatch a task dependency graph, <em>blocking</em> and <em>non-blocking</em>.</p>
+<p>All tasks are executed in a shared thread storage coupled with a <em>task scheduler</em> to decide which thread runs which task. Cpp-Taskflow provides two ways to dispatch a task dependency graph, <em>blocking</em> and <em>non-blocking</em> executions.</p>
 <h1><a class="anchor" id="BlockingExecution"></a>
 Blocking Execution</h1>
 <p>One way to dispatch the present task dependency graph is to use the method <a class="el" href="classtf_1_1BasicTaskflow.html#a37ef86998f23ee7315be032c40fe815e" title="dispatches the present graph to threads and wait for all topologies to complete ">tf::Taskflow::wait_for_all</a>. Calling <code>wait_for_all</code> dispatches the graph to threads and blocks the program flow until all tasks finish.</p>
