@@ -168,7 +168,7 @@ WorkStealingQueue<T>::WorkStealingQueue(int64_t c) {
   assert(c && (!(c & (c-1))));
   _top.store(0, std::memory_order_relaxed);
   _bottom.store(0, std::memory_order_relaxed);
-  _array.store((new Array{c}), std::memory_order_relaxed);
+  _array.store(new Array{c}, std::memory_order_relaxed);
   _garbage.reserve(32);
 }
 
@@ -363,7 +363,7 @@ class WorkStealingThreadpool {
     void _balance_load(unsigned);
 
     unsigned _randomize(uint64_t&) const;
-    unsigned _fast_modulo(uint32_t, uint32_t) const;
+    unsigned _fast_modulo(unsigned, unsigned) const;
 
     std::optional<Closure> _steal(unsigned);
 };
@@ -415,7 +415,7 @@ unsigned WorkStealingThreadpool<Closure>::_randomize(uint64_t& state) const {
 
 // http://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
 template <typename Closure>
-unsigned WorkStealingThreadpool<Closure>::_fast_modulo(uint32_t x, uint32_t N) const {
+unsigned WorkStealingThreadpool<Closure>::_fast_modulo(unsigned x, unsigned N) const {
   return ((uint64_t) x * (uint64_t) N) >> 32;
 }
 
@@ -500,7 +500,7 @@ size_t WorkStealingThreadpool<Closure>::num_workers() const {
 template <typename Closure>
 void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
 
-  auto n = _workers[me].queue.size();
+  unsigned n = _workers[me].queue.size();
 
   // return if no idler - this might not be the right value
   // but it doesn't affect the correctness
