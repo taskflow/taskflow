@@ -500,7 +500,7 @@ size_t WorkStealingThreadpool<Closure>::num_workers() const {
 template <typename Closure>
 void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
 
-  unsigned n = _workers[me].queue.size();
+  auto n = _workers[me].queue.size();
 
   // return if no idler - this might not be the right value
   // but it doesn't affect the correctness
