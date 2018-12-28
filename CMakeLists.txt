@@ -214,6 +214,13 @@ endif()
 
 if(${TF_BUILD_BENCHMARKS})
 
+# eigen package 
+if(NOT DEFINED EIGEN_ROOT)
+  set(EIGEN_ROOT ${PROJECT_SOURCE_DIR}/3rd-party/eigen-3.3.7)
+endif()
+include_directories(${EIGEN_ROOT})
+
+
 # find OpenMP package
 include(FindOpenMP)
 
@@ -269,6 +276,25 @@ target_link_libraries(
   ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
 )
 set_target_properties(graph_traversal PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+
+## benchmark 3: MNIST
+message(STATUS "benchmark 3: mnist")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/mnist)
+add_executable(
+  mnist 
+  ${TF_BENCHMARK_DIR}/mnist/main.cpp
+  ${TF_BENCHMARK_DIR}/mnist/omp.cpp
+  ${TF_BENCHMARK_DIR}/mnist/tbb.cpp
+  ${TF_BENCHMARK_DIR}/mnist/seq.cpp
+  ${TF_BENCHMARK_DIR}/mnist/taskflow.cpp
+)
+target_link_libraries(
+  mnist 
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS}
+  ${OpenMP_CXX_LIBRARIES} stdc++fs
+)
+set_target_properties(mnist PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
 endif()
