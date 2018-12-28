@@ -168,7 +168,7 @@ WorkStealingQueue<T>::WorkStealingQueue(int64_t c) {
   assert(c && (!(c & (c-1))));
   _top.store(0, std::memory_order_relaxed);
   _bottom.store(0, std::memory_order_relaxed);
-  _array.store(new Array{c}, std::memory_order_relaxed);
+  _array.store((new Array{c}), std::memory_order_relaxed);
   _garbage.reserve(32);
 }
 
@@ -509,7 +509,7 @@ void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
   }
   
   // try with probability 1/n
-  if(_fast_modulo(_randomize(_workers[me].seed), n) == 0) {
+  if(_fast_modulo(_randomize(_workers[me].seed), n) == 0u) {
     // wake up my partner to help balance
     if(_mutex.try_lock()) {
       if(!_idlers.empty()) {

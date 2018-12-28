@@ -26,10 +26,10 @@ class BasicTaskflow : public FlowBuilder {
   struct Closure {
   
     Closure() = default;
-    Closure(const Closure&);
+    Closure(const Closure&) = default;
     Closure(BasicTaskflow&, Node&);
 
-    Closure& operator = (const Closure&);
+    Closure& operator = (const Closure&) = default;
     
     void operator ()() const;
 
@@ -170,24 +170,10 @@ class BasicTaskflow : public FlowBuilder {
 // BasicTaskflow::Closure Method Definitions
 // ============================================================================
 
-// Constructor    
-template <template <typename...> typename E>
-BasicTaskflow<E>::Closure::Closure(const Closure& rhs) : 
-  taskflow {rhs.taskflow}, node {rhs.node} { 
-}
-
 // Constructor
 template <template <typename...> typename E>
 BasicTaskflow<E>::Closure::Closure(BasicTaskflow& t, Node& n) : 
   taskflow{&t}, node {&n} {
-}
-
-// copy assignment
-template <template <typename...> typename E>
-typename BasicTaskflow<E>::Closure& BasicTaskflow<E>::Closure::operator = (const Closure& rhs) {
-  taskflow = rhs.taskflow;
-  node     = rhs.node;
-  return *this;
 }
 
 // Operator ()

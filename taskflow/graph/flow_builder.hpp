@@ -610,7 +610,7 @@ size_t FlowBuilder::_estimate_chunk_size(I beg, I end, I step) {
     }
   }
   else if constexpr(std::is_floating_point_v<T>) {
-    N = std::ceil((end - beg) / step);
+    N = static_cast<size_t>(std::ceil((end - beg) / step));
   }
   else {
     static_assert(dependent_false_v<T>, "can't deduce chunk size");
