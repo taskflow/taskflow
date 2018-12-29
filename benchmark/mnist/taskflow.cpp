@@ -2,6 +2,7 @@
 #include <taskflow/taskflow.hpp>  
 
 void run_taskflow(MNIST& D, unsigned num_threads) {
+
   tf::Taskflow tf {num_threads};
 
   std::vector<tf::Task> forward_tasks;
@@ -21,12 +22,9 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
 
   for(auto e=0u; e<D.epoch; e++) {
     for(auto i=0u; i<iter_num; i++) {
-      auto& f_task = forward_tasks.emplace_back(
-        tf.silent_emplace(
-          [&, i=i, e=e%num_par_shf]() {
-            forward_task(D, i, e, mats, vecs);
-          }
-        ));
+      auto& f_task = forward_tasks.emplace_back(tf.silent_emplace(
+        [&, i=i, e=e%num_par_shf]() { forward_task(D, i, e, mats, vecs); }
+      ));
 
       if(i != 0 || (i == 0 && e != 0)) {
         auto sz = update_tasks.size();
@@ -37,12 +35,9 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
 
       for(int j=D.acts.size()-1; j>=0; j--) {
         // backward propagation
-        auto& b_task = backward_tasks.emplace_back(
-          tf.silent_emplace(
-            [&, i=j, e=e%num_par_shf] () {
-              backward_task(D, i, e, mats);
-            }
-          ));
+        auto& b_task = backward_tasks.emplace_back(tf.silent_emplace(
+          [&, i=j, e=e%num_par_shf] () { backward_task(D, i, e, mats); }
+        ));
 
         // update weight 
         auto& u_task = update_tasks.emplace_back(
@@ -62,13 +57,13 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
 
     if(e == 0) {
       // No need to shuffle in first epoch
-      auto& t = shuffle_tasks.emplace_back(tf.silent_emplace([](){}));
-      t.precede(forward_tasks[forward_tasks.size()-iter_num]);           
+      shuffle_tasks.emplace_back(tf.silent_emplace([](){}))
+                   .precede(forward_tasks[forward_tasks.size()-iter_num]);           
     }
     else {
-      auto& t = shuffle_tasks.emplace_back(
-        tf.silent_emplace([&, e=e%num_par_shf]() {D.shuffle(mats[e], vecs[e], D.images.rows());})
-      );
+      auto& t = shuffle_tasks.emplace_back(tf.silent_emplace(
+        [&, e=e%num_par_shf]() { D.shuffle(mats[e], vecs[e], D.images.rows());}
+      ));
       t.precede(forward_tasks[forward_tasks.size()-iter_num]);
 
       // This shuffle task starts after belows finish

@@ -4,6 +4,7 @@
 #include <tbb/flow_graph.h>
 
 void run_tbb(MNIST& D, unsigned num_threads) {
+
   using namespace tbb;
   using namespace tbb::flow;
 
@@ -28,7 +29,8 @@ void run_tbb(MNIST& D, unsigned num_threads) {
   for(auto e=0u; e<D.epoch; e++) {
     for(auto i=0u; i<iter_num; i++) {
       auto& f_task = forward_tasks.emplace_back(
-        std::make_unique<continue_node<continue_msg>>(G, 
+        std::make_unique<continue_node<continue_msg>>(
+          G, 
           [&, i=i, e=e%num_par_shf](const continue_msg&) {
             forward_task(D, i, e, mats, vecs);
           }
@@ -43,20 +45,26 @@ void run_tbb(MNIST& D, unsigned num_threads) {
       }
 
       for(int j=D.acts.size()-1; j>=0; j--) {
+
         // backward propagation
         auto& b_task = backward_tasks.emplace_back(
-          std::make_unique<continue_node<continue_msg>>(G, 
+          std::make_unique<continue_node<continue_msg>>(
+            G, 
             [&, i=j, e=e%num_par_shf] (const continue_msg&) {
               backward_task(D, i, e, mats);
             }
           )
         );
+
         // update weight 
         auto& u_task = update_tasks.emplace_back(
-          std::make_unique<continue_node<continue_msg>>(G, 
+          std::make_unique<continue_node<continue_msg>>(
+            G, 
             [&, i=j] (const continue_msg&) {
               D.update(i);
-            }));
+            }
+          )
+        );
 
         if(j + 1u == D.acts.size()) {
           make_edge(*f_task, *b_task);
@@ -70,18 +78,22 @@ void run_tbb(MNIST& D, unsigned num_threads) {
 
     if(e == 0) {
       // No need to shuffle in first epoch
-      shuffle_tasks.emplace_back(std::make_unique<continue_node<continue_msg>>(G, 
-        [](const continue_msg&){}));
+      shuffle_tasks.emplace_back(std::make_unique<continue_node<continue_msg>>(
+        G, 
+        [](const continue_msg&){}
+      ));
       make_edge(*shuffle_tasks.back(), *forward_tasks[forward_tasks.size()-iter_num]);
     }
     else {
       auto& t = shuffle_tasks.emplace_back(
-        std::make_unique<continue_node<continue_msg>>(G, 
+        std::make_unique<continue_node<continue_msg>>(
+          G, 
           [&, e=e%num_par_shf](const continue_msg&) {
             D.shuffle(mats[e], vecs[e], D.images.rows());
           }
-      ));
-      make_edge(*t,*forward_tasks[forward_tasks.size()-iter_num]);
+        )
+      );
+      make_edge(*t, *forward_tasks[forward_tasks.size()-iter_num]);
 
       // This shuffle task starts after belows finish
       //   1. previous shuffle on the same storage

@@ -1,6 +1,7 @@
 #include "dnn.hpp" 
 
 void run_sequential(MNIST& D, unsigned num_threads) {
+
   const auto iter_num = D.images.rows()/D.batch_size;
 
   for(auto e=0u; e<D.epoch; e++) { 
@@ -17,10 +18,6 @@ void run_sequential(MNIST& D, unsigned num_threads) {
 
       // Calculate loss  
       D.loss(D.labels);
-
-      //if(D.beg_row == 0 && false) { 
-      //  D.validate();
-      //}
 
       // Backward propagation
       for(int i=D.acts.size()-1; i>=0; i--) {

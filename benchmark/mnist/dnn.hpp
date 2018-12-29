@@ -102,10 +102,11 @@ inline auto read_mnist_image(const std::experimental::filesystem::path& path) {
   return images;
 }
 
-
-inline auto time_diff(std::chrono::time_point<std::chrono::high_resolution_clock> &t1, 
-               std::chrono::time_point<std::chrono::high_resolution_clock> &t2) {
-  return std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count()/1000000.0;
+inline auto time_diff(
+  std::chrono::time_point<std::chrono::high_resolution_clock> &t1, 
+  std::chrono::time_point<std::chrono::high_resolution_clock> &t2
+) {
+  return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 }
 
 
@@ -218,8 +219,8 @@ struct MNIST {
   }
 
   void shuffle(Eigen::MatrixXf& mat, Eigen::VectorXi& vec, const size_t row_num) {
-    static thread_local std::random_device rd;
-    static thread_local std::mt19937 gen(rd());
+
+    static thread_local std::mt19937 gen(0);
 
     Eigen::PermutationMatrix<Eigen::Dynamic, Eigen::Dynamic> p(row_num);
     p.setIdentity();
@@ -242,7 +243,7 @@ struct MNIST {
       }
     }
     auto t2 = std::chrono::high_resolution_clock::now();
-    std::cout << "Infer runtime: " << time_diff(t1, t2) << " s\n";
+    std::cout << "Infer runtime: " << time_diff(t1, t2) << " ms\n";
 
     size_t correct_num {0};
     for(int k=0; k<res.rows(); k++) {
@@ -256,7 +257,7 @@ struct MNIST {
   }
 
 
-  // Parameter functions --------------------------------------------------------------------------
+  // Parameter functions ------------------------------------------------------
   auto& epoch_num(unsigned e) {
     epoch = e;
     return *this;
@@ -290,8 +291,8 @@ struct MNIST {
 
   int beg_row {0};
 
-  double lrate {0.01};
-  double decay {0.01};
+  float lrate {0.01f};
+  float decay {0.01f};
 
   unsigned epoch {0};
   size_t batch_size {1};
@@ -329,12 +330,14 @@ inline void backward_task(MNIST& D, size_t i, size_t e, std::vector<Eigen::Matri
 }
 
 
-inline auto build_dnn() {
+inline auto build_dnn(unsigned epoch) {
   MNIST dnn;
-  dnn.epoch_num(4).batch(100).learning_rate(0.001);
-  dnn.add_layer(784, 20, Activation::RELU);
-  dnn.add_layer(20, 20, Activation::RELU);
-  dnn.add_layer(20, 10, Activation::NONE); 
+  dnn.epoch_num(epoch).batch(100).learning_rate(0.001);
+  dnn.add_layer(784, 64, Activation::RELU);
+  dnn.add_layer(64, 32, Activation::RELU);
+  dnn.add_layer(32, 16, Activation::RELU);
+  dnn.add_layer(16, 8, Activation::RELU);
+  dnn.add_layer(8, 10, Activation::NONE); 
   return dnn;
 }
 

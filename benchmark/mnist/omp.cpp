@@ -4,8 +4,7 @@
 void run_omp(MNIST& D, unsigned num_threads) {
   // Create task flow graph
   const auto iter_num = D.images.rows()/D.batch_size;
-  //const auto num_storage = num_threads * 2;
-  const auto num_storage = 1u;
+  const auto num_storage = num_threads * 2;
 
   // number of concurrent shuffle tasks
   const auto num_par_shf = std::min(num_storage, D.epoch);

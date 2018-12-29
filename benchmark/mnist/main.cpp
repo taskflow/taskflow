@@ -1,45 +1,83 @@
 #include <thread>
+#include <iomanip>
 #include "dnn.hpp"
 
-#define BENCHMARK(LIB, num_threads)                                    \
-  {                                                                    \
-    auto dnn {build_dnn()};                                            \
-    std::cout << "Benchmark " #LIB << '\n';                            \
-    auto t1 = std::chrono::high_resolution_clock::now();               \
-    run_##LIB(dnn, num_threads);                                       \
-    auto t2 = std::chrono::high_resolution_clock::now();               \
-    std::cout << "Benchmark runtime: " << time_diff(t1, t2) << " s\n"; \
-    dnn.validate(); \
-  }
+// Function: measure_time_taskflow
+std::chrono::milliseconds measure_time_taskflow(
+  unsigned num_epochs,
+  unsigned num_threads
+) {
+  auto dnn {build_dnn(num_epochs)};
+  auto t1 = std::chrono::high_resolution_clock::now();
+  run_taskflow(dnn, num_threads);
+  auto t2 = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+}
 
+// Function: measure_time_omp
+std::chrono::milliseconds measure_time_omp(
+  unsigned num_epochs,
+  unsigned num_threads
+) {
+  auto dnn {build_dnn(num_epochs)};
+  auto t1 = std::chrono::high_resolution_clock::now();
+  run_omp(dnn, num_threads);
+  auto t2 = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+}
+
+// Function: measure_time_tbb
+std::chrono::milliseconds measure_time_tbb(
+  unsigned num_epochs,
+  unsigned num_threads
+) {
+  auto dnn {build_dnn(num_epochs)};
+  auto t1 = std::chrono::high_resolution_clock::now();
+  run_tbb(dnn, num_threads);
+  auto t2 = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+}
+
+// Function: main
 int main(int argc, char *argv[]){
+  
+  unsigned num_threads = std::thread::hardware_concurrency();
 
-
-  int sel = 0;
   if(argc > 1) {
-    if(::strcmp(argv[1], "taskflow") == 0) {
-      sel = 1;
-    }
-    else if(::strcmp(argv[1], "tbb") == 0) {
-      sel = 2;
-    }
-    else if(::strcmp(argv[1], "omp") == 0) {
-      sel = 3;
-    }
+    num_threads = std::atoi(argv[1]);
   }
 
-  auto num_threads = std::thread::hardware_concurrency();
-  if(argc > 2) {
-    assert(false);
-    num_threads = std::atoi(argv[2]);
-  }
+  int rounds {1};
 
-  switch(sel) {
-    case 1:  BENCHMARK(taskflow,   num_threads); break; 
-    case 2:  BENCHMARK(tbb,        num_threads); break;
-    case 3:  BENCHMARK(omp,        num_threads); break;
-    default: BENCHMARK(sequential, num_threads); break;
-  };
+  std::cout << std::setw(12) << "# epochs"
+            << std::setw(12) << "OpenMP"
+            << std::setw(12) << "TBB"
+            << std::setw(12) << "Taskflow"
+            << std::setw(12) << "speedup1"
+            << std::setw(12) << "speedup2"
+            << '\n';
+
+
+  for(int epoch=10; epoch<=100; epoch+=10) {
+    
+    double omp_time {0.0};
+    double tbb_time {0.0};
+    double tf_time  {0.0};
+
+    for(int j=0; j<rounds; ++j) {
+      omp_time += measure_time_omp(epoch, num_threads).count();
+      tbb_time += measure_time_tbb(epoch, num_threads).count();
+      tf_time  += measure_time_taskflow(epoch, num_threads).count();
+    }
+    
+    std::cout << std::setw(12) << epoch 
+              << std::setw(12) << omp_time / rounds / 1e3
+              << std::setw(12) << tbb_time / rounds / 1e3 
+              << std::setw(12) << tf_time  / rounds / 1e3 
+              << std::setw(12) << omp_time / tf_time
+              << std::setw(12) << tbb_time / tf_time
+              << std::endl;
+  }
 
   return EXIT_SUCCESS;
 }
