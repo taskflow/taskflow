@@ -2,7 +2,8 @@
 #include <omp.h>
 
 void run_omp(MNIST& D, unsigned num_threads) {
-  // Create task flow graph
+
+  // Create a task flow graph
   const auto iter_num = D.images.rows()/D.batch_size;
   const auto num_storage = num_threads * 2;
 
@@ -31,13 +32,17 @@ void run_omp(MNIST& D, unsigned num_threads) {
          // Shuffle Tasks
          if(e < num_par_shf) {
            #pragma omp task depend (out: dep_s[e])
-           if(e != 0) {
-             D.shuffle(mats[e%num_par_shf], vecs[e%num_par_shf], D.images.rows()); 
+           {
+             if(e != 0) {
+               D.shuffle(mats[e%num_par_shf], vecs[e%num_par_shf], D.images.rows()); 
+             }
            }
          }
          else {
            #pragma omp task depend (in: dep_s[e-num_par_shf], dep_b[(1+e-num_par_shf)*iter_num*num_layers-1]) depend (out: dep_s[e])
-           D.shuffle(mats[e%num_par_shf], vecs[e%num_par_shf], D.images.rows());
+           {
+             D.shuffle(mats[e%num_par_shf], vecs[e%num_par_shf], D.images.rows());
+           }
          }
 
          // DNN operations
@@ -47,22 +52,30 @@ void run_omp(MNIST& D, unsigned num_threads) {
              if(i == 0) {
                // The first task!!
                #pragma omp task depend (in: dep_s[e]) depend (out: dep_f[i])
-               forward_task(D, i, e%num_par_shf, mats, vecs);
+               {
+                 forward_task(D, i, e%num_par_shf, mats, vecs);
+               }
              }
              else {
                // use openmp array sections syntax [lower_bound: length]
                #pragma omp task depend (in: dep_u[(i-1)*num_layers: num_layers]) depend (out: dep_f[i])
-               forward_task(D, i, e%num_par_shf, mats, vecs);
+               {
+                 forward_task(D, i, e%num_par_shf, mats, vecs);
+               }
              }
            }
            else {
              if(i == 0) {
                 #pragma omp task depend (in: dep_s[e], dep_u[e*prop_per_e-num_layers: num_layers]) depend (out: dep_f[e*iter_num+i])
-                forward_task(D, i, e%num_par_shf, mats, vecs);
+                {
+                  forward_task(D, i, e%num_par_shf, mats, vecs);
+                }
              }
              else {
                 #pragma omp task depend (in: dep_u[e*prop_per_e+(i-1)*num_layers: num_layers]) depend (out: dep_f[e*iter_num+i])
-                forward_task(D, i, e%num_par_shf, mats, vecs);
+                {
+                  forward_task(D, i, e%num_par_shf, mats, vecs);
+                }
              }
            }
 
@@ -70,18 +83,24 @@ void run_omp(MNIST& D, unsigned num_threads) {
            for(int j=num_layers-1; j>=0; j--) {
              if(j == num_layers-1) {
                #pragma omp task depend (in: dep_f[e*iter_num + i]) depend (out: dep_b[e*prop_per_e + i*num_layers + j])
-               backward_task(D, j, e%num_par_shf, mats);
+               {
+                 backward_task(D, j, e%num_par_shf, mats);
+               }
              }
              else {
                #pragma omp task depend (in: dep_b[e*prop_per_e + i*num_layers + j + 1]) depend (out: dep_b[e*prop_per_e + i*num_layers + j])
-               backward_task(D, j, e%num_par_shf, mats);
+               {
+                 backward_task(D, j, e%num_par_shf, mats);
+               }
              }
            }
 
            // Update tasks   
            for(int j=num_layers-1; j>=0; j--) {
              #pragma omp task depend (in: dep_b[e*prop_per_e + i*num_layers + j]) depend (out: dep_u[e*prop_per_e + i*num_layers + j])          
-             D.update(j);
+             {
+               D.update(j);
+             }
            }
 
          }

@@ -267,8 +267,8 @@ struct MNIST {
     assert(images.rows()%batch_size == 0);
     return *this;
   }
-  auto& learning_rate(float lrate) {
-    lrate = lrate;
+  auto& learning_rate(float l) {
+    lrate = l;
     return *this;
   }
 
