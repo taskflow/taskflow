@@ -11,7 +11,7 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
   std::vector<tf::Task> shuffle_tasks;
 
   // Number of parallel shuffle 
-  const auto num_storage = num_threads * 2;
+  const auto num_storage = num_threads;
   const auto num_par_shf = std::min(num_storage, D.epoch);
 
   std::vector<Eigen::MatrixXf> mats(num_par_shf, D.images);
