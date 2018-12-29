@@ -5,6 +5,8 @@
 #include <fstream>
 #include <random>
 
+#define EIGEN_DONT_PARALLELIZE 1
+
 #include <Eigen/Dense>
 
 // Function: read_mnist_label

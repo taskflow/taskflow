@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
             << std::setw(12) << "speedup2"
             << '\n';
   
-  for(int S=1; S<=4096; S += 128) {
+  for(int S=32; S<=4096; S += 128) {
 
     M = N = S;
     B = 8;
