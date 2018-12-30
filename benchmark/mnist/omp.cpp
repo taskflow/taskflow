@@ -57,42 +57,99 @@ void run_omp(MNIST& D, unsigned num_threads) {
                }
              }
              else {
-
                // use openmp array sections syntax [lower_bound: length]
                //#pragma omp task depend (in: dep_u[(i-1)*num_layers: num_layers]) depend (out: dep_f[i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
-               // 5 layers
-               //#pragma omp task depend (in: dep_u[(i-1)*num_layers], dep_u[(i-1)*num_layers+1], dep_u[(i-1)*num_layers+2], dep_u[(i-1)*num_layers+3], dep_u[(i-1)*num_layers+4]) depend (out: dep_f[i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
-               // 2 layers
-               //#pragma omp task depend (in: dep_u[(i-1)*num_layers], dep_u[(i-1)*num_layers+1]) depend (out: dep_f[i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
-               // 3 layers
-               #pragma omp task depend (in: dep_u[(i-1)*num_layers], dep_u[(i-1)*num_layers+1], dep_u[(i-1)*num_layers+2]) depend (out: dep_f[i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
-               {
-                 forward_task(D, i, e%num_par_shf, mats, vecs);
+               
+               switch(num_layers) {
+                 case 2:
+                   #pragma omp task depend (in: dep_u[(i-1)*num_layers], dep_u[(i-1)*num_layers+1]) depend (out: dep_f[i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
+                   {
+                     forward_task(D, i, e%num_par_shf, mats, vecs);
+                   }
+                 break;
+                 case 3:
+                   #pragma omp task depend (in: dep_u[(i-1)*num_layers], dep_u[(i-1)*num_layers+1], dep_u[(i-1)*num_layers+2]) depend (out: dep_f[i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
+                   {
+                     forward_task(D, i, e%num_par_shf, mats, vecs);
+                   }
+                 break;
+                 case 4:
+                   #pragma omp task depend (in: dep_u[(i-1)*num_layers], dep_u[(i-1)*num_layers+1], dep_u[(i-1)*num_layers+2], dep_u[(i-1)*num_layers+3]) depend (out: dep_f[i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
+                   {
+                     forward_task(D, i, e%num_par_shf, mats, vecs);
+                   }
+                 break;
+                 case 5:
+                   #pragma omp task depend (in: dep_u[(i-1)*num_layers], dep_u[(i-1)*num_layers+1], dep_u[(i-1)*num_layers+2], dep_u[(i-1)*num_layers+3], dep_u[(i-1)*num_layers+4]) depend (out: dep_f[i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
+                   {
+                     forward_task(D, i, e%num_par_shf, mats, vecs);
+                   }
+                 break;
+                 default: assert(false); break;
                }
              }
            }
            else {
              if(i == 0) {
+               switch(num_layers) {
+                 case 2: 
+                   #pragma omp task depend (in: dep_s[e], dep_u[e*prop_per_e - num_layers], dep_u[e*prop_per_e - num_layers+1]) depend (out: dep_f[e*iter_num+i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
+                   {
+                     forward_task(D, i, e%num_par_shf, mats, vecs);
+                   }
+                 break;
+                 case 3: 
+                   #pragma omp task depend (in: dep_s[e], dep_u[e*prop_per_e - num_layers], dep_u[e*prop_per_e - num_layers+1], dep_u[e*prop_per_e - num_layers+2]) depend (out: dep_f[e*iter_num+i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
+                   {
+                     forward_task(D, i, e%num_par_shf, mats, vecs);
+                   }
+                 break;
+                 case 4: 
+                   #pragma omp task depend (in: dep_s[e], dep_u[e*prop_per_e - num_layers], dep_u[e*prop_per_e - num_layers+1], dep_u[e*prop_per_e - num_layers+2], dep_u[e*prop_per_e - num_layers+3]) depend (out: dep_f[e*iter_num+i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
+                   {
+                     forward_task(D, i, e%num_par_shf, mats, vecs);
+                   }
+                 break;
+                 case 5: 
+                   #pragma omp task depend (in: dep_s[e], dep_u[e*prop_per_e - num_layers], dep_u[e*prop_per_e - num_layers+1], dep_u[e*prop_per_e - num_layers+2], dep_u[e*prop_per_e - num_layers+3], dep_u[e*prop_per_e - num_layers+4]) depend (out: dep_f[e*iter_num+i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
+                   {
+                     forward_task(D, i, e%num_par_shf, mats, vecs);
+                   }
+                 break;
+                 default: assert(false); break;
+               }
                 //#pragma omp task depend (in: dep_s[e], dep_u[e*prop_per_e - num_layers: num_layers]) depend (out: dep_f[e*iter_num+i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
-                //#pragma omp task depend (in: dep_s[e], dep_u[e*prop_per_e - num_layers], dep_u[e*prop_per_e - num_layers+1], dep_u[e*prop_per_e - num_layers+2], dep_u[e*prop_per_e - num_layers+3], dep_u[e*prop_per_e - num_layers+4]) depend (out: dep_f[e*iter_num+i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
-                // 2 layer
-                //#pragma omp task depend (in: dep_s[e], dep_u[e*prop_per_e - num_layers], dep_u[e*prop_per_e - num_layers+1]) depend (out: dep_f[e*iter_num+i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
-                // 3 layer
-                #pragma omp task depend (in: dep_s[e], dep_u[e*prop_per_e - num_layers], dep_u[e*prop_per_e - num_layers+1], dep_u[e*prop_per_e - num_layers + 2]) depend (out: dep_f[e*iter_num+i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
-                {
-                  forward_task(D, i, e%num_par_shf, mats, vecs);
-                }
+
              }
              else {
+               switch(num_layers) {
+                 case 2:
+                   #pragma omp task depend (in: dep_u[e*prop_per_e+(i-1)*num_layers], dep_u[e*prop_per_e+(i-1)*num_layers+1]) depend (out: dep_f[e*iter_num+i]) firstprivate(i ,e, num_par_shf) shared(D, mats, vecs)
+                   {
+                     forward_task(D, i, e%num_par_shf, mats, vecs);
+                   }
+                 break;
+                 case 3:
+                   #pragma omp task depend (in: dep_u[e*prop_per_e+(i-1)*num_layers], dep_u[e*prop_per_e+(i-1)*num_layers+1], dep_u[e*prop_per_e+(i-1)*num_layers+2]) depend (out: dep_f[e*iter_num+i]) firstprivate(i ,e, num_par_shf) shared(D, mats, vecs)
+                   {
+                     forward_task(D, i, e%num_par_shf, mats, vecs);
+                   }
+                 break;
+                 case 4:
+                   #pragma omp task depend (in: dep_u[e*prop_per_e+(i-1)*num_layers], dep_u[e*prop_per_e+(i-1)*num_layers+1], dep_u[e*prop_per_e+(i-1)*num_layers+2], dep_u[e*prop_per_e+(i-1)*num_layers+3]) depend (out: dep_f[e*iter_num+i]) firstprivate(i ,e, num_par_shf) shared(D, mats, vecs)
+                   {
+                     forward_task(D, i, e%num_par_shf, mats, vecs);
+                   }
+                 break;
+                 case 5:
+                   #pragma omp task depend (in: dep_u[e*prop_per_e+(i-1)*num_layers], dep_u[e*prop_per_e+(i-1)*num_layers+1], dep_u[e*prop_per_e+(i-1)*num_layers+2], dep_u[e*prop_per_e+(i-1)*num_layers+3], dep_u[e*prop_per_e+(i-1)*num_layers+4]) depend (out: dep_f[e*iter_num+i]) firstprivate(i ,e, num_par_shf) shared(D, mats, vecs)
+                   {
+                     forward_task(D, i, e%num_par_shf, mats, vecs);
+                   }
+                 break;
+                 default: assert(false); break;
+               }
                 //#pragma omp task depend (in: dep_u[e*prop_per_e+(i-1)*num_layers: num_layers]) depend (out: dep_f[e*iter_num+i]) firstprivate(i ,e, num_par_shf) shared(D, mats, vecs)
-                //#pragma omp task depend (in: dep_u[e*prop_per_e+(i-1)*num_layers], dep_u[e*prop_per_e+(i-1)*num_layers+1], dep_u[e*prop_per_e+(i-1)*num_layers+2], dep_u[e*prop_per_e+(i-1)*num_layers+3], dep_u[e*prop_per_e+(i-1)*num_layers+4]) depend (out: dep_f[e*iter_num+i]) firstprivate(i ,e, num_par_shf) shared(D, mats, vecs)
-                // 2 layer
-                //#pragma omp task depend (in: dep_u[e*prop_per_e+(i-1)*num_layers], dep_u[e*prop_per_e+(i-1)*num_layers+1]) depend (out: dep_f[e*iter_num+i]) firstprivate(i ,e, num_par_shf) shared(D, mats, vecs)
-                // 3 layer
-                #pragma omp task depend (in: dep_u[e*prop_per_e+(i-1)*num_layers], dep_u[e*prop_per_e+(i-1)*num_layers+1], dep_u[e*prop_per_e+(i-1)*num_layers+2]) depend (out: dep_f[e*iter_num+i]) firstprivate(i ,e, num_par_shf) shared(D, mats, vecs)
-                {
-                  forward_task(D, i, e%num_par_shf, mats, vecs);
-                }
              }
            }
 
