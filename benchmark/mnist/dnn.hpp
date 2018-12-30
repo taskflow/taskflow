@@ -335,11 +335,9 @@ inline void backward_task(MNIST& D, size_t i, size_t e, std::vector<Eigen::Matri
 inline auto build_dnn(unsigned epoch) {
   MNIST dnn;
   dnn.epoch_num(epoch).batch(100).learning_rate(0.001);
-  dnn.add_layer(784, 64, Activation::RELU);
-  dnn.add_layer(64, 32, Activation::RELU);
-  dnn.add_layer(32, 16, Activation::RELU);
-  dnn.add_layer(16, 8, Activation::RELU);
-  dnn.add_layer(8, 10, Activation::NONE); 
+  dnn.add_layer(784, 32, Activation::RELU);
+  dnn.add_layer(32, 32, Activation::RELU);
+  dnn.add_layer(32, 10, Activation::NONE); 
   return dnn;
 }
 

@@ -19,7 +19,6 @@ std::chrono::milliseconds measure_time_omp(
   unsigned num_epochs,
   unsigned num_threads
 ) {
-  return std::chrono::milliseconds(1);
   auto dnn {build_dnn(num_epochs)};
   auto t1 = std::chrono::high_resolution_clock::now();
   run_omp(dnn, num_threads);
@@ -48,7 +47,7 @@ int main(int argc, char *argv[]){
     num_threads = std::atoi(argv[1]);
   }
 
-  int rounds {1};
+  int rounds {5};
 
   std::cout << std::setw(12) << "# epochs"
             << std::setw(12) << "OpenMP"
