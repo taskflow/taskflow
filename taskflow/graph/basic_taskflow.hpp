@@ -194,17 +194,12 @@ void BasicTaskflow<E>::Closure::operator () () const {
     }
   }
   // subflow node type 
-  // The first time we enter into the subflow context, 
-  // "subnodes" must be empty.
-  // After executing the user's callback on subflow, 
-  // there will be at least one node node used as "super source". 
-  // The second time we enter this context there is no need
-  // to re-execute the work.
   else {
 
     bool first_time {false};  // To stop creating subflow in second time 
     
-    if(!node->_subgraph.has_value()){
+    // The first time we enter into the subflow context, subgraph must be nullopt.
+    if(!(node->_subgraph)){
       node->_subgraph.emplace();  // Initialize the _subgraph   
       first_time = true;
     }
@@ -214,29 +209,29 @@ void BasicTaskflow<E>::Closure::operator () () const {
     std::invoke(std::get<DynamicWork>(node->_work), fb);
     
     // Need to create a subflow if first time & subgraph is not empty
-    if(first_time && !node->_subgraph->empty()) {
-      // Check how many nodes are in the subgraph
-      if(std::next(node->_subgraph->begin()) == node->_subgraph->end()){
-        // If the subgraph has only one node, directly execute this static task 
-        // regardless of detached or join since this task will be eventually executed 
-        // some time before the end of the graph.
-        if(auto &f = node->_subgraph->front(); f._work.index() == 0) { 
-          std::invoke(std::get<StaticWork>(f._work));
-        }
-        else {
-          f.precede(fb.detached() ? node->_topology->_target : *node);
-          f._topology = node->_topology;
-          Closure c(*taskflow, f);
-          c();
-          // The reason to return here is this f might spawn new subflows (grandchildren)
-          // and we need to make sure grandchildren finish before f's parent. So we need to 
-          // return here. Otherwise, we might execute f's parent even grandchildren are not scheduled 
-          if(!fb.detached()) {
-            return;
-          }
-        }
-      }
-      else {
+    if(first_time && !(node->_subgraph->empty())) {
+      //// small optimization on one task
+      //if(std::next(node->_subgraph->begin()) == node->_subgraph->end()){
+      //  // If the subgraph has only one node, directly execute this static task 
+      //  // regardless of detached or join since this task will be eventually executed 
+      //  // some time before the end of the graph.
+      //  if(auto &f = node->_subgraph->front(); f._work.index() == 0) { 
+      //    std::invoke(std::get<StaticWork>(f._work));
+      //  }
+      //  else {
+      //    f.precede(fb.detached() ? node->_topology->_target : *node);
+      //    f._topology = node->_topology;
+      //    Closure c(*taskflow, f);
+      //    c();
+      //    // The reason to return here is this f might spawn new subflows (grandchildren)
+      //    // and we need to make sure grandchildren finish before f's parent. So we need to 
+      //    // return here. Otherwise, we might execute f's parent even grandchildren are not scheduled 
+      //    if(!fb.detached()) {
+      //      return;
+      //    }
+      //  }
+      //}
+      //else {
         // For storing the source nodes
         std::vector<Node*> src; 
         for(auto n = node->_subgraph->begin(); n != node->_subgraph->end(); ++n) {
@@ -256,7 +251,7 @@ void BasicTaskflow<E>::Closure::operator () () const {
         if(!fb.detached()) {
           return;
         }
-      }
+      //}
     }
   }
   

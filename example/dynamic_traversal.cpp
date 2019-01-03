@@ -1,9 +1,15 @@
+// 2019/01/03 - created by Chun-Xun Lin
+//   - TODO:
+//     1. refactored the code (80-100 cols)
+//     2. parameterized the arguments
+
 #include <taskflow/taskflow.hpp>  
 #include <random>
 #include <chrono>
 #include <cstring>
 
 struct Node {
+
   size_t level {0};
   bool visited {false};
 
@@ -27,8 +33,6 @@ void traverse(Node* n, tf::SubflowBuilder& subflow) {
     }
   }
 }
-
-
 
 void sequential_traversal(std::vector<Node*>& src) {
   auto start = std::chrono::system_clock::now();
@@ -58,10 +62,10 @@ void tf_traversal(std::vector<Node*>& src) {
   tf.wait_for_all();  // block until finished
 
   auto end = std::chrono::system_clock::now();
-  std::cout << "Tf runtime: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << '\n'; 
+  std::cout << "Tf runtime: " 
+            << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() 
+            << '\n'; 
 }
-
-
 
 int main(int argc, char* argv[]){
 
@@ -82,9 +86,8 @@ int main(int argc, char* argv[]){
     }
   }
 
-  std::srand(1);
   constexpr size_t max_degree {4};
-  constexpr size_t num_nodes {100000};
+  constexpr size_t num_nodes {1000000};
 
   Node* nodes = new Node[num_nodes];
 
