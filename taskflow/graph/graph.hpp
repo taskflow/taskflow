@@ -78,17 +78,17 @@ inline Node::~Node() {
     std::list<Graph> gs; 
     gs.push_back(std::move(*_subgraph));
     _subgraph.reset();
-    size_t i=0;
-    while(i<gs.size()) {
-      auto n = gs[i].begin();
-      while(n != gs[i].end()) {
+    auto i=gs.begin();
+    while(i!=gs.end()) {
+      auto n = i->begin();
+      while(n != i->end()) {
         if(n->_subgraph.has_value()) {
-          gs.push_back(*(n->_subgraph));
+          gs.push_back(std::move(*(n->_subgraph)));
           n->_subgraph.reset();
         }
-        n++; 
+        ++n; 
       }   
-      i++; 
+      ++i; 
     }   
   }
 }
