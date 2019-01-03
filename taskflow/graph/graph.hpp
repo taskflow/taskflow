@@ -75,22 +75,20 @@ inline Node::Node(C&& c) : _work {std::forward<C>(c)} {
 // Destructor
 inline Node::~Node() {
   if(_subgraph.has_value()) {
-    std::vector<std::forward_list<Node>> gs; 
-    gs.emplace_back();
-    std::swap(gs[0], _subgraph.value());
+    std::list<Graph> gs; 
+    gs.push_back(std::move(*_subgraph));
     _subgraph.reset();
     size_t i=0;
     while(i<gs.size()) {
       auto n = gs[i].begin();
       while(n != gs[i].end()) {
         if(n->_subgraph.has_value()) {
-          gs.emplace_back();
-          std::swap(gs.back(), n->_subgraph.value());
+          gs.push_back(*(n->_subgraph));
           n->_subgraph.reset();
         }
-        n ++; 
+        n++; 
       }   
-      i ++; 
+      i++; 
     }   
   }
 }
