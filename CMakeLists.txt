@@ -148,7 +148,10 @@ add_executable(dispatch ${TF_EXAMPLE_DIR}/dispatch.cpp)
 target_link_libraries(dispatch ${PROJECT_NAME} Threads::Threads)
 
 add_executable(executor ${TF_EXAMPLE_DIR}/executor.cpp)
-target_link_libraries(executor ${PROJECT_NAME} Threads::Threads)
+target_link_libraries(executor ${PROJECT_NAME} Threads::Threads) 
+
+add_executable(graph_traversal ${TF_EXAMPLE_DIR}/graph_traversal.cpp)
+target_link_libraries(graph_traversal ${PROJECT_NAME} Threads::Threads)
 
 endif()
 

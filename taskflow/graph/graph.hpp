@@ -31,6 +31,7 @@ class Node {
   public:
 
     Node();
+    ~Node();
 
     template <typename C>
     Node(C&&);
@@ -68,6 +69,28 @@ template <typename C>
 inline Node::Node(C&& c) : _work {std::forward<C>(c)} {
   _dependents.store(0, std::memory_order_relaxed);
   _topology = nullptr;
+}
+
+
+// Destructor
+inline Node::~Node() {
+  if(_subgraph.has_value()) {
+    std::list<Graph> gs; 
+    gs.push_back(std::move(*_subgraph));
+    _subgraph.reset();
+    auto i=gs.begin();
+    while(i!=gs.end()) {
+      auto n = i->begin();
+      while(n != i->end()) {
+        if(n->_subgraph.has_value()) {
+          gs.push_back(std::move(*(n->_subgraph)));
+          n->_subgraph.reset();
+        }
+        ++n; 
+      }   
+      ++i; 
+    }   
+  }
 }
 
 // Procedure: precede

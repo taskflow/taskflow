@@ -201,47 +201,61 @@ void BasicTaskflow<E>::Closure::operator () () const {
   // The second time we enter this context there is no need
   // to re-execute the work.
   else {
-    //assert(std::holds_alternative<DynamicWork>(node->_work));
-		
+
+    bool first_time {false};  // To stop creating subflow in second time 
+    
     if(!node->_subgraph.has_value()){
-      node->_subgraph.emplace();  // Initialize the _subgraph		
-		}
+      node->_subgraph.emplace();  // Initialize the _subgraph   
+      first_time = true;
+    }
     
     SubflowBuilder fb(*(node->_subgraph));
 
-    bool empty_graph = node->_subgraph->empty();
-
     std::invoke(std::get<DynamicWork>(node->_work), fb);
     
-    // Need to create a subflow
-    if(empty_graph) {
-
-      auto& S = node->_subgraph->emplace_front([](){});
-
-      S._topology = node->_topology;
-
-      for(auto i = std::next(node->_subgraph->begin()); i != node->_subgraph->end(); ++i) {
-
-        i->_topology = node->_topology;
-
-        if(i->num_successors() == 0) {
-          i->precede(fb.detached() ? node->_topology->_target : *node);
+    // Need to create a subflow if first time & subgraph is not empty
+    if(first_time && !node->_subgraph->empty()) {
+      // Check how many nodes are in the subgraph
+      if(std::next(node->_subgraph->begin()) == node->_subgraph->end()){
+        // If the subgraph has only one node, directly execute this static task 
+        // regardless of detached or join since this task will be eventually executed 
+        // some time before the end of the graph.
+        if(auto &f = node->_subgraph->front(); f._work.index() == 0) { 
+          std::invoke(std::get<StaticWork>(f._work));
         }
-
-        if(i->num_dependents() == 0) {
-          S.precede(*i);
+        else {
+          f.precede(fb.detached() ? node->_topology->_target : *node);
+          f._topology = node->_topology;
+          Closure c(*taskflow, f);
+          c();
+          // The reason to return here is this f might spawn new subflows (grandchildren)
+          // and we need to make sure grandchildren finish before f's parent. So we need to 
+          // return here. Otherwise, we might execute f's parent even grandchildren are not scheduled 
+          if(!fb.detached()) {
+            return;
+          }
         }
       }
-      
-      // this is for the case where subflow graph might be empty
-      if(!fb.detached()) {
-        S.precede(*node);
-      }
+      else {
+        // For storing the source nodes
+        std::vector<Node*> src; 
+        for(auto n = node->_subgraph->begin(); n != node->_subgraph->end(); ++n) {
+          n->_topology = node->_topology;
+          if(n->num_successors() == 0) {
+            n->precede(fb.detached() ? node->_topology->_target : *node);
+          }
+          if(n->num_dependents() == 0) {
+            src.emplace_back(&(*n));
+          }
+        }
 
-      taskflow->_schedule(S);
+        for(auto& n: src) {
+          taskflow->_schedule(*n);
+        }
 
-      if(!fb.detached()) {
-        return;
+        if(!fb.detached()) {
+          return;
+        }
       }
     }
   }

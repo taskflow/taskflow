@@ -784,7 +784,8 @@ auto FlowBuilder::emplace(C&& c) {
       (SubflowBuilder& fb) mutable {
         if(fb._graph.empty()) {
           c(fb);
-          if(fb.detached()) {
+          // if subgraph is detached or empty after invoked
+          if(fb.detached() || fb._graph.empty()) {
             p.get().set_value();
           }
         }
@@ -800,7 +801,7 @@ auto FlowBuilder::emplace(C&& c) {
       (SubflowBuilder& fb) mutable {
         if(fb._graph.empty()) {
           r.emplace(c(fb));
-          if(fb.detached()) {
+          if(fb.detached() || fb._graph.empty()) {
             p.get().set_value(std::move(*r)); 
           }
         }
