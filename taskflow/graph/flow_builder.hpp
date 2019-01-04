@@ -21,9 +21,9 @@ class FlowBuilder {
     
     @tparam C callable type
     
-    @param callable a callable object acceptable to @std_function
+    @param callable a callable object acceptable to std::function
 
-    @return a @std_pair of Task handle and @std_future
+    @return a std::pair of Task handle and std::future
     */
     template <typename C>
     auto emplace(C&& callable);
@@ -33,9 +33,9 @@ class FlowBuilder {
     
     @tparam C... callable types
 
-    @param callables one or multiple callable objects acceptable to @std_function
+    @param callables one or multiple callable objects acceptable to std::function
 
-    @return a @std_tuple of pairs of Task Handle and @std_future
+    @return a std::tuple of pairs of Task Handle and std::future
     */
     template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
     auto emplace(C&&... callables);
@@ -45,7 +45,7 @@ class FlowBuilder {
     
     @tparam C callable type
     
-    @param callable a callable object acceptable to @std_function
+    @param callable a callable object acceptable to std::function
 
     @return a Task handle
     */
@@ -57,7 +57,7 @@ class FlowBuilder {
     
     @tparam C... callable types
     
-    @param callables one or multiple callable objects acceptable to @std_function
+    @param callables one or multiple callable objects acceptable to std::function
 
     @return a tuple of Task handles
     */
@@ -216,7 +216,7 @@ class FlowBuilder {
 
     @return a Task handle
     */
-    auto placeholder();
+    Task placeholder();
     
     /**
     @brief adds a dependency link from task A to task B

@@ -25,7 +25,7 @@ tf::Taskflow::emplace to create a task.
 Debrief:
 @li Line 1 creates an empty task 
 @li Line 2 creates a task from a given callable object and returns a task handle
-@li Line 3 creates a task from a given callable object and returns, in addition to a task handle, a @std_future object to access the result
+@li Line 3 creates a task from a given callable object and returns, in addition to a task handle, a std::future object to access the result
 
 Each time you create a task, including an empty one, 
 the taskflow object adds a node to the present graph
@@ -59,7 +59,7 @@ Debrief:
 @li Line 7 adds a dependency link from A to B
 @li Line 9-14 dumps the task attributes 
 
-Cpp-Taskflow uses the general-purpose polymorphic function wrapper @std_function
+Cpp-Taskflow uses the general-purpose polymorphic function wrapper std::function
 to store and invoke any callable target in a task.
 You need to follow its contract to create a task.
 For instance, the callable object must be copy constructible.
@@ -68,7 +68,7 @@ For instance, the callable object must be copy constructible.
 
 Unlike tf::Taskflow::silent_emplace, 
 the method tf::Taskflow::emplace returns a pair of a task handle 
-and a @std_future object to provide a mechanism to access the result when 
+and a std::future object to provide a mechanism to access the result when 
 the associated task finishes.
 This is particularly useful when you would like to pass data between tasks.
   

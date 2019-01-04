@@ -1,6 +1,6 @@
 var hierarchy =
 [
-    [ "error_category", null, [
+    [ "std::error_category", "http://en.cppreference.com/w/cpp/error/error_category.html", [
       [ "tf::Error", "structtf_1_1Error.html", null ]
     ] ],
     [ "tf::FlowBuilder", "classtf_1_1FlowBuilder.html", [

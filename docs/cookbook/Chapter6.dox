@@ -12,8 +12,8 @@ Master is the thread that creates the taskflow object
 and workers are threads that invoke the callable target of a task. 
 Each taskflow object owns an executor instance that implements the execution of a task, 
 for example, by a thread in a shared pool. 
-By default, Cpp-Taskflow uses @std_thread_hardware_concurrency
-to decide the number of worker threads and @std_thread_get_id
+By default, Cpp-Taskflow uses std::thread::hardware_concurrency
+to decide the number of worker threads and std::thread::get_id
 to identify the ownership between the master and workers.
 
 @code{.cpp}
@@ -23,15 +23,27 @@ tf::Taskflow tf1;     // create a taskflow object with the default number of wor
 tf::Taskflow tf2{4};  // create a taskflow object with four workers
 @endcode
 
-In the above example, the master thread owns both taskflow objects. The first taskflow object tf1 creates eight (default by @std_thread_hardware_concurrency) worker threads and the second taskflow object tf2 creates four worker threads. Including the master thread, there will be a total of 1 + 8 + 4 = 13 threads running in this program. If you create a taskflow with zero workers, the master will carry out all the tasks by itself. 
-That is, using one worker and zero worker are conceptually equivalent to each other since they both end up using one thread to run all tasks (see the snippet below).
+In the above example, the master thread owns both taskflow objects. 
+The first taskflow object @c tf1 creates eight (default by std::thread::hardware_concurrency) worker threads 
+and the second taskflow object @c tf2 creates four worker threads. 
+Including the master thread, there will be a total of 1 + 8 + 4 = 13 threads running in this program. 
+If you create a taskflow with zero workers, the master will carry out all the tasks by itself. 
+That is, using one worker and zero worker are conceptually equivalent to 
+each other since they both end up using one thread to run all tasks (see the snippet below).
 
 @code{.cpp}
 tf::Taskflow tf1(0);    // one master, zero worker (master to run tasks)
 tf::Taskflow tf2(1);    // one master, one worker (one thread to run tasks)
 @endcode
 
-In general, the master thread is exposed to users at programming time (main thread), while the worker threads are transparently maintained by the taskflow object. Each taskflow object owns an executor managed by std::shared_ptr. The default executor implements a thread pool coupled with a speculative execution strategy to efficiently carry out tasks. The Taskflow class defines a member type tf::Taskflow::Executor as an alias of the associated executor type. Users can acquire an ownership of the executor from a taskflow object through the method tf::Taskflow::share_executor.
+In general, the master thread is exposed to users at programming time (main thread), 
+while the worker threads are transparently maintained by the taskflow object. 
+Each taskflow object owns an executor managed by std::shared_ptr. 
+The default executor implements a work stealing scheduler to efficiently carry out tasks. 
+The Taskflow class defines a member type tf::Taskflow::Executor 
+as an alias of the associated executor type. 
+Users can acquire an ownership of the executor from a taskflow object through the method 
+tf::Taskflow::share_executor.
 
 @code{.cpp}
 tf::Taskflow taskflow;
@@ -94,7 +106,11 @@ class MyExecutor {               // closure type C, callable on operator ()
 using MyTaskflow = tf::BasicTaskflow<MyExecutor>;
 @endcode
 
-The executor class template with one parameter on the task type. The task type can be a generic polymorphic function wrapper, for instance, std::function<void()>, or a callable class with fixed memory layout. It is completely up to users to define how to invoke the task. Your executor class must meet the following concepts:
+The executor class template with one parameter on the task type. 
+The task type can be a generic polymorphic function wrapper, 
+for instance, @c std::function<void()>, or a callable class with fixed memory layout. 
+It is completely up to users to define how to invoke the task. 
+Your executor class must meet the following concepts:
 
 @li a constructor on a given number of worker threads
 @li a constant method num_workers to return the number of worker threads

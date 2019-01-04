@@ -12,7 +12,7 @@ namespace tf {
 @tparam E: executor type to use in this taskflow
 
 This class is the base class to derive a taskflow class. 
-It inherits all public methods of creating tasks from FlowBuilder
+It inherits all public methods to create tasks from tf::FlowBuilder
 and defines means to execute task dependency graphs.
 
 */
@@ -47,7 +47,7 @@ class BasicTaskflow : public FlowBuilder {
   using Executor = E<Closure>;
     
     /**
-    @brief constructs the taskflow with @std_thread_hardware_concurrency worker threads
+    @brief constructs the taskflow with std::thread::hardware_concurrency worker threads
     */
     explicit BasicTaskflow();
     
@@ -72,21 +72,21 @@ class BasicTaskflow : public FlowBuilder {
     /**
     @brief shares ownership of the executor associated with this taskflow object
 
-    @return a @std_shared_ptr of the executor
+    @return a std::shared_ptr of the executor
     */
     std::shared_ptr<Executor> share_executor();
     
     /**
     @brief dispatches the present graph to threads and returns immediately
 
-    @return a @std_shared_future to access the execution status of the dispatched graph
+    @return a std::shared_future to access the execution status of the dispatched graph
     */
     std::shared_future<void> dispatch();
     
     /**
     @brief dispatches the present graph to threads and run a callback when the graph completes
 
-    @return a @std_shared_future to access the execution status of the dispatched graph
+    @return a std::shared_future to access the execution status of the dispatched graph
     */
     template <typename C>
     std::shared_future<void> dispatch(C&&);
@@ -116,16 +116,16 @@ class BasicTaskflow : public FlowBuilder {
     void wait_for_topologies();
     
     /**
-    @brief dumps the present task dependency graph to a @std_ostream in DOT format
+    @brief dumps the present task dependency graph to a std::ostream in DOT format
 
-    @param ostream a @std_ostream target
+    @param ostream a std::ostream target
     */
     void dump(std::ostream& ostream) const;
 
     /**
-    @brief dumps the present topologies to a @std_ostream in DOT format
+    @brief dumps the present topologies to a std::ostream in DOT format
 
-    @param ostream a @std_ostream target
+    @param ostream a std::ostream target
     */
     void dump_topologies(std::ostream& ostream) const;
     
@@ -145,12 +145,12 @@ class BasicTaskflow : public FlowBuilder {
     size_t num_topologies() const;
     
     /**
-    @brief dumps the present task dependency graph in DOT format to a @std_string
+    @brief dumps the present task dependency graph in DOT format to a std::string
     */
     std::string dump() const;
     
     /**
-    @brief dumps the existing topologies in DOT format to a @std_string
+    @brief dumps the existing topologies in DOT format to a std::string
     */
     std::string dump_topologies() const;
 

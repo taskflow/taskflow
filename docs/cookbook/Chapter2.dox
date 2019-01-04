@@ -69,7 +69,7 @@ Debrief:
 
 @li Line 1-5 creates a graph with two tasks and one dependency
 @li Line 7 dispatches this graph 
-@li and obtains a @std_shared_future object to access its execution status
+@li and obtains a std::shared_future object to access its execution status
 @li Line 8-9 performs some computations to overlap the execution of task A and task B
 @li Line 10 blocks the program until this topology finishes
 
@@ -142,7 +142,7 @@ Cpp-Taskflow provides a method tf::Taskflow::wait_for_topologies for this purpos
 Debrief
 @li Line 1 creates a taskflow object with four worker threads
 @li Line 3-5 creates a dependency graph of two tasks and one dependency
-@li Line 7 dispatches this graph to threads and obtains a @std_shared_future object for users to access the execution status
+@li Line 7 dispatches this graph to threads and obtains a std::shared_future object for users to access the execution status
 @li Line 9 starts with a new dependency graph with one task
 @li Line 11 dispatches the graph to threads
 @li Line 13 blocks the program until both graphs finish
@@ -160,7 +160,7 @@ The lifetime of a task mostly refers to the user-given callable objects,
 including those captured by a lambda expression.
 When a graph is destroyed, all of its tasks are destroyed.
 Consider the following example that uses 
-@std_shared_ptr to demonstrate the lifetime of a graph and
+std::shared_ptr to demonstrate the lifetime of a graph and
 the impact on its task.
 
 @code{.cpp}
@@ -293,7 +293,7 @@ By default, destructing a taskflow object will wait on all topologies to finish.
 
 @section Chapter2Example2 Example 2: Connect Two Dependency Graphs
 
-The example demonstrates how to use the @std_future to explicitly impose a dependency 
+The example demonstrates how to use the std::future to explicitly impose a dependency 
 link on two dispatched graphs.
 
 @code{.cpp}
