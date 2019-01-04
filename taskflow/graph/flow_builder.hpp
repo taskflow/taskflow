@@ -314,7 +314,7 @@ inline void FlowBuilder::gather(std::initializer_list<Task> keys, Task to) {
 }
 
 // Function: placeholder
-inline auto FlowBuilder::placeholder() {
+inline Task FlowBuilder::placeholder() {
   auto& node = _graph.emplace_back();
   return Task(node);
 }
