@@ -303,7 +303,7 @@ BasicTaskflow<E>::~BasicTaskflow() {
 // Function: num_nodes
 template <template <typename...> typename E>
 size_t BasicTaskflow<E>::num_nodes() const {
-  return std::distance(_graph.begin(), _graph.end());
+  return _graph.size();
 }
 
 // Function: num_workers

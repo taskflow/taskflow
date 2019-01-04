@@ -12,7 +12,7 @@ class Task;
 class FlowBuilder;
 class SubflowBuilder;
 
-using Graph = std::forward_list<Node>;
+using Graph = std::list<Node>;
 
 // ----------------------------------------------------------------------------
 

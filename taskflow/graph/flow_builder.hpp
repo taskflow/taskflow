@@ -315,7 +315,7 @@ inline void FlowBuilder::gather(std::initializer_list<Task> keys, Task to) {
 
 // Function: placeholder
 inline auto FlowBuilder::placeholder() {
-  auto& node = _graph.emplace_front();
+  auto& node = _graph.emplace_back();
   return Task(node);
 }
 
@@ -780,7 +780,7 @@ auto FlowBuilder::emplace(C&& c) {
     auto fu = p.get_future();
   
     if constexpr(std::is_same_v<void, R>) {
-      auto& node = _graph.emplace_front([p=MoC(std::move(p)), c=std::forward<C>(c)]
+      auto& node = _graph.emplace_back([p=MoC(std::move(p)), c=std::forward<C>(c)]
       (SubflowBuilder& fb) mutable {
         if(fb._graph.empty()) {
           c(fb);
@@ -796,7 +796,7 @@ auto FlowBuilder::emplace(C&& c) {
       return std::make_pair(Task(node), std::move(fu));
     }
     else {
-      auto& node = _graph.emplace_front(
+      auto& node = _graph.emplace_back(
       [p=MoC(std::move(p)), c=std::forward<C>(c), r=std::optional<R>()]
       (SubflowBuilder& fb) mutable {
         if(fb._graph.empty()) {
@@ -821,7 +821,7 @@ auto FlowBuilder::emplace(C&& c) {
     auto fu = p.get_future();
 
     if constexpr(std::is_same_v<void, R>) {
-      auto& node = _graph.emplace_front(
+      auto& node = _graph.emplace_back(
         [p=MoC(std::move(p)), c=std::forward<C>(c)]() mutable {
           c(); 
           p.get().set_value();
@@ -830,7 +830,7 @@ auto FlowBuilder::emplace(C&& c) {
       return std::make_pair(Task(node), std::move(fu));
     }
     else {
-      auto& node = _graph.emplace_front(
+      auto& node = _graph.emplace_back(
         [p=MoC(std::move(p)), c=std::forward<C>(c)]() mutable {
           p.get().set_value(c());
         }
@@ -854,7 +854,7 @@ template <typename C>
 auto FlowBuilder::silent_emplace(C&& c) {
   // dynamic tasking
   if constexpr(std::is_invocable_v<C, SubflowBuilder&>) {
-    auto& n = _graph.emplace_front(
+    auto& n = _graph.emplace_back(
     [c=std::forward<C>(c)] (SubflowBuilder& fb) {
       // first time execution
       if(fb._graph.empty()) {
@@ -865,7 +865,7 @@ auto FlowBuilder::silent_emplace(C&& c) {
   }
   // static tasking
   else if constexpr(std::is_invocable_v<C>) {
-    auto& n = _graph.emplace_front(std::forward<C>(c));
+    auto& n = _graph.emplace_back(std::forward<C>(c));
     return Task(n);
   }
   else {
