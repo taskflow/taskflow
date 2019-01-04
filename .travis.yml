@@ -42,7 +42,7 @@ matrix:
     #  env:
     #    - MATRIX_EVAL="brew install gcc && CC=gcc-7 && CXX=g++-7"
 
-    # Linux clang++6.0
+    # Linux clang++6
     - os: linux
       compiler: clang++
       addons:
@@ -51,6 +51,17 @@ matrix:
           packages: ['clang-6.0', 'g++-7']
       env:
         - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+        #- CXXFLAGS=-std=c++1z
+    
+    # Linux clang++7
+    - os: linux
+      compiler: clang++
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
+          packages: ['clang-7', 'g++-7']
+      env:
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7"
         #- CXXFLAGS=-std=c++1z
 
 # install cmake 3.10
