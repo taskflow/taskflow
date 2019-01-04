@@ -95,6 +95,24 @@ class Task {
     Task& precede(Ts&&... tasks);
     
     /**
+    @brief adds precedence links from this to others
+
+    @param tasks a vector of tasks to precede
+
+    @return @c *this
+    */
+    Task& precede(std::vector<Task>& tasks);
+
+    /**
+    @brief adds precedence links from this to others
+
+    @param tasks an initializer list of tasks to precede
+
+    @return @c *this
+    */
+    Task& precede(std::initializer_list<Task> tasks);
+    
+    /**
     @brief adds precedence links from other tasks to this
 
     @tparam Ts parameter pack 
@@ -124,11 +142,12 @@ class Task {
     */
     Task& gather(std::initializer_list<Task> tasks);
     
-    template <typename... Bs>
-    Task& broadcast(Bs&&...);
-    
-    Task& broadcast(std::vector<Task>&);
-    Task& broadcast(std::initializer_list<Task>);
+
+    //template <typename... Bs>
+    //Task& broadcast(Bs&&...);
+    //
+    //Task& broadcast(std::vector<Task>&);
+    //Task& broadcast(std::initializer_list<Task>);
 
   private:
     
@@ -136,11 +155,14 @@ class Task {
 
     Node* _node {nullptr};
 
-    template<typename S>
-    void _broadcast(S&);
+    //template <typename S>
+    //void _broadcast(S&);
 
-    template<typename S>
+    template <typename S>
     void _gather(S&);
+
+    template <typename S>
+    void _precede(S&);
 };
 
 // Constructor
@@ -151,37 +173,49 @@ inline Task::Task(Node& t) : _node {&t} {
 inline Task::Task(const Task& rhs) : _node {rhs._node} {
 }
 
-// Function: broadcast
-template <typename... Bs>
-Task& Task::broadcast(Bs&&... tgts) {
-  (_node->precede(*(tgts._node)), ...);
-  return *this;
-}
-
-// Procedure: _broadcast
-template <typename S>
-inline void Task::_broadcast(S& tgts) {
-  for(auto& to : tgts) {
-    _node->precede(*(to._node));
-  }
-}
-      
-// Function: broadcast
-inline Task& Task::broadcast(std::vector<Task>& tgts) {
-  _broadcast(tgts);
-  return *this;
-}
-
-// Function: broadcast
-inline Task& Task::broadcast(std::initializer_list<Task> tgts) {
-  _broadcast(tgts);
-  return *this;
-}
+//// Function: broadcast
+//template <typename... Bs>
+//Task& Task::broadcast(Bs&&... tgts) {
+//  (_node->precede(*(tgts._node)), ...);
+//  return *this;
+//}
+//
+//// Procedure: _broadcast
+//template <typename S>
+//inline void Task::_broadcast(S& tgts) {
+//  for(auto& to : tgts) {
+//    _node->precede(*(to._node));
+//  }
+//}
+//      
+//// Function: broadcast
+//inline Task& Task::broadcast(std::vector<Task>& tgts) {
+//  _broadcast(tgts);
+//  return *this;
+//}
+//
+//// Function: broadcast
+//inline Task& Task::broadcast(std::initializer_list<Task> tgts) {
+//  _broadcast(tgts);
+//  return *this;
+//}
 
 // Function: precede
 template <typename... Ts>
 Task& Task::precede(Ts&&... tgts) {
   (_node->precede(*(tgts._node)), ...);
+  return *this;
+}
+
+// Function: precede
+inline Task& Task::precede(std::vector<Task>& tgts) {
+  _precede(tgts);
+  return *this;
+}
+
+// Function: precede
+inline Task& Task::precede(std::initializer_list<Task> tgts) {
+  _precede(tgts);
   return *this;
 }
 
@@ -197,6 +231,14 @@ template <typename S>
 void Task::_gather(S& tgts) {
   for(auto& from : tgts) {
     from._node->precede(*_node);
+  }
+}
+
+// Procedure: _precede
+template <typename S>
+void Task::_precede(S& tgts) {
+  for(auto& to : tgts) {
+    _node->precede(*(to._node));
   }
 }
 

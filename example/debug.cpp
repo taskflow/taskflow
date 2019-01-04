@@ -15,12 +15,12 @@ int main(){
     [] () { std::cout << "Task E" << std::endl; }
   );
 
-  A.broadcast(B, C, E); 
+  A.precede(B, C, E); 
   C.precede(D);
-  B.broadcast(D, E); 
+  B.precede(D, E); 
   
   std::cout << "[dump without name assignment]\n";
-  std::cout << tf.dump() << std::endl;
+  tf.dump(std::cout);
   
   std::cout << "[dump with name assignment]\n";
   A.name("A");
@@ -28,7 +28,7 @@ int main(){
   C.name("C");
   D.name("D");
   E.name("E");
-  std::cout << tf.dump() << std::endl;
+  tf.dump(std::cout);
 
   return 0;
 }

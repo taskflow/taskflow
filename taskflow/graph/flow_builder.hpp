@@ -295,12 +295,12 @@ inline void FlowBuilder::precede(Task from, Task to) {
 
 // Procedure: broadcast
 inline void FlowBuilder::broadcast(Task from, std::vector<Task>& keys) {
-  from.broadcast(keys);
+  from.precede(keys);
 }
 
 // Procedure: broadcast
 inline void FlowBuilder::broadcast(Task from, std::initializer_list<Task> keys) {
-  from.broadcast(keys);
+  from.precede(keys);
 }
 
 // Function: gather
