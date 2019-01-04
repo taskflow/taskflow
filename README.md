@@ -859,7 +859,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [UIUC]:                  https://illinois.edu/
 [CSL]:                   https://csl.illinois.edu/
 [FAQ]:                   ./doc/faq.md
-[wiki]:                  https://cpp-taskflow.github.io/cpp-taskflow-documentation.github.io/
+[wiki]:                  https://cpp-taskflow.github.io/cpp-taskflow/index.html
 [PayMe]:                 https://www.paypal.me/twhuang/10
 [C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
 [email me]:              mailto:twh760812@gmail.com
