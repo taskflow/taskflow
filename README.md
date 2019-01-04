@@ -468,10 +468,9 @@ Visit [documentation][wiki] to see the complete list.
 | silent_dispatch | none        | none | dispatch the current graph | 
 | wait_for_all    | none        | none | dispatch the current graph and block until all graphs finish, including all previously dispatched ones, and then clear all graphs |
 | wait_for_topologies | none    | none | block until all dispatched graphs (topologies) finish, and then clear these graphs |
-| num_nodes       | none        | size | return the number of nodes in the current graph |  
-| num_workers     | size        | none | set the number of worker threads in the pool |  
-| num_workers     | none        | size | return the number of working threads in the pool |  
-| num_topologies  | none        | size | return the number of dispatched graphs |
+| num_nodes       | none        | size | query the number of nodes in the current graph |  
+| num_workers     | none        | size | query the number of working threads in the pool |  
+| num_topologies  | none        | size | query the number of dispatched graphs |
 | dump            | none        | string | dump the current graph to a string of GraphViz format |
 | dump_topologies | none        | string | dump dispatched topologies to a string of GraphViz format |
 
