@@ -64,6 +64,13 @@ matrix:
         - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7"
         #- CXXFLAGS=-std=c++1z
 
+    # OSX
+    - os: osx
+      osx_image: xcode10
+      compiler: clang
+      env:
+        - CXX=clang++
+
 # install cmake 3.10
 before_install:
   - eval "${MATRIX_EVAL}"

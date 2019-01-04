@@ -86,8 +86,8 @@ int main(int argc, char* argv[]){
     }
   }
 
-  constexpr size_t max_degree {4};
-  constexpr size_t num_nodes {1000000};
+  size_t max_degree {4};
+  size_t num_nodes {1000000};
 
   Node* nodes = new Node[num_nodes];
 
