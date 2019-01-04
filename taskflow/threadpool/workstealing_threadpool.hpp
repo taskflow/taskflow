@@ -504,12 +504,12 @@ void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
 
   // return if no idler - this might not be the right value
   // but it doesn't affect the correctness
-  if(_idlers.empty() || n <= 4) {
+  if(_idlers.empty() || n <= 1) {
     return;
   }
   
   // try with probability 1/n
-  if(_fast_modulo(_randomize(_workers[me].seed), n) == 0u) {
+  //if(_fast_modulo(_randomize(_workers[me].seed), n) == 0u) {
     // wake up my partner to help balance
     if(_mutex.try_lock()) {
       if(!_idlers.empty()) {
@@ -522,7 +522,7 @@ void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
       }
       _mutex.unlock();
     }
-  }
+  //}
 }
 
 // Function: _steal
