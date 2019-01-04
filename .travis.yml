@@ -48,7 +48,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
-          packages: ['clang-6.0']
+          packages: ['clang-6.0', 'g++-7']
       env:
         - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
         #- CXXFLAGS=-std=c++1z
