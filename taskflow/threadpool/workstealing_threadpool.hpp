@@ -516,6 +516,7 @@ void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
         Worker* w = _idlers.back();
         _idlers.pop_back();
         w->ready = true;
+        w->cache = _workers[me].queue.pop();
         w->cv.notify_one();
         w->last_victim = me;
       }
