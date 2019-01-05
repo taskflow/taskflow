@@ -1,3 +1,6 @@
+// 2019/01/03 - modified by Tsung-Wei Huang
+//   - updated the load balancing strategy
+//
 // 2018/12/24 - modified by Tsung-Wei Huang
 //   - refined the work balancing strategy 
 //

@@ -788,7 +788,6 @@ The folder `example/` contains several examples and is a great place to learn to
 + Report bugs/issues by submitting a [GitHub issue][GitHub issues]
 + Submit contributions using [pull requests][GitHub pull requests]
 + Learn more about Cpp-Taskflow by reading the [documentation][wiki]
-+ Find a solution to your question at [Frequently Asked Questions][FAQ]
 
 # Who is Using Cpp-Taskflow?
 
@@ -857,7 +856,6 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [NSF]:                   https://www.nsf.gov/
 [UIUC]:                  https://illinois.edu/
 [CSL]:                   https://csl.illinois.edu/
-[FAQ]:                   ./docs/faq.md
 [wiki]:                  https://cpp-taskflow.github.io/cpp-taskflow/index.html
 [PayMe]:                 https://www.paypal.me/twhuang/10
 [C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
