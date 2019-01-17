@@ -11,6 +11,7 @@ class Topology;
 class Task;
 class FlowBuilder;
 class SubflowBuilder;
+class Framework;
 
 using Graph = std::list<Node>;
 
@@ -167,7 +168,8 @@ inline void Node::dump(std::ostream& os) const {
 class Topology {
   
   template <template<typename...> typename E> 
-  friend class BasicTaskflow;
+  friend class BasicTaskflow; 
+  friend class Framework;
 
   public:
 
@@ -176,12 +178,18 @@ class Topology {
     template <typename C>
     Topology(Graph&&, C&&);
 
+
+    Topology(Framework&, size_t=1);
+
     std::string dump() const;
     void dump(std::ostream&) const;
 
   private:
 
-    Graph _graph;
+    std::variant<Graph, Framework*> _handle;
+
+    std::promise <void> _promise;
+    size_t _repeat;
 
     std::shared_future<void> _future;
 
@@ -190,24 +198,29 @@ class Topology {
     Node _target;
 };
 
+
+// Constructor
+inline Topology::Topology(Framework& f, size_t repeat): _handle(&f), _repeat(repeat) {
+  _future = _promise.get_future().share();
+}
+
+
 // TODO: remove duplicate code in the two constructors
 
 // Constructor
 inline Topology::Topology(Graph&& t) : 
-  _graph(std::move(t)) {
+  _handle(std::move(t)) {
 
   _target._topology = this;
   
-  std::promise<void> promise;
+  _future = _promise.get_future().share();
 
-  _future = promise.get_future().share();
-
-  _target._work = [p=MoC{std::move(promise)}] () mutable { 
-    p.get().set_value(); 
+  _target._work = [this] () mutable { 
+    this->_promise.set_value(); 
   };
 
   // Build the super source and super target.
-  for(auto& node : _graph) {
+  for(auto& node : std::get<0>(_handle)) {
 
     node._topology = this;
 
@@ -225,22 +238,19 @@ inline Topology::Topology(Graph&& t) :
 // Constructor
 template <typename C>
 inline Topology::Topology(Graph&& t, C&& c) : 
-  _graph(std::move(t)) {
+  _handle(std::move(t)) {
 
-  //_source._topology = this;
   _target._topology = this;
   
-  std::promise<void> promise;
+  _future = _promise.get_future().share();
 
-  _future = promise.get_future().share();
-
-  _target._work = [p=MoC{std::move(promise)}, c{std::forward<C>(c)}] () mutable { 
-    p.get().set_value();
+  _target._work = [this, c{std::forward<C>(c)}] () mutable { 
+    this->_promise.set_value();
     c();
   };
 
   // Build the super source and super target.
-  for(auto& node : _graph) {
+  for(auto& node : std::get<0>(_handle)) {
 
     node._topology = this;
 
@@ -263,7 +273,7 @@ inline void Topology::dump(std::ostream& os) const {
   os << "digraph Topology {\n"
      << _target.dump();
 
-  for(const auto& node : _graph) {
+  for(const auto& node : std::get<0>(_handle)) {
     os << node.dump();
   }
 

@@ -1,0 +1,225 @@
+namespace tf {
+
+/** @page chapter7 C7: %Framework (Experimental)
+
+It is much more convenient to have a reusable task dependency graph which will
+persist after execution.  Reuse existing graphs avoids the overhead of graph
+construction and also allows a graph to 
+continue on the timepoint left from previous execution.
+The @em framework - tf::Framework is designed for this purpose.  In this chapter we introduce the
+concept of framework and demonstrate how to use it.
+
+@section C7_CreateAFramework Create a Framework 
+
+In Cpp-Taskflow a framework contains a task dependency graph that is independent of a taskflow object and will persist after execution. %Framework shares the same APIs as those in a taskflow object: tf::Taskflow::placeholder, tf::Taskflow::silent_emplace, and tf::Taskflow::emplace to create a task. The code below shows how to create a framework with three tasks.
+
+@code{.cpp}
+// Declare a framework 
+tf::Framework f;
+
+// Add three tasks into the framework
+auto A = f.silent_emplace([](){ std::cout << "This is TaskA\n"; });
+auto B = f.placeholder();
+auto [C, FuC] = f.emplace([] () { std::cout << "This is TaskC\n"; });
+
+// Build precedence between tasks
+A.precede(B, C);
+@endcode
+
+
+@section C7_ExecuteAFramework Execute a Framework
+
+To execute a framework, you need to create a tf::Taskflow object as the executor and use 
+any of these methods: tf::Taskflow::run, tf::Taskflow::silent_run, tf::Taskflow::run_n or tf::Taskflow::silent_run_n to dispatch the framework to threads for execution. The run and silent_run methods only execute the framework once while run_n and silent_run_n methods can take an integral number @em N and repeat execution @em N times.
+The @em run method returns a std::shared_future object that allows access to the execution status while 
+@em silent_run returns nothing. A callback can be passed to all methods and will be invoked after every execution of the framework.
+The code below shows how to run a framework
+
+@code{.cpp}
+ 1: // Declare a framework 
+ 2: tf::Framework f;
+ 3: 
+ 4: // Add three tasks into the framework
+ 5: auto [A, B, C] = f.silent_emplace(
+ 6:   [] () { std::cout << "This is TaskA\n"; },
+ 7:   [] () { std::cout << "This is TaskB\n"; },
+ 8:   [] () { std::cout << "This is TaskC\n"; },
+ 9: );
+10: 
+11: // Build precedence between tasks
+12: A.precede(B, C); 
+13: 
+14: // Declare a taskflow object
+15: tf::Taskflow taskflow;
+16: 
+17: auto fu = taskflow.run(f);
+18: fu.get();
+19: taskflow.run(f, [](){ std::cout << "End of one execution\n"; }).get();
+20: 
+21: taskflow.silent_run_n(f, 4);
+22: taskflow.wait_for_all();
+23: 
+24: taskflow.run_n(f, 4, [](){ std::cout << "End of one execution\n"; }).get();
+@endcode
+
+
+Debrief:
+
+@li Line 1-12  creates a framework composed of three tasks 
+@li Line 15    creates a taskflow object as the executor
+@li Line 17-18 runs the framework once and use @em get() to wait for completion 
+@li Line 19 runs the framework once with a callback
+@li Line 21-22 silently runs the framework four times and use @em wait_for_all() to wait for completion 
+@li Line 24    runs the framework with a callback four times and use @em get() to wait for completion
+
+
+@section C7_LifeTimeOfAFramework Lifetime of a Framework
+
+Since a taskflow object does not own a framework, a running framework <b>must remain alive</b> until the 
+execution finishes. To make sure all frameworks have completed, you can use @em wait_for_all() method to 
+block the program until all tasks finish.
+@code{.cpp}
+
+// Declare a taskflow object
+tf::Taskflow taskflow;
+
+// Create a framework whose lifetime is restricted by the scope
+{
+  tf::Framework f;
+  
+  // Add tasks into the framework 
+  // ... 
+
+  // Dispatch the framework
+  taskflow.run(f);
+
+  // Destroy the framework without waiting for execution finishes will lead to undefined behavior
+}
+
+@endcode
+
+
+
+@section C7_CreateAppicationFramework Create an Application Framework
+A useful feature of framework is that you can customize your own application framework by 
+inheriting the tf::Framework class. By deriving from the tf::Framework, you can use the same task creation APIs 
+to build the task dependency graph for your own application and utilize the @em run methods to execute your framework. 
+Below is an example of creating a custom framework
+
+@code{.cpp} 
+// Define a framework for your application
+class Foo: public tf::Framework {
+  // Define members data and functions
+  std::vector<float> inputs;
+  void set_inputs(std::vector<float>&);
+  // ...
+};
+
+int main() {
+  // Declare a taskflow object
+  tf::Taskflow taskflow;
+
+  // Declare an application framework
+  Foo foo;
+
+  // Use the task creation APIs to build the task dependency graph in application framework  
+  auto taskA = foo.silent_emplace([](){ std::cout << "TaskA\n"; });
+  auto taskB = foo.silent_emplace([](){ std::cout << "TaskB\n"; });
+  taskA.precede(taskB); 
+  // ...
+
+  // Dispatch your application framework
+  taskflow.silent_run(foo);
+
+  taskflow.wait_for_all();
+}
+
+@endcode
+
+
+
+
+@section C7_Caveats Caveats
+Although the framework feature enables task dependency graph reuse, there are few pitfalls need to be aware of 
+
+@li Modifying a running framework could result in undefined behavior
+@code{.cpp}
+tf::Framework f;
+
+// Add tasks into the framework 
+// ...
+
+// Declare a taskflow object
+tf::Taskflow taskflow;
+
+auto future = taskflow.run(f);
+
+// Modify the framework before the execution finishes leads to undefined behavior 
+f.silent_emplace([](){ std::cout << "Add a new task\n"; });
+
+// Use get method to wait for the execution completes.
+future.get();
+@endcode
+
+
+@li Continuously run a framework \b without modification is OK and the result is equivalent to repeating the execution 
+@code{.cpp}
+tf::Framework f;
+
+// Add tasks into the framework 
+// ...
+
+// Declare a taskflow object
+tf::Taskflow taskflow;
+
+// Below is equivalent to: taskflow.silent_run_n(f, 5)
+taskflow.silent_run_n(f, 2);
+taskflow.silent_run_n(f, 3);
+
+taskflow.wait_for_all();
+@endcode
+
+
+@li Subgraphs spawn from dynamic tasking will be removed after each execution. Below code shows the 
+effect of repeating a framework with dynamic tasking.
+@code{.cpp}
+tf::Framework f;
+
+auto A = f.silent_emplace([](){ std::cout << "TaskA" << std::endl; });
+auto B = f.silent_emplace([](auto &subflow){ 
+  std::cout << "TaskB" << std::endl; 
+  subflow.silent_emplace([](){ std::cout << "SubTask" << std::endl; });
+});
+A.precede(B);
+
+// Declare a taskflow object
+tf::Taskflow taskflow;
+
+std::cout << "First run:" << std::endl;
+taskflow.run(f).get();
+std::cout << std::endl;
+
+// Previous spawn subflow is removed before the second execution, only one SubTask message will be printed.
+std::cout << "Second run:" << std::endl;
+taskflow.run(f).get();
+std::cout << std::endl;
+
+@endcode
+The output: 
+@code{.sh}
+First run:
+TaskA
+TaskB 
+SubTask 
+
+Second run:
+TaskA
+TaskB 
+SubTask 
+@endcode
+
+*/
+
+}
+
+

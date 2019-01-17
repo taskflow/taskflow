@@ -14,9 +14,17 @@ var classtf_1_1BasicTaskflow =
     [ "num_nodes", "classtf_1_1BasicTaskflow.html#a18341302575dcb719e455d84a738273f", null ],
     [ "num_topologies", "classtf_1_1BasicTaskflow.html#a7e97ed52d9d0470d2751f32748adb253", null ],
     [ "num_workers", "classtf_1_1BasicTaskflow.html#a9cef9ee3d27ffc78bfa953c8ed25b559", null ],
+    [ "run", "classtf_1_1BasicTaskflow.html#af8ebf13bc439f87077c663a3c1008eea", null ],
+    [ "run", "classtf_1_1BasicTaskflow.html#a793482ae972afc4ec5d70a065e1bddc1", null ],
+    [ "run_n", "classtf_1_1BasicTaskflow.html#a5fc02a698b067e30562f4b7ae39acfaf", null ],
+    [ "run_n", "classtf_1_1BasicTaskflow.html#a5bbbe1c79587ca86031e8565f2f58bf4", null ],
     [ "share_executor", "classtf_1_1BasicTaskflow.html#abe76e5288016861aaf1dafc0218d3084", null ],
     [ "silent_dispatch", "classtf_1_1BasicTaskflow.html#a0126001a2bd8603af4827049578629cb", null ],
     [ "silent_dispatch", "classtf_1_1BasicTaskflow.html#a689a804c4d9f2afe06d558b4ef7e7d29", null ],
+    [ "silent_run", "classtf_1_1BasicTaskflow.html#acae12080c60f087421317c7681c06f0c", null ],
+    [ "silent_run", "classtf_1_1BasicTaskflow.html#ab648c7d24846759bfbf525df4bf48b32", null ],
+    [ "silent_run_n", "classtf_1_1BasicTaskflow.html#a8276dc863390e0f3e0bc53f5cf357338", null ],
+    [ "silent_run_n", "classtf_1_1BasicTaskflow.html#a7c068dff2ed61d63e069964580d9f133", null ],
     [ "wait_for_all", "classtf_1_1BasicTaskflow.html#a37ef86998f23ee7315be032c40fe815e", null ],
     [ "wait_for_topologies", "classtf_1_1BasicTaskflow.html#a8f0ce2026118e97b83cbd727ed0932af", null ]
 ];
