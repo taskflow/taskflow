@@ -36,6 +36,7 @@ class Framework : public FlowBuilder {
     std::mutex _mtx;
     std::list<Topology*> _topologies;
     std::vector<size_t> _dependents;
+    Node* _last_target {nullptr};   
 };
 
 // Constructor
@@ -43,7 +44,21 @@ inline Framework::Framework() : FlowBuilder{_graph} {
 }
 
 // Procedure: dump
+inline void Framework::dump(std::ostream& os) const {
+  os << "digraph Topology {\n";
+  for(const auto& n: _graph) {
+    n.dump(os);
+  }
+  os << "}\n";
+}
 
+
+// Function: dump
+inline std::string Framework::dump() const { 
+  std::ostringstream os;
+  dump(os);
+  return os.str();
+}
 
 
 };  // end of namespace tf. ---------------------------------------------------
