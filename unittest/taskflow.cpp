@@ -915,7 +915,7 @@ TEST_CASE("Framework" * doctest::timeout(300)) {
   // fixed the number of workers and test it from 0 to 4
 
   // Empty subflow test
-  for(unsigned W=1; W<=4; ++W) {
+  for(unsigned W=0; W<=4; ++W) {
 
     std::atomic<size_t> count {0};
     tf::Framework f;
