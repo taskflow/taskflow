@@ -349,7 +349,9 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
       // case 2: the final run of this topology
       // notice that there can be another new run request before we acquire the lock
       else {
-        f._mtx.lock();
+        if(num_workers()) {
+          f._mtx.lock();
+        }
      
         // If there is another run
         if(f._topologies.size() > 1) {
@@ -368,7 +370,9 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
           // TODO: replace swap with move? 
           f._topologies.front()->_promise = std::move((*next_tpg)->_promise);
           f._topologies.erase(next_tpg);
-          f._mtx.unlock();
+          if(num_workers()) {
+            f._mtx.unlock();
+          }
           _schedule(f._topologies.front()->_sources);
         }
         else {
@@ -381,7 +385,9 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
           auto &p = f._topologies.front()->_promise; 
           f._last_target = &(f._topologies.front()->_target);
           f._topologies.pop_front();
-          f._mtx.unlock();
+          if(num_workers()) {
+            f._mtx.unlock();
+          }
           // We set the promise in the end in case framework leaves before taskflow
           p.set_value();
         }
