@@ -910,6 +910,10 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
 // Testcase: Framework
 // --------------------------------------------------------
 TEST_CASE("Framework" * doctest::timeout(300)) {
+
+  // TODO
+  // fixed the number of workers and test it from 0 to 4
+
   std::atomic<size_t> count {0};
   tf::Framework f;
   auto A = f.silent_emplace([&](){ count ++; });
@@ -924,7 +928,8 @@ TEST_CASE("Framework" * doctest::timeout(300)) {
   auto D = f.silent_emplace([&](){ count ++; });
 
   A.precede(B, C);
-  B.precede(D); C.precede(D);
+  B.precede(D); 
+  C.precede(D);
 
   tf::Taskflow tf;
   std::list<std::shared_future<void>> fu_list;

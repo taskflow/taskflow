@@ -96,5 +96,18 @@ struct MoC {
   mutable T object; 
 };
 
+//-------------------------------------------------------------------------------------------------
+// Functors.
+//-------------------------------------------------------------------------------------------------
+
+// Overloadded.
+template <typename... Ts>
+struct Functors : Ts... { 
+  using Ts::operator()... ;
+};
+
+template <typename... Ts>
+Functors(Ts...) -> Functors<Ts...>;
+
 
 };  // end of namespace tf. ---------------------------------------------------

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "task.hpp"
-#include "framework.hpp"
+#include "topology.hpp"
 
 namespace tf {
 
@@ -156,29 +155,31 @@ class BasicTaskflow : public FlowBuilder {
 
 
 
-
+    // TODO:
+    // 1. add parameters
+    // 2. add variable names to function signature
 
     /**
     @brief silently runs the framework w/ callback to threads and returns immediately
     */
-    void silent_run(Framework&);
+    void silent_run(Framework& framework);
 
     /**
     @brief silently runs the framework w/o callback to threads and returns immediately
     */
     template<typename C>
-    void silent_run(Framework&, C&&);
+    void silent_run(Framework& framework, C&& callable);
 
     /**
     @brief silently runs the framework N times w/ a callback to threads and returns immediately
     */
-    void silent_run_n(Framework&, size_t);
+    void silent_run_n(Framework& framework, size_t N);
 
     /**
     @brief silently runs the framework N times w/o a callback to threads and returns immediately
     */
     template <typename C>
-    void silent_run_n(Framework&, size_t, C&&);
+    void silent_run_n(Framework& framework, size_t N, C&& callable);
 
 
 
@@ -229,11 +230,13 @@ class BasicTaskflow : public FlowBuilder {
 // BasicTaskflow::Closure Method Definitions
 // ============================================================================
 
-
+// Procedure: silent_run
 template <template <typename...> typename E>
 void BasicTaskflow<E>::silent_run(Framework& f) {
   run_n(f, 1, [](){});
 }
+
+// Procedure: silent_run
 template <template <typename...> typename E>
 template <typename C>
 void BasicTaskflow<E>::silent_run(Framework& f, C&& c) {
@@ -241,10 +244,13 @@ void BasicTaskflow<E>::silent_run(Framework& f, C&& c) {
   run_n(f, 1, std::forward<C>(c));
 }
 
+// Procedure: silent_run_n
 template <template <typename...> typename E>
 void BasicTaskflow<E>::silent_run_n(Framework& f, size_t repeat) {
   run_n(f, repeat, [](){});
 }
+
+// Procedure: silent_run_n
 template <template <typename...> typename E>
 template <typename C>
 void BasicTaskflow<E>::silent_run_n(Framework& f, size_t repeat, C&& c) {
@@ -252,12 +258,13 @@ void BasicTaskflow<E>::silent_run_n(Framework& f, size_t repeat, C&& c) {
   run_n(f, repeat, std::forward<C>(c));
 }
 
-
+// Function: run
 template <template <typename...> typename E>
 std::shared_future<void> BasicTaskflow<E>::run(Framework& f) {
   return run_n(f, 1, [](){});
 }
 
+// Function: run
 template <template <typename...> typename E>
 template <typename C>
 std::shared_future<void> BasicTaskflow<E>::run(Framework& f, C&& c) {
@@ -265,12 +272,13 @@ std::shared_future<void> BasicTaskflow<E>::run(Framework& f, C&& c) {
   return run_n(f, 1, std::forward<C>(c));
 }
 
-
+// Function: run_n
 template <template <typename...> typename E>
 std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat) {
   return run_n(f, repeat, [](){});
 }
 
+// Function: run_n
 template <template <typename...> typename E>
 template <typename C>
 std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&& c) {
@@ -285,15 +293,21 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
 
   auto &tpg = _topologies.emplace_front(f, repeat);
   f._topologies.push_back(&tpg);
-
+  
+  // case 1: the previous execution is still running
   if(f._topologies.size() > 1) {
     tpg._target._work = std::forward<C>(c);
     return tpg._future;
   }
+  // case 2: this epoch should run
   else {
+
     // Start from this moment  
     tpg._sources.clear();
     f._dependents.clear();
+
+    // TODO: clear the subgraph if any
+    // do we need to linearly scan the graph twice...?
  
     // Store the dependents for recovery    
     size_t target_depedents {0};
@@ -306,7 +320,7 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
     f._dependents.push_back(target_depedents);
 
     // Set up target node's work
-    tpg._target._work = [&f, c=std::function<void()>{std::forward<C>(c)}, tf=this]() mutable {
+    tpg._target._work = [&f, c=std::function<void()>{std::forward<C>(c)}, this]() mutable {
 
       //std::scoped_lock lock(f._mtx);     
 
@@ -320,19 +334,19 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
       }
       f._topologies.front()->_target._dependents = f._dependents.back();
 
-      c();
+      std::invoke(c);
 
-      // continue if repeat is not zero
+      // case 1: we still need to run the topology again
       if(--f._topologies.front()->_repeat != 0) {
-        tf->_schedule(f._topologies.front()->_sources); 
+        _schedule(f._topologies.front()->_sources); 
       }
+      // case 2: the final run of this topology
+      // notice that there can be another new run request before we acquire the lock
       else {
-
-        // Must be unique_lock here as we need to release the lock before the framework leaves!!!
-        //std::unique_lock lock(f._mtx); 
 
         std::promise<void> *pptr {nullptr};
         {
+          // TODO: simply use f._mtx.lock()
           std::scoped_lock lock(f._mtx);     
      
           // If there is another run
@@ -343,12 +357,16 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
             auto next_tpg = std::next(f._topologies.begin());
             c = std::move(std::get<0>((*next_tpg)->_target._work));
             f._topologies.front()->_repeat = (*next_tpg)->_repeat;
+
+            // TODO: replace swap with move?
             std::swap(f._topologies.front()->_promise, (*next_tpg)->_promise);
             f._topologies.erase(next_tpg);
-            tf->_schedule(f._topologies.front()->_sources);
+            _schedule(f._topologies.front()->_sources);
             return ;
           }
           else {
+
+            // TODO: make a vector in framework to avoid this linear search ...
             // Remove the target from the successor list 
             for(auto& n: f._graph) {
               if(n._successors.back() == &(f._topologies.front()->_target)) {
@@ -386,7 +404,6 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
     return tpg._future;
   }
 }
-
 
 // Constructor
 template <template <typename...> typename E>
