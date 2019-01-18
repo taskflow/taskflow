@@ -2,9 +2,6 @@
 
 #include "flow_builder.hpp"
 
-// TODO:
-// clear the graph only at the beginning of each run.
-
 namespace tf {
 
 // TODO: document the class
@@ -21,10 +18,8 @@ class Framework : public FlowBuilder {
 
     Framework();
     
-    // TODO
     void dump(std::ostream& ostream) const;
     
-    // TODO
     std::string dump() const;
 
   protected:
@@ -45,7 +40,7 @@ inline Framework::Framework() : FlowBuilder{_graph} {
 
 // Procedure: dump
 inline void Framework::dump(std::ostream& os) const {
-  os << "digraph Topology {\n";
+  os << "digraph Framework {\n";
   for(const auto& n: _graph) {
     n.dump(os);
   }

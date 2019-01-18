@@ -46,6 +46,8 @@ int main(){
 
   std::cout << "Execute the framework 2 times without a callback\n";
   tf.run_n(f, 2).get();
+  std::cout << "Dump after 2 executions:\n";
+  tf.dump_topologies(std::cout);
   std::cout << std::endl;
 
   std::cout << "Execute the framework 4 times with a callback\n";

@@ -911,9 +911,6 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("Framework" * doctest::timeout(300)) {
 
-  // TODO
-  // fixed the number of workers and test it from 0 to 4
-
   // Empty subflow test
   for(unsigned W=0; W<=4; ++W) {
 
@@ -957,6 +954,10 @@ TEST_CASE("Framework" * doctest::timeout(300)) {
 
     REQUIRE(count == 7000);
   }
+
+
+  // TODO: test correctness when framework got changed between runs
+
 }
 
 

@@ -153,24 +153,18 @@ class BasicTaskflow : public FlowBuilder {
     */
     std::string dump_topologies() const;
 
-
-
-    // TODO:
-    // 1. add parameters
-    // 2. add variable names to function signature
-
     /**
     @brief silently runs the framework w/ a callback and returns immediately 
 
-    @param framework a tf::Framework
+    @param framework a tf::Framework object
     */
     void silent_run(Framework& framework);
 
     /**
     @brief silently runs the framework w/o any callback and returns immediately 
 
-    @param framework a tf::Framework 
-    @param callable a callable object to be invoked after every execution
+    @param framework a tf::Framework object
+    @param callable a callable object to be invoked after every run
     */
     template<typename C>
     void silent_run(Framework& framework, C&& callable);
@@ -178,7 +172,7 @@ class BasicTaskflow : public FlowBuilder {
     /**
     @brief silently runs the framework N times w/ a callback and returns immediately 
 
-    @param framework a tf::Framework 
+    @param framework a tf::Framework object
     @param N a size_t to indicate number of repeatition
     */
     void silent_run_n(Framework& framework, size_t N);
@@ -186,9 +180,9 @@ class BasicTaskflow : public FlowBuilder {
     /**
     @brief silently runs the framework N times w/o any callback and returns immediately 
 
-    @param framework a tf::Framework 
-    @param N a size_t to indicate number of repeatition 
-    @param callable a callable object to be invoked after every execution
+    @param framework a tf::Framework object
+    @param N the number of runs
+    @param callable a callable object to be invoked after every run
     */
     template <typename C>
     void silent_run_n(Framework& framework, size_t N, C&& callable);
@@ -208,7 +202,7 @@ class BasicTaskflow : public FlowBuilder {
     @brief runs the framework w/ a callback and returns immediately
 
     @param framework a tf::Framework 
-    @param callable a callable object to be invoked after every execution
+    @param callable a callable object to be invoked after every run
 
     @return a std::shared_future to access the execution status of the framework
     */
@@ -219,7 +213,7 @@ class BasicTaskflow : public FlowBuilder {
     @brief runs the framework for N times w/o any callback and returns immediately 
     
     @param framework a tf::Framework 
-    @param N a size_t to indicate number of repeatition
+    @param N number of runs
 
     @return a std::shared_future to access the execution status of the framework
     */
@@ -229,13 +223,13 @@ class BasicTaskflow : public FlowBuilder {
     @brief runs the framework for N times w/ a callback and returns immediately 
 
     @param framework a tf::Framework 
-    @param N a size_t to indicate number of repeatition 
-    @param callable a callable object to be invoked after every execution
+    @param N number of runs
+    @param callable a callable object to be invoked after every run
 
     @return a std::shared_future to access the execution status of the framework
     */
     template<typename C>
-    std::shared_future<void> run_n(Framework&, size_t, C&&);
+    std::shared_future<void> run_n(Framework& framework, size_t N, C&& callable);
 
 
   private:
@@ -321,14 +315,13 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
   // case 1: the previous execution is still running
   if(f._topologies.size() > 1) {
     tpg._target._work = std::forward<C>(c);
-    return tpg._future;
   }
   // case 2: this epoch should run
   else {
     // Set up target node's work
     tpg._target._work = [&f, c=std::function<void()>{std::forward<C>(c)}, this]() mutable {
 
-      //// Must recover nodes' dependent after every execution
+      // Must recover nodes' dependent after every execution
       size_t i=0; 
       for(auto& n: f._graph) {
         n._dependents = f._dependents[i++];
@@ -339,6 +332,7 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
 
       // case 1: we still need to run the topology again
       if(--f._topologies.front()->_repeat != 0) {
+
         // Reset subgraph in each node 
         std::for_each(f._graph.begin(), f._graph.end(), [](Node& n){
           if(n._subgraph.has_value()){ n._subgraph.reset(); }
@@ -355,6 +349,7 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
      
         // If there is another run
         if(f._topologies.size() > 1) {
+
           // Reset subgraph in each node 
           std::for_each(f._graph.begin(), f._graph.end(), [](Node& n){
             if(n._subgraph.has_value()){ n._subgraph.reset(); }
@@ -365,11 +360,11 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
 
           auto next_tpg = std::next(f._topologies.begin());
           c = std::move(std::get<0>((*next_tpg)->_target._work));
-          f._topologies.front()->_repeat = (*next_tpg)->_repeat;
 
-          // TODO: replace swap with move? 
+          f._topologies.front()->_repeat = (*next_tpg)->_repeat;
           f._topologies.front()->_promise = std::move((*next_tpg)->_promise);
           f._topologies.erase(next_tpg);
+
           if(num_workers()) {
             f._mtx.unlock();
           }
@@ -377,9 +372,6 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
         }
         else {
 
-          //// TODO: make a vector in framework to avoid this linear search ...
-          //// Remove the target from the successor list 
- 
           // Need to back up the promise first here becuz framework might be 
           // destroy before taskflow leaves
           auto &p = f._topologies.front()->_promise; 
@@ -392,23 +384,27 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
           p.set_value();
         }
       }
-    }; // End of target's callback
+    }; // End of target's work ------------------------------------------------
 
     tpg._sources.clear();
     f._dependents.clear();
 
-    //// TODO: clear the subgraph if any
-    //// do we need to linearly scan the graph twice...?
-
     // Clear last execution data & Build precedence between nodes and target
 		for(auto& n: f._graph) {
+
+      // TODO: swap this with the last and then pop_back
+      // Here we use "front" because users may add nodes to the graph
       if(!n._successors.empty() && n._successors.front() == f._last_target) {
         n._successors.erase(n._successors.begin());
       }
+      // remove_if std::vector
+
+      // reset the dynamic tasking
       if(n._subgraph.has_value()) {
         n._subgraph.reset();
       }
-
+      
+      // reset the target links
       n._topology = &tpg;
 		  if(n.num_dependents() == 0) {
 		    tpg._sources.push_back(&n);
@@ -421,8 +417,9 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
     f._dependents.push_back(tpg._target._dependents);
 
     _schedule(tpg._sources);
-    return tpg._future;
   }
+    
+  return tpg._future;
 }
 
 // Constructor
