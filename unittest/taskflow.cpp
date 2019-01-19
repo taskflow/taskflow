@@ -956,7 +956,41 @@ TEST_CASE("Framework" * doctest::timeout(300)) {
   }
 
 
-  // TODO: test correctness when framework got changed between runs
+  // TODO: test correctness when framework got changed between runs 
+  for(unsigned W=0; W<=4; ++W) {
+
+    std::atomic<size_t> count {0};
+    tf::Framework f;
+    auto A = f.silent_emplace([&](){ count ++; });
+    auto B = f.silent_emplace([&](auto& subflow){ 
+      count ++; 
+      auto B1 = subflow.silent_emplace([&](){ count++; });
+      auto B2 = subflow.silent_emplace([&](){ count++; });
+      auto B3 = subflow.silent_emplace([&](){ count++; });
+      B1.precede(B3); B2.precede(B3);
+    });
+    auto C = f.silent_emplace([&](){ count ++; });
+    auto D = f.silent_emplace([&](){ count ++; });
+
+    A.precede(B, C);
+    B.precede(D); 
+    C.precede(D);
+
+    tf::Taskflow tf(W);
+    tf.run_n(f, 10).get();
+    REQUIRE(count == 70);    
+
+    auto E = f.silent_emplace([](){});
+    D.precede(E);
+    tf.run_n(f, 10).get();
+    REQUIRE(count == 140);    
+
+    auto F = f.silent_emplace([](){});
+    E.precede(F);
+    tf.silent_run_n(f, 10);
+    tf.wait_for_all();
+    REQUIRE(count == 210);    
+  }
 
 }
 

@@ -393,11 +393,15 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
 		for(auto& n: f._graph) {
 
       // TODO: swap this with the last and then pop_back
-      // Here we use "front" because users may add nodes to the graph
-      if(!n._successors.empty() && n._successors.front() == f._last_target) {
-        n._successors.erase(n._successors.begin());
+      if(!n._successors.empty()) {
+        for(size_t i=0; i<n._successors.size(); i++) {
+          if(n._successors[i] == f._last_target) {
+            std::swap(n._successors[i], n._successors.back());
+            n._successors.pop_back();
+            break;
+          }
+        }
       }
-      // remove_if std::vector
 
       // reset the dynamic tasking
       if(n._subgraph.has_value()) {

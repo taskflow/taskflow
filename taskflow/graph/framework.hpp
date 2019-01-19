@@ -6,7 +6,15 @@ namespace tf {
 
 // TODO: document the class
 
-// Class: Framework
+/**
+@class Framework 
+
+@brief A reusable task dependency graph.
+
+A framework can be executed by a taskflow object repetitively and thus 
+avoids the graph reconstruction overhead. 
+
+*/
 class Framework : public FlowBuilder {
 
   friend class Topology;
