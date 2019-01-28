@@ -304,6 +304,13 @@ target_link_libraries(
 set_target_properties(mnist PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
+# Add benchmark command into Makefile 
+add_custom_target(benchmark 
+    COMMAND wavefront 
+    COMMAND graph_traversal 
+    COMMAND mnist)
+add_dependencies(benchmark wavefront graph_traversal mnist)
+
 endif()
 
 # -----------------------------------------------------------------------------

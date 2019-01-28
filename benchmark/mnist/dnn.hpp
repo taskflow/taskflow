@@ -173,11 +173,15 @@ struct MNIST {
 
   // Ctor
   MNIST() {
-    images = read_mnist_image("./train-images.data");
-    labels = read_mnist_label("./train-labels.data");
+    std::string path = std::experimental::filesystem::current_path();                                                                  
+    path = path.substr(0, path.rfind("cpp-taskflow") + 12);
+    path += "/benchmark/mnist/";
+    
+    images = read_mnist_image(path + "./train-images.data");
+    labels = read_mnist_label(path + "./train-labels.data");
 
-    test_images = read_mnist_image("./t10k-images-idx3-ubyte");
-    test_labels = read_mnist_label("./t10k-labels-idx1-ubyte");
+    test_images = read_mnist_image(path + "./t10k-images-idx3-ubyte");
+    test_labels = read_mnist_label(path + "./t10k-labels-idx1-ubyte");
   }
 
   void add_layer(size_t in_degree, size_t out_degree, Activation act) {
