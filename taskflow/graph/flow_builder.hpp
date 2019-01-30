@@ -873,4 +873,4 @@ auto FlowBuilder::silent_emplace(C&& c) {
   }
 }
 
-};  // end of namespace tf. ---------------------------------------------------
+}  // end of namespace tf. ---------------------------------------------------
