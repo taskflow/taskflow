@@ -283,7 +283,7 @@ void ProactiveThreadpool<Closure>::batch(std::vector<Closure> &&tasks) {
   }
 }
 
-};  // namespace tf -----------------------------------------------------------
+}  // namespace tf -----------------------------------------------------------
 
 
 

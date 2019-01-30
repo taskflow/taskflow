@@ -162,5 +162,6 @@ inline void Node::dump(std::ostream& os) const {
   }
 }
 
-};  // end of namespace tf. ---------------------------------------------------
+}  // end of namespace tf. ---------------------------------------------------
+
 

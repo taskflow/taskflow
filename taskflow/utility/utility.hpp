@@ -110,4 +110,4 @@ template <typename... Ts>
 Functors(Ts...) -> Functors<Ts...>;
 
 
-};  // end of namespace tf. ---------------------------------------------------
+}  // end of namespace tf. ---------------------------------------------------

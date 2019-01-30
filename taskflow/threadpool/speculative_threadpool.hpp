@@ -320,7 +320,7 @@ void SpeculativeThreadpool<Closure>::batch(std::vector<Closure>&& tasks){
 }
 
 
-};  // end of namespace tf. ---------------------------------------------------
+}  // end of namespace tf. ---------------------------------------------------
 
 
 

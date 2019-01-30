@@ -244,5 +244,5 @@ void SimpleThreadpool<Closure>::_shutdown() {
   _stop = false;
 } 
 
-};  // end of namespace tf. ---------------------------------------------------
+}  // end of namespace tf. ---------------------------------------------------
 
