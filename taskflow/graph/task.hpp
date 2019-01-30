@@ -293,4 +293,4 @@ inline size_t Task::num_successors() const {
   return _node->_successors.size();
 }
 
-};  // end of namespace tf. ---------------------------------------------------
+}  // end of namespace tf. ---------------------------------------------------

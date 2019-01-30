@@ -7,7 +7,7 @@ namespace tf {
 
 using Taskflow = BasicTaskflow<WorkStealingThreadpool>;
 
-};  // end of namespace tf. ---------------------------------------------------
+}  // end of namespace tf. ---------------------------------------------------
 
 
 

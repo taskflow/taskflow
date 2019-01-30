@@ -24,7 +24,7 @@ class Framework : public FlowBuilder {
 inline Framework::Framework() : FlowBuilder{_graph} {
 }
 
-};  // end of namespace tf. ---------------------------------------------------
+}  // end of namespace tf. ---------------------------------------------------
 
 
 

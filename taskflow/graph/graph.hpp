@@ -281,5 +281,5 @@ inline std::string Topology::dump() const {
 
 
 
-};  // end of namespace tf. ---------------------------------------------------
+}  // end of namespace tf. ---------------------------------------------------
 
