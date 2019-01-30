@@ -3,6 +3,8 @@
 #include "../error/error.hpp"
 #include "../utility/utility.hpp"
 
+#include "passive_vector.hpp"
+
 namespace tf {
 
 // Forward declaration
@@ -51,7 +53,9 @@ class Node {
     
     std::string _name;
     std::variant<StaticWork, DynamicWork> _work;
+
     std::vector<Node*> _successors;
+
     std::atomic<int> _dependents;
 
     std::optional<Graph> _subgraph;
