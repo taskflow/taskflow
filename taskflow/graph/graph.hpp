@@ -11,6 +11,7 @@ class Topology;
 class Task;
 class FlowBuilder;
 class SubflowBuilder;
+class Framework;
 
 using Graph = std::list<Node>;
 
@@ -161,125 +162,6 @@ inline void Node::dump(std::ostream& os) const {
   }
 }
 
-// ----------------------------------------------------------------------------
-  
-// class: Topology
-class Topology {
-  
-  template <template<typename...> typename E> 
-  friend class BasicTaskflow;
-
-  public:
-
-    Topology(Graph&&);
-
-    template <typename C>
-    Topology(Graph&&, C&&);
-
-    std::string dump() const;
-    void dump(std::ostream&) const;
-
-  private:
-
-    Graph _graph;
-
-    std::shared_future<void> _future;
-
-    std::vector<Node*> _sources;
-
-    Node _target;
-};
-
-// TODO: remove duplicate code in the two constructors
-
-// Constructor
-inline Topology::Topology(Graph&& t) : 
-  _graph(std::move(t)) {
-
-  _target._topology = this;
-  
-  std::promise<void> promise;
-
-  _future = promise.get_future().share();
-
-  _target._work = [p=MoC{std::move(promise)}] () mutable { 
-    p.get().set_value(); 
-  };
-
-  // Build the super source and super target.
-  for(auto& node : _graph) {
-
-    node._topology = this;
-
-    if(node.num_dependents() == 0) {
-      _sources.push_back(&node);
-    }
-
-    if(node.num_successors() == 0) {
-      node.precede(_target);
-    }
-  }
-}
-
-
-// Constructor
-template <typename C>
-inline Topology::Topology(Graph&& t, C&& c) : 
-  _graph(std::move(t)) {
-
-  //_source._topology = this;
-  _target._topology = this;
-  
-  std::promise<void> promise;
-
-  _future = promise.get_future().share();
-
-  _target._work = [p=MoC{std::move(promise)}, c{std::forward<C>(c)}] () mutable { 
-    p.get().set_value();
-    c();
-  };
-
-  // Build the super source and super target.
-  for(auto& node : _graph) {
-
-    node._topology = this;
-
-    if(node.num_dependents() == 0) {
-      _sources.push_back(&node);
-    }
-
-    if(node.num_successors() == 0) {
-      node.precede(_target);
-    }
-  }
-}
-
-
-// Procedure: dump
-inline void Topology::dump(std::ostream& os) const {
-
-  assert(!(_target._subgraph));
-  
-  os << "digraph Topology {\n"
-     << _target.dump();
-
-  for(const auto& node : _graph) {
-    os << node.dump();
-  }
-
-  os << "}\n";
-}
-  
-// Function: dump
-inline std::string Topology::dump() const { 
-  std::ostringstream os;
-  dump(os);
-  return os.str();
-}
-
-// ----------------------------------------------------------------------------
-
-
-
 }  // end of namespace tf. ---------------------------------------------------
+
 

@@ -905,3 +905,93 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
 
 }
 
+
+// --------------------------------------------------------
+// Testcase: Framework
+// --------------------------------------------------------
+TEST_CASE("Framework" * doctest::timeout(300)) {
+
+  // Empty subflow test
+  for(unsigned W=1; W<=4; ++W) {
+
+    std::atomic<size_t> count {0};
+    tf::Framework f;
+    auto A = f.silent_emplace([&](){ count ++; });
+    auto B = f.silent_emplace([&](auto& subflow){ 
+      count ++; 
+      auto B1 = subflow.silent_emplace([&](){ count++; });
+      auto B2 = subflow.silent_emplace([&](){ count++; });
+      auto B3 = subflow.silent_emplace([&](){ count++; });
+      B1.precede(B3); B2.precede(B3);
+    });
+    auto C = f.silent_emplace([&](){ count ++; });
+    auto D = f.silent_emplace([&](){ count ++; });
+
+    A.precede(B, C);
+    B.precede(D); 
+    C.precede(D);
+
+    tf::Taskflow tf(W);
+    std::list<std::shared_future<void>> fu_list;
+    for(size_t i=0; i<500; i++) {
+      if(i == 499) {
+        tf.run(f).get();   // Synchronize the first 500 runs
+        tf.run_n(f, 500);  // Run 500 times more
+      }
+      else if(i % 2) {
+        fu_list.push_back(tf.run(f));
+      }
+      else {
+        fu_list.push_back(tf.run(f, [&, i=i](){ REQUIRE(count == (i+1)*7); }));
+      }
+    }
+
+    for(auto& fu: fu_list) {
+      REQUIRE(fu.wait_for(std::chrono::seconds(0)) == std::future_status::ready);
+    }
+
+    tf.wait_for_all();
+
+    REQUIRE(count == 7000);
+  }
+
+
+  // TODO: test correctness when framework got changed between runs 
+  for(unsigned W=1; W<=4; ++W) {
+
+    std::atomic<size_t> count {0};
+    tf::Framework f;
+    auto A = f.silent_emplace([&](){ count ++; });
+    auto B = f.silent_emplace([&](auto& subflow){ 
+      count ++; 
+      auto B1 = subflow.silent_emplace([&](){ count++; });
+      auto B2 = subflow.silent_emplace([&](){ count++; });
+      auto B3 = subflow.silent_emplace([&](){ count++; });
+      B1.precede(B3); B2.precede(B3);
+    });
+    auto C = f.silent_emplace([&](){ count ++; });
+    auto D = f.silent_emplace([&](){ count ++; });
+
+    A.precede(B, C);
+    B.precede(D); 
+    C.precede(D);
+
+    tf::Taskflow tf(W);
+    tf.run_n(f, 10).get();
+    REQUIRE(count == 70);    
+
+    auto E = f.silent_emplace([](){});
+    D.precede(E);
+    tf.run_n(f, 10).get();
+    REQUIRE(count == 140);    
+
+    auto F = f.silent_emplace([](){});
+    E.precede(F);
+    tf.silent_run_n(f, 10);
+    tf.wait_for_all();
+    REQUIRE(count == 210);    
+  }
+
+}
+
+

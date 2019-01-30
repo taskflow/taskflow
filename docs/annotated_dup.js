@@ -4,6 +4,7 @@ var annotated_dup =
       [ "BasicTaskflow", "classtf_1_1BasicTaskflow.html", "classtf_1_1BasicTaskflow" ],
       [ "Error", "structtf_1_1Error.html", "structtf_1_1Error" ],
       [ "FlowBuilder", "classtf_1_1FlowBuilder.html", "classtf_1_1FlowBuilder" ],
+      [ "Framework", "classtf_1_1Framework.html", "classtf_1_1Framework" ],
       [ "ProactiveThreadpool", "classtf_1_1ProactiveThreadpool.html", "classtf_1_1ProactiveThreadpool" ],
       [ "SimpleThreadpool", "classtf_1_1SimpleThreadpool.html", "classtf_1_1SimpleThreadpool" ],
       [ "SpeculativeThreadpool", "classtf_1_1SpeculativeThreadpool.html", "classtf_1_1SpeculativeThreadpool" ],

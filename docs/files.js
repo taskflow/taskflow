@@ -3,6 +3,7 @@ var files =
     [ "basic_taskflow.hpp", "basic__taskflow_8hpp_source.html", null ],
     [ "error.hpp", "error_8hpp_source.html", null ],
     [ "flow_builder.hpp", "flow__builder_8hpp_source.html", null ],
+    [ "framework.hpp", "framework_8hpp_source.html", null ],
     [ "proactive_threadpool.hpp", "proactive__threadpool_8hpp_source.html", null ],
     [ "simple_threadpool.hpp", "simple__threadpool_8hpp_source.html", null ],
     [ "speculative_threadpool.hpp", "speculative__threadpool_8hpp_source.html", null ],

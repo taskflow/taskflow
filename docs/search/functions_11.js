@@ -39,5 +39,7 @@ var searchData=
   ['reverse',['reverse',['http://en.cppreference.com/w/cpp/container/forward_list/reverse.html',1,'std::forward_list::reverse()'],['http://en.cppreference.com/w/cpp/container/list/reverse.html',1,'std::list::reverse()']]],
   ['rfind',['rfind',['http://en.cppreference.com/w/cpp/string/basic_string/rfind.html',1,'std::string::rfind()'],['http://en.cppreference.com/w/cpp/string/basic_string/rfind.html',1,'std::basic_string::rfind()'],['http://en.cppreference.com/w/cpp/string/basic_string/rfind.html',1,'std::wstring::rfind()'],['http://en.cppreference.com/w/cpp/string/basic_string/rfind.html',1,'std::u16string::rfind()'],['http://en.cppreference.com/w/cpp/string/basic_string/rfind.html',1,'std::u32string::rfind()']]],
   ['round_5ferror',['round_error',['http://en.cppreference.com/w/cpp/types/numeric_limits/round_error.html',1,'std::numeric_limits']]],
+  ['run',['run',['../classtf_1_1BasicTaskflow.html#af8ebf13bc439f87077c663a3c1008eea',1,'tf::BasicTaskflow::run(Framework &amp;)'],['../classtf_1_1BasicTaskflow.html#a793482ae972afc4ec5d70a065e1bddc1',1,'tf::BasicTaskflow::run(Framework &amp;, C &amp;&amp;)']]],
+  ['run_5fn',['run_n',['../classtf_1_1BasicTaskflow.html#a5fc02a698b067e30562f4b7ae39acfaf',1,'tf::BasicTaskflow::run_n(Framework &amp;, size_t)'],['../classtf_1_1BasicTaskflow.html#a5bbbe1c79587ca86031e8565f2f58bf4',1,'tf::BasicTaskflow::run_n(Framework &amp;, size_t, C &amp;&amp;)']]],
   ['runtime_5ferror',['runtime_error',['http://en.cppreference.com/w/cpp/error/runtime_error.html',1,'std::runtime_error']]]
 ];

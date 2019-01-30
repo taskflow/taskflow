@@ -5,6 +5,7 @@ var hierarchy =
     ] ],
     [ "tf::FlowBuilder", "classtf_1_1FlowBuilder.html", [
       [ "tf::BasicTaskflow< E >", "classtf_1_1BasicTaskflow.html", null ],
+      [ "tf::Framework", "classtf_1_1Framework.html", null ],
       [ "tf::SubflowBuilder", "classtf_1_1SubflowBuilder.html", null ]
     ] ],
     [ "tf::ProactiveThreadpool< Closure >", "classtf_1_1ProactiveThreadpool.html", null ],

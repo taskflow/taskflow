@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.9)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
 # Project name
-project(Cpp-Taskflow VERSION 2.0.0 LANGUAGES CXX)
+project(Cpp-Taskflow VERSION 2.1.0 LANGUAGES CXX)
 
 # Turn on the verbose
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -151,7 +151,10 @@ add_executable(executor ${TF_EXAMPLE_DIR}/executor.cpp)
 target_link_libraries(executor ${PROJECT_NAME} Threads::Threads) 
 
 add_executable(dynamic_traversal ${TF_EXAMPLE_DIR}/dynamic_traversal.cpp)
-target_link_libraries(dynamic_traversal ${PROJECT_NAME} Threads::Threads)
+target_link_libraries(dynamic_traversal ${PROJECT_NAME} Threads::Threads) 
+
+add_executable(framework ${TF_EXAMPLE_DIR}/framework.cpp)
+target_link_libraries(framework ${PROJECT_NAME} Threads::Threads)
 
 endif()
 
@@ -181,6 +184,7 @@ add_test(reduce_min       ${TF_UTEST_DIR}/taskflow -tc=ReduceMin)
 add_test(reduce_max       ${TF_UTEST_DIR}/taskflow -tc=ReduceMax)
 add_test(joined_subflow   ${TF_UTEST_DIR}/taskflow -tc=JoinedSubflow)
 add_test(detached_subflow ${TF_UTEST_DIR}/taskflow -tc=DetachedSubflow)
+add_test(framework        ${TF_UTEST_DIR}/taskflow -tc=Framework)
 
 # unittest for threadpool 
 add_executable(threadpool_test_tmp unittest/threadpool.cpp)
@@ -299,6 +303,13 @@ target_link_libraries(
 )
 set_target_properties(mnist PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+
+# Add benchmark command into Makefile 
+add_custom_target(benchmark 
+    COMMAND wavefront 
+    COMMAND graph_traversal 
+    COMMAND mnist)
+add_dependencies(benchmark wavefront graph_traversal mnist)
 
 endif()
 

@@ -34,7 +34,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0</span>
    </div>
   </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -198,6 +198,38 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1BasicTaskflow.html#ae4c67b7bc87564e8b5b309837f4b6d78">dump_topologies</a> () const</td></tr>
 <tr class="memdesc:ae4c67b7bc87564e8b5b309837f4b6d78"><td class="mdescLeft">&#160;</td><td class="mdescRight">dumps the existing topologies in DOT format to a <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> <br /></td></tr>
 <tr class="separator:ae4c67b7bc87564e8b5b309837f4b6d78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acae12080c60f087421317c7681c06f0c"><td class="memItemLeft" align="right" valign="top"><a id="acae12080c60f087421317c7681c06f0c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1BasicTaskflow.html#acae12080c60f087421317c7681c06f0c">silent_run</a> (<a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;)</td></tr>
+<tr class="memdesc:acae12080c60f087421317c7681c06f0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">silently runs the framework w/ callback to threads and returns immediately <br /></td></tr>
+<tr class="separator:acae12080c60f087421317c7681c06f0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab648c7d24846759bfbf525df4bf48b32"><td class="memTemplParams" colspan="2"><a id="ab648c7d24846759bfbf525df4bf48b32"></a>
+template&lt;typename C &gt; </td></tr>
+<tr class="memitem:ab648c7d24846759bfbf525df4bf48b32"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1BasicTaskflow.html#ab648c7d24846759bfbf525df4bf48b32">silent_run</a> (<a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;, C &amp;&amp;)</td></tr>
+<tr class="memdesc:ab648c7d24846759bfbf525df4bf48b32"><td class="mdescLeft">&#160;</td><td class="mdescRight">silently runs the framework w/o callback to threads and returns immediately <br /></td></tr>
+<tr class="separator:ab648c7d24846759bfbf525df4bf48b32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8276dc863390e0f3e0bc53f5cf357338"><td class="memItemLeft" align="right" valign="top"><a id="a8276dc863390e0f3e0bc53f5cf357338"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1BasicTaskflow.html#a8276dc863390e0f3e0bc53f5cf357338">silent_run_n</a> (<a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;, size_t)</td></tr>
+<tr class="memdesc:a8276dc863390e0f3e0bc53f5cf357338"><td class="mdescLeft">&#160;</td><td class="mdescRight">silently runs the framework N times w/ a callback to threads and returns immediately <br /></td></tr>
+<tr class="separator:a8276dc863390e0f3e0bc53f5cf357338"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c068dff2ed61d63e069964580d9f133"><td class="memTemplParams" colspan="2"><a id="a7c068dff2ed61d63e069964580d9f133"></a>
+template&lt;typename C &gt; </td></tr>
+<tr class="memitem:a7c068dff2ed61d63e069964580d9f133"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1BasicTaskflow.html#a7c068dff2ed61d63e069964580d9f133">silent_run_n</a> (<a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;, size_t, C &amp;&amp;)</td></tr>
+<tr class="memdesc:a7c068dff2ed61d63e069964580d9f133"><td class="mdescLeft">&#160;</td><td class="mdescRight">silently runs the framework N times w/o a callback to threads and returns immediately <br /></td></tr>
+<tr class="separator:a7c068dff2ed61d63e069964580d9f133"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8ebf13bc439f87077c663a3c1008eea"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/shared_future.html">std::shared_future</a>&lt; void &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1BasicTaskflow.html#af8ebf13bc439f87077c663a3c1008eea">run</a> (<a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;)</td></tr>
+<tr class="memdesc:af8ebf13bc439f87077c663a3c1008eea"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs the framework w/o callback to threads and returns immediately  <a href="#af8ebf13bc439f87077c663a3c1008eea">More...</a><br /></td></tr>
+<tr class="separator:af8ebf13bc439f87077c663a3c1008eea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a793482ae972afc4ec5d70a065e1bddc1"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
+<tr class="memitem:a793482ae972afc4ec5d70a065e1bddc1"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/shared_future.html">std::shared_future</a>&lt; void &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1BasicTaskflow.html#a793482ae972afc4ec5d70a065e1bddc1">run</a> (<a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;, C &amp;&amp;)</td></tr>
+<tr class="memdesc:a793482ae972afc4ec5d70a065e1bddc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs the framework w/ callback to threads and returns immediately  <a href="#a793482ae972afc4ec5d70a065e1bddc1">More...</a><br /></td></tr>
+<tr class="separator:a793482ae972afc4ec5d70a065e1bddc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fc02a698b067e30562f4b7ae39acfaf"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/shared_future.html">std::shared_future</a>&lt; void &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1BasicTaskflow.html#a5fc02a698b067e30562f4b7ae39acfaf">run_n</a> (<a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;, size_t)</td></tr>
+<tr class="memdesc:a5fc02a698b067e30562f4b7ae39acfaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs the framework for N times w/o a callback to threads and returns immediately  <a href="#a5fc02a698b067e30562f4b7ae39acfaf">More...</a><br /></td></tr>
+<tr class="separator:a5fc02a698b067e30562f4b7ae39acfaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bbbe1c79587ca86031e8565f2f58bf4"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
+<tr class="memitem:a5bbbe1c79587ca86031e8565f2f58bf4"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/shared_future.html">std::shared_future</a>&lt; void &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1BasicTaskflow.html#a5bbbe1c79587ca86031e8565f2f58bf4">run_n</a> (<a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;, size_t, C &amp;&amp;)</td></tr>
+<tr class="memdesc:a5bbbe1c79587ca86031e8565f2f58bf4"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs the framework for N times w/ a callback to threads and returns immediately  <a href="#a5bbbe1c79587ca86031e8565f2f58bf4">More...</a><br /></td></tr>
+<tr class="separator:a5bbbe1c79587ca86031e8565f2f58bf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtf_1_1FlowBuilder"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtf_1_1FlowBuilder')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtf_1_1FlowBuilder.html">tf::FlowBuilder</a></td></tr>
 <tr class="memitem:ab9fcccd3c62467052a263b2fd2ca406b inherit pub_methods_classtf_1_1FlowBuilder"><td class="memItemLeft" align="right" valign="top"><a id="ab9fcccd3c62467052a263b2fd2ca406b"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>FlowBuilder</b> (Graph &amp;)</td></tr>
@@ -407,6 +439,138 @@ template&lt;template&lt; typename... &gt; typename E&gt; </div>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="af8ebf13bc439f87077c663a3c1008eea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8ebf13bc439f87077c663a3c1008eea">&#9670;&nbsp;</a></span>run() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename... &gt; typename E&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/shared_future.html">std::shared_future</a>&lt; void &gt; <a class="el" href="classtf_1_1BasicTaskflow.html">tf::BasicTaskflow</a>&lt; E &gt;::run </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;&#160;</td>
+          <td class="paramname"><em>f</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>runs the framework w/o callback to threads and returns immediately </p>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/shared_future.html">std::shared_future</a> to access the execution status of the framework </dd></dl>
+
+</div>
+</div>
+<a id="a793482ae972afc4ec5d70a065e1bddc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a793482ae972afc4ec5d70a065e1bddc1">&#9670;&nbsp;</a></span>run() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename... &gt; typename E&gt; </div>
+<div class="memtemplate">
+template&lt;typename C &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/shared_future.html">std::shared_future</a>&lt; void &gt; <a class="el" href="classtf_1_1BasicTaskflow.html">tf::BasicTaskflow</a>&lt; E &gt;::run </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">C &amp;&amp;&#160;</td>
+          <td class="paramname"><em>c</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>runs the framework w/ callback to threads and returns immediately </p>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/shared_future.html">std::shared_future</a> to access the execution status of the framework </dd></dl>
+
+</div>
+</div>
+<a id="a5fc02a698b067e30562f4b7ae39acfaf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fc02a698b067e30562f4b7ae39acfaf">&#9670;&nbsp;</a></span>run_n() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename... &gt; typename E&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/shared_future.html">std::shared_future</a>&lt; void &gt; <a class="el" href="classtf_1_1BasicTaskflow.html">tf::BasicTaskflow</a>&lt; E &gt;::run_n </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>repeat</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>runs the framework for N times w/o a callback to threads and returns immediately </p>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/shared_future.html">std::shared_future</a> to access the execution status of the framework </dd></dl>
+
+</div>
+</div>
+<a id="a5bbbe1c79587ca86031e8565f2f58bf4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bbbe1c79587ca86031e8565f2f58bf4">&#9670;&nbsp;</a></span>run_n() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename... &gt; typename E&gt; </div>
+<div class="memtemplate">
+template&lt;typename C &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/shared_future.html">std::shared_future</a>&lt; void &gt; <a class="el" href="classtf_1_1BasicTaskflow.html">tf::BasicTaskflow</a>&lt; E &gt;::run_n </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>repeat</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">C &amp;&amp;&#160;</td>
+          <td class="paramname"><em>c</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>runs the framework for N times w/ a callback to threads and returns immediately </p>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/shared_future.html">std::shared_future</a> to access the execution status of the framework </dd></dl>
 
 </div>
 </div>
