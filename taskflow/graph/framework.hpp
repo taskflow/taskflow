@@ -38,7 +38,6 @@ class Framework : public FlowBuilder {
 
     std::mutex _mtx;
     std::list<Topology*> _topologies;
-    std::vector<size_t> _dependents;
     Node* _last_target {nullptr};   
 };
 
