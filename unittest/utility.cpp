@@ -10,6 +10,17 @@
 // --------------------------------------------------------
 TEST_CASE("PassiveVector" * doctest::timeout(300)) {
 
+  SUBCASE("constructor") {
+    tf::PassiveVector<int> vec1;
+    REQUIRE(vec1.size() == 0);
+    REQUIRE(vec1.empty() == true);
+
+    tf::PassiveVector<int, 8> vec2;
+    REQUIRE(vec2.size() == 0);
+    REQUIRE(vec2.empty() == true);
+    REQUIRE(vec2.capacity() == 8);
+  }
+
   SUBCASE("constructor_n") {
     for(int N=0; N<=65536; ++N) {
       tf::PassiveVector<int> vec(N);
@@ -17,6 +28,41 @@ TEST_CASE("PassiveVector" * doctest::timeout(300)) {
       REQUIRE(vec.empty() == (N == 0));
       REQUIRE(vec.max_size() >= vec.size());
       REQUIRE(vec.capacity() >= vec.size());
+    }
+  }
+
+  SUBCASE("copy_constructor") {
+    for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
+      tf::PassiveVector<int> vec1(N);
+      for(auto& item : vec1) {
+        item = N;
+      }
+      
+      tf::PassiveVector<int> vec2(vec1);
+      REQUIRE(vec1.size() == N);
+      REQUIRE(vec2.size() == N);
+      for(size_t i=0; i<vec1.size(); ++i) {
+        REQUIRE(vec1[i] == vec2[i]);
+        REQUIRE(vec1[i] == N);
+      }
+    }
+  }
+  
+  SUBCASE("move_constructor") {
+    for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
+      tf::PassiveVector<int> vec1(N);
+      for(auto& item : vec1) {
+        item = N;
+      }
+      
+      tf::PassiveVector<int> vec2(std::move(vec1));
+      REQUIRE(vec1.size() == 0);
+      REQUIRE(vec1.empty() == true);
+      REQUIRE(vec2.size() == N);
+
+      for(size_t i=0; i<vec2.size(); ++i) {
+        REQUIRE(vec2[i] == N);
+      }
     }
   }
 
@@ -120,6 +166,17 @@ TEST_CASE("PassiveVector" * doctest::timeout(300)) {
       vec.clear();
       REQUIRE(vec.size() == 0);
       REQUIRE(vec.capacity() == cap);
+    }
+  }
+
+  SUBCASE("comparison") {
+    for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
+      tf::PassiveVector<int> vec1;
+      for(int i=0; i<N; ++i) {
+        vec1.push_back(i);
+      }
+      tf::PassiveVector<int> vec2(vec1);
+      REQUIRE(vec1 == vec2);
     }
   }
 
