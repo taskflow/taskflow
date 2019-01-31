@@ -8,7 +8,7 @@
 [![Insights](image/maintained.svg)][GitHub insights]
 [![License: MIT](./image/license_badge.svg)](./LICENSE)
 
-A fast C++ header-only library to help you quickly write parallel programs with complex task dependencies
+A fast C++ *header-only* library to help you quickly write parallel programs with complex task dependencies
 
 # Why Cpp-Taskflow?
 
