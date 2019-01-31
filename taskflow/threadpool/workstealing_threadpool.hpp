@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <set>
 #include <numeric>
+#include <cassert>
 
 namespace tf {
 

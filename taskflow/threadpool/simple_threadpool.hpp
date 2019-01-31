@@ -27,6 +27,7 @@
 #include <condition_variable>
 #include <memory>
 #include <future>
+#include <cassert>
 #include <unordered_set>
 
 namespace tf {

@@ -37,6 +37,7 @@
 #include <future>
 #include <unordered_set>
 #include <optional>
+#include <cassert>
 
 namespace tf {
   
