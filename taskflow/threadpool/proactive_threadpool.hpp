@@ -37,6 +37,7 @@
 #include <future>
 #include <unordered_set>
 #include <optional>
+#include <cassert>
 
 namespace tf {
   
@@ -283,7 +284,7 @@ void ProactiveThreadpool<Closure>::batch(std::vector<Closure> &&tasks) {
   }
 }
 
-};  // namespace tf -----------------------------------------------------------
+}  // namespace tf -----------------------------------------------------------
 
 
 

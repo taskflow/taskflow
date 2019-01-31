@@ -711,5 +711,5 @@ std::string BasicTaskflow<E>::dump() const {
   return os.str();
 }
 
-};  // end of namespace tf ----------------------------------------------------
+}  // end of namespace tf ----------------------------------------------------
 

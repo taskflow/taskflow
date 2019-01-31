@@ -1,7 +1,8 @@
 #pragma once
 
 #include "../error/error.hpp"
-#include "../utility/utility.hpp"
+#include "../utility/traits.hpp"
+#include "../utility/passive_vector.hpp"
 
 namespace tf {
 
@@ -51,8 +52,10 @@ class Node {
     
     std::string _name;
     std::variant<StaticWork, DynamicWork> _work;
-    std::vector<Node*> _successors;
-    std::vector<Node*> _predecessors;
+
+    tf::PassiveVector<Node*> _successors;
+    tf::PassiveVector<Node*> _predecessors;
+
     std::atomic<int> _dependents;
 
     std::optional<Graph> _subgraph;
@@ -167,5 +170,6 @@ inline void Node::dump(std::ostream& os) const {
   }
 }
 
-};  // end of namespace tf. ---------------------------------------------------
+}  // end of namespace tf. ---------------------------------------------------
+
 

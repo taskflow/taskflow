@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <set>
 #include <numeric>
+#include <cassert>
 
 namespace tf {
 
@@ -665,7 +666,7 @@ void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
   }
 } 
 
-};  // end of namespace tf. ---------------------------------------------------
+}  // end of namespace tf. ---------------------------------------------------
 
 
 

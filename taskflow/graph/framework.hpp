@@ -54,7 +54,6 @@ inline void Framework::dump(std::ostream& os) const {
   os << "}\n";
 }
 
-
 // Function: dump
 inline std::string Framework::dump() const { 
   std::ostringstream os;
@@ -62,6 +61,5 @@ inline std::string Framework::dump() const {
   return os.str();
 }
 
-
-};  // end of namespace tf. ---------------------------------------------------
+}  // end of namespace tf. ---------------------------------------------------
 
