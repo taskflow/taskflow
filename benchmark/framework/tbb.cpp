@@ -76,16 +76,3 @@ std::chrono::microseconds measure_time_tbb(LevelGraph& graph, unsigned num_threa
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-//int main(int argc, char* argv[]){
-//
-//  for(int i=1; i<=200; i++){
-//    LevelGraph graph(i, i);
-//    auto tbb = measure_time_tbb(graph);
-//    std::cout << "Level graph:\t" << i << "\tby\t" << i << std::endl;
-//    std::cout << "Elasped time tbb:\t" << tbb << std::endl;
-//    std::cout << "Graph is fully traversed:\t" << graph.validate_result() << std::endl;
-//    graph.clear_graph();
-//    std::cout << std::endl;
-//  }
-//
-//}
