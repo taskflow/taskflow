@@ -1,9 +1,8 @@
 #pragma once
 
 #include "../error/error.hpp"
-#include "../utility/utility.hpp"
-
-#include "passive_vector.hpp"
+#include "../utility/traits.hpp"
+#include "../utility/passive_vector.hpp"
 
 namespace tf {
 

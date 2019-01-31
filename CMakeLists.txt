@@ -169,6 +169,12 @@ enable_testing()
 message(STATUS "Building unit tests ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR})
 
+# unittest for utility
+add_executable(utility unittest/utility.cpp)
+target_link_libraries(utility ${PROJECT_NAME} Threads::Threads)
+target_include_directories(utility PRIVATE ${PROJECT_SOURCE_DIR}/doctest)
+add_test(passive_vector   ${TF_UTEST_DIR}/utility -tc=passive_vector)
+
 # unittest for taskflow
 add_executable(taskflow_test_tmp unittest/taskflow.cpp)
 target_link_libraries(taskflow_test_tmp ${PROJECT_NAME} Threads::Threads)
@@ -303,12 +309,11 @@ target_link_libraries(
 )
 set_target_properties(mnist PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-
 # Add benchmark command into Makefile 
 add_custom_target(benchmark 
-    COMMAND wavefront 
-    COMMAND graph_traversal 
-    COMMAND mnist)
+  COMMAND wavefront 
+  COMMAND graph_traversal 
+  COMMAND mnist)
 add_dependencies(benchmark wavefront graph_traversal mnist)
 
 endif()
