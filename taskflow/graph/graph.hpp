@@ -52,11 +52,15 @@ class Node {
     std::string _name;
     std::variant<StaticWork, DynamicWork> _work;
     std::vector<Node*> _successors;
+    std::vector<Node*> _predecessors;
     std::atomic<int> _dependents;
 
     std::optional<Graph> _subgraph;
 
     Topology* _topology;
+
+    bool _spawned {false};
+    bool _subtask {false};
 };
 
 // Constructor
@@ -97,6 +101,7 @@ inline Node::~Node() {
 // Procedure: precede
 inline void Node::precede(Node& v) {
   _successors.push_back(&v);
+  v._predecessors.push_back(this);
   v._dependents.fetch_add(1, std::memory_order_relaxed);
 }
 
@@ -107,7 +112,7 @@ inline size_t Node::num_successors() const {
 
 // Function: dependents
 inline size_t Node::num_dependents() const {
-  return _dependents.load(std::memory_order_relaxed);
+  return _predecessors.size();
 }
 
 // Function: name

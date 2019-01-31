@@ -912,7 +912,7 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
 TEST_CASE("Framework" * doctest::timeout(300)) {
 
   // Empty subflow test
-  for(unsigned W=1; W<=4; ++W) {
+  for(unsigned W=0; W<=4; ++W) {
 
     std::atomic<size_t> count {0};
     tf::Framework f;
@@ -957,7 +957,7 @@ TEST_CASE("Framework" * doctest::timeout(300)) {
 
 
   // TODO: test correctness when framework got changed between runs 
-  for(unsigned W=1; W<=4; ++W) {
+  for(unsigned W=0; W<=4; ++W) {
 
     std::atomic<size_t> count {0};
     tf::Framework f;

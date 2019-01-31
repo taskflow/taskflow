@@ -154,7 +154,10 @@ add_executable(dynamic_traversal ${TF_EXAMPLE_DIR}/dynamic_traversal.cpp)
 target_link_libraries(dynamic_traversal ${PROJECT_NAME} Threads::Threads) 
 
 add_executable(framework ${TF_EXAMPLE_DIR}/framework.cpp)
-target_link_libraries(framework ${PROJECT_NAME} Threads::Threads)
+target_link_libraries(framework ${PROJECT_NAME} Threads::Threads) 
+
+add_executable(framework_dynamic_tasking ${TF_EXAMPLE_DIR}/framework_dynamic_tasking.cpp)
+target_link_libraries(framework_dynamic_tasking ${PROJECT_NAME} Threads::Threads)
 
 endif()
 
@@ -302,6 +305,25 @@ target_link_libraries(
   ${OpenMP_CXX_LIBRARIES} stdc++fs
 )
 set_target_properties(mnist PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+
+## benchmark 4: Framework
+message(STATUS "benchmark 4: Framework")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/framework)
+add_executable(
+  framework_benchmarking
+  ${TF_BENCHMARK_DIR}/framework/main.cpp
+  ${TF_BENCHMARK_DIR}/framework/omp.cpp
+  ${TF_BENCHMARK_DIR}/framework/tbb.cpp
+  ${TF_BENCHMARK_DIR}/framework/seq.cpp
+  ${TF_BENCHMARK_DIR}/framework/taskflow.cpp
+)
+target_link_libraries(
+  framework_benchmarking
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
+)
+set_target_properties(framework_benchmarking PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
 
 
 endif()

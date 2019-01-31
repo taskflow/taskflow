@@ -311,88 +311,10 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
 
   auto &tpg = _topologies.emplace_front(f, repeat);
   f._topologies.push_back(&tpg);
-  
-  // case 1: the previous execution is still running
-  if(f._topologies.size() > 1) {
-    tpg._target._work = std::forward<C>(c);
-  }
-  // case 2: this epoch should run
-  else {
-    // Set up target node's work
-    tpg._target._work = [&f, c=std::function<void()>{std::forward<C>(c)}, this]() mutable {
 
-      // Must recover nodes' dependent after every execution
-      size_t i=0; 
-      for(auto& n: f._graph) {
-        n._dependents = f._dependents[i++];
-      }
-      f._topologies.front()->_target._dependents = f._dependents.back();
-
-      std::invoke(c);
-
-      // case 1: we still need to run the topology again
-      if(--f._topologies.front()->_repeat != 0) {
-
-        // Reset subgraph in each node 
-        std::for_each(f._graph.begin(), f._graph.end(), [](Node& n){
-          if(n._subgraph.has_value()){ n._subgraph.reset(); }
-        });
-
-        _schedule(f._topologies.front()->_sources); 
-      }
-      // case 2: the final run of this topology
-      // notice that there can be another new run request before we acquire the lock
-      else {
-        if(num_workers()) {
-          f._mtx.lock();
-        }
-     
-        // If there is another run
-        if(f._topologies.size() > 1) {
-
-          // Reset subgraph in each node 
-          std::for_each(f._graph.begin(), f._graph.end(), [](Node& n){
-            if(n._subgraph.has_value()){ n._subgraph.reset(); }
-          });
-
-          // Set the promise
-          f._topologies.front()->_promise.set_value();
-
-          auto next_tpg = std::next(f._topologies.begin());
-          c = std::move(std::get<0>((*next_tpg)->_target._work));
-
-          f._topologies.front()->_repeat = (*next_tpg)->_repeat;
-          f._topologies.front()->_promise = std::move((*next_tpg)->_promise);
-          f._topologies.erase(next_tpg);
-
-          if(num_workers()) {
-            f._mtx.unlock();
-          }
-          _schedule(f._topologies.front()->_sources);
-        }
-        else {
-
-          // Need to back up the promise first here becuz framework might be 
-          // destroy before taskflow leaves
-          auto &p = f._topologies.front()->_promise; 
-          f._last_target = &(f._topologies.front()->_target);
-          f._topologies.pop_front();
-          if(num_workers()) {
-            f._mtx.unlock();
-          }
-          // We set the promise in the end in case framework leaves before taskflow
-          p.set_value();
-        }
-      }
-    }; // End of target's work ------------------------------------------------
-
-    tpg._sources.clear();
-    f._dependents.clear();
-
-    // Clear last execution data & Build precedence between nodes and target
-		for(auto& n: f._graph) {
-
-      // TODO: swap this with the last and then pop_back
+  static const auto setup_topology = [](auto& f, auto& tpg) {
+    for(auto& n: f._graph) {
+      //// TODO: swap this with the last and then pop_back
       if(!n._successors.empty()) {
         for(size_t i=0; i<n._successors.size(); i++) {
           if(n._successors[i] == f._last_target) {
@@ -401,26 +323,105 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
             break;
           }
         }
-      }
+      } 
 
-      // reset the dynamic tasking
-      if(n._subgraph.has_value()) {
-        n._subgraph.reset();
-      }
-      
       // reset the target links
       n._topology = &tpg;
-		  if(n.num_dependents() == 0) {
-		    tpg._sources.push_back(&n);
-		  }
-		  if(n.num_successors() == 0) {
-		    n.precede(tpg._target);
-		  }
-      f._dependents.push_back(n._dependents);
-		}
-    f._dependents.push_back(tpg._target._dependents);
+      if(n.num_dependents() == 0) {
+        tpg._sources.push_back(&n);
+      }
+      if(n.num_successors() == 0) {
+        n.precede(tpg._target);
+      }
+    }
+  };
 
-    _schedule(tpg._sources);
+  // Iterative execution to avoid stack overflow
+  if(num_workers() == 0) {
+    // Clear last execution data & Build precedence between nodes and target
+    setup_topology(f, tpg);
+
+    tpg._target._work = std::forward<C>(c);
+    const int tgt_predecessor = tpg._target._predecessors.size();
+
+    for(size_t i=0; i<repeat; i++) {
+
+      _schedule(tpg._sources);
+
+      // Reset target 
+      f._topologies.front()->_target._predecessors.resize(tgt_predecessor);
+      f._topologies.front()->_target._dependents = tgt_predecessor;
+    }
+
+    f._last_target = &tpg._target;
+    tpg._promise.set_value();
+  }
+  else { 
+    // case 1: the previous execution is still running
+    if(f._topologies.size() > 1) {
+      tpg._target._work = std::forward<C>(c);
+    }
+    // case 2: this epoch should run
+    else {
+      setup_topology(f, tpg);
+
+      //Set up target node's work
+      tpg._target._work = [&f, c=std::function<void()>{std::forward<C>(c)}, 
+        tgt_predecessor = tpg._target._predecessors.size(), this]() mutable {
+
+        std::invoke(c);
+
+        // case 1: we still need to run the topology again
+        if(--f._topologies.front()->_repeat != 0) {
+
+          // Reset target 
+          f._topologies.front()->_target._predecessors.resize(tgt_predecessor);
+          f._topologies.front()->_target._dependents = tgt_predecessor;
+
+          _schedule(f._topologies.front()->_sources); 
+        }
+        // case 2: the final run of this topology
+        // notice that there can be another new run request before we acquire the lock
+        else {
+          f._mtx.lock();
+       
+          // If there is another run
+          if(f._topologies.size() > 1) {
+
+            // Set the promise
+            f._topologies.front()->_promise.set_value();
+
+            auto next_tpg = std::next(f._topologies.begin());
+            c = std::move(std::get<StaticWork>((*next_tpg)->_target._work));
+
+            f._topologies.front()->_repeat = (*next_tpg)->_repeat;
+            f._topologies.front()->_promise = std::move((*next_tpg)->_promise);
+            f._topologies.erase(next_tpg);
+
+            f._mtx.unlock();
+
+            // Reset target 
+            f._topologies.front()->_target._predecessors.resize(tgt_predecessor);
+            f._topologies.front()->_target._dependents = tgt_predecessor;
+
+            _schedule(f._topologies.front()->_sources);
+          }
+          else {
+            // Need to back up the promise first here becuz framework might be 
+            // destroy before taskflow leaves
+            auto &p = f._topologies.front()->_promise; 
+            f._last_target = &(f._topologies.front()->_target);
+            f._topologies.pop_front();
+            f._mtx.unlock();
+           
+            // We set the promise in the end in case framework leaves before taskflow
+            p.set_value();
+          }
+        }
+      }; // End of target's work ------------------------------------------------
+
+      _schedule(tpg._sources);
+    }
   }
     
   return tpg._future;
@@ -436,8 +437,6 @@ BasicTaskflow<E>::Closure::Closure(BasicTaskflow& t, Node& n) :
 template <template <typename...> typename E>
 void BasicTaskflow<E>::Closure::operator () () const {
 
-  //assert(taskflow && node);
-
   // Here we need to fetch the num_successors first to avoid the invalid memory
   // access caused by topology clear.
   const auto num_successors = node->num_successors();
@@ -452,46 +451,25 @@ void BasicTaskflow<E>::Closure::operator () () const {
   // subflow node type 
   else {
 
-    bool first_time {false};  // To stop creating subflow in second time 
-    
-    // The first time we enter into the subflow context, subgraph must be nullopt.
-    if(!(node->_subgraph)){
-      node->_subgraph.emplace();  // Initialize the _subgraph   
-      first_time = true;
+    // Clear the subgraph before the task execution
+    if(!node->_spawned) {
+      node->_subgraph.reset();
+      node->_subgraph.emplace();
     }
-    
+   
     SubflowBuilder fb(*(node->_subgraph));
 
     std::invoke(std::get<DynamicWork>(node->_work), fb);
     
-    // Need to create a subflow if first time & subgraph is not empty
-    if(first_time && !(node->_subgraph->empty())) {
-      //// small optimization on one task
-      //if(std::next(node->_subgraph->begin()) == node->_subgraph->end()){
-      //  // If the subgraph has only one node, directly execute this static task 
-      //  // regardless of detached or join since this task will be eventually executed 
-      //  // some time before the end of the graph.
-      //  if(auto &f = node->_subgraph->front(); f._work.index() == 0) { 
-      //    std::invoke(std::get<StaticWork>(f._work));
-      //  }
-      //  else {
-      //    f.precede(fb.detached() ? node->_topology->_target : *node);
-      //    f._topology = node->_topology;
-      //    Closure c(*taskflow, f);
-      //    c();
-      //    // The reason to return here is this f might spawn new subflows (grandchildren)
-      //    // and we need to make sure grandchildren finish before f's parent. So we need to 
-      //    // return here. Otherwise, we might execute f's parent even grandchildren are not scheduled 
-      //    if(!fb.detached()) {
-      //      return;
-      //    }
-      //  }
-      //}
-      //else {
+    // Need to create a subflow if first time & subgraph is not empty 
+    if(!node->_spawned) {
+      node->_spawned = true;
+      if(!node->_subgraph->empty()) {
         // For storing the source nodes
         std::vector<Node*> src; 
         for(auto n = node->_subgraph->begin(); n != node->_subgraph->end(); ++n) {
           n->_topology = node->_topology;
+          n->_subtask = true;
           if(n->num_successors() == 0) {
             n->precede(fb.detached() ? node->_topology->_target : *node);
           }
@@ -500,17 +478,26 @@ void BasicTaskflow<E>::Closure::operator () () const {
           }
         }
 
-        for(auto& n: src) {
-          taskflow->_schedule(*n);
-        }
+        taskflow->_schedule(src);
 
         if(!fb.detached()) {
           return;
         }
-      //}
+      }
     }
+  } // End of DynamicWork ------------------------------------------------------------------------- 
+
+  // Recover the runtime change due to dynamic tasking except the target & spawn tasks 
+  // This must be done before scheduling the successors, otherwise this might cause 
+  // race condition on the _dependents
+  if(num_successors && !node->_subtask) {
+    while(!node->_predecessors.empty() && node->_predecessors.back()->_subtask) {
+      node->_predecessors.pop_back();
+    }
+    node->_dependents = node->_predecessors.size();
+    node->_spawned = false;
   }
-  
+
   // At this point, the node/node storage might be destructed.
   for(size_t i=0; i<num_successors; ++i) {
     if(--(node->_successors[i]->_dependents) == 0) {

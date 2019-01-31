@@ -285,12 +285,12 @@ inline const std::string& Task::name() const {
 
 // Function: num_dependents
 inline size_t Task::num_dependents() const {
-  return _node->_dependents.load(std::memory_order_relaxed);
+  return _node->num_dependents();
 }
 
 // Function: num_successors
 inline size_t Task::num_successors() const {
-  return _node->_successors.size();
+  return _node->num_successors();
 }
 
 };  // end of namespace tf. ---------------------------------------------------
