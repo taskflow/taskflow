@@ -311,10 +311,16 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
 
   auto &tpg = _topologies.emplace_front(f, repeat);
   f._topologies.push_back(&tpg);
-
+  
+  // PV 1/31 (twhuang): Lambda in C++17 is by default inline - no need for static
   static const auto setup_topology = [](auto& f, auto& tpg) {
+
     for(auto& n: f._graph) {
-      //// TODO: swap this with the last and then pop_back
+      
+      // PR 1/31 (twhuang): I don't think we need check the emptiness
+      // of the successors over here
+      // Also, when do you clean up dynamic tasking nodes?
+      //
       if(!n._successors.empty()) {
         for(size_t i=0; i<n._successors.size(); i++) {
           if(n._successors[i] == f._last_target) {
@@ -336,18 +342,23 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
     }
   };
 
+  // PV 1/31 (twhuang): single worker - we need to remove topologies?
+
   // Iterative execution to avoid stack overflow
   if(num_workers() == 0) {
     // Clear last execution data & Build precedence between nodes and target
     setup_topology(f, tpg);
 
     tpg._target._work = std::forward<C>(c);
+
+    // PR 1/31 (twhuang): redundant tgt_predecessors
     const int tgt_predecessor = tpg._target._predecessors.size();
 
     for(size_t i=0; i<repeat; i++) {
 
       _schedule(tpg._sources);
-
+      
+      // PR 1/31 (twhuang): why do we need to set the dependents again?
       // Reset target 
       f._topologies.front()->_target._predecessors.resize(tgt_predecessor);
       f._topologies.front()->_target._dependents = tgt_predecessor;
@@ -370,7 +381,8 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
         tgt_predecessor = tpg._target._predecessors.size(), this]() mutable {
 
         std::invoke(c);
-
+        
+        // PV 1/31 (twhuang): thread safety? 
         // case 1: we still need to run the topology again
         if(--f._topologies.front()->_repeat != 0) {
 
@@ -450,7 +462,9 @@ void BasicTaskflow<E>::Closure::operator () () const {
   }
   // subflow node type 
   else {
-
+    
+    // PV 1/31 (twhuang): emplace is enough
+    //
     // Clear the subgraph before the task execution
     if(!node->_spawned) {
       node->_subgraph.reset();
@@ -485,8 +499,12 @@ void BasicTaskflow<E>::Closure::operator () () const {
         }
       }
     }
-  } // End of DynamicWork ------------------------------------------------------------------------- 
-
+  } // End of DynamicWork -----------------------------------------------------
+  
+  // PV 1/31 (twhuang): probably can add a bitwise state for each node?
+  // Also I think the while loop can be improved.
+  // Why do we need num_successors in if?
+  //
   // Recover the runtime change due to dynamic tasking except the target & spawn tasks 
   // This must be done before scheduling the successors, otherwise this might cause 
   // race condition on the _dependents
@@ -498,7 +516,7 @@ void BasicTaskflow<E>::Closure::operator () () const {
     node->_spawned = false;
   }
 
-  // At this point, the node/node storage might be destructed.
+  // At this point, the node storage might be destructed.
   for(size_t i=0; i<num_successors; ++i) {
     if(--(node->_successors[i]->_dependents) == 0) {
       taskflow->_schedule(*(node->_successors[i]));

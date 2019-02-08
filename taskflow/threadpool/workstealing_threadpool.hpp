@@ -376,6 +376,7 @@ class WorkStealingThreadpool {
 template <typename Closure>
 WorkStealingThreadpool<Closure>::WorkStealingThreadpool(unsigned N) : _workers {N} {
   _worker_maps.reserve(N);
+  _idlers.reserve(N);
   _spawn(N);
 }
 
@@ -508,24 +509,25 @@ void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
 
   // return if no idler - this might not be the right value
   // but it doesn't affect the correctness
-  if(_idlers.empty() || n <= 1) {
+  if(_idlers.empty() || n == 0) {
     return;
   }
   
   // try with probability 1/n
   //if(_fast_modulo(_randomize(_workers[me].seed), n) == 0u) {
     // wake up my partner to help balance
-    if(_mutex.try_lock()) {
-      if(!_idlers.empty()) {
-        Worker* w = _idlers.back();
-        _idlers.pop_back();
-        w->ready = true;
-        w->cache = _workers[me].queue.pop();
-        w->cv.notify_one();
-        w->last_victim = me;
-      }
-      _mutex.unlock();
-    }
+    //if(_mutex.try_lock()) {
+  std::scoped_lock lock(_mutex);
+  if(!_idlers.empty()) {
+    Worker* w = _idlers.back();
+    _idlers.pop_back();
+    w->ready = true;
+    w->cache = _workers[me].queue.pop();
+    w->cv.notify_one();
+    w->last_victim = me;
+  }
+      //_mutex.unlock();
+    //}
   //}
 }
 

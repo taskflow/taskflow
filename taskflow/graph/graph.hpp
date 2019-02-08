@@ -79,7 +79,6 @@ inline Node::Node(C&& c) : _work {std::forward<C>(c)} {
   _topology = nullptr;
 }
 
-
 // Destructor
 inline Node::~Node() {
   if(_subgraph.has_value()) {
