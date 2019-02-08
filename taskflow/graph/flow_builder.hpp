@@ -855,7 +855,7 @@ auto FlowBuilder::silent_emplace(C&& c) {
   // dynamic tasking
   if constexpr(std::is_invocable_v<C, SubflowBuilder&>) {
     auto& n = _graph.emplace_back(
-    [c=std::forward<C>(c)] (SubflowBuilder& fb) {
+    [c=std::forward<C>(c)] (SubflowBuilder& fb) mutable {
       // first time execution
       if(fb._graph.empty()) {
         c(fb);

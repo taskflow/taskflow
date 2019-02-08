@@ -52,24 +52,32 @@ void traverse(Node* n, tf::SubflowBuilder& subflow) {
 }
 
 void sequential_traversal(std::vector<Node*>& src, Node nodes[], size_t num_nodes) {
+  std::cout << "Profiling seq with repeat 100 times ...\n";
   auto start = std::chrono::system_clock::now();
-  while(!src.empty()) {
-    auto n = src.back();
-    assert(!n->visited);
-    n->visited = true;
-    src.pop_back();
-    for(auto& s: n->successors) {
-      if(--s->dependents == 0) {
-        s->level = n->level + 1;
-        src.emplace_back(s);
+  std::vector<Node*> active;
+  for(auto repeat=100; repeat > 0; repeat --) {
+    active = src;
+    while(!active.empty()) {
+      auto n = active.back();
+      assert(!n->visited);
+      n->visited = true;
+      active.pop_back();
+      for(auto& s: n->successors) {
+        if(--s->dependents == 0) {
+          s->level = n->level + 1;
+          active.emplace_back(s);
+        }
       }
     }
+    validate(nodes, num_nodes);
+    reset(nodes, num_nodes);
   }
   auto end = std::chrono::system_clock::now();
   std::cout << "Seq runtime: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << '\n'; 
 }
 
 void tf_traversal(std::vector<Node*>& src, Node nodes[], size_t num_nodes) {
+  std::cout << "Profiling Taskflow with repeat 100 times ...\n";
   auto start = std::chrono::system_clock::now();
 
   tf::Taskflow tf(4);
@@ -84,7 +92,6 @@ void tf_traversal(std::vector<Node*>& src, Node nodes[], size_t num_nodes) {
   tf.wait_for_all();  // block until finished
   
   auto end = std::chrono::system_clock::now();
-  std::cout << std::endl;
   std::cout << "Tf runtime: " 
             << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() 
             << '\n'; 
@@ -111,6 +118,11 @@ int main(int argc, char* argv[]){
 
   size_t max_degree {4};
   size_t num_nodes {100000};
+
+  // Shrink the size of graph if fully-connnected enabled
+  if(fully_connected) {
+    num_nodes /= 100;
+  }
 
   Node* nodes = new Node[num_nodes];
 
