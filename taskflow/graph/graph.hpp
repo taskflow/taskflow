@@ -2,6 +2,7 @@
 
 #include "../error/error.hpp"
 #include "../utility/traits.hpp"
+#include "../utility/allocator.hpp"
 #include "../utility/passive_vector.hpp"
 
 namespace tf {
@@ -14,7 +15,8 @@ class FlowBuilder;
 class SubflowBuilder;
 class Framework;
 
-using Graph = std::list<Node>;
+//using Graph = std::list<Node>;
+using Graph = std::list<Node, tf::SingularAllocator<Node>>;
 
 // ----------------------------------------------------------------------------
 

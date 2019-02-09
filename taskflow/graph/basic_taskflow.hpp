@@ -187,8 +187,6 @@ class BasicTaskflow : public FlowBuilder {
     template <typename C>
     void silent_run_n(Framework& framework, size_t N, C&& callable);
 
-
-
     /**
     @brief runs the framework w/o any callback and returns immediately
     

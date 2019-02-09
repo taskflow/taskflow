@@ -509,26 +509,22 @@ void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
 
   // return if no idler - this might not be the right value
   // but it doesn't affect the correctness
-  if(_idlers.empty() || n == 0) {
+  if(_idlers.empty() || n <= 1) {
     return;
   }
   
-  // try with probability 1/n
-  //if(_fast_modulo(_randomize(_workers[me].seed), n) == 0u) {
-    // wake up my partner to help balance
-    //if(_mutex.try_lock()) {
-  std::scoped_lock lock(_mutex);
-  if(!_idlers.empty()) {
-    Worker* w = _idlers.back();
-    _idlers.pop_back();
-    w->ready = true;
-    w->cache = _workers[me].queue.pop();
-    w->cv.notify_one();
-    w->last_victim = me;
+  // wake up my partner to help balance
+  if(_mutex.try_lock()) {
+    if(!_idlers.empty()) {
+      Worker* w = _idlers.back();
+      _idlers.pop_back();
+      w->ready = true;
+      w->cache = _workers[me].queue.pop();
+      w->cv.notify_one();
+      w->last_victim = me;
+    }
+    _mutex.unlock();
   }
-      //_mutex.unlock();
-    //}
-  //}
 }
 
 // Function: _steal
@@ -594,6 +590,7 @@ void WorkStealingThreadpool<Closure>::emplace(ArgsT&&... args){
       // bfs load balancing
       else {
         _workers[me].queue.push(Closure{std::forward<ArgsT>(args)...});
+        // TODO: load balancing
       }
       return;
     }
@@ -645,12 +642,13 @@ void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
 
       for(; i<tasks.size(); ++i) {
         _workers[me].queue.push(std::move(tasks[i]));
+        // TODO: load balancing
       }
 
       return;
     }
   }
-
+  
   std::scoped_lock lock(_mutex);
 
   size_t N = std::min(tasks.size(), _idlers.size());
