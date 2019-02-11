@@ -612,10 +612,12 @@ void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
     return;
   }
   
-  std::scoped_lock lock(_mutex);
+  {
+    std::scoped_lock lock(_mutex);
 
-  for(size_t k=0; k<tasks.size(); ++k) {
-    _queue.push(std::move(tasks[k]));
+    for(size_t k=0; k<tasks.size(); ++k) {
+      _queue.push(std::move(tasks[k]));
+    }
   }
 
   // TODO:
