@@ -347,7 +347,7 @@ int main(int argc, char* argv[]) {
 
   BENCHMARK("Atomic", atomic_add);
   BENCHMARK("Linear", linear_insertions);
-  BENCHMARK("D&Q", subsum);
+  BENCHMARK("D&C", subsum);
   BENCHMARK("Batch", batch_insertions);
   BENCHMARK("Nested", nested_insertions);
   
