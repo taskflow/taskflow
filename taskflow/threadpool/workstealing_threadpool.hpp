@@ -620,8 +620,6 @@ void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
     }
   }
 
-  // TODO:
-    
   // We need to wake up at least one thread because _num_idlers may not be
   // up-to-date.
   size_t N = std::max(size_t{1}, std::min(_num_idlers.load(), tasks.size()));
