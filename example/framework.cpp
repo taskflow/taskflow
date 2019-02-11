@@ -51,7 +51,7 @@ int main(){
   std::cout << std::endl;
 
   std::cout << "Execute the framework 4 times with a callback\n";
-  tf.run_n(f, 4, [i=0] () mutable { std::cout << "-> run #" << ++i << " finished\n"; }).get();
+  tf.run_n(f, 4, [] () mutable { std::cout << "The framework finishes\n"; }).get();
   std::cout << std::endl;
 
   std::cout << "Silently run the framework\n";

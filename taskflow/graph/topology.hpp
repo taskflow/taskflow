@@ -30,13 +30,14 @@ class Topology {
     std::variant<Graph, Framework*> _handle;
 
     std::promise <void> _promise;
-    size_t _repeat;
+    size_t _repeat {0};
 
     std::shared_future<void> _future;
 
     std::vector<Node*> _sources;
 
-    Node _target;
+    std::atomic<int> _num_sinks {0};
+    std::function<void()> _work {nullptr};
 };
 
 
@@ -51,14 +52,8 @@ inline Topology::Topology(Framework& f, size_t repeat): _handle(&f), _repeat(rep
 // Constructor
 inline Topology::Topology(Graph&& t) : 
   _handle(std::move(t)) {
-
-  _target._topology = this;
   
   _future = _promise.get_future().share();
-
-  _target._work = [this] () mutable { 
-    this->_promise.set_value(); 
-  };
 
   // Build the super source and super target.
   for(auto& node : std::get<Graph>(_handle)) {
@@ -70,7 +65,7 @@ inline Topology::Topology(Graph&& t) :
     }
 
     if(node.num_successors() == 0) {
-      node.precede(_target);
+      _num_sinks ++;
     }
   }
 }
@@ -81,14 +76,9 @@ template <typename C>
 inline Topology::Topology(Graph&& t, C&& c) : 
   _handle(std::move(t)) {
 
-  _target._topology = this;
-  
   _future = _promise.get_future().share();
 
-  _target._work = [this, c{std::forward<C>(c)}] () mutable { 
-    this->_promise.set_value();
-    c();
-  };
+  _work = std::forward<C>(c);
 
   // Build the super source and super target.
   for(auto& node : std::get<Graph>(_handle)) {
@@ -100,18 +90,15 @@ inline Topology::Topology(Graph&& t, C&& c) :
     }
 
     if(node.num_successors() == 0) {
-      node.precede(_target);
+      _num_sinks ++;
     }
   }
 }
 
 // Procedure: dump
 inline void Topology::dump(std::ostream& os) const {
-
-  assert(!(_target._subgraph));
   
-  os << "digraph Topology {\n"
-     << _target.dump();
+  os << "digraph Topology {\n";
 
   std::visit(Functors{
     [&] (const Graph& graph) {
