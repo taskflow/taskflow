@@ -6,10 +6,8 @@
 
 #include <new>       
 #include <mutex>
-#include <unordered_map>
 #include <vector>
 #include <thread>
-#include <iostream>
 #include <cassert>
 
 namespace tf {
@@ -31,7 +29,7 @@ struct Mempool {
     }
   
     // Must use empty() before calling pop
-    pointer pop(void)  {
+    pointer pop()  {
       assert(!empty());
       pointer retval = top;
       top = *(reinterpret_cast<ppointer>(top));
@@ -76,9 +74,11 @@ struct Mempool {
   T* allocate(const size_t n) {
     // TODO: we only deal with single element
     assert(n == 1);
+
     if(!free_list.empty()) {
       return free_list.pop();
     }
+
     if(tail->size == used) {
       auto next = allocate_memblock(tail->size << 1);
       tail->next = next;
@@ -164,12 +164,12 @@ class SingularAllocator {
   public:
 
     // Allocator traits
-    typedef T             value_type     ;
-    typedef T*            pointer        ;
-    typedef const T*      const_pointer  ;
-    typedef T&            reference      ;
-    typedef const T&      const_reference;
-    typedef std::size_t   size_type      ;
+    typedef T              value_type     ;
+    typedef T*             pointer        ;
+    typedef const T*       const_pointer  ;
+    typedef T&             reference      ;
+    typedef const T&       const_reference;
+    typedef std::size_t    size_type      ;
     typedef std::ptrdiff_t difference_type;
 
     template <typename U> 
@@ -177,8 +177,8 @@ class SingularAllocator {
       typedef SingularAllocator<U> other;
     };
 
-    inline SingularAllocator();                             // Constructor.
-    inline ~SingularAllocator();                            // Destructor.
+    SingularAllocator() = default;                          // Constructor.
+    ~SingularAllocator() = default;                         // Destructor.
 
     inline T* allocate(const size_t n=1) ;                  // Allocate an entry of type T.
     inline void deallocate(T*, const size_t n=1);           // Deallocate an entry of type T.
@@ -192,16 +192,6 @@ class SingularAllocator {
     bool operator == (const SingularAllocator &) const { return true; }
     bool operator != (const SingularAllocator &) const { return false; }
 };
-
-// Constructor.
-template <typename T>
-inline SingularAllocator<T>::SingularAllocator() {
-}
-
-// Destructor.
-template <typename T>
-inline SingularAllocator<T>::~SingularAllocator() {
-}
 
 // Procedure: construct
 // Construct an item with placement new.

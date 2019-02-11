@@ -4,6 +4,7 @@
 
 #include <taskflow/utility/traits.hpp>
 #include <taskflow/utility/passive_vector.hpp>
+#include <taskflow/utility/allocator.hpp>
 
 // --------------------------------------------------------
 // Testcase: PassiveVector
@@ -177,6 +178,37 @@ TEST_CASE("PassiveVector" * doctest::timeout(300)) {
       }
       tf::PassiveVector<int> vec2(vec1);
       REQUIRE(vec1 == vec2);
+    }
+  }
+
+}
+
+// --------------------------------------------------------
+// Testcase: Allocator
+// --------------------------------------------------------
+TEST_CASE("Allocator" * doctest::timeout(300)) {
+
+  SUBCASE("Singular") {
+    tf::SingularAllocator<std::string> allocator;
+    std::set<std::string*> set;
+    for(int i=0; i<6553; ++i) {
+     
+      for(int j=0; j<i; ++j) {
+        auto sptr = allocator.allocate(1);
+        set.insert(sptr);
+      }
+      REQUIRE(set.size() == i);
+      for(auto sptr : set) {
+        allocator.deallocate(sptr);
+      }
+
+      for(size_t j=0; j<set.size(); ++j) {
+        auto sptr = allocator.allocate(1);
+        REQUIRE(set.find(sptr) != set.end());
+      }
+      for(auto sptr : set) {
+        allocator.deallocate(sptr);
+      }
     }
   }
 

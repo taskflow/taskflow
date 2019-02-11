@@ -8,7 +8,7 @@ void syncLog(std::string const& msg) {
 
 void grow(tf::SubflowBuilder& subflow, uint64_t depth) {
   syncLog("Depth: " + std::to_string(depth));
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   if(depth < 3) {
     subflow.silent_emplace(
       [depth](tf::SubflowBuilder& subsubflow){ grow(subsubflow, depth+1); },
