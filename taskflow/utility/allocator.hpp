@@ -180,18 +180,17 @@ class SingularAllocator {
     explicit SingularAllocator() {}
     ~SingularAllocator() {}
 
-    inline explicit SingularAllocator(const SingularAllocator&) {}
+    explicit SingularAllocator(const SingularAllocator&) {}
 
     template<typename U>
-    inline explicit SingularAllocator(const SingularAllocator<U>&) {}
+    explicit SingularAllocator(const SingularAllocator<U>&) {}
 
-
-    inline T* allocate(size_t n=1) ;                  // Allocate an entry of type T.
-    inline void deallocate(T*, size_t n=1);           // Deallocate an entry of type T.
+    T* allocate(size_t n=1) ;          
+    void deallocate(T*, size_t n=1); 
     
     template <typename... ArgsT>               
-    inline void construct(T*, ArgsT&&...);                  // Construct an item.
-    inline void destroy(T*);                                // Destroy an item.  
+    void construct(T*, ArgsT&&...);
+    void destroy(T*);
 
     //SingularAllocator & operator = (const SingularAllocator &) {} 
 
@@ -203,30 +202,30 @@ class SingularAllocator {
 // Construct an item with placement new.
 template <typename T>
 template <typename... ArgsT>
-inline void SingularAllocator<T>::construct(T* ptr, ArgsT&&... args) {
+void SingularAllocator<T>::construct(T* ptr, ArgsT&&... args) {
   new (ptr) T(std::forward<ArgsT>(args)...); 
 }
 
 // Procedure: destroy
 // Destroy an item
 template <typename T>
-inline void SingularAllocator<T>::destroy(T* ptr) {
+void SingularAllocator<T>::destroy(T* ptr) {
   ptr->~T();
 }
 
 // Function: allocate
 // Allocate a memory piece of type T from the memory pool and return the T* to that memory.
 template <typename T>
-inline T* SingularAllocator<T>::allocate(size_t n) {
+T* SingularAllocator<T>::allocate(size_t n) {
   return get_mempool_manager<T>().get_per_thread_mempool()->allocate(n);
 }
 
 // Function: deallocate
 // Deallocate given memory piece of type T.
 template <typename T>
-inline void SingularAllocator<T>::deallocate(T* ptr, size_t n) {
+void SingularAllocator<T>::deallocate(T* ptr, size_t n) {
   get_mempool_manager<T>().get_per_thread_mempool()->deallocate(ptr, n); 
 }
 
-};  // End of namespace tf. ---------------------------------------------------
+}  // End of namespace tf. ----------------------------------------------------
 
