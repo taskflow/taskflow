@@ -177,8 +177,14 @@ class SingularAllocator {
       typedef SingularAllocator<U> other;
     };
 
-    SingularAllocator() = default;                          // Constructor.
-    ~SingularAllocator() = default;                         // Destructor.
+    explicit SingularAllocator() {}
+    ~SingularAllocator() {}
+
+    inline explicit SingularAllocator(const SingularAllocator&) {}
+
+    template<typename U>
+    inline explicit SingularAllocator(const SingularAllocator<U>&) {}
+
 
     inline T* allocate(size_t n=1) ;                  // Allocate an entry of type T.
     inline void deallocate(T*, size_t n=1);           // Deallocate an entry of type T.
