@@ -1,3 +1,6 @@
+// 2019/02/10 - modified by Tsung-Wei Huang
+//  - fixed the compilation error on MS platform
+//
 // 2019/02/08 - created by Chun-Xun Lin
 //  - added a singular memory allocator
 //  - refactored by Tsung-Wei Huang

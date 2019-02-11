@@ -617,6 +617,8 @@ void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
   for(size_t k=0; k<tasks.size(); ++k) {
     _queue.push(std::move(tasks[k]));
   }
+
+  // TODO:
     
   // We need to wake up at least one thread because _num_idlers may not be
   // up-to-date.
