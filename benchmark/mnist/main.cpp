@@ -65,8 +65,8 @@ int main(int argc, char *argv[]){
     double tf_time  {0.0};
 
     for(int j=0; j<rounds; ++j) {
-      //omp_time += measure_time_omp(epoch, num_threads).count();
-      //tbb_time += measure_time_tbb(epoch, num_threads).count();
+      omp_time += measure_time_omp(epoch, num_threads).count();
+      tbb_time += measure_time_tbb(epoch, num_threads).count();
       tf_time  += measure_time_taskflow(epoch, num_threads).count();
     }
     

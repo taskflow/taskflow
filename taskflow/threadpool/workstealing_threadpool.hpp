@@ -293,7 +293,6 @@ class WorkStealingThreadpool {
     
   struct PerThread {
     WorkStealingThreadpool* pool {nullptr}; 
-    uint64_t rand {0};
     int thread_id {-1};
   };
   
@@ -349,8 +348,14 @@ class WorkStealingThreadpool {
 
     std::vector<Worker> _workers;
     std::vector<std::thread> _threads;
+    std::vector<Notifier::Waiter> _waiters;
 
     WorkStealingQueue<Closure> _queue;
+    
+    Notifier _notifier;
+    
+    std::atomic<size_t> _num_idlers {0};
+    std::atomic<bool> _spinning {false};
 
     void _spawn(unsigned);
 
@@ -360,11 +365,6 @@ class WorkStealingThreadpool {
     PerThread& _per_thread() const;
 
     std::optional<Closure> _steal(unsigned);
-    
-    std::vector<Notifier::Waiter> _waiters;
-    std::atomic<size_t> _num_idlers {0};
-    std::atomic<bool> _spinning {false};
-    Notifier _notifier;
 };
 
 // Constructor
@@ -428,7 +428,6 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
 
       PerThread& pt = _per_thread();  
       pt.pool = this;
-      pt.rand = std::hash<std::thread::id>()(std::this_thread::get_id());
       pt.thread_id = i;
     
       auto& waiter = _waiters[i];
