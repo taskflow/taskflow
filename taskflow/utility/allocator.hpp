@@ -63,7 +63,7 @@ struct Mempool {
     }
   }
 
-  MemBlock* allocate_memblock(const size_t n) {
+  MemBlock* allocate_memblock(size_t n) {
     MemBlock* ptr = static_cast<MemBlock*>(std::malloc(sizeof(MemBlock)));
     ptr->block = static_cast<T*>(std::malloc(n*sizeof(T)));
     ptr->size = n;
@@ -71,7 +71,7 @@ struct Mempool {
     return ptr;
   }
 
-  T* allocate(const size_t n) {
+  T* allocate(size_t n) {
     // TODO: we only deal with single element
     assert(n == 1);
 
@@ -88,7 +88,7 @@ struct Mempool {
     return &(tail->block[used++]);
   }
 
-  void deallocate(T* ptr, const size_t n) {
+  void deallocate(T* ptr, size_t n) {
     // TODO: we only deal with single element
     assert(n == 1);
     free_list.push(ptr);
@@ -180,14 +180,14 @@ class SingularAllocator {
     SingularAllocator() = default;                          // Constructor.
     ~SingularAllocator() = default;                         // Destructor.
 
-    inline T* allocate(const size_t n=1) ;                  // Allocate an entry of type T.
-    inline void deallocate(T*, const size_t n=1);           // Deallocate an entry of type T.
+    inline T* allocate(size_t n=1) ;                  // Allocate an entry of type T.
+    inline void deallocate(T*, size_t n=1);           // Deallocate an entry of type T.
     
     template <typename... ArgsT>               
     inline void construct(T*, ArgsT&&...);                  // Construct an item.
     inline void destroy(T*);                                // Destroy an item.  
 
-    SingularAllocator & operator = (const SingularAllocator &) {} 
+    //SingularAllocator & operator = (const SingularAllocator &) {} 
 
     bool operator == (const SingularAllocator &) const { return true; }
     bool operator != (const SingularAllocator &) const { return false; }
@@ -211,14 +211,14 @@ inline void SingularAllocator<T>::destroy(T* ptr) {
 // Function: allocate
 // Allocate a memory piece of type T from the memory pool and return the T* to that memory.
 template <typename T>
-inline T* SingularAllocator<T>::allocate(const size_t n) {
+inline T* SingularAllocator<T>::allocate(size_t n) {
   return get_mempool_manager<T>().get_per_thread_mempool()->allocate(n);
 }
 
 // Function: deallocate
 // Deallocate given memory piece of type T.
 template <typename T>
-inline void SingularAllocator<T>::deallocate(T* ptr, const size_t n) {
+inline void SingularAllocator<T>::deallocate(T* ptr, size_t n) {
   get_mempool_manager<T>().get_per_thread_mempool()->deallocate(ptr, n); 
 }
 
