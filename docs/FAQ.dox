@@ -39,6 +39,20 @@ Each task has a method tf::Task::name(const std::string&) for user to assign a h
 to ease the debugging process. If a task is not assigned a name or is an internal node,
 its address value in the memory is used instead.
 
+@subsection GeneralQuestion6 Q6: Does Cpp-Taskflow have backward compatibility with C++03/11/14?
+
+Unfortunately, Cpp-Taskflow is heavily relying on modern C++17's features/idoms/STL 
+and it is very difficult to provide a version that compiles under older C++ versions.
+
+@subsection GeneralQuestion7 Q7: How does Cpp-Taskflow schedule tasks?
+
+Cpp-Taskflow has implemented different scheduler modules 
+(centralized queue, proactive shceduler, speculative strategy, and work stealing). 
+The default scheduler implements the famous 
+<a href="https://en.wikipedia.org/wiki/Work_stealing">work stealing algorithm</a> 
+that has shown to behave efficiently in most multicore architectures.
+You can find the source code at @c taskflow/threadpool/workstealing_threadpool.hpp
+
 ----
 
 

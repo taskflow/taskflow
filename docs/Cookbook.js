@@ -51,7 +51,7 @@ var Cookbook =
       [ "Thread Safety", "chapter6.html#C6ThreadSafety", null ],
       [ "Example 1: Impact of Over-subscription", "chapter6.html#C6Example1", null ]
     ] ],
-    [ "C7: Framework (Experimental)", "chapter7.html", [
+    [ "C7: Framework (Dev Branch)", "chapter7.html", [
       [ "Create a Framework", "chapter7.html#C7_CreateAFramework", null ],
       [ "Execute a Framework", "chapter7.html#C7_ExecuteAFramework", null ],
       [ "Lifetime of a Framework", "chapter7.html#C7_LifeTimeOfAFramework", null ],

@@ -28,7 +28,6 @@ var searchData=
   ['unique_5flock',['unique_lock',['http://en.cppreference.com/w/cpp/thread/unique_lock.html',1,'std']]],
   ['unique_5fptr',['unique_ptr',['http://en.cppreference.com/w/cpp/memory/unique_ptr.html',1,'std']]],
   ['unordered_5fmap',['unordered_map',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
-  ['unordered_5fmap_3c_20std_3a_3athread_3a_3aid_2c_20size_5ft_20_3e',['unordered_map&lt; std::thread::id, size_t &gt;',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
   ['unordered_5fmap_3c_20std_3a_3athread_3a_3aid_2c_20worker_20_2a_3e',['unordered_map&lt; std::thread::id, Worker *&gt;',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
   ['unordered_5fmultimap',['unordered_multimap',['http://en.cppreference.com/w/cpp/container/unordered_multimap.html',1,'std']]],
   ['unordered_5fmultiset',['unordered_multiset',['http://en.cppreference.com/w/cpp/container/unordered_multiset.html',1,'std']]],
