@@ -230,6 +230,32 @@ class BasicTaskflow : public FlowBuilder {
     std::shared_future<void> run_n(Framework& framework, size_t N, C&& callable);
 
 
+
+    /**
+    @brief runs the framework w/o a callback until the predicate becomes true and returns immediately 
+
+    @param framework a tf::Framework 
+    @param P predicate (a callable object returns true or false)
+
+    @return a std::shared_future to access the execution status of the framework
+    */
+    template<typename P>
+    std::shared_future<void> run_until(Framework& framework, P&& predicate);
+
+
+    /**
+    @brief runs the framework w/ a callback until the predicate becomes true and returns immediately 
+
+    @param framework a tf::Framework 
+    @param P predicate (a callable object returns true or false)
+    @param callable a callable object to be invoked after every run
+
+    @return a std::shared_future to access the execution status of the framework
+    */
+    template<typename P, typename C>
+    std::shared_future<void> run_until(Framework& framework, P&& predicate, C&& callable);
+
+
   private:
     
     Graph _graph;
@@ -298,16 +324,32 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat) {
 template <template <typename...> typename E>
 template <typename C>
 std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&& c) {
+  return run_until(f, [repeat]() mutable { return repeat-- == 0; }, std::forward<C>(c));
+}
 
-  static_assert(std::is_invocable<C>::value);
 
-  if(repeat == 0) {
+// Function: run_until
+template <template <typename...> typename E>
+template <typename P>
+std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate) {
+  return run_until(f, std::forward<P>(predicate), [](){});
+}
+
+// Function: run_until
+template <template <typename...> typename E>
+template <typename P, typename C>
+std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate, C&& c) {
+
+  // Predicate must return a boolean value
+  static_assert(std::is_invocable<C>::value && std::is_same_v<bool, std::invoke_result_t<P>>);
+
+  if(std::invoke(predicate)) {
     return std::async(std::launch::deferred, [](){}).share();
   }
 
   std::scoped_lock lock(f._mtx);
 
-  auto &tpg = _topologies.emplace_front(f, repeat);
+  auto &tpg = _topologies.emplace_front(f, std::forward<P>(predicate));
   f._topologies.push_back(&tpg);
   
   const auto setup_topology = [](auto& f, auto& tpg) {
@@ -324,17 +366,17 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
     }
   };
 
-
   // Iterative execution to avoid stack overflow
   if(num_workers() == 0) {
     // Clear last execution data & Build precedence between nodes and target
     setup_topology(f, tpg);
 
     const int tgt_predecessor = tpg._num_sinks; 
-    for(size_t i=0; i<repeat; i++) {
+    do {
+    //for(size_t i=0; i<repeat; i++) {
       _schedule(tpg._sources);
       f._topologies.front()->_num_sinks = tgt_predecessor;
-    }
+    } while(!std::invoke(tpg._predicate));
 
     std::invoke(c);
     auto &p = f._topologies.front()->_promise;
@@ -356,7 +398,8 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
 
         // PV 1/31 (twhuang): thread safety? 
         // case 1: we still need to run the topology again
-        if(--f._topologies.front()->_repeat != 0) {
+        if(!std::invoke(f._topologies.front()->_predicate)) {
+        //if(--f._topologies.front()->_repeat != 0) {
           f._topologies.front()->_num_sinks = tgt_predecessor;
           _schedule(f._topologies.front()->_sources); 
         }
@@ -377,7 +420,7 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
             //c = std::move(std::get<StaticWork>((*next_tpg)->_target._work));
             c = std::move((*next_tpg)->_work);
 
-            f._topologies.front()->_repeat = (*next_tpg)->_repeat;
+            f._topologies.front()->_predicate = std::move((*next_tpg)->_predicate);
             f._topologies.front()->_promise = std::move((*next_tpg)->_promise);
             f._topologies.erase(next_tpg);
 
@@ -432,7 +475,7 @@ void BasicTaskflow<E>::Closure::operator () () const {
   else {
     
     // Clear the subgraph before the task execution
-    if(!node->_spawned) {
+    if(!node->is_spawned()) {
       node->_subgraph.emplace();
     }
    
@@ -441,14 +484,14 @@ void BasicTaskflow<E>::Closure::operator () () const {
     std::invoke(std::get<DynamicWork>(node->_work), fb);
     
     // Need to create a subflow if first time & subgraph is not empty 
-    if(!node->_spawned) {
-      node->_spawned = true;
+    if(!node->is_spawned()) {
+      node->set_spawned();
       if(!node->_subgraph->empty()) {
         // For storing the source nodes
         std::vector<Node*> src; 
         for(auto n = node->_subgraph->begin(); n != node->_subgraph->end(); ++n) {
           n->_topology = node->_topology;
-          n->_subtask = true;
+          n->set_subtask();
           if(n->num_successors() == 0) {
             if(fb.detached()) {
               node->_topology->_num_sinks ++;
@@ -479,15 +522,15 @@ void BasicTaskflow<E>::Closure::operator () () const {
   // This must be done before scheduling the successors, otherwise this might cause 
   // race condition on the _dependents
   //if(num_successors && !node->_subtask) {
-  if(!node->_subtask) {
+  if(!node->is_subtask()) {
     // Only dynamic tasking needs to restore _predecessors
     if(node->_work.index() == 1 &&  !node->_subgraph->empty()) {
-      while(!node->_predecessors.empty() && node->_predecessors.back()->_subtask) {
+      while(!node->_predecessors.empty() && node->_predecessors.back()->is_subtask()) {
         node->_predecessors.pop_back();
       }
     }
     node->_dependents = node->_predecessors.size();
-    node->_spawned = false;
+    node->clear_status();
   }
 
   // At this point, the node storage might be destructed.

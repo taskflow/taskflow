@@ -20,7 +20,8 @@ class Topology {
     template <typename C>
     Topology(Graph&&, C&&);
 
-    Topology(Framework&, size_t);
+    //Topology(Framework&, size_t);
+    Topology(Framework&, std::function<bool()>);
 
     std::string dump() const;
     void dump(std::ostream&) const;
@@ -30,7 +31,8 @@ class Topology {
     std::variant<Graph, Framework*> _handle;
 
     std::promise <void> _promise;
-    size_t _repeat {0};
+    //size_t _repeat {0};
+    std::function<bool()> _predicate {nullptr};
 
     std::shared_future<void> _future;
 
@@ -42,7 +44,8 @@ class Topology {
 
 
 // Constructor
-inline Topology::Topology(Framework& f, size_t repeat): _handle(&f), _repeat(repeat) {
+//inline Topology::Topology(Framework& f, size_t repeat): _handle(&f), _repeat(repeat) {
+inline Topology::Topology(Framework& f, std::function<bool()> p): _handle(&f), _predicate(p) {
   _future = _promise.get_future().share();
 }
 

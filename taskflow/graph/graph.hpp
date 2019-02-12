@@ -4,6 +4,7 @@
 #include "../utility/traits.hpp"
 #include "../utility/allocator.hpp"
 #include "../utility/passive_vector.hpp"
+#include <bitset>
 
 namespace tf {
 
@@ -50,6 +51,13 @@ class Node {
 
     std::string dump() const;
 
+    // Status-related functions
+    bool is_spawned() const { return _status & 0x1;  }
+    bool is_subtask() const { return _status & 0x2; }
+    void set_spawned()  { _status |= 0x1; }
+    void set_subtask()  { _status |= 0x2; }
+    void clear_status() { _status &= 0x0; }
+
   private:
     
     std::string _name;
@@ -64,8 +72,7 @@ class Node {
 
     Topology* _topology;
 
-    bool _spawned {false};
-    bool _subtask {false};
+    size_t _status {0};
 };
 
 // Constructor

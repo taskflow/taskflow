@@ -67,6 +67,13 @@ int main(){
   std::cout << "Silently run the framework with callback\n";
   tf.silent_run_n(f, 1, []() { std::cout << "The framework finishes\n"; }); 
   tf.wait_for_all();
+  std::cout << std::endl;
+
+  std::cout << "Run the framework until a counter (init value=3) becomes zero\n"; 
+  tf.run_until(f, [counter=3]() mutable { 
+    std::cout << "Counter = " << counter << std::endl; 
+    return counter -- == 0; 
+  }).get();
 
   return 0;
 }
