@@ -45,6 +45,7 @@ class Topology {
 
     PassiveVector<Node*> _sources;
     std::atomic<int> _num_sinks {0};
+    int _cached_num_sinks;
     
     std::function<bool()> _predicate {nullptr};
     std::function<void()> _work {nullptr};
@@ -126,6 +127,7 @@ inline void Topology::_bind(Graph& g) {
       _num_sinks++;
     }
   }
+  _cached_num_sinks = _num_sinks;
 
 }
 

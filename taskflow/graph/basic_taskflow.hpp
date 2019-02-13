@@ -303,11 +303,10 @@ std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate
 
     // Clear last execution data & Build precedence between nodes and target
     tpg._bind(f._graph);
-    int num_sinks = tpg._num_sinks; 
 
     do {
       _schedule(tpg._sources);
-      tpg._num_sinks = num_sinks;
+      tpg._num_sinks = tpg._cached_num_sinks;
     } while(!std::invoke(tpg._predicate));
 
     std::invoke(c);
@@ -327,11 +326,11 @@ std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate
     tpg._bind(f._graph);
   }
 
-  tpg._work = [&f, c=std::forward<C>(c), num_sinks=tpg._num_sinks.load(), this] () mutable {
+  tpg._work = [&f, c=std::forward<C>(c), this] () mutable {
       
     // case 1: we still need to run the topology again
     if(!std::invoke(f._topologies.front()->_predicate)) {
-      f._topologies.front()->_num_sinks = num_sinks;
+      f._topologies.front()->_num_sinks = f._topologies.front()->_cached_num_sinks;
       _schedule(f._topologies.front()->_sources); 
     }
     // case 2: the final run of this topology
@@ -348,7 +347,6 @@ std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate
         f._topologies.front()->_promise.set_value();
         f._topologies.pop_front();
         f._topologies.front()->_bind(f._graph);
-        num_sinks = f._topologies.front()->_num_sinks;
         f._mtx.unlock();
         _schedule(f._topologies.front()->_sources);
       }
