@@ -90,7 +90,7 @@ void tf_traversal(std::vector<Node*>& src, Node nodes[], size_t num_nodes) {
   for(size_t i=0; i<src.size(); i++) {
     framework.silent_emplace([i=i, &src](auto& subflow){ traverse(src[i], subflow); }).precede(target);
   }
-  tf.silent_run_n(framework, 100);
+  tf.run_n(framework, 100);
 
   tf.wait_for_all();  // block until finished
   

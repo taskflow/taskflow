@@ -12,6 +12,16 @@ class Topology {
   template <template<typename...> typename E> 
   friend class BasicTaskflow; 
   friend class Framework;
+  
+  // TODO: make graph/framework handle uniform
+  //struct GraphHandle {
+  //  Graph graph;
+  //};
+
+  //struct FrameworkHandle {
+  //  Framework* framework;
+  //  std::function<bool()> predicate;
+  //};
 
   public:
 
@@ -19,9 +29,9 @@ class Topology {
 
     template <typename C>
     Topology(Graph&&, C&&);
-
-    //Topology(Framework&, size_t);
-    Topology(Framework&, std::function<bool()>);
+    
+    template <typename P>
+    Topology(Framework&, P&&);
 
     std::string dump() const;
     void dump(std::ostream&) const;
@@ -31,22 +41,22 @@ class Topology {
     std::variant<Graph, Framework*> _handle;
 
     std::promise <void> _promise;
-    //size_t _repeat {0};
-    std::function<bool()> _predicate {nullptr};
-
     std::shared_future<void> _future;
 
     std::vector<Node*> _sources;
-
     std::atomic<int> _num_sinks {0};
+    
+    std::function<bool()> _predicate {nullptr};
     std::function<void()> _work {nullptr};
 };
 
 
 // Constructor
-//inline Topology::Topology(Framework& f, size_t repeat): _handle(&f), _repeat(repeat) {
-inline Topology::Topology(Framework& f, std::function<bool()> p): _handle(&f), _predicate(p) {
-  _future = _promise.get_future().share();
+template <typename P>
+inline Topology::Topology(Framework& f, P&& p): 
+  _handle    {&f}, 
+  _future    {_promise.get_future().share()},
+  _predicate {std::forward<P>(p)} {
 }
 
 
@@ -54,9 +64,8 @@ inline Topology::Topology(Framework& f, std::function<bool()> p): _handle(&f), _
 
 // Constructor
 inline Topology::Topology(Graph&& t) : 
-  _handle(std::move(t)) {
-  
-  _future = _promise.get_future().share();
+  _handle {std::move(t)},
+  _future {_promise.get_future().share()} {
 
   // Build the super source and super target.
   for(auto& node : std::get<Graph>(_handle)) {
@@ -77,11 +86,9 @@ inline Topology::Topology(Graph&& t) :
 // Constructor
 template <typename C>
 inline Topology::Topology(Graph&& t, C&& c) : 
-  _handle(std::move(t)) {
-
-  _future = _promise.get_future().share();
-
-  _work = std::forward<C>(c);
+  _handle {std::move(t)},
+  _future {_promise.get_future().share()},
+  _work   {std::forward<C>(c)} {
 
   // Build the super source and super target.
   for(auto& node : std::get<Graph>(_handle)) {

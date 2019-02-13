@@ -55,17 +55,17 @@ int main(){
   std::cout << std::endl;
 
   std::cout << "Silently run the framework\n";
-  tf.silent_run(f); 
+  tf.run(f); 
   tf.wait_for_all();
   std::cout << std::endl;
 
   std::cout << "Silently run the framework 2 times \n";
-  tf.silent_run_n(f, 2); 
+  tf.run_n(f, 2); 
   tf.wait_for_all();
   std::cout << std::endl;
 
   std::cout << "Silently run the framework with callback\n";
-  tf.silent_run_n(f, 1, []() { std::cout << "The framework finishes\n"; }); 
+  tf.run_n(f, 1, []() { std::cout << "The framework finishes\n"; }); 
   tf.wait_for_all();
   std::cout << std::endl;
 

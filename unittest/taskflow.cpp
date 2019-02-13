@@ -987,7 +987,7 @@ TEST_CASE("Framework" * doctest::timeout(300)) {
 
     auto F = f.silent_emplace([](){});
     E.precede(F);
-    tf.silent_run_n(f, 10);
+    tf.run_n(f, 10);
     tf.wait_for_all();
     REQUIRE(count == 210);    
   }

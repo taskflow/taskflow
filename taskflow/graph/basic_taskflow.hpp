@@ -154,41 +154,7 @@ class BasicTaskflow : public FlowBuilder {
     std::string dump_topologies() const;
 
     /**
-    @brief silently runs the framework w/ a callback and returns immediately 
-
-    @param framework a tf::Framework object
-    */
-    void silent_run(Framework& framework);
-
-    /**
-    @brief silently runs the framework w/o any callback and returns immediately 
-
-    @param framework a tf::Framework object
-    @param callable a callable object to be invoked after every run
-    */
-    template<typename C>
-    void silent_run(Framework& framework, C&& callable);
-
-    /**
-    @brief silently runs the framework N times w/ a callback and returns immediately 
-
-    @param framework a tf::Framework object
-    @param N a size_t to indicate number of repeatition
-    */
-    void silent_run_n(Framework& framework, size_t N);
-
-    /**
-    @brief silently runs the framework N times w/o any callback and returns immediately 
-
-    @param framework a tf::Framework object
-    @param N the number of runs
-    @param callable a callable object to be invoked after every run
-    */
-    template <typename C>
-    void silent_run_n(Framework& framework, size_t N, C&& callable);
-
-    /**
-    @brief runs the framework w/o any callback and returns immediately
+    @brief runs the framework once
     
     @param framework a tf::Framework
 
@@ -197,7 +163,7 @@ class BasicTaskflow : public FlowBuilder {
     std::shared_future<void> run(Framework& framework);
 
     /**
-    @brief runs the framework w/ a callback and returns immediately
+    @brief runs the framework once and invoke a callback upon completion
 
     @param framework a tf::Framework 
     @param callable a callable object to be invoked after every run
@@ -208,7 +174,7 @@ class BasicTaskflow : public FlowBuilder {
     std::shared_future<void> run(Framework& framework, C&& callable);
 
     /**
-    @brief runs the framework for N times w/o any callback and returns immediately 
+    @brief runs the framework for N times
     
     @param framework a tf::Framework 
     @param N number of runs
@@ -218,7 +184,7 @@ class BasicTaskflow : public FlowBuilder {
     std::shared_future<void> run_n(Framework& framework, size_t N);
 
     /**
-    @brief runs the framework for N times w/ a callback and returns immediately 
+    @brief runs the framework for N times and invokes a callback upon completion
 
     @param framework a tf::Framework 
     @param N number of runs
@@ -229,10 +195,8 @@ class BasicTaskflow : public FlowBuilder {
     template<typename C>
     std::shared_future<void> run_n(Framework& framework, size_t N, C&& callable);
 
-
-
     /**
-    @brief runs the framework w/o a callback until the predicate becomes true and returns immediately 
+    @brief runs the framework multiple times until the predicate becomes true and invoke a callback
 
     @param framework a tf::Framework 
     @param P predicate (a callable object returns true or false)
@@ -242,9 +206,8 @@ class BasicTaskflow : public FlowBuilder {
     template<typename P>
     std::shared_future<void> run_until(Framework& framework, P&& predicate);
 
-
     /**
-    @brief runs the framework w/ a callback until the predicate becomes true and returns immediately 
+    @brief runs the framework multiple times until the predicate becomes true and invoke a callback
 
     @param framework a tf::Framework 
     @param P predicate (a callable object returns true or false)
@@ -254,7 +217,6 @@ class BasicTaskflow : public FlowBuilder {
     */
     template<typename P, typename C>
     std::shared_future<void> run_until(Framework& framework, P&& predicate, C&& callable);
-
 
   private:
     
@@ -271,34 +233,6 @@ class BasicTaskflow : public FlowBuilder {
 // ============================================================================
 // BasicTaskflow::Closure Method Definitions
 // ============================================================================
-
-// Procedure: silent_run
-template <template <typename...> typename E>
-void BasicTaskflow<E>::silent_run(Framework& f) {
-  run_n(f, 1, [](){});
-}
-
-// Procedure: silent_run
-template <template <typename...> typename E>
-template <typename C>
-void BasicTaskflow<E>::silent_run(Framework& f, C&& c) {
-  static_assert(std::is_invocable<C>::value);
-  run_n(f, 1, std::forward<C>(c));
-}
-
-// Procedure: silent_run_n
-template <template <typename...> typename E>
-void BasicTaskflow<E>::silent_run_n(Framework& f, size_t repeat) {
-  run_n(f, repeat, [](){});
-}
-
-// Procedure: silent_run_n
-template <template <typename...> typename E>
-template <typename C>
-void BasicTaskflow<E>::silent_run_n(Framework& f, size_t repeat, C&& c) {
-  static_assert(std::is_invocable<C>::value);
-  run_n(f, repeat, std::forward<C>(c));
-}
 
 // Function: run
 template <template <typename...> typename E>
@@ -341,19 +275,32 @@ template <typename P, typename C>
 std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate, C&& c) {
 
   // Predicate must return a boolean value
-  static_assert(std::is_invocable<C>::value && std::is_same_v<bool, std::invoke_result_t<P>>);
+  static_assert(std::is_invocable_v<C> && std::is_same_v<bool, std::invoke_result_t<P>>);
 
   if(std::invoke(predicate)) {
     return std::async(std::launch::deferred, [](){}).share();
   }
+  
+  auto &tpg = _topologies.emplace_front(f, std::forward<P>(predicate));
+
+  // TODO (clin99): after PV (2/12)
+  // 1. move setup_topology to the constructor
+  // 2. 
+
 
   std::scoped_lock lock(f._mtx);
 
-  auto &tpg = _topologies.emplace_front(f, std::forward<P>(predicate));
   f._topologies.push_back(&tpg);
   
   const auto setup_topology = [](auto& f, auto& tpg) {
-    tpg._num_sinks = 0;
+    
+    // PV (2/12) 
+    // 1. assert num_sinks == 0 ?
+    // 2. clear sources?
+    // 3. move this guy to constructor ... ?
+    assert(tpg._num_sinks == 0);
+    assert(tpg._sources.empty());
+
     for(auto& n: f._graph) {
       // reset the target links
       n._topology = &tpg;
@@ -373,7 +320,6 @@ std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate
 
     const int tgt_predecessor = tpg._num_sinks; 
     do {
-    //for(size_t i=0; i<repeat; i++) {
       _schedule(tpg._sources);
       f._topologies.front()->_num_sinks = tgt_predecessor;
     } while(!std::invoke(tpg._predicate));
@@ -386,6 +332,7 @@ std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate
   else { 
     // case 1: the previous execution is still running
     if(f._topologies.size() > 1) {
+      // PV (2/10): skip the predicate?
       tpg._work = std::forward<C>(c);
     }
     // case 2: this epoch should run
@@ -393,8 +340,14 @@ std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate
       setup_topology(f, tpg);
 
       //Set up target node's work
-      tpg._work = [&f, c=std::function<void()>{std::forward<C>(c)}, 
-        tgt_predecessor = tpg._num_sinks.load(std::memory_order_relaxed), this]() mutable {
+      tpg._work = [
+        &f, 
+        c=std::function<void()>{std::forward<C>(c)}, 
+        tgt_predecessor=tpg._num_sinks.load(std::memory_order_relaxed), 
+        this
+      ] () mutable {
+
+        // f._topologies.front is myself
 
         // PV 1/31 (twhuang): thread safety? 
         // case 1: we still need to run the topology again
@@ -415,7 +368,9 @@ std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate
 
             // Set the promise
             f._topologies.front()->_promise.set_value();
-
+            
+            // PV (2/10): why not just using the next_tpg other than moving all
+            // things to the previous one
             auto next_tpg = std::next(f._topologies.begin());
             //c = std::move(std::get<StaticWork>((*next_tpg)->_target._work));
             c = std::move((*next_tpg)->_work);
@@ -431,6 +386,7 @@ std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate
             _schedule(f._topologies.front()->_sources);
           }
           else {
+            assert(f._topologies.size() == 1);
             // Need to back up the promise first here becuz framework might be 
             // destroy before taskflow leaves
             auto &p = f._topologies.front()->_promise; 
@@ -514,10 +470,6 @@ void BasicTaskflow<E>::Closure::operator () () const {
     }
   } // End of DynamicWork -----------------------------------------------------
   
-  // PV 1/31 (twhuang): probably can add a bitwise state for each node?
-  // Also I think the while loop can be improved.
-  // Why do we need num_successors in if?
-  //
   // Recover the runtime change due to dynamic tasking except the target & spawn tasks 
   // This must be done before scheduling the successors, otherwise this might cause 
   // race condition on the _dependents

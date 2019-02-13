@@ -33,6 +33,9 @@ class Node {
   using StaticWork   = std::function<void()>;
   using DynamicWork  = std::function<void(SubflowBuilder&)>;
 
+  constexpr static int SPAWNED = 0x1;
+  constexpr static int SUBTASK = 0x2;
+
   public:
 
     Node();
@@ -52,11 +55,11 @@ class Node {
     std::string dump() const;
 
     // Status-related functions
-    bool is_spawned() const { return _status & 0x1;  }
-    bool is_subtask() const { return _status & 0x2; }
-    void set_spawned()  { _status |= 0x1; }
-    void set_subtask()  { _status |= 0x2; }
-    void clear_status() { _status &= 0x0; }
+    bool is_spawned() const { return _status & SPAWNED; }
+    bool is_subtask() const { return _status & SUBTASK; }
+    void set_spawned()  { _status |= SPAWNED; }
+    void set_subtask()  { _status |= SUBTASK; }
+    void clear_status() { _status = 0; }
 
   private:
     
@@ -72,7 +75,7 @@ class Node {
 
     Topology* _topology;
 
-    size_t _status {0};
+    int _status {0};
 };
 
 // Constructor
