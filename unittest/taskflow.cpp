@@ -1037,7 +1037,6 @@ TEST_CASE("Framework" * doctest::timeout(300)) {
         count = 0;
       }
     ).get();
-
   }
 
 }

@@ -45,12 +45,13 @@ class Topology {
 
     PassiveVector<Node*> _sources;
     std::atomic<int> _num_sinks {0};
-    int _cached_num_sinks;
+    int _cached_num_sinks {0};
     
     std::function<bool()> _predicate {nullptr};
     std::function<void()> _work {nullptr};
 
     void _bind(Graph& g);
+    void _recover_num_sinks();
 };
 
 // Constructor
@@ -60,27 +61,10 @@ inline Topology::Topology(Framework& f, P&& p):
   _predicate {std::forward<P>(p)} {
 }
 
-// TODO: remove duplicate code in the two constructors
-
 // Constructor
 inline Topology::Topology(Graph&& t) : 
   _handle {std::move(t)} {
-
   _bind(std::get<Graph>(_handle));
-
-  //// Build the super source and super target.
-  //for(auto& node : std::get<Graph>(_handle)) {
-
-  //  node._topology = this;
-
-  //  if(node.num_dependents() == 0) {
-  //    _sources.push_back(&node);
-  //  }
-
-  //  if(node.num_successors() == 0) {
-  //    _num_sinks ++;
-  //  }
-  //}
 }
 
 
@@ -91,20 +75,6 @@ inline Topology::Topology(Graph&& t, C&& c) :
   _work   {std::forward<C>(c)} {
 
   _bind(std::get<Graph>(_handle));
-
-  //// Build the super source and super target.
-  //for(auto& node : std::get<Graph>(_handle)) {
-
-  //  node._topology = this;
-
-  //  if(node.num_dependents() == 0) {
-  //    _sources.push_back(&node);
-  //  }
-
-  //  if(node.num_successors() == 0) {
-  //    _num_sinks ++;
-  //  }
-  //}
 }
 
 // Procedure: _bind
@@ -129,6 +99,11 @@ inline void Topology::_bind(Graph& g) {
   }
   _cached_num_sinks = _num_sinks;
 
+}
+
+// Procedure: _recover_num_sinks
+inline void Topology::_recover_num_sinks() {
+  _num_sinks = _cached_num_sinks;
 }
 
 // Procedure: dump

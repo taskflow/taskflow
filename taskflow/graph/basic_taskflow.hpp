@@ -12,6 +12,11 @@
 // 2018/06/30 - created by Tsung-Wei Huang
 //  - added BasicTaskflow template
 
+// TODO items:
+// 1. come up with a better way to remove the "joined" links 
+//    during the execution of a static node (1st layer)
+//
+
 #pragma once
 
 #include "topology.hpp"
@@ -306,7 +311,7 @@ std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate
 
     do {
       _schedule(tpg._sources);
-      tpg._num_sinks = tpg._cached_num_sinks;
+      tpg._recover_num_sinks();
     } while(!std::invoke(tpg._predicate));
 
     std::invoke(c);
@@ -330,7 +335,7 @@ std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate
       
     // case 1: we still need to run the topology again
     if(!std::invoke(f._topologies.front()->_predicate)) {
-      f._topologies.front()->_num_sinks = f._topologies.front()->_cached_num_sinks;
+      f._topologies.front()->_recover_num_sinks();
       _schedule(f._topologies.front()->_sources); 
     }
     // case 2: the final run of this topology
@@ -514,7 +519,7 @@ void BasicTaskflow<E>::Closure::operator () () const {
   //if(num_successors && !node->_subtask) {
   if(!node->is_subtask()) {
     // Only dynamic tasking needs to restore _dependents
-    // TODO
+    // TODO:
     if(node->_work.index() == 1 &&  !node->_subgraph->empty()) {
       while(!node->_dependents.empty() && node->_dependents.back()->is_subtask()) {
         node->_dependents.pop_back();
