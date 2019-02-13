@@ -1,3 +1,6 @@
+// 2019/02/13 - modified by Tsung-Wei Huang
+//  - remove num_tasks method
+// 
 // 2018/11/28 - modified by Chun-Xun Lin
 // 
 // Added the method batch to insert a vector of tasks.
@@ -87,8 +90,6 @@ class SimpleThreadpool {
     */
     bool is_owner() const;
     
-    size_t num_tasks() const;
-
   private:
 
     const std::thread::id _owner {std::this_thread::get_id()};
@@ -115,16 +116,6 @@ SimpleThreadpool<Closure>::SimpleThreadpool(unsigned N) {
 template <typename Closure>
 SimpleThreadpool<Closure>::~SimpleThreadpool() {
   _shutdown();
-}
-
-// Function: num_tasks
-// Return the number of "unfinished" tasks. 
-// Notice that this value is not necessary equal to the size of the task_queue 
-// since the task can be popped out from the task queue while 
-// not yet finished.
-template <typename Closure>
-size_t SimpleThreadpool<Closure>::num_tasks() const {
-  return _tasks.size();
 }
 
 template <typename Closure>

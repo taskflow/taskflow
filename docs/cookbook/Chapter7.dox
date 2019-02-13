@@ -1,6 +1,6 @@
 namespace tf {
 
-/** @page chapter7 C7: %Framework (Dev Branch)
+/** @page chapter7 C7: %Framework (Experimental)
 
 In many situations, you will need to execute a task dependency multiple times to
 create a @em reusable and @em stateful execution.
@@ -10,20 +10,22 @@ This chapter introduces the concept of a framework and shows its usage.
 @section C7_CreateAFramework Create a Framework 
 
 The tf::Framework inherits tf::FlowBuilder and contains a task dependency graph 
-that is independent of that in a taskflow object.
-The big difference is that executing a framework will not make the graph disappear. 
-To construct a task dependency graph in a framework, you will use the same API
-tf::Taskflow::placeholder, tf::Taskflow::silent_emplace, and tf::Taskflow::emplace.
-The code below shows how to create a framework with three tasks.
+that is independent of a taskflow object.
+The big difference is executing a framework will not make the graph disappear.
+You can use framework to enalbe reusable control flows.
+The following example demonstrates how to create a framework.
 
 @code{.cpp}
 // createe a framework 
-tf::Framework taskflow;
+tf::Framework framework;
 
-// Add three tasks into the framework
-auto A = taskflow.silent_emplace([](){ std::cout << "This is TaskA\n"; });
-auto B = taskflow.placeholder();
-auto [C, FuC] = taskflow.emplace([] () { std::cout << "This is TaskC\n"; });
+// create three tasks in the framework
+auto A = framework.silent_emplace([](){ std::cout << "This is TaskA\n"; });
+auto B = framework.placeholder();
+auto [C, FuC] = framework.emplace([] () { std::cout << "This is TaskC\n"; });
+
+// add a dependency link from A to B
+A.precede(B);  
 
 // build precedence links from A to B and C
 A.precede(B, C);

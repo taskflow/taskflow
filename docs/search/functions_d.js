@@ -18,7 +18,7 @@ var searchData=
   ['now',['now',['http://en.cppreference.com/w/cpp/chrono/steady_clock/now.html',1,'std::chrono::steady_clock::now()'],['http://en.cppreference.com/w/cpp/chrono/system_clock/now.html',1,'std::chrono::system_clock::now()'],['http://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now.html',1,'std::chrono::high_resolution_clock::now()']]],
   ['num_5fdependents',['num_dependents',['../classtf_1_1Task.html#a974dc1d738b62b829ad261beeafbd67c',1,'tf::Task']]],
   ['num_5fget',['num_get',['http://en.cppreference.com/w/cpp/locale/num_get/num_get.html',1,'std::num_get']]],
-  ['num_5fnodes',['num_nodes',['../classtf_1_1BasicTaskflow.html#a18341302575dcb719e455d84a738273f',1,'tf::BasicTaskflow']]],
+  ['num_5fnodes',['num_nodes',['../classtf_1_1BasicTaskflow.html#a18341302575dcb719e455d84a738273f',1,'tf::BasicTaskflow::num_nodes()'],['../classtf_1_1Framework.html#a27b2d8b948f15ccedd2d4b9b0c2cf51b',1,'tf::Framework::num_nodes()']]],
   ['num_5fput',['num_put',['http://en.cppreference.com/w/cpp/locale/num_put/num_put.html',1,'std::num_put']]],
   ['num_5fsuccessors',['num_successors',['../classtf_1_1Task.html#a1a0afc89e8a6a416c511e74d82df135d',1,'tf::Task']]],
   ['num_5ftopologies',['num_topologies',['../classtf_1_1BasicTaskflow.html#a7e97ed52d9d0470d2751f32748adb253',1,'tf::BasicTaskflow']]],

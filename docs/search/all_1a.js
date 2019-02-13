@@ -26,6 +26,7 @@ var searchData=
   ['_7eexception',['~exception',['http://en.cppreference.com/w/cpp/error/exception/~exception.html',1,'std::exception']]],
   ['_7efilebuf',['~filebuf',['http://en.cppreference.com/w/cpp/io/basic_filebuf/~basic_filebuf.html',1,'std::filebuf']]],
   ['_7eforward_5flist',['~forward_list',['http://en.cppreference.com/w/cpp/container/forward_list/~forward_list.html',1,'std::forward_list']]],
+  ['_7eframework',['~Framework',['../classtf_1_1Framework.html#aa6b5fbd57dde6d3e26ef38d0e6b06c7a',1,'tf::Framework']]],
   ['_7efunction',['~function',['http://en.cppreference.com/w/cpp/utility/functional/function/~function.html',1,'std::function']]],
   ['_7efuture',['~future',['http://en.cppreference.com/w/cpp/thread/future/~future.html',1,'std::future']]],
   ['_7eios_5fbase',['~ios_base',['http://en.cppreference.com/w/cpp/io/ios_base/~ios_base.html',1,'std::ios_base']]],

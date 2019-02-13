@@ -339,13 +339,12 @@ std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate
       _schedule(f._topologies.front()->_sources); 
     }
     // case 2: the final run of this topology
-    // notice that there can be another new run request before we acquire the lock
     else {
       std::invoke(c);
 
       f._mtx.lock();
 
-      // If there is another run
+      // If there is another run (interleave between lock)
       if(f._topologies.size() > 1) {
 
         // Set the promise

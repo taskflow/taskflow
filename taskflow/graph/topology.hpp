@@ -11,6 +11,7 @@ class Topology {
   
   template <template<typename...> typename E> 
   friend class BasicTaskflow; 
+
   friend class Framework;
   
   // TODO: make graph/framework handle uniform
