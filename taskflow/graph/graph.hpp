@@ -67,9 +67,9 @@ class Node {
     std::variant<StaticWork, DynamicWork> _work;
 
     tf::PassiveVector<Node*> _successors;
-    tf::PassiveVector<Node*> _predecessors;
+    tf::PassiveVector<Node*> _dependents;
 
-    std::atomic<int> _dependents;
+    std::atomic<int> _num_dependents;
 
     std::optional<Graph> _subgraph;
 
@@ -80,14 +80,14 @@ class Node {
 
 // Constructor
 inline Node::Node() {
-  _dependents.store(0, std::memory_order_relaxed);
+  _num_dependents.store(0, std::memory_order_relaxed);
   _topology = nullptr;
 }
 
 // Constructor
 template <typename C>
 inline Node::Node(C&& c) : _work {std::forward<C>(c)} {
-  _dependents.store(0, std::memory_order_relaxed);
+  _num_dependents.store(0, std::memory_order_relaxed);
   _topology = nullptr;
 }
 
@@ -115,8 +115,8 @@ inline Node::~Node() {
 // Procedure: precede
 inline void Node::precede(Node& v) {
   _successors.push_back(&v);
-  v._predecessors.push_back(this);
-  v._dependents.fetch_add(1, std::memory_order_relaxed);
+  v._dependents.push_back(this);
+  v._num_dependents.fetch_add(1, std::memory_order_relaxed);
 }
 
 // Function: num_successors
@@ -126,7 +126,7 @@ inline size_t Node::num_successors() const {
 
 // Function: dependents
 inline size_t Node::num_dependents() const {
-  return _predecessors.size();
+  return _dependents.size();
 }
 
 // Function: name

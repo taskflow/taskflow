@@ -40,46 +40,46 @@ class Topology {
 
     std::variant<Graph, Framework*> _handle;
 
-    std::promise <void> _promise;
-    std::shared_future<void> _future;
+    std::promise<void> _promise;
+    std::shared_future<void> _future {_promise.get_future().share()};
 
-    std::vector<Node*> _sources;
+    PassiveVector<Node*> _sources;
     std::atomic<int> _num_sinks {0};
     
     std::function<bool()> _predicate {nullptr};
     std::function<void()> _work {nullptr};
-};
 
+    void _bind(Graph& g);
+};
 
 // Constructor
 template <typename P>
 inline Topology::Topology(Framework& f, P&& p): 
   _handle    {&f}, 
-  _future    {_promise.get_future().share()},
   _predicate {std::forward<P>(p)} {
 }
-
 
 // TODO: remove duplicate code in the two constructors
 
 // Constructor
 inline Topology::Topology(Graph&& t) : 
-  _handle {std::move(t)},
-  _future {_promise.get_future().share()} {
+  _handle {std::move(t)} {
 
-  // Build the super source and super target.
-  for(auto& node : std::get<Graph>(_handle)) {
+  _bind(std::get<Graph>(_handle));
 
-    node._topology = this;
+  //// Build the super source and super target.
+  //for(auto& node : std::get<Graph>(_handle)) {
 
-    if(node.num_dependents() == 0) {
-      _sources.push_back(&node);
-    }
+  //  node._topology = this;
 
-    if(node.num_successors() == 0) {
-      _num_sinks ++;
-    }
-  }
+  //  if(node.num_dependents() == 0) {
+  //    _sources.push_back(&node);
+  //  }
+
+  //  if(node.num_successors() == 0) {
+  //    _num_sinks ++;
+  //  }
+  //}
 }
 
 
@@ -87,11 +87,34 @@ inline Topology::Topology(Graph&& t) :
 template <typename C>
 inline Topology::Topology(Graph&& t, C&& c) : 
   _handle {std::move(t)},
-  _future {_promise.get_future().share()},
   _work   {std::forward<C>(c)} {
 
-  // Build the super source and super target.
-  for(auto& node : std::get<Graph>(_handle)) {
+  _bind(std::get<Graph>(_handle));
+
+  //// Build the super source and super target.
+  //for(auto& node : std::get<Graph>(_handle)) {
+
+  //  node._topology = this;
+
+  //  if(node.num_dependents() == 0) {
+  //    _sources.push_back(&node);
+  //  }
+
+  //  if(node.num_successors() == 0) {
+  //    _num_sinks ++;
+  //  }
+  //}
+}
+
+// Procedure: _bind
+// Re-builds the source links and the sink number for this topology.
+inline void Topology::_bind(Graph& g) {
+  
+  _num_sinks = 0;
+  _sources.clear();
+  
+  // scan each node in the graph and build up the links
+  for(auto& node : g) {
 
     node._topology = this;
 
@@ -100,9 +123,10 @@ inline Topology::Topology(Graph&& t, C&& c) :
     }
 
     if(node.num_successors() == 0) {
-      _num_sinks ++;
+      _num_sinks++;
     }
   }
+
 }
 
 // Procedure: dump
