@@ -9,17 +9,17 @@ int main(){
 
   // Create a framework
   tf::Framework f;
-  auto A = f.silent_emplace([&](){ std::cout << "TaskA\n"; }).name("A");
-  auto B = f.silent_emplace([&](auto& subflow){ 
+  auto A = f.emplace([&](){ std::cout << "TaskA\n"; }).name("A");
+  auto B = f.emplace([&](auto& subflow){ 
     std::cout << "TaskB\n";
-    auto B1 = subflow.silent_emplace([&](){ std::cout << "TaskB1\n"; }).name("B1");
-    auto B2 = subflow.silent_emplace([&](){ std::cout << "TaskB2\n"; }).name("B2");
-    auto B3 = subflow.silent_emplace([&](){ std::cout << "TaskB3\n"; }).name("B3");
+    auto B1 = subflow.emplace([&](){ std::cout << "TaskB1\n"; }).name("B1");
+    auto B2 = subflow.emplace([&](){ std::cout << "TaskB2\n"; }).name("B2");
+    auto B3 = subflow.emplace([&](){ std::cout << "TaskB3\n"; }).name("B3");
     B1.precede(B3); 
     B2.precede(B3);
   }).name("B");
-  auto C = f.silent_emplace([&](){ std::cout << "TaskC\n"; }).name("C");
-  auto D = f.silent_emplace([&](){ std::cout << "TaskD\n"; }).name("D");
+  auto C = f.emplace([&](){ std::cout << "TaskC\n"; }).name("C");
+  auto D = f.emplace([&](){ std::cout << "TaskD\n"; }).name("D");
 
   A.precede(B, C);
   B.precede(D); 

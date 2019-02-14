@@ -29,7 +29,7 @@ void traverse(Node* n, tf::SubflowBuilder& subflow) {
   for(size_t i=0; i<n->successors.size(); i++) {
     if(--(n->successors[i]->dependents) == 0) {
       n->successors[i]->level = n->level + 1;
-      subflow.silent_emplace([s=n->successors[i]](tf::SubflowBuilder &subflow){ traverse(s, subflow); });
+      subflow.emplace([s=n->successors[i]](tf::SubflowBuilder &subflow){ traverse(s, subflow); });
     }
   }
 }
@@ -57,7 +57,7 @@ void tf_traversal(std::vector<Node*>& src) {
 
   tf::Taskflow tf(4);
   for(size_t i=0; i<src.size(); i++) {
-    tf.silent_emplace([i=i, &src](auto& subflow){ traverse(src[i], subflow); });
+    tf.emplace([i=i, &src](auto& subflow){ traverse(src[i], subflow); });
   }
   tf.wait_for_all();  // block until finished
 
