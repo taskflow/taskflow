@@ -21,7 +21,7 @@ int main() {
 
   // Insert tasks with sleeping for random ms and increasing the counter
   for(size_t i=0; i<num_jobs; ++i){
-    tf.silent_emplace([t=dice(gen), &counter](){ 
+    tf.emplace([t=dice(gen), &counter](){ 
       std::this_thread::sleep_for(std::chrono::microseconds(t));
       counter++;
     });
@@ -37,7 +37,7 @@ int main() {
 
   // Insert tasks with sleeping for random ms and decreasing the counter
   for(size_t i=0; i<num_jobs; ++i){
-    tf.silent_emplace([t=dice(gen), &counter](){ 
+    tf.emplace([t=dice(gen), &counter](){ 
       std::this_thread::sleep_for(std::chrono::microseconds(t));
       counter--;
     });

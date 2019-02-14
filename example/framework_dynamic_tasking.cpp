@@ -46,7 +46,7 @@ void traverse(Node* n, tf::SubflowBuilder& subflow) {
   for(size_t i=0; i<n->successors.size(); i++) {
     if(--(n->successors[i]->dependents) == 0) {
       n->successors[i]->level = n->level + 1;
-      subflow.silent_emplace([s=n->successors[i]](tf::SubflowBuilder &subflow){ traverse(s, subflow); });
+      subflow.emplace([s=n->successors[i]](tf::SubflowBuilder &subflow){ traverse(s, subflow); });
     }
   }
 }
@@ -83,12 +83,12 @@ void tf_traversal(std::vector<Node*>& src, Node nodes[], size_t num_nodes) {
   tf::Taskflow tf(4);
   tf::Framework framework;
   // Add a target to verify the traversal and reset nodes in each iteration
-  auto target = framework.silent_emplace([&](){
+  auto target = framework.emplace([&](){
     validate(nodes, num_nodes);
     reset(nodes, num_nodes);
   });
   for(size_t i=0; i<src.size(); i++) {
-    framework.silent_emplace([i=i, &src](auto& subflow){ traverse(src[i], subflow); }).precede(target);
+    framework.emplace([i=i, &src](auto& subflow){ traverse(src[i], subflow); }).precede(target);
   }
   tf.run_n(framework, 100);
 

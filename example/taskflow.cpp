@@ -47,11 +47,11 @@ auto dynamic_stem() {
     std::optional<tf::Task> prev;
 
     for(int l=0; l<L; ++l) {
-      auto curr = tf.silent_emplace([&, l] (auto& subflow) {
+      auto curr = tf.emplace([&, l] (auto& subflow) {
         sum.fetch_add(1, std::memory_order_relaxed);
         std::optional<tf::Task> p;
         for(int k=0; k<L; k++) {
-          auto c = subflow.silent_emplace([&] () {
+          auto c = subflow.emplace([&] () {
             sum.fetch_add(1, std::memory_order_relaxed);
           });
           if(p) {
@@ -142,7 +142,7 @@ auto level_graph() {
     tasks.resize(num_levels);
     for(int l=0; l<num_levels; ++l) {
       for(int i=0; i<num_nodes_per_level; ++i) {
-        tasks[l].push_back(tf.silent_emplace([&] () {
+        tasks[l].push_back(tf.emplace([&] () {
           sum.fetch_add(1, std::memory_order_relaxed);
         }));
       }
@@ -185,7 +185,7 @@ auto linear_graph() {
     std::vector<tf::Task> tasks;
 
     for(int i=0; i<num_nodes; ++i) {
-      tasks.push_back(tf.silent_emplace([&] () { ++sum; }));
+      tasks.push_back(tf.emplace([&] () { ++sum; }));
     }
 
     tf.linearize(tasks);
@@ -219,11 +219,11 @@ auto binary_tree() {
 
       if(l < num_levels) {
 
-        auto lc = tf.silent_emplace([&] () {
+        auto lc = tf.emplace([&] () {
           sum.fetch_add(1, std::memory_order_relaxed);
         });
 
-        auto rc = tf.silent_emplace([&] () {
+        auto rc = tf.emplace([&] () {
           sum.fetch_add(1, std::memory_order_relaxed);
         });
 
@@ -235,7 +235,7 @@ auto binary_tree() {
       }
     };
     
-    auto root = tf.silent_emplace([&] () {
+    auto root = tf.emplace([&] () {
       sum.fetch_add(1, std::memory_order_relaxed);
     });
 
@@ -266,7 +266,7 @@ auto empty_jobs() {
     T tf;
 
     for(size_t i=0; i<num_tasks; i++){
-      tf.silent_emplace([](){}); 
+      tf.emplace([](){}); 
     }
 
     tf.wait_for_all();
@@ -291,7 +291,7 @@ auto atomic_add() {
     std::atomic<int> counter(0);
     T tf;
     for(size_t i=0; i<num_tasks; i++){
-      tf.silent_emplace([&counter](){ 
+      tf.emplace([&counter](){ 
         counter.fetch_add(1, std::memory_order_relaxed);
       }); 
     }
@@ -313,7 +313,7 @@ auto multiple_dispatches() {
 
   auto create_graph = [] (T& tf, size_t N, std::atomic<int>& c) {
     for(size_t i=0; i<N; ++i) {
-      auto [A, B, C, D] = tf.silent_emplace(
+      auto [A, B, C, D] = tf.emplace(
         [&] () { c.fetch_add(1, std::memory_order_relaxed); },
         [&] () { c.fetch_add(1, std::memory_order_relaxed); },
         [&] () { c.fetch_add(1, std::memory_order_relaxed); },

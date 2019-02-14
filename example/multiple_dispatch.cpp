@@ -28,7 +28,7 @@ void dispatchBatch(tf::Taskflow& tf, int batch) {
       syncLog("  Batch " + std::to_string(batch) + " - done task " + taskName);
     };
   };
-  auto[A, B, C, D] = tf.silent_emplace(
+  auto[A, B, C, D] = tf.emplace(
     taskMaker("A", batch),
     taskMaker("B", batch),
     taskMaker("C", batch),
@@ -50,7 +50,7 @@ int main()
   tf::Taskflow tf(std::thread::hardware_concurrency());
   auto const numIndependent = 5;
   for (auto indTask = 100; indTask < 100 + numIndependent; ++indTask) {
-    tf.silent_emplace([=]() {
+    tf.emplace([=]() {
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
       syncLog("  Independent task " + std::to_string(indTask) + " - done");
     });
@@ -70,7 +70,7 @@ int main()
   independentTasksFuture.get();
   syncLog("----- Independent tasks (100 range) completed");
   for (auto indTask = 200; indTask < 200 + numIndependent; ++indTask) {
-    tf.silent_emplace([=]() {
+    tf.emplace([=]() {
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
       syncLog("  Independent task " + std::to_string(indTask) + " - done");
     });

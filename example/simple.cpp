@@ -9,7 +9,7 @@ int main(){
 
   tf::Taskflow tf;
   
-  auto [A, B, C, D] = tf.silent_emplace(   //  the taskflow graph
+  auto [A, B, C, D] = tf.emplace(   //  the taskflow graph
     [] () { std::cout << "TaskA\n"; },     //                                 
     [] () { std::cout << "TaskB\n"; },     //          +---+                  
     [] () { std::cout << "TaskC\n"; },     //    +---->| B |-----+            

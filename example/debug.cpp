@@ -7,7 +7,7 @@ int main(){
 
   tf::Taskflow tf;
 
-  auto [A, B, C, D, E] = tf.silent_emplace(
+  auto [A, B, C, D, E] = tf.emplace(
     [] () { std::cout << "Task A" << std::endl; },
     [] () { std::cout << "Task B" << std::endl; },
     [] () { std::cout << "Task C" << std::endl; },

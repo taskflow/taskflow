@@ -50,7 +50,7 @@ void matrix_multiplication() {
 // Procedure
 void create_task_dependency_graph(tf::Taskflow& tf) {
   for(size_t i=0; i<MAX_COUNT; ++i) {
-    auto [A, B, C, D] = tf.silent_emplace(
+    auto [A, B, C, D] = tf.emplace(
       [&] () { matrix_multiplication(); },
       [&] () { matrix_multiplication(); },
       [&] () { matrix_multiplication(); },

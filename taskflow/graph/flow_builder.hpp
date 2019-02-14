@@ -23,7 +23,7 @@ class FlowBuilder {
     
     @param callable a callable object acceptable to std::function
 
-    @return a std::pair of Task handle and std::future
+    @return Task handle
     */
     template <typename C>
     auto emplace(C&& callable);
@@ -35,34 +35,34 @@ class FlowBuilder {
 
     @param callables one or multiple callable objects acceptable to std::function
 
-    @return a std::tuple of pairs of Task Handle and std::future
+    @return a Task handle
     */
     template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
     auto emplace(C&&... callables);
     
-    /**
-    @brief creates a task from a given callable object without access to the result
-    
-    @tparam C callable type
-    
-    @param callable a callable object acceptable to std::function
+    ///**
+    //@brief creates a task from a given callable object without access to the result
+    //
+    //@tparam C callable type
+    //
+    //@param callable a callable object acceptable to std::function
 
-    @return a Task handle
-    */
-    template <typename C>
-    auto silent_emplace(C&& callable);
+    //@return a Task handle
+    //*/
+    //template <typename C>
+    //auto silent_emplace(C&& callable);
 
-    /**
-    @brief creates multiple tasks from a list of callable objects without access to the results
-    
-    @tparam C... callable types
-    
-    @param callables one or multiple callable objects acceptable to std::function
+    ///**
+    //@brief creates multiple tasks from a list of callable objects without access to the results
+    //
+    //@tparam C... callable types
+    //
+    //@param callables one or multiple callable objects acceptable to std::function
 
-    @return a tuple of Task handles
-    */
-    template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
-    auto silent_emplace(C&&... callables);
+    //@return a tuple of Task handles
+    //*/
+    //template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
+    //auto silent_emplace(C&&... callables);
     
     /**
     @brief constructs a task dependency graph of range-based parallel_for
@@ -319,10 +319,10 @@ inline Task FlowBuilder::placeholder() {
   return Task(node);
 }
 
-// Function: silent_emplace
+// Function: emplace
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
-auto FlowBuilder::silent_emplace(C&&... cs) {
-  return std::make_tuple(silent_emplace(std::forward<C>(cs))...);
+auto FlowBuilder::emplace(C&&... cs) {
+  return std::make_tuple(emplace(std::forward<C>(cs))...);
 }
 
 // Function: parallel_for    
@@ -355,7 +355,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, C&& c, size_t g) {
     }
       
     // Create a task
-    auto task = silent_emplace([beg, e, c] () mutable {
+    auto task = emplace([beg, e, c] () mutable {
       std::for_each(beg, e, c);
     });
     source.precede(task);
@@ -400,7 +400,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
     if(beg < end) {
       while(beg != end) {
         auto e = std::min(beg + offset, end);
-        auto task = silent_emplace([=] () mutable {
+        auto task = emplace([=] () mutable {
           for(auto i=beg; i<e; i+=s) {
             c(i);
           }
@@ -414,7 +414,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
     else if(beg > end) {
       while(beg != end) {
         auto e = std::max(beg + offset, end);
-        auto task = silent_emplace([=] () mutable {
+        auto task = emplace([=] () mutable {
           for(auto i=beg; i>e; i+=s) {
             c(i);
           }
@@ -431,7 +431,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
     auto B = beg;
     for(auto i=beg; (beg<end ? i<end : i>end); i+=s, ++N) {
       if(N == g) {
-        auto task = silent_emplace([=] () mutable {
+        auto task = emplace([=] () mutable {
           auto b = B;
           for(size_t n=0; n<N; ++n) {
             c(b);
@@ -447,7 +447,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
 
     // the last pices
     if(N != 0) {
-      auto task = silent_emplace([=] () mutable {
+      auto task = emplace([=] () mutable {
         auto b = B;
         for(size_t n=0; n<N; ++n) {
           c(b);
@@ -494,7 +494,9 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(I beg, I end, T& result, B&&
   auto source = placeholder();
   auto target = placeholder();
 
-  std::vector<std::future<T>> futures;
+  //std::vector<std::future<T>> futures;
+  auto g_results = std::make_unique<T[]>(w);
+  size_t id {0};
 
   while(beg != end) {
 
@@ -510,28 +512,40 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(I beg, I end, T& result, B&&
       for(size_t i=0; i<g && e != end; ++e, ++i);
     }
       
-    // Create a task
-    auto [task, future] = emplace([beg, e, bop, uop] () mutable {
-      auto init = uop(*beg);
+    // Create a task 
+    auto task = emplace([beg, e, bop, uop, res=&(g_results[id])] () mutable {
+      *res = uop(*beg);
       for(++beg; beg != e; ++beg) {
-        init = bop(std::move(init), uop(*beg));          
+        *res = bop(std::move(*res), uop(*beg));          
       }
-      return init;
     });
+    //auto [task, future] = emplace([beg, e, bop, uop] () mutable {
+    //  auto init = uop(*beg);
+    //  for(++beg; beg != e; ++beg) {
+    //    init = bop(std::move(init), uop(*beg));          
+    //  }
+    //  return init;
+    //});
     source.precede(task);
     task.precede(target);
-    futures.push_back(std::move(future));
+    //futures.push_back(std::move(future));
 
     // adjust the pointer
     beg = e;
+    id ++;
   }
 
-  // target synchronizer
-  target.work([&result, futures=MoC{std::move(futures)}, bop] () {
-    for(auto& fu : futures.object) {
-      result = bop(std::move(result), fu.get());
+  // target synchronizer 
+  target.work([&result, bop, res=MoC{std::move(g_results)}, w=id] () {
+    for(auto i=0u; i<w; i++) {
+      result = bop(std::move(result), res.object[i]);
     }
   });
+  //target.work([&result, futures=MoC{std::move(futures)}, bop] () {
+  //  for(auto& fu : futures.object) {
+  //    result = bop(std::move(result), fu.get());
+  //  }
+  //});
 
   return std::make_pair(source, target); 
 }
@@ -550,8 +564,10 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(I beg, I end, T& result, B&&
   auto source = placeholder();
   auto target = placeholder();
 
-  std::vector<std::future<T>> futures;
+  auto g_results = std::make_unique<T[]>(w);
+  //std::vector<std::future<T>> futures;
 
+  size_t id {0};
   while(beg != end) {
 
     auto e = beg;
@@ -566,28 +582,40 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(I beg, I end, T& result, B&&
       for(size_t i=0; i<g && e != end; ++e, ++i);
     }
       
-    // Create a task
-    auto [task, future] = emplace([beg, e, uop, pop] () mutable {
-      auto init = uop(*beg);
+    // Create a task 
+    auto task = emplace([beg, e, uop, pop,  res= &g_results[id]] () mutable {
+      *res = uop(*beg);
       for(++beg; beg != e; ++beg) {
-        init = pop(std::move(init), *beg);
+        *res = pop(std::move(*res), beg);
       }
-      return init;
     });
+    //auto [task, future] = emplace([beg, e, uop, pop] () mutable {
+    //  auto init = uop(*beg);
+    //  for(++beg; beg != e; ++beg) {
+    //    init = pop(std::move(init), *beg);
+    //  }
+    //  return init;
+    //});
     source.precede(task);
     task.precede(target);
-    futures.push_back(std::move(future));
+    //futures.push_back(std::move(future));
 
     // adjust the pointer
     beg = e;
+    id ++;
   }
 
-  // target synchronizer
-  target.work([&result, futures=MoC{std::move(futures)}, bop] () {
-    for(auto& fu : futures.object) {
-      result = bop(std::move(result), fu.get());
+  // target synchronizer 
+  target.work([&result, bop, g_results=MoC{std::move(g_results)}, w=id] () {
+    for(auto i=0u; i<w; i++) {
+      result = bop(std::move(result), g_results.object[i]);
     }
   });
+  //target.work([&result, futures=MoC{std::move(futures)}, bop] () {
+  //  for(auto& fu : futures.object) {
+  //    result = bop(std::move(result), fu.get());
+  //  }
+  //});
 
   return std::make_pair(source, target); 
 }
@@ -661,8 +689,11 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
   auto source = placeholder();
   auto target = placeholder();
 
-  std::vector<std::future<T>> futures;
+  //T* g_results = static_cast<T*>(malloc(sizeof(T)*w));
+  auto g_results = std::make_unique<T[]>(w);
+  //std::vector<std::future<T>> futures;
   
+  size_t id {0};
   while(beg != end) {
 
     auto e = beg;
@@ -678,25 +709,36 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
     }
       
     // Create a task
-    auto [task, future] = emplace([beg, e, op] () mutable {
-      auto init = *beg;
+    //auto [task, future] = emplace([beg, e, op] () mutable {
+    auto task = emplace([beg, e, op, res = &g_results[id]] () mutable {
+      *res = *beg;
       for(++beg; beg != e; ++beg) {
-        init = op(std::move(init), *beg);          
+        *res = op(std::move(*res), *beg);          
       }
-      return init;
+      //auto init = *beg;
+      //for(++beg; beg != e; ++beg) {
+      //  init = op(std::move(init), *beg);          
+      //}
+      //return init;
     });
     source.precede(task);
     task.precede(target);
-    futures.push_back(std::move(future));
+    //futures.push_back(std::move(future));
 
     // adjust the pointer
     beg = e;
+    id ++;
   }
   
   // target synchronizer
-  target.work([&result, futures=MoC{std::move(futures)}, op] () {
-    for(auto& fu : futures.object) {
-      result = op(std::move(result), fu.get());
+  //target.work([&result, futures=MoC{std::move(futures)}, op] () {
+  //  for(auto& fu : futures.object) {
+  //    result = op(std::move(result), fu.get());
+  //  }
+  //});
+  target.work([g_results=MoC{std::move(g_results)}, &result, op, w=id] () {
+    for(auto i=0u; i<w; i++) {
+      result = op(std::move(result), g_results.object[i]);
     }
   });
 
@@ -768,90 +810,89 @@ inline bool SubflowBuilder::joined() const {
   return !_detached;
 }
 
+//// Function: emplace
+//template <typename C>
+//auto FlowBuilder::emplace(C&& c) {
+//  // subflow task
+//  if constexpr(std::is_invocable_v<C, SubflowBuilder&>) {
+//
+//    using R = std::invoke_result_t<C, SubflowBuilder&>;
+//    std::promise<R> p;
+//    auto fu = p.get_future();
+//  
+//    if constexpr(std::is_same_v<void, R>) {
+//      auto& node = _graph.emplace_back([p=MoC(std::move(p)), c=std::forward<C>(c)]
+//      (SubflowBuilder& fb) mutable {
+//        if(fb._graph.empty()) {
+//          c(fb);
+//          // if subgraph is detached or empty after invoked
+//          if(fb.detached() || fb._graph.empty()) {
+//            p.get().set_value();
+//          }
+//        }
+//        else {
+//          p.get().set_value();
+//        }
+//      });
+//      return std::make_pair(Task(node), std::move(fu));
+//    }
+//    else {
+//      auto& node = _graph.emplace_back(
+//      [p=MoC(std::move(p)), c=std::forward<C>(c), r=std::optional<R>()]
+//      (SubflowBuilder& fb) mutable {
+//        if(fb._graph.empty()) {
+//          r.emplace(c(fb));
+//          if(fb.detached() || fb._graph.empty()) {
+//            p.get().set_value(std::move(*r)); 
+//          }
+//        }
+//        else {
+//          assert(r);
+//          p.get().set_value(std::move(*r));
+//        }
+//      });
+//      return std::make_pair(Task(node), std::move(fu));
+//    }
+//  }
+//  // regular task
+//  else if constexpr(std::is_invocable_v<C>) {
+//
+//    using R = std::invoke_result_t<C>;
+//    std::promise<R> p;
+//    auto fu = p.get_future();
+//
+//    if constexpr(std::is_same_v<void, R>) {
+//      auto& node = _graph.emplace_back(
+//        [p=MoC(std::move(p)), c=std::forward<C>(c)]() mutable {
+//          c(); 
+//          p.get().set_value();
+//        }
+//      );
+//      return std::make_pair(Task(node), std::move(fu));
+//    }
+//    else {
+//      auto& node = _graph.emplace_back(
+//        [p=MoC(std::move(p)), c=std::forward<C>(c)]() mutable {
+//          p.get().set_value(c());
+//        }
+//      );
+//      return std::make_pair(Task(node), std::move(fu));
+//    }
+//  }
+//  else {
+//    static_assert(dependent_false_v<C>, "invalid task work type");
+//  }
+//}
+
+//// Function: emplace
+//template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
+//auto FlowBuilder::emplace(C&&... cs) {
+//  return std::make_tuple(emplace(std::forward<C>(cs))...);
+//}
+
 // Function: emplace
 template <typename C>
 auto FlowBuilder::emplace(C&& c) {
-    
-  // subflow task
-  if constexpr(std::is_invocable_v<C, SubflowBuilder&>) {
-
-    using R = std::invoke_result_t<C, SubflowBuilder&>;
-    std::promise<R> p;
-    auto fu = p.get_future();
-  
-    if constexpr(std::is_same_v<void, R>) {
-      auto& node = _graph.emplace_back([p=MoC(std::move(p)), c=std::forward<C>(c)]
-      (SubflowBuilder& fb) mutable {
-        if(fb._graph.empty()) {
-          c(fb);
-          // if subgraph is detached or empty after invoked
-          if(fb.detached() || fb._graph.empty()) {
-            p.get().set_value();
-          }
-        }
-        else {
-          p.get().set_value();
-        }
-      });
-      return std::make_pair(Task(node), std::move(fu));
-    }
-    else {
-      auto& node = _graph.emplace_back(
-      [p=MoC(std::move(p)), c=std::forward<C>(c), r=std::optional<R>()]
-      (SubflowBuilder& fb) mutable {
-        if(fb._graph.empty()) {
-          r.emplace(c(fb));
-          if(fb.detached() || fb._graph.empty()) {
-            p.get().set_value(std::move(*r)); 
-          }
-        }
-        else {
-          assert(r);
-          p.get().set_value(std::move(*r));
-        }
-      });
-      return std::make_pair(Task(node), std::move(fu));
-    }
-  }
-  // regular task
-  else if constexpr(std::is_invocable_v<C>) {
-
-    using R = std::invoke_result_t<C>;
-    std::promise<R> p;
-    auto fu = p.get_future();
-
-    if constexpr(std::is_same_v<void, R>) {
-      auto& node = _graph.emplace_back(
-        [p=MoC(std::move(p)), c=std::forward<C>(c)]() mutable {
-          c(); 
-          p.get().set_value();
-        }
-      );
-      return std::make_pair(Task(node), std::move(fu));
-    }
-    else {
-      auto& node = _graph.emplace_back(
-        [p=MoC(std::move(p)), c=std::forward<C>(c)]() mutable {
-          p.get().set_value(c());
-        }
-      );
-      return std::make_pair(Task(node), std::move(fu));
-    }
-  }
-  else {
-    static_assert(dependent_false_v<C>, "invalid task work type");
-  }
-}
-
-// Function: emplace
-template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
-auto FlowBuilder::emplace(C&&... cs) {
-  return std::make_tuple(emplace(std::forward<C>(cs))...);
-}
-
-// Function: silent_emplace
-template <typename C>
-auto FlowBuilder::silent_emplace(C&& c) {
   // dynamic tasking
   if constexpr(std::is_invocable_v<C, SubflowBuilder&>) {
     auto& n = _graph.emplace_back(

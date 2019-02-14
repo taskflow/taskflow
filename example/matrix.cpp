@@ -119,7 +119,7 @@ void taskflow(const std::vector<size_t>& D) {
   std::vector<matrix_t> As(D.size());
   std::vector<tf::Task> TaskAs;
   for(size_t j=0; j<D.size(); ++j) {
-    TaskAs.push_back(tf.silent_emplace([&, j] () { 
+    TaskAs.push_back(tf.emplace([&, j] () { 
       As[j] = random_matrix(D[j]); 
     }));
   }
@@ -128,7 +128,7 @@ void taskflow(const std::vector<size_t>& D) {
   std::vector<matrix_t> Bs(D.size());
   std::vector<tf::Task> TaskBs;
   for(size_t j=0; j<D.size(); ++j) {
-    TaskBs.push_back(tf.silent_emplace([&, j] () {
+    TaskBs.push_back(tf.emplace([&, j] () {
       Bs[j] = random_matrix(D[j]);
     }));
   }
@@ -137,7 +137,7 @@ void taskflow(const std::vector<size_t>& D) {
   std::vector<matrix_t> Cs(D.size());
   std::vector<tf::Task> TaskCs;
   for(size_t j=0; j<D.size(); ++j) {
-    TaskCs.push_back(tf.silent_emplace([&, j] () {
+    TaskCs.push_back(tf.emplace([&, j] () {
       Cs[j] = As[j] * Bs[j];
     }));
   }

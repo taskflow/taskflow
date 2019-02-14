@@ -14,13 +14,13 @@ void build_framework(LevelGraph& graph, tf::Framework& framework) {
 
   for(size_t i=0; i<graph.length(); i++){
     Node& n = graph.node_at(graph.level()-1, i); 
-    tasks[graph.level()-1][i] = framework.silent_emplace([&](){ n.mark(); });
+    tasks[graph.level()-1][i] = framework.emplace([&](){ n.mark(); });
   }
 
   for(int l=graph.level()-2; l>=0 ; l--){
     for(size_t i=0; i<graph.length(); i++){
       Node& n = graph.node_at(l, i);
-      tasks[l][i] = framework.silent_emplace([&](){ n.mark();});
+      tasks[l][i] = framework.emplace([&](){ n.mark();});
       for(size_t k=0; k<n._out_edges.size(); k++){
         tasks[l][i].precede(tasks[l+1][n._out_edges[k]]);
       } 
