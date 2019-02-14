@@ -114,7 +114,7 @@ Loop-level Parallelism</h1>
 TaskBasedParallelism Task-based Parallelism</h1>
 <p>The traditional loop-level parallelism is simple but hardly allows users to exploit parallelism in more irregular applications such as graph algorithms, incremental flows, recursion, and dynamically-allocated data structures. To address these challenges, parallel programming and libraries are evolving from the tradition loop-based parallelism to the <em>task-based</em> model.</p>
 <div class="image">
-<img src="images/task-level-parallelism.png" alt="task-level-parallelism.png" width="30%"/>
+<img src="task-level-parallelism.png" alt="task-level-parallelism.png" width="30%"/>
 </div>
 <p>The above figure shows an example <em>task dependency graph</em>. Each node in the graph represents a task unit at function level and each edge indicates the task dependency between a pair of tasks. Task-based model offers a powerful means to express both regular and irregular parallelism in a top-down manner, and provides transparent scaling to large number of cores. In fact, it has been proven, both by the research community and the evolution of parallel programming standards, task-based approach scales the best with future processor generations and architectures.</p>
 <h1><a class="anchor" id="ChallengesOfTaskBasedParallelProgramming"></a>

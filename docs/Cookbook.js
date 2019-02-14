@@ -9,7 +9,6 @@ var Cookbook =
     ] ],
     [ "C1: Understand the Task", "chapter1.html", [
       [ "What is a Task?", "chapter1.html#WhatIsATask", null ],
-      [ "Access the Result of a Task", "chapter1.html#AccessTheResultOfATask", null ],
       [ "Create Multiple Tasks at One Time", "chapter1.html#CreateMultipleTasksAtOneTime", null ],
       [ "Lifetime of A Task", "chapter1.html#LifetimeOfATask", null ],
       [ "Example 1: Create Multiple Dependency Graphs", "chapter1.html#C1Example1", null ],

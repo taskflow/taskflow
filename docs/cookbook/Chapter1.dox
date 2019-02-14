@@ -10,22 +10,17 @@ a task dependency graph - tf::Task.
 A task in Cpp-Taskflow is a callable object for which the operation @std_invoke is applicable.
 It can be either 
 a functor, a lambda expression, a bind expression, or a class objects with @c operator() overloaded.
-
-Cpp-Taskflow provides three methods, 
-tf::Taskflow::placeholder, 
-tf::Taskflow::silent_emplace, and 
-tf::Taskflow::emplace to create a task.
+Cpp-Taskflow provides two methods, tf::Taskflow::placeholder and tf::Taskflow::emplace to create a task.
 
 @code{.cpp}
-1: auto A = taskflow.placeholder();
-2: auto B = taskflow.silent_emplace([] () {});
-3: auto [C, FuC] = taskflow.emplace([] () { return 1; });
+tf::Taskflow taskflow;
+tf::Task A = taskflow.placeholder();
+tf::Task B = taskflow.emplace([] () { std::cout << "task B\n"; });
 @endcode
 
 Debrief:
-@li Line 1 creates an empty task 
-@li Line 2 creates a task from a given callable object and returns a task handle
-@li Line 3 creates a task from a given callable object and returns, in addition to a task handle, a std::future object to access the result
+@li Line 2 creates an empty task 
+@li Line 3 creates a task from a given callable object and returns a task handle
 
 Each time you create a task, including an empty one, 
 the taskflow object adds a node to the present graph
@@ -37,8 +32,8 @@ such as adding dependencies, naming, and assigning a new work.
 
 @code{.cpp}
  1: tf::Taskflow taskflow;
- 2: auto A = taskflow.silent_emplace([] () { std::cout << "create a task A\n"; });
- 3: auto B = taskflow.silent_emplace([] () { std::cout << "create a task B\n"; });
+ 2: tf::Task A = taskflow.emplace([] () { std::cout << "create a task A\n"; });
+ 3: tf::Task B = taskflow.emplace([] () { std::cout << "create a task B\n"; });
  4:
  5: A.name("TaskA");
  6: A.work([] () { std::cout << "reassign A to a new task\n"; });
@@ -64,40 +59,16 @@ to store and invoke any callable target in a task.
 You need to follow its contract to create a task.
 For instance, the callable object must be copy constructible.
 
-@section AccessTheResultOfATask Access the Result of a Task
-
-Unlike tf::Taskflow::silent_emplace, 
-the method tf::Taskflow::emplace returns a pair of a task handle 
-and a std::future object to provide a mechanism to access the result when 
-the associated task finishes.
-This is particularly useful when you would like to pass data between tasks.
-  
-@code{.cpp}
-auto [A, FuA] = taskflow.emplace([](){ return 1; });
-taskflow.wait_for_all();
-std::cout << FuA.get() << std::endl;   // 1
-@endcode
-
-You should be aware that every time you add a task or a dependency,
-it creates only a node or an edge to the present graph.
-The execution does not start until you dispatch the graph.
-For example, the following code will block and never finish:
-
-@code{.cpp}
-auto [A, FuA] = taskflow.emplace([](){ return 1; });
-std::cout << FuA.get() << std::endl;   // block
-taskflow.wait_for_all();                     // never enter this line
-@endcode
 
 @section CreateMultipleTasksAtOneTime Create Multiple Tasks at One Time
 
-Cpp-Taskflow uses C++ structured binding coupled with tuple
+Cpp-Taskflow uses C++ structured binding coupled with tuple 
 to make the creation of tasks simple.
-Both tf::Taskflow::silent_emplace and tf::Taskflow::emplace 
-accept many callable objects to create multiple tasks at one time.
+The mthod tf::Taskflow::emplace 
+accepts a arbitrary number of callable objects to create multiple tasks at one time.
 
 @code{.cpp}
-auto [A, B, C] = taskflow.silent_emplace(  // create three tasks in one call
+auto [A, B, C] = taskflow.emplace(  // create three tasks in one call
   [](){ std::cout << "Task A\n"; },
   [](){ std::cout << "Task B\n"; },
   [](){ std::cout << "Task C\n"; }
@@ -130,10 +101,10 @@ task dependency graphs.
  6:
  7:   // create a task dependency graph
  8:   std::array<tf::Task, 4> tasks {
- 9:     taskflow.silent_emplace([] () { std::cout << "Task A\n"; }),
-10:     taskflow.silent_emplace([] () { std::cout << "Task B\n"; }),
-11:     taskflow.silent_emplace([] () { std::cout << "Task C\n"; }),
-12:     taskflow.silent_emplace([] () { std::cout << "Task D\n"; })
+ 9:     taskflow.emplace([] () { std::cout << "Task A\n"; }),
+10:     taskflow.emplace([] () { std::cout << "Task B\n"; }),
+11:     taskflow.emplace([] () { std::cout << "Task C\n"; }),
+12:     taskflow.emplace([] () { std::cout << "Task D\n"; })
 13:   };
 14:
 15:   tasks[0].precede(tasks[1]); 
@@ -145,10 +116,10 @@ task dependency graphs.
 21:
 22:   // create another task dependency graph
 23:   tasks = {
-24:     taskflow.silent_emplace([] () { std::cout << "New Task A\n"; }),
-25:     taskflow.silent_emplace([] () { std::cout << "New Task B\n"; }),
-26:     taskflow.silent_emplace([] () { std::cout << "New Task C\n"; }),
-27:     taskflow.silent_emplace([] () { std::cout << "New Task D\n"; })
+24:     taskflow.emplace([] () { std::cout << "New Task A\n"; }),
+25:     taskflow.emplace([] () { std::cout << "New Task B\n"; }),
+26:     taskflow.emplace([] () { std::cout << "New Task C\n"; }),
+27:     taskflow.emplace([] () { std::cout << "New Task D\n"; })
 28:   };
 29:
 30:   tasks[3].precede(tasks[2]);

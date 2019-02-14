@@ -91,7 +91,7 @@ Try the tf::Taskflow::dump method to debug the graph before dispatching your tas
 
 @subsection ProgrammingQuestions5 Q5: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?
 
-@image html dynamic_graph.png width=60%
+@image html images/dynamic_graph.png width=60%
 
 No. The subflow is spawned during the execution of B, and at this point A must finish
 because A precedes B. This gives rise to the fact B1 and B2 must run after A. 

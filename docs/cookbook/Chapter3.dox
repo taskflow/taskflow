@@ -37,7 +37,7 @@ By default (@c chunk=0), Cpp-Taskflow evenly partitions and distributes the work
 to all threads.
 In our example of eight tasks and four workers, each internal node is responsible for two items.
 
-@image html parallel_for1.png width=60%
+@image html images/parallel_for1.png width=60%
 
 Debrief:
 @li Line 1 creates a taskflow object of four worker threads
@@ -79,7 +79,7 @@ The above example will force each partition to run exactly one item.
 This can be useful when you have unbalanced workload
 and would like to enable more efficient parallelization.
 
-@image html parallel_for2.png width=100%
+@image html images/parallel_for2.png width=100%
 
 You can leave the chunk size to 0 to use our default partition strategy.
 
@@ -88,16 +88,15 @@ You can leave the chunk size to 0 to use our default partition strategy.
 @section ConstructTheGraphExplicitly Construct the Graph Explicitly
 
 You can explicitly construct a dependency graph that represents a parallel execution 
-of a for-loop.
-using only the basic methods tf::Taskflow::silent_emplace and tf::Task::precede.
+of a for-loop using only the basic methods tf::Taskflow::emplace and tf::Task::precede.
 
 
 @code{.cpp}
-auto S = taskflow.silent_emplace([] () {}).name("S");
-auto T = taskflow.silent_emplace([] () {}).name("T");
+tf::Task S = taskflow.emplace([] () {}).name("S");
+tf::Task T = taskflow.emplace([] () {}).name("T");
 
 for(auto item : items) {
-  auto task = taskflow.silent_emplace([item] () {
+  tf::Task task = taskflow.emplace([item] () {
     std::cout << std::this_thread::get_id() << " runs " << item << std::endl;
   });
   S.precede(task);
@@ -196,7 +195,7 @@ with other tasks.
  7:   std::vector<int> items(1024);
  8:   std::atomic<int> sum {0};
  9:
-10:   auto T1 = taskflow.silent_emplace([&] () {  // create a modifier task
+10:   tf::Task T1 = taskflow.emplace([&] () {  // create a modifier task
 11:     for(auto& item : items) {
 12:       item = 1;
 13:     }
@@ -206,7 +205,7 @@ with other tasks.
 17:     sum.fetch_add(item, std::memory_order_relaxed);
 18:   }, 128);
 19:
-20:   auto T2 = taskflow.silent_emplace([&] () {  // create a output task
+20:   tf::Task T2 = taskflow.emplace([&] () {  // create a output task
 21:     std::cout << "sum is: " << sum << std::endl;
 22:   }).name("Print Sum");
 23:
@@ -220,7 +219,7 @@ with other tasks.
 @endcode
 
 
-@image html parallel_for_example2.png width=100%
+@image html images/parallel_for_example2.png width=100%
 
 
 The output of this programs is:

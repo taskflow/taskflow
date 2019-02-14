@@ -55,7 +55,7 @@ int main(){
   
   tf::Taskflow tf;
 
-  auto [A, B, C, D] = tf.silent_emplace(
+  auto [A, B, C, D] = tf.emplace(
     [] () { std::cout << "TaskA\n"; },               //  task dependency graph
     [] () { std::cout << "TaskB\n"; },               // 
     [] () { std::cout << "TaskC\n"; },               //          +---+          
@@ -129,17 +129,17 @@ Create a taskflow object to start a task dependency graph.
 tf::Taskflow tf;
 ```
 
-Create a task from a callable object via the method `silent_emplace`
+Create a task from a callable object via the method `emplace`
 to get a task handle.
 
 ```cpp
-auto A = tf.silent_emplace([](){ std::cout << "Task A\n"; });
+tf::Task A = tf.emplace([](){ std::cout << "Task A\n"; });
 ```
 
 You can create multiple tasks at one time.
 
 ```cpp
-auto [A, B, C, D] = tf.silent_emplace(
+auto [A, B, C, D] = tf.emplace(
   [] () { std::cout << "Task A\n"; },
   [] () { std::cout << "Task B\n"; },
   [] () { std::cout << "Task C\n"; },
@@ -196,15 +196,15 @@ that spawns three tasks during its execution.
 
 ```cpp
 // create three regular tasks
-auto A = tf.silent_emplace([](){}).name("A");
-auto C = tf.silent_emplace([](){}).name("C");
-auto D = tf.silent_emplace([](){}).name("D");
+tf::Task A = tf.emplace([](){}).name("A");
+tf::Task C = tf.emplace([](){}).name("C");
+tf::Task D = tf.emplace([](){}).name("D");
 
 // create a subflow graph (dynamic tasking)
-auto B = tf.silent_emplace([] (auto& subflow) {
-  auto B1 = subflow.silent_emplace([](){}).name("B1");
-  auto B2 = subflow.silent_emplace([](){}).name("B2");
-  auto B3 = subflow.silent_emplace([](){}).name("B3");
+tf::Task B = tf.emplace([] (tf::SubflowBuilder& subflow) {
+  tf::Task B1 = subflow.emplace([](){}).name("B1");
+  tf::Task B2 = subflow.emplace([](){}).name("B2");
+  tf::Task B3 = subflow.emplace([](){}).name("B3");
   B1.precede(B3);
   B2.precede(B3);
 }).name("B");
@@ -246,7 +246,7 @@ To create a subflow for dynamic tasking,
 emplace a callable on one argument of type `tf::SubflowBuilder`.
 
 ```cpp
-auto A = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {});
+tf::Task A = tf.emplace([] (tf::SubflowBuilder& subflow) {});
 ```
 
 Similarly, you can get a [std::future][std::future] object to the execution status of the subflow.
@@ -261,9 +261,9 @@ All graph building methods defined in taskflow
 can be used in a subflow builder.
 
 ```cpp
-auto A = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {
+tf::Task A = tf.emplace([] (tf::SubflowBuilder& subflow) {
   std::cout << "Task A is spawning two subtasks A1 and A2" << '\n';
-  auto [A1, A2] = subflow.silent_emplace(
+  auto [A1, A2] = subflow.emplace(
     [] () { std::cout << "subtask A1" << '\n'; },
     [] () { std::cout << "subtask A2" << '\n'; }
     A1.precede(A2);
@@ -274,21 +274,21 @@ auto A = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {
 A subflow can also be nested or recursive. You can create another subflow from
 the execution of a subflow and so on.
 
-<img align="right" src="image/nested_subflow.png" width="45%">
+<img align="right" src="image/nested_subflow.png" width="40%">
 
 ```cpp
-auto A = tf.silent_emplace([] (auto& sbf){
+tf::Task A = tf.emplace([] (tf::SubflowBuilder& sbf){
   std::cout << "A spawns A1 & subflow A2\n";
-  auto A1 = sbf.silent_emplace([] () { 
+  tf::Task A1 = sbf.emplace([] () { 
     std::cout << "subtask A1\n"; 
   }).name("A1");
 
-  auto A2 = sbf.silent_emplace([] (auto& sbf2){
+  tf::Task A2 = sbf.emplace([](tf::SubflowBuilder& sbf2){
     std::cout << "A2 spawns A2_1 & A2_2\n";
-    auto A2_1 = sbf2.silent_emplace([] () { 
+    tf::Task A2_1 = sbf2.emplace([] () { 
       std::cout << "subtask A2_1\n"; 
     }).name("A2_1");
-    auto A2_2 = sbf2.silent_emplace([] () { 
+    tf::Task A2_2 = sbf2.emplace([] () { 
       std::cout << "subtask A2_2\n"; 
     }).name("A2_2");
     A2_1.precede(A2_2);
@@ -305,7 +305,7 @@ By default, a subflow joins to its parent task.
 Depending on applications, you can detach a subflow to enable more parallelism.
 
 ```cpp
-auto A = tf.silent_emplace([] (tf::SubflowBuilder& subflow) {
+tf::Task A = tf.emplace([] (tf::SubflowBuilder& subflow) {
   subflow.detach();  // detach this subflow from its parent task A
 });  // subflow starts to run after the callable scope
 ```
@@ -316,23 +316,21 @@ In a joined subflow,
 the completion of its parent node is defined as when all tasks
 inside the subflow (possibly nested) finish.
 
-<img align="right" src="image/joined_subflow_future.png" width="40%">
+<img align="right" src="image/joined_subflow_future.png" width="35%">
 
 ```cpp
 int value {0};
 
 // create a joined subflow
-auto [A, fuA] = tf.emplace([&] (auto& subflow) {
-  subflow.silent_emplace([&]() { 
+tf::Task A = tf.emplace([&] (tf::SubflowBuilder& subflow) {
+  subflow.emplace([&]() { 
     value = 10; 
   });
-  return 100;   // some arbitrary value
 });
 
 // create a task B after A
-auto B = tf.silent_emplace([&] () { 
+tf::Task B = tf.emplace([&] () { 
   assert(value == 10); 
-  assert(fuA.wait_for(0s) == std::future_status::ready);
 });
 
 // A1 must finish before A and therefore before B
@@ -343,22 +341,22 @@ When a subflow is detached from its parent task, it becomes a parallel
 execution line to the current flow graph and will eventually
 join to the same topology.
 
-<img align="right" src="image/detached_subflow_future.png" width="40%">
+<img align="right" src="image/detached_subflow_future.png" width="35%">
 
 ```cpp
 int value {0};
 
 // create a detached subflow
-auto [A, fuA] = tf.emplace([&] (auto& subflow) {
-  subflow.silent_emplace([&]() { value = 10; });
+tf::Task A = tf.emplace([&] (tf::SubflowBuilder& subflow) {
+  subflow.emplace([&]() { value = 10; });
   subflow.detach();
-  return 100;   // some arbitrary value
 });
 
 // create a task B after A
-auto B = tf.silent_emplace([&] () { 
+tf::Task B = tf.emplace([&] () { 
   // no guarantee for value to be 10 nor fuA ready
 });
+
 A.precede(B);
 ```
 
@@ -381,17 +379,18 @@ The graph is not dispatched yet and you can dump it to a GraphViz format.
 ```cpp
 // debug.cpp
 tf::Taskflow tf(0);  // use only the master thread
-auto A = tf.silent_emplace([] () {}).name("A");
-auto B = tf.silent_emplace([] () {}).name("B");
-auto C = tf.silent_emplace([] () {}).name("C");
-auto D = tf.silent_emplace([] () {}).name("D");
-auto E = tf.silent_emplace([] () {}).name("E");
+
+tf::Task A = tf.emplace([] () {}).name("A");
+tf::Task B = tf.emplace([] () {}).name("B");
+tf::Task C = tf.emplace([] () {}).name("C");
+tf::Task D = tf.emplace([] () {}).name("D");
+tf::Task E = tf.emplace([] () {}).name("E");
 
 A.precede(B, C, E); 
 C.precede(D);
 B.precede(D, E); 
 
-std::cout << tf.dump();
+tf.dump(std::cout);
 ```
 
 Run the program and inspect whether dependencies are expressed in the right way. 
@@ -426,12 +425,12 @@ and then use the `dump_topologies` method.
 ```cpp
 tf::Taskflow tf(0);  // use only the master thread
 
-auto A = tf.silent_emplace([](){}).name("A");
+tf::Task A = tf.emplace([](){}).name("A");
 
 // create a subflow of two tasks B1->B2
-auto B = tf.silent_emplace([] (auto& subflow) {
-  auto B1 = subflow.silent_emplace([](){}).name("B1");
-  auto B2 = subflow.silent_emplace([](){}).name("B2");
+tf::Task B = tf.emplace([] (tf::SubflowBuilder& subflow) {
+  tf::Task B1 = subflow.emplace([](){}).name("B1");
+  tf::Task B2 = subflow.emplace([](){}).name("B2");
   B1.precede(B2);
 }).name("B");
 
@@ -441,7 +440,7 @@ A.precede(B);
 tf.dispatch().get();
 
 // dump the entire graph (including dynamic tasks)
-std::cout << tf.dump_topologies();
+tf.dump_topologies(std::cout);
 ```
 
 # API Reference
@@ -456,8 +455,7 @@ Visit [documentation][wiki] to see the complete list.
 | -------- | --------- | ------- | ----------- |
 | Taskflow | none      | none    | construct a taskflow with the worker count equal to max hardware concurrency |
 | Taskflow | size      | none    | construct a taskflow with a given number of workers |
-| emplace  | callables | tasks, futures | insert nodes to execute the given callables; results can be retrieved from the returned futures |
-| silent_emplace  | callables | tasks         | insert nodes to execute the given callables |
+| emplace  | callables | tasks   | create a task with a given callable(s) |
 | placeholder     | none        | task         | insert a node without any work; work can be assigned later |
 | linearize       | task list   | none         | create a linear dependency in the given task list |
 | parallel_for    | beg, end, callable, group | task pair | apply the callable in parallel and group-by-group to the result of dereferencing every iterator in the range | 
@@ -474,31 +472,22 @@ Visit [documentation][wiki] to see the complete list.
 | dump            | none        | string | dump the current graph to a string of GraphViz format |
 | dump_topologies | none        | string | dump dispatched topologies to a string of GraphViz format |
 
-### *emplace/silent_emplace/placeholder*
+### *emplace/placeholder*
 
-The main different between `emplace` and `silent_emplace` is the return value.
-The method `emplace` gives you a [std::future][std::future] object to retrieve the result of the callable 
-when the task completes.
+You can use `emplace` to create a task for a target callable.
 
 ```cpp
 // create a task through emplace
-auto [task, future] = tf.emplace([](){ return 1; });
-tf.wait_for_all();
-assert(future.get() == 1);
-```
-
-If you don't care the return result, using `silent_emplace` to create a task can give you slightly better performance.
-```cpp
-// create a task through silent_emplace
-auto task = tf.emplace([](){ return; });
+tf::Task task = tf.emplace([] () { std::cout << "my task\n"; });
 tf.wait_for_all();
 ```
 
 When task cannot be determined beforehand, you can create a placeholder and assign the calalble later.
+
 ```cpp
 // create a placeholder and use it to build dependency
-auto A = tf.silent_emplace([](){});
-auto B = tf.placeholder();
+tf::Task A = tf.emplace([](){});
+tf::Task B = tf.placeholder();
 A.precede(B);
 
 // assign the callable later in the control flow
@@ -771,7 +760,6 @@ The folder `example/` contains several examples and is a great place to learn to
 | ------- |  ----------- | 
 | [simple.cpp](./example/simple.cpp) | uses basic task building blocks to create a trivial taskflow  graph |
 | [debug.cpp](./example/debug.cpp)| inspects a taskflow through the dump method |
-| [emplace.cpp](./example/emplace.cpp)| demonstrates the difference between the emplace method and the silent_emplace method |
 | [matrix.cpp](./example/matrix.cpp) | creates two set of matrices and multiply each individually in parallel |
 | [dispatch.cpp](./example/dispatch.cpp) | demonstrates how to dispatch a task dependency graph and assign a callback to execute |
 | [multiple_dispatch.cpp](./example/multiple_dispatch.cpp) | illustrates dispatching multiple taskflow graphs as independent batches (which all run on the same threadpool) |

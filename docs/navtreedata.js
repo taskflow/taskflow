@@ -9,6 +9,7 @@ var NAVTREE =
       [ "Supported Compilers", "index.html#SupportedCompilers", null ],
       [ "License", "index.html#License", null ]
     ] ],
+    [ "Releases", "Releases.html", "Releases" ],
     [ "Cookbook", "Cookbook.html", "Cookbook" ],
     [ "Frequently Asked Questions", "FAQ.html", [
       [ "General Questions", "FAQ.html#GeneralQuestions", [

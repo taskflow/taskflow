@@ -7,7 +7,7 @@ namespace tf {
 Cpp-Taskflow is by far faster, more expressive, fewer lines of code, and easier for drop-in integration
 than existing parallel task programming libraries such as <a href="http://www.nersc.gov/users/software/programming-models/openmp/openmp-tasking/">OpenMP Tasking</a> and Intel <a href="https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph">Thread Building Block (TBB) FlowGraph</a>.
 
-@image html image/performance.jpg width=95%
+@image html images/performance.jpg width=95%
 
 Cpp-Taskflow is committed to support both academic and industry research projects,
 making it reliable and cost-effective for long-term and large-scale developments.
@@ -41,7 +41,7 @@ int main(){
   
   tf::Taskflow taskflow;
 
-  auto [A, B, C, D] = taskflow.silent_emplace(
+  auto [A, B, C, D] = taskflow.emplace(
     [] () { std::cout << "TaskA\n"; },               //  task dependency graph
     [] () { std::cout << "TaskB\n"; },               // 
     [] () { std::cout << "TaskC\n"; },               //          +---+          

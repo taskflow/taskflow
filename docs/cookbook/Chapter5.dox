@@ -21,14 +21,14 @@ All graph building methods you find in taskflow are applicable for a subflow bui
 @code{.cpp}
  1: tf::Taskflow taskflow;
  2:
- 3: auto A = taskflow.silent_emplace([] () {}).name("A");  // static task A
- 4: auto C = taskflow.silent_emplace([] () {}).name("C");  // static task C
- 5: auto D = taskflow.silent_emplace([] () {}).name("D");  // static task D
+ 3: tf::Task A = taskflow.emplace([] () {}).name("A");  // static task A
+ 4: tf::Task C = taskflow.emplace([] () {}).name("C");  // static task C
+ 5: tf::Task D = taskflow.emplace([] () {}).name("D");  // static task D
  6:
- 7: auto B = taskflow.silent_emplace([] (tf::SubflowBuilder& subflow) { 
- 8:   auto B1 = subflow.silent_emplace([] () {}).name("B1");  // dynamic task B1
- 9:   auto B2 = subflow.silent_emplace([] () {}).name("B2");  // dynamic task B2
-10:   auto B3 = subflow.silent_emplace([] () {}).name("B3");  // dynamic task B3
+ 7: tf::Task B = taskflow.emplace([] (tf::SubflowBuilder& subflow) { 
+ 8:   tf::Task B1 = subflow.emplace([] () {}).name("B1");  // dynamic task B1
+ 9:   tf::Task B2 = subflow.emplace([] () {}).name("B2");  // dynamic task B2
+10:   tf::Task B3 = subflow.emplace([] () {}).name("B3");  // dynamic task B3
 11:   B1.precede(B3);  // B1 runs bofore B3
 12:   B2.precede(B3);  // B2 runs before B3
 13: }).name("B");
@@ -42,7 +42,7 @@ All graph building methods you find in taskflow are applicable for a subflow bui
 21: std::cout << taskflow.dump_topologies();
 @endcode
 
-@image html subflow_join.png width=30%
+@image html images/subflow_join.png width=30%
 
 Debrief:
 @li Line 1 creates a taskflow object
@@ -73,14 +73,14 @@ you can detach a subflow from its parent task, allowing its execution to flow in
 @code{.cpp}
  1: tf::Taskflow taskflow;
  2:
- 3: auto A = taskflow.silent_emplace([] () {}).name("A");  // static task A
- 4: auto C = taskflow.silent_emplace([] () {}).name("C");  // static task C
- 5: auto D = taskflow.silent_emplace([] () {}).name("D");  // static task D
+ 3: tf::Task A = taskflow.emplace([] () {}).name("A");  // static task A
+ 4: tf::Task C = taskflow.emplace([] () {}).name("C");  // static task C
+ 5: tf::Task D = taskflow.emplace([] () {}).name("D");  // static task D
  6:
- 7: auto B = taskflow.silent_emplace([] (tf::SubflowBuilder& subflow) { 
- 8:   auto B1 = subflow.silent_emplace([] () {}).name("B1");  // dynamic task B1
- 9:   auto B2 = subflow.silent_emplace([] () {}).name("B2");  // dynamic task B2
-10:   auto B3 = subflow.silent_emplace([] () {}).name("B3");  // dynamic task B3
+ 7: tf::Task B = taskflow.emplace([] (tf::SubflowBuilder& subflow) { 
+ 8:   tf::Task B1 = subflow.emplace([] () {}).name("B1");  // dynamic task B1
+ 9:   tf::Task B2 = subflow.emplace([] () {}).name("B2");  // dynamic task B2
+10:   tf::Task B3 = subflow.emplace([] () {}).name("B3");  // dynamic task B3
 11:   B1.precede(B3);    // B1 runs bofore B3
 12:   B2.precede(B3);    // B2 runs before B3
 13:   subflow.detach();  // detach this subflow
@@ -98,7 +98,7 @@ you can detach a subflow from its parent task, allowing its execution to flow in
 The figure below demonstrates a detached subflow based on the previous example.
 A detached subflow will eventually join the end of the topology of its parent task.
 
-@image html subflow_detach.png width=60%
+@image html images/subflow_detach.png width=60%
 
 
 @section NestedSubflow Nested Subflow
@@ -109,18 +109,18 @@ You can create another subflow from the execution of a subflow and so on.
 @code{.cpp}
  1: tf::Taskflow taskflow;
  2:
- 3: auto A = taskflow.silent_emplace([] (auto& sbf){
+ 3: tf::Task A = taskflow.emplace([] (tf::SubflowBuilder& sbf){
  4:   std::cout << "A spawns A1 & subflow A2\n";
- 5:   auto A1 = sbf.silent_emplace([] () {
+ 5:   tf::Task A1 = sbf.emplace([] () {
  6:     std::cout << "subtask A1\n";
  7:   }).name("A1");
  8:
- 9:   auto A2 = sbf.silent_emplace([] (auto& sbf2){
+ 9:   tf::Task A2 = sbf.emplace([] (tf::SubflowBuilder& sbf2){
 10:     std::cout << "A2 spawns A2_1 & A2_2\n";
-11:     auto A2_1 = sbf2.silent_emplace([] () {
+11:     tf::Task A2_1 = sbf2.emplace([] () {
 12:       std::cout << "subtask A2_1\n";
 13:     }).name("A2_1");
-14:     auto A2_2 = sbf2.silent_emplace([] () {
+14:     tf::Task A2_2 = sbf2.emplace([] () {
 15:       std::cout << "subtask A2_2\n";
 16:     }).name("A2_2");
 17:     A2_1.precede(A2_2);
@@ -133,7 +133,7 @@ You can create another subflow from the execution of a subflow and so on.
 24: std::cout << taskflow.dump_topologies();
 @endcode
 
-@image html nested_subflow.png width=45%
+@image html images/nested_subflow.png width=45%
 
 Debrief:
 @li Line 1 creates a taskflow object

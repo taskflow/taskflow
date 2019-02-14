@@ -45,7 +45,7 @@ Debrief:
 
 The task dependency graph of this example is shown below:
 
-@image html reduce1.png width=60%
+@image html images/reduce1.png width=60%
 
 Taskflow partitions and distributes the workload evenly across all workers
 for all reduction methods.
@@ -197,7 +197,7 @@ The example below demonstrates how to pipeline a reduction graph with other task
  7:   std::vector<int> items{1024};
  8:   int min = std::numeric_limits<int>::max();
  9:
-10:   auto T1 = taskflow.silent_emplace([&] () {  // modifier task
+10:   tf::Task T1 = taskflow.emplace([&] () {  // modifier task
 11:     for(auto& item : items) {
 12:       item = ::rand();
 13:     }
@@ -207,7 +207,7 @@ The example below demonstrates how to pipeline a reduction graph with other task
 17:     return std::min(a, b);
 18:   });
 19:
-20:   auto T2 = taskflow.silent_emplace([&] () {  // printer task
+20:   tf::Task T2 = taskflow.emplace([&] () {  // printer task
 21:     std::cout << "min is " << min << std::endl;
 22:   });
 23:
