@@ -225,7 +225,7 @@ its parent node.
 You can disable this feature by calling `subflow.detach()`.
 Detaching the above subflow will result in the following execution flow.
 
-<img align="right" src="image/subflow_detach.png" width="45%">
+<img align="right" src="image/subflow_detach.png" width="40%">
 
 ```cpp
 // detach a subflow graph
