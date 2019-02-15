@@ -1,3 +1,6 @@
+// 2019/02/15 - modified by Tsung-Wei Huang
+//  - batch to take reference not move
+//
 // 2019/02/10 - modified by Tsung-Wei Huang
 //  - modified WorkStealingThreadpool with notifier
 //  - modified the stealing loop
@@ -336,9 +339,9 @@ class WorkStealingThreadpool {
     /**
     @brief moves a batch of closures to the executor
 
-    @param closures a vector of closures to move
+    @param closures a vector of closures
     */
-    void batch(std::vector<Closure>&& closures);
+    void batch(std::vector<Closure>& closures);
 
   private:
     
@@ -580,7 +583,7 @@ void WorkStealingThreadpool<Closure>::emplace(ArgsT&&... args){
 
 // Procedure: batch
 template <typename Closure>
-void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
+void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>& tasks) {
 
   if(tasks.empty()) {
     return;

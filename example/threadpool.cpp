@@ -1,3 +1,6 @@
+// 2019/02/15 modified by Tsung-Wei Huang
+//   - modified batch_insertion
+//
 // 2018/12/08 modified by Tsung-Wei Huang
 //   - refactored the output format 
 //
@@ -319,13 +322,13 @@ auto batch_insertions() {
   // master to insert a batch
   for(size_t i=0; i<num_batches; ++i) {
     auto copy = tasks;
-    threadpool.batch(std::move(copy));
+    threadpool.batch(copy);
   }
 
   for(size_t i=0; i<num_batches; i++){
     threadpool.emplace([&](){ 
       auto copy = tasks;
-      threadpool.batch(std::move(copy));
+      threadpool.batch(copy);
     }); 
   }
 

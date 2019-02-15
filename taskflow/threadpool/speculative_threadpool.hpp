@@ -1,3 +1,6 @@
+// 2019/02/15 - modified by Tsung-Wei Huang
+//  - batch to take reference not move
+//
 // 2019/02/10 - modified by Tsung-Wei Huang
 //  - removed num_tasks method
 //
@@ -94,9 +97,9 @@ class SpeculativeThreadpool {
     /**
     @brief moves a batch of closures to the executor
 
-    @param closures a vector of closures to move
+    @param closures a vector of closures
     */
-    void batch(std::vector<Closure>&& closures);
+    void batch(std::vector<Closure>& closures);
     
   private:
     
@@ -273,7 +276,7 @@ void SpeculativeThreadpool<Closure>::emplace(ArgsT&&... args) {
 
 
 template <typename Closure>
-void SpeculativeThreadpool<Closure>::batch(std::vector<Closure>&& tasks){
+void SpeculativeThreadpool<Closure>::batch(std::vector<Closure>& tasks){
 
   if(tasks.empty()) {
     return;

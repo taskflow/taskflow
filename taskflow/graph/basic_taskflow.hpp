@@ -709,7 +709,7 @@ void BasicTaskflow<E>::_schedule(PassiveVector<Node*>& nodes) {
   for(auto src : nodes) {
     closures.emplace_back(*this, *src);
   }
-  _executor->batch(std::move(closures));
+  _executor->batch(closures);
 }
 
 // Function: dump_topologies

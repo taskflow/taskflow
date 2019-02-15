@@ -101,7 +101,7 @@ class MyExecutor {               // closure type C, callable on operator ()
   template <typename... ArgsT>
   void emplace(ArgsT&&...);      // arguments to construct the closure C
   template <typename C>
-  void batch(std::vector<C>&&);  // a vector of closures for batch insertions
+  void batch(std::vector<C>&);   // a vector of closures for batch insertions
 };
 using MyTaskflow = tf::BasicTaskflow<MyExecutor>;
 @endcode

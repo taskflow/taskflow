@@ -1,7 +1,8 @@
+// 2019/02/15 - modified by Tsung-Wei Huang
+//  - refactored the code
+//
 // 2019/01/03 - created by Chun-Xun Lin
-//   - TODO:
-//     1. refactored the code (80-100 cols)
-//     2. parameterized the arguments
+//  - use dynamic tasking to implement graph traversal
 
 #include <taskflow/taskflow.hpp>  
 #include <random>
@@ -29,7 +30,9 @@ void traverse(Node* n, tf::SubflowBuilder& subflow) {
   for(size_t i=0; i<n->successors.size(); i++) {
     if(--(n->successors[i]->dependents) == 0) {
       n->successors[i]->level = n->level + 1;
-      subflow.emplace([s=n->successors[i]](tf::SubflowBuilder &subflow){ traverse(s, subflow); });
+      subflow.emplace([s=n->successors[i]](tf::SubflowBuilder &subflow){ 
+        traverse(s, subflow); 
+      });
     }
   }
 }
@@ -49,7 +52,9 @@ void sequential_traversal(std::vector<Node*>& src) {
     }
   }
   auto end = std::chrono::system_clock::now();
-  std::cout << "Seq runtime: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << '\n'; 
+  std::cout << "Seq runtime: " 
+            << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() 
+            << '\n'; 
 }
 
 void tf_traversal(std::vector<Node*>& src) {

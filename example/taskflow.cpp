@@ -1,3 +1,7 @@
+// 2019/02/20 - modified by Tsung-Wei Huang 
+//   - added empty_subflow benchmarks
+//   - added steady_subflow benchmarks 
+//
 // 2018/12/04 - modified by Tsung-Wei Huang
 //   - replaced privatized threadpool with work stealing threadpool
 //
@@ -16,7 +20,7 @@
 #include <climits>
 #include <iomanip>
 
-constexpr int WIDTH = 12;
+constexpr int WIDTH = 15;
 
 // Procedure: benchmark
 #define BENCHMARK(TITLE, F)                                                     \
@@ -340,6 +344,65 @@ auto multiple_dispatches() {
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
 }
 
+// ============================================================================
+// Nested subflow
+// ============================================================================
+
+// Function: empty_subflow
+template <typename T>
+auto empty_subflow() {
+
+  std::function<void(tf::SubflowBuilder&, uint64_t)> grow;
+  
+  grow = [&grow] (tf::SubflowBuilder& subflow, uint64_t depth) {
+    if(depth < 20) {
+      subflow.emplace(
+        [depth, &grow](tf::SubflowBuilder& subsubflow){ grow(subsubflow, depth+1); },
+        [depth, &grow](tf::SubflowBuilder& subsubflow){ grow(subsubflow, depth+1); });
+      subflow.detach();
+    }
+  };
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  
+  {
+    T tf;
+    tf.emplace([&] (tf::SubflowBuilder& subflow) { grow(subflow, 0); });
+    tf.wait_for_all();
+  }
+
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
+}
+
+// Function: steady_subflow
+template <typename T>
+auto steady_subflow() {
+
+  std::function<void(tf::SubflowBuilder&, uint64_t)> grow;
+  
+  grow = [&grow] (tf::SubflowBuilder& subflow, uint64_t depth) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    if(depth < 3) {
+      subflow.emplace(
+        [depth, &grow](tf::SubflowBuilder& subsubflow){ grow(subsubflow, depth+1); },
+        [depth, &grow](tf::SubflowBuilder& subsubflow){ grow(subsubflow, depth+1); });
+      subflow.detach();
+    }
+  };
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  
+  {
+    T tf;
+    tf.emplace([&] (tf::SubflowBuilder& subflow) { grow(subflow, 0); });
+    tf.wait_for_all();
+  }
+
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count();
+}
+
 // ----------------------------------------------------------------------------
 
 // Function: main
@@ -360,6 +423,8 @@ int main(int argc, char* argv[]) {
   BENCHMARK("linear", linear_graph);
   BENCHMARK("dag", level_graph);
   BENCHMARK("dynamic", dynamic_stem);
+  BENCHMARK("empty-subflow", empty_subflow);
+  BENCHMARK("steady-subflow", steady_subflow);
 
   
   return 0;

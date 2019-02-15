@@ -1,3 +1,6 @@
+// 2019/02/15 - modified by Tsung-Wei Huang
+//   - modified batch tests (reference instead of move)  
+//
 // 2018/12/04 - modified by Tsung-Wei Huang
 //   - replaced privatized threadpool with work stealing threadpool
 //
@@ -390,7 +393,7 @@ void test_batch_insertion(T& threadpool) {
       funs.emplace_back([&](){count++;});
     }
 
-    threadpool.batch(std::move(funs));
+    threadpool.batch(funs);
     total += i;
   }
 

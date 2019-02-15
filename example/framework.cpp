@@ -1,5 +1,8 @@
+// 2019/02/15 - modified by Tsung-Wei Huang
+//  - refactored the code  
+//
 // 2019/01/17 - created by Chun-Xun
-//   - added example of using the Framework
+//  - added example of using the Framework
 
 #include <taskflow/taskflow.hpp>  
 
@@ -27,12 +30,11 @@ int main(){
 
   std::cout << "Run the framework once without callback\n";
 
-  std::cout << "Dump before execution:\n";
+  std::cout << "Dump the framework before execution:\n";
   f.dump(std::cout);
   std::cout << std::endl;
 
-  auto future = tf.run(f); 
-  future.get();
+  tf.run(f).get();
   std::cout << std::endl;
 
   std::cout << "Dump after execution:\n";
@@ -44,29 +46,14 @@ int main(){
   tf.wait_for_all();
   std::cout << std::endl;
 
-  std::cout << "Execute the framework 2 times without a callback\n";
+  std::cout << "Execute the framework two times without a callback\n";
   tf.run_n(f, 2).get();
-  std::cout << "Dump after 2 executions:\n";
+  std::cout << "Dump after two executions:\n";
   tf.dump_topologies(std::cout);
   std::cout << std::endl;
 
-  std::cout << "Execute the framework 4 times with a callback\n";
-  tf.run_n(f, 4, [] () mutable { std::cout << "The framework finishes\n"; }).get();
-  std::cout << std::endl;
-
-  std::cout << "Silently run the framework\n";
-  tf.run(f); 
-  tf.wait_for_all();
-  std::cout << std::endl;
-
-  std::cout << "Silently run the framework 2 times \n";
-  tf.run_n(f, 2); 
-  tf.wait_for_all();
-  std::cout << std::endl;
-
-  std::cout << "Silently run the framework with callback\n";
-  tf.run_n(f, 1, []() { std::cout << "The framework finishes\n"; }); 
-  tf.wait_for_all();
+  std::cout << "Execute the framework four times with a callback\n";
+  tf.run_n(f, 4, [] () { std::cout << "The framework finishes\n"; }).get();
   std::cout << std::endl;
 
   std::cout << "Run the framework until a counter (init value=3) becomes zero\n"; 

@@ -1,3 +1,6 @@
+// 2019/02/15 - modified by Tsung-Wei Huang
+//  - batch to take reference not move
+//
 // 2019/02/13 - modified by Tsung-Wei Huang
 //  - remove num_tasks method
 // 
@@ -76,9 +79,9 @@ class SimpleThreadpool {
     /**
     @brief moves a batch of closures to the executor
 
-    @param closures a vector of closures to move
+    @param closures a vector of closures
     */
-    void batch(std::vector<Closure>&& closures);
+    void batch(std::vector<Closure>& closures);
 
     /**
     @brief queries the number of worker threads
@@ -188,7 +191,7 @@ void SimpleThreadpool<Closure>::emplace(ArgsT&&... args) {
 
 // Function: emplace
 template <typename Closure>
-void SimpleThreadpool<Closure>::batch(std::vector<Closure>&& tasks) {
+void SimpleThreadpool<Closure>::batch(std::vector<Closure>& tasks) {
 
   // No worker, do this right away.
   if(num_workers() == 0) {

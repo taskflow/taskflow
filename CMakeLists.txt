@@ -156,9 +156,6 @@ target_link_libraries(dynamic_traversal ${PROJECT_NAME} Threads::Threads)
 add_executable(framework ${TF_EXAMPLE_DIR}/framework.cpp)
 target_link_libraries(framework ${PROJECT_NAME} Threads::Threads) 
 
-add_executable(framework_dynamic_tasking ${TF_EXAMPLE_DIR}/framework_dynamic_tasking.cpp)
-target_link_libraries(framework_dynamic_tasking ${PROJECT_NAME} Threads::Threads)
-
 endif()
 
 # -----------------------------------------------------------------------------
