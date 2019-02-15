@@ -100,31 +100,31 @@ task dependency graphs.
  5:   tf::Taskflow taskflow;
  6:
  7:   // create a task dependency graph
- 8:   std::array<tf::Task, 4> tasks {
- 9:     taskflow.emplace([] () { std::cout << "Task A\n"; }),
-10:     taskflow.emplace([] () { std::cout << "Task B\n"; }),
-11:     taskflow.emplace([] () { std::cout << "Task C\n"; }),
-12:     taskflow.emplace([] () { std::cout << "Task D\n"; })
-13:   };
-14:
-15:   tasks[0].precede(tasks[1]); 
-16:   tasks[0].precede(tasks[2]);
-17:   tasks[1].precede(tasks[3]);
-18:   tasks[2].precede(tasks[3]);
+ 8:   
+ 9:   tf::Task t0 = taskflow.emplace([] () { std::cout << "Task A\n"; });
+10:   tf::Task t1 = taskflow.emplace([] () { std::cout << "Task B\n"; });
+11:   tf::Task t2 = taskflow.emplace([] () { std::cout << "Task C\n"; });
+12:   tf::Task t3 = taskflow.emplace([] () { std::cout << "Task D\n"; });
+13:
+14:   // add dependency links
+15:   t0.precede(t1); 
+16:   t0.precede(t2);
+17:   t1.precede(t3);
+18:   t2.precede(t3);
 19:
 20:   taskflow.wait_for_all();
 21:
 22:   // create another task dependency graph
-23:   tasks = {
-24:     taskflow.emplace([] () { std::cout << "New Task A\n"; }),
-25:     taskflow.emplace([] () { std::cout << "New Task B\n"; }),
-26:     taskflow.emplace([] () { std::cout << "New Task C\n"; }),
-27:     taskflow.emplace([] () { std::cout << "New Task D\n"; })
-28:   };
-29:
-30:   tasks[3].precede(tasks[2]);
-31:   tasks[2].precede(tasks[1]);
-32:   tasks[1].precede(tasks[0]);
+23:   // we can reuse the task handle
+24:   t0 = taskflow.emplace([] () { std::cout << "New Task A\n"; });
+25:   t1 = taskflow.emplace([] () { std::cout << "New Task B\n"; });
+26:   t2 = taskflow.emplace([] () { std::cout << "New Task C\n"; });
+27:   t3 = taskflow.emplace([] () { std::cout << "New Task D\n"; });
+28:   
+29:   // add dependency links
+30:   t3.precede(t2);
+31:   t2.precede(t1);
+32:   t1.precede(t0);
 33:
 34:   taskflow.wait_for_all();
 35:
