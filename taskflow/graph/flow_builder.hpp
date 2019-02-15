@@ -557,7 +557,7 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
     auto task = emplace([beg, e, uop, pop,  res= &g_results[id]] () mutable {
       *res = uop(*beg);
       for(++beg; beg != e; ++beg) {
-        *res = pop(std::move(*res), beg);
+        *res = pop(std::move(*res), *beg);
       }
     });
     //auto [task, future] = emplace([beg, e, uop, pop] () mutable {
@@ -579,7 +579,7 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
   // target synchronizer 
   target.work([&result, bop, g_results=MoC{std::move(g_results)}, w=id] () {
     for(auto i=0u; i<w; i++) {
-      result = bop(std::move(result), g_results.object[i]);
+      result = bop(std::move(result), std::move(g_results.object[i]));
     }
   });
   //target.work([&result, futures=MoC{std::move(futures)}, bop] () {
