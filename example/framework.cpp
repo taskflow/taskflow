@@ -21,6 +21,7 @@ int main(){
     B1.precede(B3); 
     B2.precede(B3);
   }).name("B");
+
   auto C = f.emplace([&](){ std::cout << "TaskC\n"; }).name("C");
   auto D = f.emplace([&](){ std::cout << "TaskD\n"; }).name("D");
 
