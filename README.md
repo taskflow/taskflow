@@ -192,7 +192,7 @@ These tasks are spawned by a parent task and are grouped together to a *subflow*
 The example below demonstrates how to create a subflow
 that spawns three tasks during its execution.
 
-<img align="right" src="image/subflow_join.png" width="35%">
+<img align="right" src="image/subflow_join.png" width="30%">
 
 ```cpp
 // create three regular tasks
