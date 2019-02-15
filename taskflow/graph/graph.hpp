@@ -2,7 +2,7 @@
 
 #include "../error/error.hpp"
 #include "../utility/traits.hpp"
-#include "../utility/allocator.hpp"
+#include "../utility/singular_allocator.hpp"
 #include "../utility/passive_vector.hpp"
 #include <bitset>
 

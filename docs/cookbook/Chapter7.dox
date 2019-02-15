@@ -150,14 +150,12 @@ int main() {
 @endcode
 
 
-
-
 @section C7_Caveats Caveats
 
 Although tf::Framework enables efficient reuse of a task dependency graph,
 there can be many potential pitfalls. 
-First, a framework object is @em NOT thread-safe. 
-Trying to touch a framework while it is running can result in undefined behavior.
+
+@warning A framework object is @em NOT thread-safe. Trying to touch a framework while it is running can result in undefined behavior.
 
 @code{.cpp}
 tf::Framework f;
@@ -178,7 +176,7 @@ future.get();
 @endcode
 
 
-Second, subgraphs spawned during dynamic tasking will be cleaned up automatically 
+@warning Subgraphs spawned during dynamic tasking will be cleaned up automatically 
 at the beginning of each execution of the framework.
 
 @code{.cpp}
@@ -204,7 +202,7 @@ taskflow.run(f).get();
 std::cout << std::endl;
 @endcode
 
-Third, connecting the tasks from different frameworks can result in undefined behaviors.
+@warning Connecting the tasks from different frameworks can result in undefined behaviors.
 
 @code{.cpp}
 tf::Taskflow taskflow;

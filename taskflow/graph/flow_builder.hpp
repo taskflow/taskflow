@@ -7,14 +7,19 @@ namespace tf {
 /** 
 @class FlowBuilder
 
-@brief The building blocks of task dependency graphs.
+@brief Building blocks of a task dependency graph.
 
 */
 class FlowBuilder {
 
   public:
     
-    FlowBuilder(Graph&);
+    /**
+    @brief construct a flow builder object
+
+    @param graph a task dependency graph to manipulate
+    */
+    FlowBuilder(Graph& graph);
     
     /**
     @brief creates a task from a given callable object
@@ -26,7 +31,7 @@ class FlowBuilder {
     @return Task handle
     */
     template <typename C>
-    auto emplace(C&& callable);
+    Task emplace(C&& callable);
     
     /**
     @brief creates multiple tasks from a list of callable objects at one time
@@ -44,7 +49,7 @@ class FlowBuilder {
     @brief the same as tf::FlowBuilder::emplace (starting at 2.1.0)
     */
     template <typename C>
-    auto silent_emplace(C&& callable);
+    Task silent_emplace(C&& callable);
 
     /**
     @brief the same as tf::FlowBuilder::emplace (starting at 2.1.0)
@@ -727,6 +732,9 @@ class SubflowBuilder : public FlowBuilder {
 
   public:
     
+    /**
+    @brief constructs a subflow builder object
+    */
     template <typename... Args>
     SubflowBuilder(Args&&...);
     
@@ -791,7 +799,7 @@ auto FlowBuilder::emplace(C&&... cs) {
 
 // Function: emplace
 template <typename C>
-auto FlowBuilder::emplace(C&& c) {
+Task FlowBuilder::emplace(C&& c) {
   // dynamic tasking
   if constexpr(std::is_invocable_v<C, SubflowBuilder&>) {
     auto& n = _graph.emplace_back(
@@ -821,7 +829,7 @@ auto FlowBuilder::silent_emplace(C&&... cs) {
 
 // Function: silent_emplace
 template <typename C>
-auto FlowBuilder::silent_emplace(C&& c) {
+Task FlowBuilder::silent_emplace(C&& c) {
   return emplace(std::forward<C>(c));
 }
 

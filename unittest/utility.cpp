@@ -4,7 +4,7 @@
 
 #include <taskflow/utility/traits.hpp>
 #include <taskflow/utility/passive_vector.hpp>
-#include <taskflow/utility/allocator.hpp>
+#include <taskflow/utility/singular_allocator.hpp>
 
 // --------------------------------------------------------
 // Testcase: PassiveVector
@@ -184,9 +184,9 @@ TEST_CASE("PassiveVector" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
-// Testcase: Allocator
+// Testcase: SingularAllocator
 // --------------------------------------------------------
-TEST_CASE("Allocator" * doctest::timeout(300)) {
+TEST_CASE("SingularAllocator" * doctest::timeout(300)) {
 
   SUBCASE("Singular") {
     tf::SingularAllocator<std::string> allocator;

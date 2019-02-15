@@ -175,7 +175,7 @@ class BasicTaskflow : public FlowBuilder {
     /**
     @brief runs the framework once
     
-    @param framework a tf::Framework
+    @param framework a tf::Framework object
 
     @return a std::shared_future to access the execution status of the framework
     */
@@ -184,8 +184,8 @@ class BasicTaskflow : public FlowBuilder {
     /**
     @brief runs the framework once and invoke a callback upon completion
 
-    @param framework a tf::Framework 
-    @param callable a callable object to be invoked after every run
+    @param framework a tf::Framework object 
+    @param callable a callable object to be invoked after this run
 
     @return a std::shared_future to access the execution status of the framework
     */
@@ -195,7 +195,7 @@ class BasicTaskflow : public FlowBuilder {
     /**
     @brief runs the framework for N times
     
-    @param framework a tf::Framework 
+    @param framework a tf::Framework object
     @param N number of runs
 
     @return a std::shared_future to access the execution status of the framework
@@ -207,7 +207,7 @@ class BasicTaskflow : public FlowBuilder {
 
     @param framework a tf::Framework 
     @param N number of runs
-    @param callable a callable object to be invoked after every run
+    @param callable a callable object to be invoked after this run
 
     @return a std::shared_future to access the execution status of the framework
     */
@@ -218,7 +218,7 @@ class BasicTaskflow : public FlowBuilder {
     @brief runs the framework multiple times until the predicate becomes true and invoke a callback
 
     @param framework a tf::Framework 
-    @param P predicate (a callable object returns true or false)
+    @param predicate a boolean predicate to return true for stop
 
     @return a std::shared_future to access the execution status of the framework
     */
@@ -229,8 +229,8 @@ class BasicTaskflow : public FlowBuilder {
     @brief runs the framework multiple times until the predicate becomes true and invoke a callback
 
     @param framework a tf::Framework 
-    @param P predicate (a callable object returns true or false)
-    @param callable a callable object to be invoked after every run
+    @param predicate a boolean predicate to return true for stop
+    @param callable a callable object to be invoked after this run
 
     @return a std::shared_future to access the execution status of the framework
     */

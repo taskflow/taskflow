@@ -1,9 +1,12 @@
+// 2019/02/15 - modified by Tsung-Wei Huang
+//   - refactored the code
+//
 // 2019/02/10 - modified by Tsung-Wei Huang
-//  - fixed the compilation error on MS platform
+//   - fixed the compilation error on MS platform
 //
 // 2019/02/08 - created by Chun-Xun Lin
-//  - added a singular memory allocator
-//  - refactored by Tsung-Wei Huang
+//   - added a singular memory allocator
+//   - refactored by Tsung-Wei Huang
 
 #pragma once
 
@@ -15,9 +18,9 @@
 
 namespace tf {
 
-// Class: Mempool
+// Class: SingularMempool
 template <typename T>
-struct Mempool { 
+struct SingularMempool { 
   
   // FreeList uses Node array to store Node*
   struct FreeList {
@@ -51,13 +54,13 @@ struct Mempool {
   };
 
   // Ctor
-  Mempool() {
+  SingularMempool() {
     head = allocate_memblock(1024);
     tail = head;
   }
 
   // Dtor
-  ~Mempool() {
+  ~SingularMempool() {
     for(auto* prev = head; head!=nullptr;) {
       head = head->next;
       std::free(prev->block);
@@ -74,9 +77,7 @@ struct Mempool {
     return ptr;
   }
 
-  T* allocate(size_t n) {
-    // TODO: we only deal with single element
-    assert(n == 1);
+  T* allocate() {
 
     if(!free_list.empty()) {
       return free_list.pop();
@@ -91,9 +92,7 @@ struct Mempool {
     return &(tail->block[used++]);
   }
 
-  void deallocate(T* ptr, size_t n) {
-    // TODO: we only deal with single element
-    assert(n == 1);
+  void deallocate(T* ptr) {
     free_list.push(ptr);
   }
 
@@ -104,16 +103,16 @@ struct Mempool {
   size_t used {0};
 };
 
-// Class: MempoolManager
+// Class: SingularMempoolManager
 template <typename T>  
-struct MempoolManager {
+struct SingularMempoolManager {
 
   struct Handle {
 
-    Handle(MempoolManager<T> &mgr) : manager {mgr} {
+    Handle(SingularMempoolManager<T> &mgr) : manager {mgr} {
       std::scoped_lock lock(mgr.mtx);
       if(mgr.pools.empty()) {
-        mempool = new Mempool<T>();
+        mempool = new SingularMempool<T>();
       }
       else {
         mempool = mgr.pools.back();
@@ -122,41 +121,41 @@ struct MempoolManager {
     }
   
     ~Handle() {
-      // Return the memory pool to MempoolManager
+      // Return the memory pool to SingularMempoolManager
       std::scoped_lock lock(manager.mtx);
       manager.pools.emplace_back(mempool);
     }
   
-    MempoolManager<T>& manager;
-    Mempool<T>* mempool {nullptr};
+    SingularMempoolManager<T>& manager;
+    SingularMempool<T>* mempool {nullptr};
   };
 
   // Ctor 
-  MempoolManager() { 
+  SingularMempoolManager() { 
     pools.reserve(std::thread::hardware_concurrency()); 
   }
 
   // Dtor
-  ~MempoolManager() {
+  ~SingularMempoolManager() {
     std::scoped_lock lock(mtx);
     for(auto& p : pools) {
       delete p;
     }
   }
 
-  Mempool<T>* get_per_thread_mempool() {
+  SingularMempool<T>* get_per_thread_mempool() {
     thread_local Handle handle {*this};
     return handle.mempool;
   }
 
   std::mutex mtx;
-  std::vector<Mempool<T>*> pools;
+  std::vector<SingularMempool<T>*> pools;
 };
   
 // The singleton allocator
 template <typename T> 
-auto& get_mempool_manager() {
-  static MempoolManager<T> manager;
+auto& get_singular_mempool_manager() {
+  static SingularMempoolManager<T> manager;
   return manager;
 }
 
@@ -220,14 +219,16 @@ void SingularAllocator<T>::destroy(T* ptr) {
 // Allocate a memory piece of type T from the memory pool and return the T* to that memory.
 template <typename T>
 T* SingularAllocator<T>::allocate(size_t n) {
-  return get_mempool_manager<T>().get_per_thread_mempool()->allocate(n);
+  assert(n == 1);
+  return get_singular_mempool_manager<T>().get_per_thread_mempool()->allocate();
 }
 
 // Function: deallocate
 // Deallocate given memory piece of type T.
 template <typename T>
 void SingularAllocator<T>::deallocate(T* ptr, size_t n) {
-  get_mempool_manager<T>().get_per_thread_mempool()->deallocate(ptr, n); 
+  assert(n == 1);
+  get_singular_mempool_manager<T>().get_per_thread_mempool()->deallocate(ptr); 
 }
 
 }  // End of namespace tf. ----------------------------------------------------

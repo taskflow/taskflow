@@ -170,8 +170,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR})
 add_executable(utility unittest/utility.cpp)
 target_link_libraries(utility ${PROJECT_NAME} Threads::Threads)
 target_include_directories(utility PRIVATE ${PROJECT_SOURCE_DIR}/doctest)
-add_test(passive_vector   ${TF_UTEST_DIR}/utility -tc=PassiveVector)
-add_test(allocator        ${TF_UTEST_DIR}/utility -tc=Allocator)
+add_test(passive_vector    ${TF_UTEST_DIR}/utility -tc=PassiveVector)
+add_test(singular_alloc    ${TF_UTEST_DIR}/utility -tc=SingularAllocator)
 
 # unittest for taskflow
 add_executable(taskflow_test_tmp unittest/taskflow.cpp)

@@ -190,9 +190,9 @@ auto& get_mempool_manager() {
   return manager;
 }
 
-// Class: SingularAllocator
+// Class: GenericAllocator
 template <typename T>
-class SingularAllocator {
+class GenericAllocator {
 
   public:
 
@@ -207,16 +207,16 @@ class SingularAllocator {
 
     template <typename U> 
     struct rebind {
-      typedef SingularAllocator<U> other;
+      typedef GenericAllocator<U> other;
     };
 
-    explicit SingularAllocator() {}
-    ~SingularAllocator() {}
+    explicit GenericAllocator() {}
+    ~GenericAllocator() {}
 
-    explicit SingularAllocator(const SingularAllocator&) {}
+    explicit GenericAllocator(const GenericAllocator&) {}
 
     template<typename U>
-    explicit SingularAllocator(const SingularAllocator<U>&) {}
+    explicit GenericAllocator(const GenericAllocator<U>&) {}
 
     T* allocate(size_t n=1) ;          
     void deallocate(T*, size_t n=1); 
@@ -225,38 +225,38 @@ class SingularAllocator {
     void construct(T*, ArgsT&&...);
     void destroy(T*);
 
-    //SingularAllocator & operator = (const SingularAllocator &) {} 
+    //GenericAllocator & operator = (const GenericAllocator &) {} 
 
-    bool operator == (const SingularAllocator &) const { return true; }
-    bool operator != (const SingularAllocator &) const { return false; }
+    bool operator == (const GenericAllocator &) const { return true; }
+    bool operator != (const GenericAllocator &) const { return false; }
 };
 
 // Procedure: construct
 // Construct an item with placement new.
 template <typename T>
 template <typename... ArgsT>
-void SingularAllocator<T>::construct(T* ptr, ArgsT&&... args) {
+void GenericAllocator<T>::construct(T* ptr, ArgsT&&... args) {
   new (ptr) T(std::forward<ArgsT>(args)...); 
 }
 
 // Procedure: destroy
 // Destroy an item
 template <typename T>
-void SingularAllocator<T>::destroy(T* ptr) {
+void GenericAllocator<T>::destroy(T* ptr) {
   ptr->~T();
 }
 
 // Function: allocate
 // Allocate a memory piece of type T from the memory pool and return the T* to that memory.
 template <typename T>
-T* SingularAllocator<T>::allocate(size_t n) {
+T* GenericAllocator<T>::allocate(size_t n) {
   return get_mempool_manager<T>().get_per_thread_mempool()->allocate(n);
 }
 
 // Function: deallocate
 // Deallocate given memory piece of type T.
 template <typename T>
-void SingularAllocator<T>::deallocate(T* ptr, size_t n) {
+void GenericAllocator<T>::deallocate(T* ptr, size_t n) {
   get_mempool_manager<T>().get_per_thread_mempool()->deallocate(ptr, n); 
 }
 
