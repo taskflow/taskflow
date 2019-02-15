@@ -316,7 +316,7 @@ In a joined subflow,
 the completion of its parent node is defined as when all tasks
 inside the subflow (possibly nested) finish.
 
-<img align="right" src="image/joined_subflow_future.png" width="18%">
+<img align="right" src="image/joined_subflow_future.png" width="15%">
 
 ```cpp
 int value {0};
@@ -420,7 +420,7 @@ you cannot simply use the `dump` method because it displays only the static port
 Instead, you need to execute the graph first to include dynamic tasks
 and then use the `dump_topologies` method.
 
-<img align="right" src="image/debug_subflow.png" width="30%">
+<img align="right" src="image/debug_subflow.png" width="25%">
 
 ```cpp
 tf::Taskflow tf(0);  // use only the master thread
