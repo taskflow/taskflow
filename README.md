@@ -341,7 +341,7 @@ When a subflow is detached from its parent task, it becomes a parallel
 execution line to the current flow graph and will eventually
 join to the same topology.
 
-<img align="right" src="image/detached_subflow_future.png" width="30%">
+<img align="right" src="image/detached_subflow_future.png" width="25%">
 
 ```cpp
 int value {0};
