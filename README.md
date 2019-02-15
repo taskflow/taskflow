@@ -31,7 +31,7 @@ allowing users to quickly master our parallel task programming model in a natura
 
 | Static Tasking | Dynamic Tasking |
 | :------------: | :-------------: |
-| ![](image/static_graph.png) | ![](image/dynamic_graph.png) |
+| ![](image/static_graph.png) | <img align="right" src="image/dynamic_graph.png" width="100%"> |
 
 Cpp-Taskflow is committed to support both academic and industry research projects,
 making it reliable and cost-effective for long-term and large-scale developments.
@@ -192,7 +192,7 @@ These tasks are spawned by a parent task and are grouped together to a *subflow*
 The example below demonstrates how to create a subflow
 that spawns three tasks during its execution.
 
-<img align="right" src="image/subflow_join.png" width="40%">
+<img align="right" src="image/subflow_join.png" width="30%">
 
 ```cpp
 // create three regular tasks
@@ -225,7 +225,7 @@ its parent node.
 You can disable this feature by calling `subflow.detach()`.
 Detaching the above subflow will result in the following execution flow.
 
-<img align="right" src="image/subflow_detach.png" width="65%">
+<img align="right" src="image/subflow_detach.png" width="40%">
 
 ```cpp
 // detach a subflow graph
@@ -274,7 +274,7 @@ tf::Task A = tf.emplace([] (tf::SubflowBuilder& subflow) {
 A subflow can also be nested or recursive. You can create another subflow from
 the execution of a subflow and so on.
 
-<img align="right" src="image/nested_subflow.png" width="40%">
+<img align="right" src="image/nested_subflow.png" width="25%">
 
 ```cpp
 tf::Task A = tf.emplace([] (tf::SubflowBuilder& sbf){
@@ -316,7 +316,7 @@ In a joined subflow,
 the completion of its parent node is defined as when all tasks
 inside the subflow (possibly nested) finish.
 
-<img align="right" src="image/joined_subflow_future.png" width="35%">
+<img align="right" src="image/joined_subflow_future.png" width="15%">
 
 ```cpp
 int value {0};
@@ -325,13 +325,13 @@ int value {0};
 tf::Task A = tf.emplace([&] (tf::SubflowBuilder& subflow) {
   subflow.emplace([&]() { 
     value = 10; 
-  });
-});
+  }).name("A1");
+}).name("A");
 
 // create a task B after A
 tf::Task B = tf.emplace([&] () { 
   assert(value == 10); 
-});
+}).name("B");
 
 // A1 must finish before A and therefore before B
 A.precede(B);
@@ -341,21 +341,21 @@ When a subflow is detached from its parent task, it becomes a parallel
 execution line to the current flow graph and will eventually
 join to the same topology.
 
-<img align="right" src="image/detached_subflow_future.png" width="35%">
+<img align="right" src="image/detached_subflow_future.png" width="25%">
 
 ```cpp
 int value {0};
 
 // create a detached subflow
 tf::Task A = tf.emplace([&] (tf::SubflowBuilder& subflow) {
-  subflow.emplace([&]() { value = 10; });
+  subflow.emplace([&]() { value = 10; }).name("A1");
   subflow.detach();
-});
+}).name("A");
 
 // create a task B after A
 tf::Task B = tf.emplace([&] () { 
   // no guarantee for value to be 10 nor fuA ready
-});
+}).name("B");
 
 A.precede(B);
 ```
@@ -420,7 +420,7 @@ you cannot simply use the `dump` method because it displays only the static port
 Instead, you need to execute the graph first to include dynamic tasks
 and then use the `dump_topologies` method.
 
-<img align="right" src="image/debug_subflow.png" width="40%">
+<img align="right" src="image/debug_subflow.png" width="25%">
 
 ```cpp
 tf::Taskflow tf(0);  // use only the master thread
@@ -651,7 +651,7 @@ Visit [documentation][wiki] to see the complete list.
 | -------------- | ----------- | ------ | ----------- |
 | name           | string      | self   | assign a human-readable name to the task |
 | work           | callable    | self   | assign a work of a callable object to the task |
-| precede        | task        | self   | enable this task to run *before* the given task |
+| precede        | task list   | self   | enable this task to run *before* the given tasks |
 | gather         | task list   | self   | enable this task to run *after* the given tasks |
 | num_dependents | none        | size   | return the number of dependents (inputs) of this task |
 | num_successors | none        | size   | return the number of successors (outputs) of this task |
