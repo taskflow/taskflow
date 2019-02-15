@@ -127,17 +127,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1f6118326ad434f6c839007a1a79fe1b"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a1f6118326ad434f6c839007a1a79fe1b">emplace</a> (C &amp;&amp;... callables)</td></tr>
 <tr class="memdesc:a1f6118326ad434f6c839007a1a79fe1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates multiple tasks from a list of callable objects at one time  <a href="#a1f6118326ad434f6c839007a1a79fe1b">More...</a><br /></td></tr>
 <tr class="separator:a1f6118326ad434f6c839007a1a79fe1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7285613836c840e22b8511d447734c87"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
-<tr class="memitem:a7285613836c840e22b8511d447734c87"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a7285613836c840e22b8511d447734c87">silent_emplace</a> (C &amp;&amp;callable)</td></tr>
-<tr class="memdesc:a7285613836c840e22b8511d447734c87"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a task from a given callable object without access to the result  <a href="#a7285613836c840e22b8511d447734c87">More...</a><br /></td></tr>
-<tr class="separator:a7285613836c840e22b8511d447734c87"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf423e2775a25c2b8be4dce7dae8880a"><td class="memTemplParams" colspan="2">template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt; </td></tr>
-<tr class="memitem:acf423e2775a25c2b8be4dce7dae8880a"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#acf423e2775a25c2b8be4dce7dae8880a">silent_emplace</a> (C &amp;&amp;... callables)</td></tr>
-<tr class="memdesc:acf423e2775a25c2b8be4dce7dae8880a"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates multiple tasks from a list of callable objects without access to the results  <a href="#acf423e2775a25c2b8be4dce7dae8880a">More...</a><br /></td></tr>
-<tr class="separator:acf423e2775a25c2b8be4dce7dae8880a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84d411f16939bc158c5a90256e5d210e"><td class="memTemplParams" colspan="2">template&lt;typename I , typename C &gt; </td></tr>
 <tr class="memitem:a84d411f16939bc158c5a90256e5d210e"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a>, <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a84d411f16939bc158c5a90256e5d210e">parallel_for</a> (I beg, I end, C &amp;&amp;callable, size_t chunk=0)</td></tr>
-<tr class="memdesc:a84d411f16939bc158c5a90256e5d210e"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a task dependency graph of range-based parallel_for  <a href="#a84d411f16939bc158c5a90256e5d210e">More...</a><br /></td></tr>
+<tr class="memdesc:a84d411f16939bc158c5a90256e5d210e"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a task from a given callable object without access to the result  <a href="#a84d411f16939bc158c5a90256e5d210e">More...</a><br /></td></tr>
 <tr class="separator:a84d411f16939bc158c5a90256e5d210e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe18f8824cba16cde03e0dea8fae14ac"><td class="memTemplParams" colspan="2">template&lt;typename I , typename C , std::enable_if_t&lt; std::is_arithmetic_v&lt; I &gt;, void &gt; *  = nullptr&gt; </td></tr>
 <tr class="memitem:abe18f8824cba16cde03e0dea8fae14ac"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a>, <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#abe18f8824cba16cde03e0dea8fae14ac">parallel_for</a> (I beg, I end, I step, C &amp;&amp;callable, size_t chunk=0)</td></tr>
@@ -312,7 +304,7 @@ template&lt;typename C &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a> of <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handle and <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/future.html">std::future</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handle </dd></dl>
 
 </div>
 </div>
@@ -347,7 +339,7 @@ template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/tuple.html">std::tuple</a> of pairs of <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> Handle and <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/future.html">std::future</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handle </dd></dl>
 
 </div>
 </div>
@@ -549,7 +541,33 @@ template&lt;typename I , typename C &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>constructs a task dependency graph of range-based parallel_for </p>
+<p>creates a task from a given callable object without access to the result </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">C</td><td>callable type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callable</td><td>a callable object acceptable to <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/function.html">std::function</a></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handle creates multiple tasks from a list of callable objects without access to the results</dd></dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">C...</td><td>callable types</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callables</td><td>one or multiple callable objects acceptable to <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/function.html">std::function</a></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a tuple of <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handles constructs a task dependency graph of range-based parallel_for</dd></dl>
 <p>The task dependency graph applies a callable object to the dereferencing of every iterator in the range [beg, end) chunk-by-chunk.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -883,76 +901,6 @@ template&lt;typename I , typename T &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handles to the beginning and the end of the graph </dd></dl>
-
-</div>
-</div>
-<a id="a7285613836c840e22b8511d447734c87"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7285613836c840e22b8511d447734c87">&#9670;&nbsp;</a></span>silent_emplace() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename C &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">auto tf::FlowBuilder::silent_emplace </td>
-          <td>(</td>
-          <td class="paramtype">C &amp;&amp;&#160;</td>
-          <td class="paramname"><em>callable</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>creates a task from a given callable object without access to the result </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">C</td><td>callable type</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">callable</td><td>a callable object acceptable to <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/function.html">std::function</a></td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handle </dd></dl>
-
-</div>
-</div>
-<a id="acf423e2775a25c2b8be4dce7dae8880a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acf423e2775a25c2b8be4dce7dae8880a">&#9670;&nbsp;</a></span>silent_emplace() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">auto tf::FlowBuilder::silent_emplace </td>
-          <td>(</td>
-          <td class="paramtype">C &amp;&amp;...&#160;</td>
-          <td class="paramname"><em>callables</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>creates multiple tasks from a list of callable objects without access to the results </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">C...</td><td>callable types</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">callables</td><td>one or multiple callable objects acceptable to <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/function.html">std::function</a></td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>a tuple of <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handles </dd></dl>
 
 </div>
 </div>

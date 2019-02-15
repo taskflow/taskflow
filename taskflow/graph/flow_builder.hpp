@@ -40,29 +40,17 @@ class FlowBuilder {
     template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
     auto emplace(C&&... callables);
     
-    ///**
-    //@brief creates a task from a given callable object without access to the result
-    //
-    //@tparam C callable type
-    //
-    //@param callable a callable object acceptable to std::function
+    /**
+    @brief the same as tf::FlowBuilder::emplace (starting at 2.1.0)
+    */
+    template <typename C>
+    auto silent_emplace(C&& callable);
 
-    //@return a Task handle
-    //*/
-    //template <typename C>
-    //auto silent_emplace(C&& callable);
-
-    ///**
-    //@brief creates multiple tasks from a list of callable objects without access to the results
-    //
-    //@tparam C... callable types
-    //
-    //@param callables one or multiple callable objects acceptable to std::function
-
-    //@return a tuple of Task handles
-    //*/
-    //template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
-    //auto silent_emplace(C&&... callables);
+    /**
+    @brief the same as tf::FlowBuilder::emplace (starting at 2.1.0)
+    */
+    template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
+    auto silent_emplace(C&&... callables);
     
     /**
     @brief constructs a task dependency graph of range-based parallel_for
@@ -319,12 +307,6 @@ inline Task FlowBuilder::placeholder() {
   return Task(node);
 }
 
-// Function: emplace
-template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
-auto FlowBuilder::emplace(C&&... cs) {
-  return std::make_tuple(emplace(std::forward<C>(cs))...);
-}
-
 // Function: parallel_for    
 template <typename I, typename C>
 std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, C&& c, size_t g) {
@@ -519,16 +501,9 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(I beg, I end, T& result, B&&
         *res = bop(std::move(*res), uop(*beg));          
       }
     });
-    //auto [task, future] = emplace([beg, e, bop, uop] () mutable {
-    //  auto init = uop(*beg);
-    //  for(++beg; beg != e; ++beg) {
-    //    init = bop(std::move(init), uop(*beg));          
-    //  }
-    //  return init;
-    //});
+
     source.precede(task);
     task.precede(target);
-    //futures.push_back(std::move(future));
 
     // adjust the pointer
     beg = e;
@@ -541,18 +516,15 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(I beg, I end, T& result, B&&
       result = bop(std::move(result), res.object[i]);
     }
   });
-  //target.work([&result, futures=MoC{std::move(futures)}, bop] () {
-  //  for(auto& fu : futures.object) {
-  //    result = bop(std::move(result), fu.get());
-  //  }
-  //});
 
   return std::make_pair(source, target); 
 }
 
 // Function: transform_reduce    
 template <typename I, typename T, typename B, typename P, typename U>
-std::pair<Task, Task> FlowBuilder::transform_reduce(I beg, I end, T& result, B&& bop, P&& pop, U&& uop) {
+std::pair<Task, Task> FlowBuilder::transform_reduce(
+  I beg, I end, T& result, B&& bop, P&& pop, U&& uop
+) {
 
   using category = typename std::iterator_traits<I>::iterator_category;
   
@@ -565,7 +537,6 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(I beg, I end, T& result, B&&
   auto target = placeholder();
 
   auto g_results = std::make_unique<T[]>(w);
-  //std::vector<std::future<T>> futures;
 
   size_t id {0};
   while(beg != end) {
@@ -810,6 +781,52 @@ inline bool SubflowBuilder::joined() const {
   return !_detached;
 }
 
+// -----
+
+// Function: emplace
+template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
+auto FlowBuilder::emplace(C&&... cs) {
+  return std::make_tuple(emplace(std::forward<C>(cs))...);
+}
+
+// Function: emplace
+template <typename C>
+auto FlowBuilder::emplace(C&& c) {
+  // dynamic tasking
+  if constexpr(std::is_invocable_v<C, SubflowBuilder&>) {
+    auto& n = _graph.emplace_back(
+    [c=std::forward<C>(c)] (SubflowBuilder& fb) mutable {
+      // first time execution
+      if(fb._graph.empty()) {
+        c(fb);
+      }
+    });
+    return Task(n);
+  }
+  // static tasking
+  else if constexpr(std::is_invocable_v<C>) {
+    auto& n = _graph.emplace_back(std::forward<C>(c));
+    return Task(n);
+  }
+  else {
+    static_assert(dependent_false_v<C>, "invalid task work type");
+  }
+}
+
+// Function: silent_emplace
+template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
+auto FlowBuilder::silent_emplace(C&&... cs) {
+  return std::make_tuple(emplace(std::forward<C>(cs))...);
+}
+
+// Function: silent_emplace
+template <typename C>
+auto FlowBuilder::silent_emplace(C&& c) {
+  return emplace(std::forward<C>(c));
+}
+
+// ---------- deprecated ----------
+
 //// Function: emplace
 //template <typename C>
 //auto FlowBuilder::emplace(C&& c) {
@@ -883,35 +900,5 @@ inline bool SubflowBuilder::joined() const {
 //    static_assert(dependent_false_v<C>, "invalid task work type");
 //  }
 //}
-
-//// Function: emplace
-//template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
-//auto FlowBuilder::emplace(C&&... cs) {
-//  return std::make_tuple(emplace(std::forward<C>(cs))...);
-//}
-
-// Function: emplace
-template <typename C>
-auto FlowBuilder::emplace(C&& c) {
-  // dynamic tasking
-  if constexpr(std::is_invocable_v<C, SubflowBuilder&>) {
-    auto& n = _graph.emplace_back(
-    [c=std::forward<C>(c)] (SubflowBuilder& fb) mutable {
-      // first time execution
-      if(fb._graph.empty()) {
-        c(fb);
-      }
-    });
-    return Task(n);
-  }
-  // static tasking
-  else if constexpr(std::is_invocable_v<C>) {
-    auto& n = _graph.emplace_back(std::forward<C>(c));
-    return Task(n);
-  }
-  else {
-    static_assert(dependent_false_v<C>, "invalid task work type");
-  }
-}
 
 }  // end of namespace tf. ---------------------------------------------------

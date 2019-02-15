@@ -770,6 +770,7 @@ The folder `example/` contains several examples and is a great place to learn to
 | [threadpool_cxx14.cpp](./example/threadpool_cxx14.cpp)| shows use of the C++14-compatible threadpool implementation, which may be used when you have no inter-task (taskflow) dependencies to express |
 | [taskflow.cpp](./example/taskflow.cpp)| benchmarks taskflow on different task dependency graphs |
 | [executor.cpp](./example/executor.cpp)| shows how to create multiple taskflow objects sharing one executor to avoid the thread over-subscription problem |
+| [framework.cpp](./example/framework.cpp)| shows the usage of framework to create reusable task dependency graphs |
 
 # Get Involved
 
