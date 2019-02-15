@@ -31,7 +31,7 @@ allowing users to quickly master our parallel task programming model in a natura
 
 | Static Tasking | Dynamic Tasking |
 | :------------: | :-------------: |
-| ![](image/static_graph.png) | <img align="right" src="image/dynamic_graph.png" width="400%"> |
+| ![](image/static_graph.png) | <img align="right" src="image/dynamic_graph.png" width="200%"> |
 
 Cpp-Taskflow is committed to support both academic and industry research projects,
 making it reliable and cost-effective for long-term and large-scale developments.
