@@ -651,7 +651,7 @@ Visit [documentation][wiki] to see the complete list.
 | -------------- | ----------- | ------ | ----------- |
 | name           | string      | self   | assign a human-readable name to the task |
 | work           | callable    | self   | assign a work of a callable object to the task |
-| precede        | task        | self   | enable this task to run *before* the given task |
+| precede        | task list   | self   | enable this task to run *before* the given tasks |
 | gather         | task list   | self   | enable this task to run *after* the given tasks |
 | num_dependents | none        | size   | return the number of dependents (inputs) of this task |
 | num_successors | none        | size   | return the number of successors (outputs) of this task |
