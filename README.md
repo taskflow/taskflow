@@ -225,7 +225,7 @@ its parent node.
 You can disable this feature by calling `subflow.detach()`.
 Detaching the above subflow will result in the following execution flow.
 
-<img align="right" src="image/subflow_detach.png" width="65%">
+<img align="right" src="image/subflow_detach.png" width="45%">
 
 ```cpp
 // detach a subflow graph
@@ -274,7 +274,7 @@ tf::Task A = tf.emplace([] (tf::SubflowBuilder& subflow) {
 A subflow can also be nested or recursive. You can create another subflow from
 the execution of a subflow and so on.
 
-<img align="right" src="image/nested_subflow.png" width="40%">
+<img align="right" src="image/nested_subflow.png" width="25%">
 
 ```cpp
 tf::Task A = tf.emplace([] (tf::SubflowBuilder& sbf){
@@ -316,7 +316,7 @@ In a joined subflow,
 the completion of its parent node is defined as when all tasks
 inside the subflow (possibly nested) finish.
 
-<img align="right" src="image/joined_subflow_future.png" width="35%">
+<img align="right" src="image/joined_subflow_future.png" width="18%">
 
 ```cpp
 int value {0};
@@ -341,7 +341,7 @@ When a subflow is detached from its parent task, it becomes a parallel
 execution line to the current flow graph and will eventually
 join to the same topology.
 
-<img align="right" src="image/detached_subflow_future.png" width="35%">
+<img align="right" src="image/detached_subflow_future.png" width="30%">
 
 ```cpp
 int value {0};
@@ -420,7 +420,7 @@ you cannot simply use the `dump` method because it displays only the static port
 Instead, you need to execute the graph first to include dynamic tasks
 and then use the `dump_topologies` method.
 
-<img align="right" src="image/debug_subflow.png" width="40%">
+<img align="right" src="image/debug_subflow.png" width="30%">
 
 ```cpp
 tf::Taskflow tf(0);  // use only the master thread
