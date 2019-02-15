@@ -116,9 +116,6 @@ target_link_libraries(simple ${PROJECT_NAME} Threads::Threads)
 add_executable(subflow ${TF_EXAMPLE_DIR}/subflow.cpp)
 target_link_libraries(subflow ${PROJECT_NAME} Threads::Threads)
 
-add_executable(nested_subflow ${TF_EXAMPLE_DIR}/nested_subflow.cpp)
-target_link_libraries(nested_subflow ${PROJECT_NAME} Threads::Threads)
-
 add_executable(debug ${TF_EXAMPLE_DIR}/debug.cpp)
 target_link_libraries(debug ${PROJECT_NAME} Threads::Threads)
 

@@ -192,7 +192,7 @@ These tasks are spawned by a parent task and are grouped together to a *subflow*
 The example below demonstrates how to create a subflow
 that spawns three tasks during its execution.
 
-<img align="right" src="image/subflow_join.png" width="30%">
+<img align="right" src="image/subflow_join.png" width="35%">
 
 ```cpp
 // create three regular tasks
@@ -225,17 +225,18 @@ its parent node.
 You can disable this feature by calling `subflow.detach()`.
 Detaching the above subflow will result in the following execution flow.
 
-<img align="right" src="image/subflow_detach.png" width="40%">
+<img align="right" src="image/subflow_detach.png" width="35%">
 
 ```cpp
-// detach a subflow graph
-[] (auto& subflow) {
+// spawn a subflow from TaskB
+[] (tf::SubflowBuilder& subflow) {
   ...
   B1.precede(B3);
   B2.precede(B3);
 
-  // detach from B 
+  // detach from TaskB 
   subflow.detach();
+
 }).name("TaskB");
 ```
 
@@ -277,13 +278,13 @@ the execution of a subflow and so on.
 <img align="right" src="image/nested_subflow.png" width="25%">
 
 ```cpp
-tf::Task A = tf.emplace([] (tf::SubflowBuilder& sbf){
+tf::Task A = tf.emplace([] (tf::SubflowBuilder& sbf) {
   std::cout << "A spawns A1 & subflow A2\n";
   tf::Task A1 = sbf.emplace([] () { 
     std::cout << "subtask A1\n"; 
   }).name("A1");
 
-  tf::Task A2 = sbf.emplace([](tf::SubflowBuilder& sbf2){
+  tf::Task A2 = sbf.emplace([] (tf::SubflowBuilder& sbf2) {
     std::cout << "A2 spawns A2_1 & A2_2\n";
     tf::Task A2_1 = sbf2.emplace([] () { 
       std::cout << "subtask A2_1\n"; 
@@ -293,6 +294,7 @@ tf::Task A = tf.emplace([] (tf::SubflowBuilder& sbf){
     }).name("A2_2");
     A2_1.precede(A2_2);
   }).name("A2");
+
   A1.precede(A2);
 }).name("A");
 ```
@@ -413,7 +415,7 @@ digraph Taskflow {
 }
 ```
 
-## Dump the Dispatched Graphs
+## Dump a Dispatched Graph
 
 When you have dynamic tasks (subflows),
 you cannot simply use the `dump` method because it displays only the static portion.
