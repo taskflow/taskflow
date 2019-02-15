@@ -325,13 +325,13 @@ int value {0};
 tf::Task A = tf.emplace([&] (tf::SubflowBuilder& subflow) {
   subflow.emplace([&]() { 
     value = 10; 
-  });
-});
+  }).name("A1");
+}).name("A");
 
 // create a task B after A
 tf::Task B = tf.emplace([&] () { 
   assert(value == 10); 
-});
+}).name("B");
 
 // A1 must finish before A and therefore before B
 A.precede(B);
@@ -348,14 +348,14 @@ int value {0};
 
 // create a detached subflow
 tf::Task A = tf.emplace([&] (tf::SubflowBuilder& subflow) {
-  subflow.emplace([&]() { value = 10; });
+  subflow.emplace([&]() { value = 10; }).name("A1");
   subflow.detach();
-});
+}).name("A");
 
 // create a task B after A
 tf::Task B = tf.emplace([&] () { 
   // no guarantee for value to be 10 nor fuA ready
-});
+}).name("B");
 
 A.precede(B);
 ```
