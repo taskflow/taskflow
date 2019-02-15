@@ -1,0 +1,69 @@
+\hypertarget{index_ModernCppParallelTaskProgrammingLibrary}{}\section{Modern C++ Parallel Task Programming Library}\label{index_ModernCppParallelTaskProgrammingLibrary}
+Cpp-\/\+Taskflow is a fast C++ {\itshape header-\/only} library to help you quickly write parallel programs with complex task dependencies. Cpp-\/\+Taskflow is by far faster, more expressive, fewer lines of code, and easier for drop-\/in integration than existing parallel task programming libraries such as \href{http://www.nersc.gov/users/software/programming-models/openmp/openmp-tasking/}{\texttt{ Open\+MP Tasking}} and Intel \href{https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph}{\texttt{ Thread Building Block (T\+BB) Flow\+Graph}}.
+
+
+
+Cpp-\/\+Taskflow is committed to support both academic and industry research projects, making it reliable and cost-\/effective for long-\/term and large-\/scale developments. Our users say\+:
+
+\begin{DoxyItemize}
+\item "{\itshape Cpp-\/\+Taskflow has the cleanest task A\+PI I\textquotesingle{}ve ever seen.}" \href{https://github.com/damienhocking}{\texttt{ Damien Hocking}} \item "{\itshape Cpp-\/\+Taskflow has a very simple and elegant tasking interface. The performance also scales very well.}" \href{https://github.com/totalgee}{\texttt{ Glen Fraser}} \item "{\itshape Best poster award for the open-\/source parallel programming library.}" \href{https://github.com/CppCon/CppCon2018}{\texttt{ Cpp Conference 2018}}\end{DoxyItemize}
+See a quick \href{https://cpp-taskflow.github.io/}{\texttt{ presentation}} and visit our \href{https://github.com/cpp-taskflow/cpp-taskflow}{\texttt{ Git\+Hub}} to learn more about Cpp-\/\+Taskflow.\hypertarget{index_HowToInstallCppTaskflow}{}\section{How to Install Cpp-\/\+Taskflow?}\label{index_HowToInstallCppTaskflow}
+Cpp-\/\+Taskflow is {\itshape header-\/only} and there is no need for installation. Simply download the source and copy the headers under the {\ttfamily taskflow} subdirectory to your project.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{~\$ git clone https://github.com/cpp-taskflow/cpp-taskflow.git}
+\DoxyCodeLine{~\$ cd cpp-taskflow/}
+\DoxyCodeLine{~\$ cp -r taskflow myproject/include/}
+\end{DoxyCode}
+\hypertarget{index_ASimpleFirstProgram}{}\section{A Simple First Program}\label{index_ASimpleFirstProgram}
+Here is a rather simple program to get you started.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include <taskflow/taskflow.hpp>}  \textcolor{comment}{// Cpp-Taskflow is header-only}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main()\{}
+\DoxyCodeLine{  }
+\DoxyCodeLine{  tf::Taskflow taskflow;}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{auto} [A, B, C, D] = taskflow.emplace(}
+\DoxyCodeLine{    [] () \{ std::cout << \textcolor{stringliteral}{"TaskA\(\backslash\)n"}; \},               \textcolor{comment}{//  task dependency graph}}
+\DoxyCodeLine{    [] () \{ std::cout << \textcolor{stringliteral}{"TaskB\(\backslash\)n"}; \},               \textcolor{comment}{// }}
+\DoxyCodeLine{    [] () \{ std::cout << \textcolor{stringliteral}{"TaskC\(\backslash\)n"}; \},               \textcolor{comment}{//          +---+          }}
+\DoxyCodeLine{    [] () \{ std::cout << \textcolor{stringliteral}{"TaskD\(\backslash\)n"}; \}                \textcolor{comment}{//    +---->| B |-----+   }}
+\DoxyCodeLine{  );                                                 \textcolor{comment}{//    |     +---+     |}}
+\DoxyCodeLine{                                                     \textcolor{comment}{//  +---+           +-v-+ }}
+\DoxyCodeLine{  A.precede(B);  \textcolor{comment}{// A runs before B                  //  | A |           | D | }}
+\DoxyCodeLine{  A.precede(C);  \textcolor{comment}{// A runs before C                  //  +---+           +-\string^-+ }}
+\DoxyCodeLine{  B.precede(D);  \textcolor{comment}{// B runs before D                  //    |     +---+     |    }}
+\DoxyCodeLine{  C.precede(D);  \textcolor{comment}{// C runs before D                  //    +---->| C |-----+    }}
+\DoxyCodeLine{                                                     \textcolor{comment}{//          +---+          }}
+\DoxyCodeLine{  taskflow.wait\_for\_all();  \textcolor{comment}{// block until finish}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+The program creates four tasks A, B, C, and D. The dependency constraints force A to run before B and C, and D to run after B and C. The maximum concurrency is this example is two, where B and C can run at the same time.\hypertarget{index_CompileAndRunYourFirstProgram}{}\section{Compile and Run Your First Program}\label{index_CompileAndRunYourFirstProgram}
+Cpp-\/\+Taskflow is written in C++17 and is built on top of C++ standardized threading libraries. To compile the above program, you need to tell the compiler where to find the Cpp-\/\+Taskflow header files. For example, with gcc you need the {\ttfamily -\/I} option.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{~\$ g++ simple.cpp -I myproject/include/ -std=c++17 -O2 -pthread -o simple}
+\DoxyCodeLine{~\$ ./simple}
+\DoxyCodeLine{TaskA}
+\DoxyCodeLine{TaskC }
+\DoxyCodeLine{TaskB }
+\DoxyCodeLine{TaskD}
+\end{DoxyCode}
+
+
+The execution order of B and C might differ as they can run concurrently.\hypertarget{index_SupportedCompilers}{}\section{Supported Compilers}\label{index_SupportedCompilers}
+To use Cpp-\/\+Taskflow, you only need a compiler that supports C++17\+:
+
+\begin{DoxyItemize}
+\item G\+NU C++ Compiler v7.\+3 with -\/std=c++17 \item Clang C++ Compiler v6.\+0 with -\/std=c++17 \item Microsoft Visual Studio Version 15.\+7 (M\+S\+V\+C++ 19.\+14)\end{DoxyItemize}
+Cpp-\/\+Taskflow works on Linux, Windows, and O\+SX.\hypertarget{index_License}{}\section{License}\label{index_License}
+Cpp-\/\+Taskflow is open-\/source under permissive M\+IT license. 

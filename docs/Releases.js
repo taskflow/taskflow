@@ -12,7 +12,7 @@ var Releases =
       [ "Breaks and Deprecated Features", "release-2-1-0.html#release-2-1-0_breaks_and_deprecated_features", null ],
       [ "Bug Fixes", "release-2-1-0.html#release-2-1-0_bug_fixes", null ]
     ] ],
-    [ "Release 2.0.0 (2019/08/28)", "release-2-0-0.html", [
+    [ "Release 2.0.0 (2018/08/28)", "release-2-0-0.html", [
       [ "Download", "release-2-0-0.html#release-2-0-0_download", null ],
       [ "New Features", "release-2-0-0.html#release-2-0-0_new_features", null ],
       [ "Improvements and Enhancements", "release-2-0-0.html#release-2-0-0_improvements_enhancements", null ],

@@ -8,10 +8,10 @@ var searchData=
   ['value_5fcompare',['value_compare',['http://en.cppreference.com/w/cpp/container/multimap/value_compare.html',1,'std::multimap::value_compare'],['http://en.cppreference.com/w/cpp/container/map/value_compare.html',1,'std::map::value_compare']]],
   ['value_5for',['value_or',['http://en.cppreference.com/w/cpp/experimental/optional/value_or.html',1,'std::experimental::optional']]],
   ['vector',['vector',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std::vector'],['http://en.cppreference.com/w/cpp/container/vector/vector.html',1,'std::vector::vector()']]],
-  ['vector_3c_20array_20_2a_3e',['vector&lt; Array *&gt;',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
+  ['vector_3c_20array_20_2a_20_3e',['vector&lt; Array * &gt;',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
   ['vector_3c_20closure_20_3e',['vector&lt; Closure &gt;',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
   ['vector_3c_20notifier_3a_3awaiter_20_3e',['vector&lt; Notifier::Waiter &gt;',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
   ['vector_3c_20std_3a_3athread_20_3e',['vector&lt; std::thread &gt;',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
-  ['vector_3c_20worker_20_2a_3e',['vector&lt; Worker *&gt;',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
+  ['vector_3c_20worker_20_2a_20_3e',['vector&lt; Worker * &gt;',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
   ['vector_3c_20worker_20_3e',['vector&lt; Worker &gt;',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std']]]
 ];
