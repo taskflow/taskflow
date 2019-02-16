@@ -280,7 +280,6 @@ std::shared_future<void> BasicTaskflow<E>::run_n(Framework& f, size_t repeat, C&
   return run_until(f, [repeat]() mutable { return repeat-- == 0; }, std::forward<C>(c));
 }
 
-
 // Function: run_until
 template <template <typename...> typename E>
 template <typename P>
@@ -294,7 +293,7 @@ template <typename P, typename C>
 std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate, C&& c) {
 
   // Predicate must return a boolean value
-  static_assert(std::is_invocable_v<C> && std::is_same_v<bool, std::invoke_result_t<P>>);
+  static_assert(std::is_invocable_v<C> && std::is_invocable_v<P>);
 
   if(std::invoke(predicate)) {
     return std::async(std::launch::deferred, [](){}).share();
@@ -372,79 +371,6 @@ std::shared_future<void> BasicTaskflow<E>::run_until(Framework& f, P&& predicate
     _schedule(tpg._sources);
   }
 
-  // -----------------------------
-
-
-  /*// case 1: the previous execution is still running
-  if(f._topologies.size() > 1) {
-    tpg._work = std::forward<C>(c);
-  }
-  // case 2: this epoch should run
-  else {
-
-    tpg._bind(f._graph);
-
-    //Set up target node's work
-    tpg._work = [
-      &f, 
-      c=std::function<void()>{std::forward<C>(c)}, 
-      num_sinks=tpg._num_sinks.load(std::memory_order_relaxed), 
-      this
-    ] () mutable {
-
-      // f._topologies.front is myself
-
-      // case 1: we still need to run the topology again
-      if(!std::invoke(f._topologies.front()->_predicate)) {
-        f._topologies.front()->_num_sinks = num_sinks;
-        _schedule(f._topologies.front()->_sources); 
-      }
-      // case 2: the final run of this topology
-      // notice that there can be another new run request before we acquire the lock
-      else {
-        std::invoke(c);
-
-        f._mtx.lock();
-
-        // If there is another run
-        if(f._topologies.size() > 1) {
-
-          // Set the promise
-          f._topologies.front()->_promise.set_value();
-          
-          // PV (2/10): why not just using the next_tpg other than moving all
-          // things to the previous one
-          auto next_tpg = std::next(f._topologies.begin());
-          c = std::move((*next_tpg)->_work);
-
-          f._topologies.front()->_predicate = std::move((*next_tpg)->_predicate);
-          f._topologies.front()->_promise = std::move((*next_tpg)->_promise);
-          f._topologies.erase(next_tpg);
-
-          f._mtx.unlock();
-          // The graph should be exactly the same as previous dispatch
-          f._topologies.front()->_num_sinks = num_sinks;
-
-          _schedule(f._topologies.front()->_sources);
-        }
-        else {
-          assert(f._topologies.size() == 1);
-          // Need to back up the promise first here becuz framework might be 
-          // destroy before taskflow leaves
-          auto &p = f._topologies.front()->_promise; 
-          f._topologies.pop_front();
-          f._mtx.unlock();
-         
-          // We set the promise in the end in case framework leaves before taskflow
-          p.set_value();
-        }
-      }
-    }; // End of target's work ------------------------------------------------
-
-    _schedule(tpg._sources);
-  } */
-  
-    
   return tpg._future;
 }
 
