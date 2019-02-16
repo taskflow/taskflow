@@ -1,0 +1,28 @@
+digraph Topology {
+node[ width=0.71, fixedsize=true]
+rankdir=LR;
+"D";
+"C";
+"C" -> "B";
+"B";
+"B" -> "D";
+subgraph cluster_B {
+label = "Subflow_B";
+color=blue
+"B3";
+"B3" -> "B";
+"B2";
+"B2" -> "B3";
+"B1";
+"B1" -> "B2";
+}
+"A";
+"A" -> "C";
+"A" -> "D";
+"B" -> "E";
+"D" -> "X";
+"E" -> "X";
+"X" -> "Y";
+"Y" -> "Z";
+"E" -> "Z";
+}
