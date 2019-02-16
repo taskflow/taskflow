@@ -789,8 +789,9 @@ that incorporate complex task dependencies.
 - [DtCraft][DtCraft]: A General-purpose Distributed Programming Systems using Data-parallel Streams
 - [Firestorm][Firestorm]: Fighting Game Engine with Asynchronous Resource Loaders (developed by [ForgeMistress][ForgeMistress])
 - [Shiva][Shiva]: An extensible engine via an entity component system through scripts, DLLs, and header-only (C++)
+- [NetlistDB](https://github.com/HardwareIR/hardwareIr): An experimental netlist database for hardware development tools
 
-Please [let me know][email me] if I forgot your project!
+[More...](https://github.com/search?q=cpp-taskflow&type=Code)
 
 # Contributors
 
