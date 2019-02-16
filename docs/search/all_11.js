@@ -32,7 +32,7 @@ var searchData=
   ['reduce',['reduce',['../classtf_1_1FlowBuilder.html#a06b06b57f8ec8bb060951fc71dd375fb',1,'tf::FlowBuilder']]],
   ['reduce_5fmax',['reduce_max',['../classtf_1_1FlowBuilder.html#a076fa5b55e0ef6eba3c962e85727f218',1,'tf::FlowBuilder']]],
   ['reduce_5fmin',['reduce_min',['../classtf_1_1FlowBuilder.html#ae10e34cf00f7128d23e24c524c18d970',1,'tf::FlowBuilder']]],
-  ['reference',['reference',['http://en.cppreference.com/w/cpp/utility/bitset/reference.html',1,'std::bitset']]],
+  ['reference',['reference',['http://en.cppreference.com/w/cpp/utility/bitset/reference.html',1,'std::bitset::reference'],['../Reference.html',1,'(Global Namespace)']]],
   ['reference_5fwrapper',['reference_wrapper',['http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html',1,'std::reference_wrapper'],['http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper/reference_wrapper.html',1,'std::reference_wrapper::reference_wrapper()']]],
   ['regex',['regex',['http://en.cppreference.com/w/cpp/regex/basic_regex.html',1,'std::regex'],['http://en.cppreference.com/w/cpp/regex/basic_regex/basic_regex.html',1,'std::regex::regex()']]],
   ['regex_5ferror',['regex_error',['http://en.cppreference.com/w/cpp/regex/regex_error.html',1,'std::regex_error'],['http://en.cppreference.com/w/cpp/regex/regex_error/regex_error.html',1,'std::regex_error::regex_error()']]],
