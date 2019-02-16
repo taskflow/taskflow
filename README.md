@@ -216,7 +216,7 @@ C.precede(D);  // D runs after C
 
 // execute the graph without cleanning up topologies
 tf.dispatch().get();
-std::cout << tf.dump_topologies();
+tf.dump_topologies(std::cout);
 ```
 
 By default, a subflow graph joins to its parent node. 
@@ -228,16 +228,17 @@ Detaching the above subflow will result in the following execution flow.
 <img align="right" src="image/subflow_detach.png" width="35%">
 
 ```cpp
-// spawn a subflow from TaskB
-[] (tf::SubflowBuilder& subflow) {
-  ...
+// create a "detached" subflow graph (dynamic tasking)
+tf::Task B = tf.emplace([] (tf::SubflowBuilder& subflow) {
+  tf::Task B1 = subflow.emplace([](){}).name("B1");
+  tf::Task B2 = subflow.emplace([](){}).name("B2");
+  tf::Task B3 = subflow.emplace([](){}).name("B3");
   B1.precede(B3);
   B2.precede(B3);
 
-  // detach from TaskB 
+  // detach this subflow from task B
   subflow.detach();
-
-}).name("TaskB");
+}).name("B");
 ```
 
 ## Step 1: Create a Subflow
@@ -356,7 +357,7 @@ tf::Task A = tf.emplace([&] (tf::SubflowBuilder& subflow) {
 
 // create a task B after A
 tf::Task B = tf.emplace([&] () { 
-  // no guarantee for value to be 10 nor fuA ready
+  // no guarantee for value to be 10
 }).name("B");
 
 A.precede(B);
@@ -789,7 +790,6 @@ that incorporate complex task dependencies.
 - [DtCraft][DtCraft]: A General-purpose Distributed Programming Systems using Data-parallel Streams
 - [Firestorm][Firestorm]: Fighting Game Engine with Asynchronous Resource Loaders (developed by [ForgeMistress][ForgeMistress])
 - [Shiva][Shiva]: An extensible engine via an entity component system through scripts, DLLs, and header-only (C++)
-- [NetlistDB](https://github.com/HardwareIR/hardwareIr): An experimental netlist database for hardware development tools
 
 [More...](https://github.com/search?q=cpp-taskflow&type=Code)
 
