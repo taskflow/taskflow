@@ -809,7 +809,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Patrik Huber][Patrik Huber] helped fixed typos in the documentation
 - [ForgeMistress][ForgeMistress] provided API ideas about sharing the executor to avoid thread over-subscriptiong issues
 - [Alexander Neumann](https://github.com/Neumann-A) helped modify the cmake build to make Cpp-Taskflow importable from external cmake projects
-- [Paolo Bolzoni](https://github.com/paolobolzoni) helped remove extraneous semicolons to suppress extra ‘;’ warning during compilation
+- [Paolo Bolzoni](https://github.com/paolobolzoni) helped remove extraneous semicolons to suppress extra warning during compilation
 
 Meanwhile, we appreciate the support from many organizations for our development on Cpp-Taskflow.
 Please [let me know][email me] if I forgot someone!
