@@ -774,6 +774,7 @@ The folder `example/` contains several examples and is a great place to learn to
 | [taskflow.cpp](./example/taskflow.cpp)| benchmarks taskflow on different task dependency graphs |
 | [executor.cpp](./example/executor.cpp)| shows how to create multiple taskflow objects sharing one executor to avoid the thread over-subscription problem |
 | [framework.cpp](./example/framework.cpp)| shows the usage of framework to create reusable task dependency graphs |
+| [dataflow.cpp](./example/dataflow.cpp)| demonstrates how to pass data from tasks to their successors and to use cpp-taskflow for synchronization |
 
 # Get Involved
 
@@ -810,7 +811,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Patrik Huber][Patrik Huber] helped fixed typos in the documentation
 - [ForgeMistress][ForgeMistress] provided API ideas about sharing the executor to avoid thread over-subscriptiong issues
 - [Alexander Neumann](https://github.com/Neumann-A) helped modify the cmake build to make Cpp-Taskflow importable from external cmake projects
-- [Paolo Bolzoni](https://github.com/paolobolzoni) helped remove extraneous semicolons to suppress extra warning during compilation
+- [Paolo Bolzoni](https://github.com/paolobolzoni) helped remove extraneous semicolons to suppress extra warning during compilation and contributed to a dataflow example
 
 Meanwhile, we appreciate the support from many organizations for our development on Cpp-Taskflow.
 Please [let me know][email me] if I forgot someone!

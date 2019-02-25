@@ -1,5 +1,7 @@
 /*
 
+2019/02/25 - contributed by Paolo Bolzoni
+
 cpp-taskflow works on directed acyclic graphs.
 And here we want to pass information between the flow elements.
 
