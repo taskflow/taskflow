@@ -112,7 +112,7 @@ public:
     void operator()() {
         bool first{ true };
         for (auto i : v_) {
-            if (not first)  {
+            if (!first)  {
                 std::cout << ", ";
             }
             std::cout << i;
