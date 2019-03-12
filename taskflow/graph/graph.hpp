@@ -21,6 +21,8 @@ using Graph = std::list<Node, tf::SingularAllocator<Node>>;
 
 // ----------------------------------------------------------------------------
 
+// TODO: do we need the flag module now? 
+
 // Class: Node
 class Node {
 

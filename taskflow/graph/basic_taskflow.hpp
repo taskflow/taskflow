@@ -1,3 +1,6 @@
+// 2019/03/12 - modified by Chun-Xun Lin
+//  - added framework
+//
 // 2019/02/11 - modified by Tsung-Wei Huang
 //  - refactored run_until
 //  - added allocator to topologies
@@ -247,7 +250,7 @@ class BasicTaskflow : public FlowBuilder {
 
     void _schedule(Node&);
     void _schedule(PassiveVector<Node*>&);
-    void _set_module_node(Node*, Framework*);
+    void _set_module_node(Node&);
 };
 
 // ============================================================================
@@ -632,7 +635,7 @@ void BasicTaskflow<E>::wait_for_topologies() {
 template <template <typename...> typename E>
 void BasicTaskflow<E>::_schedule(Node& node) {
   if(node.is_module() && !node.is_spawned()) {
-    _set_module_node(&node, node._module);
+    _set_module_node(node);
     assert(node._work.index() == 0);
   }
   _executor->emplace(*this, node);
@@ -647,9 +650,10 @@ void BasicTaskflow<E>::_schedule(PassiveVector<Node*>& nodes) {
   std::vector<Closure> closures;
   closures.reserve(nodes.size());
   for(auto src : nodes) {
+    // TODO: remove the assert?
     if(src->is_module() && !src->is_spawned()) {
       assert(src->_module != nullptr);
-      _set_module_node(src, src->_module);
+      _set_module_node(*src);
       assert(src->_work.index() == 0);
     }
     closures.emplace_back(*this, *src);
@@ -659,30 +663,31 @@ void BasicTaskflow<E>::_schedule(PassiveVector<Node*>& nodes) {
 
 
 template <template <typename...> typename E>
-void BasicTaskflow<E>::_set_module_node(Node* n, Framework* f) {
+void BasicTaskflow<E>::_set_module_node(Node& node) {
 
-  n->_work = [node=n, this, tgt {PassiveVector<Node*>()}] () mutable {
+  node._work = [&node, this, tgt{PassiveVector<Node*>()}] () mutable {
 
     // second time to enter this context
-    if(node->is_spawned()) {
-      node->_dependents.resize(node->_dependents.size()-tgt.size());
+    if(node.is_spawned()) {
+      node._dependents.resize(node._dependents.size()-tgt.size());
       for(auto& t: tgt) {
         t->_successors.clear();
       }
       return ;
     }
+
     // first time to enter this context
-    node->set_spawned();
+    node.set_spawned();
 
     PassiveVector<Node*> src;
 
-    for(auto &n: node->_module->_graph) {
-      n._topology = node->_topology;
+    for(auto &n: node._module->_graph) {
+      n._topology = node._topology;
       if(n.num_dependents() == 0) {
         src.push_back(&n);
       }
       if(n.num_successors() == 0) {
-        n.precede(*node);
+        n.precede(node);
         tgt.push_back(&n);
       }
     }

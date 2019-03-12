@@ -50,19 +50,18 @@ class Framework : public FlowBuilder {
     */
     size_t num_nodes() const;
 
-    // TODO: add doc 
     /**
-    @brief create a module task from a framework
+    @brief creates a module task from a framework
     */
     tf::Task composed_of(Framework& framework);
 
     /**
-    @brief set the name of the framework
+    @brief sets the name of the framework
     */
     auto& name(const std::string&) ; 
 
     /**
-    @brief get the name of the framework
+    @brief gets the name of the framework
     */
     const std::string& name() const ;
 
@@ -129,6 +128,9 @@ inline void Framework::dump(std::ostream& os) const {
   os << "}\n";
 }
 
+// TODO: 
+// 1. check the bug from your composition_1 example?
+// 2. use the format: F2 (pointer value)
 
 // Procedure: dump
 inline void Framework::_dump(
