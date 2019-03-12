@@ -199,7 +199,7 @@ inline std::string Framework::dump() const {
   std::unordered_set<Framework*> seen;
   std::unordered_set<Framework*> cur_level;
   std::unordered_set<Framework*> next_level;
-  size_t level {0};
+  size_t level {1};
 
   os << "digraph Framework_" << (_name.empty() ? _addr_to_string() : _name) << " {\n";
   {
