@@ -159,20 +159,26 @@ inline std::string Node::dump() const {
 
 // Function: dump
 inline void Node::dump(std::ostream& os) const {
+  os << 'p' << this << "[label = \"";
+  if(_name.empty()) os << 'p' << this;
+  else os << _name;
+  os << "\"];\n";
   
-  if(_name.empty()) os << '\"' << this << '\"';
-  else os << std::quoted(_name);
-  os << ";\n";
+  //if(_name.empty()) os << '\"' << this << '\"';
+  //else os << std::quoted(_name);
+  //os << ";\n";
 
   for(const auto s : _successors) {
 
-    if(_name.empty()) os << '\"' << this << '\"';
-    else os << std::quoted(_name);
+    //if(_name.empty()) os << '\"' << this << '\"';
+    //else os << std::quoted(_name);
 
+    os << 'p' << this ;
     os << " -> ";
+    os << 'p' << s;
     
-    if(s->name().empty()) os << '\"' << s << '\"';
-    else os << std::quoted(s->name());
+    //if(s->name().empty()) os << '\"' << s << '\"';
+    //else os << std::quoted(s->name());
 
     os << ";\n";
   }
