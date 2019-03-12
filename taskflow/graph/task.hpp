@@ -18,6 +18,7 @@ preventing direct access to the internal data storage.
 class Task {
 
   friend class FlowBuilder;
+  friend class Framework;
 
   template <template<typename...> typename E> 
   friend class BasicTaskflow;

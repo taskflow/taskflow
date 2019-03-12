@@ -26,6 +26,7 @@ class Node {
 
   friend class Task;
   friend class Topology;
+  friend class Framework;
 
   template <template<typename...> typename E> 
   friend class BasicTaskflow;
@@ -35,6 +36,7 @@ class Node {
 
   constexpr static int SPAWNED = 0x1;
   constexpr static int SUBTASK = 0x2;
+  constexpr static int MODULE  = 0x4;
 
   public:
 
@@ -57,8 +59,16 @@ class Node {
     // Status-related functions
     bool is_spawned() const { return _status & SPAWNED; }
     bool is_subtask() const { return _status & SUBTASK; }
-    void set_spawned()  { _status |= SPAWNED; }
-    void set_subtask()  { _status |= SUBTASK; }
+    bool is_module()  const { return _status & MODULE; }
+
+    void set_spawned() { _status |= SPAWNED; }
+    void set_subtask() { _status |= SUBTASK; }
+    void set_module()  { _status |= MODULE;  }
+
+    void unset_spawned() { _status &= ~SPAWNED; }
+    void unset_subtask() { _status &= ~SUBTASK; }
+    void unset_module()  { _status &= ~MODULE;  }
+
     void clear_status() { _status = 0; }
 
   private:
@@ -74,14 +84,16 @@ class Node {
     std::optional<Graph> _subgraph;
 
     Topology* _topology;
-
-    int _status {0};
+    Framework* _module;
+    int _status;
 };
 
 // Constructor
 inline Node::Node() {
   _num_dependents.store(0, std::memory_order_relaxed);
   _topology = nullptr;
+  _module = nullptr;
+  _status = 0;
 }
 
 // Constructor
@@ -89,6 +101,8 @@ template <typename C>
 inline Node::Node(C&& c) : _work {std::forward<C>(c)} {
   _num_dependents.store(0, std::memory_order_relaxed);
   _topology = nullptr;
+  _module = nullptr;
+  _status = 0;
 }
 
 // Destructor

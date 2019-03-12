@@ -154,7 +154,11 @@ add_executable(framework ${TF_EXAMPLE_DIR}/framework.cpp)
 target_link_libraries(framework ${PROJECT_NAME} Threads::Threads) 
 
 add_executable(dataflow ${TF_EXAMPLE_DIR}/dataflow.cpp)
-target_link_libraries(dataflow ${PROJECT_NAME} Threads::Threads) 
+target_link_libraries(dataflow ${PROJECT_NAME} Threads::Threads)  
+
+add_executable(composition ${TF_EXAMPLE_DIR}/composition.cpp)
+target_link_libraries(composition ${PROJECT_NAME} Threads::Threads) 
+
 
 endif()
 

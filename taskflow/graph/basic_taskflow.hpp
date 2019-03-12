@@ -247,6 +247,7 @@ class BasicTaskflow : public FlowBuilder {
 
     void _schedule(Node&);
     void _schedule(PassiveVector<Node*>&);
+    void _set_module_node(Node*, Framework*);
 };
 
 // ============================================================================
@@ -391,8 +392,17 @@ void BasicTaskflow<E>::Closure::operator () () const {
   // regular node type
   // The default node work type. We only need to execute the callback if any.
   if(auto index=node->_work.index(); index == 0) {
-    if(auto &f = std::get<StaticWork>(node->_work); f != nullptr){
-      std::invoke(f);
+    if(node->is_module()) {
+      bool first_time = !node->is_spawned();
+      std::invoke(std::get<StaticWork>(node->_work));
+      if(first_time) {
+        return ;
+      }
+    }
+    else {
+      if(auto &f = std::get<StaticWork>(node->_work); f != nullptr){
+        std::invoke(f);
+      }
     }
   }
   // subflow node type 
@@ -451,7 +461,7 @@ void BasicTaskflow<E>::Closure::operator () () const {
       }
     }
     node->_num_dependents = node->_dependents.size();
-    node->clear_status();
+    node->unset_spawned();
   }
 
   // At this point, the node storage might be destructed.
@@ -621,6 +631,10 @@ void BasicTaskflow<E>::wait_for_topologies() {
 // Each task node has two types of tasks - regular and subflow.
 template <template <typename...> typename E>
 void BasicTaskflow<E>::_schedule(Node& node) {
+  if(node.is_module() && !node.is_spawned()) {
+    _set_module_node(&node, node._module);
+    assert(node._work.index() == 0);
+  }
   _executor->emplace(*this, node);
 }
 
@@ -633,10 +647,50 @@ void BasicTaskflow<E>::_schedule(PassiveVector<Node*>& nodes) {
   std::vector<Closure> closures;
   closures.reserve(nodes.size());
   for(auto src : nodes) {
+    if(src->is_module() && !src->is_spawned()) {
+      assert(src->_module != nullptr);
+      _set_module_node(src, src->_module);
+      assert(src->_work.index() == 0);
+    }
     closures.emplace_back(*this, *src);
   }
   _executor->batch(closures);
 }
+
+
+template <template <typename...> typename E>
+void BasicTaskflow<E>::_set_module_node(Node* n, Framework* f) {
+
+  n->_work = [node=n, this, tgt {PassiveVector<Node*>()}] () mutable {
+
+    // second time to enter this context
+    if(node->is_spawned()) {
+      node->_dependents.resize(node->_dependents.size()-tgt.size());
+      for(auto& t: tgt) {
+        t->_successors.clear();
+      }
+      return ;
+    }
+    // first time to enter this context
+    node->set_spawned();
+
+    PassiveVector<Node*> src;
+
+    for(auto &n: node->_module->_graph) {
+      n._topology = node->_topology;
+      if(n.num_dependents() == 0) {
+        src.push_back(&n);
+      }
+      if(n.num_successors() == 0) {
+        n.precede(*node);
+        tgt.push_back(&n);
+      }
+    }
+
+    _schedule(src);
+  };
+}
+
 
 // Function: dump_topologies
 template <template <typename...> typename E>
