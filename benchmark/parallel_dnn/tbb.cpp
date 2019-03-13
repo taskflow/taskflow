@@ -5,8 +5,8 @@
 using namespace tbb;
 using namespace tbb::flow;
 
-struct DNNTrainingPattern {
-  DNNTrainingPattern() {
+struct TBB_DNNTrainingPattern {
+  TBB_DNNTrainingPattern() {
     init_dnn(dnn); 
     build_task_graph();
   }
@@ -63,7 +63,7 @@ void run_tbb(unsigned num_epochs, unsigned num_threads) {
 
   tbb::task_scheduler_init init(num_threads);
 
-  auto dnn_patterns = std::make_unique<DNNTrainingPattern[]>(NUM_DNNS);
+  auto dnn_patterns = std::make_unique<TBB_DNNTrainingPattern[]>(NUM_DNNS);
   auto dnns = std::make_unique<std::unique_ptr<continue_node<continue_msg>>[]>(NUM_DNNS);
 
   tbb::flow::graph parallel_dnn;

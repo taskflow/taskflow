@@ -1,11 +1,12 @@
 #include "dnn.hpp"
 #include <taskflow/taskflow.hpp>  
 
-class DNNTrainingPattern : public tf::Framework {
+
+class TF_DNNTrainingPattern : public tf::Framework {
 
   public:
 
-    DNNTrainingPattern() { 
+    TF_DNNTrainingPattern() { 
       init_dnn(_dnn); 
       _build_task_graph();
     };
@@ -48,10 +49,13 @@ class DNNTrainingPattern : public tf::Framework {
     }
 };
 
+
+
+
 class DNN : public tf::Framework {
   public:
 
-    DNN(DNNTrainingPattern &dnn_pattern) : _dnn_pattern(dnn_pattern) {
+    DNN(TF_DNNTrainingPattern &dnn_pattern) : _dnn_pattern(dnn_pattern) {
       std::vector<tf::Task> tasks;
       for(auto i=0u; i<NUM_ITERATIONS; i++) {
         tasks.emplace_back(composed_of(_dnn_pattern));
@@ -61,18 +65,17 @@ class DNN : public tf::Framework {
 
   private:
 
-    DNNTrainingPattern& _dnn_pattern;
+    TF_DNNTrainingPattern& _dnn_pattern;
 };
 
 void run_taskflow(unsigned num_epochs, unsigned num_threads) {
 
-  tf::Taskflow tf {num_threads};
-
-  auto dnn_patterns = std::make_unique<DNNTrainingPattern[]>(NUM_DNNS);
-  auto dnns = std::make_unique<DNN*[]>(NUM_DNNS); 
+  tf::Taskflow tf {4};
+  auto dnn_patterns = std::make_unique<TF_DNNTrainingPattern[]>(NUM_DNNS);
+  auto dnns = std::make_unique<std::unique_ptr<DNN>[]>(NUM_DNNS); 
 
   for(size_t i=0; i<NUM_DNNS; i++) {
-    dnns[i] = new DNN (dnn_patterns[i]);
+    dnns[i] = std::make_unique<DNN>(dnn_patterns[i]);
   }
   
   std::vector<tf::Task> tasks;
@@ -91,7 +94,7 @@ void run_taskflow(unsigned num_epochs, unsigned num_threads) {
     report_runtime(t1);
   }).gather(tasks);
 
-  tf.run_n(parallel_dnn, 100).get();
+  tf.run_n(parallel_dnn, 1).get();
   //std::cout << parallel_dnn.dump() << std::endl;
 }
 
