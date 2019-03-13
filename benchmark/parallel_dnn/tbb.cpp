@@ -1,5 +1,4 @@
 #include "dnn.hpp"
-#include <memory>  // unique_ptr
 #include <tbb/task_scheduler_init.h>
 #include <tbb/flow_graph.h>
 
@@ -35,7 +34,7 @@ struct DNNTrainingPattern {
       auto& u_task = update_tasks.emplace_back(
           std::make_unique<continue_node<continue_msg>>(G, 
             [&, i=j](const continue_msg&) {
-            dnn.update(i);
+              dnn.update(i);
             }) 
           );
 
@@ -59,6 +58,8 @@ struct DNNTrainingPattern {
 };
 
 void run_tbb(unsigned num_epochs, unsigned num_threads) {
+
+  tbb::task_scheduler_init init(num_threads);
 
   auto dnn_patterns = std::make_unique<DNNTrainingPattern[]>(NUM_DNNS);
   auto dnns = std::make_unique<std::unique_ptr<continue_node<continue_msg>>[]>(NUM_DNNS);

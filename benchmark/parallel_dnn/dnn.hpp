@@ -424,6 +424,10 @@ struct MNIST_DNN {
     return *this;
   }
 
+  auto num_layers() const {
+    return acts.size();
+  }
+
   std::vector<Eigen::MatrixXf> Ys;
   std::vector<Eigen::MatrixXf> Ws;
   std::vector<Eigen::MatrixXf> Bs;
@@ -467,6 +471,7 @@ inline Eigen::VectorXi TEST_LABELS;
 inline constexpr size_t BATCH {6000};
 inline constexpr size_t NUM_ITERATIONS {60000/BATCH};
 inline constexpr size_t NUM_DNNS {10};
+//inline constexpr size_t NUM_DNNS {1};
 
 inline void init_dnn(MNIST_DNN& dnn) {
   dnn.batch(BATCH).learning_rate(0.001);
@@ -532,12 +537,13 @@ inline void report_runtime(std::chrono::time_point<std::chrono::high_resolution_
 
 
 void run_tbb(unsigned, unsigned);
-
 void run_taskflow(unsigned, unsigned);
+void run_omp(unsigned, unsigned);
+
 //void run_omp(MNIST&, unsigned);
 void run_sequential(MNIST&, unsigned);
 void run_sequential(MNIST_DNN&, unsigned);
 
-void run_sequential2(MNIST_DNN&, unsigned);
-
+//void run_sequential2(MNIST_DNN&, unsigned);
+void run_sequential2(unsigned, unsigned);
 

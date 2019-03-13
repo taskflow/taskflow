@@ -111,17 +111,14 @@ void run_sequential(MNIST_DNN& D, unsigned num_threads) {
 
 
 
-void run_sequential2(MNIST_DNN& D, unsigned num_threads) {
+//void run_sequential2(MNIST_DNN& D, unsigned num_threads) {
+void run_sequential2(unsigned num_epochs, unsigned num_threads) {
 
-  const auto iter_num = IMAGES.rows()/D.batch_size;
+  MNIST_DNN D;
+  init_dnn(D); 
 
-  std::cout << D.epoch << std::endl;
-  std::cout << iter_num << std::endl;
-  std::cout << D.batch_size << std::endl;
-  D.epoch = 20;
-
-  for(auto e=0u; e<D.epoch; e++) { 
-    for(auto it=0u; it<iter_num; it++) {
+  for(auto e=0u; e<100; e++) { 
+    for(auto it=0u; it<NUM_ITERATIONS; it++) {
       // Foward propagation
       forward_task(D, IMAGES, LABELS);
 
@@ -149,6 +146,5 @@ void run_sequential2(MNIST_DNN& D, unsigned num_threads) {
     shuffle(IMAGES, LABELS);
 
     D.validate(TEST_IMAGES, TEST_LABELS);
-
   } // End of epoch
 }

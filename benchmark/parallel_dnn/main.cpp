@@ -15,17 +15,17 @@ std::chrono::milliseconds measure_time_taskflow(
   return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
 }
 
-//// Function: measure_time_omp
-//std::chrono::milliseconds measure_time_omp(
-//  unsigned num_epochs,
-//  unsigned num_threads
-//) {
-//  auto dnn {build_dnn(num_epochs)};
-//  auto t1 = std::chrono::high_resolution_clock::now();
-//  run_omp(dnn, num_threads);
-//  auto t2 = std::chrono::high_resolution_clock::now();
-//  return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
-//}
+// Function: measure_time_omp
+std::chrono::milliseconds measure_time_omp(
+  unsigned num_epochs,
+  unsigned num_threads
+) {
+  std::puts("OpenMP");
+  auto t1 = std::chrono::high_resolution_clock::now();
+  run_omp(num_epochs, num_threads);
+  auto t2 = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+}
 
 // Function: measure_time_tbb
 std::chrono::milliseconds measure_time_tbb(
@@ -36,6 +36,7 @@ std::chrono::milliseconds measure_time_tbb(
   //auto dnn {build_dnn(num_epochs)};
   auto t1 = std::chrono::high_resolution_clock::now();
   //run_tbb(dnn, num_threads);
+  //run_tbb(num_epochs, num_threads);
   run_tbb(num_epochs, num_threads);
   auto t2 = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
@@ -67,6 +68,7 @@ int main(int argc, char *argv[]){
 
   ////run_sequential(mnist, 4);
   //run_sequential2(mnist, 4);
+  //run_sequential2(10, 4);
   //exit(1);
 
   int rounds {2};
@@ -81,13 +83,13 @@ int main(int argc, char *argv[]){
 
   for(int epoch=10; epoch<=100; epoch+=10) {
     
-    //double omp_time {0.0};
+    double omp_time {0.0};
     double tbb_time {0.0};
     double tf_time  {0.0};
 
     for(int j=0; j<rounds; ++j) {
-      //omp_time += measure_time_omp(epoch, num_threads).count();
-      tbb_time += measure_time_tbb(epoch, num_threads).count();
+      omp_time += measure_time_omp(epoch, num_threads).count();
+      //tbb_time += measure_time_tbb(epoch, num_threads).count();
       //tf_time  += measure_time_taskflow(epoch, num_threads).count();
       exit(1);
     }
