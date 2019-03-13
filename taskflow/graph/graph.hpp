@@ -38,7 +38,6 @@ class Node {
 
   constexpr static int SPAWNED = 0x1;
   constexpr static int SUBTASK = 0x2;
-  constexpr static int MODULE  = 0x4;
 
   public:
 
@@ -61,15 +60,12 @@ class Node {
     // Status-related functions
     bool is_spawned() const { return _status & SPAWNED; }
     bool is_subtask() const { return _status & SUBTASK; }
-    bool is_module()  const { return _status & MODULE; }
 
     void set_spawned() { _status |= SPAWNED; }
     void set_subtask() { _status |= SUBTASK; }
-    void set_module()  { _status |= MODULE;  }
 
     void unset_spawned() { _status &= ~SPAWNED; }
     void unset_subtask() { _status &= ~SUBTASK; }
-    void unset_module()  { _status &= ~MODULE;  }
 
     void clear_status() { _status = 0; }
 

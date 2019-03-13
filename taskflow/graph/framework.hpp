@@ -107,7 +107,6 @@ inline const std::string& Framework::name() const {
 // Function: composed_of
 inline tf::Task Framework::composed_of(Framework& framework) {
   auto &node = _graph.emplace_back();
-  node.set_module();
   node._module = &framework;
   return Task(node);
 }
@@ -135,7 +134,7 @@ inline void Framework::_dump(
   std::vector<Framework*>& unseen, std::unordered_set<Framework*>& seen) const {
 
   for(const auto& n: framework._graph) {
-    if(!n.is_module()) {
+    if(n._module == nullptr) {
       n.dump(os);
     }
     else {

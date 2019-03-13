@@ -395,7 +395,7 @@ void BasicTaskflow<E>::Closure::operator () () const {
   // regular node type
   // The default node work type. We only need to execute the callback if any.
   if(auto index=node->_work.index(); index == 0) {
-    if(node->is_module()) {
+    if(node->_module != nullptr) {
       bool first_time = !node->is_spawned();
       std::invoke(std::get<StaticWork>(node->_work));
       if(first_time) {
@@ -634,7 +634,7 @@ void BasicTaskflow<E>::wait_for_topologies() {
 // Each task node has two types of tasks - regular and subflow.
 template <template <typename...> typename E>
 void BasicTaskflow<E>::_schedule(Node& node) {
-  if(node.is_module() && !node.is_spawned()) {
+  if(node._module != nullptr && !node.is_spawned()) {
     _set_module_node(node);
     assert(node._work.index() == 0);
   }
@@ -651,7 +651,7 @@ void BasicTaskflow<E>::_schedule(PassiveVector<Node*>& nodes) {
   closures.reserve(nodes.size());
   for(auto src : nodes) {
     // TODO: remove the assert?
-    if(src->is_module() && !src->is_spawned()) {
+    if(src->_module != nullptr && !src->is_spawned()) {
       assert(src->_module != nullptr);
       _set_module_node(*src);
       assert(src->_work.index() == 0);
