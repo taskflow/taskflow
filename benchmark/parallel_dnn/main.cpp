@@ -73,13 +73,13 @@ int main(int argc, char *argv[]){
 
   int rounds {2};
 
-  //std::cout << std::setw(12) << "# epochs"
-  //          //<< std::setw(12) << "OpenMP"
-  //          << std::setw(12) << "TBB"
-  //          << std::setw(12) << "Taskflow"
-  //          << std::setw(12) << "speedup1"
-  //          << std::setw(12) << "speedup2"
-  //          << '\n';
+  std::cout << std::setw(12) << "# epochs"
+            << std::setw(12) << "OpenMP"
+            << std::setw(12) << "TBB"
+            << std::setw(12) << "Taskflow"
+            << std::setw(12) << "speedup1"
+            << std::setw(12) << "speedup2"
+            << '\n';
 
   for(int epoch=10; epoch<=100; epoch+=10) {
     
@@ -95,10 +95,10 @@ int main(int argc, char *argv[]){
     }
     
     std::cout << std::setw(12) << epoch 
-              //<< std::setw(12) << omp_time / rounds / 1e3
+              << std::setw(12) << omp_time / rounds / 1e3
               << std::setw(12) << tbb_time / rounds / 1e3 
               << std::setw(12) << tf_time  / rounds / 1e3 
-              //<< std::setw(12) << omp_time / tf_time
+              << std::setw(12) << omp_time / tf_time
               << std::setw(12) << tbb_time / tf_time
               << std::endl;
   }
