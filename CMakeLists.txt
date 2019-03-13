@@ -339,6 +339,24 @@ target_link_libraries(
 set_target_properties(framework_benchmarking PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
+## benchmark 5: Parallel DNN
+message(STATUS "benchmark 5: Parallel DNN")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/parallel_dnn)
+add_executable(
+  parallel_dnn 
+  ${TF_BENCHMARK_DIR}/parallel_dnn/main.cpp
+  ${TF_BENCHMARK_DIR}/parallel_dnn/omp.cpp
+  ${TF_BENCHMARK_DIR}/parallel_dnn/tbb.cpp
+  ${TF_BENCHMARK_DIR}/parallel_dnn/seq.cpp
+  ${TF_BENCHMARK_DIR}/parallel_dnn/taskflow.cpp
+)
+target_link_libraries(
+  parallel_dnn 
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS}
+  ${OpenMP_CXX_LIBRARIES} stdc++fs
+)
+set_target_properties(parallel_dnn PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
 
 endif()
 
