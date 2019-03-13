@@ -19,24 +19,26 @@ struct DNNTrainingPattern {
   void build_task_graph() {
 
     f_task = std::make_unique<continue_node<continue_msg>>(G, 
-        [&](const continue_msg&) { forward_task(dnn, IMAGES, LABELS); }
-        );
+      [&](const continue_msg&) { 
+        forward_task(dnn, IMAGES, LABELS); 
+      }
+    );
 
     for(int j=dnn.acts.size()-1; j>=0; j--) {
       // backward propagation
       auto& b_task = backward_tasks.emplace_back(
-          std::make_unique<continue_node<continue_msg>>(G, 
-            [&, i=j](const continue_msg&) {
-            backward_task(dnn, i, IMAGES);
-            }) 
-          );
+        std::make_unique<continue_node<continue_msg>>(G, 
+        [&, i=j](const continue_msg&) {
+          backward_task(dnn, i, IMAGES);
+        }) 
+      );
 
       auto& u_task = update_tasks.emplace_back(
-          std::make_unique<continue_node<continue_msg>>(G, 
-            [&, i=j](const continue_msg&) {
-              dnn.update(i);
-            }) 
-          );
+        std::make_unique<continue_node<continue_msg>>(G, 
+        [&, i=j](const continue_msg&) {
+          dnn.update(i);
+        }) 
+      );
 
       if(j + 1u == dnn.acts.size()) {
         make_edge(*f_task, *b_task);
