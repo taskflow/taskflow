@@ -142,7 +142,7 @@ inline void Framework::_dump(
       os << 'p' << &n << "[shape=oval, penwidth=5, color=blue, label = \"Module_";
       if(n._name.empty()) os << &n;
       else os << n._name;
-      os << "(Framework_";
+      os << " (Framework_";
       if(n._module->_name.empty()) os << n._module;
       else os << n._module->_name;
       os << ")\"];\n";
@@ -173,10 +173,12 @@ inline std::string Framework::dump() const {
   {
     os << "subgraph cluster_";
     os << (_name.empty() ? _addr_to_string() : _name) << " {\n";
-    os << "label = \"Framework_" << (_name.empty() ? _addr_to_string() : _name) << "\";\n";
+    os << "label = \"Framework_" << (_name.empty() ? _addr_to_string() : _name) << " (Top)\";\n";
+    os << "fontcolor = royalblue3;\n";
+    os << "fontsize = 35;\n";
     //os << "subgraph cluster_Top{\n";
     //os << "label = \"Top\";\n";
-    os << "style = \"bold\";\n";
+    os << "style = \"bold, rounded\";\n";
     _dump(os, *this, unseen, seen);
     os << "}\n";
   }
@@ -186,6 +188,10 @@ inline std::string Framework::dump() const {
     os << "subgraph cluster_";
     os << (unseen[i]->_name.empty() ? unseen[i]->_addr_to_string() : unseen[i]->_name) << " {\n";
     os << "label = \"Framework_" << (unseen[i]->_name.empty() ? unseen[i]->_addr_to_string() : unseen[i]->_name) << "\";\n";
+    os << "fontcolor = royalblue3;\n";
+    os << "fontsize = 35;\n";
+    os << "style = filled;\n";
+    os << "color = beige;\n";
     _dump(os, *unseen[i], unseen, seen);
     os << "}\n";
     cursor = unseen.size();
