@@ -13,8 +13,6 @@ struct TF_DNNTrainingPattern : public tf::Framework {
       dnn.validate(mat, vec);
     }
 
-
-
     void build_task_graph() {
       auto f_task = emplace(
         [&]() { forward_task(dnn, IMAGES, LABELS); }

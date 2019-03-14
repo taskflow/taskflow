@@ -124,8 +124,6 @@ void run_omp(unsigned num_epochs, unsigned num_threads) {
 
 
 
-void run_omp(MNIST& D, unsigned num_threads) {
-}
 
 /*
 void run_omp(MNIST& D, unsigned num_threads) {
