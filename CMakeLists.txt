@@ -357,6 +357,23 @@ target_link_libraries(
 )
 set_target_properties(parallel_dnn PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+## benchmark 6: Jacobi Iterative Stencil
+message(STATUS "benchmark 6: Jacobi iterative stencil")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/jacobi_stencil)
+add_executable(
+  jacobi_stencil 
+  ${TF_BENCHMARK_DIR}/jacobi_stencil/main.cpp
+  ${TF_BENCHMARK_DIR}/jacobi_stencil/omp.cpp
+  ${TF_BENCHMARK_DIR}/jacobi_stencil/tbb.cpp
+  ${TF_BENCHMARK_DIR}/jacobi_stencil/seq.cpp
+  ${TF_BENCHMARK_DIR}/jacobi_stencil/taskflow.cpp
+)
+target_link_libraries(
+  jacobi_stencil 
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS}
+  ${OpenMP_CXX_LIBRARIES} stdc++fs
+)
+
 
 endif()
 
