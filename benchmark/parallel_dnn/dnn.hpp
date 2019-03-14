@@ -350,7 +350,6 @@ inline void backward_task(MNIST_DNN& D, size_t i, Eigen::MatrixXf& mat) {
     if(D.beg_row >= IMAGES.rows()) {
       D.beg_row = 0;
     }
-
   }
 }
 

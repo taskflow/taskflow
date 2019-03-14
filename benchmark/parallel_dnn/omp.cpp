@@ -81,6 +81,7 @@ void omp_dnn(MNIST_DNN& D, unsigned num_iteration) {
     }
   } // End of omp parallel
 
+
   delete [] dep_f;
   delete [] dep_b;
   delete [] dep_u;
