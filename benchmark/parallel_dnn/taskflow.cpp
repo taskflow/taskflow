@@ -71,7 +71,7 @@ void run_taskflow(unsigned num_epochs, unsigned num_threads) {
   std::vector<tf::Task> tasks;
   tf::Framework parallel_dnn;
   for(size_t i=0; i<NUM_DNNS; i++) {
-    parallel_dnn.composed_of(*(dnns[i]));
+    tasks.emplace_back(parallel_dnn.composed_of(*(dnns[i])));
   }
 
   //auto t1 = std::chrono::high_resolution_clock::now();
