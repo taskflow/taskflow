@@ -242,7 +242,7 @@ struct MNIST {
 
   void validate() {
     Eigen::MatrixXf res = test_images; 
-    auto t1 = std::chrono::high_resolution_clock::now();
+    //auto t1 = std::chrono::high_resolution_clock::now();
     for(size_t i=0; i<acts.size(); i++) {
       res = res * Ws[i] + Bs[i].replicate(res.rows(), 1);
       if(acts[i] == Activation::RELU) {
@@ -252,8 +252,8 @@ struct MNIST {
         sigmoid(res);
       }
     }
-    auto t2 = std::chrono::high_resolution_clock::now();
-    std::cout << "Infer runtime: " << time_diff(t1, t2) << " ms\n";
+    //auto t2 = std::chrono::high_resolution_clock::now();
+    //std::cout << "Infer runtime: " << time_diff(t1, t2) << " ms\n";
 
     size_t correct_num {0};
     for(int k=0; k<res.rows(); k++) {
@@ -263,7 +263,7 @@ struct MNIST {
         correct_num ++;
       }
     }
-    std::cout << "Accuracy: " << correct_num << '/' << res.rows() << '\n';
+    //std::cout << "Accuracy: " << correct_num << '/' << res.rows() << '\n';
   }
 
 
@@ -406,7 +406,7 @@ struct MNIST_DNN {
         correct_num ++;
       }
     }
-    std::cout << "Accuracy: " << correct_num << '/' << res.rows() << '\n';
+    //std::cout << "Accuracy: " << correct_num << '/' << res.rows() << '\n';
   }
 
   // Parameter functions ------------------------------------------------------

@@ -81,7 +81,7 @@ void run_tbb(unsigned num_epochs, unsigned num_threads) {
   auto sync_node = std::make_unique<continue_node<continue_msg>>(parallel_dnn, 
     [&](const continue_msg&) {
       for(size_t i=0; i<NUM_DNNS; i++) {
-        std::cout << "Validate " << i << "th NN: ";
+        //std::cout << "Validate " << i << "th NN: ";
         dnn_patterns[i].dnn.validate(TEST_IMAGES, TEST_LABELS);
       }
       shuffle(IMAGES, LABELS);
@@ -92,13 +92,12 @@ void run_tbb(unsigned num_epochs, unsigned num_threads) {
     make_edge(*(dnns[i]), *sync_node);
   }
 
-  auto t1 = std::chrono::high_resolution_clock::now();
-  for(auto i=0u; i<100; i++) {
+  //auto t1 = std::chrono::high_resolution_clock::now();
+  for(auto i=0u; i<num_epochs; i++) {
     for(auto i=0u; i<NUM_DNNS; i++) {
       dnns[i]->try_put(continue_msg());
     }
-
     parallel_dnn.wait_for_all();
-    report_runtime(t1);
+    //report_runtime(t1);
   }
 }
