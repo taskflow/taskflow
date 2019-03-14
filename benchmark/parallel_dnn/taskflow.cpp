@@ -19,9 +19,7 @@ class DNNTrainingPattern : public tf::Framework {
     MNIST_DNN _dnn;
 
     void _build_task_graph() {
-      auto f_task = emplace(
-        [&]() { forward_task(_dnn, IMAGES, LABELS); }
-      );
+      auto f_task = emplace([&]() { forward_task(_dnn, IMAGES, LABELS); });
 
       std::vector<tf::Task> backward_tasks;
       std::vector<tf::Task> update_tasks;
@@ -74,7 +72,7 @@ void run_taskflow(unsigned num_epochs, unsigned num_threads) {
   for(size_t i=0; i<NUM_DNNS; i++) {
     dnns[i] = new DNN (dnn_patterns[i]);
   }
-  
+
   std::vector<tf::Task> tasks;
   tf::Framework parallel_dnn;
   for(size_t i=0; i<NUM_DNNS; i++) {
@@ -90,8 +88,10 @@ void run_taskflow(unsigned num_epochs, unsigned num_threads) {
     shuffle(IMAGES, LABELS);
     report_runtime(t1);
   }).gather(tasks);
+  
+  std::cout << parallel_dnn.dump() << std::endl;
 
-  tf.run_n(parallel_dnn, 100).get();
-  //std::cout << parallel_dnn.dump() << std::endl;
+  //tf.run_n(parallel_dnn, 100).get();
+
 }
 
