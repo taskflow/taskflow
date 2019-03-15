@@ -269,7 +269,13 @@ inline Task::Task(Task&& rhs) : _node{rhs._node} {
 // Function: work
 template <typename C>
 inline Task& Task::work(C&& c) {
+
+  if(_node->_module) {
+    TF_THROW(Error::FRAMEWORK, "can't assign work to a module task");
+  }
+
   _node->_work = std::forward<C>(c);
+
   return *this;
 }
 

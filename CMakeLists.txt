@@ -196,6 +196,9 @@ add_test(reduce_max       ${TF_UTEST_DIR}/taskflow -tc=ReduceMax)
 add_test(joined_subflow   ${TF_UTEST_DIR}/taskflow -tc=JoinedSubflow)
 add_test(detached_subflow ${TF_UTEST_DIR}/taskflow -tc=DetachedSubflow)
 add_test(framework        ${TF_UTEST_DIR}/taskflow -tc=Framework)
+add_test(composition-1    ${TF_UTEST_DIR}/taskflow -tc=Composition-1)
+add_test(composition-2    ${TF_UTEST_DIR}/taskflow -tc=Composition-2)
+add_test(composition-3    ${TF_UTEST_DIR}/taskflow -tc=Composition-3)
 
 # unittest for threadpool 
 add_executable(threadpool_test_tmp unittest/threadpool.cpp)
@@ -222,7 +225,6 @@ add_test(threadpool_cxx14_basic        ${TF_UTEST_DIR}/threadpool_cxx14 -tc=Thre
 add_test(threadpool_cxx14_wait_for_all ${TF_UTEST_DIR}/threadpool_cxx14 -tc=Threadpool.WaitForAll)
 
 # run all examples
-#add_test(inttest.simple )
 
 endif()
 
@@ -295,7 +297,6 @@ target_link_libraries(
 )
 set_target_properties(graph_traversal PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-
 ## benchmark 3: MNIST
 message(STATUS "benchmark 3: mnist")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/mnist)
@@ -356,6 +357,23 @@ target_link_libraries(
   ${OpenMP_CXX_LIBRARIES} stdc++fs
 )
 set_target_properties(parallel_dnn PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+## benchmark 6: Jacobi Iterative Stencil
+message(STATUS "benchmark 6: Jacobi iterative stencil")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/jacobi_stencil)
+add_executable(
+  jacobi_stencil 
+  ${TF_BENCHMARK_DIR}/jacobi_stencil/main.cpp
+  ${TF_BENCHMARK_DIR}/jacobi_stencil/omp.cpp
+  ${TF_BENCHMARK_DIR}/jacobi_stencil/tbb.cpp
+  ${TF_BENCHMARK_DIR}/jacobi_stencil/seq.cpp
+  ${TF_BENCHMARK_DIR}/jacobi_stencil/taskflow.cpp
+)
+target_link_libraries(
+  jacobi_stencil 
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS}
+  ${OpenMP_CXX_LIBRARIES} stdc++fs
+)
 
 
 endif()

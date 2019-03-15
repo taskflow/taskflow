@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stack>
 #include "flow_builder.hpp"
 
 namespace tf {
@@ -61,7 +62,7 @@ class Framework : public FlowBuilder {
     auto& name(const std::string&) ; 
 
     /**
-    @brief gets the name of the framework
+    @brief queries the name of the framework
     */
     const std::string& name() const ;
 
@@ -73,10 +74,6 @@ class Framework : public FlowBuilder {
 
     std::mutex _mtx;
     std::list<Topology*> _topologies;
-
-    std::string _addr_to_string() const;
-
-    void _dump(std::ostream& ostream, const Framework&,  std::vector<Framework*>&, std::unordered_set<Framework*>&) const;
 };
 
 // Constructor
@@ -111,93 +108,73 @@ inline tf::Task Framework::composed_of(Framework& framework) {
   return Task(node);
 }
 
-
-// Function: _addr_to_string
-inline std::string Framework::_addr_to_string() const {
-  std::stringstream ss;
-  ss << 'p' << this;
-  return ss.str();
-}
-
 // Procedure: dump
-inline void Framework::dump(std::ostream& os) const {
-  os << dump();
+inline std::string Framework::dump() const {
+  std::ostringstream oss;
+  dump(oss);
+  return oss.str();
 }
-
-// TODO: 
-// 1. check the bug from your composition_1 example?
-// 2. use the format: F2 (pointer value)
-
-// Procedure: dump
-inline void Framework::_dump(
-  std::ostream& os, const Framework& framework,
-  std::vector<Framework*>& unseen, std::unordered_set<Framework*>& seen) const {
-
-  for(const auto& n: framework._graph) {
-    if(n._module == nullptr) {
-      n.dump(os);
-    }
-    else {
-      os << 'p' << &n << "[shape=oval, penwidth=5, color=blue, label = \"Module_";
-      if(n._name.empty()) os << &n;
-      else os << n._name;
-      os << " (Framework_";
-      if(n._module->_name.empty()) os << n._module;
-      else os << n._module->_name;
-      os << ")\"];\n";
-
-      if(seen.find(n._module) == seen.end()) {
-        seen.insert(n._module);
-        unseen.emplace_back(n._module);
-      }
-
-      for(const auto s : n._successors) {
-        os << 'p' << &n << "->" << 'p' << s << ";\n";
-      }
-    }
-  }
-}
-
 
 // Function: dump
-inline std::string Framework::dump() const {
-  std::ostringstream os;
+inline void Framework::dump(std::ostream& os) const {
 
-  std::unordered_set<Framework*> seen;
-  std::vector<Framework*> unseen;
-  size_t cursor {0};
-
-  os << "digraph Framework_" << (_name.empty() ? _addr_to_string() : _name) << " {\n";
-
-  {
+  std::stack<const Framework*> stack;
+  std::unordered_set<const Framework*> visited; 
+  
+  os << "digraph Framework_";
+  if(_name.empty()) os << 'p' << this;
+  else os << _name;
+  os << " {\nrankdir=\"LR\";\n";
+  
+  stack.push(this);
+  visited.insert(this);
+  
+  while(!stack.empty()) {
+    
+    auto f = stack.top();
+    stack.pop();
+    
+    // create a subgraph field for this framework
     os << "subgraph cluster_";
-    os << (_name.empty() ? _addr_to_string() : _name) << " {\n";
-    os << "label = \"Framework_" << (_name.empty() ? _addr_to_string() : _name) << " (Top)\";\n";
-    os << "fontcolor = royalblue3;\n";
-    os << "fontsize = 35;\n";
-    //os << "subgraph cluster_Top{\n";
-    //os << "label = \"Top\";\n";
-    os << "style = \"bold, rounded\";\n";
-    _dump(os, *this, unseen, seen);
-    os << "}\n";
-  }
+    if(f->_name.empty()) os << 'p' << f;
+    else os << f->_name;
+    os << " {\n";
 
-  cursor = unseen.size();
-  for(auto i=0u; i<cursor; i++) {
-    os << "subgraph cluster_";
-    os << (unseen[i]->_name.empty() ? unseen[i]->_addr_to_string() : unseen[i]->_name) << " {\n";
-    os << "label = \"Framework_" << (unseen[i]->_name.empty() ? unseen[i]->_addr_to_string() : unseen[i]->_name) << "\";\n";
-    os << "fontcolor = royalblue3;\n";
-    os << "fontsize = 35;\n";
-    os << "style = filled;\n";
-    os << "color = beige;\n";
-    _dump(os, *unseen[i], unseen, seen);
+    os << "label=\"Framework_";
+    if(f->_name.empty()) os << 'p' << f;
+    else os << f->_name;
+    os << "\";\n";
+
+    // dump the details of this framework
+    for(const auto& n: f->_graph) {
+      // regular task
+      if(auto module = n._module; !module) {
+        n.dump(os);
+      }
+      // module task
+      else {
+        os << 'p' << &n << "[shape=box3d, color=blue, label=\"";
+        if(n._name.empty()) os << &n;
+        else os << n._name;
+        os << " (Framework_";
+        if(module->_name.empty()) os << module;
+        else os << module->_name;
+        os << ")\"];\n";
+
+        if(visited.find(module) == visited.end()) {
+          visited.insert(module);
+          stack.push(module);
+        }
+
+        for(const auto s : n._successors) {
+          os << 'p' << &n << "->" << 'p' << s << ";\n";
+        }
+      }
+    }
     os << "}\n";
-    cursor = unseen.size();
   }
 
   os << "}\n";
-  return os.str();
 }
 
 

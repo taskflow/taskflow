@@ -21,7 +21,8 @@ struct Error : public std::error_category {
   enum Code : int {
     SUCCESS = 0,
     FLOW_BUILDER,
-    EXECUTOR
+    EXECUTOR,
+    FRAMEWORK
   };
   
   /**
@@ -64,6 +65,10 @@ inline std::string Error::message(int code) const {
 
     case EXECUTOR:
       return "executor error";
+    break;
+
+    case FRAMEWORK:
+      return "framework error";
     break;
 
     default:

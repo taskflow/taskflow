@@ -32,8 +32,10 @@ void composition_example_1(tf::Taskflow& tf) {
   f2A.precede(f2C);
   f2B.precede(f2C);
   
-  auto f1_module_task = f2.composed_of(f1);
+  auto f1_module_task = f2.composed_of(f1).name("module");
   f2C.precede(f1_module_task);
+
+  f2.dump(std::cout);
 
   tf.run_n(f2, 3).get();
 }
@@ -83,7 +85,7 @@ void composition_example_2(tf::Taskflow& tf) {
   auto f2_module_task = f4.composed_of(f2);
   f3_module_task.precede(f2_module_task);
 
-  std::cout << f4.dump() << std::endl;
+  f4.dump(std::cout);
 
   tf.run_until(f4, [iter = 1] () mutable { std::cout << '\n'; return iter-- == 0; }, [](){ 
     std::cout << "First run_until finished\n"; 

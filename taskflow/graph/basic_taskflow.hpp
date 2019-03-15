@@ -636,7 +636,6 @@ template <template <typename...> typename E>
 void BasicTaskflow<E>::_schedule(Node& node) {
   if(node._module != nullptr && !node.is_spawned()) {
     _set_module_node(node);
-    assert(node._work.index() == 0);
   }
   _executor->emplace(*this, node);
 }
@@ -652,9 +651,7 @@ void BasicTaskflow<E>::_schedule(PassiveVector<Node*>& nodes) {
   for(auto src : nodes) {
     // TODO: remove the assert?
     if(src->_module != nullptr && !src->is_spawned()) {
-      assert(src->_module != nullptr);
       _set_module_node(*src);
-      assert(src->_work.index() == 0);
     }
     closures.emplace_back(*this, *src);
   }

@@ -8,7 +8,6 @@ std::chrono::milliseconds measure_time_taskflow(
   unsigned num_threads
 ) {
   std::puts("Taskflow");
-  //auto dnn {build_dnn(num_epochs)};
   auto t1 = std::chrono::high_resolution_clock::now();
   run_taskflow(num_epochs, num_threads);
   auto t2 = std::chrono::high_resolution_clock::now();
@@ -33,10 +32,7 @@ std::chrono::milliseconds measure_time_tbb(
   unsigned num_threads
 ) {
   std::puts("TBB");
-  //auto dnn {build_dnn(num_epochs)};
   auto t1 = std::chrono::high_resolution_clock::now();
-  //run_tbb(dnn, num_threads);
-  //run_tbb(num_epochs, num_threads);
   run_tbb(num_epochs, num_threads);
   auto t2 = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
@@ -88,10 +84,9 @@ int main(int argc, char *argv[]){
     double tf_time  {0.0};
 
     for(int j=0; j<rounds; ++j) {
-      //omp_time += measure_time_omp(epoch, num_threads).count();
-      //tbb_time += measure_time_tbb(epoch, num_threads).count();
-      tf_time  += measure_time_taskflow(epoch, num_threads).count();
-      exit(1);
+      omp_time += measure_time_omp(epoch, num_threads).count();
+      tbb_time += measure_time_tbb(epoch, num_threads).count();
+      tf_time += measure_time_taskflow(epoch, num_threads).count();
     }
     
     std::cout << std::setw(12) << epoch 

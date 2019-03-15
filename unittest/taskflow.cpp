@@ -679,28 +679,16 @@ TEST_CASE("JoinedSubflow" * doctest::timeout(300)){
         auto s1 = fb.emplace([&] () { 
           fu3v_++;
           fu3v++;
-          //REQUIRE(fu3.valid());
-          //REQUIRE(fu3.wait_for (100us) != std::future_status::ready);
-          //REQUIRE(fu3_.valid());
-          //REQUIRE(fu3_.wait_for(100us) != std::future_status::ready);
         }).name("s1");
         
         auto s2 = fb.emplace([&] () {
           fu3v_++;
           fu3v++;
-          //REQUIRE(fu3.valid());
-          //REQUIRE(fu3.wait_for (100us) != std::future_status::ready);
-          //REQUIRE(fu3_.valid());
-          //REQUIRE(fu3_.wait_for(100us) != std::future_status::ready);
         }).name("s2");
         
         auto s3 = fb.emplace([&] () {
           fu3v++;
           REQUIRE(fu3v_ == 4);
-          //REQUIRE(fu3.valid());
-          //REQUIRE(fu3.wait_for (100us) != std::future_status::ready);
-          //REQUIRE(fu3_.valid());
-          //REQUIRE(fu3_.wait_for(100us) == std::future_status::ready);
         }).name("s3");
 
         s1.precede(subflow3_);
@@ -715,8 +703,6 @@ TEST_CASE("JoinedSubflow" * doctest::timeout(300)){
 
       // empty flow to test future
       auto subflow4 = tf.emplace([&] () {
-        //REQUIRE(fu3v == 9);
-        //REQUIRE(fu3.wait_for(std::chrono::seconds(0)) == std::future_status::ready);
         fu3v++;
       }).name("subflow4");
 
@@ -725,11 +711,6 @@ TEST_CASE("JoinedSubflow" * doctest::timeout(300)){
       subflow3.precede(subflow4);
 
       tf.dispatch().get();
-
-      //REQUIRE(fu3v  == 10);
-      //REQUIRE(fu3v_ == 4);
-      //REQUIRE(fu3.get()  == 100);
-      //REQUIRE(fu3_.get() == 200);
     } // End of for loop
   }
   
@@ -813,7 +794,6 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
       
       // empty flow with future
       tf::Task subflow3, subflow3_;
-      //std::future<int> fu3, fu3_;
       std::atomic<int> fu3v{0}, fu3v_{0};
       
       // empty flow
@@ -848,7 +828,6 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
           REQUIRE(fu3v_ == 3);
           fu3v++;
           fu3v_++;
-          //return 200;
         });
         subflow3_.name("subflow3_");
 
@@ -856,28 +835,16 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
         auto s1 = fb.emplace([&] () { 
           fu3v_++;
           fu3v++;
-          //REQUIRE(fu3.valid());
-          //REQUIRE(fu3.wait_for (100us) == std::future_status::ready);
-          //REQUIRE(fu3_.valid());
-          //REQUIRE(fu3_.wait_for(100us) != std::future_status::ready);
         }).name("s1");
         
         auto s2 = fb.emplace([&] () {
           fu3v_++;
           fu3v++;
-          //REQUIRE(fu3.valid());
-          //REQUIRE(fu3.wait_for (100us) == std::future_status::ready);
-          //REQUIRE(fu3_.valid());
-          //REQUIRE(fu3_.wait_for(100us) != std::future_status::ready);
         }).name("s2");
         
         auto s3 = fb.emplace([&] () {
           fu3v++;
           REQUIRE(fu3v_ == 4);
-          //REQUIRE(fu3.valid());
-          //REQUIRE(fu3.wait_for (100us) == std::future_status::ready);
-          //REQUIRE(fu3_.valid());
-          //REQUIRE(fu3_.wait_for(100us) == std::future_status::ready);
         }).name("s3");
 
         s1.precede(subflow3_);
@@ -895,7 +862,6 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
       // empty flow to test future
       auto subflow4 = tf.emplace([&] () {
         REQUIRE((fu3v >= 3 && fu3v <= 9));
-        //REQUIRE(fu3.wait_for(std::chrono::seconds(0)) == std::future_status::ready);
         fu3v++;
       }).name("subflow4");
 
@@ -907,13 +873,9 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
 
       REQUIRE(fu3v  == 10);
       REQUIRE(fu3v_ == 4);
-      //REQUIRE(fu3.get()  == 100);
-      //REQUIRE(fu3_.get() == 200);
     }
   }
-
 }
-
 
 // --------------------------------------------------------
 // Testcase: Framework
@@ -963,7 +925,6 @@ TEST_CASE("Framework" * doctest::timeout(300)) {
 
     REQUIRE(count == 7000);
   }
-
 
   // TODO: test correctness when framework got changed between runs 
   for(unsigned W=0; W<=4; ++W) {
@@ -1049,5 +1010,195 @@ TEST_CASE("Framework" * doctest::timeout(300)) {
   }
 
 }
+
+// --------------------------------------------------------
+// Testcase: Composition
+// --------------------------------------------------------
+TEST_CASE("Composition-1" * doctest::timeout(300)) {
+
+  for(unsigned w=0; w<=8; ++w) {
+
+    tf::Taskflow taskflow;
+
+    tf::Framework f0;
+
+    int cnt {0};
+
+    auto [A, B, C, D, E] = f0.emplace(
+      [&cnt] () { ++cnt; },
+      [&cnt] () { ++cnt; },
+      [&cnt] () { ++cnt; },
+      [&cnt] () { ++cnt; },
+      [&cnt] () { ++cnt; }
+    );
+
+    A.precede(B);
+    B.precede(C);
+    C.precede(D);
+    D.precede(E);
+
+    tf::Framework f1;
+    
+    // module 1
+    std::tie(A, B, C, D, E) = f1.emplace(
+      [&cnt] () { ++cnt; },
+      [&cnt] () { ++cnt; },
+      [&cnt] () { ++cnt; },
+      [&cnt] () { ++cnt; },
+      [&cnt] () { ++cnt; }
+    );
+    A.precede(B);
+    B.precede(C);
+    C.precede(D);
+    D.precede(E);
+    auto m1_1 = f1.composed_of(f0);
+    E.precede(m1_1);
+    
+    taskflow.run(f1).get();
+    REQUIRE(cnt == 10);
+
+    cnt = 0;
+    taskflow.run_n(f1, 100).get();
+    REQUIRE(cnt == 10 * 100);
+
+    auto m1_2 = f1.composed_of(f0);
+    m1_1.precede(m1_2);
+    
+    for(int n=0; n<100; n++) {
+      cnt = 0;
+      taskflow.run_n(f1, n).get();
+      REQUIRE(cnt == 15*n);
+    }
+
+    cnt = 0;
+    for(int n=0; n<100; n++) {
+      taskflow.run(f1);
+    }
+    
+    taskflow.wait_for_all();
+
+    REQUIRE(cnt == 1500);
+  }
+}
+
+// TESTCASE: composition-2
+TEST_CASE("Composition-2" * doctest::timeout(300)) {
+
+  for(unsigned w=0; w<=8; ++w) {
+
+    tf::Taskflow taskflow {w};
+
+    int cnt {0};
+    
+    // level 0 (+5)
+    tf::Framework f0;
+
+    auto [A, B, C, D, E] = f0.emplace(
+      [&cnt] () { ++cnt; },
+      [&cnt] () { ++cnt; },
+      [&cnt] () { ++cnt; },
+      [&cnt] () { ++cnt; },
+      [&cnt] () { ++cnt; }
+    );
+
+    A.precede(B);
+    B.precede(C);
+    C.precede(D);
+    D.precede(E);
+
+    // level 1 (+10)
+    tf::Framework f1;
+    auto m1_1 = f1.composed_of(f0);
+    auto m1_2 = f1.composed_of(f0);
+    m1_1.precede(m1_2);
+
+    // level 2 (+20)
+    tf::Framework f2;
+    auto m2_1 = f2.composed_of(f1);
+    auto m2_2 = f2.composed_of(f1);
+    m2_1.precede(m2_2);
+    
+    // synchronous run
+    for(int n=0; n<100; n++) {
+      cnt = 0;
+      taskflow.run_n(f2, n).get();
+      REQUIRE(cnt == 20*n);
+    }
+
+    // asynchronous run
+    cnt = 0;
+    for(int n=0; n<100; n++) {
+      taskflow.run(f2);
+    }
+    taskflow.wait_for_all();
+    REQUIRE(cnt == 100*20);
+  }
+}
+
+// TESTCASE: composition-3
+TEST_CASE("Composition-3" * doctest::timeout(300)) {
+
+  
+  for(unsigned w=0; w<=8; ++w) {
+
+    tf::Taskflow taskflow {w};
+
+    int cnt {0};
+    
+    // level 0 (+2)
+    tf::Framework f0;
+
+    auto [A, B] = f0.emplace(
+      [&cnt] () { ++cnt; },
+      [&cnt] () { ++cnt; }
+    );
+    A.precede(B);
+
+    // level 1 (+4)
+    tf::Framework f1;
+    auto m1_1 = f1.composed_of(f0);
+    auto m1_2 = f1.composed_of(f0);
+    m1_1.precede(m1_2);
+
+    // level 2 (+8)
+    tf::Framework f2;
+    auto m2_1 = f2.composed_of(f1);
+    auto m2_2 = f2.composed_of(f1);
+    m2_1.precede(m2_2);
+
+    // level 3 (+16)
+    tf::Framework f3;
+    auto m3_1 = f3.composed_of(f2);
+    auto m3_2 = f3.composed_of(f2);
+    m3_1.precede(m3_2);
+
+    // synchronous run
+    for(int n=0; n<100; n++) {
+      cnt = 0;
+      taskflow.run_n(f3, n).get();
+      REQUIRE(cnt == 16*n);
+    }
+
+    // asynchronous run
+    cnt = 0;
+    for(int n=0; n<100; n++) {
+      taskflow.run(f3);
+    }
+    taskflow.wait_for_all();
+    REQUIRE(cnt == 16*100);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 

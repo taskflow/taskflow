@@ -4,7 +4,6 @@
 #include "../utility/traits.hpp"
 #include "../utility/singular_allocator.hpp"
 #include "../utility/passive_vector.hpp"
-#include <bitset>
 
 namespace tf {
 
@@ -16,12 +15,9 @@ class FlowBuilder;
 class SubflowBuilder;
 class Framework;
 
-//using Graph = std::list<Node>;
 using Graph = std::list<Node, tf::SingularAllocator<Node>>;
 
 // ----------------------------------------------------------------------------
-
-// TODO: do we need the flag module now? 
 
 // Class: Node
 class Node {
@@ -61,13 +57,11 @@ class Node {
     bool is_spawned() const { return _status & SPAWNED; }
     bool is_subtask() const { return _status & SUBTASK; }
 
-    void set_spawned() { _status |= SPAWNED; }
-    void set_subtask() { _status |= SUBTASK; }
-
+    void set_spawned()   { _status |= SPAWNED;  }
+    void set_subtask()   { _status |= SUBTASK;  }
     void unset_spawned() { _status &= ~SPAWNED; }
     void unset_subtask() { _status &= ~SUBTASK; }
-
-    void clear_status() { _status = 0; }
+    void clear_status()  { _status = 0;         }
 
   private:
     
@@ -105,6 +99,8 @@ inline Node::Node(C&& c) : _work {std::forward<C>(c)} {
 
 // Destructor
 inline Node::~Node() {
+  
+  // this is to avoid stack overflow
   if(_subgraph.has_value()) {
     std::list<Graph> gs; 
     gs.push_back(std::move(*_subgraph));
@@ -155,39 +151,25 @@ inline std::string Node::dump() const {
 
 // Function: dump
 inline void Node::dump(std::ostream& os) const {
-  os << 'p' << this << "[label = \"";
+
+  os << 'p' << this << "[label=\"";
   if(_name.empty()) os << 'p' << this;
   else os << _name;
   os << "\"];\n";
   
-  //if(_name.empty()) os << '\"' << this << '\"';
-  //else os << std::quoted(_name);
-  //os << ";\n";
-
   for(const auto s : _successors) {
-
-    //if(_name.empty()) os << '\"' << this << '\"';
-    //else os << std::quoted(_name);
-
-    os << 'p' << this ;
-    os << " -> ";
-    os << 'p' << s;
-    
-    //if(s->name().empty()) os << '\"' << s << '\"';
-    //else os << std::quoted(s->name());
-
-    os << ";\n";
+    os << 'p' << this << " -> " << 'p' << s << ";\n";
   }
   
   if(_subgraph && !_subgraph->empty()) {
 
     os << "subgraph cluster_";
-    if(_name.empty()) os << this;
+    if(_name.empty()) os << 'p' << this;
     else os << _name;
     os << " {\n";
 
-    os << "label = \"Subflow_";
-    if(_name.empty()) os << this;
+    os << "label=\"Subflow_";
+    if(_name.empty()) os << 'p' << this;
     else os << _name;
 
     os << "\";\n" << "color=blue\n";

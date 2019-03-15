@@ -15,7 +15,6 @@ void omp_dnn(MNIST_DNN& D, unsigned num_iteration) {
     #pragma omp single
     {
       for(auto i=0u; i<num_iteration; i++) {
-      //for(auto i=0u; i<2; i++) {
         // Forward Task 
         if(i == 0) {
           #pragma omp task depend (out: dep_f[i]) shared(D, IMAGES, LABELS)
@@ -82,6 +81,7 @@ void omp_dnn(MNIST_DNN& D, unsigned num_iteration) {
     }
   } // End of omp parallel
 
+
   delete [] dep_f;
   delete [] dep_b;
   delete [] dep_u;
@@ -94,15 +94,14 @@ void run_omp(unsigned num_epochs, unsigned num_threads) {
     init_dnn(dnns[i]); 
   }
 
-  //omp_set_num_threads(num_threads); 
-  omp_set_num_threads(4); 
+  omp_set_num_threads(num_threads); 
 
-  auto t1 = std::chrono::high_resolution_clock::now();
+  //auto t1 = std::chrono::high_resolution_clock::now();
   #pragma omp parallel
   {
     #pragma omp single
     {
-      for(auto i=0u; i<100; i++) {
+      for(auto i=0u; i<num_epochs; i++) {
         for(auto j=0u; j<NUM_DNNS; j++) {
           #pragma omp task firstprivate(j) shared(dnns) 
           {
@@ -112,11 +111,11 @@ void run_omp(unsigned num_epochs, unsigned num_threads) {
         #pragma omp taskwait 
 
         for(auto j=0u; j<NUM_DNNS; j++) {
-          std::cout << "Validate " << j << "th NN: ";
+          //std::cout << "Validate " << j << "th NN: ";
           dnns[j].validate(TEST_IMAGES, TEST_LABELS);
         }
         shuffle(IMAGES, LABELS);       
-        report_runtime(t1);
+        //report_runtime(t1);
       }
     }
   }
@@ -126,8 +125,6 @@ void run_omp(unsigned num_epochs, unsigned num_threads) {
 
 
 
-void run_omp(MNIST& D, unsigned num_threads) {
-}
 
 /*
 void run_omp(MNIST& D, unsigned num_threads) {
