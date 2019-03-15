@@ -12,6 +12,9 @@ int main(){
 
   // Create a framework
   tf::Framework f;
+
+  f.name("Demo");
+
   auto A = f.emplace([&](){ std::cout << "TaskA\n"; }).name("A");
   auto B = f.emplace([&](auto& subflow){ 
     std::cout << "TaskB\n";
@@ -62,6 +65,8 @@ int main(){
     std::cout << "Counter = " << counter << std::endl; 
     return counter -- == 0; 
   }).get();
+
+  f.dump(std::cout);
 
   return 0;
 }

@@ -7,33 +7,40 @@ void composition_example_1(tf::Taskflow& tf) {
   std::cout << '\n';
   std::cout << "Composition example 1\n"; 
 
-  // f1 has two independent tasks
+  // f1 has three independent tasks
   tf::Framework f1;
-  auto [f1A, f1B] = f1.name("F1").emplace(
+  auto [f1A, f1B, f1C] = f1.name("F1").emplace(
     [&](){ std::cout << "F1 TaskA\n"; },
-    [&](){ std::cout << "F1 TaskB\n"; }
+    [&](){ std::cout << "F1 TaskB\n"; },
+    [&](){ std::cout << "F1 TaskC\n"; }
   );
   f1A.name("f1A");
   f1B.name("f1B");
+  f1C.name("f1C");
+  f1A.precede(f1C);
+  f1B.precede(f1C);
 
   // f2A ---
-  //        |----> f2C ----> f1_module_task
+  //        |----> f2C ----> f1_module_task ----> f2D
   // f2B --- 
   tf::Framework f2;
-  auto [f2A, f2B, f2C] = f2.name("F2").emplace(
+  auto [f2A, f2B, f2C, f2D] = f2.name("F2").emplace(
     [&](){ std::cout << "  F2 TaskA\n"; },
     [&](){ std::cout << "  F2 TaskB\n"; },
-    [&](){ std::cout << "  F2 TaskC\n"; }
+    [&](){ std::cout << "  F2 TaskC\n"; },
+    [&](){ std::cout << "  F2 TaskD\n"; }
   );
   f2A.name("f2A");
   f2B.name("f2B");
   f2C.name("f2C");
+  f2D.name("f2D");
 
   f2A.precede(f2C);
   f2B.precede(f2C);
   
   auto f1_module_task = f2.composed_of(f1).name("module");
   f2C.precede(f1_module_task);
+  f1_module_task.precede(f2D);
 
   f2.dump(std::cout);
 

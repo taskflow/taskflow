@@ -775,6 +775,7 @@ The folder `example/` contains several examples and is a great place to learn to
 | [executor.cpp](./example/executor.cpp)| shows how to create multiple taskflow objects sharing one executor to avoid the thread over-subscription problem |
 | [framework.cpp](./example/framework.cpp)| shows the usage of framework to create reusable task dependency graphs |
 | [dataflow.cpp](./example/dataflow.cpp)| demonstrates how to pass data from tasks to their successors and to use cpp-taskflow for synchronization |
+| [composition.cpp](./example/composition.cpp)| demonstrates the decomposable interface of framework |
 
 # Get Involved
 
