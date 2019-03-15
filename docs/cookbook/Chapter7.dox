@@ -3,7 +3,7 @@ namespace tf {
 /** @page chapter7 C7: %Framework (Experimental)
 
 In many situations, you will need to execute a task dependency multiple times to
-create a @em reusable and @em stateful execution flow.
+create a @em reusable, @em stateful, and @em decomposable execution flow.
 tf::Framework is designed for this purpose. 
 This chapter introduces the concept of a framework and shows its usage.
 
@@ -26,9 +26,23 @@ tf::Task B = framework.placeholder();
 
 // add a dependency link from A to B
 A.precede(B);  
+@endcode
 
-// build precedence links from A to B and C
-A.precede(B, C);
+Each framework represents a unique graph with its own task set.
+You should avoid connecting tasks from different frameworks
+which gives undefined behavior.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+
+tf::Framework f1, f2;
+
+tf::Task A = f1.emplace([] () { std::cout << "task of framework 1\n"; });
+tf::Task B = f2.emplace([] () { std::cout << "task of framework 2\n"; });
+
+// connecting the tasks from different frameworks results in undefined behaviors
+A.precede(B);
+taskflow.run(f1);
 @endcode
 
 
@@ -110,6 +124,25 @@ tf::Taskflow taskflow;
 
 @endcode
 
+Similarly, you should avoid touching a framework while it is running.
+
+@code{.cpp}
+tf::Framework f;
+
+// Add tasks into the framework 
+// ...
+
+// Declare a taskflow object
+tf::Taskflow taskflow;
+
+auto future = taskflow.run(f);
+
+// Modify the framework before the execution finishes leads to undefined behavior 
+f.emplace([](){ std::cout << "Add a new task\n"; });
+
+// Use get method to wait for the execution completes.
+future.get();
+@endcode
 
 
 @section C7_CreateAppicationFramework Create an Application Framework
@@ -149,74 +182,20 @@ int main() {
 }
 @endcode
 
+@section C7_FrameworkDecomposition Framework Decomposition
+
+A powerful feature of tf::Framework is its @em decomposable interface.
+You can break down a large application framework into smaller pieces
+each designed to run a specific task dependency graph.
+This largely facilitates the @em modularity of writing a parallel task program.
+
+
+
 
 @section C7_Caveats Caveats
 
 Although tf::Framework enables efficient reuse of a task dependency graph,
 there can be many potential pitfalls. 
-
-@warning A framework object is @em NOT thread-safe. Trying to touch a framework while it is running can result in undefined behavior.
-
-@code{.cpp}
-tf::Framework f;
-
-// Add tasks into the framework 
-// ...
-
-// Declare a taskflow object
-tf::Taskflow taskflow;
-
-auto future = taskflow.run(f);
-
-// Modify the framework before the execution finishes leads to undefined behavior 
-f.emplace([](){ std::cout << "Add a new task\n"; });
-
-// Use get method to wait for the execution completes.
-future.get();
-@endcode
-
-
-@warning Subgraphs spawned during dynamic tasking will be cleaned up automatically 
-at the beginning of each execution of the framework.
-
-@code{.cpp}
-tf::Framework f;
-
-tf::Task A = f.emplace([](){ std::cout << "TaskA" << std::endl; });
-tf::Task B = f.emplace([](tf::SubflowBuilder& subflow){ 
-  std::cout << "TaskB" << std::endl; 
-  subflow.emplace([](){ std::cout << "SubTask" << std::endl; });
-});
-A.precede(B);
-
-// Declare a taskflow object
-tf::Taskflow taskflow;
-
-std::cout << "First run:" << std::endl;
-taskflow.run(f).get();
-std::cout << std::endl;
-
-// Previous spawn subflow is removed before the second execution, only one SubTask message will be printed.
-std::cout << "Second run:" << std::endl;
-taskflow.run(f).get();
-std::cout << std::endl;
-@endcode
-
-@warning Connecting the tasks from different frameworks can result in undefined behaviors.
-
-@code{.cpp}
-tf::Taskflow taskflow;
-
-tf::Framework f1, f2;
-
-tf::Task A = f1.emplace([] () { std::cout << "task of framework 1\n"; });
-tf::Task B = f2.emplace([] () { std::cout << "task of framework 2\n"; });
-
-// connecting the tasks from different frameworks results in undefined behaviors
-A.precede(B);
-taskflow.run(f1);
-@endcode
-
 We are still experimenting tf::Framework to develop a safe interface. 
 Please stay tuned with @ref master-branch.
 

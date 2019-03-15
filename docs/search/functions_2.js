@@ -24,6 +24,7 @@ var searchData=
   ['compare_5fexchange_5fstrong',['compare_exchange_strong',['http://en.cppreference.com/w/cpp/atomic/atomic/compare_exchange.html',1,'std::atomic']]],
   ['compare_5fexchange_5fweak',['compare_exchange_weak',['http://en.cppreference.com/w/cpp/atomic/atomic/compare_exchange.html',1,'std::atomic']]],
   ['complex',['complex',['http://en.cppreference.com/w/cpp/numeric/complex/complex.html',1,'std::complex']]],
+  ['composed_5fof',['composed_of',['../classtf_1_1Framework.html#acf31b1f085cca58fe87dcfc0eb7fb6ac',1,'tf::Framework']]],
   ['condition_5fvariable',['condition_variable',['http://en.cppreference.com/w/cpp/thread/condition_variable/condition_variable.html',1,'std::condition_variable']]],
   ['condition_5fvariable_5fany',['condition_variable_any',['http://en.cppreference.com/w/cpp/thread/condition_variable_any/condition_variable_any.html',1,'std::condition_variable_any']]],
   ['construct',['construct',['http://en.cppreference.com/w/cpp/memory/allocator_traits/construct.html',1,'std::allocator_traits::construct()'],['http://en.cppreference.com/w/cpp/memory/allocator/construct.html',1,'std::allocator::construct()'],['http://en.cppreference.com/w/cpp/memory/scoped_allocator_adaptor/construct.html',1,'std::scoped_allocator_adaptor::construct()']]],

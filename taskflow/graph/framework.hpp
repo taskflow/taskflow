@@ -53,6 +53,8 @@ class Framework : public FlowBuilder {
 
     /**
     @brief creates a module task from a framework
+
+    @param framework a framework object to create the module
     */
     tf::Task composed_of(Framework& framework);
 

@@ -37,7 +37,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
-   &#160;<span id="projectnumber">2.1.0</span>
+   &#160;<span id="projectnumber">2.2.0</span>
    </div>
   </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -149,6 +149,17 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Framework.html#a27b2d8b948f15ccedd2d4b9b0c2cf51b">num_nodes</a> () const</td></tr>
 <tr class="memdesc:a27b2d8b948f15ccedd2d4b9b0c2cf51b"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the number of nodes in the framework <br /></td></tr>
 <tr class="separator:a27b2d8b948f15ccedd2d4b9b0c2cf51b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf31b1f085cca58fe87dcfc0eb7fb6ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">tf::Task</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Framework.html#acf31b1f085cca58fe87dcfc0eb7fb6ac">composed_of</a> (<a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;framework)</td></tr>
+<tr class="memdesc:acf31b1f085cca58fe87dcfc0eb7fb6ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a module task from a framework  <a href="#acf31b1f085cca58fe87dcfc0eb7fb6ac">More...</a><br /></td></tr>
+<tr class="separator:acf31b1f085cca58fe87dcfc0eb7fb6ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd711d67b9efc5b09458f047f5fb73c6"><td class="memItemLeft" align="right" valign="top"><a id="abd711d67b9efc5b09458f047f5fb73c6"></a>
+auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Framework.html#abd711d67b9efc5b09458f047f5fb73c6">name</a> (const <a class="elRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;)</td></tr>
+<tr class="memdesc:abd711d67b9efc5b09458f047f5fb73c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the name of the framework <br /></td></tr>
+<tr class="separator:abd711d67b9efc5b09458f047f5fb73c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05e34a9fe31ec5339db809ab358ed69d"><td class="memItemLeft" align="right" valign="top"><a id="a05e34a9fe31ec5339db809ab358ed69d"></a>
+const <a class="elRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Framework.html#a05e34a9fe31ec5339db809ab358ed69d">name</a> () const</td></tr>
+<tr class="memdesc:a05e34a9fe31ec5339db809ab358ed69d"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the name of the framework <br /></td></tr>
+<tr class="separator:a05e34a9fe31ec5339db809ab358ed69d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtf_1_1FlowBuilder"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtf_1_1FlowBuilder')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtf_1_1FlowBuilder.html">tf::FlowBuilder</a></td></tr>
 <tr class="memitem:a67d023d5493da1594a1d2eaea89da179 inherit pub_methods_classtf_1_1FlowBuilder"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a67d023d5493da1594a1d2eaea89da179">FlowBuilder</a> (Graph &amp;graph)</td></tr>
 <tr class="memdesc:a67d023d5493da1594a1d2eaea89da179 inherit pub_methods_classtf_1_1FlowBuilder"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a flow builder object  <a href="classtf_1_1FlowBuilder.html#a67d023d5493da1594a1d2eaea89da179">More...</a><br /></td></tr>
@@ -238,6 +249,40 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Topology</b></td></t
 <div class="textblock"><p>A reusable task dependency graph. </p>
 <p>A framework is a task dependency graph that is independent of a taskflow object. You can run a framework multiple times from a taskflow object to enable a reusable control flow. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="acf31b1f085cca58fe87dcfc0eb7fb6ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf31b1f085cca58fe87dcfc0eb7fb6ac">&#9670;&nbsp;</a></span>composed_of()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1Task.html">tf::Task</a> tf::Framework::composed_of </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtf_1_1Framework.html">Framework</a> &amp;&#160;</td>
+          <td class="paramname"><em>framework</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>creates a module task from a framework </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">framework</td><td>a framework object to create the module </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a667a978354952ee99f2ef1ae55392083"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a667a978354952ee99f2ef1ae55392083">&#9670;&nbsp;</a></span>dump()</h2>
 

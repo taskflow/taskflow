@@ -55,6 +55,7 @@ var Cookbook =
       [ "Execute a Framework", "chapter7.html#C7_ExecuteAFramework", null ],
       [ "Lifetime of a Framework", "chapter7.html#C7_LifeTimeOfAFramework", null ],
       [ "Create an Application Framework", "chapter7.html#C7_CreateAppicationFramework", null ],
+      [ "Framework Decomposition", "chapter7.html#C7_FrameworkDecomposition", null ],
       [ "Caveats", "chapter7.html#C7_Caveats", null ]
     ] ]
 ];
