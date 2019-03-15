@@ -77,7 +77,7 @@ std::chrono::microseconds measure_time_omp(unsigned num_threads) {
   auto beg = std::chrono::high_resolution_clock::now();
   wavefront_omp(num_threads);
   auto end = std::chrono::high_resolution_clock::now();
-  return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg);
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
 
