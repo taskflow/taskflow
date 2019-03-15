@@ -302,8 +302,7 @@ inline Eigen::VectorXi TEST_LABELS;
 //   dnn.add_layer(30, 10, Activation::NONE); 
 
 // The total number of training data = 60000
-inline constexpr size_t BATCH {6000};
-//inline constexpr size_t BATCH {60};
+inline constexpr size_t BATCH {60};
 inline constexpr size_t NUM_ITERATIONS {60000/BATCH};
 inline constexpr size_t NUM_DNNS {10};
 

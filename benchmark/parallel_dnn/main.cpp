@@ -7,7 +7,7 @@ std::chrono::milliseconds measure_time_taskflow(
   unsigned num_epochs,
   unsigned num_threads
 ) {
-  std::puts("Taskflow");
+  //std::puts("Taskflow");
   auto t1 = std::chrono::high_resolution_clock::now();
   run_taskflow(num_epochs, num_threads);
   auto t2 = std::chrono::high_resolution_clock::now();
@@ -19,7 +19,7 @@ std::chrono::milliseconds measure_time_omp(
   unsigned num_epochs,
   unsigned num_threads
 ) {
-  std::puts("OpenMP");
+  //std::puts("OpenMP");
   auto t1 = std::chrono::high_resolution_clock::now();
   run_omp(num_epochs, num_threads);
   auto t2 = std::chrono::high_resolution_clock::now();
@@ -31,7 +31,7 @@ std::chrono::milliseconds measure_time_tbb(
   unsigned num_epochs,
   unsigned num_threads
 ) {
-  std::puts("TBB");
+  //std::puts("TBB");
   auto t1 = std::chrono::high_resolution_clock::now();
   run_tbb(num_epochs, num_threads);
   auto t2 = std::chrono::high_resolution_clock::now();
