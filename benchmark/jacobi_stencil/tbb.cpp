@@ -3,7 +3,7 @@
 #include <tbb/flow_graph.h>
 
 // the wavefront computation
-void wavefront_tbb(unsigned num_threads) {
+void wavefront_tbb(unsigned num_threads, unsigned num_runs) {
 
   using namespace tbb;
   using namespace tbb::flow;
@@ -32,8 +32,10 @@ void wavefront_tbb(unsigned num_threads) {
     }
   }
   
-  node[0][0]->try_put(continue_msg());
-  g.wait_for_all();
+  for(unsigned i=0; i<num_runs; i++) {
+    node[0][0]->try_put(continue_msg());
+    g.wait_for_all();
+  }
   
   for(int i=0; i<MB; ++i) {
     for(int j=0; j<NB; ++j) {
@@ -42,9 +44,9 @@ void wavefront_tbb(unsigned num_threads) {
   }
 }
 
-std::chrono::microseconds measure_time_tbb(unsigned num_threads) {
+std::chrono::microseconds measure_time_tbb(unsigned num_threads, unsigned num_runs) {
   auto beg = std::chrono::high_resolution_clock::now();
-  wavefront_tbb(num_threads);
+  wavefront_tbb(num_threads, num_runs);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - beg);
 }

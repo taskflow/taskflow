@@ -57,8 +57,8 @@ inline void jacobi_stencil(int i, int j){
 }
 
 
-std::chrono::microseconds measure_time_taskflow(unsigned);
-std::chrono::microseconds measure_time_omp(unsigned);
-std::chrono::microseconds measure_time_tbb(unsigned);
+std::chrono::microseconds measure_time_taskflow(unsigned, unsigned=1);
+std::chrono::microseconds measure_time_omp(unsigned, unsigned=1);
+std::chrono::microseconds measure_time_tbb(unsigned, unsigned=1);
 
 
