@@ -374,7 +374,7 @@ target_link_libraries(
   ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS}
   ${OpenMP_CXX_LIBRARIES} stdc++fs
 )
-
+set_target_properties(jacobi_stencil PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 endif()
 
