@@ -373,8 +373,8 @@ inline void report_runtime(std::chrono::time_point<std::chrono::high_resolution_
 }
 
 
-void run_tbb(unsigned, unsigned);
-void run_taskflow(unsigned, unsigned);
-void run_omp(unsigned, unsigned);
+void run_tbb(const unsigned, const unsigned);
+void run_taskflow(const unsigned, const unsigned);
+void run_omp(const unsigned, const unsigned);
 void run_sequential(unsigned, unsigned);
 

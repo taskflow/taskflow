@@ -4,36 +4,33 @@
 
 // Function: measure_time_taskflow
 std::chrono::milliseconds measure_time_taskflow(
-  unsigned num_epochs,
+  unsigned num_iterations,
   unsigned num_threads
 ) {
-  //std::puts("Taskflow");
   auto t1 = std::chrono::high_resolution_clock::now();
-  run_taskflow(num_epochs, num_threads);
+  run_taskflow(num_iterations, num_threads);
   auto t2 = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
 }
 
 // Function: measure_time_omp
 std::chrono::milliseconds measure_time_omp(
-  unsigned num_epochs,
+  unsigned num_iterations,
   unsigned num_threads
 ) {
-  //std::puts("OpenMP");
   auto t1 = std::chrono::high_resolution_clock::now();
-  run_omp(num_epochs, num_threads);
+  run_omp(num_iterations, num_threads);
   auto t2 = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
 }
 
 // Function: measure_time_tbb
 std::chrono::milliseconds measure_time_tbb(
-  unsigned num_epochs,
+  unsigned num_iterations,
   unsigned num_threads
 ) {
-  //std::puts("TBB");
   auto t1 = std::chrono::high_resolution_clock::now();
-  run_tbb(num_epochs, num_threads);
+  run_tbb(num_iterations, num_threads);
   auto t2 = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
 }
@@ -69,7 +66,7 @@ int main(int argc, char *argv[]){
 
   int rounds {2};
 
-  std::cout << std::setw(12) << "# epochs"
+  std::cout << std::setw(12) << "# iterations"
             << std::setw(12) << "OpenMP"
             << std::setw(12) << "TBB"
             << std::setw(12) << "Taskflow"
@@ -77,19 +74,19 @@ int main(int argc, char *argv[]){
             << std::setw(12) << "speedup2"
             << '\n';
 
-  for(int epoch=10; epoch<=100; epoch+=10) {
+  for(int iter=10; iter<=100; iter+=10) {
     
     double omp_time {0.0};
     double tbb_time {0.0};
     double tf_time  {0.0};
 
     for(int j=0; j<rounds; ++j) {
-      omp_time += measure_time_omp(epoch, num_threads).count();
-      tbb_time += measure_time_tbb(epoch, num_threads).count();
-      tf_time += measure_time_taskflow(epoch, num_threads).count();
+      omp_time += measure_time_omp(iter, num_threads).count();
+      tbb_time += measure_time_tbb(iter, num_threads).count();
+      tf_time += measure_time_taskflow(iter, num_threads).count();
     }
     
-    std::cout << std::setw(12) << epoch 
+    std::cout << std::setw(12) << iter
               << std::setw(12) << omp_time / rounds / 1e3
               << std::setw(12) << tbb_time / rounds / 1e3 
               << std::setw(12) << tf_time  / rounds / 1e3 

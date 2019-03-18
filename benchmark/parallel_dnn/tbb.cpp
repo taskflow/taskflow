@@ -59,7 +59,7 @@ struct TBB_DNNTrainingPattern {
   std::vector<std::unique_ptr<continue_node<continue_msg>>> update_tasks;
 };
 
-void run_tbb(unsigned num_epochs, unsigned num_threads) {
+void run_tbb(const unsigned num_iterations, const unsigned num_threads) {
 
   tbb::task_scheduler_init init(num_threads);
 
@@ -93,7 +93,7 @@ void run_tbb(unsigned num_epochs, unsigned num_threads) {
   }
 
   //auto t1 = std::chrono::high_resolution_clock::now();
-  for(auto i=0u; i<num_epochs; i++) {
+  for(auto i=0u; i<num_iterations; i++) {
     for(auto i=0u; i<NUM_DNNS; i++) {
       dnns[i]->try_put(continue_msg());
     }
