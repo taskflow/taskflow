@@ -481,6 +481,7 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
         
         // try to steal a task from others
         steal_task:
+        std::this_thread::yield();
         if(t = _steal(i); t) {
           goto run_task;
         }
@@ -488,7 +489,6 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
         // Now we are going to preempt this worker thread
         _barrier.set_active(false);
         {
-         
           if(auto victim = _find_victim(i); victim != N) {
             worker.last_victim = victim;
             _barrier.set_active(true);
@@ -614,6 +614,8 @@ std::optional<Closure> WorkStealingThreadpool<Closure>::_steal(unsigned thief) {
     }
   }
   
+
+
   return std::nullopt; 
 }
 
