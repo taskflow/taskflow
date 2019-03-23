@@ -9,7 +9,6 @@
 #include <cstdio>
 #include <atomic>
 #include <memory>
-#include <cassert>
 #include <deque>
 #include <optional>
 #include <thread>
