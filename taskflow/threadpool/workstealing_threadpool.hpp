@@ -1,3 +1,8 @@
+// 2019/03/21 - modified by Tsung-Wei Huang
+//  - removed notifier
+//  - implemented a new scheduling strategy
+//    (a thread will sleep as long as all threads meet the constraints)
+// 
 // 2019/02/15 - modified by Tsung-Wei Huang
 //  - batch to take reference not move
 //
@@ -481,7 +486,7 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
         
         // try to steal a task from others
         steal_task:
-        std::this_thread::yield();
+
         if(t = _steal(i); t) {
           goto run_task;
         }
@@ -590,8 +595,10 @@ unsigned WorkStealingThreadpool<Closure>::_find_victim(unsigned thief) const {
 // Function: _steal
 template <typename Closure>
 std::optional<Closure> WorkStealingThreadpool<Closure>::_steal(unsigned thief) {
-    
+  
   assert(_workers[thief].queue.empty());
+        
+  std::this_thread::yield();
 
   std::optional<Closure> task;
     
@@ -613,8 +620,6 @@ std::optional<Closure> WorkStealingThreadpool<Closure>::_steal(unsigned thief) {
       victim -= _workers.size();
     }
   }
-  
-
 
   return std::nullopt; 
 }
