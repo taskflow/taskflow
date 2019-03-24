@@ -377,12 +377,9 @@ class WorkStealingThreadpool {
 
     std::vector<Worker> _workers;
     std::vector<std::thread> _threads;
-    std::vector<int> _coprimes;
 
     WorkStealingQueue<Closure> _queue;
     
-    //std::atomic<bool> _spinning {false};
-
     Barrier _barrier;
 
     void _spawn(unsigned);
@@ -401,16 +398,6 @@ class WorkStealingThreadpool {
 template <typename Closure>
 WorkStealingThreadpool<Closure>::WorkStealingThreadpool(unsigned N) : 
   _workers {N} {
-
-  for (unsigned i = 1; i <= N; i++) {
-    unsigned a = i;
-    unsigned b = N;
-
-    if(std::gcd(a, b) == 1) {
-      _coprimes.push_back(i);
-    }
-  }
-
   _spawn(N);
 }
 
@@ -576,16 +563,10 @@ unsigned WorkStealingThreadpool<Closure>::_find_victim(unsigned thief) const {
   assert(_workers[thief].queue.empty());
     
   // try stealing a task from other workers
-  for(unsigned victim=0; victim<_workers.size(); victim++){
-    if(thief == victim) {
-      if(!_queue.empty()) {
-        return thief;
-      }
-    }
-    else {
-      if(!_workers[victim].queue.empty()) {
-        return victim;
-      }
+  for(unsigned victim=0; victim<_workers.size(); ++victim){
+    if((thief == victim && !_queue.empty()) ||
+       (thief != victim && !_workers[victim].queue.empty())) {
+      return victim;
     }
   }
 
@@ -598,12 +579,8 @@ std::optional<Closure> WorkStealingThreadpool<Closure>::_steal(unsigned thief) {
   
   assert(_workers[thief].queue.empty());
         
-  std::this_thread::yield();
-
   std::optional<Closure> task;
     
-  unsigned r = _randomize(_workers[thief].seed);
-  unsigned inc = _coprimes[_fast_modulo(r, _coprimes.size())];
   unsigned victim = _workers[thief].last_victim;
   
   // try stealing a task from other workers
@@ -616,10 +593,12 @@ std::optional<Closure> WorkStealingThreadpool<Closure>::_steal(unsigned thief) {
       return task;
     }
 
-    if(victim += inc; victim >= _workers.size()){
-      victim -= _workers.size();
+    if(++victim; victim == _workers.size()){
+      victim = 0;
     }
   }
+  
+  std::this_thread::yield();
 
   return std::nullopt; 
 }
