@@ -55,7 +55,7 @@ void run_sequential(MNIST& D, unsigned num_threads) {
 void run_sequential(unsigned num_epochs, unsigned num_threads) {
 
   MNIST_DNN D;
-  init_dnn(D); 
+  init_dnn(D, rand_rate()); 
 
   for(auto e=0u; e<100; e++) { 
     for(auto it=0u; it<NUM_ITERATIONS; it++) {

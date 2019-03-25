@@ -5,7 +5,7 @@
 struct TF_DNNTrainingPattern : public tf::Framework {
 
     TF_DNNTrainingPattern() { 
-      init_dnn(dnn); 
+      init_dnn(dnn, rand_rate()); 
       build_task_graph();
     };
 
@@ -56,7 +56,7 @@ struct TF_DNNTrainingEpoch : public tf::Framework {
     }
 };
 
-void run_taskflow(const unsigned num_iterations, const unsigned num_threads) {
+void run_taskflow(const unsigned num_epochs, const unsigned num_threads) {
 
   tf::Taskflow tf {num_threads};
   auto dnn_patterns = std::make_unique<TF_DNNTrainingPattern[]>(NUM_DNNS);
@@ -86,6 +86,6 @@ void run_taskflow(const unsigned num_iterations, const unsigned num_threads) {
 
   //tf.run_n(parallel_dnn, 100).get();
 
-  tf.run_n(parallel_dnn, num_iterations).get();
+  tf.run_n(parallel_dnn, num_epochs).get();
 }
 

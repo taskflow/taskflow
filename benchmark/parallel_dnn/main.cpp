@@ -65,8 +65,9 @@ int main(int argc, char *argv[]){
   //exit(1);
 
   int rounds {2};
+  ::srand(time(nullptr));
 
-  std::cout << std::setw(12) << "# iterations"
+  std::cout << std::setw(12) << "# Epochs"
             << std::setw(12) << "OpenMP"
             << std::setw(12) << "TBB"
             << std::setw(12) << "Taskflow"
@@ -74,19 +75,19 @@ int main(int argc, char *argv[]){
             << std::setw(12) << "speedup2"
             << '\n';
 
-  for(int iter=10; iter<=100; iter+=10) {
+  for(int epoch=10; epoch<=100; epoch+=10) {
     
     double omp_time {0.0};
     double tbb_time {0.0};
     double tf_time  {0.0};
 
     for(int j=0; j<rounds; ++j) {
-      omp_time += measure_time_omp(iter, num_threads).count();
-      tbb_time += measure_time_tbb(iter, num_threads).count();
-      tf_time += measure_time_taskflow(iter, num_threads).count();
+      omp_time += measure_time_omp(epoch, num_threads).count();
+      tbb_time += measure_time_tbb(epoch, num_threads).count();
+      tf_time += measure_time_taskflow(epoch, num_threads).count();
     }
     
-    std::cout << std::setw(12) << iter
+    std::cout << std::setw(12) << epoch 
               << std::setw(12) << omp_time / rounds / 1e3
               << std::setw(12) << tbb_time / rounds / 1e3 
               << std::setw(12) << tf_time  / rounds / 1e3 

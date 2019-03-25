@@ -306,13 +306,13 @@ inline constexpr size_t BATCH {60};
 inline constexpr size_t NUM_ITERATIONS {60000/BATCH};
 inline constexpr size_t NUM_DNNS {10};
 
-inline void init_dnn(MNIST_DNN& dnn) {
+inline void init_dnn(MNIST_DNN& dnn, float rate) {
   //dnn.batch(BATCH).learning_rate(0.001);
   //dnn.add_layer(784, 100, Activation::RELU);
   //dnn.add_layer(100, 30, Activation::RELU);
   //dnn.add_layer(30, 10, Activation::NONE); 
 
-  dnn.batch(BATCH).learning_rate(0.001);
+  dnn.batch(BATCH).learning_rate(rate);
   dnn.add_layer(784, 64, Activation::RELU);
   dnn.add_layer(64, 32, Activation::RELU);
   dnn.add_layer(32, 16, Activation::RELU);
@@ -372,6 +372,9 @@ inline void report_runtime(std::chrono::time_point<std::chrono::high_resolution_
   t1 = std::chrono::high_resolution_clock::now();
 }
 
+inline float rand_rate() {
+  return static_cast<float>(rand())/static_cast<float>(RAND_MAX);
+}
 
 void run_tbb(const unsigned, const unsigned);
 void run_taskflow(const unsigned, const unsigned);
