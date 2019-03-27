@@ -307,7 +307,7 @@ class WorkStealingThreadpool {
   struct Worker {
     WorkStealingQueue<Closure> queue;
     std::optional<Closure> cache;
-    bool exit  {false};
+    bool exit {false};
     uint64_t seed;
     unsigned last_victim;
   };
@@ -381,7 +381,7 @@ class WorkStealingThreadpool {
     WorkStealingQueue<Closure> _queue;
     
     Barrier _barrier;
-
+    
     void _spawn(unsigned);
     void _balance_load(unsigned);
 
