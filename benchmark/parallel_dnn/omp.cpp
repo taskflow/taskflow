@@ -91,7 +91,7 @@ void run_omp(const unsigned num_iterations, const unsigned num_threads) {
 
   auto dnns = std::make_unique<MNIST_DNN[]>(NUM_DNNS);
   for(auto i=0u; i<NUM_DNNS; i++) {
-    init_dnn(dnns[i]); 
+    init_dnn(dnns[i], rand_rate()); 
   }
 
   omp_set_num_threads(num_threads); 
