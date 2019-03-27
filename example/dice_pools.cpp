@@ -5,23 +5,22 @@
 cpp-taskflow works on directed acyclic graphs.
 And here we want to pass information between the flow elements.
 
-To do so, we see the cpp-taskflow arcs as objects memory where the functions on
-the nodes read from or write to.
+To do so, we see the cpp-taskflow arcs as objects where the functions on the
+nodes read from or write to.
 
-The function on every node will *read from* the objects of memory of its
-incoming edges and *write to* the objects of its outcoming edges.
+The function on every node will *read from* the objects on the incoming arcs
+and *write to* the objects on the outcoming arcs.
 
 The cpp-taskflow semantics ensures the synchronization.
 
 
-Nodes without incoming edges will require the input from somewhere else;
-instead nodes without outcoming edges have to execute some side effects to be
-useful.
+Nodes without incoming arcs will require the input from somewhere else; instead
+nodes without outcoming arcs have to execute some side effects to be useful.
 
 
-In this example we fill up (in parallel) two vectors of the results of a fair
-percentile die and we pick up the maximum values from each cell, and output the
-result.
+In this example we fill up (in parallel) two vectors of the same size with the
+results of a fair percentile die, once done we pick up the maximum values from
+each cell. Finally we output the result.
 
 .----------------.
 | fill in vector |----|
@@ -38,7 +37,8 @@ The code assumes the taskflow is executed once, when using the Framework
 feature the programmer needs care to keep the invariants.
 
 It is then suggested to use const references (eg., vector<int> const&) for the
-objects related to the incoming arcs and references for outcoming ones.
+objects related to the incoming arcs and non-cost references for outcoming
+ones.
 
 */
 
@@ -94,7 +94,7 @@ public:
         for (std::vector<int>::size_type i{}, e = in1_.size(); i < e; ++i) {
             in1_[i] = std::max(in1_[i], in2_[i]);
         }
-        // the taskflow is executed once, so we avoid one copy
+        // the taskflow is executed once, so we avoid one allocation
         out_.swap(in1_);
     }
 private:
@@ -143,7 +143,7 @@ int main() {
         Print(out)
     );
 
-    // Set up dependencies
+    // Set up the dependencies
     fill_in_vector1.precede(pick_up_max);
     fill_in_vector2.precede(pick_up_max);
     pick_up_max.precede(print);
