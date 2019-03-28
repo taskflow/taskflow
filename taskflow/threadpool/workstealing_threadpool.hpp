@@ -624,6 +624,8 @@ void WorkStealingThreadpool<Closure>::emplace(ArgsT&&... args){
     }
     else {
       _workers[pt.thread_id].queue.push(Closure{std::forward<ArgsT>(args)...});
+      // All are busy
+      return;
     }
   }
   // other threads
@@ -663,7 +665,8 @@ void WorkStealingThreadpool<Closure>::batch(std::vector<Closure>& tasks) {
 
     for(; i<tasks.size(); ++i) {
       _workers[pt.thread_id].queue.push(std::move(tasks[i]));
-      _cv.notify_one();
+      // All are busy
+      //_cv.notify_one();
     }
 
     return;
