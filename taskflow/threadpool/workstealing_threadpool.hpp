@@ -389,7 +389,7 @@ class WorkStealingThreadpool {
 
     unsigned _randomize(uint64_t&) const;
     unsigned _fast_modulo(unsigned, unsigned) const;
-    unsigned _find_victim(unsigned) const;
+    unsigned _find_victim(unsigned, unsigned = 1) const;
     
     PerThread& _per_thread() const;
 
@@ -467,13 +467,25 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
       while(!worker.exit) {
         
         // try to get a task from my queue
-        if(t = worker.queue.pop(); t) {
-          goto run_task;
+        //if(t = worker.queue.pop(); t) {
+        //  goto run_task;
+        //}
+        
+        // execute the tasks.
+        run_task:
+        
+        while(t) {
+          (*t)();
+          if(worker.cache) {
+            t = std::move(worker.cache);
+            worker.cache = std::nullopt;
+          }
+          else {
+            t = worker.queue.pop();
+          }
         }
         
         // try to steal a task from others
-        steal_task:
-        
         if(t = _steal(i); t) {
           goto run_task;
         }
@@ -483,12 +495,12 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
 
         if(!spinning_ && !spinning_.exchange(true)) {
           while (!t) {
-            if(auto victim = _find_victim(i); victim == N) {
+            if(auto victim = _find_victim(i, 1000); victim == N) {
               break;
             }
             else {
               worker.last_victim = victim;
-              t = _steal(i);
+              t = victim == i ? _queue.steal() : _workers[victim].queue.steal();
             }
           }
           spinning_ = false;
@@ -521,23 +533,8 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
         }
         else {
           worker.last_victim = victim;
-          goto steal_task;
+          t = victim == i ? _queue.steal() : _workers[victim].queue.steal();
         }
-        
-        // execute the tasks.
-        run_task:
-        
-        while(t) {
-          (*t)();
-          if(worker.cache) {
-            t = std::move(worker.cache);
-            worker.cache = std::nullopt;
-          }
-          else {
-            t = worker.queue.pop();
-          }
-        }
-
       }
       
       //_barrier.set_active(true);
@@ -631,16 +628,21 @@ void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
 
 // Function: _non_empty_queue
 template <typename Closure>
-unsigned WorkStealingThreadpool<Closure>::_find_victim(unsigned thief) const {
+unsigned WorkStealingThreadpool<Closure>::_find_victim(
+  unsigned thief,
+  unsigned round
+) const {
 
   assert(_workers[thief].queue.empty());
 
   if(!_workers[thief].exit) {
-    // try stealing a task from other workers
-    for(unsigned victim=0; victim<_workers.size(); ++victim){
-      if((thief == victim && !_queue.empty()) ||
-         (thief != victim && !_workers[victim].queue.empty())) {
-        return victim;
+    for(unsigned r = 0; r < round; ++r) {
+      // try stealing a task from other workers
+      for(unsigned victim=0; victim<_workers.size(); ++victim){
+        if((thief == victim && !_queue.empty()) ||
+           (thief != victim && !_workers[victim].queue.empty())) {
+          return victim;
+        }
       }
     }
   }
@@ -698,7 +700,7 @@ void WorkStealingThreadpool<Closure>::emplace(ArgsT&&... args){
       return;
     }
     else {
-      _workers[pt.thread_id].queue.push(Closure{std::forward<ArgsT>(args)...});
+    _workers[pt.thread_id].queue.push(Closure{std::forward<ArgsT>(args)...});
     }
   }
   // other threads
