@@ -716,6 +716,8 @@ void WorkStealingThreadpool<Closure>::emplace(ArgsT&&... args){
     }
     else {
       _workers[pt.thread_id].queue.push(Closure{std::forward<ArgsT>(args)...});
+      // All are busy
+      return;
     }
   }
   // other threads

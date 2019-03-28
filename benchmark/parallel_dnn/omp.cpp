@@ -24,26 +24,14 @@ void omp_dnn(MNIST_DNN& D, const unsigned num_iteration) {
         }
         else {
           switch(num_layers) {
-            case 2:
-              #pragma omp task depend (in: dep_u[(i-1)*num_iteration], dep_u[(i-1)*num_iteration+1]) depend (out: dep_f[i]) shared(D, IMAGES, LABELS)
-              {
-                forward_task(D, IMAGES, LABELS);
-              }
-            break;
             case 3:
-              #pragma omp task depend (in: dep_u[(i-1)*num_iteration], dep_u[(i-1)*num_iteration+1], dep_u[(i-1)*num_iteration+2]) depend (out: dep_f[i]) shared(D, IMAGES, LABELS)
-              {
-                forward_task(D, IMAGES, LABELS);
-              }
-            break;
-            case 4:
-              #pragma omp task depend (in: dep_u[(i-1)*num_iteration], dep_u[(i-1)*num_iteration+1], dep_u[(i-1)*num_iteration+2], dep_u[(i-1)*num_iteration+3]) depend (out: dep_f[i]) shared(D, IMAGES, LABELS)
+              #pragma omp task depend (in: dep_u[(i-1)*num_layers], dep_u[(i-1)*num_layers+1], dep_u[(i-1)*num_layers+2]) depend (out: dep_f[i]) shared(D, IMAGES, LABELS)
               {
                 forward_task(D, IMAGES, LABELS);
               }
             break;
             case 5:
-              #pragma omp task depend (in: dep_u[(i-1)*num_iteration], dep_u[(i-1)*num_iteration+1], dep_u[(i-1)*num_iteration+2], dep_u[(i-1)*num_iteration+3], dep_u[(i-1)*num_iteration+4]) depend (out: dep_f[i]) shared(D, IMAGES, LABELS)
+              #pragma omp task depend (in: dep_u[(i-1)*num_layers], dep_u[(i-1)*num_layers+1], dep_u[(i-1)*num_layers+2], dep_u[(i-1)*num_layers+3], dep_u[(i-1)*num_layers+4]) depend (out: dep_f[i]) shared(D, IMAGES, LABELS)
               {
                 forward_task(D, IMAGES, LABELS);
               }
@@ -76,18 +64,16 @@ void omp_dnn(MNIST_DNN& D, const unsigned num_iteration) {
           }
         }
 
-        #pragma omp taskwait 
       } // End of one iteration 
     }
   } // End of omp parallel
-
 
   delete [] dep_f;
   delete [] dep_b;
   delete [] dep_u;
 }
 
-void run_omp(const unsigned num_iterations, const unsigned num_threads) {
+void run_omp(const unsigned num_epochs, const unsigned num_threads) {
 
   auto dnns = std::make_unique<MNIST_DNN[]>(NUM_DNNS);
   for(auto i=0u; i<NUM_DNNS; i++) {
@@ -101,7 +87,7 @@ void run_omp(const unsigned num_iterations, const unsigned num_threads) {
   {
     #pragma omp single
     {
-      for(auto i=0u; i<num_iterations; i++) {
+      for(auto i=0u; i<num_epochs; i++) {
         for(auto j=0u; j<NUM_DNNS; j++) {
           #pragma omp task firstprivate(j) shared(dnns) 
           {
