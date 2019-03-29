@@ -1,3 +1,6 @@
+// 2019/03/29 modified by Tsung-Wei Huang
+//   - added bounded workstealing 
+//
 // 2019/02/15 modified by Tsung-Wei Huang
 //   - modified batch_insertion
 //
@@ -44,13 +47,14 @@ constexpr int WIDTH = 12;
 using Closure = std::function<void()>;
 
 // Procedure: benchmark
-#define BENCHMARK(TITLE, F)                                                     \
-std::cout                                                                       \
-  << std::setw(WIDTH) << TITLE << std::flush                                    \
-  << std::setw(WIDTH) << F<tf::SimpleThreadpool<Closure>>() << std::flush       \
-  << std::setw(WIDTH) << F<tf::ProactiveThreadpool<Closure>>() << std::flush    \
-  << std::setw(WIDTH) << F<tf::SpeculativeThreadpool<Closure>>() << std::flush  \
-  << std::setw(WIDTH) << F<tf::WorkStealingThreadpool<Closure>>() << std::flush \
+#define BENCHMARK(TITLE, F)                                                            \
+std::cout                                                                              \
+  << std::setw(WIDTH) << TITLE << std::flush                                           \
+  << std::setw(WIDTH) << F<tf::SimpleThreadpool<Closure>>()              << std::flush \
+  << std::setw(WIDTH) << F<tf::ProactiveThreadpool<Closure>>()           << std::flush \
+  << std::setw(WIDTH) << F<tf::SpeculativeThreadpool<Closure>>()         << std::flush \
+  << std::setw(WIDTH) << F<tf::WorkStealingThreadpool<Closure>>()        << std::flush \
+  << std::setw(WIDTH) << F<tf::BoundedWorkStealingThreadpool<Closure>>() << std::flush \
   << std::endl;
 
 // ============================================================================
@@ -346,6 +350,7 @@ int main(int argc, char* argv[]) {
             << std::setw(WIDTH) << "pro"
             << std::setw(WIDTH) << "spec"
             << std::setw(WIDTH) << "steal"
+            << std::setw(WIDTH) << "eigen"
             << std::endl;
 
   BENCHMARK("Atomic", atomic_add);

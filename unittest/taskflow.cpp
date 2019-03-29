@@ -97,7 +97,7 @@ TEST_CASE("Executor" * doctest::timeout(300)) {
       auto max = t == 0 ? 1 : t;
 
       REQUIRE(counter == 40000);
-      REQUIRE(threads.size() <= max);
+      REQUIRE(threads.size() <= max + 1);
     }
   }
 }

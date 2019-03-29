@@ -30,6 +30,7 @@ std::cout                                                                       
   << std::setw(WIDTH) << F<tf::BasicTaskflow<tf::ProactiveThreadpool>>() << std::flush    \
   << std::setw(WIDTH) << F<tf::BasicTaskflow<tf::SpeculativeThreadpool>>() << std::flush  \
   << std::setw(WIDTH) << F<tf::BasicTaskflow<tf::WorkStealingThreadpool>>() << std::flush \
+  << std::setw(WIDTH) << F<tf::BasicTaskflow<tf::BoundedWorkStealingThreadpool>>() << std::flush \
   << std::endl;
   
 // ============================================================================
@@ -413,6 +414,7 @@ int main(int argc, char* argv[]) {
             << std::setw(WIDTH) << "tf+pro"
             << std::setw(WIDTH) << "tf+spec"
             << std::setw(WIDTH) << "tf+steal"
+            << std::setw(WIDTH) << "tf+eigen"
             << std::endl;
 
   BENCHMARK("map-reduce", map_reduce);
