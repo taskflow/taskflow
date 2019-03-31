@@ -321,6 +321,15 @@ class WorkStealingThreadpool {
     void set_active(bool active) { active ? ++count : --count; }
     bool synchronized() const { return count == 0; }
   };
+
+  struct Consensus {
+    const unsigned threshold;
+    std::atomic<unsigned> count;
+    Consensus(unsigned N) : threshold {N/2}, count {N} {}
+    void consent() { ++count; }
+    void dissent() { --count; }
+    operator bool () const { return count > threshold; }
+  };
   
   public:
     
@@ -382,10 +391,10 @@ class WorkStealingThreadpool {
     WorkStealingQueue<Closure> _queue;
     
     //Barrier _barrier;
-    //std::atomic<bool> spinning_ {false};
     std::atomic<unsigned> _num_idlers {0};
     std::atomic<bool> _done {false};
-    //std::atomic<bool> _spinning {false};
+
+    Consensus _consensus;
 
     Notifier _notifier;
     
@@ -406,9 +415,10 @@ class WorkStealingThreadpool {
 // Constructor
 template <typename Closure>
 WorkStealingThreadpool<Closure>::WorkStealingThreadpool(unsigned N) : 
-  _workers  {N},
-  _waiters  {N},
-  _notifier {_waiters} {
+  _workers   {N},
+  _waiters   {N},
+  _consensus {N},
+  _notifier  {_waiters} {
   
   for(unsigned i = 1; i <= N; i++) {
     unsigned a = i;
@@ -475,12 +485,22 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
 
       std::optional<Closure> t;
       
+      bool active {true};
+      _consensus.dissent();
+      
       // must use 1 as condition instead of !done
       while(1) {
         
         // execute the tasks.
         run_task:
-        
+
+        assert(_consensus.count <= N && 0 <= _consensus.count);
+
+        if(!active && t) {
+          active = true;
+          _consensus.dissent();
+        }
+
         // exploit
         while(t) {
           (*t)();
@@ -492,9 +512,9 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
             t = worker.queue.pop();
           }
         }
-        
+
         // explore
-        while (!t) {
+        while (1) {
           if(auto victim = _find_victim(i); victim != N) {
             t = victim == i ? _queue.steal() : _workers[victim].queue.steal();
             if(t) {
@@ -503,68 +523,28 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
           }
           else break;
         }
+        
+        if(active) {
+          active = false;
+          _consensus.consent();
+        }
 
         // wait for tasks
-        if(_wait_for_tasks(i, t) == false) {
-          break;
+        if(_consensus) {
+          if(_wait_for_tasks(i, t) == false) {
+            break;
+          }
         }
+        //else {
+        //  std::this_thread::yield();
+        //}
+      }
+
+      if(active) {
+        active = false;
+        _consensus.consent();
       }
       
-      //_barrier.set_active(true);
-
-      /*while(!worker.exit) {
-
-        run_task:
-
-        assert(1 <= _barrier.count && _barrier.count <= N);
-        
-        // pop task from myself
-        while(t) {
-          (*t)();
-          if(worker.cache) {
-            t = std::move(worker.cache);
-            worker.cache = std::nullopt;
-          }
-          else {
-            t = worker.queue.pop();
-          }
-        }
-        
-        _barrier.set_active(false);
-
-        // steal
-        while(t == std::nullopt) {
-
-          // speculative check
-          if(auto victim = _find_victim(i); victim != N) {
-            worker.last_victim = victim;
-            _barrier.set_active(true);
-            if(t = _steal(i); !t) {
-              _barrier.set_active(false);
-            }
-            else goto run_task;
-          }
-
-          // reliable check
-          if(_barrier.synchronized()) {
-            std::unique_lock lock(_mutex);
-            if(!worker.exit) {
-              if(!_queue.empty()) {
-                _barrier.set_active(true);
-                t = _queue.pop();
-                goto run_task;
-              }
-              else {
-                _cv.wait(lock);
-              }
-            }
-            else break;
-          }
-
-        }
-
-      } // End of while ------------------------------------------------------  */
-
     });     
   }
 }
