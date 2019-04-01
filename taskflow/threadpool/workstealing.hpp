@@ -1,3 +1,6 @@
+// 2019/03/30 - modified by Tsung-Wei Huang
+//  - added consensus sleep-loop stragety 
+//
 // 2019/03/21 - modified by Tsung-Wei Huang
 //  - removed notifier
 //  - implemented a new scheduling strategy
@@ -316,12 +319,6 @@ class WorkStealingThreadpool {
     uint64_t seed {std::hash<std::thread::id>()(std::this_thread::get_id())};
   };
 
-  struct Barrier {
-    std::atomic<unsigned> count {0};
-    void set_active(bool active) { active ? ++count : --count; }
-    bool synchronized() const { return count == 0; }
-  };
-
   struct Consensus {
     const unsigned threshold;
     std::atomic<unsigned> count;
@@ -381,8 +378,6 @@ class WorkStealingThreadpool {
 
     std::mutex _mutex;
 
-    std::condition_variable _cv;
-
     std::vector<Worker> _workers;
     std::vector<Notifier::Waiter> _waiters;
     std::vector<unsigned> _coprimes;
@@ -390,12 +385,10 @@ class WorkStealingThreadpool {
 
     WorkStealingQueue<Closure> _queue;
     
-    //Barrier _barrier;
     std::atomic<unsigned> _num_idlers {0};
     std::atomic<bool> _done {false};
 
     Consensus _consensus;
-
     Notifier _notifier;
     
     void _spawn(unsigned);
@@ -481,7 +474,6 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
       pt.worker_id = i;
     
       auto& worker = _workers[i];
-      //auto& waiter = _waiters[i];
 
       std::optional<Closure> t;
       
@@ -494,7 +486,7 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
         // execute the tasks.
         run_task:
 
-        assert(_consensus.count <= N && 0 <= _consensus.count);
+        //assert(_consensus.count <= N && 0 <= _consensus.count);
 
         if(!active && t) {
           active = true;
@@ -535,9 +527,6 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
             break;
           }
         }
-        //else {
-        //  std::this_thread::yield();
-        //}
       }
 
       if(active) {
@@ -575,7 +564,7 @@ void WorkStealingThreadpool<Closure>::_balance_load(unsigned me) {
 
   // try with probability 1/n
   if(_fast_modulo(_randomize(_workers[me].seed), n) == 0) {
-    _cv.notify_one();
+    _notifier.notify(false);
   }
 }
 
