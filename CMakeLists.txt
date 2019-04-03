@@ -153,8 +153,11 @@ target_link_libraries(dynamic_traversal ${PROJECT_NAME} Threads::Threads)
 add_executable(framework ${TF_EXAMPLE_DIR}/framework.cpp)
 target_link_libraries(framework ${PROJECT_NAME} Threads::Threads) 
 
-#add_executable(dataflow ${TF_EXAMPLE_DIR}/dataflow.cpp)
-#target_link_libraries(dataflow ${PROJECT_NAME} Threads::Threads)  
+add_executable(dice_pools ${TF_EXAMPLE_DIR}/dice_pools.cpp)
+target_link_libraries(dice_pools ${PROJECT_NAME} Threads::Threads)  
+
+add_executable(get_best_dice ${TF_EXAMPLE_DIR}/get_best_dice.cpp)
+target_link_libraries(get_best_dice ${PROJECT_NAME} Threads::Threads)  
 
 add_executable(composition ${TF_EXAMPLE_DIR}/composition.cpp)
 target_link_libraries(composition ${PROJECT_NAME} Threads::Threads) 

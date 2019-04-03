@@ -122,19 +122,20 @@ void write_out(Node& node) {
 
 
 int main() {
-    Dataflow_generator gg{};
 
-    auto output = gg.create_node(write_out);
-    auto pickup = gg.create_node(pick_up_max);
-    gg.create_arc(pickup, output);
+  Dataflow_generator gg{};
 
-    //try to increase or reduce the number of dice pools
-    int nr_dice_pools{ 5 };
-    while (nr_dice_pools-- > 0) {
-        gg.create_arc(gg.create_node(Fill_up_vector{}), pickup);
-    }
+  auto output = gg.create_node(write_out);
+  auto pickup = gg.create_node(pick_up_max);
+  gg.create_arc(pickup, output);
 
-    int times{ 10 };
-    gg.start_flow([&times]() { return times-- == 0; });
+  //try to increase or reduce the number of dice pools
+  int nr_dice_pools{ 5 };
+  while (nr_dice_pools-- > 0) {
+      gg.create_arc(gg.create_node(Fill_up_vector{}), pickup);
+  }
+
+  int times{ 10 };
+  gg.start_flow([&times]() { return times-- == 0; });
 }
 

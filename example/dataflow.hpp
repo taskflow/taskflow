@@ -1,3 +1,6 @@
+// 2019/02/25 - contributed by Paolo Bolzoni
+//  - a generic wrapper for dataflow
+
 #ifndef DATAFLOW_HPP
 #define DATAFLOW_HPP 1
 
@@ -44,7 +47,8 @@ class Dataflow_generator;
 // For convenience output pads can be accessed with the [] operator
 template <typename T>
 class Node {
-public:
+  
+  public:
     // get input pad
     T const& ipad(Pad_id<T> id) const;
 
@@ -58,8 +62,7 @@ public:
     // get all the output pad ids
     std::vector< Pad_id<T> > const& opad_list() const;
 
-
-private:
+  private:
     std::vector<T>& pads_;
     std::vector< Pad_id<T> > ipads_;
     std::vector< Pad_id<T> > opads_;
@@ -86,7 +89,7 @@ private:
 // execution is done via taskflow taskflow.run_until
 template <typename T>
 class Dataflow_generator {
-public:
+  public:
     // creates a new node
     Node_id<T> create_node();
 
@@ -112,7 +115,7 @@ public:
     void start_flow_once();
 
     Dataflow_generator() = default;
-private:
+  private:
     std::vector<T> pads_;
     std::vector< Node<T> > nodes_;
     std::vector<tf::Task> tasks_;
