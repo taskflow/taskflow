@@ -264,6 +264,7 @@ class LevelGraph {
 
 
 inline void Node::mark(){
+  assert(!_visited);
   _visited = true;
   if(_chosen == true){
     _graph.BFS(*this);

@@ -26,6 +26,15 @@ void build_framework(LevelGraph& graph, tf::Framework& framework) {
       } 
     }
   }
+
+  // Add a reset task
+  auto clear_task = framework.emplace([&](){
+    graph.clear_graph();
+  });
+
+  for(size_t i=0; i<graph.length(); i++){
+    tasks[graph.level()-1][i].precede(clear_task); 
+  }
 }
 
 
@@ -33,7 +42,7 @@ void traverse_level_graph_taskflow(LevelGraph& graph, unsigned num_threads, int 
   tf::Taskflow tf(num_threads);
   tf::Framework framework;
   build_framework(graph, framework);
-  tf.run_n(framework, repeat, [&](){ graph.clear_graph(); });
+  tf.run_n(framework, repeat);
   tf.wait_for_all();
 }
 
