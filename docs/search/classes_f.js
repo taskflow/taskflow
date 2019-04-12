@@ -2,7 +2,7 @@ var searchData=
 [
   ['packaged_5ftask',['packaged_task',['http://en.cppreference.com/w/cpp/thread/packaged_task.html',1,'std']]],
   ['pair',['pair',['http://en.cppreference.com/w/cpp/utility/pair.html',1,'std']]],
-  ['pattern',['pattern',['http://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::moneypunct_byname::pattern'],['http://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::money_base::pattern'],['http://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::money_put::pattern'],['http://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::moneypunct::pattern'],['http://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::money_get::pattern']]],
+  ['pattern',['pattern',['http://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::moneypunct_byname::pattern'],['http://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::money_base::pattern'],['http://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::moneypunct::pattern'],['http://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::money_get::pattern'],['http://en.cppreference.com/w/cpp/locale/money_base.html',1,'std::money_put::pattern']]],
   ['peta',['peta',['http://en.cppreference.com/w/cpp/numeric/ratio/ratio.html',1,'std']]],
   ['pico',['pico',['http://en.cppreference.com/w/cpp/numeric/ratio/ratio.html',1,'std']]],
   ['piecewise_5fconstant_5fdistribution',['piecewise_constant_distribution',['http://en.cppreference.com/w/cpp/numeric/random/piecewise_constant_distribution.html',1,'std']]],
@@ -14,7 +14,6 @@ var searchData=
   ['pointer_5ftraits',['pointer_traits',['http://en.cppreference.com/w/cpp/memory/pointer_traits.html',1,'std']]],
   ['poisson_5fdistribution',['poisson_distribution',['http://en.cppreference.com/w/cpp/numeric/random/poisson_distribution.html',1,'std']]],
   ['priority_5fqueue',['priority_queue',['http://en.cppreference.com/w/cpp/container/priority_queue.html',1,'std']]],
-  ['proactivethreadpool',['ProactiveThreadpool',['../classtf_1_1ProactiveThreadpool.html',1,'tf']]],
   ['promise',['promise',['http://en.cppreference.com/w/cpp/thread/promise.html',1,'std']]],
   ['ptrdiff_5ft',['ptrdiff_t',['http://en.cppreference.com/w/cpp/types/ptrdiff_t.html',1,'std']]]
 ];

@@ -2,8 +2,8 @@ namespace tf {
 
 /** @page chapter7 C7: %Framework (Experimental)
 
-In many situations, you will need to execute a task dependency multiple times to
-create a @em reusable, @em stateful, and @em decomposable execution flow.
+In many situations, you will need to execute a task dependency graph multiple times 
+or create a @em composable graph.
 tf::Framework is designed for this purpose. 
 This chapter introduces the concept of a framework and shows its usage.
 
@@ -95,7 +95,7 @@ Debrief:
 @li Line 26    keeps running the framework until the @c cnt variable becomes 10
 
 Each framework has its own task dependency graph.
-You should ensure each framework run by only one taskflow at one time.
+You should ensure each framework is run by only one taskflow at one time.
 
 @code{.cpp}
  1: // Declare a framework 
@@ -107,7 +107,7 @@ You should ensure each framework run by only one taskflow at one time.
  7: taskflow2.run(f);
 @endcode
 
-Multiple runs on a framework from a taskflow will be @em synchronized.
+Multiple runs on a framework from a taskflow will be automatically @em synchronized.
 The following example sequentially creates three topologies
 that run a framework for one, ten, and one times, respectively.
 
@@ -182,7 +182,7 @@ before you can visualize the dynamic task nodes.
 Since a taskflow object does not own a framework, 
 a running framework must remain alive until its execution finishes. 
 It is your responsibility to ensure a framework is not destructed
-during it is running on a taskflow object.
+during if it is running.
 For example, the code below can result undefined behavior.
 
 @code{.cpp}
@@ -262,10 +262,10 @@ int main() {
 }
 @endcode
 
-@section C7_FrameworkDecomposition Framework Decomposition
+@section C7_FrameworkComposition Framework Composition
 
-A powerful feature of tf::Framework is its @em decomposable interface.
-You can break down a large application framework into smaller pieces
+A powerful feature of tf::Framework is its @em composable interface.
+You can break down a large parallel workload into smaller pieces
 each designed to run a specific task dependency graph.
 This largely facilitates the @em modularity of writing a parallel task program.
 
@@ -326,13 +326,13 @@ A module task does not owns any framework but maintains a soft
 mapping to use during its execution context.
 You can create multiple module tasks from the same framework
 but only one module task can run at one time.
-For example, the following decomposition is valid. 
+For example, the following composition is valid. 
 Even though the two module tasks @c module1 and @c module2 refer to the same framework @c F1,
 the dependency link prevents @c F1 from multiple executions at the same time.
 
 @image html images/composition_static_2.png width=37%
 
-However, the following decomposition is @em invalid.
+However, the following composition is @em invalid.
 Both module tasks refer to the same framework. They can not run at the same time because
 they are associated with the same graph.
 

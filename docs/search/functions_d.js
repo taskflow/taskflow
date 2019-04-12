@@ -22,7 +22,7 @@ var searchData=
   ['num_5fput',['num_put',['http://en.cppreference.com/w/cpp/locale/num_put/num_put.html',1,'std::num_put']]],
   ['num_5fsuccessors',['num_successors',['../classtf_1_1Task.html#a1a0afc89e8a6a416c511e74d82df135d',1,'tf::Task']]],
   ['num_5ftopologies',['num_topologies',['../classtf_1_1BasicTaskflow.html#a7e97ed52d9d0470d2751f32748adb253',1,'tf::BasicTaskflow']]],
-  ['num_5fworkers',['num_workers',['../classtf_1_1BasicTaskflow.html#a9cef9ee3d27ffc78bfa953c8ed25b559',1,'tf::BasicTaskflow::num_workers()'],['../classtf_1_1SimpleThreadpool.html#a4fec0216bb89a6ed2a9e59f2b1a4f01a',1,'tf::SimpleThreadpool::num_workers()'],['../classtf_1_1ProactiveThreadpool.html#addcc49e4a76ced0b0d0a3d7e00796d42',1,'tf::ProactiveThreadpool::num_workers()'],['../classtf_1_1SpeculativeThreadpool.html#afc59dc19c9029bee4a4e4d135737319d',1,'tf::SpeculativeThreadpool::num_workers()'],['../classtf_1_1WorkStealingThreadpool.html#a0069de0539feee6c7b211662211a81cc',1,'tf::WorkStealingThreadpool::num_workers()']]],
+  ['num_5fworkers',['num_workers',['../classtf_1_1BasicTaskflow.html#a9cef9ee3d27ffc78bfa953c8ed25b559',1,'tf::BasicTaskflow']]],
   ['numpunct',['numpunct',['http://en.cppreference.com/w/cpp/locale/numpunct/numpunct.html',1,'std::numpunct']]],
   ['numpunct_5fbyname',['numpunct_byname',['http://en.cppreference.com/w/cpp/locale/numpunct_byname.html',1,'std::numpunct_byname']]]
 ];

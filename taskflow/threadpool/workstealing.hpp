@@ -486,7 +486,7 @@ void WorkStealingThreadpool<Closure>::_spawn(unsigned N) {
         // execute the tasks.
         run_task:
 
-        //assert(_consensus.count <= N && 0 <= _consensus.count);
+        assert(_consensus.count <= N && 0 <= _consensus.count);
 
         if(!active && t) {
           active = true;

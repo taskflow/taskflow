@@ -8,11 +8,5 @@ var hierarchy =
       [ "tf::Framework", "classtf_1_1Framework.html", null ],
       [ "tf::SubflowBuilder", "classtf_1_1SubflowBuilder.html", null ]
     ] ],
-    [ "tf::ProactiveThreadpool< Closure >", "classtf_1_1ProactiveThreadpool.html", null ],
-    [ "tf::SimpleThreadpool< Closure >", "classtf_1_1SimpleThreadpool.html", null ],
-    [ "tf::SpeculativeThreadpool< Closure >", "classtf_1_1SpeculativeThreadpool.html", null ],
-    [ "tf::Task", "classtf_1_1Task.html", null ],
-    [ "tf::WorkStealingQueue< T >", "classtf_1_1WorkStealingQueue.html", null ],
-    [ "tf::WorkStealingQueue< Closure >", "classtf_1_1WorkStealingQueue.html", null ],
-    [ "tf::WorkStealingThreadpool< Closure >", "classtf_1_1WorkStealingThreadpool.html", null ]
+    [ "tf::Task", "classtf_1_1Task.html", null ]
 ];
