@@ -1,3 +1,6 @@
+// 2019/04/09 - modified by Tsung-Wei Huang
+//  - removed silent_dispatch method
+//
 // 2019/03/12 - modified by Chun-Xun Lin
 //  - added framework
 //
@@ -112,19 +115,6 @@ class BasicTaskflow : public FlowBuilder {
     template <typename C>
     std::shared_future<void> dispatch(C&&);
   
-    /**
-    @brief dispatches the present graph to threads and returns immediately
-    */
-    void silent_dispatch();
-    
-    /**
-    @brief dispatches the present graph to threads and run a callback when the graph completes
-
-    @param callable a callable object to execute on completion
-    */
-    template <typename C>
-    void silent_dispatch(C&& callable);
-    
     /**
     @brief dispatches the present graph to threads and wait for all topologies to complete
     */
@@ -551,33 +541,6 @@ std::shared_ptr<typename BasicTaskflow<E>::Executor> BasicTaskflow<E>::share_exe
   return _executor;
 }
 
-// Procedure: silent_dispatch 
-template <template <typename...> typename E>
-void BasicTaskflow<E>::silent_dispatch() {
-
-  if(_graph.empty()) return;
-
-  auto& topology = _topologies.emplace_back(std::move(_graph));
-
-  _schedule(topology._sources);
-}
-
-
-// Procedure: silent_dispatch with registered callback
-template <template <typename...> typename E>
-template <typename C>
-void BasicTaskflow<E>::silent_dispatch(C&& c) {
-
-  if(_graph.empty()) {
-    c();
-    return;
-  }
-
-  auto& topology = _topologies.emplace_back(std::move(_graph), std::forward<C>(c));
-
-  _schedule(topology._sources);
-}
-
 // Procedure: dispatch 
 template <template <typename...> typename E>
 std::shared_future<void> BasicTaskflow<E>::dispatch() {
@@ -615,7 +578,7 @@ std::shared_future<void> BasicTaskflow<E>::dispatch(C&& c) {
 template <template <typename...> typename E>
 void BasicTaskflow<E>::wait_for_all() {
   if(!_graph.empty()) {
-    silent_dispatch();
+    dispatch();
   }
   wait_for_topologies();
 }
@@ -649,7 +612,6 @@ void BasicTaskflow<E>::_schedule(PassiveVector<Node*>& nodes) {
   std::vector<Closure> closures;
   closures.reserve(nodes.size());
   for(auto src : nodes) {
-    // TODO: remove the assert?
     if(src->_module != nullptr && !src->is_spawned()) {
       _set_module_node(*src);
     }

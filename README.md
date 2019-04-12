@@ -33,13 +33,13 @@ allowing users to quickly master our parallel task programming model in a natura
 | :------------: | :-------------: |
 | ![](image/static_graph.png) | <img align="right" src="image/dynamic_graph.png" width="100%"> |
 
-Cpp-Taskflow provides composable task dependency graphs to enable high performance and high 
-developer productivity.
+Cpp-Taskflow provides a composable task dependency graph interface 
+to enable high performance and high developer productivity at the same time.
 
 <p float="left">
-  <img src="image/fA.png" style="width:15%; height:17%">
-  <img src="image/fB.png" style="width:15%; height:17%">
-  <img src="image/fC.png" style="width:50%; height:17%">
+  <img src="image/fA.png" style="width:20%">
+  <img src="image/fB.png" style="width:20%">
+  <img src="image/fC.png" style="width:58%">
 </p>
 
 Cpp-Taskflow is committed to support both academic and industry research projects,
@@ -53,43 +53,27 @@ See a quick [presentation][Presentation] and
 visit the [documentation][wiki] to learn more about Cpp-Taskflow.
 
 # Table of Contents
-   * [Get Started with Cpp-Taskflow](#get-started-with-cpp-taskflow)
-   * [Create a Taskflow Graph](#create-a-taskflow-graph)
-      * [Step 1: Create a Task](#step-1-create-a-task)
-      * [Step 2: Define Task Dependencies](#step-2-define-task-dependencies)
-      * [Step 3: Execute the Tasks](#step-3-execute-the-tasks)
-   * [Dynamic Tasking](#dynamic-tasking)
-      * [Step 1: Create a Subflow](#step-1-create-a-subflow)
-      * [Step 2: Detach or Join a Subflow](#step-2-detach-or-join-a-subflow)
-   * [Framework](#framework)
-      * [Create a Framework](#create-a-framework)
-      * [Execute a Framework](#execute-a-framework)
-      * [Framework Composition](#framework-composition)
-   * [Debug a Taskflow Graph](#debug-a-taskflow-graph)
-      * [Dump the Present Taskflow Graph](#dump-the-present-taskflow-graph)
-      * [Dump a Dispatched Graph](#dump-a-dispatched-graph)
-      * [Dump a Framework](#dump-a-framework)
-   * [API Reference](#api-reference)
-      * [Taskflow API](#taskflow-api)
-         * [<em>emplace/placeholder</em>](#emplaceplaceholder)
-         * [<em>linearize</em>](#linearize)
-         * [<em>parallel_for</em>](#parallel_for)
-         * [<em>reduce/transform_reduce</em>](#reducetransform_reduce)
-         * [<em>dispatch/silent_dispatch/wait_for_topologies/wait_for_all</em>](#dispatchsilent_dispatchwait_for_topologieswait_for_all)
-      * [Task API](#task-api)
-         * [<em>name</em>](#name)
-         * [<em>work</em>](#work)
-         * [<em>precede</em>](#precede)
-         * [<em>gather</em>](#gather)
-   * [Caveats](#caveats)
-   * [System Requirements](#system-requirements)
-   * [Compile Unit Tests and Examples](#compile-unit-tests-and-examples)
-      * [Unit Tests](#unit-tests)
-      * [Examples](#examples)
-   * [Get Involved](#get-involved)
-   * [Who is Using Cpp-Taskflow?](#who-is-using-cpp-taskflow)
-   * [Contributors](#contributors)
-   * [License](#license)
+
+* [Get Started with Cpp-Taskflow](#get-started-with-cpp-taskflow)
+* [Create a Taskflow Graph](#create-a-taskflow-graph)
+   * [Step 1: Create a Task](#step-1-create-a-task)
+   * [Step 2: Define Task Dependencies](#step-2-define-task-dependencies)
+   * [Step 3: Execute the Tasks](#step-3-execute-the-tasks)
+* [Dynamic Tasking](#dynamic-tasking)
+   * [Step 1: Create a Subflow](#step-1-create-a-subflow)
+   * [Step 2: Detach or Join a Subflow](#step-2-detach-or-join-a-subflow)
+* [Framework](#framework)
+   * [Step 1: Create a Framework](#step-1-create-a-framework)
+   * [Step 2: Execute a Framework](#step-2-execute-a-framework)
+   * [Step 3: Framework Composition](#step-3-framework-composition)
+* [Debug a Taskflow Graph](#debug-a-taskflow-graph)
+* [API Reference](#api-reference)
+* [Caveats](#caveats)
+* [System Requirements](#system-requirements)
+* [Compile Unit Tests and Examples](#compile-unit-tests-and-examples)
+* [Get Involved](#get-involved)
+* [Who is Using Cpp-Taskflow?](#who-is-using-cpp-taskflow)
+* [Contributors](#contributors)
 
 
 # Get Started with Cpp-Taskflow
@@ -214,12 +198,11 @@ A.gather(B);  // A runs after B
 
 ## Step 3: Execute the Tasks
 
-There are three methods to execute a task dependency graph, 
-`dispatch`, `silent_dispatch`, and `wait_for_all`.
+You can use non-blocking `dispatch` or blocking `wait_for_all` 
+to execute a task dependency graph.
 
 ```cpp
-auto future = tf.dispatch();  // non-blocking, returns with a future immediately.
-tf.silent_dispatch();         // non-blocking, no return
+auto future = tf.dispatch();  // non-blocking, returns with a future
 ```
 
 Calling `wait_for_all` will block until all tasks complete.
@@ -417,7 +400,7 @@ In many situations, you might want to execute a task graph multiple times and th
 designed for this purpose. The `tf::Framework` allows you to create reusable task dependency graphs 
 and you can compose several task graphs to build a large task graph. 
 
-## Create a Framework
+## Step 1: Create a Framework
 The `tf::Framework` provides the same API as `tf::Taskflow` to create tasks.
 The following example shows using `tf::Framework` to create a task graph .
 
@@ -445,7 +428,7 @@ A.precede(B);     // A runs before B
 B.precede(C, D);  // B runs before C and D
 ```
 
-## Execute a Framework
+## Step 2: Execute a Framework
 Cpp-Taskflow has a rich set of methods to run a framework. You can execute a framework 
 for a certain number of times or until a stopping criteria is met.
 Following example demonstrates the APIs for executing a framework.
@@ -487,7 +470,7 @@ All framework execution methods return a [std::shared_future][std::shared_future
 to let you query the execution status.
 
 
-## Framework Composition 
+## Step 3: Framework Composition 
 A powerful feature of `tf::Framework` is its composability. You can create task graphs for 
 different parts of your workload and compose them to build a whole task graph through the `composed_of` method. 
 
@@ -522,11 +505,11 @@ f2A.precede(f1_module_task);
 f2B.precede(f1_module_task);
 f1_module_task.precede(f2C);
 ```
+
 The `composed_of` method returns a *module task* and you can use the `precede` and `gather` 
-methods to define its dependencies. A framework can be used to compose multiple 
-frameworks and a framework can compose the resulting frameworks to achieve nested composition.
-
-
+methods to define its dependencies. 
+You can compose a framework from multiple frameworks and use the resulting framework
+to compose another larger ones and so on so forth.
 
 
 # Debug a Taskflow Graph
@@ -625,11 +608,10 @@ auto [f1A, f1B, f1C] = f1.emplace(
   []() { std::cout << "Task f1B\n"; },
   []() { std::cout << "Task f1C\n"; }
 );
+
 f1A.precede(f1B, f1C).name("f1A");
 f1B.name("f1B");
 f1C.name("f1C");
-
-// Name the framework 
 f1.name("f1");
 
 tf::Framework f2;
@@ -639,45 +621,40 @@ auto [f2A, f2B, f2C] = f2.emplace(
   []() { std::cout << "Task f2B\n"; },
   []() { std::cout << "Task f2C\n"; }
 );
-// Compose framework f1
+
 auto f1_module_task = f2.composed_of(f1);
 f2A.precede(f1_module_task).name("f2A");
 f2B.precede(f1_module_task).name("f2B");
 f1_module_task.precede(f2C).name("module_f1");
-f2C.name("f2C");
 
-// Name the framework 
+f2C.name("f2C");
 f2.name("f2");
 
-// Dump the framework
-f2.dump(std::cout);
+f2.dump(std::cout);  // dump the framework
 ```
 
-
-
-
-
 # API Reference
+
+The official [documentation][wiki] explains the complete list of 
+Cpp-Taskflow API. 
+In section, we highlight a short list of commonly used methods.
 
 ## Taskflow API
 
 The class `tf::Taskflow` is the main place to create and execute task dependency graph.
 The table below summarizes a list of commonly used methods.
-Visit [documentation][wiki] to see the complete list.
+
 
 | Method   | Argument  | Return  | Description |
 | -------- | --------- | ------- | ----------- |
-| Taskflow | none      | none    | construct a taskflow with the worker count equal to max hardware concurrency |
 | Taskflow | size      | none    | construct a taskflow with a given number of workers |
 | emplace  | callables | tasks   | create a task with a given callable(s) |
 | placeholder     | none        | task         | insert a node without any work; work can be assigned later |
-| linearize       | task list   | none         | create a linear dependency in the given task list |
 | parallel_for    | beg, end, callable, group | task pair | apply the callable in parallel and group-by-group to the result of dereferencing every iterator in the range | 
 | parallel_for    | beg, end, step, callable, group | task pair | apply the callable in parallel and group-by-group to a index-based range | 
 | reduce | beg, end, res, bop | task pair | reduce a range of elements to a single result through a binary operator | 
 | transform_reduce | beg, end, res, bop, uop | task pair | apply a unary operator to each element in the range and reduce them to a single result through a binary operator | 
 | dispatch        | none        | future | dispatch the current graph and return a shared future to block on completion |
-| silent_dispatch | none        | none | dispatch the current graph | 
 | wait_for_all    | none        | none | dispatch the current graph and block until all graphs finish, including all previously dispatched ones, and then clear all graphs |
 | wait_for_topologies | none    | none | block until all dispatched graphs (topologies) finish, and then clear these graphs |
 | num_nodes       | none        | size | query the number of nodes in the current graph |  
@@ -706,17 +683,6 @@ A.precede(B);
 
 // assign the callable later in the control flow
 B.work([](){ /* do something */ });
-```
-
-### *linearize*
-
-The method `linearize` lets you add a linear dependency between each adjacent pair of a task sequence.
-
-<img align="right" width="40%" src="image/linearize.png">
-
-```cpp
-// linearize five tasks
-tf.linearize(A, B, C, D);
 ```
 
 ### *parallel_for*
@@ -821,11 +787,10 @@ auto [S, T] = tf.transform_reduce(v.begin(), v.end(), min,
 
 By default, all reduce methods distribute the workload evenly across threads.
 
-### *dispatch/silent_dispatch/wait_for_topologies/wait_for_all*
+### *dispatch/wait_for_topologies/wait_for_all*
 
 Dispatching a taskflow graph will schedule threads to execute the current graph and return immediately.
-The method `dispatch` gives you a [std::future][std::future] object to probe the execution progress while
-`silent_dispatch` doesn't.
+The method `dispatch` gives you a [std::future][std::future] object to probe the execution progress.
 
 ```cpp
 auto future = tf.dispatch();
@@ -859,7 +824,6 @@ and return a *task handle* to you.
 A task handle is a lightweight object that defines a set of methods for users to
 access and modify the attributes of the associated task.
 The table below summarizes the list of commonly used methods.
-Visit [documentation][wiki] to see the complete list.
 
 | Method         | Argument    | Return | Description |
 | -------------- | ----------- | ------ | ----------- |

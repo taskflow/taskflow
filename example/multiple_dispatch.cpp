@@ -41,8 +41,8 @@ void dispatchBatch(tf::Taskflow& tf, int batch) {
   C.precede(D);  // D runs after C
 
   // Schedule this independent graph of tasks (so they start running)
-  // We use silent_dispatch because we don't care when it finishes.
-  tf.silent_dispatch();
+  // We use dispatch because we don't care when it finishes.
+  tf.dispatch();
 }
 
 int main()
@@ -76,7 +76,7 @@ int main()
     });
   }
   syncLog("Dispatching " + std::to_string(numIndependent) + " independent tasks (200 range)");
-  tf.silent_dispatch();
+  tf.dispatch();
 
   syncLog("Waiting for all...");
   tf.wait_for_all();

@@ -44,7 +44,7 @@ int main() {
   }
 
   // Register a callback to check the counter 
-  tf.silent_dispatch([&counter](){ 
+  tf.dispatch([&counter](){ 
     assert(counter == 0); 
     std::cout << "Finish silently dispatched tasks\n";
   });

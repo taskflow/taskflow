@@ -301,7 +301,7 @@ TEST_CASE("Dispatch" * doctest::timeout(300)) {
   }
 
   SUBCASE("SilentDispatch"){
-    tf.silent_dispatch();
+    tf.dispatch();
     REQUIRE(tf.num_nodes() == 0);
     std::this_thread::sleep_for(1s);
     REQUIRE(counter == num_tasks);
