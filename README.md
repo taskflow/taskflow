@@ -37,9 +37,9 @@ Cpp-Taskflow provides composable task dependency graphs to enable high performan
 developer productivity.
 
 <p float="left">
-  <img src="image/fA.png" style="width:20%; height:17%">
-  <img src="image/fB.png" style="width:20%; height:17%">
-  <img src="image/fC.png" style="width:55%; height:17%">
+  <img src="image/fA.png" style="width:15%; height:17%">
+  <img src="image/fB.png" style="width:15%; height:17%">
+  <img src="image/fC.png" style="width:50%; height:17%">
 </p>
 
 Cpp-Taskflow is committed to support both academic and industry research projects,
