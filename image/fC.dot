@@ -1,0 +1,34 @@
+digraph G {
+rankdir="LR";
+
+subgraph cluster_C {
+label="Framework_C";
+fontsize=18;
+//fontcolor=blue;
+fontname="times bold";
+
+p0x7f73d91929f8[shape=box3d, color=blue, label="module_A (Framework_A)"];
+p0x7f73d91929f8->p0x7f73d9192e58 [constraint=true]; 
+p0x7f73d91929f8->p0x7f73d9192f70 [constraint=true];
+p0x7f73d9192b10[shape=box3d, color=blue, label="module_B (Framework_B)"];
+p0x7f73d9192b10->p0x7f73d9192f70 [constraint=true];
+p0x7f73d9192c28[label="A"];
+p0x7f73d9192c28 -> p0x7f73d91929f8 [constraint=true];
+p0x7f73d9192d40[label="B"];
+p0x7f73d9192d40 -> p0x7f73d9192b10 [constraint=true];
+p0x7f73d9192e58[label="C"];
+p0x7f73d9192e58 -> p0x7f73d9193088 [constraint=true];
+p0x7f73d9192f70[label="D"];
+p0x7f73d9192f70 -> p0x7f73d9193088 [constraint=true];
+p0x7f73d9193088[label="E"];
+
+F[label="F"];
+H[label="H"];
+p0x7f73d9193088 -> F [constraint=true];
+F -> H [constraint=true];
+}
+
+
+
+
+}

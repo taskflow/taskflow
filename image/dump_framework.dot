@@ -1,0 +1,21 @@
+digraph Framework_f2 {
+subgraph cluster_f2 {
+label="Framework_f2";
+p0x7f1808654368[label="f2C"];
+p0x7f1808654480[label="f2B"];
+p0x7f1808654480 -> p0x7f18086546b0;
+p0x7f1808654598[label="f2A"];
+p0x7f1808654598 -> p0x7f18086546b0;
+p0x7f18086546b0[shape=box3d, color=blue, label="module_f1 (Framework_f1)"];
+p0x7f18086546b0->p0x7f1808654368;
+}
+subgraph cluster_f1 {
+label="Framework_f1";
+p0x7f1808654020[label="f1C"];
+p0x7f1808654138[label="f1B"];
+p0x7f1808654250[label="f1A"];
+p0x7f1808654250 -> p0x7f1808654138;
+p0x7f1808654250 -> p0x7f1808654020;
+}
+}
+

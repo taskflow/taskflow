@@ -33,6 +33,15 @@ allowing users to quickly master our parallel task programming model in a natura
 | :------------: | :-------------: |
 | ![](image/static_graph.png) | <img align="right" src="image/dynamic_graph.png" width="100%"> |
 
+Cpp-Taskflow provides composable task dependency graphs to enable high performance and high 
+developer productivity.
+
+<p float="left">
+  <img src="image/fA.png" style="width:21%; height:17%">
+  <img src="image/fB.png"  style="width:21%; height:17%">
+  <img src="image/fC.png"  style="width:56%; height:17%">
+</p>
+
 Cpp-Taskflow is committed to support both academic and industry research projects,
 making it reliable and cost-effective for long-term and large-scale developments.
 
@@ -42,6 +51,46 @@ making it reliable and cost-effective for long-term and large-scale developments
 
 See a quick [presentation][Presentation] and 
 visit the [documentation][wiki] to learn more about Cpp-Taskflow.
+
+# Table of Contents
+   * [Get Started with Cpp-Taskflow](#get-started-with-cpp-taskflow)
+   * [Create a Taskflow Graph](#create-a-taskflow-graph)
+      * [Step 1: Create a Task](#step-1-create-a-task)
+      * [Step 2: Define Task Dependencies](#step-2-define-task-dependencies)
+      * [Step 3: Execute the Tasks](#step-3-execute-the-tasks)
+   * [Dynamic Tasking](#dynamic-tasking)
+      * [Step 1: Create a Subflow](#step-1-create-a-subflow)
+      * [Step 2: Detach or Join a Subflow](#step-2-detach-or-join-a-subflow)
+   * [Framework](#framework)
+      * [Create a Framework](#create-a-framework)
+      * [Execute a Framework](#execute-a-framework)
+      * [Framework Composition](#framework-composition)
+   * [Debug a Taskflow Graph](#debug-a-taskflow-graph)
+      * [Dump the Present Taskflow Graph](#dump-the-present-taskflow-graph)
+      * [Dump a Dispatched Graph](#dump-a-dispatched-graph)
+      * [Dump a Framework](#dump-a-framework)
+   * [API Reference](#api-reference)
+      * [Taskflow API](#taskflow-api)
+         * [<em>emplace/placeholder</em>](#emplaceplaceholder)
+         * [<em>linearize</em>](#linearize)
+         * [<em>parallel_for</em>](#parallel_for)
+         * [<em>reduce/transform_reduce</em>](#reducetransform_reduce)
+         * [<em>dispatch/silent_dispatch/wait_for_topologies/wait_for_all</em>](#dispatchsilent_dispatchwait_for_topologieswait_for_all)
+      * [Task API](#task-api)
+         * [<em>name</em>](#name)
+         * [<em>work</em>](#work)
+         * [<em>precede</em>](#precede)
+         * [<em>gather</em>](#gather)
+   * [Caveats](#caveats)
+   * [System Requirements](#system-requirements)
+   * [Compile Unit Tests and Examples](#compile-unit-tests-and-examples)
+      * [Unit Tests](#unit-tests)
+      * [Examples](#examples)
+   * [Get Involved](#get-involved)
+   * [Who is Using Cpp-Taskflow?](#who-is-using-cpp-taskflow)
+   * [Contributors](#contributors)
+   * [License](#license)
+
 
 # Get Started with Cpp-Taskflow
 
@@ -363,6 +412,122 @@ tf::Task B = tf.emplace([&] () {
 A.precede(B);
 ```
 
+# Framework
+In many situations, you might want to execute a task graph multiple times and the `tf::Framework` is 
+designed for this purpose. The `tf::Framework` allows you to create reusable task dependency graphs 
+and you can compose several task graphs to build a large task graph. 
+
+## Create a Framework
+The `tf::Framework` provides the same API as `tf::Taskflow` to create tasks.
+The following example shows using `tf::Framework` to create a task graph .
+
+```cpp 
+// Create a framework object
+tf::Framework framework;
+
+// Add a task (static tasking)
+tf::Task A = framework.emplace([](){ std::cout << "Task A\n"; }).name("A");
+
+// Create a subflow (dynamic tasking)
+tf::Task B = framework.emplace([] (tf::SubflowBuilder& subflow) {
+  tf::Task B1 = subflow.emplace([](){ std::cout << "Task B1\n"; }).name("B1");
+  tf::Task B2 = subflow.emplace([](){ std::cout << "Task B2\n"; }).name("B2");
+  B1.precede(B2);  // B1 runs before B2
+}).name("B");
+
+// 
+auto [C, D] = framework.emplace( 
+  []() { std::cout << "Task C\n"; },
+  []() { std::cout << "Task D\n"; }
+);
+
+A.precede(B);     // A runs before B
+B.precede(C, D);  // B runs before C and D
+```
+
+## Execute a Framework
+Cpp-Taskflow has a rich set of methods to run a framework. You can execute a framework 
+for a certain number of times or until a stopping criteria is met.
+Following example demonstrates the APIs for executing a framework.
+
+```cpp 
+// Create a taskflow object as the executor
+tf::Taskflow taskflow;
+
+// Create a framework
+tf::Framework framework;
+
+// Add two tasks 
+auto [A, B] = framework.emplace( 
+  []() { std::cout << "Task A\n"; },
+  []() { std::cout << "Task B\n"; }
+);
+
+// Run the framework once
+taskflow.run(framework);
+
+// Run the framework once with a callback
+taskflow.run(framework, [](){ std::cout << "Execution finishes\n"; } );
+
+// Run the framework four times
+taskflow.run_n(framework, 4);
+
+// Run the framework four times with a callback
+taskflow.run_n(framework, 4, [](){ std::cout << "Execution finishes\n"; });
+
+// Run the framework with a predicate
+taskflow.run_until(framework, [counter=4](){ return --counter == 0; } );
+
+// Run the framework with a predicate and a callback
+taskflow.run_until(framework, [counter=4](){ return --counter == 0; }, 
+                              [](){ std::cout << "Execution finishes\n"; } );
+
+```
+All framework execution methods return a [std::shared_future][std::shared_future] 
+to let you query the execution status.
+
+
+## Framework Composition 
+A powerful feature of `tf::Framework` is its composability. You can create task graphs for 
+different parts of your workload and compose them to build a whole task graph through the `composed_of` method. 
+
+
+```cpp 
+// Create a framework
+tf::Framework f1;
+
+// Add two tasks 
+auto [f1A, f1B] = f1.emplace( 
+  []() { std::cout << "Task f1A\n"; },
+  []() { std::cout << "Task f1B\n"; }
+);
+
+// Create another framework
+// f2A ---
+//        |----> f1_module_task ----> f2C
+// f2B --- 
+tf::Framework f2;
+
+// Add two tasks 
+auto [f2A, f2B, f2C] = f2.emplace( 
+  []() { std::cout << "Task f2A\n"; },
+  []() { std::cout << "Task f2B\n"; },
+  []() { std::cout << "Task f2C\n"; }
+);
+
+// Compose framework f1
+auto f1_module_task = f2.composed_of(f1);
+
+f2A.precede(f1_module_task);
+f2B.precede(f1_module_task);
+f1_module_task.precede(f2C);
+```
+The `composed_of` method returns a *module task* and you can use the `precede` and `gather` 
+methods to define its dependencies. A framework can be used to compose multiple 
+frameworks and a framework can compose the resulting frameworks to achieve nested composition.
+
+
+
 
 # Debug a Taskflow Graph
 
@@ -445,6 +610,52 @@ tf.dispatch().get();
 // dump the entire graph (including dynamic tasks)
 tf.dump_topologies(std::cout);
 ```
+
+## Dump a Framework 
+You can use the `name` method to name a framework  and use the `dump` method to 
+visualize the task graph of a framework.
+
+<img align="right" src="image/dump_framework.png" width="35%">
+
+```cpp 
+tf::Framework f1;
+
+auto [f1A, f1B, f1C] = f1.emplace( 
+  []() { std::cout << "Task f1A\n"; },
+  []() { std::cout << "Task f1B\n"; },
+  []() { std::cout << "Task f1C\n"; }
+);
+f1A.precede(f1B, f1C).name("f1A");
+f1B.name("f1B");
+f1C.name("f1C");
+
+// Name the framework 
+f1.name("f1");
+
+tf::Framework f2;
+
+auto [f2A, f2B, f2C] = f2.emplace( 
+  []() { std::cout << "Task f2A\n"; },
+  []() { std::cout << "Task f2B\n"; },
+  []() { std::cout << "Task f2C\n"; }
+);
+// Compose framework f1
+auto f1_module_task = f2.composed_of(f1);
+f2A.precede(f1_module_task).name("f2A");
+f2B.precede(f1_module_task).name("f2B");
+f1_module_task.precede(f2C).name("module_f1");
+f2C.name("f2C");
+
+// Name the framework 
+f2.name("f2");
+
+// Dump the framework
+f2.dump(std::cout);
+```
+
+
+
+
 
 # API Reference
 
@@ -861,6 +1072,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 
 [std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
 [std::future]:           https://en.cppreference.com/w/cpp/thread/future
+[std::shared_future]:    https://en.cppreference.com/w/cpp/thread/shared_future
 
 [Firestorm]:             https://github.com/ForgeMistress/Firestorm
 [Shiva]:                 https://shiva.gitbook.io/project/shiva
