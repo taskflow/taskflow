@@ -14,7 +14,7 @@
 //   clang++ -std=c++14 -Wall -O3 -Ipath-to-taskflow threadpool_cxx14.cpp -o threadpool_cxx14
 // (for gcc, replace clang++ with g++)
 
-#include <taskflow/threadpool/threadpool_cxx14.hpp>
+#include <taskflow/executor/threadpool_cxx14.hpp>
 #include <iostream>
 #include <random>
 
