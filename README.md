@@ -36,11 +36,7 @@ allowing users to quickly master our parallel task programming model in a natura
 Cpp-Taskflow provides a composable task dependency graph interface 
 to enable high performance and high developer productivity at the same time.
 
-<p float="left">
-  <img src="image/fA.png" style="width:20%">
-  <img src="image/fB.png" style="width:20%">
-  <img src="image/fC.png" style="width:58%">
-</p>
+![](image/framework.png)
 
 Cpp-Taskflow is committed to support both academic and industry research projects,
 making it reliable and cost-effective for long-term and large-scale developments.
@@ -598,10 +594,10 @@ tf.dump_topologies(std::cout);
 You can use the `name` method to name a framework  and use the `dump` method to 
 visualize the task graph of a framework.
 
-<img align="right" src="image/dump_framework.png" width="35%">
+<img align="right" src="image/dump_framework.png" width="30%">
 
 ```cpp 
-tf::Framework f1;
+tf::Framework f1, f2;
 
 auto [f1A, f1B, f1C] = f1.emplace( 
   []() { std::cout << "Task f1A\n"; },
@@ -613,8 +609,6 @@ f1A.precede(f1B, f1C).name("f1A");
 f1B.name("f1B");
 f1C.name("f1C");
 f1.name("f1");
-
-tf::Framework f2;
 
 auto [f2A, f2B, f2C] = f2.emplace( 
   []() { std::cout << "Task f2A\n"; },
