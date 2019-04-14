@@ -305,6 +305,8 @@ class EigenWorkStealingExecutor {
     PerThread& _per_thread() const;
 
     std::optional<Closure> _steal();
+    
+    bool _wait_for_tasks(unsigned, std::optional<Closure>&);
 };
 
 // Constructor
@@ -375,7 +377,6 @@ void EigenWorkStealingExecutor<Closure>::_spawn(unsigned N) {
       pt.worker_id = i;
     
       auto& worker = _workers[i];
-      auto& waiter = _waiters[i];
 
       std::optional<Closure> t;
 
@@ -406,28 +407,23 @@ void EigenWorkStealingExecutor<Closure>::_spawn(unsigned N) {
           }
           else break;
         }
-
-        // wait for more tasks
-        assert(!t);
-        _notifier.prepare_wait(&waiter);
         
-        if(auto victim = _find_victim(i); victim != N) {
-          _notifier.cancel_wait(&waiter);
-          t = _workers[victim].queue.steal();
+        // Leave one thread to spin.
+        if (!_spinning && !_spinning.exchange(true)) {
+          for (int round=0; round<1000 && !t; round++) {
+            t = _steal();
+          }
+          _spinning = false;
+        }
+
+        if(t) {
           goto run_task;
         }
 
-        if(auto I = ++_num_idlers; _done && I == N) {
-          _notifier.cancel_wait(&waiter);
-          if(_find_victim(i) != N) {
-            --_num_idlers;
-            goto run_task;
-          }
-          _notifier.notify(true);
+        // wait for more tasks
+        if(_wait_for_tasks(i, t) == false) {
           break;
         }
-        _notifier.commit_wait(&waiter);
-        --_num_idlers;
       }
       
     });     
@@ -491,6 +487,40 @@ std::optional<Closure> EigenWorkStealingExecutor<Closure>::_steal() {
   return std::nullopt; 
 }
 
+// Function: _wait_for_tasks
+template <typename Closure>
+bool EigenWorkStealingExecutor<Closure>::_wait_for_tasks(
+  unsigned i, 
+  std::optional<Closure>& t
+) {
+
+  assert(!t);
+
+  _notifier.prepare_wait(&_waiters[i]);
+  
+  // check again.
+  if(auto victim = _find_victim(i); victim != _workers.size()) {
+    _notifier.cancel_wait(&_waiters[i]);
+    t = _workers[victim].queue.steal();
+    return true;
+  }
+
+  if(auto I = ++_num_idlers; _done && I == _workers.size()) {
+    _notifier.cancel_wait(&_waiters[i]);
+    if(_find_victim(i) != _workers.size()) {
+      --_num_idlers;
+      return true;
+    }
+    _notifier.notify(true);
+    return false;
+  }
+
+  _notifier.commit_wait(&_waiters[i]);
+  --_num_idlers;
+
+  return true;
+}
+
 // Procedure: emplace
 template <typename Closure>
 template <typename... ArgsT>
@@ -512,6 +542,7 @@ void EigenWorkStealingExecutor<Closure>::emplace(ArgsT&&... args){
       Closure c{std::forward<ArgsT>(args)...};
       if(_workers[pt.worker_id].queue.push(c) == true) {
         _notifier.notify(false);
+        return;
       }
       // TODO: sure this?
       else {

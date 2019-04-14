@@ -61,6 +61,10 @@ This class implements the work stealing queue described in the paper,
 "Dynamic Circular Work-stealing Deque," SPAA, 2015.
 Only the queue owner can perform pop and push operations,
 while others can steal data from the queue.
+
+PPoPP implementation paper
+"Correct and Efficient Work-Stealing for Weak Memory Models"
+https://www.di.ens.fr/~zappa/readings/ppopp13.pdf
 */
 template <typename T>
 class WorkStealingQueue {
@@ -489,8 +493,6 @@ void WorkStealingExecutor<Closure>::_spawn(unsigned N) {
         // execute the tasks.
         run_task:
 
-        assert(_consensus.count <= N && 0 <= _consensus.count);
-
         if(!active && t) {
           active = true;
           _consensus.dissent();
@@ -575,7 +577,7 @@ void WorkStealingExecutor<Closure>::_balance_load(unsigned me) {
 template <typename Closure>
 unsigned WorkStealingExecutor<Closure>::_find_victim(unsigned thief) const {
 
-  assert(_workers[thief].queue.empty());
+  //assert(_workers[thief].queue.empty());
   
   auto &pt = _per_thread();
   auto rnd = _randomize(pt.seed);
@@ -602,7 +604,7 @@ unsigned WorkStealingExecutor<Closure>::_find_victim(unsigned thief) const {
 template <typename Closure>
 std::optional<Closure> WorkStealingExecutor<Closure>::_steal(unsigned thief) {
   
-  assert(_workers[thief].queue.empty());
+  //assert(_workers[thief].queue.empty());
   
   auto &pt = _per_thread();
   auto rnd = _randomize(pt.seed);
