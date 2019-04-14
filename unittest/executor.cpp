@@ -378,7 +378,9 @@ void test_external_threads(T& executor) {
     t.join();
   }
 
-  while(sum != num_tasks * 10 * 2 + num_tasks) ;
+  while(sum != num_tasks * 10 * 2 + num_tasks) {
+    std::this_thread::yield();
+  }
 }
 
 
@@ -400,7 +402,9 @@ void test_batch_insertion(T& executor) {
     total += i;
   }
 
-  while(count != total);
+  while(count != total) {
+    std::this_thread::yield();
+  }
 }
   
 // Procedure: test_executor
