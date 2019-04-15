@@ -8,6 +8,7 @@
 #include "../predef/architecture.hpp"
 
 #if TF_COMP_MSVC || TF_COMP_MSVC_EMULATED
+# define NOMINMAX
 # include <windows.h>
 #endif
 
@@ -113,3 +114,4 @@ class LinearBackoff {
 
 
 };  // end of namespace tf. ---------------------------------------------------
+

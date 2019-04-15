@@ -478,7 +478,7 @@ void WorkStealingExecutor<Closure>::_spawn(unsigned N) {
   
   // Lock to synchronize all workers before creating _worker_mapss
   for(unsigned i=0; i<N; ++i) {
-    _threads.emplace_back([this, i, N] () -> void {
+    _threads.emplace_back([this, i] () -> void {
 
       PerThread& pt = _per_thread();  
       pt.pool = this;
