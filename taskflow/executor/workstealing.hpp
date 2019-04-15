@@ -1,6 +1,3 @@
-// 2019/04/15 - modified by Tsung-Wei Huang
-//   - added exp-backoff strategy to minimize contention
-//
 // 2019/04/11 - modified by Tsung-Wei Huang
 //   - renamed to executor
 //
