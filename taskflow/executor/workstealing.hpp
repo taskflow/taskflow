@@ -1,3 +1,6 @@
+// 2019/04/15 - modified by Tsung-Wei Huang
+//   - added exp-backoff strategy to minimize contention
+//
 // 2019/04/11 - modified by Tsung-Wei Huang
 //   - renamed to executor
 //
@@ -46,6 +49,7 @@
 #include <set>
 #include <numeric>
 #include <cassert>
+
 #include "notifier.hpp"
 
 namespace tf {
@@ -400,6 +404,7 @@ class WorkStealingExecutor {
     
     void _spawn(unsigned);
     void _balance_load(unsigned);
+    void _exploit_tasks(unsigned, std::optional<Closure>&);
 
     unsigned _randomize(uint64_t&) const;
     unsigned _fast_modulo(unsigned, unsigned) const;
@@ -442,7 +447,6 @@ WorkStealingExecutor<Closure>::~WorkStealingExecutor() {
   for(auto& t : _threads){
     t.join();
   } 
-
 }
 
 // Function: _per_thread
@@ -480,8 +484,6 @@ void WorkStealingExecutor<Closure>::_spawn(unsigned N) {
       pt.pool = this;
       pt.worker_id = i;
     
-      auto& worker = _workers[i];
-
       std::optional<Closure> t;
       
       bool active {true};
@@ -499,28 +501,14 @@ void WorkStealingExecutor<Closure>::_spawn(unsigned N) {
         }
 
         // exploit
-        while(t) {
-          (*t)();
-          if(worker.cache) {
-            t = std::move(worker.cache);
-            worker.cache = std::nullopt;
-          }
-          else {
-            t = worker.queue.pop();
-          }
-        }
+        _exploit_tasks(i, t);
 
-        // explore
-        while (1) {
-          if(auto victim = _find_victim(i); victim != N) {
-            t = victim == i ? _queue.steal() : _workers[victim].queue.steal();
-            if(t) {
-              goto run_task;
-            }
-          }
-          else break;
+        // steal loop
+        if(t = _steal(i); t) {
+          goto run_task;
         }
         
+        // still can't get any tasks at this point
         if(active) {
           active = false;
           _consensus.consent();
@@ -584,7 +572,7 @@ unsigned WorkStealingExecutor<Closure>::_find_victim(unsigned thief) const {
   auto inc = _coprimes[_fast_modulo(rnd, _coprimes.size())];
   auto vtm = _fast_modulo(rnd, _workers.size());
 
-  // try stealing a task from other workers
+  // try to look for a task from other workers
   for(unsigned i=0; i<_workers.size(); ++i){
 
     if((thief == vtm && !_queue.empty()) ||
@@ -605,30 +593,40 @@ template <typename Closure>
 std::optional<Closure> WorkStealingExecutor<Closure>::_steal(unsigned thief) {
   
   //assert(_workers[thief].queue.empty());
-  
-  auto &pt = _per_thread();
-  auto rnd = _randomize(pt.seed);
-  auto inc = _coprimes[_fast_modulo(rnd, _coprimes.size())];
-  auto vtm = _fast_modulo(rnd, _workers.size());
-  
-  std::optional<Closure> task;
-
-  // try stealing a task from other workers
-  for(unsigned i=0; i<_workers.size(); ++i){
-
-    task = vtm == thief ? _queue.steal() : _workers[vtm].queue.steal();
-
-    if(task) {
-      _workers[thief].last_vtm = vtm;
-      return task;
+        
+  // explore
+  for(ExponentialBackoff backoff;; backoff.backoff()) {
+    if(auto vtm = _find_victim(thief); vtm != _workers.size()) {
+      auto t = (vtm == thief) ? _queue.steal() : _workers[vtm].queue.steal();
+      if(t) {
+        return t;
+      }
     }
-
-    if(vtm += inc; vtm >= _workers.size()) {
-      vtm -= _workers.size();
-    }
+    else break;
   }
 
-  return std::nullopt; 
+  return std::nullopt;
+}
+
+// Procedure: _exploit_tasks
+template <typename Closure>
+void WorkStealingExecutor<Closure>::_exploit_tasks(
+  unsigned i,
+  std::optional<Closure>& t
+) {
+
+  auto& worker = _workers[i];
+
+  while(t) {
+    (*t)();
+    if(worker.cache) {
+      t = std::move(worker.cache);
+      worker.cache = std::nullopt;
+    }
+    else {
+      t = worker.queue.pop();
+    }
+  }
 }
 
 // Function: _wait_for_tasks
@@ -736,8 +734,13 @@ void WorkStealingExecutor<Closure>::batch(std::vector<Closure>& tasks) {
 
     for(size_t k=0; k<tasks.size(); ++k) {
       _queue.push(std::move(tasks[k]));
-      _notifier.notify(false);
     }
+  }
+
+  size_t N = std::min(_workers.size(), tasks.size());
+
+  for(size_t k=0; k<N; ++k) {
+    _notifier.notify(false);
   }
 
 } 

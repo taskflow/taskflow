@@ -17,6 +17,8 @@
 #include <numeric>
 #include <cassert>
 
+#include "../utility/backoff.hpp"
+
 // This file is part of Eigen, a lightweight C++ template library
 // for linear algebra.
 //
@@ -106,11 +108,11 @@ class Notifier {
         (w->epoch & kEpochMask) +
         (((w->epoch & kWaiterMask) >> kWaiterShift) << kEpochShift);
     uint64_t state = _state.load(std::memory_order_seq_cst);
-    for (;;) {
+    for (ExponentialBackoff backoff;; backoff.backoff()) {
       if (int64_t((state & kEpochMask) - epoch) < 0) {
         // The preceeding waiter has not decided on its fate. Wait until it
         // calls either cancel_wait or commit_wait, or is notified.
-        std::this_thread::yield();
+        //std::this_thread::yield();
         state = _state.load(std::memory_order_seq_cst);
         continue;
       }
@@ -137,11 +139,11 @@ class Notifier {
         (w->epoch & kEpochMask) +
         (((w->epoch & kWaiterMask) >> kWaiterShift) << kEpochShift);
     uint64_t state = _state.load(std::memory_order_relaxed);
-    for (;;) {
+    for (ExponentialBackoff backoff;; backoff.backoff()) {
       if (int64_t((state & kEpochMask) - epoch) < 0) {
         // The preceeding waiter has not decided on its fate. Wait until it
         // calls either cancel_wait or commit_wait, or is notified.
-        std::this_thread::yield();
+        //std::this_thread::yield();
         state = _state.load(std::memory_order_relaxed);
         continue;
       }
