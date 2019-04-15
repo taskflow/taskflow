@@ -595,7 +595,7 @@ std::optional<Closure> WorkStealingExecutor<Closure>::_steal(unsigned thief) {
   //assert(_workers[thief].queue.empty());
         
   // explore
-  for(ExponentialBackoff backoff;; backoff.backoff()) {
+  for(;;) {
     if(auto vtm = _find_victim(thief); vtm != _workers.size()) {
       auto t = (vtm == thief) ? _queue.steal() : _workers[vtm].queue.steal();
       if(t) {
