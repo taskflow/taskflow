@@ -384,7 +384,7 @@ class WorkStealingExecutor {
     void batch(std::vector<Closure>& closures);
 
   private:
-    
+
     const std::thread::id _owner {std::this_thread::get_id()};
 
     std::mutex _mutex;
@@ -396,7 +396,7 @@ class WorkStealingExecutor {
 
     WorkStealingQueue<Closure> _queue;
     
-    std::atomic<unsigned> _num_idlers {0};
+    std::atomic<size_t> _num_idlers {0};
     std::atomic<bool> _done {false};
 
     Consensus _consensus;
@@ -595,7 +595,7 @@ std::optional<Closure> WorkStealingExecutor<Closure>::_steal(unsigned thief) {
   //assert(_workers[thief].queue.empty());
         
   // explore
-  for(ExponentialBackoff backoff;; backoff.backoff()) {
+  for(;;) {
     if(auto vtm = _find_victim(thief); vtm != _workers.size()) {
       auto t = (vtm == thief) ? _queue.steal() : _workers[vtm].queue.steal();
       if(t) {
@@ -647,7 +647,7 @@ bool WorkStealingExecutor<Closure>::_wait_for_tasks(
     return true;
   }
 
-  if(auto I = ++_num_idlers; _done && I == _workers.size()) {
+  if(size_t I = ++_num_idlers; _done && I == _workers.size()) {
     _notifier.cancel_wait(&_waiters[i]);
     if(_find_victim(i) != _workers.size()) {
       --_num_idlers;
@@ -736,8 +736,8 @@ void WorkStealingExecutor<Closure>::batch(std::vector<Closure>& tasks) {
       _queue.push(std::move(tasks[k]));
     }
   }
-
-  size_t N = std::min(_workers.size(), tasks.size());
+  
+  size_t N = std::max(size_t{1}, std::min(_num_idlers.load(), tasks.size()));
 
   for(size_t k=0; k<N; ++k) {
     _notifier.notify(false);
