@@ -51,6 +51,7 @@
 #include <cassert>
 
 #include "notifier.hpp"
+#include "observer.hpp"
 
 namespace tf {
 
@@ -383,7 +384,23 @@ class WorkStealingExecutor {
     */
     void batch(std::vector<Closure>& closures);
 
+    
+    template<typename T, typename... Args>
+    T* observe_on(Args&&... args) {
+      _observer = std::make_unique<T>(std::forward<Args>(args)...);
+      ExecutorObserver::ExecutorInfo info;
+      info.owner = _owner;
+      info.workers.reserve(_threads.size());
+      for(auto& t: _threads) {
+        info.workers.push_back(t.get_id());
+      }
+      _observer->set_up(info);
+      return static_cast<T*>(_observer.get());
+    }
+
   private:
+
+    std::unique_ptr<ExecutorObserver> _observer {nullptr};
 
     const std::thread::id _owner {std::this_thread::get_id()};
 
@@ -618,7 +635,13 @@ void WorkStealingExecutor<Closure>::_exploit_tasks(
   auto& worker = _workers[i];
 
   while(t) {
+    if(_observer) {
+      _observer->on_entry(&(*t));
+    }
     (*t)();
+    if(_observer) {
+      _observer->on_exit(&(*t));
+    }
     if(worker.cache) {
       t = std::move(worker.cache);
       worker.cache = std::nullopt;
@@ -656,7 +679,7 @@ bool WorkStealingExecutor<Closure>::_wait_for_tasks(
     _notifier.notify(true);
     return false;
   }
-
+  
   _notifier.commit_wait(&_waiters[i]);
   --_num_idlers;
 
