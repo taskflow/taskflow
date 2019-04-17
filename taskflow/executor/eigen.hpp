@@ -280,6 +280,22 @@ class EigenWorkStealingExecutor {
     @param closures a vector of closures
     */
     void batch(std::vector<Closure>& closures);
+    
+    /**
+    @brief constructs an observer to inspect the activities of worker threads
+
+    Each executor manages at most one observer at a time through std::unique_ptr.
+    Createing multiple observers will only keep the lastest one.
+    
+    @tparam Observer observer type derived from tf::ExecutorObserverInterface
+    @tparam ArgsT... argument parameter pack
+
+    @param args... arguments to forward to the constructor of the observer
+    
+    @return a raw pointer to the observer associated with this executor
+    */
+    template<typename Observer, typename... Args>
+    Observer* make_observer(Args&&... args);
 
   private:
     
@@ -295,6 +311,8 @@ class EigenWorkStealingExecutor {
     std::atomic<bool> _spinning {false};
 
     Notifier _notifier;
+    
+    std::unique_ptr<ExecutorObserverInterface> _observer;
     
     void _spawn(unsigned);
 
@@ -618,6 +636,15 @@ void EigenWorkStealingExecutor<Closure>::batch(std::vector<Closure>& tasks) {
   }
 
 } 
+
+// Function: make_observer    
+template <typename Closure>
+template<typename Observer, typename... Args>
+Observer* EigenWorkStealingExecutor<Closure>::make_observer(Args&&... args) {
+  _observer = std::make_unique<Observer>(std::forward<Args>(args)...);
+  _observer->set_up(_threads.size());
+  return static_cast<Observer*>(_observer.get());
+}
 
 }  // end of namespace tf. ---------------------------------------------------
 

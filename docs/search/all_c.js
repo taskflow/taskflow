@@ -1,6 +1,7 @@
 var searchData=
 [
   ['m',['m',['http://en.cppreference.com/w/cpp/numeric/random/lognormal_distribution/params.html',1,'std::lognormal_distribution::m()'],['http://en.cppreference.com/w/cpp/numeric/random/fisher_f_distribution/params.html',1,'std::fisher_f_distribution::m()']]],
+  ['make_5fobserver',['make_observer',['../classtf_1_1SimpleExecutor.html#a43d20c6c984317f57e266532bc593605',1,'tf::SimpleExecutor::make_observer()'],['../classtf_1_1ProactiveExecutor.html#a63fecf40378d0d66a017aba2d378552c',1,'tf::ProactiveExecutor::make_observer()'],['../classtf_1_1SpeculativeExecutor.html#a7d6204e4830ce18ff2f44d03ac0c0198',1,'tf::SpeculativeExecutor::make_observer()'],['../classtf_1_1WorkStealingExecutor.html#a487722e1944cfac5e99ac5f6d0a7ee5b',1,'tf::WorkStealingExecutor::make_observer()']]],
   ['make_5foptional',['make_optional',['http://en.cppreference.com/w/cpp/experimental/optional/make_optional.html',1,'std::experimental']]],
   ['make_5fready_5fat_5fthread_5fexit',['make_ready_at_thread_exit',['http://en.cppreference.com/w/cpp/thread/packaged_task/make_ready_at_thread_exit.html',1,'std::packaged_task']]],
   ['make_5fsigned',['make_signed',['http://en.cppreference.com/w/cpp/types/make_signed.html',1,'std']]],

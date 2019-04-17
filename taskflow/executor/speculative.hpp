@@ -38,6 +38,8 @@
 #include <optional>
 #include <cassert>
 
+#include "observer.hpp"
+
 namespace tf {
 
 /**
@@ -89,7 +91,7 @@ class SpeculativeExecutor {
 
     @tparam ArgsT... argument parameter pack
 
-    @param args... arguments to forward to the constructor of the closure
+    @param args arguments to forward to the constructor of the closure
     */
     template <typename... ArgsT>
     void emplace(ArgsT&&... args);
@@ -100,6 +102,22 @@ class SpeculativeExecutor {
     @param closures a vector of closures
     */
     void batch(std::vector<Closure>& closures);
+    
+    /**
+    @brief constructs an observer to inspect the activities of worker threads
+
+    Each executor manages at most one observer at a time through std::unique_ptr.
+    Createing multiple observers will only keep the lastest one.
+    
+    @tparam Observer observer type derived from tf::ExecutorObserverInterface
+    @tparam ArgsT... argument parameter pack
+
+    @param args arguments to forward to the constructor of the observer
+    
+    @return a raw pointer to the observer associated with this executor
+    */
+    template<typename Observer, typename... Args>
+    Observer* make_observer(Args&&... args);
     
   private:
     
@@ -114,6 +132,8 @@ class SpeculativeExecutor {
     std::unordered_map<std::thread::id, Worker*> _worker_maps;    
 
     bool _exiting {false};
+    
+    std::unique_ptr<ExecutorObserverInterface> _observer;
 
     auto _this_worker() const;
     
@@ -315,6 +335,15 @@ void SpeculativeExecutor<Closure>::batch(std::vector<Closure>& tasks){
   if(tasks.size() == consumed) return ;
   _tasks.reserve(_tasks.size() + tasks.size() - consumed);
   std::move(tasks.begin()+consumed, tasks.end(), std::back_inserter(_tasks));
+}
+
+// Function: make_observer    
+template <typename Closure>
+template<typename Observer, typename... Args>
+Observer* SpeculativeExecutor<Closure>::make_observer(Args&&... args) {
+  _observer = std::make_unique<Observer>(std::forward<Args>(args)...);
+  _observer->set_up(_threads.size());
+  return static_cast<Observer*>(_observer.get());
 }
 
 

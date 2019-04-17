@@ -369,7 +369,7 @@ class WorkStealingExecutor {
 
     @tparam ArgsT... argument parameter pack
 
-    @param args... arguments to forward to the constructor of the closure
+    @param args arguments to forward to the constructor of the closure
     */
     template <typename... ArgsT>
     void emplace(ArgsT&&... args);
@@ -381,23 +381,23 @@ class WorkStealingExecutor {
     */
     void batch(std::vector<Closure>& closures);
 
+    /**
+    @brief constructs an observer to inspect the activities of worker threads
+
+    Each executor manages at most one observer at a time through std::unique_ptr.
+    Createing multiple observers will only keep the lastest one.
     
-    template<typename T, typename... Args>
-    T* observe_on(Args&&... args) {
-      _observer = std::make_unique<T>(std::forward<Args>(args)...);
-      ExecutorObserver::ExecutorInfo info;
-      info.owner = _owner;
-      info.workers.reserve(_threads.size());
-      for(auto& t: _threads) {
-        info.workers.push_back(t.get_id());
-      }
-      _observer->set_up(info);
-      return static_cast<T*>(_observer.get());
-    }
+    @tparam Observer observer type derived from tf::ExecutorObserverInterface
+    @tparam ArgsT... argument parameter pack
+
+    @param args arguments to forward to the constructor of the observer
+    
+    @return a raw pointer to the observer associated with this executor
+    */
+    template<typename Observer, typename... Args>
+    Observer* make_observer(Args&&... args);
 
   private:
-
-    std::unique_ptr<ExecutorObserver> _observer {nullptr};
 
     const std::thread::id _owner {std::this_thread::get_id()};
 
@@ -415,6 +415,8 @@ class WorkStealingExecutor {
 
     Consensus _consensus;
     Notifier _notifier;
+    
+    std::unique_ptr<ExecutorObserverInterface> _observer;
     
     void _spawn(unsigned);
     void _balance_load(unsigned);
@@ -632,13 +634,17 @@ void WorkStealingExecutor<Closure>::_exploit_tasks(
   auto& worker = _workers[i];
 
   while(t) {
+
     if(_observer) {
-      _observer->on_entry(&(*t));
+      _observer->on_entry(i);
     }
+
     (*t)();
+
     if(_observer) {
-      _observer->on_exit(&(*t));
+      _observer->on_exit(i);
     }
+
     if(worker.cache) {
       t = std::move(worker.cache);
       worker.cache = std::nullopt;
@@ -652,24 +658,24 @@ void WorkStealingExecutor<Closure>::_exploit_tasks(
 // Function: _wait_for_tasks
 template <typename Closure>
 bool WorkStealingExecutor<Closure>::_wait_for_tasks(
-  unsigned i, 
+  unsigned me, 
   std::optional<Closure>& t
 ) {
 
   assert(!t);
 
-  _notifier.prepare_wait(&_waiters[i]);
+  _notifier.prepare_wait(&_waiters[me]);
   
   // check again.
-  if(auto victim = _find_victim(i); victim != _workers.size()) {
-    _notifier.cancel_wait(&_waiters[i]);
-    t = _workers[victim].queue.steal();
+  if(auto vtm = _find_victim(me); vtm != _workers.size()) {
+    _notifier.cancel_wait(&_waiters[me]);
+    t = (vtm == me) ? _queue.steal() : _workers[vtm].queue.steal();
     return true;
   }
 
   if(size_t I = ++_num_idlers; _done && I == _workers.size()) {
-    _notifier.cancel_wait(&_waiters[i]);
-    if(_find_victim(i) != _workers.size()) {
+    _notifier.cancel_wait(&_waiters[me]);
+    if(_find_victim(me) != _workers.size()) {
       --_num_idlers;
       return true;
     }
@@ -677,7 +683,7 @@ bool WorkStealingExecutor<Closure>::_wait_for_tasks(
     return false;
   }
   
-  _notifier.commit_wait(&_waiters[i]);
+  _notifier.commit_wait(&_waiters[me]);
   --_num_idlers;
 
   return true;
@@ -764,6 +770,15 @@ void WorkStealingExecutor<Closure>::batch(std::vector<Closure>& tasks) {
   }
 
 } 
+    
+// Function: make_observer    
+template <typename Closure>
+template<typename Observer, typename... Args>
+Observer* WorkStealingExecutor<Closure>::make_observer(Args&&... args) {
+  _observer = std::make_unique<Observer>(std::forward<Args>(args)...);
+  _observer->set_up(_threads.size());
+  return static_cast<Observer*>(_observer.get());
+}
 
 }  // end of namespace tf. ---------------------------------------------------
 

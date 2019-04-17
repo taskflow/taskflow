@@ -88,7 +88,7 @@ class Task {
 
     @tparam Ts... parameter pack
 
-    @param tasks... one or multiple tasks
+    @param tasks one or multiple tasks
 
     @return @c *this
     */
@@ -118,7 +118,7 @@ class Task {
 
     @tparam Ts parameter pack 
 
-    @param tasks... one or multiple tasks
+    @param tasks one or multiple tasks
 
     @return @c *this
     */

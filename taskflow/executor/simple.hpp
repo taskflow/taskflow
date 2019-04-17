@@ -36,6 +36,8 @@
 #include <cassert>
 #include <unordered_set>
 
+#include "observer.hpp"
+
 namespace tf {
 
 /**
@@ -71,7 +73,7 @@ class SimpleExecutor {
 
     @tparam ArgsT... argument parameter pack
 
-    @param args... arguments to forward to the constructor of the closure
+    @param args arguments to forward to the constructor of the closure
     */
     template <typename... ArgsT>
     void emplace(ArgsT&&... args);
@@ -93,6 +95,22 @@ class SimpleExecutor {
     */
     bool is_owner() const;
     
+    /**
+    @brief constructs an observer to inspect the activities of worker threads
+
+    Each executor manages at most one observer at a time through std::unique_ptr.
+    Createing multiple observers will only keep the lastest one.
+    
+    @tparam Observer observer type derived from tf::ExecutorObserverInterface
+    @tparam ArgsT... argument parameter pack
+
+    @param args arguments to forward to the constructor of the observer
+    
+    @return a raw pointer to the observer associated with this executor
+    */
+    template<typename Observer, typename... Args>
+    Observer* make_observer(Args&&... args);
+    
   private:
 
     const std::thread::id _owner {std::this_thread::get_id()};
@@ -104,6 +122,8 @@ class SimpleExecutor {
     std::vector<std::thread> _threads;
     
     bool _stop {false};
+
+    std::unique_ptr<ExecutorObserverInterface> _observer;
 
     void _spawn(unsigned);
     void _shutdown();
@@ -238,6 +258,15 @@ void SimpleExecutor<Closure>::_shutdown() {
   _threads.clear();
   _stop = false;
 } 
+
+// Function: make_observer    
+template <typename Closure>
+template<typename Observer, typename... Args>
+Observer* SimpleExecutor<Closure>::make_observer(Args&&... args) {
+  _observer = std::make_unique<Observer>(std::forward<Args>(args)...);
+  _observer->set_up(_threads.size());
+  return static_cast<Observer*>(_observer.get());
+}
 
 }  // end of namespace tf. ---------------------------------------------------
 

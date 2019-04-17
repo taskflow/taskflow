@@ -121,7 +121,7 @@ Cpp-Taskflow requires little requirement on the executor class.
 Each taskflow object has its own internal data structure to keep track of 
 the lifetime and execution status of a task. 
 The executor only needs to guarantee a thread to run the task given by the methods emplace and batch. 
-We recommend users to read our built-in executor implementation tf::WorkStealingThreadpool for more details.
+We recommend users to read our built-in executor implementation tf::WorkStealingExecutor for more details.
 
 @section C6ThreadSafety Thread Safety
 

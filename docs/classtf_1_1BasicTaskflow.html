@@ -156,14 +156,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae644520b734078d061e3ceafc7d982ad"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/shared_future.html">std::shared_future</a>&lt; void &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1BasicTaskflow.html#ae644520b734078d061e3ceafc7d982ad">dispatch</a> (C &amp;&amp;)</td></tr>
 <tr class="memdesc:ae644520b734078d061e3ceafc7d982ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">dispatches the present graph to threads and run a callback when the graph completes  <a href="#ae644520b734078d061e3ceafc7d982ad">More...</a><br /></td></tr>
 <tr class="separator:ae644520b734078d061e3ceafc7d982ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0126001a2bd8603af4827049578629cb"><td class="memItemLeft" align="right" valign="top"><a id="a0126001a2bd8603af4827049578629cb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1BasicTaskflow.html#a0126001a2bd8603af4827049578629cb">silent_dispatch</a> ()</td></tr>
-<tr class="memdesc:a0126001a2bd8603af4827049578629cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">dispatches the present graph to threads and returns immediately <br /></td></tr>
-<tr class="separator:a0126001a2bd8603af4827049578629cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a689a804c4d9f2afe06d558b4ef7e7d29"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
-<tr class="memitem:a689a804c4d9f2afe06d558b4ef7e7d29"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1BasicTaskflow.html#a689a804c4d9f2afe06d558b4ef7e7d29">silent_dispatch</a> (C &amp;&amp;callable)</td></tr>
-<tr class="memdesc:a689a804c4d9f2afe06d558b4ef7e7d29"><td class="mdescLeft">&#160;</td><td class="mdescRight">dispatches the present graph to threads and run a callback when the graph completes  <a href="#a689a804c4d9f2afe06d558b4ef7e7d29">More...</a><br /></td></tr>
-<tr class="separator:a689a804c4d9f2afe06d558b4ef7e7d29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37ef86998f23ee7315be032c40fe815e"><td class="memItemLeft" align="right" valign="top"><a id="a37ef86998f23ee7315be032c40fe815e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1BasicTaskflow.html#a37ef86998f23ee7315be032c40fe815e">wait_for_all</a> ()</td></tr>
 <tr class="memdesc:a37ef86998f23ee7315be032c40fe815e"><td class="mdescLeft">&#160;</td><td class="mdescRight">dispatches the present graph to threads and wait for all topologies to complete <br /></td></tr>
@@ -704,36 +696,6 @@ template&lt;template&lt; typename... &gt; typename E&gt; </div>
 
 <p>shares ownership of the executor associated with this taskflow object </p>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html">std::shared_ptr</a> of the executor </dd></dl>
-
-</div>
-</div>
-<a id="a689a804c4d9f2afe06d558b4ef7e7d29"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a689a804c4d9f2afe06d558b4ef7e7d29">&#9670;&nbsp;</a></span>silent_dispatch()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;template&lt; typename... &gt; typename E&gt; </div>
-<div class="memtemplate">
-template&lt;typename C &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classtf_1_1BasicTaskflow.html">tf::BasicTaskflow</a>&lt; E &gt;::silent_dispatch </td>
-          <td>(</td>
-          <td class="paramtype">C &amp;&amp;&#160;</td>
-          <td class="paramname"><em>callable</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>dispatches the present graph to threads and run a callback when the graph completes </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">callable</td><td>a callable object to execute on completion </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>

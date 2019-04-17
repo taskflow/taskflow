@@ -807,32 +807,33 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT = ../taskflow/taskflow.hpp                            \
-        ../taskflow/error/error.hpp                         \
-        ../taskflow/graph/flow_builder.hpp                  \
-        ../taskflow/graph/basic_taskflow.hpp                \
-        ../taskflow/graph/task.hpp                          \
-        ../taskflow/graph/framework.hpp                     \
-        ../taskflow/threadpool/simple_threadpool.hpp        \
-        ../taskflow/threadpool/proactive_threadpool.hpp     \
-        ../taskflow/threadpool/speculative_threadpool.hpp   \
-        ../taskflow/threadpool/workstealing_threadpool.hpp  \
-        QuickStart.dox                                      \
-        releases/releases.dox                               \
-        releases/master-branch.dox                          \
-        releases/release-2.1.0.dox                          \
-        releases/release-2.0.0.dox                          \
-        cookbook/Cookbook.dox                               \
-        cookbook/Chapter0.dox                               \
-        cookbook/Chapter1.dox                               \
-        cookbook/Chapter2.dox                               \
-        cookbook/Chapter3.dox                               \
-        cookbook/Chapter4.dox                               \
-        cookbook/Chapter5.dox                               \
-        cookbook/Chapter6.dox                               \
-        cookbook/Chapter7.dox                               \
-        FAQ.dox                                             \
-        reference/reference.dox                             \
+INPUT = ../taskflow/taskflow.hpp               \
+        ../taskflow/error/error.hpp            \
+        ../taskflow/graph/flow_builder.hpp     \
+        ../taskflow/graph/basic_taskflow.hpp   \
+        ../taskflow/graph/task.hpp             \
+        ../taskflow/graph/framework.hpp        \
+        ../taskflow/executor/simple.hpp        \
+        ../taskflow/executor/proactive.hpp     \
+        ../taskflow/executor/speculative.hpp   \
+        ../taskflow/executor/workstealing.hpp  \
+        ../taskflow/executor/observer.hpp      \
+        QuickStart.dox                         \
+        releases/releases.dox                  \
+        releases/master-branch.dox             \
+        releases/release-2.1.0.dox             \
+        releases/release-2.0.0.dox             \
+        cookbook/Cookbook.dox                  \
+        cookbook/Chapter0.dox                  \
+        cookbook/Chapter1.dox                  \
+        cookbook/Chapter2.dox                  \
+        cookbook/Chapter3.dox                  \
+        cookbook/Chapter4.dox                  \
+        cookbook/Chapter5.dox                  \
+        cookbook/Chapter6.dox                  \
+        cookbook/Chapter7.dox                  \
+        FAQ.dox                                \
+        reference/reference.dox                \
         header.html
 
 # This tag can be used to specify the character encoding of the source files

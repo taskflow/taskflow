@@ -21,8 +21,6 @@ var classtf_1_1BasicTaskflow =
     [ "run_until", "classtf_1_1BasicTaskflow.html#a3a24f26ead77969d133d72372df456e0", null ],
     [ "run_until", "classtf_1_1BasicTaskflow.html#aaa4618b734a976a39ca1cc47a8e44c4e", null ],
     [ "share_executor", "classtf_1_1BasicTaskflow.html#abe76e5288016861aaf1dafc0218d3084", null ],
-    [ "silent_dispatch", "classtf_1_1BasicTaskflow.html#a0126001a2bd8603af4827049578629cb", null ],
-    [ "silent_dispatch", "classtf_1_1BasicTaskflow.html#a689a804c4d9f2afe06d558b4ef7e7d29", null ],
     [ "wait_for_all", "classtf_1_1BasicTaskflow.html#a37ef86998f23ee7315be032c40fe815e", null ],
     [ "wait_for_topologies", "classtf_1_1BasicTaskflow.html#a8f0ce2026118e97b83cbd727ed0932af", null ]
 ];
