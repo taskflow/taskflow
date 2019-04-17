@@ -215,9 +215,11 @@ void SpeculativeExecutor<Closure>::_spawn(unsigned N) {
 
   for(size_t i=0; i<N; ++i){
 
-    _threads.emplace_back([this, &w=_workers[i]]() -> void {
+    _threads.emplace_back([this, me=i]() -> void {
 
        std::optional<Closure> t;
+
+       auto& w = _workers[me];
 
        std::unique_lock lock(_mutex);
        
@@ -242,7 +244,17 @@ void SpeculativeExecutor<Closure>::_spawn(unsigned N) {
            lock.unlock();
            // speculation loop
            while(t) {
+
+             if(_observer) {
+               _observer->on_entry(me);
+             }
+
              (*t)();
+             
+             if(_observer) {
+               _observer->on_exit(me);
+             }
+
              if(w.task) {
                t = std::move(w.task);
                w.task = std::nullopt;

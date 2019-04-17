@@ -205,7 +205,7 @@ void ProactiveExecutor<Closure>::_spawn(unsigned N) {
 
   for(size_t i=0; i<N; ++i){
   
-    _threads.emplace_back([this] () -> void {
+    _threads.emplace_back([this, me=i] () -> void {
       
       Worker w;
       
@@ -234,7 +234,17 @@ void ProactiveExecutor<Closure>::_spawn(unsigned N) {
           Closure t{std::move(_tasks.back())};
           _tasks.pop_back();
           lock.unlock();
+
+          if(_observer) {
+            _observer->on_entry(me);
+          }
+
           t();
+          
+          if(_observer) {
+            _observer->on_exit(me);
+          }
+
           lock.lock();
         } 
       }

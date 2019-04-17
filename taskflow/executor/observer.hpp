@@ -83,7 +83,7 @@ class ExecutorObserver : public ExecutorObserverInterface {
     /**
     @brief clear the timeline data
     */
-    inline void clear() const;
+    inline void clear();
 
   private:
     

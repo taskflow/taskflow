@@ -162,7 +162,7 @@ void SimpleExecutor<Closure>::_spawn(unsigned N) {
     
   for(size_t i=0; i<N; ++i) {
       
-    _threads.emplace_back([this] () -> void { 
+    _threads.emplace_back([this, me=i] () -> void { 
         
       Closure task;
           
@@ -176,7 +176,16 @@ void SimpleExecutor<Closure>::_spawn(unsigned N) {
 
           // execute the task
           lock.unlock();
+
+          if(_observer) {
+            _observer->on_entry(me);
+          }
+
           task();
+
+          if(_observer) {
+            _observer->on_exit(me);
+          }
           lock.lock();
         }
         else {
