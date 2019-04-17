@@ -26,6 +26,7 @@
 #pragma once
 
 #include "topology.hpp"
+#include "observer.hpp"
 
 namespace tf {
 
@@ -42,7 +43,10 @@ and defines means to execute task dependency graphs.
 */
 template <template <typename...> typename E>
 class BasicTaskflow : public FlowBuilder {
-  
+
+  // Observer must be a friend of Taskflow in order to use Closure
+  friend class BasicTaskflowObserver<BasicTaskflow<E>>;
+
   using StaticWork  = typename Node::StaticWork;
   using DynamicWork = typename Node::DynamicWork;
   
@@ -60,6 +64,8 @@ class BasicTaskflow : public FlowBuilder {
     BasicTaskflow* taskflow {nullptr};
     Node*          node     {nullptr};
   };
+
+
 
   public:
   
@@ -699,6 +705,7 @@ std::string BasicTaskflow<E>::dump() const {
   dump(os); 
   return os.str();
 }
+
 
 }  // end of namespace tf ----------------------------------------------------
 

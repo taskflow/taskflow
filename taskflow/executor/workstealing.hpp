@@ -48,6 +48,7 @@
 #include <cassert>
 
 #include "notifier.hpp"
+#include "observer.hpp"
 
 namespace tf {
 
@@ -380,8 +381,24 @@ class WorkStealingExecutor {
     */
     void batch(std::vector<Closure>& closures);
 
-  private:
     
+    template<typename T, typename... Args>
+    T* observe_on(Args&&... args) {
+      _observer = std::make_unique<T>(std::forward<Args>(args)...);
+      ExecutorObserver::ExecutorInfo info;
+      info.owner = _owner;
+      info.workers.reserve(_threads.size());
+      for(auto& t: _threads) {
+        info.workers.push_back(t.get_id());
+      }
+      _observer->set_up(info);
+      return static_cast<T*>(_observer.get());
+    }
+
+  private:
+
+    std::unique_ptr<ExecutorObserver> _observer {nullptr};
+
     const std::thread::id _owner {std::this_thread::get_id()};
 
     std::mutex _mutex;
@@ -393,7 +410,7 @@ class WorkStealingExecutor {
 
     WorkStealingQueue<Closure> _queue;
     
-    std::atomic<unsigned> _num_idlers {0};
+    std::atomic<size_t> _num_idlers {0};
     std::atomic<bool> _done {false};
 
     Consensus _consensus;
@@ -615,7 +632,13 @@ void WorkStealingExecutor<Closure>::_exploit_tasks(
   auto& worker = _workers[i];
 
   while(t) {
+    if(_observer) {
+      _observer->on_entry(&(*t));
+    }
     (*t)();
+    if(_observer) {
+      _observer->on_exit(&(*t));
+    }
     if(worker.cache) {
       t = std::move(worker.cache);
       worker.cache = std::nullopt;
@@ -644,7 +667,7 @@ bool WorkStealingExecutor<Closure>::_wait_for_tasks(
     return true;
   }
 
-  if(auto I = ++_num_idlers; _done && I == _workers.size()) {
+  if(size_t I = ++_num_idlers; _done && I == _workers.size()) {
     _notifier.cancel_wait(&_waiters[i]);
     if(_find_victim(i) != _workers.size()) {
       --_num_idlers;
@@ -653,7 +676,7 @@ bool WorkStealingExecutor<Closure>::_wait_for_tasks(
     _notifier.notify(true);
     return false;
   }
-
+  
   _notifier.commit_wait(&_waiters[i]);
   --_num_idlers;
 
@@ -733,8 +756,8 @@ void WorkStealingExecutor<Closure>::batch(std::vector<Closure>& tasks) {
       _queue.push(std::move(tasks[k]));
     }
   }
-
-  size_t N = std::min(_workers.size(), tasks.size());
+  
+  size_t N = std::max(size_t{1}, std::min(_num_idlers.load(), tasks.size()));
 
   for(size_t k=0; k<N; ++k) {
     _notifier.notify(false);

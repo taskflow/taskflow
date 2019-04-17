@@ -95,8 +95,8 @@ void run_tbb(const unsigned num_epochs, const unsigned num_threads) {
 
   //auto t1 = std::chrono::high_resolution_clock::now();
   for(auto i=0u; i<num_epochs; i++) {
-    for(auto i=0u; i<NUM_DNNS; i++) {
-      dnns[i]->try_put(continue_msg());
+    for(auto j=0u; j<NUM_DNNS; j++) {
+      dnns[j]->try_put(continue_msg());
     }
     parallel_dnn.wait_for_all();
     //report_runtime(t1);
