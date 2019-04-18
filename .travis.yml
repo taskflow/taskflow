@@ -84,4 +84,4 @@ script:
   - cd build
   - cmake ../
   - make
-  - ctest
+  - env CTEST_OUTPUT_ON_FAILURE=1 ctest
