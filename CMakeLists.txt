@@ -216,6 +216,9 @@ add_test(speculative_executor ${TF_UTEST_DIR}/executor -tc=SpeculativeExecutor)
 add_test(work_stealing_executor ${TF_UTEST_DIR}/executor -tc=WorkStealingExecutor)
 add_test(eigen_work_stealing_executor ${TF_UTEST_DIR}/executor -tc=EigenWorkStealingExecutor)
 
+# unittest for observer 
+add_test(observer    ${TF_UTEST_DIR}/taskflow -tc=observer)
+
 # threadpool_cxx14 unittest (contributed by Glen Fraser)
 add_executable(threadpool_cxx14_tmp unittest/threadpool_cxx14.cpp)
 set_target_properties(threadpool_cxx14_tmp PROPERTIES CXX_STANDARD 14)
