@@ -225,15 +225,18 @@ void ProactiveExecutor<Closure>::_spawn(unsigned N) {
           // shutdown cannot have task
           if(w.task) {
             lock.unlock();
+
             if(_observer) {
               _observer->on_entry(me);
             }
+
             (*w.task)();
             w.task = std::nullopt;
 
             if(_observer) {
               _observer->on_exit(me);
             }
+
             lock.lock();
           }
         }
