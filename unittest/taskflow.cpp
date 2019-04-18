@@ -1190,12 +1190,100 @@ TEST_CASE("Composition-3" * doctest::timeout(300)) {
 }
 
 
+// --------------------------------------------------------
+// Testcase: Observer 
+// -------------------------------------------------------- 
+template <typename T> 
+void ObserverTest() {
+  for(unsigned w=0; w<=8; ++w) {
+    T taskflow {w};
+    auto observer = taskflow.share_executor()->template make_observer<tf::ExecutorObserver>();    
 
+    tf::Framework frameworkA;
+    std::vector<tf::Task> tasks;
+    // Static tasking 
+    for(auto i=0; i < 1024; i ++) {
+      tasks.emplace_back(frameworkA.emplace([](){}));
+    }
 
+    // Randomly specify dependency
+    for(auto i=0; i < 1024; i ++) {
+      for(auto j=i+1; j < 1024; j++) {
+        if(rand()%2 == 0) {
+          tasks[i].precede(tasks[j]);
+        }
+      }
+    }
 
+    taskflow.run_n(frameworkA, 16).get();
 
+    if(w == 0) {
+      REQUIRE(observer->num_tasks() == 0);
+    }
+    else {
+      REQUIRE(observer->num_tasks() == 1024*16);
+    }
 
+    observer->clear();
+    REQUIRE(observer->num_tasks() == 0);
+    tasks.clear();
 
+    // Dynamic tasking  
+    tf::Framework frameworkB;
+    std::atomic<int> num_tasks {0};
+    // Static tasking 
+    for(auto i=0; i < 1024; i ++) {
+      tasks.emplace_back(frameworkB.emplace([&](auto &subflow){
+        num_tasks ++;
+        auto num_spawn = rand() % 10 + 1;
+        // Randomly spawn tasks
+        for(auto i=0; i<num_spawn; i++) {
+          subflow.emplace([&](){ num_tasks ++; });
+        }    
+        if(rand() % 2) {
+          subflow.detach();
+        }
+        else {
+          // In join mode, this task will be visited twice
+          num_tasks ++;
+        }
+      }));
+    }
+
+    // Randomly specify dependency
+    for(auto i=0; i < 1024; i ++) {
+      for(auto j=i+1; j < 1024; j++) {
+        if(rand()%2 == 0) {
+          tasks[i].precede(tasks[j]);
+        }
+      }
+    }
+
+    taskflow.run_n(frameworkB, 16).get();
+
+    if(w == 0) {
+      REQUIRE(observer->num_tasks() == 0);
+    }
+    else {
+      REQUIRE(observer->num_tasks() == num_tasks);
+    }
+  }
+}
+
+TEST_CASE("Observer" * doctest::timeout(300)) {
+  SUBCASE("Simple Executor") {
+    ObserverTest<tf::BasicTaskflow<tf::SimpleExecutor>>();
+  }
+  SUBCASE("Proactive Executor") {
+    ObserverTest<tf::BasicTaskflow<tf::ProactiveExecutor>>();
+  }
+  SUBCASE("Speculative Executor") {
+    ObserverTest<tf::BasicTaskflow<tf::SpeculativeExecutor>>();
+  }
+  SUBCASE("WorkStealing Executor") {
+    ObserverTest<tf::BasicTaskflow<tf::WorkStealingExecutor>>();
+  }
+}
 
 
 
