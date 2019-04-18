@@ -38,6 +38,13 @@ to enable high performance and high developer productivity at the same time.
 
 ![](image/framework.png)
 
+Cpp-Taskflow provides visualization of the executor's activities to let users easily analyze their
+program's performance. 
+
+![](image/timeline.png)
+
+
+
 Cpp-Taskflow is committed to support both academic and industry research projects,
 making it reliable and cost-effective for long-term and large-scale developments.
 
