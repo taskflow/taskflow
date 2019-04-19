@@ -635,7 +635,7 @@ f2.dump(std::cout);  // dump the framework
 ```
 
 # Monitor Thread Activities 
-Understanding threads' activities is very important for performance analysis.  Cpp-Taskflow provides `tf::ExecutorObserver`
+Understanding thread activities is very important for performance analysis.  Cpp-Taskflow provides `tf::ExecutorObserver`
 to record the threads' activities, and you can dump and visualize those activities in the Chrome browser.
 
 ## Create an Observer
