@@ -97,12 +97,16 @@ class MyExecutor {               // closure type C, callable on operator ()
   public:
 
   MyExecutor(unsigned);          // constructor on a number of worker threads (might be zero)
+
   size_t num_workers() const;    // return the number of worker threads (might be zero)
+
   template <typename... ArgsT>
   void emplace(ArgsT&&...);      // arguments to construct the closure C
+
   template <typename C>
   void batch(std::vector<C>&);   // a vector of closures for batch insertions
 };
+
 using MyTaskflow = tf::BasicTaskflow<MyExecutor>;
 @endcode
 
@@ -235,6 +239,61 @@ Running the program on different number of taskflow objects gives the following 
 As we increase the number of taskflow objects, 
 the implementation without sharing the executor encounters more context switches among threads. 
 This overhead reflected on the slower runtime (15482 vs 14341 on 128 taskflow objects).
+
+@section C6MonitorThreadActivities Monitor Thread Activities 
+
+Inspecting the thread activities is very important for performance analysis. 
+It allows you to know when each task starts and ends participating in the task scheduling.
+Cpp-Taskflow provides a default observer class tf::ExecutorObserver for this purpose.
+The following example shows how to create an observer from a taskflow.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+auto observer = taskflow.share_executor()->make_observer<tf::ExecutorObserver>();
+@endcode 
+
+Note that each executor can only have an observer at a time. 
+An observer will automatically record the start and end timestamps 
+of each executed task. Users can query, dump or remove the timestamps through the tf::ExecutorObserver::num_tasks, tf::ExecutorObserver::dump and tf::ExecutorObserver::clear methods. 
+
+@code{.cpp}
+ 1. tf::Taskflow taskflow;
+ 2. auto observer = taskflow.share_executor()->make_observer<tf::ExecutorObserver>();
+ 3. taskflow.emplace([](){}, [](){}, [](){}, [](){});
+ 4. taskflow.wait_for_all();
+ 5.
+ 6. // Query the total number of tasks (number of timestamp pairs)
+ 7. auto num_tasks = observer->num_tasks();
+ 8.
+ 9. // Dump the timeline data in JSON format 
+10. std::string timelines = observer->dump();
+11. 
+12. // Clear the timeline data
+13. observer->clear();
+@endcode 
+
+Debrief:
+
+@li Line 2-4 creates an observer and a task dependency graph with four tasks and dispatch the tasks to execution.
+@li Line 7 query the total number of tasks (number of timestamp pair) through observer
+@li Line 10 dump the timestamps to a std::string in JSON format 
+@li Line 13 remove all timestamps in the observer
+
+You can visualize the timeline data in a Chrome browser:
+
+@li Step 1: save the JSON timeline data to a file
+@li Step 2: launch the Chrome browser and open a tab with the url: chrome://tracing
+@li Step 3: load the JSON file
+
+@image html images/timeline.png width=80%
+
+Tasks will be categorized by the executing thread and each task is named with @em i_j where @em i is the thread id and 
+@em j is the task number. 
+You can pan or zoom in/out the timeline to get a detailed view.
+
+You can derive your own observer from the base interface class tf::ExecutorObserverInterface 
+to customize the observing methods. 
+
 
 */
 

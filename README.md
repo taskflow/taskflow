@@ -38,11 +38,9 @@ to enable high performance and high developer productivity at the same time.
 
 ![](image/framework.png)
 
-Cpp-Taskflow provides visualization of the underlying executor's activities to help users analyze their program's performance.
+Cpp-Taskflow let users easily monitor the thread activities and analyze their programs' performance through chrome://tracing.
 
 ![](image/timeline.png)
-
-
 
 Cpp-Taskflow is committed to support both academic and industry research projects,
 making it reliable and cost-effective for long-term and large-scale developments.
@@ -69,6 +67,7 @@ visit the [documentation][wiki] to learn more about Cpp-Taskflow.
    * [Step 2: Execute a Framework](#step-2-execute-a-framework)
    * [Step 3: Framework Composition](#step-3-framework-composition)
 * [Debug a Taskflow Graph](#debug-a-taskflow-graph)
+* [Monitor Thread Activities](#monitor-thread-activities)
 * [API Reference](#api-reference)
 * [Caveats](#caveats)
 * [System Requirements](#system-requirements)
@@ -633,6 +632,43 @@ f2.name("f2");
 f2.dump(std::cout);  // dump the framework
 ```
 
+# Monitor Thread Activities 
+
+Understanding thread activities is very important for performance analysis. Cpp-Taskflow provides a default *observer* of type `tf::ExecutorObserver` to let users observe when a thread starts or stops participating in task scheduling.
+
+```cpp 
+tf::Taskflow taskflow;
+// Create an observer 
+auto observer = taskflow.share_executor()->make_observer<tf::ExecutorObserver>();
+```
+
+When you dispatch a task dependency graph,
+the observer will automatically record the start and end timestamps of each executed task.
+You can dump the entire execution timelines into a JSON file.
+
+```cpp 
+tf::Taskflow taskflow;
+// Create an observer 
+auto observer = taskflow.share_executor()->make_observer<tf::ExecutorObserver>();
+
+// Add tasks ....
+
+// Dispatch the tasks to execution
+taskflow.wait_for_all();
+
+// Dump the timestamps to a JSON file
+std::ofstream ofs("timestamps.json");
+observer->dump(ofs);
+```
+
+You can open the chrome browser to visualize the execution timelines through the chrome://tracing developer tool. In the tracing view, click the `Load` button to read the JSON file. 
+You shall see the tracing graph.
+
+![](image/timeline.png)
+
+Each task is given a name of `i_j` where `i` is the thread id and `j` is the task number.
+You can pan or zoom in/out the timeline to get into a detailed view.
+
 # API Reference
 
 The official [documentation][wiki] explains the complete list of 
@@ -1042,5 +1078,5 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [Shiva]:                 https://shiva.gitbook.io/project/shiva
 
 [Presentation]:          https://cpp-taskflow.github.io/
-
+[chrome://tracing]:      chrome://tracing
 

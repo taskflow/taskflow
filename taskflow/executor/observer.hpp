@@ -44,7 +44,7 @@ class ExecutorObserverInterface {
   virtual void set_up(unsigned num_workers) {};
   
   /**
-  @brief method to call before a worker thread executes a closure
+  @brief method to call before a worker thread executes a closure 
   @param worker_id the id of this worker thread 
   */
   virtual void on_entry(unsigned worker_id) {};

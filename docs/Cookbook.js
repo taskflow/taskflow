@@ -48,7 +48,8 @@ var Cookbook =
       [ "Share an Executor among Taskflow Objects", "chapter6.html#C6_ShareAnExecutorAmongTaskflowObjects", null ],
       [ "Customize Your Executor Interface", "chapter6.html#C6CustomizeYourExecutorInterface", null ],
       [ "Thread Safety", "chapter6.html#C6ThreadSafety", null ],
-      [ "Example 1: Impact of Over-subscription", "chapter6.html#C6Example1", null ]
+      [ "Example 1: Impact of Over-subscription", "chapter6.html#C6Example1", null ],
+      [ "Monitor Thread Activities", "chapter6.html#C6MonitorThreadActivities", null ]
     ] ],
     [ "C7: Framework (Experimental)", "chapter7.html", [
       [ "Create a Framework", "chapter7.html#C7_CreateAFramework", null ],
