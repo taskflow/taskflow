@@ -38,11 +38,9 @@ to enable high performance and high developer productivity at the same time.
 
 ![](image/framework.png)
 
-Cpp-Taskflow provides visualization of the underlying executor's activities to help users analyze their program's performance.
+Cpp-Taskflow let users easily monitor the thread activities and analyze their programs' performance through chrome://tracing.
 
 ![](image/timeline.png)
-
-
 
 Cpp-Taskflow is committed to support both academic and industry research projects,
 making it reliable and cost-effective for long-term and large-scale developments.
@@ -635,23 +633,18 @@ f2.dump(std::cout);  // dump the framework
 ```
 
 # Monitor Thread Activities 
-Understanding thread activities is very important for performance analysis.  Cpp-Taskflow provides `tf::ExecutorObserver`
-to record the threads' activities, and you can dump and visualize those activities in the Chrome browser.
 
-## Create an Observer
-An observer monitors the behavior of an executor and an executor can only have one observer at a time.  You can create an 
-observer for the executor of a taskflow object.
+Understanding thread activities is very important for performance analysis. Cpp-Taskflow provides a default *observer* of type `tf::ExecutorObserver` to let users observe when a thread starts or stops participating in task scheduling.
 
 ```cpp 
 tf::Taskflow taskflow;
 // Create an observer 
 auto observer = taskflow.share_executor()->make_observer<tf::ExecutorObserver>();
 ```
-:heavy_exclamation_mark:: Create an observer during task execution is undefined behavior.
 
-The observer will automatically record the start and end timestamps of each executed task. `tf::ExecutorObserver` provides 
-several methods to let you utilize the recorded timestamps.  You can get the total number of timestamp pairs (number of tasks), 
-remove all recorded timestamps or dump the timestamps to a JSON format.
+When you dispatch a task dependency graph,
+the observer will automatically record the start and end timestamps of each executed task.
+You can dump the entire execution timelines into a JSON file.
 
 ```cpp 
 tf::Taskflow taskflow;
@@ -663,40 +656,18 @@ auto observer = taskflow.share_executor()->make_observer<tf::ExecutorObserver>()
 // Dispatch the tasks to execution
 taskflow.wait_for_all();
 
-// Get the number of executed tasks
-std::cout << "Number of executed tasks: " << observer->num_tasks() << '\n';
-
-// Dump the timestamps as a string in JSON format
-std::string activity_json = observer->dump();
-
-// Remove all timestamps 
-observer->clear();
-```
-
-## Visualize Thread Activities
-You can visualize the thread activities in Chrome browser.  First dump the timestamps recorded by observer to a JSON file.
-```cpp 
-tf::Taskflow taskflow;
-// Create an observer 
-auto observer = taskflow.share_executor()->make_observer<tf::ExecutorObserver>();
-
-// Add tasks ....
-
-// Dispatch the tasks to execution
-taskflow.wait_for_all();
-
-// Dump the timestamps to a file in JSON format
+// Dump the timestamps to a JSON file
 std::ofstream ofs("timestamps.json");
 observer->dump(ofs);
 ```
-Next launch Chrome (or Chromium on Linux) browser and open a new tab with the url: [chrome://tracing][chrome://tracing]. 
-In the tracing view, click the `Load` button and select the JSON file. If the browser has successfully loaded the file, you will 
-see the tasks executed by each thread and they are organized in chronological order. Below is an example:
+
+You can open the chrome browser to visualize the execution timelines through the chrome://tracing developer tool. In the tracing view, click the `Load` button to read the JSON file. 
+You shall see the tracing graph.
 
 ![](image/timeline.png)
 
-Each task will be named `i_j` where `i` is the thread id and `j` is the task number. You can pan or zoom the timeline 
-to get into a detailed view.
+Each task is given a name of `i_j` where `i` is the thread id and `j` is the task number.
+You can pan or zoom in/out the timeline to get into a detailed view.
 
 # API Reference
 
