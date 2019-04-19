@@ -199,6 +199,7 @@ add_test(framework        ${TF_UTEST_DIR}/taskflow -tc=Framework)
 add_test(composition-1    ${TF_UTEST_DIR}/taskflow -tc=Composition-1)
 add_test(composition-2    ${TF_UTEST_DIR}/taskflow -tc=Composition-2)
 add_test(composition-3    ${TF_UTEST_DIR}/taskflow -tc=Composition-3)
+add_test(observer    ${TF_UTEST_DIR}/taskflow -tc=observer)
 
 # unittest for executor 
 add_executable(executor_test_tmp unittest/executor.cpp)
@@ -215,9 +216,6 @@ add_test(proactive_executor ${TF_UTEST_DIR}/executor -tc=ProactiveExecutor)
 add_test(speculative_executor ${TF_UTEST_DIR}/executor -tc=SpeculativeExecutor)
 add_test(work_stealing_executor ${TF_UTEST_DIR}/executor -tc=WorkStealingExecutor)
 add_test(eigen_work_stealing_executor ${TF_UTEST_DIR}/executor -tc=EigenWorkStealingExecutor)
-
-# unittest for observer 
-add_test(observer    ${TF_UTEST_DIR}/taskflow -tc=observer)
 
 # threadpool_cxx14 unittest (contributed by Glen Fraser)
 add_executable(threadpool_cxx14_tmp unittest/threadpool_cxx14.cpp)

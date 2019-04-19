@@ -1202,13 +1202,13 @@ void ObserverTest() {
     tf::Framework frameworkA;
     std::vector<tf::Task> tasks;
     // Static tasking 
-    for(auto i=0; i < 1024; i ++) {
+    for(auto i=0; i < 64; i ++) {
       tasks.emplace_back(frameworkA.emplace([](){}));
     }
 
     // Randomly specify dependency
-    for(auto i=0; i < 1024; i ++) {
-      for(auto j=i+1; j < 1024; j++) {
+    for(auto i=0; i < 64; i ++) {
+      for(auto j=i+1; j < 64; j++) {
         if(rand()%2 == 0) {
           tasks[i].precede(tasks[j]);
         }
@@ -1221,7 +1221,7 @@ void ObserverTest() {
       REQUIRE(observer->num_tasks() == 0);
     }
     else {
-      REQUIRE(observer->num_tasks() == 1024*16);
+      REQUIRE(observer->num_tasks() == 64*16);
     }
 
     observer->clear();
@@ -1232,7 +1232,7 @@ void ObserverTest() {
     tf::Framework frameworkB;
     std::atomic<int> num_tasks {0};
     // Static tasking 
-    for(auto i=0; i < 1024; i ++) {
+    for(auto i=0; i < 64; i ++) {
       tasks.emplace_back(frameworkB.emplace([&](auto &subflow){
         num_tasks ++;
         auto num_spawn = rand() % 10 + 1;
@@ -1251,8 +1251,8 @@ void ObserverTest() {
     }
 
     // Randomly specify dependency
-    for(auto i=0; i < 1024; i ++) {
-      for(auto j=i+1; j < 1024; j++) {
+    for(auto i=0; i < 64; i ++) {
+      for(auto j=i+1; j < 64; j++) {
         if(rand()%2 == 0) {
           tasks[i].precede(tasks[j]);
         }
@@ -1270,16 +1270,23 @@ void ObserverTest() {
   }
 }
 
+// --------------------------------------------------------
+// Testcase: Executor
+// --------------------------------------------------------
 TEST_CASE("Observer" * doctest::timeout(300)) {
+
   SUBCASE("Simple Executor") {
     ObserverTest<tf::BasicTaskflow<tf::SimpleExecutor>>();
   }
+
   SUBCASE("Proactive Executor") {
     ObserverTest<tf::BasicTaskflow<tf::ProactiveExecutor>>();
   }
+
   SUBCASE("Speculative Executor") {
     ObserverTest<tf::BasicTaskflow<tf::SpeculativeExecutor>>();
   }
+
   SUBCASE("WorkStealing Executor") {
     ObserverTest<tf::BasicTaskflow<tf::WorkStealingExecutor>>();
   }
