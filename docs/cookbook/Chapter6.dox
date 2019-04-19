@@ -281,7 +281,7 @@ browser following below steps to plot the executed tasks as temporal sequences:
 @li Step 2: launch the Chrome browser and open a tab with the url: chrome://tracing
 @li Step 3: load the JSON file
 
-The resuling plot is like this:
+The resulting plot is like this:
 
 @image html images/timeline.png width=80%
 
@@ -293,8 +293,8 @@ Users can also customize methods of observer to monitor the behavior of an execu
 inheriting the tf::ExecutorObserverInterface class. 
 There are three methods users can customize: tf::ExecutorObserverInterface::set_up, 
 tf::ExecutorObserverInterface::on_entry and tf::ExecutorObserverInterface::on_exit. 
-The tf::ExecutorObserverInterface::set_up takes the number of threads in an executor as the input argument and
-an executor calls this method once to prepare the observer after the observer is constructed. 
+The tf::ExecutorObserverInterface::set_up is to prepare the observer and it takes the number of threads in an executor 
+as the input argument. An executor calls this method once immediately after the observer is constructed. 
 A thread will call the tf::ExecutorObserverInterface::on_entry and tf::ExecutorObserverInterface::on_exit methods respectively 
 before and after executing a task, and both methods take the thread id as input argument. Notice that the 
 tf::ExecutorObserverInterface::on_entry and tf::ExecutorObserverInterface::on_exit can be invoked by multiple 
