@@ -85,12 +85,11 @@ class ExecutorObserver : public ExecutorObserverInterface {
     */
     inline void clear();
 
-
     /**
     @brief get the number of total tasks in the observer
     @return number of total tasks
     */
-    inline int num_tasks() const;
+    inline size_t num_tasks() const;
 
   private:
     
@@ -173,9 +172,9 @@ inline std::string ExecutorObserver::dump() const {
 }
 
 // Function: num_tasks
-inline int ExecutorObserver::num_tasks() const {
-  return std::accumulate(_begs.begin(), _begs.end(), 0, 
-    [](int sum, const std::vector<std::chrono::time_point<std::chrono::steady_clock>>& vec){ 
+inline size_t ExecutorObserver::num_tasks() const {
+  return std::accumulate(_begs.begin(), _begs.end(), size_t{0}, 
+    [](size_t sum, const auto& vec){ 
       return sum + vec.size(); 
     }
   );
