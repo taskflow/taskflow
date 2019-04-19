@@ -647,7 +647,7 @@ tf::Taskflow taskflow;
 // Create an observer 
 auto observer = taskflow.share_executor()->make_observer<tf::ExecutorObserver>();
 ```
-:heavy_exclamation_mark: Create an observer during task execution is undefined behavior.
+:heavy_exclamation_mark:: Create an observer during task execution is undefined behavior.
 
 The observer will automatically record the start and end timestamps of each executed task. `tf::ExecutorObserver` provides 
 several methods to let you utilize the recorded timestamps.  You can get the total number of timestamp pairs (number of tasks), 
