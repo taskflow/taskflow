@@ -37,6 +37,7 @@
 #include <vector>
 #include <cstdlib>
 #include <cstdio>
+#include <random>
 #include <atomic>
 #include <memory>
 #include <deque>
@@ -318,14 +319,14 @@ template <typename Closure>
 class WorkStealingExecutor {
     
   struct Worker {
-    WorkStealingQueue<Closure> queue;
+    std::minstd_rand rdgen { std::random_device{}() };
     std::optional<Closure> cache;
+    WorkStealingQueue<Closure> queue;
   };
     
   struct PerThread {
     WorkStealingExecutor* pool {nullptr}; 
     int worker_id {-1};
-    uint64_t seed {std::hash<std::thread::id>()(std::this_thread::get_id())};
   };
 
   struct Consensus {
@@ -405,7 +406,6 @@ class WorkStealingExecutor {
 
     std::vector<Worker> _workers;
     std::vector<Notifier::Waiter> _waiters;
-    std::vector<unsigned> _coprimes;
     std::vector<std::thread> _threads;
 
     WorkStealingQueue<Closure> _queue;
@@ -413,22 +413,20 @@ class WorkStealingExecutor {
     std::atomic<size_t> _num_idlers {0};
     std::atomic<bool> _done {false};
 
-    Consensus _consensus;
     Notifier _notifier;
     
     std::unique_ptr<ExecutorObserverInterface> _observer;
     
     void _spawn(unsigned);
     void _balance_load(unsigned);
-    void _exploit_tasks(unsigned, std::optional<Closure>&);
+    void _exploit_task(unsigned, std::optional<Closure>&);
+    void _explore_task(unsigned, std::optional<Closure>&);
 
     unsigned _randomize(uint64_t&) const;
     unsigned _fast_modulo(unsigned, unsigned) const;
-    unsigned _find_victim(unsigned) const;
+    unsigned _find_victim(unsigned);
     
     PerThread& _per_thread() const;
-
-    std::optional<Closure> _steal(unsigned);
 
     bool _wait_for_tasks(unsigned, std::optional<Closure>&);
 };
@@ -438,17 +436,16 @@ template <typename Closure>
 WorkStealingExecutor<Closure>::WorkStealingExecutor(unsigned N) : 
   _workers   {N},
   _waiters   {N},
-  _consensus {N},
   _notifier  {_waiters} {
   
-  for(unsigned i = 1; i <= N; i++) {
-    unsigned a = i;
-    unsigned b = N;
-    // If GCD(a, b) == 1, then a and b are coprimes.
-    if(std::gcd(a, b) == 1) {
-      _coprimes.push_back(i);
-    }
-  }
+  //for(unsigned i = 1; i <= N; i++) {
+  //  unsigned a = i;
+  //  unsigned b = N;
+  //  // If GCD(a, b) == 1, then a and b are coprimes.
+  //  if(std::gcd(a, b) == 1) {
+  //    _coprimes.push_back(i);
+  //  }
+  //}
 
   _spawn(N);
 }
@@ -494,7 +491,7 @@ void WorkStealingExecutor<Closure>::_spawn(unsigned N) {
   
   // Lock to synchronize all workers before creating _worker_mapss
   for(unsigned i=0; i<N; ++i) {
-    _threads.emplace_back([this, i] () -> void {
+    _threads.emplace_back([this, i, N] () -> void {
 
       PerThread& pt = _per_thread();  
       pt.pool = this;
@@ -502,45 +499,22 @@ void WorkStealingExecutor<Closure>::_spawn(unsigned N) {
     
       std::optional<Closure> t;
       
-      bool active {true};
-      _consensus.dissent();
-      
       // must use 1 as condition instead of !done
       while(1) {
         
         // execute the tasks.
         run_task:
-
-        if(!active && t) {
-          active = true;
-          _consensus.dissent();
-        }
-
-        // exploit
-        _exploit_tasks(i, t);
+        _exploit_task(i, t);
 
         // steal loop
-        if(t = _steal(i); t) {
+        if(_explore_task(i, t); t) {
           goto run_task;
         }
         
-        // still can't get any tasks at this point
-        if(active) {
-          active = false;
-          _consensus.consent();
-        }
-
         // wait for tasks
-        if(_consensus) {
-          if(_wait_for_tasks(i, t) == false) {
-            break;
-          }
+        if(_wait_for_tasks(i, t) == false) {
+          break;
         }
-      }
-
-      if(active) {
-        active = false;
-        _consensus.consent();
       }
       
     });     
@@ -559,34 +533,22 @@ size_t WorkStealingExecutor<Closure>::num_workers() const {
   return _workers.size();  
 }
 
-// Procedure: _balance_load
-template <typename Closure>
-void WorkStealingExecutor<Closure>::_balance_load(unsigned me) {
-
-  auto n = _workers[me].queue.size();
-
-  // return if no idler - this might not be the right value
-  // but it doesn't affect the correctness
-  if(n <= 4) {
-    return;
-  }
-
-  // try with probability 1/n
-  if(_fast_modulo(_randomize(_workers[me].seed), n) == 0) {
-    _notifier.notify(false);
-  }
-}
-
 // Function: _non_empty_queue
 template <typename Closure>
-unsigned WorkStealingExecutor<Closure>::_find_victim(unsigned thief) const {
+unsigned WorkStealingExecutor<Closure>::_find_victim(unsigned thief) {
 
   //assert(_workers[thief].queue.empty());
   
-  auto &pt = _per_thread();
-  auto rnd = _randomize(pt.seed);
-  auto inc = _coprimes[_fast_modulo(rnd, _coprimes.size())];
-  auto vtm = _fast_modulo(rnd, _workers.size());
+  //auto &pt = _per_thread();
+  //auto rnd = _randomize(pt.seed);
+  //auto inc = _coprimes[_fast_modulo(rnd, _coprimes.size())];
+  //auto vtm = _fast_modulo(rnd, _workers.size());
+
+  unsigned l = 0;
+  unsigned r = _workers.size() - 1;
+  unsigned vtm = std::uniform_int_distribution<unsigned>{l, r}(
+    _workers[thief].rdgen
+  );
 
   // try to look for a task from other workers
   for(unsigned i=0; i<_workers.size(); ++i){
@@ -596,37 +558,52 @@ unsigned WorkStealingExecutor<Closure>::_find_victim(unsigned thief) const {
       return vtm;
     }
 
-    if(vtm += inc; vtm >= _workers.size()) {
-      vtm -= _workers.size();
+    if(++vtm; vtm == _workers.size()) {
+      vtm = 0;
     }
   }
 
   return _workers.size();
 }
 
-// Function: _steal
+// Function: _explore_task
 template <typename Closure>
-std::optional<Closure> WorkStealingExecutor<Closure>::_steal(unsigned thief) {
+void WorkStealingExecutor<Closure>::_explore_task(
+  unsigned thief,
+  std::optional<Closure>& t
+) {
   
   //assert(_workers[thief].queue.empty());
+  assert(!t);
+
+  size_t num_failures = 0;
+  size_t num_yields = 0;
+
+  const size_t max_yields = 100;
+  const size_t max_failures = num_workers() << 1;
         
   // explore
-  for(;;) {
+  while(!_done) {
+
     if(auto vtm = _find_victim(thief); vtm != _workers.size()) {
-      auto t = (vtm == thief) ? _queue.steal() : _workers[vtm].queue.steal();
+      t = (vtm == thief) ? _queue.steal() : _workers[vtm].queue.steal();
       if(t) {
-        return t;
+        return;
       }
     }
-    else break;
-  }
 
-  return std::nullopt;
+    if(num_failures++ > max_failures) {
+      num_failures = 0;
+      if(std::this_thread::yield(); num_yields++ > max_yields) {
+        break;
+      }
+    }
+  }
 }
 
-// Procedure: _exploit_tasks
+// Procedure: _exploit_task
 template <typename Closure>
-void WorkStealingExecutor<Closure>::_exploit_tasks(
+void WorkStealingExecutor<Closure>::_exploit_task(
   unsigned i,
   std::optional<Closure>& t
 ) {

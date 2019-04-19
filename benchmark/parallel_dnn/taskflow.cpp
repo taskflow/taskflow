@@ -59,6 +59,7 @@ struct TF_DNNTrainingEpoch : public tf::Framework {
 void run_taskflow(const unsigned num_epochs, const unsigned num_threads) {
 
   tf::Taskflow tf {num_threads};
+
   auto dnn_patterns = std::make_unique<TF_DNNTrainingPattern[]>(NUM_DNNS);
   auto dnns = std::make_unique<std::unique_ptr<TF_DNNTrainingEpoch>[]>(NUM_DNNS); 
 
