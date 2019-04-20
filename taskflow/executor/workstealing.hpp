@@ -1,3 +1,10 @@
+// 2019/04/19 - modified by Tsung-Wei Huang
+//   - added delay yielding strategy
+//   - added mailbox strategy to balance the wakeup calls
+//   - TODO: need to add mailbox strategy to batch
+//   - TODO: need a notify_n to wake up n threads
+//   - TODO: can we skip the --mailbox in emplace?
+//
 // 2019/04/11 - modified by Tsung-Wei Huang
 //   - renamed to executor
 //
@@ -320,6 +327,7 @@ class WorkStealingExecutor {
     
   struct Worker {
     std::minstd_rand rdgen { std::random_device{}() };
+    std::atomic<size_t> mailbox {0};
     std::optional<Closure> cache;
     WorkStealingQueue<Closure> queue;
   };
@@ -437,16 +445,6 @@ WorkStealingExecutor<Closure>::WorkStealingExecutor(unsigned N) :
   _workers   {N},
   _waiters   {N},
   _notifier  {_waiters} {
-  
-  //for(unsigned i = 1; i <= N; i++) {
-  //  unsigned a = i;
-  //  unsigned b = N;
-  //  // If GCD(a, b) == 1, then a and b are coprimes.
-  //  if(std::gcd(a, b) == 1) {
-  //    _coprimes.push_back(i);
-  //  }
-  //}
-
   _spawn(N);
 }
 
@@ -533,16 +531,9 @@ size_t WorkStealingExecutor<Closure>::num_workers() const {
   return _workers.size();  
 }
 
-// Function: _non_empty_queue
+// Function: _find_victim
 template <typename Closure>
 unsigned WorkStealingExecutor<Closure>::_find_victim(unsigned thief) {
-
-  //assert(_workers[thief].queue.empty());
-  
-  //auto &pt = _per_thread();
-  //auto rnd = _randomize(pt.seed);
-  //auto inc = _coprimes[_fast_modulo(rnd, _coprimes.size())];
-  //auto vtm = _fast_modulo(rnd, _workers.size());
 
   unsigned l = 0;
   unsigned r = _workers.size() - 1;
@@ -587,11 +578,23 @@ void WorkStealingExecutor<Closure>::_explore_task(
 
     if(auto vtm = _find_victim(thief); vtm != _workers.size()) {
       t = (vtm == thief) ? _queue.steal() : _workers[vtm].queue.steal();
+      // successful thief
       if(t) {
         return;
       }
+      // wasteful thief
+      else if(vtm != thief) {
+        size_t C = _workers[vtm].mailbox.load(std::memory_order_acquire);
+        if(C && _workers[vtm].mailbox.compare_exchange_strong(C, 0,
+                                                              std::memory_order_seq_cst,
+                                                              std::memory_order_relaxed)) {
+          for(size_t c=0; c<C; ++c) {
+            _notifier.notify(false); 
+          }
+        }
+      }
     }
-
+    
     if(num_failures++ > max_failures) {
       num_failures = 0;
       if(std::this_thread::yield(); num_yields++ > max_yields) {
@@ -659,7 +662,22 @@ bool WorkStealingExecutor<Closure>::_wait_for_tasks(
     _notifier.notify(true);
     return false;
   }
+    
+  // After we update the idler count, we need to check the mailbox
+  // again to ensure there is no new wakeup requests.
+  for(unsigned w = 0; w<_workers.size(); ++w) {
+    if(w == me) {
+      _workers[w].mailbox.store(0, std::memory_order_relaxed);
+      continue;
+    }
+    else if(_workers[w].mailbox != 0) {
+      _notifier.cancel_wait(&_waiters[me]);
+      --_num_idlers;
+      return true;
+    }
+  }
   
+  // Now I really need to relinguish my self to others
   _notifier.commit_wait(&_waiters[me]);
   --_num_idlers;
 
@@ -687,6 +705,16 @@ void WorkStealingExecutor<Closure>::emplace(ArgsT&&... args){
     }
     else {
       _workers[pt.worker_id].queue.push(Closure{std::forward<ArgsT>(args)...});
+
+      // We only do the wake-up when this thread is the only worker!
+      // Notice that incrementing the mailbox should come before if-statement.
+      ++_workers[pt.worker_id].mailbox;
+      if(_num_idlers != num_workers() - 1) {
+        return;
+      }
+      else {
+        _workers[pt.worker_id].mailbox--;
+      }
     }
   }
   // other threads
@@ -723,7 +751,8 @@ void WorkStealingExecutor<Closure>::batch(std::vector<Closure>& tasks) {
     if(!_workers[pt.worker_id].cache) {
       _workers[pt.worker_id].cache = std::move(tasks[i++]);
     }
-
+    
+    // TODO: need to implement the mailbox strategy as well
     for(; i<tasks.size(); ++i) {
       _workers[pt.worker_id].queue.push(std::move(tasks[i]));
       _notifier.notify(false);
