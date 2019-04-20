@@ -55,8 +55,8 @@ namespace tf {
 # endif
 #else
 # define cpu_relax() { \
-   static constexpr std::chrono::microseconds us0{ 0 }; \
-   std::this_thread::sleep_for(us0); \
+    static constexpr std::chrono::microseconds us0{ 0 }; \
+    std::this_thread::sleep_for(us0); \
   }
 #endif
 
