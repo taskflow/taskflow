@@ -585,12 +585,10 @@ void WorkStealingExecutor<Closure>::_explore_task(
       // wasteful thief
       else if(vtm != thief) {
         size_t C = _workers[vtm].mailbox.load(std::memory_order_acquire);
-        if(C && _workers[vtm].mailbox.compare_exchange_strong(C, 0,
+        if(C && _workers[vtm].mailbox.compare_exchange_strong(C, C-1,
                                                               std::memory_order_seq_cst,
                                                               std::memory_order_relaxed)) {
-          for(size_t c=0; c<C; ++c) {
-            _notifier.notify(false); 
-          }
+          _notifier.notify(false); 
         }
       }
     }
