@@ -20,19 +20,19 @@ All the lists in this page are either in alphabetical order or chronological ord
 
 #### Multithreaded Programming
 
+- [Chapel: A Programming Language for Productive Parallel Computing on Large-scale Systems](https://chapel-lang.org/)
 - [Cilk Plus: C/C++ Extension for Data and Task Parallelism](https://www.cilkplus.org/)
 - [Cpp-Taskflow: A Modern C++ Parallel Task Programming Library](https://github.com/cpp-taskflow/cpp-taskflow)
-- [Chapel: A Programming Language for Productive Parallel Computing on Large-scale Systems](https://chapel-lang.org/)
 - [FastFlow: High-performance Parallel Patterns in C++](https://github.com/fastflow/fastflow)
 - [HPX: A C++ Standard Library for Concurrency and Parallelism](https://github.com/STEllAR-GROUP/hpx)
 - [Intel TBB: Threading Building Blocks](https://www.threadingbuildingblocks.org/)
 - [Kokkos: A C++ Programming Model for Writing Performance Portable Applications on HPC platforms](https://github.com/kokkos/kokkos)
 - [OpenMP: Multi-platform Shared-memory Parallel Programming in C/C++ and Fortran](https://www.openmp.org/)
-- [STAPL: Standard Template Adaptive Parallel Programming Library in C++](https://parasol.tamu.edu/stapl/)
-- [std::thread: The C++ Standard Thread Library](https://en.cppreference.com/w/cpp/thread/thread)
-- [stlab concurrency library](http://stlab.cc/libraries/concurrency/)
-- [Transwarp: A Header-only C++ Library for Task Concurrency](https://github.com/bloomen/transwarp)
 - [RaftLib: A C++ Library for Enabling Stream and Dataflow Parallel Computation](https://github.com/RaftLib/RaftLib) 
+- [STAPL: Standard Template Adaptive Parallel Programming Library in C++](https://parasol.tamu.edu/stapl/)
+- [STLab: High-level Constructs for Implementing Multicore Algorithms with Minimized Contention](http://stlab.cc/libraries/concurrency/)
+- [Transwarp: A Header-only C++ Library for Task Concurrency](https://github.com/bloomen/transwarp)
+
 
 #### Concurrent Data Structures
 
@@ -78,6 +78,10 @@ All the lists in this page are either in alphabetical order or chronological ord
 #### Blogs
  - [1024 Cores](http://www.1024cores.net/) - Dmitry Vyukov 
  - [Preshing on Programming](https://preshing.com/) - Jeff Preshing
+
+#### Journals
+ - [IEEE Transactions on Parallel and Distributed Systems (TPDS)](https://www.computer.org/csdl/journal/td) 
+ - [Journal of Parallel and Distributed Computing](https://www.journals.elsevier.com/journal-of-parallel-and-distributed-computing)
   
 #### Conferences
 
