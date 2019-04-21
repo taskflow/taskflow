@@ -711,7 +711,7 @@ void WorkStealingExecutor<Closure>::emplace(ArgsT&&... args){
         return;
       }
       else {
-        _workers[pt.worker_id].mailbox--;
+        --_workers[pt.worker_id].mailbox;
       }
     }
   }
