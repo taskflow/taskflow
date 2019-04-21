@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
   //run_sequential2(10, 4);
   //exit(1);
 
-  int rounds {1};
+  int rounds {2};
   ::srand(time(nullptr));
 
   std::cout << std::setw(12) << "# Epochs"
@@ -75,15 +75,15 @@ int main(int argc, char *argv[]){
             << std::setw(12) << "speedup2"
             << '\n';
 
-  for(int epoch=10; epoch<=10; epoch+=10) {
+  for(int epoch=10; epoch<=100; epoch+=10) {
     
     double omp_time {0.0};
     double tbb_time {0.0};
     double tf_time  {0.0};
 
     for(int j=0; j<rounds; ++j) {
-      //omp_time += measure_time_omp(epoch, num_threads).count();
-      //tbb_time += measure_time_tbb(epoch, num_threads).count();
+      omp_time += measure_time_omp(epoch, num_threads).count();
+      tbb_time += measure_time_tbb(epoch, num_threads).count();
       tf_time += measure_time_taskflow(epoch, num_threads).count();
     }
     
