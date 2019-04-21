@@ -40,7 +40,7 @@ All the lists in this page are either in alphabetical order or chronological ord
 - [ConcurrentQueue: A Fast Multi-producer Multi-consumer Lock-free Concurrent Queue in C++](https://github.com/cameron314/concurrentqueue)
 - [libcds: A C++ library of Concurrent Data Structures](https://github.com/khizmax/libcds)
 - [ReaderWriterQueue: A Fast Single-producer Single-consumer Lock-free Queue in C++](https://github.com/cameron314/readerwriterqueue)
-- [xenium: A C++ library Providing Various Concurrent Data Structures and Reclamation Schemes.](https://github.com/mpoeter/xenium)
+- [xenium: A C++ library Providing Various Concurrent Data Structures and Reclamation Schemes](https://github.com/mpoeter/xenium)
 
 #### Coroutine and Fiber
 
