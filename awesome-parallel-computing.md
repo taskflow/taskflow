@@ -32,7 +32,7 @@ All the lists in this page are either in alphabetical order or chronological ord
 - [HPX: A C++ Standard Library for Concurrency and Parallelism](https://github.com/STEllAR-GROUP/hpx)
 - [Chapel: A Programming Language for Productive Parallel Computing on Large-scale Systems](https://chapel-lang.org/)
 - [Kokkos: A C++ Programming Model for Writing Performance Portable Applications on HPC platforms](https://github.com/kokkos/kokkos)
-
+- [stlab concurrency library](http://stlab.cc/libraries/concurrency/)
 #### Concurrent Data Structures
 
 - [Boost.Lockfree: Thread-safe and Lock-free Containers](https://github.com/boostorg/lockfree)
