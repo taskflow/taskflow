@@ -72,6 +72,7 @@ All the lists in this page are either in alphabetical order or chronological ord
 
 #### Blogs
  - [1024 Cores](http://www.1024cores.net/) - Dmitry Vyukov 
+ - [Preshing on Programming](https://preshing.com/) - Jeff Preshing
   
 #### Conferences
 
