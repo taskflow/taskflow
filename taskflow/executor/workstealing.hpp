@@ -710,9 +710,6 @@ void WorkStealingExecutor<Closure>::emplace(ArgsT&&... args){
       if(_num_idlers != num_workers() - 1) {
         return;
       }
-      else {
-        _workers[pt.worker_id].mailbox--;
-      }
     }
   }
   // other threads
