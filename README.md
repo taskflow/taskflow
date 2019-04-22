@@ -38,7 +38,7 @@ to enable high performance and high developer productivity at the same time.
 
 ![](image/framework.png)
 
-Cpp-Taskflow let users easily monitor the thread activities and analyze their programs' performance through chrome://tracing.
+Cpp-Taskflow let users easily monitor the thread activities and analyze their programs' performance through [chrome://tracing][ChromeTracing].
 
 ![](image/timeline.png)
 
@@ -661,7 +661,9 @@ std::ofstream ofs("timestamps.json");
 observer->dump(ofs);
 ```
 
-You can open the chrome browser to visualize the execution timelines through the chrome://tracing developer tool. In the tracing view, click the `Load` button to read the JSON file. 
+You can open the chrome browser to visualize the execution timelines through the 
+[chrome://tracing][ChromeTracing] developer tool. 
+In the tracing view, click the `Load` button to read the JSON file. 
 You shall see the tracing graph.
 
 ![](image/timeline.png)
@@ -994,6 +996,7 @@ The folder `example/` contains several examples and is a great place to learn to
 + Submit contributions using [pull requests][GitHub pull requests]
 + Learn more about Cpp-Taskflow by reading the [documentation][wiki]
 + Read and cite our [IPDPS19](docs/reference/ipdps19.pdf) paper
++ Visit a curated list of [awesome parallel computing resources](awesome-parallel-computing.md)
 
 # Who is Using Cpp-Taskflow?
 
@@ -1040,7 +1043,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 
 * * *
 
-[Tsung-Wei Huang]:       https://twhuang.ece.illinois.edu/
+[Tsung-Wei Huang]:       https://tsung-wei-huang.github.io/
 [Chun-Xun Lin]:          https://github.com/clin99
 [Martin Wong]:           https://ece.illinois.edu/directory/profile/mdfwong
 [Andreas Olofsson]:      https://github.com/aolofsson
@@ -1069,6 +1072,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
 [email me]:              mailto:twh760812@gmail.com
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
+[ChromeTracing]:         https://www.chromium.org/developers/how-tos/trace-event-profiling-tool
 
 [std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
 [std::future]:           https://en.cppreference.com/w/cpp/thread/future
