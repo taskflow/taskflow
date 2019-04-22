@@ -996,6 +996,7 @@ The folder `example/` contains several examples and is a great place to learn to
 + Submit contributions using [pull requests][GitHub pull requests]
 + Learn more about Cpp-Taskflow by reading the [documentation][wiki]
 + Read and cite our [IPDPS19](docs/reference/ipdps19.pdf) paper
++ Visit a curated list of [awesome parallel computing resources](awesome-parallel-computing.md)
 
 # Who is Using Cpp-Taskflow?
 
