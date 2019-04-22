@@ -7,7 +7,6 @@
 [![Download](image/download.svg)](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip)
 [![Wiki](image/api-doc.svg)][wiki]
 [![Resources](image/awesome-resources.svg)](./awesome-parallel-computing.md)
-[![License: MIT](./image/license_badge.svg)](./LICENSE)
 
 A fast C++ *header-only* library to help you quickly write parallel programs with complex task dependencies
 
