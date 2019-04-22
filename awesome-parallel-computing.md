@@ -83,6 +83,7 @@ All the lists in this page are either in alphabetical order or chronological ord
 ## Datasets
 
 - [HPEC Graph Challenge](https://graphchallenge.mit.edu/)
+- [PARRSEC Benchmark Suite for the Analysis of Multithreaded Programs](https://parsec.cs.princeton.edu/)
 
 
 ## Links
