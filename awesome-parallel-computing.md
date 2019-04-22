@@ -1,4 +1,5 @@
-# Awesome Parallel Computing Resources [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
+# Awesome Parallel Computing Resources <img align="right" width="20%" src="image/parallel-computing.jpg">
+
 A curated list of awesome parallel computing resources.
 
 ## Contributing
@@ -17,7 +18,7 @@ All the lists in this page are either in alphabetical order or chronological ord
 
 ## Software
 
-#### Multithreaded Programming
+#### Programming Library
 
 - [Chapel: A Programming Language for Productive Parallel Computing on Large-scale Systems](https://chapel-lang.org/)
 - [Cilk Plus: C/C++ Extension for Data and Task Parallelism](https://www.cilkplus.org/)
