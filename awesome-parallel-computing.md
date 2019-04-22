@@ -1,8 +1,6 @@
 # Awesome Parallel Computing Resources <img align="right" width="20%" src="image/parallel-computing.jpg">
 
-A curated list of awesome parallel computing resources.
-
-## Contributing
+A curated list of awesome parallel computing resources. 
 Please feel free to update this page through [submitting pull requests][GitHub pull requests] or 
 [emailing me][email me].
 

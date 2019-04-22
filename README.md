@@ -17,10 +17,9 @@ than existing parallel task programming libraries such as [OpenMP Tasking][OpenM
 
 ![](image/performance.jpg)
 
-Cpp-Taskflow enables you to implement efficient task decomposition strategies
-that incorporate both regular loop-based parallelism 
-and irregular compute patterns to optimize multicore performance.
-
+Cpp-Taskflow lets you quickly implement task decomposition strategies
+that incorporate both regular and irregular compute patterns,
+together with an efficient *work-stealing* scheduler to optimize your multithreaded performance.
 
 | Without Cpp-Taskflow | With Cpp-Taskflow |
 | -------------------- | ----------------- |
@@ -42,8 +41,9 @@ Cpp-Taskflow let users easily monitor the thread activities and analyze their pr
 
 ![](image/timeline.png)
 
-Cpp-Taskflow is committed to support both academic and industry research projects,
-making it reliable and cost-effective for long-term and large-scale developments.
+Cpp-Taskflow is part of the [DARPA IDEA research program][DARPA IDEA].
+We are committed to support trustworthy developments 
+for both academic and industrial research projects in parallel computing.
 
 + *"Cpp-Taskflow is the cleanest Task API I've ever seen." [damienhocking][damienhocking]*
 + *"Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [totalgee][totalgee]*
@@ -51,6 +51,7 @@ making it reliable and cost-effective for long-term and large-scale developments
 
 See a quick [presentation][Presentation] and 
 visit the [documentation][wiki] to learn more about Cpp-Taskflow.
+Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
 
 # Table of Contents
 
@@ -1073,6 +1074,8 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [email me]:              mailto:twh760812@gmail.com
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
 [ChromeTracing]:         https://www.chromium.org/developers/how-tos/trace-event-profiling-tool
+[IPDPS19]:               docs/reference/ipdps19.pdf
+[WorkStealing Wiki]:     https://en.wikipedia.org/wiki/Work_stealing
 
 [std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
 [std::future]:           https://en.cppreference.com/w/cpp/thread/future
