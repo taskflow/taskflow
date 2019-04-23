@@ -39,21 +39,21 @@ std::chrono::milliseconds measure_time_tbb(
 // Function: main
 int main(int argc, char *argv[]){
   
-	CLI::App app{"Hyperparameter Search"};
+  CLI::App app{"Hyperparameter Search"};
 
   unsigned num_threads {1}; 
-	app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
+  app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
   unsigned num_epochs {10}; 
-	app.add_option("-e,--num_epochs", num_epochs, "number of epochs (default=10)");
+  app.add_option("-e,--num_epochs", num_epochs, "number of epochs (default=10)");
 
   unsigned num_rounds {1}; 
-	app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
+  app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
-	std::string model = "tf";
-	app.add_option("-m,--model", model, "model name (tbb|omp|tf(default))");
+  std::string model = "tf";
+  app.add_option("-m,--model", model, "model name (tbb|omp|tf(default))");
 
-	CLI11_PARSE(app, argc, argv);
+  CLI11_PARSE(app, argc, argv);
 
   {
     std::string path = std::experimental::filesystem::current_path();
