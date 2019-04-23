@@ -1,5 +1,6 @@
 #include <thread>
 #include <iomanip>
+#include <CLI11.hpp>
 #include "dnn.hpp"
 
 // Function: measure_time_taskflow
@@ -40,44 +41,49 @@ std::chrono::milliseconds measure_time_tbb(
 
 // Function: main
 int main(int argc, char *argv[]){
-  
-  unsigned num_threads = std::thread::hardware_concurrency();
 
-  if(argc > 1) {
-    num_threads = std::atoi(argv[1]);
-  }
+	CLI::App app{"MNIST"};
 
-  int rounds {2};
+  unsigned num_threads {1}; 
+	app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
-  std::cout << std::setw(12) << "# epochs"
-            << std::setw(12) << "OpenMP"
-            << std::setw(12) << "TBB"
-            << std::setw(12) << "Taskflow"
-            << std::setw(12) << "speedup1"
-            << std::setw(12) << "speedup2"
-            << '\n';
+  unsigned num_epochs {10}; 
+	app.add_option("-e,--num_epochs", num_epochs, "number of epochs (default=10)");
+
+  unsigned num_rounds {1}; 
+	app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
+
+	std::string model = "tf";
+	app.add_option("-m,--model", model, "model name (tbb|omp|tf(default))");
+
+	CLI11_PARSE(app, argc, argv);
 
 
-  for(int epoch=10; epoch<=100; epoch+=10) {
-    
-    double omp_time {0.0};
-    double tbb_time {0.0};
-    double tf_time  {0.0};
 
-    for(int j=0; j<rounds; ++j) {
-      omp_time += measure_time_omp(epoch, num_threads).count();
-      tbb_time += measure_time_tbb(epoch, num_threads).count();
-      tf_time  += measure_time_taskflow(epoch, num_threads).count();
+
+  double runtime  {0.0};
+
+  for(unsigned i=0; i<num_rounds; i++) {
+    if(model == "tf") {
+      runtime += measure_time_taskflow(num_epochs, num_threads).count();
     }
-    
-    std::cout << std::setw(12) << epoch 
-              << std::setw(12) << omp_time / rounds / 1e3
-              << std::setw(12) << tbb_time / rounds / 1e3 
-              << std::setw(12) << tf_time  / rounds / 1e3 
-              << std::setw(12) << omp_time / tf_time
-              << std::setw(12) << tbb_time / tf_time
-              << std::endl;
+    else if(model == "tbb") {
+      runtime += measure_time_tbb(num_epochs, num_threads).count();
+    }
+    else if(model == "omp") {
+      runtime += measure_time_omp(num_epochs, num_threads).count();
+    }
+    else {
+      std::cout << "Unsupported model = " << model << '\n';
+      break;
+    }
   }
+
+  std::cout << model << '=' << runtime / num_rounds / 1e3
+            << " threads=" << num_threads 
+            << " epochs=" << num_epochs 
+            << " rounds=" << num_rounds 
+            << std::endl;
 
   return EXIT_SUCCESS;
 }

@@ -310,6 +310,7 @@ add_executable(
   ${TF_BENCHMARK_DIR}/mnist/seq.cpp
   ${TF_BENCHMARK_DIR}/mnist/taskflow.cpp
 )
+target_include_directories(mnist PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   mnist 
   ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS}
@@ -353,6 +354,7 @@ add_executable(
   ${TF_BENCHMARK_DIR}/parallel_dnn/seq.cpp
   ${TF_BENCHMARK_DIR}/parallel_dnn/taskflow.cpp
 )
+target_include_directories(parallel_dnn PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   parallel_dnn 
   ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS}
