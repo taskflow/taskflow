@@ -42,7 +42,7 @@ std::chrono::milliseconds measure_time_tbb(
 // Function: main
 int main(int argc, char *argv[]){
 
-  CLI::App app{"MNIST"};
+  CLI::App app{"DNN Training on MNIST Dataset"};
 
   unsigned num_threads {1}; 
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
@@ -54,9 +54,21 @@ int main(int argc, char *argv[]){
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
   std::string model = "tf";
-  app.add_option("-m,--model", model, "model name (tbb|omp|tf(default))");
+  app.add_option("-m,--model", model, "model name tbb|omp|tf (default=tf)")
+     ->check([] (const std::string& m) {
+        if(m != "tbb" && m != "omp" && m != "tf") {
+          return "model name should be \"tbb\", \"omp\", or \"tf\"";
+        }
+        return "";
+     });
 
   CLI11_PARSE(app, argc, argv);
+
+  std::cout << "model=" << model << ' '
+            << "num_threads=" << num_threads << ' '
+            << "num_rounds=" << num_rounds << ' '
+            << "num_epochs=" << num_epochs << ' '
+            << std::flush;
 
   double runtime  {0.0};
 
@@ -70,17 +82,10 @@ int main(int argc, char *argv[]){
     else if(model == "omp") {
       runtime += measure_time_omp(num_epochs, num_threads).count();
     }
-    else {
-      std::cout << "Unsupported model = " << model << '\n';
-      break;
-    }
+    else assert(false);
   }
 
-  std::cout << model << '=' << runtime / num_rounds / 1e3
-            << " threads=" << num_threads 
-            << " epochs=" << num_epochs 
-            << " rounds=" << num_rounds 
-            << std::endl;
+  std::cout << "runtime(s)=" << runtime / num_rounds / 1e3 << std::endl;
 
   return EXIT_SUCCESS;
 }

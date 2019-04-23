@@ -40,20 +40,32 @@ std::chrono::milliseconds measure_time_tbb(
 int main(int argc, char *argv[]){
   
   CLI::App app{"Hyperparameter Search"};
-
+  
   unsigned num_threads {1}; 
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
   unsigned num_epochs {10}; 
   app.add_option("-e,--num_epochs", num_epochs, "number of epochs (default=10)");
 
-  unsigned num_rounds {1}; 
+  unsigned num_rounds {1};  
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
   std::string model = "tf";
-  app.add_option("-m,--model", model, "model name (tbb|omp|tf(default))");
+  app.add_option("-m,--model", model, "model name tbb|omp|tf (default=tf)")
+     ->check([] (const std::string& m) {
+        if(m != "tbb" && m != "omp" && m != "tf") {
+          return "model name should be \"tbb\", \"omp\", or \"tf\"";
+        }
+        return "";
+     });
 
   CLI11_PARSE(app, argc, argv);
+
+  std::cout << "model=" << model << ' '
+            << "num_threads=" << num_threads << ' '
+            << "num_rounds=" << num_rounds << ' '
+            << "num_epochs=" << num_epochs << ' '
+            << std::flush;
 
   {
     std::string path = std::experimental::filesystem::current_path();
@@ -66,7 +78,7 @@ int main(int argc, char *argv[]){
     TEST_LABELS = read_mnist_label(path + "./t10k-labels-idx1-ubyte");  
   }
 
-  ::srand(time(nullptr));
+  //::srand(time(nullptr));
 
   double runtime  {0.0};
 
@@ -80,17 +92,10 @@ int main(int argc, char *argv[]){
     else if(model == "omp") {
       runtime += measure_time_omp(num_epochs, num_threads).count();
     }
-    else {
-      std::cout << "Unsupported model = " << model << '\n';
-      break;
-    }
+    else assert(false);
   }
 
-  std::cout << model << '=' << runtime / num_rounds / 1e3
-            << " threads=" << num_threads 
-            << " epochs=" << num_epochs 
-            << " rounds=" << num_rounds 
-            << std::endl;
+  std::cout << "runtime(s)=" << runtime / num_rounds / 1e3 << std::endl;
 
   return EXIT_SUCCESS;
 }
