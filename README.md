@@ -285,12 +285,6 @@ emplace a callable on one argument of type `tf::SubflowBuilder`.
 tf::Task A = tf.emplace([] (tf::SubflowBuilder& subflow) {});
 ```
 
-Similarly, you can get a [std::future][std::future] object to the execution status of the subflow.
-
-```cpp
-auto [A, fu] = tf.emplace([] (tf::SubflowBuilder& subflow) {});
-```
-
 A subflow builder is a lightweight object that allows you to create 
 arbitrary dependency graphs on the fly.
 All graph building methods defined in taskflow
