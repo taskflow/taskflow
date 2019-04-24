@@ -41,12 +41,11 @@ Cpp-Taskflow let users easily monitor the thread activities and analyze their pr
 
 ![](image/timeline.png)
 
-Cpp-Taskflow is part of the [DARPA IDEA research program][DARPA IDEA].
-We are committed to support trustworthy developments 
-for both academic and industrial research projects in parallel computing.
+Cpp-Taskflow is part of the [DARPA IDEA research program][DARPA IDEA]. We are committed to support trustworthy developments for both academic and industrial research projects in parallel computing. Check out [Who is Using Cpp-Taskflow](#who-is-using-cpp-taskflow) and what our users say:
 
 + *"Cpp-Taskflow is the cleanest Task API I've ever seen." [damienhocking][damienhocking]*
 + *"Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [totalgee][totalgee]*
++ *"Cpp-Taskflow lets me handle parallel processing in a smart way." [Hayabusa](https://cpp-learning.com/cpp-taskflow/)*
 + *"Best poster award for open-source parallel programming library." [Cpp Conference 2018][Cpp Conference 2018]*
 
 See a quick [presentation][Presentation] and 
