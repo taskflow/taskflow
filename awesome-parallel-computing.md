@@ -17,7 +17,7 @@ All the lists in this page are either in alphabetical order or chronological ord
 ## Software
 
 #### Programming Library
-
+- [CAF: A C++ Actor Framework](https://github.com/actor-framework/actor-framework)
 - [Chapel: A Programming Language for Productive Parallel Computing on Large-scale Systems](https://chapel-lang.org/)
 - [Cilk Plus: C/C++ Extension for Data and Task Parallelism](https://www.cilkplus.org/)
 - [Cpp-Taskflow: A Modern C++ Parallel Task Programming Library](https://github.com/cpp-taskflow/cpp-taskflow)
