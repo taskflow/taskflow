@@ -1008,6 +1008,7 @@ that incorporate complex task dependencies.
 - [DtCraft][DtCraft]: A General-purpose Distributed Programming Systems using Data-parallel Streams
 - [Firestorm][Firestorm]: Fighting Game Engine with Asynchronous Resource Loaders (developed by [ForgeMistress][ForgeMistress])
 - [Shiva][Shiva]: An extensible engine via an entity component system through scripts, DLLs, and header-only (C++)
+- [PID Framework][PID Framework]: A Global Development Methodology Supported by a CMake API and Dedicated C++ Projects 
 
 [More...](https://github.com/search?q=cpp-taskflow&type=Code)
 
@@ -1083,6 +1084,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 
 [Firestorm]:             https://github.com/ForgeMistress/Firestorm
 [Shiva]:                 https://shiva.gitbook.io/project/shiva
+[PID Framework]:         http://pid.lirmm.net/pid-framework/index.html
 
 [Presentation]:          https://cpp-taskflow.github.io/
 [chrome://tracing]:      chrome://tracing
