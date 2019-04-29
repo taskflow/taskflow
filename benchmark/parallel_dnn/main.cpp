@@ -61,12 +61,6 @@ int main(int argc, char *argv[]){
 
   CLI11_PARSE(app, argc, argv);
 
-  std::cout << "model=" << model << ' '
-            << "num_threads=" << num_threads << ' '
-            << "num_rounds=" << num_rounds << ' '
-            << "num_epochs=" << num_epochs << ' '
-            << std::flush;
-
   {
     std::string path = std::experimental::filesystem::current_path();
     path = path.substr(0, path.rfind("cpp-taskflow") + 12);
@@ -78,11 +72,19 @@ int main(int argc, char *argv[]){
     TEST_LABELS = read_mnist_label(path + "./t10k-labels-idx1-ubyte");  
   }
 
-  //::srand(time(nullptr));
+  ::srand(0);
 
   double runtime  {0.0};
 
   for(unsigned i=0; i<num_rounds; i++) {
+  
+    std::cout << 'r' << i << ' '
+              << "model=" << model << ' '
+              << "num_threads=" << num_threads << ' '
+              << "num_rounds=" << num_rounds << ' '
+              << "num_epochs=" << num_epochs << ' '
+              << std::flush;
+
     if(model == "tf") {
       runtime += measure_time_taskflow(num_epochs, num_threads).count();
     }
@@ -93,9 +95,9 @@ int main(int argc, char *argv[]){
       runtime += measure_time_omp(num_epochs, num_threads).count();
     }
     else assert(false);
-  }
 
-  std::cout << "runtime(s)=" << runtime / num_rounds / 1e3 << std::endl;
+    std::cout << "avg_cpu(s)=" << runtime / (i+1) / 1e3 << std::endl;
+  }
 
   return EXIT_SUCCESS;
 }
