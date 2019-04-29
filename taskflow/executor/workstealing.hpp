@@ -55,7 +55,6 @@
 #include <numeric>
 #include <cassert>
 
-#include "../utility/backoff.hpp"
 #include "notifier.hpp"
 #include "observer.hpp"
 
