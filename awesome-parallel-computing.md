@@ -17,7 +17,7 @@ All the lists in this page are either in alphabetical order or chronological ord
 ## Software
 
 #### Programming Library
-
+- [CAF: An Open Source Implementation of the Actor Model in C++](https://github.com/actor-framework/actor-framework)
 - [Chapel: A Programming Language for Productive Parallel Computing on Large-scale Systems](https://chapel-lang.org/)
 - [Cilk Plus: C/C++ Extension for Data and Task Parallelism](https://www.cilkplus.org/)
 - [Cpp-Taskflow: A Modern C++ Parallel Task Programming Library](https://github.com/cpp-taskflow/cpp-taskflow)
@@ -47,6 +47,7 @@ All the lists in this page are either in alphabetical order or chronological ord
 - [Boost.Fiber: A Framework for Userland-threads Programming and Scheduling](https://github.com/boostorg/fiber)
 - [cppcoro: A Library for C++ Coroutines Abstractions for the Coroutines TS](https://github.com/lewissbaker/cppcoro)
 - [Fiber Tasking Lib: A Library for Enabling Task-based Multi-threading using Fibers](https://github.com/RichieSams/FiberTaskingLib)
+- [coro-async: A lite C++ coroutine TS based networking library](https://github.com/arun11299/coro-async)
 
 
 ## Presentations
@@ -54,13 +55,11 @@ All the lists in this page are either in alphabetical order or chronological ord
 #### Generic Parallel Computing Topics
 
 - [Is Parallel Programming still Hard?](https://www.youtube.com/watch?v=YM8Xy6oKVQg) - P. McKenney, M. Michael, and M. Wong at CppCon 2017
-
 - [The Speed of Concurrency: Is Lock-free Faster?](https://www.youtube.com/watch?v=9hJkWwHDDxs) - Fedor G Pikus in CppCon 2016
 
 #### Scheduling in Parallel Processing
 
 - [Expressing Parallelism in C++ with Threading Building Blocks](https://www.youtube.com/watch?v=9Otq_fcUnPE) - Mike Voss at Intel Webinar 2018
-
 - [A Work-stealing Runtime for Rust](https://www.youtube.com/watch?v=4DQakkJ8XLI) - Aaron Todd in Air Mozilla 2017
 
 #### Memory Model
@@ -119,3 +118,4 @@ All the lists in this page are either in alphabetical order or chronological ord
 
 [GitHub pull requests]:  https://github.com/cpp-taskflow/cpp-taskflow/pulls
 [email me]:              mailto:twh760812@gmail.com
+

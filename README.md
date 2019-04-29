@@ -41,12 +41,11 @@ Cpp-Taskflow let users easily monitor the thread activities and analyze their pr
 
 ![](image/timeline.png)
 
-Cpp-Taskflow is part of the [DARPA IDEA research program][DARPA IDEA].
-We are committed to support trustworthy developments 
-for both academic and industrial research projects in parallel computing.
+Cpp-Taskflow is part of the [DARPA IDEA research program][DARPA IDEA]. We are committed to support trustworthy developments for both academic and industrial research projects in parallel computing. Check out [Who is Using Cpp-Taskflow](#who-is-using-cpp-taskflow) and what our users say:
 
 + *"Cpp-Taskflow is the cleanest Task API I've ever seen." [damienhocking][damienhocking]*
 + *"Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [totalgee][totalgee]*
++ *"Cpp-Taskflow lets me handle parallel processing in a smart way." [Hayabusa](https://cpp-learning.com/cpp-taskflow/)*
 + *"Best poster award for open-source parallel programming library." [Cpp Conference 2018][Cpp Conference 2018]*
 
 See a quick [presentation][Presentation] and 
@@ -283,12 +282,6 @@ emplace a callable on one argument of type `tf::SubflowBuilder`.
 
 ```cpp
 tf::Task A = tf.emplace([] (tf::SubflowBuilder& subflow) {});
-```
-
-Similarly, you can get a [std::future][std::future] object to the execution status of the subflow.
-
-```cpp
-auto [A, fu] = tf.emplace([] (tf::SubflowBuilder& subflow) {});
 ```
 
 A subflow builder is a lightweight object that allows you to create 
@@ -1008,6 +1001,7 @@ that incorporate complex task dependencies.
 - [DtCraft][DtCraft]: A General-purpose Distributed Programming Systems using Data-parallel Streams
 - [Firestorm][Firestorm]: Fighting Game Engine with Asynchronous Resource Loaders (developed by [ForgeMistress][ForgeMistress])
 - [Shiva][Shiva]: An extensible engine via an entity component system through scripts, DLLs, and header-only (C++)
+- [PID Framework][PID Framework]: A Global Development Methodology Supported by a CMake API and Dedicated C++ Projects 
 
 [More...](https://github.com/search?q=cpp-taskflow&type=Code)
 
@@ -1083,6 +1077,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 
 [Firestorm]:             https://github.com/ForgeMistress/Firestorm
 [Shiva]:                 https://shiva.gitbook.io/project/shiva
+[PID Framework]:         http://pid.lirmm.net/pid-framework/index.html
 
 [Presentation]:          https://cpp-taskflow.github.io/
 [chrome://tracing]:      chrome://tracing
