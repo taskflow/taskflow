@@ -15,7 +15,8 @@ class FlowBuilder;
 class SubflowBuilder;
 class Framework;
 
-using Graph = std::list<Node, tf::SingularAllocator<Node>>;
+//using Graph = std::list<Node, tf::SingularAllocator<Node>>;
+using Graph = std::list<Node>;
 
 // ----------------------------------------------------------------------------
 

@@ -237,7 +237,8 @@ class BasicTaskflow : public FlowBuilder {
 
     std::shared_ptr<Executor> _executor;
 
-    std::list<Topology, SingularAllocator<Topology>> _topologies;
+    //std::list<Topology, SingularAllocator<Topology>> _topologies;
+    std::list<Topology> _topologies;
 
     void _schedule(Node&);
     void _schedule(PassiveVector<Node*>&);
