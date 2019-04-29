@@ -16,7 +16,7 @@ namespace tf {
 
 #if TF_ARCH_ARM
 # if TF_COMP_MSVC
-#  define cpu_relax() YieldProcessor();
+#  define TF_PAUSE() YieldProcessor();
 # elif (defined(__ARM_ARCH_6K__) || \
         defined(__ARM_ARCH_6Z__) || \
         defined(__ARM_ARCH_6ZK__) || \
@@ -30,12 +30,12 @@ namespace tf {
         defined(__aarch64__))
 // http://groups.google.com/a/chromium.org/forum/#!msg/chromium-dev/YGVrZbxYOlU/Vpgy__zeBQAJ
 // mnemonic 'yield' is supported from ARMv6k onwards
-#  define cpu_relax() asm volatile ("yield" ::: "memory");
+#  define TF_PAUSE() asm volatile ("yield" ::: "memory");
 # else
-#  define cpu_relax() asm volatile ("nop" ::: "memory");
+#  define TF_PAUSE() asm volatile ("nop" ::: "memory");
 # endif
 #elif TF_ARCH_MIPS
-# define cpu_relax() asm volatile ("pause" ::: "memory");
+# define TF_PAUSE() asm volatile ("pause" ::: "memory");
 #elif TF_ARCH_PPC
 // http://code.metager.de/source/xref/gnu/glibc/sysdeps/powerpc/sys/platform/ppc.h
 // http://stackoverflow.com/questions/5425506/equivalent-of-x86-pause-instruction-for-ppc
@@ -46,15 +46,15 @@ namespace tf {
 //               processors
 // extended mnemonics (available with POWER7)
 // yield   ==   or 27, 27, 27
-# define cpu_relax() asm volatile ("or 27,27,27" ::: "memory");
+# define TF_PAUSE() asm volatile ("or 27,27,27" ::: "memory");
 #elif TF_ARCH_X86
 # if TF_COMP_MSVC || TF_COMP_MSVC_EMULATED
-#  define cpu_relax() YieldProcessor();
+#  define TF_PAUSE() YieldProcessor();
 # else
-#  define cpu_relax() asm volatile ("pause" ::: "memory");
+#  define TF_PAUSE() asm volatile ("pause" ::: "memory");
 # endif
 #else
-# define cpu_relax() { \
+# define TF_PAUSE() { \
     static constexpr std::chrono::microseconds us0{ 0 }; \
     std::this_thread::sleep_for(us0); \
   }
@@ -62,18 +62,47 @@ namespace tf {
 
 // ------------------------------------------------------------------
 
+// Procedure: relax_cpu
+// pause cpu for a few rounds
+inline void relax_cpu(int32_t cycles) {
+  while(cycles > 0) {
+    TF_PAUSE();
+    cycles--;
+  }
+}
+
+// Procedure: relax_cpu
+inline void relax_cpu() {
+  TF_PAUSE();
+}
+
+// ------------------------------------------------------------------
+
 // Class that implements the exponential backoff
 class ExponentialBackoff {
+
+  static constexpr int LOOPS_BEFORE_YIELD = 16;
   
   public:
 
     void backoff() {
-      if(_count <= 16) {
-        cpu_relax();  
-        _count = _count < 1;
+      if(_count <= LOOPS_BEFORE_YIELD) {
+        relax_cpu(_count);
+        _count = _count << 1;
       }
       else {
         std::this_thread::yield();
+      }
+    }
+
+    // pause for a few times and return false if saturated
+    bool bounded_pause() {
+      relax_cpu(_count);
+      if(_count < LOOPS_BEFORE_YIELD) {
+        _count = _count << 1;
+        return true;
+      } else {
+        return false;
       }
     }
 
@@ -83,7 +112,7 @@ class ExponentialBackoff {
 
   private:
 
-    int32_t _count {1};
+    int _count {1};
 
 };
 
@@ -94,7 +123,7 @@ class LinearBackoff {
 
     void backoff() {
       if(_count <= 16) {
-        cpu_relax();  
+        relax_cpu(_count);
         ++_count;
       }
       else {
@@ -111,7 +140,6 @@ class LinearBackoff {
     int32_t _count {1};
 
 };
-
 
 };  // end of namespace tf. ---------------------------------------------------
 
