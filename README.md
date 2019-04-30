@@ -1023,6 +1023,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Alexander Neumann](https://github.com/Neumann-A) helped modify the cmake build to make Cpp-Taskflow importable from external cmake projects
 - [Paolo Bolzoni](https://github.com/paolobolzoni) helped remove extraneous semicolons to suppress extra warning during compilation and contributed to a dataflow example
 - [Pursche](https://github.com/Pursche) fixed compilation warning on Microsoft Visual Studio
+- [KingDuckZ][KingDuckZ] helped discover the memory leak in the memory allocator used in graph and topology
 
 Meanwhile, we appreciate the support from many organizations for our development on Cpp-Taskflow.
 Please [let me know][email me] if I forgot someone!
@@ -1059,6 +1060,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [ForgeMistress]:         https://github.com/ForgeMistress
 [Patrik Huber]:          https://github.com/patrikhuber
 [DARPA IDEA]:            https://www.darpa.mil/news-events/2017-09-13
+[KingDuckZ]:             https://github.com/KingDuckZ
 [NSF]:                   https://www.nsf.gov/
 [UIUC]:                  https://illinois.edu/
 [CSL]:                   https://csl.illinois.edu/
