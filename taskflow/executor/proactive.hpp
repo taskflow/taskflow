@@ -5,11 +5,11 @@
 //  - removed num_tasks method
 //
 // 2018/11/28 - modified by Chun-Xun Lin
-// 
+//
 // Added the method batch to insert a vector of tasks.
 //
 // 2018/10/04 - modified by Tsung-Wei Huang
-// 
+//
 // Removed shutdown, spawn, and wait_for_all to simplify the design
 // of the executor. The executor now can operates on fixed memory
 // closure to improve the performance.
@@ -20,12 +20,12 @@
 //     workers need to be cleared as well under lock, since *_async
 //     will access the worker data structure;
 //   - renamed _worker to _idler
-//     
+//
 // 2018/09/03 - modified by Guannan Guo
-// 
+//
 // BasicProactiveExecutor schedules independent jobs in a greedy manner.
 // Whenever a job is inserted into the executor, the executor will check if there
-// are any spare threads available. The spare thread will be woken through its local 
+// are any spare threads available. The spare thread will be woken through its local
 // condition variable. The new job will be directly moved into
 // this thread instead of pushed at the back of the pending queue.
 
@@ -48,7 +48,7 @@
 #include "observer.hpp"
 
 namespace tf {
-  
+
 /**
 @class: ProactiveExecutor
 
@@ -88,7 +88,7 @@ class ProactiveExecutor {
     @brief queries the number of worker threads
     */
     size_t num_workers() const;
-    
+
     /**
     @brief queries if the caller is the owner of the executor
     */
@@ -110,23 +110,23 @@ class ProactiveExecutor {
     @param closures a vector of closures
     */
     void batch(std::vector<Closure>& closures);
-    
+
     /**
     @brief constructs an observer to inspect the activities of worker threads
 
     Each executor manages at most one observer at a time through std::unique_ptr.
     Createing multiple observers will only keep the lastest one.
-    
+
     @tparam Observer observer type derived from tf::ExecutorObserverInterface
     @tparam ArgsT... argument parameter pack
 
     @param args arguments to forward to the constructor of the observer
-    
+
     @return a raw pointer to the observer associated with this executor
     */
     template<typename Observer, typename... Args>
     Observer* make_observer(Args&&... args);
-    
+
   private:
 
     std::thread::id _owner {std::this_thread::get_id()};
@@ -135,16 +135,16 @@ class ProactiveExecutor {
 
     std::vector<Closure> _tasks;
     std::vector<std::thread> _threads;
-    std::vector<Worker*> _idlers; 
+    std::vector<Worker*> _idlers;
 
     bool _exiting {false};
-    
+
     std::unique_ptr<ExecutorObserverInterface> _observer;
-    
+
     void _shutdown();
     void _spawn(unsigned);
 };
-    
+
 // Constructor
 template <typename Closure>
 ProactiveExecutor<Closure>::ProactiveExecutor(unsigned N){
@@ -165,21 +165,21 @@ bool ProactiveExecutor<Closure>::is_owner() const {
 
 // Ftion: num_workers
 template <typename Closure>
-size_t ProactiveExecutor<Closure>::num_workers() const { 
-  return _threads.size();  
+size_t ProactiveExecutor<Closure>::num_workers() const {
+  return _threads.size();
 }
 
 // Procedure: shutdown
 template <typename Closure>
 void ProactiveExecutor<Closure>::_shutdown() {
-  
+
   assert(is_owner());
 
-  { 
+  {
     std::unique_lock lock(_mutex);
 
     _exiting = true;
-    
+
     // we need to clear the workers under lock
     for(auto w : _idlers){
       w->ready = true;
@@ -188,11 +188,11 @@ void ProactiveExecutor<Closure>::_shutdown() {
     }
     _idlers.clear();
   }
-  
+
   for(auto& t : _threads){
     t.join();
-  } 
-  _threads.clear();  
+  }
+  _threads.clear();
 
   _exiting = false;
 }
@@ -204,11 +204,11 @@ void ProactiveExecutor<Closure>::_spawn(unsigned N) {
   assert(is_owner());
 
   for(size_t i=0; i<N; ++i){
-  
+
     _threads.emplace_back([this, me=i] () -> void {
-      
+
       Worker w;
-      
+
       std::unique_lock lock(_mutex);
 
       while(!_exiting) {
@@ -221,13 +221,13 @@ void ProactiveExecutor<Closure>::_spawn(unsigned N) {
           while(!w.ready) {
             w.cv.wait(lock);
           }
-          
+
           // shutdown cannot have task
           if(w.task) {
             lock.unlock();
 
             if(_observer) {
-              _observer->on_entry(me);
+              _observer->on_entry(me, std::to_string(me));
             }
 
             (*w.task)();
@@ -246,21 +246,21 @@ void ProactiveExecutor<Closure>::_spawn(unsigned N) {
           lock.unlock();
 
           if(_observer) {
-            _observer->on_entry(me);
+            _observer->on_entry(me, std::to_string(me));
           }
 
           t();
-          
+
           if(_observer) {
             _observer->on_exit(me);
           }
 
           lock.lock();
-        } 
+        }
       }
-    });     
+    });
 
-  } 
+  }
 }
 
 // Procedure: silent_async
@@ -277,13 +277,13 @@ void ProactiveExecutor<Closure>::emplace(ArgsT&&... args) {
     std::scoped_lock lock(_mutex);
     if(_idlers.empty()){
       _tasks.emplace_back(std::forward<ArgsT>(args)...);
-    } 
+    }
     else{
       Worker* w = _idlers.back();
       _idlers.pop_back();
       w->ready = true;
       w->task.emplace(std::forward<ArgsT>(args)...);
-      w->cv.notify_one();   
+      w->cv.notify_one();
     }
   }
 }
@@ -306,14 +306,14 @@ void ProactiveExecutor<Closure>::batch(std::vector<Closure>& tasks) {
     if(_idlers.empty()){
       std::move(tasks.begin(), tasks.end(), std::back_inserter(_tasks));
       return ;
-    } 
+    }
     else{
       while(consumed != tasks.size() && !_idlers.empty()) {
         Worker* w = _idlers.back();
         _idlers.pop_back();
         w->ready = true;
         w->task.emplace(std::move(tasks[consumed++]));
-        w->cv.notify_one();   
+        w->cv.notify_one();
       }
     }
     if(consumed == tasks.size()) return ;
@@ -322,7 +322,7 @@ void ProactiveExecutor<Closure>::batch(std::vector<Closure>& tasks) {
   }
 }
 
-// Function: make_observer    
+// Function: make_observer
 template <typename Closure>
 template<typename Observer, typename... Args>
 Observer* ProactiveExecutor<Closure>::make_observer(Args&&... args) {

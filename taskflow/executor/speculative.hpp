@@ -5,11 +5,11 @@
 //  - removed num_tasks method
 //
 // 2018/11/28 - modified by Chun-Xun Lin
-// 
+//
 // Added the method batch to insert a vector of tasks.
 //
 // 2018/10/04 - modified by Tsung-Wei Huang
-// 
+//
 // Removed shutdown, spawn, and wait_for_all to simplify the design
 // of the executor. The executor now can operates on fixed memory
 // closure to improve the performance.
@@ -80,7 +80,7 @@ class SpeculativeExecutor {
     @brief queries the number of worker threads
     */
     size_t num_workers() const;
-    
+
     /**
     @brief queries if the caller is the owner of the executor
     */
@@ -102,41 +102,41 @@ class SpeculativeExecutor {
     @param closures a vector of closures
     */
     void batch(std::vector<Closure>& closures);
-    
+
     /**
     @brief constructs an observer to inspect the activities of worker threads
 
     Each executor manages at most one observer at a time through std::unique_ptr.
     Createing multiple observers will only keep the lastest one.
-    
+
     @tparam Observer observer type derived from tf::ExecutorObserverInterface
     @tparam ArgsT... argument parameter pack
 
     @param args arguments to forward to the constructor of the observer
-    
+
     @return a raw pointer to the observer associated with this executor
     */
     template<typename Observer, typename... Args>
     Observer* make_observer(Args&&... args);
-    
+
   private:
-    
+
     const std::thread::id _owner {std::this_thread::get_id()};
 
     mutable std::mutex _mutex;
 
     std::vector<Closure> _tasks;
     std::vector<std::thread> _threads;
-    std::vector<Worker*> _idlers; 
+    std::vector<Worker*> _idlers;
     std::vector<Worker> _workers;
-    std::unordered_map<std::thread::id, Worker*> _worker_maps;    
+    std::unordered_map<std::thread::id, Worker*> _worker_maps;
 
     bool _exiting {false};
-    
+
     std::unique_ptr<ExecutorObserverInterface> _observer;
 
     auto _this_worker() const;
-    
+
     void _shutdown();
     void _spawn(unsigned);
 
@@ -144,7 +144,7 @@ class SpeculativeExecutor {
 
 // Constructor
 template <typename Closure>
-SpeculativeExecutor<Closure>::SpeculativeExecutor(unsigned N) : 
+SpeculativeExecutor<Closure>::SpeculativeExecutor(unsigned N) :
   _workers {N} {
   _spawn(N);
 }
@@ -163,10 +163,10 @@ bool SpeculativeExecutor<Closure>::is_owner() const {
 
 // Function: num_workers
 template <typename Closure>
-size_t SpeculativeExecutor<Closure>::num_workers() const { 
-  return _threads.size();  
+size_t SpeculativeExecutor<Closure>::num_workers() const {
+  return _threads.size();
 }
-    
+
 // Function: _this_worker
 template <typename Closure>
 auto SpeculativeExecutor<Closure>::_this_worker() const {
@@ -180,11 +180,11 @@ void SpeculativeExecutor<Closure>::_shutdown(){
 
   assert(is_owner());
 
-  { 
+  {
     std::unique_lock lock(_mutex);
 
     _exiting = true;
-    
+
     for(auto w : _idlers){
       w->ready = true;
       w->task = std::nullopt;
@@ -195,16 +195,16 @@ void SpeculativeExecutor<Closure>::_shutdown(){
 
   for(auto& t : _threads){
     t.join();
-  } 
-  _threads.clear();  
+  }
+  _threads.clear();
 
   _workers.clear();
   _worker_maps.clear();
-  
+
   _exiting = false;
 }
 
-// Function: spawn 
+// Function: spawn
 template <typename Closure>
 void SpeculativeExecutor<Closure>::_spawn(unsigned N) {
 
@@ -222,7 +222,7 @@ void SpeculativeExecutor<Closure>::_spawn(unsigned N) {
        auto& w = _workers[me];
 
        std::unique_lock lock(_mutex);
-       
+
        while(!_exiting){
          if(_tasks.empty()){
            w.ready = false;
@@ -238,7 +238,7 @@ void SpeculativeExecutor<Closure>::_spawn(unsigned N) {
          else{
            t = std::move(_tasks.back());
            _tasks.pop_back();
-         } 
+         }
 
          if(t) {
            lock.unlock();
@@ -246,11 +246,11 @@ void SpeculativeExecutor<Closure>::_spawn(unsigned N) {
            while(t) {
 
              if(_observer) {
-               _observer->on_entry(me);
+               _observer->on_entry(me, std::to_string(me));
              }
 
              (*t)();
-             
+
              if(_observer) {
                _observer->on_exit(me);
              }
@@ -266,7 +266,7 @@ void SpeculativeExecutor<Closure>::_spawn(unsigned N) {
            lock.lock();
          }
        }
-    });     
+    });
 
     _worker_maps[_threads[i].get_id()] = &_workers[i];
   } // End of For ---------------------------------------------------------------------------------
@@ -296,13 +296,13 @@ void SpeculativeExecutor<Closure>::emplace(ArgsT&&... args) {
   std::scoped_lock lock(_mutex);
   if(_idlers.empty()){
     _tasks.emplace_back(std::forward<ArgsT>(args)...);
-  } 
+  }
   else{
     Worker* w = _idlers.back();
     _idlers.pop_back();
     w->ready = true;
     w->task.emplace(std::forward<ArgsT>(args)...);
-    w->cv.notify_one();   
+    w->cv.notify_one();
   }
 }
 
@@ -321,7 +321,7 @@ void SpeculativeExecutor<Closure>::batch(std::vector<Closure>& tasks){
     }
     return;
   }
-  
+
   size_t consumed {0};
 
   // speculation
@@ -341,7 +341,7 @@ void SpeculativeExecutor<Closure>::batch(std::vector<Closure>& tasks){
     _idlers.pop_back();
     w->ready = true;
     w->task.emplace(std::move(tasks[consumed ++]));
-    w->cv.notify_one();   
+    w->cv.notify_one();
   }
 
   if(tasks.size() == consumed) return ;
@@ -349,7 +349,7 @@ void SpeculativeExecutor<Closure>::batch(std::vector<Closure>& tasks){
   std::move(tasks.begin()+consumed, tasks.end(), std::back_inserter(_tasks));
 }
 
-// Function: make_observer    
+// Function: make_observer
 template <typename Closure>
 template<typename Observer, typename... Args>
 Observer* SpeculativeExecutor<Closure>::make_observer(Args&&... args) {

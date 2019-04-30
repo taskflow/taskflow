@@ -9,13 +9,13 @@
 //   - renamed to executor
 //
 // 2019/03/30 - modified by Tsung-Wei Huang
-//   - added consensus sleep-loop stragety 
+//   - added consensus sleep-loop stragety
 //
 // 2019/03/21 - modified by Tsung-Wei Huang
 //   - removed notifier
 //   - implemented a new scheduling strategy
 //     (a thread will sleep as long as all threads meet the constraints)
-// 
+//
 // 2019/02/15 - modified by Tsung-Wei Huang
 //   - batch to take reference not move
 //
@@ -28,7 +28,7 @@
 //   - updated the load balancing strategy
 //
 // 2018/12/24 - modified by Tsung-Wei Huang
-//   - refined the work balancing strategy 
+//   - refined the work balancing strategy
 //
 // 2018/12/06 - modified by Tsung-Wei Huang
 //   - refactored the code
@@ -67,7 +67,7 @@ namespace tf {
 
 @brief Lock-free unbounded single-producer multiple-consumer queue.
 
-This class implements the work stealing queue described in the paper, 
+This class implements the work stealing queue described in the paper,
 "Dynamic Circular Work-stealing Deque," SPAA, 2015.
 Only the queue owner can perform pop and push operations,
 while others can steal data from the queue.
@@ -90,7 +90,7 @@ class WorkStealingQueue {
     //storage_type* S;
     T* S;
 
-    Array(int64_t c) : 
+    Array(int64_t c) :
       C {c},
       M {c-1},
       //S {new storage_type[C]} {
@@ -110,11 +110,11 @@ class WorkStealingQueue {
     int64_t capacity() const noexcept {
       return C;
     }
-    
+
     template <typename O>
     void push(int64_t i, O&& o) noexcept {
       //T* ptr = reinterpret_cast<T*>(std::addressof(S[i & M]));
-      //*ptr = std::forward<O>(o); 
+      //*ptr = std::forward<O>(o);
       S[i & M] = std::forward<O>(o);
     }
 
@@ -140,7 +140,7 @@ class WorkStealingQueue {
   //char _padding[cacheline_size];
 
   public:
-    
+
     /**
     @brief constructs the queue with a given capacity
 
@@ -152,12 +152,12 @@ class WorkStealingQueue {
     @brief destructs the queue
     */
     ~WorkStealingQueue();
-    
+
     /**
     @brief queries if the queue is empty at the time of this call
     */
     bool empty() const noexcept;
-    
+
     /**
     @brief queries the number of items at the time of this call
     */
@@ -167,25 +167,25 @@ class WorkStealingQueue {
     @brief queries the capacity of the queue
     */
     int64_t capacity() const noexcept;
-    
+
     /**
     @brief inserts an item to the queue
 
-    Only the owner thread can insert an item to the queue. 
-    The operation can trigger the queue to resize its capacity 
+    Only the owner thread can insert an item to the queue.
+    The operation can trigger the queue to resize its capacity
     if more space is required.
 
-    @tparam O data type 
+    @tparam O data type
 
     @param item the item to perfect-forward to the queue
     */
     template <typename O>
     void push(O&& item);
-    
+
     /**
     @brief pops out an item from the queue
 
-    Only the owner thread can pop out an item from the queue. 
+    Only the owner thread can pop out an item from the queue.
     The return can be a @std_nullopt if this operation failed (not necessary empty).
     */
     std::optional<T> pop();
@@ -219,7 +219,7 @@ WorkStealingQueue<T>::~WorkStealingQueue() {
   }
   delete _array.load();
 }
-  
+
 // Function: empty
 template <typename T>
 bool WorkStealingQueue<T>::empty() const noexcept {
@@ -273,8 +273,8 @@ std::optional<T> WorkStealingQueue<T>::pop() {
     item = a->pop(b);
     if(t == b) {
       // the last item just got stolen
-      if(!_top.compare_exchange_strong(t, t+1, 
-                                       std::memory_order_seq_cst, 
+      if(!_top.compare_exchange_strong(t, t+1,
+                                       std::memory_order_seq_cst,
                                        std::memory_order_relaxed)) {
         item = std::nullopt;
       }
@@ -303,8 +303,8 @@ std::optional<T> WorkStealingQueue<T>::pop(int64_t& N) {
     item = a->pop(b);
     if(t == b) {
       // the last item just got stolen
-      if(!_top.compare_exchange_strong(t, t+1, 
-                                       std::memory_order_seq_cst, 
+      if(!_top.compare_exchange_strong(t, t+1,
+                                       std::memory_order_seq_cst,
                                        std::memory_order_relaxed)) {
         item = std::nullopt;
       }
@@ -329,7 +329,7 @@ std::optional<T> WorkStealingQueue<T>::steal() {
   int64_t t = _top.load(std::memory_order_acquire);
   std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t b = _bottom.load(std::memory_order_acquire);
-  
+
   std::optional<T> item;
 
   if(t < b) {
@@ -353,7 +353,7 @@ int64_t WorkStealingQueue<T>::capacity() const noexcept {
 
 // ----------------------------------------------------------------------------
 
-/** 
+/**
 @class: WorkStealingExecutor
 
 @brief Executor that implements an efficient work stealing algorithm.
@@ -362,16 +362,16 @@ int64_t WorkStealingQueue<T>::capacity() const noexcept {
 */
 template <typename Closure>
 class WorkStealingExecutor {
-    
+
   struct Worker {
     std::minstd_rand rdgen { std::random_device{}() };
     std::atomic<int64_t> mailbox {0};
     std::optional<Closure> cache;
     WorkStealingQueue<Closure> queue;
   };
-    
+
   struct PerThread {
-    WorkStealingExecutor* pool {nullptr}; 
+    WorkStealingExecutor* pool {nullptr};
     int worker_id {-1};
   };
 
@@ -383,9 +383,9 @@ class WorkStealingExecutor {
     void dissent() { --count; }
     operator bool () const { return count > threshold; }
   };
-  
+
   public:
-    
+
     /**
     @brief constructs the executor with a given number of worker threads
 
@@ -400,17 +400,17 @@ class WorkStealingExecutor {
     The executor does not guarantee all tasks to finish upon destruction.
     */
     ~WorkStealingExecutor();
-    
+
     /**
     @brief queries the number of worker threads
     */
     size_t num_workers() const;
-    
+
     /**
     @brief queries if the caller is the owner of the executor
     */
     bool is_owner() const;
-    
+
     /**
     @brief constructs the closure in place in the executor
 
@@ -420,7 +420,7 @@ class WorkStealingExecutor {
     */
     template <typename... ArgsT>
     void emplace(ArgsT&&... args);
-    
+
     /**
     @brief moves a batch of closures to the executor
 
@@ -433,12 +433,12 @@ class WorkStealingExecutor {
 
     Each executor manages at most one observer at a time through std::unique_ptr.
     Createing multiple observers will only keep the lastest one.
-    
+
     @tparam Observer observer type derived from tf::ExecutorObserverInterface
     @tparam ArgsT... argument parameter pack
 
     @param args arguments to forward to the constructor of the observer
-    
+
     @return a raw pointer to the observer associated with this executor
     */
     template<typename Observer, typename... Args>
@@ -455,15 +455,15 @@ class WorkStealingExecutor {
     std::vector<std::thread> _threads;
 
     WorkStealingQueue<Closure> _queue;
-    
+
     std::atomic<size_t> _num_thieves {0};
     std::atomic<size_t> _num_idlers {0};
     std::atomic<bool> _done {false};
 
     Notifier _notifier;
-    
+
     std::unique_ptr<ExecutorObserverInterface> _observer;
-    
+
     void _spawn(unsigned);
     void _balance_load(unsigned);
     void _exploit_task(unsigned, std::optional<Closure>&);
@@ -480,7 +480,7 @@ class WorkStealingExecutor {
 
 // Constructor
 template <typename Closure>
-WorkStealingExecutor<Closure>::WorkStealingExecutor(unsigned N) : 
+WorkStealingExecutor<Closure>::WorkStealingExecutor(unsigned N) :
   _workers   {N},
   _waiters   {N},
   _notifier  {_waiters} {
@@ -493,15 +493,15 @@ WorkStealingExecutor<Closure>::~WorkStealingExecutor() {
 
   _done = true;
   _notifier.notify(true);
-  
+
   for(auto& t : _threads){
     t.join();
-  } 
+  }
 }
 
 // Function: _per_thread
 template <typename Closure>
-typename WorkStealingExecutor<Closure>::PerThread& 
+typename WorkStealingExecutor<Closure>::PerThread&
 WorkStealingExecutor<Closure>::_per_thread() const {
   thread_local PerThread pt;
   return pt;
@@ -525,20 +525,20 @@ unsigned WorkStealingExecutor<Closure>::_fast_modulo(unsigned x, unsigned N) con
 // Procedure: _spawn
 template <typename Closure>
 void WorkStealingExecutor<Closure>::_spawn(unsigned N) {
-  
+
   // Lock to synchronize all workers before creating _worker_mapss
   for(unsigned i=0; i<N; ++i) {
     _threads.emplace_back([this, i] () -> void {
 
-      PerThread& pt = _per_thread();  
+      PerThread& pt = _per_thread();
       pt.pool = this;
       pt.worker_id = i;
-    
+
       std::optional<Closure> t;
-      
+
       // must use 1 as condition instead of !done
       while(1) {
-        
+
         // execute the tasks.
         run_task:
         _exploit_task(i, t);
@@ -547,14 +547,14 @@ void WorkStealingExecutor<Closure>::_spawn(unsigned N) {
         if(_explore_task(i, t); t) {
           goto run_task;
         }
-        
+
         // wait for tasks
         if(_wait_for_tasks(i, t) == false) {
           break;
         }
       }
-      
-    });     
+
+    });
   }
 }
 
@@ -566,8 +566,8 @@ bool WorkStealingExecutor<Closure>::is_owner() const {
 
 // Function: num_workers
 template <typename Closure>
-size_t WorkStealingExecutor<Closure>::num_workers() const { 
-  return _workers.size();  
+size_t WorkStealingExecutor<Closure>::num_workers() const {
+  return _workers.size();
 }
 
 // Function: _find_victim
@@ -602,7 +602,7 @@ void WorkStealingExecutor<Closure>::_explore_task(
   unsigned thief,
   std::optional<Closure>& t
 ) {
-  
+
   //assert(_workers[thief].queue.empty());
   assert(!t);
 
@@ -618,11 +618,11 @@ void WorkStealingExecutor<Closure>::_explore_task(
 
   // explore
   while(!_done) {
-  
+
     /*unsigned vtm = std::uniform_int_distribution<unsigned>{l, r}(
       _workers[thief].rdgen
     );
-      
+
     t = (vtm == thief) ? _queue.steal() : _workers[vtm].queue.steal();
 
     if(t) {
@@ -638,7 +638,7 @@ void WorkStealingExecutor<Closure>::_explore_task(
       if(C > 0 && _workers[vtm].mailbox.compare_exchange_strong(C, C - 1,
                                                             std::memory_order_seq_cst,
                                                             std::memory_order_relaxed)) {
-        _notifier.notify(false); 
+        _notifier.notify(false);
       }
     }
     //else {
@@ -668,7 +668,7 @@ void WorkStealingExecutor<Closure>::_explore_task(
         if(C > 0 && _workers[vtm].mailbox.compare_exchange_strong(C, C - 1,
                     std::memory_order_relaxed,
                     std::memory_order_relaxed)) {
-          _notifier.notify(false); 
+          _notifier.notify(false);
         }
       }
       //else {
@@ -698,8 +698,41 @@ void WorkStealingExecutor<Closure>::_exploit_task(
     auto& worker = _workers[i];
 
     do {
+      if(_observer && t->node) {
+
+        _observer->on_entry(i, t->node->name());
+      }
+
+      (*t)();
+
       if(_observer) {
-        _observer->on_entry(i);
+        _observer->on_exit(i);
+      }
+
+      if(worker.cache) {
+        t = std::move(worker.cache);
+        worker.cache = std::nullopt;
+      }
+      else {
+        t = worker.queue.pop();
+      }
+    } while(t);
+  }
+}
+
+template <>
+inline void WorkStealingExecutor<std::function<void()>>::_exploit_task(
+  unsigned i,
+  std::optional<std::function<void()>>& t
+) {
+
+  if(t) {
+    auto& worker = _workers[i];
+
+    do {
+      if(_observer) {
+
+        _observer->on_entry(i, std::to_string(i));
       }
 
       (*t)();
@@ -722,14 +755,14 @@ void WorkStealingExecutor<Closure>::_exploit_task(
 // Function: _wait_for_tasks
 template <typename Closure>
 bool WorkStealingExecutor<Closure>::_wait_for_tasks(
-  unsigned me, 
+  unsigned me,
   std::optional<Closure>& t
 ) {
 
   assert(!t);
-  
+
   _notifier.prepare_wait(&_waiters[me]);
-  
+
   // check again.
   if(auto vtm = _find_victim(me); vtm != _workers.size()) {
     _notifier.cancel_wait(&_waiters[me]);
@@ -746,7 +779,7 @@ bool WorkStealingExecutor<Closure>::_wait_for_tasks(
     _notifier.notify(true);
     return false;
   }
-    
+
   // After we update the idler count, we need to check the mailbox
   // again to ensure there is no new wakeup requests.
   //if(_num_idlers >= _workers.size() / 2) {
@@ -763,7 +796,7 @@ bool WorkStealingExecutor<Closure>::_wait_for_tasks(
     }
   }
   //}
-  
+
   // Now I really need to relinguish my self to others
   _notifier.commit_wait(&_waiters[me]);
   --_num_idlers;
@@ -775,7 +808,7 @@ bool WorkStealingExecutor<Closure>::_wait_for_tasks(
 template <typename Closure>
 template <typename... ArgsT>
 void WorkStealingExecutor<Closure>::emplace(ArgsT&&... args){
-  
+
   //no worker thread available
   if(num_workers() == 0){
     Closure{std::forward<ArgsT>(args)...}();
@@ -783,7 +816,7 @@ void WorkStealingExecutor<Closure>::emplace(ArgsT&&... args){
   }
 
   auto& pt = _per_thread();
-  
+
   // caller is a worker to this pool
   if(pt.pool == this) {
     if(!_workers[pt.worker_id].cache) {
@@ -829,13 +862,13 @@ void WorkStealingExecutor<Closure>::batch(std::vector<Closure>& tasks) {
   auto& pt = _per_thread();
 
   if(pt.pool == this) {
-    
+
     size_t i = 0;
 
     if(!_workers[pt.worker_id].cache) {
       _workers[pt.worker_id].cache = std::move(tasks[i++]);
     }
-    
+
     // TODO: need to implement the mailbox strategy as well
     for(; i<tasks.size(); ++i) {
       _workers[pt.worker_id].queue.push(std::move(tasks[i]));
@@ -844,7 +877,7 @@ void WorkStealingExecutor<Closure>::batch(std::vector<Closure>& tasks) {
 
     return;
   }
-  
+
   {
     std::scoped_lock lock(_mutex);
 
@@ -852,7 +885,7 @@ void WorkStealingExecutor<Closure>::batch(std::vector<Closure>& tasks) {
       _queue.push(std::move(tasks[k]));
     }
   }
-  
+
   size_t N = std::max(size_t{1}, std::min(_num_idlers.load(), tasks.size()));
 
   if(N >= _workers.size()) {
@@ -863,9 +896,9 @@ void WorkStealingExecutor<Closure>::batch(std::vector<Closure>& tasks) {
       _notifier.notify(false);
     }
   }
-} 
-    
-// Function: make_observer    
+}
+
+// Function: make_observer
 template <typename Closure>
 template<typename Observer, typename... Args>
 Observer* WorkStealingExecutor<Closure>::make_observer(Args&&... args) {
