@@ -45,6 +45,9 @@
 #include <doctest.h>
 #include <taskflow/executor/executor.hpp>
 
+#include <chrono>
+#include <taskflow/executor/semaphore.hpp>
+
 // ============================================================================
 // WorkStealingQueue tests
 // ============================================================================
@@ -447,6 +450,8 @@ void test_executor() {
   }
 }
 
+
+
 // ----------------------------------------------------------------------------
 // Testcase: SimpleExecutor
 // ----------------------------------------------------------------------------
@@ -480,5 +485,48 @@ TEST_CASE("WorkStealingExecutor" * doctest::timeout(300)) {
 // ----------------------------------------------------------------------------
 TEST_CASE("EigenWorkStealingExecutor" * doctest::timeout(300)) {
   test_executor<tf::EigenWorkStealingExecutor<std::function<void()>>>();
+}
+
+// ----------------------------------------------------------------------------
+// Testcase: BinarySemaphore
+// ----------------------------------------------------------------------------
+TEST_CASE("BinarySemaphore" * doctest::timeout(300)) {
+  tf::BinarySemaphore sema;
+
+  size_t count {0};
+
+  std::thread t1([&](){
+    using namespace std::chrono_literals;
+    for(int i=0; i<100; i++) {
+      std::this_thread::sleep_for(2ms);
+      sema.P();
+      ++ count;
+    }
+  });
+
+  {
+    using namespace std::chrono_literals;
+    for(int i=0; i<100; i++) {
+      sema.V();
+      std::this_thread::sleep_for(10ms);
+      REQUIRE(count == i+1);
+    }
+  }
+
+  t1.join();
+
+
+  count = 0;
+  std::thread t2([&](){
+    using namespace std::chrono_literals;
+    for(int i=0; i<10; i++) {
+      std::this_thread::sleep_for(10ms);
+      sema.V();
+      count += 1;
+    }
+  });
+
+  t2.join();
+  REQUIRE(count == 10);
 }
 
