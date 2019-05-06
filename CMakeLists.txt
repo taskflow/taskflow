@@ -338,6 +338,7 @@ add_executable(
   ${TF_BENCHMARK_DIR}/framework/seq.cpp
   ${TF_BENCHMARK_DIR}/framework/taskflow.cpp
 )
+target_include_directories(framework_benchmarking PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   framework_benchmarking
   ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
