@@ -276,6 +276,7 @@ add_executable(
   ${TF_BENCHMARK_DIR}/wavefront/seq.cpp
   ${TF_BENCHMARK_DIR}/wavefront/taskflow.cpp
 )
+target_include_directories(wavefront PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   wavefront 
   ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
