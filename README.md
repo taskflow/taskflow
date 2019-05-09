@@ -1054,7 +1054,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [OpenMP Tasking]:        http://www.nersc.gov/users/software/programming-models/openmp/openmp-tasking/
 [TBB FlowGraph]:         https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph
 [OpenTimer]:             https://github.com/OpenTimer/OpenTimer
-[DtCraft]:               http://dtcraft.web.engr.illinois.edu/
+[DtCraft]:               https://github.com/tsung-wei-huang/DtCraft
 [totalgee]:              https://github.com/totalgee
 [damienhocking]:         https://github.com/damienhocking
 [ForgeMistress]:         https://github.com/ForgeMistress
