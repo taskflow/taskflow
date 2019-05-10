@@ -705,7 +705,7 @@ void WorkStealingExecutor<Closure>::_exploit_task(
 
       (*t)();
 
-      if(_observer) {
+      if(_observer && t->node) {
         _observer->on_exit(i);
       }
 
