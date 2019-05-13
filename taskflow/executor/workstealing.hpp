@@ -3,7 +3,7 @@
 //   - removed cache
 //   - added _num_actives 
 //   - added _num_thieves 
-//   - _exploit_task now randomly selects a worker queue
+//   - _explore_task now randomly selects a worker queue
 //
 // 2019/04/19 - modified by Tsung-Wei Huang
 //   - added delay yielding strategy
