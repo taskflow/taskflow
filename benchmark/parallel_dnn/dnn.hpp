@@ -284,11 +284,6 @@ struct MNIST_DNN {
   size_t batch_size {1};
 };
 
-
-
-
-
-
 inline Eigen::MatrixXf IMAGES;
 inline Eigen::VectorXi LABELS;
 inline Eigen::MatrixXf TEST_IMAGES;

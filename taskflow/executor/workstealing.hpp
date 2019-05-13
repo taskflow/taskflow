@@ -1,9 +1,16 @@
+// 2019/05/13 - modified by Tsung-Wei Huang & Chun-Xun Lin
+//   - removed mailbox 
+//   - removed cache
+//   - added _num_actives 
+//   - added _num_thieves 
+//   - _explore_task now randomly selects a worker queue
+//
 // 2019/04/19 - modified by Tsung-Wei Huang
 //   - added delay yielding strategy
 //   - added mailbox strategy to balance the wakeup calls
-//   - TODO: need to add mailbox strategy to batch
-//   - TODO: need a notify_n to wake up n threads
-//   - TODO: can we skip the --mailbox in emplace?
+//   - need to add mailbox strategy to batch
+//   - need a notify_n to wake up n threads
+//   - can we skip the --mailbox in emplace?
 //
 // 2019/04/11 - modified by Tsung-Wei Huang
 //   - renamed to executor
@@ -232,7 +239,7 @@ template <typename T>
 size_t WorkStealingQueue<T>::size() const noexcept {
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
-  return b >= t ? b - t : 0;
+  return static_cast<size_t>(b >= t ? b - t : 0);
 }
 
 // Function: push
@@ -488,7 +495,7 @@ unsigned WorkStealingExecutor<Closure>::_fast_modulo(unsigned x, unsigned N) con
 template <typename Closure>
 void WorkStealingExecutor<Closure>::_spawn(unsigned N) {
   
-  // Lock to synchronize all workers before creating _worker_mapss
+  // Lock to synchronize all workers before creating _worker_maps
   for(unsigned i=0; i<N; ++i) {
     _threads.emplace_back([this, i] () -> void {
 
@@ -625,9 +632,7 @@ void WorkStealingExecutor<Closure>::_explore_task(
   // We need to ensure at least one thieve if there is an
   // active worker
   if(auto N = --_num_thieves; N == 0) {
-    //if(t != std::nullopt || _num_actives > 0) {
-    //  _notifier.notify(false);
-    //}
+  //if(auto N = _num_thieves.fetch_sub(1); N == 1) {
     if(t != std::nullopt) {
       _notifier.notify(false);
       return;

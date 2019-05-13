@@ -34,7 +34,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
-   &#160;<span id="projectnumber">2.2.0</span>
+   &#160;<span id="projectnumber">2.3.0</span>
    </div>
   </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -109,7 +109,7 @@ New Features</h1>
 Improvements and Enhancements</h1>
 <ul>
 <li>Improved the performance of tf::WorkStealingThreadpool (non-blocking notifier, work stealing strategy, etc.) </li>
-<li>Changed the data structure to store nodes and topologies to <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/list.html">std::list</a>. </li>
+<li>Changed the data structure to store nodes and topologies to std::list. </li>
 <li>Added memory pool and allocator to manage the memory allocation of nodes and topologies. </li>
 <li>Added a customized vector (PassiveVector) to hold POD data. </li>
 <li>Added a dependents vector to keep track of the predecessors, in addition to successors, of a node. </li>
@@ -120,7 +120,7 @@ Improvements and Enhancements</h1>
 <h1><a class="anchor" id="release-2-1-0_breaks_and_deprecated_features"></a>
 Breaks and Deprecated Features</h1>
 <ul>
-<li><a class="el" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c" title="creates a task from a given callable object ">tf::Taskflow::emplace</a> is now merged with <a class="el" href="classtf_1_1FlowBuilder.html#abf3da84e99b67248d6d8fdba48267caf" title="the same as tf::FlowBuilder::emplace (starting at 2.1.0) ">tf::Taskflow::silent_emplace</a> (both are the same) and no longer returns <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/future.html">std::future</a> in order to support <a class="el" href="classtf_1_1Framework.html" title="A reusable task dependency graph. ">tf::Framework</a></li>
+<li><a class="el" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c" title="creates a task from a given callable object ">tf::Taskflow::emplace</a> is now merged with <a class="el" href="classtf_1_1FlowBuilder.html#abf3da84e99b67248d6d8fdba48267caf" title="the same as tf::FlowBuilder::emplace (starting at 2.1.0) ">tf::Taskflow::silent_emplace</a> (both are the same) and no longer returns std::future in order to support <a class="el" href="classtf_1_1Framework.html" title="A reusable task dependency graph. ">tf::Framework</a></li>
 </ul>
 <h1><a class="anchor" id="release-2-1-0_bug_fixes"></a>
 Bug Fixes</h1>

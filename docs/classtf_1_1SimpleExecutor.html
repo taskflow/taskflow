@@ -34,7 +34,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
-   &#160;<span id="projectnumber">2.2.0</span>
+   &#160;<span id="projectnumber">2.3.0</span>
    </div>
   </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -116,7 +116,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af5092c9ee800f28599c9e224747215d9"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1SimpleExecutor.html#af5092c9ee800f28599c9e224747215d9">emplace</a> (ArgsT &amp;&amp;... args)</td></tr>
 <tr class="memdesc:af5092c9ee800f28599c9e224747215d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs the closure in place in the executor  <a href="#af5092c9ee800f28599c9e224747215d9">More...</a><br /></td></tr>
 <tr class="separator:af5092c9ee800f28599c9e224747215d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaaeeda90bcb1dabe0852f2deda3b3289"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1SimpleExecutor.html#aaaeeda90bcb1dabe0852f2deda3b3289">batch</a> (<a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; Closure &gt; &amp;closures)</td></tr>
+<tr class="memitem:aaaeeda90bcb1dabe0852f2deda3b3289"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1SimpleExecutor.html#aaaeeda90bcb1dabe0852f2deda3b3289">batch</a> (std::vector&lt; Closure &gt; &amp;closures)</td></tr>
 <tr class="memdesc:aaaeeda90bcb1dabe0852f2deda3b3289"><td class="mdescLeft">&#160;</td><td class="mdescRight">moves a batch of closures to the executor  <a href="#aaaeeda90bcb1dabe0852f2deda3b3289">More...</a><br /></td></tr>
 <tr class="separator:aaaeeda90bcb1dabe0852f2deda3b3289"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1a78412e33e6b42af546eb73ba2b52a"><td class="memItemLeft" align="right" valign="top"><a id="ae1a78412e33e6b42af546eb73ba2b52a"></a>
@@ -214,7 +214,7 @@ template&lt;typename Closure &gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classtf_1_1SimpleExecutor.html">tf::SimpleExecutor</a>&lt; Closure &gt;::batch </td>
           <td>(</td>
-          <td class="paramtype"><a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; Closure &gt; &amp;&#160;</td>
+          <td class="paramtype">std::vector&lt; Closure &gt; &amp;&#160;</td>
           <td class="paramname"><em>closures</em></td><td>)</td>
           <td></td>
         </tr>
@@ -288,7 +288,7 @@ template&lt;typename Observer , typename... Args&gt; </div>
 </div><div class="memdoc">
 
 <p>constructs an observer to inspect the activities of worker threads </p>
-<p>Each executor manages at most one observer at a time through <a class="elRef" doxygen="/home/twhuang/PhD/Code/cpp-taskflow/docs/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html">std::unique_ptr</a>. Createing multiple observers will only keep the lastest one.</p>
+<p>Each executor manages at most one observer at a time through std::unique_ptr. Createing multiple observers will only keep the lastest one.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Observer</td><td>observer type derived from <a class="el" href="classtf_1_1ExecutorObserverInterface.html" title="The interface class for creating an executor observer. ">tf::ExecutorObserverInterface</a> </td></tr>
