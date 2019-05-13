@@ -230,7 +230,6 @@ class EigenWorkStealingExecutor {
     
   struct Worker {
     EigenWorkStealingQueue<Closure> queue;
-    std::optional<Closure> cache;
   };
     
   struct PerThread {
@@ -390,13 +389,7 @@ void EigenWorkStealingExecutor<Closure>::_spawn(unsigned N) {
         
         while(t) {
           (*t)();
-          if(worker.cache) {
-            t = std::move(worker.cache);
-            worker.cache = std::nullopt;
-          }
-          else {
-            t = worker.queue.pop();
-          }
+          t = worker.queue.pop();
         }
 
         // stealing loop
@@ -547,21 +540,16 @@ void EigenWorkStealingExecutor<Closure>::emplace(ArgsT&&... args){
 
   // caller is a worker to this pool
   if(auto& pt = _per_thread(); pt.pool == this) {
-    if(!_workers[pt.worker_id].cache) {
-      _workers[pt.worker_id].cache.emplace(std::forward<ArgsT>(args)...);
+    Closure c{std::forward<ArgsT>(args)...};
+    if(_workers[pt.worker_id].queue.push(c) == true) {
+      _notifier.notify(false);
       return;
     }
+    // TODO: sure this?
     else {
-      Closure c{std::forward<ArgsT>(args)...};
-      if(_workers[pt.worker_id].queue.push(c) == true) {
-        _notifier.notify(false);
-        return;
-      }
-      // TODO: sure this?
-      else {
-        std::invoke(c);
-      }
+      std::invoke(c);
     }
+    
   }
   // other threads
   else {
@@ -603,13 +591,7 @@ void EigenWorkStealingExecutor<Closure>::batch(std::vector<Closure>& tasks) {
   // schedule the work
   if(auto& pt = _per_thread(); pt.pool == this) {
     
-    size_t i = 0;
-
-    if(!_workers[pt.worker_id].cache) {
-      _workers[pt.worker_id].cache = std::move(tasks[i++]);
-    }
-
-    for(; i<tasks.size(); ++i) {
+    for(size_t i=0; i<tasks.size(); ++i) {
       if(_workers[pt.worker_id].queue.push(tasks[i]) == true) {
         _notifier.notify(false);
       }
