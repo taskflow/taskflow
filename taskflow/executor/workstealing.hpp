@@ -1,3 +1,10 @@
+// 2019/05/13 - modified by Tsung-Wei Huang & Chun-Xun Lin
+//   - removed mailbox 
+//   - removed cache
+//   - added _num_actives 
+//   - added _num_thieves 
+//   - _exploit_task now randomly selects a worker queue
+//
 // 2019/04/19 - modified by Tsung-Wei Huang
 //   - added delay yielding strategy
 //   - added mailbox strategy to balance the wakeup calls
@@ -190,8 +197,6 @@ class WorkStealingQueue {
     */
     std::optional<T> pop();
 
-    std::optional<T> pop(int64_t&);
-
     /**
     @brief steals an item from the queue
 
@@ -226,7 +231,7 @@ bool WorkStealingQueue<T>::empty() const noexcept {
   std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
-  return b <= t;
+  return b == t;
 }
 
 // Function: size
@@ -288,41 +293,6 @@ std::optional<T> WorkStealingQueue<T>::pop() {
   return item;
 }
 
-// Function: pop
-template <typename T>
-std::optional<T> WorkStealingQueue<T>::pop(int64_t& N) {
-  int64_t b = _bottom.load(std::memory_order_relaxed) - 1;
-  Array* a = _array.load(std::memory_order_relaxed);
-  _bottom.store(b, std::memory_order_relaxed);
-  std::atomic_thread_fence(std::memory_order_seq_cst);
-  int64_t t = _top.load(std::memory_order_relaxed);
-
-  std::optional<T> item;
-
-  if(t <= b) {
-    item = a->pop(b);
-    if(t == b) {
-      // the last item just got stolen
-      if(!_top.compare_exchange_strong(t, t+1, 
-                                       std::memory_order_seq_cst, 
-                                       std::memory_order_relaxed)) {
-        item = std::nullopt;
-      }
-      _bottom.store(b + 1, std::memory_order_relaxed);
-      N = 0;
-    }
-    else {
-      N = b - t;
-    }
-  }
-  else {
-    _bottom.store(b + 1, std::memory_order_relaxed);
-    N = b + 1 - t;
-  }
-
-  return item;
-}
-
 // Function: steal
 template <typename T>
 std::optional<T> WorkStealingQueue<T>::steal() {
@@ -365,8 +335,6 @@ class WorkStealingExecutor {
     
   struct Worker {
     std::minstd_rand rdgen { std::random_device{}() };
-    std::atomic<int64_t> mailbox {0};
-    std::optional<Closure> cache;
     WorkStealingQueue<Closure> queue;
   };
     
@@ -456,6 +424,7 @@ class WorkStealingExecutor {
 
     WorkStealingQueue<Closure> _queue;
     
+    std::atomic<size_t> _num_actives {0};
     std::atomic<size_t> _num_thieves {0};
     std::atomic<size_t> _num_idlers {0};
     std::atomic<bool> _done {false};
@@ -526,7 +495,7 @@ unsigned WorkStealingExecutor<Closure>::_fast_modulo(unsigned x, unsigned N) con
 template <typename Closure>
 void WorkStealingExecutor<Closure>::_spawn(unsigned N) {
   
-  // Lock to synchronize all workers before creating _worker_mapss
+  // Lock to synchronize all workers before creating _worker_maps
   for(unsigned i=0; i<N; ++i) {
     _threads.emplace_back([this, i] () -> void {
 
@@ -574,7 +543,7 @@ size_t WorkStealingExecutor<Closure>::num_workers() const {
 template <typename Closure>
 unsigned WorkStealingExecutor<Closure>::_find_victim(unsigned thief) {
 
-  unsigned l = 0;
+  /*unsigned l = 0;
   unsigned r = _workers.size() - 1;
   unsigned vtm = std::uniform_int_distribution<unsigned>{l, r}(
     _workers[thief].rdgen
@@ -591,6 +560,14 @@ unsigned WorkStealingExecutor<Closure>::_find_victim(unsigned thief) {
     if(++vtm; vtm == _workers.size()) {
       vtm = 0;
     }
+  }*/
+  
+  // try to look for a task from other workers
+  for(unsigned vtm=0; vtm<_workers.size(); ++vtm){
+    if((thief == vtm && !_queue.empty()) ||
+       (thief != vtm && !_workers[vtm].queue.empty())) {
+      return vtm;
+    }
   }
 
   return _workers.size();
@@ -606,74 +583,42 @@ void WorkStealingExecutor<Closure>::_explore_task(
   //assert(_workers[thief].queue.empty());
   assert(!t);
 
-  //const unsigned l = 0;
-  //const unsigned r = _workers.size() - 1;
+  const unsigned l = 0;
+  const unsigned r = _workers.size() - 1;
+
+  steal_loop:
 
   size_t f = 0;
   size_t F = (num_workers() + 1) << 1;
   size_t y = 0;
 
-  _workers[thief].mailbox = 0;
   ++_num_thieves;
 
   // explore
   while(!_done) {
   
-    /*unsigned vtm = std::uniform_int_distribution<unsigned>{l, r}(
+    unsigned vtm = std::uniform_int_distribution<unsigned>{l, r}(
       _workers[thief].rdgen
     );
       
     t = (vtm == thief) ? _queue.steal() : _workers[vtm].queue.steal();
 
     if(t) {
-      _workers[thief].mailbox.fetch_add(1);
-      if(auto N = --_num_thieves; N == 0) {
-        _notifier.notify(false);
-      }
-      return;
+      break;
     }
-    // wasteful thief
-    else if(vtm != thief) {
-      auto C = _workers[vtm].mailbox.load(std::memory_order_acquire);
-      if(C > 0 && _workers[vtm].mailbox.compare_exchange_strong(C, C - 1,
-                                                            std::memory_order_seq_cst,
-                                                            std::memory_order_relaxed)) {
-        _notifier.notify(false); 
-      }
-    }
-    //else {
-    //  assert(_workers[vtm].mailbox == 0);
-    //}
 
     if(f++ > F) {
       if(std::this_thread::yield(); y++ > 100) {
         break;
       }
-    } */
+    }
 
-    if(auto vtm = _find_victim(thief); vtm != _workers.size()) {
+    /*if(auto vtm = _find_victim(thief); vtm != _workers.size()) {
       t = (vtm == thief) ? _queue.steal() : _workers[vtm].queue.steal();
-      //printf("%lu\n", _workers[vtm].mailbox.load(std::memory_order_relaxed));
       // successful thief
       if(t) {
-        ++_workers[thief].mailbox;
-        if(auto N = --_num_thieves; N == 0) {
-          _notifier.notify(false);
-        }
-        return;
+        break;
       }
-      // wasteful thief
-      else if(vtm != thief) {
-        auto C = _workers[vtm].mailbox.load(std::memory_order_acquire);
-        if(C > 0 && _workers[vtm].mailbox.compare_exchange_strong(C, C - 1,
-                    std::memory_order_relaxed,
-                    std::memory_order_relaxed)) {
-          _notifier.notify(false); 
-        }
-      }
-      //else {
-      //  assert(_workers[vtm].mailbox == 0);
-      //}
     }
     else {
       if(f++ > F) {
@@ -681,10 +626,24 @@ void WorkStealingExecutor<Closure>::_explore_task(
           break;
         }
       }
+    } */
+  }
+  
+  // We need to ensure at least one thieve if there is an
+  // active worker
+  //if(auto N = --_num_thieves; N == 0) {
+  if(auto N = _num_thieves.fetch_sub(1); N == 1) {
+    //if(t != std::nullopt || _num_actives > 0) {
+    //  _notifier.notify(false);
+    //}
+    if(t != std::nullopt) {
+      _notifier.notify(false);
+      return;
+    }
+    else if(_num_actives > 0) {
+      goto steal_loop;
     }
   }
-
-  --_num_thieves;
 }
 
 // Procedure: _exploit_task
@@ -695,9 +654,15 @@ void WorkStealingExecutor<Closure>::_exploit_task(
 ) {
 
   if(t) {
+
     auto& worker = _workers[i];
 
+    if(++_num_actives; _num_thieves == 0) {
+      _notifier.notify(false);
+    }
+
     do {
+
       if(_observer) {
         _observer->on_entry(i);
       }
@@ -708,14 +673,11 @@ void WorkStealingExecutor<Closure>::_exploit_task(
         _observer->on_exit(i);
       }
 
-      if(worker.cache) {
-        t = std::move(worker.cache);
-        worker.cache = std::nullopt;
-      }
-      else {
-        t = worker.queue.pop();
-      }
+      t = worker.queue.pop();
+
     } while(t);
+
+    --_num_actives;
   }
 }
 
@@ -730,7 +692,22 @@ bool WorkStealingExecutor<Closure>::_wait_for_tasks(
   
   _notifier.prepare_wait(&_waiters[me]);
   
-  // check again.
+  //// check again.
+  //if(!_queue.empty()) {
+  //  t = _queue.steal();
+  //  return true;
+  //}
+
+  //if(size_t I = ++_num_idlers; _done && I == _workers.size()) {
+  //  _notifier.cancel_wait(&_waiters[me]);
+  //  //if(_find_victim(me) != _workers.size()) {
+  //  //  --_num_idlers;
+  //  //  return true;
+  //  //}
+  //  _notifier.notify(true);
+  //  return false;
+  //}
+
   if(auto vtm = _find_victim(me); vtm != _workers.size()) {
     _notifier.cancel_wait(&_waiters[me]);
     t = (vtm == me) ? _queue.steal() : _workers[vtm].queue.steal();
@@ -747,23 +724,6 @@ bool WorkStealingExecutor<Closure>::_wait_for_tasks(
     return false;
   }
     
-  // After we update the idler count, we need to check the mailbox
-  // again to ensure there is no new wakeup requests.
-  //if(_num_idlers >= _workers.size() / 2) {
-  for(unsigned w = 0; w<_workers.size(); ++w) {
-    if(w == me) {
-      //assert(_workers[w].mailbox.load(std::memory_order_relaxed) == 0);
-      //_workers[w].mailbox.store(0, std::memory_order_relaxed);
-      continue;
-    }
-    else if(_workers[w].mailbox.load(std::memory_order_relaxed) > 0) {
-      _notifier.cancel_wait(&_waiters[me]);
-      --_num_idlers;
-      return true;
-    }
-  }
-  //}
-  
   // Now I really need to relinguish my self to others
   _notifier.commit_wait(&_waiters[me]);
   --_num_idlers;
@@ -786,20 +746,8 @@ void WorkStealingExecutor<Closure>::emplace(ArgsT&&... args){
   
   // caller is a worker to this pool
   if(pt.pool == this) {
-    if(!_workers[pt.worker_id].cache) {
-      _workers[pt.worker_id].cache.emplace(std::forward<ArgsT>(args)...);
-      return;
-    }
-    else {
-      _workers[pt.worker_id].queue.push(Closure{std::forward<ArgsT>(args)...});
-
-      // We only do the wake-up when this thread is the only worker!
-      // Notice that incrementing the mailbox should come before if-statement.
-      ++_workers[pt.worker_id].mailbox;
-      if(_num_idlers != num_workers() - 1) {
-        return;
-      }
-    }
+    _workers[pt.worker_id].queue.push(Closure{std::forward<ArgsT>(args)...});
+    return;
   }
   // other threads
   else {
@@ -829,19 +777,9 @@ void WorkStealingExecutor<Closure>::batch(std::vector<Closure>& tasks) {
   auto& pt = _per_thread();
 
   if(pt.pool == this) {
-    
-    size_t i = 0;
-
-    if(!_workers[pt.worker_id].cache) {
-      _workers[pt.worker_id].cache = std::move(tasks[i++]);
-    }
-    
-    // TODO: need to implement the mailbox strategy as well
-    for(; i<tasks.size(); ++i) {
+    for(size_t i=0; i<tasks.size(); ++i) {
       _workers[pt.worker_id].queue.push(std::move(tasks[i]));
-      _notifier.notify(false);
     }
-
     return;
   }
   
@@ -875,6 +813,7 @@ Observer* WorkStealingExecutor<Closure>::make_observer(Args&&... args) {
 }
 
 }  // end of namespace tf. ---------------------------------------------------
+
 
 
 
