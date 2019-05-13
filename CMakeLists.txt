@@ -159,7 +159,6 @@ target_link_libraries(get_best_dice ${PROJECT_NAME} Threads::Threads)
 add_executable(composition ${TF_EXAMPLE_DIR}/composition.cpp)
 target_link_libraries(composition ${PROJECT_NAME} Threads::Threads) 
 
-
 endif()
 
 # -----------------------------------------------------------------------------
