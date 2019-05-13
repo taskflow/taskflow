@@ -3,7 +3,7 @@ var Cookbook =
     [ "C0: Project Motivation", "chapter0.html", [
       [ "The Era of Multicore", "chapter0.html#TheEraOfMulticore", null ],
       [ "Loop-level Parallelism", "chapter0.html#LoopLevelParallelism", null ],
-      [ "TaskBasedParallelism Task-based Parallelism", "chapter0.html#html", null ],
+      [ "Task-based Parallelism", "chapter0.html#TaskBasedParallelism", null ],
       [ "Challenges of Task-based Parallel Programming", "chapter0.html#ChallengesOfTaskBasedParallelProgramming", null ],
       [ "The Project Mantra", "chapter0.html#TheProjectMantra", null ]
     ] ],
