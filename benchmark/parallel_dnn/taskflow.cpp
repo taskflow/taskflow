@@ -2,63 +2,63 @@
 #include <taskflow/taskflow.hpp>  
 
 
-struct TF_DNNTrainingPattern : public tf::Framework {
+struct TF_DNNTrainingPattern : public tf::Taskflow {
 
-    TF_DNNTrainingPattern() { 
-      init_dnn(dnn, rand_rate()); 
-      build_task_graph();
-    };
+  TF_DNNTrainingPattern() { 
+    init_dnn(dnn, rand_rate()); 
+    build_task_graph();
+  };
 
-    void validate(Eigen::MatrixXf &mat, Eigen::VectorXi &vec) {
-      dnn.validate(mat, vec);
-    }
+  void validate(Eigen::MatrixXf &mat, Eigen::VectorXi &vec) {
+    dnn.validate(mat, vec);
+  }
 
-    void build_task_graph() {
-      auto f_task = emplace(
-        [&]() { forward_task(dnn, IMAGES, LABELS); }
+  void build_task_graph() {
+    auto f_task = emplace(
+      [&]() { forward_task(dnn, IMAGES, LABELS); }
+    );
+
+    std::vector<tf::Task> backward_tasks;
+    std::vector<tf::Task> update_tasks;
+
+    for(int j=dnn.acts.size()-1; j>=0; j--) {
+      // backward propagation
+      auto& b_task = backward_tasks.emplace_back(emplace(
+        [&, i=j] () { backward_task(dnn, i, IMAGES); }
+      ));
+
+      // update weight 
+      auto& u_task = update_tasks.emplace_back(
+        emplace([&, i=j] () { dnn.update(i); })
       );
 
-      std::vector<tf::Task> backward_tasks;
-      std::vector<tf::Task> update_tasks;
+      if(j + 1u == dnn.acts.size()) {
+        f_task.precede(b_task);
+      }
+      else {
+        backward_tasks[backward_tasks.size()-2].precede(b_task);
+      }
+      b_task.precede(u_task);
+    }  
+  }
 
-      for(int j=dnn.acts.size()-1; j>=0; j--) {
-        // backward propagation
-        auto& b_task = backward_tasks.emplace_back(emplace(
-          [&, i=j] () { backward_task(dnn, i, IMAGES); }
-        ));
-
-        // update weight 
-        auto& u_task = update_tasks.emplace_back(
-          emplace([&, i=j] () { dnn.update(i); })
-        );
-
-        if(j + 1u == dnn.acts.size()) {
-          f_task.precede(b_task);
-        }
-        else {
-          backward_tasks[backward_tasks.size()-2].precede(b_task);
-        }
-        b_task.precede(u_task);
-      }  
-    }
-
-    MNIST_DNN dnn;
+  MNIST_DNN dnn;
 };
 
-struct TF_DNNTrainingEpoch : public tf::Framework {
+struct TF_DNNTrainingEpoch : public tf::Taskflow {
 
-    TF_DNNTrainingEpoch(TF_DNNTrainingPattern &dnn_pattern) { 
-      std::vector<tf::Task> tasks;
-      for(auto i=0u; i<NUM_ITERATIONS; i++) {
-        tasks.emplace_back(composed_of(dnn_pattern));
-      }
-      linearize(tasks);
+  TF_DNNTrainingEpoch(TF_DNNTrainingPattern &dnn_pattern) { 
+    std::vector<tf::Task> tasks;
+    for(auto i=0u; i<NUM_ITERATIONS; i++) {
+      tasks.emplace_back(composed_of(dnn_pattern));
     }
+    linearize(tasks);
+  }
 };
 
 void run_taskflow(const unsigned num_epochs, const unsigned num_threads) {
 
-  tf::Taskflow tf {num_threads};
+  tf::Executor executor(num_threads);
 
   auto dnn_patterns = std::make_unique<TF_DNNTrainingPattern[]>(NUM_DNNS);
   auto dnns = std::make_unique<std::unique_ptr<TF_DNNTrainingEpoch>[]>(NUM_DNNS); 
@@ -68,7 +68,7 @@ void run_taskflow(const unsigned num_epochs, const unsigned num_threads) {
   }
 
   std::vector<tf::Task> tasks;
-  tf::Framework parallel_dnn;
+  tf::Taskflow parallel_dnn;
   for(size_t i=0; i<NUM_DNNS; i++) {
     tasks.emplace_back(parallel_dnn.composed_of(*(dnns[i])));
   }
@@ -87,6 +87,6 @@ void run_taskflow(const unsigned num_epochs, const unsigned num_threads) {
 
   //tf.run_n(parallel_dnn, 100).get();
 
-  tf.run_n(parallel_dnn, num_epochs).get();
+  executor.run_n(parallel_dnn, num_epochs).get();
 }
 

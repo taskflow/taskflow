@@ -16,13 +16,13 @@ struct Data {
 // Procedure: reduce
 // This procedure demonstrates 
 void reduce() {
+  
+  std::cout << "Benchmark: reduce" << std::endl;
 
   std::vector<int> data;
   for(int i=0; i<40000000; ++i) {
     data.push_back(::rand());
   }
-  
-  std::cout << "Benchmark: reduce" << std::endl;
 
   // sequential method
   auto sbeg = std::chrono::steady_clock::now();
@@ -42,7 +42,7 @@ void reduce() {
   tf.reduce(data.begin(), data.end(), tmin, [] (const auto& l, const auto& r) {
     return std::min(l, r);
   });
-  tf.wait_for_all();
+  tf::Executor().run(tf).get();
   auto tend = std::chrono::steady_clock::now();
   std::cout << "[taskflow] reduce: " 
             << std::chrono::duration_cast<std::chrono::milliseconds>(tend - tbeg).count()
@@ -78,7 +78,7 @@ void transform_reduce() {
     [] (int l, int r) { return std::min(l, r); },
     [] (const Data& d) { return d.transform(); }
   );
-  tf.wait_for_all();
+  tf::Executor().run(tf).get();
   auto tend = std::chrono::steady_clock::now();
   std::cout << "[taskflow] transform_reduce " 
             << std::chrono::duration_cast<std::chrono::milliseconds>(tend - tbeg).count()

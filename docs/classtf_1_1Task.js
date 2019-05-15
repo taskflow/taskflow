@@ -15,7 +15,6 @@ var classtf_1_1Task =
     [ "precede", "classtf_1_1Task.html#a29631a0e035e7bf8aa93379b470bbbca", null ],
     [ "precede", "classtf_1_1Task.html#ab2701f26ef5777304ee0e87f555b710c", null ],
     [ "work", "classtf_1_1Task.html#a2f6f4cec42d016e5eb89390f362ffe99", null ],
-    [ "BasicTaskflow", "classtf_1_1Task.html#ab3ad8c5c7ed22c3fbd8a41b84db75083", null ],
     [ "FlowBuilder", "classtf_1_1Task.html#a61184f9bd9c801d0a5eccecfdbddc641", null ],
-    [ "Framework", "classtf_1_1Task.html#ad3defef37a1222bb2b2a65577a6c4816", null ]
+    [ "Taskflow", "classtf_1_1Task.html#af043dd6f6a359602805d9c7dd7539cca", null ]
 ];

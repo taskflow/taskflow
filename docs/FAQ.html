@@ -34,7 +34,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
-   &#160;<span id="projectnumber">2.3.0</span>
+   &#160;<span id="projectnumber">2.2.0</span>
    </div>
   </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -103,7 +103,7 @@ Q1: What's the goal of Cpp-Taskflow?</h2>
 <p>Cpp-Taskflow aims to help C++ developers quickly implement efficient parallel decomposition strategies using task-based approaches.</p>
 <h2><a class="anchor" id="GeneralQuestion2"></a>
 Q2: How do I use Cpp-Taskflow in my projects?</h2>
-<p>Cpp-Taskflow is a header-only library with zero dependencies. The only thing you need is a <a href="https://en.wikipedia.org/wiki/C%2B%2B17">C++17</a> compiler. To use Cpp-Taskflow, simply drop the folder <code>taskflow/</code> to your project and include <a class="el" href="taskflow_8hpp_source.html">taskflow.hpp</a>.</p>
+<p>Cpp-Taskflow is a header-only library with zero dependencies. The only thing you need is a <a href="https://en.wikipedia.org/wiki/C%2B%2B17">C++17</a> compiler. To use Cpp-Taskflow, simply drop the folder <code>taskflow/</code> to your project and include taskflow.hpp.</p>
 <h2><a class="anchor" id="GeneralQuestion3"></a>
 Q3: What is the difference between static tasking and dynamic tasking?</h2>
 <p>Static tasking refers to those tasks created before execution, while dynamic tasking refers to those tasks created during the execution of static tasks or dynamic tasks (nested). Dynamic tasks created by the same task node are grouped together to a subflow.</p>
@@ -124,7 +124,7 @@ Programming Questions</h1>
 <h2><a class="anchor" id="ProgrammingQuestions1"></a>
 Q1: What is the difference between Cpp-Taskflow threads and workers?</h2>
 <p>The master thread owns the thread pool and can spawn workers to run tasks or shutdown the pool. Giving taskflow <code>N</code> threads means using <code>N</code> threads to do the works, and there is a total of <code>N+1</code> threads (including the master threads) in the program.</p>
-<div class="fragment"><div class="line"><a class="code" href="classtf_1_1BasicTaskflow.html">tf::Taskflow</a>(N);    <span class="comment">// N workers, N+1 threads in the program.</span></div></div><!-- fragment --><p>If there is no worker threads in the pool, the master thread will do all the works by itself. Please refer to <a class="el" href="chapter6.html#C6_MasterWorkersAndExecutor">Master, Workers, and Executor</a> for more details.</p>
+<div class="fragment"><div class="line"><a class="code" href="classtf_1_1Taskflow.html">tf::Taskflow</a>(N);    <span class="comment">// N workers, N+1 threads in the program.</span></div></div><!-- fragment --><p>If there is no worker threads in the pool, the master thread will do all the works by itself. Please refer to <a class="el" href="chapter6.html#C6_MasterWorkersAndExecutor">Master, Workers, and Executor</a> for more details.</p>
 <h2><a class="anchor" id="ProgrammingQuestions2"></a>
 Q2: What is the Lifetime of a Task and a Graph?</h2>
 <p>The lifetime of a task sticks with its parent graph. A task is not destroyed until its parent graph is destroyed. Please refer to <a class="el" href="chapter2.html#LifeTimeOfAGraph">Lifetime of a Graph</a> for more details.</p>
@@ -133,7 +133,7 @@ Q3: Is taskflow thread-safe?</h2>
 <p>No, the taskflow object is not thread-safe. You can't create tasks from multiple threads at the same time.</p>
 <h2><a class="anchor" id="ProgrammingQuestions4"></a>
 Q4: My program hangs and never returns after dispatching a taskflow graph. What's wrong?</h2>
-<p>When the program hangs forever it is very likely your taskflow graph has a cycle. Try the <a class="el" href="classtf_1_1BasicTaskflow.html#adac448e1cc44307856b3116d7ed5490f" title="dumps the present task dependency graph to a std::ostream in DOT format ">tf::Taskflow::dump</a> method to debug the graph before dispatching your taskflow graph.</p>
+<p>When the program hangs forever it is very likely your taskflow graph has a cycle. Try the <a class="el" href="classtf_1_1Taskflow.html#ac433018262e44b12c4cc9f0c4748d758" title="dumps the taskflow to a std::ostream in DOT format ">tf::Taskflow::dump</a> method to debug the graph before dispatching your taskflow graph.</p>
 <h2><a class="anchor" id="ProgrammingQuestions5"></a>
 Q5: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?</h2>
 <div class="image">
