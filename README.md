@@ -990,7 +990,7 @@ The folder `example/` contains several examples and is a great place to learn to
 + Submit contributions using [pull requests][GitHub pull requests]
 + Learn more about Cpp-Taskflow by reading the [documentation][wiki]
 + Release notes are highlighted [here][release notes]
-+ Read and cite our [IPDPS19](docs/reference/ipdps19.pdf) paper
++ Read and cite our [IPDPS19](doxygen/reference/ipdps19.pdf) paper
 + Visit a curated list of [awesome parallel computing resources](awesome-parallel-computing.md)
 
 # Who is Using Cpp-Taskflow?
@@ -1072,7 +1072,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [email me]:              mailto:twh760812@gmail.com
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
 [ChromeTracing]:         https://www.chromium.org/developers/how-tos/trace-event-profiling-tool
-[IPDPS19]:               docs/reference/ipdps19.pdf
+[IPDPS19]:               doxygen/reference/ipdps19.pdf
 [WorkStealing Wiki]:     https://en.wikipedia.org/wiki/Work_stealing
 
 [std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
