@@ -8,7 +8,7 @@ var hierarchy =
       [ "tf::ExecutorObserver", "classtf_1_1ExecutorObserver.html", null ]
     ] ],
     [ "tf::FlowBuilder", "classtf_1_1FlowBuilder.html", [
-      [ "tf::SubflowBuilder", "classtf_1_1SubflowBuilder.html", null ],
+      [ "tf::Subflow", "classtf_1_1Subflow.html", null ],
       [ "tf::Taskflow", "classtf_1_1Taskflow.html", null ]
     ] ],
     [ "tf::Task", "classtf_1_1Task.html", null ],

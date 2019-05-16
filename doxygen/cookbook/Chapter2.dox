@@ -8,7 +8,7 @@ In this chapter, we will show you how to execute a task dependency graph.
 @section GraphAndTopology Graph and Topology
 
 Each taskflow object has exactly one graph at a time that represents
-the tasks and the dependencies constructed so far.
+a set of dependent tasks constructed so far.
 To execute a graph, you need to create an @em executor from tf::Executor.
 An executor manages a set of worker threads and schedules task execution
 through an efficient @em work-stealing algorithm.
@@ -18,15 +18,11 @@ Each executor object has a list of topologies to keep track of the
 execution status of running and finished graphs.
 Users can retrieve this information for graph inspection and debugging.
 
-All tasks are executed in a shared thread storage coupled with a
-<em>task scheduler</em> to decide which thread runs which task.
-Cpp-Taskflow provides a rich set of methods to run a task dependency graph.
-
 @section C2_CreateAnExecutor Create an Executor
 
 The first step is to create an executor to run a taskflow.
-tf::Executor take an unsigned integer to construct an executor of @c N worker threads.
-You can leave it empty to our default value of std::thread::hardware_concurrency.
+tf::Executor takes an unsigned integer to construct an executor of @c N worker threads.
+The default value is std::thread::hardware_concurrency.
 
 @code{.cpp}
 tf::Executor executor1;     // create an executor of std::thread::hardware_concurrency worker threads
@@ -80,8 +76,8 @@ Debrief:
 @li Line 19    runs the taskflow four times and invokes a callback at the end of the forth execution
 @li Line 20    keeps running the taskflow until the predicate returns true
 
-Issuing multiple runs on a same taskflow will automatically get @em synchronized
-to a sequential chain of executions following the order of run calls.
+Issuing multiple runs on a same taskflow will automatically @em synchronize
+to a sequential chain of executions following the order of the run calls.
 
 @code{.cpp}
 executor.run(taskflow);         // execution 1
@@ -128,7 +124,7 @@ std::shared_future<void> future = taskflow.run(f);  // non-blocking return
 f.emplace([](){ std::cout << "Add a new task\n"; });
 @endcode
 
-A rule of thumb is to always keep a taskflow alive in your program scope 
+A rule of thumb is to always keep a taskflow alive in your function scope 
 while it is participating in an execution.
 
 

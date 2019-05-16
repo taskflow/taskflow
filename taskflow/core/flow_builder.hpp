@@ -724,11 +724,11 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
 // ----------------------------------------------------------------------------
 
 /** 
-@class SubflowBuilder
+@class Subflow
 
 @brief The building blocks of dynamic tasking.
 */ 
-class SubflowBuilder : public FlowBuilder {
+class Subflow : public FlowBuilder {
 
   public:
     
@@ -736,7 +736,7 @@ class SubflowBuilder : public FlowBuilder {
     @brief constructs a subflow builder object
     */
     template <typename... Args>
-    SubflowBuilder(Args&&...);
+    Subflow(Args&&... args);
     
     /**
     @brief enables the subflow to join its parent task
@@ -765,27 +765,27 @@ class SubflowBuilder : public FlowBuilder {
 
 // Constructor
 template <typename... Args>
-SubflowBuilder::SubflowBuilder(Args&&... args) :
+Subflow::Subflow(Args&&... args) :
   FlowBuilder {std::forward<Args>(args)...} {
 }
 
 // Procedure: join
-inline void SubflowBuilder::join() {
+inline void Subflow::join() {
   _detached = false;
 }
 
 // Procedure: detach
-inline void SubflowBuilder::detach() {
+inline void Subflow::detach() {
   _detached = true;
 }
 
 // Function: detached
-inline bool SubflowBuilder::detached() const {
+inline bool Subflow::detached() const {
   return _detached;
 }
 
 // Function: joined
-inline bool SubflowBuilder::joined() const {
+inline bool Subflow::joined() const {
   return !_detached;
 }
 
@@ -801,9 +801,9 @@ auto FlowBuilder::emplace(C&&... cs) {
 template <typename C>
 Task FlowBuilder::emplace(C&& c) {
   // dynamic tasking
-  if constexpr(std::is_invocable_v<C, SubflowBuilder&>) {
+  if constexpr(std::is_invocable_v<C, Subflow&>) {
     auto& n = _graph.emplace_back(
-    [c=std::forward<C>(c)] (SubflowBuilder& fb) mutable {
+    [c=std::forward<C>(c)] (Subflow& fb) mutable {
       // first time execution
       if(fb._graph.empty()) {
         c(fb);
@@ -839,15 +839,15 @@ Task FlowBuilder::silent_emplace(C&& c) {
 //template <typename C>
 //auto FlowBuilder::emplace(C&& c) {
 //  // subflow task
-//  if constexpr(std::is_invocable_v<C, SubflowBuilder&>) {
+//  if constexpr(std::is_invocable_v<C, Subflow&>) {
 //
-//    using R = std::invoke_result_t<C, SubflowBuilder&>;
+//    using R = std::invoke_result_t<C, Subflow&>;
 //    std::promise<R> p;
 //    auto fu = p.get_future();
 //  
 //    if constexpr(std::is_same_v<void, R>) {
 //      auto& node = _graph.emplace_back([p=MoC(std::move(p)), c=std::forward<C>(c)]
-//      (SubflowBuilder& fb) mutable {
+//      (Subflow& fb) mutable {
 //        if(fb._graph.empty()) {
 //          c(fb);
 //          // if subgraph is detached or empty after invoked
@@ -864,7 +864,7 @@ Task FlowBuilder::silent_emplace(C&& c) {
 //    else {
 //      auto& node = _graph.emplace_back(
 //      [p=MoC(std::move(p)), c=std::forward<C>(c), r=std::optional<R>()]
-//      (SubflowBuilder& fb) mutable {
+//      (Subflow& fb) mutable {
 //        if(fb._graph.empty()) {
 //          r.emplace(c(fb));
 //          if(fb.detached() || fb._graph.empty()) {
@@ -908,5 +908,7 @@ Task FlowBuilder::silent_emplace(C&& c) {
 //    static_assert(dependent_false_v<C>, "invalid task work type");
 //  }
 //}
+
+using SubflowBuilder = Subflow;
 
 }  // end of namespace tf. ---------------------------------------------------

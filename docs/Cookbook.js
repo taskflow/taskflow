@@ -11,8 +11,8 @@ var Cookbook =
       [ "What is a Task?", "chapter1.html#WhatIsATask", null ],
       [ "Create Multiple Tasks at One Time", "chapter1.html#CreateMultipleTasksAtOneTime", null ],
       [ "Lifetime of A Task", "chapter1.html#C1_LifetimeOfATask", null ],
-      [ "Example 1: Create a Task Dependency Graph", "chapter1.html#C1Example1", null ],
-      [ "Example 2: Modify Task Attributes", "chapter1.html#C1Example2", null ],
+      [ "Create a Task Dependency Graph", "chapter1.html#C1_CreateATaskDependencyGraph", null ],
+      [ "Modify Task Attributes", "chapter1.html#C1_ModifyTaskAttributes", null ],
       [ "Taskflow Composition", "chapter1.html#C1_TaskflowComposition", null ]
     ] ],
     [ "C2: Execute a Taskflow", "chapter2.html", [

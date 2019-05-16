@@ -13,7 +13,8 @@ A fast C++ *header-only* library to help you quickly write parallel programs wit
 # Why Cpp-Taskflow?
 
 Cpp-Taskflow is by far faster, more expressive, fewer lines of code, and easier for drop-in integration
-than existing parallel task programming libraries such as [OpenMP Tasking][OpenMP Tasking] and Intel [TBB FlowGraph][TBB FlowGraph].
+than existing parallel task programming libraries such as [OpenMP Tasking][OpenMP Tasking] 
+and Intel [TBB FlowGraph][TBB FlowGraph].
 
 ![](image/performance.jpg)
 
@@ -259,7 +260,7 @@ tf::Task C = tf.emplace([](){}).name("C");
 tf::Task D = tf.emplace([](){}).name("D");
 
 // create a subflow graph (dynamic tasking)
-tf::Task B = tf.emplace([] (tf::SubflowBuilder& subflow) {
+tf::Task B = tf.emplace([] (tf::Subflow& subflow) {
   tf::Task B1 = subflow.emplace([](){}).name("B1");
   tf::Task B2 = subflow.emplace([](){}).name("B2");
   tf::Task B3 = subflow.emplace([](){}).name("B3");
@@ -283,7 +284,7 @@ For example, detaching the above subflow will result in the following execution 
 
 ```cpp
 // create a "detached" subflow graph (dynamic tasking)
-tf::Task B = tf.emplace([] (tf::SubflowBuilder& subflow) {
+tf::Task B = tf.emplace([] (tf::Subflow& subflow) {
   tf::Task B1 = subflow.emplace([](){}).name("B1");
   tf::Task B2 = subflow.emplace([](){}).name("B2");
   tf::Task B3 = subflow.emplace([](){}).name("B3");
@@ -299,10 +300,10 @@ tf::Task B = tf.emplace([] (tf::SubflowBuilder& subflow) {
 
 Cpp-Taskflow has an unified interface for static and dynamic tasking.
 To create a subflow for dynamic tasking, 
-emplace a callable with one argument of type `tf::SubflowBuilder`.
+emplace a callable with one argument of type `tf::Subflow`.
 
 ```cpp
-tf::Task A = tf.emplace([] (tf::SubflowBuilder& subflow) {});
+tf::Task A = tf.emplace([] (tf::Subflow& subflow) {});
 ```
 
 A subflow builder is a lightweight object that allows you to create 
@@ -311,7 +312,7 @@ All graph building methods defined in taskflow
 can be used in the subflow builder.
 
 ```cpp
-tf::Task A = tf.emplace([] (tf::SubflowBuilder& subflow) {
+tf::Task A = tf.emplace([] (tf::Subflow& subflow) {
   std::cout << "Task A is spawning two subtasks A1 and A2" << '\n';
   auto [A1, A2] = subflow.emplace(
     [] () { std::cout << "subtask A1" << '\n'; },
@@ -327,13 +328,13 @@ the execution of a subflow and so on.
 <img align="right" src="image/nested_subflow.png" width="25%">
 
 ```cpp
-tf::Task A = tf.emplace([] (tf::SubflowBuilder& sbf) {
+tf::Task A = tf.emplace([] (tf::Subflow& sbf) {
   std::cout << "A spawns A1 & subflow A2\n";
   tf::Task A1 = sbf.emplace([] () { 
     std::cout << "subtask A1\n"; 
   }).name("A1");
 
-  tf::Task A2 = sbf.emplace([] (tf::SubflowBuilder& sbf2) {
+  tf::Task A2 = sbf.emplace([] (tf::Subflow& sbf2) {
     std::cout << "A2 spawns A2_1 & A2_2\n";
     tf::Task A2_1 = sbf2.emplace([] () { 
       std::cout << "subtask A2_1\n"; 
@@ -355,7 +356,7 @@ By default, a subflow joins to its parent task.
 Depending on applications, you can detach a subflow to enable more parallelism.
 
 ```cpp
-tf::Task A = tf.emplace([] (tf::SubflowBuilder& subflow) {
+tf::Task A = tf.emplace([] (tf::Subflow& subflow) {
   subflow.detach();  // detach this subflow from its parent task A
 });  // subflow starts to run after the callable scope
 ```
@@ -372,7 +373,7 @@ inside the subflow (possibly nested) finish.
 int value {0};
 
 // create a joined subflow
-tf::Task A = tf.emplace([&] (tf::SubflowBuilder& subflow) {
+tf::Task A = tf.emplace([&] (tf::Subflow& subflow) {
   subflow.emplace([&]() { 
     value = 10; 
   }).name("A1");
@@ -397,7 +398,7 @@ join to the same taskflow.
 int value {0};
 
 // create a detached subflow
-tf::Task A = tf.emplace([&] (tf::SubflowBuilder& subflow) {
+tf::Task A = tf.emplace([&] (tf::Subflow& subflow) {
   subflow.emplace([&]() { value = 10; }).name("A1");
   subflow.detach();
 }).name("A");
@@ -517,7 +518,7 @@ tf::Taskflow taskflow;
 tf::Task A = taskflow.emplace([](){}).name("A");
 
 // create a subflow of two tasks B1->B2
-tf::Task B = taskflow.emplace([] (tf::SubflowBuilder& subflow) {
+tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) {
   tf::Task B1 = subflow.emplace([](){}).name("B1");
   tf::Task B2 = subflow.emplace([](){}).name("B2");
   B1.precede(B2);

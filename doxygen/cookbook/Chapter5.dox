@@ -13,10 +13,10 @@ These tasks are spawned from a parent task and are grouped together to a
 @em subflow dependency graph.
 Cpp-Taskflow has an unified interface for static and dynamic tasking.
 To create a subflow for dynamic tasking, emplace a callable 
-that takes one argument of type tf::SubflowBuilder.
-A tf::SubflowBuilder object will be created during the runtime and
+that takes one argument of type tf::Subflow.
+A tf::Subflow object will be created during the runtime and
 passed to the task.
-All graph building methods you find in taskflow are applicable for a subflow builder.
+All graph building methods you find in taskflow are applicable for a subflow.
 
 @code{.cpp}
  1: tf::Taskflow taskflow;
@@ -25,7 +25,7 @@ All graph building methods you find in taskflow are applicable for a subflow bui
  4: tf::Task C = taskflow.emplace([] () {}).name("C");  // static task C
  5: tf::Task D = taskflow.emplace([] () {}).name("D");  // static task D
  6:
- 7: tf::Task B = taskflow.emplace([] (tf::SubflowBuilder& subflow) { 
+ 7: tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) { 
  8:   tf::Task B1 = subflow.emplace([] () {}).name("B1");  // dynamic task B1
  9:   tf::Task B2 = subflow.emplace([] () {}).name("B2");  // dynamic task B2
 10:   tf::Task B3 = subflow.emplace([] () {}).name("B3");  // dynamic task B3
@@ -55,7 +55,7 @@ Debrief:
 Line 7-13 is the main coding block to enable dynamic tasking.
 Cpp-Taskflow uses a @std_variant date type to 
 unify the interface of static tasking and dynamic tasking.
-The runtime will create a tf::SubflowBuilder passing it to task B,
+The runtime will create a tf::Subflow passing it to task B,
 and spawn a dependency graph as described by the associated callable.
 This new subflow graph will be added to the topology of its parent task B.
 Due to the property of dynamic tasking,
@@ -77,7 +77,7 @@ you can detach a subflow from its parent task, allowing its execution to flow in
  4: tf::Task C = taskflow.emplace([] () {}).name("C");  // static task C
  5: tf::Task D = taskflow.emplace([] () {}).name("D");  // static task D
  6:
- 7: tf::Task B = taskflow.emplace([] (tf::SubflowBuilder& subflow) { 
+ 7: tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) { 
  8:   tf::Task B1 = subflow.emplace([] () {}).name("B1");  // dynamic task B1
  9:   tf::Task B2 = subflow.emplace([] () {}).name("B2");  // dynamic task B2
 10:   tf::Task B3 = subflow.emplace([] () {}).name("B3");  // dynamic task B3
@@ -109,13 +109,13 @@ You can create another subflow from the execution of a subflow and so on.
 @code{.cpp}
  1: tf::Taskflow taskflow;
  2:
- 3: tf::Task A = taskflow.emplace([] (tf::SubflowBuilder& sbf){
+ 3: tf::Task A = taskflow.emplace([] (tf::Subflow& sbf){
  4:   std::cout << "A spawns A1 & subflow A2\n";
  5:   tf::Task A1 = sbf.emplace([] () {
  6:     std::cout << "subtask A1\n";
  7:   }).name("A1");
  8:
- 9:   tf::Task A2 = sbf.emplace([] (tf::SubflowBuilder& sbf2){
+ 9:   tf::Task A2 = sbf.emplace([] (tf::Subflow& sbf2){
 10:     std::cout << "A2 spawns A2_1 & A2_2\n";
 11:     tf::Task A2_1 = sbf2.emplace([] () {
 12:       std::cout << "subtask A2_1\n";

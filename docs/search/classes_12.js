@@ -31,7 +31,7 @@ var searchData=
   ['strstreambuf',['strstreambuf',['http://en.cppreference.com/w/cpp/io/strstreambuf.html',1,'std']]],
   ['student_5ft_5fdistribution',['student_t_distribution',['http://en.cppreference.com/w/cpp/numeric/random/student_t_distribution.html',1,'std']]],
   ['sub_5fmatch',['sub_match',['http://en.cppreference.com/w/cpp/regex/sub_match.html',1,'std']]],
-  ['subflowbuilder',['SubflowBuilder',['../classtf_1_1SubflowBuilder.html',1,'tf']]],
+  ['subflow',['Subflow',['../classtf_1_1Subflow.html',1,'tf']]],
   ['subtract_5fwith_5fcarry_5fengine',['subtract_with_carry_engine',['http://en.cppreference.com/w/cpp/numeric/random/subtract_with_carry_engine.html',1,'std']]],
   ['system_5fclock',['system_clock',['http://en.cppreference.com/w/cpp/chrono/system_clock.html',1,'std::chrono']]],
   ['system_5ferror',['system_error',['http://en.cppreference.com/w/cpp/error/system_error.html',1,'std']]]
