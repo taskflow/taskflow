@@ -54,13 +54,8 @@ visit the [documentation][wiki] to learn more about Cpp-Taskflow.
 Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
 
 :exclamation: Notice that starting at v2.2.0 (including this master branch) 
-<<<<<<< HEAD
-we isolated the executor interface from Taskflow to improve programming model and performance.
-This introduced a few breaks in using Cpp-Taskflow.
-=======
 we isolated the executor interface from Taskflow to improve the programming model and performance.
 This caused a few breaks in using Cpp-Taskflow.
->>>>>>> master
 Please refer to [release-notes](https://cpp-taskflow.github.io/cpp-taskflow/release-2-2-0.html)
 for adapting to this new change.
 
