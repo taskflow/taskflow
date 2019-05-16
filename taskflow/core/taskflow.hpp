@@ -61,6 +61,11 @@ class Taskflow : public FlowBuilder {
     @brief queries the name of the taskflow
     */
     const std::string& name() const ;
+    
+    /**
+    @brief clears the associated task dependency graph
+    */
+    void clear();
 
   private:
  
@@ -79,6 +84,11 @@ inline Taskflow::Taskflow() : FlowBuilder{_graph} {
 // Destructor
 inline Taskflow::~Taskflow() {
   assert(_topologies.empty());
+}
+
+// Procedure:
+inline void Taskflow::clear() {
+  _graph.clear();
 }
 
 // Function: num_noces

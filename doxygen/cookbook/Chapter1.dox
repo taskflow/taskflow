@@ -64,10 +64,8 @@ For instance, the callable object must be copy constructible.
 
 @section CreateMultipleTasksAtOneTime Create Multiple Tasks at One Time
 
-Cpp-Taskflow uses C++ structured binding coupled with tuple 
-to make the creation of tasks simple.
-The method tf::Taskflow::emplace 
-accepts a arbitrary number of callable objects to create multiple tasks at one time.
+Cpp-Taskflow uses C++ structured binding coupled with std::tuple 
+to make it simple to create multiple tasks at one time.
 
 @code{.cpp}
 auto [A, B, C] = taskflow.emplace(  // create three tasks in one call
@@ -87,10 +85,10 @@ As long as the graph is alive,
 all the associated tasks exist.
 It is your responsibility to keep tasks and graph alive during their execution.
 
-@section C1Example1 Example 1: Create a Task Dependency Graph
+@section C1_CreateATaskDependencyGraph Create a Task Dependency Graph
 
-The example below demonstrates how to create a simple task dependency graph of 
-four dependent tasks.
+Putting everything together, 
+the example below creates a simple task dependency graph of four dependent tasks.
 
 @code{.cpp}
  1: #include <taskflow/taskflow.hpp>
@@ -120,7 +118,7 @@ Debrief:
 @li Line 8-11 creates four tasks
 @li Line 14-17 adds four task dependency links
 
-@section C1Example2 Example 2: Modify Task Attributes
+@section C1_ModifyTaskAttributes Modify Task Attributes
 
 This example demonstrates how to modify a task's attributes using methods defined in
 the task handler.

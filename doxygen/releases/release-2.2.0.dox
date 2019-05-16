@@ -48,13 +48,13 @@ taskflow.wait_for_all();   // wait until the framework finishes
 However, this design is awkward in many aspects.
 For instance, calling @c wait_for_all dispatches the present graph
 and the graph vanishes when the execution completes.
-To reuse a graph, users have to create another special type of graphs called framework
+To reuse a graph, users have to create another special graph called framework
 and mix its execution with the one in a taskflow object.
-Given user feedback and lessons we have learned so far, 
-we decided to isolate the executor out of tf::Taskflow and 
+Given the user feedback and lessons we have learned so far, 
+we decided to isolate the executor interface out of tf::Taskflow and 
 merge tf::Framework with tf::Taskflow.
-In other words, all execution methods such as @c dispatch and @c wait_for_all 
-are removed from tf::Taskflow and are unified to tf::Executor.
+All execution methods such as @c dispatch and @c wait_for_all 
+have been moved from tf::Taskflow to tf::Executor.
 
 @code{.cpp}
 // starting from v2.2.0, tf::Executor manages the execution of graphs

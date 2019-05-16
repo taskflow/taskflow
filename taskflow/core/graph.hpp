@@ -11,7 +11,7 @@ class Node;
 class Topology;
 class Task;
 class FlowBuilder;
-class SubflowBuilder;
+class Subflow;
 class Taskflow;
 
 //using Graph = std::list<Node, tf::SingularAllocator<Node>>;
@@ -28,7 +28,7 @@ class Node {
   friend class Executor;
 
   using StaticWork   = std::function<void()>;
-  using DynamicWork  = std::function<void(SubflowBuilder&)>;
+  using DynamicWork  = std::function<void(Subflow&)>;
 
   constexpr static int SPAWNED = 0x1;
   constexpr static int SUBTASK = 0x2;
