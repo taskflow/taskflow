@@ -306,10 +306,10 @@ emplace a callable with one argument of type `tf::Subflow`.
 tf::Task A = tf.emplace([] (tf::Subflow& subflow) {});
 ```
 
-A subflow builder is a lightweight object that allows you to create 
+A subflow is a lightweight object that allows you to create 
 arbitrary dependency graphs at runtime.
 All graph building methods defined in taskflow
-can be used in the subflow builder.
+can be used in the subflow.
 
 ```cpp
 tf::Task A = tf.emplace([] (tf::Subflow& subflow) {
