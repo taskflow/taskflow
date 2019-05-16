@@ -44,7 +44,7 @@ var searchData=
   ['release',['release',['http://en.cppreference.com/w/cpp/thread/unique_lock/release.html',1,'std::unique_lock::release()'],['http://en.cppreference.com/w/cpp/memory/unique_ptr/release.html',1,'std::unique_ptr::release()'],['http://en.cppreference.com/w/cpp/thread/shared_lock/release.html',1,'std::shared_lock::release()'],['http://en.cppreference.com/w/cpp/memory/auto_ptr/release.html',1,'std::auto_ptr::release()']]],
   ['release_202_2e0_2e0_20_282018_2f08_2f28_29',['Release 2.0.0 (2018/08/28)',['../release-2-0-0.html',1,'Releases']]],
   ['release_202_2e1_2e0_20_282019_2f02_2f15_29',['Release 2.1.0 (2019/02/15)',['../release-2-1-0.html',1,'Releases']]],
-  ['release_202_2e2_2e0_20_282019_2f05_2f13_29',['Release 2.2.0 (2019/05/13)',['../release-2-2-0.html',1,'Releases']]],
+  ['release_202_2e2_2e0_20_282019_2f05_2f16_29',['Release 2.2.0 (2019/05/16)',['../release-2-2-0.html',1,'Releases']]],
   ['releases',['Releases',['../Releases.html',1,'']]],
   ['remove',['remove',['http://en.cppreference.com/w/cpp/container/forward_list/remove.html',1,'std::forward_list::remove()'],['http://en.cppreference.com/w/cpp/container/list/remove.html',1,'std::list::remove()']]],
   ['remove_5fall_5fextents',['remove_all_extents',['http://en.cppreference.com/w/cpp/types/remove_all_extents.html',1,'std']]],

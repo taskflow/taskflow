@@ -11,5 +11,6 @@ var searchData=
   ['vector_3c_20array_20_2a_3e',['vector&lt; Array *&gt;',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
   ['vector_3c_20notifier_3a_3awaiter_20_3e',['vector&lt; Notifier::Waiter &gt;',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
   ['vector_3c_20std_3a_3athread_20_3e',['vector&lt; std::thread &gt;',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
+  ['vector_3c_20std_3a_3avector_3c_20std_3a_3achrono_3a_3atime_5fpoint_3c_20std_3a_3achrono_3a_3asteady_5fclock_20_3e_20_3e_20_3e',['vector&lt; std::vector&lt; std::chrono::time_point&lt; std::chrono::steady_clock &gt; &gt; &gt;',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std']]],
   ['vector_3c_20worker_20_3e',['vector&lt; Worker &gt;',['http://en.cppreference.com/w/cpp/container/vector.html',1,'std']]]
 ];

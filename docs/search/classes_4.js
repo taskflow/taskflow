@@ -13,6 +13,8 @@ var searchData=
   ['exception',['exception',['http://en.cppreference.com/w/cpp/error/exception.html',1,'std']]],
   ['exception_5fptr',['exception_ptr',['http://en.cppreference.com/w/cpp/error/exception_ptr.html',1,'std']]],
   ['executor',['Executor',['../classtf_1_1Executor.html',1,'tf']]],
+  ['executorobserver',['ExecutorObserver',['../classtf_1_1ExecutorObserver.html',1,'tf']]],
+  ['executorobserverinterface',['ExecutorObserverInterface',['../classtf_1_1ExecutorObserverInterface.html',1,'tf']]],
   ['exponential_5fdistribution',['exponential_distribution',['http://en.cppreference.com/w/cpp/numeric/random/exponential_distribution.html',1,'std']]],
   ['extent',['extent',['http://en.cppreference.com/w/cpp/types/extent.html',1,'std']]],
   ['extern_5ftype',['extern_type',['http://en.cppreference.com/w/cpp/locale/codecvt.html',1,'std::codecvt_utf8::extern_type'],['http://en.cppreference.com/w/cpp/locale/codecvt.html',1,'std::codecvt_byname::extern_type'],['http://en.cppreference.com/w/cpp/locale/codecvt.html',1,'std::codecvt::extern_type'],['http://en.cppreference.com/w/cpp/locale/codecvt.html',1,'std::codecvt_utf8_utf16::extern_type'],['http://en.cppreference.com/w/cpp/locale/codecvt.html',1,'std::codecvt_utf16::extern_type']]],

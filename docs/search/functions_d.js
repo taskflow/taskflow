@@ -21,6 +21,7 @@ var searchData=
   ['num_5fnodes',['num_nodes',['../classtf_1_1Taskflow.html#a66ada311b948a920d2c26255ef731e6d',1,'tf::Taskflow']]],
   ['num_5fput',['num_put',['http://en.cppreference.com/w/cpp/locale/num_put/num_put.html',1,'std::num_put']]],
   ['num_5fsuccessors',['num_successors',['../classtf_1_1Task.html#a1a0afc89e8a6a416c511e74d82df135d',1,'tf::Task']]],
+  ['num_5ftasks',['num_tasks',['../classtf_1_1ExecutorObserver.html#a93d51307198abb9a1fc00a14904c3dd0',1,'tf::ExecutorObserver']]],
   ['num_5fworkers',['num_workers',['../classtf_1_1Executor.html#a79223c7f32c9d715e725b8d775de2d29',1,'tf::Executor']]],
   ['numpunct',['numpunct',['http://en.cppreference.com/w/cpp/locale/numpunct/numpunct.html',1,'std::numpunct']]],
   ['numpunct_5fbyname',['numpunct_byname',['http://en.cppreference.com/w/cpp/locale/numpunct_byname.html',1,'std::numpunct_byname']]]

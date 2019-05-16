@@ -24,6 +24,7 @@ var searchData=
   ['_7eerror_5fcategory',['~error_category',['http://en.cppreference.com/w/cpp/error/error_category/~error_category.html',1,'std::error_category']]],
   ['_7eexception',['~exception',['http://en.cppreference.com/w/cpp/error/exception/~exception.html',1,'std::exception']]],
   ['_7eexecutor',['~Executor',['../classtf_1_1Executor.html#a5a511b0cc23b264826373d3dabcef670',1,'tf::Executor']]],
+  ['_7eexecutorobserverinterface',['~ExecutorObserverInterface',['../classtf_1_1ExecutorObserverInterface.html#a239e48ee46d73bcd5a3f28b3e1b8fe50',1,'tf::ExecutorObserverInterface']]],
   ['_7efilebuf',['~filebuf',['http://en.cppreference.com/w/cpp/io/basic_filebuf/~basic_filebuf.html',1,'std::filebuf']]],
   ['_7eforward_5flist',['~forward_list',['http://en.cppreference.com/w/cpp/container/forward_list/~forward_list.html',1,'std::forward_list']]],
   ['_7efunction',['~function',['http://en.cppreference.com/w/cpp/utility/functional/function/~function.html',1,'std::function']]],

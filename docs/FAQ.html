@@ -124,10 +124,10 @@ Programming Questions</h1>
 <h2><a class="anchor" id="ProgrammingQuestions1"></a>
 Q1: What is the difference between Cpp-Taskflow threads and workers?</h2>
 <p>The master thread owns the thread pool and can spawn workers to run tasks or shutdown the pool. Giving taskflow <code>N</code> threads means using <code>N</code> threads to do the works, and there is a total of <code>N+1</code> threads (including the master threads) in the program.</p>
-<div class="fragment"><div class="line"><a class="code" href="classtf_1_1Taskflow.html">tf::Taskflow</a>(N);    <span class="comment">// N workers, N+1 threads in the program.</span></div></div><!-- fragment --><p>If there is no worker threads in the pool, the master thread will do all the works by itself. Please refer to <a class="el" href="chapter6.html#C6_MasterWorkersAndExecutor">Master, Workers, and Executor</a> for more details.</p>
+<div class="fragment"><div class="line"><a class="code" href="classtf_1_1Executor.html">tf::Executor</a>(N);    <span class="comment">// N workers, N+1 threads in the program.</span></div></div><!-- fragment --><p>If there is no worker threads in the pool, the master thread will do all the works by itself. Please refer to <a class="el" href="chapter6.html#C6_MasterWorkersAndExecutor">Master, Workers, and Executor</a> for more details.</p>
 <h2><a class="anchor" id="ProgrammingQuestions2"></a>
 Q2: What is the Lifetime of a Task and a Graph?</h2>
-<p>The lifetime of a task sticks with its parent graph. A task is not destroyed until its parent graph is destroyed. Please refer to <a class="el" href="chapter2.html#LifeTimeOfAGraph">Lifetime of a Graph</a> for more details.</p>
+<p>The lifetime of a task sticks with its parent graph. A task is not destroyed until its parent graph is destroyed. Please refer to <a class="el" href="chapter1.html#C1_LifetimeOfATask">Lifetime of A Task</a> for more details.</p>
 <h2><a class="anchor" id="ProgrammingQuestions3"></a>
 Q3: Is taskflow thread-safe?</h2>
 <p>No, the taskflow object is not thread-safe. You can't create tasks from multiple threads at the same time.</p>

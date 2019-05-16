@@ -23,12 +23,10 @@ and returns a task pair as two synchronization points to this task graph.
  6:   std::cout << std::this_thread::get_id() << " runs " << item << std::endl;
  7: });
  8:
- 9: S.work([] () { std::cout << "S\n"; }).name("S");
-10: T.work([] () { std::cout << "T\n"; }).name("T");
+ 9: S.work([](){ std::cout << "S\n"; }).name("S");
+10: T.work([](){ std::cout << "T\n"; }).name("T");
 11:
-12: std::cout << taskflow.dump();
-13:
-14: taskflow.wait_for_all();
+12: taskflow.dump(std::cout);
 @endcode
 
 The above code generates the following task dependency graph. 
@@ -45,7 +43,6 @@ Debrief:
 @li Line 5-7 creates a parallel execution graph using the method @c parallel_for
 @li Line 9-10 names the synchronization tasks @c S and @c T
 @li Line 12 dumps the graph to a dot format which can be visualized through @GraphVizOnline
-@li Line 14 dispatches the graph to execution and blocks until the graph finishes
 
 Here is one possible output of this program:
 
@@ -92,8 +89,8 @@ of a for-loop using only the basic methods tf::Taskflow::emplace and tf::Task::p
 
 
 @code{.cpp}
-tf::Task S = taskflow.emplace([] () {}).name("S");
-tf::Task T = taskflow.emplace([] () {}).name("T");
+tf::Task S = taskflow.emplace([](){}).name("S");
+tf::Task T = taskflow.emplace([](){}).name("T");
 
 for(auto item : items) {
   tf::Task task = taskflow.emplace([item] () {
@@ -154,7 +151,8 @@ or zero if it is an even number.
 #include <taskflow/taskflow.hpp>
 
 int main() {
-
+  
+  tf::Executor executor;
   tf::Taskflow taskflow;
 
   std::vector<int> items{1, 2, 3, 4, 5, 6, 7, 8};
@@ -163,7 +161,7 @@ int main() {
     item = (item & 1) ? 1 : 0;
   });
 
-  taskflow.wait_for_all();
+  executor.run(taskflow).get();
 
   for(auto item : items) {
     std::cout << item << " ";
@@ -212,7 +210,7 @@ with other tasks.
 24:   T1.precede(S);  // modifier precedes parallel-for
 25:   T.precede(T2);  // parallel-for precedes the output task
 26:
-27:   taskflow.wait_for_all();
+27:   tf::Executor().run(taskflow);
 28:
 29:   return 0;
 30: }

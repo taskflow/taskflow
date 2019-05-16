@@ -66,7 +66,7 @@ Giving taskflow @c N threads means using @c N threads to do the works,
 and there is a total of @c N+1 threads (including the master threads) in the program.
 
 @code{.cpp}
-tf::Taskflow(N);    // N workers, N+1 threads in the program.
+tf::Executor(N);    // N workers, N+1 threads in the program.
 @endcode
 
 If there is no worker threads in the pool, the master thread will do all the works by itself.
@@ -74,9 +74,9 @@ Please refer to @ref C6_MasterWorkersAndExecutor for more details.
 
 @subsection ProgrammingQuestions2 Q2: What is the Lifetime of a Task and a Graph?
 
-The lifetime of a task sticks with its parent graph. A task is not destroyed until its parent
-graph is destroyed.
-Please refer to @ref LifeTimeOfAGraph for more details.
+The lifetime of a task sticks with its parent graph. 
+A task is not destroyed until its parent graph is destroyed.
+Please refer to @ref C1_LifetimeOfATask for more details.
 
 @subsection ProgrammingQuestions3 Q3: Is taskflow thread-safe?
 

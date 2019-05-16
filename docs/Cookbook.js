@@ -7,21 +7,18 @@ var Cookbook =
       [ "Challenges of Task-based Parallel Programming", "chapter0.html#ChallengesOfTaskBasedParallelProgramming", null ],
       [ "The Project Mantra", "chapter0.html#TheProjectMantra", null ]
     ] ],
-    [ "C1: Understand the Task", "chapter1.html", [
+    [ "C1: Create a Taskflow", "chapter1.html", [
       [ "What is a Task?", "chapter1.html#WhatIsATask", null ],
       [ "Create Multiple Tasks at One Time", "chapter1.html#CreateMultipleTasksAtOneTime", null ],
-      [ "Lifetime of A Task", "chapter1.html#LifetimeOfATask", null ],
-      [ "Example 1: Create Multiple Dependency Graphs", "chapter1.html#C1Example1", null ],
-      [ "Example 2: Modify Task Attributes", "chapter1.html#C1Example2", null ]
+      [ "Lifetime of A Task", "chapter1.html#C1_LifetimeOfATask", null ],
+      [ "Example 1: Create a Task Dependency Graph", "chapter1.html#C1Example1", null ],
+      [ "Example 2: Modify Task Attributes", "chapter1.html#C1Example2", null ],
+      [ "Taskflow Composition", "chapter1.html#C1_TaskflowComposition", null ]
     ] ],
-    [ "C2: Dispatch a Task Dependency Graph", "chapter2.html", [
+    [ "C2: Execute a Taskflow", "chapter2.html", [
       [ "Graph and Topology", "chapter2.html#GraphAndTopology", null ],
-      [ "Blocking Execution", "chapter2.html#BlockingExecution", null ],
-      [ "Non-blocking Execution", "chapter2.html#NonBlockingExecution", null ],
-      [ "Wait for Topologies", "chapter2.html#WaitForTopologies", null ],
-      [ "Lifetime of a Graph", "chapter2.html#LifeTimeOfAGraph", null ],
-      [ "Example 1: Multiple Dispatches", "chapter2.html#Chapter2Example1", null ],
-      [ "Example 2: Connect Two Dependency Graphs", "chapter2.html#Chapter2Example2", null ]
+      [ "Create an Executor", "chapter2.html#C2_CreateAnExecutor", null ],
+      [ "Execute a Taskflow", "chapter2.html#C2_ExecuteATaskflow", null ]
     ] ],
     [ "C3: Create a Parallel For-loop Graph", "chapter3.html", [
       [ "Range-based For-loop", "chapter3.html#RangeBasedForLoop", null ],
@@ -45,19 +42,7 @@ var Cookbook =
     ] ],
     [ "C6: Manage Threads and Executor", "chapter6.html", [
       [ "Master, Workers, and Executor", "chapter6.html#C6_MasterWorkersAndExecutor", null ],
-      [ "Share an Executor among Taskflow Objects", "chapter6.html#C6_ShareAnExecutorAmongTaskflowObjects", null ],
-      [ "Customize Your Executor Interface", "chapter6.html#C6CustomizeYourExecutorInterface", null ],
       [ "Thread Safety", "chapter6.html#C6ThreadSafety", null ],
-      [ "Example 1: Impact of Over-subscription", "chapter6.html#C6Example1", null ],
       [ "Monitor Thread Activities", "chapter6.html#C6MonitorThreadActivities", null ]
-    ] ],
-    [ "C7: Framework (Experimental)", "chapter7.html", [
-      [ "Create a Framework", "chapter7.html#C7_CreateAFramework", null ],
-      [ "Execute a Framework", "chapter7.html#C7_ExecuteAFramework", null ],
-      [ "Visualize a Framework", "chapter7.html#C7_VisualizeAFramework", null ],
-      [ "Lifetime of a Framework", "chapter7.html#C7_LifeTimeOfAFramework", null ],
-      [ "Create an Application Framework", "chapter7.html#C7_CreateAppicationFramework", null ],
-      [ "Framework Composition", "chapter7.html#C7_FrameworkComposition", null ],
-      [ "Caveats", "chapter7.html#C7_Caveats", null ]
     ] ]
 ];

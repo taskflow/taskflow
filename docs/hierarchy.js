@@ -4,6 +4,9 @@ var hierarchy =
       [ "tf::Error", "structtf_1_1Error.html", null ]
     ] ],
     [ "tf::Executor", "classtf_1_1Executor.html", null ],
+    [ "tf::ExecutorObserverInterface", "classtf_1_1ExecutorObserverInterface.html", [
+      [ "tf::ExecutorObserver", "classtf_1_1ExecutorObserver.html", null ]
+    ] ],
     [ "tf::FlowBuilder", "classtf_1_1FlowBuilder.html", [
       [ "tf::SubflowBuilder", "classtf_1_1SubflowBuilder.html", null ],
       [ "tf::Taskflow", "classtf_1_1Taskflow.html", null ]
