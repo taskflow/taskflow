@@ -2,6 +2,7 @@ var classtf_1_1Taskflow =
 [
     [ "Taskflow", "classtf_1_1Taskflow.html#ade7fc641d136a3f8c96682c08040626a", null ],
     [ "~Taskflow", "classtf_1_1Taskflow.html#a00325e9799c833b75455ba1407b2695c", null ],
+    [ "clear", "classtf_1_1Taskflow.html#a1f00bbe72a1553c9656ecae4d98bb9af", null ],
     [ "composed_of", "classtf_1_1Taskflow.html#a21b96ca779cc68d1117fdf1b053d11ee", null ],
     [ "dump", "classtf_1_1Taskflow.html#ac433018262e44b12c4cc9f0c4748d758", null ],
     [ "dump", "classtf_1_1Taskflow.html#a9c4900da1831dce708664a06b3e3a3fb", null ],

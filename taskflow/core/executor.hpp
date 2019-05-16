@@ -371,7 +371,6 @@ inline void Executor::_explore_task(unsigned thief, std::optional<Node*>& t) {
   // We need to ensure at least one thieve if there is an
   // active worker
   if(auto N = --_num_thieves; N == 0) {
-  //if(auto N = _num_thieves.fetch_sub(1); N == 1) {
     if(t != std::nullopt) {
       _notifier.notify(false);
       return;
