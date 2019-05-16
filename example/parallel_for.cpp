@@ -12,7 +12,7 @@ void parallel_for_on_range(int N) {
   tf.parallel_for(range.begin(), range.end(), [&] (const int i) { 
     printf("parallel_for on container item: %d\n", i);
   });
-  tf.wait_for_all();
+  tf::Executor().run(tf);
 }
 
 // Procedure: parallel_for_on_index
@@ -23,7 +23,7 @@ void parallel_for_on_index(int N) {
   tf.parallel_for(0, N, 1, [] (int i) {
     printf("parallel_for on index: %d\n", i);
   });
-  tf.wait_for_all();
+  tf::Executor().run(tf);
 }
 
 // ----------------------------------------------------------------------------

@@ -1,0 +1,5 @@
+2019/05/15 Log:
+
+We have decided to isolate the executor out of the taskflow 
+to combine the tf::Framework with tf::Taskflow. We created a tf::Executor
+to manage the workers and implement the work-stealing scheduling algorithm.

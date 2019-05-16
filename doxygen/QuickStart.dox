@@ -55,7 +55,8 @@ int main(){
   B.precede(D);  // B runs before D                  //    |     +---+     |    
   C.precede(D);  // C runs before D                  //    +---->| C |-----+    
                                                      //          +---+          
-  taskflow.wait_for_all();  // block until finish
+  // create an executor to run the taskflow
+  tf::Executor().run(taskflow);
 
   return 0;
 }

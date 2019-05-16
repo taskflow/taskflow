@@ -1,15 +1,16 @@
 namespace tf {
 
-/** @page chapter1 C1: Understand the %Task
+/** @page chapter1 C1: Create a %Taskflow
 
-In this chapter, we demonstrate the basic construct of 
-a task dependency graph - tf::Task.
+This chapter demonstrates how to create a task dependency graph--tf::Taskflow.
 
 @section WhatIsATask What is a Task?
 
-A task in Cpp-Taskflow is a callable object for which the operation @std_invoke is applicable.
+A task in Cpp-Taskflow is a @em callable object for which the operation @std_invoke is applicable.
 It can be either 
 a functor, a lambda expression, a bind expression, or a class objects with @c operator() overloaded.
+All tasks are created from tf::Taskflow, the class that manages a task dependency graph
+and its tasks.
 Cpp-Taskflow provides two methods, tf::Taskflow::placeholder and tf::Taskflow::emplace to create a task.
 
 @code{.cpp}
@@ -19,12 +20,13 @@ tf::Task B = taskflow.emplace([] () { std::cout << "task B\n"; });
 @endcode
 
 Debrief:
+@li Line 1 creates a taskflow object, or a @em graph
 @li Line 2 creates an empty task 
 @li Line 3 creates a task from a given callable object and returns a task handle
 
-Each time you create a task, including an empty one, 
+Each time you create a task including an empty one, 
 the taskflow object adds a node to the present graph
-and returns a task handle of type Task.
+and returns a task handle of type tf::Task.
 A task handle is a lightweight object
 that wraps up a particular node in a graph
 and provides a set of methods for you to assign different attributes to the task
@@ -75,22 +77,20 @@ auto [A, B, C] = taskflow.emplace(  // create three tasks in one call
 );
 @endcode
 
-@section LifetimeOfATask Lifetime of A Task
+@section C1_LifetimeOfATask Lifetime of A Task
 
-A task lives with its graph, and is not destroyed until its parent graph
-gets cleaned up.
-A task belongs to only a graph at a time.
-The lifetime of a task mostly refers to the user-given callable object,
+A task lives with its graph and belongs to only a graph at a time, 
+and is not destroyed until the graph gets cleaned up.
+The lifetime of a task refers to the user-given callable object,
 including captured values.
 As long as the graph is alive,
-all the associated tasks remain their existence.
-We recommend the users to read @ref LifeTimeOfAGraph.
+all the associated tasks exist.
+It is your responsibility to keep tasks and graph alive during their execution.
 
+@section C1Example1 Example 1: Create a Task Dependency Graph
 
-@section C1Example1 Example 1: Create Multiple Dependency Graphs
-
-The example below demonstrates how to reuse task handles to create two 
-task dependency graphs.
+The example below demonstrates how to create a simple task dependency graph of 
+four dependent tasks.
 
 @code{.cpp}
  1: #include <taskflow/taskflow.hpp>
@@ -100,52 +100,25 @@ task dependency graphs.
  5:   tf::Taskflow taskflow;
  6:
  7:   // create a task dependency graph
- 8:   
- 9:   tf::Task t0 = taskflow.emplace([] () { std::cout << "Task A\n"; });
-10:   tf::Task t1 = taskflow.emplace([] () { std::cout << "Task B\n"; });
-11:   tf::Task t2 = taskflow.emplace([] () { std::cout << "Task C\n"; });
-12:   tf::Task t3 = taskflow.emplace([] () { std::cout << "Task D\n"; });
-13:
-14:   // add dependency links
-15:   t0.precede(t1); 
-16:   t0.precede(t2);
-17:   t1.precede(t3);
-18:   t2.precede(t3);
-19:
-20:   taskflow.wait_for_all();
-21:
-22:   // create another task dependency graph
-23:   // we can reuse the task handle
-24:   t0 = taskflow.emplace([] () { std::cout << "New Task A\n"; });
-25:   t1 = taskflow.emplace([] () { std::cout << "New Task B\n"; });
-26:   t2 = taskflow.emplace([] () { std::cout << "New Task C\n"; });
-27:   t3 = taskflow.emplace([] () { std::cout << "New Task D\n"; });
-28:   
-29:   // add dependency links
-30:   t3.precede(t2);
-31:   t2.precede(t1);
-32:   t1.precede(t0);
-33:
-34:   taskflow.wait_for_all();
-35:
-36:   return 0;
-37: }
+ 8:   tf::Task t0 = taskflow.emplace([] () { std::cout << "Task A\n"; });
+ 9:   tf::Task t1 = taskflow.emplace([] () { std::cout << "Task B\n"; });
+10:   tf::Task t2 = taskflow.emplace([] () { std::cout << "Task C\n"; });
+11:   tf::Task t3 = taskflow.emplace([] () { std::cout << "Task D\n"; });
+12:
+13:   // add dependency links
+14:   t0.precede(t1); 
+15:   t0.precede(t2);
+16:   t1.precede(t3);
+17:   t2.precede(t3);
+18:
+19:   return 0;
+20: }
 @endcode
 
 Debrief:
 @li Line 5 creates a taskflow object
-@li Line 8 creates a task array to store four task handles
-@li Line 9-12 creates four tasks
-@li Line 15-18 adds four task dependency links
-@li Line 20 dispatches the graph and blocks until it completes
-@li Line 23-28 creates four new tasks and reassigns the task array to these four tasks
-@li Line 30-32 adds a linear dependency to these four tasks
-@li Line 34 dispatches the graph and blocks until it completes
-
-Notice that trying to modify a task in a dispatched graph 
-results in undefined behavior.
-For examples, starting from Line 21, you should not modify any tasks 
-but assign them to new targets (Line 23-28).
+@li Line 8-11 creates four tasks
+@li Line 14-17 adds four task dependency links
 
 @section C1Example2 Example 2: Modify Task Attributes
 
@@ -168,7 +141,7 @@ the task handler.
 13:   tasks[1].name("This is Task 1");
 14:   tasks[0].precede(tasks[1]);
 15:
-16:   for(auto task : tasks) {    // print out each task's attributes
+16:   for(auto task : tasks) {          // print out each task's attributes
 17:     std::cout << task.name() << ": "
 18:               << "num_dependents=" << task.num_dependents() << ", "
 19:               << "num_successors=" << task.num_successors() << '\n';
@@ -179,10 +152,8 @@ the task handler.
 24:   tasks[0].work([](){ std::cout << "got a new work!\n"; });
 25:   tasks[1].work([](){ std::cout << "got a new work!\n"; });
 26:
-27:   taskflow.wait_for_all();
-28:
-29:   return 0;
-30: }
+27:   return 0;
+28: }
 @endcode
 
 The output of this program looks like the following:
@@ -195,8 +166,6 @@ digraph Taskflow {
 "This is Task 0";
 "This is Task 0" -> "This is Task 1";
 }
-got a new work!
-got a new work!
 @endcode
 
 Debrief:
@@ -207,11 +176,84 @@ Debrief:
 @li Line 16-20 prints out the name of each task, the number of dependents, and the number of successors
 @li Line 22 dumps the task dependency graph to a @GraphVizOnline format (dot)
 @li Line 24-25 assigns a new target to each task
-@li Line 27 dispatches the graph and blocks until the execution finishes
 
-You can change the name and work of a task at anytime before dispatching the graph.
+You can change the name and work of a task at anytime before running the graph.
 The later assignment overwrites the previous values.
-Only the latest information will be used.
+
+
+@section C1_TaskflowComposition Taskflow Composition
+
+A powerful feature of tf::Taskflow is its @em composable interface.
+You can break down a large parallel workload into smaller pieces
+each designed to run a specific task dependency graph.
+This largely facilitates the @em modularity of writing a parallel task program.
+
+@code{.cpp}
+ 1: // f1 has three independent tasks
+ 2: tf::Taskflow f1;
+ 3: f1.name("F1");
+ 4: tf::Task f1A = f1.emplace([&](){ std::cout << "F1 TaskA\n"; });
+ 5: tf::Task f1B = f1.emplace([&](){ std::cout << "F1 TaskB\n"; });
+ 6: tf::Task f1C = f1.emplace([&](){ std::cout << "F1 TaskC\n"; });
+ 7: 
+ 8: f1A.name("f1A");
+ 9: f1B.name("f1B");
+10: f1C.name("f1C");
+11: f1A.precede(f1C);
+12: f1B.precede(f1C);
+13:
+14: // f2A ---
+15: //        |----> f2C ----> f1_module_task ----> f2D
+16: // f2B --- 
+17: tf::Taskflow f2;
+18: f2.name("F2");
+19: tf::Task f2A = f2.emplace([&](){ std::cout << "  F2 TaskA\n"; });
+20: tf::Task f2B = f2.emplace([&](){ std::cout << "  F2 TaskB\n"; });
+21: tf::Task f2C = f2.emplace([&](){ std::cout << "  F2 TaskC\n"; });
+22: tf::Task f2D = f2.emplace([&](){ std::cout << "  F2 TaskD\n"; });
+23: 
+24: f2A.name("f2A");
+25: f2B.name("f2B");
+26: f2C.name("f2C");
+27: f2C.name("f2D");
+28:
+29: f2A.precede(f2C);
+30: f2B.precede(f2C);
+31:
+32: tf::Task f1_module_task = f2.composed_of(f1).name("module");
+33: f2C.precede(f1_module_task);
+34: f1_module_task.precede(f2D);
+35:
+36: f2.dump(std::cout);
+@endcode
+
+@image html images/composition_static_1.png width=37%
+
+Debrief:
+
+@li Line 1-12  creates a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C
+@li Line 17-30 creates a taskflow of four tasks f2A, f2B, f2C, and f2D 
+@li Line 32 creates a module task from taskflow f1 through the method Taskflow::composed_of
+@li Line 33 enforces task f2C to run before the module task 
+@li Line 34 enforces the module task to run before task f2D
+
+The task created from Taskflow::composed_of is a @em module task
+that runs on a taskflow.
+A module task does not owns any taskflow but maintains a soft 
+mapping to use during its execution context.
+You can create multiple module tasks from the same taskflow
+but only one module task can run at one time.
+For example, the following composition is valid. 
+Even though the two module tasks @c module1 and @c module2 refer to the same taskflow @c F1,
+the dependency link prevents @c F1 from multiple executions at the same time.
+
+@image html images/composition_static_2.png width=37%
+
+However, the following composition is @em invalid.
+Both module tasks refer to the same taskflow. They can not run at the same time because
+they are associated with the same graph.
+
+@image html images/composition_static_invalid.png width=50%
 
 */
 

@@ -34,9 +34,10 @@ int main(int argc, char* argv[]) {
   auto detached = (opt == "detach") ? true : false;
 
   // Create a taskflow graph with three regular tasks and one subflow task.
-  tf::Taskflow tf(std::thread::hardware_concurrency());
+  tf::Executor executor(4);
+  tf::Taskflow taskflow;
 
-  auto [A, B, C, D] = tf.emplace(
+  auto [A, B, C, D] = taskflow.emplace(
     // Task A
     [] () { std::cout << "TaskA\n"; },              
     // Task B
@@ -80,10 +81,10 @@ int main(int argc, char* argv[]) {
   B.precede(D);  // D runs after B 
   C.precede(D);  // D runs after C  
 
-  tf.dispatch().get();  // block until finished
+  executor.run(taskflow).get();  // block until finished
 
   // examine the graph
-  std::cout << '\n' << tf.dump_topologies();
+  taskflow.dump(std::cout);
 
   return 0;
 }

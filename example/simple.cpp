@@ -7,9 +7,9 @@
 
 int main(){
 
-  tf::Taskflow tf;
+  tf::Taskflow taskflow;
   
-  auto [A, B, C, D] = tf.emplace( 
+  auto [A, B, C, D] = taskflow.emplace( 
     [] () { std::cout << "TaskA\n"; },     //                                 
     [] () { std::cout << "TaskB\n"; },     //          +---+                  
     [] () { std::cout << "TaskC\n"; },     //    +---->| B |-----+            
@@ -21,7 +21,7 @@ int main(){
   B.precede(D);  // D runs after B         //    +---->| C |-----+            
   C.precede(D);  // D runs after C         //          +---+
 
-  tf.wait_for_all();  // block until finished
+  tf::Executor().run(taskflow);  // create an executor to run the taskflow
 
   return 0;
 }

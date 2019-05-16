@@ -2,8 +2,9 @@
 #include <taskflow/taskflow.hpp>  
 
 void run_taskflow(MNIST& D, unsigned num_threads) {
-
-  tf::Taskflow tf {num_threads};
+  
+  tf::Executor executor(num_threads);
+  tf::Taskflow taskflow;
 
   std::vector<tf::Task> forward_tasks;
   std::vector<tf::Task> backward_tasks;
@@ -22,7 +23,7 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
 
   for(auto e=0u; e<D.epoch; e++) {
     for(auto i=0u; i<iter_num; i++) {
-      auto& f_task = forward_tasks.emplace_back(tf.emplace(
+      auto& f_task = forward_tasks.emplace_back(taskflow.emplace(
         [&, i=i, e=e%num_par_shf]() { forward_task(D, i, e, mats, vecs); }
       ));
 
@@ -35,13 +36,13 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
 
       for(int j=D.acts.size()-1; j>=0; j--) {
         // backward propagation
-        auto& b_task = backward_tasks.emplace_back(tf.emplace(
+        auto& b_task = backward_tasks.emplace_back(taskflow.emplace(
           [&, i=j, e=e%num_par_shf] () { backward_task(D, i, e, mats); }
         ));
 
         // update weight 
         auto& u_task = update_tasks.emplace_back(
-          tf.emplace([&, i=j] () {D.update(i);})
+          taskflow.emplace([&, i=j] () {D.update(i);})
         );
 
         if(j + 1u == D.acts.size()) {
@@ -57,11 +58,11 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
 
     if(e == 0) {
       // No need to shuffle in first epoch
-      shuffle_tasks.emplace_back(tf.emplace([](){}))
+      shuffle_tasks.emplace_back(taskflow.emplace([](){}))
                    .precede(forward_tasks[forward_tasks.size()-iter_num]);           
     }
     else {
-      auto& t = shuffle_tasks.emplace_back(tf.emplace(
+      auto& t = shuffle_tasks.emplace_back(taskflow.emplace(
         [&, e=e%num_par_shf]() { D.shuffle(mats[e], vecs[e], D.images.rows());}
       ));
       t.precede(forward_tasks[forward_tasks.size()-iter_num]);
@@ -79,6 +80,6 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
     }
   } // End of all epoch
 
-  tf.wait_for_all();
+  executor.run(taskflow).get();
 }
 

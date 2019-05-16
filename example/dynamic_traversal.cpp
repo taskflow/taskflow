@@ -60,11 +60,11 @@ void sequential_traversal(std::vector<Node*>& src) {
 void tf_traversal(std::vector<Node*>& src) {
   auto start = std::chrono::system_clock::now();
 
-  tf::Taskflow tf(4);
+  tf::Taskflow tf;
   for(size_t i=0; i<src.size(); i++) {
     tf.emplace([i=i, &src](auto& subflow){ traverse(src[i], subflow); });
   }
-  tf.wait_for_all();  // block until finished
+  tf::Executor().run(tf);  // block until finished
 
   auto end = std::chrono::system_clock::now();
   std::cout << "Tf runtime: " 

@@ -1,11 +1,10 @@
 #pragma once
 
-#include "executor/executor.hpp"
-#include "graph/basic_taskflow.hpp"
+#include "core/executor.hpp"
 
 namespace tf {
 
-using Taskflow = BasicTaskflow<WorkStealingExecutor>;
+
 
 }  // end of namespace tf. ---------------------------------------------------
 

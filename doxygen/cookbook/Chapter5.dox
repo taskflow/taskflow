@@ -8,7 +8,7 @@ In Cpp-Taskflow, we call this <em>dynamic tasking</em>.
 
 @section Subflow Subflow
 
-Dynamic tasks are those created during the execution of a dispatched graph.
+Dynamic tasks are those created during the execution of a graph.
 These tasks are spawned from a parent task and are grouped together to a 
 @em subflow dependency graph.
 Cpp-Taskflow has an unified interface for static and dynamic tasking.
@@ -38,8 +38,8 @@ All graph building methods you find in taskflow are applicable for a subflow bui
 17: B.precede(D);  // D runs after B
 18: C.precede(D);  // D runs after C
 19:
-20: taskflow.dispatch().get();  // execute the graph without cleanning up topologies
-21: std::cout << taskflow.dump_topologies();
+20: tf::Executor().run(taskflow).get();  // execute the graph to spawn the subflow
+21: taskflow.dump(std::cout);            // dump the taskflow to DOT format
 @endcode
 
 @image html images/subflow_join.png width=30%
@@ -49,18 +49,18 @@ Debrief:
 @li Line 3-5 creates three tasks, A, C, and D
 @li Line 7-13 creates a task B that spawns a task dependency graph of three tasks B1, B2, and B3
 @li Line 15-18 add dependencies among A, B, C, and D
-@li Line 20 dispatches the graph and waits until it finishes without cleaning up the topology
-@li Line 21 dumps the topology that represents the entire task dependency graph
+@li Line 20 dispatches the graph and waits until it finishes
+@li Line 21 dumps the entire task dependency graph
 
 Line 7-13 is the main coding block to enable dynamic tasking.
 Cpp-Taskflow uses a @std_variant date type to 
 unify the interface of static tasking and dynamic tasking.
 The runtime will create a tf::SubflowBuilder passing it to task B,
 and spawn a dependency graph as described by the associated callable.
-This new subflow graph will be added to the topology to which its parent task B belongs to.
+This new subflow graph will be added to the topology of its parent task B.
 Due to the property of dynamic tasking,
 we cannot dump its structure before execution.
-We will need to dispatch the graph first and call the method tf::Taskflow::dump_topologies.
+We will need to run the graph first and call the method tf::Taskflow::dump.
 
 @section DetachASubflow Detach a Subflow
 
@@ -91,12 +91,12 @@ you can detach a subflow from its parent task, allowing its execution to flow in
 18: B.precede(D);  // D runs after B
 19: C.precede(D);  // D runs after C
 20:
-21: taskflow.dispatch().get();  // execute the graph without cleaning up topologies
-22: std::cout << taskflow.dump_topologies();
+21: tf::Executor().run(taskflow).get();  // execute the graph to spawn the subflow
+22: taskflow.dump(std::cout);            // dump the taskflow to DOT format
 @endcode
 
 The figure below demonstrates a detached subflow based on the previous example.
-A detached subflow will eventually join the end of the topology of its parent task.
+A detached subflow will eventually join the topology of its parent task.
 
 @image html images/subflow_detach.png width=60%
 
@@ -128,9 +128,9 @@ You can create another subflow from the execution of a subflow and so on.
 19:   A1.precede(A2);
 20: }).name("A");
 21:
-22: // execute the graph without cleanning up topologies
-23: taskflow.dispatch().get();
-24: std::cout << taskflow.dump_topologies();
+22: // execute the graph to spawn the subflow
+23: tf::Executor().run(taskflow).get();
+24: taskflow.dump(std::cout);
 @endcode
 
 @image html images/nested_subflow.png width=45%
