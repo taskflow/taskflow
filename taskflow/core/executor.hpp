@@ -420,22 +420,6 @@ inline bool Executor::_wait_for_tasks(unsigned me, std::optional<Node*>& t) {
   
   _notifier.prepare_wait(&_waiters[me]);
   
-  //// check again.
-  //if(!_queue.empty()) {
-  //  t = _queue.steal();
-  //  return true;
-  //}
-
-  //if(size_t I = ++_num_idlers; _done && I == _workers.size()) {
-  //  _notifier.cancel_wait(&_waiters[me]);
-  //  //if(_find_victim(me) != _workers.size()) {
-  //  //  --_num_idlers;
-  //  //  return true;
-  //  //}
-  //  _notifier.notify(true);
-  //  return false;
-  //}
-
   if(auto vtm = _find_victim(me); vtm != _workers.size()) {
     _notifier.cancel_wait(&_waiters[me]);
     t = (vtm == me) ? _queue.steal() : _workers[vtm].queue.steal();
@@ -444,10 +428,10 @@ inline bool Executor::_wait_for_tasks(unsigned me, std::optional<Node*>& t) {
 
   if(size_t I = ++_num_idlers; _done && I == _workers.size()) {
     _notifier.cancel_wait(&_waiters[me]);
-    if(_find_victim(me) != _workers.size()) {
-      --_num_idlers;
-      return true;
-    }
+    //if(_find_victim(me) != _workers.size()) {
+    //  --_num_idlers;
+    //  return true;
+    //}
     _notifier.notify(true);
     return false;
   }
@@ -727,7 +711,7 @@ std::shared_future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
   
   // TODO: clear topologies that are done
   // create a topology for this run
-  auto &tpg = _topologies.emplace_back(f, std::forward<P>(pred));
+  auto &tpg = _topologies.emplace_back(std::forward<P>(pred));
 
   // Iterative execution to avoid stack overflow
   if(_workers.size() == 0) {

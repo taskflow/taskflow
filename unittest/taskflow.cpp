@@ -341,6 +341,44 @@ TEST_CASE("Run" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: MultipleRuns
+// --------------------------------------------------------
+TEST_CASE("MultipleRuns" * doctest::timeout(300)) {
+
+  for(size_t W=0; W<=8; ++W) {
+    tf::Executor executor(W);
+    std::atomic<size_t> counter(0);
+
+    tf::Taskflow tf1, tf2, tf3, tf4;
+
+    for(size_t n=0; n<16; ++n) {
+      tf1.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+    }
+    
+    for(size_t n=0; n<1024; ++n) {
+      tf2.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+    }
+    
+    for(size_t n=0; n<32; ++n) {
+      tf3.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+    }
+    
+    for(size_t n=0; n<128; ++n) {
+      tf4.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+    }
+    
+    for(int i=0; i<200; ++i) {
+      executor.run(tf1);
+      executor.run(tf2);
+      executor.run(tf3);
+      executor.run(tf4);
+    }
+    executor.wait_for_all();
+    REQUIRE(counter == 240000);
+  }
+}
+
+// --------------------------------------------------------
 // Testcase: ParallelFor
 // --------------------------------------------------------
 TEST_CASE("ParallelFor" * doctest::timeout(300)) {

@@ -15,11 +15,9 @@ class Topology {
   public:
 
     template <typename P>
-    Topology(Taskflow&, P&&);
+    Topology(P&&);
 
   private:
-
-    Taskflow& _taskflow;
 
     std::promise<void> _promise;
     std::shared_future<void> _future {_promise.get_future().share()};
@@ -37,8 +35,7 @@ class Topology {
 
 // Constructor
 template <typename P>
-inline Topology::Topology(Taskflow& f, P&& p): 
-  _taskflow {f}, 
+inline Topology::Topology(P&& p): 
   _pred {std::forward<P>(p)} {
 }
 
