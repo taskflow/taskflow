@@ -153,11 +153,11 @@ message(STATUS "Building unit tests ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR})
 
 # unittest for utility
-add_executable(utility unittest/utility.cpp)
-target_link_libraries(utility ${PROJECT_NAME} Threads::Threads)
-target_include_directories(utility PRIVATE ${PROJECT_SOURCE_DIR}/doctest)
-add_test(passive_vector ${TF_UTEST_DIR}/utility -tc=PassiveVector)
-add_test(singular_alloc ${TF_UTEST_DIR}/utility -tc=SingularAllocator)
+#add_executable(utility unittest/utility.cpp)
+#target_link_libraries(utility ${PROJECT_NAME} Threads::Threads)
+#target_include_directories(utility PRIVATE ${PROJECT_SOURCE_DIR}/doctest)
+#add_test(passive_vector ${TF_UTEST_DIR}/utility -tc=PassiveVector)
+#add_test(singular_alloc ${TF_UTEST_DIR}/utility -tc=SingularAllocator)
 
 # unittest for taskflow
 add_executable(taskflow_test_tmp unittest/taskflow.cpp)
@@ -166,6 +166,7 @@ target_include_directories(taskflow_test_tmp PRIVATE ${PROJECT_SOURCE_DIR}/docte
 set_target_properties(taskflow_test_tmp PROPERTIES OUTPUT_NAME "taskflow")
 add_test(builder          ${TF_UTEST_DIR}/taskflow -tc=Builder)
 add_test(dispatch         ${TF_UTEST_DIR}/taskflow -tc=Dispatch)
+add_test(multiple_runs    ${TF_UTEST_DIR}/taskflow -tc=MultipleRuns)
 add_test(parallel_for     ${TF_UTEST_DIR}/taskflow -tc=ParallelFor)
 add_test(parallel_for_idx ${TF_UTEST_DIR}/taskflow -tc=ParallelForOnIndex)
 add_test(reduce           ${TF_UTEST_DIR}/taskflow -tc=Reduce)
@@ -179,14 +180,14 @@ add_test(composition-3    ${TF_UTEST_DIR}/taskflow -tc=Composition-3)
 add_test(observer         ${TF_UTEST_DIR}/taskflow -tc=Observer)
 
 # unittest for WorkStealingQueue 
-add_executable(spmc_queue unittest/spmc_queue.cpp)
-target_link_libraries(spmc_queue ${PROJECT_NAME} Threads::Threads)
-target_include_directories(spmc_queue PRIVATE ${PROJECT_SOURCE_DIR}/doctest)
-add_test(WorkStealingQueue.Owner  ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.Owner)
-add_test(WorkStealingQueue.1Thief ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.1Thief)
-add_test(WorkStealingQueue.2Thieves ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.2Thieves)
-add_test(WorkStealingQueue.3Thieves ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.3Thieves)
-add_test(WorkStealingQueue.4Thieves ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.4Thieves)
+#add_executable(spmc_queue unittest/spmc_queue.cpp)
+#target_link_libraries(spmc_queue ${PROJECT_NAME} Threads::Threads)
+#target_include_directories(spmc_queue PRIVATE ${PROJECT_SOURCE_DIR}/doctest)
+#add_test(WorkStealingQueue.Owner  ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.Owner)
+#add_test(WorkStealingQueue.1Thief ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.1Thief)
+#add_test(WorkStealingQueue.2Thieves ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.2Thieves)
+#add_test(WorkStealingQueue.3Thieves ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.3Thieves)
+#add_test(WorkStealingQueue.4Thieves ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.4Thieves)
 
 endif()
 
