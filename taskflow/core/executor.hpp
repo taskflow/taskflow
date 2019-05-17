@@ -806,13 +806,6 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
     }
     
     return std::async(std::launch::deferred, [](){});
-    
-    //// TODO
-    //tpg._promise.set_value();
-    //
-    //// TODO: use future?
-    //auto fu = tpg._future;
-    //return fu;
   }
   
   // has worker(s)
@@ -832,7 +825,8 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
     // create a topology for this run
     tpg = &(f._topologies.emplace_back(f, std::forward<P>(pred), std::forward<C>(c)));
     future = tpg->_promise.get_future();
-
+    
+    // TODO: if we do this without lock protection, we got segfault...?
     if(f._topologies.size() == 1) {
       //run_now = true;
       tpg->_bind(f._graph);
