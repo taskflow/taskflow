@@ -40,7 +40,7 @@ tf::Executor::run,
 tf::Executor::run_n, and tf::Executor::run_until to run a taskflow
 for one time, multiple times, or until a given predicate evaluates to true.
 All methods accept an optional callback to invoke after the execution completes,
-and return a std::shared_future for users to access the execution status.
+and return a std::future for users to access the execution status.
 The code below shows several ways to run a taskflow.
 
 @code{.cpp}
@@ -56,7 +56,7 @@ The code below shows several ways to run a taskflow.
 10: // Build precedence between tasks
 11: A.precede(B, C); 
 12: 
-13: std::shared_future<void> fu = executor.run(taskflow);
+13: std::future<void> fu = executor.run(taskflow);
 14: fu.get();                 // block until the execution completes
 15:
 16: executor.run(taskflow, [](){ std::cout << "end of one execution\n"; }).get();
@@ -70,7 +70,7 @@ The code below shows several ways to run a taskflow.
 Debrief:
 
 @li Line 6-8   creates a taskflow of three tasks A, B, and C
-@li Line 13-14 runs the taskflow once and use std::shared_future::get to wait for completion 
+@li Line 13-14 runs the taskflow once and use std::future::get to wait for completion 
 @li Line 16    runs the taskflow once with a callback to invoke when the execution finishes
 @li Line 17-18 runs the taskflow four times and use tf::Taskflow::wait_for_all to wait for completion 
 @li Line 19    runs the taskflow four times and invokes a callback at the end of the forth execution
@@ -118,7 +118,7 @@ tf::Taskflow taskflow;
 // Declare an executor
 tf::Executor executor;
 
-std::shared_future<void> future = taskflow.run(f);  // non-blocking return
+std::future<void> future = taskflow.run(f);  // non-blocking return
 
 // alter the taskflow while running leads to undefined behavior 
 f.emplace([](){ std::cout << "Add a new task\n"; });

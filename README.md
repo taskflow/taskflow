@@ -213,7 +213,7 @@ tf::Executor executor;
 
 The executor provides a rich set of methods to run a taskflow. 
 You can run a taskflow one or multiple times, or until a stopping criteria is met.
-These methods are non-blocking and all return a [std::shared_future][std::shared_future] 
+These methods are non-blocking and all return a [std::future][std::future] 
 to let you query the execution status.
 
 ```cpp 
@@ -783,9 +783,9 @@ The table below summarizes a list of commonly used methods.
 | Method    | Argument       | Return        | Description              |
 | --------- | -------------- | ------------- | ------------------------ |
 | Executor  | N              | none          | construct an executor with N worker threads |
-| run       | taskflow       | shared_future | run the taskflow once    |
-| run_n     | taskflow, N    | shared_future | run the taskflow N times |
-| run_until | taskflow, binary predicate | shared_future | keep running the task until the predicate returns true |
+| run       | taskflow       | future | run the taskflow once    |
+| run_n     | taskflow, N    | future | run the taskflow N times |
+| run_until | taskflow, binary predicate | future | keep running the task until the predicate returns true |
 | make_observer | arguments to forward to user-derived constructor | pointer to the observer | create an observer to monitor the thread activities of the executor |
 
 ### *Executor*
@@ -968,7 +968,6 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 
 [std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
 [std::future]:           https://en.cppreference.com/w/cpp/thread/future
-[std::shared_future]:    https://en.cppreference.com/w/cpp/thread/shared_future
 
 [Firestorm]:             https://github.com/ForgeMistress/Firestorm
 [Shiva]:                 https://shiva.gitbook.io/project/shiva

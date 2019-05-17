@@ -14,34 +14,32 @@ class Topology {
   
   public:
 
-    template <typename P>
-    Topology(Taskflow&, P&&);
-
+    template <typename P, typename C>
+    Topology(Taskflow&, P&&, C&&);
+    
   private:
 
     Taskflow& _taskflow;
 
     std::promise<void> _promise;
 
-    // TDOO: use future instead of shared_future
-    std::shared_future<void> _future {_promise.get_future().share()};
-
     PassiveVector<Node*> _sources;
     std::atomic<int> _num_sinks {0};
     int _cached_num_sinks {0};
     
     std::function<bool()> _pred {nullptr};
-    std::function<void()> _callback {nullptr};
+    std::function<void()> _call {nullptr};
 
     void _bind(Graph& g);
     void _recover_num_sinks();
 };
 
 // Constructor
-template <typename P>
-inline Topology::Topology(Taskflow& tf, P&& p): 
+template <typename P, typename C>
+inline Topology::Topology(Taskflow& tf, P&& p, C&& c): 
   _taskflow(tf),
-  _pred {std::forward<P>(p)} {
+  _pred {std::forward<P>(p)},
+  _call {std::forward<C>(c)} {
 }
 
 // Procedure: _bind

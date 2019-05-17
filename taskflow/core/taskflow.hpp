@@ -86,18 +86,6 @@ inline Taskflow::Taskflow() : FlowBuilder{_graph} {
 
 // Destructor
 inline Taskflow::~Taskflow() {
-  //std::shared_future<void> fu;
-  //{
-  //  std::scoped_lock lock(_mtx);
-  //  if(!_topologies.empty()) {
-  //    fu = _topologies.back()._future;
-  //  }
-  //  else {
-  //    return ;
-  //  }
-  //}
-  //fu.get();
-
   assert(_topologies.empty());
 }
 
