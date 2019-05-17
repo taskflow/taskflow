@@ -2,6 +2,7 @@
 
 #include <stack>
 #include "flow_builder.hpp"
+#include "topology.hpp"
 
 namespace tf {
 
@@ -74,7 +75,9 @@ class Taskflow : public FlowBuilder {
     Graph _graph;
 
     std::mutex _mtx;
-    std::list<Topology*> _topologies;
+
+    std::list<Topology> _topologies;
+    //std::list<Topology*> _topologies;
 };
 
 // Constructor
@@ -83,6 +86,18 @@ inline Taskflow::Taskflow() : FlowBuilder{_graph} {
 
 // Destructor
 inline Taskflow::~Taskflow() {
+  //std::shared_future<void> fu;
+  //{
+  //  std::scoped_lock lock(_mtx);
+  //  if(!_topologies.empty()) {
+  //    fu = _topologies.back()._future;
+  //  }
+  //  else {
+  //    return ;
+  //  }
+  //}
+  //fu.get();
+
   assert(_topologies.empty());
 }
 

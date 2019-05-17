@@ -46,7 +46,9 @@
 #include "spmc_queue.hpp"
 #include "notifier.hpp"
 #include "observer.hpp"
-#include "topology.hpp"
+
+//#include "topology.hpp"
+#include "taskflow.hpp"
 
 namespace tf {
 
@@ -178,8 +180,12 @@ class Executor {
   Observer* make_observer(Args&&... args);
 
   private:
-    
-  std::list<Topology> _topologies;
+   
+  void _last_work(Topology&); 
+  std::condition_variable _tpg_cv;
+  std::mutex _tpg_mtx;
+  unsigned _num_tpgs {0};
+  //std::list<Topology> _topologies;
   
   // scheduler field
   std::mutex _mutex;
@@ -662,9 +668,13 @@ inline void Executor::_invoke(Node* node) {
   if(num_successors == 0) {
     if(--(node->_topology->_num_sinks) == 0) {
       // This is the last executing node 
-      if(node->_topology->_work != nullptr) {
-        std::invoke(node->_topology->_work);
+      // TODO
+      //if(node->_topology->_callback != nullptr) {
+      if(_workers.size() > 0) {
+        _last_work(*node->_topology);
       }
+        //std::invoke(node->_topology->_work);
+      //}
     }
   }
 }
@@ -698,6 +708,67 @@ std::shared_future<void> Executor::run_until(Taskflow& f, P&& pred) {
   return run_until(f, std::forward<P>(pred), [](){});
 }
 
+
+// Function: _last_work
+inline void Executor::_last_work(Topology& tpg) {
+  auto &f = tpg._taskflow;
+
+  // case 1: we still need to run the topology again
+  if(!std::invoke(f._topologies.front()._pred)) {
+    f._topologies.front()._recover_num_sinks();
+    _schedule(f._topologies.front()._sources); 
+  }
+  // case 2: the final run of this topology
+  else {
+    
+    // TODO: tpg._work might be nullptr? check if invoke will do the sanity check
+    //if(tpg._callback != nullptr) {
+      std::invoke(tpg._callback);
+    //}
+
+    f._mtx.lock();
+
+    // If there is another run (interleave between lock)
+    if(f._topologies.size() > 1) {
+
+      // Set the promise
+      f._topologies.front()._promise.set_value();
+      f._topologies.pop_front();
+      f._topologies.front()._bind(f._graph);
+      f._mtx.unlock();
+
+      {
+        std::scoped_lock lock(_tpg_mtx);
+        _num_tpgs --;
+      }
+
+      _schedule(f._topologies.front()._sources);
+    }
+    else {
+      assert(f._topologies.size() == 1);
+      // Need to back up the promise first here becuz taskflow might be 
+      // destroy before taskflow leaves
+      //auto &p = f._topologies.front()._promise; 
+      std::promise<void> p {std::move(f._topologies.front()._promise)};
+
+      f._topologies.pop_front();
+
+      f._mtx.unlock();
+
+      // We set the promise in the end in case taskflow leaves before taskflow
+      p.set_value();
+
+      {
+        std::scoped_lock lock(_tpg_mtx);
+        _num_tpgs --;
+      }
+      _tpg_cv.notify_one();
+
+    }
+  }
+}
+
+
 // Function: run_until
 template <typename P, typename C>
 std::shared_future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
@@ -709,12 +780,9 @@ std::shared_future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
     return std::async(std::launch::deferred, [](){}).share();
   }
   
-  // TODO: clear topologies that are done
-  // create a topology for this run
-  auto &tpg = _topologies.emplace_back(std::forward<P>(pred));
-
   // Iterative execution to avoid stack overflow
   if(_workers.size() == 0) {
+    auto &tpg = f._topologies.emplace_back(f, std::forward<P>(pred));
 
     // Clear last execution data & Build precedence between nodes and target
     tpg._bind(f._graph);
@@ -724,16 +792,31 @@ std::shared_future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
       tpg._recover_num_sinks();
     } while(!std::invoke(tpg._pred));
 
-    std::invoke(c);
+    tpg._callback = std::forward<C>(c);
+    if(tpg._callback != nullptr) {
+      std::invoke(tpg._callback);
+    }
     tpg._promise.set_value();
 
-    return tpg._future;
+    auto fu = tpg._future;
+    f._topologies.clear();
+    return fu;
+
+    //return tpg._future;
+
+   }
+
+  {
+    std::lock_guard lock(_tpg_mtx);
+    _num_tpgs ++;
   }
 
   // Multi-threaded execution.
   std::scoped_lock lock(f._mtx);
 
-  f._topologies.push_back(&tpg);
+  // TODO: clear topologies that are done
+  // create a topology for this run
+  auto &tpg = f._topologies.emplace_back(f, std::forward<P>(pred));
 
   bool run_now = (f._topologies.size() == 1);
 
@@ -741,12 +824,15 @@ std::shared_future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
     tpg._bind(f._graph);
   }
 
-  tpg._work = [&f, c=std::forward<C>(c), this] () mutable {
+  tpg._callback = std::forward<C>(c);
+
+  /*
+  tpg._callback = [&f, c=std::forward<C>(c), this] () mutable {
       
     // case 1: we still need to run the topology again
-    if(!std::invoke(f._topologies.front()->_pred)) {
-      f._topologies.front()->_recover_num_sinks();
-      _schedule(f._topologies.front()->_sources); 
+    if(!std::invoke(f._topologies.front()._pred)) {
+      f._topologies.front()._recover_num_sinks();
+      _schedule(f._topologies.front()._sources); 
     }
     // case 2: the final run of this topology
     else {
@@ -759,25 +845,45 @@ std::shared_future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
       if(f._topologies.size() > 1) {
 
         // Set the promise
-        f._topologies.front()->_promise.set_value();
+        f._topologies.front()._promise.set_value();
         f._topologies.pop_front();
-        f._topologies.front()->_bind(f._graph);
+        f._topologies.front()._bind(f._graph);
         f._mtx.unlock();
-        _schedule(f._topologies.front()->_sources);
+
+        {
+          std::scoped_lock lock(_tpg_mtx);
+          _num_tpgs --;
+        }
+
+        _schedule(f._topologies.front()._sources);
       }
       else {
         assert(f._topologies.size() == 1);
         // Need to back up the promise first here becuz taskflow might be 
         // destroy before taskflow leaves
-        auto &p = f._topologies.front()->_promise; 
+        //auto &p = f._topologies.front()._promise; 
+        std::promise<void> p {std::move(f._topologies.front()._promise)};
+
         f._topologies.pop_front();
+
         f._mtx.unlock();
-       
+
+        //f._topologies.pop_front();
+
         // We set the promise in the end in case taskflow leaves before taskflow
         p.set_value();
+
+        {
+          std::scoped_lock lock(_tpg_mtx);
+          _num_tpgs --;
+        }
+        _tpg_cv.notify_one();
+
+       
       }
     }
   };
+  */
 
   if(run_now) {
     _schedule(tpg._sources);
@@ -788,10 +894,13 @@ std::shared_future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
 
 // Procedure: wait_for_all
 inline void Executor::wait_for_all() {
-  for(auto& t: _topologies) {
-    t._future.get();
-  }
-  _topologies.clear();
+  std::unique_lock lock(_tpg_mtx);
+  _tpg_cv.wait(lock, [&](){ return _num_tpgs == 0; });
+
+  //for(auto& t: _topologies) {
+  //  t._future.get();
+  //}
+  //_topologies.clear();
 }
 
 }  // end of namespace tf2 ----------------------------------------------------

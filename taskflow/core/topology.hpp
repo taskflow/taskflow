@@ -1,6 +1,6 @@
 #pragma once
 
-#include "taskflow.hpp"
+//#include "taskflow.hpp"
 
 namespace tf {
 
@@ -15,11 +15,15 @@ class Topology {
   public:
 
     template <typename P>
-    Topology(P&&);
+    Topology(Taskflow&, P&&);
 
   private:
 
+    Taskflow& _taskflow;
+
     std::promise<void> _promise;
+
+    // TDOO: use future instead of shared_future
     std::shared_future<void> _future {_promise.get_future().share()};
 
     PassiveVector<Node*> _sources;
@@ -27,7 +31,7 @@ class Topology {
     int _cached_num_sinks {0};
     
     std::function<bool()> _pred {nullptr};
-    std::function<void()> _work {nullptr};
+    std::function<void()> _callback {nullptr};
 
     void _bind(Graph& g);
     void _recover_num_sinks();
@@ -35,7 +39,8 @@ class Topology {
 
 // Constructor
 template <typename P>
-inline Topology::Topology(P&& p): 
+inline Topology::Topology(Taskflow& tf, P&& p): 
+  _taskflow(tf),
   _pred {std::forward<P>(p)} {
 }
 
