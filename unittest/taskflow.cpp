@@ -443,8 +443,6 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
   using namespace std::chrono_literals;
 
   auto exception_test = [] (unsigned num_workers) {
-
-    tf::Executor executor(num_workers);
     tf::Taskflow tf;
 
     // invalid index

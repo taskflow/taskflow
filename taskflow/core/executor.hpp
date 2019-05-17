@@ -723,6 +723,11 @@ inline void Executor::_sync_topology(Topology& tpg) {
 
   auto &f = tpg._taskflow;
 
+  // TODO: check whether we can use tpg instead of t._topologies.front()
+  //       below and elsewhere.
+
+  assert(&tpg == &(f._topologies.front()));
+
   // case 1: we still need to run the topology again
   if(!std::invoke(f._topologies.front()._pred)) {
     f._topologies.front()._recover_num_sinks();
