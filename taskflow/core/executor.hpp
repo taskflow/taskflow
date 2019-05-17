@@ -1,5 +1,9 @@
 // 2019/05/17 - modified by Chun-Xun Lin
 //  - moved topology to taskflow
+//  - TODO: can we use aggressive find_victim method
+//          to replace the spin?
+//  - TODO: need to check why one worker runs slower
+//          than sequential version
 // 
 // 2019/05/14 - modified by Tsung-Wei Huang
 //  - isolated the executor from the taskflow
@@ -345,7 +349,7 @@ inline void Executor::_explore_task(unsigned thief, std::optional<Node*>& t) {
   size_t y = 0;
 
   ++_num_thieves;
-
+  
   // explore
   while(!_done) {
   
