@@ -819,7 +819,7 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
   }
 
   // Multi-threaded execution.
-  bool run_now {false};
+  //bool run_now {false};
   Topology* tpg;
   std::future<void> future;
   
@@ -832,18 +832,19 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
     
     // TODO: if we do this without lock protection, we got segfault...?
     if(f._topologies.size() == 1) {
-      run_now = true;
+      //run_now = true;
       tpg->_bind(f._graph);
+      _schedule(tpg->_sources);
     }
   }
   
   // Notice here calling schedule may cause the topology to be removed sonner 
   // before the function leaves.
-  if(run_now) {
-    // TODO: seg fault when binding outside the protection of lock?
+  //if(run_now) {
+    // TODO: seg fault 
     // tplg->_bind(f._graph)
-    _schedule(tpg->_sources);
-  }
+    // _schedule(tpg->_sources);
+  //}
 
   return future;
 }
