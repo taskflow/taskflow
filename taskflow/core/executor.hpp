@@ -725,13 +725,12 @@ inline void Executor::_sync_topology(Topology& tpg) {
 
   // TODO: check whether we can use tpg instead of t._topologies.front()
   //       below and elsewhere.
-
-  assert(&tpg == &(f._topologies.front()));
+  //assert(&tpg == &(f._topologies.front()));
 
   // case 1: we still need to run the topology again
-  if(!std::invoke(f._topologies.front()._pred)) {
-    f._topologies.front()._recover_num_sinks();
-    _schedule(f._topologies.front()._sources); 
+  if(!std::invoke(tpg._pred)) {
+    tpg._recover_num_sinks();
+    _schedule(tpg._sources); 
   }
   // case 2: the final run of this topology
   else {
@@ -746,7 +745,7 @@ inline void Executor::_sync_topology(Topology& tpg) {
     if(f._topologies.size() > 1) {
 
       // Set the promise
-      f._topologies.front()._promise.set_value();
+      tpg._promise.set_value();
       f._topologies.pop_front();
       f._topologies.front()._bind(f._graph);
       f._mtx.unlock();
@@ -762,7 +761,7 @@ inline void Executor::_sync_topology(Topology& tpg) {
       assert(f._topologies.size() == 1);
       // Need to back up the promise first here becuz taskflow might be 
       // destroy before taskflow leaves
-      auto p {std::move(f._topologies.front()._promise)};
+      auto p {std::move(tpg._promise)};
 
       f._topologies.pop_front();
 
@@ -820,7 +819,7 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
   }
 
   // Multi-threaded execution.
-  //bool run_now {false};
+  bool run_now {false};
   Topology* tpg;
   std::future<void> future;
   
@@ -833,18 +832,18 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
     
     // TODO: if we do this without lock protection, we got segfault...?
     if(f._topologies.size() == 1) {
-      //run_now = true;
+      run_now = true;
       tpg->_bind(f._graph);
-      _schedule(tpg->_sources);     
     }
   }
   
   // Notice here calling schedule may cause the topology to be removed sonner 
   // before the function leaves.
-  //if(run_now) {
-  //  tpg->_bind(f._graph);
-  //  _schedule(tpg->_sources);
-  //}
+  if(run_now) {
+    // TODO: seg fault when binding outside the protection of lock?
+    // tplg->_bind(f._graph)
+    _schedule(tpg->_sources);
+  }
 
   return future;
 }
