@@ -180,6 +180,7 @@ void run_omp(MNIST& D, unsigned num_threads) {
          } // End of one iteration 
        } // End of one epoch 
 
+    #pragma omp taskwait
     } // End of omp single 
   } // End of omp parallel
 
