@@ -66,6 +66,7 @@ void wavefront_omp(unsigned num_threads) {
           }
         }
       }
+      #pragma omp taskwait
     }
   }
   
