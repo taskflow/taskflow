@@ -509,7 +509,11 @@ inline void Executor::_schedule(Node* node) {
 // Each task node has two types of tasks - regular and subflow.
 inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
   
-  if(nodes.empty()) {
+  // We need to cacth the node count to avoid accessing the nodes
+  // vector while the parent topology is removed!
+  const auto num_nodes = nodes.size();
+  
+  if(num_nodes == 0) {
     return;
   }
 
@@ -530,7 +534,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
   auto& pt = _per_thread();
 
   if(pt.pool == this) {
-    for(size_t i=0; i<nodes.size(); ++i) {
+    for(size_t i=0; i<num_nodes; ++i) {
       _workers[pt.worker_id].queue.push(nodes[i]);
     }
     return;
@@ -538,12 +542,12 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
   
   {
     //std::scoped_lock lock(_mutex);
-    for(size_t k=0; k<nodes.size(); ++k) {
+    for(size_t k=0; k<num_nodes; ++k) {
       _queue.push(nodes[k]);
     }
   }
   
-  size_t N = std::max(size_t{1}, std::min(_num_idlers.load(), nodes.size()));
+  size_t N = std::max(size_t{1}, std::min(_num_idlers.load(), num_nodes));
 
   if(N >= _workers.size()) {
     _notifier.notify(true);
@@ -778,7 +782,6 @@ inline void Executor::_sync_topology(Topology& tpg) {
   }
 }
 
-
 // Function: run_until
 template <typename P, typename C>
 std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
@@ -819,7 +822,7 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
   }
 
   // Multi-threaded execution.
-  //bool run_now {false};
+  bool run_now {false};
   Topology* tpg;
   std::future<void> future;
   
@@ -832,19 +835,19 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
     
     // TODO: if we do this without lock protection, we got segfault...?
     if(f._topologies.size() == 1) {
-      //run_now = true;
-      tpg->_bind(f._graph);
-      _schedule(tpg->_sources);
+      run_now = true;
+      //tpg->_bind(f._graph);
+      //_schedule(tpg->_sources);
     }
   }
   
   // Notice here calling schedule may cause the topology to be removed sonner 
   // before the function leaves.
-  //if(run_now) {
+  if(run_now) {
     // TODO: seg fault 
-    // tplg->_bind(f._graph)
-    // _schedule(tpg->_sources);
-  //}
+    tpg->_bind(f._graph);
+    _schedule(tpg->_sources);
+  }
 
   return future;
 }
