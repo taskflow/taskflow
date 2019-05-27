@@ -751,7 +751,6 @@ inline void Executor::_sync_topology(Topology& tpg) {
       // Set the promise
       tpg._promise.set_value();
       f._topologies.pop_front();
-      f._topologies.front()._bind(f._graph);
       f._mtx.unlock();
 
       {
@@ -759,6 +758,7 @@ inline void Executor::_sync_topology(Topology& tpg) {
         _num_topologies--;
       }
 
+      f._topologies.front()._bind(f._graph);
       _schedule(f._topologies.front()._sources);
     }
     else {
@@ -844,7 +844,6 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
   // Notice here calling schedule may cause the topology to be removed sonner 
   // before the function leaves.
   if(run_now) {
-    // TODO: seg fault 
     tpg->_bind(f._graph);
     _schedule(tpg->_sources);
   }
