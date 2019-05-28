@@ -701,12 +701,10 @@ void WorkStealingExecutor<Closure>::_exploit_task(
       if(_observer && t->node) {
 
         _observer->on_entry(i, t->node->name());
-      }
-
-      (*t)();
-
-      if(_observer && t->node) {
+        (*t)();
         _observer->on_exit(i);
+      } else {
+        (*t)();
       }
 
       if(worker.cache) {
