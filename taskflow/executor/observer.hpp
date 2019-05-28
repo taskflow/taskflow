@@ -144,16 +144,16 @@ inline void ExecutorObserver::dump(std::ostream& os) const {
   bool needComma = false;
   for(size_t w=0; w<_begs.size(); w++) {
 
-    assert(_begs[w].size() <= _ends[w].size());
-    assert(_names[w].size() <= _ends[w].size());
+    assert(_ends[w].size() <= _begs[w].size());
+    assert(_ends[w].size() <= _names[w].size());
 
 
-    if(needComma && _begs[w].size() > 0) {
+    if(needComma && _ends[w].size() > 0) {
       os << ',';
       needComma = false;
     }
-
-    for(size_t i=0; i<_begs[w].size(); i++) {
+    // sometimes _bigs > _ends, though idk why
+    for(size_t i=0; i<_ends[w].size(); i++) {
       os << '{'
          << "\"cat\":\"ExecutorObserver\","
          << "\"name\":\"" << _names[w][i] << "\","

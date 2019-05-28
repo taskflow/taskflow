@@ -731,13 +731,12 @@ inline void WorkStealingExecutor<std::function<void()>>::_exploit_task(
       if(_observer) {
 
         _observer->on_entry(i, std::to_string(i));
-      }
-
-      (*t)();
-
-      if(_observer) {
+          (*t)();
         _observer->on_exit(i);
+      } else {
+          (*t)();
       }
+
 
       if(worker.cache) {
         t = std::move(worker.cache);
