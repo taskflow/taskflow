@@ -144,8 +144,8 @@ inline void ExecutorObserver::dump(std::ostream& os) const {
   bool needComma = false;
   for(size_t w=0; w<_begs.size(); w++) {
 
-    assert(_begs[w].size() == _ends[w].size());
-    assert(_names[w].size() == _ends[w].size());
+    assert(_begs[w].size() <= _ends[w].size());
+    assert(_names[w].size() <= _ends[w].size());
 
 
     if(needComma && _begs[w].size() > 0) {
