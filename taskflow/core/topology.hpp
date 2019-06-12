@@ -27,8 +27,8 @@ class Topology {
     std::atomic<int> _num_sinks {0};
     int _cached_num_sinks {0};
     
-    std::function<bool()> _pred {nullptr};
-    std::function<void()> _call {nullptr};
+    std::function<bool()> _pred;
+    std::function<void()> _call;
 
     void _bind(Graph& g);
     void _recover_num_sinks();

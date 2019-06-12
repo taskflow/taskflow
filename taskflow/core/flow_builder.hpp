@@ -366,7 +366,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
   using T = std::decay_t<I>;
 
   if((s == 0) || (beg < end && s <= 0) || (beg > end && s >=0) ) {
-    TF_THROW(Error::FLOW_BUILDER, 
+    TF_THROW(Error::TASKFLOW, 
       "invalid range [", beg, ", ", end, ") with step size ", s
     );
   }

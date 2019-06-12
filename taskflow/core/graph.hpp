@@ -70,14 +70,14 @@ class Node {
     tf::PassiveVector<Node*> _successors;
     tf::PassiveVector<Node*> _dependents;
 
-    std::atomic<int> _num_dependents;
-
     std::optional<Graph> _subgraph;
 
     Topology* _topology;
     Taskflow* _module;
 
     int _status;
+    
+    std::atomic<int> _num_dependents;
 };
 
 // Constructor

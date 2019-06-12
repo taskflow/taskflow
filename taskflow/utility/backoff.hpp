@@ -1,6 +1,8 @@
 // 2019/04/15 - created by Tsung-Wei Huang
 //   - modified from boost/fiber/cpu_relax.hpp
 
+#pragma once
+
 #include <chrono>
 #include <thread>
 

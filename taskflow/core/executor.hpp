@@ -57,8 +57,6 @@
 #include "spmc_queue.hpp"
 #include "notifier.hpp"
 #include "observer.hpp"
-
-//#include "topology.hpp"
 #include "taskflow.hpp"
 
 namespace tf {
@@ -74,7 +72,7 @@ an efficient work-stealing scheduling algorithm to run a task graph.
 class Executor {
   
   struct Worker {
-    std::minstd_rand rdgen { std::random_device{}() };
+    std::mt19937 rdgen { std::random_device{}() };
     WorkStealingQueue<Node*> queue;
   };
     
@@ -85,155 +83,155 @@ class Executor {
 
   public:
     
-  /**
-  @brief constructs the executor with N worker threads
-  */
-  explicit Executor(unsigned n = std::thread::hardware_concurrency());
-  
-  /**
-  @brief destructs the executor 
-  */
-  ~Executor();
+    /**
+    @brief constructs the executor with N worker threads
+    */
+    explicit Executor(unsigned n = std::thread::hardware_concurrency());
+    
+    /**
+    @brief destructs the executor 
+    */
+    ~Executor();
 
-  /**
-  @brief runs the taskflow once
-  
-  @param taskflow a tf::Taskflow object
+    /**
+    @brief runs the taskflow once
+    
+    @param taskflow a tf::Taskflow object
 
-  @return a std::future to access the execution status of the taskflow
-  */
-  std::future<void> run(Taskflow& taskflow);
+    @return a std::future to access the execution status of the taskflow
+    */
+    std::future<void> run(Taskflow& taskflow);
 
-  /**
-  @brief runs the taskflow once and invoke a callback upon completion
+    /**
+    @brief runs the taskflow once and invoke a callback upon completion
 
-  @param taskflow a tf::Taskflow object 
-  @param callable a callable object to be invoked after this run
+    @param taskflow a tf::Taskflow object 
+    @param callable a callable object to be invoked after this run
 
-  @return a std::future to access the execution status of the taskflow
-  */
-  template<typename C>
-  std::future<void> run(Taskflow& taskflow, C&& callable);
+    @return a std::future to access the execution status of the taskflow
+    */
+    template<typename C>
+    std::future<void> run(Taskflow& taskflow, C&& callable);
 
-  /**
-  @brief runs the taskflow for N times
-  
-  @param taskflow a tf::Taskflow object
-  @param N number of runs
+    /**
+    @brief runs the taskflow for N times
+    
+    @param taskflow a tf::Taskflow object
+    @param N number of runs
 
-  @return a std::future to access the execution status of the taskflow
-  */
-  std::future<void> run_n(Taskflow& taskflow, size_t N);
+    @return a std::future to access the execution status of the taskflow
+    */
+    std::future<void> run_n(Taskflow& taskflow, size_t N);
 
-  /**
-  @brief runs the taskflow for N times and then invokes a callback
+    /**
+    @brief runs the taskflow for N times and then invokes a callback
 
-  @param taskflow a tf::Taskflow 
-  @param N number of runs
-  @param callable a callable object to be invoked after this run
+    @param taskflow a tf::Taskflow 
+    @param N number of runs
+    @param callable a callable object to be invoked after this run
 
-  @return a std::future to access the execution status of the taskflow
-  */
-  template<typename C>
-  std::future<void> run_n(Taskflow& taskflow, size_t N, C&& callable);
+    @return a std::future to access the execution status of the taskflow
+    */
+    template<typename C>
+    std::future<void> run_n(Taskflow& taskflow, size_t N, C&& callable);
 
-  /**
-  @brief runs the taskflow multiple times until the predicate becomes true and 
-         then invokes a callback
+    /**
+    @brief runs the taskflow multiple times until the predicate becomes true and 
+           then invokes a callback
 
-  @param taskflow a tf::Taskflow 
-  @param pred a boolean predicate to return true for stop
+    @param taskflow a tf::Taskflow 
+    @param pred a boolean predicate to return true for stop
 
-  @return a std::future to access the execution status of the taskflow
-  */
-  template<typename P>
-  std::future<void> run_until(Taskflow& taskflow, P&& pred);
+    @return a std::future to access the execution status of the taskflow
+    */
+    template<typename P>
+    std::future<void> run_until(Taskflow& taskflow, P&& pred);
 
-  /**
-  @brief runs the taskflow multiple times until the predicate becomes true and 
-         then invokes the callback
+    /**
+    @brief runs the taskflow multiple times until the predicate becomes true and 
+           then invokes the callback
 
-  @param taskflow a tf::Taskflow 
-  @param pred a boolean predicate to return true for stop
-  @param callable a callable object to be invoked after this run
+    @param taskflow a tf::Taskflow 
+    @param pred a boolean predicate to return true for stop
+    @param callable a callable object to be invoked after this run
 
-  @return a std::future to access the execution status of the taskflow
-  */
-  template<typename P, typename C>
-  std::future<void> run_until(Taskflow& taskflow, P&& pred, C&& callable);
+    @return a std::future to access the execution status of the taskflow
+    */
+    template<typename P, typename C>
+    std::future<void> run_until(Taskflow& taskflow, P&& pred, C&& callable);
 
-  /**
-  @brief wait for all pending graphs to complete
-  */
-  void wait_for_all();
+    /**
+    @brief wait for all pending graphs to complete
+    */
+    void wait_for_all();
 
-  /**
-  @brief queries the number of worker threads (can be zero)
+    /**
+    @brief queries the number of worker threads (can be zero)
 
-  @return the number of worker threads
-  */
-  size_t num_workers() const;
-  
-  /**
-  @brief constructs an observer to inspect the activities of worker threads
+    @return the number of worker threads
+    */
+    size_t num_workers() const;
+    
+    /**
+    @brief constructs an observer to inspect the activities of worker threads
 
-  Each executor manages at most one observer at a time through std::unique_ptr.
-  Createing multiple observers will only keep the lastest one.
-  
-  @tparam Observer observer type derived from tf::ExecutorObserverInterface
-  @tparam ArgsT... argument parameter pack
+    Each executor manages at most one observer at a time through std::unique_ptr.
+    Createing multiple observers will only keep the lastest one.
+    
+    @tparam Observer observer type derived from tf::ExecutorObserverInterface
+    @tparam ArgsT... argument parameter pack
 
-  @param args arguments to forward to the constructor of the observer
-  
-  @return a raw pointer to the observer associated with this executor
-  */
-  template<typename Observer, typename... Args>
-  Observer* make_observer(Args&&... args);
-  
-  /**
-  @brief removes the associated observer
-  */
-  void remove_observer();
+    @param args arguments to forward to the constructor of the observer
+    
+    @return a raw pointer to the observer associated with this executor
+    */
+    template<typename Observer, typename... Args>
+    Observer* make_observer(Args&&... args);
+    
+    /**
+    @brief removes the associated observer
+    */
+    void remove_observer();
 
   private:
    
-  std::condition_variable _topology_cv;
-  std::mutex _topology_mutex;
+    std::condition_variable _topology_cv;
+    std::mutex _topology_mutex;
 
-  unsigned _num_topologies {0};
-  
-  // scheduler field
-  std::vector<Worker> _workers;
-  std::vector<Notifier::Waiter> _waiters;
-  std::vector<std::thread> _threads;
+    unsigned _num_topologies {0};
+    
+    // scheduler field
+    std::vector<Worker> _workers;
+    std::vector<Notifier::Waiter> _waiters;
+    std::vector<std::thread> _threads;
 
-  WorkStealingQueue<Node*> _queue;
-  
-  std::atomic<size_t> _num_actives {0};
-  std::atomic<size_t> _num_thieves {0};
-  //std::atomic<size_t> _num_idlers  {0};
-  std::atomic<bool>   _done        {0};
+    WorkStealingQueue<Node*> _queue;
+    
+    std::atomic<size_t> _num_actives {0};
+    std::atomic<size_t> _num_thieves {0};
+    //std::atomic<size_t> _num_idlers  {0};
+    std::atomic<bool>   _done        {0};
 
-  Notifier _notifier;
-  
-  std::unique_ptr<ExecutorObserverInterface> _observer;
-  
-  unsigned _find_victim(unsigned);
+    Notifier _notifier;
+    
+    std::unique_ptr<ExecutorObserverInterface> _observer;
+    
+    unsigned _find_victim(unsigned);
 
-  PerThread& _per_thread() const;
+    PerThread& _per_thread() const;
 
-  bool _wait_for_tasks(unsigned, std::optional<Node*>&);
-  
-  void _spawn(unsigned);
-  void _exploit_task(unsigned, std::optional<Node*>&);
-  void _explore_task(unsigned, std::optional<Node*>&);
-  void _schedule(Node*);
-  void _schedule(PassiveVector<Node*>&);
-  void _invoke(unsigned, Node*);
-  void _invoke_static_work(unsigned, Node*);
-  void _invoke_dynamic_work(unsigned, Node*, Subflow&);
-  void _init_module_node(Node*);
-  void _tear_down_topology(Topology&); 
+    bool _wait_for_tasks(unsigned, std::optional<Node*>&);
+    
+    void _spawn(unsigned);
+    void _exploit_task(unsigned, std::optional<Node*>&);
+    void _explore_task(unsigned, std::optional<Node*>&);
+    void _schedule(Node*);
+    void _schedule(PassiveVector<Node*>&);
+    void _invoke(unsigned, Node*);
+    void _invoke_static_work(unsigned, Node*);
+    void _invoke_dynamic_work(unsigned, Node*, Subflow&);
+    void _init_module_node(Node*);
+    void _tear_down_topology(Topology&); 
 };
 
 // Constructor
@@ -417,19 +415,8 @@ inline void Executor::_exploit_task(unsigned i, std::optional<Node*>& t) {
     }
 
     do {
-
-      //if(_observer) {
-      //  _observer->on_entry(i, TaskView(*t));
-      //  _invoke(*t);
-      //  _observer->on_exit(i, TaskView(*t));
-      //}
-      //else {
-      //  _invoke(*t);
-      //}
       _invoke(i, *t);
-
       t = worker.queue.pop();
-
     } while(t);
 
     --_num_actives;
@@ -847,7 +834,7 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
   
   // has worker(s)
   {
-    std::lock_guard lock(_topology_mutex);
+    std::scoped_lock lock(_topology_mutex);
     _num_topologies++;
   }
 
@@ -884,12 +871,8 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
 inline void Executor::wait_for_all() {
   std::unique_lock lock(_topology_mutex);
   _topology_cv.wait(lock, [&](){ return _num_topologies == 0; });
-  //for(auto& t: _topologies) {
-  //  t._future.get();
-  //}
-  //_topologies.clear();
 }
 
-}  // end of namespace tf2 ----------------------------------------------------
+}  // end of namespace tf -----------------------------------------------------
 
 

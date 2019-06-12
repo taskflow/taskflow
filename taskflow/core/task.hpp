@@ -248,7 +248,7 @@ template <typename C>
 inline Task& Task::work(C&& c) {
 
   if(_node->_module) {
-    TF_THROW(Error::FRAMEWORK, "can't assign work to a module task");
+    TF_THROW(Error::TASKFLOW, "can't assign work to a module task");
   }
 
   _node->_work = std::forward<C>(c);
@@ -351,7 +351,7 @@ class TaskView {
     /**
     @brief resets to an empty view
     */
-    TaskView& reset();
+    void reset();
 
     /**
     @brief queries if the task view is empty
@@ -416,9 +416,8 @@ inline size_t TaskView::num_successors() const {
 }
 
 // Function: reset
-inline TaskView& TaskView::reset() {
+inline void TaskView::reset() {
   _node = nullptr;
-  return *this;
 }
 
 // Function: empty

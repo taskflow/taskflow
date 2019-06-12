@@ -20,9 +20,8 @@ struct Error : public std::error_category {
   */
   enum Code : int {
     SUCCESS = 0,
-    FLOW_BUILDER,
-    EXECUTOR,
-    FRAMEWORK
+    TASKFLOW,
+    EXECUTOR
   };
   
   /**
@@ -59,16 +58,12 @@ inline std::string Error::message(int code) const {
       return "success";
     break;
 
-    case FLOW_BUILDER:
-      return "flow builder error";
+    case TASKFLOW:
+      return "taskflow error";
     break;
 
     case EXECUTOR:
       return "executor error";
-    break;
-
-    case FRAMEWORK:
-      return "framework error";
     break;
 
     default:

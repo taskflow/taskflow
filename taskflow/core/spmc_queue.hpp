@@ -95,7 +95,7 @@ class WorkStealingQueue {
 
     @param capacity the capacity of the queue (must be power of 2)
     */
-    WorkStealingQueue(int64_t capacity = 4096);
+    WorkStealingQueue(int64_t capacity = 1024);
 
     /**
     @brief destructs the queue
@@ -135,9 +135,19 @@ class WorkStealingQueue {
     @brief pops out an item from the queue
 
     Only the owner thread can pop out an item from the queue. 
-    The return can be a @std_nullopt if this operation failed (not necessary empty).
+    The return can be a @std_nullopt if this operation failed (empty queue).
     */
     std::optional<T> pop();
+    
+    /**
+    @brief pops out an item from the queue without synchronization with thieves
+
+    Only the onwer thread can pop out an item from the queue, 
+    given no other threads trying to steal an item at the same time
+    
+    The return can be a @std_nullopt if this operation failed (empty queue).
+    */
+    std::optional<T> unsync_pop();
 
     /**
     @brief steals an item from the queue
@@ -170,7 +180,6 @@ WorkStealingQueue<T>::~WorkStealingQueue() {
 // Function: empty
 template <typename T>
 bool WorkStealingQueue<T>::empty() const noexcept {
-  std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
   return b <= t;
@@ -227,6 +236,26 @@ std::optional<T> WorkStealingQueue<T>::pop() {
       }
       _bottom.store(b + 1, std::memory_order_relaxed);
     }
+  }
+  else {
+    _bottom.store(b + 1, std::memory_order_relaxed);
+  }
+
+  return item;
+}
+
+// Function: unsync_pop
+template <typename T>
+std::optional<T> WorkStealingQueue<T>::unsync_pop() {
+
+  int64_t t = _top.load(std::memory_order_relaxed);
+  int64_t b = _bottom.fetch_sub(1, std::memory_order_relaxed) - 1;
+  Array* a = _array.load(std::memory_order_relaxed);
+
+  std::optional<T> item;
+
+  if(t <= b) {
+    item = a->pop(b);
   }
   else {
     _bottom.store(b + 1, std::memory_order_relaxed);
