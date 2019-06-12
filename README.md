@@ -874,6 +874,7 @@ The folder `example/` contains several examples and is a great place to learn to
 | [subflow.cpp](./example/subflow.cpp)| demonstrates how to create a subflow graph that spawns three dynamic tasks |
 | [run_variants.cpp](./example/run_variants.cpp)| shows multiple ways to run a taskflow graph |
 | [composition.cpp](./example/composition.cpp)| demonstrates the decomposable interface of taskflow |
+| [observer.cpp](./example/observer.cpp)| demonstrates how to monitor the thread activities in scheduling and running tasks |
 
 # Get Involved
 

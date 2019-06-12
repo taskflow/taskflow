@@ -108,7 +108,7 @@ Inheritance diagram for tf::ExecutorObserverInterface:</div>
 <div class="dyncontent">
 <div class="center"><img src="classtf_1_1ExecutorObserverInterface__inherit__graph.png" border="0" usemap="#tf_1_1ExecutorObserverInterface_inherit__map" alt="Inheritance graph"/></div>
 <map name="tf_1_1ExecutorObserverInterface_inherit__map" id="tf_1_1ExecutorObserverInterface_inherit__map">
-<area shape="rect" id="node2" href="classtf_1_1ExecutorObserver.html" title="A default executor observer to dump the execution timelines. " alt="" coords="31,80,174,107"/>
+<area shape="rect" id="node2" href="classtf_1_1ExecutorObserver.html" title="Default executor observer to dump the execution timelines. " alt="" coords="31,80,174,107"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -121,19 +121,19 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <tr class="memitem:ab2df5279ea499ccef2ccc29a18671571"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1ExecutorObserverInterface.html#ab2df5279ea499ccef2ccc29a18671571">set_up</a> (unsigned num_workers)</td></tr>
 <tr class="memdesc:ab2df5279ea499ccef2ccc29a18671571"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor-like method to call when the executor observer is fully created  <a href="#ab2df5279ea499ccef2ccc29a18671571">More...</a><br /></td></tr>
 <tr class="separator:ab2df5279ea499ccef2ccc29a18671571"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7cb25fff90de5c6deea326f0f2d1455"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1ExecutorObserverInterface.html#ac7cb25fff90de5c6deea326f0f2d1455">on_entry</a> (unsigned worker_id)</td></tr>
-<tr class="memdesc:ac7cb25fff90de5c6deea326f0f2d1455"><td class="mdescLeft">&#160;</td><td class="mdescRight">method to call before a worker thread executes a closure  <a href="#ac7cb25fff90de5c6deea326f0f2d1455">More...</a><br /></td></tr>
-<tr class="separator:ac7cb25fff90de5c6deea326f0f2d1455"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a128258b55337f3a9336c9b7fd3e093"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1ExecutorObserverInterface.html#a7a128258b55337f3a9336c9b7fd3e093">on_exit</a> (unsigned worker_id)</td></tr>
-<tr class="memdesc:a7a128258b55337f3a9336c9b7fd3e093"><td class="mdescLeft">&#160;</td><td class="mdescRight">method to call after a worker thread executed a closure  <a href="#a7a128258b55337f3a9336c9b7fd3e093">More...</a><br /></td></tr>
-<tr class="separator:a7a128258b55337f3a9336c9b7fd3e093"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a426e2d3f8a6427ff0d393077c1ffabe9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1ExecutorObserverInterface.html#a426e2d3f8a6427ff0d393077c1ffabe9">on_entry</a> (unsigned worker_id, <a class="el" href="classtf_1_1TaskView.html">TaskView</a> task_view)</td></tr>
+<tr class="memdesc:a426e2d3f8a6427ff0d393077c1ffabe9"><td class="mdescLeft">&#160;</td><td class="mdescRight">method to call before a worker thread executes a closure  <a href="#a426e2d3f8a6427ff0d393077c1ffabe9">More...</a><br /></td></tr>
+<tr class="separator:a426e2d3f8a6427ff0d393077c1ffabe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77d6c294cd5bcd74e69202937f6aa278"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1ExecutorObserverInterface.html#a77d6c294cd5bcd74e69202937f6aa278">on_exit</a> (unsigned worker_id, <a class="el" href="classtf_1_1TaskView.html">TaskView</a> task_view)</td></tr>
+<tr class="memdesc:a77d6c294cd5bcd74e69202937f6aa278"><td class="mdescLeft">&#160;</td><td class="mdescRight">method to call after a worker thread executed a closure  <a href="#a77d6c294cd5bcd74e69202937f6aa278">More...</a><br /></td></tr>
+<tr class="separator:a77d6c294cd5bcd74e69202937f6aa278"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The interface class for creating an executor observer. </p>
-<p>The <a class="el" href="classtf_1_1ExecutorObserver.html" title="A default executor observer to dump the execution timelines. ">tf::ExecutorObserver</a> class let users define methods to monitor the behaviors of an executor. This is particularly useful when you want to inspect the performance of an executor. </p>
+<p>The <a class="el" href="classtf_1_1ExecutorObserver.html" title="Default executor observer to dump the execution timelines. ">tf::ExecutorObserver</a> class let users define methods to monitor the behaviors of an executor. This is particularly useful when you want to inspect the performance of an executor. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="ac7cb25fff90de5c6deea326f0f2d1455"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac7cb25fff90de5c6deea326f0f2d1455">&#9670;&nbsp;</a></span>on_entry()</h2>
+<a id="a426e2d3f8a6427ff0d393077c1ffabe9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a426e2d3f8a6427ff0d393077c1ffabe9">&#9670;&nbsp;</a></span>on_entry()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -145,8 +145,18 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td class="memname">virtual void tf::ExecutorObserverInterface::on_entry </td>
           <td>(</td>
           <td class="paramtype">unsigned&#160;</td>
-          <td class="paramname"><em>worker_id</em></td><td>)</td>
+          <td class="paramname"><em>worker_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="classtf_1_1TaskView.html">TaskView</a>&#160;</td>
+          <td class="paramname"><em>task_view</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -160,14 +170,15 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">worker_id</td><td>the id of this worker thread </td></tr>
+    <tr><td class="paramname">task_view</td><td>a constant wrapper object to the task </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a7a128258b55337f3a9336c9b7fd3e093"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a128258b55337f3a9336c9b7fd3e093">&#9670;&nbsp;</a></span>on_exit()</h2>
+<a id="a77d6c294cd5bcd74e69202937f6aa278"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77d6c294cd5bcd74e69202937f6aa278">&#9670;&nbsp;</a></span>on_exit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -179,8 +190,18 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td class="memname">virtual void tf::ExecutorObserverInterface::on_exit </td>
           <td>(</td>
           <td class="paramtype">unsigned&#160;</td>
-          <td class="paramname"><em>worker_id</em></td><td>)</td>
+          <td class="paramname"><em>worker_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="classtf_1_1TaskView.html">TaskView</a>&#160;</td>
+          <td class="paramname"><em>task_view</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -194,6 +215,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">worker_id</td><td>the id of this worker thread </td></tr>
+    <tr><td class="paramname">task_view</td><td>a constant wrapper object to the task </td></tr>
   </table>
   </dd>
 </dl>

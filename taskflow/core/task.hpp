@@ -19,6 +19,7 @@ class Task {
 
   friend class FlowBuilder;
   friend class Taskflow;
+  friend class TaskView;
 
   public:
     
@@ -33,16 +34,14 @@ class Task {
     Task(const Task& other);
     
     /**
-    @brief constructs the task with the content of the other task using move semantics
-
-    After the move, other is guaranteed to be empty
-    */
-    Task(Task&& other);
-    
-    /**
     @brief replaces the contents with a copy of the other task
     */
     Task& operator = (const Task&);
+    
+    /**
+    @brief replaces the contents with a null pointer
+    */
+    Task& operator = (std::nullptr_t);
     
     /**
     @brief queries the name of the task
@@ -139,22 +138,25 @@ class Task {
     @return @c *this
     */
     Task& gather(std::initializer_list<Task> tasks);
-    
 
-    //template <typename... Bs>
-    //Task& broadcast(Bs&&...);
-    //
-    //Task& broadcast(std::vector<Task>&);
-    //Task& broadcast(std::initializer_list<Task>);
+    /**
+    @brief resets the task handle to point to nothing
+    
+    @return @c *this
+    */
+    Task& reset();
+
+    /**
+    @brief queries if the task handle points to a task node
+    */
+    bool empty() const;
 
   private:
     
     Task(Node&);
+    Task(Node*);
 
     Node* _node {nullptr};
-
-    //template <typename S>
-    //void _broadcast(S&);
 
     template <typename S>
     void _gather(S&);
@@ -164,39 +166,16 @@ class Task {
 };
 
 // Constructor
-inline Task::Task(Node& t) : _node {&t} {
+inline Task::Task(Node& node) : _node {&node} {
+}
+
+// Constructor
+inline Task::Task(Node* node) : _node {node} {
 }
 
 // Constructor
 inline Task::Task(const Task& rhs) : _node {rhs._node} {
 }
-
-//// Function: broadcast
-//template <typename... Bs>
-//Task& Task::broadcast(Bs&&... tgts) {
-//  (_node->precede(*(tgts._node)), ...);
-//  return *this;
-//}
-//
-//// Procedure: _broadcast
-//template <typename S>
-//inline void Task::_broadcast(S& tgts) {
-//  for(auto& to : tgts) {
-//    _node->precede(*(to._node));
-//  }
-//}
-//      
-//// Function: broadcast
-//inline Task& Task::broadcast(std::vector<Task>& tgts) {
-//  _broadcast(tgts);
-//  return *this;
-//}
-//
-//// Function: broadcast
-//inline Task& Task::broadcast(std::initializer_list<Task> tgts) {
-//  _broadcast(tgts);
-//  return *this;
-//}
 
 // Function: precede
 template <typename... Ts>
@@ -258,9 +237,10 @@ inline Task& Task::operator = (const Task& rhs) {
   return *this;
 }
 
-// Constructor
-inline Task::Task(Task&& rhs) : _node{rhs._node} { 
-  rhs._node = nullptr; 
+// Operator =
+inline Task& Task::operator = (std::nullptr_t ptr) {
+  _node = ptr;
+  return *this;
 }
 
 // Function: work
@@ -282,6 +262,12 @@ inline Task& Task::name(const std::string& name) {
   return *this;
 }
 
+// Procedure: reset
+inline Task& Task::reset() {
+  _node = nullptr;
+  return *this;
+}
+
 // Function: name
 inline const std::string& Task::name() const {
   return _node->_name;
@@ -295,6 +281,149 @@ inline size_t Task::num_dependents() const {
 // Function: num_successors
 inline size_t Task::num_successors() const {
   return _node->num_successors();
+}
+
+// Function: empty
+inline bool Task::empty() const {
+  return _node == nullptr;
+}
+
+// ----------------------------------------------------------------------------
+
+/**
+@class TaskView
+
+@brief A constant wrapper class to a task node, 
+       mainly used in the tf::ExecutorObserver interface.
+
+*/
+class TaskView {
+  
+  friend class Executor;
+
+  public:
+
+    /**
+    @brief constructs an empty task view
+    */
+    TaskView() = default;
+
+    /**
+    @brief constructs a task view from a task
+    */
+    TaskView(const Task& task);
+    
+    /**
+    @brief constructs the task with the copy of the other task
+    */
+    TaskView(const TaskView& other);
+    
+    /**
+    @brief replaces the contents with a copy of the other task
+    */
+    TaskView& operator = (const TaskView& other);
+    
+    /**
+    @brief replaces the contents with another task
+    */
+    TaskView& operator = (const Task& other);
+    
+    /**
+    @brief replaces the contents with a null pointer
+    */
+    TaskView& operator = (std::nullptr_t);
+    
+    /**
+    @brief queries the name of the task
+    */
+    const std::string& name() const;
+    
+    /**
+    @brief queries the number of successors of the task
+    */
+    size_t num_successors() const;
+
+    /**
+    @brief queries the number of predecessors of the task
+    */
+    size_t num_dependents() const;
+
+    /**
+    @brief resets to an empty view
+    */
+    TaskView& reset();
+
+    /**
+    @brief queries if the task view is empty
+    */
+    bool empty() const;
+    
+  private:
+    
+    TaskView(Node&);
+    TaskView(Node*);
+
+    Node* _node {nullptr};
+};
+
+// Constructor
+inline TaskView::TaskView(Node& node) : _node {&node} {
+}
+
+// Constructor
+inline TaskView::TaskView(Node* node) : _node {node} {
+}
+
+// Constructor
+inline TaskView::TaskView(const TaskView& rhs) : _node {rhs._node} {
+}
+
+// Constructor
+inline TaskView::TaskView(const Task& task) : _node {task._node} {
+}
+
+// Operator =
+inline TaskView& TaskView::operator = (const TaskView& rhs) {
+  _node = rhs._node;
+  return *this;
+}
+
+// Operator =
+inline TaskView& TaskView::operator = (const Task& rhs) {
+  _node = rhs._node;
+  return *this;
+}
+
+// Operator =
+inline TaskView& TaskView::operator = (std::nullptr_t ptr) {
+  _node = ptr;
+  return *this;
+}
+
+// Function: name
+inline const std::string& TaskView::name() const {
+  return _node->_name;
+}
+
+// Function: num_dependents
+inline size_t TaskView::num_dependents() const {
+  return _node->num_dependents();
+}
+
+// Function: num_successors
+inline size_t TaskView::num_successors() const {
+  return _node->num_successors();
+}
+
+// Function: reset
+inline TaskView& TaskView::reset() {
+  _node = nullptr;
+  return *this;
+}
+
+// Function: empty
+inline bool TaskView::empty() const {
+  return _node == nullptr;
 }
 
 }  // end of namespace tf. ---------------------------------------------------

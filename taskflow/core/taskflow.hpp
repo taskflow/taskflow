@@ -20,7 +20,12 @@ class Taskflow : public FlowBuilder {
   public:
 
     /**
-    @brief constructs the taskflow with an empty task dependency graph
+    @brief constructs a taskflow with a given name
+    */
+    Taskflow(const std::string& name);
+
+    /**
+    @brief constructs a taskflow
     */
     Taskflow();
 
@@ -55,8 +60,10 @@ class Taskflow : public FlowBuilder {
 
     /**
     @brief sets the name of the taskflow
+    
+    @return @c *this
     */
-    auto& name(const std::string&) ; 
+    tf::Taskflow& name(const std::string&); 
 
     /**
     @brief queries the name of the taskflow
@@ -81,6 +88,12 @@ class Taskflow : public FlowBuilder {
 };
 
 // Constructor
+inline Taskflow::Taskflow(const std::string& name) : 
+  FlowBuilder {_graph},
+  _name       {name} {
+}
+
+// Constructor
 inline Taskflow::Taskflow() : FlowBuilder{_graph} {
 }
 
@@ -100,7 +113,7 @@ inline size_t Taskflow::num_nodes() const {
 }
 
 // Function: name
-inline auto& Taskflow::name(const std::string &name) {
+inline Taskflow& Taskflow::name(const std::string &name) {
   _name = name;
   return *this;
 }

@@ -12,6 +12,7 @@ var hierarchy =
       [ "tf::Taskflow", "classtf_1_1Taskflow.html", null ]
     ] ],
     [ "tf::Task", "classtf_1_1Task.html", null ],
+    [ "tf::TaskView", "classtf_1_1TaskView.html", null ],
     [ "tf::WorkStealingQueue< T >", "classtf_1_1WorkStealingQueue.html", null ],
     [ "tf::WorkStealingQueue< Node *>", "classtf_1_1WorkStealingQueue.html", null ]
 ];

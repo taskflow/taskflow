@@ -173,7 +173,7 @@ bool WorkStealingQueue<T>::empty() const noexcept {
   std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
-  return b == t;
+  return b <= t;
 }
 
 // Function: size

@@ -23,6 +23,7 @@ using Graph = std::list<Node>;
 class Node {
 
   friend class Task;
+  friend class TaskView;
   friend class Topology;
   friend class Taskflow;
   friend class Executor;
@@ -98,7 +99,6 @@ inline Node::Node(C&& c) : _work {std::forward<C>(c)} {
 
 // Destructor
 inline Node::~Node() {
-  
   // this is to avoid stack overflow
   if(_subgraph.has_value()) {
     std::list<Graph> gs; 

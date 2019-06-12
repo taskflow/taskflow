@@ -13,9 +13,7 @@ int main(){
   
   // create an executor and a taskflow
   tf::Executor executor;
-  tf::Taskflow taskflow;
-
-  taskflow.name("Demo");
+  tf::Taskflow taskflow("Demo");
 
   auto A = taskflow.emplace([&](){ std::cout << "TaskA\n"; }).name("A");
   auto B = taskflow.emplace([&](auto& subflow){ 

@@ -5,7 +5,7 @@ var Releases =
       [ "Working Items", "master-branch.html#master-branch_new_features", null ],
       [ "Bug Fixes", "master-branch.html#master-branch_bug_fixes", null ]
     ] ],
-    [ "Release 2.2.0 (2019/05/16)", "release-2-2-0.html", [
+    [ "Release 2.2.0 (soon)", "release-2-2-0.html", [
       [ "Download", "release-2-2-0.html#release-2-2-0_download", null ],
       [ "New Features", "release-2-2-0.html#release-2-2-0_new_features", null ],
       [ "Breaks and Deprecated Features", "release-2-2-0.html#release-2-2-0_breaks_and_deprecated_features", null ]

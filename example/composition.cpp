@@ -10,8 +10,8 @@ void composition_example_1() {
   tf::Executor executor;
 
   // f1 has three independent tasks
-  tf::Taskflow f1;
-  auto [f1A, f1B, f1C] = f1.name("F1").emplace(
+  tf::Taskflow f1("F1");
+  auto [f1A, f1B, f1C] = f1.emplace(
     [&](){ std::cout << "F1 TaskA\n"; },
     [&](){ std::cout << "F1 TaskB\n"; },
     [&](){ std::cout << "F1 TaskC\n"; }
@@ -25,8 +25,8 @@ void composition_example_1() {
   // f2A ---
   //        |----> f2C ----> f1_module_task ----> f2D
   // f2B --- 
-  tf::Taskflow f2;
-  auto [f2A, f2B, f2C, f2D] = f2.name("F2").emplace(
+  tf::Taskflow f2("F2");
+  auto [f2A, f2B, f2C, f2D] = f2.emplace(
     [&](){ std::cout << "  F2 TaskA\n"; },
     [&](){ std::cout << "  F2 TaskB\n"; },
     [&](){ std::cout << "  F2 TaskC\n"; },
@@ -40,7 +40,8 @@ void composition_example_1() {
   f2A.precede(f2C);
   f2B.precede(f2C);
   
-  auto f1_module_task = f2.composed_of(f1).name("module");
+  tf::Task f1_module_task = f2.composed_of(f1);
+  f1_module_task.name("module");
   f2C.precede(f1_module_task);
   f1_module_task.precede(f2D);
 
@@ -56,8 +57,8 @@ void composition_example_2() {
   tf::Executor executor;
 
   // f1 has two independent tasks
-  tf::Taskflow f1;
-  auto [f1A, f1B] = f1.name("F1").emplace(
+  tf::Taskflow f1("F1");
+  auto [f1A, f1B] = f1.emplace(
     [&](){ std::cout << "F1 TaskA\n"; },
     [&](){ std::cout << "F1 TaskB\n"; }
   );
@@ -69,8 +70,8 @@ void composition_example_2() {
   //  f2B --- 
   //
   //  f1_module_task
-  tf::Taskflow f2;
-  auto [f2A, f2B, f2C] = f2.name("F2").emplace(
+  tf::Taskflow f2("F2");
+  auto [f2A, f2B, f2C] = f2.emplace(
     [&](){ std::cout << "  F2 TaskA\n"; },
     [&](){ std::cout << "  F2 TaskB\n"; },
     [&](){ std::cout << "  F2 TaskC\n"; }
@@ -84,8 +85,7 @@ void composition_example_2() {
   f2.composed_of(f1);
 
   // f3 has a module task (f2) and a regular task
-  tf::Taskflow f3;
-  f3.name("F3");
+  tf::Taskflow f3("F3");
   f3.composed_of(f2);
   f3.emplace([](){ std::cout << "      F3 TaskA\n"; }).name("f3A");
 

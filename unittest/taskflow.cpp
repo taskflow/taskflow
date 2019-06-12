@@ -1169,12 +1169,7 @@ TEST_CASE("Observer" * doctest::timeout(300)) {
 
     executor.run_n(taskflowA, 16).get();
 
-    if(w == 0) {
-      REQUIRE(observer->num_tasks() == 0);
-    }
-    else {
-      REQUIRE(observer->num_tasks() == 64*16);
-    }
+    REQUIRE(observer->num_tasks() == 64*16);
 
     observer->clear();
     REQUIRE(observer->num_tasks() == 0);
@@ -1212,13 +1207,7 @@ TEST_CASE("Observer" * doctest::timeout(300)) {
     }
 
     executor.run_n(taskflowB, 16).get();
-
-    if(w == 0) {
-      REQUIRE(observer->num_tasks() == 0);
-    }
-    else {
-      REQUIRE(observer->num_tasks() == num_tasks);
-    }
+    REQUIRE(observer->num_tasks() == num_tasks);
   }
 }
 

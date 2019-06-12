@@ -4,6 +4,7 @@ var classtf_1_1Executor =
     [ "~Executor", "classtf_1_1Executor.html#a5a511b0cc23b264826373d3dabcef670", null ],
     [ "make_observer", "classtf_1_1Executor.html#a7f43cde72d3e0a17e2d006cbe7a41ff3", null ],
     [ "num_workers", "classtf_1_1Executor.html#a79223c7f32c9d715e725b8d775de2d29", null ],
+    [ "remove_observer", "classtf_1_1Executor.html#a3ed11b270f0c7fe1c55a81c60d20411f", null ],
     [ "run", "classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa", null ],
     [ "run", "classtf_1_1Executor.html#a94b45b69dc247c82c2ada8c90424b172", null ],
     [ "run_n", "classtf_1_1Executor.html#adca6cd0ce1bd7e6fa2ed2a55c9ae15e6", null ],

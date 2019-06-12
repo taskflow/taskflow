@@ -113,6 +113,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR})
 add_executable(simple ${TF_EXAMPLE_DIR}/simple.cpp)
 target_link_libraries(simple ${PROJECT_NAME} Threads::Threads)
 
+add_executable(observer ${TF_EXAMPLE_DIR}/observer.cpp)
+target_link_libraries(observer ${PROJECT_NAME} Threads::Threads)
+
 add_executable(subflow ${TF_EXAMPLE_DIR}/subflow.cpp)
 target_link_libraries(subflow ${PROJECT_NAME} Threads::Threads)
 

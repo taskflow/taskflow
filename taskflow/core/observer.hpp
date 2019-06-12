@@ -17,6 +17,8 @@
 #include <numeric>
 #include <cassert>
 
+#include "task.hpp"
+
 namespace tf {
 
 /**
@@ -46,14 +48,16 @@ class ExecutorObserverInterface {
   /**
   @brief method to call before a worker thread executes a closure 
   @param worker_id the id of this worker thread 
+  @param task_view a constant wrapper object to the task 
   */
-  virtual void on_entry(unsigned worker_id) {};
+  virtual void on_entry(unsigned worker_id, TaskView task_view) {};
   
   /**
   @brief method to call after a worker thread executed a closure
   @param worker_id the id of this worker thread 
+  @param task_view a constant wrapper object to the task
   */
-  virtual void on_exit(unsigned worker_id) {};
+  virtual void on_exit(unsigned worker_id, TaskView task_view) {};
 };
 
 // ------------------------------------------------------------------
@@ -61,10 +65,42 @@ class ExecutorObserverInterface {
 /**
 @class: ExecutorObserver
 
-@brief A default executor observer to dump the execution timelines
+@brief Default executor observer to dump the execution timelines
 
 */
 class ExecutorObserver : public ExecutorObserverInterface {
+
+  friend class Executor;
+  
+  // data structure to record each task execution
+  struct Execution {
+
+    TaskView task_view;
+
+    std::chrono::time_point<std::chrono::steady_clock> beg;
+    std::chrono::time_point<std::chrono::steady_clock> end;
+
+    Execution(
+      TaskView tv, 
+      std::chrono::time_point<std::chrono::steady_clock> b
+    ) :
+      task_view {tv}, beg {b} {
+    } 
+
+    Execution(
+      TaskView tv,
+      std::chrono::time_point<std::chrono::steady_clock> b,
+      std::chrono::time_point<std::chrono::steady_clock> e
+    ) :
+      task_view {tv}, beg {b}, end {e} {
+    }
+  };
+  
+  // data structure to store the entire execution timeline
+  struct Timeline {
+    std::chrono::time_point<std::chrono::steady_clock> origin;
+    std::vector<std::vector<Execution>> executions;
+  };  
 
   public:
     
@@ -94,40 +130,39 @@ class ExecutorObserver : public ExecutorObserverInterface {
   private:
     
     inline void set_up(unsigned num_workers) override final;
-    inline void on_entry(unsigned worker_id) override final;
-    inline void on_exit(unsigned worker_id) override final;
+    inline void on_entry(unsigned worker_id, TaskView task_view) override final;
+    inline void on_exit(unsigned worker_id, TaskView task_view) override final;
 
-    std::chrono::time_point<std::chrono::steady_clock> _origin {std::chrono::steady_clock::now()};
-
-    std::vector<std::vector<std::chrono::time_point<std::chrono::steady_clock>>> _begs;
-    std::vector<std::vector<std::chrono::time_point<std::chrono::steady_clock>>> _ends;
+    Timeline _timeline;
 };  
 
 // Procedure: set_up
 inline void ExecutorObserver::set_up(unsigned num_workers) {
-  _begs.resize(num_workers);
-  _ends.resize(num_workers);
+
+  _timeline.executions.resize(num_workers);
+
   for(unsigned w=0; w<num_workers; ++w) {
-    _begs[w].reserve(1024);
-    _ends[w].reserve(1024);
+    _timeline.executions[w].reserve(1024);
   }
+  
+  _timeline.origin = std::chrono::steady_clock::now();
 }
 
 // Procedure: on_entry
-inline void ExecutorObserver::on_entry(unsigned w) {
-  _begs[w].emplace_back(std::chrono::steady_clock::now());
+inline void ExecutorObserver::on_entry(unsigned w, TaskView tv) {
+  _timeline.executions[w].emplace_back(tv, std::chrono::steady_clock::now());
 }
 
 // Procedure: on_exit
-inline void ExecutorObserver::on_exit(unsigned w) {
-  _ends[w].emplace_back(std::chrono::steady_clock::now());
+inline void ExecutorObserver::on_exit(unsigned w, TaskView tv) {
+  assert(_timeline.executions[w].size() > 0);
+  _timeline.executions[w].back().end = std::chrono::steady_clock::now();
 }
 
 // Function: clear
 inline void ExecutorObserver::clear() {
-  for(size_t w=0; w<_begs.size(); ++w) {
-    _begs[w].clear();
-    _ends[w].clear();
+  for(size_t w=0; w<_timeline.executions.size(); ++w) {
+    _timeline.executions[w].clear();
   }
 }
 
@@ -136,24 +171,29 @@ inline void ExecutorObserver::dump(std::ostream& os) const {
 
   os << '[';
 
-  for(size_t w=0; w<_begs.size(); w++) {
+  for(size_t w=0; w<_timeline.executions.size(); w++) {
 
-    assert(_begs[w].size() == _ends[w].size());
-
-    if(w != 0 && _begs[w].size() > 0 && _begs[w-1].size() > 0) {
+    if(w != 0 && _timeline.executions[w].size() > 0 && 
+                 _timeline.executions[w-1].size() > 0) {
       os << ',';
     }
 
-    for(size_t i=0; i<_begs[w].size(); i++) {
+    for(size_t i=0; i<_timeline.executions[w].size(); i++) {
+
       os << '{'
          << "\"cat\":\"ExecutorObserver\","
-         << "\"name\":\"" << w << '_' << i << "\","
+         << "\"name\":\"" << _timeline.executions[w][i].task_view.name() << "\","
          << "\"ph\":\"X\","
          << "\"pid\":1,"
          << "\"tid\":" << w << ','
-         << "\"ts\":" << std::chrono::duration_cast<std::chrono::microseconds>(_begs[w][i] - _origin).count() << ','
-         << "\"dur\":" << std::chrono::duration_cast<std::chrono::microseconds>(_ends[w][i] - _begs[w][i]).count();
-      if(i != _begs[w].size() - 1) {
+         << "\"ts\":" << std::chrono::duration_cast<std::chrono::microseconds>(
+                           _timeline.executions[w][i].beg - _timeline.origin
+                         ).count() << ','
+         << "\"dur\":" << std::chrono::duration_cast<std::chrono::microseconds>(
+                           _timeline.executions[w][i].end - _timeline.executions[w][i].beg
+                         ).count();
+
+      if(i != _timeline.executions[w].size() - 1) {
         os << "},";
       }
       else {
@@ -173,9 +213,10 @@ inline std::string ExecutorObserver::dump() const {
 
 // Function: num_tasks
 inline size_t ExecutorObserver::num_tasks() const {
-  return std::accumulate(_begs.begin(), _begs.end(), size_t{0}, 
-    [](size_t sum, const auto& vec){ 
-      return sum + vec.size(); 
+  return std::accumulate(
+    _timeline.executions.begin(), _timeline.executions.end(), size_t{0}, 
+    [](size_t sum, const auto& exe){ 
+      return sum + exe.size(); 
     }
   );
 }
