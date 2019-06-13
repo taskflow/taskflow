@@ -231,7 +231,7 @@ class Executor {
     void _invoke_static_work(unsigned, Node*);
     void _invoke_dynamic_work(unsigned, Node*, Subflow&);
     void _init_module_node(Node*);
-    void _tear_down_topology(Topology&); 
+    void _tear_down_topology(Topology*); 
 };
 
 // Constructor
@@ -682,7 +682,7 @@ inline void Executor::_invoke(unsigned me, Node* node) {
   if(num_successors == 0) {
     if(--(node->_topology->_num_sinks) == 0) {
       if(_workers.size() > 0) {   // finishing this topology
-        _tear_down_topology(*node->_topology);
+        _tear_down_topology(node->_topology);
       }
     }
   }
@@ -742,22 +742,24 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred) {
 }
 
 // Function: _tear_down_topology
-inline void Executor::_tear_down_topology(Topology& tpg) {
+inline void Executor::_tear_down_topology(Topology* tpg) {
 
-  auto &f = tpg._taskflow;
+  auto &f = tpg->_taskflow;
 
-  //assert(&tpg == &(f._topologies.front()));
+  assert(tpg == f._topologies.front());
 
   // case 1: we still need to run the topology again
-  if(!std::invoke(tpg._pred)) {
-    tpg._recover_num_sinks();
-    _schedule(tpg._sources); 
+  if(!std::invoke(tpg->_pred)) {
+    tpg->_recover_num_sinks();
+    _schedule(tpg->_sources); 
   }
   // case 2: the final run of this topology
   else {
+  
+    auto& pool = per_thread_object_pool<Topology>(); 
     
-    if(tpg._call != nullptr) {
-      std::invoke(tpg._call);
+    if(tpg->_call != nullptr) {
+      std::invoke(tpg->_call);
     }
 
     f._mtx.lock();
@@ -766,7 +768,8 @@ inline void Executor::_tear_down_topology(Topology& tpg) {
     if(f._topologies.size() > 1) {
 
       // Set the promise
-      tpg._promise.set_value();
+      tpg->_promise.set_value();
+      pool.recycle(tpg);
       f._topologies.pop_front();
       f._mtx.unlock();
 
@@ -775,15 +778,16 @@ inline void Executor::_tear_down_topology(Topology& tpg) {
         _num_topologies--;
       }
 
-      f._topologies.front()._bind(f._graph);
-      _schedule(f._topologies.front()._sources);
+      f._topologies.front()->_bind(f._graph);
+      _schedule(f._topologies.front()->_sources);
     }
     else {
       assert(f._topologies.size() == 1);
       // Need to back up the promise first here becuz taskflow might be 
       // destroy before taskflow leaves
-      auto p {std::move(tpg._promise)};
-
+      auto p {std::move(tpg->_promise)};
+      
+      pool.recycle(tpg);
       f._topologies.pop_front();
 
       f._mtx.unlock();
@@ -809,25 +813,29 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
   if(std::invoke(pred)) {
     return std::async(std::launch::deferred, [](){});
   }
+    
+  auto& pool = per_thread_object_pool<Topology>(); 
   
   // Speicla case of zero workers needs
   //  - iterative execution to avoid stack overflow
   //  - avoid execution of last_work
   if(_workers.size() == 0) {
     
-    Topology tpg(f, std::forward<P>(pred), std::forward<C>(c));
+    auto tpg = pool.get(f, std::forward<P>(pred), std::forward<C>(c));
 
     // Clear last execution data & Build precedence between nodes and target
-    tpg._bind(f._graph);
+    tpg->_bind(f._graph);
 
     do {
-      _schedule(tpg._sources);
-      tpg._recover_num_sinks();
-    } while(!std::invoke(tpg._pred));
+      _schedule(tpg->_sources);
+      tpg->_recover_num_sinks();
+    } while(!std::invoke(tpg->_pred));
 
-    if(tpg._call != nullptr) {
-      std::invoke(tpg._call);
+    if(tpg->_call != nullptr) {
+      std::invoke(tpg->_call);
     }
+
+    pool.recycle(tpg);
     
     return std::async(std::launch::deferred, [](){});
   }
@@ -847,7 +855,9 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
     std::scoped_lock lock(f._mtx);
 
     // create a topology for this run
-    tpg = &(f._topologies.emplace_back(f, std::forward<P>(pred), std::forward<C>(c)));
+    //tpg = &(f._topologies.emplace_back(f, std::forward<P>(pred), std::forward<C>(c)));
+    tpg = pool.get(f, std::forward<P>(pred), std::forward<C>(c));
+    f._topologies.push_back(tpg);
     future = tpg->_promise.get_future();
     
     if(f._topologies.size() == 1) {
