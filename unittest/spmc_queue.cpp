@@ -66,7 +66,7 @@ void wsq_test_owner() {
   REQUIRE(queue.capacity() == 2);
   REQUIRE(queue.empty());
 
-  for(int i=2; i<=(1<<20); i <<= 1) {
+  for(int i=2; i<=(1<<16); i <<= 1) {
 
     REQUIRE(queue.empty());
 
@@ -147,7 +147,7 @@ void wsq_test_n_thieves(int N) {
   REQUIRE(queue.capacity() == 2);
   REQUIRE(queue.empty());
 
-  for(int i=2; i<=(1<<20); i <<= 1) {
+  for(int i=2; i<=(1<<16); i <<= 1) {
 
     REQUIRE(queue.empty());
 

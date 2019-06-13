@@ -83,8 +83,9 @@ class Taskflow : public FlowBuilder {
 
     std::mutex _mtx;
 
-    std::list<Topology> _topologies;
-    //std::list<Topology*> _topologies;
+    //std::list<Topology> _topologies;
+
+    std::deque<Topology*> _topologies;
 };
 
 // Constructor
@@ -168,16 +169,17 @@ inline void Taskflow::dump(std::ostream& os) const {
     os << "\";\n";
 
     // dump the details of this taskflow
-    for(const auto& n: f->_graph) {
+    for(const auto n : f->_graph.nodes()) {
+      
       // regular task
-      if(auto module = n._module; !module) {
-        n.dump(os);
+      if(auto module = n->_module; !module) {
+        n->dump(os);
       }
       // module task
       else {
-        os << 'p' << &n << "[shape=box3d, color=blue, label=\"";
-        if(n._name.empty()) os << &n;
-        else os << n._name;
+        os << 'p' << n << "[shape=box3d, color=blue, label=\"";
+        if(n->_name.empty()) os << n;
+        else os << n->_name;
         os << " (Taskflow_";
         if(module->_name.empty()) os << module;
         else os << module->_name;
@@ -188,8 +190,8 @@ inline void Taskflow::dump(std::ostream& os) const {
           stack.push(module);
         }
 
-        for(const auto s : n._successors) {
-          os << 'p' << &n << "->" << 'p' << s << ";\n";
+        for(const auto s : n->_successors) {
+          os << 'p' << n << "->" << 'p' << s << ";\n";
         }
       }
     }
