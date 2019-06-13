@@ -83,9 +83,9 @@ class Taskflow : public FlowBuilder {
 
     std::mutex _mtx;
 
-    //std::list<Topology> _topologies;
+    std::list<Topology> _topologies;
 
-    std::deque<Topology*> _topologies;
+    //std::deque<Topology*> _topologies;
 };
 
 // Constructor
