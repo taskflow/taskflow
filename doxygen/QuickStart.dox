@@ -42,6 +42,7 @@ Here is a rather simple program to get you started.
 
 int main(){
   
+  tf::Executor executor;
   tf::Taskflow taskflow;
 
   auto [A, B, C, D] = taskflow.emplace(
@@ -56,8 +57,7 @@ int main(){
   B.precede(D);  // B runs before D                  //    |     +---+     |    
   C.precede(D);  // C runs before D                  //    +---->| C |-----+    
                                                      //          +---+          
-  // create an executor to run the taskflow
-  tf::Executor().run(taskflow);
+  executor.run(taskflow);
 
   return 0;
 }

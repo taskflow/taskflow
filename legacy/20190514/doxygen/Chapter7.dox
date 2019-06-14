@@ -1,0 +1,236 @@
+namespace tf {
+
+/** @page chapter7 C7: %Framework (Experimental)
+
+In many situations, you will need to execute a task dependency graph multiple times 
+or create a @em composable graph.
+tf::Framework is designed for this purpose. 
+This chapter introduces the concept of a framework and shows its usage.
+
+@section C7_CreateAFramework Create a Framework 
+
+The tf::Framework inherits tf::FlowBuilder and contains a task dependency graph 
+that is independent of a taskflow object.
+Executing a framework from a taskflow does not make the graph vanish.
+You can reuse a framework multiple times.
+The following example demonstrates how to create a framework.
+
+@code{.cpp}
+// create a framework 
+tf::Framework framework;
+
+// create three tasks in the framework
+tf::Task A = framework.emplace([](){ std::cout << "This is TaskA\n"; });
+tf::Task B = framework.placeholder();
+
+// add a dependency link from A to B
+A.precede(B);  
+@endcode
+
+Each framework represents a unique task dependency graph.
+Connecting tasks from different frameworks results in undefined behavior
+and should be avoided.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+
+tf::Framework f1, f2;
+
+tf::Task A = f1.emplace([] () { std::cout << "task of framework 1\n"; });
+tf::Task B = f2.emplace([] () { std::cout << "task of framework 2\n"; });
+
+// connecting tasks from different frameworks results in undefined behaviors
+A.precede(B);
+taskflow.run(f1);
+@endcode
+
+
+@section C7_ExecuteAFramework Execute a Framework
+
+You use one of following methods:
+tf::Taskflow::run, 
+tf::Taskflow::run_n, or tf::Taskflow::run_until to run a framework
+for one time, multiple times, or until a given condition is met.
+All methods accept an optional callback to invoke after the execution completes.
+The code below shows several ways to run a framework.
+
+@code{.cpp}
+ 1: // Declare a framework 
+ 2: tf::Framework f;
+ 3: 
+ 4: // Add three tasks into the framework
+ 5: auto [A, B, C] = f.emplace(
+ 6:   [] () { std::cout << "This is TaskA\n"; },
+ 7:   [] () { std::cout << "This is TaskB\n"; },
+ 8:   [] () { std::cout << "This is TaskC\n"; },
+ 9: );
+10: 
+11: // Build precedence between tasks
+12: A.precede(B, C); 
+13: 
+14: // Declare a taskflow object
+15: tf::Taskflow taskflow;
+16: 
+17: auto fu = taskflow.run(f);
+18: fu.get();
+19: taskflow.run(f, [](){ std::cout << "end of one execution\n"; }).get();
+20: 
+21: taskflow.run_n(f, 4);
+22: taskflow.wait_for_all();
+23: 
+24: taskflow.run_n(f, 4, [](){ std::cout << "end of four executions\n"; }).get();
+25:
+26: taskflow.run_until(f, [int cnt=0] () mutable { return (++cnt == 10); });
+@endcode
+
+
+Debrief:
+
+@li Line 1-12  creates a framework of three tasks A, B, and C
+@li Line 15    creates a taskflow object
+@li Line 17-18 runs the framework once and use std::shared_future::get to wait for completion 
+@li Line 19 runs the framework once with a callback to invoke when the execution finishes
+@li Line 21-22 runs the framework four times and use tf::Taskflow::wait_for_all to wait for completion 
+@li Line 24    runs the framework four times and invokes a callback at the end of the forth execution
+@li Line 26    keeps running the framework until the @c cnt variable becomes 10
+
+Each framework has its own task dependency graph.
+You should ensure each framework is run by only one taskflow at one time.
+
+@code{.cpp}
+ 1: // Declare a framework 
+ 2: tf::Framework f;
+ 3: 
+ 4: // Running a framework on two taskflows at the same time gives undefined behavior
+ 5: tf::Taskflow taskflow1, taskflow2;
+ 6: taskflow1.run(f);
+ 7: taskflow2.run(f);
+@endcode
+
+Multiple runs on a framework from a taskflow will be automatically @em synchronized.
+The following example sequentially creates three topologies
+that run a framework for one, ten, and one times, respectively.
+
+@code{.cpp}
+ 1: // Declare a framework 
+ 2: tf::Framework f;
+ 3: 
+ 4: // Running a framework on two taskflows at the same time gives undefined behavior
+ 5: tf::Taskflow taskflow;
+ 6: taskflow.run(f);  
+ 7: taskflow.run_n(f, 10);
+ 8: taskflow.run(f);
+ 9: taskflow.wait_for_all();
+@endcode
+
+@section C7_VisualizeAFramework Visualize a Framework
+
+Similar to a task, you can name a framework and dump it to a DOT format.
+
+@code{.cpp}
+ 1: tf::Taskflow tf;
+ 2:
+ 3: // create a framework
+ 4: tf::Framework f;
+ 5:
+ 6: // name the framework
+ 7: f.name("Demo");
+ 8:
+ 9: auto A = f.emplace([&](){ std::cout << "TaskA\n"; }).name("A");
+10: auto B = f.emplace([&](auto& subflow){
+11:   std::cout << "TaskB\n";
+12:   auto B1 = subflow.emplace([&](){ std::cout << "TaskB1\n"; }).name("B1");
+13:   auto B2 = subflow.emplace([&](){ std::cout << "TaskB2\n"; }).name("B2");
+14:   auto B3 = subflow.emplace([&](){ std::cout << "TaskB3\n"; }).name("B3");
+15:   B1.precede(B3);
+16:   B2.precede(B3);
+17: }).name("B");
+18:
+19: auto C = f.emplace([&](){ std::cout << "TaskC\n"; }).name("C");
+20: auto D = f.emplace([&](){ std::cout << "TaskD\n"; }).name("D");
+21:
+22: A.precede(B, C);
+23: B.precede(D);
+24: C.precede(D);
+25:
+26: // dump the framework (static portion only)
+26: f.dump(std::cout);
+@endcode
+
+@image html images/framework_static_dump.png width=30%
+
+The framework in this example contains a subflow.
+You will need to run the framework first to spawn the subflow
+before you can visualize the dynamic task nodes.
+
+@code{.cpp}
+ 1: // run the framework and make sure it finishes before dump
+ 2: taskflow.run(f).get();
+ 3:
+ 4: // at this point the subflow graph is spawned
+ 5: f.dump(std::cout);
+ 6:
+ 7: // alternatively, you can dump the topology to obtain the same result
+ 8: taskflow.dump(std::cout);
+@endcode
+
+@image html images/framework_dynamic_dump.png width=40%
+
+
+@section C7_LifeTimeOfAFramework Lifetime of a Framework
+
+Since a taskflow object does not own a framework, 
+a running framework must remain alive until its execution finishes. 
+It is your responsibility to ensure a framework is not destructed
+during if it is running.
+For example, the code below can result undefined behavior.
+
+@code{.cpp}
+
+// create a taskflow object
+tf::Taskflow taskflow;
+
+// create a framework whose lifetime is restricted by the scope
+{
+  tf::Framework f;
+  
+  // add tasks into the framework 
+  // ... 
+
+  // run the framework
+  taskflow.run(f);
+
+} // destroy the framework without waiting for execution finishes will lead to undefined behavior
+
+@endcode
+
+Similarly, you should avoid touching a framework while it is running.
+
+@code{.cpp}
+tf::Framework f;
+
+// Add tasks into the framework 
+// ...
+
+// Declare a taskflow object
+tf::Taskflow taskflow;
+
+auto future = taskflow.run(f);
+
+// Modify the framework before the execution finishes leads to undefined behavior 
+f.emplace([](){ std::cout << "Add a new task\n"; });
+
+// Use get method to wait for the execution completes.
+future.get();
+@endcode
+
+
+
+
+
+
+*/
+
+}
+
+

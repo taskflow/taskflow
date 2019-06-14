@@ -107,9 +107,9 @@ $(document).ready(function(){initNavTree('classtf_1_1WorkStealingQueue.html','')
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa0df9f7cd3cafa230bf1def57dc69d1d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1WorkStealingQueue.html#aa0df9f7cd3cafa230bf1def57dc69d1d">WorkStealingQueue</a> (int64_t <a class="el" href="classtf_1_1WorkStealingQueue.html#aa24605d46953ae1d27dd35451c72c9b3">capacity</a>=4096)</td></tr>
-<tr class="memdesc:aa0df9f7cd3cafa230bf1def57dc69d1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs the queue with a given capacity  <a href="#aa0df9f7cd3cafa230bf1def57dc69d1d">More...</a><br /></td></tr>
-<tr class="separator:aa0df9f7cd3cafa230bf1def57dc69d1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c790ba6a203092fa8f15297dcb5b1d6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1WorkStealingQueue.html#a0c790ba6a203092fa8f15297dcb5b1d6">WorkStealingQueue</a> (int64_t <a class="el" href="classtf_1_1WorkStealingQueue.html#aa24605d46953ae1d27dd35451c72c9b3">capacity</a>=1024)</td></tr>
+<tr class="memdesc:a0c790ba6a203092fa8f15297dcb5b1d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs the queue with a given capacity  <a href="#a0c790ba6a203092fa8f15297dcb5b1d6">More...</a><br /></td></tr>
+<tr class="separator:a0c790ba6a203092fa8f15297dcb5b1d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb22a49430fd235aa2ae4770d1cd662b"><td class="memItemLeft" align="right" valign="top"><a id="acb22a49430fd235aa2ae4770d1cd662b"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1WorkStealingQueue.html#acb22a49430fd235aa2ae4770d1cd662b">~WorkStealingQueue</a> ()</td></tr>
 <tr class="memdesc:acb22a49430fd235aa2ae4770d1cd662b"><td class="mdescLeft">&#160;</td><td class="mdescRight">destructs the queue <br /></td></tr>
@@ -133,6 +133,9 @@ int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <tr class="memitem:a1ba75ce446b149de97e62310851a243d"><td class="memItemLeft" align="right" valign="top">std::optional&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1WorkStealingQueue.html#a1ba75ce446b149de97e62310851a243d">pop</a> ()</td></tr>
 <tr class="memdesc:a1ba75ce446b149de97e62310851a243d"><td class="mdescLeft">&#160;</td><td class="mdescRight">pops out an item from the queue  <a href="#a1ba75ce446b149de97e62310851a243d">More...</a><br /></td></tr>
 <tr class="separator:a1ba75ce446b149de97e62310851a243d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22aac5bd13c0f1120ddfe8289846fd1d"><td class="memItemLeft" align="right" valign="top">std::optional&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1WorkStealingQueue.html#a22aac5bd13c0f1120ddfe8289846fd1d">unsync_pop</a> ()</td></tr>
+<tr class="memdesc:a22aac5bd13c0f1120ddfe8289846fd1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">pops out an item from the queue without synchronization with thieves  <a href="#a22aac5bd13c0f1120ddfe8289846fd1d">More...</a><br /></td></tr>
+<tr class="separator:a22aac5bd13c0f1120ddfe8289846fd1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b63dca550a2f576b92f05bdc2e03a74"><td class="memItemLeft" align="right" valign="top">std::optional&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1WorkStealingQueue.html#a6b63dca550a2f576b92f05bdc2e03a74">steal</a> ()</td></tr>
 <tr class="memdesc:a6b63dca550a2f576b92f05bdc2e03a74"><td class="mdescLeft">&#160;</td><td class="mdescRight">steals an item from the queue  <a href="#a6b63dca550a2f576b92f05bdc2e03a74">More...</a><br /></td></tr>
 <tr class="separator:a6b63dca550a2f576b92f05bdc2e03a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -151,8 +154,8 @@ class tf::WorkStealingQueue&lt; T &gt;</h3>
 <p>This class implements the work stealing queue described in the paper, "Dynamic Circular Work-stealing Deque," SPAA, 2015. Only the queue owner can perform pop and push operations, while others can steal data from the queue.</p>
 <p>PPoPP implementation paper "Correct and Efficient Work-Stealing for Weak Memory Models" <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">https://www.di.ens.fr/~zappa/readings/ppopp13.pdf</a> </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="aa0df9f7cd3cafa230bf1def57dc69d1d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa0df9f7cd3cafa230bf1def57dc69d1d">&#9670;&nbsp;</a></span>WorkStealingQueue()</h2>
+<a id="a0c790ba6a203092fa8f15297dcb5b1d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c790ba6a203092fa8f15297dcb5b1d6">&#9670;&nbsp;</a></span>WorkStealingQueue()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -163,7 +166,7 @@ template&lt;typename T &gt; </div>
           <td class="memname"><a class="el" href="classtf_1_1WorkStealingQueue.html">tf::WorkStealingQueue</a>&lt; T &gt;::<a class="el" href="classtf_1_1WorkStealingQueue.html">WorkStealingQueue</a> </td>
           <td>(</td>
           <td class="paramtype">int64_t&#160;</td>
-          <td class="paramname"><em>capacity</em> = <code>4096</code></td><td>)</td>
+          <td class="paramname"><em>capacity</em> = <code>1024</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -198,7 +201,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>pops out an item from the queue </p>
-<p>Only the owner thread can pop out an item from the queue. The return can be a <a href="https://en.cppreference.com/w/cpp/utility/optional/nullopt">std::nullopt</a> if this operation failed (not necessary empty). </p>
+<p>Only the owner thread can pop out an item from the queue. The return can be a <a href="https://en.cppreference.com/w/cpp/utility/optional/nullopt">std::nullopt</a> if this operation failed (empty queue). </p>
 
 </div>
 </div>
@@ -258,6 +261,29 @@ template&lt;typename T &gt; </div>
 
 <p>steals an item from the queue </p>
 <p>Any threads can try to steal an item from the queue. The return can be a <a href="https://en.cppreference.com/w/cpp/utility/optional/nullopt">std::nullopt</a> if this operation failed (not necessary empty). </p>
+
+</div>
+</div>
+<a id="a22aac5bd13c0f1120ddfe8289846fd1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22aac5bd13c0f1120ddfe8289846fd1d">&#9670;&nbsp;</a></span>unsync_pop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; T &gt; <a class="el" href="classtf_1_1WorkStealingQueue.html">tf::WorkStealingQueue</a>&lt; T &gt;::unsync_pop </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>pops out an item from the queue without synchronization with thieves </p>
+<p>Only the onwer thread can pop out an item from the queue, given no other threads trying to steal an item at the same time</p>
+<p>The return can be a <a href="https://en.cppreference.com/w/cpp/utility/optional/nullopt">std::nullopt</a> if this operation failed (empty queue). </p>
 
 </div>
 </div>

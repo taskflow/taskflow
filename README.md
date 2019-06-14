@@ -91,9 +91,10 @@ you need in most applications.
 
 int main(){
   
-  tf::Taskflow tf;
+  tf::Executor executor;
+  tf::Taskflow taskflow;
 
-  auto [A, B, C, D] = tf.emplace(
+  auto [A, B, C, D] = taskflow.emplace(
     [] () { std::cout << "TaskA\n"; },               //  task dependency graph
     [] () { std::cout << "TaskB\n"; },               // 
     [] () { std::cout << "TaskC\n"; },               //          +---+          
@@ -105,7 +106,7 @@ int main(){
   B.precede(D);  // B runs before D                  //    |     +---+     |    
   C.precede(D);  // C runs before D                  //    +---->| C |-----+    
                                                      //          +---+          
-  tf::Executor().run(tf);  // create an executor to run the taskflow
+  executor.run(taskflow);
 
   return 0;
 }
