@@ -208,7 +208,6 @@ if(NOT DEFINED EIGEN_ROOT)
 endif()
 include_directories(${EIGEN_ROOT})
 
-
 # find OpenMP package
 include(FindOpenMP)
 
