@@ -267,8 +267,24 @@ target_link_libraries(
 )
 set_target_properties(graph_traversal PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-## benchmark 3: MNIST
-message(STATUS "benchmark 3: mnist")
+## benchmark 3: binary_tree
+message(STATUS "benchmark 3: binary tree")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/binary_tree)
+add_executable(
+  binary_tree 
+  ${TF_BENCHMARK_DIR}/binary_tree/main.cpp
+  ${TF_BENCHMARK_DIR}/binary_tree/tbb.cpp
+  ${TF_BENCHMARK_DIR}/binary_tree/taskflow.cpp
+)
+target_include_directories(binary_tree PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  binary_tree 
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
+)
+set_target_properties(binary_tree PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+## benchmark 4: MNIST
+message(STATUS "benchmark 4: mnist")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/mnist)
 add_executable(
   mnist 
@@ -286,8 +302,8 @@ target_link_libraries(
 )
 set_target_properties(mnist PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-## benchmark 4: Parallel DNN
-message(STATUS "benchmark 4: Parallel DNN")
+## benchmark 5: Parallel DNN
+message(STATUS "benchmark 5: Parallel DNN")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/parallel_dnn)
 add_executable(
   parallel_dnn 

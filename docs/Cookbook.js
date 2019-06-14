@@ -43,6 +43,7 @@ var Cookbook =
     [ "C6: Manage Threads and Executor", "chapter6.html", [
       [ "Master, Workers, and Executor", "chapter6.html#C6_MasterWorkersAndExecutor", null ],
       [ "Thread Safety", "chapter6.html#C6ThreadSafety", null ],
-      [ "Monitor Thread Activities", "chapter6.html#C6MonitorThreadActivities", null ]
+      [ "Monitor Thread Activities", "chapter6.html#C6MonitorThreadActivities", null ],
+      [ "Customize Your Own Observer", "chapter6.html#C6CustomizeYourOwnObserver", null ]
     ] ]
 ];

@@ -57,6 +57,7 @@ var NAVTREEINDEX0 =
 "chapter5.html#NestedSubflow":[2,5,2],
 "chapter5.html#Subflow":[2,5,0],
 "chapter6.html":[2,6],
+"chapter6.html#C6CustomizeYourOwnObserver":[2,6,3],
 "chapter6.html#C6MonitorThreadActivities":[2,6,2],
 "chapter6.html#C6ThreadSafety":[2,6,1],
 "chapter6.html#C6_MasterWorkersAndExecutor":[2,6,0],

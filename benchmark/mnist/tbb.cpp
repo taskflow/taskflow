@@ -108,6 +108,8 @@ void run_tbb(MNIST& D, unsigned num_threads) {
     }
   } // End of all epoch
 
+  return;
+
   for(size_t i=0; i<num_par_shf; i++) {
     shuffle_tasks[i]->try_put(continue_msg());
   }

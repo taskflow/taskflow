@@ -12,9 +12,9 @@ A fast C++ *header-only* library to help you quickly write parallel programs wit
 
 # Why Cpp-Taskflow?
 
-Cpp-Taskflow is by far faster, more expressive, fewer lines of code, and easier for drop-in integration
+Cpp-Taskflow is by far faster, more expressive, and easier for drop-in integration
 than existing parallel task programming libraries such as [OpenMP Tasking][OpenMP Tasking] 
-and Intel [TBB FlowGraph][TBB FlowGraph].
+and Intel [TBB FlowGraph][TBB FlowGraph] in handling complex parallel workloads.
 
 ![](image/performance.jpg)
 
