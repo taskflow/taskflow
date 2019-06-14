@@ -231,7 +231,7 @@ class Executor {
     void _invoke_static_work(unsigned, Node*);
     void _invoke_dynamic_work(unsigned, Node*, Subflow&);
     void _init_module_node(Node*);
-    void _tear_down_topology(Topology&); 
+    void _tear_down_topology(Topology*); 
 };
 
 // Constructor
@@ -682,7 +682,7 @@ inline void Executor::_invoke(unsigned me, Node* node) {
   if(num_successors == 0) {
     if(--(node->_topology->_num_sinks) == 0) {
       if(_workers.size() > 0) {   // finishing this topology
-        _tear_down_topology(*node->_topology);
+        _tear_down_topology(node->_topology);
       }
     }
   }
@@ -742,22 +742,22 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred) {
 }
 
 // Function: _tear_down_topology
-inline void Executor::_tear_down_topology(Topology& tpg) {
+inline void Executor::_tear_down_topology(Topology* tpg) {
 
-  auto &f = tpg._taskflow;
+  auto &f = tpg->_taskflow;
 
   //assert(&tpg == &(f._topologies.front()));
 
   // case 1: we still need to run the topology again
-  if(!std::invoke(tpg._pred)) {
-    tpg._recover_num_sinks();
-    _schedule(tpg._sources); 
+  if(!std::invoke(tpg->_pred)) {
+    tpg->_recover_num_sinks();
+    _schedule(tpg->_sources); 
   }
   // case 2: the final run of this topology
   else {
     
-    if(tpg._call != nullptr) {
-      std::invoke(tpg._call);
+    if(tpg->_call != nullptr) {
+      std::invoke(tpg->_call);
     }
 
     f._mtx.lock();
@@ -766,7 +766,7 @@ inline void Executor::_tear_down_topology(Topology& tpg) {
     if(f._topologies.size() > 1) {
 
       // Set the promise
-      tpg._promise.set_value();
+      tpg->_promise.set_value();
       f._topologies.pop_front();
       f._mtx.unlock();
 
@@ -782,7 +782,7 @@ inline void Executor::_tear_down_topology(Topology& tpg) {
       assert(f._topologies.size() == 1);
       // Need to back up the promise first here becuz taskflow might be 
       // destroy before taskflow leaves
-      auto p {std::move(tpg._promise)};
+      auto p {std::move(tpg->_promise)};
 
       f._topologies.pop_front();
 
