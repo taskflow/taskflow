@@ -184,6 +184,81 @@ TEST_CASE("PassiveVector" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: Pool
+// --------------------------------------------------------
+TEST_CASE("ObjectPool" * doctest::timeout(300)) {
+
+  auto fork = [&] (unsigned N) {
+    const int M = 2048 * N;
+    std::atomic<int> counter = M;
+    std::atomic<int> recycle = M;
+    std::mutex mutex;
+    std::vector<int*> objects;
+    std::vector<std::thread> threads; 
+
+    // allocate
+    for(unsigned t=1; t<=N; ++t) {
+      threads.emplace_back([&] () {
+        while(1) {
+          if(int c = --counter; c < 0) {
+            break;
+          }
+          else {
+            auto ptr = tf::per_thread_object_pool<int>().get(c);
+            std::scoped_lock lock(mutex);
+            objects.push_back(ptr);
+          }
+        }
+      });
+    }
+    for(auto& thread : threads) {
+      thread.join();
+    }
+    threads.clear();
+
+    REQUIRE(objects.size() == M);
+
+    auto sum = std::accumulate(objects.begin(), objects.end(), 0,
+      [] (int s, int* v) { return s + *v; }
+    );
+
+    REQUIRE(sum == (M-1)*M / 2);
+
+    // recycle
+    for(unsigned t=1; t<=N; ++t) {
+      threads.emplace_back([&] () {
+        while(1) {
+          if(int r = --recycle; r < 0) {
+            break;
+          }
+          else {
+            std::scoped_lock lock(mutex);
+            REQUIRE(!objects.empty());
+            tf::per_thread_object_pool<int>().recycle(objects.back());
+            objects.pop_back();
+          }
+        }
+      });
+    }
+    for(auto& thread : threads) {
+      thread.join();
+    }
+    threads.clear();
+
+    REQUIRE(objects.size() == 0);
+  };
+
+  SUBCASE("OneThread")    { fork(1); }
+  SUBCASE("TwoThread")    { fork(2); }
+  SUBCASE("ThreeThreads") { fork(3); }
+  SUBCASE("FourThreads")  { fork(4); }
+  SUBCASE("FiveThreads")  { fork(5); }
+  SUBCASE("SixThreads")   { fork(6); }
+  SUBCASE("SevenThreads") { fork(7); }
+  SUBCASE("EightThreads") { fork(8); }
+}
+
+// --------------------------------------------------------
 // Testcase: SingularAllocator
 // --------------------------------------------------------
 TEST_CASE("SingularAllocator" * doctest::timeout(300)) {

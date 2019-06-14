@@ -177,6 +177,44 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: Creation
+// --------------------------------------------------------
+TEST_CASE("Creation" * doctest::timeout(300)) {
+
+  std::vector<int> dummy(1024, -1);
+
+  auto create_taskflow = [&] () {
+    for(int i=0; i<1024; ++i) {
+      tf::Taskflow tf;
+      tf.parallel_for(dummy.begin(), dummy.end(), [] (int) {});
+    }
+  };
+
+  SUBCASE("One") {
+    create_taskflow();
+  }
+
+  SUBCASE("Two") {
+    std::thread t1(create_taskflow);
+    std::thread t2(create_taskflow);
+    t1.join();
+    t2.join();
+  }
+  
+  SUBCASE("Four") {
+    std::thread t1(create_taskflow); 
+    std::thread t2(create_taskflow); 
+    std::thread t3(create_taskflow); 
+    std::thread t4(create_taskflow); 
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+  }
+
+}
+
+// --------------------------------------------------------
 // Testcase: Run
 // --------------------------------------------------------
 TEST_CASE("Run" * doctest::timeout(300)) {

@@ -1,6 +1,7 @@
 // 2019/06/11 - modified by Tsung-Wei Huang
 //  - fixed the bug in calling observer while the user
 //    may clear the data
+//  - added object pool for nodes
 //
 // 2019/05/17 - modified by Chun-Xun Lin
 //  - moved topology to taskflow
