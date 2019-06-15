@@ -6,7 +6,8 @@
 #include <taskflow/taskflow.hpp>  // the only include you need
 
 int main(){
-
+  
+  tf::Executor executor;
   tf::Taskflow taskflow;
   
   auto [A, B, C, D] = taskflow.emplace( 
@@ -21,7 +22,7 @@ int main(){
   B.precede(D);  // D runs after B         //    +---->| C |-----+            
   C.precede(D);  // D runs after C         //          +---+
 
-  tf::Executor().run(taskflow);  // create an executor to run the taskflow
+  executor.run(taskflow).get();
 
   return 0;
 }

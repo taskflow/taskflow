@@ -1,11 +1,5 @@
-// 2019/05/14 - modified by Tsung-Wei Huang
-//  - isolated executor from taskflow
-//
-// 2019/02/15 - modified by Tsung-Wei Huang
-//  - refactored the code  
-//
-// 2019/01/17 - created by Chun-Xun
-//  - added example of using the Framework
+// This example demonstrates how to use different methods to
+// run a taskflow object.
 
 #include <taskflow/taskflow.hpp>  
 

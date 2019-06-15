@@ -1,3 +1,6 @@
+// This program demonstrates how to use cpp-taskflow to
+// write loop-based parallelism.
+
 #include <taskflow/taskflow.hpp>
 #include <cassert>
 #include <numeric>
@@ -5,25 +8,31 @@
 // Procedure: parallel_for_on_range
 void parallel_for_on_range(int N) {
 
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
   std::vector<int> range(N);
   std::iota(range.begin(), range.end(), 0);
 
-  tf::Taskflow tf;
-  tf.parallel_for(range.begin(), range.end(), [&] (const int i) { 
+  taskflow.parallel_for(range.begin(), range.end(), [&] (const int i) { 
     printf("parallel_for on container item: %d\n", i);
   });
-  tf::Executor().run(tf);
+
+  executor.run(taskflow).get();
 }
 
 // Procedure: parallel_for_on_index
 void parallel_for_on_index(int N) {
-  tf::Taskflow tf;
+  
+  tf::Executor executor;
+  tf::Taskflow taskflow;
 
   // [0, N) with step size 1
-  tf.parallel_for(0, N, 1, [] (int i) {
+  taskflow.parallel_for(0, N, 1, [] (int i) {
     printf("parallel_for on index: %d\n", i);
   });
-  tf::Executor().run(tf);
+
+  executor.run(taskflow).get();
 }
 
 // ----------------------------------------------------------------------------
