@@ -320,6 +320,23 @@ target_link_libraries(
 )
 set_target_properties(parallel_dnn PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+## benchmark 6: matrix multiplication
+message(STATUS "benchmark 6: matrix multiplication")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/matrix_multiplication)
+add_executable(
+  matrix_multiplication 
+  ${TF_BENCHMARK_DIR}/matrix_multiplication/main.cpp
+  ${TF_BENCHMARK_DIR}/matrix_multiplication/omp.cpp
+  ${TF_BENCHMARK_DIR}/matrix_multiplication/tbb.cpp
+  ${TF_BENCHMARK_DIR}/matrix_multiplication/taskflow.cpp
+)
+target_include_directories(matrix_multiplication PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  matrix_multiplication 
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
+)
+set_target_properties(matrix_multiplication PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
 endif()
 
 # -----------------------------------------------------------------------------
