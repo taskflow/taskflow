@@ -307,7 +307,7 @@ inline void Executor::_spawn(unsigned N) {
 // Function: _find_victim
 inline unsigned Executor::_find_victim(unsigned thief) {
   
-  unsigned l = 0;
+  /*unsigned l = 0;
   unsigned r = _workers.size() - 1;
   unsigned vtm = std::uniform_int_distribution<unsigned>{l, r}(
     _workers[thief].rdgen
@@ -324,15 +324,15 @@ inline unsigned Executor::_find_victim(unsigned thief) {
     if(++vtm; vtm == _workers.size()) {
       vtm = 0;
     }
-  }
+  } */
 
-  /*// try to look for a task from other workers
+  // try to look for a task from other workers
   for(unsigned vtm=0; vtm<_workers.size(); ++vtm){
     if((thief == vtm && !_queue.empty()) ||
        (thief != vtm && !_workers[vtm].queue.empty())) {
       return vtm;
     }
-  }*/
+  }
 
   return _workers.size();
 }
@@ -343,10 +343,10 @@ inline void Executor::_explore_task(unsigned thief, std::optional<Node*>& t) {
   //assert(_workers[thief].queue.empty());
   assert(!t);
 
-  //const unsigned l = 0;
-  //const unsigned r = _workers.size() - 1;
+  const unsigned l = 0;
+  const unsigned r = _workers.size() - 1;
 
-  const size_t F = (_workers.size() + 1);
+  const size_t F = (_workers.size() + 1) << 1;
   const size_t Y = 100;
 
   steal_loop:
@@ -359,7 +359,7 @@ inline void Executor::_explore_task(unsigned thief, std::optional<Node*>& t) {
   // explore
   while(!_done) {
   
-    /*unsigned vtm = std::uniform_int_distribution<unsigned>{l, r}(
+    unsigned vtm = std::uniform_int_distribution<unsigned>{l, r}(
       _workers[thief].rdgen
     );
       
@@ -370,12 +370,12 @@ inline void Executor::_explore_task(unsigned thief, std::optional<Node*>& t) {
     }
 
     if(f++ > F) {
-      if(std::this_thread::yield(); y++ > 100) {
+      if(std::this_thread::yield(); y++ > Y) {
         break;
       }
-    }*/
+    }
 
-    if(auto vtm = _find_victim(thief); vtm != _workers.size()) {
+    /*if(auto vtm = _find_victim(thief); vtm != _workers.size()) {
       t = (vtm == thief) ? _queue.steal() : _workers[vtm].queue.steal();
       // successful thief
       if(t) {
@@ -388,7 +388,7 @@ inline void Executor::_explore_task(unsigned thief, std::optional<Node*>& t) {
           break;
         }
       }
-    }
+    }*/
   }
   
   // We need to ensure at least one thieve if there is an
