@@ -273,6 +273,7 @@ add_executable(
   binary_tree 
   ${TF_BENCHMARK_DIR}/binary_tree/main.cpp
   ${TF_BENCHMARK_DIR}/binary_tree/tbb.cpp
+  ${TF_BENCHMARK_DIR}/binary_tree/omp.cpp
   ${TF_BENCHMARK_DIR}/binary_tree/taskflow.cpp
 )
 target_include_directories(binary_tree PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)

@@ -2,7 +2,7 @@
 #include <taskflow/taskflow.hpp> 
 
 // binary_tree_taskflow
-void binary_tree_taskflow(unsigned num_layers, unsigned num_threads) {
+void binary_tree_taskflow(size_t num_layers, unsigned num_threads) {
 
   std::atomic<size_t> counter {0};
 
@@ -30,7 +30,7 @@ void binary_tree_taskflow(unsigned num_layers, unsigned num_threads) {
 }
 
 std::chrono::microseconds measure_time_taskflow(
-  unsigned num_layers,
+  size_t num_layers,
   unsigned num_threads
 ) {
   auto beg = std::chrono::high_resolution_clock::now();

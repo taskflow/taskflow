@@ -3,7 +3,7 @@
 #include <tbb/flow_graph.h>
 
 // binary_tree_tbb
-void binary_tree_tbb(unsigned num_layers, unsigned num_threads) {
+void binary_tree_tbb(size_t num_layers, unsigned num_threads) {
 
   using namespace tbb;
   using namespace tbb::flow;
@@ -44,7 +44,7 @@ void binary_tree_tbb(unsigned num_layers, unsigned num_threads) {
 }
 
 std::chrono::microseconds measure_time_tbb(
-  unsigned num_layers,
+  size_t num_layers,
   unsigned num_threads
 ) {
   auto beg = std::chrono::high_resolution_clock::now();
