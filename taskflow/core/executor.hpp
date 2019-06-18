@@ -75,6 +75,7 @@ class Executor {
   struct Worker {
     std::mt19937 rdgen { std::random_device{}() };
     WorkStealingQueue<Node*> queue;
+    std::optional<Node*> cache;
   };
     
   struct PerThread {
@@ -226,7 +227,7 @@ class Executor {
     void _spawn(unsigned);
     void _exploit_task(unsigned, std::optional<Node*>&);
     void _explore_task(unsigned, std::optional<Node*>&);
-    void _schedule(Node*);
+    void _schedule(Node*, bool);
     void _schedule(PassiveVector<Node*>&);
     void _invoke(unsigned, Node*);
     void _invoke_static_work(unsigned, Node*);
@@ -417,10 +418,21 @@ inline void Executor::_exploit_task(unsigned i, std::optional<Node*>& t) {
 
     do {
       _invoke(i, *t);
-      t = worker.queue.pop();
+
+      if(worker.cache) {
+        t = *worker.cache;
+        worker.cache = std::nullopt;
+      }
+      else {
+        t = worker.queue.pop();
+      }
+
     } while(t);
 
     --_num_actives;
+  }
+  else {
+    assert(!_workers[i].cache);
   }
 }
 
@@ -478,7 +490,7 @@ inline void Executor::remove_observer() {
 // Procedure: _schedule
 // The main procedure to schedule a give task node.
 // Each task node has two types of tasks - regular and subflow.
-inline void Executor::_schedule(Node* node) {
+inline void Executor::_schedule(Node* node, bool bypass) {
   
   // module node need another initialization
   if(node->_module != nullptr && !node->is_spawned()) {
@@ -493,7 +505,13 @@ inline void Executor::_schedule(Node* node) {
 
   // caller is a worker to this pool
   if(auto& pt = _per_thread(); pt.pool == this) {
-    _workers[pt.worker_id].queue.push(node);
+    if(!bypass) {
+      _workers[pt.worker_id].queue.push(node);
+    }
+    else {
+      assert(!_workers[pt.worker_id].cache);
+      _workers[pt.worker_id].cache = node;
+    }
     return;
   }
 
@@ -673,10 +691,20 @@ inline void Executor::_invoke(unsigned me, Node* node) {
   }
 
   // At this point, the node storage might be destructed.
+  Node* cache {nullptr};
+
   for(size_t i=0; i<num_successors; ++i) {
     if(--(node->_successors[i]->_num_dependents) == 0) {
-      _schedule(node->_successors[i]);
+      if(cache) {
+        //_schedule(node->_successors[i]);
+        _schedule(cache, false);
+      }
+      cache = node->_successors[i];
     }
+  }
+
+  if(cache) {
+    _schedule(cache, true);
   }
 
   // A node without any successor should check the termination of topology
