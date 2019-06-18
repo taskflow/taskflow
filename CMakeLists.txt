@@ -283,8 +283,25 @@ target_link_libraries(
 )
 set_target_properties(binary_tree PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-## benchmark 4: MNIST
-message(STATUS "benchmark 4: mnist")
+## benchmark 4: linear_chain
+message(STATUS "benchmark 4: linear_chain")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/linear_chain)
+add_executable(
+  linear_chain
+  ${TF_BENCHMARK_DIR}/linear_chain/main.cpp
+  ${TF_BENCHMARK_DIR}/linear_chain/tbb.cpp
+  ${TF_BENCHMARK_DIR}/linear_chain/omp.cpp
+  ${TF_BENCHMARK_DIR}/linear_chain/taskflow.cpp
+)
+target_include_directories(linear_chain PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  linear_chain 
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
+)
+set_target_properties(linear_chain PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+## benchmark 5: MNIST
+message(STATUS "benchmark 5: mnist")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/mnist)
 add_executable(
   mnist 
@@ -302,8 +319,8 @@ target_link_libraries(
 )
 set_target_properties(mnist PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-## benchmark 5: Parallel DNN
-message(STATUS "benchmark 5: Parallel DNN")
+## benchmark 6: Parallel DNN
+message(STATUS "benchmark 6: Parallel DNN")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/parallel_dnn)
 add_executable(
   parallel_dnn 
@@ -321,8 +338,8 @@ target_link_libraries(
 )
 set_target_properties(parallel_dnn PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-## benchmark 6: matrix multiplication
-message(STATUS "benchmark 6: matrix multiplication")
+## benchmark 7: matrix multiplication
+message(STATUS "benchmark 7: matrix multiplication")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/matrix_multiplication)
 add_executable(
   matrix_multiplication 

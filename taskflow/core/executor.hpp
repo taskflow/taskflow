@@ -1,3 +1,7 @@
+// 2019/06/18 - modified by Tsung-Wei Huang
+//  - fixed the cache to enable continuity
+//  - TODO: do we need a special optimization for 0 workers?
+//
 // 2019/06/11 - modified by Tsung-Wei Huang
 //  - fixed the bug in calling observer while the user
 //    may clear the data
@@ -5,10 +9,6 @@
 //
 // 2019/05/17 - modified by Chun-Xun Lin
 //  - moved topology to taskflow
-//  - TODO: can we use aggressive find_victim method
-//          to replace the spin?
-//  - TODO: need to check why one worker runs slower
-//          than sequential version
 // 
 // 2019/05/14 - modified by Tsung-Wei Huang
 //  - isolated the executor from the taskflow
@@ -208,7 +208,7 @@ class Executor {
     std::vector<std::thread> _threads;
 
     WorkStealingQueue<Node*> _queue;
-    
+
     std::atomic<size_t> _num_actives {0};
     std::atomic<size_t> _num_thieves {0};
     //std::atomic<size_t> _num_idlers  {0};
@@ -407,6 +407,8 @@ inline void Executor::_explore_task(unsigned thief, std::optional<Node*>& t) {
 
 // Procedure: _exploit_task
 inline void Executor::_exploit_task(unsigned i, std::optional<Node*>& t) {
+  
+  assert(!_workers[i].cache);
 
   if(t) {
 
@@ -430,9 +432,6 @@ inline void Executor::_exploit_task(unsigned i, std::optional<Node*>& t) {
     } while(t);
 
     --_num_actives;
-  }
-  else {
-    assert(!_workers[i].cache);
   }
 }
 
@@ -499,7 +498,8 @@ inline void Executor::_schedule(Node* node, bool bypass) {
   
   //no worker thread available
   if(_workers.size() == 0){
-    _invoke(0, node);
+    _queue.push(node);
+    //_invoke(0, node);
     return;
   }
 
@@ -543,7 +543,8 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
   //no worker thread available
   if(_workers.size() == 0){
     for(auto node: nodes){
-      _invoke(0, node);
+      _queue.push(node);
+      //_invoke(0, node);
     }
     return;
   }
@@ -851,6 +852,13 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
 
     do {
       _schedule(tpg._sources);
+
+      auto node = _queue.pop();
+      while(node) {
+        _invoke(0, *node);
+        node = _queue.unsync_pop();
+      }
+
       tpg._recover_num_sinks();
     } while(!std::invoke(tpg._pred));
 
