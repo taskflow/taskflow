@@ -99,6 +99,11 @@ def main():
   rows = len(args.benchmarks)
   cols = len(args.threads)
 
+  figc = plot.rcParams["figure.figsize"][0]
+  figr = plot.rcParams["figure.figsize"][1]
+
+  plot.rcParams["figure.figsize"] = [figc*cols*0.5, figr*rows*0.5]
+
   fig, axes = plot.subplots(rows, cols)
   plot_index = 1
 

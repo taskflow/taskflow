@@ -643,11 +643,11 @@ auto [S, T] = tf.parallel_for(
   [] (int i) { 
     std::cout << "AB and CD run in parallel" << '\n';
   },
-  2  // group two tasks at a time
+  2  // partition the range to two groups
 );
 ```
 
-By default, taskflow performs an even partition over worker threads
+By default, taskflow performs an even partition over the maximum hardware concurrency
 if the group size is not specified (or equal to 0).
 
 In addition to range-based iterator, `parallel_for` has another overload of index-based loop.
@@ -661,7 +661,7 @@ auto [S, T] = tf.parallel_for(
   [] (int i) {
     std::cout << "parallel_for on index " << i << std::endl;
   }, 
-  2  // group two tasks at a time
+  2  // partition the range to two groups
 );
 // will print 0, 2, 4, 6, 8 (three groups, {0, 2}, {4, 6}, {8})
 ```

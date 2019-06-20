@@ -11,19 +11,19 @@ void matrix_multiplication_taskflow(unsigned num_threads) {
     for(int j=0; j<N; ++j) {
       a[i][j] = i + j;
     }
-  });
+  }, num_threads);
   
   auto pb = taskflow.parallel_for(0, N, 1, [&] (int i) { 
     for(int j=0; j<N; ++j) {
       b[i][j] = i * j;
     }
-  });
+  }, num_threads);
   
   auto pc = taskflow.parallel_for(0, N, 1, [&] (int i) { 
     for(int j=0; j<N; ++j) {
       c[i][j] = 0;;
     }
-  });
+  }, num_threads);
 
   auto pr = taskflow.parallel_for(0, N, 1, [&] (int i) {
     for(int j=0; j<N; ++j) {
@@ -31,7 +31,7 @@ void matrix_multiplication_taskflow(unsigned num_threads) {
         c[i][j] += a[i][k] * b[k][j];
       }
     }
-  });
+  }, num_threads);
 
   pa.second.precede(pr.first);
   pb.second.precede(pr.first);

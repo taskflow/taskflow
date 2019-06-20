@@ -70,12 +70,12 @@ class FlowBuilder {
     @param beg iterator to the beginning (inclusive)
     @param end iterator to the end (exclusive)
     @param callable a callable object to be applied to 
-    @param chunk number of works per thread
+    @param partitions number of partitions
 
     @return a pair of Task handles to the beginning and the end of the graph
     */
     template <typename I, typename C>
-    std::pair<Task, Task> parallel_for(I beg, I end, C&& callable, size_t chunk = 0);
+    std::pair<Task, Task> parallel_for(I beg, I end, C&& callable, size_t partitions = 0);
     
     /**
     @brief constructs a task dependency graph of index-based parallel_for
@@ -90,12 +90,12 @@ class FlowBuilder {
     @param end index to the end (exclusive)
     @param step step size 
     @param callable a callable object to be applied to
-    @param chunk number of works per thread
+    @param partitions number of partitions
 
     @return a pair of Task handles to the beginning and the end of the graph
     */
     template <typename I, typename C, std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr >
-    std::pair<Task, Task> parallel_for(I beg, I end, I step, C&& callable, size_t chunk = 0);
+    std::pair<Task, Task> parallel_for(I beg, I end, I step, C&& callable, size_t partitions = 0);
     
     /**
     @brief construct a task dependency graph of parallel reduction
@@ -312,7 +312,61 @@ inline Task FlowBuilder::placeholder() {
   return Task(node);
 }
 
-// Function: parallel_for    
+// Function: parallel_for
+template <typename I, typename C>
+std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, C&& c, size_t p){
+
+  using category = typename std::iterator_traits<I>::iterator_category;
+  
+  auto S = placeholder();
+  auto T = placeholder();
+  auto D = std::distance(beg, end);
+  
+  // special case
+  if(D == 0) {
+    S.precede(T);
+    return std::make_pair(S, T);
+  }
+  
+  // default partition equals to the worker count
+  if(p == 0) {
+    p = std::max(unsigned{1}, std::thread::hardware_concurrency());
+  }
+
+  size_t b = (D + p - 1) / p;           // block size
+  size_t r = (D % p) ? D % p : p;       // workers to take b
+  size_t w = 0;                         // worker id
+
+  while(beg != end) {
+
+    auto e = beg;
+    size_t g = (w++ >= r) ? b - 1 : b;
+    
+    // Case 1: random access iterator
+    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
+      size_t x = std::distance(beg, end);
+      std::advance(e, std::min(x, g));
+    }
+    // Case 2: non-random access iterator
+    else {
+      for(size_t i=0; i<g && e != end; ++e, ++i);
+    }
+      
+    // Create a task
+    auto task = emplace([beg, e, c] () mutable {
+      std::for_each(beg, e, c);
+    });
+    S.precede(task);
+    task.precede(T);
+
+    // adjust the pointer
+    beg = e;
+  }
+  
+  return std::make_pair(S, T); 
+}
+
+/*// Function: parallel_for    
 template <typename I, typename C>
 std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, C&& c, size_t g) {
 
@@ -353,7 +407,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, C&& c, size_t g) {
   }
 
   return std::make_pair(source, target); 
-}
+}*/
 
 // Function: parallel_for
 template <
@@ -361,7 +415,7 @@ template <
   typename C, 
   std::enable_if_t<std::is_arithmetic_v<I>, void>*
 >
-std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t g) {
+std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t p) {
 
   using T = std::decay_t<I>;
 
@@ -370,22 +424,51 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
       "invalid range [", beg, ", ", end, ") with step size ", s
     );
   }
-    
+
+  // compute the distance
+  size_t D;
+
+  if constexpr(std::is_integral_v<T>) {
+    if(beg <= end) {  
+      D = (end - beg + s - 1) / s;
+    }
+    else {
+      D = (end - beg + s + 1) / s;
+    }
+  }
+  else if constexpr(std::is_floating_point_v<T>) {
+    D = std::ceil((end - beg) / s);
+  }
+  else {
+    static_assert(dependent_false_v<T>, "can't deduce distance");
+  }
+
+  // source and target 
   auto source = placeholder();
   auto target = placeholder();
 
-  if(g == 0) {
-    g = _estimate_chunk_size(beg, end, s);
+  // special case
+  if(D == 0) {
+    source.precede(target);
+    return std::make_pair(source, target);
   }
+  
+  // default partition equals to the worker count
+  if(p == 0) {
+    p = std::max(unsigned{1}, std::thread::hardware_concurrency());
+  }
+  
+  size_t b = (D + p - 1) / p;           // block size
+  size_t r = (D % p) ? D % p : p;       // workers to take b
+  size_t w = 0;                         // worker id
 
   // Integer indices
   if constexpr(std::is_integral_v<T>) {
-
-    auto offset = static_cast<T>(g) * s;
-
     // positive case
     if(beg < end) {
       while(beg != end) {
+        size_t g = (w++ >= r) ? b - 1 : b;
+        auto offset = static_cast<T>(g) * s;
         auto e = std::min(beg + offset, end);
         auto task = emplace([=] () mutable {
           for(auto i=beg; i<e; i+=s) {
@@ -400,6 +483,8 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
     // negative case
     else if(beg > end) {
       while(beg != end) {
+        size_t g = (w++ >= r) ? b - 1 : b;
+        auto offset = static_cast<T>(g) * s;
         auto e = std::max(beg + offset, end);
         auto task = emplace([=] () mutable {
           for(auto i=beg; i>e; i+=s) {
@@ -415,6 +500,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
   // We enumerate the entire sequence to avoid floating error
   else if constexpr(std::is_floating_point_v<T>) {
     size_t N = 0;
+    size_t g = b;
     auto B = beg;
     for(auto i=beg; (beg<end ? i<end : i>end); i+=s, ++N) {
       if(N == g) {
@@ -429,6 +515,9 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
         B = i;
         source.precede(task);
         task.precede(target);
+        if(++w >= r) {
+          g = b - 1;
+        }
       }
     }
 

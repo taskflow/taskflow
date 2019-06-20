@@ -9,8 +9,8 @@ to create a task dependency graph of parallel for-loop.
 @section RangeBasedForLoop Range-based For-loop
 
 Cpp-Taskflow has a STL-style method 
-tf::Taskflow::parallel_for(I beg, I end, C&& callable, size_t chunk)
-that takes a range of items and applies a callable to each of the item in parallel.
+tf::Taskflow::parallel_for(I beg, I end, C&& callable, size_t partitions)
+that partitions a range of items and applies a callable to each item in the partition in parallel.
 The method constructs a task dependency graph representing this workload
 and returns a task pair as two synchronization points to this task graph.
 
@@ -31,9 +31,10 @@ and returns a task pair as two synchronization points to this task graph.
 
 The above code generates the following task dependency graph. 
 The label 0x56\* represents an internal task node to execute the callable object.
-By default (@c chunk=0), Cpp-Taskflow evenly partitions and distributes the workload 
-to all threads.
-In our example of eight tasks and four workers, each internal node is responsible for two items.
+By default (@c partitions=0), Cpp-Taskflow evenly partitions and distributes the workload 
+across the maximum hardware concurrency.
+Suppose our example has four logical cores,
+each internal node corresponds to a partition taking two items (eight tasks in total).
 
 @image html images/parallel_for1.png width=60%
 
@@ -63,22 +64,22 @@ T
 
 By default, Cpp-Taskflow partitions the workload evenly across the workers.
 In some cases, it is useful to disable this feature and apply user-specified partition.
-The method @c parallel_for tasks an unsigned integer @c chunk as 
-the number of items in each partition.
+The method @c parallel_for tasks an unsigned integer @c partitions as 
+the number of partitions over the items.
 
 @code{.cpp}
 auto [S, T] = taskflow.parallel_for(items.begin(), items.end(), [] (int item) {
   std::cout << std::this_thread::get_id() << " runs " << item << std::endl;
-}, 1);
+}, 8);
 @endcode
 
-The above example will force each partition to run exactly one item.
-This can be useful when you have unbalanced workload
+The above example will force each of the eight partitions to run exactly one item.
+This can be useful when you have unbalanced workload per item
 and would like to enable more efficient parallelization.
 
 @image html images/parallel_for2.png width=100%
 
-You can leave the chunk size to 0 to use our default partition strategy.
+Again, you can leave the partition variable to 0 to use our default partition strategy.
 
 
 
@@ -104,7 +105,7 @@ for(auto item : items) {
 @section IndexBasedForLoop Index-based For-loop
 
 Cpp-Taskflow provides an overload 
-tf::Taskflow::parallel_for(I beg, I end, I step, C&& callable, size_t chunk) 
+tf::Taskflow::parallel_for(I beg, I end, I step, C&& callable, size_t partitions) 
 to parallelize an index-based for-loop. 
 It takes three numbers @c beg, @c end, and @c step of the same type @c I
 and applies @c callable to each index in the range `[beg, end)` with 
@@ -127,17 +128,17 @@ It also works on the opposite order with negative step size.
 4: // print 10, 8, 6, 4, 2
 @endcode
 
-Similarly, you can specify a chunk size to group the works per thread.
+Similarly, you can explicitly specify the partition size:
 
 @code{.cpp}
 1: taskflow.parallel_for(0, 10, 2, [] (int i) {
 2:   std::cout << "parallel on " << i << std::endl;
-3: }, 2);
-4: // print 0, 2, 4, 6, 8 (three groups {0, 2}, {4, 6}, {8})
+3: }, 3);
+4: // print 0, 2, 4, 6, 8 (three partitions {0, 2}, {4, 6}, {8})
 @endcode
 
 By default, Cpp-Taskflow performs even partition across the number of available threads 
-if no group size is given.
+if no partition size is given.
 
 
 @section Chapter3Example1 Example 1: Parallel Map
@@ -201,7 +202,7 @@ with other tasks.
 15:
 16:   auto [S, T] = taskflow.parallel_for(items.begin(), items.end(), [&] (int item) {
 17:     sum.fetch_add(item, std::memory_order_relaxed);
-18:   }, 128);
+18:   }, 8);
 19:
 20:   tf::Task T2 = taskflow.emplace([&] () {  // create a output task
 21:     std::cout << "sum is: " << sum << std::endl;
@@ -231,7 +232,7 @@ Debrief:
 @li Line 7 creates a vector of 1024 uninitialized integers
 @li Line 8 creates an atomic integer variable
 @li Line 10-14 creates a task that captures the vector to initialize all items to one
-@li Line 16-18 sums up all items with each thread running on a partition of 128 items (total 1024/128=8 partitions)
+@li Line 16-18 sums up all items with each thread running on a partition of 1024/8=128 items
 @li Line 20-22 creates a task that outputs the summation value
 @li Line 24-25 pipelines the parallel-for workload with the two tasks
 @li Line 27 dispatches the graph to threads and blocks until the execution completes
