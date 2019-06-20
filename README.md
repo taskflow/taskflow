@@ -628,8 +628,7 @@ auto [S, T] = tf.parallel_for(
 // add dependencies via S and T.
 ```
 
-Changing the group size can force intra-group tasks to run sequentially
-and inter-group tasks to run in parallel.
+Partition size can affect the parallelism both inside and outside a partition.
 Depending on applications, different group sizes can result in significant performance hit.
 
 <img align="right" width="20%" src="image/parallel_for_2.png">
@@ -648,7 +647,7 @@ auto [S, T] = tf.parallel_for(
 ```
 
 By default, taskflow performs an even partition over the maximum hardware concurrency
-if the group size is not specified (or equal to 0).
+if the partition size is not specified (or equal to 0).
 
 In addition to range-based iterator, `parallel_for` has another overload of index-based loop.
 The first three argument to this overload indicates 
@@ -661,9 +660,9 @@ auto [S, T] = tf.parallel_for(
   [] (int i) {
     std::cout << "parallel_for on index " << i << std::endl;
   }, 
-  2  // partition the range to two groups
+  2  // partition the range to two
 );
-// will print 0, 2, 4, 6, 8 (three groups, {0, 2}, {4, 6}, {8})
+// will print 0, 2, 4, 6, 8 (three partitions, {0, 2}, {4, 6}, {8})
 ```
 
 You can also go opposite direction by reversing the starting index and the ending index
@@ -677,7 +676,7 @@ auto [S, T] = tf.parallel_for(
     std::cout << "parallel_for on index " << i << std::endl;
   }
 );
-// will print 10, 8, 6, 4, 2 (group size decided by taskflow)
+// will print 10, 8, 6, 4, 2 (partition size decided by taskflow)
 ```
 
 ### *reduce/transform_reduce*
