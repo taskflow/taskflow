@@ -106,7 +106,7 @@ int main(){
   B.precede(D);  // B runs before D                  //    |     +---+     |    
   C.precede(D);  // C runs before D                  //    +---->| C |-----+    
                                                      //          +---+          
-  executor.run(taskflow).get();
+  executor.run(taskflow);
 
   return 0;
 }

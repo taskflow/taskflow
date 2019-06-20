@@ -39,6 +39,44 @@ std::chrono::milliseconds measure_time_tbb(
   return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
 }
 
+// Procedure
+void mnist(
+  const std::string& model,
+  const unsigned min_epochs,
+  const unsigned max_epochs,
+  const unsigned num_threads, 
+  const unsigned num_rounds
+) {
+  
+  std::cout << std::setw(12) << "epochs"
+            << std::setw(12) << "runtime"
+            << std::endl;
+
+  for(unsigned epochs=min_epochs; epochs <= max_epochs; epochs += 10) {
+
+    double runtime  {0.0};
+
+    for(unsigned i=0; i<num_rounds; i++) {
+    
+      if(model == "tf") {
+        runtime += measure_time_taskflow(epochs, num_threads).count();
+      }
+      else if(model == "tbb") {
+        runtime += measure_time_tbb(epochs, num_threads).count();
+      }
+      else if(model == "omp") {
+        runtime += measure_time_omp(epochs, num_threads).count();
+      }
+      else assert(false);
+
+      std::cout << std::setw(12) << epochs
+                << std::setw(12) << runtime / num_rounds / 1e3
+                << std::endl;
+    }
+  }
+
+}
+
 // Function: main
 int main(int argc, char *argv[]){
 
@@ -47,8 +85,11 @@ int main(int argc, char *argv[]){
   unsigned num_threads {1}; 
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
-  unsigned num_epochs {10}; 
-  app.add_option("-e,--num_epochs", num_epochs, "number of epochs (default=10)");
+  unsigned max_epochs {100}; 
+  app.add_option("-E,--max_epochs", max_epochs, "max number of epochs (default=100)");
+  
+  unsigned min_epochs {10}; 
+  app.add_option("-e,--min_epochs", min_epochs, "min number of epochs (default=10)");
 
   unsigned num_rounds {1};  
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
@@ -63,34 +104,16 @@ int main(int argc, char *argv[]){
      });
 
   CLI11_PARSE(app, argc, argv);
+    
+  std::cout << "model=" << model << ' '
+            << "num_threads=" << num_threads << ' '
+            << "num_rounds=" << num_rounds << ' '
+            << "min_epochs=" << min_epochs << ' '
+            << "max_epochs=" << max_epochs << ' '
+            << std::endl;
 
-  double runtime  {0.0};
-
-  for(unsigned i=0; i<num_rounds; i++) {
+  mnist(model, min_epochs, max_epochs, num_threads, num_rounds);
   
-    std::cout << 'r' << i << ' '
-              << "model=" << model << ' '
-              << "num_threads=" << num_threads << ' '
-              << "num_rounds=" << num_rounds << ' '
-              << "num_epochs=" << num_epochs << ' '
-              << std::flush;
-
-    if(model == "tf") {
-      runtime += measure_time_taskflow(num_epochs, num_threads).count();
-    }
-    else if(model == "tbb") {
-      runtime += measure_time_tbb(num_epochs, num_threads).count();
-    }
-    else if(model == "omp") {
-      runtime += measure_time_omp(num_epochs, num_threads).count();
-    }
-    else assert(false);
-
-    std::cout << "avg_cpu(s)=" << runtime / (i+1) / 1e3 << std::endl;
-  }
-
-
-
   return EXIT_SUCCESS;
 }
 

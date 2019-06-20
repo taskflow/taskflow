@@ -94,9 +94,7 @@ class LevelGraph {
       _length_num = length;
 
       std::mt19937 g(0);  // fixed the seed for graph generator
-
-      //std::srand(std::time(nullptr));
-      std::srand(1);
+      std::srand(0);
 
       for(size_t l=0; l<level; ++l){
         
