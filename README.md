@@ -580,8 +580,8 @@ The table below summarizes a list of commonly used methods.
 | -------- | --------- | ------- | ----------- |
 | emplace  | callables | tasks   | create a task with a given callable(s) |
 | placeholder     | none        | task         | insert a node without any work; work can be assigned later |
-| parallel_for    | beg, end, callable, group | task pair | apply the callable in parallel and group-by-group to the result of dereferencing every iterator in the range | 
-| parallel_for    | beg, end, step, callable, group | task pair | apply the callable in parallel and group-by-group to a index-based range | 
+| parallel_for    | beg, end, callable, partitions | task pair | apply the callable in parallel and partition-by-partition to the result of dereferencing every iterator in the range | 
+| parallel_for    | beg, end, step, callable, partitions | task pair | apply the callable in parallel and partition-by-partition to a index-based range | 
 | reduce | beg, end, res, bop | task pair | reduce a range of elements to a single result through a binary operator | 
 | transform_reduce | beg, end, res, bop, uop | task pair | apply a unary operator to each element in the range and reduce them to a single result through a binary operator | 
 | num_workers     | none        | size | query the number of working threads in the pool |  

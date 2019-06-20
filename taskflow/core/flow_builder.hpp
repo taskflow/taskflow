@@ -62,7 +62,7 @@ class FlowBuilder {
     
     The task dependency graph applies a callable object 
     to the dereferencing of every iterator 
-    in the range [beg, end) chunk-by-chunk.
+    in the range [beg, end) partition-by-partition.
 
     @tparam I input iterator type
     @tparam C callable type
@@ -81,7 +81,7 @@ class FlowBuilder {
     @brief constructs a task dependency graph of index-based parallel_for
     
     The task dependency graph applies a callable object to every index 
-    in the range [beg, end) with a step size chunk-by-chunk.
+    in the range [beg, end) with a step size partition-by-partition.
 
     @tparam I arithmetic index type
     @tparam C callable type
@@ -271,9 +271,6 @@ class FlowBuilder {
 
     template <typename L>
     void _linearize(L&);
-
-    template <typename I>
-    size_t _estimate_chunk_size(I, I, I);
 };
 
 // Constructor
@@ -685,32 +682,32 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
   return std::make_pair(source, target); 
 }
 
-// Function: _estimate_chunk_size
-template <typename I>
-size_t FlowBuilder::_estimate_chunk_size(I beg, I end, I step) {
-
-  using T = std::decay_t<I>;
-      
-  size_t w = std::max(unsigned{1}, std::thread::hardware_concurrency());
-  size_t N = 0;
-
-  if constexpr(std::is_integral_v<T>) {
-    if(beg <= end) {  
-      N = (end - beg + step - 1) / step;
-    }
-    else {
-      N = (end - beg + step + 1) / step;
-    }
-  }
-  else if constexpr(std::is_floating_point_v<T>) {
-    N = static_cast<size_t>(std::ceil((end - beg) / step));
-  }
-  else {
-    static_assert(dependent_false_v<T>, "can't deduce chunk size");
-  }
-
-  return (N + w - 1) / w;
-}
+//// Function: _estimate_chunk_size
+//template <typename I>
+//size_t FlowBuilder::_estimate_chunk_size(I beg, I end, I step) {
+//
+//  using T = std::decay_t<I>;
+//      
+//  size_t w = std::max(unsigned{1}, std::thread::hardware_concurrency());
+//  size_t N = 0;
+//
+//  if constexpr(std::is_integral_v<T>) {
+//    if(beg <= end) {  
+//      N = (end - beg + step - 1) / step;
+//    }
+//    else {
+//      N = (end - beg + step + 1) / step;
+//    }
+//  }
+//  else if constexpr(std::is_floating_point_v<T>) {
+//    N = static_cast<size_t>(std::ceil((end - beg) / step));
+//  }
+//  else {
+//    static_assert(dependent_false_v<T>, "can't deduce chunk size");
+//  }
+//
+//  return (N + w - 1) / w;
+//}
 
 
 // Procedure: _linearize
