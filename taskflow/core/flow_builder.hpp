@@ -464,9 +464,9 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
     // positive case
     if(beg < end) {
       while(beg != end) {
-        size_t g = (w++ >= r) ? b - 1 : b;
-        auto offset = static_cast<T>(g) * s;
-        auto e = std::min(beg + offset, end);
+        auto g = (w++ >= r) ? b - 1 : b;
+        auto o = static_cast<T>(g) * s;
+        auto e = std::min(beg + o, end);
         auto task = emplace([=] () mutable {
           for(auto i=beg; i<e; i+=s) {
             c(i);
@@ -480,9 +480,9 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
     // negative case
     else if(beg > end) {
       while(beg != end) {
-        size_t g = (w++ >= r) ? b - 1 : b;
-        auto offset = static_cast<T>(g) * s;
-        auto e = std::max(beg + offset, end);
+        auto g = (w++ >= r) ? b - 1 : b;
+        auto o = static_cast<T>(g) * s;
+        auto e = std::max(beg + o, end);
         auto task = emplace([=] () mutable {
           for(auto i=beg; i>e; i+=s) {
             c(i);
