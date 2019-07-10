@@ -434,7 +434,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
     }
   }
   else if constexpr(std::is_floating_point_v<T>) {
-    D = std::ceil((end - beg) / s);
+    D = static_cast<size_t>(std::ceil((end - beg) / s));
   }
   else {
     static_assert(dependent_false_v<T>, "can't deduce distance");
