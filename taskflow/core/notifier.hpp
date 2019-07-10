@@ -80,7 +80,7 @@ class Notifier {
     };
   };
 
-  Notifier(std::vector<Waiter>& waiters) : _waiters{waiters} {
+  explicit Notifier(std::vector<Waiter>& waiters) : _waiters{waiters} {
     assert(waiters.size() < (1 << kWaiterBits) - 1);
     // Initialize epoch to something close to overflow to test overflow.
     _state = kStackMask | (kEpochMask - kEpochInc * waiters.size() * 2);

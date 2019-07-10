@@ -39,7 +39,7 @@ class WorkStealingQueue {
     //storage_type* S;
     T* S;
 
-    Array(int64_t c) : 
+    explicit Array(int64_t c) : 
       C {c},
       M {c-1},
       //S {new storage_type[C]} {
@@ -95,7 +95,7 @@ class WorkStealingQueue {
 
     @param capacity the capacity of the queue (must be power of 2)
     */
-    WorkStealingQueue(int64_t capacity = 1024);
+    explicit WorkStealingQueue(int64_t capacity = 1024);
 
     /**
     @brief destructs the queue
