@@ -594,14 +594,14 @@ inline void Executor::_init_module_node(Node* node) {
 
     PassiveVector<Node*> src;
 
-    for(auto n: node->_module->_graph.nodes()) {
+    for(auto& n: node->_module->_graph.nodes()) {
       n->_topology = node->_topology;
       if(n->num_dependents() == 0) {
-        src.push_back(n);
+        src.push_back(n.get());
       }
       if(n->num_successors() == 0) {
         n->precede(*node);
-        tgt.push_back(n);
+        tgt.push_back(n.get());
       }
     }
 
@@ -650,7 +650,7 @@ inline void Executor::_invoke(unsigned me, Node* node) {
       if(!node->_subgraph->empty()) {
         // For storing the source nodes
         PassiveVector<Node*> src; 
-        for(auto n: node->_subgraph->nodes()) {
+        for(auto& n: node->_subgraph->nodes()) {
           n->_topology = node->_topology;
           n->set_subtask();
           if(n->num_successors() == 0) {
@@ -662,7 +662,7 @@ inline void Executor::_invoke(unsigned me, Node* node) {
             }
           }
           if(n->num_dependents() == 0) {
-            src.push_back(n);
+            src.push_back(n.get());
           }
         }
 

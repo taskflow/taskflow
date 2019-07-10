@@ -17,84 +17,62 @@ class ObjectPool {
     ObjectPool(const ObjectPool& other) = delete;
     ObjectPool(ObjectPool&& other);
 
-    ~ObjectPool();
+    ~ObjectPool() = default;
 
     ObjectPool& operator = (const ObjectPool& other) = delete;
     ObjectPool& operator = (ObjectPool&& other);
   
-    template <typename... ArgsT>
-    T* get(ArgsT&&... args);
-
-    void recycle(T* obj);
-
     size_t size() const;
+
+    void enstack(std::unique_ptr<T>&& obj);
+
+    template <typename... ArgsT>
+    std::unique_ptr<T> destack(ArgsT&&... args);
 
   private:
     
-    std::vector<T*> _free_list;
+    std::vector<std::unique_ptr<T>> _stack;
 };
 
 // Move constructor
 template <typename T>
 ObjectPool<T>::ObjectPool(ObjectPool&& other) :
-  _free_list {std::move(other._free_list)} {
-}
-
-// Destructor
-template <typename T>
-ObjectPool<T>::~ObjectPool() {
-  for(T* ptr : _free_list) {
-    std::free(ptr);
-  }
+  _stack {std::move(other._stack)} {
 }
 
 // Move assignment
 template <typename T>
 ObjectPool<T>& ObjectPool<T>::operator = (ObjectPool&& other) {
-  _free_list = std::move(other._free_list);
+  _stack = std::move(other._stack);
   return *this;
 }
 
 // Function: size
 template <typename T>
 size_t ObjectPool<T>::size() const {
-  return _free_list.size();
+  return _stack.size();
 }
 
-// Function: get
+// Function: destack
 template <typename T>
 template <typename... ArgsT>
-T* ObjectPool<T>::get(ArgsT&&... args) {
-
-  T* ptr;
-
-  if(_free_list.empty()) {
-    ptr = static_cast<T*>(std::malloc(sizeof(T)));
+std::unique_ptr<T> ObjectPool<T>::destack(ArgsT&&... args) {
+  if(_stack.empty()) {
+    return std::make_unique<T>(std::forward<ArgsT>(args)...);
   }
   else {
-    ptr = _free_list.back();
-    _free_list.pop_back();
+    auto ptr = std::move(_stack.back());
+    ptr->animate(std::forward<ArgsT>(args)...);
+    _stack.pop_back();
+    return ptr;
   }
-    
-  ::new(ptr) T(std::forward<ArgsT>(args)...);
-
-  return ptr;
 }
 
-// Procedure: recycle
+// Procedure: enstack
 template <typename T>
-void ObjectPool<T>::recycle(T* obj) {
-  obj->~T();
-  _free_list.push_back(obj);
-}
-
-// ----------------------------------------------------------------------------
-
-// Function: per_thread_object_pool
-template <typename T>
-ObjectPool<T>& per_thread_object_pool() {
-  thread_local ObjectPool<T> op;
-  return op;
+void ObjectPool<T>::enstack(std::unique_ptr<T>&& obj) {
+  obj->recycle();
+  _stack.push_back(std::move(obj));
 }
 
 }  // end of namespace tf -----------------------------------------------------

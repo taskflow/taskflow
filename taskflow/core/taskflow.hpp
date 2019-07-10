@@ -169,7 +169,7 @@ inline void Taskflow::dump(std::ostream& os) const {
     os << "\";\n";
 
     // dump the details of this taskflow
-    for(const auto n : f->_graph.nodes()) {
+    for(const auto& n : f->_graph.nodes()) {
       
       // regular task
       if(auto module = n->_module; !module) {
@@ -177,8 +177,8 @@ inline void Taskflow::dump(std::ostream& os) const {
       }
       // module task
       else {
-        os << 'p' << n << "[shape=box3d, color=blue, label=\"";
-        if(n->_name.empty()) os << n;
+        os << 'p' << n.get() << "[shape=box3d, color=blue, label=\"";
+        if(n->_name.empty()) os << n.get();
         else os << n->_name;
         os << " (Taskflow_";
         if(module->_name.empty()) os << module;
@@ -191,7 +191,7 @@ inline void Taskflow::dump(std::ostream& os) const {
         }
 
         for(const auto s : n->_successors) {
-          os << 'p' << n << "->" << 'p' << s << ";\n";
+          os << 'p' << n.get() << "->" << 'p' << s << ";\n";
         }
       }
     }

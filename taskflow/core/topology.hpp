@@ -50,12 +50,12 @@ inline void Topology::_bind(Graph& g) {
   _sources.clear();
   
   // scan each node in the graph and build up the links
-  for(auto node : g.nodes()) {
+  for(auto& node : g.nodes()) {
 
     node->_topology = this;
 
     if(node->num_dependents() == 0) {
-      _sources.push_back(node);
+      _sources.push_back(node.get());
     }
 
     if(node->num_successors() == 0) {

@@ -15,6 +15,9 @@ class FlowBuilder;
 class Subflow;
 class Taskflow;
 
+// TLS node pool
+inline thread_local ObjectPool<Node> NodePool;
+
 // ----------------------------------------------------------------------------
 
 // Class: Graph
@@ -40,13 +43,13 @@ class Graph {
     template <typename... ArgsT>
     Node& emplace_back(ArgsT&&...); 
 
-    std::vector<Node*>& nodes();
+    std::vector<std::unique_ptr<Node>>& nodes();
 
-    const std::vector<Node*>& nodes() const;
+    const std::vector<std::unique_ptr<Node>>& nodes() const;
 
   private:
 
-    std::vector<Node*> _nodes;
+    std::vector<std::unique_ptr<Node>> _nodes;
 };
 
 // ----------------------------------------------------------------------------
@@ -68,15 +71,22 @@ class Node {
 
   public:
 
-    Node();
-    ~Node();
+    Node() = default;
 
     template <typename C>
     Node(C&&);
+    
+    ~Node();
+    
+    template <typename C>
+    void animate(C&&);
 
+    void animate();
+    void recycle();
     void precede(Node&);
     void dump(std::ostream&) const;
-
+    void clear_subgraph();
+    
     size_t num_successors() const;
     size_t num_dependents() const;
     
@@ -104,33 +114,48 @@ class Node {
 
     std::optional<Graph> _subgraph;
 
-    Topology* _topology;
-    Taskflow* _module;
+    Topology* _topology {nullptr};
+    Taskflow* _module {nullptr};
 
-    int _status;
+    int _status {0};
     
-    std::atomic<int> _num_dependents;
+    std::atomic<int> _num_dependents {0};
 };
-
-// Constructor
-inline Node::Node() {
-  _num_dependents.store(0, std::memory_order_relaxed);
-  _topology = nullptr;
-  _module = nullptr;
-  _status = 0;
-}
 
 // Constructor
 template <typename C>
 Node::Node(C&& c) : _work {std::forward<C>(c)} {
-  _num_dependents.store(0, std::memory_order_relaxed);
-  _topology = nullptr;
-  _module = nullptr;
-  _status = 0;
 }
 
 // Destructor
 inline Node::~Node() {
+  clear_subgraph();
+}
+
+// Constructor-like call
+inline void Node::animate() {
+}
+
+// Constructor-like call
+template <typename C>
+void Node::animate(C&& c) {
+  _work = std::forward<C>(c);
+}
+
+// Destructor-like call
+inline void Node::recycle() {
+  _name.clear();
+  _work.emplace<StaticWork>();
+  _successors.clear();
+  _dependents.clear();
+  _topology = nullptr;
+  _module = nullptr;
+  _status = 0;
+  _num_dependents.store(0, std::memory_order_relaxed);
+  clear_subgraph();  
+}
+
+inline void Node::clear_subgraph() {
   // this is to avoid stack overflow
   if(_subgraph.has_value()) {
     std::list<Graph> gs; 
@@ -205,7 +230,7 @@ inline void Node::dump(std::ostream& os) const {
 
     os << "\";\n" << "color=blue\n";
 
-    for(const auto n : _subgraph->nodes()) {
+    for(const auto& n : _subgraph->nodes()) {
       n->dump(os);
     }
     os << "}\n";
@@ -233,9 +258,8 @@ inline Graph& Graph::operator = (Graph&& other) {
 // Procedure: clear
 // clear and recycle the nodes
 inline void Graph::clear() {
-  auto& pool = per_thread_object_pool<Node>(); 
   for(auto& node : _nodes) {
-    pool.recycle(node);
+    NodePool.enstack(std::move(node));
   }
   _nodes.clear();
 }
@@ -255,14 +279,14 @@ inline bool Graph::empty() const {
 // Function: nodes
 // return a mutable reference to the node data structure
 //inline std::vector<std::unique_ptr<Node>>& Graph::nodes() {
-inline std::vector<Node*>& Graph::nodes() {
+inline std::vector<std::unique_ptr<Node>>& Graph::nodes() {
   return _nodes;
 }
 
 // Function: nodes
 // returns a constant reference to the node data structure
 //inline const std::vector<std::unique_ptr<Node>>& Graph::nodes() const {
-inline const std::vector<Node*>& Graph::nodes() const {
+inline const std::vector<std::unique_ptr<Node>>& Graph::nodes() const {
   return _nodes;
 }
 
@@ -270,9 +294,10 @@ inline const std::vector<Node*>& Graph::nodes() const {
 // create a node from a give argument; constructor is called if necessary
 template <typename... ArgsT>
 Node& Graph::emplace_back(ArgsT&&... args) {
-  _nodes.push_back(
-    per_thread_object_pool<Node>().get(std::forward<ArgsT>(args)...)
-  );
+  //_nodes.push_back(
+  //  per_thread_object_pool<Node>().get(std::forward<ArgsT>(args)...)
+  //);
+  _nodes.push_back(NodePool.destack(std::forward<ArgsT>(args)...));
   return *(_nodes.back());
 }
 

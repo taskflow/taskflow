@@ -188,12 +188,32 @@ TEST_CASE("PassiveVector" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("ObjectPool" * doctest::timeout(300)) {
 
+  struct TestObject {
+
+    TestObject(int v) : value {v} {
+    }
+
+    void animate(int v) {
+      REQUIRE(value == 0);
+      value = v;
+    }
+    
+    void recycle() {
+      value = 0;
+    }
+
+    int value;
+  };
+    
+  thread_local tf::ObjectPool<TestObject> TestObjectPool;
+
   auto fork = [&] (unsigned N) {
+
     const int M = 2048 * N;
     std::atomic<int> counter = M;
     std::atomic<int> recycle = M;
     std::mutex mutex;
-    std::vector<int*> objects;
+    std::vector<std::unique_ptr<TestObject>> objects;
     std::vector<std::thread> threads; 
 
     // allocate
@@ -204,9 +224,9 @@ TEST_CASE("ObjectPool" * doctest::timeout(300)) {
             break;
           }
           else {
-            auto ptr = tf::per_thread_object_pool<int>().get(c);
+            auto ptr = TestObjectPool.destack(c);
             std::scoped_lock lock(mutex);
-            objects.push_back(ptr);
+            objects.push_back(std::move(ptr));
           }
         }
       });
@@ -219,7 +239,7 @@ TEST_CASE("ObjectPool" * doctest::timeout(300)) {
     REQUIRE(objects.size() == M);
 
     auto sum = std::accumulate(objects.begin(), objects.end(), 0,
-      [] (int s, int* v) { return s + *v; }
+      [] (int s, const auto& v) { return s + v->value; }
     );
 
     REQUIRE(sum == (M-1)*M / 2);
@@ -234,7 +254,7 @@ TEST_CASE("ObjectPool" * doctest::timeout(300)) {
           else {
             std::scoped_lock lock(mutex);
             REQUIRE(!objects.empty());
-            tf::per_thread_object_pool<int>().recycle(objects.back());
+            TestObjectPool.enstack(std::move(objects.back()));
             objects.pop_back();
           }
         }
