@@ -1,3 +1,6 @@
+// 2019/07/10 - modified by Tsung-Wei Huang
+//  - replace raw pointer with smart pointer
+//
 // 2019/06/13 - created by Tsung-Wei Huang
 //  - implemented an object pool class
 
