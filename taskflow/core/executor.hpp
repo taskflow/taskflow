@@ -609,7 +609,7 @@ inline void Executor::_init_module_node(Node* node) {
   };
 }
 
-// Procedure: 
+// Procedure: _invoke
 inline void Executor::_invoke(unsigned me, Node* node) {
 
   // Here we need to fetch the num_successors first to avoid the invalid memory

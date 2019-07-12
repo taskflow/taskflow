@@ -74,8 +74,10 @@ std::unique_ptr<T> ObjectPool<T>::destack(ArgsT&&... args) {
 // Procedure: enstack
 template <typename T>
 void ObjectPool<T>::enstack(std::unique_ptr<T>&& obj) {
-  obj->recycle();
-  _stack.push_back(std::move(obj));
+  if(_stack.size() < 4096) {
+    obj->recycle();
+    _stack.push_back(std::move(obj));
+  }
 }
 
 }  // end of namespace tf -----------------------------------------------------

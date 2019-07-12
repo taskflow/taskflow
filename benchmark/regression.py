@@ -129,7 +129,7 @@ def main():
 
   plot.tight_layout()
   plot.savefig('result.png')
-  plot.show()
+  #plot.show()
   plot.close(fig)
 
 # run the main entry
