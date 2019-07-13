@@ -259,7 +259,7 @@ inline Graph& Graph::operator = (Graph&& other) {
 // clear and recycle the nodes
 inline void Graph::clear() {
   for(auto& node : _nodes) {
-    NodePool.enstack(std::move(node));
+    NodePool.release(std::move(node));
   }
   _nodes.clear();
 }
@@ -294,10 +294,7 @@ inline const std::vector<std::unique_ptr<Node>>& Graph::nodes() const {
 // create a node from a give argument; constructor is called if necessary
 template <typename... ArgsT>
 Node& Graph::emplace_back(ArgsT&&... args) {
-  //_nodes.push_back(
-  //  per_thread_object_pool<Node>().get(std::forward<ArgsT>(args)...)
-  //);
-  _nodes.push_back(NodePool.destack(std::forward<ArgsT>(args)...));
+  _nodes.push_back(NodePool.acquire(std::forward<ArgsT>(args)...));
   return *(_nodes.back());
 }
 

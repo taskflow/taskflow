@@ -224,7 +224,7 @@ TEST_CASE("ObjectPool" * doctest::timeout(300)) {
             break;
           }
           else {
-            auto ptr = TestObjectPool.destack(c);
+            auto ptr = TestObjectPool.acquire(c);
             std::scoped_lock lock(mutex);
             objects.push_back(std::move(ptr));
           }
@@ -254,7 +254,7 @@ TEST_CASE("ObjectPool" * doctest::timeout(300)) {
           else {
             std::scoped_lock lock(mutex);
             REQUIRE(!objects.empty());
-            TestObjectPool.enstack(std::move(objects.back()));
+            TestObjectPool.release(std::move(objects.back()));
             objects.pop_back();
           }
         }

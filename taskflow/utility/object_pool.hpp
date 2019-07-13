@@ -27,10 +27,10 @@ class ObjectPool {
   
     size_t size() const;
 
-    void enstack(std::unique_ptr<T>&& obj);
+    void release(std::unique_ptr<T>&& obj);
 
     template <typename... ArgsT>
-    std::unique_ptr<T> destack(ArgsT&&... args);
+    std::unique_ptr<T> acquire(ArgsT&&... args);
 
   private:
     
@@ -56,10 +56,10 @@ size_t ObjectPool<T>::size() const {
   return _stack.size();
 }
 
-// Function: destack
+// Function: acquire
 template <typename T>
 template <typename... ArgsT>
-std::unique_ptr<T> ObjectPool<T>::destack(ArgsT&&... args) {
+std::unique_ptr<T> ObjectPool<T>::acquire(ArgsT&&... args) {
   if(_stack.empty()) {
     return std::make_unique<T>(std::forward<ArgsT>(args)...);
   }
@@ -71,13 +71,11 @@ std::unique_ptr<T> ObjectPool<T>::destack(ArgsT&&... args) {
   }
 }
 
-// Procedure: enstack
+// Procedure: release
 template <typename T>
-void ObjectPool<T>::enstack(std::unique_ptr<T>&& obj) {
-  if(_stack.size() < 4096) {
-    obj->recycle();
-    _stack.push_back(std::move(obj));
-  }
+void ObjectPool<T>::release(std::unique_ptr<T>&& obj) {
+  obj->recycle();
+  _stack.push_back(std::move(obj));
 }
 
 }  // end of namespace tf -----------------------------------------------------

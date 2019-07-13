@@ -637,7 +637,12 @@ inline void Executor::_invoke(unsigned me, Node* node) {
     
     // Clear the subgraph before the task execution
     if(!node->is_spawned()) {
-      node->_subgraph.emplace();
+      if(node->_subgraph) {
+        node->_subgraph->clear();
+      }
+      else {
+        node->_subgraph.emplace();
+      }
     }
    
     Subflow fb(*(node->_subgraph));
@@ -668,7 +673,7 @@ inline void Executor::_invoke(unsigned me, Node* node) {
 
         _schedule(src);
 
-        if(!fb.detached()) {
+        if(fb.joined()) {
           return;
         }
       }
@@ -682,7 +687,7 @@ inline void Executor::_invoke(unsigned me, Node* node) {
   if(!node->is_subtask()) {
     // Only dynamic tasking needs to restore _dependents
     // TODO:
-    if(node->_work.index() == 1 &&  !node->_subgraph->empty()) {
+    if(node->_work.index() == 1 && !node->_subgraph->empty()) {
       while(!node->_dependents.empty() && node->_dependents.back()->is_subtask()) {
         node->_dependents.pop_back();
       }
