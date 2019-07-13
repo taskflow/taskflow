@@ -616,9 +616,9 @@ inline void Executor::_invoke(unsigned me, Node* node) {
   // access caused by topology clear.
   const auto num_successors = node->num_successors();
 
-  // regular node type
+  // static task
   // The default node work type. We only need to execute the callback if any.
-  if(auto index=node->_work.index(); index == 0) {
+  if(auto index=node->_work.index(); index == 1) {
     if(node->_module != nullptr) {
       bool first_time = !node->is_spawned();
       _invoke_static_work(me, node);
@@ -632,8 +632,8 @@ inline void Executor::_invoke(unsigned me, Node* node) {
       }
     }
   }
-  // subflow node type 
-  else {
+  // dynamic task
+  else if (index == 2){
     
     // Clear the subgraph before the task execution
     if(!node->is_spawned()) {
@@ -687,7 +687,7 @@ inline void Executor::_invoke(unsigned me, Node* node) {
   if(!node->is_subtask()) {
     // Only dynamic tasking needs to restore _dependents
     // TODO:
-    if(node->_work.index() == 1 && !node->_subgraph->empty()) {
+    if(node->_work.index() == 2 && !node->_subgraph->empty()) {
       while(!node->_dependents.empty() && node->_dependents.back()->is_subtask()) {
         node->_dependents.pop_back();
       }
