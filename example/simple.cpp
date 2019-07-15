@@ -22,7 +22,7 @@ int main(){
   B.precede(D);  // D runs after B         //    +---->| C |-----+            
   C.precede(D);  // D runs after C         //          +---+
 
-  executor.run(taskflow).get();
+  executor.run(taskflow).wait();
 
   return 0;
 }
