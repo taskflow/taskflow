@@ -51,7 +51,7 @@ Cpp-Taskflow is part of the [DARPA IDEA research program][DARPA IDEA]. We are co
 
 See a quick [presentation][Presentation] and 
 visit the [documentation][wiki] to learn more about Cpp-Taskflow.
-Technical details can be referred to our [IEEE IPDPS19 paper][https://tsung-wei-huang.github.io/papers/ipdps19.pdf].
+Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
 
 :exclamation: Notice that starting at v2.2.0 (including this master branch) 
 we isolated the executor interface from Taskflow to improve the programming model and performance.
@@ -965,7 +965,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [email me]:              mailto:twh760812@gmail.com
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
 [ChromeTracing]:         https://www.chromium.org/developers/how-tos/trace-event-profiling-tool
-[IPDPS19]:               doxygen/reference/ipdps19.pdf
+[IPDPS19]:               https://tsung-wei-huang.github.io/papers/ipdps19.pdf
 [WorkStealing Wiki]:     https://en.wikipedia.org/wiki/Work_stealing
 
 [std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
