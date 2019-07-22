@@ -51,7 +51,7 @@ Cpp-Taskflow is part of the [DARPA IDEA research program][DARPA IDEA]. We are co
 
 See a quick [presentation][Presentation] and 
 visit the [documentation][wiki] to learn more about Cpp-Taskflow.
-Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
+Technical details can be referred to our [IEEE IPDPS19 paper][https://tsung-wei-huang.github.io/papers/ipdps19.pdf].
 
 :exclamation: Notice that starting at v2.2.0 (including this master branch) 
 we isolated the executor interface from Taskflow to improve the programming model and performance.
