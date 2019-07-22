@@ -45,9 +45,10 @@ matrix:
     # Linux clang++6
     - os: linux
       compiler: clang++
+      dist: xenial
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+          sources: ['ubuntu-toolchain-r-test']
           packages: ['clang-6.0', 'g++-7']
       env:
         - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
