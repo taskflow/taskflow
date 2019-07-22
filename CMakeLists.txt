@@ -355,6 +355,24 @@ target_link_libraries(
 )
 set_target_properties(matrix_multiplication PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+
+## benchmark 8: Mandelbrot set
+message(STATUS "benchmark 8: Mandelbrot set")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/mandelbrot_set)
+add_executable(
+  mandelbrot_set
+  ${TF_BENCHMARK_DIR}/mandelbrot_set/main.cpp
+  ${TF_BENCHMARK_DIR}/mandelbrot_set/omp.cpp
+  ${TF_BENCHMARK_DIR}/mandelbrot_set/tbb.cpp
+  ${TF_BENCHMARK_DIR}/mandelbrot_set/taskflow.cpp
+)
+target_include_directories(mandelbrot_set PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  mandelbrot_set
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
+)
+set_target_properties(mandelbrot_set PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
 endif()
 
 # -----------------------------------------------------------------------------
