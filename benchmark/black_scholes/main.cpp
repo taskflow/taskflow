@@ -93,6 +93,7 @@ int main (int argc, char *argv[]) {
       assert(std::fabs(seq_prices[i] - prices[i]) < 0.01);
     }
     std::cout << "Results are consistent with the sequential version\n";
+    free(seq_prices);
   }
 
 #ifdef ERR_CHK
