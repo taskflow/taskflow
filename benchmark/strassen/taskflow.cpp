@@ -127,43 +127,36 @@ void OptimizedStrassenMultiply_tf(
   std::vector<tf::Task> tasks;
 
   /* M2 = A11 x B11 */
-  //#pragma omp task untied
   tasks.emplace_back(subflow.emplace([=](auto& subflow) {
     OptimizedStrassenMultiply_tf(M2, A11, B11, QuadrantSize, QuadrantSize, RowWidthA, RowWidthB, Depth+1, subflow);
   }));
 
   /* M5 = S1 * S5 */
-  //#pragma omp task untied 
   tasks.emplace_back(subflow.emplace([=](auto &subflow) {
     OptimizedStrassenMultiply_tf(M5, S1, S5, QuadrantSize, QuadrantSize, QuadrantSize, QuadrantSize, Depth+1, subflow);
   }));
 
   /* Step 1 of T1 = S2 x S6 + M2 */
-  //#pragma omp task untied
   tasks.emplace_back(subflow.emplace([=](auto& subflow){
     OptimizedStrassenMultiply_tf(T1sMULT, S2, S6,  QuadrantSize, QuadrantSize, QuadrantSize, QuadrantSize, Depth+1, subflow);
   }));
 
   /* Step 1 of T2 = T1 + S3 x S7 */
-  //#pragma omp task untied
   tasks.emplace_back(subflow.emplace([=](auto &subflow){
     OptimizedStrassenMultiply_tf(C22, S3, S7, QuadrantSize, RowWidthC /*FIXME*/, QuadrantSize, QuadrantSize, Depth+1, subflow);
   }));
 
   /* Step 1 of C11 = M2 + A12 * B21 */
-  //#pragma omp task untied
   tasks.emplace_back(subflow.emplace([=](auto &subflow){
     OptimizedStrassenMultiply_tf(C11, A12, B21, QuadrantSize, RowWidthC, RowWidthA, RowWidthB, Depth+1, subflow);
   }));
   
   /* Step 1 of C12 = S4 x B22 + T1 + M5 */
-  //#pragma omp task untied
   tasks.emplace_back(subflow.emplace([=](auto &subflow){
     OptimizedStrassenMultiply_tf(C12, S4, B22, QuadrantSize, RowWidthC, QuadrantSize, RowWidthB, Depth+1, subflow);
   }));
 
   /* Step 1 of C21 = T2 - A22 * S8 */
-  //#pragma omp task untied
   tasks.emplace_back(subflow.emplace([=](auto &subflow){
     OptimizedStrassenMultiply_tf(C21, A22, S8, QuadrantSize, RowWidthC, RowWidthA, QuadrantSize, Depth+1, subflow);
   }));
@@ -171,7 +164,6 @@ void OptimizedStrassenMultiply_tf(
   /**********************************************
   ** Synchronization Point
   **********************************************/
-  //#pragma omp taskwait
   /***************************************************************************
   ** Step through all columns row by row (vertically)
   ** (jumps in memory by RowWidth => bad locality)
@@ -241,7 +233,7 @@ void strassen_taskflow(unsigned num_threads, REAL *A, REAL *B, REAL *C, int n) {
 
   flow.emplace(
     [=](auto &subflow) {
-		  OptimizedStrassenMultiply_tf(C, A, B, n, n, n, n, 1, subflow);
+      OptimizedStrassenMultiply_tf(C, A, B, n, n, n, n, 1, subflow);
     }
   );
 
