@@ -389,6 +389,23 @@ target_link_libraries(
 )
 set_target_properties(black_scholes PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+## benchmark 10: Strassen algorithm
+message(STATUS "benchmark 10: Strassen matrix multiplication algorithm")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/strassen)
+add_executable(
+  strassen
+  ${TF_BENCHMARK_DIR}/strassen/main.cpp
+  ${TF_BENCHMARK_DIR}/strassen/omp.cpp
+  ${TF_BENCHMARK_DIR}/strassen/tbb.cpp
+  ${TF_BENCHMARK_DIR}/strassen/taskflow.cpp
+)
+target_include_directories(strassen PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  strassen
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
+)
+set_target_properties(strassen PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
 endif()
 
 # -----------------------------------------------------------------------------
