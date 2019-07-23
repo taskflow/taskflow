@@ -355,7 +355,6 @@ target_link_libraries(
 )
 set_target_properties(matrix_multiplication PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-
 ## benchmark 8: Mandelbrot set
 message(STATUS "benchmark 8: Mandelbrot set")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/mandelbrot_set)
@@ -372,6 +371,23 @@ target_link_libraries(
   ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
 )
 set_target_properties(mandelbrot_set PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+## benchmark 9: Black–Scholes
+message(STATUS "benchmark 9: Black-Scholes Partial Differential Equation")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/black_scholes)
+add_executable(
+  black_scholes
+  ${TF_BENCHMARK_DIR}/black_scholes/main.cpp
+  ${TF_BENCHMARK_DIR}/black_scholes/omp.cpp
+  ${TF_BENCHMARK_DIR}/black_scholes/tbb.cpp
+  ${TF_BENCHMARK_DIR}/black_scholes/taskflow.cpp
+)
+target_include_directories(black_scholes PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  black_scholes
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
+)
+set_target_properties(black_scholes PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 endif()
 
