@@ -406,6 +406,24 @@ target_link_libraries(
 )
 set_target_properties(strassen PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+## benchmark 11: parallel loop
+message(STATUS "benchmark 11: parallel loop")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/parallel_loop)
+add_executable(
+  parallel_loop
+  ${TF_BENCHMARK_DIR}/parallel_loop/main.cpp
+  ${TF_BENCHMARK_DIR}/parallel_loop/omp.cpp
+  ${TF_BENCHMARK_DIR}/parallel_loop/tbb.cpp
+  ${TF_BENCHMARK_DIR}/parallel_loop/taskflow.cpp
+)
+target_include_directories(parallel_loop PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  parallel_loop
+  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES}
+)
+set_target_properties(parallel_loop PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+
 endif()
 
 # -----------------------------------------------------------------------------
