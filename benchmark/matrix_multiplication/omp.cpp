@@ -9,26 +9,34 @@ void matrix_multiplication_omp(unsigned nthreads) {
 
   int i, j, k;
 
+  int edge;
+
   #pragma omp parallel shared(a, b, c, nthreads) private(i, j, k)
   {
-
-    #pragma omp for schedule (static)
-    for (i=0; i<N; i++)
+    #pragma omp single private(i, j)
+    for(i = 0; i<N; i++) {
+      #pragma omp task private(j) firstprivate(i) depend(out: edge)
       for (j=0; j<N; j++)
         a[i][j]= i+j;
+    }
 
-    #pragma omp for schedule (static)
-    for (i=0; i<N; i++)
+    #pragma omp single private(i, j)
+    for(i = 0; i<N; i++) {
+      #pragma omp task private(j) firstprivate(i) depend(out: edge)
       for (j=0; j<N; j++)
         b[i][j]= i*j;
+    }
 
-    #pragma omp for schedule (static)
-    for (i=0; i<N; i++)
+    #pragma omp single private(i, j)
+    for(i = 0; i<N; i++) {
+      #pragma omp task private(j) firstprivate(i) depend(out: edge)
       for (j=0; j<N; j++)
         c[i][j]= 0;
+    }
 
-    #pragma omp for schedule (static)
-    for (i=0; i<N; i++) {
+    #pragma omp single private(i, j)
+    for(i = 0; i<N; i++) {
+      #pragma omp task private(j, k) firstprivate(i) depend(in: edge)
       for(j=0; j<N; j++) {
         for (k=0; k<N; k++) {
           c[i][j] += a[i][k] * b[k][j];
