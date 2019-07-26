@@ -287,14 +287,8 @@ inline void Executor::_spawn(unsigned N) {
       while(1) {
         
         // execute the tasks.
-        run_task:
         _exploit_task(i, t);
 
-        // steal loop
-        if(_explore_task(i, t); t) {
-          goto run_task;
-        }
-        
         // wait for tasks
         if(_wait_for_tasks(i, t) == false) {
           break;
@@ -350,13 +344,11 @@ inline void Executor::_explore_task(unsigned thief, std::optional<Node*>& t) {
   const size_t F = (_workers.size() + 1) << 1;
   const size_t Y = 100;
 
-  steal_loop:
+steal_loop:
 
   size_t f = 0;
   size_t y = 0;
 
-  ++_num_thieves;
-  
   // explore
   while(!_done) {
   
@@ -391,16 +383,24 @@ inline void Executor::_explore_task(unsigned thief, std::optional<Node*>& t) {
       }
     }*/
   }
-  
-  // We need to ensure at least one thieve if there is an
-  // active worker
+
+  // We need to ensure at least one thieve if there is an active worker
   if(auto N = --_num_thieves; N == 0) {
     if(t != std::nullopt) {
       _notifier.notify(false);
-      return;
     }
     else if(_num_actives > 0) {
-      goto steal_loop;
+      // watch dog 
+      // To prevent race with another thief inside the wait_for_task
+      //++_num_thieves; 
+      size_t zero {0};
+      size_t one {1};
+      if(_num_thieves.compare_exchange_strong(zero, one, std::memory_order_seq_cst, std::memory_order_relaxed)) {
+        goto steal_loop;
+      }
+      else {
+        assert(zero <= _workers.size());
+      }
     }
   }
 }
@@ -411,13 +411,10 @@ inline void Executor::_exploit_task(unsigned i, std::optional<Node*>& t) {
   assert(!_workers[i].cache);
 
   if(t) {
-
     auto& worker = _workers[i];
-
-    if(++_num_actives; _num_thieves == 0) {
+    if(_num_actives.fetch_add(1) == 0 && _num_thieves == 0) {
       _notifier.notify(false);
     }
-
     do {
       _invoke(i, *t);
 
@@ -438,13 +435,25 @@ inline void Executor::_exploit_task(unsigned i, std::optional<Node*>& t) {
 // Function: _wait_for_tasks
 inline bool Executor::_wait_for_tasks(unsigned me, std::optional<Node*>& t) {
 
+  ++_num_thieves;
+  assert(_num_thieves <= _workers.size());
+
+begin_steal:
+
+  if(_explore_task(me, t); t) {
+    return true;
+  }
+
+
   assert(!t);
-  
+
   _notifier.prepare_wait(&_waiters[me]);
   
-  if(auto vtm = _find_victim(me); vtm != _workers.size()) {
+  //if(auto vtm = _find_victim(me); vtm != _workers.size()) {
+  if(!_queue.empty()) {
     _notifier.cancel_wait(&_waiters[me]);
-    t = (vtm == me) ? _queue.steal() : _workers[vtm].queue.steal();
+    t = _queue.steal();
+    //t = (vtm == me) ? _queue.steal() : _workers[vtm].queue.steal();
     return true;
   }
 
@@ -463,10 +472,18 @@ inline bool Executor::_wait_for_tasks(unsigned me, std::optional<Node*>& t) {
     _notifier.notify(true);
     return false;
   }
+
+  if(_num_actives && _num_thieves.load(std::memory_order_relaxed) == 0) {
+    size_t zero {0};
+    size_t one {1};
+    if(_num_thieves.compare_exchange_strong(zero, one, std::memory_order_seq_cst, std::memory_order_relaxed)) {
+      _notifier.cancel_wait(&_waiters[me]);
+      goto begin_steal;
+    }
+  }
     
   // Now I really need to relinguish my self to others
   _notifier.commit_wait(&_waiters[me]);
-  //--_num_idlers;
 
   return true;
 }
