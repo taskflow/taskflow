@@ -1,3 +1,7 @@
+// 2019/07/25 - modified by Tsung-Wei Huang & Chun-Xun Lin
+//  - fixed the potential underutilization 
+//  - use CAS in both last thief & active worker to make the notification less aggressive
+//
 // 2019/06/18 - modified by Tsung-Wei Huang
 //  - fixed the cache to enable continuity
 //  - TODO: do we need a special optimization for 0 workers?
