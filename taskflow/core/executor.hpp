@@ -234,7 +234,7 @@ class Executor {
 
     PerThread& _per_thread() const;
 
-    bool _wait_for_tasks(unsigned, std::optional<Node*>&);
+    bool _wait_for_task(unsigned, std::optional<Node*>&);
     
     void _spawn(unsigned);
     void _exploit_task(unsigned, std::optional<Node*>&);
@@ -302,7 +302,7 @@ inline void Executor::_spawn(unsigned N) {
         _exploit_task(i, t);
 
         // wait for tasks
-        if(_wait_for_tasks(i, t) == false) {
+        if(_wait_for_task(i, t) == false) {
           break;
         }
       }
@@ -403,6 +403,7 @@ inline void Executor::_exploit_task(unsigned i, std::optional<Node*>& t) {
 
   if(t) {
     auto& worker = _workers[i];
+    // TODO: study the memory order here
     if(_num_actives.fetch_add(1) == 0 && _num_thieves == 0) {
       _notifier.notify(false);
     }
@@ -423,13 +424,17 @@ inline void Executor::_exploit_task(unsigned i, std::optional<Node*>& t) {
   }
 }
 
-// Function: _wait_for_tasks
-inline bool Executor::_wait_for_tasks(unsigned me, std::optional<Node*>& t) {
+// Function: _wait_for_task
+inline bool Executor::_wait_for_task(unsigned me, std::optional<Node*>& t) {
 
+  wait_for_task:
 
-begin_steal:
+  assert(!t);
 
   ++_num_thieves;
+
+  explore_task:
+
   assert(_num_thieves <= _workers.size());
 
   if(_explore_task(me, t); t) {
@@ -439,19 +444,23 @@ begin_steal:
     return true;
   }
 
-  assert(!t);
-
   _notifier.prepare_wait(&_waiters[me]);
   
   //if(auto vtm = _find_victim(me); vtm != _workers.size()) {
   if(!_queue.empty()) {
+
     _notifier.cancel_wait(&_waiters[me]);
-    t = _queue.steal();
-    if(auto N = _num_thieves.fetch_sub(1); t && N == 1) {
-      _notifier.notify(false);
-    }
     //t = (vtm == me) ? _queue.steal() : _workers[vtm].queue.steal();
-    return true;
+
+    if(t = _queue.steal(); t) {
+      if(auto N = _num_thieves.fetch_sub(1); N == 1) {
+        _notifier.notify(false);
+      }
+      return true;
+    }
+    else {
+      goto explore_task;
+    }
   }
 
   //if(size_t I = ++_num_idlers; _done && I == _workers.size()) {
@@ -473,7 +482,7 @@ begin_steal:
 
   if(_num_thieves.fetch_sub(1) == 1 && _num_actives) {
     _notifier.cancel_wait(&_waiters[me]);
-    goto begin_steal;
+    goto wait_for_task;
   }
 
   //if(_num_actives && _num_thieves.load(std::memory_order_relaxed) == 0) {
