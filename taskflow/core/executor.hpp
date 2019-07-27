@@ -435,7 +435,7 @@ inline bool Executor::_wait_for_task(unsigned me, std::optional<Node*>& t) {
 
   explore_task:
 
-  assert(_num_thieves <= _workers.size());
+  //assert(_num_thieves <= _workers.size());
 
   if(_explore_task(me, t); t) {
     if(auto N = _num_thieves.fetch_sub(1); N == 1) {
