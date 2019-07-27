@@ -896,6 +896,7 @@ that incorporate complex task dependencies.
 - [Shiva][Shiva]: An extensible engine via an entity component system through scripts, DLLs, and header-only (C++)
 - [PID Framework][PID Framework]: A Global Development Methodology Supported by a CMake API and Dedicated C++ Projects 
 - [NovusCore][NovusCore]: An emulating project for World of Warcraft (Wrath of the Lich King 3.3.5a 12340 client build)
+- [SA-PCB][SA-PCB]: Annealing-based Printed Circuit Board (PCB) Placement Tool
 
 [More...](https://github.com/search?q=cpp-taskflow&type=Code)
 
@@ -975,6 +976,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [Shiva]:                 https://shiva.gitbook.io/project/shiva
 [PID Framework]:         http://pid.lirmm.net/pid-framework/index.html
 [NovusCore]:             https://github.com/novuscore/NovusCore
+[SA-PCB]:                https://github.com/choltz95/SA-PCB
 
 [Presentation]:          https://cpp-taskflow.github.io/
 [chrome://tracing]:      chrome://tracing
