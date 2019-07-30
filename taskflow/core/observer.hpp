@@ -172,12 +172,16 @@ inline void ExecutorObserver::clear() {
 // Procedure: dump
 inline void ExecutorObserver::dump(std::ostream& os) const {
 
+  size_t first;
+  for(first = 0; first<_timeline.executions.size(); ++first) {
+    if(_timeline.executions[first].size() > 0) { break; }
+  }
+
   os << '[';
 
-  for(size_t w=0; w<_timeline.executions.size(); w++) {
+  for(size_t w=first; w<_timeline.executions.size(); w++) {
 
-    if(w != 0 && _timeline.executions[w].size() > 0 && 
-                 _timeline.executions[w-1].size() > 0) {
+    if(w != first && _timeline.executions[w].size() > 0) {
       os << ',';
     }
 
