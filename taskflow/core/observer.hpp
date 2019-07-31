@@ -173,8 +173,11 @@ inline void ExecutorObserver::clear() {
 inline void ExecutorObserver::dump(std::ostream& os) const {
 
   size_t first;
+
   for(first = 0; first<_timeline.executions.size(); ++first) {
-    if(_timeline.executions[first].size() > 0) { break; }
+    if(_timeline.executions[first].size() > 0) { 
+      break; 
+    }
   }
 
   os << '[';

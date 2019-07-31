@@ -919,6 +919,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Paolo Bolzoni](https://github.com/paolobolzoni) helped remove extraneous semicolons to suppress extra warning during compilation and contributed to a dataflow example
 - [Pursche](https://github.com/Pursche) fixed compilation warning on Microsoft Visual Studio
 - [KingDuckZ][KingDuckZ] helped discover the memory leak in the memory allocator used in graph and topology
+- [mrogez-yseop](https://github.com/mrogez-yseop) helped fix the missing comma in outputing the execution timeline JSON from the observer
 
 Meanwhile, we appreciate the support from many organizations for our development on Cpp-Taskflow.
 Please [let me know][email me] if I forgot someone!
