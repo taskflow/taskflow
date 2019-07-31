@@ -161,6 +161,7 @@ inline void ExecutorObserver::on_entry(unsigned w, TaskView tv) {
 
 // Procedure: on_exit
 inline void ExecutorObserver::on_exit(unsigned w, TaskView tv) {
+  static_cast<void>(tv);
   assert(_timeline.executions[w].size() > 0);
   _timeline.executions[w].back().end = std::chrono::steady_clock::now();
 }
