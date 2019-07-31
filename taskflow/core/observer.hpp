@@ -1,3 +1,6 @@
+// 2019/07/31 - modified by Tsung-Wei Huang
+//  - fixed the missing comma in outputing JSON  
+//
 // 2019/06/13 - modified by Tsung-Wei Huang
 //  - added TaskView interface
 //
@@ -46,21 +49,21 @@ class ExecutorObserverInterface {
   @brief constructor-like method to call when the executor observer is fully created
   @param num_workers the number of the worker threads in the executor
   */
-  virtual void set_up(unsigned num_workers) {};
+  virtual void set_up(unsigned num_workers) = 0;
   
   /**
   @brief method to call before a worker thread executes a closure 
   @param worker_id the id of this worker thread 
   @param task_view a constant wrapper object to the task 
   */
-  virtual void on_entry(unsigned worker_id, TaskView task_view) {};
+  virtual void on_entry(unsigned worker_id, TaskView task_view) = 0;
   
   /**
   @brief method to call after a worker thread executed a closure
   @param worker_id the id of this worker thread 
   @param task_view a constant wrapper object to the task
   */
-  virtual void on_exit(unsigned worker_id, TaskView task_view) {};
+  virtual void on_exit(unsigned worker_id, TaskView task_view) = 0;
 };
 
 // ------------------------------------------------------------------
