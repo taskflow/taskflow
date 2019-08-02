@@ -37,6 +37,26 @@ Cpp-Taskflow currently supports the following compilers:\n\
 ")
 endif()
 
+# defult release build
+set(TF_DEFAULT_BUILD_TYPE "Release")
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to '${TF_DEFAULT_BUILD_TYPE}'")
+  set(
+    CMAKE_BUILD_TYPE "${TF_DEFAULT_BUILD_TYPE}" 
+    CACHE
+    STRING "Choose the type of build." 
+    FORCE
+  )
+  # Set the possible values of build type for cmake-gui
+  set_property(
+    CACHE 
+    CMAKE_BUILD_TYPE 
+    PROPERTY STRINGS
+    "Debug" "Release" "MinSizeRel" "RelWithDebInfo"
+  )
+endif()
+
+
 # error setting
 add_library(error_settings INTERFACE)
 add_library(tf::error_settings ALIAS error_settings)
@@ -46,7 +66,7 @@ target_compile_options(
   INTERFACE
   $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wfatal-errors>
   $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wfatal-errors>
-  $<$<CXX_COMPILER_ID:MSVC>:/W3>
+  $<$<CXX_COMPILER_ID:MSVC>:/W3 /permissive->
 )
 
 # additional features
@@ -74,15 +94,12 @@ add_library(tf::optimize_settings ALIAS optimize_settings)
 
 target_compile_options(
   optimize_settings INTERFACE
-  #$<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:Clang>>:-O2 -march=native>
-  #$<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:GNU>>:-O2 -march=native>
-  #$<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/O2 -DNDEBUG /MP>
-  #$<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:GNU>>:-O0 -g>
-  #$<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>>:-O0 -g>
-  #$<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/Zi /FS /DEBUG /Od /MP /MDd /Oy->
-  $<$<CXX_COMPILER_ID:Clang>:-O2 -march=native>
-  $<$<CXX_COMPILER_ID:GNU>:-O2 -march=native>
-  $<$<CXX_COMPILER_ID:MSVC>:/O2 -DNDEBUG /MP>
+  $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:Clang>>:-O2 -march=native>
+  $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:GNU>>:-O2 -march=native>
+  $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/O2 -DNDEBUG /MP>
+  $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:GNU>>:-O0 -g>
+  $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>>:-O0 -g>
+  $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/Zi /FS /DEBUG /Od /MP /MDd /Oy->
 )
 
 add_library(default_settings INTERFACE)
