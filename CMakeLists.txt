@@ -82,7 +82,7 @@ target_compile_options(
   #$<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/Zi /FS /DEBUG /Od /MP /MDd /Oy->
   $<$<CXX_COMPILER_ID:Clang>:-O2 -march=native>
   $<$<CXX_COMPILER_ID:GNU>:-O2 -march=native>
-  $<$<CXX_COMPILER_ID:MSVC>:/O2 -DNDEBUG /MP>
+  $<$<CXX_COMPILER_ID:MSVC>:/O2>
 )
 
 add_library(default_settings INTERFACE)
