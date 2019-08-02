@@ -62,8 +62,8 @@ for adapting to this new change.
 # Table of Contents
 
 * [Get Started with Cpp-Taskflow](#get-started-with-cpp-taskflow)
-* [Create a Taskflow Graph](#create-a-taskflow-graph)
-   * [Step 1: Create a Task](#step-1-create-a-task)
+* [Create a Taskflow Application](#create-a-taskflow-application)
+   * [Step 1: Create a Taskflow](#step-1-create-a-taskflow)
    * [Step 2: Define Task Dependencies](#step-2-define-task-dependencies)
    * [Step 3: Execute a Taskflow](#step-3-execute-a-taskflow)
 * [Dynamic Tasking](#dynamic-tasking)
@@ -154,12 +154,12 @@ b1.precede(T);    // b1 runs before T
 b3.precede(T);    // b3 runs before T
 ```
 
-# Create a Taskflow Graph
+# Create a Taskflow Application
 
 Cpp-Taskflow defines a very expressive API to create task dependency graphs.
 Most applications are developed through the following three steps.
 
-## Step 1: Create a Task
+## Step 1: Create a Taskflow
 
 Create a taskflow object to build a task dependency graph:
 
@@ -187,8 +187,8 @@ auto [A, B, C, D] = taskflow.emplace(
 
 ## Step 2: Define Task Dependencies
 
-You can add dependency links between tasks to enforce one task run after another.
-The dependency links must be specified in a
+You can add dependency links between tasks to enforce one task to run after another.
+The dependency graph must be a
 [Directed Acyclic Graph (DAG)](https://en.wikipedia.org/wiki/Directed_acyclic_graph).
 The handle `Task` supports different methods for you to describe task dependencies.
 
@@ -209,12 +209,12 @@ An executor manages a set of worker threads to execute a taskflow
 through an efficient *work-stealing* algorithm.
 
 ```cpp
-tf::Executor executor; 
+tf::Executor executor;    
 ```
 
 The executor provides a rich set of methods to run a taskflow. 
-You can run a taskflow one or multiple times, or until a stopping criteria is met.
-These methods are non-blocking and all return a [std::future][std::future] 
+You can run a taskflow multiple times, or until a stopping criteria is met.
+These methods are non-blocking with a [std::future][std::future] return
 to let you query the execution status.
 
 ```cpp 
@@ -247,7 +247,7 @@ each representing a specific part of your parallel decomposition.
 # Dynamic Tasking
 
 Another powerful feature of Taskflow is *dynamic* tasking.
-Dynamic tasks are those created during the execution of a taskflow.
+Dynamic tasks are those tasks created during the execution of a taskflow.
 These tasks are spawned by a parent task and are grouped together to a *subflow* graph.
 The example below demonstrates how to create a subflow
 that spawns three tasks at runtime.
@@ -275,9 +275,9 @@ B.precede(D);  // D runs after B
 C.precede(D);  // D runs after C 
 ```
 
-By default, a subflow graph joins to its parent node. 
-This guarantees a subflow graph to finish before the successors of 
-its parent node.
+By default, a subflow graph joins its parent node. 
+This ensures a subflow graph finishes before the successors of 
+its parent task.
 You can disable this feature by calling `subflow.detach()`.
 For example, detaching the above subflow will result in the following execution flow:
 
@@ -391,7 +391,7 @@ A.precede(B);
 
 When a subflow is detached from its parent task, it becomes a parallel
 execution line to the current flow graph and will eventually
-join to the same taskflow.
+join the same taskflow.
 
 <img align="right" src="image/detached_subflow_future.png" width="25%">
 
@@ -445,27 +445,21 @@ f2B.precede(f1_module_task);
 f1_module_task.precede(f2C);
 ```
 
-Similarly, `composed_of` returns a task handle and you can use the same methods 
+Similarly, `composed_of` returns a task handle and you can use the methods 
 `precede` and `gather` to create dependencies. 
 You can compose a taskflow from multiple taskflows and use the result
-to compose another taskflow and so on.
-
-
+to compose a larger taskflow and so on.
 
 # Debug a Taskflow Graph
 
 Concurrent programs are notoriously difficult to debug.
-Cpp-Taskflow leverages the graph properties to relieve the debugging pain.
-To debug a taskflow graph,
-(1) name tasks and dump the graph, and
+To debug a taskflow graph, we suggest: 
+(1) name each task and dump the graph, and
 (2) start with one thread before going multiple.
-Currently, Cpp-Taskflow supports [GraphViz][GraphViz] format.
 
 ## Dump a Taskflow Graph
 
-Each time you create a task or add a dependency, 
-it adds a node or an edge to the taskflow graph.
-You can dump it to a GraphViz format using the method `dump`.
+You can dump a taskflow in [GraphViz][GraphViz] format using the method `dump`.
 
 ```cpp
 // debug.cpp
@@ -508,7 +502,7 @@ digraph Taskflow {
 
 When you have dynamic tasks (subflows),
 you cannot simply use the `dump` method because it displays only the static portion.
-Instead, you need to execute the graph to spawn dynamic tasks first.
+Instead, you need to execute the graph first to spawn dynamic tasks.
 
 <img align="right" src="image/debug_subflow.png" width="25%">
 
@@ -527,8 +521,8 @@ tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) {
 
 A.precede(B);
 
-executor.run(tf).get();  // run the taskflow
-tf.dump(std::cout);      // dump the graph including dynamic tasks
+executor.run(tf).wait();  // run the taskflow
+tf.dump(std::cout);       // dump the graph including dynamic tasks
 ```
 
 # Monitor Thread Activities 
@@ -699,7 +693,7 @@ The method `transform_reduce` is similar to reduce, except it applies a unary op
 This is particular useful when you need additional data processing to reduce a range of elements.
 
 ```cpp
-std::vector<std::pari<int, int>> v = { {1, 5}, {6, 4}, {-6, 4} };
+std::vector<std::pair<int, int>> v = { {1, 5}, {6, 4}, {-6, 4} };
 int min = std::numeric_limits<int>::max();
 auto [S, T] = tf.transform_reduce(v.begin(), v.end(), min, 
   [] (int l, int r) { return std::min(l, r); },
@@ -822,6 +816,7 @@ thousands of task nodes and links, there are a few amateur pitfalls and mistakes
 + Having a cycle in a graph may result in running forever
 + Destructing a taskflow while it is running in one execution results in undefined behavior
 + Trying to modify a running task can result in undefined behavior
++ Touching a taskflow or an executor from multiple threads is not safe
 
 Cpp-Taskflow is known to work on Linux distributions, MAC OSX, and Microsoft Visual Studio.
 Please [let me know][email me] if you found any issues in a particular platform.
@@ -914,12 +909,13 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Glen Fraser](https://github.com/totalgee) created a standalone C++14-compatible [threadpool](./taskflow/threadpool/threadpool_cxx14.hpp) for taskflow; various other fixes and examples
 - [Guannan Guo](https://github.com/gguo4) added different threadpool implementations to enhance the performance for taskflow
 - [Patrik Huber][Patrik Huber] helped fixed typos in the documentation
-- [ForgeMistress][ForgeMistress] provided API ideas about sharing the executor to avoid thread over-subscriptiong issues
+- [ForgeMistress][ForgeMistress] provided API ideas about sharing the executor to avoid thread over-subscription issues
 - [Alexander Neumann](https://github.com/Neumann-A) helped modify the cmake build to make Cpp-Taskflow importable from external cmake projects
 - [Paolo Bolzoni](https://github.com/paolobolzoni) helped remove extraneous semicolons to suppress extra warning during compilation and contributed to a dataflow example
 - [Pursche](https://github.com/Pursche) fixed compilation warning on Microsoft Visual Studio
 - [KingDuckZ][KingDuckZ] helped discover the memory leak in the memory allocator used in graph and topology
-- [mrogez-yseop](https://github.com/mrogez-yseop) helped fix the missing comma in outputing the execution timeline JSON from the observer
+- [mrogez-yseop](https://github.com/mrogez-yseop) helped fix the missing comma in outputting the execution timeline JSON from the observer
+- [Sztergbaum Roman](https://github.com/Milerius) replaced the error-prone global setting in cmake with project-specific targets
 
 Meanwhile, we appreciate the support from many organizations for our development on Cpp-Taskflow.
 Please [let me know][email me] if I forgot someone!
