@@ -37,48 +37,63 @@ Cpp-Taskflow currently supports the following compilers:\n\
 ")
 endif()
 
+# error setting
 add_library(error_settings INTERFACE)
-
-# Using namespaces causes CMake to error our in case of typos on the
-# consuming side, very important.
-add_library(cpptaskflow::error_settings ALIAS error_settings)
+add_library(tf::error_settings ALIAS error_settings)
 
 target_compile_options(
-        error_settings
-        INTERFACE
-        $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wfatal-errors>
-        $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wfatal-errors>
-        $<$<CXX_COMPILER_ID:MSVC>:/W3 /permissive->)
+  error_settings
+  INTERFACE
+  $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wfatal-errors>
+  $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wfatal-errors>
+  $<$<CXX_COMPILER_ID:MSVC>:/W3 /permissive->
+)
 
+# additional features
 add_library(features_settings INTERFACE)
-add_library(cpptaskflow::features_settings ALIAS features_settings)
-target_compile_definitions(features_settings INTERFACE $<$<CXX_COMPILER_ID:MSVC>:_ENABLE_EXTENDED_ALIGNED_STORAGE>)
+add_library(tf::features_settings ALIAS features_settings)
+target_compile_definitions(
+  features_settings 
+  INTERFACE 
+  $<$<CXX_COMPILER_ID:MSVC>:_ENABLE_EXTENDED_ALIGNED_STORAGE>
+)
 
-add_library(optimize_settings INTERFACE)
-
-add_library(cpptaskflow::optimize_settings ALIAS optimize_settings)
-
+# optimization
+#
 ##! Msvc flags info
-# /Zi - Produces a program database (PDB) that contains type information and symbolic debugging information for use with the debugger.
+# /Zi - Produces a program database (PDB) that contains type information 
+#       and symbolic debugging information for use with the debugger.
 # /FS - Allows multiple cl.exe processes to write to the same .pdb file
 # /DEBUG - Enable debug during linking
 # /Od - Disables optimization
 # /Ox - Full optimization
 # /Oy- do not suppress frame pointers (recommended for debugging)
+#
+add_library(optimize_settings INTERFACE)
+add_library(tf::optimize_settings ALIAS optimize_settings)
 
-target_compile_options(optimize_settings INTERFACE
-        $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:Clang>>:-O2 -march=native>
-        $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:GNU>>:-O2 -march=native>
-        $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:GNU>>:-O0 -g>
-        $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>>:-O0 -g>
-        $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/Zi /FS /DEBUG /Od /MP /MDd /Oy->
-        $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/O2 -DNDEBUG /MP>
-        )
+target_compile_options(
+  optimize_settings INTERFACE
+  #$<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:Clang>>:-O2 -march=native>
+  #$<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:GNU>>:-O2 -march=native>
+  #$<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/O2 -DNDEBUG /MP>
+  #$<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:GNU>>:-O0 -g>
+  #$<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>>:-O0 -g>
+  #$<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/Zi /FS /DEBUG /Od /MP /MDd /Oy->
+  $<$<CXX_COMPILER_ID:Clang>:-O2 -march=native>
+  $<$<CXX_COMPILER_ID:GNU>:-O2 -march=native>
+  $<$<CXX_COMPILER_ID:MSVC>:/O2 -DNDEBUG /MP>
+)
 
 add_library(default_settings INTERFACE)
-add_library(cpptaskflow::default_settings ALIAS default_settings)
-target_link_libraries(default_settings INTERFACE cpptaskflow::error_settings cpptaskflow::optimize_settings cpptaskflow::features_settings)
-
+add_library(tf::default_settings ALIAS default_settings)
+target_link_libraries(
+  default_settings 
+  INTERFACE 
+  tf::error_settings 
+  tf::optimize_settings 
+  tf::features_settings
+)
 
 # CXX target properties
 #set(CMAKE_CXX_STANDARD 17)
@@ -154,31 +169,49 @@ message(STATUS "Building examples ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR})
 
 add_executable(simple ${TF_EXAMPLE_DIR}/simple.cpp)
-target_link_libraries(simple ${PROJECT_NAME} Threads::Threads cpptaskflow::default_settings)
+target_link_libraries(
+  simple ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
 
 add_executable(observer ${TF_EXAMPLE_DIR}/observer.cpp)
-target_link_libraries(observer ${PROJECT_NAME} Threads::Threads cpptaskflow::default_settings)
+target_link_libraries(
+  observer ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
 
 add_executable(subflow ${TF_EXAMPLE_DIR}/subflow.cpp)
-target_link_libraries(subflow ${PROJECT_NAME} Threads::Threads cpptaskflow::default_settings)
+target_link_libraries(
+  subflow ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
 
 add_executable(debug ${TF_EXAMPLE_DIR}/debug.cpp)
-target_link_libraries(debug ${PROJECT_NAME} Threads::Threads cpptaskflow::default_settings)
+target_link_libraries(
+  debug ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
 
 add_executable(reduce ${TF_EXAMPLE_DIR}/reduce.cpp)
-target_link_libraries(reduce ${PROJECT_NAME} Threads::Threads cpptaskflow::default_settings)
+target_link_libraries(
+  reduce ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
 
 add_executable(parallel_for ${TF_EXAMPLE_DIR}/parallel_for.cpp)
-target_link_libraries(parallel_for ${PROJECT_NAME} Threads::Threads cpptaskflow::default_settings)
+target_link_libraries(
+  parallel_for ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
 
 add_executable(dynamic_traversal ${TF_EXAMPLE_DIR}/dynamic_traversal.cpp)
-target_link_libraries(dynamic_traversal ${PROJECT_NAME} Threads::Threads cpptaskflow::default_settings)
+target_link_libraries(
+  dynamic_traversal ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
 
 add_executable(run_variants ${TF_EXAMPLE_DIR}/run_variants.cpp)
-target_link_libraries(run_variants ${PROJECT_NAME} Threads::Threads cpptaskflow::default_settings)
+target_link_libraries(
+  run_variants ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
 
 add_executable(composition ${TF_EXAMPLE_DIR}/composition.cpp)
-target_link_libraries(composition ${PROJECT_NAME} Threads::Threads cpptaskflow::default_settings)
+target_link_libraries(
+ composition ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
 
 #add_executable(dice_pools ${TF_EXAMPLE_DIR}/dice_pools.cpp)
 #target_link_libraries(dice_pools ${PROJECT_NAME} Threads::Threads)  
@@ -200,7 +233,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR})
 
 # unittest for utility
 add_executable(utility unittest/utility.cpp)
-target_link_libraries(utility ${PROJECT_NAME} Threads::Threads cpptaskflow::default_settings)
+target_link_libraries(utility ${PROJECT_NAME} Threads::Threads tf::default_settings)
 target_include_directories(utility PRIVATE ${PROJECT_SOURCE_DIR}/doctest)
 add_test(passive_vector ${TF_UTEST_DIR}/utility -tc=PassiveVector)
 add_test(object_pool    ${TF_UTEST_DIR}/utility -tc=ObjectPool)
@@ -208,7 +241,7 @@ add_test(singular_alloc ${TF_UTEST_DIR}/utility -tc=SingularAllocator)
 
 # unittest for taskflow
 add_executable(taskflow_test_tmp unittest/taskflow.cpp)
-target_link_libraries(taskflow_test_tmp ${PROJECT_NAME} Threads::Threads cpptaskflow::default_settings)
+target_link_libraries(taskflow_test_tmp ${PROJECT_NAME} Threads::Threads tf::default_settings)
 target_include_directories(taskflow_test_tmp PRIVATE ${PROJECT_SOURCE_DIR}/doctest)
 set_target_properties(taskflow_test_tmp PROPERTIES OUTPUT_NAME "taskflow")
 add_test(builder          ${TF_UTEST_DIR}/taskflow -tc=Builder)
@@ -230,7 +263,7 @@ add_test(observer         ${TF_UTEST_DIR}/taskflow -tc=Observer)
 # unittest for WorkStealingQueue 
 add_executable(spmc_queue unittest/spmc_queue.cpp)
 target_link_libraries(spmc_queue ${PROJECT_NAME} Threads::Threads)
-target_include_directories(spmc_queue PRIVATE ${PROJECT_SOURCE_DIR}/doctest cpptaskflow::default_settings)
+target_include_directories(spmc_queue PRIVATE ${PROJECT_SOURCE_DIR}/doctest tf::default_settings)
 add_test(WorkStealingQueue.Owner  ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.Owner)
 add_test(WorkStealingQueue.1Thief ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.1Thief)
 add_test(WorkStealingQueue.2Thieves ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.2Thieves)
@@ -287,7 +320,11 @@ add_executable(
 target_include_directories(wavefront PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   wavefront 
-  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES} cpptaskflow::default_settings
+  ${PROJECT_NAME} 
+  Threads::Threads 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
 )
 set_target_properties(wavefront PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
@@ -305,7 +342,11 @@ add_executable(
 target_include_directories(graph_traversal PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   graph_traversal 
-  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES} cpptaskflow::default_settings
+  ${PROJECT_NAME} 
+  Threads::Threads 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
 )
 set_target_properties(graph_traversal PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
@@ -322,7 +363,11 @@ add_executable(
 target_include_directories(binary_tree PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   binary_tree 
-  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES} cpptaskflow::default_settings
+  ${PROJECT_NAME} 
+  Threads::Threads 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
 )
 set_target_properties(binary_tree PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
@@ -339,7 +384,11 @@ add_executable(
 target_include_directories(linear_chain PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   linear_chain 
-  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES} cpptaskflow::default_settings
+  ${PROJECT_NAME} 
+  Threads::Threads 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
 )
 set_target_properties(linear_chain PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
@@ -357,8 +406,12 @@ add_executable(
 target_include_directories(mnist PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   mnist 
-  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS}
-  ${OpenMP_CXX_LIBRARIES} stdc++fs cpptaskflow::default_settings
+  ${PROJECT_NAME} 
+  Threads::Threads 
+  ${TBB_IMPORTED_TARGETS}
+  ${OpenMP_CXX_LIBRARIES} 
+  stdc++fs 
+  tf::default_settings
 )
 set_target_properties(mnist PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
@@ -376,8 +429,12 @@ add_executable(
 target_include_directories(parallel_dnn PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   parallel_dnn 
-  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS}
-  ${OpenMP_CXX_LIBRARIES} stdc++fs cpptaskflow::default_settings
+  ${PROJECT_NAME} 
+  Threads::Threads 
+  ${TBB_IMPORTED_TARGETS}
+  ${OpenMP_CXX_LIBRARIES} 
+  stdc++fs 
+  tf::default_settings
 )
 set_target_properties(parallel_dnn PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
@@ -394,7 +451,11 @@ add_executable(
 target_include_directories(matrix_multiplication PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   matrix_multiplication 
-  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES} cpptaskflow::default_settings
+  ${PROJECT_NAME} 
+  Threads::Threads 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
 )
 set_target_properties(matrix_multiplication PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
@@ -411,7 +472,11 @@ add_executable(
 target_include_directories(mandelbrot_set PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   mandelbrot_set
-  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES} cpptaskflow::default_settings
+  ${PROJECT_NAME} 
+  Threads::Threads 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
 )
 set_target_properties(mandelbrot_set PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
@@ -428,7 +493,11 @@ add_executable(
 target_include_directories(black_scholes PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   black_scholes
-  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES} cpptaskflow::default_settings
+  ${PROJECT_NAME} 
+  Threads::Threads 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
 )
 set_target_properties(black_scholes PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
@@ -445,7 +514,11 @@ add_executable(
 target_include_directories(strassen PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   strassen
-  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES} cpptaskflow::default_settings
+  ${PROJECT_NAME} 
+  Threads::Threads 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
 )
 set_target_properties(strassen PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
@@ -462,7 +535,11 @@ add_executable(
 target_include_directories(parallel_loop PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   parallel_loop
-  ${PROJECT_NAME} Threads::Threads ${TBB_IMPORTED_TARGETS} ${OpenMP_CXX_LIBRARIES} cpptaskflow::default_settings
+  ${PROJECT_NAME} 
+  Threads::Threads 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
 )
 set_target_properties(parallel_loop PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 

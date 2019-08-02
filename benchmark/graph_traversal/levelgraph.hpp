@@ -202,8 +202,8 @@ class LevelGraph {
 
     Node& node_at(size_t level, size_t index){ return _graph[level][index]; }
 
-    const size_t level(){ return _level_num; }
-    const size_t length() { return _length_num;  }
+    size_t level(){ return _level_num; }
+    size_t length() { return _length_num;  }
 
     size_t graph_size() const {
       size_t size = 0;

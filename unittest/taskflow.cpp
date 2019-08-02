@@ -480,7 +480,8 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
     
   using namespace std::chrono_literals;
 
-  auto exception_test = [] (unsigned num_workers) {
+  auto exception_test = [] () {
+
     tf::Taskflow tf;
 
     // invalid index
@@ -602,9 +603,7 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
   };
   
   SUBCASE("Exception") {
-    for(unsigned w=0; w<=4; w++) {
-      exception_test(w);
-    }
+    exception_test();
   }
 
   SUBCASE("PositiveIntegerStep") {
@@ -768,6 +767,7 @@ TEST_CASE("JoinedSubflow" * doctest::timeout(300)){
       // empty flow
       auto subflow1 = tf.emplace([&] (auto& fb) {
         fu3v++;
+        fb.join();
       }).name("subflow1");
       
       // nested empty flow
@@ -777,6 +777,7 @@ TEST_CASE("JoinedSubflow" * doctest::timeout(300)){
           fu3v++;
           fb.emplace( [&] (auto& fb) {
             fu3v++;
+            fb.join();
           }).name("subflow2_1_1");
         }).name("subflow2_1");
       }).name("subflow2");
@@ -795,6 +796,7 @@ TEST_CASE("JoinedSubflow" * doctest::timeout(300)){
           fu3v++;
           fu3v_++;
           //return 200;
+          fb.join();
         });
         subflow3_.name("subflow3_");
 
@@ -934,6 +936,7 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
           fu3v++;
           fb.emplace( [&] (auto& fb) {
             fu3v++;
+            fb.join();
           }).name("subflow2_1_1");
           fb.detach();
         }).name("subflow2_1");
@@ -953,6 +956,7 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
           REQUIRE(fu3v_ == 3);
           fu3v++;
           fu3v_++;
+          fb.join();
         });
         subflow3_.name("subflow3_");
 

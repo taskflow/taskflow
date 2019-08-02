@@ -38,7 +38,7 @@ void parallel_for_on_index(int N) {
 // ----------------------------------------------------------------------------
 
 // Function: main
-int main(int argc, char* argv[]) {
+int main() {
 
   parallel_for_on_range(10);
   parallel_for_on_index(10);
