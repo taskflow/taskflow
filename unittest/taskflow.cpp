@@ -417,6 +417,47 @@ TEST_CASE("MultipleRuns" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: ParallelRuns
+// --------------------------------------------------------
+TEST_CASE("ParallelRuns" * doctest::timeout(300)) {
+ 
+  for(size_t w=1; w<=32; ++w) {
+
+    tf::Executor executor(w);
+  
+    std::atomic<int> counter = 0;
+
+    auto make_taskflow = [&] (tf::Taskflow& tf) {
+      for(int i=0; i<1024; i++) {
+        auto A = tf.emplace([&] () { 
+          counter.fetch_add(1, std::memory_order_relaxed); 
+        });
+        auto B = tf.emplace([&] () {
+          counter.fetch_add(1, std::memory_order_relaxed); 
+        });
+        A.precede(B);
+      }
+    };
+    
+    std::vector<std::thread> threads;
+    for(int t=1; t<=32; t++) {
+      threads.emplace_back([&] () {
+        tf::Taskflow taskflow;
+        make_taskflow(taskflow);
+        executor.run(taskflow).wait();
+      });
+    }
+
+    for(auto& t : threads) {
+      t.join();
+    }
+
+    REQUIRE(counter.load() == 32*1024*2);
+  }
+
+}
+
+// --------------------------------------------------------
 // Testcase: ParallelFor
 // --------------------------------------------------------
 TEST_CASE("ParallelFor" * doctest::timeout(300)) {

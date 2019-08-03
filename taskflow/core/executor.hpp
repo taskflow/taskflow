@@ -211,6 +211,7 @@ class Executor {
    
     std::condition_variable _topology_cv;
     std::mutex _topology_mutex;
+    std::mutex _queue_mutex;
 
     unsigned _num_topologies {0};
     
@@ -223,7 +224,6 @@ class Executor {
 
     std::atomic<size_t> _num_actives {0};
     std::atomic<size_t> _num_thieves {0};
-    //std::atomic<size_t> _num_idlers  {0};
     std::atomic<bool>   _done        {0};
 
     Notifier _notifier;
@@ -403,7 +403,6 @@ inline void Executor::_exploit_task(unsigned i, std::optional<Node*>& t) {
 
   if(t) {
     auto& worker = _workers[i];
-    // TODO: study the memory order here
     if(_num_actives.fetch_add(1) == 0 && _num_thieves == 0) {
       _notifier.notify(false);
     }
@@ -435,8 +434,6 @@ inline bool Executor::_wait_for_task(unsigned me, std::optional<Node*>& t) {
 
   explore_task:
 
-  //assert(_num_thieves <= _workers.size());
-
   if(_explore_task(me, t); t) {
     if(auto N = _num_thieves.fetch_sub(1); N == 1) {
       _notifier.notify(false);
@@ -463,16 +460,6 @@ inline bool Executor::_wait_for_task(unsigned me, std::optional<Node*>& t) {
     }
   }
 
-  //if(size_t I = ++_num_idlers; _done && I == _workers.size()) {
-  //  _notifier.cancel_wait(&_waiters[me]);
-  //  //if(_find_victim(me) != _workers.size()) {
-  //  //  --_num_idlers;
-  //  //  return true;
-  //  //}
-  //  _notifier.notify(true);
-  //  return false;
-  //}
-
   if(_done) {
     _notifier.cancel_wait(&_waiters[me]);
     _notifier.notify(true);
@@ -484,15 +471,6 @@ inline bool Executor::_wait_for_task(unsigned me, std::optional<Node*>& t) {
     _notifier.cancel_wait(&_waiters[me]);
     goto wait_for_task;
   }
-
-  //if(_num_actives && _num_thieves.load(std::memory_order_relaxed) == 0) {
-  //  size_t zero {0};
-  //  size_t one {1};
-  //  if(_num_thieves.compare_exchange_strong(zero, one, std::memory_order_seq_cst, std::memory_order_relaxed)) {
-  //    _notifier.cancel_wait(&_waiters[me]);
-  //    goto begin_steal;
-  //  }
-  //}
     
   // Now I really need to relinguish my self to others
   _notifier.commit_wait(&_waiters[me]);
@@ -544,8 +522,11 @@ inline void Executor::_schedule(Node* node, bool bypass) {
     return;
   }
 
-  // master threads
-  _queue.push(node);
+  // other threads
+  {
+    std::scoped_lock lock(_queue_mutex);
+    _queue.push(node);
+  }
 
   _notifier.notify(false);
 }
@@ -586,21 +567,29 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
     return;
   }
   
-  // master thread
-  for(size_t k=0; k<num_nodes; ++k) {
-    _queue.push(nodes[k]);
-    _notifier.notify(false);
+  // other threads
+  {
+    std::scoped_lock lock(_queue_mutex);
+    for(size_t k=0; k<num_nodes; ++k) {
+      _queue.push(nodes[k]);
+    }
   }
-  
-  //size_t N = std::max(size_t{1}, std::min(_num_idlers.load(), num_nodes));
 
-  //if(N >= _workers.size()) {
+  _notifier.notify(false);
+
+  //if(num_nodes > _workers.size()) {
   //  _notifier.notify(true);
   //}
   //else {
-  //  for(size_t k=0; k<N; ++k) {
+  //  for(size_t k=0; k<num_nodes; ++k) {
   //    _notifier.notify(false);
   //  }
+  //}
+
+
+  //for(size_t k=0; k<num_nodes; ++k) {
+  //  _queue.push(nodes[k]);
+  //  _notifier.notify(false);
   //}
 }
 
@@ -856,9 +845,10 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
       p.set_value();
       {
         std::scoped_lock lock(_topology_mutex);
-        _num_topologies--;
+        if(--_num_topologies == 0) {
+          _topology_cv.notify_all();
+        }
       }
-      _topology_cv.notify_one();
     }
   }
 }
@@ -870,11 +860,12 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
   // Predicate must return a boolean value
   static_assert(std::is_invocable_v<C> && std::is_invocable_v<P>);
 
+  // Special case of predicate
   if(std::invoke(pred)) {
     return std::async(std::launch::deferred, [](){});
   }
   
-  // Speicla case of zero workers needs
+  // Special case of zero workers requires:
   //  - iterative execution to avoid stack overflow
   //  - avoid execution of last_work
   if(_workers.size() == 0) {
@@ -904,10 +895,12 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
   }
   
   // has worker(s)
-  {
-    std::scoped_lock lock(_topology_mutex);
+//  {
+    //std::scoped_lock lock(_topology_mutex);
+    _topology_mutex.lock();
     _num_topologies++;
-  }
+    _topology_mutex.unlock();
+//  }
 
   // Multi-threaded execution.
   bool run_now {false};
