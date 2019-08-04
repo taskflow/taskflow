@@ -216,6 +216,7 @@ The executor provides a rich set of methods to run a taskflow.
 You can run a taskflow one or multiple times, or until a stopping criteria is met.
 These methods are non-blocking and all return a [std::future][std::future] 
 to let you query the execution status.
+All methods are *thread-safe*.
 
 ```cpp 
 executor.run(taskflow);                                              // run the taskflow once
@@ -527,7 +528,7 @@ tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) {
 
 A.precede(B);
 
-executor.run(tf).get();  // run the taskflow
+executor.run(tf).wait();  // run the taskflow
 tf.dump(std::cout);      // dump the graph including dynamic tasks
 ```
 

@@ -31,8 +31,8 @@ tf::Executor executor2(4);  // create an executor of 4 worker threads
 @endcode
 
 An executor can be reused to execute multiple taskflows.
-In most workloads, you may need only one executor but multiple taskflows
-to represent parts of a parallel decomposition.
+In most workloads, you may need only one executor to run multiple taskflows
+where each taskflow represents a part of a parallel decomposition.
 
 @section C2_ExecuteATaskflow Execute a Taskflow
 
@@ -78,7 +78,7 @@ Debrief:
 @li Line 20    keeps running the taskflow until the predicate returns true
 
 Issuing multiple runs on the same taskflow will automatically @em synchronize
-to a sequential chain of executions following the order of the run calls.
+to a sequential chain of executions in the order of run calls.
 
 @code{.cpp}
 executor.run(taskflow);         // execution 1
