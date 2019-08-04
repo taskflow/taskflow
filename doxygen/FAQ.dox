@@ -51,7 +51,7 @@ Cpp-Taskflow has implemented different scheduler modules
 The default scheduler implements the famous 
 <a href="https://en.wikipedia.org/wiki/Work_stealing">work stealing algorithm</a> 
 that has shown to behave efficiently in most multicore architectures.
-You can find the source code at @c taskflow/threadpool/workstealing_threadpool.hpp
+You can find the source code at @c taskflow/core/executor.hpp
 
 ----
 
@@ -83,13 +83,18 @@ Please refer to @ref C1_LifetimeOfATask for more details.
 No, the taskflow object is not thread-safe. You can't create tasks from multiple threads
 at the same time.
 
-@subsection ProgrammingQuestions4 Q4: My program hangs and never returns after dispatching a taskflow graph. What's wrong?
+@subsection ProgrammingQuestions4 Q4: Is executor thread-safe?
+
+Yes, the executor object is thread-safe. 
+You can have multiple threads run their taskflows on one executor.
+
+@subsection ProgrammingQuestions5 Q5: My program hangs and never returns after dispatching a taskflow graph. What's wrong?
 
 When the program hangs forever it is very likely your taskflow graph has a cycle.
 Try the tf::Taskflow::dump method to debug the graph before dispatching your taskflow graph.
 
 
-@subsection ProgrammingQuestions5 Q5: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?
+@subsection ProgrammingQuestions6 Q6: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?
 
 @image html images/dynamic_graph.png width=60%
 

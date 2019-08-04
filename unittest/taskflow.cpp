@@ -97,7 +97,9 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   SUBCASE("LinearCounter"){
     for(size_t i=0;i<num_tasks;i++){
       tasks.emplace_back(
-        taskflow.emplace([&counter, i]() { REQUIRE(counter == i); counter += 1;})
+        taskflow.emplace([&counter, i]() { 
+          REQUIRE(counter == i); counter += 1;}
+        )
       );
       if(i>0){
         taskflow.precede(tasks[i-1], tasks[i]);
@@ -124,7 +126,9 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   SUBCASE("Gather"){
     auto dst = taskflow.emplace([&]() { REQUIRE(counter == num_tasks - 1);});
     for(size_t i=1;i<num_tasks;i++){
-      silent_tasks.emplace_back(taskflow.emplace([&counter]() {counter += 1;}));
+      silent_tasks.emplace_back(
+        taskflow.emplace([&counter]() {counter += 1;})
+      );
     }
     dst.gather(silent_tasks);
     executor.run(taskflow).get();
@@ -135,7 +139,9 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   SUBCASE("MapReduce"){
     auto src = taskflow.emplace([&counter]() {counter = 0;});
     for(size_t i=0;i<num_tasks;i++){
-      silent_tasks.emplace_back(taskflow.emplace([&counter]() {counter += 1;}));
+      silent_tasks.emplace_back(
+        taskflow.emplace([&counter]() {counter += 1;})
+      );
     }
     taskflow.broadcast(src, silent_tasks);
     auto dst = taskflow.emplace(
@@ -149,7 +155,9 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   SUBCASE("Linearize"){
     for(size_t i=0;i<num_tasks;i++){
       silent_tasks.emplace_back(
-        taskflow.emplace([&counter, i]() { REQUIRE(counter == i); counter += 1;})
+        taskflow.emplace([&counter, i]() { 
+          REQUIRE(counter == i); counter += 1;}
+        )
       );
     }
     taskflow.linearize(silent_tasks);
@@ -162,7 +170,9 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     auto src = taskflow.emplace([&counter]() {counter = 0;});
     for(size_t i=0;i<num_tasks;i++){
       silent_tasks.emplace_back(
-        taskflow.emplace([&counter, i]() { REQUIRE(counter == i); counter += 1; })
+        taskflow.emplace([&counter, i]() { 
+          REQUIRE(counter == i); counter += 1; }
+        )
       );
     }
     taskflow.broadcast(src, silent_tasks);
@@ -215,9 +225,9 @@ TEST_CASE("Creation" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
-// Testcase: Run
+// Testcase: SequentialRun
 // --------------------------------------------------------
-TEST_CASE("Run" * doctest::timeout(300)) {
+TEST_CASE("SequentialRun" * doctest::timeout(300)) {
     
   using namespace std::chrono_literals;
   
@@ -233,13 +243,15 @@ TEST_CASE("Run" * doctest::timeout(300)) {
   std::vector<tf::Task> silent_tasks;
     
   for(size_t i=0;i<num_tasks;i++){
-    silent_tasks.emplace_back(taskflow.emplace([&counter]() {counter += 1;}));
+    silent_tasks.emplace_back(
+      taskflow.emplace([&counter]() {counter += 1;})
+    );
   }
 
   SUBCASE("RunOnce"){
     auto fu = executor.run(taskflow);
     REQUIRE(taskflow.num_nodes() == num_tasks);
-    REQUIRE(fu.wait_for(1s) == std::future_status::ready);
+    fu.get();
     REQUIRE(counter == num_tasks);
   }
 
@@ -249,7 +261,7 @@ TEST_CASE("Run" * doctest::timeout(300)) {
     REQUIRE(counter == num_tasks); 
   }
   
-  SUBCASE("RunVariants") {
+  SUBCASE("RunWithFuture") {
     // Empty subflow test
     for(unsigned W=0; W<=4; ++W) {
 
@@ -271,7 +283,7 @@ TEST_CASE("Run" * doctest::timeout(300)) {
       C.precede(D);
 
       tf::Executor executor(W);
-      std::list<std::shared_future<void>> fu_list;
+      std::list<std::future<void>> fu_list;
       for(size_t i=0; i<500; i++) {
         if(i == 499) {
           executor.run(f).get();   // Synchronize the first 500 runs
@@ -281,20 +293,26 @@ TEST_CASE("Run" * doctest::timeout(300)) {
           fu_list.push_back(executor.run(f));
         }
         else {
-          fu_list.push_back(executor.run(f, [&, i=i](){ REQUIRE(count == (i+1)*7); }));
+          fu_list.push_back(executor.run(f, [&, i=i](){ 
+            REQUIRE(count == (i+1)*7); })
+          );
         }
       }
+      
+      executor.wait_for_all();
 
       for(auto& fu: fu_list) {
-        REQUIRE(fu.wait_for(std::chrono::seconds(0)) == std::future_status::ready);
+        REQUIRE(fu.valid());
+        REQUIRE(fu.wait_for(std::chrono::seconds(1)) == std::future_status::ready);
       }
-
-      executor.wait_for_all();
 
       REQUIRE(count == 7000);
     }
+  }
 
-    // TODO: test correctness when taskflow got changed between runs 
+  SUBCASE("RunWithChange") {
+
+    // test correctness when taskflow got changed between runs 
     for(unsigned W=0; W<=4; ++W) {
 
       std::atomic<size_t> count {0};
@@ -329,7 +347,9 @@ TEST_CASE("Run" * doctest::timeout(300)) {
       executor.wait_for_all();
       REQUIRE(count == 210);    
     }
+  }
 
+  SUBCASE("RunWithPred") {
     // Test run_until 
     for(unsigned W=0; W<=4; ++W) {
 
@@ -376,44 +396,109 @@ TEST_CASE("Run" * doctest::timeout(300)) {
       ).get();
     }
   }
+
+  SUBCASE("MultipleRuns") {
+    for(size_t W=0; W<=8; ++W) {
+      tf::Executor executor(W);
+      std::atomic<size_t> counter(0);
+
+      tf::Taskflow tf1, tf2, tf3, tf4;
+
+      for(size_t n=0; n<16; ++n) {
+        tf1.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+      }
+      
+      for(size_t n=0; n<1024; ++n) {
+        tf2.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+      }
+      
+      for(size_t n=0; n<32; ++n) {
+        tf3.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+      }
+      
+      for(size_t n=0; n<128; ++n) {
+        tf4.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+      }
+      
+      for(int i=0; i<200; ++i) {
+        executor.run(tf1);
+        executor.run(tf2);
+        executor.run(tf3);
+        executor.run(tf4);
+      }
+      executor.wait_for_all();
+      REQUIRE(counter == 240000);
+    }
+  }
 }
 
 // --------------------------------------------------------
-// Testcase: MultipleRuns
+// Testcase: ParallelRuns
 // --------------------------------------------------------
-TEST_CASE("MultipleRuns" * doctest::timeout(300)) {
+TEST_CASE("ParallelRuns" * doctest::timeout(300)) {
+  
+  std::atomic<int> counter;
+  std::vector<std::thread> threads;
 
-  for(size_t W=0; W<=8; ++W) {
-    tf::Executor executor(W);
-    std::atomic<size_t> counter(0);
+  auto make_taskflow = [&] (tf::Taskflow& tf) {
+    for(int i=0; i<1024; i++) {
+      auto A = tf.emplace([&] () { 
+        counter.fetch_add(1, std::memory_order_relaxed); 
+      });
+      auto B = tf.emplace([&] () {
+        counter.fetch_add(1, std::memory_order_relaxed); 
+      });
+      A.precede(B);
+    }
+  };
 
-    tf::Taskflow tf1, tf2, tf3, tf4;
+  SUBCASE("RunAndWait") {
+    for(size_t w=0; w<=32; ++w) {
+      tf::Executor executor(w);
+      counter = 0;
+      for(int t=0; t<32; t++) {
+        threads.emplace_back([&] () {
+          tf::Taskflow taskflow;
+          make_taskflow(taskflow);
+          executor.run(taskflow).wait();
+        });
+      }
 
-    for(size_t n=0; n<16; ++n) {
-      tf1.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+      for(auto& t : threads) {
+        t.join();
+      }
+      threads.clear();
+
+      REQUIRE(counter.load() == 32*1024*2);
     }
-    
-    for(size_t n=0; n<1024; ++n) {
-      tf2.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
-    }
-    
-    for(size_t n=0; n<32; ++n) {
-      tf3.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
-    }
-    
-    for(size_t n=0; n<128; ++n) {
-      tf4.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
-    }
-    
-    for(int i=0; i<200; ++i) {
-      executor.run(tf1);
-      executor.run(tf2);
-      executor.run(tf3);
-      executor.run(tf4);
-    }
-    executor.wait_for_all();
-    REQUIRE(counter == 240000);
   }
+  
+  SUBCASE("RunAndWaitForAll") { 
+    for(size_t w=0; w<=32; ++w) {
+      tf::Executor executor(w);
+      counter = 0;
+      std::vector<std::unique_ptr<tf::Taskflow>> taskflows(32);
+      std::atomic<size_t> barrier(0);
+      for(int t=0; t<32; t++) {
+        threads.emplace_back([&, t=t] () {
+          taskflows[t] = std::make_unique<tf::Taskflow>();
+          make_taskflow(*taskflows[t]);
+          executor.run(*taskflows[t]);
+          ++barrier;    // make sure all runs are issued
+        });
+      }
+      
+      while(barrier != 32);
+      executor.wait_for_all();
+      REQUIRE(counter.load() == 32*1024*2);
+      
+      for(auto& t : threads) {
+        t.join();
+      }
+      threads.clear();
+    }
+  }
+
 }
 
 // --------------------------------------------------------
@@ -1188,7 +1273,7 @@ TEST_CASE("Composition-3" * doctest::timeout(300)) {
 // -------------------------------------------------------- 
 TEST_CASE("Observer" * doctest::timeout(300)) {
 
-  for(unsigned w=0; w<=8; ++w) {
+  for(unsigned w=1; w<=8; ++w) {
     tf::Executor executor(w);
 
     auto observer = executor.make_observer<tf::ExecutorObserver>();    

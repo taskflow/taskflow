@@ -1,3 +1,26 @@
+/*
+@ @licstart  The following is the entire license notice for the
+JavaScript code in this file.
+
+Copyright (C) 1997-2017 by Dimitri van Heesch
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+@licend  The above is the entire license notice
+for the JavaScript code in this file
+*/
 var NAVTREE =
 [
   [ "Cpp-Taskflow", "index.html", [
@@ -25,8 +48,9 @@ var NAVTREE =
         [ "Q1: What is the difference between Cpp-Taskflow threads and workers?", "FAQ.html#ProgrammingQuestions1", null ],
         [ "Q2: What is the Lifetime of a Task and a Graph?", "FAQ.html#ProgrammingQuestions2", null ],
         [ "Q3: Is taskflow thread-safe?", "FAQ.html#ProgrammingQuestions3", null ],
-        [ "Q4: My program hangs and never returns after dispatching a taskflow graph. What's wrong?", "FAQ.html#ProgrammingQuestions4", null ],
-        [ "Q5: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?", "FAQ.html#ProgrammingQuestions5", null ]
+        [ "Q4: Is executor thread-safe?", "FAQ.html#ProgrammingQuestions4", null ],
+        [ "Q5: My program hangs and never returns after dispatching a taskflow graph. What's wrong?", "FAQ.html#ProgrammingQuestions5", null ],
+        [ "Q6: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?", "FAQ.html#ProgrammingQuestions6", null ]
       ] ]
     ] ],
     [ "Reference", "Reference.html", [
@@ -43,8 +67,8 @@ var NAVTREE =
         [ "Enumerations", "functions_enum.html", null ]
       ] ]
     ] ],
-    [ "Files", null, [
-      [ "File List", "files.html", "files" ]
+    [ "Files", "files.html", [
+      [ "File List", "files.html", "files_dup" ]
     ] ]
   ] ]
 ];

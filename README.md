@@ -216,6 +216,7 @@ The executor provides a rich set of methods to run a taskflow.
 You can run a taskflow multiple times, or until a stopping criteria is met.
 These methods are non-blocking with a [std::future][std::future] return
 to let you query the execution status.
+All methods are *thread-safe*.
 
 ```cpp 
 executor.run(taskflow);                                              // run the taskflow once

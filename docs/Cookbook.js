@@ -18,7 +18,10 @@ var Cookbook =
     [ "C2: Execute a Taskflow", "chapter2.html", [
       [ "Graph and Topology", "chapter2.html#GraphAndTopology", null ],
       [ "Create an Executor", "chapter2.html#C2_CreateAnExecutor", null ],
-      [ "Execute a Taskflow", "chapter2.html#C2_ExecuteATaskflow", null ]
+      [ "Execute a Taskflow", "chapter2.html#C2_ExecuteATaskflow", null ],
+      [ "Thread Safety", "chapter2.html#C2_ThreadSafety", null ],
+      [ "Monitor Thread Activities", "chapter2.html#C2_MonitorThreadActivities", null ],
+      [ "Customize Your Own Observer", "chapter2.html#C2_CustomizeYourOwnObserver", null ]
     ] ],
     [ "C3: Create a Parallel For-loop Graph", "chapter3.html", [
       [ "Range-based For-loop", "chapter3.html#RangeBasedForLoop", null ],
@@ -39,11 +42,5 @@ var Cookbook =
       [ "Subflow", "chapter5.html#Subflow", null ],
       [ "Detach a Subflow", "chapter5.html#DetachASubflow", null ],
       [ "Nested Subflow", "chapter5.html#NestedSubflow", null ]
-    ] ],
-    [ "C6: Manage Threads and Executor", "chapter6.html", [
-      [ "Master, Workers, and Executor", "chapter6.html#C6_MasterWorkersAndExecutor", null ],
-      [ "Thread Safety", "chapter6.html#C6ThreadSafety", null ],
-      [ "Monitor Thread Activities", "chapter6.html#C6MonitorThreadActivities", null ],
-      [ "Customize Your Own Observer", "chapter6.html#C6CustomizeYourOwnObserver", null ]
     ] ]
 ];

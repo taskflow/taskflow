@@ -14,20 +14,16 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.3")
     message(FATAL_ERROR "\nCpp-Taskflow requires g++ at least v7.3")
   endif()
-  #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2")
 ## clang++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6.0")
     message(FATAL_ERROR "\nCpp-Taskflow requires clang++ at least v6.0")
   endif() 
-  #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2")
 ## microsoft visual c++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   if(NOT MSVC_VERSION GREATER_EQUAL 1914)
     message(FATAL_ERROR "\nCpp-Taskflow requires MSVC++ at least v14.14") 
   endif()
-  #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2 /W3")
-  #add_definitions(-D_ENABLE_EXTENDED_ALIGNED_STORAGE)
 else()
   message(FATAL_ERROR "\n\
 Cpp-Taskflow currently supports the following compilers:\n\
@@ -264,7 +260,8 @@ set_target_properties(taskflow_test_tmp PROPERTIES OUTPUT_NAME "taskflow")
 add_test(builder          ${TF_UTEST_DIR}/taskflow -tc=Builder)
 add_test(creation         ${TF_UTEST_DIR}/taskflow -tc=Creation)
 add_test(dispatch         ${TF_UTEST_DIR}/taskflow -tc=Dispatch)
-add_test(multiple_runs    ${TF_UTEST_DIR}/taskflow -tc=MultipleRuns)
+add_test(sequential_runs  ${TF_UTEST_DIR}/taskflow -tc=SequentialRuns)
+add_test(parallel_runs    ${TF_UTEST_DIR}/taskflow -tc=ParallelRuns)
 add_test(parallel_for     ${TF_UTEST_DIR}/taskflow -tc=ParallelFor)
 add_test(parallel_for_idx ${TF_UTEST_DIR}/taskflow -tc=ParallelForOnIndex)
 add_test(reduce           ${TF_UTEST_DIR}/taskflow -tc=Reduce)
@@ -538,28 +535,6 @@ target_link_libraries(
   tf::default_settings
 )
 set_target_properties(strassen PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-
-## benchmark 11: parallel loop
-message(STATUS "benchmark 11: parallel loop")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/parallel_loop)
-add_executable(
-  parallel_loop
-  ${TF_BENCHMARK_DIR}/parallel_loop/main.cpp
-  ${TF_BENCHMARK_DIR}/parallel_loop/omp.cpp
-  ${TF_BENCHMARK_DIR}/parallel_loop/tbb.cpp
-  ${TF_BENCHMARK_DIR}/parallel_loop/taskflow.cpp
-)
-target_include_directories(parallel_loop PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-target_link_libraries(
-  parallel_loop
-  ${PROJECT_NAME} 
-  Threads::Threads 
-  ${TBB_IMPORTED_TARGETS} 
-  ${OpenMP_CXX_LIBRARIES} 
-  tf::default_settings
-)
-set_target_properties(parallel_loop PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-
 
 endif()
 
