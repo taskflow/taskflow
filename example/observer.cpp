@@ -4,7 +4,7 @@
 
 int main(){
   
-  tf::Executor executor(0);
+  tf::Executor executor;
   
   // Create a taskflow of eight tasks
   tf::Taskflow taskflow;
