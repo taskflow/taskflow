@@ -420,39 +420,67 @@ TEST_CASE("MultipleRuns" * doctest::timeout(300)) {
 // Testcase: ParallelRuns
 // --------------------------------------------------------
 TEST_CASE("ParallelRuns" * doctest::timeout(300)) {
- 
-  for(size_t w=0; w<=32; ++w) {
-
-    tf::Executor executor(w);
   
-    std::atomic<int> counter = 0;
+  std::atomic<int> counter;
+  std::vector<std::thread> threads;
 
-    auto make_taskflow = [&] (tf::Taskflow& tf) {
-      for(int i=0; i<1024; i++) {
-        auto A = tf.emplace([&] () { 
-          counter.fetch_add(1, std::memory_order_relaxed); 
-        });
-        auto B = tf.emplace([&] () {
-          counter.fetch_add(1, std::memory_order_relaxed); 
-        });
-        A.precede(B);
-      }
-    };
-    
-    std::vector<std::thread> threads;
-    for(int t=1; t<=32; t++) {
-      threads.emplace_back([&] () {
-        tf::Taskflow taskflow;
-        make_taskflow(taskflow);
-        executor.run(taskflow).wait();
+  auto make_taskflow = [&] (tf::Taskflow& tf) {
+    for(int i=0; i<1024; i++) {
+      auto A = tf.emplace([&] () { 
+        counter.fetch_add(1, std::memory_order_relaxed); 
       });
+      auto B = tf.emplace([&] () {
+        counter.fetch_add(1, std::memory_order_relaxed); 
+      });
+      A.precede(B);
     }
+  };
 
-    for(auto& t : threads) {
-      t.join();
+  SUBCASE("RunAndWait") {
+    for(size_t w=0; w<=32; ++w) {
+      tf::Executor executor(w);
+      counter = 0;
+      for(int t=0; t<32; t++) {
+        threads.emplace_back([&] () {
+          tf::Taskflow taskflow;
+          make_taskflow(taskflow);
+          executor.run(taskflow).wait();
+        });
+      }
+
+      for(auto& t : threads) {
+        t.join();
+      }
+      threads.clear();
+
+      REQUIRE(counter.load() == 32*1024*2);
     }
-
-    REQUIRE(counter.load() == 32*1024*2);
+  }
+  
+  SUBCASE("RunAndWaitForAll") { 
+    for(size_t w=0; w<=32; ++w) {
+      tf::Executor executor(w);
+      counter = 0;
+      std::vector<std::unique_ptr<tf::Taskflow>> taskflows(32);
+      std::atomic<size_t> barrier(0);
+      for(int t=0; t<32; t++) {
+        threads.emplace_back([&, t=t] () {
+          taskflows[t] = std::make_unique<tf::Taskflow>();
+          make_taskflow(*taskflows[t]);
+          executor.run(*taskflows[t]);
+          ++barrier;    // make sure all runs are issued
+        });
+      }
+      
+      while(barrier != 32);
+      executor.wait_for_all();
+      REQUIRE(counter.load() == 32*1024*2);
+      
+      for(auto& t : threads) {
+        t.join();
+      }
+      threads.clear();
+    }
   }
 
 }

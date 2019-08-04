@@ -1,3 +1,6 @@
+// 2019/08/03 - modified by Tsung-Wei Huang
+//  - made executor thread-safe
+//
 // 2019/07/26 - modified by Chun-Xun Lin
 //  - Combine explore_task & wait_for_task
 //  - Remove CAS operations 
