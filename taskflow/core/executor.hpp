@@ -1002,8 +1002,10 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
 
   // Special case of predicate
   if(std::invoke(pred)) {
+    std::promise<void> promise;
+    promise.set_value();
     _decrement_topology_and_notify();
-    return std::async(std::launch::deferred, [](){});
+    return promise.get_future();
   }
   
   // Special case of zero workers requires:
@@ -1031,10 +1033,12 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
     if(tpg._call != nullptr) {
       std::invoke(tpg._call);
     }
+
+    tpg._promise.set_value();
     
     _decrement_topology_and_notify();
     
-    return std::async(std::launch::deferred, [](){});
+    return tpg._promise.get_future();
   }
   
   // Multi-threaded execution.
