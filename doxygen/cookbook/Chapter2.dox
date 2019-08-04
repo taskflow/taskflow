@@ -10,7 +10,8 @@ In this chapter, we will show you how to execute a task dependency graph.
 Each taskflow object has exactly one graph at a time that represents
 a set of dependent tasks constructed so far.
 To execute a graph, you need to create an @em executor from tf::Executor.
-An executor manages a set of worker threads and schedules task execution
+An executor is a @em thread-safe object that 
+ manages a set of worker threads and schedules task execution
 through an efficient @em work-stealing algorithm.
 Issuing a call to run a taskflow creates a @em topology.
 A topology is a data structure wrapping around a running graph.
@@ -21,7 +22,7 @@ Users can retrieve this information for graph inspection and debugging.
 @section C2_CreateAnExecutor Create an Executor
 
 The first step is to create an executor to run a taskflow.
-tf::Executor takes an unsigned integer to construct an executor of @c N worker threads.
+tf::Executor takes an unsigned integer to construct with @c N worker threads.
 The default value is std::thread::hardware_concurrency.
 
 @code{.cpp}
@@ -57,12 +58,12 @@ The code below shows several ways to run a taskflow.
 11: A.precede(B, C); 
 12: 
 13: std::future<void> fu = executor.run(taskflow);
-14: fu.get();                 // block until the execution completes
+14: fu.wait();                // block until the execution completes
 15:
-16: executor.run(taskflow, [](){ std::cout << "end of one execution\n"; }).get();
+16: executor.run(taskflow, [](){ std::cout << "end of one execution\n"; }).wait();
 17: executor.run_n(taskflow, 4);
 18: executor.wait_for_all();  // block until all associated executions finish
-19: executor.run_n(taskflow, 4, [](){ std::cout << "end of four executions\n"; }).get();
+19: executor.run_n(taskflow, 4, [](){ std::cout << "end of four executions\n"; }).wait();
 20: executor.run_until(taskflow, [int cnt=0] () mutable { return (++cnt == 10); });
 @endcode
 
@@ -70,13 +71,13 @@ The code below shows several ways to run a taskflow.
 Debrief:
 
 @li Line 6-8   creates a taskflow of three tasks A, B, and C
-@li Line 13-14 runs the taskflow once and use std::future::get to wait for completion 
+@li Line 13-14 runs the taskflow once and use std::future::wait to wait for completion 
 @li Line 16    runs the taskflow once with a callback to invoke when the execution finishes
-@li Line 17-18 runs the taskflow four times and use tf::Taskflow::wait_for_all to wait for completion 
+@li Line 17-18 runs the taskflow four times and use tf::Executor::wait_for_all to wait for completion 
 @li Line 19    runs the taskflow four times and invokes a callback at the end of the forth execution
 @li Line 20    keeps running the taskflow until the predicate returns true
 
-Issuing multiple runs on a same taskflow will automatically @em synchronize
+Issuing multiple runs on the same taskflow will automatically @em synchronize
 to a sequential chain of executions following the order of the run calls.
 
 @code{.cpp}
@@ -126,6 +127,84 @@ f.emplace([](){ std::cout << "Add a new task\n"; });
 
 A rule of thumb is to always keep a taskflow alive in your function scope 
 while it is participating in an execution.
+
+
+@section C2_ThreadSafety Thread Safety
+
+tf::Executor is @em thread-safe. 
+Touching an executor from multiple threads is acceptable.
+You can have multiple threads call executor to run different taskflows.
+
+@code{.cpp}
+ 1: tf::Executor executor;
+ 2:
+ 3: for(int i=0; i<10; ++i) {
+ 4:   std::thread([i, &](){
+ 5:     // ... modify my taskflow
+ 6:     executor.run(taskflows[i]);  // run my taskflow
+ 7:   }).detach();
+ 8: }
+@endcode
+
+Although executor can be accessed from multiple threads, 
+returnning from @c wait_for_all will only guarantee those runs that were called 
+before to complete.
+
+@section C2_MonitorThreadActivities Monitor Thread Activities 
+
+Inspecting the thread activities is very important for performance analysis. 
+It allows you to know when each task starts and ends participating in the task scheduling.
+Cpp-Taskflow provides a default observer class tf::ExecutorObserver for this purpose.
+The following example shows how to create an observer from an executor.
+
+@code{.cpp}
+tf::Executor executor;
+tf::ExecutorObserver* observer = executor.make_observer<tf::ExecutorObserver>();
+@endcode 
+
+Note that each executor can only have an observer at a time. 
+An observer will automatically record the start and end timestamps 
+of each executed task. Users can query, dump or remove the timestamps through the tf::ExecutorObserver::num_tasks, tf::ExecutorObserver::dump and tf::ExecutorObserver::clear methods. 
+
+@code{.cpp}
+ 1: tf::Executor executor;
+ 2: tf::ExecutorObserver* observer = executor.make_observer<tf::ExecutorObserver>();
+ 3:
+ 4: executor.run(taskflow).get();  // do something
+ 5:
+ 6: // Query the total number of tasks (number of timestamp pairs)
+ 7: auto num_tasks = observer->num_tasks();
+ 8:
+ 9: // Dump the timeline data in JSON format 
+10: std::string timelines_in_json = observer->dump();
+11: 
+12: // Clear the timeline data
+13: observer->clear();
+@endcode 
+
+Debrief:
+
+@li Line 2-4 creates an observer and a task dependency graph with four tasks and dispatch the tasks to execution.
+@li Line 7 query the total number of tasks (number of timestamp pair) through observer
+@li Line 10 dump the timestamps to a std::string in JSON format 
+@li Line 13 remove all timestamps in the observer
+
+You can visualize the timeline data in a Chrome browser:
+
+@li Step 1: save the JSON timeline data to a file
+@li Step 2: launch the Chrome browser and open a tab with the url: chrome://tracing
+@li Step 3: load the JSON file
+
+@image html images/timeline.png width=80%
+
+Tasks will be categorized by the executing thread and each task is named with @em i_j where @em i is the thread id and 
+@em j is the task number. 
+You can pan or zoom in/out the timeline to get a detailed view.
+
+@section C2_CustomizeYourOwnObserver Customize Your Own Observer 
+
+You can derive your own observer from the base interface class tf::ExecutorObserverInterface 
+to customize the observing methods. 
 
 
 */

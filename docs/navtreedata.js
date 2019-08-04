@@ -48,8 +48,9 @@ var NAVTREE =
         [ "Q1: What is the difference between Cpp-Taskflow threads and workers?", "FAQ.html#ProgrammingQuestions1", null ],
         [ "Q2: What is the Lifetime of a Task and a Graph?", "FAQ.html#ProgrammingQuestions2", null ],
         [ "Q3: Is taskflow thread-safe?", "FAQ.html#ProgrammingQuestions3", null ],
-        [ "Q4: My program hangs and never returns after dispatching a taskflow graph. What's wrong?", "FAQ.html#ProgrammingQuestions4", null ],
-        [ "Q5: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?", "FAQ.html#ProgrammingQuestions5", null ]
+        [ "Q4: Is executor thread-safe?", "FAQ.html#ProgrammingQuestions4", null ],
+        [ "Q5: My program hangs and never returns after dispatching a taskflow graph. What's wrong?", "FAQ.html#ProgrammingQuestions5", null ],
+        [ "Q6: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?", "FAQ.html#ProgrammingQuestions6", null ]
       ] ]
     ] ],
     [ "Reference", "Reference.html", [
