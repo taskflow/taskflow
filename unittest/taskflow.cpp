@@ -421,7 +421,7 @@ TEST_CASE("MultipleRuns" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("ParallelRuns" * doctest::timeout(300)) {
  
-  for(size_t w=1; w<=32; ++w) {
+  for(size_t w=0; w<=32; ++w) {
 
     tf::Executor executor(w);
   
@@ -1229,7 +1229,7 @@ TEST_CASE("Composition-3" * doctest::timeout(300)) {
 // -------------------------------------------------------- 
 TEST_CASE("Observer" * doctest::timeout(300)) {
 
-  for(unsigned w=0; w<=8; ++w) {
+  for(unsigned w=1; w<=8; ++w) {
     tf::Executor executor(w);
 
     auto observer = executor.make_observer<tf::ExecutorObserver>();    

@@ -140,16 +140,6 @@ class WorkStealingQueue {
     std::optional<T> pop();
     
     /**
-    @brief pops out an item from the queue without synchronization with thieves
-
-    Only the onwer thread can pop out an item from the queue, 
-    given no other threads trying to steal an item at the same time
-    
-    The return can be a @std_nullopt if this operation failed (empty queue).
-    */
-    std::optional<T> unsync_pop();
-
-    /**
     @brief steals an item from the queue
 
     Any threads can try to steal an item from the queue.
@@ -236,26 +226,6 @@ std::optional<T> WorkStealingQueue<T>::pop() {
       }
       _bottom.store(b + 1, std::memory_order_relaxed);
     }
-  }
-  else {
-    _bottom.store(b + 1, std::memory_order_relaxed);
-  }
-
-  return item;
-}
-
-// Function: unsync_pop
-template <typename T>
-std::optional<T> WorkStealingQueue<T>::unsync_pop() {
-
-  int64_t t = _top.load(std::memory_order_relaxed);
-  int64_t b = _bottom.fetch_sub(1, std::memory_order_relaxed) - 1;
-  Array* a = _array.load(std::memory_order_relaxed);
-
-  std::optional<T> item;
-
-  if(t <= b) {
-    item = a->pop(b);
   }
   else {
     _bottom.store(b + 1, std::memory_order_relaxed);
