@@ -229,7 +229,7 @@ class Executor {
     std::atomic<size_t> _num_thieves {0};
     std::atomic<bool>   _done        {0};
 
-    //Notifier _notifier;
+    Notifier _notifier;
     
     std::unique_ptr<ExecutorObserverInterface> _observer;
     
@@ -261,8 +261,8 @@ class Executor {
 // Constructor
 inline Executor::Executor(unsigned N) : 
   _workers  {N},
-  _waiters  {N} {
-  //_notifier {_waiters} {
+  _waiters  {N},
+  _notifier {_waiters} {
   _spawn(N);
 }
 
@@ -274,7 +274,7 @@ inline Executor::~Executor() {
   
   // shut down the scheduler
   _done = true;
-  //_notifier.notify(true);
+  _notifier.notify(true);
   
   for(auto& t : _threads){
     t.join();
@@ -354,7 +354,6 @@ inline unsigned Executor::_find_victim(unsigned thief) {
   return _workers.size();
 }
 
-
 // Function: _explore_task
 inline void Executor::_explore_task(unsigned thief, std::optional<Node*>& t) {
   
@@ -364,11 +363,15 @@ inline void Executor::_explore_task(unsigned thief, std::optional<Node*>& t) {
   const unsigned l = 0;
   const unsigned r = _workers.size() - 1;
 
+  const size_t F = (_workers.size() + 1) << 1;
+  const size_t Y = 100;
+
+  size_t f = 0;
+  size_t y = 0;
+
   // explore
   while(!_done) {
   
-    std::this_thread::yield();  
-
     unsigned vtm = std::uniform_int_distribution<unsigned>{l, r}(
       _workers[thief].rdgen
     );
@@ -376,12 +379,32 @@ inline void Executor::_explore_task(unsigned thief, std::optional<Node*>& t) {
     t = (vtm == thief) ? _queue.steal() : _workers[vtm].queue.steal();
 
     if(t) {
-      return ;
+      break;
     }
+
+    if(f++ > F) {
+      if(std::this_thread::yield(); y++ > Y) {
+        break;
+      }
+    }
+
+    /*if(auto vtm = _find_victim(thief); vtm != _workers.size()) {
+      t = (vtm == thief) ? _queue.steal() : _workers[vtm].queue.steal();
+      // successful thief
+      if(t) {
+        break;
+      }
+    }
+    else {
+      if(f++ > F) {
+        if(std::this_thread::yield(); y++ > Y) {
+          break;
+        }
+      }
+    }*/
   }
 
 }
-
 
 // Procedure: _exploit_task
 inline void Executor::_exploit_task(unsigned i, std::optional<Node*>& t) {
@@ -390,6 +413,9 @@ inline void Executor::_exploit_task(unsigned i, std::optional<Node*>& t) {
 
   if(t) {
     auto& worker = _workers[i];
+    if(_num_actives.fetch_add(1) == 0 && _num_thieves == 0) {
+      _notifier.notify(false);
+    }
     do {
       _invoke(i, *t);
 
@@ -402,23 +428,64 @@ inline void Executor::_exploit_task(unsigned i, std::optional<Node*>& t) {
       }
 
     } while(t);
+
+    --_num_actives;
   }
 }
-
 
 // Function: _wait_for_task
 inline bool Executor::_wait_for_task(unsigned me, std::optional<Node*>& t) {
 
+  wait_for_task:
+
   assert(!t);
 
+  ++_num_thieves;
+
+  explore_task:
+
   if(_explore_task(me, t); t) {
+    if(auto N = _num_thieves.fetch_sub(1); N == 1) {
+      _notifier.notify(false);
+    }
     return true;
   }
-  else {
+
+  _notifier.prepare_wait(&_waiters[me]);
+  
+  //if(auto vtm = _find_victim(me); vtm != _workers.size()) {
+  if(!_queue.empty()) {
+
+    _notifier.cancel_wait(&_waiters[me]);
+    //t = (vtm == me) ? _queue.steal() : _workers[vtm].queue.steal();
+
+    if(t = _queue.steal(); t) {
+      if(auto N = _num_thieves.fetch_sub(1); N == 1) {
+        _notifier.notify(false);
+      }
+      return true;
+    }
+    else {
+      goto explore_task;
+    }
+  }
+
+  if(_done) {
+    _notifier.cancel_wait(&_waiters[me]);
+    _notifier.notify(true);
+    --_num_thieves;
     return false;
   }
 
-  assert(false);
+  if(_num_thieves.fetch_sub(1) == 1 && _num_actives) {
+    _notifier.cancel_wait(&_waiters[me]);
+    goto wait_for_task;
+  }
+    
+  // Now I really need to relinguish my self to others
+  _notifier.commit_wait(&_waiters[me]);
+
+  return true;
 }
 
 // Function: make_observer    
@@ -496,7 +563,7 @@ inline void Executor::_schedule(Node* node, bool bypass) {
     _queue.push(node);
   }
 
-  //_notifier.notify(false);
+  _notifier.notify(false);
 }
 
 // Procedure: _schedule
@@ -536,7 +603,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
     }
   }
 
-  //_notifier.notify(false);
+  _notifier.notify(false);
 }
 
 // Procedure: _init_module_node
