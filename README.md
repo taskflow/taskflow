@@ -893,6 +893,7 @@ that incorporate complex task dependencies.
 - [PID Framework][PID Framework]: A Global Development Methodology Supported by a CMake API and Dedicated C++ Projects 
 - [NovusCore][NovusCore]: An emulating project for World of Warcraft (Wrath of the Lich King 3.3.5a 12340 client build)
 - [SA-PCB][SA-PCB]: Annealing-based Printed Circuit Board (PCB) Placement Tool
+- [LPMP](https://github.com/LPMP/LPMP): A C++ framework for developing scalable Lagrangean decomposition solvers for discrete optimization problems
 
 [More...](https://github.com/search?q=cpp-taskflow&type=Code)
 
