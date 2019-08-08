@@ -21,6 +21,16 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   std::atomic<int> counter {0};
   std::vector<tf::Task> silent_tasks;
   std::vector<tf::Task> tasks;
+
+  SUBCASE("Empty") {
+    for(size_t W=0; W<32; ++W) {
+      tf::Executor executor(W);
+      tf::Taskflow taskflow;
+      REQUIRE(taskflow.num_nodes() == 0);
+      REQUIRE(taskflow.empty() == true);
+      executor.run(taskflow).wait();
+    }
+  }
     
   SUBCASE("Placeholder") {
     
