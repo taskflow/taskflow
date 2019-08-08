@@ -50,6 +50,11 @@ class Taskflow : public FlowBuilder {
     @brief queries the number of nodes in the taskflow
     */
     size_t num_nodes() const;
+    
+    /**
+    @brief queries the emptiness of the taskflow
+    */
+    bool empty() const;
 
     /**
     @brief creates a module task from a taskflow
@@ -111,6 +116,11 @@ inline void Taskflow::clear() {
 // Function: num_noces
 inline size_t Taskflow::num_nodes() const {
   return _graph.size();
+}
+
+// Function: empty
+inline bool Taskflow::empty() const {
+  return _graph.empty();
 }
 
 // Function: name

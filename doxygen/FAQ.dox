@@ -69,8 +69,9 @@ and there is a total of @c N+1 threads (including the master threads) in the pro
 tf::Executor(N);    // N workers, N+1 threads in the program.
 @endcode
 
-If there is no worker threads in the pool, the master thread will do all the works by itself.
-Please refer to @ref C6_MasterWorkersAndExecutor for more details.
+If there is no worker threads in the pool, 
+the master thread will do all the works by itself.
+Please refer to @ref C2_CreateAnExecutor for more details.
 
 @subsection ProgrammingQuestions2 Q2: What is the Lifetime of a Task and a Graph?
 

@@ -1011,7 +1011,7 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
   // Special case of zero workers requires:
   //  - iterative execution to avoid stack overflow
   //  - avoid execution of last_work
-  if(_workers.size() == 0) {
+  if(_workers.size() == 0 || f.empty()) {
     
     Topology tpg(f, std::forward<P>(pred), std::forward<C>(c));
 
