@@ -792,11 +792,15 @@ inline void Executor::_invoke(unsigned me, Node* node) {
 inline void Executor::_invoke_static_work(unsigned me, Node* node) {
   if(_observer) {
     _observer->on_entry(me, TaskView(node));
-    std::invoke(std::get<Node::StaticWork>(node->_work));
+    if (const auto* const wp = std::get_if<Node::StaticWork>(&(node->_work))) {
+      std::invoke(*wp);
+    }
     _observer->on_exit(me, TaskView(node));
   }
   else {
-    std::invoke(std::get<Node::StaticWork>(node->_work));
+    if (const auto* const wp = std::get_if<Node::StaticWork>(&(node->_work))) {
+      std::invoke(*wp);
+    }
   }
 }
 
@@ -804,11 +808,15 @@ inline void Executor::_invoke_static_work(unsigned me, Node* node) {
 inline void Executor::_invoke_dynamic_work(unsigned me, Node* node, Subflow& sf) {
   if(_observer) {
     _observer->on_entry(me, TaskView(node));
-    std::invoke(std::get<Node::DynamicWork>(node->_work), sf);
+    if (const auto* const wp = std::get_if<Node::DynamicWork>(&(node->_work))) {
+      std::invoke(*wp, sf);
+    }
     _observer->on_exit(me, TaskView(node));
   }
   else {
-    std::invoke(std::get<Node::DynamicWork>(node->_work), sf);
+    if (const auto* const wp = std::get_if<Node::DynamicWork>(&(node->_work))) {
+      std::invoke(*wp, sf);
+    }
   }
 }
 
@@ -822,13 +830,17 @@ inline void Executor::_invoke_unsync(Node* node, std::stack<Node*>& stack) const
   if(auto index=node->_work.index(); index == 1) {
     if(node->_module != nullptr) {
       bool first_time = !node->is_spawned();
-      std::invoke(std::get<Node::StaticWork>(node->_work));
+      if (const auto* const wp = std::get_if<Node::StaticWork>(&(node->_work))) {
+        std::invoke(*wp);
+      }
       if(first_time) {
         return ;
       }
     }
     else {
-      std::invoke(std::get<Node::StaticWork>(node->_work));
+      if (const auto* const wp = std::get_if<Node::StaticWork>(&(node->_work))) {
+        std::invoke(*wp);
+      }
     }
   }
   // dynamic task
@@ -846,7 +858,9 @@ inline void Executor::_invoke_unsync(Node* node, std::stack<Node*>& stack) const
    
     Subflow fb(*(node->_subgraph));
 
-    std::invoke(std::get<Node::DynamicWork>(node->_work), fb);
+    if (const auto* const wp = std::get_if<Node::DynamicWork>(&(node->_work))) {
+      std::invoke(*wp, fb);
+    }
     
     // Need to create a subflow if first time & subgraph is not empty 
     if(!node->is_spawned()) {
