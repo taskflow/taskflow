@@ -338,16 +338,8 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, C&& c, size_t p){
 
     auto e = beg;
     size_t g = (w++ >= r) ? b - 1 : b;
-    
-    // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
-      size_t x = std::distance(beg, end);
-      std::advance(e, std::min(x, g));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<g && e != end; ++e, ++i);
-    }
+    size_t x = std::distance(beg, end);
+    std::advance(e, std::min(x, g));
       
     // Create a task
     auto task = emplace([beg, e, c] () mutable {
@@ -574,16 +566,8 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(I beg, I end, T& result, B&&
   while(beg != end) {
 
     auto e = beg;
-    
-    // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
-      size_t r = std::distance(beg, end);
-      std::advance(e, std::min(r, g));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<g && e != end; ++e, ++i);
-    }
+    size_t r = std::distance(beg, end);
+    std::advance(e, std::min(r, g));
       
     // Create a task 
     auto task = emplace([beg, e, bop, uop, res=&(g_results[id])] () mutable {
@@ -633,16 +617,8 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
   while(beg != end) {
 
     auto e = beg;
-    
-    // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
-      size_t r = std::distance(beg, end);
-      std::advance(e, std::min(r, g));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<g && e != end; ++e, ++i);
-    }
+    size_t r = std::distance(beg, end);
+    std::advance(e, std::min(r, g));
       
     // Create a task 
     auto task = emplace([beg, e, uop, pop,  res= &g_results[id]] () mutable {
@@ -759,16 +735,8 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
   while(beg != end) {
 
     auto e = beg;
-    
-    // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
-      size_t r = std::distance(beg, end);
-      std::advance(e, std::min(r, g));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<g && e != end; ++e, ++i);
-    }
+    size_t r = std::distance(beg, end);
+    std::advance(e, std::min(r, g));
       
     // Create a task
     //auto [task, future] = emplace([beg, e, op] () mutable {
