@@ -96,6 +96,11 @@ class FlowBuilder {
     */
     template <typename I, typename C, std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr >
     std::pair<Task, Task> parallel_for(I beg, I end, I step, C&& callable, size_t partitions = 0);
+
+
+    template <typename I, typename C, std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr >
+    std::pair<Task, Task> dynamic_parallel_for(I beg, I end, I step, C&& callable, size_t partitions = 0);
+
     
     /**
     @brief construct a task dependency graph of parallel reduction
@@ -534,6 +539,313 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
     
   return std::make_pair(source, target); 
 }
+
+
+// Function: dynamic_parallel_for
+template <
+  typename I, 
+  typename C, 
+  std::enable_if_t<std::is_arithmetic_v<I>, void>*
+>
+std::pair<Task, Task> FlowBuilder::dynamic_parallel_for(I beg, I end, I s, C&& c, size_t p) {
+
+  struct alignas(64) Atomic {
+    std::atomic<int64_t> v;
+  };
+
+  using T = std::decay_t<I>;
+
+  if((s == 0) || (beg < end && s <= 0) || (beg > end && s >=0) ) {
+    TF_THROW(Error::TASKFLOW, 
+      "invalid range [", beg, ", ", end, ") with step size ", s
+    );
+  }
+
+  // compute the distance
+  size_t D;
+
+  if constexpr(std::is_integral_v<T>) {
+    if(beg <= end) {  
+      D = (end - beg + s - 1) / s;
+    }
+    else {
+      D = (end - beg + s + 1) / s;
+    }
+  }
+  else if constexpr(std::is_floating_point_v<T>) {
+    D = static_cast<size_t>(std::ceil((end - beg) / s));
+  }
+  else {
+    static_assert(dependent_false_v<T>, "can't deduce distance");
+  }
+
+  // source and target 
+  auto source = placeholder();
+  auto target = placeholder();
+
+  // special case
+  if(D == 0) {
+    source.precede(target);
+    return std::make_pair(source, target);
+  }
+  
+  // default partition equals to the worker count
+  if(p == 0) {
+    p = std::max(unsigned{1}, std::thread::hardware_concurrency());
+  }
+  
+  size_t b = (D + p - 1) / p;           // block size
+  size_t r = (D % p) ? D % p : p;       // workers to take b
+  size_t w = 0;                         // worker id 
+
+  size_t num_parts = D >= p ? p : D;
+
+  const size_t max_concurrency = std::thread::hardware_concurrency();
+
+  // Integer indices
+  if constexpr(std::is_integral_v<T>) {
+    // positive case
+    if(beg < end) { 
+
+      std::shared_ptr<Atomic> atom_beg (new Atomic[num_parts]);
+      std::shared_ptr<Atomic> atom_end (new Atomic[num_parts]);
+
+      std::shared_ptr<uint64_t> length (new uint64_t[num_parts]);
+      std::shared_ptr<uint64_t> start (new uint64_t[num_parts]);
+
+      size_t id = 0;
+      while(beg != end) {
+        auto g = (w++ >= r) ? b - 1 : b;
+        auto o = static_cast<T>(g) * s;
+        auto e = std::min(beg + o, end);
+
+        atom_beg.get()[id].v = 0;
+        atom_end.get()[id].v = e;
+        length.get()[id] = e - beg;
+        start.get()[id] = beg;
+
+        int64_t interval = (e-beg)/max_concurrency;
+        int64_t cur = beg;
+
+        auto task = emplace([=] () mutable {
+
+          // Round the number to power of 2
+          if((p & (p-1)) != 0) {
+            p--;
+            p |= p >> 1;
+            p |= p >> 2;
+            p |= p >> 4;
+            p |= p >> 8;
+            p |= p >> 16;
+            p++;
+          }
+
+          // Find the index of most significant bit
+          unsigned msb = 0;
+          while(p >>= 1) {
+            msb ++;
+          }
+
+          size_t done {0};
+          std::atomic<int64_t> &my_beg = atom_beg.get()[id].v;
+          auto beg = start.get()[id];
+
+          uint64_t incr = interval;
+
+          const uint64_t mask = ((1ull << 32) - 1);
+          uint64_t incr2 = 1ull << 32;
+
+          uint64_t sum {0};
+
+          uint64_t len = length.get()[id];
+
+          uint64_t prev_num_steals = 0;
+          uint64_t diff;
+
+          while(1) {
+            //break;
+
+            while(!my_beg.compare_exchange_weak(cur, cur+ incr, 
+                                      std::memory_order_release, 
+                                      std::memory_order_relaxed)) {
+              if(len > (cur & mask) + (cur >> 32))
+                incr = (len - (cur & mask) - (cur >> 32)) >> msb;
+              if(incr == 0) {
+                incr = 1;
+              }
+            }
+            sum = (cur & mask) + (cur >> 32);
+            if(sum >= len) {
+              break;
+            }
+            auto num_steals = (cur >> 32);
+            auto iter = (cur & mask);
+
+            for(auto i=0u; i<incr && iter+i+num_steals < len; i++) {
+              c(iter + i + beg);
+              //total ++;
+            }
+
+            diff = (cur >> 32) - prev_num_steals;
+            prev_num_steals = cur >> 32;
+
+            cur += incr;
+
+            if(len - (cur & mask) - (cur >> 32) <= max_concurrency) {
+              incr = 1;
+            }
+            else {
+              if(cur >> 32) {
+                if(incr > diff) {
+                  incr = (len - (cur & mask) - (cur >> 32)) >> msb;
+                }
+                else {
+                  if(diff > len - (cur & mask) - (cur >> 32)) {
+                    incr = (len - (cur & mask) - (cur >> 32)) >> msb;
+                  }
+                  else {
+                    incr = diff >> msb;
+                  }
+                }
+              }
+              else {
+                incr = (len - (cur & mask)) >> msb;
+                incr = incr >> 1;
+              }
+
+              if(incr == 0) 
+                incr = 1;
+            }
+            //incr = 1;
+          }
+
+          //printf("cur = %u\n", incr);
+          //printf("total = %u\n", total);
+          //return ;
+
+          done ++;
+
+          while(done != num_parts) {
+            id += 1;
+            id = id % num_parts;
+
+            cur = 0;
+            auto &my_beg = atom_beg.get()[id].v;
+            auto now_end = atom_end.get()[id].v.load(std::memory_order_relaxed);
+            auto len = length.get()[id];
+
+            cur = my_beg.load(std::memory_order_relaxed);
+
+            while(1) {
+
+              sum = (cur & mask) + (cur >> 32);
+              if(len > sum)
+                incr2 = ((len - sum) >> msb) << 32;
+              if(incr2 == 0) 
+                incr2 = 1ull << 32;
+
+              while(!my_beg.compare_exchange_weak(cur, cur + incr2, 
+                                        std::memory_order_release, 
+                                        std::memory_order_relaxed)) {
+                sum = (cur & mask) + (cur >> 32);
+                if(len > sum)
+                  incr2 = ((len - sum) >> msb) << 32;
+                //else 
+                //  break;
+
+                if(incr2 == 0) 
+                  incr2 = 1ull << 32;
+              }
+              sum = (cur & mask) + (cur >> 32);
+
+              if(sum >= len) {
+                done ++;
+                break;
+              }
+
+              auto sz = incr2 >> 32;
+              for(auto i=0u; i<sz; i++) {
+                if(sum + i < len) {
+                  c(now_end - (cur >> 32) - 1 - i);
+                }
+              }
+
+              cur += incr2;
+            }
+          }
+
+          return ;
+
+        });
+        id ++;
+        source.precede(task);
+        task.precede(target);
+        beg = e;
+      }
+
+
+      //std::cout << id << "/" << p << "/" << D << std::endl; exit(0);
+      //assert(id == p);
+    }
+    // negative case
+    else if(beg > end) {
+      while(beg != end) {
+        auto g = (w++ >= r) ? b - 1 : b;
+        auto o = static_cast<T>(g) * s;
+        auto e = std::max(beg + o, end);
+        auto task = emplace([=] () mutable {
+          for(auto i=beg; i>e; i+=s) {
+            c(i);
+          }
+        });
+        source.precede(task);
+        task.precede(target);
+        beg = e;
+      }
+    }
+  }
+  // We enumerate the entire sequence to avoid floating error
+  else if constexpr(std::is_floating_point_v<T>) {
+    assert(false);
+    size_t N = 0;
+    size_t g = b;
+    auto B = beg;
+    for(auto i=beg; (beg<end ? i<end : i>end); i+=s, ++N) {
+      if(N == g) {
+        auto task = emplace([=] () mutable {
+          auto b = B;
+          for(size_t n=0; n<N; ++n) {
+            c(b);
+            b += s; 
+          }
+        });
+        N = 0;
+        B = i;
+        source.precede(task);
+        task.precede(target);
+        if(++w >= r) {
+          g = b - 1;
+        }
+      }
+    }
+
+    // the last pices
+    if(N != 0) {
+      auto task = emplace([=] () mutable {
+        auto b = B;
+        for(size_t n=0; n<N; ++n) {
+          c(b);
+          b += s; 
+        }
+      });
+      source.precede(task);
+      task.precede(target);
+    }
+  }
+    
+  return std::make_pair(source, target); 
+}
+
 
 // Function: reduce_min
 // Find the minimum element over a range of items.

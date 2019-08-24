@@ -320,6 +320,7 @@ include(${TBB_ROOT}/cmake/TBBBuild.cmake)
 tbb_build(TBB_ROOT ${TBB_ROOT} CONFIG_DIR TBB_DIR MAKE_ARGS tbb_cpf=1)
 find_package(TBB REQUIRED tbb_preview)
 
+
 ## benchmark 1: wavefront computing
 message(STATUS "benchmark 1: wavefront")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/wavefront)
@@ -535,6 +536,51 @@ target_link_libraries(
   tf::default_settings
 )
 set_target_properties(strassen PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+### benchmark 11: imbalance for-loop 
+#message(STATUS "benchmark 11: imbalance for-loop")
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/imbalance_for)
+#add_executable(
+#  imbalance_for
+#  ${TF_BENCHMARK_DIR}/imbalance_for/main.cpp
+#  ${TF_BENCHMARK_DIR}/imbalance_for/omp.cpp
+#  ${TF_BENCHMARK_DIR}/imbalance_for/tbb.cpp
+#  ${TF_BENCHMARK_DIR}/imbalance_for/taskflow.cpp
+#  ${TF_BENCHMARK_DIR}/imbalance_for/mmio.cpp
+#)
+#target_include_directories(imbalance_for PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+#target_link_libraries(
+#  imbalance_for 
+#  ${PROJECT_NAME} 
+#  Threads::Threads 
+#  ${TBB_IMPORTED_TARGETS} 
+#  ${OpenMP_CXX_LIBRARIES} 
+#  tf::default_settings
+#)
+#set_target_properties(imbalance_for PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+#
+### benchmark 12: LavaMD
+#message(STATUS "benchmark 12: LavaMD")
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/lavamd)
+#add_executable(
+#  lavamd
+#  ${TF_BENCHMARK_DIR}/lavamd/main.cpp
+#  ${TF_BENCHMARK_DIR}/lavamd/omp.cpp
+#  ${TF_BENCHMARK_DIR}/lavamd/tbb.cpp
+#  ${TF_BENCHMARK_DIR}/lavamd/taskflow.cpp
+#)
+#target_include_directories(lavamd PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+#target_link_libraries(
+#  lavamd 
+#  ${PROJECT_NAME} 
+#  Threads::Threads 
+#  ${TBB_IMPORTED_TARGETS} 
+#  ${OpenMP_CXX_LIBRARIES} 
+#  tf::default_settings
+#)
+#set_target_properties(lavamd PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+
 
 endif()
 
