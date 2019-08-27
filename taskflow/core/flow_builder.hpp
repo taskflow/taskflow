@@ -608,7 +608,7 @@ std::pair<Task, Task> FlowBuilder::dynamic_parallel_for(I beg, I end, I s, C&& c
     if(beg < end) { 
 
       std::shared_ptr<Atomic> atom_beg (new Atomic[num_parts]);
-      std::shared_ptr<Atomic> atom_end (new Atomic[num_parts]);
+      std::shared_ptr<Atomic> atom_end (new Atomic[num_parts + 1]);
 
       std::shared_ptr<uint64_t> length (new uint64_t[num_parts]);
       std::shared_ptr<uint64_t> start (new uint64_t[num_parts]);
@@ -621,6 +621,7 @@ std::pair<Task, Task> FlowBuilder::dynamic_parallel_for(I beg, I end, I s, C&& c
 
         atom_beg.get()[id].v = 0;
         atom_end.get()[id].v = e;
+        atom_end.get()[num_parts].v = num_parts;
         length.get()[id] = e - beg;
         start.get()[id] = beg;
 
@@ -710,7 +711,7 @@ std::pair<Task, Task> FlowBuilder::dynamic_parallel_for(I beg, I end, I s, C&& c
               }
               else {
                 incr = (len - (cur & mask)) >> msb;
-                incr = incr >> 1;
+                //incr = incr >> 1;
               }
 
               if(incr == 0) 
@@ -735,42 +736,54 @@ std::pair<Task, Task> FlowBuilder::dynamic_parallel_for(I beg, I end, I s, C&& c
             auto len = length.get()[id];
 
             cur = my_beg.load(std::memory_order_relaxed);
+            sum = (cur & mask) + (cur >> 32);
+            if(sum >= len) {
+              done ++;
+            }
+            else {
+              while(1) {
 
-            while(1) {
-
-              sum = (cur & mask) + (cur >> 32);
-              if(len > sum)
-                incr2 = ((len - sum) >> msb) << 32;
-              if(incr2 == 0) 
-                incr2 = 1ull << 32;
-
-              while(!my_beg.compare_exchange_weak(cur, cur + incr2, 
-                                        std::memory_order_release, 
-                                        std::memory_order_relaxed)) {
                 sum = (cur & mask) + (cur >> 32);
                 if(len > sum)
                   incr2 = ((len - sum) >> msb) << 32;
-                //else 
-                //  break;
-
                 if(incr2 == 0) 
                   incr2 = 1ull << 32;
-              }
-              sum = (cur & mask) + (cur >> 32);
 
-              if(sum >= len) {
-                done ++;
-                break;
-              }
+                while(!my_beg.compare_exchange_weak(cur, cur + incr2, 
+                                          std::memory_order_release, 
+                                          std::memory_order_relaxed)) {
+                  sum = (cur & mask) + (cur >> 32);
+                  if(len > sum)
+                    incr2 = ((len - sum) >> msb) << 32;
+                  //else 
+                  //  break;
 
-              auto sz = incr2 >> 32;
-              for(auto i=0u; i<sz; i++) {
-                if(sum + i < len) {
-                  c(now_end - (cur >> 32) - 1 - i);
+                  if(incr2 == 0) 
+                    incr2 = 1ull << 32;
                 }
-              }
+                sum = (cur & mask) + (cur >> 32);
 
-              cur += incr2;
+                if(sum >= len) {
+                  done ++;
+                  break;
+                }
+
+                auto sz = incr2 >> 32;
+                for(auto i=0u; i<sz; i++) {
+                  if(sum + i < len) {
+                    c(now_end - (cur >> 32) - 1 - i);
+                  }
+                }
+
+                cur += incr2;
+              }
+            }
+          }
+
+          if(atom_end.get()[num_parts].v.fetch_sub(1, std::memory_order_relaxed) == 1) {
+            atom_end.get()[num_parts].v = num_parts;
+            for(auto i=0u; i<num_parts; i++) {
+              atom_beg.get()[i].v = 0;
             }
           }
 
