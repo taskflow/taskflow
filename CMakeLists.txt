@@ -581,6 +581,48 @@ set_target_properties(strassen PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 #set_target_properties(lavamd PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
+## benchmark 13: seismic 
+#message(STATUS "benchmark 13: seismic")
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/seismic)
+# add_executable(
+#   seismic 
+#   ${TF_BENCHMARK_DIR}/seismic/main.cpp 
+#   ${TF_BENCHMARK_DIR}/seismic/seismic_video.cpp 
+#   ${TF_BENCHMARK_DIR}/seismic/universe.cpp 
+# )
+#find_package(X11)
+##Check if X11 library is installed
+#if (NOT X11_FOUND)
+#  target_sources(seismic PRIVATE ${TF_BENCHMARK_DIR}/seismic/convideo.cpp)
+#  target_link_libraries(
+#    seismic 
+#    ${PROJECT_NAME} 
+#    Threads::Threads 
+#    ${TBB_IMPORTED_TARGETS} 
+#    ${OpenMP_CXX_LIBRARIES} 
+#    tf::default_settings
+#  )
+#  target_include_directories(seismic PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11) 
+#  set_target_properties(seismic PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+#else() 
+#  target_sources(seismic PRIVATE ${TF_BENCHMARK_DIR}/seismic/xvideo.cpp)
+#  target_link_libraries(
+#    seismic 
+#    ${PROJECT_NAME} 
+#    Threads::Threads 
+#    ${TBB_IMPORTED_TARGETS} 
+#    ${OpenMP_CXX_LIBRARIES} 
+#    tf::default_settings 
+#    ${X11_LIBRARIES}
+#  )
+#  target_include_directories(seismic PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11 ${X11_INCLUDE_DIR})
+#  # Check if X11 SHM extension is supported
+#  if (${X11_XShm_INCLUDE_PATH})
+#    set_target_properties(seismic PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+#  else() 
+#    set_target_properties(seismic PROPERTIES COMPILE_FLAGS "${OpenMP_CXX_FLAGS} -DX_NOSHMEM")
+#  endif()
+#endif()
 
 endif()
 
