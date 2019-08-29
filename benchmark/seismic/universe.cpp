@@ -16,8 +16,6 @@
 
 #include "video.h"
 #include <cmath>
-#include "tbb/blocked_range.h"
-#include "tbb/parallel_for.h"
 
 using namespace std;
 
@@ -80,7 +78,7 @@ void Universe::InitializeUniverse(video const& colorizer) {
             ValueType r = t>0 ? t : 0;
             ValueType b = t<0 ? -t : 0;
             ValueType g = 0.5f*fabs(t);
-            memcpy(c, MaterialColor[k], sizeof(c));
+            std::memcpy(c, MaterialColor[k], sizeof(c));
             c[2] = colorcomp_t(r*(255-c[2])+c[2]);
             c[1] = colorcomp_t(g*(255-c[1])+c[1]);
             c[0] = colorcomp_t(b*(255-c[0])+c[0]);
@@ -103,25 +101,13 @@ void Universe::InitializeUniverse(video const& colorizer) {
     drawingMemory = colorizer.get_drawing_memory();
 }
 void Universe::UpdatePulse() {
-    if( pulseCounter>0 ) {
-        ValueType t = (pulseCounter-pulseTime/2)*0.05f;
-        V[pulseY][pulseX] += 64*sqrt(M[pulseY][pulseX])*exp(-t*t);
-        --pulseCounter;
-    }
+  if( pulseCounter>0 ) {
+    ValueType t = (pulseCounter-pulseTime/2)*0.05f;
+    V[pulseY][pulseX] += 64*sqrt(M[pulseY][pulseX])*exp(-t*t);
+    --pulseCounter;
+  }
 }
 
-struct Universe::Rectangle {
-    struct std::pair<int,int> xRange;
-    struct std::pair<int,int> yRange;
-    Rectangle (int startX, int startY, int width, int height):xRange(startX,width),yRange(startY,height){}
-    int StartX() const {return xRange.first;}
-    int StartY() const {return yRange.first;}
-    int Width()   const {return xRange.second;}
-    int Height()  const {return yRange.second;}
-    int EndX() const {return xRange.first + xRange.second;}
-    int EndY() const {return yRange.first + yRange.second;}
-
-};
 
 void Universe::UpdateStress(Rectangle const& r ) {
     drawing_area  drawing(r.StartX(),r.StartY(),r.Width(),r.Height(),drawingMemory);
@@ -141,24 +127,15 @@ void Universe::UpdateStress(Rectangle const& r ) {
 }
 
 void Universe::SerialUpdateStress() {
-    Rectangle  area(0, 0, UniverseWidth-1, UniverseHeight-1);
+    Rectangle area(0, 0, UniverseWidth-1, UniverseHeight-1);
     UpdateStress(area);
 }
 
-struct UpdateStressBody {
-    Universe & u_;
-    UpdateStressBody(Universe & u):u_(u){}
-    void operator()( const tbb::blocked_range<int>& range ) const {
-        Universe::Rectangle area(0, range.begin(), u_.UniverseWidth-1, range.size());
-        u_.UpdateStress(area);
-    }
-};
-
-void Universe::ParallelUpdateStress(tbb::affinity_partitioner &affinity) {
-    tbb::parallel_for( tbb::blocked_range<int>( 0, UniverseHeight-1 ), // Index space for loop
-                       UpdateStressBody(*this),                             // Body of loop
-                       affinity );                                     // Affinity hint
-}
+//void Universe::ParallelUpdateStress(tbb::affinity_partitioner &affinity) {
+//    tbb::parallel_for( tbb::blocked_range<int>( 0, UniverseHeight-1 ), // Index space for loop
+//                       UpdateStressBody(*this),                             // Body of loop
+//                       affinity );                                     // Affinity hint
+//}
 
 void Universe::UpdateVelocity(Rectangle const& r) {
     for( int i=r.StartY(); i<r.EndY(); ++i )
@@ -171,36 +148,29 @@ void Universe::SerialUpdateVelocity() {
     UpdateVelocity(Rectangle(1,1,UniverseWidth-1,UniverseHeight-1));
 }
 
-struct UpdateVelocityBody {
-    Universe & u_;
-    UpdateVelocityBody(Universe & u):u_(u){}
-    void operator()( const tbb::blocked_range<int>& y_range ) const {
-        u_.UpdateVelocity(Universe::Rectangle(1,y_range.begin(),u_.UniverseWidth-1,y_range.size()));
-    }
-};
 
-void Universe::ParallelUpdateVelocity(tbb::affinity_partitioner &affinity) {
-    tbb::parallel_for( tbb::blocked_range<int>( 1, UniverseHeight ), // Index space for loop
-                       UpdateVelocityBody(*this),                    // Body of loop
-                       affinity );                                   // Affinity hint
-}
+//void Universe::ParallelUpdateVelocity(tbb::affinity_partitioner &affinity) {
+//    tbb::parallel_for( tbb::blocked_range<int>( 1, UniverseHeight ), // Index space for loop
+//                       UpdateVelocityBody(*this),                    // Body of loop
+//                       affinity );                                   // Affinity hint
+//}
 
 void Universe::SerialUpdateUniverse() {
-    UpdatePulse();
-    SerialUpdateStress();
-    SerialUpdateVelocity();
+  UpdatePulse();
+  SerialUpdateStress();
+  SerialUpdateVelocity();
 }
 
-void Universe::ParallelUpdateUniverse() {
-    /** Affinity is an argument to parallel_for to hint that an iteration of a loop
-    is best replayed on the same processor for each execution of the loop.
-    It is a static object because it must remember where the iterations happened
-    in previous executions. */
-    static tbb::affinity_partitioner affinity;
-    UpdatePulse();
-    ParallelUpdateStress(affinity);
-    ParallelUpdateVelocity(affinity);
-}
+//void Universe::ParallelUpdateUniverse() {
+//  /** Affinity is an argument to parallel_for to hint that an iteration of a loop
+//    is best replayed on the same processor for each execution of the loop.
+//    It is a static object because it must remember where the iterations happened
+//    in previous executions. */
+//  static tbb::affinity_partitioner affinity;
+//  UpdatePulse();
+//  ParallelUpdateStress(affinity);
+//  ParallelUpdateVelocity(affinity);
+//}
 
 bool Universe::TryPutNewPulseSource(int x, int y){
     if(pulseCounter == 0) {

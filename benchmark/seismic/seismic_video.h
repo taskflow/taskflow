@@ -45,6 +45,7 @@ public:
     void on_key(int key);
 
 public:
-    SeismicVideo(    Universe &u,int numberOfFrames, int threadsHigh, bool initIsParallel=true);
+
+    SeismicVideo(Universe &u,int numberOfFrames, int threadsHigh, bool initIsParallel=true);
 };
 #endif /* SEISMIC_VIDEO_H_ */

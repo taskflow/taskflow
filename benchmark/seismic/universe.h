@@ -1,31 +1,14 @@
-/*
-    Copyright (c) 2005-2019 Intel Corporation
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-*/
+#include <chrono>
+#include <string>
+#include <cstring>
 
 #ifndef UNIVERSE_H_
 #define UNIVERSE_H_
 
-#ifndef UNIVERSE_WIDTH
-#define UNIVERSE_WIDTH 1024
-#endif
-#ifndef UNIVERSE_HEIGHT
-#define UNIVERSE_HEIGHT 512
-#endif
+inline const int UNIVERSE_WIDTH {1024}; 
+inline const int UNIVERSE_HEIGHT {512};
 
 #include "video.h"
-#include "tbb/partitioner.h"
 
 class Universe {
 public:
@@ -88,27 +71,46 @@ private:
 
     drawing_memory drawingMemory;
 
+    std::string _model {"tf"};
+
 public:
+    const std::string& get_model() { return _model; }
+    void set_model(std::string m) { _model = m; }
     void InitializeUniverse(video const& colorizer);
 
-    void SerialUpdateUniverse();
-    void ParallelUpdateUniverse();
     bool TryPutNewPulseSource(int x, int y);
     void SetDrawingMemory(const drawing_memory &dmem);
-private:
-    struct Rectangle;
+
+    struct Rectangle {
+      struct std::pair<int,int> xRange;
+      struct std::pair<int,int> yRange;
+      Rectangle (int startX, int startY, int width, int height):xRange(startX,width),yRange(startY,height){}
+      int StartX() const {return xRange.first;}
+      int StartY() const {return yRange.first;}
+      int Width()   const {return xRange.second;}
+      int Height()  const {return yRange.second;}
+      int EndX() const {return xRange.first + xRange.second;}
+      int EndY() const {return yRange.first + yRange.second;}
+    };
+
     void UpdatePulse();
-    void UpdateStress(Rectangle const& r );
-
-    void SerialUpdateStress() ;
-    friend struct UpdateStressBody;
-    friend struct UpdateVelocityBody;
-    void ParallelUpdateStress(tbb::affinity_partitioner &affinity);
-
+    void UpdateStress(Rectangle const& r);
     void UpdateVelocity(Rectangle const& r);
 
-    void SerialUpdateVelocity() ;
-    void ParallelUpdateVelocity(tbb::affinity_partitioner &affinity);
+    friend struct UpdateStressBody;
+    friend struct UpdateVelocityBody;
+
+    //void ParallelUpdateUniverse();
+    //void ParallelUpdateStress(tbb::affinity_partitioner &affinity);
+    //void ParallelUpdateVelocity(tbb::affinity_partitioner &affinity);
+
+    void SerialUpdateVelocity();
+    void SerialUpdateUniverse();
+    void SerialUpdateStress();
 };
+
+std::chrono::microseconds measure_time_tbb(unsigned, unsigned, Universe &);
+std::chrono::microseconds measure_time_taskflow(unsigned, unsigned, Universe &);
+
 
 #endif /* UNIVERSE_H_ */

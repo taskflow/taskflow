@@ -16,35 +16,103 @@
 
 #include "seismic_video.h"
 #include "universe.h"
-#include "tbb/task_scheduler_init.h"
+#include <taskflow/taskflow.hpp> 
+#include <tbb/task_scheduler_init.h>
+#include <tbb/flow_graph.h>
+#include <tbb/partitioner.h>
+#include <tbb/blocked_range.h>
+#include <tbb/parallel_for.h>
+
 
 const char * const SeismicVideo::titles[2] = {"Seismic Simulation: Serial", "Seismic Simulation: Parallel"};
 void SeismicVideo::on_mouse(int x, int y, int key) {
-    if(key == 1){
-        u_.TryPutNewPulseSource(x,y);
-    }
+  if(key == 1){
+    u_.TryPutNewPulseSource(x,y);
+  }
 }
 
 void SeismicVideo::on_key(int key) {
-    key &= 0xff;
-    if(char(key) == ' ') initIsParallel = !initIsParallel;
-    else if(char(key) == 'p') initIsParallel = true;
-    else if(char(key) == 's') initIsParallel = false;
-    else if(char(key) == 'e') updating = true;
-    else if(char(key) == 'd') updating = false;
-    else if(key == 27) running = false;
-    title = titles[initIsParallel?1:0];
+  key &= 0xff;
+  if(char(key) == ' ') initIsParallel = !initIsParallel;
+  else if(char(key) == 'p') initIsParallel = true;
+  else if(char(key) == 's') initIsParallel = false;
+  else if(char(key) == 'e') updating = true;
+  else if(char(key) == 'd') updating = false;
+  else if(key == 27) running = false;
+  title = titles[initIsParallel?1:0];
 }
 
 void SeismicVideo::on_process() {
-    tbb::task_scheduler_init Init(threadsHigh);
-    for( int frames = 0; numberOfFrames_==0 || frames<numberOfFrames_; ++frames ) {
-        if( initIsParallel )
-            u_.ParallelUpdateUniverse();
-        else
-            u_.SerialUpdateUniverse();
+  if(initIsParallel) {
+    if(u_.get_model() == "tf") {
+      tf::Executor executor(threadsHigh);
+      tf::Taskflow taskflow;
+      int UniverseHeight = u_.UniverseHeight;
+      auto stress_tasks = taskflow.dynamic_parallel_for(1, UniverseHeight, 1, [&](int i) mutable {
+        u_.UpdateStress(Universe::Rectangle(0, i, u_.UniverseWidth-1, 1));
+      }, executor.num_workers());
+    
+      auto velocity_tasks = taskflow.dynamic_parallel_for(1, UniverseHeight, 1, [&](int i) mutable {
+        u_.UpdateVelocity(Universe::Rectangle(1, i, u_.UniverseWidth-1, 1));
+      }, executor.num_workers());
+    
+      std::get<1>(stress_tasks).precede(std::get<0>(velocity_tasks));
+
+      for( int frames = 0; numberOfFrames_==0 || frames<numberOfFrames_; ++frames ) {
+        executor.run(taskflow).wait();
         if( !next_frame() ) break;
+      }
     }
+    else if(u_.get_model() == "tbb") {
+      struct UpdateStressBody {
+        Universe & u_;
+        UpdateStressBody(Universe & u):u_(u){}
+        void operator()( const tbb::blocked_range<int>& range ) const {
+          u_.UpdateStress(Universe::Rectangle(0, range.begin(), u_.UniverseWidth-1, range.size()));
+        }
+      };
+
+      struct UpdateVelocityBody {
+        Universe & u_;
+        UpdateVelocityBody(Universe & u):u_(u){}
+        void operator()( const tbb::blocked_range<int>& y_range ) const {
+          u_.UpdateVelocity(Universe::Rectangle(1,y_range.begin(),u_.UniverseWidth-1,y_range.size()));
+        }
+      };
+
+      using namespace tbb;
+      using namespace tbb::flow;
+
+      tbb::task_scheduler_init init(threadsHigh);
+
+      static tbb::affinity_partitioner affinity;
+
+      for( int frames = 0; numberOfFrames_==0 || frames<numberOfFrames_; ++frames ) {
+        u_.UpdatePulse();
+        tbb::parallel_for(tbb::blocked_range<int>( 0, u_.UniverseHeight-1 ), // Index space for loop
+            UpdateStressBody(u_),                            // Body of loop
+            affinity);                                      // Affinity hint
+        tbb::parallel_for(tbb::blocked_range<int>( 1, u_.UniverseHeight ), // Index space for loop
+            UpdateVelocityBody(u_),                        // Body of loop
+            affinity);                                    // Affinity hint
+        if( !next_frame() ) break;
+      }
+    }
+  }
+  else {
+    for( int frames = 0; numberOfFrames_==0 || frames<numberOfFrames_; ++frames ) {
+      u_.SerialUpdateUniverse();
+      if( !next_frame() ) break;
+    }
+  }
+  //tbb::task_scheduler_init Init(threadsHigh);
+  //for( int frames = 0; numberOfFrames_==0 || frames<numberOfFrames_; ++frames ) {
+  //  if( initIsParallel ) {
+  //    u_.ParallelUpdateUniverse();
+  //  else
+  //    u_.SerialUpdateUniverse();
+  //  if( !next_frame() ) break;
+  //}
 }
 
 #ifdef _WINDOWS
@@ -54,7 +122,7 @@ SeismicVideo * gVideo = NULL;
 #endif
 
 SeismicVideo::SeismicVideo(    Universe &u, int number_of_frames, int threads_high, bool init_is_parallel)
-    :numberOfFrames_(number_of_frames),initIsParallel(init_is_parallel),u_(u),threadsHigh(threads_high)
+    :numberOfFrames_(number_of_frames), initIsParallel(init_is_parallel), u_(u), threadsHigh(threads_high)
 {
     title = titles[initIsParallel?1:0];
 #ifdef _WINDOWS
@@ -89,19 +157,18 @@ SeismicVideo::SeismicVideo(    Universe &u, int number_of_frames, int threads_hi
 //  WM_DESTROY  - post a quit message and return
 //
 //
-LRESULT CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    switch (message)
-    {
-    case WM_INITDIALOG: return TRUE;
-    case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL) {
-            EndDialog(hDlg, LOWORD(wParam));
-            return TRUE;
-        }
-        break;
-    }
-    return FALSE;
+LRESULT CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+   switch (message)
+   {
+   case WM_INITDIALOG: return TRUE;
+   case WM_COMMAND:
+       if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL) {
+           EndDialog(hDlg, LOWORD(wParam));
+           return TRUE;
+       }
+       break;
+   }
+   return FALSE;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
