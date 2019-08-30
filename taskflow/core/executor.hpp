@@ -510,7 +510,7 @@ inline void Executor::_schedule_unsync(
 ) const {
   
   // module node need another initialization
-  if(node->_module != nullptr && !node->is_spawned()) {
+  if(node->_module != nullptr && !node->_module->empty() && !node->is_spawned()) {
     _init_module_node_unsync(node, stack);
   }
 
@@ -526,7 +526,7 @@ inline void Executor::_schedule_unsync(
   // here we guarantee to run by a thread so no need to cache the
   // size from nodes
   for(auto node : nodes) {
-    if(node->_module != nullptr && !node->is_spawned()) {
+    if(node->_module != nullptr && !node->_module->empty() && !node->is_spawned()) {
       _init_module_node_unsync(node, stack);
     }
     stack.push(node);
@@ -541,7 +541,7 @@ inline void Executor::_schedule(Node* node, bool bypass) {
   assert(_workers.size() != 0);
   
   // module node need another initialization
-  if(node->_module != nullptr && !node->is_spawned()) {
+  if(node->_module != nullptr && !node->_module->empty() && !node->is_spawned()) {
     _init_module_node(node);
   }
   
@@ -582,7 +582,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
   }
 
   for(auto node : nodes) {
-    if(node->_module != nullptr && !node->is_spawned()) {
+    if(node->_module != nullptr && !node->_module->empty() && !node->is_spawned()) {
       _init_module_node(node);
     }
   }
