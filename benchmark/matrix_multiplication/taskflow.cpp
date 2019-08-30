@@ -7,48 +7,41 @@ void matrix_multiplication_taskflow(unsigned num_threads) {
   tf::Executor executor(num_threads); 
   tf::Taskflow taskflow;
 
-  std::vector<tf::Task> tasks; 
-  tasks.reserve(4*N);
   auto sync = taskflow.emplace([](){});
 
   for(int i=0; i<N; ++i) {
-    tasks[i] = taskflow.emplace([&, i=i](){
+    taskflow.emplace([&, i=i](){
       for(int j=0; j<N; ++j) {
         a[i][j] = i + j;
       }
-    });
-    tasks[i].precede(sync);
+    }).precede(sync);
   }
 
   for(int i=0; i<N; ++i) {
-    tasks[i+N] = taskflow.emplace([&, i=i](){
+    taskflow.emplace([&, i=i](){
       for(int j=0; j<N; ++j) {
         b[i][j] = i * j;
       }
-    });
-    tasks[i+N].precede(sync);
+    }).precede(sync);
   }
-  tasks.clear();
 
   for(int i=0; i<N; ++i) {
-    tasks[i+2*N] = taskflow.emplace([&, i=i](){
+    taskflow.emplace([&, i=i](){
       for(int j=0; j<N; ++j) {
         c[i][j] = 0;;
       }
-    });
-    tasks[i+2*N].precede(sync);
+    }).precede(sync);
   }
-  tasks.clear();
 
   for(int i=0; i<N; ++i) {
-    tasks[i+3*N] = taskflow.emplace([&, i=i](){
+    auto t = taskflow.emplace([&, i=i](){
       for(int j=0; j<N; ++j) {
         for(int k=0; k<N; k++) {
           c[i][j] += a[i][k] * b[k][j];
         }
       }
     });
-    sync.precede(tasks[i+3*N]);
+    sync.precede(t);
   }
 
   executor.run(taskflow).get(); 
