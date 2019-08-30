@@ -588,7 +588,9 @@ set_target_properties(strassen PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 #   seismic 
 #   ${TF_BENCHMARK_DIR}/seismic/main.cpp 
 #   ${TF_BENCHMARK_DIR}/seismic/seismic_video.cpp 
-#   ${TF_BENCHMARK_DIR}/seismic/universe.cpp 
+#   ${TF_BENCHMARK_DIR}/seismic/universe.cpp  
+#   ${TF_BENCHMARK_DIR}/seismic/taskflow.cpp 
+#   ${TF_BENCHMARK_DIR}/seismic/tbb.cpp 
 # )
 #find_package(X11)
 ##Check if X11 library is installed
