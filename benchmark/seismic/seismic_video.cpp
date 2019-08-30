@@ -57,6 +57,7 @@ void SeismicVideo::on_process() {
       }, executor.num_workers());
     
       std::get<1>(stress_tasks).precede(std::get<0>(velocity_tasks));
+      std::get<0>(stress_tasks).work([&](){ u_.UpdatePulse(); });
 
       for( int frames = 0; numberOfFrames_==0 || frames<numberOfFrames_; ++frames ) {
         executor.run(taskflow).wait();

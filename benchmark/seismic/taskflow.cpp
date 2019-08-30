@@ -3,7 +3,7 @@
 
 
 void seismic_taskflow(unsigned num_threads, unsigned num_frames, Universe& u) { 
-  
+
   tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
@@ -18,6 +18,7 @@ void seismic_taskflow(unsigned num_threads, unsigned num_frames, Universe& u) {
   }, executor.num_workers());
 
   std::get<1>(stress_tasks).precede(std::get<0>(velocity_tasks));
+  std::get<0>(stress_tasks).work([&](){ u.UpdatePulse(); });
 
   executor.run_n(taskflow, num_frames).get();
 }
