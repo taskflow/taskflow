@@ -2,7 +2,7 @@
 #include <taskflow/taskflow.hpp> 
 
 // binary_tree_taskflow
-void binary_tree_taskflow(size_t length, unsigned num_threads) {
+void linear_chain_taskflow(size_t length, unsigned num_threads) {
 
   size_t counter {0};
 
@@ -26,7 +26,7 @@ std::chrono::microseconds measure_time_taskflow(
   unsigned num_threads
 ) {
   auto beg = std::chrono::high_resolution_clock::now();
-  binary_tree_taskflow(length, num_threads);
+  linear_chain_taskflow(length, num_threads);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
