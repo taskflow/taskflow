@@ -6,7 +6,6 @@
 [![Standard](image/cpp17.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![Download](image/download.svg)](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip)
 [![Wiki](image/api-doc.svg)][wiki]
-[![Resources](image/awesome-resources.svg)](./awesome-parallel-computing.md)
 
 A fast C++ *header-only* library to help you quickly write parallel programs with complex task dependencies
 
@@ -881,7 +880,7 @@ The folder `example/` contains several examples and is a great place to learn to
 + Learn more about Cpp-Taskflow by reading the [documentation][wiki]
 + Release notes are highlighted [here][release notes]
 + Read and cite our [IPDPS19][IPDPS19] paper
-+ Visit a curated list of [awesome parallel computing resources](awesome-parallel-computing.md)
++ Visit a curated list of [awesome parallel computing resources](https://github.com/tsung-wei-huang/awesome-parallel-computing)
 
 # Who is Using Cpp-Taskflow?
 
