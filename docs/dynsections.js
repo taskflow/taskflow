@@ -1,3 +1,26 @@
+/*
+ @licstart  The following is the entire license notice for the
+ JavaScript code in this file.
+
+ Copyright (C) 1997-2017 by Dimitri van Heesch
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License along
+ with this program; if not, write to the Free Software Foundation, Inc.,
+ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ @licend  The above is the entire license notice
+ for the JavaScript code in this file
+ */
 function toggleVisibility(linkObj)
 {
  var base = $(linkObj).attr('id');
@@ -15,7 +38,7 @@ function toggleVisibility(linkObj)
    summary.hide();
    $(linkObj).removeClass('closed').addClass('opened');
    $(trigger).attr('src',src.substring(0,src.length-10)+'open.png');
- } 
+ }
  return false;
 }
 
@@ -37,7 +60,7 @@ function toggleLevel(level)
       $(this).show();
     } else if (l==level+1) {
       i.removeClass('iconfclosed iconfopen').addClass('iconfclosed');
-      a.html('&#9658;');
+      a.html('&#9654;');
       $(this).show();
     } else {
       $(this).hide();
@@ -64,7 +87,7 @@ function toggleFolder(id)
     // replace down arrow by right arrow for current row
     var currentRowSpans = currentRow.find("span");
     currentRowSpans.filter(".iconfopen").removeClass("iconfopen").addClass("iconfclosed");
-    currentRowSpans.filter(".arrow").html('&#9658;');
+    currentRowSpans.filter(".arrow").html('&#9654;');
     rows.filter("[id^=row_"+id+"]").hide(); // hide all children
   } else { // we are SHOWING
     // replace right arrow by down arrow for current row
@@ -74,7 +97,7 @@ function toggleFolder(id)
     // replace down arrows by right arrows for child rows
     var childRowsSpans = childRows.find("span");
     childRowsSpans.filter(".iconfopen").removeClass("iconfopen").addClass("iconfclosed");
-    childRowsSpans.filter(".arrow").html('&#9658;');
+    childRowsSpans.filter(".arrow").html('&#9654;');
     childRows.show(); //show all children
   }
   updateStripes();
@@ -94,4 +117,4 @@ function toggleInherit(id)
     $(img).attr('src',src.substring(0,src.length-10)+'open.png');
   }
 }
-
+/* @license-end */

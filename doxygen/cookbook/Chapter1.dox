@@ -21,11 +21,11 @@ tf::Task B = taskflow.emplace([] () { std::cout << "task B\n"; });
 
 Debrief:
 @li Line 1 creates a taskflow object, or a @em graph
-@li Line 2 creates an empty task 
+@li Line 2 creates a placeholder task without work (i.e., callable)
 @li Line 3 creates a task from a given callable object and returns a task handle
 
-Each time you create a task including an empty one, 
-the taskflow object adds a node to the present graph
+Each time you create a task, 
+the taskflow object creates a node in the task graph
 and returns a task handle of type tf::Task.
 A task handle is a lightweight object
 that wraps up a particular node in a graph
@@ -168,7 +168,7 @@ digraph Taskflow {
 
 Debrief:
 @li Line 5 creates a taskflow object
-@li Line 7-10 creates two tasks with empty target and stores the corresponding task handles in a vector
+@li Line 7-10 creates two placeholder tasks with no works and stores the corresponding task handles in a vector
 @li Line 12-13 names the two tasks with human-readable strings 
 @li Line 14 adds a dependency link from the first task to the second task
 @li Line 16-20 prints out the name of each task, the number of dependents, and the number of successors

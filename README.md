@@ -197,9 +197,9 @@ The handle `Task` supports different methods for you to describe task dependenci
 A.precede(B);  // A runs before B.
 ```
 
-**Gather**: Adding a gathering link forces one task to run after another.
+**Succeed**: Adding a succeeding link forces one task to run after another.
 ```cpp
-A.gather(B);  // A runs after B
+A.succeed(B);  // A runs after B
 ```
 
 ## Step 3: Execute a Taskflow
@@ -447,7 +447,7 @@ f1_module_task.precede(f2C);
 ```
 
 Similarly, `composed_of` returns a task handle and you can use the methods 
-`precede` and `gather` to create dependencies. 
+`precede` and `succeed` to create dependencies. 
 You can compose a taskflow from multiple taskflows and use the result
 to compose a larger taskflow and so on.
 
@@ -717,9 +717,11 @@ The table below summarizes a list of commonly used methods.
 | name           | string      | self   | assign a human-readable name to the task |
 | work           | callable    | self   | assign a work of a callable object to the task |
 | precede        | task list   | self   | enable this task to run *before* the given tasks |
-| gather         | task list   | self   | enable this task to run *after* the given tasks |
+| succeed        | task list   | self   | enable this task to run *after* the given tasks |
 | num_dependents | none        | size   | return the number of dependents (inputs) of this task |
 | num_successors | none        | size   | return the number of successors (outputs) of this task |
+| empty          | none        | bool   | return true if the task points to a graph node or false otherwise |
+| has_work       | none        | bool   | return true if the task points to a graph node with a callable assigned |
 
 ### *name*
 
@@ -758,16 +760,16 @@ You can precede multiple tasks at one time.
 A.precede(B, C, D, E);
 ```
 
-### *gather*
+### *succeed*
 
-The method `gather` lets you add a preceding link from a task to self.
+The method `succeed` lets you add a preceding link from a task to self.
 
 <img align="right" width="30%" src="image/gather.png">
 
 ```cpp
 // B, C, D, and E run in parallel
 // A runs after B, C, D, and E complete
-A.gather(B, C, D, E);
+A.succeed(B, C, D, E);
 ```
 
 ## Executor API

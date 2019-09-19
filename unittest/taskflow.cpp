@@ -133,14 +133,14 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     REQUIRE(taskflow.num_nodes() == num_tasks);
   }
 
-  SUBCASE("Gather"){
+  SUBCASE("Succeed"){
     auto dst = taskflow.emplace([&]() { REQUIRE(counter == num_tasks - 1);});
     for(size_t i=1;i<num_tasks;i++){
       silent_tasks.emplace_back(
         taskflow.emplace([&counter]() {counter += 1;})
       );
     }
-    dst.gather(silent_tasks);
+    dst.succeed(silent_tasks);
     executor.run(taskflow).get();
     REQUIRE(counter == num_tasks - 1);
     REQUIRE(taskflow.num_nodes() == num_tasks);
