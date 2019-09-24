@@ -920,6 +920,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [KingDuckZ][KingDuckZ] helped discover the memory leak in the memory allocator used in graph and topology
 - [mrogez-yseop](https://github.com/mrogez-yseop) helped fix the missing comma in outputting the execution timeline JSON from the observer and the composition of an empty taskflow.
 - [Sztergbaum Roman](https://github.com/Milerius) replaced the error-prone global setting in cmake with project-specific targets
+- [mrogez-yseop](https://github.com/mrogez-yseop) fixed the bug of empty taskflow to block the executor
 
 Meanwhile, we appreciate the support from many organizations for our development on Cpp-Taskflow.
 Please [let me know][email me] if I forgot someone!
