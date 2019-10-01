@@ -16,7 +16,7 @@ parallel decomposition strategies using task-based approaches.
 @subsection GeneralQuestion2 Q2: How do I use Cpp-Taskflow in my projects?
 
 Cpp-Taskflow is a header-only library with zero dependencies. 
-The only thing you need is a @CPP17 compiler.
+The only thing you need is a C++17 compiler.
 To use Cpp-Taskflow, simply drop the folder @c taskflow/
 to your project and include taskflow.hpp.
 
@@ -46,11 +46,9 @@ and it is very difficult to provide a version that compiles under older C++ vers
 
 @subsection GeneralQuestion7 Q7: How does Cpp-Taskflow schedule tasks?
 
-Cpp-Taskflow has implemented different scheduler modules 
-(centralized queue, proactive shceduler, speculative strategy, and work stealing). 
-The default scheduler implements the famous 
-<a href="https://en.wikipedia.org/wiki/Work_stealing">work stealing algorithm</a> 
-that has shown to behave efficiently in most multicore architectures.
+Cpp-Taskflow implemented a very efficient 
+<a href="https://en.wikipedia.org/wiki/Work_stealing">work-stealing scheduler</a> 
+to execute task dependency graphs.
 You can find the source code at @c taskflow/core/executor.hpp
 
 ----

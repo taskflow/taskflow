@@ -818,7 +818,6 @@ thousands of task nodes and links, there are a few amateur pitfalls and mistakes
 + Having a cycle in a graph may result in running forever
 + Destructing a taskflow while it is running in one execution results in undefined behavior
 + Trying to modify a running task can result in undefined behavior
-+ Touching a taskflow or an executor from multiple threads is not safe
 
 Cpp-Taskflow is known to work on Linux distributions, MAC OSX, and Microsoft Visual Studio.
 Please [let me know][email me] if you found any issues in a particular platform.
@@ -921,6 +920,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [mrogez-yseop](https://github.com/mrogez-yseop) helped fix the missing comma in outputting the execution timeline JSON from the observer and the composition of an empty taskflow.
 - [Sztergbaum Roman](https://github.com/Milerius) replaced the error-prone global setting in cmake with project-specific targets
 - [mrogez-yseop](https://github.com/mrogez-yseop) fixed the bug of empty taskflow to block the executor
+- [Robin Christ](https://github.com/robinchrist) identified things to fix in the outdated documentation and readme.
 
 Meanwhile, we appreciate the support from many organizations for our development on Cpp-Taskflow.
 Please [let me know][email me] if I forgot someone!
