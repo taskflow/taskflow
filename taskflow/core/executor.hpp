@@ -603,7 +603,14 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
     }
   }
 
-  _notifier.notify(false);
+  if(num_nodes >= _workers.size()) {
+    _notifier.notify(true);
+  }
+  else {
+    for(size_t k=0; k<num_nodes; ++k) {
+      _notifier.notify(false);
+    }
+  }
 }
 
 // Procedure: _init_module_node
