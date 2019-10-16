@@ -6,6 +6,7 @@
 [![Standard](image/cpp17.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![Download](image/download.svg)](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip)
 [![Wiki](image/api-doc.svg)][wiki]
+[![Cite](image/cite-ipdps.svg)](doxygen/reference/ipdps19.pdf)
 
 A fast C++ *header-only* library to help you quickly write parallel programs with complex task dependencies
 
