@@ -160,7 +160,7 @@ void wsq_test_n_thieves(int N) {
     auto num_stolen = [&] () {
       int total = 0;
       for(const auto& cdeq : cdeqs) {
-        total += cdeq.size();
+        total += static_cast<int>(cdeq.size());
       }
       return total;
     };
