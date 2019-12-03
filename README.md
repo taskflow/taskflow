@@ -3,8 +3,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bb04cb8e4aca401b8206c054e79fd5e3)](https://app.codacy.com/app/tsung-wei-huang/cpp-taskflow?utm_source=github.com&utm_medium=referral&utm_content=cpp-taskflow/cpp-taskflow&utm_campaign=Badge_Grade_Dashboard)
 [![Linux Build Status](https://travis-ci.com/cpp-taskflow/cpp-taskflow.svg?branch=master)](https://travis-ci.com/cpp-taskflow/cpp-taskflow)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/te9bjp4yfhq7f8hq?svg=true)](https://ci.appveyor.com/project/TsungWeiHuang/cpp-taskflow)
-[![Standard](image/cpp17.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
-[![Download](image/download.svg)](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip)
+[![Download](image/download-c++14_17-blue.svg)](#system-requirements)
 [![Wiki](image/api-doc.svg)][wiki]
 [![Cite](image/cite-ipdps.svg)](doxygen/reference/ipdps19.pdf)
 
@@ -825,10 +824,15 @@ Please [let me know][email me] if you found any issues in a particular platform.
 
 # System Requirements
 
-To use Cpp-Taskflow, you only need a [C++17][C++17] compiler:
+To use the latest [Cpp-Taskflow](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip), you only need a [C++17][C++17] compiler:
 + GNU C++ Compiler v7.3 with -std=c++1z
 + Clang C++ Compiler v6.0 with -std=c++17
 + Microsoft Visual Studio Version 15.7 (MSVC++ 19.14)
+
+A C++14 compatible version is provided [here](https://github.com/cpp-taskflow/cpp-taskflow/archive/cpp14.zip), and you need a [C++14][C++14] compiler:
++ GNU C++ Compiler v4.9 with -std=c++1y
++ Clang C++ Compiler v5.0 with -std=c++14
+
 
 # Compile Unit Tests and Examples
 
@@ -966,6 +970,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [release notes]:         https://cpp-taskflow.github.io/cpp-taskflow/Releases.html
 [PayMe]:                 https://www.paypal.me/twhuang/10
 [C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
+[C++14]:                 https://en.wikipedia.org/wiki/C%2B%2B14
 [email me]:              mailto:twh760812@gmail.com
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
 [ChromeTracing]:         https://www.chromium.org/developers/how-tos/trace-event-profiling-tool
