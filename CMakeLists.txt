@@ -19,6 +19,11 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6.0")
     message(FATAL_ERROR "\nCpp-Taskflow requires clang++ at least v6.0")
   endif() 
+## AppleClang
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "11.0")
+    message(FATAL_ERROR "\nCpp-Taskflow requires AppleClang at least v11.0")
+  endif()
 ## microsoft visual c++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   if(NOT MSVC_VERSION GREATER_EQUAL 1914)
