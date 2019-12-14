@@ -65,6 +65,7 @@ add_library(tf::error_settings ALIAS error_settings)
 target_compile_options(
   error_settings
   INTERFACE
+  $<$<CXX_COMPILER_ID:AppleClang>:-Wall -Wextra -Wfatal-errors>
   $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wfatal-errors>
   $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wfatal-errors>
   $<$<CXX_COMPILER_ID:MSVC>:/W3 /permissive->
@@ -96,10 +97,12 @@ add_library(tf::optimize_settings ALIAS optimize_settings)
 target_compile_options(
   optimize_settings INTERFACE
   $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:Clang>>:-O2 -march=native>
+  $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:AppleClang>>:-O2 -march=native>
   $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:GNU>>:-O2 -march=native>
   $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/O2 -DNDEBUG /MP>
   $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:GNU>>:-O0 -g>
   $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>>:-O0 -g>
+  $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:AppleClang>>:-O0 -g>
   $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/Zi /FS /DEBUG /Od /MP /MDd /Oy->
 )
 
