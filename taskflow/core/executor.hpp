@@ -861,13 +861,13 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
 
 // Procedure: _increment_topology
 inline void Executor::_increment_topology() {
-  std::scoped_lock lock(_topology_mutex);
+  std::scoped_lock<std::mutex> lock(_topology_mutex);
   ++_num_topologies;
 }
 
 // Procedure: _decrement_topology_and_notify
 inline void Executor::_decrement_topology_and_notify() {
-  std::scoped_lock lock(_topology_mutex);
+  std::scoped_lock<std::mutex> lock(_topology_mutex);
   if(--_num_topologies == 0) {
     _topology_cv.notify_all();
   }
