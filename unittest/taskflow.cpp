@@ -31,6 +31,13 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
       executor.run(taskflow).wait();
     }
   }
+
+  //SUBCASE("NoWorker") {
+  //  tf::Executor executor(0);
+  //  tf::Taskflow taskflow;
+  //  taskflow.emplace([](){});
+  //  REQUIRE_THROWS(executor.run(taskflow));
+  //}
     
   SUBCASE("Placeholder") {
     
@@ -133,14 +140,14 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     REQUIRE(taskflow.num_nodes() == num_tasks);
   }
 
-  SUBCASE("Gather"){
+  SUBCASE("Succeed"){
     auto dst = taskflow.emplace([&]() { REQUIRE(counter == num_tasks - 1);});
     for(size_t i=1;i<num_tasks;i++){
       silent_tasks.emplace_back(
         taskflow.emplace([&counter]() {counter += 1;})
       );
     }
-    dst.gather(silent_tasks);
+    dst.succeed(silent_tasks);
     executor.run(taskflow).get();
     REQUIRE(counter == num_tasks - 1);
     REQUIRE(taskflow.num_nodes() == num_tasks);
@@ -273,7 +280,7 @@ TEST_CASE("SequentialRun" * doctest::timeout(300)) {
   
   SUBCASE("RunWithFuture") {
     // Empty subflow test
-    for(unsigned W=0; W<=4; ++W) {
+    for(unsigned W=1; W<=4; ++W) {
 
       std::atomic<size_t> count {0};
       tf::Taskflow f;
@@ -323,7 +330,7 @@ TEST_CASE("SequentialRun" * doctest::timeout(300)) {
   SUBCASE("RunWithChange") {
 
     // test correctness when taskflow got changed between runs 
-    for(unsigned W=0; W<=4; ++W) {
+    for(unsigned W=1; W<=4; ++W) {
 
       std::atomic<size_t> count {0};
       tf::Taskflow f;
@@ -361,7 +368,7 @@ TEST_CASE("SequentialRun" * doctest::timeout(300)) {
 
   SUBCASE("RunWithPred") {
     // Test run_until 
-    for(unsigned W=0; W<=4; ++W) {
+    for(unsigned W=1; W<=4; ++W) {
 
       std::atomic<size_t> count {0};
       tf::Taskflow f;
@@ -408,7 +415,7 @@ TEST_CASE("SequentialRun" * doctest::timeout(300)) {
   }
 
   SUBCASE("MultipleRuns") {
-    for(size_t W=0; W<=8; ++W) {
+    for(size_t W=1; W<=8; ++W) {
       tf::Executor executor(W);
       std::atomic<size_t> counter(0);
 
@@ -463,7 +470,7 @@ TEST_CASE("ParallelRuns" * doctest::timeout(300)) {
   };
 
   SUBCASE("RunAndWait") {
-    for(size_t w=0; w<=32; ++w) {
+    for(size_t w=1; w<=32; ++w) {
       tf::Executor executor(w);
       counter = 0;
       for(int t=0; t<32; t++) {
@@ -484,7 +491,7 @@ TEST_CASE("ParallelRuns" * doctest::timeout(300)) {
   }
   
   SUBCASE("RunAndWaitForAll") { 
-    for(size_t w=0; w<=32; ++w) {
+    for(size_t w=1; w<=32; ++w) {
       tf::Executor executor(w);
       counter = 0;
       std::vector<std::unique_ptr<tf::Taskflow>> taskflows(32);
@@ -518,8 +525,8 @@ TEST_CASE("ParallelFor" * doctest::timeout(300)) {
     
   using namespace std::chrono_literals;
 
-  const auto mapper = [](size_t num_workers, size_t num_data, bool group){
-    tf::Executor executor(static_cast<unsigned>(num_workers));
+  const auto mapper = [](size_t w, size_t num_data, bool group){
+    tf::Executor executor(static_cast<unsigned>(w));
     tf::Taskflow tf;
     std::vector<int> vec(num_data, 0);
     tf.parallel_for(
@@ -535,8 +542,8 @@ TEST_CASE("ParallelFor" * doctest::timeout(300)) {
     }
   };
 
-  const auto reducer = [](size_t num_workers, size_t num_data, bool group){
-    tf::Executor executor(static_cast<unsigned>(num_workers));
+  const auto reducer = [](size_t w, size_t num_data, bool group){
+    tf::Executor executor(static_cast<unsigned>(w));
     tf::Taskflow tf;
     std::vector<int> vec(num_data, 0);
     std::atomic<int> sum(0);
@@ -549,20 +556,20 @@ TEST_CASE("ParallelFor" * doctest::timeout(300)) {
 
   // map
   SUBCASE("Map") {
-    for(size_t num_workers=0; num_workers<=4; ++num_workers){
+    for(size_t W=1; W<=4; ++W){
       for(size_t num_data=1; num_data<=59049; num_data *= 3){
-        mapper(num_workers, num_data, true);
-        mapper(num_workers, num_data, false);
+        mapper(W, num_data, true);
+        mapper(W, num_data, false);
       }
     }
   }
 
   // reduce
   SUBCASE("Reduce") {
-    for(size_t num_workers=0; num_workers<=4; ++num_workers){
+    for(size_t W=1; W<=4; ++W){
       for(size_t num_data=1; num_data<=59049; num_data *= 3){
-        reducer(num_workers, num_data, true);
-        reducer(num_workers, num_data, false);
+        reducer(W, num_data, true);
+        reducer(W, num_data, false);
       }
     }
   }
@@ -609,8 +616,8 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
     REQUIRE_NOTHROW(tf.parallel_for(0.0, 0.0, 1.0, [] (auto) {}));
   };
 
-  auto positive_integer_step = [] (unsigned num_workers) {
-    tf::Executor executor(num_workers);
+  auto positive_integer_step = [] (unsigned w) {
+    tf::Executor executor(w);
     for(int beg=-10; beg<=10; ++beg) {
       for(int end=beg; end<=10; ++end) {
         for(int s=1; s<=end-beg; ++s) {
@@ -631,8 +638,8 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
     }
   };
   
-  auto negative_integer_step = [] (unsigned num_workers) {
-    tf::Executor executor(num_workers);
+  auto negative_integer_step = [] (unsigned w) {
+    tf::Executor executor(w);
     for(int beg=10; beg>=-10; --beg) {
       for(int end=beg; end>=-10; --end) {
         for(int s=1; s<=beg-end; ++s) {
@@ -653,13 +660,13 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
     }
   };
   
-  auto positive_floating_step = [] (unsigned num_workers) {
-    tf::Executor executor(num_workers);
+  auto positive_floating_step = [] (unsigned w) {
+    tf::Executor executor(w);
     for(float beg=-10.0f; beg<=10.0f; ++beg) {
       for(float end=beg; end<=10.0f; ++end) {
         for(float s=1.0f; s<=end-beg; s+=0.1f) {
           int n = 0;
-          for(float b = beg; b<end; b+=s) {
+          for(float b=beg; (beg<end ? b<end : b>end); b+=s) {
             ++n;
           }
           tf::Taskflow tf;
@@ -675,13 +682,13 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
     }
   };
   
-  auto negative_floating_step = [] (unsigned num_workers) {
-    tf::Executor executor(num_workers);
+  auto negative_floating_step = [] (unsigned w) {
+    tf::Executor executor(w);
     for(float beg=10.0f; beg>=-10.0f; --beg) {
       for(float end=beg; end>=-10.0f; --end) {
         for(float s=1.0f; s<=beg-end; s+=0.1f) {
           int n = 0;
-          for(float b = beg; b>end; b-=s) {
+          for(float b=beg; (beg<end ? b<end : b>end); b+=(-s)) {
             ++n;
           }
           tf::Taskflow tf;
@@ -702,25 +709,25 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
   }
 
   SUBCASE("PositiveIntegerStep") {
-    for(unsigned w=0; w<=4; w++) {
+    for(unsigned w=1; w<=4; w++) {
       positive_integer_step(w);  
     }
   }
   
   SUBCASE("NegativeIntegerStep") {
-    for(unsigned w=0; w<=4; w++) {
+    for(unsigned w=1; w<=4; w++) {
       negative_integer_step(w);  
     }
   }
   
   SUBCASE("PositiveFloatingStep") {
-    for(unsigned w=0; w<=4; w++) {
+    for(unsigned w=1; w<=4; w++) {
       positive_floating_step(w);  
     }
   }
   
   SUBCASE("NegativeFloatingStep") {
-    for(unsigned w=0; w<=4; w++) {
+    for(unsigned w=1; w<=4; w++) {
       negative_floating_step(w);  
     }
   }
@@ -776,19 +783,19 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
     );
   };
 
-  for(size_t i=0; i<=4; ++i){
+  for(size_t w=1; w<=4; ++w){
     for(size_t j=0; j<=256; j=j*2+1){
-      plus_test(i, std::vector<int>(j));
-      plus_test(i, std::list<int>(j));
+      plus_test(w, std::vector<int>(j));
+      plus_test(w, std::list<int>(j));
 
-      multiply_test(i, std::vector<double>(j));
-      multiply_test(i, std::list<double>(j));
+      multiply_test(w, std::vector<double>(j));
+      multiply_test(w, std::list<double>(j));
 
-      max_test(i, std::vector<int>(j));
-      max_test(i, std::list<int>(j));
+      max_test(w, std::vector<int>(j));
+      max_test(w, std::list<int>(j));
 
-      min_test(i, std::vector<int>(j));
-      min_test(i, std::list<int>(j));
+      min_test(w, std::vector<int>(j));
+      min_test(w, std::list<int>(j));
     }
   }
 }
@@ -798,7 +805,7 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("ReduceMin" * doctest::timeout(300)) {
 
-  for(int w=0; w<=4; w++) {
+  for(int w=1; w<=4; w++) {
     tf::Executor executor(w);
     for(int i=0; i<=65536; i = (i <= 1024) ? i + 1 : i*2 + 1) {
       tf::Taskflow tf;
@@ -822,7 +829,7 @@ TEST_CASE("ReduceMin" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("ReduceMax" * doctest::timeout(300)) {
 
-  for(int w=0; w<=4; w++) {
+  for(int w=1; w<=4; w++) {
     tf::Executor executor(w);
     for(int i=0; i<=65536; i = (i <= 1024) ? i + 1 : i*2 + 1) {
       tf::Taskflow tf;
@@ -849,7 +856,7 @@ TEST_CASE("JoinedSubflow" * doctest::timeout(300)){
   
   SUBCASE("Trivial") {
     // Empty subflow test
-    for(unsigned W=0; W<=4; ++W) {
+    for(unsigned W=1; W<=4; ++W) {
       
       tf::Executor executor(W);
       tf::Taskflow tf;
@@ -937,7 +944,7 @@ TEST_CASE("JoinedSubflow" * doctest::timeout(300)){
   // Mixed intra- and inter- operations
   SUBCASE("Complex") {
 
-    for(unsigned W=0; W<=4; ++W) {
+    for(unsigned W=1; W<=4; ++W) {
 
       tf::Executor executor(W);
       tf::Taskflow tf;
@@ -1009,7 +1016,7 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
   SUBCASE("Trivial") {
 
     // Empty subflow test
-    for(unsigned W=0; W<=4; ++W) {
+    for(unsigned W=1; W<=4; ++W) {
 
       tf::Executor executor(W);
       tf::Taskflow tf;
@@ -1106,7 +1113,7 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("Composition-1" * doctest::timeout(300)) {
 
-  for(unsigned w=0; w<=8; ++w) {
+  for(unsigned w=1; w<=8; ++w) {
 
     tf::Executor executor(w);
 
@@ -1174,7 +1181,7 @@ TEST_CASE("Composition-1" * doctest::timeout(300)) {
 // TESTCASE: composition-2
 TEST_CASE("Composition-2" * doctest::timeout(300)) {
 
-  for(unsigned w=0; w<=8; ++w) {
+  for(unsigned w=1; w<=8; ++w) {
 
     tf::Executor executor(w);
 
@@ -1228,7 +1235,7 @@ TEST_CASE("Composition-2" * doctest::timeout(300)) {
 // TESTCASE: composition-3
 TEST_CASE("Composition-3" * doctest::timeout(300)) {
   
-  for(unsigned w=0; w<=8; ++w) {
+  for(unsigned w=1; w<=8; ++w) {
   
     tf::Executor executor(w);
 

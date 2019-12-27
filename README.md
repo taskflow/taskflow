@@ -3,10 +3,9 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bb04cb8e4aca401b8206c054e79fd5e3)](https://app.codacy.com/app/tsung-wei-huang/cpp-taskflow?utm_source=github.com&utm_medium=referral&utm_content=cpp-taskflow/cpp-taskflow&utm_campaign=Badge_Grade_Dashboard)
 [![Linux Build Status](https://travis-ci.com/cpp-taskflow/cpp-taskflow.svg?branch=master)](https://travis-ci.com/cpp-taskflow/cpp-taskflow)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/te9bjp4yfhq7f8hq?svg=true)](https://ci.appveyor.com/project/TsungWeiHuang/cpp-taskflow)
-[![Standard](image/cpp17.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
-[![Download](image/download.svg)](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip)
+[![Download](image/download-c++14_17-blue.svg)](#system-requirements)
 [![Wiki](image/api-doc.svg)][wiki]
-[![Resources](image/awesome-resources.svg)](./awesome-parallel-computing.md)
+[![Cite](image/cite-ipdps.svg)](doxygen/reference/ipdps19.pdf)
 
 A fast C++ *header-only* library to help you quickly write parallel programs with complex task dependencies
 
@@ -197,9 +196,9 @@ The handle `Task` supports different methods for you to describe task dependenci
 A.precede(B);  // A runs before B.
 ```
 
-**Gather**: Adding a gathering link forces one task to run after another.
+**Succeed**: Adding a succeeding link forces one task to run after another.
 ```cpp
-A.gather(B);  // A runs after B
+A.succeed(B);  // A runs after B
 ```
 
 ## Step 3: Execute a Taskflow
@@ -447,7 +446,7 @@ f1_module_task.precede(f2C);
 ```
 
 Similarly, `composed_of` returns a task handle and you can use the methods 
-`precede` and `gather` to create dependencies. 
+`precede` and `succeed` to create dependencies. 
 You can compose a taskflow from multiple taskflows and use the result
 to compose a larger taskflow and so on.
 
@@ -717,9 +716,11 @@ The table below summarizes a list of commonly used methods.
 | name           | string      | self   | assign a human-readable name to the task |
 | work           | callable    | self   | assign a work of a callable object to the task |
 | precede        | task list   | self   | enable this task to run *before* the given tasks |
-| gather         | task list   | self   | enable this task to run *after* the given tasks |
+| succeed        | task list   | self   | enable this task to run *after* the given tasks |
 | num_dependents | none        | size   | return the number of dependents (inputs) of this task |
 | num_successors | none        | size   | return the number of successors (outputs) of this task |
+| empty          | none        | bool   | return true if the task points to a graph node or false otherwise |
+| has_work       | none        | bool   | return true if the task points to a graph node with a callable assigned |
 
 ### *name*
 
@@ -758,16 +759,16 @@ You can precede multiple tasks at one time.
 A.precede(B, C, D, E);
 ```
 
-### *gather*
+### *succeed*
 
-The method `gather` lets you add a preceding link from a task to self.
+The method `succeed` lets you add a preceding link from a task to self.
 
 <img align="right" width="30%" src="image/gather.png">
 
 ```cpp
 // B, C, D, and E run in parallel
 // A runs after B, C, D, and E complete
-A.gather(B, C, D, E);
+A.succeed(B, C, D, E);
 ```
 
 ## Executor API
@@ -817,17 +818,21 @@ thousands of task nodes and links, there are a few amateur pitfalls and mistakes
 + Having a cycle in a graph may result in running forever
 + Destructing a taskflow while it is running in one execution results in undefined behavior
 + Trying to modify a running task can result in undefined behavior
-+ Touching a taskflow or an executor from multiple threads is not safe
 
 Cpp-Taskflow is known to work on Linux distributions, MAC OSX, and Microsoft Visual Studio.
 Please [let me know][email me] if you found any issues in a particular platform.
 
 # System Requirements
 
-To use Cpp-Taskflow, you only need a [C++17][C++17] compiler:
+To use the latest [Cpp-Taskflow](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip), you only need a [C++17][C++17] compiler:
 + GNU C++ Compiler v7.3 with -std=c++1z
 + Clang C++ Compiler v6.0 with -std=c++17
 + Microsoft Visual Studio Version 15.7 (MSVC++ 19.14)
+
+A C++14 compatible version is provided [here](https://github.com/cpp-taskflow/cpp-taskflow/archive/cpp14.zip), and you need a [C++14][C++14] compiler:
++ GNU C++ Compiler v4.9 with -std=c++1y
++ Clang C++ Compiler v5.0 with -std=c++14
+
 
 # Compile Unit Tests and Examples
 
@@ -879,7 +884,7 @@ The folder `example/` contains several examples and is a great place to learn to
 + Learn more about Cpp-Taskflow by reading the [documentation][wiki]
 + Release notes are highlighted [here][release notes]
 + Read and cite our [IPDPS19][IPDPS19] paper
-+ Visit a curated list of [awesome parallel computing resources](awesome-parallel-computing.md)
++ Visit a curated list of [awesome parallel computing resources](https://github.com/tsung-wei-huang/awesome-parallel-computing)
 
 # Who is Using Cpp-Taskflow?
 
@@ -894,6 +899,7 @@ that incorporate complex task dependencies.
 - [NovusCore][NovusCore]: An emulating project for World of Warcraft (Wrath of the Lich King 3.3.5a 12340 client build)
 - [SA-PCB][SA-PCB]: Annealing-based Printed Circuit Board (PCB) Placement Tool
 - [LPMP](https://github.com/LPMP/LPMP): A C++ framework for developing scalable Lagrangean decomposition solvers for discrete optimization problems
+- [Heteroflow](https://github.com/Heteroflow/Heteroflow): A Modern C++ Parallel CPU-GPU Task Programming Library
 
 [More...](https://github.com/search?q=cpp-taskflow&type=Code)
 
@@ -908,7 +914,7 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [Nan Xiao](https://github.com/NanXiao) fixed compilation error of unittest on the Arch platform
 - [Vladyslav](https://github.com/innermous) fixed comment errors in README.md and examples
 - [vblanco20-1](https://github.com/vblanco20-1) fixed compilation error on Microsoft Visual Studio
-- [Glen Fraser](https://github.com/totalgee) created a standalone C++14-compatible [threadpool](./taskflow/threadpool/threadpool_cxx14.hpp) for taskflow; various other fixes and examples
+- [Glen Fraser](https://github.com/totalgee) created a standalone C++14-compatible for taskflow; various other fixes and examples
 - [Guannan Guo](https://github.com/gguo4) added different threadpool implementations to enhance the performance for taskflow
 - [Patrik Huber][Patrik Huber] helped fixed typos in the documentation
 - [ForgeMistress][ForgeMistress] provided API ideas about sharing the executor to avoid thread over-subscription issues
@@ -918,6 +924,8 @@ Cpp-Taskflow is being actively developed and contributed by the following people
 - [KingDuckZ][KingDuckZ] helped discover the memory leak in the memory allocator used in graph and topology
 - [mrogez-yseop](https://github.com/mrogez-yseop) helped fix the missing comma in outputting the execution timeline JSON from the observer and the composition of an empty taskflow.
 - [Sztergbaum Roman](https://github.com/Milerius) replaced the error-prone global setting in cmake with project-specific targets
+- [mrogez-yseop](https://github.com/mrogez-yseop) fixed the bug of empty taskflow to block the executor
+- [Robin Christ](https://github.com/robinchrist) identified things to fix in the outdated documentation and readme.
 
 Meanwhile, we appreciate the support from many organizations for our development on Cpp-Taskflow.
 Please [let me know][email me] if I forgot someone!
@@ -962,6 +970,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [release notes]:         https://cpp-taskflow.github.io/cpp-taskflow/Releases.html
 [PayMe]:                 https://www.paypal.me/twhuang/10
 [C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
+[C++14]:                 https://en.wikipedia.org/wiki/C%2B%2B14
 [email me]:              mailto:twh760812@gmail.com
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
 [ChromeTracing]:         https://www.chromium.org/developers/how-tos/trace-event-profiling-tool
