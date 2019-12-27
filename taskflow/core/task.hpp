@@ -119,7 +119,7 @@ class Task {
     @return @c *this
     */
     template <typename... Ts>
-    Task& gather(Ts&&... tasks);
+    Task& succeed(Ts&&... tasks);
     
     /**
     @brief adds precedence links from other tasks to this
@@ -128,7 +128,7 @@ class Task {
 
     @return @c *this
     */
-    Task& gather(std::vector<Task>& tasks);
+    Task& succeed(std::vector<Task>& tasks);
 
     /**
     @brief adds precedence links from other tasks to this
@@ -137,10 +137,40 @@ class Task {
 
     @return @c *this
     */
+    Task& succeed(std::initializer_list<Task> tasks);
+    
+    /**
+    @brief adds precedence links from other tasks to this (same as succeed)
+
+    @tparam Ts parameter pack 
+
+    @param tasks one or multiple tasks
+
+    @return @c *this
+    */
+    template <typename... Ts>
+    Task& gather(Ts&&... tasks);
+    
+    /**
+    @brief adds precedence links from other tasks to this (same as succeed)
+
+    @param tasks a vector of tasks
+
+    @return @c *this
+    */
+    Task& gather(std::vector<Task>& tasks);
+
+    /**
+    @brief adds precedence links from other tasks to this (same as succeed)
+
+    @param tasks an initializer list of tasks
+
+    @return @c *this
+    */
     Task& gather(std::initializer_list<Task> tasks);
 
     /**
-    @brief resets the task handle to point to nothing
+    @brief resets the task handle to null
     
     @return @c *this
     */
@@ -150,6 +180,11 @@ class Task {
     @brief queries if the task handle points to a task node
     */
     bool empty() const;
+
+    /**
+    @brief queries if the task has a work assigned
+    */
+    bool has_work() const;
 
   private:
     
@@ -163,6 +198,9 @@ class Task {
 
     template <typename S>
     void _precede(S&);
+    
+    template <typename S>
+    void _succeed(S&);
 };
 
 // Constructor
@@ -196,6 +234,14 @@ inline Task& Task::precede(std::initializer_list<Task> tgts) {
   return *this;
 }
 
+// Procedure: _precede
+template <typename S>
+void Task::_precede(S& tgts) {
+  for(auto& to : tgts) {
+    _node->precede(*(to._node));
+  }
+}
+
 // Function: gather
 template <typename... Bs>
 Task& Task::gather(Bs&&... tgts) {
@@ -211,14 +257,6 @@ void Task::_gather(S& tgts) {
   }
 }
 
-// Procedure: _precede
-template <typename S>
-void Task::_precede(S& tgts) {
-  for(auto& to : tgts) {
-    _node->precede(*(to._node));
-  }
-}
-
 // Function: gather
 inline Task& Task::gather(std::vector<Task>& tgts) {
   _gather(tgts);
@@ -228,6 +266,33 @@ inline Task& Task::gather(std::vector<Task>& tgts) {
 // Function: gather
 inline Task& Task::gather(std::initializer_list<Task> tgts) {
   _gather(tgts);
+  return *this;
+}
+
+// Function: succeed
+template <typename... Bs>
+Task& Task::succeed(Bs&&... tgts) {
+  (tgts._node->precede(*_node), ...);
+  return *this;
+}
+
+// Procedure: _succeed
+template <typename S>
+void Task::_succeed(S& tgts) {
+  for(auto& from : tgts) {
+    from._node->precede(*_node);
+  }
+}
+
+// Function: succeed
+inline Task& Task::succeed(std::vector<Task>& tgts) {
+  _succeed(tgts);
+  return *this;
+}
+
+// Function: succeed
+inline Task& Task::succeed(std::initializer_list<Task> tgts) {
+  _succeed(tgts);
   return *this;
 }
 
@@ -286,6 +351,11 @@ inline size_t Task::num_successors() const {
 // Function: empty
 inline bool Task::empty() const {
   return _node == nullptr;
+}
+
+// Function: has_work
+inline bool Task::has_work() const {
+  return _node ? _node->_work.index() != 0 : false;
 }
 
 // ----------------------------------------------------------------------------
