@@ -76,7 +76,8 @@ class Node {
     Node() = default;
 
     template <typename ...Args>
-    Node(Args&&... args); 
+    Node(Args&&... args): _work{std::forward<Args>(args)...} 
+    {} 
 
     ~Node();
     
@@ -125,10 +126,10 @@ class Node {
     std::atomic<int> _num_dependents {0};
 };
 
-// Constructor
-template <typename ...Args>
-Node::Node(Args&&... args) : _work{std::forward<Args>(args)...} {
-}
+//// Constructor
+//template <typename ...Args>
+//Node::Node(Args&&... args) : _work{std::forward<Args>(args)...} {
+//}
 
 // Destructor
 inline Node::~Node() {
