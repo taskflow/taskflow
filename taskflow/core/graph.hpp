@@ -75,6 +75,8 @@ class Node {
 
     Node() = default;
 
+    // Constructor 
+    // Must define the implementation here otherwise MSVC cannot compile
     template <typename ...Args>
     Node(Args&&... args): _work{std::forward<Args>(args)...} 
     {} 
