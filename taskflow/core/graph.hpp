@@ -76,7 +76,7 @@ class Node {
     Node() = default;
 
     template <typename ...Args>
-    Node(Args&& ...); 
+    Node(Args&&... args); 
 
     ~Node();
     
