@@ -24,14 +24,15 @@ class Topology {
     std::promise<void> _promise;
 
     PassiveVector<Node*> _sources;
-    std::atomic<int> _num_sinks {0};
-    int _cached_num_sinks {0};
+    // TODO: remove sink
     
     std::function<bool()> _pred;
     std::function<void()> _call;
 
     void _bind(Graph& g);
-    void _recover_num_sinks();
+
+    // TODO: use int type
+    std::atomic<int> _num_dependents {0};
 };
 
 // Constructor
@@ -46,29 +47,41 @@ inline Topology::Topology(Taskflow& tf, P&& p, C&& c):
 // Re-builds the source links and the sink number for this topology.
 inline void Topology::_bind(Graph& g) {
   
-  _num_sinks = 0;
   _sources.clear();
+
+  // TODO: reserve size
+  std::vector<Node*> condition_nodes;
   
+  // TODO: clear flag 
   // scan each node in the graph and build up the links
   for(auto& node : g.nodes()) {
 
+    node->clear_status();
     node->_topology = this;
 
+    // TODO: remove node->is_case
     if(node->num_dependents() == 0) {
       _sources.push_back(node.get());
     }
 
-    if(node->num_successors() == 0) {
-      _num_sinks++;
+    // TODO: Merge with the loop below
+    if(node->_work.index() == 3) {
+      condition_nodes.push_back(node.get());
+    }
+
+    // Reset each node's num_dependents
+    node->_num_dependents.store(node->_dependents.size(), std::memory_order_relaxed);
+  }
+
+  // We need to deduct the condition predecessors in impure case nodes
+  for(auto& n: condition_nodes) {
+    for(auto& s: n->_successors) {
+      s->_num_dependents.fetch_sub(1, std::memory_order_relaxed);
+      s->set_branch();
     }
   }
-  _cached_num_sinks = _num_sinks;
-
 }
 
-// Procedure: _recover_num_sinks
-inline void Topology::_recover_num_sinks() {
-  _num_sinks = _cached_num_sinks;
-}
+
 
 }  // end of namespace tf. ----------------------------------------------------

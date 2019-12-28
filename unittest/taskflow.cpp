@@ -1356,3 +1356,330 @@ TEST_CASE("Observer" * doctest::timeout(300)) {
 }
 
 
+
+TEST_SUITE("TreeSubflow") {
+  auto detach_spawn = [](const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
+    if(depth < max_depth) {
+      counter.fetch_add(1, std::memory_order_relaxed);
+      subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ detach_spawn(max_depth, counter, depth, subflow); });
+      subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ detach_spawn(max_depth, counter, depth, subflow); });
+      subflow.detach();
+    }
+  };
+  TEST_CASE("AllDetach" * doctest::timeout(300)) {
+    constexpr int max_depth {10};
+    for(int W=1; W<=4; W++) {
+      std::atomic<int> counter {0};
+      tf::Taskflow tf;
+      tf.emplace([&](auto &subflow){ detach_spawn(max_depth, counter, 0, subflow); });
+
+      tf::Executor executor(W);
+      executor.run(tf).get();
+      REQUIRE(counter == (1<<max_depth) - 1);
+    }
+  }
+
+  auto join_spawn = [](const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
+    if(depth < max_depth) {
+      counter.fetch_add(1, std::memory_order_relaxed);
+      subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ join_spawn(max_depth, counter, depth, subflow); });
+      subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ join_spawn(max_depth, counter, depth, subflow); });
+    }
+  };
+  TEST_CASE("AllJoin" * doctest::timeout(300)) {
+    constexpr int max_depth {10};
+    for(int W=1; W<=4; W++) {
+      std::atomic<int> counter {0};
+      tf::Taskflow tf;
+      tf.emplace([&](auto &subflow){ join_spawn(max_depth, counter, 0, subflow); });
+
+      tf::Executor executor(W);
+      executor.run(tf).get();
+      REQUIRE(counter == (1<<max_depth) - 1);
+    }
+  }
+
+
+  auto mix_spawn = [](const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
+    if(depth < max_depth) {
+      auto ret = counter.fetch_add(1, std::memory_order_relaxed);
+      if(ret % 2) {
+        subflow.detach();
+      }
+      subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ mix_spawn(max_depth, counter, depth, subflow); });
+      subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ mix_spawn(max_depth, counter, depth, subflow); });
+    }
+  };
+  TEST_CASE("Mix" * doctest::timeout(300)) {
+    constexpr int max_depth {10};
+    for(int W=1; W<=4; W++) {
+      std::atomic<int> counter {0};
+      tf::Taskflow tf;
+      tf.emplace([&](auto &subflow){ mix_spawn(max_depth, counter, 0, subflow); });
+
+      tf::Executor executor(W);
+      executor.run(tf).get();
+      REQUIRE(counter == (1<<max_depth) - 1);
+    }
+  }
+}
+
+
+// --------------------------------------------------------
+// Testcase: Condition 
+// -------------------------------------------------------- 
+TEST_SUITE("Condition") {
+  TEST_CASE("CyclicCondition" * doctest::timeout(300)) {
+    // Static tasking
+    for(unsigned w=1; w<=8; ++w) {
+      tf::Executor executor(w);
+  
+      //      ____________________
+      //      |                  | 
+      //      v                  |
+      // S -> A -> Branch -> many branches -> T
+      //  
+      // Make sure each branch will be passed through exactly once
+      // and the T (target) node will also be passed
+  
+      tf::Taskflow flow;
+      auto S = flow.emplace([](){});
+      
+      int num_iterations = 0;
+      const int total_iteration = 1000;
+      auto A = flow.emplace([&](){ num_iterations ++; });
+      S.precede(A);
+  
+      int sel = 0;
+      bool pass_T = false;
+      std::vector<bool> pass(total_iteration, false);
+      auto T = flow.emplace([&](){ REQUIRE(num_iterations == total_iteration); pass_T=true; });
+      auto branch = flow.emplace([&](){ return sel++; });
+      A.precede(branch);
+      for(size_t i=0; i<total_iteration; i++) {
+        auto t = flow.emplace([&, i](){ 
+          if(num_iterations < total_iteration) {
+            REQUIRE(!pass[i]);
+            pass[i] = true;
+            return 0; 
+          }
+          // The last node will come to here (last iteration) 
+          REQUIRE(!pass[i]);
+          pass[i] = true;
+          return 1; 
+        });
+        branch.precede(t);
+        t.precede(A);
+        t.precede(T);
+      }
+  
+      executor.run(flow).get();
+  
+      REQUIRE(pass_T);
+      for(size_t i=0; i<pass.size(); i++) {
+        REQUIRE(pass[i]);
+      }
+    }
+  }
+
+  TEST_CASE("BinaryTreeCondition" * doctest::timeout(300)) {
+    for(unsigned w=1; w<=8; ++w) {
+      for(int l=1; l<12; l++) {
+        tf::Taskflow flow;
+        std::vector<tf::Task> prev_tasks;
+        std::vector<tf::Task> tasks;
+        
+        std::atomic<int> counter {0};
+        int level = l;
+      
+        for(int i=0; i<level; i++) {
+          tasks.clear();
+          for(int j=0; j< (1<<i); j++) {
+            if(i % 2 == 0) {
+              tasks.emplace_back(flow.emplace([&](){ counter++; }) );
+            }
+            else {
+              if(j%2) {
+                tasks.emplace_back(flow.emplace([](){ return 1; }));
+              }
+              else {
+                tasks.emplace_back(flow.emplace([](){ return 0; }));
+              }
+            }
+          }
+          
+          for(size_t j=0; j<prev_tasks.size(); j++) {
+            prev_tasks[j].precede(tasks[2*j]    );
+            prev_tasks[j].precede(tasks[2*j + 1]);
+          }
+          tasks.swap(prev_tasks);
+        }
+      
+        tf::Executor executor(w);
+        executor.run(flow).wait();
+      
+        REQUIRE(counter == (1<<((level+1)/2)) - 1);
+      }
+    }
+  }
+
+
+
+  //             ---- > B
+  //             |
+  //  A -> Cond -
+  //             |
+  //             ---- > C
+  void spawn(std::atomic<int>& counter, const int max_depth, int depth, tf::Subflow& subflow)  {
+    if(depth < max_depth) {
+      for(int i=0; i<2; i++) {
+        auto [A, B, C] = subflow.emplace(
+          [&](){ counter++; },
+          [&, max_depth, depth=depth+1](auto &subflow){ spawn(counter, max_depth, depth, subflow); },
+          [&, max_depth, depth=depth+1](auto &subflow){ spawn(counter, max_depth, depth, subflow); }
+        );
+        auto cond = subflow.emplace([depth](){ if(depth%2) return 1; return 0; }).precede(B, C);
+        A.precede(cond);
+      }
+    }
+  }
+  TEST_CASE("DynamicBinaryTreeCondition" * doctest::timeout(300)) {
+    for(unsigned w=1; w<=8; ++w) {
+      std::atomic<int> counter {0};
+      constexpr int max_depth = 6;
+      tf::Taskflow flow;
+      flow.emplace([&](auto &subflow) { counter++; spawn(counter, max_depth, 0, subflow); });
+      tf::Executor executor(w);
+      executor.run_n(flow, 4).get();
+      // Each run increments the counter by (2^(max_depth+1) - 1)
+      REQUIRE(counter.load() == ((1<<(max_depth+1)) - 1)*4);
+    }
+  }
+
+  //        ______
+  //       |      |
+  //       v      |
+  //  S -> A -> cond  
+  TEST_CASE("NestedForDynamicCondition" * doctest::timeout(300)) {
+    for(unsigned w=1; w<=8; ++w) {
+      const int outer_loop = 3;
+      const int mid_loop = 4;
+      const int inner_loop = 5;
+
+      int counter {0};
+      tf::Taskflow flow;
+      auto S = flow.emplace([](){});
+      auto A = flow.emplace([&] (auto &subflow) mutable {
+        //         ___________
+        //        |           |
+        //        v           |
+        //   S -> A -> B -> cond 
+        auto S = subflow.emplace([](){ });
+        auto A = subflow.emplace([](){ }).succeed(S);
+        auto B = subflow.emplace([&](auto &subflow){ 
+
+          //         ___________
+          //        |           |
+          //        v           |
+          //   S -> A -> B -> cond 
+          //        |
+          //        -----> C
+          //        -----> D
+          //        -----> E
+
+          auto S = subflow.emplace([](){});
+          auto A = subflow.emplace([](){}).succeed(S);
+          auto B = subflow.emplace([&](){ counter++; }).succeed(A);
+          subflow.emplace([&, repeat=0]() mutable {
+            if(repeat ++ < inner_loop) 
+              return 0;
+      
+            repeat = 0;
+            return 1;
+          }).succeed(B).precede(A).name("cond");
+      
+          // Those are redundant tasks
+          subflow.emplace([](){}).succeed(A).name("C");
+          subflow.emplace([](){}).succeed(A).name("D");
+          subflow.emplace([](){}).succeed(A).name("E");
+        }).succeed(A);
+        subflow.emplace([&, repeat=0]() mutable {
+          if(repeat ++ < mid_loop) 
+            return 0;
+      
+          repeat = 0;
+          return 1;
+        }).succeed(B).precede(A).name("cond");
+      
+      }).succeed(S);
+      
+      flow.emplace(
+        [repeat=0]() mutable {
+          if(repeat ++ < outer_loop) {
+            return 0;
+          }
+      
+          repeat = 0;
+          return 1;
+        }
+      ).succeed(A).precede(A);
+
+      tf::Executor executor(w);
+      const int repeat = 10;
+      executor.run_n(flow, repeat).get();
+
+      REQUIRE(counter == (inner_loop+1)*(mid_loop+1)*(outer_loop+1)*repeat);
+    }
+  }
+
+
+  //         ________________
+  //        |  ___   ______  |
+  //        | |   | |      | |
+  //        v v   | v      | |
+  //   S -> A -> cond1 -> cond2 -> D
+  //               |
+  //                ----> B
+  TEST_CASE("Condition2Condition" * doctest::timeout(300)) {
+    for(unsigned w=1; w<=8; ++w) {
+
+      const int repeat = 10;
+      tf::Taskflow flow;
+
+      int num_visit_A {0};
+      int num_visit_C1 {0};
+      int num_visit_C2 {0};
+
+      int iteration_C1 {0};
+      int iteration_C2 {0};
+
+      auto S = flow.emplace([](){});
+      auto A = flow.emplace([&](){ num_visit_A++; }).succeed(S);
+      auto cond1 = flow.emplace([&]() mutable {
+        num_visit_C1++;
+        iteration_C1++;
+        if(iteration_C1 == 1) return 0;
+        return 1;
+      }).succeed(A).precede(A);
+
+      auto cond2 = flow.emplace([&]() mutable {
+        num_visit_C2 ++;
+        return iteration_C2++;
+      }).succeed(cond1).precede(cond1, A);
+
+      flow.emplace([](){ REQUIRE(false); }).succeed(cond1).name("B");
+      flow.emplace([&](){
+        iteration_C1 = 0;
+        iteration_C2 = 0;
+      }).succeed(cond2).name("D");
+
+      tf::Executor executor(w);
+      executor.run_n(flow, repeat).get();
+
+      REQUIRE(num_visit_A  == 3*repeat);
+      REQUIRE(num_visit_C1 == 4*repeat);
+      REQUIRE(num_visit_C2 == 3*repeat);
+    }
+  }
+
+}

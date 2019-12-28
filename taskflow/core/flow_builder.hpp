@@ -32,7 +32,21 @@ class FlowBuilder {
     */
     template <typename C>
     Task emplace(C&& callable);
-    
+
+    ///**
+    //@brief creates a condition task from a given callable object and precede a set of given tasks
+    //
+    //@tparam C callable type
+
+    //@param callable a callable object acceptable to std::function
+
+    //@param tasks one or multiple tasks
+
+    //@return Task handle
+    //*/
+    //template <typename C, typename... Ts, std::enable_if_t<std::is_same_v<typename function_traits<C>::return_type, int>, void>* = nullptr>
+    //Task emplace(C&& callables, Ts&&... tasks);
+
     /**
     @brief creates multiple tasks from a list of callable objects at one time
     
@@ -96,12 +110,10 @@ class FlowBuilder {
     */
     template <typename I, typename C, std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr >
     std::pair<Task, Task> parallel_for(I beg, I end, I step, C&& callable, size_t partitions = 0);
-
-
+ 
     //template <typename I, typename C, std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr >
     //std::pair<Task, Task> dynamic_parallel_for(I beg, I end, I step, C&& callable, size_t partitions = 0);
 
-    
     /**
     @brief construct a task dependency graph of parallel reduction
     
@@ -860,6 +872,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
 //}
 
 
+
 // Function: reduce_min
 // Find the minimum element over a range of items.
 template <typename I, typename T>
@@ -1202,6 +1215,14 @@ inline bool Subflow::joined() const {
 
 // -----
 
+//// Function: one-shot emplace
+//template <typename C, typename... Ts, std::enable_if_t<std::is_same_v<typename function_traits<C>::return_type, int>, void>*>
+//Task FlowBuilder::emplace(C&& callable, Ts&&... tasks) {
+//  auto t = emplace(std::forward<C>(callable));
+//  (t.precede(tasks), ...);
+//  return t;
+//}
+
 // Function: emplace
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
 auto FlowBuilder::emplace(C&&... cs) {
@@ -1211,9 +1232,10 @@ auto FlowBuilder::emplace(C&&... cs) {
 // Function: emplace
 template <typename C>
 Task FlowBuilder::emplace(C&& c) {
+
   // dynamic tasking
   if constexpr(std::is_invocable_v<C, Subflow&>) {
-    auto& n = _graph.emplace_back(
+    auto& n = _graph.emplace_back(std::in_place_type_t<Node::DynamicWork>{}, 
     [c=std::forward<C>(c)] (Subflow& fb) mutable {
       // first time execution
       if(fb._graph.empty()) {
@@ -1222,15 +1244,22 @@ Task FlowBuilder::emplace(C&& c) {
     });
     return Task(n);
   }
+  // condition tasking
+  else if constexpr(std::is_same_v<typename function_traits<C>::return_type, int>) {
+    auto& n = _graph.emplace_back(std::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c));
+    return Task(n);
+  }
   // static tasking
-  else if constexpr(std::is_invocable_v<C>) {
-    auto& n = _graph.emplace_back(std::forward<C>(c));
+  else if constexpr(std::is_same_v<typename function_traits<C>::return_type, void>) {
+    auto& n = _graph.emplace_back(std::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c));
     return Task(n);
   }
   else {
     static_assert(dependent_false_v<C>, "invalid task work type");
   }
 }
+
+
 
 // Function: silent_emplace
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
@@ -1319,6 +1348,42 @@ Task FlowBuilder::silent_emplace(C&& c) {
 //    static_assert(dependent_false_v<C>, "invalid task work type");
 //  }
 //}
+
+
+// Function: work
+template <typename C>
+inline Task& Task::work(C&& c) {
+
+  if(_node->_module) {
+    TF_THROW(Error::TASKFLOW, "can't assign work to a module task");
+  }
+
+  // static tasking
+  if constexpr(std::is_same_v<typename function_traits<C>::return_type, void>) {
+    _node->_work.emplace<Node::StaticWork>(std::forward<C>(c));
+  }
+  // condition tasking
+  else if constexpr(std::is_same_v<typename function_traits<C>::return_type, int>) {
+    _node->_work.emplace<Node::ConditionWork>(std::forward<C>(c));
+  }
+  // dyanmic tasking
+  else if constexpr(std::is_invocable_v<C, Subflow&>) {
+    _node->_work.emplace<Node::DynamicWork>( 
+    [c=std::forward<C>(c)] (Subflow& fb) mutable {
+      // first time execution
+      if(fb._graph.empty()) {
+        c(fb);
+      }
+    });
+  }
+  else {
+    static_assert(dependent_false_v<C>, "invalid task work type");
+  }
+
+  return *this;
+}
+
+
 
 using SubflowBuilder = Subflow;
 

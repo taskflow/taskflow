@@ -36,8 +36,8 @@ class Graph {
 
     size_t size() const;
     
-    template <typename C>
-    Node& emplace_back(C&&); 
+    template <typename ...Args>
+    Node& emplace_back(Args&& ...); 
 
     Node& emplace_back();
 
@@ -60,23 +60,28 @@ class Node {
   friend class Topology;
   friend class Taskflow;
   friend class Executor;
+  friend class FlowBuilder;
+  friend class Subflow;
 
   using StaticWork  = std::function<void()>;
   using DynamicWork = std::function<void(Subflow&)>;
+  using ConditionWork = std::function<int()>;
 
   constexpr static int SPAWNED = 0x1;
   constexpr static int SUBTASK = 0x2;
+  constexpr static int BRANCH  = 0x4;
 
   public:
 
     Node() = default;
 
-    template <typename C>
-    Node(C&&);
-    
+    template <typename ...Args>
+    Node(Args&& ...); 
+
     ~Node();
     
     void precede(Node&);
+
     void dump(std::ostream&) const;
 
     size_t num_successors() const;
@@ -89,34 +94,40 @@ class Node {
     // Status-related functions
     bool is_spawned() const { return _status & SPAWNED; }
     bool is_subtask() const { return _status & SUBTASK; }
+    bool is_branch()  const { return _status & BRANCH;  }
 
     void set_spawned()   { _status |= SPAWNED;  }
     void set_subtask()   { _status |= SUBTASK;  }
+    void set_branch()    { _status |= BRANCH;   }
+
     void unset_spawned() { _status &= ~SPAWNED; }
     void unset_subtask() { _status &= ~SUBTASK; }
+    void unset_branch()  { _status &= ~BRANCH;  }
     void clear_status()  { _status = 0;         }
 
   private:
     
     std::string _name;
-    std::variant<std::monostate, StaticWork, DynamicWork> _work;
+    std::variant<std::monostate, StaticWork, DynamicWork, ConditionWork> _work;
 
     tf::PassiveVector<Node*> _successors;
     tf::PassiveVector<Node*> _dependents;
-    
+
     std::optional<Graph> _subgraph;
 
     Topology* _topology {nullptr};
     Taskflow* _module {nullptr};
+    
+    Node* _parent {nullptr};
 
     int _status {0};
-    
+
     std::atomic<int> _num_dependents {0};
 };
 
 // Constructor
-template <typename C>
-Node::Node(C&& c) : _work {std::forward<C>(c)} {
+template <typename ...Args>
+Node::Node(Args&&... args) : _work{std::forward<Args>(args)...} {
 }
 
 // Destructor
@@ -147,8 +158,10 @@ inline Node::~Node() {
 inline void Node::precede(Node& v) {
   _successors.push_back(&v);
   v._dependents.push_back(this);
-  v._num_dependents.fetch_add(1, std::memory_order_relaxed);
+  // TODO: Remove this 
+  //v._num_dependents.fetch_add(1, std::memory_order_relaxed);
 }
+
 
 // Function: num_successors
 inline size_t Node::num_successors() const {
@@ -178,10 +191,22 @@ inline void Node::dump(std::ostream& os) const {
   os << 'p' << this << "[label=\"";
   if(_name.empty()) os << 'p' << this;
   else os << _name;
-  os << "\"];\n";
+  os << "\" ";
+
+  if(_work.index() == 3) {
+    // condition node is colored green
+    os << " shape=diamond color=black fillcolor=aquamarine style=filled";
+  }
+  os << "];\n";
   
   for(const auto s : _successors) {
-    os << 'p' << this << " -> " << 'p' << s << ";\n";
+    if(_work.index() == 3) {
+      // case edge is dashed
+      os << 'p' << this << " -> " << 'p' << s << " [style=dashed];\n";
+    }
+    else {
+      os << 'p' << this << " -> " << 'p' << s << ";\n";
+    }
   }
   
   if(_subgraph && !_subgraph->empty()) {
@@ -341,9 +366,9 @@ inline const std::vector<std::unique_ptr<Node>>& Graph::nodes() const {
 
 // Function: emplace_back
 // create a node from a give argument; constructor is called if necessary
-template <typename C>
-Node& Graph::emplace_back(C&& c) {
-  _nodes.push_back(std::make_unique<Node>(std::forward<C>(c)));
+template <typename ...Args>
+Node& Graph::emplace_back(Args&&... args) {
+  _nodes.push_back(std::make_unique<Node>(std::forward<Args>(args)...));
   return *(_nodes.back());
 }
 

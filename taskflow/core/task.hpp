@@ -308,19 +308,6 @@ inline Task& Task::operator = (std::nullptr_t ptr) {
   return *this;
 }
 
-// Function: work
-template <typename C>
-inline Task& Task::work(C&& c) {
-
-  if(_node->_module) {
-    TF_THROW(Error::TASKFLOW, "can't assign work to a module task");
-  }
-
-  _node->_work = std::forward<C>(c);
-
-  return *this;
-}
-
 // Function: name
 inline Task& Task::name(const std::string& name) {
   _node->_name = name;

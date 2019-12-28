@@ -282,6 +282,17 @@ add_test(composition-2    ${TF_UTEST_DIR}/taskflow -tc=Composition-2)
 add_test(composition-3    ${TF_UTEST_DIR}/taskflow -tc=Composition-3)
 add_test(observer         ${TF_UTEST_DIR}/taskflow -tc=Observer)
 
+# unittest after adding condition task
+add_test(all_detach                   ${TF_UTEST_DIR}/taskflow -tc=AllDetach)
+add_test(all_join                     ${TF_UTEST_DIR}/taskflow -tc=AllJoin)
+add_test(mix                          ${TF_UTEST_DIR}/taskflow -tc=Mix)
+add_test(cyclic_condition              ${TF_UTEST_DIR}/taskflow -tc=CyclicCondition)
+add_test(binary_tree_condition         ${TF_UTEST_DIR}/taskflow -tc=BinaryTreeCondition)
+add_test(dynamic_binary_tree_condition ${TF_UTEST_DIR}/taskflow -tc=DynamicBinaryTreeCondition)
+add_test(nested_for_dynamic_condition  ${TF_UTEST_DIR}/taskflow -tc=NestedForDynamicCondition)
+add_test(condition2condition           ${TF_UTEST_DIR}/taskflow -tc=Condition2Condition)
+
+
 # unittest for WorkStealingQueue 
 add_executable(spmc_queue unittest/spmc_queue.cpp)
 target_link_libraries(spmc_queue ${PROJECT_NAME} Threads::Threads)
