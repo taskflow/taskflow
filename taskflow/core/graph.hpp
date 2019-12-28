@@ -77,6 +77,7 @@ class Node {
 
     // Constructor 
     // Must define the implementation here otherwise MSVC cannot compile
+    // number of args must be >= 1
     template <typename ...Args>
     Node(Args&&... args): _work{std::forward<Args>(args)...} 
     {} 

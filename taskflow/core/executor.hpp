@@ -592,11 +592,12 @@ inline void Executor::_invoke(unsigned me, Node* node) {
 
   if(node->_work.index() == 3) {
     // Reset num_dependents
-    node->_num_dependents = static_cast<int>(node->_dependents.size());
     if(node->is_branch()) {
-      auto num_condition_deps = std::count_if(
-        node->_dependents.begin(), node->_dependents.end(), [](auto& p){ return p->_work.index() == 3; } );
-      node->_num_dependents.fetch_sub(num_condition_deps, std::memory_order_relaxed);
+      node->_num_dependents = std::count_if(
+        node->_dependents.begin(), node->_dependents.end(), [](auto& p){ return p->_work.index() != 3; } );
+    }
+    else {
+      node->_num_dependents = static_cast<int>(node->_dependents.size());
     }
 
     if(size_t id = std::get<Node::ConditionWork>(node->_work)(); id < num_successors) {
@@ -645,7 +646,7 @@ inline void Executor::_invoke(unsigned me, Node* node) {
       if(!node->_subgraph->empty()) {
         // For storing the source nodes
         PassiveVector<Node*> src; 
-        std::vector<Node*> condition_nodes;
+        PassiveVector<Node*> condition_nodes;
 
         for(auto& n: node->_subgraph->nodes()) {
           n->_topology = node->_topology;
@@ -702,14 +703,13 @@ inline void Executor::_invoke(unsigned me, Node* node) {
   // We MUST recover the dependency regardless subflow as a condition node can go back (cyclic)
   // This must be done before scheduling the successors, otherwise this might cause 
   // race condition on the _dependents
-  node->_num_dependents = static_cast<int>(node->_dependents.size());
-
-  // TODO: case => branch
-  // If this is a case node, we need to deduct condition predecessors
   if(node->is_branch()) {
-    auto num_condition_deps = std::count_if(
-      node->_dependents.begin(), node->_dependents.end(), [](auto& p){ return p->_work.index() == 3; } );
-    node->_num_dependents.fetch_sub(num_condition_deps, std::memory_order_relaxed);
+    // If this is a case node, we need to deduct condition predecessors
+    node->_num_dependents = std::count_if(
+        node->_dependents.begin(), node->_dependents.end(), [](auto& p){ return p->_work.index() != 3; } );
+  }
+  else {
+    node->_num_dependents = static_cast<int>(node->_dependents.size());
   }
   node->unset_spawned();
 
