@@ -1358,14 +1358,14 @@ TEST_CASE("Observer" * doctest::timeout(300)) {
 
 
 TEST_SUITE("TreeSubflow") {
-  auto detach_spawn = [](const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
+  void detach_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
     if(depth < max_depth) {
       counter.fetch_add(1, std::memory_order_relaxed);
       subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ detach_spawn(max_depth, counter, depth, subflow); });
       subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ detach_spawn(max_depth, counter, depth, subflow); });
       subflow.detach();
     }
-  };
+  }
   TEST_CASE("AllDetach" * doctest::timeout(300)) {
     constexpr int max_depth {10};
     for(int W=1; W<=4; W++) {
@@ -1379,13 +1379,13 @@ TEST_SUITE("TreeSubflow") {
     }
   }
 
-  auto join_spawn = [](const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
+  void join_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
     if(depth < max_depth) {
       counter.fetch_add(1, std::memory_order_relaxed);
       subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ join_spawn(max_depth, counter, depth, subflow); });
       subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ join_spawn(max_depth, counter, depth, subflow); });
     }
-  };
+  }
   TEST_CASE("AllJoin" * doctest::timeout(300)) {
     constexpr int max_depth {10};
     for(int W=1; W<=4; W++) {
@@ -1400,7 +1400,7 @@ TEST_SUITE("TreeSubflow") {
   }
 
 
-  auto mix_spawn = [](const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
+  void mix_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
     if(depth < max_depth) {
       auto ret = counter.fetch_add(1, std::memory_order_relaxed);
       if(ret % 2) {
@@ -1409,7 +1409,7 @@ TEST_SUITE("TreeSubflow") {
       subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ mix_spawn(max_depth, counter, depth, subflow); });
       subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ mix_spawn(max_depth, counter, depth, subflow); });
     }
-  };
+  }
   TEST_CASE("Mix" * doctest::timeout(300)) {
     constexpr int max_depth {10};
     for(int W=1; W<=4; W++) {

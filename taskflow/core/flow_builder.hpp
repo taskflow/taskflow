@@ -12,6 +12,8 @@ namespace tf {
 */
 class FlowBuilder {
 
+  friend class Task;
+
   public:
     
     /**
