@@ -1614,7 +1614,7 @@ TEST_SUITE("Condition") {
       }).succeed(S);
       
       flow.emplace(
-        [repeat=0]() mutable {
+        [&, repeat=0]() mutable {
           if(repeat ++ < outer_loop) {
             return 0;
           }
