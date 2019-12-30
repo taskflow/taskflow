@@ -589,29 +589,33 @@ inline void Executor::_invoke(unsigned me, Node* node) {
   // Here we need to fetch the num_successors first to avoid the invalid memory
   // access caused by topology clear.
   const auto num_successors = node->num_successors();
-
-  if(node->_work.index() == 3) {
+  
+  // condition task
+  if(node->_work.index() == Node::CONDITION) {
     // Reset num_dependents
     if(node->is_branch()) {
       node->_num_dependents = std::count_if(
-        node->_dependents.begin(), node->_dependents.end(), [](auto& p){ return p->_work.index() != 3; } );
+        node->_dependents.begin(), 
+        node->_dependents.end(), 
+        [] (const auto& p) { return p->_work.index() != Node::CONDITION; } 
+      );
     }
     else {
       node->_num_dependents = static_cast<int>(node->_dependents.size());
     }
 
     if(size_t id = std::get<Node::ConditionWork>(node->_work)(); id < num_successors) {
-      // Need to reset successor's dependency otherwise this will make the parent dependency incorrectly update
+      // Need to reset successor's dependency 
+      // otherwise this will make the parent dependency incorrectly update
       // in dynamic tasking with condition task
       node->_successors[id]->_num_dependents.store(0);
       _schedule(node->_successors[id], true);
     }
     return ;
   }
-
   // static task
   // The default node work type. We only need to execute the callback if any.
-  if(auto index=node->_work.index(); index == 1) {
+  else if(auto index=node->_work.index(); index == Node::STATIC) {
     if(node->_module != nullptr) {
       bool first_time = !node->is_spawned();
       _invoke_static_work(me, node);
@@ -622,9 +626,9 @@ inline void Executor::_invoke(unsigned me, Node* node) {
     else {
       _invoke_static_work(me, node);
     }
-  }
+  } 
   // dynamic task
-  else if (index == 2){
+  else if (index == Node::DYNAMIC){
 
     // Clear the subgraph before the task execution
     if(!node->is_spawned()) {
@@ -661,7 +665,7 @@ inline void Executor::_invoke(unsigned me, Node* node) {
             src.push_back(n.get());
           }
 
-          if(n->_work.index() == 3) {
+          if(n->_work.index() == Node::CONDITION) {
             condition_nodes.push_back(n.get());
           }
         }
@@ -700,13 +704,16 @@ inline void Executor::_invoke(unsigned me, Node* node) {
   } // End of DynamicWork -----------------------------------------------------
   
 
-  // We MUST recover the dependency regardless subflow as a condition node can go back (cyclic)
+  // We MUST recover the dependency since subflow is a condition node can go back (cyclic)
   // This must be done before scheduling the successors, otherwise this might cause 
   // race condition on the _dependents
   if(node->is_branch()) {
     // If this is a case node, we need to deduct condition predecessors
     node->_num_dependents = std::count_if(
-        node->_dependents.begin(), node->_dependents.end(), [](auto& p){ return p->_work.index() != 3; } );
+      node->_dependents.begin(), 
+      node->_dependents.end(), 
+      [](auto& p){ return p->_work.index() != Node::CONDITION; } 
+    );
   }
   else {
     node->_num_dependents = static_cast<int>(node->_dependents.size());
@@ -722,14 +729,13 @@ inline void Executor::_invoke(unsigned me, Node* node) {
       if(cache) {
         if(num_spawns == 0) {
           if(node->_parent == nullptr) {
-            // TODO: num_spawn => num_dependents
             node->_topology->_num_dependents.fetch_add(node->_successors.size());
           }
           else {
             node->_parent->_num_dependents.fetch_add(node->_successors.size()); 
           }
         }
-        num_spawns ++;
+        num_spawns++;
         _schedule(cache, false);
       }
       cache = node->_successors[i];
@@ -984,10 +990,6 @@ inline void Executor::_init_module_node(Node* node) {
 
     // second time to enter this context
     if(node->is_spawned()) {
-      //node->_dependents.resize(node->_dependents.size()-tgt.size());
-      //for(auto& t: tgt) {
-      //  t->_successors.clear();
-      //}
       return ;
     }
 
@@ -1004,7 +1006,7 @@ inline void Executor::_init_module_node(Node* node) {
         src.push_back(n.get());
       }
       n->_parent = node;
-      if(n->_work.index() == 3) {
+      if(n->_work.index() == Node::CONDITION) {
         condition_nodes.push_back(n.get());
       }
     }

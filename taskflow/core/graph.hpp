@@ -63,17 +63,23 @@ class Node {
   friend class FlowBuilder;
   friend class Subflow;
 
+  public:
+  
   using StaticWork  = std::function<void()>;
   using DynamicWork = std::function<void(Subflow&)>;
   using ConditionWork = std::function<int()>;
-
+  
+  // status bit flag
   constexpr static int SPAWNED = 0x1;
   constexpr static int SUBTASK = 0x2;
   constexpr static int BRANCH  = 0x4;
 
-  public:
+  // variant index
+  constexpr static int STATIC    = 1;
+  constexpr static int DYNAMIC   = 2;
+  constexpr static int CONDITION = 3; 
 
-    Node() = default;
+    //Node() = default;
 
     // Constructor 
     // Must define the implementation here otherwise MSVC cannot compile
@@ -103,7 +109,6 @@ class Node {
     void set_spawned()   { _status |= SPAWNED;  }
     void set_subtask()   { _status |= SUBTASK;  }
     void set_branch()    { _status |= BRANCH;   }
-
     void unset_spawned() { _status &= ~SPAWNED; }
     void unset_subtask() { _status &= ~SUBTASK; }
     void unset_branch()  { _status &= ~BRANCH;  }
@@ -162,8 +167,6 @@ inline Node::~Node() {
 inline void Node::precede(Node& v) {
   _successors.push_back(&v);
   v._dependents.push_back(this);
-  // TODO: Remove this 
-  //v._num_dependents.fetch_add(1, std::memory_order_relaxed);
 }
 
 
@@ -197,14 +200,15 @@ inline void Node::dump(std::ostream& os) const {
   else os << _name;
   os << "\" ";
 
-  if(_work.index() == 3) {
-    // condition node is colored green
+  // condition node is colored green
+  if(_work.index() == CONDITION) {
     os << " shape=diamond color=black fillcolor=aquamarine style=filled";
   }
+
   os << "];\n";
   
   for(const auto s : _successors) {
-    if(_work.index() == 3) {
+    if(_work.index() == CONDITION) {
       // case edge is dashed
       os << 'p' << this << " -> " << 'p' << s << " [style=dashed];\n";
     }

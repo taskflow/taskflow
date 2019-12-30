@@ -24,14 +24,12 @@ class Topology {
     std::promise<void> _promise;
 
     PassiveVector<Node*> _sources;
-    // TODO: remove sink
     
     std::function<bool()> _pred;
     std::function<void()> _call;
 
     void _bind(Graph& g);
 
-    // TODO: use int type
     std::atomic<int> _num_dependents {0};
 };
 
@@ -49,23 +47,20 @@ inline void Topology::_bind(Graph& g) {
   
   _sources.clear();
 
-  // TODO: reserve size
-  std::vector<Node*> condition_nodes;
+  PassiveVector<Node*> condition_nodes;
   
-  // TODO: clear flag 
   // scan each node in the graph and build up the links
   for(auto& node : g.nodes()) {
 
     node->clear_status();
     node->_topology = this;
 
-    // TODO: remove node->is_case
     if(node->num_dependents() == 0) {
       _sources.push_back(node.get());
     }
 
-    // TODO: Merge with the loop below
-    if(node->_work.index() == 3) {
+    // TODO: Merge with the loop below?
+    if(node->_work.index() == Node::CONDITION) {
       condition_nodes.push_back(node.get());
     }
 
