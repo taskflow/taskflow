@@ -37,13 +37,15 @@ class WorkStealingQueue {
     int64_t C;
     int64_t M;
     //storage_type* S;
-    T* S;
+    std::atomic<T>* S;
+
+    //T* S;
 
     explicit Array(int64_t c) : 
       C {c},
       M {c-1},
       //S {new storage_type[C]} {
-      S {new T[static_cast<size_t>(C)]} {
+      S {new std::atomic<T>[static_cast<size_t>(C)]} {
       //for(int64_t i=0; i<C; ++i) {
       //  ::new (std::addressof(S[i])) T();
       //}
@@ -64,12 +66,14 @@ class WorkStealingQueue {
     void push(int64_t i, O&& o) noexcept {
       //T* ptr = reinterpret_cast<T*>(std::addressof(S[i & M]));
       //*ptr = std::forward<O>(o); 
-      S[i & M] = std::forward<O>(o);
+      //S[i & M] = std::forward<O>(o);
+      S[i & M].store(std::forward<O>(o), std::memory_order_relaxed);
     }
 
     T pop(int64_t i) noexcept {
       //return *reinterpret_cast<T*>(std::addressof(S[i & M]));
-      return S[i & M];
+      //return S[i & M];
+      return S[i & M].load(std::memory_order_relaxed);
     }
 
     Array* resize(int64_t b, int64_t t) {

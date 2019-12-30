@@ -415,7 +415,6 @@ inline void Executor::_exploit_task(unsigned i, std::optional<Node*>& t) {
           }
           else {
             auto ret = prev_parent->_num_dependents.fetch_sub(deduct);
-
             if(ret == deduct) {
               t = prev_parent;
               worker.num_executed = 1;
@@ -670,7 +669,7 @@ inline void Executor::_invoke(unsigned me, Node* node) {
           }
         }
 
-        // We need to deduct the condition predecessors in impure case nodes
+        // We only care about strong dependency
         for(auto& n: condition_nodes) {
           for(auto& s: n->_successors) {
             s->_num_dependents.fetch_sub(1, std::memory_order_relaxed);
@@ -686,6 +685,8 @@ inline void Executor::_invoke(unsigned me, Node* node) {
         else {
           // Join mode
           node->_num_dependents.fetch_add(src.size());
+
+          // spawned node needs another second-round execution
           if(node->_parent == nullptr) {
             node->_topology->_num_dependents.fetch_add(1);
           }
