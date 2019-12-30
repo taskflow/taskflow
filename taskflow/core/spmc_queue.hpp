@@ -45,6 +45,7 @@ class WorkStealingQueue {
       C {c},
       M {c-1},
       //S {new storage_type[C]} {
+      //S {new T[static_cast<size_t>(C)]} {
       S {new std::atomic<T>[static_cast<size_t>(C)]} {
       //for(int64_t i=0; i<C; ++i) {
       //  ::new (std::addressof(S[i])) T();
