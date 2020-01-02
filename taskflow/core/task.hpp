@@ -59,6 +59,16 @@ class Task {
     size_t num_dependents() const;
     
     /**
+    @brief queries the number of non-condition predecessors of the task
+    */
+    size_t num_strong_dependents() const;
+
+    /**
+    @brief queries the number of condition predecessors of the task
+    */
+    size_t num_weak_dependents() const;
+    
+    /**
     @brief assigns a name to the task
 
     @param name a @std_string acceptable string
@@ -92,24 +102,6 @@ class Task {
     Task& precede(Ts&&... tasks);
     
     /**
-    @brief adds precedence links from this to others
-
-    @param tasks a vector of tasks to precede
-
-    @return @c *this
-    */
-    Task& precede(std::vector<Task>& tasks);
-
-    /**
-    @brief adds precedence links from this to others
-
-    @param tasks an initializer list of tasks to precede
-
-    @return @c *this
-    */
-    Task& precede(std::initializer_list<Task> tasks);
-    
-    /**
     @brief adds precedence links from other tasks to this
 
     @tparam Ts parameter pack 
@@ -121,54 +113,6 @@ class Task {
     template <typename... Ts>
     Task& succeed(Ts&&... tasks);
     
-    /**
-    @brief adds precedence links from other tasks to this
-
-    @param tasks a vector of tasks
-
-    @return @c *this
-    */
-    Task& succeed(std::vector<Task>& tasks);
-
-    /**
-    @brief adds precedence links from other tasks to this
-
-    @param tasks an initializer list of tasks
-
-    @return @c *this
-    */
-    Task& succeed(std::initializer_list<Task> tasks);
-    
-    /**
-    @brief adds precedence links from other tasks to this (same as succeed)
-
-    @tparam Ts parameter pack 
-
-    @param tasks one or multiple tasks
-
-    @return @c *this
-    */
-    template <typename... Ts>
-    Task& gather(Ts&&... tasks);
-    
-    /**
-    @brief adds precedence links from other tasks to this (same as succeed)
-
-    @param tasks a vector of tasks
-
-    @return @c *this
-    */
-    Task& gather(std::vector<Task>& tasks);
-
-    /**
-    @brief adds precedence links from other tasks to this (same as succeed)
-
-    @param tasks an initializer list of tasks
-
-    @return @c *this
-    */
-    Task& gather(std::initializer_list<Task> tasks);
-
     /**
     @brief resets the task handle to null
     
@@ -218,81 +162,14 @@ inline Task::Task(const Task& rhs) : _node {rhs._node} {
 // Function: precede
 template <typename... Ts>
 Task& Task::precede(Ts&&... tgts) {
-  (_node->precede(*(tgts._node)), ...);
-  return *this;
-}
-
-// Function: precede
-inline Task& Task::precede(std::vector<Task>& tgts) {
-  _precede(tgts);
-  return *this;
-}
-
-// Function: precede
-inline Task& Task::precede(std::initializer_list<Task> tgts) {
-  _precede(tgts);
-  return *this;
-}
-
-// Procedure: _precede
-template <typename S>
-void Task::_precede(S& tgts) {
-  for(auto& to : tgts) {
-    _node->precede(*(to._node));
-  }
-}
-
-// Function: gather
-template <typename... Bs>
-Task& Task::gather(Bs&&... tgts) {
-  (tgts._node->precede(*_node), ...);
-  return *this;
-}
-
-// Procedure: _gather
-template <typename S>
-void Task::_gather(S& tgts) {
-  for(auto& from : tgts) {
-    from._node->precede(*_node);
-  }
-}
-
-// Function: gather
-inline Task& Task::gather(std::vector<Task>& tgts) {
-  _gather(tgts);
-  return *this;
-}
-
-// Function: gather
-inline Task& Task::gather(std::initializer_list<Task> tgts) {
-  _gather(tgts);
+  (_node->_precede(tgts._node), ...);
   return *this;
 }
 
 // Function: succeed
 template <typename... Bs>
 Task& Task::succeed(Bs&&... tgts) {
-  (tgts._node->precede(*_node), ...);
-  return *this;
-}
-
-// Procedure: _succeed
-template <typename S>
-void Task::_succeed(S& tgts) {
-  for(auto& from : tgts) {
-    from._node->precede(*_node);
-  }
-}
-
-// Function: succeed
-inline Task& Task::succeed(std::vector<Task>& tgts) {
-  _succeed(tgts);
-  return *this;
-}
-
-// Function: succeed
-inline Task& Task::succeed(std::initializer_list<Task> tgts) {
-  _succeed(tgts);
+  (tgts._node->_precede(_node), ...);
   return *this;
 }
 
@@ -328,6 +205,16 @@ inline const std::string& Task::name() const {
 // Function: num_dependents
 inline size_t Task::num_dependents() const {
   return _node->num_dependents();
+}
+
+// Function: num_strong_dependents
+inline size_t Task::num_strong_dependents() const {
+  return _node->num_strong_dependents();
+}
+
+// Function: num_weak_dependents
+inline size_t Task::num_weak_dependents() const {
+  return _node->num_weak_dependents();
 }
 
 // Function: num_successors

@@ -35,20 +35,6 @@ class FlowBuilder {
     template <typename C>
     Task emplace(C&& callable);
 
-    ///**
-    //@brief creates a condition task from a given callable object and precede a set of given tasks
-    //
-    //@tparam C callable type
-
-    //@param callable a callable object acceptable to std::function
-
-    //@param tasks one or multiple tasks
-
-    //@return Task handle
-    //*/
-    //template <typename C, typename... Ts, std::enable_if_t<std::is_same_v<typename function_traits<C>::return_type, int>, void>* = nullptr>
-    //Task emplace(C&& callables, Ts&&... tasks);
-
     /**
     @brief creates multiple tasks from a list of callable objects at one time
     
@@ -60,18 +46,6 @@ class FlowBuilder {
     */
     template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
     auto emplace(C&&... callables);
-    
-    /**
-    @brief the same as tf::FlowBuilder::emplace (starting at 2.1.0)
-    */
-    template <typename C>
-    Task silent_emplace(C&& callable);
-
-    /**
-    @brief the same as tf::FlowBuilder::emplace (starting at 2.1.0)
-    */
-    template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
-    auto silent_emplace(C&&... callables);
     
     /**
     @brief constructs a task dependency graph of range-based parallel_for
@@ -299,27 +273,35 @@ inline FlowBuilder::FlowBuilder(Graph& graph) :
 
 // Procedure: precede
 inline void FlowBuilder::precede(Task from, Task to) {
-  from._node->precede(*(to._node));
+  from._node->_precede(to._node);
 }
 
 // Procedure: broadcast
-inline void FlowBuilder::broadcast(Task from, std::vector<Task>& keys) {
-  from.precede(keys);
+inline void FlowBuilder::broadcast(Task from, std::vector<Task>& tos) {
+  for(auto to : tos) {
+    from.precede(to);
+  }
 }
 
 // Procedure: broadcast
-inline void FlowBuilder::broadcast(Task from, std::initializer_list<Task> keys) {
-  from.precede(keys);
+inline void FlowBuilder::broadcast(Task from, std::initializer_list<Task> tos) {
+  for(auto to : tos) {
+    from.precede(to);
+  }
 }
 
 // Function: gather
-inline void FlowBuilder::gather(std::vector<Task>& keys, Task to) {
-  to.gather(keys);
+inline void FlowBuilder::gather(std::vector<Task>& froms, Task to) {
+  for(auto from : froms) {
+    to.succeed(from);
+  }
 }
 
 // Function: gather
-inline void FlowBuilder::gather(std::initializer_list<Task> keys, Task to) {
-  to.gather(keys);
+inline void FlowBuilder::gather(std::initializer_list<Task> froms, Task to) {
+  for(auto from : froms) {
+    to.succeed(from);
+  }
 }
 
 // Function: placeholder
@@ -1064,7 +1046,7 @@ void FlowBuilder::_linearize(L& keys) {
   auto nxt = itr;
 
   for(++nxt; nxt != end; ++nxt, ++itr) {
-    itr->_node->precede(*(nxt->_node));
+    itr->_node->_precede(nxt->_node);
   }
 }
 
@@ -1261,100 +1243,13 @@ Task FlowBuilder::emplace(C&& c) {
   }
 }
 
-
-
-// Function: silent_emplace
-template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
-auto FlowBuilder::silent_emplace(C&&... cs) {
-  return std::make_tuple(emplace(std::forward<C>(cs))...);
-}
-
-// Function: silent_emplace
-template <typename C>
-Task FlowBuilder::silent_emplace(C&& c) {
-  return emplace(std::forward<C>(c));
-}
-
-// ---------- deprecated ----------
-
-//// Function: emplace
-//template <typename C>
-//auto FlowBuilder::emplace(C&& c) {
-//  // subflow task
-//  if constexpr(std::is_invocable_v<C, Subflow&>) {
-//
-//    using R = std::invoke_result_t<C, Subflow&>;
-//    std::promise<R> p;
-//    auto fu = p.get_future();
-//  
-//    if constexpr(std::is_same_v<void, R>) {
-//      auto& node = _graph.emplace_back([p=MoC(std::move(p)), c=std::forward<C>(c)]
-//      (Subflow& fb) mutable {
-//        if(fb._graph.empty()) {
-//          c(fb);
-//          // if subgraph is detached or empty after invoked
-//          if(fb.detached() || fb._graph.empty()) {
-//            p.get().set_value();
-//          }
-//        }
-//        else {
-//          p.get().set_value();
-//        }
-//      });
-//      return std::make_pair(Task(node), std::move(fu));
-//    }
-//    else {
-//      auto& node = _graph.emplace_back(
-//      [p=MoC(std::move(p)), c=std::forward<C>(c), r=std::optional<R>()]
-//      (Subflow& fb) mutable {
-//        if(fb._graph.empty()) {
-//          r.emplace(c(fb));
-//          if(fb.detached() || fb._graph.empty()) {
-//            p.get().set_value(std::move(*r)); 
-//          }
-//        }
-//        else {
-//          assert(r);
-//          p.get().set_value(std::move(*r));
-//        }
-//      });
-//      return std::make_pair(Task(node), std::move(fu));
-//    }
-//  }
-//  // regular task
-//  else if constexpr(std::is_invocable_v<C>) {
-//
-//    using R = std::invoke_result_t<C>;
-//    std::promise<R> p;
-//    auto fu = p.get_future();
-//
-//    if constexpr(std::is_same_v<void, R>) {
-//      auto& node = _graph.emplace_back(
-//        [p=MoC(std::move(p)), c=std::forward<C>(c)]() mutable {
-//          c(); 
-//          p.get().set_value();
-//        }
-//      );
-//      return std::make_pair(Task(node), std::move(fu));
-//    }
-//    else {
-//      auto& node = _graph.emplace_back(
-//        [p=MoC(std::move(p)), c=std::forward<C>(c)]() mutable {
-//          p.get().set_value(c());
-//        }
-//      );
-//      return std::make_pair(Task(node), std::move(fu));
-//    }
-//  }
-//  else {
-//    static_assert(dependent_false_v<C>, "invalid task work type");
-//  }
-//}
-
+// ----------------------------------------------------------------------------
+// Cyclic Dependency: Task
+// ----------------------------------------------------------------------------
 
 // Function: work
 template <typename C>
-inline Task& Task::work(C&& c) {
+Task& Task::work(C&& c) {
 
   if(_node->_module) {
     TF_THROW(Error::TASKFLOW, "can't assign work to a module task");
@@ -1385,8 +1280,13 @@ inline Task& Task::work(C&& c) {
   return *this;
 }
 
+// ----------------------------------------------------------------------------
+// Legacy code
+// ----------------------------------------------------------------------------
 
 
 using SubflowBuilder = Subflow;
 
 }  // end of namespace tf. ---------------------------------------------------
+
+

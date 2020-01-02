@@ -22,8 +22,8 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   std::vector<tf::Task> silent_tasks;
   std::vector<tf::Task> tasks;
 
-  SUBCASE("Empty") {
-    for(size_t W=0; W<32; ++W) {
+  SUBCASE("EmptyFlow") {
+    for(size_t W=1; W<32; ++W) {
       tf::Executor executor(W);
       tf::Taskflow taskflow;
       REQUIRE(taskflow.num_nodes() == 0);
@@ -147,7 +147,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
         taskflow.emplace([&counter]() {counter += 1;})
       );
     }
-    dst.succeed(silent_tasks);
+    taskflow.gather(silent_tasks, dst);
     executor.run(taskflow).get();
     REQUIRE(counter == num_tasks - 1);
     REQUIRE(taskflow.num_nodes() == num_tasks);
@@ -242,9 +242,9 @@ TEST_CASE("Creation" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
-// Testcase: SequentialRun
+// Testcase: SequentialRuns
 // --------------------------------------------------------
-TEST_CASE("SequentialRun" * doctest::timeout(300)) {
+TEST_CASE("SequentialRuns" * doctest::timeout(300)) {
     
   using namespace std::chrono_literals;
   
@@ -1109,6 +1109,88 @@ TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: TreeSubflow
+// -------------------------------------------------------- 
+void detach_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
+  if(depth < max_depth) {
+    counter.fetch_add(1, std::memory_order_relaxed);
+    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ 
+      detach_spawn(max_depth, counter, depth, subflow); }
+    );
+    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ 
+      detach_spawn(max_depth, counter, depth, subflow); }
+    );
+    subflow.detach();
+  }
+}
+
+void join_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
+  if(depth < max_depth) {
+    counter.fetch_add(1, std::memory_order_relaxed);
+    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ 
+      join_spawn(max_depth, counter, depth, subflow); }
+    );
+    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ 
+      join_spawn(max_depth, counter, depth, subflow); }
+    );
+  }
+}
+
+void mix_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
+  if(depth < max_depth) {
+    auto ret = counter.fetch_add(1, std::memory_order_relaxed);
+    if(ret % 2) {
+      subflow.detach();
+    }
+    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ mix_spawn(max_depth, counter, depth, subflow); });
+    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ mix_spawn(max_depth, counter, depth, subflow); });
+  }
+}
+
+TEST_CASE("TreeSubflow" * doctest::timeout(300)) {
+
+  SUBCASE("AllDetach") {
+    constexpr int max_depth {10};
+    for(int W=1; W<=4; W++) {
+      std::atomic<int> counter {0};
+      tf::Taskflow tf;
+      tf.emplace([&](auto &subflow){ detach_spawn(max_depth, counter, 0, subflow); });
+
+      tf::Executor executor(W);
+      executor.run(tf).get();
+      REQUIRE(counter == (1<<max_depth) - 1);
+    }
+  }
+
+
+  SUBCASE("AllJoin") {
+    constexpr int max_depth {10};
+    for(int W=1; W<=4; W++) {
+      std::atomic<int> counter {0};
+      tf::Taskflow tf;
+      tf.emplace([&](auto &subflow){ join_spawn(max_depth, counter, 0, subflow); });
+      tf::Executor executor(W);
+      executor.run(tf).get();
+      REQUIRE(counter == (1<<max_depth) - 1);
+    }
+  }
+
+  SUBCASE("Mix") {
+    constexpr int max_depth {10};
+    for(int W=1; W<=4; W++) {
+      std::atomic<int> counter {0};
+      tf::Taskflow tf;
+      tf.emplace([&](auto &subflow){ mix_spawn(max_depth, counter, 0, subflow); });
+
+      tf::Executor executor(W);
+      executor.run(tf).get();
+      REQUIRE(counter == (1<<max_depth) - 1);
+    }
+  }
+}
+
+
+// --------------------------------------------------------
 // Testcase: Composition
 // --------------------------------------------------------
 TEST_CASE("Composition-1" * doctest::timeout(300)) {
@@ -1354,76 +1436,6 @@ TEST_CASE("Observer" * doctest::timeout(300)) {
     REQUIRE(observer->num_tasks() == num_tasks);
   }
 }
-
-
-
-TEST_SUITE("TreeSubflow") {
-  void detach_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
-    if(depth < max_depth) {
-      counter.fetch_add(1, std::memory_order_relaxed);
-      subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ detach_spawn(max_depth, counter, depth, subflow); });
-      subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ detach_spawn(max_depth, counter, depth, subflow); });
-      subflow.detach();
-    }
-  }
-  TEST_CASE("AllDetach" * doctest::timeout(300)) {
-    constexpr int max_depth {10};
-    for(int W=1; W<=4; W++) {
-      std::atomic<int> counter {0};
-      tf::Taskflow tf;
-      tf.emplace([&](auto &subflow){ detach_spawn(max_depth, counter, 0, subflow); });
-
-      tf::Executor executor(W);
-      executor.run(tf).get();
-      REQUIRE(counter == (1<<max_depth) - 1);
-    }
-  }
-
-  void join_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
-    if(depth < max_depth) {
-      counter.fetch_add(1, std::memory_order_relaxed);
-      subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ join_spawn(max_depth, counter, depth, subflow); });
-      subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ join_spawn(max_depth, counter, depth, subflow); });
-    }
-  }
-  TEST_CASE("AllJoin" * doctest::timeout(300)) {
-    constexpr int max_depth {10};
-    for(int W=1; W<=4; W++) {
-      std::atomic<int> counter {0};
-      tf::Taskflow tf;
-      tf.emplace([&](auto &subflow){ join_spawn(max_depth, counter, 0, subflow); });
-
-      tf::Executor executor(W);
-      executor.run(tf).get();
-      REQUIRE(counter == (1<<max_depth) - 1);
-    }
-  }
-
-
-  void mix_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
-    if(depth < max_depth) {
-      auto ret = counter.fetch_add(1, std::memory_order_relaxed);
-      if(ret % 2) {
-        subflow.detach();
-      }
-      subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ mix_spawn(max_depth, counter, depth, subflow); });
-      subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ mix_spawn(max_depth, counter, depth, subflow); });
-    }
-  }
-  TEST_CASE("Mix" * doctest::timeout(300)) {
-    constexpr int max_depth {10};
-    for(int W=1; W<=4; W++) {
-      std::atomic<int> counter {0};
-      tf::Taskflow tf;
-      tf.emplace([&](auto &subflow){ mix_spawn(max_depth, counter, 0, subflow); });
-
-      tf::Executor executor(W);
-      executor.run(tf).get();
-      REQUIRE(counter == (1<<max_depth) - 1);
-    }
-  }
-}
-
 
 // --------------------------------------------------------
 // Testcase: Condition 

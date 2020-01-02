@@ -24,13 +24,13 @@ struct Node {
 };
 
 
-void traverse(Node* n, tf::SubflowBuilder& subflow) {
+void traverse(Node* n, tf::Subflow& subflow) {
   assert(!n->visited);
   n->visited = true;
   for(size_t i=0; i<n->successors.size(); i++) {
     if(--(n->successors[i]->dependents) == 0) {
       n->successors[i]->level = n->level + 1;
-      subflow.emplace([s=n->successors[i]](tf::SubflowBuilder &subflow){ 
+      subflow.emplace([s=n->successors[i]](tf::Subflow &subflow){ 
         traverse(s, subflow); 
       });
     }

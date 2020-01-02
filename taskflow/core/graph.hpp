@@ -69,15 +69,15 @@ class Node {
   using DynamicWork = std::function<void(Subflow&)>;
   using ConditionWork = std::function<int()>;
   
-  // status bit flag
+  // state bit flag
   constexpr static int SPAWNED = 0x1;
   constexpr static int SUBTASK = 0x2;
   constexpr static int BRANCH  = 0x4;
 
   // variant index
-  constexpr static int STATIC    = 1;
-  constexpr static int DYNAMIC   = 2;
-  constexpr static int CONDITION = 3; 
+  constexpr static int STATIC_WORK    = 1;
+  constexpr static int DYNAMIC_WORK   = 2;
+  constexpr static int CONDITION_WORK = 3; 
 
     //Node() = default;
 
@@ -89,30 +89,17 @@ class Node {
     {} 
 
     ~Node();
-    
-    void precede(Node&);
 
     void dump(std::ostream&) const;
 
     size_t num_successors() const;
     size_t num_dependents() const;
+    size_t num_strong_dependents() const;
+    size_t num_weak_dependents() const;
     
     const std::string& name() const;
 
     std::string dump() const;
-
-    // Status-related functions
-    bool is_spawned() const { return _status & SPAWNED; }
-    bool is_subtask() const { return _status & SUBTASK; }
-    bool is_branch()  const { return _status & BRANCH;  }
-
-    void set_spawned()   { _status |= SPAWNED;  }
-    void set_subtask()   { _status |= SUBTASK;  }
-    void set_branch()    { _status |= BRANCH;   }
-    void unset_spawned() { _status &= ~SPAWNED; }
-    void unset_subtask() { _status &= ~SUBTASK; }
-    void unset_branch()  { _status &= ~BRANCH;  }
-    void clear_status()  { _status = 0;         }
 
   private:
     
@@ -129,9 +116,17 @@ class Node {
     
     Node* _parent {nullptr};
 
-    int _status {0};
+    int _state {0};
 
-    std::atomic<int> _num_dependents {0};
+    std::atomic<int> _join_counter {0};
+    
+    void _precede(Node*);
+    void _set_state(int);
+    void _unset_state(int);
+    void _clear_state();
+    void _set_up_join_counter();
+
+    bool _has_state(int) const;
 };
 
 //// Constructor
@@ -163,12 +158,11 @@ inline Node::~Node() {
   }
 }
 
-// Procedure: precede
-inline void Node::precede(Node& v) {
-  _successors.push_back(&v);
-  v._dependents.push_back(this);
+// Procedure: _precede
+inline void Node::_precede(Node* v) {
+  _successors.push_back(v);
+  v->_dependents.push_back(this);
 }
-
 
 // Function: num_successors
 inline size_t Node::num_successors() const {
@@ -178,6 +172,24 @@ inline size_t Node::num_successors() const {
 // Function: dependents
 inline size_t Node::num_dependents() const {
   return _dependents.size();
+}
+
+// Function: num_weak_dependents
+inline size_t Node::num_weak_dependents() const {
+  return std::count_if(
+    _dependents.begin(), 
+    _dependents.end(), 
+    [](Node* node){ return node->_work.index() == Node::CONDITION_WORK; } 
+  );
+}
+
+// Function: num_strong_dependents
+inline size_t Node::num_strong_dependents() const {
+  return std::count_if(
+    _dependents.begin(), 
+    _dependents.end(), 
+    [](Node* node){ return node->_work.index() != Node::CONDITION_WORK; } 
+  );
 }
 
 // Function: name
@@ -201,14 +213,14 @@ inline void Node::dump(std::ostream& os) const {
   os << "\" ";
 
   // condition node is colored green
-  if(_work.index() == CONDITION) {
+  if(_work.index() == CONDITION_WORK) {
     os << " shape=diamond color=black fillcolor=aquamarine style=filled";
   }
 
   os << "];\n";
   
   for(const auto s : _successors) {
-    if(_work.index() == CONDITION) {
+    if(_work.index() == CONDITION_WORK) {
       // case edge is dashed
       os << 'p' << this << " -> " << 'p' << s << " [style=dashed];\n";
     }
@@ -235,6 +247,43 @@ inline void Node::dump(std::ostream& os) const {
     }
     os << "}\n";
   }
+}
+    
+// Procedure: _set_state
+inline void Node::_set_state(int flag) { 
+  _state |= flag; 
+}
+
+// Procedure: _unset_state
+inline void Node::_unset_state(int flag) { 
+  _state &= ~flag; 
+}
+
+// Procedure: _clear_state
+inline void Node::_clear_state() { 
+  _state = 0; 
+}
+
+// Procedure: _set_up_join_counter
+inline void Node::_set_up_join_counter() {
+
+  int c = 0;
+
+  for(auto p : _dependents) {
+    if(p->_work.index() == Node::CONDITION_WORK) {
+      _set_state(Node::BRANCH);
+    }
+    else {
+      c++;
+    }
+  }
+
+  _join_counter.store(c, std::memory_order_relaxed);
+}
+
+// Function: _has_state
+inline bool Node::_has_state(int flag) const {
+  return _state & flag;
 }
 
 // ----------------------------------------------------------------------------
@@ -315,8 +364,8 @@ inline void NodePool::_recycle(Node& node) {
   node._dependents.clear();
   node._topology = nullptr;
   node._module = nullptr;
-  node._status = 0;
-  node._num_dependents.store(0, std::memory_order_relaxed);
+  node._state = 0;
+  node._join_counter.store(0, std::memory_order_relaxed);
   //assert(!node._subgraph);
 }
 
