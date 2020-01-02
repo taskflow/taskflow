@@ -402,6 +402,7 @@ inline void Executor::_exploit_task(Worker& worker, std::optional<Node*>& t) {
           // joined subflow
           else {
             if(prev_parent == nullptr) {
+              // still have tasks so the topology join counter can't be zero
               (*t)->_topology->_join_counter.fetch_sub(worker.num_executed);
             }
             else {
@@ -417,10 +418,8 @@ inline void Executor::_exploit_task(Worker& worker, std::optional<Node*>& t) {
         }
         else {
           // If no more local tasks!
-          auto deduct = worker.num_executed;
           if(prev_parent == nullptr) {
-            auto ret = tpg->_join_counter.fetch_sub(deduct);
-            if(ret == deduct) {
+            if(tpg->_join_counter.fetch_sub(worker.num_executed) == worker.num_executed) {
               // TODO: Store tpg in local variable not in worker
               _tear_down_topology(&tpg);
               if(tpg != nullptr) {
@@ -432,8 +431,7 @@ inline void Executor::_exploit_task(Worker& worker, std::optional<Node*>& t) {
             }
           }
           else {
-            auto ret = prev_parent->_join_counter.fetch_sub(deduct);
-            if(ret == deduct) {
+            if(prev_parent->_join_counter.fetch_sub(worker.num_executed) == worker.num_executed) {
               t = prev_parent;
               worker.num_executed = 1;
               prev_parent = prev_parent->_parent;
@@ -668,8 +666,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
           n->_topology = node->_topology;
           n->_set_up_join_counter();
           
-          // TODO (twhuang 01/02/20): do we still need subtask flag?
-          n->_set_state(Node::SUBTASK);
+          //n->_set_state(Node::SUBTASK);
 
           if(!fb.detached()) {
             n->_parent = node;
@@ -725,16 +722,13 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   Node* cache {nullptr};
   size_t num_spawns {0};
 
+  auto& c = (node->_parent) ? node->_parent->_join_counter : node->_topology->_join_counter;
+
   for(size_t i=0; i<num_successors; ++i) {
     if(--(node->_successors[i]->_join_counter) == 0) {
       if(cache) {
         if(num_spawns == 0) {
-          if(node->_parent == nullptr) {
-            node->_topology->_join_counter.fetch_add(num_successors);
-          }
-          else {
-            node->_parent->_join_counter.fetch_add(num_successors); 
-          }
+          c.fetch_add(num_successors);
         }
         num_spawns++;
         _schedule(cache, false);
@@ -961,7 +955,7 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
   //  
   //  return tpg._promise.get_future();
   //}
-  
+
   // Multi-threaded execution.
   bool run_now {false};
   Topology* tpg;

@@ -242,6 +242,83 @@ TEST_CASE("Creation" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: Iterators
+// --------------------------------------------------------
+TEST_CASE("Iterators" * doctest::timeout(300)) {
+
+  tf::Taskflow taskflow;
+
+  auto A = taskflow.emplace([](){}).name("A");
+  auto B = taskflow.emplace([](){}).name("B");
+  auto C = taskflow.emplace([](){}).name("C");
+  auto D = taskflow.emplace([](){}).name("D");
+  auto E = taskflow.emplace([](){}).name("E");
+
+  REQUIRE(A.successors().size() == 0);
+  REQUIRE(A.dependents().size() == 0);
+  REQUIRE(B.successors().size() == 0);
+  REQUIRE(B.dependents().size() == 0);
+
+  A.precede(B);
+  
+  REQUIRE(A.successors().size() == 1);
+  REQUIRE(A.dependents().size() == 0);
+  REQUIRE(B.successors().size() == 0);
+  REQUIRE(B.dependents().size() == 1);
+
+  for(auto s : A.successors()) {
+    REQUIRE(s == B);
+  }
+
+  for(auto d : B.dependents()) {
+    REQUIRE(d == A);
+  }
+
+  A.precede(C);
+  A.precede(D);
+  A.precede(E);
+  C.precede(B);
+  D.precede(B);
+  E.precede(B);
+  
+  int counter{0}, a{0}, b{0}, c{0}, d{0}, e{0};
+  for(auto s : A.successors()) {
+    counter++;
+    if(s == A) ++a;
+    if(s == B) ++b;
+    if(s == C) ++c;
+    if(s == D) ++d;
+    if(s == E) ++e;
+  }
+  REQUIRE(counter == A.successors().size());
+  REQUIRE(counter == A.num_successors());
+  REQUIRE(a==0);
+  REQUIRE(b==1);
+  REQUIRE(c==1);
+  REQUIRE(d==1);
+  REQUIRE(e==1);
+  
+  counter = a = b = c = d = e = 0;
+  for(auto s : B.dependents()) {
+    counter++;
+    if(s == A) ++a;
+    if(s == B) ++b;
+    if(s == C) ++c;
+    if(s == D) ++d;
+    if(s == E) ++e;
+  }
+
+  REQUIRE(counter == B.dependents().size());
+  REQUIRE(counter == B.num_dependents());
+  REQUIRE(a == 1);
+  REQUIRE(b == 0);
+  REQUIRE(c == 1);
+  REQUIRE(d == 1);
+  REQUIRE(e == 1);
+
+}
+
+// --------------------------------------------------------
 // Testcase: SequentialRuns
 // --------------------------------------------------------
 TEST_CASE("SequentialRuns" * doctest::timeout(300)) {
@@ -1534,8 +1611,6 @@ TEST_SUITE("Condition") {
       }
     }
   }
-
-
 
   //             ---- > B
   //             |

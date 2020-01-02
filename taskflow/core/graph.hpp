@@ -3,18 +3,9 @@
 #include "../error/error.hpp"
 #include "../utility/traits.hpp"
 #include "../utility/passive_vector.hpp"
+#include "declarations.hpp"
 
 namespace tf {
-
-// Forward declaration
-class Node;
-class Topology;
-class Task;
-class FlowBuilder;
-class Subflow;
-class Taskflow;
-
-// ----------------------------------------------------------------------------
 
 // Class: Graph
 class Graph {
@@ -63,6 +54,12 @@ class Node {
   friend class FlowBuilder;
   friend class Subflow;
 
+  template <typename T>
+  friend class SuccessorsRange;
+  
+  template <typename T>
+  friend class DependentsRange;
+
   public:
   
   using StaticWork  = std::function<void()>;
@@ -71,8 +68,7 @@ class Node {
   
   // state bit flag
   constexpr static int SPAWNED = 0x1;
-  constexpr static int SUBTASK = 0x2;
-  constexpr static int BRANCH  = 0x4;
+  constexpr static int BRANCH  = 0x2;
 
   // variant index
   constexpr static int STATIC_WORK    = 1;
@@ -223,11 +219,15 @@ inline void Node::dump(std::ostream& os) const {
   for(const auto s : _successors) {
     if(_work.index() == CONDITION_WORK) {
       // case edge is dashed
-      os << 'p' << this << " -> " << 'p' << s << " [style=dashed];\n";
+      os << 'p' << this << " -> p" << s << " [style=dashed];\n";
     }
     else {
-      os << 'p' << this << " -> " << 'p' << s << ";\n";
+      os << 'p' << this << " -> p" << s << ";\n";
     }
+  }
+
+  if(_parent && _successors.size() == 0) {
+    os << 'p' << this << " -> p" << _parent << ";\n";
   }
   
   if(_subgraph && !_subgraph->empty()) {
