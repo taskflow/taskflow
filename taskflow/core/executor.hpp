@@ -522,7 +522,7 @@ inline void Executor::_schedule(Node* node, bool bypass) {
       worker->queue.push(node);
     }
     else {
-      assert(!_workers[pt.worker_id].cache);
+      assert(!worker->cache);
       worker->cache = node;
     }
     return;
