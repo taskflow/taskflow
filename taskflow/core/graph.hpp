@@ -82,11 +82,8 @@ class Node {
     //Node() = default;
 
     // Constructor 
-    // Must define the implementation here otherwise MSVC cannot compile
-    // number of args must be >= 1
     template <typename ...Args>
-    Node(Args&&... args): _work{std::forward<Args>(args)...} 
-    {} 
+    Node(Args&&... args);
 
     ~Node();
 
@@ -133,6 +130,10 @@ class Node {
 //template <typename ...Args>
 //Node::Node(Args&&... args) : _work{std::forward<Args>(args)...} {
 //}
+    
+template <typename ...Args>
+Node::Node(Args&&... args): _work{std::forward<Args>(args)...} {
+} 
 
 // Destructor
 inline Node::~Node() {

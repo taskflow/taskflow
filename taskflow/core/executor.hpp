@@ -372,19 +372,19 @@ inline void Executor::_exploit_task(Worker& worker, std::optional<Node*>& t) {
     do {
       // Only joined subflow will enter block
       // Flush the num_executed if encountering a different subflow
-      if((*t)->_parent != prev_parent) {
-        if(prev_parent == nullptr) {
-          (*t)->_topology->_join_counter.fetch_sub(worker.num_executed);
-        }
-        else {
-          auto ret = prev_parent->_join_counter.fetch_sub(worker.num_executed);
-          if(ret == worker.num_executed) {
-            _schedule(prev_parent, false);
-          }
-        }
-        worker.num_executed = 1;
-        prev_parent = (*t)->_parent;
-      }
+      //if((*t)->_parent != prev_parent) {
+      //  if(prev_parent == nullptr) {
+      //    (*t)->_topology->_join_counter.fetch_sub(worker.num_executed);
+      //  }
+      //  else {
+      //    auto ret = prev_parent->_join_counter.fetch_sub(worker.num_executed);
+      //    if(ret == worker.num_executed) {
+      //      _schedule(prev_parent, false);
+      //    }
+      //  }
+      //  worker.num_executed = 1;
+      //  prev_parent = (*t)->_parent;
+      //}
 
       _invoke(worker, *t);
 
@@ -398,6 +398,21 @@ inline void Executor::_exploit_task(Worker& worker, std::optional<Node*>& t) {
           // We only increment the counter when poping task from queue (NOT including cache!)
           if((*t)->_parent == prev_parent) {
             worker.num_executed ++;
+          }
+          // joined subflow
+          else {
+            if(prev_parent == nullptr) {
+              (*t)->_topology->_join_counter.fetch_sub(worker.num_executed);
+            }
+            else {
+              auto ret = prev_parent->_join_counter.fetch_sub(worker.num_executed);
+              if(ret == worker.num_executed) {
+                //_schedule(prev_parent, false);
+                worker.queue.push(prev_parent);
+              }
+            }
+            worker.num_executed = 1;
+            prev_parent = (*t)->_parent;
           }
         }
         else {
@@ -715,10 +730,10 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       if(cache) {
         if(num_spawns == 0) {
           if(node->_parent == nullptr) {
-            node->_topology->_join_counter.fetch_add(node->_successors.size());
+            node->_topology->_join_counter.fetch_add(num_successors);
           }
           else {
-            node->_parent->_join_counter.fetch_add(node->_successors.size()); 
+            node->_parent->_join_counter.fetch_add(num_successors); 
           }
         }
         num_spawns++;
@@ -1029,22 +1044,22 @@ inline void Executor::_set_up_module_node(Node* node) {
       }
     }
 
-    auto worker = _per_thread().worker;
-
     node->_join_counter.fetch_add(src.size());
     
-    if(worker != nullptr) {
-      if(node->_parent == nullptr) {
-        node->_topology->_join_counter.fetch_add(1);
-      }
-      else {
-        node->_parent->_join_counter.fetch_add(1);
-      }
+    //auto worker = _per_thread().worker;
+    //
+    //if(worker != nullptr) {
+    if(node->_parent == nullptr) {
+      node->_topology->_join_counter.fetch_add(1);
     }
-    // TODO (twhuang 01/02/20): will this happen?
     else {
-      node->_topology->_join_counter.fetch_add(src.size());         
+      node->_parent->_join_counter.fetch_add(1);
     }
+    //}
+    //// TODO (twhuang 01/02/20): will this happen?
+    //else {
+    //  node->_topology->_join_counter.fetch_add(src.size());         
+    //}
 
     _schedule(src);
   };
