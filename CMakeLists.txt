@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.9)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
 # Project name
-project(Cpp-Taskflow VERSION 2.2.0 LANGUAGES CXX)
+project(Cpp-Taskflow VERSION 2.3.0 LANGUAGES CXX)
 
 # Turn on the verbose
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -445,31 +445,8 @@ target_link_libraries(
 )
 set_target_properties(mnist PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-## benchmark 6: Parallel DNN
-message(STATUS "benchmark 6: Parallel DNN")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/parallel_dnn)
-add_executable(
-  parallel_dnn 
-  ${TF_BENCHMARK_DIR}/parallel_dnn/main.cpp
-  ${TF_BENCHMARK_DIR}/parallel_dnn/omp.cpp
-  ${TF_BENCHMARK_DIR}/parallel_dnn/tbb.cpp
-  ${TF_BENCHMARK_DIR}/parallel_dnn/seq.cpp
-  ${TF_BENCHMARK_DIR}/parallel_dnn/taskflow.cpp
-)
-target_include_directories(parallel_dnn PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-target_link_libraries(
-  parallel_dnn 
-  ${PROJECT_NAME} 
-  Threads::Threads 
-  ${TBB_IMPORTED_TARGETS}
-  ${OpenMP_CXX_LIBRARIES} 
-  stdc++fs 
-  tf::default_settings
-)
-set_target_properties(parallel_dnn PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-
-## benchmark 7: matrix multiplication
-message(STATUS "benchmark 7: matrix multiplication")
+## benchmark 6: matrix multiplication
+message(STATUS "benchmark 6: matrix multiplication")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/matrix_multiplication)
 add_executable(
   matrix_multiplication 
@@ -489,157 +466,93 @@ target_link_libraries(
 )
 set_target_properties(matrix_multiplication PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-## benchmark 8: Mandelbrot set
-message(STATUS "benchmark 8: Mandelbrot set")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/mandelbrot_set)
-add_executable(
-  mandelbrot_set
-  ${TF_BENCHMARK_DIR}/mandelbrot_set/main.cpp
-  ${TF_BENCHMARK_DIR}/mandelbrot_set/omp.cpp
-  ${TF_BENCHMARK_DIR}/mandelbrot_set/tbb.cpp
-  ${TF_BENCHMARK_DIR}/mandelbrot_set/taskflow.cpp
-)
-target_include_directories(mandelbrot_set PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-target_link_libraries(
-  mandelbrot_set
-  ${PROJECT_NAME} 
-  Threads::Threads 
-  ${TBB_IMPORTED_TARGETS} 
-  ${OpenMP_CXX_LIBRARIES} 
-  tf::default_settings
-)
-set_target_properties(mandelbrot_set PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-
-## benchmark 9: Black–Scholes
-message(STATUS "benchmark 9: Black-Scholes Partial Differential Equation")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/black_scholes)
-add_executable(
-  black_scholes
-  ${TF_BENCHMARK_DIR}/black_scholes/main.cpp
-  ${TF_BENCHMARK_DIR}/black_scholes/omp.cpp
-  ${TF_BENCHMARK_DIR}/black_scholes/tbb.cpp
-  ${TF_BENCHMARK_DIR}/black_scholes/taskflow.cpp
-)
-target_include_directories(black_scholes PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-target_link_libraries(
-  black_scholes
-  ${PROJECT_NAME} 
-  Threads::Threads 
-  ${TBB_IMPORTED_TARGETS} 
-  ${OpenMP_CXX_LIBRARIES} 
-  tf::default_settings
-)
-set_target_properties(black_scholes PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-
-## benchmark 10: Strassen algorithm
-message(STATUS "benchmark 10: Strassen matrix multiplication algorithm")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/strassen)
-add_executable(
-  strassen
-  ${TF_BENCHMARK_DIR}/strassen/main.cpp
-  ${TF_BENCHMARK_DIR}/strassen/omp.cpp
-  ${TF_BENCHMARK_DIR}/strassen/tbb.cpp
-  ${TF_BENCHMARK_DIR}/strassen/taskflow.cpp
-)
-target_include_directories(strassen PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-target_link_libraries(
-  strassen
-  ${PROJECT_NAME} 
-  Threads::Threads 
-  ${TBB_IMPORTED_TARGETS} 
-  ${OpenMP_CXX_LIBRARIES} 
-  tf::default_settings
-)
-set_target_properties(strassen PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-
-### benchmark 11: imbalance for-loop 
-#message(STATUS "benchmark 11: imbalance for-loop")
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/imbalance_for)
+## benchmark 6: Parallel DNN
+#message(STATUS "benchmark 6: Parallel DNN")
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/parallel_dnn)
 #add_executable(
-#  imbalance_for
-#  ${TF_BENCHMARK_DIR}/imbalance_for/main.cpp
-#  ${TF_BENCHMARK_DIR}/imbalance_for/omp.cpp
-#  ${TF_BENCHMARK_DIR}/imbalance_for/tbb.cpp
-#  ${TF_BENCHMARK_DIR}/imbalance_for/taskflow.cpp
-#  ${TF_BENCHMARK_DIR}/imbalance_for/mmio.cpp
+#  parallel_dnn 
+#  ${TF_BENCHMARK_DIR}/parallel_dnn/main.cpp
+#  ${TF_BENCHMARK_DIR}/parallel_dnn/omp.cpp
+#  ${TF_BENCHMARK_DIR}/parallel_dnn/tbb.cpp
+#  ${TF_BENCHMARK_DIR}/parallel_dnn/seq.cpp
+#  ${TF_BENCHMARK_DIR}/parallel_dnn/taskflow.cpp
 #)
-#target_include_directories(imbalance_for PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+#target_include_directories(parallel_dnn PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 #target_link_libraries(
-#  imbalance_for 
+#  parallel_dnn 
 #  ${PROJECT_NAME} 
 #  Threads::Threads 
-#  ${TBB_IMPORTED_TARGETS} 
+#  ${TBB_IMPORTED_TARGETS}
 #  ${OpenMP_CXX_LIBRARIES} 
+#  stdc++fs 
 #  tf::default_settings
 #)
-#set_target_properties(imbalance_for PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+#set_target_properties(parallel_dnn PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 #
-### benchmark 12: LavaMD
-#message(STATUS "benchmark 12: LavaMD")
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/lavamd)
+
+
+### benchmark 8: Mandelbrot set
+#message(STATUS "benchmark 8: Mandelbrot set")
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/mandelbrot_set)
 #add_executable(
-#  lavamd
-#  ${TF_BENCHMARK_DIR}/lavamd/main.cpp
-#  ${TF_BENCHMARK_DIR}/lavamd/omp.cpp
-#  ${TF_BENCHMARK_DIR}/lavamd/tbb.cpp
-#  ${TF_BENCHMARK_DIR}/lavamd/taskflow.cpp
+#  mandelbrot_set
+#  ${TF_BENCHMARK_DIR}/mandelbrot_set/main.cpp
+#  ${TF_BENCHMARK_DIR}/mandelbrot_set/omp.cpp
+#  ${TF_BENCHMARK_DIR}/mandelbrot_set/tbb.cpp
+#  ${TF_BENCHMARK_DIR}/mandelbrot_set/taskflow.cpp
 #)
-#target_include_directories(lavamd PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+#target_include_directories(mandelbrot_set PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 #target_link_libraries(
-#  lavamd 
+#  mandelbrot_set
 #  ${PROJECT_NAME} 
 #  Threads::Threads 
 #  ${TBB_IMPORTED_TARGETS} 
 #  ${OpenMP_CXX_LIBRARIES} 
 #  tf::default_settings
 #)
-#set_target_properties(lavamd PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-
-
-## benchmark 13: seismic 
-#message(STATUS "benchmark 13: seismic")
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/seismic)
-# add_executable(
-#   seismic 
-#   ${TF_BENCHMARK_DIR}/seismic/main.cpp 
-#   ${TF_BENCHMARK_DIR}/seismic/seismic_video.cpp 
-#   ${TF_BENCHMARK_DIR}/seismic/universe.cpp  
-#   ${TF_BENCHMARK_DIR}/seismic/taskflow.cpp 
-#   ${TF_BENCHMARK_DIR}/seismic/tbb.cpp 
-# )
-#find_package(X11)
-##Check if X11 library is installed
-#if (NOT X11_FOUND)
-#  target_sources(seismic PRIVATE ${TF_BENCHMARK_DIR}/seismic/convideo.cpp)
-#  target_link_libraries(
-#    seismic 
-#    ${PROJECT_NAME} 
-#    Threads::Threads 
-#    ${TBB_IMPORTED_TARGETS} 
-#    ${OpenMP_CXX_LIBRARIES} 
-#    tf::default_settings
-#  )
-#  target_include_directories(seismic PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11) 
-#  set_target_properties(seismic PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-#else() 
-#  target_sources(seismic PRIVATE ${TF_BENCHMARK_DIR}/seismic/xvideo.cpp)
-#  target_link_libraries(
-#    seismic 
-#    ${PROJECT_NAME} 
-#    Threads::Threads 
-#    ${TBB_IMPORTED_TARGETS} 
-#    ${OpenMP_CXX_LIBRARIES} 
-#    tf::default_settings 
-#    ${X11_LIBRARIES}
-#  )
-#  target_include_directories(seismic PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11 ${X11_INCLUDE_DIR})
-#  # Check if X11 SHM extension is supported
-#  if (${X11_XShm_INCLUDE_PATH})
-#    set_target_properties(seismic PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-#  else() 
-#    set_target_properties(seismic PROPERTIES COMPILE_FLAGS "${OpenMP_CXX_FLAGS} -DX_NOSHMEM")
-#  endif()
-#endif()
+#set_target_properties(mandelbrot_set PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+#
+### benchmark 9: Black–Scholes
+#message(STATUS "benchmark 9: Black-Scholes Partial Differential Equation")
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/black_scholes)
+#add_executable(
+#  black_scholes
+#  ${TF_BENCHMARK_DIR}/black_scholes/main.cpp
+#  ${TF_BENCHMARK_DIR}/black_scholes/omp.cpp
+#  ${TF_BENCHMARK_DIR}/black_scholes/tbb.cpp
+#  ${TF_BENCHMARK_DIR}/black_scholes/taskflow.cpp
+#)
+#target_include_directories(black_scholes PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+#target_link_libraries(
+#  black_scholes
+#  ${PROJECT_NAME} 
+#  Threads::Threads 
+#  ${TBB_IMPORTED_TARGETS} 
+#  ${OpenMP_CXX_LIBRARIES} 
+#  tf::default_settings
+#)
+#set_target_properties(black_scholes PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+#
+### benchmark 10: Strassen algorithm
+#message(STATUS "benchmark 10: Strassen matrix multiplication algorithm")
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/strassen)
+#add_executable(
+#  strassen
+#  ${TF_BENCHMARK_DIR}/strassen/main.cpp
+#  ${TF_BENCHMARK_DIR}/strassen/omp.cpp
+#  ${TF_BENCHMARK_DIR}/strassen/tbb.cpp
+#  ${TF_BENCHMARK_DIR}/strassen/taskflow.cpp
+#)
+#target_include_directories(strassen PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+#target_link_libraries(
+#  strassen
+#  ${PROJECT_NAME} 
+#  Threads::Threads 
+#  ${TBB_IMPORTED_TARGETS} 
+#  ${OpenMP_CXX_LIBRARIES} 
+#  tf::default_settings
+#)
+#set_target_properties(strassen PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 endif()
 

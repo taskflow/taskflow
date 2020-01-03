@@ -316,6 +316,25 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
   REQUIRE(d == 1);
   REQUIRE(e == 1);
 
+  for(auto s : A.successors()) {
+    s.name("A");
+  }
+
+  REQUIRE(A.name() == "A");
+  REQUIRE(B.name() == "A");
+  REQUIRE(C.name() == "A");
+  REQUIRE(D.name() == "A");
+  REQUIRE(E.name() == "A");
+
+  for(auto s : B.dependents()) {
+    s.name("B");
+  }
+  
+  REQUIRE(A.name() == "B");
+  REQUIRE(B.name() == "A");
+  REQUIRE(C.name() == "B");
+  REQUIRE(D.name() == "B");
+  REQUIRE(E.name() == "B");
 }
 
 // --------------------------------------------------------

@@ -1197,15 +1197,7 @@ inline bool Subflow::joined() const {
   return !_detached;
 }
 
-// -----
-
-//// Function: one-shot emplace
-//template <typename C, typename... Ts, std::enable_if_t<std::is_same_v<typename function_traits<C>::return_type, int>, void>*>
-//Task FlowBuilder::emplace(C&& callable, Ts&&... tasks) {
-//  auto t = emplace(std::forward<C>(callable));
-//  (t.precede(tasks), ...);
-//  return t;
-//}
+// ----------------------------------------------------------------------------
 
 // Function: emplace
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>

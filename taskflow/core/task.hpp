@@ -114,23 +114,23 @@ class SuccessorsRange {
       T _item;
       
       template <typename I>
-      Iterator(I in) : _cursor {in}, _item{*in} { }
+      explicit Iterator(I in) : _cursor {in}, _item{*in} { }
   };
     
     /**
     @brief constructs a successor range from a task
     */
-    SuccessorsRange(T t) : _node {t._node} {}
+    explicit SuccessorsRange(T t) : _node {t._node} {}
     
     /**
     @brief returns an iterator to the beginning of the successor range
     */
-    Iterator begin() { return _node->_successors.begin(); }
+    Iterator begin() { return Iterator(_node->_successors.begin()); }
 
     /**
     @brief returns an iterator to the end of the successor range
     */
-    Iterator end() { return _node->_successors.end(); }
+    Iterator end() { return Iterator(_node->_successors.end()); }
     
     /**
     @brief returns the size of the range
@@ -253,23 +253,23 @@ class DependentsRange {
       T _item;
       
       template <typename I>
-      Iterator(I in) : _cursor {in}, _item{*in} { }
+      explicit Iterator(I in) : _cursor {in}, _item{*in} { }
   };
     
     /**
     @brief constructs a predecessor range from a task
     */
-    DependentsRange(T t) : _node {t._node} {}
+    explicit DependentsRange(T t) : _node {t._node} {}
     
     /**
     @brief returns an iterator to the beginning of the predecessor range
     */
-    Iterator begin() { return _node->_dependents.begin(); }
+    Iterator begin() { return Iterator(_node->_dependents.begin()); }
 
     /**
     @brief returns an iterator to the end of the predecessor range
     */
-    Iterator end() { return _node->_dependents.end(); }
+    Iterator end() { return Iterator(_node->_dependents.end()); }
     
     /**
     @brief returns the size of the range
@@ -629,6 +629,16 @@ class TaskView {
     */
     bool empty() const;
     
+    /**
+    @brief returns a range object of successors of this task view for iterating
+    */
+    SuccessorsRange<TaskView> successors() const;
+
+    /**
+    @brief returns a range object of dependents of this task view for iterating
+    */
+    DependentsRange<TaskView> dependents() const;
+    
   private:
     
     TaskView(Node*);
@@ -701,7 +711,15 @@ inline bool TaskView::empty() const {
   return _node == nullptr;
 }
 
+// Function: successors
+inline SuccessorsRange<TaskView> TaskView::successors() const {
+  return SuccessorsRange<TaskView>(*this);
+}
 
+// Function: dependents
+inline DependentsRange<TaskView> TaskView::dependents() const {
+  return DependentsRange<TaskView>(*this);
+}
 
 
 }  // end of namespace tf. ---------------------------------------------------
