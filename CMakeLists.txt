@@ -293,6 +293,7 @@ add_test(binary_tree_condition         ${TF_UTEST_DIR}/basics -tc=BinaryTreeCond
 add_test(dynamic_binary_tree_condition ${TF_UTEST_DIR}/basics -tc=DynamicBinaryTreeCondition)
 add_test(nested_for_dynamic_condition  ${TF_UTEST_DIR}/basics -tc=NestedForDynamicCondition)
 add_test(condition2condition           ${TF_UTEST_DIR}/basics -tc=Condition2Condition)
+add_test(hierarchical_condition        ${TF_UTEST_DIR}/basics -tc=HierarchicalCondition)
 
 # unittest for WorkStealingQueue 
 add_executable(spmc_queue unittest/spmc_queue.cpp)

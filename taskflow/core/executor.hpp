@@ -525,7 +525,7 @@ inline void Executor::_schedule(Node* node, bool bypass) {
   //assert(_workers.size() != 0);
   
   // module node need another initialization
-  if(node->_module != nullptr && !node->_module->empty() && !node->_has_state(Node::SPAWNED)) {
+  if(node->_module && !node->_module->empty() && !node->_has_state(Node::SPAWNED)) {
     _set_up_module_node(node);
   }
   
@@ -566,7 +566,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
   }
 
   for(auto node : nodes) {
-    if(node->_module != nullptr && !node->_module->empty() && !node->_has_state(Node::SPAWNED)) {
+    if(node->_module && !node->_module->empty() && !node->_has_state(Node::SPAWNED)) {
       _set_up_module_node(node);
     }
   }
@@ -1054,7 +1054,8 @@ inline void Executor::_set_up_module_node(Node* node) {
     //else {
     //  node->_topology->_join_counter.fetch_add(src.size());         
     //}
-
+    
+    // TODO: error if src is empty?
     _schedule(src);
   };
 }
