@@ -232,12 +232,7 @@ inline void Node::dump(std::ostream& os) const {
   
   if(_subgraph && !_subgraph->empty()) {
 
-    os << "subgraph cluster_";
-    if(_name.empty()) os << 'p' << this;
-    else os << _name;
-    os << " {\n";
-
-    os << "label=\"Subflow_";
+    os << "subgraph cluster_p" << this << " {\nlabel=\"Subflow: ";
     if(_name.empty()) os << 'p' << this;
     else os << _name;
 

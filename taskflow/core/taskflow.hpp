@@ -47,9 +47,9 @@ class Taskflow : public FlowBuilder {
     std::string dump() const;
     
     /**
-    @brief queries the number of nodes in the taskflow
+    @brief queries the number of tasks in the taskflow
     */
-    size_t num_nodes() const;
+    size_t num_tasks() const;
     
     /**
     @brief queries the emptiness of the taskflow
@@ -114,7 +114,7 @@ inline void Taskflow::clear() {
 }
 
 // Function: num_noces
-inline size_t Taskflow::num_nodes() const {
+inline size_t Taskflow::num_tasks() const {
   return _graph.size();
 }
 
@@ -154,10 +154,7 @@ inline void Taskflow::dump(std::ostream& os) const {
   std::stack<const Taskflow*> stack;
   std::unordered_set<const Taskflow*> visited; 
   
-  os << "digraph Taskflow_";
-  if(_name.empty()) os << 'p' << this;
-  else os << _name;
-  os << " {\nrankdir=\"LR\";\n";
+  os << "digraph Taskflow {\nrankdir=\"LR\";\n";
   
   stack.push(this);
   visited.insert(this);
@@ -168,12 +165,7 @@ inline void Taskflow::dump(std::ostream& os) const {
     stack.pop();
     
     // create a subgraph field for this taskflow
-    os << "subgraph cluster_";
-    if(f->_name.empty()) os << 'p' << f;
-    else os << f->_name;
-    os << " {\n";
-
-    os << "label=\"Taskflow_";
+    os << "subgraph cluster_p" << f << " {\nlabel=\"Taskflow: ";
     if(f->_name.empty()) os << 'p' << f;
     else os << f->_name;
     os << "\";\n";
@@ -187,13 +179,13 @@ inline void Taskflow::dump(std::ostream& os) const {
       }
       // module task
       else {
-        os << 'p' << n.get() << "[shape=box3d, color=blue, label=\"";
+        os << 'p' << n.get() << "[shape=box, color=blue, label=\"";
         if(n->_name.empty()) os << n.get();
         else os << n->_name;
-        os << " (Taskflow_";
-        if(module->_name.empty()) os << module;
+        os << " [Taskflow: ";
+        if(module->_name.empty()) os << 'p' << module;
         else os << module->_name;
-        os << ")\"];\n";
+        os << "]\"];\n";
 
         if(visited.find(module) == visited.end()) {
           visited.insert(module);

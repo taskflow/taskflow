@@ -26,7 +26,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     for(size_t W=1; W<32; ++W) {
       tf::Executor executor(W);
       tf::Taskflow taskflow;
-      REQUIRE(taskflow.num_nodes() == 0);
+      REQUIRE(taskflow.num_tasks() == 0);
       REQUIRE(taskflow.empty() == true);
       executor.run(taskflow).wait();
     }
@@ -65,10 +65,10 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
       tasks.emplace_back(taskflow.emplace([&counter]() {counter += 1;}));
     }
 
-    REQUIRE(taskflow.num_nodes() == num_tasks);
+    REQUIRE(taskflow.num_tasks() == num_tasks);
     executor.run(taskflow).get();
     REQUIRE(counter == num_tasks);
-    REQUIRE(taskflow.num_nodes() == 100);
+    REQUIRE(taskflow.num_tasks() == 100);
 
     counter = 0;
     
@@ -76,10 +76,10 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
       silent_tasks.emplace_back(taskflow.emplace([&counter]() {counter += 1;}));
     }
 
-    REQUIRE(taskflow.num_nodes() == num_tasks * 2);
+    REQUIRE(taskflow.num_tasks() == num_tasks * 2);
     executor.run(taskflow).get();
     REQUIRE(counter == num_tasks * 2);
-    REQUIRE(taskflow.num_nodes() == 200);
+    REQUIRE(taskflow.num_tasks() == 200);
   }
   
   SUBCASE("BinarySequence"){
@@ -124,7 +124,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     }
     executor.run(taskflow).get();
     REQUIRE(counter == num_tasks);
-    REQUIRE(taskflow.num_nodes() == num_tasks);
+    REQUIRE(taskflow.num_tasks() == num_tasks);
   }
  
   SUBCASE("Broadcast"){
@@ -137,7 +137,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     taskflow.broadcast(src, silent_tasks);
     executor.run(taskflow).get();
     REQUIRE(counter == - 1);
-    REQUIRE(taskflow.num_nodes() == num_tasks);
+    REQUIRE(taskflow.num_tasks() == num_tasks);
   }
 
   SUBCASE("Succeed"){
@@ -150,7 +150,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     taskflow.gather(silent_tasks, dst);
     executor.run(taskflow).get();
     REQUIRE(counter == num_tasks - 1);
-    REQUIRE(taskflow.num_nodes() == num_tasks);
+    REQUIRE(taskflow.num_tasks() == num_tasks);
   }
 
   SUBCASE("MapReduce"){
@@ -166,7 +166,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     );
     taskflow.gather(silent_tasks, dst);
     executor.run(taskflow).get();
-    REQUIRE(taskflow.num_nodes() == num_tasks + 2);
+    REQUIRE(taskflow.num_tasks() == num_tasks + 2);
   }
 
   SUBCASE("Linearize"){
@@ -180,7 +180,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     taskflow.linearize(silent_tasks);
     executor.run(taskflow).get();
     REQUIRE(counter == num_tasks);
-    REQUIRE(taskflow.num_nodes() == num_tasks);
+    REQUIRE(taskflow.num_tasks() == num_tasks);
   }
 
   SUBCASE("Kite"){
@@ -199,7 +199,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     );
     taskflow.gather(silent_tasks, dst);
     executor.run(taskflow).get();
-    REQUIRE(taskflow.num_nodes() == num_tasks + 2);
+    REQUIRE(taskflow.num_tasks() == num_tasks + 2);
   }
 }
 
@@ -363,7 +363,7 @@ TEST_CASE("SequentialRuns" * doctest::timeout(300)) {
 
   SUBCASE("RunOnce"){
     auto fu = executor.run(taskflow);
-    REQUIRE(taskflow.num_nodes() == num_tasks);
+    REQUIRE(taskflow.num_tasks() == num_tasks);
     fu.get();
     REQUIRE(counter == num_tasks);
   }

@@ -206,6 +206,11 @@ target_link_libraries(
   subflow ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
 
+add_executable(condition ${TF_EXAMPLE_DIR}/condition.cpp)
+target_link_libraries(
+  condition ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
+
 add_executable(debug ${TF_EXAMPLE_DIR}/debug.cpp)
 target_link_libraries(
   debug ${PROJECT_NAME} Threads::Threads tf::default_settings
