@@ -1,10 +1,13 @@
 #pragma once
 
 #include <stack>
+
 #include "flow_builder.hpp"
 #include "topology.hpp"
 
 namespace tf {
+
+// ----------------------------------------------------------------------------
 
 /**
 @class Taskflow 
@@ -89,8 +92,6 @@ class Taskflow : public FlowBuilder {
     std::mutex _mtx;
 
     std::list<Topology> _topologies;
-
-    //std::deque<Topology*> _topologies;
 };
 
 // Constructor

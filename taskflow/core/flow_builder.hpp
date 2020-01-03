@@ -52,7 +52,7 @@ class FlowBuilder {
     
     The task dependency graph applies a callable object 
     to the dereferencing of every iterator 
-    in the range [beg, end) partition-by-partition.
+    in the range [beg, end) chunk by chunk.
 
     @tparam I input iterator type
     @tparam C callable type
@@ -60,36 +60,39 @@ class FlowBuilder {
     @param beg iterator to the beginning (inclusive)
     @param end iterator to the end (exclusive)
     @param callable a callable object to be applied to 
-    @param partitions number of partitions
+    @param chunk size (default 1)
 
     @return a pair of Task handles to the beginning and the end of the graph
     */
     template <typename I, typename C>
-    std::pair<Task, Task> parallel_for(I beg, I end, C&& callable, size_t partitions = 0);
+    std::pair<Task, Task> parallel_for(I beg, I end, C&& callable, size_t chunk=1);
     
     /**
     @brief constructs a task dependency graph of index-based parallel_for
     
     The task dependency graph applies a callable object to every index 
-    in the range [beg, end) with a step size partition-by-partition.
+    in the range [beg, end) with a step size chunk by chunk.
 
     @tparam I arithmetic index type
     @tparam C callable type
 
-    @param beg index to the beginning (inclusive)
-    @param end index to the end (exclusive)
+    @param beg index of the beginning (inclusive)
+    @param end index of the end (exclusive)
     @param step step size 
     @param callable a callable object to be applied to
     @param partitions number of partitions
 
     @return a pair of Task handles to the beginning and the end of the graph
     */
-    template <typename I, typename C, std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr >
-    std::pair<Task, Task> parallel_for(I beg, I end, I step, C&& callable, size_t partitions = 0);
+    template <
+      typename I, 
+      typename C, 
+      std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr 
+    >
+    std::pair<Task, Task> parallel_for(
+      I beg, I end, I step, C&& callable, size_t chunk = 1
+    );
  
-    //template <typename I, typename C, std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr >
-    //std::pair<Task, Task> dynamic_parallel_for(I beg, I end, I step, C&& callable, size_t partitions = 0);
-
     /**
     @brief construct a task dependency graph of parallel reduction
     
@@ -195,7 +198,9 @@ class FlowBuilder {
     @return a pair of Task handles to the beginning and the end of the graph
     */
     template <typename I, typename T, typename B, typename P, typename U>
-    std::pair<Task, Task> transform_reduce(I beg, I end, T& result, B&& bop1, P&& bop2, U&& uop);
+    std::pair<Task, Task> transform_reduce(
+      I beg, I end, T& result, B&& bop1, P&& bop2, U&& uop
+    );
     
     /**
     @brief creates an empty task
@@ -312,9 +317,56 @@ inline Task FlowBuilder::placeholder() {
 
 // Function: parallel_for
 template <typename I, typename C>
-std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, C&& c, size_t p){
-
+std::pair<Task, Task> FlowBuilder::parallel_for(
+  I beg, I end, C&& c, size_t chunk
+){
+  
   using category = typename std::iterator_traits<I>::iterator_category;
+  
+  auto S = placeholder();
+  auto T = placeholder();
+  //auto D = std::distance(beg, end);
+  
+  // default partition equals to the worker count
+  if(chunk == 0) {
+    chunk = 1;
+  }
+
+  while(beg != end) {
+
+    auto e = beg;
+    
+    // Case 1: random access iterator
+    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
+      size_t x = std::distance(beg, end);
+      std::advance(e, std::min(x, chunk));
+    }
+    // Case 2: non-random access iterator
+    else {
+      for(size_t i=0; i<chunk && e != end; ++e, ++i);
+    }
+      
+    // Create a task
+    auto task = emplace([beg, e, c] () mutable {
+      std::for_each(beg, e, c);
+    });
+
+    S.precede(task);
+    task.precede(T);
+
+    // adjust the pointer
+    beg = e;
+  }
+  
+  // special case
+  if(S.num_successors() == 0) {
+    S.precede(T);
+  }
+  
+  return std::make_pair(S, T); 
+
+
+  /*using category = typename std::iterator_traits<I>::iterator_category;
   
   auto S = placeholder();
   auto T = placeholder();
@@ -361,51 +413,8 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, C&& c, size_t p){
     beg = e;
   }
   
-  return std::make_pair(S, T); 
+  return std::make_pair(S, T); */
 }
-
-/*// Function: parallel_for    
-template <typename I, typename C>
-std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, C&& c, size_t g) {
-
-  using category = typename std::iterator_traits<I>::iterator_category;
-  
-  if(g == 0) {
-    auto d = std::distance(beg, end);
-    auto w = std::max(unsigned{1}, std::thread::hardware_concurrency());
-    g = (d + w - 1) / w;
-  }
-
-  auto source = placeholder();
-  auto target = placeholder();
-  
-  while(beg != end) {
-
-    auto e = beg;
-    
-    // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
-      size_t r = std::distance(beg, end);
-      std::advance(e, std::min(r, g));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<g && e != end; ++e, ++i);
-    }
-      
-    // Create a task
-    auto task = emplace([beg, e, c] () mutable {
-      std::for_each(beg, e, c);
-    });
-    source.precede(task);
-    task.precede(target);
-
-    // adjust the pointer
-    beg = e;
-  }
-
-  return std::make_pair(source, target); 
-}*/
 
 // Function: parallel_for
 template <
@@ -413,8 +422,8 @@ template <
   typename C, 
   std::enable_if_t<std::is_arithmetic_v<I>, void>*
 >
-std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t p) {
-
+std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t chunk) {
+  
   using T = std::decay_t<I>;
 
   if((s == 0) || (beg < end && s <= 0) || (beg > end && s >=0) ) {
@@ -423,50 +432,20 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
     );
   }
 
-  // compute the distance
-  size_t D;
-
-  if constexpr(std::is_integral_v<T>) {
-    if(beg <= end) {  
-      D = (end - beg + s - 1) / s;
-    }
-    else {
-      D = (end - beg + s + 1) / s;
-    }
-  }
-  else if constexpr(std::is_floating_point_v<T>) {
-    D = static_cast<size_t>(std::ceil((end - beg) / s));
-  }
-  else {
-    static_assert(dependent_false_v<T>, "can't deduce distance");
-  }
-
   // source and target 
   auto source = placeholder();
   auto target = placeholder();
-
-  // special case
-  if(D == 0) {
-    source.precede(target);
-    return std::make_pair(source, target);
-  }
   
-  // default partition equals to the worker count
-  if(p == 0) {
-    p = std::max(unsigned{1}, std::thread::hardware_concurrency());
+  if(chunk == 0) {
+    chunk = 1;
   }
-  
-  size_t b = (D + p - 1) / p;           // block size
-  size_t r = (D % p) ? D % p : p;       // workers to take b
-  size_t w = 0;                         // worker id
 
   // Integer indices
   if constexpr(std::is_integral_v<T>) {
     // positive case
     if(beg < end) {
       while(beg != end) {
-        auto g = (w++ >= r) ? b - 1 : b;
-        auto o = static_cast<T>(g) * s;
+        auto o = static_cast<T>(chunk) * s;
         auto e = std::min(beg + o, end);
         auto task = emplace([=] () mutable {
           for(auto i=beg; i<e; i+=s) {
@@ -481,8 +460,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
     // negative case
     else if(beg > end) {
       while(beg != end) {
-        auto g = (w++ >= r) ? b - 1 : b;
-        auto o = static_cast<T>(g) * s;
+        auto o = static_cast<T>(chunk) * s;
         auto e = std::max(beg + o, end);
         auto task = emplace([=] () mutable {
           for(auto i=beg; i>e; i+=s) {
@@ -497,43 +475,51 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
   }
   // We enumerate the entire sequence to avoid floating error
   else if constexpr(std::is_floating_point_v<T>) {
-    size_t N = 0;
-    size_t g = b;
-    auto B = beg;
-    for(auto i=beg; (beg<end ? i<end : i>end); i+=s, ++N) {
-      if(N == g) {
+
+    // positive case
+    if(beg < end) {
+      while(beg < end) {
+        size_t N = 0;
+        auto e = beg;
+        while(e < end && N < chunk) {
+          e+=s;
+          ++N;
+        }
         auto task = emplace([=] () mutable {
-          auto b = B;
-          for(size_t n=0; n<N; ++n) {
-            c(b);
-            b += s; 
+          for(auto i=beg; i<e; i+=s) {
+            c(i);
           }
         });
-        N = 0;
-        B = i;
         source.precede(task);
         task.precede(target);
-        if(++w >= r) {
-          g = b - 1;
-        }
+        beg = e;
       }
     }
-
-    // the last pices
-    if(N != 0) {
-      auto task = emplace([=] () mutable {
-        auto b = B;
-        for(size_t n=0; n<N; ++n) {
-          c(b);
-          b += s; 
+    else if(beg > end) {
+      while(beg > end) {
+        size_t N = 0;
+        auto e = beg;
+        while(e > end && N < chunk) {
+          e+=s;
+          ++N;
         }
-      });
-      source.precede(task);
-      task.precede(target);
+        auto task = emplace([=] () mutable {
+          for(auto i=beg; i>e; i+=s) {
+            c(i);
+          }
+        });
+        source.precede(task);
+        task.precede(target);
+        beg = e;
+      }
     }
   }
+
+  if(source.num_successors() == 0) {
+    source.precede(target);
+  }
     
-  return std::make_pair(source, target); 
+  return std::make_pair(source, target);
 }
 
 

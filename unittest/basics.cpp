@@ -762,8 +762,11 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
       for(float end=beg; end<=10.0f; ++end) {
         for(float s=1.0f; s<=end-beg; s+=0.1f) {
           int n = 0;
-          for(float b=beg; (beg<end ? b<end : b>end); b+=s) {
-            ++n;
+          if(beg < end) {
+            for(float b = beg; b < end; b += s) ++n;
+          }
+          else if(beg > end) {
+            for(float b = beg; b > end; b += s) ++n;
           }
           tf::Taskflow tf;
           std::atomic<int> counter {0};
@@ -784,8 +787,11 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
       for(float end=beg; end>=-10.0f; --end) {
         for(float s=1.0f; s<=beg-end; s+=0.1f) {
           int n = 0;
-          for(float b=beg; (beg<end ? b<end : b>end); b+=(-s)) {
-            ++n;
+          if(beg < end) {
+            for(float b = beg; b < end; b += (-s)) ++n;
+          }
+          else if(beg > end) {
+            for(float b = beg; b > end; b += (-s)) ++n;
           }
           tf::Taskflow tf;
           std::atomic<int> counter {0};

@@ -211,9 +211,9 @@ target_link_libraries(
   condition ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
 
-add_executable(debug ${TF_EXAMPLE_DIR}/debug.cpp)
+add_executable(visualization ${TF_EXAMPLE_DIR}/visualization.cpp)
 target_link_libraries(
-  debug ${PROJECT_NAME} Threads::Threads tf::default_settings
+  visualization ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
 
 add_executable(reduce ${TF_EXAMPLE_DIR}/reduce.cpp)
@@ -231,9 +231,9 @@ target_link_libraries(
   dynamic_traversal ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
 
-add_executable(run_variants ${TF_EXAMPLE_DIR}/run_variants.cpp)
+add_executable(run ${TF_EXAMPLE_DIR}/run.cpp)
 target_link_libraries(
-  run_variants ${PROJECT_NAME} Threads::Threads tf::default_settings
+  run ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
 
 add_executable(composition ${TF_EXAMPLE_DIR}/composition.cpp)
