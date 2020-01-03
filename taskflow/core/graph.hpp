@@ -216,13 +216,14 @@ inline void Node::dump(std::ostream& os) const {
 
   os << "];\n";
   
-  for(const auto s : _successors) {
+  for(size_t s=0; s<_successors.size(); ++s) {
     if(_work.index() == CONDITION_WORK) {
       // case edge is dashed
-      os << 'p' << this << " -> p" << s << " [style=dashed];\n";
+      os << 'p' << this << " -> p" << _successors[s] 
+         << " [style=dashed label=\"" << s << "\"];\n";
     }
     else {
-      os << 'p' << this << " -> p" << s << ";\n";
+      os << 'p' << this << " -> p" << _successors[s] << ";\n";
     }
   }
 
