@@ -2041,7 +2041,7 @@ TEST_CASE("HierarchicalCondition" * doctest::timeout(300)) {
     executor.run_n(tf3, 10);
     executor.wait_for_all();
 
-    tf3.dump(std::cout);
+    //tf3.dump(std::cout);
   }
 }
 
