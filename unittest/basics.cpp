@@ -204,7 +204,7 @@ TEST_CASE("Creation" * doctest::timeout(300)) {
   std::vector<int> dummy(1000, -1);
 
   auto create_taskflow = [&] () {
-    for(int i=0; i<1024; ++i) {
+    for(int i=0; i<10; ++i) {
       tf::Taskflow tf;
       tf.parallel_for(dummy.begin(), dummy.end(), [] (int) {});
     }
