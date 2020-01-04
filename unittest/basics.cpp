@@ -201,7 +201,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("Creation" * doctest::timeout(300)) {
 
-  std::vector<int> dummy(1024, -1);
+  std::vector<int> dummy(1000, -1);
 
   auto create_taskflow = [&] () {
     for(int i=0; i<1024; ++i) {
@@ -212,6 +212,10 @@ TEST_CASE("Creation" * doctest::timeout(300)) {
 
   SUBCASE("One") {
     create_taskflow();
+    REQUIRE(dummy.size() == 1000);
+    for(auto item : dummy) {
+      REQUIRE(item == -1);
+    }
   }
 
   SUBCASE("Two") {
@@ -219,6 +223,10 @@ TEST_CASE("Creation" * doctest::timeout(300)) {
     std::thread t2(create_taskflow);
     t1.join();
     t2.join();
+    REQUIRE(dummy.size() == 1000);
+    for(auto item : dummy) {
+      REQUIRE(item == -1);
+    }
   }
   
   SUBCASE("Four") {
@@ -230,6 +238,10 @@ TEST_CASE("Creation" * doctest::timeout(300)) {
     t2.join();
     t3.join();
     t4.join();
+    REQUIRE(dummy.size() == 1000);
+    for(auto item : dummy) {
+      REQUIRE(item == -1);
+    }
   }
 
 }
@@ -2005,14 +2017,13 @@ TEST_CASE("HierarchicalCondition" * doctest::timeout(300)) {
     }).name("loop2");
     
     auto sync = tf3.emplace([&](){
-      REQUIRE(c1==100);
       REQUIRE(c2==0);
       REQUIRE(c2_repeat==100);
-      c1 = c2_repeat = 0;
+      c2_repeat = 0;
     }).name("sync");
 
     auto grab = tf3.emplace([&](){ 
-      REQUIRE(c1 == 0);
+      REQUIRE(c1 == 100);
       REQUIRE(c2 == 0);
       REQUIRE(c2_repeat == 0);
     }).name("grab");
