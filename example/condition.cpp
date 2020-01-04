@@ -43,7 +43,7 @@ int main() {
       return 0;
     }
     std::cout << "breaks the loop (goes to D)\n";
-    return 2;
+    return 1;
   }).name("C");
 
   auto D = taskflow.emplace([&](){

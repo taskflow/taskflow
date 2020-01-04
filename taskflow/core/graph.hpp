@@ -83,7 +83,7 @@ class Node {
 
     ~Node();
 
-    void dump(std::ostream&) const;
+    //void dump(std::ostream&) const;
 
     size_t num_successors() const;
     size_t num_dependents() const;
@@ -92,7 +92,7 @@ class Node {
     
     const std::string& name() const;
 
-    std::string dump() const;
+    //std::string dump() const;
 
   private:
     
@@ -193,58 +193,59 @@ inline size_t Node::num_strong_dependents() const {
 inline const std::string& Node::name() const {
   return _name;
 }
-
-// Function: dump
-inline std::string Node::dump() const {
-  std::ostringstream os;  
-  dump(os);
-  return os.str();
-}
-
-// Function: dump
-inline void Node::dump(std::ostream& os) const {
-
-  os << 'p' << this << "[label=\"";
-  if(_name.empty()) os << 'p' << this;
-  else os << _name;
-  os << "\" ";
-
-  // condition node is colored green
-  if(_work.index() == CONDITION_WORK) {
-    os << " shape=diamond color=black fillcolor=aquamarine style=filled";
-  }
-
-  os << "];\n";
-  
-  for(size_t s=0; s<_successors.size(); ++s) {
-    if(_work.index() == CONDITION_WORK) {
-      // case edge is dashed
-      os << 'p' << this << " -> p" << _successors[s] 
-         << " [style=dashed label=\"" << s << "\"];\n";
-    }
-    else {
-      os << 'p' << this << " -> p" << _successors[s] << ";\n";
-    }
-  }
-
-  if(_parent && _successors.size() == 0) {
-    os << 'p' << this << " -> p" << _parent << ";\n";
-  }
-  
-  if(_subgraph && !_subgraph->empty()) {
-
-    os << "subgraph cluster_p" << this << " {\nlabel=\"Subflow: ";
-    if(_name.empty()) os << 'p' << this;
-    else os << _name;
-
-    os << "\";\n" << "color=blue\n";
-
-    for(const auto& n : _subgraph->nodes()) {
-      n->dump(os);
-    }
-    os << "}\n";
-  }
-}
+//
+//// Function: dump
+//inline std::string Node::dump() const {
+//  std::ostringstream os;  
+//  dump(os);
+//  return os.str();
+//}
+//
+//// Function: dump
+//inline void Node::dump(std::ostream& os) const {
+//
+//  os << 'p' << this << "[label=\"";
+//  if(_name.empty()) os << 'p' << this;
+//  else os << _name;
+//  os << "\" ";
+//
+//  // condition node is colored green
+//  if(_work.index() == CONDITION_WORK) {
+//    os << " shape=diamond color=black fillcolor=aquamarine style=filled";
+//  }
+//
+//  os << "];\n";
+//  
+//  for(size_t s=0; s<_successors.size(); ++s) {
+//    if(_work.index() == CONDITION_WORK) {
+//      // case edge is dashed
+//      os << 'p' << this << " -> p" << _successors[s] 
+//         << " [style=dashed label=\"" << s << "\"];\n";
+//    }
+//    else {
+//      os << 'p' << this << " -> p" << _successors[s] << ";\n";
+//    }
+//  }
+//  
+//  // subflow join node
+//  if(_parent && _successors.size() == 0) {
+//    os << 'p' << this << " -> p" << _parent << ";\n";
+//  }
+//  
+//  if(_subgraph && !_subgraph->empty()) {
+//
+//    os << "subgraph cluster_p" << this << " {\nlabel=\"Subflow: ";
+//    if(_name.empty()) os << 'p' << this;
+//    else os << _name;
+//
+//    os << "\";\n" << "color=blue\n";
+//
+//    for(const auto& n : _subgraph->nodes()) {
+//      n->dump(os);
+//    }
+//    os << "}\n";
+//  }
+//}
     
 // Procedure: _set_state
 inline void Node::_set_state(int flag) { 

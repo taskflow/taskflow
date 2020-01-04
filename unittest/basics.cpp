@@ -31,13 +31,6 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
       executor.run(taskflow).wait();
     }
   }
-
-  //SUBCASE("NoWorker") {
-  //  tf::Executor executor(0);
-  //  tf::Taskflow taskflow;
-  //  taskflow.emplace([](){});
-  //  REQUIRE_THROWS(executor.run(taskflow));
-  //}
     
   SUBCASE("Placeholder") {
     
@@ -246,95 +239,189 @@ TEST_CASE("Creation" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("Iterators" * doctest::timeout(300)) {
 
-  tf::Taskflow taskflow;
+  SUBCASE("Order") {
+    tf::Taskflow taskflow;
 
-  auto A = taskflow.emplace([](){}).name("A");
-  auto B = taskflow.emplace([](){}).name("B");
-  auto C = taskflow.emplace([](){}).name("C");
-  auto D = taskflow.emplace([](){}).name("D");
-  auto E = taskflow.emplace([](){}).name("E");
+    auto [A, B, C, D, E] = taskflow.emplace(
+      [] () {},
+      [] () {},
+      [] () {},
+      [] () {},
+      [] () {}
+    );
 
-  REQUIRE(A.successors().size() == 0);
-  REQUIRE(A.dependents().size() == 0);
-  REQUIRE(B.successors().size() == 0);
-  REQUIRE(B.dependents().size() == 0);
+    A.precede(B, C, D, E);
+    E.succeed(B, C, D);
 
-  A.precede(B);
+    size_t i=0;
+    for(auto s : A.successors_range()) {
+      switch(i++) {
+        case 0:
+          REQUIRE(s == B);
+        break;
+        case 1:
+          REQUIRE(s == C);
+        break;
+        case 2:
+          REQUIRE(s == D);
+        break;
+        case 3:
+          REQUIRE(s == E);
+        break;
+        default:
+        break;
+      }
+    }
+
+    for(i=0; i<A.successors_range().size(); i++) {
+      auto s = A.successors_range()[i];
+      switch(i++) {
+        case 0:
+          REQUIRE(s == B);
+        break;
+        case 1:
+          REQUIRE(s == C);
+        break;
+        case 2:
+          REQUIRE(s == D);
+        break;
+        case 3:
+          REQUIRE(s == E);
+        break;
+        default:
+        break;
+      }
+    }
+
+    i = 0;
+    for(auto s : E.dependents_range()) {
+      switch(i++) {
+        case 0:
+          REQUIRE(s == A);
+        break;
+        case 1:
+          REQUIRE(s == B);
+        break;
+        case 2:
+          REQUIRE(s == C);
+        break;
+        case 3:
+          REQUIRE(s == D);
+        break;
+      }
+    }
+
+    for(i=0; i<E.dependents_range().size(); ++i) {
+      auto s = E.dependents_range()[i];
+      switch(i++) {
+        case 0:
+          REQUIRE(s == A);
+        break;
+        case 1:
+          REQUIRE(s == B);
+        break;
+        case 2:
+          REQUIRE(s == C);
+        break;
+        case 3:
+          REQUIRE(s == D);
+        break;
+      }
+    }
+  }
   
-  REQUIRE(A.successors().size() == 1);
-  REQUIRE(A.dependents().size() == 0);
-  REQUIRE(B.successors().size() == 0);
-  REQUIRE(B.dependents().size() == 1);
+  SUBCASE("Generic") {
+    tf::Taskflow taskflow;
 
-  for(auto s : A.successors()) {
-    REQUIRE(s == B);
+    auto A = taskflow.emplace([](){}).name("A");
+    auto B = taskflow.emplace([](){}).name("B");
+    auto C = taskflow.emplace([](){}).name("C");
+    auto D = taskflow.emplace([](){}).name("D");
+    auto E = taskflow.emplace([](){}).name("E");
+
+    REQUIRE(A.successors_range().size() == 0);
+    REQUIRE(A.dependents_range().size() == 0);
+    REQUIRE(B.successors_range().size() == 0);
+    REQUIRE(B.dependents_range().size() == 0);
+
+    A.precede(B);
+    
+    REQUIRE(A.successors_range().size() == 1);
+    REQUIRE(A.dependents_range().size() == 0);
+    REQUIRE(B.successors_range().size() == 0);
+    REQUIRE(B.dependents_range().size() == 1);
+
+    for(auto s : A.successors_range()) {
+      REQUIRE(s == B);
+    }
+
+    for(auto d : B.dependents_range()) {
+      REQUIRE(d == A);
+    }
+
+    A.precede(C);
+    A.precede(D);
+    A.precede(E);
+    C.precede(B);
+    D.precede(B);
+    E.precede(B);
+    
+    int counter{0}, a{0}, b{0}, c{0}, d{0}, e{0};
+    for(auto s : A.successors_range()) {
+      counter++;
+      if(s == A) ++a;
+      if(s == B) ++b;
+      if(s == C) ++c;
+      if(s == D) ++d;
+      if(s == E) ++e;
+    }
+    REQUIRE(counter == A.successors_range().size());
+    REQUIRE(counter == A.num_successors());
+    REQUIRE(a==0);
+    REQUIRE(b==1);
+    REQUIRE(c==1);
+    REQUIRE(d==1);
+    REQUIRE(e==1);
+    
+    counter = a = b = c = d = e = 0;
+    for(auto s : B.dependents_range()) {
+      counter++;
+      if(s == A) ++a;
+      if(s == B) ++b;
+      if(s == C) ++c;
+      if(s == D) ++d;
+      if(s == E) ++e;
+    }
+
+    REQUIRE(counter == B.dependents_range().size());
+    REQUIRE(counter == B.num_dependents());
+    REQUIRE(a == 1);
+    REQUIRE(b == 0);
+    REQUIRE(c == 1);
+    REQUIRE(d == 1);
+    REQUIRE(e == 1);
+
+    for(auto s : A.successors_range()) {
+      s.name("A");
+    }
+
+    REQUIRE(A.name() == "A");
+    REQUIRE(B.name() == "A");
+    REQUIRE(C.name() == "A");
+    REQUIRE(D.name() == "A");
+    REQUIRE(E.name() == "A");
+
+    for(auto s : B.dependents_range()) {
+      s.name("B");
+    }
+    
+    REQUIRE(A.name() == "B");
+    REQUIRE(B.name() == "A");
+    REQUIRE(C.name() == "B");
+    REQUIRE(D.name() == "B");
+    REQUIRE(E.name() == "B");
+
   }
-
-  for(auto d : B.dependents()) {
-    REQUIRE(d == A);
-  }
-
-  A.precede(C);
-  A.precede(D);
-  A.precede(E);
-  C.precede(B);
-  D.precede(B);
-  E.precede(B);
-  
-  int counter{0}, a{0}, b{0}, c{0}, d{0}, e{0};
-  for(auto s : A.successors()) {
-    counter++;
-    if(s == A) ++a;
-    if(s == B) ++b;
-    if(s == C) ++c;
-    if(s == D) ++d;
-    if(s == E) ++e;
-  }
-  REQUIRE(counter == A.successors().size());
-  REQUIRE(counter == A.num_successors());
-  REQUIRE(a==0);
-  REQUIRE(b==1);
-  REQUIRE(c==1);
-  REQUIRE(d==1);
-  REQUIRE(e==1);
-  
-  counter = a = b = c = d = e = 0;
-  for(auto s : B.dependents()) {
-    counter++;
-    if(s == A) ++a;
-    if(s == B) ++b;
-    if(s == C) ++c;
-    if(s == D) ++d;
-    if(s == E) ++e;
-  }
-
-  REQUIRE(counter == B.dependents().size());
-  REQUIRE(counter == B.num_dependents());
-  REQUIRE(a == 1);
-  REQUIRE(b == 0);
-  REQUIRE(c == 1);
-  REQUIRE(d == 1);
-  REQUIRE(e == 1);
-
-  for(auto s : A.successors()) {
-    s.name("A");
-  }
-
-  REQUIRE(A.name() == "A");
-  REQUIRE(B.name() == "A");
-  REQUIRE(C.name() == "A");
-  REQUIRE(D.name() == "A");
-  REQUIRE(E.name() == "A");
-
-  for(auto s : B.dependents()) {
-    s.name("B");
-  }
-  
-  REQUIRE(A.name() == "B");
-  REQUIRE(B.name() == "A");
-  REQUIRE(C.name() == "B");
-  REQUIRE(D.name() == "B");
-  REQUIRE(E.name() == "B");
 }
 
 // --------------------------------------------------------
@@ -1569,6 +1656,54 @@ void conditional_spawn(
   }
 }
 
+TEST_CASE("LoopCondition" * doctest::timeout(300)) {
+
+  for(unsigned w=1; w<=8; ++w) {
+    tf::Executor executor(w);
+    tf::Taskflow taskflow;
+
+    int counter = -1;
+    int state   = 0;
+
+    auto [A, B, C] = taskflow.emplace(
+      [&] () { counter = 0; },
+      [&] () mutable { 
+        REQUIRE((++counter % 100) == (++state % 100));
+        return counter < 100 ? 0 : 1; 
+      },
+      [&] () { 
+        REQUIRE(counter == 100); 
+        counter = 0;
+      }
+    );
+
+    A.precede(B);
+    B.precede(B, C);
+
+    REQUIRE(A.num_strong_dependents() == 0);
+    REQUIRE(A.num_weak_dependents() == 0);
+    REQUIRE(A.num_dependents() == 0);
+
+    REQUIRE(B.num_strong_dependents() == 1);
+    REQUIRE(B.num_weak_dependents() == 1);
+    REQUIRE(B.num_dependents() == 2);
+
+    executor.run(taskflow).wait();
+    REQUIRE(counter == 0);
+    REQUIRE(state == 100);
+
+    executor.run(taskflow);
+    executor.run(taskflow);
+    executor.run(taskflow);
+    executor.run(taskflow);
+    executor.run_n(taskflow, 10);
+    executor.wait_for_all();
+
+    REQUIRE(state == 1500);
+  }
+
+}
+
 TEST_CASE("CyclicCondition" * doctest::timeout(300)) {
   // Static tasking
   for(unsigned w=1; w<=8; ++w) {
@@ -1827,7 +1962,7 @@ TEST_CASE("HierarchicalCondition" * doctest::timeout(300)) {
     int c1, c2, c2_repeat;
 
     auto [c1A, c1B, c1C] = tf1.emplace(
-      [&](){ },
+      [&](){ c1=0; },
       [&, state=0] () mutable {
         REQUIRE(state++ % 100 == c1 % 100);
       },
@@ -1884,19 +2019,29 @@ TEST_CASE("HierarchicalCondition" * doctest::timeout(300)) {
 
     auto mod0 = tf3.composed_of(tf0).name("module0");
     auto mod1 = tf3.composed_of(tf1).name("module1");
+    auto sbf1 = tf3.emplace([&](tf::Subflow sbf){
+      auto sbf1_1 = sbf.emplace([](){}).name("sbf1_1");
+      auto module1 = sbf.composed_of(tf1).name("module1");
+      auto sbf1_2 = sbf.emplace([](){}).name("sbf1_2");
+      sbf1_1.precede(module1);
+      module1.precede(sbf1_2);
+      sbf.join();
+    }).name("sbf1");
     auto mod2 = tf3.composed_of(tf2).name("module2");
 
-    init.precede(mod0, mod1, loop1);
+    init.precede(mod0, sbf1, loop1);
     loop1.precede(loop1, mod2);
     loop2.succeed(mod2).precede(loop1, sync);
     mod0.precede(grab);
+    sbf1.precede(mod1);
     mod1.precede(grab);
     sync.precede(grab);
 
-    //tf3.dump(std::cout);
     executor.run(tf3);
     executor.run_n(tf3, 10);
     executor.wait_for_all();
+
+    tf3.dump(std::cout);
   }
 }
 

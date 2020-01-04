@@ -11,11 +11,17 @@ namespace tf {
 @brief Creates a range of successors of a task/taskview
 
 */
-template <typename T>
+template <typename U>
 class SuccessorsRange {
+  
+  using value_type = std::decay_t<U>;
+  using reference = value_type&;
+  using const_reference = const value_type&;
+  using pointer = value_type*;
+  using const_pointer = const value_type*;
 
   static_assert(
-    std::is_same_v<T, Task> || std::is_same_v<T, TaskView>,
+    std::is_same_v<value_type, Task> || std::is_same_v<value_type, TaskView>,
     "SuccessorsRange takes only Task or TaskView type"
   );
   
@@ -40,22 +46,22 @@ class SuccessorsRange {
       /**
       @brief mutable object accessor 
       */
-      T operator * () { return _item; }
+      value_type operator * () { return _item; }
 
       /**
       @brief immutable object accessor
       */
-      const T& operator * () const { return _item; }
+      const_reference operator * () const { return _item; }
       
       /**
       @brief mutable object pointer accessor
       */
-      T* operator -> () { return &_item; }
+      pointer operator -> () { return &_item; }
 
       /**
       @brief immutable object pointer accessor
       */
-      const T* operator -> () const { return &_item; }
+      const_pointer operator -> () const { return &_item; }
 
       /**
       @brief compares if two iterators equal each other
@@ -111,7 +117,7 @@ class SuccessorsRange {
     private:
 
       PassiveVector<Node*>::iterator _cursor {nullptr};
-      T _item;
+      value_type _item;
       
       template <typename I>
       explicit Iterator(I in) : _cursor {in}, _item{*in} { }
@@ -120,7 +126,17 @@ class SuccessorsRange {
     /**
     @brief constructs a successor range from a task
     */
-    explicit SuccessorsRange(T t) : _node {t._node} {}
+    explicit SuccessorsRange(U t) : _node {t._node} {}
+
+    /**
+    @brief default copy constructor
+    */
+    SuccessorsRange(const SuccessorsRange&) = default;
+
+    /**
+    @brief default copy assignment
+    */
+    SuccessorsRange& operator = (const SuccessorsRange&) = default;
     
     /**
     @brief returns an iterator to the beginning of the successor range
@@ -137,6 +153,21 @@ class SuccessorsRange {
     */
     size_t size() const { return _node->_successors.size(); }
 
+    /**
+    @brief returns a task to the successor at specified position
+    */
+    value_type operator [] (size_t pos) const { return value_type(_node->_successors[pos]); }
+    
+    /**
+    @brief compare operator ==
+    */
+    bool operator == (const SuccessorsRange& rhs) const { return _node == rhs._node; }
+    
+    /**
+    @brief compare operator !=
+    */
+    bool operator != (const SuccessorsRange& rhs) const { return _node != rhs._node; }
+
   private:
 
     Node* _node {nullptr};
@@ -150,11 +181,17 @@ class SuccessorsRange {
 @brief Creates a range of dependents of a task/taskview
 
 */
-template <typename T>
+template <typename U>
 class DependentsRange {
+  
+  using value_type = std::decay_t<U>;
+  using reference = value_type&;
+  using const_reference = const value_type&;
+  using pointer = value_type*;
+  using const_pointer = const value_type*;
 
   static_assert(
-    std::is_same_v<T, Task> || std::is_same_v<T, TaskView>,
+    std::is_same_v<value_type, Task> || std::is_same_v<value_type, TaskView>,
     "DependentsRange takes only Task or TaskView type"
   );
   
@@ -179,22 +216,22 @@ class DependentsRange {
       /**
       @brief mutable object accessor 
       */
-      T operator * () { return _item; }
+      value_type operator * () { return _item; }
 
       /**
       @brief immutable object accessor
       */
-      const T& operator * () const { return _item; }
+      const_reference operator * () const { return _item; }
       
       /**
       @brief mutable object pointer accessor
       */
-      T* operator -> () { return &_item; }
+      pointer operator -> () { return &_item; }
 
       /**
       @brief immutable object pointer accessor
       */
-      const T* operator -> () const { return &_item; }
+      const_pointer operator -> () const { return &_item; }
 
       /**
       @brief compares if two iterators equal each other
@@ -250,7 +287,7 @@ class DependentsRange {
     private:
 
       PassiveVector<Node*>::iterator _cursor {nullptr};
-      T _item;
+      value_type _item;
       
       template <typename I>
       explicit Iterator(I in) : _cursor {in}, _item{*in} { }
@@ -259,7 +296,17 @@ class DependentsRange {
     /**
     @brief constructs a predecessor range from a task
     */
-    explicit DependentsRange(T t) : _node {t._node} {}
+    explicit DependentsRange(U t) : _node {t._node} {}
+    
+    /**
+    @brief default copy constructor
+    */
+    DependentsRange(const DependentsRange&) = default; 
+
+    /**
+    @brief default copy assignment
+    */
+    DependentsRange& operator = (const DependentsRange&) = default;
     
     /**
     @brief returns an iterator to the beginning of the predecessor range
@@ -275,6 +322,21 @@ class DependentsRange {
     @brief returns the size of the range
     */
     size_t size() const { return _node->_dependents.size(); }
+    
+    /**
+    @brief returns a task to the dependent at specified position
+    */
+    value_type operator [] (size_t pos) const { return value_type(_node->_dependents[pos]); }
+
+    /**
+    @brief compare operator ==
+    */
+    bool operator == (const DependentsRange& rhs) const { return _node == rhs._node; }
+    
+    /**
+    @brief compare operator !=
+    */
+    bool operator != (const DependentsRange& rhs) const { return _node != rhs._node; }
 
   private:
 
@@ -422,12 +484,12 @@ class Task {
     /**
     @brief returns a range object of successors of this task for iterating
     */
-    SuccessorsRange<Task> successors() const;
+    SuccessorsRange<Task> successors_range() const;
 
     /**
     @brief returns a range object of dependents of this task for iterating
     */
-    DependentsRange<Task> dependents() const;
+    DependentsRange<Task> dependents_range() const;
 
   private:
     
@@ -537,12 +599,12 @@ inline bool Task::has_work() const {
 }
 
 // Function: successors
-inline SuccessorsRange<Task> Task::successors() const {
+inline SuccessorsRange<Task> Task::successors_range() const {
   return SuccessorsRange<Task>(*this);
 }
 
 // Function: dependents
-inline DependentsRange<Task> Task::dependents() const {
+inline DependentsRange<Task> Task::dependents_range() const {
   return DependentsRange<Task>(*this);
 }
 
@@ -632,12 +694,12 @@ class TaskView {
     /**
     @brief returns a range object of successors of this task view for iterating
     */
-    SuccessorsRange<TaskView> successors() const;
+    SuccessorsRange<TaskView> successors_range() const;
 
     /**
     @brief returns a range object of dependents of this task view for iterating
     */
-    DependentsRange<TaskView> dependents() const;
+    DependentsRange<TaskView> dependents_range() const;
     
   private:
     
@@ -712,24 +774,16 @@ inline bool TaskView::empty() const {
 }
 
 // Function: successors
-inline SuccessorsRange<TaskView> TaskView::successors() const {
+inline SuccessorsRange<TaskView> TaskView::successors_range() const {
   return SuccessorsRange<TaskView>(*this);
 }
 
 // Function: dependents
-inline DependentsRange<TaskView> TaskView::dependents() const {
+inline DependentsRange<TaskView> TaskView::dependents_range() const {
   return DependentsRange<TaskView>(*this);
 }
 
 
 }  // end of namespace tf. ---------------------------------------------------
-
-
-
-
-
-
-
-
 
 

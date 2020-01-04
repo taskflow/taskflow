@@ -46,6 +46,14 @@ class FlowBuilder {
     */
     template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
     auto emplace(C&&... callables);
+
+    /**
+    @brief creates a module task from a taskflow
+
+    @param taskflow a taskflow object for the module
+    @return a Task handle
+    */
+    Task composed_of(Taskflow& taskflow);
     
     /**
     @brief constructs a task dependency graph of range-based parallel_for
@@ -274,6 +282,121 @@ class FlowBuilder {
 // Constructor
 inline FlowBuilder::FlowBuilder(Graph& graph) :
   _graph {graph} {
+}
+
+// ----------------------------------------------------------------------------
+
+/** 
+@class Subflow
+
+@brief The building blocks of dynamic tasking.
+*/ 
+class Subflow : public FlowBuilder {
+
+  public:
+    
+    /**
+    @brief constructs a subflow builder object
+    */
+    template <typename... Args>
+    Subflow(Args&&... args);
+    
+    /**
+    @brief enables the subflow to join its parent task
+    */
+    void join();
+
+    /**
+    @brief enables the subflow to detach from its parent task
+    */
+    void detach();
+    
+    /**
+    @brief queries if the subflow will be detached from its parent task
+    */
+    bool detached() const;
+
+    /**
+    @brief queries if the subflow will join its parent task
+    */
+    bool joined() const;
+
+  private:
+
+    bool _detached {false};
+};
+
+// Constructor
+template <typename... Args>
+Subflow::Subflow(Args&&... args) :
+  FlowBuilder {std::forward<Args>(args)...} {
+}
+
+// Procedure: join
+inline void Subflow::join() {
+  _detached = false;
+}
+
+// Procedure: detach
+inline void Subflow::detach() {
+  _detached = true;
+}
+
+// Function: detached
+inline bool Subflow::detached() const {
+  return _detached;
+}
+
+// Function: joined
+inline bool Subflow::joined() const {
+  return !_detached;
+}
+
+// ----------------------------------------------------------------------------
+// Member definition of FlowBuilder
+// ----------------------------------------------------------------------------
+
+// Function: emplace
+template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
+auto FlowBuilder::emplace(C&&... cs) {
+  return std::make_tuple(emplace(std::forward<C>(cs))...);
+}
+
+// Function: emplace
+template <typename C>
+Task FlowBuilder::emplace(C&& c) {
+
+  // dynamic tasking
+  if constexpr(std::is_invocable_v<C, Subflow&>) {
+    auto& n = _graph.emplace_back(std::in_place_type_t<Node::DynamicWork>{}, 
+    [c=std::forward<C>(c)] (Subflow& fb) mutable {
+      // first time execution
+      if(fb._graph.empty()) {
+        c(fb);
+      }
+    });
+    return Task(n);
+  }
+  // condition tasking
+  else if constexpr(std::is_same_v<typename function_traits<C>::return_type, int>) {
+    auto& n = _graph.emplace_back(std::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c));
+    return Task(n);
+  }
+  // static tasking
+  else if constexpr(std::is_same_v<typename function_traits<C>::return_type, void>) {
+    auto& n = _graph.emplace_back(std::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c));
+    return Task(n);
+  }
+  else {
+    static_assert(dependent_false_v<C>, "invalid task work type");
+  }
+}
+
+// Function: composed_of    
+Task FlowBuilder::composed_of(Taskflow& taskflow) {
+  auto &node = _graph.emplace_back();
+  node._module = &taskflow;
+  return Task(node);
 }
 
 // Procedure: precede
@@ -1113,112 +1236,6 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
   });
 
   return std::make_pair(source, target); 
-}
-
-// ----------------------------------------------------------------------------
-
-/** 
-@class Subflow
-
-@brief The building blocks of dynamic tasking.
-*/ 
-class Subflow : public FlowBuilder {
-
-  public:
-    
-    /**
-    @brief constructs a subflow builder object
-    */
-    template <typename... Args>
-    Subflow(Args&&... args);
-    
-    /**
-    @brief enables the subflow to join its parent task
-    */
-    void join();
-
-    /**
-    @brief enables the subflow to detach from its parent task
-    */
-    void detach();
-    
-    /**
-    @brief queries if the subflow will be detached from its parent task
-    */
-    bool detached() const;
-
-    /**
-    @brief queries if the subflow will join its parent task
-    */
-    bool joined() const;
-
-  private:
-
-    bool _detached {false};
-};
-
-// Constructor
-template <typename... Args>
-Subflow::Subflow(Args&&... args) :
-  FlowBuilder {std::forward<Args>(args)...} {
-}
-
-// Procedure: join
-inline void Subflow::join() {
-  _detached = false;
-}
-
-// Procedure: detach
-inline void Subflow::detach() {
-  _detached = true;
-}
-
-// Function: detached
-inline bool Subflow::detached() const {
-  return _detached;
-}
-
-// Function: joined
-inline bool Subflow::joined() const {
-  return !_detached;
-}
-
-// ----------------------------------------------------------------------------
-
-// Function: emplace
-template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
-auto FlowBuilder::emplace(C&&... cs) {
-  return std::make_tuple(emplace(std::forward<C>(cs))...);
-}
-
-// Function: emplace
-template <typename C>
-Task FlowBuilder::emplace(C&& c) {
-
-  // dynamic tasking
-  if constexpr(std::is_invocable_v<C, Subflow&>) {
-    auto& n = _graph.emplace_back(std::in_place_type_t<Node::DynamicWork>{}, 
-    [c=std::forward<C>(c)] (Subflow& fb) mutable {
-      // first time execution
-      if(fb._graph.empty()) {
-        c(fb);
-      }
-    });
-    return Task(n);
-  }
-  // condition tasking
-  else if constexpr(std::is_same_v<typename function_traits<C>::return_type, int>) {
-    auto& n = _graph.emplace_back(std::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c));
-    return Task(n);
-  }
-  // static tasking
-  else if constexpr(std::is_same_v<typename function_traits<C>::return_type, void>) {
-    auto& n = _graph.emplace_back(std::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c));
-    return Task(n);
-  }
-  else {
-    static_assert(dependent_false_v<C>, "invalid task work type");
-  }
 }
 
 // ----------------------------------------------------------------------------
