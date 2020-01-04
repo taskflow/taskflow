@@ -1716,6 +1716,49 @@ TEST_CASE("LoopCondition" * doctest::timeout(300)) {
 
 }
 
+// Testcase: FlipCoinCondition
+TEST_CASE("FlipCoinCondition" * doctest::timeout(300)) {
+
+  for(unsigned w=1; w<=4; ++w) {
+
+    tf::Taskflow taskflow;
+
+    int counter;
+    double avg;
+
+    auto [A, B, C, D, E, F, G] = taskflow.emplace(
+      [&](){ counter = 0; },
+      [&](){ ++counter; return ::rand()%2; },
+      [&](){ return ::rand()%2; },
+      [&](){ return ::rand()%2; },
+      [&](){ return ::rand()%2; },
+      [&](){ return ::rand()%2; },
+      [&, N=0, accu=0.0]() mutable { 
+        ++N;  // a new round
+        accu += counter;
+        avg = accu/N;
+        //std::cout << N << ": " << counter << " => avg = " << avg << '\n';
+      }
+    );
+
+    A.precede(B).name("init");
+    B.precede(C, B).name("flip-coin-1");
+    C.precede(D, B).name("flip-coin-2");
+    D.precede(E, B).name("flip-coin-3");
+    E.precede(F, B).name("flip-coin-4");
+    F.precede(G, B).name("flip-coin-5");
+
+    //taskflow.dump(std::cout);
+
+    tf::Executor executor;
+
+    executor.run_n(taskflow, 10000).wait();
+    
+    REQUIRE(std::fabs(avg-32.0)<1.0);
+  }
+}
+
+// Testcase: CyclicCondition
 TEST_CASE("CyclicCondition" * doctest::timeout(300)) {
   // Static tasking
   for(unsigned w=1; w<=8; ++w) {

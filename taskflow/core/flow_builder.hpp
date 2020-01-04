@@ -393,7 +393,7 @@ Task FlowBuilder::emplace(C&& c) {
 }
 
 // Function: composed_of    
-Task FlowBuilder::composed_of(Taskflow& taskflow) {
+inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
   auto &node = _graph.emplace_back();
   node._module = &taskflow;
   return Task(node);
