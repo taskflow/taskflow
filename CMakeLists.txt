@@ -308,10 +308,10 @@ add_test(cond2cond                ${TF_UTEST_DIR}/basics -tc=Condition2Condition
 add_test(hierarchical_cond        ${TF_UTEST_DIR}/basics -tc=HierarchicalCondition)
 
 # unittest for graphs
-add_executable(graphs unittest/graphs.cpp)
-target_link_libraries(graphs ${PROJECT_NAME} Threads::Threads tf::default_settings)
-target_include_directories(graphs PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
-add_test(DynamicLevelize  ${TF_UTEST_DIR}/graphs -tc=DynamicLevelize)
+#add_executable(graphs unittest/graphs.cpp)
+#target_link_libraries(graphs ${PROJECT_NAME} Threads::Threads tf::default_settings)
+#target_include_directories(graphs PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
+#add_test(DynamicLevelize  ${TF_UTEST_DIR}/graphs -tc=DynamicLevelize)
 
 endif()
 
