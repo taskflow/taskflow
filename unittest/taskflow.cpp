@@ -24,7 +24,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
 
   SUBCASE("Empty") {
     for(size_t W=0; W<32; ++W) {
-      tf::Executor executor(W);
+      tf::Executor executor(static_cast<unsigned>(W));
       tf::Taskflow taskflow;
       REQUIRE(taskflow.num_nodes() == 0);
       REQUIRE(taskflow.empty() == true);
@@ -251,7 +251,7 @@ TEST_CASE("SequentialRun" * doctest::timeout(300)) {
   size_t num_workers = 4;
   size_t num_tasks = 100;
   
-  tf::Executor executor(num_workers);
+  tf::Executor executor(static_cast<unsigned>(num_workers));
   tf::Taskflow taskflow;
 
   REQUIRE(executor.num_workers() == num_workers);
@@ -416,7 +416,7 @@ TEST_CASE("SequentialRun" * doctest::timeout(300)) {
 
   SUBCASE("MultipleRuns") {
     for(size_t W=1; W<=8; ++W) {
-      tf::Executor executor(W);
+      tf::Executor executor(static_cast<unsigned>(W));
       std::atomic<size_t> counter(0);
 
       tf::Taskflow tf1, tf2, tf3, tf4;
@@ -471,7 +471,7 @@ TEST_CASE("ParallelRuns" * doctest::timeout(300)) {
 
   SUBCASE("RunAndWait") {
     for(size_t w=1; w<=32; ++w) {
-      tf::Executor executor(w);
+      tf::Executor executor(static_cast<unsigned>(w));
       counter = 0;
       for(int t=0; t<32; t++) {
         threads.emplace_back([&] () {
@@ -492,7 +492,7 @@ TEST_CASE("ParallelRuns" * doctest::timeout(300)) {
   
   SUBCASE("RunAndWaitForAll") { 
     for(size_t w=1; w<=32; ++w) {
-      tf::Executor executor(w);
+      tf::Executor executor(static_cast<unsigned>(w));
       counter = 0;
       std::vector<std::unique_ptr<tf::Taskflow>> taskflows(32);
       std::atomic<size_t> barrier(0);
