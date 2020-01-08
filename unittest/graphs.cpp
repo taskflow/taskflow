@@ -3,10 +3,6 @@
 #include <doctest.h>
 
 #include <taskflow/taskflow.hpp>
-#include <vector>
-#include <utility>
-#include <chrono>
-#include <limits.h>
 
 // --------------------------------------------------------
 // Graph generation 
@@ -61,7 +57,7 @@ std::unique_ptr<Node[]> make_dag(size_t num_nodes, size_t max_degree) {
 TEST_CASE("StaticLevelize" * doctest::timeout(300)) {
   
   size_t max_degree = 4;
-  size_t num_nodes = 1000000;  
+  size_t num_nodes = 100000;
   
   for(unsigned w=1; w<=4; w++) {
 
@@ -108,15 +104,17 @@ TEST_CASE("StaticLevelize" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("DynamicLevelize" * doctest::timeout(300)) {
 
+  std::atomic<size_t> level;
+
   std::function<void(Node*, tf::Subflow&)> levelize;
 
-  levelize = [&levelize] (Node* n, tf::Subflow& subflow) {
+  levelize = [&] (Node* n, tf::Subflow& subflow) {
     REQUIRE(!n->visited);
     n->visited = true;
     size_t S = n->successors.size();
     for(size_t i=0; i<S; i++) {
       if(n->successors[i]->dependents.fetch_sub(1) == 1) {
-        n->successors[i]->level = n->level + 1;
+        n->successors[i]->level = ++level;
         subflow.emplace([s=n->successors[i], &levelize](tf::Subflow &subflow){ 
           levelize(s, subflow); 
         });
@@ -125,9 +123,9 @@ TEST_CASE("DynamicLevelize" * doctest::timeout(300)) {
   };
   
   size_t max_degree = 4;
-  size_t num_nodes = 10;  
+  size_t num_nodes = 100000;
   
-  for(unsigned w=1; w<=1; w++) {
+  for(unsigned w=1; w<=4; w++) {
 
     auto nodes = make_dag(num_nodes, max_degree);
     
@@ -137,6 +135,8 @@ TEST_CASE("DynamicLevelize" * doctest::timeout(300)) {
         src.emplace_back(&(nodes[i]));
       }
     }
+
+    level = 0;
 
     tf::Taskflow tf;
     tf::Executor executor(w);
@@ -149,13 +149,10 @@ TEST_CASE("DynamicLevelize" * doctest::timeout(300)) {
     
     executor.run(tf).wait();  // block until finished
     
-    tf.dump(std::cout);
-    
     for(size_t i=0; i<num_nodes; i++) {
       REQUIRE(nodes[i].visited);
       REQUIRE(nodes[i].dependents == 0);
       for(size_t j=0; j<nodes[i].successors.size(); ++j) {
-        std::cout << nodes[i].level << " vs " << nodes[i].successors[j]->level << std::endl;
         REQUIRE(nodes[i].level < nodes[i].successors[j]->level);
       }
     }
