@@ -279,6 +279,66 @@ TEST_CASE("ObjectPool" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: FunctionTraits
+// --------------------------------------------------------
+void func1() {
+}
+
+int func2(int, double, float, char) {
+  return 0;
+}
+
+TEST_CASE("FunctionTraits" * doctest::timeout(300)) {
+  
+  SUBCASE("func1") {
+    using func1_traits = tf::function_traits<decltype(func1)>;
+    static_assert(std::is_same_v<func1_traits::return_type, void>);
+    static_assert(func1_traits::arity == 0);
+  }
+  
+  SUBCASE("func2") {
+    using func2_traits = tf::function_traits<decltype(func2)>;
+    static_assert(std::is_same_v<func2_traits::return_type, int>);
+    static_assert(func2_traits::arity == 4);
+    static_assert(std::is_same_v<func2_traits::argument_t<0>, int>);
+    static_assert(std::is_same_v<func2_traits::argument_t<1>, double>);
+    static_assert(std::is_same_v<func2_traits::argument_t<2>, float>);
+    static_assert(std::is_same_v<func2_traits::argument_t<3>, char>);
+  }
+
+  SUBCASE("lambda1") {
+    auto lambda1 = [] () mutable {
+      return 1;
+    };
+    using lambda1_traits = tf::function_traits<decltype(lambda1)>;
+    static_assert(std::is_same_v<lambda1_traits::return_type, int>);
+    static_assert(lambda1_traits::arity == 0);
+  }
+
+  SUBCASE("lambda2") {
+    auto lambda2 = [] (int, double, char&) {
+    };
+    using lambda2_traits = tf::function_traits<decltype(lambda2)>;
+    static_assert(std::is_same_v<lambda2_traits::return_type, void>);
+    static_assert(lambda2_traits::arity == 3);
+    static_assert(std::is_same_v<lambda2_traits::argument_t<0>, int>);
+    static_assert(std::is_same_v<lambda2_traits::argument_t<1>, double>);
+    static_assert(std::is_same_v<lambda2_traits::argument_t<2>, char&>);
+  }
+
+  SUBCASE("class") {
+    struct foo {
+      int operator ()(int, float) const;
+    };
+    using foo_traits = tf::function_traits<foo>;
+    static_assert(std::is_same_v<foo_traits::return_type, int>);
+    static_assert(foo_traits::arity == 2);
+    static_assert(std::is_same_v<foo_traits::argument_t<0>, int>);
+    static_assert(std::is_same_v<foo_traits::argument_t<1>, float>);
+  }
+}
+
+// --------------------------------------------------------
 // Testcase: SingularAllocator
 // --------------------------------------------------------
 TEST_CASE("SingularAllocator" * doctest::timeout(300)) {

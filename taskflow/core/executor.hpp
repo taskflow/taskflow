@@ -15,7 +15,7 @@
 #include <numeric>
 #include <cassert>
 
-#include "spmc_queue.hpp"
+#include "wsq.hpp"
 #include "notifier.hpp"
 #include "observer.hpp"
 #include "taskflow.hpp"
@@ -302,7 +302,7 @@ inline unsigned Executor::_find_victim(unsigned thief) {
     }
   }
 
-  return _workers.size();
+  return static_cast<unsigned>(_workers.size());
 }
 
 // Function: _explore_task
@@ -312,7 +312,7 @@ inline void Executor::_explore_task(Worker& thief, std::optional<Node*>& t) {
   assert(!t);
 
   const unsigned l = 0;
-  const unsigned r = _workers.size() - 1;
+  const unsigned r = static_cast<unsigned>(_workers.size()) - 1;
 
   const size_t F = (_workers.size() + 1) << 1;
   const size_t Y = 100;

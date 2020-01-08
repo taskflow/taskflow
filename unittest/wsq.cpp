@@ -160,7 +160,7 @@ void wsq_test_n_thieves(int N) {
     auto num_stolen = [&] () {
       int total = 0;
       for(const auto& cdeq : cdeqs) {
-        total += cdeq.size();
+        total += static_cast<int>(cdeq.size());
       }
       return total;
     };
@@ -254,282 +254,32 @@ TEST_CASE("WSQ.4Thieves" * doctest::timeout(300)) {
   wsq_test_n_thieves(4);
 }
 
-/*
-// ============================================================================
-// Executor tests
-// ============================================================================
-
-// Procedure: test_ownership
-template <typename ExecutorType>
-void test_ownership(ExecutorType& tp) {
-  
-  REQUIRE(tp.is_owner()); 
-  
-  tp.emplace([&](){
-    if(tp.num_workers() == 0) {
-      REQUIRE(tp.is_owner());
-    }
-    else {
-      REQUIRE(!tp.is_owner());
-    }
-  });
-
-  std::vector<std::thread> threads;
-  for(int i=0; i<10; ++i) {
-    threads.emplace_back([&] () {
-      REQUIRE(!tp.is_owner());
-    });
-  }
-  for(auto& t : threads) {
-    t.join();
-  }
-}
-
-// Procedure: test_emplace
-template <typename ExecutorType>
-void test_emplace(ExecutorType& tp) {
-
-  constexpr size_t num_tasks = 1024;
-
-  std::atomic<size_t> counter{0};
-  
-  for(size_t i=0; i<num_tasks; i++){
-    tp.emplace([&counter](){ 
-      counter.fetch_add(1, std::memory_order_relaxed); }
-    );
-  }
-
-  while(counter != num_tasks);
-}
-
-// Procedure: test_dynamic_tasking
-template <typename T>
-void test_dynamic_tasking(T& executor) {
-
-  std::atomic<size_t> sum {0};
-  std::atomic<size_t> cnt {0};
-
-  std::function<void(int)> insert;
-  std::promise<int> promise;
-  auto future = promise.get_future();
-  
-  insert = [&executor, &insert, &sum, &promise, &cnt] (int i) {
-    if(i > 0) {
-      ++cnt;
-      executor.emplace([i=i-1, &insert] () {
-        insert(i);
-      });
-    }
-    else {
-      if(auto s = ++sum; s == executor.num_workers()) {
-        promise.set_value(1);
-      }
-    }
-  };
-
-  if(auto W = executor.num_workers(); W > 0) {
-    for(size_t i=0; i<executor.num_workers(); i++){
-      insert(100);
-    }
-  }
-  else {
-    promise.set_value(1);
-  }
-
-  // synchronize until all tasks finish
-  REQUIRE(future.get() == 1);
-  REQUIRE(cnt == 100 * executor.num_workers());
-  REQUIRE(sum == executor.num_workers());
-}
-
-// Procedure: test_external_threads
-template <typename T>
-void test_external_threads(T& executor) {
-
-  constexpr int num_tasks = 65536;
-
-  std::vector<std::thread> threads;
-  std::atomic<size_t> sum {0};
-
-  for(int i=0; i<10; ++i) {
-    threads.emplace_back([&] () {
-      std::this_thread::sleep_for(std::chrono::microseconds(100));
-      for(int j=0; j<num_tasks; ++j) {
-        executor.emplace([&] () { 
-          sum.fetch_add(1, std::memory_order_relaxed);
-        });
-      }
-    });
-  }
-  
-  // master thread to insert
-  for(int j=0; j<num_tasks; ++j) {
-    executor.emplace([&] () {
-      sum.fetch_add(1, std::memory_order_relaxed);
-    });
-  }
-
-  // worker thread to insert
-  for(int i=0; i<10; ++i) {
-    executor.emplace([&] () {
-      for(int j=0; j<num_tasks; ++j) {
-        executor.emplace([&] () {
-          sum.fetch_add(1, std::memory_order_relaxed);
-        });
-      }
-    });
-  }
-  
-  for(auto& t : threads) {
-    t.join();
-  }
-
-  while(sum != num_tasks * 10 * 2 + num_tasks) {
-    std::this_thread::yield();
-  }
-}
-
-
-// Procedure: test_batch_insertion
-template <typename T>
-void test_batch_insertion(T& executor) {
-  constexpr int num_iterations = 50;
-
-  size_t total {0};
-  std::atomic<size_t> count {0};
-  for(size_t i=1; i<num_iterations; i++) {
-
-    std::vector<std::function<void()>> funs;
-    for(size_t j=0; j<i; j++) {
-      funs.emplace_back([&](){count++;});
-    }
-
-    executor.batch(funs);
-    total += i;
-  }
-
-  while(count != total) {
-    std::this_thread::yield();
-  }
-}
-  
-// Procedure: test_executor
-template <typename T>
-void test_executor() {  
-
-  SUBCASE("Ownership") {
-    for(unsigned i=0; i<=4; ++i) {
-      T tp(i);
-      test_ownership(tp);
-    }
-  }
-
-  SUBCASE("Emplace") {
-    for(unsigned i=0; i<=4; ++i) {
-      T tp(i);
-      test_emplace(tp);
-    }
-  }
-
-  SUBCASE("DynamicTasking") {
-    for(unsigned i=0; i<=4; ++i) {
-      T tp(i);
-      test_dynamic_tasking(tp);
-    }
-  }
-
-  SUBCASE("ExternalThreads") {
-    for(unsigned i=0; i<=4; ++i) {
-      T tp(i);
-      test_external_threads(tp);
-    }
-  }
-
-  SUBCASE("Batch") {
-    for(unsigned i=0; i<=4; ++i) {
-      T tp(i);
-      test_batch_insertion(tp);
-    }
-  }
-}
-
-
-
 // ----------------------------------------------------------------------------
-// Testcase: SimpleExecutor
+// Testcase: WSQTest.5Thieves
 // ----------------------------------------------------------------------------
-TEST_CASE("SimpleExecutor" * doctest::timeout(300)) {
-  test_executor<tf::SimpleExecutor<std::function<void()>>>();
+TEST_CASE("WSQ.5Thieves" * doctest::timeout(300)) {
+  wsq_test_n_thieves(5);
 }
 
 // ----------------------------------------------------------------------------
-// Testcase: ProactiveExecutor
+// Testcase: WSQTest.6Thieves
 // ----------------------------------------------------------------------------
-TEST_CASE("ProactiveExecutor" * doctest::timeout(300)) {
-  test_executor<tf::ProactiveExecutor<std::function<void()>>>();
+TEST_CASE("WSQ.6Thieves" * doctest::timeout(300)) {
+  wsq_test_n_thieves(6);
 }
 
 // ----------------------------------------------------------------------------
-// Testcase: SpeculativeExecutor
+// Testcase: WSQTest.7Thieves
 // ----------------------------------------------------------------------------
-TEST_CASE("SpeculativeExecutor" * doctest::timeout(300)) {
-  test_executor<tf::SpeculativeExecutor<std::function<void()>>>();
+TEST_CASE("WSQ.7Thieves" * doctest::timeout(300)) {
+  wsq_test_n_thieves(7);
 }
 
 // ----------------------------------------------------------------------------
-// Testcase: WorkStealingExecutor
+// Testcase: WSQTest.8Thieves
 // ----------------------------------------------------------------------------
-TEST_CASE("WorkStealingExecutor" * doctest::timeout(300)) {
-  test_executor<tf::WorkStealingExecutor<std::function<void()>>>();
+TEST_CASE("WSQ.8Thieves" * doctest::timeout(300)) {
+  wsq_test_n_thieves(8);
 }
 
-// ----------------------------------------------------------------------------
-// Testcase: EigenWorkStealingExecutor
-// ----------------------------------------------------------------------------
-TEST_CASE("EigenWorkStealingExecutor" * doctest::timeout(300)) {
-  test_executor<tf::EigenWorkStealingExecutor<std::function<void()>>>();
-}
-
-// ----------------------------------------------------------------------------
-// Testcase: BinarySemaphore
-// ----------------------------------------------------------------------------
-TEST_CASE("BinarySemaphore" * doctest::timeout(300)) {
-  tf::BinarySemaphore sema;
-
-  size_t count {0};
-
-  std::thread t1([&](){
-    using namespace std::chrono_literals;
-    for(int i=0; i<100; i++) {
-      std::this_thread::sleep_for(2ms);
-      sema.P();
-      ++ count;
-    }
-  });
-
-  {
-    using namespace std::chrono_literals;
-    for(int i=0; i<100; i++) {
-      sema.V();
-      std::this_thread::sleep_for(10ms);
-      REQUIRE(count == i+1);
-    }
-  }
-
-  t1.join();
-
-
-  count = 0;
-  std::thread t2([&](){
-    using namespace std::chrono_literals;
-    for(int i=0; i<10; i++) {
-      std::this_thread::sleep_for(10ms);
-      sema.V();
-      count += 1;
-    }
-  });
-
-  t2.join();
-  REQUIRE(count == 10);
-} */
 

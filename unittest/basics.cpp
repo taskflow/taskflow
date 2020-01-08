@@ -23,7 +23,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   std::vector<tf::Task> tasks;
 
   SUBCASE("EmptyFlow") {
-    for(size_t W=1; W<32; ++W) {
+    for(unsigned W=1; W<32; ++W) {
       tf::Executor executor(W);
       tf::Taskflow taskflow;
       REQUIRE(taskflow.num_tasks() == 0);
@@ -443,13 +443,10 @@ TEST_CASE("SequentialRuns" * doctest::timeout(300)) {
     
   using namespace std::chrono_literals;
   
-  size_t num_workers = 4;
   size_t num_tasks = 100;
   
-  tf::Executor executor(num_workers);
+  tf::Executor executor(4);
   tf::Taskflow taskflow;
-
-  REQUIRE(executor.num_workers() == num_workers);
 
   std::atomic<int> counter {0};
   std::vector<tf::Task> silent_tasks;
@@ -610,7 +607,7 @@ TEST_CASE("SequentialRuns" * doctest::timeout(300)) {
   }
 
   SUBCASE("MultipleRuns") {
-    for(size_t W=1; W<=8; ++W) {
+    for(unsigned W=1; W<=8; ++W) {
       tf::Executor executor(W);
       std::atomic<size_t> counter(0);
 
@@ -665,7 +662,7 @@ TEST_CASE("ParallelRuns" * doctest::timeout(300)) {
   };
 
   SUBCASE("RunAndWait") {
-    for(size_t w=1; w<=32; ++w) {
+    for(unsigned w=1; w<=32; ++w) {
       tf::Executor executor(w);
       counter = 0;
       for(int t=0; t<32; t++) {
@@ -686,7 +683,7 @@ TEST_CASE("ParallelRuns" * doctest::timeout(300)) {
   }
   
   SUBCASE("RunAndWaitForAll") { 
-    for(size_t w=1; w<=32; ++w) {
+    for(unsigned w=1; w<=32; ++w) {
       tf::Executor executor(w);
       counter = 0;
       std::vector<std::unique_ptr<tf::Taskflow>> taskflows(32);
@@ -720,8 +717,8 @@ TEST_CASE("ParallelFor" * doctest::timeout(300)) {
     
   using namespace std::chrono_literals;
 
-  const auto mapper = [](size_t w, size_t num_data, bool group){
-    tf::Executor executor(static_cast<unsigned>(w));
+  const auto mapper = [](unsigned w, size_t num_data, bool group){
+    tf::Executor executor(w);
     tf::Taskflow tf;
     std::vector<int> vec(num_data, 0);
     tf.parallel_for(
@@ -737,8 +734,8 @@ TEST_CASE("ParallelFor" * doctest::timeout(300)) {
     }
   };
 
-  const auto reducer = [](size_t w, size_t num_data, bool group){
-    tf::Executor executor(static_cast<unsigned>(w));
+  const auto reducer = [](unsigned w, size_t num_data, bool group){
+    tf::Executor executor(w);
     tf::Taskflow tf;
     std::vector<int> vec(num_data, 0);
     std::atomic<int> sum(0);
@@ -751,7 +748,7 @@ TEST_CASE("ParallelFor" * doctest::timeout(300)) {
 
   // map
   SUBCASE("Map") {
-    for(size_t W=1; W<=4; ++W){
+    for(unsigned W=1; W<=4; ++W){
       for(size_t num_data=1; num_data<=59049; num_data *= 3){
         mapper(W, num_data, true);
         mapper(W, num_data, false);
@@ -761,7 +758,7 @@ TEST_CASE("ParallelFor" * doctest::timeout(300)) {
 
   // reduce
   SUBCASE("Reduce") {
-    for(size_t W=1; W<=4; ++W){
+    for(unsigned W=1; W<=4; ++W){
       for(size_t num_data=1; num_data<=59049; num_data *= 3){
         reducer(W, num_data, true);
         reducer(W, num_data, false);
@@ -940,8 +937,8 @@ TEST_CASE("ParallelForOnIndex" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("Reduce" * doctest::timeout(300)) {
 
-  const auto plus_test = [](size_t num_workers, auto &&data){
-    tf::Executor executor(static_cast<unsigned>(num_workers));
+  const auto plus_test = [](unsigned num_workers, auto &&data){
+    tf::Executor executor(num_workers);
     tf::Taskflow tf;
     int result {0};
     std::iota(data.begin(), data.end(), 1);
@@ -950,8 +947,8 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
     REQUIRE(result == std::accumulate(data.begin(), data.end(), 0, std::plus<int>()));
   };
 
-  const auto multiply_test = [](size_t num_workers, auto &&data){
-    tf::Executor executor(static_cast<unsigned>(num_workers));
+  const auto multiply_test = [](unsigned num_workers, auto &&data){
+    tf::Executor executor(num_workers);
     tf::Taskflow tf;
     std::fill(data.begin(), data.end(), 1.0);
     double result {2.0};
@@ -960,8 +957,8 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
     REQUIRE(result == std::accumulate(data.begin(), data.end(), 2.0, std::multiplies<double>()));
   };
 
-  const auto max_test = [](size_t num_workers, auto &&data){
-    tf::Executor executor(static_cast<unsigned>(num_workers));
+  const auto max_test = [](unsigned num_workers, auto &&data){
+    tf::Executor executor(num_workers);
     tf::Taskflow tf;
     std::iota(data.begin(), data.end(), 1);
     int result {0};
@@ -971,8 +968,8 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
     REQUIRE(result == std::accumulate(data.begin(), data.end(), 0, lambda));
   };
 
-  const auto min_test = [](size_t num_workers, auto &&data){
-    tf::Executor executor(static_cast<unsigned>(num_workers));
+  const auto min_test = [](unsigned num_workers, auto &&data){
+    tf::Executor executor(num_workers);
     tf::Taskflow tf;
     std::iota(data.begin(), data.end(), 1);
     int result {std::numeric_limits<int>::max()};
@@ -984,7 +981,7 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
     );
   };
 
-  for(size_t w=1; w<=4; ++w){
+  for(unsigned w=1; w<=4; ++w){
     for(size_t j=0; j<=256; j=j*2+1){
       plus_test(w, std::vector<int>(j));
       plus_test(w, std::list<int>(j));
@@ -1337,14 +1334,22 @@ void join_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::S
   }
 }
 
-void mix_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
+void mix_spawn(
+  const int max_depth, 
+  std::atomic<int>& counter, 
+  int depth, tf::Subflow& subflow
+)  {
   if(depth < max_depth) {
     auto ret = counter.fetch_add(1, std::memory_order_relaxed);
     if(ret % 2) {
       subflow.detach();
     }
-    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ mix_spawn(max_depth, counter, depth, subflow); });
-    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ mix_spawn(max_depth, counter, depth, subflow); });
+    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ 
+      mix_spawn(max_depth, counter, depth, subflow); }
+    );
+    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ 
+      mix_spawn(max_depth, counter, depth, subflow); }
+    );
   }
 }
 
@@ -1814,7 +1819,7 @@ TEST_CASE("CyclicCondition" * doctest::timeout(300)) {
   }
 }
 
-TEST_CASE("BinaryTreeCondition" * doctest::timeout(300)) {
+TEST_CASE("BTreeCondition" * doctest::timeout(300)) {
   for(unsigned w=1; w<=8; ++w) {
     for(int l=1; l<12; l++) {
       tf::Taskflow flow;
@@ -1861,7 +1866,7 @@ TEST_CASE("BinaryTreeCondition" * doctest::timeout(300)) {
 //             |
 //             ---- > C
 
-TEST_CASE("DynamicBinaryTreeCondition" * doctest::timeout(300)) {
+TEST_CASE("DynamicBTreeCondition" * doctest::timeout(300)) {
   for(unsigned w=1; w<=8; ++w) {
     std::atomic<int> counter {0};
     constexpr int max_depth = 6;

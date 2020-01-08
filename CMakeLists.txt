@@ -226,11 +226,6 @@ target_link_libraries(
   parallel_for ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
 
-add_executable(dynamic_traversal ${TF_EXAMPLE_DIR}/dynamic_traversal.cpp)
-target_link_libraries(
-  dynamic_traversal ${PROJECT_NAME} Threads::Threads tf::default_settings
-)
-
 add_executable(run ${TF_EXAMPLE_DIR}/run.cpp)
 target_link_libraries(
   run ${PROJECT_NAME} Threads::Threads tf::default_settings
@@ -263,9 +258,24 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR})
 add_executable(utility unittest/utility.cpp)
 target_link_libraries(utility ${PROJECT_NAME} Threads::Threads tf::default_settings)
 target_include_directories(utility PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
-add_test(passive_vector ${TF_UTEST_DIR}/utility -tc=PassiveVector)
-add_test(object_pool    ${TF_UTEST_DIR}/utility -tc=ObjectPool)
-add_test(singular_alloc ${TF_UTEST_DIR}/utility -tc=SingularAllocator)
+add_test(passive_vector  ${TF_UTEST_DIR}/utility -tc=PassiveVector)
+add_test(object_pool     ${TF_UTEST_DIR}/utility -tc=ObjectPool)
+add_test(function_traits ${TF_UTEST_DIR}/utility -tc=FunctionTraits)
+add_test(singular_alloc  ${TF_UTEST_DIR}/utility -tc=SingularAllocator)
+
+# unittest for WorkStealingQueue 
+add_executable(wsq unittest/wsq.cpp)
+target_link_libraries(wsq ${PROJECT_NAME} Threads::Threads)
+target_include_directories(wsq PRIVATE ${TF_3RD_PARTY_DIR}/doctest tf::default_settings)
+add_test(work_stealing_queue.Owner  ${TF_UTEST_DIR}/wsq -tc=WSQ.Owner)
+add_test(work_stealing_queue.1Thief ${TF_UTEST_DIR}/wsq -tc=WSQ.1Thief)
+add_test(work_stealing_queue.2Thieves ${TF_UTEST_DIR}/wsq -tc=WSQ.2Thieves)
+add_test(work_stealing_queue.3Thieves ${TF_UTEST_DIR}/wsq -tc=WSQ.3Thieves)
+add_test(work_stealing_queue.4Thieves ${TF_UTEST_DIR}/wsq -tc=WSQ.4Thieves)
+add_test(work_stealing_queue.5Thieves ${TF_UTEST_DIR}/wsq -tc=WSQ.5Thieves)
+add_test(work_stealing_queue.6Thieves ${TF_UTEST_DIR}/wsq -tc=WSQ.6Thieves)
+add_test(work_stealing_queue.7Thieves ${TF_UTEST_DIR}/wsq -tc=WSQ.7Thieves)
+add_test(work_stealing_queue.8Thieves ${TF_UTEST_DIR}/wsq -tc=WSQ.8Thieves)
 
 # unittest for basics
 add_executable(basics unittest/basics.cpp)
@@ -288,24 +298,20 @@ add_test(composition-1    ${TF_UTEST_DIR}/basics -tc=Composition-1)
 add_test(composition-2    ${TF_UTEST_DIR}/basics -tc=Composition-2)
 add_test(composition-3    ${TF_UTEST_DIR}/basics -tc=Composition-3)
 add_test(observer         ${TF_UTEST_DIR}/basics -tc=Observer)
-add_test(loop_condition                ${TF_UTEST_DIR}/basics -tc=LoopCondition)
-add_test(flip_coin_condition           ${TF_UTEST_DIR}/basics -tc=FlipCoinCondition)
-add_test(cyclic_condition              ${TF_UTEST_DIR}/basics -tc=CyclicCondition)
-add_test(binary_tree_condition         ${TF_UTEST_DIR}/basics -tc=BinaryTreeCondition)
-add_test(dynamic_binary_tree_condition ${TF_UTEST_DIR}/basics -tc=DynamicBinaryTreeCondition)
-add_test(nested_for_dynamic_condition  ${TF_UTEST_DIR}/basics -tc=NestedForDynamicCondition)
-add_test(condition2condition           ${TF_UTEST_DIR}/basics -tc=Condition2Condition)
-add_test(hierarchical_condition        ${TF_UTEST_DIR}/basics -tc=HierarchicalCondition)
+add_test(loop_cond                ${TF_UTEST_DIR}/basics -tc=LoopCondition)
+add_test(flip_coin_cond           ${TF_UTEST_DIR}/basics -tc=FlipCoinCondition)
+add_test(cyclic_cond              ${TF_UTEST_DIR}/basics -tc=CyclicCondition)
+add_test(btree_cond               ${TF_UTEST_DIR}/basics -tc=BTreeCondition)
+add_test(dynamic_btree_cond       ${TF_UTEST_DIR}/basics -tc=DynamicBTreeCondition)
+add_test(nested_for_dynamic_cond  ${TF_UTEST_DIR}/basics -tc=NestedForDynamicCondition)
+add_test(cond2cond                ${TF_UTEST_DIR}/basics -tc=Condition2Condition)
+add_test(hierarchical_cond        ${TF_UTEST_DIR}/basics -tc=HierarchicalCondition)
 
-# unittest for WorkStealingQueue 
-add_executable(spmc_queue unittest/spmc_queue.cpp)
-target_link_libraries(spmc_queue ${PROJECT_NAME} Threads::Threads)
-target_include_directories(spmc_queue PRIVATE ${TF_3RD_PARTY_DIR}/doctest tf::default_settings)
-add_test(WorkStealingQueue.Owner  ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.Owner)
-add_test(WorkStealingQueue.1Thief ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.1Thief)
-add_test(WorkStealingQueue.2Thieves ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.2Thieves)
-add_test(WorkStealingQueue.3Thieves ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.3Thieves)
-add_test(WorkStealingQueue.4Thieves ${TF_UTEST_DIR}/spmc_queue -tc=WSQ.4Thieves)
+# unittest for graphs
+add_executable(graphs unittest/graphs.cpp)
+target_link_libraries(graphs ${PROJECT_NAME} Threads::Threads tf::default_settings)
+target_include_directories(graphs PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
+add_test(DynamicLevelize  ${TF_UTEST_DIR}/graphs -tc=DynamicLevelize)
 
 endif()
 
