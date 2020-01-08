@@ -254,19 +254,16 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
   SUBCASE("Order") {
     tf::Taskflow taskflow;
 
-    auto [A, B, C, D, E] = taskflow.emplace(
-      [] () {},
-      [] () {},
-      [] () {},
-      [] () {},
-      [] () {}
-    );
+    auto A = taskflow.emplace([](){}).name("A");
+    auto B = taskflow.emplace([](){}).name("B");
+    auto C = taskflow.emplace([](){}).name("C");
+    auto D = taskflow.emplace([](){}).name("D");
+    auto E = taskflow.emplace([](){}).name("E");
 
     A.precede(B, C, D, E);
     E.succeed(B, C, D);
 
-    size_t i=0;
-    for(auto s : A.successors_range()) {
+    A.for_each_successor([&, i=0] (tf::Task s) mutable {
       switch(i++) {
         case 0:
           REQUIRE(s == B);
@@ -283,30 +280,9 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
         default:
         break;
       }
-    }
+    });
 
-    for(i=0; i<A.successors_range().size(); i++) {
-      auto s = A.successors_range()[i];
-      switch(i++) {
-        case 0:
-          REQUIRE(s == B);
-        break;
-        case 1:
-          REQUIRE(s == C);
-        break;
-        case 2:
-          REQUIRE(s == D);
-        break;
-        case 3:
-          REQUIRE(s == E);
-        break;
-        default:
-        break;
-      }
-    }
-
-    i = 0;
-    for(auto s : E.dependents_range()) {
+    E.for_each_dependent([&, i=0](tf::Task s) mutable {
       switch(i++) {
         case 0:
           REQUIRE(s == A);
@@ -321,25 +297,7 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
           REQUIRE(s == D);
         break;
       }
-    }
-
-    for(i=0; i<E.dependents_range().size(); ++i) {
-      auto s = E.dependents_range()[i];
-      switch(i++) {
-        case 0:
-          REQUIRE(s == A);
-        break;
-        case 1:
-          REQUIRE(s == B);
-        break;
-        case 2:
-          REQUIRE(s == C);
-        break;
-        case 3:
-          REQUIRE(s == D);
-        break;
-      }
-    }
+    });
   }
   
   SUBCASE("Generic") {
@@ -351,25 +309,18 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
     auto D = taskflow.emplace([](){}).name("D");
     auto E = taskflow.emplace([](){}).name("E");
 
-    REQUIRE(A.successors_range().size() == 0);
-    REQUIRE(A.dependents_range().size() == 0);
-    REQUIRE(B.successors_range().size() == 0);
-    REQUIRE(B.dependents_range().size() == 0);
+    std::vector<tf::Task> tasks;
 
+    taskflow.for_each_task([&tasks](tf::Task s){
+      tasks.push_back(s);
+    });
+
+    REQUIRE(std::find(tasks.begin(), tasks.end(), A) != tasks.end());
+ 
     A.precede(B);
-    
-    REQUIRE(A.successors_range().size() == 1);
-    REQUIRE(A.dependents_range().size() == 0);
-    REQUIRE(B.successors_range().size() == 0);
-    REQUIRE(B.dependents_range().size() == 1);
 
-    for(auto s : A.successors_range()) {
-      REQUIRE(s == B);
-    }
-
-    for(auto d : B.dependents_range()) {
-      REQUIRE(d == A);
-    }
+    A.for_each_successor([B](tf::Task s){ REQUIRE(s==B); });
+    B.for_each_dependent([A](tf::Task s){ REQUIRE(s==A); });
 
     A.precede(C);
     A.precede(D);
@@ -379,15 +330,14 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
     E.precede(B);
     
     int counter{0}, a{0}, b{0}, c{0}, d{0}, e{0};
-    for(auto s : A.successors_range()) {
+    A.for_each_successor([&](tf::Task s) {
       counter++;
       if(s == A) ++a;
       if(s == B) ++b;
       if(s == C) ++c;
       if(s == D) ++d;
       if(s == E) ++e;
-    }
-    REQUIRE(counter == A.successors_range().size());
+    });
     REQUIRE(counter == A.num_successors());
     REQUIRE(a==0);
     REQUIRE(b==1);
@@ -396,16 +346,15 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
     REQUIRE(e==1);
     
     counter = a = b = c = d = e = 0;
-    for(auto s : B.dependents_range()) {
+    B.for_each_dependent([&](tf::Task s) {
       counter++;
       if(s == A) ++a;
       if(s == B) ++b;
       if(s == C) ++c;
       if(s == D) ++d;
       if(s == E) ++e;
-    }
+    });
 
-    REQUIRE(counter == B.dependents_range().size());
     REQUIRE(counter == B.num_dependents());
     REQUIRE(a == 1);
     REQUIRE(b == 0);
@@ -413,9 +362,9 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
     REQUIRE(d == 1);
     REQUIRE(e == 1);
 
-    for(auto s : A.successors_range()) {
+    A.for_each_successor([](tf::Task s){
       s.name("A");
-    }
+    });
 
     REQUIRE(A.name() == "A");
     REQUIRE(B.name() == "A");
@@ -423,9 +372,9 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
     REQUIRE(D.name() == "A");
     REQUIRE(E.name() == "A");
 
-    for(auto s : B.dependents_range()) {
+    B.for_each_dependent([](tf::Task s){
       s.name("B");
-    }
+    });
     
     REQUIRE(A.name() == "B");
     REQUIRE(B.name() == "A");

@@ -4,345 +4,6 @@
 
 namespace tf {
 
-/**
-
-@class SuccessorsRange
-
-@brief Creates a range of successors of a task/taskview
-
-*/
-template <typename U>
-class SuccessorsRange {
-  
-  using value_type = std::decay_t<U>;
-  using reference = value_type&;
-  using const_reference = const value_type&;
-  using pointer = value_type*;
-  using const_pointer = const value_type*;
-
-  static_assert(
-    std::is_same_v<value_type, Task> || std::is_same_v<value_type, TaskView>,
-    "SuccessorsRange takes only Task or TaskView type"
-  );
-  
-  public:
-
-  class Iterator {
-
-    friend class SuccessorsRange;
-
-    public:
-      
-      /**
-      @brief default constructor
-      */
-      Iterator() = default;
-      
-      /**
-      @brief copy constructor
-      */
-      Iterator(const Iterator&) = default;
-      
-      /**
-      @brief mutable object accessor 
-      */
-      value_type operator * () { return _item; }
-
-      /**
-      @brief immutable object accessor
-      */
-      const_reference operator * () const { return _item; }
-      
-      /**
-      @brief mutable object pointer accessor
-      */
-      pointer operator -> () { return &_item; }
-
-      /**
-      @brief immutable object pointer accessor
-      */
-      const_pointer operator -> () const { return &_item; }
-
-      /**
-      @brief compares if two iterators equal each other
-      */
-      bool operator == (const Iterator& rhs) const { return _cursor == rhs._cursor; }
-
-      /**
-      @brief compares if two iterators differ from each other
-      */
-      bool operator != (const Iterator& rhs) const { return !(*this == rhs); }
-      
-      /**
-      @brief assigns a new iterator
-      */
-      Iterator& operator = (const Iterator& rhs) {
-        _cursor = rhs._cursor;
-        _item = rhs._item;
-        return *this;
-      }
-      
-      /**
-      @brief prefix increment operator
-      */
-      Iterator& operator ++ () { 
-        _item._node = *(++_cursor);
-        return *this; 
-      }
-      
-      /**
-      @brief postfix increment operator
-      */
-      Iterator& operator ++ (int n) { 
-        _item._node = *(n == 0 ? _cursor++ : _cursor += n);
-        return *this; 
-      }
-
-      /**
-      @brief prefix decrement operator
-      */
-      Iterator& operator -- () {
-        _item._node = *(--_cursor);
-        return *this;
-      }
-
-      /**
-      @brief postfix decrement oeprator
-      */
-      Iterator& operator -- (int n) {
-        _item._node = *(n == 0 ? _cursor-- : _cursor -= n);
-        return *this;
-      }
-
-    private:
-
-      PassiveVector<Node*>::iterator _cursor {nullptr};
-      value_type _item;
-      
-      template <typename I>
-      explicit Iterator(I in) : _cursor {in}, _item{*in} { }
-  };
-    
-    /**
-    @brief constructs a successor range from a task
-    */
-    explicit SuccessorsRange(U t) : _node {t._node} {}
-
-    /**
-    @brief default copy constructor
-    */
-    SuccessorsRange(const SuccessorsRange&) = default;
-
-    /**
-    @brief default copy assignment
-    */
-    SuccessorsRange& operator = (const SuccessorsRange&) = default;
-    
-    /**
-    @brief returns an iterator to the beginning of the successor range
-    */
-    Iterator begin() { return Iterator(_node->_successors.begin()); }
-
-    /**
-    @brief returns an iterator to the end of the successor range
-    */
-    Iterator end() { return Iterator(_node->_successors.end()); }
-    
-    /**
-    @brief returns the size of the range
-    */
-    size_t size() const { return _node->_successors.size(); }
-
-    /**
-    @brief returns a task to the successor at specified position
-    */
-    value_type operator [] (size_t pos) const { return value_type(_node->_successors[pos]); }
-    
-    /**
-    @brief compare operator ==
-    */
-    bool operator == (const SuccessorsRange& rhs) const { return _node == rhs._node; }
-    
-    /**
-    @brief compare operator !=
-    */
-    bool operator != (const SuccessorsRange& rhs) const { return _node != rhs._node; }
-
-  private:
-
-    Node* _node {nullptr};
-};
-
-
-/**
-
-@class DependentsRange
-
-@brief Creates a range of dependents of a task/taskview
-
-*/
-template <typename U>
-class DependentsRange {
-  
-  using value_type = std::decay_t<U>;
-  using reference = value_type&;
-  using const_reference = const value_type&;
-  using pointer = value_type*;
-  using const_pointer = const value_type*;
-
-  static_assert(
-    std::is_same_v<value_type, Task> || std::is_same_v<value_type, TaskView>,
-    "DependentsRange takes only Task or TaskView type"
-  );
-  
-  public:
-
-  class Iterator {
-
-    friend class DependentsRange;
-
-    public:
-      
-      /**
-      @brief default constructor
-      */
-      Iterator() = default;
-      
-      /**
-      @brief copy constructor
-      */
-      Iterator(const Iterator&) = default;
-      
-      /**
-      @brief mutable object accessor 
-      */
-      value_type operator * () { return _item; }
-
-      /**
-      @brief immutable object accessor
-      */
-      const_reference operator * () const { return _item; }
-      
-      /**
-      @brief mutable object pointer accessor
-      */
-      pointer operator -> () { return &_item; }
-
-      /**
-      @brief immutable object pointer accessor
-      */
-      const_pointer operator -> () const { return &_item; }
-
-      /**
-      @brief compares if two iterators equal each other
-      */
-      bool operator == (const Iterator& rhs) const { return _cursor == rhs._cursor; }
-
-      /**
-      @brief compares if two iterators differ from each other
-      */
-      bool operator != (const Iterator& rhs) const { return !(*this == rhs); }
-      
-      /**
-      @brief assigns a new iterator
-      */
-      Iterator& operator = (const Iterator& rhs) {
-        _cursor = rhs._cursor;
-        _item = rhs._item;
-        return *this;
-      }
-      
-      /**
-      @brief prefix increment operator
-      */
-      Iterator& operator ++ () { 
-        _item._node = *(++_cursor);
-        return *this; 
-      }
-      
-      /**
-      @brief postfix increment operator
-      */
-      Iterator& operator ++ (int n) { 
-        _item._node = *(n == 0 ? _cursor++ : _cursor += n);
-        return *this; 
-      }
-
-      /**
-      @brief prefix decrement operator
-      */
-      Iterator& operator -- () {
-        _item._node = *(--_cursor);
-        return *this;
-      }
-
-      /**
-      @brief postfix decrement oeprator
-      */
-      Iterator& operator -- (int n) {
-        _item._node = *(n == 0 ? _cursor-- : _cursor -= n);
-        return *this;
-      }
-
-    private:
-
-      PassiveVector<Node*>::iterator _cursor {nullptr};
-      value_type _item;
-      
-      template <typename I>
-      explicit Iterator(I in) : _cursor {in}, _item{*in} { }
-  };
-    
-    /**
-    @brief constructs a predecessor range from a task
-    */
-    explicit DependentsRange(U t) : _node {t._node} {}
-    
-    /**
-    @brief default copy constructor
-    */
-    DependentsRange(const DependentsRange&) = default; 
-
-    /**
-    @brief default copy assignment
-    */
-    DependentsRange& operator = (const DependentsRange&) = default;
-    
-    /**
-    @brief returns an iterator to the beginning of the predecessor range
-    */
-    Iterator begin() { return Iterator(_node->_dependents.begin()); }
-
-    /**
-    @brief returns an iterator to the end of the predecessor range
-    */
-    Iterator end() { return Iterator(_node->_dependents.end()); }
-    
-    /**
-    @brief returns the size of the range
-    */
-    size_t size() const { return _node->_dependents.size(); }
-    
-    /**
-    @brief returns a task to the dependent at specified position
-    */
-    value_type operator [] (size_t pos) const { return value_type(_node->_dependents[pos]); }
-
-    /**
-    @brief compare operator ==
-    */
-    bool operator == (const DependentsRange& rhs) const { return _node == rhs._node; }
-    
-    /**
-    @brief compare operator !=
-    */
-    bool operator != (const DependentsRange& rhs) const { return _node != rhs._node; }
-
-  private:
-
-    Node* _node {nullptr};
-};
-
 // ----------------------------------------------------------------------------
 // Task
 // ----------------------------------------------------------------------------
@@ -364,9 +25,6 @@ class Task {
   friend class Taskflow;
   friend class TaskView;
   
-  friend class SuccessorsRange<Task>;
-  friend class DependentsRange<Task>;
-
   public:
 
     /**
@@ -393,6 +51,11 @@ class Task {
     @brief compares if two tasks are associated with the same graph node
     */
     bool operator == (const Task& rhs) const;
+
+    /**
+    @brief compares if two tasks are not associated with the same graph node
+    */
+    bool operator != (const Task& rhs) const;
     
     /**
     @brief queries the name of the task
@@ -482,15 +145,17 @@ class Task {
     bool has_work() const;
     
     /**
-    @brief returns a range object of successors of this task for iterating
+    @brief applies an visitor callable to each successor of the task
     */
-    SuccessorsRange<Task> successors_range() const;
-
+    template <typename V>
+    void for_each_successor(V&& visitor) const;
+    
     /**
-    @brief returns a range object of dependents of this task for iterating
+    @brief applies an visitor callable to each dependents of the task
     */
-    DependentsRange<Task> dependents_range() const;
-
+    template <typename V>
+    void for_each_dependent(V&& visitor) const;
+    
   private:
     
     Task(Node&);
@@ -551,6 +216,11 @@ inline bool Task::operator == (const Task& rhs) const {
   return _node == rhs._node;
 }
 
+// Operator !=
+inline bool Task::operator != (const Task& rhs) const {
+  return _node != rhs._node;
+}
+
 // Function: name
 inline Task& Task::name(const std::string& name) {
   _node->_name = name;
@@ -598,14 +268,20 @@ inline bool Task::has_work() const {
   return _node ? _node->_work.index() != 0 : false;
 }
 
-// Function: successors
-inline SuccessorsRange<Task> Task::successors_range() const {
-  return SuccessorsRange<Task>(*this);
+// Function: for_each_successor
+template <typename V>
+void Task::for_each_successor(V&& visitor) const {
+  for(size_t i=0; i<_node->_successors.size(); ++i) {
+    visitor(Task(_node->_successors[i]));
+  }
 }
 
-// Function: dependents
-inline DependentsRange<Task> Task::dependents_range() const {
-  return DependentsRange<Task>(*this);
+// Function: for_each_dependent
+template <typename V>
+void Task::for_each_dependent(V&& visitor) const {
+  for(size_t i=0; i<_node->_dependents.size(); ++i) {
+    visitor(Task(_node->_dependents[i]));
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -620,9 +296,6 @@ inline DependentsRange<Task> Task::dependents_range() const {
 class TaskView {
   
   friend class Executor;
-  
-  friend class SuccessorsRange<TaskView>;
-  friend class DependentsRange<TaskView>;
 
   public:
 
@@ -655,6 +328,16 @@ class TaskView {
     @brief replaces the contents with a null pointer
     */
     TaskView& operator = (std::nullptr_t);
+
+    /**
+    @brief compares if two taskviews are associated with the same task
+    */
+    bool operator == (const TaskView&) const;
+    
+    /**
+    @brief compares if two taskviews are associated with different tasks
+    */
+    bool operator != (const TaskView&) const;
     
     /**
     @brief queries the name of the task
@@ -692,14 +375,16 @@ class TaskView {
     bool empty() const;
     
     /**
-    @brief returns a range object of successors of this task view for iterating
+    @brief applies an visitor callable to each successor of the task
     */
-    SuccessorsRange<TaskView> successors_range() const;
-
+    template <typename V>
+    void for_each_successor(V&& visitor) const;
+    
     /**
-    @brief returns a range object of dependents of this task view for iterating
+    @brief applies an visitor callable to each dependents of the task
     */
-    DependentsRange<TaskView> dependents_range() const;
+    template <typename V>
+    void for_each_dependent(V&& visitor) const;
     
   private:
     
@@ -773,16 +458,31 @@ inline bool TaskView::empty() const {
   return _node == nullptr;
 }
 
-// Function: successors
-inline SuccessorsRange<TaskView> TaskView::successors_range() const {
-  return SuccessorsRange<TaskView>(*this);
+// Operator ==
+inline bool TaskView::operator == (const TaskView& rhs) const {
+  return _node == rhs._node;
 }
 
-// Function: dependents
-inline DependentsRange<TaskView> TaskView::dependents_range() const {
-  return DependentsRange<TaskView>(*this);
+// Operator !=
+inline bool TaskView::operator != (const TaskView& rhs) const {
+  return _node != rhs._node;
 }
 
+// Function: for_each_successor
+template <typename V>
+void TaskView::for_each_successor(V&& visitor) const {
+  for(size_t i=0; i<_node->_successors.size(); ++i) {
+    visitor(TaskView(_node->_successors[i]));
+  }
+}
+
+// Function: for_each_dependent
+template <typename V>
+void TaskView::for_each_dependent(V&& visitor) const {
+  for(size_t i=0; i<_node->_dependents.size(); ++i) {
+    visitor(TaskView(_node->_dependents[i]));
+  }
+}
 
 }  // end of namespace tf. ---------------------------------------------------
 

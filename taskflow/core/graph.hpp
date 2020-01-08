@@ -54,12 +54,6 @@ class Node {
   friend class FlowBuilder;
   friend class Subflow;
 
-  template <typename T>
-  friend class SuccessorsRange;
-  
-  template <typename T>
-  friend class DependentsRange;
-
   public:
   
   using StaticWork  = std::function<void()>;
