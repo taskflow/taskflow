@@ -463,7 +463,6 @@ auto [f2A, f2B, f2C] = f2.emplace(
   []() { std::cout << "Task f2C\n"; }
 );
 
-// Use f1 to compose f2
 auto f1_module_task = f2.composed_of(f1);
 
 f2A.precede(f1_module_task);
