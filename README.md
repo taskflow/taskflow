@@ -53,6 +53,7 @@ We are committed to support trustworthy developments for both academic and indus
 + *"Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [totalgee][totalgee]*
 + *"Cpp-Taskflow lets me handle parallel processing in a smart way." [Hayabusa](https://cpp-learning.com/cpp-taskflow/)*
 + *"Best poster award for open-source parallel programming library." [Cpp Conference 2018][Cpp Conference 2018]*
++ *"Second Prize of Open-source Software Competition." [ACM Multimedia Conference 2019](https://tsung-wei-huang.github.io/img/mm19-ossc-award.jpg)*
 
 See a quick [presentation][Presentation] and 
 visit the [documentation][wiki] to learn more about Cpp-Taskflow.
@@ -69,6 +70,8 @@ Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
    * [Step 1: Create a Subflow](#step-1-create-a-subflow)
    * [Step 2: Detach or Join a Subflow](#step-2-detach-or-join-a-subflow)
 * [Conditional Tasking](#conditional-tasking)
+   * [Step 1: Create a Condition Task](#step-1-create-a-condition-task)
+   * [Step 2: Understand the Task Scheduling Rules](#step-2-understand-the-task-scheduling-rules)
 * [Taskflow Composition](#taskflow-composition)
 * [Debug a Taskflow Graph](#debug-a-taskflow-graph)
 * [Monitor Thread Activities](#monitor-thread-activities)
@@ -77,7 +80,6 @@ Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
 * [Compile Unit Tests and Examples](#compile-unit-tests-and-examples)
 * [Get Involved](#get-involved)
 * [Who is Using Cpp-Taskflow?](#who-is-using-cpp-taskflow)
-* [Contributors](#contributors)
 
 
 # Get Started with Cpp-Taskflow
@@ -399,6 +401,42 @@ A.precede(B);
 ```
 
 # Conditional Tasking
+
+Taskflow supports *conditional tasking* for users to implement *dynamic* and *cyclic* control flows.
+You can create highly versatile and efficient parallel patterns through condition tasks.
+
+## Step 1: Create a Condition Task
+
+A *condition task* evalutes a set of instructions and returns an integer index
+of the next immediate successor to execute.
+The index is defined with respect to the order of its successor construction.
+
+<img align="right" src="image/condition-2.png" width="20%">
+
+```cpp
+tf::Task init = tf.emplace([](){ }).name("init");
+tf::Task stop = tf.emplace([](){ }).name("stop");
+
+// creates a condition task that returns 0 or 1
+tf::Task cond = tf.emplace([](){
+  std::cout << "flipping a coin\n";
+  return rand() % 2;
+}).name("cond");
+
+// creates a feedback loop
+init.precede(cond);
+cond.precede(cond, stop);  // cond--0-->cond, cond--1-->stop
+
+executor.run(tf).wait();
+```
+
+If the return value from `cond` is 0, it goes back to itself, or otherwise to `stop`.
+Cpp-Taskflow terms the preceding link from a condition task a *weak dependency*
+(dashed lines above).
+Others are *strong depedency* (solid lines above).
+
+
+## Step 2: Understand the Task Scheduling Rules
 
 TBD
 
