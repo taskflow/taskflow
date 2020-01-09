@@ -470,8 +470,8 @@ f2B.precede(f1_module_task);
 f1_module_task.precede(f2C);
 ```
 
-Similarly, `composed_of` returns a task handle and you can use the methods 
-`precede` and `succeed` to create dependencies. 
+Similarly, `composed_of` returns a task handle and you can use 
+`precede` to create dependencies. 
 You can compose a taskflow from multiple taskflows and use the result
 to compose a larger taskflow and so on.
 
