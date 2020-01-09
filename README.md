@@ -625,7 +625,7 @@ B.work([](){ /* do something */ });
 
 The method `parallel_for` creates a subgraph that applies the callable to each item in the given range of a container.
 
-<img align="right" width="40%" src="image/parallel_for.png">
+<img align="right" width="35%" src="image/parallel_for.png">
 
 ```cpp
 auto v = {'A', 'B', 'C', 'D'};
@@ -641,7 +641,7 @@ auto [S, T] = tf.parallel_for(
 
 You can specify a *chunk* size (default one) in the last argument to force each worker to execute a certain number of items at a time.
 
-<img align="right" width="20%" src="image/parallel_for_2.png">
+<img align="right" width="18%" src="image/parallel_for_2.png">
 
 ```cpp
 auto v = {'A', 'B', 'C', 'D'};
