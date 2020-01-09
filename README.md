@@ -28,18 +28,22 @@ together with an efficient *work-stealing* scheduler to optimize your multithrea
 Cpp-Taskflow has a unified interface for both *static* tasking and *dynamic* tasking,
 allowing users to quickly master our parallel task programming model in a natural idiom.
 
-| Static Tasking | Dynamic Tasking |
+| [Static Tasking](#get-started-with-cpp-taskflow) | [Dynamic Tasking](#dynamic-tasking) |
 | :------------: | :-------------: |
 | ![](image/static_graph.png) | <img align="right" src="image/dynamic_graph.png" width="100%"> |
 
 Cpp-Taskflow supports conditional tasking for you to implement cyclic and dynamic control flows that are otherwise difficult to do with existing task programming frameworks.
 
-![](image/condition.png)
+| [Conditional Tasking](#conditional-tasking) |
+| :-----------------: |
+| ![](image/condition.png)|
 
 Cpp-Taskflow is composable. You can create large parallel graphs through
 composition of modular and reusable blocks that are easier to optimize.
 
-![](image/framework.png)
+| [Graph Composition](#taskflow-composition) |
+| :---------------: |
+|![](image/framework.png)|
 
 Cpp-Taskflow let you easily monitor the thread activities and analyze their programs' performance through [chrome://tracing][ChromeTracing].
 
@@ -232,7 +236,9 @@ or it can result in undefined behavior.
 In most applications, you need only one executor to run multiple taskflows
 each representing a specific part of your parallel decomposition.
 
-# Dynamic Tasking
+<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+
+# Dynamic Tasking 
 
 Another powerful feature of Taskflow is *dynamic* tasking.
 Dynamic tasks are those tasks created during the execution of a taskflow.
@@ -399,6 +405,7 @@ tf::Task B = tf.emplace([&] () {
 
 A.precede(B);
 ```
+<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 
 # Conditional Tasking
 
@@ -440,6 +447,8 @@ Others are *strong depedency* (solid lines above).
 
 TBD
 
+<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+
 # Taskflow Composition
 
 A powerful feature of `tf::Taskflow` is composability. 
@@ -474,6 +483,8 @@ Similarly, `composed_of` returns a task handle and you can use
 `precede` to create dependencies. 
 You can compose a taskflow from multiple taskflows and use the result
 to compose a larger taskflow and so on.
+
+<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 
 # Debug a Taskflow Graph
 
@@ -549,6 +560,7 @@ A.precede(B);
 executor.run(tf).wait();  // run the taskflow
 tf.dump(std::cout);       // dump the graph including dynamic tasks
 ```
+<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 
 # Monitor Thread Activities 
 
@@ -583,6 +595,8 @@ You shall see the tracing graph.
 
 Each task is given a name of `i_j` where `i` is the thread id and `j` is the task number.
 You can pan or zoom in/out the timeline to get into a detailed view.
+
+<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 
 # API Reference
 
@@ -795,6 +809,8 @@ executor.wait_for_all();
 ```
 
 The first run finishes before the second run, and the second run finishes before the third run.
+
+<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 
 # System Requirements
 
