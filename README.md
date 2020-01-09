@@ -452,13 +452,11 @@ and use them to compose a large graph through the `composed_of` method.
 ```cpp 
 tf::Taskflow f1, f2;
 
-// Add two tasks 
 auto [f1A, f1B] = f1.emplace( 
   []() { std::cout << "Task f1A\n"; },
   []() { std::cout << "Task f1B\n"; }
 );
 
-// Add two tasks 
 auto [f2A, f2B, f2C] = f2.emplace( 
   []() { std::cout << "Task f2A\n"; },
   []() { std::cout << "Task f2B\n"; },
