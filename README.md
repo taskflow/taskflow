@@ -453,9 +453,7 @@ However,
 the scheduler skips this rule for a condition task and jumps directly to its successor
 indexed by the return value.
 
-<center>
 ![](image/conditional-tasking-rules.svg)
-</center>
 
 It is users' responsibility to ensure a taskflow is properly conditioned. 
 Top things to avoid include no source tasks to start with and task race.
