@@ -21,8 +21,7 @@ int main(){
   A.precede(C);  // C runs after A         //    |     +---+     |            
   B.precede(D);  // D runs after B         //    +---->| C |-----+            
   C.precede(D);  // D runs after C         //          +---+
-
-  executor.run(taskflow).wait();
+  executor.run(taskflow).wait(); 
 
   return 0;
 }
