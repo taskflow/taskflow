@@ -88,7 +88,7 @@ class FlowBuilder {
     @param end index of the end (exclusive)
     @param step step size 
     @param callable a callable object to be applied to
-    @param partitions number of partitions
+    @param chunk items per task
 
     @return a pair of Task handles to the beginning and the end of the graph
     */

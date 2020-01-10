@@ -34,7 +34,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
-   &#160;<span id="projectnumber">2.2.0</span>
+   &#160;<span id="projectnumber">2.3.0</span>
    </div>
   </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -103,7 +103,7 @@ $(document).ready(function(){initNavTree('classtf_1_1WorkStealingQueue.html','')
 <p>Lock-free unbounded single-producer multiple-consumer queue.  
  <a href="classtf_1_1WorkStealingQueue.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="spmc__queue_8hpp_source.html">spmc_queue.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="wsq_8hpp_source.html">wsq.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -148,8 +148,8 @@ class tf::WorkStealingQueue&lt; T &gt;</h3>
   </table>
   </dd>
 </dl>
-<p>This class implements the work stealing queue described in the paper, "Dynamic Circular Work-stealing Deque," SPAA, 2015. Only the queue owner can perform pop and push operations, while others can steal data from the queue.</p>
-<p>PPoPP implementation paper "Correct and Efficient Work-Stealing for Weak Memory Models" <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">https://www.di.ens.fr/~zappa/readings/ppopp13.pdf</a> </p>
+<p>This class implements the work stealing queue described in the paper, "Correct and Efficient Work-Stealing for Weak Memory Models," available at <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">https://www.di.ens.fr/~zappa/readings/ppopp13.pdf</a>.</p>
+<p>Only the queue owner can perform pop and push operations, while others can steal data from the queue. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0c790ba6a203092fa8f15297dcb5b1d6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0c790ba6a203092fa8f15297dcb5b1d6">&#9670;&nbsp;</a></span>WorkStealingQueue()</h2>
@@ -270,7 +270,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="spmc__queue_8hpp_source.html">spmc_queue.hpp</a></li>
+<li><a class="el" href="wsq_8hpp_source.html">wsq.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

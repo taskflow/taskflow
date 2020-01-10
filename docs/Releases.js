@@ -3,7 +3,8 @@ var Releases =
     [ "Master Branch (GitHub)", "master-branch.html", [
       [ "Download", "master-branch.html#master-branch_download", null ],
       [ "Working Items", "master-branch.html#master-branch_new_features", null ],
-      [ "Bug Fixes", "master-branch.html#master-branch_bug_fixes", null ]
+      [ "Bug Fixes", "master-branch.html#master-branch_bug_fixes", null ],
+      [ "Deprecated Items", "master-branch.html#master-branch_deprecated_items", null ]
     ] ],
     [ "Release 2.2.0 (2019/06/15)", "release-2-2-0.html", [
       [ "Download", "release-2-2-0.html#release-2-2-0_download", null ],

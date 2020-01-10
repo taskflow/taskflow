@@ -34,7 +34,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
-   &#160;<span id="projectnumber">2.2.0</span>
+   &#160;<span id="projectnumber">2.3.0</span>
    </div>
   </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -93,6 +93,7 @@ $(document).ready(function(){initNavTree('classtf_1_1FlowBuilder.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classtf_1_1FlowBuilder-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">tf::FlowBuilder Class Reference</div>  </div>
@@ -126,24 +127,17 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1f6118326ad434f6c839007a1a79fe1b"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a1f6118326ad434f6c839007a1a79fe1b">emplace</a> (C &amp;&amp;... callables)</td></tr>
 <tr class="memdesc:a1f6118326ad434f6c839007a1a79fe1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates multiple tasks from a list of callable objects at one time  <a href="#a1f6118326ad434f6c839007a1a79fe1b">More...</a><br /></td></tr>
 <tr class="separator:a1f6118326ad434f6c839007a1a79fe1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf3da84e99b67248d6d8fdba48267caf"><td class="memTemplParams" colspan="2"><a id="abf3da84e99b67248d6d8fdba48267caf"></a>
-template&lt;typename C &gt; </td></tr>
-<tr class="memitem:abf3da84e99b67248d6d8fdba48267caf"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#abf3da84e99b67248d6d8fdba48267caf">silent_emplace</a> (C &amp;&amp;callable)</td></tr>
-<tr class="memdesc:abf3da84e99b67248d6d8fdba48267caf"><td class="mdescLeft">&#160;</td><td class="mdescRight">the same as <a class="el" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c" title="creates a task from a given callable object ">tf::FlowBuilder::emplace</a> (starting at 2.1.0) <br /></td></tr>
-<tr class="separator:abf3da84e99b67248d6d8fdba48267caf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf423e2775a25c2b8be4dce7dae8880a"><td class="memTemplParams" colspan="2"><a id="acf423e2775a25c2b8be4dce7dae8880a"></a>
-template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt; </td></tr>
-<tr class="memitem:acf423e2775a25c2b8be4dce7dae8880a"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#acf423e2775a25c2b8be4dce7dae8880a">silent_emplace</a> (C &amp;&amp;... callables)</td></tr>
-<tr class="memdesc:acf423e2775a25c2b8be4dce7dae8880a"><td class="mdescLeft">&#160;</td><td class="mdescRight">the same as <a class="el" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c" title="creates a task from a given callable object ">tf::FlowBuilder::emplace</a> (starting at 2.1.0) <br /></td></tr>
-<tr class="separator:acf423e2775a25c2b8be4dce7dae8880a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a644d7ff0f19ca155a2e7d56b1cdb3a0b"><td class="memTemplParams" colspan="2">template&lt;typename I , typename C &gt; </td></tr>
-<tr class="memitem:a644d7ff0f19ca155a2e7d56b1cdb3a0b"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a>, <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a644d7ff0f19ca155a2e7d56b1cdb3a0b">parallel_for</a> (I beg, I end, C &amp;&amp;callable, size_t partitions=0)</td></tr>
-<tr class="memdesc:a644d7ff0f19ca155a2e7d56b1cdb3a0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a task dependency graph of range-based parallel_for  <a href="#a644d7ff0f19ca155a2e7d56b1cdb3a0b">More...</a><br /></td></tr>
-<tr class="separator:a644d7ff0f19ca155a2e7d56b1cdb3a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfce9d2800a097202bdd4047f205dacf"><td class="memTemplParams" colspan="2">template&lt;typename I , typename C , std::enable_if_t&lt; std::is_arithmetic_v&lt; I &gt;, void &gt; *  = nullptr&gt; </td></tr>
-<tr class="memitem:acfce9d2800a097202bdd4047f205dacf"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a>, <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#acfce9d2800a097202bdd4047f205dacf">parallel_for</a> (I beg, I end, I step, C &amp;&amp;callable, size_t partitions=0)</td></tr>
-<tr class="memdesc:acfce9d2800a097202bdd4047f205dacf"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a task dependency graph of index-based parallel_for  <a href="#acfce9d2800a097202bdd4047f205dacf">More...</a><br /></td></tr>
-<tr class="separator:acfce9d2800a097202bdd4047f205dacf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a01192f4f92c15380a4f259e2fec2d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9">composed_of</a> (<a class="el" href="classtf_1_1Taskflow.html">Taskflow</a> &amp;taskflow)</td></tr>
+<tr class="memdesc:a0a01192f4f92c15380a4f259e2fec2d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a module task from a taskflow  <a href="#a0a01192f4f92c15380a4f259e2fec2d9">More...</a><br /></td></tr>
+<tr class="separator:a0a01192f4f92c15380a4f259e2fec2d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9357261a2a8a9e4598b2f3d69b2f689d"><td class="memTemplParams" colspan="2">template&lt;typename I , typename C &gt; </td></tr>
+<tr class="memitem:a9357261a2a8a9e4598b2f3d69b2f689d"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a>, <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a9357261a2a8a9e4598b2f3d69b2f689d">parallel_for</a> (I beg, I end, C &amp;&amp;callable, size_t chunk=1)</td></tr>
+<tr class="memdesc:a9357261a2a8a9e4598b2f3d69b2f689d"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a task dependency graph of range-based parallel_for  <a href="#a9357261a2a8a9e4598b2f3d69b2f689d">More...</a><br /></td></tr>
+<tr class="separator:a9357261a2a8a9e4598b2f3d69b2f689d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0f7b86c70a39518f0ea6ddefef9cc22"><td class="memTemplParams" colspan="2">template&lt;typename I , typename C , std::enable_if_t&lt; std::is_arithmetic_v&lt; I &gt;, void &gt; *  = nullptr&gt; </td></tr>
+<tr class="memitem:aa0f7b86c70a39518f0ea6ddefef9cc22"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a>, <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#aa0f7b86c70a39518f0ea6ddefef9cc22">parallel_for</a> (I beg, I end, I step, C &amp;&amp;callable, size_t chunk=1)</td></tr>
+<tr class="memdesc:aa0f7b86c70a39518f0ea6ddefef9cc22"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a task dependency graph of index-based parallel_for  <a href="#aa0f7b86c70a39518f0ea6ddefef9cc22">More...</a><br /></td></tr>
+<tr class="separator:aa0f7b86c70a39518f0ea6ddefef9cc22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06b06b57f8ec8bb060951fc71dd375fb"><td class="memTemplParams" colspan="2">template&lt;typename I , typename T , typename B &gt; </td></tr>
 <tr class="memitem:a06b06b57f8ec8bb060951fc71dd375fb"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a>, <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a06b06b57f8ec8bb060951fc71dd375fb">reduce</a> (I beg, I end, T &amp;result, B &amp;&amp;bop)</td></tr>
 <tr class="memdesc:a06b06b57f8ec8bb060951fc71dd375fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a task dependency graph of parallel reduction  <a href="#a06b06b57f8ec8bb060951fc71dd375fb">More...</a><br /></td></tr>
@@ -188,6 +182,12 @@ template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt; </td></tr
 <tr class="memitem:ae62feb52131f930695357dca68ea2acb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#ae62feb52131f930695357dca68ea2acb">gather</a> (<a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; others, <a class="el" href="classtf_1_1Task.html">Task</a> A)</td></tr>
 <tr class="memdesc:ae62feb52131f930695357dca68ea2acb"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds dependency links from many tasks to one task A  <a href="#ae62feb52131f930695357dca68ea2acb">More...</a><br /></td></tr>
 <tr class="separator:ae62feb52131f930695357dca68ea2acb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:aaa7728226b6ce66782e8816b1658dd9a"><td class="memItemLeft" align="right" valign="top"><a id="aaa7728226b6ce66782e8816b1658dd9a"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><b>Task</b></td></tr>
+<tr class="separator:aaa7728226b6ce66782e8816b1658dd9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Building blocks of a task dependency graph. </p>
@@ -317,6 +317,41 @@ template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt; </td></tr
 
 </div>
 </div>
+<a id="a0a01192f4f92c15380a4f259e2fec2d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a01192f4f92c15380a4f259e2fec2d9">&#9670;&nbsp;</a></span>composed_of()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> tf::FlowBuilder::composed_of </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtf_1_1Taskflow.html">Taskflow</a> &amp;&#160;</td>
+          <td class="paramname"><em>taskflow</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>creates a module task from a taskflow </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">taskflow</td><td>a taskflow object for the module </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="task handle ">Task</a> handle </dd></dl>
+
+</div>
+</div>
 <a id="a4d52a7fe2814b264846a2085e931652c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4d52a7fe2814b264846a2085e931652c">&#9670;&nbsp;</a></span>emplace() <span class="overload">[1/2]</span></h2>
 
@@ -348,7 +383,7 @@ template&lt;typename C &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handle </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1Task.html" title="task handle ">Task</a> handle </dd></dl>
 
 </div>
 </div>
@@ -383,7 +418,7 @@ template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handle </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="task handle ">Task</a> handle </dd></dl>
 
 </div>
 </div>
@@ -545,8 +580,8 @@ template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt; </div>
 
 </div>
 </div>
-<a id="a644d7ff0f19ca155a2e7d56b1cdb3a0b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a644d7ff0f19ca155a2e7d56b1cdb3a0b">&#9670;&nbsp;</a></span>parallel_for() <span class="overload">[1/2]</span></h2>
+<a id="a9357261a2a8a9e4598b2f3d69b2f689d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9357261a2a8a9e4598b2f3d69b2f689d">&#9670;&nbsp;</a></span>parallel_for() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -575,7 +610,7 @@ template&lt;typename I , typename C &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>partitions</em> = <code>0</code>&#160;</td>
+          <td class="paramname"><em>chunk</em> = <code>1</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -586,7 +621,7 @@ template&lt;typename I , typename C &gt; </div>
 </div><div class="memdoc">
 
 <p>constructs a task dependency graph of range-based parallel_for </p>
-<p>The task dependency graph applies a callable object to the dereferencing of every iterator in the range [beg, end) partition-by-partition.</p>
+<p>The task dependency graph applies a callable object to the dereferencing of every iterator in the range [beg, end) chunk by chunk.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">I</td><td>input iterator type </td></tr>
@@ -599,16 +634,16 @@ template&lt;typename I , typename C &gt; </div>
     <tr><td class="paramname">beg</td><td>iterator to the beginning (inclusive) </td></tr>
     <tr><td class="paramname">end</td><td>iterator to the end (exclusive) </td></tr>
     <tr><td class="paramname">callable</td><td>a callable object to be applied to </td></tr>
-    <tr><td class="paramname">partitions</td><td>number of partitions</td></tr>
+    <tr><td class="paramname">chunk</td><td>size (default 1)</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>
-<a id="acfce9d2800a097202bdd4047f205dacf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acfce9d2800a097202bdd4047f205dacf">&#9670;&nbsp;</a></span>parallel_for() <span class="overload">[2/2]</span></h2>
+<a id="aa0f7b86c70a39518f0ea6ddefef9cc22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0f7b86c70a39518f0ea6ddefef9cc22">&#9670;&nbsp;</a></span>parallel_for() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -643,7 +678,7 @@ template&lt;typename I , typename C , std::enable_if_t&lt; std::is_arithmetic_v&
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>partitions</em> = <code>0</code>&#160;</td>
+          <td class="paramname"><em>chunk</em> = <code>1</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -654,7 +689,7 @@ template&lt;typename I , typename C , std::enable_if_t&lt; std::is_arithmetic_v&
 </div><div class="memdoc">
 
 <p>constructs a task dependency graph of index-based parallel_for </p>
-<p>The task dependency graph applies a callable object to every index in the range [beg, end) with a step size partition-by-partition.</p>
+<p>The task dependency graph applies a callable object to every index in the range [beg, end) with a step size chunk by chunk.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">I</td><td>arithmetic index type </td></tr>
@@ -664,15 +699,15 @@ template&lt;typename I , typename C , std::enable_if_t&lt; std::is_arithmetic_v&
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">beg</td><td>index to the beginning (inclusive) </td></tr>
-    <tr><td class="paramname">end</td><td>index to the end (exclusive) </td></tr>
+    <tr><td class="paramname">beg</td><td>index of the beginning (inclusive) </td></tr>
+    <tr><td class="paramname">end</td><td>index of the end (exclusive) </td></tr>
     <tr><td class="paramname">step</td><td>step size </td></tr>
     <tr><td class="paramname">callable</td><td>a callable object to be applied to </td></tr>
-    <tr><td class="paramname">partitions</td><td>number of partitions</td></tr>
+    <tr><td class="paramname">chunk</td><td>items per task</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>
@@ -700,7 +735,7 @@ template&lt;typename I , typename C , std::enable_if_t&lt; std::is_arithmetic_v&
 </div><div class="memdoc">
 
 <p>creates an empty task </p>
-<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handle </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="task handle ">Task</a> handle </dd></dl>
 
 </div>
 </div>
@@ -808,7 +843,7 @@ template&lt;typename I , typename T , typename B &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>
@@ -863,7 +898,7 @@ template&lt;typename I , typename T &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>
@@ -918,7 +953,7 @@ template&lt;typename I , typename T &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>
@@ -989,7 +1024,7 @@ template&lt;typename I , typename T , typename B , typename U &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>
@@ -1068,7 +1103,7 @@ template&lt;typename I , typename T , typename B , typename P , typename U &gt; 
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>

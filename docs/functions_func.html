@@ -34,7 +34,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
-   &#160;<span id="projectnumber">2.2.0</span>
+   &#160;<span id="projectnumber">2.3.0</span>
    </div>
   </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -109,7 +109,7 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 , <a class="el" href="classtf_1_1Taskflow.html#a1f00bbe72a1553c9656ecae4d98bb9af">tf::Taskflow</a>
 </li>
 <li>composed_of()
-: <a class="el" href="classtf_1_1Taskflow.html#a21b96ca779cc68d1117fdf1b053d11ee">tf::Taskflow</a>
+: <a class="el" href="classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9">tf::FlowBuilder</a>
 </li>
 </ul>
 
@@ -148,13 +148,23 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <li>FlowBuilder()
 : <a class="el" href="classtf_1_1FlowBuilder.html#a67d023d5493da1594a1d2eaea89da179">tf::FlowBuilder</a>
 </li>
+<li>for_each_dependent()
+: <a class="el" href="classtf_1_1Task.html#a3bf68937662bf291637e4a763476b2e4">tf::Task</a>
+, <a class="el" href="classtf_1_1TaskView.html#a55651e26436bfc2499cadaca4a24e48d">tf::TaskView</a>
+</li>
+<li>for_each_successor()
+: <a class="el" href="classtf_1_1Task.html#aff13a503d4a3c994eb08cb6f22e1b427">tf::Task</a>
+, <a class="el" href="classtf_1_1TaskView.html#a3cb647dc0064b5d11e0c87226c47f8f8">tf::TaskView</a>
+</li>
+<li>for_each_task()
+: <a class="el" href="classtf_1_1Taskflow.html#a6350d0d6653ae9ae7b94c35e42fffe07">tf::Taskflow</a>
+</li>
 </ul>
 
 
 <h3><a id="index_g"></a>- g -</h3><ul>
 <li>gather()
 : <a class="el" href="classtf_1_1FlowBuilder.html#a8871a9277dad477a69fb3a323d9c7bdb">tf::FlowBuilder</a>
-, <a class="el" href="classtf_1_1Task.html#a40d627bd34014eb6f981014f209c304c">tf::Task</a>
 </li>
 <li>get()
 : <a class="el" href="structtf_1_1Error.html#a2fdb64a058ea1ff03706d0cd69c36021">tf::Error</a>
@@ -207,8 +217,9 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 : <a class="el" href="classtf_1_1Task.html#a974dc1d738b62b829ad261beeafbd67c">tf::Task</a>
 , <a class="el" href="classtf_1_1TaskView.html#acc4e2bef464e8fbb5706cefdf482a24f">tf::TaskView</a>
 </li>
-<li>num_nodes()
-: <a class="el" href="classtf_1_1Taskflow.html#a66ada311b948a920d2c26255ef731e6d">tf::Taskflow</a>
+<li>num_strong_dependents()
+: <a class="el" href="classtf_1_1Task.html#ad49a92e8858c3c298bed0215e341b66b">tf::Task</a>
+, <a class="el" href="classtf_1_1TaskView.html#ac7bcb9cb1ee8f020de56fdbf8e651388">tf::TaskView</a>
 </li>
 <li>num_successors()
 : <a class="el" href="classtf_1_1Task.html#a1a0afc89e8a6a416c511e74d82df135d">tf::Task</a>
@@ -216,6 +227,11 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 </li>
 <li>num_tasks()
 : <a class="el" href="classtf_1_1ExecutorObserver.html#a93d51307198abb9a1fc00a14904c3dd0">tf::ExecutorObserver</a>
+, <a class="el" href="classtf_1_1Taskflow.html#af4f03bca084deb5c2228ac8936d33649">tf::Taskflow</a>
+</li>
+<li>num_weak_dependents()
+: <a class="el" href="classtf_1_1Task.html#af3bf886291af7f39957d43d17083fe07">tf::Task</a>
+, <a class="el" href="classtf_1_1TaskView.html#ad1ddd9a7e68a81feee1785ece99e58f5">tf::TaskView</a>
 </li>
 <li>num_workers()
 : <a class="el" href="classtf_1_1Executor.html#a79223c7f32c9d715e725b8d775de2d29">tf::Executor</a>
@@ -230,16 +246,24 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <li>on_exit()
 : <a class="el" href="classtf_1_1ExecutorObserverInterface.html#a02c91f5c3839bde52e7b172170887acf">tf::ExecutorObserverInterface</a>
 </li>
+<li>operator!=()
+: <a class="el" href="classtf_1_1Task.html#af4e13636e3a494297b30c2b2e483f095">tf::Task</a>
+, <a class="el" href="classtf_1_1TaskView.html#adb557ad6ea636a2276022b04062e4725">tf::TaskView</a>
+</li>
 <li>operator=()
 : <a class="el" href="classtf_1_1Task.html#aebdcc47e47a119f261daab673a971458">tf::Task</a>
 , <a class="el" href="classtf_1_1TaskView.html#a6228f57867fcaeec9fd47e58be2773fd">tf::TaskView</a>
+</li>
+<li>operator==()
+: <a class="el" href="classtf_1_1Task.html#ad87bb498b0a4eae0c375bc59b66dbba8">tf::Task</a>
+, <a class="el" href="classtf_1_1TaskView.html#ac31f08774b5cb89bc56367739614abcd">tf::TaskView</a>
 </li>
 </ul>
 
 
 <h3><a id="index_p"></a>- p -</h3><ul>
 <li>parallel_for()
-: <a class="el" href="classtf_1_1FlowBuilder.html#a644d7ff0f19ca155a2e7d56b1cdb3a0b">tf::FlowBuilder</a>
+: <a class="el" href="classtf_1_1FlowBuilder.html#a9357261a2a8a9e4598b2f3d69b2f689d">tf::FlowBuilder</a>
 </li>
 <li>placeholder()
 : <a class="el" href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf">tf::FlowBuilder</a>
@@ -289,9 +313,6 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <h3><a id="index_s"></a>- s -</h3><ul>
 <li>set_up()
 : <a class="el" href="classtf_1_1ExecutorObserverInterface.html#ae9fc3e8778dbb52175fe6ff13eb1672d">tf::ExecutorObserverInterface</a>
-</li>
-<li>silent_emplace()
-: <a class="el" href="classtf_1_1FlowBuilder.html#abf3da84e99b67248d6d8fdba48267caf">tf::FlowBuilder</a>
 </li>
 <li>size()
 : <a class="el" href="classtf_1_1WorkStealingQueue.html#ab5fe261361a29226f52e6a5eb6351d38">tf::WorkStealingQueue&lt; T &gt;</a>

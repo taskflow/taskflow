@@ -34,7 +34,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
-   &#160;<span id="projectnumber">2.2.0</span>
+   &#160;<span id="projectnumber">2.3.0</span>
    </div>
   </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -100,7 +100,7 @@ $(document).ready(function(){initNavTree('classtf_1_1Task.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p>Handle to modify and access a task.  
+<p>task handle  
  <a href="classtf_1_1Task.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="task_8hpp_source.html">task.hpp</a>&gt;</code></p>
@@ -123,6 +123,14 @@ Public Member Functions</h2></td></tr>
 <a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a4b0e3d6a1985a353626c15970c51c820">operator=</a> (<a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/types/nullptr_t.html">std::nullptr_t</a>)</td></tr>
 <tr class="memdesc:a4b0e3d6a1985a353626c15970c51c820"><td class="mdescLeft">&#160;</td><td class="mdescRight">replaces the contents with a null pointer <br /></td></tr>
 <tr class="separator:a4b0e3d6a1985a353626c15970c51c820"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad87bb498b0a4eae0c375bc59b66dbba8"><td class="memItemLeft" align="right" valign="top"><a id="ad87bb498b0a4eae0c375bc59b66dbba8"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#ad87bb498b0a4eae0c375bc59b66dbba8">operator==</a> (const <a class="el" href="classtf_1_1Task.html">Task</a> &amp;rhs) const</td></tr>
+<tr class="memdesc:ad87bb498b0a4eae0c375bc59b66dbba8"><td class="mdescLeft">&#160;</td><td class="mdescRight">compares if two tasks are associated with the same graph node <br /></td></tr>
+<tr class="separator:ad87bb498b0a4eae0c375bc59b66dbba8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4e13636e3a494297b30c2b2e483f095"><td class="memItemLeft" align="right" valign="top"><a id="af4e13636e3a494297b30c2b2e483f095"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#af4e13636e3a494297b30c2b2e483f095">operator!=</a> (const <a class="el" href="classtf_1_1Task.html">Task</a> &amp;rhs) const</td></tr>
+<tr class="memdesc:af4e13636e3a494297b30c2b2e483f095"><td class="mdescLeft">&#160;</td><td class="mdescRight">compares if two tasks are not associated with the same graph node <br /></td></tr>
+<tr class="separator:af4e13636e3a494297b30c2b2e483f095"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08ada0425b490997b6ff7f310107e5e3"><td class="memItemLeft" align="right" valign="top"><a id="a08ada0425b490997b6ff7f310107e5e3"></a>
 const <a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a08ada0425b490997b6ff7f310107e5e3">name</a> () const</td></tr>
 <tr class="memdesc:a08ada0425b490997b6ff7f310107e5e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the name of the task <br /></td></tr>
@@ -135,6 +143,14 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a974dc1d738b62b829ad261beeafbd67c">num_dependents</a> () const</td></tr>
 <tr class="memdesc:a974dc1d738b62b829ad261beeafbd67c"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the number of predecessors of the task <br /></td></tr>
 <tr class="separator:a974dc1d738b62b829ad261beeafbd67c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad49a92e8858c3c298bed0215e341b66b"><td class="memItemLeft" align="right" valign="top"><a id="ad49a92e8858c3c298bed0215e341b66b"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#ad49a92e8858c3c298bed0215e341b66b">num_strong_dependents</a> () const</td></tr>
+<tr class="memdesc:ad49a92e8858c3c298bed0215e341b66b"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the number of non-condition predecessors of the task <br /></td></tr>
+<tr class="separator:ad49a92e8858c3c298bed0215e341b66b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3bf886291af7f39957d43d17083fe07"><td class="memItemLeft" align="right" valign="top"><a id="af3bf886291af7f39957d43d17083fe07"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#af3bf886291af7f39957d43d17083fe07">num_weak_dependents</a> () const</td></tr>
+<tr class="memdesc:af3bf886291af7f39957d43d17083fe07"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the number of condition predecessors of the task <br /></td></tr>
+<tr class="separator:af3bf886291af7f39957d43d17083fe07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9057ecd0f3833b717480e914f8568f02"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a9057ecd0f3833b717480e914f8568f02">name</a> (const <a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;name)</td></tr>
 <tr class="memdesc:a9057ecd0f3833b717480e914f8568f02"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a name to the task  <a href="#a9057ecd0f3833b717480e914f8568f02">More...</a><br /></td></tr>
 <tr class="separator:a9057ecd0f3833b717480e914f8568f02"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -146,32 +162,10 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <tr class="memitem:a8c78c453295a553c1c016e4062da8588"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a8c78c453295a553c1c016e4062da8588">precede</a> (Ts &amp;&amp;... tasks)</td></tr>
 <tr class="memdesc:a8c78c453295a553c1c016e4062da8588"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds precedence links from this to other tasks  <a href="#a8c78c453295a553c1c016e4062da8588">More...</a><br /></td></tr>
 <tr class="separator:a8c78c453295a553c1c016e4062da8588"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29631a0e035e7bf8aa93379b470bbbca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a29631a0e035e7bf8aa93379b470bbbca">precede</a> (<a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;tasks)</td></tr>
-<tr class="memdesc:a29631a0e035e7bf8aa93379b470bbbca"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds precedence links from this to others  <a href="#a29631a0e035e7bf8aa93379b470bbbca">More...</a><br /></td></tr>
-<tr class="separator:a29631a0e035e7bf8aa93379b470bbbca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2701f26ef5777304ee0e87f555b710c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#ab2701f26ef5777304ee0e87f555b710c">precede</a> (<a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; tasks)</td></tr>
-<tr class="memdesc:ab2701f26ef5777304ee0e87f555b710c"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds precedence links from this to others  <a href="#ab2701f26ef5777304ee0e87f555b710c">More...</a><br /></td></tr>
-<tr class="separator:ab2701f26ef5777304ee0e87f555b710c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a331b1b726555072e7c7d10941257f664"><td class="memTemplParams" colspan="2">template&lt;typename... Ts&gt; </td></tr>
 <tr class="memitem:a331b1b726555072e7c7d10941257f664"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a331b1b726555072e7c7d10941257f664">succeed</a> (Ts &amp;&amp;... tasks)</td></tr>
 <tr class="memdesc:a331b1b726555072e7c7d10941257f664"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds precedence links from other tasks to this  <a href="#a331b1b726555072e7c7d10941257f664">More...</a><br /></td></tr>
 <tr class="separator:a331b1b726555072e7c7d10941257f664"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2cf16c59cc2240f176e15fed7025724b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a2cf16c59cc2240f176e15fed7025724b">succeed</a> (<a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;tasks)</td></tr>
-<tr class="memdesc:a2cf16c59cc2240f176e15fed7025724b"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds precedence links from other tasks to this  <a href="#a2cf16c59cc2240f176e15fed7025724b">More...</a><br /></td></tr>
-<tr class="separator:a2cf16c59cc2240f176e15fed7025724b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1a776a5c9699756893565323116af6d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#ad1a776a5c9699756893565323116af6d">succeed</a> (<a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; tasks)</td></tr>
-<tr class="memdesc:ad1a776a5c9699756893565323116af6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds precedence links from other tasks to this  <a href="#ad1a776a5c9699756893565323116af6d">More...</a><br /></td></tr>
-<tr class="separator:ad1a776a5c9699756893565323116af6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40d627bd34014eb6f981014f209c304c"><td class="memTemplParams" colspan="2">template&lt;typename... Ts&gt; </td></tr>
-<tr class="memitem:a40d627bd34014eb6f981014f209c304c"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a40d627bd34014eb6f981014f209c304c">gather</a> (Ts &amp;&amp;... tasks)</td></tr>
-<tr class="memdesc:a40d627bd34014eb6f981014f209c304c"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds precedence links from other tasks to this (same as succeed)  <a href="#a40d627bd34014eb6f981014f209c304c">More...</a><br /></td></tr>
-<tr class="separator:a40d627bd34014eb6f981014f209c304c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62acac1736be009cb8e8f461a97d939b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a62acac1736be009cb8e8f461a97d939b">gather</a> (<a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;tasks)</td></tr>
-<tr class="memdesc:a62acac1736be009cb8e8f461a97d939b"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds precedence links from other tasks to this (same as succeed)  <a href="#a62acac1736be009cb8e8f461a97d939b">More...</a><br /></td></tr>
-<tr class="separator:a62acac1736be009cb8e8f461a97d939b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac66a3dec55c7e255c173ef6937016d54"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#ac66a3dec55c7e255c173ef6937016d54">gather</a> (<a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; tasks)</td></tr>
-<tr class="memdesc:ac66a3dec55c7e255c173ef6937016d54"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds precedence links from other tasks to this (same as succeed)  <a href="#ac66a3dec55c7e255c173ef6937016d54">More...</a><br /></td></tr>
-<tr class="separator:ac66a3dec55c7e255c173ef6937016d54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5210c412a06900253d2b008591a137a7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a5210c412a06900253d2b008591a137a7">reset</a> ()</td></tr>
 <tr class="memdesc:a5210c412a06900253d2b008591a137a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">resets the task handle to null  <a href="#a5210c412a06900253d2b008591a137a7">More...</a><br /></td></tr>
 <tr class="separator:a5210c412a06900253d2b008591a137a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -183,6 +177,16 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#afc4ecb89dd4e4645b3ec3fb7c1bb0ec5">has_work</a> () const</td></tr>
 <tr class="memdesc:afc4ecb89dd4e4645b3ec3fb7c1bb0ec5"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries if the task has a work assigned <br /></td></tr>
 <tr class="separator:afc4ecb89dd4e4645b3ec3fb7c1bb0ec5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff13a503d4a3c994eb08cb6f22e1b427"><td class="memTemplParams" colspan="2"><a id="aff13a503d4a3c994eb08cb6f22e1b427"></a>
+template&lt;typename V &gt; </td></tr>
+<tr class="memitem:aff13a503d4a3c994eb08cb6f22e1b427"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#aff13a503d4a3c994eb08cb6f22e1b427">for_each_successor</a> (V &amp;&amp;visitor) const</td></tr>
+<tr class="memdesc:aff13a503d4a3c994eb08cb6f22e1b427"><td class="mdescLeft">&#160;</td><td class="mdescRight">applies an visitor callable to each successor of the task <br /></td></tr>
+<tr class="separator:aff13a503d4a3c994eb08cb6f22e1b427"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3bf68937662bf291637e4a763476b2e4"><td class="memTemplParams" colspan="2"><a id="a3bf68937662bf291637e4a763476b2e4"></a>
+template&lt;typename V &gt; </td></tr>
+<tr class="memitem:a3bf68937662bf291637e4a763476b2e4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a3bf68937662bf291637e4a763476b2e4">for_each_dependent</a> (V &amp;&amp;visitor) const</td></tr>
+<tr class="memdesc:a3bf68937662bf291637e4a763476b2e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">applies an visitor callable to each dependents of the task <br /></td></tr>
+<tr class="separator:a3bf68937662bf291637e4a763476b2e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -197,114 +201,9 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>TaskView</b></td></t
 <tr class="separator:a0aa0e12e4a0ba023033e808fb2132fdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Handle to modify and access a task. </p>
-<p>A <a class="el" href="classtf_1_1Task.html" title="Handle to modify and access a task. ">Task</a> is a wrapper of a node in a dependency graph. It provides a set of methods for users to access and modify the attributes of the task node, preventing direct access to the internal data storage. </p>
+<div class="textblock"><p>task handle </p>
+<p>A <a class="el" href="classtf_1_1Task.html" title="task handle ">Task</a> is a wrapper of a node in a dependency graph. It provides a set of methods for users to access and modify the attributes of the task node, preventing direct access to the internal data storage. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a40d627bd34014eb6f981014f209c304c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40d627bd34014eb6f981014f209c304c">&#9670;&nbsp;</a></span>gather() <span class="overload">[1/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename... Bs&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> &amp; tf::Task::gather </td>
-          <td>(</td>
-          <td class="paramtype">Bs &amp;&amp;...&#160;</td>
-          <td class="paramname"><em>tasks</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>adds precedence links from other tasks to this (same as succeed) </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Ts</td><td>parameter pack</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">tasks</td><td>one or multiple tasks</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>*this</code> </dd></dl>
-
-</div>
-</div>
-<a id="a62acac1736be009cb8e8f461a97d939b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62acac1736be009cb8e8f461a97d939b">&#9670;&nbsp;</a></span>gather() <span class="overload">[2/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> &amp; tf::Task::gather </td>
-          <td>(</td>
-          <td class="paramtype"><a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>tasks</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>adds precedence links from other tasks to this (same as succeed) </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">tasks</td><td>a vector of tasks</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>*this</code> </dd></dl>
-
-</div>
-</div>
-<a id="ac66a3dec55c7e255c173ef6937016d54"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac66a3dec55c7e255c173ef6937016d54">&#9670;&nbsp;</a></span>gather() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> &amp; tf::Task::gather </td>
-          <td>(</td>
-          <td class="paramtype"><a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td>
-          <td class="paramname"><em>tasks</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>adds precedence links from other tasks to this (same as succeed) </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">tasks</td><td>an initializer list of tasks</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>*this</code> </dd></dl>
-
-</div>
-</div>
 <a id="a9057ecd0f3833b717480e914f8568f02"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9057ecd0f3833b717480e914f8568f02">&#9670;&nbsp;</a></span>name()</h2>
 
@@ -341,7 +240,7 @@ template&lt;typename... Bs&gt; </div>
 </div>
 </div>
 <a id="a8c78c453295a553c1c016e4062da8588"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c78c453295a553c1c016e4062da8588">&#9670;&nbsp;</a></span>precede() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c78c453295a553c1c016e4062da8588">&#9670;&nbsp;</a></span>precede()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -368,76 +267,6 @@ template&lt;typename... Ts&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tasks</td><td>one or multiple tasks</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>*this</code> </dd></dl>
-
-</div>
-</div>
-<a id="a29631a0e035e7bf8aa93379b470bbbca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a29631a0e035e7bf8aa93379b470bbbca">&#9670;&nbsp;</a></span>precede() <span class="overload">[2/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> &amp; tf::Task::precede </td>
-          <td>(</td>
-          <td class="paramtype"><a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>tasks</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>adds precedence links from this to others </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">tasks</td><td>a vector of tasks to precede</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>*this</code> </dd></dl>
-
-</div>
-</div>
-<a id="ab2701f26ef5777304ee0e87f555b710c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2701f26ef5777304ee0e87f555b710c">&#9670;&nbsp;</a></span>precede() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> &amp; tf::Task::precede </td>
-          <td>(</td>
-          <td class="paramtype"><a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td>
-          <td class="paramname"><em>tasks</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>adds precedence links from this to others </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">tasks</td><td>an initializer list of tasks to precede</td></tr>
   </table>
   </dd>
 </dl>
@@ -474,7 +303,7 @@ template&lt;typename... Ts&gt; </div>
 </div>
 </div>
 <a id="a331b1b726555072e7c7d10941257f664"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a331b1b726555072e7c7d10941257f664">&#9670;&nbsp;</a></span>succeed() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a331b1b726555072e7c7d10941257f664">&#9670;&nbsp;</a></span>succeed()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -508,76 +337,6 @@ template&lt;typename... Bs&gt; </div>
 
 </div>
 </div>
-<a id="a2cf16c59cc2240f176e15fed7025724b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2cf16c59cc2240f176e15fed7025724b">&#9670;&nbsp;</a></span>succeed() <span class="overload">[2/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> &amp; tf::Task::succeed </td>
-          <td>(</td>
-          <td class="paramtype"><a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>tasks</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>adds precedence links from other tasks to this </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">tasks</td><td>a vector of tasks</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>*this</code> </dd></dl>
-
-</div>
-</div>
-<a id="ad1a776a5c9699756893565323116af6d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad1a776a5c9699756893565323116af6d">&#9670;&nbsp;</a></span>succeed() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> &amp; tf::Task::succeed </td>
-          <td>(</td>
-          <td class="paramtype"><a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td>
-          <td class="paramname"><em>tasks</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>adds precedence links from other tasks to this </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">tasks</td><td>an initializer list of tasks</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>*this</code> </dd></dl>
-
-</div>
-</div>
 <a id="a2f6f4cec42d016e5eb89390f362ffe99"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2f6f4cec42d016e5eb89390f362ffe99">&#9670;&nbsp;</a></span>work()</h2>
 
@@ -585,9 +344,6 @@ template&lt;typename... Bs&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename C &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> &amp; tf::Task::work </td>
@@ -597,11 +353,6 @@ template&lt;typename C &gt; </div>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>assigns a new callable object to the task </p>
@@ -621,8 +372,9 @@ template&lt;typename C &gt; </div>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="task_8hpp_source.html">task.hpp</a></li>
+<li><a class="el" href="flow__builder_8hpp_source.html">flow_builder.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

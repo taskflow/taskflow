@@ -17,13 +17,11 @@ namespace tf {
 @brief Lock-free unbounded single-producer multiple-consumer queue.
 
 This class implements the work stealing queue described in the paper, 
-"Dynamic Circular Work-stealing Deque," SPAA, 2015.
+"Correct and Efficient Work-Stealing for Weak Memory Models,"
+available at https://www.di.ens.fr/~zappa/readings/ppopp13.pdf.
+
 Only the queue owner can perform pop and push operations,
 while others can steal data from the queue.
-
-PPoPP implementation paper
-"Correct and Efficient Work-Stealing for Weak Memory Models"
-https://www.di.ens.fr/~zappa/readings/ppopp13.pdf
 */
 template <typename T>
 class WorkStealingQueue {
