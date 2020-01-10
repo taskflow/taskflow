@@ -36,7 +36,7 @@ Cpp-Taskflow supports conditional tasking for you to implement cyclic and dynami
 
 | [Conditional Tasking](#conditional-tasking) |
 | :-----------------: |
-| ![](image/condition.png)|
+| ![](image/condition.svg) |
 
 Cpp-Taskflow is composable. You can create large parallel graphs through
 composition of modular and reusable blocks that are easier to optimize.
@@ -75,7 +75,7 @@ Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
    * [Step 2: Detach or Join a Subflow](#step-2-detach-or-join-a-subflow)
 * [Conditional Tasking](#conditional-tasking)
    * [Step 1: Create a Condition Task](#step-1-create-a-condition-task)
-   * [Step 2: Understand the Task Scheduling Rules](#step-2-understand-the-task-scheduling-rules)
+   * [Step 2: Scheduling Rules for Condition Tasks](#step-2-scheduling-rules-for-condition-tasks)
 * [Taskflow Composition](#taskflow-composition)
 * [Debug a Taskflow Graph](#debug-a-taskflow-graph)
 * [Monitor Thread Activities](#monitor-thread-activities)
@@ -347,7 +347,7 @@ tf::Task A = tf.emplace([] (tf::Subflow& sbf) {
 ## Step 2: Detach or Join a Subflow
 
 A subflow will run after leaving the execution context of its parent task.
-By default, a subflow joins to its parent task.
+By default, a subflow joins its parent task.
 Depending on applications, you can detach a subflow to enable more parallelism.
 
 ```cpp
@@ -359,8 +359,8 @@ tf::Task A = tf.emplace([] (tf::Subflow& subflow) {
 Detaching or joining a subflow has different meaning in the completion status of 
 its parent node.
 In a joined subflow, 
-the completion of its parent node is defined as when all tasks
-inside the subflow (possibly nested) finish.
+the completion of its parent node is defined as when tasks
+of the subflow and nested ones all finish.
 
 <img align="right" src="image/joined_subflow_future.png" width="15%">
 
@@ -405,6 +405,7 @@ tf::Task B = tf.emplace([&] () {
 
 A.precede(B);
 ```
+
 <div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 
 # Conditional Tasking
@@ -443,11 +444,31 @@ Cpp-Taskflow terms the preceding link from a condition task a *weak dependency*
 Others are *strong depedency* (solid lines above).
 
 
-## Step 2: Understand the Task Scheduling Rules
+## Step 2: Scheduling Rules for Condition Tasks
 
-TBD
+When you submit a taskflow to an executor,
+the scheduler starts with tasks of *zero dependency* (both weak and strong dependencies)
+and continues to execute successive tasks whenever *strong dependencies* are met.
+However, 
+the scheduler skips this rule for a condition task and jumps directly to its successor
+indexed by the return value.
+
+
+![](image/conditional-tasking-rules.svg)
+
+It is users' responsibility to ensure a taskflow is properly conditioned. 
+Top things to avoid include no source tasks to start with and task race.
+The figure shows common pitfalls and their remedies.
+In the risky scenario, task X may not be raced if P and M is exclusively
+branching to X.
+
+![](image/conditional-tasking-pitfalls.svg)
+
+A good practice for avoding other mistakes of conditional tasking is to infer the execution of your graphs using our scheduling rules and make sure there is no task race.
 
 <div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+
+
 
 # Taskflow Composition
 
@@ -556,6 +577,7 @@ A.precede(B);
 executor.run(tf).wait();  // run the taskflow to spawn subflows
 tf.dump(std::cout);       // dump the graph including dynamic tasks
 ```
+
 <div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 
 # Monitor Thread Activities 
@@ -775,7 +797,8 @@ The table below summarizes a list of commonly used methods.
 | Executor  | N              | none          | constructs an executor with N worker threads |
 | run       | taskflow       | future | runs the taskflow once    |
 | run_n     | taskflow, N    | future | runs the taskflow N times |
-| run_until | taskflow, binary predicate | future | keeps running the task until the predicate returns true |
+| run_until | taskflow, binary predicate | future | keeps running the taskflow until the predicate becomes true |
+| wait_for_all | none | none | blocks until all running tasks finish |
 | make_observer | arguments to forward to user-derived constructor | pointer to the observer | creates an observer to monitor the thread activities of the executor |
 
 ### *Executor*
