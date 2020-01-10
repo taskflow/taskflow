@@ -465,13 +465,11 @@ auto [f1A, f1B] = f1.emplace(
   []() { std::cout << "Task f1A\n"; },
   []() { std::cout << "Task f1B\n"; }
 );
-
 auto [f2A, f2B, f2C] = f2.emplace( 
   []() { std::cout << "Task f2A\n"; },
   []() { std::cout << "Task f2B\n"; },
   []() { std::cout << "Task f2C\n"; }
 );
-
 auto f1_module_task = f2.composed_of(f1);
 
 f2A.precede(f1_module_task);
@@ -498,7 +496,6 @@ To debug a taskflow graph, we suggest:
 You can dump a taskflow in [GraphViz][GraphViz] format using the method `dump`.
 
 ```cpp
-// debug.cpp
 tf::Taskflow taskflow;
 
 tf::Task A = taskflow.emplace([] () {}).name("A");
@@ -521,10 +518,9 @@ to visualize your Taskflow graph.
 <img align="right" src="image/graphviz.png" width="25%">
 
 ```bash
-~$ ./debug
-
 // Taskflow with five tasks and six dependencies
 digraph Taskflow {
+  rankdir="TB"
   "A" -> "B"
   "A" -> "C"
   "A" -> "E"
@@ -557,7 +553,7 @@ tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) {
 
 A.precede(B);
 
-executor.run(tf).wait();  // run the taskflow
+executor.run(tf).wait();  // run the taskflow to spawn subflows
 tf.dump(std::cout);       // dump the graph including dynamic tasks
 ```
 <div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
@@ -569,7 +565,6 @@ Cpp-Taskflow provides a default *observer* of type `tf::ExecutorObserver`
 that lets users observe when a thread starts or stops participating in task scheduling.
 
 ```cpp 
-tf::executor executor;
 auto observer = executor.make_observer<tf::ExecutorObserver>();
 ```
 
@@ -653,7 +648,7 @@ auto [S, T] = tf.parallel_for(
 // add dependencies via S and T.
 ```
 
-You can specify a *chunk* size (default one) in the last argument to force each worker to execute a certain number of items at a time.
+You can specify a *chunk* size (default one) in the last argument to force a task to include a certain number of items.
 
 <img align="right" width="18%" src="image/parallel_for_2.png">
 
@@ -709,14 +704,14 @@ The table below summarizes a list of commonly used methods.
 
 | Method         | Argument    | Return | Description |
 | -------------- | ----------- | ------ | ----------- |
-| name           | string      | self   | assign a human-readable name to the task |
-| work           | callable    | self   | assign a work of a callable object to the task |
-| precede        | task list   | self   | enable this task to run *before* the given tasks |
-| succeed        | task list   | self   | enable this task to run *after* the given tasks |
-| num_dependents | none        | size   | return the number of dependents (inputs) of this task |
-| num_successors | none        | size   | return the number of successors (outputs) of this task |
-| empty          | none        | bool   | return true if the task points to a graph node or false otherwise |
-| has_work       | none        | bool   | return true if the task points to a graph node with a callable assigned |
+| name           | string      | self   | assigns a human-readable name to the task |
+| work           | callable    | self   | assigns a work of a callable object to the task |
+| precede        | task list   | self   | enables this task to run *before* the given tasks |
+| succeed        | task list   | self   | enables this task to run *after* the given tasks |
+| num_dependents | none        | size   | returns the number of dependents (inputs) of this task |
+| num_successors | none        | size   | returns the number of successors (outputs) of this task |
+| empty          | none        | bool   | returns true if the task points to a graph node or false otherwise |
+| has_work       | none        | bool   | returns true if the task points to a graph node with a callable assigned |
 
 ### *name*
 
@@ -777,11 +772,11 @@ The table below summarizes a list of commonly used methods.
 
 | Method    | Argument       | Return        | Description              |
 | --------- | -------------- | ------------- | ------------------------ |
-| Executor  | N              | none          | construct an executor with N worker threads |
-| run       | taskflow       | future | run the taskflow once    |
-| run_n     | taskflow, N    | future | run the taskflow N times |
-| run_until | taskflow, binary predicate | future | keep running the task until the predicate returns true |
-| make_observer | arguments to forward to user-derived constructor | pointer to the observer | create an observer to monitor the thread activities of the executor |
+| Executor  | N              | none          | constructs an executor with N worker threads |
+| run       | taskflow       | future | runs the taskflow once    |
+| run_n     | taskflow, N    | future | runs the taskflow N times |
+| run_until | taskflow, binary predicate | future | keeps running the task until the predicate returns true |
+| make_observer | arguments to forward to user-derived constructor | pointer to the observer | creates an observer to monitor the thread activities of the executor |
 
 ### *Executor*
 
@@ -805,12 +800,11 @@ to a sequential chain of executions.
 executor.run(taskflow);             // runs a graph once
 executor.run_n(taskflow, 5);        // runs a graph five times
 executor.run_n(taskflow, my_pred);  // keeps running until the my_pred becomes true
-executor.wait_for_all();
+executor.wait_for_all();            // blocks until all tasks finish
 ```
 
 The first run finishes before the second run, and the second run finishes before the third run.
-
-<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+ <div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 
 # System Requirements
 
@@ -823,6 +817,8 @@ To use the latest [Cpp-Taskflow](https://github.com/cpp-taskflow/cpp-taskflow/ar
 A C++14 compatible version is provided [here](https://github.com/cpp-taskflow/cpp-taskflow/archive/cpp14.zip), and you need a [C++14][C++14] compiler:
 + GNU C++ Compiler v4.9 with -std=c++1y
 + Clang C++ Compiler v5.0 with -std=c++14
+
+<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 
 
 # Compile Unit Tests and Examples
@@ -869,6 +865,8 @@ The folder `example/` contains several examples and is a great place to learn to
 | [observer.cpp](./example/observer.cpp)| demonstrates how to monitor the thread activities in scheduling and running tasks |
 | [condition.cpp](./example/condition.cpp) | creates a conditional tasking graph with a feedback loop control flow |
 
+<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+
 # Get Involved
 
 + Report bugs/issues by submitting a [GitHub issue][GitHub issues]
@@ -877,6 +875,8 @@ The folder `example/` contains several examples and is a great place to learn to
 + Release notes are highlighted [here][release notes]
 + Read and cite our [IPDPS19][IPDPS19] paper
 + Visit a curated list of [awesome parallel computing resources](https://github.com/tsung-wei-huang/awesome-parallel-computing)
+
+<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 
 # Who is Using Cpp-Taskflow?
 
@@ -895,6 +895,8 @@ that incorporate complex task dependencies.
 - [OpenPhySyn](https://github.com/The-OpenROAD-Project/OpenPhySyn): A plugin-based physical synthesis optimization kit as part of the OpenRoad flow
 
 [More...](https://github.com/search?q=cpp-taskflow&type=Code)
+
+<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 
 # Contributors
 
