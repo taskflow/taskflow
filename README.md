@@ -618,7 +618,7 @@ You can pan or zoom in/out the timeline to get into a detailed view.
 
 The official [documentation][wiki] explains a complete list of 
 Cpp-Taskflow API. 
-In this section, we highlight a short list of commonly used methods.
+Here, we highlight commonly used methods.
 
 ## Taskflow API
 
