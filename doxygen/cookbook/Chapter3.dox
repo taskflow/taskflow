@@ -1,241 +1,165 @@
 namespace tf {
 
-/** @page chapter3 C3: Create a Parallel For-loop Graph
+/** @page chapter3 C3: Dynamic Tasking
 
-Running a for-loop in parallel is the most fundamental building block in parallel programming.
-In this chapter, we are going to demonstrate how to use Cpp-Taskflow
-to create a task dependency graph of parallel for-loop.
+It is very common for a parallel program to 
+spawn task dependency graphs at runtime.
+In Cpp-Taskflow, we call this <em>dynamic tasking</em>.
 
-@section RangeBasedForLoop Range-based For-loop
+@section C3_CreateASubflow Create a Subflow
 
-Cpp-Taskflow has a STL-style method 
-tf::Taskflow::parallel_for(I beg, I end, C&& callable, size_t partitions)
-that partitions a range of items and applies a callable to each item in the partition in parallel.
-The method constructs a task dependency graph representing this workload
-and returns a task pair as two synchronization points to this task graph.
+Dynamic tasks are those created during the execution of a graph.
+These tasks are spawned from a parent task and are grouped together to a 
+@em subflow dependency graph.
+Cpp-Taskflow has an unified interface for static and dynamic tasking.
+To create a subflow, emplace a callable 
+that takes an argument of type tf::Subflow.
+A tf::Subflow object will be created and forwarded to
+the execution context of the task.
+All methods you find in tf::Taskflow are applicable for tf::Subflow.
+
+@code{.cpp}
+ 1: tf::Taskflow taskflow;
+ 2: tf::Executor executor;
+ 3:
+ 4: tf::Task A = taskflow.emplace([] () {}).name("A");  // static task A
+ 5: tf::Task C = taskflow.emplace([] () {}).name("C");  // static task C
+ 6: tf::Task D = taskflow.emplace([] () {}).name("D");  // static task D
+ 7:
+ 8: tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) { 
+ 9:   tf::Task B1 = subflow.emplace([] () {}).name("B1");  // dynamic task B1
+10:   tf::Task B2 = subflow.emplace([] () {}).name("B2");  // dynamic task B2
+11:   tf::Task B3 = subflow.emplace([] () {}).name("B3");  // dynamic task B3
+12:   B1.precede(B3);  // B1 runs bofore B3
+13:   B2.precede(B3);  // B2 runs before B3
+14: }).name("B");
+15:
+16: A.precede(B);  // B runs after A
+17: A.precede(C);  // C runs after A
+18: B.precede(D);  // D runs after B
+19: C.precede(D);  // D runs after C
+20:
+21: executor.run(taskflow).get();  // execute the graph to spawn the subflow
+22: taskflow.dump(std::cout);      // dump the taskflow to a DOT format
+@endcode
+
+@image html images/subflow_join.svg width=35%
+
+Debrief:
+@li Line 1-2 creates a taskflow and an executor
+@li Line 4-6 creates three tasks, A, C, and D
+@li Line 8-14 creates a task B that spawns a task dependency graph of three tasks B1, B2, and B3
+@li Line 16-19 adds dependencies among A, B, C, and D
+@li Line 21 submits the graph to an executor and waits until it finishes
+@li Line 22 dumps the entire task dependency graph
+
+Line 8-14 is the main block to enable dynamic tasking.
+Cpp-Taskflow uses a @std_variant date type to 
+unify the interface of static tasking and dynamic tasking.
+The runtime will create a tf::Subflow passing it to task B,
+and spawn a dependency graph as described by the associated callable.
+This new subflow graph will be added to the topology of its parent task B.
+Due to the property of dynamic tasking,
+we cannot dump its structure before execution.
+We will need to run the graph first to spawn the graph and then
+call tf::Taskflow::dump.
+
+@section DetachASubflow Detach a Subflow
+
+By default, a spawned subflow joins its parent task.
+That is, all nodes of zero outgoing edges in the subflow will precede the parent task.
+This forces a subflow to follow the dependency constraints after its parent task.
+Having said that,
+you can detach a subflow from its parent task, allowing its execution to flow independently.
 
 @code{.cpp}
  1: tf::Taskflow taskflow;
  2:
- 3: std::vector<int> items {1, 2, 3, 4, 5, 6, 7, 8};
- 4:
- 5: auto [S, T] = taskflow.parallel_for(items.begin(), items.end(), [] (int item) {
- 6:   std::cout << std::this_thread::get_id() << " runs " << item << std::endl;
- 7: });
- 8:
- 9: S.work([](){ std::cout << "S\n"; }).name("S");
-10: T.work([](){ std::cout << "T\n"; }).name("T");
-11:
-12: taskflow.dump(std::cout);
-@endcode
-
-The above code generates the following task dependency graph. 
-The label 0x56\* represents an internal task node to execute the callable object.
-By default (@c partitions=0), Cpp-Taskflow evenly partitions and distributes the workload 
-across the maximum hardware concurrency.
-Suppose our example has four logical cores,
-each internal node corresponds to a partition taking two items (eight tasks in total).
-
-@image html images/parallel_for1.png width=60%
-
-Debrief:
-@li Line 1 creates a taskflow object of four worker threads
-@li Line 3 creates a vector container of eight items
-@li Line 5-7 creates a parallel execution graph using the method @c parallel_for
-@li Line 9-10 names the synchronization tasks @c S and @c T
-@li Line 12 dumps the graph to a dot format which can be visualized through @GraphVizOnline
-
-Here is one possible output of this program:
-
-@code{.sh}
-S
-139931471636224 runs 1
-139931471636224 runs 2
-139931480028928 runs 7
-139931480028928 runs 8
-139931496814336 runs 3
-139931496814336 runs 4
-139931488421632 runs 5
-139931488421632 runs 6
-T
-@endcode
-
-@section PartitionTheWorkloadExplicitly Partition the Workload Explicitly
-
-By default, Cpp-Taskflow partitions the workload evenly across the workers.
-In some cases, it is useful to disable this feature and apply user-specified partition.
-The method @c parallel_for tasks an unsigned integer @c partitions as 
-the number of partitions over the items.
-
-@code{.cpp}
-auto [S, T] = taskflow.parallel_for(items.begin(), items.end(), [] (int item) {
-  std::cout << std::this_thread::get_id() << " runs " << item << std::endl;
-}, 8);
-@endcode
-
-The above example will force each of the eight partitions to run exactly one item.
-This can be useful when you have unbalanced workload per item
-and would like to enable more efficient parallelization.
-
-@image html images/parallel_for2.png width=100%
-
-Again, you can leave the partition variable to 0 to use our default partition strategy.
-
-
-
-@section ConstructTheGraphExplicitly Construct the Graph Explicitly
-
-You can explicitly construct a dependency graph that represents a parallel execution 
-of a for-loop using only the basic methods tf::Taskflow::emplace and tf::Task::precede.
-
-
-@code{.cpp}
-tf::Task S = taskflow.emplace([](){}).name("S");
-tf::Task T = taskflow.emplace([](){}).name("T");
-
-for(auto item : items) {
-  tf::Task task = taskflow.emplace([item] () {
-    std::cout << std::this_thread::get_id() << " runs " << item << std::endl;
-  });
-  S.precede(task);
-  task.precede(T);
-}
-@endcode
-
-@section IndexBasedForLoop Index-based For-loop
-
-Cpp-Taskflow provides an overload 
-tf::Taskflow::parallel_for(I beg, I end, I step, C&& callable, size_t partitions) 
-to parallelize an index-based for-loop. 
-It takes three numbers @c beg, @c end, and @c step of the same type @c I
-and applies @c callable to each index in the range `[beg, end)` with 
-the step size @c step.
-
-@code{.cpp}
-1: taskflow.parallel_for(0, 10, 2, [] (int i) {
-2:   std::cout << "parallel on " << i << std::endl;
-3: });
-4: // print 0, 2, 4, 6, 8
-@endcode
-
-
-It also works on the opposite order with negative step size.
-
-@code{.cpp}
-1: taskflow.parallel_for(10, 0, -2, [] (int i) {
-2:   std::cout << "parallel on " << i << std::endl;
-3: });
-4: // print 10, 8, 6, 4, 2
-@endcode
-
-Similarly, you can explicitly specify the partition size:
-
-@code{.cpp}
-1: taskflow.parallel_for(0, 10, 2, [] (int i) {
-2:   std::cout << "parallel on " << i << std::endl;
-3: }, 3);
-4: // print 0, 2, 4, 6, 8 (three partitions {0, 2}, {4, 6}, {8})
-@endcode
-
-By default, Cpp-Taskflow performs even partition across the number of available threads 
-if no partition size is given.
-
-
-@section Chapter3Example1 Example 1: Parallel Map
-
-This example demonstrates how to use tf::Taskflow::parallel_for
-to create a parallel map pattern.
-The map operator modifies each item in the container to one if it is an odd number,
-or zero if it is an even number.
-
-@code{.cpp}
-#include <taskflow/taskflow.hpp>
-
-int main() {
-  
-  tf::Executor executor;
-  tf::Taskflow taskflow;
-
-  std::vector<int> items{1, 2, 3, 4, 5, 6, 7, 8};
-
-  taskflow.parallel_for(items.begin(), items.end(), [] (int& item) {
-    item = (item & 1) ? 1 : 0;
-  });
-
-  executor.run(taskflow).get();
-
-  for(auto item : items) {
-    std::cout << item << " ";
-  }
-
-  return 0;
-}
-@endcode
-
-The program outputs the following:
-
-@code{.sh}
-1 0 1 0 1 0 1 0 
-@endcode
-
-
-@section Chapter3Example2 Example 2: Pipeline a Parallel For-loop
-
-This example demonstrates how to pipeline a parallel-for workload
-with other tasks.
-
-@code{.cpp}
- 1: #include <taskflow/taskflow.hpp>
- 2:
- 3: int main() {
- 4:
- 5:   tf::Taskflow taskflow;
+ 3: tf::Task A = taskflow.emplace([] () {}).name("A");  // static task A
+ 4: tf::Task C = taskflow.emplace([] () {}).name("C");  // static task C
+ 5: tf::Task D = taskflow.emplace([] () {}).name("D");  // static task D
  6:
- 7:   std::vector<int> items(1024);
- 8:   std::atomic<int> sum {0};
- 9:
-10:   tf::Task T1 = taskflow.emplace([&] () {  // create a modifier task
-11:     for(auto& item : items) {
-12:       item = 1;
-13:     }
-14:   }).name("Create Items");
+ 7: tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) { 
+ 8:   tf::Task B1 = subflow.emplace([] () {}).name("B1");  // dynamic task B1
+ 9:   tf::Task B2 = subflow.emplace([] () {}).name("B2");  // dynamic task B2
+10:   tf::Task B3 = subflow.emplace([] () {}).name("B3");  // dynamic task B3
+11:   B1.precede(B3);    // B1 runs bofore B3
+12:   B2.precede(B3);    // B2 runs before B3
+13:   subflow.detach();  // detach this subflow
+14: }).name("B");
 15:
-16:   auto [S, T] = taskflow.parallel_for(items.begin(), items.end(), [&] (int item) {
-17:     sum.fetch_add(item, std::memory_order_relaxed);
-18:   }, 8);
-19:
-20:   tf::Task T2 = taskflow.emplace([&] () {  // create a output task
-21:     std::cout << "sum is: " << sum << std::endl;
-22:   }).name("Print Sum");
-23:
-24:   T1.precede(S);  // modifier precedes parallel-for
-25:   T.precede(T2);  // parallel-for precedes the output task
-26:
-27:   tf::Executor().run(taskflow);
-28:
-29:   return 0;
-30: }
+16: A.precede(B);  // B runs after A
+17: A.precede(C);  // C runs after A
+18: B.precede(D);  // D runs after B
+19: C.precede(D);  // D runs after C
+20:
+21: tf::Executor().run(taskflow).get();  // execute the graph to spawn the subflow
+22: taskflow.dump(std::cout);            // dump the taskflow to DOT format
 @endcode
 
+The figure below demonstrates a detached subflow based on the previous example.
+A detached subflow will eventually join the topology of its parent task.
 
-@image html images/parallel_for_example2.png width=100%
+@image html images/subflow_detach.svg width=45%
 
 
-The output of this programs is:
+@section NestedSubflow Nested Subflow
 
-@code{.sh}
-sum is: 1024
+A subflow can be nested or recursive.
+You can create another subflow from the execution of a subflow and so on.
+
+@code{.cpp}
+ 1: tf::Taskflow taskflow;
+ 2:
+ 3: tf::Task A = taskflow.emplace([] (tf::Subflow& sbf){
+ 4:   std::cout << "A spawns A1 & subflow A2\n";
+ 5:   tf::Task A1 = sbf.emplace([] () {
+ 6:     std::cout << "subtask A1\n";
+ 7:   }).name("A1");
+ 8:
+ 9:   tf::Task A2 = sbf.emplace([] (tf::Subflow& sbf2){
+10:     std::cout << "A2 spawns A2_1 & A2_2\n";
+11:     tf::Task A2_1 = sbf2.emplace([] () {
+12:       std::cout << "subtask A2_1\n";
+13:     }).name("A2_1");
+14:     tf::Task A2_2 = sbf2.emplace([] () {
+15:       std::cout << "subtask A2_2\n";
+16:     }).name("A2_2");
+17:     A2_1.precede(A2_2);
+18:   }).name("A2");
+19:   A1.precede(A2);
+20: }).name("A");
+21:
+22: // execute the graph to spawn the subflow
+23: tf::Executor().run(taskflow).get();
+24: taskflow.dump(std::cout);
 @endcode
+
+@image html images/nested_subflow.svg width=55%
 
 Debrief:
-@li Line 5 creates a taskflow object
-@li Line 7 creates a vector of 1024 uninitialized integers
-@li Line 8 creates an atomic integer variable
-@li Line 10-14 creates a task that captures the vector to initialize all items to one
-@li Line 16-18 sums up all items with each thread running on a partition of 1024/8=128 items
-@li Line 20-22 creates a task that outputs the summation value
-@li Line 24-25 pipelines the parallel-for workload with the two tasks
-@li Line 27 dispatches the graph to threads and blocks until the execution completes
+@li Line 1 creates a taskflow object
+@li Line 3-20 creates a task to spawn a subflow of two tasks A1 and A2
+@li Line 9-18 spawns another subflow of two tasks A2_1 and A2_2 out of its parent task A2
+@li Line 23-24 dispatches the graph asynchronously and dump its structure when it finishes
+
+Similarly, you can detach a nested subflow from its parent subflow.
+A detached subflow will run independently and eventually join the topology
+of its parent subflow.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 */
 

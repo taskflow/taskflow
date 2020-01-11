@@ -26,6 +26,7 @@ var searchData=
   ['wistringstream',['wistringstream',['http://en.cppreference.com/w/cpp/io/basic_istringstream.html',1,'std::wistringstream'],['http://en.cppreference.com/w/cpp/io/basic_istringstream/basic_istringstream.html',1,'std::wistringstream::wistringstream()']]],
   ['wofstream',['wofstream',['http://en.cppreference.com/w/cpp/io/basic_ofstream.html',1,'std::wofstream'],['http://en.cppreference.com/w/cpp/io/basic_ofstream/basic_ofstream.html',1,'std::wofstream::wofstream()']]],
   ['work',['work',['../classtf_1_1Task.html#a2f6f4cec42d016e5eb89390f362ffe99',1,'tf::Task']]],
+  ['worker2',['Worker2',['../structtf_1_1Worker2.html',1,'tf']]],
   ['workstealingqueue',['WorkStealingQueue',['../classtf_1_1WorkStealingQueue.html',1,'tf::WorkStealingQueue&lt; T &gt;'],['../classtf_1_1WorkStealingQueue.html#a0c790ba6a203092fa8f15297dcb5b1d6',1,'tf::WorkStealingQueue::WorkStealingQueue()']]],
   ['workstealingqueue_3c_20node_20_2a_3e',['WorkStealingQueue&lt; Node *&gt;',['../classtf_1_1WorkStealingQueue.html',1,'tf']]],
   ['wostream',['wostream',['http://en.cppreference.com/w/cpp/io/basic_ostream.html',1,'std::wostream'],['http://en.cppreference.com/w/cpp/io/basic_ostream/basic_ostream.html',1,'std::wostream::wostream()']]],

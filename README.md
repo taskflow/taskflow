@@ -375,12 +375,9 @@ tf::Task A = tf.emplace([&] (tf::Subflow& subflow) {
 }).name("A");
 
 // create a task B after A
-tf::Task B = tf.emplace([&] () { 
-  assert(value == 10); 
-}).name("B");
+tf::Task B = tf.emplace([&](){ assert(value == 10); }).name("B");
 
-// A1 must finish before A and therefore before B
-A.precede(B);
+A.precede(B); // A1 finishes before A and therefore before B
 ```
 
 When a subflow is detached from its parent task, it becomes a parallel
@@ -399,9 +396,7 @@ tf::Task A = tf.emplace([&] (tf::Subflow& subflow) {
 }).name("A");
 
 // create a task B after A
-tf::Task B = tf.emplace([&] () { 
-  // no guarantee for value to be 10
-}).name("B");
+tf::Task B = tf.emplace([&] () { /* value may not be 10 */ }).name("B");
 
 A.precede(B);
 ```
@@ -419,7 +414,7 @@ A *condition task* evalutes a set of instructions and returns an integer index
 of the next immediate successor to execute.
 The index is defined with respect to the order of its successor construction.
 
-<img align="right" src="image/condition-2.png" width="20%">
+<img align="right" src="image/condition-2.svg" width="20%">
 
 ```cpp
 tf::Task init = tf.emplace([](){ }).name("init");
@@ -438,7 +433,7 @@ cond.precede(cond, stop);  // cond--0-->cond, cond--1-->stop
 executor.run(tf).wait();
 ```
 
-If the return value from `cond` is 0, it goes back to itself, or otherwise to `stop`.
+If the return value from `cond` is 0, it loops back to itself, or otherwise to `stop`.
 Cpp-Taskflow terms the preceding link from a condition task a *weak dependency*
 (dashed lines above).
 Others are *strong depedency* (solid lines above).
@@ -950,7 +945,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [GitHub contributors]:   https://github.com/cpp-taskflow/cpp-taskflow/graphs/contributors
 [GraphViz]:              https://www.graphviz.org/
 [AwesomeGraphViz]:       https://github.com/CodeFreezr/awesome-graphviz
-[OpenMP Tasking]:        http://www.nersc.gov/users/software/programming-models/openmp/openmp-tasking/
+[OpenMP Tasking]:        https://www.openmp.org/spec-html/5.0/openmpsu99.html 
 [TBB FlowGraph]:         https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph
 [OpenTimer]:             https://github.com/OpenTimer/OpenTimer
 [DtCraft]:               https://github.com/tsung-wei-huang/DtCraft

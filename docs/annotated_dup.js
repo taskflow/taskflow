@@ -10,6 +10,7 @@ var annotated_dup =
       [ "Task", "classtf_1_1Task.html", "classtf_1_1Task" ],
       [ "Taskflow", "classtf_1_1Taskflow.html", "classtf_1_1Taskflow" ],
       [ "TaskView", "classtf_1_1TaskView.html", "classtf_1_1TaskView" ],
+      [ "Worker2", "structtf_1_1Worker2.html", null ],
       [ "WorkStealingQueue", "classtf_1_1WorkStealingQueue.html", "classtf_1_1WorkStealingQueue" ]
     ] ]
 ];

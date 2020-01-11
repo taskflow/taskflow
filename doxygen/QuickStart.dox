@@ -7,7 +7,7 @@ namespace tf {
 Cpp-Taskflow is a fast C++ @em header-only library to help you quickly 
 write parallel programs with complex task dependencies.
 Cpp-Taskflow is by far faster, more expressive, fewer lines of code, and easier for drop-in integration
-than existing parallel task programming libraries such as <a href="http://www.nersc.gov/users/software/programming-models/openmp/openmp-tasking/">OpenMP Tasking</a> and Intel <a href="https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph">Thread Building Block (TBB) FlowGraph</a>.
+than existing parallel task programming libraries such as <a href="https://www.openmp.org/spec-html/5.0/openmpsu99.html">OpenMP Tasking</a> and Intel <a href="https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph">Thread Building Block (TBB) FlowGraph</a>.
 
 @image html images/performance.jpg width=95%
 
@@ -18,8 +18,8 @@ Our users say:
 @li \"<em>Cpp-Taskflow has the cleanest task API I've ever seen.</em>\" <a href="https://github.com/damienhocking">Damien Hocking</a>
 @li \"<em>Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well.</em>\" <a href="https://github.com/totalgee">Glen Fraser</a>
 @li \"<em>Cpp-Taskflow lets me handle parallel processing in a smart way.</em>\" <a href="https://cpp-learning.com/cpp-taskflow/">Hayabusa</a>
-@li \"<em>Best poster award for the open-source parallel programming library.</em>\" <a href="https://github.com/CppCon/CppCon2018">Cpp Conference 2018</a>
-@li \"<em>Second Place in Open Source Software Competition.</em>\" ACM Multimedia Conference, 2019</a>
+@li \"<em>Best poster award for the open-source parallel programming library.</em>\" <a href="https://github.com/CppCon/CppCon2018">2018 Cpp Conference</a>
+@li \"<em>Second Place in Open Source Software Competition.</em>\" 2019 ACM Multimedia Conference</a>
 
 See a quick <a href="https://cpp-taskflow.github.io/">presentation</a> and visit our <a href="https://github.com/cpp-taskflow/cpp-taskflow">GitHub</a> to learn more about Cpp-Taskflow.
 
@@ -64,9 +64,13 @@ int main(){
 }
 @endcode
 
+
+
 The program creates four tasks A, B, C, and D.
 The dependency constraints force A to run before B and C, and D to run after B and C.
 The maximum concurrency is this example is two, where B and C can run at the same time.
+
+@image html images/simple.svg width=40%
 
 @section CompileAndRunYourFirstProgram Compile and Run Your First Program
 

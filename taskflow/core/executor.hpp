@@ -157,6 +157,11 @@ class Executor {
     */
     void remove_observer();
 
+    /**
+    @brief queries the id of the caller thread in this executor
+    */
+    std::optional<unsigned> this_worker_id() const;
+
   private:
    
     std::condition_variable _topology_cv;
@@ -239,6 +244,16 @@ inline size_t Executor::num_workers() const {
 inline Executor::PerThread& Executor::_per_thread() const {
   thread_local PerThread pt;
   return pt;
+}
+
+// Function: this_worker_id
+inline std::optional<unsigned> Executor::this_worker_id() const {
+  if(auto worker = _per_thread().worker; worker) {
+    return worker->id;
+  }
+  else {
+    return std::nullopt;
+  }
 }
 
 // Procedure: _spawn
