@@ -6,6 +6,12 @@ var Releases =
       [ "Bug Fixes", "master-branch.html#master-branch_bug_fixes", null ],
       [ "Deprecated Items", "master-branch.html#master-branch_deprecated_items", null ]
     ] ],
+    [ "Release 2.3.0 (TBD)", "release-2-3-0.html", [
+      [ "Download", "release-2-3-0.html#release-2-3-0_download", null ],
+      [ "New Features", "release-2-3-0.html#release-2-3-0_new_features", null ],
+      [ "Bug Fixes", "release-2-3-0.html#release-2-3-0_bug_fixes", null ],
+      [ "Deprecated Items", "release-2-3-0.html#release-2-3-0_deprecated_items", null ]
+    ] ],
     [ "Release 2.2.0 (2019/06/15)", "release-2-2-0.html", [
       [ "Download", "release-2-2-0.html#release-2-2-0_download", null ],
       [ "New Features", "release-2-2-0.html#release-2-2-0_new_features", null ],

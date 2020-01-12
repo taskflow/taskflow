@@ -118,8 +118,58 @@ Create a Condition Task</h1>
 <div class="image">
 <object type="image/svg+xml" data="conditional-tasking-2.svg" width="100%">conditional-tasking-2.svg</object>
 </div>
+<p>You can use condition tasks to create cycles as long as the graph does not introduce task race during execution. However, cycles are not allowed in non-condition tasks.</p>
 <h1><a class="anchor" id="C4_StrongDependencyVSWeakDependency"></a>
 Strong Dependency vs Weak Dependency</h1>
+<p>In order to understand how an executor schedules condition tasks, we define two dependency types, <em>strong dependency</em> and <em>weak dependency</em>. A strong dependency is a preceding link from a condition task to another task. A weak dependency is a preceding link from a non-condition task to another task. The number of dependents of a task is the sum of strong dependency and weak dependency. The table below lists the strong dependency and weak dependency numbers of each task in the previous example.</p>
+<div align="center"> <table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadCenter">task  </th><th class="markdownTableHeadCenter">strong dependency  </th><th class="markdownTableHeadCenter">weak dependency  </th><th class="markdownTableHeadNone">dependents   </th></tr>
+<tr class="markdownTableBody" class="markdownTableRowOdd">
+<td class="markdownTableBodyCenter">A  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyNone">0   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowEven">
+<td class="markdownTableBodyCenter">B  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyNone">2   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowOdd">
+<td class="markdownTableBodyCenter">C  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyNone">1   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowEven">
+<td class="markdownTableBodyCenter">D  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyNone">1   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowOdd">
+<td class="markdownTableBodyCenter">E  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyNone">1   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowEven">
+<td class="markdownTableBodyCenter">F  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyNone">1   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowOdd">
+<td class="markdownTableBodyCenter">G  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyNone">1   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowEven">
+<td class="markdownTableBodyCenter">H  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyNone">1   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowOdd">
+<td class="markdownTableBodyCenter">I  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyNone">1   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowEven">
+<td class="markdownTableBodyCenter">K  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyNone">1   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowOdd">
+<td class="markdownTableBodyCenter">L  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyNone">1   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowEven">
+<td class="markdownTableBodyCenter">M  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyNone">1   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowOdd">
+<td class="markdownTableBodyCenter">cond_1  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyNone">1   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowEven">
+<td class="markdownTableBodyCenter">cond_2  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyCenter">0  </td><td class="markdownTableBodyNone">1   </td></tr>
+<tr class="markdownTableBody" class="markdownTableRowOdd">
+<td class="markdownTableBodyCenter">cond_3  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyNone">2   </td></tr>
+</table>
+</div><p>You can query the number of strong dependents, the number of weak dependents, and the number of dependents of a task.</p>
+<div class="fragment"><div class="line">1: <a class="code" href="classtf_1_1Taskflow.html">tf::Taskflow</a> taskflow;</div><div class="line">2: </div><div class="line">3: <a class="code" href="classtf_1_1Task.html">tf::Task</a> task = taskflow.<a class="code" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">emplace</a>([](){});</div><div class="line">4: </div><div class="line">5: <span class="comment">// ... add more tasks and preceding links</span></div><div class="line">6:</div><div class="line">7: <a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a> &lt;&lt; task.<a class="code" href="classtf_1_1Task.html#a974dc1d738b62b829ad261beeafbd67c">num_dependents</a>() &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div><div class="line">8: <a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a> &lt;&lt; task.<a class="code" href="classtf_1_1Task.html#ad49a92e8858c3c298bed0215e341b66b">num_strong_dependents</a>() &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>; </div><div class="line">9: <a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a> &lt;&lt; task.<a class="code" href="classtf_1_1Task.html#af3bf886291af7f39957d43d17083fe07">num_weak_dependents</a>() &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div></div><!-- fragment --><p>When you submit a task to an executor, the scheduler starts with tasks of <em>zero dependents</em> (both zero strong and weak dependencies) and continues to execute successive tasks whenever their <em>strong dependencies</em> are met. However, the scheduler skips this rule when executing a condition task and jumps directly to its successors indexed by the return value.</p>
+<div class="image">
+<object type="image/svg+xml" data="conditional-tasking-rules.svg" width="100%">conditional-tasking-rules.svg</object>
+</div>
+<p>Each task has an <em>atomic</em> join counter to keep track of strong dependents that are met at runtime. When a task completes, the join counter is restored to the task's strong dependency number in the graph, such that the subsequent execution can reuse the counter again.</p>
+<h1><a class="anchor" id="C4_CommonPitfalls"></a>
+Common Pitfalls</h1>
+<p>Condition tasks are handy in creasing dynamic and cyclic control flows, but they are also easy to make mistakes. It is your responsibility to ensure a taskflow is properly conditioned. Top things to avoid include <em>no source tasks</em> to start with and <em>task race</em>. The figure below shows common pitfalls and their remedies.</p>
+<div class="image">
+<object type="image/svg+xml" data="conditional-tasking-pitfalls.svg" width="100%">conditional-tasking-pitfalls.svg</object>
+</div>
+<p>In the error1 scenario, there is no source task for the scheduler to start with, and the simplest fix is to add a task S that has no dependents. In the error2 scenario, D might be scheduled twice by E through the strong dependency and C through the weak dependency (on return 1). To fix this problem, you can add an auxiliary task D-aux to break the mixed use of strong dependency and weak dependency. In the risky scenario, task X may not be raced if P and M is exclusively branching to X.</p>
+<p>A good practice for avoiding mistakes of conditional tasking is to infer the execution flow of your graphs based on our scheduling rules. Make sure there is no task race. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

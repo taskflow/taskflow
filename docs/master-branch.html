@@ -111,32 +111,12 @@ Working Items</h1>
 <ul>
 <li>Improving the performance of work stealing algorithm </li>
 <li>Discovering a scalable memory allocator to handle the taskflow graph </li>
-<li>Adding more benchmarks to compare Cpp-Taskflow with OpenMP and TBB </li>
-<li>Improving the partition policy of parallel_for </li>
-<li>Making <a class="el" href="classtf_1_1Executor.html" title="The executor class to run a taskflow graph. ">tf::Executor</a> thread-safe </li>
-<li>Adding <a class="el" href="classtf_1_1Task.html#afc4ecb89dd4e4645b3ec3fb7c1bb0ec5" title="queries if the task has a work assigned ">tf::Task::has_work</a> to detect if a task has work assigned </li>
-<li>Changing the behavior of running a non-empty graph under zero worker to throw </li>
-<li>Adding conditional tasking </li>
-<li>Improving the task-level scheduling </li>
-<li>Enhancing unittests </li>
-<li>Adding iterator support for a task's precedessors and successors</li>
+<li>Adding more benchmarks to compare Cpp-Taskflow with OpenMP and TBB</li>
 </ul>
 <h1><a class="anchor" id="master-branch_bug_fixes"></a>
 Bug Fixes</h1>
-<ul>
-<li>Fixed the stack overflow problem in zero worker execution </li>
-<li>Fixed the missing comma in output execution timelines from an executor </li>
-<li>Fixed the bug in empty taskflow</li>
-</ul>
 <h1><a class="anchor" id="master-branch_deprecated_items"></a>
 Deprecated Items</h1>
-<ul>
-<li>Removed zero worker thread support in execution </li>
-<li>Removed gather method in task handle </li>
-<li>Removed <a class="elRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a> and std::initializer support in task's preceed/succeed methods </li>
-<li>Removed taskflow::silent_emplace method</li>
-</ul>
-<p>There are no major bug fixes for now since <a class="el" href="release-2-2-0.html">Release 2.2.0 (2019/06/15)</a>. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

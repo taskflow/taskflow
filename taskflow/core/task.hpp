@@ -11,7 +11,7 @@ namespace tf {
 /**
 @class Task
 
-@brief task handle
+@brief task handle to a node in a task dependency graph
 
 A Task is a wrapper of a node in a dependency graph. 
 It provides a set of methods for users to access and modify the attributes of 
@@ -73,12 +73,12 @@ class Task {
     size_t num_dependents() const;
     
     /**
-    @brief queries the number of non-condition predecessors of the task
+    @brief queries the number of strong dependents of the task
     */
     size_t num_strong_dependents() const;
 
     /**
-    @brief queries the number of condition predecessors of the task
+    @brief queries the number of weak dependents of the task
     */
     size_t num_weak_dependents() const;
     
@@ -355,12 +355,12 @@ class TaskView {
     size_t num_dependents() const;
     
     /**
-    @brief queries the number of non-condition predecessors of the task
+    @brief queries the number of strong dependents of the task
     */
     size_t num_strong_dependents() const;
 
     /**
-    @brief queries the number of condition predecessors of the task
+    @brief queries the number of weak dependents of the task
     */
     size_t num_weak_dependents() const;
 

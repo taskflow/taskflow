@@ -458,7 +458,9 @@ branching to X.
 
 ![](image/conditional-tasking-pitfalls.svg)
 
-A good practice for avoding other mistakes of conditional tasking is to infer the execution of your graphs using our scheduling rules and make sure there is no task race.
+
+A good practice for avoiding mistakes of conditional tasking is to infer the execution flow of your graphs based on our scheduling rules.
+Make sure there is no task race.
 
 <div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 

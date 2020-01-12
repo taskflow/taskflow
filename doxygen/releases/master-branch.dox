@@ -18,29 +18,11 @@ To download the newest version of Cpp-Taskflow, please clone from <a href="https
 @li Improving the performance of work stealing algorithm
 @li Discovering a scalable memory allocator to handle the taskflow graph
 @li Adding more benchmarks to compare Cpp-Taskflow with OpenMP and TBB
-@li Improving the partition policy of parallel_for
-@li Making tf::Executor thread-safe
-@li Adding tf::Task::has_work to detect if a task has work assigned
-@li Changing the behavior of running a non-empty graph under zero worker to throw
-@li Adding conditional tasking
-@li Improving the task-level scheduling
-@li Enhancing unittests
-@li Adding iterator support for a task's precedessors and successors
 
 @section master-branch_bug_fixes Bug Fixes 
 
-@li Fixed the stack overflow problem in zero worker execution
-@li Fixed the missing comma in output execution timelines from an executor
-@li Fixed the bug in empty taskflow
-
 @section master-branch_deprecated_items Deprecated Items 
 
-@li Removed zero worker thread support in execution
-@li Removed gather method in task handle
-@li Removed std::vector and std::initializer support in task's preceed/succeed methods
-@li Removed taskflow::silent_emplace method
-
-There are no major bug fixes for now since @ref release-2-2-0.
 
 */
 

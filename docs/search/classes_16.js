@@ -18,7 +18,6 @@ var searchData=
   ['wistream',['wistream',['http://en.cppreference.com/w/cpp/io/basic_istream.html',1,'std']]],
   ['wistringstream',['wistringstream',['http://en.cppreference.com/w/cpp/io/basic_istringstream.html',1,'std']]],
   ['wofstream',['wofstream',['http://en.cppreference.com/w/cpp/io/basic_ofstream.html',1,'std']]],
-  ['worker2',['Worker2',['../structtf_1_1Worker2.html',1,'tf']]],
   ['workstealingqueue',['WorkStealingQueue',['../classtf_1_1WorkStealingQueue.html',1,'tf']]],
   ['workstealingqueue_3c_20node_20_2a_3e',['WorkStealingQueue&lt; Node *&gt;',['../classtf_1_1WorkStealingQueue.html',1,'tf']]],
   ['wostream',['wostream',['http://en.cppreference.com/w/cpp/io/basic_ostream.html',1,'std']]],
