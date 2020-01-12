@@ -1,0 +1,58 @@
+digraph Taskflow {
+   bgcolor="transparent"
+   //rankdir="LR"
+   subgraph cluster_1 {
+     label = "error1: no source tasks"
+     c1A [label="A" shape=diamond color=black fillcolor=aquamarine style=filled ]
+     c1B [label="B"]
+     c1X [label="X"]
+     c1A -> c1A [style=dashed label="0"];
+     c1A -> c1B [style=dashed label="1"];
+     c1A -> c1X [style=dashed label="2"];
+   }
+   subgraph cluster_2 {
+     label = "fix1: adds a source"
+     c2S [label="S"]
+     c2A [label="A" shape=diamond color=black fillcolor=aquamarine style=filled ]
+     c2B [label="B"]
+     c2X [label="X"]
+     c2S -> c2A
+     c2A -> c2A [style=dashed label="0"];
+     c2A -> c2B [style=dashed label="1"];
+     c2A -> c2X [style=dashed label="2"];
+   }
+   subgraph cluster_3 {
+     label = "error2: race on D"
+     c3E [label="E"]
+     c3C [label="C" shape=diamond color=black fillcolor=aquamarine style=filled ]
+     c3D [label="D"]
+     c3F [label="F"]
+     c3E -> c3D
+     c3C -> c3D [style=dashed label="1"];
+     c3C -> c3F [style=dashed label="0"];
+   }
+   subgraph cluster_4 {
+     label = "fix2: adds an auxiliary task"
+     c4E [label="E"]
+     c4C [label="C" shape=diamond color=black fillcolor=aquamarine style=filled ]
+     c4D [label="D"]
+     c4Daux [label="D-aux"]
+     c4F [label="F"]
+     c4E -> c4D
+     c4C -> c4Daux [style=dashed label="1"];
+     c4C -> c4F [style=dashed label="0"];
+     c4Daux -> c4D
+   }
+   subgraph cluster_5 {
+     label = "risky: Q may race"
+     c5P [label="P" shape=diamond color=black fillcolor=aquamarine style=filled ]
+     c5M [label="M" shape=diamond color=black fillcolor=aquamarine style=filled ]
+     c5Q [label="Q"]
+     c5X [label="X"]
+     c5N [label="N"]
+     c5P -> c5Q [style=dashed label="0"];
+     c5P -> c5X [style=dashed label="1"];
+     c5M -> c5Q [style=dashed label="1"];
+     c5M -> c5N [style=dashed label="0"];
+   }
+}
