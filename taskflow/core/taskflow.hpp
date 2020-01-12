@@ -1,10 +1,13 @@
 #pragma once
 
 #include <stack>
+
 #include "flow_builder.hpp"
 #include "topology.hpp"
 
 namespace tf {
+
+// ----------------------------------------------------------------------------
 
 /**
 @class Taskflow 
@@ -47,21 +50,14 @@ class Taskflow : public FlowBuilder {
     std::string dump() const;
     
     /**
-    @brief queries the number of nodes in the taskflow
+    @brief queries the number of tasks in the taskflow
     */
-    size_t num_nodes() const;
+    size_t num_tasks() const;
     
     /**
     @brief queries the emptiness of the taskflow
     */
     bool empty() const;
-
-    /**
-    @brief creates a module task from a taskflow
-
-    @param taskflow a taskflow object to create the module
-    */
-    tf::Task composed_of(Taskflow& taskflow);
 
     /**
     @brief sets the name of the taskflow
@@ -80,6 +76,12 @@ class Taskflow : public FlowBuilder {
     */
     void clear();
 
+    /**
+    @brief applies an visitor callable to each task in the taskflow
+    */
+    template <typename V>
+    void for_each_task(V&& visitor) const;
+
   private:
  
     std::string _name;
@@ -90,7 +92,21 @@ class Taskflow : public FlowBuilder {
 
     std::list<Topology> _topologies;
 
-    //std::deque<Topology*> _topologies;
+    void _dump(std::ostream&, const Taskflow*) const;
+
+    void _dump(
+      std::ostream&, 
+      const Node*,
+      std::stack<const Taskflow*>&,
+      std::unordered_set<const Taskflow*>&
+    ) const;
+
+    void _dump(
+      std::ostream&,
+      const Graph&,
+      std::stack<const Taskflow*>&,
+      std::unordered_set<const Taskflow*>&
+    ) const;
 };
 
 // Constructor
@@ -114,7 +130,7 @@ inline void Taskflow::clear() {
 }
 
 // Function: num_noces
-inline size_t Taskflow::num_nodes() const {
+inline size_t Taskflow::num_tasks() const {
   return _graph.size();
 }
 
@@ -134,11 +150,12 @@ inline const std::string& Taskflow::name() const {
   return _name;
 }
 
-// Function: composed_of
-inline tf::Task Taskflow::composed_of(Taskflow& taskflow) {
-  auto &node = _graph.emplace_back();
-  node._module = &taskflow;
-  return Task(node);
+// Function: for_each_task
+template <typename V>
+void Taskflow::for_each_task(V&& visitor) const {
+  for(size_t i=0; i<_graph.nodes().size(); ++i) {
+    visitor(Task(_graph.nodes()[i].get()));
+  }
 }
 
 // Procedure: dump
@@ -150,68 +167,121 @@ inline std::string Taskflow::dump() const {
 
 // Function: dump
 inline void Taskflow::dump(std::ostream& os) const {
+  os << "digraph Taskflow {\n";
+  _dump(os, this);
+  os << "}\n";
+}
 
+// Procedure: _dump
+inline void Taskflow::_dump(std::ostream& os, const Taskflow* top) const {
+  
   std::stack<const Taskflow*> stack;
   std::unordered_set<const Taskflow*> visited; 
   
-  os << "digraph Taskflow_";
-  if(_name.empty()) os << 'p' << this;
-  else os << _name;
-  os << " {\nrankdir=\"LR\";\n";
-  
-  stack.push(this);
-  visited.insert(this);
-  
+  stack.push(top);
+  visited.insert(top);
+
   while(!stack.empty()) {
     
     auto f = stack.top();
     stack.pop();
     
-    // create a subgraph field for this taskflow
-    os << "subgraph cluster_";
-    if(f->_name.empty()) os << 'p' << f;
-    else os << f->_name;
-    os << " {\n";
-
-    os << "label=\"Taskflow_";
+    os << "subgraph cluster_p" << f << " {\nlabel=\"Taskflow: ";
     if(f->_name.empty()) os << 'p' << f;
     else os << f->_name;
     os << "\";\n";
-
-    // dump the details of this taskflow
-    for(const auto& n : f->_graph.nodes()) {
-      
-      // regular task
-      if(auto module = n->_module; !module) {
-        n->dump(os);
-      }
-      // module task
-      else {
-        os << 'p' << n.get() << "[shape=box3d, color=blue, label=\"";
-        if(n->_name.empty()) os << n.get();
-        else os << n->_name;
-        os << " (Taskflow_";
-        if(module->_name.empty()) os << module;
-        else os << module->_name;
-        os << ")\"];\n";
-
-        if(visited.find(module) == visited.end()) {
-          visited.insert(module);
-          stack.push(module);
-        }
-
-        for(const auto s : n->_successors) {
-          os << 'p' << n.get() << "->" << 'p' << s << ";\n";
-        }
-      }
-    }
+    _dump(os, f->_graph, stack, visited);
     os << "}\n";
   }
-
-  os << "}\n";
 }
 
+// Procedure: _dump
+inline void Taskflow::_dump(
+  std::ostream& os, 
+  const Node* node,
+  std::stack<const Taskflow*>& stack,
+  std::unordered_set<const Taskflow*>& visited
+) const {
+
+  os << 'p' << node << "[label=\"";
+  if(node->_name.empty()) os << 'p' << node;
+  else os << node->_name;
+  os << "\" ";
+
+  // condition node is colored green
+  if(node->_work.index() == Node::CONDITION_WORK) {
+    os << " shape=diamond color=black fillcolor=aquamarine style=filled";
+  }
+
+  os << "];\n";
+  
+  for(size_t s=0; s<node->_successors.size(); ++s) {
+    if(node->_work.index() == Node::CONDITION_WORK) {
+      // case edge is dashed
+      os << 'p' << node << " -> p" << node->_successors[s] 
+         << " [style=dashed label=\"" << s << "\"];\n";
+    }
+    else {
+      os << 'p' << node << " -> p" << node->_successors[s] << ";\n";
+    }
+  }
+  
+  // subflow join node
+  if(node->_parent && node->_successors.size() == 0) {
+    os << 'p' << node << " -> p" << node->_parent << ";\n";
+  }
+  
+  if(node->_subgraph && !node->_subgraph->empty()) {
+
+    os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
+    if(node->_name.empty()) os << 'p' << node;
+    else os << node->_name;
+
+    os << "\";\n" << "color=blue\n";
+    _dump(os, *(node->_subgraph), stack, visited);
+    os << "}\n";
+  }
+}
+
+// Procedure: _dump
+inline void Taskflow::_dump(
+  std::ostream& os, 
+  const Graph& graph,
+  std::stack<const Taskflow*>& stack,
+  std::unordered_set<const Taskflow*>& visited
+) const {
+    
+  for(const auto& n : graph.nodes()) {
+    // regular task
+    if(auto module = n->_module; !module) {
+      _dump(os, n.get(), stack, visited);
+    }
+    // module task
+    else {
+      os << 'p' << n.get() << "[shape=box, color=blue, label=\"";
+      if(n->_name.empty()) os << n.get();
+      else os << n->_name;
+      os << " [Taskflow: ";
+      if(module->_name.empty()) os << 'p' << module;
+      else os << module->_name;
+      os << "]\"];\n";
+
+      if(visited.find(module) == visited.end()) {
+        visited.insert(module);
+        stack.push(module);
+      }
+
+      for(const auto s : n->_successors) {
+        os << 'p' << n.get() << "->" << 'p' << s << ";\n";
+      }
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
 // Backward compatibility
+// ----------------------------------------------------------------------------
+
 using Framework = Taskflow;
 
 }  // end of namespace tf. ---------------------------------------------------

@@ -1,149 +1,95 @@
 namespace tf {
 
-/** @page chapter5 C5: Spawn %Task Dependency Graphs at Runtime
+/** @page chapter5 C5: Composable Tasking
 
-It is very common for a parallel program to 
-spawn task dependency graphs at runtime.
-In Cpp-Taskflow, we call this <em>dynamic tasking</em>.
+Composition is a key to improve the programmability of a complex workflow.
+This chapter describes how to create a large parallel graph through composition of modular and reusable blocks that are easier to optimize.
 
-@section Subflow Subflow
 
-Dynamic tasks are those created during the execution of a graph.
-These tasks are spawned from a parent task and are grouped together to a 
-@em subflow dependency graph.
-Cpp-Taskflow has an unified interface for static and dynamic tasking.
-To create a subflow for dynamic tasking, emplace a callable 
-that takes one argument of type tf::Subflow.
-A tf::Subflow object will be created during the runtime and
-passed to the task.
-All graph building methods you find in taskflow are applicable for a subflow.
+@section C5_ComposesATaskflow Composes a Taskflow
+
+A powerful feature of tf::Taskflow is its @em composable interface.
+You can break down a large parallel workload into smaller pieces
+each designed to run a specific task dependency graph.
+This largely facilitates the @em modularity of writing a parallel task program.
 
 @code{.cpp}
- 1: tf::Taskflow taskflow;
- 2:
- 3: tf::Task A = taskflow.emplace([] () {}).name("A");  // static task A
- 4: tf::Task C = taskflow.emplace([] () {}).name("C");  // static task C
- 5: tf::Task D = taskflow.emplace([] () {}).name("D");  // static task D
- 6:
- 7: tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) { 
- 8:   tf::Task B1 = subflow.emplace([] () {}).name("B1");  // dynamic task B1
- 9:   tf::Task B2 = subflow.emplace([] () {}).name("B2");  // dynamic task B2
-10:   tf::Task B3 = subflow.emplace([] () {}).name("B3");  // dynamic task B3
-11:   B1.precede(B3);  // B1 runs bofore B3
-12:   B2.precede(B3);  // B2 runs before B3
-13: }).name("B");
-14:
-15: A.precede(B);  // B runs after A
-16: A.precede(C);  // C runs after A
-17: B.precede(D);  // D runs after B
-18: C.precede(D);  // D runs after C
-19:
-20: tf::Executor().run(taskflow).get();  // execute the graph to spawn the subflow
-21: taskflow.dump(std::cout);            // dump the taskflow to DOT format
+ 1: // f1 has three independent tasks
+ 2: tf::Taskflow f1;
+ 3: f1.name("F1");
+ 4: tf::Task f1A = f1.emplace([&](){ std::cout << "F1 TaskA\n"; });
+ 5: tf::Task f1B = f1.emplace([&](){ std::cout << "F1 TaskB\n"; });
+ 6: tf::Task f1C = f1.emplace([&](){ std::cout << "F1 TaskC\n"; });
+ 7: 
+ 8: f1A.name("f1A");
+ 9: f1B.name("f1B");
+10: f1C.name("f1C");
+11: f1A.precede(f1C);
+12: f1B.precede(f1C);
+13:
+14: // f2A ---
+15: //        |----> f2C ----> f1_module_task ----> f2D
+16: // f2B --- 
+17: tf::Taskflow f2;
+18: f2.name("F2");
+19: tf::Task f2A = f2.emplace([&](){ std::cout << "  F2 TaskA\n"; });
+20: tf::Task f2B = f2.emplace([&](){ std::cout << "  F2 TaskB\n"; });
+21: tf::Task f2C = f2.emplace([&](){ std::cout << "  F2 TaskC\n"; });
+22: tf::Task f2D = f2.emplace([&](){ std::cout << "  F2 TaskD\n"; });
+23: 
+24: f2A.name("f2A");
+25: f2B.name("f2B");
+26: f2C.name("f2C");
+27: f2D.name("f2D");
+28:
+29: f2A.precede(f2C);
+30: f2B.precede(f2C);
+31:
+32: tf::Task f1_module_task = f2.composed_of(f1).name("module");
+33: f2C.precede(f1_module_task);
+34: f1_module_task.precede(f2D);
+35:
+36: f2.dump(std::cout);
 @endcode
 
-@image html images/subflow_join.png width=30%
+@image html images/composition_static_1.svg width=45%
 
 Debrief:
-@li Line 1 creates a taskflow object
-@li Line 3-5 creates three tasks, A, C, and D
-@li Line 7-13 creates a task B that spawns a task dependency graph of three tasks B1, B2, and B3
-@li Line 15-18 add dependencies among A, B, C, and D
-@li Line 20 dispatches the graph and waits until it finishes
-@li Line 21 dumps the entire task dependency graph
 
-Line 7-13 is the main coding block to enable dynamic tasking.
-Cpp-Taskflow uses a @std_variant date type to 
-unify the interface of static tasking and dynamic tasking.
-The runtime will create a tf::Subflow passing it to task B,
-and spawn a dependency graph as described by the associated callable.
-This new subflow graph will be added to the topology of its parent task B.
-Due to the property of dynamic tasking,
-we cannot dump its structure before execution.
-We will need to run the graph first and call the method tf::Taskflow::dump.
-
-@section DetachASubflow Detach a Subflow
-
-By default, a spawned subflow joins its parent task.
-That is, all nodes of zero outgoing edges in the subflow will precede the parent task.
-This forces a subflow to follow the dependency constraints after its parent task.
-Having said that,
-you can detach a subflow from its parent task, allowing its execution to flow independently.
-
-@code{.cpp}
- 1: tf::Taskflow taskflow;
- 2:
- 3: tf::Task A = taskflow.emplace([] () {}).name("A");  // static task A
- 4: tf::Task C = taskflow.emplace([] () {}).name("C");  // static task C
- 5: tf::Task D = taskflow.emplace([] () {}).name("D");  // static task D
- 6:
- 7: tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) { 
- 8:   tf::Task B1 = subflow.emplace([] () {}).name("B1");  // dynamic task B1
- 9:   tf::Task B2 = subflow.emplace([] () {}).name("B2");  // dynamic task B2
-10:   tf::Task B3 = subflow.emplace([] () {}).name("B3");  // dynamic task B3
-11:   B1.precede(B3);    // B1 runs bofore B3
-12:   B2.precede(B3);    // B2 runs before B3
-13:   subflow.detach();  // detach this subflow
-14: }).name("B");
-15:
-16: A.precede(B);  // B runs after A
-17: A.precede(C);  // C runs after A
-18: B.precede(D);  // D runs after B
-19: C.precede(D);  // D runs after C
-20:
-21: tf::Executor().run(taskflow).get();  // execute the graph to spawn the subflow
-22: taskflow.dump(std::cout);            // dump the taskflow to DOT format
-@endcode
-
-The figure below demonstrates a detached subflow based on the previous example.
-A detached subflow will eventually join the topology of its parent task.
-
-@image html images/subflow_detach.png width=60%
+@li Line 1-12  creates a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C
+@li Line 17-30 creates a taskflow of four tasks f2A, f2B, f2C, and f2D 
+@li Line 32 creates a module task from taskflow f1 through the method Taskflow::composed_of
+@li Line 33 enforces task f2C to run before the module task 
+@li Line 34 enforces the module task to run before task f2D
 
 
-@section NestedSubflow Nested Subflow
+@section C5_ModuleTask Module Task
 
-A subflow can be nested or recursive.
-You can create another subflow from the execution of a subflow and so on.
+The task created from Taskflow::composed_of is a @em module task
+that runs on a pre-defined taskflow.
+A module task does not owns the taskflow but maintains a soft 
+mapping to the taskflow.
+You can create multiple module tasks from the same taskflow
+but only one module task can run at one time.
+For example, the following composition is valid. 
+Even though the two module tasks @c module1 and @c module2 refer to the same taskflow @c F1,
+the dependency link prevents @c F1 from multiple executions at the same time.
 
-@code{.cpp}
- 1: tf::Taskflow taskflow;
- 2:
- 3: tf::Task A = taskflow.emplace([] (tf::Subflow& sbf){
- 4:   std::cout << "A spawns A1 & subflow A2\n";
- 5:   tf::Task A1 = sbf.emplace([] () {
- 6:     std::cout << "subtask A1\n";
- 7:   }).name("A1");
- 8:
- 9:   tf::Task A2 = sbf.emplace([] (tf::Subflow& sbf2){
-10:     std::cout << "A2 spawns A2_1 & A2_2\n";
-11:     tf::Task A2_1 = sbf2.emplace([] () {
-12:       std::cout << "subtask A2_1\n";
-13:     }).name("A2_1");
-14:     tf::Task A2_2 = sbf2.emplace([] () {
-15:       std::cout << "subtask A2_2\n";
-16:     }).name("A2_2");
-17:     A2_1.precede(A2_2);
-18:   }).name("A2");
-19:   A1.precede(A2);
-20: }).name("A");
-21:
-22: // execute the graph to spawn the subflow
-23: tf::Executor().run(taskflow).get();
-24: taskflow.dump(std::cout);
-@endcode
+@image html images/composition_static_2.svg width=45%
 
-@image html images/nested_subflow.png width=45%
+However, the following composition is @em invalid.
+Both module tasks refer to the same taskflow. They can not run at the same time because
+they are associated with the same graph.
 
-Debrief:
-@li Line 1 creates a taskflow object
-@li Line 3-20 creates a task to spawn a subflow of two tasks A1 and A2
-@li Line 9-18 spawns another subflow of two tasks A2_1 and A2_2 out of its parent task A2
-@li Line 23-24 dispatches the graph asynchronously and dump its structure when it finishes
+@image html images/composition_static_invalid.svg width=60%
 
-Similarly, you can detach a nested subflow from its parent subflow.
-A detached subflow will run independently and eventually join the topology
-of its parent subflow.
+
+
+
+
+
+
+
 
 */
 

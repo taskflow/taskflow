@@ -1,0 +1,28 @@
+This page summarizes a list of frequently asked questions about Cpp-\/\+Taskflow. If you cannot find a solution here, please post an issue at \href{https://github.com/cpp-taskflow/cpp-taskflow/issues}{\tt here}.\hypertarget{_f_a_q_GeneralQuestions}{}\section{General Questions}\label{_f_a_q_GeneralQuestions}
+\hypertarget{_f_a_q_GeneralQuestion1}{}\subsection{Q1\+: What\textquotesingle{}s the goal of Cpp-\/\+Taskflow?}\label{_f_a_q_GeneralQuestion1}
+Cpp-\/\+Taskflow aims to help C++ developers quickly implement efficient parallel decomposition strategies using task-\/based approaches.\hypertarget{_f_a_q_GeneralQuestion2}{}\subsection{Q2\+: How do I use Cpp-\/\+Taskflow in my projects?}\label{_f_a_q_GeneralQuestion2}
+Cpp-\/\+Taskflow is a header-\/only library with zero dependencies. The only thing you need is a C++17 compiler. To use Cpp-\/\+Taskflow, simply drop the folder {\ttfamily taskflow/} to your project and include taskflow.\+hpp.\hypertarget{_f_a_q_GeneralQuestion3}{}\subsection{Q3\+: What is the difference between static tasking and dynamic tasking?}\label{_f_a_q_GeneralQuestion3}
+Static tasking refers to those tasks created before execution, while dynamic tasking refers to those tasks created during the execution of static tasks or dynamic tasks (nested). Dynamic tasks created by the same task node are grouped together to a subflow.\hypertarget{_f_a_q_GeneralQuestion4}{}\subsection{Q4\+: How many tasks can Cpp-\/\+Taskflow handle?}\label{_f_a_q_GeneralQuestion4}
+Benchmarks showed Cpp-\/\+Taskflow can efficiently handle millions or billions of tasks (both large and small tasks) on a machine with up to 64 C\+P\+Us.\hypertarget{_f_a_q_GeneralQuestion5}{}\subsection{Q5\+: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?}\label{_f_a_q_GeneralQuestion5}
+The hex value represents the memory address of the task. Each task has a method tf\+::\+Task\+::name(const std\+::string\&) for user to assign a human readable string to ease the debugging process. If a task is not assigned a name or is an internal node, its address value in the memory is used instead.\hypertarget{_f_a_q_GeneralQuestion6}{}\subsection{Q6\+: Does Cpp-\/\+Taskflow have backward compatibility with C++03/11/14?}\label{_f_a_q_GeneralQuestion6}
+Unfortunately, Cpp-\/\+Taskflow is heavily relying on modern C++17\textquotesingle{}s features/idoms/\+S\+TL and it is very difficult to provide a version that compiles under older C++ versions.\hypertarget{_f_a_q_GeneralQuestion7}{}\subsection{Q7\+: How does Cpp-\/\+Taskflow schedule tasks?}\label{_f_a_q_GeneralQuestion7}
+Cpp-\/\+Taskflow implemented a very efficient \href{https://en.wikipedia.org/wiki/Work_stealing}{\tt work-\/stealing scheduler} to execute task dependency graphs. You can find the source code at {\ttfamily taskflow/core/executor.\+hpp} 
+
+\hypertarget{_f_a_q_ProgrammingQuestions}{}\section{Programming Questions}\label{_f_a_q_ProgrammingQuestions}
+\hypertarget{_f_a_q_ProgrammingQuestions1}{}\subsection{Q1\+: What is the difference between Cpp-\/\+Taskflow threads and workers?}\label{_f_a_q_ProgrammingQuestions1}
+The master thread owns the thread pool and can spawn workers to run tasks or shutdown the pool. Giving taskflow {\ttfamily N} threads means using {\ttfamily N} threads to do the works, and there is a total of {\ttfamily N+1} threads (including the master threads) in the program.
+
+
+\begin{DoxyCode}
+tf::Executor(N);    \textcolor{comment}{// N workers, N+1 threads in the program.}
+\end{DoxyCode}
+
+
+If there is no worker threads in the pool, the master thread will do all the works by itself. Please refer to C2\+\_\+\+Create\+An\+Executor for more details.\hypertarget{_f_a_q_ProgrammingQuestions2}{}\subsection{Q2\+: What is the Lifetime of a Task and a Graph?}\label{_f_a_q_ProgrammingQuestions2}
+The lifetime of a task sticks with its parent graph. A task is not destroyed until its parent graph is destroyed. Please refer to C1\+\_\+\+Lifetime\+Of\+A\+Task for more details.\hypertarget{_f_a_q_ProgrammingQuestions3}{}\subsection{Q3\+: Is taskflow thread-\/safe?}\label{_f_a_q_ProgrammingQuestions3}
+No, the taskflow object is not thread-\/safe. You can\textquotesingle{}t create tasks from multiple threads at the same time.\hypertarget{_f_a_q_ProgrammingQuestions4}{}\subsection{Q4\+: Is executor thread-\/safe?}\label{_f_a_q_ProgrammingQuestions4}
+Yes, the executor object is thread-\/safe. You can have multiple threads run their taskflows on one executor.\hypertarget{_f_a_q_ProgrammingQuestions5}{}\subsection{Q5\+: My program hangs and never returns after dispatching a taskflow graph. What\textquotesingle{}s wrong?}\label{_f_a_q_ProgrammingQuestions5}
+When the program hangs forever it is very likely your taskflow graph has a cycle. Try the tf\+::\+Taskflow\+::dump method to debug the graph before dispatching your taskflow graph.\hypertarget{_f_a_q_ProgrammingQuestions6}{}\subsection{Q6\+: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?}\label{_f_a_q_ProgrammingQuestions6}
+
+
+No. The subflow is spawned during the execution of B, and at this point A must finish because A precedes B. This gives rise to the fact B1 and B2 must run after A. This graph may looks strange because B seems to run twice! However, Cpp-\/\+Taskflow will schedule B only once to create its subflow. Whether this subflow joins or detaches from B only affects the future object returned from B. 

@@ -1,0 +1,35 @@
+digraph Taskflow {
+rankdir="LR"
+p0x7fecbdc02830[label="A" ];
+p0x7fecbdc02830 -> p0x7fecbdc02940;
+p0x7fecbdc02830 -> p0x7fecbdc02d80;
+p0x7fecbdc02940[label="B" ];
+p0x7fecbdc02940 -> p0x7fecbdc02a50;
+p0x7fecbdc02a50[label="C" ];
+p0x7fecbdc02a50 -> p0x7fecbdc02b60;
+p0x7fecbdc02b60[label="D" ];
+p0x7fecbdc02b60 -> p0x7fecbdc034f0;
+p0x7fecbdc02c70[label="E" ];
+p0x7fecbdc02c70 -> p0x7fecbdc031c0;
+p0x7fecbdc02d80[label="F" ];
+p0x7fecbdc02d80 -> p0x7fecbdc03600;
+p0x7fecbdc02e90[label="G" ];
+p0x7fecbdc02fa0[label="H" ];
+p0x7fecbdc02fa0 -> p0x7fecbdc030b0;
+p0x7fecbdc030b0[label="I" ];
+p0x7fecbdc030b0 -> p0x7fecbdc03710;
+p0x7fecbdc031c0[label="K" ];
+p0x7fecbdc032d0[label="L" ];
+p0x7fecbdc032d0 -> p0x7fecbdc033e0;
+p0x7fecbdc033e0[label="M" ];
+p0x7fecbdc034f0[label="cond_1"  shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7fecbdc034f0 -> p0x7fecbdc02940 [style=dashed label="0"];
+p0x7fecbdc034f0 -> p0x7fecbdc02c70 [style=dashed label="1"];
+p0x7fecbdc03600[label="cond_2"  shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7fecbdc03600 -> p0x7fecbdc02e90 [style=dashed label="0"];
+p0x7fecbdc03600 -> p0x7fecbdc02fa0 [style=dashed label="1"];
+p0x7fecbdc03710[label="cond_3"  shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7fecbdc03710 -> p0x7fecbdc03710 [style=dashed label="0"];
+p0x7fecbdc03710 -> p0x7fecbdc032d0 [style=dashed label="1"];
+}
+

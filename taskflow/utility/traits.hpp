@@ -110,4 +110,60 @@ template <typename... Ts>
 Functors(Ts...) -> Functors<Ts...>;
 
 
+// ----------------------------------------------------------------------------
+// Function Traits
+// ----------------------------------------------------------------------------
+
+// we specialize for pointers to member function
+
+template<typename F>
+struct function_traits;
+
+// function pointer
+template<typename R, typename... Args>
+struct function_traits<R(*)(Args...)> : public function_traits<R(Args...)> {
+};
+
+// function reference
+template<typename R, typename... Args>
+struct function_traits<R(&)(Args...)> : public function_traits<R(Args...)> {
+};
+
+// for operator ()
+template <typename T>
+struct function_traits : public function_traits<decltype(&T::operator())>{
+};
+
+// immutable operator
+template <typename C, typename R, typename... Args>
+struct function_traits<R(C::*)(Args...) const> :
+  public function_traits<R(Args...)> {
+};
+
+// mutable operator
+template <typename C, typename R, typename... Args>
+struct function_traits<R(C::*)(Args...)> :
+  public function_traits<R(Args...)> {
+};
+
+// function_traits
+template<typename R, typename... Args>
+struct function_traits<R(Args...)> {
+
+  using return_type = R;
+  using argument_tuple_type = std::tuple<Args...>;
+ 
+  static constexpr size_t arity = sizeof...(Args);
+ 
+  template <size_t N>
+  struct argument {
+    static_assert(N < arity, "error: invalid parameter index.");
+    using type = std::tuple_element_t<N, std::tuple<Args...>>;
+  };
+
+  template <size_t N>
+  using argument_t = typename argument<N>::type;
+};
+
+
 }  // end of namespace tf. ---------------------------------------------------

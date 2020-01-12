@@ -50,12 +50,15 @@ def run(target, method, thread, round):
 ###########################################################
 def main():
 
+  # example usage
+  # -b wavefront graph_traversal -t 1 2 3 -m tbb omp tf
+
   parser = argparse.ArgumentParser(description='regression')
 
   parser.add_argument(
     '-b', '--benchmarks',
     nargs='+',
-    help='valid benchmarks: wavefront, graph_traversal',
+    help='list of benchmark names',
     choices=['wavefront', 
              'graph_traversal', 
              'binary_tree', 
@@ -68,7 +71,7 @@ def main():
   parser.add_argument(
     '-m','--methods', 
     nargs='+', 
-    help='valid methods: omp, tbb, tf', 
+    help='list of tasking methods', 
     default=['tf', 'tbb', 'omp'],
     choices=['tf', 'tbb', 'omp']
   )
@@ -87,6 +90,13 @@ def main():
     help='number of rounds to average',
     default=1
   )
+
+  parser.add_argument(
+    '-p', '--plot',
+    type=bool,
+    help='show the plot or not',
+    default=False
+  )
   
   # parse the arguments
   args = parser.parse_args()
@@ -95,6 +105,7 @@ def main():
   print('threads:', args.threads)
   print('methods:', args.methods)
   print('num_rounds:', args.num_rounds)
+  print('plot:', args.plot)
 
   rows = len(args.benchmarks)
   cols = len(args.threads)
@@ -129,7 +140,10 @@ def main():
 
   plot.tight_layout()
   plot.savefig('result.png')
-  #plot.show()
+
+  if args.plot:
+    plot.show()
+
   plot.close(fig)
 
 # run the main entry

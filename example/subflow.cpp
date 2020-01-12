@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
 
   // Create a taskflow graph with three regular tasks and one subflow task.
   tf::Executor executor(4);
-  tf::Taskflow taskflow;
+  tf::Taskflow taskflow("Dynamic Tasking Demo");
 
   auto [A, B, C, D] = taskflow.emplace(
     // Task A

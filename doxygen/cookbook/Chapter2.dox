@@ -1,27 +1,18 @@
 namespace tf {
 
-/** @page chapter2 C2: Execute a %Taskflow
+/** @page chapter2 C2: %Executor
 
-After you create a task dependency graph, you need to dispatch it to threads for execution.
+After you create a task dependency graph, you need to submit it to threads for execution.
 In this chapter, we will show you how to execute a task dependency graph.
-
-@section GraphAndTopology Graph and Topology
-
-Each taskflow object has exactly one graph at a time that represents
-a set of dependent tasks constructed so far.
-To execute a graph, you need to create an @em executor from tf::Executor.
-An executor is a @em thread-safe object that 
- manages a set of worker threads and schedules task execution
-through an efficient @em work-stealing algorithm.
-Issuing a call to run a taskflow creates a @em topology.
-A topology is a data structure wrapping around a running graph.
-Each executor object has a list of topologies to keep track of the 
-execution status of running and finished graphs.
-Users can retrieve this information for graph inspection and debugging.
 
 @section C2_CreateAnExecutor Create an Executor
 
-The first step is to create an executor to run a taskflow.
+To execute a taskflkow, you need to create an @em executor from tf::Executor.
+An executor is a @em thread-safe object that 
+manages a set of worker threads and executes tasks
+through an efficient @em work-stealing algorithm.
+Issuing a call to run a taskflow creates a @em topology,
+a data structure to keep track of the execution status of a running graph.
 tf::Executor takes an unsigned integer to construct with @c N worker threads.
 The default value is std::thread::hardware_concurrency.
 
@@ -133,7 +124,7 @@ while it is participating in an execution.
 
 tf::Executor is @em thread-safe. 
 Touching an executor from multiple threads is acceptable.
-You can have multiple threads call executor to run different taskflows.
+You can have multiple threads call the same executor to run different taskflows.
 
 @code{.cpp}
  1: tf::Executor executor;
@@ -145,10 +136,6 @@ You can have multiple threads call executor to run different taskflows.
  7:   }).detach();
  8: }
 @endcode
-
-Although executor can be accessed from multiple threads, 
-returnning from @c wait_for_all will only guarantee those runs that were called 
-before to complete.
 
 @section C2_MonitorThreadActivities Monitor Thread Activities 
 
@@ -184,7 +171,7 @@ of each executed task. Users can query, dump or remove the timestamps through th
 
 Debrief:
 
-@li Line 2-4 creates an observer and a task dependency graph with four tasks and dispatch the tasks to execution.
+@li Line 2-4 creates an observer and a task dependency graph with four tasks and submits the tasks to execution.
 @li Line 7 query the total number of tasks (number of timestamp pair) through observer
 @li Line 10 dump the timestamps to a std::string in JSON format 
 @li Line 13 remove all timestamps in the observer

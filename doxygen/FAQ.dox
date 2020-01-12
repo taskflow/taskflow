@@ -49,7 +49,8 @@ and it is very difficult to provide a version that compiles under older C++ vers
 Cpp-Taskflow implemented a very efficient 
 <a href="https://en.wikipedia.org/wiki/Work_stealing">work-stealing scheduler</a> 
 to execute task dependency graphs.
-You can find the source code at @c taskflow/core/executor.hpp
+The source code is available at @c taskflow/core/executor.hpp
+and @c taskflow/core/wsq.hpp.
 
 ----
 
@@ -61,7 +62,7 @@ You can find the source code at @c taskflow/core/executor.hpp
 The master thread owns the thread pool and can spawn workers to run tasks 
 or shutdown the pool. 
 Giving taskflow @c N threads means using @c N threads to do the works, 
-and there is a total of @c N+1 threads (including the master threads) in the program.
+and there is a total of @c N+1 threads (including the master thread) in the program.
 
 @code{.cpp}
 tf::Executor(N);    // N workers, N+1 threads in the program.
@@ -79,8 +80,7 @@ Please refer to @ref C1_LifetimeOfATask for more details.
 
 @subsection ProgrammingQuestions3 Q3: Is taskflow thread-safe?
 
-No, the taskflow object is not thread-safe. You can't create tasks from multiple threads
-at the same time.
+No, the taskflow object is not thread-safe. Multiple threads cannot create tasks from the same taskflow at the same time.
 
 @subsection ProgrammingQuestions4 Q4: Is executor thread-safe?
 

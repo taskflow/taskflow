@@ -3,18 +3,9 @@
 #include "../error/error.hpp"
 #include "../utility/traits.hpp"
 #include "../utility/passive_vector.hpp"
+#include "declarations.hpp"
 
 namespace tf {
-
-// Forward declaration
-class Node;
-class Topology;
-class Task;
-class FlowBuilder;
-class Subflow;
-class Taskflow;
-
-// ----------------------------------------------------------------------------
 
 // Class: Graph
 class Graph {
@@ -36,8 +27,8 @@ class Graph {
 
     size_t size() const;
     
-    template <typename C>
-    Node& emplace_back(C&&); 
+    template <typename ...Args>
+    Node& emplace_back(Args&& ...); 
 
     Node& emplace_back();
 
@@ -60,64 +51,79 @@ class Node {
   friend class Topology;
   friend class Taskflow;
   friend class Executor;
-
-  using StaticWork  = std::function<void()>;
-  using DynamicWork = std::function<void(Subflow&)>;
-
-  constexpr static int SPAWNED = 0x1;
-  constexpr static int SUBTASK = 0x2;
+  friend class FlowBuilder;
+  friend class Subflow;
 
   public:
+  
+  using StaticWork  = std::function<void()>;
+  using DynamicWork = std::function<void(Subflow&)>;
+  using ConditionWork = std::function<int()>;
+  
+  // state bit flag
+  constexpr static int SPAWNED = 0x1;
+  constexpr static int BRANCH  = 0x2;
 
-    Node() = default;
+  // variant index
+  constexpr static int STATIC_WORK    = 1;
+  constexpr static int DYNAMIC_WORK   = 2;
+  constexpr static int CONDITION_WORK = 3; 
 
-    template <typename C>
-    Node(C&&);
-    
+    //Node() = default;
+
+    // Constructor 
+    template <typename ...Args>
+    Node(Args&&... args);
+
     ~Node();
-    
-    void precede(Node&);
-    void dump(std::ostream&) const;
+
+    //void dump(std::ostream&) const;
 
     size_t num_successors() const;
     size_t num_dependents() const;
+    size_t num_strong_dependents() const;
+    size_t num_weak_dependents() const;
     
     const std::string& name() const;
 
-    std::string dump() const;
-
-    // Status-related functions
-    bool is_spawned() const { return _status & SPAWNED; }
-    bool is_subtask() const { return _status & SUBTASK; }
-
-    void set_spawned()   { _status |= SPAWNED;  }
-    void set_subtask()   { _status |= SUBTASK;  }
-    void unset_spawned() { _status &= ~SPAWNED; }
-    void unset_subtask() { _status &= ~SUBTASK; }
-    void clear_status()  { _status = 0;         }
+    //std::string dump() const;
 
   private:
     
     std::string _name;
-    std::variant<std::monostate, StaticWork, DynamicWork> _work;
+    std::variant<std::monostate, StaticWork, DynamicWork, ConditionWork> _work;
 
     tf::PassiveVector<Node*> _successors;
     tf::PassiveVector<Node*> _dependents;
-    
+
     std::optional<Graph> _subgraph;
 
     Topology* _topology {nullptr};
     Taskflow* _module {nullptr};
-
-    int _status {0};
     
-    std::atomic<int> _num_dependents {0};
+    Node* _parent {nullptr};
+
+    int _state {0};
+
+    std::atomic<int> _join_counter {0};
+    
+    void _precede(Node*);
+    void _set_state(int);
+    void _unset_state(int);
+    void _clear_state();
+    void _set_up_join_counter();
+
+    bool _has_state(int) const;
 };
 
-// Constructor
-template <typename C>
-Node::Node(C&& c) : _work {std::forward<C>(c)} {
-}
+//// Constructor
+//template <typename ...Args>
+//Node::Node(Args&&... args) : _work{std::forward<Args>(args)...} {
+//}
+    
+template <typename ...Args>
+Node::Node(Args&&... args): _work{std::forward<Args>(args)...} {
+} 
 
 // Destructor
 inline Node::~Node() {
@@ -143,11 +149,10 @@ inline Node::~Node() {
   }
 }
 
-// Procedure: precede
-inline void Node::precede(Node& v) {
-  _successors.push_back(&v);
-  v._dependents.push_back(this);
-  v._num_dependents.fetch_add(1, std::memory_order_relaxed);
+// Procedure: _precede
+inline void Node::_precede(Node* v) {
+  _successors.push_back(v);
+  v->_dependents.push_back(this);
 }
 
 // Function: num_successors
@@ -160,48 +165,117 @@ inline size_t Node::num_dependents() const {
   return _dependents.size();
 }
 
+// Function: num_weak_dependents
+inline size_t Node::num_weak_dependents() const {
+  return std::count_if(
+    _dependents.begin(), 
+    _dependents.end(), 
+    [](Node* node){ return node->_work.index() == Node::CONDITION_WORK; } 
+  );
+}
+
+// Function: num_strong_dependents
+inline size_t Node::num_strong_dependents() const {
+  return std::count_if(
+    _dependents.begin(), 
+    _dependents.end(), 
+    [](Node* node){ return node->_work.index() != Node::CONDITION_WORK; } 
+  );
+}
+
 // Function: name
 inline const std::string& Node::name() const {
   return _name;
 }
-
-// Function: dump
-inline std::string Node::dump() const {
-  std::ostringstream os;  
-  dump(os);
-  return os.str();
+//
+//// Function: dump
+//inline std::string Node::dump() const {
+//  std::ostringstream os;  
+//  dump(os);
+//  return os.str();
+//}
+//
+//// Function: dump
+//inline void Node::dump(std::ostream& os) const {
+//
+//  os << 'p' << this << "[label=\"";
+//  if(_name.empty()) os << 'p' << this;
+//  else os << _name;
+//  os << "\" ";
+//
+//  // condition node is colored green
+//  if(_work.index() == CONDITION_WORK) {
+//    os << " shape=diamond color=black fillcolor=aquamarine style=filled";
+//  }
+//
+//  os << "];\n";
+//  
+//  for(size_t s=0; s<_successors.size(); ++s) {
+//    if(_work.index() == CONDITION_WORK) {
+//      // case edge is dashed
+//      os << 'p' << this << " -> p" << _successors[s] 
+//         << " [style=dashed label=\"" << s << "\"];\n";
+//    }
+//    else {
+//      os << 'p' << this << " -> p" << _successors[s] << ";\n";
+//    }
+//  }
+//  
+//  // subflow join node
+//  if(_parent && _successors.size() == 0) {
+//    os << 'p' << this << " -> p" << _parent << ";\n";
+//  }
+//  
+//  if(_subgraph && !_subgraph->empty()) {
+//
+//    os << "subgraph cluster_p" << this << " {\nlabel=\"Subflow: ";
+//    if(_name.empty()) os << 'p' << this;
+//    else os << _name;
+//
+//    os << "\";\n" << "color=blue\n";
+//
+//    for(const auto& n : _subgraph->nodes()) {
+//      n->dump(os);
+//    }
+//    os << "}\n";
+//  }
+//}
+    
+// Procedure: _set_state
+inline void Node::_set_state(int flag) { 
+  _state |= flag; 
 }
 
-// Function: dump
-inline void Node::dump(std::ostream& os) const {
+// Procedure: _unset_state
+inline void Node::_unset_state(int flag) { 
+  _state &= ~flag; 
+}
 
-  os << 'p' << this << "[label=\"";
-  if(_name.empty()) os << 'p' << this;
-  else os << _name;
-  os << "\"];\n";
-  
-  for(const auto s : _successors) {
-    os << 'p' << this << " -> " << 'p' << s << ";\n";
-  }
-  
-  if(_subgraph && !_subgraph->empty()) {
+// Procedure: _clear_state
+inline void Node::_clear_state() { 
+  _state = 0; 
+}
 
-    os << "subgraph cluster_";
-    if(_name.empty()) os << 'p' << this;
-    else os << _name;
-    os << " {\n";
+// Procedure: _set_up_join_counter
+inline void Node::_set_up_join_counter() {
 
-    os << "label=\"Subflow_";
-    if(_name.empty()) os << 'p' << this;
-    else os << _name;
+  int c = 0;
 
-    os << "\";\n" << "color=blue\n";
-
-    for(const auto& n : _subgraph->nodes()) {
-      n->dump(os);
+  for(auto p : _dependents) {
+    if(p->_work.index() == Node::CONDITION_WORK) {
+      _set_state(Node::BRANCH);
     }
-    os << "}\n";
+    else {
+      c++;
+    }
   }
+
+  _join_counter.store(c, std::memory_order_relaxed);
+}
+
+// Function: _has_state
+inline bool Node::_has_state(int flag) const {
+  return _state & flag;
 }
 
 // ----------------------------------------------------------------------------
@@ -282,8 +356,8 @@ inline void NodePool::_recycle(Node& node) {
   node._dependents.clear();
   node._topology = nullptr;
   node._module = nullptr;
-  node._status = 0;
-  node._num_dependents.store(0, std::memory_order_relaxed);
+  node._state = 0;
+  node._join_counter.store(0, std::memory_order_relaxed);
   //assert(!node._subgraph);
 }
 
@@ -341,9 +415,9 @@ inline const std::vector<std::unique_ptr<Node>>& Graph::nodes() const {
 
 // Function: emplace_back
 // create a node from a give argument; constructor is called if necessary
-template <typename C>
-Node& Graph::emplace_back(C&& c) {
-  _nodes.push_back(std::make_unique<Node>(std::forward<C>(c)));
+template <typename ...Args>
+Node& Graph::emplace_back(Args&&... args) {
+  _nodes.push_back(std::make_unique<Node>(std::forward<Args>(args)...));
   return *(_nodes.back());
 }
 

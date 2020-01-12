@@ -4,10 +4,14 @@
 
 namespace tf {
 
+// ----------------------------------------------------------------------------
+// Task
+// ----------------------------------------------------------------------------
+
 /**
 @class Task
 
-@brief Handle to modify and access a task.
+@brief task handle to a node in a task dependency graph
 
 A Task is a wrapper of a node in a dependency graph. 
 It provides a set of methods for users to access and modify the attributes of 
@@ -20,9 +24,9 @@ class Task {
   friend class FlowBuilder;
   friend class Taskflow;
   friend class TaskView;
-
+  
   public:
-    
+
     /**
     @brief constructs an empty task
     */
@@ -42,6 +46,16 @@ class Task {
     @brief replaces the contents with a null pointer
     */
     Task& operator = (std::nullptr_t);
+
+    /**
+    @brief compares if two tasks are associated with the same graph node
+    */
+    bool operator == (const Task& rhs) const;
+
+    /**
+    @brief compares if two tasks are not associated with the same graph node
+    */
+    bool operator != (const Task& rhs) const;
     
     /**
     @brief queries the name of the task
@@ -57,6 +71,16 @@ class Task {
     @brief queries the number of predecessors of the task
     */
     size_t num_dependents() const;
+    
+    /**
+    @brief queries the number of strong dependents of the task
+    */
+    size_t num_strong_dependents() const;
+
+    /**
+    @brief queries the number of weak dependents of the task
+    */
+    size_t num_weak_dependents() const;
     
     /**
     @brief assigns a name to the task
@@ -92,24 +116,6 @@ class Task {
     Task& precede(Ts&&... tasks);
     
     /**
-    @brief adds precedence links from this to others
-
-    @param tasks a vector of tasks to precede
-
-    @return @c *this
-    */
-    Task& precede(std::vector<Task>& tasks);
-
-    /**
-    @brief adds precedence links from this to others
-
-    @param tasks an initializer list of tasks to precede
-
-    @return @c *this
-    */
-    Task& precede(std::initializer_list<Task> tasks);
-    
-    /**
     @brief adds precedence links from other tasks to this
 
     @tparam Ts parameter pack 
@@ -121,54 +127,6 @@ class Task {
     template <typename... Ts>
     Task& succeed(Ts&&... tasks);
     
-    /**
-    @brief adds precedence links from other tasks to this
-
-    @param tasks a vector of tasks
-
-    @return @c *this
-    */
-    Task& succeed(std::vector<Task>& tasks);
-
-    /**
-    @brief adds precedence links from other tasks to this
-
-    @param tasks an initializer list of tasks
-
-    @return @c *this
-    */
-    Task& succeed(std::initializer_list<Task> tasks);
-    
-    /**
-    @brief adds precedence links from other tasks to this (same as succeed)
-
-    @tparam Ts parameter pack 
-
-    @param tasks one or multiple tasks
-
-    @return @c *this
-    */
-    template <typename... Ts>
-    Task& gather(Ts&&... tasks);
-    
-    /**
-    @brief adds precedence links from other tasks to this (same as succeed)
-
-    @param tasks a vector of tasks
-
-    @return @c *this
-    */
-    Task& gather(std::vector<Task>& tasks);
-
-    /**
-    @brief adds precedence links from other tasks to this (same as succeed)
-
-    @param tasks an initializer list of tasks
-
-    @return @c *this
-    */
-    Task& gather(std::initializer_list<Task> tasks);
-
     /**
     @brief resets the task handle to null
     
@@ -185,7 +143,19 @@ class Task {
     @brief queries if the task has a work assigned
     */
     bool has_work() const;
-
+    
+    /**
+    @brief applies an visitor callable to each successor of the task
+    */
+    template <typename V>
+    void for_each_successor(V&& visitor) const;
+    
+    /**
+    @brief applies an visitor callable to each dependents of the task
+    */
+    template <typename V>
+    void for_each_dependent(V&& visitor) const;
+    
   private:
     
     Task(Node&);
@@ -218,81 +188,14 @@ inline Task::Task(const Task& rhs) : _node {rhs._node} {
 // Function: precede
 template <typename... Ts>
 Task& Task::precede(Ts&&... tgts) {
-  (_node->precede(*(tgts._node)), ...);
-  return *this;
-}
-
-// Function: precede
-inline Task& Task::precede(std::vector<Task>& tgts) {
-  _precede(tgts);
-  return *this;
-}
-
-// Function: precede
-inline Task& Task::precede(std::initializer_list<Task> tgts) {
-  _precede(tgts);
-  return *this;
-}
-
-// Procedure: _precede
-template <typename S>
-void Task::_precede(S& tgts) {
-  for(auto& to : tgts) {
-    _node->precede(*(to._node));
-  }
-}
-
-// Function: gather
-template <typename... Bs>
-Task& Task::gather(Bs&&... tgts) {
-  (tgts._node->precede(*_node), ...);
-  return *this;
-}
-
-// Procedure: _gather
-template <typename S>
-void Task::_gather(S& tgts) {
-  for(auto& from : tgts) {
-    from._node->precede(*_node);
-  }
-}
-
-// Function: gather
-inline Task& Task::gather(std::vector<Task>& tgts) {
-  _gather(tgts);
-  return *this;
-}
-
-// Function: gather
-inline Task& Task::gather(std::initializer_list<Task> tgts) {
-  _gather(tgts);
+  (_node->_precede(tgts._node), ...);
   return *this;
 }
 
 // Function: succeed
 template <typename... Bs>
 Task& Task::succeed(Bs&&... tgts) {
-  (tgts._node->precede(*_node), ...);
-  return *this;
-}
-
-// Procedure: _succeed
-template <typename S>
-void Task::_succeed(S& tgts) {
-  for(auto& from : tgts) {
-    from._node->precede(*_node);
-  }
-}
-
-// Function: succeed
-inline Task& Task::succeed(std::vector<Task>& tgts) {
-  _succeed(tgts);
-  return *this;
-}
-
-// Function: succeed
-inline Task& Task::succeed(std::initializer_list<Task> tgts) {
-  _succeed(tgts);
+  (tgts._node->_precede(_node), ...);
   return *this;
 }
 
@@ -308,17 +211,14 @@ inline Task& Task::operator = (std::nullptr_t ptr) {
   return *this;
 }
 
-// Function: work
-template <typename C>
-inline Task& Task::work(C&& c) {
+// Operator ==
+inline bool Task::operator == (const Task& rhs) const {
+  return _node == rhs._node;
+}
 
-  if(_node->_module) {
-    TF_THROW(Error::TASKFLOW, "can't assign work to a module task");
-  }
-
-  _node->_work = std::forward<C>(c);
-
-  return *this;
+// Operator !=
+inline bool Task::operator != (const Task& rhs) const {
+  return _node != rhs._node;
 }
 
 // Function: name
@@ -343,6 +243,16 @@ inline size_t Task::num_dependents() const {
   return _node->num_dependents();
 }
 
+// Function: num_strong_dependents
+inline size_t Task::num_strong_dependents() const {
+  return _node->num_strong_dependents();
+}
+
+// Function: num_weak_dependents
+inline size_t Task::num_weak_dependents() const {
+  return _node->num_weak_dependents();
+}
+
 // Function: num_successors
 inline size_t Task::num_successors() const {
   return _node->num_successors();
@@ -358,12 +268,28 @@ inline bool Task::has_work() const {
   return _node ? _node->_work.index() != 0 : false;
 }
 
+// Function: for_each_successor
+template <typename V>
+void Task::for_each_successor(V&& visitor) const {
+  for(size_t i=0; i<_node->_successors.size(); ++i) {
+    visitor(Task(_node->_successors[i]));
+  }
+}
+
+// Function: for_each_dependent
+template <typename V>
+void Task::for_each_dependent(V&& visitor) const {
+  for(size_t i=0; i<_node->_dependents.size(); ++i) {
+    visitor(Task(_node->_dependents[i]));
+  }
+}
+
 // ----------------------------------------------------------------------------
 
 /**
 @class TaskView
 
-@brief A constant wrapper class to a task node, 
+@brief an immutable accessor class to a task node, 
        mainly used in the tf::ExecutorObserver interface.
 
 */
@@ -402,6 +328,16 @@ class TaskView {
     @brief replaces the contents with a null pointer
     */
     TaskView& operator = (std::nullptr_t);
+
+    /**
+    @brief compares if two taskviews are associated with the same task
+    */
+    bool operator == (const TaskView&) const;
+    
+    /**
+    @brief compares if two taskviews are associated with different tasks
+    */
+    bool operator != (const TaskView&) const;
     
     /**
     @brief queries the name of the task
@@ -417,6 +353,16 @@ class TaskView {
     @brief queries the number of predecessors of the task
     */
     size_t num_dependents() const;
+    
+    /**
+    @brief queries the number of strong dependents of the task
+    */
+    size_t num_strong_dependents() const;
+
+    /**
+    @brief queries the number of weak dependents of the task
+    */
+    size_t num_weak_dependents() const;
 
     /**
     @brief resets to an empty view
@@ -428,17 +374,24 @@ class TaskView {
     */
     bool empty() const;
     
+    /**
+    @brief applies an visitor callable to each successor of the task
+    */
+    template <typename V>
+    void for_each_successor(V&& visitor) const;
+    
+    /**
+    @brief applies an visitor callable to each dependents of the task
+    */
+    template <typename V>
+    void for_each_dependent(V&& visitor) const;
+    
   private:
     
-    TaskView(Node&);
     TaskView(Node*);
 
     Node* _node {nullptr};
 };
-
-// Constructor
-inline TaskView::TaskView(Node& node) : _node {&node} {
-}
 
 // Constructor
 inline TaskView::TaskView(Node* node) : _node {node} {
@@ -480,6 +433,16 @@ inline size_t TaskView::num_dependents() const {
   return _node->num_dependents();
 }
 
+// Function: num_strong_dependents
+inline size_t TaskView::num_strong_dependents() const {
+  return _node->num_strong_dependents();
+}
+
+// Function: num_weak_dependents
+inline size_t TaskView::num_weak_dependents() const {
+  return _node->num_weak_dependents();
+}
+
 // Function: num_successors
 inline size_t TaskView::num_successors() const {
   return _node->num_successors();
@@ -495,5 +458,32 @@ inline bool TaskView::empty() const {
   return _node == nullptr;
 }
 
+// Operator ==
+inline bool TaskView::operator == (const TaskView& rhs) const {
+  return _node == rhs._node;
+}
+
+// Operator !=
+inline bool TaskView::operator != (const TaskView& rhs) const {
+  return _node != rhs._node;
+}
+
+// Function: for_each_successor
+template <typename V>
+void TaskView::for_each_successor(V&& visitor) const {
+  for(size_t i=0; i<_node->_successors.size(); ++i) {
+    visitor(TaskView(_node->_successors[i]));
+  }
+}
+
+// Function: for_each_dependent
+template <typename V>
+void TaskView::for_each_dependent(V&& visitor) const {
+  for(size_t i=0; i<_node->_dependents.size(); ++i) {
+    visitor(TaskView(_node->_dependents[i]));
+  }
+}
+
 }  // end of namespace tf. ---------------------------------------------------
+
 
