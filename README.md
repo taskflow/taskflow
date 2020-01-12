@@ -30,7 +30,7 @@ allowing users to quickly master our parallel task programming model in a natura
 
 | [Static Tasking](#get-started-with-cpp-taskflow) | [Dynamic Tasking](#dynamic-tasking) |
 | :------------: | :-------------: |
-| ![](image/static_graph.png) | <img align="right" src="image/dynamic_graph.png" width="100%"> |
+| ![](image/static_graph.svg) | <img align="right" src="image/dynamic_graph.svg" width="100%"> |
 
 Cpp-Taskflow supports conditional tasking for you to implement cyclic and dynamic control flows that are otherwise difficult to do with existing task programming frameworks.
 
@@ -132,7 +132,7 @@ It is clear now Cpp-Taskflow is powerful in parallelizing tasks with complex dep
 The following example demonstrates a concurrent execution of 10 tasks with 15 dependencies.
 With Cpp-Taskflow, you only need ***15 lines of code***.
 
-<img align="right" src="image/complex.png" width="30%">
+<img align="right" src="image/complex.svg" width="30%">
 
 ```cpp
 // source dependencies
@@ -246,7 +246,7 @@ These tasks are spawned by a parent task and are grouped together to a *subflow*
 The example below demonstrates how to create a subflow
 that spawns three tasks at runtime.
 
-<img align="right" src="image/subflow_join.png" width="30%">
+<img align="right" src="image/subflow_join.svg" width="30%">
 
 ```cpp
 // create three regular tasks
@@ -275,7 +275,7 @@ its parent task.
 You can disable this feature by calling `subflow.detach()`.
 For example, detaching the above subflow will result in the following execution flow:
 
-<img align="right" src="image/subflow_detach.png" width="35%">
+<img align="right" src="image/subflow_detach.svg" width="35%">
 
 ```cpp
 // create a "detached" subflow graph (dynamic tasking)
@@ -320,7 +320,7 @@ tf::Task A = tf.emplace([] (tf::Subflow& subflow) {
 A subflow can be nested or recursive. You can create another subflow from
 the execution of a subflow and so on.
 
-<img align="right" src="image/nested_subflow.png" width="25%">
+<img align="right" src="image/nested_subflow.svg" width="25%">
 
 ```cpp
 tf::Task A = tf.emplace([] (tf::Subflow& sbf) {
@@ -523,7 +523,7 @@ taskflow.dump(std::cout);
 
 There are a number of free [GraphViz tools][AwesomeGraphViz] you could find online to visualize your Taskflow graph.
 
-<img align="right" src="image/graphviz.png" width="25%">
+<img align="right" src="image/graphviz.svg" width="25%">
 
 ```bash
 // Taskflow with five tasks and six dependencies
@@ -542,7 +542,7 @@ When you have dynamic tasks (subflows),
 you cannot simply use the `dump` method because it displays only the static portion.
 Instead, you need to execute the graph first to spawn dynamic tasks.
 
-<img align="right" src="image/debug_subflow.png" width="25%">
+<img align="right" src="image/debug_subflow.svg" width="25%">
 
 ```cpp
 tf::Executor executor;
