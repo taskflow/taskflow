@@ -77,7 +77,7 @@ Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
    * [Step 1: Create a Condition Task](#step-1-create-a-condition-task)
    * [Step 2: Scheduling Rules for Condition Tasks](#step-2-scheduling-rules-for-condition-tasks)
 * [Taskflow Composition](#taskflow-composition)
-* [Debug a Taskflow Graph](#debug-a-taskflow-graph)
+* [Visualize a Taskflow Graph](#visualize-a-taskflow-graph)
 * [Monitor Thread Activities](#monitor-thread-activities)
 * [API Reference](#api-reference)
 * [System Requirements](#system-requirements)
@@ -501,14 +501,7 @@ to compose a larger taskflow and so on.
 
 <div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 
-# Debug a Taskflow Graph
-
-Concurrent programs are notoriously difficult to debug.
-To debug a taskflow graph, we suggest: 
-(1) name each task and dump the graph, and
-(2) start with one thread before going multiple.
-
-## Dump a Taskflow Graph
+# Visualize a Taskflow Graph
 
 You can dump a taskflow in [GraphViz][GraphViz] format using the method `dump`.
 
@@ -528,9 +521,7 @@ B.precede(D, E);
 taskflow.dump(std::cout);
 ```
 
-Run the program and inspect whether dependencies are expressed in the right way. 
-There are a number of free [GraphViz tools][AwesomeGraphViz] you could find online
-to visualize your Taskflow graph.
+There are a number of free [GraphViz tools][AwesomeGraphViz] you could find online to visualize your Taskflow graph.
 
 <img align="right" src="image/graphviz.png" width="25%">
 
@@ -546,8 +537,6 @@ digraph Taskflow {
   "C" -> "D"
 }
 ```
-
-## Dump a Subflow Graph
 
 When you have dynamic tasks (subflows),
 you cannot simply use the `dump` method because it displays only the static portion.
