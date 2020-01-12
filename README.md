@@ -71,8 +71,6 @@ Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
    * [Step 2: Define Task Dependencies](#step-2-define-task-dependencies)
    * [Step 3: Execute a Taskflow](#step-3-execute-a-taskflow)
 * [Dynamic Tasking](#dynamic-tasking)
-   * [Step 1: Create a Subflow](#step-1-create-a-subflow)
-   * [Step 2: Detach or Join a Subflow](#step-2-detach-or-join-a-subflow)
 * [Conditional Tasking](#conditional-tasking)
    * [Step 1: Create a Condition Task](#step-1-create-a-condition-task)
    * [Step 2: Scheduling Rules for Condition Tasks](#step-2-scheduling-rules-for-condition-tasks)
@@ -243,8 +241,8 @@ each representing a specific part of your parallel decomposition.
 Another powerful feature of Taskflow is *dynamic* tasking.
 Dynamic tasks are those tasks created during the execution of a taskflow.
 These tasks are spawned by a parent task and are grouped together to a *subflow* graph.
-The example below demonstrates how to create a subflow
-that spawns three tasks at runtime.
+To create a subflow for dynamic tasking, 
+emplace a callable with one argument of type `tf::Subflow`.
 
 <img align="right" src="image/subflow_join.svg" width="30%">
 
@@ -286,35 +284,9 @@ tf::Task B = tf.emplace([] (tf::Subflow& subflow) {
   B1.precede(B3);
   B2.precede(B3);
 
-  // detach this subflow from task B
+  // detach the subflow from B to form a parallel execution line
   subflow.detach();
 }).name("B");
-```
-
-## Step 1: Create a Subflow
-
-Cpp-Taskflow has an unified interface for static and dynamic tasking.
-To create a subflow for dynamic tasking, 
-emplace a callable with one argument of type `tf::Subflow`.
-
-```cpp
-tf::Task A = tf.emplace([] (tf::Subflow& subflow) {});
-```
-
-A subflow is a lightweight object that allows you to create 
-arbitrary dependency graphs at runtime.
-All graph building methods defined in taskflow
-can be used in the subflow.
-
-```cpp
-tf::Task A = tf.emplace([] (tf::Subflow& subflow) {
-  std::cout << "Task A is spawning two subtasks A1 and A2" << '\n';
-  auto [A1, A2] = subflow.emplace(
-    [] () { std::cout << "subtask A1" << '\n'; },
-    [] () { std::cout << "subtask A2" << '\n'; }
-    A1.precede(A2);
-  );
-});
 ```
 
 A subflow can be nested or recursive. You can create another subflow from
@@ -334,6 +306,7 @@ tf::Task A = tf.emplace([] (tf::Subflow& sbf) {
     tf::Task A2_1 = sbf2.emplace([] () { 
       std::cout << "subtask A2_1\n"; 
     }).name("A2_1");
+
     tf::Task A2_2 = sbf2.emplace([] () { 
       std::cout << "subtask A2_2\n"; 
     }).name("A2_2");
@@ -342,63 +315,6 @@ tf::Task A = tf.emplace([] (tf::Subflow& sbf) {
 
   A1.precede(A2);
 }).name("A");
-```
-
-## Step 2: Detach or Join a Subflow
-
-A subflow will run after leaving the execution context of its parent task.
-By default, a subflow joins its parent task.
-Depending on applications, you can detach a subflow to enable more parallelism.
-
-```cpp
-tf::Task A = tf.emplace([] (tf::Subflow& subflow) {
-  subflow.detach();  // detach this subflow from its parent task A
-});  // subflow starts to run after the callable scope
-```
-
-Detaching or joining a subflow has different meaning in the completion status of 
-its parent node.
-In a joined subflow, 
-the completion of its parent node is defined as when tasks
-of the subflow and nested ones all finish.
-
-<img align="right" src="image/joined_subflow_future.png" width="15%">
-
-```cpp
-int value {0};
-
-// create a joined subflow
-tf::Task A = tf.emplace([&] (tf::Subflow& subflow) {
-  subflow.emplace([&]() { 
-    value = 10; 
-  }).name("A1");
-}).name("A");
-
-// create a task B after A
-tf::Task B = tf.emplace([&](){ assert(value == 10); }).name("B");
-
-A.precede(B); // A1 finishes before A and therefore before B
-```
-
-When a subflow is detached from its parent task, it becomes a parallel
-execution line to the current flow graph and will eventually
-join the same taskflow.
-
-<img align="right" src="image/detached_subflow_future.png" width="25%">
-
-```cpp
-int value {0};
-
-// create a detached subflow
-tf::Task A = tf.emplace([&] (tf::Subflow& subflow) {
-  subflow.emplace([&]() { value = 10; }).name("A1");
-  subflow.detach();
-}).name("A");
-
-// create a task B after A
-tf::Task B = tf.emplace([&] () { /* value may not be 10 */ }).name("B");
-
-A.precede(B);
 ```
 
 <div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
