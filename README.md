@@ -389,7 +389,7 @@ You can create multiple task graphs from different parts of your workload
 and use them to compose a large graph through the `composed_of` method. 
 
 
-<img align="right" src="image/composition.png" width="50%">
+<img align="right" src="image/composition.svg" width="50%">
 
 ```cpp 
 tf::Taskflow f1, f2;
@@ -557,7 +557,7 @@ B.work([](){ /* do something */ });
 
 The method `parallel_for` creates a subgraph that applies the callable to each item in the given range of a container.
 
-<img align="right" width="35%" src="image/parallel_for.png">
+<img align="right" width="35%" src="image/parallel_for.svg">
 
 ```cpp
 auto v = {'A', 'B', 'C', 'D'};
@@ -573,7 +573,7 @@ auto [S, T] = tf.parallel_for(
 
 You can specify a *chunk* size (default one) in the last argument to force a task to include a certain number of items.
 
-<img align="right" width="18%" src="image/parallel_for_2.png">
+<img align="right" width="18%" src="image/parallel_for_2.svg">
 
 ```cpp
 auto v = {'A', 'B', 'C', 'D'};
@@ -656,7 +656,7 @@ A.work([] () { std::cout << "hello world!"; });
 
 The method `precede` lets you add a preceding link from self to other tasks.
 
-<img align="right" width="30%" src="image/broadcast.png">
+<img align="right" width="30%" src="image/broadcast.svg">
 
 ```cpp
 // A runs before B, C, D, and E
@@ -667,7 +667,7 @@ A.precede(B, C, D, E);
 
 The method `succeed` lets you add a preceding link from other tasks to self.
 
-<img align="right" width="30%" src="image/gather.png">
+<img align="right" width="30%" src="image/gather.svg">
 
 ```cpp
 // A runs after B, C, D, and E
