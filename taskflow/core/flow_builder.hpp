@@ -379,12 +379,16 @@ Task FlowBuilder::emplace(C&& c) {
   }
   // condition tasking
   else if constexpr(std::is_same_v<typename function_traits<C>::return_type, int>) {
-    auto& n = _graph.emplace_back(std::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c));
+    auto& n = _graph.emplace_back(
+      std::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
+    );
     return Task(n);
   }
   // static tasking
   else if constexpr(std::is_same_v<typename function_traits<C>::return_type, void>) {
-    auto& n = _graph.emplace_back(std::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c));
+    auto& n = _graph.emplace_back(
+      std::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
+    );
     return Task(n);
   }
   else {
@@ -986,7 +990,9 @@ std::pair<Task, Task> FlowBuilder::reduce_max(I beg, I end, T& result) {
 
 // Function: transform_reduce    
 template <typename I, typename T, typename B, typename U>
-std::pair<Task, Task> FlowBuilder::transform_reduce(I beg, I end, T& result, B&& bop, U&& uop) {
+std::pair<Task, Task> FlowBuilder::transform_reduce(
+  I beg, I end, T& result, B&& bop, U&& uop
+) {
 
   using category = typename std::iterator_traits<I>::iterator_category;
   
