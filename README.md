@@ -284,7 +284,7 @@ tf::Task B = tf.emplace([] (tf::Subflow& subflow) {
   B1.precede(B3);
   B2.precede(B3);
 
-  // detach the subflow from B to form a parallel execution line
+  // detach the subflow to form a parallel execution line
   subflow.detach();
 }).name("B");
 ```
@@ -738,7 +738,7 @@ To use the latest [Cpp-Taskflow](https://github.com/cpp-taskflow/cpp-taskflow/ar
 + Microsoft Visual Studio Version 15.7 (MSVC++ 19.14)
 + Apple Clang Version 11.0
 
-A C++14 compatible version is provided [here](https://github.com/cpp-taskflow/cpp-taskflow/archive/cpp14.zip), and you need a [C++14][C++14] compiler:
+A C++14 compatible version (with limited feature support) is provided [here](https://github.com/cpp-taskflow/cpp-taskflow/archive/cpp14.zip), and you need a [C++14][C++14] compiler:
 + GNU C++ Compiler v4.9 with -std=c++1y
 + Clang C++ Compiler v5.0 with -std=c++14
 
