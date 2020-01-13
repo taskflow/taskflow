@@ -12,8 +12,8 @@ A fast C++ *header-only* library to help you quickly write parallel programs wit
 # Why Cpp-Taskflow?
 
 Cpp-Taskflow is by far faster, more expressive, and easier for drop-in integration
-than existing parallel task programming libraries such as [OpenMP Tasking][OpenMP Tasking] 
-and Intel [TBB FlowGraph][TBB FlowGraph] in handling complex parallel workloads.
+than existing task programming libraries such as [OpenMP Tasking][OpenMP Tasking] 
+and [Intel TBB FlowGraph][TBB FlowGraph] in handling complex parallel workloads.
 
 ![](image/performance.jpg)
 
@@ -79,7 +79,7 @@ Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
 * [Monitor Thread Activities](#monitor-thread-activities)
 * [API Reference](#api-reference)
 * [System Requirements](#system-requirements)
-* [Compile Unit Tests and Examples](#compile-unit-tests-and-examples)
+* [Compile Unit Tests, Examples, and Benchmarks](#compile-unit-tests-examples-and-benchmarks)
 * [Get Involved](#get-involved)
 * [Who is Using Cpp-Taskflow?](#who-is-using-cpp-taskflow)
 
@@ -372,7 +372,7 @@ The figure shows common pitfalls and their remedies.
 In the risky scenario, task Q may not be raced if P and M is exclusively
 branching to X.
 
-![](image/conditional-tasking-pitfalls-new.svg)
+![](image/conditional-tasking-pitfalls.svg)
 
 
 A good practice for avoiding mistakes of conditional tasking is to infer the execution flow of your graphs based on our scheduling rules.
@@ -745,7 +745,7 @@ A C++14 compatible version is provided [here](https://github.com/cpp-taskflow/cp
 <div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 
 
-# Compile Unit Tests and Examples
+# Compile Unit Tests, Examples, and Benchmarks
 
 Cpp-Taskflow uses [CMake](https://cmake.org/) to build examples and unit tests.
 We recommend using out-of-source build.
@@ -788,6 +788,11 @@ The folder `example/` contains several examples and is a great place to learn to
 | [composition.cpp](./example/composition.cpp)| demonstrates the decomposable interface of taskflow |
 | [observer.cpp](./example/observer.cpp)| demonstrates how to monitor the thread activities in scheduling and running tasks |
 | [condition.cpp](./example/condition.cpp) | creates a conditional tasking graph with a feedback loop control flow |
+
+## Benchmarks
+
+Please visit [benchmarks](benchmarks/benchmarks.md) to learn to
+compile the benchmarks.
 
 <div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
 

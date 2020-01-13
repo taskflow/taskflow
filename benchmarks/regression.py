@@ -41,7 +41,7 @@ def run(target, method, thread, round):
       X.append(int(token[0]))
       Y.append(float(token[1]))
 
-  analyze(Y)
+  #analyze(Y)
 
   return X, Y
 
