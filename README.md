@@ -369,7 +369,7 @@ indexed by the return value.
 It is users' responsibility to ensure a taskflow is properly conditioned. 
 Top things to avoid include no source tasks to start with and task race.
 The figure shows common pitfalls and their remedies.
-In the risky scenario, task Q may not be raced if P and M is exclusively
+In the risky scenario, task X may not be raced if P and M is exclusively
 branching to X.
 
 ![](image/conditional-tasking-pitfalls.svg)
