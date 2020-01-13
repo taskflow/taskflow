@@ -1,4 +1,4 @@
-# Benchmark
+# Benchmarks
 
 This folder contains a set of benchmarks to evaluate and compare the performance 
 of Cpp-Taskflow with the following task programming frameworks:

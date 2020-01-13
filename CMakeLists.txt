@@ -129,7 +129,7 @@ option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
 # installation path
 set(TF_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
 set(TF_LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib")
-set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittest)
+set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittests)
 set(TF_EXAMPLE_DIR ${PROJECT_SOURCE_DIR}/examples)
 set(TF_BENCHMARK_DIR ${PROJECT_SOURCE_DIR}/benchmarks)
 set(TF_3RD_PARTY_DIR ${PROJECT_SOURCE_DIR}/3rd-party)
@@ -255,7 +255,7 @@ message(STATUS "Building unit tests ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR})
 
 # unittest for utility
-add_executable(utility unittest/utility.cpp)
+add_executable(utility ${TF_UTEST_DIR}/utility.cpp)
 target_link_libraries(utility ${PROJECT_NAME} Threads::Threads tf::default_settings)
 target_include_directories(utility PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
 add_test(passive_vector  ${TF_UTEST_DIR}/utility -tc=PassiveVector)
@@ -264,7 +264,7 @@ add_test(function_traits ${TF_UTEST_DIR}/utility -tc=FunctionTraits)
 add_test(singular_alloc  ${TF_UTEST_DIR}/utility -tc=SingularAllocator)
 
 # unittest for WorkStealingQueue 
-add_executable(wsq unittest/wsq.cpp)
+add_executable(wsq ${TF_UTEST_DIR}/wsq.cpp)
 target_link_libraries(wsq ${PROJECT_NAME} Threads::Threads)
 target_include_directories(wsq PRIVATE ${TF_3RD_PARTY_DIR}/doctest tf::default_settings)
 add_test(work_stealing_queue.Owner  ${TF_UTEST_DIR}/wsq -tc=WSQ.Owner)
@@ -278,7 +278,7 @@ add_test(work_stealing_queue.7Thieves ${TF_UTEST_DIR}/wsq -tc=WSQ.7Thieves)
 add_test(work_stealing_queue.8Thieves ${TF_UTEST_DIR}/wsq -tc=WSQ.8Thieves)
 
 # unittest for basics
-add_executable(basics unittest/basics.cpp)
+add_executable(basics ${TF_UTEST_DIR}/basics.cpp)
 target_link_libraries(basics ${PROJECT_NAME} Threads::Threads tf::default_settings)
 target_include_directories(basics PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
 add_test(builder          ${TF_UTEST_DIR}/basics -tc=Builder)
@@ -308,7 +308,7 @@ add_test(cond2cond                ${TF_UTEST_DIR}/basics -tc=Condition2Condition
 add_test(hierarchical_cond        ${TF_UTEST_DIR}/basics -tc=HierarchicalCondition)
 
 # unittest for graphs
-add_executable(graphs unittest/graphs.cpp)
+add_executable(graphs ${TF_UTEST_DIR}/graphs.cpp)
 target_link_libraries(graphs ${PROJECT_NAME} Threads::Threads tf::default_settings)
 target_include_directories(graphs PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
 add_test(StaticLevelize  ${TF_UTEST_DIR}/graphs -tc=StaticLevelize)
