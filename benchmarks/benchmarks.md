@@ -1,12 +1,13 @@
 # Benchmark
 
-This folder contains a set of benchmarks to compare the performance 
+This folder contains a set of benchmarks to evaluate and compare the performance 
 of Cpp-Taskflow with the following task programming frameworks:
 
   + [OpenMP Task Dependency Clause][OpenMP Tasking]
   + [Intel Threading Building Blocks (TBB) FlowGraph][TBB FlowGraph]
 
-To compile benchmarks, enable the option `TF_BUILD_BENCHMARKS` in cmake build:
+To compile the benchmark sources, 
+enable the option `TF_BUILD_BENCHMARKS` in cmake build:
 
 ```bash
 ~$ mkdir build        # create a build folder under cpp-taskflow/
@@ -20,14 +21,14 @@ executables will be available in the respective folder of an application.
 Currently, we provide the following applications:
 
   + [Graph Traveral](./graph_traversal): traverses a direct acyclic graph
-  + [Matrix Multiplication](./matrix_multiplication): multiplies two matrices
-  + [Wavefront](./wavefront): propagates computations in a 2D grid
+  + [Wavefront](./wavefront): propagates computations in a two-dimensional (2D) grid
   + [Linear Chain](./linear_chain): computes a linear chain of tasks
   + [Binary Tree](./binary_tree): traverse a complete binary tree
+  + [Matrix Multiplication](./matrix_multiplication): multiplies two matrices
   + [MNIST](./mnist): trains a neural network-based image classfier on the MNIST dataset
 
 We have provided a python wrapper [regression.py](./regression.py) to help
-benchmark each application and manage the execution configuration at the top level,
+configure the benchmark of each application,
 including thread count, rounds to average, tasking methods, and plot.
 
 ```bash
@@ -43,7 +44,7 @@ Cpp-Taskflow (tf), OpenMP (omp), and TBB (tbb)
 on graph traversal, wavefront, and linear chain applications
 across 1, 4, 8, and 16 threads,
 with data collected in an average of ten runs. 
-Results are illustrated in a plot and by default saved to `result.png`.
+Results are illustrated in a plot and saved to `result.png`.
 
 ```bash
 ~$ python regression.py -m tf omp tbb \ 
