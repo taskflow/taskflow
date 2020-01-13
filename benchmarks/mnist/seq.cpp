@@ -1,6 +1,6 @@
 #include "dnn.hpp" 
 
-void run_sequential(MNIST& D, unsigned num_threads) {
+void run_sequential(MNIST& D, unsigned) {
 
   const auto iter_num = D.images.rows()/D.batch_size;
 

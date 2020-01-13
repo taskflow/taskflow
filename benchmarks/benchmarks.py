@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import os
 import subprocess
 import sys
@@ -97,6 +97,13 @@ def main():
     help='show the plot or not',
     default=False
   )
+
+  parser.add_argument(
+    '-o', '--output',
+    type=str,
+    help='file name to save the plot result',
+    default="result.png"
+  )
   
   # parse the arguments
   args = parser.parse_args()
@@ -132,14 +139,24 @@ def main():
         #  horizontalalignment='center',
         #  transform=ax.transAxes
         #)
-        plot.plot(X, Y, label=method)
+        if method == 'tf':
+          marker = ''
+          color  = 'b'
+        elif method == 'omp':
+          marker = '+'
+          color  = 'g'
+        else:
+          marker = '.'
+          color  = 'r'
+
+        plot.plot(X, Y, label=method, marker=marker, color=color)
         plot.legend()
         print(X)
         print(Y)
       plot_index = plot_index + 1
 
   plot.tight_layout()
-  plot.savefig('result.png')
+  plot.savefig(args.output)
 
   if args.plot:
     plot.show()

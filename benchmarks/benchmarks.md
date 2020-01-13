@@ -27,16 +27,13 @@ Currently, we provide the following applications:
   + [Matrix Multiplication](./matrix_multiplication): multiplies two matrices
   + [MNIST](./mnist): trains a neural network-based image classfier on the MNIST dataset
 
-We have provided a python wrapper [regression.py](./regression.py) to help
+We have provided a python wrapper [benchmarks.py](./benchmarks.py) to help
 configure the benchmark of each application,
 including thread count, rounds to average, tasking methods, and plot.
 
 ```bash
-usage: regression.py [-h] -b
-                     {wavefront,graph_traversal,binary_tree,linear_chain,matrix_multiplication,mnist}
-                     [{wavefront,graph_traversal,binary_tree,linear_chain,matrix_multiplication,mnist} ...]
-                     [-m {tf,tbb,omp} [{tf,tbb,omp} ...]] -t THREADS
-                     [THREADS ...] [-r NUM_ROUNDS] [-p PLOT]
+~$ chmod 755 benchmarks.py    # change the permission to execute
+~$ ./benchmarks.py -h         # show the help message
 ```
 
 For example, the following command benchmarks 
@@ -47,12 +44,19 @@ with data collected in an average of ten runs.
 Results are illustrated in a plot and saved to `result.png`.
 
 ```bash
-~$ python regression.py -m tf omp tbb \ 
-                        -b graph_traversal wavefront linear_chain \
-                        -t 1 4 8 16 \
-                        -r 10 \
-                        -plot true
+~$ ./benchmarks.py -m tf omp tbb \ 
+                   -b graph_traversal wavefront linear_chain \
+                   -t 1 4 8 16 \
+                   -r 10 \
+                   -p true \
+                   -o result.png
 ```
+
+When the program completes, you will see a combined plot of all specified benchmarsk.
+The x-axis represents the growth of problem size and the y-axis denotes the runtime
+in millisecond.
+
+![](../image/benchmarks.svg)
 
 
 ---
