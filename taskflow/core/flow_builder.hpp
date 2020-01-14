@@ -391,6 +391,11 @@ Task FlowBuilder::emplace(C&& c) {
     );
     return Task(n);
   }
+  // placeholder
+  else if constexpr(std::is_same_v<C, std::monostate>) {
+    auto& n = _graph.emplace_back();
+    return Task(n);
+  }
   else {
     static_assert(dependent_false_v<C>, "invalid task work type");
   }
@@ -1273,6 +1278,10 @@ Task& Task::work(C&& c) {
         c(fb);
       }
     });
+  }
+  // placeholder
+  else if constexpr(std::is_same_v<C, std::monostate>) {
+    _node->_work.emplace<std::monostate>();
   }
   else {
     static_assert(dependent_false_v<C>, "invalid task work type");

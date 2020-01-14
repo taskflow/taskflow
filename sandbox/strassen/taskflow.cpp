@@ -1,8 +1,6 @@
 #include <taskflow/taskflow.hpp>
 #include "strassen.hpp"
 
-
-
 void OptimizedStrassenMultiply_tf(
   REAL *C, REAL *A, REAL *B, unsigned MatrixSize,
   unsigned RowWidthC, unsigned RowWidthA, unsigned RowWidthB, int Depth, tf::Subflow& subflow)
