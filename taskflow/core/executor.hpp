@@ -1030,7 +1030,7 @@ inline void Executor::wait_for_all() {
 // Procedure: _set_up_module_node
 inline void Executor::_set_up_module_node(Node* node) {
 
-  node->_work = [node=node, this, tgt{PassiveVector<Node*>()}] () mutable {
+  node->_work = [node=node, this] () {
 
     // second time to enter this context
     if(node->_has_state(Node::SPAWNED)) {

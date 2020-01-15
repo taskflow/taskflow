@@ -19,6 +19,7 @@ class Taskflow : public FlowBuilder {
 
   friend class Topology;
   friend class Executor;
+  friend class FlowBuilder;
 
   public:
 
