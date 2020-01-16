@@ -1905,7 +1905,7 @@ TEST_CASE("NestedForDynamicCondition" * doctest::timeout(300)) {
 
     REQUIRE(counter == (inner_loop+1)*(mid_loop+1)*(outer_loop+1)*repeat);
 
-    flow.dump(std::cout);
+    //flow.dump(std::cout);
   }
 }
 
