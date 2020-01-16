@@ -28,7 +28,7 @@ class Topology {
     std::function<bool()> _pred;
     std::function<void()> _call;
 
-    std::atomic<int> _join_counter {0};
+    std::atomic<size_t> _join_counter {0};
 };
 
 // Constructor
