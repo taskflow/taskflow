@@ -38,7 +38,7 @@ class Executor {
     WorkStealingQueue<Node*> queue;
     std::optional<Node*> cache;
 
-    int num_executed {0};
+    size_t num_executed {0};
   };
     
   struct PerThread {
