@@ -610,40 +610,74 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
 
     // positive case
     if(beg < end) {
-      while(beg < end) {
-        size_t N = 0;
-        auto e = beg;
-        while(e < end && N < chunk) {
-          e+=s;
-          ++N;
+      size_t N=0;
+      I b = beg;
+      for(I e=beg; e<end; e+=s) {
+        if(++N == chunk) {
+          auto task = emplace([=] () mutable {
+            for(size_t i=0; i<N; ++i, b+=s) {
+              c(b);
+            }
+          });
+          source.precede(task);
+          task.precede(target);
+          N = 0;
+          b = e;
         }
+      }
+
+      if(N) {
         auto task = emplace([=] () mutable {
-          for(auto i=beg; i<e; i+=s) {
-            c(i);
+          for(size_t i=0; i<N; ++i, b+=s) {
+            c(b);
           }
         });
         source.precede(task);
         task.precede(target);
-        beg = e;
       }
     }
     else if(beg > end) {
-      while(beg > end) {
-        size_t N = 0;
-        auto e = beg;
-        while(e > end && N < chunk) {
-          e+=s;
-          ++N;
+      size_t N=0;
+      I b = beg;
+      for(I e=beg; e>end; e+=s) {
+        if(++N == chunk) {
+          auto task = emplace([=] () mutable {
+            for(size_t i=0; i<N; ++i, b+=s) {
+              c(b);
+            }
+          });
+          source.precede(task);
+          task.precede(target);
+          N = 0;
+          b = e;
         }
+      }
+
+      if(N) {
         auto task = emplace([=] () mutable {
-          for(auto i=beg; i>e; i+=s) {
-            c(i);
+          for(size_t i=0; i<N; ++i, b+=s) {
+            c(b);
           }
         });
         source.precede(task);
         task.precede(target);
-        beg = e;
       }
+      //while(beg > end) {
+      //  size_t N = 0;
+      //  auto e = beg;
+      //  while(e > end && N < chunk) {
+      //    e+=s;
+      //    ++N;
+      //  }
+      //  auto task = emplace([=] () mutable {
+      //    for(size_t i=0; i<N; ++i, beg+=s) {
+      //      c(beg);
+      //    }
+      //  });
+      //  source.precede(task);
+      //  task.precede(target);
+      //  beg = e;
+      //}
     }
   }
 
