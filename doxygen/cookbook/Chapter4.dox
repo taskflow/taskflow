@@ -91,9 +91,9 @@ You can use condition tasks to create cycles as long as the graph does not intro
 In order to understand how an executor schedules condition tasks,
 we define two dependency types,
 <em>strong dependency</em> and <em>weak dependency</em>.
-A strong dependency is a preceding link from a condition task to 
+A strong dependency is a preceding link from a non-condition task to 
 another task.
-A weak dependency is a preceding link from a non-condition task to
+A weak dependency is a preceding link from a condition task to
 another task. 
 The number of dependents of a task is the sum of strong dependency 
 and weak dependency.
