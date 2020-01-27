@@ -9,7 +9,7 @@ int main(){
 
   tf::Executor executor;
   tf::Taskflow taskflow;
-  
+
   auto [A, B, C, D] = taskflow.emplace( 
     [] () { std::cout << "TaskA\n"; },     //                                 
     [] () { std::cout << "TaskB\n"; },     //          +---+                  

@@ -247,6 +247,49 @@ TEST_CASE("Creation" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: STDFunction
+// --------------------------------------------------------
+TEST_CASE("STDFunction" * doctest::timeout(300)) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  int counter = 0;
+
+  std::function<void()> func1  = [&] () { ++counter; };
+  std::function<int()> func2 = [&] () { ++counter; return 0; };
+  std::function<void()> func3  = [&] () { };
+  std::function<void()> func4  = [&] () { ++counter;};
+  
+  // scenario 1
+  auto [A, B, C, D] = taskflow.emplace(func1, func2, func3, func4);
+  A.precede(B);
+  B.precede(C, D);
+  executor.run(taskflow).wait();
+  REQUIRE(counter == 2);
+  
+  // scenario 2
+  counter = 0;
+  A.work(func1);
+  B.work(func2);
+  C.work(func4);
+  D.work(func3);
+  executor.run(taskflow).wait();
+  REQUIRE(counter == 3);
+  
+  // scenario 3
+  taskflow.clear();
+  std::tie(A, B, C, D) = taskflow.emplace(
+    std::move(func1), std::move(func2), std::move(func3), std::move(func4)
+  );
+  A.precede(B);
+  B.precede(C, D);
+  counter = 0;
+  executor.run(taskflow).wait();
+  REQUIRE(counter == 2);
+}
+
+// --------------------------------------------------------
 // Testcase: Iterators
 // --------------------------------------------------------
 TEST_CASE("Iterators" * doctest::timeout(300)) {

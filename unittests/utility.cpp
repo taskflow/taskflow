@@ -336,6 +336,29 @@ TEST_CASE("FunctionTraits" * doctest::timeout(300)) {
     static_assert(std::is_same_v<foo_traits::argument_t<0>, int>);
     static_assert(std::is_same_v<foo_traits::argument_t<1>, float>);
   }
+
+  SUBCASE("std-function") {
+    using ft1 = tf::function_traits<std::function<void()>>;
+    static_assert(std::is_same_v<ft1::return_type, void>);
+    static_assert(ft1::arity == 0);
+
+    using ft2 = tf::function_traits<std::function<int(int&, double&&)>&>;
+    static_assert(std::is_same_v<ft2::return_type, int>);
+    static_assert(ft2::arity == 2);
+    static_assert(std::is_same_v<ft2::argument_t<0>, int&>);
+    static_assert(std::is_same_v<ft2::argument_t<1>, double&&>);
+    
+    using ft3 = tf::function_traits<std::function<int(int&, double&&)>&&>;
+    static_assert(std::is_same_v<ft3::return_type, int>);
+    static_assert(ft3::arity == 2);
+    static_assert(std::is_same_v<ft3::argument_t<0>, int&>);
+    static_assert(std::is_same_v<ft3::argument_t<1>, double&&>);
+
+    using ft4 = tf::function_traits<const std::function<void(int)>&>;
+    static_assert(std::is_same_v<ft4::return_type, void>);
+    static_assert(ft4::arity == 1);
+    static_assert(std::is_same_v<ft4::argument_t<0>, int>);
+  }
 }
 
 // --------------------------------------------------------
