@@ -308,12 +308,20 @@ add_test(nested_for_dynamic_cond  ${TF_UTEST_DIR}/basics -tc=NestedForDynamicCon
 add_test(cond2cond                ${TF_UTEST_DIR}/basics -tc=Condition2Condition)
 add_test(hierarchical_cond        ${TF_UTEST_DIR}/basics -tc=HierarchicalCondition)
 
-# unittest for graphs
-add_executable(graphs ${TF_UTEST_DIR}/graphs.cpp)
-target_link_libraries(graphs ${PROJECT_NAME} Threads::Threads tf::default_settings)
-target_include_directories(graphs PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
-add_test(StaticLevelize  ${TF_UTEST_DIR}/graphs -tc=StaticLevelize)
-add_test(DynamicLevelize  ${TF_UTEST_DIR}/graphs -tc=DynamicLevelize)
+# unittest for traverse
+add_executable(traverse ${TF_UTEST_DIR}/traverse.cpp)
+target_link_libraries(traverse ${PROJECT_NAME} Threads::Threads tf::default_settings)
+target_include_directories(traverse PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
+add_test(static_levelize  ${TF_UTEST_DIR}/traverse -tc=StaticLevelize)
+add_test(dynamic_levelize ${TF_UTEST_DIR}/traverse -tc=DynamicLevelize)
+
+# unittest for sorting
+add_executable(sort ${TF_UTEST_DIR}/sort.cpp)
+target_link_libraries(sort ${PROJECT_NAME} Threads::Threads tf::default_settings)
+target_include_directories(sort PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
+add_test(bubble_sort ${TF_UTEST_DIR}/sort -tc=BubbleSort)
+add_test(merge_sort ${TF_UTEST_DIR}/sort -tc=MergeSort)
+
 
 endif()
 

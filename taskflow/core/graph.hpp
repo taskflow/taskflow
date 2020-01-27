@@ -116,11 +116,7 @@ class Node {
     bool _has_state(int) const;
 };
 
-//// Constructor
-//template <typename ...Args>
-//Node::Node(Args&&... args) : _work{std::forward<Args>(args)...} {
-//}
-    
+// Constructor
 template <typename ...Args>
 Node::Node(Args&&... args): _work{std::forward<Args>(args)...} {
 } 
