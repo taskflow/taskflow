@@ -192,11 +192,6 @@ TEST_CASE("SelectionSort" * doctest::timeout(300)) {
 
 }
 
-
-
-
-
-
 // --------------------------------------------------------
 // Testcase: MergeSort
 // --------------------------------------------------------
@@ -210,7 +205,7 @@ TEST_CASE("MergeSort" * doctest::timeout(300)) {
       return;
     }
 
-    if(beg - end <= 10) {
+    if(beg - end <= 5) {
       std::sort(data.begin() + beg, data.begin() + end);
       return;
     }
@@ -272,6 +267,87 @@ TEST_CASE("MergeSort" * doctest::timeout(300)) {
       
       taskflow.emplace([&spawn, &data, end](tf::Subflow& sf){
         spawn(sf, data, 0, end);
+      }).name(std::string("[0") 
+            + ":" 
+            + std::to_string(end) + ")");
+
+      executor.run(taskflow).wait();
+
+      std::sort(gold.begin(), gold.end());
+
+      REQUIRE(gold == data);
+    }
+  }
+}
+
+// --------------------------------------------------------
+// Testcase: QuickSort
+// --------------------------------------------------------
+TEST_CASE("QuickSort" * doctest::timeout(300)) {
+
+  using itr_t = std::vector<int>::iterator;
+
+  std::function<void(tf::Subflow& sf, std::vector<int>&, itr_t, itr_t)> spawn;
+
+  spawn = [&] (
+    tf::Subflow& sf, 
+    std::vector<int>& data, 
+    itr_t beg, 
+    itr_t end
+  ) mutable {
+
+    if(!(beg < end) || std::distance(beg, end) == 1) {
+      return;
+    }
+    
+    if(std::distance(beg, end) <= 5) {
+      std::sort(beg, end);
+      return;
+    }
+
+    auto pvt = beg + std::distance(beg, end) / 2;
+
+    std::iter_swap(pvt, end-1);
+
+    pvt = std::partition(beg, end-1, [end] (int item) {
+      return item < *(end - 1);
+    });
+
+    std::iter_swap(pvt, end-1);
+    
+    sf.emplace([&spawn, &data, beg, pvt] (tf::Subflow& sf) {
+      spawn(sf, data, beg, pvt);
+    }).name(std::string("[") 
+          + std::to_string(beg-data.begin()) 
+          + ':' 
+          + std::to_string(pvt-data.begin()) 
+          + ')');
+
+    sf.emplace([&spawn, &data, pvt, end] (tf::Subflow& sf) {
+      spawn(sf, data, pvt+1, end);
+    }).name(std::string("[") 
+          + std::to_string(pvt-data.begin()) 
+          + ':' 
+          + std::to_string(end-data.begin()) 
+          + ')');
+  };
+
+  for(unsigned w=1; w<=9; w+=2) {
+
+    tf::Executor executor(w);
+
+    for(int end=16; end <= 32768; end <<= 1) {
+
+      tf::Taskflow taskflow("QuickSort");
+      
+      std::vector<int> data(end);
+
+      for(auto& d : data) d = ::rand()%100;
+
+      auto gold = data;
+      
+      taskflow.emplace([&spawn, &data](tf::Subflow& sf){
+        spawn(sf, data, data.begin(), data.end());
       }).name(std::string("[0") 
             + ":" 
             + std::to_string(end) + ")");

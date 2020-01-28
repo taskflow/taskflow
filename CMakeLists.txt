@@ -322,6 +322,7 @@ target_include_directories(sort PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
 add_test(bubble_sort ${TF_UTEST_DIR}/sort -tc=BubbleSort)
 add_test(selection_sort ${TF_UTEST_DIR}/sort -tc=SelectionSort)
 add_test(merge_sort ${TF_UTEST_DIR}/sort -tc=MergeSort)
+add_test(quick_sort ${TF_UTEST_DIR}/sort -tc=QuickSort)
 
 
 endif()
