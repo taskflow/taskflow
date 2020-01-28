@@ -320,6 +320,7 @@ add_executable(sort ${TF_UTEST_DIR}/sort.cpp)
 target_link_libraries(sort ${PROJECT_NAME} Threads::Threads tf::default_settings)
 target_include_directories(sort PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
 add_test(bubble_sort ${TF_UTEST_DIR}/sort -tc=BubbleSort)
+add_test(selection_sort ${TF_UTEST_DIR}/sort -tc=SelectionSort)
 add_test(merge_sort ${TF_UTEST_DIR}/sort -tc=MergeSort)
 
 

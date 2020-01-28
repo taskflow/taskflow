@@ -69,8 +69,133 @@ TEST_CASE("BubbleSort" * doctest::timeout(300)) {
       REQUIRE(gold == data);
     }
   }
+}
+
+// --------------------------------------------------------
+// Testcase: SelectionSort
+// --------------------------------------------------------
+TEST_CASE("SelectionSort" * doctest::timeout(300)) {
+
+  std::function<
+    void(tf::Subflow& sf, std::vector<int>&, int, int, int&)
+  > spawn;
+
+  spawn = [&] (
+    tf::Subflow& sf, 
+    std::vector<int>& data, 
+    int beg, 
+    int end, 
+    int& min
+  ) mutable {
+
+    if(!(beg < end)) {
+      min = -1;
+      return;
+    }
+
+    if(end - beg == 1) {
+      min = beg;
+      return;
+    }
+
+    int m = (beg + end + 1) / 2;
+    
+    auto minl = new int(-1);
+    auto minr = new int(-1);
+    
+    auto SL = sf.emplace(
+      [&spawn, &data, beg, m, l=minl] (tf::Subflow& sf) mutable {
+      spawn(sf, data, beg, m, *l);
+    }).name(std::string("[") 
+          + std::to_string(beg) 
+          + ':' 
+          + std::to_string(m) 
+          + ')');
+
+    auto SR = sf.emplace(
+      [&spawn, &data, m, end, r=minr] (tf::Subflow& sf) mutable {
+      spawn(sf, data, m, end, *r);
+    }).name(std::string("[") 
+          + std::to_string(m) 
+          + ':' 
+          + std::to_string(end) 
+          + ')');
+
+    auto SM = sf.emplace([&spawn, &data, &min, beg, end, m, minl, minr] () {
+      if(*minl == -1) {
+        min = *minr;
+      }
+      else if(*minr == -1) {
+        min = *minl;
+        return;
+      }
+      else {
+        min = data[*minl] < data[*minr] ? *minl : *minr;
+      }
+      delete minl;
+      delete minr;
+    }).name(std::string("merge [") 
+          + std::to_string(beg) 
+          + ':' 
+          + std::to_string(end) + ')');
+
+    SM.succeed(SL, SR);
+  };
+
+  for(unsigned w=1; w<=9; w+=2) {
+
+    tf::Executor executor(w);
+
+    for(int end=16; end <= 512; end <<= 1) {
+      tf::Taskflow taskflow("SelectionSort");
+      
+      std::vector<int> data(end);
+
+      for(auto& d : data) d = ::rand()%100;
+
+      auto gold = data;
+      std::sort(gold.begin(), gold.end());
+      
+      int beg = 0;
+      int min = -1;
+      
+      auto start = taskflow.emplace([](){});
+
+      auto argmin = taskflow.emplace(
+        [&spawn, &data, &beg, end, &min](tf::Subflow& sf) mutable {
+        spawn(sf, data, beg, end, min);
+      }).name(std::string("[0") 
+            + ":" 
+            + std::to_string(end) + ")");
+
+      auto putmin = taskflow.emplace([&](){
+        std::swap(data[beg], data[min]);
+        //std::cout << "select " << data[beg] << '\n';
+        beg++;
+        if(beg < end) {
+          min = -1;
+          return 0;
+        }
+        else return 1;
+      });
+
+      start.precede(argmin);
+      argmin.precede(putmin);
+      putmin.precede(argmin);
+
+      executor.run(taskflow).wait();
+
+      REQUIRE(gold == data);
+      //std::exit(1);
+    }
+  }
 
 }
+
+
+
+
+
 
 // --------------------------------------------------------
 // Testcase: MergeSort
@@ -160,10 +285,5 @@ TEST_CASE("MergeSort" * doctest::timeout(300)) {
   }
 
 }
-
-
-
-
-
 
 

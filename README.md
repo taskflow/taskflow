@@ -203,7 +203,7 @@ or it can result in undefined behavior.
 In most applications, you need only one executor to run multiple taskflows
 each representing a specific part of your parallel decomposition.
 
-<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
 # Dynamic Tasking 
 
@@ -286,7 +286,7 @@ tf::Task A = tf.emplace([] (tf::Subflow& sbf) {
 }).name("A");
 ```
 
-<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
 # Conditional Tasking
 
@@ -347,7 +347,7 @@ branching to X.
 A good practice for avoiding mistakes of conditional tasking is to infer the execution flow of your graphs based on our scheduling rules.
 Make sure there is no task race.
 
-<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
 
 
@@ -384,7 +384,7 @@ Similarly, `composed_of` returns a task handle and you can use
 You can compose a taskflow from multiple taskflows and use the result
 to compose a larger taskflow and so on.
 
-<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
 # Visualize a Taskflow Graph
 
@@ -448,7 +448,7 @@ executor.run(tf).wait();  // run the taskflow to spawn subflows
 tf.dump(std::cout);       // dump the graph including dynamic tasks
 ```
 
-<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
 # Monitor Thread Activities 
 
@@ -483,7 +483,7 @@ You shall see the tracing graph.
 Each task is given a name of `i_j` where `i` is the thread id and `j` is the task number.
 You can pan or zoom in/out the timeline to get into a detailed view.
 
-<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
 # API Reference
 
@@ -697,7 +697,7 @@ executor.wait_for_all();            // blocks until all tasks finish
 ```
 
 The first run finishes before the second run, and the second run finishes before the third run.
- <div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+ <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
 # System Requirements
 
@@ -711,7 +711,7 @@ A C++14 compatible version (with limited feature support) is provided [here](htt
 + GNU C++ Compiler v4.9 with -std=c++1y
 + Clang C++ Compiler v5.0 with -std=c++14
 
-<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
 
 # Compile Unit Tests, Examples, and Benchmarks
@@ -763,7 +763,7 @@ The folder `example/` contains several examples and is a great place to learn to
 Please visit [benchmarks](benchmarks/benchmarks.md) to learn to
 compile the benchmarks.
 
-<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
 # Get Involved
 
@@ -774,7 +774,7 @@ compile the benchmarks.
 + Read and cite our [IPDPS19][IPDPS19] paper
 + Visit a curated list of [awesome parallel computing resources](https://github.com/tsung-wei-huang/awesome-parallel-computing)
 
-<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
 # Who is Using Cpp-Taskflow?
 
@@ -794,7 +794,7 @@ that incorporate complex task dependencies.
 
 [More...](https://github.com/search?q=cpp-taskflow&type=Code)
 
-<div align="right"><b><a href="#table-of-contents">back to TOC</a></b></div>
+<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
 # Contributors
 
