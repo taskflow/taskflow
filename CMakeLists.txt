@@ -259,9 +259,7 @@ add_executable(utility ${TF_UTEST_DIR}/utility.cpp)
 target_link_libraries(utility ${PROJECT_NAME} Threads::Threads tf::default_settings)
 target_include_directories(utility PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
 add_test(passive_vector  ${TF_UTEST_DIR}/utility -tc=PassiveVector)
-add_test(object_pool     ${TF_UTEST_DIR}/utility -tc=ObjectPool)
 add_test(function_traits ${TF_UTEST_DIR}/utility -tc=FunctionTraits)
-add_test(singular_alloc  ${TF_UTEST_DIR}/utility -tc=SingularAllocator)
 
 # unittest for WorkStealingQueue 
 add_executable(wsq ${TF_UTEST_DIR}/wsq.cpp)
@@ -312,8 +310,16 @@ add_test(hierarchical_cond        ${TF_UTEST_DIR}/basics -tc=HierarchicalConditi
 add_executable(traverse ${TF_UTEST_DIR}/traverse.cpp)
 target_link_libraries(traverse ${PROJECT_NAME} Threads::Threads tf::default_settings)
 target_include_directories(traverse PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
-add_test(static_levelize  ${TF_UTEST_DIR}/traverse -tc=StaticLevelize)
-add_test(dynamic_levelize ${TF_UTEST_DIR}/traverse -tc=DynamicLevelize)
+add_test(static_traverse  ${TF_UTEST_DIR}/traverse -tc=StaticTraverse)
+add_test(dynamic_traverse ${TF_UTEST_DIR}/traverse -tc=DynamicTraverse)
+add_test(parallel_traverse.1 ${TF_UTEST_DIR}/traverse -tc=ParallelTraverse.1)
+add_test(parallel_traverse.2 ${TF_UTEST_DIR}/traverse -tc=ParallelTraverse.2)
+add_test(parallel_traverse.3 ${TF_UTEST_DIR}/traverse -tc=ParallelTraverse.3)
+add_test(parallel_traverse.4 ${TF_UTEST_DIR}/traverse -tc=ParallelTraverse.4)
+add_test(parallel_traverse.5 ${TF_UTEST_DIR}/traverse -tc=ParallelTraverse.5)
+add_test(parallel_traverse.6 ${TF_UTEST_DIR}/traverse -tc=ParallelTraverse.6)
+add_test(parallel_traverse.7 ${TF_UTEST_DIR}/traverse -tc=ParallelTraverse.7)
+add_test(parallel_traverse.8 ${TF_UTEST_DIR}/traverse -tc=ParallelTraverse.8)
 
 # unittest for sorting
 add_executable(sort ${TF_UTEST_DIR}/sort.cpp)

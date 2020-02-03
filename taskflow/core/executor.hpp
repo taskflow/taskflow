@@ -676,7 +676,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
         // For storing the source nodes
         PassiveVector<Node*> src; 
 
-        for(auto& n: node->_subgraph->nodes()) {
+        for(auto n: node->_subgraph->_nodes) {
 
           n->_topology = node->_topology;
           n->_set_up_join_counter();
@@ -688,7 +688,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
           }
 
           if(n->num_dependents() == 0) {
-            src.push_back(n.get());
+            src.push_back(n);
           }
         }
 
@@ -820,13 +820,13 @@ inline void Executor::_set_up_topology(Topology* tpg) {
   tpg->_sources.clear();
   
   // scan each node in the graph and build up the links
-  for(auto& node : tpg->_taskflow._graph.nodes()) {
+  for(auto node : tpg->_taskflow._graph._nodes) {
 
     node->_topology = tpg;
     node->_clear_state();
 
     if(node->num_dependents() == 0) {
-      tpg->_sources.push_back(node.get());
+      tpg->_sources.push_back(node);
     }
 
     int join_counter = 0;
@@ -1042,14 +1042,14 @@ inline void Executor::_set_up_module_node(Node* node) {
 
     PassiveVector<Node*> src;
 
-    for(auto& n: node->_module->_graph.nodes()) {
+    for(auto n: node->_module->_graph._nodes) {
 
       n->_topology = node->_topology;
       n->_parent = node;
       n->_set_up_join_counter();
 
       if(n->num_dependents() == 0) {
-        src.push_back(n.get());
+        src.push_back(n);
       }
     }
 

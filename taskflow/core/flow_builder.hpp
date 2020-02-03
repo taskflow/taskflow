@@ -368,7 +368,7 @@ Task FlowBuilder::emplace(C&& c) {
 
   // dynamic tasking
   if constexpr(std::is_invocable_v<C, Subflow&>) {
-    auto& n = _graph.emplace_back(std::in_place_type_t<Node::DynamicWork>{}, 
+    auto n = _graph.emplace_back(std::in_place_type_t<Node::DynamicWork>{}, 
     [c=std::forward<C>(c)] (Subflow& fb) mutable {
       // first time execution
       if(fb._graph.empty()) {
@@ -379,21 +379,21 @@ Task FlowBuilder::emplace(C&& c) {
   }
   // condition tasking
   else if constexpr(std::is_same_v<typename function_traits<C>::return_type, int>) {
-    auto& n = _graph.emplace_back(
+    auto n = _graph.emplace_back(
       std::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
     );
     return Task(n);
   }
   // static tasking
   else if constexpr(std::is_same_v<typename function_traits<C>::return_type, void>) {
-    auto& n = _graph.emplace_back(
+    auto n = _graph.emplace_back(
       std::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
     );
     return Task(n);
   }
   // placeholder
   else if constexpr(std::is_same_v<C, std::monostate>) {
-    auto& n = _graph.emplace_back();
+    auto n = _graph.emplace_back();
     return Task(n);
   }
   else {
@@ -403,8 +403,8 @@ Task FlowBuilder::emplace(C&& c) {
 
 // Function: composed_of    
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
-  auto &node = _graph.emplace_back();
-  node._module = &taskflow;
+  auto node = _graph.emplace_back();
+  node->_module = &taskflow;
   return Task(node);
 }
 
@@ -443,7 +443,7 @@ inline void FlowBuilder::gather(std::initializer_list<Task> froms, Task to) {
 
 // Function: placeholder
 inline Task FlowBuilder::placeholder() {
-  auto& node = _graph.emplace_back();
+  auto node = _graph.emplace_back();
   return Task(node);
 }
 

@@ -41,7 +41,7 @@ std::unique_ptr<Node[]> make_dag(size_t num_nodes, size_t max_degree) {
   for(size_t i=0; i<num_nodes; i++) {
     size_t degree {0};
     for(size_t j=i+1; j<num_nodes && degree < max_degree; j++) {
-      if(rand()%2 == 1) {
+      if(j%2 == 1) {
         nodes[i].precede(nodes[j]);
         degree ++;
       }
@@ -52,9 +52,9 @@ std::unique_ptr<Node[]> make_dag(size_t num_nodes, size_t max_degree) {
 }
 
 // --------------------------------------------------------
-// Testcase: StaticLevelize
+// Testcase: StaticTraverse
 // --------------------------------------------------------
-TEST_CASE("StaticLevelize" * doctest::timeout(300)) {
+TEST_CASE("StaticTraverse" * doctest::timeout(300)) {
   
   size_t max_degree = 4;
   size_t num_nodes = 100000;
@@ -100,23 +100,23 @@ TEST_CASE("StaticLevelize" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
-// Testcase: DynamicLevelize
+// Testcase: DynamicTraverse
 // --------------------------------------------------------
-TEST_CASE("DynamicLevelize" * doctest::timeout(300)) {
+TEST_CASE("DynamicTraverse" * doctest::timeout(300)) {
 
   std::atomic<size_t> level;
 
-  std::function<void(Node*, tf::Subflow&)> levelize;
+  std::function<void(Node*, tf::Subflow&)> traverse;
 
-  levelize = [&] (Node* n, tf::Subflow& subflow) {
+  traverse = [&] (Node* n, tf::Subflow& subflow) {
     REQUIRE(!n->visited);
     n->visited = true;
     size_t S = n->successors.size();
     for(size_t i=0; i<S; i++) {
       if(n->successors[i]->dependents.fetch_sub(1) == 1) {
         n->successors[i]->level = ++level;
-        subflow.emplace([s=n->successors[i], &levelize](tf::Subflow &subflow){ 
-          levelize(s, subflow); 
+        subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow){ 
+          traverse(s, subflow); 
         });
       }
     }
@@ -142,8 +142,8 @@ TEST_CASE("DynamicLevelize" * doctest::timeout(300)) {
     tf::Executor executor(w);
 
     for(size_t i=0; i<src.size(); i++) {
-      tf.emplace([s=src[i], &levelize](tf::Subflow& subflow){ 
-        levelize(s, subflow); 
+      tf.emplace([s=src[i], &traverse](tf::Subflow& subflow){ 
+        traverse(s, subflow); 
       });
     }
     
@@ -158,5 +158,105 @@ TEST_CASE("DynamicLevelize" * doctest::timeout(300)) {
     }
   }
 }
+
+// --------------------------------------------------------
+// Testcase: ParallelTraverse
+// --------------------------------------------------------
+  
+void parallel_traverse(unsigned num_threads) { 
+
+  tf::Executor executor(num_threads);
+
+  std::vector<std::thread> threads;
+
+  for(unsigned t=0; t<num_threads; ++t) {
+    
+    threads.emplace_back([&](){
+
+      std::atomic<size_t> level {0};
+
+      size_t max_degree = 8;
+      size_t num_nodes = 100000;
+      
+      auto nodes = make_dag(num_nodes, max_degree);
+        
+      std::vector<Node*> src;
+      for(size_t i=0; i<num_nodes; i++) {
+        if(nodes[i].dependents == 0) { 
+          src.emplace_back(&(nodes[i]));
+        }
+      }
+  
+      std::function<void(Node*, tf::Subflow&)> traverse;
+
+      traverse = [&] (Node* n, tf::Subflow& subflow) {
+        REQUIRE(!n->visited);
+        n->visited = true;
+        size_t S = n->successors.size();
+        for(size_t i=0; i<S; i++) {
+          if(n->successors[i]->dependents.fetch_sub(1) == 1) {
+            n->successors[i]->level = ++level;
+            subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow){ 
+              traverse(s, subflow); 
+            });
+          }
+        }
+      };
+
+      tf::Taskflow tf;
+
+      for(size_t i=0; i<src.size(); i++) {
+        tf.emplace([s=src[i], &traverse](tf::Subflow& subflow){ 
+          traverse(s, subflow); 
+        });
+      }
+      
+      executor.run(tf).wait();  // block until finished
+      
+      for(size_t i=0; i<num_nodes; i++) {
+        REQUIRE(nodes[i].visited);
+        REQUIRE(nodes[i].dependents == 0);
+        for(size_t j=0; j<nodes[i].successors.size(); ++j) {
+          REQUIRE(nodes[i].level < nodes[i].successors[j]->level);
+        }
+      }
+    });
+  }
+
+  for(auto& thread : threads) thread.join();
+}
+
+TEST_CASE("ParallelTraverse.1" * doctest::timeout(300)) {
+  parallel_traverse(1);
+}
+
+TEST_CASE("ParallelTraverse.2" * doctest::timeout(300)) {
+  parallel_traverse(2);
+}
+
+TEST_CASE("ParallelTraverse.3" * doctest::timeout(300)) {
+  parallel_traverse(3);
+}
+
+TEST_CASE("ParallelTraverse.4" * doctest::timeout(300)) {
+  parallel_traverse(4);
+}
+
+TEST_CASE("ParallelTraverse.5" * doctest::timeout(300)) {
+  parallel_traverse(5);
+}
+
+TEST_CASE("ParallelTraverse.6" * doctest::timeout(300)) {
+  parallel_traverse(6);
+}
+
+TEST_CASE("ParallelTraverse.7" * doctest::timeout(300)) {
+  parallel_traverse(7);
+}
+
+TEST_CASE("ParallelTraverse.8" * doctest::timeout(300)) {
+  parallel_traverse(8);
+}
+
 
 

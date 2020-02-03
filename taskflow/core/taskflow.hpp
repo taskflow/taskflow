@@ -154,8 +154,8 @@ inline const std::string& Taskflow::name() const {
 // Function: for_each_task
 template <typename V>
 void Taskflow::for_each_task(V&& visitor) const {
-  for(size_t i=0; i<_graph.nodes().size(); ++i) {
-    visitor(Task(_graph.nodes()[i].get()));
+  for(size_t i=0; i<_graph._nodes.size(); ++i) {
+    visitor(Task(_graph._nodes[i]));
   }
 }
 
@@ -252,15 +252,15 @@ inline void Taskflow::_dump(
   std::unordered_set<const Taskflow*>& visited
 ) const {
     
-  for(const auto& n : graph.nodes()) {
+  for(const auto& n : graph._nodes) {
     // regular task
     if(auto module = n->_module; !module) {
-      _dump(os, n.get(), stack, visited);
+      _dump(os, n, stack, visited);
     }
     // module task
     else {
-      os << 'p' << n.get() << "[shape=box, color=blue, label=\"";
-      if(n->_name.empty()) os << n.get();
+      os << 'p' << n << "[shape=box, color=blue, label=\"";
+      if(n->_name.empty()) os << n;
       else os << n->_name;
       os << " [Taskflow: ";
       if(module->_name.empty()) os << 'p' << module;
@@ -273,7 +273,7 @@ inline void Taskflow::_dump(
       }
 
       for(const auto s : n->_successors) {
-        os << 'p' << n.get() << "->" << 'p' << s << ";\n";
+        os << 'p' << n << "->" << 'p' << s << ";\n";
       }
     }
   }
