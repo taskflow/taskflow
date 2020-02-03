@@ -99,21 +99,26 @@ extern "C" {
 
 // C11 or newer
 #if !defined(aligned_alloc) && !defined(__aligned_alloc_is_defined)
-
+  
+  // std compliant
   #if TF_C11_ALIGNED_ALLOC
     #ifdef TF_DEBUG_ALIGNED_ALLOC
     #error "DEBUG: c11 aligned_alloc configured"
     #endif
-  // Aligned _aligned_malloc is not compatible with free.
+    #define portable_aligned_alloc(align, sz) std::aligned_alloc(align, sz)
+    #define portable_aligned_free(p) std::free(p)
+    #define __aligned_alloc_is_defined 1
+    #define __aligned_free_is_defined 1
+  // MSVC 
   #elif defined(_MSC_VER)
     #ifdef TF_DEBUG_ALIGNED_ALLOC
     #error "DEBUG: MS _aligned_malloc and _aligned_free configured"
     #endif
-
-    #define aligned_alloc(alignment, size) _aligned_malloc(size, alignment)
-    #define aligned_free(p) _aligned_free(p)
+    #define portable_aligned_alloc(align, sz) _aligned_malloc(sz, align)
+    #define portable_aligned_free(p) _aligned_free(p)
     #define __aligned_alloc_is_defined 1
     #define __aligned_free_is_defined 1
+  // POSIX MEMALIGN
   #elif TF_POSIX_MEMALIGN
 
     #ifdef TF_DEBUG_ALIGNED_ALLOC
@@ -140,7 +145,7 @@ extern "C" {
       return p;
     }
 
-    #define aligned_alloc(align, size) __portable_aligned_alloc(align, size)
+    #define portable_aligned_alloc(align, sz) __portable_aligned_alloc(align, sz)
     #define aligned_free(p) free(p)
     #define __aligned_alloc_is_defined 1
     #define __aligned_free_is_defined 1
@@ -177,8 +182,8 @@ extern "C" {
       }
     }
 
-    #define aligned_alloc(align, size) __portable_aligned_alloc(align, size)
-    #define aligned_free(p) __portable_aligned_free(p)
+    #define portable_aligned_alloc(align, sz) __portable_aligned_alloc(align, sz)
+    #define portable_aligned_free(p) __portable_aligned_free(p)
     #define __aligned_alloc_is_defined 1
     #define __aligned_free_is_defined 1
     
@@ -186,10 +191,10 @@ extern "C" {
 
 #endif // aligned_alloc
 
-#if !defined(aligned_free) && !defined(__aligned_free_is_defined)
-  #define aligned_free(p) free(p)
-  #define __aligned_free_is_defined 1
-#endif
+//#if !defined(aligned_free) && !defined(__aligned_free_is_defined)
+//  #define aligned_free(p) free(p)
+//  #define __aligned_free_is_defined 1
+//#endif
 
 #ifdef __cplusplus
 }
@@ -374,7 +379,7 @@ ObjectPool<T, S, MutexT>::~ObjectPool() {
     for(size_t i=0; i<B; ++i) {
       _for_each_block_safe(&h.lists[i], [] (Block* b) { 
         //std::free(b); 
-        aligned_free(b);
+        portable_aligned_free(b);
       });
     }
   }
@@ -382,7 +387,7 @@ ObjectPool<T, S, MutexT>::~ObjectPool() {
   // clear global heap
   _for_each_block_safe(&_gheap.list, [] (Block* b) { 
     // std::free(b);
-    aligned_free(b); 
+    portable_aligned_free(b); 
   });
 
 }
@@ -707,7 +712,7 @@ T* ObjectPool<T, S, MutexT>::allocate() {
       //s->i = 0;
       //s->u = 0;
       //s->top = nullptr;
-      s = static_cast<Block*>(aligned_alloc(S, sizeof(Block)));
+      s = static_cast<Block*>(portable_aligned_alloc(S, sizeof(Block)));
       assert(((size_t)s & X) == (size_t)s);
 
       if(s == nullptr) {
