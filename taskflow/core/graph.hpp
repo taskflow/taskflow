@@ -89,7 +89,7 @@ class Node {
     
     const std::string& name() const;
 
-    ObjectPool<Node>::satellite_t satellite;
+    //ObjectPool<Node>::satellite_t satellite;
 
   private:
 
@@ -152,7 +152,8 @@ inline Node::~Node() {
       
     auto& np = Graph::_node_pool();
     for(i=0; i<nodes.size(); ++i) {
-      np.destruct(nodes[i]);
+      nodes[i]->~Node();
+      np.deallocate(nodes[i]);
     }
   }
 }
@@ -300,7 +301,8 @@ inline ObjectPool<Node>& Graph::_node_pool() {
 inline Graph::~Graph() {
   auto& np = _node_pool();
   for(auto node : _nodes) {
-    np.destruct(node);
+    node->~Node();
+    np.deallocate(node);
   }
 }
 
@@ -319,7 +321,8 @@ inline Graph& Graph::operator = (Graph&& other) {
 inline void Graph::clear() {
   auto& np = _node_pool();
   for(auto node : _nodes) {
-    np.destruct(node);
+    node->~Node();
+    np.deallocate(node);
   }
   _nodes.clear();
 }
@@ -340,7 +343,8 @@ inline bool Graph::empty() const {
 // create a node from a give argument; constructor is called if necessary
 template <typename ...ArgsT>
 Node* Graph::emplace_back(ArgsT&&... args) {
-  auto node = _node_pool().construct(std::forward<ArgsT>(args)...);
+  auto node = _node_pool().allocate();
+  new (node) Node(std::forward<ArgsT>(args)...);
   _nodes.push_back(node);
   return node;
 }
@@ -348,7 +352,8 @@ Node* Graph::emplace_back(ArgsT&&... args) {
 // Function: emplace_back
 // create a node from a give argument; constructor is called if necessary
 inline Node* Graph::emplace_back() {
-  auto node = _node_pool().construct();
+  auto node = _node_pool().allocate();
+  new (node) Node();
   _nodes.push_back(node);
   return node;
 }

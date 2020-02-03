@@ -9,12 +9,13 @@
 
 #pragma once
 
+#include <iostream>
 #include <thread>
 #include <new>       
 #include <mutex>
 #include <vector>
+#include <list>
 #include <array>
-#include <cstddef>
 #include <cassert>
 
 // ----------------------------------------------------------------------------
@@ -202,70 +203,53 @@ extern "C" {
 namespace tf {
 
 // Class: ObjectPool
-//
-// Example scenario 1:
-// M = 30
-// F = 4
-// W = (30+4-1)/4 = 8
-// 
-// b0: 0,1,2,3,4,5,6,7
-// b1: 8,9,10,11,12,13,14,15
-// b2: 16,17,18,19,20,21,22,23
-// b3: 24,25,26,27,28,29,
-// b4: 30 (anything equal to M)
-// 
-// Example scenario 2:
-// M = 32
-// F = 4
-// W = (32+4-1)/4 = 8
-// b0: 0,1,2,3,4,5,6,7
-// b1: 8,9,10,11,12,13,14,15
-// b2: 16,17,18,19,20,21,22,23
-// b3: 24,25,26,27,28,29,30,31
-// b4: 32 (anything equal to M)
-//
-template <typename T, size_t S = 8192, typename MutexT=std::mutex>
+template <typename T, typename MutexT=std::mutex>
 class ObjectPool { 
 
+  struct GlobalHeap;
   struct LocalHeap;
+  struct Block;
 
-  union Block;
+  public:
 
+  constexpr static size_t S = 8192;
+  
+  constexpr static size_t F = 4;   
+  constexpr static size_t B = F + 1;
+  constexpr static size_t M = 32;  
+  constexpr static size_t W = 8;
+  constexpr static size_t K = 4;
+
+  static_assert(M/F == W && M%F == 0);
+
+  using satellite_t = Block*;
+
+  private:
+  
   struct Blocklist {
     Blocklist* prev;
     Blocklist* next;
   };
 
-  union Block {
-    char buffer[S];
-    struct {
-      LocalHeap* heap;
-      Blocklist list_node;
-      size_t i;
-      size_t u;
-      T* top;
-      T* data;
-    };
+  struct Block {
+    LocalHeap* heap;
+    Blocklist list_node;
+    size_t i;
+    size_t u;
+    T* top;
+    char data[M*sizeof(T)];
+
+    Block(const Block&) = delete;
+    Block(Block&&) = delete;
+
+    Block& operator = (const Block&) = delete;
+    Block& operator = (Block&&) = delete;
+
+    bool empty() const;
+    void push(T*);
+    T* pop();
+    T* allocate();
   };
-  
-  constexpr static size_t X = ~(S-1);
-  constexpr static size_t M = (S - offsetof(Block, data)) / sizeof(T);
-  constexpr static size_t F = 4;   
-  constexpr static size_t B = F + 1;
-  constexpr static size_t W = (M + F - 1) / F;
-  constexpr static size_t K = 4;
-  
-  static_assert(
-    S && (!(S & (S-1))), "block size S must be a power of two"
-  );
-
-  static_assert(
-    sizeof(Block) == S, "block size S is too small"
-  );
-
-  static_assert(
-    M >= 8, "block size S is too small to pool enough objects"
-  );
 
   class GlobalHeap {
     friend class ObjectPool;
@@ -286,18 +270,14 @@ class ObjectPool {
     explicit ObjectPool(unsigned = std::thread::hardware_concurrency());
     ~ObjectPool();
 
-    T* allocate();
+    template <typename... ArgsT>
+    T* construct(ArgsT&&... args);
 
-    void deallocate(T*);
-    
-    size_t num_bins_per_local_heap() const;
-    size_t num_objects_per_bin() const;
-    size_t num_objects_per_block() const;
+    void destruct(T*);
+
     size_t num_local_heaps() const;
     size_t num_global_heaps() const;
     size_t num_heaps() const;
-    
-    float emptiness_threshold() const;
 
   private:
 
@@ -317,11 +297,6 @@ class ObjectPool {
 
     constexpr Block* _block_of(Blocklist*);
 
-    size_t _bin(size_t) const;
-
-    T* _allocate(Block*);
-
-    void _deallocate(Block*, T*);
     void _blocklist_init_head(Blocklist*);
     void _blocklist_add_impl(Blocklist*, Blocklist*, Blocklist*);
     void _blocklist_push_front(Blocklist*, Blocklist*);
@@ -345,13 +320,45 @@ class ObjectPool {
 };
     
 // ----------------------------------------------------------------------------
+// Block definition
+// ----------------------------------------------------------------------------
+
+// Function: allocate
+template <typename T, typename MutexT>
+T* ObjectPool<T, MutexT>::Block::allocate() {
+  return empty() ? reinterpret_cast<T*>(data) + i++ : pop();
+}
+
+// Function: empty
+template <typename T, typename MutexT>
+bool ObjectPool<T, MutexT>::Block::empty() const { 
+  return top == nullptr; 
+}
+
+// Procedure: push    
+template <typename T, typename MutexT>
+void ObjectPool<T, MutexT>::Block::push(T* ptr) {
+  *(reinterpret_cast<T**>(ptr)) = top;
+  top = ptr;
+}
+  
+// Function: pop
+// Must use empty() before calling pop
+template <typename T, typename MutexT>
+T* ObjectPool<T, MutexT>::Block::pop() {
+  assert(!empty());
+  T* retval = top;
+  top = *(reinterpret_cast<T**>(top));
+  return retval;
+}
+
+// ----------------------------------------------------------------------------
 // ObjectPool definition
 // ----------------------------------------------------------------------------
 
-
 // Constructor
-template <typename T, size_t S, typename MutexT>
-ObjectPool<T, S, MutexT>::ObjectPool(unsigned t) :
+template <typename T, typename MutexT>
+ObjectPool<T, MutexT>::ObjectPool(unsigned t) :
   //_heap_mask   {(_next_power_of_two(t) << 1) - 1u},
   //_heap_mask   { _next_power_of_two(t<<1) - 1u },
   //_heap_mask   {(t << 1) - 1},
@@ -366,101 +373,62 @@ ObjectPool<T, S, MutexT>::ObjectPool(unsigned t) :
   }
 }
 
-template <typename T, size_t S, typename MutexT>
-ObjectPool<T, S, MutexT>::~ObjectPool() {
+template <typename T, typename MutexT>
+ObjectPool<T, MutexT>::~ObjectPool() {
 
   // clear local heaps
   for(auto& h : _lheaps) {
     for(size_t i=0; i<B; ++i) {
-      _for_each_block_safe(&h.lists[i], [] (Block* b) { 
-        //std::free(b); 
-        aligned_free(b);
-      });
+      _for_each_block_safe(&h.lists[i], [] (Block* b) { std::free(b); });
     }
   }
   
   // clear global heap
-  _for_each_block_safe(&_gheap.list, [] (Block* b) { 
-    // std::free(b);
-    aligned_free(b); 
-  });
+  _for_each_block_safe(&_gheap.list, [] (Block* b) { std::free(b); } );
 
-}
-    
-// Function: num_bins_per_local_heap
-template <typename T, size_t S, typename MutexT>
-size_t ObjectPool<T, S, MutexT>::num_bins_per_local_heap() const {
-  return B;
-}
-
-// Function: num_objects_per_bin
-template <typename T, size_t S, typename MutexT>
-size_t ObjectPool<T, S, MutexT>::num_objects_per_bin() const {
-  return W;
-}
-
-// Function: num_objects_per_block
-template <typename T, size_t S, typename MutexT>
-size_t ObjectPool<T, S, MutexT>::num_objects_per_block() const {
-  return M;
-}
-
-// Function: emptiness_threshold
-template <typename T, size_t S, typename MutexT>
-float ObjectPool<T, S, MutexT>::emptiness_threshold() const {
-  return 1.0f/F;
 }
 
 // Function: num_global_heaps
-template <typename T, size_t S, typename MutexT>
-size_t ObjectPool<T, S, MutexT>::num_global_heaps() const {
+template <typename T, typename MutexT>
+size_t ObjectPool<T, MutexT>::num_global_heaps() const {
   return 1;
 }
 
 // Function: num_lheaps
-template <typename T, size_t S, typename MutexT>
-size_t ObjectPool<T, S, MutexT>::num_local_heaps() const {
+template <typename T, typename MutexT>
+size_t ObjectPool<T, MutexT>::num_local_heaps() const {
   return _lheaps.size();
 }
 
 // Function: num_heaps
-template <typename T, size_t S, typename MutexT>
-size_t ObjectPool<T, S, MutexT>::num_heaps() const {
+template <typename T, typename MutexT>
+size_t ObjectPool<T, MutexT>::num_heaps() const {
   return _lheaps.size() + 1;
 }
-
-// Function: _bin
-template <typename T, size_t S, typename MutexT>
-size_t ObjectPool<T, S, MutexT>::_bin(size_t u) const {
-  return u == M ? F : u/W;
-}
     
-template <typename T, size_t S, typename MutexT>
+template <typename T, typename MutexT>
 template <class P, class Q>
-constexpr size_t ObjectPool<T, S, MutexT>::_offset_in_class(
-  const Q P::*member) {
+constexpr size_t ObjectPool<T, MutexT>::_offset_in_class(const Q P::*member) {
   return (size_t) &( reinterpret_cast<P*>(0)->*member);
 }
 
 // C macro: parent_class_of(list_pointer, Block, list)
 // C++: parent_class_of(list_pointer,  &Block::list)
-template <typename T, size_t S, typename MutexT>
+template <typename T, typename MutexT>
 template <class P, class Q>
-constexpr P* ObjectPool<T, S, MutexT>::_parent_class_of(
-  Q* ptr, const Q P::*member
-) {
+constexpr P* ObjectPool<T, MutexT>::_parent_class_of(Q* ptr, const Q P::*member) {
   return (P*)( (char*)ptr - _offset_in_class(member));
 }
 
-template <typename T, size_t S, typename MutexT>
-constexpr typename ObjectPool<T, S, MutexT>::Block* 
-ObjectPool<T, S, MutexT>::_block_of(Blocklist* list) {
+template <typename T, typename MutexT>
+constexpr typename ObjectPool<T, MutexT>::Block* 
+ObjectPool<T, MutexT>::_block_of(Blocklist* list) {
   return _parent_class_of(list, &Block::list_node);
 }
 
 // Procedure: initialize a list head
-template <typename T, size_t S, typename MutexT>
-void ObjectPool<T, S, MutexT>::_blocklist_init_head(Blocklist *list) {
+template <typename T, typename MutexT>
+void ObjectPool<T, MutexT>::_blocklist_init_head(Blocklist *list) {
   list->next = list;
   list->prev = list;
 }
@@ -470,8 +438,8 @@ void ObjectPool<T, S, MutexT>::_blocklist_init_head(Blocklist *list) {
 // 
 // This is only for internal list manipulation where we know
 // the prev/next entries already!
-template <typename T, size_t S, typename MutexT>
-void ObjectPool<T, S, MutexT>::_blocklist_add_impl(
+template <typename T, typename MutexT>
+void ObjectPool<T, MutexT>::_blocklist_add_impl(
   Blocklist *curr, Blocklist *prev, Blocklist *next
 ) {
   next->prev = curr;
@@ -487,8 +455,8 @@ void ObjectPool<T, S, MutexT>::_blocklist_add_impl(
 // Insert a new entry after the specified head.
 // This is good for implementing stacks.
 // 
-template <typename T, size_t S, typename MutexT>
-void ObjectPool<T, S, MutexT>::_blocklist_push_front(
+template <typename T, typename MutexT>
+void ObjectPool<T, MutexT>::_blocklist_push_front(
   Blocklist *curr, Blocklist *head
 ) {
   _blocklist_add_impl(curr, head, head->next);
@@ -501,8 +469,8 @@ void ObjectPool<T, S, MutexT>::_blocklist_push_front(
 // Insert a new entry before the specified head.
 // This is useful for implementing queues.
 // 
-template <typename T, size_t S, typename MutexT>
-void ObjectPool<T, S, MutexT>::_blocklist_push_back(
+template <typename T, typename MutexT>
+void ObjectPool<T, MutexT>::_blocklist_push_back(
   Blocklist *curr, Blocklist *head
 ) {
   _blocklist_add_impl(curr, head->prev, head);
@@ -514,8 +482,8 @@ void ObjectPool<T, S, MutexT>::_blocklist_push_back(
 // This is only for internal list manipulation where we know
 // the prev/next entries already!
 // 
-template <typename T, size_t S, typename MutexT>
-void ObjectPool<T, S, MutexT>::_blocklist_del_impl(
+template <typename T, typename MutexT>
+void ObjectPool<T, MutexT>::_blocklist_del_impl(
   Blocklist * prev, Blocklist * next
 ) {
   next->prev = prev;
@@ -526,8 +494,8 @@ void ObjectPool<T, S, MutexT>::_blocklist_del_impl(
 // @entry: the element to delete from the list.
 // Note: list_empty() on entry does not return true after this, the entry is
 // in an undefined state.
-template <typename T, size_t S, typename MutexT>
-void ObjectPool<T, S, MutexT>::_blocklist_del(Blocklist *entry) {
+template <typename T, typename MutexT>
+void ObjectPool<T, MutexT>::_blocklist_del(Blocklist *entry) {
   _blocklist_del_impl(entry->prev, entry->next);
   entry->next = nullptr;
   entry->prev = nullptr;
@@ -538,8 +506,8 @@ void ObjectPool<T, S, MutexT>::_blocklist_del(Blocklist *entry) {
 // @curr : the new element to insert
 // 
 // If @old was empty, it will be overwritten.
-template <typename T, size_t S, typename MutexT>
-void ObjectPool<T, S, MutexT>::_blocklist_replace(
+template <typename T, typename MutexT>
+void ObjectPool<T, MutexT>::_blocklist_replace(
   Blocklist *old, Blocklist *curr
 ) {
   curr->next = old->next;
@@ -551,8 +519,8 @@ void ObjectPool<T, S, MutexT>::_blocklist_replace(
 // list_move - delete from one list and add as another's head
 // @list: the entry to move
 // @head: the head that will precede our entry
-template <typename T, size_t S, typename MutexT>
-void ObjectPool<T, S, MutexT>::_blocklist_move_front(
+template <typename T, typename MutexT>
+void ObjectPool<T, MutexT>::_blocklist_move_front(
   Blocklist *list, Blocklist *head
 ) {
   _blocklist_del_impl(list->prev, list->next);
@@ -562,8 +530,8 @@ void ObjectPool<T, S, MutexT>::_blocklist_move_front(
 // list_move_tail - delete from one list and add as another's tail
 // @list: the entry to move
 // @head: the head that will follow our entry
-template <typename T, size_t S, typename MutexT>
-void ObjectPool<T, S, MutexT>::_blocklist_move_back(
+template <typename T, typename MutexT>
+void ObjectPool<T, MutexT>::_blocklist_move_back(
   Blocklist *list, Blocklist *head
 ) {
   _blocklist_del_impl(list->prev, list->next);
@@ -573,8 +541,8 @@ void ObjectPool<T, S, MutexT>::_blocklist_move_back(
 // list_is_first - tests whether @list is the last entry in list @head
 // @list: the entry to test
 // @head: the head of the list
-template <typename T, size_t S, typename MutexT>
-bool ObjectPool<T, S, MutexT>::_blocklist_is_first(
+template <typename T, typename MutexT>
+bool ObjectPool<T, MutexT>::_blocklist_is_first(
   const Blocklist *list, const Blocklist *head
 ) {
   return list->prev == head;
@@ -583,8 +551,8 @@ bool ObjectPool<T, S, MutexT>::_blocklist_is_first(
 // list_is_last - tests whether @list is the last entry in list @head
 // @list: the entry to test
 // @head: the head of the list
-template <typename T, size_t S, typename MutexT>
-bool ObjectPool<T, S, MutexT>::_blocklist_is_last(
+template <typename T, typename MutexT>
+bool ObjectPool<T, MutexT>::_blocklist_is_last(
   const Blocklist *list, const Blocklist *head
 ) {
   return list->next == head;
@@ -592,24 +560,22 @@ bool ObjectPool<T, S, MutexT>::_blocklist_is_last(
 
 // list_empty - tests whether a list is empty
 // @head: the list to test.
-template <typename T, size_t S, typename MutexT>
-bool ObjectPool<T, S, MutexT>::_blocklist_is_empty(const Blocklist *head) {
+template <typename T, typename MutexT>
+bool ObjectPool<T, MutexT>::_blocklist_is_empty(const Blocklist *head) {
   return head->next == head;
 }
 
 // list_is_singular - tests whether a list has just one entry.
 // @head: the list to test.
-template <typename T, size_t S, typename MutexT>
-bool ObjectPool<T, S, MutexT>::_blocklist_is_singular(
-  const Blocklist *head
-) {
+template <typename T, typename MutexT>
+bool ObjectPool<T, MutexT>::_blocklist_is_singular(const Blocklist *head) {
   return !_blocklist_is_empty(head) && (head->next == head->prev);
 }
 
 // Procedure: _for_each_block
-template <typename T, size_t S, typename MutexT>
+template <typename T, typename MutexT>
 template <typename C>
-void ObjectPool<T, S, MutexT>::_for_each_block(Blocklist* head, C&& c) {
+void ObjectPool<T, MutexT>::_for_each_block(Blocklist* head, C&& c) {
   Blocklist* p;
   for(p=head->next; p!=head; p=p->next) {
     c(_block_of(p));
@@ -618,9 +584,9 @@ void ObjectPool<T, S, MutexT>::_for_each_block(Blocklist* head, C&& c) {
       
 // Procedure: _for_each_block_safe
 // Iterate each item of a list - safe to free
-template <typename T, size_t S, typename MutexT>
+template <typename T, typename MutexT>
 template <typename C>
-void ObjectPool<T, S, MutexT>::_for_each_block_safe(Blocklist* head, C&& c) {
+void ObjectPool<T, MutexT>::_for_each_block_safe(Blocklist* head, C&& c) {
   Blocklist* p;
   Blocklist* t;
   for(p=head->next, t=p->next; p!=head; p=t, t=p->next) {
@@ -628,39 +594,17 @@ void ObjectPool<T, S, MutexT>::_for_each_block_safe(Blocklist* head, C&& c) {
   }
 }
 
-// Function: _allocate
-// allocate a spot from the block
-template <typename T, size_t S, typename MutexT>
-T* ObjectPool<T, S, MutexT>::_allocate(Block* s) {
-  if(s->top == nullptr) {
-    return s->data + (s->i)++;
-  }
-  else {
-    T* retval = s->top;
-    s->top = *(reinterpret_cast<T**>(s->top));
-    return retval;
-  }
-}
-
-// Procedure: _deallocate
-template <typename T, size_t S, typename MutexT>
-void ObjectPool<T, S, MutexT>::_deallocate(Block* s, T* ptr) {
-  assert(((size_t)ptr & X) == (size_t)(s));
-  *(reinterpret_cast<T**>(ptr)) = s->top;
-  s->top = ptr;
-}
-
-
 // Function: allocate
-template <typename T, size_t S, typename MutexT>
-T* ObjectPool<T, S, MutexT>::allocate() {
+template <typename T, typename MutexT>
+template <typename... ArgsT>
+T* ObjectPool<T, MutexT>::construct(ArgsT&&... args) {
 
   //std::cout << "construct a new item\n";
     
   // my logically mapped heap
   LocalHeap& h = _this_heap(); 
   
-  Block* s;
+  satellite_t s;
 
   h.mutex.lock();
   
@@ -686,12 +630,12 @@ T* ObjectPool<T, S, MutexT>::allocate() {
       
       //printf("get a superblock from global heap %lu\n", s->u);
       assert(s->u < M && s->heap == nullptr);
-      f = _bin(s->u+1);
+      f = (s->u + 1) / W;
       //h.lists[f].splice(h.lists[f].begin(), _gheap.list, s);
 
       _blocklist_move_front(&s->list_node, &h.lists[f]);
 
-      s->heap = &h;  // must be within the global heap lock
+      s->heap = &h;  // must be wihin the global heap lock
       _gheap.mutex.unlock();
 
       h.u = h.u + s->u;
@@ -702,24 +646,14 @@ T* ObjectPool<T, S, MutexT>::allocate() {
       //printf("create a new superblock\n");
       _gheap.mutex.unlock();
       f = 0;
-      //s = static_cast<Block*>(std::malloc(sizeof(Block)));
-      //s->heap = &h; 
-      //s->i = 0;
-      //s->u = 0;
-      //s->top = nullptr;
-      s = static_cast<Block*>(aligned_alloc(S, sizeof(Block)));
-      assert(((size_t)s & X) == (size_t)s);
+      //h.lists[f].emplace_front(&h);
+      //s = h.lists[f].begin();
 
-      if(s == nullptr) {
-        throw std::bad_alloc();
-      }
-
-      s->heap = &h;
+      s = static_cast<Block*>(std::malloc(sizeof(Block)));
+      s->heap = &h; 
       s->i = 0;
       s->u = 0;
-      s->top = 0;
-      s->data = reinterpret_cast<T*>(&s->data);
-
+      s->top = nullptr;
       _blocklist_push_front(&s->list_node, &h.lists[f]);
 
       h.a = h.a + M;
@@ -735,14 +669,23 @@ T* ObjectPool<T, S, MutexT>::allocate() {
   s->u = s->u + 1;
 
   // take one item from the superblock
-  //T* mem = s->allocate();
-  T* mem = _allocate(s);
+  //T* mem;
+  //if(s->freelist.empty()) {
+  //  assert(s->i < M);
+  //  mem = s->block + s->i;
+  //  s->i = s->i + 1;
+  //}
+  //else {
+  //  mem = s->freelist.pop();
+  //}
+  T* mem = s->allocate();
   
-  int b = _bin(s->u);
+  int b = s->u / W;
   
   if(b != f) {
     //printf("move superblock from list[%d] to list[%d]\n", f, b);
     //h.lists[b].splice(h.lists[b].begin(), h.lists[f], s);
+
     _blocklist_move_front(&s->list_node, &h.lists[b]);
   }
 
@@ -753,21 +696,24 @@ T* ObjectPool<T, S, MutexT>::allocate() {
 
   h.mutex.unlock();
 
-  //new (mem) T(std::forward<ArgsT>(args)...);
+  // set the satellite 
+  new (mem) T(std::forward<ArgsT>(args)...);
+
+  mem->satellite = s;
 
   return mem;
 }
   
 // Function: destruct
-template <typename T, size_t S, typename MutexT>
-void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
+template <typename T, typename MutexT>
+void ObjectPool<T, MutexT>::destruct(T* mem) {
 
   //printf("destruct %p\n", mem);
 
-  Block* s = reinterpret_cast<Block*>((size_t)mem & X);
+  auto s = mem->satellite;
 
   // destruct the item
-  //mem->~T();
+  mem->~T();
   
   // here we need a loop because when we lock the heap,
   // other threads may have removed the superblock to another heap
@@ -782,8 +728,7 @@ void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
       std::lock_guard<MutexT> glock(_gheap.mutex);
       if(s->heap == h) {
         sync = true;
-        //s->push(mem);
-        _deallocate(s, mem);
+        s->push(mem);
         s->u = s->u - 1;
       }
     }
@@ -792,14 +737,13 @@ void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
       if(s->heap == h) {
         sync = true;
         // deallocate the item from the superblock
-        int f = _bin(s->u);
+        int f = s->u / W;
 
-        //s->push(mem);
-        _deallocate(s, mem);
+        s->push(mem);
         s->u = s->u - 1;
         h->u = h->u - 1;
 
-        int b = _bin(s->u);
+        int b = s->u / W;
 
         if(b != f) {
           //printf("move superblock from list[%d] to list[%d]\n", f, b);
@@ -837,9 +781,9 @@ void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
 }
     
 // Function: _this_heap
-template <typename T, size_t S, typename MutexT>
-typename ObjectPool<T, S, MutexT>::LocalHeap& 
-ObjectPool<T, S, MutexT>::_this_heap() {
+template <typename T, typename MutexT>
+typename ObjectPool<T, MutexT>::LocalHeap& 
+ObjectPool<T, MutexT>::_this_heap() {
   thread_local LocalHeap& heap = _lheaps[
     //std::hash<std::thread::id>()(std::this_thread::get_id()) & _heap_mask
     std::hash<std::thread::id>()(std::this_thread::get_id()) % _lheaps.size()
@@ -848,8 +792,8 @@ ObjectPool<T, S, MutexT>::_this_heap() {
 }
 
 // Function: _next_power_of_two
-template <typename T, size_t S, typename MutexT>
-unsigned ObjectPool<T, S, MutexT>::_next_power_of_two(unsigned n) const { 
+template <typename T, typename MutexT>
+unsigned ObjectPool<T, MutexT>::_next_power_of_two(unsigned n) const { 
   n--; 
   n |= n >> 1; 
   n |= n >> 2; 
@@ -860,4 +804,12 @@ unsigned ObjectPool<T, S, MutexT>::_next_power_of_two(unsigned n) const {
   return n; 
 }  
 
-}  // end namespace tf --------------------------------------------------------
+}  // end of namespace tf -----------------------------------------------------
+
+
+
+
+
+
+
+
