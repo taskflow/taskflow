@@ -121,7 +121,7 @@ TEST_CASE("SelectionSort" * doctest::timeout(300)) {
           + std::to_string(end) 
           + ')');
 
-    auto SM = sf.emplace([&spawn, &data, &min, beg, end, m, minl, minr] () {
+    auto SM = sf.emplace([&data, &min, minl, minr] () {
       if(*minl == -1) {
         min = *minr;
       }
@@ -228,7 +228,7 @@ TEST_CASE("MergeSort" * doctest::timeout(300)) {
           + std::to_string(end) 
           + ')');
 
-    auto SM = sf.emplace([&spawn, &data, beg, end, m] () {
+    auto SM = sf.emplace([&data, beg, end, m] () {
       std::vector<int> tmpl, tmpr;
       for(int i=beg; i<m; ++i) tmpl.push_back(data[i]);
       for(int i=m; i<end; ++i) tmpr.push_back(data[i]);

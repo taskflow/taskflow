@@ -227,7 +227,7 @@ namespace tf {
 template <typename T, size_t S = 8192, typename MutexT=std::mutex>
 class ObjectPool { 
 
-  struct LocalHeap;
+  class LocalHeap;
 
   union Block;
 
