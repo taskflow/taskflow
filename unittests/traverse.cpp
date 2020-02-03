@@ -258,5 +258,37 @@ TEST_CASE("ParallelTraverse.8" * doctest::timeout(300)) {
   parallel_traverse(8);
 }
 
+TEST_CASE("ParallelTraverse.9" * doctest::timeout(300)) {
+  parallel_traverse(9);
+}
+
+TEST_CASE("ParallelTraverse.10" * doctest::timeout(300)) {
+  parallel_traverse(10);
+}
+
+TEST_CASE("ParallelTraverse.11" * doctest::timeout(300)) {
+  parallel_traverse(11);
+}
+
+TEST_CASE("ParallelTraverse.12" * doctest::timeout(300)) {
+  parallel_traverse(12);
+}
+
+TEST_CASE("ParallelTraverse.13" * doctest::timeout(300)) {
+  parallel_traverse(13);
+}
+
+TEST_CASE("ParallelTraverse.14" * doctest::timeout(300)) {
+  parallel_traverse(14);
+}
+
+TEST_CASE("ParallelTraverse.15" * doctest::timeout(300)) {
+  parallel_traverse(15);
+}
+
+TEST_CASE("ParallelTraverse.16" * doctest::timeout(300)) {
+  parallel_traverse(16);
+}
+
 
 
