@@ -35,12 +35,17 @@ matrix:
             - g++-8
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
-    
-    ## OSX
-    #- os: osx
-    #  osx_image: xcode8
-    #  env:
-    #    - MATRIX_EVAL="brew install gcc && CC=gcc-7 && CXX=g++-7"
+
+    # Linux g++9
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-9
+      env:
+        - MATRIX_EVAL="CC=gcc-9 CXX=g++-9"
 
     # Linux clang++6
     - os: linux
@@ -56,14 +61,42 @@ matrix:
     
     # Linux clang++7
     - os: linux
-      compiler: clang++
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
-          packages: ['clang-7', 'g++-7']
+          sources:
+            - ubuntu-toolchain-r-test
+            - sourceline: 'deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+          packages:
+            - clang-7
       env:
-        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7"
-        #- CXXFLAGS=-std=c++1z
+        - MATRIX_EVAL="CC=clang-7 CXX=clang++-7"
+    
+    # Linux clang++8
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - sourceline: 'deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+          packages:
+            - clang-8
+      env:
+        - MATRIX_EVAL="CC=clang-8 CXX=clang++-8"
+    
+    # Linux clang++9
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - sourceline: 'deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+          packages:
+            - clang-9
+      env:
+        - MATRIX_EVAL="CC=clang-9 CXX=clang++-9"
 
     ## OSX
     #- os: osx
