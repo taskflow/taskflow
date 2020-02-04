@@ -1,4 +1,7 @@
 sudo: required
+
+# distribution
+dist: xenial
   
 # Enable C++ support
 language: cpp
@@ -9,6 +12,7 @@ cache:
     - ${TRAVIS_BUILD_DIR}/deps
 
 # environment 
+# ref 1: https://github.com/google/re2
 matrix:
   include:
 
@@ -49,16 +53,17 @@ matrix:
 
     # Linux clang++6
     - os: linux
-      compiler: clang++
-      dist: xenial
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['clang-6.0', 'g++-7']
+          sources:
+            - ubuntu-toolchain-r-test
+            - sourceline: 'deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-6.0 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+          packages:
+            - clang-6.0
       env:
-        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
-        #- CXXFLAGS=-std=c++1z
-    
+        - MATRIX_EVAL="CC=clang-6.0 CXX=clang++-6.0"
+
     # Linux clang++7
     - os: linux
       addons:
