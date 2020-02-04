@@ -185,97 +185,97 @@ TEST_CASE("PassiveVector" * doctest::timeout(300)) {
 // --------------------------------------------------------
 // Testcase: Pool
 // --------------------------------------------------------
-//TEST_CASE("ObjectPool" * doctest::timeout(300)) {
+TEST_CASE("ObjectPool.Basics" * doctest::timeout(300)) {
 
-  //struct TestObject {
+  struct TestObject {
 
-  //  TestObject(int v) : value {v} {
-  //  }
+    TestObject(int v) : value {v} {
+    }
 
-  //  void animate(int v) {
-  //    REQUIRE(value == 0);
-  //    value = v;
-  //  }
-  //  
-  //  void recycle() {
-  //    value = 0;
-  //  }
+    void animate(int v) {
+      REQUIRE(value == 0);
+      value = v;
+    }
+    
+    void recycle() {
+      value = 0;
+    }
 
-  //  int value;
-  //};
-  //  
-  //thread_local tf::ObjectPool<TestObject> TestObjectPool;
+    int value;
+  };
+    
+  thread_local tf::ObjectPool<TestObject> TestObjectPool;
 
-  //auto fork = [&] (unsigned N) {
+  auto fork = [&] (unsigned N) {
 
-  //  const int M = 2048 * N;
-  //  std::atomic<int> counter = M;
-  //  std::atomic<int> recycle = M;
-  //  std::mutex mutex;
-  //  std::vector<std::unique_ptr<TestObject>> objects;
-  //  std::vector<std::thread> threads; 
+    const int M = 2048 * N;
+    std::atomic<int> counter = M;
+    std::atomic<int> recycle = M;
+    std::mutex mutex;
+    std::vector<std::unique_ptr<TestObject>> objects;
+    std::vector<std::thread> threads; 
 
-  //  // allocate
-  //  for(unsigned t=1; t<=N; ++t) {
-  //    threads.emplace_back([&] () {
-  //      while(1) {
-  //        if(int c = --counter; c < 0) {
-  //          break;
-  //        }
-  //        else {
-  //          auto ptr = TestObjectPool.acquire(c);
-  //          std::scoped_lock lock(mutex);
-  //          objects.push_back(std::move(ptr));
-  //        }
-  //      }
-  //    });
-  //  }
-  //  for(auto& thread : threads) {
-  //    thread.join();
-  //  }
-  //  threads.clear();
+    // allocate
+    for(unsigned t=1; t<=N; ++t) {
+      threads.emplace_back([&] () {
+        while(1) {
+          if(int c = --counter; c < 0) {
+            break;
+          }
+          else {
+            auto ptr = TestObjectPool.acquire(c);
+            std::scoped_lock lock(mutex);
+            objects.push_back(std::move(ptr));
+          }
+        }
+      });
+    }
+    for(auto& thread : threads) {
+      thread.join();
+    }
+    threads.clear();
 
-  //  REQUIRE(objects.size() == M);
+    REQUIRE(objects.size() == M);
 
-  //  auto sum = std::accumulate(objects.begin(), objects.end(), 0,
-  //    [] (int s, const auto& v) { return s + v->value; }
-  //  );
+    auto sum = std::accumulate(objects.begin(), objects.end(), 0,
+      [] (int s, const auto& v) { return s + v->value; }
+    );
 
-  //  REQUIRE(sum == (M-1)*M / 2);
+    REQUIRE(sum == (M-1)*M / 2);
 
-  //  // recycle
-  //  for(unsigned t=1; t<=N; ++t) {
-  //    threads.emplace_back([&] () {
-  //      while(1) {
-  //        if(int r = --recycle; r < 0) {
-  //          break;
-  //        }
-  //        else {
-  //          std::scoped_lock lock(mutex);
-  //          REQUIRE(!objects.empty());
-  //          TestObjectPool.release(std::move(objects.back()));
-  //          objects.pop_back();
-  //        }
-  //      }
-  //    });
-  //  }
-  //  for(auto& thread : threads) {
-  //    thread.join();
-  //  }
-  //  threads.clear();
+    // recycle
+    for(unsigned t=1; t<=N; ++t) {
+      threads.emplace_back([&] () {
+        while(1) {
+          if(int r = --recycle; r < 0) {
+            break;
+          }
+          else {
+            std::scoped_lock lock(mutex);
+            REQUIRE(!objects.empty());
+            TestObjectPool.release(std::move(objects.back()));
+            objects.pop_back();
+          }
+        }
+      });
+    }
+    for(auto& thread : threads) {
+      thread.join();
+    }
+    threads.clear();
 
-  //  REQUIRE(objects.size() == 0);
-  //};
+    REQUIRE(objects.size() == 0);
+  };
 
-  //SUBCASE("OneThread")    { fork(1); }
-  //SUBCASE("TwoThread")    { fork(2); }
-  //SUBCASE("ThreeThreads") { fork(3); }
-  //SUBCASE("FourThreads")  { fork(4); }
-  //SUBCASE("FiveThreads")  { fork(5); }
-  //SUBCASE("SixThreads")   { fork(6); }
-  //SUBCASE("SevenThreads") { fork(7); }
-  //SUBCASE("EightThreads") { fork(8); }
-//}
+  SUBCASE("OneThread")    { fork(1); }
+  SUBCASE("TwoThread")    { fork(2); }
+  SUBCASE("ThreeThreads") { fork(3); }
+  SUBCASE("FourThreads")  { fork(4); }
+  SUBCASE("FiveThreads")  { fork(5); }
+  SUBCASE("SixThreads")   { fork(6); }
+  SUBCASE("SevenThreads") { fork(7); }
+  SUBCASE("EightThreads") { fork(8); }
+}
 
 // --------------------------------------------------------
 // Testcase: FunctionTraits

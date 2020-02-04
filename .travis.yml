@@ -53,53 +53,41 @@ matrix:
 
     # Linux clang++6
     - os: linux
+      compiler: clang++
       addons:
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - sourceline: 'deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-6.0 main'
-              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
-          packages:
-            - clang-6.0
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['clang-6.0', 'g++-7']
       env:
-        - MATRIX_EVAL="CC=clang-6.0 CXX=clang++-6.0"
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
 
     # Linux clang++7
     - os: linux
+      compiler: clang++
       addons:
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - sourceline: 'deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main'
-              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
-          packages:
-            - clang-7
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['clang-7', 'g++-7']
       env:
-        - MATRIX_EVAL="CC=clang-7 CXX=clang++-7"
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7"
     
     # Linux clang++8
     - os: linux
+      compiler: clang++
       addons:
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - sourceline: 'deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main'
-              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
-          packages:
-            - clang-8
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['clang-8', 'g++-8']
       env:
         - MATRIX_EVAL="CC=clang-8 CXX=clang++-8"
     
     # Linux clang++9
     - os: linux
+      compiler: clang++
       addons:
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - sourceline: 'deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main'
-              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
-          packages:
-            - clang-9
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['clang-9', 'g++-9']
       env:
         - MATRIX_EVAL="CC=clang-9 CXX=clang++-9"
 
