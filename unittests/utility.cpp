@@ -183,99 +183,219 @@ TEST_CASE("PassiveVector" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
-// Testcase: Pool
+// Testcase: ObjectPool.Sequential
 // --------------------------------------------------------
-TEST_CASE("ObjectPool.Basics" * doctest::timeout(300)) {
+TEST_CASE("ObjectPool.Sequential" * doctest::timeout(300)) {
 
-  /*struct TestObject {
-
-    TestObject(int v) : value {v} {
-    }
-
-    void animate(int v) {
-      REQUIRE(value == 0);
-      value = v;
-    }
-    
-    void recycle() {
-      value = 0;
-    }
-
-    int value;
-  };
-    
-  thread_local tf::ObjectPool<TestObject> TestObjectPool;
-
-  auto fork = [&] (unsigned N) {
-
-    const int M = 2048 * N;
-    std::atomic<int> counter = M;
-    std::atomic<int> recycle = M;
-    std::mutex mutex;
-    std::vector<std::unique_ptr<TestObject>> objects;
-    std::vector<std::thread> threads; 
-
-    // allocate
-    for(unsigned t=1; t<=N; ++t) {
-      threads.emplace_back([&] () {
-        while(1) {
-          if(int c = --counter; c < 0) {
-            break;
-          }
-          else {
-            auto ptr = TestObjectPool.acquire(c);
-            std::scoped_lock lock(mutex);
-            objects.push_back(std::move(ptr));
-          }
-        }
-      });
-    }
-    for(auto& thread : threads) {
-      thread.join();
-    }
-    threads.clear();
-
-    REQUIRE(objects.size() == M);
-
-    auto sum = std::accumulate(objects.begin(), objects.end(), 0,
-      [] (int s, const auto& v) { return s + v->value; }
-    );
-
-    REQUIRE(sum == (M-1)*M / 2);
-
-    // recycle
-    for(unsigned t=1; t<=N; ++t) {
-      threads.emplace_back([&] () {
-        while(1) {
-          if(int r = --recycle; r < 0) {
-            break;
-          }
-          else {
-            std::scoped_lock lock(mutex);
-            REQUIRE(!objects.empty());
-            TestObjectPool.release(std::move(objects.back()));
-            objects.pop_back();
-          }
-        }
-      });
-    }
-    for(auto& thread : threads) {
-      thread.join();
-    }
-    threads.clear();
-
-    REQUIRE(objects.size() == 0);
+  struct Foo {
+    std::string str;
+    std::vector<int> vec;
+    int a;
+    char b;
   };
 
-  SUBCASE("OneThread")    { fork(1); }
-  SUBCASE("TwoThread")    { fork(2); }
-  SUBCASE("ThreeThreads") { fork(3); }
-  SUBCASE("FourThreads")  { fork(4); }
-  SUBCASE("FiveThreads")  { fork(5); }
-  SUBCASE("SixThreads")   { fork(6); }
-  SUBCASE("SevenThreads") { fork(7); }
-  SUBCASE("EightThreads") { fork(8); }
-*/}
+  for(unsigned w=1; w<=4; w++) {
+
+    tf::ObjectPool<Foo> pool(w);
+
+    REQUIRE(pool.num_heaps() > 0);
+    REQUIRE(pool.num_local_heaps() > 0);
+    REQUIRE(pool.num_global_heaps() > 0);
+    REQUIRE(pool.num_bins_per_local_heap() > 0);
+    REQUIRE(pool.num_objects_per_bin() > 0);
+    REQUIRE(pool.num_objects_per_block() > 0);
+    REQUIRE(pool.emptiness_threshold() > 0);
+    
+    // fill out all object objects
+    int N = 1000*pool.num_objects_per_block();
+
+    std::set<Foo*> set;
+
+    for(int i=0; i<N; ++i) {
+      auto item = pool.allocate();
+      REQUIRE(set.find(item) == set.end());
+      set.insert(item);
+    }
+
+    REQUIRE(set.size() == N);
+
+    for(auto s : set) {
+      pool.deallocate(s);
+    }
+
+    REQUIRE(N == pool.capacity());
+    REQUIRE(N == pool.num_available_objects());
+    REQUIRE(0 == pool.num_allocated_objects());
+    
+    for(int i=0; i<N; ++i) {
+      auto item = pool.allocate();
+      REQUIRE(set.find(item) != set.end());
+    }
+
+    REQUIRE(pool.num_available_objects() == 0);
+    REQUIRE(pool.num_allocated_objects() == N);
+  }
+}
+
+// --------------------------------------------------------
+// Testcase: ObjectPool.Threaded
+// --------------------------------------------------------
+
+template <typename T>
+void threaded_objectpool(unsigned W) {
+  
+  tf::ObjectPool<T> pool;
+
+  std::vector<std::thread> threads;
+
+  for(unsigned w=0; w<W; ++w) {
+    threads.emplace_back([&pool](){
+      std::vector<T*> items;
+      for(int i=0; i<65536; ++i) {
+        auto item = pool.allocate();
+        items.push_back(item);
+      }
+      for(auto item : items) {
+        pool.deallocate(item);
+      }
+    });
+  }
+
+  for(auto& thread : threads) {
+    thread.join();
+  }
+
+  REQUIRE(pool.num_allocated_objects() == 0);
+  REQUIRE(pool.num_available_objects() == pool.capacity());
+}
+
+TEST_CASE("ObjectPool.1thread" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(1);
+  threaded_objectpool<int16_t>(1);
+  threaded_objectpool<int32_t>(1);
+  threaded_objectpool<int64_t>(1);
+  threaded_objectpool<std::string>(1);
+}
+
+TEST_CASE("ObjectPool.2threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(2);
+  threaded_objectpool<int16_t>(2);
+  threaded_objectpool<int32_t>(2);
+  threaded_objectpool<int64_t>(2);
+  threaded_objectpool<std::string>(2);
+}
+
+TEST_CASE("ObjectPool.3threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(3);
+  threaded_objectpool<int16_t>(3);
+  threaded_objectpool<int32_t>(3);
+  threaded_objectpool<int64_t>(3);
+  threaded_objectpool<std::string>(3);
+}
+
+TEST_CASE("ObjectPool.4threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(4);
+  threaded_objectpool<int16_t>(4);
+  threaded_objectpool<int32_t>(4);
+  threaded_objectpool<int64_t>(4);
+  threaded_objectpool<std::string>(4);
+}
+
+TEST_CASE("ObjectPool.5threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(5);
+  threaded_objectpool<int16_t>(5);
+  threaded_objectpool<int32_t>(5);
+  threaded_objectpool<int64_t>(5);
+  threaded_objectpool<std::string>(5);
+}
+
+TEST_CASE("ObjectPool.6threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(6);
+  threaded_objectpool<int16_t>(6);
+  threaded_objectpool<int32_t>(6);
+  threaded_objectpool<int64_t>(6);
+  threaded_objectpool<std::string>(6);
+}
+
+TEST_CASE("ObjectPool.7threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(7);
+  threaded_objectpool<int16_t>(7);
+  threaded_objectpool<int32_t>(7);
+  threaded_objectpool<int64_t>(7);
+  threaded_objectpool<std::string>(7);
+}
+
+TEST_CASE("ObjectPool.8threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(8);
+  threaded_objectpool<int16_t>(8);
+  threaded_objectpool<int32_t>(8);
+  threaded_objectpool<int64_t>(8);
+  threaded_objectpool<std::string>(8);
+}
+
+TEST_CASE("ObjectPool.9threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(9);
+  threaded_objectpool<int16_t>(9);
+  threaded_objectpool<int32_t>(9);
+  threaded_objectpool<int64_t>(9);
+  threaded_objectpool<std::string>(9);
+}
+
+TEST_CASE("ObjectPool.10threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(10);
+  threaded_objectpool<int16_t>(10);
+  threaded_objectpool<int32_t>(10);
+  threaded_objectpool<int64_t>(10);
+  threaded_objectpool<std::string>(10);
+}
+
+TEST_CASE("ObjectPool.11threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(11);
+  threaded_objectpool<int16_t>(11);
+  threaded_objectpool<int32_t>(11);
+  threaded_objectpool<int64_t>(11);
+  threaded_objectpool<std::string>(11);
+}
+
+TEST_CASE("ObjectPool.12threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(12);
+  threaded_objectpool<int16_t>(12);
+  threaded_objectpool<int32_t>(12);
+  threaded_objectpool<int64_t>(12);
+  threaded_objectpool<std::string>(12);
+}
+
+TEST_CASE("ObjectPool.13threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(13);
+  threaded_objectpool<int16_t>(13);
+  threaded_objectpool<int32_t>(13);
+  threaded_objectpool<int64_t>(13);
+  threaded_objectpool<std::string>(13);
+}
+
+TEST_CASE("ObjectPool.14threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(14);
+  threaded_objectpool<int16_t>(14);
+  threaded_objectpool<int32_t>(14);
+  threaded_objectpool<int64_t>(14);
+  threaded_objectpool<std::string>(14);
+}
+
+TEST_CASE("ObjectPool.15threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(15);
+  threaded_objectpool<int16_t>(15);
+  threaded_objectpool<int32_t>(15);
+  threaded_objectpool<int64_t>(15);
+  threaded_objectpool<std::string>(15);
+}
+
+TEST_CASE("ObjectPool.16threads" * doctest::timeout(300)) {
+  threaded_objectpool<int8_t>(16);
+  threaded_objectpool<int16_t>(16);
+  threaded_objectpool<int32_t>(16);
+  threaded_objectpool<int64_t>(16);
+  threaded_objectpool<std::string>(16);
+}
 
 // --------------------------------------------------------
 // Testcase: FunctionTraits

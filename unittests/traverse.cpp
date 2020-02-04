@@ -176,7 +176,7 @@ void parallel_traverse(unsigned num_threads) {
       std::atomic<size_t> level {0};
 
       size_t max_degree = 8;
-      size_t num_nodes = 100000;
+      size_t num_nodes = 50000;
       
       auto nodes = make_dag(num_nodes, max_degree);
         

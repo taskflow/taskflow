@@ -68,13 +68,14 @@ class ObjectPool {
     };
   };
   
-  constexpr static size_t X = sizeof(Block**) + sizeof(T);
+  // the data column must be sufficient to hold the pointer in freelist
+  constexpr static size_t X = sizeof(Block**) + std::max(sizeof(T**), sizeof(T));
   constexpr static size_t M = (S - offsetof(Block, data)) / X;
   constexpr static size_t F = 4;   
   constexpr static size_t B = F + 1;
   constexpr static size_t W = (M + F - 1) / F;
   constexpr static size_t K = 4;
-  
+
   static_assert(
     S && (!(S & (S-1))), "block size S must be a power of two"
   );
@@ -113,6 +114,9 @@ class ObjectPool {
     size_t num_bins_per_local_heap() const;
     size_t num_objects_per_bin() const;
     size_t num_objects_per_block() const;
+    size_t num_available_objects() const;
+    size_t num_allocated_objects() const;
+    size_t capacity() const;
     size_t num_local_heaps() const;
     size_t num_global_heaps() const;
     size_t num_heaps() const;
@@ -120,6 +124,8 @@ class ObjectPool {
     float emptiness_threshold() const;
 
   private:
+
+    const size_t _lheap_mask;
 
     GlobalHeap _gheap;
 
@@ -130,12 +136,16 @@ class ObjectPool {
     unsigned _next_power_of_two(unsigned n) const;
 
     template <class P, class Q>
-    constexpr size_t _offset_in_class(const Q P::*member);
+    constexpr size_t _offset_in_class(const Q P::*member) const;
     
     template <class P, class Q>
-    constexpr P* _parent_class_of(Q* ptr, const Q P::*member);
+    constexpr P* _parent_class_of(Q*, const Q P::*member);
+
+    template <class P, class Q>
+    constexpr P* _parent_class_of(const Q*, const Q P::*member) const;
 
     constexpr Block* _block_of(Blocklist*);
+    constexpr Block* _block_of(const Blocklist*) const;
 
     size_t _bin(size_t) const;
 
@@ -175,7 +185,8 @@ ObjectPool<T, S, MutexT>::ObjectPool(unsigned t) :
   //_heap_mask   {(_next_power_of_two(t) << 1) - 1u},
   //_heap_mask   { _next_power_of_two(t<<1) - 1u },
   //_heap_mask   {(t << 1) - 1},
-  _lheaps { (t+1) << 1 } {
+  _lheap_mask { _next_power_of_two((t+1) << 1) - 1 },
+  _lheaps     { _lheap_mask + 1 } {
 
   _blocklist_init_head(&_gheap.list);
 
@@ -247,6 +258,61 @@ size_t ObjectPool<T, S, MutexT>::num_heaps() const {
   return _lheaps.size() + 1;
 }
 
+// Function: capacity
+template <typename T, size_t S, typename MutexT>
+size_t ObjectPool<T, S, MutexT>::capacity() const {
+  
+  size_t n = 0;
+  
+  // global heap
+  for(auto p=_gheap.list.next; p!=&_gheap.list; p=p->next) {  
+    n += M;
+  };
+
+  // local heap
+  for(auto& h : _lheaps) {
+    n += h.a;
+  }
+
+  return n;
+}
+
+// Function: num_available_objects
+template <typename T, size_t S, typename MutexT>
+size_t ObjectPool<T, S, MutexT>::num_available_objects() const {
+
+  size_t n = 0;
+  
+  // global heap
+  for(auto p=_gheap.list.next; p!=&_gheap.list; p=p->next) {  
+    n += (M - _block_of(p)->u);
+  };
+
+  // local heap
+  for(auto& h : _lheaps) {
+    n += (h.a - h.u);
+  }
+  return n;
+}
+
+// Function: num_allocated_objects
+template <typename T, size_t S, typename MutexT>
+size_t ObjectPool<T, S, MutexT>::num_allocated_objects() const {
+  
+  size_t n = 0;
+  
+  // global heap
+  for(auto p=_gheap.list.next; p!=&_gheap.list; p=p->next) {  
+    n += _block_of(p)->u;
+  };
+
+  // local heap
+  for(auto& h : _lheaps) {
+    n += h.u;
+  }
+  return n;
+}
+
 // Function: _bin
 template <typename T, size_t S, typename MutexT>
 size_t ObjectPool<T, S, MutexT>::_bin(size_t u) const {
@@ -256,7 +322,7 @@ size_t ObjectPool<T, S, MutexT>::_bin(size_t u) const {
 template <typename T, size_t S, typename MutexT>
 template <class P, class Q>
 constexpr size_t ObjectPool<T, S, MutexT>::_offset_in_class(
-  const Q P::*member) {
+  const Q P::*member) const {
   return (size_t) &( reinterpret_cast<P*>(0)->*member);
 }
 
@@ -271,8 +337,23 @@ constexpr P* ObjectPool<T, S, MutexT>::_parent_class_of(
 }
 
 template <typename T, size_t S, typename MutexT>
+template <class P, class Q>
+constexpr P* ObjectPool<T, S, MutexT>::_parent_class_of(
+  const Q* ptr, const Q P::*member
+) const {
+  return (P*)( (char*)ptr - _offset_in_class(member));
+}
+
+
+template <typename T, size_t S, typename MutexT>
 constexpr typename ObjectPool<T, S, MutexT>::Block* 
 ObjectPool<T, S, MutexT>::_block_of(Blocklist* list) {
+  return _parent_class_of(list, &Block::list_node);
+}
+
+template <typename T, size_t S, typename MutexT>
+constexpr typename ObjectPool<T, S, MutexT>::Block* 
+ObjectPool<T, S, MutexT>::_block_of(const Blocklist* list) const {
   return _parent_class_of(list, &Block::list_node);
 }
 
@@ -453,6 +534,7 @@ T* ObjectPool<T, S, MutexT>::_allocate(Block* s) {
   if(s->top == nullptr) {
     auto beg = reinterpret_cast<Block**>(&s->data + s->i++ * X);
     *beg = s;
+    //printf("beg=%p data=%p s=%p\n", *beg, beg+1, s);
     return reinterpret_cast<T*>(beg + 1);
   }
   else {
@@ -586,7 +668,7 @@ void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
 
   Block* s= *(reinterpret_cast<Block**>(mem) - 1);
   
-  //printf("deallocate %p (s=%p)\n", mem, s);
+  //printf("deallocate %p (s=%p) M=%lu W=%lu X=%lu\n", mem, s, M, W, X);
 
   // here we need a loop because when we lock the heap,
   // other threads may have removed the superblock to another heap
@@ -601,7 +683,6 @@ void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
       std::lock_guard<MutexT> glock(_gheap.mutex);
       if(s->heap == h) {
         sync = true;
-        //s->push(mem);
         _deallocate(s, mem);
         s->u = s->u - 1;
       }
@@ -612,8 +693,6 @@ void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
         sync = true;
         // deallocate the item from the superblock
         int f = _bin(s->u);
-
-        //s->push(mem);
         _deallocate(s, mem);
         s->u = s->u - 1;
         h->u = h->u - 1;
@@ -622,16 +701,13 @@ void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
 
         if(b != f) {
           //printf("move superblock from list[%d] to list[%d]\n", f, b);
-          //h->lists[b].splice(h->lists[b].begin(), h->lists[f], s);
           _blocklist_move_front(&s->list_node, &h->lists[b]);
         }
 
         // transfer a mostly-empty superblock to global heap
         if((h->u + K*M < h->a) && (h->u < ((F-1) * h->a / F))) {
           for(size_t i=0; i<F; i++) {
-            //if(!h->lists[i].empty()) {
             if(!_blocklist_is_empty(&h->lists[i])) {
-              //auto x = h->lists[i].begin();
               Block* x = _block_of(h->lists[i].next);
               //printf("transfer a block (x.u=%lu/x.i=%lu) to the global heap\n", x->u, x->i);
               assert(h->u > x->u && h->a > M);
@@ -639,7 +715,6 @@ void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
               h->a = h->a - M;
               x->heap = nullptr;
               std::lock_guard<MutexT> glock(_gheap.mutex);
-              //_gheap.list.splice(_gheap.list.begin(), h->lists[i], x);
               _blocklist_move_front(&x->list_node, &_gheap.list);
               break;
             }
@@ -650,20 +725,25 @@ void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
   }
   
   //std::cout << "s.i " << s->i << '\n'
-  //          << "s.u " << s->u << '\n'
-  //          << "h.u " << h->u  << '\n'
-  //          << "h.a " << h->a  << '\n';
+  //          << "s.u " << s->u << '\n';
 }
     
 // Function: _this_heap
 template <typename T, size_t S, typename MutexT>
 typename ObjectPool<T, S, MutexT>::LocalHeap& 
 ObjectPool<T, S, MutexT>::_this_heap() {
-  thread_local LocalHeap& heap = _lheaps[
-    //std::hash<std::thread::id>()(std::this_thread::get_id()) & _heap_mask
-    std::hash<std::thread::id>()(std::this_thread::get_id()) % _lheaps.size()
+  //thread_local LocalHeap& heap = _lheaps[
+  //  //std::hash<std::thread::id>()(std::this_thread::get_id()) & _heap_mask
+  //  std::hash<std::thread::id>()(std::this_thread::get_id()) % _lheaps.size()
+  //];
+  //return heap;
+
+  // here we can't use thread local since objectpool might be
+  // created and destroyed multiple times
+  return _lheaps[
+    std::hash<std::thread::id>()(std::this_thread::get_id()) & _lheap_mask
+    //std::hash<std::thread::id>()(std::this_thread::get_id()) % _lheaps.size()
   ];
-  return heap;
 }
 
 // Function: _next_power_of_two
