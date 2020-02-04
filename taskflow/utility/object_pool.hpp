@@ -10,195 +10,10 @@
 #pragma once
 
 #include <thread>
-#include <new>       
 #include <mutex>
 #include <vector>
 #include <array>
-#include <cstddef>
 #include <cassert>
-
-// ----------------------------------------------------------------------------
-// aligned_alloc definition
-// ----------------------------------------------------------------------------
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-// NOTE: MSVC in general has no aligned alloc function that is
-// compatible with free and it is not trivial to implement a version
-// which is. Therefore, to remain portable, end user code needs to
-// use `aligned_free` which is not part of C11 but defined in this header.
-// 
-// The same issue is present on some Unix systems not providing
-// posix_memalign.
-// 
-// Note that clang and gcc with -std=c11 or -std=c99 will not define
-// _POSIX_C_SOURCE and thus posix_memalign cannot be detected but
-// aligned_alloc is not necessarily available either. We assume
-// that clang always has posix_memalign although it is not strictly
-// correct. For gcc, use -std=gnu99 or -std=gnu11 or don't use -std in
-// order to enable posix_memalign, or live with the fallback until using
-// a system where glibc has a version that supports aligned_alloc.
-// 
-// For C11 compliant compilers and compilers with posix_memalign,
-// it is valid to use free instead of aligned_free with the above
-// caveats.
-//
-// source: https://github.com/dvidelabs/flatcc
-
-//Define this to see which version is used so the fallback is not
-//enganged unnecessarily:
-//
-//#define TF_DEBUG_ALIGNED_ALLOC
-
-
-#if 0
-#define TF_DEBUG_ALIGNED_ALLOC
-#endif
-
-#if !defined(TF_C11_ALIGNED_ALLOC)
-
-  // glibc aligned_alloc detection.
-  #if defined (_ISOC11_SOURCE)
-    #define TF_C11_ALIGNED_ALLOC 1
-  // aligned_alloc is not available in glibc just because 
-  // __STDC_VERSION__ >= 201112L.
-  #elif defined (__GLIBC__)
-    #define TF_C11_ALIGNED_ALLOC 0
-  #elif defined (__clang__)
-    #define TF_C11_ALIGNED_ALLOC 0
-  #elif defined(__IBMC__)
-    #define TF_C11_ALIGNED_ALLOC 0
-  #elif (defined(__STDC__) && __STDC__ && defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L)
-    #define TF_C11_ALIGNED_ALLOC 1
-  #else
-    #define TF_C11_ALIGNED_ALLOC 0
-  #endif
-
-#endif // TF_C11_ALIGNED_ALLOC
-
-// https://linux.die.net/man/3/posix_memalign
-#if !defined(TF_POSIX_MEMALIGN)
-
-  // https://forum.kde.org/viewtopic.php?p=66274
-  #if (defined _GNU_SOURCE) || ((_XOPEN_SOURCE + 0) >= 600) || (_POSIX_C_SOURCE + 0) >= 200112L 
-    #define TF_POSIX_MEMALIGN 1
-  #elif defined (__clang__)
-    #define TF_POSIX_MEMALIGN 1
-  #else
-    #define TF_POSIX_MEMALIGN 0
-  #endif
-#endif // TF_POSIX_MEMALIGN
-
-// https://forum.kde.org/viewtopic.php?p=66274 
-#if (defined(__STDC__) && __STDC__ && defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L)
-  // C11 or newer
-  #include <stdalign.h>
-#endif
-
-// C11 or newer
-#if !defined(aligned_alloc) && !defined(__aligned_alloc_is_defined)
-  
-  // std compliant
-  #if TF_C11_ALIGNED_ALLOC
-    #ifdef TF_DEBUG_ALIGNED_ALLOC
-    #error "DEBUG: c11 aligned_alloc configured"
-    #endif
-    #define portable_aligned_alloc(align, sz) std::aligned_alloc(align, sz)
-    #define portable_aligned_free(p) std::free(p)
-    #define __aligned_alloc_is_defined 1
-    #define __aligned_free_is_defined 1
-  // MSVC 
-  #elif defined(_MSC_VER)
-    #ifdef TF_DEBUG_ALIGNED_ALLOC
-    #error "DEBUG: MS _aligned_malloc and _aligned_free configured"
-    #endif
-    #define portable_aligned_alloc(align, sz) _aligned_malloc(sz, align)
-    #define portable_aligned_free(p) _aligned_free(p)
-    #define __aligned_alloc_is_defined 1
-    #define __aligned_free_is_defined 1
-  // POSIX MEMALIGN
-  #elif TF_POSIX_MEMALIGN
-
-    #ifdef TF_DEBUG_ALIGNED_ALLOC
-    #error "DEBUG: POSIX posix_memalign configured"
-    #endif
-
-    #if defined(__GNUC__) && __GNUCC__ < 5
-    extern int posix_memalign (void **, size_t, size_t);
-    #endif
-
-    static inline void *__portable_aligned_alloc(size_t align, size_t size)
-    {
-      int err;
-      void *p = 0;
-    
-      if (align < sizeof(void *)) {
-        align = sizeof(void *);
-      }
-      err = posix_memalign(&p, align, size);
-      if (err && p) {
-        free(p);
-        p = 0;
-      }
-      return p;
-    }
-
-    #define portable_aligned_alloc(align, sz) __portable_aligned_alloc(align, sz)
-    #define aligned_free(p) free(p)
-    #define __aligned_alloc_is_defined 1
-    #define __aligned_free_is_defined 1
-
-  #else
-    
-    #ifdef TF_DEBUG_ALIGNED_ALLOC
-    #error "DEBUG: malloc fallback configured"
-    #endif
-
-    static inline void *__portable_aligned_alloc(size_t align, size_t size)
-    {
-      char *raw;
-      void *buf;
-      size_t total_size = (size + align - 1 + sizeof(void *));
-    
-      if (align < sizeof(void *)) {
-          align = sizeof(void *);
-      }
-      raw = (char *)(size_t)malloc(total_size);
-      buf = raw + align - 1 + sizeof(void *);
-      buf = (void *)(((size_t)buf) & ~(align - 1));
-      ((void **)buf)[-1] = raw;
-      return buf;
-    }
-    
-    static inline void __portable_aligned_free(void *p)
-    {
-      char *raw;
-      
-      if (p) {
-        raw = (char*)((void **)p)[-1];
-        free(raw);
-      }
-    }
-
-    #define portable_aligned_alloc(align, sz) __portable_aligned_alloc(align, sz)
-    #define portable_aligned_free(p) __portable_aligned_free(p)
-    #define __aligned_alloc_is_defined 1
-    #define __aligned_free_is_defined 1
-    
-  #endif
-
-#endif // aligned_alloc
-
-//#if !defined(aligned_free) && !defined(__aligned_free_is_defined)
-//  #define aligned_free(p) free(p)
-//  #define __aligned_free_is_defined 1
-//#endif
-
-#ifdef __cplusplus
-}
-#endif
 
 // ----------------------------------------------------------------------------
 // ObjectPool definition
@@ -249,12 +64,12 @@ class ObjectPool {
       size_t i;
       size_t u;
       T* top;
-      T* data;
+      char data;
     };
   };
   
-  constexpr static size_t X = ~(S-1);
-  constexpr static size_t M = (S - offsetof(Block, data)) / sizeof(T);
+  constexpr static size_t X = sizeof(Block**) + sizeof(T);
+  constexpr static size_t M = (S - offsetof(Block, data)) / X;
   constexpr static size_t F = 4;   
   constexpr static size_t B = F + 1;
   constexpr static size_t W = (M + F - 1) / F;
@@ -378,16 +193,14 @@ ObjectPool<T, S, MutexT>::~ObjectPool() {
   for(auto& h : _lheaps) {
     for(size_t i=0; i<B; ++i) {
       _for_each_block_safe(&h.lists[i], [] (Block* b) { 
-        //std::free(b); 
-        portable_aligned_free(b);
+        std::free(b); 
       });
     }
   }
   
   // clear global heap
   _for_each_block_safe(&_gheap.list, [] (Block* b) { 
-    // std::free(b);
-    portable_aligned_free(b); 
+    std::free(b);
   });
 
 }
@@ -638,7 +451,9 @@ void ObjectPool<T, S, MutexT>::_for_each_block_safe(Blocklist* head, C&& c) {
 template <typename T, size_t S, typename MutexT>
 T* ObjectPool<T, S, MutexT>::_allocate(Block* s) {
   if(s->top == nullptr) {
-    return s->data + (s->i)++;
+    auto beg = reinterpret_cast<Block**>(&s->data + s->i++ * X);
+    *beg = s;
+    return reinterpret_cast<T*>(beg + 1);
   }
   else {
     T* retval = s->top;
@@ -650,11 +465,9 @@ T* ObjectPool<T, S, MutexT>::_allocate(Block* s) {
 // Procedure: _deallocate
 template <typename T, size_t S, typename MutexT>
 void ObjectPool<T, S, MutexT>::_deallocate(Block* s, T* ptr) {
-  assert(((size_t)ptr & X) == (size_t)(s));
   *(reinterpret_cast<T**>(ptr)) = s->top;
   s->top = ptr;
 }
-
 
 // Function: allocate
 template <typename T, size_t S, typename MutexT>
@@ -686,13 +499,11 @@ T* ObjectPool<T, S, MutexT>::allocate() {
     _gheap.mutex.lock();
     if(!_blocklist_is_empty(&_gheap.list)) {
       
-      //s = _gheap.list.begin();
       s = _block_of(_gheap.list.next);
       
       //printf("get a superblock from global heap %lu\n", s->u);
       assert(s->u < M && s->heap == nullptr);
-      f = _bin(s->u+1);
-      //h.lists[f].splice(h.lists[f].begin(), _gheap.list, s);
+      f = _bin(s->u + 1);
 
       _blocklist_move_front(&s->list_node, &h.lists[f]);
 
@@ -712,8 +523,9 @@ T* ObjectPool<T, S, MutexT>::allocate() {
       //s->i = 0;
       //s->u = 0;
       //s->top = nullptr;
-      s = static_cast<Block*>(portable_aligned_alloc(S, sizeof(Block)));
-      assert(((size_t)s & X) == (size_t)s);
+      //s = static_cast<Block*>(portable_aligned_alloc(S, sizeof(Block)));
+      //assert(((size_t)s & X) == (size_t)s);
+      s = static_cast<Block*>(std::malloc(sizeof(Block)));
 
       if(s == nullptr) {
         throw std::bad_alloc();
@@ -722,8 +534,8 @@ T* ObjectPool<T, S, MutexT>::allocate() {
       s->heap = &h;
       s->i = 0;
       s->u = 0;
-      s->top = 0;
-      s->data = reinterpret_cast<T*>(&s->data);
+      s->top = nullptr;
+      //s->data = reinterpret_cast<char*>(&s->data);
 
       _blocklist_push_front(&s->list_node, &h.lists[f]);
 
@@ -747,7 +559,6 @@ T* ObjectPool<T, S, MutexT>::allocate() {
   
   if(b != f) {
     //printf("move superblock from list[%d] to list[%d]\n", f, b);
-    //h.lists[b].splice(h.lists[b].begin(), h.lists[f], s);
     _blocklist_move_front(&s->list_node, &h.lists[b]);
   }
 
@@ -760,6 +571,8 @@ T* ObjectPool<T, S, MutexT>::allocate() {
 
   //new (mem) T(std::forward<ArgsT>(args)...);
 
+  //printf("allocate %p (s=%p)\n", mem, s);
+
   return mem;
 }
   
@@ -767,13 +580,14 @@ T* ObjectPool<T, S, MutexT>::allocate() {
 template <typename T, size_t S, typename MutexT>
 void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
 
-  //printf("destruct %p\n", mem);
+  //Block* s = *reinterpret_cast<Block**>(
+  //  reinterpret_cast<char*>(mem) - sizeof(Block**)
+  //);
 
-  Block* s = reinterpret_cast<Block*>((size_t)mem & X);
-
-  // destruct the item
-  //mem->~T();
+  Block* s= *(reinterpret_cast<Block**>(mem) - 1);
   
+  //printf("deallocate %p (s=%p)\n", mem, s);
+
   // here we need a loop because when we lock the heap,
   // other threads may have removed the superblock to another heap
   bool sync = false;
