@@ -42,6 +42,7 @@ matrix:
 
     # Linux g++9
     - os: linux
+      compiler: g++
       addons:
         apt:
           sources:
@@ -66,7 +67,7 @@ matrix:
       compiler: clang++
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
           packages: ['clang-7', 'g++-7']
       env:
         - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7"
@@ -76,21 +77,11 @@ matrix:
       compiler: clang++
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-8']
           packages: ['clang-8', 'g++-8']
       env:
-        - MATRIX_EVAL="CC=clang-8 CXX=clang++-8"
+        - MATRIX_EVAL="CC=clang-8 && CXX=clang++-8"
     
-    # Linux clang++9
-    - os: linux
-      compiler: clang++
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['clang-9', 'g++-9']
-      env:
-        - MATRIX_EVAL="CC=clang-9 CXX=clang++-9"
-
     ## OSX
     #- os: osx
     #  osx_image: xcode10
