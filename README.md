@@ -513,7 +513,7 @@ You can use `emplace` to create a task from a target callable.
 tf::Task task = tf.emplace([] () { std::cout << "my task\n"; });
 ```
 
-When a task cannot be determined beforehand, you can create a placeholder and assign the calalble later.
+When a task cannot be determined beforehand, you can create a placeholder and assign the callable later.
 
 ```cpp
 tf::Task A = tf.emplace([](){});
@@ -786,9 +786,9 @@ that incorporate complex task dependencies.
 - [Firestorm][Firestorm]: Fighting Game Engine with Asynchronous Resource Loaders (developed by [ForgeMistress][ForgeMistress])
 - [Shiva][Shiva]: An extensible engine via an entity component system through scripts, DLLs, and header-only (C++)
 - [PID Framework][PID Framework]: A Global Development Methodology Supported by a CMake API and Dedicated C++ Projects 
-- [NovusCore][NovusCore]: An emulating project for World of Warcraft (Wrath of the Lich King 3.3.5a 12340 client build)
+- [NovusCore][NovusCore]: An emulating project for World of Warraft (Wrath of the Lich King 3.3.5a 12340 client build)
 - [SA-PCB][SA-PCB]: Annealing-based Printed Circuit Board (PCB) Placement Tool
-- [LPMP](https://github.com/LPMP/LPMP): A C++ framework for developing scalable Lagrangean decomposition solvers for discrete optimization problems
+- [LPMP](https://github.com/LPMP/LPMP): A C++ framework for developing scalable Lagrangian decomposition solvers for discrete optimization problems
 - [Heteroflow](https://github.com/Heteroflow/Heteroflow): A Modern C++ Parallel CPU-GPU Task Programming Library
 - [OpenPhySyn](https://github.com/The-OpenROAD-Project/OpenPhySyn): A plugin-based physical synthesis optimization kit as part of the OpenRoad flow
 
