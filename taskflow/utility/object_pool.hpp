@@ -178,7 +178,6 @@ class ObjectPool {
 // ObjectPool definition
 // ----------------------------------------------------------------------------
 
-
 // Constructor
 template <typename T, size_t S, typename MutexT>
 ObjectPool<T, S, MutexT>::ObjectPool(unsigned t) :
@@ -197,6 +196,7 @@ ObjectPool<T, S, MutexT>::ObjectPool(unsigned t) :
   }
 }
 
+// Destructor
 template <typename T, size_t S, typename MutexT>
 ObjectPool<T, S, MutexT>::~ObjectPool() {
 
@@ -213,7 +213,6 @@ ObjectPool<T, S, MutexT>::~ObjectPool() {
   _for_each_block_safe(&_gheap.list, [] (Block* b) { 
     std::free(b);
   });
-
 }
     
 // Function: num_bins_per_local_heap
@@ -600,13 +599,6 @@ T* ObjectPool<T, S, MutexT>::allocate() {
       //printf("create a new superblock\n");
       _gheap.mutex.unlock();
       f = 0;
-      //s = static_cast<Block*>(std::malloc(sizeof(Block)));
-      //s->heap = &h; 
-      //s->i = 0;
-      //s->u = 0;
-      //s->top = nullptr;
-      //s = static_cast<Block*>(portable_aligned_alloc(S, sizeof(Block)));
-      //assert(((size_t)s & X) == (size_t)s);
       s = static_cast<Block*>(std::malloc(sizeof(Block)));
 
       if(s == nullptr) {
@@ -617,7 +609,6 @@ T* ObjectPool<T, S, MutexT>::allocate() {
       s->i = 0;
       s->u = 0;
       s->top = nullptr;
-      //s->data = reinterpret_cast<char*>(&s->data);
 
       _blocklist_push_front(&s->list_node, &h.lists[f]);
 
@@ -634,7 +625,6 @@ T* ObjectPool<T, S, MutexT>::allocate() {
   s->u = s->u + 1;
 
   // take one item from the superblock
-  //T* mem = s->allocate();
   T* mem = _allocate(s);
   
   int b = _bin(s->u);
@@ -650,8 +640,6 @@ T* ObjectPool<T, S, MutexT>::allocate() {
   //          << "h.a " << h.a  << '\n';
 
   h.mutex.unlock();
-
-  //new (mem) T(std::forward<ArgsT>(args)...);
 
   //printf("allocate %p (s=%p)\n", mem, s);
 
@@ -732,17 +720,10 @@ void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
 template <typename T, size_t S, typename MutexT>
 typename ObjectPool<T, S, MutexT>::LocalHeap& 
 ObjectPool<T, S, MutexT>::_this_heap() {
-  //thread_local LocalHeap& heap = _lheaps[
-  //  //std::hash<std::thread::id>()(std::this_thread::get_id()) & _heap_mask
-  //  std::hash<std::thread::id>()(std::this_thread::get_id()) % _lheaps.size()
-  //];
-  //return heap;
-
   // here we can't use thread local since objectpool might be
   // created and destroyed multiple times
   return _lheaps[
     std::hash<std::thread::id>()(std::this_thread::get_id()) & _lheap_mask
-    //std::hash<std::thread::id>()(std::this_thread::get_id()) % _lheaps.size()
   ];
 }
 
