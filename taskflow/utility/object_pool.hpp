@@ -28,20 +28,20 @@ namespace tf {
 // F = 4
 // W = (30+4-1)/4 = 8
 // 
-// b0: 0,1,2,3,4,5,6,7
-// b1: 8,9,10,11,12,13,14,15
-// b2: 16,17,18,19,20,21,22,23
-// b3: 24,25,26,27,28,29,
+// b0: 0, 1, 2, 3, 4, 5, 6, 7
+// b1: 8, 9, 10, 11, 12, 13, 14, 15
+// b2: 16, 17, 18, 19, 20, 21, 22, 23
+// b3: 24, 25, 26, 27, 28, 29
 // b4: 30 (anything equal to M)
 // 
 // Example scenario 2:
 // M = 32
 // F = 4
 // W = (32+4-1)/4 = 8
-// b0: 0,1,2,3,4,5,6,7
-// b1: 8,9,10,11,12,13,14,15
-// b2: 16,17,18,19,20,21,22,23
-// b3: 24,25,26,27,28,29,30,31
+// b0: 0, 1, 2, 3, 4, 5, 6, 7
+// b1: 8, 9, 10, 11, 12, 13, 14, 15
+// b2: 16, 17, 18, 19, 20, 21, 22, 23
+// b3: 24, 25, 26, 27, 28, 29, 30, 31
 // b4: 32 (anything equal to M)
 //
 template <typename T, size_t S = 8192, typename MutexT=std::mutex>
@@ -85,7 +85,7 @@ class ObjectPool {
   );
 
   static_assert(
-    M >= 8, "block size S is too small to pool enough objects"
+    M >= 8, "block size S must be larger enough to pool at least 8 objects"
   );
 
   class GlobalHeap {
@@ -103,13 +103,22 @@ class ObjectPool {
   };
 
   public:
-
+    
+    /**
+    @brief constructs an object pool from a number of anticipated threads
+    */
     explicit ObjectPool(unsigned = std::thread::hardware_concurrency());
     ~ObjectPool();
-
+    
+    /**
+    @brief allocates an uninitialized storage to hold an object of type T
+    */
     T* allocate();
-
-    void deallocate(T*);
+    
+    /**
+    @brief deallocates (recycles) a storage referenced by the pointer @c ptr
+    */
+    void deallocate(T* ptr);
     
     size_t num_bins_per_local_heap() const;
     size_t num_objects_per_bin() const;
@@ -133,7 +142,7 @@ class ObjectPool {
 
     LocalHeap& _this_heap();
 
-    unsigned _next_power_of_two(unsigned n) const;
+    constexpr unsigned _next_power_of_two(unsigned n) const;
 
     template <class P, class Q>
     constexpr size_t _offset_in_class(const Q P::*member) const;
@@ -177,7 +186,6 @@ class ObjectPool {
 // ----------------------------------------------------------------------------
 // ObjectPool definition
 // ----------------------------------------------------------------------------
-
 
 // Constructor
 template <typename T, size_t S, typename MutexT>
@@ -318,7 +326,8 @@ template <typename T, size_t S, typename MutexT>
 size_t ObjectPool<T, S, MutexT>::_bin(size_t u) const {
   return u == M ? F : u/W;
 }
-    
+
+// Function: _offset_in_class
 template <typename T, size_t S, typename MutexT>
 template <class P, class Q>
 constexpr size_t ObjectPool<T, S, MutexT>::_offset_in_class(
@@ -336,6 +345,7 @@ constexpr P* ObjectPool<T, S, MutexT>::_parent_class_of(
   return (P*)( (char*)ptr - _offset_in_class(member));
 }
 
+// Function: _parent_class_of
 template <typename T, size_t S, typename MutexT>
 template <class P, class Q>
 constexpr P* ObjectPool<T, S, MutexT>::_parent_class_of(
@@ -344,13 +354,14 @@ constexpr P* ObjectPool<T, S, MutexT>::_parent_class_of(
   return (P*)( (char*)ptr - _offset_in_class(member));
 }
 
-
+// Function: _block_of
 template <typename T, size_t S, typename MutexT>
 constexpr typename ObjectPool<T, S, MutexT>::Block* 
 ObjectPool<T, S, MutexT>::_block_of(Blocklist* list) {
   return _parent_class_of(list, &Block::list_node);
 }
 
+// Function: _block_of
 template <typename T, size_t S, typename MutexT>
 constexpr typename ObjectPool<T, S, MutexT>::Block* 
 ObjectPool<T, S, MutexT>::_block_of(const Blocklist* list) const {
@@ -568,7 +579,6 @@ T* ObjectPool<T, S, MutexT>::allocate() {
   int f = F-1;
   for(; f>=0; f--) {
     if(!_blocklist_is_empty(&h.lists[f])) {
-      //s = h.lists[f].begin();
       s = _block_of(h.lists[f].next);
       break;
     }
@@ -600,13 +610,6 @@ T* ObjectPool<T, S, MutexT>::allocate() {
       //printf("create a new superblock\n");
       _gheap.mutex.unlock();
       f = 0;
-      //s = static_cast<Block*>(std::malloc(sizeof(Block)));
-      //s->heap = &h; 
-      //s->i = 0;
-      //s->u = 0;
-      //s->top = nullptr;
-      //s = static_cast<Block*>(portable_aligned_alloc(S, sizeof(Block)));
-      //assert(((size_t)s & X) == (size_t)s);
       s = static_cast<Block*>(std::malloc(sizeof(Block)));
 
       if(s == nullptr) {
@@ -617,7 +620,6 @@ T* ObjectPool<T, S, MutexT>::allocate() {
       s->i = 0;
       s->u = 0;
       s->top = nullptr;
-      //s->data = reinterpret_cast<char*>(&s->data);
 
       _blocklist_push_front(&s->list_node, &h.lists[f]);
 
@@ -634,7 +636,6 @@ T* ObjectPool<T, S, MutexT>::allocate() {
   s->u = s->u + 1;
 
   // take one item from the superblock
-  //T* mem = s->allocate();
   T* mem = _allocate(s);
   
   int b = _bin(s->u);
@@ -674,8 +675,7 @@ void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
   // other threads may have removed the superblock to another heap
   bool sync = false;
 
-  while(!sync) {
-    
+  do {
     auto h = s->heap;    
     
     // the block is in global heap
@@ -722,7 +722,7 @@ void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
         }
       }
     }
-  }
+  } while(!sync);
   
   //std::cout << "s.i " << s->i << '\n'
   //          << "s.u " << s->u << '\n';
@@ -732,23 +732,16 @@ void ObjectPool<T, S, MutexT>::deallocate(T* mem) {
 template <typename T, size_t S, typename MutexT>
 typename ObjectPool<T, S, MutexT>::LocalHeap& 
 ObjectPool<T, S, MutexT>::_this_heap() {
-  //thread_local LocalHeap& heap = _lheaps[
-  //  //std::hash<std::thread::id>()(std::this_thread::get_id()) & _heap_mask
-  //  std::hash<std::thread::id>()(std::this_thread::get_id()) % _lheaps.size()
-  //];
-  //return heap;
-
-  // here we can't use thread local since objectpool might be
+  // here we don't use thread local since object pool might be
   // created and destroyed multiple times
   return _lheaps[
     std::hash<std::thread::id>()(std::this_thread::get_id()) & _lheap_mask
-    //std::hash<std::thread::id>()(std::this_thread::get_id()) % _lheaps.size()
   ];
 }
 
 // Function: _next_power_of_two
 template <typename T, size_t S, typename MutexT>
-unsigned ObjectPool<T, S, MutexT>::_next_power_of_two(unsigned n) const { 
+constexpr unsigned ObjectPool<T, S, MutexT>::_next_power_of_two(unsigned n) const { 
   n--; 
   n |= n >> 1; 
   n |= n >> 2; 
