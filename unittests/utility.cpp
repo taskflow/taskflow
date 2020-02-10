@@ -253,9 +253,11 @@ void threaded_objectpool(unsigned W) {
       std::vector<T*> items;
       for(int i=0; i<65536; ++i) {
         auto item = pool.allocate();
+        new (item) T();
         items.push_back(item);
       }
       for(auto item : items) {
+        item->~T();
         pool.deallocate(item);
       }
     });

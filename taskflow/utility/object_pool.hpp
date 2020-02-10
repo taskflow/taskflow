@@ -93,7 +93,7 @@ class ObjectPool {
   );
 
   static_assert(
-    M >= 8, "block size S must be larger enough to pool at least 8 objects"
+    M >= 16, "block size S must be larger enough to pool at least 16 objects"
   );
 
   class GlobalHeap {
