@@ -10,6 +10,7 @@
 #pragma once
 
 #include <thread>
+#include <atomic>
 #include <mutex>
 #include <vector>
 #include <cassert>
@@ -54,7 +55,7 @@ namespace tf {
 //
 template <typename T, size_t S = 8192>
 class ObjectPool { 
-
+  
   class LocalHeap;
 
   union Block;
