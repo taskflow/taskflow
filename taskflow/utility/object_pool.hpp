@@ -53,7 +53,7 @@ namespace tf {
 // b3: 24, 25, 26, 27, 28, 29, 30, 31
 // b4: 32 (anything equal to M)
 //
-template <typename T, size_t S = 8192>
+template <typename T, size_t S = 65536>
 class ObjectPool { 
   
   class LocalHeap;
