@@ -467,7 +467,7 @@ void sequential_runs(unsigned W) {
     std::atomic<size_t> count {0};
     tf::Taskflow f;
     auto A = f.emplace([&](){ count ++; });
-    auto B = f.emplace([&](auto& subflow){ 
+    auto B = f.emplace([&](tf::Subflow& subflow){ 
       count ++; 
       auto B1 = subflow.emplace([&](){ count++; });
       auto B2 = subflow.emplace([&](){ count++; });
@@ -512,7 +512,7 @@ void sequential_runs(unsigned W) {
     std::atomic<size_t> count {0};
     tf::Taskflow f;
     auto A = f.emplace([&](){ count ++; });
-    auto B = f.emplace([&](auto& subflow){ 
+    auto B = f.emplace([&](tf::Subflow& subflow){ 
       count ++; 
       auto B1 = subflow.emplace([&](){ count++; });
       auto B2 = subflow.emplace([&](){ count++; });
@@ -546,7 +546,7 @@ void sequential_runs(unsigned W) {
     std::atomic<size_t> count {0};
     tf::Taskflow f;
     auto A = f.emplace([&](){ count ++; });
-    auto B = f.emplace([&](auto& subflow){ 
+    auto B = f.emplace([&](tf::Subflow& subflow){ 
       count ++; 
       auto B1 = subflow.emplace([&](){ count++; });
       auto B2 = subflow.emplace([&](){ count++; });
@@ -1164,33 +1164,31 @@ void joined_subflow(unsigned W) {
     std::atomic<int> fu3v{0}, fu3v_{0};
     
     // empty flow
-    auto subflow1 = tf.emplace([&] (auto& fb) {
+    auto subflow1 = tf.emplace([&] (tf::Subflow& fb) {
       fu3v++;
       fb.join();
     }).name("subflow1");
     
     // nested empty flow
-    auto subflow2 = tf.emplace([&] (auto& fb) {
+    auto subflow2 = tf.emplace([&] (tf::Subflow& fb) {
       fu3v++;
-      fb.emplace([&] (auto& fb) {
+      fb.emplace([&] (tf::Subflow& fb) {
         fu3v++;
-        fb.emplace( [&] (auto& fb) {
+        fb.emplace( [&] (tf::Subflow& fb) {
           fu3v++;
           fb.join();
         }).name("subflow2_1_1");
       }).name("subflow2_1");
     }).name("subflow2");
     
-    //std::tie(subflow3, fu3) = tf.emplace([&] (auto& fb) {
-    subflow3 = tf.emplace([&] (auto& fb) {
+    subflow3 = tf.emplace([&] (tf::Subflow& fb) {
 
       REQUIRE(fu3v == 4);
 
       fu3v++;
       fu3v_++;
       
-      //std::tie(subflow3_, fu3_) = fb.emplace([&] (auto& fb) {
-      subflow3_ = fb.emplace([&] (auto& fb) {
+      subflow3_ = fb.emplace([&] (tf::Subflow& fb) {
         REQUIRE(fu3v_ == 3);
         fu3v++;
         fu3v_++;
@@ -1254,7 +1252,7 @@ void joined_subflow(unsigned W) {
 
     std::atomic<size_t> count = 0;
 
-    auto B = tf.emplace([&count, &data, &sum](auto& fb){
+    auto B = tf.emplace([&count, &data, &sum](tf::Subflow& fb){
 
       auto [src, tgt] = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
 
@@ -1266,7 +1264,7 @@ void joined_subflow(unsigned W) {
         ++count;
       }
 
-      auto n = fb.emplace([&count](auto& fb){
+      auto n = fb.emplace([&count](tf::Subflow& fb){
 
         REQUIRE(count == 20);
         ++count;
@@ -1349,17 +1347,17 @@ void detached_subflow(unsigned W) {
     std::atomic<int> fu3v{0}, fu3v_{0};
     
     // empty flow
-    auto subflow1 = tf.emplace([&] (auto& fb) {
+    auto subflow1 = tf.emplace([&] (tf::Subflow& fb) {
       fu3v++;
       fb.detach();
     }).name("subflow1");
     
     // nested empty flow
-    auto subflow2 = tf.emplace([&] (auto& fb) {
+    auto subflow2 = tf.emplace([&] (tf::Subflow& fb) {
       fu3v++;
-      fb.emplace([&] (auto& fb) {
+      fb.emplace([&] (tf::Subflow& fb) {
         fu3v++;
-        fb.emplace( [&] (auto& fb) {
+        fb.emplace( [&] (tf::Subflow& fb) {
           fu3v++;
           fb.join();
         }).name("subflow2_1_1");
@@ -1368,16 +1366,14 @@ void detached_subflow(unsigned W) {
       fb.detach();
     }).name("subflow2");
     
-    //std::tie(subflow3, fu3) = tf.emplace([&] (auto& fb) {
-    subflow3 = tf.emplace([&] (auto& fb) {
+    subflow3 = tf.emplace([&] (tf::Subflow& fb) {
 
       REQUIRE((fu3v >= 2 && fu3v <= 4));
 
       fu3v++;
       fu3v_++;
       
-      //std::tie(subflow3_, fu3_) = fb.emplace([&] (auto& fb) {
-      subflow3_ = fb.emplace([&] (auto& fb) {
+      subflow3_ = fb.emplace([&] (tf::Subflow& fb) {
         REQUIRE(fu3v_ == 3);
         fu3v++;
         fu3v_++;
@@ -1409,7 +1405,7 @@ void detached_subflow(unsigned W) {
 
       fb.detach();
 
-      return 100;
+      //return 100;
     });
     subflow3.name("subflow3");
 
@@ -1470,10 +1466,10 @@ TEST_CASE("DetachedSubflow.8threads" * doctest::timeout(300)) {
 void detach_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
   if(depth < max_depth) {
     counter.fetch_add(1, std::memory_order_relaxed);
-    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
       detach_spawn(max_depth, counter, depth, subflow); }
     );
-    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
       detach_spawn(max_depth, counter, depth, subflow); }
     );
     subflow.detach();
@@ -1483,10 +1479,10 @@ void detach_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf:
 void join_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
   if(depth < max_depth) {
     counter.fetch_add(1, std::memory_order_relaxed);
-    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
       join_spawn(max_depth, counter, depth, subflow); }
     );
-    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
       join_spawn(max_depth, counter, depth, subflow); }
     );
   }
@@ -1502,10 +1498,10 @@ void mix_spawn(
     if(ret % 2) {
       subflow.detach();
     }
-    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
       mix_spawn(max_depth, counter, depth, subflow); }
     );
-    subflow.emplace([&, max_depth, depth=depth+1](auto &subflow){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
       mix_spawn(max_depth, counter, depth, subflow); }
     );
   }
@@ -1518,7 +1514,9 @@ TEST_CASE("TreeSubflow" * doctest::timeout(300)) {
     for(int W=1; W<=4; W++) {
       std::atomic<int> counter {0};
       tf::Taskflow tf;
-      tf.emplace([&](auto &subflow){ detach_spawn(max_depth, counter, 0, subflow); });
+      tf.emplace([&](tf::Subflow& subflow){ 
+        detach_spawn(max_depth, counter, 0, subflow); 
+      });
 
       tf::Executor executor(W);
       executor.run(tf).get();
@@ -1532,7 +1530,9 @@ TEST_CASE("TreeSubflow" * doctest::timeout(300)) {
     for(int W=1; W<=4; W++) {
       std::atomic<int> counter {0};
       tf::Taskflow tf;
-      tf.emplace([&](auto &subflow){ join_spawn(max_depth, counter, 0, subflow); });
+      tf.emplace([&](tf::Subflow& subflow){ 
+        join_spawn(max_depth, counter, 0, subflow); 
+      });
       tf::Executor executor(W);
       executor.run(tf).get();
       REQUIRE(counter == (1<<max_depth) - 1);
@@ -1544,7 +1544,9 @@ TEST_CASE("TreeSubflow" * doctest::timeout(300)) {
     for(int W=1; W<=4; W++) {
       std::atomic<int> counter {0};
       tf::Taskflow tf;
-      tf.emplace([&](auto &subflow){ mix_spawn(max_depth, counter, 0, subflow); });
+      tf.emplace([&](tf::Subflow& subflow){ 
+        mix_spawn(max_depth, counter, 0, subflow); 
+      });
 
       tf::Executor executor(W);
       executor.run(tf).get();
@@ -1770,7 +1772,7 @@ void observer(unsigned w) {
   std::atomic<int> num_tasks {0};
   // Static tasking 
   for(auto i=0; i < 64; i ++) {
-    tasks.emplace_back(taskflowB.emplace([&](auto &subflow){
+    tasks.emplace_back(taskflowB.emplace([&](tf::Subflow& subflow){
       num_tasks ++;
       auto num_spawn = rand() % 10 + 1;
       // Randomly spawn tasks
@@ -1830,10 +1832,10 @@ void conditional_spawn(
     for(int i=0; i<2; i++) {
       auto [A, B, C] = subflow.emplace(
         [&](){ counter++; },
-        [&, max_depth, depth=depth+1](auto &subflow){ 
+        [&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
           conditional_spawn(counter, max_depth, depth, subflow); 
         },
-        [&, max_depth, depth=depth+1](auto &subflow){ 
+        [&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
           conditional_spawn(counter, max_depth, depth, subflow); 
         }
       );
@@ -2106,7 +2108,7 @@ TEST_CASE("DynamicBTreeCondition" * doctest::timeout(300)) {
     std::atomic<int> counter {0};
     constexpr int max_depth = 6;
     tf::Taskflow flow;
-    flow.emplace([&](auto &subflow) { 
+    flow.emplace([&](tf::Subflow& subflow) { 
       counter++; 
       conditional_spawn(counter, max_depth, 0, subflow); }
     );
@@ -2131,14 +2133,14 @@ void nested_cond(unsigned w) {
   int counter {0};
   tf::Taskflow flow;
   auto S = flow.emplace([](){});
-  auto A = flow.emplace([&] (auto &subflow) mutable {
+  auto A = flow.emplace([&] (tf::Subflow& subflow) mutable {
     //         ___________
     //        |           |
     //        v           |
     //   S -> A -> B -> cond 
     auto S = subflow.emplace([](){ });
     auto A = subflow.emplace([](){ }).succeed(S);
-    auto B = subflow.emplace([&](auto &subflow){ 
+    auto B = subflow.emplace([&](tf::Subflow& subflow){ 
 
       //         ___________
       //        |           |
@@ -2374,7 +2376,7 @@ void hierarchical_condition(unsigned w) {
 
   auto mod0 = tf3.composed_of(tf0).name("module0");
   auto mod1 = tf3.composed_of(tf1).name("module1");
-  auto sbf1 = tf3.emplace([&](tf::Subflow sbf){
+  auto sbf1 = tf3.emplace([&](tf::Subflow& sbf){
     auto sbf1_1 = sbf.emplace([](){}).name("sbf1_1");
     auto module1 = sbf.composed_of(tf1).name("module1");
     auto sbf1_2 = sbf.emplace([](){}).name("sbf1_2");

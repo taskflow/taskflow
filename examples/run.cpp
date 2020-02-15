@@ -10,7 +10,7 @@ int main(){
   tf::Taskflow taskflow("Demo");
 
   auto A = taskflow.emplace([&](){ std::cout << "TaskA\n"; }).name("A");
-  auto B = taskflow.emplace([&](auto& subflow){ 
+  auto B = taskflow.emplace([&](tf::Subflow& subflow){ 
     std::cout << "TaskB\n";
     auto B1 = subflow.emplace([&](){ std::cout << "TaskB1\n"; }).name("B1");
     auto B2 = subflow.emplace([&](){ std::cout << "TaskB2\n"; }).name("B2");

@@ -166,12 +166,12 @@ struct function_traits<R(Args...)> {
 
 // function pointer
 template<typename R, typename... Args>
-struct function_traits<R(*)(Args...)> : public function_traits<R(Args...)> {
+struct function_traits<R(*)(Args...)> : function_traits<R(Args...)> {
 };
 
 // function reference
 template<typename R, typename... Args>
-struct function_traits<R(&)(Args...)> : public function_traits<R(Args...)> {
+struct function_traits<R(&)(Args...)> : function_traits<R(Args...)> {
 };
 
 // immutable lambda

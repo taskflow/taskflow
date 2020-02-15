@@ -4,6 +4,73 @@
 
 namespace tf {
 
+
+// ----------------------------------------------------------------------------
+// Task Traits
+// ----------------------------------------------------------------------------
+
+/**
+@struct is_static_task
+
+@brief determines if a callable is a static task
+*/
+template <typename C>
+struct is_static_task {
+  
+  using task_traits = function_traits<C>;
+
+  constexpr static bool value = (
+    std::is_same<typename task_traits::return_type, void>::value &&
+    task_traits::arity == 0
+  );
+};
+
+template <typename C>
+constexpr bool is_static_task_v = is_static_task<C>::value;
+
+/**
+@struct is_dynamic_task
+
+@brief determines if a callable is a dynamic task
+*/
+template <typename C>
+struct is_dynamic_task {
+  
+  using task_traits = function_traits<C>;
+
+  using arg = typename std::conditional<task_traits::arity==1,
+    typename task_traits::template argument_t<0>,
+    void
+  >::type;
+
+  constexpr static bool value = (
+    std::is_same<typename task_traits::return_type, void>::value &&
+    std::is_same<arg, Subflow&>::value
+  );
+};
+
+template <typename C>
+constexpr bool is_dynamic_task_v = is_dynamic_task<C>::value;
+
+/**
+@struct is_condition_task
+
+@brief determines if a callable is a condition task
+*/
+template <typename C>
+struct is_condition_task {
+  
+  using task_traits = function_traits<std::decay_t<C>>;
+  
+  constexpr static bool value = (
+    std::is_same<typename task_traits::return_type, int>::value &&
+    task_traits::arity == 0
+  );
+};
+
+template <typename C>
+constexpr bool is_condition_task_v = is_condition_task<C>::value;
+
 // ----------------------------------------------------------------------------
 // Task
 // ----------------------------------------------------------------------------
@@ -129,10 +196,8 @@ class Task {
     
     /**
     @brief resets the task handle to null
-    
-    @return @c *this
     */
-    Task& reset();
+    void reset();
 
     /**
     @brief queries if the task handle points to a task node
@@ -228,9 +293,8 @@ inline Task& Task::name(const std::string& name) {
 }
 
 // Procedure: reset
-inline Task& Task::reset() {
+inline void Task::reset() {
   _node = nullptr;
-  return *this;
 }
 
 // Function: name

@@ -365,9 +365,23 @@ auto FlowBuilder::emplace(C&&... cs) {
 // Function: emplace
 template <typename C>
 Task FlowBuilder::emplace(C&& c) {
-
-  // dynamic tasking
-  if constexpr(std::is_invocable_v<C, Subflow&>) {
+  
+  // static task
+  if constexpr(is_static_task_v<C>) {
+    auto n = _graph.emplace_back(
+      std::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
+    );
+    return Task(n);
+  }
+  // condition task
+  else if constexpr(is_condition_task_v<C>) {
+    auto n = _graph.emplace_back(
+      std::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
+    );
+    return Task(n);
+  }
+  // dynamic task
+  else if constexpr(is_dynamic_task_v<C>) {
     auto n = _graph.emplace_back(std::in_place_type_t<Node::DynamicWork>{}, 
     [c=std::forward<C>(c)] (Subflow& fb) mutable {
       // first time execution
@@ -375,25 +389,6 @@ Task FlowBuilder::emplace(C&& c) {
         c(fb);
       }
     });
-    return Task(n);
-  }
-  // condition tasking
-  else if constexpr(std::is_same_v<typename function_traits<C>::return_type, int>) {
-    auto n = _graph.emplace_back(
-      std::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
-    );
-    return Task(n);
-  }
-  // static tasking
-  else if constexpr(std::is_same_v<typename function_traits<C>::return_type, void>) {
-    auto n = _graph.emplace_back(
-      std::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
-    );
-    return Task(n);
-  }
-  // placeholder
-  else if constexpr(std::is_same_v<C, std::monostate>) {
-    auto n = _graph.emplace_back();
     return Task(n);
   }
   else {
@@ -975,15 +970,15 @@ Task& Task::work(C&& c) {
   }
 
   // static tasking
-  if constexpr(std::is_same_v<typename function_traits<C>::return_type, void>) {
+  if constexpr(is_static_task_v<C>) {
     _node->_work.emplace<Node::StaticWork>(std::forward<C>(c));
   }
   // condition tasking
-  else if constexpr(std::is_same_v<typename function_traits<C>::return_type, int>) {
+  else if constexpr(is_condition_task_v<C>) {
     _node->_work.emplace<Node::ConditionWork>(std::forward<C>(c));
   }
   // dyanmic tasking
-  else if constexpr(std::is_invocable_v<C, Subflow&>) {
+  else if constexpr(is_dynamic_task_v<C>) {
     _node->_work.emplace<Node::DynamicWork>( 
     [c=std::forward<C>(c)] (Subflow& fb) mutable {
       // first time execution
@@ -991,10 +986,6 @@ Task& Task::work(C&& c) {
         c(fb);
       }
     });
-  }
-  // placeholder
-  else if constexpr(std::is_same_v<C, std::monostate>) {
-    _node->_work.emplace<std::monostate>();
   }
   else {
     static_assert(dependent_false_v<C>, "invalid task work type");

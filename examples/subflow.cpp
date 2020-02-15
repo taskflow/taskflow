@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
     // Task A
     [] () { std::cout << "TaskA\n"; },              
     // Task B
-    [cap=std::vector<int>{1,2,3,4,5,6,7,8}, detached] (auto& subflow) {
+    [cap=std::vector<int>{1,2,3,4,5,6,7,8}, detached] (tf::Subflow& subflow) {
       std::cout << "TaskB is spawning B1, B2, and B3 ...\n";
 
       auto B1 = subflow.emplace([&]() { 
