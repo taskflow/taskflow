@@ -4,7 +4,6 @@
 
 namespace tf {
 
-
 // ----------------------------------------------------------------------------
 // Task Traits
 // ----------------------------------------------------------------------------
@@ -355,7 +354,6 @@ void Task::for_each_dependent(V&& visitor) const {
 
 @brief an immutable accessor class to a task node, 
        mainly used in the tf::ExecutorObserver interface.
-
 */
 class TaskView {
   

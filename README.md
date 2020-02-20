@@ -704,7 +704,7 @@ The first run finishes before the second run, and the second run finishes before
 To use the latest [Cpp-Taskflow](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip), you only need a [C++17][C++17] compiler:
 + GNU C++ Compiler v7.3 with -std=c++1z
 + Clang C++ Compiler v6.0 with -std=c++17
-+ Microsoft Visual Studio Version 15.7 (MSVC++ 19.14)
++ Microsoft Visual Studio Version 15.7 (MSVC++ 19.14); see [vcpkg guide](https://github.com/cpp-taskflow/cpp-taskflow/issues/143)
 + Apple Clang Version 11.0
 
 A C++14 compatible version (with limited feature support) is provided [here](https://github.com/cpp-taskflow/cpp-taskflow/archive/cpp14.zip), and you need a [C++14][C++14] compiler:
@@ -805,18 +805,6 @@ Meanwhile, we appreciate the support from many organizations for our development
 
 | [<img src="image/utah.png" width="100px">][UofU] | [<img src="image/uiuc.png" width="100px">][UIUC] | [<img src="image/csl.png" width="100px">][CSL] | [<img src="image/nsf.png" width="100px">][NSF] | [<img src="image/darpa.png" width="100px">][DARPA IDEA] |
 | :---: | :---: | :---: | :---: | :---: |
-
-# Building cpp-taskflow - Using vcpkg
-
-You can download and install cpp-taskflow using the [vcpkg](https://github.com/Microsoft/vcpkg) dependency manager:
-
-    git clone https://github.com/Microsoft/vcpkg.git
-    cd vcpkg
-    ./bootstrap-vcpkg.sh
-    ./vcpkg integrate install
-    ./vcpkg install cpp-taskflow
-
-The cpp-taskflow port in vcpkg is kept up to date by Microsoft team members and community contributors. If the version is out of date, please [create an issue or pull request](https://github.com/Microsoft/vcpkg) on the vcpkg repository.
 
 # License
 
