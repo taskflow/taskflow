@@ -806,6 +806,17 @@ Meanwhile, we appreciate the support from many organizations for our development
 | [<img src="image/utah.png" width="100px">][UofU] | [<img src="image/uiuc.png" width="100px">][UIUC] | [<img src="image/csl.png" width="100px">][CSL] | [<img src="image/nsf.png" width="100px">][NSF] | [<img src="image/darpa.png" width="100px">][DARPA IDEA] |
 | :---: | :---: | :---: | :---: | :---: |
 
+# Building cpp-taskflow - Using vcpkg
+
+You can download and install cpp-taskflow using the [vcpkg](https://github.com/Microsoft/vcpkg) dependency manager:
+
+    git clone https://github.com/Microsoft/vcpkg.git
+    cd vcpkg
+    ./bootstrap-vcpkg.sh
+    ./vcpkg integrate install
+    ./vcpkg install cpp-taskflow
+
+The cpp-taskflow port in vcpkg is kept up to date by Microsoft team members and community contributors. If the version is out of date, please [create an issue or pull request](https://github.com/Microsoft/vcpkg) on the vcpkg repository.
 
 # License
 
