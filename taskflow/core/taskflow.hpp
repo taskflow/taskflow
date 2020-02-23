@@ -261,14 +261,14 @@ inline void Taskflow::_dump(
   for(const auto& n : graph._nodes) {
 
     // regular task
-    if(auto module = n->_module; !module) {
-    //if(n->_handle.index() != Node::MODULE_WORK) {
+    //if(auto module = n->_module; !module) {
+    if(n->_handle.index() != Node::MODULE_WORK) {
       _dump(os, n, stack, visited);
     }
     // module task
     else {
 
-      //auto module = std::get<Node::ModuleWork>(n->_handle).module;
+      auto module = std::get<Node::ModuleWork>(n->_handle).module;
 
       os << 'p' << n << "[shape=box, color=blue, label=\"";
       if(n->_name.empty()) os << n;

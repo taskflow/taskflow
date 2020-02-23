@@ -202,7 +202,7 @@ class Executor {
     void _invoke_dynamic_work(Worker&, Node*, Subflow&);
     void _invoke_condition_work(Worker&, Node*, int&);
     void _invoke_module_work(Worker&, Node*);
-    void _set_up_module_node(Node*);
+    //void _set_up_module_node(Node*);
     void _set_up_topology(Topology*);
     void _tear_down_topology(Topology**); 
     void _increment_topology();
@@ -543,9 +543,9 @@ inline void Executor::_schedule(Node* node, bool bypass) {
   //assert(_workers.size() != 0);
   
   // module node need another initialization
-  if(node->_module && !node->_module->empty() && !node->_has_state(Node::SPAWNED)) {
-    _set_up_module_node(node);
-  }
+  //if(node->_module && !node->_module->empty() && !node->_has_state(Node::SPAWNED)) {
+  //  _set_up_module_node(node);
+  //}
   
   // caller is a worker to this pool
   if(auto worker = _per_thread().worker; worker != nullptr) {
@@ -583,11 +583,11 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
     return;
   }
 
-  for(auto node : nodes) {
-    if(node->_module && !node->_module->empty() && !node->_has_state(Node::SPAWNED)) {
-      _set_up_module_node(node);
-    }
-  }
+  //for(auto node : nodes) {
+  //  if(node->_module && !node->_module->empty() && !node->_has_state(Node::SPAWNED)) {
+  //    _set_up_module_node(node);
+  //  }
+  //}
 
   // worker thread
   if(auto worker = _per_thread().worker; worker != nullptr) {
@@ -647,25 +647,25 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // static task
   // The default node work type. We only need to execute the callback if any.
   else if(auto index=node->_handle.index(); index == Node::STATIC_WORK) {
-    if(node->_module != nullptr) {
-      bool first_time = !node->_has_state(Node::SPAWNED);
+    //if(node->_module != nullptr) {
+    //  bool first_time = !node->_has_state(Node::SPAWNED);
+    //  _invoke_static_work(worker, node);
+    //  if(first_time) {
+    //    return ;
+    //  }
+    //}
+    //else {
       _invoke_static_work(worker, node);
-      if(first_time) {
-        return ;
-      }
-    }
-    else {
-      _invoke_static_work(worker, node);
-    }
+    //}
   } 
   // module task
-  //else if(node->_handle.index() == Node::MODULE_WORK) {
-  //  bool first_time = !node->_has_state(Node::SPAWNED);
-  //  _invoke_module_work(worker, node);
-  //  if(first_time) {
-  //    return;
-  //  }
-  //}
+  else if(node->_handle.index() == Node::MODULE_WORK) {
+    bool first_time = !node->_has_state(Node::SPAWNED);
+    _invoke_module_work(worker, node);
+    if(first_time) {
+      return;
+    }
+  }
   // dynamic task
   else if (index == Node::DYNAMIC_WORK) {
 
@@ -1109,7 +1109,7 @@ inline void Executor::wait_for_all() {
   _topology_cv.wait(lock, [&](){ return _num_topologies == 0; });
 }
 
-// Procedure: _set_up_module_node
+/*// Procedure: _set_up_module_node
 inline void Executor::_set_up_module_node(Node* node) {
 
   node->_handle.emplace<Node::StaticWork>([node=node, this] () {
@@ -1155,7 +1155,7 @@ inline void Executor::_set_up_module_node(Node* node) {
     // TODO: error if src is empty?
     _schedule(src);
   });
-}
+}*/
 
 }  // end of namespace tf -----------------------------------------------------
 

@@ -398,12 +398,12 @@ Task FlowBuilder::emplace(C&& c) {
 
 // Function: composed_of    
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
-  auto node = _graph.emplace_back();
-  node->_module = &taskflow;
+  //auto node = _graph.emplace_back();
+  //node->_module = &taskflow;
     
-  //auto node = _graph.emplace_back(
-  //  std::in_place_type_t<Node::ModuleWork>{}, &taskflow
-  //);
+  auto node = _graph.emplace_back(
+    std::in_place_type_t<Node::ModuleWork>{}, &taskflow
+  );
 
   return Task(node);
 }

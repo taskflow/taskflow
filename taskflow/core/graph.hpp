@@ -129,7 +129,7 @@ class Node {
     tf::PassiveVector<Node*> _dependents;
 
     Topology* _topology {nullptr};
-    Taskflow* _module {nullptr};
+    //Taskflow* _module {nullptr};
     
     Node* _parent {nullptr};
 
