@@ -210,14 +210,14 @@ inline void Taskflow::_dump(
   os << "\" ";
 
   // condition node is colored green
-  if(node->_work.index() == Node::CONDITION_WORK) {
+  if(node->_handle.index() == Node::CONDITION_WORK) {
     os << " shape=diamond color=black fillcolor=aquamarine style=filled";
   }
 
   os << "];\n";
   
   for(size_t s=0; s<node->_successors.size(); ++s) {
-    if(node->_work.index() == Node::CONDITION_WORK) {
+    if(node->_handle.index() == Node::CONDITION_WORK) {
       // case edge is dashed
       os << 'p' << node << " -> p" << node->_successors[s] 
          << " [style=dashed label=\"" << s << "\"];\n";
@@ -231,16 +231,22 @@ inline void Taskflow::_dump(
   if(node->_parent && node->_successors.size() == 0) {
     os << 'p' << node << " -> p" << node->_parent << ";\n";
   }
-  
-  if(node->_subgraph && !node->_subgraph->empty()) {
 
-    os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
-    if(node->_name.empty()) os << 'p' << node;
-    else os << node->_name;
+  if(node->_handle.index() == Node::DYNAMIC_WORK) {
 
-    os << "\";\n" << "color=blue\n";
-    _dump(os, *(node->_subgraph), stack, visited);
-    os << "}\n";
+    auto& sbg = std::get<Node::DynamicWork>(node->_handle).subgraph;
+ 
+    //if(node->_subgraph && !node->_subgraph->empty()) {
+    if(!sbg.empty()) {
+
+      os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
+      if(node->_name.empty()) os << 'p' << node;
+      else os << node->_name;
+
+      os << "\";\n" << "color=blue\n";
+      _dump(os, sbg, stack, visited);
+      os << "}\n";
+    }
   }
 }
 
@@ -253,12 +259,17 @@ inline void Taskflow::_dump(
 ) const {
     
   for(const auto& n : graph._nodes) {
+
     // regular task
     if(auto module = n->_module; !module) {
+    //if(n->_handle.index() != Node::MODULE_WORK) {
       _dump(os, n, stack, visited);
     }
     // module task
     else {
+
+      //auto module = std::get<Node::ModuleWork>(n->_handle).module;
+
       os << 'p' << n << "[shape=box, color=blue, label=\"";
       if(n->_name.empty()) os << n;
       else os << n->_name;

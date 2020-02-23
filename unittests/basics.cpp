@@ -2397,6 +2397,8 @@ void hierarchical_condition(unsigned w) {
   executor.run(tf3);
   executor.run_n(tf3, 10);
   executor.wait_for_all();
+
+  //tf3.dump(std::cout);
 }
 
 TEST_CASE("HierCondition.1thread" * doctest::timeout(300)) {

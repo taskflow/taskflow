@@ -400,6 +400,11 @@ Task FlowBuilder::emplace(C&& c) {
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
   auto node = _graph.emplace_back();
   node->_module = &taskflow;
+    
+  //auto node = _graph.emplace_back(
+  //  std::in_place_type_t<Node::ModuleWork>{}, &taskflow
+  //);
+
   return Task(node);
 }
 
@@ -965,21 +970,21 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
 template <typename C>
 Task& Task::work(C&& c) {
 
-  if(_node->_module) {
-    TF_THROW(Error::TASKFLOW, "can't assign work to a module task");
-  }
+  //if(_node->_module) {
+  //  TF_THROW(Error::TASKFLOW, "can't assign work to a module task");
+  //}
 
   // static tasking
   if constexpr(is_static_task_v<C>) {
-    _node->_work.emplace<Node::StaticWork>(std::forward<C>(c));
+    _node->_handle.emplace<Node::StaticWork>(std::forward<C>(c));
   }
   // condition tasking
   else if constexpr(is_condition_task_v<C>) {
-    _node->_work.emplace<Node::ConditionWork>(std::forward<C>(c));
+    _node->_handle.emplace<Node::ConditionWork>(std::forward<C>(c));
   }
   // dyanmic tasking
   else if constexpr(is_dynamic_task_v<C>) {
-    _node->_work.emplace<Node::DynamicWork>( 
+    _node->_handle.emplace<Node::DynamicWork>( 
     [c=std::forward<C>(c)] (Subflow& fb) mutable {
       // first time execution
       if(fb._graph.empty()) {

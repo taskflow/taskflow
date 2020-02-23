@@ -59,10 +59,6 @@ class Node {
 
   public:
   
-  using StaticWork  = std::function<void()>;
-  using DynamicWork = std::function<void(Subflow&)>;
-  using ConditionWork = std::function<int()>;
-  
   // state bit flag
   constexpr static int SPAWNED = 0x1;
   constexpr static int BRANCH  = 0x2;
@@ -71,6 +67,41 @@ class Node {
   constexpr static int STATIC_WORK    = 1;
   constexpr static int DYNAMIC_WORK   = 2;
   constexpr static int CONDITION_WORK = 3; 
+  constexpr static int MODULE_WORK = 4; 
+  
+  // static work handle
+  struct StaticWork {
+
+    template <typename C> 
+    StaticWork(C&&);
+
+    std::function<void()> work;
+  };
+
+  // dynamic work handle
+  struct DynamicWork {
+
+    template <typename C> 
+    DynamicWork(C&&);
+
+    std::function<void(Subflow&)> work;
+    Graph subgraph;
+  };
+  
+  // condition work handle
+  struct ConditionWork {
+
+    template <typename C> 
+    ConditionWork(C&&);
+
+    std::function<int()> work;
+  };
+
+  // module work handle
+  struct ModuleWork {
+    ModuleWork(Taskflow*);
+    Taskflow* module {nullptr};
+  };
 
     //Node() = default;
 
@@ -89,17 +120,13 @@ class Node {
     
     const std::string& name() const;
 
-    //ObjectPool<Node>::satellite_t satellite;
-
   private:
 
     std::string _name;
-    std::variant<std::monostate, StaticWork, DynamicWork, ConditionWork> _work;
+    std::variant<std::monostate, StaticWork, DynamicWork, ConditionWork, ModuleWork> _handle;
 
     tf::PassiveVector<Node*> _successors;
     tf::PassiveVector<Node*> _dependents;
-
-    std::optional<Graph> _subgraph;
 
     Topology* _topology {nullptr};
     Taskflow* _module {nullptr};
@@ -119,34 +146,78 @@ class Node {
     bool _has_state(int) const;
 };
 
+// ----------------------------------------------------------------------------
+// Definition for Node::StaticWork
+// ----------------------------------------------------------------------------
+    
+// Constructor
+template <typename C> 
+Node::StaticWork::StaticWork(C&& c) : work {std::forward<C>(c)} {
+}
+
+// ----------------------------------------------------------------------------
+// Definition for Node::DynamicWork
+// ----------------------------------------------------------------------------
+    
+// Constructor
+template <typename C> 
+Node::DynamicWork::DynamicWork(C&& c) : work {std::forward<C>(c)} {
+}
+
+// ----------------------------------------------------------------------------
+// Definition for Node::ConditionWork
+// ----------------------------------------------------------------------------
+    
+// Constructor
+template <typename C> 
+Node::ConditionWork::ConditionWork(C&& c) : work {std::forward<C>(c)} {
+}
+
+// ----------------------------------------------------------------------------
+// Definition for Node::ModuleWork
+// ----------------------------------------------------------------------------
+    
+// Constructor
+inline Node::ModuleWork::ModuleWork(Taskflow* ptr) : module {ptr} {
+}
+
+// ----------------------------------------------------------------------------
+// Definition for Node
+// ----------------------------------------------------------------------------
+
 // Constructor
 template <typename ...Args>
-Node::Node(Args&&... args): _work{std::forward<Args>(args)...} {
+Node::Node(Args&&... args): _handle{std::forward<Args>(args)...} {
 } 
 
 // Destructor
 inline Node::~Node() {
   // this is to avoid stack overflow
-  if(_subgraph.has_value()) {
+
+  if(_handle.index() == DYNAMIC_WORK) {
+
+    auto& subgraph = std::get<DynamicWork>(_handle).subgraph;
 
     std::vector<Node*> nodes;
 
     std::move(
-     _subgraph->_nodes.begin(), _subgraph->_nodes.end(), std::back_inserter(nodes)
+     subgraph._nodes.begin(), subgraph._nodes.end(), std::back_inserter(nodes)
     );
-    _subgraph->_nodes.clear();
-    _subgraph.reset();
+    subgraph._nodes.clear();
 
     size_t i = 0;
 
     while(i < nodes.size()) {
-      if(auto& sbg = nodes[i]->_subgraph; sbg) {
+
+      if(nodes[i]->_handle.index() == DYNAMIC_WORK) {
+
+        auto& sbg = std::get<DynamicWork>(nodes[i]->_handle).subgraph;
         std::move(
-          sbg->_nodes.begin(), sbg->_nodes.end(), std::back_inserter(nodes)
+          sbg._nodes.begin(), sbg._nodes.end(), std::back_inserter(nodes)
         );
-        sbg->_nodes.clear();
-        sbg.reset();
+        sbg._nodes.clear();
       }
+
       ++i;
     }
       
@@ -179,7 +250,7 @@ inline size_t Node::num_weak_dependents() const {
   return std::count_if(
     _dependents.begin(), 
     _dependents.end(), 
-    [](Node* node){ return node->_work.index() == Node::CONDITION_WORK; } 
+    [](Node* node){ return node->_handle.index() == Node::CONDITION_WORK; } 
   );
 }
 
@@ -188,7 +259,7 @@ inline size_t Node::num_strong_dependents() const {
   return std::count_if(
     _dependents.begin(), 
     _dependents.end(), 
-    [](Node* node){ return node->_work.index() != Node::CONDITION_WORK; } 
+    [](Node* node){ return node->_handle.index() != Node::CONDITION_WORK; } 
   );
 }
 
@@ -213,14 +284,14 @@ inline const std::string& Node::name() const {
 //  os << "\" ";
 //
 //  // condition node is colored green
-//  if(_work.index() == CONDITION_WORK) {
+//  if(_handle.index() == CONDITION_WORK) {
 //    os << " shape=diamond color=black fillcolor=aquamarine style=filled";
 //  }
 //
 //  os << "];\n";
 //  
 //  for(size_t s=0; s<_successors.size(); ++s) {
-//    if(_work.index() == CONDITION_WORK) {
+//    if(_handle.index() == CONDITION_WORK) {
 //      // case edge is dashed
 //      os << 'p' << this << " -> p" << _successors[s] 
 //         << " [style=dashed label=\"" << s << "\"];\n";
@@ -271,7 +342,7 @@ inline void Node::_set_up_join_counter() {
   int c = 0;
 
   for(auto p : _dependents) {
-    if(p->_work.index() == Node::CONDITION_WORK) {
+    if(p->_handle.index() == Node::CONDITION_WORK) {
       _set_state(Node::BRANCH);
     }
     else {

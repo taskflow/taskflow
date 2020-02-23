@@ -37,14 +37,14 @@ struct is_dynamic_task {
   
   using task_traits = function_traits<C>;
 
-  using arg = typename std::conditional<task_traits::arity==1,
+  using arg_t = typename std::conditional<task_traits::arity==1,
     typename task_traits::template argument_t<0>,
     void
   >::type;
 
   constexpr static bool value = (
     std::is_same<typename task_traits::return_type, void>::value &&
-    std::is_same<arg, Subflow&>::value
+    std::is_same<arg_t, Subflow&>::value
   );
 };
 
@@ -199,6 +199,11 @@ class Task {
     void reset();
 
     /**
+    @brief resets the associated work to a placeholder
+    */
+    void reset_work();
+
+    /**
     @brief queries if the task handle points to a task node
     */
     bool empty() const;
@@ -222,7 +227,7 @@ class Task {
     
   private:
     
-    Task(Node&);
+    //Task(Node&);
     Task(Node*);
 
     Node* _node {nullptr};
@@ -237,9 +242,9 @@ class Task {
     void _succeed(S&);
 };
 
-// Constructor
-inline Task::Task(Node& node) : _node {&node} {
-}
+//// Constructor
+//inline Task::Task(Node& node) : _node {&node} {
+//}
 
 // Constructor
 inline Task::Task(Node* node) : _node {node} {
@@ -296,6 +301,11 @@ inline void Task::reset() {
   _node = nullptr;
 }
 
+// Procedure: reset_work
+inline void Task::reset_work() {
+  _node->_handle = std::monostate{};
+}
+
 // Function: name
 inline const std::string& Task::name() const {
   return _node->_name;
@@ -328,7 +338,7 @@ inline bool Task::empty() const {
 
 // Function: has_work
 inline bool Task::has_work() const {
-  return _node ? _node->_work.index() != 0 : false;
+  return _node ? _node->_handle.index() != 0 : false;
 }
 
 // Function: for_each_successor

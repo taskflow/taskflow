@@ -11,6 +11,9 @@ var hierarchy =
       [ "tf::Subflow", "classtf_1_1Subflow.html", null ],
       [ "tf::Taskflow", "classtf_1_1Taskflow.html", null ]
     ] ],
+    [ "tf::is_condition_task< C >", "structtf_1_1is__condition__task.html", null ],
+    [ "tf::is_dynamic_task< C >", "structtf_1_1is__dynamic__task.html", null ],
+    [ "tf::is_static_task< C >", "structtf_1_1is__static__task.html", null ],
     [ "tf::Task", "classtf_1_1Task.html", null ],
     [ "tf::TaskView", "classtf_1_1TaskView.html", null ],
     [ "tf::WorkStealingQueue< T >", "classtf_1_1WorkStealingQueue.html", null ],

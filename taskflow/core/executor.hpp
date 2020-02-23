@@ -30,6 +30,7 @@ An executor object manages a set of worker threads and implements
 an efficient work-stealing scheduling algorithm to run a task graph.
 
 */
+
 class Executor {
   
   struct Worker {
@@ -199,6 +200,8 @@ class Executor {
     void _invoke(Worker&, Node*);
     void _invoke_static_work(Worker&, Node*);
     void _invoke_dynamic_work(Worker&, Node*, Subflow&);
+    void _invoke_condition_work(Worker&, Node*, int&);
+    void _invoke_module_work(Worker&, Node*);
     void _set_up_module_node(Node*);
     void _set_up_topology(Topology*);
     void _tear_down_topology(Topology**); 
@@ -623,7 +626,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   const auto num_successors = node->num_successors();
   
   // condition task
-  if(node->_work.index() == Node::CONDITION_WORK) {
+  if(node->_handle.index() == Node::CONDITION_WORK) {
 
     if(node->_has_state(Node::BRANCH)) {
       node->_join_counter = node->num_strong_dependents();
@@ -631,8 +634,11 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     else {
       node->_join_counter = node->num_dependents();
     }
+    
+    int id;
+    _invoke_condition_work(worker, node, id);
 
-    if(size_t id = std::get<Node::ConditionWork>(node->_work)(); id < num_successors) {
+    if(id >= 0 && static_cast<size_t>(id) < num_successors) {
       node->_successors[id]->_join_counter.store(0);
       _schedule(node->_successors[id], true);
     }
@@ -640,7 +646,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   }
   // static task
   // The default node work type. We only need to execute the callback if any.
-  else if(auto index=node->_work.index(); index == Node::STATIC_WORK) {
+  else if(auto index=node->_handle.index(); index == Node::STATIC_WORK) {
     if(node->_module != nullptr) {
       bool first_time = !node->_has_state(Node::SPAWNED);
       _invoke_static_work(worker, node);
@@ -652,31 +658,45 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       _invoke_static_work(worker, node);
     }
   } 
+  // module task
+  //else if(node->_handle.index() == Node::MODULE_WORK) {
+  //  bool first_time = !node->_has_state(Node::SPAWNED);
+  //  _invoke_module_work(worker, node);
+  //  if(first_time) {
+  //    return;
+  //  }
+  //}
   // dynamic task
-  else if (index == Node::DYNAMIC_WORK){
+  else if (index == Node::DYNAMIC_WORK) {
+
+    auto& subgraph = std::get<Node::DynamicWork>(node->_handle).subgraph;
 
     // Clear the subgraph before the task execution
     if(!node->_has_state(Node::SPAWNED)) {
-      if(node->_subgraph) {
-        node->_subgraph->clear();
-      }
-      else {
-        node->_subgraph.emplace();
-      }
+      subgraph.clear();
+      //if(node->_subgraph) {
+      //  node->_subgraph->clear();
+      //}
+      //else {
+      //  node->_subgraph.emplace();
+      //}
     }
    
-    Subflow fb(*(node->_subgraph));
+    //Subflow fb(*(node->_subgraph));
+    Subflow fb(subgraph);
 
     _invoke_dynamic_work(worker, node, fb);
     
     // Need to create a subflow if first time & subgraph is not empty 
     if(!node->_has_state(Node::SPAWNED)) {
       node->_set_state(Node::SPAWNED);
-      if(!node->_subgraph->empty()) {
+      //if(!node->_subgraph->empty()) {
+      if(!subgraph.empty()) {
         // For storing the source nodes
         PassiveVector<Node*> src; 
 
-        for(auto n: node->_subgraph->_nodes) {
+        //for(auto n: node->_subgraph->_nodes) {
+        for(auto n : subgraph._nodes) {
 
           n->_topology = node->_topology;
           n->_set_up_join_counter();
@@ -765,11 +785,11 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 inline void Executor::_invoke_static_work(Worker& worker, Node* node) {
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
-    std::invoke(std::get<Node::StaticWork>(node->_work));
+    std::invoke(std::get<Node::StaticWork>(node->_handle).work);
     _observer->on_exit(worker.id, TaskView(node));
   }
   else {
-    std::invoke(std::get<Node::StaticWork>(node->_work));
+    std::invoke(std::get<Node::StaticWork>(node->_handle).work);
   }
 }
 
@@ -777,12 +797,75 @@ inline void Executor::_invoke_static_work(Worker& worker, Node* node) {
 inline void Executor::_invoke_dynamic_work(Worker& worker, Node* node, Subflow& sf) {
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
-    std::invoke(std::get<Node::DynamicWork>(node->_work), sf);
+    std::invoke(std::get<Node::DynamicWork>(node->_handle).work, sf);
     _observer->on_exit(worker.id, TaskView(node));
   }
   else {
-    std::invoke(std::get<Node::DynamicWork>(node->_work), sf);
+    std::invoke(std::get<Node::DynamicWork>(node->_handle).work, sf);
   }
+}
+
+// Procedure: _invoke_condition_work
+inline void Executor::_invoke_condition_work(Worker& worker, Node* node, int& id) {
+  if(_observer) {
+    _observer->on_entry(worker.id, TaskView(node));
+    id = std::get<Node::ConditionWork>(node->_handle).work();
+    _observer->on_exit(worker.id, TaskView(node));
+  }
+  else {
+    id = std::get<Node::ConditionWork>(node->_handle).work();
+  }
+}
+
+// Procedure: _invoke_module_work
+inline void Executor::_invoke_module_work(Worker& worker, Node* node) {
+
+  // second time to enter this context
+  if(node->_has_state(Node::SPAWNED)) {
+    return;
+  }
+  
+  // first time to enter this context
+  node->_set_state(Node::SPAWNED);
+
+  auto module = std::get<Node::ModuleWork>(node->_handle).module;
+
+  if(module == nullptr || module->empty()) {
+    return;
+  }
+
+  PassiveVector<Node*> src;
+
+  for(auto n: module->_graph._nodes) {
+
+    n->_topology = node->_topology;
+    n->_parent = node;
+    n->_set_up_join_counter();
+
+    if(n->num_dependents() == 0) {
+      src.push_back(n);
+    }
+  }
+
+  node->_join_counter.fetch_add(src.size());
+    
+  //auto worker = _per_thread().worker;
+  //
+  //if(worker != nullptr) {
+  if(node->_parent == nullptr) {
+    node->_topology->_join_counter.fetch_add(1);
+  }
+  else {
+    node->_parent->_join_counter.fetch_add(1);
+  }
+    //}
+    //// TODO (twhuang 01/02/20): will this happen?
+    //else {
+    //  node->_topology->_join_counter.fetch_add(src.size());         
+    //}
+    
+    // TODO: error if src is empty?
+  _schedule(src);
 }
 
 // Function: run
@@ -831,7 +914,7 @@ inline void Executor::_set_up_topology(Topology* tpg) {
 
     int join_counter = 0;
     for(auto p : node->_dependents) {
-      if(p->_work.index() == Node::CONDITION_WORK) {
+      if(p->_handle.index() == Node::CONDITION_WORK) {
         node->_set_state(Node::BRANCH);
       }
       else {
@@ -1026,11 +1109,10 @@ inline void Executor::wait_for_all() {
   _topology_cv.wait(lock, [&](){ return _num_topologies == 0; });
 }
 
-
 // Procedure: _set_up_module_node
 inline void Executor::_set_up_module_node(Node* node) {
 
-  node->_work = [node=node, this] () {
+  node->_handle.emplace<Node::StaticWork>([node=node, this] () {
 
     // second time to enter this context
     if(node->_has_state(Node::SPAWNED)) {
@@ -1072,7 +1154,7 @@ inline void Executor::_set_up_module_node(Node* node) {
     
     // TODO: error if src is empty?
     _schedule(src);
-  };
+  });
 }
 
 }  // end of namespace tf -----------------------------------------------------
