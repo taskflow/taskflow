@@ -18,7 +18,6 @@
 #include <numeric>
 #include <iomanip>
 #include <cassert>
-#include <optional>
 #include <variant>
 #include <cmath>
 
@@ -100,14 +99,14 @@ struct MoC {
 // Functors.
 //-----------------------------------------------------------------------------
 
-// Overloadded.
-template <typename... Ts>
-struct Functors : Ts... { 
-  using Ts::operator()... ;
-};
-
-template <typename... Ts>
-Functors(Ts...) -> Functors<Ts...>;
+//// Overloadded.
+//template <typename... Ts>
+//struct Functors : Ts... { 
+//  using Ts::operator()... ;
+//};
+//
+//template <typename... Ts>
+//Functors(Ts...) -> Functors<Ts...>;
 
 
 // ----------------------------------------------------------------------------

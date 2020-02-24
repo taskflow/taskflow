@@ -8,7 +8,6 @@
 #include <atomic>
 #include <memory>
 #include <deque>
-#include <optional>
 #include <thread>
 #include <algorithm>
 #include <set>
@@ -36,7 +35,6 @@ class Executor {
   struct Worker {
     unsigned id;
     std::mt19937 rdgen { std::random_device{}() };
-    //WorkStealingQueue<Node*> queue;
     TaskQueue<Node*> queue;
     Node* cache {nullptr};
 
@@ -161,8 +159,11 @@ class Executor {
 
     /**
     @brief queries the id of the caller thread in this executor
+
+    Each worker has an unique id from 0 to N-1 exclusive to the associated executor.
+    If the caller thread does not belong to the executor, -1 is returned.
     */
-    std::optional<unsigned> this_worker_id() const;
+    int this_worker_id() const;
 
   private:
    
@@ -250,12 +251,12 @@ inline Executor::PerThread& Executor::_per_thread() const {
 }
 
 // Function: this_worker_id
-inline std::optional<unsigned> Executor::this_worker_id() const {
+inline int Executor::this_worker_id() const {
   if(auto worker = _per_thread().worker; worker) {
     return worker->id;
   }
   else {
-    return std::nullopt;
+    return -1;
   }
 }
 
@@ -374,86 +375,86 @@ inline void Executor::_explore_task(Worker& thief, Node*& t) {
 }
 
 // Procedure: _exploit_task
-inline void Executor::_exploit_task(Worker& worker, Node*& t) {
+inline void Executor::_exploit_task(Worker& w, Node*& t) {
   
-  assert(!worker.cache);
+  assert(!w.cache);
 
   if(t) {
     if(_num_actives.fetch_add(1) == 0 && _num_thieves == 0) {
       _notifier.notify(false);
     }
 
-    Topology *tpg = t->_topology;
-    Node* prev_parent {t->_parent};
-    worker.num_executed = 1;
+    auto tpg = t->_topology;
+    auto par = t->_parent;
+    w.num_executed = 1;
 
     do {
       // Only joined subflow will enter block
       // Flush the num_executed if encountering a different subflow
-      //if((*t)->_parent != prev_parent) {
-      //  if(prev_parent == nullptr) {
-      //    (*t)->_topology->_join_counter.fetch_sub(worker.num_executed);
+      //if((*t)->_parent != par) {
+      //  if(par == nullptr) {
+      //    (*t)->_topology->_join_counter.fetch_sub(w.num_executed);
       //  }
       //  else {
-      //    auto ret = prev_parent->_join_counter.fetch_sub(worker.num_executed);
-      //    if(ret == worker.num_executed) {
-      //      _schedule(prev_parent, false);
+      //    auto ret = par->_join_counter.fetch_sub(w.num_executed);
+      //    if(ret == w.num_executed) {
+      //      _schedule(par, false);
       //    }
       //  }
-      //  worker.num_executed = 1;
-      //  prev_parent = (*t)->_parent;
+      //  w.num_executed = 1;
+      //  par = (*t)->_parent;
       //}
 
-      _invoke(worker, t);
+      _invoke(w, t);
 
-      if(worker.cache) {
-        t = worker.cache;
-        worker.cache = nullptr;
+      if(w.cache) {
+        t = w.cache;
+        w.cache = nullptr;
       }
       else {
-        t = worker.queue.pop();
+        t = w.queue.pop();
         if(t) {
           // We only increment the counter when poping task from queue 
           // (NOT including cache!)
-          if(t->_parent == prev_parent) {
-            worker.num_executed ++;
+          if(t->_parent == par) {
+            w.num_executed ++;
           }
           // joined subflow
           else {
-            if(prev_parent == nullptr) {
+            if(par == nullptr) {
               // still have tasks so the topology join counter can't be zero
-              t->_topology->_join_counter.fetch_sub(worker.num_executed);
+              t->_topology->_join_counter.fetch_sub(w.num_executed);
             }
             else {
-              auto ret = prev_parent->_join_counter.fetch_sub(worker.num_executed);
-              if(ret == worker.num_executed) {
-                //_schedule(prev_parent, false);
-                worker.queue.push(prev_parent);
+              auto ret = par->_join_counter.fetch_sub(w.num_executed);
+              if(ret == w.num_executed) {
+                //_schedule(par, false);
+                w.queue.push(par);
               }
             }
-            worker.num_executed = 1;
-            prev_parent = t->_parent;
+            w.num_executed = 1;
+            par = t->_parent;
           }
         }
         else {
           // If no more local tasks!
-          if(prev_parent == nullptr) {
-            if(tpg->_join_counter.fetch_sub(worker.num_executed) == worker.num_executed) {
-              // TODO: Store tpg in local variable not in worker
+          if(par == nullptr) {
+            if(tpg->_join_counter.fetch_sub(w.num_executed) == w.num_executed) {
+              // TODO: Store tpg in local variable not in w
               _tear_down_topology(&tpg);
               if(tpg != nullptr) {
-                t = worker.queue.pop();
+                t = w.queue.pop();
                 if(t) {
-                  worker.num_executed = 1;
+                  w.num_executed = 1;
                 }
               }
             }
           }
           else {
-            if(prev_parent->_join_counter.fetch_sub(worker.num_executed) == worker.num_executed) {
-              t = prev_parent;
-              worker.num_executed = 1;
-              prev_parent = prev_parent->_parent;
+            if(par->_join_counter.fetch_sub(w.num_executed) == w.num_executed) {
+              t = par;
+              w.num_executed = 1;
+              par = par->_parent;
             }
           }
         }
@@ -645,19 +646,15 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // Need to create a subflow if first time & subgraph is not empty 
     if(!node->_has_state(Node::SPAWNED)) {
       node->_set_state(Node::SPAWNED);
-      //if(!node->_subgraph->empty()) {
       if(!subgraph.empty()) {
         // For storing the source nodes
         PassiveVector<Node*> src; 
 
-        //for(auto n: node->_subgraph->_nodes) {
         for(auto n : subgraph._nodes) {
 
           n->_topology = node->_topology;
           n->_set_up_join_counter();
           
-          //n->_set_state(Node::SUBTASK);
-
           if(!fb.detached()) {
             n->_parent = node;
           }
@@ -879,17 +876,7 @@ inline void Executor::_set_up_topology(Topology* tpg) {
       tpg->_sources.push_back(node);
     }
 
-    int join_counter = 0;
-    for(auto p : node->_dependents) {
-      if(p->_handle.index() == Node::CONDITION_WORK) {
-        node->_set_state(Node::BRANCH);
-      }
-      else {
-        join_counter++;
-      }
-    }
-
-    node->_join_counter.store(join_counter, std::memory_order_relaxed);
+    node->_set_up_join_counter();
   }
 
   tpg->_join_counter.store(tpg->_sources.size(), std::memory_order_relaxed);

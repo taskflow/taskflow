@@ -67,7 +67,7 @@ class Node {
   constexpr static int STATIC_WORK    = 1;
   constexpr static int DYNAMIC_WORK   = 2;
   constexpr static int CONDITION_WORK = 3; 
-  constexpr static int MODULE_WORK = 4; 
+  constexpr static int MODULE_WORK    = 4; 
   
   // static work handle
   struct StaticWork {
@@ -111,8 +111,6 @@ class Node {
 
     ~Node();
 
-    //void dump(std::ostream&) const;
-
     size_t num_successors() const;
     size_t num_dependents() const;
     size_t num_strong_dependents() const;
@@ -123,13 +121,19 @@ class Node {
   private:
 
     std::string _name;
-    std::variant<std::monostate, StaticWork, DynamicWork, ConditionWork, ModuleWork> _handle;
+
+    std::variant<
+      std::monostate,   // placeholder
+      StaticWork,       // static tasking
+      DynamicWork,      // dynamic tasking
+      ConditionWork,    // conditional tasking
+      ModuleWork        // composable tasking
+    > _handle;
 
     tf::PassiveVector<Node*> _successors;
     tf::PassiveVector<Node*> _dependents;
 
     Topology* _topology {nullptr};
-    //Taskflow* _module {nullptr};
     
     Node* _parent {nullptr};
 
