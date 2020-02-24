@@ -48,9 +48,6 @@
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
 
-#include <chrono>
-//#include <taskflow/executor/semaphore.hpp>
-
 // ============================================================================
 // WorkStealingQueue tests
 // ============================================================================

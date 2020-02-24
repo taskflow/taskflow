@@ -99,7 +99,7 @@ class Node {
 
   // module work handle
   struct ModuleWork {
-    ModuleWork(Taskflow*);
+    ModuleWork(Taskflow&);
     Taskflow* module {nullptr};
   };
 
@@ -178,7 +178,7 @@ Node::ConditionWork::ConditionWork(C&& c) : work {std::forward<C>(c)} {
 // ----------------------------------------------------------------------------
     
 // Constructor
-inline Node::ModuleWork::ModuleWork(Taskflow* ptr) : module {ptr} {
+inline Node::ModuleWork::ModuleWork(Taskflow& tf) : module {&tf} {
 }
 
 // ----------------------------------------------------------------------------

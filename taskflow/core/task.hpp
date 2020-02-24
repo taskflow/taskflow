@@ -168,6 +168,15 @@ class Task {
     */
     template <typename C>
     Task& work(C&& callable);
+
+    /**
+    @brief creates a module task from a taskflow
+
+    @param taskflow a taskflow object for the module
+
+    @return @c *this
+    */
+    Task& composed_of(Taskflow&);
     
     /**
     @brief adds precedence links from this to other tasks
@@ -227,7 +236,6 @@ class Task {
     
   private:
     
-    //Task(Node&);
     Task(Node*);
 
     Node* _node {nullptr};
@@ -241,10 +249,6 @@ class Task {
     template <typename S>
     void _succeed(S&);
 };
-
-//// Constructor
-//inline Task::Task(Node& node) : _node {&node} {
-//}
 
 // Constructor
 inline Task::Task(Node* node) : _node {node} {
@@ -265,6 +269,12 @@ Task& Task::precede(Ts&&... tgts) {
 template <typename... Bs>
 Task& Task::succeed(Bs&&... tgts) {
   (tgts._node->_precede(_node), ...);
+  return *this;
+}
+
+// Function: composed_of
+inline Task& Task::composed_of(Taskflow& tf) {
+  _node->_handle.emplace<Node::ModuleWork>(tf);
   return *this;
 }
 

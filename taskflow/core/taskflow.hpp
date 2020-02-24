@@ -261,7 +261,6 @@ inline void Taskflow::_dump(
   for(const auto& n : graph._nodes) {
 
     // regular task
-    //if(auto module = n->_module; !module) {
     if(n->_handle.index() != Node::MODULE_WORK) {
       _dump(os, n, stack, visited);
     }

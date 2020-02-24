@@ -398,13 +398,9 @@ Task FlowBuilder::emplace(C&& c) {
 
 // Function: composed_of    
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
-  //auto node = _graph.emplace_back();
-  //node->_module = &taskflow;
-    
   auto node = _graph.emplace_back(
-    std::in_place_type_t<Node::ModuleWork>{}, &taskflow
+    std::in_place_type_t<Node::ModuleWork>{}, taskflow
   );
-
   return Task(node);
 }
 
@@ -969,10 +965,6 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
 // Function: work
 template <typename C>
 Task& Task::work(C&& c) {
-
-  //if(_node->_module) {
-  //  TF_THROW(Error::TASKFLOW, "can't assign work to a module task");
-  //}
 
   // static tasking
   if constexpr(is_static_task_v<C>) {

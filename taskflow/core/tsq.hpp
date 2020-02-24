@@ -1,19 +1,17 @@
-// 2019/05/15 - created by Tsung-Wei Huang
-//  - isolated from the original workstealing executor
+// 2020/02/24 - created by twhuang
 
 #pragma once
 
 #include <atomic>
 #include <vector>
-#include <optional>
 #include <cassert>
 
 namespace tf {
 
 /**
-@class: WorkStealingQueue
+@class: TaskQueue
 
-@tparam T data type
+@tparam T data type (must be a pointer)
 
 @brief Lock-free unbounded single-producer multiple-consumer queue.
 
@@ -25,36 +23,23 @@ Only the queue owner can perform pop and push operations,
 while others can steal data from the queue.
 */
 template <typename T>
-class WorkStealingQueue {
+class TaskQueue {
 
-  //constexpr static int64_t cacheline_size = 64;
-
-  //using storage_type = std::aligned_storage_t<sizeof(T), cacheline_size>;
+  static_assert(std::is_pointer<T>::value, "T must be a pointer type");
 
   struct Array {
 
     int64_t C;
     int64_t M;
-    //storage_type* S;
     std::atomic<T>* S;
-
-    //T* S;
 
     explicit Array(int64_t c) : 
       C {c},
       M {c-1},
-      //S {new storage_type[C]} {
-      //S {new T[static_cast<size_t>(C)]} {
       S {new std::atomic<T>[static_cast<size_t>(C)]} {
-      //for(int64_t i=0; i<C; ++i) {
-      //  ::new (std::addressof(S[i])) T();
-      //}
     }
 
     ~Array() {
-      //for(int64_t i=0; i<C; ++i) {
-      //  reinterpret_cast<T*>(std::addressof(S[i]))->~T();
-      //}
       delete [] S;
     }
 
@@ -64,15 +49,10 @@ class WorkStealingQueue {
     
     template <typename O>
     void push(int64_t i, O&& o) noexcept {
-      //T* ptr = reinterpret_cast<T*>(std::addressof(S[i & M]));
-      //*ptr = std::forward<O>(o); 
-      //S[i & M] = std::forward<O>(o);
       S[i & M].store(std::forward<O>(o), std::memory_order_relaxed);
     }
 
     T pop(int64_t i) noexcept {
-      //return *reinterpret_cast<T*>(std::addressof(S[i & M]));
-      //return S[i & M];
       return S[i & M].load(std::memory_order_relaxed);
     }
 
@@ -90,7 +70,6 @@ class WorkStealingQueue {
   std::atomic<int64_t> _bottom;
   std::atomic<Array*> _array;
   std::vector<Array*> _garbage;
-  //char _padding[cacheline_size];
 
   public:
     
@@ -99,12 +78,12 @@ class WorkStealingQueue {
 
     @param capacity the capacity of the queue (must be power of 2)
     */
-    explicit WorkStealingQueue(int64_t capacity = 1024);
+    explicit TaskQueue(int64_t capacity = 1024);
 
     /**
     @brief destructs the queue
     */
-    ~WorkStealingQueue();
+    ~TaskQueue();
     
     /**
     @brief queries if the queue is empty at the time of this call
@@ -132,29 +111,28 @@ class WorkStealingQueue {
 
     @param item the item to perfect-forward to the queue
     */
-    template <typename O>
-    void push(O&& item);
+    void push(T item);
     
     /**
     @brief pops out an item from the queue
 
     Only the owner thread can pop out an item from the queue. 
-    The return can be a @std_nullopt if this operation failed (empty queue).
+    The return can be a @nullptr if this operation failed (empty queue).
     */
-    std::optional<T> pop();
+    T pop();
     
     /**
     @brief steals an item from the queue
 
     Any threads can try to steal an item from the queue.
-    The return can be a @std_nullopt if this operation failed (not necessary empty).
+    The return can be a @nullptr if this operation failed (not necessary empty).
     */
-    std::optional<T> steal();
+    T steal();
 };
 
 // Constructor
 template <typename T>
-WorkStealingQueue<T>::WorkStealingQueue(int64_t c) {
+TaskQueue<T>::TaskQueue(int64_t c) {
   assert(c && (!(c & (c-1))));
   _top.store(0, std::memory_order_relaxed);
   _bottom.store(0, std::memory_order_relaxed);
@@ -164,7 +142,7 @@ WorkStealingQueue<T>::WorkStealingQueue(int64_t c) {
 
 // Destructor
 template <typename T>
-WorkStealingQueue<T>::~WorkStealingQueue() {
+TaskQueue<T>::~TaskQueue() {
   for(auto a : _garbage) {
     delete a;
   }
@@ -173,7 +151,7 @@ WorkStealingQueue<T>::~WorkStealingQueue() {
   
 // Function: empty
 template <typename T>
-bool WorkStealingQueue<T>::empty() const noexcept {
+bool TaskQueue<T>::empty() const noexcept {
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
   return b <= t;
@@ -181,7 +159,7 @@ bool WorkStealingQueue<T>::empty() const noexcept {
 
 // Function: size
 template <typename T>
-size_t WorkStealingQueue<T>::size() const noexcept {
+size_t TaskQueue<T>::size() const noexcept {
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
   return static_cast<size_t>(b >= t ? b - t : 0);
@@ -189,8 +167,7 @@ size_t WorkStealingQueue<T>::size() const noexcept {
 
 // Function: push
 template <typename T>
-template <typename O>
-void WorkStealingQueue<T>::push(O&& o) {
+void TaskQueue<T>::push(T o) {
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_acquire);
   Array* a = _array.load(std::memory_order_relaxed);
@@ -203,21 +180,21 @@ void WorkStealingQueue<T>::push(O&& o) {
     _array.store(a, std::memory_order_relaxed);
   }
 
-  a->push(b, std::forward<O>(o));
+  a->push(b, o);
   std::atomic_thread_fence(std::memory_order_release);
   _bottom.store(b + 1, std::memory_order_relaxed);
 }
 
 // Function: pop
 template <typename T>
-std::optional<T> WorkStealingQueue<T>::pop() {
+T TaskQueue<T>::pop() {
   int64_t b = _bottom.load(std::memory_order_relaxed) - 1;
   Array* a = _array.load(std::memory_order_relaxed);
   _bottom.store(b, std::memory_order_relaxed);
   std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t t = _top.load(std::memory_order_relaxed);
 
-  std::optional<T> item;
+  T item {nullptr};
 
   if(t <= b) {
     item = a->pop(b);
@@ -226,7 +203,7 @@ std::optional<T> WorkStealingQueue<T>::pop() {
       if(!_top.compare_exchange_strong(t, t+1, 
                                        std::memory_order_seq_cst, 
                                        std::memory_order_relaxed)) {
-        item = std::nullopt;
+        item = nullptr;
       }
       _bottom.store(b + 1, std::memory_order_relaxed);
     }
@@ -240,12 +217,12 @@ std::optional<T> WorkStealingQueue<T>::pop() {
 
 // Function: steal
 template <typename T>
-std::optional<T> WorkStealingQueue<T>::steal() {
+T TaskQueue<T>::steal() {
   int64_t t = _top.load(std::memory_order_acquire);
   std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t b = _bottom.load(std::memory_order_acquire);
   
-  std::optional<T> item;
+  T item {nullptr};
 
   if(t < b) {
     Array* a = _array.load(std::memory_order_consume);
@@ -253,7 +230,7 @@ std::optional<T> WorkStealingQueue<T>::steal() {
     if(!_top.compare_exchange_strong(t, t+1,
                                      std::memory_order_seq_cst,
                                      std::memory_order_relaxed)) {
-      return std::nullopt;
+      return nullptr;
     }
   }
 
@@ -262,11 +239,8 @@ std::optional<T> WorkStealingQueue<T>::steal() {
 
 // Function: capacity
 template <typename T>
-int64_t WorkStealingQueue<T>::capacity() const noexcept {
+int64_t TaskQueue<T>::capacity() const noexcept {
   return _array.load(std::memory_order_relaxed)->capacity();
 }
-
-
-
 
 }  // end of namespace tf -----------------------------------------------------
