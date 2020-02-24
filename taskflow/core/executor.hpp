@@ -660,10 +660,13 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   } 
   // module task
   else if(node->_handle.index() == Node::MODULE_WORK) {
-    bool first_time = !node->_has_state(Node::SPAWNED);
-    _invoke_module_work(worker, node);
-    if(first_time) {
-      return;
+    auto module = std::get<Node::ModuleWork>(node->_handle).module;
+    if(!module->empty()) {
+      bool first_time = !node->_has_state(Node::SPAWNED);
+      _invoke_module_work(worker, node);
+      if(first_time) {
+        return;
+      }
     }
   }
   // dynamic task
