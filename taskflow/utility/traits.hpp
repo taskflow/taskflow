@@ -18,7 +18,6 @@
 #include <numeric>
 #include <iomanip>
 #include <cassert>
-//#include <variant>
 #include <cmath>
 
 namespace tf {
@@ -51,8 +50,11 @@ struct dependent_false {
 template <typename... T>
 constexpr auto dependent_false_v = dependent_false<T...>::value;
 
+//-----------------------------------------------------------------------------
+// Move-On-Copy
+//-----------------------------------------------------------------------------
+
 // Struct: MoC
-// Move-on-copy wrapper.
 template <typename T>
 struct MoC {
 
@@ -81,6 +83,32 @@ auto make_moc(T&& m) {
 //
 //template <typename... Ts>
 //Functors(Ts...) -> Functors<Ts...>;
+
+// ----------------------------------------------------------------------------
+// callable traits
+// ----------------------------------------------------------------------------
+
+template <typename F, typename... Args>
+struct is_invocable :
+  std::is_constructible<
+    std::function<void(Args ...)>,
+    std::reference_wrapper<typename std::remove_reference<F>::type>
+  > {
+};
+
+template <typename F, typename... Args>
+constexpr bool is_invocable_v = is_invocable<F, Args...>::value;
+
+template <typename R, typename F, typename... Args>
+struct is_invocable_r :
+  std::is_constructible<
+    std::function<R(Args ...)>,
+    std::reference_wrapper<typename std::remove_reference<F>::type>
+  > {
+};
+
+template <typename R, typename F, typename... Args>
+constexpr bool is_invocable_r_v = is_invocable_r<R, F, Args...>::value;
 
 
 // ----------------------------------------------------------------------------

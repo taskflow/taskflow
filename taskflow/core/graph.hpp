@@ -16,7 +16,7 @@ class Graph {
   friend class Node;
   friend class Taskflow;
   friend class Executor;
-  
+
   public:
 
     Graph() = default;

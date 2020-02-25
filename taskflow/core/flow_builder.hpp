@@ -24,16 +24,40 @@ class FlowBuilder {
     FlowBuilder(Graph& graph);
     
     /**
-    @brief creates a task from a given callable object
+    @brief creates a static task from a given callable object
     
     @tparam C callable type
     
-    @param callable a callable object acceptable to std::function
+    @param callable a callable object acceptable to std::function<void()>
 
     @return Task handle
     */
     template <typename C>
-    Task emplace(C&& callable);
+    std::enable_if_t<is_static_task_v<C>, Task> emplace(C&& callable);
+
+    /**
+    @brief creates a dynamic task from a given callable object
+    
+    @tparam C callable type
+    
+    @param callable a callable object acceptable to std::function<void(Subflow&)>
+
+    @return Task handle
+    */
+    template <typename C>
+    std::enable_if_t<is_dynamic_task_v<C>, Task> emplace(C&& callable);
+
+    /**
+    @brief creates a condition task from a given callable object
+    
+    @tparam C callable type
+    
+    @param callable a callable object acceptable to std::function<int()>
+
+    @return Task handle
+    */
+    template <typename C>
+    std::enable_if_t<is_condition_task_v<C>, Task> emplace(C&& callable);
 
     /**
     @brief creates multiple tasks from a list of callable objects at one time
@@ -76,12 +100,12 @@ class FlowBuilder {
     std::pair<Task, Task> parallel_for(I beg, I end, C&& callable, size_t chunk=1);
     
     /**
-    @brief constructs a task dependency graph of index-based parallel_for
+    @brief constructs a task dependency graph of integer index-based parallel_for
     
     The task dependency graph applies a callable object to every index 
     in the range [beg, end) with a step size chunk by chunk.
 
-    @tparam I arithmetic index type
+    @tparam I integer (arithmetic) index type
     @tparam C callable type
 
     @param beg index of the beginning (inclusive)
@@ -95,7 +119,33 @@ class FlowBuilder {
     template <
       typename I, 
       typename C, 
-      std::enable_if_t<std::is_arithmetic<I>::value, void>* = nullptr 
+      std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>* = nullptr
+    >
+    std::pair<Task, Task> parallel_for(
+      I beg, I end, I step, C&& callable, size_t chunk = 1
+    );
+
+    /**
+    @brief constructs a task dependency graph of floating index-based parallel_for
+    
+    The task dependency graph applies a callable object to every index 
+    in the range [beg, end) with a step size chunk by chunk.
+
+    @tparam I floating (arithmetic) index type
+    @tparam C callable type
+
+    @param beg index of the beginning (inclusive)
+    @param end index of the end (exclusive)
+    @param step step size 
+    @param callable a callable object to be applied to
+    @param chunk items per task
+
+    @return a pair of Task handles to the beginning and the end of the graph
+    */
+    template <
+      typename I, 
+      typename C, 
+      std::enable_if_t<std::is_floating_point<std::decay_t<I>>::value, void>* = nullptr
     >
     std::pair<Task, Task> parallel_for(
       I beg, I end, I step, C&& callable, size_t chunk = 1
@@ -363,38 +413,72 @@ auto FlowBuilder::emplace(C&&... cs) {
 }
 
 // Function: emplace
+// emplaces a static task
 template <typename C>
-Task FlowBuilder::emplace(C&& c) {
-  
-  // static task
-  if constexpr(is_static_task_v<C>) {
-    auto n = _graph.emplace_back(
-      nstd::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
-    );
-    return Task(n);
-  }
-  // condition task
-  else if constexpr(is_condition_task_v<C>) {
-    auto n = _graph.emplace_back(
-      nstd::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
-    );
-    return Task(n);
-  }
-  // dynamic task
-  else if constexpr(is_dynamic_task_v<C>) {
-    auto n = _graph.emplace_back(nstd::in_place_type_t<Node::DynamicWork>{}, 
-    [c=std::forward<C>(c)] (Subflow& fb) mutable {
-      // first time execution
-      if(fb._graph.empty()) {
-        c(fb);
-      }
-    });
-    return Task(n);
-  }
-  else {
-    static_assert(dependent_false_v<C>, "invalid task work type");
-  }
+std::enable_if_t<is_static_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
+  auto n = _graph.emplace_back(
+    nstd::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
+  );
+  return Task(n);
 }
+
+// Function: emplace
+// emplaces a dynamic task
+template <typename C>
+std::enable_if_t<is_dynamic_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
+  auto n = _graph.emplace_back(nstd::in_place_type_t<Node::DynamicWork>{}, 
+  [c=std::forward<C>(c)] (Subflow& fb) mutable {
+    // first time execution
+    if(fb._graph.empty()) {
+      c(fb);
+    }
+  });
+  return Task(n);
+}
+
+// Function: emplace 
+// emplades a condition task
+template <typename C>
+std::enable_if_t<is_condition_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
+  auto n = _graph.emplace_back(
+    nstd::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
+  );
+  return Task(n);
+}
+
+//template <typename C>
+//Task FlowBuilder::emplace(C&& c) {
+//
+//  // static task
+//  //if constexpr(is_static_task_v<C>) {
+//  if constexpr (is_invocable_r_v<void, C> && !is_invocable_r_v<int, C>) {
+//    auto n = _graph.emplace_back(
+//      nstd::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
+//    );
+//    return Task(n);
+//  }
+//  // condition task
+//  else if constexpr(is_condition_task_v<C>) {
+//    auto n = _graph.emplace_back(
+//      nstd::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
+//    );
+//    return Task(n);
+//  }
+//  // dynamic task
+//  else if constexpr(is_dynamic_task_v<C>) {
+//    auto n = _graph.emplace_back(nstd::in_place_type_t<Node::DynamicWork>{}, 
+//    [c=std::forward<C>(c)] (Subflow& fb) mutable {
+//      // first time execution
+//      if(fb._graph.empty()) {
+//        c(fb);
+//      }
+//    });
+//    return Task(n);
+//  }
+//  else {
+//    static_assert(dependent_false_v<C>, "invalid task work type");
+//  }
+//}
 
 // Function: composed_of    
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
@@ -449,30 +533,25 @@ std::pair<Task, Task> FlowBuilder::parallel_for(
   I beg, I end, C&& c, size_t chunk
 ){
   
-  using category = typename std::iterator_traits<I>::iterator_category;
+  //using category = typename std::iterator_traits<I>::iterator_category;
   
   auto S = placeholder();
   auto T = placeholder();
-  //auto D = std::distance(beg, end);
   
   // default partition equals to the worker count
   if(chunk == 0) {
     chunk = 1;
   }
 
+  size_t remain = std::distance(beg, end);
+
   while(beg != end) {
 
     auto e = beg;
     
-    // Case 1: random access iterator
-    if constexpr(std::is_same<category, std::random_access_iterator_tag>::value) {
-      size_t x = std::distance(beg, end);
-      std::advance(e, std::min(x, chunk));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<chunk && e != end; ++e, ++i);
-    }
+    auto x = std::min(remain, chunk);
+    std::advance(e, x);
+    remain -= x;
       
     // Create a task
     auto task = emplace([beg, e, c] () mutable {
@@ -492,72 +571,18 @@ std::pair<Task, Task> FlowBuilder::parallel_for(
   }
   
   return std::make_pair(S, T); 
-
-
-  /*using category = typename std::iterator_traits<I>::iterator_category;
-  
-  auto S = placeholder();
-  auto T = placeholder();
-  auto D = std::distance(beg, end);
-  
-  // special case
-  if(D == 0) {
-    S.precede(T);
-    return std::make_pair(S, T);
-  }
-  
-  // default partition equals to the worker count
-  if(p == 0) {
-    p = std::max(unsigned{1}, std::thread::hardware_concurrency());
-  }
-
-  size_t b = (D + p - 1) / p;           // block size
-  size_t r = (D % p) ? D % p : p;       // workers to take b
-  size_t w = 0;                         // worker id
-
-  while(beg != end) {
-
-    auto e = beg;
-    size_t g = (w++ >= r) ? b - 1 : b;
-    
-    // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
-      size_t x = std::distance(beg, end);
-      std::advance(e, std::min(x, g));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<g && e != end; ++e, ++i);
-    }
-      
-    // Create a task
-    auto task = emplace([beg, e, c] () mutable {
-      std::for_each(beg, e, c);
-    });
-    S.precede(task);
-    task.precede(T);
-
-    // adjust the pointer
-    beg = e;
-  }
-  
-  return std::make_pair(S, T); */
 }
 
 // Function: parallel_for
 template <
   typename I, 
   typename C, 
-  std::enable_if_t<std::is_arithmetic<I>::value, void>*
+  std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>*
 >
 std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t chunk) {
   
-  using T = std::decay_t<I>;
-
   if((s == 0) || (beg < end && s <= 0) || (beg > end && s >=0) ) {
-    TF_THROW(Error::TASKFLOW, 
-      "invalid range [", beg, ", ", end, ") with step size ", s
-    );
+    TF_THROW("invalid range [", beg, ", ", end, ") with step size ", s);
   }
 
   // source and target 
@@ -568,61 +593,68 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
     chunk = 1;
   }
 
-  // Integer indices
-  if constexpr(std::is_integral<T>::value) {
-    // positive case
-    if(beg < end) {
-      while(beg != end) {
-        auto o = static_cast<T>(chunk) * s;
-        auto e = std::min(beg + o, end);
-        auto task = emplace([=] () mutable {
-          for(auto i=beg; i<e; i+=s) {
-            c(i);
-          }
-        });
-        source.precede(task);
-        task.precede(target);
-        beg = e;
-      }
-    }
-    // negative case
-    else if(beg > end) {
-      while(beg != end) {
-        auto o = static_cast<T>(chunk) * s;
-        auto e = std::max(beg + o, end);
-        auto task = emplace([=] () mutable {
-          for(auto i=beg; i>e; i+=s) {
-            c(i);
-          }
-        });
-        source.precede(task);
-        task.precede(target);
-        beg = e;
-      }
+  // positive case
+  if(beg < end) {
+    while(beg != end) {
+      auto o = static_cast<I>(chunk) * s;
+      auto e = std::min(beg + o, end);
+      auto task = emplace([=] () mutable {
+        for(auto i=beg; i<e; i+=s) {
+          c(i);
+        }
+      });
+      source.precede(task);
+      task.precede(target);
+      beg = e;
     }
   }
-  // We enumerate the entire sequence to avoid floating error
-  else if constexpr(std::is_floating_point<T>::value) {
-
-    // positive case
-    if(beg < end) {
-      size_t N=0;
-      I b = beg;
-      for(I e=beg; e<end; e+=s) {
-        if(++N == chunk) {
-          auto task = emplace([=] () mutable {
-            for(size_t i=0; i<N; ++i, b+=s) {
-              c(b);
-            }
-          });
-          source.precede(task);
-          task.precede(target);
-          N = 0;
-          b = e;
+  // negative case
+  else if(beg > end) {
+    while(beg != end) {
+      auto o = static_cast<I>(chunk) * s;
+      auto e = std::max(beg + o, end);
+      auto task = emplace([=] () mutable {
+        for(auto i=beg; i>e; i+=s) {
+          c(i);
         }
-      }
+      });
+      source.precede(task);
+      task.precede(target);
+      beg = e;
+    }
+  }
 
-      if(N) {
+  if(source.num_successors() == 0) {
+    source.precede(target);
+  }
+    
+  return std::make_pair(source, target);
+}
+
+// Function: parallel_for
+template <typename I, typename C, 
+  std::enable_if_t<std::is_floating_point<std::decay_t<I>>::value, void>*
+>
+std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t chunk) {
+  
+  if((s == 0) || (beg < end && s <= 0) || (beg > end && s >=0) ) {
+    TF_THROW("invalid range [", beg, ", ", end, ") with step size ", s);
+  }
+
+  // source and target 
+  auto source = placeholder();
+  auto target = placeholder();
+  
+  if(chunk == 0) {
+    chunk = 1;
+  }
+
+  // positive case
+  if(beg < end) {
+    size_t N=0;
+    I b = beg;
+    for(I e=beg; e<end; e+=s) {
+      if(++N == chunk) {
         auto task = emplace([=] () mutable {
           for(size_t i=0; i<N; ++i, b+=s) {
             c(b);
@@ -630,26 +662,26 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
         });
         source.precede(task);
         task.precede(target);
+        N = 0;
+        b = e;
       }
     }
-    else if(beg > end) {
-      size_t N=0;
-      I b = beg;
-      for(I e=beg; e>end; e+=s) {
-        if(++N == chunk) {
-          auto task = emplace([=] () mutable {
-            for(size_t i=0; i<N; ++i, b+=s) {
-              c(b);
-            }
-          });
-          source.precede(task);
-          task.precede(target);
-          N = 0;
-          b = e;
-        }
-      }
 
-      if(N) {
+    if(N) {
+      auto task = emplace([=] () mutable {
+        for(size_t i=0; i<N; ++i, b+=s) {
+          c(b);
+        }
+      });
+      source.precede(task);
+      task.precede(target);
+    }
+  }
+  else if(beg > end) {
+    size_t N=0;
+    I b = beg;
+    for(I e=beg; e>end; e+=s) {
+      if(++N == chunk) {
         auto task = emplace([=] () mutable {
           for(size_t i=0; i<N; ++i, b+=s) {
             c(b);
@@ -657,23 +689,19 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
         });
         source.precede(task);
         task.precede(target);
+        N = 0;
+        b = e;
       }
-      //while(beg > end) {
-      //  size_t N = 0;
-      //  auto e = beg;
-      //  while(e > end && N < chunk) {
-      //    e+=s;
-      //    ++N;
-      //  }
-      //  auto task = emplace([=] () mutable {
-      //    for(size_t i=0; i<N; ++i, beg+=s) {
-      //      c(beg);
-      //    }
-      //  });
-      //  source.precede(task);
-      //  task.precede(target);
-      //  beg = e;
-      //}
+    }
+
+    if(N) {
+      auto task = emplace([=] () mutable {
+        for(size_t i=0; i<N; ++i, b+=s) {
+          c(b);
+        }
+      });
+      source.precede(task);
+      task.precede(target);
     }
   }
 
@@ -708,7 +736,7 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
   I beg, I end, T& result, B&& bop, U&& uop
 ) {
 
-  using category = typename std::iterator_traits<I>::iterator_category;
+  //using category = typename std::iterator_traits<I>::iterator_category;
   
   // Even partition
   size_t d = std::distance(beg, end);
@@ -722,20 +750,16 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
   auto g_results = std::make_unique<T[]>(w);
   size_t id {0};
 
+  size_t remain = d;
+
   while(beg != end) {
 
     auto e = beg;
     
-    // Case 1: random access iterator
-    if constexpr(std::is_same<category, std::random_access_iterator_tag>::value) {
-      size_t r = std::distance(beg, end);
-      std::advance(e, std::min(r, g));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<g && e != end; ++e, ++i);
-    }
-      
+    size_t x = std::min(remain, g);
+    std::advance(e, x);
+    remain -= x;
+
     // Create a task 
     auto task = emplace([beg, e, bop, uop, res=&(g_results[id])] () mutable {
       *res = uop(*beg);
@@ -768,7 +792,7 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
   I beg, I end, T& result, B&& bop, P&& pop, U&& uop
 ) {
 
-  using category = typename std::iterator_traits<I>::iterator_category;
+  //using category = typename std::iterator_traits<I>::iterator_category;
   
   // Even partition
   size_t d = std::distance(beg, end);
@@ -781,19 +805,15 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
   auto g_results = std::make_unique<T[]>(w);
 
   size_t id {0};
+  size_t remain = d;
+
   while(beg != end) {
 
     auto e = beg;
     
-    // Case 1: random access iterator
-    if constexpr(std::is_same<category, std::random_access_iterator_tag>::value) {
-      size_t r = std::distance(beg, end);
-      std::advance(e, std::min(r, g));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<g && e != end; ++e, ++i);
-    }
+    size_t x = std::min(remain, g);
+    std::advance(e, x);
+    remain -= x;
       
     // Create a task 
     auto task = emplace([beg, e, uop, pop,  res= &g_results[id]] () mutable {
@@ -802,16 +822,8 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
         *res = pop(std::move(*res), *beg);
       }
     });
-    //auto [task, future] = emplace([beg, e, uop, pop] () mutable {
-    //  auto init = uop(*beg);
-    //  for(++beg; beg != e; ++beg) {
-    //    init = pop(std::move(init), *beg);
-    //  }
-    //  return init;
-    //});
     source.precede(task);
     task.precede(target);
-    //futures.push_back(std::move(future));
 
     // adjust the pointer
     beg = e;
@@ -824,42 +836,9 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
       result = bop(std::move(result), std::move(g_results.object[i]));
     }
   });
-  //target.work([&result, futures=MoC{std::move(futures)}, bop] () {
-  //  for(auto& fu : futures.object) {
-  //    result = bop(std::move(result), fu.get());
-  //  }
-  //});
 
   return std::make_pair(source, target); 
 }
-
-//// Function: _estimate_chunk_size
-//template <typename I>
-//size_t FlowBuilder::_estimate_chunk_size(I beg, I end, I step) {
-//
-//  using T = std::decay_t<I>;
-//      
-//  size_t w = std::max(unsigned{1}, std::thread::hardware_concurrency());
-//  size_t N = 0;
-//
-//  if constexpr(std::is_integral_v<T>) {
-//    if(beg <= end) {  
-//      N = (end - beg + step - 1) / step;
-//    }
-//    else {
-//      N = (end - beg + step + 1) / step;
-//    }
-//  }
-//  else if constexpr(std::is_floating_point_v<T>) {
-//    N = static_cast<size_t>(std::ceil((end - beg) / step));
-//  }
-//  else {
-//    static_assert(dependent_false_v<T>, "can't deduce chunk size");
-//  }
-//
-//  return (N + w - 1) / w;
-//}
-
 
 // Procedure: _linearize
 template <typename L>
@@ -893,7 +872,7 @@ inline void FlowBuilder::linearize(std::initializer_list<Task> keys) {
 template <typename I, typename T, typename B>
 std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
   
-  using category = typename std::iterator_traits<I>::iterator_category;
+  //using category = typename std::iterator_traits<I>::iterator_category;
   
   size_t d = std::distance(beg, end);
   size_t w = std::max(unsigned{1}, std::thread::hardware_concurrency());
@@ -907,20 +886,16 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
   //std::vector<std::future<T>> futures;
   
   size_t id {0};
+  size_t remain = d;
+
   while(beg != end) {
 
     auto e = beg;
     
-    // Case 1: random access iterator
-    if constexpr(std::is_same<category, std::random_access_iterator_tag>::value) {
-      size_t r = std::distance(beg, end);
-      std::advance(e, std::min(r, g));
-    }
-    // Case 2: non-random access iterator
-    else {
-      for(size_t i=0; i<g && e != end; ++e, ++i);
-    }
-      
+    size_t x = std::min(remain, g);
+    std::advance(e, x);
+    remain -= x;
+    
     // Create a task
     //auto [task, future] = emplace([beg, e, op] () mutable {
     auto task = emplace([beg, e, op, res = &g_results[id]] () mutable {
@@ -963,33 +938,64 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
 // ----------------------------------------------------------------------------
 
 // Function: work
+// assign a static work
 template <typename C>
-Task& Task::work(C&& c) {
-
-  // static tasking
-  if constexpr(is_static_task_v<C>) {
-    _node->_handle.emplace<Node::StaticWork>(std::forward<C>(c));
-  }
-  // condition tasking
-  else if constexpr(is_condition_task_v<C>) {
-    _node->_handle.emplace<Node::ConditionWork>(std::forward<C>(c));
-  }
-  // dyanmic tasking
-  else if constexpr(is_dynamic_task_v<C>) {
-    _node->_handle.emplace<Node::DynamicWork>( 
-    [c=std::forward<C>(c)] (Subflow& fb) mutable {
-      // first time execution
-      if(fb._graph.empty()) {
-        c(fb);
-      }
-    });
-  }
-  else {
-    static_assert(dependent_false_v<C>, "invalid task work type");
-  }
-
+std::enable_if_t<is_static_task_v<C>, Task>& Task::work(C&& c) {
+  _node->_handle.emplace<Node::StaticWork>(std::forward<C>(c));
   return *this;
 }
+
+// Function: work
+// assigns a dynamic work
+template <typename C>
+std::enable_if_t<is_dynamic_task_v<C>, Task>& Task::work(C&& c) {
+  _node->_handle.emplace<Node::DynamicWork>( 
+  [c=std::forward<C>(c)] (Subflow& fb) mutable {
+    // first time execution
+    if(fb._graph.empty()) {
+      c(fb);
+    }
+  });
+  return *this;
+}
+
+// Function: work
+// assigns a condition work
+template <typename C>
+std::enable_if_t<is_condition_task_v<C>, Task>& Task::work(C&& c) {
+  _node->_handle.emplace<Node::ConditionWork>(std::forward<C>(c));
+  return *this;
+}
+
+
+// Function: work
+//template <typename C>
+//Task& Task::work(C&& c) {
+//
+//  // static tasking
+//  if constexpr(is_static_task_v<C>) {
+//    _node->_handle.emplace<Node::StaticWork>(std::forward<C>(c));
+//  }
+//  // condition tasking
+//  else if constexpr(is_condition_task_v<C>) {
+//    _node->_handle.emplace<Node::ConditionWork>(std::forward<C>(c));
+//  }
+//  // dyanmic tasking
+//  else if constexpr(is_dynamic_task_v<C>) {
+//    _node->_handle.emplace<Node::DynamicWork>( 
+//    [c=std::forward<C>(c)] (Subflow& fb) mutable {
+//      // first time execution
+//      if(fb._graph.empty()) {
+//        c(fb);
+//      }
+//    });
+//  }
+//  else {
+//    static_assert(dependent_false_v<C>, "invalid task work type");
+//  }
+//
+//  return *this;
+//}
 
 // ----------------------------------------------------------------------------
 // Legacy code

@@ -218,7 +218,7 @@ inline Executor::Executor(unsigned N) :
   _notifier {_waiters} {
   
   if(N == 0) {
-    TF_THROW(Error::EXECUTOR, "no workers to execute the graph");
+    TF_THROW("no workers to execute the graph");
   }
 
   _spawn(N);

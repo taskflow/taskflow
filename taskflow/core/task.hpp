@@ -14,18 +14,8 @@ namespace tf {
 @brief determines if a callable is a static task
 */
 template <typename C>
-struct is_static_task {
-  
-  using task_traits = function_traits<C>;
-
-  constexpr static bool value = (
-    std::is_same<typename task_traits::return_type, void>::value &&
-    task_traits::arity == 0
-  );
-};
-
-template <typename C>
-constexpr bool is_static_task_v = is_static_task<C>::value;
+constexpr bool is_static_task_v = is_invocable_r_v<void, C> &&
+                                 !is_invocable_r_v<int, C>;
 
 /**
 @struct is_dynamic_task
@@ -33,23 +23,7 @@ constexpr bool is_static_task_v = is_static_task<C>::value;
 @brief determines if a callable is a dynamic task
 */
 template <typename C>
-struct is_dynamic_task {
-  
-  using task_traits = function_traits<C>;
-
-  using arg_t = typename std::conditional<task_traits::arity==1,
-    typename task_traits::template argument_t<0>,
-    void
-  >::type;
-
-  constexpr static bool value = (
-    std::is_same<typename task_traits::return_type, void>::value &&
-    std::is_same<arg_t, Subflow&>::value
-  );
-};
-
-template <typename C>
-constexpr bool is_dynamic_task_v = is_dynamic_task<C>::value;
+constexpr bool is_dynamic_task_v = is_invocable_r_v<void, C, Subflow&>;
 
 /**
 @struct is_condition_task
@@ -57,18 +31,7 @@ constexpr bool is_dynamic_task_v = is_dynamic_task<C>::value;
 @brief determines if a callable is a condition task
 */
 template <typename C>
-struct is_condition_task {
-  
-  using task_traits = function_traits<std::decay_t<C>>;
-  
-  constexpr static bool value = (
-    std::is_same<typename task_traits::return_type, int>::value &&
-    task_traits::arity == 0
-  );
-};
-
-template <typename C>
-constexpr bool is_condition_task_v = is_condition_task<C>::value;
+constexpr bool is_condition_task_v = is_invocable_r_v<int, C>;
 
 // ----------------------------------------------------------------------------
 // Task
@@ -158,16 +121,40 @@ class Task {
     Task& name(const std::string& name);
 
     /**
-    @brief assigns a new callable object to the task
+    @brief assigns a static task
 
     @tparam C callable object type
 
-    @param callable a callable object acceptable to @std_function
+    @param callable a callable object acceptable to std::function<void()>
 
     @return @c *this
     */
     template <typename C>
-    Task& work(C&& callable);
+    std::enable_if_t<is_static_task_v<C>, Task>& work(C&& callable);
+    
+    /**
+    @brief assigns a dynamic task
+
+    @tparam C callable object type
+
+    @param callable a callable object acceptable to std::function<void(Subflow&)>
+
+    @return @c *this
+    */
+    template <typename C>
+    std::enable_if_t<is_dynamic_task_v<C>, Task>& work(C&& callable);
+    
+    /**
+    @brief assigns a condition task
+
+    @tparam C callable object type
+
+    @param callable a callable object acceptable to std::function<int()>
+
+    @return @c *this
+    */
+    template <typename C>
+    std::enable_if_t<is_condition_task_v<C>, Task>& work(C&& callable);
 
     /**
     @brief creates a module task from a taskflow
