@@ -701,15 +701,11 @@ The first run finishes before the second run, and the second run finishes before
 
 # System Requirements
 
-To use the latest [Cpp-Taskflow](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip), you only need a [C++17][C++17] compiler:
-+ GNU C++ Compiler v7.3 with -std=c++1z
-+ Clang C++ Compiler v6.0 with -std=c++17
+To use the latest [Cpp-Taskflow](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip), you only need a [C++14][C++14] compiler:
++ GNU C++ Compiler v7.3 with -std=c++14
++ Clang C++ Compiler v6.0 with -std=c++14
 + Microsoft Visual Studio Version 15.7 (MSVC++ 19.14); see [vcpkg guide](https://github.com/cpp-taskflow/cpp-taskflow/issues/143)
 + Apple Clang Version 11.0
-
-A C++14 compatible version (with limited feature support) is provided [here](https://github.com/cpp-taskflow/cpp-taskflow/archive/cpp14.zip), and you need a [C++14][C++14] compiler:
-+ GNU C++ Compiler v4.9 with -std=c++1y
-+ Clang C++ Compiler v5.0 with -std=c++14
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
