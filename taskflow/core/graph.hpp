@@ -1,7 +1,7 @@
 #pragma once
 
-#include "declarations.hpp"
-#include "../error/error.hpp"
+#include "error.hpp"
+#include "../declarations.hpp"
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
 #include "../utility/passive_vector.hpp"
@@ -59,6 +59,8 @@ class Node {
   friend class FlowBuilder;
   friend class Subflow;
 
+  friend class cudaGraph;
+
   public:
   
   // state bit flag
@@ -108,6 +110,9 @@ class Node {
     Taskflow* module {nullptr};
   };
 
+  struct cudaFlowWork {
+  };
+
     //Node() = default;
 
     // Constructor 
@@ -128,15 +133,15 @@ class Node {
     std::string _name;
 
     nstd::variant<
-      nstd::monostate,   // placeholder
+      nstd::monostate,  // placeholder
       StaticWork,       // static tasking
       DynamicWork,      // dynamic tasking
       ConditionWork,    // conditional tasking
       ModuleWork        // composable tasking
     > _handle;
 
-    tf::PassiveVector<Node*> _successors;
-    tf::PassiveVector<Node*> _dependents;
+    PassiveVector<Node*> _successors;
+    PassiveVector<Node*> _dependents;
 
     Topology* _topology {nullptr};
     

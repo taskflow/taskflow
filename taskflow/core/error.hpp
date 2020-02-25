@@ -3,22 +3,10 @@
 #include <iostream>
 #include <sstream>
 #include <exception>
-#include <system_error>
+
+#include "../utility/stringify.hpp"
 
 namespace tf {
-
-// Procedure: stringify
-template <typename T>
-void ostreamize(std::ostringstream& oss, T&& token) {
-  oss << std::forward<T>(token);  
-}
-
-// Procedure: stringify
-template <typename T, typename... Rest>
-void ostreamize(std::ostringstream& oss, T&& token, Rest&&... rest) {
-  oss << std::forward<T>(token);
-  ostreamize(oss, std::forward<Rest>(rest)...);
-}
 
 // Procedure: throw_se
 // Throws the system error under a given error code.
