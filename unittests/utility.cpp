@@ -413,18 +413,18 @@ TEST_CASE("FunctionTraits" * doctest::timeout(300)) {
   
   SUBCASE("func1") {
     using func1_traits = tf::function_traits<decltype(func1)>;
-    static_assert(std::is_same_v<func1_traits::return_type, void>);
-    static_assert(func1_traits::arity == 0);
+    static_assert(std::is_same<func1_traits::return_type, void>::value, "");
+    static_assert(func1_traits::arity == 0, "");
   }
   
   SUBCASE("func2") {
     using func2_traits = tf::function_traits<decltype(func2)>;
-    static_assert(std::is_same_v<func2_traits::return_type, int>);
-    static_assert(func2_traits::arity == 4);
-    static_assert(std::is_same_v<func2_traits::argument_t<0>, int>);
-    static_assert(std::is_same_v<func2_traits::argument_t<1>, double>);
-    static_assert(std::is_same_v<func2_traits::argument_t<2>, float>);
-    static_assert(std::is_same_v<func2_traits::argument_t<3>, char>);
+    static_assert(std::is_same<func2_traits::return_type, int>::value, "");
+    static_assert(func2_traits::arity == 4, "");
+    static_assert(std::is_same<func2_traits::argument_t<0>, int>::value,   "");
+    static_assert(std::is_same<func2_traits::argument_t<1>, double>::value,"");
+    static_assert(std::is_same<func2_traits::argument_t<2>, float>::value, "");
+    static_assert(std::is_same<func2_traits::argument_t<3>, char>::value,  "");
   }
 
   SUBCASE("lambda1") {
@@ -432,19 +432,19 @@ TEST_CASE("FunctionTraits" * doctest::timeout(300)) {
       return 1;
     };
     using lambda1_traits = tf::function_traits<decltype(lambda1)>;
-    static_assert(std::is_same_v<lambda1_traits::return_type, int>);
-    static_assert(lambda1_traits::arity == 0);
+    static_assert(std::is_same<lambda1_traits::return_type, int>::value, "");
+    static_assert(lambda1_traits::arity == 0, "");
   }
 
   SUBCASE("lambda2") {
     auto lambda2 = [] (int, double, char&) {
     };
     using lambda2_traits = tf::function_traits<decltype(lambda2)>;
-    static_assert(std::is_same_v<lambda2_traits::return_type, void>);
-    static_assert(lambda2_traits::arity == 3);
-    static_assert(std::is_same_v<lambda2_traits::argument_t<0>, int>);
-    static_assert(std::is_same_v<lambda2_traits::argument_t<1>, double>);
-    static_assert(std::is_same_v<lambda2_traits::argument_t<2>, char&>);
+    static_assert(std::is_same<lambda2_traits::return_type, void>::value, "");
+    static_assert(lambda2_traits::arity == 3, "");
+    static_assert(std::is_same<lambda2_traits::argument_t<0>, int>::value, "");
+    static_assert(std::is_same<lambda2_traits::argument_t<1>, double>::value, "");
+    static_assert(std::is_same<lambda2_traits::argument_t<2>, char&>::value, "");
   }
 
   SUBCASE("class") {
@@ -452,33 +452,33 @@ TEST_CASE("FunctionTraits" * doctest::timeout(300)) {
       int operator ()(int, float) const;
     };
     using foo_traits = tf::function_traits<foo>;
-    static_assert(std::is_same_v<foo_traits::return_type, int>);
-    static_assert(foo_traits::arity == 2);
-    static_assert(std::is_same_v<foo_traits::argument_t<0>, int>);
-    static_assert(std::is_same_v<foo_traits::argument_t<1>, float>);
+    static_assert(std::is_same<foo_traits::return_type, int>::value, "");
+    static_assert(foo_traits::arity == 2, "");
+    static_assert(std::is_same<foo_traits::argument_t<0>, int>::value, "");
+    static_assert(std::is_same<foo_traits::argument_t<1>, float>::value, "");
   }
 
   SUBCASE("std-function") {
     using ft1 = tf::function_traits<std::function<void()>>;
-    static_assert(std::is_same_v<ft1::return_type, void>);
-    static_assert(ft1::arity == 0);
+    static_assert(std::is_same<ft1::return_type, void>::value, "");
+    static_assert(ft1::arity == 0, "");
 
     using ft2 = tf::function_traits<std::function<int(int&, double&&)>&>;
-    static_assert(std::is_same_v<ft2::return_type, int>);
-    static_assert(ft2::arity == 2);
-    static_assert(std::is_same_v<ft2::argument_t<0>, int&>);
-    static_assert(std::is_same_v<ft2::argument_t<1>, double&&>);
+    static_assert(std::is_same<ft2::return_type, int>::value, "");
+    static_assert(ft2::arity == 2, "");
+    static_assert(std::is_same<ft2::argument_t<0>, int&>::value, "");
+    static_assert(std::is_same<ft2::argument_t<1>, double&&>::value, "");
     
     using ft3 = tf::function_traits<std::function<int(int&, double&&)>&&>;
-    static_assert(std::is_same_v<ft3::return_type, int>);
-    static_assert(ft3::arity == 2);
-    static_assert(std::is_same_v<ft3::argument_t<0>, int&>);
-    static_assert(std::is_same_v<ft3::argument_t<1>, double&&>);
+    static_assert(std::is_same<ft3::return_type, int>::value, "");
+    static_assert(ft3::arity == 2, "");
+    static_assert(std::is_same<ft3::argument_t<0>, int&>::value, "");
+    static_assert(std::is_same<ft3::argument_t<1>, double&&>::value, "");
 
     using ft4 = tf::function_traits<const std::function<void(int)>&>;
-    static_assert(std::is_same_v<ft4::return_type, void>);
-    static_assert(ft4::arity == 1);
-    static_assert(std::is_same_v<ft4::argument_t<0>, int>);
+    static_assert(std::is_same<ft4::return_type, void>::value, "");
+    static_assert(ft4::arity == 1, "");
+    static_assert(std::is_same<ft4::argument_t<0>, int>::value, "");
   }
 }
 
