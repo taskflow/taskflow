@@ -154,10 +154,21 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <tr class="memitem:a9057ecd0f3833b717480e914f8568f02"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a9057ecd0f3833b717480e914f8568f02">name</a> (const <a class="elRef" doxygen="/home/tsung-wei/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;name)</td></tr>
 <tr class="memdesc:a9057ecd0f3833b717480e914f8568f02"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a name to the task  <a href="#a9057ecd0f3833b717480e914f8568f02">More...</a><br /></td></tr>
 <tr class="separator:a9057ecd0f3833b717480e914f8568f02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f6f4cec42d016e5eb89390f362ffe99"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
-<tr class="memitem:a2f6f4cec42d016e5eb89390f362ffe99"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a2f6f4cec42d016e5eb89390f362ffe99">work</a> (C &amp;&amp;callable)</td></tr>
-<tr class="memdesc:a2f6f4cec42d016e5eb89390f362ffe99"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a new callable object to the task  <a href="#a2f6f4cec42d016e5eb89390f362ffe99">More...</a><br /></td></tr>
-<tr class="separator:a2f6f4cec42d016e5eb89390f362ffe99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2554a0983b10ec7cb2270b4db0334fb7"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
+<tr class="memitem:a2554a0983b10ec7cb2270b4db0334fb7"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; is_static_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a2554a0983b10ec7cb2270b4db0334fb7">work</a> (C &amp;&amp;callable)</td></tr>
+<tr class="memdesc:a2554a0983b10ec7cb2270b4db0334fb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a static task  <a href="#a2554a0983b10ec7cb2270b4db0334fb7">More...</a><br /></td></tr>
+<tr class="separator:a2554a0983b10ec7cb2270b4db0334fb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29b0523feb88d88780bb0a8d39c9a7f0"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
+<tr class="memitem:a29b0523feb88d88780bb0a8d39c9a7f0"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; is_dynamic_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a29b0523feb88d88780bb0a8d39c9a7f0">work</a> (C &amp;&amp;callable)</td></tr>
+<tr class="memdesc:a29b0523feb88d88780bb0a8d39c9a7f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a dynamic task  <a href="#a29b0523feb88d88780bb0a8d39c9a7f0">More...</a><br /></td></tr>
+<tr class="separator:a29b0523feb88d88780bb0a8d39c9a7f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1d5bd430aaf11c2145b8a5d60999d39"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
+<tr class="memitem:ac1d5bd430aaf11c2145b8a5d60999d39"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; is_condition_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#ac1d5bd430aaf11c2145b8a5d60999d39">work</a> (C &amp;&amp;callable)</td></tr>
+<tr class="memdesc:ac1d5bd430aaf11c2145b8a5d60999d39"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a condition task  <a href="#ac1d5bd430aaf11c2145b8a5d60999d39">More...</a><br /></td></tr>
+<tr class="separator:ac1d5bd430aaf11c2145b8a5d60999d39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa95e8cfa4ab21c38f2d352947c372f7f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#aa95e8cfa4ab21c38f2d352947c372f7f">composed_of</a> (<a class="el" href="classtf_1_1Taskflow.html">Taskflow</a> &amp;)</td></tr>
+<tr class="memdesc:aa95e8cfa4ab21c38f2d352947c372f7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a module task from a taskflow  <a href="#aa95e8cfa4ab21c38f2d352947c372f7f">More...</a><br /></td></tr>
+<tr class="separator:aa95e8cfa4ab21c38f2d352947c372f7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c78c453295a553c1c016e4062da8588"><td class="memTemplParams" colspan="2">template&lt;typename... Ts&gt; </td></tr>
 <tr class="memitem:a8c78c453295a553c1c016e4062da8588"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a8c78c453295a553c1c016e4062da8588">precede</a> (Ts &amp;&amp;... tasks)</td></tr>
 <tr class="memdesc:a8c78c453295a553c1c016e4062da8588"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds precedence links from this to other tasks  <a href="#a8c78c453295a553c1c016e4062da8588">More...</a><br /></td></tr>
@@ -192,6 +203,14 @@ template&lt;typename V &gt; </td></tr>
 <tr class="memitem:a3bf68937662bf291637e4a763476b2e4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a3bf68937662bf291637e4a763476b2e4">for_each_dependent</a> (V &amp;&amp;visitor) const</td></tr>
 <tr class="memdesc:a3bf68937662bf291637e4a763476b2e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">applies an visitor callable to each dependents of the task <br /></td></tr>
 <tr class="separator:a3bf68937662bf291637e4a763476b2e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9897b310803473ceda3fd06f30813676"><td class="memTemplParams" colspan="2"><a id="a9897b310803473ceda3fd06f30813676"></a>
+template&lt;typename T , typename... Ts&gt; </td></tr>
+<tr class="memitem:a9897b310803473ceda3fd06f30813676"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>_precede</b> (T &amp;&amp;task, Ts &amp;&amp;... others)</td></tr>
+<tr class="separator:a9897b310803473ceda3fd06f30813676"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86fae151949c3ec66b34bf94aac33c9b"><td class="memTemplParams" colspan="2"><a id="a86fae151949c3ec66b34bf94aac33c9b"></a>
+template&lt;typename T , typename... Ts&gt; </td></tr>
+<tr class="memitem:a86fae151949c3ec66b34bf94aac33c9b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>_succeed</b> (T &amp;&amp;task, Ts &amp;&amp;... others)</td></tr>
+<tr class="separator:a86fae151949c3ec66b34bf94aac33c9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -209,6 +228,41 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>TaskView</b></td></t
 <div class="textblock"><p>task handle to a node in a task dependency graph </p>
 <p>A <a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> is a wrapper of a node in a dependency graph. It provides a set of methods for users to access and modify the attributes of the task node, preventing direct access to the internal data storage. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="aa95e8cfa4ab21c38f2d352947c372f7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa95e8cfa4ab21c38f2d352947c372f7f">&#9670;&nbsp;</a></span>composed_of()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> &amp; tf::Task::composed_of </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtf_1_1Taskflow.html">Taskflow</a> &amp;&#160;</td>
+          <td class="paramname"><em>tf</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>creates a module task from a taskflow </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">taskflow</td><td>a taskflow object for the module</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>*this</code> </dd></dl>
+
+</div>
+</div>
 <a id="a9057ecd0f3833b717480e914f8568f02"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9057ecd0f3833b717480e914f8568f02">&#9670;&nbsp;</a></span>name()</h2>
 
@@ -285,12 +339,12 @@ template&lt;typename... Ts&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename... Bs&gt; </div>
+template&lt;typename... Ts&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> &amp; tf::Task::succeed </td>
           <td>(</td>
-          <td class="paramtype">Bs &amp;&amp;...&#160;</td>
+          <td class="paramtype">Ts &amp;&amp;...&#160;</td>
           <td class="paramname"><em>tasks</em></td><td>)</td>
           <td></td>
         </tr>
@@ -314,8 +368,8 @@ template&lt;typename... Bs&gt; </div>
 
 </div>
 </div>
-<a id="a2f6f4cec42d016e5eb89390f362ffe99"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2f6f4cec42d016e5eb89390f362ffe99">&#9670;&nbsp;</a></span>work()</h2>
+<a id="a2554a0983b10ec7cb2270b4db0334fb7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2554a0983b10ec7cb2270b4db0334fb7">&#9670;&nbsp;</a></span>work() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -323,7 +377,7 @@ template&lt;typename... Bs&gt; </div>
 template&lt;typename C &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> &amp; tf::Task::work </td>
+          <td class="memname">std::enable_if_t&lt; is_static_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp; tf::Task::work </td>
           <td>(</td>
           <td class="paramtype">C &amp;&amp;&#160;</td>
           <td class="paramname"><em>callable</em></td><td>)</td>
@@ -332,7 +386,7 @@ template&lt;typename C &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>assigns a new callable object to the task </p>
+<p>assigns a static task </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">C</td><td>callable object type</td></tr>
@@ -341,7 +395,77 @@ template&lt;typename C &gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">callable</td><td>a callable object acceptable to <a href="https://en.cppreference.com/w/cpp/utility/functional/function">std::function</a></td></tr>
+    <tr><td class="paramname">callable</td><td>a callable object acceptable to std::function&lt;void()&gt;</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>*this</code> </dd></dl>
+
+</div>
+</div>
+<a id="a29b0523feb88d88780bb0a8d39c9a7f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29b0523feb88d88780bb0a8d39c9a7f0">&#9670;&nbsp;</a></span>work() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::enable_if_t&lt; is_dynamic_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp; tf::Task::work </td>
+          <td>(</td>
+          <td class="paramtype">C &amp;&amp;&#160;</td>
+          <td class="paramname"><em>callable</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>assigns a dynamic task </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">C</td><td>callable object type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callable</td><td>a callable object acceptable to std::function&lt;void(Subflow&amp;)&gt;</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>*this</code> </dd></dl>
+
+</div>
+</div>
+<a id="ac1d5bd430aaf11c2145b8a5d60999d39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1d5bd430aaf11c2145b8a5d60999d39">&#9670;&nbsp;</a></span>work() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::enable_if_t&lt; is_condition_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp; tf::Task::work </td>
+          <td>(</td>
+          <td class="paramtype">C &amp;&amp;&#160;</td>
+          <td class="paramname"><em>callable</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>assigns a condition task </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">C</td><td>callable object type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callable</td><td>a callable object acceptable to std::function&lt;int()&gt;</td></tr>
   </table>
   </dd>
 </dl>
