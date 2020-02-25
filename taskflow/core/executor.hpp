@@ -252,12 +252,8 @@ inline Executor::PerThread& Executor::_per_thread() const {
 
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
-  if(auto worker = _per_thread().worker; worker) {
-    return worker->id;
-  }
-  else {
-    return -1;
-  }
+  auto worker = _per_thread().worker;
+  return worker ? static_cast<int>(worker->id) : -1;
 }
 
 // Procedure: _spawn
@@ -351,7 +347,8 @@ inline void Executor::_explore_task(Worker& thief, Node*& t) {
     }
 
     if(f++ > F) {
-      if(std::this_thread::yield(); y++ > Y) {
+      std::this_thread::yield();
+      if(y++ > Y) {
         break;
       }
     }
@@ -476,8 +473,11 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
   explore_task:
 
-  if(_explore_task(worker, t); t) {
-    if(auto N = _num_thieves.fetch_sub(1); N == 1) {
+  _explore_task(worker, t);
+
+  if(t) {
+    auto N = _num_thieves.fetch_sub(1);
+    if(N == 1) {
       _notifier.notify(false);
     }
     return true;
@@ -492,9 +492,11 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
     _notifier.cancel_wait(waiter);
     //t = (vtm == me) ? _queue.steal() : _workers[vtm].queue.steal();
-
-    if(t = _queue.steal(); t) {
-      if(auto N = _num_thieves.fetch_sub(1); N == 1) {
+    
+    t = _queue.steal();
+    if(t) {
+      auto N = _num_thieves.fetch_sub(1);
+      if(N == 1) {
         _notifier.notify(false);
       }
       return true;
@@ -545,7 +547,9 @@ inline void Executor::_schedule(Node* node, bool bypass) {
   //assert(_workers.size() != 0);
   
   // caller is a worker to this pool
-  if(auto worker = _per_thread().worker; worker != nullptr) {
+  auto worker = _per_thread().worker;
+
+  if(worker != nullptr) {
     if(!bypass) {
       worker->queue.push(node);
     }
@@ -558,7 +562,7 @@ inline void Executor::_schedule(Node* node, bool bypass) {
 
   // other threads
   {
-    std::scoped_lock lock(_queue_mutex);
+    std::lock_guard<std::mutex> lock(_queue_mutex);
     _queue.push(node);
   }
 
@@ -581,7 +585,9 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
   }
 
   // worker thread
-  if(auto worker = _per_thread().worker; worker != nullptr) {
+  auto worker = _per_thread().worker;
+
+  if(worker != nullptr) {
     for(size_t i=0; i<num_nodes; ++i) {
       worker->queue.push(nodes[i]);
     }
@@ -590,7 +596,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
   
   // other threads
   {
-    std::scoped_lock lock(_queue_mutex);
+    std::lock_guard<std::mutex> lock(_queue_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
       _queue.push(nodes[k]);
     }
@@ -632,7 +638,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // dynamic task
   else if (node->_handle.index() == Node::DYNAMIC_WORK) {
 
-    auto& subgraph = std::get<Node::DynamicWork>(node->_handle).subgraph;
+    auto& subgraph = nstd::get<Node::DynamicWork>(node->_handle).subgraph;
 
     // Clear the subgraph before the task execution
     if(!node->_has_state(Node::SPAWNED)) {
@@ -756,11 +762,11 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 inline void Executor::_invoke_static_work(Worker& worker, Node* node) {
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
-    std::invoke(std::get<Node::StaticWork>(node->_handle).work);
+    nstd::get<Node::StaticWork>(node->_handle).work();
     _observer->on_exit(worker.id, TaskView(node));
   }
   else {
-    std::invoke(std::get<Node::StaticWork>(node->_handle).work);
+    nstd::get<Node::StaticWork>(node->_handle).work();
   }
 }
 
@@ -768,11 +774,11 @@ inline void Executor::_invoke_static_work(Worker& worker, Node* node) {
 inline void Executor::_invoke_dynamic_work(Worker& worker, Node* node, Subflow& sf) {
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
-    std::invoke(std::get<Node::DynamicWork>(node->_handle).work, sf);
+    nstd::get<Node::DynamicWork>(node->_handle).work(sf);
     _observer->on_exit(worker.id, TaskView(node));
   }
   else {
-    std::invoke(std::get<Node::DynamicWork>(node->_handle).work, sf);
+    nstd::get<Node::DynamicWork>(node->_handle).work(sf);
   }
 }
 
@@ -780,11 +786,11 @@ inline void Executor::_invoke_dynamic_work(Worker& worker, Node* node, Subflow& 
 inline void Executor::_invoke_condition_work(Worker& worker, Node* node, int& id) {
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
-    id = std::get<Node::ConditionWork>(node->_handle).work();
+    id = nstd::get<Node::ConditionWork>(node->_handle).work();
     _observer->on_exit(worker.id, TaskView(node));
   }
   else {
-    id = std::get<Node::ConditionWork>(node->_handle).work();
+    id = nstd::get<Node::ConditionWork>(node->_handle).work();
   }
 }
 
@@ -799,7 +805,7 @@ inline void Executor::_set_up_module_work(Node* node, bool& ept) {
   // first time to enter this context
   node->_set_state(Node::SPAWNED);
 
-  auto module = std::get<Node::ModuleWork>(node->_handle).module;
+  auto module = nstd::get<Node::ModuleWork>(node->_handle).module;
 
   if(module->empty()) {
     ept = true;
@@ -840,7 +846,6 @@ inline std::future<void> Executor::run(Taskflow& f) {
 // Function: run
 template <typename C>
 std::future<void> Executor::run(Taskflow& f, C&& c) {
-  static_assert(std::is_invocable<C>::value);
   return run_n(f, 1, std::forward<C>(c));
 }
 
@@ -890,7 +895,7 @@ inline void Executor::_tear_down_topology(Topology** tpg) {
   //assert(&tpg == &(f._topologies.front()));
 
   // case 1: we still need to run the topology again
-  if(!std::invoke((*tpg)->_pred)) {
+  if(! (*tpg)->_pred() ) {
     //tpg->_recover_num_sinks();
 
     assert((*tpg)->_join_counter == 0);
@@ -902,7 +907,7 @@ inline void Executor::_tear_down_topology(Topology** tpg) {
   else {
     
     if((*tpg)->_call != nullptr) {
-      std::invoke((*tpg)->_call);
+      (*tpg)->_call();
     }
 
     f._mtx.lock();
@@ -960,13 +965,10 @@ inline void Executor::_tear_down_topology(Topology** tpg) {
 template <typename P, typename C>
 std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
 
-  // Predicate must return a boolean value
-  static_assert(std::is_invocable_v<C> && std::is_invocable_v<P>);
-  
   _increment_topology();
 
   // Special case of predicate
-  if(f.empty() || std::invoke(pred)) {
+  if(f.empty() || pred()) {
     std::promise<void> promise;
     promise.set_value();
     _decrement_topology_and_notify();
@@ -1014,10 +1016,12 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
   std::future<void> future;
   
   {
-    std::scoped_lock lock(f._mtx);
+    std::lock_guard<std::mutex> lock(f._mtx);
 
     // create a topology for this run
-    tpg = &(f._topologies.emplace_back(f, std::forward<P>(pred), std::forward<C>(c)));
+    //tpg = &(f._topologies.emplace_back(f, std::forward<P>(pred), std::forward<C>(c)));
+    f._topologies.emplace_back(f, std::forward<P>(pred), std::forward<C>(c));
+    tpg = &(f._topologies.back());
     future = tpg->_promise.get_future();
    
     if(f._topologies.size() == 1) {
@@ -1039,13 +1043,13 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
 
 // Procedure: _increment_topology
 inline void Executor::_increment_topology() {
-  std::scoped_lock<std::mutex> lock(_topology_mutex);
+  std::lock_guard<std::mutex> lock(_topology_mutex);
   ++_num_topologies;
 }
 
 // Procedure: _decrement_topology_and_notify
 inline void Executor::_decrement_topology_and_notify() {
-  std::scoped_lock<std::mutex> lock(_topology_mutex);
+  std::lock_guard<std::mutex> lock(_topology_mutex);
   if(--_num_topologies == 0) {
     _topology_cv.notify_all();
   }
@@ -1053,13 +1057,13 @@ inline void Executor::_decrement_topology_and_notify() {
 
 // Procedure: _decrement_topology
 inline void Executor::_decrement_topology() {
-  std::scoped_lock lock(_topology_mutex);
+  std::lock_guard<std::mutex> lock(_topology_mutex);
   --_num_topologies;
 }
 
 // Procedure: wait_for_all
 inline void Executor::wait_for_all() {
-  std::unique_lock lock(_topology_mutex);
+  std::unique_lock<std::mutex> lock(_topology_mutex);
   _topology_cv.wait(lock, [&](){ return _num_topologies == 0; });
 }
 

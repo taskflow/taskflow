@@ -18,7 +18,7 @@
 #include <numeric>
 #include <iomanip>
 #include <cassert>
-#include <variant>
+//#include <variant>
 #include <cmath>
 
 namespace tf {
@@ -51,37 +51,6 @@ struct dependent_false {
 template <typename... T>
 constexpr auto dependent_false_v = dependent_false<T...>::value;
 
-// Struct: is_iterator
-template <typename T, typename = void>
-struct is_iterator {
-  static constexpr bool value = false;
-};
-
-template <typename T>
-struct is_iterator<
-  T, 
-  std::enable_if_t<!std::is_same_v<typename std::iterator_traits<T>::value_type, void>>
-> {
-  static constexpr bool value = true;
-};
-
-template <typename T>
-inline constexpr bool is_iterator_v = is_iterator<T>::value;
-
-// Struct: is_iterable
-template <typename T, typename = void>
-struct is_iterable : std::false_type {
-};
-
-template <typename T>
-struct is_iterable<T, std::void_t<decltype(std::declval<T>().begin()),
-                                  decltype(std::declval<T>().end())>>
-  : std::true_type {
-};
-
-template <typename T>
-inline constexpr bool is_iterable_v = is_iterable<T>::value;
-
 // Struct: MoC
 // Move-on-copy wrapper.
 template <typename T>
@@ -94,6 +63,11 @@ struct MoC {
   
   mutable T object; 
 };
+
+template <typename T>
+auto make_moc(T&& m) {
+  return MoC<T>(std::forward<T>(m));
+}
 
 //-----------------------------------------------------------------------------
 // Functors.

@@ -1,10 +1,12 @@
 #pragma once
 
+#include "declarations.hpp"
 #include "../error/error.hpp"
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
 #include "../utility/passive_vector.hpp"
-#include "declarations.hpp"
+#include "../nstd/variant.hpp"
+
 
 namespace tf {
 
@@ -122,8 +124,8 @@ class Node {
 
     std::string _name;
 
-    std::variant<
-      std::monostate,   // placeholder
+    nstd::variant<
+      nstd::monostate,   // placeholder
       StaticWork,       // static tasking
       DynamicWork,      // dynamic tasking
       ConditionWork,    // conditional tasking
@@ -200,7 +202,7 @@ inline Node::~Node() {
 
   if(_handle.index() == DYNAMIC_WORK) {
 
-    auto& subgraph = std::get<DynamicWork>(_handle).subgraph;
+    auto& subgraph = nstd::get<DynamicWork>(_handle).subgraph;
 
     std::vector<Node*> nodes;
 
@@ -215,7 +217,7 @@ inline Node::~Node() {
 
       if(nodes[i]->_handle.index() == DYNAMIC_WORK) {
 
-        auto& sbg = std::get<DynamicWork>(nodes[i]->_handle).subgraph;
+        auto& sbg = nstd::get<DynamicWork>(nodes[i]->_handle).subgraph;
         std::move(
           sbg._nodes.begin(), sbg._nodes.end(), std::back_inserter(nodes)
         );

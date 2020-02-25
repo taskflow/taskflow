@@ -240,14 +240,17 @@ class Task {
 
     Node* _node {nullptr};
 
-    template <typename S>
-    void _gather(S&);
-
-    template <typename S>
-    void _precede(S&);
+    template <typename T>
+    void _precede(T&&);
     
-    template <typename S>
-    void _succeed(S&);
+    template <typename T, typename... Rest>
+    void _precede(T&&, Rest&&...);
+    
+    template <typename T>
+    void _succeed(T&&);
+    
+    template <typename T, typename... Rest>
+    void _succeed(T&&, Rest&&...);
 };
 
 // Constructor
@@ -260,16 +263,44 @@ inline Task::Task(const Task& rhs) : _node {rhs._node} {
 
 // Function: precede
 template <typename... Ts>
-Task& Task::precede(Ts&&... tgts) {
-  (_node->_precede(tgts._node), ...);
+Task& Task::precede(Ts&&... tasks) {
+  //(_node->_precede(tgts._node), ...);
+  _precede(std::forward<Ts>(tasks)...);
   return *this;
 }
 
+// Procedure: precede
+template <typename T>
+void Task::_precede(T&& other) {
+  _node->_precede(other._node);
+}
+
+// Procedure: _precede
+template <typename T, typename... Ts>
+void Task::_precede(T&& task, Ts&&... others) {
+  _precede(std::forward<T>(task));
+  _precede(std::forward<Ts>(others)...);
+}
+
 // Function: succeed
-template <typename... Bs>
-Task& Task::succeed(Bs&&... tgts) {
-  (tgts._node->_precede(_node), ...);
+template <typename... Ts>
+Task& Task::succeed(Ts&&... tasks) {
+  //(tasks._node->_precede(_node), ...);
+  _succeed(std::forward<Ts>(tasks)...);
   return *this;
+}
+
+// Procedure: succeed
+template <typename T>
+void Task::_succeed(T&& other) {
+  other._node->_precede(_node);
+}
+
+// Procedure: _succeed
+template <typename T, typename... Ts>
+void Task::_succeed(T&& task, Ts&&... others) {
+  _succeed(std::forward<T>(task));
+  _succeed(std::forward<Ts>(others)...);
 }
 
 // Function: composed_of
@@ -313,7 +344,7 @@ inline void Task::reset() {
 
 // Procedure: reset_work
 inline void Task::reset_work() {
-  _node->_handle = std::monostate{};
+  _node->_handle = nstd::monostate{};
 }
 
 // Function: name

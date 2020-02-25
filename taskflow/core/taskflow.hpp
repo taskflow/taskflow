@@ -234,7 +234,7 @@ inline void Taskflow::_dump(
 
   if(node->_handle.index() == Node::DYNAMIC_WORK) {
 
-    auto& sbg = std::get<Node::DynamicWork>(node->_handle).subgraph;
+    auto& sbg = nstd::get<Node::DynamicWork>(node->_handle).subgraph;
  
     //if(node->_subgraph && !node->_subgraph->empty()) {
     if(!sbg.empty()) {
@@ -267,7 +267,7 @@ inline void Taskflow::_dump(
     // module task
     else {
 
-      auto module = std::get<Node::ModuleWork>(n->_handle).module;
+      auto module = nstd::get<Node::ModuleWork>(n->_handle).module;
 
       os << 'p' << n << "[shape=box, color=blue, label=\"";
       if(n->_name.empty()) os << n;

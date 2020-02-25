@@ -95,7 +95,7 @@ class FlowBuilder {
     template <
       typename I, 
       typename C, 
-      std::enable_if_t<std::is_arithmetic_v<I>, void>* = nullptr 
+      std::enable_if_t<std::is_arithmetic<I>::value, void>* = nullptr 
     >
     std::pair<Task, Task> parallel_for(
       I beg, I end, I step, C&& callable, size_t chunk = 1
@@ -369,20 +369,20 @@ Task FlowBuilder::emplace(C&& c) {
   // static task
   if constexpr(is_static_task_v<C>) {
     auto n = _graph.emplace_back(
-      std::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
+      nstd::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
     );
     return Task(n);
   }
   // condition task
   else if constexpr(is_condition_task_v<C>) {
     auto n = _graph.emplace_back(
-      std::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
+      nstd::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
     );
     return Task(n);
   }
   // dynamic task
   else if constexpr(is_dynamic_task_v<C>) {
-    auto n = _graph.emplace_back(std::in_place_type_t<Node::DynamicWork>{}, 
+    auto n = _graph.emplace_back(nstd::in_place_type_t<Node::DynamicWork>{}, 
     [c=std::forward<C>(c)] (Subflow& fb) mutable {
       // first time execution
       if(fb._graph.empty()) {
@@ -399,7 +399,7 @@ Task FlowBuilder::emplace(C&& c) {
 // Function: composed_of    
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
   auto node = _graph.emplace_back(
-    std::in_place_type_t<Node::ModuleWork>{}, taskflow
+    nstd::in_place_type_t<Node::ModuleWork>{}, taskflow
   );
   return Task(node);
 }
@@ -465,7 +465,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(
     auto e = beg;
     
     // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
+    if constexpr(std::is_same<category, std::random_access_iterator_tag>::value) {
       size_t x = std::distance(beg, end);
       std::advance(e, std::min(x, chunk));
     }
@@ -548,7 +548,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(
 template <
   typename I, 
   typename C, 
-  std::enable_if_t<std::is_arithmetic_v<I>, void>*
+  std::enable_if_t<std::is_arithmetic<I>::value, void>*
 >
 std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t chunk) {
   
@@ -569,7 +569,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
   }
 
   // Integer indices
-  if constexpr(std::is_integral_v<T>) {
+  if constexpr(std::is_integral<T>::value) {
     // positive case
     if(beg < end) {
       while(beg != end) {
@@ -602,7 +602,7 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
     }
   }
   // We enumerate the entire sequence to avoid floating error
-  else if constexpr(std::is_floating_point_v<T>) {
+  else if constexpr(std::is_floating_point<T>::value) {
 
     // positive case
     if(beg < end) {
@@ -727,7 +727,7 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
     auto e = beg;
     
     // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
+    if constexpr(std::is_same<category, std::random_access_iterator_tag>::value) {
       size_t r = std::distance(beg, end);
       std::advance(e, std::min(r, g));
     }
@@ -753,7 +753,7 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
   }
 
   // target synchronizer 
-  target.work([&result, bop, res=MoC{std::move(g_results)}, w=id] () {
+  target.work([&result, bop, res=make_moc(std::move(g_results)), w=id] () {
     for(auto i=0u; i<w; i++) {
       result = bop(std::move(result), res.object[i]);
     }
@@ -786,7 +786,7 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
     auto e = beg;
     
     // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
+    if constexpr(std::is_same<category, std::random_access_iterator_tag>::value) {
       size_t r = std::distance(beg, end);
       std::advance(e, std::min(r, g));
     }
@@ -819,7 +819,7 @@ std::pair<Task, Task> FlowBuilder::transform_reduce(
   }
 
   // target synchronizer 
-  target.work([&result, bop, g_results=MoC{std::move(g_results)}, w=id] () {
+  target.work([&result, bop, g_results=make_moc(std::move(g_results)), w=id] () {
     for(auto i=0u; i<w; i++) {
       result = bop(std::move(result), std::move(g_results.object[i]));
     }
@@ -912,7 +912,7 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
     auto e = beg;
     
     // Case 1: random access iterator
-    if constexpr(std::is_same_v<category, std::random_access_iterator_tag>) {
+    if constexpr(std::is_same<category, std::random_access_iterator_tag>::value) {
       size_t r = std::distance(beg, end);
       std::advance(e, std::min(r, g));
     }
@@ -949,7 +949,7 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
   //    result = op(std::move(result), fu.get());
   //  }
   //});
-  target.work([g_results=MoC{std::move(g_results)}, &result, op, w=id] () {
+  target.work([g_results=make_moc(std::move(g_results)), &result, op, w=id] () {
     for(auto i=0u; i<w; i++) {
       result = op(std::move(result), g_results.object[i]);
     }
