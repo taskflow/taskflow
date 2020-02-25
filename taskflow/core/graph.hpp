@@ -101,7 +101,10 @@ class Node {
 
   // module work handle
   struct ModuleWork {
-    ModuleWork(Taskflow&);
+
+    template <typename T>
+    ModuleWork(T&&);
+
     Taskflow* module {nullptr};
   };
 
@@ -184,7 +187,8 @@ Node::ConditionWork::ConditionWork(C&& c) : work {std::forward<C>(c)} {
 // ----------------------------------------------------------------------------
     
 // Constructor
-inline Node::ModuleWork::ModuleWork(Taskflow& tf) : module {&tf} {
+template <typename T>
+inline Node::ModuleWork::ModuleWork(T&& tf) : module {tf} {
 }
 
 // ----------------------------------------------------------------------------

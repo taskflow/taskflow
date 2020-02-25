@@ -399,7 +399,7 @@ Task FlowBuilder::emplace(C&& c) {
 // Function: composed_of    
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
   auto node = _graph.emplace_back(
-    nstd::in_place_type_t<Node::ModuleWork>{}, taskflow
+    nstd::in_place_type_t<Node::ModuleWork>{}, &taskflow
   );
   return Task(node);
 }
