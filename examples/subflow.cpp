@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     std::exit(EXIT_FAILURE);
   }
 
-  std::string_view opt(argv[1]);
+  std::string opt(argv[1]);
 
   if(opt != "detach" && opt != "join") {
     std::cerr << usage << std::endl;
@@ -37,9 +37,9 @@ int main(int argc, char* argv[]) {
   tf::Executor executor(4);
   tf::Taskflow taskflow("Dynamic Tasking Demo");
 
-  auto [A, B, C, D] = taskflow.emplace(
-    // Task A
-    [] () { std::cout << "TaskA\n"; },              
+  // Task A
+  auto A = taskflow.emplace([] () { std::cout << "TaskA\n"; });
+  auto B = taskflow.emplace(
     // Task B
     [cap=std::vector<int>{1,2,3,4,5,6,7,8}, detached] (tf::Subflow& subflow) {
       std::cout << "TaskB is spawning B1, B2, and B3 ...\n";
@@ -64,13 +64,11 @@ int main(int argc, char* argv[]) {
 
       // detach or join the subflow (by default the subflow join at B)
       if(detached) subflow.detach();
-    },
-    // Task C
-    [] () { std::cout << "TaskC\n"; },               
-    // Task D
-    [] () { std::cout << "TaskD\n"; }                
-  );                                                 
-                                         
+    }
+  );
+  
+  auto C = taskflow.emplace([] () { std::cout << "TaskC\n"; });
+  auto D = taskflow.emplace([] () { std::cout << "TaskD\n"; });
   A.name("A");
   B.name("B");
   C.name("C");

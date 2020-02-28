@@ -97,15 +97,15 @@ int main(int argc, char* argv[]) {
     std::cerr << "usage: ./reduce [reduce|transform_reduce]" << std::endl;
     std::exit(EXIT_FAILURE);
   }
-  
-  if(std::string_view method(argv[1]); method == "reduce") {
+
+  if(std::strcmp(argv[1], "reduce") == 0) {
     reduce();
   }
-  else if(method == "transform_reduce") {
+  else if(std::strcmp(argv[1], "transform_reduce")) {
     transform_reduce();
   }
   else {
-    std::cerr << "invalid method " << method.data() << std::endl;
+    std::cerr << "invalid method " << argv[1] << std::endl;
     std::exit(EXIT_FAILURE);
   }
 

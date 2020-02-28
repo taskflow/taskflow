@@ -15,6 +15,18 @@ cache:
 # ref 1: https://github.com/google/re2
 matrix:
   include:
+    
+    # Linux g++6
+    - os: linux
+      compiler: g++
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env:
+        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
 
     # Linux g++7
     - os: linux

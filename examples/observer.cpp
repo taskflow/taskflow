@@ -9,16 +9,14 @@ int main(){
   // Create a taskflow of eight tasks
   tf::Taskflow taskflow;
 
-  auto [A, B, C, D, E, F, G, H] = taskflow.emplace(
-    [] () { std::cout << "1\n"; },
-    [] () { std::cout << "2\n"; },
-    [] () { std::cout << "3\n"; },
-    [] () { std::cout << "4\n"; },
-    [] () { std::cout << "5\n"; },
-    [] () { std::cout << "6\n"; },
-    [] () { std::cout << "7\n"; },
-    [] () { std::cout << "8\n"; }
-  );
+  auto A = taskflow.emplace([] () { std::cout << "1\n"; });
+  auto B = taskflow.emplace([] () { std::cout << "2\n"; });
+  auto C = taskflow.emplace([] () { std::cout << "3\n"; });
+  auto D = taskflow.emplace([] () { std::cout << "4\n"; });
+  auto E = taskflow.emplace([] () { std::cout << "5\n"; });
+  auto F = taskflow.emplace([] () { std::cout << "6\n"; });
+  auto G = taskflow.emplace([] () { std::cout << "7\n"; });
+  auto H = taskflow.emplace([] () { std::cout << "8\n"; });
 
   A.name("A");
   B.name("B");

@@ -11,11 +11,9 @@ void composition_example_1() {
 
   // f1 has three independent tasks
   tf::Taskflow f1("F1");
-  auto [f1A, f1B, f1C] = f1.emplace(
-    [&](){ std::cout << "F1 TaskA\n"; },
-    [&](){ std::cout << "F1 TaskB\n"; },
-    [&](){ std::cout << "F1 TaskC\n"; }
-  );
+  auto f1A = f1.emplace([](){ std::cout << "F1 TaskA\n"; });
+  auto f1B = f1.emplace([](){ std::cout << "F1 TaskB\n"; });
+  auto f1C = f1.emplace([](){ std::cout << "F1 TaskC\n"; });
   f1A.name("f1A");
   f1B.name("f1B");
   f1C.name("f1C");
@@ -26,12 +24,10 @@ void composition_example_1() {
   //        |----> f2C ----> f1_module_task ----> f2D
   // f2B --- 
   tf::Taskflow f2("F2");
-  auto [f2A, f2B, f2C, f2D] = f2.emplace(
-    [&](){ std::cout << "  F2 TaskA\n"; },
-    [&](){ std::cout << "  F2 TaskB\n"; },
-    [&](){ std::cout << "  F2 TaskC\n"; },
-    [&](){ std::cout << "  F2 TaskD\n"; }
-  );
+  auto f2A = f2.emplace([](){ std::cout << "  F2 TaskA\n"; });
+  auto f2B = f2.emplace([](){ std::cout << "  F2 TaskB\n"; });
+  auto f2C = f2.emplace([](){ std::cout << "  F2 TaskC\n"; });
+  auto f2D = f2.emplace([](){ std::cout << "  F2 TaskD\n"; });
   f2A.name("f2A");
   f2B.name("f2B");
   f2C.name("f2C");
@@ -58,10 +54,8 @@ void composition_example_2() {
 
   // f1 has two independent tasks
   tf::Taskflow f1("F1");
-  auto [f1A, f1B] = f1.emplace(
-    [&](){ std::cout << "F1 TaskA\n"; },
-    [&](){ std::cout << "F1 TaskB\n"; }
-  );
+  auto f1A = f1.emplace([&](){ std::cout << "F1 TaskA\n"; });
+  auto f1B = f1.emplace([&](){ std::cout << "F1 TaskB\n"; });
   f1A.name("f1A");
   f1B.name("f1B");
 
@@ -71,11 +65,9 @@ void composition_example_2() {
   //
   //  f1_module_task
   tf::Taskflow f2("F2");
-  auto [f2A, f2B, f2C] = f2.emplace(
-    [&](){ std::cout << "  F2 TaskA\n"; },
-    [&](){ std::cout << "  F2 TaskB\n"; },
-    [&](){ std::cout << "  F2 TaskC\n"; }
-  );
+  auto f2A = f2.emplace([&](){ std::cout << "  F2 TaskA\n"; });
+  auto f2B = f2.emplace([&](){ std::cout << "  F2 TaskB\n"; });
+  auto f2C = f2.emplace([&](){ std::cout << "  F2 TaskC\n"; });
   f2A.name("f2A");
   f2B.name("f2B");
   f2C.name("f2C");
