@@ -18,7 +18,7 @@ var NAVTREE =
         [ "Q3: What is the difference between static tasking and dynamic tasking?", "FAQ.html#GeneralQuestion3", null ],
         [ "Q4: How many tasks can Cpp-Taskflow handle?", "FAQ.html#GeneralQuestion4", null ],
         [ "Q5: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?", "FAQ.html#GeneralQuestion5", null ],
-        [ "Q6: Does Cpp-Taskflow have backward compatibility with C++03/11/14?", "FAQ.html#GeneralQuestion6", null ],
+        [ "Q6: Does Cpp-Taskflow have backward compatibility with C++03/98/11?", "FAQ.html#GeneralQuestion6", null ],
         [ "Q7: How does Cpp-Taskflow schedule tasks?", "FAQ.html#GeneralQuestion7", null ]
       ] ],
       [ "Programming Questions", "FAQ.html#ProgrammingQuestions", [
