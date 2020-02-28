@@ -1,7 +1,7 @@
 sudo: required
 
 # distribution
-dist: xenial
+dist: trusty
   
 # Enable C++ support
 language: cpp
@@ -91,10 +91,17 @@ matrix:
       compiler: clang++
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
-          packages: ['clang-5.0', 'g++-7']
+          packages: 
+            - clang-5.0
+            - g++-7
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-5.0
+            - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-5.0 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
       env:
         - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+      addons: &clang50
     
     # Linux clang++6
     - os: linux
