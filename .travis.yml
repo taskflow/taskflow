@@ -76,18 +76,26 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-9 CXX=g++-9"
     
-    # Linux clang++-3.4
+    # Linux clang++4
     - os: linux
+      compiler: clang++
       addons:
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.4
-          packages:
-            - clang-3.4
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
+          packages: ['clang-4.0', 'g++-5']
       env:
-        - MATRIX_EVAL="CC=clang-3.4 && CXX=clang++-3.4"
-
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+    
+    # Linux clang++5
+    - os: linux
+      compiler: clang++
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+          packages: ['clang-5.0', 'g++-7']
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+    
     # Linux clang++6
     - os: linux
       compiler: clang++
