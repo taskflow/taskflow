@@ -7,7 +7,7 @@ namespace tf {
 /** 
 @class FlowBuilder
 
-@brief Building blocks of a task dependency graph.
+@brief Building methods of a task dependency graph.
 
 */
 class FlowBuilder {
@@ -17,7 +17,7 @@ class FlowBuilder {
   public:
     
     /**
-    @brief construct a flow builder object
+    @brief constructs a flow builder object
 
     @param graph a task dependency graph to manipulate
     */

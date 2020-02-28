@@ -4,16 +4,59 @@
 
 namespace tf {
 
+/**
+@class cudaFlow
+
+@brief Building methods of a cuda task dependency graph.
+*/
 class cudaFlow {
 
   public:
     
-    cudaFlow(cudaGraph&);
+    /**
+    @brief constructs a cudaFlow builder object
 
+    @param graph a cudaGraph to manipulate
+    */
+    cudaFlow(cudaGraph& graph);
+    
+    /**
+    @brief constructs a kernel task
+    
+    @tparam F kernel function type
+    @tparam ArgsT kernel function parameters type
+
+    @param g configured grid
+    @param b configured block
+    @param s configured shared memory
+    @param f kernel function
+    @param args arguments to forward to the kernel function by copy
+
+    @return cudaTask handle
+    */
     template <typename F, typename... ArgsT>
-    cudaTask kernel(dim3 grid, dim3 block, size_t shm, F&& func, ArgsT&&... args);
+    cudaTask kernel(dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
+    
+    /**
+    @brief constructs an 1D copy task
+    
+    @tparam T element type (non-void)
 
-    cudaTask copy(void* tgt, void* src, size_t num, size_t size);
+    @param tgt pointer to the target memory block
+    @param src pointer to the source memory block
+    @param num number of elements to copy
+
+    @return cudaTask handle
+
+    A copy task transfers num*sizeof(T) bytes of data from a source location
+    to a target location. Direction can be either cpu-to-gpu, gpu-to-cpu,
+    gpu-to-gpu, or gpu-to-cpu.
+    */
+    template <
+      typename T, 
+      std::enable_if_t<!std::is_same<T, void>::value, void>* = nullptr
+    >
+    cudaTask copy(T* tgt, T* src, size_t num);
 
   private:
 
@@ -50,18 +93,22 @@ cudaTask cudaFlow::kernel(dim3 grid, dim3 block, size_t shm, F&& func, ArgsT&&..
 }
 
 // Function: copy
-inline cudaTask cudaFlow::copy(void* tgt, void* src, size_t num, size_t size) {
+template <
+  typename T,
+  std::enable_if_t<!std::is_same<T, void>::value, void>*
+>
+cudaTask cudaFlow::copy(T* tgt, T* src, size_t num) {
 
   auto node = _graph.emplace_back();
   auto& param = node->_handle.emplace<cudaNode::Copy>().param;
 
   param.srcArray = nullptr;
   param.srcPos = ::make_cudaPos(0, 0, 0);
-  param.srcPtr = ::make_cudaPitchedPtr(src, num*size, num, 1);
+  param.srcPtr = ::make_cudaPitchedPtr(src, num*sizeof(T), num, 1);
   param.dstArray = nullptr;
   param.dstPos = ::make_cudaPos(0, 0, 0);
-  param.dstPtr = ::make_cudaPitchedPtr(tgt, num*size, num, 1);
-  param.extent = ::make_cudaExtent(num*size, 1, 1);
+  param.dstPtr = ::make_cudaPitchedPtr(tgt, num*sizeof(T), num, 1);
+  param.extent = ::make_cudaExtent(num*sizeof(T), 1, 1);
   param.kind = cudaMemcpyDefault;
 
   TF_CHECK_CUDA(

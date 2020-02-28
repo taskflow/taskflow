@@ -11,7 +11,7 @@ project(Cpp-Taskflow VERSION 2.3.0 LANGUAGES CXX)
 # build options
 option(TF_BUILD_EXAMPLES "Enables build of examples" ON)
 option(TF_BUILD_TESTS "Enables build of tests" ON)
-option(TF_BUILD_CUDA "Enables build of cuda code" OFF)
+option(TF_ENABLE_CUDA "Enables build of cuda code" OFF)
 option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
 
 # Include additional language check
@@ -53,7 +53,7 @@ endif()
 
 # NVCC Compiler
 # https://cliutils.gitlab.io/modern-cmake/chapters/packages/CUDA.html
-if(${TF_BUILD_CUDA})
+if(${TF_ENABLE_CUDA})
 
 check_language(CUDA)
 if(CMAKE_CUDA_COMPILER)
@@ -184,7 +184,7 @@ message(STATUS "CMAKE_PREFIX_PATH: " ${CMAKE_PREFIX_PATH})
 message(STATUS "PROJECT_NAME: " ${PROJECT_NAME})
 message(STATUS "TF_BUILD_EXAMPLES: " ${TF_BUILD_EXAMPLES})
 message(STATUS "TF_BUILD_TESTS: " ${TF_BUILD_TESTS})
-message(STATUS "TF_BUILD_CUDA: " ${TF_BUILD_CUDA})
+message(STATUS "TF_ENABLE_CUDA: " ${TF_ENABLE_CUDA})
 message(STATUS "TF_BUILD_BENCHMARKS: " ${TF_BUILD_BENCHMARKS})
 message(STATUS "TF_INC_INSTALL_DIR: " ${TF_INC_INSTALL_DIR})
 message(STATUS "TF_LIB_INSTALL_DIR: " ${TF_LIB_INSTALL_DIR})
@@ -272,18 +272,12 @@ target_link_libraries(
  composition ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
 
-#add_executable(dice_pools ${TF_EXAMPLE_DIR}/dice_pools.cpp)
-#target_link_libraries(dice_pools ${PROJECT_NAME} Threads::Threads)  
-#
-#add_executable(get_best_dice ${TF_EXAMPLE_DIR}/get_best_dice.cpp)
-#target_link_libraries(get_best_dice ${PROJECT_NAME} Threads::Threads)  
-
-if(${TF_BUILD_CUDA})
+if(${TF_ENABLE_CUDA})
 add_executable(saxpy ${TF_EXAMPLE_DIR}/saxpy.cu)
 target_link_libraries(
   saxpy ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
-endif(${TF_BUILD_CUDA})
+endif(${TF_ENABLE_CUDA})
 
 endif(${TF_BUILD_EXAMPLES})  # ---- if TF_BUILD_EXAMPLES
 
@@ -418,8 +412,8 @@ add_test(cyclic_cond.5threads ${TF_UTEST_DIR}/basics -tc=CyclicCond.5threads)
 add_test(cyclic_cond.6threads ${TF_UTEST_DIR}/basics -tc=CyclicCond.6threads)
 add_test(cyclic_cond.7threads ${TF_UTEST_DIR}/basics -tc=CyclicCond.7threads)
 add_test(cyclic_cond.8threads ${TF_UTEST_DIR}/basics -tc=CyclicCond.8threads)
-add_test(btree_cond               ${TF_UTEST_DIR}/basics -tc=BTreeCondition)
-add_test(dynamic_btree_cond       ${TF_UTEST_DIR}/basics -tc=DynamicBTreeCondition)
+add_test(btree_cond           ${TF_UTEST_DIR}/basics -tc=BTreeCondition)
+add_test(dynamic_btree_cond   ${TF_UTEST_DIR}/basics -tc=DynamicBTreeCondition)
 add_test(nested_cond.1thread  ${TF_UTEST_DIR}/basics -tc=NestedCond.1thread)
 add_test(nested_cond.2threads ${TF_UTEST_DIR}/basics -tc=NestedCond.2threads)
 add_test(nested_cond.3threads ${TF_UTEST_DIR}/basics -tc=NestedCond.3threads)
@@ -469,6 +463,26 @@ add_test(selection_sort ${TF_UTEST_DIR}/sort -tc=SelectionSort)
 add_test(merge_sort ${TF_UTEST_DIR}/sort -tc=MergeSort)
 add_test(quick_sort ${TF_UTEST_DIR}/sort -tc=QuickSort)
 
+
+if(${TF_ENABLE_CUDA})
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR}/cuda)
+
+add_executable(cuda-basics ${TF_UTEST_DIR}/cuda/basics.cu)
+target_link_libraries(
+  cuda-basics ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
+target_include_directories(cuda-basics PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
+add_test(cuda-basics.builder   ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Builder)
+add_test(cuda-basics.Set.i8  ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Set.Int8)
+add_test(cuda-basics.Set.i16 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Set.Int16)
+add_test(cuda-basics.Set.i32 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Set.Int32)
+add_test(cuda-basics.Set.f32 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Set.Float)
+add_test(cuda-basics.Add.i8 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Add.Int8)
+add_test(cuda-basics.Add.i16 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Add.Int16)
+add_test(cuda-basics.Add.i32 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Add.Int32)
+
+endif(${TF_ENABLE_CUDA})
 
 endif()
 

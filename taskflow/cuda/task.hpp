@@ -43,6 +43,18 @@ class cudaTask {
     cudaTask& precede(Ts&&... tasks);
     
     /**
+    @brief adds precedence links from other tasks to this
+
+    @tparam Ts... parameter pack
+
+    @param tasks one or multiple tasks
+
+    @return @c *this
+    */
+    template <typename... Ts>
+    cudaTask& succeed(Ts&&... tasks);
+    
+    /**
     @brief assigns a name to the task
 
     @param name a @std_string acceptable string
@@ -56,6 +68,16 @@ class cudaTask {
     */
     const std::string& name() const;
 
+    /**
+    @brief queries the number of successors
+    */
+    size_t num_successors() const;
+
+    /**
+    @brief queries if the task is associated with a cudaNode
+    */
+    bool empty() const;
+
   private:
     
     cudaTask(cudaNode*);
@@ -67,6 +89,12 @@ class cudaTask {
 
     template <typename T, typename... Ts>
     void _precede(T&&, Ts&&...);
+    
+    template <typename T>
+    void _succeed(T&&);
+
+    template <typename T, typename... Ts>
+    void _succeed(T&&, Ts&&...);
 };
 
 // Constructor
@@ -93,6 +121,31 @@ void cudaTask::_precede(T&& task, Ts&&... others) {
   _precede(std::forward<Ts>(others)...);
 }
 
+// Function: succeed
+template <typename... Ts>
+cudaTask& cudaTask::succeed(Ts&&... tasks) {
+  _succeed(std::forward<Ts>(tasks)...);
+  return *this;
+}
+
+// Procedure: succeed
+template <typename T>
+void cudaTask::_succeed(T&& other) {
+  other._node->_precede(_node);
+}
+
+// Procedure: _succeed
+template <typename T, typename... Ts>
+void cudaTask::_succeed(T&& task, Ts&&... others) {
+  _succeed(std::forward<T>(task));
+  _succeed(std::forward<Ts>(others)...);
+}
+
+// Function: empty
+inline bool cudaTask::empty() const {
+  return _node == nullptr;
+}
+
 // Function: name
 inline cudaTask& cudaTask::name(const std::string& name) {
   _node->_name = name;
@@ -102,6 +155,11 @@ inline cudaTask& cudaTask::name(const std::string& name) {
 // Function: name
 inline const std::string& cudaTask::name() const {
   return _node->_name;
+}
+
+// Function: num_successors
+inline size_t cudaTask::num_successors() const {
+  return _node->_successors.size();
 }
 
 }  // end of namespace tf -----------------------------------------------------

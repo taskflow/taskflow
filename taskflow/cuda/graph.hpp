@@ -25,19 +25,18 @@ class cudaNode {
   struct Copy {
     
     template <typename... ArgsT>
-    Copy(ArgsT&&... args) {
-    }
+    Copy(ArgsT&&...);
 
-    cudaMemcpy3DParms param = {0};
+    cudaMemcpy3DParms param;
   };
   
   // Kernel handle
   struct Kernel {
     
     template <typename... ArgsT>
-    Kernel(ArgsT&&...) {}
+    Kernel(ArgsT&&...);
 
-    cudaKernelNodeParams param = {0};
+    cudaKernelNodeParams param;
   };
 
   public:
@@ -77,6 +76,8 @@ class cudaGraph {
     template <typename... ArgsT>
     cudaNode* emplace_back(ArgsT&&...);
 
+    cudaGraph_t native_handle();
+
   private:
     
     cudaGraph_t _handle {nullptr};
@@ -87,6 +88,16 @@ class cudaGraph {
 // ----------------------------------------------------------------------------
 // cudaNode definitions
 // ----------------------------------------------------------------------------
+
+// Copy handle constructor
+template <typename... ArgsT>
+cudaNode::Copy::Copy(ArgsT&&... args) {
+}
+
+// Kernel handle constructor
+template <typename... ArgsT>
+cudaNode::Kernel::Kernel(ArgsT&&... args) {
+}
 
 // Constructor
 inline cudaNode::cudaNode(cudaGraph& g) : _graph {g} {
@@ -121,6 +132,11 @@ cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
   auto node = std::make_unique<cudaNode>(*this, std::forward<ArgsT>(args)...);
   _nodes.emplace_back(std::move(node));
   return _nodes.back().get();
+}
+
+// Function: native_handle
+inline cudaGraph_t cudaGraph::native_handle() {
+  return _handle;
 }
 
 
