@@ -11,13 +11,13 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 # Compiler vendors
 ## g++
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.3")
-    message(FATAL_ERROR "\nCpp-Taskflow requires g++ at least v7.3")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.0")
+    message(FATAL_ERROR "\nCpp-Taskflow requires g++ at least v5.0")
   endif()
 ## clang++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6.0")
-    message(FATAL_ERROR "\nCpp-Taskflow requires clang++ at least v6.0")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.0")
+    message(FATAL_ERROR "\nCpp-Taskflow requires clang++ at least v5.0")
   endif() 
 ## AppleClang
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
@@ -32,8 +32,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 else()
   message(FATAL_ERROR "\n\
 Cpp-Taskflow currently supports the following compilers:\n\
-- g++ v7.3 or above\n\
-- clang++ v6.0 or above\n\
+- g++ v5.0 or above\n\
+- clang++ v5.0 or above\n\
 - MSVC++ v19.14 or above\n\
 ")
 endif()
