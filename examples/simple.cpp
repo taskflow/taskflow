@@ -10,21 +10,21 @@ int main(){
   tf::Executor executor;
   tf::Taskflow taskflow;
 
-  auto [A, B, C, D] = taskflow.emplace( 
-    [] () { std::cout << "TaskA\n"; },     //                                 
-    [] () { std::cout << "TaskB\n"; },     //          +---+                  
-    [] () { std::cout << "TaskC\n"; },     //    +---->| B |-----+            
-    [] () { std::cout << "TaskD\n"; }      //    |     +---+     |            
-  );                                       //  +---+           +-v-+          
-                                           //  | A |           | D |          
-  A.precede(B);  // B runs after A         //  +---+           +-^-+          
-  A.precede(C);  // C runs after A         //    |     +---+     |            
-  B.precede(D);  // D runs after B         //    +---->| C |-----+            
-  C.precede(D);  // D runs after C         //          +---+
-  
-  executor.run(taskflow).wait(); 
+  auto A = taskflow.emplace([]() { std::cout << "TaskA\n"; });
+  auto B = taskflow.emplace([]() { std::cout << "TaskB\n"; });
+  auto C = taskflow.emplace([]() { std::cout << "TaskC\n"; });
+  auto D = taskflow.emplace([]() { std::cout << "TaskD\n"; });
 
-  return 0;
+                                           //                                 
+  A.precede(B);  // B runs after A         //          +---+                  
+  A.precede(C);  // C runs after A         //    +---->| B |-----+            
+  B.precede(D);  // D runs after B         //    |     +---+     |            
+  C.precede(D);  // D runs after C         //  +---+           +-v-+          
+                                           //  | A |           | D |          
+                                           //  +---+           +-^-+          
+  executor.run(taskflow).wait();           //    |     +---+     |            
+                                           //    +---->| C |-----+            
+  return 0;                                //          +---+
 }
 
 

@@ -262,7 +262,10 @@ TEST_CASE("STDFunction" * doctest::timeout(300)) {
   std::function<void()> func4  = [&] () { ++counter;};
   
   // scenario 1
-  auto [A, B, C, D] = taskflow.emplace(func1, func2, func3, func4);
+  auto A = taskflow.emplace(func1);
+  auto B = taskflow.emplace(func2);
+  auto C = taskflow.emplace(func3);
+  auto D = taskflow.emplace(func4);
   A.precede(B);
   B.precede(C, D);
   executor.run(taskflow).wait();
@@ -1250,11 +1253,14 @@ void joined_subflow(unsigned W) {
       }
     });
 
-    std::atomic<size_t> count = 0;
+    std::atomic<size_t> count {0};
 
     auto B = tf.emplace([&count, &data, &sum](tf::Subflow& fb){
 
-      auto [src, tgt] = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
+      //auto [src, tgt] = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
+      auto task_pair = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
+      auto &src = std::get<0>(task_pair);
+      auto &tgt = std::get<1>(task_pair);
 
       fb.emplace([&sum] () { REQUIRE(sum == 0); }).precede(src);
 
@@ -1569,13 +1575,11 @@ TEST_CASE("Composition-1" * doctest::timeout(300)) {
 
     int cnt {0};
 
-    auto [A, B, C, D, E] = f0.emplace(
-      [&cnt] () { ++cnt; },
-      [&cnt] () { ++cnt; },
-      [&cnt] () { ++cnt; },
-      [&cnt] () { ++cnt; },
-      [&cnt] () { ++cnt; }
-    );
+    auto A = f0.emplace([&cnt](){ ++cnt; });
+    auto B = f0.emplace([&cnt](){ ++cnt; });
+    auto C = f0.emplace([&cnt](){ ++cnt; });
+    auto D = f0.emplace([&cnt](){ ++cnt; });
+    auto E = f0.emplace([&cnt](){ ++cnt; });
 
     A.precede(B);
     B.precede(C);
@@ -1638,13 +1642,11 @@ TEST_CASE("Composition-2" * doctest::timeout(300)) {
     // level 0 (+5)
     tf::Taskflow f0;
 
-    auto [A, B, C, D, E] = f0.emplace(
-      [&cnt] () { ++cnt; },
-      [&cnt] () { ++cnt; },
-      [&cnt] () { ++cnt; },
-      [&cnt] () { ++cnt; },
-      [&cnt] () { ++cnt; }
-    );
+    auto A = f0.emplace([&cnt](){ ++cnt; });
+    auto B = f0.emplace([&cnt](){ ++cnt; });
+    auto C = f0.emplace([&cnt](){ ++cnt; });
+    auto D = f0.emplace([&cnt](){ ++cnt; });
+    auto E = f0.emplace([&cnt](){ ++cnt; });
 
     A.precede(B);
     B.precede(C);
@@ -1692,10 +1694,9 @@ TEST_CASE("Composition-3" * doctest::timeout(300)) {
     // level 0 (+2)
     tf::Taskflow f0;
 
-    auto [A, B] = f0.emplace(
-      [&cnt] () { ++cnt; },
-      [&cnt] () { ++cnt; }
-    );
+    auto A = f0.emplace([&cnt](){ ++cnt; });
+    auto B = f0.emplace([&cnt](){ ++cnt; });
+
     A.precede(B);
 
     // level 1 (+4)
@@ -1830,15 +1831,17 @@ void conditional_spawn(
 )  {
   if(depth < max_depth) {
     for(int i=0; i<2; i++) {
-      auto [A, B, C] = subflow.emplace(
-        [&](){ counter++; },
+      auto A = subflow.emplace([&](){ counter++; });
+      auto B = subflow.emplace(
         [&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
           conditional_spawn(counter, max_depth, depth, subflow); 
-        },
+      });
+      auto C = subflow.emplace(
         [&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
           conditional_spawn(counter, max_depth, depth, subflow); 
         }
       );
+
       auto cond = subflow.emplace([depth](){ 
         if(depth%2) return 1;
         else return 0; 
@@ -1856,17 +1859,16 @@ void loop_cond(unsigned w) {
   int counter = -1;
   int state   = 0;
 
-  auto [A, B, C] = taskflow.emplace(
-    [&] () { counter = 0; },
-    [&] () mutable { 
+  auto A = taskflow.emplace([&] () { counter = 0; });
+  auto B = taskflow.emplace([&] () mutable { 
       REQUIRE((++counter % 100) == (++state % 100));
       return counter < 100 ? 0 : 1; 
-    },
+  });
+  auto C = taskflow.emplace(
     [&] () { 
       REQUIRE(counter == 100); 
       counter = 0;
-    }
-  );
+  });
 
   A.precede(B);
   B.precede(B, C);
@@ -1919,14 +1921,13 @@ void flip_coin_cond(unsigned w) {
   int counter;
   double avg;
 
-  auto [A, B, C, D, E, F, G] = taskflow.emplace(
-    [&](){ counter = 0; },
-    [&](){ ++counter; return ::rand()%2; },
-    [&](){ return ::rand()%2; },
-    [&](){ return ::rand()%2; },
-    [&](){ return ::rand()%2; },
-    [&](){ return ::rand()%2; },
-    [&, N=0, accu=0.0]() mutable { 
+  auto A = taskflow.emplace( [&](){ counter = 0; } );
+  auto B = taskflow.emplace( [&](){ ++counter; return ::rand()%2; } );
+  auto C = taskflow.emplace( [&](){ return ::rand()%2; } );
+  auto D = taskflow.emplace( [&](){ return ::rand()%2; } );
+  auto E = taskflow.emplace( [&](){ return ::rand()%2; } );
+  auto F = taskflow.emplace( [&](){ return ::rand()%2; } );
+  auto G = taskflow.emplace( [&, N=0, accu=0.0]() mutable { 
       ++N;  // a new round
       accu += counter;
       avg = accu/N;
@@ -2319,13 +2320,11 @@ void hierarchical_condition(unsigned w) {
 
   int c1, c2, c2_repeat;
 
-  auto [c1A, c1B, c1C] = tf1.emplace(
-    [&](){ c1=0; },
-    [&, state=0] () mutable {
-      REQUIRE(state++ % 100 == c1 % 100);
-    },
-    [&](){ return (++c1 < 100) ? 0 : 1; }
-  );
+  auto c1A = tf1.emplace( [&](){ c1=0; } );
+  auto c1B = tf1.emplace( [&, state=0] () mutable {
+    REQUIRE(state++ % 100 == c1 % 100);
+  });
+  auto c1C = tf1.emplace( [&](){ return (++c1 < 100) ? 0 : 1; });
 
   c1A.precede(c1B);
   c1B.precede(c1C);
@@ -2334,13 +2333,11 @@ void hierarchical_condition(unsigned w) {
   c1B.name("c1B");
   c1C.name("c1C");
   
-  auto [c2A, c2B, c2C] = tf2.emplace(
-    [&](){ REQUIRE(c2 == 100); c2 = 0; },
-    [&, state=0] () mutable { 
+  auto c2A = tf2.emplace( [&](){ REQUIRE(c2 == 100); c2 = 0; } );
+  auto c2B = tf2.emplace( [&, state=0] () mutable { 
       REQUIRE((state++ % 100) == (c2 % 100)); 
-    },
-    [&](){ return (++c2 < 100) ? 0 : 1; }
-  );
+  });
+  auto c2C = tf2.emplace( [&](){ return (++c2 < 100) ? 0 : 1; });
 
   c2A.precede(c2B);
   c2B.precede(c2C);
