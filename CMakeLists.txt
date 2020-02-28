@@ -16,8 +16,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   endif()
 ## clang++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.0")
-    message(FATAL_ERROR "\nCpp-Taskflow requires clang++ at least v5.0")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "3.4")
+    message(FATAL_ERROR "\nCpp-Taskflow requires clang++ at least v3.4")
   endif() 
 ## AppleClang
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
@@ -33,7 +33,7 @@ else()
   message(FATAL_ERROR "\n\
 Cpp-Taskflow currently supports the following compilers:\n\
 - g++ v5.0 or above\n\
-- clang++ v5.0 or above\n\
+- clang++ v3.4 or above\n\
 - MSVC++ v19.14 or above\n\
 ")
 endif()

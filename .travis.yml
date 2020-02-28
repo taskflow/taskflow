@@ -16,7 +16,19 @@ cache:
 matrix:
   include:
     
-    # Linux g++6
+    # Linux g++-5
+    - os: linux
+      compiler: g++
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+    
+    # Linux g++-6
     - os: linux
       compiler: g++
       addons:
@@ -28,7 +40,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
 
-    # Linux g++7
+    # Linux g++-7
     - os: linux
       compiler: g++
       addons:
@@ -40,7 +52,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
     
-    # Linux g++8
+    # Linux g++-8
     - os: linux
       compiler: g++
       addons:
@@ -52,7 +64,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
-    # Linux g++9
+    # Linux g++-9
     - os: linux
       compiler: g++
       addons:
@@ -63,6 +75,18 @@ matrix:
             - g++-9
       env:
         - MATRIX_EVAL="CC=gcc-9 CXX=g++-9"
+    
+    # Linux clang++-3.4
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.4
+          packages:
+            - clang-3.4
+      env:
+        - MATRIX_EVAL="CC=clang-3.4 && CXX=clang++-3.4"
 
     # Linux clang++6
     - os: linux
