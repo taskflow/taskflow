@@ -15,7 +15,6 @@ int main(){
   auto C = taskflow.emplace([]() { std::cout << "TaskC\n"; });
   auto D = taskflow.emplace([]() { std::cout << "TaskD\n"; });
 
-                                    //                                 
   A.precede(B);  // B runs after A  //          +---+                  
   A.precede(C);  // C runs after A  //    +---->| B |-----+            
   B.precede(D);  // D runs after B  //    |     +---+     |            
