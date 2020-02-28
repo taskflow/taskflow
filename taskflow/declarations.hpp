@@ -15,9 +15,10 @@ class Taskflow;
 class Topology;
 class Executor;
 
-class cudaTask;
 class cudaNode;
 class cudaGraph;
+class cudaTask;
+class cudaFlow;
 
 }  // end of namespace tf -----------------------------------------------------
 

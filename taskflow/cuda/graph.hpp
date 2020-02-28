@@ -10,17 +10,18 @@
 
 namespace tf {
 
+// ----------------------------------------------------------------------------
+// cudaNode class
+// ----------------------------------------------------------------------------
+
+// class: cudaNode
 class cudaNode {
   
+  friend class cudaFlow;
   friend class cudaGraph;
+  friend class cudaTask;
 
-  public:
-  
-  //struct Host {
-  //  cudaHostNodeParams param = {0};
-  //  // need an any storage?
-  //};
-
+  // Copy handle
   struct Copy {
     
     template <typename... ArgsT>
@@ -29,19 +30,23 @@ class cudaNode {
 
     cudaMemcpy3DParms param = {0};
   };
-
+  
+  // Kernel handle
   struct Kernel {
     
     template <typename... ArgsT>
     Kernel(ArgsT&&...) {}
 
     cudaKernelNodeParams param = {0};
-    // need an any storage?
   };
 
-  cudaNode() = default;
+  public:
+  
+    cudaNode(cudaGraph&);
 
   private:
+
+    cudaGraph& _graph;
 
     std::string _name;
     
@@ -51,93 +56,88 @@ class cudaNode {
 
     PassiveVector<cudaNode*> _successors;
 
+    void _precede(cudaNode*);
 };
+
+// ----------------------------------------------------------------------------
+// cudaGraph class
+// ----------------------------------------------------------------------------
 
 // class: cudaGraph
 class cudaGraph {
+
+  friend class cudaFlow;
+  friend class cudaNode;
 
   public:
 
     cudaGraph();
     ~cudaGraph();
 
-    void placeholder() {
-      auto node = std::make_unique<cudaNode>();
-    }
-    
-    template <typename F, typename... ArgsT>
-    cudaNode* kernel(dim3 grid, dim3 block, size_t shm, F&& func, ArgsT&&... args) {
-
-      void* arguments[sizeof...(ArgsT)] = { &args... };
-
-      auto node = std::make_unique<cudaNode>();
-      auto& p = node->_handle.emplace<cudaNode::Kernel>();
-
-      p.param.func = (void*)func;
-      p.param.gridDim = grid;
-      p.param.blockDim = block;
-      p.param.sharedMemBytes = shm;
-      p.param.kernelParams = arguments;
-      p.param.extra = nullptr;
-      
-      TF_CHECK_CUDA(
-        ::cudaGraphAddKernelNode(&node->_node, _graph, nullptr, 0, &p.param),
-        "failed to create a kernel node"
-      );
-
-      return node.get();
-    }
-
-    cudaNode* copy(void* tgt, void* src, size_t num, size_t size) {
-      auto node = std::make_unique<cudaNode>();
-      auto& p = node->_handle.emplace<cudaNode::Copy>();
-      p.param.srcArray = nullptr;
-      p.param.srcPos = ::make_cudaPos(0, 0, 0);
-      p.param.srcPtr = ::make_cudaPitchedPtr(src, num*size, num, 1);
-      p.param.dstArray = nullptr;
-      p.param.dstPos = ::make_cudaPos(0, 0, 0);
-      p.param.dstPtr = ::make_cudaPitchedPtr(tgt, num*size, num, 1);
-      p.param.extent = ::make_cudaExtent(num*size, 1, 1);
-      p.param.kind = cudaMemcpyDefault;
-
-      TF_CHECK_CUDA(
-        ::cudaGraphAddMemcpyNode(&node->_node, _graph, nullptr, 0, &p.param),
-        "failed to create a memcpy node"
-      );
-
-      return node.get();
-    }
-
-    void precede(cudaNode* u, cudaNode* v) {
-      TF_CHECK_CUDA(
-        ::cudaGraphAddDependencies(_graph, {&(u->_node)}, {&(v->_node)}, 1),
-        "failed to add a preceding link"
-      );
-    }
-
-    void run() {
-      cudaGraphExec_t graphExec;
-      cudaGraphInstantiate(&graphExec, _graph, nullptr, nullptr, 0);
-      cudaGraphLaunch(graphExec, 0);
-      cudaStreamSynchronize(0);
-    }
+    template <typename... ArgsT>
+    cudaNode* emplace_back(ArgsT&&...);
 
   private:
     
-    cudaGraph_t _graph {nullptr};
+    cudaGraph_t _handle {nullptr};
 
     std::vector<std::unique_ptr<cudaNode>> _nodes;
 };
 
+// ----------------------------------------------------------------------------
+// cudaNode definitions
+// ----------------------------------------------------------------------------
+
+// Constructor
+inline cudaNode::cudaNode(cudaGraph& g) : _graph {g} {
+}
+
+// Procedure: _precede
+inline void cudaNode::_precede(cudaNode* v) {
+  _successors.push_back(v);
+  TF_CHECK_CUDA(
+    ::cudaGraphAddDependencies(_graph._handle, &_node, &(v->_node), 1),
+    "failed to add a preceding link"
+  );
+}
+
+// ----------------------------------------------------------------------------
+// cudaGraph definitions
+// ----------------------------------------------------------------------------
+
 // Constructor
 inline cudaGraph::cudaGraph() {
-  TF_CHECK_CUDA(cudaGraphCreate(&_graph, 0), "failed to create a cudaGraph");
+  TF_CHECK_CUDA(cudaGraphCreate(&_handle, 0), "failed to create a cudaGraph");
 }
 
 // Destructor
 inline cudaGraph::~cudaGraph() {
-  cudaGraphDestroy(_graph);
+  cudaGraphDestroy(_handle);
 }
+    
+// Function: emplace_back
+template <typename... ArgsT>
+cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
+  auto node = std::make_unique<cudaNode>(*this, std::forward<ArgsT>(args)...);
+  _nodes.emplace_back(std::move(node));
+  return _nodes.back().get();
+}
+
+
+//inline void cudaGraph::run() {
+//  cudaGraphExec_t graphExec;
+//  TF_CHECK_CUDA(
+//    cudaGraphInstantiate(&graphExec, _handle, nullptr, nullptr, 0),
+//    "failed to create an executable cudaGraph"
+//  );
+//  TF_CHECK_CUDA(cudaGraphLaunch(graphExec, 0), "failed to launch cudaGraph")
+//  TF_CHECK_CUDA(cudaStreamSynchronize(0), "failed to sync cudaStream");
+//  TF_CHECK_CUDA(
+//    cudaGraphExecDestroy(graphExec), "failed to destroy an executable cudaGraph"
+//  );
+//}
+
+
 
 
 
