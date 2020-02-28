@@ -19,9 +19,31 @@ class cudaFlow {
     @param graph a cudaGraph to manipulate
     */
     cudaFlow(cudaGraph& graph);
+
+    /**
+    @brief queries the emptiness of the graph
+    */
+    bool empty() const;
     
     /**
-    @brief constructs a kernel task
+    @brief creates a placeholder task
+    */
+    cudaTask placeholder();
+
+    /**
+    @brief creates a no-operation task
+
+    An empty node performs no operation during execution, 
+    but can be used for transitive ordering. 
+    For example, a phased execution graph with 2 groups of n nodes 
+    with a barrier between them can be represented using an empty node 
+    and 2*n dependency edges, 
+    rather than no empty node and n^2 dependency edges.
+    */
+    cudaTask noop();
+    
+    /**
+    @brief creates a kernel task
     
     @tparam F kernel function type
     @tparam ArgsT kernel function parameters type
@@ -38,7 +60,7 @@ class cudaFlow {
     cudaTask kernel(dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
     
     /**
-    @brief constructs an 1D copy task
+    @brief creates an 1D copy task
     
     @tparam T element type (non-void)
 
@@ -67,25 +89,46 @@ class cudaFlow {
 inline cudaFlow::cudaFlow(cudaGraph& g) : _graph {g} {
 }
 
+// Function: empty
+inline bool cudaFlow::empty() const {
+  return _graph._nodes.empty();
+}
+
+// Function: noop
+inline cudaTask cudaFlow::noop() {
+  auto node = _graph.emplace_back();
+  TF_CHECK_CUDA(
+    ::cudaGraphAddEmptyNode(&node->_node, _graph._handle, nullptr, 0),
+    "failed to create a no-operation (empty) node"
+  );
+  return cudaTask(node);
+}
+
 // Function: kernel
 template <typename F, typename... ArgsT>
-cudaTask cudaFlow::kernel(dim3 grid, dim3 block, size_t shm, F&& func, ArgsT&&... args) {
+cudaTask cudaFlow::kernel(
+  dim3 grid, dim3 block, size_t shm, F&& func, ArgsT&&... args
+) {
+  
+  using traits = function_traits<F>;
+
+  static_assert(traits::arity == sizeof...(ArgsT), "arity mismatches");
 
   void* arguments[sizeof...(ArgsT)] = { &args... };
 
   auto node = _graph.emplace_back();
 
-  auto& param = node->_handle.emplace<cudaNode::Kernel>().param;
+  auto& p = node->_handle.emplace<cudaNode::Kernel>().param;
 
-  param.func = (void*)func;
-  param.gridDim = grid;
-  param.blockDim = block;
-  param.sharedMemBytes = shm;
-  param.kernelParams = arguments;
-  param.extra = nullptr;
+  p.func = (void*)func;
+  p.gridDim = grid;
+  p.blockDim = block;
+  p.sharedMemBytes = shm;
+  p.kernelParams = arguments;
+  p.extra = nullptr;
   
   TF_CHECK_CUDA(
-    ::cudaGraphAddKernelNode(&node->_node, _graph._handle, nullptr, 0, &param),
+    ::cudaGraphAddKernelNode(&node->_node, _graph._handle, nullptr, 0, &p),
     "failed to create a cudaKernel node"
   );
   
@@ -99,20 +142,22 @@ template <
 >
 cudaTask cudaFlow::copy(T* tgt, T* src, size_t num) {
 
-  auto node = _graph.emplace_back();
-  auto& param = node->_handle.emplace<cudaNode::Copy>().param;
+  using U = std::decay_t<T>;
 
-  param.srcArray = nullptr;
-  param.srcPos = ::make_cudaPos(0, 0, 0);
-  param.srcPtr = ::make_cudaPitchedPtr(src, num*sizeof(T), num, 1);
-  param.dstArray = nullptr;
-  param.dstPos = ::make_cudaPos(0, 0, 0);
-  param.dstPtr = ::make_cudaPitchedPtr(tgt, num*sizeof(T), num, 1);
-  param.extent = ::make_cudaExtent(num*sizeof(T), 1, 1);
-  param.kind = cudaMemcpyDefault;
+  auto node = _graph.emplace_back();
+  auto& p = node->_handle.emplace<cudaNode::Copy>().param;
+
+  p.srcArray = nullptr;
+  p.srcPos = ::make_cudaPos(0, 0, 0);
+  p.srcPtr = ::make_cudaPitchedPtr(src, num*sizeof(U), num, 1);
+  p.dstArray = nullptr;
+  p.dstPos = ::make_cudaPos(0, 0, 0);
+  p.dstPtr = ::make_cudaPitchedPtr(tgt, num*sizeof(U), num, 1);
+  p.extent = ::make_cudaExtent(num*sizeof(U), 1, 1);
+  p.kind = cudaMemcpyDefault;
 
   TF_CHECK_CUDA(
-    cudaGraphAddMemcpyNode(&node->_node, _graph._handle, nullptr, 0, &param),
+    cudaGraphAddMemcpyNode(&node->_node, _graph._handle, nullptr, 0, &p),
     "failed to create a cudaCopy node"
   );
 

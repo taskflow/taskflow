@@ -272,6 +272,7 @@ target_link_libraries(
  composition ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
 
+#### CUDA examples
 if(${TF_ENABLE_CUDA})
 add_executable(saxpy ${TF_EXAMPLE_DIR}/saxpy.cu)
 target_link_libraries(
@@ -412,7 +413,7 @@ add_test(cyclic_cond.5threads ${TF_UTEST_DIR}/basics -tc=CyclicCond.5threads)
 add_test(cyclic_cond.6threads ${TF_UTEST_DIR}/basics -tc=CyclicCond.6threads)
 add_test(cyclic_cond.7threads ${TF_UTEST_DIR}/basics -tc=CyclicCond.7threads)
 add_test(cyclic_cond.8threads ${TF_UTEST_DIR}/basics -tc=CyclicCond.8threads)
-add_test(btree_cond           ${TF_UTEST_DIR}/basics -tc=BTreeCondition)
+add_test(btree_cond ${TF_UTEST_DIR}/basics -tc=BTreeCondition)
 add_test(dynamic_btree_cond   ${TF_UTEST_DIR}/basics -tc=DynamicBTreeCondition)
 add_test(nested_cond.1thread  ${TF_UTEST_DIR}/basics -tc=NestedCond.1thread)
 add_test(nested_cond.2threads ${TF_UTEST_DIR}/basics -tc=NestedCond.2threads)
@@ -464,6 +465,7 @@ add_test(merge_sort ${TF_UTEST_DIR}/sort -tc=MergeSort)
 add_test(quick_sort ${TF_UTEST_DIR}/sort -tc=QuickSort)
 
 
+#### CUDA unittests
 if(${TF_ENABLE_CUDA})
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR}/cuda)
@@ -473,18 +475,23 @@ target_link_libraries(
   cuda-basics ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
 target_include_directories(cuda-basics PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
-add_test(cuda-basics.builder   ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Builder)
-add_test(cuda-basics.Set.i8  ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Set.Int8)
-add_test(cuda-basics.Set.i16 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Set.Int16)
-add_test(cuda-basics.Set.i32 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Set.Int32)
-add_test(cuda-basics.Set.f32 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Set.Float)
-add_test(cuda-basics.Add.i8 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Add.Int8)
-add_test(cuda-basics.Add.i16 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Add.Int16)
-add_test(cuda-basics.Add.i32 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Add.Int32)
+add_test(cuda-basics.builder ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Builder)
+add_test(cuda-basics.set.i8  ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Set.i8)
+add_test(cuda-basics.set.i16 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Set.i16)
+add_test(cuda-basics.set.i32 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Set.i32)
+add_test(cuda-basics.bset.i8  ${TF_UTEST_DIR}/cuda/cuda-basics -tc=BSet.i8)
+add_test(cuda-basics.bset.i16 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=BSet.i16)
+add_test(cuda-basics.bset.i32 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=BSet.i32)
+add_test(cuda-basics.add.i8  ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Add.i8)
+add_test(cuda-basics.add.i16 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Add.i16)
+add_test(cuda-basics.add.i32 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Add.i32)
+add_test(cuda-basics.barrier.i8 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Barrier.i8)
+add_test(cuda-basics.barrier.i16 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Barrier.i16)
+add_test(cuda-basics.barrier.i32 ${TF_UTEST_DIR}/cuda/cuda-basics -tc=Barrier.i32)
 
 endif(${TF_ENABLE_CUDA})
 
-endif()
+endif(${TF_BUILD_TESTS})
 
 # -----------------------------------------------------------------------------
 # Benchmarking (enabled by TF_BUILD_BENCHMARKS)

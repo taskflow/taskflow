@@ -15,11 +15,21 @@ __global__ void k_set(T* ptr, size_t N, T value) {
 }
 
 template <typename T>
+__global__ void k_single_set(T* ptr, int i, T value) {
+  ptr[i] = value;
+}
+
+template <typename T>
 __global__ void k_add(T* ptr, size_t N, T value) {
   int i = blockIdx.x*blockDim.x + threadIdx.x;
   if (i < N) {
     ptr[i] += value;
   }
+}
+
+template <typename T>
+__global__ void k_single_add(T* ptr, int i, T value) {
+  ptr[i] += value;
 }
 
 // --------------------------------------------------------
@@ -104,20 +114,16 @@ void set() {
   }
 }
 
-TEST_CASE("Set.Int8" * doctest::timeout(300)) {
+TEST_CASE("Set.i8" * doctest::timeout(300)) {
   set<int8_t>();
 }
 
-TEST_CASE("Set.Int16" * doctest::timeout(300)) {
+TEST_CASE("Set.i16" * doctest::timeout(300)) {
   set<int16_t>();
 }
 
-TEST_CASE("Set.Int32" * doctest::timeout(300)) {
+TEST_CASE("Set.i32" * doctest::timeout(300)) {
   set<int32_t>();
-}
-
-TEST_CASE("Set.Float" * doctest::timeout(300)) {
-  set<float>();
 }
 
 // --------------------------------------------------------
@@ -161,20 +167,140 @@ void add() {
   }
 }
 
-TEST_CASE("Add.Int8" * doctest::timeout(300)) {
+TEST_CASE("Add.i8" * doctest::timeout(300)) {
   add<int8_t>();
 }
 
-TEST_CASE("Add.Int16" * doctest::timeout(300)) {
+TEST_CASE("Add.i16" * doctest::timeout(300)) {
   add<int16_t>();
 }
 
-TEST_CASE("Add.Int32" * doctest::timeout(300)) {
+TEST_CASE("Add.i32" * doctest::timeout(300)) {
   add<int32_t>();
 }
 
+// TODO: 64-bit fail?
+//TEST_CASE("Add.i64" * doctest::timeout(300)) {
+//  add<int64_t>();
+//}
 
 
+// --------------------------------------------------------
+// Testcase: Binary Set
+// --------------------------------------------------------
+template <typename T>
+void bset() {
 
+  const unsigned n = 10000;
 
+  tf::cudaGraph G;
+  tf::cudaFlow cf(G);
+  
+  T* cpu = nullptr;
+  T* gpu = nullptr;
+
+  cpu = static_cast<T*>(std::calloc(n, sizeof(T)));
+  REQUIRE(cudaMalloc(&gpu, n*sizeof(T)) == cudaSuccess);
+
+  dim3 g = {1, 1, 1};
+  dim3 b = {1, 1, 1};
+  auto h2d = cf.copy(gpu, cpu, n);
+  auto d2h = cf.copy(cpu, gpu, n);
+
+  std::vector<tf::cudaTask> tasks(n+1);
+
+  for(unsigned i=1; i<=n; ++i) {
+    tasks[i] = cf.kernel(g, b, 0, k_single_set<T>, gpu, i-1, (T)17);
+
+    auto p = i/2;
+    if(p != 0) {
+      tasks[p].precede(tasks[i]);
+    }
+
+    tasks[i].precede(d2h);
+    h2d.precede(tasks[i]);
+  }
+  
+  run(G);
+
+  for(unsigned i=0; i<n; ++i) {
+    REQUIRE(cpu[i] == (T)17);
+  }
+
+  std::free(cpu);
+  REQUIRE(cudaFree(gpu) == cudaSuccess);
+}
+
+TEST_CASE("BSet.i8" * doctest::timeout(300)) {
+  bset<int8_t>();
+}
+
+TEST_CASE("BSet.i16" * doctest::timeout(300)) {
+  bset<int16_t>();
+}
+
+TEST_CASE("BSet.i32" * doctest::timeout(300)) {
+  bset<int32_t>();
+}
+
+// --------------------------------------------------------
+// Testcase: Barrier
+// --------------------------------------------------------
+template <typename T>
+void barrier() {
+
+  const unsigned n = 1000;
+
+  tf::cudaGraph G;
+  tf::cudaFlow cf(G);
+  
+  T* cpu = nullptr;
+  T* gpu = nullptr;
+
+  cpu = static_cast<T*>(std::calloc(n, sizeof(T)));
+  REQUIRE(cudaMalloc(&gpu, n*sizeof(T)) == cudaSuccess);
+
+  dim3 g = {1, 1, 1};
+  dim3 b = {1, 1, 1};
+  auto br1 = cf.noop();
+  auto br2 = cf.noop();
+  auto br3 = cf.noop();
+  auto h2d = cf.copy(gpu, cpu, n);
+  auto d2h = cf.copy(cpu, gpu, n);
+
+  h2d.precede(br1);
+
+  for(unsigned i=0; i<n; ++i) {
+    auto k1 = cf.kernel(g, b, 0, k_single_set<T>, gpu, i, (T)17);
+    k1.succeed(br1)
+      .precede(br2);
+
+    auto k2 = cf.kernel(g, b, 0, k_single_add<T>, gpu, i, (T)3);
+    k2.succeed(br2)
+      .precede(br3);
+  }
+
+  br3.precede(d2h);
+  
+  run(G);
+
+  for(unsigned i=0; i<n; ++i) {
+    REQUIRE(cpu[i] == (T)20);
+  }
+
+  std::free(cpu);
+  REQUIRE(cudaFree(gpu) == cudaSuccess);
+}
+
+TEST_CASE("Barrier.i8" * doctest::timeout(300)) {
+  barrier<int8_t>();
+}
+
+TEST_CASE("Barrier.i16" * doctest::timeout(300)) {
+  barrier<int16_t>();
+}
+
+TEST_CASE("Barrier.i32" * doctest::timeout(300)) {
+  barrier<int32_t>();
+}
 

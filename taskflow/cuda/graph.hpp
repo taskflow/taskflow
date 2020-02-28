@@ -21,6 +21,11 @@ class cudaNode {
   friend class cudaGraph;
   friend class cudaTask;
 
+  // Host handle
+  //struct Host {
+  //  cudaHostNodeParams param;
+  //};
+
   // Copy handle
   struct Copy {
     
@@ -67,6 +72,7 @@ class cudaGraph {
 
   friend class cudaFlow;
   friend class cudaNode;
+  friend class cudaTask;
 
   public:
 
