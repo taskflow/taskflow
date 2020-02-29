@@ -114,7 +114,7 @@ cudaTask cudaFlow::kernel(
 
   static_assert(traits::arity == sizeof...(ArgsT), "arity mismatches");
 
-  void* arguments[sizeof...(ArgsT)] = { &args... };
+  void* arguments[sizeof...(ArgsT)] = { (void*)(&args)... };
 
   auto node = _graph.emplace_back();
 

@@ -2,7 +2,6 @@
 
 #include "device.hpp"
 
-#include "../declarations.hpp"
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
 #include "../utility/passive_vector.hpp"
@@ -20,6 +19,8 @@ class cudaNode {
   friend class cudaFlow;
   friend class cudaGraph;
   friend class cudaTask;
+
+  friend class Executor;
 
   // Host handle
   //struct Host {
@@ -73,6 +74,8 @@ class cudaGraph {
   friend class cudaFlow;
   friend class cudaNode;
   friend class cudaTask;
+  
+  friend class Executor;
 
   public:
 
@@ -83,6 +86,8 @@ class cudaGraph {
     cudaNode* emplace_back(ArgsT&&...);
 
     cudaGraph_t native_handle();
+
+    void clear();
 
   private:
     
@@ -130,6 +135,18 @@ inline cudaGraph::cudaGraph() {
 // Destructor
 inline cudaGraph::~cudaGraph() {
   cudaGraphDestroy(_handle);
+}
+
+// Procedure: clear
+inline void cudaGraph::clear() {
+
+  _nodes.clear();
+
+  cudaGraphDestroy(_handle);
+  TF_CHECK_CUDA(
+    cudaGraphCreate(&_handle, 0), 
+    "failed to create a cudaGraph after clear"
+  );
 }
     
 // Function: emplace_back

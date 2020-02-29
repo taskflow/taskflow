@@ -59,6 +59,20 @@ class FlowBuilder {
     template <typename C>
     std::enable_if_t<is_condition_task_v<C>, Task> emplace(C&& callable);
 
+#ifdef TF_ENABLE_CUDA
+    /**
+    @brief creates a cudaflow task from a given callable object
+    
+    @tparam C callable type
+    
+    @param callable a callable object acceptable to std::function<void(cudaFlow&)>
+
+    @return Task handle
+    */
+    template <typename C>
+    std::enable_if_t<is_cudaflow_task_v<C>, Task> emplace(C&& callable);
+#endif 
+
     /**
     @brief creates multiple tasks from a list of callable objects at one time
     
@@ -437,7 +451,7 @@ std::enable_if_t<is_dynamic_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
 }
 
 // Function: emplace 
-// emplades a condition task
+// emplaces a condition task
 template <typename C>
 std::enable_if_t<is_condition_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
   auto n = _graph.emplace_back(
@@ -445,6 +459,18 @@ std::enable_if_t<is_condition_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
   );
   return Task(n);
 }
+
+#ifdef TF_ENABLE_CUDA
+// Function: emplace
+// emplaces a cudaflow task
+template <typename C>
+std::enable_if_t<is_cudaflow_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
+  auto n = _graph.emplace_back(
+    nstd::in_place_type_t<Node::cudaFlowWork>{}, std::forward<C>(c)
+  );
+  return Task(n);
+}
+#endif
 
 //template <typename C>
 //Task FlowBuilder::emplace(C&& c) {

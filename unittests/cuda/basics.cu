@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include <doctest.h>
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/taskflow.hpp>
 
 // ----------------------------------------------------------------------------
 // kernel helper

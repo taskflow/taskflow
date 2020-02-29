@@ -7,6 +7,10 @@
 #include "../utility/passive_vector.hpp"
 #include "../nstd/variant.hpp"
 
+#if defined(__CUDA__) || defined(__CUDACC__)
+#define TF_ENABLE_CUDA
+#include "../cuda/flow_builder.hpp"
+#endif
 
 namespace tf {
 
@@ -59,19 +63,9 @@ class Node {
   friend class FlowBuilder;
   friend class Subflow;
 
-  friend class cudaGraph;
-
-  public:
-  
   // state bit flag
   constexpr static int SPAWNED = 0x1;
   constexpr static int BRANCH  = 0x2;
-
-  // variant index
-  constexpr static int STATIC_WORK    = 1;
-  constexpr static int DYNAMIC_WORK   = 2;
-  constexpr static int CONDITION_WORK = 3; 
-  constexpr static int MODULE_WORK    = 4; 
   
   // static work handle
   struct StaticWork {
@@ -109,9 +103,42 @@ class Node {
 
     Taskflow* module {nullptr};
   };
-
+  
+  // cudaFlow work handle
+#ifdef TF_ENABLE_CUDA
   struct cudaFlowWork {
+    
+    template <typename C> 
+    cudaFlowWork(C&& c) : work {std::forward<C>(c)} {}
+
+    std::function<void(cudaFlow&)> work;
+
+    cudaGraph graph;
   };
+#endif
+    
+  using handle_t = nstd::variant<
+    nstd::monostate,  // placeholder
+#ifdef TF_ENABLE_CUDA
+    cudaFlowWork,     // cudaFlow
+#endif
+    StaticWork,       // static tasking
+    DynamicWork,      // dynamic tasking
+    ConditionWork,    // conditional tasking
+    ModuleWork        // composable tasking
+  >;
+
+  // variant index
+  constexpr static auto STATIC_WORK    = get_index_v<StaticWork, handle_t>;
+  constexpr static auto DYNAMIC_WORK   = get_index_v<DynamicWork, handle_t>;
+  constexpr static auto CONDITION_WORK = get_index_v<ConditionWork, handle_t>; 
+  constexpr static auto MODULE_WORK    = get_index_v<ModuleWork, handle_t>; 
+
+#ifdef TF_ENABLE_CUDA
+  constexpr static auto CUDAFLOW_WORK  = get_index_v<cudaFlowWork, handle_t>; 
+#endif
+  
+  public:
 
     //Node() = default;
 
@@ -132,13 +159,7 @@ class Node {
 
     std::string _name;
 
-    nstd::variant<
-      nstd::monostate,  // placeholder
-      StaticWork,       // static tasking
-      DynamicWork,      // dynamic tasking
-      ConditionWork,    // conditional tasking
-      ModuleWork        // composable tasking
-    > _handle;
+    handle_t _handle;
 
     PassiveVector<Node*> _successors;
     PassiveVector<Node*> _dependents;
@@ -158,6 +179,7 @@ class Node {
     void _set_up_join_counter();
 
     bool _has_state(int) const;
+
 };
 
 // ----------------------------------------------------------------------------
@@ -193,7 +215,7 @@ Node::ConditionWork::ConditionWork(C&& c) : work {std::forward<C>(c)} {
     
 // Constructor
 template <typename T>
-inline Node::ModuleWork::ModuleWork(T&& tf) : module {tf} {
+Node::ModuleWork::ModuleWork(T&& tf) : module {tf} {
 }
 
 // ----------------------------------------------------------------------------
