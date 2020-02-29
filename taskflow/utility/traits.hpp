@@ -257,7 +257,7 @@ template <typename T, typename... Ts>
 struct get_index<T, nstd::variant<Ts...>>
     : std::integral_constant<
         size_t, 
-        nstd::variant<variant_tag<Ts>...>(variant_tag<T>()).index()
+        nstd::variant<variant_tag<Ts>...>(variant_tag<T>{}).index()
       >
 { };
 
