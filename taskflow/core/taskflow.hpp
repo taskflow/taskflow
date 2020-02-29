@@ -70,7 +70,7 @@ class Taskflow : public FlowBuilder {
     
     @return @c *this
     */
-    tf::Taskflow& name(const std::string&); 
+    void name(const std::string&); 
 
     /**
     @brief queries the name of the taskflow
@@ -134,9 +134,8 @@ inline bool Taskflow::empty() const {
 }
 
 // Function: name
-inline Taskflow& Taskflow::name(const std::string &name) {
+inline void Taskflow::name(const std::string &name) {
   _name = name;
-  return *this;
 }
 
 // Function: name
