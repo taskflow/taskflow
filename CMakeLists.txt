@@ -274,7 +274,9 @@ target_link_libraries(
 
 #### CUDA examples
 if(${TF_ENABLE_CUDA})
-add_executable(saxpy ${TF_EXAMPLE_DIR}/saxpy.cu)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR}/cuda)
+
+add_executable(saxpy ${TF_EXAMPLE_DIR}/cuda/saxpy.cu)
 target_link_libraries(
   saxpy ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
