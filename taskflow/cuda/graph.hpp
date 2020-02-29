@@ -20,12 +20,17 @@ class cudaNode {
   friend class cudaGraph;
   friend class cudaTask;
 
+  friend class Taskflow;
   friend class Executor;
 
   // Host handle
   //struct Host {
   //  cudaHostNodeParams param;
   //};
+
+  struct Noop {
+
+  };
 
   // Copy handle
   struct Copy {
@@ -45,6 +50,13 @@ class cudaNode {
     cudaKernelNodeParams param;
   };
 
+  using handle_t = nstd::variant<nstd::monostate, Noop, Copy, Kernel>;
+  
+  // variant index
+  constexpr static auto NOOP = get_index_v<Noop, handle_t>;
+  constexpr static auto COPY = get_index_v<Copy, handle_t>; 
+  constexpr static auto KERNEL = get_index_v<Kernel, handle_t>;
+
   public:
   
     cudaNode(cudaGraph&);
@@ -55,7 +67,7 @@ class cudaNode {
 
     std::string _name;
     
-    nstd::variant<nstd::monostate, Copy, Kernel> _handle;
+    handle_t _handle;
 
     cudaGraphNode_t _node {nullptr};
 
@@ -75,6 +87,7 @@ class cudaGraph {
   friend class cudaNode;
   friend class cudaTask;
   
+  friend class Taskflow;
   friend class Executor;
 
   public:
@@ -88,6 +101,8 @@ class cudaGraph {
     cudaGraph_t native_handle();
 
     void clear();
+
+    bool empty() const;
 
   private:
     
@@ -135,6 +150,11 @@ inline cudaGraph::cudaGraph() {
 // Destructor
 inline cudaGraph::~cudaGraph() {
   cudaGraphDestroy(_handle);
+}
+
+// Function: empty
+inline bool cudaGraph::empty() const {
+  return _nodes.empty();
 }
 
 // Procedure: clear

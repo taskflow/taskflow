@@ -97,6 +97,7 @@ inline bool cudaFlow::empty() const {
 // Function: noop
 inline cudaTask cudaFlow::noop() {
   auto node = _graph.emplace_back();
+  node->_handle.emplace<cudaNode::Noop>();
   TF_CHECK_CUDA(
     ::cudaGraphAddEmptyNode(&node->_node, _graph._handle, nullptr, 0),
     "failed to create a no-operation (empty) node"
