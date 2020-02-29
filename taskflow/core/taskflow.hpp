@@ -21,6 +21,11 @@ class Taskflow : public FlowBuilder {
   friend class Executor;
   friend class FlowBuilder;
 
+  struct Dumper {
+    std::stack<const Taskflow*> stack;
+    std::unordered_set<const Taskflow*> visited;
+  };
+
   public:
 
     /**
@@ -94,20 +99,8 @@ class Taskflow : public FlowBuilder {
     std::list<Topology> _topologies;
 
     void _dump(std::ostream&, const Taskflow*) const;
-
-    void _dump(
-      std::ostream&, 
-      const Node*,
-      std::stack<const Taskflow*>&,
-      std::unordered_set<const Taskflow*>&
-    ) const;
-
-    void _dump(
-      std::ostream&,
-      const Graph&,
-      std::stack<const Taskflow*>&,
-      std::unordered_set<const Taskflow*>&
-    ) const;
+    void _dump(std::ostream&, const Node*, Dumper&) const;
+    void _dump(std::ostream&, const Graph&, Dumper&) const;
 };
 
 // Constructor
@@ -176,32 +169,28 @@ inline void Taskflow::dump(std::ostream& os) const {
 // Procedure: _dump
 inline void Taskflow::_dump(std::ostream& os, const Taskflow* top) const {
   
-  std::stack<const Taskflow*> stack;
-  std::unordered_set<const Taskflow*> visited; 
+  Dumper dumper;
   
-  stack.push(top);
-  visited.insert(top);
+  dumper.stack.push(top);
+  dumper.visited.insert(top);
 
-  while(!stack.empty()) {
+  while(!dumper.stack.empty()) {
     
-    auto f = stack.top();
-    stack.pop();
+    auto f = dumper.stack.top();
+    dumper.stack.pop();
     
     os << "subgraph cluster_p" << f << " {\nlabel=\"Taskflow: ";
     if(f->_name.empty()) os << 'p' << f;
     else os << f->_name;
     os << "\";\n";
-    _dump(os, f->_graph, stack, visited);
+    _dump(os, f->_graph, dumper);
     os << "}\n";
   }
 }
 
 // Procedure: _dump
 inline void Taskflow::_dump(
-  std::ostream& os, 
-  const Node* node,
-  std::stack<const Taskflow*>& stack,
-  std::unordered_set<const Taskflow*>& visited
+  std::ostream& os, const Node* node, Dumper& dumper
 ) const {
 
   os << 'p' << node << "[label=\"";
@@ -254,7 +243,7 @@ inline void Taskflow::_dump(
         else os << node->_name;
 
         os << "\";\n" << "color=blue\n";
-        _dump(os, sbg, stack, visited);
+        _dump(os, sbg, dumper);
         os << "}\n";
       }
     }
@@ -322,17 +311,14 @@ inline void Taskflow::_dump(
 
 // Procedure: _dump
 inline void Taskflow::_dump(
-  std::ostream& os, 
-  const Graph& graph,
-  std::stack<const Taskflow*>& stack,
-  std::unordered_set<const Taskflow*>& visited
+  std::ostream& os, const Graph& graph, Dumper& dumper
 ) const {
     
   for(const auto& n : graph._nodes) {
 
     // regular task
     if(n->_handle.index() != Node::MODULE_WORK) {
-      _dump(os, n, stack, visited);
+      _dump(os, n, dumper);
     }
     // module task
     else {
@@ -347,9 +333,9 @@ inline void Taskflow::_dump(
       else os << module->_name;
       os << "]\"];\n";
 
-      if(visited.find(module) == visited.end()) {
-        visited.insert(module);
-        stack.push(module);
+      if(dumper.visited.find(module) == dumper.visited.end()) {
+        dumper.visited.insert(module);
+        dumper.stack.push(module);
       }
 
       for(const auto s : n->_successors) {
