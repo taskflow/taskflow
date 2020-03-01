@@ -15,8 +15,11 @@ var searchData=
   ['allocator_5ftraits',['allocator_traits',['http://en.cppreference.com/w/cpp/memory/allocator_traits.html',1,'std']]],
   ['array',['array',['http://en.cppreference.com/w/cpp/container/array.html',1,'std']]],
   ['atomic',['atomic',['http://en.cppreference.com/w/cpp/atomic/atomic.html',1,'std']]],
+  ['atomic_3c_20array_20_2a_3e',['atomic&lt; Array *&gt;',['http://en.cppreference.com/w/cpp/atomic/atomic.html',1,'std']]],
   ['atomic_3c_20bool_20_3e',['atomic&lt; bool &gt;',['http://en.cppreference.com/w/cpp/atomic/atomic.html',1,'std']]],
+  ['atomic_3c_20int64_5ft_20_3e',['atomic&lt; int64_t &gt;',['http://en.cppreference.com/w/cpp/atomic/atomic.html',1,'std']]],
   ['atomic_3c_20size_5ft_20_3e',['atomic&lt; size_t &gt;',['http://en.cppreference.com/w/cpp/atomic/atomic.html',1,'std']]],
+  ['atomic_3c_20t_20_3e',['atomic&lt; T &gt;',['http://en.cppreference.com/w/cpp/atomic/atomic.html',1,'std']]],
   ['atomic_5fflag',['atomic_flag',['http://en.cppreference.com/w/cpp/atomic/atomic_flag.html',1,'std']]],
   ['auto_5fptr',['auto_ptr',['http://en.cppreference.com/w/cpp/memory/auto_ptr.html',1,'std']]]
 ];

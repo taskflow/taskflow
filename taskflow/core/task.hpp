@@ -33,16 +33,6 @@ constexpr bool is_dynamic_task_v = is_invocable_r_v<void, C, Subflow&>;
 template <typename C>
 constexpr bool is_condition_task_v = is_invocable_r_v<int, C>;
 
-#ifdef TF_ENABLE_CUDA
-/**
-@struct is_cudaflow_task
-
-@brief determines if a callable is a cudaflow task
-*/
-template <typename C>
-constexpr bool is_cudaflow_task_v = is_invocable_r_v<void, C, cudaFlow&>;
-#endif
-
 // ----------------------------------------------------------------------------
 // Task
 // ----------------------------------------------------------------------------
@@ -50,7 +40,7 @@ constexpr bool is_cudaflow_task_v = is_invocable_r_v<void, C, cudaFlow&>;
 /**
 @class Task
 
-@brief task handle to a node in a task dependency graph
+@brief handle to a node in a task dependency graph
 
 A Task is a wrapper of a node in a dependency graph. 
 It provides a set of methods for users to access and modify the attributes of 
@@ -173,7 +163,7 @@ class Task {
 
     @return @c *this
     */
-    Task& composed_of(Taskflow&);
+    Task& composed_of(Taskflow& taskflow);
     
     /**
     @brief adds precedence links from this to other tasks
@@ -266,12 +256,14 @@ Task& Task::precede(Ts&&... tasks) {
   return *this;
 }
 
-// Procedure: precede
+/// @private
+// Procedure: _precede
 template <typename T>
 void Task::_precede(T&& other) {
   _node->_precede(other._node);
 }
 
+/// @private
 // Procedure: _precede
 template <typename T, typename... Ts>
 void Task::_precede(T&& task, Ts&&... others) {
@@ -287,12 +279,14 @@ Task& Task::succeed(Ts&&... tasks) {
   return *this;
 }
 
+/// @private
 // Procedure: succeed
 template <typename T>
 void Task::_succeed(T&& other) {
   other._node->_precede(_node);
 }
 
+/// @private
 // Procedure: _succeed
 template <typename T, typename... Ts>
 void Task::_succeed(T&& task, Ts&&... others) {

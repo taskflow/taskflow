@@ -6,7 +6,7 @@
 [![Wiki](image/api-doc.svg)][wiki]
 [![Cite](image/cite-ipdps.svg)](doxygen/reference/ipdps19.pdf)
 
-A fast C++ *header-only* library to help you quickly write parallel programs with complex task dependencies
+A header-only C++ library to help you quickly write parallel and heterogeneous programs using task models
 
 # Why Cpp-Taskflow?
 
@@ -38,17 +38,20 @@ Cpp-Taskflow supports conditional tasking for you to implement cyclic and dynami
 | ![](image/condition.svg) |
 
 Cpp-Taskflow is composable. You can create large parallel graphs through
-composition of modular and reusable blocks that are easier to optimize.
+composition of modular and reusable blocks that are easier to optimize
+at an individual scope.
 
-| [Graph Composition](#taskflow-composition) |
+| [Taskflow Composition](#composable-tasking) |
 | :---------------: |
 |![](image/framework.png)|
 
-Cpp-Taskflow let you easily monitor the thread activities and analyze their programs' performance through [chrome://tracing][ChromeTracing].
+Cpp-Taskflow supports heterogeneous tasking for you to 
+speed up a wide range of scientific computing applications
+by harnessing the power of CPU-GPU collaborative computing.
 
-
-
-![](image/timeline.png)
+| [Concurrent CPU-GPU Tasking](#concurrent-cpu-gpu-tasking) |
+| :-----------------: |
+| ![](image/cudaflow.svg) |
 
 We are committed to support trustworthy developments for both academic and industrial research projects in parallel computing. Check out [Who is Using Cpp-Taskflow](#who-is-using-cpp-taskflow) and what our users say:
 
@@ -73,13 +76,15 @@ Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
 * [Conditional Tasking](#conditional-tasking)
    * [Step 1: Create a Condition Task](#step-1-create-a-condition-task)
    * [Step 2: Scheduling Rules for Condition Tasks](#step-2-scheduling-rules-for-condition-tasks)
-* [Taskflow Composition](#taskflow-composition)
+* [Composable Tasking](#composable-tasking)
+* [Concurrent CPU-GPU Tasking](#concurrent-cpu-gpu-tasking)
+   * [Step 1: Create a cudaFlow](#step-1-create-a-cudaflow)
+   * [Step 2: Compile and Execute a cudaFlow](#step-2-compile-and-execute-a-cudaflow)
 * [Visualize a Taskflow Graph](#visualize-a-taskflow-graph)
 * [Monitor Thread Activities](#monitor-thread-activities)
 * [API Reference](#api-reference)
 * [System Requirements](#system-requirements)
 * [Compile Unit Tests, Examples, and Benchmarks](#compile-unit-tests-examples-and-benchmarks)
-* [Get Involved](#get-involved)
 * [Who is Using Cpp-Taskflow?](#who-is-using-cpp-taskflow)
 
 
@@ -117,7 +122,7 @@ int main(){
 Compile and run the code with the following commands:
 
 ```bash
-~$ g++ simple.cpp -std=c++1z -O2 -lpthread -o simple
+~$ g++ simple.cpp -I path/to/include/taskflow/ -std=c++17 -O2 -lpthread -o simple
 ~$ ./simple
 TaskA
 TaskC  <-- concurrent with TaskB
@@ -143,17 +148,6 @@ Use the method `emplace` to create a task:
 
 ```cpp
 tf::Task A = taskflow.emplace([](){ std::cout << "Task A\n"; });
-```
-
-You can create multiple tasks at one time:
-
-```cpp
-auto [A, B, C, D] = taskflow.emplace(
-  [] () { std::cout << "Task A\n"; },
-  [] () { std::cout << "Task B\n"; },
-  [] () { std::cout << "Task C\n"; },
-  [] () { std::cout << "Task D\n"; }
-);
 ```
 
 ## Step 2: Define Task Dependencies
@@ -249,6 +243,7 @@ tf::Task B = tf.emplace([] (tf::Subflow& subflow) {
   tf::Task B1 = subflow.emplace([](){}).name("B1");
   tf::Task B2 = subflow.emplace([](){}).name("B2");
   tf::Task B3 = subflow.emplace([](){}).name("B3");
+
   B1.precede(B3);
   B2.precede(B3);
 
@@ -259,31 +254,6 @@ tf::Task B = tf.emplace([] (tf::Subflow& subflow) {
 
 A subflow can be nested or recursive. You can create another subflow from
 the execution of a subflow and so on.
-
-<img align="right" src="image/nested_subflow.svg" width="25%">
-
-```cpp
-tf::Task A = tf.emplace([] (tf::Subflow& sbf) {
-  std::cout << "A spawns A1 & subflow A2\n";
-  tf::Task A1 = sbf.emplace([] () { 
-    std::cout << "subtask A1\n"; 
-  }).name("A1");
-
-  tf::Task A2 = sbf.emplace([] (tf::Subflow& sbf2) {
-    std::cout << "A2 spawns A2_1 & A2_2\n";
-    tf::Task A2_1 = sbf2.emplace([] () { 
-      std::cout << "subtask A2_1\n"; 
-    }).name("A2_1");
-
-    tf::Task A2_2 = sbf2.emplace([] () { 
-      std::cout << "subtask A2_2\n"; 
-    }).name("A2_2");
-    A2_1.precede(A2_2);
-  }).name("A2");
-
-  A1.precede(A2);
-}).name("A");
-```
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
@@ -350,7 +320,7 @@ Make sure there is no task race.
 
 
 
-# Taskflow Composition
+# Composable Tasking
 
 A powerful feature of `tf::Taskflow` is composability. 
 You can create multiple task graphs from different parts of your workload
@@ -373,9 +343,8 @@ auto [f2A, f2B, f2C] = f2.emplace(
 );
 auto f1_module_task = f2.composed_of(f1);
 
-f2A.precede(f1_module_task);
-f2B.precede(f1_module_task);
-f1_module_task.precede(f2C);
+f1_module_task.succeed(f2A, f2B)
+              .precede(f2C);
 ```
 
 Similarly, `composed_of` returns a task handle and you can use 
@@ -385,46 +354,110 @@ to compose a larger taskflow and so on.
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
-# Visualize a Taskflow Graph
+# Concurrent CPU-GPU Tasking
 
-You can dump a taskflow in [GraphViz][GraphViz] format using the method `dump`.
+Cpp-Taskflow enables concurrent CPU-GPU tasking by leveraging
+[Nvidia CUDA Toolkit][cuda-toolkit].
+You can harness the power of CPU-GPU collaborative computing 
+to implement heterogeneous decomposition algorithms.
+
+## Step 1: Create a cudaFlow
+
+A `tf::cudaFlow` is a graph object created at runtime 
+similar to dynamic tasking.
+It manages a task node in a taskflow and associates it
+with a [CUDA Graph][cudaGraph].
+To create a cudaFlow, emplace a callable with an argument 
+of type `tf::cudaFlow`.
+
+
 
 ```cpp
 tf::Taskflow taskflow;
+tf::Executor executor;
 
+const unsigned N = 1<<20;                            // size of the vector
+std::vector<float> hx(N, 1.0f), hy(N, 2.0f);         // x and y vectors at host
+float *dx{nullptr}, *dy{nullptr};                    // x and y vectors at device
+
+tf::Task allocate_x = taskflow.emplace([&](){ cudaMalloc(&dx, N*sizeof(float));});
+tf::Task allocate_y = taskflow.emplace([&](){ cudaMalloc(&dy, N*sizeof(float));});
+tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
+  tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N);    // host-to-device x data transfer
+  tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N);    // host-to-device y data transfer
+  tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N);    // device-to-host x data transfer
+  tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N);    // device-to-host y data transfer
+  // launch saxpy<<<(N+255)/256, 256, 0>>>(N, 2.0f, dx, dy)
+  tf::cudaTask kernel = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy);
+  kernel.succeed(h2d_x, h2d_y)
+        .precede(d2h_x, d2h_y);
+});
+cudaflow.succeed(allocate_x, allocate_y);            // overlap data allocations
+
+executor.run(taskflow).wait();
+```
+
+Assume our kernel implements the canonical saxpy operation 
+(single-precision A·X Plus Y) using the CUDA syntax.
+
+<img align="right" src="image/saxpy.svg" width="50%">
+
+```cpp
+// saxpy (single-precision A·X Plus Y) kernel
+__global__ void saxpy(
+  int n, float a, float *x, float *y
+) {
+  // get the thread index
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
+
+  if (i < n) {
+    y[i] = a*x[i] + y[i];
+  }
+}
+```
+
+
+
+## Step 2: Compile and Execute a cudaFlow
+
+Name you source with the extension `.cu`, let's say `saxpy.cu`,
+and compile it through [nvcc][nvcc]:
+
+```bash
+~$ nvcc saxpy.cu -I path/to/include/taskflow -O2 -o saxpy
+~$ ./saxpy
+```
+
+Our source autonomously enables cudaFlow for compilers that support
+CUDA.
+
+<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
+
+# Visualize a Taskflow Graph
+
+You can dump a taskflow through a `std::ostream` 
+in [GraphViz][GraphViz] format using the method `dump`.
+There are a number of free [GraphViz tools][AwesomeGraphViz] you could find online to visualize your Taskflow graph.
+
+<img align="right" src="image/graphviz.svg" width="25%">
+
+```cpp
+tf::Taskflow taskflow;
 tf::Task A = taskflow.emplace([] () {}).name("A");
 tf::Task B = taskflow.emplace([] () {}).name("B");
 tf::Task C = taskflow.emplace([] () {}).name("C");
 tf::Task D = taskflow.emplace([] () {}).name("D");
 tf::Task E = taskflow.emplace([] () {}).name("E");
-
 A.precede(B, C, E); 
 C.precede(D);
 B.precede(D, E); 
 
-taskflow.dump(std::cout);
+taskflow.dump(std::cout);  // dump the graph in DOT to std::cout
 ```
 
-There are a number of free [GraphViz tools][AwesomeGraphViz] you could find online to visualize your Taskflow graph.
-
-<img align="right" src="image/graphviz.svg" width="25%">
-
-```bash
-// Taskflow with five tasks and six dependencies
-digraph Taskflow {
-  rankdir="TB"
-  "A" -> "B"
-  "A" -> "C"
-  "A" -> "E"
-  "B" -> "D"
-  "B" -> "E"
-  "C" -> "D"
-}
-```
-
-When you have dynamic tasks (subflows),
-you cannot simply use the `dump` method because it displays only the static portion.
-Instead, you need to execute the graph first to spawn dynamic tasks.
+When you have tasks that are created at runtime (e.g., subflow, cudaFlow),
+you need to execute the graph first to spawn these tasks
+and dump the entire graph.
 
 <img align="right" src="image/debug_subflow.svg" width="25%">
 
@@ -448,6 +481,9 @@ tf.dump(std::cout);       // dump the graph including dynamic tasks
 ```
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
+
+
+
 
 # Monitor Thread Activities 
 
@@ -572,19 +608,6 @@ auto [S, T] = tf.parallel_for(
 // will print 0, 2, 4, 6, 8, 10 (three partitions, {0, 2}, {4, 6}, {8, 10})
 ```
 
-You can also do opposite direction with negative step size.
-
-```cpp
-// [10, -1) with a step size of -2
-auto [S, T] = tf.parallel_for(
-  10, -1, 2, 
-  [] (int i) {
-    std::cout << "parallel_for on index " << i << std::endl;
-  }
-);
-// will print 10, 8, 6, 4, 2, 0
-```
-
 ## Task API
 
 Each time you create a task, the taskflow object adds a node to the present task dependency graph
@@ -672,7 +695,7 @@ The table below summarizes a list of commonly used methods.
 
 ### *Executor*
 
-The constructor of tf::Executor takes an unsigned *non-zero* integer to 
+The constructor of `tf::Executor` takes an unsigned *non-zero* integer to 
 initialize the executor with `N` worker threads.
 
 ```cpp
@@ -689,10 +712,10 @@ Issuing multiple runs on the same taskflow will automatically synchronize
 to a sequential chain of executions.
 
 ```cpp
-executor.run(taskflow);             // runs a graph once
-executor.run_n(taskflow, 5);        // runs a graph five times
+executor.run(taskflow);                 // runs a graph once
+executor.run_n(taskflow, 5);            // runs a graph five times
 executor.run_until(taskflow, my_pred);  // keeps running until the my_pred becomes true
-executor.wait_for_all();            // blocks until all tasks finish
+executor.wait_for_all();                // blocks until all tasks finish
 ```
 
 The first run finishes before the second run, and the second run finishes before the third run.
@@ -705,6 +728,7 @@ To use the latest [Cpp-Taskflow](https://github.com/cpp-taskflow/cpp-taskflow/ar
 + GNU C++ Compiler at least v5.0 with -std=c++14
 + Clang C++ Compiler at least v4.0 with -std=c++14
 + Microsoft Visual Studio Version 15.7 (MSVC++ 19.14); see [vcpkg guide](https://github.com/cpp-taskflow/cpp-taskflow/issues/143)
++ Nvidia CUDA Toolkit and Compiler ([nvcc][nvcc]) at least v10.0 with -std=c++14
 
 See the [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support) status.
 
@@ -715,28 +739,12 @@ See the [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_suppor
 Cpp-Taskflow uses [CMake](https://cmake.org/) to build examples and unit tests.
 We recommend using out-of-source build.
 
-
 ```bash
-~$ cmake --version  # must be at least 3.9 or higher
+~$ cmake --version   # must be at least 3.9 or higher
 ~$ mkdir build
 ~$ cd build
-~$ cmake ../
-~$ make 
-```
-
-## Unit Tests
-
-Cpp-Taskflow uses [Doctest](https://github.com/onqtam/doctest) for unit tests.
-
-```bash
-~$ ./unittest/taskflow
-```
-
-Alternatively, you can use CMake's testing framework to run the unittest.
-
-```bash
-~$ cd build
-~$ make test
+~$ cmake ../ 
+~$ make & make test  # run all unit tests
 ```
 
 ## Examples
@@ -748,7 +756,6 @@ The folder `examples/` contains several examples and is a great place to learn t
 | [simple.cpp](./examples/simple.cpp) | uses basic task building blocks to create a trivial taskflow  graph |
 | [debug.cpp](./examples/debug.cpp)| inspects a taskflow through the dump method |
 | [parallel_for.cpp](./examples/parallel_for.cpp)| parallelizes a for loop with unbalanced workload |
-| [reduce.cpp](./examples/reduce.cpp)| performs reduce operations over linear containers |
 | [subflow.cpp](./examples/subflow.cpp)| demonstrates how to create a subflow graph that spawns three dynamic tasks |
 | [run_variants.cpp](./examples/run_variants.cpp)| shows multiple ways to run a taskflow graph |
 | [composition.cpp](./examples/composition.cpp)| demonstrates the decomposable interface of taskflow |
@@ -759,17 +766,6 @@ The folder `examples/` contains several examples and is a great place to learn t
 
 Please visit [benchmarks](benchmarks/benchmarks.md) to learn to
 compile the benchmarks.
-
-<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
-
-# Get Involved
-
-+ Report bugs/issues by submitting a [GitHub issue][GitHub issues]
-+ Submit contributions using [pull requests][GitHub pull requests]
-+ Learn more about Cpp-Taskflow by reading the [documentation][wiki]
-+ Release notes are highlighted [here][release notes]
-+ Read and cite our [IPDPS19][IPDPS19] paper
-+ Visit a curated list of [awesome parallel computing resources](https://github.com/tsung-wei-huang/awesome-parallel-computing)
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
@@ -821,7 +817,7 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [GitHub pull requests]:  https://github.com/cpp-taskflow/cpp-taskflow/pulls
 [GitHub contributors]:   https://github.com/cpp-taskflow/cpp-taskflow/graphs/contributors
 [GraphViz]:              https://www.graphviz.org/
-[AwesomeGraphViz]:       https://github.com/CodeFreezr/awesome-graphviz
+[AwesomeGraphViz]:       https://dreampuf.github.io/GraphvizOnline/
 [OpenMP Tasking]:        https://www.openmp.org/spec-html/5.0/openmpsu99.html 
 [TBB FlowGraph]:         https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph
 [OpenTimer]:             https://github.com/OpenTimer/OpenTimer
@@ -849,6 +845,11 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 
 [std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
 [std::future]:           https://en.cppreference.com/w/cpp/thread/future
+
+[cuda-zone]:             https://developer.nvidia.com/cuda-zone
+[nvcc]:                  https://developer.nvidia.com/cuda-llvm-compiler
+[cuda-toolkit]:          https://developer.nvidia.com/cuda-toolkit
+[cudaGraph]:             https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__GRAPH.html
 
 [Firestorm]:             https://github.com/ForgeMistress/Firestorm
 [Shiva]:                 https://shiva.gitbook.io/project/shiva

@@ -71,6 +71,7 @@ var searchData=
   ['_7estrstream',['~strstream',['http://en.cppreference.com/w/cpp/io/strstream/~strstream.html',1,'std::strstream']]],
   ['_7estrstreambuf',['~strstreambuf',['http://en.cppreference.com/w/cpp/io/strstreambuf/~strstreambuf.html',1,'std::strstreambuf']]],
   ['_7etaskflow',['~Taskflow',['../classtf_1_1Taskflow.html#a00325e9799c833b75455ba1407b2695c',1,'tf::Taskflow']]],
+  ['_7etaskqueue',['~TaskQueue',['../classtf_1_1TaskQueue.html#a6b1b54083f0e4e62c888b155690f1062',1,'tf::TaskQueue']]],
   ['_7ethread',['~thread',['http://en.cppreference.com/w/cpp/thread/thread/~thread.html',1,'std::thread']]],
   ['_7etime_5fget',['~time_get',['http://en.cppreference.com/w/cpp/locale/time_get/~time_get.html',1,'std::time_get']]],
   ['_7etime_5fget_5fbyname',['~time_get_byname',['http://en.cppreference.com/w/cpp/locale/time_get_byname.html',1,'std::time_get_byname']]],

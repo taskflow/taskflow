@@ -107,7 +107,7 @@ $(document).ready(function(){initNavTree('classtf_1_1FlowBuilder.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p>Building blocks of a task dependency graph.  
+<p>Building methods of a task dependency graph.  
  <a href="classtf_1_1FlowBuilder.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="flow__builder_8hpp_source.html">flow_builder.hpp</a>&gt;</code></p>
@@ -124,7 +124,7 @@ Inheritance diagram for tf::FlowBuilder:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a67d023d5493da1594a1d2eaea89da179"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a67d023d5493da1594a1d2eaea89da179">FlowBuilder</a> (Graph &amp;graph)</td></tr>
-<tr class="memdesc:a67d023d5493da1594a1d2eaea89da179"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a flow builder object  <a href="#a67d023d5493da1594a1d2eaea89da179">More...</a><br /></td></tr>
+<tr class="memdesc:a67d023d5493da1594a1d2eaea89da179"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a flow builder object  <a href="#a67d023d5493da1594a1d2eaea89da179">More...</a><br /></td></tr>
 <tr class="separator:a67d023d5493da1594a1d2eaea89da179"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a796e29175380f70246cf2a5639adc437"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
 <tr class="memitem:a796e29175380f70246cf2a5639adc437"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; is_static_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a796e29175380f70246cf2a5639adc437">emplace</a> (C &amp;&amp;callable)</td></tr>
@@ -209,7 +209,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Task</b></td></tr>
 <tr class="separator:aaa7728226b6ce66782e8816b1658dd9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Building blocks of a task dependency graph. </p>
+<div class="textblock"><p>Building methods of a task dependency graph. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a67d023d5493da1594a1d2eaea89da179"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a67d023d5493da1594a1d2eaea89da179">&#9670;&nbsp;</a></span>FlowBuilder()</h2>
@@ -235,7 +235,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Task</b></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>construct a flow builder object </p>
+<p>constructs a flow builder object </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">graph</td><td>a task dependency graph to manipulate </td></tr>
@@ -367,7 +367,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Task</b></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
 
 </div>
 </div>
@@ -402,7 +402,7 @@ template&lt;typename C &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
 
 </div>
 </div>
@@ -437,7 +437,7 @@ template&lt;typename C &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
 
 </div>
 </div>
@@ -472,7 +472,7 @@ template&lt;typename C &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
 
 </div>
 </div>
@@ -507,7 +507,7 @@ template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
 
 </div>
 </div>
@@ -727,7 +727,7 @@ template&lt;typename I , typename C &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>
@@ -796,7 +796,7 @@ template&lt;typename I , typename C , std::enable_if_t&lt; std::is_floating_poin
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>
@@ -865,7 +865,7 @@ template&lt;typename I , typename C , std::enable_if_t&lt; std::is_floating_poin
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>
@@ -893,7 +893,7 @@ template&lt;typename I , typename C , std::enable_if_t&lt; std::is_floating_poin
 </div><div class="memdoc">
 
 <p>creates an empty task </p>
-<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
 
 </div>
 </div>
@@ -1001,7 +1001,7 @@ template&lt;typename I , typename T , typename B &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>
@@ -1056,7 +1056,7 @@ template&lt;typename I , typename T &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>
@@ -1111,7 +1111,7 @@ template&lt;typename I , typename T &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>
@@ -1182,7 +1182,7 @@ template&lt;typename I , typename T , typename B , typename U &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>
@@ -1261,7 +1261,7 @@ template&lt;typename I , typename T , typename B , typename P , typename U &gt; 
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pair of <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handles to the beginning and the end of the graph </dd></dl>
 
 </div>
 </div>

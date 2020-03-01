@@ -1,0 +1,35 @@
+digraph Taskflow {
+rankdir="LR"
+p0x563fab6cd698[label="allocate_x" ];
+p0x563fab6cd698->init_x;
+init_x -> p0x563fab6cd8a8;
+p0x563fab6cd7a0[label="allocate_y" ];
+p0x563fab6cd7a0->init_y;
+init_y -> p0x563fab6cd8a8;
+p0x563fab6cd8a8[label="saxpy" shape=folder fillcolor=cyan style=filled];
+p0x563fab6cd8a8 -> p0x563fab6cd9b0;
+subgraph cluster_p0x563fab6cd8a8 {
+label="cudaFlow: saxpy";
+color="purple"
+p0x7f5924401640[label="copy_h2d_x"];
+p0x7f5924401640 -> p0x7f59244027b0;
+p0x7f5924401aa0[label="copy_h2d_y"];
+p0x7f5924401aa0 -> p0x7f59244027b0;
+p0x7f5924401f00[label="copy_d2h_x"];
+p0x7f5924401f00 -> p0x563fab6cd8a8;
+p0x7f5924402370[label="copy_d2h_y"];
+p0x7f5924402370 -> p0x563fab6cd8a8;
+p0x7f59244027b0[label="saxpy kernel" style="filled" color="white" fillcolor="black" fontcolor="white" shape="box3d"];
+p0x7f59244027b0 -> p0x7f5924401f00;
+p0x7f59244027b0 -> p0x7f5924402370;
+}
+p0x563fab6cd9b0[label="verify" ];
+p0x563fab6cd9b0 -> p0x563fab6cdab8;
+p0x563fab6cd9b0 -> p0x563fab6cdbc0;
+p0x563fab6cdab8[label="deallocate_x" ];
+p0x563fab6cdbc0[label="deallocate_y" ];
+p0x563fab6cdab8->host_x;
+p0x563fab6cdbc0->host_y;
+host_x->done;
+host_y->done;
+}
