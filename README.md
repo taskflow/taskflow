@@ -44,11 +44,13 @@ composition of modular and reusable blocks that are easier to optimize.
 | :---------------: |
 |![](image/framework.png)|
 
-Cpp-Taskflow let you easily monitor the thread activities and analyze their programs' performance through [chrome://tracing][ChromeTracing].
+Cpp-Taskflow supports heterogeneous tasking for you to 
+speed up a wide range of computing applications
+by harnessing the power of both CPUs and GPUs.
 
-
-
-![](image/timeline.png)
+| [Concurrent CPU-GPU Tasking](#concurrent-cpu-gpu-tasking) |
+| :-----------------: |
+| ![](image/cudaflow.svg) |
 
 We are committed to support trustworthy developments for both academic and industrial research projects in parallel computing. Check out [Who is Using Cpp-Taskflow](#who-is-using-cpp-taskflow) and what our users say:
 
@@ -74,12 +76,12 @@ Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
    * [Step 1: Create a Condition Task](#step-1-create-a-condition-task)
    * [Step 2: Scheduling Rules for Condition Tasks](#step-2-scheduling-rules-for-condition-tasks)
 * [Taskflow Composition](#taskflow-composition)
+* [Concurrent CPU-GPU Tasking](#concurrent-cpu-gpu-tasking)
 * [Visualize a Taskflow Graph](#visualize-a-taskflow-graph)
 * [Monitor Thread Activities](#monitor-thread-activities)
 * [API Reference](#api-reference)
 * [System Requirements](#system-requirements)
 * [Compile Unit Tests, Examples, and Benchmarks](#compile-unit-tests-examples-and-benchmarks)
-* [Get Involved](#get-involved)
 * [Who is Using Cpp-Taskflow?](#who-is-using-cpp-taskflow)
 
 
@@ -143,17 +145,6 @@ Use the method `emplace` to create a task:
 
 ```cpp
 tf::Task A = taskflow.emplace([](){ std::cout << "Task A\n"; });
-```
-
-You can create multiple tasks at one time:
-
-```cpp
-auto [A, B, C, D] = taskflow.emplace(
-  [] () { std::cout << "Task A\n"; },
-  [] () { std::cout << "Task B\n"; },
-  [] () { std::cout << "Task C\n"; },
-  [] () { std::cout << "Task D\n"; }
-);
 ```
 
 ## Step 2: Define Task Dependencies
@@ -385,41 +376,32 @@ to compose a larger taskflow and so on.
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
+# Concurrent CPU-GPU Tasking
+
+TBD
+
+<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
+
 # Visualize a Taskflow Graph
 
-You can dump a taskflow in [GraphViz][GraphViz] format using the method `dump`.
+You can dump a taskflow through a `std::ostream` 
+in [GraphViz][GraphViz] format using the method `dump`.
+There are a number of free [GraphViz tools][AwesomeGraphViz] you could find online to visualize your Taskflow graph.
+
+<img align="right" src="image/graphviz.svg" width="25%">
 
 ```cpp
 tf::Taskflow taskflow;
-
 tf::Task A = taskflow.emplace([] () {}).name("A");
 tf::Task B = taskflow.emplace([] () {}).name("B");
 tf::Task C = taskflow.emplace([] () {}).name("C");
 tf::Task D = taskflow.emplace([] () {}).name("D");
 tf::Task E = taskflow.emplace([] () {}).name("E");
-
 A.precede(B, C, E); 
 C.precede(D);
 B.precede(D, E); 
 
-taskflow.dump(std::cout);
-```
-
-There are a number of free [GraphViz tools][AwesomeGraphViz] you could find online to visualize your Taskflow graph.
-
-<img align="right" src="image/graphviz.svg" width="25%">
-
-```bash
-// Taskflow with five tasks and six dependencies
-digraph Taskflow {
-  rankdir="TB"
-  "A" -> "B"
-  "A" -> "C"
-  "A" -> "E"
-  "B" -> "D"
-  "B" -> "E"
-  "C" -> "D"
-}
+taskflow.dump(std::cout);  // dump the graph in DOT to std::cout
 ```
 
 When you have dynamic tasks (subflows),
@@ -448,6 +430,9 @@ tf.dump(std::cout);       // dump the graph including dynamic tasks
 ```
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
+
+
+
 
 # Monitor Thread Activities 
 
@@ -672,7 +657,7 @@ The table below summarizes a list of commonly used methods.
 
 ### *Executor*
 
-The constructor of tf::Executor takes an unsigned *non-zero* integer to 
+The constructor of `tf::Executor` takes an unsigned *non-zero* integer to 
 initialize the executor with `N` worker threads.
 
 ```cpp
@@ -689,10 +674,10 @@ Issuing multiple runs on the same taskflow will automatically synchronize
 to a sequential chain of executions.
 
 ```cpp
-executor.run(taskflow);             // runs a graph once
-executor.run_n(taskflow, 5);        // runs a graph five times
+executor.run(taskflow);                 // runs a graph once
+executor.run_n(taskflow, 5);            // runs a graph five times
 executor.run_until(taskflow, my_pred);  // keeps running until the my_pred becomes true
-executor.wait_for_all();            // blocks until all tasks finish
+executor.wait_for_all();                // blocks until all tasks finish
 ```
 
 The first run finishes before the second run, and the second run finishes before the third run.
@@ -705,6 +690,7 @@ To use the latest [Cpp-Taskflow](https://github.com/cpp-taskflow/cpp-taskflow/ar
 + GNU C++ Compiler at least v5.0 with -std=c++14
 + Clang C++ Compiler at least v4.0 with -std=c++14
 + Microsoft Visual Studio Version 15.7 (MSVC++ 19.14); see [vcpkg guide](https://github.com/cpp-taskflow/cpp-taskflow/issues/143)
++ Nvidia CUDA Toolkit and Compiler ([nvcc][nvcc]) at least v10.0 with -std=c++14
 
 See the [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support) status.
 
@@ -715,28 +701,12 @@ See the [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_suppor
 Cpp-Taskflow uses [CMake](https://cmake.org/) to build examples and unit tests.
 We recommend using out-of-source build.
 
-
 ```bash
-~$ cmake --version  # must be at least 3.9 or higher
+~$ cmake --version   # must be at least 3.9 or higher
 ~$ mkdir build
 ~$ cd build
-~$ cmake ../
-~$ make 
-```
-
-## Unit Tests
-
-Cpp-Taskflow uses [Doctest](https://github.com/onqtam/doctest) for unit tests.
-
-```bash
-~$ ./unittest/taskflow
-```
-
-Alternatively, you can use CMake's testing framework to run the unittest.
-
-```bash
-~$ cd build
-~$ make test
+~$ cmake ../ 
+~$ make & make test  # run all unit tests
 ```
 
 ## Examples
@@ -748,7 +718,6 @@ The folder `examples/` contains several examples and is a great place to learn t
 | [simple.cpp](./examples/simple.cpp) | uses basic task building blocks to create a trivial taskflow  graph |
 | [debug.cpp](./examples/debug.cpp)| inspects a taskflow through the dump method |
 | [parallel_for.cpp](./examples/parallel_for.cpp)| parallelizes a for loop with unbalanced workload |
-| [reduce.cpp](./examples/reduce.cpp)| performs reduce operations over linear containers |
 | [subflow.cpp](./examples/subflow.cpp)| demonstrates how to create a subflow graph that spawns three dynamic tasks |
 | [run_variants.cpp](./examples/run_variants.cpp)| shows multiple ways to run a taskflow graph |
 | [composition.cpp](./examples/composition.cpp)| demonstrates the decomposable interface of taskflow |
@@ -759,17 +728,6 @@ The folder `examples/` contains several examples and is a great place to learn t
 
 Please visit [benchmarks](benchmarks/benchmarks.md) to learn to
 compile the benchmarks.
-
-<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
-
-# Get Involved
-
-+ Report bugs/issues by submitting a [GitHub issue][GitHub issues]
-+ Submit contributions using [pull requests][GitHub pull requests]
-+ Learn more about Cpp-Taskflow by reading the [documentation][wiki]
-+ Release notes are highlighted [here][release notes]
-+ Read and cite our [IPDPS19][IPDPS19] paper
-+ Visit a curated list of [awesome parallel computing resources](https://github.com/tsung-wei-huang/awesome-parallel-computing)
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
@@ -849,6 +807,11 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 
 [std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
 [std::future]:           https://en.cppreference.com/w/cpp/thread/future
+
+[cuda-zone]:             https://developer.nvidia.com/cuda-zone
+[nvcc]:                  https://developer.nvidia.com/cuda-llvm-compiler
+[cuda-toolkit]:          https://developer.nvidia.com/cuda-toolkit
+[cudaGraph]:             https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__GRAPH.html
 
 [Firestorm]:             https://github.com/ForgeMistress/Firestorm
 [Shiva]:                 https://shiva.gitbook.io/project/shiva
