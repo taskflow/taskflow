@@ -206,7 +206,7 @@ inline void Taskflow::_dump(
 
 #ifdef TF_ENABLE_CUDA
     case Node::CUDAFLOW_WORK:
-      os << "shape=folder fillcolor=gray style=filled";
+      os << "shape=folder fillcolor=cyan style=filled";
     break;
 #endif
 
