@@ -13,7 +13,7 @@ TEST_CASE("BubbleSort" * doctest::timeout(300)) {
 
     tf::Executor executor(w);
 
-    for(int end=10; end <= 1000; end += 100) {
+    for(int end=10; end <= 1000; end += 200) {
 
       tf::Taskflow taskflow("BubbleSort");
       

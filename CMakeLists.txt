@@ -491,6 +491,16 @@ add_test(cuda_basics.barrier.i8 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i8)
 add_test(cuda_basics.barrier.i16 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i16)
 add_test(cuda_basics.barrier.i32 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i32)
 
+# matrix operation tests
+add_executable(cuda_matrix ${TF_UTEST_DIR}/cuda/cuda_matrix.cu)
+target_link_libraries(
+  cuda_matrix ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
+target_include_directories(cuda_matrix PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
+add_test(cuda_matrix.multiply ${TF_UTEST_DIR}/cuda/cuda_matrix -tc=multiply)
+add_test(cuda_matrix.transpose ${TF_UTEST_DIR}/cuda/cuda_matrix -tc=transpose)
+add_test(cuda_matrix.product ${TF_UTEST_DIR}/cuda/cuda_matrix -tc=product)
+
 endif(${TF_ENABLE_CUDA})
 
 endif(${TF_BUILD_TESTS})
