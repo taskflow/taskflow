@@ -108,6 +108,39 @@ Modern C++ Parallel Task Programming Library</h1>
 <div class="image">
 <img src="performance.jpg" alt="performance.jpg" width="95%"/>
 </div>
+<h2><a class="anchor" id="StaticDynamicTasking"></a>
+Static and Dynamic Tasking</h2>
+<p>Cpp-Taskflow has a unified interface for both <em>static</em> tasking and <em>dynamic</em> tasking, allowing users to quickly master our parallel task programming model in a natural idiom.</p>
+<table width="100%">
+<tr>
+<td><div class="image">
+<object type="image/svg+xml" data="static_graph.svg" width="100%</td>">static_graph.svg</object>
+</div>
+ </td><td><div class="image">
+<object type="image/svg+xml" data="dynamic_graph.svg" width="100%</td>">dynamic_graph.svg</object>
+</div>
+  </td></tr>
+</table>
+<h2><a class="anchor" id="ConditionalTasking"></a>
+Conditional Tasking</h2>
+<p>Cpp-Taskflow supports conditional tasking for you to implement cyclic and dynamic control flows that are otherwise difficult to do with existing task programming frameworks.</p>
+<div class="image">
+<object type="image/svg+xml" data="condition.svg" width="100%">condition.svg</object>
+</div>
+<h2><a class="anchor" id="ComposableTasking"></a>
+Composable Tasking</h2>
+<p>Cpp-Taskflow is composable. You can create large parallel graphs through composition of modular and reusable blocks that are easier to optimize at an individual scope.</p>
+<div class="image">
+<img src="framework.png" alt="framework.png" width="100%"/>
+</div>
+<h2><a class="anchor" id="HeterogeneousTasking"></a>
+Concurrent CPU-GPU Tasking</h2>
+<p>Cpp-Taskflow supports heterogeneous tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing.</p>
+<div class="image">
+<object type="image/svg+xml" data="cudaflow.svg" width="100%">cudaflow.svg</object>
+</div>
+<h2><a class="anchor" id="Testimonial"></a>
+Testimonial</h2>
 <p>Cpp-Taskflow is committed to support both academic and industry research projects, making it reliable and cost-effective for long-term and large-scale developments. Our users say:</p>
 <ul>
 <li>"<em>Cpp-Taskflow has the cleanest task API I've ever seen.</em>" <a href="https://github.com/damienhocking">Damien Hocking</a> </li>
@@ -125,7 +158,7 @@ A Simple First Program</h1>
 <p>Here is a rather simple program to get you started.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;taskflow/taskflow.hpp&gt;</span>  <span class="comment">// Cpp-Taskflow is header-only</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main(){</div><div class="line">  </div><div class="line">  <a class="code" href="classtf_1_1Executor.html">tf::Executor</a> executor;</div><div class="line">  <a class="code" href="classtf_1_1Taskflow.html">tf::Taskflow</a> taskflow;</div><div class="line"></div><div class="line">  <span class="keyword">auto</span> [A, B, C, D] = taskflow.<a class="code" href="classtf_1_1FlowBuilder.html#a796e29175380f70246cf2a5639adc437">emplace</a>(</div><div class="line">    [] () { <a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a> &lt;&lt; <span class="stringliteral">&quot;TaskA\n&quot;</span>; },               <span class="comment">//  task dependency graph</span></div><div class="line">    [] () { <a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a> &lt;&lt; <span class="stringliteral">&quot;TaskB\n&quot;</span>; },               <span class="comment">// </span></div><div class="line">    [] () { <a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a> &lt;&lt; <span class="stringliteral">&quot;TaskC\n&quot;</span>; },               <span class="comment">//          +---+          </span></div><div class="line">    [] () { <a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a> &lt;&lt; <span class="stringliteral">&quot;TaskD\n&quot;</span>; }                <span class="comment">//    +----&gt;| B |-----+   </span></div><div class="line">  );                                                 <span class="comment">//    |     +---+     |</span></div><div class="line">                                                     <span class="comment">//  +---+           +-v-+ </span></div><div class="line">  A.<a class="code" href="classtf_1_1Task.html#a8c78c453295a553c1c016e4062da8588">precede</a>(B);  <span class="comment">// A runs before B                  //  | A |           | D | </span></div><div class="line">  A.<a class="code" href="classtf_1_1Task.html#a8c78c453295a553c1c016e4062da8588">precede</a>(C);  <span class="comment">// A runs before C                  //  +---+           +-^-+ </span></div><div class="line">  B.<a class="code" href="classtf_1_1Task.html#a8c78c453295a553c1c016e4062da8588">precede</a>(D);  <span class="comment">// B runs before D                  //    |     +---+     |    </span></div><div class="line">  C.<a class="code" href="classtf_1_1Task.html#a8c78c453295a553c1c016e4062da8588">precede</a>(D);  <span class="comment">// C runs before D                  //    +----&gt;| C |-----+    </span></div><div class="line">                                                     <span class="comment">//          +---+          </span></div><div class="line">  executor.<a class="code" href="classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa">run</a>(taskflow).wait();</div><div class="line"></div><div class="line">  <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --><p>The program creates four tasks A, B, C, and D. The dependency constraints force A to run before B and C, and D to run after B and C. The maximum concurrency is this example is two, where B and C can run at the same time.</p>
 <div class="image">
-<object type="image/svg+xml" data="simple.svg" width="40%">simple.svg</object>
+<object type="image/svg+xml" data="simple.svg" width="35%">simple.svg</object>
 </div>
 <h1><a class="anchor" id="CompileAndRunYourFirstProgram"></a>
 Compile and Run Your First Program</h1>
@@ -137,7 +170,8 @@ Supported Compilers</h1>
 <ul>
 <li>GNU C++ Compiler at least v5.0 with -std=c++14 </li>
 <li>Clang C++ Compiler at least v4.0 with -std=c++14 </li>
-<li>Microsoft Visual Studio Version 15.7 (MSVC++ 19.14)</li>
+<li>Microsoft Visual Studio Version 15.7 (MSVC++ 19.14) </li>
+<li>Nvidia CUDA Toolkit and Compiler (nvcc) at least v10.0 with -std=c++14</li>
 </ul>
 <p>Cpp-Taskflow works on Linux, Windows, and OSX.</p>
 <h1><a class="anchor" id="License"></a>

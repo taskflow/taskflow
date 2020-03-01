@@ -46,7 +46,7 @@ at an individual scope.
 |![](image/framework.png)|
 
 Cpp-Taskflow supports heterogeneous tasking for you to 
-speed up a wide range of scientific computing applications
+accelerate a wide range of scientific computing applications
 by harnessing the power of CPU-GPU collaborative computing.
 
 | [Concurrent CPU-GPU Tasking](#concurrent-cpu-gpu-tasking) |

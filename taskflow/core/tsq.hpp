@@ -118,7 +118,7 @@ class TaskQueue {
     @brief pops out an item from the queue
 
     Only the owner thread can pop out an item from the queue. 
-    The return can be a @nullptr if this operation failed (empty queue).
+    The return can be a nullptr if this operation failed (empty queue).
     */
     T pop();
     
@@ -126,7 +126,7 @@ class TaskQueue {
     @brief steals an item from the queue
 
     Any threads can try to steal an item from the queue.
-    The return can be a @nullptr if this operation failed (not necessary empty).
+    The return can be a nullptr if this operation failed (not necessary empty).
     */
     T steal();
 };

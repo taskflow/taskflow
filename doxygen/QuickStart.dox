@@ -11,6 +11,45 @@ than existing parallel task programming libraries such as <a href="https://www.o
 
 @image html images/performance.jpg width=95%
 
+
+@subsection StaticDynamicTasking Static and Dynamic Tasking
+
+Cpp-Taskflow has a unified interface for both @em static tasking and @em dynamic tasking,
+allowing users to quickly master our parallel task programming model in a natural idiom.
+
+<table width="100%">
+<tr>
+  <td>@image html images/static_graph.svg width=100%</td>
+  <td>@image html images/dynamic_graph.svg width=100%</td>
+</tr>
+</table>
+
+@subsection ConditionalTasking Conditional Tasking
+
+Cpp-Taskflow supports conditional tasking for you to implement cyclic and 
+dynamic control flows that are otherwise difficult to do 
+with existing task programming frameworks.
+
+@image html images/condition.svg width=100%
+
+@subsection ComposableTasking Composable Tasking
+
+Cpp-Taskflow is composable. You can create large parallel graphs through
+composition of modular and reusable blocks that are easier to optimize
+at an individual scope.
+
+@image html images/framework.png width=100%
+
+@subsection HeterogeneousTasking Concurrent CPU-GPU Tasking
+
+Cpp-Taskflow supports heterogeneous tasking for you to 
+accelerate a wide range of scientific computing applications
+by harnessing the power of CPU-GPU collaborative computing.
+
+@image html images/cudaflow.svg width=100%
+
+@subsection Testimonial Testimonial
+
 Cpp-Taskflow is committed to support both academic and industry research projects,
 making it reliable and cost-effective for long-term and large-scale developments.
 Our users say:
@@ -70,7 +109,7 @@ The program creates four tasks A, B, C, and D.
 The dependency constraints force A to run before B and C, and D to run after B and C.
 The maximum concurrency is this example is two, where B and C can run at the same time.
 
-@image html images/simple.svg width=40%
+@image html images/simple.svg width=35%
 
 @section CompileAndRunYourFirstProgram Compile and Run Your First Program
 
@@ -98,6 +137,7 @@ To use Cpp-Taskflow, you only need a compiler that supports C++14:
 @li GNU C++ Compiler at least v5.0 with -std=c++14
 @li Clang C++ Compiler at least v4.0 with -std=c++14
 @li Microsoft Visual Studio Version 15.7 (MSVC++ 19.14)
+@li Nvidia CUDA Toolkit and Compiler (nvcc) at least v10.0 with -std=c++14
 
 Cpp-Taskflow works on Linux, Windows, and OSX.
 
