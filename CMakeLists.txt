@@ -8,6 +8,17 @@ project(Cpp-Taskflow VERSION 2.3.0 LANGUAGES CXX)
 # Turn on the verbose
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
+include(CheckLanguage)
+
+# check cuda
+check_language(CUDA)
+
+if(CMAKE_CUDA_COMPILER)
+  enable_language(CUDA)
+else()
+  message(STATUS "No CUDA support")
+endif()
+
 # Compiler vendors
 ## g++
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
