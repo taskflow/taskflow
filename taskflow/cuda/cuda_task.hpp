@@ -5,9 +5,17 @@
 namespace tf {
 
 /**
-@class Task
+@struct is_cudaflow_task
 
-@brief task handle to a node in a cudaGraph
+@brief determines if a callable is a cudaflow task
+*/
+template <typename C>
+constexpr bool is_cudaflow_task_v = is_invocable_r_v<void, C, cudaFlow&>;
+
+/**
+@class cudaTask
+
+@brief handle to a node in a cudaGraph
 */
 class cudaTask {
 
@@ -83,16 +91,20 @@ class cudaTask {
     cudaTask(cudaNode*);
 
     cudaNode* _node {nullptr};
-
+    
+    /// @private
     template <typename T>
     void _precede(T&&);
 
+    /// @private
     template <typename T, typename... Ts>
     void _precede(T&&, Ts&&...);
     
+    /// @private
     template <typename T>
     void _succeed(T&&);
 
+    // @private
     template <typename T, typename... Ts>
     void _succeed(T&&, Ts&&...);
 };
@@ -108,12 +120,14 @@ cudaTask& cudaTask::precede(Ts&&... tasks) {
   return *this;
 }
 
+/// @private
 // Procedure: precede
 template <typename T>
 void cudaTask::_precede(T&& other) {
   _node->_precede(other._node);
 }
 
+/// @private
 // Procedure: _precede
 template <typename T, typename... Ts>
 void cudaTask::_precede(T&& task, Ts&&... others) {
@@ -128,12 +142,14 @@ cudaTask& cudaTask::succeed(Ts&&... tasks) {
   return *this;
 }
 
-// Procedure: succeed
+/// @private
+// Procedure: _succeed
 template <typename T>
 void cudaTask::_succeed(T&& other) {
   other._node->_precede(_node);
 }
 
+/// @private
 // Procedure: _succeed
 template <typename T, typename... Ts>
 void cudaTask::_succeed(T&& task, Ts&&... others) {

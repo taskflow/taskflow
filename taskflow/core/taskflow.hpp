@@ -324,7 +324,7 @@ inline void Taskflow::_dump(
 
       auto module = nstd::get<Node::ModuleWork>(n->_handle).module;
 
-      os << 'p' << n << "[shape=box, color=blue, label=\"";
+      os << 'p' << n << "[shape=box3d, color=blue, label=\"";
       if(n->_name.empty()) os << n;
       else os << n->_name;
       os << " [Taskflow: ";

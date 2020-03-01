@@ -107,7 +107,7 @@ $(document).ready(function(){initNavTree('classtf_1_1Task.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p>task handle to a node in a task dependency graph  
+<p>handle to a node in a task dependency graph  
  <a href="classtf_1_1Task.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="task_8hpp_source.html">task.hpp</a>&gt;</code></p>
@@ -173,9 +173,9 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <tr class="memitem:ac1d5bd430aaf11c2145b8a5d60999d39"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; is_condition_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#ac1d5bd430aaf11c2145b8a5d60999d39">work</a> (C &amp;&amp;callable)</td></tr>
 <tr class="memdesc:ac1d5bd430aaf11c2145b8a5d60999d39"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a condition task  <a href="#ac1d5bd430aaf11c2145b8a5d60999d39">More...</a><br /></td></tr>
 <tr class="separator:ac1d5bd430aaf11c2145b8a5d60999d39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa95e8cfa4ab21c38f2d352947c372f7f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#aa95e8cfa4ab21c38f2d352947c372f7f">composed_of</a> (<a class="el" href="classtf_1_1Taskflow.html">Taskflow</a> &amp;)</td></tr>
-<tr class="memdesc:aa95e8cfa4ab21c38f2d352947c372f7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a module task from a taskflow  <a href="#aa95e8cfa4ab21c38f2d352947c372f7f">More...</a><br /></td></tr>
-<tr class="separator:aa95e8cfa4ab21c38f2d352947c372f7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5278492a4d43a191b321eee60e7d629"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#ac5278492a4d43a191b321eee60e7d629">composed_of</a> (<a class="el" href="classtf_1_1Taskflow.html">Taskflow</a> &amp;taskflow)</td></tr>
+<tr class="memdesc:ac5278492a4d43a191b321eee60e7d629"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a module task from a taskflow  <a href="#ac5278492a4d43a191b321eee60e7d629">More...</a><br /></td></tr>
+<tr class="separator:ac5278492a4d43a191b321eee60e7d629"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c78c453295a553c1c016e4062da8588"><td class="memTemplParams" colspan="2">template&lt;typename... Ts&gt; </td></tr>
 <tr class="memitem:a8c78c453295a553c1c016e4062da8588"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a8c78c453295a553c1c016e4062da8588">precede</a> (Ts &amp;&amp;... tasks)</td></tr>
 <tr class="memdesc:a8c78c453295a553c1c016e4062da8588"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds precedence links from this to other tasks  <a href="#a8c78c453295a553c1c016e4062da8588">More...</a><br /></td></tr>
@@ -210,14 +210,6 @@ template&lt;typename V &gt; </td></tr>
 <tr class="memitem:a3bf68937662bf291637e4a763476b2e4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Task.html#a3bf68937662bf291637e4a763476b2e4">for_each_dependent</a> (V &amp;&amp;visitor) const</td></tr>
 <tr class="memdesc:a3bf68937662bf291637e4a763476b2e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">applies an visitor callable to each dependents of the task <br /></td></tr>
 <tr class="separator:a3bf68937662bf291637e4a763476b2e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9897b310803473ceda3fd06f30813676"><td class="memTemplParams" colspan="2"><a id="a9897b310803473ceda3fd06f30813676"></a>
-template&lt;typename T , typename... Ts&gt; </td></tr>
-<tr class="memitem:a9897b310803473ceda3fd06f30813676"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>_precede</b> (T &amp;&amp;task, Ts &amp;&amp;... others)</td></tr>
-<tr class="separator:a9897b310803473ceda3fd06f30813676"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86fae151949c3ec66b34bf94aac33c9b"><td class="memTemplParams" colspan="2"><a id="a86fae151949c3ec66b34bf94aac33c9b"></a>
-template&lt;typename T , typename... Ts&gt; </td></tr>
-<tr class="memitem:a86fae151949c3ec66b34bf94aac33c9b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>_succeed</b> (T &amp;&amp;task, Ts &amp;&amp;... others)</td></tr>
-<tr class="separator:a86fae151949c3ec66b34bf94aac33c9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -232,11 +224,11 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>TaskView</b></td></t
 <tr class="separator:a0aa0e12e4a0ba023033e808fb2132fdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>task handle to a node in a task dependency graph </p>
-<p>A <a class="el" href="classtf_1_1Task.html" title="task handle to a node in a task dependency graph ">Task</a> is a wrapper of a node in a dependency graph. It provides a set of methods for users to access and modify the attributes of the task node, preventing direct access to the internal data storage. </p>
+<div class="textblock"><p>handle to a node in a task dependency graph </p>
+<p>A <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> is a wrapper of a node in a dependency graph. It provides a set of methods for users to access and modify the attributes of the task node, preventing direct access to the internal data storage. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa95e8cfa4ab21c38f2d352947c372f7f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa95e8cfa4ab21c38f2d352947c372f7f">&#9670;&nbsp;</a></span>composed_of()</h2>
+<a id="ac5278492a4d43a191b321eee60e7d629"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5278492a4d43a191b321eee60e7d629">&#9670;&nbsp;</a></span>composed_of()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -248,7 +240,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>TaskView</b></td></t
           <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> &amp; tf::Task::composed_of </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classtf_1_1Taskflow.html">Taskflow</a> &amp;&#160;</td>
-          <td class="paramname"><em>tf</em></td><td>)</td>
+          <td class="paramname"><em>taskflow</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

@@ -52,7 +52,7 @@ This largely facilitates the @em modularity of writing a parallel task program.
 36: f2.dump(std::cout);
 @endcode
 
-@image html images/composition_static_1.svg width=45%
+@image html images/composition_static_1.svg width=40%
 
 Debrief:
 
@@ -75,7 +75,7 @@ For example, the following composition is valid.
 Even though the two module tasks @c module1 and @c module2 refer to the same taskflow @c F1,
 the dependency link prevents @c F1 from multiple executions at the same time.
 
-@image html images/composition_static_2.svg width=45%
+@image html images/composition_static_2.svg width=60%
 
 However, the following composition is @em invalid.
 Both module tasks refer to the same taskflow. They can not run at the same time because
