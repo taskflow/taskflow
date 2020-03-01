@@ -2,11 +2,21 @@
 cmake_minimum_required (VERSION 3.9)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
+# Turn on the verbose
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
 # Project name
 project(Cpp-Taskflow VERSION 2.3.0 LANGUAGES CXX)
 
-# Turn on the verbose
-set(CMAKE_VERBOSE_MAKEFILE ON)
+# build options
+option(TF_BUILD_EXAMPLES "Enables build of examples" ON)
+option(TF_BUILD_TESTS "Enables build of tests" ON)
+option(TF_ENABLE_CUDA "Enables build of cuda code" OFF)
+option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
+
+# Include additional language check
+include(CheckLanguage)
+
 
 include(CheckLanguage)
 
@@ -23,11 +33,13 @@ endif()
 ## g++
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.0")
+    message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
     message(FATAL_ERROR "\nCpp-Taskflow requires g++ at least v5.0")
   endif()
 ## clang++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.0")
+    message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
     message(FATAL_ERROR "\nCpp-Taskflow requires clang++ at least v4.0")
   endif() 
 ## AppleClang
@@ -38,6 +50,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 ## microsoft visual c++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   if(NOT MSVC_VERSION GREATER_EQUAL 1914)
+    message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
     message(FATAL_ERROR "\nCpp-Taskflow requires MSVC++ at least v14.14") 
   endif()
 else()
@@ -47,6 +60,23 @@ Cpp-Taskflow currently supports the following compilers:\n\
 - clang++ v4.0 or above\n\
 - MSVC++ v19.14 or above\n\
 ")
+endif()
+
+# NVCC Compiler
+# https://cliutils.gitlab.io/modern-cmake/chapters/packages/CUDA.html
+if(${TF_ENABLE_CUDA})
+
+check_language(CUDA)
+if(CMAKE_CUDA_COMPILER)
+  enable_language(CUDA)
+  if(CMAKE_CUDA_COMPILER_VERSION VERSION_LESS "10")
+    message(STATUS "CMAKE_CUDA_COMPILER_VERSION: ${CMAKE_CUDA_COMPILER_VERSION}")
+    message(FATAL_ERROR "\nCpp-Taskflow requires CUDA at least v10")
+  endif()
+else()
+  message(FATAL_ERROR "No CUDA support")
+endif()
+
 endif()
 
 # defult release build
@@ -76,10 +106,15 @@ add_library(tf::error_settings ALIAS error_settings)
 target_compile_options(
   error_settings
   INTERFACE
-  $<$<CXX_COMPILER_ID:AppleClang>:-Wall -Wextra -Wfatal-errors>
-  $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wfatal-errors>
-  $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wfatal-errors>
-  $<$<CXX_COMPILER_ID:MSVC>:/W3 /permissive->
+  #$<$<CXX_COMPILER_ID:AppleClang>:-Wall -Wextra -Wfatal-errors>
+  $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:Clang>>:-Wall -Wextra -Wfatal-errors>
+  $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:GNU>>:-Wall -Wextra -Wfatal-errors>
+  $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/W3 /permissive->
+  $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-Wall,-Wextra,-Wfatal-errors>
+  #$<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wfatal-errors>
+  #$<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wfatal-errors>
+  #$<$<CXX_COMPILER_ID:MSVC>:/W3 /permissive->
+  #$<$<CXX_COMPILER_ID:NVIDIA>:-Xcompiler=-Wall,-Wextra,-Wfatal-errors>
 )
 
 # additional features
@@ -102,28 +137,28 @@ target_compile_definitions(
 # /Ox - Full optimization
 # /Oy- do not suppress frame pointers (recommended for debugging)
 #
-add_library(optimize_settings INTERFACE)
-add_library(tf::optimize_settings ALIAS optimize_settings)
-
-target_compile_options(
-  optimize_settings INTERFACE
-  $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:Clang>>:-O2 -march=native>
-  $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:AppleClang>>:-O2 -march=native>
-  $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:GNU>>:-O2 -march=native>
-  $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/O2 -DNDEBUG /MP>
-  $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:GNU>>:-O0 -g>
-  $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>>:-O0 -g>
-  $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:AppleClang>>:-O0 -g>
-  $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/Zi /FS /DEBUG /Od /MP /MDd /Oy->
-)
-
+#add_library(optimize_settings INTERFACE)
+#add_library(tf::optimize_settings ALIAS optimize_settings)
+#
+#target_compile_options(
+#  optimize_settings INTERFACE
+#  $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:Clang>>:-O2 -march=native>
+#  #$<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:AppleClang>>:-O2 -march=native>
+#  $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:GNU>>:-O2 -march=native>
+#  $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/O2 -DNDEBUG /MP>
+#  $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:GNU>>:-O0 -g>
+#  $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>>:-O0 -g>
+#  #$<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:AppleClang>>:-O0 -g>
+#  $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/Zi /FS /DEBUG /Od /MP /MDd /Oy->
+#)
+#
 add_library(default_settings INTERFACE)
 add_library(tf::default_settings ALIAS default_settings)
 target_link_libraries(
   default_settings 
   INTERFACE 
   tf::error_settings 
-  tf::optimize_settings 
+  #tf::optimize_settings 
   tf::features_settings
 )
 
@@ -131,11 +166,6 @@ target_link_libraries(
 #set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_EXTENSIONS OFF)
-
-# build options
-option(TF_BUILD_EXAMPLES "Enables build of examples" ON)
-option(TF_BUILD_TESTS "Enables build of tests" ON)
-option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
 
 # installation path
 set(TF_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
@@ -148,8 +178,13 @@ set(TF_3RD_PARTY_DIR ${PROJECT_SOURCE_DIR}/3rd-party)
 message(STATUS "CMAKE_HOST_SYSTEM: ${CMAKE_HOST_SYSTEM}")
 message(STATUS "CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
 message(STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER})
+message(STATUS "CMAKE_CXX_COMPILER_ID: " ${CMAKE_CXX_COMPILER_ID})
 message(STATUS "CMAKE_CXX_COMPILER_VERSION: " ${CMAKE_CXX_COMPILER_VERSION})
 message(STATUS "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS})
+message(STATUS "CMAKE_CUDA_COMPILER: " ${CMAKE_CUDA_COMPILER})
+message(STATUS "CMAKE_CUDA_COMPILER_ID: " ${CMAKE_CUDA_COMPILER_ID})
+message(STATUS "CMAKE_CUDA_COMPILER_VERSION: " ${CMAKE_CUDA_COMPILER_VERSION})
+message(STATUS "CMAKE_CUDA_FLAGS: " ${CMAKE_CUDA_FLAGS})
 message(STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH})
 message(STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR})
 message(STATUS "CMAKE_CURRENT_BINARY_DIR: " ${CMAKE_CURRENT_BINARY_DIR})
@@ -160,6 +195,7 @@ message(STATUS "CMAKE_PREFIX_PATH: " ${CMAKE_PREFIX_PATH})
 message(STATUS "PROJECT_NAME: " ${PROJECT_NAME})
 message(STATUS "TF_BUILD_EXAMPLES: " ${TF_BUILD_EXAMPLES})
 message(STATUS "TF_BUILD_TESTS: " ${TF_BUILD_TESTS})
+message(STATUS "TF_ENABLE_CUDA: " ${TF_ENABLE_CUDA})
 message(STATUS "TF_BUILD_BENCHMARKS: " ${TF_BUILD_BENCHMARKS})
 message(STATUS "TF_INC_INSTALL_DIR: " ${TF_INC_INSTALL_DIR})
 message(STATUS "TF_LIB_INSTALL_DIR: " ${TF_LIB_INSTALL_DIR})
@@ -247,13 +283,17 @@ target_link_libraries(
  composition ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
 
-#add_executable(dice_pools ${TF_EXAMPLE_DIR}/dice_pools.cpp)
-#target_link_libraries(dice_pools ${PROJECT_NAME} Threads::Threads)  
-#
-#add_executable(get_best_dice ${TF_EXAMPLE_DIR}/get_best_dice.cpp)
-#target_link_libraries(get_best_dice ${PROJECT_NAME} Threads::Threads)  
+#### CUDA examples
+if(${TF_ENABLE_CUDA})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR}/cuda)
 
-endif()
+add_executable(saxpy ${TF_EXAMPLE_DIR}/cuda/saxpy.cu)
+target_link_libraries(
+  saxpy ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
+endif(${TF_ENABLE_CUDA})
+
+endif(${TF_BUILD_EXAMPLES})  # ---- if TF_BUILD_EXAMPLES
 
 # -----------------------------------------------------------------------------
 # Unittest
@@ -386,8 +426,8 @@ add_test(cyclic_cond.5threads ${TF_UTEST_DIR}/basics -tc=CyclicCond.5threads)
 add_test(cyclic_cond.6threads ${TF_UTEST_DIR}/basics -tc=CyclicCond.6threads)
 add_test(cyclic_cond.7threads ${TF_UTEST_DIR}/basics -tc=CyclicCond.7threads)
 add_test(cyclic_cond.8threads ${TF_UTEST_DIR}/basics -tc=CyclicCond.8threads)
-add_test(btree_cond               ${TF_UTEST_DIR}/basics -tc=BTreeCondition)
-add_test(dynamic_btree_cond       ${TF_UTEST_DIR}/basics -tc=DynamicBTreeCondition)
+add_test(btree_cond ${TF_UTEST_DIR}/basics -tc=BTreeCondition)
+add_test(dynamic_btree_cond   ${TF_UTEST_DIR}/basics -tc=DynamicBTreeCondition)
 add_test(nested_cond.1thread  ${TF_UTEST_DIR}/basics -tc=NestedCond.1thread)
 add_test(nested_cond.2threads ${TF_UTEST_DIR}/basics -tc=NestedCond.2threads)
 add_test(nested_cond.3threads ${TF_UTEST_DIR}/basics -tc=NestedCond.3threads)
@@ -438,7 +478,43 @@ add_test(merge_sort ${TF_UTEST_DIR}/sort -tc=MergeSort)
 add_test(quick_sort ${TF_UTEST_DIR}/sort -tc=QuickSort)
 
 
-endif()
+#### CUDA unittests
+if(${TF_ENABLE_CUDA})
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR}/cuda)
+
+add_executable(cuda_basics ${TF_UTEST_DIR}/cuda/cuda_basics.cu)
+target_link_libraries(
+  cuda_basics ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
+target_include_directories(cuda_basics PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
+add_test(cuda_basics.builder ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Builder)
+add_test(cuda_basics.set.i8  ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Set.i8)
+add_test(cuda_basics.set.i16 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Set.i16)
+add_test(cuda_basics.set.i32 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Set.i32)
+add_test(cuda_basics.bset.i8  ${TF_UTEST_DIR}/cuda/cuda_basics -tc=BSet.i8)
+add_test(cuda_basics.bset.i16 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=BSet.i16)
+add_test(cuda_basics.bset.i32 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=BSet.i32)
+add_test(cuda_basics.add.i8  ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Add.i8)
+add_test(cuda_basics.add.i16 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Add.i16)
+add_test(cuda_basics.add.i32 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Add.i32)
+add_test(cuda_basics.barrier.i8 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i8)
+add_test(cuda_basics.barrier.i16 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i16)
+add_test(cuda_basics.barrier.i32 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i32)
+
+# matrix operation tests
+add_executable(cuda_matrix ${TF_UTEST_DIR}/cuda/cuda_matrix.cu)
+target_link_libraries(
+  cuda_matrix ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
+target_include_directories(cuda_matrix PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
+add_test(cuda_matrix.multiply ${TF_UTEST_DIR}/cuda/cuda_matrix -tc=multiply)
+add_test(cuda_matrix.transpose ${TF_UTEST_DIR}/cuda/cuda_matrix -tc=transpose)
+add_test(cuda_matrix.product ${TF_UTEST_DIR}/cuda/cuda_matrix -tc=product)
+
+endif(${TF_ENABLE_CUDA})
+
+endif(${TF_BUILD_TESTS})
 
 # -----------------------------------------------------------------------------
 # Benchmarking (enabled by TF_BUILD_BENCHMARKS)

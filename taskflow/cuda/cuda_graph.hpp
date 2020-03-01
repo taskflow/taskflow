@@ -1,8 +1,7 @@
 #pragma once
 
-#include "device.hpp"
+#include "cuda_device.hpp"
 
-#include "../declarations.hpp"
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
 #include "../utility/passive_vector.hpp"
@@ -21,24 +20,42 @@ class cudaNode {
   friend class cudaGraph;
   friend class cudaTask;
 
+  friend class Taskflow;
+  friend class Executor;
+
+  // Host handle
+  //struct Host {
+  //  cudaHostNodeParams param;
+  //};
+
+  struct Noop {
+
+  };
+
   // Copy handle
   struct Copy {
     
     template <typename... ArgsT>
-    Copy(ArgsT&&... args) {
-    }
+    Copy(ArgsT&&...);
 
-    cudaMemcpy3DParms param = {0};
+    cudaMemcpy3DParms param;
   };
   
   // Kernel handle
   struct Kernel {
     
     template <typename... ArgsT>
-    Kernel(ArgsT&&...) {}
+    Kernel(ArgsT&&...);
 
-    cudaKernelNodeParams param = {0};
+    cudaKernelNodeParams param;
   };
+
+  using handle_t = nstd::variant<nstd::monostate, Noop, Copy, Kernel>;
+  
+  // variant index
+  constexpr static auto NOOP = get_index_v<Noop, handle_t>;
+  constexpr static auto COPY = get_index_v<Copy, handle_t>; 
+  constexpr static auto KERNEL = get_index_v<Kernel, handle_t>;
 
   public:
   
@@ -50,7 +67,7 @@ class cudaNode {
 
     std::string _name;
     
-    nstd::variant<nstd::monostate, Copy, Kernel> _handle;
+    handle_t _handle;
 
     cudaGraphNode_t _node {nullptr};
 
@@ -68,6 +85,10 @@ class cudaGraph {
 
   friend class cudaFlow;
   friend class cudaNode;
+  friend class cudaTask;
+  
+  friend class Taskflow;
+  friend class Executor;
 
   public:
 
@@ -76,6 +97,12 @@ class cudaGraph {
 
     template <typename... ArgsT>
     cudaNode* emplace_back(ArgsT&&...);
+
+    cudaGraph_t native_handle();
+
+    void clear();
+
+    bool empty() const;
 
   private:
     
@@ -87,6 +114,16 @@ class cudaGraph {
 // ----------------------------------------------------------------------------
 // cudaNode definitions
 // ----------------------------------------------------------------------------
+
+// Copy handle constructor
+template <typename... ArgsT>
+cudaNode::Copy::Copy(ArgsT&&... args) {
+}
+
+// Kernel handle constructor
+template <typename... ArgsT>
+cudaNode::Kernel::Kernel(ArgsT&&... args) {
+}
 
 // Constructor
 inline cudaNode::cudaNode(cudaGraph& g) : _graph {g} {
@@ -114,6 +151,23 @@ inline cudaGraph::cudaGraph() {
 inline cudaGraph::~cudaGraph() {
   cudaGraphDestroy(_handle);
 }
+
+// Function: empty
+inline bool cudaGraph::empty() const {
+  return _nodes.empty();
+}
+
+// Procedure: clear
+inline void cudaGraph::clear() {
+
+  _nodes.clear();
+
+  cudaGraphDestroy(_handle);
+  TF_CHECK_CUDA(
+    cudaGraphCreate(&_handle, 0), 
+    "failed to create a cudaGraph after clear"
+  );
+}
     
 // Function: emplace_back
 template <typename... ArgsT>
@@ -121,6 +175,11 @@ cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
   auto node = std::make_unique<cudaNode>(*this, std::forward<ArgsT>(args)...);
   _nodes.emplace_back(std::move(node));
   return _nodes.back().get();
+}
+
+// Function: native_handle
+inline cudaGraph_t cudaGraph::native_handle() {
+  return _handle;
 }
 
 

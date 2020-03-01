@@ -20,6 +20,8 @@
 #include <cassert>
 #include <cmath>
 
+#include "../nstd/variant.hpp"
+
 namespace tf {
 
 //-----------------------------------------------------------------------------
@@ -243,4 +245,28 @@ template <typename F>
 struct function_traits<F&&> : function_traits<F> {};
 
 
+// ----------------------------------------------------------------------------
+// nstd::variant
+// ----------------------------------------------------------------------------
+template <typename T, typename>
+struct get_index;
+
+template <size_t I, typename... Ts> 
+struct get_index_impl {};
+
+template <size_t I, typename T, typename... Ts> 
+struct get_index_impl<I, T, T, Ts...> : std::integral_constant<size_t, I>{};
+
+template <size_t I, typename T, typename U, typename... Ts> 
+struct get_index_impl<I, T, U, Ts...> : get_index_impl<I+1, T, Ts...>{};
+
+template <typename T, typename... Ts> 
+struct get_index<T, nstd::variant<Ts...>> : get_index_impl<0, T, Ts...>{};
+
+template <typename T, typename... Ts>
+constexpr auto get_index_v = get_index<T, Ts...>::value;
+
 }  // end of namespace tf. ---------------------------------------------------
+
+
+

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cuda.h>
 #include <iostream>
 #include <sstream>
 #include <exception>

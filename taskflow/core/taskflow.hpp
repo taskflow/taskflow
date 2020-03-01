@@ -21,6 +21,11 @@ class Taskflow : public FlowBuilder {
   friend class Executor;
   friend class FlowBuilder;
 
+  struct Dumper {
+    std::stack<const Taskflow*> stack;
+    std::unordered_set<const Taskflow*> visited;
+  };
+
   public:
 
     /**
@@ -65,7 +70,7 @@ class Taskflow : public FlowBuilder {
     
     @return @c *this
     */
-    tf::Taskflow& name(const std::string&); 
+    void name(const std::string&); 
 
     /**
     @brief queries the name of the taskflow
@@ -94,20 +99,8 @@ class Taskflow : public FlowBuilder {
     std::list<Topology> _topologies;
 
     void _dump(std::ostream&, const Taskflow*) const;
-
-    void _dump(
-      std::ostream&, 
-      const Node*,
-      std::stack<const Taskflow*>&,
-      std::unordered_set<const Taskflow*>&
-    ) const;
-
-    void _dump(
-      std::ostream&,
-      const Graph&,
-      std::stack<const Taskflow*>&,
-      std::unordered_set<const Taskflow*>&
-    ) const;
+    void _dump(std::ostream&, const Node*, Dumper&) const;
+    void _dump(std::ostream&, const Graph&, Dumper&) const;
 };
 
 // Constructor
@@ -141,9 +134,8 @@ inline bool Taskflow::empty() const {
 }
 
 // Function: name
-inline Taskflow& Taskflow::name(const std::string &name) {
+inline void Taskflow::name(const std::string &name) {
   _name = name;
-  return *this;
 }
 
 // Function: name
@@ -176,32 +168,28 @@ inline void Taskflow::dump(std::ostream& os) const {
 // Procedure: _dump
 inline void Taskflow::_dump(std::ostream& os, const Taskflow* top) const {
   
-  std::stack<const Taskflow*> stack;
-  std::unordered_set<const Taskflow*> visited; 
+  Dumper dumper;
   
-  stack.push(top);
-  visited.insert(top);
+  dumper.stack.push(top);
+  dumper.visited.insert(top);
 
-  while(!stack.empty()) {
+  while(!dumper.stack.empty()) {
     
-    auto f = stack.top();
-    stack.pop();
+    auto f = dumper.stack.top();
+    dumper.stack.pop();
     
     os << "subgraph cluster_p" << f << " {\nlabel=\"Taskflow: ";
     if(f->_name.empty()) os << 'p' << f;
     else os << f->_name;
     os << "\";\n";
-    _dump(os, f->_graph, stack, visited);
+    _dump(os, f->_graph, dumper);
     os << "}\n";
   }
 }
 
 // Procedure: _dump
 inline void Taskflow::_dump(
-  std::ostream& os, 
-  const Node* node,
-  std::stack<const Taskflow*>& stack,
-  std::unordered_set<const Taskflow*>& visited
+  std::ostream& os, const Node* node, Dumper& dumper
 ) const {
 
   os << 'p' << node << "[label=\"";
@@ -209,9 +197,21 @@ inline void Taskflow::_dump(
   else os << node->_name;
   os << "\" ";
 
-  // condition node is colored green
-  if(node->_handle.index() == Node::CONDITION_WORK) {
-    os << " shape=diamond color=black fillcolor=aquamarine style=filled";
+  // shape for node
+  switch(node->_handle.index()) {
+
+    case Node::CONDITION_WORK:
+      os << "shape=diamond color=black fillcolor=aquamarine style=filled";
+    break;
+
+#ifdef TF_ENABLE_CUDA
+    case Node::CUDAFLOW_WORK:
+      os << "shape=folder fillcolor=cyan style=filled";
+    break;
+#endif
+
+    default:
+    break;
   }
 
   os << "];\n";
@@ -232,37 +232,92 @@ inline void Taskflow::_dump(
     os << 'p' << node << " -> p" << node->_parent << ";\n";
   }
 
-  if(node->_handle.index() == Node::DYNAMIC_WORK) {
+  switch(node->_handle.index()) {
 
-    auto& sbg = nstd::get<Node::DynamicWork>(node->_handle).subgraph;
- 
-    //if(node->_subgraph && !node->_subgraph->empty()) {
-    if(!sbg.empty()) {
+    case Node::DYNAMIC_WORK: {
+      auto& sbg = nstd::get<Node::DynamicWork>(node->_handle).subgraph;
+      if(!sbg.empty()) {
+        os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
+        if(node->_name.empty()) os << 'p' << node;
+        else os << node->_name;
 
-      os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
-      if(node->_name.empty()) os << 'p' << node;
-      else os << node->_name;
-
-      os << "\";\n" << "color=blue\n";
-      _dump(os, sbg, stack, visited);
-      os << "}\n";
+        os << "\";\n" << "color=blue\n";
+        _dump(os, sbg, dumper);
+        os << "}\n";
+      }
     }
+    break;
+
+#ifdef TF_ENABLE_CUDA
+    case Node::CUDAFLOW_WORK: {
+      auto& cfg = nstd::get<Node::cudaFlowWork>(node->_handle).graph;
+      if(!cfg.empty()) {
+        os << "subgraph cluster_p" << node << " {\nlabel=\"cudaFlow: ";
+        if(node->_name.empty()) os << 'p' << node;
+        else os << node->_name;
+
+        os << "\";\n" << "color=\"purple\"\n";
+
+        for(const auto& v : cfg._nodes) {
+
+          os << 'p' << v.get() << "[label=\"";
+          if(v->_name.empty()) {
+            os << 'p' << v.get() << "\"";
+          }
+          else {
+            os << v->_name << "\"";
+          }
+          
+          switch(v->_handle.index()) {
+            case cudaNode::NOOP:
+            break;
+
+            case cudaNode::COPY:
+              //os << " shape=\"cds\"";
+            break;
+
+            case cudaNode::KERNEL:
+              os << " style=\"filled\""
+                 << " color=\"white\" fillcolor=\"black\""
+                 << " fontcolor=\"white\""
+                 << " shape=\"box3d\"";
+            break;
+
+            default:
+            break;
+          }
+  
+          os << "];\n";
+          for(const auto s : v->_successors) {
+            os << 'p' << v.get() << " -> " << 'p' << s << ";\n";
+          }
+          
+          if(v->_successors.size() == 0) {
+            os << 'p' << v.get() << " -> p" << node << ";\n";
+          }
+
+        }
+        os << "}\n";
+      }
+    }
+    break;
+#endif
+
+    default:
+    break;
   }
 }
 
 // Procedure: _dump
 inline void Taskflow::_dump(
-  std::ostream& os, 
-  const Graph& graph,
-  std::stack<const Taskflow*>& stack,
-  std::unordered_set<const Taskflow*>& visited
+  std::ostream& os, const Graph& graph, Dumper& dumper
 ) const {
     
   for(const auto& n : graph._nodes) {
 
     // regular task
     if(n->_handle.index() != Node::MODULE_WORK) {
-      _dump(os, n, stack, visited);
+      _dump(os, n, dumper);
     }
     // module task
     else {
@@ -277,9 +332,9 @@ inline void Taskflow::_dump(
       else os << module->_name;
       os << "]\"];\n";
 
-      if(visited.find(module) == visited.end()) {
-        visited.insert(module);
-        stack.push(module);
+      if(dumper.visited.find(module) == dumper.visited.end()) {
+        dumper.visited.insert(module);
+        dumper.stack.push(module);
       }
 
       for(const auto s : n->_successors) {
@@ -292,7 +347,6 @@ inline void Taskflow::_dump(
 // ----------------------------------------------------------------------------
 // Backward compatibility
 // ----------------------------------------------------------------------------
-
 using Framework = Taskflow;
 
 }  // end of namespace tf. ---------------------------------------------------

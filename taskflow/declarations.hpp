@@ -3,8 +3,10 @@
 namespace tf {
 
 // ----------------------------------------------------------------------------
-// forward declarations inside tf
+// forward declarations
 // ----------------------------------------------------------------------------
+
+// taskflow
 class Node;
 class Graph;
 class FlowBuilder;
@@ -15,6 +17,7 @@ class Taskflow;
 class Topology;
 class Executor;
 
+// cudaflow
 class cudaNode;
 class cudaGraph;
 class cudaTask;

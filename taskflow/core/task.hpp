@@ -33,6 +33,16 @@ constexpr bool is_dynamic_task_v = is_invocable_r_v<void, C, Subflow&>;
 template <typename C>
 constexpr bool is_condition_task_v = is_invocable_r_v<int, C>;
 
+#ifdef TF_ENABLE_CUDA
+/**
+@struct is_cudaflow_task
+
+@brief determines if a callable is a cudaflow task
+*/
+template <typename C>
+constexpr bool is_cudaflow_task_v = is_invocable_r_v<void, C, cudaFlow&>;
+#endif
+
 // ----------------------------------------------------------------------------
 // Task
 // ----------------------------------------------------------------------------

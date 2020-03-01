@@ -85,7 +85,7 @@ Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
 
 # Get Started with Cpp-Taskflow
 
-The following example [simple.cpp](./example/simple.cpp) shows the basic Cpp-Taskflow API
+The following example [simple.cpp](./examples/simple.cpp) shows the basic Cpp-Taskflow API
 you need in most applications.
 
 ```cpp
@@ -691,7 +691,7 @@ to a sequential chain of executions.
 ```cpp
 executor.run(taskflow);             // runs a graph once
 executor.run_n(taskflow, 5);        // runs a graph five times
-executor.run_n(taskflow, my_pred);  // keeps running until the my_pred becomes true
+executor.run_until(taskflow, my_pred);  // keeps running until the my_pred becomes true
 executor.wait_for_all();            // blocks until all tasks finish
 ```
 
@@ -741,19 +741,19 @@ Alternatively, you can use CMake's testing framework to run the unittest.
 
 ## Examples
 
-The folder `example/` contains several examples and is a great place to learn to use Cpp-Taskflow.
+The folder `examples/` contains several examples and is a great place to learn to use Cpp-Taskflow.
 
 | Example |  Description |
 | ------- |  ----------- | 
-| [simple.cpp](./example/simple.cpp) | uses basic task building blocks to create a trivial taskflow  graph |
-| [debug.cpp](./example/debug.cpp)| inspects a taskflow through the dump method |
-| [parallel_for.cpp](./example/parallel_for.cpp)| parallelizes a for loop with unbalanced workload |
-| [reduce.cpp](./example/reduce.cpp)| performs reduce operations over linear containers |
-| [subflow.cpp](./example/subflow.cpp)| demonstrates how to create a subflow graph that spawns three dynamic tasks |
-| [run_variants.cpp](./example/run_variants.cpp)| shows multiple ways to run a taskflow graph |
-| [composition.cpp](./example/composition.cpp)| demonstrates the decomposable interface of taskflow |
-| [observer.cpp](./example/observer.cpp)| demonstrates how to monitor the thread activities in scheduling and running tasks |
-| [condition.cpp](./example/condition.cpp) | creates a conditional tasking graph with a feedback loop control flow |
+| [simple.cpp](./examples/simple.cpp) | uses basic task building blocks to create a trivial taskflow  graph |
+| [debug.cpp](./examples/debug.cpp)| inspects a taskflow through the dump method |
+| [parallel_for.cpp](./examples/parallel_for.cpp)| parallelizes a for loop with unbalanced workload |
+| [reduce.cpp](./examples/reduce.cpp)| performs reduce operations over linear containers |
+| [subflow.cpp](./examples/subflow.cpp)| demonstrates how to create a subflow graph that spawns three dynamic tasks |
+| [run_variants.cpp](./examples/run_variants.cpp)| shows multiple ways to run a taskflow graph |
+| [composition.cpp](./examples/composition.cpp)| demonstrates the decomposable interface of taskflow |
+| [observer.cpp](./examples/observer.cpp)| demonstrates how to monitor the thread activities in scheduling and running tasks |
+| [condition.cpp](./examples/condition.cpp) | creates a conditional tasking graph with a feedback loop control flow |
 
 ## Benchmarks
 
