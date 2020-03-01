@@ -212,7 +212,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>pops out an item from the queue </p>
-<p>Only the owner thread can pop out an item from the queue. The return can be a  if this operation failed (empty queue). </p>
+<p>Only the owner thread can pop out an item from the queue. The return can be a nullptr if this operation failed (empty queue). </p>
 
 </div>
 </div>
@@ -269,7 +269,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>steals an item from the queue </p>
-<p>Any threads can try to steal an item from the queue. The return can be a  if this operation failed (not necessary empty). </p>
+<p>Any threads can try to steal an item from the queue. The return can be a nullptr if this operation failed (not necessary empty). </p>
 
 </div>
 </div>
