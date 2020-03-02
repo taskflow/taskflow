@@ -1,0 +1,31 @@
+digraph Taskflow {
+subgraph cluster_p0x7ffee0bae020 {
+label="Taskflow: F4";
+p0x7f9ec5801238[shape=box3d, color=blue, label="module3 [Taskflow: F3]"];
+p0x7f9ec5801238->p0x7f9ec5801338;
+p0x7f9ec5801338[shape=box3d, color=blue, label="module2 [Taskflow: F2]"];
+}
+subgraph cluster_p0x7ffee0badd80 {
+label="Taskflow: F2";
+p0x7f9ec5800a38[label="f2A" ];
+p0x7f9ec5800a38 -> p0x7f9ec5801038;
+p0x7f9ec5801138[label="f2B" ];
+p0x7f9ec5801138 -> p0x7f9ec5801038;
+p0x7f9ec5801038[label="f2C" ];
+p0x7f9ec5800f38[shape=box3d, color=blue, label="module1 [Taskflow: F1]"];
+p0x7f9ec5800f38->p0x7f9ec5801038;
+}
+subgraph cluster_p0x7ffee0badce0 {
+label="Taskflow: F1";
+p0xa[label="f1A" ];
+p0xb[label="f1B" ];
+p0xc[label="f1C" ];
+p0xd[label="f1D" ];
+
+}
+subgraph cluster_p0x7ffee0bade20 {
+label="Taskflow: F3";
+p0x7f9ec5800e38[shape=box3d, color=blue, label="module2 [Taskflow: F2]"];
+p0x7f9ec5800d38[label="f3A" ];
+}
+}

@@ -43,7 +43,7 @@ at an individual scope.
 
 | [Taskflow Composition](#composable-tasking) |
 | :---------------: |
-|![](image/framework.png)|
+|![](image/framework.svg)|
 
 Cpp-Taskflow supports heterogeneous tasking for you to 
 accelerate a wide range of scientific computing applications
