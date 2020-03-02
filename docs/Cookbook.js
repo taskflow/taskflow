@@ -33,5 +33,8 @@ var Cookbook =
     [ "C5: Composable Tasking", "chapter5.html", [
       [ "Composes a Taskflow", "chapter5.html#C5_ComposesATaskflow", null ],
       [ "Module Task", "chapter5.html#C5_ModuleTask", null ]
+    ] ],
+    [ "C6: CPU-GPU Tasking", "chapter6.html", [
+      [ "Create a cudaFlow", "chapter6.html#C6_Create_a_cudaFlow", null ]
     ] ]
 ];

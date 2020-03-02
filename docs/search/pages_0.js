@@ -6,5 +6,6 @@ var searchData=
   ['c3_3a_20dynamic_20tasking',['C3: Dynamic Tasking',['../chapter3.html',1,'Cookbook']]],
   ['c4_3a_20conditional_20tasking',['C4: Conditional Tasking',['../chapter4.html',1,'Cookbook']]],
   ['c5_3a_20composable_20tasking',['C5: Composable Tasking',['../chapter5.html',1,'Cookbook']]],
+  ['c6_3a_20cpu_2dgpu_20tasking',['C6: CPU-GPU Tasking',['../chapter6.html',1,'Cookbook']]],
   ['cookbook',['Cookbook',['../Cookbook.html',1,'']]]
 ];
