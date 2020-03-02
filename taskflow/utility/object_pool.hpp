@@ -642,9 +642,9 @@ T* ObjectPool<T, S>::allocate() {
   }
   
   // the superblock must have at least one space
-  assert(s->u < M);
+  //assert(s->u < M);
   //printf("%lu %lu %lu\n", h.u, h.a, s->u);
-  assert(h.u < h.a);
+  //assert(h.u < h.a);
 
   h.u = h.u + 1;
   s->u = s->u + 1;
