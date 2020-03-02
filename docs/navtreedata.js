@@ -81,7 +81,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"structis__static__task.html"
+"structis__cudaflow__task.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

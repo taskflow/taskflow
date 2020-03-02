@@ -1,0 +1,95 @@
+namespace tf {
+
+/** @page chapter6 C6: CPU-GPU Tasking
+
+Modern scientific computing typically leverages 
+GPU-powered parallel processing cores to speed up large-scale applications.
+This chapters discusses how to implement heterogeneous decomposition algorithms
+using CPU-GPU collaborative tasking.
+
+@section C6_Create_a_cudaFlow Create a cudaFlow
+
+Cpp-Taskflow enables concurrent CPU-GPU tasking by leveraging 
+<a href="https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__GRAPH.html">Nvidia CUDA Graph</a>.
+The tasking interface is referred to as @em %cudaFlow.
+A tf::cudaFlow is a graph object created at runtime similar to dynamic tasking. 
+It manages a task node in a taskflow and associates it with a CUDA Graph. 
+To create a %cudaFlow, emplace a callable with an argument of type tf::cudaFlow.
+The following example implements the canonical saxpy (A·X Plus Y) task graph.
+
+
+@code{.cpp}
+ 1: #include <taskflow/taskflow.hpp>
+ 2: 
+ 3: // saxpy (single-precision A·X Plus Y) kernel
+ 4: __global__ void saxpy(int n, float a, float *x, float *y) {
+ 5:   int i = blockIdx.x*blockDim.x + threadIdx.x;
+ 6:   if (i < n) {
+ 7:     y[i] = a*x[i] + y[i];
+ 8:   }
+ 9: }
+10:
+11: // main function begins
+12: int main() {
+13:
+14:   tf::Taskflow taskflow;
+15:   tf::Executor executor;
+16:  
+17:   const unsigned N = 1<<20;                            // size of the vector
+18:
+19:   std::vector<float> hx(N, 1.0f);                      // x vector at host
+20:   std::vector<float> hy(N, 2.0f);                      // y vector at host
+21:
+22:   float *dx{nullptr};                                  // x vector at device
+23:   float *dy{nullptr};                                  // y vector at device
+24:  
+25:   tf::Task allocate_x = taskflow.emplace(
+26:     [&](){ cudaMalloc(&dx, N*sizeof(float));}
+27:   );
+28:
+29:   tf::Task allocate_y = taskflow.emplace(
+30:     [&](){ cudaMalloc(&dy, N*sizeof(float));}
+31:   );
+32:
+33:   tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
+34:     // create data transfer tasks
+35:     tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N);    // host-to-device x data transfer
+36:     tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N);    // host-to-device y data transfer
+37:     tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N);    // device-to-host x data transfer
+38:     tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N);    // device-to-host y data transfer
+39:
+40:     // launch saxpy<<<(N+255)/256, 256, 0>>>(N, 2.0f, dx, dy)
+41:     tf::cudaTask kernel = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy);
+42:
+43:     kernel.succeed(h2d_x, h2d_y)
+44:           .precede(d2h_x, d2h_y);
+45:   });
+46:   cudaflow.succeed(allocate_x, allocate_y);            // overlap data allocations
+47:  
+48:   executor.run(taskflow).wait();
+49:
+50:   taskflow.dump(std::cout);                            // dump the taskflow
+51: }
+@endcode
+
+@image html images/saxpy.svg width=50%
+
+Debrief:
+
+@li Lines 3-9 define a saxpy kernel using CUDA
+@li Lines 19-20 declare two host vectors, @c hx and @c hy
+@li Lines 22-23 declare two device vector pointers, @c dx and @c dy
+@li Lines 25-31 declare two tasks to allocate memory for @c dx and @c dy on device, each of @c N*sizeof(float) bytes
+@li Lines 33-45 create a tf::cudaFlow to capture kernel work in a graph (two host-to-device data transfer tasks, one saxpy kernel task, and two device-to-host data transfer tasks)
+@li Lines 46-48 define the task dependency between host tasks and the %cudaFlow tasks and execute the taskflow
+
+Cpp-Taskflow does not expend unnecessary efforts on kernel programming but focus on 
+tasking CUDA operations with CPU work.
+We give users full privileges to craft a CUDA kernel 
+that is commensurate with their domain knowledge. 
+Users focus on developing high-performance kernels using 
+a native CUDA toolkit, while leaving difficult task parallelism to Cpp-Taskflow.
+
+*/
+
+}
