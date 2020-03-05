@@ -585,7 +585,7 @@ T* ObjectPool<T, S>::allocate() {
   // my logically mapped heap
   LocalHeap& h = _this_heap(); 
   
-  Block* s;
+  Block* s {nullptr};
 
   h.mutex.lock();
   
