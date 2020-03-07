@@ -74,12 +74,15 @@ class ObjectPool {
       size_t i;
       size_t u;
       T* top;
+      long double pad;
       char data;
     };
   };
   
-  // the data column must be sufficient to hold the pointer in freelist
-  constexpr static size_t X = sizeof(Block**) + std::max(sizeof(T**), sizeof(T));
+  // the data column must be sufficient to hold the pointer in freelist  
+  constexpr static size_t O = sizeof(long double)/sizeof(Block**);
+  //constexpr static size_t X = sizeof(Block**) + std::max(sizeof(T**), sizeof(T));
+  constexpr static size_t X = sizeof(long double) + std::max(sizeof(T**), sizeof(T));
   constexpr static size_t M = (S - offsetof(Block, data)) / X;
   constexpr static size_t F = 4;   
   constexpr static size_t B = F + 1;
@@ -560,7 +563,7 @@ T* ObjectPool<T, S>::_allocate(Block* s) {
     auto beg = reinterpret_cast<Block**>(&s->data + s->i++ * X);
     *beg = s;
     //printf("beg=%p data=%p s=%p\n", *beg, beg+1, s);
-    return reinterpret_cast<T*>(beg + 1);
+    return reinterpret_cast<T*>(beg + O);  // (beg + 1) 
   }
   else {
     T* retval = s->top;
@@ -679,7 +682,7 @@ void ObjectPool<T, S>::deallocate(T* mem) {
   //  reinterpret_cast<char*>(mem) - sizeof(Block**)
   //);
 
-  Block* s= *(reinterpret_cast<Block**>(mem) - 1);
+  Block* s= *(reinterpret_cast<Block**>(mem) - O); //  (mem) - 1
   
   //printf("deallocate %p (s=%p) M=%lu W=%lu X=%lu\n", mem, s, M, W, X);
 
