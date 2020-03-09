@@ -1949,6 +1949,8 @@ void flip_coin_cond(unsigned w) {
   executor.run_n(taskflow, 10000).wait();
   
   REQUIRE(std::fabs(avg-32.0)<1.0);
+
+  taskflow.dump(std::cout);
 }
 
 TEST_CASE("FlipCoinCond.1thread" * doctest::timeout(300)) {

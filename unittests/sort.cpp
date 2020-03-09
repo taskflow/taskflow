@@ -205,7 +205,7 @@ TEST_CASE("MergeSort" * doctest::timeout(300)) {
       return;
     }
 
-    if(beg - end <= 5) {
+    if(end - beg <= 5) {
       std::sort(data.begin() + beg, data.begin() + end);
       return;
     }
