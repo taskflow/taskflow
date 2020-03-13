@@ -256,7 +256,7 @@ TEST_CASE("MergeSort" * doctest::timeout(300)) {
 
     tf::Executor executor(w);
 
-    for(int end=10; end <= 1000000; end = end * 10) {
+    for(int end=10; end <= 100000; end = end * 10) {
       tf::Taskflow taskflow("MergeSort");
       
       std::vector<int> data(end);
