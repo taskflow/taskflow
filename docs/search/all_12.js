@@ -54,6 +54,7 @@ var searchData=
   ['release_202_2e1_2e0_20_282019_2f02_2f15_29',['Release 2.1.0 (2019/02/15)',['../release-2-1-0.html',1,'Releases']]],
   ['release_202_2e2_2e0_20_282019_2f06_2f15_29',['Release 2.2.0 (2019/06/15)',['../release-2-2-0.html',1,'Releases']]],
   ['release_202_2e3_2e0_20_282020_2f02_2f27_29',['Release 2.3.0 (2020/02/27)',['../release-2-3-0.html',1,'Releases']]],
+  ['release_202_2e3_2e1_20_282020_2f03_2f13_29',['Release 2.3.1 (2020/03/13)',['../release-2-3-1.html',1,'Releases']]],
   ['releases',['Releases',['../Releases.html',1,'']]],
   ['remainder',['remainder',['http://en.cppreference.com/w/cpp/numeric/math/remainder.html',1,'std']]],
   ['remove',['remove',['http://en.cppreference.com/w/cpp/container/forward_list/remove.html',1,'std::forward_list::remove()'],['http://en.cppreference.com/w/cpp/container/list/remove.html',1,'std::list::remove()'],['http://en.cppreference.com/w/cpp/algorithm/remove.html',1,'std::remove()']]],
