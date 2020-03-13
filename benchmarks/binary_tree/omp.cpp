@@ -4,7 +4,7 @@
 // binary_tree_omp
 void binary_tree_omp(size_t num_layers, unsigned num_threads) {
 
-  std::atomic<size_t> counter = 0;
+  std::atomic<size_t> counter {0};
   
   size_t N = 1 << num_layers;
   size_t *D = new size_t [N]; 

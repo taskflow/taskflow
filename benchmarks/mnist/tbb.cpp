@@ -28,7 +28,7 @@ void run_tbb(MNIST& D, unsigned num_threads) {
 
   for(auto e=0u; e<D.epoch; e++) {
     for(auto i=0u; i<iter_num; i++) {
-      auto& f_task = forward_tasks.emplace_back(
+      forward_tasks.emplace_back(
         std::make_unique<continue_node<continue_msg>>(
           G, 
           [&, i=i, e=e%num_par_shf](const continue_msg&) {
@@ -36,6 +36,7 @@ void run_tbb(MNIST& D, unsigned num_threads) {
           }
         ) 
       );
+      auto& f_task = forward_tasks.back();
 
       if(i != 0 || (i == 0 && e != 0)) {
         auto sz = update_tasks.size();
@@ -47,7 +48,7 @@ void run_tbb(MNIST& D, unsigned num_threads) {
       for(int j=D.acts.size()-1; j>=0; j--) {
 
         // backward propagation
-        auto& b_task = backward_tasks.emplace_back(
+        backward_tasks.emplace_back(
           std::make_unique<continue_node<continue_msg>>(
             G, 
             [&, i=j, e=e%num_par_shf] (const continue_msg&) {
@@ -55,9 +56,10 @@ void run_tbb(MNIST& D, unsigned num_threads) {
             }
           )
         );
+        auto& b_task = backward_tasks.back();
 
         // update weight 
-        auto& u_task = update_tasks.emplace_back(
+        update_tasks.emplace_back(
           std::make_unique<continue_node<continue_msg>>(
             G, 
             [&, i=j] (const continue_msg&) {
@@ -65,6 +67,7 @@ void run_tbb(MNIST& D, unsigned num_threads) {
             }
           )
         );
+        auto& u_task = update_tasks.back();
 
         if(j + 1u == D.acts.size()) {
           make_edge(*f_task, *b_task);
@@ -85,7 +88,7 @@ void run_tbb(MNIST& D, unsigned num_threads) {
       make_edge(*shuffle_tasks.back(), *forward_tasks[forward_tasks.size()-iter_num]);
     }
     else {
-      auto& t = shuffle_tasks.emplace_back(
+      shuffle_tasks.emplace_back(
         std::make_unique<continue_node<continue_msg>>(
           G, 
           [&, e=e%num_par_shf](const continue_msg&) {
@@ -93,6 +96,7 @@ void run_tbb(MNIST& D, unsigned num_threads) {
           }
         )
       );
+      auto& t = shuffle_tasks.back();
       make_edge(*t, *forward_tasks[forward_tasks.size()-iter_num]);
 
       // This shuffle task starts after belows finish

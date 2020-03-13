@@ -23,9 +23,10 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
 
   for(auto e=0u; e<D.epoch; e++) {
     for(auto i=0u; i<iter_num; i++) {
-      auto& f_task = forward_tasks.emplace_back(taskflow.emplace(
+      forward_tasks.emplace_back(taskflow.emplace(
         [&, i=i, e=e%num_par_shf]() { forward_task(D, i, e, mats, vecs); }
       ));
+      auto& f_task = forward_tasks.back();
 
       if(i != 0 || (i == 0 && e != 0)) {
         auto sz = update_tasks.size();
@@ -36,14 +37,16 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
 
       for(int j=D.acts.size()-1; j>=0; j--) {
         // backward propagation
-        auto& b_task = backward_tasks.emplace_back(taskflow.emplace(
+        backward_tasks.emplace_back(taskflow.emplace(
           [&, i=j, e=e%num_par_shf] () { backward_task(D, i, e, mats); }
         ));
+        auto& b_task = backward_tasks.back();
 
         // update weight 
-        auto& u_task = update_tasks.emplace_back(
+        update_tasks.emplace_back(
           taskflow.emplace([&, i=j] () {D.update(i);})
         );
+        auto& u_task = update_tasks.back();
 
         if(j + 1u == D.acts.size()) {
           f_task.precede(b_task);
@@ -58,13 +61,14 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
 
     if(e == 0) {
       // No need to shuffle in first epoch
-      shuffle_tasks.emplace_back(taskflow.emplace([](){}))
-                   .precede(forward_tasks[forward_tasks.size()-iter_num]);           
+      shuffle_tasks.emplace_back(taskflow.emplace([](){}));
+      shuffle_tasks.back().precede(forward_tasks[forward_tasks.size()-iter_num]);           
     }
     else {
-      auto& t = shuffle_tasks.emplace_back(taskflow.emplace(
+      shuffle_tasks.emplace_back(taskflow.emplace(
         [&, e=e%num_par_shf]() { D.shuffle(mats[e], vecs[e], D.images.rows());}
       ));
+      auto& t = shuffle_tasks.back();
       t.precede(forward_tasks[forward_tasks.size()-iter_num]);
 
       // This shuffle task starts after belows finish

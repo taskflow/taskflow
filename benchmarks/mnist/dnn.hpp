@@ -186,12 +186,15 @@ struct MNIST {
 
   void add_layer(size_t in_degree, size_t out_degree, Activation act) {
     acts.emplace_back(act);
-    Ys.emplace_back().resize(batch_size, out_degree);
+    Ys.emplace_back();
+    Ys.back().resize(batch_size, out_degree);
     Ws.push_back(Eigen::MatrixXf::Random(in_degree, out_degree));
     Bs.push_back(Eigen::MatrixXf::Random(1, out_degree));
 
-    dW.emplace_back().resize(in_degree, out_degree);
-    dB.emplace_back().resize(1, out_degree);
+    dW.emplace_back();
+    dW.back().resize(in_degree, out_degree);
+    dB.emplace_back();
+    dB.back().resize(1, out_degree);
   }
 
   void forward(size_t layer, const Eigen::MatrixXf& mat) {
