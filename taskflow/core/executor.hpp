@@ -26,7 +26,7 @@ namespace tf {
 @brief The executor class to run a taskflow graph.
 
 An executor object manages a set of worker threads and implements 
-an efficient work-stealing scheduling algorithm to run a task graph.
+an efficient work-stealing scheduling algorithm to run a taskflow.
 
 */
 
@@ -131,10 +131,24 @@ class Executor {
 
     /**
     @brief queries the number of worker threads (can be zero)
-
-    @return the number of worker threads
     */
     size_t num_workers() const;
+    
+    /**
+    @brief queries the number of running topologies at the time of this call
+
+    When a taskflow is submitted to an executor, a topology is created to store
+    runtime metadata of the running taskflow.
+    */
+    size_t num_topologies() const;
+
+    /**
+    @brief queries the id of the caller thread in this executor
+
+    Each worker has an unique id from 0 to N-1 exclusive to the associated executor.
+    If the caller thread does not belong to the executor, -1 is returned.
+    */
+    int this_worker_id() const;
     
     /**
     @brief constructs an observer to inspect the activities of worker threads
@@ -157,13 +171,6 @@ class Executor {
     */
     void remove_observer();
 
-    /**
-    @brief queries the id of the caller thread in this executor
-
-    Each worker has an unique id from 0 to N-1 exclusive to the associated executor.
-    If the caller thread does not belong to the executor, -1 is returned.
-    */
-    int this_worker_id() const;
 
   private:
    
@@ -171,7 +178,7 @@ class Executor {
     std::mutex _topology_mutex;
     std::mutex _queue_mutex;
 
-    unsigned _num_topologies {0};
+    size_t _num_topologies {0};
     
     // scheduler field
     std::vector<Worker> _workers;
@@ -248,6 +255,11 @@ inline Executor::~Executor() {
 // Function: num_workers
 inline size_t Executor::num_workers() const {
   return _workers.size();
+}
+
+// Function: num_topologies
+inline size_t Executor::num_topologies() const {
+  return _num_topologies;
 }
 
 // Function: _per_thread
