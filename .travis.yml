@@ -106,12 +106,10 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-8 && CXX=clang++-8"
     
-    ## OSX
-    #- os: osx
-    #  osx_image: xcode10
-    #  compiler: clang
-    #  env:
-    #    - CXX=clang++
+    # OSX
+    - os: osx
+      osx_image: xcode8
+      compiler: clang++
 
 # install cmake 3.10
 before_install:

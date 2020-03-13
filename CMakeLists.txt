@@ -17,18 +17,6 @@ option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
 # Include additional language check
 include(CheckLanguage)
 
-
-include(CheckLanguage)
-
-# check cuda
-check_language(CUDA)
-
-if(CMAKE_CUDA_COMPILER)
-  enable_language(CUDA)
-else()
-  message(STATUS "No CUDA support")
-endif()
-
 # Compiler vendors
 ## g++
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -59,6 +47,7 @@ Cpp-Taskflow currently supports the following compilers:\n\
 - g++ v5.0 or above\n\
 - clang++ v4.0 or above\n\
 - MSVC++ v19.14 or above\n\
+- AppleClang v8 or above\n\
 ")
 endif()
 
