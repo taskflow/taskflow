@@ -432,6 +432,33 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: Hash
+// --------------------------------------------------------
+TEST_CASE("Hash" * doctest::timeout(300)) {
+
+  std::hash<tf::Task> hash;
+  
+  // empty hash
+  tf::Task t1, t2;
+
+  REQUIRE(hash(t1) == hash(t2));
+
+  tf::Taskflow taskflow;
+
+  t1 = taskflow.emplace([](){});
+
+  REQUIRE(((hash(t1) != hash(t2)) || (hash(t1) == hash(t2) && t1 != t2)));
+
+  t2 = taskflow.emplace([](){});
+
+  REQUIRE(((hash(t1) != hash(t2)) || (hash(t1) == hash(t2) && t1 != t2)));
+
+  t2 = t1;
+
+  REQUIRE(hash(t1) == hash(t2));
+}
+
+// --------------------------------------------------------
 // Testcase: SequentialRuns
 // --------------------------------------------------------
 void sequential_runs(unsigned W) {

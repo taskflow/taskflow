@@ -220,6 +220,11 @@ class Task {
     */
     template <typename V>
     void for_each_dependent(V&& visitor) const;
+
+    /**
+    @brief obtains a hash value of the underlying node
+    */
+    size_t hash_value() const;
     
   private:
     
@@ -387,6 +392,11 @@ void Task::for_each_dependent(V&& visitor) const {
   for(size_t i=0; i<_node->_dependents.size(); ++i) {
     visitor(Task(_node->_dependents[i]));
   }
+}
+
+// Function: hash_value
+inline size_t Task::hash_value() const {
+  return std::hash<Node*>{}(_node);
 }
 
 // ----------------------------------------------------------------------------
@@ -589,5 +599,18 @@ void TaskView::for_each_dependent(V&& visitor) const {
 }
 
 }  // end of namespace tf. ---------------------------------------------------
+
+namespace std {
+
+// specialization for hash
+template <>
+struct hash<tf::Task> {
+  auto operator() (const tf::Task& task) const noexcept {
+    return task.hash_value();
+  }
+};
+
+}  // end of namespace std ----------------------------------------------------
+
 
 
