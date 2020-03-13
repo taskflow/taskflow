@@ -38,7 +38,7 @@ class Executor {
     TaskQueue<Node*> queue;
     Node* cache {nullptr};
 
-    int num_executed {0};
+    size_t num_executed {0};
   };
     
   struct PerThread {

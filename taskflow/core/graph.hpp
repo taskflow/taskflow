@@ -169,7 +169,7 @@ class Node {
 
     int _state {0};
 
-    std::atomic<int> _join_counter {0};
+    std::atomic<size_t> _join_counter {0};
     
     void _precede(Node*);
     void _set_state(int);
