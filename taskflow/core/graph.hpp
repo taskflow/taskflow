@@ -18,8 +18,9 @@ namespace tf {
 class Graph {
 
   friend class Node;
-  friend class Taskflow;
-  friend class Executor;
+  
+  TF_FRIEND_TASKFLOW; 
+  TF_FRIEND_EXECUTOR;
 
   public:
 
@@ -58,10 +59,11 @@ class Node {
   friend class Task;
   friend class TaskView;
   friend class Topology;
-  friend class Taskflow;
-  friend class Executor;
   friend class FlowBuilder;
   friend class Subflow;
+  
+  TF_FRIEND_TASKFLOW; 
+  TF_FRIEND_EXECUTOR;
 
   TF_ENABLE_POOLABLE_ON_THIS;
 

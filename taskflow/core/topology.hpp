@@ -9,8 +9,8 @@ namespace tf {
 // class: Topology
 class Topology {
   
-  friend class Taskflow;
-  friend class Executor;
+  TF_FRIEND_TASKFLOW; 
+  TF_FRIEND_EXECUTOR;
   
   public:
 

@@ -20,8 +20,8 @@ class cudaNode {
   friend class cudaGraph;
   friend class cudaTask;
 
-  friend class Taskflow;
-  friend class Executor;
+  TF_FRIEND_TASKFLOW; 
+  TF_FRIEND_EXECUTOR;
 
   // Host handle
   //struct Host {
@@ -87,8 +87,8 @@ class cudaGraph {
   friend class cudaNode;
   friend class cudaTask;
   
-  friend class Taskflow;
-  friend class Executor;
+  TF_FRIEND_TASKFLOW; 
+  TF_FRIEND_EXECUTOR;
 
   public:
 

@@ -7,6 +7,7 @@ var classtf_1_1Task =
     [ "for_each_dependent", "classtf_1_1Task.html#a3bf68937662bf291637e4a763476b2e4", null ],
     [ "for_each_successor", "classtf_1_1Task.html#aff13a503d4a3c994eb08cb6f22e1b427", null ],
     [ "has_work", "classtf_1_1Task.html#afc4ecb89dd4e4645b3ec3fb7c1bb0ec5", null ],
+    [ "hash_value", "classtf_1_1Task.html#a1c9301f2a330cc23ee18e8f61688141f", null ],
     [ "name", "classtf_1_1Task.html#a08ada0425b490997b6ff7f310107e5e3", null ],
     [ "name", "classtf_1_1Task.html#a9057ecd0f3833b717480e914f8568f02", null ],
     [ "num_dependents", "classtf_1_1Task.html#a974dc1d738b62b829ad261beeafbd67c", null ],
@@ -25,6 +26,5 @@ var classtf_1_1Task =
     [ "work", "classtf_1_1Task.html#a29b0523feb88d88780bb0a8d39c9a7f0", null ],
     [ "work", "classtf_1_1Task.html#ac1d5bd430aaf11c2145b8a5d60999d39", null ],
     [ "FlowBuilder", "classtf_1_1Task.html#a61184f9bd9c801d0a5eccecfdbddc641", null ],
-    [ "Taskflow", "classtf_1_1Task.html#af043dd6f6a359602805d9c7dd7539cca", null ],
     [ "TaskView", "classtf_1_1Task.html#a0aa0e12e4a0ba023033e808fb2132fdf", null ]
 ];

@@ -18,8 +18,9 @@ namespace tf {
 class Taskflow : public FlowBuilder {
 
   friend class Topology;
-  friend class Executor;
   friend class FlowBuilder;
+
+  TF_FRIEND_EXECUTOR;
 
   struct Dumper {
     std::stack<const Taskflow*> stack;

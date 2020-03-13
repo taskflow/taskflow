@@ -18,10 +18,12 @@
 #include "notifier.hpp"
 #include "observer.hpp"
 #include "taskflow.hpp"
+#include "strategy.hpp"
 
 namespace tf {
 
-/** @class Executor
+
+/** @class BasicExecutor
 
 @brief The executor class to run a taskflow graph.
 
@@ -30,7 +32,12 @@ an efficient work-stealing scheduling algorithm to run a taskflow.
 
 */
 
-class Executor {
+template <typename Strategy>
+class BasicExecutor {
+
+  static_assert(std::is_base_of<ExecutorStrategy, Strategy>::value,
+    "strategy must be derived from ExecutorStrategy"
+  );
   
   struct Worker {
     unsigned id;
@@ -50,12 +57,12 @@ class Executor {
     /**
     @brief constructs the executor with N worker threads
     */
-    explicit Executor(unsigned n = std::thread::hardware_concurrency());
+    explicit BasicExecutor(unsigned n = std::thread::hardware_concurrency());
     
     /**
     @brief destructs the executor 
     */
-    ~Executor();
+    ~BasicExecutor();
 
     /**
     @brief runs the taskflow once
@@ -171,7 +178,6 @@ class Executor {
     */
     void remove_observer();
 
-
   private:
    
     std::condition_variable _topology_cv;
@@ -225,7 +231,8 @@ class Executor {
 };
 
 // Constructor
-inline Executor::Executor(unsigned N) : 
+template <typename Strategy>
+BasicExecutor<Strategy>::BasicExecutor(unsigned N) : 
   _workers  {N},
   _waiters  {N},
   _notifier {_waiters} {
@@ -238,7 +245,8 @@ inline Executor::Executor(unsigned N) :
 }
 
 // Destructor
-inline Executor::~Executor() {
+template <typename Strategy>
+BasicExecutor<Strategy>::~BasicExecutor() {
   
   // wait for all topologies to complete
   wait_for_all();
@@ -253,29 +261,35 @@ inline Executor::~Executor() {
 }
 
 // Function: num_workers
-inline size_t Executor::num_workers() const {
+template <typename Strategy>
+size_t BasicExecutor<Strategy>::num_workers() const {
   return _workers.size();
 }
 
 // Function: num_topologies
-inline size_t Executor::num_topologies() const {
+template <typename Strategy>
+size_t BasicExecutor<Strategy>::num_topologies() const {
   return _num_topologies;
 }
 
 // Function: _per_thread
-inline Executor::PerThread& Executor::_per_thread() const {
+template <typename Strategy>
+typename BasicExecutor<Strategy>::PerThread& 
+BasicExecutor<Strategy>::_per_thread() const {
   thread_local PerThread pt;
   return pt;
 }
 
 // Function: this_worker_id
-inline int Executor::this_worker_id() const {
+template <typename Strategy>
+int BasicExecutor<Strategy>::this_worker_id() const {
   auto worker = _per_thread().worker;
   return worker ? static_cast<int>(worker->id) : -1;
 }
 
 // Procedure: _spawn
-inline void Executor::_spawn(unsigned N) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_spawn(unsigned N) {
 
   // Lock to synchronize all workers before creating _worker_maps
   for(unsigned i=0; i<N; ++i) {
@@ -306,7 +320,8 @@ inline void Executor::_spawn(unsigned N) {
 }
 
 // Function: _find_victim
-inline unsigned Executor::_find_victim(unsigned thief) {
+template <typename Strategy>
+unsigned BasicExecutor<Strategy>::_find_victim(unsigned thief) {
   
   /*unsigned l = 0;
   unsigned r = _workers.size() - 1;
@@ -339,7 +354,8 @@ inline unsigned Executor::_find_victim(unsigned thief) {
 }
 
 // Function: _explore_task
-inline void Executor::_explore_task(Worker& thief, Node*& t) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_explore_task(Worker& thief, Node*& t) {
   
   //assert(_workers[thief].queue.empty());
   assert(!t);
@@ -390,7 +406,8 @@ inline void Executor::_explore_task(Worker& thief, Node*& t) {
 }
 
 // Procedure: _exploit_task
-inline void Executor::_exploit_task(Worker& w, Node*& t) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_exploit_task(Worker& w, Node*& t) {
   
   assert(!w.cache);
 
@@ -481,7 +498,8 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
 }
 
 // Function: _wait_for_task
-inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
+template <typename Strategy>
+bool BasicExecutor<Strategy>::_wait_for_task(Worker& worker, Node*& t) {
 
   wait_for_task:
 
@@ -543,8 +561,9 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 }
 
 // Function: make_observer    
+template <typename Strategy>
 template<typename Observer, typename... Args>
-Observer* Executor::make_observer(Args&&... args) {
+Observer* BasicExecutor<Strategy>::make_observer(Args&&... args) {
   // use a local variable to mimic the constructor 
   auto tmp = std::make_unique<Observer>(std::forward<Args>(args)...);
   tmp->set_up(_workers.size());
@@ -553,14 +572,16 @@ Observer* Executor::make_observer(Args&&... args) {
 }
 
 // Procedure: remove_observer
-inline void Executor::remove_observer() {
+template <typename Strategy>
+void BasicExecutor<Strategy>::remove_observer() {
   _observer.reset();
 }
 
 // Procedure: _schedule
 // The main procedure to schedule a give task node.
 // Each task node has two types of tasks - regular and subflow.
-inline void Executor::_schedule(Node* node, bool bypass) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_schedule(Node* node, bool bypass) {
   
   //assert(_workers.size() != 0);
   
@@ -590,7 +611,8 @@ inline void Executor::_schedule(Node* node, bool bypass) {
 // Procedure: _schedule
 // The main procedure to schedule a set of task nodes.
 // Each task node has two types of tasks - regular and subflow.
-inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_schedule(PassiveVector<Node*>& nodes) {
 
   //assert(_workers.size() != 0);
   
@@ -632,7 +654,8 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
 
 
 // Procedure: _invoke
-inline void Executor::_invoke(Worker& worker, Node* node) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_invoke(Worker& worker, Node* node) {
 
   //assert(_workers.size() != 0);
 
@@ -796,7 +819,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 }
 
 // Procedure: _invoke_static_work
-inline void Executor::_invoke_static_work(Worker& worker, Node* node) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_invoke_static_work(Worker& worker, Node* node) {
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
     nstd::get<Node::StaticWork>(node->_handle).work();
@@ -808,7 +832,10 @@ inline void Executor::_invoke_static_work(Worker& worker, Node* node) {
 }
 
 // Procedure: _invoke_dynamic_work
-inline void Executor::_invoke_dynamic_work(Worker& worker, Node* node, Subflow& sf) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_invoke_dynamic_work(
+  Worker& worker, Node* node, Subflow& sf
+) {
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
     nstd::get<Node::DynamicWork>(node->_handle).work(sf);
@@ -820,7 +847,10 @@ inline void Executor::_invoke_dynamic_work(Worker& worker, Node* node, Subflow& 
 }
 
 // Procedure: _invoke_condition_work
-inline void Executor::_invoke_condition_work(Worker& worker, Node* node, int& id) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_invoke_condition_work(
+  Worker& worker, Node* node, int& id
+) {
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
     id = nstd::get<Node::ConditionWork>(node->_handle).work();
@@ -833,7 +863,10 @@ inline void Executor::_invoke_condition_work(Worker& worker, Node* node, int& id
 
 #ifdef TF_ENABLE_CUDA
 // Procedure: _invoke_cudaflow_work
-inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_invoke_cudaflow_work(
+  Worker& worker, Node* node
+) {
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
     _invoke_cudaflow_work_impl(worker, node);
@@ -845,7 +878,10 @@ inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
 }
 
 // Procedure: _invoke_cudaflow_work_impl
-inline void Executor::_invoke_cudaflow_work_impl(Worker&, Node* node) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_invoke_cudaflow_work_impl(
+  Worker&, Node* node
+) {
 
   auto& h = nstd::get<Node::cudaFlowWork>(node->_handle);
 
@@ -869,7 +905,8 @@ inline void Executor::_invoke_cudaflow_work_impl(Worker&, Node* node) {
 #endif
 
 // Procedure: _set_up_module_work
-inline void Executor::_set_up_module_work(Node* node, bool& ept) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_set_up_module_work(Node* node, bool& ept) {
 
   // second time to enter this context
   if(node->_has_state(Node::SPAWNED)) {
@@ -913,35 +950,41 @@ inline void Executor::_set_up_module_work(Node* node, bool& ept) {
 }
 
 // Function: run
-inline std::future<void> Executor::run(Taskflow& f) {
+template <typename Strategy>
+std::future<void> BasicExecutor<Strategy>::run(Taskflow& f) {
   return run_n(f, 1, [](){});
 }
 
 // Function: run
+template <typename Strategy>
 template <typename C>
-std::future<void> Executor::run(Taskflow& f, C&& c) {
+std::future<void> BasicExecutor<Strategy>::run(Taskflow& f, C&& c) {
   return run_n(f, 1, std::forward<C>(c));
 }
 
 // Function: run_n
-inline std::future<void> Executor::run_n(Taskflow& f, size_t repeat) {
+template <typename Strategy>
+std::future<void> BasicExecutor<Strategy>::run_n(Taskflow& f, size_t repeat) {
   return run_n(f, repeat, [](){});
 }
 
 // Function: run_n
+template <typename Strategy>
 template <typename C>
-std::future<void> Executor::run_n(Taskflow& f, size_t repeat, C&& c) {
+std::future<void> BasicExecutor<Strategy>::run_n(Taskflow& f, size_t repeat, C&& c) {
   return run_until(f, [repeat]() mutable { return repeat-- == 0; }, std::forward<C>(c));
 }
 
 // Function: run_until    
+template <typename Strategy>
 template<typename P>
-std::future<void> Executor::run_until(Taskflow& f, P&& pred) {
+std::future<void> BasicExecutor<Strategy>::run_until(Taskflow& f, P&& pred) {
   return run_until(f, std::forward<P>(pred), [](){});
 }
 
 // Function: _set_up_topology
-inline void Executor::_set_up_topology(Topology* tpg) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_set_up_topology(Topology* tpg) {
   
   tpg->_sources.clear();
   
@@ -962,7 +1005,8 @@ inline void Executor::_set_up_topology(Topology* tpg) {
 }
 
 // Function: _tear_down_topology
-inline void Executor::_tear_down_topology(Topology** tpg) {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_tear_down_topology(Topology** tpg) {
 
   auto &f = (*tpg)->_taskflow;
 
@@ -1036,8 +1080,11 @@ inline void Executor::_tear_down_topology(Topology** tpg) {
 }
 
 // Function: run_until
+template <typename Strategy>
 template <typename P, typename C>
-std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
+std::future<void> BasicExecutor<Strategy>::run_until(
+  Taskflow& f, P&& pred, C&& c
+) {
 
   _increment_topology();
 
@@ -1116,13 +1163,15 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
 }
 
 // Procedure: _increment_topology
-inline void Executor::_increment_topology() {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_increment_topology() {
   std::lock_guard<std::mutex> lock(_topology_mutex);
   ++_num_topologies;
 }
 
 // Procedure: _decrement_topology_and_notify
-inline void Executor::_decrement_topology_and_notify() {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_decrement_topology_and_notify() {
   std::lock_guard<std::mutex> lock(_topology_mutex);
   if(--_num_topologies == 0) {
     _topology_cv.notify_all();
@@ -1130,16 +1179,27 @@ inline void Executor::_decrement_topology_and_notify() {
 }
 
 // Procedure: _decrement_topology
-inline void Executor::_decrement_topology() {
+template <typename Strategy>
+void BasicExecutor<Strategy>::_decrement_topology() {
   std::lock_guard<std::mutex> lock(_topology_mutex);
   --_num_topologies;
 }
 
 // Procedure: wait_for_all
-inline void Executor::wait_for_all() {
+template <typename Strategy>
+void BasicExecutor<Strategy>::wait_for_all() {
   std::unique_lock<std::mutex> lock(_topology_mutex);
   _topology_cv.wait(lock, [&](){ return _num_topologies == 0; });
 }
+
+// ----------------------------------------------------------------------------
+
+/** @class Executor
+
+@brief alias of the default executor to use work-stealing algorithm
+
+*/
+using Executor = BasicExecutor<WorkStealing>;
 
 }  // end of namespace tf -----------------------------------------------------
 

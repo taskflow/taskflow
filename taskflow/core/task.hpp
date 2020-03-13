@@ -51,8 +51,9 @@ preventing direct access to the internal data storage.
 class Task {
 
   friend class FlowBuilder;
-  friend class Taskflow;
   friend class TaskView;
+  
+  TF_FRIEND_TASKFLOW; 
   
   public:
 
@@ -409,8 +410,8 @@ inline size_t Task::hash_value() const {
 */
 class TaskView {
   
-  friend class Executor;
-
+  TF_FRIEND_EXECUTOR;
+  
   public:
 
     /**

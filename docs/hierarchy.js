@@ -1,10 +1,14 @@
 var hierarchy =
 [
+    [ "tf::BasicExecutor< Strategy >", "classtf_1_1BasicExecutor.html", null ],
     [ "tf::cudaFlow", "classtf_1_1cudaFlow.html", null ],
     [ "tf::cudaTask", "classtf_1_1cudaTask.html", null ],
-    [ "tf::Executor", "classtf_1_1Executor.html", null ],
+    [ "Executor", "classExecutor.html", null ],
     [ "tf::ExecutorObserverInterface", "classtf_1_1ExecutorObserverInterface.html", [
       [ "tf::ExecutorObserver", "classtf_1_1ExecutorObserver.html", null ]
+    ] ],
+    [ "tf::ExecutorStrategy", "structtf_1_1ExecutorStrategy.html", [
+      [ "tf::WorkStealing", "structtf_1_1WorkStealing.html", null ]
     ] ],
     [ "tf::FlowBuilder", "classtf_1_1FlowBuilder.html", [
       [ "tf::Subflow", "classtf_1_1Subflow.html", null ],

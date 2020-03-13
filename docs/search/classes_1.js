@@ -25,6 +25,7 @@ var searchData=
   ['basic_5fstring',['basic_string',['http://en.cppreference.com/w/cpp/string/basic_string.html',1,'std']]],
   ['basic_5fstringbuf',['basic_stringbuf',['http://en.cppreference.com/w/cpp/io/basic_stringbuf.html',1,'std']]],
   ['basic_5fstringstream',['basic_stringstream',['http://en.cppreference.com/w/cpp/io/basic_stringstream.html',1,'std']]],
+  ['basicexecutor',['BasicExecutor',['../classtf_1_1BasicExecutor.html',1,'tf']]],
   ['bernoulli_5fdistribution',['bernoulli_distribution',['http://en.cppreference.com/w/cpp/numeric/random/bernoulli_distribution.html',1,'std']]],
   ['bidirectional_5fiterator_5ftag',['bidirectional_iterator_tag',['http://en.cppreference.com/w/cpp/iterator/iterator_tags.html',1,'std']]],
   ['binary_5ffunction',['binary_function',['http://en.cppreference.com/w/cpp/utility/functional/binary_function.html',1,'std']]],
