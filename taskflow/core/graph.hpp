@@ -141,12 +141,7 @@ class Node {
 #endif
   
   public:
-    
 
-
-    //Node() = default;
-
-    // Constructor 
     template <typename ...Args>
     Node(Args&&... args);
 
