@@ -501,6 +501,7 @@ add_test(cuda_basics.add.i32 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Add.i32)
 add_test(cuda_basics.barrier.i8 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i8)
 add_test(cuda_basics.barrier.i16 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i16)
 add_test(cuda_basics.barrier.i32 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i32)
+add_test(cuda_basics.loop ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Loop)
 
 # matrix operation tests
 add_executable(cuda_matrix ${TF_UTEST_DIR}/cuda/cuda_matrix.cu)

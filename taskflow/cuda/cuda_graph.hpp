@@ -164,8 +164,7 @@ inline void cudaGraph::clear() {
 
   cudaGraphDestroy(_handle);
   TF_CHECK_CUDA(
-    cudaGraphCreate(&_handle, 0), 
-    "failed to create a cudaGraph after clear"
+    cudaGraphCreate(&_handle, 0), "failed to create a cudaGraph after clear"
   );
 }
     

@@ -315,3 +315,54 @@ TEST_CASE("Barrier.i32" * doctest::timeout(300)) {
   barrier<int32_t>();
 }
 
+// ----------------------------------------------------------------------------
+// Conditional GPU tasking
+// ----------------------------------------------------------------------------
+
+TEST_CASE("Loop") {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  const unsigned n = 1000;
+    
+  int* cpu = nullptr;
+  int* gpu = nullptr;
+
+  auto cputask = taskflow.emplace([&](){
+    cpu = static_cast<int*>(std::calloc(n, sizeof(int)));
+    REQUIRE(cudaMalloc(&gpu, n*sizeof(int)) == cudaSuccess);
+  });
+
+  auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
+    dim3 g = {(n+255)/256, 1, 1};
+    dim3 b = {256, 1, 1};
+    auto h2d = cf.copy(gpu, cpu, n);
+    auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
+    auto d2h = cf.copy(cpu, gpu, n);
+    h2d.precede(kernel);
+    kernel.precede(d2h);
+  });
+
+  auto condition = taskflow.emplace([&cpu, round=0] () mutable {
+    ++round;
+    for(unsigned i=0; i<n; ++i) {
+      REQUIRE(cpu[i] == round);
+    }
+    return round >= 100;
+  });
+
+  auto freetask = taskflow.emplace([&](){
+    REQUIRE(cudaFree(gpu) == cudaSuccess);
+    std::free(cpu);
+  });
+
+  cputask.precede(gputask);
+  gputask.precede(condition);
+  condition.precede(gputask, freetask);
+  
+  executor.run(taskflow).wait();
+}
+
+//TEST_CASE("") {
+//}
