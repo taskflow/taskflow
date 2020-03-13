@@ -182,7 +182,7 @@ TEST_CASE("PassiveVector" * doctest::timeout(300)) {
   }
 }
 
-// --------------------------------------------------------
+/*// --------------------------------------------------------
 // Testcase: ObjectPool.Sequential
 // --------------------------------------------------------
 TEST_CASE("ObjectPool.Sequential" * doctest::timeout(300)) {
@@ -397,7 +397,7 @@ TEST_CASE("ObjectPool.16threads" * doctest::timeout(300)) {
   threaded_objectpool<int32_t>(16);
   threaded_objectpool<int64_t>(16);
   threaded_objectpool<std::string>(16);
-}
+} */
 
 // --------------------------------------------------------
 // Testcase: FunctionTraits
