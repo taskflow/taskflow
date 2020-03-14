@@ -6,7 +6,7 @@
 [![Wiki](image/api-doc.svg)][wiki]
 [![Cite](image/cite-ipdps.svg)](doxygen/reference/ipdps19.pdf)
 
-A header-only C++ library to help you quickly write parallel programs using task models
+A header-only C++ library to help you quickly write parallel and heterogeneous programs using task models
 
 # Why Cpp-Taskflow?
 
@@ -728,7 +728,7 @@ To use the latest [Cpp-Taskflow](https://github.com/cpp-taskflow/cpp-taskflow/ar
 + GNU C++ Compiler at least v5.0 with -std=c++14
 + Clang C++ Compiler at least v4.0 with -std=c++14
 + Microsoft Visual Studio at least v15.7 (MSVC++ 19.14); see [vcpkg guide](https://github.com/cpp-taskflow/cpp-taskflow/issues/143)
-+ AppleClang Xode Version at least v8 with -std=c++14
++ AppleClang Xode Version at least v8
 + Nvidia CUDA Toolkit and Compiler ([nvcc][nvcc]) at least v10.0 with -std=c++14
 
 See the [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support) status.

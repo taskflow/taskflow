@@ -18,12 +18,10 @@
 #include "notifier.hpp"
 #include "observer.hpp"
 #include "taskflow.hpp"
-#include "strategy.hpp"
 
 namespace tf {
 
-
-/** @class BasicExecutor
+/** @class Executor
 
 @brief The executor class to run a taskflow graph.
 
@@ -32,12 +30,7 @@ an efficient work-stealing scheduling algorithm to run a taskflow.
 
 */
 
-template <typename Strategy>
-class BasicExecutor {
-
-  static_assert(std::is_base_of<ExecutorStrategy, Strategy>::value,
-    "strategy must be derived from ExecutorStrategy"
-  );
+class Executor {
   
   struct Worker {
     unsigned id;
@@ -57,12 +50,12 @@ class BasicExecutor {
     /**
     @brief constructs the executor with N worker threads
     */
-    explicit BasicExecutor(unsigned n = std::thread::hardware_concurrency());
+    explicit Executor(unsigned n = std::thread::hardware_concurrency());
     
     /**
     @brief destructs the executor 
     */
-    ~BasicExecutor();
+    ~Executor();
 
     /**
     @brief runs the taskflow once
@@ -178,6 +171,7 @@ class BasicExecutor {
     */
     void remove_observer();
 
+
   private:
    
     std::condition_variable _topology_cv;
@@ -231,8 +225,12 @@ class BasicExecutor {
 };
 
 // Constructor
+<<<<<<< HEAD
 template <typename S>
 BasicExecutor<S>::BasicExecutor(unsigned N) : 
+=======
+inline Executor::Executor(unsigned N) : 
+>>>>>>> parent of 9e466cc... updated docs
   _workers  {N},
   _waiters  {N},
   _notifier {_waiters} {
@@ -245,8 +243,12 @@ BasicExecutor<S>::BasicExecutor(unsigned N) :
 }
 
 // Destructor
+<<<<<<< HEAD
 template <typename S>
 BasicExecutor<S>::~BasicExecutor() {
+=======
+inline Executor::~Executor() {
+>>>>>>> parent of 9e466cc... updated docs
   
   // wait for all topologies to complete
   wait_for_all();
@@ -261,35 +263,55 @@ BasicExecutor<S>::~BasicExecutor() {
 }
 
 // Function: num_workers
+<<<<<<< HEAD
 template <typename S>
 size_t BasicExecutor<S>::num_workers() const {
+=======
+inline size_t Executor::num_workers() const {
+>>>>>>> parent of 9e466cc... updated docs
   return _workers.size();
 }
 
 // Function: num_topologies
+<<<<<<< HEAD
 template <typename S>
 size_t BasicExecutor<S>::num_topologies() const {
+=======
+inline size_t Executor::num_topologies() const {
+>>>>>>> parent of 9e466cc... updated docs
   return _num_topologies;
 }
 
 // Function: _per_thread
+<<<<<<< HEAD
 template <typename S>
 typename BasicExecutor<S>::PerThread& 
 BasicExecutor<S>::_per_thread() const {
+=======
+inline Executor::PerThread& Executor::_per_thread() const {
+>>>>>>> parent of 9e466cc... updated docs
   thread_local PerThread pt;
   return pt;
 }
 
 // Function: this_worker_id
+<<<<<<< HEAD
 template <typename S>
 int BasicExecutor<S>::this_worker_id() const {
+=======
+inline int Executor::this_worker_id() const {
+>>>>>>> parent of 9e466cc... updated docs
   auto worker = _per_thread().worker;
   return worker ? static_cast<int>(worker->id) : -1;
 }
 
 // Procedure: _spawn
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_spawn(unsigned N) {
+=======
+inline void Executor::_spawn(unsigned N) {
+>>>>>>> parent of 9e466cc... updated docs
 
   // Lock to synchronize all workers before creating _worker_maps
   for(unsigned i=0; i<N; ++i) {
@@ -320,8 +342,12 @@ void BasicExecutor<S>::_spawn(unsigned N) {
 }
 
 // Function: _find_victim
+<<<<<<< HEAD
 template <typename S>
 unsigned BasicExecutor<S>::_find_victim(unsigned thief) {
+=======
+inline unsigned Executor::_find_victim(unsigned thief) {
+>>>>>>> parent of 9e466cc... updated docs
   
   /*unsigned l = 0;
   unsigned r = _workers.size() - 1;
@@ -354,8 +380,12 @@ unsigned BasicExecutor<S>::_find_victim(unsigned thief) {
 }
 
 // Function: _explore_task
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_explore_task(Worker& thief, Node*& t) {
+=======
+inline void Executor::_explore_task(Worker& thief, Node*& t) {
+>>>>>>> parent of 9e466cc... updated docs
   
   //assert(_workers[thief].queue.empty());
   assert(!t);
@@ -406,8 +436,12 @@ void BasicExecutor<S>::_explore_task(Worker& thief, Node*& t) {
 }
 
 // Procedure: _exploit_task
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_exploit_task(Worker& w, Node*& t) {
+=======
+inline void Executor::_exploit_task(Worker& w, Node*& t) {
+>>>>>>> parent of 9e466cc... updated docs
   
   assert(!w.cache);
 
@@ -498,8 +532,12 @@ void BasicExecutor<S>::_exploit_task(Worker& w, Node*& t) {
 }
 
 // Function: _wait_for_task
+<<<<<<< HEAD
 template <typename S>
 bool BasicExecutor<S>::_wait_for_task(Worker& worker, Node*& t) {
+=======
+inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
+>>>>>>> parent of 9e466cc... updated docs
 
   wait_for_task:
 
@@ -561,9 +599,14 @@ bool BasicExecutor<S>::_wait_for_task(Worker& worker, Node*& t) {
 }
 
 // Function: make_observer    
+<<<<<<< HEAD
 template <typename S>
 template<typename Observer, typename... Args>
 Observer* BasicExecutor<S>::make_observer(Args&&... args) {
+=======
+template<typename Observer, typename... Args>
+Observer* Executor::make_observer(Args&&... args) {
+>>>>>>> parent of 9e466cc... updated docs
   // use a local variable to mimic the constructor 
   auto tmp = std::make_unique<Observer>(std::forward<Args>(args)...);
   tmp->set_up(_workers.size());
@@ -572,16 +615,24 @@ Observer* BasicExecutor<S>::make_observer(Args&&... args) {
 }
 
 // Procedure: remove_observer
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::remove_observer() {
+=======
+inline void Executor::remove_observer() {
+>>>>>>> parent of 9e466cc... updated docs
   _observer.reset();
 }
 
 // Procedure: _schedule
 // The main procedure to schedule a give task node.
 // Each task node has two types of tasks - regular and subflow.
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_schedule(Node* node, bool bypass) {
+=======
+inline void Executor::_schedule(Node* node, bool bypass) {
+>>>>>>> parent of 9e466cc... updated docs
   
   //assert(_workers.size() != 0);
   
@@ -611,8 +662,12 @@ void BasicExecutor<S>::_schedule(Node* node, bool bypass) {
 // Procedure: _schedule
 // The main procedure to schedule a set of task nodes.
 // Each task node has two types of tasks - regular and subflow.
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_schedule(PassiveVector<Node*>& nodes) {
+=======
+inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
+>>>>>>> parent of 9e466cc... updated docs
 
   //assert(_workers.size() != 0);
   
@@ -654,8 +709,12 @@ void BasicExecutor<S>::_schedule(PassiveVector<Node*>& nodes) {
 
 
 // Procedure: _invoke
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_invoke(Worker& worker, Node* node) {
+=======
+inline void Executor::_invoke(Worker& worker, Node* node) {
+>>>>>>> parent of 9e466cc... updated docs
 
   //assert(_workers.size() != 0);
 
@@ -819,8 +878,12 @@ void BasicExecutor<S>::_invoke(Worker& worker, Node* node) {
 }
 
 // Procedure: _invoke_static_work
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_invoke_static_work(Worker& worker, Node* node) {
+=======
+inline void Executor::_invoke_static_work(Worker& worker, Node* node) {
+>>>>>>> parent of 9e466cc... updated docs
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
     nstd::get<Node::StaticWork>(node->_handle).work();
@@ -832,10 +895,14 @@ void BasicExecutor<S>::_invoke_static_work(Worker& worker, Node* node) {
 }
 
 // Procedure: _invoke_dynamic_work
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_invoke_dynamic_work(
   Worker& worker, Node* node, Subflow& sf
 ) {
+=======
+inline void Executor::_invoke_dynamic_work(Worker& worker, Node* node, Subflow& sf) {
+>>>>>>> parent of 9e466cc... updated docs
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
     nstd::get<Node::DynamicWork>(node->_handle).work(sf);
@@ -847,10 +914,14 @@ void BasicExecutor<S>::_invoke_dynamic_work(
 }
 
 // Procedure: _invoke_condition_work
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_invoke_condition_work(
   Worker& worker, Node* node, int& id
 ) {
+=======
+inline void Executor::_invoke_condition_work(Worker& worker, Node* node, int& id) {
+>>>>>>> parent of 9e466cc... updated docs
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
     id = nstd::get<Node::ConditionWork>(node->_handle).work();
@@ -863,10 +934,14 @@ void BasicExecutor<S>::_invoke_condition_work(
 
 #ifdef TF_ENABLE_CUDA
 // Procedure: _invoke_cudaflow_work
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_invoke_cudaflow_work(
   Worker& worker, Node* node
 ) {
+=======
+inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
+>>>>>>> parent of 9e466cc... updated docs
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
     _invoke_cudaflow_work_impl(worker, node);
@@ -878,10 +953,14 @@ void BasicExecutor<S>::_invoke_cudaflow_work(
 }
 
 // Procedure: _invoke_cudaflow_work_impl
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_invoke_cudaflow_work_impl(
   Worker&, Node* node
 ) {
+=======
+inline void Executor::_invoke_cudaflow_work_impl(Worker&, Node* node) {
+>>>>>>> parent of 9e466cc... updated docs
 
   auto& h = nstd::get<Node::cudaFlowWork>(node->_handle);
 
@@ -905,8 +984,12 @@ void BasicExecutor<S>::_invoke_cudaflow_work_impl(
 #endif
 
 // Procedure: _set_up_module_work
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_set_up_module_work(Node* node, bool& ept) {
+=======
+inline void Executor::_set_up_module_work(Node* node, bool& ept) {
+>>>>>>> parent of 9e466cc... updated docs
 
   // second time to enter this context
   if(node->_has_state(Node::SPAWNED)) {
@@ -950,41 +1033,68 @@ void BasicExecutor<S>::_set_up_module_work(Node* node, bool& ept) {
 }
 
 // Function: run
+<<<<<<< HEAD
 template <typename S>
 std::future<void> BasicExecutor<S>::run(Taskflow& f) {
+=======
+inline std::future<void> Executor::run(Taskflow& f) {
+>>>>>>> parent of 9e466cc... updated docs
   return run_n(f, 1, [](){});
 }
 
 // Function: run
+<<<<<<< HEAD
 template <typename S>
 template <typename C>
 std::future<void> BasicExecutor<S>::run(Taskflow& f, C&& c) {
+=======
+template <typename C>
+std::future<void> Executor::run(Taskflow& f, C&& c) {
+>>>>>>> parent of 9e466cc... updated docs
   return run_n(f, 1, std::forward<C>(c));
 }
 
 // Function: run_n
+<<<<<<< HEAD
 template <typename S>
 std::future<void> BasicExecutor<S>::run_n(Taskflow& f, size_t repeat) {
+=======
+inline std::future<void> Executor::run_n(Taskflow& f, size_t repeat) {
+>>>>>>> parent of 9e466cc... updated docs
   return run_n(f, repeat, [](){});
 }
 
 // Function: run_n
+<<<<<<< HEAD
 template <typename S>
 template <typename C>
 std::future<void> BasicExecutor<S>::run_n(Taskflow& f, size_t repeat, C&& c) {
+=======
+template <typename C>
+std::future<void> Executor::run_n(Taskflow& f, size_t repeat, C&& c) {
+>>>>>>> parent of 9e466cc... updated docs
   return run_until(f, [repeat]() mutable { return repeat-- == 0; }, std::forward<C>(c));
 }
 
 // Function: run_until    
+<<<<<<< HEAD
 template <typename S>
 template<typename P>
 std::future<void> BasicExecutor<S>::run_until(Taskflow& f, P&& pred) {
+=======
+template<typename P>
+std::future<void> Executor::run_until(Taskflow& f, P&& pred) {
+>>>>>>> parent of 9e466cc... updated docs
   return run_until(f, std::forward<P>(pred), [](){});
 }
 
 // Function: _set_up_topology
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_set_up_topology(Topology* tpg) {
+=======
+inline void Executor::_set_up_topology(Topology* tpg) {
+>>>>>>> parent of 9e466cc... updated docs
   
   tpg->_sources.clear();
   
@@ -1005,8 +1115,12 @@ void BasicExecutor<S>::_set_up_topology(Topology* tpg) {
 }
 
 // Function: _tear_down_topology
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_tear_down_topology(Topology** tpg) {
+=======
+inline void Executor::_tear_down_topology(Topology** tpg) {
+>>>>>>> parent of 9e466cc... updated docs
 
   auto &f = (*tpg)->_taskflow;
 
@@ -1080,11 +1194,16 @@ void BasicExecutor<S>::_tear_down_topology(Topology** tpg) {
 }
 
 // Function: run_until
+<<<<<<< HEAD
 template <typename S>
 template <typename P, typename C>
 std::future<void> BasicExecutor<S>::run_until(
   Taskflow& f, P&& pred, C&& c
 ) {
+=======
+template <typename P, typename C>
+std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
+>>>>>>> parent of 9e466cc... updated docs
 
   _increment_topology();
 
@@ -1163,15 +1282,23 @@ std::future<void> BasicExecutor<S>::run_until(
 }
 
 // Procedure: _increment_topology
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_increment_topology() {
+=======
+inline void Executor::_increment_topology() {
+>>>>>>> parent of 9e466cc... updated docs
   std::lock_guard<std::mutex> lock(_topology_mutex);
   ++_num_topologies;
 }
 
 // Procedure: _decrement_topology_and_notify
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_decrement_topology_and_notify() {
+=======
+inline void Executor::_decrement_topology_and_notify() {
+>>>>>>> parent of 9e466cc... updated docs
   std::lock_guard<std::mutex> lock(_topology_mutex);
   if(--_num_topologies == 0) {
     _topology_cv.notify_all();
@@ -1179,27 +1306,26 @@ void BasicExecutor<S>::_decrement_topology_and_notify() {
 }
 
 // Procedure: _decrement_topology
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::_decrement_topology() {
+=======
+inline void Executor::_decrement_topology() {
+>>>>>>> parent of 9e466cc... updated docs
   std::lock_guard<std::mutex> lock(_topology_mutex);
   --_num_topologies;
 }
 
 // Procedure: wait_for_all
+<<<<<<< HEAD
 template <typename S>
 void BasicExecutor<S>::wait_for_all() {
+=======
+inline void Executor::wait_for_all() {
+>>>>>>> parent of 9e466cc... updated docs
   std::unique_lock<std::mutex> lock(_topology_mutex);
   _topology_cv.wait(lock, [&](){ return _num_topologies == 0; });
 }
-
-// ----------------------------------------------------------------------------
-
-/** @class Executor
-
-@brief alias of the default executor to use work-stealing algorithm
-
-*/
-using Executor = BasicExecutor<WorkStealing>;
 
 }  // end of namespace tf -----------------------------------------------------
 

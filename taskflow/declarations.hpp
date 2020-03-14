@@ -15,9 +15,7 @@ class Task;
 class TaskView;
 class Taskflow;
 class Topology;
-
-template <typename Strategy>
-class BasicExecutor;
+class Executor;
 
 // cudaflow
 class cudaNode;
@@ -27,10 +25,6 @@ class cudaFlow;
 
 }  // end of namespace tf -----------------------------------------------------
 
-#define TF_FRIEND_EXECUTOR \
-template <typename Strategy> friend class BasicExecutor;
 
-#define TF_FRIEND_TASKFLOW \
-friend class Taskflow;
 
 

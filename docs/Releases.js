@@ -4,8 +4,7 @@ var Releases =
       [ "Download", "master-branch.html#master-branch_download", null ],
       [ "Working Items", "master-branch.html#master-branch_new_features", null ],
       [ "Bug Fixes", "master-branch.html#master-branch_bug_fixes", null ],
-      [ "Deprecated Items", "master-branch.html#master-branch_deprecated_items", null ],
-      [ "Miscellaneous Items", "master-branch.html#master-branch_miscellaneous_items", null ]
+      [ "Deprecated Items", "master-branch.html#master-branch_deprecated_items", null ]
     ] ],
     [ "Release 2.3.1 (2020/03/13)", "release-2-3-1.html", [
       [ "Download", "release-2-3-1.html#release-2-3-1_download", null ],

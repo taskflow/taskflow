@@ -10,7 +10,7 @@ namespace tf {
 inline unsigned cuda_num_devices() {
 	int N = 0;
   TF_CHECK_CUDA(cudaGetDeviceCount(&N), "failed to get device count");
-	return N < 0 ? 0 : static_cast<unsigned>(N);
+	return N;
 }
 
 /**

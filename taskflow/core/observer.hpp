@@ -75,7 +75,7 @@ class ExecutorObserverInterface {
 */
 class ExecutorObserver : public ExecutorObserverInterface {
 
-  TF_FRIEND_EXECUTOR;
+  friend class Executor;
   
   // data structure to record each task execution
   struct Execution {
