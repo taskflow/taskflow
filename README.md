@@ -133,7 +133,7 @@ TaskD
 # Create a Taskflow Application
 
 Cpp-Taskflow defines a very expressive API to create task dependency graphs.
-Most applications are developed through the following three steps.
+Most applications are developed through the following three steps:
 
 ## Step 1: Create a Taskflow
 
