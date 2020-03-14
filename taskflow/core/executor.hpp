@@ -231,8 +231,8 @@ class BasicExecutor {
 };
 
 // Constructor
-template <typename Strategy>
-BasicExecutor<Strategy>::BasicExecutor(unsigned N) : 
+template <typename S>
+BasicExecutor<S>::BasicExecutor(unsigned N) : 
   _workers  {N},
   _waiters  {N},
   _notifier {_waiters} {
@@ -245,8 +245,8 @@ BasicExecutor<Strategy>::BasicExecutor(unsigned N) :
 }
 
 // Destructor
-template <typename Strategy>
-BasicExecutor<Strategy>::~BasicExecutor() {
+template <typename S>
+BasicExecutor<S>::~BasicExecutor() {
   
   // wait for all topologies to complete
   wait_for_all();
@@ -261,35 +261,35 @@ BasicExecutor<Strategy>::~BasicExecutor() {
 }
 
 // Function: num_workers
-template <typename Strategy>
-size_t BasicExecutor<Strategy>::num_workers() const {
+template <typename S>
+size_t BasicExecutor<S>::num_workers() const {
   return _workers.size();
 }
 
 // Function: num_topologies
-template <typename Strategy>
-size_t BasicExecutor<Strategy>::num_topologies() const {
+template <typename S>
+size_t BasicExecutor<S>::num_topologies() const {
   return _num_topologies;
 }
 
 // Function: _per_thread
-template <typename Strategy>
-typename BasicExecutor<Strategy>::PerThread& 
-BasicExecutor<Strategy>::_per_thread() const {
+template <typename S>
+typename BasicExecutor<S>::PerThread& 
+BasicExecutor<S>::_per_thread() const {
   thread_local PerThread pt;
   return pt;
 }
 
 // Function: this_worker_id
-template <typename Strategy>
-int BasicExecutor<Strategy>::this_worker_id() const {
+template <typename S>
+int BasicExecutor<S>::this_worker_id() const {
   auto worker = _per_thread().worker;
   return worker ? static_cast<int>(worker->id) : -1;
 }
 
 // Procedure: _spawn
-template <typename Strategy>
-void BasicExecutor<Strategy>::_spawn(unsigned N) {
+template <typename S>
+void BasicExecutor<S>::_spawn(unsigned N) {
 
   // Lock to synchronize all workers before creating _worker_maps
   for(unsigned i=0; i<N; ++i) {
@@ -320,8 +320,8 @@ void BasicExecutor<Strategy>::_spawn(unsigned N) {
 }
 
 // Function: _find_victim
-template <typename Strategy>
-unsigned BasicExecutor<Strategy>::_find_victim(unsigned thief) {
+template <typename S>
+unsigned BasicExecutor<S>::_find_victim(unsigned thief) {
   
   /*unsigned l = 0;
   unsigned r = _workers.size() - 1;
@@ -354,8 +354,8 @@ unsigned BasicExecutor<Strategy>::_find_victim(unsigned thief) {
 }
 
 // Function: _explore_task
-template <typename Strategy>
-void BasicExecutor<Strategy>::_explore_task(Worker& thief, Node*& t) {
+template <typename S>
+void BasicExecutor<S>::_explore_task(Worker& thief, Node*& t) {
   
   //assert(_workers[thief].queue.empty());
   assert(!t);
@@ -406,8 +406,8 @@ void BasicExecutor<Strategy>::_explore_task(Worker& thief, Node*& t) {
 }
 
 // Procedure: _exploit_task
-template <typename Strategy>
-void BasicExecutor<Strategy>::_exploit_task(Worker& w, Node*& t) {
+template <typename S>
+void BasicExecutor<S>::_exploit_task(Worker& w, Node*& t) {
   
   assert(!w.cache);
 
@@ -498,8 +498,8 @@ void BasicExecutor<Strategy>::_exploit_task(Worker& w, Node*& t) {
 }
 
 // Function: _wait_for_task
-template <typename Strategy>
-bool BasicExecutor<Strategy>::_wait_for_task(Worker& worker, Node*& t) {
+template <typename S>
+bool BasicExecutor<S>::_wait_for_task(Worker& worker, Node*& t) {
 
   wait_for_task:
 
@@ -561,9 +561,9 @@ bool BasicExecutor<Strategy>::_wait_for_task(Worker& worker, Node*& t) {
 }
 
 // Function: make_observer    
-template <typename Strategy>
+template <typename S>
 template<typename Observer, typename... Args>
-Observer* BasicExecutor<Strategy>::make_observer(Args&&... args) {
+Observer* BasicExecutor<S>::make_observer(Args&&... args) {
   // use a local variable to mimic the constructor 
   auto tmp = std::make_unique<Observer>(std::forward<Args>(args)...);
   tmp->set_up(_workers.size());
@@ -572,16 +572,16 @@ Observer* BasicExecutor<Strategy>::make_observer(Args&&... args) {
 }
 
 // Procedure: remove_observer
-template <typename Strategy>
-void BasicExecutor<Strategy>::remove_observer() {
+template <typename S>
+void BasicExecutor<S>::remove_observer() {
   _observer.reset();
 }
 
 // Procedure: _schedule
 // The main procedure to schedule a give task node.
 // Each task node has two types of tasks - regular and subflow.
-template <typename Strategy>
-void BasicExecutor<Strategy>::_schedule(Node* node, bool bypass) {
+template <typename S>
+void BasicExecutor<S>::_schedule(Node* node, bool bypass) {
   
   //assert(_workers.size() != 0);
   
@@ -611,8 +611,8 @@ void BasicExecutor<Strategy>::_schedule(Node* node, bool bypass) {
 // Procedure: _schedule
 // The main procedure to schedule a set of task nodes.
 // Each task node has two types of tasks - regular and subflow.
-template <typename Strategy>
-void BasicExecutor<Strategy>::_schedule(PassiveVector<Node*>& nodes) {
+template <typename S>
+void BasicExecutor<S>::_schedule(PassiveVector<Node*>& nodes) {
 
   //assert(_workers.size() != 0);
   
@@ -654,8 +654,8 @@ void BasicExecutor<Strategy>::_schedule(PassiveVector<Node*>& nodes) {
 
 
 // Procedure: _invoke
-template <typename Strategy>
-void BasicExecutor<Strategy>::_invoke(Worker& worker, Node* node) {
+template <typename S>
+void BasicExecutor<S>::_invoke(Worker& worker, Node* node) {
 
   //assert(_workers.size() != 0);
 
@@ -819,8 +819,8 @@ void BasicExecutor<Strategy>::_invoke(Worker& worker, Node* node) {
 }
 
 // Procedure: _invoke_static_work
-template <typename Strategy>
-void BasicExecutor<Strategy>::_invoke_static_work(Worker& worker, Node* node) {
+template <typename S>
+void BasicExecutor<S>::_invoke_static_work(Worker& worker, Node* node) {
   if(_observer) {
     _observer->on_entry(worker.id, TaskView(node));
     nstd::get<Node::StaticWork>(node->_handle).work();
@@ -832,8 +832,8 @@ void BasicExecutor<Strategy>::_invoke_static_work(Worker& worker, Node* node) {
 }
 
 // Procedure: _invoke_dynamic_work
-template <typename Strategy>
-void BasicExecutor<Strategy>::_invoke_dynamic_work(
+template <typename S>
+void BasicExecutor<S>::_invoke_dynamic_work(
   Worker& worker, Node* node, Subflow& sf
 ) {
   if(_observer) {
@@ -847,8 +847,8 @@ void BasicExecutor<Strategy>::_invoke_dynamic_work(
 }
 
 // Procedure: _invoke_condition_work
-template <typename Strategy>
-void BasicExecutor<Strategy>::_invoke_condition_work(
+template <typename S>
+void BasicExecutor<S>::_invoke_condition_work(
   Worker& worker, Node* node, int& id
 ) {
   if(_observer) {
@@ -863,8 +863,8 @@ void BasicExecutor<Strategy>::_invoke_condition_work(
 
 #ifdef TF_ENABLE_CUDA
 // Procedure: _invoke_cudaflow_work
-template <typename Strategy>
-void BasicExecutor<Strategy>::_invoke_cudaflow_work(
+template <typename S>
+void BasicExecutor<S>::_invoke_cudaflow_work(
   Worker& worker, Node* node
 ) {
   if(_observer) {
@@ -878,8 +878,8 @@ void BasicExecutor<Strategy>::_invoke_cudaflow_work(
 }
 
 // Procedure: _invoke_cudaflow_work_impl
-template <typename Strategy>
-void BasicExecutor<Strategy>::_invoke_cudaflow_work_impl(
+template <typename S>
+void BasicExecutor<S>::_invoke_cudaflow_work_impl(
   Worker&, Node* node
 ) {
 
@@ -905,8 +905,8 @@ void BasicExecutor<Strategy>::_invoke_cudaflow_work_impl(
 #endif
 
 // Procedure: _set_up_module_work
-template <typename Strategy>
-void BasicExecutor<Strategy>::_set_up_module_work(Node* node, bool& ept) {
+template <typename S>
+void BasicExecutor<S>::_set_up_module_work(Node* node, bool& ept) {
 
   // second time to enter this context
   if(node->_has_state(Node::SPAWNED)) {
@@ -950,41 +950,41 @@ void BasicExecutor<Strategy>::_set_up_module_work(Node* node, bool& ept) {
 }
 
 // Function: run
-template <typename Strategy>
-std::future<void> BasicExecutor<Strategy>::run(Taskflow& f) {
+template <typename S>
+std::future<void> BasicExecutor<S>::run(Taskflow& f) {
   return run_n(f, 1, [](){});
 }
 
 // Function: run
-template <typename Strategy>
+template <typename S>
 template <typename C>
-std::future<void> BasicExecutor<Strategy>::run(Taskflow& f, C&& c) {
+std::future<void> BasicExecutor<S>::run(Taskflow& f, C&& c) {
   return run_n(f, 1, std::forward<C>(c));
 }
 
 // Function: run_n
-template <typename Strategy>
-std::future<void> BasicExecutor<Strategy>::run_n(Taskflow& f, size_t repeat) {
+template <typename S>
+std::future<void> BasicExecutor<S>::run_n(Taskflow& f, size_t repeat) {
   return run_n(f, repeat, [](){});
 }
 
 // Function: run_n
-template <typename Strategy>
+template <typename S>
 template <typename C>
-std::future<void> BasicExecutor<Strategy>::run_n(Taskflow& f, size_t repeat, C&& c) {
+std::future<void> BasicExecutor<S>::run_n(Taskflow& f, size_t repeat, C&& c) {
   return run_until(f, [repeat]() mutable { return repeat-- == 0; }, std::forward<C>(c));
 }
 
 // Function: run_until    
-template <typename Strategy>
+template <typename S>
 template<typename P>
-std::future<void> BasicExecutor<Strategy>::run_until(Taskflow& f, P&& pred) {
+std::future<void> BasicExecutor<S>::run_until(Taskflow& f, P&& pred) {
   return run_until(f, std::forward<P>(pred), [](){});
 }
 
 // Function: _set_up_topology
-template <typename Strategy>
-void BasicExecutor<Strategy>::_set_up_topology(Topology* tpg) {
+template <typename S>
+void BasicExecutor<S>::_set_up_topology(Topology* tpg) {
   
   tpg->_sources.clear();
   
@@ -1005,8 +1005,8 @@ void BasicExecutor<Strategy>::_set_up_topology(Topology* tpg) {
 }
 
 // Function: _tear_down_topology
-template <typename Strategy>
-void BasicExecutor<Strategy>::_tear_down_topology(Topology** tpg) {
+template <typename S>
+void BasicExecutor<S>::_tear_down_topology(Topology** tpg) {
 
   auto &f = (*tpg)->_taskflow;
 
@@ -1080,9 +1080,9 @@ void BasicExecutor<Strategy>::_tear_down_topology(Topology** tpg) {
 }
 
 // Function: run_until
-template <typename Strategy>
+template <typename S>
 template <typename P, typename C>
-std::future<void> BasicExecutor<Strategy>::run_until(
+std::future<void> BasicExecutor<S>::run_until(
   Taskflow& f, P&& pred, C&& c
 ) {
 
@@ -1163,15 +1163,15 @@ std::future<void> BasicExecutor<Strategy>::run_until(
 }
 
 // Procedure: _increment_topology
-template <typename Strategy>
-void BasicExecutor<Strategy>::_increment_topology() {
+template <typename S>
+void BasicExecutor<S>::_increment_topology() {
   std::lock_guard<std::mutex> lock(_topology_mutex);
   ++_num_topologies;
 }
 
 // Procedure: _decrement_topology_and_notify
-template <typename Strategy>
-void BasicExecutor<Strategy>::_decrement_topology_and_notify() {
+template <typename S>
+void BasicExecutor<S>::_decrement_topology_and_notify() {
   std::lock_guard<std::mutex> lock(_topology_mutex);
   if(--_num_topologies == 0) {
     _topology_cv.notify_all();
@@ -1179,15 +1179,15 @@ void BasicExecutor<Strategy>::_decrement_topology_and_notify() {
 }
 
 // Procedure: _decrement_topology
-template <typename Strategy>
-void BasicExecutor<Strategy>::_decrement_topology() {
+template <typename S>
+void BasicExecutor<S>::_decrement_topology() {
   std::lock_guard<std::mutex> lock(_topology_mutex);
   --_num_topologies;
 }
 
 // Procedure: wait_for_all
-template <typename Strategy>
-void BasicExecutor<Strategy>::wait_for_all() {
+template <typename S>
+void BasicExecutor<S>::wait_for_all() {
   std::unique_lock<std::mutex> lock(_topology_mutex);
   _topology_cv.wait(lock, [&](){ return _num_topologies == 0; });
 }
