@@ -7,6 +7,7 @@ var classtf_1_1Task =
     [ "for_each_dependent", "classtf_1_1Task.html#a3bf68937662bf291637e4a763476b2e4", null ],
     [ "for_each_successor", "classtf_1_1Task.html#aff13a503d4a3c994eb08cb6f22e1b427", null ],
     [ "has_work", "classtf_1_1Task.html#afc4ecb89dd4e4645b3ec3fb7c1bb0ec5", null ],
+    [ "hash_value", "classtf_1_1Task.html#a1c9301f2a330cc23ee18e8f61688141f", null ],
     [ "name", "classtf_1_1Task.html#a08ada0425b490997b6ff7f310107e5e3", null ],
     [ "name", "classtf_1_1Task.html#a9057ecd0f3833b717480e914f8568f02", null ],
     [ "num_dependents", "classtf_1_1Task.html#a974dc1d738b62b829ad261beeafbd67c", null ],
