@@ -78,7 +78,7 @@ class cudaFlow {
       typename T, 
       std::enable_if_t<!std::is_same<T, void>::value, void>* = nullptr
     >
-    cudaTask copy(T* tgt, T* src, size_t num);
+    cudaTask copy(T* tgt, const T* src, size_t num);
 
   private:
 
@@ -141,7 +141,7 @@ template <
   typename T,
   std::enable_if_t<!std::is_same<T, void>::value, void>*
 >
-cudaTask cudaFlow::copy(T* tgt, T* src, size_t num) {
+cudaTask cudaFlow::copy(T* tgt, const T* src, size_t num) {
 
   using U = std::decay_t<T>;
 
@@ -150,7 +150,7 @@ cudaTask cudaFlow::copy(T* tgt, T* src, size_t num) {
 
   p.srcArray = nullptr;
   p.srcPos = ::make_cudaPos(0, 0, 0);
-  p.srcPtr = ::make_cudaPitchedPtr(src, num*sizeof(U), num, 1);
+  p.srcPtr = ::make_cudaPitchedPtr(const_cast<T*>(src), num*sizeof(U), num, 1);
   p.dstArray = nullptr;
   p.dstPos = ::make_cudaPos(0, 0, 0);
   p.dstPtr = ::make_cudaPitchedPtr(tgt, num*sizeof(U), num, 1);
