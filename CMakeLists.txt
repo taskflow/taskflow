@@ -104,6 +104,15 @@ target_compile_options(
   #$<$<CXX_COMPILER_ID:NVIDIA>:-Xcompiler=-Wall,-Wextra,-Wfatal-errors>
 )
 
+if(${TF_ENABLE_CUDA})
+  target_compile_options(
+    error_settings
+    BEFORE
+    INTERFACE
+    $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-Wall,-Wextra,-Wfatal-errors>
+  )
+endif()
+
 # additional features
 add_library(features_settings INTERFACE)
 add_library(tf::features_settings ALIAS features_settings)
