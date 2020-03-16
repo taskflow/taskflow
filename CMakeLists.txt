@@ -97,7 +97,7 @@ target_compile_options(
   $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:Clang>>:-Wall -Wextra -Wfatal-errors>
   $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:GNU>>:-Wall -Wextra -Wfatal-errors>
   $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/W3 /permissive->
-  $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-Wall,-Wextra,-Wfatal-errors>
+  #$<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-Wall,-Wextra,-Wfatal-errors>
   #$<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wfatal-errors>
   #$<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wfatal-errors>
   #$<$<CXX_COMPILER_ID:MSVC>:/W3 /permissive->
