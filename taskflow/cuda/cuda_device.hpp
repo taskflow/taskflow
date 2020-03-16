@@ -28,6 +28,72 @@ inline int cuda_get_device() {
 inline void cuda_set_device(int id) {
   TF_CHECK_CUDA(cudaSetDevice(id), "failed to switch to device ", id);
 }
+    
+/**    
+@brief obtains the device property 
+*/
+inline void cuda_get_device_property(int i, cudaDeviceProp& p) {
+  TF_CHECK_CUDA(
+    cudaGetDeviceProperties(&p, i), "failed to get property of device ", i
+  );
+}
+
+/**    
+@brief obtains the device property 
+*/
+inline cudaDeviceProp cuda_get_device_property(int i) {
+  cudaDeviceProp p;
+  TF_CHECK_CUDA(
+    cudaGetDeviceProperties(&p, i), "failed to get property of device ", i
+  );
+  return p;
+}
+
+/**
+@brief cuda_dump_device_property
+*/
+inline void cuda_dump_device_property(std::ostream& os, const cudaDeviceProp& p) {
+
+  os << "Major revision number:         " << p.major << '\n'
+     << "Minor revision number:         " << p.minor << '\n'
+     << "Name:                          " << p.name  << '\n'
+     << "Total global memory:           " << p.totalGlobalMem << '\n'
+     << "Total shared memory per block: " << p.sharedMemPerBlock << '\n'
+     << "Total registers per block:     " << p.regsPerBlock << '\n'
+     << "Warp size:                     " << p.warpSize << '\n'
+     << "Maximum memory pitch:          " << p.memPitch << '\n'
+     << "Maximum threads per block:     " << p.maxThreadsPerBlock << '\n';
+
+  os << "Maximum dimension of block:    ";
+  for (int i = 0; i < 3; ++i) {
+    if(i) os << 'x';
+    os << p.maxThreadsDim[i];
+  }
+  os << '\n';
+
+  os << "Maximum dimenstion of grid:    ";
+  for (int i = 0; i < 3; ++i) {
+    if(i) os << 'x';
+    os << p.maxGridSize[i];;
+  }
+  os << '\n';
+
+  os << "Clock rate:                    " << p.clockRate << '\n'
+     << "Total constant memory:         " << p.totalConstMem << '\n'
+     << "Texture alignment:             " << p.textureAlignment << '\n'
+     << "Concurrent copy and execution: " << p.deviceOverlap << '\n'
+     << "Number of multiprocessors:     " << p.multiProcessorCount << '\n'
+     << "Kernel execution timeout:      " << p.kernelExecTimeoutEnabled << '\n'
+     << "GPU sharing Host Memory:       " << p.integrated << '\n'
+     << "Host page-locked mem mapping:  " << p.canMapHostMemory << '\n'
+     << "Alignment for Surfaces:        " << p.surfaceAlignment << '\n'
+     << "Device has ECC support:        " << p.ECCEnabled << '\n'
+     << "Unified Addressing (UVA):      " << p.unifiedAddressing << '\n';
+}
+
+// ----------------------------------------------------------------------------
+// Class definitions
+// ----------------------------------------------------------------------------
 
 /** @class cudaScopedDevice
 

@@ -9,8 +9,6 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 project(Cpp-Taskflow VERSION 2.3.1 LANGUAGES CXX)
 
 # build options
-option(TF_BUILD_EXAMPLES "Enables build of examples" ON)
-option(TF_BUILD_TESTS "Enables build of tests" ON)
 option(TF_ENABLE_CUDA "Enables build of cuda code" OFF)
 option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
 
@@ -44,10 +42,10 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 else()
   message(FATAL_ERROR "\n\
 Cpp-Taskflow currently supports the following compilers:\n\
-- g++ v5.0 or above\n\
-- clang++ v4.0 or above\n\
-- MSVC++ v19.14 or above\n\
-- AppleClang v8 or above\n\
+  - g++ v5.0 or above\n\
+  - clang++ v4.0 or above\n\
+  - MSVC++ v19.14 or above\n\
+  - AppleClang v8 or above\n\
 ")
 endif()
 
@@ -182,8 +180,6 @@ message(STATUS "CMAKE_INSTALL_PREFIX: " ${CMAKE_INSTALL_PREFIX})
 message(STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH})
 message(STATUS "CMAKE_PREFIX_PATH: " ${CMAKE_PREFIX_PATH})
 message(STATUS "PROJECT_NAME: " ${PROJECT_NAME})
-message(STATUS "TF_BUILD_EXAMPLES: " ${TF_BUILD_EXAMPLES})
-message(STATUS "TF_BUILD_TESTS: " ${TF_BUILD_TESTS})
 message(STATUS "TF_ENABLE_CUDA: " ${TF_ENABLE_CUDA})
 message(STATUS "TF_BUILD_BENCHMARKS: " ${TF_BUILD_BENCHMARKS})
 message(STATUS "TF_INC_INSTALL_DIR: " ${TF_INC_INSTALL_DIR})
@@ -221,8 +217,6 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 # -----------------------------------------------------------------------------
 # Example program 
 # -----------------------------------------------------------------------------
-
-if(${TF_BUILD_EXAMPLES})
 
 message(STATUS "Building examples ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR})
@@ -280,16 +274,16 @@ add_executable(saxpy ${TF_EXAMPLE_DIR}/cuda/saxpy.cu)
 target_link_libraries(
   saxpy ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
-endif(${TF_ENABLE_CUDA})
 
-endif(${TF_BUILD_EXAMPLES})  # ---- if TF_BUILD_EXAMPLES
+add_executable(device_property ${TF_EXAMPLE_DIR}/cuda/device_property.cu)
+target_link_libraries(
+  device_property ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
+endif(${TF_ENABLE_CUDA})
 
 # -----------------------------------------------------------------------------
 # Unittest
 # -----------------------------------------------------------------------------
-
-if(${TF_BUILD_TESTS})
- 
 enable_testing()
 message(STATUS "Building unit tests ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR})
@@ -504,8 +498,6 @@ add_test(cuda_matrix.transpose ${TF_UTEST_DIR}/cuda/cuda_matrix -tc=transpose)
 add_test(cuda_matrix.product ${TF_UTEST_DIR}/cuda/cuda_matrix -tc=product)
 
 endif(${TF_ENABLE_CUDA})
-
-endif(${TF_BUILD_TESTS})
 
 # -----------------------------------------------------------------------------
 # Benchmarking (enabled by TF_BUILD_BENCHMARKS)

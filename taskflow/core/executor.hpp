@@ -29,7 +29,6 @@ An executor object manages a set of worker threads and implements
 an efficient work-stealing scheduling algorithm to run a taskflow.
 
 */
-
 class Executor {
   
   struct Worker {
