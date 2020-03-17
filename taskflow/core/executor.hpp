@@ -574,7 +574,7 @@ inline void Executor::_schedule(Node* node, bool bypass_hint) {
   auto worker = _per_thread().worker;
 
   if(worker != nullptr) {
-    if(bypass_hint && worker->domain == d) {
+    if(bypass_hint) {
       assert(!worker->cache);
       worker->cache = node;
     }
@@ -760,7 +760,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
       if(id >= 0 && static_cast<size_t>(id) < num_successors) {
         node->_successors[id]->_join_counter.store(0);
-        _schedule(node->_successors[id], true);
+        _schedule(node->_successors[id], node->_successors[id]->domain() == worker.domain);
       }
       return ;
     }  // no need to add a break here due to the immediate return
@@ -801,14 +801,21 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   for(size_t i=0; i<num_successors; ++i) {
     if(--(node->_successors[i]->_join_counter) == 0) {
-      if(cache) {
-        if(num_spawns == 0) {
+      if(node->_successors[i]->domain() != worker.domain) {
+        if(num_spawns++ == 0) {
           c.fetch_add(num_successors);
         }
-        num_spawns++;
-        _schedule(cache, false);
+        _schedule(node->_successors[i], false);
       }
-      cache = node->_successors[i];
+      else {
+        if(cache) {
+          if(num_spawns++ == 0) {
+            c.fetch_add(num_successors);
+          }
+          _schedule(cache, false);
+        }
+        cache = node->_successors[i];
+      }
     }
   }
 
