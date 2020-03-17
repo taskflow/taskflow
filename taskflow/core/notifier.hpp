@@ -64,7 +64,9 @@ namespace tf {
 // other changes, which would lead to deadlock.
 class Notifier {
 
- public:
+  friend class Executor;
+
+  public:
   
   struct Waiter {
     std::atomic<Waiter*> next;
@@ -79,10 +81,10 @@ class Notifier {
     };
   };
 
-  explicit Notifier(std::vector<Waiter>& waiters) : _waiters{waiters} {
-    assert(waiters.size() < (1 << kWaiterBits) - 1);
+  explicit Notifier(unsigned N) : _waiters{N} {
+    assert(_waiters.size() < (1 << kWaiterBits) - 1);
     // Initialize epoch to something close to overflow to test overflow.
-    _state = kStackMask | (kEpochMask - kEpochInc * waiters.size() * 2);
+    _state = kStackMask | (kEpochMask - kEpochInc * _waiters.size() * 2);
   }
 
   ~Notifier() {
@@ -195,6 +197,18 @@ class Notifier {
       }
     }
   }
+  
+  // notify n workers
+  void notify_n(unsigned n) {
+    if(n >= _waiters.size()) {
+      notify(true);
+    }
+    else {
+      for(unsigned k=0; k<n; ++k) {
+        notify(false);
+      }
+    }
+  }
 
  private:
 
@@ -214,7 +228,7 @@ class Notifier {
   static const uint64_t kEpochMask = ((1ull << kEpochBits) - 1) << kEpochShift;
   static const uint64_t kEpochInc = 1ull << kEpochShift;
   std::atomic<uint64_t> _state;
-  std::vector<Waiter>& _waiters;
+  std::vector<Waiter> _waiters;
 
   void _park(Waiter* w) {
     std::unique_lock<std::mutex> lock(w->mu);
@@ -240,7 +254,14 @@ class Notifier {
   }
 
   Notifier(const Notifier&) = delete;
-  void operator=(const Notifier&) = delete;
+  Notifier& operator=(const Notifier&) = delete;
+
+  Notifier(Notifier&& rhs) : 
+    _state   {rhs._state.load()},
+    _waiters {std::move(rhs._waiters)} {
+  }
+
+  
 };
 
 

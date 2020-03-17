@@ -225,6 +225,7 @@ class Task {
     @brief obtains a hash value of the underlying node
     */
     size_t hash_value() const;
+
     
   private:
     

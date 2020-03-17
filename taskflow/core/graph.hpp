@@ -14,7 +14,22 @@
 
 namespace tf {
 
+// ----------------------------------------------------------------------------
+// domain
+// ----------------------------------------------------------------------------
+
+enum Domain : int {
+  HOST = 0,
+#ifdef TF_ENABLE_CUDA
+  CUDA,
+#endif
+  HETEROGENEITY
+};
+
+
+// ----------------------------------------------------------------------------
 // Class: Graph
+// ----------------------------------------------------------------------------
 class Graph {
 
   friend class Node;
@@ -153,6 +168,8 @@ class Node {
     size_t num_weak_dependents() const;
     
     const std::string& name() const;
+
+    Domain domain() const;
 
   private:
 
@@ -303,6 +320,35 @@ inline size_t Node::num_strong_dependents() const {
 inline const std::string& Node::name() const {
   return _name;
 }
+
+// Function: domain
+inline Domain Node::domain() const {
+
+  Domain domain;
+
+  switch(_handle.index()) {
+
+    case STATIC_WORK:
+    case DYNAMIC_WORK:
+    case CONDITION_WORK:
+    case MODULE_WORK:
+      domain = Domain::HOST;
+    break;
+
+#ifdef TF_ENABLE_CUDA
+    case CUDAFLOW_WORK:
+      domain = Domain::CUDA;
+    break;
+#endif
+
+    default:
+      domain = Domain::HOST;
+    break;
+  }
+
+  return domain;
+}
+
 //
 //// Function: dump
 //inline std::string Node::dump() const {
