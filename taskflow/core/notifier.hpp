@@ -210,6 +210,10 @@ class Notifier {
     }
   }
 
+  size_t size() const {
+    return _waiters.size();
+  }
+
  private:
 
   // State_ layout:

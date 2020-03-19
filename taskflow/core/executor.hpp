@@ -38,7 +38,6 @@ class Executor {
     std::mt19937 rdgen { std::random_device{}() };
     TaskQueue<Node*> wsq[HETEROGENEITY];
     Node* cache {nullptr};
-    size_t num_executed {0};
   };
     
   struct PerThread {
@@ -56,7 +55,7 @@ class Executor {
 
 #ifdef TF_ENABLE_CUDA    
     /**
-    @brief constructs the executor with N worker threads
+    @brief constructs the executor with N/M cpu/gpu worker threads
     */
     explicit Executor(
       unsigned N = std::thread::hardware_concurrency(),
@@ -412,7 +411,7 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
     
     auto tpg = t->_topology;
     auto par = t->_parent;
-    w.num_executed = 1;
+    auto exe = size_t{1};
 
     do {
       _invoke(w, t);
@@ -427,43 +426,43 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
           // We only increment the counter when poping task from wsq 
           // (NOT including cache!)
           if(t->_parent == par) {
-            w.num_executed ++;
+            exe++;
           }
           // joined subflow
           else {
             if(par == nullptr) {
               // still have tasks so the topology join counter can't be zero
-              t->_topology->_join_counter.fetch_sub(w.num_executed);
+              t->_topology->_join_counter.fetch_sub(exe);
             }
             else {
-              auto ret = par->_join_counter.fetch_sub(w.num_executed);
-              if(ret == w.num_executed) {
+              auto ret = par->_join_counter.fetch_sub(exe);
+              if(ret == exe) {
                 //_schedule(par, false);
                 w.wsq[d].push(par);
               }
             }
-            w.num_executed = 1;
+            exe = 1;
             par = t->_parent;
           }
         }
         else {
           // If no more local tasks!
           if(par == nullptr) {
-            if(tpg->_join_counter.fetch_sub(w.num_executed) == w.num_executed) {
+            if(tpg->_join_counter.fetch_sub(exe) == exe) {
               // TODO: Store tpg in local variable not in w
               _tear_down_topology(&tpg);
               if(tpg != nullptr) {
                 t = w.wsq[d].pop();
                 if(t) {
-                  w.num_executed = 1;
+                  exe = 1;
                 }
               }
             }
           }
           else {
-            if(par->_join_counter.fetch_sub(w.num_executed) == w.num_executed) {
+            if(par->_join_counter.fetch_sub(exe) == exe) {
               t = par;
-              w.num_executed = 1;
+              exe = 1;
               par = par->_parent;
             }
           }
@@ -617,11 +616,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
   auto worker = _per_thread().worker;
 
   // task counts
-  size_t tcount[HETEROGENEITY];
-
-  for(int d=0; d<HETEROGENEITY; ++d) {
-    tcount[d] = 0;
-  }
+  size_t tcount[HETEROGENEITY] = {0};
 
   if(worker != nullptr) {
     for(size_t i=0; i<num_nodes; ++i) {
@@ -665,6 +660,10 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // Here we need to fetch the num_successors first to avoid the invalid memory
   // access caused by topology clear.
   const auto num_successors = node->num_successors();
+  
+  // acquire the parent flow counter
+  auto& c = (node->_parent) ? node->_parent->_join_counter : 
+                              node->_topology->_join_counter;
   
   // switch is faster than nested if-else due to jump table
   switch(node->_handle.index()) {
@@ -728,12 +727,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
             node->_join_counter.fetch_add(src.size());
 
             // spawned node needs another second-round execution
-            if(node->_parent == nullptr) {
-              node->_topology->_join_counter.fetch_add(1);
-            }
-            else {
-              node->_parent->_join_counter.fetch_add(1);
-            }
+            c.fetch_add(1);
           }
 
           _schedule(src);
@@ -759,8 +753,16 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       _invoke_condition_work(worker, node, id);
 
       if(id >= 0 && static_cast<size_t>(id) < num_successors) {
-        node->_successors[id]->_join_counter.store(0);
-        _schedule(node->_successors[id], node->_successors[id]->domain() == worker.domain);
+        auto s = node->_successors[id];
+        s->_join_counter.store(0);
+
+        if(s->domain() == worker.domain) {
+          _schedule(s, true);
+        }
+        else {
+          c.fetch_add(1);
+          _schedule(s, false);
+        }
       }
       return ;
     }  // no need to add a break here due to the immediate return
@@ -779,7 +781,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   }
   
 
-  // We MUST recover the dependency since subflow is a condition node can go back (cyclic)
+  // We MUST recover the dependency since subflow may have  
+  // a condition node to go back (cyclic).
   // This must be done before scheduling the successors, otherwise this might cause 
   // race condition on the _dependents
   if(node->_has_state(Node::BRANCH)) {
@@ -794,24 +797,23 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // At this point, the node storage might be destructed.
   Node* cache {nullptr};
-  size_t num_spawns {0};
-
-  auto& c = (node->_parent) ? node->_parent->_join_counter : 
-                              node->_topology->_join_counter;
+  //size_t num_spawns {0};
 
   for(size_t i=0; i<num_successors; ++i) {
     if(--(node->_successors[i]->_join_counter) == 0) {
       if(node->_successors[i]->domain() != worker.domain) {
-        if(num_spawns++ == 0) {
-          c.fetch_add(num_successors);
-        }
+        //if(num_spawns++ == 0) {
+        //  c.fetch_add(num_successors);
+        //}
+        c.fetch_add(1);
         _schedule(node->_successors[i], false);
       }
       else {
         if(cache) {
-          if(num_spawns++ == 0) {
-            c.fetch_add(num_successors);
-          }
+          //if(num_spawns++ == 0) {
+          //  c.fetch_add(num_successors);
+          //}
+          c.fetch_add(1);
           _schedule(cache, false);
         }
         cache = node->_successors[i];
@@ -819,9 +821,9 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     }
   }
 
-  if(num_spawns) {
-    worker.num_executed += (node->_successors.size() - num_spawns);
-  }
+  //if(num_spawns) {
+  //  worker.num_executed += (node->_successors.size() - num_spawns);
+  //}
 
   if(cache) {
     _schedule(cache, true);
