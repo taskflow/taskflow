@@ -438,7 +438,12 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
               auto ret = par->_join_counter.fetch_sub(exe);
               if(ret == exe) {
                 //_schedule(par, false);
-                w.wsq[d].push(par);
+                if(par->domain() == d) {
+                  w.wsq[d].push(par);
+                }
+                else {
+                  _schedule(par, false);
+                }
               }
             }
             exe = 1;
@@ -461,9 +466,14 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
           }
           else {
             if(par->_join_counter.fetch_sub(exe) == exe) {
-              t = par;
-              exe = 1;
-              par = par->_parent;
+              if(par->domain() == d) {
+                t = par;
+                exe = 1;
+                par = par->_parent;
+              }
+              else {
+                _schedule(par, false);
+              }
             }
           }
         }
