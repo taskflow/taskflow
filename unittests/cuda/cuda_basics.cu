@@ -364,5 +364,172 @@ TEST_CASE("Loop") {
   executor.run(taskflow).wait();
 }
 
-//TEST_CASE("") {
-//}
+// ----------------------------------------------------------------------------
+// Subflow
+// ----------------------------------------------------------------------------
+
+TEST_CASE("Subflow") {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+    
+  int* cpu = nullptr;
+  int* gpu = nullptr;
+  
+  const unsigned n = 1000;
+
+  auto partask = taskflow.emplace([&](tf::Subflow& sf){
+
+    auto cputask = sf.emplace([&](){
+      cpu = static_cast<int*>(std::calloc(n, sizeof(int)));
+      REQUIRE(cudaMalloc(&gpu, n*sizeof(int)) == cudaSuccess);
+    });
+    
+    auto gputask = sf.emplace([&](tf::cudaFlow& cf) {
+      dim3 g = {(n+255)/256, 1, 1};
+      dim3 b = {256, 1, 1};
+      auto h2d = cf.copy(gpu, cpu, n);
+      auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
+      auto d2h = cf.copy(cpu, gpu, n);
+      h2d.precede(kernel);
+      kernel.precede(d2h);
+    });
+
+    cputask.precede(gputask);
+  });
+    
+  auto chktask = taskflow.emplace([&](){
+    for(unsigned i=0; i<n ;++i){
+      REQUIRE(cpu[i] == 1);
+    }
+    REQUIRE(cudaFree(gpu) == cudaSuccess);
+    std::free(cpu);
+  });
+
+  partask.precede(chktask);
+
+  executor.run(taskflow).wait();
+
+}
+
+// ----------------------------------------------------------------------------
+// NestedSubflow
+// ----------------------------------------------------------------------------
+
+TEST_CASE("NestedSubflow") {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+    
+  int* cpu = nullptr;
+  int* gpu = nullptr;
+  
+  const unsigned n = 1000;
+    
+  auto cputask = taskflow.emplace([&](){
+    cpu = static_cast<int*>(std::calloc(n, sizeof(int)));
+    REQUIRE(cudaMalloc(&gpu, n*sizeof(int)) == cudaSuccess);
+  });
+
+  auto partask = taskflow.emplace([&](tf::Subflow& sf){
+    
+    auto gputask1 = sf.emplace([&](tf::cudaFlow& cf) {
+      dim3 g = {(n+255)/256, 1, 1};
+      dim3 b = {256, 1, 1};
+      auto h2d = cf.copy(gpu, cpu, n);
+      auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
+      auto d2h = cf.copy(cpu, gpu, n);
+      h2d.precede(kernel);
+      kernel.precede(d2h);
+    });
+
+    auto subtask1 = sf.emplace([&](tf::Subflow& sf) {
+      auto gputask2 = sf.emplace([&](tf::cudaFlow& cf) {
+        dim3 g = {(n+255)/256, 1, 1};
+        dim3 b = {256, 1, 1};
+        auto h2d = cf.copy(gpu, cpu, n);
+        auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
+        auto d2h = cf.copy(cpu, gpu, n);
+        h2d.precede(kernel);
+        kernel.precede(d2h);
+      });
+      
+      auto subtask2 = sf.emplace([&](tf::Subflow& sf){
+        sf.emplace([&](tf::cudaFlow& cf) {
+          dim3 g = {(n+255)/256, 1, 1};
+          dim3 b = {256, 1, 1};
+          auto h2d = cf.copy(gpu, cpu, n);
+          auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
+          auto d2h = cf.copy(cpu, gpu, n);
+          h2d.precede(kernel);
+          kernel.precede(d2h);
+        });
+      });
+
+      gputask2.precede(subtask2);
+    });
+
+    gputask1.precede(subtask1);
+  });
+    
+  auto chktask = taskflow.emplace([&](){
+    for(unsigned i=0; i<n ;++i){
+      REQUIRE(cpu[i] == 3);
+    }
+    REQUIRE(cudaFree(gpu) == cudaSuccess);
+    std::free(cpu);
+  });
+
+  partask.precede(chktask)
+         .succeed(cputask);
+
+  executor.run(taskflow).wait();
+
+}
+
+// ----------------------------------------------------------------------------
+// DetachedSubflow
+// ----------------------------------------------------------------------------
+
+TEST_CASE("DetachedSubflow") {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+    
+  int* cpu = nullptr;
+  int* gpu = nullptr;
+  
+  const unsigned n = 1000;
+
+  taskflow.emplace([&](tf::Subflow& sf){
+
+    auto cputask = sf.emplace([&](){
+      cpu = static_cast<int*>(std::calloc(n, sizeof(int)));
+      REQUIRE(cudaMalloc(&gpu, n*sizeof(int)) == cudaSuccess);
+    });
+    
+    auto gputask = sf.emplace([&](tf::cudaFlow& cf) {
+      dim3 g = {(n+255)/256, 1, 1};
+      dim3 b = {256, 1, 1};
+      auto h2d = cf.copy(gpu, cpu, n);
+      auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
+      auto d2h = cf.copy(cpu, gpu, n);
+      h2d.precede(kernel);
+      kernel.precede(d2h);
+    });
+
+    cputask.precede(gputask);
+
+    sf.detach();
+  });
+    
+  executor.run(taskflow).wait();
+  
+  for(unsigned i=0; i<n ;++i){
+    REQUIRE(cpu[i] == 1);
+  }
+  REQUIRE(cudaFree(gpu) == cudaSuccess);
+  std::free(cpu);
+}
+
+

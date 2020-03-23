@@ -495,6 +495,9 @@ add_test(cuda_basics.barrier.i8 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i8)
 add_test(cuda_basics.barrier.i16 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i16)
 add_test(cuda_basics.barrier.i32 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i32)
 add_test(cuda_basics.loop ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Loop)
+add_test(cuda_basics.subflow ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Subflow)
+add_test(cuda_basics.nested_subflow ${TF_UTEST_DIR}/cuda/cuda_basics -tc=NestedSubflow)
+add_test(cuda_basics.detached_subflow ${TF_UTEST_DIR}/cuda/cuda_basics -tc=DetachedSubflow)
 
 # matrix operation tests
 add_executable(cuda_matrix ${TF_UTEST_DIR}/cuda/cuda_matrix.cu)

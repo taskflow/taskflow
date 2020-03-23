@@ -437,7 +437,6 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
             else {
               auto ret = par->_join_counter.fetch_sub(exe);
               if(ret == exe) {
-                //_schedule(par, false);
                 if(par->domain() == d) {
                   w.wsq[d].push(par);
                 }
