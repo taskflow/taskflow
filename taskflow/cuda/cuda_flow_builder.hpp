@@ -77,7 +77,7 @@ class cudaFlow {
     @return cudaTask handle
     */
     template <typename F, typename... ArgsT>
-    cudaTask kernel(int d, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
+    cudaTask kernel_on(int d, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
     
     /**
     @brief creates an 1D copy task
@@ -209,7 +209,7 @@ cudaTask cudaFlow::kernel(
 
 // Function: kernel
 template <typename F, typename... ArgsT>
-cudaTask cudaFlow::kernel(
+cudaTask cudaFlow::kernel_on(
   int dev, dim3 grid, dim3 block, size_t shm, F&& func, ArgsT&&... args
 ) {
   
