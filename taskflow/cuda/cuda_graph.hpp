@@ -30,24 +30,32 @@ class cudaNode {
 
   struct Noop {
 
+    template <typename C>
+    Noop(C&&);
+
+    std::function<void(cudaGraph_t&, cudaGraphNode_t&)> work;
   };
 
   // Copy handle
   struct Copy {
     
-    template <typename... ArgsT>
-    Copy(ArgsT&&...);
+    template <typename C>
+    Copy(C&&);
 
-    cudaMemcpy3DParms param;
+    //cudaMemcpy3DParms param;
+
+    std::function<void(cudaGraph_t&, cudaGraphNode_t&)> work;
   };
   
   // Kernel handle
   struct Kernel {
     
-    template <typename... ArgsT>
-    Kernel(ArgsT&&...);
+    template <typename C>
+    Kernel(C&&);
 
-    cudaKernelNodeParams param;
+    //cudaKernelNodeParams param;
+
+    std::function<void(cudaGraph_t&, cudaGraphNode_t&)> work;
   };
 
   using handle_t = nstd::variant<nstd::monostate, Noop, Copy, Kernel>;
@@ -58,18 +66,17 @@ class cudaNode {
   constexpr static auto KERNEL = get_index_v<Kernel, handle_t>;
 
   public:
-  
-    cudaNode(cudaGraph&);
+    
+    template <typename... ArgsT>
+    cudaNode(ArgsT&&...);
 
   private:
-
-    cudaGraph& _graph;
 
     std::string _name;
     
     handle_t _handle;
 
-    cudaGraphNode_t _node {nullptr};
+    cudaGraphNode_t _native_handle {nullptr};
 
     PassiveVector<cudaNode*> _successors;
 
@@ -92,7 +99,6 @@ class cudaGraph {
 
   public:
 
-    cudaGraph();
     ~cudaGraph();
 
     template <typename... ArgsT>
@@ -106,50 +112,55 @@ class cudaGraph {
 
   private:
     
-    cudaGraph_t _handle {nullptr};
+    cudaGraph_t _native_handle {nullptr};
 
     std::vector<std::unique_ptr<cudaNode>> _nodes;
+
+    void _make_native_graph(int);
 };
 
 // ----------------------------------------------------------------------------
 // cudaNode definitions
 // ----------------------------------------------------------------------------
 
+// Noop handle constructor
+template <typename C>
+cudaNode::Noop::Noop(C&& c) : work {std::forward<C>(c)} {
+}
+
 // Copy handle constructor
-template <typename... ArgsT>
-cudaNode::Copy::Copy(ArgsT&&... args) {
+template <typename C>
+cudaNode::Copy::Copy(C&& c) : work {std::forward<C>(c)} {
 }
 
 // Kernel handle constructor
-template <typename... ArgsT>
-cudaNode::Kernel::Kernel(ArgsT&&... args) {
+template <typename C>
+cudaNode::Kernel::Kernel(C&& c) : work {std::forward<C>(c)} {
 }
 
 // Constructor
-inline cudaNode::cudaNode(cudaGraph& g) : _graph {g} {
+template <typename... ArgsT>
+cudaNode::cudaNode(ArgsT&&... args) : _handle {std::forward<ArgsT>(args)...} {
 }
 
 // Procedure: _precede
 inline void cudaNode::_precede(cudaNode* v) {
   _successors.push_back(v);
-  TF_CHECK_CUDA(
-    ::cudaGraphAddDependencies(_graph._handle, &_node, &(v->_node), 1),
-    "failed to add a preceding link"
-  );
+  //TF_CHECK_CUDA(
+  //  ::cudaGraphAddDependencies(_graph._handle, &_node, &(v->_node), 1),
+  //  "failed to add a preceding link"
+  //);
 }
 
 // ----------------------------------------------------------------------------
 // cudaGraph definitions
 // ----------------------------------------------------------------------------
 
-// Constructor
-inline cudaGraph::cudaGraph() {
-  TF_CHECK_CUDA(cudaGraphCreate(&_handle, 0), "failed to create a cudaGraph");
-}
-
 // Destructor
 inline cudaGraph::~cudaGraph() {
-  cudaGraphDestroy(_handle);
+  if(_native_handle) {
+    cudaGraphDestroy(_native_handle);
+  }
 }
 
 // Function: empty
@@ -162,23 +173,81 @@ inline void cudaGraph::clear() {
 
   _nodes.clear();
 
-  cudaGraphDestroy(_handle);
-  TF_CHECK_CUDA(
-    cudaGraphCreate(&_handle, 0), "failed to create a cudaGraph after clear"
-  );
+  if(_native_handle) {
+    TF_CHECK_CUDA(
+      cudaGraphDestroy(_native_handle), "failed to destroy a cudaGraph on clear"
+    );
+    _native_handle = nullptr;
+  }
 }
     
 // Function: emplace_back
 template <typename... ArgsT>
 cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
-  auto node = std::make_unique<cudaNode>(*this, std::forward<ArgsT>(args)...);
+  auto node = std::make_unique<cudaNode>(std::forward<ArgsT>(args)...);
   _nodes.emplace_back(std::move(node));
   return _nodes.back().get();
 }
 
 // Function: native_handle
 inline cudaGraph_t cudaGraph::native_handle() {
-  return _handle;
+  return _native_handle;
+}
+
+// Procedure: _make_native_graph
+inline void cudaGraph::_make_native_graph(int d) {
+
+  if(_native_handle) {
+    TF_CHECK_CUDA(
+      cudaGraphDestroy(_native_handle), "failed to destroy the previous cudaGraph"
+    );
+    _native_handle = nullptr;
+  }
+  
+  cudaScopedDevice ctx {d};
+
+  TF_CHECK_CUDA(
+    cudaGraphCreate(&_native_handle, 0), "failed to create a cudaGraph under device ", d
+  );
+
+  // create nodes
+  for(auto& node : _nodes) {
+    switch(node->_handle.index()) {
+      case cudaNode::NOOP:
+        nstd::get<cudaNode::Noop>(node->_handle).work(
+          _native_handle, node->_native_handle
+        );
+      break;
+
+      case cudaNode::COPY:
+        nstd::get<cudaNode::Copy>(node->_handle).work(
+          _native_handle, node->_native_handle
+        );
+      break;
+
+      case cudaNode::KERNEL:
+        nstd::get<cudaNode::Kernel>(node->_handle).work(
+          _native_handle, node->_native_handle
+        );
+      break;
+
+      default:
+      break;
+    }
+  }
+
+  // create edges
+  for(auto& node : _nodes) {
+    for(auto succ : node->_successors){
+      TF_CHECK_CUDA(
+        ::cudaGraphAddDependencies(
+          _native_handle, &(node->_native_handle), &(succ->_native_handle), 1
+        ),
+        "failed to add a preceding link"
+      );
+    }
+  }
+
 }
 
 

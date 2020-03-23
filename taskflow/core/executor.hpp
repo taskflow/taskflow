@@ -902,15 +902,17 @@ inline void Executor::_invoke_cudaflow_work_impl(Worker&, Node* node) {
 
   h.work(cf); 
 
+  h.graph._make_native_graph(cf._device);
+
   cudaGraphExec_t exec;
   TF_CHECK_CUDA(
-    cudaGraphInstantiate(&exec, h.graph._handle, nullptr, nullptr, 0),
-    "failed to create an exec cudaGraph"
+    cudaGraphInstantiate(&exec, h.graph._native_handle, nullptr, nullptr, 0),
+    "failed to create an executable cudaGraph"
   );
-  TF_CHECK_CUDA(cudaGraphLaunch(exec, 0), "failed to launch cudaGraph")
-  TF_CHECK_CUDA(cudaStreamSynchronize(0), "failed to sync cudaStream");
+  TF_CHECK_CUDA(cudaGraphLaunch(exec, cf._stream), "failed to launch cudaGraph")
+  TF_CHECK_CUDA(cudaStreamSynchronize(cf._stream), "failed to sync cudaStream");
   TF_CHECK_CUDA(
-    cudaGraphExecDestroy(exec), "failed to destroy an exec cudaGraph"
+    cudaGraphExecDestroy(exec), "failed to destroy an executable cudaGraph"
   );
 }
 #endif
