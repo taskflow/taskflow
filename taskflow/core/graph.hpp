@@ -23,7 +23,7 @@ enum Domain : int {
 #ifdef TF_ENABLE_CUDA
   CUDA,
 #endif
-  HETEROGENEITY
+  NUM_DOMAINS
 };
 
 

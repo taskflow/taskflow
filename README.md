@@ -654,20 +654,11 @@ The method `precede` lets you add a preceding link from self to other tasks.
 A.precede(B, C, D, E);
 ```
 
-### *succeed*
-
-The method `succeed` lets you add a preceding link from other tasks to self.
-
-<img align="right" width="30%" src="image/gather.svg">
-
-```cpp
-// A runs after B, C, D, and E
-A.succeed(B, C, D, E);
-```
+The method `succeed` is similar to `precede` but operates in the opposite direction.
 
 ### *empty/has_work*
 
-A task is empty is it is not associated with any graphs.
+A task is empty is it is not associated with any graph node.
 
 ```cpp
 tf::Task task;  // assert(task.empty());

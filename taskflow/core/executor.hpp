@@ -37,7 +37,7 @@ class Executor {
     Executor* executor;
     Notifier::Waiter* waiter;
     std::mt19937 rdgen { std::random_device{}() };
-    TaskQueue<Node*> wsq[HETEROGENEITY];
+    TaskQueue<Node*> wsq[NUM_DOMAINS];
     Node* cache {nullptr};
   };
     
@@ -160,6 +160,14 @@ class Executor {
     size_t num_topologies() const;
 
     /**
+    @brief queries the number of worker domains 
+
+    Each domain manages a subset of worker threads to execute tasks in its domain,
+    for example, HOST and CUDA.
+    */
+    size_t num_domains() const;
+
+    /**
     @brief queries the id of the caller thread in this executor
 
     Each worker has an unique id from 0 to N-1 exclusive to the associated executor.
@@ -201,13 +209,13 @@ class Executor {
     std::vector<Worker> _workers;
     std::vector<std::thread> _threads;
     
-    Notifier _notifier[HETEROGENEITY];
+    Notifier _notifier[NUM_DOMAINS];
 
-    TaskQueue<Node*> _wsq[HETEROGENEITY];
+    TaskQueue<Node*> _wsq[NUM_DOMAINS];
 
-    std::atomic<size_t> _num_actives[HETEROGENEITY];
-    std::atomic<size_t> _num_thieves[HETEROGENEITY];
-    std::atomic<bool>   _done{0};
+    std::atomic<size_t> _num_actives[NUM_DOMAINS];
+    std::atomic<size_t> _num_thieves[NUM_DOMAINS];
+    std::atomic<bool>   _done {0};
     
     std::unique_ptr<ExecutorObserverInterface> _observer;
     
@@ -256,7 +264,7 @@ inline Executor::Executor(unsigned N, unsigned M) :
     TF_THROW("no gpu workers to execute cudaflows");
   }
 
-  for(int i=0; i<HETEROGENEITY; ++i) {
+  for(int i=0; i<NUM_DOMAINS; ++i) {
     _num_actives[i].store(0, std::memory_order_relaxed);
     _num_thieves[i].store(0, std::memory_order_relaxed); 
   }
@@ -275,7 +283,7 @@ inline Executor::Executor(unsigned N) :
     TF_THROW("no cpu workers to execute taskflows");
   }
   
-  for(int i=0; i<HETEROGENEITY; ++i) {
+  for(int i=0; i<NUM_DOMAINS; ++i) {
     _num_actives[i].store(0, std::memory_order_relaxed);
     _num_thieves[i].store(0, std::memory_order_relaxed); 
   }
@@ -293,7 +301,7 @@ inline Executor::~Executor() {
   // shut down the scheduler
   _done = true;
 
-  for(int i=0; i<HETEROGENEITY; ++i) {
+  for(int i=0; i<NUM_DOMAINS; ++i) {
     _notifier[i].notify(true);
   }
   
@@ -305,6 +313,11 @@ inline Executor::~Executor() {
 // Function: num_workers
 inline size_t Executor::num_workers() const {
   return _workers.size();
+}
+
+// Function: num_domains
+inline size_t Executor::num_domains() const {
+  return NUM_DOMAINS;
 }
 
 // Function: num_topologies
@@ -469,8 +482,8 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
             if(par->_join_counter.fetch_sub(exe) == exe) {
               if(par->domain() == d) {
                 t = par;
-                exe = 1;
                 par = par->_parent;
+                exe = 1;
               }
               else {
                 _schedule(par, false);
@@ -529,7 +542,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
   if(_done) {
     _notifier[d].cancel_wait(worker.waiter);
-    for(int i=0; i<HETEROGENEITY; ++i) {
+    for(int i=0; i<NUM_DOMAINS; ++i) {
       _notifier[i].notify(true);
     }
     --_num_thieves[d];
@@ -627,7 +640,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
   auto worker = _per_thread().worker;
 
   // task counts
-  size_t tcount[HETEROGENEITY] = {0};
+  size_t tcount[NUM_DOMAINS] = {0};
 
   if(worker != nullptr && worker->executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
@@ -636,7 +649,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
       tcount[d]++;
     }
     
-    for(int d=0; d<HETEROGENEITY; ++d) {
+    for(int d=0; d<NUM_DOMAINS; ++d) {
       if(tcount[d] && d != worker->domain) {
         if(_num_actives[d] == 0 && _num_thieves[d] == 0) {
           _notifier[d].notify_n(tcount[d]);
@@ -657,7 +670,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
     }
   }
   
-  for(int d=0; d<HETEROGENEITY; ++d) {
+  for(int d=0; d<NUM_DOMAINS; ++d) {
     _notifier[d].notify_n(tcount[d]);
   }
 }
@@ -808,22 +821,15 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // At this point, the node storage might be destructed.
   Node* cache {nullptr};
-  //size_t num_spawns {0};
 
   for(size_t i=0; i<num_successors; ++i) {
     if(--(node->_successors[i]->_join_counter) == 0) {
       if(node->_successors[i]->domain() != worker.domain) {
-        //if(num_spawns++ == 0) {
-        //  c.fetch_add(num_successors);
-        //}
         c.fetch_add(1);
         _schedule(node->_successors[i], false);
       }
       else {
         if(cache) {
-          //if(num_spawns++ == 0) {
-          //  c.fetch_add(num_successors);
-          //}
           c.fetch_add(1);
           _schedule(cache, false);
         }
@@ -831,10 +837,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       }
     }
   }
-
-  //if(num_spawns) {
-  //  worker.num_executed += (node->_successors.size() - num_spawns);
-  //}
 
   if(cache) {
     _schedule(cache, true);
