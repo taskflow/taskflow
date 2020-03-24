@@ -709,24 +709,10 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // dynamic task
     case Node::DYNAMIC_WORK: {
 
-      auto& subgraph = nstd::get<Node::DynamicWork>(node->_handle).subgraph;
-
-      // Clear the subgraph before the task execution
-      bool spawned = node->_has_state(Node::SPAWNED);
-
-      //if(!node->_has_state(Node::SPAWNED)) {
-      //if(!spawned) {
-      //  subgraph.clear();  // first time
-      //}
-     
-      //Subflow fb(subgraph);
-      //
-      //if(!spawned) { 
-      //  _invoke_dynamic_work(worker, node, fb);
-      //}
-      
-      // Need to create a subflow if first time & subgraph is not empty 
-      if(!spawned) {
+      // Need to create a subflow if it is the first time entering here
+      if(!node->_has_state(Node::SPAWNED)) {
+        
+        auto& subgraph = nstd::get<Node::DynamicWork>(node->_handle).subgraph;
 
         subgraph.clear();
         Subflow fb(subgraph); 
@@ -736,7 +722,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
         node->_set_state(Node::SPAWNED);
 
         if(!subgraph.empty()) {
-          // For storing the source nodes
+
           PassiveVector<Node*> src; 
 
           for(auto n : subgraph._nodes) {

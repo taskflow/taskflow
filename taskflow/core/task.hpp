@@ -432,6 +432,40 @@ inline size_t Task::hash_value() const {
   return std::hash<Node*>{}(_node);
 }
 
+// Function: work
+// assign a static work
+template <typename C>
+std::enable_if_t<is_static_task_v<C>, Task>& Task::work(C&& c) {
+  _node->_handle.emplace<Node::StaticWork>(std::forward<C>(c));
+  return *this;
+}
+
+// Function: work
+// assigns a dynamic work
+template <typename C>
+std::enable_if_t<is_dynamic_task_v<C>, Task>& Task::work(C&& c) {
+  _node->_handle.emplace<Node::DynamicWork>(std::forward<C>(c));
+  return *this;
+}
+
+// Function: work
+// assigns a condition work
+template <typename C>
+std::enable_if_t<is_condition_task_v<C>, Task>& Task::work(C&& c) {
+  _node->_handle.emplace<Node::ConditionWork>(std::forward<C>(c));
+  return *this;
+}
+
+#ifdef TF_ENABLE_CUDA
+// Function: work
+// assigns a cudaFlow work
+template <typename C>
+std::enable_if_t<is_cudaflow_task_v<C>, Task>& Task::work(C&& c) {
+  _node->_handle.emplace<Node::cudaFlowWork>(std::forward<C>(c));
+  return *this;
+}
+#endif
+
 // ----------------------------------------------------------------------------
 
 /**

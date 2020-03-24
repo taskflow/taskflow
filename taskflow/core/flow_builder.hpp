@@ -443,13 +443,6 @@ std::enable_if_t<is_dynamic_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
   auto n = _graph.emplace_back(
     nstd::in_place_type_t<Node::DynamicWork>{}, std::forward<C>(c)
   );
-  //auto n = _graph.emplace_back(nstd::in_place_type_t<Node::DynamicWork>{}, 
-  //[c=std::forward<C>(c)] (Subflow& fb) mutable {
-  //  // first time execution
-  //  if(fb._graph.empty()) {
-  //    c(fb);
-  //  }
-  //});
   return Task(n);
 }
 
@@ -474,40 +467,6 @@ std::enable_if_t<is_cudaflow_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
   return Task(n);
 }
 #endif
-
-//template <typename C>
-//Task FlowBuilder::emplace(C&& c) {
-//
-//  // static task
-//  //if constexpr(is_static_task_v<C>) {
-//  if constexpr (is_invocable_r_v<void, C> && !is_invocable_r_v<int, C>) {
-//    auto n = _graph.emplace_back(
-//      nstd::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
-//    );
-//    return Task(n);
-//  }
-//  // condition task
-//  else if constexpr(is_condition_task_v<C>) {
-//    auto n = _graph.emplace_back(
-//      nstd::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
-//    );
-//    return Task(n);
-//  }
-//  // dynamic task
-//  else if constexpr(is_dynamic_task_v<C>) {
-//    auto n = _graph.emplace_back(nstd::in_place_type_t<Node::DynamicWork>{}, 
-//    [c=std::forward<C>(c)] (Subflow& fb) mutable {
-//      // first time execution
-//      if(fb._graph.empty()) {
-//        c(fb);
-//      }
-//    });
-//    return Task(n);
-//  }
-//  else {
-//    static_assert(dependent_false_v<C>, "invalid task work type");
-//  }
-//}
 
 // Function: composed_of    
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
@@ -962,55 +921,11 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
   return std::make_pair(source, target); 
 }
 
-// ----------------------------------------------------------------------------
-// Cyclic Dependency: Task
-// ----------------------------------------------------------------------------
 
-// Function: work
-// assign a static work
-template <typename C>
-std::enable_if_t<is_static_task_v<C>, Task>& Task::work(C&& c) {
-  _node->_handle.emplace<Node::StaticWork>(std::forward<C>(c));
-  return *this;
-}
-
-// Function: work
-// assigns a dynamic work
-template <typename C>
-std::enable_if_t<is_dynamic_task_v<C>, Task>& Task::work(C&& c) {
-  _node->_handle.emplace<Node::DynamicWork>(std::forward<C>(c));
-  //_node->_handle.emplace<Node::DynamicWork>( 
-  //[c=std::forward<C>(c)] (Subflow& fb) mutable {
-  //  // first time execution
-  //  if(fb._graph.empty()) {
-  //    c(fb);
-  //  }
-  //});
-  return *this;
-}
-
-// Function: work
-// assigns a condition work
-template <typename C>
-std::enable_if_t<is_condition_task_v<C>, Task>& Task::work(C&& c) {
-  _node->_handle.emplace<Node::ConditionWork>(std::forward<C>(c));
-  return *this;
-}
-
-#ifdef TF_ENABLE_CUDA
-// Function: work
-// assigns a cudaFlow work
-template <typename C>
-std::enable_if_t<is_cudaflow_task_v<C>, Task>& Task::work(C&& c) {
-  _node->_handle.emplace<Node::cudaFlowWork>(std::forward<C>(c));
-  return *this;
-}
-#endif
 
 // ----------------------------------------------------------------------------
 // Legacy code
 // ----------------------------------------------------------------------------
-
 
 using SubflowBuilder = Subflow;
 
