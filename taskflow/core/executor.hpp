@@ -34,6 +34,7 @@ class Executor {
   struct Worker {
     unsigned id;
     Domain domain;
+    Executor* executor;
     Notifier::Waiter* waiter;
     std::mt19937 rdgen { std::random_device{}() };
     TaskQueue<Node*> wsq[HETEROGENEITY];
@@ -332,13 +333,14 @@ inline void Executor::_spawn(unsigned N, Domain d) {
 
     _workers[id].id = id;
     _workers[id].domain = d;
+    _workers[id].executor = this;
     _workers[id].waiter = &_notifier[d]._waiters[i];
     
     _threads.emplace_back([this] (Worker& w) -> void {
 
       PerThread& pt = _per_thread();  
       pt.worker = &w;
-    
+
       Node* t = nullptr;
 
       // must use 1 as condition instead of !done
@@ -581,7 +583,7 @@ inline void Executor::_schedule(Node* node, bool bypass_hint) {
   // caller is a worker to this pool
   auto worker = _per_thread().worker;
 
-  if(worker != nullptr) {
+  if(worker != nullptr && worker->executor == this) {
     if(bypass_hint) {
       assert(!worker->cache);
       worker->cache = node;
@@ -627,7 +629,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
   // task counts
   size_t tcount[HETEROGENEITY] = {0};
 
-  if(worker != nullptr) {
+  if(worker != nullptr && worker->executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
       const auto d = nodes[i]->domain();
       worker->wsq[d].push(nodes[i]);
@@ -991,7 +993,7 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred) {
 
 // Function: _set_up_topology
 inline void Executor::_set_up_topology(Topology* tpg) {
-  
+
   tpg->_sources.clear();
   
   // scan each node in the graph and build up the links
@@ -1098,41 +1100,6 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
     return promise.get_future();
   }
   
-
-  
-  //// Special case of zero workers requires:
-  ////  - iterative execution to avoid stack overflow
-  ////  - avoid execution of last_work
-  //if(_workers.size() == 0) {
-  //  
-  //  Topology tpg(f, std::forward<P>(pred), std::forward<C>(c));
-
-  //  // Clear last execution data & Build precedence between nodes and target
-  //  tpg._bind(f._graph);
-
-  //  std::stack<Node*> stack;
-
-  //  do {
-  //    _schedule_unsync(tpg._sources, stack);
-  //    while(!stack.empty()) {
-  //      auto node = stack.top();
-  //      stack.pop();
-  //      _invoke_unsync(node, stack);
-  //    }
-  //    tpg._recover_num_sinks();
-  //  } while(!std::invoke(tpg._pred));
-
-  //  if(tpg._call != nullptr) {
-  //    std::invoke(tpg._call);
-  //  }
-
-  //  tpg._promise.set_value();
-  //  
-  //  _decrement_topology_and_notify();
-  //  
-  //  return tpg._promise.get_future();
-  //}
-
   // Multi-threaded execution.
   bool run_now {false};
   Topology* tpg;

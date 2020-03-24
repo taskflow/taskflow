@@ -781,6 +781,106 @@ TEST_CASE("ParallelRuns.8threads" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: NestedRuns
+// --------------------------------------------------------
+void nested_runs(unsigned w) {
+
+  int counter {0};
+
+  struct A {
+
+    tf::Executor executor;
+    tf::Taskflow taskflow;
+
+    int& counter;
+
+    A(unsigned w, int& c) : executor{w}, counter{c} { }
+  
+    void run()
+    {
+      taskflow.clear();
+      auto A1 = taskflow.emplace([&]() { counter++; });
+      auto A2 = taskflow.emplace([&]() { counter++; });
+      A1.precede(A2);
+      executor.run_n(taskflow, 10).wait();
+    }
+
+  };
+  
+  struct B {
+
+    tf::Taskflow taskflow;
+    tf::Executor executor;
+
+    int& counter;
+
+    A a_sim;
+
+    B(unsigned w, int& c) : executor{w}, counter{c}, a_sim{w, c} { }
+  
+    void run()
+    {
+      taskflow.clear();
+      auto B1 = taskflow.emplace([&] () { ++counter; });
+      auto B2 = taskflow.emplace([&] () { ++counter; a_sim.run(); });
+      B1.precede(B2);
+      executor.run_n(taskflow, 100).wait();
+    }
+  };
+  
+  struct C {
+
+    tf::Taskflow taskflow;
+    tf::Executor executor;
+
+    int& counter;
+
+    B b_sim;
+
+    C(unsigned w, int& c) : executor{w}, counter{c}, b_sim{w, c} { }
+  
+    void run()
+    {
+      taskflow.clear();
+      auto C1 = taskflow.emplace([&] () { ++counter; });
+      auto C2 = taskflow.emplace([&] () { ++counter; b_sim.run(); });
+      C1.precede(C2);
+      executor.run_n(taskflow, 100).wait();
+    }
+  };
+
+  C c(w, counter);
+  c.run();
+
+  REQUIRE(counter == 220200);
+}
+
+TEST_CASE("NestedRuns.1thread") {
+  nested_runs(1);
+}
+
+TEST_CASE("NestedRuns.2threads") {
+  nested_runs(2);
+}
+
+TEST_CASE("NestedRuns.3threads") {
+  nested_runs(3);
+}
+
+TEST_CASE("NestedRuns.4threads") {
+  nested_runs(4);
+}
+
+TEST_CASE("NestedRuns.8threads") {
+  nested_runs(8);
+}
+
+TEST_CASE("NestedRuns.16threads") {
+  nested_runs(16);
+}
+
+
+// --------------------------------------------------------
 // Testcase: ParallelFor
 // --------------------------------------------------------
 
