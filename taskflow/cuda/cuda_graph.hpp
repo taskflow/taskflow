@@ -27,11 +27,21 @@ class cudaNode {
   //struct Host {
   //  cudaHostNodeParams param;
   //};
-
+  
+  // Noop handle
   struct Noop {
 
     template <typename C>
     Noop(C&&);
+
+    std::function<void(cudaGraph_t&, cudaGraphNode_t&)> work;
+  };
+
+  // Memset handle
+  struct Memset {
+    
+    template <typename C>
+    Memset(C&&);
 
     std::function<void(cudaGraph_t&, cudaGraphNode_t&)> work;
   };
@@ -42,8 +52,6 @@ class cudaNode {
     template <typename C>
     Copy(C&&);
 
-    //cudaMemcpy3DParms param;
-
     std::function<void(cudaGraph_t&, cudaGraphNode_t&)> work;
   };
   
@@ -53,16 +61,15 @@ class cudaNode {
     template <typename C>
     Kernel(C&&);
 
-    //cudaKernelNodeParams param;
-
     std::function<void(cudaGraph_t&, cudaGraphNode_t&)> work;
   };
 
-  using handle_t = nstd::variant<nstd::monostate, Noop, Copy, Kernel>;
+  using handle_t = nstd::variant<nstd::monostate, Noop, Memset, Copy, Kernel>;
   
   // variant index
-  constexpr static auto NOOP = get_index_v<Noop, handle_t>;
-  constexpr static auto COPY = get_index_v<Copy, handle_t>; 
+  constexpr static auto NOOP   = get_index_v<Noop, handle_t>;
+  constexpr static auto MEMSET = get_index_v<Memset, handle_t>;
+  constexpr static auto COPY   = get_index_v<Copy, handle_t>; 
   constexpr static auto KERNEL = get_index_v<Kernel, handle_t>;
 
   public:
@@ -128,6 +135,11 @@ template <typename C>
 cudaNode::Noop::Noop(C&& c) : work {std::forward<C>(c)} {
 }
 
+// Memset handle constructor
+template <typename C>
+cudaNode::Memset::Memset(C&& c) : work {std::forward<C>(c)} {
+}
+
 // Copy handle constructor
 template <typename C>
 cudaNode::Copy::Copy(C&& c) : work {std::forward<C>(c)} {
@@ -146,10 +158,6 @@ cudaNode::cudaNode(ArgsT&&... args) : _handle {std::forward<ArgsT>(args)...} {
 // Procedure: _precede
 inline void cudaNode::_precede(cudaNode* v) {
   _successors.push_back(v);
-  //TF_CHECK_CUDA(
-  //  ::cudaGraphAddDependencies(_graph._handle, &_node, &(v->_node), 1),
-  //  "failed to add a preceding link"
-  //);
 }
 
 // ----------------------------------------------------------------------------
@@ -219,6 +227,12 @@ inline void cudaGraph::_make_native_graph(int d) {
         );
       break;
 
+      case cudaNode::MEMSET:
+        nstd::get<cudaNode::Memset>(node->_handle).work(
+          _native_handle, node->_native_handle
+        );
+      break;
+
       case cudaNode::COPY:
         nstd::get<cudaNode::Copy>(node->_handle).work(
           _native_handle, node->_native_handle
@@ -229,9 +243,6 @@ inline void cudaGraph::_make_native_graph(int d) {
         nstd::get<cudaNode::Kernel>(node->_handle).work(
           _native_handle, node->_native_handle
         );
-      break;
-
-      default:
       break;
     }
   }

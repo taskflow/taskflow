@@ -248,6 +248,55 @@ TEST_CASE("BSet.i32" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: Memset
+// --------------------------------------------------------
+TEST_CASE("Memset") {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+  
+  const int N = 100;
+
+  int* cpu = new int [N];
+  int* gpu = nullptr;
+    
+  REQUIRE(cudaMalloc(&gpu, N*sizeof(int)) == cudaSuccess);
+
+  for(int r=1; r<=100; ++r) {
+
+    int start = ::rand() % N;
+
+    for(int i=0; i<N; ++i) {
+      cpu[i] = 999;
+    }
+    
+    taskflow.emplace([&](tf::cudaFlow& cf){
+      dim3 g = {(unsigned)(N+255)/256, 1, 1};
+      dim3 b = {256, 1, 1};
+      auto kset = cf.kernel(g, b, 0, k_set<int>, gpu, N, 123);
+      auto zero = cf.memset(gpu+start, 0x3f, (N-start)*sizeof(int));
+      auto copy = cf.copy(cpu, gpu, N);
+      kset.precede(zero);
+      zero.precede(copy);
+    });
+    
+    executor.run(taskflow).wait();
+
+    for(int i=0; i<start; ++i) {
+      REQUIRE(cpu[i] == 123);
+    }
+    for(int i=start; i<N; ++i) {
+      REQUIRE(cpu[i] == 0x3f3f3f3f);
+    }
+  }
+  
+
+  delete [] cpu;
+  REQUIRE(cudaFree(gpu) == cudaSuccess);
+}
+
+
+// --------------------------------------------------------
 // Testcase: Barrier
 // --------------------------------------------------------
 template <typename T>

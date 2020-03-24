@@ -7,7 +7,7 @@ namespace tf {
 /**
 @class cudaFlow
 
-@brief Building methods of a cuda task dependency graph.
+@brief Building methods for a cuda task dependency graph.
 */
 class cudaFlow {
 
@@ -78,6 +78,18 @@ class cudaFlow {
     */
     template <typename F, typename... ArgsT>
     cudaTask kernel_on(int d, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
+
+    /**
+    @brief creates a memset node
+
+    @param dst pointer to the destination device memory area
+    @param ch value to set for each byte of specified memory
+    @param count size in bytes to set
+
+    A memset tasks fills the first @c count bytes of device memory area 
+    pointed by @c dst with the byte value @ch.
+    */
+    cudaTask memset(void* dst, int ch, size_t count);
     
     /**
     @brief creates an 1D copy task
@@ -239,6 +251,32 @@ cudaTask cudaFlow::kernel_on(
   
   return cudaTask(node);
 }
+
+// Function: memset
+inline cudaTask cudaFlow::memset(void* dst, int ch, size_t count) {
+
+  auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Memset>{},
+    [=] (cudaGraph_t& graph, cudaGraphNode_t& node) {
+      cudaMemsetParams p;
+      p.dst = dst;
+      p.value = ch;
+      p.pitch = 0;
+      //p.elementSize = (count & 1) == 0 ? ((count & 3) == 0 ? 4 : 2) : 1;
+      //p.width = (count & 1) == 0 ? ((count & 3) == 0 ? count >> 2 : count >> 1) : count;
+      p.elementSize = 1;  // either 1, 2, or 4
+      p.width = count;
+
+      p.height = 1;
+      TF_CHECK_CUDA(
+        cudaGraphAddMemsetNode(&node, graph, nullptr, 0, &p),
+        "failed to create a cudaMemset node"
+      );
+    }
+  );
+  
+  return cudaTask(node);
+}
+
 
 // Function: copy
 template <
