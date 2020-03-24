@@ -140,7 +140,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
         taskflow.emplace([&counter]() {counter += 1;})
       );
     }
-    taskflow.gather(silent_tasks, dst);
+    taskflow.succeed(silent_tasks, dst);
     executor.run(taskflow).get();
     REQUIRE(counter == num_tasks - 1);
     REQUIRE(taskflow.num_tasks() == num_tasks);
@@ -157,7 +157,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     auto dst = taskflow.emplace(
       [&counter, num_tasks]() { REQUIRE(counter == num_tasks);}
     );
-    taskflow.gather(silent_tasks, dst);
+    taskflow.succeed(silent_tasks, dst);
     executor.run(taskflow).get();
     REQUIRE(taskflow.num_tasks() == num_tasks + 2);
   }
@@ -190,7 +190,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     auto dst = taskflow.emplace(
       [&counter, num_tasks]() { REQUIRE(counter == num_tasks);}
     );
-    taskflow.gather(silent_tasks, dst);
+    taskflow.succeed(silent_tasks, dst);
     executor.run(taskflow).get();
     REQUIRE(taskflow.num_tasks() == num_tasks + 2);
   }
@@ -1896,38 +1896,38 @@ void observer(unsigned w) {
   tasks.clear();
 
   // Dynamic tasking  
-  tf::Taskflow taskflowB;
-  std::atomic<int> num_tasks {0};
-  // Static tasking 
-  for(auto i=0; i < 64; i ++) {
-    tasks.emplace_back(taskflowB.emplace([&](tf::Subflow& subflow){
-      num_tasks ++;
-      auto num_spawn = rand() % 10 + 1;
-      // Randomly spawn tasks
-      for(auto i=0; i<num_spawn; i++) {
-        subflow.emplace([&](){ num_tasks ++; });
-      }    
-      if(rand() % 2) {
-        subflow.detach();
-      }
-      else {
-        // In join mode, this task will be visited twice
-        num_tasks ++;
-      }
-    }));
-  }
+  //tf::Taskflow taskflowB;
+  //std::atomic<int> num_tasks {0};
+  //// Static tasking 
+  //for(auto i=0; i < 64; i ++) {
+  //  tasks.emplace_back(taskflowB.emplace([&](tf::Subflow& subflow){
+  //    num_tasks ++;
+  //    auto num_spawn = rand() % 10 + 1;
+  //    // Randomly spawn tasks
+  //    for(auto i=0; i<num_spawn; i++) {
+  //      subflow.emplace([&](){ num_tasks ++; });
+  //    }    
+  //    if(rand() % 2) {
+  //      subflow.detach();
+  //    }
+  //    else {
+  //      // In join mode, this task will be visited twice
+  //      num_tasks ++;
+  //    }
+  //  }));
+  //}
 
-  // Randomly specify dependency
-  for(auto i=0; i < 64; i ++) {
-    for(auto j=i+1; j < 64; j++) {
-      if(rand()%2 == 0) {
-        tasks[i].precede(tasks[j]);
-      }
-    }
-  }
+  //// Randomly specify dependency
+  //for(auto i=0; i < 64; i ++) {
+  //  for(auto j=i+1; j < 64; j++) {
+  //    if(rand()%2 == 0) {
+  //      tasks[i].precede(tasks[j]);
+  //    }
+  //  }
+  //}
 
-  executor.run_n(taskflowB, 16).get();
-  REQUIRE(observer->num_tasks() == num_tasks);
+  //executor.run_n(taskflowB, 16).get();
+  //REQUIRE(observer->num_tasks() == num_tasks);
   
 }
 

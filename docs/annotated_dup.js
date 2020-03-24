@@ -10,7 +10,6 @@ var annotated_dup =
       [ "Subflow", "classtf_1_1Subflow.html", "classtf_1_1Subflow" ],
       [ "Task", "classtf_1_1Task.html", "classtf_1_1Task" ],
       [ "Taskflow", "classtf_1_1Taskflow.html", "classtf_1_1Taskflow" ],
-      [ "TaskQueue", "classtf_1_1TaskQueue.html", "classtf_1_1TaskQueue" ],
       [ "TaskView", "classtf_1_1TaskView.html", "classtf_1_1TaskView" ]
     ] ],
     [ "is_condition_task", "structis__condition__task.html", null ],

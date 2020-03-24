@@ -5,14 +5,6 @@
 namespace tf {
 
 /**
-@struct is_cudaflow_task
-
-@brief determines if a callable is a cudaflow task
-*/
-template <typename C>
-constexpr bool is_cudaflow_task_v = is_invocable_r_v<void, C, cudaFlow&>;
-
-/**
 @class cudaTask
 
 @brief handle to a node in a cudaGraph

@@ -2,8 +2,6 @@ var searchData=
 [
   ['task',['Task',['../classtf_1_1Task.html',1,'tf']]],
   ['taskflow',['Taskflow',['../classtf_1_1Taskflow.html',1,'tf']]],
-  ['taskqueue',['TaskQueue',['../classtf_1_1TaskQueue.html',1,'tf']]],
-  ['taskqueue_3c_20node_20_2a_3e',['TaskQueue&lt; Node *&gt;',['../classtf_1_1TaskQueue.html',1,'tf']]],
   ['taskview',['TaskView',['../classtf_1_1TaskView.html',1,'tf']]],
   ['tera',['tera',['http://en.cppreference.com/w/cpp/numeric/ratio/ratio.html',1,'std']]],
   ['terminate_5fhandler',['terminate_handler',['http://en.cppreference.com/w/cpp/error/terminate_handler.html',1,'std']]],

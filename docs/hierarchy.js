@@ -15,7 +15,5 @@ var hierarchy =
     [ "is_dynamic_task", "structis__dynamic__task.html", null ],
     [ "is_static_task", "structis__static__task.html", null ],
     [ "tf::Task", "classtf_1_1Task.html", null ],
-    [ "tf::TaskQueue< T >", "classtf_1_1TaskQueue.html", null ],
-    [ "tf::TaskQueue< Node *>", "classtf_1_1TaskQueue.html", null ],
     [ "tf::TaskView", "classtf_1_1TaskView.html", null ]
 ];

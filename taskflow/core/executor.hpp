@@ -79,7 +79,7 @@ class Executor {
     
     @param taskflow a tf::Taskflow object
 
-    @return a std::future to access the execution state of the taskflow
+    @return a std::future to access the execution status of the taskflow
     */
     std::future<void> run(Taskflow& taskflow);
 
@@ -89,7 +89,7 @@ class Executor {
     @param taskflow a tf::Taskflow object 
     @param callable a callable object to be invoked after this run
 
-    @return a std::future to access the execution state of the taskflow
+    @return a std::future to access the execution status of the taskflow
     */
     template<typename C>
     std::future<void> run(Taskflow& taskflow, C&& callable);
@@ -100,7 +100,7 @@ class Executor {
     @param taskflow a tf::Taskflow object
     @param N number of runs
 
-    @return a std::future to access the execution state of the taskflow
+    @return a std::future to access the execution status of the taskflow
     */
     std::future<void> run_n(Taskflow& taskflow, size_t N);
 
@@ -111,7 +111,7 @@ class Executor {
     @param N number of runs
     @param callable a callable object to be invoked after this run
 
-    @return a std::future to access the execution state of the taskflow
+    @return a std::future to access the execution status of the taskflow
     */
     template<typename C>
     std::future<void> run_n(Taskflow& taskflow, size_t N, C&& callable);
@@ -123,7 +123,7 @@ class Executor {
     @param taskflow a tf::Taskflow 
     @param pred a boolean predicate to return true for stop
 
-    @return a std::future to access the execution state of the taskflow
+    @return a std::future to access the execution status of the taskflow
     */
     template<typename P>
     std::future<void> run_until(Taskflow& taskflow, P&& pred);
@@ -136,7 +136,7 @@ class Executor {
     @param pred a boolean predicate to return true for stop
     @param callable a callable object to be invoked after this run
 
-    @return a std::future to access the execution state of the taskflow
+    @return a std::future to access the execution status of the taskflow
     */
     template<typename P, typename C>
     std::future<void> run_until(Taskflow& taskflow, P&& pred, C&& callable);
@@ -162,8 +162,8 @@ class Executor {
     /**
     @brief queries the number of worker domains 
 
-    Each domain manages a subset of worker threads to execute tasks in its domain,
-    for example, HOST and CUDA.
+    Each domain manages a subset of worker threads to execute domain-specific tasks,
+    for example, HOST tasks and CUDA tasks.
     */
     size_t num_domains() const;
 
@@ -712,17 +712,29 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       auto& subgraph = nstd::get<Node::DynamicWork>(node->_handle).subgraph;
 
       // Clear the subgraph before the task execution
-      if(!node->_has_state(Node::SPAWNED)) {
-        subgraph.clear();
-      }
-     
-      Subflow fb(subgraph);
+      bool spawned = node->_has_state(Node::SPAWNED);
 
-      _invoke_dynamic_work(worker, node, fb);
+      //if(!node->_has_state(Node::SPAWNED)) {
+      //if(!spawned) {
+      //  subgraph.clear();  // first time
+      //}
+     
+      //Subflow fb(subgraph);
+      //
+      //if(!spawned) { 
+      //  _invoke_dynamic_work(worker, node, fb);
+      //}
       
       // Need to create a subflow if first time & subgraph is not empty 
-      if(!node->_has_state(Node::SPAWNED)) {
+      if(!spawned) {
+
+        subgraph.clear();
+        Subflow fb(subgraph); 
+
+        _invoke_dynamic_work(worker, node, fb);
+
         node->_set_state(Node::SPAWNED);
+
         if(!subgraph.empty()) {
           // For storing the source nodes
           PassiveVector<Node*> src; 

@@ -12,6 +12,8 @@ namespace tf {
 @struct is_static_task
 
 @brief determines if a callable is a static task
+
+A static task is a callable object constructible from std::function<void()>.
 */
 template <typename C>
 constexpr bool is_static_task_v = is_invocable_r_v<void, C> &&
@@ -21,6 +23,8 @@ constexpr bool is_static_task_v = is_invocable_r_v<void, C> &&
 @struct is_dynamic_task
 
 @brief determines if a callable is a dynamic task
+
+A dynamic task is a callable object constructible from std::function<void(Subflow&)>.
 */
 template <typename C>
 constexpr bool is_dynamic_task_v = is_invocable_r_v<void, C, Subflow&>;
@@ -29,9 +33,23 @@ constexpr bool is_dynamic_task_v = is_invocable_r_v<void, C, Subflow&>;
 @struct is_condition_task
 
 @brief determines if a callable is a condition task
+
+A condition task is a callable object constructible from std::function<int()>.
 */
 template <typename C>
 constexpr bool is_condition_task_v = is_invocable_r_v<int, C>;
+
+#ifdef TF_ENABLE_CUDA
+/**
+@struct is_cudaflow_task
+
+@brief determines if a callable is a cudaflow task
+
+A cudaFlow task is a callable object constructible from std::function<void(cudaFlow&)>.
+*/
+template <typename C>
+constexpr bool is_cudaflow_task_v = is_invocable_r_v<void, C, cudaFlow&>;
+#endif
 
 // ----------------------------------------------------------------------------
 // Task
@@ -125,7 +143,7 @@ class Task {
 
     @tparam C callable object type
 
-    @param callable a callable object acceptable to std::function<void()>
+    @param callable a callable object constructible from std::function<void()>
 
     @return @c *this
     */
@@ -137,7 +155,7 @@ class Task {
 
     @tparam C callable object type
 
-    @param callable a callable object acceptable to std::function<void(Subflow&)>
+    @param callable a callable object constructible from std::function<void(Subflow&)>
 
     @return @c *this
     */
@@ -149,12 +167,26 @@ class Task {
 
     @tparam C callable object type
 
-    @param callable a callable object acceptable to std::function<int()>
+    @param callable a callable object constructible from std::function<int()>
 
     @return @c *this
     */
     template <typename C>
     std::enable_if_t<is_condition_task_v<C>, Task>& work(C&& callable);
+
+#ifdef TF_ENABLE_CUDA    
+    /**
+    @brief assigns a cudaFlow task
+
+    @tparam C callable object type
+
+    @param callable a callable object constructible from std::function<void(cudaFlow&)>
+
+    @return @c *this
+    */
+    template <typename C>
+    std::enable_if_t<is_cudaflow_task_v<C>, Task>& work(C&& callable);
+#endif
 
     /**
     @brief creates a module task from a taskflow

@@ -1,8 +1,11 @@
 var classtf_1_1Executor =
 [
-    [ "Executor", "classtf_1_1Executor.html#a10e0189c6403293c276b72bb1158557e", null ],
+    [ "Executor", "classtf_1_1Executor.html#a2f6749fa9e4fde9a609fb66efacdd3de", null ],
+    [ "Executor", "classtf_1_1Executor.html#ac4211f9718d30c2a0589840103fee46f", null ],
     [ "~Executor", "classtf_1_1Executor.html#a5a511b0cc23b264826373d3dabcef670", null ],
     [ "make_observer", "classtf_1_1Executor.html#a7f43cde72d3e0a17e2d006cbe7a41ff3", null ],
+    [ "num_domains", "classtf_1_1Executor.html#a8acfc81ae6a64989761ce229262c9a21", null ],
+    [ "num_topologies", "classtf_1_1Executor.html#a6d6c28ed58211e4c27a99571e5bf0b6c", null ],
     [ "num_workers", "classtf_1_1Executor.html#a79223c7f32c9d715e725b8d775de2d29", null ],
     [ "remove_observer", "classtf_1_1Executor.html#a3ed11b270f0c7fe1c55a81c60d20411f", null ],
     [ "run", "classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa", null ],

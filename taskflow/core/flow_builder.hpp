@@ -28,7 +28,7 @@ class FlowBuilder {
     
     @tparam C callable type
     
-    @param callable a callable object acceptable to std::function<void()>
+    @param callable a callable object constructible from std::function<void()>
 
     @return Task handle
     */
@@ -40,7 +40,7 @@ class FlowBuilder {
     
     @tparam C callable type
     
-    @param callable a callable object acceptable to std::function<void(Subflow&)>
+    @param callable a callable object constructible from std::function<void(Subflow&)>
 
     @return Task handle
     */
@@ -52,7 +52,7 @@ class FlowBuilder {
     
     @tparam C callable type
     
-    @param callable a callable object acceptable to std::function<int()>
+    @param callable a callable object constructible from std::function<int()>
 
     @return Task handle
     */
@@ -65,7 +65,7 @@ class FlowBuilder {
     
     @tparam C callable type
     
-    @param callable a callable object acceptable to std::function<void(cudaFlow&)>
+    @param callable a callable object constructible from std::function<void(cudaFlow&)>
 
     @return Task handle
     */
@@ -74,11 +74,11 @@ class FlowBuilder {
 #endif 
 
     /**
-    @brief creates multiple tasks from a list of callable objects at one time
+    @brief creates multiple tasks from a list of callable objects
     
     @tparam C... callable types
 
-    @param callables one or multiple callable objects acceptable to std::function
+    @param callables one or multiple callable objects constructible from each task category
 
     @return a Task handle
     */
@@ -325,7 +325,7 @@ class FlowBuilder {
     @param others a task set to precede A
     @param A task A
     */
-    void gather(std::vector<Task>& others, Task A);
+    void succeed(std::vector<Task>& others, Task A);
 
     /**
     @brief adds dependency links from many tasks to one task A
@@ -333,7 +333,7 @@ class FlowBuilder {
     @param others a task set to precede A
     @param A task A
     */
-    void gather(std::initializer_list<Task> others, Task A);
+    void succeed(std::initializer_list<Task> others, Task A);
     
   private:
 
@@ -440,13 +440,16 @@ std::enable_if_t<is_static_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
 // emplaces a dynamic task
 template <typename C>
 std::enable_if_t<is_dynamic_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
-  auto n = _graph.emplace_back(nstd::in_place_type_t<Node::DynamicWork>{}, 
-  [c=std::forward<C>(c)] (Subflow& fb) mutable {
-    // first time execution
-    if(fb._graph.empty()) {
-      c(fb);
-    }
-  });
+  auto n = _graph.emplace_back(
+    nstd::in_place_type_t<Node::DynamicWork>{}, std::forward<C>(c)
+  );
+  //auto n = _graph.emplace_back(nstd::in_place_type_t<Node::DynamicWork>{}, 
+  //[c=std::forward<C>(c)] (Subflow& fb) mutable {
+  //  // first time execution
+  //  if(fb._graph.empty()) {
+  //    c(fb);
+  //  }
+  //});
   return Task(n);
 }
 
@@ -533,15 +536,15 @@ inline void FlowBuilder::broadcast(Task from, std::initializer_list<Task> tos) {
   }
 }
 
-// Function: gather
-inline void FlowBuilder::gather(std::vector<Task>& froms, Task to) {
+// Function: succeed
+inline void FlowBuilder::succeed(std::vector<Task>& froms, Task to) {
   for(auto from : froms) {
     to.succeed(from);
   }
 }
 
-// Function: gather
-inline void FlowBuilder::gather(std::initializer_list<Task> froms, Task to) {
+// Function: succeed
+inline void FlowBuilder::succeed(std::initializer_list<Task> froms, Task to) {
   for(auto from : froms) {
     to.succeed(from);
   }
@@ -975,13 +978,14 @@ std::enable_if_t<is_static_task_v<C>, Task>& Task::work(C&& c) {
 // assigns a dynamic work
 template <typename C>
 std::enable_if_t<is_dynamic_task_v<C>, Task>& Task::work(C&& c) {
-  _node->_handle.emplace<Node::DynamicWork>( 
-  [c=std::forward<C>(c)] (Subflow& fb) mutable {
-    // first time execution
-    if(fb._graph.empty()) {
-      c(fb);
-    }
-  });
+  _node->_handle.emplace<Node::DynamicWork>(std::forward<C>(c));
+  //_node->_handle.emplace<Node::DynamicWork>( 
+  //[c=std::forward<C>(c)] (Subflow& fb) mutable {
+  //  // first time execution
+  //  if(fb._graph.empty()) {
+  //    c(fb);
+  //  }
+  //});
   return *this;
 }
 
@@ -993,35 +997,15 @@ std::enable_if_t<is_condition_task_v<C>, Task>& Task::work(C&& c) {
   return *this;
 }
 
-
+#ifdef TF_ENABLE_CUDA
 // Function: work
-//template <typename C>
-//Task& Task::work(C&& c) {
-//
-//  // static tasking
-//  if constexpr(is_static_task_v<C>) {
-//    _node->_handle.emplace<Node::StaticWork>(std::forward<C>(c));
-//  }
-//  // condition tasking
-//  else if constexpr(is_condition_task_v<C>) {
-//    _node->_handle.emplace<Node::ConditionWork>(std::forward<C>(c));
-//  }
-//  // dyanmic tasking
-//  else if constexpr(is_dynamic_task_v<C>) {
-//    _node->_handle.emplace<Node::DynamicWork>( 
-//    [c=std::forward<C>(c)] (Subflow& fb) mutable {
-//      // first time execution
-//      if(fb._graph.empty()) {
-//        c(fb);
-//      }
-//    });
-//  }
-//  else {
-//    static_assert(dependent_false_v<C>, "invalid task work type");
-//  }
-//
-//  return *this;
-//}
+// assigns a cudaFlow work
+template <typename C>
+std::enable_if_t<is_cudaflow_task_v<C>, Task>& Task::work(C&& c) {
+  _node->_handle.emplace<Node::cudaFlowWork>(std::forward<C>(c));
+  return *this;
+}
+#endif
 
 // ----------------------------------------------------------------------------
 // Legacy code

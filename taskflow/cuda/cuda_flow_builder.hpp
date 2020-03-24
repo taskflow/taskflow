@@ -28,11 +28,6 @@ class cudaFlow {
     bool empty() const;
     
     /**
-    @brief creates a placeholder task
-    */
-    cudaTask placeholder();
-
-    /**
     @brief creates a no-operation task
 
     An empty node performs no operation during execution, 
@@ -83,13 +78,14 @@ class cudaFlow {
     @brief creates a memset node
 
     @param dst pointer to the destination device memory area
-    @param ch value to set for each byte of specified memory
+    @param v value to set for each byte of specified memory
     @param count size in bytes to set
 
     A memset tasks fills the first @c count bytes of device memory area 
-    pointed by @c dst with the byte value @ch.
+    pointed by @c dst with the byte value @c v.
+
     */
-    cudaTask memset(void* dst, int ch, size_t count);
+    cudaTask memset(void* dst, int v, size_t count);
     
     /**
     @brief creates an 1D copy task
