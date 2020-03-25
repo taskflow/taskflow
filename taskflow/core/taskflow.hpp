@@ -12,7 +12,7 @@ namespace tf {
 /**
 @class Taskflow 
 
-@brief the class to create a task dependency graph
+@brief main entry to create a task dependency graph
 
 */
 class Taskflow : public FlowBuilder {

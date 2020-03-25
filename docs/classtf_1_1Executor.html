@@ -107,7 +107,7 @@ $(document).ready(function(){initNavTree('classtf_1_1Executor.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p>The executor class to run a taskflow graph.  
+<p>execution interface for running a taskflow graph  
  <a href="classtf_1_1Executor.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="executor_8hpp_source.html">executor.hpp</a>&gt;</code></p>
@@ -175,7 +175,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:a3ed11b270f0c7fe1c55a81c60d20411f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The executor class to run a taskflow graph. </p>
+<div class="textblock"><p>execution interface for running a taskflow graph </p>
 <p>An executor object manages a set of worker threads and implements an efficient work-stealing scheduling algorithm to run a taskflow. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a7f43cde72d3e0a17e2d006cbe7a41ff3"></a>
@@ -298,7 +298,7 @@ template&lt;typename Observer , typename... Args&gt; </div>
 <p>runs the taskflow once </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">taskflow</td><td>a <a class="el" href="classtf_1_1Taskflow.html" title="the class to create a task dependency graph ">tf::Taskflow</a> object</td></tr>
+    <tr><td class="paramname">taskflow</td><td>a <a class="el" href="classtf_1_1Taskflow.html" title="main entry to create a task dependency graph ">tf::Taskflow</a> object</td></tr>
   </table>
   </dd>
 </dl>
@@ -337,7 +337,7 @@ template&lt;typename C &gt; </div>
 <p>runs the taskflow once and invoke a callback upon completion </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">taskflow</td><td>a <a class="el" href="classtf_1_1Taskflow.html" title="the class to create a task dependency graph ">tf::Taskflow</a> object </td></tr>
+    <tr><td class="paramname">taskflow</td><td>a <a class="el" href="classtf_1_1Taskflow.html" title="main entry to create a task dependency graph ">tf::Taskflow</a> object </td></tr>
     <tr><td class="paramname">callable</td><td>a callable object to be invoked after this run</td></tr>
   </table>
   </dd>
@@ -383,7 +383,7 @@ template&lt;typename C &gt; </div>
 <p>runs the taskflow for N times </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">taskflow</td><td>a <a class="el" href="classtf_1_1Taskflow.html" title="the class to create a task dependency graph ">tf::Taskflow</a> object </td></tr>
+    <tr><td class="paramname">taskflow</td><td>a <a class="el" href="classtf_1_1Taskflow.html" title="main entry to create a task dependency graph ">tf::Taskflow</a> object </td></tr>
     <tr><td class="paramname">N</td><td>number of runs</td></tr>
   </table>
   </dd>
@@ -429,7 +429,7 @@ template&lt;typename C &gt; </div>
 <p>runs the taskflow for N times and then invokes a callback </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">taskflow</td><td>a <a class="el" href="classtf_1_1Taskflow.html" title="the class to create a task dependency graph ">tf::Taskflow</a> </td></tr>
+    <tr><td class="paramname">taskflow</td><td>a <a class="el" href="classtf_1_1Taskflow.html" title="main entry to create a task dependency graph ">tf::Taskflow</a> </td></tr>
     <tr><td class="paramname">N</td><td>number of runs </td></tr>
     <tr><td class="paramname">callable</td><td>a callable object to be invoked after this run</td></tr>
   </table>
@@ -470,7 +470,7 @@ template&lt;typename P &gt; </div>
 <p>runs the taskflow multiple times until the predicate becomes true and then invokes a callback </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">taskflow</td><td>a <a class="el" href="classtf_1_1Taskflow.html" title="the class to create a task dependency graph ">tf::Taskflow</a> </td></tr>
+    <tr><td class="paramname">taskflow</td><td>a <a class="el" href="classtf_1_1Taskflow.html" title="main entry to create a task dependency graph ">tf::Taskflow</a> </td></tr>
     <tr><td class="paramname">pred</td><td>a boolean predicate to return true for stop</td></tr>
   </table>
   </dd>
@@ -516,7 +516,7 @@ template&lt;typename P , typename C &gt; </div>
 <p>runs the taskflow multiple times until the predicate becomes true and then invokes the callback </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">taskflow</td><td>a <a class="el" href="classtf_1_1Taskflow.html" title="the class to create a task dependency graph ">tf::Taskflow</a> </td></tr>
+    <tr><td class="paramname">taskflow</td><td>a <a class="el" href="classtf_1_1Taskflow.html" title="main entry to create a task dependency graph ">tf::Taskflow</a> </td></tr>
     <tr><td class="paramname">pred</td><td>a boolean predicate to return true for stop </td></tr>
     <tr><td class="paramname">callable</td><td>a callable object to be invoked after this run</td></tr>
   </table>

@@ -23,7 +23,7 @@ namespace tf {
 
 /** @class Executor
 
-@brief The executor class to run a taskflow graph.
+@brief execution interface for running a taskflow graph
 
 An executor object manages a set of worker threads and implements 
 an efficient work-stealing scheduling algorithm to run a taskflow.

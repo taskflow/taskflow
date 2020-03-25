@@ -7,7 +7,7 @@ namespace tf {
 /** 
 @class FlowBuilder
 
-@brief Building methods of a task dependency graph.
+@brief building methods of a task dependency graph
 
 */
 class FlowBuilder {
@@ -347,78 +347,6 @@ class FlowBuilder {
 inline FlowBuilder::FlowBuilder(Graph& graph) :
   _graph {graph} {
 }
-
-// ----------------------------------------------------------------------------
-
-/** 
-@class Subflow
-
-@brief The building blocks of dynamic tasking.
-*/ 
-class Subflow : public FlowBuilder {
-
-  public:
-    
-    /**
-    @brief constructs a subflow builder object
-    */
-    template <typename... Args>
-    Subflow(Args&&... args);
-    
-    /**
-    @brief enables the subflow to join its parent task
-    */
-    void join();
-
-    /**
-    @brief enables the subflow to detach from its parent task
-    */
-    void detach();
-    
-    /**
-    @brief queries if the subflow will be detached from its parent task
-    */
-    bool detached() const;
-
-    /**
-    @brief queries if the subflow will join its parent task
-    */
-    bool joined() const;
-
-  private:
-
-    bool _detached {false};
-};
-
-// Constructor
-template <typename... Args>
-Subflow::Subflow(Args&&... args) :
-  FlowBuilder {std::forward<Args>(args)...} {
-}
-
-// Procedure: join
-inline void Subflow::join() {
-  _detached = false;
-}
-
-// Procedure: detach
-inline void Subflow::detach() {
-  _detached = true;
-}
-
-// Function: detached
-inline bool Subflow::detached() const {
-  return _detached;
-}
-
-// Function: joined
-inline bool Subflow::joined() const {
-  return !_detached;
-}
-
-// ----------------------------------------------------------------------------
-// Member definition of FlowBuilder
-// ----------------------------------------------------------------------------
 
 // Function: emplace
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
@@ -921,6 +849,74 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
   return std::make_pair(source, target); 
 }
 
+// ----------------------------------------------------------------------------
+
+/** 
+@class Subflow
+
+@brief building methods of a subflow graph in dynamic tasking
+
+*/ 
+class Subflow : public FlowBuilder {
+
+  public:
+    
+    /**
+    @brief constructs a subflow builder object
+    */
+    template <typename... Args>
+    Subflow(Args&&... args);
+    
+    /**
+    @brief enables the subflow to join its parent task
+    */
+    void join();
+
+    /**
+    @brief enables the subflow to detach from its parent task
+    */
+    void detach();
+    
+    /**
+    @brief queries if the subflow will be detached from its parent task
+    */
+    bool detached() const;
+
+    /**
+    @brief queries if the subflow will join its parent task
+    */
+    bool joined() const;
+
+  private:
+
+    bool _detached {false};
+};
+
+// Constructor
+template <typename... Args>
+Subflow::Subflow(Args&&... args) :
+  FlowBuilder {std::forward<Args>(args)...} {
+}
+
+// Procedure: join
+inline void Subflow::join() {
+  _detached = false;
+}
+
+// Procedure: detach
+inline void Subflow::detach() {
+  _detached = true;
+}
+
+// Function: detached
+inline bool Subflow::detached() const {
+  return _detached;
+}
+
+// Function: joined
+inline bool Subflow::joined() const {
+  return !_detached;
+}
 
 
 // ----------------------------------------------------------------------------

@@ -60,10 +60,9 @@ constexpr bool is_cudaflow_task_v = is_invocable_r_v<void, C, cudaFlow&>;
 
 @brief handle to a node in a task dependency graph
 
-A Task is a wrapper of a node in a dependency graph. 
+A Task is handle object of a node in a dependency graph. 
 It provides a set of methods for users to access and modify the attributes of 
-the task node,
-preventing direct access to the internal data storage.
+the associated graph node.
 
 */
 class Task {
@@ -471,8 +470,7 @@ std::enable_if_t<is_cudaflow_task_v<C>, Task>& Task::work(C&& c) {
 /**
 @class TaskView
 
-@brief an immutable accessor class to a task node, 
-       mainly used in the tf::ExecutorObserver interface.
+@brief immutable accessor class to a task node used by tf::ExecutorObserver
 */
 class TaskView {
   

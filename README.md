@@ -677,24 +677,11 @@ The table below summarizes a list of commonly used methods.
 
 | Method    | Argument       | Return        | Description              |
 | --------- | -------------- | ------------- | ------------------------ |
-| Executor  | N              | none          | constructs an executor with N worker threads |
 | run       | taskflow       | future | runs the taskflow once    |
 | run_n     | taskflow, N    | future | runs the taskflow N times |
 | run_until | taskflow, binary predicate | future | keeps running the taskflow until the predicate becomes true |
 | wait_for_all | none | none | blocks until all running tasks finish |
 | make_observer | arguments to forward to user-derived constructor | pointer to the observer | creates an observer to monitor the thread activities of the executor |
-
-### *Executor*
-
-The constructor of `tf::Executor` takes an unsigned *non-zero* integer to 
-initialize the executor with `N` worker threads.
-
-```cpp
-tf::Executor executor(8);  // create an executor of 8 worker threads
-```
-
-The default value uses `std::thread::hardware_concurrency` 
-to decide the number of worker threads.
 
 ### *run/run_n/run_until*
 
