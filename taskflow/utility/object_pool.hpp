@@ -64,33 +64,11 @@ namespace tf {
 template <typename T, size_t S = 65536>
 class ObjectPool { 
   
-  class LocalHeap;
-
-  union Block;
-
-  struct Blocklist {
-    Blocklist* prev;
-    Blocklist* next;
-  };
-
-  union Block {
-    char buffer[S];
-    struct {
-      LocalHeap* heap;
-      Blocklist list_node;
-      size_t i;
-      size_t u;
-      T* top;
-      // long double padding;
-      char data;
-    };
-  };
-  
   // the data column must be sufficient to hold the pointer in freelist  
-  //constexpr static size_t O = sizeof(long double)/sizeof(Block*);
   constexpr static size_t X = std::max(sizeof(T*), sizeof(T));
   //constexpr static size_t X = sizeof(long double) + std::max(sizeof(T*), sizeof(T));
-  constexpr static size_t M = (S - offsetof(Block, data)) / X;
+  //constexpr static size_t M = (S - offsetof(Block, data)) / X;
+  constexpr static size_t M = S / X;
   constexpr static size_t F = 4;   
   constexpr static size_t B = F + 1;
   constexpr static size_t W = (M + F - 1) / F;
@@ -101,12 +79,13 @@ class ObjectPool {
   );
 
   static_assert(
-    sizeof(Block) == S, "block size S is too small"
+    M >= 128, "block size S must be larger enough to pool at least 128 objects"
   );
-
-  static_assert(
-    M >= 16, "block size S must be larger enough to pool at least 16 objects"
-  );
+  
+  struct Blocklist {
+    Blocklist* prev;
+    Blocklist* next;
+  };
 
   class GlobalHeap {
     friend class ObjectPool;
@@ -120,6 +99,16 @@ class ObjectPool {
     Blocklist lists[B];
     size_t u {0};
     size_t a {0};
+  };
+
+  struct Block {
+    LocalHeap* heap;
+    Blocklist list_node;
+    size_t i;
+    size_t u;
+    T* top;
+    // long double padding;
+    char data[S];
   };
 
   public:
@@ -567,12 +556,7 @@ void ObjectPool<T, S>::_for_each_block_safe(Blocklist* head, C&& c) {
 template <typename T, size_t S>
 T* ObjectPool<T, S>::_allocate(Block* s) {
   if(s->top == nullptr) {
-    //auto beg = reinterpret_cast<Block**>(&s->data + s->i++ * X);
-    //*beg = s;
-    //printf("beg=%p data=%p s=%p\n", *beg, beg+1, s);
-    //return reinterpret_cast<T*>(beg + O);  // (beg + 1) 
-    
-    return reinterpret_cast<T*>(&s->data + s->i++ * X);
+    return reinterpret_cast<T*>(s->data + s->i++ * X);
   }
   else {
     T* retval = s->top;
