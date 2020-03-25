@@ -10,9 +10,9 @@ using CPU-GPU collaborative tasking.
 @section C6_Create_a_cudaFlow Create a cudaFlow
 
 Cpp-Taskflow enables concurrent CPU-GPU tasking by leveraging 
-<a href="https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__GRAPH.html">Nvidia CUDA Graph</a>.
+<a href="https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__GRAPH.html">CUDA Graph</a>.
 The tasking interface is referred to as @em %cudaFlow.
-A tf::cudaFlow is a graph object created at runtime similar to dynamic tasking. 
+A %cudaFlow is a graph object of type tf::cudaFlow created at runtime similar to dynamic tasking. 
 It manages a task node in a taskflow and associates it with a CUDA Graph. 
 To create a %cudaFlow, emplace a callable with an argument of type tf::cudaFlow.
 The following example implements the canonical saxpy (A·X Plus Y) task graph.
@@ -79,8 +79,8 @@ Debrief:
 @li Lines 3-9 define a saxpy kernel using CUDA
 @li Lines 19-20 declare two host vectors, @c hx and @c hy
 @li Lines 22-23 declare two device vector pointers, @c dx and @c dy
-@li Lines 25-31 declare two tasks to allocate memory for @c dx and @c dy on device, each of @c N*sizeof(float) bytes
-@li Lines 33-45 create a tf::cudaFlow to capture kernel work in a graph (two host-to-device data transfer tasks, one saxpy kernel task, and two device-to-host data transfer tasks)
+@li Lines 25-31 declare two tasks to allocate memory for @c dx and @c dy on device, each of <tt>N*sizeof(float)</tt> bytes
+@li Lines 33-45 create a %cudaFlow to capture kernel work in a graph (two host-to-device data transfer tasks, one saxpy kernel task, and two device-to-host data transfer tasks)
 @li Lines 46-48 define the task dependency between host tasks and the %cudaFlow tasks and execute the taskflow
 
 Cpp-Taskflow does not expend unnecessary efforts on kernel programming but focus on 
@@ -90,6 +90,168 @@ that is commensurate with their domain knowledge.
 Users focus on developing high-performance kernels using 
 a native CUDA toolkit, while leaving difficult task parallelism to Cpp-Taskflow.
 
+@section C6_Compile_a_cudaFlow_program Compile a cudaFlow Program
+
+Use @nvcc (at least v10) to compile a %cudaFlow program:
+
+@code{.sh}
+~$ nvcc my_cudaflow.cu -I path/to/include/taskflow -O2 -o my_cudaflow
+~$ ./my_cudaflow
+@endcode
+
+Our source autonomously enables %cudaFlow when detecting a CUDA compiler.
+
+@section C6_configure_the_number_of_gpu_workers Configure the Number of GPU workers
+
+By default, the executor spawns one worker per GPU. 
+We dedicate a worker set to each heterogeneous domain, for example, 
+host domain and CUDA domain.
+If your systems has 4 CPU cores and 2 GPUs, the default number of workers
+spawned by the executor is 4+2, 
+where 4 workers run CPU tasks and 2 workers run GPU tasks (%cudaFlow).
+You can construct an executor with different numbers of GPU workers.
+
+@code{.cpp}
+tf::Executor executor(17, 8);  // 17 CPU workers and 8 GPU workers
+@endcode
+
+The above executor spawns 17 and 8 workers for running CPU and GPU tasks, respectively.
+These workers coordinate with each other to balance the load in a work-stealing loop
+highly optimized for performance.
+
+@section C6_run_a_cudaflow_on_multiple_gpus Run a cudaFlow on Multiple GPUs
+
+You can run a %cudaFlow on multiple GPUs by explicitly associating a %cudaFlow or a kernel task
+with a CUDA device.
+A CUDA device is an integer number in the range of <tt>[0, N)</tt> 
+representing the identifier of a GPU, where @c N is the number of GPUs in a system.
+The code below creates a %cudaFlow that runs on the GPU device 2 through @c my_stream.
+
+@code{.cpp}
+taskflow.emplace([](tf::cudaFlow& cf) {
+  cf.device(2);
+  cf.stream(my_stream);     // by default, every cudaFlow runs on default stream 0
+  // adding more cudaTasks below (all tasks are placed on GPU 2 unless specified explicitly)
+});
+@endcode
+
+You can place a kernel on a device explicitly through the method tf::cudaFlow::kernel_on
+that takes the device identifier in the first argument.
+
+@code{.cpp}
+ 1: #include <taskflow/taskflow.hpp>
+ 2: 
+ 3: // saxpy (single-precision A·X Plus Y) kernel
+ 4: __global__ void saxpy(int n, int a, int *x, int *y, int *z) {
+ 5:  int i = blockIdx.x*blockDim.x + threadIdx.x;
+ 6:  if (i < n) {
+ 7:    z[i] = a*x[i] + y[i];
+ 8:   }
+ 9: }
+10:
+11: int main() {
+12:
+13:   const unsigned N = 1<<20;
+14:   
+15:   int* dx {nullptr};
+16:   int* dy {nullptr};
+17:   int* z1 {nullptr};
+18:   int* z2 {nullptr};
+19:  
+20:   cudaMallocManaged(&dx, N*sizeof(int));  // create a unified memory block for x
+21:   cudaMallocManaged(&dy, N*sizeof(int));  // create a unified memory block for y
+22:   cudaMallocManaged(&z1, N*sizeof(int));  // result of saxpy task 1
+23:   cudaMallocManaged(&z2, N*sizeof(int));  // result of saxpy task 2
+24:  
+25:   for(unsigned i=0; i<N; ++i) {
+26:     dx[i] = 1;
+27:     dy[i] = 2;
+28:   }
+29:
+30:   tf::Taskflow taskflow;
+31:   tf::Executor executor;
+32:  
+33:   taskflow.emplace([&](tf::cudaFlow& cf){
+34:     // launch the cudaFlow on GPU 0
+35:     cf.device(0);
+36:
+37:     // launch the first saxpy kernel on GPU 1
+38:     cf.kernel_on(1, (N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z1);
+39:
+40:     // launch the second saxpy kernel on GPU 3
+41:     cf.kernel_on(3, (N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z2);
+42:   });
+43:
+44:   executor.run(taskflow).wait();
+45:
+46:   cudaFree(dx);
+47:   cudaFree(dy);
+48:  
+49:   // verify the solution; max_error should be zero
+50:   int max_error = 0;
+51:   for (size_t i = 0; i < N; i++) {
+52:     max_error = std::max(max_error, abs(z1[i]-4));
+53:     max_error = std::max(max_error, abs(z2[i]-4));
+54:   }
+55:   std::cout << "saxpy finished with max error: " << max_error << '\n';
+56: }
+@endcode
+
+Debrief:
+
+@li Lines 3-9 define a CUDA saxpy kernel that stores the result to z  
+@li Lines 15-23 declare four unified memory blocks accessible from any processor
+@li Lines 25-28 initialize @c dx and @c dy blocks by CPU
+@li Lines 33-42 create a %cudaFlow task
+@li Lines 34-35 associate the %cudaFlow on GPU 0
+@li Lines 37-38 create a kernel task to launch the first saxpy on GPU 1 and store the result in @c z1
+@li Lines 40-41 create a kernel task to launch the second saxpy on GPU 3 and store the result in @c z2
+@li Lines 44-55 run the taskflow and verify the result (@c max_error should be zero)
+
+Running the program gives the following 
+@nvidia_smi snapshot in a system of 4 GPUs:
+
+@code{.sh}
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 430.50       Driver Version: 430.50       CUDA Version: 10.1     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  GeForce RTX 208...  Off  | 00000000:18:00.0 Off |                  N/A |
+| 32%   35C    P2    68W / 250W |    163MiB / 11019MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+|   1  GeForce RTX 208...  Off  | 00000000:3B:00.0 Off |                  N/A |
+| 33%   43C    P2   247W / 250W |    293MiB / 11019MiB |    100%      Default |
++-------------------------------+----------------------+----------------------+
+|   2  GeForce RTX 208...  Off  | 00000000:86:00.0 Off |                  N/A |
+| 32%   37C    P0    72W / 250W |     10MiB / 11019MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+|   3  GeForce RTX 208...  Off  | 00000000:AF:00.0 Off |                  N/A |
+| 31%   43C    P2   245W / 250W |    293MiB / 11019MiB |    100%      Default |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|=============================================================================|
+|    0     53869      C   ./a.out                                      153MiB |
+|    1     53869      C   ./a.out                                      155MiB |
+|    3     53869      C   ./a.out                                      155MiB |
++-----------------------------------------------------------------------------+
+@endcode
+
+Even if %cudaFlow provides interface for device placement,
+it is users' responsibility to ensure correct memory access.
+For example, you may not allocate a memory block on GPU 2 using @c cudaMalloc and 
+access it from a kernel on GPU 1.
+A safe practice is to allocate unified memory blocks using @c cudaMallocManaged 
+and let the CUDA runtime  perform automatic memory migration between processors
+(as demonstrated in the code example above).
+
+
 */
 
 }
+
+

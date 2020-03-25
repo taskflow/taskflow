@@ -52,7 +52,10 @@ var NAVTREEINDEX0 =
 "chapter5.html#C5_ComposesATaskflow":[2,5,0],
 "chapter5.html#C5_ModuleTask":[2,5,1],
 "chapter6.html":[2,6],
+"chapter6.html#C6_Compile_a_cudaFlow_program":[2,6,1],
 "chapter6.html#C6_Create_a_cudaFlow":[2,6,0],
+"chapter6.html#C6_configure_the_number_of_gpu_workers":[2,6,2],
+"chapter6.html#C6_run_a_cudaflow_on_multiple_gpus":[2,6,3],
 "classes.html":[5,1],
 "classtf_1_1Executor.html":[5,0,0,2],
 "classtf_1_1Executor.html#a2f6749fa9e4fde9a609fb66efacdd3de":[5,0,0,2,0],
@@ -211,8 +214,8 @@ var NAVTREEINDEX0 =
 "functions.html":[5,3,0],
 "functions_func.html":[5,3,1],
 "hierarchy.html":[5,2],
-"index.html":[],
 "index.html":[0],
+"index.html":[],
 "index.html#ASimpleFirstProgram":[0,2],
 "index.html#CompileAndRunYourFirstProgram":[0,3],
 "index.html#ComposableTasking":[0,0,2],
@@ -246,8 +249,5 @@ var NAVTREEINDEX0 =
 "release-2-1-0.html#release-2-1-0_new_features":[1,4,1],
 "release-2-2-0.html":[1,3],
 "release-2-2-0.html#release-2-2-0_breaks_and_deprecated_features":[1,3,2],
-"release-2-2-0.html#release-2-2-0_download":[1,3,0],
-"release-2-2-0.html#release-2-2-0_new_features":[1,3,1],
-"release-2-3-0.html":[1,2],
-"release-2-3-0.html#release-2-3-0_bug_fixes":[1,2,2]
+"release-2-2-0.html#release-2-2-0_download":[1,3,0]
 };
