@@ -6,7 +6,7 @@ MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Project name
-project(Cpp-Taskflow VERSION 2.3.1 LANGUAGES CXX)
+project(Cpp-Taskflow VERSION 2.4.0 LANGUAGES CXX)
 
 # build options
 option(TF_ENABLE_CUDA "Enables build of cuda code" OFF)
@@ -500,10 +500,13 @@ add_test(cuda_basics.add.i32 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Add.i32)
 add_test(cuda_basics.barrier.i8 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i8)
 add_test(cuda_basics.barrier.i16 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i16)
 add_test(cuda_basics.barrier.i32 ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Barrier.i32)
-add_test(cuda_basics.loop ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Loop)
+add_test(cuda_basics.empty ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Empty)
+add_test(cuda_basics.nested_runs ${TF_UTEST_DIR}/cuda/cuda_basics -tc=NestedRuns)
 add_test(cuda_basics.subflow ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Subflow)
 add_test(cuda_basics.nested_subflow ${TF_UTEST_DIR}/cuda/cuda_basics -tc=NestedSubflow)
 add_test(cuda_basics.detached_subflow ${TF_UTEST_DIR}/cuda/cuda_basics -tc=DetachedSubflow)
+add_test(cuda_basics.loop ${TF_UTEST_DIR}/cuda/cuda_basics -tc=Loop)
+
 
 # matrix operation tests
 add_executable(cuda_matrix ${TF_UTEST_DIR}/cuda/cuda_matrix.cu)

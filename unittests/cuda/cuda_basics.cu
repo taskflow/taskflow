@@ -64,6 +64,34 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: Empty
+// --------------------------------------------------------
+
+TEST_CASE("Empty" * doctest::timeout(300)) {
+
+  std::atomic<int> counter{0};
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  taskflow.emplace([&](tf::cudaFlow&){ 
+    ++counter; 
+  });
+  
+  taskflow.emplace([&](tf::cudaFlow&){ 
+    ++counter; 
+  });
+  
+  taskflow.emplace([&](tf::cudaFlow&){ 
+    ++counter; 
+  });
+
+  executor.run_n(taskflow, 100).wait();
+
+  REQUIRE(counter == 300);
+}
+
+// --------------------------------------------------------
 // Testcase: Set
 // --------------------------------------------------------
 template <typename T>
@@ -365,52 +393,94 @@ TEST_CASE("Barrier.i32" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
-// Conditional GPU tasking
+// NestedRuns
 // ----------------------------------------------------------------------------
 
-TEST_CASE("Loop") {
-
-  tf::Taskflow taskflow;
-  tf::Executor executor;
-
-  const unsigned n = 1000;
-    
+TEST_CASE("NestedRuns") {
+  
   int* cpu = nullptr;
   int* gpu = nullptr;
 
-  auto cputask = taskflow.emplace([&](){
-    cpu = static_cast<int*>(std::calloc(n, sizeof(int)));
-    REQUIRE(cudaMalloc(&gpu, n*sizeof(int)) == cudaSuccess);
-  });
+  constexpr unsigned n = 1000;
 
-  auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
-    dim3 g = {(n+255)/256, 1, 1};
-    dim3 b = {256, 1, 1};
-    auto h2d = cf.copy(gpu, cpu, n);
-    auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
-    auto d2h = cf.copy(cpu, gpu, n);
-    h2d.precede(kernel);
-    kernel.precede(d2h);
-  });
+  cpu = static_cast<int*>(std::calloc(n, sizeof(int)));
+  REQUIRE(cudaMalloc(&gpu, n*sizeof(int)) == cudaSuccess);
 
-  auto condition = taskflow.emplace([&cpu, round=0] () mutable {
-    ++round;
-    for(unsigned i=0; i<n; ++i) {
-      REQUIRE(cpu[i] == round);
+  struct A {
+
+    tf::Executor executor;
+    tf::Taskflow taskflow;
+
+    void run(int* cpu, int* gpu, unsigned n) {
+      taskflow.clear();
+
+      auto A1 = taskflow.emplace([&](tf::cudaFlow& cf) {  
+        cf.copy(gpu, cpu, n);
+      });
+
+      auto A2 = taskflow.emplace([&](tf::cudaFlow& cf) { 
+        dim3 g = {(n+255)/256, 1, 1};
+        dim3 b = {256, 1, 1};
+        cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
+      });
+
+      auto A3 = taskflow.emplace([&] (tf::cudaFlow& cf) {
+        cf.copy(cpu, gpu, n);
+      });
+
+      A1.precede(A2);
+      A2.precede(A3);
+
+      executor.run_n(taskflow, 10).wait();
     }
-    return round >= 100;
-  });
 
-  auto freetask = taskflow.emplace([&](){
-    REQUIRE(cudaFree(gpu) == cudaSuccess);
-    std::free(cpu);
-  });
-
-  cputask.precede(gputask);
-  gputask.precede(condition);
-  condition.precede(gputask, freetask);
+  };
   
-  executor.run(taskflow).wait();
+  struct B {
+
+    tf::Taskflow taskflow;
+    tf::Executor executor;
+
+    A a;
+
+    void run(int* cpu, int* gpu, unsigned n) {
+
+      taskflow.clear();
+      
+      auto B0 = taskflow.emplace([] () {});
+      auto B1 = taskflow.emplace([&] (tf::cudaFlow& cf) { 
+        dim3 g = {(n+255)/256, 1, 1};
+        dim3 b = {256, 1, 1};
+        auto h2d = cf.copy(gpu, cpu, n);
+        auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
+        auto d2h = cf.copy(cpu, gpu, n);
+        h2d.precede(kernel);
+        kernel.precede(d2h);
+      });
+      auto B2 = taskflow.emplace([&] () { a.run(cpu, gpu, n); });
+      auto B3 = taskflow.emplace([&] (tf::cudaFlow&) { 
+        for(unsigned i=0; i<n; ++i) {
+          cpu[i]++;
+        }
+      });
+      
+      B0.precede(B1);
+      B1.precede(B2);
+      B2.precede(B3);
+
+      executor.run_n(taskflow, 100).wait();
+    }
+  };
+
+  B b;
+  b.run(cpu, gpu, n);
+
+  for(unsigned i=0; i<n; i++) {
+    REQUIRE(cpu[i] == 1200);
+  }
+    
+  REQUIRE(cudaFree(gpu) == cudaSuccess);
+  std::free(cpu);
 }
 
 // ----------------------------------------------------------------------------
@@ -579,6 +649,55 @@ TEST_CASE("DetachedSubflow") {
   }
   REQUIRE(cudaFree(gpu) == cudaSuccess);
   std::free(cpu);
+}
+
+// ----------------------------------------------------------------------------
+// Conditional GPU tasking
+// ----------------------------------------------------------------------------
+
+TEST_CASE("Loop") {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  const unsigned n = 1000;
+    
+  int* cpu = nullptr;
+  int* gpu = nullptr;
+
+  auto cputask = taskflow.emplace([&](){
+    cpu = static_cast<int*>(std::calloc(n, sizeof(int)));
+    REQUIRE(cudaMalloc(&gpu, n*sizeof(int)) == cudaSuccess);
+  });
+
+  auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
+    dim3 g = {(n+255)/256, 1, 1};
+    dim3 b = {256, 1, 1};
+    auto h2d = cf.copy(gpu, cpu, n);
+    auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
+    auto d2h = cf.copy(cpu, gpu, n);
+    h2d.precede(kernel);
+    kernel.precede(d2h);
+  });
+
+  auto condition = taskflow.emplace([&cpu, round=0] () mutable {
+    ++round;
+    for(unsigned i=0; i<n; ++i) {
+      REQUIRE(cpu[i] == round);
+    }
+    return round >= 100;
+  });
+
+  auto freetask = taskflow.emplace([&](){
+    REQUIRE(cudaFree(gpu) == cudaSuccess);
+    std::free(cpu);
+  });
+
+  cputask.precede(gputask);
+  gputask.precede(condition);
+  condition.precede(gputask, freetask);
+  
+  executor.run(taskflow).wait();
 }
 
 

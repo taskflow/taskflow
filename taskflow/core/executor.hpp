@@ -904,6 +904,10 @@ inline void Executor::_invoke_cudaflow_work_impl(Worker&, Node* node) {
 
   h.work(cf); 
 
+  if(h.graph.empty()) {
+    return;
+  }
+
   h.graph._make_native_graph(cf._device);
 
   cudaGraphExec_t exec;
