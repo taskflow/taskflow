@@ -45,13 +45,6 @@ class Executor {
     Worker* worker {nullptr};
   };
 
-#ifdef TF_ENABLE_CUDA
-  struct CUDADevice {
-    int id {-1};
-    std::vector<cudaStream_t> streams;
-  };
-#endif
-
   public:
 
 #ifdef TF_ENABLE_CUDA    

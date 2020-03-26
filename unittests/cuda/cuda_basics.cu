@@ -610,6 +610,253 @@ TEST_CASE("NestedRuns") {
 }
 
 // ----------------------------------------------------------------------------
+// WorkerID
+// ----------------------------------------------------------------------------
+
+void worker_id(unsigned N, unsigned M) {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(N, M);
+
+  REQUIRE(executor.num_workers() == (N + M));
+  REQUIRE(executor.num_domains() == 2);
+
+  const unsigned s = 1000;
+
+  for(unsigned k=0; k<s; ++k) {
+    
+    auto cputask = taskflow.emplace([&](){
+      auto id = executor.this_worker_id();
+      REQUIRE(id >= 0);
+      REQUIRE(id <  N);
+    });
+    
+    auto gputask = taskflow.emplace([&](tf::cudaFlow&) {
+      auto id = executor.this_worker_id();
+      REQUIRE(id >= N);
+      REQUIRE(id <  N+M);
+    });
+
+    auto chktask = taskflow.emplace([&] () {
+      auto id = executor.this_worker_id();
+      REQUIRE(id >= 0);
+      REQUIRE(id <  N);
+    });
+    
+    taskflow.emplace([&](tf::cudaFlow&) {
+      auto id = executor.this_worker_id();
+      REQUIRE(id >= N);
+      REQUIRE(id <  N+M);
+    });
+    
+    taskflow.emplace([&]() {
+      auto id = executor.this_worker_id();
+      REQUIRE(id >= 0);
+      REQUIRE(id <  N);
+    });
+
+    auto subflow = taskflow.emplace([&](tf::Subflow& sf){
+      auto id = executor.this_worker_id();
+      REQUIRE(id >= 0);
+      REQUIRE(id <  N);
+      auto t1 = sf.emplace([&](){
+        auto id = executor.this_worker_id();
+        REQUIRE(id >= 0);
+        REQUIRE(id <  N);
+      });
+      auto t2 = sf.emplace([&](tf::cudaFlow&){
+        auto id = executor.this_worker_id();
+        REQUIRE(id >= N);
+        REQUIRE(id <  N+M);
+      });
+      t1.precede(t2);
+    });
+
+    cputask.precede(gputask);
+    gputask.precede(chktask);
+    chktask.precede(subflow);
+  }
+
+  executor.run_n(taskflow, 100).wait();
+}
+
+TEST_CASE("WorkerID.1C.1G") {
+  worker_id(1, 1);
+}
+
+TEST_CASE("WorkerID.1C.2G") {
+  worker_id(1, 2);
+}
+
+TEST_CASE("WorkerID.1C.3G") {
+  worker_id(1, 3);
+}
+
+TEST_CASE("WorkerID.1C.4G") {
+  worker_id(1, 4);
+}
+
+TEST_CASE("WorkerID.2C.1G") {
+  worker_id(2, 1);
+}
+
+TEST_CASE("WorkerID.2C.2G") {
+  worker_id(2, 2);
+}
+
+TEST_CASE("WorkerID.2C.3G") {
+  worker_id(2, 3);
+}
+
+TEST_CASE("WorkerID.2C.4G") {
+  worker_id(2, 4);
+}
+
+TEST_CASE("WorkerID.3C.1G") {
+  worker_id(3, 1);
+}
+
+TEST_CASE("WorkerID.3C.2G") {
+  worker_id(3, 2);
+}
+
+TEST_CASE("WorkerID.3C.3G") {
+  worker_id(3, 3);
+}
+
+TEST_CASE("WorkerID.3C.4G") {
+  worker_id(3, 4);
+}
+
+TEST_CASE("WorkerID.4C.1G") {
+  worker_id(4, 1);
+}
+
+TEST_CASE("WorkerID.4C.2G") {
+  worker_id(4, 2);
+}
+
+TEST_CASE("WorkerID.4C.3G") {
+  worker_id(4, 3);
+}
+
+TEST_CASE("WorkerID.4C.4G") {
+  worker_id(4, 4);
+}
+
+// ----------------------------------------------------------------------------
+// Multiruns
+// ----------------------------------------------------------------------------
+
+void multiruns(unsigned N, unsigned M) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(N, M);
+
+  const unsigned n = 1000;
+  const unsigned s = 1000;
+
+  int *cpu[s] = {0};
+  int *gpu[s] = {0};
+
+  for(unsigned k=0; k<s; ++k) {
+    
+    int number = ::rand()%100;
+
+    auto cputask = taskflow.emplace([&, k](){
+      cpu[k] = static_cast<int*>(std::calloc(n, sizeof(int)));
+      REQUIRE(cudaMalloc(&gpu[k], n*sizeof(int)) == cudaSuccess);
+    });
+    
+    auto gputask = taskflow.emplace([&, k, number](tf::cudaFlow& cf) {
+      dim3 g = {(n+255)/256, 1, 1};
+      dim3 b = {256, 1, 1};
+      auto h2d = cf.copy(gpu[k], cpu[k], n);
+      auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu[k], n, number);
+      auto d2h = cf.copy(cpu[k], gpu[k], n);
+      h2d.precede(kernel);
+      kernel.precede(d2h);
+    });
+
+    auto chktask = taskflow.emplace([&, k, number] () {
+      for(unsigned i=0; i<n; ++i) {
+        REQUIRE(cpu[k][i] == number);
+      }
+    });
+
+    cputask.precede(gputask);
+    gputask.precede(chktask);
+
+  }
+
+  executor.run(taskflow).wait();
+}
+
+TEST_CASE("Multiruns.1C.1G") {
+  multiruns(1, 1);
+}
+
+TEST_CASE("Multiruns.1C.2G") {
+  multiruns(1, 2);
+}
+
+TEST_CASE("Multiruns.1C.3G") {
+  multiruns(1, 3);
+}
+
+TEST_CASE("Multiruns.1C.4G") {
+  multiruns(1, 4);
+}
+
+TEST_CASE("Multiruns.2C.1G") {
+  multiruns(2, 1);
+}
+
+TEST_CASE("Multiruns.2C.2G") {
+  multiruns(2, 2);
+}
+
+TEST_CASE("Multiruns.2C.3G") {
+  multiruns(2, 3);
+}
+
+TEST_CASE("Multiruns.2C.4G") {
+  multiruns(2, 4);
+}
+
+TEST_CASE("Multiruns.3C.1G") {
+  multiruns(3, 1);
+}
+
+TEST_CASE("Multiruns.3C.2G") {
+  multiruns(3, 2);
+}
+
+TEST_CASE("Multiruns.3C.3G") {
+  multiruns(3, 3);
+}
+
+TEST_CASE("Multiruns.3C.4G") {
+  multiruns(3, 4);
+}
+
+TEST_CASE("Multiruns.4C.1G") {
+  multiruns(4, 1);
+}
+
+TEST_CASE("Multiruns.4C.2G") {
+  multiruns(4, 2);
+}
+
+TEST_CASE("Multiruns.4C.3G") {
+  multiruns(4, 3);
+}
+
+TEST_CASE("Multiruns.4C.4G") {
+  multiruns(4, 4);
+}
+
+// ----------------------------------------------------------------------------
 // Subflow
 // ----------------------------------------------------------------------------
 
