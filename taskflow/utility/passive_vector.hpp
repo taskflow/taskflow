@@ -13,7 +13,10 @@ namespace tf {
 template <typename T, size_t S = 4, typename A = std::allocator<T>>
 class PassiveVector {
 
-  static_assert(std::is_pod<T>::value, "must be a passive data structure type");
+  static_assert(
+    std::is_trivial<T>::value && std::is_standard_layout<T>::value, 
+    "must be a plain old data type"
+  );
 
   public:
 

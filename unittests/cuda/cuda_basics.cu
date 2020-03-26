@@ -318,11 +318,137 @@ TEST_CASE("Memset") {
     }
   }
   
+  delete [] cpu;
+  REQUIRE(cudaFree(gpu) == cudaSuccess);
+}
+
+// --------------------------------------------------------
+// Testcase: Memset0
+// --------------------------------------------------------
+template <typename T>
+void memset0() {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+  
+  const int N = 100;
+
+  T* cpu = new T [N];
+  T* gpu = nullptr;
+    
+  REQUIRE(cudaMalloc(&gpu, N*sizeof(T)) == cudaSuccess);
+
+  for(int r=1; r<=100; ++r) {
+
+    int start = ::rand() % N;
+
+    for(int i=0; i<N; ++i) {
+      cpu[i] = (T)999;
+    }
+    
+    taskflow.emplace([&](tf::cudaFlow& cf){
+      dim3 g = {(unsigned)(N+255)/256, 1, 1};
+      dim3 b = {256, 1, 1};
+      auto kset = cf.kernel(g, b, 0, k_set<T>, gpu, N, (T)123);
+      auto zero = cf.memset(gpu+start, (T)0, (N-start)*sizeof(T));
+      auto copy = cf.copy(cpu, gpu, N);
+      kset.precede(zero);
+      zero.precede(copy);
+    });
+    
+    executor.run(taskflow).wait();
+
+    for(int i=0; i<start; ++i) {
+      REQUIRE(std::fabs(cpu[i] - (T)123) < 1e-4);
+    }
+    for(int i=start; i<N; ++i) {
+      REQUIRE(std::fabs(cpu[i] - (T)0) < 1e-4);
+    }
+  }
+  
+  delete [] cpu;
+  REQUIRE(cudaFree(gpu) == cudaSuccess);
+}
+
+TEST_CASE("Memset0.i8") {
+  memset0<int8_t>();
+}
+
+TEST_CASE("Memset0.i16") {
+  memset0<int16_t>();
+}
+
+TEST_CASE("Memset0.i32") {
+  memset0<int32_t>();
+}
+
+TEST_CASE("Memset0.f32") {
+  memset0<float>();
+}
+
+// --------------------------------------------------------
+// Testcase: Zero
+// --------------------------------------------------------
+template <typename T>
+void zero() {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+  
+  const int N = 100;
+
+  T* cpu = new T [N];
+  T* gpu = nullptr;
+    
+  REQUIRE(cudaMalloc(&gpu, N*sizeof(T)) == cudaSuccess);
+
+  for(int r=1; r<=100; ++r) {
+
+    int start = ::rand() % N;
+
+    for(int i=0; i<N; ++i) {
+      cpu[i] = (T)999;
+    }
+    
+    taskflow.emplace([&](tf::cudaFlow& cf){
+      dim3 g = {(unsigned)(N+255)/256, 1, 1};
+      dim3 b = {256, 1, 1};
+      auto kset = cf.kernel(g, b, 0, k_set<T>, gpu, N, (T)123);
+      auto zero = cf.zero(gpu+start, (N-start));
+      auto copy = cf.copy(cpu, gpu, N);
+      kset.precede(zero);
+      zero.precede(copy);
+    });
+    
+    executor.run(taskflow).wait();
+
+    for(int i=0; i<start; ++i) {
+      REQUIRE(std::fabs(cpu[i] - (T)123) < 1e-4);
+    }
+    for(int i=start; i<N; ++i) {
+      REQUIRE(std::fabs(cpu[i] - (T)0) < 1e-4);
+    }
+  }
 
   delete [] cpu;
   REQUIRE(cudaFree(gpu) == cudaSuccess);
 }
 
+TEST_CASE("Zero.i8") {
+  zero<int8_t>();
+}
+
+TEST_CASE("Zero.i16") {
+  zero<int16_t>();
+}
+
+TEST_CASE("Zero.i32") {
+  zero<int32_t>();
+}
+
+TEST_CASE("Zero.f32") {
+  zero<float>();
+}
 
 // --------------------------------------------------------
 // Testcase: Barrier

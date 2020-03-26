@@ -124,14 +124,15 @@ class ObjectPool {
     ~ObjectPool();
     
     /**
-    @brief allocates an uninitialized storage to hold an object of type T
+    @brief acquires a pointer to a object constructed from a given argument list
     */
-    T* allocate();
+    template <typename... ArgsT>
+    T* animate(ArgsT&&... args);
     
     /**
-    @brief deallocates (recycles) a storage referenced by the pointer @c ptr
+    @brief recycles a object pointed by @c ptr and destroys it
     */
-    void deallocate(T* ptr);
+    void recycle(T* ptr);
     
     size_t num_bins_per_local_heap() const;
     size_t num_objects_per_bin() const;
@@ -574,7 +575,8 @@ void ObjectPool<T, S>::_deallocate(Block* s, T* ptr) {
 
 // Function: allocate
 template <typename T, size_t S>
-T* ObjectPool<T, S>::allocate() {
+template <typename... ArgsT>
+T* ObjectPool<T, S>::animate(ArgsT&&... args) {
 
   //std::cout << "construct a new item\n";
     
@@ -664,6 +666,8 @@ T* ObjectPool<T, S>::allocate() {
 
   //printf("allocate %p (s=%p)\n", mem, s);
 
+  new (mem) T(std::forward<ArgsT>(args)...);
+
   mem->_object_pool_block = s;
 
   return mem;
@@ -671,7 +675,7 @@ T* ObjectPool<T, S>::allocate() {
   
 // Function: destruct
 template <typename T, size_t S>
-void ObjectPool<T, S>::deallocate(T* mem) {
+void ObjectPool<T, S>::recycle(T* mem) {
 
   //Block* s = *reinterpret_cast<Block**>(
   //  reinterpret_cast<char*>(mem) - sizeof(Block**)
@@ -680,6 +684,8 @@ void ObjectPool<T, S>::deallocate(T* mem) {
   //Block* s= *(reinterpret_cast<Block**>(mem) - O); //  (mem) - 1
 
   Block* s = static_cast<Block*>(mem->_object_pool_block);
+
+  mem->~T();
   
   //printf("deallocate %p (s=%p) M=%lu W=%lu X=%lu\n", mem, s, M, W, X);
 

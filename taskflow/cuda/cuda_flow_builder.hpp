@@ -90,17 +90,31 @@ class cudaFlow {
     cudaTask kernel_on(int d, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
 
     /**
-    @brief creates a memset node
+    @brief creates a memset task
 
     @param dst pointer to the destination device memory area
     @param v value to set for each byte of specified memory
     @param count size in bytes to set
 
-    A memset tasks fills the first @c count bytes of device memory area 
+    A memset task fills the first @c count bytes of device memory area 
     pointed by @c dst with the byte value @c v.
 
     */
     cudaTask memset(void* dst, int v, size_t count);
+
+    /**
+    @brief creates a zero task that zeroes a typed memory block
+
+    @tparam T element type (sizeof(T) must be either 1, 2, or 4
+    @param dst pointer to the destination device memory area
+    @param count number of elements
+
+    A zero task zeroes the first @c count elements of type @c T 
+    in a device memory area pointed by @c dst.
+    */
+    template <typename T>
+    std::enable_if_t<(sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), cudaTask> 
+    zero(T* dst, size_t count);
     
     /**
     @brief creates an 1D copy task
@@ -277,6 +291,28 @@ cudaTask cudaFlow::kernel_on(
     }
   );
   
+  return cudaTask(node);
+}
+
+// Function: zero
+template <typename T>
+std::enable_if_t<(sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), cudaTask> 
+cudaFlow::zero(T* dst, size_t count) {
+  auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Memset>{},
+    [=] (cudaGraph_t& graph, cudaGraphNode_t& node) {
+      cudaMemsetParams p;
+      p.dst = dst;
+      p.value = 0;
+      p.pitch = 0;
+      p.elementSize = sizeof(T);  // either 1, 2, or 4
+      p.width = count;
+      p.height = 1;
+      TF_CHECK_CUDA(
+        cudaGraphAddMemsetNode(&node, graph, nullptr, 0, &p),
+        "failed to create a cudaMemset node"
+      );
+    }
+  );
   return cudaTask(node);
 }
 

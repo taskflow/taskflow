@@ -19,6 +19,7 @@
 #include <iomanip>
 #include <cassert>
 #include <cmath>
+#include <cstring>
 
 #include "../nstd/variant.hpp"
 
@@ -265,6 +266,24 @@ struct get_index<T, nstd::variant<Ts...>> : get_index_impl<0, T, Ts...>{};
 
 template <typename T, typename... Ts>
 constexpr auto get_index_v = get_index<T, Ts...>::value;
+
+// ----------------------------------------------------------------------------
+// bit_cast
+//-----------------------------------------------------------------------------
+template <class To, class From>
+typename std::enable_if<
+  (sizeof(To) == sizeof(From)) &&
+  std::is_trivially_copyable<From>::value &&
+  std::is_trivial<To>::value,
+  // this implementation requires that To is trivially default constructible
+  To
+>::type
+// constexpr support needs compiler magic
+bit_cast(const From &src) noexcept {
+  To dst;
+  std::memcpy(&dst, &src, sizeof(To));
+  return dst;
+}
 
 }  // end of namespace tf. ---------------------------------------------------
 
