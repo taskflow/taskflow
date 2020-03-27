@@ -683,6 +683,75 @@ TEST_CASE("SerialRuns.8threads" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: WorkerID
+// --------------------------------------------------------
+void worker_id(unsigned w) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(w);
+
+  for(int i=0; i<1000; i++) {
+    auto A = taskflow.emplace([&](){
+      auto id = executor.this_worker_id();
+      REQUIRE(id>=0);
+      REQUIRE(id< w);
+    });
+
+    auto B = taskflow.emplace([&](tf::Subflow& sf){
+      auto id = executor.this_worker_id();
+      REQUIRE(id>=0);
+      REQUIRE(id< w);
+      sf.emplace([&](){
+        auto id = executor.this_worker_id();
+        REQUIRE(id>=0);
+        REQUIRE(id< w);
+      });
+      sf.emplace([&](tf::Subflow&){
+        auto id = executor.this_worker_id();
+        REQUIRE(id>=0);
+        REQUIRE(id< w);
+      });
+    });
+
+    A.precede(B);
+  }
+
+  executor.run_n(taskflow, 100).wait();
+}
+
+TEST_CASE("WorkerID.1thread") {
+  worker_id(1);
+}
+
+TEST_CASE("WorkerID.2threads") {
+  worker_id(2);
+}
+
+TEST_CASE("WorkerID.3threads") {
+  worker_id(3);
+}
+
+TEST_CASE("WorkerID.4threads") {
+  worker_id(4);
+}
+
+TEST_CASE("WorkerID.5threads") {
+  worker_id(5);
+}
+
+TEST_CASE("WorkerID.6threads") {
+  worker_id(6);
+}
+
+TEST_CASE("WorkerID.7threads") {
+  worker_id(7);
+}
+
+TEST_CASE("WorkerID.8threads") {
+  worker_id(8);
+}
+
+// --------------------------------------------------------
 // Testcase: ParallelRuns
 // --------------------------------------------------------
 void parallel_runs(unsigned w) {
@@ -878,7 +947,6 @@ TEST_CASE("NestedRuns.8threads") {
 TEST_CASE("NestedRuns.16threads") {
   nested_runs(16);
 }
-
 
 // --------------------------------------------------------
 // Testcase: ParallelFor

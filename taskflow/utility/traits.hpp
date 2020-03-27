@@ -268,6 +268,18 @@ template <typename T, typename... Ts>
 constexpr auto get_index_v = get_index<T, Ts...>::value;
 
 // ----------------------------------------------------------------------------
+// is_pod
+//-----------------------------------------------------------------------------
+template <typename T>
+struct is_pod {
+  static const bool value = std::is_trivial<T>::value && 
+                            std::is_standard_layout<T>::value;
+};
+
+template <typename T>
+constexpr bool is_pod_v = is_pod<T>::value;
+
+// ----------------------------------------------------------------------------
 // bit_cast
 //-----------------------------------------------------------------------------
 template <class To, class From>

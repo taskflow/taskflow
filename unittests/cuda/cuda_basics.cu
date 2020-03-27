@@ -331,7 +331,7 @@ void memset0() {
   tf::Taskflow taskflow;
   tf::Executor executor;
   
-  const int N = 100;
+  const int N = 97;
 
   T* cpu = new T [N];
   T* gpu = nullptr;
@@ -384,6 +384,146 @@ TEST_CASE("Memset0.i32") {
 
 TEST_CASE("Memset0.f32") {
   memset0<float>();
+}
+
+TEST_CASE("Memset0.f64") {
+  memset0<double>();
+}
+
+// --------------------------------------------------------
+// Testcase: Memcpy
+// --------------------------------------------------------
+template <typename T>
+void memcpy() {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+  
+  const int N = 97;
+
+  T* cpu = new T [N];
+  T* gpu = nullptr;
+    
+  REQUIRE(cudaMalloc(&gpu, N*sizeof(T)) == cudaSuccess);
+
+  for(int r=1; r<=100; ++r) {
+
+    int start = ::rand() % N;
+
+    for(int i=0; i<N; ++i) {
+      cpu[i] = (T)999;
+    }
+    
+    taskflow.emplace([&](tf::cudaFlow& cf){
+      dim3 g = {(unsigned)(N+255)/256, 1, 1};
+      dim3 b = {256, 1, 1};
+      auto kset = cf.kernel(g, b, 0, k_set<T>, gpu, N, (T)123);
+      auto zero = cf.memset(gpu+start, (T)0, (N-start)*sizeof(T));
+      auto copy = cf.memcpy(cpu, gpu, N*sizeof(T));
+      kset.precede(zero);
+      zero.precede(copy);
+    });
+    
+    executor.run(taskflow).wait();
+
+    for(int i=0; i<start; ++i) {
+      REQUIRE(std::fabs(cpu[i] - (T)123) < 1e-4);
+    }
+    for(int i=start; i<N; ++i) {
+      REQUIRE(std::fabs(cpu[i] - (T)0) < 1e-4);
+    }
+  }
+  
+  delete [] cpu;
+  REQUIRE(cudaFree(gpu) == cudaSuccess);
+}
+
+TEST_CASE("Memcpy.i8") {
+  memcpy<int8_t>();
+}
+
+TEST_CASE("Memcpy.i16") {
+  memcpy<int16_t>();
+}
+
+TEST_CASE("Memcpy.i32") {
+  memcpy<int32_t>();
+}
+
+TEST_CASE("Memcpy.f32") {
+  memcpy<float>();
+}
+
+TEST_CASE("Memcpy.f64") {
+  memcpy<double>();
+}
+
+// --------------------------------------------------------
+// Testcase: fill
+// --------------------------------------------------------
+template <typename T>
+void fill(T value) {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+  
+  const int N = 107;
+
+  T* cpu = new T [N];
+  T* gpu = nullptr;
+    
+  REQUIRE(cudaMalloc(&gpu, N*sizeof(T)) == cudaSuccess);
+
+  for(int r=1; r<=100; ++r) {
+
+    int start = ::rand() % N;
+
+    for(int i=0; i<N; ++i) {
+      cpu[i] = (T)999;
+    }
+    
+    taskflow.emplace([&](tf::cudaFlow& cf){
+      dim3 g = {(unsigned)(N+255)/256, 1, 1};
+      dim3 b = {256, 1, 1};
+      auto kset = cf.kernel(g, b, 0, k_set<T>, gpu, N, (T)123);
+      auto fill = cf.fill(gpu+start, value, (N-start));
+      auto copy = cf.copy(cpu, gpu, N);
+      kset.precede(fill);
+      fill.precede(copy);
+    });
+    
+    executor.run(taskflow).wait();
+
+    for(int i=0; i<start; ++i) {
+      REQUIRE(std::fabs(cpu[i] - (T)123) < 1e-4);
+    }
+    for(int i=start; i<N; ++i) {
+      REQUIRE(std::fabs(cpu[i] - value) < 1e-4);
+    }
+  }
+
+  delete [] cpu;
+  REQUIRE(cudaFree(gpu) == cudaSuccess);
+}
+
+TEST_CASE("Fill.i8") {
+  fill<int8_t>(+123);
+  fill<int8_t>(-123);
+}
+
+TEST_CASE("Fill.i16") {
+  fill<int16_t>(+12345);
+  fill<int16_t>(-12345);
+}
+
+TEST_CASE("Fill.i32") {
+  fill<int32_t>(+123456789);
+  fill<int32_t>(-123456789);
+}
+
+TEST_CASE("Fill.f32") {
+  fill<float>(+123456789.0f);
+  fill<float>(-123456789.0f);
 }
 
 // --------------------------------------------------------
