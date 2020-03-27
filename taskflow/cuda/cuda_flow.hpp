@@ -118,7 +118,7 @@ class cudaFlow {
     /**
     @brief creates a zero task that zeroes a typed memory block
 
-    @tparam T element type (sizeof(T) must be either 1, 2, or 4
+    @tparam T element type (size of @c T must be either 1, 2, or 4)
     @param dst pointer to the destination device memory area
     @param count number of elements
 
@@ -135,7 +135,7 @@ class cudaFlow {
     /**
     @brief creates a fill task that fills a typed memory block with a value
 
-    @tparam T element type (sizeof(T) must be either 1, 2, or 4
+    @tparam T element type (size of @c T must be either 1, 2, or 4)
     @param dst pointer to the destination device memory area
     @param value value to fill for each element of type @c T
     @param count number of elements

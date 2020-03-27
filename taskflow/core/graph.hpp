@@ -9,7 +9,7 @@
 
 #if defined(__CUDA__) || defined(__CUDACC__)
 #define TF_ENABLE_CUDA
-#include "../cuda/cuda_flow_builder.hpp"
+#include "../cuda/cuda_flow.hpp"
 #endif
 
 namespace tf {

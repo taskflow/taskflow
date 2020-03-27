@@ -208,7 +208,7 @@ var NAVTREEINDEX0 =
 "classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4":[5,0,0,1,7],
 "classtf_1_1cudaTask.html#af17c570ca9a43ad71c4b626635ea9cbb":[5,0,0,1,6],
 "cuda__error_8hpp_source.html":[6,0,0],
-"cuda__flow__builder_8hpp_source.html":[6,0,1],
+"cuda__flow_8hpp_source.html":[6,0,1],
 "cuda__task_8hpp_source.html":[6,0,2],
 "error_8hpp_source.html":[6,0,3],
 "executor_8hpp_source.html":[6,0,4],
