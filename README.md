@@ -740,6 +740,7 @@ The folder `examples/` contains several examples and is a great place to learn t
 | [composition.cpp](./examples/composition.cpp)| demonstrates the decomposable interface of taskflow |
 | [observer.cpp](./examples/observer.cpp)| demonstrates how to monitor the thread activities in scheduling and running tasks |
 | [condition.cpp](./examples/condition.cpp) | creates a conditional tasking graph with a feedback loop control flow |
+| [cuda/saxpy.cu](./examples/cuda/saxpy.cu) | uses cudaFlow interface to create a canonical single precision saxpy GPU kernel |
 
 ## Benchmarks
 
