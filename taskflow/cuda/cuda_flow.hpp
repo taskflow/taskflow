@@ -7,7 +7,13 @@ namespace tf {
 /**
 @class cudaFlow
 
-@brief Building methods for a cuda task dependency graph.
+@brief methods for building a CUDA task dependency graph.
+
+A cudaFlow is a high-level interface to manipulate GPU tasks using 
+the task dependency graph model.
+The class provides a set of methods for creating and launch different tasks
+on one or multiple CUDA devices,
+for instance, kernel tasks, data transfer tasks, and memory operation tasks.
 */
 class cudaFlow {
 
