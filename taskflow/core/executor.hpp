@@ -45,6 +45,12 @@ class Executor {
     Worker* worker {nullptr};
   };
 
+#ifdef TF_ENABLE_CUDA
+  struct cudaDevice {
+    std::vector<cudaStream_t> streams;
+  };
+#endif
+
   public:
 
 #ifdef TF_ENABLE_CUDA    
@@ -201,10 +207,16 @@ class Executor {
     // scheduler field
     std::vector<Worker> _workers;
     std::vector<std::thread> _threads;
+
+#ifdef TF_ENABLE_CUDA
+    std::vector<cudaDevice> _cuda_devices;
+#endif
     
     Notifier _notifier[NUM_DOMAINS];
 
     TaskQueue<Node*> _wsq[NUM_DOMAINS];
+
+    size_t _id_offset[NUM_DOMAINS] = {0};
 
     std::atomic<size_t> _num_actives[NUM_DOMAINS];
     std::atomic<size_t> _num_thieves[NUM_DOMAINS];
@@ -246,8 +258,9 @@ class Executor {
 #ifdef TF_ENABLE_CUDA
 // Constructor
 inline Executor::Executor(unsigned N, unsigned M) :
-  _workers  {N + M},
-  _notifier {Notifier(N), Notifier(M)} {
+  _workers      {N + M},
+  _cuda_devices {cuda_num_devices()},
+  _notifier     {Notifier(N), Notifier(M)} {
 
   if(N == 0) {
     TF_THROW("no cpu workers to execute taskflows");
@@ -260,6 +273,18 @@ inline Executor::Executor(unsigned N, unsigned M) :
   for(int i=0; i<NUM_DOMAINS; ++i) {
     _num_actives[i].store(0, std::memory_order_relaxed);
     _num_thieves[i].store(0, std::memory_order_relaxed); 
+  }
+  
+  // create a per-worker stream on each cuda device
+  for(size_t i=0; i<_cuda_devices.size(); ++i) {
+    _cuda_devices[i].streams.resize(M);
+    cudaScopedDevice ctx(i);
+    for(unsigned m=0; m<M; ++m) {
+      TF_CHECK_CUDA(
+        cudaStreamCreate(&(_cuda_devices[i].streams[m])),
+        "failed to create a cudaStream for worker ", m, " on device ", i
+      );
+    }
   }
 
   _spawn(N, HOST);
@@ -301,6 +326,15 @@ inline Executor::~Executor() {
   for(auto& t : _threads){
     t.join();
   } 
+  
+#ifdef TF_ENABLE_CUDA  
+  for(size_t i=0; i<_cuda_devices.size(); ++i) {
+    cudaScopedDevice ctx(i);
+    for(size_t m=0; m<_cuda_devices[i].streams.size(); ++m) {
+      cudaStreamDestroy(_cuda_devices[i].streams[m]);
+    }
+  }
+#endif
 }
 
 // Function: num_workers
@@ -334,6 +368,8 @@ inline int Executor::this_worker_id() const {
 inline void Executor::_spawn(unsigned N, Domain d) {
   
   auto id = _threads.size();
+
+  _id_offset[d] = id;
 
   for(unsigned i=0; i<N; ++i, ++id) {
 
@@ -887,7 +923,7 @@ inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
 }
 
 // Procedure: _invoke_cudaflow_work_impl
-inline void Executor::_invoke_cudaflow_work_impl(Worker&, Node* node) {
+inline void Executor::_invoke_cudaflow_work_impl(Worker& w, Node* node) {
 
   auto& h = nstd::get<Node::cudaFlowWork>(node->_handle);
 
@@ -900,8 +936,17 @@ inline void Executor::_invoke_cudaflow_work_impl(Worker&, Node* node) {
   if(h.graph.empty()) {
     return;
   }
+  
+  // transforms cudaFlow to a native cudaGraph under the specified device
+  // and launches the graph through a given or an internal device stream
+  const int d = cf._device;
 
-  h.graph._make_native_graph(cf._device);
+  cudaScopedDevice ctx(d);
+  
+  auto s = cf._stream ? *(cf._stream) : 
+                        _cuda_devices[d].streams[w.id - _id_offset[w.domain]];
+
+  h.graph._make_native_graph();
 
   cudaGraphExec_t exec;
 
@@ -911,18 +956,15 @@ inline void Executor::_invoke_cudaflow_work_impl(Worker&, Node* node) {
   );
 
   TF_CHECK_CUDA(
-    cudaGraphLaunch(exec, cf._stream), 
-    "failed to launch cudaGraph through stream ", cf._stream
+    cudaGraphLaunch(exec, s), "failed to launch cudaGraph on stream ", s
   );
 
   TF_CHECK_CUDA(
-    cudaStreamSynchronize(cf._stream), 
-    "failed to synchronize stream ", cf._stream
+    cudaStreamSynchronize(s), "failed to synchronize stream ", s
   );
 
   TF_CHECK_CUDA(
-    cudaGraphExecDestroy(exec), 
-    "failed to destroy an executable cudaGraph"
+    cudaGraphExecDestroy(exec), "failed to destroy an executable cudaGraph"
   );
 }
 #endif

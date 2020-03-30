@@ -196,18 +196,13 @@ class cudaFlow {
     */
     void stream(cudaStream_t stream);
 
-    /**
-    @brief queries the stream associated with the cudaFlow
-    */
-    cudaStream_t stream() const;
-
   private:
 
     cudaGraph& _graph;
     
     int _device {0};
 
-    cudaStream_t _stream {nullptr};
+    nstd::optional<cudaStream_t> _stream;
 };
 
 // Constructor
@@ -232,11 +227,6 @@ inline int cudaFlow::device() const {
 // Procedure: stream
 inline void cudaFlow::stream(cudaStream_t s) {
   _stream = s;
-}
-
-// Function: stream
-inline cudaStream_t cudaFlow::stream() const {
-  return _stream;
 }
 
 // Function: noop

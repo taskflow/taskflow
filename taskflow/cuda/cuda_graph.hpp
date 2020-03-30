@@ -6,6 +6,7 @@
 #include "../utility/traits.hpp"
 #include "../utility/passive_vector.hpp"
 #include "../nstd/variant.hpp"
+#include "../nstd/optional.hpp"
 
 namespace tf {
 
@@ -136,7 +137,7 @@ class cudaGraph {
 
     std::vector<std::unique_ptr<cudaNode>> _nodes;
 
-    void _make_native_graph(int);
+    void _make_native_graph();
 };
 
 // ----------------------------------------------------------------------------
@@ -221,19 +222,21 @@ inline cudaGraph_t cudaGraph::native_handle() {
 }
 
 // Procedure: _make_native_graph
-inline void cudaGraph::_make_native_graph(int d) {
+inline void cudaGraph::_make_native_graph() {
 
-  if(_native_handle) {
-    TF_CHECK_CUDA(
-      cudaGraphDestroy(_native_handle), "failed to destroy the previous cudaGraph"
-    );
-    _native_handle = nullptr;
-  }
-  
-  cudaScopedDevice ctx {d};
+  //// TODO: must be nullptr
+  //if(_native_handle) {
+  //  TF_CHECK_CUDA(
+  //    cudaGraphDestroy(_native_handle), "failed to destroy the previous cudaGraph"
+  //  );
+  //  _native_handle = nullptr;
+  //}
+  //
+  //cudaScopedDevice ctx {d};
+  assert(_native_handle == nullptr);
 
   TF_CHECK_CUDA(
-    cudaGraphCreate(&_native_handle, 0), "failed to create a cudaGraph under device ", d
+    cudaGraphCreate(&_native_handle, 0), "failed to create a cudaGraph"
   );
 
   // create nodes

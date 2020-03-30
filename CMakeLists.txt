@@ -751,93 +751,29 @@ target_link_libraries(
 )
 set_target_properties(matrix_multiplication PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-## benchmark 6: Parallel DNN
-#message(STATUS "benchmark 6: Parallel DNN")
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/parallel_dnn)
-#add_executable(
-#  parallel_dnn 
-#  ${TF_BENCHMARK_DIR}/parallel_dnn/main.cpp
-#  ${TF_BENCHMARK_DIR}/parallel_dnn/omp.cpp
-#  ${TF_BENCHMARK_DIR}/parallel_dnn/tbb.cpp
-#  ${TF_BENCHMARK_DIR}/parallel_dnn/seq.cpp
-#  ${TF_BENCHMARK_DIR}/parallel_dnn/taskflow.cpp
-#)
-#target_include_directories(parallel_dnn PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-#target_link_libraries(
-#  parallel_dnn 
-#  ${PROJECT_NAME} 
-#  Threads::Threads 
-#  ${TBB_IMPORTED_TARGETS}
-#  ${OpenMP_CXX_LIBRARIES} 
-#  stdc++fs 
-#  tf::default_settings
-#)
-#set_target_properties(parallel_dnn PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-#
 
-
-### benchmark 8: Mandelbrot set
-#message(STATUS "benchmark 8: Mandelbrot set")
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/mandelbrot_set)
-#add_executable(
-#  mandelbrot_set
-#  ${TF_BENCHMARK_DIR}/mandelbrot_set/main.cpp
-#  ${TF_BENCHMARK_DIR}/mandelbrot_set/omp.cpp
-#  ${TF_BENCHMARK_DIR}/mandelbrot_set/tbb.cpp
-#  ${TF_BENCHMARK_DIR}/mandelbrot_set/taskflow.cpp
-#)
-#target_include_directories(mandelbrot_set PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-#target_link_libraries(
-#  mandelbrot_set
-#  ${PROJECT_NAME} 
-#  Threads::Threads 
-#  ${TBB_IMPORTED_TARGETS} 
-#  ${OpenMP_CXX_LIBRARIES} 
-#  tf::default_settings
-#)
-#set_target_properties(mandelbrot_set PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-#
-### benchmark 9: Black–Scholes
-#message(STATUS "benchmark 9: Black-Scholes Partial Differential Equation")
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/black_scholes)
-#add_executable(
-#  black_scholes
-#  ${TF_BENCHMARK_DIR}/black_scholes/main.cpp
-#  ${TF_BENCHMARK_DIR}/black_scholes/omp.cpp
-#  ${TF_BENCHMARK_DIR}/black_scholes/tbb.cpp
-#  ${TF_BENCHMARK_DIR}/black_scholes/taskflow.cpp
-#)
-#target_include_directories(black_scholes PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-#target_link_libraries(
-#  black_scholes
-#  ${PROJECT_NAME} 
-#  Threads::Threads 
-#  ${TBB_IMPORTED_TARGETS} 
-#  ${OpenMP_CXX_LIBRARIES} 
-#  tf::default_settings
-#)
-#set_target_properties(black_scholes PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-#
-### benchmark 10: Strassen algorithm
-#message(STATUS "benchmark 10: Strassen matrix multiplication algorithm")
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/strassen)
-#add_executable(
-#  strassen
-#  ${TF_BENCHMARK_DIR}/strassen/main.cpp
-#  ${TF_BENCHMARK_DIR}/strassen/omp.cpp
-#  ${TF_BENCHMARK_DIR}/strassen/tbb.cpp
-#  ${TF_BENCHMARK_DIR}/strassen/taskflow.cpp
-#)
-#target_include_directories(strassen PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-#target_link_libraries(
-#  strassen
-#  ${PROJECT_NAME} 
-#  Threads::Threads 
-#  ${TBB_IMPORTED_TARGETS} 
-#  ${OpenMP_CXX_LIBRARIES} 
-#  tf::default_settings
-#)
-#set_target_properties(strassen PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+if(${TF_ENABLE_CUDA})
+## cuda benchmark 1: heterogeneous traversal
+message(STATUS "cuda benchmark 1: heterogeneous traversal")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/hetero_traversal)
+add_executable(
+  hetero_traversal 
+  ${TF_BENCHMARK_DIR}/hetero_traversal/main.cu
+  ${TF_BENCHMARK_DIR}/hetero_traversal/taskflow.cu
+  ${TF_BENCHMARK_DIR}/hetero_traversal/tbb.cu
+  ${TF_BENCHMARK_DIR}/hetero_traversal/omp.cu
+)
+target_include_directories(hetero_traversal PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  hetero_traversal 
+  ${PROJECT_NAME} 
+  Threads::Threads 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
+)
+set_target_properties(hetero_traversal PROPERTIES COMPILE_FLAGS "-Xcompiler ${OpenMP_CXX_FLAGS}")
+endif(${TF_ENABLE_CUDA})
 
 endif()
 
