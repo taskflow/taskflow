@@ -54,9 +54,9 @@ void TBB(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
   int* gx = nullptr;
   int* gy = nullptr;
   int* gz = nullptr;
-  TF_CHECK_CUDA(cudaMalloc(&gx, N*sizeof(int)), "failed at cudaMalloc");
-  TF_CHECK_CUDA(cudaMalloc(&gy, N*sizeof(int)), "failed at cudaMalloc");
-  TF_CHECK_CUDA(cudaMalloc(&gz, N*sizeof(int)), "failed at cudaMalloc");
+  TF_CHECK_CUDA(cudaMallocManaged(&gx, N*sizeof(int)), "failed at cudaMallocManaged");
+  TF_CHECK_CUDA(cudaMallocManaged(&gy, N*sizeof(int)), "failed at cudaMallocManaged");
+  TF_CHECK_CUDA(cudaMallocManaged(&gz, N*sizeof(int)), "failed at cudaMallocManaged");
 
   std::vector<std::unique_ptr<continue_node<continue_msg>>> tasks(g.num_nodes);
   std::vector<size_t> indegree(g.num_nodes, 0);

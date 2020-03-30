@@ -46,13 +46,13 @@ int main(int argc, char* argv[]) {
 
   for(int i=10; i<=10000; i += 500) {
 
-    double runtime {0.0};
-
     Graph graph(i, 4*i, cuda_ratio);
 
     //std::ofstream ofs(std::string("graph") + std::to_string(graph.size()) + ".txt");
     //graph.dump(ofs);
     //continue;
+    
+    double runtime {0.0};
     
     for(unsigned j=0; j<num_rounds; ++j) {
       if(model == "tf") {
