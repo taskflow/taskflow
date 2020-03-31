@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 
   cudaDeviceReset();
 
-  for(int i=10; i<=10000; i += 500) {
+  for(int i=10; i<=20010; i += 500) {
 
     Graph graph(i, 4*i, cuda_ratio);
 
@@ -53,16 +53,25 @@ int main(int argc, char* argv[]) {
     //continue;
     
     double runtime {0.0};
+    double elapsed;
     
-    for(unsigned j=0; j<num_rounds; ++j) {
+    for(unsigned j=0; j<=num_rounds; ++j) {
+
       if(model == "tf") {
-        runtime += measure_time_taskflow(graph, num_threads, num_gpus).count();
+        elapsed = measure_time_taskflow(graph, num_threads, num_gpus).count();
       }
       else if(model == "tbb") {
-        runtime += measure_time_tbb(graph, num_threads, num_gpus).count();
+        elapsed = measure_time_tbb(graph, num_threads, num_gpus).count();
       }
       else if(model == "omp") {
-        runtime += measure_time_omp(graph, num_threads, num_gpus).count();
+        elapsed = measure_time_omp(graph, num_threads, num_gpus).count();
+      }
+      else {
+        throw std::runtime_error("unknown model");
+      }
+      
+      if(j) {
+        runtime += elapsed;
       }
     }
 
