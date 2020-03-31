@@ -1,4 +1,5 @@
 #include <taskflow/taskflow.hpp>
+#include <fstream>
 
 struct pair_hash {
   template <typename T1, typename T2>
@@ -25,6 +26,28 @@ struct Graph {
 
   std::vector<Edge> edges;
   std::vector<Node> nodes;
+
+  Graph(const std::string& path) :
+    num_gpus  {static_cast<int>(tf::cuda_num_devices())} {
+
+    std::ifstream ifs(path);
+
+    if(!ifs) throw std::runtime_error("failed to open the file");
+    
+    ifs >> num_nodes >> num_edges;
+
+    nodes.resize(num_nodes);
+    for(int i=0; i<num_nodes; ++i) {
+      nodes[i].v = i;
+      ifs >> nodes[i].g;
+    }
+
+    for(int i=0; i<num_edges; ++i) {
+      Edge e;
+      ifs >> e.u >> e.v;
+      edges.push_back(e);
+    }
+  }
 
   Graph(int V, int E, int cuda_ratio) : 
     num_nodes {V}, 

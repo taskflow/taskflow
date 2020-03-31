@@ -30,28 +30,66 @@ int main(int argc, char* argv[]) {
         return "";
      });
 
-  CLI11_PARSE(app, argc, argv);
-   
-  std::cout << "model=" << model << ' '
-            << "num_threads=" << num_threads << ' '
-            << "num_gpus=" << num_gpus << ' '
-            << "num_rounds=" << num_rounds << ' '
-            << std::endl;
+  std::string path;
+  app.add_option("-f,--file", path, "file path");
 
-  std::cout << std::setw(12) << "|V|+|E|"
-            << std::setw(12) << "Runtime"
-             << '\n';
+  CLI11_PARSE(app, argc, argv);
+
 
   cudaDeviceReset();
 
-  for(int i=10; i<=20010; i += 500) {
+  if(path.empty()) {
+     
+    std::cout << "model=" << model << ' '
+              << "num_threads=" << num_threads << ' '
+              << "num_gpus=" << num_gpus << ' '
+              << "num_rounds=" << num_rounds << ' '
+              << std::endl;
 
-    Graph graph(i, 4*i, cuda_ratio);
+    std::cout << std::setw(12) << "|V|+|E|"
+              << std::setw(12) << "Runtime"
+               << '\n';
 
-    //std::ofstream ofs(std::string("graph") + std::to_string(graph.size()) + ".txt");
-    //graph.dump(ofs);
-    //continue;
-    
+    for(int i=10; i<=20010; i += 500) {
+
+      Graph graph(i, 4*i, cuda_ratio);
+
+      //std::ofstream ofs(std::string("graph") + std::to_string(graph.size()) + ".txt");
+      //graph.dump(ofs);
+      //continue;
+      
+      double runtime {0.0};
+      double elapsed;
+      
+      for(unsigned j=0; j<=num_rounds; ++j) {
+
+        if(model == "tf") {
+          elapsed = measure_time_taskflow(graph, num_threads, num_gpus).count();
+        }
+        else if(model == "tbb") {
+          elapsed = measure_time_tbb(graph, num_threads, num_gpus).count();
+        }
+        else if(model == "omp") {
+          elapsed = measure_time_omp(graph, num_threads, num_gpus).count();
+        }
+        else {
+          throw std::runtime_error("unknown model");
+        }
+        
+        if(j) {
+          runtime += elapsed;
+        }
+      }
+
+      std::cout << std::setw(12) << graph.size() 
+                << std::setw(12) << runtime / num_rounds / 1e3
+                << std::endl;
+    }
+  }
+  else {
+
+    Graph graph(path);
+
     double runtime {0.0};
     double elapsed;
     
