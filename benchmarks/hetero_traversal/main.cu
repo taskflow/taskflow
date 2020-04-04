@@ -110,12 +110,14 @@ int main(int argc, char* argv[]) {
       
       if(j) {
         runtime += elapsed;
+        //std::cout << elapsed/1e3 << ',';
       }
     }
 
-    std::cout << std::setw(12) << graph.size() 
-              << std::setw(12) << runtime / num_rounds / 1e3
-              << std::endl;
+    //std::cout << std::setw(12) << graph.size() 
+    //          << std::setw(12) << runtime / num_rounds / 1e3
+    //          << std::endl;
+    std::cout << runtime/num_rounds/1e3 << std::endl;
   }
 
   return 0;

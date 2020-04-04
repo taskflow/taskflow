@@ -262,7 +262,7 @@ inline cudaTask cudaFlow::noop() {
 // Function: kernel
 template <typename F, typename... ArgsT>
 cudaTask cudaFlow::kernel(
-  dim3 grid, dim3 block, size_t shm, F&& func, ArgsT&&... args
+  dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
 ) {
   
   using traits = function_traits<F>;
@@ -270,14 +270,14 @@ cudaTask cudaFlow::kernel(
   static_assert(traits::arity == sizeof...(ArgsT), "arity mismatches");
   
   auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Kernel>{}, 
-    [=] (cudaGraph_t& graph, cudaGraphNode_t& node) {
+    [g, b, s, f=(void*)f, args...] (cudaGraph_t& graph, cudaGraphNode_t& node) {
 
       cudaKernelNodeParams p;
       void* arguments[sizeof...(ArgsT)] = { (void*)(&args)... };
-      p.func = (void*)func;
-      p.gridDim = grid;
-      p.blockDim = block;
-      p.sharedMemBytes = shm;
+      p.func = f;
+      p.gridDim = g;
+      p.blockDim = b;
+      p.sharedMemBytes = s;
       p.kernelParams = arguments;
       p.extra = nullptr;
 
@@ -294,7 +294,7 @@ cudaTask cudaFlow::kernel(
 // Function: kernel
 template <typename F, typename... ArgsT>
 cudaTask cudaFlow::kernel_on(
-  int dev, dim3 grid, dim3 block, size_t shm, F&& func, ArgsT&&... args
+  int d, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
 ) {
   
   using traits = function_traits<F>;
@@ -302,18 +302,18 @@ cudaTask cudaFlow::kernel_on(
   static_assert(traits::arity == sizeof...(ArgsT), "arity mismatches");
   
   auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Kernel>{}, 
-    [=] (cudaGraph_t& graph, cudaGraphNode_t& node) {
+    [d, g, b, s, f=(void*)f, args...] (cudaGraph_t& graph, cudaGraphNode_t& node) {
 
       cudaKernelNodeParams p;
       void* arguments[sizeof...(ArgsT)] = { (void*)(&args)... };
-      p.func = (void*)func;
-      p.gridDim = grid;
-      p.blockDim = block;
-      p.sharedMemBytes = shm;
+      p.func = f;
+      p.gridDim = g;
+      p.blockDim = b;
+      p.sharedMemBytes = s;
       p.kernelParams = arguments;
       p.extra = nullptr;
 
-      cudaScopedDevice ctx(dev);
+      cudaScopedDevice ctx(d);
       TF_CHECK_CUDA(
         ::cudaGraphAddKernelNode(&node, graph, nullptr, 0, &p),
         "failed to create a cudaGraph node in kernel_on task"
@@ -332,7 +332,7 @@ std::enable_if_t<
 > 
 cudaFlow::zero(T* dst, size_t count) {
   auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Memset>{},
-    [=] (cudaGraph_t& graph, cudaGraphNode_t& node) {
+    [dst, count] (cudaGraph_t& graph, cudaGraphNode_t& node) {
       cudaMemsetParams p;
       p.dst = dst;
       p.value = 0;
@@ -357,7 +357,7 @@ std::enable_if_t<
 >
 cudaFlow::fill(T* dst, T value, size_t count) {
   auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Memset>{},
-    [=] (cudaGraph_t& graph, cudaGraphNode_t& node) {
+    [dst, value, count] (cudaGraph_t& graph, cudaGraphNode_t& node) {
       cudaMemsetParams p;
       p.dst = dst;
 
@@ -389,7 +389,7 @@ cudaTask cudaFlow::copy(T* tgt, const T* src, size_t num) {
   using U = std::decay_t<T>;
 
   auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Copy>{}, 
-    [=] (cudaGraph_t& graph, cudaGraphNode_t& node) {
+    [tgt, src, num] (cudaGraph_t& graph, cudaGraphNode_t& node) {
 
       cudaMemcpy3DParms p;
       p.srcArray = nullptr;
@@ -415,7 +415,7 @@ cudaTask cudaFlow::copy(T* tgt, const T* src, size_t num) {
 inline cudaTask cudaFlow::memset(void* dst, int ch, size_t count) {
 
   auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Memset>{},
-    [=] (cudaGraph_t& graph, cudaGraphNode_t& node) {
+    [dst, ch, count] (cudaGraph_t& graph, cudaGraphNode_t& node) {
       cudaMemsetParams p;
       p.dst = dst;
       p.value = ch;
@@ -438,7 +438,7 @@ inline cudaTask cudaFlow::memset(void* dst, int ch, size_t count) {
 // Function: memcpy
 inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
   auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Copy>{},
-    [=] (cudaGraph_t& graph, cudaGraphNode_t& node) {
+    [tgt, src, bytes] (cudaGraph_t& graph, cudaGraphNode_t& node) {
       // Parameters in cudaPitchedPtr
       // d   - Pointer to allocated memory
       // p   - Pitch of allocated memory in bytes

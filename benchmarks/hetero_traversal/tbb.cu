@@ -204,20 +204,18 @@ void TBB(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
       );
     }
   }
-  
   for(const auto& e : g.edges) {
     make_edge(*tasks[e.u], *tasks[e.v]);
     indegree[e.v]++;
   }
-
   for(size_t i=0; i<indegree.size(); ++i) {
     if(indegree[i] == 0) {
       make_edge(*source, *tasks[i]);
     }
   }
-
   source->try_put(continue_msg());
   G.wait_for_all();
+
   
   delete [] cx;
   delete [] cy;
