@@ -588,7 +588,7 @@ T* ObjectPool<T, S>::animate(ArgsT&&... args) {
   h.mutex.lock();
   
   // scan the list of superblocks from most full to least
-  int f = F-1;
+  int f = static_cast<int>(F-1);
   for(; f>=0; f--) {
     if(!_blocklist_is_empty(&h.lists[f])) {
       s = _block_of(h.lists[f].next);
@@ -607,7 +607,7 @@ T* ObjectPool<T, S>::animate(ArgsT&&... args) {
       
       //printf("get a superblock from global heap %lu\n", s->u);
       assert(s->u < M && s->heap == nullptr);
-      f = _bin(s->u + 1);
+      f = static_cast<int>(_bin(s->u + 1));
 
       _blocklist_move_front(&s->list_node, &h.lists[f]);
 
@@ -650,7 +650,7 @@ T* ObjectPool<T, S>::animate(ArgsT&&... args) {
   // take one item from the superblock
   T* mem = _allocate(s);
   
-  int b = _bin(s->u);
+  int b = static_cast<int>(_bin(s->u));
   
   if(b != f) {
     //printf("move superblock from list[%d] to list[%d]\n", f, b);
@@ -710,12 +710,12 @@ void ObjectPool<T, S>::recycle(T* mem) {
       if(s->heap == h) {
         sync = true;
         // deallocate the item from the superblock
-        int f = _bin(s->u);
+        size_t f = _bin(s->u);
         _deallocate(s, mem);
         s->u = s->u - 1;
         h->u = h->u - 1;
 
-        int b = _bin(s->u);
+        size_t b = _bin(s->u);
 
         if(b != f) {
           //printf("move superblock from list[%d] to list[%d]\n", f, b);

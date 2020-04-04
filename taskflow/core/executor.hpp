@@ -373,7 +373,7 @@ inline void Executor::_spawn(unsigned N, Domain d) {
 
   for(unsigned i=0; i<N; ++i, ++id) {
 
-    _workers[id].id = id;
+    _workers[id].id = static_cast<unsigned>(id);
     _workers[id].domain = d;
     _workers[id].executor = this;
     _workers[id].waiter = &_notifier[d]._waiters[i];
@@ -681,7 +681,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
     for(int d=0; d<NUM_DOMAINS; ++d) {
       if(tcount[d] && d != worker->domain) {
         if(_num_actives[d] == 0 && _num_thieves[d] == 0) {
-          _notifier[d].notify_n(tcount[d]);
+          _notifier[d].notify_n(static_cast<unsigned>(tcount[d]));
         }
       }
     }
@@ -700,7 +700,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
   }
   
   for(int d=0; d<NUM_DOMAINS; ++d) {
-    _notifier[d].notify_n(tcount[d]);
+    _notifier[d].notify_n(static_cast<unsigned>(tcount[d]));
   }
 }
 
