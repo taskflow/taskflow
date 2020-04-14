@@ -9,7 +9,6 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 project(Cpp-Taskflow VERSION 2.4.0 LANGUAGES CXX)
 
 # build options
-option(TF_ENABLE_CUDA "Enables build of cuda code" OFF)
 option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
 
 # Include additional language check
@@ -51,8 +50,6 @@ endif()
 
 # NVCC Compiler
 # https://cliutils.gitlab.io/modern-cmake/chapters/packages/CUDA.html
-if(${TF_ENABLE_CUDA})
-
 check_language(CUDA)
 if(CMAKE_CUDA_COMPILER)
   enable_language(CUDA)
@@ -60,11 +57,7 @@ if(CMAKE_CUDA_COMPILER)
     message(STATUS "CMAKE_CUDA_COMPILER_VERSION: ${CMAKE_CUDA_COMPILER_VERSION}")
     message(FATAL_ERROR "\nCpp-Taskflow requires CUDA at least v10")
   endif()
-else()
-  message(FATAL_ERROR "No CUDA support")
-endif()
-
-endif()
+endif(CMAKE_CUDA_COMPILER)
 
 # defult release build
 set(TF_DEFAULT_BUILD_TYPE "Release")
@@ -104,14 +97,14 @@ target_compile_options(
   #$<$<CXX_COMPILER_ID:NVIDIA>:-Xcompiler=-Wall,-Wextra,-Wfatal-errors>
 )
 
-if(${TF_ENABLE_CUDA})
+if(CMAKE_CUDA_COMPILER)
   target_compile_options(
     error_settings
     BEFORE
     INTERFACE
     $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-Wall,-Wextra,-Wfatal-errors>
   )
-endif()
+endif(CMAKE_CUDA_COMPILER)
 
 # additional features
 add_library(features_settings INTERFACE)
@@ -189,7 +182,6 @@ message(STATUS "CMAKE_INSTALL_PREFIX: " ${CMAKE_INSTALL_PREFIX})
 message(STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH})
 message(STATUS "CMAKE_PREFIX_PATH: " ${CMAKE_PREFIX_PATH})
 message(STATUS "PROJECT_NAME: " ${PROJECT_NAME})
-message(STATUS "TF_ENABLE_CUDA: " ${TF_ENABLE_CUDA})
 message(STATUS "TF_BUILD_BENCHMARKS: " ${TF_BUILD_BENCHMARKS})
 message(STATUS "TF_INC_INSTALL_DIR: " ${TF_INC_INSTALL_DIR})
 message(STATUS "TF_LIB_INSTALL_DIR: " ${TF_LIB_INSTALL_DIR})
@@ -276,7 +268,7 @@ target_link_libraries(
 )
 
 #### CUDA examples
-if(${TF_ENABLE_CUDA})
+if(CMAKE_CUDA_COMPILER)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR}/cuda)
 
 add_executable(saxpy ${TF_EXAMPLE_DIR}/cuda/saxpy.cu)
@@ -288,7 +280,7 @@ add_executable(device_property ${TF_EXAMPLE_DIR}/cuda/device_property.cu)
 target_link_libraries(
   device_property ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
-endif(${TF_ENABLE_CUDA})
+endif(CMAKE_CUDA_COMPILER)
 
 # -----------------------------------------------------------------------------
 # Unittest
@@ -491,7 +483,7 @@ add_test(quick_sort ${TF_UTEST_SORT} -tc=QuickSort)
 
 
 #### CUDA unittests
-if(${TF_ENABLE_CUDA})
+if(CMAKE_CUDA_COMPILER)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR}/cuda)
 
@@ -584,7 +576,7 @@ add_test(cuda_matrix.multiply ${TF_UTEST_CUDA_MATRIX} -tc=multiply)
 add_test(cuda_matrix.transpose ${TF_UTEST_CUDA_MATRIX} -tc=transpose)
 add_test(cuda_matrix.product ${TF_UTEST_CUDA_MATRIX} -tc=product)
 
-endif(${TF_ENABLE_CUDA})
+endif(CMAKE_CUDA_COMPILER)
 
 # -----------------------------------------------------------------------------
 # Benchmarking (enabled by TF_BUILD_BENCHMARKS)
@@ -752,7 +744,7 @@ target_link_libraries(
 set_target_properties(matrix_multiplication PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
-if(${TF_ENABLE_CUDA})
+if(CMAKE_CUDA_COMPILER)
 ## cuda benchmark 1: heterogeneous traversal
 message(STATUS "cuda benchmark 1: heterogeneous traversal")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/hetero_traversal)
@@ -773,7 +765,7 @@ target_link_libraries(
   tf::default_settings
 )
 set_target_properties(hetero_traversal PROPERTIES COMPILE_FLAGS "-Xcompiler ${OpenMP_CXX_FLAGS}")
-endif(${TF_ENABLE_CUDA})
+endif(CMAKE_CUDA_COMPILER)
 
 endif()
 
