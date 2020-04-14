@@ -18,6 +18,7 @@ To download the newest version of Cpp-Taskflow, please clone from <a href="https
 @li enhancing the performance of the work-stealing algorithm
 @li enhancing the interface of concurrent CPU-GPU tasking (added tf::cudaFlow::zero, tf::cudaFlow::memset, tf::cudaFlow::memcpy, tf::cudaFlow::fill)
 @li enhancing unittests for tf::cudaFlow
+@li adding per-thread stream to avoid synchronizing with the default stream in running cudaFlow
 
 @section master-branch_bug_fixes Bug Fixes 
 

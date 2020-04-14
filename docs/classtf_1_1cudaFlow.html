@@ -100,7 +100,7 @@ $(document).ready(function(){initNavTree('classtf_1_1cudaFlow.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p>Building methods for a cuda task dependency graph.  
+<p>methods for building a CUDA task dependency graph.  
  <a href="classtf_1_1cudaFlow.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="cuda__flow_8hpp_source.html">cuda_flow.hpp</a>&gt;</code></p>
@@ -108,7 +108,7 @@ $(document).ready(function(){initNavTree('classtf_1_1cudaFlow.html','');});
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8e17934efb9e502acc8491b49d9bdf7b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a8e17934efb9e502acc8491b49d9bdf7b">cudaFlow</a> (cudaGraph &amp;graph)</td></tr>
-<tr class="memdesc:a8e17934efb9e502acc8491b49d9bdf7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a <a class="el" href="classtf_1_1cudaFlow.html" title="Building methods for a cuda task dependency graph. ">cudaFlow</a> builder object  <a href="#a8e17934efb9e502acc8491b49d9bdf7b">More...</a><br /></td></tr>
+<tr class="memdesc:a8e17934efb9e502acc8491b49d9bdf7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> builder object  <a href="#a8e17934efb9e502acc8491b49d9bdf7b">More...</a><br /></td></tr>
 <tr class="separator:a8e17934efb9e502acc8491b49d9bdf7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1926f45a038d8faa9c1b1ee43fd29a93"><td class="memItemLeft" align="right" valign="top"><a id="a1926f45a038d8faa9c1b1ee43fd29a93"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a1926f45a038d8faa9c1b1ee43fd29a93">empty</a> () const</td></tr>
@@ -144,19 +144,15 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:af03e04771b655f9e629eb4c22e19b19f"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a copy task  <a href="#af03e04771b655f9e629eb4c22e19b19f">More...</a><br /></td></tr>
 <tr class="separator:af03e04771b655f9e629eb4c22e19b19f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8c0664e4dc3748f043eaa31b69c11cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#ad8c0664e4dc3748f043eaa31b69c11cc">device</a> (int device)</td></tr>
-<tr class="memdesc:ad8c0664e4dc3748f043eaa31b69c11cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a device to launch the <a class="el" href="classtf_1_1cudaFlow.html" title="Building methods for a cuda task dependency graph. ">cudaFlow</a>  <a href="#ad8c0664e4dc3748f043eaa31b69c11cc">More...</a><br /></td></tr>
+<tr class="memdesc:ad8c0664e4dc3748f043eaa31b69c11cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a device to launch the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a>  <a href="#ad8c0664e4dc3748f043eaa31b69c11cc">More...</a><br /></td></tr>
 <tr class="separator:ad8c0664e4dc3748f043eaa31b69c11cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2905a7772fb2c25753e1ae72bb05861b"><td class="memItemLeft" align="right" valign="top"><a id="a2905a7772fb2c25753e1ae72bb05861b"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a2905a7772fb2c25753e1ae72bb05861b">device</a> () const</td></tr>
-<tr class="memdesc:a2905a7772fb2c25753e1ae72bb05861b"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the device associated with the <a class="el" href="classtf_1_1cudaFlow.html" title="Building methods for a cuda task dependency graph. ">cudaFlow</a> <br /></td></tr>
+<tr class="memdesc:a2905a7772fb2c25753e1ae72bb05861b"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the device associated with the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> <br /></td></tr>
 <tr class="separator:a2905a7772fb2c25753e1ae72bb05861b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ccc24918db4d63c50f26b68d17fd452"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a5ccc24918db4d63c50f26b68d17fd452">stream</a> (cudaStream_t stream)</td></tr>
-<tr class="memdesc:a5ccc24918db4d63c50f26b68d17fd452"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a stream to launch the <a class="el" href="classtf_1_1cudaFlow.html" title="Building methods for a cuda task dependency graph. ">cudaFlow</a>  <a href="#a5ccc24918db4d63c50f26b68d17fd452">More...</a><br /></td></tr>
+<tr class="memdesc:a5ccc24918db4d63c50f26b68d17fd452"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a stream to launch the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a>  <a href="#a5ccc24918db4d63c50f26b68d17fd452">More...</a><br /></td></tr>
 <tr class="separator:a5ccc24918db4d63c50f26b68d17fd452"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a4311fa88ad71a71c2c9f9cebd67c4c"><td class="memItemLeft" align="right" valign="top"><a id="a3a4311fa88ad71a71c2c9f9cebd67c4c"></a>
-cudaStream_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a3a4311fa88ad71a71c2c9f9cebd67c4c">stream</a> () const</td></tr>
-<tr class="memdesc:a3a4311fa88ad71a71c2c9f9cebd67c4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the stream associated with the <a class="el" href="classtf_1_1cudaFlow.html" title="Building methods for a cuda task dependency graph. ">cudaFlow</a> <br /></td></tr>
-<tr class="separator:a3a4311fa88ad71a71c2c9f9cebd67c4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -165,7 +161,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></t
 <tr class="separator:a763b2f90bc53f92d680a635fe28e858e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Building methods for a cuda task dependency graph. </p>
+<div class="textblock"><p>methods for building a CUDA task dependency graph. </p>
+<p>A <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> is a high-level interface to manipulate GPU tasks using the task dependency graph model. The class provides a set of methods for creating and launch different tasks on one or multiple CUDA devices, for instance, kernel tasks, data transfer tasks, and memory operation tasks. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8e17934efb9e502acc8491b49d9bdf7b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8e17934efb9e502acc8491b49d9bdf7b">&#9670;&nbsp;</a></span>cudaFlow()</h2>
@@ -191,7 +188,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></t
 </table>
 </div><div class="memdoc">
 
-<p>constructs a <a class="el" href="classtf_1_1cudaFlow.html" title="Building methods for a cuda task dependency graph. ">cudaFlow</a> builder object </p>
+<p>constructs a <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> builder object </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">graph</td><td>a cudaGraph to manipulate </td></tr>
@@ -280,7 +277,7 @@ template&lt;typename T , std::enable_if_t&lt;!std::is_same&lt; T, void &gt;::val
 </table>
 </div><div class="memdoc">
 
-<p>assigns a device to launch the <a class="el" href="classtf_1_1cudaFlow.html" title="Building methods for a cuda task dependency graph. ">cudaFlow</a> </p>
+<p>assigns a device to launch the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">device</td><td>target device identifier </td></tr>
@@ -645,7 +642,7 @@ template&lt;typename F , typename... ArgsT&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>assigns a stream to launch the <a class="el" href="classtf_1_1cudaFlow.html" title="Building methods for a cuda task dependency graph. ">cudaFlow</a> </p>
+<p>assigns a stream to launch the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">stream</td><td>target stream identifier </td></tr>

@@ -130,7 +130,7 @@ The code below creates a %cudaFlow that runs on the GPU device 2 through @c my_s
 @code{.cpp}
 taskflow.emplace([](tf::cudaFlow& cf) {
   cf.device(2);
-  cf.stream(my_stream);     // by default, every cudaFlow runs on default stream 0
+  cf.stream(my_stream);  // by default, a cudaFlow runs on a per-worker stream managed by the executor
   // adding more cudaTasks below (all tasks are placed on GPU 2 unless specified explicitly)
 });
 @endcode
