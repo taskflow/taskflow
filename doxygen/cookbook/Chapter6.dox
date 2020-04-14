@@ -310,10 +310,55 @@ taskflow.emplace([&](tf::cudaFlow& cf){
 @section C6_Granularity Granularity
 
 Creating a %cudaFlow has certain overhead, which means fined-grained tasking 
-such as one GPU operation per %cudaFlow can kill
-the performance.
+such as one GPU operation per %cudaFlow may not give you any performance gain.
 You should aggregate as many GPU operations as possible in a %cudaFlow
 to launch the entire graph once instead of separate calls.
+For example, the following code creates the saxpy task graph at a very fine-grained level
+using one %cudaFlow per GPU operation.
+
+@code{.cpp}
+tf::Task h2d_x = taskflow.emplace([&](tf::cudaFlow& cf) {
+  cf.copy(dx, hx.data(), N);
+};
+
+tf::Task h2d_y = taskflow.emplace([&](tf::cudaFlow& cf) {
+  cf.copy(dy, hy.data(), N);
+};
+
+tf::Task d2h_x = taskflow.emplace([&](tf::cudaFlow& cf) {
+  cf.copy(hx.data(), dx, N);
+};
+
+tf::Task d2h_y = taskflow.emplace([&](tf::cudaFlow& cf) {
+  cf.copy(hy.data(), dy, N);
+};
+
+tf::Task kernel = taskflow.emplace([&](tf::cudaFlow& cf) {
+  cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy);
+};
+
+kernel.succeed(h2d_x, h2d_y)
+      .precede(d2h_x, d2h_y);
+@endcode
+
+The following code aggregates the five GPU operations
+using one %cudaFlow to deliver much better performance.
+
+@code{.cpp}
+tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
+  tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N);
+  tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N);
+  tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N);
+  tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N);
+  tf::cudaTask kernel = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy);
+  kernel.succeed(h2d_x, h2d_y)
+        .precede(d2h_x, d2h_y);
+});
+@endcode
+
+We encourage users to study and understand the parallel structure of their applications,
+in order to come up with the best granularity of task decomposition.
+A refined task graph can have significant performance difference from the raw counterpart.
 
 */
 
