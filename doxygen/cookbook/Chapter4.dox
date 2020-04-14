@@ -2,9 +2,10 @@ namespace tf {
 
 /** @page chapter4 C4: Conditional Tasking
 
-Real parallel workloads often require dynamic flow controls.
+Parallel workloads often require making control-flow decisions across dependent tasks.
 Cpp-Taskflow supports an very efficient interface of conditional tasking
-for users to implement dynamic and cyclic control flows that are otherwise difficult to do with existing task programming frameworks.
+for users to implement general control flow such as dynamic flows, cycles, and conditionals 
+that are otherwise difficult to do with existing frameworks.
 
 @section C4_CreateAConditionTask Create a Condition Task
 

@@ -20,18 +20,13 @@ Cpp-Taskflow lets you quickly implement task decomposition strategies
 that incorporate both regular and irregular compute patterns,
 together with an efficient *work-stealing* scheduler to optimize your multithreaded performance.
 
-| Without Cpp-Taskflow | With Cpp-Taskflow |
-| -------------------- | ----------------- |
-| ![](image/profile_without_taskflow.gif) | ![](image/profile_with_taskflow.gif) |
-
-Cpp-Taskflow has a unified interface for both *static* tasking and *dynamic* tasking,
-allowing users to quickly master our parallel task programming model in a natural idiom.
-
 | [Static Tasking](#get-started-with-cpp-taskflow) | [Dynamic Tasking](#dynamic-tasking) |
 | :------------: | :-------------: |
 | ![](image/static_graph.svg) | <img align="right" src="image/dynamic_graph.svg" width="100%"> |
 
-Cpp-Taskflow supports conditional tasking for you to implement cyclic and dynamic control flows that are otherwise difficult to do with existing task programming frameworks.
+Cpp-Taskflow supports conditional tasking for you to make rapid control-flow decisions
+across dependent tasks to implement cycles and conditions that were otherwise difficult to do
+with existing tools.
 
 | [Conditional Tasking](#conditional-tasking) |
 | :-----------------: |

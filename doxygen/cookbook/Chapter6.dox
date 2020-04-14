@@ -242,13 +242,78 @@ Running the program gives the following
 @endcode
 
 Even if %cudaFlow provides interface for device placement,
-it is users' responsibility to ensure correct memory access.
+it is your responsibility to ensure correct memory access.
 For example, you may not allocate a memory block on GPU 2 using @c cudaMalloc and 
 access it from a kernel on GPU 1.
 A safe practice is to allocate unified memory blocks using @c cudaMallocManaged 
 and let the CUDA runtime  perform automatic memory migration between processors
 (as demonstrated in the code example above).
 
+As the same example, you may create two %cudaFlows for the two kernels on two GPUs, respectively.
+The overhead of creating a kernel on the same device as a %cudaFlow is
+much less than the different one. 
+
+@code{.cpp}
+tf::Task cudaFlow_on_gpu1 = taskflow.emplace([&](tf::cudaFlow& cf){
+  cf.device(1);
+  cf.kernel((N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z1);
+});
+
+tf::Task cudaFlow_on_gpu3 = taskflow.emplace([&](tf::cudaFlow& cf){
+  cf.device(3);
+  cf.kernel((N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z2);
+});
+@endcode
+
+@section C6_data_operations Data Operations
+
+cudaFlow provides a set of methods for users to manipulate device memory data.
+There are two categories, raw data and typed data.
+Raw data operations are methods with prefix @c mem, such as @c memcpy and @c memset,
+that take action on a device memory area in @em bytes.
+Typed data operations such as @c copy, @c fill, and @c zero,
+take <i>logical count</i> of elements.
+For instance, the following three methods have the same result of zeroing
+<tt>sizeof(int)*count</tt> bytes of the device memory area pointed by @c target.
+
+@code{.cpp}
+int* target;
+cudaMalloc(&target, count*sizeof(int));
+
+taskflow.emplace([&](tf::cudaFlow& cf){
+  tf::cudaTask memset_target = cf.memset(target, 0, sizeof(int) * count);
+  tf::cudaTask same_as_above = cf.fill(target, 0, count);
+  tf::cudaTask same_as_above_again = cf.zero(target, count);
+});
+@endcode
+
+The method cudaFlow::fill is a more powerful version of cudaFlow::memset.
+It can fill a memory area with any value of type @c T, 
+given that <tt>sizeof(T)</tt> is 1, 2, or 4 bytes.
+For example, the following code sets each element in the array @c target to 1234.
+
+@code{.cpp}
+taskflow.emplace([&](tf::cudaFlow& cf){
+  cf.fill(target, 1234, count);
+});
+@endcode
+
+Similar concept applies to cudaFlow::memcpy and cudaFlow::copy as well.
+
+@code{.cpp}
+taskflow.emplace([&](tf::cudaFlow& cf){
+  tf::cudaTask memcpy_target = cf.memcpy(target, source, sizeof(int) * count);
+  tf::cudaTask same_as_above = cf.copy(target, source, count);
+});
+@endcode
+
+@section C6_Granularity Granularity
+
+Creating a %cudaFlow has certain overhead, which means fined-grained tasking 
+such as one GPU operation per %cudaFlow can kill
+the performance.
+You should aggregate as many GPU operations as possible in a %cudaFlow
+to launch the entire graph once instead of separate calls.
 
 */
 

@@ -51,6 +51,14 @@ Cpp-Taskflow implemented a very efficient
 to execute task dependency graphs.
 The source code is available at @c taskflow/core/executor.hpp.
 
+@subsection GeneralQuestion8 Q8: What is the overhead of taskflow?
+
+Creating a taskflow has certain overhead. For example, creating a task and a dependency 
+takes about 61 and 14 nanoseconds in our system (Intel 4-core CPU at 2.00GHz).
+The time is amortized over 1M operations, since we have implemented an object pool 
+to recycle tasks for minimal overhead.
+
+
 ----
 
 
@@ -88,7 +96,8 @@ You can have multiple threads run their taskflows on one executor.
 
 @subsection ProgrammingQuestions5 Q5: My program hangs and never returns after dispatching a taskflow graph. What's wrong?
 
-When the program hangs forever it is very likely your taskflow graph has a cycle.
+When the program hangs forever it is very likely your taskflow graph has a cycle or 
+not properly conditioned (see @ref chapter4).
 Try the tf::Taskflow::dump method to debug the graph before dispatching your taskflow graph.
 
 

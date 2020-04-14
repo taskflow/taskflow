@@ -1,7 +1,7 @@
 var files_dup =
 [
     [ "cuda_error.hpp", "cuda__error_8hpp_source.html", null ],
-    [ "cuda_flow_builder.hpp", "cuda__flow__builder_8hpp_source.html", null ],
+    [ "cuda_flow.hpp", "cuda__flow_8hpp_source.html", null ],
     [ "cuda_task.hpp", "cuda__task_8hpp_source.html", null ],
     [ "error.hpp", "error_8hpp_source.html", null ],
     [ "executor.hpp", "executor_8hpp_source.html", null ],

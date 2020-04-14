@@ -1,8 +1,31 @@
+/*
+@ @licstart  The following is the entire license notice for the
+JavaScript code in this file.
+
+Copyright (C) 1997-2017 by Dimitri van Heesch
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+@licend  The above is the entire license notice
+for the JavaScript code in this file
+*/
 var NAVTREE =
 [
   [ "Cpp-Taskflow", "index.html", [
     [ "Quick Start", "index.html", [
-      [ "Modern C++ Parallel Task Programming Library", "index.html#ModernCppParallelTaskProgrammingLibrary", [
+      [ "Modern C++ Parallel and Heterogeneous Task Programming", "index.html#ModernCppParallelTaskProgrammingLibrary", [
         [ "Static and Dynamic Tasking", "index.html#StaticDynamicTasking", null ],
         [ "Conditional Tasking", "index.html#ConditionalTasking", null ],
         [ "Composable Tasking", "index.html#ComposableTasking", null ],
@@ -25,7 +48,8 @@ var NAVTREE =
         [ "Q4: How many tasks can Cpp-Taskflow handle?", "FAQ.html#GeneralQuestion4", null ],
         [ "Q5: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?", "FAQ.html#GeneralQuestion5", null ],
         [ "Q6: Does Cpp-Taskflow have backward compatibility with C++03/98/11?", "FAQ.html#GeneralQuestion6", null ],
-        [ "Q7: How does Cpp-Taskflow schedule tasks?", "FAQ.html#GeneralQuestion7", null ]
+        [ "Q7: How does Cpp-Taskflow schedule tasks?", "FAQ.html#GeneralQuestion7", null ],
+        [ "Q8: What is the overhead of taskflow?", "FAQ.html#GeneralQuestion8", null ]
       ] ],
       [ "Programming Questions", "FAQ.html#ProgrammingQuestions", [
         [ "Q1: What is the difference between Cpp-Taskflow threads and workers?", "FAQ.html#ProgrammingQuestions1", null ],
@@ -49,8 +73,8 @@ var NAVTREE =
         [ "Functions", "functions_func.html", null ]
       ] ]
     ] ],
-    [ "Files", null, [
-      [ "File List", "files.html", "files" ]
+    [ "Files", "files.html", [
+      [ "File List", "files.html", "files_dup" ]
     ] ]
   ] ]
 ];
@@ -58,7 +82,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"release-2-2-0.html#release-2-2-0_breaks_and_deprecated_features"
+"release-2-1-0.html#release-2-1-0_improvements_enhancements"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

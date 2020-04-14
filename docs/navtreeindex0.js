@@ -10,6 +10,7 @@ var NAVTREEINDEX0 =
 "FAQ.html#GeneralQuestion5":[3,0,4],
 "FAQ.html#GeneralQuestion6":[3,0,5],
 "FAQ.html#GeneralQuestion7":[3,0,6],
+"FAQ.html#GeneralQuestion8":[3,0,7],
 "FAQ.html#GeneralQuestions":[3,0],
 "FAQ.html#ProgrammingQuestions":[3,1],
 "FAQ.html#ProgrammingQuestions1":[3,1,0],
@@ -54,7 +55,9 @@ var NAVTREEINDEX0 =
 "chapter6.html":[2,6],
 "chapter6.html#C6_Compile_a_cudaFlow_program":[2,6,1],
 "chapter6.html#C6_Create_a_cudaFlow":[2,6,0],
+"chapter6.html#C6_Granularity":[2,6,5],
 "chapter6.html#C6_configure_the_number_of_gpu_workers":[2,6,2],
+"chapter6.html#C6_data_operations":[2,6,4],
 "chapter6.html#C6_run_a_cudaflow_on_multiple_gpus":[2,6,3],
 "classes.html":[5,1],
 "classtf_1_1Executor.html":[5,0,0,2],
@@ -246,8 +249,5 @@ var NAVTREEINDEX0 =
 "release-2-1-0.html":[1,5],
 "release-2-1-0.html#release-2-1-0_breaks_and_deprecated_features":[1,5,3],
 "release-2-1-0.html#release-2-1-0_bug_fixes":[1,5,4],
-"release-2-1-0.html#release-2-1-0_download":[1,5,0],
-"release-2-1-0.html#release-2-1-0_improvements_enhancements":[1,5,2],
-"release-2-1-0.html#release-2-1-0_new_features":[1,5,1],
-"release-2-2-0.html":[1,4]
+"release-2-1-0.html#release-2-1-0_download":[1,5,0]
 };

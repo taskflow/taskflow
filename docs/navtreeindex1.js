@@ -1,5 +1,8 @@
 var NAVTREEINDEX1 =
 {
+"release-2-1-0.html#release-2-1-0_improvements_enhancements":[1,5,2],
+"release-2-1-0.html#release-2-1-0_new_features":[1,5,1],
+"release-2-2-0.html":[1,4],
 "release-2-2-0.html#release-2-2-0_breaks_and_deprecated_features":[1,4,2],
 "release-2-2-0.html#release-2-2-0_download":[1,4,0],
 "release-2-2-0.html#release-2-2-0_new_features":[1,4,1],
