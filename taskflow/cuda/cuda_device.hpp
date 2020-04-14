@@ -7,10 +7,10 @@ namespace tf {
 /**
 @brief queries the number of available devices
 */
-inline unsigned cuda_num_devices() {
+inline size_t cuda_num_devices() {
 	int N = 0;
   TF_CHECK_CUDA(cudaGetDeviceCount(&N), "failed to get device count");
-	return N;
+	return static_cast<size_t>(N);
 }
 
 /**

@@ -32,7 +32,8 @@ an efficient work-stealing scheduling algorithm to run a taskflow.
 class Executor {
 
   struct Worker {
-    unsigned id;
+    size_t id;
+    size_t victim;
     Domain domain;
     Executor* executor;
     Notifier::Waiter* waiter;
@@ -58,14 +59,14 @@ class Executor {
     @brief constructs the executor with N/M cpu/gpu worker threads
     */
     explicit Executor(
-      unsigned N = std::thread::hardware_concurrency(),
-      unsigned M = cuda_num_devices()
+      size_t N = std::thread::hardware_concurrency(),
+      size_t M = cuda_num_devices()
     );
 #else
     /**
     @brief constructs the executor with N worker threads
     */
-    explicit Executor(unsigned N = std::thread::hardware_concurrency());
+    explicit Executor(size_t N = std::thread::hardware_concurrency());
 #endif
     
     /**
@@ -224,13 +225,11 @@ class Executor {
     
     std::unique_ptr<ExecutorObserverInterface> _observer;
     
-    unsigned _find_victim(unsigned);
-
     PerThread& _per_thread() const;
 
     bool _wait_for_task(Worker&, Node*&);
     
-    void _spawn(unsigned, Domain);
+    void _spawn(size_t, Domain);
     void _worker_loop(Worker&);
     void _exploit_task(Worker&, Node*&);
     void _explore_task(Worker&, Node*&);
@@ -257,7 +256,7 @@ class Executor {
 
 #ifdef TF_ENABLE_CUDA
 // Constructor
-inline Executor::Executor(unsigned N, unsigned M) :
+inline Executor::Executor(size_t N, size_t M) :
   _workers      {N + M},
   _cuda_devices {cuda_num_devices()},
   _notifier     {Notifier(N), Notifier(M)} {
@@ -279,7 +278,7 @@ inline Executor::Executor(unsigned N, unsigned M) :
   for(size_t i=0; i<_cuda_devices.size(); ++i) {
     _cuda_devices[i].streams.resize(M);
     cudaScopedDevice ctx(i);
-    for(unsigned m=0; m<M; ++m) {
+    for(size_t m=0; m<M; ++m) {
       TF_CHECK_CUDA(
         cudaStreamCreate(&(_cuda_devices[i].streams[m])),
         "failed to create a cudaStream for worker ", m, " on device ", i
@@ -293,7 +292,7 @@ inline Executor::Executor(unsigned N, unsigned M) :
 
 #else
 // Constructor
-inline Executor::Executor(unsigned N) : 
+inline Executor::Executor(size_t N) : 
   _workers  {N},
   _notifier {Notifier(N)} {
   
@@ -365,15 +364,16 @@ inline int Executor::this_worker_id() const {
 }
 
 // Procedure: _spawn
-inline void Executor::_spawn(unsigned N, Domain d) {
+inline void Executor::_spawn(size_t N, Domain d) {
   
   auto id = _threads.size();
 
   _id_offset[d] = id;
 
-  for(unsigned i=0; i<N; ++i, ++id) {
+  for(size_t i=0; i<N; ++i, ++id) {
 
-    _workers[id].id = static_cast<unsigned>(id);
+    _workers[id].id = id;
+    _workers[id].victim = id;
     _workers[id].domain = d;
     _workers[id].executor = this;
     _workers[id].waiter = &_notifier[d]._waiters[i];
@@ -403,15 +403,15 @@ inline void Executor::_spawn(unsigned N, Domain d) {
 }
 
 // Function: _explore_task
-inline void Executor::_explore_task(Worker& thief, Node*& t) {
+inline void Executor::_explore_task(Worker& w, Node*& t) {
   
-  //assert(_workers[thief].wsq.empty());
+  //assert(_workers[w].wsq.empty());
   assert(!t);
 
-  const auto d = thief.domain;
+  const auto d = w.domain;
 
-  const unsigned l = 0;
-  const unsigned r = static_cast<unsigned>(_workers.size()) - 1;
+  const size_t l = 0;
+  const size_t r = _workers.size() - 1;
 
   const size_t F = (_workers.size() + 1) << 1;
   const size_t Y = 100;
@@ -419,12 +419,12 @@ inline void Executor::_explore_task(Worker& thief, Node*& t) {
   size_t f = 0;
   size_t y = 0;
 
-  // explore
+  /*// explore
   while(!_done) {
   
-    unsigned vtm = std::uniform_int_distribution<unsigned>{l, r}(thief.rdgen);
+    size_t vtm = std::uniform_int_distribution<size_t>{l, r}(w.rdgen);
       
-    t = (vtm == thief.id) ? _wsq[d].steal() : _workers[vtm].wsq[d].steal();
+    t = (vtm == w.id) ? _wsq[d].steal() : _workers[vtm].wsq[d].steal();
 
     if(t) {
       break;
@@ -436,7 +436,26 @@ inline void Executor::_explore_task(Worker& thief, Node*& t) {
         break;
       }
     }
-  }
+  } */
+
+  do {
+    
+    t = (w.id == w.victim) ? _wsq[d].steal() : _workers[w.victim].wsq[d].steal();
+
+    if(t) {
+      break;
+    }
+    
+    if(f++ > F) {
+      std::this_thread::yield();
+      if(y++ > Y) {
+        break;
+      }
+    }
+    
+    w.victim = std::uniform_int_distribution<size_t>{l, r}(w.rdgen);
+
+  } while(!_done);
 
 }
 
@@ -681,7 +700,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
     for(int d=0; d<NUM_DOMAINS; ++d) {
       if(tcount[d] && d != worker->domain) {
         if(_num_actives[d] == 0 && _num_thieves[d] == 0) {
-          _notifier[d].notify_n(static_cast<unsigned>(tcount[d]));
+          _notifier[d].notify_n(tcount[d]);
         }
       }
     }
@@ -700,7 +719,7 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
   }
   
   for(int d=0; d<NUM_DOMAINS; ++d) {
-    _notifier[d].notify_n(static_cast<unsigned>(tcount[d]));
+    _notifier[d].notify_n(tcount[d]);
   }
 }
 

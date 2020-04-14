@@ -129,7 +129,7 @@ for graph in $FILES; do
   sumj=0;
   sump=0;
   sumt=0;
-  R=10
+  R=2
   for((r=1; r<=$R; r=r+1)) do
     res=`eval "${PERF} ./hpx $graph 4 1 1 > /dev/null" 2>&1`    
     j=$(echo "$res" | grep "power" | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
