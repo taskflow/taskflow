@@ -271,14 +271,19 @@ target_link_libraries(
 if(CMAKE_CUDA_COMPILER)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR}/cuda)
 
+add_executable(device_property ${TF_EXAMPLE_DIR}/cuda/device_property.cu)
+target_link_libraries(
+  device_property ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
+
 add_executable(saxpy ${TF_EXAMPLE_DIR}/cuda/saxpy.cu)
 target_link_libraries(
   saxpy ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
 
-add_executable(device_property ${TF_EXAMPLE_DIR}/cuda/device_property.cu)
+add_executable(matmul ${TF_EXAMPLE_DIR}/cuda/matmul.cu)
 target_link_libraries(
-  device_property ${PROJECT_NAME} Threads::Threads tf::default_settings
+  matmul ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
 endif(CMAKE_CUDA_COMPILER)
 
