@@ -95,31 +95,31 @@ int main(int argc, const char* argv[]) {
   tf::Taskflow taskflow("K-Means");
   
   auto allocate_px = taskflow.emplace([&](){
-    cudaMalloc(&d_px, N*sizeof(float)); 
+    TF_CHECK_CUDA(cudaMalloc(&d_px, N*sizeof(float)), "failed to allocate d_px"); 
   }).name("allocate_px");
 
   auto allocate_py = taskflow.emplace([&](){
-    cudaMalloc(&d_py, N*sizeof(float)); 
+    TF_CHECK_CUDA(cudaMalloc(&d_py, N*sizeof(float)), "failed to allocate d_py"); 
   }).name("allocate_py");
   
   auto allocate_mx = taskflow.emplace([&](){
-    cudaMalloc(&d_mx, K*sizeof(float)); 
+    TF_CHECK_CUDA(cudaMalloc(&d_mx, K*sizeof(float)), "failed to allocate d_mx"); 
   }).name("allocate_mx");
 
   auto allocate_my = taskflow.emplace([&](){
-    cudaMalloc(&d_my, K*sizeof(float)); 
+    TF_CHECK_CUDA(cudaMalloc(&d_my, K*sizeof(float)), "failed to allocate d_my"); 
   }).name("allocate_my");
 
   auto allocate_sx = taskflow.emplace([&](){
-    cudaMalloc(&d_sx, K*sizeof(float)); 
+    TF_CHECK_CUDA(cudaMalloc(&d_sx, K*sizeof(float)), "failed to allocate d_sx"); 
   }).name("allocate_sx");
 
   auto allocate_sy = taskflow.emplace([&](){
-    cudaMalloc(&d_sy, K*sizeof(float)); 
+    TF_CHECK_CUDA(cudaMalloc(&d_sy, K*sizeof(float)), "failed to allocate d_sy"); 
   }).name("allocate_sy");
 
   auto allocate_c = taskflow.emplace([&](){
-    cudaMalloc(&d_c, K*sizeof(float));
+    TF_CHECK_CUDA(cudaMalloc(&d_c, K*sizeof(float)), "failed to allocate dc");
   }).name("allocate_c");
 
   auto h2d = taskflow.emplace([&](tf::cudaFlow& cf){
