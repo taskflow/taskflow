@@ -285,6 +285,11 @@ add_executable(matmul ${TF_EXAMPLE_DIR}/cuda/matmul.cu)
 target_link_libraries(
   matmul ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
+
+add_executable(kmeans ${TF_EXAMPLE_DIR}/cuda/kmeans.cu)
+target_link_libraries(
+  kmeans ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
 endif(CMAKE_CUDA_COMPILER)
 
 # -----------------------------------------------------------------------------
