@@ -62,7 +62,14 @@ auto gpu(int M, int N, int K) {
 
   }).name("cudaFlow");
 
-  cudaFlow.succeed(allocate_a, allocate_b, allocate_c);
+  auto free = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaFree(da), "failed to free da");  
+    TF_CHECK_CUDA(cudaFree(db), "failed to free db");  
+    TF_CHECK_CUDA(cudaFree(dc), "failed to free dc");  
+  }).name("free");
+
+  cudaFlow.succeed(allocate_a, allocate_b, allocate_c)
+          .precede(free);
   
   executor.run(taskflow).wait();
   

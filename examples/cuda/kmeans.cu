@@ -1,12 +1,174 @@
+// This program implements the k-means clustering algorithm in three forms:
+//  - sequential cpu
+//  - parallel cpu
+//  - gpu
+
 #include <taskflow/taskflow.hpp>
 
+#include <iomanip>
 #include <cfloat>
 #include <climits>
 
-// L2 distance
-__device__ float l2(float x_1, float y_1, float x_2, float y_2) {
-  return (x_1 - x_2) * (x_1 - x_2) + (y_1 - y_2) * (y_1 - y_2);
+#define L2(x1, y1, x2, y2) ((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2))
+
+// ----------------------------------------------------------------------------
+// CPU (sequential) implementation
+// ----------------------------------------------------------------------------
+
+// run k-means on cpu
+std::pair<std::vector<float>, std::vector<float>> cpu_seq(
+ const int N, 
+ const int K, 
+ const int M,
+ const std::vector<float>& px,
+ const std::vector<float>& py
+) {
+
+  std::vector<int> c(K);
+  std::vector<float> sx(K), sy(K), mx(K), my(K);
+  
+  // initial centroids
+  for(int i=0; i<K; ++i) {
+    mx[i] = px[i];
+    my[i] = py[i];
+  }
+  
+  for(int m=0; m<M; m++) {
+  
+    // clear the storage
+    for(int k=0; k<K; ++k) {
+      sx[k] = 0.0f;
+      sy[k] = 0.0f;
+      c [k] = 0;
+    }
+
+    // find the best k (cluster id) for each point
+    for(int i=0; i<N; ++i) {
+      float x = px[i];
+      float y = py[i];
+      float best_d = std::numeric_limits<float>::max();
+      int best_k = 0;
+      for (int k = 0; k < K; ++k) {
+        const float d = L2(x, y, mx[k], my[k]);
+        if (d < best_d) {
+          best_d = d;
+          best_k = k;
+        }
+      }
+      sx[best_k] += x;
+      sy[best_k] += y;
+      c [best_k] += 1;
+    }
+    
+    // update the centroid
+    for(int k=0; k<K; k++) {
+      const int count = max(1, c[k]);  // turn 0/0 to 0/1
+      mx[k] = sx[k] / count;
+      my[k] = sy[k] / count;
+    }
+  }
+  
+  return {mx, my};
 }
+
+// ----------------------------------------------------------------------------
+// CPU (parallel) implementation
+// ----------------------------------------------------------------------------
+
+// run k-means on cpu (parallel)
+std::pair<std::vector<float>, std::vector<float>> cpu_par(
+ const int N, 
+ const int K, 
+ const int M,
+ const std::vector<float>& px,
+ const std::vector<float>& py
+) {
+
+  const auto num_threads = std::thread::hardware_concurrency();
+
+  tf::Executor executor;
+  tf::Taskflow taskflow("K-Means");
+  
+  std::vector<int> c(K), best_ks(N);
+  std::vector<float> sx(K), sy(K), mx(K), my(K);
+  
+  // initial centroids
+  auto init = taskflow.emplace([&](){
+    for(int i=0; i<K; ++i) {
+      mx[i] = px[i];
+      my[i] = py[i];
+    }
+  }).name("init");
+  
+  // clear the storage
+  auto clean_up = taskflow.emplace([&](){
+    for(int k=0; k<K; ++k) {
+      sx[k] = 0.0f;
+      sy[k] = 0.0f;
+      c [k] = 0;
+    }
+  }).name("clean_up");
+
+  tf::Task S, T;
+  
+  // update cluster
+  std::tie(S, T) = taskflow.parallel_for(0, N, 1, [&](int i){
+    float x = px[i];
+    float y = py[i];
+    float best_d = std::numeric_limits<float>::max();
+    int best_k = 0;
+    for (int k = 0; k < K; ++k) {
+      const float d = L2(x, y, mx[k], my[k]);
+      if (d < best_d) {
+        best_d = d;
+        best_k = k;
+      }
+    }
+    best_ks[i] = best_k;
+  }, (N+num_threads-1)/num_threads);
+
+  S.name("beg_assign_cluster");
+  S.for_each_successor([i=0](tf::Task t) mutable {
+    t.name(std::string("partition") + std::to_string(i++));
+  });
+  T.name("end_assign_cluster");
+
+  auto update_cluster = taskflow.emplace([&](){
+    for(int i=0; i<N; i++) {
+      sx[best_ks[i]] += px[i];
+      sy[best_ks[i]] += py[i];
+      c [best_ks[i]] += 1;
+    }
+    
+    for(int k=0; k<K; ++k) {
+      auto count = max(1, c[k]);  // turn 0/0 to 0/1
+      mx[k] = sx[k] / count;
+      my[k] = sy[k] / count;
+    }
+  }).name("update_cluster");
+
+  auto condition = taskflow.emplace([m=0, M]() mutable {
+    return (m++ < M) ? 0 : 1;
+  }).name("converged?");
+  
+  init.precede(clean_up);
+
+  clean_up.precede(S);
+  T.precede(update_cluster);
+
+  condition.precede(clean_up)
+           .succeed(update_cluster);
+
+  //taskflow.dump(std::cout);
+
+  executor.run(taskflow).wait();
+  
+  return {mx, my};
+}
+
+// ----------------------------------------------------------------------------
+// GPU implementation
+// ----------------------------------------------------------------------------
 
 // Each point (thread) computes its distance to each centroid 
 // and adds its x and y values to the sum of its closest
@@ -23,7 +185,10 @@ __global__ void assign_clusters(
   int* c
 ) {
   const int index = blockIdx.x * blockDim.x + threadIdx.x;
-  if (index >= N) return;
+
+  if (index >= N) {
+    return;
+  }
 
   // Make global loads once.
   const float x = px[index];
@@ -32,17 +197,16 @@ __global__ void assign_clusters(
   float best_distance = FLT_MAX;
   int best_cluster = 0;
   for (int cluster = 0; cluster < k; ++cluster) {
-    const float distance = l2(x, y, mx[cluster], my[cluster]);
+    const float distance = L2(x, y, mx[cluster], my[cluster]);
     if (distance < best_distance) {
       best_distance = distance;
       best_cluster = cluster;
     }
   }
 
-  // Slow but simple.
   atomicAdd(&sx[best_cluster], x);
   atomicAdd(&sy[best_cluster], y);
-  atomicAdd(&c[best_cluster], 1);
+  atomicAdd(&c [best_cluster], 1);
 }
 
 // Each thread is one cluster, which just recomputes its coordinates as the mean
@@ -56,38 +220,21 @@ __global__ void compute_new_means(
   my[cluster] = sy[cluster] / count;
 }
 
-// Function: main
-int main(int argc, const char* argv[]) {
-
-  if(argc != 4) {
-    std::cerr << "usage: ./kmeans num_points k num_iterations\n";
-    std::exit(EXIT_FAILURE);
-  }
+// run k-means on gpu
+std::pair<std::vector<float>, std::vector<float>> gpu(
+ const int N, 
+ const int K, 
+ const int M,
+ const std::vector<float>& h_px,
+ const std::vector<float>& h_py
+) {
   
-  const int N = std::atoi(argv[1]);
-  const int K = std::atoi(argv[2]);
-  const int M = std::atoi(argv[3]);
-
-  if(K >= N) {
-    throw std::runtime_error("k must be smaller than the number of points");
-  }
-
-  std::vector<float> h_px, h_py, h_mx, h_my;
+  std::vector<float> h_mx, h_my;
   float *d_px, *d_py, *d_mx, *d_my, *d_sx, *d_sy, *d_c;
   
-  // Randomly generate N points
-  std::cout << "generating " << N << " random points ...\n";
-  for(int i=0; i<N; ++i) {
-    h_px.push_back(rand()%1000);
-    h_py.push_back(rand()%1000);
-    if(i<K) {
-      h_mx.push_back(h_px.back());
-      h_my.push_back(h_py.back());
-    }
-  }
-  std::cout << "initial K centroids\n";
-  for(int k=0; k<K; ++k) {
-    std::cout << "centroid " << k << ": " << h_mx[k] << ' ' << h_my[k] << '\n';  
+  for(int i=0; i<K; ++i) {
+    h_mx.push_back(h_px[i]);
+    h_my.push_back(h_py[i]);
   }
   
   // create a taskflow graph
@@ -157,6 +304,16 @@ int main(int argc, const char* argv[]) {
     cf.copy(h_mx.data(), d_mx, K).name("d2h_mx");
     cf.copy(h_my.data(), d_my, K).name("d2h_my");
   }).name("stop");
+
+  auto free = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaFree(d_px), "failed to free d_px");
+    TF_CHECK_CUDA(cudaFree(d_py), "failed to free d_py");
+    TF_CHECK_CUDA(cudaFree(d_mx), "failed to free d_mx");
+    TF_CHECK_CUDA(cudaFree(d_my), "failed to free d_my");
+    TF_CHECK_CUDA(cudaFree(d_sx), "failed to free d_sx");
+    TF_CHECK_CUDA(cudaFree(d_sy), "failed to free d_sy");
+    TF_CHECK_CUDA(cudaFree(d_c),  "failed to free d_c");
+  }).name("free");
   
   // build up the dependency
   h2d.succeed(allocate_px, allocate_py, allocate_mx, allocate_my);
@@ -165,17 +322,99 @@ int main(int argc, const char* argv[]) {
         .precede(condition);
 
   condition.precede(kmeans, stop);
+
+  stop.precede(free);
   
   // run the taskflow
   executor.run(taskflow).wait();
 
-  std::cout << "dumping kmeans graph ...\n";
-  taskflow.dump(std::cout);
-  
-  std::cout << "final K centroids\n";
-  for(int k=0; k<K; ++k) {
-    std::cout << "centroid " << k << ": " << h_mx[k] << ' ' << h_my[k] << '\n';  
+  //std::cout << "dumping kmeans graph ...\n";
+  //taskflow.dump(std::cout);
+  return {h_mx, h_my};
+}
+
+// Function: main
+int main(int argc, const char* argv[]) {
+
+  if(argc != 4) {
+    std::cerr << "usage: ./kmeans num_points k num_iterations\n";
+    std::exit(EXIT_FAILURE);
   }
+  
+  const int N = std::atoi(argv[1]);
+  const int K = std::atoi(argv[2]);
+  const int M = std::atoi(argv[3]);
+
+  if(N < 1) {
+    throw std::runtime_error("num_points must be at least one");
+  }
+
+  if(K >= N) {
+    throw std::runtime_error("k must be smaller than the number of points");
+  }
+
+  if(M < 1) {
+    throw std::runtime_error("num_iterations must be larger than 0");
+  }
+
+  std::vector<float> h_px, h_py, mx, my;
+  
+  // Randomly generate N points
+  std::cout << "generating " << N << " random points ...\n";
+  for(int i=0; i<N; ++i) {
+    h_px.push_back(rand()%1000 - 500);
+    h_py.push_back(rand()%1000 - 500);
+  }
+
+  // k-means on cpu_seq
+  std::cout << "running k-means on cpu (sequential) ... ";
+  auto sbeg = std::chrono::steady_clock::now();
+  std::tie(mx, my) = cpu_seq(N, K, M, h_px, h_py);
+  auto send = std::chrono::steady_clock::now();
+  std::cout << "completed with " 
+            << std::chrono::duration_cast<std::chrono::milliseconds>(send-sbeg).count()
+            << " ms\n";
+  
+  std::cout << "k centroids found by cpu (sequential)\n";
+  for(int k=0; k<K; ++k) {
+    std::cout << "centroid " << k << ": " << std::setw(10) << mx[k] << ' ' 
+                                          << std::setw(10) << my[k] << '\n';  
+  }
+  
+  // k-means on cpu_par
+  std::cout << "running k-means on cpu (parallel) ... ";
+  auto pbeg = std::chrono::steady_clock::now();
+  std::tie(mx, my) = cpu_par(N, K, M, h_px, h_py);
+  auto pend = std::chrono::steady_clock::now();
+  std::cout << "completed with " 
+            << std::chrono::duration_cast<std::chrono::milliseconds>(pend-pbeg).count()
+            << " ms\n";
+  
+  std::cout << "k centroids found by cpu (parallel)\n";
+  for(int k=0; k<K; ++k) {
+    std::cout << "centroid " << k << ": " << std::setw(10) << mx[k] << ' ' 
+                                          << std::setw(10) << my[k] << '\n';  
+  }
+ 
+  // k-means on gpu
+  std::cout << "running k-means on gpu ... ";
+  auto gbeg = std::chrono::steady_clock::now();
+  std::tie(mx, my) = gpu(N, K, M, h_px, h_py);
+  auto gend = std::chrono::steady_clock::now();
+  std::cout << "completed with " 
+            << std::chrono::duration_cast<std::chrono::milliseconds>(gend-gbeg).count()
+            << " ms\n";
+  
+  std::cout << "k centroids found by gpu\n";
+  for(int k=0; k<K; ++k) {
+    std::cout << "centroid " << k << ": " << std::setw(10) << mx[k] << ' ' 
+                                          << std::setw(10) << my[k] << '\n';  
+  }
+  
+
 
   return 0;
 }
+
+
+
