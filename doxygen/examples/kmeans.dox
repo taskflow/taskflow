@@ -1,6 +1,6 @@
 namespace tf {
 
-/** @page kmeans k-means clustering
+/** @page kmeans k-means Clustering
 
 We study a fundamental clustering problem in unsupervised learning, <em>k-means clustering</em>. 
 We will begin by discussing the problem formulation and then learn how to 
@@ -293,7 +293,7 @@ __global__ void compute_new_means(float* mx, float* my, float* sx, float* sy, in
 @endcode
 
 When we recompute the cluster centroids to be the mean of all points assigned to a particular centroid,
-multiple GPU threads may access the sum arrays, @c sx and @c sy, and the count array, @c.
+multiple GPU threads may access the sum arrays, @c sx and @c sy, and the count array, @c c.
 To avoid data race, we use a simple @c atomicAdd method.
 Based on the two kernels, the entire code of CPU-GPU collaborative tasking is described as follows:
 
@@ -402,7 +402,10 @@ void kmeans_gpu(int N, int K, int M, cconst std::vector<float>& px,  const std::
 }
 @endcode
 
-The first dump before executing the taskflow produces the following diagram:
+The first dump before executing the taskflow produces the following diagram.
+The condition tasks introduces a cycle between itself and @c update_means.
+Each time it goes back to @c update_means, the %cudaFlow is reconstructed with captured 
+parameters in the closure and offloaded to the GPU.
 
 @image html images/kmeans_3.svg width=80%
 
