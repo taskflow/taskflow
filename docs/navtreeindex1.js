@@ -1,5 +1,16 @@
 var NAVTREEINDEX1 =
 {
+"pages.html":[],
+"release-2-0-0.html":[1,6],
+"release-2-0-0.html#release-2-0-0_breaks_and_deprecated_features":[1,6,3],
+"release-2-0-0.html#release-2-0-0_bug_fixes":[1,6,4],
+"release-2-0-0.html#release-2-0-0_download":[1,6,0],
+"release-2-0-0.html#release-2-0-0_improvements_enhancements":[1,6,2],
+"release-2-0-0.html#release-2-0-0_new_features":[1,6,1],
+"release-2-1-0.html":[1,5],
+"release-2-1-0.html#release-2-1-0_breaks_and_deprecated_features":[1,5,3],
+"release-2-1-0.html#release-2-1-0_bug_fixes":[1,5,4],
+"release-2-1-0.html#release-2-1-0_download":[1,5,0],
 "release-2-1-0.html#release-2-1-0_improvements_enhancements":[1,5,2],
 "release-2-1-0.html#release-2-1-0_new_features":[1,5,1],
 "release-2-2-0.html":[1,4],
@@ -19,10 +30,10 @@ var NAVTREEINDEX1 =
 "release-2-4-0.html#release-2-4-0_download":[1,1,0],
 "release-2-4-0.html#release-2-4-0_miscellaneous_items":[1,1,3],
 "release-2-4-0.html#release-2-4-0_new_features":[1,1,1],
-"structis__condition__task.html":[5,0,1],
-"structis__cudaflow__task.html":[5,0,2],
-"structis__dynamic__task.html":[5,0,3],
-"structis__static__task.html":[5,0,4],
-"task_8hpp_source.html":[6,0,7],
-"taskflow_8hpp_source.html":[6,0,8]
+"structis__condition__task.html":[6,0,1],
+"structis__cudaflow__task.html":[6,0,2],
+"structis__dynamic__task.html":[6,0,3],
+"structis__static__task.html":[6,0,4],
+"task_8hpp_source.html":[7,0,7],
+"taskflow_8hpp_source.html":[7,0,8]
 };

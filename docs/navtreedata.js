@@ -40,6 +40,7 @@ var NAVTREE =
     ] ],
     [ "Releases", "Releases.html", "Releases" ],
     [ "Cookbook", "Cookbook.html", "Cookbook" ],
+    [ "Learning from Examples", "Examples.html", "Examples" ],
     [ "Frequently Asked Questions", "FAQ.html", [
       [ "General Questions", "FAQ.html#GeneralQuestions", [
         [ "Q1: What's the goal of Cpp-Taskflow?", "FAQ.html#GeneralQuestion1", null ],
@@ -82,7 +83,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"release-2-1-0.html#release-2-1-0_improvements_enhancements"
+"pages.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -303,7 +303,7 @@ std::pair<std::vector<float>, std::vector<float>> gpu(
   auto stop = taskflow.emplace([&](tf::cudaFlow& cf){
     cf.copy(h_mx.data(), d_mx, K).name("d2h_mx");
     cf.copy(h_my.data(), d_my, K).name("d2h_my");
-  }).name("stop");
+  }).name("d2h");
 
   auto free = taskflow.emplace([&](){
     TF_CHECK_CUDA(cudaFree(d_px), "failed to free d_px");
