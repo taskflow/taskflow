@@ -6,7 +6,7 @@ var Examples =
       [ "GPU-based Acceleration", "matrix_multiplication.html#GPUAcceleratedMatrixMultiplication", null ],
       [ "Benchmarking", "matrix_multiplication.html#MatrixMultiplicationBenchmarking", null ]
     ] ],
-    [ "k-means clustering", "kmeans.html", [
+    [ "k-means Clustering", "kmeans.html", [
       [ "Problem Formulation", "kmeans.html#KMeansProblemFormulation", null ],
       [ "Parallel k-means using CPUs", "kmeans.html#ParallelKMeansUsingCPUs", null ],
       [ "Parallel k-means using GPUs", "kmeans.html#ParallelKMeansUsingGPUs", null ],
