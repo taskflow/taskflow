@@ -948,7 +948,7 @@ inline void Executor::_invoke_cudaflow_work_impl(Worker& w, Node* node) {
 
   h.graph.clear();
 
-  cudaFlow cf(h.graph);
+  cudaFlow cf(h.graph, [repeat=1] () mutable { return repeat-- == 0; });
 
   h.work(cf); 
 
@@ -973,14 +973,16 @@ inline void Executor::_invoke_cudaflow_work_impl(Worker& w, Node* node) {
     cudaGraphInstantiate(&exec, h.graph._native_handle, nullptr, nullptr, 0),
     "failed to create an executable cudaGraph"
   );
+  
+  while(!cf._predicate()) {
+    TF_CHECK_CUDA(
+      cudaGraphLaunch(exec, s), "failed to launch cudaGraph on stream ", s
+    );
 
-  TF_CHECK_CUDA(
-    cudaGraphLaunch(exec, s), "failed to launch cudaGraph on stream ", s
-  );
-
-  TF_CHECK_CUDA(
-    cudaStreamSynchronize(s), "failed to synchronize stream ", s
-  );
+    TF_CHECK_CUDA(
+      cudaStreamSynchronize(s), "failed to synchronize stream ", s
+    );
+  }
 
   TF_CHECK_CUDA(
     cudaGraphExecDestroy(exec), "failed to destroy an executable cudaGraph"

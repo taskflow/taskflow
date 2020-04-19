@@ -70,11 +70,11 @@ auto gpu(int M, int N, int K) {
 
   cudaFlow.succeed(allocate_a, allocate_b, allocate_c)
           .precede(free);
-  
+
   executor.run(taskflow).wait();
   
   // You may uncomment the line below to dump the task graph
-  // taskflow.dump(std::cout);
+  //taskflow.dump(std::cout);
 
   return hc;
 }
@@ -84,7 +84,7 @@ auto cpu(int M, int N, int K) {
 
   std::vector<int> a, b, c;
 
-  tf::Executor executor;
+  tf::Executor executor(1);
   tf::Taskflow taskflow;
 
   auto ha = taskflow.emplace([&](){ 
@@ -99,9 +99,7 @@ auto cpu(int M, int N, int K) {
     c.resize(M*K, 0);
   }).name("allocate_c");
 
-  tf::Task S, T;
-  
-  std::tie(S, T) = taskflow.parallel_for(0, M, 1, [&] (int m) {
+  auto pair = taskflow.parallel_for(0, M, 1, [&] (int m) {
     for(int k=0; k<K; k++) {
       for(int n=0; n<N; n++) {
         c[m*K+k] += (a[m*N+n]*b[n*K+k]);
@@ -109,7 +107,9 @@ auto cpu(int M, int N, int K) {
     }
   });
   
-  S.succeed(ha, hb, hc);
+  pair.first.succeed(ha, hb, hc);
+
+  //taskflow.dump(std::cout);
 
   executor.run(taskflow).wait();
 
