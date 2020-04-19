@@ -25,13 +25,11 @@ var NAVTREE =
 [
   [ "Cpp-Taskflow", "index.html", [
     [ "Quick Start", "index.html", [
-      [ "Modern C++ Parallel and Heterogeneous Task Programming", "index.html#ModernCppParallelTaskProgrammingLibrary", [
-        [ "Static and Dynamic Tasking", "index.html#StaticDynamicTasking", null ],
-        [ "Conditional Tasking", "index.html#ConditionalTasking", null ],
-        [ "Composable Tasking", "index.html#ComposableTasking", null ],
-        [ "Concurrent CPU-GPU Tasking", "index.html#HeterogeneousTasking", null ],
-        [ "Testimonial", "index.html#Testimonial", null ]
-      ] ],
+      [ "Modern C++ Parallel and Heterogeneous Task Programming", "index.html#ModernCppParallelTaskProgrammingLibrary", null ],
+      [ "Static and Dynamic Tasking", "index.html#StaticDynamicTasking", null ],
+      [ "Conditional Tasking", "index.html#ConditionalTasking", null ],
+      [ "Composable Tasking", "index.html#ComposableTasking", null ],
+      [ "Concurrent CPU-GPU Tasking", "index.html#HeterogeneousTasking", null ],
       [ "How to Install Cpp-Taskflow?", "index.html#HowToInstallCppTaskflow", null ],
       [ "A Simple First Program", "index.html#ASimpleFirstProgram", null ],
       [ "Compile and Run Your First Program", "index.html#CompileAndRunYourFirstProgram", null ],
@@ -83,7 +81,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"matrix_multiplication.html#MatrixMultiplicationBenchmarking"
+"matrix_multiplication.html#MatrixMultiplicationParallelPattern"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

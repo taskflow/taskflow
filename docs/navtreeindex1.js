@@ -1,6 +1,5 @@
 var NAVTREEINDEX1 =
 {
-"matrix_multiplication.html#MatrixMultiplicationBenchmarking":[3,0,3],
 "matrix_multiplication.html#MatrixMultiplicationParallelPattern":[3,0,1],
 "matrix_multiplication.html#MatrixMultiplicationProblem":[3,0,0],
 "observer_8hpp_source.html":[7,0,6],
