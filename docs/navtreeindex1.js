@@ -1,5 +1,9 @@
 var NAVTREEINDEX1 =
 {
+"matrix_multiplication.html#MatrixMultiplicationBenchmarking":[3,0,3],
+"matrix_multiplication.html#MatrixMultiplicationParallelPattern":[3,0,1],
+"matrix_multiplication.html#MatrixMultiplicationProblem":[3,0,0],
+"observer_8hpp_source.html":[7,0,6],
 "pages.html":[],
 "release-2-0-0.html":[1,6],
 "release-2-0-0.html#release-2-0-0_breaks_and_deprecated_features":[1,6,3],
@@ -35,5 +39,8 @@ var NAVTREEINDEX1 =
 "structis__dynamic__task.html":[6,0,3],
 "structis__static__task.html":[6,0,4],
 "task_8hpp_source.html":[7,0,7],
-"taskflow_8hpp_source.html":[7,0,8]
+"taskflow_8hpp_source.html":[7,0,8],
+"wavefront.html":[3,1],
+"wavefront.html#WavefrontComputingFormulation":[3,1,0],
+"wavefront.html#WavefrontTaskGraph":[3,1,1]
 };

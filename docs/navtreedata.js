@@ -83,7 +83,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"pages.html"
+"matrix_multiplication.html#MatrixMultiplicationBenchmarking"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

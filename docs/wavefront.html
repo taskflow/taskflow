@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('hierarchy.html','');});
+$(document).ready(function(){initNavTree('wavefront.html','');});
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -99,72 +99,25 @@ $(document).ready(function(){initNavTree('hierarchy.html','');});
 
 <div class="header">
   <div class="headertitle">
-<div class="title">Class Hierarchy</div>  </div>
+<div class="title">Wavefront Parallelism </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock">
-<p><a href="hierarchy.html">Go to the textual class hierarchy</a></p>
-</div><table border="0" cellspacing="10" cellpadding="0">
-<tr><td><img src="inherit_graph_0.png" border="0" alt="" usemap="#is__condition__task"/>
-<map name="is__condition__task" id="is__condition__task">
-<area shape="rect" id="node1" href="structis__condition__task.html" title="determines if a callable is a condition task " alt="" coords="5,5,129,31"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_1.png" border="0" alt="" usemap="#is__cudaflow__task"/>
-<map name="is__cudaflow__task" id="is__cudaflow__task">
-<area shape="rect" id="node1" href="structis__cudaflow__task.html" title="determines if a callable is a cudaflow task " alt="" coords="5,5,128,31"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_2.png" border="0" alt="" usemap="#is__dynamic__task"/>
-<map name="is__dynamic__task" id="is__dynamic__task">
-<area shape="rect" id="node1" href="structis__dynamic__task.html" title="determines if a callable is a dynamic task " alt="" coords="5,5,125,31"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_3.png" border="0" alt="" usemap="#is__static__task"/>
-<map name="is__static__task" id="is__static__task">
-<area shape="rect" id="node1" href="structis__static__task.html" title="determines if a callable is a static task " alt="" coords="5,5,107,31"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_4.png" border="0" alt="" usemap="#tf_1_1cudaFlow"/>
-<map name="tf_1_1cudaFlow" id="tf_1_1cudaFlow">
-<area shape="rect" id="node1" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. " alt="" coords="5,5,99,31"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_5.png" border="0" alt="" usemap="#tf_1_1cudaTask"/>
-<map name="tf_1_1cudaTask" id="tf_1_1cudaTask">
-<area shape="rect" id="node1" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph " alt="" coords="5,5,98,31"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_6.png" border="0" alt="" usemap="#tf_1_1Executor"/>
-<map name="tf_1_1Executor" id="tf_1_1Executor">
-<area shape="rect" id="node1" href="classtf_1_1Executor.html" title="execution interface for running a taskflow graph " alt="" coords="5,5,94,31"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_7.png" border="0" alt="" usemap="#tf_1_1ExecutorObserverInterface"/>
-<map name="tf_1_1ExecutorObserverInterface" id="tf_1_1ExecutorObserverInterface">
-<area shape="rect" id="node1" href="classtf_1_1ExecutorObserverInterface.html" title="The interface class for creating an executor observer. " alt="" coords="5,5,201,31"/>
-<area shape="rect" id="node2" href="classtf_1_1ExecutorObserver.html" title="Default executor observer to dump the execution timelines. " alt="" coords="249,5,392,31"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_8.png" border="0" alt="" usemap="#tf_1_1FlowBuilder"/>
-<map name="tf_1_1FlowBuilder" id="tf_1_1FlowBuilder">
-<area shape="rect" id="node1" href="classtf_1_1FlowBuilder.html" title="building methods of a task dependency graph " alt="" coords="5,31,111,56"/>
-<area shape="rect" id="node2" href="classtf_1_1Subflow.html" title="building methods of a subflow graph in dynamic tasking " alt="" coords="161,5,245,31"/>
-<area shape="rect" id="node3" href="classtf_1_1Taskflow.html" title="main entry to create a task dependency graph " alt="" coords="159,55,246,80"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_9.png" border="0" alt="" usemap="#tf_1_1Task"/>
-<map name="tf_1_1Task" id="tf_1_1Task">
-<area shape="rect" id="node1" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph " alt="" coords="5,5,69,31"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_10.png" border="0" alt="" usemap="#tf_1_1TaskView"/>
-<map name="tf_1_1TaskView" id="tf_1_1TaskView">
-<area shape="rect" id="node1" href="classtf_1_1TaskView.html" title="immutable accessor class to a task node used by tf::ExecutorObserver " alt="" coords="5,5,98,31"/>
-</map>
-</td></tr>
-</table>
-</div><!-- contents -->
+<div class="textblock"><p>We study the wavefront parallelism, which is a common pattern in dynamic programming to sweep elements in a monotonic direction.</p>
+<h1><a class="anchor" id="WavefrontComputingFormulation"></a>
+Problem Formulation</h1>
+<p>The computation starts at a singular point at a corner of a data plan (e.g., grid) and propagates its effect diagonally to other elements. This forms a sweep of computation is known as wavefront. Each point in the wavefront can be computed in parallel. The following example shows a wavefront parallelism in a 2D matrix.</p>
+<div class="image">
+<img src="wavefront_1.png" alt="wavefront_1.png" width="50%"/>
+</div>
+<p>We partition the 9x9 grid into a 3x3 block and assign a task to one block. The wavefront propagates task dependencies from the top-left block all the way to the bottom-right block. Each task precedes two tasks, one to the right and another below.</p>
+<h1><a class="anchor" id="WavefrontTaskGraph"></a>
+Wavefront Task Graph</h1>
+<p>We can describe the wavefront parallelism in a simple two-level loop. Since we need to address the two tasks upper and left to a task when creating its dependencies, we use a 2D vector to pre-allocate all tasks via <a class="el" href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf" title="creates an empty task ">Taskflow::placeholder</a>.</p>
+<div class="fragment"><div class="line"><span class="keywordtype">void</span> wavefront() {</div><div class="line">  <a class="code" href="classtf_1_1Executor.html">tf::Executor</a> executor;</div><div class="line">  <a class="code" href="classtf_1_1Taskflow.html">tf::Taskflow</a> taskflow;</div><div class="line"></div><div class="line">  <a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;std::vector&lt;tf::Task&gt;</a>&gt; node(num_blocks);</div><div class="line">  </div><div class="line">  <span class="comment">// create num_blocks*num_blocks placeholder tasks</span></div><div class="line">  <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;n : node){</div><div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i=0; i&lt;num_blocks; i++){</div><div class="line">      n.emplace_back(taskflow.<a class="code" href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf">placeholder</a>());</div><div class="line">    }   </div><div class="line">  }</div><div class="line">  </div><div class="line">  <span class="comment">// scan each block and create dependencies</span></div><div class="line">  <span class="keywordflow">for</span>( <span class="keywordtype">int</span> i=num_blocks; --i&gt;=0; ) { </div><div class="line">    <span class="keywordflow">for</span>( <span class="keywordtype">int</span> j=num_blocks; --j&gt;=0; ) { </div><div class="line">      <span class="comment">// deferred task assignment</span></div><div class="line">      node[i][j].work([=]() { block_computation(i, j); });  </div><div class="line">      </div><div class="line">      <span class="comment">// wavefront dependency</span></div><div class="line">      <span class="keywordflow">if</span>(j+1 &lt; num_blocks) node[i][j].precede(node[i][j+1]);</div><div class="line">      <span class="keywordflow">if</span>(i+1 &lt; num_blocks) node[i][j].precede(node[i+1][j]);</div><div class="line">    }   </div><div class="line">  }</div><div class="line"></div><div class="line">  executor.<a class="code" href="classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa">run</a>(taskflow).wait();</div><div class="line"></div><div class="line">  <span class="comment">// dump the taskflow</span></div><div class="line">  taskflow.<a class="code" href="classtf_1_1Taskflow.html#ac433018262e44b12c4cc9f0c4748d758">dump</a>(<a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a>);</div><div class="line">}</div></div><!-- fragment --><p>The taskflow below depicts the wavefront parallelism in a 3x3 grid.</p>
+<div class="image">
+<object type="image/svg+xml" data="wavefront_2.svg" width="80%">wavefront_2.svg</object>
+</div>
+ </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

@@ -418,14 +418,61 @@ It precedes a condition task that circles back to itself until we reach @c M ite
 When iteration completes, the condition task directs the execution path to the %cudaFlow, @c h2d,
 to copy the results of clusters to @c h_mx and @c h_my and then deallocate all GPU memory.
 
-@section PredicateInsteadOfConditionalTasking Predicate instead of Conditional Tasking
+@section BuiltInPredicate Built-in Predicate
 
-Using a condition task to iterate the k-means %cudaFlow may be replaced with a simple predicate,
-given that the graph parameters remain unchanged across all iterations.
-In this case, we can create the %cudaFlow once and launch it repeatedly as rapidly as possible.
+We observe the GPU task graph parameters remain @em unchanged across all k-means iterations.
+In this case, we can leverage cudaFlow::repeat or cudaFlow::predicate 
+to create the %cudaFlow once and launch it repeatedly as rapidly as possible without participating in
+conditional tasking.
 
 @code{.cpp}
+auto kmeans = taskflow.emplace([&](tf::cudaFlow& cf){
+
+  auto zero_c = cf.zero(d_c, K).name("zero_c");
+  auto zero_sx = cf.zero(d_sx, K).name("zero_sx");
+  auto zero_sy = cf.zero(d_sy, K).name("zero_sy");
+
+  auto cluster = cf.kernel(
+    (N+1024-1) / 1024, 1024, 0,
+    assign_clusters, d_px, d_py, N, d_mx, d_my, d_sx, d_sy, K, d_c
+  ).name("cluster");
+
+  auto new_centroid = cf.kernel(
+    1, K, 0,
+    compute_new_means, d_mx, d_my, d_sx, d_sy, d_c
+  ).name("new_centroid");
+
+  cluster.precede(new_centroid)
+         .succeed(zero_c, zero_sx, zero_sy);
+  
+  // we ask the executor to launch the cudaFlow by M times;
+  // equivalent to: cf.predicate( [m=M] () mutable { return m-- == 0; } );
+  cf.repeat(M);
+}).name("update_means");
+
+// ...
+
+// build up the dependency
+h2d.succeed(allocate_px, allocate_py, allocate_mx, allocate_my);
+
+kmeans.succeed(allocate_sx, allocate_sy, allocate_c, h2d)
+      .precede(stop);
+
+stop.precede(free);
 @endcode
+
+At the last line of the %cudaFlow closure, we call <tt>cf.repeat(M)</tt> to ask the executor to 
+repeatedly run the %cudaFlow by @c M times.
+Compared with the version using conditional tasking, the %cudaFlow here is created only one time
+and thus the overhead is reduced.
+
+@image html images/kmeans_5.svg width=100%
+
+We can see from the above taskflow the condition task is removed.
+Not all problems can benefit from cudaFlow::repeat.
+If the graph parameters change at each iteration, you may use conditional tasking or resort to
+other client-side decision.
+
 
 @section KMeansBenchmarking Benchmarking
 
@@ -447,13 +494,11 @@ on a machine of 6 Intel i7-8700 CPUs at 3.20GHz and a Nvidia RTX 2080 GPU using 
 When the number of points is larger than 10K, 
 both parallel CPU and GPU implementations start to pick up the speed
 over than the sequential version.
+We can see using the built-in predicate of %cudaFlow is two times faster than conditional tasking.
 
 */
 
 }
-
-
-
 
 
 

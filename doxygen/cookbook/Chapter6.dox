@@ -265,7 +265,7 @@ tf::Task cudaFlow_on_gpu3 = taskflow.emplace([&](tf::cudaFlow& cf){
 });
 @endcode
 
-@section C6_data_operations Data Operations
+@section C6_GPUMemoryOperations GPU Memory Operations
 
 cudaFlow provides a set of methods for users to manipulate device memory data.
 There are two categories, raw data and typed data.
@@ -306,6 +306,25 @@ taskflow.emplace([&](tf::cudaFlow& cf){
   tf::cudaTask same_as_above = cf.copy(target, source, count);
 });
 @endcode
+
+@section C6_LaunchcudaFlowRepeatedly Iterate a cudaFlow
+
+You can create a %cudaFlow once and launch it multiple times using cudaFlow::repeat or cudaFlow::predicate,
+given that the graph parameters remain @em unchanged across all iterations.
+
+@code{.cpp}
+taskflow.emplace([&] (tf::cudaFlow& cf) {
+  // construct the GPU task dependency graph ...
+  
+  // launch the cudaFlow 10 times
+  cf.repeat(10);
+
+  // equivalently
+  cf.predicate([n=10] () mutable { return n-- == 0; });
+});
+@endcode
+
+The executor iterate the execution of the %cudaFlow until the predicate evaluates to @c true.
 
 @section C6_Granularity Granularity
 
