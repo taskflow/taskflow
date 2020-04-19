@@ -24,9 +24,13 @@ class cudaFlow {
     /**
     @brief constructs a cudaFlow builder object
 
+    @tparam P predicate type
+
     @param graph a cudaGraph to manipulate
+    @param p predicate which return @c true if the launching should be contined
     */
-    cudaFlow(cudaGraph& graph);
+    template <typename P>
+    cudaFlow(cudaGraph& graph, P&& p);
 
     /**
     @brief queries the emptiness of the graph
@@ -168,7 +172,7 @@ class cudaFlow {
 
     @return cudaTask handle
 
-    A copy task transfers num*sizeof(T) bytes of data from a source location
+    A copy task transfers <tt>num*sizeof(T)</tt> bytes of data from a source location
     to a target location. Direction can be arbitrary among CPUs and GPUs.
     */
     template <
@@ -196,6 +200,22 @@ class cudaFlow {
     */
     void stream(cudaStream_t stream);
 
+    /**
+    @brief assigns a predicate to loop the cudaFlow until the predicate is satisfied
+
+    @tparam P predicate type
+    @param p predicate which return @c true if the launching should be contined
+
+    The execution of cudaFlow is equivalent to: <tt>while(!predicate()) { run cudaflow; }</tt>
+    */
+    template <typename P>
+    void predicate(P&& p);
+    
+    /**
+    @brief repeats the execution of the cudaFlow by @c n times
+    */
+    void repeat(size_t n);
+
   private:
 
     cudaGraph& _graph;
@@ -203,10 +223,26 @@ class cudaFlow {
     int _device {0};
 
     nstd::optional<cudaStream_t> _stream;
+
+    std::function<bool()> _predicate;
 };
 
 // Constructor
-inline cudaFlow::cudaFlow(cudaGraph& g) : _graph {g} {
+template <typename P>
+cudaFlow::cudaFlow(cudaGraph& g, P&& p) : 
+  _graph {g},
+  _predicate {std::forward<P>(p)} {
+}
+
+// Procedure: predicate
+template <typename P>
+void cudaFlow::predicate(P&& pred) {
+  _predicate = std::forward<P>(pred);
+}
+
+// Procedure: repeat
+inline void cudaFlow::repeat(size_t n) {
+  _predicate = [n] () mutable { return n-- == 0; };
 }
 
 // Function: empty

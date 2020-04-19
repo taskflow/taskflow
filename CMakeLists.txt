@@ -573,6 +573,8 @@ add_test(cuda_basics.subflow ${TF_UTEST_CUDA_BASICS} -tc=Subflow)
 add_test(cuda_basics.nested_subflow ${TF_UTEST_CUDA_BASICS} -tc=NestedSubflow)
 add_test(cuda_basics.detached_subflow ${TF_UTEST_CUDA_BASICS} -tc=DetachedSubflow)
 add_test(cuda_basics.loop ${TF_UTEST_CUDA_BASICS} -tc=Loop)
+add_test(cuda_basics.predicate ${TF_UTEST_CUDA_BASICS} -tc=Predicate)
+add_test(cuda_basics.repeat ${TF_UTEST_CUDA_BASICS} -tc=Repeat)
 
 # matrix operation tests
 add_executable(cuda_matrix ${TF_UTEST_DIR}/cuda/cuda_matrix.cu)

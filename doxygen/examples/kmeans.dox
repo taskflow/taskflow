@@ -418,6 +418,15 @@ It precedes a condition task that circles back to itself until we reach @c M ite
 When iteration completes, the condition task directs the execution path to the %cudaFlow, @c h2d,
 to copy the results of clusters to @c h_mx and @c h_my and then deallocate all GPU memory.
 
+@section PredicateInsteadOfConditionalTasking Predicate instead of Conditional Tasking
+
+Using a condition task to iterate the k-means %cudaFlow may be replaced with a simple predicate,
+given that the graph parameters remain unchanged across all iterations.
+In this case, we can create the %cudaFlow once and launch it repeatedly as rapidly as possible.
+
+@code{.cpp}
+@endcode
+
 @section KMeansBenchmarking Benchmarking
 
 We run three versions of kmeans,
@@ -426,13 +435,13 @@ on a machine of 6 Intel i7-8700 CPUs at 3.20GHz and a Nvidia RTX 2080 GPU using 
 2D point counts and iterations.
 
 <div align="center">
-| N        | K   | M       | CPU Sequential | CPU Parallel | GPU Parallel |
-| :-:      | :-: | :-:     | :-:            | :-:          | :-:          |
-| 10       | 5   | 10      | 0.14 ms        | 77 ms        | 1 ms         |
-| 100      | 10  | 100     | 0.56 ms        | 86 ms        | 7 ms         |
-| 1000     | 10  | 1000    | 10 ms          | 98 ms        | 55 ms        |
-| 10000    | 10  | 10000   | 1006 ms        | 713 ms       | 458 ms       |
-| 100000   | 10  | 100000  | 102483 ms      | 49966 ms     | 7952 ms      |
+| N        | K   | M       | CPU Sequential | CPU Parallel | GPU (conditional taksing) | GPU (with predicate) |
+| :-:      | :-: | :-:     | :-:            | :-:          | :-:          | :-:                               |
+| 10       | 5   | 10      | 0.14 ms        | 77 ms        | 1 ms         | 1 ms   |
+| 100      | 10  | 100     | 0.56 ms        | 86 ms        | 7 ms         | 1 ms   |
+| 1000     | 10  | 1000    | 10 ms          | 98 ms        | 55 ms        | 13 ms  |
+| 10000    | 10  | 10000   | 1006 ms        | 713 ms       | 458 ms       | 183 ms |
+| 100000   | 10  | 100000  | 102483 ms      | 49966 ms     | 7952 ms      | 4725 ms |
 </div>
 
 When the number of points is larger than 10K, 

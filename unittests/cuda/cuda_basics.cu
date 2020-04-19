@@ -38,7 +38,7 @@ __global__ void k_single_add(T* ptr, int i, T value) {
 TEST_CASE("Builder" * doctest::timeout(300)) {
 
   tf::cudaGraph G;
-  tf::cudaFlow cf(G);
+  tf::cudaFlow cf(G, [](){ return true; });
 
   int source = 1;
   int target = 1;
@@ -1209,6 +1209,92 @@ TEST_CASE("Loop") {
   cputask.precede(gputask);
   gputask.precede(condition);
   condition.precede(gputask, freetask);
+  
+  executor.run(taskflow).wait();
+}
+
+// ----------------------------------------------------------------------------
+// Predicate
+// ----------------------------------------------------------------------------
+
+TEST_CASE("Predicate") {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  const unsigned n = 1000;
+    
+  int* cpu = nullptr;
+  int* gpu = nullptr;
+
+  auto cputask = taskflow.emplace([&](){
+    cpu = static_cast<int*>(std::calloc(n, sizeof(int)));
+    REQUIRE(cudaMalloc(&gpu, n*sizeof(int)) == cudaSuccess);
+    REQUIRE(cudaMemcpy(gpu, cpu, n*sizeof(int), cudaMemcpyHostToDevice) == cudaSuccess);
+  });
+
+  auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
+    dim3 g = {(n+255)/256, 1, 1};
+    dim3 b = {256, 1, 1};
+    auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
+    auto copy = cf.copy(cpu, gpu, n);
+    kernel.precede(copy);
+    cf.predicate([i=100]() mutable { return i-- == 0; });
+  });
+
+  auto freetask = taskflow.emplace([&](){
+    for(unsigned i=0; i<n; ++i) {
+      REQUIRE(cpu[i] == 100);
+    }
+    REQUIRE(cudaFree(gpu) == cudaSuccess);
+    std::free(cpu);
+  });
+
+  cputask.precede(gputask);
+  gputask.precede(freetask);
+  
+  executor.run(taskflow).wait();
+}
+
+// ----------------------------------------------------------------------------
+// Repeat
+// ----------------------------------------------------------------------------
+
+TEST_CASE("Repeat") {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  const unsigned n = 1000;
+    
+  int* cpu = nullptr;
+  int* gpu = nullptr;
+
+  auto cputask = taskflow.emplace([&](){
+    cpu = static_cast<int*>(std::calloc(n, sizeof(int)));
+    REQUIRE(cudaMalloc(&gpu, n*sizeof(int)) == cudaSuccess);
+    REQUIRE(cudaMemcpy(gpu, cpu, n*sizeof(int), cudaMemcpyHostToDevice) == cudaSuccess);
+  });
+
+  auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
+    dim3 g = {(n+255)/256, 1, 1};
+    dim3 b = {256, 1, 1};
+    auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
+    auto copy = cf.copy(cpu, gpu, n);
+    kernel.precede(copy);
+    cf.repeat(100);
+  });
+
+  auto freetask = taskflow.emplace([&](){
+    for(unsigned i=0; i<n; ++i) {
+      REQUIRE(cpu[i] == 100);
+    }
+    REQUIRE(cudaFree(gpu) == cudaSuccess);
+    std::free(cpu);
+  });
+
+  cputask.precede(gputask);
+  gputask.precede(freetask);
   
   executor.run(taskflow).wait();
 }
