@@ -184,7 +184,7 @@ class Executor {
     @tparam Observer observer type derived from tf::ExecutorObserverInterface
     @tparam ArgsT... argument parameter pack
 
-    @param args... arguments to forward to the constructor of the observer
+    @param args arguments to forward to the constructor of the observer
     
     @return a raw pointer to the observer associated with this executor
     */
