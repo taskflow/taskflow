@@ -421,7 +421,7 @@ to copy the results of clusters to @c h_mx and @c h_my and then deallocate all G
 @section BuiltInPredicate Built-in Predicate
 
 We observe the GPU task graph parameters remain @em unchanged across all k-means iterations.
-In this case, we can leverage cudaFlow::repeat or cudaFlow::predicate 
+In this case, we can leverage tf::cudaFlow::repeat or tf::cudaFlow::predicate 
 to create the %cudaFlow once and launch it repeatedly as rapidly as possible without participating in
 conditional tasking.
 
@@ -469,7 +469,7 @@ and thus the overhead is reduced.
 @image html images/kmeans_5.svg width=100%
 
 We can see from the above taskflow the condition task is removed.
-Not all problems can benefit from cudaFlow::repeat.
+Not all problems can benefit from tf::cudaFlow::repeat.
 If the graph parameters change at each iteration, you may use conditional tasking or resort to
 other client-side decision.
 

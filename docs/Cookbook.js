@@ -11,6 +11,7 @@ var Cookbook =
       [ "Create a Task Dependency Graph", "chapter1.html#C1_CreateATaskDependencyGraph", null ],
       [ "Visualize a Task Dependency Graph", "chapter1.html#C1_VisualizeATaskDependencyGraph", null ],
       [ "Modify Task Attributes", "chapter1.html#C1_ModifyTaskAttributes", null ],
+      [ "Traverse Adjacent Tasks", "chapter1.html#C1_TraverseAdjacentTasks", null ],
       [ "Lifetime of A Task", "chapter1.html#C1_LifetimeOfATask", null ]
     ] ],
     [ "C2: Executor", "chapter2.html", [

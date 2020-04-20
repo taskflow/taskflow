@@ -232,7 +232,7 @@ one device-to-host (D2H) task that copies the result from @c dc to @c C,
 and one kernel task that launches @c matmul on the GPU
 (by default, GPU 0).
 H2D tasks precede the kernel and the kernel precedes the D2H task.
-These GPU operations form a GPU task graph managed by a cudaFlow.
+These GPU operations form a GPU task graph managed by a %cudaFlow.
 The first dump of the taskflow gives the following graph:
 
 @image html images/matrix_multiplication_5.svg width=40%

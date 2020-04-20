@@ -81,7 +81,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"matrix_multiplication.html#MatrixMultiplicationParallelPattern"
+"master-branch.html#master-branch_miscellaneous_items"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

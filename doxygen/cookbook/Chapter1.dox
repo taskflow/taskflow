@@ -164,7 +164,23 @@ Debrief:
 You can change the name and work of a task at anytime before running the graph.
 The later assignment overwrites the previous values.
 
+@section C1_TraverseAdjacentTasks Traverse Adjacent Tasks
 
+You can iterate the successor list and the dependent list of a task by using tf::Task::for_each_successor
+and tf::Task::for_each_dependent, respectively.
+Each method takes a lambda and applies it to a successor or a dependent being traversed.
+
+@code{.cpp}
+// traverse all successors of my_task
+my_task.for_each_successor([s=0] (tf::Task successor) mutable {
+  std::cout << "successor " << s++ << '\n';
+});
+
+// traverse all dependents of my_task
+my_task.for_each_dependent([d=0] (tf::Task dependent) mutable {
+  std::cout << "dependent " << d++ << '\n';
+});
+@endcode
 
 
 @section C1_LifetimeOfATask Lifetime of A Task

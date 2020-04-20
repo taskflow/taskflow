@@ -13,12 +13,13 @@ we continue to try our best to ensure backward compatibility.
 
 To download the newest version of Cpp-Taskflow, please clone from <a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow's GitHub</a>.
 
-@section master-branch_new_features Working Items
+@section master-branch_new_features New Features
 
 @li enhancing the performance of the work-stealing algorithm
 @li enhancing the interface of concurrent CPU-GPU tasking (added tf::cudaFlow::zero, tf::cudaFlow::memset, tf::cudaFlow::memcpy, tf::cudaFlow::fill)
 @li enhancing unittests for tf::cudaFlow
-@li adding per-thread stream to avoid synchronizing with the default stream in running cudaFlow
+@li adding per-thread stream to avoid synchronizing with the default stream in running a %cudaFlow
+@li adding tf::cudaFlow::repeat and tf::cudaFlow::predicate for iterative execution of a %cudaFlow
 @li adding @ref Examples pages
 
 @section master-branch_bug_fixes Bug Fixes 
@@ -28,6 +29,8 @@ To download the newest version of Cpp-Taskflow, please clone from <a href="https
 @section master-branch_deprecated_items Deprecated Items 
 
 @section master-branch_miscellaneous_items Miscellaneous Items
+
+@li fixed the warning between unsigned and size_t conversion in tf::Executor
 
 */
 

@@ -107,12 +107,13 @@ $(document).ready(function(){initNavTree('master-branch.html','');});
 Download</h1>
 <p>To download the newest version of Cpp-Taskflow, please clone from <a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow's GitHub</a>.</p>
 <h1><a class="anchor" id="master-branch_new_features"></a>
-Working Items</h1>
+New Features</h1>
 <ul>
 <li>enhancing the performance of the work-stealing algorithm </li>
 <li>enhancing the interface of concurrent CPU-GPU tasking (added <a class="el" href="classtf_1_1cudaFlow.html#a91c1739bb9a2832f306f3d12693a0994" title="creates a zero task that zeroes a typed memory block ">tf::cudaFlow::zero</a>, <a class="el" href="classtf_1_1cudaFlow.html#a079ca65da35301e5aafd45878a19e9d2" title="creates a memset task ">tf::cudaFlow::memset</a>, <a class="el" href="classtf_1_1cudaFlow.html#ad37637606f0643f360e9eda1f9a6e559" title="creates a memcpy task ">tf::cudaFlow::memcpy</a>, <a class="el" href="classtf_1_1cudaFlow.html#aee1fa4aff12a41737ea585fa2e106a35" title="creates a fill task that fills a typed memory block with a value ">tf::cudaFlow::fill</a>) </li>
 <li>enhancing unittests for <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">tf::cudaFlow</a> </li>
-<li>adding per-thread stream to avoid synchronizing with the default stream in running <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> </li>
+<li>adding per-thread stream to avoid synchronizing with the default stream in running a cudaFlow </li>
+<li>adding <a class="el" href="classtf_1_1cudaFlow.html#a1eeebb4bbd6436a3145ff950ce282ac4" title="repeats the execution of the cudaFlow by n times ">tf::cudaFlow::repeat</a> and <a class="el" href="classtf_1_1cudaFlow.html#adbd46a1ef9f5ae9e0848ccbefa1e65ee" title="assigns a predicate to loop the cudaFlow until the predicate is satisfied ">tf::cudaFlow::predicate</a> for iterative execution of a cudaFlow </li>
 <li>adding <a class="el" href="Examples.html">Learning from Examples</a> pages</li>
 </ul>
 <h1><a class="anchor" id="master-branch_bug_fixes"></a>
@@ -124,6 +125,9 @@ Bug Fixes</h1>
 Deprecated Items</h1>
 <h1><a class="anchor" id="master-branch_miscellaneous_items"></a>
 Miscellaneous Items</h1>
+<ul>
+<li>fixed the warning between unsigned and size_t conversion in <a class="el" href="classtf_1_1Executor.html" title="execution interface for running a taskflow graph ">tf::Executor</a> </li>
+</ul>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -33,8 +33,9 @@ var NAVTREEINDEX0 =
 "chapter0.html#TheProjectMantra":[2,0,4],
 "chapter1.html":[2,1],
 "chapter1.html#C1_CreateATaskDependencyGraph":[2,1,0],
-"chapter1.html#C1_LifetimeOfATask":[2,1,3],
+"chapter1.html#C1_LifetimeOfATask":[2,1,4],
 "chapter1.html#C1_ModifyTaskAttributes":[2,1,2],
+"chapter1.html#C1_TraverseAdjacentTasks":[2,1,3],
 "chapter1.html#C1_VisualizeATaskDependencyGraph":[2,1,1],
 "chapter2.html":[2,2],
 "chapter2.html#C2_CreateAnExecutor":[2,2,0],
@@ -219,6 +220,10 @@ var NAVTREEINDEX0 =
 "error_8hpp_source.html":[7,0,3],
 "executor_8hpp_source.html":[7,0,4],
 "files.html":[7,0],
+"flipcoins.html":[3,3],
+"flipcoins.html#FlipCoinsProbabilistic":[3,3,1],
+"flipcoins.html#FlipCoinsProblemFormulation":[3,3,0],
+"flipcoins.html#FlipCoinsTernaryCoins":[3,3,2],
 "flow__builder_8hpp_source.html":[7,0,5],
 "functions.html":[6,3,0],
 "functions_func.html":[6,3,1],
@@ -244,10 +249,5 @@ var NAVTREEINDEX0 =
 "master-branch.html":[1,0],
 "master-branch.html#master-branch_bug_fixes":[1,0,2],
 "master-branch.html#master-branch_deprecated_items":[1,0,3],
-"master-branch.html#master-branch_download":[1,0,0],
-"master-branch.html#master-branch_miscellaneous_items":[1,0,4],
-"master-branch.html#master-branch_new_features":[1,0,1],
-"matrix_multiplication.html":[3,0],
-"matrix_multiplication.html#GPUAcceleratedMatrixMultiplication":[3,0,2],
-"matrix_multiplication.html#MatrixMultiplicationBenchmarking":[3,0,3]
+"master-branch.html#master-branch_download":[1,0,0]
 };

@@ -2112,21 +2112,25 @@ TEST_CASE("LoopCond.4threads" * doctest::timeout(300)) {
 void flip_coin_cond(unsigned w) {
 
   tf::Taskflow taskflow;
+  
+  size_t rounds = 10000;
+  size_t steps = 0;
+  size_t total_steps = 0;
+  double average_steps = 0.0;
 
-  int counter;
-  double avg;
-
-  auto A = taskflow.emplace( [&](){ counter = 0; } );
-  auto B = taskflow.emplace( [&](){ ++counter; return ::rand()%2; } );
-  auto C = taskflow.emplace( [&](){ return ::rand()%2; } );
-  auto D = taskflow.emplace( [&](){ return ::rand()%2; } );
-  auto E = taskflow.emplace( [&](){ return ::rand()%2; } );
-  auto F = taskflow.emplace( [&](){ return ::rand()%2; } );
-  auto G = taskflow.emplace( [&, N=0, accu=0.0]() mutable { 
-      ++N;  // a new round
-      accu += counter;
-      avg = accu/N;
-      //std::cout << N << ": " << counter << " => avg = " << avg << '\n';
+  auto A = taskflow.emplace( [&](){ steps = 0; } );
+  auto B = taskflow.emplace( [&](){ ++steps; return std::rand()%2; } );
+  auto C = taskflow.emplace( [&](){ return std::rand()%2; } );
+  auto D = taskflow.emplace( [&](){ return std::rand()%2; } );
+  auto E = taskflow.emplace( [&](){ return std::rand()%2; } );
+  auto F = taskflow.emplace( [&](){ return std::rand()%2; } );
+  auto G = taskflow.emplace( [&]() mutable { 
+      //++N;  // a new round
+      total_steps += steps;
+      //avg = (double)accu/N;
+      //std::cout << "round " << N << ": steps=" << steps 
+      //                           << " accumulated_steps=" << accu 
+      //                           << " average_steps=" << avg << '\n';
     }
   );
 
@@ -2141,11 +2145,13 @@ void flip_coin_cond(unsigned w) {
 
   tf::Executor executor(w);
 
-  executor.run_n(taskflow, 10000).wait();
-  
-  REQUIRE(std::fabs(avg-32.0)<1.0);
+  executor.run_n(taskflow, rounds).wait();
 
-  taskflow.dump(std::cout);
+  average_steps = total_steps / (double)rounds;
+  
+  REQUIRE(std::fabs(average_steps-32.0)<1.0);
+
+  //taskflow.dump(std::cout);
 }
 
 TEST_CASE("FlipCoinCond.1thread" * doctest::timeout(300)) {

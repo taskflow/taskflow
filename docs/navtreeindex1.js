@@ -1,7 +1,12 @@
 var NAVTREEINDEX1 =
 {
-"matrix_multiplication.html#MatrixMultiplicationParallelPattern":[3,0,1],
-"matrix_multiplication.html#MatrixMultiplicationProblem":[3,0,0],
+"master-branch.html#master-branch_miscellaneous_items":[1,0,4],
+"master-branch.html#master-branch_new_features":[1,0,1],
+"matrix_multiplication.html":[3,1],
+"matrix_multiplication.html#GPUAcceleratedMatrixMultiplication":[3,1,2],
+"matrix_multiplication.html#MatrixMultiplicationBenchmarking":[3,1,3],
+"matrix_multiplication.html#MatrixMultiplicationParallelPattern":[3,1,1],
+"matrix_multiplication.html#MatrixMultiplicationProblem":[3,1,0],
 "observer_8hpp_source.html":[7,0,6],
 "pages.html":[],
 "release-2-0-0.html":[1,6],
@@ -39,7 +44,7 @@ var NAVTREEINDEX1 =
 "structis__static__task.html":[6,0,4],
 "task_8hpp_source.html":[7,0,7],
 "taskflow_8hpp_source.html":[7,0,8],
-"wavefront.html":[3,1],
-"wavefront.html#WavefrontComputingFormulation":[3,1,0],
-"wavefront.html#WavefrontTaskGraph":[3,1,1]
+"wavefront.html":[3,0],
+"wavefront.html#WavefrontComputingFormulation":[3,0,0],
+"wavefront.html#WavefrontTaskGraph":[3,0,1]
 };
