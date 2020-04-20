@@ -21,5 +21,11 @@ var Examples =
       [ "Problem Formulation", "flipcoins.html#FlipCoinsProblemFormulation", null ],
       [ "Probabilistic Conditions", "flipcoins.html#FlipCoinsProbabilistic", null ],
       [ "Ternary Coins", "flipcoins.html#FlipCoinsTernaryCoins", null ]
+    ] ],
+    [ "Graph Traversal", "graphtraversal.html", [
+      [ "Problem Formulation", "graphtraversal.html#GraphTraversalProblemFormulation", null ],
+      [ "Graph Representation", "graphtraversal.html#GraphTraversalGraphRepresentation", null ],
+      [ "Static Traversal", "graphtraversal.html#GraphTraversalStaticTraversal", null ],
+      [ "Dynamic Traversal", "graphtraversal.html#GraphTraversalDynamicTraversal", null ]
     ] ]
 ];

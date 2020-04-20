@@ -1,5 +1,10 @@
 var NAVTREEINDEX1 =
 {
+"kmeans.html#ParallelKMeansUsingGPUs":[3,2,2],
+"master-branch.html":[1,0],
+"master-branch.html#master-branch_bug_fixes":[1,0,2],
+"master-branch.html#master-branch_deprecated_items":[1,0,3],
+"master-branch.html#master-branch_download":[1,0,0],
 "master-branch.html#master-branch_miscellaneous_items":[1,0,4],
 "master-branch.html#master-branch_new_features":[1,0,1],
 "matrix_multiplication.html":[3,1],

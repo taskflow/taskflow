@@ -227,6 +227,11 @@ var NAVTREEINDEX0 =
 "flow__builder_8hpp_source.html":[7,0,5],
 "functions.html":[6,3,0],
 "functions_func.html":[6,3,1],
+"graphtraversal.html":[3,4],
+"graphtraversal.html#GraphTraversalDynamicTraversal":[3,4,3],
+"graphtraversal.html#GraphTraversalGraphRepresentation":[3,4,1],
+"graphtraversal.html#GraphTraversalProblemFormulation":[3,4,0],
+"graphtraversal.html#GraphTraversalStaticTraversal":[3,4,2],
 "hierarchy.html":[6,2],
 "index.html":[0],
 "index.html":[],
@@ -244,10 +249,5 @@ var NAVTREEINDEX0 =
 "kmeans.html#BuiltInPredicate":[3,2,3],
 "kmeans.html#KMeansBenchmarking":[3,2,4],
 "kmeans.html#KMeansProblemFormulation":[3,2,0],
-"kmeans.html#ParallelKMeansUsingCPUs":[3,2,1],
-"kmeans.html#ParallelKMeansUsingGPUs":[3,2,2],
-"master-branch.html":[1,0],
-"master-branch.html#master-branch_bug_fixes":[1,0,2],
-"master-branch.html#master-branch_deprecated_items":[1,0,3],
-"master-branch.html#master-branch_download":[1,0,0]
+"kmeans.html#ParallelKMeansUsingCPUs":[3,2,1]
 };

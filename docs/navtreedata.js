@@ -25,7 +25,7 @@ var NAVTREE =
 [
   [ "Cpp-Taskflow", "index.html", [
     [ "Quick Start", "index.html", [
-      [ "Modern C++ Parallel and Heterogeneous Task Programming", "index.html#ModernCppParallelTaskProgrammingLibrary", null ],
+      [ "Modern C++ Parallel Task Programming", "index.html#ModernCppParallelTaskProgrammingLibrary", null ],
       [ "Static and Dynamic Tasking", "index.html#StaticDynamicTasking", null ],
       [ "Conditional Tasking", "index.html#ConditionalTasking", null ],
       [ "Composable Tasking", "index.html#ComposableTasking", null ],
@@ -81,7 +81,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"master-branch.html#master-branch_miscellaneous_items"
+"kmeans.html#ParallelKMeansUsingGPUs"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
