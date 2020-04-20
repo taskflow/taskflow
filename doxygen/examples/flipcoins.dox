@@ -18,9 +18,9 @@ It is equivalently to say the expected number we need to toss for obtaining five
 @section FlipCoinsProbabilistic Probabilistic Conditions
 
 We use condition tasks to simulate the five coin tosses.
-We create five condition tasks each return a random binary number.
+We create five condition tasks each returning a random binary number.
 If the return is zero (head toss), the execution moves to the next condition task; 
-or it (tail toss) goes back to the first condition task to start over the simulation again.
+or it (tail toss) goes back to the first condition task to start over the simulation.
 
 @code{.cpp}
 tf::Taskflow taskflow;
@@ -71,7 +71,7 @@ its control flow can expand to a tree of tasks based on our scheduling rule for 
 (see @ref chapter4).
 Each path from the root to a leaf represents a result of five heads,
 and none of them can overlap at the same time (no task race).
-You must follow the same rule when creating a probabilistic condition task.
+You must follow the same rule when creating a probabilistic framework using conditional tasking.
 
 @section FlipCoinsTernaryCoins Ternary Coins
 
