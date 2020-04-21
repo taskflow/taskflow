@@ -12,7 +12,7 @@ and simultaneous high productivity.
 # Why Cpp-Taskflow?
 
 Cpp-Taskflow is by far faster, more expressive, and easier for drop-in integration
-than existing task programming libraries such as [OpenMP Tasking][OpenMP Tasking] 
+than existing task programming frameworks such as [OpenMP Tasking][OpenMP Tasking] 
 and [Intel TBB FlowGraph][TBB FlowGraph] in handling complex parallel workloads.
 
 ![](image/performance.jpg)
