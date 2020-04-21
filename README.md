@@ -6,7 +6,7 @@
 [![Wiki](image/api-doc.svg)][wiki]
 [![Cite](image/cite-ipdps.svg)](doxygen/reference/ipdps19.pdf)
 
-Cpp-Taskflow helps you write parallel programs with high performance scalability
+Cpp-Taskflow helps you quickly write parallel programs with high performance scalability
 and simultaneous high productivity.
 
 # Why Cpp-Taskflow?
