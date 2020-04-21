@@ -6,7 +6,8 @@
 [![Wiki](image/api-doc.svg)][wiki]
 [![Cite](image/cite-ipdps.svg)](doxygen/reference/ipdps19.pdf)
 
-A header-only C++ library to help you quickly write parallel and heterogeneous programs using task models
+Cpp-Taskflow helps you write parallel programs with high performance scalability
+and simultaneous high productivity.
 
 # Why Cpp-Taskflow?
 
