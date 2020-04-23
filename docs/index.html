@@ -94,7 +94,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="ModernCppParallelTaskProgrammingLibrary"></a>
 Modern C++ Parallel Task Programming</h1>
-<p>Cpp-Taskflow helps you quickly write parallel task programs with high performance scalability and simultaneous high productivity. It is by far faster, more expressive, fewer lines of code, and easier for drop-in integration than existing parallel task programming libraries such as <a href="https://www.openmp.org/spec-html/5.0/openmpsu99.html">OpenMP Tasking</a> and Intel <a href="https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph">Thread Building Block (TBB) FlowGraph</a>.</p>
+<p>Cpp-Taskflow helps you quickly write parallel task programs with high performance scalability and simultaneous high productivity. It is by far faster, more expressive, fewer lines of code, and easier for drop-in integration than existing parallel task programming frameworks such as <a href="https://www.openmp.org/spec-html/5.0/openmpsu99.html">OpenMP Tasking</a> and Intel <a href="https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph">Thread Building Block (TBB) FlowGraph</a>.</p>
 <div class="image">
 <img src="performance.jpg" alt="performance.jpg" width="95%"/>
 </div>
@@ -142,7 +142,7 @@ Concurrent CPU-GPU Tasking</h1>
 </div>
 <h1><a class="anchor" id="HowToInstallCppTaskflow"></a>
 How to Install Cpp-Taskflow?</h1>
-<p>Cpp-Taskflow is <em>header-only</em> and there is no need for installation. Simply download the source and copy the headers under the <code>taskflow</code> subdirectory to your project.</p>
+<p>Cpp-Taskflow is <em>header-only</em> and there is no need for installation. Simply download the source and copy the headers under the directory <code>taskflow/</code> to your project.</p>
 <div class="fragment"><div class="line">~$ git clone https://github.com/cpp-taskflow/cpp-taskflow.git</div><div class="line">~$ cd cpp-taskflow/</div><div class="line">~$ cp -r taskflow myproject/include/</div></div><!-- fragment --><h1><a class="anchor" id="ASimpleFirstProgram"></a>
 A Simple First Program</h1>
 <p>Here is a rather simple program to get you started.</p>
@@ -164,7 +164,7 @@ Supported Compilers</h1>
 <li>AppleClang Xode Version at least v8 </li>
 <li>Nvidia CUDA Toolkit and Compiler (nvcc) at least v10.0 with -std=c++14</li>
 </ul>
-<p>Cpp-Taskflow works on Linux, Windows, and OSX.</p>
+<p>Cpp-Taskflow works on Linux, Windows, and Mac OS X.</p>
 <h1><a class="anchor" id="License"></a>
 License</h1>
 <p>Cpp-Taskflow is open-source under permissive MIT license. </p>

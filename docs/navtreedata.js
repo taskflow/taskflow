@@ -36,6 +36,12 @@ var NAVTREE =
       [ "Supported Compilers", "index.html#SupportedCompilers", null ],
       [ "License", "index.html#License", null ]
     ] ],
+    [ "Building and Installing", "install.html", [
+      [ "Setting Up Cpp-Taskflow", "install.html#BAISettingUpCpp-Taskflow", null ],
+      [ "Compile and Link Flags", "install.html#BAICompileAndLinkFlag", null ],
+      [ "Supported Compilers", "install.html#BAISupportedCompilers", null ],
+      [ "Build Examples, Tests, and Benchmarks", "install.html#BAIBuildExamplesTestsAndBenchmarks", null ]
+    ] ],
     [ "Releases", "Releases.html", "Releases" ],
     [ "Cookbook", "Cookbook.html", "Cookbook" ],
     [ "Learning from Examples", "Examples.html", "Examples" ],
@@ -81,7 +87,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"kmeans.html#ParallelKMeansUsingGPUs"
+"kmeans.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

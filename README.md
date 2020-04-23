@@ -705,7 +705,7 @@ To use the latest [Cpp-Taskflow](https://github.com/cpp-taskflow/cpp-taskflow/ar
 + AppleClang Xode Version at least v8
 + Nvidia CUDA Toolkit and Compiler ([nvcc][nvcc]) at least v10.0 with -std=c++14
 
-See the [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support) status.
+Cpp-Taskflow works on Linux, Windows, and Mac OS X. See the [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support) status.
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 

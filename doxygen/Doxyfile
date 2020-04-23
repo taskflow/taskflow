@@ -820,6 +820,7 @@ INPUT                  = ../taskflow/core/error.hpp \
                          ../taskflow/cuda/cuda_task.hpp \
                          ../taskflow/cuda/cuda_flow.hpp \
                          QuickStart.dox \
+                         install/install.dox \
                          releases/releases.dox \
                          releases/master-branch.dox \
                          releases/release-2.4.0.dox \
@@ -1195,7 +1196,10 @@ HTML_EXTRA_STYLESHEET  =
 # files will be copied as-is; there are no commands or markers available.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_FILES       = favicon/favicon.ico
+HTML_EXTRA_FILES       = favicon/favicon.ico \
+                         reference/ipdps19.pdf \
+                         reference/mm19.pdf \
+                         reference/hpec19.pdf \
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to
@@ -1768,7 +1772,7 @@ LATEX_EXTRA_STYLESHEET =
 # markers available.
 # This tag requires that the tag GENERATE_LATEX is set to YES.
 
-LATEX_EXTRA_FILES      =
+LATEX_EXTRA_FILES      = 
 
 # If the PDF_HYPERLINKS tag is set to YES, the LaTeX that is generated is
 # prepared for conversion to PDF (using ps2pdf or pdflatex). The PDF file will

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['learning_20from_20examples',['Learning from Examples',['../Examples.html',1,'']]]
+  ['k_2dmeans_20clustering',['k-means Clustering',['../kmeans.html',1,'Examples']]]
 ];
