@@ -5,6 +5,7 @@ var NAVTREEINDEX0 =
 "Examples.html":[4],
 "FAQ.html":[5],
 "FAQ.html#GeneralQuestion1":[5,0,0],
+"FAQ.html#GeneralQuestion10":[5,0,9],
 "FAQ.html#GeneralQuestion2":[5,0,1],
 "FAQ.html#GeneralQuestion3":[5,0,2],
 "FAQ.html#GeneralQuestion4":[5,0,3],
@@ -12,6 +13,7 @@ var NAVTREEINDEX0 =
 "FAQ.html#GeneralQuestion6":[5,0,5],
 "FAQ.html#GeneralQuestion7":[5,0,6],
 "FAQ.html#GeneralQuestion8":[5,0,7],
+"FAQ.html#GeneralQuestion9":[5,0,8],
 "FAQ.html#GeneralQuestions":[5,0],
 "FAQ.html#ProgrammingQuestions":[5,1],
 "FAQ.html#ProgrammingQuestions1":[5,1,0],
@@ -233,8 +235,8 @@ var NAVTREEINDEX0 =
 "graphtraversal.html#GraphTraversalProblemFormulation":[4,4,0],
 "graphtraversal.html#GraphTraversalStaticTraversal":[4,4,2],
 "hierarchy.html":[7,2],
-"index.html":[],
 "index.html":[0],
+"index.html":[],
 "index.html#ASimpleFirstProgram":[0,6],
 "index.html#CompileAndRunYourFirstProgram":[0,7],
 "index.html#ComposableTasking":[0,3],
@@ -247,7 +249,5 @@ var NAVTREEINDEX0 =
 "index.html#SupportedCompilers":[0,8],
 "install.html":[1],
 "install.html#BAIBuildExamplesTestsAndBenchmarks":[1,3],
-"install.html#BAICompileAndLinkFlag":[1,1],
-"install.html#BAISettingUpCpp-Taskflow":[1,0],
-"install.html#BAISupportedCompilers":[1,2]
+"install.html#BAICompileAndLinkFlag":[1,1]
 };

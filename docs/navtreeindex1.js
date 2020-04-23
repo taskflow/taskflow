@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"install.html#BAISettingUpCpp-Taskflow":[1,0],
+"install.html#BAISupportedCompilers":[1,2],
 "kmeans.html":[4,2],
 "kmeans.html#BuiltInPredicate":[4,2,3],
 "kmeans.html#KMeansBenchmarking":[4,2,4],

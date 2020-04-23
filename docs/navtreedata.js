@@ -54,7 +54,9 @@ var NAVTREE =
         [ "Q5: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?", "FAQ.html#GeneralQuestion5", null ],
         [ "Q6: Does Cpp-Taskflow have backward compatibility with C++03/98/11?", "FAQ.html#GeneralQuestion6", null ],
         [ "Q7: How does Cpp-Taskflow schedule tasks?", "FAQ.html#GeneralQuestion7", null ],
-        [ "Q8: What is the overhead of taskflow?", "FAQ.html#GeneralQuestion8", null ]
+        [ "Q8: What is the overhead of taskflow?", "FAQ.html#GeneralQuestion8", null ],
+        [ "Q9: How does it compare to existing task programming systems?", "FAQ.html#GeneralQuestion9", null ],
+        [ "Q10: Do you try to simplify the GPU kernel programming?", "FAQ.html#GeneralQuestion10", null ]
       ] ],
       [ "Programming Questions", "FAQ.html#ProgrammingQuestions", [
         [ "Q1: What is the difference between Cpp-Taskflow threads and workers?", "FAQ.html#ProgrammingQuestions1", null ],
@@ -87,7 +89,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"kmeans.html"
+"install.html#BAISettingUpCpp-Taskflow"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

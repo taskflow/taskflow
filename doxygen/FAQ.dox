@@ -58,6 +58,27 @@ takes about 61 and 14 nanoseconds in our system (Intel 4-core CPU at 2.00GHz).
 The time is amortized over 1M operations, since we have implemented an object pool 
 to recycle tasks for minimal overhead.
 
+@subsection GeneralQuestion9 Q9: How does it compare to existing task programming systems?
+
+There is a large amount of work on programming systems (e.g., StarPU, Intel TBB, OpenMP, PaRSEC, Kokkos, HPX) in the interest of simplifying the 
+programming complexity of parallel and heterogeneous computing. 
+Each of these systems has its own pros and cons and deserves a reason to exist.
+However, they do have some problems, particularly from the standpoint of ease of use, 
+static control flow, and scheduling efficiency.
+Cpp-Taskflow addresses these limitations through a simple, expressive, and transparent
+graph programming model.
+
+@subsection GeneralQuestion10 Q10: Do you try to simplify the GPU kernel programming?
+
+No, we do not develop new programming models to simplify the kernel programming.
+The rationale is simple: Writing efficient kernels requires domain-specific knowledge 
+and developers often require direct access to the native GPU programming interface.
+High-level kernel programming models or abstractions all come with restricted applicability.
+Despite non-trivial kernel programming, we believe what makes heterogeneous computing difficult
+is the surrounding tasks.
+A mistake made in task scheduling can outweigh all speed-up benefits from a highly optimized kernel.
+Therefore, Cpp-Taskflow focuses on heterogeneous tasking 
+that affects the overall system performance to a large extent.
 
 ----
 
