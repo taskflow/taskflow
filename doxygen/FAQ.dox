@@ -75,8 +75,8 @@ The rationale is simple: Writing efficient kernels requires domain-specific know
 and developers often require direct access to the native GPU programming interface.
 High-level kernel programming models or abstractions all come with restricted applicability.
 Despite non-trivial kernel programming, we believe what makes heterogeneous computing difficult
-is the surrounding tasks.
-A mistake made in task scheduling can outweigh all speed-up benefits from a highly optimized kernel.
+are surrounding tasks.
+A mistake made by task scheduling can outweigh all speed-up benefits from a highly optimized kernel.
 Therefore, Cpp-Taskflow focuses on heterogeneous tasking 
 that affects the overall system performance to a large extent.
 
@@ -91,13 +91,6 @@ The master thread owns the thread pool and can spawn workers to run tasks
 or shutdown the pool. 
 Giving taskflow @c N threads means using @c N threads to do the works, 
 and there is a total of @c N+1 threads (including the master thread) in the program.
-
-@code{.cpp}
-tf::Executor(N);    // N workers, N+1 threads in the program.
-@endcode
-
-If there is no worker threads in the pool, 
-the master thread will do all the works by itself.
 Please refer to @ref C2_CreateAnExecutor for more details.
 
 @subsection ProgrammingQuestions2 Q2: What is the Lifetime of a Task and a Graph?
