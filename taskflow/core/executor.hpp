@@ -198,6 +198,11 @@ class Executor {
 
 
   private:
+    
+    const size_t _VICTIM_BEG;
+    const size_t _VICTIM_END;
+    const size_t _MAX_STEALS;
+    const size_t _MAX_YIELDS;
    
     std::condition_variable _topology_cv;
     std::mutex _topology_mutex;
@@ -205,7 +210,6 @@ class Executor {
 
     size_t _num_topologies {0};
     
-    // scheduler field
     std::vector<Worker> _workers;
     std::vector<std::thread> _threads;
 
@@ -257,6 +261,10 @@ class Executor {
 #ifdef TF_ENABLE_CUDA
 // Constructor
 inline Executor::Executor(size_t N, size_t M) :
+  _VICTIM_BEG   {0},
+  _VICTIM_END   {N + M - 1},
+  _MAX_STEALS   {(N + M + 1) << 1},
+  _MAX_YIELDS   {100},
   _workers      {N + M},
   _cuda_devices {cuda_num_devices()},
   _notifier     {Notifier(N), Notifier(M)} {
@@ -293,8 +301,12 @@ inline Executor::Executor(size_t N, size_t M) :
 #else
 // Constructor
 inline Executor::Executor(size_t N) : 
-  _workers  {N},
-  _notifier {Notifier(N)} {
+  _VICTIM_BEG {0},
+  _VICTIM_END {N - 1},
+  _MAX_STEALS {(N + 1) << 1},
+  _MAX_YIELDS {100},
+  _workers    {N},
+  _notifier   {Notifier(N)} {
   
   if(N == 0) {
     TF_THROW("no cpu workers to execute taskflows");
@@ -410,51 +422,44 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
 
   const auto d = w.domain;
 
-  const size_t l = 0;
-  const size_t r = _workers.size() - 1;
+  size_t num_steals = 0;
+  size_t num_yields = 0;
 
-  const size_t F = (_workers.size() + 1) << 1;
-  const size_t Y = 100;
+  std::uniform_int_distribution<size_t> rdvtm(_VICTIM_BEG, _VICTIM_END);
 
-  size_t f = 0;
-  size_t y = 0;
+  //while(!_done) {
+  //
+  //  size_t vtm = rdvtm(w.rdgen);
+  //    
+  //  t = (vtm == w.id) ? _wsq[d].steal() : _workers[vtm].wsq[d].steal();
 
-  /*// explore
-  while(!_done) {
-  
-    size_t vtm = std::uniform_int_distribution<size_t>{l, r}(w.rdgen);
-      
-    t = (vtm == w.id) ? _wsq[d].steal() : _workers[vtm].wsq[d].steal();
+  //  if(t) {
+  //    break;
+  //  }
 
-    if(t) {
-      break;
-    }
-
-    if(f++ > F) {
-      std::this_thread::yield();
-      if(y++ > Y) {
-        break;
-      }
-    }
-  } */
+  //  if(num_steal++ > _MAX_STEALS) {
+  //    std::this_thread::yield();
+  //    if(num_yields++ > _MAX_YIELDS) {
+  //      break;
+  //    }
+  //  }
+  //}
 
   do {
-    
     t = (w.id == w.victim) ? _wsq[d].steal() : _workers[w.victim].wsq[d].steal();
 
     if(t) {
       break;
     }
     
-    if(f++ > F) {
+    if(num_steals++ > _MAX_STEALS) {
       std::this_thread::yield();
-      if(y++ > Y) {
+      if(num_yields++ > _MAX_YIELDS) {
         break;
       }
     }
     
-    w.victim = std::uniform_int_distribution<size_t>{l, r}(w.rdgen);
-
+    w.victim = rdvtm(w.rdgen);
   } while(!_done);
 
 }
@@ -584,6 +589,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
       return true;
     }
     else {
+      worker.victim = worker.id;
       goto explore_task;
     }
   }
@@ -605,6 +611,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     // check all domain queue again
     for(auto& w : _workers) {
       if(!w.wsq[d].empty()) {
+        worker.victim = w.id;
         _notifier[d].cancel_wait(worker.waiter);
         goto wait_for_task;
       }
