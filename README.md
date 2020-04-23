@@ -49,7 +49,8 @@ by harnessing the power of CPU-GPU collaborative computing.
 | :-----------------: |
 | ![](image/cudaflow.svg) |
 
-We are committed to support trustworthy developments for both academic and industrial research projects in parallel computing. Check out [Who is Using Cpp-Taskflow](#who-is-using-cpp-taskflow) and what our users say:
+We are committed to support trustworthy developments for both academic and industrial research projects 
+in parallel computing. Check out [Who is Using Cpp-Taskflow](#who-is-using-cpp-taskflow) and what our users say:
 
 + *"Cpp-Taskflow is the cleanest Task API I've ever seen." [damienhocking][damienhocking]*
 + *"Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [totalgee][totalgee]*
