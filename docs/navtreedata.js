@@ -45,6 +45,7 @@ var NAVTREE =
     [ "Releases", "Releases.html", "Releases" ],
     [ "Cookbook", "Cookbook.html", "Cookbook" ],
     [ "Learning from Examples", "Examples.html", "Examples" ],
+    [ "Real Use Cases", "UseCases.html", "UseCases" ],
     [ "Frequently Asked Questions", "FAQ.html", [
       [ "General Questions", "FAQ.html#GeneralQuestions", [
         [ "Q1: What's the goal of Cpp-Taskflow?", "FAQ.html#GeneralQuestion1", null ],
@@ -89,7 +90,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"install.html#BAISettingUpCpp-Taskflow"
+"index.html#ModernCppParallelTaskProgrammingLibrary"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

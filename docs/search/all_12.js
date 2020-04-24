@@ -1,7 +1,9 @@
 var searchData=
 [
   ['chrono',['chrono',['http://en.cppreference.com/w/namespacestd_1_1chrono.html',1,'std']]],
+  ['standard_20cell_20placement',['Standard Cell Placement',['../dreamplace.html',1,'UseCases']]],
   ['experimental',['experimental',['http://en.cppreference.com/w/namespacestd_1_1experimental.html',1,'std']]],
+  ['static_20timing_20analysis',['Static Timing Analysis',['../opentimer.html',1,'UseCases']]],
   ['regex_5fconstants',['regex_constants',['http://en.cppreference.com/w/namespacestd_1_1regex__constants.html',1,'std']]],
   ['rel_5fops',['rel_ops',['http://en.cppreference.com/w/namespacestd_1_1rel__ops.html',1,'std']]],
   ['s',['s',['http://en.cppreference.com/w/cpp/numeric/random/lognormal_distribution/params.html',1,'std::lognormal_distribution']]],

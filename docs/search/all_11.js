@@ -75,5 +75,6 @@ var searchData=
   ['run',['run',['../classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa',1,'tf::Executor::run(Taskflow &amp;taskflow)'],['../classtf_1_1Executor.html#a94b45b69dc247c82c2ada8c90424b172',1,'tf::Executor::run(Taskflow &amp;taskflow, C &amp;&amp;callable)']]],
   ['run_5fn',['run_n',['../classtf_1_1Executor.html#adca6cd0ce1bd7e6fa2ed2a55c9ae15e6',1,'tf::Executor::run_n(Taskflow &amp;taskflow, size_t N)'],['../classtf_1_1Executor.html#aff558312e64d19f98f26c91349c317da',1,'tf::Executor::run_n(Taskflow &amp;taskflow, size_t N, C &amp;&amp;callable)']]],
   ['run_5funtil',['run_until',['../classtf_1_1Executor.html#a8acf7515e8e8fdda366ace68bcd65aa6',1,'tf::Executor::run_until(Taskflow &amp;taskflow, P &amp;&amp;pred)'],['../classtf_1_1Executor.html#a85f5cd590d2dbe15d1f2f1f8d920a7e6',1,'tf::Executor::run_until(Taskflow &amp;taskflow, P &amp;&amp;pred, C &amp;&amp;callable)']]],
-  ['runtime_5ferror',['runtime_error',['http://en.cppreference.com/w/cpp/error/runtime_error.html',1,'std::runtime_error'],['http://en.cppreference.com/w/cpp/error/runtime_error.html',1,'std::runtime_error::runtime_error()']]]
+  ['runtime_5ferror',['runtime_error',['http://en.cppreference.com/w/cpp/error/runtime_error.html',1,'std::runtime_error'],['http://en.cppreference.com/w/cpp/error/runtime_error.html',1,'std::runtime_error::runtime_error()']]],
+  ['real_20use_20cases',['Real Use Cases',['../UseCases.html',1,'']]]
 ];
