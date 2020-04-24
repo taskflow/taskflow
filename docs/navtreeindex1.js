@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"index.html#License":[0,9],
 "index.html#ModernCppParallelTaskProgrammingLibrary":[0,0],
 "index.html#StaticDynamicTasking":[0,1],
 "index.html#SupportedCompilers":[0,8],
@@ -30,6 +31,7 @@ var NAVTREEINDEX1 =
 "opentimer.html#UseCaseOpenTimerConclusion":[5,0,3],
 "opentimer.html#UseCaseOpenTimerPerformanceImprovement":[5,0,2],
 "opentimer.html#UseCaseOpenTimerProgrammingEffort":[5,0,1],
+"opentimer.html#UseCaseOpenTimerReferences":[5,0,4],
 "opentimer.html#UseCasesOpenTimer":[5,0,0],
 "pages.html":[],
 "release-2-0-0.html":[2,6],

@@ -68,9 +68,9 @@ var NAVTREE =
         [ "Q6: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?", "FAQ.html#ProgrammingQuestions6", null ]
       ] ]
     ] ],
-    [ "Reference", "Reference.html", [
-      [ "Conference", "Reference.html#RefConference", null ],
-      [ "Journal", "Reference.html#RefJournal", null ]
+    [ "References", "References.html", [
+      [ "Conference", "References.html#RefConference", null ],
+      [ "Journal", "References.html#RefJournal", null ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
@@ -90,7 +90,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"index.html#ModernCppParallelTaskProgrammingLibrary"
+"index.html#License"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
