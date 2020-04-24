@@ -1,4 +1,4 @@
-var UseCases =
+var usecases =
 [
     [ "Static Timing Analysis", "opentimer.html", [
       [ "OpenTimer: A High-performance Timing Analysis Tool", "opentimer.html#UseCasesOpenTimer", null ],

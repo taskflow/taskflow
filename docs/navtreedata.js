@@ -45,7 +45,7 @@ var NAVTREE =
     [ "Releases", "Releases.html", "Releases" ],
     [ "Cookbook", "Cookbook.html", "Cookbook" ],
     [ "Learning from Examples", "Examples.html", "Examples" ],
-    [ "Real Use Cases", "UseCases.html", "UseCases" ],
+    [ "Real Use Cases", "usecases.html", "usecases" ],
     [ "Frequently Asked Questions", "FAQ.html", [
       [ "General Questions", "FAQ.html#GeneralQuestions", [
         [ "Q1: What's the goal of Cpp-Taskflow?", "FAQ.html#GeneralQuestion1", null ],
@@ -57,7 +57,8 @@ var NAVTREE =
         [ "Q7: How does Cpp-Taskflow schedule tasks?", "FAQ.html#GeneralQuestion7", null ],
         [ "Q8: What is the overhead of taskflow?", "FAQ.html#GeneralQuestion8", null ],
         [ "Q9: How does it compare to existing task programming systems?", "FAQ.html#GeneralQuestion9", null ],
-        [ "Q10: Do you try to simplify the GPU kernel programming?", "FAQ.html#GeneralQuestion10", null ]
+        [ "Q10: Do you try to simplify the GPU kernel programming?", "FAQ.html#GeneralQuestion10", null ],
+        [ "Q11: Do you have any real use cases?", "FAQ.html#GeneralQuestion11", null ]
       ] ],
       [ "Programming Questions", "FAQ.html#ProgrammingQuestions", [
         [ "Q1: What is the difference between Cpp-Taskflow threads and workers?", "FAQ.html#ProgrammingQuestions1", null ],

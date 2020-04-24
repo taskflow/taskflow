@@ -31,17 +31,17 @@ size_t tosses = 0;
 size_t total_tosses = 0; 
 double average_tosses = 0.0; 
 
-auto A = taskflow.emplace( [&](){ tosses = 0; } ).name("init"); 
+tf::Task A = taskflow.emplace( [&](){ tosses = 0; } ).name("init"); 
 
 // start over the flip again
-auto B = taskflow.emplace( [&](){ ++tosses; return std::rand()%2; } ).name("flip-coin-1");
-auto C = taskflow.emplace( [&](){ return std::rand()%2; } ).name("flip-coin-2");
-auto D = taskflow.emplace( [&](){ return std::rand()%2; } ).name("flip-coin-3");
-auto E = taskflow.emplace( [&](){ return std::rand()%2; } ).name("flip-coin-4");
-auto F = taskflow.emplace( [&](){ return std::rand()%2; } ).name("flip-coin-5");
+tf::Task B = taskflow.emplace( [&](){ ++tosses; return std::rand()%2; } ).name("flip-coin-1");
+tf::Task C = taskflow.emplace( [&](){ return std::rand()%2; } ).name("flip-coin-2");
+tf::Task D = taskflow.emplace( [&](){ return std::rand()%2; } ).name("flip-coin-3");
+tf::Task E = taskflow.emplace( [&](){ return std::rand()%2; } ).name("flip-coin-4");
+tf::Task F = taskflow.emplace( [&](){ return std::rand()%2; } ).name("flip-coin-5");
 
 // reach the target; record the number of tosses 
-auto G = taskflow.emplace( [&](){ total_tosses += tosses; } ).name("stop");
+tf::Task G = taskflow.emplace( [&](){ total_tosses += tosses; } ).name("stop");
 
 A.precede(B).name;
 
@@ -81,17 +81,17 @@ The expected number of tosses to reach
 five identical results is 3*3*3*3*3 = 243.
 
 @code{.cpp}
-auto A = taskflow.emplace( [&](){ tosses = 0; } ).name("init"); 
+tf::Task A = taskflow.emplace( [&](){ tosses = 0; } ).name("init"); 
 
 // start over the flip again
-auto B = taskflow.emplace( [&](){ ++tosses; return std::rand()%3; } ).name("flip-coin-1");
-auto C = taskflow.emplace( [&](){ return std::rand()%3; } ).name("flip-coin-2");
-auto D = taskflow.emplace( [&](){ return std::rand()%3; } ).name("flip-coin-3");
-auto E = taskflow.emplace( [&](){ return std::rand()%3; } ).name("flip-coin-4");
-auto F = taskflow.emplace( [&](){ return std::rand()%3; } ).name("flip-coin-5");
+tf::Task B = taskflow.emplace( [&](){ ++tosses; return std::rand()%3; } ).name("flip-coin-1");
+tf::Task C = taskflow.emplace( [&](){ return std::rand()%3; } ).name("flip-coin-2");
+tf::Task D = taskflow.emplace( [&](){ return std::rand()%3; } ).name("flip-coin-3");
+tf::Task E = taskflow.emplace( [&](){ return std::rand()%3; } ).name("flip-coin-4");
+tf::Task F = taskflow.emplace( [&](){ return std::rand()%3; } ).name("flip-coin-5");
 
 // reach the target; record the number of tosses 
-auto G = taskflow.emplace( [&](){ total_tosses += tosses; } ).name("stop");
+tf::Task G = taskflow.emplace( [&](){ total_tosses += tosses; } ).name("stop");
 
 A.precede(B);
 

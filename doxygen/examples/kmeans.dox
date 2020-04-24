@@ -21,7 +21,7 @@ We describe the k-means algorithm in the following steps:
 
 The algorithm is illustrated as follows:
 
-@image html images/kmeans_1.png width=80%
+@image html images/kmeans_1.png width=100%
 
 A sequential implementation of k-means is described as follows:
 
@@ -158,7 +158,7 @@ void kmeans_par(int N, int K, int M, cconst std::vector<float>& px,  const std::
   std::vector<float> sx(K), sy(K), mx(K), my(K);
 
   // initial centroids
-  auto init = taskflow.emplace([&](){
+  tf::Task init = taskflow.emplace([&](){
     for(int i=0; i<K; ++i) {
       mx[i] = px[i];
       my[i] = py[i];
@@ -166,7 +166,7 @@ void kmeans_par(int N, int K, int M, cconst std::vector<float>& px,  const std::
   }).name("init");
 
   // clear the storage
-  auto clean_up = taskflow.emplace([&](){
+  tf::Task clean_up = taskflow.emplace([&](){
     for(int k=0; k<K; ++k) {
       sx[k] = 0.0f;
       sy[k] = 0.0f;
@@ -198,7 +198,7 @@ void kmeans_par(int N, int K, int M, cconst std::vector<float>& px,  const std::
   });
   T.name("end_assign_cluster");
 
-  auto update_cluster = taskflow.emplace([&](){
+  tf::Task update_cluster = taskflow.emplace([&](){
     for(int i=0; i<N; i++) {
       sx[best_ks[i]] += px[i];
       sy[best_ks[i]] += py[i];
@@ -213,7 +213,7 @@ void kmeans_par(int N, int K, int M, cconst std::vector<float>& px,  const std::
   }).name("update_cluster");
   
   // convergence check
-  auto condition = taskflow.emplace([m=0, M]() mutable {
+  tf::Task condition = taskflow.emplace([m=0, M]() mutable {
     return (m++ < M) ? 0 : 1;
   }).name("converged?");
 
@@ -314,26 +314,26 @@ void kmeans_gpu(int N, int K, int M, cconst std::vector<float>& px,  const std::
   tf::Taskflow taskflow("K-Means");
   
   // allocate GPU memory
-  auto allocate_px = taskflow.emplace([&](){ cudaMalloc(&d_px, N*sizeof(float)); })
+  tf::Task allocate_px = taskflow.emplace([&](){ cudaMalloc(&d_px, N*sizeof(float)); })
                              .name("allocate_px");
 
-  auto allocate_py = taskflow.emplace([&](){ cudaMalloc(&d_py, N*sizeof(float)); })
+  tf::Task allocate_py = taskflow.emplace([&](){ cudaMalloc(&d_py, N*sizeof(float)); })
                              .name("allocate_py");
 
-  auto allocate_mx = taskflow.emplace([&](){ cudaMalloc(&d_mx, K*sizeof(float)); })
+  tf::Task allocate_mx = taskflow.emplace([&](){ cudaMalloc(&d_mx, K*sizeof(float)); })
                              .name("allocate_mx");
 
-  auto allocate_my = taskflow.emplace([&](){ cudaMalloc(&d_my, K*sizeof(float)); })
+  tf::Task allocate_my = taskflow.emplace([&](){ cudaMalloc(&d_my, K*sizeof(float)); })
                              .name("allocate_my");
 
-  auto allocate_sy = taskflow.emplace([&](){ cudaMalloc(&d_sy, K*sizeof(float)); })
+  tf::Task allocate_sy = taskflow.emplace([&](){ cudaMalloc(&d_sy, K*sizeof(float)); })
                              .name("allocate_sy");
 
-  auto allocate_c = taskflow.emplace([&](){ cudaMalloc(&d_c, K*sizeof(float)); })
+  tf::Task allocate_c = taskflow.emplace([&](){ cudaMalloc(&d_c, K*sizeof(float)); })
                             .name("allocate_c");
   
   // transfer data from the host to the GPU
-  auto h2d = taskflow.emplace([&](tf::cudaFlow& cf){
+  tf::Task h2d = taskflow.emplace([&](tf::cudaFlow& cf){
     cf.copy(d_px, h_px.data(), N).name("h2d_px");
     cf.copy(d_py, h_py.data(), N).name("h2d_py");
     cf.copy(d_mx, h_mx.data(), K).name("h2d_mx");
@@ -341,17 +341,17 @@ void kmeans_gpu(int N, int K, int M, cconst std::vector<float>& px,  const std::
   }).name("h2d");
   
   // GPU task graph of the main k-means body
-  auto kmeans = taskflow.emplace([&](tf::cudaFlow& cf){
+  tf::Task kmeans = taskflow.emplace([&](tf::cudaFlow& cf){
 
-    auto zero_c = cf.zero(d_c, K).name("zero_c");
-    auto zero_sx = cf.zero(d_sx, K).name("zero_sx");
-    auto zero_sy = cf.zero(d_sy, K).name("zero_sy");
+    tf::cudaTask zero_c = cf.zero(d_c, K).name("zero_c");
+    tf::cudaTask zero_sx = cf.zero(d_sx, K).name("zero_sx");
+    tf::cudaTask zero_sy = cf.zero(d_sy, K).name("zero_sy");
 
-    auto cluster = cf.kernel(
+    tf::cudaTask cluster = cf.kernel(
       (N+1024-1) / 1024, 1024, 0, assign_clusters, d_px, d_py, N, d_mx, d_my, d_sx, d_sy, K, d_c
     ).name("cluster");
 
-    auto new_centroid = cf.kernel(
+    tf::cudaTask new_centroid = cf.kernel(
       1, K, 0, compute_new_means, d_mx, d_my, d_sx, d_sy, d_c
     ).name("new_centroid");
 
@@ -360,18 +360,18 @@ void kmeans_gpu(int N, int K, int M, cconst std::vector<float>& px,  const std::
   }).name("update_means");
   
   // condition task to check convergence
-  auto condition = taskflow.emplace([i=0, M] () mutable {
+  tf::Task condition = taskflow.emplace([i=0, M] () mutable {
     return i++ < M ? 0 : 1;
   }).name("converged?");
   
   // transfer the result of clusters from GPU to host
-  auto stop = taskflow.emplace([&](tf::cudaFlow& cf){
+  tf::Task stop = taskflow.emplace([&](tf::cudaFlow& cf){
     cf.copy(h_mx.data(), d_mx, K).name("d2h_mx");
     cf.copy(h_my.data(), d_my, K).name("d2h_my");
   }).name("d2h");
   
   // deallocated GPU memory
-  auto free = taskflow.emplace([&](){
+  tf::Task free = taskflow.emplace([&](){
     cudaFree(d_px);
     cudaFree(d_py);
     cudaFree(d_mx);
@@ -426,18 +426,18 @@ to create the %cudaFlow once and launch it repeatedly as rapidly as possible wit
 conditional tasking.
 
 @code{.cpp}
-auto kmeans = taskflow.emplace([&](tf::cudaFlow& cf){
+tf::Task kmeans = taskflow.emplace([&](tf::cudaFlow& cf){
 
-  auto zero_c = cf.zero(d_c, K).name("zero_c");
-  auto zero_sx = cf.zero(d_sx, K).name("zero_sx");
-  auto zero_sy = cf.zero(d_sy, K).name("zero_sy");
+  tf::cudaTask zero_c = cf.zero(d_c, K).name("zero_c");
+  tf::cudaTask zero_sx = cf.zero(d_sx, K).name("zero_sx");
+  tf::cudaTask zero_sy = cf.zero(d_sy, K).name("zero_sy");
 
-  auto cluster = cf.kernel(
+  tf::cudaTask cluster = cf.kernel(
     (N+1024-1) / 1024, 1024, 0,
     assign_clusters, d_px, d_py, N, d_mx, d_my, d_sx, d_sy, K, d_c
   ).name("cluster");
 
-  auto new_centroid = cf.kernel(
+  tf::cudaTask new_centroid = cf.kernel(
     1, K, 0,
     compute_new_means, d_mx, d_my, d_sx, d_sy, d_c
   ).name("new_centroid");

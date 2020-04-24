@@ -28,7 +28,7 @@ The algorithm iterates the following:
 Each iteration contains overlapped CPU and
 GPU tasks with nested conditions to decide the convergence.
 
-@image html images/dreamplace_2.png width=80%
+@image html images/dreamplace_2.png width=100%
 
 @section UseCasesDreamPlaceProgrammingEffort Programming Effort
 
@@ -64,7 +64,7 @@ than TBB and StarPU.
 We observed similar results using other CPU numbers. 
 Performance saturates at about 16 CPUs, primarily due to the inherent irregularity of the placement algorithm.
 
-@image html images/dreamplace_4.png width=60%
+@image html images/dreamplace_4.png width=70%
 
 
 The memory footprint shows the benefit of our conditional tasking. 
@@ -74,7 +74,7 @@ At a vertical scale, increasing the number of CPUs bumps
 up the memory usage of all methods, but the growth rate of
 Cpp-Taskflow is much slower than the others. 
 
-@image html images/dreamplace_5.png width=60%
+@image html images/dreamplace_5.png width=70%
 
 In terms of energy, our scheduler is very power efficient in completing the
 placement workload, regardless of problem sizes and CPU
@@ -82,7 +82,7 @@ numbers. Beyond 16 CPUs where performance saturates, our
 system does not suffer from increasing power as StarPU, 
 due to our adaptive task scheduling algorithm.
 
-@image html images/dreamplace_6.png width=60%
+@image html images/dreamplace_6.png width=70%
 
 For irregular task graphs akin to this placement workload, 
 resource utilization is critical to the system throughput. 
@@ -92,7 +92,7 @@ We plot the throughput using <em>weighted speed-up</em> across nine coruns at tw
 Both Cpp-Taskflow and TBB achieve higher throughput than StarPU. 
 At the largest problem size, Cpp-Taskflow outperforms TBB and StarPU across all coruns.
 
-@image html images/dreamplace_7.png width=60%
+@image html images/dreamplace_7.png width=70%
 
 @section UseCasesDreamPlaceConclusion Conclusion
 

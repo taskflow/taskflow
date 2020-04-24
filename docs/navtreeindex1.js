@@ -69,6 +69,7 @@ var NAVTREEINDEX1 =
 "structis__static__task.html":[8,0,4],
 "task_8hpp_source.html":[9,0,7],
 "taskflow_8hpp_source.html":[9,0,8],
+"usecases.html":[5],
 "wavefront.html":[4,0],
 "wavefront.html#WavefrontComputingFormulation":[4,0,0],
 "wavefront.html#WavefrontTaskGraph":[4,0,1]
