@@ -69,8 +69,8 @@ var NAVTREE =
       ] ]
     ] ],
     [ "References", "References.html", [
-      [ "Conference", "References.html#RefConference", null ],
-      [ "Journal", "References.html#RefJournal", null ]
+      [ "Journal", "References.html#RefJournal", null ],
+      [ "Conference", "References.html#RefConference", null ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
