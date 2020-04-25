@@ -97,7 +97,7 @@ $(document).ready(function(){initNavTree('opentimer.html','');});
 OpenTimer: A High-performance Timing Analysis Tool</h1>
 <p>Static timing analysis (STA) is an important step in the overall chip design flow. It verifies the static behavior of a circuit design and ensure its correct functionality under the given clock speed. However, efficient parallel timing analysis is extremely challenging to design and implement, due to large irregularity and graph-oriented computing. The following figure shows an extracted timing graph from an industrial design.</p>
 <div class="image">
-<img src="opentimer_1.png" alt="opentimer_1.png" width="50%"/>
+<img src="opentimer_1.png" alt="opentimer_1.png" width="100%"/>
 </div>
 <p>We consider our research project <a href="https://github.com/OpenTimer/OpenTimer">OpenTimer</a>, an open-source static timing analyzer that has been used in many industrial and academic projects. The first release v1 in 2015 implemented the <em>pipeline-based levelization</em> algorithm using the OpenMP 4.5 task dependency clause. To overcome the performance bottleneck caused by pipeline, we rewrote the core incremental timing engine using Cpp-Taskflow in the second release v2.</p>
 <h1><a class="anchor" id="UseCaseOpenTimerProgrammingEffort"></a>
