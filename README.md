@@ -4,7 +4,7 @@
 [![Linux Build Status](https://travis-ci.com/cpp-taskflow/cpp-taskflow.svg?branch=master)](https://travis-ci.com/cpp-taskflow/cpp-taskflow)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/te9bjp4yfhq7f8hq?svg=true)](https://ci.appveyor.com/project/TsungWeiHuang/cpp-taskflow)
 [![Wiki](image/api-doc.svg)][wiki]
-[![Cite](image/cite-arXiv.svg)](https://arxiv.org/abs/2004.10908)
+[![Cite](image/cite-arXiv.svg)](https://arxiv.org/abs/2004.10908v2)
 
 Cpp-Taskflow helps you quickly write parallel programs with high performance scalability
 and simultaneous high productivity.

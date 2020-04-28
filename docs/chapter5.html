@@ -109,7 +109,7 @@ Composes a Taskflow</h1>
 </ul>
 <h1><a class="anchor" id="C5_ModuleTask"></a>
 Module Task</h1>
-<p>The task created from <a class="el" href="classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9" title="creates a module task from a taskflow ">Taskflow::composed_of</a> is a <em>module</em> task that runs on a pre-defined taskflow. A module task does not owns the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <code>module1</code> and <code>module2</code> refer to the same taskflow <code>F1</code>, the dependency link prevents <code>F1</code> from multiple executions at the same time.</p>
+<p>The task created from <a class="el" href="classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9" title="creates a module task from a taskflow ">Taskflow::composed_of</a> is a <em>module</em> task that runs on a pre-defined taskflow. A module task does not own the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <code>module1</code> and <code>module2</code> refer to the same taskflow <code>F1</code>, the dependency link prevents <code>F1</code> from multiple executions at the same time.</p>
 <div class="image">
 <object type="image/svg+xml" data="composition_static_2.svg" width="60%">composition_static_2.svg</object>
 </div>
