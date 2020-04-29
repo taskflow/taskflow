@@ -52,7 +52,7 @@ by harnessing the power of CPU-GPU collaborative computing.
 We are committed to support trustworthy developments for both academic and industrial research projects 
 in parallel computing. Check out [Who is Using Cpp-Taskflow](#who-is-using-cpp-taskflow) and what our users say:
 
-+ *"Cpp-Taskflow is the cleanest Task API I've ever seen." [Damien Hocking @Corelium Inc][http://coreliuminc.com]*
++ *"Cpp-Taskflow is the cleanest Task API I've ever seen." [Damien Hocking @Corelium Inc](http://coreliuminc.com)*
 + *"Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [Glen Fraser][totalgee]*
 + *"Cpp-Taskflow lets me handle parallel processing in a smart way." [Hayabusa @Cpp-Learning](https://cpp-learning.com/cpp-taskflow/)*
 + *"Cpp-Taskflow improves the throughput of our graph engine in just a few hours of coding." [Jean-Michaël @KDAB](https://ossia.io/)*
