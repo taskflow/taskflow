@@ -8,9 +8,6 @@
 
 #pragma once
 
-#ifndef NONSTD_OPTIONAL_LITE_HPP
-#define NONSTD_OPTIONAL_LITE_HPP
-
 #define optional_lite_MAJOR  3
 #define optional_lite_MINOR  2
 #define optional_lite_PATCH  0
@@ -1712,13 +1709,10 @@ public:
 
 #endif // optional_USES_STD_OPTIONAL
 
-namespace nstd {
+
+namespace tf { namespace nstd {
 
 template <typename T>
 using optional = nonstd::optional<T>;
 
-}
-
-#endif // NONSTD_OPTIONAL_LITE_HPP
-
-
+}}
