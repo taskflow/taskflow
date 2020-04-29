@@ -1,3 +1,7 @@
+// The file is modified from MPark in order to use variant in C++11/14
+// We change the namespace to stick with the v1.4, in order to avoid clashing
+// problem when upstream code uses the same library.
+
 // MPark.Variant
 //
 // Copyright Michael Park, 2015-2017
@@ -5,194 +9,7 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-#ifndef MPARK_VARIANT_HPP
-#define MPARK_VARIANT_HPP
-
-/*
-   variant synopsis
-
-namespace std {
-
-  // 20.7.2, class template variant
-  template <class... Types>
-  class variant {
-  public:
-
-    // 20.7.2.1, constructors
-    constexpr variant() noexcept(see below);
-    variant(const variant&);
-    variant(variant&&) noexcept(see below);
-
-    template <class T> constexpr variant(T&&) noexcept(see below);
-
-    template <class T, class... Args>
-    constexpr explicit variant(in_place_type_t<T>, Args&&...);
-
-    template <class T, class U, class... Args>
-    constexpr explicit variant(
-        in_place_type_t<T>, initializer_list<U>, Args&&...);
-
-    template <size_t I, class... Args>
-    constexpr explicit variant(in_place_index_t<I>, Args&&...);
-
-    template <size_t I, class U, class... Args>
-    constexpr explicit variant(
-        in_place_index_t<I>, initializer_list<U>, Args&&...);
-
-    // 20.7.2.2, destructor
-    ~variant();
-
-    // 20.7.2.3, assignment
-    variant& operator=(const variant&);
-    variant& operator=(variant&&) noexcept(see below);
-
-    template <class T> variant& operator=(T&&) noexcept(see below);
-
-    // 20.7.2.4, modifiers
-    template <class T, class... Args>
-    T& emplace(Args&&...);
-
-    template <class T, class U, class... Args>
-    T& emplace(initializer_list<U>, Args&&...);
-
-    template <size_t I, class... Args>
-    variant_alternative<I, variant>& emplace(Args&&...);
-
-    template <size_t I, class U, class...  Args>
-    variant_alternative<I, variant>& emplace(initializer_list<U>, Args&&...);
-
-    // 20.7.2.5, value status
-    constexpr bool valueless_by_exception() const noexcept;
-    constexpr size_t index() const noexcept;
-
-    // 20.7.2.6, swap
-    void swap(variant&) noexcept(see below);
-  };
-
-  // 20.7.3, variant helper classes
-  template <class T> struct variant_size; // undefined
-
-  template <class T>
-  constexpr size_t variant_size_v = variant_size<T>::value;
-
-  template <class T> struct variant_size<const T>;
-  template <class T> struct variant_size<volatile T>;
-  template <class T> struct variant_size<const volatile T>;
-
-  template <class... Types>
-  struct variant_size<variant<Types...>>;
-
-  template <size_t I, class T> struct variant_alternative; // undefined
-
-  template <size_t I, class T>
-  using variant_alternative_t = typename variant_alternative<I, T>::type;
-
-  template <size_t I, class T> struct variant_alternative<I, const T>;
-  template <size_t I, class T> struct variant_alternative<I, volatile T>;
-  template <size_t I, class T> struct variant_alternative<I, const volatile T>;
-
-  template <size_t I, class... Types>
-  struct variant_alternative<I, variant<Types...>>;
-
-  constexpr size_t variant_npos = -1;
-
-  // 20.7.4, value access
-  template <class T, class... Types>
-  constexpr bool holds_alternative(const variant<Types...>&) noexcept;
-
-  template <size_t I, class... Types>
-  constexpr variant_alternative_t<I, variant<Types...>>&
-  get(variant<Types...>&);
-
-  template <size_t I, class... Types>
-  constexpr variant_alternative_t<I, variant<Types...>>&&
-  get(variant<Types...>&&);
-
-  template <size_t I, class... Types>
-  constexpr variant_alternative_t<I, variant<Types...>> const&
-  get(const variant<Types...>&);
-
-  template <size_t I, class... Types>
-  constexpr variant_alternative_t<I, variant<Types...>> const&&
-  get(const variant<Types...>&&);
-
-  template <class T, class...  Types>
-  constexpr T& get(variant<Types...>&);
-
-  template <class T, class... Types>
-  constexpr T&& get(variant<Types...>&&);
-
-  template <class T, class... Types>
-  constexpr const T& get(const variant<Types...>&);
-
-  template <class T, class... Types>
-  constexpr const T&& get(const variant<Types...>&&);
-
-  template <size_t I, class... Types>
-  constexpr add_pointer_t<variant_alternative_t<I, variant<Types...>>>
-  get_if(variant<Types...>*) noexcept;
-
-  template <size_t I, class... Types>
-  constexpr add_pointer_t<const variant_alternative_t<I, variant<Types...>>>
-  get_if(const variant<Types...>*) noexcept;
-
-  template <class T, class... Types>
-  constexpr add_pointer_t<T>
-  get_if(variant<Types...>*) noexcept;
-
-  template <class T, class... Types>
-  constexpr add_pointer_t<const T>
-  get_if(const variant<Types...>*) noexcept;
-
-  // 20.7.5, relational operators
-  template <class... Types>
-  constexpr bool operator==(const variant<Types...>&, const variant<Types...>&);
-
-  template <class... Types>
-  constexpr bool operator!=(const variant<Types...>&, const variant<Types...>&);
-
-  template <class... Types>
-  constexpr bool operator<(const variant<Types...>&, const variant<Types...>&);
-
-  template <class... Types>
-  constexpr bool operator>(const variant<Types...>&, const variant<Types...>&);
-
-  template <class... Types>
-  constexpr bool operator<=(const variant<Types...>&, const variant<Types...>&);
-
-  template <class... Types>
-  constexpr bool operator>=(const variant<Types...>&, const variant<Types...>&);
-
-  // 20.7.6, visitation
-  template <class Visitor, class... Variants>
-  constexpr see below visit(Visitor&&, Variants&&...);
-
-  // 20.7.7, class monostate
-  struct monostate;
-
-  // 20.7.8, monostate relational operators
-  constexpr bool operator<(monostate, monostate) noexcept;
-  constexpr bool operator>(monostate, monostate) noexcept;
-  constexpr bool operator<=(monostate, monostate) noexcept;
-  constexpr bool operator>=(monostate, monostate) noexcept;
-  constexpr bool operator==(monostate, monostate) noexcept;
-  constexpr bool operator!=(monostate, monostate) noexcept;
-
-  // 20.7.9, specialized algorithms
-  template <class... Types>
-  void swap(variant<Types...>&, variant<Types...>&) noexcept(see below);
-
-  // 20.7.10, class bad_variant_access
-  class bad_variant_access;
-
-  // 20.7.11, hash support
-  template <class T> struct hash;
-  template <class... Types> struct hash<variant<Types...>>;
-  template <> struct hash<monostate>;
-
-} // namespace std
-
-*/
+#pragma once
 
 #include <cstddef>
 #include <exception>
@@ -202,6 +19,8 @@ namespace std {
 #include <new>
 #include <type_traits>
 #include <utility>
+#include <memory>
+
 
 // MPark.Variant
 //
@@ -209,9 +28,6 @@ namespace std {
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
-
-#ifndef MPARK_CONFIG_HPP
-#define MPARK_CONFIG_HPP
 
 // MSVC 2015 Update 3.
 #if __cplusplus < 201103L && (!defined(_MSC_VER) || _MSC_FULL_VER < 190024210)
@@ -235,70 +51,68 @@ namespace std {
 #endif
 
 #if __has_attribute(always_inline) || defined(__GNUC__)
-#define MPARK_ALWAYS_INLINE __attribute__((__always_inline__)) inline
+#define TF_ALWAYS_INLINE __attribute__((__always_inline__)) inline
 #elif defined(_MSC_VER)
-#define MPARK_ALWAYS_INLINE __forceinline
+#define TF_ALWAYS_INLINE __forceinline
 #else
-#define MPARK_ALWAYS_INLINE inline
+#define TF_ALWAYS_INLINE inline
 #endif
 
 #if __has_builtin(__builtin_addressof) || \
     (defined(__GNUC__) && __GNUC__ >= 7) || defined(_MSC_VER)
-#define MPARK_BUILTIN_ADDRESSOF
+#define TF_BUILTIN_ADDRESSOF
 #endif
 
 #if __has_builtin(__builtin_unreachable) || defined(__GNUC__)
-#define MPARK_BUILTIN_UNREACHABLE __builtin_unreachable()
+#define TF_BUILTIN_UNREACHABLE __builtin_unreachable()
 #elif defined(_MSC_VER)
-#define MPARK_BUILTIN_UNREACHABLE __assume(false)
+#define TF_BUILTIN_UNREACHABLE __assume(false)
 #else
-#define MPARK_BUILTIN_UNREACHABLE
+#define TF_BUILTIN_UNREACHABLE
 #endif
 
 #if __has_builtin(__type_pack_element)
-#define MPARK_TYPE_PACK_ELEMENT
+#define TF_TYPE_PACK_ELEMENT
 #endif
 
 #if defined(__cpp_constexpr) && __cpp_constexpr >= 200704 && \
     !(defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ == 9)
-#define MPARK_CPP11_CONSTEXPR
+#define TF_CPP11_CONSTEXPR
 #endif
 
 #if defined(__cpp_constexpr) && __cpp_constexpr >= 201304
-#define MPARK_CPP14_CONSTEXPR
+#define TF_CPP14_CONSTEXPR
 #endif
 
 #if __has_feature(cxx_exceptions) || defined(__cpp_exceptions) || \
     (defined(_MSC_VER) && defined(_CPPUNWIND))
-#define MPARK_EXCEPTIONS
+#define TF_EXCEPTIONS
 #endif
 
 #if defined(__cpp_generic_lambdas) || defined(_MSC_VER)
-#define MPARK_GENERIC_LAMBDAS
+#define TF_GENERIC_LAMBDAS
 #endif
 
 #if defined(__cpp_lib_integer_sequence)
-#define MPARK_INTEGER_SEQUENCE
+#define TF_INTEGER_SEQUENCE
 #endif
 
 #if (defined(__cpp_decltype_auto) && defined(__cpp_return_type_deduction)) || defined(_MSC_VER)
-#define MPARK_RETURN_TYPE_DEDUCTION
+#define TF_RETURN_TYPE_DEDUCTION
 #endif
 
 #if defined(__cpp_lib_transparent_operators) || defined(_MSC_VER)
-#define MPARK_TRANSPARENT_OPERATORS
+#define TF_TRANSPARENT_OPERATORS
 #endif
 
 #if defined(__cpp_variable_templates) || defined(_MSC_VER)
-#define MPARK_VARIABLE_TEMPLATES
+#define TF_VARIABLE_TEMPLATES
 #endif
 
 #if !defined(__GLIBCXX__) || __has_include(<codecvt>)  // >= libstdc++-5
-#define MPARK_TRIVIALITY_TYPE_TRAITS
-#define MPARK_INCOMPLETE_TYPE_TRAITS
+#define TF_TRIVIALITY_TYPE_TRAITS
+#define TF_INCOMPLETE_TYPE_TRAITS
 #endif
-
-#endif  // MPARK_CONFIG_HPP
 
 // MPark.Variant
 //
@@ -307,13 +121,8 @@ namespace std {
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-#ifndef MPARK_IN_PLACE_HPP
-#define MPARK_IN_PLACE_HPP
-
-#include <cstddef>
-
-
-namespace nstd {
+// in_place_t definition
+namespace tf { namespace nstd {
 
   struct in_place_t { explicit in_place_t() = default; };
 
@@ -323,7 +132,7 @@ namespace nstd {
   template <typename T>
   struct in_place_type_t { explicit in_place_type_t() = default; };
 
-#ifdef MPARK_VARIABLE_TEMPLATES
+#ifdef TF_VARIABLE_TEMPLATES
   constexpr in_place_t in_place{};
 
   template <std::size_t I> constexpr in_place_index_t<I> in_place_index{};
@@ -331,9 +140,7 @@ namespace nstd {
   template <typename T> constexpr in_place_type_t<T> in_place_type{};
 #endif
 
-}  // namespace nstd
-
-#endif  // MPARK_IN_PLACE_HPP
+}}  // namespace tf::nstd
 
 // MPark.Variant
 //
@@ -342,19 +149,11 @@ namespace nstd {
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
 
-#ifndef MPARK_LIB_HPP
-#define MPARK_LIB_HPP
 
-#include <memory>
-#include <functional>
-#include <type_traits>
-#include <utility>
-
-
-#define MPARK_RETURN(...) \
+#define TF_RETURN(...) \
   noexcept(noexcept(__VA_ARGS__)) -> decltype(__VA_ARGS__) { return __VA_ARGS__; }
 
-namespace nstd {
+namespace tf { namespace nstd {
   namespace lib {
     template <typename T>
     struct identity { using type = T; };
@@ -408,7 +207,7 @@ namespace nstd {
         return static_cast<remove_reference_t<T> &&>(t);
       }
 
-#ifdef MPARK_INTEGER_SEQUENCE
+#ifdef TF_INTEGER_SEQUENCE
       using std::integer_sequence;
       using std::index_sequence;
       using std::make_index_sequence;
@@ -453,63 +252,63 @@ namespace nstd {
 #endif
 
       // <functional>
-#ifdef MPARK_TRANSPARENT_OPERATORS
+#ifdef TF_TRANSPARENT_OPERATORS
       using equal_to = std::equal_to<>;
 #else
       struct equal_to {
         template <typename Lhs, typename Rhs>
         inline constexpr auto operator()(Lhs &&lhs, Rhs &&rhs) const
-          MPARK_RETURN(lib::forward<Lhs>(lhs) == lib::forward<Rhs>(rhs))
+          TF_RETURN(lib::forward<Lhs>(lhs) == lib::forward<Rhs>(rhs))
       };
 #endif
 
-#ifdef MPARK_TRANSPARENT_OPERATORS
+#ifdef TF_TRANSPARENT_OPERATORS
       using not_equal_to = std::not_equal_to<>;
 #else
       struct not_equal_to {
         template <typename Lhs, typename Rhs>
         inline constexpr auto operator()(Lhs &&lhs, Rhs &&rhs) const
-          MPARK_RETURN(lib::forward<Lhs>(lhs) != lib::forward<Rhs>(rhs))
+          TF_RETURN(lib::forward<Lhs>(lhs) != lib::forward<Rhs>(rhs))
       };
 #endif
 
-#ifdef MPARK_TRANSPARENT_OPERATORS
+#ifdef TF_TRANSPARENT_OPERATORS
       using less = std::less<>;
 #else
       struct less {
         template <typename Lhs, typename Rhs>
         inline constexpr auto operator()(Lhs &&lhs, Rhs &&rhs) const
-          MPARK_RETURN(lib::forward<Lhs>(lhs) < lib::forward<Rhs>(rhs))
+          TF_RETURN(lib::forward<Lhs>(lhs) < lib::forward<Rhs>(rhs))
       };
 #endif
 
-#ifdef MPARK_TRANSPARENT_OPERATORS
+#ifdef TF_TRANSPARENT_OPERATORS
       using greater = std::greater<>;
 #else
       struct greater {
         template <typename Lhs, typename Rhs>
         inline constexpr auto operator()(Lhs &&lhs, Rhs &&rhs) const
-          MPARK_RETURN(lib::forward<Lhs>(lhs) > lib::forward<Rhs>(rhs))
+          TF_RETURN(lib::forward<Lhs>(lhs) > lib::forward<Rhs>(rhs))
       };
 #endif
 
-#ifdef MPARK_TRANSPARENT_OPERATORS
+#ifdef TF_TRANSPARENT_OPERATORS
       using less_equal = std::less_equal<>;
 #else
       struct less_equal {
         template <typename Lhs, typename Rhs>
         inline constexpr auto operator()(Lhs &&lhs, Rhs &&rhs) const
-          MPARK_RETURN(lib::forward<Lhs>(lhs) <= lib::forward<Rhs>(rhs))
+          TF_RETURN(lib::forward<Lhs>(lhs) <= lib::forward<Rhs>(rhs))
       };
 #endif
 
-#ifdef MPARK_TRANSPARENT_OPERATORS
+#ifdef TF_TRANSPARENT_OPERATORS
       using greater_equal = std::greater_equal<>;
 #else
       struct greater_equal {
         template <typename Lhs, typename Rhs>
         inline constexpr auto operator()(Lhs &&lhs, Rhs &&rhs) const
-          MPARK_RETURN(lib::forward<Lhs>(lhs) >= lib::forward<Rhs>(rhs))
+          TF_RETURN(lib::forward<Lhs>(lhs) >= lib::forward<Rhs>(rhs))
       };
 #endif
     }  // namespace cpp14
@@ -581,47 +380,47 @@ namespace nstd {
         struct Invoke<true /* pmf */, 0 /* is_base_of */> {
           template <typename R, typename T, typename Arg, typename... Args>
           inline static constexpr auto invoke(R T::*pmf, Arg &&arg, Args &&... args)
-            MPARK_RETURN((lib::forward<Arg>(arg).*pmf)(lib::forward<Args>(args)...))
+            TF_RETURN((lib::forward<Arg>(arg).*pmf)(lib::forward<Args>(args)...))
         };
 
         template <>
         struct Invoke<true /* pmf */, 1 /* is_reference_wrapper */> {
           template <typename R, typename T, typename Arg, typename... Args>
           inline static constexpr auto invoke(R T::*pmf, Arg &&arg, Args &&... args)
-            MPARK_RETURN((lib::forward<Arg>(arg).get().*pmf)(lib::forward<Args>(args)...))
+            TF_RETURN((lib::forward<Arg>(arg).get().*pmf)(lib::forward<Args>(args)...))
         };
 
         template <>
         struct Invoke<true /* pmf */, 2 /* otherwise */> {
           template <typename R, typename T, typename Arg, typename... Args>
           inline static constexpr auto invoke(R T::*pmf, Arg &&arg, Args &&... args)
-            MPARK_RETURN(((*lib::forward<Arg>(arg)).*pmf)(lib::forward<Args>(args)...))
+            TF_RETURN(((*lib::forward<Arg>(arg)).*pmf)(lib::forward<Args>(args)...))
         };
 
         template <>
         struct Invoke<false /* pmo */, 0 /* is_base_of */> {
           template <typename R, typename T, typename Arg>
           inline static constexpr auto invoke(R T::*pmo, Arg &&arg)
-            MPARK_RETURN(lib::forward<Arg>(arg).*pmo)
+            TF_RETURN(lib::forward<Arg>(arg).*pmo)
         };
 
         template <>
         struct Invoke<false /* pmo */, 1 /* is_reference_wrapper */> {
           template <typename R, typename T, typename Arg>
           inline static constexpr auto invoke(R T::*pmo, Arg &&arg)
-            MPARK_RETURN(lib::forward<Arg>(arg).get().*pmo)
+            TF_RETURN(lib::forward<Arg>(arg).get().*pmo)
         };
 
         template <>
         struct Invoke<false /* pmo */, 2 /* otherwise */> {
           template <typename R, typename T, typename Arg>
           inline static constexpr auto invoke(R T::*pmo, Arg &&arg)
-              MPARK_RETURN((*lib::forward<Arg>(arg)).*pmo)
+              TF_RETURN((*lib::forward<Arg>(arg)).*pmo)
         };
 
         template <typename R, typename T, typename Arg, typename... Args>
         inline constexpr auto invoke(R T::*f, Arg &&arg, Args &&... args)
-          MPARK_RETURN(
+          TF_RETURN(
               Invoke<std::is_function<R>::value,
                      (std::is_base_of<T, lib::decay_t<Arg>>::value
                           ? 0
@@ -637,7 +436,7 @@ namespace nstd {
 #endif
         template <typename F, typename... Args>
         inline constexpr auto invoke(F &&f, Args &&... args)
-          MPARK_RETURN(lib::forward<F>(f)(lib::forward<Args>(args)...))
+          TF_RETURN(lib::forward<F>(f)(lib::forward<Args>(args)...))
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
@@ -645,7 +444,7 @@ namespace nstd {
 
       template <typename F, typename... Args>
       inline constexpr auto invoke(F &&f, Args &&... args)
-        MPARK_RETURN(detail::invoke(lib::forward<F>(f),
+        TF_RETURN(detail::invoke(lib::forward<F>(f),
                                     lib::forward<Args>(args)...))
 
       namespace detail {
@@ -697,7 +496,7 @@ namespace nstd {
       using is_invocable_r = detail::is_invocable_r<void, R, F, Args...>;
 
       // <memory>
-#ifdef MPARK_BUILTIN_ADDRESSOF
+#ifdef TF_BUILTIN_ADDRESSOF
       template <typename T>
       inline constexpr T *addressof(T &arg) noexcept {
         return __builtin_addressof(arg);
@@ -765,7 +564,7 @@ namespace nstd {
     using all = std::is_same<integer_sequence<bool, true, Bs...>,
                              integer_sequence<bool, Bs..., true>>;
 
-#ifdef MPARK_TYPE_PACK_ELEMENT
+#ifdef TF_TYPE_PACK_ELEMENT
     template <std::size_t I, typename... Ts>
     using type_pack_element_t = __type_pack_element<I, Ts...>;
 #else
@@ -794,7 +593,7 @@ namespace nstd {
     using type_pack_element_t = typename type_pack_element<I, Ts...>::type;
 #endif
 
-#ifdef MPARK_TRIVIALITY_TYPE_TRAITS
+#ifdef TF_TRIVIALITY_TYPE_TRAITS
     using std::is_trivially_copy_constructible;
     using std::is_trivially_move_constructible;
     using std::is_trivially_copy_assignable;
@@ -832,16 +631,14 @@ namespace nstd {
     };
 
   }  // namespace lib
-}  // namespace nstd
+}}  // namespace tf::nstd
 
-#undef MPARK_RETURN
-
-#endif  // MPARK_LIB_HPP
+#undef TF_RETURN
 
 
-namespace nstd {
+namespace tf { namespace nstd {
 
-#ifdef MPARK_RETURN_TYPE_DEDUCTION
+#ifdef TF_RETURN_TYPE_DEDUCTION
 
 #define AUTO auto
 #define AUTO_RETURN(...) { return __VA_ARGS__; }
@@ -877,11 +674,11 @@ namespace nstd {
   };
 
   [[noreturn]] inline void throw_bad_variant_access() {
-#ifdef MPARK_EXCEPTIONS
+#ifdef TF_EXCEPTIONS
     throw bad_variant_access{};
 #else
     std::terminate();
-    MPARK_BUILTIN_UNREACHABLE;
+    TF_BUILTIN_UNREACHABLE;
 #endif
   }
 
@@ -891,7 +688,7 @@ namespace nstd {
   template <typename T>
   struct variant_size;
 
-#ifdef MPARK_VARIABLE_TEMPLATES
+#ifdef TF_VARIABLE_TEMPLATES
   template <typename T>
   constexpr std::size_t variant_size_v = variant_size<T>::value;
 #endif
@@ -940,7 +737,7 @@ namespace nstd {
     constexpr std::size_t not_found = static_cast<std::size_t>(-1);
     constexpr std::size_t ambiguous = static_cast<std::size_t>(-2);
 
-#ifdef MPARK_CPP14_CONSTEXPR
+#ifdef TF_CPP14_CONSTEXPR
     template <typename T, typename... Ts>
     inline constexpr std::size_t find_index() {
       constexpr lib::array<bool, sizeof...(Ts)> matches = {
@@ -1010,7 +807,7 @@ namespace nstd {
                                          : Trait::Unavailable;
     }
 
-#ifdef MPARK_CPP14_CONSTEXPR
+#ifdef TF_CPP14_CONSTEXPR
     template <typename... Traits>
     inline constexpr Trait common_trait(Traits... traits_) {
       Trait result = Trait::TriviallyAvailable;
@@ -1074,7 +871,7 @@ namespace nstd {
     namespace access {
 
       struct recursive_union {
-#ifdef MPARK_RETURN_TYPE_DEDUCTION
+#ifdef TF_RETURN_TYPE_DEDUCTION
         template <typename V>
         inline static constexpr auto &&get_alt(V &&v, in_place_index_t<0>) {
           return lib::forward<V>(v).head_;
@@ -1127,8 +924,8 @@ namespace nstd {
 
     namespace visitation {
 
-#if defined(MPARK_CPP14_CONSTEXPR) && !defined(_MSC_VER)
-#define MPARK_VARIANT_SWITCH_VISIT
+#if defined(TF_CPP14_CONSTEXPR) && !defined(_MSC_VER)
+#define TF_VARIANT_SWITCH_VISIT
 #endif
 
       struct base {
@@ -1158,35 +955,35 @@ namespace nstd {
                                              lib::forward<Alts>(alts)...))
         };
 
-#ifdef MPARK_VARIANT_SWITCH_VISIT
+#ifdef TF_VARIANT_SWITCH_VISIT
         template <bool B, typename R, typename... ITs>
         struct dispatcher;
 
         template <typename R, typename... ITs>
         struct dispatcher<false, R, ITs...> {
           template <std::size_t B, typename F, typename... Vs>
-          MPARK_ALWAYS_INLINE static constexpr R dispatch(
+          TF_ALWAYS_INLINE static constexpr R dispatch(
               F &&, typename ITs::type &&..., Vs &&...) {
-            MPARK_BUILTIN_UNREACHABLE;
+            TF_BUILTIN_UNREACHABLE;
           }
 
           template <std::size_t I, typename F, typename... Vs>
-          MPARK_ALWAYS_INLINE static constexpr R dispatch_case(F &&, Vs &&...) {
-            MPARK_BUILTIN_UNREACHABLE;
+          TF_ALWAYS_INLINE static constexpr R dispatch_case(F &&, Vs &&...) {
+            TF_BUILTIN_UNREACHABLE;
           }
 
           template <std::size_t B, typename F, typename... Vs>
-          MPARK_ALWAYS_INLINE static constexpr R dispatch_at(std::size_t,
+          TF_ALWAYS_INLINE static constexpr R dispatch_at(std::size_t,
                                                              F &&,
                                                              Vs &&...) {
-            MPARK_BUILTIN_UNREACHABLE;
+            TF_BUILTIN_UNREACHABLE;
           }
         };
 
         template <typename R, typename... ITs>
         struct dispatcher<true, R, ITs...> {
           template <std::size_t B, typename F>
-          MPARK_ALWAYS_INLINE static constexpr R dispatch(
+          TF_ALWAYS_INLINE static constexpr R dispatch(
               F &&f, typename ITs::type &&... visited_vs) {
             using Expected = R;
             using Actual = decltype(lib::invoke(
@@ -1200,9 +997,9 @@ namespace nstd {
           }
 
           template <std::size_t B, typename F, typename V, typename... Vs>
-          MPARK_ALWAYS_INLINE static constexpr R dispatch(
+          TF_ALWAYS_INLINE static constexpr R dispatch(
               F &&f, typename ITs::type &&... visited_vs, V &&v, Vs &&... vs) {
-#define MPARK_DISPATCH(I)                                                   \
+#define TF_DISPATCH(I)                                                   \
   dispatcher<(I < lib::decay_t<V>::size()),                                 \
              R,                                                             \
              ITs...,                                                        \
@@ -1212,7 +1009,7 @@ namespace nstd {
                            lib::forward<V>(v),                              \
                            lib::forward<Vs>(vs)...)
 
-#define MPARK_DEFAULT(I)                                                      \
+#define TF_DEFAULT(I)                                                      \
   dispatcher<(I < lib::decay_t<V>::size()), R, ITs...>::template dispatch<I>( \
       lib::forward<F>(f),                                                     \
       lib::forward<typename ITs::type>(visited_vs)...,                        \
@@ -1220,47 +1017,47 @@ namespace nstd {
       lib::forward<Vs>(vs)...)
 
             switch (v.index()) {
-              case B + 0: return MPARK_DISPATCH(B + 0);
-              case B + 1: return MPARK_DISPATCH(B + 1);
-              case B + 2: return MPARK_DISPATCH(B + 2);
-              case B + 3: return MPARK_DISPATCH(B + 3);
-              case B + 4: return MPARK_DISPATCH(B + 4);
-              case B + 5: return MPARK_DISPATCH(B + 5);
-              case B + 6: return MPARK_DISPATCH(B + 6);
-              case B + 7: return MPARK_DISPATCH(B + 7);
-              case B + 8: return MPARK_DISPATCH(B + 8);
-              case B + 9: return MPARK_DISPATCH(B + 9);
-              case B + 10: return MPARK_DISPATCH(B + 10);
-              case B + 11: return MPARK_DISPATCH(B + 11);
-              case B + 12: return MPARK_DISPATCH(B + 12);
-              case B + 13: return MPARK_DISPATCH(B + 13);
-              case B + 14: return MPARK_DISPATCH(B + 14);
-              case B + 15: return MPARK_DISPATCH(B + 15);
-              case B + 16: return MPARK_DISPATCH(B + 16);
-              case B + 17: return MPARK_DISPATCH(B + 17);
-              case B + 18: return MPARK_DISPATCH(B + 18);
-              case B + 19: return MPARK_DISPATCH(B + 19);
-              case B + 20: return MPARK_DISPATCH(B + 20);
-              case B + 21: return MPARK_DISPATCH(B + 21);
-              case B + 22: return MPARK_DISPATCH(B + 22);
-              case B + 23: return MPARK_DISPATCH(B + 23);
-              case B + 24: return MPARK_DISPATCH(B + 24);
-              case B + 25: return MPARK_DISPATCH(B + 25);
-              case B + 26: return MPARK_DISPATCH(B + 26);
-              case B + 27: return MPARK_DISPATCH(B + 27);
-              case B + 28: return MPARK_DISPATCH(B + 28);
-              case B + 29: return MPARK_DISPATCH(B + 29);
-              case B + 30: return MPARK_DISPATCH(B + 30);
-              case B + 31: return MPARK_DISPATCH(B + 31);
-              default: return MPARK_DEFAULT(B + 32);
+              case B + 0: return TF_DISPATCH(B + 0);
+              case B + 1: return TF_DISPATCH(B + 1);
+              case B + 2: return TF_DISPATCH(B + 2);
+              case B + 3: return TF_DISPATCH(B + 3);
+              case B + 4: return TF_DISPATCH(B + 4);
+              case B + 5: return TF_DISPATCH(B + 5);
+              case B + 6: return TF_DISPATCH(B + 6);
+              case B + 7: return TF_DISPATCH(B + 7);
+              case B + 8: return TF_DISPATCH(B + 8);
+              case B + 9: return TF_DISPATCH(B + 9);
+              case B + 10: return TF_DISPATCH(B + 10);
+              case B + 11: return TF_DISPATCH(B + 11);
+              case B + 12: return TF_DISPATCH(B + 12);
+              case B + 13: return TF_DISPATCH(B + 13);
+              case B + 14: return TF_DISPATCH(B + 14);
+              case B + 15: return TF_DISPATCH(B + 15);
+              case B + 16: return TF_DISPATCH(B + 16);
+              case B + 17: return TF_DISPATCH(B + 17);
+              case B + 18: return TF_DISPATCH(B + 18);
+              case B + 19: return TF_DISPATCH(B + 19);
+              case B + 20: return TF_DISPATCH(B + 20);
+              case B + 21: return TF_DISPATCH(B + 21);
+              case B + 22: return TF_DISPATCH(B + 22);
+              case B + 23: return TF_DISPATCH(B + 23);
+              case B + 24: return TF_DISPATCH(B + 24);
+              case B + 25: return TF_DISPATCH(B + 25);
+              case B + 26: return TF_DISPATCH(B + 26);
+              case B + 27: return TF_DISPATCH(B + 27);
+              case B + 28: return TF_DISPATCH(B + 28);
+              case B + 29: return TF_DISPATCH(B + 29);
+              case B + 30: return TF_DISPATCH(B + 30);
+              case B + 31: return TF_DISPATCH(B + 31);
+              default: return TF_DEFAULT(B + 32);
             }
 
-#undef MPARK_DEFAULT
-#undef MPARK_DISPATCH
+#undef TF_DEFAULT
+#undef TF_DISPATCH
           }
 
           template <std::size_t I, typename F, typename... Vs>
-          MPARK_ALWAYS_INLINE static constexpr R dispatch_case(F &&f,
+          TF_ALWAYS_INLINE static constexpr R dispatch_case(F &&f,
                                                                Vs &&... vs) {
             using Expected = R;
             using Actual = decltype(
@@ -1272,59 +1069,59 @@ namespace nstd {
           }
 
           template <std::size_t B, typename F, typename V, typename... Vs>
-          MPARK_ALWAYS_INLINE static constexpr R dispatch_at(std::size_t index,
+          TF_ALWAYS_INLINE static constexpr R dispatch_at(std::size_t index,
                                                              F &&f,
                                                              V &&v,
                                                              Vs &&... vs) {
             static_assert(lib::all<(lib::decay_t<V>::size() ==
                                     lib::decay_t<Vs>::size())...>::value,
                           "all of the variants must be the same size.");
-#define MPARK_DISPATCH_AT(I)                                               \
+#define TF_DISPATCH_AT(I)                                               \
   dispatcher<(I < lib::decay_t<V>::size()), R>::template dispatch_case<I>( \
       lib::forward<F>(f), lib::forward<V>(v), lib::forward<Vs>(vs)...)
 
-#define MPARK_DEFAULT(I)                                                 \
+#define TF_DEFAULT(I)                                                 \
   dispatcher<(I < lib::decay_t<V>::size()), R>::template dispatch_at<I>( \
       index, lib::forward<F>(f), lib::forward<V>(v), lib::forward<Vs>(vs)...)
 
             switch (index) {
-              case B + 0: return MPARK_DISPATCH_AT(B + 0);
-              case B + 1: return MPARK_DISPATCH_AT(B + 1);
-              case B + 2: return MPARK_DISPATCH_AT(B + 2);
-              case B + 3: return MPARK_DISPATCH_AT(B + 3);
-              case B + 4: return MPARK_DISPATCH_AT(B + 4);
-              case B + 5: return MPARK_DISPATCH_AT(B + 5);
-              case B + 6: return MPARK_DISPATCH_AT(B + 6);
-              case B + 7: return MPARK_DISPATCH_AT(B + 7);
-              case B + 8: return MPARK_DISPATCH_AT(B + 8);
-              case B + 9: return MPARK_DISPATCH_AT(B + 9);
-              case B + 10: return MPARK_DISPATCH_AT(B + 10);
-              case B + 11: return MPARK_DISPATCH_AT(B + 11);
-              case B + 12: return MPARK_DISPATCH_AT(B + 12);
-              case B + 13: return MPARK_DISPATCH_AT(B + 13);
-              case B + 14: return MPARK_DISPATCH_AT(B + 14);
-              case B + 15: return MPARK_DISPATCH_AT(B + 15);
-              case B + 16: return MPARK_DISPATCH_AT(B + 16);
-              case B + 17: return MPARK_DISPATCH_AT(B + 17);
-              case B + 18: return MPARK_DISPATCH_AT(B + 18);
-              case B + 19: return MPARK_DISPATCH_AT(B + 19);
-              case B + 20: return MPARK_DISPATCH_AT(B + 20);
-              case B + 21: return MPARK_DISPATCH_AT(B + 21);
-              case B + 22: return MPARK_DISPATCH_AT(B + 22);
-              case B + 23: return MPARK_DISPATCH_AT(B + 23);
-              case B + 24: return MPARK_DISPATCH_AT(B + 24);
-              case B + 25: return MPARK_DISPATCH_AT(B + 25);
-              case B + 26: return MPARK_DISPATCH_AT(B + 26);
-              case B + 27: return MPARK_DISPATCH_AT(B + 27);
-              case B + 28: return MPARK_DISPATCH_AT(B + 28);
-              case B + 29: return MPARK_DISPATCH_AT(B + 29);
-              case B + 30: return MPARK_DISPATCH_AT(B + 30);
-              case B + 31: return MPARK_DISPATCH_AT(B + 31);
-              default: return MPARK_DEFAULT(B + 32);
+              case B + 0: return TF_DISPATCH_AT(B + 0);
+              case B + 1: return TF_DISPATCH_AT(B + 1);
+              case B + 2: return TF_DISPATCH_AT(B + 2);
+              case B + 3: return TF_DISPATCH_AT(B + 3);
+              case B + 4: return TF_DISPATCH_AT(B + 4);
+              case B + 5: return TF_DISPATCH_AT(B + 5);
+              case B + 6: return TF_DISPATCH_AT(B + 6);
+              case B + 7: return TF_DISPATCH_AT(B + 7);
+              case B + 8: return TF_DISPATCH_AT(B + 8);
+              case B + 9: return TF_DISPATCH_AT(B + 9);
+              case B + 10: return TF_DISPATCH_AT(B + 10);
+              case B + 11: return TF_DISPATCH_AT(B + 11);
+              case B + 12: return TF_DISPATCH_AT(B + 12);
+              case B + 13: return TF_DISPATCH_AT(B + 13);
+              case B + 14: return TF_DISPATCH_AT(B + 14);
+              case B + 15: return TF_DISPATCH_AT(B + 15);
+              case B + 16: return TF_DISPATCH_AT(B + 16);
+              case B + 17: return TF_DISPATCH_AT(B + 17);
+              case B + 18: return TF_DISPATCH_AT(B + 18);
+              case B + 19: return TF_DISPATCH_AT(B + 19);
+              case B + 20: return TF_DISPATCH_AT(B + 20);
+              case B + 21: return TF_DISPATCH_AT(B + 21);
+              case B + 22: return TF_DISPATCH_AT(B + 22);
+              case B + 23: return TF_DISPATCH_AT(B + 23);
+              case B + 24: return TF_DISPATCH_AT(B + 24);
+              case B + 25: return TF_DISPATCH_AT(B + 25);
+              case B + 26: return TF_DISPATCH_AT(B + 26);
+              case B + 27: return TF_DISPATCH_AT(B + 27);
+              case B + 28: return TF_DISPATCH_AT(B + 28);
+              case B + 29: return TF_DISPATCH_AT(B + 29);
+              case B + 30: return TF_DISPATCH_AT(B + 30);
+              case B + 31: return TF_DISPATCH_AT(B + 31);
+              default: return TF_DEFAULT(B + 32);
             }
 
-#undef MPARK_DEFAULT
-#undef MPARK_DISPATCH_AT
+#undef TF_DEFAULT
+#undef TF_DISPATCH_AT
           }
         };
 #else
@@ -1360,7 +1157,7 @@ namespace nstd {
                 access::base::get_alt<Is>(lib::forward<Vs>(vs))...);
           }
 
-#ifdef MPARK_RETURN_TYPE_DEDUCTION
+#ifdef TF_RETURN_TYPE_DEDUCTION
           template <std::size_t... Is>
           inline static constexpr auto impl(lib::index_sequence<Is...>) {
             return &dispatch<Is...>;
@@ -1391,7 +1188,7 @@ namespace nstd {
 #endif
         };
 
-#ifdef MPARK_RETURN_TYPE_DEDUCTION
+#ifdef TF_RETURN_TYPE_DEDUCTION
         template <typename F, typename... Vs>
         inline static constexpr auto make_fmatrix() {
           return make_fmatrix_impl<F, Vs...>::impl(
@@ -1439,7 +1236,7 @@ namespace nstd {
 #endif
       };
 
-#if !defined(MPARK_VARIANT_SWITCH_VISIT) && \
+#if !defined(TF_VARIANT_SWITCH_VISIT) && \
     (!defined(_MSC_VER) || _MSC_VER >= 1910)
       template <typename F, typename... Vs>
       using fmatrix_t = decltype(base::make_fmatrix<F, Vs...>());
@@ -1470,7 +1267,7 @@ namespace nstd {
         template <typename Visitor, typename... Vs>
         inline static constexpr DECLTYPE_AUTO visit_alt(Visitor &&visitor,
                                                         Vs &&... vs)
-#ifdef MPARK_VARIANT_SWITCH_VISIT
+#ifdef TF_VARIANT_SWITCH_VISIT
           DECLTYPE_AUTO_RETURN(
               base::dispatcher<
                   true,
@@ -1497,7 +1294,7 @@ namespace nstd {
         inline static constexpr DECLTYPE_AUTO visit_alt_at(std::size_t index,
                                                            Visitor &&visitor,
                                                            Vs &&... vs)
-#ifdef MPARK_VARIANT_SWITCH_VISIT
+#ifdef TF_VARIANT_SWITCH_VISIT
           DECLTYPE_AUTO_RETURN(
               base::dispatcher<
                   true,
@@ -1620,7 +1417,7 @@ namespace nstd {
     template <Trait DestructibleTrait, std::size_t Index>
     union recursive_union<DestructibleTrait, Index> {};
 
-#define MPARK_VARIANT_RECURSIVE_UNION(destructible_trait, destructor)      \
+#define TF_VARIANT_RECURSIVE_UNION(destructible_trait, destructor)      \
   template <std::size_t Index, typename T, typename... Ts>                 \
   union recursive_union<destructible_trait, Index, T, Ts...> {             \
     public:                                                                \
@@ -1653,14 +1450,14 @@ namespace nstd {
     friend struct access::recursive_union;                                 \
   }
 
-    MPARK_VARIANT_RECURSIVE_UNION(Trait::TriviallyAvailable,
+    TF_VARIANT_RECURSIVE_UNION(Trait::TriviallyAvailable,
                                   ~recursive_union() = default;);
-    MPARK_VARIANT_RECURSIVE_UNION(Trait::Available,
+    TF_VARIANT_RECURSIVE_UNION(Trait::Available,
                                   ~recursive_union() {});
-    MPARK_VARIANT_RECURSIVE_UNION(Trait::Unavailable,
+    TF_VARIANT_RECURSIVE_UNION(Trait::Unavailable,
                                   ~recursive_union() = delete;);
 
-#undef MPARK_VARIANT_RECURSIVE_UNION
+#undef TF_VARIANT_RECURSIVE_UNION
 
     template <typename... Ts>
     using index_t = typename std::conditional<
@@ -1726,9 +1523,9 @@ namespace nstd {
     };
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1910
-#define MPARK_INHERITING_CTOR(type, base) using base::base;
+#define TF_INHERITING_CTOR(type, base) using base::base;
 #else
-#define MPARK_INHERITING_CTOR(type, base)         \
+#define TF_INHERITING_CTOR(type, base)         \
   template <typename... Args>                     \
   inline explicit constexpr type(Args &&... args) \
       : base(lib::forward<Args>(args)...) {}
@@ -1737,14 +1534,14 @@ namespace nstd {
     template <typename Traits, Trait = Traits::destructible_trait>
     class destructor;
 
-#define MPARK_VARIANT_DESTRUCTOR(destructible_trait, definition, destroy) \
+#define TF_VARIANT_DESTRUCTOR(destructible_trait, definition, destroy) \
   template <typename... Ts>                                               \
   class destructor<traits<Ts...>, destructible_trait>                     \
       : public base<destructible_trait, Ts...> {                          \
     using super = base<destructible_trait, Ts...>;                        \
                                                                           \
     public:                                                               \
-    MPARK_INHERITING_CTOR(destructor, super)                              \
+    TF_INHERITING_CTOR(destructor, super)                              \
     using super::operator=;                                               \
                                                                           \
     destructor(const destructor &) = default;                             \
@@ -1757,14 +1554,14 @@ namespace nstd {
     destroy                                                               \
   }
 
-    MPARK_VARIANT_DESTRUCTOR(
+    TF_VARIANT_DESTRUCTOR(
         Trait::TriviallyAvailable,
         ~destructor() = default;,
         inline void destroy() noexcept {
           this->index_ = static_cast<index_t<Ts...>>(-1);
         });
 
-    MPARK_VARIANT_DESTRUCTOR(
+    TF_VARIANT_DESTRUCTOR(
         Trait::Available,
         ~destructor() { destroy(); },
         inline void destroy() noexcept {
@@ -1774,23 +1571,23 @@ namespace nstd {
           this->index_ = static_cast<index_t<Ts...>>(-1);
         });
 
-    MPARK_VARIANT_DESTRUCTOR(
+    TF_VARIANT_DESTRUCTOR(
         Trait::Unavailable,
         ~destructor() = delete;,
         inline void destroy() noexcept = delete;);
 
-#undef MPARK_VARIANT_DESTRUCTOR
+#undef TF_VARIANT_DESTRUCTOR
 
     template <typename Traits>
     class constructor : public destructor<Traits> {
       using super = destructor<Traits>;
 
       public:
-      MPARK_INHERITING_CTOR(constructor, super)
+      TF_INHERITING_CTOR(constructor, super)
       using super::operator=;
 
       protected:
-#ifndef MPARK_GENERIC_LAMBDAS
+#ifndef TF_GENERIC_LAMBDAS
       struct ctor {
         template <typename LhsAlt, typename RhsAlt>
         inline void operator()(LhsAlt &lhs_alt, RhsAlt &&rhs_alt) const {
@@ -1813,7 +1610,7 @@ namespace nstd {
         if (!rhs.valueless_by_exception()) {
           visitation::alt::visit_alt_at(
               rhs.index(),
-#ifdef MPARK_GENERIC_LAMBDAS
+#ifdef TF_GENERIC_LAMBDAS
               [](auto &lhs_alt, auto &&rhs_alt) {
                 constructor::construct_alt(
                     lhs_alt, lib::forward<decltype(rhs_alt)>(rhs_alt).value);
@@ -1832,14 +1629,14 @@ namespace nstd {
     template <typename Traits, Trait = Traits::move_constructible_trait>
     class move_constructor;
 
-#define MPARK_VARIANT_MOVE_CONSTRUCTOR(move_constructible_trait, definition) \
+#define TF_VARIANT_MOVE_CONSTRUCTOR(move_constructible_trait, definition) \
   template <typename... Ts>                                                  \
   class move_constructor<traits<Ts...>, move_constructible_trait>            \
       : public constructor<traits<Ts...>> {                                  \
     using super = constructor<traits<Ts...>>;                                \
                                                                              \
     public:                                                                  \
-    MPARK_INHERITING_CTOR(move_constructor, super)                           \
+    TF_INHERITING_CTOR(move_constructor, super)                           \
     using super::operator=;                                                  \
                                                                              \
     move_constructor(const move_constructor &) = default;                    \
@@ -1849,11 +1646,11 @@ namespace nstd {
     move_constructor &operator=(move_constructor &&) = default;              \
   }
 
-    MPARK_VARIANT_MOVE_CONSTRUCTOR(
+    TF_VARIANT_MOVE_CONSTRUCTOR(
         Trait::TriviallyAvailable,
         move_constructor(move_constructor &&that) = default;);
 
-    MPARK_VARIANT_MOVE_CONSTRUCTOR(
+    TF_VARIANT_MOVE_CONSTRUCTOR(
         Trait::Available,
         move_constructor(move_constructor &&that) noexcept(
             lib::all<std::is_nothrow_move_constructible<Ts>::value...>::value)
@@ -1861,23 +1658,23 @@ namespace nstd {
           this->generic_construct(*this, lib::move(that));
         });
 
-    MPARK_VARIANT_MOVE_CONSTRUCTOR(
+    TF_VARIANT_MOVE_CONSTRUCTOR(
         Trait::Unavailable,
         move_constructor(move_constructor &&) = delete;);
 
-#undef MPARK_VARIANT_MOVE_CONSTRUCTOR
+#undef TF_VARIANT_MOVE_CONSTRUCTOR
 
     template <typename Traits, Trait = Traits::copy_constructible_trait>
     class copy_constructor;
 
-#define MPARK_VARIANT_COPY_CONSTRUCTOR(copy_constructible_trait, definition) \
+#define TF_VARIANT_COPY_CONSTRUCTOR(copy_constructible_trait, definition) \
   template <typename... Ts>                                                  \
   class copy_constructor<traits<Ts...>, copy_constructible_trait>            \
       : public move_constructor<traits<Ts...>> {                             \
     using super = move_constructor<traits<Ts...>>;                           \
                                                                              \
     public:                                                                  \
-    MPARK_INHERITING_CTOR(copy_constructor, super)                           \
+    TF_INHERITING_CTOR(copy_constructor, super)                           \
     using super::operator=;                                                  \
                                                                              \
     definition                                                               \
@@ -1887,29 +1684,29 @@ namespace nstd {
     copy_constructor &operator=(copy_constructor &&) = default;              \
   }
 
-    MPARK_VARIANT_COPY_CONSTRUCTOR(
+    TF_VARIANT_COPY_CONSTRUCTOR(
         Trait::TriviallyAvailable,
         copy_constructor(const copy_constructor &that) = default;);
 
-    MPARK_VARIANT_COPY_CONSTRUCTOR(
+    TF_VARIANT_COPY_CONSTRUCTOR(
         Trait::Available,
         copy_constructor(const copy_constructor &that)
             : copy_constructor(valueless_t{}) {
           this->generic_construct(*this, that);
         });
 
-    MPARK_VARIANT_COPY_CONSTRUCTOR(
+    TF_VARIANT_COPY_CONSTRUCTOR(
         Trait::Unavailable,
         copy_constructor(const copy_constructor &) = delete;);
 
-#undef MPARK_VARIANT_COPY_CONSTRUCTOR
+#undef TF_VARIANT_COPY_CONSTRUCTOR
 
     template <typename Traits>
     class assignment : public copy_constructor<Traits> {
       using super = copy_constructor<Traits>;
 
       public:
-      MPARK_INHERITING_CTOR(assignment, super)
+      TF_INHERITING_CTOR(assignment, super)
       using super::operator=;
 
       template <std::size_t I, typename... Args>
@@ -1924,7 +1721,7 @@ namespace nstd {
       }
 
       protected:
-#ifndef MPARK_GENERIC_LAMBDAS
+#ifndef TF_GENERIC_LAMBDAS
       template <typename That>
       struct assigner {
         template <typename ThisAlt, typename ThatAlt>
@@ -1972,7 +1769,7 @@ namespace nstd {
         } else {
           visitation::alt::visit_alt_at(
               that.index(),
-#ifdef MPARK_GENERIC_LAMBDAS
+#ifdef TF_GENERIC_LAMBDAS
               [this](auto &this_alt, auto &&that_alt) {
                 this->assign_alt(
                     this_alt, lib::forward<decltype(that_alt)>(that_alt).value);
@@ -1990,14 +1787,14 @@ namespace nstd {
     template <typename Traits, Trait = Traits::move_assignable_trait>
     class move_assignment;
 
-#define MPARK_VARIANT_MOVE_ASSIGNMENT(move_assignable_trait, definition) \
+#define TF_VARIANT_MOVE_ASSIGNMENT(move_assignable_trait, definition) \
   template <typename... Ts>                                              \
   class move_assignment<traits<Ts...>, move_assignable_trait>            \
       : public assignment<traits<Ts...>> {                               \
     using super = assignment<traits<Ts...>>;                             \
                                                                          \
     public:                                                              \
-    MPARK_INHERITING_CTOR(move_assignment, super)                        \
+    TF_INHERITING_CTOR(move_assignment, super)                        \
     using super::operator=;                                              \
                                                                          \
     move_assignment(const move_assignment &) = default;                  \
@@ -2007,11 +1804,11 @@ namespace nstd {
     definition                                                           \
   }
 
-    MPARK_VARIANT_MOVE_ASSIGNMENT(
+    TF_VARIANT_MOVE_ASSIGNMENT(
         Trait::TriviallyAvailable,
         move_assignment &operator=(move_assignment &&that) = default;);
 
-    MPARK_VARIANT_MOVE_ASSIGNMENT(
+    TF_VARIANT_MOVE_ASSIGNMENT(
         Trait::Available,
         move_assignment &
         operator=(move_assignment &&that) noexcept(
@@ -2021,23 +1818,23 @@ namespace nstd {
           return *this;
         });
 
-    MPARK_VARIANT_MOVE_ASSIGNMENT(
+    TF_VARIANT_MOVE_ASSIGNMENT(
         Trait::Unavailable,
         move_assignment &operator=(move_assignment &&) = delete;);
 
-#undef MPARK_VARIANT_MOVE_ASSIGNMENT
+#undef TF_VARIANT_MOVE_ASSIGNMENT
 
     template <typename Traits, Trait = Traits::copy_assignable_trait>
     class copy_assignment;
 
-#define MPARK_VARIANT_COPY_ASSIGNMENT(copy_assignable_trait, definition) \
+#define TF_VARIANT_COPY_ASSIGNMENT(copy_assignable_trait, definition) \
   template <typename... Ts>                                              \
   class copy_assignment<traits<Ts...>, copy_assignable_trait>            \
       : public move_assignment<traits<Ts...>> {                          \
     using super = move_assignment<traits<Ts...>>;                        \
                                                                          \
     public:                                                              \
-    MPARK_INHERITING_CTOR(copy_assignment, super)                        \
+    TF_INHERITING_CTOR(copy_assignment, super)                        \
     using super::operator=;                                              \
                                                                          \
     copy_assignment(const copy_assignment &) = default;                  \
@@ -2047,29 +1844,29 @@ namespace nstd {
     copy_assignment &operator=(copy_assignment &&) = default;            \
   }
 
-    MPARK_VARIANT_COPY_ASSIGNMENT(
+    TF_VARIANT_COPY_ASSIGNMENT(
         Trait::TriviallyAvailable,
         copy_assignment &operator=(const copy_assignment &that) = default;);
 
-    MPARK_VARIANT_COPY_ASSIGNMENT(
+    TF_VARIANT_COPY_ASSIGNMENT(
         Trait::Available,
         copy_assignment &operator=(const copy_assignment &that) {
           this->generic_assign(that);
           return *this;
         });
 
-    MPARK_VARIANT_COPY_ASSIGNMENT(
+    TF_VARIANT_COPY_ASSIGNMENT(
         Trait::Unavailable,
         copy_assignment &operator=(const copy_assignment &) = delete;);
 
-#undef MPARK_VARIANT_COPY_ASSIGNMENT
+#undef TF_VARIANT_COPY_ASSIGNMENT
 
     template <typename... Ts>
     class impl : public copy_assignment<traits<Ts...>> {
       using super = copy_assignment<traits<Ts...>>;
 
       public:
-      MPARK_INHERITING_CTOR(impl, super)
+      TF_INHERITING_CTOR(impl, super)
       using super::operator=;
 
       impl(const impl&) = default;
@@ -2089,7 +1886,7 @@ namespace nstd {
           // do nothing.
         } else if (this->index() == that.index()) {
           visitation::alt::visit_alt_at(this->index(),
-#ifdef MPARK_GENERIC_LAMBDAS
+#ifdef TF_GENERIC_LAMBDAS
                                         [](auto &this_alt, auto &that_alt) {
                                           using std::swap;
                                           swap(this_alt.value,
@@ -2108,7 +1905,7 @@ namespace nstd {
             std::swap(lhs, rhs);
           }
           impl tmp(lib::move(*rhs));
-#ifdef MPARK_EXCEPTIONS
+#ifdef TF_EXCEPTIONS
           // EXTENSION: When the move construction of `lhs` into `rhs` throws
           // and `tmp` is nothrow move constructible then we move `tmp` back
           // into `rhs` and provide the strong exception safety guarantee.
@@ -2128,7 +1925,7 @@ namespace nstd {
       }
 
       private:
-#ifndef MPARK_GENERIC_LAMBDAS
+#ifndef TF_GENERIC_LAMBDAS
       struct swapper {
         template <typename ThisAlt, typename ThatAlt>
         inline void operator()(ThisAlt &this_alt, ThatAlt &that_alt) const {
@@ -2146,7 +1943,7 @@ namespace nstd {
       }
     };
 
-#undef MPARK_INHERITING_CTOR
+#undef TF_INHERITING_CTOR
 
     template <typename From, typename To>
     struct is_non_narrowing_convertible {
@@ -2543,7 +2340,7 @@ namespace nstd {
                                    const variant<Ts...> &rhs) {
     using detail::visitation::variant;
     using equal_to = detail::convert_to_bool<lib::equal_to>;
-#ifdef MPARK_CPP14_CONSTEXPR
+#ifdef TF_CPP14_CONSTEXPR
     if (lhs.index() != rhs.index()) return false;
     if (lhs.valueless_by_exception()) return true;
     return variant::visit_value_at(lhs.index(), equal_to{}, lhs, rhs);
@@ -2559,7 +2356,7 @@ namespace nstd {
                                    const variant<Ts...> &rhs) {
     using detail::visitation::variant;
     using not_equal_to = detail::convert_to_bool<lib::not_equal_to>;
-#ifdef MPARK_CPP14_CONSTEXPR
+#ifdef TF_CPP14_CONSTEXPR
     if (lhs.index() != rhs.index()) return true;
     if (lhs.valueless_by_exception()) return false;
     return variant::visit_value_at(lhs.index(), not_equal_to{}, lhs, rhs);
@@ -2575,7 +2372,7 @@ namespace nstd {
                                   const variant<Ts...> &rhs) {
     using detail::visitation::variant;
     using less = detail::convert_to_bool<lib::less>;
-#ifdef MPARK_CPP14_CONSTEXPR
+#ifdef TF_CPP14_CONSTEXPR
     if (rhs.valueless_by_exception()) return false;
     if (lhs.valueless_by_exception()) return true;
     if (lhs.index() < rhs.index()) return true;
@@ -2594,7 +2391,7 @@ namespace nstd {
                                   const variant<Ts...> &rhs) {
     using detail::visitation::variant;
     using greater = detail::convert_to_bool<lib::greater>;
-#ifdef MPARK_CPP14_CONSTEXPR
+#ifdef TF_CPP14_CONSTEXPR
     if (lhs.valueless_by_exception()) return false;
     if (rhs.valueless_by_exception()) return true;
     if (lhs.index() > rhs.index()) return true;
@@ -2613,7 +2410,7 @@ namespace nstd {
                                    const variant<Ts...> &rhs) {
     using detail::visitation::variant;
     using less_equal = detail::convert_to_bool<lib::less_equal>;
-#ifdef MPARK_CPP14_CONSTEXPR
+#ifdef TF_CPP14_CONSTEXPR
     if (lhs.valueless_by_exception()) return true;
     if (rhs.valueless_by_exception()) return false;
     if (lhs.index() < rhs.index()) return true;
@@ -2633,7 +2430,7 @@ namespace nstd {
                                    const variant<Ts...> &rhs) {
     using detail::visitation::variant;
     using greater_equal = detail::convert_to_bool<lib::greater_equal>;
-#ifdef MPARK_CPP14_CONSTEXPR
+#ifdef TF_CPP14_CONSTEXPR
     if (rhs.valueless_by_exception()) return true;
     if (lhs.valueless_by_exception()) return false;
     if (lhs.index() > rhs.index()) return true;
@@ -2675,7 +2472,7 @@ namespace nstd {
     return false;
   }
 
-#ifdef MPARK_CPP14_CONSTEXPR
+#ifdef TF_CPP14_CONSTEXPR
   namespace detail {
 
     inline constexpr bool any(std::initializer_list<bool> bs) {
@@ -2767,28 +2564,28 @@ namespace nstd {
 #undef DECLTYPE_AUTO
 #undef DECLTYPE_AUTO_RETURN
 
-}  // namespace nstd
+}}  // namespace tf::nstd
 
 namespace std {
 
   template <typename... Ts>
-  struct hash<nstd::detail::enabled_type<
-      nstd::variant<Ts...>,
-      nstd::lib::enable_if_t<nstd::lib::all<nstd::detail::hash::is_enabled<
-          nstd::lib::remove_const_t<Ts>>()...>::value>>> {
-    using argument_type = nstd::variant<Ts...>;
+  struct hash<tf::nstd::detail::enabled_type<
+      tf::nstd::variant<Ts...>,
+      tf::nstd::lib::enable_if_t<tf::nstd::lib::all<tf::nstd::detail::hash::is_enabled<
+          tf::nstd::lib::remove_const_t<Ts>>()...>::value>>> {
+    using argument_type = tf::nstd::variant<Ts...>;
     using result_type = std::size_t;
 
     inline result_type operator()(const argument_type &v) const {
-      using nstd::detail::visitation::variant;
+      using tf::nstd::detail::visitation::variant;
       std::size_t result =
           v.valueless_by_exception()
               ? 299792458  // Random value chosen by the universe upon creation
               : variant::visit_alt(
-#ifdef MPARK_GENERIC_LAMBDAS
+#ifdef TF_GENERIC_LAMBDAS
                     [](const auto &alt) {
-                      using alt_type = nstd::lib::decay_t<decltype(alt)>;
-                      using value_type = nstd::lib::remove_const_t<
+                      using alt_type = tf::nstd::lib::decay_t<decltype(alt)>;
+                      using value_type = tf::nstd::lib::remove_const_t<
                           typename alt_type::value_type>;
                       return hash<value_type>{}(alt.value);
                     }
@@ -2801,13 +2598,13 @@ namespace std {
     }
 
     private:
-#ifndef MPARK_GENERIC_LAMBDAS
+#ifndef TF_GENERIC_LAMBDAS
     struct hasher {
       template <typename Alt>
       inline std::size_t operator()(const Alt &alt) const {
-        using alt_type = nstd::lib::decay_t<Alt>;
+        using alt_type = tf::nstd::lib::decay_t<Alt>;
         using value_type =
-            nstd::lib::remove_const_t<typename alt_type::value_type>;
+            tf::nstd::lib::remove_const_t<typename alt_type::value_type>;
         return hash<value_type>{}(alt.value);
       }
     };
@@ -2819,8 +2616,8 @@ namespace std {
   };
 
   template <>
-  struct hash<nstd::monostate> {
-    using argument_type = nstd::monostate;
+  struct hash<tf::nstd::monostate> {
+    using argument_type = tf::nstd::monostate;
     using result_type = std::size_t;
 
     inline result_type operator()(const argument_type &) const noexcept {
@@ -2830,4 +2627,5 @@ namespace std {
 
 }  // namespace std
 
-#endif  // MPARK_VARIANT_HPP
+
+

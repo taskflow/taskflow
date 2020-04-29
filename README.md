@@ -61,7 +61,7 @@ in parallel computing. Check out [Who is Using Cpp-Taskflow](#who-is-using-cpp-t
 
 See a quick [presentation][Presentation] and 
 visit the [documentation][wiki] to learn more about Cpp-Taskflow.
-Technical details can be referred to our [IEEE IPDPS19 paper][IPDPS19].
+Technical details can be referred to our [arXiv paper](https://arxiv.org/abs/2004.10908v2).
 
 # Table of Contents
 
