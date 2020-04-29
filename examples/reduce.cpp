@@ -101,7 +101,7 @@ int main(int argc, char* argv[]) {
   if(std::strcmp(argv[1], "reduce") == 0) {
     reduce();
   }
-  else if(std::strcmp(argv[1], "transform_reduce")) {
+  else if(std::strcmp(argv[1], "transform_reduce") == 0) {
     transform_reduce();
   }
   else {
