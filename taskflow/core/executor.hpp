@@ -27,18 +27,18 @@ namespace tf {
 @brief class to access worker information from the observer interface
 
 */
-class WorkerView {
-
-  friend class Executor;
-
-  public:
-
-
-  private:
-
-    Worker* _worker;
-
-};
+//class WorkerView {
+//
+//  friend class Executor;
+//
+//  public:
+//
+//
+//  private:
+//
+//    Worker* _worker;
+//
+//};
 
 
 // ----------------------------------------------------------------------------
