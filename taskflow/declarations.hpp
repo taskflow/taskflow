@@ -16,6 +16,7 @@ class TaskView;
 class Taskflow;
 class Topology;
 class Executor;
+class WorkerView;
 
 // cudaflow
 class cudaNode;

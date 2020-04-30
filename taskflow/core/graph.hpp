@@ -5,6 +5,7 @@
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
 #include "../utility/passive_vector.hpp"
+#include "../utility/singleton.hpp"
 #include "../nstd/variant.hpp"
 
 #if defined(__CUDA__) || defined(__CUDACC__)
@@ -144,18 +145,19 @@ class Node {
     ConditionWork,    // conditional tasking
     ModuleWork        // composable tasking
   >;
-
+  
+  public:
+  
   // variant index
-  constexpr static auto STATIC_WORK    = get_index_v<StaticWork, handle_t>;
-  constexpr static auto DYNAMIC_WORK   = get_index_v<DynamicWork, handle_t>;
-  constexpr static auto CONDITION_WORK = get_index_v<ConditionWork, handle_t>; 
-  constexpr static auto MODULE_WORK    = get_index_v<ModuleWork, handle_t>; 
+  constexpr static auto PLACEHOLDER_WORK = get_index_v<nstd::monostate, handle_t>;
+  constexpr static auto STATIC_WORK      = get_index_v<StaticWork, handle_t>;
+  constexpr static auto DYNAMIC_WORK     = get_index_v<DynamicWork, handle_t>;
+  constexpr static auto CONDITION_WORK   = get_index_v<ConditionWork, handle_t>; 
+  constexpr static auto MODULE_WORK      = get_index_v<ModuleWork, handle_t>; 
 
 #ifdef TF_ENABLE_CUDA
   constexpr static auto CUDAFLOW_WORK  = get_index_v<cudaFlowWork, handle_t>; 
 #endif
-  
-  public:
 
     template <typename ...Args>
     Node(Args&&... args);

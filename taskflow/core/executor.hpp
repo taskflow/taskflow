@@ -21,6 +21,31 @@
 
 namespace tf {
 
+
+/** @class WorkerView
+
+@brief class to access worker information from the observer interface
+
+*/
+class WorkerView {
+
+  friend class Executor;
+
+  public:
+
+
+  private:
+
+    Worker* _worker;
+
+};
+
+
+// ----------------------------------------------------------------------------
+// Executor Definition
+// ----------------------------------------------------------------------------
+
+
 /** @class Executor
 
 @brief execution interface for running a taskflow graph
@@ -181,7 +206,7 @@ class Executor {
     Each executor manages at most one observer at a time through std::unique_ptr.
     Createing multiple observers will only keep the lastest one.
     
-    @tparam Observer observer type derived from tf::ExecutorObserverInterface
+    @tparam Observer observer type derived from tf::ObserverInterface
     @tparam ArgsT... argument parameter pack
 
     @param args arguments to forward to the constructor of the observer
@@ -227,7 +252,7 @@ class Executor {
     std::atomic<size_t> _num_thieves[NUM_DOMAINS];
     std::atomic<bool>   _done {0};
     
-    std::unique_ptr<ExecutorObserverInterface> _observer;
+    std::unique_ptr<ObserverInterface> _observer;
     
     PerThread& _per_thread() const;
 
@@ -627,9 +652,17 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 // Function: make_observer    
 template<typename Observer, typename... Args>
 Observer* Executor::make_observer(Args&&... args) {
+  
+  // must remove the existing observer before creating a new one
+  if(_observer) {
+    TF_THROW("observer already exists; remove the existing observer first");
+  }
+
   // use a local variable to mimic the constructor 
   auto tmp = std::make_unique<Observer>(std::forward<Args>(args)...);
   tmp->set_up(_workers.size());
+
+  // transfer the ownership
   _observer = std::move(tmp);
   return static_cast<Observer*>(_observer.get());
 }

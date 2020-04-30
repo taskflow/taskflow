@@ -5,6 +5,27 @@
 namespace tf {
 
 // ----------------------------------------------------------------------------
+// Task Types
+// ----------------------------------------------------------------------------
+
+/**
+@enum TaskType
+
+@brief enumeration of all task types
+*/
+enum TaskType {
+  PLACEHOLDER_TASK = Node::PLACEHOLDER_WORK,
+#ifdef TF_ENABLE_CUDA
+  CUDAFLOW_TASK    = Node::CUDAFLOW_WORK,
+#endif
+  STATIC_TASK      = Node::STATIC_WORK,
+  DYNAMIC_TASK     = Node::DYNAMIC_WORK,
+  CONDITION_TASK   = Node::CONDITION_WORK,
+  MODULE_TASK      = Node::MODULE_WORK,
+  NUM_TASK_TYPES
+};
+
+// ----------------------------------------------------------------------------
 // Task Traits
 // ----------------------------------------------------------------------------
 
@@ -50,6 +71,8 @@ A cudaFlow task is a callable object constructible from std::function<void(cudaF
 template <typename C>
 constexpr bool is_cudaflow_task_v = is_invocable_r_v<void, C, cudaFlow&>;
 #endif
+
+
 
 // ----------------------------------------------------------------------------
 // Task
@@ -256,8 +279,12 @@ class Task {
     @brief obtains a hash value of the underlying node
     */
     size_t hash_value() const;
-
     
+    /**
+    @brief returns the task type
+    */
+    TaskType type() const;
+
   private:
     
     Task(Node*);
@@ -410,6 +437,11 @@ inline bool Task::has_work() const {
   return _node ? _node->_handle.index() != 0 : false;
 }
 
+// Function: task_type
+inline TaskType Task::type() const {
+  return static_cast<TaskType>(_node->_handle.index());
+}
+
 // Function: for_each_successor
 template <typename V>
 void Task::for_each_successor(V&& visitor) const {
@@ -470,7 +502,7 @@ std::enable_if_t<is_cudaflow_task_v<C>, Task>& Task::work(C&& c) {
 /**
 @class TaskView
 
-@brief immutable accessor class to a task node used by tf::ExecutorObserver
+@brief class to access task information from the observer interface
 */
 class TaskView {
   
@@ -564,6 +596,11 @@ class TaskView {
     */
     template <typename V>
     void for_each_dependent(V&& visitor) const;
+
+    /**
+    @brief queries the task type
+    */
+    TaskType type() const;
     
   private:
     
@@ -635,6 +672,11 @@ inline void TaskView::reset() {
 // Function: empty
 inline bool TaskView::empty() const {
   return _node == nullptr;
+}
+
+// Function: type
+inline TaskType TaskView::type() const {
+  return static_cast<TaskType>(_node->_handle.index());
 }
 
 // Operator ==
