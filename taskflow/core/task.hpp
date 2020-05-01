@@ -25,6 +25,28 @@ enum TaskType {
   NUM_TASK_TYPES
 };
 
+/**
+@brief convert a task type to a human-readable string
+*/
+const char* task_type_to_string(TaskType type) {
+
+  const char* val;
+
+  switch(type) {
+    case PLACEHOLDER_TASK: val = "placeholder";    break;
+#ifdef TF_ENABLE_CUDA
+    case CUDAFLOW_TASK:    val = "cudaflow";       break;
+#endif
+    case STATIC_TASK:      val = "static task";    break;
+    case DYNAMIC_TASK:     val = "dynamic task";   break;
+    case CONDITION_TASK:   val = "condition task"; break;
+    case MODULE_TASK:      val = "module task";    break;
+    default:               val = "undefined";      break;
+  }
+
+  return val;
+}
+
 // ----------------------------------------------------------------------------
 // Task Traits
 // ----------------------------------------------------------------------------
