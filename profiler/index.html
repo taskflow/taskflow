@@ -11,10 +11,11 @@
 
     <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="css/tfp.css">
     <script type="text/javascript" src="js/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
-	  <script src="js/timelines-chart/timelines-chart.min.js"></script>
-    <script src="js/chartjs/Chart.min.js"></script>
+    <script type="text/javascript" src="js/d3/d3.v3.min.js"></script>
+    <script type="text/javascript" src="js/d3/d3-tip.min.js"></script>
   </head>
 
 <!-- BEG BODY -->
@@ -31,10 +32,10 @@
             Examples
           </a>
           <div class="dropdown-menu">
-            <a class="dropdown-item" href="#" onclick="tfp_render_matmul()">Marix Multiplication</a>
-            <a class="dropdown-item" href="#" onclick="tfp_render_kmeans()">k-means Clustering</a>
-            <a class="dropdown-item" href="#" onclick="tfp_render_inference()">Machine Learning Inference</a>
-            <a class="dropdown-item" href="#" onclick="tfp_render_dreamplace()">Integrated Circuit Placement</a>
+            <a class="dropdown-item" id="tfp_matmul" href="#">Marix Multiplication</a>
+            <a class="dropdown-item" id="tfp_kmeans" href="#">k-means Clustering</a>
+            <a class="dropdown-item" id="tfp_inference" href="#">Machine Learning Inference</a>
+            <a class="dropdown-item" id="tfp_dreamplace" href="#">Integrated Circuit Placement</a>
           </div>
         </li>
       </ul>
@@ -49,7 +50,38 @@
     
     <div class="form-group mr-4 ml-4 mt-4">
       <textarea class="form-control" id="tfp_textarea" placeholder="Paste Profiled Data" rows="16"></textarea>
-      <div class="invalid-feedback">wrong format</div>
+      <div class="invalid-feedback"><p>Wrong format! Correct your data with the following syntax:</p>
+<pre class="text-danger">[
+  {
+    "group": "executor1-name",
+    "data": [
+      {
+        "label": "worker1-name",
+        "data": [
+          {
+            "timeRange": [from1, to1],
+            "name": "task1-name",
+            "val": "task1-type"
+          },
+          {
+            "timeRange": [from2, to2],
+            "name": "task2-name",
+            "val": "task2-type"
+          }, 
+          (... more timeRange segments)
+        ]
+      },
+      {
+        "label": "worker2-name",
+        "data": [ ... ]
+      },
+      (... more workers)
+    ],
+  },
+  (... more executors)
+]
+</pre>
+      </div>
     </div>
     
     <script src="js/simple.js"></script>
