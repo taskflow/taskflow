@@ -12,12 +12,23 @@ var state = {
   // DOMAIN (data) -> RANGE (graph)
 
   // main timeline svg
+  dom : null,
   svg : null,                     // svg block
   graph: null,                    // graph block
-  graphW: null,
-  graphH: null,
+  graphW: 0,
+  graphH: 0,
   zoomX: [null, null],            // scoped time data
   zoomY: [null, null],            // scoped line data
+ 
+  // main graph
+  width: window.innerWidth,
+  height: 650,
+  maxHeight: Infinity,
+  maxLineHeight: 20,
+  leftMargin: 100,
+  rightMargin: 100,
+  topMargin: 26,
+  bottomMargin: 30,
   
   // overview element
   overviewAreaSvg: null,
@@ -30,6 +41,19 @@ var state = {
   overviewAreaXGrid: d3.axisBottom().tickFormat(''),
   overviewAreaXAxis: d3.axisBottom().tickPadding(0),
   overviewAreaBrush: d3.brushX(),
+
+  // bar chart
+  barSvg : null,
+  barXScale: d3.scaleBand(),
+  barYScale: d3.scaleLinear(),
+  barXAxis: d3.axisBottom(),
+  barYAxis: d3.axisLeft(),
+  barHeight: 400,
+  barWidth: window.innerWidth,
+  barLeftMargin: 100,
+  barRightMargin: 100,
+  barTopMargin: 30,
+  barBottomMargin: 100,
 
   // axes attributes
   xScale: d3.scaleLinear(),
@@ -53,16 +77,6 @@ var state = {
   zGroup: null,
   zWidth: null,
   zHeight: null,
-  
-  // window attributes
-  width: window.innerWidth,
-  height: 640,
-  maxHeight: Infinity,
-  maxLineHeight: 20,
-  leftMargin: 100,
-  rightMargin: 100,
-  topMargin: 26,
-  bottomMargin: 30,
 
   // date marker line
   dateMarker: null,
@@ -86,33 +100,51 @@ var state = {
   nLines: 0
 };
 
-// Procedure: make_timeline_structure
-function make_timeline_structure(dom_element) {
+d3.selection.prototype.moveToFront = function() {
+      return this.each(function(){
+        this.parentNode.appendChild(this);
+      });
+    };
+
+d3.selection.prototype.moveToBack = function() {
+    return this.each(function() {
+        var firstChild = this.parentNode.firstChild;
+        if (firstChild) {
+            this.parentNode.insertBefore(this, firstChild);
+        }
+    });
+};
+
+// Procedure: make_tfp_structure
+function make_tfp_structure(dom_element) {
   
   //console.log("timeline chart created at", dom_element);
   
-  const elem = d3.select(dom_element).attr('class', 'timelines-chart');
+  state.dom = d3.select('#tfp').attr('class', 'tfp');
 
   // main svg
-  state.svg = elem.append('svg');
+  state.svg = state.dom.append('svg');
   
   // overview svg
-  state.overviewAreaSvg = elem.append('div').append('svg')
-                            .attr('class', 'brusher');
-  
-  //console.log("_make_timeline_structure");
+  state.overviewAreaSvg = state.dom.append('div').append('svg').attr('class', 'brusher');
+
+  // bar svg
+
+
+  //console.log("_make_tfp_structure");
     
   state.yScale.invert = _invertOrdinal;
   state.grpScale.invert = _invertOrdinal;
   
-  _make_timeline_gradient_field();
-  _make_timeline_axes();
-  _make_timeline_legend();
-  _make_timeline_graph();
-  _make_timeline_date_marker_line();
-  _make_timeline_overview();
-  _make_timeline_tooltips();
-  _make_timeline_events();
+  _make_tfp_gradient_field();
+  _make_tfp_axes();
+  _make_tfp_legend();
+  _make_tfp_graph();
+  _make_tfp_date_marker_line();
+  _make_tfp_overview();
+  _make_tfp_bar();
+  _make_tfp_tooltips();
+  _make_tfp_events();
 }
 
 // Procedure: feed()
@@ -125,8 +157,10 @@ function feed(rawData) {
   state.maxX  = null;
   state.completeStructData = [];
   state.completeFlatData = [];
+  state.completeTableData = [];
   state.totalNLines = 0;
 
+  // iterate executor
   for (let i=0, ilen=rawData.length; i<ilen; i++) {
     const group = rawData[i].group;
 
@@ -134,9 +168,12 @@ function feed(rawData) {
       group: group,
       lines: rawData[i].data.map(d => d.label)
     });
-
-    for (let j= 0, jlen=rawData[i].data.length; j<jlen; j++) {  // iterate lines
-      for (let k= 0, klen=rawData[i].data[j].data.length; k<klen; k++) {  // iterate segs
+    
+    // iterate worker
+    for (let j= 0, jlen=rawData[i].data.length; j<jlen; j++) {
+      var total_time=0, stime=0, dtime=0, gtime=0, ctime=0, mtime=0;
+      // iterate segment
+      for (let k= 0, klen=rawData[i].data[j].data.length; k<klen; k++) {
         const { timeRange, val, name } = rawData[i].data[j].data[k];
 
         state.completeFlatData.push({
@@ -154,15 +191,182 @@ function feed(rawData) {
         if(state.maxX == null || timeRange[1] > state.maxX) {
           state.maxX = timeRange[1];
         }
+        
+        const elapsed = timeRange[1] - timeRange[0];
+        total_time += elapsed;
+
+        switch(val) {
+          case "static task":
+            stime += elapsed;
+          break;
+
+          case "dynamic task":
+            dtime += elapsed;
+          break;
+
+          case "cudaflow":
+            gtime += elapsed;
+          break;
+
+          case "condition task":
+            ctime += elapsed;
+          break;
+
+          case "module task":
+            mtime += elapsed;
+          break;
+
+          default:
+            console.assert(false);
+          break;
+        }
       }
+
+      state.completeTableData.push({
+        "group": group,
+        "label": rawData[i].data[j].label,
+        "tasks": rawData[i].data[j].data.length,
+        "static task": stime,
+        "dynamic task": dtime,
+        "cudaflow": gtime,
+        "condition task": ctime,
+        "module task": mtime,
+        "busy": total_time
+      });
+
       state.totalNLines++;
     }
   }
 
   //console.log("total", state.totalNLines, " lines");
-        
+  console.log(state.completeTableData)
+  
+  // static data fields
   state.overviewAreaDomain = [state.minX, state.maxX];
+
+  // update all dynamic fields
   update([state.minX, state.maxX], [null, null]);
+  
+  
+  // update the bar chart fields
+  var options = d3.select("#tfp-sel-executor").selectAll("option")
+		.data(['default (all)', ...rawData.map(d=>d.group)])
+
+  options.exit().remove();
+  options = options.merge(options.enter().append('option'))
+              .text(d=>d);
+
+  state.barXScale
+    .padding(0.5)
+    .domain(state.completeTableData.map(d=>d.label))
+    .range([state.barLeftMargin, state.barWidth-state.barRightMargin]);
+  
+  state.barYScale
+    .domain([0, d3.max(state.completeTableData, d=>d.busy)])
+    .range([state.barHeight - state.barBottomMargin, state.barTopMargin]);
+
+  console.log("barYScale", state.barYScale.domain(), state.barYScale.range());
+
+  state.barXAxis.scale(state.barXScale).tickSizeOuter(0);
+  state.barYAxis.scale(state.barYScale).tickSize(-state.barWidth+state.barLeftMargin +state.barRightMargin);
+
+  state.barSvg.select('g.tfp-bar-x-axis')
+    .attr('transform', `translate(0, ${state.barHeight - state.barBottomMargin})`)
+    .transition().duration(state.transDuration)
+      .call(state.barXAxis)
+    .selectAll("text")
+      .attr("y", 0)
+      .attr("x", -40)
+      .attr("dy", ".35em")
+      .attr("transform", "rotate(-90)");
+
+  state.barSvg.select('g.tfp-bar-y-axis')
+    .attr('transform', `translate(${state.barLeftMargin}, 0)`)
+    .transition().duration(state.transDuration)
+      .call(state.barYAxis)
+
+  var keys = ['static task', 'dynamic task', 'cudaflow', 'condition task', 'module task'];
+  var stacked_data = d3.stack().keys(keys)(state.completeTableData);
+
+  console.log(stacked_data)
+
+  var l1 = state.barSvg.select('g.tfp-bar-graph')
+    .selectAll('g')
+    .data(stacked_data);
+
+  l1.exit().remove();
+  l1 = l1.enter().append('g').merge(l1).attr("fill", d => state.zColorMap.get(d.key));
+
+  var l2 = l1.selectAll("rect").data(d=>d);
+
+  l2.exit().remove(); 
+  //l2.enter().append("rect").merge(l2)
+  //  .transition().duration(state.transDuration)
+  //  .attr('rx', 1)
+  //  .attr('ry', 1)
+  //  .attr('x', d => state.barXScale(d.data.label))
+  //  .attr('y', d => state.barYScale(d[1]))
+  //  .attr('height', d => state.barYScale(d[0]) - state.barYScale(d[1]))
+  //  .attr('width', state.barXScale.bandwidth());
+
+  var newbars = l2.enter().append("rect")
+    .attr('width', 0)
+    .attr('height', 0)
+    .attr('x', 0)
+    .attr('y', 0)
+    .style('fill-opacity', 0.8)
+    .on('mouseover.barTooltip', state.barTooltip.show)
+    .on('mouseout.barTooltip', state.barTooltip.hide);
+    
+  newbars
+    .on('mouseover', function() {
+
+      if (state.disableHover) { return; }
+
+      //MoveToFront()(this);
+      d3.select(this).moveToFront();
+
+      //const hoverEnlarge = state.lineHeight*hoverEnlargeRatio;
+
+      const hoverEnlarge = state.barXScale.bandwidth()*0.01;
+
+      //  const x = state.barXScale(d.data.label);
+      //  const y = state.barYScale(d[1]);
+      //  const w = state.barXScale.bandwidth();
+      //  const h = state.barYScale(d[0]) - state.barYScale(d[1]);
+      d3.select(this).moveToFront()
+        .transition().duration(250)
+        .attr('x', function(d) {
+          return state.barXScale(d.data.label)-hoverEnlarge/2; 
+        })
+        .attr('width', state.barXScale.bandwidth() + hoverEnlarge)
+        .attr('y', function(d) {
+          return state.barYScale(d[1]) - hoverEnlarge/2;
+        })
+        .attr('height', function(d) {
+          return state.barYScale(d[0]) - state.barYScale(d[1]) + hoverEnlarge;
+        })
+        .style('fill-opacity', 1);
+    })
+    .on('mouseout', function() {
+      d3.select(this).moveToBack()
+        .transition().duration(250)
+        .attr('width', d => state.barXScale.bandwidth())
+        .attr('height', d => state.barYScale(d[0]) - state.barYScale(d[1]))
+        .attr('x', d => state.barXScale(d.data.label))
+        .attr('y', d => state.barYScale(d[1]))
+        .style('fill-opacity', 0.8);
+    })
+
+
+  l2.merge(newbars)
+    .transition().duration(state.transDuration)
+    .attr('rx', 1)
+    .attr('ry', 1)
+    .attr('x', d => state.barXScale(d.data.label))
+    .attr('y', d => state.barYScale(d[1]))
+    .attr('height', d => state.barYScale(d[0]) - state.barYScale(d[1]))
+    .attr('width', state.barXScale.bandwidth());
 }
 
 // Procedure: update
@@ -230,7 +434,7 @@ function _invertOrdinal(val, cmpFunc) {
   return this.domain()[this.domain().length-1];
 }
   
-function _make_timeline_gradient_field() {  
+function _make_tfp_gradient_field() {  
   //console.log("making gradient ...");
   state.groupGradId = `areaGradient${Math.round(Math.random()*10000)}`;
   const gradient = state.svg.append('linearGradient');
@@ -245,7 +449,7 @@ function _make_timeline_gradient_field() {
   const stop_scale = d3.scaleLinear().domain([0, 100]).range(color_scale.domain());
   
   let color_stops = gradient.selectAll('stop')
-                               .data(d3.range(0, 100.01, 20)); 
+                      .data(d3.range(0, 100.01, 20)); 
 
   color_stops.exit().remove();
   color_stops.merge(color_stops.enter().append('stop'))
@@ -253,14 +457,14 @@ function _make_timeline_gradient_field() {
     .attr('stop-color', d => color_scale(stop_scale(d)));
 }
 
-// Procedure: _make_timeline_date_marker_line
-function _make_timeline_date_marker_line() {
+// Procedure: _make_tfp_date_marker_line
+function _make_tfp_date_marker_line() {
   //console.log("making date marker ...");
   state.dateMarkerLine = state.svg.append('line').attr('class', 'x-axis-date-marker');
 }
 
-// Procedure: _make_timeline_overview
-function _make_timeline_overview() {
+// Procedure: _make_tfp_overview
+function _make_tfp_overview() {
   //console.log("making the overview ...");
 
   state.overviewAreaBrush
@@ -316,8 +520,25 @@ function _make_timeline_overview() {
   //});
 }
 
-// Procedure: _make_timeline_axes
-function _make_timeline_axes() {  
+// Procedure: _make_tfp_bar
+function _make_tfp_bar() {
+  
+  const barDiv = state.dom.append('div');
+
+  state.barSvg = barDiv.append('svg')
+    .attr('width', state.barWidth)
+    .attr('height', state.barHeight);
+
+  barDiv.append('div').attr('style', 'ml-4')
+    .append('select').attr('id', 'tfp-sel-executor');
+
+  state.barSvg.append('g').attr('class', 'tfp-bar-x-axis');
+  state.barSvg.append('g').attr('class', 'tfp-bar-y-axis');
+  state.barSvg.append('g').attr('class', 'tfp-bar-graph');
+}
+
+// Procedure: _make_tfp_axes
+function _make_tfp_axes() {  
   //console.log("making the axes ...");
   const axes = state.svg.append('g').attr('class', 'axes');
   axes.append('g').attr('class', 'x-axis');
@@ -329,8 +550,8 @@ function _make_timeline_axes() {
   state.grpAxis.scale(state.grpScale).tickSize(0);
 }
 
-// Procedure: _make_timeline_legend
-function _make_timeline_legend() {
+// Procedure: _make_tfp_legend
+function _make_tfp_legend() {
 
   //console.log("making the legend ...");
 
@@ -392,8 +613,8 @@ function _make_timeline_legend() {
     .style('fill', '#FFFFFF');
 }
 
-// Procedure: _make_timeline_graph
-function _make_timeline_graph() {
+// Procedure: _make_tfp_graph
+function _make_tfp_graph() {
 
   //console.log("making the graph ...");
 
@@ -485,14 +706,14 @@ function _make_timeline_graph() {
   });
 }
 
-// Procedure: _make_timeline_tooltips
-function _make_timeline_tooltips() {
+// Procedure: _make_tfp_tooltips
+function _make_tfp_tooltips() {
 
   //console.log("making the tooltips ...");
   
   // group tooltips 
   state.groupTooltip = d3.tip()
-       .attr('class', 'timelines-chart-tooltip')
+       .attr('class', 'tfp-tooltip')
        .direction('w')
        .offset([0, 0])
        .html(d => {
@@ -508,7 +729,7 @@ function _make_timeline_tooltips() {
 
   // label tooltips
   state.lineTooltip = d3.tip()
-       .attr('class', 'timelines-chart-tooltip')
+       .attr('class', 'tfp-tooltip')
        .direction('e')
        .offset([0, 0])
        .html(d => {
@@ -522,7 +743,7 @@ function _make_timeline_tooltips() {
   
   // segment tooltips
   state.segmentTooltip = d3.tip()
-    .attr('class', 'timelines-chart-tooltip')
+    .attr('class', 'tfp-tooltip')
     .direction('s')
     .offset([5, 0])
     .html(d => {
@@ -533,10 +754,24 @@ function _make_timeline_tooltips() {
     });
 
   state.svg.call(state.segmentTooltip);
+  
+  // bar tooltips
+  state.barTooltip = d3.tip()
+    .attr('class', 'tfp-tooltip')
+    .direction('w')
+    .offset([0, -5])
+    .html(d => {
+      const t = d[1] - d[0];
+      const p = ((t / d.data.busy)*100).toFixed(2);
+      return `Total Time: ${t}<br>
+              Percentage: ${p}%`;
+    });
+
+  state.svg.call(state.barTooltip);
 }
       
-// Proecedure: _make_timeline_events      
-function _make_timeline_events() {
+// Proecedure: _make_tfp_events      
+function _make_tfp_events() {
 
   //console.log("making dom events ...");
 
@@ -614,24 +849,20 @@ function _apply_filters() {
     //    )
     //  );
     //}
-
     if (cntDwn[0]>=validLines.length) { // Ignore whole group (before start)
       cntDwn[0]-=validLines.length;
       continue;
     }
-
     const groupData = {
       group: state.completeStructData[i].group,
       lines: null
     };
-
     if (validLines.length-cntDwn[0]>=cntDwn[1]) {  // Last (or first && last) group (partial)
       groupData.lines = validLines.slice(cntDwn[0],cntDwn[1]+cntDwn[0]);
       state.structData.push(groupData);
       cntDwn[1]=0;
       break;
     }
-
     if (cntDwn[0]>0) {  // First group (partial)
       groupData.lines = validLines.slice(cntDwn[0]);
       cntDwn[0]=0;
@@ -644,7 +875,6 @@ function _apply_filters() {
   }
 
   state.nLines-=cntDwn[1];
-
   //console.log("filtered lines:", state.nLines);
 }
 
@@ -655,7 +885,7 @@ function _adjust_dimensions() {
   state.graphH = state.nLines*state.maxLineHeight;
   state.height = state.graphH + state.topMargin + state.bottomMargin;
   //console.log("transition to", state.width, state.height, " graph", state.graphH, state.graphW);
-  state.svg.transition().duration(state.transDuration)
+  state.svg//.transition().duration(state.transDuration)
     .attr('width', state.width)
     .attr('height', state.height);
 
@@ -681,19 +911,14 @@ function _adjust_yscale() {
   }
 
   //console.log("adjusting yscale to", labels);
-
   state.yScale.domain(labels);
-  
   //console.log(state.graphH/labels.length*0.5, state.graphH*(1-0.5/labels.length));
-
   state.yScale.range([state.graphH/labels.length*0.5, state.graphH*(1-0.5/labels.length)]);
 }
     
 // Procedure: _adjust_grpscale
 function _adjust_grpscale() {
-
   //console.log("adjusting group domain", state.structData.map(d => d.group));
-
   state.grpScale.domain(state.structData.map(d => d.group));
 
   let cntLines = 0;
@@ -808,11 +1033,13 @@ function _render_axes() {
 
   //// Make Axises clickable
   //if (state.onLabelClick) {
+  //  console.log("register callback")
   //  state.svg.selectAll('g.y-axis,g.grp-axis').selectAll('text')
   //    .style('cursor', 'pointer')
   //    .on('click', function(d) {
   //      const segms = d.split('+&+');
-  //      state.onLabelClick(...segms.reverse());
+  //      //state.onLabelClick(...segms.reverse());
+  //      console.log("click on", d);
   //    });
   //}
 
@@ -836,10 +1063,6 @@ function _render_groups() {
     .style('stroke-opacity', 0)
     .style('fill-opacity', 0)
     .remove();
-    
-  //  fill-opacity: 0.6;
-  //  stroke: #808080;
-  //  stroke-opacity: 0.2;
 
   const newGroups = groups.enter().append('rect')
     .attr('class', 'series-group')
@@ -900,12 +1123,12 @@ function _render_timelines(maxElems) {
     .attr('class', 'series-segment')
     .attr('rx', 1)
     .attr('ry', 1)
-    .attr('x', state.graphW/2)
-    .attr('y', state.graphH/2)
+    .attr('x', state.graphW/2)    // here we initialize the rect to avoid
+    .attr('y', state.graphH/2)    // NaN y error during transition
     .attr('width', 0)
     .attr('height', 0)
-    .style('fill', d => state.zColorMap.get(d.val))
     .style('fill-opacity', 0)
+    .style('fill', d => state.zColorMap.get(d.val))
     .on('mouseover.groupTooltip', state.groupTooltip.show)
     .on('mouseout.groupTooltip', state.groupTooltip.hide)
     .on('mouseover.lineTooltip', state.lineTooltip.show)
@@ -923,7 +1146,7 @@ function _render_timelines(maxElems) {
       const hoverEnlarge = state.lineHeight*hoverEnlargeRatio;
 
       d3.select(this)
-        .transition().duration(70)
+        .transition().duration(250)
         .attr('x', function (d) {
           return state.xScale(d.timeRange[0])-hoverEnlarge/2;
         })
@@ -1026,6 +1249,7 @@ function _render_overview_area()  {
     .call(state.overviewAreaBrush.move, state.overviewAreaSelection.map(state.overviewAreaScale));
 }
 
+
 // ----------------------------------------------------------------------------
 // Helper functions
 // ----------------------------------------------------------------------------
@@ -1110,9 +1334,10 @@ function tfp_render_dreamplace() {
 
 // ----------------------------------------------------------------------------
 
+
+
 // DOM objects
-make_timeline_structure(document.getElementById('tfp_timeline'));
+make_tfp_structure();
 
 tfp_render_simple();
-
 

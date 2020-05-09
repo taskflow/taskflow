@@ -1,47 +1,47 @@
 
-.timelines-chart .axes .x-axis {
+.tfp .axes .x-axis {
   font-size: 1rem;
   font-family: sans-serif;
 }
 
-.timelines-chart .axes .x-grid line {
+.tfp .axes .x-grid line {
   stroke: #D3D3D3;
 }
 
-.timelines-chart .axes line, path {
+.tfp .axes line, path {
   stroke: #808080;
 }
 
-.timelines-chart .axes .y-axis line, path {
+.tfp .axes .y-axis line, path {
   stroke: none;
 }
 
-.timelines-chart .axes .grp-axis line, path {
+.tfp .axes .grp-axis line, path {
   stroke: none;
 }
 
-.timelines-chart .brusher .x-grid line {
+.tfp .brusher .x-grid line {
   stroke: #fff;
 }
 
-.timelines-chart .brusher .x-axis {
+.tfp .brusher .x-axis {
   font-size: 1rem;
   font-family: sans-serif;
 }
 
-.timelines-chart .series-segment {
+.tfp .series-segment {
   stroke: none;
   cursor: crosshair;
 }
 
-.timelines-chart .series-group {
+.tfp .series-group {
   cursor: crosshair;
   fill-opacity: 0.6;
   stroke: #808080;
   stroke-opacity: 0.2;
 }
   
-.timelines-chart .reset-zoom-btn {
+.tfp .reset-zoom-btn {
   font-family: sans-serif;
   font-size: 1rem;
   fill: blue;
@@ -50,33 +50,33 @@
   text-anchor: end;
 }
 
-.timelines-chart .legend text {
+.tfp .legend text {
   font-family: sans-serif;
   font-size: 1rem;
   text-anchor: start;
 }
 
-.timelines-chart .reset-zoom-btn:hover {
+.tfp .reset-zoom-btn:hover {
   opacity: 1;
 }
 
-.timelines-chart .brusher .grid-background {
+.tfp .brusher .grid-background {
   fill: lightgrey;
 }
 
-.timelines-chart .brusher .axis path {
+.tfp .brusher .axis path {
   display: none;
 }
 
-.timelines-chart .brusher .tick text {
+.tfp .brusher .tick text {
   text-anchor: middle;
 }
 
-.timelines-chart .brusher .grid line, path {
+.tfp .brusher .grid line, path {
   stroke: #fff;
 }
 
-.timelines-chart .chart-zoom-selection, .brusher .brush .selection {
+.tfp .chart-zoom-selection, .brusher .brush .selection {
   stroke: blue;
   stroke-opacity: 0.6;
   fill: blue;
@@ -84,7 +84,7 @@
   shape-rendering: crispEdges;
 }
 
-.timelines-chart-tooltip {
+.tfp-tooltip {
   color: white;
   background: black;
   padding: 6px;
@@ -96,5 +96,23 @@
   text-align: center;
 }
 
+.tfp-bar-x-axis {
+  font-size: 1rem;
+  font-family: sans-serif;
+}
 
+.tfp-bar-x-axis line, path {
+  stroke: #808080;
+  stroke-opacity: 0.5;
+}
+
+.tfp-bar-y-axis {
+  font-size: 1rem;
+  font-family: sans-serif;
+}
+
+.tfp-bar-y-axis line, path {
+  stroke: #808080;
+  stroke-opacity: 0.5;
+}
 

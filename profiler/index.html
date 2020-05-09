@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="css/tfp.css">
     <script type="text/javascript" src="js/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/d3/d3.v3.min.js"></script>
+    <script type="text/javascript" src="js/d3/d3.v5.min.js"></script>
     <script type="text/javascript" src="js/d3/d3-tip.min.js"></script>
   </head>
 
@@ -46,12 +46,11 @@
       </ul>
     </nav>
     
-    <div id="tfp_timeline"></div>
+    <div id="tfp"></div>
     
     <div class="form-group mr-4 ml-4 mt-4">
       <textarea class="form-control" id="tfp_textarea" placeholder="Paste Profiled Data" rows="16"></textarea>
-      <div class="invalid-feedback"><p>Wrong format! Correct your data with the following syntax:</p>
-<pre class="text-danger">[
+      <div class="invalid-feedback"><p>Wrong format! Correct your data with the following syntax: <pre class="text-danger">[
   {
     "group": "executor1-name",
     "data": [
@@ -80,7 +79,7 @@
   },
   (... more executors)
 ]
-</pre>
+</pre></p>
       </div>
     </div>
     
