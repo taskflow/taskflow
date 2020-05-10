@@ -1,25 +1,36 @@
 #pragma once
 
-#include <iostream>
-#include <vector>
-#include <cstdlib>
-#include <cstdio>
-#include <random>
-#include <atomic>
-#include <memory>
-#include <deque>
-#include <thread>
-#include <algorithm>
-#include <set>
-#include <numeric>
-#include <cassert>
-
 #include "tsq.hpp"
 #include "notifier.hpp"
 #include "observer.hpp"
 #include "taskflow.hpp"
 
 namespace tf {
+
+
+/** @class WorkerView
+
+@brief class to access worker information from the observer interface
+
+*/
+//class WorkerView {
+//
+//  friend class Executor;
+//
+//  public:
+//
+//
+//  private:
+//
+//    Worker* _worker;
+//
+//};
+
+
+// ----------------------------------------------------------------------------
+// Executor Definition
+// ----------------------------------------------------------------------------
+
 
 /** @class Executor
 
@@ -178,24 +189,28 @@ class Executor {
     /**
     @brief constructs an observer to inspect the activities of worker threads
 
-    Each executor manages at most one observer at a time through std::unique_ptr.
-    Createing multiple observers will only keep the lastest one.
+    Each executor manage a list of observers in shared ownership with callers.
     
-    @tparam Observer observer type derived from tf::ExecutorObserverInterface
+    @tparam Observer observer type derived from tf::ObserverInterface
     @tparam ArgsT... argument parameter pack
 
     @param args arguments to forward to the constructor of the observer
     
-    @return a raw pointer to the observer associated with this executor
+    @return a shared pointer to the created observer
     */
-    template<typename Observer, typename... Args>
-    Observer* make_observer(Args&&... args);
+    template <typename Observer, typename... Args>
+    std::shared_ptr<Observer> make_observer(Args&&... args);
     
     /**
     @brief removes the associated observer
     */
-    void remove_observer();
+    template <typename Observer>
+    void remove_observer(std::shared_ptr<Observer> observer);
 
+    /**
+    @brief queries the number of observers
+    */
+    size_t num_observers() const;
 
   private:
     
@@ -227,12 +242,18 @@ class Executor {
     std::atomic<size_t> _num_thieves[NUM_DOMAINS];
     std::atomic<bool>   _done {0};
     
-    std::unique_ptr<ExecutorObserverInterface> _observer;
+    std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
+
+    ObserverInterface* _default_observer;
     
     PerThread& _per_thread() const;
 
     bool _wait_for_task(Worker&, Node*&);
     
+    void _instantiate_default_observer();
+    void _flush_default_observer();
+    void _observer_prologue(Worker&, Node*);
+    void _observer_epilogue(Worker&, Node*);
     void _spawn(size_t, Domain);
     void _worker_loop(Worker&);
     void _exploit_task(Worker&, Node*&);
@@ -241,15 +262,15 @@ class Executor {
     void _schedule(PassiveVector<Node*>&);
     void _invoke(Worker&, Node*);
     void _invoke_static_work(Worker&, Node*);
-    void _invoke_dynamic_work(Worker&, Node*, Subflow&);
-    void _invoke_condition_work(Worker&, Node*, int&);
+    void _invoke_dynamic_work(Worker&, Node*, bool&);
+    void _invoke_condition_work(Worker&, Node*);
+    void _invoke_module_work(Worker&, Node*, bool&);
 
 #ifdef TF_ENABLE_CUDA
     void _invoke_cudaflow_work(Worker&, Node*);
     void _invoke_cudaflow_work_impl(Worker&, Node*);
 #endif
 
-    void _set_up_module_work(Node*, bool&);
     void _set_up_topology(Topology*);
     void _tear_down_topology(Topology**); 
     void _increment_topology();
@@ -296,6 +317,9 @@ inline Executor::Executor(size_t N, size_t M) :
 
   _spawn(N, HOST);
   _spawn(M, CUDA);
+
+  // initiate the observer if requested
+  _instantiate_default_observer();
 }
 
 #else
@@ -318,6 +342,9 @@ inline Executor::Executor(size_t N) :
   }
 
   _spawn(N, HOST);
+
+  // instantite the default observer if requested
+  _instantiate_default_observer();
 }
 #endif
 
@@ -339,6 +366,7 @@ inline Executor::~Executor() {
   } 
   
 #ifdef TF_ENABLE_CUDA  
+  // clean up the cuda streams
   for(size_t i=0; i<_cuda_devices.size(); ++i) {
     cudaScopedDevice ctx(i);
     for(size_t m=0; m<_cuda_devices[i].streams.size(); ++m) {
@@ -346,6 +374,53 @@ inline Executor::~Executor() {
     }
   }
 #endif
+  
+  // flush the default observer
+  _flush_default_observer();
+}
+
+// Procedure: _instantiate_default_observer
+inline void Executor::_instantiate_default_observer() {
+
+  // TF_OBSERVER_TYPE
+  auto env = std::getenv("TF_OBSERVER_TYPE");
+
+  if(env) {
+    auto type = static_cast<ObserverType>(std::atoi(env));
+
+    switch(type) {
+      case CHROME_TRACING_OBSERVER:
+        _default_observer = make_observer<ChromeTracingObserver>().get();
+      break;
+
+      case TASKFLOW_BOARD_OBSERVER:
+        _default_observer = make_observer<TaskflowBoardObserver>().get();
+      break;
+
+      default:
+        TF_THROW("unsupported observer type id: ", type);
+      break;
+    }
+  }
+  else {
+    _default_observer = nullptr;
+  }
+}
+
+// Procedure: _flush_default_observer
+inline void Executor::_flush_default_observer() {
+  if(_default_observer) {
+    const char* env = std::getenv("TF_OBSERVER_FILE");
+    if(env) {
+      char buf[4096];
+      std::sprintf(buf, "%s_%p.tfb", env, this);
+      std::ofstream ofs(buf);
+      _default_observer->dump(ofs);
+    }
+    else {
+      _default_observer->dump(std::cout);
+    }
+  }
 }
 
 // Function: num_workers
@@ -626,17 +701,38 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
 // Function: make_observer    
 template<typename Observer, typename... Args>
-Observer* Executor::make_observer(Args&&... args) {
+std::shared_ptr<Observer> Executor::make_observer(Args&&... args) {
+
+  static_assert(
+    std::is_base_of<ObserverInterface, Observer>::value,
+    "Observer must be derived from ObserverInterface"
+  );
+  
   // use a local variable to mimic the constructor 
-  auto tmp = std::make_unique<Observer>(std::forward<Args>(args)...);
-  tmp->set_up(_workers.size());
-  _observer = std::move(tmp);
-  return static_cast<Observer*>(_observer.get());
+  auto ptr = std::make_shared<Observer>(std::forward<Args>(args)...);
+  
+  ptr->set_up(_workers.size());
+
+  _observers.emplace(std::static_pointer_cast<ObserverInterface>(ptr));
+
+  return ptr;
 }
 
 // Procedure: remove_observer
-inline void Executor::remove_observer() {
-  _observer.reset();
+template <typename Observer>
+void Executor::remove_observer(std::shared_ptr<Observer> ptr) {
+  
+  static_assert(
+    std::is_base_of<ObserverInterface, Observer>::value,
+    "Observer must be derived from ObserverInterface"
+  );
+
+  _observers.erase(std::static_pointer_cast<ObserverInterface>(ptr));
+}
+
+// Function: num_observers
+inline size_t Executor::num_observers() const {
+  return _observers.size();
 }
 
 // Procedure: _schedule
@@ -751,96 +847,34 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       _invoke_static_work(worker, node);
     } 
     break;
+
     // module task
     case Node::MODULE_WORK: {
       bool first_time = !node->_has_state(Node::SPAWNED);
       bool emptiness  = false;
-      _set_up_module_work(node, emptiness);
+      _invoke_module_work(worker, node, emptiness);
       if(first_time && !emptiness) {
         return;
       }
     }
     break;
+
     // dynamic task
     case Node::DYNAMIC_WORK: {
-
       // Need to create a subflow if it is the first time entering here
       if(!node->_has_state(Node::SPAWNED)) {
-        
-        auto& subgraph = nstd::get<Node::DynamicWork>(node->_handle).subgraph;
-
-        subgraph.clear();
-        Subflow fb(subgraph); 
-
-        _invoke_dynamic_work(worker, node, fb);
-
-        node->_set_state(Node::SPAWNED);
-
-        if(!subgraph.empty()) {
-
-          PassiveVector<Node*> src; 
-
-          for(auto n : subgraph._nodes) {
-
-            n->_topology = node->_topology;
-            n->_set_up_join_counter();
-            
-            if(!fb.detached()) {
-              n->_parent = node;
-            }
-
-            if(n->num_dependents() == 0) {
-              src.push_back(n);
-            }
-          }
-
-          const bool join = fb.joined();
-          if(!join) {
-            // Detach mode
-            node->_topology->_join_counter.fetch_add(src.size());         
-          }
-          else {
-            // Join mode
-            node->_join_counter.fetch_add(src.size());
-
-            // spawned node needs another second-round execution
-            c.fetch_add(1);
-          }
-
-          _schedule(src);
-
-          if(join) {
-            return;
-          }
-        } // End of first time 
+        bool join = false;
+        _invoke_dynamic_work(worker, node, join);
+        if(join) {
+          return;
+        }
       }
     }
     break;
+
     // condition task
     case Node::CONDITION_WORK: {
-
-      if(node->_has_state(Node::BRANCH)) {
-        node->_join_counter = node->num_strong_dependents();
-      }
-      else {
-        node->_join_counter = node->num_dependents();
-      }
-      
-      int id;
-      _invoke_condition_work(worker, node, id);
-
-      if(id >= 0 && static_cast<size_t>(id) < num_successors) {
-        auto s = node->_successors[id];
-        s->_join_counter.store(0);
-
-        if(s->domain() == worker.domain) {
-          _schedule(s, true);
-        }
-        else {
-          c.fetch_add(1);
-          _schedule(s, false);
-        }
-      }
+      _invoke_condition_work(worker, node);
       return ;
     }  // no need to add a break here due to the immediate return
 
@@ -896,60 +930,120 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   }
 }
 
+// Procedure: _observer_prologue
+inline void Executor::_observer_prologue(Worker& worker, Node* node) {
+  for(auto& observer : _observers) {
+    observer->on_entry(worker.id, TaskView(node));
+  }
+}
+
+// Procedure: _observer_epilogue
+inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
+  for(auto& observer : _observers) {
+    observer->on_exit(worker.id, TaskView(node));
+  }
+}
+
 // Procedure: _invoke_static_work
 inline void Executor::_invoke_static_work(Worker& worker, Node* node) {
-  if(_observer) {
-    _observer->on_entry(worker.id, TaskView(node));
-    nstd::get<Node::StaticWork>(node->_handle).work();
-    _observer->on_exit(worker.id, TaskView(node));
-  }
-  else {
-    nstd::get<Node::StaticWork>(node->_handle).work();
-  }
+  _observer_prologue(worker, node);
+  nstd::get<Node::StaticWork>(node->_handle).work();
+  _observer_epilogue(worker, node);
 }
 
 // Procedure: _invoke_dynamic_work
-inline void Executor::_invoke_dynamic_work(Worker& worker, Node* node, Subflow& sf) {
-  if(_observer) {
-    _observer->on_entry(worker.id, TaskView(node));
-    nstd::get<Node::DynamicWork>(node->_handle).work(sf);
-    _observer->on_exit(worker.id, TaskView(node));
+inline void Executor::_invoke_dynamic_work(Worker& worker, Node* node, bool& join) {
+
+  _observer_prologue(worker, node);
+    
+  auto& subgraph = nstd::get<Node::DynamicWork>(node->_handle).subgraph;
+
+  subgraph.clear();
+  Subflow fb(subgraph); 
+
+  nstd::get<Node::DynamicWork>(node->_handle).work(fb);
+
+  node->_set_state(Node::SPAWNED);
+
+  if(!subgraph.empty()) {
+
+    PassiveVector<Node*> src; 
+
+    for(auto n : subgraph._nodes) {
+
+      n->_topology = node->_topology;
+      n->_set_up_join_counter();
+      
+      if(!fb.detached()) {
+        n->_parent = node;
+      }
+
+      if(n->num_dependents() == 0) {
+        src.push_back(n);
+      }
+    }
+
+    join = fb.joined();
+
+    if(!join) {  // Detach mode
+      node->_topology->_join_counter.fetch_add(src.size());         
+    }
+    else {       // Join mode (spawned nodes need second-round execution
+      node->_join_counter.fetch_add(src.size());
+
+      node->_parent ? node->_parent->_join_counter.fetch_add(1) :
+                      node->_topology->_join_counter.fetch_add(1);
+    }
+
+    _schedule(src);
   }
-  else {
-    nstd::get<Node::DynamicWork>(node->_handle).work(sf);
-  }
+  
+  _observer_epilogue(worker, node);
 }
 
 // Procedure: _invoke_condition_work
-inline void Executor::_invoke_condition_work(Worker& worker, Node* node, int& id) {
-  if(_observer) {
-    _observer->on_entry(worker.id, TaskView(node));
-    id = nstd::get<Node::ConditionWork>(node->_handle).work();
-    _observer->on_exit(worker.id, TaskView(node));
+inline void Executor::_invoke_condition_work(Worker& worker, Node* node) {
+
+  _observer_prologue(worker, node);
+  
+  if(node->_has_state(Node::BRANCH)) {
+    node->_join_counter = node->num_strong_dependents();
   }
   else {
-    id = nstd::get<Node::ConditionWork>(node->_handle).work();
+    node->_join_counter = node->num_dependents();
   }
+  
+  auto id = nstd::get<Node::ConditionWork>(node->_handle).work();
+
+  if(id >= 0 && static_cast<size_t>(id) < node->num_successors()) {
+    auto s = node->_successors[id];
+    s->_join_counter.store(0);
+
+    if(s->domain() == worker.domain) {
+      _schedule(s, true);
+    }
+    else {
+      node->_parent ? node->_parent->_join_counter.fetch_add(1) :
+                      node->_topology->_join_counter.fetch_add(1);
+      _schedule(s, false);
+    }
+  }
+
+  _observer_epilogue(worker, node);
 }
 
 #ifdef TF_ENABLE_CUDA
 // Procedure: _invoke_cudaflow_work
 inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
-
-  assert(worker.domain == node->domain());
-
-  if(_observer) {
-    _observer->on_entry(worker.id, TaskView(node));
-    _invoke_cudaflow_work_impl(worker, node);
-    _observer->on_exit(worker.id, TaskView(node));
-  }
-  else {
-    _invoke_cudaflow_work_impl(worker, node);
-  }
+  _observer_prologue(worker, node);  
+  _invoke_cudaflow_work_impl(worker, node);
+  _observer_epilogue(worker, node);
 }
 
 // Procedure: _invoke_cudaflow_work_impl
 inline void Executor::_invoke_cudaflow_work_impl(Worker& w, Node* node) {
+  
+  assert(w.domain == node->domain());
 
   auto& h = nstd::get<Node::cudaFlowWork>(node->_handle);
 
@@ -997,13 +1091,15 @@ inline void Executor::_invoke_cudaflow_work_impl(Worker& w, Node* node) {
 }
 #endif
 
-// Procedure: _set_up_module_work
-inline void Executor::_set_up_module_work(Node* node, bool& ept) {
+// Procedure: _invoke_module_work
+inline void Executor::_invoke_module_work(Worker& worker, Node* node, bool& ept) {
 
   // second time to enter this context
   if(node->_has_state(Node::SPAWNED)) {
     return;
   }
+  
+  _observer_prologue(worker, node);
   
   // first time to enter this context
   node->_set_state(Node::SPAWNED);
@@ -1039,6 +1135,8 @@ inline void Executor::_set_up_module_work(Node* node, bool& ept) {
   
   // src can't be empty (banned outside)
   _schedule(src);
+  
+  _observer_epilogue(worker, node);  
 }
 
 // Function: run

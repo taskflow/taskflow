@@ -36,6 +36,8 @@ int main(){
   // dump the execution timeline to json (view at chrome://tracing)
   observer->dump(std::cout);
 
+  executor.remove_observer(observer);
+
   return 0;
 }
 

@@ -21,10 +21,13 @@ To download the newest version of Cpp-Taskflow, please clone from <a href="https
 @li adding per-thread stream to avoid synchronizing with the default stream in running a %cudaFlow
 @li adding tf::cudaFlow::repeat and tf::cudaFlow::predicate for iterative execution of a %cudaFlow
 @li adding @ref Examples pages
+@li making observer a std::shared_ptr object
+@li enabling multiple observers to coexit in an executor
 
 @section master-branch_bug_fixes Bug Fixes 
 
 @li fixed the bug in assigning the block pointer before constructor of an object in object pool 
+@li fixed the namespace conflicting in using MPark.Variant from upstream code
 
 @section master-branch_deprecated_items Deprecated Items 
 

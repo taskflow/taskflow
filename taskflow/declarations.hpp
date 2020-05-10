@@ -16,6 +16,10 @@ class TaskView;
 class Taskflow;
 class Topology;
 class Executor;
+class WorkerView;
+class ObserverInterface;
+class ChromeTracingObserver;
+class TaskflowBoardObserver;
 
 // cudaflow
 class cudaNode;
