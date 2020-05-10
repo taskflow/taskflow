@@ -48,11 +48,11 @@ var state = {
   barYScale: d3.scaleLinear(),
   barXAxis: d3.axisBottom(),
   barYAxis: d3.axisLeft(),
-  barHeight: 400,
+  barHeight: 350,
   barWidth: window.innerWidth,
   barLeftMargin: 100,
   barRightMargin: 100,
-  barTopMargin: 30,
+  barTopMargin: 20,
   barBottomMargin: 100,
 
   // axes attributes
@@ -94,25 +94,11 @@ var state = {
   // data field
   completeStructData: [],       // groups and lines
   completeFlatData: [],         // flat segments with gropu and line
+  completeBarData: [],        // bar char data
   structData: null,
   flatData: null,
   totalNLines: 0,
   nLines: 0
-};
-
-d3.selection.prototype.moveToFront = function() {
-      return this.each(function(){
-        this.parentNode.appendChild(this);
-      });
-    };
-
-d3.selection.prototype.moveToBack = function() {
-    return this.each(function() {
-        var firstChild = this.parentNode.firstChild;
-        if (firstChild) {
-            this.parentNode.insertBefore(this, firstChild);
-        }
-    });
 };
 
 // Procedure: make_tfp_structure
@@ -124,12 +110,6 @@ function make_tfp_structure(dom_element) {
 
   // main svg
   state.svg = state.dom.append('svg');
-  
-  // overview svg
-  state.overviewAreaSvg = state.dom.append('div').append('svg').attr('class', 'brusher');
-
-  // bar svg
-
 
   //console.log("_make_tfp_structure");
     
@@ -157,7 +137,7 @@ function feed(rawData) {
   state.maxX  = null;
   state.completeStructData = [];
   state.completeFlatData = [];
-  state.completeTableData = [];
+  state.completeBarData = [];
   state.totalNLines = 0;
 
   // iterate executor
@@ -222,7 +202,7 @@ function feed(rawData) {
         }
       }
 
-      state.completeTableData.push({
+      state.completeBarData.push({
         "group": group,
         "label": rawData[i].data[j].label,
         "tasks": rawData[i].data[j].data.length,
@@ -238,135 +218,18 @@ function feed(rawData) {
     }
   }
 
-  //console.log("total", state.totalNLines, " lines");
-  console.log(state.completeTableData)
-  
+  //state.completeBarData.sort((a, b) => {
+  //  return b.busy - a.busy;
+  //});
+
   // static data fields
   state.overviewAreaDomain = [state.minX, state.maxX];
 
   // update all dynamic fields
   update([state.minX, state.maxX], [null, null]);
   
-  
   // update the bar chart fields
-  var options = d3.select("#tfp-sel-executor").selectAll("option")
-		.data(['default (all)', ...rawData.map(d=>d.group)])
-
-  options.exit().remove();
-  options = options.merge(options.enter().append('option'))
-              .text(d=>d);
-
-  state.barXScale
-    .padding(0.5)
-    .domain(state.completeTableData.map(d=>d.label))
-    .range([state.barLeftMargin, state.barWidth-state.barRightMargin]);
-  
-  state.barYScale
-    .domain([0, d3.max(state.completeTableData, d=>d.busy)])
-    .range([state.barHeight - state.barBottomMargin, state.barTopMargin]);
-
-  console.log("barYScale", state.barYScale.domain(), state.barYScale.range());
-
-  state.barXAxis.scale(state.barXScale).tickSizeOuter(0);
-  state.barYAxis.scale(state.barYScale).tickSize(-state.barWidth+state.barLeftMargin +state.barRightMargin);
-
-  state.barSvg.select('g.tfp-bar-x-axis')
-    .attr('transform', `translate(0, ${state.barHeight - state.barBottomMargin})`)
-    .transition().duration(state.transDuration)
-      .call(state.barXAxis)
-    .selectAll("text")
-      .attr("y", 0)
-      .attr("x", -40)
-      .attr("dy", ".35em")
-      .attr("transform", "rotate(-90)");
-
-  state.barSvg.select('g.tfp-bar-y-axis')
-    .attr('transform', `translate(${state.barLeftMargin}, 0)`)
-    .transition().duration(state.transDuration)
-      .call(state.barYAxis)
-
-  var keys = ['static task', 'dynamic task', 'cudaflow', 'condition task', 'module task'];
-  var stacked_data = d3.stack().keys(keys)(state.completeTableData);
-
-  console.log(stacked_data)
-
-  var l1 = state.barSvg.select('g.tfp-bar-graph')
-    .selectAll('g')
-    .data(stacked_data);
-
-  l1.exit().remove();
-  l1 = l1.enter().append('g').merge(l1).attr("fill", d => state.zColorMap.get(d.key));
-
-  var l2 = l1.selectAll("rect").data(d=>d);
-
-  l2.exit().remove(); 
-  //l2.enter().append("rect").merge(l2)
-  //  .transition().duration(state.transDuration)
-  //  .attr('rx', 1)
-  //  .attr('ry', 1)
-  //  .attr('x', d => state.barXScale(d.data.label))
-  //  .attr('y', d => state.barYScale(d[1]))
-  //  .attr('height', d => state.barYScale(d[0]) - state.barYScale(d[1]))
-  //  .attr('width', state.barXScale.bandwidth());
-
-  var newbars = l2.enter().append("rect")
-    .attr('width', 0)
-    .attr('height', 0)
-    .attr('x', 0)
-    .attr('y', 0)
-    .style('fill-opacity', 0.8)
-    .on('mouseover.barTooltip', state.barTooltip.show)
-    .on('mouseout.barTooltip', state.barTooltip.hide);
-    
-  newbars
-    .on('mouseover', function() {
-
-      if (state.disableHover) { return; }
-
-      //MoveToFront()(this);
-      d3.select(this).moveToFront();
-
-      //const hoverEnlarge = state.lineHeight*hoverEnlargeRatio;
-
-      const hoverEnlarge = state.barXScale.bandwidth()*0.01;
-
-      //  const x = state.barXScale(d.data.label);
-      //  const y = state.barYScale(d[1]);
-      //  const w = state.barXScale.bandwidth();
-      //  const h = state.barYScale(d[0]) - state.barYScale(d[1]);
-      d3.select(this).moveToFront()
-        .transition().duration(250)
-        .attr('x', function(d) {
-          return state.barXScale(d.data.label)-hoverEnlarge/2; 
-        })
-        .attr('width', state.barXScale.bandwidth() + hoverEnlarge)
-        .attr('y', function(d) {
-          return state.barYScale(d[1]) - hoverEnlarge/2;
-        })
-        .attr('height', function(d) {
-          return state.barYScale(d[0]) - state.barYScale(d[1]) + hoverEnlarge;
-        })
-        .style('fill-opacity', 1);
-    })
-    .on('mouseout', function() {
-      d3.select(this).moveToBack()
-        .transition().duration(250)
-        .attr('width', d => state.barXScale.bandwidth())
-        .attr('height', d => state.barYScale(d[0]) - state.barYScale(d[1]))
-        .attr('x', d => state.barXScale(d.data.label))
-        .attr('y', d => state.barYScale(d[1]))
-        .style('fill-opacity', 0.8);
-    })
-
-
-  l2.merge(newbars)
-    .transition().duration(state.transDuration)
-    .attr('rx', 1)
-    .attr('ry', 1)
-    .attr('x', d => state.barXScale(d.data.label))
-    .attr('y', d => state.barYScale(d[1]))
-    .attr('height', d => state.barYScale(d[0]) - state.barYScale(d[1]))
-    .attr('width', state.barXScale.bandwidth());
+  update_bar(null, null);
 }
 
 // Procedure: update
@@ -404,6 +267,144 @@ function update(zoomX, zoomY) {
   _render_overview_area();
 }
 
+function update_bar(selexe, seltask) {
+
+  var exeopt = d3.select("#tfp-bar-sel-executor").selectAll("option")
+		.data(['executor (all)', ...state.structData.map(d=>d.group)])
+
+  exeopt.exit().remove();
+  exeopt = exeopt.merge(exeopt.enter().append('option')).text(d=>d);
+
+  if(selexe == null) {
+    d3.select('#tfp-bar-sel-executor').node().options[0].selected = true; 
+  }
+  if(seltask == null) {
+    d3.select('#tfp-bar-sel-task-type').node().options[0].selected = true;
+  }
+
+  var data;
+  
+  //console.log("complete data", state.completeBarData, selexe, seltask);
+
+  // filter executor
+  data = state.completeBarData.filter( d => {
+    return (selexe == null  || d.group == selexe);
+  });
+  
+  // filter task type
+  const keys = (seltask == null) ? Array.from(state.zColorMap.keys()) : [seltask];
+
+  //console.log("keys", keys)
+
+  var stacked_data = d3.stack().keys(keys)(data);
+
+  const ymax = (seltask != null) ?  
+    d3.max(stacked_data[0], d=>d[1]) : d3.max(data, d=>d.busy)
+
+  //console.log(stacked_data)
+  //console.log("filtered data", data);
+
+  state.barXScale.padding(0.5)
+    .domain(data.map(d=>`${d.group}+&+${d.label}`))
+    .range([state.barLeftMargin, state.barWidth-state.barRightMargin]);
+  
+  state.barYScale
+    .domain([0, ymax])
+    .range([state.barHeight - state.barBottomMargin, state.barTopMargin]);
+  
+  //let maxChars = Math.ceil(state.rightMargin/(14/Math.SQRT2));
+
+  state.barXAxis.scale(state.barXScale)
+    .tickSizeOuter(0)
+    .tickFormat(d => d.split('+&+')[1]);
+  
+  state.barYAxis.scale(state.barYScale)
+    .tickSize(-state.barWidth+state.barLeftMargin +state.barRightMargin);
+
+  state.barSvg.select('g.tfp-bar-x-axis')
+    .attr('transform', `translate(0, ${state.barHeight - state.barBottomMargin})`)
+    .transition().duration(state.transDuration)
+      .call(state.barXAxis)
+    .selectAll("text")
+      .attr("y", 0)
+      .attr("x", -50)
+      .attr("dy", ".35em")
+      .attr("transform", "rotate(-90)");
+
+  state.barSvg.select('g.tfp-bar-y-axis')
+    .attr('transform', `translate(${state.barLeftMargin}, 0)`)
+    .transition().duration(state.transDuration)
+      .call(state.barYAxis);
+
+  var l1 = state.barSvg.select('g.tfp-bar-graph')
+    .selectAll('g')
+    .data(stacked_data);
+
+  l1.exit().remove();
+  l1 = l1.enter().append('g').merge(l1).attr("fill", d => state.zColorMap.get(d.key));
+
+  var l2 = l1.selectAll("rect").data(d=>d);
+
+  l2.exit().remove(); 
+
+  var newbars = l2.enter().append("rect")
+    .attr('width', 0)
+    .attr('height', 0)
+    .attr('x', 0)
+    .attr('y', 0)
+    .style('fill-opacity', 0.8)
+    .on('mouseover.barTooltip', state.barTooltip.show)
+    .on('mouseout.barTooltip', state.barTooltip.hide);
+    
+  newbars
+    .on('mouseover', function() {
+
+      if (state.disableHover) { return; }
+
+      //MoveToFront()(this);
+      //const hoverEnlarge = state.lineHeight*hoverEnlargeRatio;
+
+      const hoverEnlarge = state.barXScale.bandwidth()*0.02;
+
+      //  const x = state.barXScale(d.data.label);
+      //  const y = state.barYScale(d[1]);
+      //  const w = state.barXScale.bandwidth();
+      //  const h = state.barYScale(d[0]) - state.barYScale(d[1]);
+      d3.select(this)
+        .transition().duration(250)
+        .attr('x', function(d) {
+          return state.barXScale(`${d.data.group}+&+${d.data.label}`)-hoverEnlarge/2; 
+        })
+        .attr('width', state.barXScale.bandwidth() + hoverEnlarge)
+        .attr('y', function(d) {
+          return state.barYScale(d[1]) - hoverEnlarge/2;
+        })
+        .attr('height', function(d) {
+          return state.barYScale(d[0]) - state.barYScale(d[1]) + hoverEnlarge;
+        })
+        .style('fill-opacity', 1);
+    })
+    .on('mouseout', function() {
+      d3.select(this)
+        .transition().duration(250)
+        .attr('width', d => state.barXScale.bandwidth())
+        .attr('height', d => state.barYScale(d[0]) - state.barYScale(d[1]))
+        .attr('x', d => state.barXScale(`${d.data.group}+&+${d.data.label}`))
+        .attr('y', d => state.barYScale(d[1]))
+        .style('fill-opacity', 0.8);
+    })
+
+
+  l2.merge(newbars)
+    .transition().duration(state.transDuration)
+    .attr('rx', 1)
+    .attr('ry', 1)
+    .attr('x', d => state.barXScale(`${d.data.group}+&+${d.data.label}`))
+    .attr('y', d => state.barYScale(d[1]))
+    .attr('height', d => state.barYScale(d[0]) - state.barYScale(d[1]))
+    .attr('width', state.barXScale.bandwidth());
+}
+
 // ----------------------------------------------------------------------------
 // private function definitions
 // ----------------------------------------------------------------------------
@@ -435,6 +436,7 @@ function _invertOrdinal(val, cmpFunc) {
 }
   
 function _make_tfp_gradient_field() {  
+
   //console.log("making gradient ...");
   state.groupGradId = `areaGradient${Math.round(Math.random()*10000)}`;
   const gradient = state.svg.append('linearGradient');
@@ -466,17 +468,18 @@ function _make_tfp_date_marker_line() {
 // Procedure: _make_tfp_overview
 function _make_tfp_overview() {
   //console.log("making the overview ...");
+  
+  // overview svg
+  state.overviewAreaSvg = state.dom.append('div').append('svg').attr('class', 'brusher');
 
   state.overviewAreaBrush
     .handleSize(24)
     .on('end', function() {
       
       //console.log("ON 'end': brush ends by source", d3.event.sourceEvent);
-
       if (!d3.event.sourceEvent) {
         return;
       }
-
       //console.log("    -> type:", d3.event.sourceEvent.type);
 
       const selection = d3.event.selection ? 
@@ -498,39 +501,44 @@ function _make_tfp_overview() {
   brusher.append('g').attr('class', 'x-grid');
   brusher.append('g').attr('class', 'x-axis');
   brusher.append('g').attr('class', 'brush');
-        
-  //state.svg.on('zoomScent', function() {
-
-  //  const zoomX = d3.event.detail.zoomX;
-
-  //  if (!zoomX) return;
-
-  //  // Out of overview bounds > extend it
-  //  if (zoomX[0]<state.overviewArea.domainRange()[0] || zoomX[1]>state.overviewArea.domainRange()[1]) {
-  //    console.log("can this happen?");
-  //    state.overviewArea.domainRange([
-  //      new Date(Math.min(zoomX[0], state.overviewArea.domainRange()[0])),
-  //      new Date(Math.max(zoomX[1], state.overviewArea.domainRange()[1]))
-  //    ]);
-  //  }
-
-  //  state.overviewArea.currentSelection(zoomX);
-
-  //  console.log("on ZoomScent");
-  //});
 }
 
 // Procedure: _make_tfp_bar
 function _make_tfp_bar() {
   
-  const barDiv = state.dom.append('div');
+  const barDiv = state.dom.append('div').attr('class', 'mt-4');
+  const selDiv = barDiv.append('div').style('margin-left', `${state.barLeftMargin}px`)
+
+  const exeSel = selDiv
+    .append('select')
+    .attr('id', 'tfp-bar-sel-executor')
+    .attr('class', 'btn-secondary')
+    .on('change', function() {
+      const tt = d3.select("#tfp-bar-sel-task-type").node().value;
+      update_bar(
+        this.value === 'executor (all)' ? null : this.value,
+        tt === 'task type (all)' ? null : tt
+      );
+    });
+
+  selDiv.append('select')
+    .attr('id', 'tfp-bar-sel-task-type')
+    .attr('class', 'ml-2 btn-secondary')
+    .on('change', function() {
+      const exe = d3.select('#tfp-bar-sel-executor').node().value;
+      update_bar(
+        exe === 'executor (all)' ? null : exe,
+        this.value === 'task type (all)' ? null : this.value
+      );
+    })
+    .selectAll('option')
+    .data(['task type (all)', ... Array.from(state.zColorMap.keys())])
+    .enter().append('option')
+    .text(d=>d);
 
   state.barSvg = barDiv.append('svg')
     .attr('width', state.barWidth)
     .attr('height', state.barHeight);
-
-  barDiv.append('div').attr('style', 'ml-4')
-    .append('select').attr('id', 'tfp-sel-executor');
 
   state.barSvg.append('g').attr('class', 'tfp-bar-x-axis');
   state.barSvg.append('g').attr('class', 'tfp-bar-y-axis');
@@ -749,8 +757,8 @@ function _make_tfp_tooltips() {
     .html(d => {
       return `Type: ${d.val}<br>
               Name: ${d.name}<br>
-              Time: [${d.timeRange}]<br>
-              Span: ${d.timeRange[1]-d.timeRange[0]}`;
+              Span: [${d.timeRange}]<br>
+              Time: ${d.timeRange[1]-d.timeRange[0]}`;
     });
 
   state.svg.call(state.segmentTooltip);
@@ -761,10 +769,11 @@ function _make_tfp_tooltips() {
     .direction('w')
     .offset([0, -5])
     .html(d => {
-      const t = d[1] - d[0];
-      const p = ((t / d.data.busy)*100).toFixed(2);
-      return `Total Time: ${t}<br>
-              Percentage: ${p}%`;
+      //const p = ((d[1]-d[0]) * 100 / (state.maxX - state.minX)).toFixed(2);
+      return `${d.data.group}<br>
+        ${d.data.label}<br>
+        Span: [${d[0]}, ${d[1]}]<br>
+        Time: ${d[1]-d[0]}`;
     });
 
   state.svg.call(state.barTooltip);
@@ -933,11 +942,11 @@ function _adjust_grpscale() {
 // Procedure: _adjust_legend
 function _adjust_legend() {
   //console.log("adjusting legend ...");
-  state.resetBtn.transition().duration(state.transDuration)
+  state.resetBtn//.transition().duration(state.transDuration)
     .attr('x', state.leftMargin + state.graphW*.99)
     .attr('y', state.topMargin *.8);
   
-  state.zGroup.transition().duration(state.transDuration)
+  state.zGroup//.transition().duration(state.transDuration)
     .attr('transform', `translate(${state.leftMargin}, ${state.topMargin * .1})`);
 }
 
@@ -964,7 +973,7 @@ function _render_axes() {
   state.svg.select('g.x-axis')
     .style('stroke-opacity', 0)
     .style('fill-opacity', 0)
-    .attr('transform', 'translate(0,' + state.graphH + ')')
+    .attr('transform', `translate(0, ${state.graphH})`)
     .transition().duration(state.transDuration)
       .call(state.xAxis)
       .style('stroke-opacity', 1)
@@ -978,7 +987,7 @@ function _render_axes() {
 
   state.xGrid.tickSize(state.graphH);
   state.svg.select('g.x-grid')
-    .attr('transform', 'translate(0,' + state.graphH + ')')
+    .attr('transform', `translate(0, ${state.graphH})`)
     .transition().duration(state.transDuration)
     .call(state.xGrid);
 
@@ -1043,13 +1052,7 @@ function _render_axes() {
   //    });
   //}
 
-  function reduceLabel(label, maxChars) {
-    return label.length <= maxChars ? label : (
-      label.substring(0, maxChars*2/3)
-      + '...'
-      + label.substring(label.length - maxChars/3, label.length
-    ));
-  }
+
 }
 
 // Procedure: _render_groups
@@ -1111,13 +1114,13 @@ function _render_timelines(maxElems) {
   let timelines = state.graph.selectAll('rect.series-segment').data(
     //state.flatData.filter(dataFilter),
     state.completeFlatData.filter(dataFilter),
-    d => d.group + d.label + d.timeRange[0]
+    d => d.group + d.label + d.val + d.timeRange[0]
   );
 
-  timelines.exit()
-    .transition().duration(state.transDuration)
-    .style('fill-opacity', 0)
-    .remove();
+  timelines.exit().remove();
+    //.transition().duration(state.transDuration)
+    //.style('fill-opacity', 0)
+    //.remove();
 
   const newSegments = timelines.enter().append('rect')
     .attr('class', 'series-segment')
@@ -1256,6 +1259,14 @@ function _render_overview_area()  {
 function num_xticks(W) {
   return Math.max(2, Math.min(12, Math.round(W * 0.012)));
 }
+  
+function reduceLabel(label, maxChars) {
+  return label.length <= maxChars ? label : (
+    label.substring(0, maxChars*2/3)
+    + '...'
+    + label.substring(label.length - maxChars/3, label.length
+  ));
+}
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -1334,10 +1345,16 @@ function tfp_render_dreamplace() {
 
 // ----------------------------------------------------------------------------
 
-
-
 // DOM objects
 make_tfp_structure();
 
 tfp_render_simple();
+
+
+
+
+
+
+
+
 
