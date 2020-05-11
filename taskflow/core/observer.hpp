@@ -298,11 +298,6 @@ class TFProfObserver : public ObserverInterface {
   public:
     
     /**
-    @brief constructs a tfprof observer with an output file prefix
-    */
-    TFProfObserver(const std::string&);
-
-    /**
     @brief dump the timelines in JSON format to an ostream
     @param ostream the target std::ostream to dump
     */
@@ -333,7 +328,7 @@ class TFProfObserver : public ObserverInterface {
 
     Timeline _timeline;
 
-    std::ostringstream _ofile_prefix;
+    UUID _uuid;
 };  
 
 // constructor
@@ -353,11 +348,6 @@ inline TFProfObserver::Segment::Segment(
   std::chrono::time_point<std::chrono::steady_clock> e
 ) :
   name {n}, type {t}, beg {b}, end {e} {
-}
-
-// Constructor
-inline TFProfObserver::TFProfObserver(const std::string& p) : 
-  _ofile_prefix {p} {
 }
 
 // Procedure: set_up
@@ -409,7 +399,7 @@ inline void TFProfObserver::dump(std::ostream& os) const {
     return;
   }
 
-  os << "{\"executor\":\"executor-" << this << "\",\"data\":[";
+  os << "{\"executor\":\"" << _uuid << "\",\"data\":[";
 
   for(size_t w=first; w<_timeline.segments.size(); w++) {
 

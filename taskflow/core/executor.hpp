@@ -382,24 +382,18 @@ inline Executor::~Executor() {
 // Procedure: _instantiate_tfprof
 inline void Executor::_instantiate_tfprof() {
   // TF_OBSERVER_TYPE
-  auto env = std::getenv("TF_ENABLE_PROFILER");
-  _tfprof = env ? make_observer<TFProfObserver>(env).get() : nullptr;
+  _tfprof = std::getenv("TF_ENABLE_PROFILER") ? 
+    make_observer<TFProfObserver>().get() : nullptr;
 }
 
 // Procedure: _flush_tfprof
 inline void Executor::_flush_tfprof() {
 
   if(_tfprof) {
-    //const char* env = std::getenv("TF_OBSERVER_FILE");
-    //if(env) {
-    //  char buf[4096];
-    //  std::sprintf(buf, "%s_%p.tfb", env, this);
-    //  std::ofstream ofs(buf);
-    //  _tfprof->dump(ofs);
-    //}
-    //else {
-      _tfprof->dump(std::cout);
-    //}
+    std::ostringstream fpath;
+    fpath << std::getenv("TF_ENABLE_PROFILER") << _tfprof->_uuid << ".tfp";
+    std::ofstream ofs(fpath.str());
+    _tfprof->dump(ofs);
   }
 }
 
