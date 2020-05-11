@@ -54,12 +54,6 @@ class ObserverInterface {
   @param task_view a constant wrapper object to the task
   */
   virtual void on_exit(unsigned worker_id, TaskView task_view) = 0;
-
-  /**
-  @brief method to dump the observed data
-  @param ostream the output stream to dump
-  */
-  virtual void dump(std::ostream& ostream) const = 0;
 };
 
 // ----------------------------------------------------------------------------
@@ -108,7 +102,7 @@ class ChromeTracingObserver : public ObserverInterface {
     @brief dump the timelines in JSON format to an ostream
     @param ostream the target std::ostream to dump
     */
-    inline void dump(std::ostream& ostream) const override final;
+    inline void dump(std::ostream& ostream) const;
 
     /**
     @brief dump the timelines in JSON to a std::string
@@ -259,16 +253,16 @@ inline size_t ChromeTracingObserver::num_tasks() const {
 }
 
 // ----------------------------------------------------------------------------
-// TaskflowBoardObserver definition
+// TFProfObserver definition
 // ----------------------------------------------------------------------------
 
 /**
-@class: TaskflowBoardObserver
+@class: TFProfObserver
 
 @brief observer designed based on taskflow board format
 
 */
-class TaskflowBoardObserver : public ObserverInterface {
+class TFProfObserver : public ObserverInterface {
 
   friend class Executor;
   
@@ -302,12 +296,12 @@ class TaskflowBoardObserver : public ObserverInterface {
   };  
 
   public:
-
+    
     /**
     @brief dump the timelines in JSON format to an ostream
     @param ostream the target std::ostream to dump
     */
-    inline void dump(std::ostream& ostream) const override final;
+    inline void dump(std::ostream& ostream) const;
 
     /**
     @brief dump the timelines in JSON to a std::string
@@ -333,10 +327,12 @@ class TaskflowBoardObserver : public ObserverInterface {
     inline void on_exit(unsigned worker_id, TaskView task_view) override final;
 
     Timeline _timeline;
+
+    UUID _uuid;
 };  
-    
+
 // constructor
-inline TaskflowBoardObserver::Segment::Segment(
+inline TFProfObserver::Segment::Segment(
   const std::string& n,
   TaskType t,
   std::chrono::time_point<std::chrono::steady_clock> b
@@ -345,7 +341,7 @@ inline TaskflowBoardObserver::Segment::Segment(
 } 
 
 // constructor
-inline TaskflowBoardObserver::Segment::Segment(
+inline TFProfObserver::Segment::Segment(
   const std::string& n,
   TaskType t,
   std::chrono::time_point<std::chrono::steady_clock> b,
@@ -355,7 +351,7 @@ inline TaskflowBoardObserver::Segment::Segment(
 }
 
 // Procedure: set_up
-inline void TaskflowBoardObserver::set_up(unsigned num_workers) {
+inline void TFProfObserver::set_up(unsigned num_workers) {
 
   _timeline.segments.resize(num_workers);
 
@@ -367,27 +363,27 @@ inline void TaskflowBoardObserver::set_up(unsigned num_workers) {
 }
 
 // Procedure: on_entry
-inline void TaskflowBoardObserver::on_entry(unsigned w, TaskView tv) {
+inline void TFProfObserver::on_entry(unsigned w, TaskView tv) {
   _timeline.segments[w].emplace_back(
     tv.name(), tv.type(), std::chrono::steady_clock::now()
   );
 }
 
 // Procedure: on_exit
-inline void TaskflowBoardObserver::on_exit(unsigned w, TaskView) {
+inline void TFProfObserver::on_exit(unsigned w, TaskView) {
   assert(_timeline.segments[w].size() > 0);
   _timeline.segments[w].back().end = std::chrono::steady_clock::now();
 }
 
 // Function: clear
-inline void TaskflowBoardObserver::clear() {
+inline void TFProfObserver::clear() {
   for(size_t w=0; w<_timeline.segments.size(); ++w) {
     _timeline.segments[w].clear();
   }
 }
 
 // Procedure: dump
-inline void TaskflowBoardObserver::dump(std::ostream& os) const {
+inline void TFProfObserver::dump(std::ostream& os) const {
 
   size_t first;
 
@@ -403,7 +399,7 @@ inline void TaskflowBoardObserver::dump(std::ostream& os) const {
     return;
   }
 
-  os << "{\"group\":\"executor[" << this << "]\",\"data\":[";
+  os << "{\"executor\":\"" << _uuid << "\",\"data\":[";
 
   for(size_t w=first; w<_timeline.segments.size(); w++) {
 
@@ -415,15 +411,15 @@ inline void TaskflowBoardObserver::dump(std::ostream& os) const {
       os << ',';
     }
 
-    os << "{\"label\":\"worker " << w << "\",\"data\":[";
+    os << "{\"worker\":\"worker " << w << "\",\"data\":[";
     for(size_t i=0; i<_timeline.segments[w].size(); ++i) {
 
       const auto& s = _timeline.segments[w][i];
 
       if(i) os << ',';
       
-      // timeRange 
-      os << "{\"timeRange\":[" 
+      // span 
+      os << "{\"span\":[" 
          << std::chrono::duration_cast<std::chrono::microseconds>(
               s.beg - _timeline.origin
             ).count() << ","
@@ -441,8 +437,8 @@ inline void TaskflowBoardObserver::dump(std::ostream& os) const {
       }
       os << "\",";
   
-      // category "val": "Condition Task",
-      os << "\"val\":\"" << task_type_to_string(s.type) << "\"";
+      // category "type": "Condition Task",
+      os << "\"type\":\"" << task_type_to_string(s.type) << "\"";
 
       os << "}";
     }
@@ -453,14 +449,14 @@ inline void TaskflowBoardObserver::dump(std::ostream& os) const {
 }
 
 // Function: dump
-inline std::string TaskflowBoardObserver::dump() const {
+inline std::string TFProfObserver::dump() const {
   std::ostringstream oss;
   dump(oss);
   return oss.str();
 }
 
 // Function: num_tasks
-inline size_t TaskflowBoardObserver::num_tasks() const {
+inline size_t TFProfObserver::num_tasks() const {
   return std::accumulate(
     _timeline.segments.begin(), _timeline.segments.end(), size_t{0}, 
     [](size_t sum, const auto& exe){ 
@@ -479,8 +475,8 @@ built-in observer types
 
 */
 enum ObserverType {
-  CHROME_TRACING_OBSERVER = 1,
-  TASKFLOW_BOARD_OBSERVER = 2
+  TFPROF = 1,
+  CHROME = 2
 };
 
 /**
@@ -489,9 +485,9 @@ enum ObserverType {
 const char* observer_type_to_string(ObserverType type) {
   const char* val;
   switch(type) {
-    case CHROME_TRACING_OBSERVER: val = "ChromeTracingObserver"; break;
-    case TASKFLOW_BOARD_OBSERVER: val = "TaskflowBoardObserver"; break;
-    default:                      val = "undefined";             break;
+    case TFPROF: val = "TFProf";    break;
+    case CHROME: val = "Chrome";    break;
+    default:     val = "undefined"; break;
   }
   return val;
 }
