@@ -244,14 +244,14 @@ class Executor {
     
     std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
-    ObserverInterface* _default_observer;
+    TFProfObserver* _tfprof;
     
     PerThread& _per_thread() const;
 
     bool _wait_for_task(Worker&, Node*&);
     
-    void _instantiate_default_observer();
-    void _flush_default_observer();
+    void _instantiate_tfprof();
+    void _flush_tfprof();
     void _observer_prologue(Worker&, Node*);
     void _observer_epilogue(Worker&, Node*);
     void _spawn(size_t, Domain);
@@ -319,7 +319,7 @@ inline Executor::Executor(size_t N, size_t M) :
   _spawn(M, CUDA);
 
   // initiate the observer if requested
-  _instantiate_default_observer();
+  _instantiate_tfprof();
 }
 
 #else
@@ -344,7 +344,7 @@ inline Executor::Executor(size_t N) :
   _spawn(N, HOST);
 
   // instantite the default observer if requested
-  _instantiate_default_observer();
+  _instantiate_tfprof();
 }
 #endif
 
@@ -376,50 +376,30 @@ inline Executor::~Executor() {
 #endif
   
   // flush the default observer
-  _flush_default_observer();
+  _flush_tfprof();
 }
 
-// Procedure: _instantiate_default_observer
-inline void Executor::_instantiate_default_observer() {
-
+// Procedure: _instantiate_tfprof
+inline void Executor::_instantiate_tfprof() {
   // TF_OBSERVER_TYPE
-  auto env = std::getenv("TF_OBSERVER_TYPE");
-
-  if(env) {
-    auto type = static_cast<ObserverType>(std::atoi(env));
-
-    switch(type) {
-      case CHROME_TRACING_OBSERVER:
-        _default_observer = make_observer<ChromeTracingObserver>().get();
-      break;
-
-      case TASKFLOW_BOARD_OBSERVER:
-        _default_observer = make_observer<TaskflowBoardObserver>().get();
-      break;
-
-      default:
-        TF_THROW("unsupported observer type id: ", type);
-      break;
-    }
-  }
-  else {
-    _default_observer = nullptr;
-  }
+  auto env = std::getenv("TF_ENABLE_PROFILER");
+  _tfprof = env ? make_observer<TFProfObserver>(env).get() : nullptr;
 }
 
-// Procedure: _flush_default_observer
-inline void Executor::_flush_default_observer() {
-  if(_default_observer) {
-    const char* env = std::getenv("TF_OBSERVER_FILE");
-    if(env) {
-      char buf[4096];
-      std::sprintf(buf, "%s_%p.tfb", env, this);
-      std::ofstream ofs(buf);
-      _default_observer->dump(ofs);
-    }
-    else {
-      _default_observer->dump(std::cout);
-    }
+// Procedure: _flush_tfprof
+inline void Executor::_flush_tfprof() {
+
+  if(_tfprof) {
+    //const char* env = std::getenv("TF_OBSERVER_FILE");
+    //if(env) {
+    //  char buf[4096];
+    //  std::sprintf(buf, "%s_%p.tfb", env, this);
+    //  std::ofstream ofs(buf);
+    //  _tfprof->dump(ofs);
+    //}
+    //else {
+      _tfprof->dump(std::cout);
+    //}
   }
 }
 
