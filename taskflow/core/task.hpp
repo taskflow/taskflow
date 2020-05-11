@@ -33,15 +33,15 @@ const char* task_type_to_string(TaskType type) {
   const char* val;
 
   switch(type) {
-    case PLACEHOLDER_TASK: val = "placeholder";    break;
+    case PLACEHOLDER_TASK: val = "placeholder"; break;
 #ifdef TF_ENABLE_CUDA
-    case CUDAFLOW_TASK:    val = "cudaflow";       break;
+    case CUDAFLOW_TASK:    val = "cudaflow";    break;
 #endif
-    case STATIC_TASK:      val = "static task";    break;
-    case DYNAMIC_TASK:     val = "dynamic task";   break;
-    case CONDITION_TASK:   val = "condition task"; break;
-    case MODULE_TASK:      val = "module task";    break;
-    default:               val = "undefined";      break;
+    case STATIC_TASK:      val = "static";      break;
+    case DYNAMIC_TASK:     val = "subflow";     break;
+    case CONDITION_TASK:   val = "condition";   break;
+    case MODULE_TASK:      val = "module";      break;
+    default:               val = "undefined";   break;
   }
 
   return val;

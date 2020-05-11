@@ -19,7 +19,7 @@ class Executor;
 class WorkerView;
 class ObserverInterface;
 class ChromeTracingObserver;
-class TaskflowBoardObserver;
+class TFProfObserver;
 
 // cudaflow
 class cudaNode;
