@@ -1043,7 +1043,7 @@ inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
 // Procedure: _invoke_cudaflow_work_impl
 inline void Executor::_invoke_cudaflow_work_impl(Worker& w, Node* node) {
   
-  assert(worker.domain == node->domain());
+  assert(w.domain == node->domain());
 
   auto& h = nstd::get<Node::cudaFlowWork>(node->_handle);
 

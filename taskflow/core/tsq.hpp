@@ -6,6 +6,9 @@
 #include <atomic>
 #include <vector>
 #include <cassert>
+#include <cstdint>
+#include <cstddef>
+#include <cstdlib>
 
 namespace tf {
 

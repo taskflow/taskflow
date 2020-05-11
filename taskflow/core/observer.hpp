@@ -307,7 +307,7 @@ class TaskflowBoardObserver : public ObserverInterface {
     @brief dump the timelines in JSON format to an ostream
     @param ostream the target std::ostream to dump
     */
-    inline void dump(std::ostream& ostream) const;
+    inline void dump(std::ostream& ostream) const override final;
 
     /**
     @brief dump the timelines in JSON to a std::string
