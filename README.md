@@ -4,6 +4,7 @@
 [![Linux Build Status](https://travis-ci.com/cpp-taskflow/cpp-taskflow.svg?branch=master)](https://travis-ci.com/cpp-taskflow/cpp-taskflow)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/te9bjp4yfhq7f8hq?svg=true)](https://ci.appveyor.com/project/TsungWeiHuang/cpp-taskflow)
 [![Wiki](image/api-doc.svg)][wiki]
+[![TFProf](image/tfprof.svg)](https://cpp-taskflow.github.io/tfprof/)
 [![Cite](image/cite-arXiv.svg)](https://arxiv.org/abs/2004.10908v2)
 
 Cpp-Taskflow helps you quickly write parallel programs with high performance scalability
@@ -485,36 +486,14 @@ tf.dump(std::cout);       // dump the graph including dynamic tasks
 
 # Monitor Thread Activities 
 
-Understanding thread activities is very important for performance analysis. 
-Cpp-Taskflow provides a default *observer* of type `tf::ExecutorObserver` 
-that lets users observe when a thread starts or stops participating in task scheduling.
+Cpp-Taskflow Profiler ([TFProf](https://github.com/cpp-taskflow/tfprof)) 
+provides the visualization and tooling needed for profiling cpp-taskflow programs.
 
-```cpp 
-auto observer = executor.make_observer<tf::ExecutorObserver>();
-```
-
-When you are running a task dependency graph,
-the observer will automatically record the start and end timestamps of each executed task.
-You can dump the entire execution timelines into a JSON file.
-
-```cpp 
-executor.run(taskflow1);               // run a task dependency graph 1
-executor.run(taskflow2);               // run a task dependency graph 2
-executor.wait_for_all();               // block until all tasks finish
-
-std::ofstream ofs("timestamps.json");
-observer->dump(ofs);                   // dump the timeline to a JSON file
-```
-
-You can open the chrome browser to visualize the execution timelines through the 
-[chrome://tracing][ChromeTracing] developer tool. 
-In the tracing view, click the `Load` button to read the JSON file. 
-You shall see the tracing graph.
-
-![](image/timeline.png)
-
-Each task is given a name of `i_j` where `i` is the thread id and `j` is the task number.
-You can pan or zoom in/out the timeline to get into a detailed view.
+<p align="center">
+   <a href="https://cpp-taskflow.github.io/tfprof/">
+     <img width="100%" src="image/tfprof.png">
+   </a>
+</p>
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 

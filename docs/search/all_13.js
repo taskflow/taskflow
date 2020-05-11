@@ -12,6 +12,7 @@ var searchData=
   ['terminate_5fhandler',['terminate_handler',['http://en.cppreference.com/w/cpp/error/terminate_handler.html',1,'std']]],
   ['test',['test',['http://en.cppreference.com/w/cpp/utility/bitset/test.html',1,'std::bitset']]],
   ['test_5fand_5fset',['test_and_set',['http://en.cppreference.com/w/cpp/atomic/atomic_flag/test_and_set.html',1,'std::atomic_flag']]],
+  ['tfprofobserver',['TFProfObserver',['../classtf_1_1TFProfObserver.html',1,'tf']]],
   ['this_5fworker_5fid',['this_worker_id',['../classtf_1_1Executor.html#a6487d589cb1f6b078b69fd3bb1082345',1,'tf::Executor']]],
   ['thousands_5fsep',['thousands_sep',['http://en.cppreference.com/w/cpp/locale/moneypunct/thousands_sep.html',1,'std::moneypunct_byname::thousands_sep()'],['http://en.cppreference.com/w/cpp/locale/moneypunct/thousands_sep.html',1,'std::moneypunct::thousands_sep()'],['http://en.cppreference.com/w/cpp/locale/numpunct/thousands_sep.html',1,'std::numpunct_byname::thousands_sep()'],['http://en.cppreference.com/w/cpp/locale/numpunct/thousands_sep.html',1,'std::numpunct::thousands_sep()']]],
   ['thread',['thread',['http://en.cppreference.com/w/cpp/thread/thread.html',1,'std::thread'],['http://en.cppreference.com/w/cpp/thread/thread/thread.html',1,'std::thread::thread()']]],
@@ -54,6 +55,7 @@ var searchData=
   ['try_5flock_5funtil',['try_lock_until',['http://en.cppreference.com/w/cpp/thread/unique_lock/try_lock_until.html',1,'std::unique_lock::try_lock_until()'],['http://en.cppreference.com/w/cpp/thread/recursive_timed_mutex/try_lock_until.html',1,'std::recursive_timed_mutex::try_lock_until()'],['http://en.cppreference.com/w/cpp/thread/shared_lock/try_lock_until.html',1,'std::shared_lock::try_lock_until()'],['http://en.cppreference.com/w/cpp/thread/timed_mutex/try_lock_until.html',1,'std::timed_mutex::try_lock_until()'],['http://en.cppreference.com/w/cpp/thread/shared_timed_mutex/try_lock_until.html',1,'std::shared_timed_mutex::try_lock_until()']]],
   ['try_5fto_5flock_5ft',['try_to_lock_t',['http://en.cppreference.com/w/cpp/thread/lock_tag_t.html',1,'std']]],
   ['tuple',['tuple',['http://en.cppreference.com/w/cpp/utility/tuple.html',1,'std::tuple'],['http://en.cppreference.com/w/cpp/utility/tuple/tuple.html',1,'std::tuple::tuple()']]],
+  ['type',['type',['../classtf_1_1Task.html#af2df95e6c8c5870c033d692e88af0bc2',1,'tf::Task::type()'],['../classtf_1_1TaskView.html#aa20d7b5796064c3ab194e6d7ebe2adb1',1,'tf::TaskView::type()']]],
   ['type_5findex',['type_index',['http://en.cppreference.com/w/cpp/types/type_index.html',1,'std::type_index'],['http://en.cppreference.com/w/cpp/types/type_index/type_index.html',1,'std::type_index::type_index()']]],
   ['type_5finfo',['type_info',['http://en.cppreference.com/w/cpp/types/type_info.html',1,'std']]]
 ];
