@@ -84,7 +84,7 @@ auto cpu(int M, int N, int K) {
 
   std::vector<int> a, b, c;
 
-  tf::Executor executor(1);
+  tf::Executor executor;
   tf::Taskflow taskflow;
 
   auto ha = taskflow.emplace([&](){ 
