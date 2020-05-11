@@ -5,6 +5,7 @@
 #include <taskflow/utility/traits.hpp>
 #include <taskflow/utility/object_pool.hpp>
 #include <taskflow/utility/passive_vector.hpp>
+#include <taskflow/utility/uuid.hpp>
 
 // --------------------------------------------------------
 // Testcase: PassiveVector
@@ -181,6 +182,76 @@ TEST_CASE("PassiveVector" * doctest::timeout(300)) {
     }
   }
 }
+
+// --------------------------------------------------------
+// Testcase: ObjectPool.Sequential
+// --------------------------------------------------------
+void test_threaded_uuid(size_t N) {
+  
+  std::vector<tf::UUID> uuids(65536);
+
+  // threaded
+  std::mutex mutex;
+  std::vector<std::thread> threads;
+
+  for(size_t i=0; i<N; ++i) {
+    threads.emplace_back([&](){
+      for(int i=0; i<1000; ++i) {
+        std::lock_guard<std::mutex> lock(mutex);
+        uuids.push_back(tf::UUID());
+      }
+    });
+  }
+
+  for(auto& t : threads) {
+    t.join();
+  }
+  
+  auto size = uuids.size();
+  std::sort(uuids.begin(), uuids.end());
+  std::unique(uuids.begin(), uuids.end());
+  REQUIRE(uuids.size() == size);
+}
+
+TEST_CASE("uuid") {
+
+  tf::UUID u1, u2, u3, u4;
+
+  // Comparator.
+  REQUIRE(u1 == u1);
+
+  // Copy
+  u2 = u1;
+  REQUIRE(u1 == u2);
+
+  // Move
+  u3 = std::move(u1);
+  REQUIRE(u2 == u3);
+
+  // Copy constructor
+  tf::UUID u5(u4);
+  REQUIRE(u5 == u4);
+
+  // Move constructor.
+  tf::UUID u6(std::move(u4));
+  REQUIRE(u5 == u6);
+
+  // Uniqueness
+  std::vector<tf::UUID> uuids(65536);
+  std::sort(uuids.begin(), uuids.end());
+  std::unique(uuids.begin(), uuids.end());
+  REQUIRE(uuids.size() == 65536);
+
+}
+
+TEST_CASE("uuid.10threads") {
+  test_threaded_uuid(10);
+}
+
+TEST_CASE("uuid.100threads") {
+  test_threaded_uuid(100);
+}
+
 
 // --------------------------------------------------------
 // Testcase: ObjectPool.Sequential
