@@ -155,21 +155,26 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <tr class="memitem:a6487d589cb1f6b078b69fd3bb1082345"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Executor.html#a6487d589cb1f6b078b69fd3bb1082345">this_worker_id</a> () const</td></tr>
 <tr class="memdesc:a6487d589cb1f6b078b69fd3bb1082345"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the id of the caller thread in this executor  <a href="#a6487d589cb1f6b078b69fd3bb1082345">More...</a><br /></td></tr>
 <tr class="separator:a6487d589cb1f6b078b69fd3bb1082345"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f43cde72d3e0a17e2d006cbe7a41ff3"><td class="memTemplParams" colspan="2">template&lt;typename Observer , typename... Args&gt; </td></tr>
-<tr class="memitem:a7f43cde72d3e0a17e2d006cbe7a41ff3"><td class="memTemplItemLeft" align="right" valign="top">Observer *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Executor.html#a7f43cde72d3e0a17e2d006cbe7a41ff3">make_observer</a> (Args &amp;&amp;... args)</td></tr>
-<tr class="memdesc:a7f43cde72d3e0a17e2d006cbe7a41ff3"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs an observer to inspect the activities of worker threads  <a href="#a7f43cde72d3e0a17e2d006cbe7a41ff3">More...</a><br /></td></tr>
-<tr class="separator:a7f43cde72d3e0a17e2d006cbe7a41ff3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ed11b270f0c7fe1c55a81c60d20411f"><td class="memItemLeft" align="right" valign="top"><a id="a3ed11b270f0c7fe1c55a81c60d20411f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Executor.html#a3ed11b270f0c7fe1c55a81c60d20411f">remove_observer</a> ()</td></tr>
-<tr class="memdesc:a3ed11b270f0c7fe1c55a81c60d20411f"><td class="mdescLeft">&#160;</td><td class="mdescRight">removes the associated observer <br /></td></tr>
-<tr class="separator:a3ed11b270f0c7fe1c55a81c60d20411f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e68a0d779cfee1554c88c2596ae9000"><td class="memTemplParams" colspan="2">template&lt;typename Observer , typename... Args&gt; </td></tr>
+<tr class="memitem:a3e68a0d779cfee1554c88c2596ae9000"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html">std::shared_ptr</a>&lt; Observer &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Executor.html#a3e68a0d779cfee1554c88c2596ae9000">make_observer</a> (Args &amp;&amp;... args)</td></tr>
+<tr class="memdesc:a3e68a0d779cfee1554c88c2596ae9000"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs an observer to inspect the activities of worker threads  <a href="#a3e68a0d779cfee1554c88c2596ae9000">More...</a><br /></td></tr>
+<tr class="separator:a3e68a0d779cfee1554c88c2596ae9000"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31081f492c376f7b798de0e430534531"><td class="memTemplParams" colspan="2"><a id="a31081f492c376f7b798de0e430534531"></a>
+template&lt;typename Observer &gt; </td></tr>
+<tr class="memitem:a31081f492c376f7b798de0e430534531"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1Executor.html#a31081f492c376f7b798de0e430534531">remove_observer</a> (<a class="elRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html">std::shared_ptr</a>&lt; Observer &gt; observer)</td></tr>
+<tr class="memdesc:a31081f492c376f7b798de0e430534531"><td class="mdescLeft">&#160;</td><td class="mdescRight">removes the associated observer <br /></td></tr>
+<tr class="separator:a31081f492c376f7b798de0e430534531"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab92083be20ea77b9fb3eb8ea2d26af68"><td class="memItemLeft" align="right" valign="top"><a id="ab92083be20ea77b9fb3eb8ea2d26af68"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Executor.html#ab92083be20ea77b9fb3eb8ea2d26af68">num_observers</a> () const</td></tr>
+<tr class="memdesc:ab92083be20ea77b9fb3eb8ea2d26af68"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the number of observers <br /></td></tr>
+<tr class="separator:ab92083be20ea77b9fb3eb8ea2d26af68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>execution interface for running a taskflow graph </p>
 <p>An executor object manages a set of worker threads and implements an efficient work-stealing scheduling algorithm to run a taskflow. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7f43cde72d3e0a17e2d006cbe7a41ff3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f43cde72d3e0a17e2d006cbe7a41ff3">&#9670;&nbsp;</a></span>make_observer()</h2>
+<a id="a3e68a0d779cfee1554c88c2596ae9000"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e68a0d779cfee1554c88c2596ae9000">&#9670;&nbsp;</a></span>make_observer()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -177,7 +182,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 template&lt;typename Observer , typename... Args&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Observer * tf::Executor::make_observer </td>
+          <td class="memname"><a class="elRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html">std::shared_ptr</a>&lt; Observer &gt; tf::Executor::make_observer </td>
           <td>(</td>
           <td class="paramtype">Args &amp;&amp;...&#160;</td>
           <td class="paramname"><em>args</em></td><td>)</td>
@@ -187,10 +192,10 @@ template&lt;typename Observer , typename... Args&gt; </div>
 </div><div class="memdoc">
 
 <p>constructs an observer to inspect the activities of worker threads </p>
-<p>Each executor manages at most one observer at a time through <a class="elRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html">std::unique_ptr</a>. Createing multiple observers will only keep the lastest one.</p>
+<p>Each executor manage a list of observers in shared ownership with callers.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Observer</td><td>observer type derived from <a class="el" href="classtf_1_1ExecutorObserverInterface.html" title="The interface class for creating an executor observer. ">tf::ExecutorObserverInterface</a> </td></tr>
+    <tr><td class="paramname">Observer</td><td>observer type derived from <a class="el" href="classtf_1_1ObserverInterface.html" title="The interface class for creating an executor observer. ">tf::ObserverInterface</a> </td></tr>
     <tr><td class="paramname">ArgsT...</td><td>argument parameter pack</td></tr>
   </table>
   </dd>
@@ -201,7 +206,7 @@ template&lt;typename Observer , typename... Args&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a raw pointer to the observer associated with this executor </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a shared pointer to the created observer </dd></dl>
 
 </div>
 </div>

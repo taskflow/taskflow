@@ -18,6 +18,7 @@ var searchData=
   ['wistream',['wistream',['http://en.cppreference.com/w/cpp/io/basic_istream.html',1,'std']]],
   ['wistringstream',['wistringstream',['http://en.cppreference.com/w/cpp/io/basic_istringstream.html',1,'std']]],
   ['wofstream',['wofstream',['http://en.cppreference.com/w/cpp/io/basic_ofstream.html',1,'std']]],
+  ['workerview',['WorkerView',['../classWorkerView.html',1,'']]],
   ['wostream',['wostream',['http://en.cppreference.com/w/cpp/io/basic_ostream.html',1,'std']]],
   ['wostringstream',['wostringstream',['http://en.cppreference.com/w/cpp/io/basic_ostringstream.html',1,'std']]],
   ['wregex',['wregex',['http://en.cppreference.com/w/cpp/regex/basic_regex.html',1,'std']]],

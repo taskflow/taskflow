@@ -1,5 +1,16 @@
 var NAVTREEINDEX1 =
 {
+"graphtraversal.html#GraphTraversalProblemFormulation":[4,4,0],
+"graphtraversal.html#GraphTraversalStaticTraversal":[4,4,2],
+"hierarchy.html":[8,2],
+"index.html":[],
+"index.html":[0],
+"index.html#ASimpleFirstProgram":[0,6],
+"index.html#CompileAndRunYourFirstProgram":[0,7],
+"index.html#ComposableTasking":[0,3],
+"index.html#ConditionalTasking":[0,2],
+"index.html#HeterogeneousTasking":[0,4],
+"index.html#HowToInstallCppTaskflow":[0,5],
 "index.html#License":[0,9],
 "index.html#ModernCppParallelTaskProgrammingLibrary":[0,0],
 "index.html#StaticDynamicTasking":[0,1],

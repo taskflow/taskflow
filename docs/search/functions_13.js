@@ -45,5 +45,6 @@ var searchData=
   ['try_5flock_5fshared_5funtil',['try_lock_shared_until',['http://en.cppreference.com/w/cpp/thread/shared_timed_mutex/try_lock_shared_until.html',1,'std::shared_timed_mutex']]],
   ['try_5flock_5funtil',['try_lock_until',['http://en.cppreference.com/w/cpp/thread/unique_lock/try_lock_until.html',1,'std::unique_lock::try_lock_until()'],['http://en.cppreference.com/w/cpp/thread/recursive_timed_mutex/try_lock_until.html',1,'std::recursive_timed_mutex::try_lock_until()'],['http://en.cppreference.com/w/cpp/thread/shared_lock/try_lock_until.html',1,'std::shared_lock::try_lock_until()'],['http://en.cppreference.com/w/cpp/thread/timed_mutex/try_lock_until.html',1,'std::timed_mutex::try_lock_until()'],['http://en.cppreference.com/w/cpp/thread/shared_timed_mutex/try_lock_until.html',1,'std::shared_timed_mutex::try_lock_until()']]],
   ['tuple',['tuple',['http://en.cppreference.com/w/cpp/utility/tuple/tuple.html',1,'std::tuple']]],
+  ['type',['type',['../classtf_1_1Task.html#af2df95e6c8c5870c033d692e88af0bc2',1,'tf::Task::type()'],['../classtf_1_1TaskView.html#aa20d7b5796064c3ab194e6d7ebe2adb1',1,'tf::TaskView::type()']]],
   ['type_5findex',['type_index',['http://en.cppreference.com/w/cpp/types/type_index/type_index.html',1,'std::type_index']]]
 ];

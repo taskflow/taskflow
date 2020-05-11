@@ -91,7 +91,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"index.html#License"
+"graphtraversal.html#GraphTraversalProblemFormulation"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

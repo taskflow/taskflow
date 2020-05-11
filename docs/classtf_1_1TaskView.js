@@ -17,5 +17,6 @@ var classtf_1_1TaskView =
     [ "operator=", "classtf_1_1TaskView.html#a148557f80bb73e600c00a4fde25ff5f7", null ],
     [ "operator==", "classtf_1_1TaskView.html#ac31f08774b5cb89bc56367739614abcd", null ],
     [ "reset", "classtf_1_1TaskView.html#a04c63b3e737474fb4157534d8a94eb64", null ],
+    [ "type", "classtf_1_1TaskView.html#aa20d7b5796064c3ab194e6d7ebe2adb1", null ],
     [ "Executor", "classtf_1_1TaskView.html#a763b2f90bc53f92d680a635fe28e858e", null ]
 ];

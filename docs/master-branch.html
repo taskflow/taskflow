@@ -104,12 +104,16 @@ New Features</h1>
 <li>enhancing unittests for <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">tf::cudaFlow</a> </li>
 <li>adding per-thread stream to avoid synchronizing with the default stream in running a cudaFlow </li>
 <li>adding <a class="el" href="classtf_1_1cudaFlow.html#a1eeebb4bbd6436a3145ff950ce282ac4" title="repeats the execution of the cudaFlow by n times ">tf::cudaFlow::repeat</a> and <a class="el" href="classtf_1_1cudaFlow.html#adbd46a1ef9f5ae9e0848ccbefa1e65ee" title="assigns a predicate to loop the cudaFlow until the predicate is satisfied ">tf::cudaFlow::predicate</a> for iterative execution of a cudaFlow </li>
-<li>adding <a class="el" href="Examples.html">Learning from Examples</a> pages</li>
+<li>adding <a class="el" href="Examples.html">Learning from Examples</a> pages </li>
+<li>making observer a <a class="elRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html">std::shared_ptr</a> object </li>
+<li>enabling multiple observers to coexit in an executor </li>
+<li>creating the <a href="https://github.com/cpp-taskflow/tfprof">TFProf project</a></li>
 </ul>
 <h1><a class="anchor" id="master-branch_bug_fixes"></a>
 Bug Fixes</h1>
 <ul>
-<li>fixed the bug in assigning the block pointer before constructor of an object in object pool</li>
+<li>fixed the bug in assigning the block pointer before constructor of an object in object pool </li>
+<li>fixed the namespace conflicting in using MPark.Variant from upstream code</li>
 </ul>
 <h1><a class="anchor" id="master-branch_deprecated_items"></a>
 Deprecated Items</h1>
