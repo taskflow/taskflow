@@ -482,7 +482,7 @@ enum ObserverType {
 /**
 @brief convert an observer type to a human-readable string
 */
-const char* observer_type_to_string(ObserverType type) {
+inline const char* observer_type_to_string(ObserverType type) {
   const char* val;
   switch(type) {
     case TFPROF: val = "TFProf";    break;

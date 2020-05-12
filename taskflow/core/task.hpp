@@ -28,7 +28,7 @@ enum TaskType {
 /**
 @brief convert a task type to a human-readable string
 */
-const char* task_type_to_string(TaskType type) {
+inline const char* task_type_to_string(TaskType type) {
 
   const char* val;
 
