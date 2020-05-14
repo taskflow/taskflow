@@ -39,21 +39,21 @@ class ObserverInterface {
   @brief constructor-like method to call when the executor observer is fully created
   @param num_workers the number of the worker threads in the executor
   */
-  virtual void set_up(unsigned num_workers) = 0;
+  virtual void set_up(size_t num_workers) = 0;
   
   /**
   @brief method to call before a worker thread executes a closure 
   @param worker_id the id of this worker thread 
   @param task_view a constant wrapper object to the task 
   */
-  virtual void on_entry(unsigned worker_id, TaskView task_view) = 0;
+  virtual void on_entry(size_t worker_id, TaskView task_view) = 0;
   
   /**
   @brief method to call after a worker thread executed a closure
   @param worker_id the id of this worker thread 
   @param task_view a constant wrapper object to the task
   */
-  virtual void on_exit(unsigned worker_id, TaskView task_view) = 0;
+  virtual void on_exit(size_t worker_id, TaskView task_view) = 0;
 };
 
 // ----------------------------------------------------------------------------
@@ -123,9 +123,9 @@ class ChromeTracingObserver : public ObserverInterface {
 
   private:
     
-    inline void set_up(unsigned num_workers) override final;
-    inline void on_entry(unsigned worker_id, TaskView task_view) override final;
-    inline void on_exit(unsigned worker_id, TaskView task_view) override final;
+    inline void set_up(size_t num_workers) override final;
+    inline void on_entry(size_t worker_id, TaskView task_view) override final;
+    inline void on_exit(size_t worker_id, TaskView task_view) override final;
 
     Timeline _timeline;
 };  
@@ -148,11 +148,11 @@ inline ChromeTracingObserver::Segment::Segment(
 }
 
 // Procedure: set_up
-inline void ChromeTracingObserver::set_up(unsigned num_workers) {
+inline void ChromeTracingObserver::set_up(size_t num_workers) {
 
   _timeline.segments.resize(num_workers);
 
-  for(unsigned w=0; w<num_workers; ++w) {
+  for(size_t w=0; w<num_workers; ++w) {
     _timeline.segments[w].reserve(32);
   }
   
@@ -160,14 +160,14 @@ inline void ChromeTracingObserver::set_up(unsigned num_workers) {
 }
 
 // Procedure: on_entry
-inline void ChromeTracingObserver::on_entry(unsigned w, TaskView tv) {
+inline void ChromeTracingObserver::on_entry(size_t w, TaskView tv) {
   _timeline.segments[w].emplace_back(
     tv.name(), std::chrono::steady_clock::now()
   );
 }
 
 // Procedure: on_exit
-inline void ChromeTracingObserver::on_exit(unsigned w, TaskView) {
+inline void ChromeTracingObserver::on_exit(size_t w, TaskView) {
   assert(_timeline.segments[w].size() > 0);
   _timeline.segments[w].back().end = std::chrono::steady_clock::now();
 }
@@ -322,9 +322,9 @@ class TFProfObserver : public ObserverInterface {
 
   private:
     
-    inline void set_up(unsigned num_workers) override final;
-    inline void on_entry(unsigned worker_id, TaskView task_view) override final;
-    inline void on_exit(unsigned worker_id, TaskView task_view) override final;
+    inline void set_up(size_t num_workers) override final;
+    inline void on_entry(size_t worker_id, TaskView task_view) override final;
+    inline void on_exit(size_t worker_id, TaskView task_view) override final;
 
     Timeline _timeline;
 
@@ -351,11 +351,11 @@ inline TFProfObserver::Segment::Segment(
 }
 
 // Procedure: set_up
-inline void TFProfObserver::set_up(unsigned num_workers) {
+inline void TFProfObserver::set_up(size_t num_workers) {
 
   _timeline.segments.resize(num_workers);
 
-  for(unsigned w=0; w<num_workers; ++w) {
+  for(size_t w=0; w<num_workers; ++w) {
     _timeline.segments[w].reserve(32);
   }
   
@@ -363,14 +363,14 @@ inline void TFProfObserver::set_up(unsigned num_workers) {
 }
 
 // Procedure: on_entry
-inline void TFProfObserver::on_entry(unsigned w, TaskView tv) {
+inline void TFProfObserver::on_entry(size_t w, TaskView tv) {
   _timeline.segments[w].emplace_back(
     tv.name(), tv.type(), std::chrono::steady_clock::now()
   );
 }
 
 // Procedure: on_exit
-inline void TFProfObserver::on_exit(unsigned w, TaskView) {
+inline void TFProfObserver::on_exit(size_t w, TaskView) {
   assert(_timeline.segments[w].size() > 0);
   _timeline.segments[w].back().end = std::chrono::steady_clock::now();
 }
