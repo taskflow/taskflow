@@ -7,6 +7,7 @@
 #include "../utility/passive_vector.hpp"
 #include "../utility/singleton.hpp"
 #include "../utility/uuid.hpp"
+#include "../utility/os.hpp"
 #include "../nstd/variant.hpp"
 
 #if defined(__CUDA__) || defined(__CUDACC__)
