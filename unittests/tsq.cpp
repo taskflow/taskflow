@@ -90,7 +90,7 @@ void tsq_test_owner() {
 }
 
 // Procedure: tsq_test_n_thieves
-void tsq_test_n_thieves(int M) {
+void tsq_test_n_thieves(size_t M) {
   
   for(size_t N=1; N<=777777; N=N*2+1) {
     tf::TaskQueue<void*> queue;

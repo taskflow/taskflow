@@ -7,15 +7,15 @@ namespace tf {
 // Function: get_env
 inline std::string get_env(const std::string& str) {
 #ifdef _MSC_VER
-  char *ptr;
-  size_t len;
-  auto err = _dupenv_s(&ptr, &len, str.c_str());
-  if ( err ) {
-    return "";
+  char *ptr = nullptr;
+  size_t len = 0;
+  
+  if(_dupenv_s(&ptr, &len, str.c_str()) == 0 && ptr != nullptr) {
+    std::string res(ptr, len);
+    free(ptr);
+    return res;
   }
-  std::string res(ptr);
-  free(ptr);
-  return res;
+  return "";
 
 #else
   auto ptr = std::getenv(str.c_str());
