@@ -23,7 +23,7 @@ namespace tf {
 
 #define TF_ENABLE_POOLABLE_ON_THIS                          \
   template <typename T, size_t S> friend class ObjectPool;  \
-  void* _object_pool_block;
+  void* _object_pool_block
 
 // Class: ObjectPool
 //
