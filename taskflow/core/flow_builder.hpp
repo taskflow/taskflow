@@ -96,9 +96,13 @@ class FlowBuilder {
     /**
     @brief constructs a task dependency graph of range-based parallel_for
     
-    The task dependency graph applies a callable object 
-    to the dereferencing of every iterator 
-    in the range [beg, end) chunk by chunk.
+    The task dependency graph applies the callable object
+    @p callable to each object obtained by dereferencing
+    every iterator in the range [beg, end). The range
+    is split into chunks of size @p chunk, where each of them
+    is processed by one Task.
+
+    The callable needs to accept a single argument, the object in the range.
 
     @tparam I input iterator type
     @tparam C callable type
