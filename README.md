@@ -7,8 +7,9 @@
 [![TFProf](image/tfprof.svg)](https://taskflow.github.io/tfprof/)
 [![Cite](image/cite-arXiv.svg)](https://arxiv.org/abs/2004.10908v2)
 
-Taskflow helps you write parallel programs with high performance scalability
-and simultaneous high productivity.
+Taskflow helps you quickly write parallel tasks programs in modern C++
+
+:exclamation: Starting from [v2.5.0](https://github.com/taskflow/taskflow/releases/tag/2.5.0), we have renamed cpp-taskflow to taskflow to broaden its support and future application scopes. The core codebase remains *unchanged*. You may only need to [change the remote URL](https://help.github.com/en/github/using-git/changing-a-remotes-url) to this new repository. Thank your for the support!
 
 # Why Taskflow?
 
