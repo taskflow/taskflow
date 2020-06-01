@@ -9,7 +9,7 @@ using CPU-GPU collaborative tasking.
 
 @section C6_Create_a_cudaFlow Create a cudaFlow
 
-Cpp-Taskflow enables concurrent CPU-GPU tasking by leveraging 
+%Taskflow enables concurrent CPU-GPU tasking by leveraging 
 <a href="https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__GRAPH.html">CUDA Graph</a>.
 The tasking interface is referred to as @em %cudaFlow.
 A %cudaFlow is a graph object of type tf::cudaFlow created at runtime similar to dynamic tasking. 
@@ -83,12 +83,12 @@ Debrief:
 @li Lines 33-45 create a %cudaFlow to capture kernel work in a graph (two host-to-device data transfer tasks, one saxpy kernel task, and two device-to-host data transfer tasks)
 @li Lines 46-48 define the task dependency between host tasks and the %cudaFlow tasks and execute the taskflow
 
-Cpp-Taskflow does not expend unnecessary efforts on kernel programming but focus on 
+%Taskflow does not expend unnecessary efforts on kernel programming but focus on 
 tasking CUDA operations with CPU work.
 We give users full privileges to craft a CUDA kernel 
 that is commensurate with their domain knowledge. 
 Users focus on developing high-performance kernels using 
-a native CUDA toolkit, while leaving difficult task parallelism to Cpp-Taskflow.
+a native CUDA toolkit, while leaving difficult task parallelism to %Taskflow.
 
 @section C6_Compile_a_cudaFlow_program Compile a cudaFlow Program
 

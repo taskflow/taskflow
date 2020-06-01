@@ -42,9 +42,7 @@ var NAVTREEINDEX0 =
 "chapter1.html#C1_VisualizeATaskDependencyGraph":[3,1,1],
 "chapter2.html":[3,2],
 "chapter2.html#C2_CreateAnExecutor":[3,2,0],
-"chapter2.html#C2_CustomizeYourOwnObserver":[3,2,4],
 "chapter2.html#C2_ExecuteATaskflow":[3,2,1],
-"chapter2.html#C2_MonitorThreadActivities":[3,2,3],
 "chapter2.html#C2_ThreadSafety":[3,2,2],
 "chapter3.html":[3,3],
 "chapter3.html#C3_CreateASubflow":[3,3,0],
@@ -249,5 +247,7 @@ var NAVTREEINDEX0 =
 "functions_func.html":[8,3,1],
 "graphtraversal.html":[4,4],
 "graphtraversal.html#GraphTraversalDynamicTraversal":[4,4,3],
-"graphtraversal.html#GraphTraversalGraphRepresentation":[4,4,1]
+"graphtraversal.html#GraphTraversalGraphRepresentation":[4,4,1],
+"graphtraversal.html#GraphTraversalProblemFormulation":[4,4,0],
+"graphtraversal.html#GraphTraversalStaticTraversal":[4,4,2]
 };

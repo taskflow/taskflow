@@ -4,30 +4,30 @@ namespace tf {
 
 @section ModernCppParallelTaskProgrammingLibrary Modern C++ Parallel Task Programming
 
-Cpp-Taskflow helps you quickly write parallel task programs with high performance scalability
+%Taskflow helps you quickly write parallel task programs with high performance scalability
 and simultaneous high productivity.
 It is faster, more expressive, fewer lines of code, and easier for drop-in integration
 than many of existing task programming frameworks.
 
 @image html images/performance.png width=100%
 
-Cpp-Taskflow is committed to support both academic and industry research projects,
+%Taskflow is committed to support both academic and industry research projects,
 making it reliable and cost-efficient to develop large-scale parallel applications.
 Our users say:
 
-@li \"<em>Cpp-Taskflow has the cleanest task API I've ever seen.</em>\" <a href="http://coreliuminc.com">Damien Hocking \@Corelium Inc</a>
-@li \"<em>Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well.</em>\" <a href="https://github.com/totalgee">Glen Fraser</a>
-@li \"<em>Cpp-Taskflow lets me handle parallel processing in a smart way.</em>\" <a href="https://cpp-learning.com/cpp-taskflow/">Hayabusa \@Cpp-Learning</a>
-@li \"<em>Cpp-Taskflow helps improve the throughput of our graph processing engine in just a few hours of coding.</em>\" <a href="https://ossia.io/">Jean-Michaël \@KDAB</a>
+@li \"<em>%Taskflow has the cleanest task API I've ever seen.</em>\" <a href="http://coreliuminc.com">Damien Hocking \@Corelium Inc</a>
+@li \"<em>%Taskflow has a very simple and elegant tasking interface. The performance also scales very well.</em>\" <a href="https://github.com/totalgee">Glen Fraser</a>
+@li \"<em>%Taskflow lets me handle parallel processing in a smart way.</em>\" <a href="https://cpp-learning.com/cpp-taskflow/">Hayabusa \@Learning</a>
+@li \"<em>%Taskflow helps improve the throughput of our graph processing engine in just a few hours of coding.</em>\" <a href="https://ossia.io/">Jean-Michaël \@KDAB</a>
 @li \"<em>Best poster award for the open-source parallel programming library.</em>\" <a href="https://github.com/CppCon/CppCon2018">2018 Cpp Conference</a>
 @li \"<em>Second Place in Open Source Software Competition.</em>\" 2019 ACM Multimedia Conference</a>
 
-See a quick <a href="https://cpp-taskflow.github.io/">presentation</a> and visit our <a href="https://github.com/cpp-taskflow/cpp-taskflow">GitHub</a> to learn more about Cpp-Taskflow.
+See a quick <a href="https://taskflow.github.io/">presentation</a> and visit our <a href="https://github.com/taskflow/taskflow">GitHub</a> to learn more about %Taskflow.
 
 
 @section StaticDynamicTasking Static and Dynamic Tasking
 
-Cpp-Taskflow has a unified interface for both @em static tasking and @em dynamic tasking,
+%Taskflow has a unified interface for both @em static tasking and @em dynamic tasking,
 allowing users to quickly master our parallel task programming model in a natural idiom.
 
 <table width="100%">
@@ -43,7 +43,7 @@ allowing users to quickly master our parallel task programming model in a natura
 
 @section ConditionalTasking Conditional Tasking
 
-Cpp-Taskflow supports conditional tasking for you to implement cyclic and 
+%Taskflow supports conditional tasking for you to implement cyclic and 
 dynamic control flows that are otherwise difficult to do 
 with existing task programming frameworks.
 
@@ -51,7 +51,7 @@ with existing task programming frameworks.
 
 @section ComposableTasking Composable Tasking
 
-Cpp-Taskflow is composable. You can create large parallel graphs through
+%Taskflow is composable. You can create large parallel graphs through
 composition of modular and reusable blocks that are easier to optimize
 at an individual scope.
 
@@ -59,21 +59,25 @@ at an individual scope.
 
 @section HeterogeneousTasking Concurrent CPU-GPU Tasking
 
-Cpp-Taskflow supports heterogeneous tasking for you to 
+%Taskflow supports heterogeneous tasking for you to 
 accelerate a wide range of scientific computing applications
 by harnessing the power of CPU-GPU collaborative computing.
 
 @image html images/cudaflow.svg width=100%
 
+%Taskflow provides visualization and tooling (<a href="https://github.com/taskflow/tfprof">tfprof</a>) needed for profiling %Taskflow programs.
 
-@section HowToInstallCppTaskflow How to Install Cpp-Taskflow?
+@image html images/tfprof.png width=100%
 
-Cpp-Taskflow is *header-only* and there is no need for installation.
+
+@section HowToInstallCppTaskflow How to Install Taskflow?
+
+%Taskflow is *header-only* and there is no need for installation.
 Simply download the source and copy the headers under the directory @c taskflow/ to your project.
 
 @code{.sh}
-~$ git clone https://github.com/cpp-taskflow/cpp-taskflow.git
-~$ cd cpp-taskflow/
+~$ git clone https://github.com/taskflow/taskflow.git
+~$ cd taskflow/
 ~$ cp -r taskflow myproject/include/
 @endcode
 
@@ -82,7 +86,7 @@ Simply download the source and copy the headers under the directory @c taskflow/
 Here is a rather simple program to get you started.
 
 @code{.cpp}
-#include <taskflow/taskflow.hpp>  // Cpp-Taskflow is header-only
+#include <taskflow/taskflow.hpp>  // Taskflow is header-only
 
 int main(){
   
@@ -117,10 +121,10 @@ The maximum concurrency is this example is two, where B and C can run at the sam
 
 @section CompileAndRunYourFirstProgram Compile and Run Your First Program
 
-Cpp-Taskflow is written in C++14 and is built on top of 
+%Taskflow is written in C++14 and is built on top of 
 C++ standardized threading libraries.
 To compile the above program, you need to tell the compiler
-where to find the Cpp-Taskflow header files.
+where to find the %Taskflow header files.
 For example, with gcc you need the `-I` option.
 
 @code{.sh}
@@ -136,7 +140,7 @@ The execution order of B and C might differ as they can run concurrently.
 
 @section SupportedCompilers Supported Compilers
 
-To use Cpp-Taskflow, you only need a compiler that supports C++14:
+To use %Taskflow, you only need a compiler that supports C++14:
 
 @li GNU C++ Compiler at least v5.0 with -std=c++14
 @li Clang C++ Compiler at least v4.0 with -std=c++14
@@ -144,11 +148,11 @@ To use Cpp-Taskflow, you only need a compiler that supports C++14:
 @li AppleClang Xode Version at least v8
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v10.0 with -std=c++14
 
-Cpp-Taskflow works on Linux, Windows, and Mac OS X.
+%Taskflow works on Linux, Windows, and Mac OS X.
 
 @section License License
 
-Cpp-Taskflow is open-source under permissive MIT license.
+%Taskflow is open-source under permissive MIT license.
 
 */
 

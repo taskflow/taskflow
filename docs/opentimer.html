@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.14"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Cpp-Taskflow</title>
+<title>Taskflow Handbook</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link rel="icon" type="image/x-icon" href="favicon.ico" />
 <script type="text/javascript" src="jquery.js"></script>
@@ -31,7 +31,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
+   <div id="projectname"><a href="https://github.com/taskflow/taskflow">Taskflow</a>
    &#160;<span id="projectnumber">2.4-master-branch</span>
    </div>
   </td>
@@ -92,26 +92,26 @@ $(document).ready(function(){initNavTree('opentimer.html','');});
 <div class="title">Static Timing Analysis </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>We have applied Cpp-Taskflow to solve a real-world VLSI static timing analysis problem that incorporates hundreds of millions of tasks and dependencies. The goal is to analyze the timing behavior of a design.</p>
+<div class="textblock"><p>We have applied Taskflow to solve a real-world VLSI static timing analysis problem that incorporates hundreds of millions of tasks and dependencies. The goal is to analyze the timing behavior of a design.</p>
 <h1><a class="anchor" id="UseCasesOpenTimer"></a>
 OpenTimer: A High-performance Timing Analysis Tool</h1>
 <p>Static timing analysis (STA) is an important step in the overall chip design flow. It verifies the static behavior of a circuit design and ensure its correct functionality under the given clock speed. However, efficient parallel timing analysis is extremely challenging to design and implement, due to large irregularity and graph-oriented computing. The following figure shows an extracted timing graph from an industrial design.</p>
 <div class="image">
 <img src="opentimer_1.png" alt="opentimer_1.png" width="100%"/>
 </div>
-<p>We consider our research project <a href="https://github.com/OpenTimer/OpenTimer">OpenTimer</a>, an open-source static timing analyzer that has been used in many industrial and academic projects. The first release v1 in 2015 implemented the <em>pipeline-based levelization</em> algorithm using the OpenMP 4.5 task dependency clause. To overcome the performance bottleneck caused by pipeline, we rewrote the core incremental timing engine using Cpp-Taskflow in the second release v2.</p>
+<p>We consider our research project <a href="https://github.com/OpenTimer/OpenTimer">OpenTimer</a>, an open-source static timing analyzer that has been used in many industrial and academic projects. The first release v1 in 2015 implemented the <em>pipeline-based levelization</em> algorithm using the OpenMP 4.5 task dependency clause. To overcome the performance bottleneck caused by pipeline, we rewrote the core incremental timing engine using Taskflow in the second release v2.</p>
 <h1><a class="anchor" id="UseCaseOpenTimerProgrammingEffort"></a>
 Programming Effort</h1>
-<p>The table below measures the software costs of two OpenTimer versions using the Linux tool <a href="https://dwheeler.com/sloccount/">SLOCCount</a>. In OpenTimer v2, a large amount of exhaustive OpenMP dependency clauses that were used to carry out task dependencies are now replaced with only a few lines of flexible Cpp-Taskflow code (9123 vs 4482). The maximum cyclomatic complexity in a single function is reduced from 58 to 20, due to Cpp-Taskflow's programmability.</p>
+<p>The table below measures the software costs of two OpenTimer versions using the Linux tool <a href="https://dwheeler.com/sloccount/">SLOCCount</a>. In OpenTimer v2, a large amount of exhaustive OpenMP dependency clauses that were used to carry out task dependencies are now replaced with only a few lines of flexible Taskflow code (9123 vs 4482). The maximum cyclomatic complexity in a single function is reduced from 58 to 20, due to Taskflow's programmability.</p>
 <div align="center"> <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadCenter">Tool  </th><th class="markdownTableHeadCenter">Task Model  </th><th class="markdownTableHeadCenter">Lines of Code  </th><th class="markdownTableHeadCenter">Cyclomatic Complexity  </th><th class="markdownTableHeadCenter">Cost   </th></tr>
 <tr class="markdownTableBody" class="markdownTableRowOdd">
 <td class="markdownTableBodyCenter">OpenTimer v1  </td><td class="markdownTableBodyCenter">OpenMP 4.5  </td><td class="markdownTableBodyCenter">9123  </td><td class="markdownTableBodyCenter">58  </td><td class="markdownTableBodyCenter">$275,287   </td></tr>
 <tr class="markdownTableBody" class="markdownTableRowEven">
-<td class="markdownTableBodyCenter">OpenTimer v2  </td><td class="markdownTableBodyCenter">Cpp-Taskflow  </td><td class="markdownTableBodyCenter">4482  </td><td class="markdownTableBodyCenter">20  </td><td class="markdownTableBodyCenter">$130,523   </td></tr>
+<td class="markdownTableBodyCenter">OpenTimer v2  </td><td class="markdownTableBodyCenter">Taskflow  </td><td class="markdownTableBodyCenter">4482  </td><td class="markdownTableBodyCenter">20  </td><td class="markdownTableBodyCenter">$130,523   </td></tr>
 </table>
-</div><p>OpenTimer v1 relied on a pipeline data structure to adtop loop parallelism with OpenMP. We found it very difficult to go beyond this paradigm because of the insufficient support for dynamic dependencies in OpenMP. With Cpp-Taskflow in place, we can break this bottleneck and easily model both static and dynamic task dependencies at programming time and runtime. The task dependency graph flows computations naturally with the timing graph, providing improved asynchrony and performance. The following figure shows a task graph to carry one iteration of timing update.</p>
+</div><p>OpenTimer v1 relied on a pipeline data structure to adtop loop parallelism with OpenMP. We found it very difficult to go beyond this paradigm because of the insufficient support for dynamic dependencies in OpenMP. With Taskflow in place, we can break this bottleneck and easily model both static and dynamic task dependencies at programming time and runtime. The task dependency graph flows computations naturally with the timing graph, providing improved asynchrony and performance. The following figure shows a task graph to carry one iteration of timing update.</p>
 <div class="image">
 <object type="image/svg+xml" data="opentimer_4.svg" width="100%">opentimer_4.svg</object>
 </div>
@@ -121,7 +121,7 @@ Performance Improvement</h1>
 <div class="image">
 <img src="opentimer_2.png" alt="opentimer_2.png" width="70%"/>
 </div>
-<p>The scalability of Cpp-Taskflow is shown in the Figure below. We used two million-scale designs, netcard (1.4M gates) and leon3mp (1.2M gates) to evaluate the runtime of v1 and v2 across different number of CPUs. There are two important observations. First, v2 is slightly slower than v1 at one CPU (3-4%), where all OpenMP's constructs are literally disabled. This shows the graph overhead of Cpp-Taskflow; yet it is negligible. Second, v2 is consistently faster than v1 regardless of CPU numbers except one. This highlights that Cpp-Taskflow's programming model largely improves the design of a parallel VLSI timing engine that would otherwise not be possible with OpenMP.</p>
+<p>The scalability of Taskflow is shown in the Figure below. We used two million-scale designs, netcard (1.4M gates) and leon3mp (1.2M gates) to evaluate the runtime of v1 and v2 across different number of CPUs. There are two important observations. First, v2 is slightly slower than v1 at one CPU (3-4%), where all OpenMP's constructs are literally disabled. This shows the graph overhead of Taskflow; yet it is negligible. Second, v2 is consistently faster than v1 regardless of CPU numbers except one. This highlights that Taskflow's programming model largely improves the design of a parallel VLSI timing engine that would otherwise not be possible with OpenMP.</p>
 <div class="image">
 <img src="opentimer_3.png" alt="opentimer_3.png" width="70%"/>
 </div>

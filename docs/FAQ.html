@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.14"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Cpp-Taskflow</title>
+<title>Taskflow Handbook</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link rel="icon" type="image/x-icon" href="favicon.ico" />
 <script type="text/javascript" src="jquery.js"></script>
@@ -31,7 +31,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
+   <div id="projectname"><a href="https://github.com/taskflow/taskflow">Taskflow</a>
    &#160;<span id="projectnumber">2.4-master-branch</span>
    </div>
   </td>
@@ -92,46 +92,46 @@ $(document).ready(function(){initNavTree('FAQ.html','');});
 <div class="title">Frequently Asked Questions </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>This page summarizes a list of frequently asked questions about Cpp-Taskflow. If you cannot find a solution here, please post an issue at <a href="https://github.com/cpp-taskflow/cpp-taskflow/issues">here</a>.</p>
+<div class="textblock"><p>This page summarizes a list of frequently asked questions about Taskflow. If you cannot find a solution here, please post an issue at <a href="https://github.com/taskflow/taskflow/issues">here</a>.</p>
 <h1><a class="anchor" id="GeneralQuestions"></a>
 General Questions</h1>
 <h2><a class="anchor" id="GeneralQuestion1"></a>
-Q1: What's the goal of Cpp-Taskflow?</h2>
-<p>Cpp-Taskflow aims to help C++ developers quickly implement efficient parallel decomposition strategies using task-based approaches.</p>
+Q1: What's the goal of Taskflow?</h2>
+<p>Taskflow aims to help C++ developers quickly implement efficient parallel decomposition strategies using task-based approaches.</p>
 <h2><a class="anchor" id="GeneralQuestion2"></a>
-Q2: How do I use Cpp-Taskflow in my projects?</h2>
-<p>Cpp-Taskflow is a header-only library with zero dependencies. The only thing you need is a C++14 compiler. To use Cpp-Taskflow, simply drop the folder <code>taskflow/</code> to your project and include <a class="el" href="taskflow_8hpp_source.html">taskflow.hpp</a>.</p>
+Q2: How do I use Taskflow in my projects?</h2>
+<p>Taskflow is a header-only library with zero dependencies. The only thing you need is a C++14 compiler. To use Taskflow, simply drop the folder <code>taskflow/</code> to your project and include <a class="el" href="taskflow_8hpp_source.html">taskflow.hpp</a>.</p>
 <h2><a class="anchor" id="GeneralQuestion3"></a>
 Q3: What is the difference between static tasking and dynamic tasking?</h2>
 <p>Static tasking refers to those tasks created before execution, while dynamic tasking refers to those tasks created during the execution of static tasks or dynamic tasks (nested). Dynamic tasks created by the same task node are grouped together to a subflow.</p>
 <h2><a class="anchor" id="GeneralQuestion4"></a>
-Q4: How many tasks can Cpp-Taskflow handle?</h2>
-<p>Benchmarks showed Cpp-Taskflow can efficiently handle millions or billions of tasks (both large and small tasks) on a machine with up to 64 CPUs.</p>
+Q4: How many tasks can Taskflow handle?</h2>
+<p>Benchmarks showed Taskflow can efficiently handle millions or billions of tasks (both large and small tasks) on a machine with up to 64 CPUs.</p>
 <h2><a class="anchor" id="GeneralQuestion5"></a>
 Q5: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?</h2>
 <p>The hex value represents the memory address of the task. Each task has a method <a class="el" href="classtf_1_1Task.html#a9057ecd0f3833b717480e914f8568f02" title="assigns a name to the task ">tf::Task::name(const std::string&amp;)</a> for user to assign a human readable string to ease the debugging process. If a task is not assigned a name or is an internal node, its address value in the memory is used instead.</p>
 <h2><a class="anchor" id="GeneralQuestion6"></a>
-Q6: Does Cpp-Taskflow have backward compatibility with C++03/98/11?</h2>
-<p>Unfortunately, Cpp-Taskflow is heavily relying on modern C++14's features/idoms/STL and it is very difficult to provide a version that compiles under older C++ versions.</p>
+Q6: Does Taskflow have backward compatibility with C++03/98/11?</h2>
+<p>Unfortunately, Taskflow is heavily relying on modern C++14's features/idoms/STL and it is very difficult to provide a version that compiles under older C++ versions.</p>
 <h2><a class="anchor" id="GeneralQuestion7"></a>
-Q7: How does Cpp-Taskflow schedule tasks?</h2>
-<p>Cpp-Taskflow implemented a very efficient <a href="https://en.wikipedia.org/wiki/Work_stealing">work-stealing scheduler</a> to execute task dependency graphs. The source code is available at <code><a class="el" href="executor_8hpp_source.html">taskflow/core/executor.hpp</a></code>.</p>
+Q7: How does Taskflow schedule tasks?</h2>
+<p>Taskflow implemented a very efficient <a href="https://en.wikipedia.org/wiki/Work_stealing">work-stealing scheduler</a> to execute task dependency graphs. The source code is available at <code><a class="el" href="executor_8hpp_source.html">taskflow/core/executor.hpp</a></code>.</p>
 <h2><a class="anchor" id="GeneralQuestion8"></a>
 Q8: What is the overhead of taskflow?</h2>
 <p>Creating a taskflow has certain overhead. For example, creating a task and a dependency takes about 61 and 14 nanoseconds in our system (Intel 4-core CPU at 2.00GHz). The time is amortized over 1M operations, since we have implemented an object pool to recycle tasks for minimal overhead.</p>
 <h2><a class="anchor" id="GeneralQuestion9"></a>
 Q9: How does it compare to existing task programming systems?</h2>
-<p>There is a large amount of work on programming systems (e.g., StarPU, Intel TBB, OpenMP, PaRSEC, Kokkos, HPX) in the interest of simplifying the programming complexity of parallel and heterogeneous computing. Each of these systems has its own pros and cons and deserves a reason to exist. However, they do have some problems, particularly from the standpoint of ease of use, static control flow, and scheduling efficiency. Cpp-Taskflow addresses these limitations through a simple, expressive, and transparent graph programming model.</p>
+<p>There is a large amount of work on programming systems (e.g., StarPU, Intel TBB, OpenMP, PaRSEC, Kokkos, HPX) in the interest of simplifying the programming complexity of parallel and heterogeneous computing. Each of these systems has its own pros and cons and deserves a reason to exist. However, they do have some problems, particularly from the standpoint of ease of use, static control flow, and scheduling efficiency. Taskflow addresses these limitations through a simple, expressive, and transparent graph programming model.</p>
 <h2><a class="anchor" id="GeneralQuestion10"></a>
 Q10: Do you try to simplify the GPU kernel programming?</h2>
-<p>No, we do not develop new programming models to simplify the kernel programming. The rationale is simple: Writing efficient kernels requires domain-specific knowledge and developers often require direct access to the native GPU programming interface. High-level kernel programming models or abstractions all come with restricted applicability. Despite non-trivial kernel programming, we believe what makes heterogeneous computing difficult are surrounding tasks. A mistake made by task scheduling can outweigh all speed-up benefits from a highly optimized kernel. Therefore, Cpp-Taskflow focuses on heterogeneous tasking that affects the overall system performance to a large extent.</p>
+<p>No, we do not develop new programming models to simplify the kernel programming. The rationale is simple: Writing efficient kernels requires domain-specific knowledge and developers often require direct access to the native GPU programming interface. High-level kernel programming models or abstractions all come with restricted applicability. Despite non-trivial kernel programming, we believe what makes heterogeneous computing difficult are surrounding tasks. A mistake made by task scheduling can outweigh all speed-up benefits from a highly optimized kernel. Therefore, Taskflow focuses on heterogeneous tasking that affects the overall system performance to a large extent.</p>
 <h2><a class="anchor" id="GeneralQuestion11"></a>
 Q11: Do you have any real use cases?</h2>
-<p>We have applied Cpp-Taskflow to solve many realistic workloads and demonstrated promising performance scalability and programming productivity. Please refer to <a class="el" href="usecases.html">Real Use Cases</a> and <a class="el" href="References.html">References</a>. </p><hr/>
+<p>We have applied Taskflow to solve many realistic workloads and demonstrated promising performance scalability and programming productivity. Please refer to <a class="el" href="usecases.html">Real Use Cases</a> and <a class="el" href="References.html">References</a>. </p><hr/>
 <h1><a class="anchor" id="ProgrammingQuestions"></a>
 Programming Questions</h1>
 <h2><a class="anchor" id="ProgrammingQuestions1"></a>
-Q1: What is the difference between Cpp-Taskflow threads and workers?</h2>
+Q1: What is the difference between Taskflow threads and workers?</h2>
 <p>The master thread owns the thread pool and can spawn workers to run tasks or shutdown the pool. Giving taskflow <code>N</code> threads means using <code>N</code> threads to do the works, and there is a total of <code>N+1</code> threads (including the master thread) in the program. Please refer to <a class="el" href="chapter2.html#C2_CreateAnExecutor">Create an Executor</a> for more details.</p>
 <h2><a class="anchor" id="ProgrammingQuestions2"></a>
 Q2: What is the Lifetime of a Task and a Graph?</h2>
@@ -150,7 +150,7 @@ Q6: In the following example where B spawns a joined subflow of two tasks B1 and
 <div class="image">
 <img src="dynamic_graph.png" alt="dynamic_graph.png" width="60%"/>
 </div>
-<p>No. The subflow is spawned during the execution of B, and at this point A must finish because A precedes B. This gives rise to the fact B1 and B2 must run after A. This graph may looks strange because B seems to run twice! However, Cpp-Taskflow will schedule B only once to create its subflow. Whether this subflow joins or detaches from B only affects the future object returned from B. </p>
+<p>No. The subflow is spawned during the execution of B, and at this point A must finish because A precedes B. This gives rise to the fact B1 and B2 must run after A. This graph may looks strange because B seems to run twice! However, B will run only once to create its subflow. Whether this subflow joins or detaches from B only affects the future object returned from B. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

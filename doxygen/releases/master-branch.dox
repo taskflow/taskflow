@@ -2,7 +2,7 @@ namespace tf {
 
 /** @page master-branch Master Branch (GitHub)
 
-Cpp-Taskflow master branch is the newest developing line to new features and improvements 
+%Taskflow master branch is the newest developing line to new features and improvements 
 we continue to support.
 It is also where this documentation is generated.
 Many things are considered @em experimental and may change or break from time to time.
@@ -11,33 +11,18 @@ we continue to try our best to ensure backward compatibility.
 
 @section master-branch_download Download
 
-To download the newest version of Cpp-Taskflow, please clone from <a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow's GitHub</a>.
+To download the newest version of %Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
 
 @section master-branch_new_features New Features
 
-@li enhancing the performance of the work-stealing algorithm
-@li enhancing the interface of concurrent CPU-GPU tasking (added tf::cudaFlow::zero, tf::cudaFlow::memset, tf::cudaFlow::memcpy, tf::cudaFlow::fill)
-@li enhancing unittests for tf::cudaFlow
-@li adding per-thread stream to avoid synchronizing with the default stream in running a %cudaFlow
-@li adding tf::cudaFlow::repeat and tf::cudaFlow::predicate for iterative execution of a %cudaFlow
-@li adding @ref Examples pages
-@li making observer a std::shared_ptr object
-@li enabling multiple observers to coexit in an executor
-@li creating the <a href="https://github.com/cpp-taskflow/tfprof">TFProf project</a>
+@li adding tf::Executor::async to support std::async styled tasking
+@li enhancing <a href="https://github.com/taskflow/tfprof">TFProf</a>
 
 @section master-branch_bug_fixes Bug Fixes 
 
-@li fixed the bug in assigning the block pointer before constructor of an object in object pool 
-@li fixed the namespace conflicting in using MPark.Variant from upstream code
-
 @section master-branch_deprecated_items Deprecated Items 
 
-@li removed @c -DTF_ENABLE_CUDA and made CMake to automatically detect the existence of CUDA
-
 @section master-branch_miscellaneous_items Miscellaneous Items
-
-@li fixed the warning between unsigned and size_t conversion in tf::Executor
-@li submitted the technical paper to arXiv
 
 */
 

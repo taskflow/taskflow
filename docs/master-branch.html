@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.14"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Cpp-Taskflow</title>
+<title>Taskflow Handbook</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link rel="icon" type="image/x-icon" href="favicon.ico" />
 <script type="text/javascript" src="jquery.js"></script>
@@ -31,7 +31,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
+   <div id="projectname"><a href="https://github.com/taskflow/taskflow">Taskflow</a>
    &#160;<span id="projectnumber">2.4-master-branch</span>
    </div>
   </td>
@@ -92,40 +92,22 @@ $(document).ready(function(){initNavTree('master-branch.html','');});
 <div class="title">Master Branch (GitHub) </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Cpp-Taskflow master branch is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <em>experimental</em> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</p>
+<div class="textblock"><p>Taskflow master branch is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <em>experimental</em> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</p>
 <h1><a class="anchor" id="master-branch_download"></a>
 Download</h1>
-<p>To download the newest version of Cpp-Taskflow, please clone from <a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow's GitHub</a>.</p>
+<p>To download the newest version of Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">Taskflow's GitHub</a>.</p>
 <h1><a class="anchor" id="master-branch_new_features"></a>
 New Features</h1>
 <ul>
-<li>enhancing the performance of the work-stealing algorithm </li>
-<li>enhancing the interface of concurrent CPU-GPU tasking (added <a class="el" href="classtf_1_1cudaFlow.html#a91c1739bb9a2832f306f3d12693a0994" title="creates a zero task that zeroes a typed memory block ">tf::cudaFlow::zero</a>, <a class="el" href="classtf_1_1cudaFlow.html#a079ca65da35301e5aafd45878a19e9d2" title="creates a memset task ">tf::cudaFlow::memset</a>, <a class="el" href="classtf_1_1cudaFlow.html#ad37637606f0643f360e9eda1f9a6e559" title="creates a memcpy task ">tf::cudaFlow::memcpy</a>, <a class="el" href="classtf_1_1cudaFlow.html#aee1fa4aff12a41737ea585fa2e106a35" title="creates a fill task that fills a typed memory block with a value ">tf::cudaFlow::fill</a>) </li>
-<li>enhancing unittests for <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">tf::cudaFlow</a> </li>
-<li>adding per-thread stream to avoid synchronizing with the default stream in running a cudaFlow </li>
-<li>adding <a class="el" href="classtf_1_1cudaFlow.html#a1eeebb4bbd6436a3145ff950ce282ac4" title="repeats the execution of the cudaFlow by n times ">tf::cudaFlow::repeat</a> and <a class="el" href="classtf_1_1cudaFlow.html#adbd46a1ef9f5ae9e0848ccbefa1e65ee" title="assigns a predicate to loop the cudaFlow until the predicate is satisfied ">tf::cudaFlow::predicate</a> for iterative execution of a cudaFlow </li>
-<li>adding <a class="el" href="Examples.html">Learning from Examples</a> pages </li>
-<li>making observer a <a class="elRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html">std::shared_ptr</a> object </li>
-<li>enabling multiple observers to coexit in an executor </li>
-<li>creating the <a href="https://github.com/cpp-taskflow/tfprof">TFProf project</a></li>
+<li>adding tf::Executor::async to support std::async styled tasking </li>
+<li>enhancing <a href="https://github.com/taskflow/tfprof">TFProf</a></li>
 </ul>
 <h1><a class="anchor" id="master-branch_bug_fixes"></a>
 Bug Fixes</h1>
-<ul>
-<li>fixed the bug in assigning the block pointer before constructor of an object in object pool </li>
-<li>fixed the namespace conflicting in using MPark.Variant from upstream code</li>
-</ul>
 <h1><a class="anchor" id="master-branch_deprecated_items"></a>
 Deprecated Items</h1>
-<ul>
-<li>removed <code>-DTF_ENABLE_CUDA</code> and made CMake to automatically detect the existence of CUDA</li>
-</ul>
 <h1><a class="anchor" id="master-branch_miscellaneous_items"></a>
 Miscellaneous Items</h1>
-<ul>
-<li>fixed the warning between unsigned and size_t conversion in <a class="el" href="classtf_1_1Executor.html" title="execution interface for running a taskflow graph ">tf::Executor</a> </li>
-<li>submitted the technical paper to arXiv </li>
-</ul>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

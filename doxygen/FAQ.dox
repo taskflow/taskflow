@@ -2,22 +2,22 @@ namespace tf {
 
 /** @page FAQ Frequently Asked Questions
 
-This page summarizes a list of frequently asked questions about Cpp-Taskflow.
+This page summarizes a list of frequently asked questions about %Taskflow.
 If you cannot find a solution here, please post an issue at
-<a href="https://github.com/cpp-taskflow/cpp-taskflow/issues">here</a>.
+<a href="https://github.com/taskflow/taskflow/issues">here</a>.
 
 @section GeneralQuestions General Questions
 
-@subsection GeneralQuestion1 Q1: What's the goal of Cpp-Taskflow?
+@subsection GeneralQuestion1 Q1: What's the goal of Taskflow?
 
-Cpp-Taskflow aims to help C++ developers quickly implement efficient 
+%Taskflow aims to help C++ developers quickly implement efficient 
 parallel decomposition strategies using task-based approaches.
 
-@subsection GeneralQuestion2 Q2: How do I use Cpp-Taskflow in my projects?
+@subsection GeneralQuestion2 Q2: How do I use Taskflow in my projects?
 
-Cpp-Taskflow is a header-only library with zero dependencies. 
+%Taskflow is a header-only library with zero dependencies. 
 The only thing you need is a C++14 compiler.
-To use Cpp-Taskflow, simply drop the folder @c taskflow/
+To use %Taskflow, simply drop the folder @c taskflow/
 to your project and include taskflow.hpp.
 
 @subsection GeneralQuestion3 Q3: What is the difference between static tasking and dynamic tasking?
@@ -27,9 +27,9 @@ while dynamic tasking refers to those tasks created during the execution of stat
 or dynamic tasks (nested).
 Dynamic tasks created by the same task node are grouped together to a subflow.
 
-@subsection GeneralQuestion4 Q4: How many tasks can Cpp-Taskflow handle?
+@subsection GeneralQuestion4 Q4: How many tasks can Taskflow handle?
 
-Benchmarks showed Cpp-Taskflow can efficiently handle millions or billions of tasks 
+Benchmarks showed %Taskflow can efficiently handle millions or billions of tasks 
 (both large and small tasks) on a machine with up to 64 CPUs.
 
 @subsection GeneralQuestion5 Q5: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?
@@ -39,14 +39,14 @@ Each task has a method tf::Task::name(const std::string&) for user to assign a h
 to ease the debugging process. If a task is not assigned a name or is an internal node,
 its address value in the memory is used instead.
 
-@subsection GeneralQuestion6 Q6: Does Cpp-Taskflow have backward compatibility with C++03/98/11?
+@subsection GeneralQuestion6 Q6: Does Taskflow have backward compatibility with C++03/98/11?
 
-Unfortunately, Cpp-Taskflow is heavily relying on modern C++14's features/idoms/STL 
+Unfortunately, %Taskflow is heavily relying on modern C++14's features/idoms/STL 
 and it is very difficult to provide a version that compiles under older C++ versions.
 
-@subsection GeneralQuestion7 Q7: How does Cpp-Taskflow schedule tasks?
+@subsection GeneralQuestion7 Q7: How does Taskflow schedule tasks?
 
-Cpp-Taskflow implemented a very efficient 
+%Taskflow implemented a very efficient 
 <a href="https://en.wikipedia.org/wiki/Work_stealing">work-stealing scheduler</a> 
 to execute task dependency graphs.
 The source code is available at @c taskflow/core/executor.hpp.
@@ -65,7 +65,7 @@ programming complexity of parallel and heterogeneous computing.
 Each of these systems has its own pros and cons and deserves a reason to exist.
 However, they do have some problems, particularly from the standpoint of ease of use, 
 static control flow, and scheduling efficiency.
-Cpp-Taskflow addresses these limitations through a simple, expressive, and transparent
+%Taskflow addresses these limitations through a simple, expressive, and transparent
 graph programming model.
 
 @subsection GeneralQuestion10 Q10: Do you try to simplify the GPU kernel programming?
@@ -77,12 +77,12 @@ High-level kernel programming models or abstractions all come with restricted ap
 Despite non-trivial kernel programming, we believe what makes heterogeneous computing difficult
 are surrounding tasks.
 A mistake made by task scheduling can outweigh all speed-up benefits from a highly optimized kernel.
-Therefore, Cpp-Taskflow focuses on heterogeneous tasking 
+Therefore, %Taskflow focuses on heterogeneous tasking 
 that affects the overall system performance to a large extent.
 
 @subsection GeneralQuestion11 Q11: Do you have any real use cases?
 
-We have applied Cpp-Taskflow to solve many realistic workloads and demonstrated promising
+We have applied %Taskflow to solve many realistic workloads and demonstrated promising
 performance scalability and programming productivity. Please refer to @ref usecases
 and @ref References.
 
@@ -91,7 +91,7 @@ and @ref References.
 
 @section ProgrammingQuestions Programming Questions
 
-@subsection ProgrammingQuestions1 Q1: What is the difference between Cpp-Taskflow threads and workers?
+@subsection ProgrammingQuestions1 Q1: What is the difference between Taskflow threads and workers?
 
 The master thread owns the thread pool and can spawn workers to run tasks 
 or shutdown the pool. 
@@ -128,7 +128,7 @@ Try the tf::Taskflow::dump method to debug the graph before dispatching your tas
 No. The subflow is spawned during the execution of B, and at this point A must finish
 because A precedes B. This gives rise to the fact B1 and B2 must run after A. 
 This graph may looks strange because B seems to run twice!
-However, Cpp-Taskflow will schedule B only once to create its subflow.
+However, B will run only once to create its subflow.
 Whether this subflow joins or detaches from B only affects the future object returned from B.
 
 

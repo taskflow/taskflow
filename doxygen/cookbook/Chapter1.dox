@@ -7,11 +7,11 @@ It has a flat task hierarchy and cannot spawn new tasks from a running dependenc
 
 @section C1_CreateATaskDependencyGraph Create a Task Dependency Graph
 
-A task in Cpp-Taskflow is a @em callable object for which the operation @std_invoke is applicable.
+A task in %Taskflow is a @em callable object for which the operation @std_invoke is applicable.
 It can be either 
 a functor, a lambda expression, a bind expression, or a class objects with @c operator() overloaded.
 All tasks are created from tf::Taskflow, the class that manages a task dependency graph.
-Cpp-Taskflow provides two methods, tf::Taskflow::placeholder and tf::Taskflow::emplace to create a task.
+%Taskflow provides two methods, tf::Taskflow::placeholder and tf::Taskflow::emplace to create a task.
 
 @code{.cpp}
 1: tf::Taskflow taskflow;
@@ -63,7 +63,7 @@ Debrief:
 @li Line 7 adds a dependency link from A to B
 @li Line 9-14 dumps the task attributes 
 
-Cpp-Taskflow uses the general-purpose polymorphic function wrapper std::function
+%Taskflow uses general-purpose polymorphic function wrapper, std::function,
 to store and invoke a callable in a task.
 You need to follow its contract to create a task.
 

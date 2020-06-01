@@ -2,27 +2,27 @@ namespace tf {
 
 /** @page install Building and Installing
 
-This page describes how to set up Cpp-Taskflow in your project. 
+This page describes how to set up %Taskflow in your project. 
 We will also go through the building process of unit tests and examples.
 
-@section BAISettingUpCpp-Taskflow Setting Up Cpp-Taskflow
+@section BAISettingUpTaskflow Setting Up Taskflow
 
-Cpp-Taskflow is *header-only* and there is no need for installation.
+%Taskflow is *header-only* and there is no need for installation.
 Simply download the source and copy the headers under the directory @c taskflow/
 to your project.
 
 @code{.sh}
-~$ git clone https://github.com/cpp-taskflow/cpp-taskflow.git
-~$ cd cpp-taskflow/
+~$ git clone https://github.com/taskflow/taskflow.git
+~$ cd taskflow/
 ~$ cp -r taskflow myproject/include/
 @endcode
 
 @section BAICompileAndLinkFlag Compile and Link Flags
 
-Cpp-Taskflow is written in C++14 and is built on top of 
+%Taskflow is written in C++14 and is built on top of 
 C++ standardized threading libraries to improve portability.
-To compile a Cpp-Taskflow program, say <tt>simple.cpp</tt>, you need to tell the compiler
-where to find the Cpp-Taskflow header files and link it through the system thread library
+To compile a %Taskflow program, say <tt>simple.cpp</tt>, you need to tell the compiler
+where to find the %Taskflow header files and link it through the system thread library
 (usually [POSIX threads](http://man7.org/linux/man-pages/man7/pthreads.7.html) in Linux-like systems).
 Take gcc for an example:
 
@@ -32,7 +32,7 @@ Take gcc for an example:
 
 @section BAISupportedCompilers Supported Compilers
 
-To use Cpp-Taskflow, you only need a compiler that supports C++14:
+To use %Taskflow, you only need a compiler that supports C++14:
 
 @li GNU C++ Compiler at least v5.0 with -std=c++14
 @li Clang C++ Compiler at least v4.0 with -std=c++14
@@ -40,15 +40,15 @@ To use Cpp-Taskflow, you only need a compiler that supports C++14:
 @li AppleClang Xode Version at least v8
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v10.0 with -std=c++14
 
-Cpp-Taskflow works on Linux, Windows, and Mac OS X.
+%Taskflow works on Linux, Windows, and Mac OS X.
 
 @section BAIBuildExamplesTestsAndBenchmarks Build Examples, Tests, and Benchmarks
 
-Cpp-Taskflow uses CMake to build examples and unit tests. 
+%Taskflow uses CMake to build examples and unit tests. 
 We recommend using out-of-source build.
 
 @code{.sh}
-~$ cd path/to/cpp-taskflow
+~$ cd path/to/taskflow
 ~$ mkdir build
 ~$ cd build
 ~$ cmake ../
@@ -57,7 +57,7 @@ We recommend using out-of-source build.
 
 Running tests...
 /usr/bin/ctest --force-new-ctest-process
-Test project /home/tsung-wei/Code/cpp-taskflow/build
+Test project /home/tsung-wei/Code/taskflow/build
         Start   1: passive_vector
   1/254 Test   #1: passive_vector ...................   Passed    0.04 sec
         Start   2: function_traits
@@ -87,7 +87,7 @@ You may list a set of available options in the cmake.
 TF_BUILD_BENCHMARKS:BOOL=OFF    # by default, we don't compile benchmarks due to long compilation time
 @endcode
 
-We have developed a set of micro-benchmarks comparing Cpp-Taskflow with OpenMP %Task Dependency Clause and Intel TBB FlowGraph.
+We have developed a set of micro-benchmarks comparing %Taskflow with OpenMP %Task Dependency Clause and Intel TBB FlowGraph.
 To build these benchmarks, you need to configure the option @c TF_BUILD_BENCHMARKS to @c ON.
 
 @code{.sh}

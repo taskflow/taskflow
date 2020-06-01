@@ -17,9 +17,7 @@ var Cookbook =
     [ "C2: Executor", "chapter2.html", [
       [ "Create an Executor", "chapter2.html#C2_CreateAnExecutor", null ],
       [ "Execute a Taskflow", "chapter2.html#C2_ExecuteATaskflow", null ],
-      [ "Thread Safety", "chapter2.html#C2_ThreadSafety", null ],
-      [ "Monitor Thread Activities", "chapter2.html#C2_MonitorThreadActivities", null ],
-      [ "Customize Your Own Observer", "chapter2.html#C2_CustomizeYourOwnObserver", null ]
+      [ "Thread Safety", "chapter2.html#C2_ThreadSafety", null ]
     ] ],
     [ "C3: Dynamic Tasking", "chapter3.html", [
       [ "Create a Subflow", "chapter3.html#C3_CreateASubflow", null ],

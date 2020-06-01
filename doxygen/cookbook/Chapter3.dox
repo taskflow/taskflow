@@ -4,14 +4,14 @@ namespace tf {
 
 It is very common for a parallel program to 
 spawn task dependency graphs at runtime.
-In Cpp-Taskflow, we call this <em>dynamic tasking</em>.
+In %Taskflow, we call this <em>dynamic tasking</em>.
 
 @section C3_CreateASubflow Create a Subflow
 
 Dynamic tasks are those created during the execution of a graph.
 These tasks are spawned from a parent task and are grouped together to a 
 @em subflow dependency graph.
-Cpp-Taskflow has an unified interface for static and dynamic tasking.
+%Taskflow has an unified interface for static and dynamic tasking.
 To create a subflow, emplace a callable 
 that takes an argument of type tf::Subflow.
 A tf::Subflow object will be created and forwarded to
@@ -54,7 +54,7 @@ Debrief:
 @li Line 22 dumps the entire task dependency graph
 
 Line 8-14 is the main block to enable dynamic tasking.
-Cpp-Taskflow uses a @std_variant date type to 
+%Taskflow uses a @std_variant date type to 
 unify the interface of static tasking and dynamic tasking.
 The runtime will create a tf::Subflow passing it to task B,
 and spawn a dependency graph as described by the associated callable.

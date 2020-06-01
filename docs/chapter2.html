@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.14"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Cpp-Taskflow</title>
+<title>Taskflow Handbook</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link rel="icon" type="image/x-icon" href="favicon.ico" />
 <script type="text/javascript" src="jquery.js"></script>
@@ -31,7 +31,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname"><a href="https://github.com/cpp-taskflow/cpp-taskflow">Cpp-Taskflow</a>
+   <div id="projectname"><a href="https://github.com/taskflow/taskflow">Taskflow</a>
    &#160;<span id="projectnumber">2.4-master-branch</span>
    </div>
   </td>
@@ -115,31 +115,8 @@ Execute a Taskflow</h1>
 <div class="fragment"><div class="line"><a class="code" href="classtf_1_1Taskflow.html">tf::Taskflow</a> taskflow;</div><div class="line"></div><div class="line"><span class="comment">// Add tasks into the taskflow</span></div><div class="line"><span class="comment">// ...</span></div><div class="line"></div><div class="line"><span class="comment">// Declare an executor</span></div><div class="line"><a class="code" href="classtf_1_1Executor.html">tf::Executor</a> executor;</div><div class="line"></div><div class="line"><a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/future.html">std::future&lt;void&gt;</a> future = taskflow.run(f);  <span class="comment">// non-blocking return</span></div><div class="line"></div><div class="line"><span class="comment">// alter the taskflow while running leads to undefined behavior </span></div><div class="line">f.<a class="code" href="classtf_1_1FlowBuilder.html#a796e29175380f70246cf2a5639adc437">emplace</a>([](){ <a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a> &lt;&lt; <span class="stringliteral">&quot;Add a new task\n&quot;</span>; });</div></div><!-- fragment --><p>A rule of thumb is to always keep a taskflow alive in your function scope while it is participating in an execution.</p>
 <h1><a class="anchor" id="C2_ThreadSafety"></a>
 Thread Safety</h1>
-<p><a class="el" href="classtf_1_1Executor.html" title="execution interface for running a taskflow graph ">tf::Executor</a> is <em>thread-safe</em>. Touching an executor from multiple threads is acceptable. You can have multiple threads call the same executor to run different taskflows.</p>
-<div class="fragment"><div class="line">1: <a class="code" href="classtf_1_1Executor.html">tf::Executor</a> executor;</div><div class="line">2:</div><div class="line">3: <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i=0; i&lt;10; ++i) {</div><div class="line">4:   <a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/thread.html">std::thread</a>([i, &amp;](){</div><div class="line">5:     <span class="comment">// ... modify my taskflow</span></div><div class="line">6:     executor.<a class="code" href="classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa">run</a>(taskflows[i]);  <span class="comment">// run my taskflow</span></div><div class="line">7:   }).detach();</div><div class="line">8: }</div></div><!-- fragment --><h1><a class="anchor" id="C2_MonitorThreadActivities"></a>
-Monitor Thread Activities</h1>
-<p>Inspecting the thread activities is very important for performance analysis. It allows you to know when each task starts and ends participating in the task scheduling. Cpp-Taskflow provides a default observer class tf::ExecutorObserver for this purpose. The following example shows how to create an observer from an executor.</p>
-<div class="fragment"><div class="line"><a class="code" href="classtf_1_1Executor.html">tf::Executor</a> executor;</div><div class="line"><a class="code" href="classtf_1_1ChromeTracingObserver.html">tf::ExecutorObserver</a>* observer = executor.<a class="code" href="classtf_1_1Executor.html#a3e68a0d779cfee1554c88c2596ae9000">make_observer</a>&lt;<a class="code" href="classtf_1_1ChromeTracingObserver.html">tf::ExecutorObserver</a>&gt;();</div></div><!-- fragment --><p>Note that each executor can only have an observer at a time. An observer will automatically record the start and end timestamps of each executed task. Users can query, dump or remove the timestamps through the <a class="el" href="classtf_1_1ChromeTracingObserver.html#a996fcaf138dd62ea9edbb3e013e921a9" title="get the number of total tasks in the observer ">tf::ExecutorObserver::num_tasks</a>, <a class="el" href="classtf_1_1ChromeTracingObserver.html#af443dbf15bfba3f35686b7cdfc1aee38" title="dump the timelines in JSON format to an ostream ">tf::ExecutorObserver::dump</a> and <a class="el" href="classtf_1_1ChromeTracingObserver.html#a80b781d1df8f31c2b73df55b36d2e104" title="clear the timeline data ">tf::ExecutorObserver::clear</a> methods.</p>
-<div class="fragment"><div class="line"> 1: <a class="code" href="classtf_1_1Executor.html">tf::Executor</a> executor;</div><div class="line"> 2: <a class="code" href="classtf_1_1ChromeTracingObserver.html">tf::ExecutorObserver</a>* observer = executor.<a class="code" href="classtf_1_1Executor.html#a3e68a0d779cfee1554c88c2596ae9000">make_observer</a>&lt;<a class="code" href="classtf_1_1ChromeTracingObserver.html">tf::ExecutorObserver</a>&gt;();</div><div class="line"> 3:</div><div class="line"> 4: executor.<a class="code" href="classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa">run</a>(taskflow).get();  <span class="comment">// do something</span></div><div class="line"> 5:</div><div class="line"> 6: <span class="comment">// Query the total number of tasks (number of timestamp pairs)</span></div><div class="line"> 7: <span class="keyword">auto</span> num_tasks = observer-&gt;<a class="code" href="classtf_1_1ChromeTracingObserver.html#a996fcaf138dd62ea9edbb3e013e921a9">num_tasks</a>();</div><div class="line"> 8:</div><div class="line"> 9: <span class="comment">// Dump the timeline data in JSON format </span></div><div class="line">10: <a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> timelines_in_json = observer-&gt;<a class="code" href="classtf_1_1ChromeTracingObserver.html#af443dbf15bfba3f35686b7cdfc1aee38">dump</a>();</div><div class="line">11: </div><div class="line">12: <span class="comment">// Clear the timeline data</span></div><div class="line">13: observer-&gt;<a class="code" href="classtf_1_1ChromeTracingObserver.html#a80b781d1df8f31c2b73df55b36d2e104">clear</a>();</div></div><!-- fragment --><p>Debrief:</p>
-<ul>
-<li>Line 2-4 creates an observer and a task dependency graph with four tasks and submits the tasks to execution. </li>
-<li>Line 7 query the total number of tasks (number of timestamp pair) through observer </li>
-<li>Line 10 dump the timestamps to a <a class="elRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> in JSON format </li>
-<li>Line 13 remove all timestamps in the observer</li>
-</ul>
-<p>You can visualize the timeline data in a Chrome browser:</p>
-<ul>
-<li>Step 1: save the JSON timeline data to a file </li>
-<li>Step 2: launch the Chrome browser and open a tab with the url: chrome://tracing </li>
-<li>Step 3: load the JSON file</li>
-</ul>
-<div class="image">
-<img src="timeline.png" alt="timeline.png" width="80%"/>
-</div>
-<p>Tasks will be categorized by the executing thread and each task is named with <em>i_j</em> where <em>i</em> is the thread id and <em>j</em> is the task number. You can pan or zoom in/out the timeline to get a detailed view.</p>
-<h1><a class="anchor" id="C2_CustomizeYourOwnObserver"></a>
-Customize Your Own Observer</h1>
-<p>You can derive your own observer from the base interface class tf::ExecutorObserverInterface to customize the observing methods. </p>
+<p>All <code>run_*</code> methods are <em>thread-safe</em>. Touching an executor from multiple threads is acceptable. You can have multiple threads call the same executor to run different taskflows.</p>
+<div class="fragment"><div class="line">1: <a class="code" href="classtf_1_1Executor.html">tf::Executor</a> executor;</div><div class="line">2:</div><div class="line">3: <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i=0; i&lt;10; ++i) {</div><div class="line">4:   <a class="codeRef" doxygen="/Users/twhuang/PhD/Code/cpp-taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/thread.html">std::thread</a>([i, &amp;](){</div><div class="line">5:     <span class="comment">// ... modify my taskflow</span></div><div class="line">6:     executor.<a class="code" href="classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa">run</a>(taskflows[i]);  <span class="comment">// run my taskflow</span></div><div class="line">7:   }).detach();</div><div class="line">8: }</div></div><!-- fragment --><p>Again, it is your responsibility to ensure all taskflows from different threads remain alive during their executions; or it can result unexpected behavior or program crash. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

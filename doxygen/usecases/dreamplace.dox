@@ -2,7 +2,7 @@ namespace tf {
 
 /** @page dreamplace Standard Cell Placement
 
-We applied Cpp-Taskflow to solve a VLSI placement problem. 
+We applied %Taskflow to solve a VLSI placement problem. 
 The goal is to determine the physical locations of cells
 (logic gates) in a fixed layout region using minimal interconnect wirelength.
 
@@ -32,7 +32,7 @@ GPU tasks with nested conditions to decide the convergence.
 
 @section UseCasesDreamPlaceProgrammingEffort Programming Effort
 
-We implemented the hybrid CPU-GPU placement algorithm using Cpp-Taskflow, 
+We implemented the hybrid CPU-GPU placement algorithm using %Taskflow, 
 @TBB, and @StarPU. 
 The algorithm is crafted on one GPU and many CPUs. 
 Since TBB and StarPU have no support for nested conditions, 
@@ -43,13 +43,13 @@ for one placement iteration.
 @image html images/dreamplace_3.svg width=100%
 
 The table below lists the programming effort of each method, measured by @SLOCCount.
-Cpp-Taskflow outperforms TBB and StarPU in all aspects. 
+%Taskflow outperforms TBB and StarPU in all aspects. 
 The whole program is about 1.5x and 1.7x less complex than that of TBB and StarPU, respectively. 
 
 <div align="center">
 | Method       | Lines of Code | Number of Tokens | Cyclomatic Complexity | Cost    |
 | :-:          | :-:           | :-:              | :-:                   | :-:     |
-| Cpp-Taskflow | 677           | 4180             | 53                    | $15,054 |
+| %Taskflow | 677           | 4180             | 53                    | $15,054 |
 | TBB          | 1000          | 6415             | 78                    | $21,736 |
 | StarPU       | 1279          | 8136             | 90                    | $29,686 |
 </div>
@@ -57,9 +57,9 @@ The whole program is about 1.5x and 1.7x less complex than that of TBB and StarP
 
 @section UseCasesDreamPlacePerformance Performance
 
-Using 8 CPUs and 1 GPU, Cpp-Taskflow is consistently faster than others across
+Using 8 CPUs and 1 GPU, %Taskflow is consistently faster than others across
 all problem sizes (placement iterations). 
-The gap becomes clear at large problem size; at 100 iterations, Cpp-Taskflow is 17% faster 
+The gap becomes clear at large problem size; at 100 iterations, %Taskflow is 17% faster 
 than TBB and StarPU. 
 We observed similar results using other CPU numbers. 
 Performance saturates at about 16 CPUs, primarily due to the inherent irregularity of the placement algorithm.
@@ -72,7 +72,7 @@ We keep nearly no growth of memory when the problem size increases,
 whereas StarPU and TBB grow linearly due to unrolled task graphs.
 At a vertical scale, increasing the number of CPUs bumps
 up the memory usage of all methods, but the growth rate of
-Cpp-Taskflow is much slower than the others. 
+%Taskflow is much slower than the others. 
 
 @image html images/dreamplace_5.png width=70%
 
@@ -89,14 +89,14 @@ resource utilization is critical to the system throughput.
 We corun the same program by up to nine processes that compete for 40 CPUs and 1 GPU. 
 Corunning a placement program is very common for searching the best parameters for an algorithm. 
 We plot the throughput using <em>weighted speed-up</em> across nine coruns at two problem sizes. 
-Both Cpp-Taskflow and TBB achieve higher throughput than StarPU. 
-At the largest problem size, Cpp-Taskflow outperforms TBB and StarPU across all coruns.
+Both %Taskflow and TBB achieve higher throughput than StarPU. 
+At the largest problem size, %Taskflow outperforms TBB and StarPU across all coruns.
 
 @image html images/dreamplace_7.png width=70%
 
 @section UseCasesDreamPlaceConclusion Conclusion
 
-We have observed two significant benefits of Cpp-Taskflow over existing programming systems.
+We have observed two significant benefits of %Taskflow over existing programming systems.
 The first benefit is our conditional tasking.
 Condition tasks encode control-flow decisions directly in a cyclic task graph
 rather than unrolling it statically across iterations, saving a lot of memory usage.

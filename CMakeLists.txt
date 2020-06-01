@@ -6,7 +6,7 @@ MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Project name
-project(Cpp-Taskflow VERSION 2.4.0 LANGUAGES CXX)
+project(Taskflow VERSION 2.4.0 LANGUAGES CXX)
 
 # build options
 option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
@@ -19,28 +19,28 @@ include(CheckLanguage)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.0")
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
-    message(FATAL_ERROR "\nCpp-Taskflow requires g++ at least v5.0")
+    message(FATAL_ERROR "\nTaskflow requires g++ at least v5.0")
   endif()
 ## clang++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.0")
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
-    message(FATAL_ERROR "\nCpp-Taskflow requires clang++ at least v4.0")
+    message(FATAL_ERROR "\nTaskflow requires clang++ at least v4.0")
   endif() 
 ## AppleClang
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "8.0")
-    message(FATAL_ERROR "\nCpp-Taskflow requires AppleClang at least v8.0")
+    message(FATAL_ERROR "\nTaskflow requires AppleClang at least v8.0")
   endif()
 ## microsoft visual c++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   if(NOT MSVC_VERSION GREATER_EQUAL 1914)
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
-    message(FATAL_ERROR "\nCpp-Taskflow requires MSVC++ at least v14.14") 
+    message(FATAL_ERROR "\nTaskflow requires MSVC++ at least v14.14") 
   endif()
 else()
   message(FATAL_ERROR "\n\
-Cpp-Taskflow currently supports the following compilers:\n\
+Taskflow currently supports the following compilers:\n\
   - g++ v5.0 or above\n\
   - clang++ v4.0 or above\n\
   - MSVC++ v19.14 or above\n\
@@ -55,7 +55,7 @@ if(CMAKE_CUDA_COMPILER)
   enable_language(CUDA)
   if(CMAKE_CUDA_COMPILER_VERSION VERSION_LESS "10")
     message(STATUS "CMAKE_CUDA_COMPILER_VERSION: ${CMAKE_CUDA_COMPILER_VERSION}")
-    message(FATAL_ERROR "\nCpp-Taskflow requires CUDA at least v10")
+    message(FATAL_ERROR "\nTaskflow requires CUDA at least v10")
   endif()
 endif(CMAKE_CUDA_COMPILER)
 
@@ -204,7 +204,7 @@ include(CTest)
 find_package(Threads REQUIRED)
 
 # -----------------------------------------------------------------------------
-# Cpp-Taskflow library interface
+# Taskflow library interface
 # -----------------------------------------------------------------------------
 
 add_library(${PROJECT_NAME} INTERFACE)
@@ -809,7 +809,7 @@ endif(CMAKE_CUDA_COMPILER)
 endif()
 
 # -----------------------------------------------------------------------------
-# create find_package(Cpp-Taskflow CONFIG)
+# create find_package(Taskflow CONFIG)
 # -----------------------------------------------------------------------------
 
 # install header
