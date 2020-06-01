@@ -927,22 +927,24 @@ inline void Executor::_invoke_static_work(Worker& worker, Node* node) {
 // Procedure: _invoke_dynamic_work
 inline void Executor::_invoke_dynamic_work(Worker& worker, Node* node, bool& join) {
 
+  //assert(!node->_has_state(Node::SPAWNED));
+
   _observer_prologue(worker, node);
-    
-  auto& subgraph = nstd::get<Node::DynamicWork>(node->_handle).subgraph;
 
-  subgraph.clear();
-  Subflow fb(subgraph); 
+  auto& handle = nstd::get<Node::DynamicWork>(node->_handle);
 
-  nstd::get<Node::DynamicWork>(node->_handle).work(fb);
+  handle.subgraph.clear();
+  Subflow fb(handle.subgraph); 
+
+  handle.work(fb);
 
   node->_set_state(Node::SPAWNED);
 
-  if(!subgraph.empty()) {
+  if(!handle.subgraph.empty()) {
 
     PassiveVector<Node*> src; 
 
-    for(auto n : subgraph._nodes) {
+    for(auto n : handle.subgraph._nodes) {
 
       n->_topology = node->_topology;
       n->_set_up_join_counter();

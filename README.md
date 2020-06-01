@@ -50,6 +50,13 @@ by harnessing the power of CPU-GPU collaborative computing.
 | :-----------------: |
 | ![](image/cudaflow.svg) |
 
+
+Cpp-Taskflow provides visualization and tooling needed for profiling cpp-taskflow programs.
+
+| [Taskflow Profiler](https://cpp-taskflow.github.io/tfprof) |
+| :-----------------: |
+| ![](image/tfprof.png) |
+
 We are committed to support trustworthy developments for both academic and industrial research projects 
 in parallel computing. Check out [Who is Using Cpp-Taskflow](#who-is-using-cpp-taskflow) and what our users say:
 
@@ -73,14 +80,11 @@ Technical details can be referred to our [arXiv paper](https://arxiv.org/abs/200
    * [Step 3: Execute a Taskflow](#step-3-execute-a-taskflow)
 * [Dynamic Tasking](#dynamic-tasking)
 * [Conditional Tasking](#conditional-tasking)
-   * [Step 1: Create a Condition Task](#step-1-create-a-condition-task)
-   * [Step 2: Scheduling Rules for Condition Tasks](#step-2-scheduling-rules-for-condition-tasks)
 * [Composable Tasking](#composable-tasking)
 * [Concurrent CPU-GPU Tasking](#concurrent-cpu-gpu-tasking)
    * [Step 1: Create a cudaFlow](#step-1-create-a-cudaflow)
    * [Step 2: Compile and Execute a cudaFlow](#step-2-compile-and-execute-a-cudaflow)
 * [Visualize a Taskflow Graph](#visualize-a-taskflow-graph)
-* [Monitor Thread Activities](#monitor-thread-activities)
 * [API Reference](#api-reference)
 * [System Requirements](#system-requirements)
 * [Compile Unit Tests, Examples, and Benchmarks](#compile-unit-tests-examples-and-benchmarks)
@@ -258,11 +262,7 @@ the execution of a subflow and so on.
 
 # Conditional Tasking
 
-Taskflow supports *conditional tasking* for users to implement *dynamic* and *cyclic* control flows.
-You can create highly versatile and efficient parallel patterns through condition tasks.
-
-## Step 1: Create a Condition Task
-
+Taskflow supports *conditional tasking* for users to implement *general* control flow with cycles and conditionals.
 A *condition task* evalutes a set of instructions and returns an integer index
 of the next immediate successor to execute.
 The index is defined with respect to the order of its successor construction.
@@ -285,35 +285,6 @@ cond.precede(cond, stop);  // cond--0-->cond, cond--1-->stop
 
 executor.run(tf).wait();
 ```
-
-If the return value from `cond` is 0, it loops back to itself, or otherwise to `stop`.
-Cpp-Taskflow terms the preceding link from a condition task a *weak dependency*
-(dashed lines above).
-Others are *strong depedency* (solid lines above).
-
-
-## Step 2: Scheduling Rules for Condition Tasks
-
-When you submit a taskflow to an executor,
-the scheduler starts with tasks of *zero dependency* (both weak and strong dependencies)
-and continues to execute successive tasks whenever *strong dependencies* are met.
-However, 
-the scheduler skips this rule for a condition task and jumps directly to its successor
-indexed by the return value.
-
-![](image/conditional-tasking-rules.svg)
-
-It is users' responsibility to ensure a taskflow is properly conditioned. 
-Top things to avoid include no source tasks to start with and task race.
-The figure shows common pitfalls and their remedies.
-In the risky scenario, task X may not be raced if P and M is exclusively
-branching to X.
-
-![](image/conditional-tasking-pitfalls.svg)
-
-
-A good practice for avoiding mistakes of conditional tasking is to infer the execution flow of your graphs based on our scheduling rules.
-Make sure there is no task race.
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
@@ -484,19 +455,6 @@ tf.dump(std::cout);       // dump the graph including dynamic tasks
 
 
 
-# Monitor Thread Activities 
-
-Cpp-Taskflow Profiler ([TFProf](https://github.com/cpp-taskflow/tfprof)) 
-provides the visualization and tooling needed for profiling cpp-taskflow programs.
-
-<p align="center">
-   <a href="https://cpp-taskflow.github.io/tfprof/">
-     <img width="100%" src="image/tfprof.png">
-   </a>
-</p>
-
-<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
-
 # API Reference
 
 The official [documentation][wiki] explains a complete list of 
@@ -506,30 +464,20 @@ Here, we highlight commonly used methods.
 ## Taskflow API
 
 The class `tf::Taskflow` is the main place to create a task dependency graph.
-The table below summarizes a list of commonly used methods.
-
-| Method   | Argument  | Return  | Description |
-| -------- | --------- | ------- | ----------- |
-| emplace  | callables | tasks   | creates a task with a given callable(s) |
-| placeholder     | none        | task         | inserts a node without any work; work can be assigned later |
-| parallel_for    | beg, end, callable, chunk | task pair | concurrently applies the callable chunk by chunk to the result of dereferencing every iterator in the range | 
-| parallel_for    | beg, end, step, callable, chunk | task pair | concurrently applies the callable chunk by chunk to an index-based range with a step size | 
-| num_workers     | none        | size | queries the number of working threads in the pool |  
-| dump            | ostream     | none | dumps the taskflow to an output stream in GraphViz format |
 
 ### *emplace/placeholder*
 
 You can use `emplace` to create a task from a target callable.
 
 ```cpp
-tf::Task task = tf.emplace([] () { std::cout << "my task\n"; });
+tf::Task task = taskflow.emplace([] () { std::cout << "my task\n"; });
 ```
 
 When a task cannot be determined beforehand, you can create a placeholder and assign the callable later.
 
 ```cpp
-tf::Task A = tf.emplace([](){});
-tf::Task B = tf.placeholder();
+tf::Task A = taskflow.emplace([](){});
+tf::Task B = taskflow.placeholder();
 A.precede(B);
 B.work([](){ /* do something */ });
 ```
@@ -542,7 +490,7 @@ The method `parallel_for` creates a subgraph that applies the callable to each i
 
 ```cpp
 auto v = {'A', 'B', 'C', 'D'};
-auto [S, T] = tf.parallel_for(
+auto [S, T] = taskflow.parallel_for(
   v.begin(),    // iterator to the beginning
   v.end(),      // iterator to the end
   [] (int i) { 
@@ -558,7 +506,7 @@ You can specify a *chunk* size (default one) in the last argument to force a tas
 
 ```cpp
 auto v = {'A', 'B', 'C', 'D'};
-auto [S, T] = tf.parallel_for(
+auto [S, T] = taskflow.parallel_for(
   v.begin(),    // iterator to the beginning
   v.end(),      // iterator to the end
   [] (int i) { 
@@ -575,7 +523,7 @@ starting index, ending index (exclusive), and step size.
 
 ```cpp
 // [0, 11) with a step size of 2
-auto [S, T] = tf.parallel_for(
+auto [S, T] = taskflow.parallel_for(
   0, 11, 2, 
   [] (int i) {
     std::cout << "parallel_for on index " << i << std::endl;
@@ -589,20 +537,7 @@ auto [S, T] = tf.parallel_for(
 
 Each time you create a task, the taskflow object adds a node to the present task dependency graph
 and return a *task handle* to you.
-A task handle is a lightweight object that defines a set of methods for users to
-access and modify the attributes of the associated task.
-The table below summarizes a list of commonly used methods.
-
-| Method         | Argument    | Return | Description |
-| -------------- | ----------- | ------ | ----------- |
-| name           | string      | self   | assigns a human-readable name to the task |
-| work           | callable    | self   | assigns a work of a callable object to the task |
-| precede        | task list   | self   | enables this task to run *before* the given tasks |
-| succeed        | task list   | self   | enables this task to run *after* the given tasks |
-| num_dependents | none        | size   | returns the number of dependents (inputs) of this task |
-| num_successors | none        | size   | returns the number of successors (outputs) of this task |
-| empty          | none        | bool   | returns true if the task points to a graph node or false otherwise |
-| has_work       | none        | bool   | returns true if the task points to a graph node with a callable assigned |
+You can access or modify the attributes of the associated task node.
 
 ### *name*
 
@@ -620,9 +555,9 @@ The method `work` lets you assign a callable to a task.
 A.work([] () { std::cout << "hello world!"; });
 ```
 
-### *precede*
+### *precede/succeed*
 
-The method `precede` lets you add a preceding link from self to other tasks.
+The method `precede/succedd` lets you add a preceding/succeeding link between tasks.
 
 <img align="right" width="30%" src="image/broadcast.svg">
 
@@ -635,7 +570,7 @@ The method `succeed` is similar to `precede` but operates in the opposite direct
 
 ### *empty/has_work*
 
-A task is empty is it is not associated with any graph node.
+A task is empty if it is not associated with any graph node.
 
 ```cpp
 tf::Task task;  // assert(task.empty());
@@ -649,20 +584,11 @@ tf::Task task = taskflow.placeholder();  // assert(!task.has_work());
 
 ## Executor API
 
-The class `tf::Executor` is used for execution of one or multiple taskflow objects.
-The table below summarizes a list of commonly used methods. 
-
-| Method    | Argument       | Return        | Description              |
-| --------- | -------------- | ------------- | ------------------------ |
-| run       | taskflow       | future | runs the taskflow once    |
-| run_n     | taskflow, N    | future | runs the taskflow N times |
-| run_until | taskflow, binary predicate | future | keeps running the taskflow until the predicate becomes true |
-| wait_for_all | none | none | blocks until all running tasks finish |
-| make_observer | arguments to forward to user-derived constructor | pointer to the observer | creates an observer to monitor the thread activities of the executor |
+The class `tf::Executor` is used for executing one or multiple taskflow objects.
 
 ### *run/run_n/run_until*
 
-The run series are non-blocking call to execute a taskflow graph.
+The run series are *thread-safe* and *non-blocking* calls to execute a taskflow.
 Issuing multiple runs on the same taskflow will automatically synchronize 
 to a sequential chain of executions.
 

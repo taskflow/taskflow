@@ -649,7 +649,8 @@ template&lt;typename I , typename C &gt; </div>
 </div><div class="memdoc">
 
 <p>constructs a task dependency graph of range-based parallel_for </p>
-<p>The task dependency graph applies a callable object to the dereferencing of every iterator in the range [beg, end) chunk by chunk.</p>
+<p>The task dependency graph applies the callable object <code>callable</code> to each object obtained by dereferencing every iterator in the range [beg, end). The range is split into chunks of size <code>chunk</code>, where each of them is processed by one <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a>.</p>
+<p>The callable needs to accept a single argument, the object in the range.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">I</td><td>input iterator type </td></tr>
