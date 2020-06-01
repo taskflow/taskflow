@@ -1,32 +1,32 @@
-# Cpp-Taskflow <img align="right" width="10%" src="image/cpp-taskflow_logo.png">
+# Taskflow <img align="right" width="10%" src="image/taskflow_logo.png">
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bb04cb8e4aca401b8206c054e79fd5e3)](https://app.codacy.com/app/tsung-wei-huang/cpp-taskflow?utm_source=github.com&utm_medium=referral&utm_content=cpp-taskflow/cpp-taskflow&utm_campaign=Badge_Grade_Dashboard)
 [![Linux Build Status](https://travis-ci.com/cpp-taskflow/cpp-taskflow.svg?branch=master)](https://travis-ci.com/cpp-taskflow/cpp-taskflow)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/te9bjp4yfhq7f8hq?svg=true)](https://ci.appveyor.com/project/TsungWeiHuang/cpp-taskflow)
 [![Wiki](image/api-doc.svg)][wiki]
-[![TFProf](image/tfprof.svg)](https://cpp-taskflow.github.io/tfprof/)
+[![TFProf](image/tfprof.svg)](https://taskflow.github.io/tfprof/)
 [![Cite](image/cite-arXiv.svg)](https://arxiv.org/abs/2004.10908v2)
 
-Cpp-Taskflow helps you quickly write parallel programs with high performance scalability
+Taskflow helps you write parallel programs with high performance scalability
 and simultaneous high productivity.
 
-# Why Cpp-Taskflow?
+# Why Taskflow?
 
-Cpp-Taskflow is faster, more expressive, and easier for drop-in integration
+Taskflow is faster, more expressive, and easier for drop-in integration
 than many of existing task programming frameworks
 in handling complex parallel workloads.
 
 ![](image/performance.png)
 
-Cpp-Taskflow lets you quickly implement task decomposition strategies
+Taskflow lets you quickly implement task decomposition strategies
 that incorporate both regular and irregular compute patterns,
 together with an efficient *work-stealing* scheduler to optimize your multithreaded performance.
 
-| [Static Tasking](#get-started-with-cpp-taskflow) | [Dynamic Tasking](#dynamic-tasking) |
+| [Static Tasking](#get-started-with-taskflow) | [Dynamic Tasking](#dynamic-tasking) |
 | :------------: | :-------------: |
 | ![](image/static_graph.svg) | <img align="right" src="image/dynamic_graph.svg" width="100%"> |
 
-Cpp-Taskflow supports conditional tasking for you to make rapid control-flow decisions
+Taskflow supports conditional tasking for you to make rapid control-flow decisions
 across dependent tasks to implement cycles and conditions that were otherwise difficult to do
 with existing tools.
 
@@ -34,7 +34,7 @@ with existing tools.
 | :-----------------: |
 | ![](image/condition.svg) |
 
-Cpp-Taskflow is composable. You can create large parallel graphs through
+Taskflow is composable. You can create large parallel graphs through
 composition of modular and reusable blocks that are easier to optimize
 at an individual scope.
 
@@ -42,7 +42,7 @@ at an individual scope.
 | :---------------: |
 |![](image/framework.svg)|
 
-Cpp-Taskflow supports heterogeneous tasking for you to 
+Taskflow supports heterogeneous tasking for you to 
 accelerate a wide range of scientific computing applications
 by harnessing the power of CPU-GPU collaborative computing.
 
@@ -51,29 +51,29 @@ by harnessing the power of CPU-GPU collaborative computing.
 | ![](image/cudaflow.svg) |
 
 
-Cpp-Taskflow provides visualization and tooling needed for profiling cpp-taskflow programs.
+Taskflow provides visualization and tooling needed for profiling Taskflow programs.
 
-| [Taskflow Profiler](https://cpp-taskflow.github.io/tfprof) |
+| [Taskflow Profiler](https://taskflow.github.io/tfprof) |
 | :-----------------: |
 | ![](image/tfprof.png) |
 
 We are committed to support trustworthy developments for both academic and industrial research projects 
-in parallel computing. Check out [Who is Using Cpp-Taskflow](#who-is-using-cpp-taskflow) and what our users say:
+in parallel computing. Check out [Who is Using Taskflow](#who-is-using-taskflow) and what our users say:
 
-+ *"Cpp-Taskflow is the cleanest Task API I've ever seen." [Damien Hocking @Corelium Inc](http://coreliuminc.com)*
-+ *"Cpp-Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [Glen Fraser][totalgee]*
-+ *"Cpp-Taskflow lets me handle parallel processing in a smart way." [Hayabusa @Cpp-Learning](https://cpp-learning.com/cpp-taskflow/)*
-+ *"Cpp-Taskflow improves the throughput of our graph engine in just a few hours of coding." [Jean-Michaël @KDAB](https://ossia.io/)*
++ *"Taskflow is the cleanest Task API I've ever seen." [Damien Hocking @Corelium Inc](http://coreliuminc.com)*
++ *"Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [Glen Fraser][totalgee]*
++ *"Taskflow lets me handle parallel processing in a smart way." [Hayabusa @Learning](https://cpp-learning.com/cpp-taskflow/)*
++ *"Taskflow improves the throughput of our graph engine in just a few hours of coding." [Jean-Michaël @KDAB](https://ossia.io/)*
 + *"Best poster award for open-source parallel programming library." [Cpp Conference 2018][Cpp Conference 2018]*
 + *"Second Prize of Open-source Software Competition." [ACM Multimedia Conference 2019](https://tsung-wei-huang.github.io/img/mm19-ossc-award.jpg)*
 
 See a quick [presentation][Presentation] and 
-visit the [documentation][wiki] to learn more about Cpp-Taskflow.
+visit the [documentation][wiki] to learn more about Taskflow.
 Technical details can be referred to our [arXiv paper](https://arxiv.org/abs/2004.10908v2).
 
 # Table of Contents
 
-* [Get Started with Cpp-Taskflow](#get-started-with-cpp-taskflow)
+* [Get Started with Taskflow](#get-started-with-taskflow)
 * [Create a Taskflow Application](#create-a-taskflow-application)
    * [Step 1: Create a Taskflow](#step-1-create-a-taskflow)
    * [Step 2: Define Task Dependencies](#step-2-define-task-dependencies)
@@ -88,16 +88,16 @@ Technical details can be referred to our [arXiv paper](https://arxiv.org/abs/200
 * [API Reference](#api-reference)
 * [System Requirements](#system-requirements)
 * [Compile Unit Tests, Examples, and Benchmarks](#compile-unit-tests-examples-and-benchmarks)
-* [Who is Using Cpp-Taskflow?](#who-is-using-cpp-taskflow)
+* [Who is Using Taskflow?](#who-is-using-taskflow)
 
 
-# Get Started with Cpp-Taskflow
+# Get Started with Taskflow
 
-The following example [simple.cpp](./examples/simple.cpp) shows the basic Cpp-Taskflow API
+The following example [simple.cpp](./examples/simple.cpp) shows the basic Taskflow API
 you need in most applications.
 
 ```cpp
-#include <taskflow/taskflow.hpp>  // Cpp-Taskflow is header-only
+#include <taskflow/taskflow.hpp>  // Taskflow is header-only
 
 int main(){
   
@@ -135,7 +135,7 @@ TaskD
 
 # Create a Taskflow Application
 
-Cpp-Taskflow defines a very expressive API to create task dependency graphs.
+Taskflow defines a very expressive API to create task dependency graphs.
 Most applications are developed through the following three steps:
 
 ## Step 1: Create a Taskflow
@@ -326,7 +326,7 @@ to compose a larger taskflow and so on.
 
 # Concurrent CPU-GPU Tasking
 
-Cpp-Taskflow enables concurrent CPU-GPU tasking by leveraging
+Taskflow enables concurrent CPU-GPU tasking by leveraging
 [Nvidia CUDA Toolkit][cuda-toolkit].
 You can harness the power of CPU-GPU collaborative computing 
 to implement heterogeneous decomposition algorithms.
@@ -458,7 +458,7 @@ tf.dump(std::cout);       // dump the graph including dynamic tasks
 # API Reference
 
 The official [documentation][wiki] explains a complete list of 
-Cpp-Taskflow API. 
+Taskflow API. 
 Here, we highlight commonly used methods.
 
 ## Taskflow API
@@ -604,21 +604,21 @@ The first run finishes before the second run, and the second run finishes before
 
 # System Requirements
 
-To use the latest [Cpp-Taskflow](https://github.com/cpp-taskflow/cpp-taskflow/archive/master.zip), you only need a [C++14][C++14] compiler.
+To use the latest [Taskflow](https://github.com/taskflow/taskflow/archive/master.zip), you only need a [C++14][C++14] compiler.
 
 + GNU C++ Compiler at least v5.0 with -std=c++14
 + Clang C++ Compiler at least v4.0 with -std=c++14
-+ Microsoft Visual Studio at least v15.7 (MSVC++ 19.14); see [vcpkg guide](https://github.com/cpp-taskflow/cpp-taskflow/issues/143)
++ Microsoft Visual Studio at least v15.7 (MSVC++ 19.14); see [vcpkg guide](https://github.com/taskflow/taskflow/issues/143)
 + AppleClang Xode Version at least v8
 + Nvidia CUDA Toolkit and Compiler ([nvcc][nvcc]) at least v10.0 with -std=c++14
 
-Cpp-Taskflow works on Linux, Windows, and Mac OS X. See the [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support) status.
+Taskflow works on Linux, Windows, and Mac OS X. See the [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support) status.
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
 # Compile Unit Tests, Examples, and Benchmarks
 
-Cpp-Taskflow uses [CMake](https://cmake.org/) to build examples and unit tests.
+Taskflow uses [CMake](https://cmake.org/) to build examples and unit tests.
 We recommend using out-of-source build.
 
 ```bash
@@ -631,7 +631,7 @@ We recommend using out-of-source build.
 
 ## Examples
 
-The folder `examples/` contains several examples and is a great place to learn to use Cpp-Taskflow.
+The folder `examples/` contains several examples and is a great place to learn to use Taskflow.
 
 | Example |  Description |
 | ------- |  ----------- | 
@@ -653,9 +653,9 @@ compile the benchmarks.
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
-# Who is Using Cpp-Taskflow?
+# Who is Using Taskflow?
 
-Cpp-Taskflow is being used in both industry and academic projects to scale up existing workloads 
+Taskflow is being used in both industry and academic projects to scale up existing workloads 
 that incorporate complex task dependencies. 
 
 - [OpenTimer][OpenTimer]: A High-performance Timing Analysis Tool for Very Large Scale Integration (VLSI) Systems
@@ -670,14 +670,14 @@ that incorporate complex task dependencies.
 - [OpenPhySyn](https://github.com/The-OpenROAD-Project/OpenPhySyn): A plugin-based physical synthesis optimization kit as part of the OpenRoad flow
 - [OSSIA](https://ossia.io/): Open-source Software System for Interactive Applications
 
-[More...](https://github.com/search?q=cpp-taskflow&type=Code)
+[More...](https://github.com/search?q=taskflow&type=Code)
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
 # Contributors
 
-Cpp-Taskflow is being actively developed and contributed by the 
-[these people](https://github.com/cpp-taskflow/cpp-taskflow/graphs/contributors).
+Taskflow is being actively developed and contributed by the 
+[these people](https://github.com/taskflow/taskflow/graphs/contributors).
 Meanwhile, we appreciate the support from many organizations for our developments.
 
 
@@ -686,21 +686,19 @@ Meanwhile, we appreciate the support from many organizations for our development
 
 # License
 
-Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
+Taskflow is licensed under the [MIT License](./LICENSE).
 
 * * *
 
 [Tsung-Wei Huang]:       https://tsung-wei-huang.github.io/
 [Chun-Xun Lin]:          https://github.com/clin99
 [Martin Wong]:           https://ece.illinois.edu/directory/profile/mdfwong
-[Andreas Olofsson]:      https://github.com/aolofsson
-[Gitter]:                https://gitter.im/cpp-taskflow/Lobby
 [Gitter badge]:          ./image/gitter_badge.svg
-[GitHub releases]:       https://github.com/coo-taskflow/cpp-taskflow/releases
-[GitHub issues]:         https://github.com/cpp-taskflow/cpp-taskflow/issues
-[GitHub insights]:       https://github.com/cpp-taskflow/cpp-taskflow/pulse
-[GitHub pull requests]:  https://github.com/cpp-taskflow/cpp-taskflow/pulls
-[GitHub contributors]:   https://github.com/cpp-taskflow/cpp-taskflow/graphs/contributors
+[GitHub releases]:       https://github.com/taskflow/taskflow/releases
+[GitHub issues]:         https://github.com/taskflow/taskflow/issues
+[GitHub insights]:       https://github.com/taskflow/taskflow/pulse
+[GitHub pull requests]:  https://github.com/taskflow/taskflow/pulls
+[GitHub contributors]:   https://github.com/taskflow/taskflow/graphs/contributors
 [GraphViz]:              https://www.graphviz.org/
 [AwesomeGraphViz]:       https://dreampuf.github.io/GraphvizOnline/
 [OpenMP Tasking]:        https://www.openmp.org/spec-html/5.0/openmpsu99.html 
@@ -717,8 +715,8 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [UIUC]:                  https://illinois.edu/
 [CSL]:                   https://csl.illinois.edu/
 [UofU]:                  https://www.utah.edu/
-[wiki]:                  https://cpp-taskflow.github.io/cpp-taskflow/index.html
-[release notes]:         https://cpp-taskflow.github.io/cpp-taskflow/Releases.html
+[wiki]:                  https://taskflow.github.io/taskflow/index.html
+[release notes]:         https://taskflow.github.io/taskflow/Releases.html
 [PayMe]:                 https://www.paypal.me/twhuang/10
 [C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
 [C++14]:                 https://en.wikipedia.org/wiki/C%2B%2B14
@@ -742,6 +740,6 @@ Cpp-Taskflow is licensed under the [MIT License](./LICENSE).
 [NovusCore]:             https://github.com/novuscore/NovusCore
 [SA-PCB]:                https://github.com/choltz95/SA-PCB
 
-[Presentation]:          https://cpp-taskflow.github.io/
+[Presentation]:          https://taskflow.github.io/
 [chrome://tracing]:      chrome://tracing
 
