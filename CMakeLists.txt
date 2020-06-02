@@ -6,7 +6,7 @@ MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Project name
-project(Taskflow VERSION 2.4.0 LANGUAGES CXX)
+project(Taskflow VERSION 2.5.0 LANGUAGES CXX)
 
 # build options
 option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
