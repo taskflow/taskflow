@@ -1,5 +1,6 @@
 # Taskflow <img align="right" width="10%" src="image/taskflow_logo.png">
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3bbdc89f9a7a41eaa17559fab8a64cde)](https://app.codacy.com/gh/taskflow/taskflow?utm_source=github.com&utm_medium=referral&utm_content=taskflow/taskflow&utm_campaign=Badge_Grade_Dashboard)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bb04cb8e4aca401b8206c054e79fd5e3)](https://app.codacy.com/app/tsung-wei-huang/cpp-taskflow?utm_source=github.com&utm_medium=referral&utm_content=cpp-taskflow/cpp-taskflow&utm_campaign=Badge_Grade_Dashboard)
 [![Linux Build Status](https://travis-ci.com/taskflow/taskflow.svg?branch=master)](https://travis-ci.com/taskflow/taskflow)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/te9bjp4yfhq7f8hq?svg=true)](https://ci.appveyor.com/project/TsungWeiHuang/cpp-taskflow)
