@@ -862,7 +862,7 @@ inline void Executor::_invoke_dynamic_work_external(Graph& g, Node* p) {
 
   auto worker = _per_thread().worker;
 
-  assert(worker && worker.executor == this);
+  assert(worker && worker->executor == this);
   
   _invoke_dynamic_work_internal(*worker, p, g, false);
 }
