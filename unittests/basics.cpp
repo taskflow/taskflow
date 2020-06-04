@@ -1694,6 +1694,7 @@ void mix_spawn(
   std::atomic<int>& counter, 
   int depth, tf::Subflow& subflow
 )  {
+
   if(depth < max_depth) {
     auto ret = counter.fetch_add(1, std::memory_order_relaxed);
     if(ret % 2) {
@@ -1701,10 +1702,10 @@ void mix_spawn(
     }
     subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
       mix_spawn(max_depth, counter, depth, subflow); }
-    );
+    ).name(std::string("left") + std::to_string(ret%2));
     subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
       mix_spawn(max_depth, counter, depth, subflow); }
-    );
+    ).name(std::string("right") + std::to_string(ret%2));
   }
 }
 
@@ -1747,7 +1748,7 @@ TEST_CASE("TreeSubflow" * doctest::timeout(300)) {
       tf::Taskflow tf;
       tf.emplace([&](tf::Subflow& subflow){ 
         mix_spawn(max_depth, counter, 0, subflow); 
-      });
+      }).name("top task");
 
       tf::Executor executor(W);
       executor.run(tf).get();

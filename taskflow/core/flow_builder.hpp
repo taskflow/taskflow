@@ -13,6 +13,8 @@ namespace tf {
 class FlowBuilder {
 
   friend class Task;
+  friend class Executor;
+  friend class Subflow;
 
   public:
     
@@ -339,7 +341,7 @@ class FlowBuilder {
     */
     void succeed(std::initializer_list<Task> others, Task A);
     
-  private:
+  protected:
 
     Graph& _graph;
 
@@ -863,6 +865,8 @@ std::pair<Task, Task> FlowBuilder::reduce(I beg, I end, T& result, B&& op) {
 */ 
 class Subflow : public FlowBuilder {
 
+  friend class Executor;
+
   public:
     
     /**
@@ -884,7 +888,7 @@ class Subflow : public FlowBuilder {
     /**
     @brief queries if the subflow will be detached from its parent task
     */
-    bool detached() const;
+    //bool detached() const;
 
     /**
     @brief queries if the subflow will join its parent task
@@ -893,7 +897,10 @@ class Subflow : public FlowBuilder {
 
   private:
 
-    bool _detached {false};
+    Executor* _executor;
+
+    bool _joined {false};
+    bool _detach {false};
 };
 
 // Constructor
@@ -902,24 +909,17 @@ Subflow::Subflow(Args&&... args) :
   FlowBuilder {std::forward<Args>(args)...} {
 }
 
-// Procedure: join
-inline void Subflow::join() {
-  _detached = false;
-}
-
 // Procedure: detach
 inline void Subflow::detach() {
-  _detached = true;
-}
-
-// Function: detached
-inline bool Subflow::detached() const {
-  return _detached;
+  if(_joined) {
+    TF_THROW("subflow already joined");
+  }
+  _detach = true;
 }
 
 // Function: joined
 inline bool Subflow::joined() const {
-  return !_detached;
+  return _joined;
 }
 
 

@@ -57,7 +57,7 @@ std::unique_ptr<Node[]> make_dag(size_t num_nodes, size_t max_degree) {
 TEST_CASE("StaticTraverse" * doctest::timeout(300)) {
   
   size_t max_degree = 4;
-  size_t num_nodes = 100000;
+  size_t num_nodes = 1000;
   
   for(unsigned w=1; w<=4; w++) {
 
@@ -123,7 +123,7 @@ TEST_CASE("DynamicTraverse" * doctest::timeout(300)) {
   };
   
   size_t max_degree = 4;
-  size_t num_nodes = 100000;
+  size_t num_nodes = 1000;
   
   for(unsigned w=1; w<=4; w++) {
 
@@ -176,7 +176,7 @@ void parallel_traverse(unsigned num_threads) {
       std::atomic<size_t> level {0};
 
       size_t max_degree = 8;
-      size_t num_nodes = 5000;
+      size_t num_nodes = 1000;
       
       auto nodes = make_dag(num_nodes, max_degree);
         
