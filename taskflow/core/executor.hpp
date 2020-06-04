@@ -803,8 +803,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     node->_join_counter = node->num_dependents();
   }
 
-  node->_unset_state(Node::SPAWNED);
-
   // At this point, the node storage might be destructed.
   for(size_t i=0; i<num_successors; ++i) {
     if(--(node->_successors[i]->_join_counter) == 0) {
@@ -837,8 +835,6 @@ inline void Executor::_invoke_static_work(Worker& worker, Node* node) {
 
 // Procedure: _invoke_dynamic_work
 inline void Executor::_invoke_dynamic_work(Worker& w, Node* node) {
-
-  //assert(!node->_has_state(Node::SPAWNED));
 
   _observer_prologue(w, node);
 
@@ -879,26 +875,16 @@ inline void Executor::_invoke_dynamic_work(Worker& w, Node* node) {
         _schedule(src);
         Node* t = nullptr;
 
-        while(1) {
-
+        do {
           t = w.wsq[w.domain].pop();
       
           if(t) {
             _invoke(w, t);
-            if(t->_parent == nullptr) {
-              t->_topology->_join_counter.fetch_sub(1, std::memory_order_relaxed);
-              assert(t->_topology->_join_counter != 0);
-            }
-            else {
-              t->_parent->_join_counter.fetch_sub(1, std::memory_order_relaxed);
-            }
+            t->_parent ? t->_parent->_join_counter.fetch_sub(1, std::memory_order_relaxed) :
+                         t->_topology->_join_counter.fetch_sub(1, std::memory_order_relaxed);
           }
 
-          if(node->_join_counter == 0) {
-            break;
-          }
-          // TODO: steal tasks
-        }
+        } while(node->_join_counter != 0);
       }
     }
   }
@@ -1029,26 +1015,16 @@ inline void Executor::_invoke_module_work(Worker& w, Node* node) {
     _schedule(src);
     Node* t = nullptr;
 
-    while(1) {
+    do {
 
       t = w.wsq[w.domain].pop();
 
       if(t) {
         _invoke(w, t);
-        if(t->_parent == nullptr) {
-          t->_topology->_join_counter.fetch_sub(1, std::memory_order_relaxed);
-          assert(t->_topology->_join_counter != 0);
-        }
-        else {
-          t->_parent->_join_counter.fetch_sub(1, std::memory_order_relaxed);
-        }
+        t->_parent ? t->_parent->_join_counter.fetch_sub(1, std::memory_order_relaxed) : 
+                     t->_topology->_join_counter.fetch_sub(1, std::memory_order_relaxed);
       }
-
-      if(node->_join_counter == 0) {
-        break;
-      }
-      // TODO: steal tasks
-    }
+    } while(node->_join_counter != 0);
   }
   
   _observer_epilogue(w, node);  
@@ -1245,6 +1221,8 @@ inline void Executor::wait_for_all() {
   _topology_cv.wait(lock, [&](){ return _num_topologies == 0; });
 }
 
+// ----------------------------------------------------------------------------
+// Cyclic Dependency
 // ----------------------------------------------------------------------------
 
 inline void Subflow::join() {

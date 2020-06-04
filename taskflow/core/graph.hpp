@@ -84,8 +84,7 @@ class Node {
   TF_ENABLE_POOLABLE_ON_THIS;
 
   // state bit flag
-  constexpr static int SPAWNED = 0x1;
-  constexpr static int BRANCH  = 0x2;
+  constexpr static int BRANCH  = 0x1;
   
   // static work handle
   struct StaticWork {

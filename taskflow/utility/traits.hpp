@@ -5,7 +5,8 @@
 #include <iostream>
 #include <fstream>
 #include <mutex>
-#include <deque>
+#include <stack>
+#include <queue>
 #include <vector>
 #include <algorithm>
 #include <memory>

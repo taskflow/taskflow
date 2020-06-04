@@ -94,6 +94,7 @@ class ChromeTracingObserver : public ObserverInterface {
   struct Timeline {
     std::chrono::time_point<std::chrono::steady_clock> origin;
     std::vector<std::vector<Segment>> segments;
+    std::vector<std::stack<std::chrono::time_point<std::chrono::steady_clock>>> stacks;
   };  
 
   public:
@@ -149,8 +150,8 @@ inline ChromeTracingObserver::Segment::Segment(
 
 // Procedure: set_up
 inline void ChromeTracingObserver::set_up(size_t num_workers) {
-
   _timeline.segments.resize(num_workers);
+  _timeline.stacks.resize(num_workers);
 
   for(size_t w=0; w<num_workers; ++w) {
     _timeline.segments[w].reserve(32);
@@ -160,22 +161,29 @@ inline void ChromeTracingObserver::set_up(size_t num_workers) {
 }
 
 // Procedure: on_entry
-inline void ChromeTracingObserver::on_entry(size_t w, TaskView tv) {
-  _timeline.segments[w].emplace_back(
-    tv.name(), std::chrono::steady_clock::now()
-  );
+inline void ChromeTracingObserver::on_entry(size_t w, TaskView) {
+  _timeline.stacks[w].push(std::chrono::steady_clock::now());
 }
 
 // Procedure: on_exit
-inline void ChromeTracingObserver::on_exit(size_t w, TaskView) {
-  assert(_timeline.segments[w].size() > 0);
-  _timeline.segments[w].back().end = std::chrono::steady_clock::now();
+inline void ChromeTracingObserver::on_exit(size_t w, TaskView tv) {
+  assert(!_timeline.stacks[w].empty());
+
+  auto beg = _timeline.stacks[w].top();
+  _timeline.stacks[w].pop();
+
+  _timeline.segments[w].emplace_back(
+    tv.name(), beg, std::chrono::steady_clock::now()
+  );
 }
 
 // Function: clear
 inline void ChromeTracingObserver::clear() {
   for(size_t w=0; w<_timeline.segments.size(); ++w) {
     _timeline.segments[w].clear();
+    while(!_timeline.stacks[w].empty()) {
+      _timeline.stacks[w].pop();
+    }
   }
 }
 
@@ -293,6 +301,7 @@ class TFProfObserver : public ObserverInterface {
   struct Timeline {
     std::chrono::time_point<std::chrono::steady_clock> origin;
     std::vector<std::vector<Segment>> segments;
+    std::vector<std::stack<std::chrono::time_point<std::chrono::steady_clock>>> stacks;
   };  
 
   public:
@@ -354,6 +363,7 @@ inline TFProfObserver::Segment::Segment(
 inline void TFProfObserver::set_up(size_t num_workers) {
 
   _timeline.segments.resize(num_workers);
+  _timeline.stacks.resize(num_workers);
 
   for(size_t w=0; w<num_workers; ++w) {
     _timeline.segments[w].reserve(32);
@@ -363,22 +373,29 @@ inline void TFProfObserver::set_up(size_t num_workers) {
 }
 
 // Procedure: on_entry
-inline void TFProfObserver::on_entry(size_t w, TaskView tv) {
-  _timeline.segments[w].emplace_back(
-    tv.name(), tv.type(), std::chrono::steady_clock::now()
-  );
+inline void TFProfObserver::on_entry(size_t w, TaskView) {
+  _timeline.stacks[w].push(std::chrono::steady_clock::now());
 }
 
 // Procedure: on_exit
-inline void TFProfObserver::on_exit(size_t w, TaskView) {
-  assert(_timeline.segments[w].size() > 0);
-  _timeline.segments[w].back().end = std::chrono::steady_clock::now();
+inline void TFProfObserver::on_exit(size_t w, TaskView tv) {
+  assert(!_timeline.stacks[w].empty());
+
+  auto beg = _timeline.stacks[w].top();
+  _timeline.stacks[w].pop();
+
+  _timeline.segments[w].emplace_back(
+    tv.name(), tv.type(), beg, std::chrono::steady_clock::now()
+  );
 }
 
 // Function: clear
 inline void TFProfObserver::clear() {
   for(size_t w=0; w<_timeline.segments.size(); ++w) {
     _timeline.segments[w].clear();
+    while(!_timeline.stacks[w].empty()) {
+      _timeline.stacks[w].pop();
+    }
   }
 }
 
