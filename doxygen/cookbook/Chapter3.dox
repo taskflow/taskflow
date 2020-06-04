@@ -64,12 +64,45 @@ we cannot dump its structure before execution.
 We will need to run the graph first to spawn the graph and then
 call tf::Taskflow::dump.
 
+@section JoinASubflow Join a Subflow
+
+By default, a subflow joins its parent task when the program leaves its execution context.
+All nodes of zero outgoing edges in the subflow precede its parent task.
+You can explicitly join a subflow within its execution context to
+carry out recursive patterns.
+A famous implementation is fibonacci recursion.
+
+@code{.cpp}
+int spawn(int n, tf::Subflow& sbf) {
+  if (n < 2) return n;
+  int res1, res2;
+  sbf.emplace([&res1, n] (tf::Subflow& sbf) { res1 = spawn(n - 1, sbf); } );
+  sbf.emplace([&res2, n] (tf::Subflow& sbf) { res2 = spawn(n - 2, sbf); } );
+  sbf.join();    // join to materialize the subflow immediately
+  return res1 + res2;
+}
+  
+taskflow.emplace([&res] (tf::Subflow& sbf) { 
+  res = spawn(10, sbf);  
+});
+
+executor.run(taskflow).wait();
+@endcode
+
+The code above computes the 10th fibonacci number using recursive subflow.
+Calling tf::Subflow::join @em immediately materializes the subflow by executing all associated
+tasks to recursively compute fibonacci numbers.
+The taskflow graph is shown below:
+
+@image html images/fibonacci_10.svg width=100%
+
+Our implementation to join subflows is @em recursive in order to
+preserve the thread context in each subflow task.
+Having a deep recursion of subflows may cause stack overflow.
+
 @section DetachASubflow Detach a Subflow
 
-By default, a spawned subflow joins its parent task.
-That is, all nodes of zero outgoing edges in the subflow will precede the parent task.
-This forces a subflow to follow the dependency constraints after its parent task.
-Having said that,
+In contract to joined subflow, 
 you can detach a subflow from its parent task, allowing its execution to flow independently.
 
 @code{.cpp}
@@ -146,19 +179,6 @@ Debrief:
 Similarly, you can detach a nested subflow from its parent subflow.
 A detached subflow will run independently and eventually join the topology
 of its parent subflow.
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 */

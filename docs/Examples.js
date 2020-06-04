@@ -10,6 +10,10 @@ var Examples =
       [ "GPU-based Acceleration", "matrix_multiplication.html#GPUAcceleratedMatrixMultiplication", null ],
       [ "Benchmarking", "matrix_multiplication.html#MatrixMultiplicationBenchmarking", null ]
     ] ],
+    [ "Fibonacci Number", "fibonacci.html", [
+      [ "Problem Formulation", "fibonacci.html#FibonacciNumberProblem", null ],
+      [ "Recursive Fibonacci Parallelism", "fibonacci.html#RecursiveFibonacciParallelism", null ]
+    ] ],
     [ "k-means Clustering", "kmeans.html", [
       [ "Problem Formulation", "kmeans.html#KMeansProblemFormulation", null ],
       [ "Parallel k-means using CPUs", "kmeans.html#ParallelKMeansUsingCPUs", null ],

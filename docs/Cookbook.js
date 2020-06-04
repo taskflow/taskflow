@@ -21,6 +21,7 @@ var Cookbook =
     ] ],
     [ "C3: Dynamic Tasking", "chapter3.html", [
       [ "Create a Subflow", "chapter3.html#C3_CreateASubflow", null ],
+      [ "Join a Subflow", "chapter3.html#JoinASubflow", null ],
       [ "Detach a Subflow", "chapter3.html#DetachASubflow", null ],
       [ "Nested Subflow", "chapter3.html#NestedSubflow", null ]
     ] ],

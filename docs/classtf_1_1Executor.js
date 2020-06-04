@@ -16,5 +16,6 @@ var classtf_1_1Executor =
     [ "run_until", "classtf_1_1Executor.html#a8acf7515e8e8fdda366ace68bcd65aa6", null ],
     [ "run_until", "classtf_1_1Executor.html#a85f5cd590d2dbe15d1f2f1f8d920a7e6", null ],
     [ "this_worker_id", "classtf_1_1Executor.html#a6487d589cb1f6b078b69fd3bb1082345", null ],
-    [ "wait_for_all", "classtf_1_1Executor.html#ab9aa252f70e9a40020a1e5a89d485b85", null ]
+    [ "wait_for_all", "classtf_1_1Executor.html#ab9aa252f70e9a40020a1e5a89d485b85", null ],
+    [ "Subflow", "classtf_1_1Executor.html#aa48945297ede77a161defc88033ce8a6", null ]
 ];

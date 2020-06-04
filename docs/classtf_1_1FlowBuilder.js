@@ -23,5 +23,6 @@ var classtf_1_1FlowBuilder =
     [ "succeed", "classtf_1_1FlowBuilder.html#a53927b2b4198b29568f20c43d21ad526", null ],
     [ "transform_reduce", "classtf_1_1FlowBuilder.html#a08d669f2286cb90fd5ba7dade1e93fef", null ],
     [ "transform_reduce", "classtf_1_1FlowBuilder.html#a9b81ad3b206a63adff8b8bc423f8c425", null ],
-    [ "Task", "classtf_1_1FlowBuilder.html#aaa7728226b6ce66782e8816b1658dd9a", null ]
+    [ "Executor", "classtf_1_1FlowBuilder.html#a763b2f90bc53f92d680a635fe28e858e", null ],
+    [ "_graph", "classtf_1_1FlowBuilder.html#a9404a57d9d37a4d49d20b686e4e5f68f", null ]
 ];

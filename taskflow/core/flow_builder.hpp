@@ -334,9 +334,17 @@ class FlowBuilder {
     
   protected:
     
+    /**
+    @brief constructs a flow builder with a graph
+    */
     FlowBuilder(Graph& graph);
-
+    
+    /**
+    @brief associated graph object
+    */
     Graph& _graph;
+
+  private:
 
     template <typename L>
     void _linearize(L&);
