@@ -6,7 +6,7 @@ MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Project name
-project(Taskflow VERSION 2.5.0 LANGUAGES CXX)
+project(Taskflow VERSION 2.6.0 LANGUAGES CXX)
 
 # build options
 option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
@@ -237,6 +237,11 @@ target_link_libraries(
   subflow ${PROJECT_NAME} tf::default_settings
 )
 
+add_executable(fibonacci ${TF_EXAMPLE_DIR}/fibonacci.cpp)
+target_link_libraries(
+  fibonacci ${PROJECT_NAME} tf::default_settings
+)
+
 add_executable(condition ${TF_EXAMPLE_DIR}/condition.cpp)
 target_link_libraries(
   condition ${PROJECT_NAME} tf::default_settings
@@ -417,7 +422,14 @@ add_test(detached_subflow.5threads ${TF_UTEST_BASICS} -tc=DetachedSubflow.5threa
 add_test(detached_subflow.6threads ${TF_UTEST_BASICS} -tc=DetachedSubflow.6threads)
 add_test(detached_subflow.7threads ${TF_UTEST_BASICS} -tc=DetachedSubflow.7threads)
 add_test(detached_subflow.8threads ${TF_UTEST_BASICS} -tc=DetachedSubflow.8threads)
-#add_test(tree_subflow     ${TF_UTEST_BASICS} -tc=TreeSubflow)
+add_test(tree_subflow ${TF_UTEST_BASICS} -tc=TreeSubflow)
+add_test(fib.1thread ${TF_UTEST_BASICS} -tc=Fib.1thread)
+add_test(fib.2threads ${TF_UTEST_BASICS} -tc=Fib.2threads)
+add_test(fib.4threads ${TF_UTEST_BASICS} -tc=Fib.4threads)
+add_test(fib.5threads ${TF_UTEST_BASICS} -tc=Fib.5threads)
+add_test(fib.6threads ${TF_UTEST_BASICS} -tc=Fib.6threads)
+add_test(fib.7threads ${TF_UTEST_BASICS} -tc=Fib.7threads)
+add_test(fib.8threads ${TF_UTEST_BASICS} -tc=Fib.8threads)
 add_test(composition-1    ${TF_UTEST_BASICS} -tc=Composition-1)
 add_test(composition-2    ${TF_UTEST_BASICS} -tc=Composition-2)
 add_test(composition-3    ${TF_UTEST_BASICS} -tc=Composition-3)

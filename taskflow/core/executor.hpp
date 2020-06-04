@@ -36,11 +36,13 @@ namespace tf {
 
 @brief execution interface for running a taskflow graph
 
-An executor object manages a set of worker threads and implements 
+An executor object manages a set of worker threads and internalements 
 an efficient work-stealing scheduling algorithm to run a taskflow.
 
 */
 class Executor {
+
+  friend class Subflow;
 
   struct Worker {
     size_t id;
@@ -262,12 +264,14 @@ class Executor {
     void _invoke(Worker&, Node*);
     void _invoke_static_work(Worker&, Node*);
     void _invoke_dynamic_work(Worker&, Node*);
+    void _invoke_dynamic_work_internal(Worker&, Node*, Graph&, bool);
+    void _invoke_dynamic_work_external(Graph&, Node*);
     void _invoke_condition_work(Worker&, Node*);
     void _invoke_module_work(Worker&, Node*);
 
 #ifdef TF_ENABLE_CUDA
     void _invoke_cudaflow_work(Worker&, Node*);
-    void _invoke_cudaflow_work_impl(Worker&, Node*);
+    void _invoke_cudaflow_work_internal(Worker&, Node*);
 #endif
 
     void _set_up_topology(Topology*);
@@ -767,7 +771,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
     // dynamic task
     case Node::DYNAMIC_WORK: {
-      // Need to create a subflow if it is the first time entering here
       _invoke_dynamic_work(worker, node);
     }
     break;
@@ -841,56 +844,70 @@ inline void Executor::_invoke_dynamic_work(Worker& w, Node* node) {
   auto& handle = nstd::get<Node::DynamicWork>(node->_handle);
 
   handle.subgraph.clear();
-  Subflow fb(handle.subgraph); 
 
-  fb._executor = this;
+  Subflow fb(*this, node, handle.subgraph); 
 
   handle.work(fb);
 
   if(!fb._joined) {
-    if(!handle.subgraph.empty()) {
-
-      PassiveVector<Node*> src; 
-
-      for(auto n : handle.subgraph._nodes) {
-
-        n->_topology = node->_topology;
-        n->_set_up_join_counter();
-
-        if(fb._detach == false) {
-          n->_parent = node;
-        }
-        
-        if(n->num_dependents() == 0) {
-          src.push_back(n);
-        }
-      }
-      
-      if(fb._detach) {
-        node->_topology->_join_counter.fetch_add(src.size());
-        _schedule(src);
-      }
-      else {  // join here
-        node->_join_counter.fetch_add(src.size());
-        _schedule(src);
-        Node* t = nullptr;
-
-        do {
-          t = w.wsq[w.domain].pop();
-      
-          if(t) {
-            _invoke(w, t);
-            t->_parent ? t->_parent->_join_counter.fetch_sub(1, std::memory_order_relaxed) :
-                         t->_topology->_join_counter.fetch_sub(1, std::memory_order_relaxed);
-          }
-
-        } while(node->_join_counter != 0);
-      }
-    }
+    _invoke_dynamic_work_internal(w, node, handle.subgraph, fb._detach);
   }
   
   // TODO 
   _observer_epilogue(w, node);
+}
+
+// Procedure: _invoke_dynamic_work_external
+inline void Executor::_invoke_dynamic_work_external(Graph& g, Node* p) {
+
+  auto worker = _per_thread().worker;
+
+  assert(worker && worker.executor == this);
+  
+  _invoke_dynamic_work_internal(*worker, p, g, false);
+}
+
+// Procedure: _invoke_dynamic_work_internal
+inline void Executor::_invoke_dynamic_work_internal(Worker& w, Node* p, Graph& g, bool d) {
+
+  if(!g.empty()) {
+
+    PassiveVector<Node*> src; 
+
+    for(auto n : g._nodes) {
+
+      n->_topology = p->_topology;
+      n->_set_up_join_counter();
+      n->_parent = d ? nullptr : p;
+      
+      if(n->num_dependents() == 0) {
+        src.push_back(n);
+      }
+    }
+    
+    // detach here
+    if(d) { 
+      p->_topology->_join_counter.fetch_add(src.size());
+      _schedule(src);
+    }
+    // join here
+    else {  
+      p->_join_counter.fetch_add(src.size());
+      _schedule(src);
+      Node* t = nullptr;
+
+      do {
+        t = w.wsq[w.domain].pop();
+    
+        if(t) {
+          _invoke(w, t);
+          t->_parent ? t->_parent->_join_counter.fetch_sub(1) :
+                       t->_topology->_join_counter.fetch_sub(1);
+        }
+
+      } while(p->_join_counter != 0);
+    }
+  }
 }
 
 // Procedure: _invoke_condition_work
@@ -933,12 +950,12 @@ inline void Executor::_invoke_condition_work(Worker& worker, Node* node) {
 // Procedure: _invoke_cudaflow_work
 inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
   _observer_prologue(worker, node);  
-  _invoke_cudaflow_work_impl(worker, node);
+  _invoke_cudaflow_work_internal(worker, node);
   _observer_epilogue(worker, node);
 }
 
-// Procedure: _invoke_cudaflow_work_impl
-inline void Executor::_invoke_cudaflow_work_impl(Worker& w, Node* node) {
+// Procedure: _invoke_cudaflow_work_internal
+inline void Executor::_invoke_cudaflow_work_internal(Worker& w, Node* node) {
   
   assert(w.domain == node->domain());
 
@@ -994,38 +1011,8 @@ inline void Executor::_invoke_module_work(Worker& w, Node* node) {
   _observer_prologue(w, node);
   
   auto module = nstd::get<Node::ModuleWork>(node->_handle).module;
-
-  if(!module->empty()) {
-    PassiveVector<Node*> src;
-
-    for(auto n: module->_graph._nodes) {
-
-      n->_topology = node->_topology;
-      n->_parent = node;
-      n->_set_up_join_counter();
-
-      if(n->num_dependents() == 0) {
-        src.push_back(n);
-      }
-    }
-
-    assert(!src.empty());
-    
-    node->_join_counter.fetch_add(src.size());
-    _schedule(src);
-    Node* t = nullptr;
-
-    do {
-
-      t = w.wsq[w.domain].pop();
-
-      if(t) {
-        _invoke(w, t);
-        t->_parent ? t->_parent->_join_counter.fetch_sub(1, std::memory_order_relaxed) : 
-                     t->_topology->_join_counter.fetch_sub(1, std::memory_order_relaxed);
-      }
-    } while(node->_join_counter != 0);
-  }
+  
+  _invoke_dynamic_work_internal(w, node, module->_graph, false);
   
   _observer_epilogue(w, node);  
 }
@@ -1231,55 +1218,8 @@ inline void Subflow::join() {
     TF_THROW("subflow already joined");
   }
 
-  _detach = false;
-
-  /*if(!_graph.empty()) {
-
-    PassiveVector<Node*> src; 
-
-    for(auto n : _graph._nodes) {
-
-      n->_topology = node->_topology;
-      n->_set_up_join_counter();
-      n->_parent = node;
-      
-      if(n->num_dependents() == 0) {
-        src.push_back(n);
-      }
-    }
-    
-    node->_join_counter.fetch_add(src.size());
-    _executor->_schedule(src);
-    Node* t = nullptr;
-
-    while(1) {
-
-      bool from_cache = true;
-
-      if(w.cache) {
-        t = w.cache;
-        w.cache = nullptr;
-      }
-      else {
-        t = w.wsq[w.domain].pop();
-        from_cache = false;
-      }
-
-      if(t) {
-        _executor->_invoke(w, t);
-        if(!from_cache) {
-          node->_join_counter.fetch_sub(1);
-        }
-      }
-
-      if(node->_join_counter == 0) {
-        break;
-      }
-      // TODO: steal tasks
-    }
-    
-  }*/
-  
+  _executor._invoke_dynamic_work_external(_graph, _parent);
+  _joined = true;
 }
 
 }  // end of namespace tf -----------------------------------------------------

@@ -1757,6 +1757,64 @@ TEST_CASE("TreeSubflow" * doctest::timeout(300)) {
   }
 }
 
+// --------------------------------------------------------
+// Testcase: FibSubflow
+// --------------------------------------------------------
+int fibonacci_spawn(int n, tf::Subflow& sbf) {
+  if (n < 2) return n;
+  int res1, res2;
+  sbf.emplace([&res1, n] (tf::Subflow& sbf) { res1 = fibonacci_spawn(n - 1, sbf); } );
+  sbf.emplace([&res2, n] (tf::Subflow& sbf) { res2 = fibonacci_spawn(n - 2, sbf); } );
+  REQUIRE(sbf.joinable() == true);
+  sbf.join();
+  REQUIRE(sbf.joinable() == false);
+  return res1 + res2;
+}
+
+void fibonacci(size_t W) {
+
+  int N = 20;
+  int res = -1;  // result
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  taskflow.emplace([&res, N] (tf::Subflow& sbf) { 
+    res = fibonacci_spawn(N, sbf);  
+  });
+
+  executor.run(taskflow).wait();
+
+  REQUIRE(res == 6765);
+}
+
+TEST_CASE("Fib.1thread") {
+  fibonacci(1);
+}
+
+TEST_CASE("Fib.2threads") {
+  fibonacci(2);
+}
+
+TEST_CASE("Fib.4threads") {
+  fibonacci(4);
+}
+
+TEST_CASE("Fib.5threads") {
+  fibonacci(5);
+}
+
+TEST_CASE("Fib.6threads") {
+  fibonacci(6);
+}
+
+TEST_CASE("Fib.7threads") {
+  fibonacci(7);
+}
+
+TEST_CASE("Fib.8threads") {
+  fibonacci(8);
+}
 
 // --------------------------------------------------------
 // Testcase: Composition
