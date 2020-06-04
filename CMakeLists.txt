@@ -208,8 +208,8 @@ find_package(Threads REQUIRED)
 # -----------------------------------------------------------------------------
 
 add_library(${PROJECT_NAME} INTERFACE)
-
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_14)
+target_link_libraries(${PROJECT_NAME} INTERFACE Threads::Threads)
 target_include_directories(${PROJECT_NAME} INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include/> 
@@ -224,47 +224,47 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR})
 
 add_executable(simple ${TF_EXAMPLE_DIR}/simple.cpp)
 target_link_libraries(
-  simple ${PROJECT_NAME} Threads::Threads tf::default_settings
+  simple ${PROJECT_NAME} tf::default_settings
 )
 
 add_executable(observer ${TF_EXAMPLE_DIR}/observer.cpp)
 target_link_libraries(
-  observer ${PROJECT_NAME} Threads::Threads tf::default_settings
+  observer ${PROJECT_NAME} tf::default_settings
 )
 
 add_executable(subflow ${TF_EXAMPLE_DIR}/subflow.cpp)
 target_link_libraries(
-  subflow ${PROJECT_NAME} Threads::Threads tf::default_settings
+  subflow ${PROJECT_NAME} tf::default_settings
 )
 
 add_executable(condition ${TF_EXAMPLE_DIR}/condition.cpp)
 target_link_libraries(
-  condition ${PROJECT_NAME} Threads::Threads tf::default_settings
+  condition ${PROJECT_NAME} tf::default_settings
 )
 
 add_executable(visualization ${TF_EXAMPLE_DIR}/visualization.cpp)
 target_link_libraries(
-  visualization ${PROJECT_NAME} Threads::Threads tf::default_settings
+  visualization ${PROJECT_NAME} tf::default_settings
 )
 
 add_executable(reduce ${TF_EXAMPLE_DIR}/reduce.cpp)
 target_link_libraries(
-  reduce ${PROJECT_NAME} Threads::Threads tf::default_settings
+  reduce ${PROJECT_NAME} tf::default_settings
 )
 
 add_executable(parallel_for ${TF_EXAMPLE_DIR}/parallel_for.cpp)
 target_link_libraries(
-  parallel_for ${PROJECT_NAME} Threads::Threads tf::default_settings
+  parallel_for ${PROJECT_NAME} tf::default_settings
 )
 
 add_executable(run ${TF_EXAMPLE_DIR}/run.cpp)
 target_link_libraries(
-  run ${PROJECT_NAME} Threads::Threads tf::default_settings
+  run ${PROJECT_NAME} tf::default_settings
 )
 
 add_executable(composition ${TF_EXAMPLE_DIR}/composition.cpp)
 target_link_libraries(
- composition ${PROJECT_NAME} Threads::Threads tf::default_settings
+ composition ${PROJECT_NAME} tf::default_settings
 )
 
 #### CUDA examples
@@ -301,7 +301,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR})
 
 # unittest for utility
 add_executable(utility ${TF_UTEST_DIR}/utility.cpp)
-target_link_libraries(utility ${PROJECT_NAME} Threads::Threads tf::default_settings)
+target_link_libraries(utility ${PROJECT_NAME} tf::default_settings)
 target_include_directories(utility PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
 set(TF_UTEST_UTILITY ${TF_UTEST_DIR}/utility)
 add_test(passive_vector  ${TF_UTEST_UTILITY} -tc=PassiveVector)
@@ -329,7 +329,7 @@ add_test(object_pool.16threads ${TF_UTEST_UTILITY} -tc=ObjectPool.16threads)
 
 # unittest for WorkStealingQueue 
 add_executable(tsq ${TF_UTEST_DIR}/tsq.cpp)
-target_link_libraries(tsq ${PROJECT_NAME} Threads::Threads)
+target_link_libraries(tsq ${PROJECT_NAME})
 target_include_directories(tsq PRIVATE ${TF_3RD_PARTY_DIR}/doctest tf::default_settings)
 set(TF_UTEST_TSQ ${TF_UTEST_DIR}/tsq)
 add_test(tsq.Owner  ${TF_UTEST_TSQ} -tc=TSQ.Owner)
@@ -344,7 +344,7 @@ add_test(tsq.8Thieves ${TF_UTEST_TSQ} -tc=TSQ.8Thieves)
 
 # unittest for basics
 add_executable(basics ${TF_UTEST_DIR}/basics.cpp)
-target_link_libraries(basics ${PROJECT_NAME} Threads::Threads tf::default_settings)
+target_link_libraries(basics ${PROJECT_NAME} tf::default_settings)
 target_include_directories(basics PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
 set(TF_UTEST_BASICS ${TF_UTEST_DIR}/basics)
 add_test(builder ${TF_UTEST_BASICS} -tc=Builder)
@@ -470,7 +470,7 @@ add_test(hier_cond.8threads ${TF_UTEST_BASICS} -tc=HierCondition.8threads)
 
 # unittest for traverse
 add_executable(traverse ${TF_UTEST_DIR}/traverse.cpp)
-target_link_libraries(traverse ${PROJECT_NAME} Threads::Threads tf::default_settings)
+target_link_libraries(traverse ${PROJECT_NAME} tf::default_settings)
 target_include_directories(traverse PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
 set(TF_UTEST_TRAVERSE ${TF_UTEST_DIR}/traverse)
 add_test(static_traverse  ${TF_UTEST_TRAVERSE} -tc=StaticTraverse)
@@ -486,7 +486,7 @@ add_test(parallel_traverse.8threads ${TF_UTEST_TRAVERSE} -tc=ParallelTraverse.8)
 
 # unittest for sorting
 add_executable(sort ${TF_UTEST_DIR}/sort.cpp)
-target_link_libraries(sort ${PROJECT_NAME} Threads::Threads tf::default_settings)
+target_link_libraries(sort ${PROJECT_NAME} tf::default_settings)
 target_include_directories(sort PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
 set(TF_UTEST_SORT ${TF_UTEST_DIR}/sort)
 add_test(bubble_sort ${TF_UTEST_SORT} -tc=BubbleSort)
@@ -667,7 +667,6 @@ target_include_directories(wavefront PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI
 target_link_libraries(
   wavefront 
   ${PROJECT_NAME} 
-  Threads::Threads 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
@@ -689,7 +688,6 @@ target_include_directories(graph_traversal PRIVATE ${PROJECT_SOURCE_DIR}/3rd-par
 target_link_libraries(
   graph_traversal 
   ${PROJECT_NAME} 
-  Threads::Threads 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
@@ -710,7 +708,6 @@ target_include_directories(binary_tree PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/C
 target_link_libraries(
   binary_tree 
   ${PROJECT_NAME} 
-  Threads::Threads 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
@@ -731,7 +728,6 @@ target_include_directories(linear_chain PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/
 target_link_libraries(
   linear_chain 
   ${PROJECT_NAME} 
-  Threads::Threads 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
@@ -753,7 +749,6 @@ target_include_directories(mnist PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
   mnist 
   ${PROJECT_NAME} 
-  Threads::Threads 
   ${TBB_IMPORTED_TARGETS}
   ${OpenMP_CXX_LIBRARIES} 
   stdc++fs 
@@ -775,13 +770,11 @@ target_include_directories(matrix_multiplication PRIVATE ${PROJECT_SOURCE_DIR}/3
 target_link_libraries(
   matrix_multiplication 
   ${PROJECT_NAME} 
-  Threads::Threads 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
 set_target_properties(matrix_multiplication PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-
 
 if(CMAKE_CUDA_COMPILER)
 ## cuda benchmark 1: heterogeneous traversal

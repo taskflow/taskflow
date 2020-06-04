@@ -2,6 +2,8 @@
 
 set_and_check(@PROJECT_NAME@_INCLUDE_DIR "@PACKAGE_TF_INC_INSTALL_DIR@")
 
+find_dependency(Threads)
+
 include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 
 get_filename_component(@PROJECT_NAME@_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
