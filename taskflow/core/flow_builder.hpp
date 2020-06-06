@@ -913,7 +913,7 @@ class Subflow : public FlowBuilder {
 };
 
 // Constructor
-Subflow::Subflow(Executor& executor, Node* parent, Graph& graph) :
+inline Subflow::Subflow(Executor& executor, Node* parent, Graph& graph) :
   FlowBuilder {graph},
   _executor   {executor},
   _parent     {parent} {
