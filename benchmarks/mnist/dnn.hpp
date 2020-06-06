@@ -174,7 +174,7 @@ struct MNIST {
   // Ctor
   MNIST() {
     std::string path = std::experimental::filesystem::current_path();                                                                  
-    path = path.substr(0, path.rfind("cpp-taskflow") + 12);
+    path = path.substr(0, path.rfind("taskflow") + 8);
     path += "/benchmarks/mnist/";
     
     images = read_mnist_image(path + "./train-images.data");

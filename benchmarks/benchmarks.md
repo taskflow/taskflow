@@ -10,7 +10,7 @@ To compile the benchmark sources,
 enable the option `TF_BUILD_BENCHMARKS` in cmake build:
 
 ```bash
-~$ mkdir build        # create a build folder under cpp-taskflow/
+~$ mkdir build        # create a build folder under taskflow/
 ~$ cd build
 ~$ cmake ../ -DTF_BUILD_BENCHMARKS=ON
 ~$ make 
