@@ -10,7 +10,7 @@ project(Taskflow VERSION 2.6.0 LANGUAGES CXX)
 
 # build options
 option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
-option(TF_BUILD_CUDA "Enables build of CUDA code" OFF)
+option(TF_BUILD_CUDA "Enables build of CUDA code" ON)
 
 # Include additional language check
 include(CheckLanguage)
