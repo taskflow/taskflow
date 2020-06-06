@@ -1,14 +1,3 @@
-// 2020/04/30 - midified by Tsung-Wei Huang
-//  - adding TaskflowBoard support
-//
-// 2019/07/31 - modified by Tsung-Wei Huang
-//  - fixed the missing comma in outputing JSON  
-//
-// 2019/06/13 - modified by Tsung-Wei Huang
-//  - added TaskView interface
-//
-// 2019/04/17 - created by Tsung-Wei Huang
-
 #pragma once
 
 #include "task.hpp"
@@ -300,7 +289,7 @@ class TFProfObserver : public ObserverInterface {
   // data structure to store the entire execution timeline
   struct Timeline {
     std::chrono::time_point<std::chrono::steady_clock> origin;
-    std::vector<std::vector<Segment>> segments;
+    std::vector<std::vector<std::vector<Segment>>> segments;
     std::vector<std::stack<std::chrono::time_point<std::chrono::steady_clock>>> stacks;
   };  
 
@@ -365,10 +354,6 @@ inline void TFProfObserver::set_up(size_t num_workers) {
   _timeline.segments.resize(num_workers);
   _timeline.stacks.resize(num_workers);
 
-  for(size_t w=0; w<num_workers; ++w) {
-    _timeline.segments[w].reserve(32);
-  }
-  
   _timeline.origin = std::chrono::steady_clock::now();
 }
 
@@ -379,12 +364,17 @@ inline void TFProfObserver::on_entry(size_t w, TaskView) {
 
 // Procedure: on_exit
 inline void TFProfObserver::on_exit(size_t w, TaskView tv) {
+
   assert(!_timeline.stacks[w].empty());
+  
+  if(_timeline.stacks.size() > _timeline.segments[w].size()){
+    _timeline.segments[w].resize(_timeline.stacks.size());
+  }
 
   auto beg = _timeline.stacks[w].top();
   _timeline.stacks[w].pop();
 
-  _timeline.segments[w].emplace_back(
+  _timeline.segments[w][_timeline.stacks[w].size()].emplace_back(
     tv.name(), tv.type(), beg, std::chrono::steady_clock::now()
   );
 }
@@ -392,7 +382,9 @@ inline void TFProfObserver::on_exit(size_t w, TaskView tv) {
 // Function: clear
 inline void TFProfObserver::clear() {
   for(size_t w=0; w<_timeline.segments.size(); ++w) {
-    _timeline.segments[w].clear();
+    for(size_t l=0; l<_timeline.segments[w].size(); ++l) {
+      _timeline.segments[w][l].clear();
+    }
     while(!_timeline.stacks[w].empty()) {
       _timeline.stacks[w].pop();
     }
@@ -418,48 +410,55 @@ inline void TFProfObserver::dump(std::ostream& os) const {
 
   os << "{\"executor\":\"" << _uuid << "\",\"data\":[";
 
+  bool comma = false;
+
   for(size_t w=first; w<_timeline.segments.size(); w++) {
+    for(size_t l=0; l<_timeline.segments[w].size(); l++) {
 
-    if(_timeline.segments[w].empty()) {
-      continue;
-    }
+      if(_timeline.segments[w][l].empty()) {
+        continue;
+      }
 
-    if(w != first) {
-      os << ',';
-    }
-
-    os << "{\"worker\":\"worker " << w << "\",\"data\":[";
-    for(size_t i=0; i<_timeline.segments[w].size(); ++i) {
-
-      const auto& s = _timeline.segments[w][i];
-
-      if(i) os << ',';
-      
-      // span 
-      os << "{\"span\":[" 
-         << std::chrono::duration_cast<std::chrono::microseconds>(
-              s.beg - _timeline.origin
-            ).count() << ","
-         << std::chrono::duration_cast<std::chrono::microseconds>(
-              s.end - _timeline.origin
-            ).count() << "],";
-      
-      // name
-      os << "\"name\":\""; 
-      if(s.name.empty()) {
-        os << w << '_' << i;
+      if(comma) {
+        os << ',';
       }
       else {
-        os << s.name;
+        comma = true;
       }
-      os << "\",";
-  
-      // category "type": "Condition Task",
-      os << "\"type\":\"" << task_type_to_string(s.type) << "\"";
 
-      os << "}";
+      os << "{\"worker\":" << w << ",\"level\":" << l << ",\"data\":[";
+      for(size_t i=0; i<_timeline.segments[w][l].size(); ++i) {
+
+        const auto& s = _timeline.segments[w][l][i];
+
+        if(i) os << ',';
+        
+        // span 
+        os << "{\"span\":[" 
+           << std::chrono::duration_cast<std::chrono::microseconds>(
+                s.beg - _timeline.origin
+              ).count() << ","
+           << std::chrono::duration_cast<std::chrono::microseconds>(
+                s.end - _timeline.origin
+              ).count() << "],";
+        
+        // name
+        os << "\"name\":\""; 
+        if(s.name.empty()) {
+          os << w << '_' << i;
+        }
+        else {
+          os << s.name;
+        }
+        os << "\",";
+    
+        // category "type": "Condition Task",
+        os << "\"type\":\"" << task_type_to_string(s.type) << "\"";
+
+        os << "}";
+      }
+      os << "]}";
     }
-    os << "]}";
   }
 
   os << "]}\n";
