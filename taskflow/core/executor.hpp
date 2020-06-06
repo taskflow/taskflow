@@ -46,7 +46,7 @@ class Executor {
 
   struct Worker {
     size_t id;
-    size_t victim;
+    size_t vtm;
     Domain domain;
     Executor* executor;
     Notifier::Waiter* waiter;
@@ -436,7 +436,7 @@ inline void Executor::_spawn(size_t N, Domain d) {
   for(size_t i=0; i<N; ++i, ++id) {
 
     _workers[id].id = id;
-    _workers[id].victim = id;
+    _workers[id].vtm = id;
     _workers[id].domain = d;
     _workers[id].executor = this;
     _workers[id].waiter = &_notifier[d]._waiters[i];
@@ -497,7 +497,7 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
   //}
 
   do {
-    t = (w.id == w.victim) ? _wsq[d].steal() : _workers[w.victim].wsq[d].steal();
+    t = (w.id == w.vtm) ? _wsq[d].steal() : _workers[w.vtm].wsq[d].steal();
 
     if(t) {
       break;
@@ -510,7 +510,7 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
       }
     }
     
-    w.victim = rdvtm(w.rdgen);
+    w.vtm = rdvtm(w.rdgen);
   } while(!_done);
 
 }
@@ -571,7 +571,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
   _notifier[d].prepare_wait(worker.waiter);
   
-  //if(auto vtm = _find_victim(me); vtm != _workers.size()) {
+  //if(auto vtm = _find_vtm(me); vtm != _workers.size()) {
   if(!_wsq[d].empty()) {
 
     _notifier[d].cancel_wait(worker.waiter);
@@ -585,7 +585,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
       return true;
     }
     else {
-      worker.victim = worker.id;
+      worker.vtm = worker.id;
       goto explore_task;
     }
   }
@@ -607,7 +607,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     // check all domain queue again
     for(auto& w : _workers) {
       if(!w.wsq[d].empty()) {
-        worker.victim = w.id;
+        worker.vtm = w.id;
         _notifier[d].cancel_wait(worker.waiter);
         goto wait_for_task;
       }
@@ -895,6 +895,9 @@ inline void Executor::_invoke_dynamic_work_internal(Worker& w, Node* p, Graph& g
       p->_join_counter.fetch_add(src.size());
       _schedule(src);
       Node* t = nullptr;
+      
+      //size_t num_steals = 0;
+      //std::uniform_int_distribution<size_t> rdvtm(_VICTIM_BEG, _VICTIM_END);
 
       do {
         t = w.wsq[w.domain].pop();
@@ -904,6 +907,20 @@ inline void Executor::_invoke_dynamic_work_internal(Worker& w, Node* p, Graph& g
           t->_parent ? t->_parent->_join_counter.fetch_sub(1) :
                        t->_topology->_join_counter.fetch_sub(1);
         }
+        //else {
+        //  t = (w.id == w.vtm) ? _wsq[w.domain].steal() : 
+        //                           _workers[w.vtm].wsq[w.domain].steal();
+
+        //  if(t) {
+        //    _invoke(w, t);
+        //  }
+        //  else {
+        //    if(num_steals++ > _MAX_STEALS) {
+        //      std::this_thread::yield();
+        //    }
+        //    w.vtm = rdvtm(w.rdgen);
+        //  }
+        //}
 
       } while(p->_join_counter != 0);
     }
