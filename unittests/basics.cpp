@@ -1690,22 +1690,20 @@ void join_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::S
 }
 
 void mix_spawn(
-  const int max_depth, 
-  std::atomic<int>& counter, 
-  int depth, tf::Subflow& subflow
-)  {
+  const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow
+) {
 
   if(depth < max_depth) {
     auto ret = counter.fetch_add(1, std::memory_order_relaxed);
-    if(ret % 2) {
-      subflow.detach();
-    }
     subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
       mix_spawn(max_depth, counter, depth, subflow); }
     ).name(std::string("left") + std::to_string(ret%2));
     subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
       mix_spawn(max_depth, counter, depth, subflow); }
     ).name(std::string("right") + std::to_string(ret%2));
+    if(ret % 2) {
+      subflow.detach();
+    }
   }
 }
 
@@ -1788,31 +1786,31 @@ void fibonacci(size_t W) {
   REQUIRE(res == 6765);
 }
 
-TEST_CASE("Fib.1thread") {
+TEST_CASE("FibSubflow.1thread") {
   fibonacci(1);
 }
 
-TEST_CASE("Fib.2threads") {
+TEST_CASE("FibSubflow.2threads") {
   fibonacci(2);
 }
 
-TEST_CASE("Fib.4threads") {
+TEST_CASE("FibSubflow.4threads") {
   fibonacci(4);
 }
 
-TEST_CASE("Fib.5threads") {
+TEST_CASE("FibSubflow.5threads") {
   fibonacci(5);
 }
 
-TEST_CASE("Fib.6threads") {
+TEST_CASE("FibSubflow.6threads") {
   fibonacci(6);
 }
 
-TEST_CASE("Fib.7threads") {
+TEST_CASE("FibSubflow.7threads") {
   fibonacci(7);
 }
 
-TEST_CASE("Fib.8threads") {
+TEST_CASE("FibSubflow.8threads") {
   fibonacci(8);
 }
 

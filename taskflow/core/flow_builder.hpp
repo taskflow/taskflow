@@ -877,27 +877,22 @@ class Subflow : public FlowBuilder {
     @brief enables the subflow to join its parent task
 
     Performs an immediate action to join the subflow. Once the subflow is joined,
-    it is considered finished and you may not apply any other actions to it.
+    it is considered finished and you may not modify the subflow anymore.
     */
     void join();
 
     /**
     @brief enables the subflow to detach from its parent task
 
-    A joined subflow cannot be detached. The subflow will be detached upon leaving
-    its execution context.
+    Performs an immediate action to detach the subflow. Once the subflow is detached,
+    it is considered finished and you may not modify the subflow anymore.
     */
     void detach();
     
     /**
-    @brief queries if the subflow will be detached from its parent task
-    */
-    bool detached() const;
-
-    /**
     @brief queries if the subflow is joinable
 
-    When a subflow is joined, it becomes not joinable.
+    When a subflow is joined or detached, it becomes not joinable.
     */
     bool joinable() const;
 
@@ -908,8 +903,7 @@ class Subflow : public FlowBuilder {
     Executor& _executor;
     Node* _parent;
 
-    bool _joined {false};
-    bool _detach {false};
+    bool _joinable {true};
 };
 
 // Constructor
@@ -919,24 +913,10 @@ inline Subflow::Subflow(Executor& executor, Node* parent, Graph& graph) :
   _parent     {parent} {
 }
 
-// Procedure: detach
-inline void Subflow::detach() {
-  if(_joined) {
-    TF_THROW("subflow already joined");
-  }
-  _detach = true;
-}
-
-// Function: detached
-inline bool Subflow::detached() const {
-  return _detach;
-}
-
 // Function: joined
 inline bool Subflow::joinable() const {
-  return !_joined;
+  return _joinable;
 }
-
 
 // ----------------------------------------------------------------------------
 // Legacy code
