@@ -909,7 +909,7 @@ inline void Executor::_invoke_dynamic_work_internal(
           std::this_thread::yield();
         }
 
-      };
+      }
     }
   }
 }
