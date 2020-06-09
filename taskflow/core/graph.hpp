@@ -51,6 +51,8 @@ class Graph {
     Graph& operator = (Graph&&);
     
     void clear();
+    void clear_detached();
+    void merge(Graph&&);
 
     bool empty() const;
 
@@ -72,7 +74,8 @@ class Graph {
 
 // Class: Node
 class Node {
-
+  
+  friend class Graph;
   friend class Task;
   friend class TaskView;
   friend class Topology;
@@ -84,7 +87,8 @@ class Node {
   TF_ENABLE_POOLABLE_ON_THIS;
 
   // state bit flag
-  constexpr static int BRANCH  = 0x1;
+  constexpr static int BRANCHED = 0x1;
+  constexpr static int DETACHED = 0x2;
   
   // static work handle
   struct StaticWork {
@@ -157,7 +161,7 @@ class Node {
   constexpr static auto MODULE_WORK      = get_index_v<ModuleWork, handle_t>; 
 
 #ifdef TF_ENABLE_CUDA
-  constexpr static auto CUDAFLOW_WORK  = get_index_v<cudaFlowWork, handle_t>; 
+  constexpr static auto CUDAFLOW_WORK = get_index_v<cudaFlowWork, handle_t>; 
 #endif
 
     template <typename ...Args>
@@ -429,7 +433,7 @@ inline void Node::_set_up_join_counter() {
 
   for(auto p : _dependents) {
     if(p->_handle.index() == Node::CONDITION_WORK) {
-      _set_state(Node::BRANCH);
+      _set_state(Node::BRANCHED);
     }
     else {
       c++;
@@ -484,6 +488,28 @@ inline void Graph::clear() {
     np.recycle(node);
   }
   _nodes.clear();
+}
+
+// Procedure: clear_detached
+inline void Graph::clear_detached() {
+
+  auto mid = std::partition(_nodes.begin(), _nodes.end(), [] (Node* node) {
+    return !(node->_has_state(Node::DETACHED));
+  });
+  
+  auto& np = _node_pool();
+  for(auto itr = mid; itr != _nodes.end(); ++itr) {
+    np.recycle(*itr);
+  }
+  _nodes.resize(std::distance(_nodes.begin(), mid));
+}
+
+// Procedure: merge
+inline void Graph::merge(Graph&& g) {
+  for(auto n : g._nodes) {
+    _nodes.push_back(n);
+  }
+  g._nodes.clear();
 }
 
 // Function: size

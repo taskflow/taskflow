@@ -2656,4 +2656,96 @@ TEST_CASE("HierCondition.8threads" * doctest::timeout(300)) {
   hierarchical_condition(8);
 }
 
+// ----------------------------------------------------------------------------
+// CondSubflow
+// ----------------------------------------------------------------------------
+
+void condition_subflow(unsigned W) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  const size_t I = 1000;
+
+  std::vector<size_t> data(I);
+
+  size_t i;
+
+  auto init = taskflow.emplace([&](){ i = 0; }).name("init");
+  auto subflow = taskflow.emplace([&](tf::Subflow& sf){
+    sf.emplace([&, i](){ 
+      REQUIRE(i<I);
+      data[i] = i*(i+1)/2*123;; 
+    }).name(std::to_string(i));
+    sf.detach();
+  }).name("subflow");
+  auto cond = taskflow.emplace([&](){
+    if(++i < I) return 0;
+    return 1;
+  }).name("cond");
+  auto stop = taskflow.emplace([](){}).name("stop");
+
+  init.precede(subflow);
+  subflow.precede(cond);
+  cond.precede(subflow, stop);
+
+  executor.run(taskflow).wait();
+
+  REQUIRE(taskflow.num_tasks() == 4 + I);
+
+  for(size_t i=0; i<data.size(); ++i) {
+    REQUIRE(data[i] == i*(i+1)/2*123);
+    data[i] = 0;
+  }
+  
+  executor.run_n(taskflow, 1);
+  executor.run_n(taskflow, 10);
+  executor.run_n(taskflow, 100);
+
+  executor.wait_for_all();
+  
+  REQUIRE(taskflow.num_tasks() == 4 + I*100);
+
+  for(size_t i=0; i<data.size(); ++i) {
+    REQUIRE(data[i] == i*(i+1)/2*123);
+  }
+
+}
+
+TEST_CASE("CondSubflow.1thread") {
+  condition_subflow(1);
+}
+
+TEST_CASE("CondSubflow.2threads") {
+  condition_subflow(2);
+}
+
+TEST_CASE("CondSubflow.3threads") {
+  condition_subflow(3);
+}
+
+TEST_CASE("CondSubflow.4threads") {
+  condition_subflow(4);
+}
+
+TEST_CASE("CondSubflow.5threads") {
+  condition_subflow(5);
+}
+
+TEST_CASE("CondSubflow.6threads") {
+  condition_subflow(6);
+}
+
+TEST_CASE("CondSubflow.7threads") {
+  condition_subflow(7);
+}
+
+TEST_CASE("CondSubflow.8threads") {
+  condition_subflow(8);
+}
+
+
+
+
+
 

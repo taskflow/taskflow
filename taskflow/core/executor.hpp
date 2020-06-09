@@ -186,6 +186,28 @@ class Executor {
     If the caller thread does not belong to the executor, -1 is returned.
     */
     int this_worker_id() const;
+
+    //
+    //@brief runs a given function asynchronously and returns std::future that will
+    //       eventually hold the result of that function call
+    //template <typename F, typename... ArgsT>
+    //auto async(F&& f, ArgsT&&... args) {
+
+    //  using R = typename function_traits<F>::return_type;
+
+    //  std::promise<R> p;
+
+    //  auto fu = p.get_future();
+
+    //  auto lambda = [p=std::move(p), f=std::forward<F>(f), args...] () {
+    //    f(args...);
+    //  };
+
+    //  //std::function<void()> f {[f=std::forward<F>(f), args...] () {
+    //  //}};
+
+    //  return fu;
+    //}
     
     /**
     @brief constructs an observer to inspect the activities of worker threads
@@ -796,7 +818,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // a condition node to go back (cyclic).
   // This must be done before scheduling the successors, otherwise this might cause 
   // race condition on the _dependents
-  if(node->_has_state(Node::BRANCH)) {
+  if(node->_has_state(Node::BRANCHED)) {
     // If this is a case node, we need to deduct condition predecessors
     node->_join_counter = node->num_strong_dependents();
   }
@@ -856,19 +878,21 @@ inline void Executor::_invoke_dynamic_work(Worker& w, Node* node) {
 }
 
 // Procedure: _invoke_dynamic_work_external
-inline void Executor::_invoke_dynamic_work_external(Node*p, Graph& g, bool d) {
+inline void Executor::_invoke_dynamic_work_external(Node*p, Graph& g, bool detach) {
 
   auto worker = _per_thread().worker;
 
   assert(worker && worker->executor == this);
   
-  _invoke_dynamic_work_internal(*worker, p, g, d);
+  _invoke_dynamic_work_internal(*worker, p, g, detach);
 }
 
 // Procedure: _invoke_dynamic_work_internal
 inline void Executor::_invoke_dynamic_work_internal(
   Worker& w, Node* p, Graph& g, bool detach
 ) {
+
+  assert(p);
 
   if(!g.empty()) {
 
@@ -878,7 +902,14 @@ inline void Executor::_invoke_dynamic_work_internal(
 
       n->_topology = p->_topology;
       n->_set_up_join_counter();
-      n->_parent = detach ? nullptr : p;
+
+      if(detach) {
+        n->_parent = nullptr;
+        n->_set_state(Node::DETACHED);
+      }
+      else {
+        n->_parent = p;
+      }
       
       if(n->num_dependents() == 0) {
         src.push_back(n);
@@ -886,7 +917,13 @@ inline void Executor::_invoke_dynamic_work_internal(
     }
     
     // detach here
-    if(detach) { 
+    if(detach) {    
+      
+      {
+        std::lock_guard<std::mutex> lock(p->_topology->_taskflow._mtx);
+        p->_topology->_taskflow._graph.merge(std::move(g));
+      }
+
       p->_topology->_join_counter.fetch_add(src.size());
       _schedule(src);
     }
@@ -919,7 +956,7 @@ inline void Executor::_invoke_condition_work(Worker& worker, Node* node) {
 
   _observer_prologue(worker, node);
   
-  if(node->_has_state(Node::BRANCH)) {
+  if(node->_has_state(Node::BRANCHED)) {
     node->_join_counter = node->num_strong_dependents();
   }
   else {
@@ -1053,10 +1090,11 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred) {
 inline void Executor::_set_up_topology(Topology* tpg) {
 
   tpg->_sources.clear();
+  tpg->_taskflow._graph.clear_detached();
   
   // scan each node in the graph and build up the links
   for(auto node : tpg->_taskflow._graph._nodes) {
-
+    
     node->_topology = tpg;
     node->_clear_state();
 
