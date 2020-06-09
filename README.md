@@ -637,7 +637,7 @@ The folder `examples/` contains several examples and is a great place to learn t
 | Example |  Description |
 | ------- |  ----------- | 
 | [simple.cpp](./examples/simple.cpp) | uses basic task building blocks to create a trivial taskflow  graph |
-| [debug.cpp](./examples/debug.cpp)| inspects a taskflow through the dump method |
+| [visualization.cpp](./examples/visualization.cpp)| inspects a taskflow through the dump method |
 | [parallel_for.cpp](./examples/parallel_for.cpp)| parallelizes a for loop with unbalanced workload |
 | [subflow.cpp](./examples/subflow.cpp)| demonstrates how to create a subflow graph that spawns three dynamic tasks |
 | [run_variants.cpp](./examples/run_variants.cpp)| shows multiple ways to run a taskflow graph |

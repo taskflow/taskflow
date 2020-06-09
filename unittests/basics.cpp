@@ -2672,6 +2672,7 @@ void condition_subflow(unsigned W) {
   size_t i;
 
   auto init = taskflow.emplace([&](){ i = 0; }).name("init");
+
   auto subflow = taskflow.emplace([&](tf::Subflow& sf){
     sf.emplace([&, i](){ 
       REQUIRE(i<I);
@@ -2679,10 +2680,12 @@ void condition_subflow(unsigned W) {
     }).name(std::to_string(i));
     sf.detach();
   }).name("subflow");
+
   auto cond = taskflow.emplace([&](){
     if(++i < I) return 0;
     return 1;
   }).name("cond");
+
   auto stop = taskflow.emplace([](){}).name("stop");
 
   init.precede(subflow);
@@ -2743,8 +2746,6 @@ TEST_CASE("CondSubflow.7threads") {
 TEST_CASE("CondSubflow.8threads") {
   condition_subflow(8);
 }
-
-
 
 
 
