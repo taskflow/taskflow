@@ -126,7 +126,8 @@ you can detach a subflow from its parent task, allowing its execution to flow in
 18: B.precede(D);  // D runs after B
 19: C.precede(D);  // D runs after C
 20:
-21: tf::Executor().run(taskflow).get();  // execute the graph to spawn the subflow
+21: tf::Executor executor;
+22: executor.run(taskflow).wait();       // execute the graph to spawn the subflow
 22: taskflow.dump(std::cout);            // dump the taskflow to DOT format
 @endcode
 
@@ -134,6 +135,21 @@ The figure below demonstrates a detached subflow based on the previous example.
 A detached subflow will eventually join the topology of its parent task.
 
 @image html images/subflow_detach.svg width=45%
+
+Detached subflow becomes an independent graph attached to the top-most taskflow.
+Running a taskflow multiple times will accumulate all detached tasks
+in the graph.
+For example, running the above taskflow 10 times results in a total of 34 tasks.
+
+@code{.cpp}
+executor.run_n(taskflow, 10).wait();
+assert(taskflow.num_tasks() == 34);
+taskflow.dump(std::cout);
+@endcode
+
+The dumped graph is shown as follows:
+
+@image html images/subflow_detach_10.svg width=100%
 
 
 @section NestedSubflow Nested Subflow

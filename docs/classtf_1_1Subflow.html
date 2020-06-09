@@ -126,10 +126,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:acfdedc7e9676126e9a38ecf7b5a37864"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Subflow.html#acfdedc7e9676126e9a38ecf7b5a37864">detach</a> ()</td></tr>
 <tr class="memdesc:acfdedc7e9676126e9a38ecf7b5a37864"><td class="mdescLeft">&#160;</td><td class="mdescRight">enables the subflow to detach from its parent task  <a href="#acfdedc7e9676126e9a38ecf7b5a37864">More...</a><br /></td></tr>
 <tr class="separator:acfdedc7e9676126e9a38ecf7b5a37864"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a185a0cba35c5f208029ea207e9be0b5f"><td class="memItemLeft" align="right" valign="top"><a id="a185a0cba35c5f208029ea207e9be0b5f"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Subflow.html#a185a0cba35c5f208029ea207e9be0b5f">detached</a> () const</td></tr>
-<tr class="memdesc:a185a0cba35c5f208029ea207e9be0b5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries if the subflow will be detached from its parent task <br /></td></tr>
-<tr class="separator:a185a0cba35c5f208029ea207e9be0b5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c4b56476ca907ceca75dd8a861e1145"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1Subflow.html#a4c4b56476ca907ceca75dd8a861e1145">joinable</a> () const</td></tr>
 <tr class="memdesc:a4c4b56476ca907ceca75dd8a861e1145"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries if the subflow is joinable  <a href="#a4c4b56476ca907ceca75dd8a861e1145">More...</a><br /></td></tr>
 <tr class="separator:a4c4b56476ca907ceca75dd8a861e1145"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -261,7 +257,7 @@ Graph &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>enables the subflow to detach from its parent task </p>
-<p>A joined subflow cannot be detached. The subflow will be detached upon leaving its execution context. </p>
+<p>Performs an immediate action to detach the subflow. Once the subflow is detached, it is considered finished and you may not modify the subflow anymore. </p>
 
 </div>
 </div>
@@ -289,7 +285,7 @@ Graph &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>enables the subflow to join its parent task </p>
-<p>Performs an immediate action to join the subflow. Once the subflow is joined, it is considered finished and you may not apply any other actions to it. </p>
+<p>Performs an immediate action to join the subflow. Once the subflow is joined, it is considered finished and you may not modify the subflow anymore. </p>
 
 </div>
 </div>
@@ -317,7 +313,7 @@ Graph &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>queries if the subflow is joinable </p>
-<p>When a subflow is joined, it becomes not joinable. </p>
+<p>When a subflow is joined or detached, it becomes not joinable. </p>
 
 </div>
 </div>
