@@ -1,6 +1,5 @@
 var NAVTREEINDEX1 =
 {
-"functions.html":[8,3,0],
 "functions_func.html":[8,3,1],
 "functions_vars.html":[8,3,2],
 "graphtraversal.html":[4,5],

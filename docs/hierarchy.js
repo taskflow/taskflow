@@ -12,10 +12,9 @@ var hierarchy =
     [ "is_dynamic_task", "structis__dynamic__task.html", null ],
     [ "is_static_task", "structis__static__task.html", null ],
     [ "tf::ObserverInterface", "classtf_1_1ObserverInterface.html", [
-      [ "tf::ChromeTracingObserver", "classtf_1_1ChromeTracingObserver.html", null ],
+      [ "tf::ChromeObserver", "classtf_1_1ChromeObserver.html", null ],
       [ "tf::TFProfObserver", "classtf_1_1TFProfObserver.html", null ]
     ] ],
     [ "tf::Task", "classtf_1_1Task.html", null ],
-    [ "tf::TaskView", "classtf_1_1TaskView.html", null ],
-    [ "WorkerView", "classWorkerView.html", null ]
+    [ "tf::TaskView", "classtf_1_1TaskView.html", null ]
 ];

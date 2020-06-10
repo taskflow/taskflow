@@ -1,7 +1,7 @@
 var annotated_dup =
 [
     [ "tf", null, [
-      [ "ChromeTracingObserver", "classtf_1_1ChromeTracingObserver.html", "classtf_1_1ChromeTracingObserver" ],
+      [ "ChromeObserver", "classtf_1_1ChromeObserver.html", "classtf_1_1ChromeObserver" ],
       [ "cudaFlow", "classtf_1_1cudaFlow.html", "classtf_1_1cudaFlow" ],
       [ "cudaTask", "classtf_1_1cudaTask.html", "classtf_1_1cudaTask" ],
       [ "Executor", "classtf_1_1Executor.html", "classtf_1_1Executor" ],
@@ -16,6 +16,5 @@ var annotated_dup =
     [ "is_condition_task", "structis__condition__task.html", null ],
     [ "is_cudaflow_task", "structis__cudaflow__task.html", null ],
     [ "is_dynamic_task", "structis__dynamic__task.html", null ],
-    [ "is_static_task", "structis__static__task.html", null ],
-    [ "WorkerView", "classWorkerView.html", null ]
+    [ "is_static_task", "structis__static__task.html", null ]
 ];

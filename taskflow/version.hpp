@@ -15,6 +15,9 @@
 
 namespace tf {
 
+/**
+@brief queries the version information in string
+*/
 constexpr const char* version() {
   return "2.6.0";
 }

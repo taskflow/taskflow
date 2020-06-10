@@ -46,16 +46,16 @@ class ObserverInterface {
 };
 
 // ----------------------------------------------------------------------------
-// ChromeTracingObserver definition
+// ChromeObserver definition
 // ----------------------------------------------------------------------------
 
 /**
-@class: ChromeTracingObserver
+@class: ChromeObserver
 
 @brief observer designed based on chrome tracing format
 
 */
-class ChromeTracingObserver : public ObserverInterface {
+class ChromeObserver : public ObserverInterface {
 
   friend class Executor;
   
@@ -121,7 +121,7 @@ class ChromeTracingObserver : public ObserverInterface {
 };  
     
 // constructor
-inline ChromeTracingObserver::Segment::Segment(
+inline ChromeObserver::Segment::Segment(
   const std::string& n,
   std::chrono::time_point<std::chrono::steady_clock> b
 ) :
@@ -129,7 +129,7 @@ inline ChromeTracingObserver::Segment::Segment(
 } 
 
 // constructor
-inline ChromeTracingObserver::Segment::Segment(
+inline ChromeObserver::Segment::Segment(
   const std::string& n,
   std::chrono::time_point<std::chrono::steady_clock> b,
   std::chrono::time_point<std::chrono::steady_clock> e
@@ -138,7 +138,7 @@ inline ChromeTracingObserver::Segment::Segment(
 }
 
 // Procedure: set_up
-inline void ChromeTracingObserver::set_up(size_t num_workers) {
+inline void ChromeObserver::set_up(size_t num_workers) {
   _timeline.segments.resize(num_workers);
   _timeline.stacks.resize(num_workers);
 
@@ -150,12 +150,12 @@ inline void ChromeTracingObserver::set_up(size_t num_workers) {
 }
 
 // Procedure: on_entry
-inline void ChromeTracingObserver::on_entry(size_t w, TaskView) {
+inline void ChromeObserver::on_entry(size_t w, TaskView) {
   _timeline.stacks[w].push(std::chrono::steady_clock::now());
 }
 
 // Procedure: on_exit
-inline void ChromeTracingObserver::on_exit(size_t w, TaskView tv) {
+inline void ChromeObserver::on_exit(size_t w, TaskView tv) {
   assert(!_timeline.stacks[w].empty());
 
   auto beg = _timeline.stacks[w].top();
@@ -167,7 +167,7 @@ inline void ChromeTracingObserver::on_exit(size_t w, TaskView tv) {
 }
 
 // Function: clear
-inline void ChromeTracingObserver::clear() {
+inline void ChromeObserver::clear() {
   for(size_t w=0; w<_timeline.segments.size(); ++w) {
     _timeline.segments[w].clear();
     while(!_timeline.stacks[w].empty()) {
@@ -177,7 +177,7 @@ inline void ChromeTracingObserver::clear() {
 }
 
 // Procedure: dump
-inline void ChromeTracingObserver::dump(std::ostream& os) const {
+inline void ChromeObserver::dump(std::ostream& os) const {
 
   size_t first;
 
@@ -198,7 +198,7 @@ inline void ChromeTracingObserver::dump(std::ostream& os) const {
     for(size_t i=0; i<_timeline.segments[w].size(); i++) {
 
       os << '{'
-         << "\"cat\":\"ChromeTracingObserver\",";
+         << "\"cat\":\"ChromeObserver\",";
 
       // name field
       os << "\"name\":\"";
@@ -233,14 +233,14 @@ inline void ChromeTracingObserver::dump(std::ostream& os) const {
 }
 
 // Function: dump
-inline std::string ChromeTracingObserver::dump() const {
+inline std::string ChromeObserver::dump() const {
   std::ostringstream oss;
   dump(oss);
   return oss.str();
 }
 
 // Function: num_tasks
-inline size_t ChromeTracingObserver::num_tasks() const {
+inline size_t ChromeObserver::num_tasks() const {
   return std::accumulate(
     _timeline.segments.begin(), _timeline.segments.end(), size_t{0}, 
     [](size_t sum, const auto& exe){ 
@@ -512,7 +512,7 @@ inline const char* observer_type_to_string(ObserverType type) {
 // Legacy Alias
 // ----------------------------------------------------------------------------
 using ExecutorObserverInterface = ObserverInterface;
-using ExecutorObserver          = ChromeTracingObserver;
+using ExecutorObserver          = ChromeObserver;
 
 
 }  // end of namespace tf -----------------------------------------------------
