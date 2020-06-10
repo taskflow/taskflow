@@ -26,9 +26,11 @@ To download the newest version of %Taskflow, please clone from <a href="https://
 @section master-branch_bug_fixes Bug Fixes 
 
 @li fixed the bug of iteratively detaching a subflow from a run loop or a condition loop (see @ref DetachASubflow)
-@li fixed the bug of conflict macro with boost (<a href="https://github.com/taskflow/taskflow/issues/184">184</a>)
+@li fixed the bug of conflict macro with boost (<a href="https://github.com/taskflow/taskflow/issues/184">#184</a>)
 
 @section master-branch_deprecated_items Deprecated Items 
+
+@lit removed two methods, tf::detached and tf::joined, due to the new join/detach behavior
 
 @section master-branch_miscellaneous_items Miscellaneous Items
 
