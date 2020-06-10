@@ -13,11 +13,15 @@ we continue to try our best to ensure backward compatibility.
 
 To download the newest version of %Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
 
-@section master-branch_new_features New Features
+@section master-branch_working_items Working Items
 
 @li adding tf::Executor::async to support std::async styled tasking
-@li adding explicit join behavior of tf::Subflow (see @ref JoinASubflow and @ref fibonacci)
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
+
+@section master-branch_new_features New Features
+
+@li added explicit join behavior of tf::Subflow (see @ref JoinASubflow and @ref fibonacci)
+@li added version macro (@c TF_VERSION, @c TF_MAJOR_VERSION, @c TF_MINOR_VERSION, @c TF_PATCH_VERSION) to retrieve version info programmatically (tf::version)
 
 @section master-branch_bug_fixes Bug Fixes 
 

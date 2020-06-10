@@ -10,3 +10,14 @@
 #define TF_MAJOR_VERSION TF_VERSION/100000
 #define TF_MINOR_VERSION TF_VERSION/100%1000
 #define TF_PATCH_VERSION TF_VERSION%100
+
+#include <string>
+
+namespace tf {
+
+constexpr const char* version() {
+  return "2.6.0";
+}
+
+
+}  // end of namespace tf -----------------------------------------------------
