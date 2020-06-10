@@ -143,9 +143,9 @@ remain alive during their executions; or it can result unexpected behavior or pr
 
 @section C2_Observer Observe Thread Activities
 
-You can observe thread activities in an executor when a thread particiates in executing
-a task and leaves using tf::ObserverInterface.
-tf::ObserverInterface is an interface class that provides a set of methods for you to define
+You can observe thread activities in an executor when a worker thread particiates in executing
+a task and leaves the execution using tf::ObserverInterface.
+tf::ObserverInterface is an @em interface class that provides a set of methods for you to define
 what to do when a thread enters and leaves the execution context of a task.
 
 @code{.cpp}
@@ -166,13 +166,13 @@ tf::ObserverInterface::set_up, tf::ObserverInterface::on_entry, and
 tf::ObserverInterface::on_exit.
 The method, tf::ObserverInterface::set_up, is a constructor-like method that 
 will be called by the executor when the observer is constructed.
-It passes an argument of the number of workers in the observer.
-You may use it to preallocate or initialize data storage.
+It passes an argument of the number of workers to observer in the executor.
+You may use it to preallocate or initialize data storage, e.g., an independent vector for each worker.
 The methods, tf::ObserverInterface::on_entry and
 tf::ObserverInterface::on_exit,
-are called by a worker thread before and after the execution context of task,
+are called by a worker thread before and after the execution context of a task,
 respectively.
-You may use them to record the timepoints and calculate the difference inbetween.
+You may use them to record timepoints and calculate the elapsed time of a task.
 
 You can associate an executor with one or multiple observers (though one is common)
 using tf::Executor::make_observer.
