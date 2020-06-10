@@ -123,8 +123,9 @@ while it is participating in an execution.
 @section C2_ThreadSafety Thread Safety
 
 All @c run\_* methods are @em thread-safe.
-Touching an executor from multiple threads is acceptable.
-You can have multiple threads call the same executor to run different taskflows.
+You can have multiple threads call these methods from an executor to run different taskflows.
+However, the order which taskflow runs first is non-deterministics and is up to the 
+runtime.
 
 @code{.cpp}
  1: tf::Executor executor;
@@ -137,10 +138,147 @@ You can have multiple threads call the same executor to run different taskflows.
  8: }
 @endcode
 
-Again, it is your responsibility to ensure all taskflows from different threads 
+It is your responsibility to ensure all taskflows from different threads 
 remain alive during their executions; or it can result unexpected behavior or program crash.
+
+@section C2_Observer Observe Thread Activities
+
+You can observe thread activities in an executor when a thread particiates in executing
+a task and leaves using tf::ObserverInterface.
+tf::ObserverInterface is an interface class that provides a set of methods for you to define
+what to do when a thread enters and leaves the execution context of a task.
+
+@code{.cpp}
+class ObserverInterface {
+
+  virtual ~ObserverInterface() = default;
+  
+  virtual void set_up(size_t num_workers) = 0;
+  
+  virtual void on_entry(size_t worker_id, tf::TaskView task_view) = 0;
+  
+  virtual void on_exit(size_t worker_id, tf::TaskView task_view) = 0;
+};
+@endcode
+
+There are three methods you must define in your derived class, 
+tf::ObserverInterface::set_up, tf::ObserverInterface::on_entry, and 
+tf::ObserverInterface::on_exit.
+The method, tf::ObserverInterface::set_up, is a constructor-like method that 
+will be called by the executor when the observer is constructed.
+It passes an argument of the number of workers in the observer.
+You may use it to preallocate or initialize data storage.
+The methods, tf::ObserverInterface::on_entry and
+tf::ObserverInterface::on_exit,
+are called by a worker thread before and after the execution context of task,
+respectively.
+You may use them to record the timepoints and calculate the difference inbetween.
+
+You can associate an executor with one or multiple observers (though one is common)
+using tf::Executor::make_observer.
+We use std::shared_ptr to manage the ownership of an observer.
+The executor loops through each observer and invoke the corresponding methods accordingly.
+
+@code{.cpp}
+ 1 #include <taskflow/taskflow.hpp>
+ 2
+ 3 struct MyObserver : public tf::ObserverInterface {
+ 4
+ 5   MyObserver(const std::string& name) {
+ 6     std::cout << "constructing observer " << name << '\n';
+ 7   }
+ 8
+ 9   void set_up(size_t num_workers) override final {
+10     std::cout << "settting up observer with " << num_workers << " workers\n";
+11   }
+12
+13   void on_entry(size_t w, tf::TaskView tv) override final {
+14     std::ostringstream oss;
+15     oss << "worker " << w << " ready to run " << tv.name() << '\n';
+16     std::cout << oss.str();
+17   }
+18
+19   void on_exit(size_t w, tf::TaskView tv) override final {
+20     std::ostringstream oss;
+21     oss << "worker " << w << " finished running " << tv.name() << '\n';
+22     std::cout << oss.str();
+23   }
+24
+25 };
+26
+27 int main(){
+28
+29   tf::Executor executor(4);
+30
+31   // Create a taskflow of eight tasks
+32   tf::Taskflow taskflow;
+33
+34   auto A = taskflow.emplace([] () { std::cout << "1\n"; }).name("A");
+35   auto B = taskflow.emplace([] () { std::cout << "2\n"; }).name("B");
+36   auto C = taskflow.emplace([] () { std::cout << "3\n"; }).name("C");
+37   auto D = taskflow.emplace([] () { std::cout << "4\n"; }).name("D");
+38   auto E = taskflow.emplace([] () { std::cout << "5\n"; }).name("E");
+39   auto F = taskflow.emplace([] () { std::cout << "6\n"; }).name("F");
+40   auto G = taskflow.emplace([] () { std::cout << "7\n"; }).name("G");
+41   auto H = taskflow.emplace([] () { std::cout << "8\n"; }).name("H");
+42 
+43   // create an observer
+44   std::shared_ptr<MyObserver> observer = executor.make_observer<MyObserver>("MyObserver");
+45 
+46   // run the taskflow
+47   executor.run(taskflow).get();
+48 
+49   // remove the observer (optional)
+50   executor.remove_observer(std::move(observer));
+51 
+52   return 0;
+53 }
+@endcode
+
+The above code produces the following output:
+
+@code{.bash}
+constructing observer MyObserver
+settting up observer with 4 workers
+worker 2 ready to run A
+1
+worker 2 finished running A
+worker 2 ready to run B
+2
+worker 1 ready to run C
+worker 2 finished running B
+3
+worker 2 ready to run D
+worker 3 ready to run E
+worker 1 finished running C
+4
+5
+worker 1 ready to run F
+worker 2 finished running D
+worker 3 finished running E
+6
+worker 2 ready to run G
+worker 3 ready to run H
+worker 1 finished running F
+7
+8
+worker 2 finished running G
+worker 3 finished running H
+@endcode
+
+It is expected each line of std::cout interleaves with each other 
+as there are four workers participating in task scheduling.
+However, the @em ready message always appears before the corresponding task message 
+(e.g., numbers)
+and then the  @em finished message.
 
 */
 
 }
+
+
+
+
+
+
 

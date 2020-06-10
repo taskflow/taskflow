@@ -501,8 +501,8 @@ enum ObserverType {
 inline const char* observer_type_to_string(ObserverType type) {
   const char* val;
   switch(type) {
-    case TFPROF: val = "TFProf";    break;
-    case CHROME: val = "Chrome";    break;
+    case TFPROF: val = "tfprof";    break;
+    case CHROME: val = "chrome";    break;
     default:     val = "undefined"; break;
   }
   return val;

@@ -43,6 +43,7 @@ var NAVTREEINDEX0 =
 "chapter2.html":[3,2],
 "chapter2.html#C2_CreateAnExecutor":[3,2,0],
 "chapter2.html#C2_ExecuteATaskflow":[3,2,1],
+"chapter2.html#C2_Observer":[3,2,3],
 "chapter2.html#C2_ThreadSafety":[3,2,2],
 "chapter3.html":[3,3],
 "chapter3.html#C3_CreateASubflow":[3,3,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "flipcoins.html#FlipCoinsProblemFormulation":[4,4,0],
 "flipcoins.html#FlipCoinsTernaryCoins":[4,4,2],
 "flow__builder_8hpp_source.html":[9,0,5],
-"functions.html":[8,3,0],
-"functions_func.html":[8,3,1]
+"functions.html":[8,3,0]
 };

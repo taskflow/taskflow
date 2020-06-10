@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"functions_func.html":[8,3,1],
 "functions_vars.html":[8,3,2],
 "graphtraversal.html":[4,5],
 "graphtraversal.html#GraphTraversalDynamicTraversal":[4,5,3],
@@ -7,8 +8,8 @@ var NAVTREEINDEX1 =
 "graphtraversal.html#GraphTraversalProblemFormulation":[4,5,0],
 "graphtraversal.html#GraphTraversalStaticTraversal":[4,5,2],
 "hierarchy.html":[8,2],
-"index.html":[0],
 "index.html":[],
+"index.html":[0],
 "index.html#ASimpleFirstProgram":[0,6],
 "index.html#CompileAndRunYourFirstProgram":[0,7],
 "index.html#ComposableTasking":[0,3],
