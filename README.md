@@ -671,6 +671,7 @@ that incorporate complex task dependencies.
 - [OpenPhySyn](https://github.com/The-OpenROAD-Project/OpenPhySyn): A plugin-based physical synthesis optimization kit as part of the OpenRoad flow
 - [OSSIA](https://ossia.io/): Open-source Software System for Interactive Applications
 - [deal.II](https://github.com/dealii/dealii): A C++ software library to support the creation of finite element code
+- [PyRepScan](https://github.com/Intsights/PyRepScan): A Git Repository Leaks Scanner Python Library written in C++
 
 [More...](https://github.com/search?q=taskflow&type=Code)
 
