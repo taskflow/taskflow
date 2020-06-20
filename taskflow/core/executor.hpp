@@ -1148,6 +1148,10 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
       // destroy before taskflow leaves
       auto p {std::move(tpg->_promise)};
 
+      // Back up lambda capture in case it has the topology pointer, to avoid it releasing on 
+      // pop_front ahead of _mtx.unlock & _promise.set_value. Released safely when leaving scope.
+      auto bc{ std::move( tpg->_call ) };
+
       f._topologies.pop_front();
 
       f._mtx.unlock();
