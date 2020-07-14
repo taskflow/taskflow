@@ -35,6 +35,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
   endif()
 ## microsoft visual c++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  add_definitions(/bigobj)
   if(NOT MSVC_VERSION GREATER_EQUAL 1914)
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
     message(FATAL_ERROR "\nTaskflow requires MSVC++ at least v14.14") 
