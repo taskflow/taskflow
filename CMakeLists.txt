@@ -845,7 +845,7 @@ install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets)
 install(
   EXPORT ${PROJECT_NAME}Targets 
   NAMESPACE ${PROJECT_NAME}:: 
-  DESTINATION ${TF_LIB_INSTALL_DIR}/cmake
+  DESTINATION ${TF_LIB_INSTALL_DIR}/cmake/${PROJECT_NAME}
 )
 
 # set up config
@@ -854,7 +854,7 @@ include(CMakePackageConfigHelpers)
 configure_package_config_file(
   ${PROJECT_NAME}Config.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-  INSTALL_DESTINATION ${TF_LIB_INSTALL_DIR}/cmake
+  INSTALL_DESTINATION ${TF_LIB_INSTALL_DIR}/cmake/${PROJECT_NAME}
   PATH_VARS TF_INC_INSTALL_DIR
 )
 
@@ -866,6 +866,6 @@ write_basic_package_version_file(
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-  DESTINATION ${TF_LIB_INSTALL_DIR}/cmake 
+  DESTINATION ${TF_LIB_INSTALL_DIR}/cmake/${PROJECT_NAME}
 )
 
