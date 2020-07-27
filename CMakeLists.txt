@@ -11,6 +11,8 @@ project(Taskflow VERSION 2.6.0 LANGUAGES CXX)
 # build options
 option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
 option(TF_BUILD_CUDA "Enables build of CUDA code" ON)
+option(TF_BUILD_TESTS "Enables build of tests" ON)
+option(TF_BUILD_EXAMPLES "Enables build of tests" ON)
 
 # Include additional language check
 include(CheckLanguage)
@@ -186,6 +188,8 @@ message(STATUS "CMAKE_PREFIX_PATH: " ${CMAKE_PREFIX_PATH})
 message(STATUS "PROJECT_NAME: " ${PROJECT_NAME})
 message(STATUS "TF_BUILD_BENCHMARKS: " ${TF_BUILD_BENCHMARKS})
 message(STATUS "TF_BUILD_CUDA: " ${TF_BUILD_CUDA})
+message(STATUS "TF_BUILD_TESTS: " ${TF_BUILD_TESTS})
+message(STATUS "TF_BUILD_EXAMPLES: " ${TF_BUILD_EXAMPLES})
 message(STATUS "TF_INC_INSTALL_DIR: " ${TF_INC_INSTALL_DIR})
 message(STATUS "TF_LIB_INSTALL_DIR: " ${TF_LIB_INSTALL_DIR})
 message(STATUS "TF_UTEST_DIR: " ${TF_UTEST_DIR})
@@ -221,6 +225,7 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 # -----------------------------------------------------------------------------
 # Example program 
 # -----------------------------------------------------------------------------
+if(TF_BUILD_EXAMPLES)
 
 message(STATUS "Building examples ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR})
@@ -300,9 +305,13 @@ target_link_libraries(
 )
 endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
 
+endif(TF_BUILD_EXAMPLES)
+
 # -----------------------------------------------------------------------------
 # Unittest
 # -----------------------------------------------------------------------------
+if(TF_BUILD_TESTS)
+
 enable_testing()
 message(STATUS "Building unit tests ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_UTEST_DIR})
@@ -639,6 +648,8 @@ add_test(cuda_kmeans.1000.8C8G ${TF_UTEST_CUDA_KMEANS} -tc=kmeans.1000.8C8G)
 add_test(cuda_kmeans.1000.16C16G ${TF_UTEST_CUDA_KMEANS} -tc=kmeans.1000.16C16G)
 
 endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
+
+endif(TF_BUILD_TESTS)
 
 # -----------------------------------------------------------------------------
 # Benchmarking (enabled by TF_BUILD_BENCHMARKS)
