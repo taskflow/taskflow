@@ -33,14 +33,14 @@ int main(){
   // Create a taskflow of eight tasks
   tf::Taskflow taskflow;
 
-  auto A = taskflow.emplace([] () { std::cout << "1\n"; }).name("A");
-  auto B = taskflow.emplace([] () { std::cout << "2\n"; }).name("B");
-  auto C = taskflow.emplace([] () { std::cout << "3\n"; }).name("C");
-  auto D = taskflow.emplace([] () { std::cout << "4\n"; }).name("D");
-  auto E = taskflow.emplace([] () { std::cout << "5\n"; }).name("E");
-  auto F = taskflow.emplace([] () { std::cout << "6\n"; }).name("F");
-  auto G = taskflow.emplace([] () { std::cout << "7\n"; }).name("G");
-  auto H = taskflow.emplace([] () { std::cout << "8\n"; }).name("H");
+  taskflow.emplace([] () { std::cout << "1\n"; }).name("A");
+  taskflow.emplace([] () { std::cout << "2\n"; }).name("B");
+  taskflow.emplace([] () { std::cout << "3\n"; }).name("C");
+  taskflow.emplace([] () { std::cout << "4\n"; }).name("D");
+  taskflow.emplace([] () { std::cout << "5\n"; }).name("E");
+  taskflow.emplace([] () { std::cout << "6\n"; }).name("F");
+  taskflow.emplace([] () { std::cout << "7\n"; }).name("G");
+  taskflow.emplace([] () { std::cout << "8\n"; }).name("H");
 
   // create a default observer
   std::shared_ptr<MyObserver> observer = executor.make_observer<MyObserver>("MyObserver");
