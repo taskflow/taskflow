@@ -1258,7 +1258,7 @@ inline void Executor::wait_for_all() {
 }
 
 // ----------------------------------------------------------------------------
-// Cyclic Dependency
+// Subflow Definition
 // ----------------------------------------------------------------------------
 
 inline void Subflow::join() {
@@ -1280,6 +1280,7 @@ inline void Subflow::detach() {
   _executor._invoke_dynamic_work_external(_parent, _graph, true);
   _joinable = false;
 }
+
 
 }  // end of namespace tf -----------------------------------------------------
 

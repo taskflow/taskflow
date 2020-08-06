@@ -960,8 +960,8 @@ void parallel_for(unsigned W) {
     tf::Executor executor(w);
     tf::Taskflow tf;
     std::vector<int> vec(num_data, 0);
-    tf.parallel_for(
-      vec.begin(), vec.end(), [] (int& v) { v = 64; }, group ? ::rand() : 0
+    tf.parallel_for_static(
+      vec.begin(), vec.end(), [] (int& v) { v = 64; }, group ? ::rand()%17 : 0
     );
     for(const auto v : vec) {
       REQUIRE(v == 0);
@@ -978,7 +978,7 @@ void parallel_for(unsigned W) {
     tf::Taskflow tf;
     std::vector<int> vec(num_data, 0);
     std::atomic<int> sum(0);
-    tf.parallel_for(vec.begin(), vec.end(), [&](auto) { ++sum; }, group ? ::rand() : 0);
+    tf.parallel_for_static(vec.begin(), vec.end(), [&](auto) { ++sum; }, group ? ::rand()%17 : 0);
     REQUIRE(sum == 0);
     executor.run(tf);
     executor.wait_for_all();
@@ -1041,39 +1041,39 @@ void parallel_for_index(unsigned w) {
   
   using namespace std::chrono_literals;
 
-  auto exception_test = [] () {
+  //auto exception_test = [] () {
 
-    tf::Taskflow tf;
+  //  tf::Taskflow tf;
 
-    // invalid index
-    REQUIRE_THROWS(tf.parallel_for(0, 10, 0, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(0, 10, -1, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(10, 0, 0, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(10, 0, 1, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(0u, 10u, 0u, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(10u, 0u, 0u, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(10u, 0u, 1u, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(0.0f, 10.0f, 0.0f, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(0.0f, 10.0f, -1.0f, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(10.0f, 0.0f, 0.0f, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(10.0f, 0.0f, 1.0f, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(0.0, 10.0, 0.0, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(0.0, 10.0, -1.0, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(10.0, 0.0, 0.0, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(10.0, 0.0, 1.0, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(0, 0, 0, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(0u, 0u, 0u, [] (auto) {}));
-    REQUIRE_THROWS(tf.parallel_for(0.0, 0.0, 0.0, [] (auto) {}));
-    
-    // graceful case
-    REQUIRE_NOTHROW(tf.parallel_for(0, 0, -1, [] (auto) {}));
-    REQUIRE_NOTHROW(tf.parallel_for(0, 0, 1, [] (auto) {}));
-    REQUIRE_NOTHROW(tf.parallel_for(0u, 0u, 1u, [] (auto) {}));
-    REQUIRE_NOTHROW(tf.parallel_for(0.0f, 0.0f, -1.0f, [] (auto) {}));
-    REQUIRE_NOTHROW(tf.parallel_for(0.0f, 0.0f, 1.0f, [] (auto) {}));
-    REQUIRE_NOTHROW(tf.parallel_for(0.0, 0.0, -1.0, [] (auto) {}));
-    REQUIRE_NOTHROW(tf.parallel_for(0.0, 0.0, 1.0, [] (auto) {}));
-  };
+  //  // invalid index
+  //  REQUIRE_THROWS(tf.parallel_for(0, 10, 0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(0, 10, -1, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(10, 0, 0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(10, 0, 1, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(0u, 10u, 0u, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(10u, 0u, 0u, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(10u, 0u, 1u, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(0.0f, 10.0f, 0.0f, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(0.0f, 10.0f, -1.0f, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(10.0f, 0.0f, 0.0f, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(10.0f, 0.0f, 1.0f, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(0.0, 10.0, 0.0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(0.0, 10.0, -1.0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(10.0, 0.0, 0.0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(10.0, 0.0, 1.0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(0, 0, 0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(0u, 0u, 0u, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.parallel_for(0.0, 0.0, 0.0, [] (auto) {}));
+  //  
+  //  // graceful case
+  //  REQUIRE_NOTHROW(tf.parallel_for(0, 0, -1, [] (auto) {}));
+  //  REQUIRE_NOTHROW(tf.parallel_for(0, 0, 1, [] (auto) {}));
+  //  REQUIRE_NOTHROW(tf.parallel_for(0u, 0u, 1u, [] (auto) {}));
+  //  REQUIRE_NOTHROW(tf.parallel_for(0.0f, 0.0f, -1.0f, [] (auto) {}));
+  //  REQUIRE_NOTHROW(tf.parallel_for(0.0f, 0.0f, 1.0f, [] (auto) {}));
+  //  REQUIRE_NOTHROW(tf.parallel_for(0.0, 0.0, -1.0, [] (auto) {}));
+  //  REQUIRE_NOTHROW(tf.parallel_for(0.0, 0.0, 1.0, [] (auto) {}));
+  //};
 
   auto positive_integer_step = [] (unsigned w) {
     tf::Executor executor(w);
@@ -1084,14 +1084,16 @@ void parallel_for_index(unsigned w) {
           for(int b = beg; b<end; b+=s) {
             ++n;
           }
-          tf::Taskflow tf;
-          std::atomic<int> counter {0};
-          tf.parallel_for(beg, end, s, [&] (auto) {
-            counter.fetch_add(1, std::memory_order_relaxed);
-          });
-          executor.run(tf);
-          executor.wait_for_all();
-          REQUIRE(n == counter);
+          for(size_t c=0; c<10; c++) {
+            tf::Taskflow tf;
+            std::atomic<int> counter {0};
+            tf.parallel_for_static(beg, end, s, [&] (auto) {
+              counter.fetch_add(1, std::memory_order_relaxed);
+            }, c);
+            executor.run(tf);
+            executor.wait_for_all();
+            REQUIRE(n == counter);
+          }
         }
       }
     }
@@ -1106,81 +1108,83 @@ void parallel_for_index(unsigned w) {
           for(int b = beg; b>end; b-=s) {
             ++n;
           }
-          tf::Taskflow tf;
-          std::atomic<int> counter {0};
-          tf.parallel_for(beg, end, -s, [&] (auto) {
-            counter.fetch_add(1, std::memory_order_relaxed);
-          });
-          executor.run(tf);
-          executor.wait_for_all();
-          REQUIRE(n == counter);
+          for(size_t c=0; c<10; c++) {
+            tf::Taskflow tf;
+            std::atomic<int> counter {0};
+            tf.parallel_for_static(beg, end, -s, [&] (auto) {
+              counter.fetch_add(1, std::memory_order_relaxed);
+            }, c);
+            executor.run(tf);
+            executor.wait_for_all();
+            REQUIRE(n == counter);
+          }
         }
       }
     }
   };
   
-  auto positive_floating_step = [] (unsigned w) {
-    tf::Executor executor(w);
-    for(float beg=-10.0f; beg<=10.0f; ++beg) {
-      for(float end=beg; end<=10.0f; ++end) {
-        for(float s=1.0f; s<=end-beg; s+=0.1f) {
-          int n = 0;
-          if(beg < end) {
-            for(float b = beg; b < end; b += s) {
-              ++n;
-            }
-          }
-          else if(beg > end) {
-            for(float b = beg; b > end; b += s) {
-              ++n;
-            }
-          }
-          
-          tf::Taskflow tf;
-          std::atomic<int> counter {0};
-          tf.parallel_for(beg, end, s, [&] (auto) {
-            counter.fetch_add(1, std::memory_order_relaxed);
-          });
-          executor.run(tf);
-          executor.wait_for_all();
-          REQUIRE(n == counter);
-        }
-      }
-    }
-  };
+  //auto positive_floating_step = [] (unsigned w) {
+  //  tf::Executor executor(w);
+  //  for(float beg=-10.0f; beg<=10.0f; ++beg) {
+  //    for(float end=beg; end<=10.0f; ++end) {
+  //      for(float s=1.0f; s<=end-beg; s+=0.1f) {
+  //        int n = 0;
+  //        if(beg < end) {
+  //          for(float b = beg; b < end; b += s) {
+  //            ++n;
+  //          }
+  //        }
+  //        else if(beg > end) {
+  //          for(float b = beg; b > end; b += s) {
+  //            ++n;
+  //          }
+  //        }
+  //        
+  //        tf::Taskflow tf;
+  //        std::atomic<int> counter {0};
+  //        tf.parallel_for(beg, end, s, [&] (auto) {
+  //          counter.fetch_add(1, std::memory_order_relaxed);
+  //        });
+  //        executor.run(tf);
+  //        executor.wait_for_all();
+  //        REQUIRE(n == counter);
+  //      }
+  //    }
+  //  }
+  //};
+  //
+  //auto negative_floating_step = [] (unsigned w) {
+  //  tf::Executor executor(w);
+  //  for(float beg=10.0f; beg>=-10.0f; --beg) {
+  //    for(float end=beg; end>=-10.0f; --end) {
+  //      for(float s=1.0f; s<=beg-end; s+=0.1f) {
+  //        int n = 0;
+  //        if(beg < end) {
+  //          for(float b = beg; b < end; b += (-s)) {
+  //            ++n;
+  //          }
+  //        }
+  //        else if(beg > end) {
+  //          for(float b = beg; b > end; b += (-s)) {
+  //            ++n;
+  //          }
+  //        }
+  //        tf::Taskflow tf;
+  //        std::atomic<int> counter {0};
+  //        tf.parallel_for(beg, end, -s, [&] (auto) {
+  //          counter.fetch_add(1, std::memory_order_relaxed);
+  //        });
+  //        executor.run(tf);
+  //        executor.wait_for_all();
+  //        REQUIRE(n == counter);
+  //      }
+  //    }
+  //  }
+  //};
   
-  auto negative_floating_step = [] (unsigned w) {
-    tf::Executor executor(w);
-    for(float beg=10.0f; beg>=-10.0f; --beg) {
-      for(float end=beg; end>=-10.0f; --end) {
-        for(float s=1.0f; s<=beg-end; s+=0.1f) {
-          int n = 0;
-          if(beg < end) {
-            for(float b = beg; b < end; b += (-s)) {
-              ++n;
-            }
-          }
-          else if(beg > end) {
-            for(float b = beg; b > end; b += (-s)) {
-              ++n;
-            }
-          }
-          tf::Taskflow tf;
-          std::atomic<int> counter {0};
-          tf.parallel_for(beg, end, -s, [&] (auto) {
-            counter.fetch_add(1, std::memory_order_relaxed);
-          });
-          executor.run(tf);
-          executor.wait_for_all();
-          REQUIRE(n == counter);
-        }
-      }
-    }
-  };
-  
-  SUBCASE("Exception") {
-    exception_test();
-  }
+  //SUBCASE("Exception") {
+  //  exception_test();
+  //}
 
   SUBCASE("PositiveIntegerStep") {
     positive_integer_step(w);  
@@ -1190,13 +1194,13 @@ void parallel_for_index(unsigned w) {
     negative_integer_step(w);  
   }
   
-  SUBCASE("PositiveFloatingStep") {
-    positive_floating_step(w);  
-  }
-  
-  SUBCASE("NegativeFloatingStep") {
-    negative_floating_step(w);  
-  }
+  //SUBCASE("PositiveFloatingStep") {
+  //  positive_floating_step(w);  
+  //}
+  //
+  //SUBCASE("NegativeFloatingStep") {
+  //  negative_floating_step(w);  
+  //}
 }
 
 TEST_CASE("ParallelForIndex.1thread" * doctest::timeout(300)) {

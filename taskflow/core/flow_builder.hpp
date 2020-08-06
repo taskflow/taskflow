@@ -135,6 +135,8 @@ class FlowBuilder {
     std::pair<Task, Task> parallel_for(
       I beg, I end, I step, C&& callable, size_t chunk = 1
     );
+    
+
 
     /**
     @brief constructs a task dependency graph of floating index-based parallel_for
@@ -331,6 +333,106 @@ class FlowBuilder {
     @param A task A
     */
     void succeed(std::initializer_list<Task> others, Task A);
+    
+    // ------------------------------------------------------------------------
+    // Algorithms
+    // ------------------------------------------------------------------------
+    
+    /**
+    @brief constructs a STL-styled parallel-for task using static partition
+    
+    The task spawns a subflow that applies the callable object
+    @p callable to each object obtained by dereferencing
+    every iterator in the range [beg, end). The range
+    is split into chunks of even size, where each of them
+    is processed by one task.
+
+    The callable needs to take a single argument of the dereferenced type.
+
+    @tparam I input iterator type
+    @tparam C callable type
+
+    @param beg iterator to the beginning (inclusive)
+    @param end iterator to the end (exclusive)
+    @param callable a callable object to apply to the dereferenced iterator 
+
+    @return a pair of Task handles to the beginning and the end of the graph
+    */
+    template <typename I, typename C>
+    Task parallel_for_static(I beg, I end, C&& callable);
+    
+    /**
+    @brief constructs a STL-styled parallel-for task using static partition with the given chunk size
+    
+    The task spawns a subflow that applies the callable object
+    @p callable to each object obtained by dereferencing
+    every iterator in the range [beg, end). The range
+    is split into chunks of the given size, where each of them
+    is processed by one task.
+
+    The callable needs to take a single argument of the dereferenced type.
+
+    @tparam I input iterator type
+    @tparam C callable type
+
+    @param beg iterator to the beginning (inclusive)
+    @param end iterator to the end (exclusive)
+    @param callable a callable object to apply to the dereferenced iterator 
+    @param chunk_size chunk size
+
+    @return a pair of Task handles to the beginning and the end of the graph
+    */
+    template <typename I, typename C>
+    Task parallel_for_static(I beg, I end, C&& callable, size_t chunk_size);
+    
+    /**
+    @brief constructs a parallel-for task using static partition
+    
+    The task spawns a subflow that applies a callable object to every index in the range [beg, end) with a step size
+    
+    The callable needs to take a single argument of the index type.
+
+    @tparam I integer (arithmetic) index type
+    @tparam C callable type
+
+    @param beg index of the beginning (inclusive)
+    @param end index of the end (exclusive)
+    @param step step size 
+    @param callable a callable object to apply to each valid index
+
+    @return a dynamic task
+    */
+    template <
+      typename I, 
+      typename C, 
+      std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>* = nullptr
+    >
+    Task parallel_for_static(I beg, I end, I step, C&& callable);
+    
+    /**
+    @brief constructs a parallel-for task using static partition with the given chunk_size
+    
+    The task spawns a subflow that applies a callable object to every index in the range [beg, end) with a step size chunk by chunk
+
+    The callable needs to take a single argument of the index type.
+
+    @tparam I integer (arithmetic) index type
+    @tparam C callable type
+
+    @param beg index of the beginning (inclusive)
+    @param end index of the end (exclusive)
+    @param step step size 
+    @param callable a callable object to apply to each valid index
+    @param chunk_size chunk size
+
+    @return a dynamic task
+    */
+    template <
+      typename I, 
+      typename C, 
+      std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>* = nullptr
+    >
+    Task parallel_for_static(I beg, I end, I step, C&& callable, size_t chunk_size);
     
   protected:
     
@@ -870,6 +972,7 @@ join or detach a subflow by calling Subflow::join or Subflow::detach.
 class Subflow : public FlowBuilder {
 
   friend class Executor;
+  friend class FlowBuilder;
 
   public:
     
