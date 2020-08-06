@@ -145,31 +145,31 @@ Task FlowBuilder::parallel_for_static(
 template <typename I, typename C, 
   std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>*
 >
-Task FlowBuilder::parallel_for_static(I beg, I end, I incr, C&& c){
+Task FlowBuilder::parallel_for_static(I beg, I end, I inc, C&& c){
 
   using namespace std::string_literals;
 
   Task task = emplace(
-  [beg, end, incr, c=std::forward<C>(c)] (Subflow& sf) mutable {
+  [beg, end, inc, c=std::forward<C>(c)] (Subflow& sf) mutable {
   
-    if((incr == 0 && beg != end) || 
-       (beg < end && incr <=  0) || 
-       (beg > end && incr >=  0)) {
-      TF_THROW("invalid range [", beg, ", ", end, ") with step size ", incr);
+    if((inc == 0 && beg != end) || 
+       (beg < end && inc <=  0) || 
+       (beg > end && inc >=  0)) {
+      TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
     }
     
     const size_t nworkers = sf._executor.num_workers();
     
     // only myself - no need to spawn another graph
     if(nworkers <= 1) {
-      for(I x = beg; (incr < 0 ? x > end : x < end); x+= incr) {
+      for(I x = beg; (inc < 0 ? x > end : x < end); x+= inc) {
         c(x);
       }
       return;
     }
   
     // zero-based start and end points
-    const size_t n0 = (end - beg + incr + (incr > 0 ? -1 : 1)) / incr;
+    const size_t n0 = (end - beg + inc + (inc > 0 ? -1 : 1)) / inc;
     const size_t q0 = n0 / nworkers;
     const size_t t0 = n0 % nworkers;
 
@@ -195,11 +195,11 @@ Task FlowBuilder::parallel_for_static(I beg, I end, I incr, C&& c){
       }
   
       // transform to the actual start and end numbers
-      I s = static_cast<I>(s0) * incr + beg;
-      I e = static_cast<I>(e0) * incr + beg;
+      I s = static_cast<I>(s0) * inc + beg;
+      I e = static_cast<I>(e0) * inc + beg;
 
-      sf.emplace([&c, &incr, s, e] () mutable {
-        for(I x = s; (incr < 0 ? x > e : x < e); x+= incr) {
+      sf.emplace([&c, &inc, s, e] () mutable {
+        for(I x = s; (inc < 0 ? x > e : x < e); x+= inc) {
           c(x);
         }
       }).name("pfs_"s + std::to_string(i));
@@ -215,36 +215,36 @@ template <typename I, typename C,
   std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>*
 >
 Task FlowBuilder::parallel_for_static(
-  I beg, I end, I incr, C&& c, size_t chunk_size
+  I beg, I end, I inc, C&& c, size_t chunk_size
 ){
 
   using namespace std::string_literals;
 
   if(chunk_size == 0) {
-    return parallel_for_static(beg, end, incr, std::forward<C>(c));
+    return parallel_for_static(beg, end, inc, std::forward<C>(c));
   }
 
   Task task = emplace(
-  [beg, end, incr, chunk_size, c=std::forward<C>(c)] (Subflow& sf) mutable {
+  [beg, end, inc, chunk_size, c=std::forward<C>(c)] (Subflow& sf) mutable {
   
-    if((incr == 0 && beg != end) || 
-       (beg < end && incr <=  0) || 
-       (beg > end && incr >=  0)) {
-      TF_THROW("invalid range [", beg, ", ", end, ") with step size ", incr);
+    if((inc == 0 && beg != end) || 
+       (beg < end && inc <=  0) || 
+       (beg > end && inc >=  0)) {
+      TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
     }
     
     size_t nworkers = sf._executor.num_workers();
     
     // only myself - no need to spawn another graph
     if(nworkers <= 1) {
-      for(I x = beg; (incr < 0 ? x > end : x < end); x+= incr) {
+      for(I x = beg; (inc < 0 ? x > end : x < end); x+= inc) {
         c(x);
       }
       return;
     }
   
     // zero-based start and end points
-    const size_t n = (end - beg + incr + (incr > 0 ? -1 : 1)) / incr;
+    const size_t n = (end - beg + inc + (inc > 0 ? -1 : 1)) / inc;
 
     for(size_t i=0; i<nworkers; ++i) {
       
@@ -253,7 +253,7 @@ Task FlowBuilder::parallel_for_static(
         break;
       }
 
-      sf.emplace([beg, incr, chunk_size, n, nworkers, i, &c] () mutable {
+      sf.emplace([beg, inc, chunk_size, n, nworkers, i, &c] () mutable {
 
         size_t trip = 0;
         
@@ -270,10 +270,10 @@ Task FlowBuilder::parallel_for_static(
             e0 = n;
           }
 
-          I s = static_cast<I>(s0) * incr + beg;
-          I e = static_cast<I>(e0) * incr + beg;
+          I s = static_cast<I>(s0) * inc + beg;
+          I e = static_cast<I>(e0) * inc + beg;
 
-          for(I x = s; (incr < 0 ? x > e : x < e); x+= incr) {
+          for(I x = s; (inc < 0 ? x > e : x < e); x+= inc) {
             c(x);
           }
 
