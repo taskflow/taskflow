@@ -875,58 +875,80 @@ inline void Executor::_invoke_dynamic_work_internal(
 
   assert(p);
 
-  if(!g.empty()) {
+  if(g.empty()) return;
 
-    PassiveVector<Node*> src; 
+  PassiveVector<Node*> src; 
 
-    for(auto n : g._nodes) {
+  for(auto n : g._nodes) {
 
-      n->_topology = p->_topology;
-      n->_set_up_join_counter();
+    n->_topology = p->_topology;
+    n->_set_up_join_counter();
 
-      if(detach) {
-        n->_parent = nullptr;
-        n->_set_state(Node::DETACHED);
-      }
-      else {
-        n->_parent = p;
-      }
-      
-      if(n->num_dependents() == 0) {
-        src.push_back(n);
-      }
+    if(detach) {
+      n->_parent = nullptr;
+      n->_set_state(Node::DETACHED);
+    }
+    else {
+      n->_parent = p;
     }
     
-    // detach here
-    if(detach) {    
-      
-      {
-        std::lock_guard<std::mutex> lock(p->_topology->_taskflow._mtx);
-        p->_topology->_taskflow._graph.merge(std::move(g));
-      }
-
-      p->_topology->_join_counter.fetch_add(src.size());
-      _schedule(src);
+    if(n->num_dependents() == 0) {
+      src.push_back(n);
     }
-    // join here
-    else {  
-      p->_join_counter.fetch_add(src.size());
-      _schedule(src);
-      Node* t = nullptr;
+  }
+  
+  // detach here
+  if(detach) {    
+    
+    {
+      std::lock_guard<std::mutex> lock(p->_topology->_taskflow._mtx);
+      p->_topology->_taskflow._graph.merge(std::move(g));
+    }
 
-      while(p->_join_counter != 0) {
+    p->_topology->_join_counter.fetch_add(src.size());
+    _schedule(src);
+  }
+  // join here
+  else {  
+    p->_join_counter.fetch_add(src.size());
+    _schedule(src);
+    Node* t = nullptr;
+  
+    std::uniform_int_distribution<size_t> rdvtm(_VICTIM_BEG, _VICTIM_END);
 
-        t = w.wsq[w.domain].pop();
+    while(p->_join_counter != 0) {
 
+      t = w.wsq[w.domain].pop();
+
+      exploit:
+
+      if(t) {
+        _invoke(w, t);
+        if(t->_parent == nullptr) {
+          if(t->_topology->_join_counter.fetch_sub(1) == 1) {
+            _tear_down_topology(t->_topology);
+          }
+        }
+        else {  // joined subflow
+          t->_parent->_join_counter.fetch_sub(1);
+        }
+      }
+      else {
+
+        explore:
+        t = (w.id == w.vtm) ? _wsq[w.domain].steal() : 
+                              _workers[w.vtm].wsq[w.domain].steal();
         if(t) {
-          _invoke(w, t);
-          t->_parent ? t->_parent->_join_counter.fetch_sub(1) :
-                       t->_topology->_join_counter.fetch_sub(1);
+          goto exploit;
         }
-        else {  // here we don't steal (unknown issues to fix)
+        else if(p->_join_counter != 0){
           std::this_thread::yield();
+          w.vtm = rdvtm(w.rdgen);
+          goto explore;
         }
-
+        else {
+          break;
+        }
       }
     }
   }

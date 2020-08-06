@@ -261,7 +261,7 @@ inline Node::~Node() {
     std::vector<Node*> nodes;
 
     std::move(
-     subgraph._nodes.begin(), subgraph._nodes.end(), std::back_inserter(nodes)
+      subgraph._nodes.begin(), subgraph._nodes.end(), std::back_inserter(nodes)
     );
     subgraph._nodes.clear();
 
