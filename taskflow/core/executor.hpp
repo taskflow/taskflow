@@ -59,7 +59,7 @@ class Executor {
     /**
     @brief constructs the executor with N worker threads
     */
-    explicit Executor(size_t N = std::thread::hardware_concurrency());
+    explicit Executor(size_t N = std::thread::hardware_concurrency(), size_t M = 1);
 #endif
     
     /**
@@ -330,13 +330,13 @@ inline Executor::Executor(size_t N, size_t M) :
 
 #else
 // Constructor
-inline Executor::Executor(size_t N) : 
+inline Executor::Executor(size_t N, size_t M) :
   _VICTIM_BEG {0},
   _VICTIM_END {N - 1},
   _MAX_STEALS {(N + 1) << 1},
   _MAX_YIELDS {100},
-  _workers    {N},
-  _notifier   {Notifier(N)} {
+  _workers    {N+M},
+  _notifier   {Notifier(N), Notifier(M)} {
   
   if(N == 0) {
     TF_THROW("no cpu workers to execute taskflows");
@@ -348,6 +348,9 @@ inline Executor::Executor(size_t N) :
   }
 
   _spawn(N, HOST);
+  if (M > 0) {
+    _spawn(M, HOST);
+  }
 
   // instantite the default observer if requested
   _instantiate_tfprof();
