@@ -1,8 +1,14 @@
+// reference: https://github.com/gcc-mirror/gcc/blob/master/libgomp/iter.c
+
 #pragma once
 
 #include "../core/executor.hpp"
 
 namespace tf {
+
+// ----------------------------------------------------------------------------
+// parallel for using the static partition algorithm
+// ----------------------------------------------------------------------------
 
 // Function: parallel_for_static
 // static scheduling with even partition
@@ -18,52 +24,42 @@ Task FlowBuilder::parallel_for_static(I beg, I end, C&& c){
       return;
     }
   
-    const size_t nworkers = sf._executor.num_workers();
+    const size_t W = sf._executor.num_workers();
+    const size_t N = std::distance(beg, end);
     
     // only myself - no need to spawn another graph
-    if(nworkers <= 1) {
+    if(W <= 1 || N <= 1) {
       std::for_each(beg, end, c);
       return;
     }
   
     // zero-based start and end points
-    const size_t n0 = std::distance(beg, end);
-    const size_t q0 = n0 / nworkers;
-    const size_t t0 = n0 % nworkers;
+    const size_t q0 = N / W;
+    const size_t t0 = N % W;
+    
+    std::atomic<size_t> next(0);
 
-    for(size_t i=0; i<nworkers; ++i) {
-      
-      size_t q, t;
+    for(size_t i=0; i<W; ++i) {
 
-      if(i < t0) {
-        t = 0;
-        q = q0 + 1; 
-      }
-      else {
-        t = t0;
-        q = q0;
-      }
-  
-      size_t s0 = q*i + t;
-      size_t e0 = s0 + q;
+      size_t items = i < t0 ? q0 + 1 : q0;
 
-      // no iteration allocated
-      if(s0 >= e0) {
+      if(items == 0) {
         break;
       }
-  
-      // transform to the actual start and end numbers
-      auto s = std::next(beg, s0);
-      auto e = std::next(s, q);
-
-      sf.emplace([&c, s, e] () mutable {
-        std::for_each(s, e, c);
+      
+      sf.emplace([&next, beg, items, &c] () mutable {
+        size_t s0 = next.fetch_add(items, std::memory_order_relaxed);
+        std::advance(beg, s0);
+        for(size_t i=0; i<items; i++) {
+          c(*beg++);
+        }
       }).name("pfs_"s + std::to_string(i));
     }
+
+    sf.join();
   });  
 
   return task;
-
 }
 
 // Function: parallel_for_static
@@ -86,55 +82,54 @@ Task FlowBuilder::parallel_for_static(
       return;
     }
     
-    const size_t nworkers = sf._executor.num_workers();
+    const size_t W = sf._executor.num_workers();
+    const size_t N = std::distance(beg, end);
     
     // only myself - no need to spawn another graph
-    if(nworkers <= 1) {
+    if(W <= 1 || N <= chunk_size) {
       std::for_each(beg, end, c);
       return;
     }
-  
-    const size_t n = std::distance(beg, end);
 
-    for(size_t i=0; i<nworkers; ++i) {
+    std::atomic<size_t> next(0);
+
+    for(size_t i=0; i<W; ++i) {
       
       // initial
-      if(i*chunk_size >= n) {
+      if(i*chunk_size >= N) {
         break;
       }
 
-      sf.emplace([beg, chunk_size, n, nworkers, i, &c] () mutable {
+      sf.emplace([&next, beg, end, chunk_size, N, W, &c] () mutable {
 
-        size_t trip = 0;
-        
+        size_t trip = W*chunk_size;
+        size_t s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
+
+        std::advance(beg, s0);
+
         while(1) {
 
-          size_t s0 = (trip * nworkers + i) * chunk_size;
-          size_t e0 = s0 + chunk_size;
+          size_t items;
 
-          if(s0 >= n) {
+          I e = beg;
+
+          for(items=0; items<chunk_size && e != end; ++items, ++e) {
+            c(*e); 
+          }
+
+          s0 += trip;
+
+          if(items != chunk_size || s0 >= N) {
             break;
           }
 
-          if(e0 > n) {
-            e0 = n;
-          }
-
-          auto s = std::next(beg, s0);
-          auto e = std::next(beg, e0);
-
-          std::for_each(s, e, c);
-
-          if(e0 == n) {
-            break;
-          }
-          trip++;
+          std::advance(beg, trip);
         }
 
       }).name("pfs_"s + std::to_string(i));
-
     }
 
+    sf.join();
   });  
 
   return task;
@@ -158,52 +153,45 @@ Task FlowBuilder::parallel_for_static(I beg, I end, I inc, C&& c){
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
     }
     
-    const size_t nworkers = sf._executor.num_workers();
+    const size_t W = sf._executor.num_workers();
+    const size_t N = (end - beg + inc + (inc > 0 ? -1 : 1)) / inc;
     
     // only myself - no need to spawn another graph
-    if(nworkers <= 1) {
-      for(I x = beg; (inc < 0 ? x > end : x < end); x+= inc) {
-        c(x);
+    if(W <= 1 || N <= 1) {
+      for(size_t x=0; x<N; x++, beg+=inc) {
+        c(beg);
       }
       return;
     }
   
     // zero-based start and end points
-    const size_t n0 = (end - beg + inc + (inc > 0 ? -1 : 1)) / inc;
-    const size_t q0 = n0 / nworkers;
-    const size_t t0 = n0 % nworkers;
+    const size_t q0 = N / W;
+    const size_t t0 = N % W;
 
-    for(size_t i=0; i<nworkers; ++i) {
-      
-      size_t q, t;
+    std::atomic<size_t> next(0);
 
-      if(i < t0) {
-        t = 0;
-        q = q0 + 1; 
-      }
-      else {
-        t = t0;
-        q = q0;
-      }
-  
-      size_t s0 = q*i + t;
-      size_t e0 = s0 + q;
+    for(size_t i=0; i<W; ++i) {
 
-      // no iteration allocated
-      if(s0 >= e0) {
+      size_t items = i < t0 ? q0 + 1 : q0;
+
+      if(items == 0) {
         break;
       }
-  
-      // transform to the actual start and end numbers
-      I s = static_cast<I>(s0) * inc + beg;
-      I e = static_cast<I>(e0) * inc + beg;
+      
+      sf.emplace([&next, beg, &inc, items, &c] () mutable {
 
-      sf.emplace([&c, &inc, s, e] () mutable {
-        for(I x = s; (inc < 0 ? x > e : x < e); x+= inc) {
-          c(x);
+        size_t s0 = next.fetch_add(items, std::memory_order_relaxed);
+      
+        I s = static_cast<I>(s0) * inc + beg;
+        
+        for(size_t x=0; x<items; x++, s+=inc) {
+          c(s);
         }
+
       }).name("pfs_"s + std::to_string(i));
     }
+
+    sf.join();
   });  
 
   return task;
@@ -233,65 +221,356 @@ Task FlowBuilder::parallel_for_static(
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
     }
     
-    size_t nworkers = sf._executor.num_workers();
+    // configured worker count
+    size_t W = sf._executor.num_workers();
+    
+    // zero-based start and end points
+    const size_t N = (end - beg + inc + (inc > 0 ? -1 : 1)) / inc;
     
     // only myself - no need to spawn another graph
-    if(nworkers <= 1) {
-      for(I x = beg; (inc < 0 ? x > end : x < end); x+= inc) {
-        c(x);
+    if(W <= 1 || N <= chunk_size) {
+      for(size_t x=0; x<N; x++, beg+=inc) {
+        c(beg);
       }
       return;
     }
-  
-    // zero-based start and end points
-    const size_t n = (end - beg + inc + (inc > 0 ? -1 : 1)) / inc;
 
-    for(size_t i=0; i<nworkers; ++i) {
+    std::atomic<size_t> next(0);
+
+    for(size_t i=0; i<W; ++i) {
       
       // initial
-      if(i*chunk_size >= n) {
+      if(i*chunk_size >= N) {
         break;
       }
 
-      sf.emplace([beg, inc, chunk_size, n, nworkers, i, &c] () mutable {
+      sf.emplace([&next, beg, inc, chunk_size, N, W, &c] () mutable {
 
-        size_t trip = 0;
+        size_t trip = W * chunk_size;
+        size_t s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
         
         while(1) {
 
-          size_t s0 = (trip * nworkers + i) * chunk_size;
           size_t e0 = s0 + chunk_size;
 
-          if(s0 >= n) {
-            break;
-          }
-
-          if(e0 > n) {
-            e0 = n;
+          if(e0 > N) {
+            e0 = N;
           }
 
           I s = static_cast<I>(s0) * inc + beg;
-          I e = static_cast<I>(e0) * inc + beg;
 
-          for(I x = s; (inc < 0 ? x > e : x < e); x+= inc) {
-            c(x);
+          for(size_t x=s0; x<e0; x++, s+=inc) {
+            c(s);
           }
 
-          if(e0 == n) {
+          if(e0 == N) {
             break;
           }
-          trip++;
+
+          s0 += trip;
+
+          if(s0 >= N) {
+            break;
+          }
         }
 
       }).name("pfs_"s + std::to_string(i));
 
     }
 
+    sf.join();
+
   });  
 
   return task;
 }
 
+// ----------------------------------------------------------------------------
+// parallel for using the guided partition algorithm
+// ----------------------------------------------------------------------------
+
+// Function: parallel_for_guided
+template <typename I, typename C>
+Task FlowBuilder::parallel_for_guided(I beg, I end, C&& c, size_t chunk_size){
+
+  using namespace std::string_literals;
+
+  if(chunk_size == 0) {
+    chunk_size = 1;
+  }
+
+  Task task = emplace(
+  [beg, end, chunk_size, c=std::forward<C>(c)] (Subflow& sf) mutable {
+  
+    if(beg == end) {
+      return;
+    }
+  
+    size_t W = sf._executor.num_workers();
+    size_t N = std::distance(beg, end);
+    
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= chunk_size) {
+      std::for_each(beg, end, c);
+      return;
+    }
+    
+    if(N < W) {
+      W = N;
+    }
+
+    std::atomic<size_t> next(0);
+
+    for(size_t w=0; w<W; w++) {
+
+      sf.emplace([&next, beg, N, chunk_size, W, &c] () mutable {
+        
+        size_t z = 0;
+        size_t s = next.load(std::memory_order_relaxed);
+
+        while(s != N) {
+          
+          size_t r = N - s;
+          size_t q = (r + W - 1) / W;
+
+          if(q < chunk_size) {
+            q = chunk_size;
+          }
+
+          size_t e = (q <= r) ? s + q : N;
+
+          if(next.compare_exchange_strong(s, e, std::memory_order_release,
+                                                std::memory_order_relaxed)) {
+            std::advance(beg, s-z);
+            for(size_t x = s; x < e; x++, beg++) {
+              c(*beg);
+            }
+            z = e;
+            s = next.load(); 
+          }
+        }
+
+      }).name("pfg_"s + std::to_string(w));
+    }
+    
+    sf.join();
+  });  
+
+  return task;
+}
+
+// Function: parallel_for_guided
+template <typename I, typename C, 
+  std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>*
+>
+Task FlowBuilder::parallel_for_guided(
+  I beg, I end, I inc, C&& c, size_t chunk_size
+){
+
+  using namespace std::string_literals;
+
+  if(chunk_size == 0) {
+    chunk_size = 1;
+  }
+
+  Task task = emplace(
+  [beg, end, inc, chunk_size, c=std::forward<C>(c)] (Subflow& sf) mutable {
+  
+    if((inc == 0 && beg != end) || 
+       (beg < end && inc <=  0) || 
+       (beg > end && inc >=  0)) {
+      TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
+    }
+    
+    size_t W = sf._executor.num_workers();
+    size_t N = (end - beg + inc + (inc > 0 ? -1 : 1)) / inc;
+    
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= chunk_size) {
+      for(size_t x=0; x<N; x++, beg+=inc) {
+        c(beg);
+      }
+      return;
+    }
+    
+    if(N < W) {
+      W = N;
+    }
+
+    std::atomic<size_t> next(0);
+
+    for(size_t w=0; w<W; w++) {
+
+      sf.emplace([&next, beg, inc, N, chunk_size, W, &c] () mutable {
+          
+        size_t e0;
+        size_t s0 = next.load(std::memory_order_relaxed);
+          
+        while(s0 != N) {
+          
+          size_t r = N - s0;
+          size_t q = (r + W - 1) / W;
+
+          if(q < chunk_size) {
+            q = chunk_size;
+          }
+
+          e0 = (q <= r) ? s0 + q : N;
+
+          if(next.compare_exchange_strong(s0, e0, std::memory_order_release,
+                                                  std::memory_order_relaxed)) {
+            I s = static_cast<I>(s0) * inc + beg;
+            for(size_t x=s0; x<e0; x++, s+= inc) {
+              c(s);
+            }
+            s0 = next.load(); 
+          }
+        }
+      }).name("pfg_"s + std::to_string(w));
+    }
+    
+    sf.join();
+  });  
+
+  return task;
+}
+
+// ----------------------------------------------------------------------------
+// Function: parallel_for_dynamic
+// ----------------------------------------------------------------------------
+
+// Function: parallel_for_dynamic
+template <typename I, typename C>
+Task FlowBuilder::parallel_for_dynamic(I beg, I end, C&& c, size_t chunk_size){
+
+  using namespace std::string_literals;
+
+  if(chunk_size == 0) {
+    chunk_size = 1;
+  }
+
+  Task task = emplace(
+  [beg, end, chunk_size, c=std::forward<C>(c)] (Subflow& sf) mutable {
+  
+    if(beg == end) {
+      return;
+    }
+  
+    size_t W = sf._executor.num_workers();
+    size_t N = std::distance(beg, end);
+    
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= chunk_size) {
+      std::for_each(beg, end, c);
+      return;
+    }
+    
+    if(N < W) {
+      W = N;
+    }
+
+    std::atomic<size_t> next(0);
+
+    for(size_t w=0; w<W; w++) {
+
+      sf.emplace([&next, beg, N, chunk_size, W, &c] () mutable {
+        
+        size_t z = 0;
+        size_t s = next.load(std::memory_order_relaxed);
+
+        while(s != N) {
+          
+          size_t r = N - s;
+          size_t e = (chunk_size <= r) ? s + chunk_size : N;
+
+          if(next.compare_exchange_strong(s, e, std::memory_order_release,
+                                                std::memory_order_relaxed)) {
+            std::advance(beg, s-z);
+            for(size_t x = s; x < e; x++, beg++) {
+              c(*beg);
+            }
+            z = e;
+            s = next.load(); 
+          }
+        }
+
+      }).name("pfd_"s + std::to_string(w));
+    }
+    
+    sf.join();
+  });  
+
+  return task;
+}
+
+template <typename I, typename C, 
+  std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>*
+>
+Task FlowBuilder::parallel_for_dynamic(
+  I beg, I end, I inc, C&& c, size_t chunk_size
+){
+
+  using namespace std::string_literals;
+
+  if(chunk_size == 0) {
+    chunk_size = 1;
+  }
+
+  Task task = emplace(
+  [beg, end, inc, chunk_size, c=std::forward<C>(c)] (Subflow& sf) mutable {
+  
+    if((inc == 0 && beg != end) || 
+       (beg < end && inc <=  0) || 
+       (beg > end && inc >=  0)) {
+      TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
+    }
+    
+    size_t W = sf._executor.num_workers();
+    size_t N = (end - beg + inc + (inc > 0 ? -1 : 1)) / inc;
+    
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= chunk_size) {
+      for(size_t x=0; x<N; x++, beg+=inc) {
+        c(beg);
+      }
+      return;
+    }
+    
+    if(N < W) {
+      W = N;
+    }
+
+    std::atomic<size_t> next(0);
+
+    for(size_t w=0; w<W; w++) {
+
+      sf.emplace([&next, beg, inc, N, chunk_size, W, &c] () mutable {
+          
+        size_t s0 = next.load(std::memory_order_relaxed);
+          
+        while(s0 != N) {
+          
+          size_t r = N - s0;
+          size_t e0 = (chunk_size <= r) ? s0 + chunk_size : N;
+
+          if(next.compare_exchange_strong(s0, e0, std::memory_order_release,
+                                                  std::memory_order_relaxed)) {
+            I s = static_cast<I>(s0) * inc + beg;
+            for(size_t x=s0; x<e0; x++, s+= inc) {
+              c(s);
+            }
+            s0 = next.load(); 
+          }
+        }
+      }).name("pfd_"s + std::to_string(w));
+    }
+    
+    sf.join();
+  });  
+          
+
+  return task;
+}
 
 
 

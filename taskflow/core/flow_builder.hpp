@@ -114,7 +114,7 @@ class FlowBuilder {
     @brief constructs a task dependency graph of integer index-based parallel_for
     
     The task dependency graph applies a callable object to every index 
-    in the range [beg, end) with a step size chunk by chunk.
+    in the range [beg, end) with the given step size chunk by chunk.
 
     @tparam I integer (arithmetic) index type
     @tparam C callable type
@@ -135,14 +135,12 @@ class FlowBuilder {
     std::pair<Task, Task> parallel_for(
       I beg, I end, I step, C&& callable, size_t chunk = 1
     );
-    
-
 
     /**
     @brief constructs a task dependency graph of floating index-based parallel_for
     
     The task dependency graph applies a callable object to every index 
-    in the range [beg, end) with a step size chunk by chunk.
+    in the range [beg, end) with the given step size chunk by chunk.
 
     @tparam I floating (arithmetic) index type
     @tparam C callable type
@@ -339,7 +337,7 @@ class FlowBuilder {
     // ------------------------------------------------------------------------
     
     /**
-    @brief constructs a STL-styled parallel-for task using static partition
+    @brief constructs a STL-styled parallel-for task using the static partition algorithm
     
     The task spawns a subflow that applies the callable object
     @p callable to each object obtained by dereferencing
@@ -356,13 +354,13 @@ class FlowBuilder {
     @param end iterator to the end (exclusive)
     @param callable a callable object to apply to the dereferenced iterator 
 
-    @return a pair of Task handles to the beginning and the end of the graph
+    @return a Task handle
     */
     template <typename I, typename C>
     Task parallel_for_static(I beg, I end, C&& callable);
     
     /**
-    @brief constructs a STL-styled parallel-for task using static partition with the given chunk size
+    @brief constructs a STL-styled parallel-for task using the static partition algorithm with the given chunk size
     
     The task spawns a subflow that applies the callable object
     @p callable to each object obtained by dereferencing
@@ -380,15 +378,15 @@ class FlowBuilder {
     @param callable a callable object to apply to the dereferenced iterator 
     @param chunk_size chunk size
 
-    @return a pair of Task handles to the beginning and the end of the graph
+    @return a Task handle
     */
     template <typename I, typename C>
     Task parallel_for_static(I beg, I end, C&& callable, size_t chunk_size);
     
     /**
-    @brief constructs a parallel-for task using static partition
+    @brief constructs a parallel-for task using the static partition algorithm
     
-    The task spawns a subflow that applies a callable object to every index in the range [beg, end) with a step size
+    The task spawns a subflow that applies a callable object to every index in the range [beg, end) with the given step size
     
     The callable needs to take a single argument of the index type.
 
@@ -400,7 +398,7 @@ class FlowBuilder {
     @param step step size 
     @param callable a callable object to apply to each valid index
 
-    @return a dynamic task
+    @return a Task handle
     */
     template <
       typename I, 
@@ -410,9 +408,9 @@ class FlowBuilder {
     Task parallel_for_static(I beg, I end, I step, C&& callable);
     
     /**
-    @brief constructs a parallel-for task using static partition with the given chunk_size
+    @brief constructs a parallel-for task using the static partition algorithm with the given chunk_size
     
-    The task spawns a subflow that applies a callable object to every index in the range [beg, end) with a step size chunk by chunk
+    The task spawns a subflow that applies a callable object to every index in the range [beg, end) with the given step size chunk by chunk
 
     The callable needs to take a single argument of the index type.
 
@@ -425,7 +423,7 @@ class FlowBuilder {
     @param callable a callable object to apply to each valid index
     @param chunk_size chunk size
 
-    @return a dynamic task
+    @return a Task handle
     */
     template <
       typename I, 
@@ -433,6 +431,100 @@ class FlowBuilder {
       std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>* = nullptr
     >
     Task parallel_for_static(I beg, I end, I step, C&& callable, size_t chunk_size);
+    
+    /**
+    @brief constructs a STL-styled parallel-for task using the guided partition algorithm with the given chunk size (default one)
+    
+    The task spawns a subflow that applies the callable object
+    @p callable to each object obtained by dereferencing
+    every iterator in the range [beg, end). 
+
+    The callable needs to take a single argument of the dereferenced type.
+
+    @tparam I input iterator type
+    @tparam C callable type
+
+    @param beg iterator to the beginning (inclusive)
+    @param end iterator to the end (exclusive)
+    @param callable a callable object to apply to the dereferenced iterator 
+    @param chunk_size chunk size
+
+    @return a Task handle
+    */
+    template <typename I, typename C>
+    Task parallel_for_guided(I beg, I end, C&& callable, size_t chunk_size = 1);
+    
+    /**
+    @brief constructs a parallel-for task using the guided partition algorithm with the given chunk_size (default 1)
+    
+    The task spawns a subflow that applies a callable object to every index in the range [beg, end) with the given step size 
+
+    The callable needs to take a single argument of the index type.
+
+    @tparam I integer (arithmetic) index type
+    @tparam C callable type
+
+    @param beg index of the beginning (inclusive)
+    @param end index of the end (exclusive)
+    @param step step size 
+    @param callable a callable object to apply to each valid index
+    @param chunk_size chunk size
+
+    @return a Task handle
+    */
+    template <
+      typename I, 
+      typename C, 
+      std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>* = nullptr
+    >
+    Task parallel_for_guided(I beg, I end, I step, C&& callable, size_t chunk_siz = 1);
+    
+    /**
+    @brief constructs a STL-styled parallel-for task using the dynamic partition algorithm with the given chunk size (default one)
+    
+    The task spawns a subflow that applies the callable object
+    @p callable to each object obtained by dereferencing
+    every iterator in the range [beg, end). 
+
+    The callable needs to take a single argument of the dereferenced type.
+
+    @tparam I input iterator type
+    @tparam C callable type
+
+    @param beg iterator to the beginning (inclusive)
+    @param end iterator to the end (exclusive)
+    @param callable a callable object to apply to the dereferenced iterator 
+    @param chunk_size chunk size
+
+    @return a Task handle
+    */
+    template <typename I, typename C>
+    Task parallel_for_dynamic(I beg, I end, C&& callable, size_t chunk_size = 1);
+    
+    /**
+    @brief constructs a parallel-for task using the dynamic partition algorithm with the given chunk_size
+    
+    The task spawns a subflow that applies a callable object to every index in the range [beg, end) with the given step size chunk by chunk
+
+    The callable needs to take a single argument of the index type.
+
+    @tparam I integer (arithmetic) index type
+    @tparam C callable type
+
+    @param beg index of the beginning (inclusive)
+    @param end index of the end (exclusive)
+    @param step step size 
+    @param callable a callable object to apply to each valid index
+    @param chunk_size chunk size
+
+    @return a Task handle
+    */
+    template <
+      typename I, 
+      typename C, 
+      std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>* = nullptr
+    >
+    Task parallel_for_dynamic(I beg, I end, I step, C&& callable, size_t chunk_siz = 1);
     
   protected:
     

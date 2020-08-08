@@ -1,6 +1,9 @@
 #include "matrix_multiplication.hpp"
 #include <CLI11.hpp>
 
+int N = 0;
+double **a = nullptr, **b = nullptr, **c = nullptr;
+
 void matrix_multiplication(
   const std::string& model,
   const unsigned num_threads, 
@@ -11,7 +14,7 @@ void matrix_multiplication(
             << std::setw(12) << "runtime"
             << std::endl;
   
-  for(int i=128; i<=1024; i += 32) {
+  for(int i=1024; i<=1024; i += 32) {
 
     N = i;
 
