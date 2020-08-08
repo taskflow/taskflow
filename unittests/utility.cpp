@@ -6,6 +6,7 @@
 #include <taskflow/utility/object_pool.hpp>
 #include <taskflow/utility/passive_vector.hpp>
 #include <taskflow/utility/uuid.hpp>
+#include <taskflow/utility/iterator.hpp>
 
 // --------------------------------------------------------
 // Testcase: PassiveVector
@@ -181,6 +182,36 @@ TEST_CASE("PassiveVector" * doctest::timeout(300)) {
       REQUIRE(vec1 == vec2);
     }
   }
+}
+
+// --------------------------------------------------------
+// Testcase: distance
+// --------------------------------------------------------
+TEST_CASE("distance.integral" * doctest::timeout(300)) {
+
+  auto count = [] (int beg, int end, int step) {
+    size_t c = 0;
+    for(int i=beg; step > 0 ? i < end : i > end; i += step) {
+      ++c;
+    }
+    return c;
+  };
+
+  for(int beg=-50; beg<=50; ++beg) {
+    for(int end=-50; end<=50; ++end) {
+      if(beg < end) {   // positive step
+        for(int s=1; s<=50; s++) {
+          REQUIRE((tf::distance(beg, end, s) == count(beg, end, s))); 
+        }
+      }
+      else {            // negative step
+        for(int s=-1; s>=-50; s--) {
+          REQUIRE((tf::distance(beg, end, s) == count(beg, end, s))); 
+        }
+      }
+    }
+  }
+
 }
 
 // --------------------------------------------------------

@@ -2,6 +2,7 @@
 
 #include "error.hpp"
 #include "../declarations.hpp"
+#include "../utility/iterator.hpp"
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
 #include "../utility/passive_vector.hpp"
