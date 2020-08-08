@@ -154,7 +154,7 @@ Task FlowBuilder::parallel_for_static(I beg, I end, I inc, C&& c){
     }
     
     const size_t W = sf._executor.num_workers();
-    const size_t N = (end - beg + inc + (inc > 0 ? -1 : 1)) / inc;
+    const size_t N = distance(beg, end, inc);
     
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 1) {
@@ -222,10 +222,8 @@ Task FlowBuilder::parallel_for_static(
     }
     
     // configured worker count
-    size_t W = sf._executor.num_workers();
-    
-    // zero-based start and end points
-    const size_t N = (end - beg + inc + (inc > 0 ? -1 : 1)) / inc;
+    const size_t W = sf._executor.num_workers();
+    const size_t N = distance(beg, end, inc);
     
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
@@ -526,7 +524,7 @@ Task FlowBuilder::parallel_for_dynamic(
     }
     
     size_t W = sf._executor.num_workers();
-    size_t N = (end - beg + inc + (inc > 0 ? -1 : 1)) / inc;
+    size_t N = distance(beg, end, inc);
     
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
