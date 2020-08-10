@@ -381,7 +381,7 @@ Task FlowBuilder::parallel_for_guided(
     }
     
     size_t W = sf._executor.num_workers();
-    size_t N = (end - beg + inc + (inc > 0 ? -1 : 1)) / inc;
+    size_t N = distance(beg, end, inc);
     
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
@@ -471,7 +471,7 @@ Task FlowBuilder::parallel_for_dynamic(I beg, I end, C&& c, size_t chunk_size){
 
     for(size_t w=0; w<W; w++) {
 
-      sf.emplace([&next, beg, N, chunk_size, W, &c] () mutable {
+      sf.emplace([&next, beg, N, chunk_size, &c] () mutable {
         
         size_t z = 0;
         size_t s = next.load(std::memory_order_relaxed);
@@ -542,7 +542,7 @@ Task FlowBuilder::parallel_for_dynamic(
 
     for(size_t w=0; w<W; w++) {
 
-      sf.emplace([&next, beg, inc, N, chunk_size, W, &c] () mutable {
+      sf.emplace([&next, beg, inc, N, chunk_size, &c] () mutable {
           
         size_t s0 = next.load(std::memory_order_relaxed);
           
