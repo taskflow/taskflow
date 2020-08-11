@@ -14,7 +14,7 @@ void matrix_multiplication(
             << std::setw(12) << "runtime"
             << std::endl;
   
-  for(int i=1024; i<=1024; i += 32) {
+  for(int i=128; i<=1024; i += 32) {
 
     N = i;
 

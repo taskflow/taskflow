@@ -7,25 +7,25 @@ void matrix_multiplication_taskflow(unsigned num_threads) {
   tf::Executor executor(num_threads); 
   tf::Taskflow taskflow;
 
-  auto init_a = taskflow.parallel_for_static(0, N, 1, [&] (int i) {
+  auto init_a = taskflow.parallel_for(0, N, 1, [&] (int i) {
     for(int j=0; j<N; ++j) {
       a[i][j] = i + j;
     }
   });
   
-  auto init_b = taskflow.parallel_for_static(0, N, 1, [&] (int i) {
+  auto init_b = taskflow.parallel_for(0, N, 1, [&] (int i) {
     for(int j=0; j<N; ++j) {
       b[i][j] = i * j;
     }
   });
 
-  auto init_c = taskflow.parallel_for_static(0, N, 1, [&] (int i) {
+  auto init_c = taskflow.parallel_for(0, N, 1, [&] (int i) {
     for(int j=0; j<N; ++j) {
       c[i][j] = 0;
     }
   });
 
-  auto comp_c = taskflow.parallel_for_static(0, N, 1, [&] (int i) {
+  auto comp_c = taskflow.parallel_for(0, N, 1, [&] (int i) {
     for(int j=0; j<N; ++j) {
       for(int k=0; k<N; k++) {
         c[i][j] += a[i][k] * b[k][j];

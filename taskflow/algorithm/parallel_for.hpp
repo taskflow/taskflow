@@ -7,6 +7,23 @@
 namespace tf {
 
 // ----------------------------------------------------------------------------
+// default parallel for
+// ----------------------------------------------------------------------------
+
+// Function: parallel_for
+template <typename I, typename C>
+Task FlowBuilder::parallel_for(I beg, I end, C&& c) {
+  return parallel_for_guided(beg, end, std::forward<C>(c));
+}
+
+template <typename I, typename C, 
+  std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>*
+>
+Task FlowBuilder::parallel_for(I beg, I end, I inc, C&& c){
+  return parallel_for_guided(beg, end, inc, std::forward<C>(c));
+}
+
+// ----------------------------------------------------------------------------
 // parallel for using the static partition algorithm
 // ----------------------------------------------------------------------------
 
