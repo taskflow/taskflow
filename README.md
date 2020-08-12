@@ -489,9 +489,7 @@ The method `parallel_for` creates a dynamic task that spawns a subflow to apply 
 
 ```cpp
 auto v = {'A', 'B', 'C', 'D'};
-auto t = taskflow.parallel_for(
-  v.begin(),    // iterator to the beginning
-  v.end(),      // iterator to the end
+auto t = taskflow.parallel_for(v.begin(), v.end(),
   [] (int i) { 
     std::cout << "parallel " << i << '\n';
   }
@@ -501,13 +499,12 @@ auto t = taskflow.parallel_for(
 You can also specify an *index-based* range with the given step size to perform parallel iterations.
 
 ```cpp
-// [0, 11) with a step size of 2
+// [0, 11) with a step size of 2, i.e., 0, 2, 4, 6, 8, 10
 auto t = taskflow.parallel_for(0, 11, 2, 
   [] (int i) {
     std::cout << "parallel_for on index " << i << std::endl;
   } 
 );
-// will print 0, 2, 4, 6, 8, 10
 ```
 
 ## Task API
