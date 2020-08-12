@@ -118,7 +118,6 @@ struct is_invocable_r :
 template <typename R, typename F, typename... Args>
 constexpr bool is_invocable_r_v = is_invocable_r<R, F, Args...>::value;
 
-
 // ----------------------------------------------------------------------------
 // Function Traits
 // reference: https://github.com/ros2/rclcpp

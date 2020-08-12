@@ -14,7 +14,7 @@ void parallel_for_on_range(int N) {
   std::vector<int> range(N);
   std::iota(range.begin(), range.end(), 0);
 
-  taskflow.parallel_for(range.begin(), range.end(), [&] (const int i) { 
+  taskflow.parallel_for(range.begin(), range.end(), [&] (int i) { 
     printf("parallel_for on container item: %d\n", i);
   });
 

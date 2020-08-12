@@ -6,7 +6,7 @@ void mandelbrot_taskflow(unsigned num_threads, int d = D) {
   tf::Executor executor {num_threads};
   tf::Taskflow flow;
 
-  flow.parallel_for(0, H, 1, [&](int i){
+  flow.parallel_for_dynamic(0, H, 1, [&](int i){
     for(int j=0; j<W; j++) {
 
       auto [xx, yy] = scale_xy(i, j);
@@ -20,7 +20,7 @@ void mandelbrot_taskflow(unsigned num_threads, int d = D) {
       RGB[k+1] = g;
       RGB[k+2] = b;
     }
-  });
+  }, 1);
 
   executor.run(flow).wait();
 } 
