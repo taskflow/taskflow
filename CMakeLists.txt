@@ -862,6 +862,7 @@ target_link_libraries(
 set_target_properties(mandelbrot PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
+
 if(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
 ## cuda benchmark 1: heterogeneous traversal
 message(STATUS "cuda benchmark 1: heterogeneous traversal")
