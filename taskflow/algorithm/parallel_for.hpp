@@ -161,7 +161,7 @@ Task FlowBuilder::_parallel_for_guided(
 
   static_assert(
     std::is_same<TB, TE>::value && std::is_same<TE, TS>::value,
-    "decayed iterator types must match"
+    "decayed index and step types must match"
   );
 
   using namespace std::string_literals;
@@ -182,9 +182,7 @@ Task FlowBuilder::_parallel_for_guided(
     TE end = e;
     TS inc = i;
 
-    if((inc == 0 && beg != end) || 
-       (beg < end && inc <=  0) || 
-       (beg > end && inc >=  0)) {
+    if(is_range_invalid(beg, end, inc)) {
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
     }
     

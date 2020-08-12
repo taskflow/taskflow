@@ -290,8 +290,6 @@ class FlowBuilder {
     The three indices are templated to enable stateful passing using std::reference_wrapper.
 
     The callable needs to take a single argument of the index type.
-
-
     
     @tparam B beginning index type (must be integral)
     @tparam E ending index type (must be integral)
@@ -307,7 +305,6 @@ class FlowBuilder {
     */
     template <typename B, typename E, typename S, typename C>
     Task parallel_for(B&& beg, E&& end, S&& step, C&& callable);
-    
     
   protected:
     
