@@ -339,8 +339,8 @@ Task FlowBuilder::parallel_for_dynamic(B&& beg, E&& end, C&& c, size_t chunk_siz
           
           size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
           std::advance(beg, s0-z);
-          for(size_t x=s0; x<e0; x++, beg++) {
-            c(*beg);
+          for(size_t x=s0; x<e0; x++) {
+            c(*beg++);
           }
           z = e0;
         }

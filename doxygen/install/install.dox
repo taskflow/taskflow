@@ -42,7 +42,7 @@ To use %Taskflow, you only need a compiler that supports C++14:
 
 %Taskflow works on Linux, Windows, and Mac OS X.
 
-@section BAIBuildExamplesTestsAndBenchmarks Build Examples, Tests, and Benchmarks
+@section BAIBuildExamplesAndUnitTests Build Examples and Unit Tests
 
 %Taskflow uses CMake to build examples and unit tests. 
 We recommend using out-of-source build.
@@ -79,7 +79,12 @@ When the building completes, you can find the executables for examples and tests
 under the two folders, @c examples/ and @c unittests/.
 By default, our CMake script automatically detects the existence of a CUDA compiler
 and compiles all GPU tests and examples if one is available.
-You may list a set of available options in the cmake.
+
+
+
+@section BAIAvailableCMakeOptions Available CMake Options
+
+You can list a set of available options in the cmake.
 
 @code{.sh}
 ~$ cmake -LA
@@ -87,7 +92,20 @@ You may list a set of available options in the cmake.
 TF_BUILD_BENCHMARKS:BOOL=OFF    # by default, we don't compile benchmarks due to long compilation time
 @endcode
 
-We have developed a set of micro-benchmarks comparing %Taskflow with OpenMP %Task Dependency Clause and Intel TBB FlowGraph.
+Currently, our CMake script supports the following options:
+
+<div align="center">
+| CMake Option        | Default   | Usage   |
+| :-:                 | :-:       | :-:     |
+| TF_BUILD_BENCHMARKS | OFF       | enable/disable building benchmarks |
+| TF_BUILD_CUDA       | ON        | enable/disable building CUDA code  |
+| TF_BUILD_EXAMPLES   | ON        | enable/disable building examples   |
+| TF_BUILD_TESTS      | ON        | enable/disable building unit tests |
+</div>
+
+@section BAIBuildBenchmarks Build Benchmarks
+
+We have developed a set of benchmarks comparing %Taskflow with OpenMP and Intel Threading Building Blocks (TBB) libraries.
 To build these benchmarks, you need to configure the option @c TF_BUILD_BENCHMARKS to @c ON.
 
 @code{.sh}

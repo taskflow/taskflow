@@ -23,7 +23,7 @@ class FlowBuilder {
     
     @param callable a callable object constructible from std::function<void()>
 
-    @return Task handle
+    @return a Task handle
     */
     template <typename C>
     std::enable_if_t<is_static_task_v<C>, Task> emplace(C&& callable);
@@ -35,7 +35,7 @@ class FlowBuilder {
     
     @param callable a callable object constructible from std::function<void(Subflow&)>
 
-    @return Task handle
+    @return a Task handle
     */
     template <typename C>
     std::enable_if_t<is_dynamic_task_v<C>, Task> emplace(C&& callable);
@@ -47,7 +47,7 @@ class FlowBuilder {
     
     @param callable a callable object constructible from std::function<int()>
 
-    @return Task handle
+    @return a Task handle
     */
     template <typename C>
     std::enable_if_t<is_condition_task_v<C>, Task> emplace(C&& callable);
@@ -60,7 +60,7 @@ class FlowBuilder {
     
     @param callable a callable object constructible from std::function<void(cudaFlow&)>
 
-    @return Task handle
+    @return a Task handle
     */
     template <typename C>
     std::enable_if_t<is_cudaflow_task_v<C>, Task> emplace(C&& callable);
@@ -322,6 +322,7 @@ class FlowBuilder {
     @param beg iterator to the beginning (inclusive)
     @param end iterator to the end (exclusive)
     @param callable a callable object to apply to the dereferenced iterator 
+    @param chunk_size chunk size
 
     @return a Task handle
     */
@@ -346,6 +347,7 @@ class FlowBuilder {
     @param end index of the end (exclusive)
     @param step step size 
     @param callable a callable object to apply to each valid index
+    @param chunk_size chunk size
 
     @return a Task handle
     */
@@ -368,6 +370,7 @@ class FlowBuilder {
     @param beg iterator to the beginning (inclusive)
     @param end iterator to the end (exclusive)
     @param callable a callable object to apply to the dereferenced iterator 
+    @param chunk_size chunk size
 
     @return a Task handle
     */
@@ -392,6 +395,7 @@ class FlowBuilder {
     @param end index of the end (exclusive)
     @param step step size 
     @param callable a callable object to apply to each valid index
+    @param chunk_size chunk size
 
     @return a Task handle
     */
@@ -410,6 +414,7 @@ class FlowBuilder {
     @tparam B beginning iterator type
     @tparam E ending iterator type
     @tparam C callable type
+    @param chunk_size chunk size
 
     @param beg iterator to the beginning (inclusive)
     @param end iterator to the end (exclusive)
@@ -433,6 +438,7 @@ class FlowBuilder {
     @tparam E ending index type (must be integral)
     @tparam S step type (must be integral)
     @tparam C callable type
+    @param chunk_size chunk size
 
     @param beg index of the beginning (inclusive)
     @param end index of the end (exclusive)

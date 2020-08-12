@@ -16,13 +16,28 @@ To download the newest version of %Taskflow, please clone from <a href="https://
 @section master-branch_working_items Working Items
 
 @li adding tf::Executor::async to support std::async styled tasking
+@li adding parallel reduction algorithms
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
 
 @section master-branch_new_features New Features
 
 @li added explicit join behavior of tf::Subflow (see @ref JoinASubflow and @ref fibonacci)
 @li added version macro (@c TF_VERSION, @c TF_MAJOR_VERSION, @c TF_MINOR_VERSION, @c TF_PATCH_VERSION) to retrieve version info programmatically (tf::version)
-@li added @c TF_BUILD_TESTS and @c TF_BUILD_EXAMPLES (default on) to let users disable the build of tests and examples
+@li added @c TF_BUILD_TESTS and @c TF_BUILD_EXAMPLES (default on) to let users disable the build of tests and examples (see @ref BAIAvailableCMakeOptions)
+@li redesigned tf::Taskflow::parallel_for using OpenMP-styled scheduling algorithms; this redesign largely improved the performance of parallel-for using a single dynamic task return, but it breaks the previous API that returned a std::pair of tasks to synchronize on a set of static parallel-for tasks. Yet, we believe adopting this change is not difficult (see @ref A0ParallelFor).
+@code{.cpp}
+// index-based parallel-for in the range [0, 100) with the step size equal to one
+tf::Task task1 = taskflow.emplace(0, 100, 1, 
+  [](int id) { std::cout << "parallel for on index" << id << '\n'; }
+);
+
+// iterator-based parallel-for in the range [first, last)
+tf::Task task2 = taskflow.emplace(first, last, 
+  [](auto item) { std::cout << "parallel for on object " << item << '\n'; }
+);
+@endcode
+@li added multiple unit tests for tf::Taskflow::parallel_for at three partition algorithms, tf::Taskflow::parallel_for_static, tf::Taskflow::parallel_for_dynamic, and tf::Taskflow::parallel_for_guided partitions; we have implemented our partition algorithms based on the OpenMP library implementation of LLVM and GCC.
+@li added Mandelbrot application in the benchmark to evaluate the performance of parallel-for
 
 @section master-branch_bug_fixes Bug Fixes 
 
@@ -31,7 +46,7 @@ To download the newest version of %Taskflow, please clone from <a href="https://
 
 @section master-branch_deprecated_items Deprecated Items 
 
-@lit removed two methods, tf::detached and tf::joined, due to the new join/detach behavior
+@li removed two methods, tf::detached and tf::joined, due to the new join/detach behavior
 
 @section master-branch_miscellaneous_items Miscellaneous Items
 

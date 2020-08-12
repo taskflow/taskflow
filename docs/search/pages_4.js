@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['k_2dmeans_20clustering',['k-means Clustering',['../kmeans.html',1,'Examples']]]
+  ['graph_20traversal',['Graph Traversal',['../graphtraversal.html',1,'Examples']]]
 ];
