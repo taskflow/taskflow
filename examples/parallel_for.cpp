@@ -14,7 +14,7 @@ void parallel_for_on_range(int N) {
   std::vector<int> range(N);
   std::iota(range.begin(), range.end(), 0);
 
-  taskflow.parallel_for_static(range.begin(), range.end(), [&] (const int i) { 
+  taskflow.parallel_for(range.begin(), range.end(), [&] (const int i) { 
     printf("parallel_for on container item: %d\n", i);
   });
 
@@ -29,7 +29,7 @@ void parallel_for_on_index(int N) {
   tf::Taskflow taskflow;
 
   // [3, N) with step size 2
-  taskflow.parallel_for_static(3, N, 2, [] (int i) {
+  taskflow.parallel_for(3, N, 2, [] (int i) {
     printf("parallel_for on index: %d\n", i);
   });
 

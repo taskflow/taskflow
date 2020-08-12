@@ -956,12 +956,12 @@ void parallel_for(unsigned W) {
   
   using namespace std::chrono_literals;
 
-  const auto mapper = [](unsigned w, size_t num_data, bool group){
+  const auto mapper = [](unsigned w, size_t num_data, bool){
     tf::Executor executor(w);
     tf::Taskflow tf;
     std::vector<int> vec(num_data, 0);
-    tf.parallel_for_static(
-      vec.begin(), vec.end(), [] (int& v) { v = 64; }, group ? ::rand()%17 : 0
+    tf.parallel_for(
+      vec.begin(), vec.end(), [] (int& v) { v = 64; } /*, group ? ::rand()%17 : 0*/
     );
     for(const auto v : vec) {
       REQUIRE(v == 0);
@@ -973,12 +973,12 @@ void parallel_for(unsigned W) {
     }
   };
 
-  const auto reducer = [](unsigned w, size_t num_data, bool group){
+  const auto reducer = [](unsigned w, size_t num_data, bool){
     tf::Executor executor(w);
     tf::Taskflow tf;
     std::vector<int> vec(num_data, 0);
     std::atomic<int> sum(0);
-    tf.parallel_for_static(vec.begin(), vec.end(), [&](auto) { ++sum; }, group ? ::rand()%17 : 0);
+    tf.parallel_for(vec.begin(), vec.end(), [&](auto) { ++sum; }/*, group ? ::rand()%17 : 0*/);
     REQUIRE(sum == 0);
     executor.run(tf);
     executor.wait_for_all();
@@ -1084,16 +1084,16 @@ void parallel_for_index(unsigned w) {
           for(int b = beg; b<end; b+=s) {
             ++n;
           }
-          for(size_t c=0; c<10; c++) {
+          //for(size_t c=0; c<10; c++) {
             tf::Taskflow tf;
             std::atomic<int> counter {0};
-            tf.parallel_for_static(beg, end, s, [&] (auto) {
+            tf.parallel_for(beg, end, s, [&] (auto) {
               counter.fetch_add(1, std::memory_order_relaxed);
-            }, c);
+            }/*, c*/);
             executor.run(tf);
             executor.wait_for_all();
             REQUIRE(n == counter);
-          }
+          //}
         }
       }
     }
@@ -1108,16 +1108,16 @@ void parallel_for_index(unsigned w) {
           for(int b = beg; b>end; b-=s) {
             ++n;
           }
-          for(size_t c=0; c<10; c++) {
+          //for(size_t c=0; c<10; c++) {
             tf::Taskflow tf;
             std::atomic<int> counter {0};
-            tf.parallel_for_static(beg, end, -s, [&] (auto) {
+            tf.parallel_for(beg, end, -s, [&] (auto) {
               counter.fetch_add(1, std::memory_order_relaxed);
-            }, c);
+            }/*, c*/);
             executor.run(tf);
             executor.wait_for_all();
             REQUIRE(n == counter);
-          }
+          //}
         }
       }
     }

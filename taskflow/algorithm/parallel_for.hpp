@@ -1,4 +1,7 @@
-// reference: https://github.com/gcc-mirror/gcc/blob/master/libgomp/iter.c
+// reference:
+// - gomp: https://github.com/gcc-mirror/gcc/blob/master/libgomp/iter.c
+// - komp: https://github.com/llvm-mirror/openmp/blob/master/src/kmp_dispatch.cpp
+
 
 #pragma once
 
@@ -11,26 +14,260 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 // Function: parallel_for
-template <typename I, typename C>
-Task FlowBuilder::parallel_for(I beg, I end, C&& c) {
-  return parallel_for_guided(beg, end, std::forward<C>(c));
+template <typename B, typename E, typename C>
+Task FlowBuilder::parallel_for(B&& beg, E&& end, C&& c) {
+  return _parallel_for_guided(
+    std::forward<B>(beg), std::forward<E>(end), std::forward<C>(c), 1
+  );
 }
 
-template <typename I, typename C, 
-  std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>*
->
-Task FlowBuilder::parallel_for(I beg, I end, I inc, C&& c){
-  return parallel_for_guided(beg, end, inc, std::forward<C>(c));
+template <typename B, typename E, typename S, typename C>
+Task FlowBuilder::parallel_for(B&& beg, E&& end, S&& inc, C&& c){
+  return _parallel_for_guided(
+    std::forward<B>(beg), 
+    std::forward<E>(end), 
+    std::forward<S>(inc), 
+    std::forward<C>(c),
+    1
+  );
 }
 
+// ----------------------------------------------------------------------------
+// parallel for using the guided partition algorithm
+// ----------------------------------------------------------------------------
+
+// Function: _parallel_for_guided
+template <typename B, typename E, typename C>
+Task FlowBuilder::_parallel_for_guided(B&& beg, E&& end, C&& c, size_t chunk_size){
+  
+  using TB = std::decay_t<unwrap_ref_decay_t<B>>;
+  using TE = std::decay_t<unwrap_ref_decay_t<E>>;
+
+  static_assert(std::is_same<TB, TE>::value, "decayed iterator types must match");
+
+  using namespace std::string_literals;
+
+  if(chunk_size == 0) {
+    chunk_size = 1;
+  }
+  
+  Task task = emplace(
+  [b=std::forward<B>(beg),
+   e=std::forward<E>(end), 
+   c=std::forward<C>(c),
+   chunk_size] (Subflow& sf) mutable {
+    
+    // fetch the iterator values
+    TB beg = b;
+    TE end = e;
+  
+    if(beg == end) {
+      return;
+    }
+  
+    size_t W = sf._executor.num_workers();
+    size_t N = std::distance(beg, end);
+    
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= chunk_size) {
+      std::for_each(beg, end, c);
+      return;
+    }
+    
+    if(N < W) {
+      W = N;
+    }
+
+    std::atomic<size_t> next(0);
+
+    for(size_t w=0; w<W; w++) {
+
+      sf.emplace([&next, beg, N, chunk_size, W, &c] () mutable {
+        
+        size_t z = 0;
+        size_t p1 = 2 * W * (chunk_size + 1);
+        double p2 = 0.5 / W;
+        size_t s0 = next.load(std::memory_order_relaxed);
+
+        while(s0 < N) {
+          
+          size_t r = N - s0;
+          
+          // fine-grained
+          if(r < p1) {
+            while(1) {
+              s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
+              if(s0 >= N) {
+                return;
+              }
+              size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
+              std::advance(beg, s0-z);
+              for(size_t x=s0; x<e0; x++) {
+                c(*beg++);
+              }
+              z = e0;
+            }
+            break;
+          }
+          // coarse-grained
+          else {
+            size_t q = p2 * r;
+            if(q < chunk_size) {
+              q = chunk_size;
+            }
+            size_t e0 = (q <= r) ? s0 + q : N;
+            if(next.compare_exchange_strong(s0, e0, std::memory_order_release,
+                                                    std::memory_order_relaxed)) {
+              std::advance(beg, s0-z);
+              for(size_t x = s0; x< e0; x++) {
+                c(*beg++);
+              }
+              z = e0;
+              s0 = next.load(std::memory_order_relaxed);
+            }
+          }
+        }
+
+      }).name("pfg_"s + std::to_string(w));
+    }
+    
+    sf.join();
+  });  
+
+  return task;
+}
+
+// Function: _parallel_for_guided
+template <typename B, typename E, typename S, typename C>
+Task FlowBuilder::_parallel_for_guided(
+  B&& beg, E&& end, S&& inc, C&& c, size_t chunk_size
+){
+
+  using TB = std::decay_t<unwrap_ref_decay_t<B>>;
+  using TE = std::decay_t<unwrap_ref_decay_t<E>>;
+  using TS = std::decay_t<unwrap_ref_decay_t<S>>;
+
+  static_assert(
+    std::is_integral<TB>::value, "decayed beg index must be an integral type"
+  );
+  
+  static_assert(
+    std::is_integral<TE>::value, "decayed end index must be an integral type"
+  );
+  
+  static_assert(
+    std::is_integral<TS>::value, "decayed step must be an integral type"
+  );
+
+  static_assert(
+    std::is_same<TB, TE>::value && std::is_same<TE, TS>::value,
+    "decayed iterator types must match"
+  );
+
+  using namespace std::string_literals;
+
+  if(chunk_size == 0) {
+    chunk_size = 1;
+  }
+
+  Task task = emplace(
+  [b=std::forward<B>(beg), 
+   e=std::forward<E>(end), 
+   i=std::forward<S>(inc), 
+   c=std::forward<C>(c),
+   chunk_size] (Subflow& sf) mutable {
+    
+    // fetch the iterator values
+    TB beg = b;
+    TE end = e;
+    TS inc = i;
+
+    if((inc == 0 && beg != end) || 
+       (beg < end && inc <=  0) || 
+       (beg > end && inc >=  0)) {
+      TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
+    }
+    
+    size_t W = sf._executor.num_workers();
+    size_t N = distance(beg, end, inc);
+    
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= chunk_size) {
+      for(size_t x=0; x<N; x++, beg+=inc) {
+        c(beg);
+      }
+      return;
+    }
+    
+    if(N < W) {
+      W = N;
+    }
+
+    std::atomic<size_t> next(0);
+
+    for(size_t w=0; w<W; w++) {
+
+      sf.emplace([&next, beg, inc, N, chunk_size, W, &c] () mutable {
+
+        size_t p1 = 2 * W * (chunk_size + 1);
+        double p2 = 0.5 / W;
+        size_t s0 = next.load(std::memory_order_relaxed);
+
+        while(s0 < N) {
+        
+          size_t r = N - s0;
+          
+          // find-grained
+          if(r < p1) {
+            while(1) { 
+              s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
+              if(s0 >= N) {
+                return;
+              }
+              size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
+              auto s = static_cast<TS>(s0) * inc + beg;
+              for(size_t x=s0; x<e0; x++, s+=inc) {
+                c(s);
+              }
+            }
+            break;
+          }
+          // coarse-grained
+          else {
+            size_t q = p2 * r;
+            if(q < chunk_size) {
+              q = chunk_size;
+            }
+            size_t e0 = (q <= r) ? s0 + q : N;
+            if(next.compare_exchange_strong(s0, e0, std::memory_order_release,
+                                                    std::memory_order_relaxed)) {
+              auto s = static_cast<TS>(s0) * inc + beg;
+              for(size_t x=s0; x<e0; x++, s+= inc) {
+                c(s);
+              }
+              s0 = next.load(std::memory_order_relaxed); 
+            }
+          }
+
+        }
+      }).name("pfg_"s + std::to_string(w));
+    }
+    
+    sf.join();
+  });  
+
+  return task;
+}
+
+/*
 // ----------------------------------------------------------------------------
 // parallel for using the static partition algorithm
 // ----------------------------------------------------------------------------
 
-// Function: parallel_for_static
+// Function: _parallel_for_static
 // static scheduling with even partition
 template <typename I, typename C>
-Task FlowBuilder::parallel_for_static(I beg, I end, C&& c){
+Task FlowBuilder::_parallel_for_static(I beg, I end, C&& c){
   
   using namespace std::string_literals;
 
@@ -79,17 +316,17 @@ Task FlowBuilder::parallel_for_static(I beg, I end, C&& c){
   return task;
 }
 
-// Function: parallel_for_static
+// Function: _parallel_for_static
 // static scheduling with chunk size
 template <typename I, typename C>
-Task FlowBuilder::parallel_for_static(
+Task FlowBuilder::_parallel_for_static(
   I beg, I end, C&& c, size_t chunk_size
 ){
 
   using namespace std::string_literals;
 
   if(chunk_size == 0) {
-    return parallel_for_static(beg, end, std::forward<C>(c));
+    return _parallel_for_static(beg, end, std::forward<C>(c));
   }
 
   Task task = emplace(
@@ -152,12 +389,12 @@ Task FlowBuilder::parallel_for_static(
   return task;
 }
 
-// Function: parallel_for_static
+// Function: _parallel_for_static
 // static scheduling with even partition
 template <typename I, typename C, 
   std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>*
 >
-Task FlowBuilder::parallel_for_static(I beg, I end, I inc, C&& c){
+Task FlowBuilder::_parallel_for_static(I beg, I end, I inc, C&& c){
 
   using namespace std::string_literals;
 
@@ -214,19 +451,19 @@ Task FlowBuilder::parallel_for_static(I beg, I end, I inc, C&& c){
   return task;
 }
 
-// Function: parallel_for_static
+// Function: _parallel_for_static
 // static scheduling with chunk size
 template <typename I, typename C, 
   std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>*
 >
-Task FlowBuilder::parallel_for_static(
+Task FlowBuilder::_parallel_for_static(
   I beg, I end, I inc, C&& c, size_t chunk_size
 ){
 
   using namespace std::string_literals;
 
   if(chunk_size == 0) {
-    return parallel_for_static(beg, end, inc, std::forward<C>(c));
+    return _parallel_for_static(beg, end, inc, std::forward<C>(c));
   }
 
   Task task = emplace(
@@ -301,162 +538,12 @@ Task FlowBuilder::parallel_for_static(
 }
 
 // ----------------------------------------------------------------------------
-// parallel for using the guided partition algorithm
+// Function: _parallel_for_dynamic
 // ----------------------------------------------------------------------------
 
-// Function: parallel_for_guided
+// Function: _parallel_for_dynamic
 template <typename I, typename C>
-Task FlowBuilder::parallel_for_guided(I beg, I end, C&& c, size_t chunk_size){
-
-  using namespace std::string_literals;
-
-  if(chunk_size == 0) {
-    chunk_size = 1;
-  }
-
-  Task task = emplace(
-  [beg, end, chunk_size, c=std::forward<C>(c)] (Subflow& sf) mutable {
-  
-    if(beg == end) {
-      return;
-    }
-  
-    size_t W = sf._executor.num_workers();
-    size_t N = std::distance(beg, end);
-    
-    // only myself - no need to spawn another graph
-    if(W <= 1 || N <= chunk_size) {
-      std::for_each(beg, end, c);
-      return;
-    }
-    
-    if(N < W) {
-      W = N;
-    }
-
-    std::atomic<size_t> next(0);
-
-    for(size_t w=0; w<W; w++) {
-
-      sf.emplace([&next, beg, N, chunk_size, W, &c] () mutable {
-        
-        size_t z = 0;
-        size_t s = next.load(std::memory_order_relaxed);
-
-        while(s != N) {
-          
-          size_t r = N - s;
-          size_t q = (r + W - 1) / W;
-
-          if(q < chunk_size) {
-            q = chunk_size;
-          }
-
-          size_t e = (q <= r) ? s + q : N;
-
-          if(next.compare_exchange_strong(s, e, std::memory_order_release,
-                                                std::memory_order_relaxed)) {
-            std::advance(beg, s-z);
-            for(size_t x = s; x < e; x++, beg++) {
-              c(*beg);
-            }
-            z = e;
-            s = next.load(); 
-          }
-        }
-
-      }).name("pfg_"s + std::to_string(w));
-    }
-    
-    sf.join();
-  });  
-
-  return task;
-}
-
-// Function: parallel_for_guided
-template <typename I, typename C, 
-  std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>*
->
-Task FlowBuilder::parallel_for_guided(
-  I beg, I end, I inc, C&& c, size_t chunk_size
-){
-
-  using namespace std::string_literals;
-
-  if(chunk_size == 0) {
-    chunk_size = 1;
-  }
-
-  Task task = emplace(
-  [beg, end, inc, chunk_size, c=std::forward<C>(c)] (Subflow& sf) mutable {
-  
-    if((inc == 0 && beg != end) || 
-       (beg < end && inc <=  0) || 
-       (beg > end && inc >=  0)) {
-      TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
-    }
-    
-    size_t W = sf._executor.num_workers();
-    size_t N = distance(beg, end, inc);
-    
-    // only myself - no need to spawn another graph
-    if(W <= 1 || N <= chunk_size) {
-      for(size_t x=0; x<N; x++, beg+=inc) {
-        c(beg);
-      }
-      return;
-    }
-    
-    if(N < W) {
-      W = N;
-    }
-
-    std::atomic<size_t> next(0);
-
-    for(size_t w=0; w<W; w++) {
-
-      sf.emplace([&next, beg, inc, N, chunk_size, W, &c] () mutable {
-          
-        size_t e0;
-        size_t s0 = next.load(std::memory_order_relaxed);
-          
-        while(s0 != N) {
-          
-          size_t r = N - s0;
-          size_t q = (r + W - 1) / W;
-
-          if(q < chunk_size) {
-            q = chunk_size;
-          }
-
-          e0 = (q <= r) ? s0 + q : N;
-
-          if(next.compare_exchange_strong(s0, e0, std::memory_order_release,
-                                                  std::memory_order_relaxed)) {
-            I s = static_cast<I>(s0) * inc + beg;
-            for(size_t x=s0; x<e0; x++, s+= inc) {
-              c(s);
-            }
-            s0 = next.load(); 
-          }
-        }
-      }).name("pfg_"s + std::to_string(w));
-    }
-    
-    sf.join();
-  });  
-
-  return task;
-}
-
-// ----------------------------------------------------------------------------
-// Function: parallel_for_dynamic
-// ----------------------------------------------------------------------------
-
-// Function: parallel_for_dynamic
-template <typename I, typename C>
-Task FlowBuilder::parallel_for_dynamic(I beg, I end, C&& c, size_t chunk_size){
+Task FlowBuilder::_parallel_for_dynamic(I beg, I end, C&& c, size_t chunk_size){
 
   using namespace std::string_literals;
 
@@ -491,22 +578,21 @@ Task FlowBuilder::parallel_for_dynamic(I beg, I end, C&& c, size_t chunk_size){
       sf.emplace([&next, beg, N, chunk_size, &c] () mutable {
         
         size_t z = 0;
-        size_t s = next.load(std::memory_order_relaxed);
 
-        while(s != N) {
+        while(1) {
+
+          size_t s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
           
-          size_t r = N - s;
-          size_t e = (chunk_size <= r) ? s + chunk_size : N;
-
-          if(next.compare_exchange_strong(s, e, std::memory_order_release,
-                                                std::memory_order_relaxed)) {
-            std::advance(beg, s-z);
-            for(size_t x = s; x < e; x++, beg++) {
-              c(*beg);
-            }
-            z = e;
-            s = next.load(); 
+          if(s0 >= N) {
+            break;
           }
+          
+          size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
+          std::advance(beg, s0-z);
+          for(size_t x=s0; x<e0; x++, beg++) {
+            c(*beg);
+          }
+          z = e0;
         }
 
       }).name("pfd_"s + std::to_string(w));
@@ -521,7 +607,7 @@ Task FlowBuilder::parallel_for_dynamic(I beg, I end, C&& c, size_t chunk_size){
 template <typename I, typename C, 
   std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>*
 >
-Task FlowBuilder::parallel_for_dynamic(
+Task FlowBuilder::_parallel_for_dynamic(
   I beg, I end, I inc, C&& c, size_t chunk_size
 ){
 
@@ -560,21 +646,19 @@ Task FlowBuilder::parallel_for_dynamic(
     for(size_t w=0; w<W; w++) {
 
       sf.emplace([&next, beg, inc, N, chunk_size, &c] () mutable {
-          
-        size_t s0 = next.load(std::memory_order_relaxed);
-          
-        while(s0 != N) {
-          
-          size_t r = N - s0;
-          size_t e0 = (chunk_size <= r) ? s0 + chunk_size : N;
 
-          if(next.compare_exchange_strong(s0, e0, std::memory_order_release,
-                                                  std::memory_order_relaxed)) {
-            I s = static_cast<I>(s0) * inc + beg;
-            for(size_t x=s0; x<e0; x++, s+= inc) {
-              c(s);
-            }
-            s0 = next.load(); 
+        while(1) {
+          
+          size_t s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
+
+          if(s0 >= N) {
+            break;
+          }
+          
+          size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
+          I s = static_cast<I>(s0) * inc + beg;
+          for(size_t x=s0; x<e0; x++, s+=inc) {
+            c(s);
           }
         }
       }).name("pfd_"s + std::to_string(w));
@@ -586,7 +670,7 @@ Task FlowBuilder::parallel_for_dynamic(
 
   return task;
 }
-
+*/
 
 
 }  // end of namespace tf -----------------------------------------------------
