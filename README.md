@@ -485,53 +485,29 @@ B.work([](){ /* do something */ });
 
 ### *parallel_for*
 
-The method `parallel_for` creates a subgraph that applies the callable to each item in the given range of a container.
-
-<img align="right" width="35%" src="image/parallel_for.svg">
+The method `parallel_for` creates a dynamic task that spawns a subflow to apply the callable to each item in the given range of a container.
 
 ```cpp
 auto v = {'A', 'B', 'C', 'D'};
-auto [S, T] = taskflow.parallel_for(
+auto t = taskflow.parallel_for(
   v.begin(),    // iterator to the beginning
   v.end(),      // iterator to the end
   [] (int i) { 
     std::cout << "parallel " << i << '\n';
   }
 );
-// add dependencies via S and T.
 ```
 
-You can specify a *chunk* size (default one) in the last argument to force a task to include a certain number of items.
-
-<img align="right" width="18%" src="image/parallel_for_2.svg">
-
-```cpp
-auto v = {'A', 'B', 'C', 'D'};
-auto [S, T] = taskflow.parallel_for(
-  v.begin(),    // iterator to the beginning
-  v.end(),      // iterator to the end
-  [] (int i) { 
-    std::cout << "AB and CD run in parallel" << '\n';
-  },
-  2  // at least two items at a time
-);
-```
-
-In addition to iterator-based construction, 
-`parallel_for` has another overload of index-based loop.
-The first three argument of this overload indicates 
-starting index, ending index (exclusive), and step size.
+You can also specify an *index-based* range with the given step size to perform parallel iterations.
 
 ```cpp
 // [0, 11) with a step size of 2
-auto [S, T] = taskflow.parallel_for(
-  0, 11, 2, 
+auto t = taskflow.parallel_for(0, 11, 2, 
   [] (int i) {
     std::cout << "parallel_for on index " << i << std::endl;
-  }, 
-  2  // at least two items at a time
+  } 
 );
-// will print 0, 2, 4, 6, 8, 10 (three partitions, {0, 2}, {4, 6}, {8, 10})
+// will print 0, 2, 4, 6, 8, 10
 ```
 
 ## Task API
