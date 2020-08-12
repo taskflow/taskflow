@@ -841,6 +841,27 @@ target_link_libraries(
 )
 set_target_properties(matrix_multiplication PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+## benchmark 7: mandelbrot
+message(STATUS "benchmark 7: mandelbrot")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/mandelbrot)
+add_executable(
+  mandelbrot 
+  ${TF_BENCHMARK_DIR}/mandelbrot/main.cpp
+  ${TF_BENCHMARK_DIR}/mandelbrot/omp.cpp
+  ${TF_BENCHMARK_DIR}/mandelbrot/tbb.cpp
+  ${TF_BENCHMARK_DIR}/mandelbrot/taskflow.cpp
+)
+target_include_directories(mandelbrot PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  mandelbrot 
+  ${PROJECT_NAME} 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
+)
+set_target_properties(mandelbrot PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+
 if(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
 ## cuda benchmark 1: heterogeneous traversal
 message(STATUS "cuda benchmark 1: heterogeneous traversal")

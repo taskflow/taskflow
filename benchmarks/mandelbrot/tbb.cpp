@@ -5,21 +5,19 @@
 
 void mandelbrot_tbb(unsigned num_threads, int d = D) {
   tbb::task_scheduler_init init(num_threads);
-  tbb::parallel_for(tbb::blocked_range<size_t>(0, H), [&](const tbb::blocked_range<size_t>& r) {
-    for (size_t i=r.begin();i!=r.end();++i) {
-      for(int j=0; j<W; j++) {
+  tbb::parallel_for(0, H, 1, [&](int i) {
+    for(int j=0; j<W; j++) {
 
-        auto [xx, yy] = scale_xy(i, j);
-        auto value = escape_time(xx, yy, d);
+      auto [xx, yy] = scale_xy(i, j);
+      auto value = escape_time(xx, yy, d);
 
-        auto k = 3*(j*W + i);
+      auto k = 3 * ( j * W + i );
 
-        auto [r, g, b] = get_color(value);
+      auto [r, g, b] = get_color(value);
 
-        RGB[k]   = r;
-        RGB[k+1] = g;
-        RGB[k+2] = b;
-      }
+      RGB[k]   = r;
+      RGB[k+1] = g;
+      RGB[k+2] = b;
     }
   });
 }

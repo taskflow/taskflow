@@ -15,30 +15,38 @@ void mandelbrot(
   const unsigned num_rounds
   ) {
 
-  std::cout << std::setw(12) << "runtime"
+  std::cout << std::setw(12) << "size"
+            << std::setw(12) << "runtime"
             << std::endl;
  
-  double runtime {0.0};
-  RGB = static_cast<unsigned char *>(malloc (W * H * 3 * sizeof(unsigned char)));
+  for(int N = 100; N<=1000; N+=100) {
 
-  for(unsigned j=0; j<num_rounds; ++j) {
-    if(model == "tf") {
-      runtime += measure_time_taskflow(num_threads).count();
+    W = N;
+    H = N;
+  
+    double runtime {0.0};
+    RGB = static_cast<unsigned char *>(malloc (W * H * 3 * sizeof(unsigned char)));
+
+    for(unsigned j=0; j<num_rounds; ++j) {
+      if(model == "tf") {
+        runtime += measure_time_taskflow(num_threads).count();
+      }
+      else if(model == "tbb") {
+        runtime += measure_time_tbb(num_threads).count();
+      }
+      else if(model == "omp") {
+        runtime += measure_time_omp(num_threads).count();
+      }
+      else assert(false);
     }
-    else if(model == "tbb") {
-      runtime += measure_time_tbb(num_threads).count();
-    }
-    else if(model == "omp") {
-      runtime += measure_time_omp(num_threads).count();
-    }
-    else assert(false);
+
+    std::cout << std::setw(12) << N
+              << std::setw(12) << runtime / num_rounds / 1e3
+              << std::endl;
+
+    //dump_tga(W, H, RGB, "mandelbrot_set.tga");
+    free(RGB);
   }
-
-  std::cout << std::setw(12) << runtime / num_rounds / 1e3
-            << std::endl;
-
-  //dump_tga(W, H, RGB, "mandelbrot_set.tga");
-  free(RGB);
 }
 
 
