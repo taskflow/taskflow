@@ -7,20 +7,18 @@ void bs_taskflow(unsigned num_threads) {
   tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
-  taskflow.parallel_for(
-    0, numOptions, 1, [&](int i) {
-      /* Calling main function to calculate option value based on 
-       * Black & Scholes's equation.
-       */
-       auto price = BlkSchlsEqEuroNoDiv( sptprice[i], strike[i],
-                                    rate[i], volatility[i], otime[i], 
-                                    otype[i], 0);
-       prices[i] = price;
+  taskflow.parallel_for(0, numOptions, 1, [&](int i) {
+    auto price = BlkSchlsEqEuroNoDiv(
+      sptprice[i], strike[i],
+      rate[i], volatility[i], otime[i], 
+      otype[i], 0
+    );
+
+    prices[i] = price;
 #ifdef ERR_CHK 
-      check_error(i, price);
+    check_error(i, price);
 #endif
-    } 
-  );
+  });
 
   executor.run_n(taskflow, NUM_RUNS).wait();
 }

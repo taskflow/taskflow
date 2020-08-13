@@ -98,10 +98,10 @@ void kmeans(int N, int K, int M, size_t num_cpus, size_t num_gpus) {
     }
   }).name("clean_up");
 
-  tf::Task S, T;
+  tf::Task pf;
   
   // update cluster
-  std::tie(S, T) = taskflow.parallel_for(0, N, 1, [&](int i){
+  pf = taskflow.parallel_for(0, N, 1, [&](int i){
     float x = h_px[i];
     float y = h_py[i];
     float best_d = std::numeric_limits<float>::max();
@@ -114,13 +114,7 @@ void kmeans(int N, int K, int M, size_t num_cpus, size_t num_gpus) {
       }
     }
     best_ks[i] = best_k;
-  }, (N+num_cpus-1)/num_cpus);
-
-  S.name("beg_assign_cluster");
-  S.for_each_successor([i=0](tf::Task t) mutable {
-    t.name(std::string("partition") + std::to_string(i++));
   });
-  T.name("end_assign_cluster");
 
   auto update_cluster = taskflow.emplace([&](){
     for(int i=0; i<N; i++) {
@@ -142,8 +136,8 @@ void kmeans(int N, int K, int M, size_t num_cpus, size_t num_gpus) {
   
   init.precede(clean_up);
 
-  clean_up.precede(S);
-  T.precede(update_cluster);
+  clean_up.precede(pf);
+  pf.precede(update_cluster);
 
   condition.precede(clean_up)
            .succeed(update_cluster);

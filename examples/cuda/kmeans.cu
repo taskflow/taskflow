@@ -110,10 +110,10 @@ std::pair<std::vector<float>, std::vector<float>> cpu_par(
     }
   }).name("clean_up");
 
-  tf::Task S, T;
+  tf::Task pf;
   
   // update cluster
-  std::tie(S, T) = taskflow.parallel_for(0, N, 1, [&](int i){
+  pf = taskflow.parallel_for(0, N, 1, [&](int i){
     float x = px[i];
     float y = py[i];
     float best_d = std::numeric_limits<float>::max();
@@ -126,13 +126,9 @@ std::pair<std::vector<float>, std::vector<float>> cpu_par(
       }
     }
     best_ks[i] = best_k;
-  }, (N+num_threads-1)/num_threads);
-
-  S.name("beg_assign_cluster");
-  S.for_each_successor([i=0](tf::Task t) mutable {
-    t.name(std::string("partition") + std::to_string(i++));
   });
-  T.name("end_assign_cluster");
+
+  pf.name("parallel-for");
 
   auto update_cluster = taskflow.emplace([&](){
     for(int i=0; i<N; i++) {
@@ -154,8 +150,8 @@ std::pair<std::vector<float>, std::vector<float>> cpu_par(
   
   init.precede(clean_up);
 
-  clean_up.precede(S);
-  T.precede(update_cluster);
+  clean_up.precede(pf);
+  pf.precede(update_cluster);
 
   condition.precede(clean_up)
            .succeed(update_cluster);
