@@ -255,7 +255,7 @@ Task FlowBuilder::parallel_for_guided(
           }
           // coarse-grained
           else {
-            size_t q = p2 * r;
+            size_t q = static_cast<size_t>(p2 * r);
             if(q < chunk_size) {
               q = chunk_size;
             }
