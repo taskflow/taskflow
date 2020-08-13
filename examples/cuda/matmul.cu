@@ -99,7 +99,7 @@ auto cpu(int M, int N, int K) {
     c.resize(M*K, 0);
   }).name("allocate_c");
 
-  auto pair = taskflow.parallel_for(0, M, 1, [&] (int m) {
+  auto pf = taskflow.parallel_for(0, M, 1, [&] (int m) {
     for(int k=0; k<K; k++) {
       for(int n=0; n<N; n++) {
         c[m*K+k] += (a[m*N+n]*b[n*K+k]);
@@ -107,7 +107,7 @@ auto cpu(int M, int N, int K) {
     }
   });
   
-  pair.first.succeed(ha, hb, hc);
+  pf.succeed(ha, hb, hc);
 
   //taskflow.dump(std::cout);
 

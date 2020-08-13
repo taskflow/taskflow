@@ -909,6 +909,26 @@ target_link_libraries(
 )
 set_target_properties(mandelbrot PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+## benchmark 8: black_scholes
+message(STATUS "benchmark 8: black scholes")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/black_scholes)
+add_executable(
+  black_scholes
+  ${TF_BENCHMARK_DIR}/black_scholes/main.cpp
+  ${TF_BENCHMARK_DIR}/black_scholes/omp.cpp
+  ${TF_BENCHMARK_DIR}/black_scholes/tbb.cpp
+  ${TF_BENCHMARK_DIR}/black_scholes/taskflow.cpp
+)
+target_include_directories(black_scholes PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  black_scholes 
+  ${PROJECT_NAME} 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
+)
+set_target_properties(black_scholes PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
 
 
 if(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
