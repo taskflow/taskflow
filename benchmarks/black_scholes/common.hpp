@@ -25,21 +25,19 @@ typedef struct OptionData_ {
   float DGrefval;   // DerivaGem Reference Value
 } OptionData;
 
-inline OptionData *optdata;
-inline float *prices;
-inline int numOptions;
-inline int NUM_RUNS;
-
-inline int*    otype;
-inline float* sptprice;
-inline float* strike;
-inline float* rate;
-inline float* volatility;
-inline float* otime;
-inline int numError {0};
-
-inline float* BUFFER {nullptr};
-inline int* BUFFER2 {nullptr};
+extern OptionData *optdata;
+extern float *prices;
+extern int numOptions;
+extern int NUM_RUNS;
+extern int*    otype;
+extern float* sptprice;
+extern float* strike;
+extern float* rate;
+extern float* volatility;
+extern float* otime;
+extern int numError;
+extern float* BUFFER;
+extern int* BUFFER2;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Cumulative Normal Distribution Function
@@ -268,3 +266,4 @@ inline void generate_options(size_t num_options) {
 std::chrono::microseconds measure_time_taskflow(unsigned);
 std::chrono::microseconds measure_time_tbb(unsigned);
 std::chrono::microseconds measure_time_omp(unsigned);
+

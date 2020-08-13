@@ -11,16 +11,10 @@ void mandelbrot_omp(unsigned num_threads, int d = D) {
     for(i=0; i<H ;i ++) {
       for(j=0; j<W; j++) {
    
-        auto [xx, yy] = scale_xy(i, j);
-        auto value = escape_time(xx, yy, d);
-                                                    
+        auto xy = scale_xy(i, j);
+        auto value = escape_time(xy.first, xy.second, d);
         auto k = 3*(j*W + i);
-
-        auto [r, g, b] = get_color(value);
-
-        RGB[k]   = r;
-        RGB[k+1] = g;
-        RGB[k+2] = b;
+        std::tie(RGB[k], RGB[k+1], RGB[k+2]) = get_color(value);
       }
     }
   }

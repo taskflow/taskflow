@@ -9,6 +9,10 @@
 //   https://csl.name/post/mandelbrot-rendering/ 
 //   http://linas.org/art-gallery/escape/smooth.html
 
+int H = 1000; 
+int W = 1000; 
+unsigned char* RGB = nullptr;
+
 void mandelbrot(
   const std::string& model,
   const unsigned num_threads, 

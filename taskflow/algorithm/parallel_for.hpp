@@ -541,7 +541,7 @@ template <typename B, typename E, typename S, typename C>
 Task FlowBuilder::parallel_for_static(
   B&& beg, E&& end, S&& inc, C&& c, size_t chunk_size
 ){
-  
+
   using I = underlying_index_t<B, E, S>;
   using namespace std::string_literals;
 
@@ -592,11 +592,10 @@ Task FlowBuilder::parallel_for_static(
           size_t s0 = next.fetch_add(items, std::memory_order_relaxed);
         
           I s = static_cast<I>(s0) * inc + beg;
-          
+
           for(size_t x=0; x<items; x++, s+=inc) {
             c(s);
           }
-
         }).name("pfs_"s + std::to_string(i));
       }
 

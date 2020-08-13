@@ -12,6 +12,21 @@
 #include "common.hpp"
 #include <CLI11.hpp>
 
+// extern global variables
+OptionData *optdata = nullptr;
+float *prices = nullptr;
+int numOptions = 0;
+int NUM_RUNS = 0;
+int*    otype = nullptr;
+float* sptprice = nullptr;
+float* strike = nullptr;
+float* rate = nullptr;
+float* volatility = nullptr;
+float* otime = nullptr;
+int numError = 0;
+float* BUFFER = nullptr;
+int* BUFFER2 = nullptr;
+
 void black_scholes(
   const std::string& model,
   const unsigned num_threads,

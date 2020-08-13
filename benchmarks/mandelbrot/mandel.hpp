@@ -5,15 +5,16 @@
 #include <chrono>
 #include <cassert>
 
-inline const int D = 2;
-inline const int MAX_ITERATION = 200;
-inline int H = 1000; 
-inline int W = 1000; 
-inline const double XL = - 2.5;
-inline const double XR = 1.0;
-inline const double YB = -1.0;
-inline const double YT = 1.0;
-inline unsigned char* RGB {nullptr};
+const int D = 2;
+const int MAX_ITERATION = 200;
+const double XL = - 2.5;
+const double XR = 1.0;
+const double YB = -1.0;
+const double YT = 1.0;
+extern int H; 
+extern int W; 
+extern unsigned char* RGB;
+
 
 inline void dump_tga(int w, int h, unsigned char rgb[], const char *filename) {
   FILE *file_unit;
