@@ -43,7 +43,7 @@ With task parallelism, we prefer <em>coarse-grained</em> model
 to have each task perform rather large computation to amortize
 the overhead of creating and scheduling tasks.
 In this case, we avoid intensive tasks each working on only a single element.
-We create a task per row of C 
+by creating a task per row of C 
 to multiply a row of A by every column of B.
 
 @code{.cpp}
@@ -54,46 +54,36 @@ void matrix_multiplication(int** A, int** B, int** C, int M, int K, int N) {
   tf::Taskflow taskflow;
   tf::Executor executor;
   
-  // loop the rage [0, M) with a step size of one
-  taskflow.parallel_for(0, M, 1, [&] (int m) {
-    for(int n=0; n<N; n++) {
-      for(int k=0; k<K; k++) {
-        C[m][n] += A[m][k] * B[k][n];
-      }   
-    }   
-  }); 
+  for(int m=0; m<M; ++m) {
+    taskflow.emplace([m, &] () {
+      for(int n=0; n<N; n++) {
+        for(int k=0; k<K; k++) {
+          C[m][n] += A[m][k] * B[k][n];
+        }
+      }
+    });
+  }
 
   executor.run(taskflow).wait();
 }
 @endcode
 
-The method, Taskflow::parallel_for, creates a <em>parallel-for</em> graph.
-The above example creates a task per row @c m of C that applies a lambda to compute the
-result of each @c m. 
-The first three arguments define the loop in the range <tt>[0, M)</tt> with a step size of one.
-Instead of using Taskflow::parallel_for, you can manually create a parallel-for graph.
+Instead of creating tasks one-by-one over a loop,
+you can leverage Taskflow::parallel_for to create a <em>parallel-for</em> task.
+A parallel-for task spawns a subflow to perform parallel iterations over the given range.
 
 @code{.cpp}
-tf::Task S, T;
-
-for(int m=0; m<M; ++m) {
-  auto chunk = taskflow.emplace([m, &] () {
-    for(int n=0; n<N; n++) {
-      for(int k=0; k<K; k++) {
-        C[m][n] += A[m][k] * B[k][n];
-      }
-    }
-  });
-  chunk.succeed(S)
-       .precede(T);
-}
+// perform parallel iterations on the range [0, M) with the step size of 1
+tf::Task task = taskflow.parallel_for(0, M, 1, [&] (int m) {
+  for(int n=0; n<N; n++) {
+    for(int k=0; k<K; k++) {
+      C[m][n] += A[m][k] * B[k][n];
+    }   
+  }   
+}); 
 @endcode
 
-Depending on applications, the chunk size of each task can have significant impact on 
-the performance.
-Smaller chunk size implies more tasks and thus the overhead of creating and scheduling tasks may
-slow down the performance.
-Larger chunk size implies fewer tasks and load balancing between tasks dominates the performance.
+Please visit @ref A0ParallelFor for more details.
 
 @section GPUAcceleratedMatrixMultiplication GPU-based Acceleration
 
