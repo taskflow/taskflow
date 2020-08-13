@@ -71,40 +71,6 @@ The method, Taskflow::parallel_for, creates a <em>parallel-for</em> graph.
 The above example creates a task per row @c m of C that applies a lambda to compute the
 result of each @c m. 
 The first three arguments define the loop in the range <tt>[0, M)</tt> with a step size of one.
-You can force each task to work on a @em chunk of iterations by passing an addition argument
-at last.
-
-
-@code{.cpp}
-unsigned P = 8;  // eight partitioned tasks
-
-// loop the rage [0, M) with a step size of one and have each task run "chunk" iterations
-std::pair<tf::Task, tf::Task> pair = taskflow.parallel_for(0, M, 1, [&] (int m) {
-  for(int n=0; n<N; n++) {
-    for(int k=0; k<K; k++) {
-      C[m][n] += A[m][k] * B[k][n];
-    }   
-  }   
-}, (M + P - 1) / P); 
-
-// name tasks
-pair.first.name("S");
-pair.second.name("T");
-pair.first.for_each_successor([i=0] (tf::Task task) mutable {
-  task.name(std::string("chunk") + std::to_string(i++));
-});
-
-// dump the taskflow to a dot format
-taskflow.dump(std::cout);
-@endcode
-
-@image html images/matrix_multiplication_3.svg width=80%
-
-The above code partitions the loop into eight taskseach containing up to 
-<tt>(M + P - 1) / P</tt> rows of C.
-The return value of Taskflow::parallel_for is a std::pair of tasks, 
-indicating the starting point and the ending point of the parallel-for graph.
-You can use this pair of tasks to splice the parallel-for graph to other dependent tasks.
 Instead of using Taskflow::parallel_for, you can manually create a parallel-for graph.
 
 @code{.cpp}

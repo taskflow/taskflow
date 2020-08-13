@@ -83,9 +83,7 @@ void kmeans_seq(int N, int K, int M, cconst std::vector<float>& px,  const std::
 
 The second step of k-means algorithm, <em>assigning every point to the nearest centroid</em>,
 is highly parallelizable across individual points.
-We can create a @em parallel-for graph to run this step in parallel.
-Assuming we request @c P tasks, 
-each task works on a set of points of size <tt>(N + P - 1) / P</tt>.
+We can create a @em parallel-for task to run parallel iterations.
 
 @code{.cpp}
 std::vector<int> best_ks(N);  // nearest centroid of each point
@@ -106,7 +104,7 @@ taskflow.parallel_for(0, N, 1, [&](int i){
     }
   }
   best_ks[i] = best_k;
-}, (N + P - 1)/ P);
+});
 @endcode
 
 The third step of moving every centroid to the average of points is also parallelizable
@@ -174,10 +172,8 @@ void kmeans_par(int N, int K, int M, cconst std::vector<float>& px,  const std::
     }
   }).name("clean_up");
 
-  tf::Task S, T;
-
   // update cluster
-  std::tie(S, T) = taskflow.parallel_for(0, N, 1, [&](int i){
+  tf::Task pf = taskflow.parallel_for(0, N, 1, [&](int i){
     float x = px[i];
     float y = py[i];
     float best_d = std::numeric_limits<float>::max();
@@ -190,13 +186,7 @@ void kmeans_par(int N, int K, int M, cconst std::vector<float>& px,  const std::
       }
     }
     best_ks[i] = best_k;
-  }, (N + P - 1) / P);
-
-  S.name("beg_assign_cluster");
-  S.for_each_successor([i=0](tf::Task t) mutable {
-    t.name(std::string("partition") + std::to_string(i++));
-  });
-  T.name("end_assign_cluster");
+  }).name("parallel-for");
 
   tf::Task update_cluster = taskflow.emplace([&](){
     for(int i=0; i<N; i++) {
@@ -219,8 +209,8 @@ void kmeans_par(int N, int K, int M, cconst std::vector<float>& px,  const std::
 
   init.precede(clean_up);
 
-  clean_up.precede(S);
-  T.precede(update_cluster);
+  clean_up.precede(pf);
+  pf.precede(update_cluster);
 
   condition.precede(clean_up)
            .succeed(update_cluster);
