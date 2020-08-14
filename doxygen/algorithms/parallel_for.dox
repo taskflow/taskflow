@@ -26,7 +26,9 @@ Notice that either positive or negative direction is defined in terms of the ran
 <tt>[first, last)</tt>, where @c end is excluded.
 In the positive case, the 50 items are 0, 2, 4, 6, 8, ..., 96, 98.
 In the negative case, the 50 items are 100, 98, 96, 04, ... 4, 2.
+An example of the %Taskflow graph for the positive case under 12 workers is depicted below:
 
+@image html images/parallel_for_1.svg width=100%
 
 The index types, @c B, @c E, and @c S, are templates to preserve the variable types and their underlying types must be of the same @em integral type (e.g., @c int, @c size_t, @c unsigned).
 By default, tf::Taskflow::parallel_for(B&& first, E&& last, S&& step, C&& callable) creates a task that spawns a subflow (see @ref chapter3) to run iterations in parallel. The subflow closure captures all input arguments through perfect forwarding to form a stateful closure such that any changes on the arguments will be visible to the execution context of the subflow. For example:
@@ -54,9 +56,9 @@ This property is especially important for task graph parallelism, because users 
 
 @section IteratorBasedParallelFor Iterator-based Parallel-For
 
-Iterator-based parallel-for performs parallel iterations over a range specified by two STL-styled iterators, @c first and @c last. 
+Iterator-based parallel-for performs parallel iterations over a range specified by two <a href="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</a>, @c first and @c last. 
 The task created by tf::Taskflow::parallel_for(B&& first, E&& last, C&& callable) represents 
-parallel execution of the following loop:
+a parallel execution of the following loop:
 
 @code{.cpp}
 for(auto i=first; i<last; i++) {
@@ -105,7 +107,7 @@ When @c init finishes, the parallel-for task @c pf will see @c first pointing to
 @section PartitionAlgorithms Partition Algorithms
 
 At runtime, the parallel-for task automatically partitions the range into @em chunks and assign each chunk a task in the spawned subflow.
-Inspired by OpenMP, we support three partition algorithms, @em static partition, @em dynamic partition, and @em guided partition.
+Inspired by the <a href="http://jakascorner.com/blog/2016/06/omp-for-scheduling.html">scheduling algorithms of OpenMP</a>, we support three partition algorithms, @em static partition, @em dynamic partition, and @em guided partition.
 
 @code{.cpp}
 size_t first = 0, last = 1000, step = 1, chunk_size = 100;
@@ -131,7 +133,8 @@ The picture below illustrates the three partition algorithms.
 @image html images/parallel_for_partition_algorithms.jpeg width=95%
 
 By default, tf::Taskflow::parallel_for(B&& first, E&& last, S&& step, C&& callable) and tf::Taskflow::parallel_for(B&& first, E&& last, C&& callable) adopt the @em guided partition algorithm with chunk size equal to one. 
-In practice, guided partition produces decent performance in many applications.
+In practice, guided partition produces decent performance in many applications
+and is the default of %Taskflow's parallel-for algorithm.
 However, depending on the workload requirement, users may explicitly call for static, dynamic, or guided partition algorithms with a specified chunk size.
 
 */
