@@ -15,7 +15,8 @@
 enum TYPE {
   GUIDED,
   DYNAMIC,
-  STATIC
+  STATIC,
+  FACTORING
 };
 
 void parallel_for(unsigned W, TYPE type) {
@@ -56,6 +57,13 @@ void parallel_for(unsigned W, TYPE type) {
               counter++;
               vec[i-beg] = i;
             }, c);
+          break;
+          
+          case FACTORING:
+            taskflow.parallel_for_factoring(beg, end, s, [&](int i){
+              counter++;
+              vec[i-beg] = i;
+            });
           break;
         }
 
@@ -102,6 +110,13 @@ void parallel_for(unsigned W, TYPE type) {
             counter++;
             i = 1;
           }, c);
+        break;
+        
+        case FACTORING:
+          taskflow.parallel_for_factoring(vec.begin(), vec.begin() + n, [&](int& i){
+            counter++;
+            i = 1;
+          });
         break;
       }
 
@@ -266,6 +281,55 @@ TEST_CASE("pfs.12threads" * doctest::timeout(300)) {
   parallel_for(12, STATIC);
 }
 
+// factoring
+TEST_CASE("pff.1thread" * doctest::timeout(300)) {
+  parallel_for(1, FACTORING);
+}
+
+TEST_CASE("pff.2threads" * doctest::timeout(300)) {
+  parallel_for(2, FACTORING);
+}
+
+TEST_CASE("pff.3threads" * doctest::timeout(300)) {
+  parallel_for(3, FACTORING);
+}
+
+TEST_CASE("pff.4threads" * doctest::timeout(300)) {
+  parallel_for(4, FACTORING);
+}
+
+TEST_CASE("pff.5threads" * doctest::timeout(300)) {
+  parallel_for(5, FACTORING);
+}
+
+TEST_CASE("pff.6threads" * doctest::timeout(300)) {
+  parallel_for(6, FACTORING);
+}
+
+TEST_CASE("pff.7threads" * doctest::timeout(300)) {
+  parallel_for(7, FACTORING);
+}
+
+TEST_CASE("pff.8threads" * doctest::timeout(300)) {
+  parallel_for(8, FACTORING);
+}
+
+TEST_CASE("pff.9threads" * doctest::timeout(300)) {
+  parallel_for(9, FACTORING);
+}
+
+TEST_CASE("pff.10threads" * doctest::timeout(300)) {
+  parallel_for(10, FACTORING);
+}
+
+TEST_CASE("pff.11threads" * doctest::timeout(300)) {
+  parallel_for(11, FACTORING);
+}
+
+TEST_CASE("pff.12threads" * doctest::timeout(300)) {
+  parallel_for(12, FACTORING);
+}
+
 // ----------------------------------------------------------------------------
 // stateful_parallel_for
 // ----------------------------------------------------------------------------
@@ -343,6 +407,20 @@ void stateful_parallel_for(unsigned W, TYPE type) {
             counter++;
             vec[i] = -8;
         }, c);
+      break;
+      
+      case FACTORING:
+        pf1 = taskflow.parallel_for_factoring(
+          std::ref(beg), std::ref(end), [&](int& i){
+          counter++;
+          i = 8;
+        });
+
+        pf2 = taskflow.parallel_for_factoring(
+          std::ref(ibeg), std::ref(iend), size_t{1}, [&] (size_t i) {
+            counter++;
+            vec[i] = -8;
+        });
       break;
     }
 
@@ -511,5 +589,51 @@ TEST_CASE("statefulpfs.12threads" * doctest::timeout(300)) {
   stateful_parallel_for(12, STATIC);
 }
 
+// factoring
+TEST_CASE("statefulpff.1thread" * doctest::timeout(300)) {
+  stateful_parallel_for(1, FACTORING);
+}
 
+TEST_CASE("statefulpff.2threads" * doctest::timeout(300)) {
+  stateful_parallel_for(2, FACTORING);
+}
 
+TEST_CASE("statefulpff.3threads" * doctest::timeout(300)) {
+  stateful_parallel_for(3, FACTORING);
+}
+
+TEST_CASE("statefulpff.4threads" * doctest::timeout(300)) {
+  stateful_parallel_for(4, FACTORING);
+}
+
+TEST_CASE("statefulpff.5threads" * doctest::timeout(300)) {
+  stateful_parallel_for(5, FACTORING);
+}
+
+TEST_CASE("statefulpff.6threads" * doctest::timeout(300)) {
+  stateful_parallel_for(6, FACTORING);
+}
+
+TEST_CASE("statefulpff.7threads" * doctest::timeout(300)) {
+  stateful_parallel_for(7, FACTORING);
+}
+
+TEST_CASE("statefulpff.8threads" * doctest::timeout(300)) {
+  stateful_parallel_for(8, FACTORING);
+}
+
+TEST_CASE("statefulpff.9threads" * doctest::timeout(300)) {
+  stateful_parallel_for(9, FACTORING);
+}
+
+TEST_CASE("statefulpff.10threads" * doctest::timeout(300)) {
+  stateful_parallel_for(10, FACTORING);
+}
+
+TEST_CASE("statefulpff.11threads" * doctest::timeout(300)) {
+  stateful_parallel_for(11, FACTORING);
+}
+
+TEST_CASE("statefulpff.12threads" * doctest::timeout(300)) {
+  stateful_parallel_for(12, FACTORING);
+}

@@ -1,6 +1,6 @@
 // reference:
 // - gomp: https://github.com/gcc-mirror/gcc/blob/master/libgomp/iter.c
-// - komp: https://github.com/llvm-mirror/openmp/blob/master/src/kmp_dispatch.cpp
+// - komp: https://github.com/llvm-mirror/openmp/blob/master/runtime/src/kmp_dispatch.cpp
 
 
 #pragma once
@@ -81,6 +81,10 @@ Task FlowBuilder::parallel_for(B&& beg, E&& end, S&& inc, C&& c){
 
 // ----------------------------------------------------------------------------
 // parallel for using the guided partition algorithm
+// - Polychronopoulos, C. D. and Kuck, D. J. 
+//   "Guided Self-Scheduling: A Practical Scheduling Scheme 
+//    for Parallel Supercomputers," 
+//   IEEE Transactions on Computers, C-36(12):1425–1439 (1987).
 // ----------------------------------------------------------------------------
 
 // Function: parallel_for_guided
@@ -223,13 +227,13 @@ Task FlowBuilder::parallel_for_guided(
     if(N < W) {
       W = N;
     }
-
+    
     std::atomic<size_t> next(0);
 
     for(size_t w=0; w<W; w++) {
 
       sf.emplace([&next, beg, inc, N, chunk_size, W, &c] () mutable {
-
+        
         size_t p1 = 2 * W * (chunk_size + 1);
         double p2 = 0.5 / W;
         size_t s0 = next.load(std::memory_order_relaxed);
@@ -269,9 +273,161 @@ Task FlowBuilder::parallel_for_guided(
               s0 = next.load(std::memory_order_relaxed); 
             }
           }
+        } 
+      }).name("pfg_"s + std::to_string(w));
+    }
+    
+    sf.join();
+  });  
 
+  return task;
+}
+
+// ----------------------------------------------------------------------------
+// Factoring algorithm
+// - Hummel, S. F., Schonberg, E., and Flynn, L. E., 
+//   "Factoring: a practical and robust method for scheduling parallel loops," 
+//   IEEE/ACM SC, 1991
+// ----------------------------------------------------------------------------
+
+// Function: parallel_for_factoring
+template <typename B, typename E, typename C>
+Task FlowBuilder::parallel_for_factoring(B&& beg, E&& end, C&& c){
+  
+  using I = underlying_iterator_t<B, E>;
+  using namespace std::string_literals;
+
+  Task task = emplace(
+  [b=std::forward<B>(beg),
+   e=std::forward<E>(end), 
+   c=std::forward<C>(c)] (Subflow& sf) mutable {
+    
+    // fetch the iterator values
+    I beg = b;
+    I end = e;
+  
+    if(beg == end) {
+      return;
+    }
+  
+    size_t W = sf._executor.num_workers();
+    size_t N = std::distance(beg, end);
+    
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= 1) {
+      std::for_each(beg, end, c);
+      return;
+    }
+    
+    if(N < W) {
+      W = N;
+    }
+    
+    std::atomic<size_t> batch(0);
+    std::atomic<size_t> next(0);
+
+    for(size_t w=0; w<W; w++) {
+
+      sf.emplace([&batch, &next, beg, N, W, &c] () mutable {
+
+        size_t z = 0;
+        
+        while(1) {
+
+          size_t c0 = batch.fetch_add(1, std::memory_order_relaxed) + 1;
+          size_t b0 = (c0 + W - 1) / W;
+          size_t ck = static_cast<size_t>((N >> b0) / (double)W);
+
+          if(ck == 0) {
+            ck = 1;
+          }
+
+          size_t s0 = next.fetch_add(ck, std::memory_order_relaxed);
+          if(s0 >= N) {
+            return;
+          }
+          size_t e0 = (ck <= (N - s0)) ? s0 + ck : N;
+          std::advance(beg, s0-z);
+          for(size_t x=s0; x<e0; x++) {
+            c(*beg++);
+          }
+          z = e0;
         }
       }).name("pfg_"s + std::to_string(w));
+    }
+    
+    sf.join();
+  });  
+
+  return task;
+}
+
+// Function: parallel_for_factoring
+template <typename B, typename E, typename S, typename C>
+Task FlowBuilder::parallel_for_factoring(B&& beg, E&& end, S&& inc, C&& c){
+
+  using I = underlying_index_t<B, E, S>;
+  using namespace std::string_literals;
+
+  Task task = emplace(
+  [b=std::forward<B>(beg), 
+   e=std::forward<E>(end), 
+   i=std::forward<S>(inc), 
+   c=std::forward<C>(c)] (Subflow& sf) mutable {
+    
+    // fetch the iterator values
+    I beg = b;
+    I end = e;
+    I inc = i;
+
+    if(is_range_invalid(beg, end, inc)) {
+      TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
+    }
+    
+    size_t W = sf._executor.num_workers();
+    size_t N = distance(beg, end, inc);
+    
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= 1) {
+      for(size_t x=0; x<N; x++, beg+=inc) {
+        c(beg);
+      }
+      return;
+    }
+    
+    if(N < W) {
+      W = N;
+    }
+    
+    std::atomic<size_t> batch(0);
+    std::atomic<size_t> next(0);
+
+    for(size_t w=0; w<W; w++) {
+
+      sf.emplace([&batch, &next, beg, inc, N, W, &c] () mutable {
+
+        while(1) {
+
+          size_t c0 = batch.fetch_add(1, std::memory_order_relaxed) + 1;
+          size_t b0 = (c0 + W - 1) / W;
+          size_t ck = static_cast<size_t>((N >> b0) / (double)(W));
+
+          if(ck == 0) {
+            ck = 1;
+          }
+
+          size_t s0 = next.fetch_add(ck, std::memory_order_relaxed);
+          if(s0 >= N) {
+            return;
+          }
+          size_t e0 = (ck <= (N - s0)) ? s0 + ck : N;
+          auto s = static_cast<I>(s0) * inc + beg;
+          for(size_t x=s0; x<e0; x++, s+=inc) {
+            c(s);
+          }
+        }
+
+      }).name("pff_"s + std::to_string(w));
     }
     
     sf.join();

@@ -28,8 +28,8 @@ void parallel_for_on_index(int N) {
   tf::Executor executor;
   tf::Taskflow taskflow;
 
-  // [3, N) with step size 2
-  taskflow.parallel_for(3, N, 2, [] (int i) {
+  // [0, N) with step size 2
+  taskflow.parallel_for(0, N, 2, [] (int i) {
     printf("parallel_for on index: %d\n", i);
   });
 

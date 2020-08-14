@@ -355,6 +355,52 @@ class FlowBuilder {
     Task parallel_for_guided(B&& beg, E&& end, S&& step, C&& callable, size_t chunk_size);
     
     /**
+    @brief constructs a STL-styled parallel-for task using the factoring partition algorithm
+
+    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range [beg, end). The runtime partitions the range into chunks using a factoring algorithm.
+    
+    The two iterators are templated to enable stateful passing using std::reference_wrapper. 
+    
+    The callable needs to take a single argument of the dereferenced type.
+
+    @tparam B beginning iterator type
+    @tparam E ending iterator type
+    @tparam C callable type
+
+    @param beg iterator to the beginning (inclusive)
+    @param end iterator to the end (exclusive)
+    @param callable a callable object to apply to the dereferenced iterator 
+
+    @return a Task handle
+    */
+    template <typename B, typename E, typename C>
+    Task parallel_for_factoring(B&& beg, E&& end, C&& callable);
+    
+    /**
+    @brief constructs an index-based parallel-for task using the factoring partition algorithm.
+    
+    The task spawns a subflow that applies the callable object to each index in the range [beg, end) with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task. The chunk size is determined through a factoring algorithm.
+
+    The three indices are templated to enable stateful passing using std::reference_wrapper.
+
+    The callable needs to take a single argument of the index type.
+    
+    @tparam B beginning index type (must be integral)
+    @tparam E ending index type (must be integral)
+    @tparam S step type (must be integral)
+    @tparam C callable type
+
+    @param beg index of the beginning (inclusive)
+    @param end index of the end (exclusive)
+    @param step step size 
+    @param callable a callable object to apply to each valid index
+
+    @return a Task handle
+    */
+    template <typename B, typename E, typename S, typename C>
+    Task parallel_for_factoring(B&& beg, E&& end, S&& step, C&& callable);
+
+    /**
     @brief constructs a STL-styled parallel-for task using the dynamic partition algorithm
 
     The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range [beg, end). The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task.

@@ -156,8 +156,6 @@ std::pair<std::vector<float>, std::vector<float>> cpu_par(
   condition.precede(clean_up)
            .succeed(update_cluster);
 
-  //taskflow.dump(std::cout);
-
   executor.run(taskflow).wait();
   
   return {mx, my};
