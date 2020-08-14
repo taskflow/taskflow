@@ -219,9 +219,6 @@ void kmeans_par(int N, int K, int M, cconst std::vector<float>& px,  const std::
 }
 @endcode
 
-The taskflow graph is illustrated below:
-
-@image html images/kmeans_2.svg width=100%
 
 The taskflow consists of two parts, a @c clean_up task and a parallel-for graph.
 The former cleans up the storage @c sx, @c sy, and @c c that are used to average points for new centroids,
@@ -229,7 +226,20 @@ and the later parallelizes the searching for nearest centroids across individual
 12 tasks (may vary depending on the machine).
 If the iteration count is smaller than @c M,
 the condition task returns 0 to let the execution path go back to @c clean_up.
-Otherwise, it returns 1 to stop.
+Otherwise, it returns 1 to stop (i.e., no successor tasks at index 1).
+The taskflow graph is illustrated below:
+
+@image html images/kmeans_2.svg width=100%
+
+The scheduler starts with @c init, moves on to @c clean_up, and then enters the
+parallel-for task @c paralle-for that spawns a subflow of 12 workers to perform 
+parallel iterations.
+When @c parallel-for completes, it updates the cluster centroids and checks if
+they have converged through a condition task.
+If not, the condition task informs the scheduler to go back to @c clean_up and then
+@c parallel-for; otherwise, it returns a nominal index to stop the scheduler.
+
+
 
 @section ParallelKMeansUsingGPUs Parallel k-means using GPUs
 
