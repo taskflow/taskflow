@@ -219,15 +219,17 @@ void kmeans_par(int N, int K, int M, cconst std::vector<float>& px,  const std::
 }
 @endcode
 
+The taskflow graph is illustrated below:
+
 @image html images/kmeans_2.svg width=100%
 
-The second step of the algorithm consists of two parts, a @c clean_up task and a parallel-for graph.
+The taskflow consists of two parts, a @c clean_up task and a parallel-for graph.
 The former cleans up the storage @c sx, @c sy, and @c c that are used to average points for new centroids,
 and the later parallelizes the searching for nearest centroids across individual points using
-12 tasks.
+12 tasks (may vary depending on the machine).
 If the iteration count is smaller than @c M,
 the condition task returns 0 to let the execution path go back to @c clean_up.
-Otherwise, it returns 1 to stop, since there is no successor indexable by 1.
+Otherwise, it returns 1 to stop.
 
 @section ParallelKMeansUsingGPUs Parallel k-means using GPUs
 
