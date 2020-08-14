@@ -120,7 +120,7 @@ Partition Algorithms</h1>
 </ul>
 <p>The picture below illustrates the three partition algorithms.</p>
 <div class="image">
-<img src="parallel_for_partition_algorithms.jpeg" alt="parallel_for_partition_algorithms.jpeg" width="95%"/>
+<img src="parallel_for_partition_algorithms.png" alt="parallel_for_partition_algorithms.png" width="95%"/>
 </div>
 <p>By default, <a class="el" href="classtf_1_1FlowBuilder.html#ad4e760b3a1534a422e300d512e65be02" title="constructs an index-based parallel-for task ">tf::Taskflow::parallel_for(B&amp;&amp; first, E&amp;&amp; last, S&amp;&amp; step, C&amp;&amp; callable)</a> and <a class="el" href="classtf_1_1FlowBuilder.html#a3d719c3e8c414dc5d30792b842224996" title="constructs a STL-styled parallel-for task ">tf::Taskflow::parallel_for(B&amp;&amp; first, E&amp;&amp; last, C&amp;&amp; callable)</a> adopt the <em>guided</em> partition algorithm with chunk size equal to one. In practice, guided partition produces decent performance in many applications and is the default of Taskflow's parallel-for algorithm. However, depending on the workload requirement, users may explicitly call for static, dynamic, or guided partition algorithms with a specified chunk size. </p>
 </div></div><!-- contents -->

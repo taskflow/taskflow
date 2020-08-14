@@ -130,7 +130,7 @@ Static partition has the lowest scheduling overhead but the least optimal worklo
 
 The picture below illustrates the three partition algorithms.
 
-@image html images/parallel_for_partition_algorithms.jpeg width=95%
+@image html images/parallel_for_partition_algorithms.png width=95%
 
 By default, tf::Taskflow::parallel_for(B&& first, E&& last, S&& step, C&& callable) and tf::Taskflow::parallel_for(B&& first, E&& last, C&& callable) adopt the @em guided partition algorithm with chunk size equal to one. 
 In practice, guided partition produces decent performance in many applications
