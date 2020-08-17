@@ -200,14 +200,14 @@ Task FlowBuilder::parallel_for_guided(
   Task task = emplace(
   [b=std::forward<B>(beg), 
    e=std::forward<E>(end), 
-   i=std::forward<S>(inc), 
+   a=std::forward<S>(inc), 
    c=std::forward<C>(c),
    chunk_size] (Subflow& sf) mutable {
     
     // fetch the iterator values
     I beg = b;
     I end = e;
-    I inc = i;
+    I inc = a;
 
     if(is_range_invalid(beg, end, inc)) {
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
@@ -525,13 +525,13 @@ Task FlowBuilder::parallel_for_dynamic(
   Task task = emplace(
   [b=std::forward<B>(beg), 
    e=std::forward<E>(end),
-   i=std::forward<S>(inc),
+   a=std::forward<S>(inc),
    c=std::forward<C>(c),
    chunk_size] (Subflow& sf) mutable {
 
     I beg = b;
     I end = e;
-    I inc = i;
+    I inc = a;
   
     if(is_range_invalid(beg, end, inc)) {
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
@@ -704,14 +704,14 @@ Task FlowBuilder::parallel_for_static(
   Task task = emplace(
   [b=std::forward<B>(beg), 
    e=std::forward<E>(end), 
-   i=std::forward<S>(inc), 
+   a=std::forward<S>(inc), 
    c=std::forward<C>(c),
    chunk_size] (Subflow& sf) mutable {
     
     // fetch the indices
     I beg = b;
     I end = e;
-    I inc = i;
+    I inc = a;
     
     if(is_range_invalid(beg, end, inc)) {
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
