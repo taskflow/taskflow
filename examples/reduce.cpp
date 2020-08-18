@@ -5,6 +5,8 @@
 #include <chrono>
 #include <limits.h>
 
+#define MAX_DATA_SIZE 400000000
+
 struct Data {
   int a {::rand()};
   int b {::rand()};
@@ -20,7 +22,8 @@ void reduce() {
   std::cout << "Benchmark: reduce" << std::endl;
 
   std::vector<int> data;
-  for(int i=0; i<40000000; ++i) {
+  data.reserve(MAX_DATA_SIZE);
+  for(int i=0; i<MAX_DATA_SIZE; ++i) {
     data.push_back(::rand());
   }
 
@@ -37,19 +40,30 @@ void reduce() {
 
   // taskflow
   auto tbeg = std::chrono::steady_clock::now();
-  tf::Taskflow tf;
+  tf::Taskflow taskflow;
+  tf::Executor executor;
   auto tmin = std::numeric_limits<int>::max();
-  tf.reduce(data.begin(), data.end(), tmin, [] (const auto& l, const auto& r) {
-    return std::min(l, r);
-  });
-  tf::Executor().run(tf).get();
+  taskflow.parallel_reduce(
+    data.begin(), 
+    data.end(), 
+    tmin, 
+    [] (int& l, const auto& r) { return std::min(l, r); }
+  );
+  executor.run(taskflow).get();
   auto tend = std::chrono::steady_clock::now();
   std::cout << "[taskflow] reduce: " 
             << std::chrono::duration_cast<std::chrono::milliseconds>(tend - tbeg).count()
             << " ms\n";
   
   // assertion
-  assert(tmin == smin);
+  if(tmin == smin) {
+    std::cout << "result is correct" << std::endl;
+  }
+  else {
+    std::cout << "result is incorrect: " << smin << " != " << tmin << std::endl;
+  }
+
+  taskflow.dump(std::cout);
 }
 
 // Procedure: transform_reduce
@@ -88,7 +102,7 @@ void transform_reduce() {
   assert(tmin == smin);
 }
 
-// ------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 // Function: main
 int main(int argc, char* argv[]) {

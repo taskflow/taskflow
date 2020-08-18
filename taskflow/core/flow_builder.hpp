@@ -263,12 +263,6 @@ class FlowBuilder {
     /**
     @brief constructs a STL-styled parallel-for task
 
-    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range [beg, end). By default, we employ the guided partition algorithm with chunk size equal to one.
-    
-    The two iterators are templated to enable stateful passing using std::reference_wrapper. 
-    
-    The callable needs to take a single argument of the dereferenced type.
-
     @tparam B beginning iterator type
     @tparam E ending iterator type
     @tparam C callable type
@@ -278,19 +272,19 @@ class FlowBuilder {
     @param callable a callable object to apply to the dereferenced iterator 
 
     @return a Task handle
+
+    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. By default, we employ the guided partition algorithm with chunk size equal to one.
+    
+    Arguments templated to enable stateful passing using std::reference_wrapper. 
+    
+    The callable needs to take a single argument of the dereferenced type.
     */
     template <typename B, typename E, typename C>
     Task parallel_for(B&& beg, E&& end, C&& callable);
     
     /**
     @brief constructs an index-based parallel-for task 
-    
-    The task spawns a subflow that applies the callable object to each index in the range [beg, end) with the step size. By default, we employ the guided partition algorithm with chunk size equal to one.
 
-    The three indices are templated to enable stateful passing using std::reference_wrapper.
-
-    The callable needs to take a single argument of the index type.
-    
     @tparam B beginning index type (must be integral)
     @tparam E ending index type (must be integral)
     @tparam S step type (must be integral)
@@ -302,6 +296,13 @@ class FlowBuilder {
     @param callable a callable object to apply to each valid index
 
     @return a Task handle
+    
+    The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. By default, we employ the guided partition algorithm with chunk size equal to one.
+
+    Arguments are templated to enable stateful passing using std::reference_wrapper.
+
+    The callable needs to take a single argument of the index type.
+    
     */
     template <typename B, typename E, typename S, typename C>
     Task parallel_for(B&& beg, E&& end, S&& step, C&& callable);
@@ -309,15 +310,10 @@ class FlowBuilder {
     /**
     @brief constructs a STL-styled parallel-for task using the guided partition algorithm
 
-    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range [beg, end). The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task.
-    
-    The two iterators are templated to enable stateful passing using std::reference_wrapper. 
-    
-    The callable needs to take a single argument of the dereferenced type.
-
     @tparam B beginning iterator type
     @tparam E ending iterator type
     @tparam C callable type
+    @tparam H chunk size type
 
     @param beg iterator to the beginning (inclusive)
     @param end iterator to the end (exclusive)
@@ -325,23 +321,24 @@ class FlowBuilder {
     @param chunk_size chunk size
 
     @return a Task handle
+
+    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task.
+    
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    
+    The callable needs to take a single argument of the dereferenced type.
     */
-    template <typename B, typename E, typename C>
-    Task parallel_for_guided(B&& beg, E&& end, C&& callable, size_t chunk_size);
+    template <typename B, typename E, typename C, typename H>
+    Task parallel_for_guided(B&& beg, E&& end, C&& callable, H&& chunk_size);
     
     /**
     @brief constructs an index-based parallel-for task using the guided partition algorithm.
-    
-    The task spawns a subflow that applies the callable object to each index in the range [beg, end) with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task.
-
-    The three indices are templated to enable stateful passing using std::reference_wrapper.
-
-    The callable needs to take a single argument of the index type.
     
     @tparam B beginning index type (must be integral)
     @tparam E ending index type (must be integral)
     @tparam S step type (must be integral)
     @tparam C callable type
+    @tparam H chunk size type
 
     @param beg index of the beginning (inclusive)
     @param end index of the end (exclusive)
@@ -350,18 +347,18 @@ class FlowBuilder {
     @param chunk_size chunk size
 
     @return a Task handle
+    
+    The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task.
+
+    Arguments are templated to enable stateful passing using std::reference_wrapper.
+
+    The callable needs to take a single argument of the index type.
     */
-    template <typename B, typename E, typename S, typename C>
-    Task parallel_for_guided(B&& beg, E&& end, S&& step, C&& callable, size_t chunk_size);
+    template <typename B, typename E, typename S, typename C, typename H>
+    Task parallel_for_guided(B&& beg, E&& end, S&& step, C&& callable, H&& chunk_size);
     
     /**
     @brief constructs a STL-styled parallel-for task using the factoring partition algorithm
-
-    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range [beg, end). The runtime partitions the range into chunks using a factoring algorithm.
-    
-    The two iterators are templated to enable stateful passing using std::reference_wrapper. 
-    
-    The callable needs to take a single argument of the dereferenced type.
 
     @tparam B beginning iterator type
     @tparam E ending iterator type
@@ -372,6 +369,12 @@ class FlowBuilder {
     @param callable a callable object to apply to the dereferenced iterator 
 
     @return a Task handle
+    
+    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks using a factoring algorithm.
+    
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    
+    The callable needs to take a single argument of the dereferenced type.
     */
     template <typename B, typename E, typename C>
     Task parallel_for_factoring(B&& beg, E&& end, C&& callable);
@@ -379,12 +382,6 @@ class FlowBuilder {
     /**
     @brief constructs an index-based parallel-for task using the factoring partition algorithm.
     
-    The task spawns a subflow that applies the callable object to each index in the range [beg, end) with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task. The chunk size is determined through a factoring algorithm.
-
-    The three indices are templated to enable stateful passing using std::reference_wrapper.
-
-    The callable needs to take a single argument of the index type.
-    
     @tparam B beginning index type (must be integral)
     @tparam E ending index type (must be integral)
     @tparam S step type (must be integral)
@@ -396,6 +393,12 @@ class FlowBuilder {
     @param callable a callable object to apply to each valid index
 
     @return a Task handle
+    
+    The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task. The chunk size is determined through a factoring algorithm.
+
+    Arguments are templated to enable stateful passing using std::reference_wrapper.
+
+    The callable needs to take a single argument of the index type.
     */
     template <typename B, typename E, typename S, typename C>
     Task parallel_for_factoring(B&& beg, E&& end, S&& step, C&& callable);
@@ -403,15 +406,10 @@ class FlowBuilder {
     /**
     @brief constructs a STL-styled parallel-for task using the dynamic partition algorithm
 
-    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range [beg, end). The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task.
-    
-    The two iterators are templated to enable stateful passing using std::reference_wrapper. 
-    
-    The callable needs to take a single argument of the dereferenced type.
-
     @tparam B beginning iterator type
     @tparam E ending iterator type
     @tparam C callable type
+    @tparam H chunk size type
 
     @param beg iterator to the beginning (inclusive)
     @param end iterator to the end (exclusive)
@@ -419,23 +417,24 @@ class FlowBuilder {
     @param chunk_size chunk size
 
     @return a Task handle
+    
+    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task.
+    
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    
+    The callable needs to take a single argument of the dereferenced type.
     */
-    template <typename B, typename E, typename C>
-    Task parallel_for_dynamic(B&& beg, E&& end, C&& callable, size_t chunk_size);
+    template <typename B, typename E, typename C, typename H>
+    Task parallel_for_dynamic(B&& beg, E&& end, C&& callable, H&& chunk_size);
     
     /**
     @brief constructs an index-based parallel-for task using the dynamic partition algorithm.
-    
-    The task spawns a subflow that applies the callable object to each index in the range [beg, end) with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task.
 
-    The three indices are templated to enable stateful passing using std::reference_wrapper.
-
-    The callable needs to take a single argument of the index type.
-    
     @tparam B beginning index type (must be integral)
     @tparam E ending index type (must be integral)
     @tparam S step type (must be integral)
     @tparam C callable type
+    @tparam H chunk size type
 
     @param beg index of the beginning (inclusive)
     @param end index of the end (exclusive)
@@ -444,57 +443,129 @@ class FlowBuilder {
     @param chunk_size chunk size
 
     @return a Task handle
+    
+    The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task.
+
+    Arguments are templated to enable stateful passing using std::reference_wrapper.
+
+    The callable needs to take a single argument of the index type.
     */
-    template <typename B, typename E, typename S, typename C>
-    Task parallel_for_dynamic(B&& beg, E&& end, S&& step, C&& callable, size_t chunk_size);
+    template <typename B, typename E, typename S, typename C, typename H>
+    Task parallel_for_dynamic(B&& beg, E&& end, S&& step, C&& callable, H&& chunk_size);
     
     /**
     @brief constructs a STL-styled parallel-for task using the dynamic partition algorithm
 
-    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range [beg, end). The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task. When the given chunk size is zero, the runtime distributes the work evenly across workers.
-    
-    The two iterators are templated to enable stateful passing using std::reference_wrapper. 
-    
-    The callable needs to take a single argument of the dereferenced type.
-
     @tparam B beginning iterator type
     @tparam E ending iterator type
     @tparam C callable type
-    @param chunk_size chunk size
+    @tparam H chunk size type
 
     @param beg iterator to the beginning (inclusive)
     @param end iterator to the end (exclusive)
     @param callable a callable object to apply to the dereferenced iterator 
+    @param chunk_size chunk size
 
     @return a Task handle
+    
+    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task. When the given chunk size is zero, the runtime distributes the work evenly across workers.
+    
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    
+    The callable needs to take a single argument of the dereferenced type.
     */
-    template <typename B, typename E, typename C>
-    Task parallel_for_static(B&& beg, E&& end, C&& callable, size_t chunk_size);
+    template <typename B, typename E, typename C, typename H>
+    Task parallel_for_static(B&& beg, E&& end, C&& callable, H&& chunk_size);
     
     /**
     @brief constructs an index-based parallel-for task using the static partition algorithm.
-    
-    The task spawns a subflow that applies the callable object to each index in the range [beg, end) with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task. When the given chunk size is zero, the runtime distributes the work evenly across workers.
-
-    The three indices are templated to enable stateful passing using std::reference_wrapper.
-
-    The callable needs to take a single argument of the index type.
     
     @tparam B beginning index type (must be integral)
     @tparam E ending index type (must be integral)
     @tparam S step type (must be integral)
     @tparam C callable type
-    @param chunk_size chunk size
+    @tparam H chunk size type
 
     @param beg index of the beginning (inclusive)
     @param end index of the end (exclusive)
     @param step step size 
     @param callable a callable object to apply to each valid index
+    @param chunk_size chunk size
+
+    @return a Task handle
+    
+    The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task. When the given chunk size is zero, the runtime distributes the work evenly across workers.
+
+    Arguments are templated to enable stateful passing using std::reference_wrapper.
+
+    The callable needs to take a single argument of the index type.
+    */
+    template <typename B, typename E, typename S, typename C, typename H>
+    Task parallel_for_static(B&& beg, E&& end, S&& step, C&& callable, H&& chunk_size);
+    
+
+    /**
+    @brief constructs a STL-styled parallel-reduce task
+  
+    @tparam B beginning iterator type
+    @tparam E ending iterator type
+    @tparam T result type 
+    @tparam O binary reducer type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param init initial value of the reduction and the storage for the reduced result
+    @param bop binary operator that will be applied 
+
+    @return a Task handle
+    
+    The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task. By default, we employ the guided partition algorithm.
+    
+    This method is equivalent to the parallel execution of the following loop:
+    
+    @code{.cpp}
+    for(auto itr=first; itr!=last; itr++) {
+      init = bop(init, *itr);
+    }
+    @endcode
+    
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    */
+    template <typename B, typename E, typename T, typename O>
+    Task parallel_reduce(B&& first, E&& last, T& init, O&& bop);
+
+    /**
+    @brief constructs a STL-styled parallel-reduce task using the guided partition algorithm
+
+    @tparam B beginning iterator type
+    @tparam E ending iterator type
+    @tparam T result type 
+    @tparam O binary reducer type
+    @tparam H chunk size type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param init initial value of the reduction and the storage for the reduced result
+    @param bop binary operator that will be applied 
+    @param chunk_size chunk size
+
+    The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a task. 
+    
+    This method is equivalent to the parallel execution of the following loop:
+    
+    @code{.cpp}
+    for(auto itr=first; itr!=last; itr++) {
+      init = bop(init, *itr);
+    }
+    @endcode
+    
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
 
     @return a Task handle
     */
-    template <typename B, typename E, typename S, typename C>
-    Task parallel_for_static(B&& beg, E&& end, S&& step, C&& callable, size_t chunk_size);
+    template <typename B, typename E, typename T, typename O, typename H>
+    Task parallel_reduce_guided(B&& first, E&& last, T& init, O&& bop, H&& chunk_size);
+
     
   protected:
     

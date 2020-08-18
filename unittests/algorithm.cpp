@@ -637,3 +637,102 @@ TEST_CASE("statefulpff.11threads" * doctest::timeout(300)) {
 TEST_CASE("statefulpff.12threads" * doctest::timeout(300)) {
   stateful_parallel_for(12, FACTORING);
 }
+
+// --------------------------------------------------------
+// Testcase: parallel_reduce
+// --------------------------------------------------------
+
+void parallel_reduce(unsigned W, TYPE type) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  std::vector<int> vec(1000);
+
+  for(auto& i : vec) i = ::rand() % 100 - 50;
+
+  for(size_t n=1; n<vec.size(); n++) {
+    for(size_t c=0; c<=17; c=c*2+1) {
+
+      int smin = std::numeric_limits<int>::max();
+      int pmin = std::numeric_limits<int>::max();
+      auto beg = vec.end();
+      auto end = vec.end();
+
+      taskflow.clear();
+      auto stask = taskflow.emplace([&](){
+        beg = vec.begin();
+        end = vec.begin() + n;
+        for(auto itr = beg; itr != end; itr++) {
+          smin = std::min(*itr, smin);
+        }
+      });
+
+      auto ptask = taskflow.parallel_reduce_guided(
+        std::ref(beg), std::ref(end), pmin, [](int& l, int& r){
+        return std::min(l, r);
+      }, c);
+
+      stask.precede(ptask);
+
+      executor.run(taskflow).wait();
+      
+      REQUIRE(smin != std::numeric_limits<int>::max());
+      REQUIRE(pmin != std::numeric_limits<int>::max());
+      REQUIRE(smin == pmin);
+    }
+  }
+}
+
+TEST_CASE("prg.1thread" * doctest::timeout(300)) {
+  parallel_reduce(1, GUIDED);
+}
+
+TEST_CASE("prg.2threads" * doctest::timeout(300)) {
+  parallel_reduce(2, GUIDED);
+}
+
+TEST_CASE("prg.3threads" * doctest::timeout(300)) {
+  parallel_reduce(3, GUIDED);
+}
+
+TEST_CASE("prg.4threads" * doctest::timeout(300)) {
+  parallel_reduce(4, GUIDED);
+}
+
+TEST_CASE("prg.5threads" * doctest::timeout(300)) {
+  parallel_reduce(5, GUIDED);
+}
+
+TEST_CASE("prg.6threads" * doctest::timeout(300)) {
+  parallel_reduce(6, GUIDED);
+}
+
+TEST_CASE("prg.7threads" * doctest::timeout(300)) {
+  parallel_reduce(7, GUIDED);
+}
+
+TEST_CASE("prg.8threads" * doctest::timeout(300)) {
+  parallel_reduce(8, GUIDED);
+}
+
+TEST_CASE("prg.9threads" * doctest::timeout(300)) {
+  parallel_reduce(9, GUIDED);
+}
+
+TEST_CASE("prg.10threads" * doctest::timeout(300)) {
+  parallel_reduce(10, GUIDED);
+}
+
+TEST_CASE("prg.11threads" * doctest::timeout(300)) {
+  parallel_reduce(11, GUIDED);
+}
+
+TEST_CASE("prg.12threads" * doctest::timeout(300)) {
+  parallel_reduce(12, GUIDED);
+}
+
+
+
+
+
