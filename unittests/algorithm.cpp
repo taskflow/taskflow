@@ -668,10 +668,23 @@ void parallel_reduce(unsigned W, TYPE type) {
         }
       });
 
-      auto ptask = taskflow.parallel_reduce_guided(
-        std::ref(beg), std::ref(end), pmin, [](int& l, int& r){
-        return std::min(l, r);
-      }, c);
+      tf::Task ptask;
+
+      switch (type) {
+        case GUIDED:
+          ptask = taskflow.parallel_reduce_guided(
+            std::ref(beg), std::ref(end), pmin, [](int& l, int& r){
+            return std::min(l, r);
+          }, c);
+        break;
+
+        case DYNAMIC:
+          ptask = taskflow.parallel_reduce_dynamic(
+            std::ref(beg), std::ref(end), pmin, [](int& l, int& r){
+            return std::min(l, r);
+          }, c);
+        break;
+      }
 
       stask.precede(ptask);
 
@@ -684,6 +697,7 @@ void parallel_reduce(unsigned W, TYPE type) {
   }
 }
 
+// guided
 TEST_CASE("prg.1thread" * doctest::timeout(300)) {
   parallel_reduce(1, GUIDED);
 }
@@ -732,7 +746,51 @@ TEST_CASE("prg.12threads" * doctest::timeout(300)) {
   parallel_reduce(12, GUIDED);
 }
 
+// dynamic
+TEST_CASE("prd.1thread" * doctest::timeout(300)) {
+  parallel_reduce(1, DYNAMIC);
+}
 
+TEST_CASE("prd.2threads" * doctest::timeout(300)) {
+  parallel_reduce(2, DYNAMIC);
+}
 
+TEST_CASE("prd.3threads" * doctest::timeout(300)) {
+  parallel_reduce(3, DYNAMIC);
+}
 
+TEST_CASE("prd.4threads" * doctest::timeout(300)) {
+  parallel_reduce(4, DYNAMIC);
+}
 
+TEST_CASE("prd.5threads" * doctest::timeout(300)) {
+  parallel_reduce(5, DYNAMIC);
+}
+
+TEST_CASE("prd.6threads" * doctest::timeout(300)) {
+  parallel_reduce(6, DYNAMIC);
+}
+
+TEST_CASE("prd.7threads" * doctest::timeout(300)) {
+  parallel_reduce(7, DYNAMIC);
+}
+
+TEST_CASE("prd.8threads" * doctest::timeout(300)) {
+  parallel_reduce(8, DYNAMIC);
+}
+
+TEST_CASE("prd.9threads" * doctest::timeout(300)) {
+  parallel_reduce(9, DYNAMIC);
+}
+
+TEST_CASE("prd.10threads" * doctest::timeout(300)) {
+  parallel_reduce(10, DYNAMIC);
+}
+
+TEST_CASE("prd.11threads" * doctest::timeout(300)) {
+  parallel_reduce(11, DYNAMIC);
+}
+
+TEST_CASE("prd.12threads" * doctest::timeout(300)) {
+  parallel_reduce(12, DYNAMIC);
+}

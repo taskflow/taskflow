@@ -108,7 +108,7 @@ Task FlowBuilder::parallel_for_guided(B&& beg, E&& end, C&& c, H&& chunk_size){
       return;
     }
   
-    size_t chunk_size = (h == 0) ? 1 : chunk_size;
+    size_t chunk_size = (h == 0) ? 1 : h;
     size_t W = sf._executor.num_workers();
     size_t N = std::distance(beg, end);
     
@@ -206,7 +206,7 @@ Task FlowBuilder::parallel_for_guided(
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
     }
     
-    size_t chunk_size = (h == 0) ? 1 : chunk_size;
+    size_t chunk_size = (h == 0) ? 1 : h;
     size_t W = sf._executor.num_workers();
     size_t N = distance(beg, end, inc);
     
@@ -358,7 +358,9 @@ Task FlowBuilder::parallel_for_factoring(B&& beg, E&& end, C&& c){
 
 // Function: parallel_for_factoring
 template <typename B, typename E, typename S, typename C>
-Task FlowBuilder::parallel_for_factoring(B&& beg, E&& end, S&& inc, C&& c){
+Task FlowBuilder::parallel_for_factoring(
+  B&& beg, E&& end, S&& inc, C&& c
+){
 
   using I = underlying_index_t<B, E, S>;
   using namespace std::string_literals;
@@ -436,7 +438,9 @@ Task FlowBuilder::parallel_for_factoring(B&& beg, E&& end, S&& inc, C&& c){
 
 // Function: parallel_for_dynamic
 template <typename B, typename E, typename C, typename H>
-Task FlowBuilder::parallel_for_dynamic(B&& beg, E&& end, C&& c, H&& chunk_size){
+Task FlowBuilder::parallel_for_dynamic(
+  B&& beg, E&& end, C&& c, H&& chunk_size
+) {
 
   using I = underlying_iterator_t<B, E>;
   using namespace std::string_literals;
@@ -445,7 +449,7 @@ Task FlowBuilder::parallel_for_dynamic(B&& beg, E&& end, C&& c, H&& chunk_size){
   [b=std::forward<B>(beg), 
    e=std::forward<E>(end), 
    c=std::forward<C>(c),
-   h=std::forward<H>(chunk_size)](Subflow& sf) mutable {
+   h=std::forward<H>(chunk_size)] (Subflow& sf) mutable {
 
     I beg = b;
     I end = e;
@@ -524,7 +528,7 @@ Task FlowBuilder::parallel_for_dynamic(
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
     }
     
-    size_t chunk_size = (h == 0) ? 1 : chunk_size;
+    size_t chunk_size = (h == 0) ? 1 : h;
     size_t W = sf._executor.num_workers();
     size_t N = distance(beg, end, inc);
     

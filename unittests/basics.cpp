@@ -1245,7 +1245,7 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
     tf::Taskflow tf;
     int result {0};
     std::iota(data.begin(), data.end(), 1);
-    tf.reduce(data.begin(), data.end(), result, std::plus<int>());
+    tf.parallel_reduce(data.begin(), data.end(), result, std::plus<int>());
     executor.run(tf).get();
     REQUIRE(result == std::accumulate(data.begin(), data.end(), 0, std::plus<int>()));
   };
@@ -1255,7 +1255,7 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
     tf::Taskflow tf;
     std::fill(data.begin(), data.end(), 1.0);
     double result {2.0};
-    tf.reduce(data.begin(), data.end(), result, std::multiplies<double>());
+    tf.parallel_reduce(data.begin(), data.end(), result, std::multiplies<double>());
     executor.run(tf).get();
     REQUIRE(result == std::accumulate(data.begin(), data.end(), 2.0, std::multiplies<double>()));
   };
@@ -1266,7 +1266,7 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
     std::iota(data.begin(), data.end(), 1);
     int result {0};
     auto lambda = [](const auto& l, const auto& r){return std::max(l, r);};
-    tf.reduce(data.begin(), data.end(), result, lambda);
+    tf.parallel_reduce(data.begin(), data.end(), result, lambda);
     executor.run(tf).get();
     REQUIRE(result == std::accumulate(data.begin(), data.end(), 0, lambda));
   };
@@ -1277,7 +1277,7 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
     std::iota(data.begin(), data.end(), 1);
     int result {std::numeric_limits<int>::max()};
     auto lambda = [](const auto& l, const auto& r){return std::min(l, r);};
-    tf.reduce(data.begin(), data.end(), result, lambda);
+    tf.parallel_reduce(data.begin(), data.end(), result, lambda);
     executor.run(tf).get();
     REQUIRE(result == std::accumulate(
       data.begin(), data.end(), std::numeric_limits<int>::max(), lambda)
@@ -1317,7 +1317,9 @@ TEST_CASE("ReduceMin" * doctest::timeout(300)) {
         d = ::rand();
         gold = std::min(gold, d);
       }
-      tf.reduce_min(data.begin(), data.end(), test);
+      tf.parallel_reduce(data.begin(), data.end(), test, [] (int l, int r) {
+        return std::min(l, r);
+      });
       executor.run(tf).get();
       REQUIRE(test == gold);
     }
@@ -1341,7 +1343,9 @@ TEST_CASE("ReduceMax" * doctest::timeout(300)) {
         d = ::rand();
         gold = std::max(gold, d);
       }
-      tf.reduce_max(data.begin(), data.end(), test);
+      tf.parallel_reduce(data.begin(), data.end(), test, [](int l, int r){
+        return std::max(l, r);
+      });
       executor.run(tf).get();
       REQUIRE(test == gold);
     }
@@ -1457,13 +1461,11 @@ void joined_subflow(unsigned W) {
     auto B = tf.emplace([&count, &data, &sum](tf::Subflow& fb){
 
       //auto [src, tgt] = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
-      auto task_pair = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
-      auto &src = std::get<0>(task_pair);
-      auto &tgt = std::get<1>(task_pair);
+      auto task = fb.parallel_reduce(data.begin(), data.end(), sum, std::plus<int>());
 
-      fb.emplace([&sum] () { REQUIRE(sum == 0); }).precede(src);
+      fb.emplace([&sum] () { REQUIRE(sum == 0); }).precede(task);
 
-      tgt.precede(fb.emplace([&sum] () { REQUIRE(sum == 10); }));
+      task.precede(fb.emplace([&sum] () { REQUIRE(sum == 10); }));
 
       for(size_t i=0; i<10; i ++){
         ++count;

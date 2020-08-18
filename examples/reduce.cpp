@@ -88,10 +88,10 @@ void transform_reduce() {
   auto tbeg = std::chrono::steady_clock::now();
   tf::Taskflow tf;
   auto tmin = std::numeric_limits<int>::max();
-  tf.transform_reduce(data.begin(), data.end(), tmin, 
-    [] (int l, int r) { return std::min(l, r); },
-    [] (const Data& d) { return d.transform(); }
-  );
+  //tf.transform_reduce(data.begin(), data.end(), tmin, 
+  //  [] (int l, int r) { return std::min(l, r); },
+  //  [] (const Data& d) { return d.transform(); }
+  //);
   tf::Executor().run(tf).get();
   auto tend = std::chrono::steady_clock::now();
   std::cout << "[taskflow] transform_reduce " 
