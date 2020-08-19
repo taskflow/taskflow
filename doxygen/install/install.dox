@@ -89,7 +89,10 @@ You can list a set of available options in the cmake.
 @code{.sh}
 ~$ cmake -LA
 ...
-TF_BUILD_BENCHMARKS:BOOL=OFF    # by default, we don't compile benchmarks due to long compilation time
+TF_BUILD_BENCHMARKS:BOOL=OFF    # by default, we don't compile benchmarks 
+TF_BUILD_CUDA:BOOL=ON           # by default, we compile CUDA code
+...
+... more options
 @endcode
 
 Currently, our CMake script supports the following options:
@@ -102,6 +105,13 @@ Currently, our CMake script supports the following options:
 | TF_BUILD_EXAMPLES   | ON        | enable/disable building examples   |
 | TF_BUILD_TESTS      | ON        | enable/disable building unit tests |
 </div>
+
+To enable or disable a specific option, use @c -D in the CMake build. 
+For example:
+
+@code{.sh}
+~$ cmake ../ -DTF_BUILD_CUDA=OFF    # disable building CUDA code
+@endcode
 
 @section BAIBuildBenchmarks Build Benchmarks
 

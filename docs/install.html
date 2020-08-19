@@ -117,7 +117,7 @@ Build Examples and Unit Tests</h1>
 <h1><a class="anchor" id="BAIAvailableCMakeOptions"></a>
 Available CMake Options</h1>
 <p>You can list a set of available options in the cmake.</p>
-<div class="fragment"><div class="line">~$ cmake -LA</div><div class="line">...</div><div class="line">TF_BUILD_BENCHMARKS:BOOL=OFF    # by default, we don&#39;t compile benchmarks due to long compilation time</div></div><!-- fragment --><p>Currently, our CMake script supports the following options:</p>
+<div class="fragment"><div class="line">~$ cmake -LA</div><div class="line">...</div><div class="line">TF_BUILD_BENCHMARKS:BOOL=OFF    # by default, we don&#39;t compile benchmarks </div><div class="line">TF_BUILD_CUDA:BOOL=ON           # by default, we compile CUDA code</div><div class="line">...</div><div class="line">... more options</div></div><!-- fragment --><p>Currently, our CMake script supports the following options:</p>
 <div align="center"> <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadCenter">CMake Option  </th><th class="markdownTableHeadCenter">Default  </th><th class="markdownTableHeadCenter">Usage   </th></tr>
@@ -130,7 +130,8 @@ Available CMake Options</h1>
 <tr class="markdownTableBody" class="markdownTableRowEven">
 <td class="markdownTableBodyCenter">TF_BUILD_TESTS  </td><td class="markdownTableBodyCenter">ON  </td><td class="markdownTableBodyCenter">enable/disable building unit tests   </td></tr>
 </table>
-</div><h1><a class="anchor" id="BAIBuildBenchmarks"></a>
+</div><p>To enable or disable a specific option, use <code>-D</code> in the CMake build. For example:</p>
+<div class="fragment"><div class="line">~$ cmake ../ -DTF_BUILD_CUDA=OFF    # disable building CUDA code</div></div><!-- fragment --><h1><a class="anchor" id="BAIBuildBenchmarks"></a>
 Build Benchmarks</h1>
 <p>We have developed a set of benchmarks comparing Taskflow with OpenMP and Intel Threading Building Blocks (TBB) libraries. To build these benchmarks, you need to configure the option <code>TF_BUILD_BENCHMARKS</code> to <code>ON</code>.</p>
 <div class="fragment"><div class="line">~$ cmake ../ -DTF_BUILD_BENCHMARKS=ON</div><div class="line">~$ make                                  </div></div><!-- fragment --><p>You can find the binary of each benchmark under the folder <code>benchmarks/</code>. </p>

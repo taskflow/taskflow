@@ -1,10 +1,13 @@
 var NAVTREEINDEX0 =
 {
 ".html":[9,0,0],
-"A0ParallelFor.html":[4,0],
-"A0ParallelFor.html#IndexBasedParallelFor":[4,0,0],
-"A0ParallelFor.html#IteratorBasedParallelFor":[4,0,1],
-"A0ParallelFor.html#PartitionAlgorithms":[4,0,2],
+"A0ForEach.html":[4,0],
+"A0ForEach.html#A0IndexBasedParallelFor":[4,0,0],
+"A0ForEach.html#A0IteratorBasedParallelFor":[4,0,1],
+"A0ForEach.html#A0PartitionAlgorithms":[4,0,2],
+"A1Reduce.html":[4,1],
+"A1Reduce.html#A1ParallelReduction":[4,1,0],
+"A1Reduce.html#A1ParallelTransformationReduction":[4,1,1],
 "Algorithms.html":[4],
 "Cookbook.html":[3],
 "Examples.html":[5],
@@ -246,8 +249,5 @@ var NAVTREEINDEX0 =
 "cuda__error_8hpp_source.html":[10,0,0],
 "cuda__flow_8hpp_source.html":[10,0,1],
 "cuda__task_8hpp_source.html":[10,0,2],
-"dreamplace.html":[6,1],
-"dreamplace.html#UseCasesDreamPlace":[6,1,0],
-"dreamplace.html#UseCasesDreamPlaceConclusion":[6,1,3],
-"dreamplace.html#UseCasesDreamPlacePerformance":[6,1,2]
+"dreamplace.html":[6,1]
 };

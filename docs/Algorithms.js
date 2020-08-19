@@ -1,8 +1,12 @@
 var Algorithms =
 [
-    [ "A0: Parallel Iterations", "A0ParallelFor.html", [
-      [ "Index-based Parallel Iterations", "A0ParallelFor.html#IndexBasedParallelFor", null ],
-      [ "Iterator-based Parallel Iterations", "A0ParallelFor.html#IteratorBasedParallelFor", null ],
-      [ "Partition Algorithms", "A0ParallelFor.html#PartitionAlgorithms", null ]
+    [ "A0: Parallel Iterations", "A0ForEach.html", [
+      [ "Index-based Parallel Iterations", "A0ForEach.html#A0IndexBasedParallelFor", null ],
+      [ "Iterator-based Parallel Iterations", "A0ForEach.html#A0IteratorBasedParallelFor", null ],
+      [ "Partition Algorithms", "A0ForEach.html#A0PartitionAlgorithms", null ]
+    ] ],
+    [ "A0: Parallel Reduction", "A1Reduce.html", [
+      [ "Parallel Reduction", "A1Reduce.html#A1ParallelReduction", null ],
+      [ "Parallel Transformation-Reduction", "A1Reduce.html#A1ParallelTransformationReduction", null ]
     ] ]
 ];
