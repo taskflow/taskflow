@@ -1001,6 +1001,25 @@ target_link_libraries(
 )
 set_target_properties(black_scholes PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+## benchmark 9: reduce_sum
+message(STATUS "benchmark 9: reduce_sum")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_BENCHMARK_DIR}/reduce_sum)
+add_executable(
+  reduce_sum
+  ${TF_BENCHMARK_DIR}/reduce_sum/main.cpp
+  ${TF_BENCHMARK_DIR}/reduce_sum/omp.cpp
+  ${TF_BENCHMARK_DIR}/reduce_sum/tbb.cpp
+  ${TF_BENCHMARK_DIR}/reduce_sum/taskflow.cpp
+)
+target_include_directories(reduce_sum PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  reduce_sum 
+  ${PROJECT_NAME} 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
+)
+set_target_properties(reduce_sum PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
 if(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)

@@ -8,12 +8,11 @@
 #include <random>
 #include <cmath>
 
-inline int M, N;
-inline int B;
-inline int MB;
-inline int NB;
-
-inline double **matrix {nullptr};
+extern int M, N;
+extern int B;
+extern int MB;
+extern int NB;
+extern double **matrix;
 
 // nominal operations
 inline double calc(double v0, double v1) {

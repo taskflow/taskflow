@@ -1,14 +1,9 @@
-#include "matrix.hpp"
+#include "reduce_sum.hpp"
 #include <CLI11.hpp>
 
-int M = 0;
-int N = 0;
-int B = 0;
-int MB = 0;
-int NB = 0;
-double **matrix = nullptr;
+std::vector<double> vec;
 
-void wavefront(
+void reduce_sum(
   const std::string& model,
   const unsigned num_threads, 
   const unsigned num_rounds
@@ -18,16 +13,11 @@ void wavefront(
             << std::setw(12) << "runtime"
             << std::endl;
   
-  for(int S=32; S<=4096; S += 128) {
+  for(size_t N=10; N<=100000000; N = N*10) {
 
-    M = N = S;
-    B = 8;
-    MB = (M/B) + (M%B>0);
-    NB = (N/B) + (N%B>0);
-  
+    vec.resize(N);
+
     double runtime {0.0};
-
-    init_matrix();
 
     for(unsigned j=0; j<num_rounds; ++j) {
       if(model == "tf") {
@@ -42,9 +32,7 @@ void wavefront(
       else assert(false);
     }
 
-    destroy_matrix();
-    
-    std::cout << std::setw(12) << MB*NB
+    std::cout << std::setw(12) << N
               << std::setw(12) << runtime / num_rounds / 1e3
               << std::endl;
   }
@@ -52,7 +40,7 @@ void wavefront(
 
 int main(int argc, char* argv[]) {
 
-  CLI::App app{"Wavefront"};
+  CLI::App app{"MatrixMultiplication"};
 
   unsigned num_threads {1}; 
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
@@ -63,7 +51,7 @@ int main(int argc, char* argv[]) {
   std::string model = "tf";
   app.add_option("-m,--model", model, "model name tbb|omp|tf (default=tf)")
      ->check([] (const std::string& m) {
-        if(m != "tbb" && m != "omp" && m != "tf") {
+        if(m != "tbb" && m != "tf" && m != "omp") {
           return "model name should be \"tbb\", \"omp\", or \"tf\"";
         }
         return "";
@@ -76,7 +64,7 @@ int main(int argc, char* argv[]) {
             << "num_rounds=" << num_rounds << ' '
             << std::endl;
 
-  wavefront(model, num_threads, num_rounds);
+  reduce_sum(model, num_threads, num_rounds);
 
   return 0;
 }

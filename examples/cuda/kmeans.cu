@@ -113,7 +113,7 @@ std::pair<std::vector<float>, std::vector<float>> cpu_par(
   tf::Task pf;
   
   // update cluster
-  pf = taskflow.parallel_for(0, N, 1, [&](int i){
+  pf = taskflow.for_each_index(0, N, 1, [&](int i){
     float x = px[i];
     float y = py[i];
     float best_d = std::numeric_limits<float>::max();

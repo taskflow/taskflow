@@ -202,8 +202,8 @@ class FlowBuilder {
     
     The callable needs to take a single argument of the dereferenced type.
     */
-    template <typename B, typename E, typename C, typename H>
-    Task for_each_guided(B&& beg, E&& end, C&& callable, H&& chunk_size);
+    template <typename B, typename E, typename C, typename H = size_t>
+    Task for_each_guided(B&& beg, E&& end, C&& callable, H&& chunk_size = 1);
     
     /**
     @brief constructs a STL-styled parallel-for task using the dynamic partition algorithm
@@ -226,8 +226,8 @@ class FlowBuilder {
     
     The callable needs to take a single argument of the dereferenced type.
     */
-    template <typename B, typename E, typename C, typename H>
-    Task for_each_dynamic(B&& beg, E&& end, C&& callable, H&& chunk_size);
+    template <typename B, typename E, typename C, typename H = size_t>
+    Task for_each_dynamic(B&& beg, E&& end, C&& callable, H&& chunk_size = 1);
     
     /**
     @brief constructs a STL-styled parallel-for task using the dynamic partition algorithm
@@ -250,9 +250,9 @@ class FlowBuilder {
     
     The callable needs to take a single argument of the dereferenced type.
     */
-    template <typename B, typename E, typename C, typename H>
+    template <typename B, typename E, typename C, typename H = size_t>
     Task for_each_static(
-      B&& beg, E&& end, C&& callable, H&& chunk_size
+      B&& beg, E&& end, C&& callable, H&& chunk_size = 0
     );
     
     /**
@@ -317,7 +317,7 @@ class FlowBuilder {
 
     The callable needs to take a single argument of the index type.
     */
-    template <typename B, typename E, typename S, typename C, typename H>
+    template <typename B, typename E, typename S, typename C, typename H = size_t>
     Task for_each_index_guided(
       B&& beg, E&& end, S&& step, C&& callable, H&& chunk_size = 1
     );
@@ -345,7 +345,7 @@ class FlowBuilder {
 
     The callable needs to take a single argument of the index type.
     */
-    template <typename B, typename E, typename S, typename C, typename H>
+    template <typename B, typename E, typename S, typename C, typename H = size_t>
     Task for_each_index_dynamic(
       B&& beg, E&& end, S&& step, C&& callable, H&& chunk_size = 1
     );
@@ -373,7 +373,7 @@ class FlowBuilder {
 
     The callable needs to take a single argument of the index type.
     */
-    template <typename B, typename E, typename S, typename C, typename H>
+    template <typename B, typename E, typename S, typename C, typename H = size_t>
     Task for_each_index_static(
       B&& beg, E&& end, S&& step, C&& callable, H&& chunk_size = 0
     );
@@ -433,7 +433,7 @@ class FlowBuilder {
 
     @return a Task handle
     */
-    template <typename B, typename E, typename T, typename O, typename H>
+    template <typename B, typename E, typename T, typename O, typename H = size_t>
     Task reduce_guided(
       B&& first, E&& last, T& init, O&& bop, H&& chunk_size = 1
     );
@@ -459,7 +459,7 @@ class FlowBuilder {
 
     @return a Task handle
     */
-    template <typename B, typename E, typename T, typename O, typename H>
+    template <typename B, typename E, typename T, typename O, typename H = size_t>
     Task reduce_dynamic(
       B&& first, E&& last, T& init, O&& bop, H&& chunk_size = 1
     );
@@ -485,7 +485,7 @@ class FlowBuilder {
 
     @return a Task handle
     */
-    template <typename B, typename E, typename T, typename O, typename H>
+    template <typename B, typename E, typename T, typename O, typename H = size_t>
     Task reduce_static(
       B&& first, E&& last, T& init, O&& bop, H&& chunk_size = 0
     );
@@ -549,7 +549,7 @@ class FlowBuilder {
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
     */
-    template <typename B, typename E, typename T, typename BOP, typename UOP, typename H>
+    template <typename B, typename E, typename T, typename BOP, typename UOP, typename H = size_t>
     Task transform_reduce_guided(
       B&& first, E&& last, T& init, BOP&& bop, UOP&& uop, H&& chunk_size = 1
     );
@@ -577,9 +577,9 @@ class FlowBuilder {
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
     */
-    template <typename B, typename E, typename T, typename BOP, typename UOP, typename H>
+    template <typename B, typename E, typename T, typename BOP, typename UOP, typename H = size_t>
     Task transform_reduce_static(
-      B&& first, E&& last, T& init, BOP&& bop, UOP&& uop, H&& chunk_size = 1
+      B&& first, E&& last, T& init, BOP&& bop, UOP&& uop, H&& chunk_size = 0
     );
 
     /**
@@ -605,7 +605,7 @@ class FlowBuilder {
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
     */
-    template <typename B, typename E, typename T, typename BOP, typename UOP, typename H>
+    template <typename B, typename E, typename T, typename BOP, typename UOP, typename H = size_t>
     Task transform_reduce_dynamic(
       B&& first, E&& last, T& init, BOP&& bop, UOP&& uop, H&& chunk_size = 1
     );

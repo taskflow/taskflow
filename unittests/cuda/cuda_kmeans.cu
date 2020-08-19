@@ -101,7 +101,7 @@ void kmeans(int N, int K, int M, size_t num_cpus, size_t num_gpus) {
   tf::Task pf;
   
   // update cluster
-  pf = taskflow.parallel_for(0, N, 1, [&](int i){
+  pf = taskflow.for_each_index(0, N, 1, [&](int i){
     float x = h_px[i];
     float y = h_py[i];
     float best_d = std::numeric_limits<float>::max();
