@@ -251,9 +251,176 @@ Task FlowBuilder::parallel_reduce_dynamic(
   return task;
 }
 
-//TF_ALGORITHM_GUIDED_PARTITION(
-//  sum = o(sum, *beg);
-//)
+// ----------------------------------------------------------------------------
+// parallel_reduce_static
+// ----------------------------------------------------------------------------
+
+template <typename B, typename E, typename T, typename O, typename H>
+Task FlowBuilder::parallel_reduce_static(
+  B&& beg, E&& end, T& init, O&& bop, H&& chunk_size
+) {
+  
+  using I = underlying_iterator_t<B, E>;
+  using namespace std::string_literals;
+
+  Task task = emplace(
+  [b=std::forward<B>(beg),
+   e=std::forward<E>(end), 
+   &r=init,
+   o=std::forward<O>(bop),
+   c=std::forward<H>(chunk_size)
+   ] (Subflow& sf) mutable {
+    
+    // fetch the iterator values
+    I beg = b;
+    I end = e;
+  
+    if(beg == end) {
+      return;
+    }
+
+    size_t C = c;
+    size_t W = sf._executor.num_workers();
+    size_t N = std::distance(beg, end);
+    
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= C) {
+      for(; beg!=end; r = o(r, *beg++));
+      return;
+    }
+    
+    std::mutex mutex;
+    std::atomic<size_t> next(0);
+    
+    // even partition
+    if(C == 0) {
+
+      const size_t q0 = N / W;
+      const size_t t0 = N % W;
+      
+      for(size_t i=0; i<W; ++i) {
+
+        size_t items = i < t0 ? q0 + 1 : q0;
+
+        if(items == 0) {
+          break;
+        }
+        
+        sf.emplace([&mutex, &next, &r, beg, items, &o] () mutable {
+
+          size_t s0 = next.fetch_add(items, std::memory_order_relaxed);
+          std::advance(beg, s0);
+
+          if(items == 1) {
+            std::lock_guard<std::mutex> lock(mutex);
+            r = o(r, *beg);
+            return;
+          }
+          
+          auto beg1 = beg++;
+          auto beg2 = beg++;
+          
+          T sum = o(*beg1, *beg2);
+
+          for(size_t i=2; i<items; i++, beg++) {
+            sum = o(sum, *beg); 
+          }
+          
+          std::lock_guard<std::mutex> lock(mutex);
+          r = o(r, sum);
+
+        }).name("prs_"s + std::to_string(i));
+      }
+    }
+    // chunk-by-chunk partition
+    else {
+      for(size_t w=0; w<W; ++w) {
+        
+        // initial
+        if(w*C >= N) {
+          break;
+        }
+        
+        sf.emplace([&mutex, &next, &r, beg, end, C, N, W, &o] () mutable {
+
+          size_t trip = W*C;
+          size_t s0 = next.fetch_add(C, std::memory_order_relaxed);
+
+          std::advance(beg, s0);
+
+          T sum;
+
+          if(C == 1) {
+            if(s0 + trip >= N) { // last trip
+              std::lock_guard<std::mutex> lock(mutex);
+              r = o(r, *beg);
+              return;
+            }
+            else {  // one more trip
+              auto beg1 = beg;
+              auto beg2 = std::next(beg, trip);
+              sum = o(*beg1, *beg2);
+              s0 += trip*2;
+              if(s0 >= N) {
+                goto end_reduce;
+              }
+              beg = std::next(beg2, trip);
+            }
+          }
+          else {
+            if(N - s0 == 1) {
+              std::lock_guard<std::mutex> lock(mutex);
+              r = o(r, *beg);
+              return;
+            }
+            auto beg1 = beg++;
+            auto beg2 = beg++;
+            sum = o(*beg1, *beg2);
+            I e = beg;
+            size_t i;
+            for(i=2; i<C && e != end; i++, e++) {
+              sum = o(sum, *e); 
+            }
+            s0 += trip;
+            if(i != C || s0 >= N) {
+              goto end_reduce;
+            }
+            std::advance(beg, trip-2);
+          }
+
+          while(1) {
+
+            size_t i;
+
+            I e = beg;
+
+            for(i=0; i<C && e != end; ++i, ++e) {
+              sum = o(sum, *e); 
+            }
+
+            s0 += trip;
+
+            if(i != C || s0 >= N) {
+              break;
+            }
+
+            std::advance(beg, trip);
+          }
+          
+          end_reduce:
+
+          std::lock_guard<std::mutex> lock(mutex);
+          r = o(r, sum);
+
+        }).name("prs_"s + std::to_string(w));
+      }
+    }
+    
+    sf.join();
+  });  
+
+  return task;
+}
 
 }  // end of namespace tf -----------------------------------------------------
 

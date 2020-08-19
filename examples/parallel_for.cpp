@@ -29,8 +29,8 @@ void parallel_for_on_index(int N) {
   tf::Taskflow taskflow;
 
   // [0, N) with step size 2
-  taskflow.parallel_for(0, N, 2, [] (int i) {
-    printf("parallel_for on index: %d\n", i);
+  taskflow.parallel_index(0, N, 2, [] (int i) {
+    printf("parallel_index on index: %d\n", i);
   });
 
   executor.run(taskflow).get();

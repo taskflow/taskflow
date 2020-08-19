@@ -1,9 +1,5 @@
 var NAVTREEINDEX1 =
 {
-"dreamplace.html#UseCasesDreamPlacePerformance":[6,1,2],
-"dreamplace.html#UseCasesDreamPlaceProgrammingEffort":[6,1,1],
-"dreamplace.html#UseCasesDreamPlaceReferences":[6,1,4],
-"error_8hpp_source.html":[10,0,3],
 "executor_8hpp_source.html":[10,0,4],
 "fibonacci.html":[5,2],
 "fibonacci.html#FibonacciNumberProblem":[5,2,0],
@@ -23,8 +19,8 @@ var NAVTREEINDEX1 =
 "graphtraversal.html#GraphTraversalProblemFormulation":[5,5,0],
 "graphtraversal.html#GraphTraversalStaticTraversal":[5,5,2],
 "hierarchy.html":[9,2],
-"index.html":[0],
 "index.html":[],
+"index.html":[0],
 "index.html#ASimpleFirstProgram":[0,6],
 "index.html#CompileAndRunYourFirstProgram":[0,7],
 "index.html#ComposableTasking":[0,3],

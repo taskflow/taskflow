@@ -7,7 +7,7 @@ void bs_taskflow(unsigned num_threads) {
   tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
-  taskflow.parallel_for(0, numOptions, 1, [&](int i) {
+  taskflow.parallel_index(0, numOptions, 1, [&](int i) {
     auto price = BlkSchlsEqEuroNoDiv(
       sptprice[i], strike[i],
       rate[i], volatility[i], otime[i], 

@@ -67,10 +67,10 @@ Task FlowBuilder::parallel_for(B&& beg, E&& end, C&& c) {
   );
 }
 
-// Function: parallel_for
+// Function: parallel_index
 template <typename B, typename E, typename S, typename C>
-Task FlowBuilder::parallel_for(B&& beg, E&& end, S&& inc, C&& c){
-  return parallel_for_guided(
+Task FlowBuilder::parallel_index(B&& beg, E&& end, S&& inc, C&& c){
+  return parallel_index_guided(
     std::forward<B>(beg), 
     std::forward<E>(end), 
     std::forward<S>(inc), 
@@ -181,9 +181,9 @@ Task FlowBuilder::parallel_for_guided(B&& beg, E&& end, C&& c, H&& chunk_size){
   return task;
 }
 
-// Function: parallel_for_guided
+// Function: parallel_index_guided
 template <typename B, typename E, typename S, typename C, typename H>
-Task FlowBuilder::parallel_for_guided(
+Task FlowBuilder::parallel_index_guided(
   B&& beg, E&& end, S&& inc, C&& c, H&& chunk_size
 ){
 
@@ -284,7 +284,7 @@ Task FlowBuilder::parallel_for_guided(
 //   IEEE/ACM SC, 1991
 // ----------------------------------------------------------------------------
 
-// Function: parallel_for_factoring
+/*// Function: parallel_for_factoring
 template <typename B, typename E, typename C>
 Task FlowBuilder::parallel_for_factoring(B&& beg, E&& end, C&& c){
   
@@ -430,7 +430,7 @@ Task FlowBuilder::parallel_for_factoring(
   });  
 
   return task;
-}
+}*/
 
 // ----------------------------------------------------------------------------
 // Function: parallel_for_dynamic
@@ -506,7 +506,7 @@ Task FlowBuilder::parallel_for_dynamic(
 }
 
 template <typename B, typename E, typename S, typename C, typename H>
-Task FlowBuilder::parallel_for_dynamic(
+Task FlowBuilder::parallel_index_dynamic(
   B&& beg, E&& end, S&& inc, C&& c, H&& chunk_size
 ){
   
@@ -661,7 +661,7 @@ Task FlowBuilder::parallel_for_static(
 
             I e = beg;
 
-            for(items=0; items<chunk_size && e != end; ++items, ++e) {
+            for(items=0; items<chunk_size && e != end; items++, e++) {
               c(*e); 
             }
 
@@ -684,10 +684,10 @@ Task FlowBuilder::parallel_for_static(
   return task;
 }
 
-// Function: parallel_for_static
+// Function: parallel_index_static
 // static scheduling with chunk size
 template <typename B, typename E, typename S, typename C, typename H>
-Task FlowBuilder::parallel_for_static(
+Task FlowBuilder::parallel_index_static(
   B&& beg, E&& end, S&& inc, C&& c, H&& chunk_size
 ){
 

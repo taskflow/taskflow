@@ -1087,7 +1087,7 @@ void parallel_for_index(unsigned w) {
           //for(size_t c=0; c<10; c++) {
             tf::Taskflow tf;
             std::atomic<int> counter {0};
-            tf.parallel_for(beg, end, s, [&] (auto) {
+            tf.parallel_index(beg, end, s, [&] (auto) {
               counter.fetch_add(1, std::memory_order_relaxed);
             }/*, c*/);
             executor.run(tf);
@@ -1111,7 +1111,7 @@ void parallel_for_index(unsigned w) {
           //for(size_t c=0; c<10; c++) {
             tf::Taskflow tf;
             std::atomic<int> counter {0};
-            tf.parallel_for(beg, end, -s, [&] (auto) {
+            tf.parallel_index(beg, end, -s, [&] (auto) {
               counter.fetch_add(1, std::memory_order_relaxed);
             }/*, c*/);
             executor.run(tf);

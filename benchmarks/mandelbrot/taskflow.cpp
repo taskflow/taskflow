@@ -6,7 +6,7 @@ void mandelbrot_taskflow(unsigned num_threads, int d = D) {
   tf::Executor executor {num_threads};
   tf::Taskflow taskflow;
 
-  taskflow.parallel_for(0, H, 1, [&](int i){
+  taskflow.parallel_index(0, H, 1, [&](int i){
     for(int j=0; j<W; j++) {
       auto xy = scale_xy(i, j);
       auto value = escape_time(xy.first, xy.second, d);
