@@ -148,7 +148,7 @@ class FlowBuilder {
     void succeed(std::initializer_list<Task> others, Task A);
     
     // ------------------------------------------------------------------------
-    // Algorithms
+    // parallel iterations
     // ------------------------------------------------------------------------
     
     /**
@@ -378,6 +378,10 @@ class FlowBuilder {
       B&& beg, E&& end, S&& step, C&& callable, H&& chunk_size = 0
     );
 
+    // ------------------------------------------------------------------------
+    // reduction
+    // ------------------------------------------------------------------------
+
     /**
     @brief constructs a STL-styled parallel-reduce task
   
@@ -485,7 +489,42 @@ class FlowBuilder {
     Task reduce_static(
       B&& first, E&& last, T& init, O&& bop, H&& chunk_size = 0
     );
+    
+    /**
+    @brief constructs a STL-styled parallel-transform-reduce task
+  
+    @tparam B beginning iterator type
+    @tparam E ending iterator type
+    @tparam T result type 
+    @tparam BOP binary reducer type
+    @tparam UOP unary transformion type
 
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param init initial value of the reduction and the storage for the reduced result
+    @param bop binary operator that will be applied in unspecified order to the results of @c uop
+    @param uop unary operator that will be applied to transform each element in the range to the result type
+
+    @return a Task handle
+    
+    The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task. By default, we employ the guided partition algorithm.
+    
+    This method is equivalent to the parallel execution of the following loop:
+    
+    @code{.cpp}
+    for(auto itr=first; itr!=last; itr++) {
+      init = bop(init, uop(*itr));
+    }
+    @endcode
+    
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    */
+    template <typename B, typename E, typename T, typename BOP, typename UOP>
+    Task transform_reduce(B&& first, E&& last, T& init, O&& bop, UOP&& uop);
+    
+    template <typename B, typename E, typename T, typename BOP, typename UOP, typename H>
+    Task transform_reduce_guided(B&& first, E&& last, T& init, O&& bop, UOP&& uop, H&& = 1);
+    
     
   protected:
     
