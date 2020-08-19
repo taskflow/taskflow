@@ -7,10 +7,16 @@ namespace tf {
 @section IndexBasedParallelFor Index-based Parallel-For
 
 Index-based parallel-for performs parallel iterations over a range <tt>[beg, end)</tt> with the given @c step size.
-The task created by tf::Taskflow::parallel_for(B&& first, E&& last, S&& step, C&& callable) represents parallel execution of the following loop:
+The task created by tf::Taskflow::parallel_index(B&& first, E&& last, S&& step, C&& callable) represents parallel execution of the following loop:
 
 @code{.cpp}
+// positive step
 for(auto i=first; i<last; i+=step) {
+  callable(i);
+}
+
+// negative step
+for(auto i=first; i>last; i+=step) {
   callable(i);
 }
 @endcode
@@ -18,8 +24,8 @@ for(auto i=first; i<last; i+=step) {
 We support only integer-based range. The range can go positive or negative direction. 
 
 @code{.cpp}
-taskflow.parallel_for(0, 100,  2, [](int i) { });  // loop 50 items with a positive step
-taskflow.parallel_for(100, 0, -2, [](int i) { });  // loop 50 items with a negative step
+taskflow.parallel_index(0, 100,  2, [](int i) { });  // loop 50 items with a positive step
+taskflow.parallel_index(100, 0, -2, [](int i) { });  // loop 50 items with a negative step
 @endcode
 
 Notice that either positive or negative direction is defined in terms of the range,
@@ -31,7 +37,7 @@ An example of the %Taskflow graph for the positive case under 12 workers is depi
 @image html images/parallel_for_1.svg width=100%
 
 The index types, @c B, @c E, and @c S, are templates to preserve the variable types and their underlying types must be of the same @em integral type (e.g., @c int, @c size_t, @c unsigned).
-By default, tf::Taskflow::parallel_for(B&& first, E&& last, S&& step, C&& callable) creates a task that spawns a subflow (see @ref chapter3) to run iterations in parallel. The subflow closure captures all input arguments through perfect forwarding to form a stateful closure such that any changes on the arguments will be visible to the execution context of the subflow. For example:
+By default, tf::Taskflow::parallel_index creates a task that spawns a subflow (see @ref chapter3) to run iterations in parallel. The subflow closure captures all input arguments through perfect forwarding to form a stateful closure such that any changes on the arguments will be visible to the execution context of the subflow. For example:
 
 @code{.cpp}
 int* vec;
@@ -43,8 +49,8 @@ auto init = taskflow.emplace([&](){
   vec = new int[1000];  
 });
 
-auto pf = taskflow.parallel_for(std::ref(first), std::ref(last), 1, [&](int i) {
-  std::cout << "parallel iteration on item " << vec[i] << '\n';
+auto pf = taskflow.parallel_index(std::ref(first), std::ref(last), 1, [&](int i) {
+  std::cout << "parallel iteration on index " << vec[i] << '\n';
 });
 
 init.precede(pf);
@@ -112,9 +118,9 @@ Inspired by the <a href="http://jakascorner.com/blog/2016/06/omp-for-scheduling.
 @code{.cpp}
 size_t first = 0, last = 1000, step = 1, chunk_size = 100;
 
-auto task1 = taskflow.parallel_for_static (first, last, step, [](auto){ }, chunk_size)
-auto task1 = taskflow.parallel_for_dynamic(first, last, step, [](auto){ }, chunk_size)
-auto task1 = taskflow.parallel_for_guided (first, last, step, [](auto){ }, chunk_size)
+auto task1 = taskflow.parallel_index_static (first, last, step, [](auto){ }, chunk_size)
+auto task1 = taskflow.parallel_index_dynamic(first, last, step, [](auto){ }, chunk_size)
+auto task1 = taskflow.parallel_index_guided (first, last, step, [](auto){ }, chunk_size)
 
 // same syntax for the iterator-based parallel-for
 // ...
@@ -132,7 +138,7 @@ The picture below illustrates the three partition algorithms.
 
 @image html images/parallel_for_partition_algorithms.png width=95%
 
-By default, tf::Taskflow::parallel_for(B&& first, E&& last, S&& step, C&& callable) and tf::Taskflow::parallel_for(B&& first, E&& last, C&& callable) adopt the @em guided partition algorithm with chunk size equal to one. 
+By default, tf::Taskflow::parallel_index and tf::Taskflow::parallel_for adopt the @em guided partition algorithm with chunk size equal to one. 
 In practice, guided partition produces decent performance in many applications
 and is the default of %Taskflow's parallel-for algorithm.
 However, depending on the workload requirement, users may explicitly call for static, dynamic, or guided partition algorithms with a specified chunk size.
