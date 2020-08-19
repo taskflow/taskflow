@@ -206,7 +206,7 @@ TEST_CASE("Creation" * doctest::timeout(300)) {
   auto create_taskflow = [&] () {
     for(int i=0; i<10; ++i) {
       tf::Taskflow tf;
-      tf.parallel_for(dummy.begin(), dummy.end(), [] (int) {});
+      tf.for_each(dummy.begin(), dummy.end(), [] (int) {});
     }
   };
 
@@ -952,7 +952,7 @@ TEST_CASE("NestedRuns.16threads") {
 // Testcase: ParallelFor
 // --------------------------------------------------------
 
-void parallel_for(unsigned W) {
+void for_each(unsigned W) {
   
   using namespace std::chrono_literals;
 
@@ -960,7 +960,7 @@ void parallel_for(unsigned W) {
     tf::Executor executor(w);
     tf::Taskflow tf;
     std::vector<int> vec(num_data, 0);
-    tf.parallel_for(
+    tf.for_each(
       vec.begin(), vec.end(), [] (int& v) { v = 64; } /*, group ? ::rand()%17 : 0*/
     );
     for(const auto v : vec) {
@@ -978,7 +978,7 @@ void parallel_for(unsigned W) {
     tf::Taskflow tf;
     std::vector<int> vec(num_data, 0);
     std::atomic<int> sum(0);
-    tf.parallel_for(vec.begin(), vec.end(), [&](auto) { ++sum; }/*, group ? ::rand()%17 : 0*/);
+    tf.for_each(vec.begin(), vec.end(), [&](auto) { ++sum; }/*, group ? ::rand()%17 : 0*/);
     REQUIRE(sum == 0);
     executor.run(tf);
     executor.wait_for_all();
@@ -1003,41 +1003,41 @@ void parallel_for(unsigned W) {
 }
 
 TEST_CASE("ParallelFor.1thread" * doctest::timeout(300)) {
-  parallel_for(1);
+  for_each(1);
 }
 
 TEST_CASE("ParallelFor.2threads" * doctest::timeout(300)) {
-  parallel_for(2);
+  for_each(2);
 }
 
 TEST_CASE("ParallelFor.3threads" * doctest::timeout(300)) {
-  parallel_for(3);
+  for_each(3);
 }
 
 TEST_CASE("ParallelFor.4threads" * doctest::timeout(300)) {
-  parallel_for(4);
+  for_each(4);
 }
 
 TEST_CASE("ParallelFor.5threads" * doctest::timeout(300)) {
-  parallel_for(5);
+  for_each(5);
 }
 
 TEST_CASE("ParallelFor.6threads" * doctest::timeout(300)) {
-  parallel_for(6);
+  for_each(6);
 }
 
 TEST_CASE("ParallelFor.7threads" * doctest::timeout(300)) {
-  parallel_for(7);
+  for_each(7);
 }
 
 TEST_CASE("ParallelFor.8threads" * doctest::timeout(300)) {
-  parallel_for(8);
+  for_each(8);
 }
 
 // --------------------------------------------------------
 // Testcase: ParallelForOnIndex
 // --------------------------------------------------------
-void parallel_for_index(unsigned w) {
+void for_each_index(unsigned w) {
   
   using namespace std::chrono_literals;
 
@@ -1046,33 +1046,33 @@ void parallel_for_index(unsigned w) {
   //  tf::Taskflow tf;
 
   //  // invalid index
-  //  REQUIRE_THROWS(tf.parallel_for(0, 10, 0, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(0, 10, -1, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(10, 0, 0, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(10, 0, 1, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(0u, 10u, 0u, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(10u, 0u, 0u, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(10u, 0u, 1u, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(0.0f, 10.0f, 0.0f, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(0.0f, 10.0f, -1.0f, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(10.0f, 0.0f, 0.0f, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(10.0f, 0.0f, 1.0f, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(0.0, 10.0, 0.0, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(0.0, 10.0, -1.0, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(10.0, 0.0, 0.0, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(10.0, 0.0, 1.0, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(0, 0, 0, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(0u, 0u, 0u, [] (auto) {}));
-  //  REQUIRE_THROWS(tf.parallel_for(0.0, 0.0, 0.0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(0, 10, 0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(0, 10, -1, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(10, 0, 0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(10, 0, 1, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(0u, 10u, 0u, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(10u, 0u, 0u, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(10u, 0u, 1u, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(0.0f, 10.0f, 0.0f, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(0.0f, 10.0f, -1.0f, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(10.0f, 0.0f, 0.0f, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(10.0f, 0.0f, 1.0f, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(0.0, 10.0, 0.0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(0.0, 10.0, -1.0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(10.0, 0.0, 0.0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(10.0, 0.0, 1.0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(0, 0, 0, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(0u, 0u, 0u, [] (auto) {}));
+  //  REQUIRE_THROWS(tf.for_each(0.0, 0.0, 0.0, [] (auto) {}));
   //  
   //  // graceful case
-  //  REQUIRE_NOTHROW(tf.parallel_for(0, 0, -1, [] (auto) {}));
-  //  REQUIRE_NOTHROW(tf.parallel_for(0, 0, 1, [] (auto) {}));
-  //  REQUIRE_NOTHROW(tf.parallel_for(0u, 0u, 1u, [] (auto) {}));
-  //  REQUIRE_NOTHROW(tf.parallel_for(0.0f, 0.0f, -1.0f, [] (auto) {}));
-  //  REQUIRE_NOTHROW(tf.parallel_for(0.0f, 0.0f, 1.0f, [] (auto) {}));
-  //  REQUIRE_NOTHROW(tf.parallel_for(0.0, 0.0, -1.0, [] (auto) {}));
-  //  REQUIRE_NOTHROW(tf.parallel_for(0.0, 0.0, 1.0, [] (auto) {}));
+  //  REQUIRE_NOTHROW(tf.for_each(0, 0, -1, [] (auto) {}));
+  //  REQUIRE_NOTHROW(tf.for_each(0, 0, 1, [] (auto) {}));
+  //  REQUIRE_NOTHROW(tf.for_each(0u, 0u, 1u, [] (auto) {}));
+  //  REQUIRE_NOTHROW(tf.for_each(0.0f, 0.0f, -1.0f, [] (auto) {}));
+  //  REQUIRE_NOTHROW(tf.for_each(0.0f, 0.0f, 1.0f, [] (auto) {}));
+  //  REQUIRE_NOTHROW(tf.for_each(0.0, 0.0, -1.0, [] (auto) {}));
+  //  REQUIRE_NOTHROW(tf.for_each(0.0, 0.0, 1.0, [] (auto) {}));
   //};
 
   auto positive_integer_step = [] (unsigned w) {
@@ -1087,7 +1087,7 @@ void parallel_for_index(unsigned w) {
           //for(size_t c=0; c<10; c++) {
             tf::Taskflow tf;
             std::atomic<int> counter {0};
-            tf.parallel_index(beg, end, s, [&] (auto) {
+            tf.for_each_index(beg, end, s, [&] (auto) {
               counter.fetch_add(1, std::memory_order_relaxed);
             }/*, c*/);
             executor.run(tf);
@@ -1111,7 +1111,7 @@ void parallel_for_index(unsigned w) {
           //for(size_t c=0; c<10; c++) {
             tf::Taskflow tf;
             std::atomic<int> counter {0};
-            tf.parallel_index(beg, end, -s, [&] (auto) {
+            tf.for_each_index(beg, end, -s, [&] (auto) {
               counter.fetch_add(1, std::memory_order_relaxed);
             }/*, c*/);
             executor.run(tf);
@@ -1142,7 +1142,7 @@ void parallel_for_index(unsigned w) {
   //        
   //        tf::Taskflow tf;
   //        std::atomic<int> counter {0};
-  //        tf.parallel_for(beg, end, s, [&] (auto) {
+  //        tf.for_each(beg, end, s, [&] (auto) {
   //          counter.fetch_add(1, std::memory_order_relaxed);
   //        });
   //        executor.run(tf);
@@ -1171,7 +1171,7 @@ void parallel_for_index(unsigned w) {
   //        }
   //        tf::Taskflow tf;
   //        std::atomic<int> counter {0};
-  //        tf.parallel_for(beg, end, -s, [&] (auto) {
+  //        tf.for_each(beg, end, -s, [&] (auto) {
   //          counter.fetch_add(1, std::memory_order_relaxed);
   //        });
   //        executor.run(tf);
@@ -1204,35 +1204,35 @@ void parallel_for_index(unsigned w) {
 }
 
 TEST_CASE("ParallelForIndex.1thread" * doctest::timeout(300)) {
-  parallel_for_index(1);
+  for_each_index(1);
 }
 
 TEST_CASE("ParallelForIndex.2threads" * doctest::timeout(300)) {
-  parallel_for_index(2);
+  for_each_index(2);
 }
 
 TEST_CASE("ParallelForIndex.3threads" * doctest::timeout(300)) {
-  parallel_for_index(3);
+  for_each_index(3);
 }
 
 TEST_CASE("ParallelForIndex.4threads" * doctest::timeout(300)) {
-  parallel_for_index(4);
+  for_each_index(4);
 }
 
 TEST_CASE("ParallelForIndex.5threads" * doctest::timeout(300)) {
-  parallel_for_index(5);
+  for_each_index(5);
 }
 
 TEST_CASE("ParallelForIndex.6threads" * doctest::timeout(300)) {
-  parallel_for_index(6);
+  for_each_index(6);
 }
 
 TEST_CASE("ParallelForIndex.7threads" * doctest::timeout(300)) {
-  parallel_for_index(7);
+  for_each_index(7);
 }
 
 TEST_CASE("ParallelForIndex.8threads" * doctest::timeout(300)) {
-  parallel_for_index(8);
+  for_each_index(8);
 }
 
 // --------------------------------------------------------
@@ -1245,7 +1245,7 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
     tf::Taskflow tf;
     int result {0};
     std::iota(data.begin(), data.end(), 1);
-    tf.parallel_reduce(data.begin(), data.end(), result, std::plus<int>());
+    tf.reduce(data.begin(), data.end(), result, std::plus<int>());
     executor.run(tf).get();
     REQUIRE(result == std::accumulate(data.begin(), data.end(), 0, std::plus<int>()));
   };
@@ -1255,7 +1255,7 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
     tf::Taskflow tf;
     std::fill(data.begin(), data.end(), 1.0);
     double result {2.0};
-    tf.parallel_reduce(data.begin(), data.end(), result, std::multiplies<double>());
+    tf.reduce(data.begin(), data.end(), result, std::multiplies<double>());
     executor.run(tf).get();
     REQUIRE(result == std::accumulate(data.begin(), data.end(), 2.0, std::multiplies<double>()));
   };
@@ -1266,7 +1266,7 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
     std::iota(data.begin(), data.end(), 1);
     int result {0};
     auto lambda = [](const auto& l, const auto& r){return std::max(l, r);};
-    tf.parallel_reduce(data.begin(), data.end(), result, lambda);
+    tf.reduce(data.begin(), data.end(), result, lambda);
     executor.run(tf).get();
     REQUIRE(result == std::accumulate(data.begin(), data.end(), 0, lambda));
   };
@@ -1277,7 +1277,7 @@ TEST_CASE("Reduce" * doctest::timeout(300)) {
     std::iota(data.begin(), data.end(), 1);
     int result {std::numeric_limits<int>::max()};
     auto lambda = [](const auto& l, const auto& r){return std::min(l, r);};
-    tf.parallel_reduce(data.begin(), data.end(), result, lambda);
+    tf.reduce(data.begin(), data.end(), result, lambda);
     executor.run(tf).get();
     REQUIRE(result == std::accumulate(
       data.begin(), data.end(), std::numeric_limits<int>::max(), lambda)
@@ -1317,7 +1317,7 @@ TEST_CASE("ReduceMin" * doctest::timeout(300)) {
         d = ::rand();
         gold = std::min(gold, d);
       }
-      tf.parallel_reduce(data.begin(), data.end(), test, [] (int l, int r) {
+      tf.reduce(data.begin(), data.end(), test, [] (int l, int r) {
         return std::min(l, r);
       });
       executor.run(tf).get();
@@ -1343,7 +1343,7 @@ TEST_CASE("ReduceMax" * doctest::timeout(300)) {
         d = ::rand();
         gold = std::max(gold, d);
       }
-      tf.parallel_reduce(data.begin(), data.end(), test, [](int l, int r){
+      tf.reduce(data.begin(), data.end(), test, [](int l, int r){
         return std::max(l, r);
       });
       executor.run(tf).get();
@@ -1461,7 +1461,7 @@ void joined_subflow(unsigned W) {
     auto B = tf.emplace([&count, &data, &sum](tf::Subflow& fb){
 
       //auto [src, tgt] = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
-      auto task = fb.parallel_reduce(data.begin(), data.end(), sum, std::plus<int>());
+      auto task = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
 
       fb.emplace([&sum] () { REQUIRE(sum == 0); }).precede(task);
 

@@ -43,7 +43,7 @@ void reduce() {
   tf::Taskflow taskflow;
   tf::Executor executor;
   auto tmin = std::numeric_limits<int>::max();
-  taskflow.parallel_reduce(
+  taskflow.reduce(
     data.begin(), 
     data.end(), 
     tmin, 

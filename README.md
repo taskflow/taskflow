@@ -483,26 +483,27 @@ A.precede(B);
 B.work([](){ /* do something */ });
 ```
 
-### *parallel_for*
+### *for_each/for_each_index*
 
-The method `parallel_for` creates a dynamic task that spawns a subflow to apply the callable to each item in the given range of a container.
+The method `for_each` creates a subflow to perform parallel iterations over a range of elements
+specified by `[beg, end)`.
 
 ```cpp
 auto v = {'A', 'B', 'C', 'D'};
-auto t = taskflow.parallel_for(v.begin(), v.end(),
-  [] (int i) { 
-    std::cout << "parallel " << i << '\n';
+auto t = taskflow.for_each(v.begin(), v.end(),
+  [] (char i) { 
+    std::cout << "parallel iteration on character " << i << '\n';
   }
 );
 ```
 
-You can also specify an *index-based* range with the given step size to perform parallel iterations.
+You can also specify an *index-based* range with the given step size.
 
 ```cpp
 // [0, 11) with a step size of 2, i.e., 0, 2, 4, 6, 8, 10
-auto t = taskflow.parallel_for(0, 11, 2, 
+auto t = taskflow.for_each_index(0, 11, 2, 
   [] (int i) {
-    std::cout << "parallel_for on index " << i << std::endl;
+    std::cout << "parallel iteration on index " << i << std::endl;
   } 
 );
 ```

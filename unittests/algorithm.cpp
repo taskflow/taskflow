@@ -9,7 +9,7 @@
 #include <limits.h>
 
 // --------------------------------------------------------
-// Testcase: parallel_for
+// Testcase: for_each
 // --------------------------------------------------------
 
 enum TYPE {
@@ -18,7 +18,7 @@ enum TYPE {
   STATIC
 };
 
-void parallel_for(unsigned W, TYPE type) {
+void for_each(unsigned W, TYPE type) {
 
   tf::Executor executor(W);
   tf::Taskflow taskflow;
@@ -38,21 +38,21 @@ void parallel_for(unsigned W, TYPE type) {
         
         switch(type) {
           case GUIDED:
-            taskflow.parallel_index_guided(beg, end, s, [&](int i){
+            taskflow.for_each_index_guided(beg, end, s, [&](int i){
               counter++;
               vec[i-beg] = i;
             }, c);
           break;
 
           case DYNAMIC:
-            taskflow.parallel_index_dynamic(beg, end, s, [&](int i){
+            taskflow.for_each_index_dynamic(beg, end, s, [&](int i){
               counter++;
               vec[i-beg] = i;
             }, c);
           break;
           
           case STATIC:
-            taskflow.parallel_index_static(beg, end, s, [&](int i){
+            taskflow.for_each_index_static(beg, end, s, [&](int i){
               counter++;
               vec[i-beg] = i;
             }, c);
@@ -84,21 +84,21 @@ void parallel_for(unsigned W, TYPE type) {
       
       switch(type) {
         case GUIDED:
-          taskflow.parallel_for_guided(vec.begin(), vec.begin() + n, [&](int& i){
+          taskflow.for_each_guided(vec.begin(), vec.begin() + n, [&](int& i){
             counter++;
             i = 1;
           }, c);
         break;
 
         case DYNAMIC:
-          taskflow.parallel_for_dynamic(vec.begin(), vec.begin() + n, [&](int& i){
+          taskflow.for_each_dynamic(vec.begin(), vec.begin() + n, [&](int& i){
             counter++;
             i = 1;
           }, c);
         break;
         
         case STATIC:
-          taskflow.parallel_for_static(vec.begin(), vec.begin() + n, [&](int& i){
+          taskflow.for_each_static(vec.begin(), vec.begin() + n, [&](int& i){
             counter++;
             i = 1;
           }, c);
@@ -121,156 +121,156 @@ void parallel_for(unsigned W, TYPE type) {
 
 // guided
 TEST_CASE("pfg.1thread" * doctest::timeout(300)) {
-  parallel_for(1, GUIDED);
+  for_each(1, GUIDED);
 }
 
 TEST_CASE("pfg.2threads" * doctest::timeout(300)) {
-  parallel_for(2, GUIDED);
+  for_each(2, GUIDED);
 }
 
 TEST_CASE("pfg.3threads" * doctest::timeout(300)) {
-  parallel_for(3, GUIDED);
+  for_each(3, GUIDED);
 }
 
 TEST_CASE("pfg.4threads" * doctest::timeout(300)) {
-  parallel_for(4, GUIDED);
+  for_each(4, GUIDED);
 }
 
 TEST_CASE("pfg.5threads" * doctest::timeout(300)) {
-  parallel_for(5, GUIDED);
+  for_each(5, GUIDED);
 }
 
 TEST_CASE("pfg.6threads" * doctest::timeout(300)) {
-  parallel_for(6, GUIDED);
+  for_each(6, GUIDED);
 }
 
 TEST_CASE("pfg.7threads" * doctest::timeout(300)) {
-  parallel_for(7, GUIDED);
+  for_each(7, GUIDED);
 }
 
 TEST_CASE("pfg.8threads" * doctest::timeout(300)) {
-  parallel_for(8, GUIDED);
+  for_each(8, GUIDED);
 }
 
 TEST_CASE("pfg.9threads" * doctest::timeout(300)) {
-  parallel_for(9, GUIDED);
+  for_each(9, GUIDED);
 }
 
 TEST_CASE("pfg.10threads" * doctest::timeout(300)) {
-  parallel_for(10, GUIDED);
+  for_each(10, GUIDED);
 }
 
 TEST_CASE("pfg.11threads" * doctest::timeout(300)) {
-  parallel_for(11, GUIDED);
+  for_each(11, GUIDED);
 }
 
 TEST_CASE("pfg.12threads" * doctest::timeout(300)) {
-  parallel_for(12, GUIDED);
+  for_each(12, GUIDED);
 }
 
 // dynamic
 TEST_CASE("pfd.1thread" * doctest::timeout(300)) {
-  parallel_for(1, DYNAMIC);
+  for_each(1, DYNAMIC);
 }
 
 TEST_CASE("pfd.2threads" * doctest::timeout(300)) {
-  parallel_for(2, DYNAMIC);
+  for_each(2, DYNAMIC);
 }
 
 TEST_CASE("pfd.3threads" * doctest::timeout(300)) {
-  parallel_for(3, DYNAMIC);
+  for_each(3, DYNAMIC);
 }
 
 TEST_CASE("pfd.4threads" * doctest::timeout(300)) {
-  parallel_for(4, DYNAMIC);
+  for_each(4, DYNAMIC);
 }
 
 TEST_CASE("pfd.5threads" * doctest::timeout(300)) {
-  parallel_for(5, DYNAMIC);
+  for_each(5, DYNAMIC);
 }
 
 TEST_CASE("pfd.6threads" * doctest::timeout(300)) {
-  parallel_for(6, DYNAMIC);
+  for_each(6, DYNAMIC);
 }
 
 TEST_CASE("pfd.7threads" * doctest::timeout(300)) {
-  parallel_for(7, DYNAMIC);
+  for_each(7, DYNAMIC);
 }
 
 TEST_CASE("pfd.8threads" * doctest::timeout(300)) {
-  parallel_for(8, DYNAMIC);
+  for_each(8, DYNAMIC);
 }
 
 TEST_CASE("pfd.9threads" * doctest::timeout(300)) {
-  parallel_for(9, DYNAMIC);
+  for_each(9, DYNAMIC);
 }
 
 TEST_CASE("pfd.10threads" * doctest::timeout(300)) {
-  parallel_for(10, DYNAMIC);
+  for_each(10, DYNAMIC);
 }
 
 TEST_CASE("pfd.11threads" * doctest::timeout(300)) {
-  parallel_for(11, DYNAMIC);
+  for_each(11, DYNAMIC);
 }
 
 TEST_CASE("pfd.12threads" * doctest::timeout(300)) {
-  parallel_for(12, DYNAMIC);
+  for_each(12, DYNAMIC);
 }
 
 // static
 TEST_CASE("pfs.1thread" * doctest::timeout(300)) {
-  parallel_for(1, STATIC);
+  for_each(1, STATIC);
 }
 
 TEST_CASE("pfs.2threads" * doctest::timeout(300)) {
-  parallel_for(2, STATIC);
+  for_each(2, STATIC);
 }
 
 TEST_CASE("pfs.3threads" * doctest::timeout(300)) {
-  parallel_for(3, STATIC);
+  for_each(3, STATIC);
 }
 
 TEST_CASE("pfs.4threads" * doctest::timeout(300)) {
-  parallel_for(4, STATIC);
+  for_each(4, STATIC);
 }
 
 TEST_CASE("pfs.5threads" * doctest::timeout(300)) {
-  parallel_for(5, STATIC);
+  for_each(5, STATIC);
 }
 
 TEST_CASE("pfs.6threads" * doctest::timeout(300)) {
-  parallel_for(6, STATIC);
+  for_each(6, STATIC);
 }
 
 TEST_CASE("pfs.7threads" * doctest::timeout(300)) {
-  parallel_for(7, STATIC);
+  for_each(7, STATIC);
 }
 
 TEST_CASE("pfs.8threads" * doctest::timeout(300)) {
-  parallel_for(8, STATIC);
+  for_each(8, STATIC);
 }
 
 TEST_CASE("pfs.9threads" * doctest::timeout(300)) {
-  parallel_for(9, STATIC);
+  for_each(9, STATIC);
 }
 
 TEST_CASE("pfs.10threads" * doctest::timeout(300)) {
-  parallel_for(10, STATIC);
+  for_each(10, STATIC);
 }
 
 TEST_CASE("pfs.11threads" * doctest::timeout(300)) {
-  parallel_for(11, STATIC);
+  for_each(11, STATIC);
 }
 
 TEST_CASE("pfs.12threads" * doctest::timeout(300)) {
-  parallel_for(12, STATIC);
+  for_each(12, STATIC);
 }
 
 // ----------------------------------------------------------------------------
-// stateful_parallel_for
+// stateful_for_each
 // ----------------------------------------------------------------------------
 
-void stateful_parallel_for(unsigned W, TYPE type) {
+void stateful_for_each(unsigned W, TYPE type) {
   
   tf::Executor executor(W);
   tf::Taskflow taskflow;
@@ -304,13 +304,13 @@ void stateful_parallel_for(unsigned W, TYPE type) {
     switch (type) {
 
       case GUIDED:
-        pf1 = taskflow.parallel_for_guided(
+        pf1 = taskflow.for_each_guided(
           std::ref(beg), std::ref(end), [&](int& i){
           counter++;
           i = 8;
         }, c);
 
-        pf2 = taskflow.parallel_index_guided(
+        pf2 = taskflow.for_each_index_guided(
           std::ref(ibeg), std::ref(iend), size_t{1}, [&] (size_t i) {
             counter++;
             vec[i] = -8;
@@ -318,13 +318,13 @@ void stateful_parallel_for(unsigned W, TYPE type) {
       break;
 
       case DYNAMIC:
-        pf1 = taskflow.parallel_for_dynamic(
+        pf1 = taskflow.for_each_dynamic(
           std::ref(beg), std::ref(end), [&](int& i){
           counter++;
           i = 8;
         }, c);
 
-        pf2 = taskflow.parallel_index_dynamic(
+        pf2 = taskflow.for_each_index_dynamic(
           std::ref(ibeg), std::ref(iend), size_t{1}, [&] (size_t i) {
             counter++;
             vec[i] = -8;
@@ -332,13 +332,13 @@ void stateful_parallel_for(unsigned W, TYPE type) {
       break;
       
       case STATIC:
-        pf1 = taskflow.parallel_for_static(
+        pf1 = taskflow.for_each_static(
           std::ref(beg), std::ref(end), [&](int& i){
           counter++;
           i = 8;
         }, c);
 
-        pf2 = taskflow.parallel_index_static(
+        pf2 = taskflow.for_each_index_static(
           std::ref(ibeg), std::ref(iend), size_t{1}, [&] (size_t i) {
             counter++;
             vec[i] = -8;
@@ -366,156 +366,156 @@ void stateful_parallel_for(unsigned W, TYPE type) {
 
 // guided
 TEST_CASE("statefulpfg.1thread" * doctest::timeout(300)) {
-  stateful_parallel_for(1, GUIDED);
+  stateful_for_each(1, GUIDED);
 }
 
 TEST_CASE("statefulpfg.2threads" * doctest::timeout(300)) {
-  stateful_parallel_for(2, GUIDED);
+  stateful_for_each(2, GUIDED);
 }
 
 TEST_CASE("statefulpfg.3threads" * doctest::timeout(300)) {
-  stateful_parallel_for(3, GUIDED);
+  stateful_for_each(3, GUIDED);
 }
 
 TEST_CASE("statefulpfg.4threads" * doctest::timeout(300)) {
-  stateful_parallel_for(4, GUIDED);
+  stateful_for_each(4, GUIDED);
 }
 
 TEST_CASE("statefulpfg.5threads" * doctest::timeout(300)) {
-  stateful_parallel_for(5, GUIDED);
+  stateful_for_each(5, GUIDED);
 }
 
 TEST_CASE("statefulpfg.6threads" * doctest::timeout(300)) {
-  stateful_parallel_for(6, GUIDED);
+  stateful_for_each(6, GUIDED);
 }
 
 TEST_CASE("statefulpfg.7threads" * doctest::timeout(300)) {
-  stateful_parallel_for(7, GUIDED);
+  stateful_for_each(7, GUIDED);
 }
 
 TEST_CASE("statefulpfg.8threads" * doctest::timeout(300)) {
-  stateful_parallel_for(8, GUIDED);
+  stateful_for_each(8, GUIDED);
 }
 
 TEST_CASE("statefulpfg.9threads" * doctest::timeout(300)) {
-  stateful_parallel_for(9, GUIDED);
+  stateful_for_each(9, GUIDED);
 }
 
 TEST_CASE("statefulpfg.10threads" * doctest::timeout(300)) {
-  stateful_parallel_for(10, GUIDED);
+  stateful_for_each(10, GUIDED);
 }
 
 TEST_CASE("statefulpfg.11threads" * doctest::timeout(300)) {
-  stateful_parallel_for(11, GUIDED);
+  stateful_for_each(11, GUIDED);
 }
 
 TEST_CASE("statefulpfg.12threads" * doctest::timeout(300)) {
-  stateful_parallel_for(12, GUIDED);
+  stateful_for_each(12, GUIDED);
 }
 
 // dynamic
 TEST_CASE("statefulpfd.1thread" * doctest::timeout(300)) {
-  stateful_parallel_for(1, DYNAMIC);
+  stateful_for_each(1, DYNAMIC);
 }
 
 TEST_CASE("statefulpfd.2threads" * doctest::timeout(300)) {
-  stateful_parallel_for(2, DYNAMIC);
+  stateful_for_each(2, DYNAMIC);
 }
 
 TEST_CASE("statefulpfd.3threads" * doctest::timeout(300)) {
-  stateful_parallel_for(3, DYNAMIC);
+  stateful_for_each(3, DYNAMIC);
 }
 
 TEST_CASE("statefulpfd.4threads" * doctest::timeout(300)) {
-  stateful_parallel_for(4, DYNAMIC);
+  stateful_for_each(4, DYNAMIC);
 }
 
 TEST_CASE("statefulpfd.5threads" * doctest::timeout(300)) {
-  stateful_parallel_for(5, DYNAMIC);
+  stateful_for_each(5, DYNAMIC);
 }
 
 TEST_CASE("statefulpfd.6threads" * doctest::timeout(300)) {
-  stateful_parallel_for(6, DYNAMIC);
+  stateful_for_each(6, DYNAMIC);
 }
 
 TEST_CASE("statefulpfd.7threads" * doctest::timeout(300)) {
-  stateful_parallel_for(7, DYNAMIC);
+  stateful_for_each(7, DYNAMIC);
 }
 
 TEST_CASE("statefulpfd.8threads" * doctest::timeout(300)) {
-  stateful_parallel_for(8, DYNAMIC);
+  stateful_for_each(8, DYNAMIC);
 }
 
 TEST_CASE("statefulpfd.9threads" * doctest::timeout(300)) {
-  stateful_parallel_for(9, DYNAMIC);
+  stateful_for_each(9, DYNAMIC);
 }
 
 TEST_CASE("statefulpfd.10threads" * doctest::timeout(300)) {
-  stateful_parallel_for(10, DYNAMIC);
+  stateful_for_each(10, DYNAMIC);
 }
 
 TEST_CASE("statefulpfd.11threads" * doctest::timeout(300)) {
-  stateful_parallel_for(11, DYNAMIC);
+  stateful_for_each(11, DYNAMIC);
 }
 
 TEST_CASE("statefulpfd.12threads" * doctest::timeout(300)) {
-  stateful_parallel_for(12, DYNAMIC);
+  stateful_for_each(12, DYNAMIC);
 }
 
 // static
 TEST_CASE("statefulpfs.1thread" * doctest::timeout(300)) {
-  stateful_parallel_for(1, STATIC);
+  stateful_for_each(1, STATIC);
 }
 
 TEST_CASE("statefulpfs.2threads" * doctest::timeout(300)) {
-  stateful_parallel_for(2, STATIC);
+  stateful_for_each(2, STATIC);
 }
 
 TEST_CASE("statefulpfs.3threads" * doctest::timeout(300)) {
-  stateful_parallel_for(3, STATIC);
+  stateful_for_each(3, STATIC);
 }
 
 TEST_CASE("statefulpfs.4threads" * doctest::timeout(300)) {
-  stateful_parallel_for(4, STATIC);
+  stateful_for_each(4, STATIC);
 }
 
 TEST_CASE("statefulpfs.5threads" * doctest::timeout(300)) {
-  stateful_parallel_for(5, STATIC);
+  stateful_for_each(5, STATIC);
 }
 
 TEST_CASE("statefulpfs.6threads" * doctest::timeout(300)) {
-  stateful_parallel_for(6, STATIC);
+  stateful_for_each(6, STATIC);
 }
 
 TEST_CASE("statefulpfs.7threads" * doctest::timeout(300)) {
-  stateful_parallel_for(7, STATIC);
+  stateful_for_each(7, STATIC);
 }
 
 TEST_CASE("statefulpfs.8threads" * doctest::timeout(300)) {
-  stateful_parallel_for(8, STATIC);
+  stateful_for_each(8, STATIC);
 }
 
 TEST_CASE("statefulpfs.9threads" * doctest::timeout(300)) {
-  stateful_parallel_for(9, STATIC);
+  stateful_for_each(9, STATIC);
 }
 
 TEST_CASE("statefulpfs.10threads" * doctest::timeout(300)) {
-  stateful_parallel_for(10, STATIC);
+  stateful_for_each(10, STATIC);
 }
 
 TEST_CASE("statefulpfs.11threads" * doctest::timeout(300)) {
-  stateful_parallel_for(11, STATIC);
+  stateful_for_each(11, STATIC);
 }
 
 TEST_CASE("statefulpfs.12threads" * doctest::timeout(300)) {
-  stateful_parallel_for(12, STATIC);
+  stateful_for_each(12, STATIC);
 }
 
 // --------------------------------------------------------
-// Testcase: parallel_reduce
+// Testcase: reduce
 // --------------------------------------------------------
 
-void parallel_reduce(unsigned W, TYPE type) {
+void reduce(unsigned W, TYPE type) {
 
   tf::Executor executor(W);
   tf::Taskflow taskflow;
@@ -545,21 +545,21 @@ void parallel_reduce(unsigned W, TYPE type) {
 
       switch (type) {
         case GUIDED:
-          ptask = taskflow.parallel_reduce_guided(
+          ptask = taskflow.reduce_guided(
             std::ref(beg), std::ref(end), pmin, [](int& l, int& r){
             return std::min(l, r);
           }, c);
         break;
 
         case DYNAMIC:
-          ptask = taskflow.parallel_reduce_dynamic(
+          ptask = taskflow.reduce_dynamic(
             std::ref(beg), std::ref(end), pmin, [](int& l, int& r){
             return std::min(l, r);
           }, c);
         break;
         
         case STATIC:
-          ptask = taskflow.parallel_reduce_static(
+          ptask = taskflow.reduce_static(
             std::ref(beg), std::ref(end), pmin, [](int& l, int& r){
             return std::min(l, r);
           }, c);
@@ -579,148 +579,148 @@ void parallel_reduce(unsigned W, TYPE type) {
 
 // guided
 TEST_CASE("prg.1thread" * doctest::timeout(300)) {
-  parallel_reduce(1, GUIDED);
+  reduce(1, GUIDED);
 }
 
 TEST_CASE("prg.2threads" * doctest::timeout(300)) {
-  parallel_reduce(2, GUIDED);
+  reduce(2, GUIDED);
 }
 
 TEST_CASE("prg.3threads" * doctest::timeout(300)) {
-  parallel_reduce(3, GUIDED);
+  reduce(3, GUIDED);
 }
 
 TEST_CASE("prg.4threads" * doctest::timeout(300)) {
-  parallel_reduce(4, GUIDED);
+  reduce(4, GUIDED);
 }
 
 TEST_CASE("prg.5threads" * doctest::timeout(300)) {
-  parallel_reduce(5, GUIDED);
+  reduce(5, GUIDED);
 }
 
 TEST_CASE("prg.6threads" * doctest::timeout(300)) {
-  parallel_reduce(6, GUIDED);
+  reduce(6, GUIDED);
 }
 
 TEST_CASE("prg.7threads" * doctest::timeout(300)) {
-  parallel_reduce(7, GUIDED);
+  reduce(7, GUIDED);
 }
 
 TEST_CASE("prg.8threads" * doctest::timeout(300)) {
-  parallel_reduce(8, GUIDED);
+  reduce(8, GUIDED);
 }
 
 TEST_CASE("prg.9threads" * doctest::timeout(300)) {
-  parallel_reduce(9, GUIDED);
+  reduce(9, GUIDED);
 }
 
 TEST_CASE("prg.10threads" * doctest::timeout(300)) {
-  parallel_reduce(10, GUIDED);
+  reduce(10, GUIDED);
 }
 
 TEST_CASE("prg.11threads" * doctest::timeout(300)) {
-  parallel_reduce(11, GUIDED);
+  reduce(11, GUIDED);
 }
 
 TEST_CASE("prg.12threads" * doctest::timeout(300)) {
-  parallel_reduce(12, GUIDED);
+  reduce(12, GUIDED);
 }
 
 // dynamic
 TEST_CASE("prd.1thread" * doctest::timeout(300)) {
-  parallel_reduce(1, DYNAMIC);
+  reduce(1, DYNAMIC);
 }
 
 TEST_CASE("prd.2threads" * doctest::timeout(300)) {
-  parallel_reduce(2, DYNAMIC);
+  reduce(2, DYNAMIC);
 }
 
 TEST_CASE("prd.3threads" * doctest::timeout(300)) {
-  parallel_reduce(3, DYNAMIC);
+  reduce(3, DYNAMIC);
 }
 
 TEST_CASE("prd.4threads" * doctest::timeout(300)) {
-  parallel_reduce(4, DYNAMIC);
+  reduce(4, DYNAMIC);
 }
 
 TEST_CASE("prd.5threads" * doctest::timeout(300)) {
-  parallel_reduce(5, DYNAMIC);
+  reduce(5, DYNAMIC);
 }
 
 TEST_CASE("prd.6threads" * doctest::timeout(300)) {
-  parallel_reduce(6, DYNAMIC);
+  reduce(6, DYNAMIC);
 }
 
 TEST_CASE("prd.7threads" * doctest::timeout(300)) {
-  parallel_reduce(7, DYNAMIC);
+  reduce(7, DYNAMIC);
 }
 
 TEST_CASE("prd.8threads" * doctest::timeout(300)) {
-  parallel_reduce(8, DYNAMIC);
+  reduce(8, DYNAMIC);
 }
 
 TEST_CASE("prd.9threads" * doctest::timeout(300)) {
-  parallel_reduce(9, DYNAMIC);
+  reduce(9, DYNAMIC);
 }
 
 TEST_CASE("prd.10threads" * doctest::timeout(300)) {
-  parallel_reduce(10, DYNAMIC);
+  reduce(10, DYNAMIC);
 }
 
 TEST_CASE("prd.11threads" * doctest::timeout(300)) {
-  parallel_reduce(11, DYNAMIC);
+  reduce(11, DYNAMIC);
 }
 
 TEST_CASE("prd.12threads" * doctest::timeout(300)) {
-  parallel_reduce(12, DYNAMIC);
+  reduce(12, DYNAMIC);
 }
 
 // static
 TEST_CASE("prs.1thread" * doctest::timeout(300)) {
-  parallel_reduce(1, STATIC);
+  reduce(1, STATIC);
 }
 
 TEST_CASE("prs.2threads" * doctest::timeout(300)) {
-  parallel_reduce(2, STATIC);
+  reduce(2, STATIC);
 }
 
 TEST_CASE("prs.3threads" * doctest::timeout(300)) {
-  parallel_reduce(3, STATIC);
+  reduce(3, STATIC);
 }
 
 TEST_CASE("prs.4threads" * doctest::timeout(300)) {
-  parallel_reduce(4, STATIC);
+  reduce(4, STATIC);
 }
 
 TEST_CASE("prs.5threads" * doctest::timeout(300)) {
-  parallel_reduce(5, STATIC);
+  reduce(5, STATIC);
 }
 
 TEST_CASE("prs.6threads" * doctest::timeout(300)) {
-  parallel_reduce(6, STATIC);
+  reduce(6, STATIC);
 }
 
 TEST_CASE("prs.7threads" * doctest::timeout(300)) {
-  parallel_reduce(7, STATIC);
+  reduce(7, STATIC);
 }
 
 TEST_CASE("prs.8threads" * doctest::timeout(300)) {
-  parallel_reduce(8, STATIC);
+  reduce(8, STATIC);
 }
 
 TEST_CASE("prs.9threads" * doctest::timeout(300)) {
-  parallel_reduce(9, STATIC);
+  reduce(9, STATIC);
 }
 
 TEST_CASE("prs.10threads" * doctest::timeout(300)) {
-  parallel_reduce(10, STATIC);
+  reduce(10, STATIC);
 }
 
 TEST_CASE("prs.11threads" * doctest::timeout(300)) {
-  parallel_reduce(11, STATIC);
+  reduce(11, STATIC);
 }
 
 TEST_CASE("prs.12threads" * doctest::timeout(300)) {
-  parallel_reduce(12, STATIC);
+  reduce(12, STATIC);
 }
 

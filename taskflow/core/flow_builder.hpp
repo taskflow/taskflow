@@ -179,7 +179,7 @@ class FlowBuilder {
     The callable needs to take a single argument of the dereferenced type.
     */
     template <typename B, typename E, typename C>
-    Task parallel_for(B&& first, E&& last, C&& callable);
+    Task for_each(B&& first, E&& last, C&& callable);
     
     /**
     @brief constructs a STL-styled parallel-for task using the guided partition algorithm
@@ -203,7 +203,7 @@ class FlowBuilder {
     The callable needs to take a single argument of the dereferenced type.
     */
     template <typename B, typename E, typename C, typename H>
-    Task parallel_for_guided(B&& beg, E&& end, C&& callable, H&& chunk_size);
+    Task for_each_guided(B&& beg, E&& end, C&& callable, H&& chunk_size);
     
     /**
     @brief constructs a STL-styled parallel-for task using the dynamic partition algorithm
@@ -227,7 +227,7 @@ class FlowBuilder {
     The callable needs to take a single argument of the dereferenced type.
     */
     template <typename B, typename E, typename C, typename H>
-    Task parallel_for_dynamic(B&& beg, E&& end, C&& callable, H&& chunk_size);
+    Task for_each_dynamic(B&& beg, E&& end, C&& callable, H&& chunk_size);
     
     /**
     @brief constructs a STL-styled parallel-for task using the dynamic partition algorithm
@@ -251,7 +251,7 @@ class FlowBuilder {
     The callable needs to take a single argument of the dereferenced type.
     */
     template <typename B, typename E, typename C, typename H>
-    Task parallel_for_static(
+    Task for_each_static(
       B&& beg, E&& end, C&& callable, H&& chunk_size
     );
     
@@ -292,7 +292,7 @@ class FlowBuilder {
     
     */
     template <typename B, typename E, typename S, typename C>
-    Task parallel_index(B&& first, E&& last, S&& step, C&& callable);
+    Task for_each_index(B&& first, E&& last, S&& step, C&& callable);
     
     /**
     @brief constructs an index-based parallel-for task using the guided partition algorithm.
@@ -318,7 +318,7 @@ class FlowBuilder {
     The callable needs to take a single argument of the index type.
     */
     template <typename B, typename E, typename S, typename C, typename H>
-    Task parallel_index_guided(
+    Task for_each_index_guided(
       B&& beg, E&& end, S&& step, C&& callable, H&& chunk_size = 1
     );
     
@@ -346,7 +346,7 @@ class FlowBuilder {
     The callable needs to take a single argument of the index type.
     */
     template <typename B, typename E, typename S, typename C, typename H>
-    Task parallel_index_dynamic(
+    Task for_each_index_dynamic(
       B&& beg, E&& end, S&& step, C&& callable, H&& chunk_size = 1
     );
     
@@ -374,7 +374,7 @@ class FlowBuilder {
     The callable needs to take a single argument of the index type.
     */
     template <typename B, typename E, typename S, typename C, typename H>
-    Task parallel_index_static(
+    Task for_each_index_static(
       B&& beg, E&& end, S&& step, C&& callable, H&& chunk_size = 0
     );
 
@@ -406,7 +406,7 @@ class FlowBuilder {
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
     */
     template <typename B, typename E, typename T, typename O>
-    Task parallel_reduce(B&& first, E&& last, T& init, O&& bop);
+    Task reduce(B&& first, E&& last, T& init, O&& bop);
 
     /**
     @brief constructs a STL-styled parallel-reduce task using the guided partition algorithm
@@ -430,7 +430,7 @@ class FlowBuilder {
     @return a Task handle
     */
     template <typename B, typename E, typename T, typename O, typename H>
-    Task parallel_reduce_guided(
+    Task reduce_guided(
       B&& first, E&& last, T& init, O&& bop, H&& chunk_size = 1
     );
     
@@ -456,7 +456,7 @@ class FlowBuilder {
     @return a Task handle
     */
     template <typename B, typename E, typename T, typename O, typename H>
-    Task parallel_reduce_dynamic(
+    Task reduce_dynamic(
       B&& first, E&& last, T& init, O&& bop, H&& chunk_size = 1
     );
     
@@ -482,7 +482,7 @@ class FlowBuilder {
     @return a Task handle
     */
     template <typename B, typename E, typename T, typename O, typename H>
-    Task parallel_reduce_static(
+    Task reduce_static(
       B&& first, E&& last, T& init, O&& bop, H&& chunk_size = 0
     );
 
@@ -605,9 +605,9 @@ inline Task FlowBuilder::placeholder() {
   return Task(node);
 }
 
-/*// Function: parallel_for
+/*// Function: for_each
 template <typename I, typename C>
-std::pair<Task, Task> FlowBuilder::parallel_for(
+std::pair<Task, Task> FlowBuilder::for_each(
   I beg, I end, C&& c, size_t chunk
 ){
   
@@ -651,13 +651,13 @@ std::pair<Task, Task> FlowBuilder::parallel_for(
   return std::make_pair(S, T); 
 }
 
-// Function: parallel_for
+// Function: for_each
 template <
   typename I, 
   typename C, 
   std::enable_if_t<std::is_integral<std::decay_t<I>>::value, void>*
 >
-std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t chunk) {
+std::pair<Task, Task> FlowBuilder::for_each(I beg, I end, I s, C&& c, size_t chunk) {
   
   if((s == 0) || (beg < end && s <= 0) || (beg > end && s >=0) ) {
     TF_THROW("invalid range [", beg, ", ", end, ") with step size ", s);
@@ -709,11 +709,11 @@ std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t
   return std::make_pair(source, target);
 }
 
-// Function: parallel_for
+// Function: for_each
 template <typename I, typename C, 
   std::enable_if_t<std::is_floating_point<std::decay_t<I>>::value, void>*
 >
-std::pair<Task, Task> FlowBuilder::parallel_for(I beg, I end, I s, C&& c, size_t chunk) {
+std::pair<Task, Task> FlowBuilder::for_each(I beg, I end, I s, C&& c, size_t chunk) {
   
   if((s == 0) || (beg < end && s <= 0) || (beg > end && s >=0) ) {
     TF_THROW("invalid range [", beg, ", ", end, ") with step size ", s);

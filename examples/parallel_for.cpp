@@ -5,8 +5,8 @@
 #include <cassert>
 #include <numeric>
 
-// Procedure: parallel_for_on_range
-void parallel_for_on_range(int N) {
+// Procedure: for_each_on_range
+void for_each_on_range(int N) {
 
   tf::Executor executor;
   tf::Taskflow taskflow;
@@ -14,23 +14,23 @@ void parallel_for_on_range(int N) {
   std::vector<int> range(N);
   std::iota(range.begin(), range.end(), 0);
 
-  taskflow.parallel_for(range.begin(), range.end(), [&] (int i) { 
-    printf("parallel_for on container item: %d\n", i);
+  taskflow.for_each(range.begin(), range.end(), [&] (int i) { 
+    printf("for_each on container item: %d\n", i);
   });
 
   executor.run(taskflow).get();
   taskflow.dump(std::cout);
 }
 
-// Procedure: parallel_for_on_index
-void parallel_for_on_index(int N) {
+// Procedure: for_each_on_index
+void for_each_on_index(int N) {
   
   tf::Executor executor;
   tf::Taskflow taskflow;
 
   // [0, N) with step size 2
-  taskflow.parallel_index(0, N, 2, [] (int i) {
-    printf("parallel_index on index: %d\n", i);
+  taskflow.for_each_index(0, N, 2, [] (int i) {
+    printf("for_each_index on index: %d\n", i);
   });
 
   executor.run(taskflow).get();
@@ -42,8 +42,8 @@ void parallel_for_on_index(int N) {
 // Function: main
 int main() {
   
-  parallel_for_on_range(100);
-  parallel_for_on_index(100);
+  for_each_on_range(100);
+  for_each_on_index(100);
 
   return 0;
 }
