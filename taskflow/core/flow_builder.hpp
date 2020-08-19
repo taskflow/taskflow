@@ -520,10 +520,10 @@ class FlowBuilder {
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
     */
     template <typename B, typename E, typename T, typename BOP, typename UOP>
-    Task transform_reduce(B&& first, E&& last, T& init, O&& bop, UOP&& uop);
+    Task transform_reduce(B&& first, E&& last, T& init, BOP&& bop, UOP&& uop);
     
     template <typename B, typename E, typename T, typename BOP, typename UOP, typename H>
-    Task transform_reduce_guided(B&& first, E&& last, T& init, O&& bop, UOP&& uop, H&& = 1);
+    Task transform_reduce_guided(B&& first, E&& last, T& init, BOP&& bop, UOP&& uop, H&& = 1);
     
     
   protected:
