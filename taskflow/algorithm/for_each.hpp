@@ -9,52 +9,6 @@
 
 namespace tf {
 
-// STL-styled iterator
-template <typename B, typename E>
-struct underlying_iterator {
-
-  using TB = std::decay_t<unwrap_ref_decay_t<B>>;
-  using TE = std::decay_t<unwrap_ref_decay_t<E>>;
-  
-  static_assert(std::is_same<TB, TE>::value, "decayed iterator types must match");
-
-  using type = TB;
-};
-
-template <typename B, typename E>
-using underlying_iterator_t = typename underlying_iterator<B, E>::type;
-
-// raw integral index
-template <typename B, typename E, typename S>
-struct underlying_index {
-
-  using TB = std::decay_t<unwrap_ref_decay_t<B>>;
-  using TE = std::decay_t<unwrap_ref_decay_t<E>>;
-  using TS = std::decay_t<unwrap_ref_decay_t<S>>;
-
-  static_assert(
-    std::is_integral<TB>::value, "decayed beg index must be an integral type"
-  );
-  
-  static_assert(
-    std::is_integral<TE>::value, "decayed end index must be an integral type"
-  );
-  
-  static_assert(
-    std::is_integral<TS>::value, "decayed step must be an integral type"
-  );
-
-  static_assert(
-    std::is_same<TB, TE>::value && std::is_same<TE, TS>::value,
-    "decayed index and step types must match"
-  );
-
-  using type = TB;
-};
-
-template <typename B, typename E, typename S>
-using underlying_index_t = typename underlying_index<B, E, S>::type;
-
 // ----------------------------------------------------------------------------
 // default parallel for
 // ----------------------------------------------------------------------------
@@ -91,7 +45,7 @@ Task FlowBuilder::for_each_index(B&& beg, E&& end, S&& inc, C&& c){
 template <typename B, typename E, typename C, typename H>
 Task FlowBuilder::for_each_guided(B&& beg, E&& end, C&& c, H&& chunk_size){
   
-  using I = underlying_iterator_t<B, E>;
+  using I = stateful_iterator_t<B, E>;
   using namespace std::string_literals;
 
   Task task = emplace(
@@ -187,7 +141,7 @@ Task FlowBuilder::for_each_index_guided(
   B&& beg, E&& end, S&& inc, C&& c, H&& chunk_size
 ){
 
-  using I = underlying_index_t<B, E, S>;
+  using I = stateful_index_t<B, E, S>;
   using namespace std::string_literals;
 
   Task task = emplace(
@@ -288,7 +242,7 @@ Task FlowBuilder::for_each_index_guided(
 template <typename B, typename E, typename C>
 Task FlowBuilder::for_each_factoring(B&& beg, E&& end, C&& c){
   
-  using I = underlying_iterator_t<B, E>;
+  using I = stateful_iterator_t<B, E>;
   using namespace std::string_literals;
 
   Task task = emplace(
@@ -362,7 +316,7 @@ Task FlowBuilder::for_each_factoring(
   B&& beg, E&& end, S&& inc, C&& c
 ){
 
-  using I = underlying_index_t<B, E, S>;
+  using I = stateful_index_t<B, E, S>;
   using namespace std::string_literals;
 
   Task task = emplace(
@@ -442,7 +396,7 @@ Task FlowBuilder::for_each_dynamic(
   B&& beg, E&& end, C&& c, H&& chunk_size
 ) {
 
-  using I = underlying_iterator_t<B, E>;
+  using I = stateful_iterator_t<B, E>;
   using namespace std::string_literals;
 
   Task task = emplace(
@@ -510,7 +464,7 @@ Task FlowBuilder::for_each_index_dynamic(
   B&& beg, E&& end, S&& inc, C&& c, H&& chunk_size
 ){
   
-  using I = underlying_index_t<B, E, S>;
+  using I = stateful_index_t<B, E, S>;
   using namespace std::string_literals;
 
   Task task = emplace(
@@ -585,7 +539,7 @@ Task FlowBuilder::for_each_static(
   B&& beg, E&& end, C&& c, H&& chunk_size
 ){
   
-  using I = underlying_iterator_t<B, E>;
+  using I = stateful_iterator_t<B, E>;
   using namespace std::string_literals;
 
   Task task = emplace(
@@ -691,7 +645,7 @@ Task FlowBuilder::for_each_index_static(
   B&& beg, E&& end, S&& inc, C&& c, H&& chunk_size
 ){
 
-  using I = underlying_index_t<B, E, S>;
+  using I = stateful_index_t<B, E, S>;
   using namespace std::string_literals;
 
   Task task = emplace(

@@ -71,7 +71,7 @@ void transform_reduce() {
 
   std::cout << "Benchmark: transform_reduce" << std::endl;
   
-  std::vector<Data> data(40000000);
+  std::vector<Data> data(MAX_DATA_SIZE);
   
   // sequential method
   auto sbeg = std::chrono::steady_clock::now();
@@ -88,10 +88,10 @@ void transform_reduce() {
   auto tbeg = std::chrono::steady_clock::now();
   tf::Taskflow tf;
   auto tmin = std::numeric_limits<int>::max();
-  //tf.transform_reduce(data.begin(), data.end(), tmin, 
-  //  [] (int l, int r) { return std::min(l, r); },
-  //  [] (const Data& d) { return d.transform(); }
-  //);
+  tf.transform_reduce(data.begin(), data.end(), tmin, 
+    [] (int l, int r) { return std::min(l, r); },
+    [] (const Data& d) { return d.transform(); }
+  );
   tf::Executor().run(tf).get();
   auto tend = std::chrono::steady_clock::now();
   std::cout << "[taskflow] transform_reduce " 

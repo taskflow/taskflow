@@ -724,3 +724,231 @@ TEST_CASE("prs.12threads" * doctest::timeout(300)) {
   reduce(12, STATIC);
 }
 
+// ----------------------------------------------------------------------------
+// transform_reduce
+// ----------------------------------------------------------------------------
+
+class Data {
+
+  private:
+
+    int _v {::rand() % 100 - 50};
+  
+  public:
+
+    int get() const { return _v; }
+};
+
+void transform_reduce(unsigned W, TYPE type) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  std::vector<Data> vec(1000);
+
+  for(size_t n=1; n<vec.size(); n++) {
+    for(size_t c=0; c<=17; c=c*2+1) {
+
+      int smin = std::numeric_limits<int>::max();
+      int pmin = std::numeric_limits<int>::max();
+      auto beg = vec.end();
+      auto end = vec.end();
+
+      taskflow.clear();
+      auto stask = taskflow.emplace([&](){
+        beg = vec.begin();
+        end = vec.begin() + n;
+        for(auto itr = beg; itr != end; itr++) {
+          smin = std::min(itr->get(), smin);
+        }
+      });
+
+      tf::Task ptask;
+
+      switch (type) {
+        case GUIDED:
+          ptask = taskflow.transform_reduce_guided(
+            std::ref(beg), std::ref(end), pmin, 
+            [] (int l, int r)   { return std::min(l, r); }, 
+            [] (const Data& data) { return data.get(); },
+            c
+          );
+        break;
+        
+        case STATIC:
+          ptask = taskflow.transform_reduce_static(
+            std::ref(beg), std::ref(end), pmin, 
+            [] (int l, int r)   { return std::min(l, r); }, 
+            [] (const Data& data) { return data.get(); },
+            c
+          );
+        break;
+        
+        case DYNAMIC:
+          ptask = taskflow.transform_reduce_dynamic(
+            std::ref(beg), std::ref(end), pmin, 
+            [] (int l, int r)   { return std::min(l, r); }, 
+            [] (const Data& data) { return data.get(); },
+            c
+          );
+        break;
+      }
+
+      stask.precede(ptask);
+
+      executor.run(taskflow).wait();
+      
+      REQUIRE(smin != std::numeric_limits<int>::max());
+      REQUIRE(pmin != std::numeric_limits<int>::max());
+      REQUIRE(smin == pmin);
+    }
+  }
+}
+
+// guided
+TEST_CASE("ptrg.1thread" * doctest::timeout(300)) {
+  transform_reduce(1, GUIDED);
+}
+
+TEST_CASE("ptrg.2threads" * doctest::timeout(300)) {
+  transform_reduce(2, GUIDED);
+}
+
+TEST_CASE("ptrg.3threads" * doctest::timeout(300)) {
+  transform_reduce(3, GUIDED);
+}
+
+TEST_CASE("ptrg.4threads" * doctest::timeout(300)) {
+  transform_reduce(4, GUIDED);
+}
+
+TEST_CASE("ptrg.5threads" * doctest::timeout(300)) {
+  transform_reduce(5, GUIDED);
+}
+
+TEST_CASE("ptrg.6threads" * doctest::timeout(300)) {
+  transform_reduce(6, GUIDED);
+}
+
+TEST_CASE("ptrg.7threads" * doctest::timeout(300)) {
+  transform_reduce(7, GUIDED);
+}
+
+TEST_CASE("ptrg.8threads" * doctest::timeout(300)) {
+  transform_reduce(8, GUIDED);
+}
+
+TEST_CASE("ptrg.9threads" * doctest::timeout(300)) {
+  transform_reduce(9, GUIDED);
+}
+
+TEST_CASE("ptrg.10threads" * doctest::timeout(300)) {
+  transform_reduce(10, GUIDED);
+}
+
+TEST_CASE("ptrg.11threads" * doctest::timeout(300)) {
+  transform_reduce(11, GUIDED);
+}
+
+TEST_CASE("ptrg.12threads" * doctest::timeout(300)) {
+  transform_reduce(12, GUIDED);
+}
+
+// dynamic
+TEST_CASE("ptrd.1thread" * doctest::timeout(300)) {
+  transform_reduce(1, DYNAMIC);
+}
+
+TEST_CASE("ptrd.2threads" * doctest::timeout(300)) {
+  transform_reduce(2, DYNAMIC);
+}
+
+TEST_CASE("ptrd.3threads" * doctest::timeout(300)) {
+  transform_reduce(3, DYNAMIC);
+}
+
+TEST_CASE("ptrd.4threads" * doctest::timeout(300)) {
+  transform_reduce(4, DYNAMIC);
+}
+
+TEST_CASE("ptrd.5threads" * doctest::timeout(300)) {
+  transform_reduce(5, DYNAMIC);
+}
+
+TEST_CASE("ptrd.6threads" * doctest::timeout(300)) {
+  transform_reduce(6, DYNAMIC);
+}
+
+TEST_CASE("ptrd.7threads" * doctest::timeout(300)) {
+  transform_reduce(7, DYNAMIC);
+}
+
+TEST_CASE("ptrd.8threads" * doctest::timeout(300)) {
+  transform_reduce(8, DYNAMIC);
+}
+
+TEST_CASE("ptrd.9threads" * doctest::timeout(300)) {
+  transform_reduce(9, DYNAMIC);
+}
+
+TEST_CASE("ptrd.10threads" * doctest::timeout(300)) {
+  transform_reduce(10, DYNAMIC);
+}
+
+TEST_CASE("ptrd.11threads" * doctest::timeout(300)) {
+  transform_reduce(11, DYNAMIC);
+}
+
+TEST_CASE("ptrd.12threads" * doctest::timeout(300)) {
+  transform_reduce(12, DYNAMIC);
+}
+
+// static
+TEST_CASE("ptrs.1thread" * doctest::timeout(300)) {
+  transform_reduce(1, STATIC);
+}
+
+TEST_CASE("ptrs.2threads" * doctest::timeout(300)) {
+  transform_reduce(2, STATIC);
+}
+
+TEST_CASE("ptrs.3threads" * doctest::timeout(300)) {
+  transform_reduce(3, STATIC);
+}
+
+TEST_CASE("ptrs.4threads" * doctest::timeout(300)) {
+  transform_reduce(4, STATIC);
+}
+
+TEST_CASE("ptrs.5threads" * doctest::timeout(300)) {
+  transform_reduce(5, STATIC);
+}
+
+TEST_CASE("ptrs.6threads" * doctest::timeout(300)) {
+  transform_reduce(6, STATIC);
+}
+
+TEST_CASE("ptrs.7threads" * doctest::timeout(300)) {
+  transform_reduce(7, STATIC);
+}
+
+TEST_CASE("ptrs.8threads" * doctest::timeout(300)) {
+  transform_reduce(8, STATIC);
+}
+
+TEST_CASE("ptrs.9threads" * doctest::timeout(300)) {
+  transform_reduce(9, STATIC);
+}
+
+TEST_CASE("ptrs.10threads" * doctest::timeout(300)) {
+  transform_reduce(10, STATIC);
+}
+
+TEST_CASE("ptrs.11threads" * doctest::timeout(300)) {
+  transform_reduce(11, STATIC);
+}
+
+TEST_CASE("ptrs.12threads" * doctest::timeout(300)) {
+  transform_reduce(12, STATIC);
+}
+

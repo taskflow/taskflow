@@ -210,6 +210,22 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a54e36c916ae7dd88bd079d3fd49119f9"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a54e36c916ae7dd88bd079d3fd49119f9">reduce_static</a> (B &amp;&amp;first, E &amp;&amp;last, T &amp;init, O &amp;&amp;bop, H &amp;&amp;chunk_size=0)</td></tr>
 <tr class="memdesc:a54e36c916ae7dd88bd079d3fd49119f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a STL-styled parallel-reduce task using the static partition algorithm  <a href="#a54e36c916ae7dd88bd079d3fd49119f9">More...</a><br /></td></tr>
 <tr class="separator:a54e36c916ae7dd88bd079d3fd49119f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8d03524f15292610ebee63d53b89579"><td class="memTemplParams" colspan="2">template&lt;typename B , typename E , typename T , typename BOP , typename UOP &gt; </td></tr>
+<tr class="memitem:ad8d03524f15292610ebee63d53b89579"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#ad8d03524f15292610ebee63d53b89579">transform_reduce</a> (B &amp;&amp;first, E &amp;&amp;last, T &amp;init, BOP &amp;&amp;bop, UOP &amp;&amp;uop)</td></tr>
+<tr class="memdesc:ad8d03524f15292610ebee63d53b89579"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a STL-styled parallel transform-reduce task  <a href="#ad8d03524f15292610ebee63d53b89579">More...</a><br /></td></tr>
+<tr class="separator:ad8d03524f15292610ebee63d53b89579"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa102a40672a331643944cb17c2377118"><td class="memTemplParams" colspan="2">template&lt;typename B , typename E , typename T , typename BOP , typename UOP , typename H &gt; </td></tr>
+<tr class="memitem:aa102a40672a331643944cb17c2377118"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#aa102a40672a331643944cb17c2377118">transform_reduce_guided</a> (B &amp;&amp;first, E &amp;&amp;last, T &amp;init, BOP &amp;&amp;bop, UOP &amp;&amp;uop, H &amp;&amp;chunk_size=1)</td></tr>
+<tr class="memdesc:aa102a40672a331643944cb17c2377118"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a STL-styled parallel transform-reduce task using the guided partition algorithm  <a href="#aa102a40672a331643944cb17c2377118">More...</a><br /></td></tr>
+<tr class="separator:aa102a40672a331643944cb17c2377118"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78a4b53cfe359bb417ee37696cab06ca"><td class="memTemplParams" colspan="2">template&lt;typename B , typename E , typename T , typename BOP , typename UOP , typename H &gt; </td></tr>
+<tr class="memitem:a78a4b53cfe359bb417ee37696cab06ca"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a78a4b53cfe359bb417ee37696cab06ca">transform_reduce_static</a> (B &amp;&amp;first, E &amp;&amp;last, T &amp;init, BOP &amp;&amp;bop, UOP &amp;&amp;uop, H &amp;&amp;chunk_size=1)</td></tr>
+<tr class="memdesc:a78a4b53cfe359bb417ee37696cab06ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a STL-styled parallel transform-reduce task using the static partition algorithm  <a href="#a78a4b53cfe359bb417ee37696cab06ca">More...</a><br /></td></tr>
+<tr class="separator:a78a4b53cfe359bb417ee37696cab06ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fb87774919f4a570ac505cdcda48249"><td class="memTemplParams" colspan="2">template&lt;typename B , typename E , typename T , typename BOP , typename UOP , typename H &gt; </td></tr>
+<tr class="memitem:a6fb87774919f4a570ac505cdcda48249"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a6fb87774919f4a570ac505cdcda48249">transform_reduce_dynamic</a> (B &amp;&amp;first, E &amp;&amp;last, T &amp;init, BOP &amp;&amp;bop, UOP &amp;&amp;uop, H &amp;&amp;chunk_size=1)</td></tr>
+<tr class="memdesc:a6fb87774919f4a570ac505cdcda48249"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a STL-styled parallel transform-reduce task using the dynamic partition algorithm  <a href="#a6fb87774919f4a570ac505cdcda48249">More...</a><br /></td></tr>
+<tr class="separator:a6fb87774919f4a570ac505cdcda48249"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -653,7 +669,7 @@ template&lt;typename B , typename E , typename C , typename H &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
-<p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[beg, end)</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task.</p>
+<p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[beg, end)</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</p>
 <p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the dereferenced type. </p>
 
@@ -719,7 +735,7 @@ template&lt;typename B , typename E , typename C , typename H &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
-<p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[beg, end)</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task.</p>
+<p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[beg, end)</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</p>
 <p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the dereferenced type. </p>
 
@@ -860,7 +876,7 @@ template&lt;typename B , typename E , typename S , typename C , typename H &gt; 
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
-<p>The task spawns a subflow that applies the callable object to each index in the range <code>[beg, end)</code> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task.</p>
+<p>The task spawns a subflow that applies the callable object to each index in the range <code>[beg, end)</code> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</p>
 <p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the index type. </p>
 
@@ -934,7 +950,7 @@ template&lt;typename B , typename E , typename S , typename C , typename H &gt; 
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
-<p>The task spawns a subflow that applies the callable object to each index in the range <code>[beg, end)</code> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task.</p>
+<p>The task spawns a subflow that applies the callable object to each index in the range <code>[beg, end)</code> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</p>
 <p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the index type. </p>
 
@@ -1008,7 +1024,7 @@ template&lt;typename B , typename E , typename S , typename C , typename H &gt; 
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
-<p>The task spawns a subflow that applies the callable object to each index in the range <code>[beg, end)</code> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task. When the given chunk size is zero, the runtime distributes the work evenly across workers.</p>
+<p>The task spawns a subflow that applies the callable object to each index in the range <code>[beg, end)</code> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</p>
 <p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the index type. </p>
 
@@ -1074,7 +1090,7 @@ template&lt;typename B , typename E , typename C , typename H &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
-<p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[beg, end)</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task. When the given chunk size is zero, the runtime distributes the work evenly across workers.</p>
+<p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[beg, end)</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</p>
 <p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the dereferenced type. </p>
 
@@ -1281,7 +1297,7 @@ template&lt;typename B , typename E , typename T , typename O &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
-<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task. By default, we employ the guided partition algorithm.</p>
+<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.</p>
 <p>This method is equivalent to the parallel execution of the following loop:</p>
 <div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> itr=first; itr!=last; itr++) {</div><div class="line">  init = bop(init, *itr);</div><div class="line">}</div></div><!-- fragment --><p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
 
@@ -1354,7 +1370,7 @@ template&lt;typename B , typename E , typename T , typename O , typename H &gt; 
   </table>
   </dd>
 </dl>
-<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a task.</p>
+<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p>
 <p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
 
@@ -1427,7 +1443,7 @@ template&lt;typename B , typename E , typename T , typename O , typename H &gt; 
   </table>
   </dd>
 </dl>
-<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a task.</p>
+<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p>
 <p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
 
@@ -1500,7 +1516,7 @@ template&lt;typename B , typename E , typename T , typename O , typename H &gt; 
   </table>
   </dd>
 </dl>
-<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a task.</p>
+<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p>
 <p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
 
@@ -1593,6 +1609,323 @@ template&lt;typename B , typename E , typename T , typename O , typename H &gt; 
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ad8d03524f15292610ebee63d53b89579"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8d03524f15292610ebee63d53b89579">&#9670;&nbsp;</a></span>transform_reduce()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename B , typename E , typename T , typename BOP , typename UOP &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> tf::FlowBuilder::transform_reduce </td>
+          <td>(</td>
+          <td class="paramtype">B &amp;&amp;&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">E &amp;&amp;&#160;</td>
+          <td class="paramname"><em>last</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>init</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">BOP &amp;&amp;&#160;</td>
+          <td class="paramname"><em>bop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">UOP &amp;&amp;&#160;</td>
+          <td class="paramname"><em>uop</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>constructs a STL-styled parallel transform-reduce task </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">B</td><td>beginning iterator type </td></tr>
+    <tr><td class="paramname">E</td><td>ending iterator type </td></tr>
+    <tr><td class="paramname">T</td><td>result type </td></tr>
+    <tr><td class="paramname">BOP</td><td>binary reducer type </td></tr>
+    <tr><td class="paramname">UOP</td><td>unary transformion type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>iterator to the beginning (inclusive) </td></tr>
+    <tr><td class="paramname">last</td><td>iterator to the end (exclusive) </td></tr>
+    <tr><td class="paramname">init</td><td>initial value of the reduction and the storage for the reduced result </td></tr>
+    <tr><td class="paramname">bop</td><td>binary operator that will be applied in unspecified order to the results of <code>uop</code> </td></tr>
+    <tr><td class="paramname">uop</td><td>unary operator that will be applied to transform each element in the range to the result type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
+<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.</p>
+<p>This method is equivalent to the parallel execution of the following loop:</p>
+<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> itr=first; itr!=last; itr++) {</div><div class="line">  init = bop(init, uop(*itr));</div><div class="line">}</div></div><!-- fragment --><p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
+
+</div>
+</div>
+<a id="a6fb87774919f4a570ac505cdcda48249"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fb87774919f4a570ac505cdcda48249">&#9670;&nbsp;</a></span>transform_reduce_dynamic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename B , typename E , typename T , typename BOP , typename UOP , typename H &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> tf::FlowBuilder::transform_reduce_dynamic </td>
+          <td>(</td>
+          <td class="paramtype">B &amp;&amp;&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">E &amp;&amp;&#160;</td>
+          <td class="paramname"><em>last</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>init</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">BOP &amp;&amp;&#160;</td>
+          <td class="paramname"><em>bop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">UOP &amp;&amp;&#160;</td>
+          <td class="paramname"><em>uop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">H &amp;&amp;&#160;</td>
+          <td class="paramname"><em>chunk_size</em> = <code>1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>constructs a STL-styled parallel transform-reduce task using the dynamic partition algorithm </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">B</td><td>beginning iterator type </td></tr>
+    <tr><td class="paramname">E</td><td>ending iterator type </td></tr>
+    <tr><td class="paramname">T</td><td>result type </td></tr>
+    <tr><td class="paramname">BOP</td><td>binary reducer type </td></tr>
+    <tr><td class="paramname">UOP</td><td>unary transformion type </td></tr>
+    <tr><td class="paramname">H</td><td>chunk size type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>iterator to the beginning (inclusive) </td></tr>
+    <tr><td class="paramname">last</td><td>iterator to the end (exclusive) </td></tr>
+    <tr><td class="paramname">init</td><td>initial value of the reduction and the storage for the reduced result </td></tr>
+    <tr><td class="paramname">bop</td><td>binary operator that will be applied in unspecified order to the results of <code>uop</code> </td></tr>
+    <tr><td class="paramname">uop</td><td>unary operator that will be applied to transform each element in the range to the result type </td></tr>
+    <tr><td class="paramname">chunk_size</td><td>chunk size</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
+<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
+
+</div>
+</div>
+<a id="aa102a40672a331643944cb17c2377118"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa102a40672a331643944cb17c2377118">&#9670;&nbsp;</a></span>transform_reduce_guided()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename B , typename E , typename T , typename BOP , typename UOP , typename H &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> tf::FlowBuilder::transform_reduce_guided </td>
+          <td>(</td>
+          <td class="paramtype">B &amp;&amp;&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">E &amp;&amp;&#160;</td>
+          <td class="paramname"><em>last</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>init</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">BOP &amp;&amp;&#160;</td>
+          <td class="paramname"><em>bop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">UOP &amp;&amp;&#160;</td>
+          <td class="paramname"><em>uop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">H &amp;&amp;&#160;</td>
+          <td class="paramname"><em>chunk_size</em> = <code>1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>constructs a STL-styled parallel transform-reduce task using the guided partition algorithm </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">B</td><td>beginning iterator type </td></tr>
+    <tr><td class="paramname">E</td><td>ending iterator type </td></tr>
+    <tr><td class="paramname">T</td><td>result type </td></tr>
+    <tr><td class="paramname">BOP</td><td>binary reducer type </td></tr>
+    <tr><td class="paramname">UOP</td><td>unary transformion type </td></tr>
+    <tr><td class="paramname">H</td><td>chunk size type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>iterator to the beginning (inclusive) </td></tr>
+    <tr><td class="paramname">last</td><td>iterator to the end (exclusive) </td></tr>
+    <tr><td class="paramname">init</td><td>initial value of the reduction and the storage for the reduced result </td></tr>
+    <tr><td class="paramname">bop</td><td>binary operator that will be applied in unspecified order to the results of <code>uop</code> </td></tr>
+    <tr><td class="paramname">uop</td><td>unary operator that will be applied to transform each element in the range to the result type </td></tr>
+    <tr><td class="paramname">chunk_size</td><td>chunk size</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
+<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
+
+</div>
+</div>
+<a id="a78a4b53cfe359bb417ee37696cab06ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78a4b53cfe359bb417ee37696cab06ca">&#9670;&nbsp;</a></span>transform_reduce_static()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename B , typename E , typename T , typename BOP , typename UOP , typename H &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> tf::FlowBuilder::transform_reduce_static </td>
+          <td>(</td>
+          <td class="paramtype">B &amp;&amp;&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">E &amp;&amp;&#160;</td>
+          <td class="paramname"><em>last</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>init</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">BOP &amp;&amp;&#160;</td>
+          <td class="paramname"><em>bop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">UOP &amp;&amp;&#160;</td>
+          <td class="paramname"><em>uop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">H &amp;&amp;&#160;</td>
+          <td class="paramname"><em>chunk_size</em> = <code>1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>constructs a STL-styled parallel transform-reduce task using the static partition algorithm </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">B</td><td>beginning iterator type </td></tr>
+    <tr><td class="paramname">E</td><td>ending iterator type </td></tr>
+    <tr><td class="paramname">T</td><td>result type </td></tr>
+    <tr><td class="paramname">BOP</td><td>binary reducer type </td></tr>
+    <tr><td class="paramname">UOP</td><td>unary transformion type </td></tr>
+    <tr><td class="paramname">H</td><td>chunk size type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>iterator to the beginning (inclusive) </td></tr>
+    <tr><td class="paramname">last</td><td>iterator to the end (exclusive) </td></tr>
+    <tr><td class="paramname">init</td><td>initial value of the reduction and the storage for the reduced result </td></tr>
+    <tr><td class="paramname">bop</td><td>binary operator that will be applied in unspecified order to the results of <code>uop</code> </td></tr>
+    <tr><td class="paramname">uop</td><td>unary operator that will be applied to transform each element in the range to the result type </td></tr>
+    <tr><td class="paramname">chunk_size</td><td>chunk size</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
+<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
 
 </div>
 </div>

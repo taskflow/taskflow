@@ -320,6 +320,56 @@ struct unwrap_ref_decay : unwrap_reference<std::decay_t<T>> {};
 template<class T>
 using unwrap_ref_decay_t = typename unwrap_ref_decay<T>::type;
 
+// ----------------------------------------------------------------------------
+// stateful iterators
+// ----------------------------------------------------------------------------
+
+// STL-styled iterator
+template <typename B, typename E>
+struct stateful_iterator {
+
+  using TB = std::decay_t<unwrap_ref_decay_t<B>>;
+  using TE = std::decay_t<unwrap_ref_decay_t<E>>;
+  
+  static_assert(std::is_same<TB, TE>::value, "decayed iterator types must match");
+
+  using type = TB;
+};
+
+template <typename B, typename E>
+using stateful_iterator_t = typename stateful_iterator<B, E>::type;
+
+// raw integral index
+template <typename B, typename E, typename S>
+struct stateful_index {
+
+  using TB = std::decay_t<unwrap_ref_decay_t<B>>;
+  using TE = std::decay_t<unwrap_ref_decay_t<E>>;
+  using TS = std::decay_t<unwrap_ref_decay_t<S>>;
+
+  static_assert(
+    std::is_integral<TB>::value, "decayed beg index must be an integral type"
+  );
+  
+  static_assert(
+    std::is_integral<TE>::value, "decayed end index must be an integral type"
+  );
+  
+  static_assert(
+    std::is_integral<TS>::value, "decayed step must be an integral type"
+  );
+
+  static_assert(
+    std::is_same<TB, TE>::value && std::is_same<TE, TS>::value,
+    "decayed index and step types must match"
+  );
+
+  using type = TB;
+};
+
+template <typename B, typename E, typename S>
+using stateful_index_t = typename stateful_index<B, E, S>::type;
+
 
 }  // end of namespace tf. ----------------------------------------------------
 

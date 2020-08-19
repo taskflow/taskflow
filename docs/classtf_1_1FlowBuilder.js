@@ -27,6 +27,10 @@ var classtf_1_1FlowBuilder =
     [ "reduce_static", "classtf_1_1FlowBuilder.html#a54e36c916ae7dd88bd079d3fd49119f9", null ],
     [ "succeed", "classtf_1_1FlowBuilder.html#a963e239f17485d0e05a2477f0732df09", null ],
     [ "succeed", "classtf_1_1FlowBuilder.html#a53927b2b4198b29568f20c43d21ad526", null ],
+    [ "transform_reduce", "classtf_1_1FlowBuilder.html#ad8d03524f15292610ebee63d53b89579", null ],
+    [ "transform_reduce_dynamic", "classtf_1_1FlowBuilder.html#a6fb87774919f4a570ac505cdcda48249", null ],
+    [ "transform_reduce_guided", "classtf_1_1FlowBuilder.html#aa102a40672a331643944cb17c2377118", null ],
+    [ "transform_reduce_static", "classtf_1_1FlowBuilder.html#a78a4b53cfe359bb417ee37696cab06ca", null ],
     [ "Executor", "classtf_1_1FlowBuilder.html#a763b2f90bc53f92d680a635fe28e858e", null ],
     [ "_graph", "classtf_1_1FlowBuilder.html#a9404a57d9d37a4d49d20b686e4e5f68f", null ]
 ];

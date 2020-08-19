@@ -95,7 +95,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"fibonacci.html"
+"dreamplace.html#UseCasesDreamPlaceProgrammingEffort"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

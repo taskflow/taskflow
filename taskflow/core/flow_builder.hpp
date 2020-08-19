@@ -196,7 +196,7 @@ class FlowBuilder {
 
     @return a Task handle
 
-    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task.
+    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
     
@@ -220,7 +220,7 @@ class FlowBuilder {
 
     @return a Task handle
     
-    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task.
+    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
     
@@ -244,7 +244,7 @@ class FlowBuilder {
 
     @return a Task handle
     
-    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task. When the given chunk size is zero, the runtime distributes the work evenly across workers.
+    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
     
@@ -311,7 +311,7 @@ class FlowBuilder {
 
     @return a Task handle
     
-    The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task.
+    The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.
 
     Arguments are templated to enable stateful passing using std::reference_wrapper.
 
@@ -339,7 +339,7 @@ class FlowBuilder {
 
     @return a Task handle
     
-    The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task.
+    The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.
 
     Arguments are templated to enable stateful passing using std::reference_wrapper.
 
@@ -367,7 +367,7 @@ class FlowBuilder {
 
     @return a Task handle
     
-    The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a task. When the given chunk size is zero, the runtime distributes the work evenly across workers.
+    The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.
 
     Arguments are templated to enable stateful passing using std::reference_wrapper.
 
@@ -397,7 +397,7 @@ class FlowBuilder {
 
     @return a Task handle
     
-    The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task. By default, we employ the guided partition algorithm.
+    The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.
     
     This method is equivalent to the parallel execution of the following loop:
     
@@ -427,7 +427,7 @@ class FlowBuilder {
     @param bop binary operator that will be applied 
     @param chunk_size chunk size
 
-    The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a task. 
+    The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
 
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
 
@@ -453,7 +453,7 @@ class FlowBuilder {
     @param bop binary operator that will be applied 
     @param chunk_size chunk size
 
-    The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a task. 
+    The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
 
@@ -479,7 +479,7 @@ class FlowBuilder {
     @param bop binary operator that will be applied 
     @param chunk_size chunk size
 
-    The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a task. 
+    The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
 
@@ -490,8 +490,12 @@ class FlowBuilder {
       B&& first, E&& last, T& init, O&& bop, H&& chunk_size = 0
     );
     
+    // ------------------------------------------------------------------------
+    // transfrom and reduction
+    // ------------------------------------------------------------------------
+    
     /**
-    @brief constructs a STL-styled parallel-transform-reduce task
+    @brief constructs a STL-styled parallel transform-reduce task
   
     @tparam B beginning iterator type
     @tparam E ending iterator type
@@ -507,7 +511,7 @@ class FlowBuilder {
 
     @return a Task handle
     
-    The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a task. By default, we employ the guided partition algorithm.
+    The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.
     
     This method is equivalent to the parallel execution of the following loop:
     
@@ -522,8 +526,89 @@ class FlowBuilder {
     template <typename B, typename E, typename T, typename BOP, typename UOP>
     Task transform_reduce(B&& first, E&& last, T& init, BOP&& bop, UOP&& uop);
     
+    /**
+    @brief constructs a STL-styled parallel transform-reduce task using the guided partition algorithm
+  
+    @tparam B beginning iterator type
+    @tparam E ending iterator type
+    @tparam T result type 
+    @tparam BOP binary reducer type
+    @tparam UOP unary transformion type
+    @tparam H chunk size type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param init initial value of the reduction and the storage for the reduced result
+    @param bop binary operator that will be applied in unspecified order to the results of @c uop
+    @param uop unary operator that will be applied to transform each element in the range to the result type
+    @param chunk_size chunk size
+
+    @return a Task handle
+    
+    The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
+    
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    */
     template <typename B, typename E, typename T, typename BOP, typename UOP, typename H>
-    Task transform_reduce_guided(B&& first, E&& last, T& init, BOP&& bop, UOP&& uop, H&& = 1);
+    Task transform_reduce_guided(
+      B&& first, E&& last, T& init, BOP&& bop, UOP&& uop, H&& chunk_size = 1
+    );
+
+    /**
+    @brief constructs a STL-styled parallel transform-reduce task using the static partition algorithm
+  
+    @tparam B beginning iterator type
+    @tparam E ending iterator type
+    @tparam T result type 
+    @tparam BOP binary reducer type
+    @tparam UOP unary transformion type
+    @tparam H chunk size type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param init initial value of the reduction and the storage for the reduced result
+    @param bop binary operator that will be applied in unspecified order to the results of @c uop
+    @param uop unary operator that will be applied to transform each element in the range to the result type
+    @param chunk_size chunk size
+
+    @return a Task handle
+    
+    The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
+    
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    */
+    template <typename B, typename E, typename T, typename BOP, typename UOP, typename H>
+    Task transform_reduce_static(
+      B&& first, E&& last, T& init, BOP&& bop, UOP&& uop, H&& chunk_size = 1
+    );
+
+    /**
+    @brief constructs a STL-styled parallel transform-reduce task using the dynamic partition algorithm
+  
+    @tparam B beginning iterator type
+    @tparam E ending iterator type
+    @tparam T result type 
+    @tparam BOP binary reducer type
+    @tparam UOP unary transformion type
+    @tparam H chunk size type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param init initial value of the reduction and the storage for the reduced result
+    @param bop binary operator that will be applied in unspecified order to the results of @c uop
+    @param uop unary operator that will be applied to transform each element in the range to the result type
+    @param chunk_size chunk size
+
+    @return a Task handle
+    
+    The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
+    
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    */
+    template <typename B, typename E, typename T, typename BOP, typename UOP, typename H>
+    Task transform_reduce_dynamic(
+      B&& first, E&& last, T& init, BOP&& bop, UOP&& uop, H&& chunk_size = 1
+    );
     
     
   protected:
