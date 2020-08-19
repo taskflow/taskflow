@@ -5,7 +5,7 @@ var Algorithms =
       [ "Iterator-based Parallel Iterations", "A0ForEach.html#A0IteratorBasedParallelFor", null ],
       [ "Partition Algorithms", "A0ForEach.html#A0PartitionAlgorithms", null ]
     ] ],
-    [ "A0: Parallel Reduction", "A1Reduce.html", [
+    [ "A1: Parallel Reduction", "A1Reduce.html", [
       [ "Parallel Reduction", "A1Reduce.html#A1ParallelReduction", null ],
       [ "Parallel Transformation-Reduction", "A1Reduce.html#A1ParallelTransformationReduction", null ]
     ] ]
