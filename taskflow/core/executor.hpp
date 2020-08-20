@@ -1046,6 +1046,8 @@ inline void Executor::_invoke_cudaflow_work_internal(Worker& w, Node* node) {
   TF_CHECK_CUDA(
     cudaGraphExecDestroy(exec), "failed to destroy an executable cudaGraph"
   );
+
+  h.graph.clear_native_graph();
 }
 #endif
 

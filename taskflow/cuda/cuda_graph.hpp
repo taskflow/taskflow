@@ -129,6 +129,8 @@ class cudaGraph {
 
     void clear();
 
+    void clear_native_graph();
+
     bool empty() const;
 
   private:
@@ -197,9 +199,12 @@ inline bool cudaGraph::empty() const {
 
 // Procedure: clear
 inline void cudaGraph::clear() {
-
   _nodes.clear();
+  clear_native_graph();
+}
 
+// Procedure: clear the cudaGraph
+inline void cudaGraph::clear_native_graph() {
   if(_native_handle) {
     TF_CHECK_CUDA(
       cudaGraphDestroy(_native_handle), "failed to destroy a cudaGraph on clear"
