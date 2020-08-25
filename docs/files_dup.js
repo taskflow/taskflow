@@ -9,6 +9,5 @@ var files_dup =
     [ "observer.hpp", "observer_8hpp_source.html", null ],
     [ "task.hpp", "task_8hpp_source.html", null ],
     [ "core/taskflow.hpp", "core_2taskflow_8hpp_source.html", null ],
-    [ "taskflow.hpp", "taskflow_8hpp_source.html", null ],
-    [ "version.hpp", "version_8hpp_source.html", null ]
+    [ "taskflow.hpp", "taskflow_8hpp_source.html", null ]
 ];

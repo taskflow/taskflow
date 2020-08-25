@@ -96,7 +96,7 @@ tf::Executor executor;  // create an executor
   // run the taskflow
   executor.run(f);
 
-} // at this point, taskflow might get destructed while it is running, resulting in defined behavior
+} // at this point, taskflow might get destructed while it is running, resulting in undefined behavior
 @endcode
 
 Similarly, you should avoid touching a taskflow while it is running.

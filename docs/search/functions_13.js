@@ -37,7 +37,7 @@ var searchData=
   ['transform_5freduce',['transform_reduce',['../classtf_1_1FlowBuilder.html#ad8d03524f15292610ebee63d53b89579',1,'tf::FlowBuilder']]],
   ['transform_5freduce_5fdynamic',['transform_reduce_dynamic',['../classtf_1_1FlowBuilder.html#a6fb87774919f4a570ac505cdcda48249',1,'tf::FlowBuilder']]],
   ['transform_5freduce_5fguided',['transform_reduce_guided',['../classtf_1_1FlowBuilder.html#aa102a40672a331643944cb17c2377118',1,'tf::FlowBuilder']]],
-  ['transform_5freduce_5fstatic',['transform_reduce_static',['../classtf_1_1FlowBuilder.html#a78a4b53cfe359bb417ee37696cab06ca',1,'tf::FlowBuilder']]],
+  ['transform_5freduce_5fstatic',['transform_reduce_static',['../classtf_1_1FlowBuilder.html#a562e253028680b61de95e305c0224d91',1,'tf::FlowBuilder']]],
   ['translate',['translate',['http://en.cppreference.com/w/cpp/regex/regex_traits/translate.html',1,'std::regex_traits']]],
   ['translate_5fnocase',['translate_nocase',['http://en.cppreference.com/w/cpp/regex/regex_traits/translate_nocase.html',1,'std::regex_traits']]],
   ['truename',['truename',['http://en.cppreference.com/w/cpp/locale/numpunct/truefalsename.html',1,'std::numpunct_byname::truename()'],['http://en.cppreference.com/w/cpp/locale/numpunct/truefalsename.html',1,'std::numpunct::truename()']]],

@@ -25,8 +25,8 @@ var NAVTREEINDEX1 =
 "graphtraversal.html#GraphTraversalProblemFormulation":[5,5,0],
 "graphtraversal.html#GraphTraversalStaticTraversal":[5,5,2],
 "hierarchy.html":[9,2],
-"index.html":[0],
 "index.html":[],
+"index.html":[0],
 "index.html#ASimpleFirstProgram":[0,6],
 "index.html#CompileAndRunYourFirstProgram":[0,7],
 "index.html#ComposableTasking":[0,3],
@@ -111,7 +111,6 @@ var NAVTREEINDEX1 =
 "task_8hpp_source.html":[10,0,7],
 "taskflow_8hpp_source.html":[10,0,9],
 "usecases.html":[6],
-"version_8hpp_source.html":[10,0,10],
 "wavefront.html":[5,0],
 "wavefront.html#WavefrontComputingFormulation":[5,0,0],
 "wavefront.html#WavefrontTaskGraph":[5,0,1]
