@@ -9,8 +9,6 @@
 
 Taskflow helps you quickly write parallel tasks programs in modern C++
 
-:exclamation: Starting from [v2.5.0](https://github.com/taskflow/taskflow/releases/tag/2.5.0), we have renamed cpp-taskflow to ***taskflow*** to broaden its support and future application scopes. The core codebase remains *unchanged*. You may only need to [change the remote URL](https://help.github.com/en/github/using-git/changing-a-remotes-url) to this new repository. Thank your for the support!
-
 # Why Taskflow?
 
 Taskflow is faster, more expressive, and easier for drop-in integration
