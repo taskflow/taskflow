@@ -21,7 +21,7 @@ template <typename J, typename = void> struct JobTrait;
 
 // a job self
 template <typename J>
-struct JobTrait<J, void_t<std::is_base_of<JobSignature, J>>> {
+struct JobTrait<J, std::enable_if_t<std::is_base_of<JobSignature, J>::value>> {
   using JobList = TypeList<J>;
 };
 

@@ -26,11 +26,13 @@ public:
 private:
   template <size_t... Is>
   void build_jobs_cb(FlowBuilder &flow_builder, std::index_sequence<Is...>) {
-    (std::get<Is>(jobsCb_).build(flow_builder), ...);
+    auto _ = {0, (std::get<Is>(jobsCb_).build(flow_builder), 0)...};
+    (void)_;
   }
 
   template <size_t... Is> void build_links(std::index_sequence<Is...>) {
-    (std::get<Is>(links_).build(jobsCb_), ...);
+    auto _ = {0, (std::get<Is>(links_).build(jobsCb_), 0)...};
+    (void)_;
   }
 
 private:
@@ -43,9 +45,9 @@ private:
 #define __merge(...) auto(__some_job(__VA_ARGS__))
 #define __link(Job) auto(Job)
 #define __taskbuild(...) tf::TaskDsl<__VA_ARGS__>
-#define __def_task(name, ...)                                                  \
-  struct name {                                                                \
-    auto operator()() __VA_ARGS__                                              \
+#define __def_task(name, ...)         \
+  struct name: tf::JobSignature {     \
+    auto operator()() __VA_ARGS__     \
   }
 
 } // namespace tf
