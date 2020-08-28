@@ -255,6 +255,16 @@ target_link_libraries(
   condition ${PROJECT_NAME} tf::default_settings
 )
 
+add_executable(simple_dsl ${TF_EXAMPLE_DIR}/simple_dsl.cpp)
+target_link_libraries(
+  simple_dsl ${PROJECT_NAME} tf::default_settings
+)
+
+add_executable(visualization_dsl ${TF_EXAMPLE_DIR}/visualization_dsl.cpp)
+target_link_libraries(
+  visualization_dsl ${PROJECT_NAME} tf::default_settings
+)
+
 add_executable(visualization ${TF_EXAMPLE_DIR}/visualization.cpp)
 target_link_libraries(
   visualization ${PROJECT_NAME} tf::default_settings
