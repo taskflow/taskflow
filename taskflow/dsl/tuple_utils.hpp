@@ -6,22 +6,24 @@
 namespace tf {
 namespace detail {
 // get tuple element index by f, if not exists then index >= tuple_size
-template<typename TUP, template<typename> class F, typename = void>
+template <typename TUP, template <typename> class F, typename = void>
 struct TupleElementByF {
-    constexpr static size_t Index = 0;
+  constexpr static size_t Index = 0;
 };
 
-template<template<typename> class F, typename H, typename ...Ts>
+template <template <typename> class F, typename H, typename... Ts>
 struct TupleElementByF<std::tuple<H, Ts...>, F, std::enable_if_t<F<H>::value>> {
-    constexpr static size_t Index = 0;
+  constexpr static size_t Index = 0;
 };
 
-template<template<typename> class F, typename H, typename ...Ts>
-struct TupleElementByF<std::tuple<H, Ts...>, F, std::enable_if_t<! F<H>::value>> {
-    constexpr static size_t Index = 1 + TupleElementByF<std::tuple<Ts...>, F>::Index;
+template <template <typename> class F, typename H, typename... Ts>
+struct TupleElementByF<std::tuple<H, Ts...>, F,
+                       std::enable_if_t<!F<H>::value>> {
+  constexpr static size_t Index =
+      1 + TupleElementByF<std::tuple<Ts...>, F>::Index;
 };
-}
+} // namespace detail
 
-template<typename TUP, template<typename> class F>
+template <typename TUP, template <typename> class F>
 constexpr size_t TupleElementByF_v = detail::TupleElementByF<TUP, F>::Index;
-}
+} // namespace tf

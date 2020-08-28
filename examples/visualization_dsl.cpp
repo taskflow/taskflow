@@ -7,7 +7,6 @@
 #include <taskflow/dsl/task_dsl.hpp> // for support dsl
 
 int main(){
-
   tf::Taskflow tf("Visualization Demo");
 
   // ------------------------------------------------------
@@ -25,7 +24,7 @@ int main(){
     __link(D) -> E
   ) {tf};
 
-  std::cout << "[dump without name assignment]\n";
+  // std::cout << "[dump without name assignment]\n";
   tf.dump(std::cout);
 
   // TODO: support set name
