@@ -19,9 +19,11 @@ int main(){
   __def_task(E, { return []() { std::cout << "TaskE\n"; }; });
 
   __taskbuild(
-    __link(A) -> __fork(B, C, E),
-    __merge(B, C) -> D,
-    __link(D) -> E
+    __chain(__tsk(A)
+        -> __fork(B, C)
+        -> __tsk(D)),
+    __chain(__merge(A, B)
+        -> __tsk(E))
   ) {tf};
 
   // std::cout << "[dump without name assignment]\n";

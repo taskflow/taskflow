@@ -15,9 +15,12 @@ template <typename J> struct JobCb {
   Task job_;
 };
 
-template <typename... J> struct SomeJob { using JobList = TypeList<J...>; };
-
 template <typename J, typename = void> struct JobTrait;
+
+template <typename... J> struct SomeJob {
+  using JobList =
+      Unique_t<Flatten_t<TypeList<typename JobTrait<J>::JobList...>>>;
+};
 
 // a job self
 template <typename J>

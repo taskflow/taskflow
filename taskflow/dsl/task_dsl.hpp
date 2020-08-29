@@ -5,11 +5,14 @@
 #include "task_analyzer.hpp"
 
 namespace tf {
-template <typename... Links> class TaskDsl {
-  using AllJobs = typename TaskAnalyzer<Links...>::AllJobs;
+template <typename... Chains> class TaskDsl {
+  using Links = Unique_t<Flatten_t<TypeList<typename Chain<Chains>::type...>>>;
+  using Analyzer = typename Links::template exportTo<TaskAnalyzer>;
+
+  using AllJobs = typename Analyzer::AllJobs;
   using JobsCb = typename Map_t<AllJobs, JobCb>::template exportTo<std::tuple>;
 
-  using OneToOneLinkSet = typename TaskAnalyzer<Links...>::OneToOneLinkSet;
+  using OneToOneLinkSet = typename Analyzer::OneToOneLinkSet;
   template <typename OneToOneLink> struct OneToOneLinkInstanceType {
     using type = typename OneToOneLink::template InstanceType<JobsCb>;
   };
@@ -40,14 +43,16 @@ private:
   OneToOneLinkInstances links_;
 };
 
-#define __some_job(...) tf::SomeJob<__VA_ARGS__>
-#define __fork(...) __some_job(__VA_ARGS__)
-#define __merge(...) auto(__some_job(__VA_ARGS__))
-#define __link(Job) auto(Job)
-#define __taskbuild(...) tf::TaskDsl<__VA_ARGS__>
-#define __def_task(name, ...)         \
-  struct name: tf::JobSignature {     \
-    auto operator()() __VA_ARGS__     \
+#define __def_task(name, ...)                                                  \
+  struct name : tf::JobSignature {                                             \
+    auto operator()() __VA_ARGS__                                              \
   }
+
+#define __some_tsk(...) auto (*)(tf::SomeJob<__VA_ARGS__>)
+#define __fork(...) __some_tsk(__VA_ARGS__)
+#define __merge(...) __some_tsk(__VA_ARGS__)
+#define __tsk(Job) auto (*)(Job)
+#define __chain(link) link->void
+#define __taskbuild(...) tf::TaskDsl<__VA_ARGS__>
 
 } // namespace tf

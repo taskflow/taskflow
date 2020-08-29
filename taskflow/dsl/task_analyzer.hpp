@@ -29,10 +29,10 @@ template <typename... Links> class TaskAnalyzer {
   };
 
 public:
-  using AllJobs = Unique_t<Concat_t<typename Connection<Links>::FromJobList...,
-                                    typename Connection<Links>::ToJobList...>>;
-  using OneToOneLinkSet = Unique_t<
-      Flatten_t<Map_t<TypeList<Connection<Links>...>, OneToOneLinkSetF>>>;
+  using AllJobs = Unique_t<
+      Concat_t<typename Links::FromJobList..., typename Links::ToJobList...>>;
+  using OneToOneLinkSet =
+      Unique_t<Flatten_t<Map_t<TypeList<Links...>, OneToOneLinkSetF>>>;
 };
 
 } // namespace tf
