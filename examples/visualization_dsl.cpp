@@ -2,21 +2,20 @@
 // This example demonstrates how to use 'dump' method to inspect
 // a taskflow graph.
 // use task dsl
-
 #include <taskflow/taskflow.hpp>
 #include <taskflow/dsl/task_dsl.hpp> // for support dsl
 
-int main(){
+int main() {
   tf::Taskflow tf("Visualization Demo");
 
   // ------------------------------------------------------
   // Static Tasking
   // ------------------------------------------------------
-  def_task(A, { return []() { std::cout << "TaskA\n"; }; });
-  def_task(B, { return []() { std::cout << "TaskB\n"; }; });
-  def_task(C, { return []() { std::cout << "TaskC\n"; }; });
-  def_task(D, { return []() { std::cout << "TaskD\n"; }; });
-  def_task(E, { return []() { std::cout << "TaskE\n"; }; });
+  def_task(A, { std::cout << "TaskA\n"; };);
+  def_task(B, { std::cout << "TaskB\n"; };);
+  def_task(C, { std::cout << "TaskC\n"; };);
+  def_task(D, { std::cout << "TaskD\n"; };);
+  def_task(E, { std::cout << "TaskE\n"; };);
 
   taskbuild(
     task(A)
@@ -24,7 +23,7 @@ int main(){
       -> task(D),
     merge(A, B)
       -> task(E)
-  ) {tf};
+  )(tf);
 
   // std::cout << "[dump without name assignment]\n";
   tf.dump(std::cout);
@@ -42,8 +41,5 @@ int main(){
   // Dynamic Tasking
   // ------------------------------------------------------
 
-
   return 0;
 }
-
-

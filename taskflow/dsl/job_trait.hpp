@@ -9,10 +9,12 @@ namespace tf {
 namespace dsl {
 struct JobSignature {};
 
-template <typename J> struct JobCb {
-  using type = JobCb<J>;
+template <typename J, typename CONTEXT> struct JobCb {
   using JobType = J;
-  void build(FlowBuilder &build) { job_ = build.emplace(JobType{}()); }
+  void build(FlowBuilder &build, const CONTEXT &context) {
+    job_ = build.emplace(JobType{context}());
+  }
+
   Task job_;
 };
 

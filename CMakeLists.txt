@@ -250,6 +250,11 @@ target_link_libraries(
   fibonacci ${PROJECT_NAME} tf::default_settings
 )
 
+add_executable(condition_dsl ${TF_EXAMPLE_DIR}/condition_dsl.cpp)
+target_link_libraries(
+  condition_dsl ${PROJECT_NAME} tf::default_settings
+)
+
 add_executable(condition ${TF_EXAMPLE_DIR}/condition.cpp)
 target_link_libraries(
   condition ${PROJECT_NAME} tf::default_settings

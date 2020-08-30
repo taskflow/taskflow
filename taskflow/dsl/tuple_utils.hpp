@@ -23,9 +23,21 @@ struct TupleElementByF<std::tuple<H, Ts...>, F,
   constexpr static size_t Index =
       1 + TupleElementByF<std::tuple<Ts...>, F>::Index;
 };
+
+template <typename T, typename TUP, size_t... Is>
+constexpr inline T AggregationByTupImpl(TUP &&tup, std::index_sequence<Is...>) {
+  return T{std::get<Is>(tup)...};
+}
 } // namespace detail
 
 template <typename TUP, template <typename> class F>
 constexpr size_t TupleElementByF_v = detail::TupleElementByF<TUP, F>::Index;
+
+template <typename T, typename TUP>
+constexpr inline T AggregationByTup(TUP &&tup) {
+  return detail::AggregationByTupImpl<T>(
+      std::forward<TUP>(tup),
+      std::make_index_sequence<std::tuple_size<std::decay_t<TUP>>::size>{});
+}
 } // namespace dsl
 } // namespace tf
