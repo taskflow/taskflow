@@ -6,6 +6,7 @@
 #include <type_traits>
 
 namespace tf {
+namespace dsl {
 struct JobSignature {};
 
 template <typename J> struct JobCb {
@@ -31,5 +32,5 @@ struct JobTrait<J, std::enable_if_t<std::is_base_of<JobSignature, J>::value>> {
 template <typename... J> struct JobTrait<SomeJob<J...>> {
   using JobList = typename SomeJob<J...>::JobList;
 };
-
+} // namespace dsl
 } // namespace tf

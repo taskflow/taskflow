@@ -4,6 +4,7 @@
 #include <tuple>
 
 namespace tf {
+namespace dsl {
 namespace detail {
 // get tuple element index by f, if not exists then index >= tuple_size
 template <typename TUP, template <typename> class F, typename = void>
@@ -26,4 +27,5 @@ struct TupleElementByF<std::tuple<H, Ts...>, F,
 
 template <typename TUP, template <typename> class F>
 constexpr size_t TupleElementByF_v = detail::TupleElementByF<TUP, F>::Index;
+} // namespace dsl
 } // namespace tf

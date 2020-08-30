@@ -6,6 +6,7 @@
 #include "type_list.hpp"
 
 namespace tf {
+namespace dsl {
 template <typename F, typename T> class Connection {
   using FROMs = typename JobTrait<F>::JobList;
   using TOs = typename JobTrait<T>::JobList;
@@ -55,4 +56,5 @@ template <typename FROM, typename TO> struct OneToOneLink {
     }
   };
 };
+} // namespace dsl
 }; // namespace tf

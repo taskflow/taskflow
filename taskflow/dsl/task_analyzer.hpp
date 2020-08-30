@@ -5,6 +5,7 @@
 #include <type_traits>
 
 namespace tf {
+namespace dsl {
 template <typename... Links> class TaskAnalyzer {
   template <typename FROMs, typename TOs, typename = void>
   struct BuildOneToOneLink;
@@ -35,4 +36,5 @@ public:
       Unique_t<Flatten_t<Map_t<TypeList<Links...>, OneToOneLinkSetF>>>;
 };
 
+} // namespace dsl
 } // namespace tf

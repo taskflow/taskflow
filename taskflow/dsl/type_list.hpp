@@ -3,6 +3,7 @@
 #include <cstddef>
 
 namespace tf {
+namespace dsl {
 template <typename...> using void_t = void;
 
 template <typename... Ts> struct TypeList {
@@ -131,4 +132,5 @@ template <typename IN> class Unique<IN, void_t<typename IN::head>> {
 public:
   using type = typename eraseHead::template prepend<typename IN::head>;
 };
+} // namespace dsl
 } // namespace tf

@@ -5,6 +5,7 @@
 #include "task_analyzer.hpp"
 
 namespace tf {
+namespace dsl {
 template <typename... Chains> class TaskDsl {
   using Links = Unique_t<Flatten_t<TypeList<typename Chain<Chains>::type...>>>;
   using Analyzer = typename Links::template exportTo<TaskAnalyzer>;
@@ -42,17 +43,24 @@ private:
   JobsCb jobsCb_;
   OneToOneLinkInstances links_;
 };
+}
+} // namespace tf
 
-#define __def_task(name, ...)                                                  \
-  struct name : tf::JobSignature {                                             \
+// def_task(TASK_NAME, { return a action lambda })
+#define def_task(name, ...)                                                    \
+  struct name : tf::dsl::JobSignature {                                        \
     auto operator()() __VA_ARGS__                                              \
   }
 
-#define __some_tsk(...) auto (*)(tf::SomeJob<__VA_ARGS__>)
-#define __fork(...) __some_tsk(__VA_ARGS__)
-#define __merge(...) __some_tsk(__VA_ARGS__)
-#define __tsk(Job) auto (*)(Job)
-#define __chain(link) link->void
-#define __taskbuild(...) tf::TaskDsl<__VA_ARGS__>
-
-} // namespace tf
+// some_task(A, B, C) means SomeJob
+#define some_task(...) auto (*)(tf::dsl::SomeJob<__VA_ARGS__>)
+// same as some_task
+#define fork(...) some_task(__VA_ARGS__)
+// same as some_task
+#define merge(...) some_task(__VA_ARGS__)
+// task(A) means a task A
+#define task(Job) auto (*)(Job)
+// chain(task(A) -> task(B) -> ...) for build a task chain
+#define chain(link) link->void
+// taskbuild(...) build a task dsl graph
+#define taskbuild(...) tf::dsl::TaskDsl<__VA_ARGS__>

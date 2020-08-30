@@ -1,7 +1,7 @@
 // 2020/08/28 - Created by netcan: https://github.com/netcan
 // This example demonstrates how to use 'dump' method to inspect
 // a taskflow graph.
-// use taskflow dsl
+// use task dsl
 
 #include <taskflow/taskflow.hpp>
 #include <taskflow/dsl/task_dsl.hpp> // for support dsl
@@ -12,18 +12,18 @@ int main(){
   // ------------------------------------------------------
   // Static Tasking
   // ------------------------------------------------------
-  __def_task(A, { return []() { std::cout << "TaskA\n"; }; });
-  __def_task(B, { return []() { std::cout << "TaskB\n"; }; });
-  __def_task(C, { return []() { std::cout << "TaskC\n"; }; });
-  __def_task(D, { return []() { std::cout << "TaskD\n"; }; });
-  __def_task(E, { return []() { std::cout << "TaskE\n"; }; });
+  def_task(A, { return []() { std::cout << "TaskA\n"; }; });
+  def_task(B, { return []() { std::cout << "TaskB\n"; }; });
+  def_task(C, { return []() { std::cout << "TaskC\n"; }; });
+  def_task(D, { return []() { std::cout << "TaskD\n"; }; });
+  def_task(E, { return []() { std::cout << "TaskE\n"; }; });
 
-  __taskbuild(
-    __chain(__tsk(A)
-        -> __fork(B, C)
-        -> __tsk(D)),
-    __chain(__merge(A, B)
-        -> __tsk(E))
+  taskbuild(
+    chain(task(A)
+        -> fork(B, C)
+        -> task(D)),
+    chain(merge(A, B)
+        -> task(E))
   ) {tf};
 
   // std::cout << "[dump without name assignment]\n";
