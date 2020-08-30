@@ -36,13 +36,6 @@ public:
 
 template <typename FROM, typename TO> struct OneToOneLink {
   template <typename JobsCB> struct InstanceType {
-    template <typename J> struct IsJob {
-      template <typename JobCb> struct apply {
-        constexpr static bool value =
-            std::is_same<typename JobCb::JobType, J>::value;
-      };
-    };
-
     constexpr void build(JobsCB &jobsCb) {
       constexpr size_t JobsCBSize = std::tuple_size<JobsCB>::value;
       constexpr size_t FromJobIndex =

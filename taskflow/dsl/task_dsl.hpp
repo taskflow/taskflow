@@ -17,12 +17,12 @@ template <typename CONTEXT = EmptyContext, typename... Chains> class TaskDsl {
   template <typename J> struct JobCbWithContext {
     using type = JobCb<J, CONTEXT>;
   };
-  using JobsCb =
+  using JobsCB =
       typename Map_t<AllJobs, JobCbWithContext>::template exportTo<std::tuple>;
 
   using OneToOneLinkSet = typename Analyzer::OneToOneLinkSet;
   template <typename OneToOneLink> struct OneToOneLinkInstanceType {
-    using type = typename OneToOneLink::template InstanceType<JobsCb>;
+    using type = typename OneToOneLink::template InstanceType<JobsCB>;
   };
   using OneToOneLinkInstances =
       typename Map_t<OneToOneLinkSet,
@@ -33,6 +33,15 @@ public:
     build_jobs_cb(flow_builder, context,
                   std::make_index_sequence<AllJobs::size>{});
     build_links(std::make_index_sequence<OneToOneLinkSet::size>{});
+  }
+
+  template<typename Job>
+  Task& get_task() {
+      constexpr size_t JobsCBSize = std::tuple_size<JobsCB>::value;
+      constexpr size_t JobIndex =
+          TupleElementByF_v<JobsCB, IsJob<Job>::template apply>;
+      static_assert(JobIndex < JobsCBSize, "fatal: not find JobCb in JobsCB");
+      return std::get<JobIndex>(jobsCb_).job_;
   }
 
 private:
@@ -49,7 +58,7 @@ private:
   }
 
 private:
-  JobsCb jobsCb_;
+  JobsCB jobsCb_;
   OneToOneLinkInstances links_;
 };
 

@@ -18,6 +18,13 @@ template <typename J, typename CONTEXT> struct JobCb {
   Task job_;
 };
 
+template <typename J> struct IsJob {
+    template <typename JobCb> struct apply {
+    constexpr static bool value =
+        std::is_same<typename JobCb::JobType, J>::value;
+    };
+};
+
 template <typename J, typename = void> struct JobTrait;
 
 template <typename... J> struct SomeJob {

@@ -17,7 +17,7 @@ int main() {
   def_task(D, { std::cout << "TaskD\n"; };);
   def_task(E, { std::cout << "TaskE\n"; };);
 
-  taskbuild(
+  auto tasks = taskbuild(
     task(A)
       -> fork(B, C)
       -> task(D),
@@ -25,17 +25,16 @@ int main() {
       -> task(E)
   )(tf);
 
-  // std::cout << "[dump without name assignment]\n";
+  std::cout << "[dump without name assignment]\n";
   tf.dump(std::cout);
 
-  // TODO: support set name
-  // std::cout << "[dump with name assignment]\n";
-  // A.name("A");
-  // B.name("B");
-  // C.name("C");
-  // D.name("D");
-  // E.name("E");
-  // tf.dump(std::cout);
+  std::cout << "[dump with name assignment]\n";
+  tasks.get_task<A>().name("A");
+  tasks.get_task<B>().name("B");
+  tasks.get_task<C>().name("C");
+  tasks.get_task<D>().name("D");
+  tasks.get_task<E>().name("E");
+  tf.dump(std::cout);
 
   // ------------------------------------------------------
   // Dynamic Tasking
