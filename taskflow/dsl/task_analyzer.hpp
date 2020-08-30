@@ -22,16 +22,16 @@ template <typename... Links> class TaskAnalyzer {
   };
 
   template <typename Link> class OneToOneLinkSetF {
-    using FromJobList = typename Link::FromJobList;
-    using ToJobList = typename Link::ToJobList;
+    using FromTaskList = typename Link::FromTaskList;
+    using ToTaskList = typename Link::ToTaskList;
 
   public:
-    using type = typename BuildOneToOneLink<FromJobList, ToJobList>::type;
+    using type = typename BuildOneToOneLink<FromTaskList, ToTaskList>::type;
   };
 
 public:
-  using AllJobs = Unique_t<
-      Concat_t<typename Links::FromJobList..., typename Links::ToJobList...>>;
+  using AllTasks = Unique_t<
+      Concat_t<typename Links::FromTaskList..., typename Links::ToTaskList...>>;
   using OneToOneLinkSet =
       Unique_t<Flatten_t<Map_t<TypeList<Links...>, OneToOneLinkSetF>>>;
 };

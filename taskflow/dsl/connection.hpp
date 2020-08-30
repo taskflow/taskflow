@@ -1,19 +1,19 @@
 // 2020/08/28 - Created by netcan: https://github.com/netcan
 #pragma once
 #include "../core/flow_builder.hpp"
-#include "job_trait.hpp"
+#include "task_trait.hpp"
 #include "tuple_utils.hpp"
 #include "type_list.hpp"
 
 namespace tf {
 namespace dsl {
 template <typename F, typename T> class Connection {
-  using FROMs = typename JobTrait<F>::JobList;
-  using TOs = typename JobTrait<T>::JobList;
+  using FROMs = typename TaskTrait<F>::TaskList;
+  using TOs = typename TaskTrait<T>::TaskList;
 
 public:
-  using FromJobList = Unique_t<Flatten_t<FROMs>>;
-  using ToJobList = Unique_t<Flatten_t<TOs>>;
+  using FromTaskList = Unique_t<Flatten_t<FROMs>>;
+  using ToTaskList = Unique_t<Flatten_t<TOs>>;
 };
 
 template <typename T, typename OUT = TypeList<>> struct Chain;
@@ -35,17 +35,17 @@ public:
 };
 
 template <typename FROM, typename TO> struct OneToOneLink {
-  template <typename JobsCB> struct InstanceType {
-    constexpr void build(JobsCB &jobsCb) {
-      constexpr size_t JobsCBSize = std::tuple_size<JobsCB>::value;
-      constexpr size_t FromJobIndex =
-          TupleElementByF_v<JobsCB, IsJob<FROM>::template apply>;
-      constexpr size_t ToJobIndex =
-          TupleElementByF_v<JobsCB, IsJob<TO>::template apply>;
-      static_assert(FromJobIndex < JobsCBSize && ToJobIndex < JobsCBSize,
-                    "fatal: not find JobCb in JobsCB");
-      std::get<FromJobIndex>(jobsCb).job_.precede(
-          std::get<ToJobIndex>(jobsCb).job_);
+  template <typename TasksCB> struct InstanceType {
+    constexpr void build(TasksCB &tasksCb) {
+      constexpr size_t TasksCBSize = std::tuple_size<TasksCB>::value;
+      constexpr size_t FromTaskIndex =
+          TupleElementByF_v<TasksCB, IsTask<FROM>::template apply>;
+      constexpr size_t ToTaskIndex =
+          TupleElementByF_v<TasksCB, IsTask<TO>::template apply>;
+      static_assert(FromTaskIndex < TasksCBSize && ToTaskIndex < TasksCBSize,
+                    "fatal: not find TaskCb in TasksCB");
+      std::get<FromTaskIndex>(tasksCb).task_.precede(
+          std::get<ToTaskIndex>(tasksCb).task_);
     }
   };
 };

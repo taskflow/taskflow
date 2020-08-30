@@ -54,13 +54,18 @@ int main() {
     std::cout << "done with counter equal to " << rcounter << '\n';
   });
 
-  taskbuild(
+  auto tasks = taskbuild(
     task(A)
       -> task(B)
       -> task(C),
     task(C)
       -> fork(B, D)
   )(taskflow, context);
+
+  tasks.get_task<A>().name("A");
+  tasks.get_task<B>().name("B");
+  tasks.get_task<C>().name("C");
+  tasks.get_task<D>().name("D");
 
   // visualizes the taskflow
   taskflow.dump(std::cout);
