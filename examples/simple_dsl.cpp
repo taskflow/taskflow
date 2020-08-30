@@ -14,15 +14,15 @@ int main(){
   def_task(C, { return []() { std::cout << "TaskC\n"; }; });
   def_task(D, { return []() { std::cout << "TaskD\n"; }; });
 
-  taskbuild(            //          +---+
-    chain(task(A)       //    +---->| B |-----+
-        -> fork(B, C)   //    |     +---+     |
-        -> task(D))     //  +---+           +-v-+
-  ) {taskflow};         //  | A |           | D |
-                        //  +---+           +-^-+
-                        //    |     +---+     |
-                        //    +---->| C |-----+
-                        //          +---+
+  taskbuild(        //          +---+
+    task(A)         //    +---->| B |-----+
+      -> fork(B, C) //    |     +---+     |
+      -> task(D)    //  +---+           +-v-+
+  ) {taskflow};     //  | A |           | D |
+                    //  +---+           +-^-+
+                    //    |     +---+     |
+                    //    +---->| C |-----+
+                    //          +---+
 
   executor.run(taskflow).wait();
   return 0;

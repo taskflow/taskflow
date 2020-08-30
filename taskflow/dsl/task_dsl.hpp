@@ -2,11 +2,12 @@
 #pragma once
 #include "../core/flow_builder.hpp"
 #include "job_trait.hpp"
+#include "meta_macro.hpp"
 #include "task_analyzer.hpp"
 
 namespace tf {
 namespace dsl {
-template <typename... Chains> class TaskDsl {
+template <typename = void, typename... Chains> class TaskDsl {
   using Links = Unique_t<Flatten_t<TypeList<typename Chain<Chains>::type...>>>;
   using Analyzer = typename Links::template exportTo<TaskAnalyzer>;
 
@@ -43,9 +44,13 @@ private:
   JobsCb jobsCb_;
   OneToOneLinkInstances links_;
 };
-}
+} // namespace dsl
 } // namespace tf
 
+///////////////////////////////////////////////////////////////////////////////
+#define chain(n, link) , link->void
+
+///////////////////////////////////////////////////////////////////////////////
 // def_task(TASK_NAME, { return a action lambda })
 #define def_task(name, ...)                                                    \
   struct name : tf::dsl::JobSignature {                                        \
@@ -60,7 +65,7 @@ private:
 #define merge(...) some_task(__VA_ARGS__)
 // task(A) means a task A
 #define task(Job) auto (*)(Job)
-// chain(task(A) -> task(B) -> ...) for build a task chain
-#define chain(link) link->void
 // taskbuild(...) build a task dsl graph
-#define taskbuild(...) tf::dsl::TaskDsl<__VA_ARGS__>
+#define taskbuild(...)                                                         \
+  tf::dsl::TaskDsl<void TF_PASTE(TF_REPEAT_, TF_GET_ARG_COUNT(__VA_ARGS__))(   \
+      chain, 0, __VA_ARGS__)>
