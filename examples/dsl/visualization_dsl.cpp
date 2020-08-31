@@ -3,7 +3,7 @@
 // a taskflow graph.
 // use task dsl
 #include <taskflow/taskflow.hpp>
-#include <taskflow/dsl/task_dsl.hpp> // for support dsl
+#include <taskflow/dsl.hpp> // for support dsl
 
 int main() {
   tf::Taskflow tf("Visualization Demo");

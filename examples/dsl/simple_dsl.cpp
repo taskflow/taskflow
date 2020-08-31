@@ -3,7 +3,7 @@
 // using Task DSL to describe
 // TaskA -> fork(TaskB, TaskC) -> TaskD
 #include <taskflow/taskflow.hpp>     // the only include you need
-#include <taskflow/dsl/task_dsl.hpp> // for support dsl
+#include <taskflow/dsl.hpp> // for support dsl
 
 int main() {
   tf::Executor executor;

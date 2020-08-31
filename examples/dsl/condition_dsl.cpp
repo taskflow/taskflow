@@ -19,7 +19,7 @@
 //   reaches a breaking number
 // - D is a task that wraps up the result
 #include <taskflow/taskflow.hpp>
-#include <taskflow/dsl/task_dsl.hpp>
+#include <taskflow/dsl.hpp>
 
 int main() {
   tf::Executor executor;
