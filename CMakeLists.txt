@@ -215,7 +215,7 @@ find_package(Threads REQUIRED)
 # -----------------------------------------------------------------------------
 
 add_library(${PROJECT_NAME} INTERFACE)
-target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_14)
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
 target_link_libraries(${PROJECT_NAME} INTERFACE Threads::Threads)
 target_include_directories(${PROJECT_NAME} INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
@@ -250,9 +250,24 @@ target_link_libraries(
   fibonacci ${PROJECT_NAME} tf::default_settings
 )
 
+add_executable(condition_dsl ${TF_EXAMPLE_DIR}/condition_dsl.cpp)
+target_link_libraries(
+  condition_dsl ${PROJECT_NAME} tf::default_settings
+)
+
 add_executable(condition ${TF_EXAMPLE_DIR}/condition.cpp)
 target_link_libraries(
   condition ${PROJECT_NAME} tf::default_settings
+)
+
+add_executable(simple_dsl ${TF_EXAMPLE_DIR}/simple_dsl.cpp)
+target_link_libraries(
+  simple_dsl ${PROJECT_NAME} tf::default_settings
+)
+
+add_executable(visualization_dsl ${TF_EXAMPLE_DIR}/visualization_dsl.cpp)
+target_link_libraries(
+  visualization_dsl ${PROJECT_NAME} tf::default_settings
 )
 
 add_executable(visualization ${TF_EXAMPLE_DIR}/visualization.cpp)
