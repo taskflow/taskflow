@@ -11,11 +11,11 @@ int main() {
   // ------------------------------------------------------
   // Static Tasking
   // ------------------------------------------------------
-  def_task(A, { std::cout << "TaskA\n"; };);
-  def_task(B, { std::cout << "TaskB\n"; };);
-  def_task(C, { std::cout << "TaskC\n"; };);
-  def_task(D, { std::cout << "TaskD\n"; };);
-  def_task(E, { std::cout << "TaskE\n"; };);
+  def_task((A), { std::cout << "TaskA\n"; };);
+  def_task((B), { std::cout << "TaskB\n"; };);
+  def_task((C), { std::cout << "TaskC\n"; };);
+  def_task((D), { std::cout << "TaskD\n"; };);
+  def_task((E), { std::cout << "TaskE\n"; };);
 
   auto tasks = taskbuild(
     task(A)

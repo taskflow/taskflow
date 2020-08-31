@@ -33,15 +33,15 @@ int main() {
     int &rcounter; // use counter(borrow)
   } context{counter};
 
-  def_taskc(A, Context, {
+  def_task((A, Context), {
     std::cout << "initializes the counter to zero\n";
     rcounter = 0;
   });
-  def_taskc(B, Context, {
+  def_task((B, Context), {
     std::cout << "loops to increment the counter\n";
     rcounter++;
   });
-  def_taskc(C, Context, {
+  def_task((C, Context), {
     std::cout << "counter is " << rcounter << " -> ";
     if (rcounter != 5) {
       std::cout << "loops again (goes to B)\n";
@@ -50,7 +50,7 @@ int main() {
     std::cout << "breaks the loop (goes to D)\n";
     return 1;
   });
-  def_taskc(D, Context, {
+  def_task((D, Context), {
     std::cout << "done with counter equal to " << rcounter << '\n';
   });
 
