@@ -19,10 +19,10 @@ template <typename TASK, typename CONTEXT> struct TaskCb {
 };
 
 template <typename TASK> struct IsTask {
-    template <typename TaskCb> struct apply {
+  template <typename TaskCb> struct apply {
     constexpr static bool value =
         std::is_same<typename TaskCb::TaskType, TASK>::value;
-    };
+  };
 };
 
 template <typename TASK, typename = void> struct TaskTrait;
@@ -34,7 +34,8 @@ template <typename... TASK> struct SomeTask {
 
 // a task self
 template <typename TASK>
-struct TaskTrait<TASK, std::enable_if_t<std::is_base_of<TaskSignature, TASK>::value>> {
+struct TaskTrait<
+    TASK, std::enable_if_t<std::is_base_of<TaskSignature, TASK>::value>> {
   using TaskList = TypeList<TASK>;
 };
 

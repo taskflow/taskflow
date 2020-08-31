@@ -1,9 +1,9 @@
 // 2020/08/28 - Created by netcan: https://github.com/netcan
 #pragma once
 #include "../core/flow_builder.hpp"
-#include "task_trait.hpp"
 #include "meta_macro.hpp"
 #include "task_analyzer.hpp"
+#include "task_trait.hpp"
 
 namespace tf {
 namespace dsl {
@@ -18,7 +18,8 @@ template <typename CONTEXT = EmptyContext, typename... Chains> class TaskDsl {
     using type = TaskCb<TASK, CONTEXT>;
   };
   using TasksCB =
-      typename Map_t<AllTasks, TaskCbWithContext>::template exportTo<std::tuple>;
+      typename Map_t<AllTasks,
+                     TaskCbWithContext>::template exportTo<std::tuple>;
 
   using OneToOneLinkSet = typename Analyzer::OneToOneLinkSet;
   template <typename OneToOneLink> struct OneToOneLinkInstanceType {
@@ -31,23 +32,22 @@ template <typename CONTEXT = EmptyContext, typename... Chains> class TaskDsl {
 public:
   constexpr TaskDsl(FlowBuilder &flow_builder, const CONTEXT &context = {}) {
     build_tasks_cb(flow_builder, context,
-                  std::make_index_sequence<AllTasks::size>{});
+                   std::make_index_sequence<AllTasks::size>{});
     build_links(std::make_index_sequence<OneToOneLinkSet::size>{});
   }
 
-  template<typename TASK>
-  Task& get_task() {
-      constexpr size_t TasksCBSize = std::tuple_size<TasksCB>::value;
-      constexpr size_t TaskIndex =
-          TupleElementByF_v<TasksCB, IsTask<TASK>::template apply>;
-      static_assert(TaskIndex < TasksCBSize, "fatal: not find TaskCb in TasksCB");
-      return std::get<TaskIndex>(tasksCb_).task_;
+  template <typename TASK> Task &get_task() {
+    constexpr size_t TasksCBSize = std::tuple_size<TasksCB>::value;
+    constexpr size_t TaskIndex =
+        TupleElementByF_v<TasksCB, IsTask<TASK>::template apply>;
+    static_assert(TaskIndex < TasksCBSize, "fatal: not find TaskCb in TasksCB");
+    return std::get<TaskIndex>(tasksCb_).task_;
   }
 
 private:
   template <size_t... Is>
   void build_tasks_cb(FlowBuilder &flow_builder, const CONTEXT &context,
-                     std::index_sequence<Is...>) {
+                      std::index_sequence<Is...>) {
     auto _ = {0, (std::get<Is>(tasksCb_).build(flow_builder, context), 0)...};
     (void)_;
   }
@@ -72,17 +72,17 @@ constexpr TaskDsl<CONTEXT, Chains...> taskDsl(FlowBuilder &flow_builder,
 } // namespace tf
 
 ///////////////////////////////////////////////////////////////////////////////
-#define chain(n, link) , link->void
+#define chain(link) , link->void
 
 ///////////////////////////////////////////////////////////////////////////////
 // def_task(TASK_NAME, { return a action lambda })
 #define def_task(name, ...)                                                    \
-  struct name : tf::dsl::TaskSignature, tf::dsl::EmptyContext {                 \
+  struct name : tf::dsl::TaskSignature, tf::dsl::EmptyContext {                \
     name(const EmptyContext &context) : EmptyContext(context) {}               \
     auto operator()() { return [] __VA_ARGS__; }                               \
   };
 #define def_taskc(name, Context, ...)                                          \
-  struct name : tf::dsl::TaskSignature, Context {                               \
+  struct name : tf::dsl::TaskSignature, Context {                              \
     name(const Context &context) : Context(context) {}                         \
     auto operator()() {                                                        \
       /* copy *this(copy CONTEXT to lambda) */                                 \
@@ -99,6 +99,4 @@ constexpr TaskDsl<CONTEXT, Chains...> taskDsl(FlowBuilder &flow_builder,
 // task(A) means a task A
 #define task(Task) auto (*)(Task)
 // taskbuild(...) build a task dsl graph
-#define taskbuild(...)                                                         \
-  tf::dsl::taskDsl<void TF_PASTE(TF_REPEAT_, TF_GET_ARG_COUNT(__VA_ARGS__))(   \
-      chain, 0, __VA_ARGS__)>
+#define taskbuild(...) tf::dsl::taskDsl<void TF_MAP(chain, __VA_ARGS__)>
