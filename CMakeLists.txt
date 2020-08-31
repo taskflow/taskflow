@@ -222,21 +222,21 @@ target_include_directories(${PROJECT_NAME} INTERFACE
   $<INSTALL_INTERFACE:include/> 
 )
 
-add_library(TaskflowDSL INTERFACE)
-target_compile_features(TaskflowDSL INTERFACE cxx_std_17)
-target_link_libraries(TaskflowDSL INTERFACE Threads::Threads)
-target_include_directories(TaskflowDSL INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  $<INSTALL_INTERFACE:include/> 
-)
-
-add_library(TensorFrame INTERFACE)
-target_compile_features(TensorFrame INTERFACE cxx_std_17)
-target_link_libraries(TensorFrame INTERFACE Threads::Threads)
-target_include_directories(TensorFrame INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  $<INSTALL_INTERFACE:include/> 
-)
+#add_library(TaskflowDSL INTERFACE)
+#target_compile_features(TaskflowDSL INTERFACE cxx_std_17)
+#target_link_libraries(TaskflowDSL INTERFACE Threads::Threads)
+#target_include_directories(TaskflowDSL INTERFACE
+#  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+#  $<INSTALL_INTERFACE:include/> 
+#)
+#
+#add_library(TensorFrame INTERFACE)
+#target_compile_features(TensorFrame INTERFACE cxx_std_17)
+#target_link_libraries(TensorFrame INTERFACE Threads::Threads)
+#target_include_directories(TensorFrame INTERFACE
+#  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+#  $<INSTALL_INTERFACE:include/> 
+#)
 
 # -----------------------------------------------------------------------------
 # Example program 
@@ -331,20 +331,20 @@ endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
 
 #### TaskflowDSL project
 #### TODO: enable only when C++17 is available
-#
-#add_executable(condition_dsl ${TF_EXAMPLE_DIR}/condition_dsl.cpp)
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR}/dsl)
+#add_executable(condition_dsl ${TF_EXAMPLE_DIR}/dsl/condition_dsl.cpp)
 #target_link_libraries(
-#  condition_dsl ${PROJECT_NAME} tf::default_settings
+#  condition_dsl TaskflowDSL tf::default_settings
 #)
 #
-#add_executable(simple_dsl ${TF_EXAMPLE_DIR}/simple_dsl.cpp)
+#add_executable(simple_dsl ${TF_EXAMPLE_DIR}/dsl/simple_dsl.cpp)
 #target_link_libraries(
-#  simple_dsl ${PROJECT_NAME} tf::default_settings
+#  simple_dsl TaskflowDSL tf::default_settings
 #)
 #
-#add_executable(visualization_dsl ${TF_EXAMPLE_DIR}/visualization_dsl.cpp)
+#add_executable(visualization_dsl ${TF_EXAMPLE_DIR}/dsl/visualization_dsl.cpp)
 #target_link_libraries(
-#  visualization_dsl ${PROJECT_NAME} tf::default_settings
+#  visualization_dsl TaskflowDSL tf::default_settings
 #)
 
 

@@ -11,17 +11,17 @@ int main() {
   // ------------------------------------------------------
   // Static Tasking
   // ------------------------------------------------------
-  def_task((A), { std::cout << "TaskA\n"; };);
-  def_task((B), { std::cout << "TaskB\n"; };);
-  def_task((C), { std::cout << "TaskC\n"; };);
-  def_task((D), { std::cout << "TaskD\n"; };);
-  def_task((E), { std::cout << "TaskE\n"; };);
+  make_task((A), { std::cout << "TaskA\n"; };);
+  make_task((B), { std::cout << "TaskB\n"; };);
+  make_task((C), { std::cout << "TaskC\n"; };);
+  make_task((D), { std::cout << "TaskD\n"; };);
+  make_task((E), { std::cout << "TaskE\n"; };);
 
-  auto tasks = taskbuild(
+  auto tasks = build_taskflow(
     task(A)
-      -> fork(B, C)
+      -> fork_tasks(B, C)
       -> task(D),
-    merge(A, B)
+    merge_tasks(A, B)
       -> task(E)
   )(tf);
 

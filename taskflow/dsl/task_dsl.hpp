@@ -79,8 +79,8 @@ constexpr TaskDsl<CONTEXT, Chains...> taskDsl(FlowBuilder &flow_builder,
 #define TF_CAPTURE_THIS_2 *this
 
 ///////////////////////////////////////////////////////////////////////////////
-// def_task(TASK_NAME, { return a action lambda })
-#define def_task(name, ...)                                                    \
+// make_task(TASK_NAME, { return a action lambda })
+#define make_task(name, ...)                                                    \
   struct TF_GET_FIRST name : tf::dsl::TaskSignature,                           \
                              TF_PASTE(TF_CONTEXT_, TF_GET_ARG_COUNT name)      \
                                  name {                                        \
@@ -91,13 +91,14 @@ constexpr TaskDsl<CONTEXT, Chains...> taskDsl(FlowBuilder &flow_builder,
     }                                                                          \
   }
 
-// some_task(A, B, C) means SomeTask
-#define some_task(...) auto (*)(tf::dsl::SomeTask<__VA_ARGS__>)
-// same as some_task
-#define fork(...) some_task(__VA_ARGS__)
-// same as some_task
-#define merge(...) some_task(__VA_ARGS__)
+// some_tasks(A, B, C) means SomeTask
+#define some_tasks(...) auto (*)(tf::dsl::SomeTask<__VA_ARGS__>)
+// same as some_tasks
+#define fork_tasks(...) some_tasks(__VA_ARGS__)
+// same as some_tasks
+#define merge_tasks(...) some_tasks(__VA_ARGS__)
 // task(A) means a task A
 #define task(Task) auto (*)(Task)
 // taskbuild(...) build a task dsl graph
-#define taskbuild(...) tf::dsl::taskDsl<void TF_MAP(TF_CHAIN, __VA_ARGS__)>
+#define build_taskflow(...) tf::dsl::taskDsl<void TF_MAP(TF_CHAIN, __VA_ARGS__)>
+

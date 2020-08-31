@@ -33,15 +33,15 @@ int main() {
     int &rcounter; // use counter(borrow)
   } context{counter};
 
-  def_task((A, Context), {
+  make_task((A, Context), {
     std::cout << "initializes the counter to zero\n";
     rcounter = 0;
   });
-  def_task((B, Context), {
+  make_task((B, Context), {
     std::cout << "loops to increment the counter\n";
     rcounter++;
   });
-  def_task((C, Context), {
+  make_task((C, Context), {
     std::cout << "counter is " << rcounter << " -> ";
     if (rcounter != 5) {
       std::cout << "loops again (goes to B)\n";
@@ -50,16 +50,16 @@ int main() {
     std::cout << "breaks the loop (goes to D)\n";
     return 1;
   });
-  def_task((D, Context), {
+  make_task((D, Context), {
     std::cout << "done with counter equal to " << rcounter << '\n';
   });
 
-  auto tasks = taskbuild(
+  auto tasks = build_taskflow(
     task(A)
       -> task(B)
       -> task(C),
     task(C)
-      -> fork(B, D)
+      -> fork_tasks(B, D)
   )(taskflow, context);
 
   tasks.get_task<A>().name("A");
