@@ -6,7 +6,7 @@ MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Project name
-project(Taskflow VERSION 2.6.0 LANGUAGES CXX)
+project(Taskflow VERSION 2.7.0 LANGUAGES CXX)
 
 # build options
 option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
@@ -222,6 +222,14 @@ target_include_directories(${PROJECT_NAME} INTERFACE
   $<INSTALL_INTERFACE:include/> 
 )
 
+add_library(TensorFrame INTERFACE)
+target_compile_features(TensorFrame INTERFACE cxx_std_17)
+target_link_libraries(TensorFrame INTERFACE Threads::Threads)
+target_include_directories(TensorFrame INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include/> 
+)
+
 # -----------------------------------------------------------------------------
 # Example program 
 # -----------------------------------------------------------------------------
@@ -304,6 +312,13 @@ target_link_libraries(
   kmeans ${PROJECT_NAME} Threads::Threads tf::default_settings
 )
 endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
+
+#### TensorFrame
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR}/tensorframe)
+add_executable(add ${TF_EXAMPLE_DIR}/tensorframe/add.cpp)
+target_link_libraries(
+  add TensorFrame Threads::Threads tf::default_settings
+)
 
 endif(TF_BUILD_EXAMPLES)
 

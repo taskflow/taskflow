@@ -128,7 +128,7 @@ Task FlowBuilder::reduce_guided(
               q = C;
             }
             size_t e0 = (q <= r) ? s0 + q : N;
-            if(next.compare_exchange_strong(s0, e0, std::memory_order_release,
+            if(next.compare_exchange_strong(s0, e0, std::memory_order_relaxed,
                                                     std::memory_order_relaxed)) {
               std::advance(beg, s0-z);
               for(size_t x = s0; x<e0; x++, beg++) {
@@ -549,7 +549,7 @@ Task FlowBuilder::transform_reduce_guided(
               q = C;
             }
             size_t e0 = (q <= r) ? s0 + q : N;
-            if(next.compare_exchange_strong(s0, e0, std::memory_order_release,
+            if(next.compare_exchange_strong(s0, e0, std::memory_order_relaxed,
                                                     std::memory_order_relaxed)) {
               std::advance(beg, s0-z);
               for(size_t x = s0; x<e0; x++, beg++) {
