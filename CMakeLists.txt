@@ -106,7 +106,7 @@ if(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
     error_settings
     BEFORE
     INTERFACE
-    $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-Wall,-Wextra,-Wfatal-errors>
+    $<$<COMPILE_LANGUAGE:CUDA>:--extended-lambda -Xcompiler=-Wall,-Wextra,-Wfatal-errors>
   )
 endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
 
@@ -322,11 +322,11 @@ target_link_libraries(
 endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
 
 #### TensorFrame Project
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR}/tensorframe)
-add_executable(add ${TF_EXAMPLE_DIR}/tensorframe/add.cpp)
-target_link_libraries(
-  add TensorFrame Threads::Threads tf::default_settings
-)
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR}/tensorframe)
+#add_executable(add ${TF_EXAMPLE_DIR}/tensorframe/add.cpp)
+#target_link_libraries(
+#  add TensorFrame Threads::Threads tf::default_settings
+#)
 
 
 #### TaskflowDSL project
