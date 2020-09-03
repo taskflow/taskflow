@@ -15,6 +15,8 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 // class: cudaNode
+// each work is wrapped in a function to call at runtime in order to work with
+// gpu context
 class cudaNode {
   
   friend class cudaFlow;
@@ -128,7 +130,6 @@ class cudaGraph {
     cudaGraph_t native_handle();
 
     void clear();
-
     void clear_native_graph();
 
     bool empty() const;

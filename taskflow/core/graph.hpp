@@ -165,7 +165,7 @@ class Node {
   constexpr static auto CUDAFLOW_WORK = get_index_v<cudaFlowWork, handle_t>; 
 #endif
 
-    template <typename ...Args>
+    template <typename... Args>
     Node(Args&&... args);
 
     ~Node();
@@ -247,7 +247,7 @@ Node::ModuleWork::ModuleWork(T&& tf) : module {tf} {
 // ----------------------------------------------------------------------------
 
 // Constructor
-template <typename ...Args>
+template <typename... Args>
 Node::Node(Args&&... args): _handle{std::forward<Args>(args)...} {
 } 
 

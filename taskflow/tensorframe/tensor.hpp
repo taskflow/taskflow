@@ -7,6 +7,11 @@
 
 namespace tf {
 
+enum StorageLevel {
+  MEMORY = 0,
+  MEMORY_AND_DISK = 1
+};
+
 /** 
 
 @class Tensor
@@ -17,8 +22,13 @@ namespace tf {
 template <typename T>
 class Tensor {
   
+  template <typename U>
   friend class TensorNode;
+
+  template <typename U>
   friend class TensorExpr;
+  
+  template <typename U>
   friend class TensorFrame;
 
   struct Chunk {
@@ -32,16 +42,17 @@ class Tensor {
     Tensor(Tensor&& tensor) = delete;
 
     Tensor(std::vector<size_t> shape);
-    Tensor(std::vector<size_t> shape, size_t max_elements);
+    Tensor(std::vector<size_t> shape, size_t max_chunk_size);
 
     const std::vector<size_t>& shape() const;
     const std::vector<size_t>& chunk_shape() const;
 
     size_t size() const;
     size_t rank() const;
-    size_t max_elements() const;
     size_t chunk_size() const;
     size_t num_chunks() const;
+
+    StorageLevel storage_level() const;
 
     void dump(std::ostream& ostream) const;
     
@@ -53,14 +64,14 @@ class Tensor {
 
   private:
     
-    size_t _max_elements {65536*1024};  // 65MB
+    StorageLevel _storage_level;
 
     std::vector<size_t> _shape;
     std::vector<size_t> _chunk_shape;
     std::vector<size_t> _chunk_grid;
     std::vector<Chunk> _chunks;
 
-    void _make_chunks();
+    void _make_chunks(size_t = 65536*1024);  // 65MB per chunk
     
     size_t _flat_chunk_index(size_t&, size_t) const;
 
@@ -75,21 +86,20 @@ class Tensor {
 
 template <typename T>
 Tensor<T>::Tensor(std::vector<size_t> shape) : 
-  _shape {std::move(shape)},
+  _shape       {std::move(shape)},
   _chunk_shape (_shape.size()),
-  _chunk_grid (_shape.size()) {
+  _chunk_grid  (_shape.size()) {
 
   _make_chunks();
 }
 
 template <typename T>
-Tensor<T>::Tensor(std::vector<size_t> shape, size_t max_elements) :
-  _max_elements {std::max(1ul, max_elements)},
-  _shape {std::move(shape)},
+Tensor<T>::Tensor(std::vector<size_t> shape, size_t max_chunk_size) :
+  _shape       {std::move(shape)},
   _chunk_shape (_shape.size()),
-  _chunk_grid (_shape.size()) {
+  _chunk_grid  (_shape.size()) {
 
-  _make_chunks();
+  _make_chunks(std::max(1ul, max_chunk_size));
 }
 
 template <typename T>
@@ -112,11 +122,6 @@ size_t Tensor<T>::chunk_size() const {
 template <typename T>
 size_t Tensor<T>::rank() const {
   return _shape.size();
-}
-
-template <typename T>
-size_t Tensor<T>::max_elements() const {
-  return _max_elements;
 }
 
 template <typename T>
@@ -212,9 +217,8 @@ void Tensor<T>::dump(std::ostream& os) const {
 }
 
 template <typename T>
-void Tensor<T>::_make_chunks() {  
+void Tensor<T>::_make_chunks(size_t M) {  
 
-  size_t M = _max_elements;
   size_t P = 1;
   size_t N = 1;
 
@@ -247,8 +251,11 @@ void Tensor<T>::_make_chunks() {
   // TODO: the rest sits in the disk
   for(size_t i=1; i<_chunks.size(); ++i) {
   }
+
+  // assign the storage level
+  _storage_level = (_chunks.size() <= 1) ? MEMORY : MEMORY_AND_DISK;
 }
-    
+
 }  // end of namespace tf -----------------------------------------------------
 
 

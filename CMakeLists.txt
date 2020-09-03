@@ -230,13 +230,13 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 #  $<INSTALL_INTERFACE:include/> 
 #)
 #
-#add_library(TensorFrame INTERFACE)
-#target_compile_features(TensorFrame INTERFACE cxx_std_17)
-#target_link_libraries(TensorFrame INTERFACE Threads::Threads)
-#target_include_directories(TensorFrame INTERFACE
-#  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-#  $<INSTALL_INTERFACE:include/> 
-#)
+add_library(TensorFrame INTERFACE)
+target_compile_features(TensorFrame INTERFACE cxx_std_17)
+target_link_libraries(TensorFrame INTERFACE Threads::Threads)
+target_include_directories(TensorFrame INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include/> 
+)
 
 # -----------------------------------------------------------------------------
 # Example program 
@@ -321,12 +321,12 @@ target_link_libraries(
 )
 endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
 
-##### TensorFrame Project
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR}/tensorframe)
-#add_executable(add ${TF_EXAMPLE_DIR}/tensorframe/add.cpp)
-#target_link_libraries(
-#  add TensorFrame Threads::Threads tf::default_settings
-#)
+#### TensorFrame Project
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR}/tensorframe)
+add_executable(add ${TF_EXAMPLE_DIR}/tensorframe/add.cpp)
+target_link_libraries(
+  add TensorFrame Threads::Threads tf::default_settings
+)
 
 
 #### TaskflowDSL project
@@ -840,6 +840,27 @@ add_test(cuda_kmeans.1000.2C2G ${TF_UTEST_CUDA_KMEANS} -tc=kmeans.1000.2C2G)
 add_test(cuda_kmeans.1000.4C4G ${TF_UTEST_CUDA_KMEANS} -tc=kmeans.1000.4C4G)
 add_test(cuda_kmeans.1000.8C8G ${TF_UTEST_CUDA_KMEANS} -tc=kmeans.1000.8C8G)
 add_test(cuda_kmeans.1000.16C16G ${TF_UTEST_CUDA_KMEANS} -tc=kmeans.1000.16C16G)
+
+# algorithm test
+add_executable(cuda_algorithm ${TF_UTEST_DIR}/cuda/cuda_algorithm.cu)
+target_link_libraries(
+  cuda_algorithm ${PROJECT_NAME} Threads::Threads tf::default_settings
+)
+target_include_directories(cuda_algorithm PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
+set(TF_UTEST_CUDA_ALG ${TF_UTEST_DIR}/cuda/cuda_algorithm)
+add_test(cuda_alg.add2.int    ${TF_UTEST_CUDA_ALG} -tc=add2.int)
+add_test(cuda_alg.add2.float  ${TF_UTEST_CUDA_ALG} -tc=add2.float)
+add_test(cuda_alg.add2.double ${TF_UTEST_CUDA_ALG} -tc=add2.double)
+add_test(cuda_alg.add3.int    ${TF_UTEST_CUDA_ALG} -tc=add3.int)
+add_test(cuda_alg.add3.float  ${TF_UTEST_CUDA_ALG} -tc=add3.float)
+add_test(cuda_alg.add3.double ${TF_UTEST_CUDA_ALG} -tc=add3.double)
+add_test(cuda_alg.multiply2.int    ${TF_UTEST_CUDA_ALG} -tc=multiply2.int)
+add_test(cuda_alg.multiply2.float  ${TF_UTEST_CUDA_ALG} -tc=multiply2.float)
+add_test(cuda_alg.multiply2.double ${TF_UTEST_CUDA_ALG} -tc=multiply2.double)
+add_test(cuda_alg.for_each.int    ${TF_UTEST_CUDA_ALG} -tc=for_each.int)
+add_test(cuda_alg.for_each.float  ${TF_UTEST_CUDA_ALG} -tc=for_each.float)
+add_test(cuda_alg.for_each.double ${TF_UTEST_CUDA_ALG} -tc=for_each.double)
+
 
 endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
 

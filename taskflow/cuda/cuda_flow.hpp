@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cuda_task.hpp"
+#include "cuda_ops.hpp"
 
 namespace tf {
 
@@ -18,6 +19,8 @@ for instance, kernel tasks, data transfer tasks, and memory operation tasks.
 class cudaFlow {
 
   friend class Executor;
+
+  constexpr static size_t BLOCK_DIM_1D = 256;
 
   public:
     
@@ -215,6 +218,90 @@ class cudaFlow {
     @brief repeats the execution of the cudaFlow by @c n times
     */
     void repeat(size_t n);
+    
+    // ------------------------------------------------------------------------
+    // generic operations
+    // ------------------------------------------------------------------------
+
+    /**
+    @brief applies a functor to each element in the range
+    
+    @tparam T result type
+    @tparam F functor type
+
+    @param data pointer to the starting address of the data array
+    @param N number of elements in the data array
+    @param functor the functor to apply to each element in the data array
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    for(size_t i=0; i<N; i++) {
+      functor(data[i]);
+    }
+    @endcode
+    */
+    template <typename T, typename F>
+    cudaTask for_each(T* data, size_t N, F&& functor);
+  
+    /**
+    @brief applies a functor to a source range and stores the result in a target ange
+    
+    @tparam T result type
+    @tparam F functor type
+    @tparam S source types
+
+    @param tgt pointer to the starting address of the target range
+    @param N number of elements in the range
+    @param functor the functor to apply to each element in the range
+    @param srcs pointers to the starting addresses of source ranges
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    for(size_t i=0; i<N; i++) {
+      tgt[i] = functor(src1[i], src2[i], src3[i], ...);
+    }
+    @endcode
+    */
+    template <typename T, typename F, typename... S>
+    cudaTask transform(T* tgt, size_t N, F&& functor, S*... srcs);
+
+    // ------------------------------------------------------------------------
+    // common arithmetic operations
+    // ------------------------------------------------------------------------
+
+    /**
+    @brief performs element-wise add operation over a list of vectors
+    
+    @tparam T result type
+    @tparam S source data types
+
+    @param res pointer to the result vector
+    @param N number of elements to add for each vector
+    @param srcs the list of vectors to add
+
+    Performs element-wise add operation over a list of vectors, @c srcs,
+    and stores the result in the vector, @c res
+    */
+    template <typename T, typename... S>
+    cudaTask add(T* res, size_t N, const S*... srcs);
+    
+    /**
+    @brief performs element-wise multiplication over a list of vectors
+    
+    @tparam T result type
+    @tparam S source data types
+
+    @param res pointer to the result vector
+    @param N number of elements to add for each vector
+    @param srcs the list of vectors to add
+
+    Performs element-wise multiplication over a list of vectors, @c srcs,
+    and stores the result in the vector, @c res
+    */
+    template <typename T, typename... S>
+    cudaTask multiply(T* res, size_t N, const S*... srcs);
 
   private:
 
@@ -319,7 +406,7 @@ cudaTask cudaFlow::kernel(
 
       TF_CHECK_CUDA(
         ::cudaGraphAddKernelNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node in kernel task"
+        "failed to create a cudaGraph node of kernel task"
       );
     }
   );
@@ -352,7 +439,7 @@ cudaTask cudaFlow::kernel_on(
       cudaScopedDevice ctx(d);
       TF_CHECK_CUDA(
         ::cudaGraphAddKernelNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node in kernel_on task"
+        "failed to create a cudaGraph node of kernel_on task"
       );
     }
   );
@@ -378,7 +465,7 @@ cudaFlow::zero(T* dst, size_t count) {
       p.height = 1;
       TF_CHECK_CUDA(
         cudaGraphAddMemsetNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node in zero task"
+        "failed to create a cudaGraph node of zero task"
       );
     }
   );
@@ -408,7 +495,7 @@ cudaFlow::fill(T* dst, T value, size_t count) {
       p.height = 1;
       TF_CHECK_CUDA(
         cudaGraphAddMemsetNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node in fill task"
+        "failed to create a cudaGraph node of fill task"
       );
     }
   );
@@ -439,7 +526,7 @@ cudaTask cudaFlow::copy(T* tgt, const T* src, size_t num) {
 
       TF_CHECK_CUDA(
         cudaGraphAddMemcpyNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node in copy task"
+        "failed to create a cudaGraph node of copy task"
       );
     }
   );
@@ -463,7 +550,7 @@ inline cudaTask cudaFlow::memset(void* dst, int ch, size_t count) {
       p.height = 1;
       TF_CHECK_CUDA(
         cudaGraphAddMemsetNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node in memset task"
+        "failed to create a cudaGraph node of memset task"
       );
     }
   );
@@ -491,12 +578,111 @@ inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
       p.kind = cudaMemcpyDefault;
       TF_CHECK_CUDA(
         cudaGraphAddMemcpyNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node in memcpy task"
+        "failed to create a cudaGraph node of memcpy task"
       );
     }
   );
   return cudaTask(node);
 }
+
+// Function: add
+template <typename T, typename... Us>
+cudaTask cudaFlow::add(T* res, size_t N, const Us*... srcs) {
+  auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Kernel>{}, 
+    [res, N, srcs...] (cudaGraph_t& graph, cudaGraphNode_t& node) {
+
+      cudaKernelNodeParams p;
+      void* arguments[] = { (void*)&res, (void*)&N, (void*)(&srcs)... };
+      p.func = (void*)cuda_add<T, Us...>;
+      p.gridDim = (N+256)/256;
+      p.blockDim = 256;
+      p.sharedMemBytes = 0;
+      p.kernelParams = arguments;
+      p.extra = nullptr;
+
+      TF_CHECK_CUDA(
+        ::cudaGraphAddKernelNode(&node, graph, nullptr, 0, &p),
+        "failed to create a cudaGraph node of add task"
+      );
+    }
+  );
+
+  return cudaTask(node);
+}
+
+// Function: multiply
+template <typename T, typename... Us>
+cudaTask cudaFlow::multiply(T* res, size_t N, const Us*... srcs) {
+  auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Kernel>{}, 
+    [res, N, srcs...] (cudaGraph_t& graph, cudaGraphNode_t& node) {
+
+      cudaKernelNodeParams p;
+      void* arguments[] = { (void*)&res, (void*)&N, (void*)(&srcs)... };
+      p.func = (void*)cuda_multiply<T, Us...>;
+      p.gridDim = (N+256)/256;
+      p.blockDim = 256;
+      p.sharedMemBytes = 0;
+      p.kernelParams = arguments;
+      p.extra = nullptr;
+
+      TF_CHECK_CUDA(
+        ::cudaGraphAddKernelNode(&node, graph, nullptr, 0, &p),
+        "failed to create a cudaGraph node of multiply task"
+      );
+    }
+  );
+
+  return cudaTask(node);
+}
+
+// Function: for_each
+template <typename T, typename F>
+cudaTask cudaFlow::for_each(T* data, size_t N, F&& functor) {
+  auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Kernel>{}, 
+    [data, N, f=std::forward<F>(functor)] (cudaGraph_t& graph, cudaGraphNode_t& node) {
+
+      cudaKernelNodeParams p;
+      void* arguments[] = { (void*)&data, (void*)&N, (void*)(&f) };
+      p.func = (void*)cuda_for_each<T, F>;
+      p.gridDim = (N+256)/256;
+      p.blockDim = 256;
+      p.sharedMemBytes = 0;
+      p.kernelParams = arguments;
+      p.extra = nullptr;
+
+      TF_CHECK_CUDA(
+        ::cudaGraphAddKernelNode(&node, graph, nullptr, 0, &p),
+        "failed to create a cudaGraph node of for_each task"
+      );
+    }
+  );
+  return cudaTask(node);
+}
+
+// Function: transform
+template <typename T, typename F, typename... S>
+cudaTask cudaFlow::transform(T* tgt, size_t N, F&& functor, S*... srcs) {
+  auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Kernel>{}, 
+    [tgt, N, f=std::forward<F>(functor), srcs...] (cudaGraph_t& graph, cudaGraphNode_t& node) {
+
+      cudaKernelNodeParams p;
+      void* arguments[] = { (void*)&tgt, (void*)&N, (void*)(&f), (void*)(&srcs)... };
+      p.func = (void*)cuda_transform<T, F, S...>;
+      p.gridDim = (N+256)/256;
+      p.blockDim = 256;
+      p.sharedMemBytes = 0;
+      p.kernelParams = arguments;
+      p.extra = nullptr;
+
+      TF_CHECK_CUDA(
+        ::cudaGraphAddKernelNode(&node, graph, nullptr, 0, &p),
+        "failed to create a cudaGraph node of for_each task"
+      );
+    }
+  );
+  return cudaTask(node);
+}
+
 
 }  // end of namespace tf -----------------------------------------------------
 

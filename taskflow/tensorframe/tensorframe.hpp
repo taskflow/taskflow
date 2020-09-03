@@ -1,42 +1,78 @@
 #pragma once
 
 #include "tensor_expr.hpp"
+#include "tensor_ops.hpp"
 
 namespace tf {
 
-class TensorFrame : protected Taskflow {
+/** @class TensorFrame
+
+@brief a tensor frame represents multiple tensor operations in a graph format
+
+*/
+template <typename T>
+class TensorFrame {
+
+  friend class Executor;
 
   public:
-    
-    template <typename T>
-    TensorExpr input(Tensor<T>& tensor);
 
-    template <typename T>
-    TensorExpr output(Tensor<T>& tensor);
+    /**
+    @brief creates an input tensor expression
+    */
+    TensorExpr<T> input(Tensor<T>& tensor);
     
-    TensorExpr add(TensorExpr lexpr, TensorExpr rexpr);
+    /**
+    @brief creates an output tensor expression
+    */
+    TensorExpr<T> output(Tensor<T>& tensor);
+    
+    /**
+    @brief creates a tensor expression that performs element-wise add
+    */
+    TensorExpr<T> add(TensorExpr<T> lexpr, TensorExpr<T> rexpr);
+
+    /**
+    @brief creates a tensor expression that performs element-wise multiplication
+    */
+    TensorExpr<T> multiply(TensorExpr<T> lexpr, TensorExpr<T> rexpr);
+
+    void optimize();
 
   private:
 
-    std::vector<TensorNode> _tensor_nodes;
+    Taskflow _taskflow;
+
+    std::vector<std::unique_ptr<TensorNode<T>>> _tensor_nodes;
 };
 
-//auto TensorExpr = TensorGraph.tensor_frame()
+template <typename T>
+TensorExpr<T> TensorFrame<T>::input(Tensor<T>& tensor) {
+  return TensorExpr<T>(_tensor_nodes.emplace_back(std::make_unique<TensorNode<T>>(
+    std::in_place_type_t<typename TensorNode<T>::Input>{}, tensor
+  )).get());
+}
 
-//
-// TensorFrame tf1({1000, 1000, 1000}), tf2({1000, 1000, 1000}), tf3, tf4;
-// ExpressionFlow ef;
-//
-// auto expr1 = ef.input(tf1);
-// auto expr2 = ef.input(tf2);
-// auto expr3 = ef.input(tf3);
-// auto expr4 = ef.input(tf4);
-// auto sum12 = ef.add(expr1, expr2);
-// auto sum34 = ef.add(expr3, expr4);
-// auto s1234 = ef.add(sum12, sum34);
-// ef.evaluate(s1234, tensor_frame);
+template <typename T>
+TensorExpr<T> TensorFrame<T>::output(Tensor<T>& tensor) {
+  return TensorExpr<T>(_tensor_nodes.emplace_back(std::make_unique<TensorNode<T>>(
+    std::in_place_type_t<typename TensorNode<T>::Output>{}, tensor
+  )).get());
+}
 
-//executor.run(ef);
+template <typename T>
+TensorExpr<T> TensorFrame<T>::add(TensorExpr<T> lhs, TensorExpr<T> rhs) {
+  
+  auto res = TensorExpr<T>(_tensor_nodes.emplace_back(std::make_unique<TensorNode<T>>(
+    std::in_place_type_t<typename TensorNode<T>::Add>{}, 
+    lhs._tensor_node, 
+    rhs._tensor_node
+  )).get());
+
+  res.succeed(lhs, rhs);
+
+  return res; 
+}
 
 
 }  // end of namespace tf -----------------------------------------------------
