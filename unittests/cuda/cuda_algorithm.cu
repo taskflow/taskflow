@@ -3,6 +3,8 @@
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
 
+constexpr float eps = 0.0001f;
+
 // --------------------------------------------------------
 // Testcase: add2
 // --------------------------------------------------------
@@ -58,7 +60,7 @@ void add2() {
     // Add a verification task
     auto verifier = taskflow.emplace([&](){
       for (size_t i = 0; i < N; i++) {
-        REQUIRE(std::fabs(hx[i] - v3) < 1e-4f);
+        REQUIRE(std::fabs(hx[i] - v3) < eps);
       }
     }).succeed(cudaflow).name("verify");
 
@@ -154,7 +156,7 @@ void add3() {
     // Add a verification task
     auto verifier = taskflow.emplace([&](){
       for (size_t i = 0; i < N; i++) {
-        REQUIRE(std::fabs(hx[i] - v4) < 1e-4f);
+        REQUIRE(std::fabs(hx[i] - v4) < eps);
       }
     }).succeed(cudaflow).name("verify");
 
@@ -244,7 +246,7 @@ void multiply2() {
     // Add a verification task
     auto verifier = taskflow.emplace([&](){
       for (size_t i = 0; i < N; i++) {
-        REQUIRE(std::fabs(hx[i] - v3) < 1e-4f);
+        REQUIRE(std::fabs(hx[i] - v3) < eps);
       }
     }).succeed(cudaflow).name("verify");
 
@@ -275,21 +277,14 @@ TEST_CASE("multiply2.double" * doctest::timeout(300)) {
   multiply2<double>();
 }
 
-// --------------------------------------------------------
-// Testcase: for_each
-// --------------------------------------------------------
-
-template <typename T>
-struct Reset {
-  __device__ void operator () (T& value) {
-    value = 17;
-  }
-};
+// ----------------------------------------------------------------------------
+// for_each
+// ----------------------------------------------------------------------------
 
 template <typename T>
 void for_each() {
 
-  for(unsigned n=1; n<=123456; n = n*2 + 1) {
+  for(int n=1; n<=123456; n = n*2 + 1) {
 
     tf::Taskflow taskflow;
     tf::Executor executor;
@@ -304,18 +299,20 @@ void for_each() {
 
     auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
       auto h2d = cf.copy(gpu, cpu, n);
-      auto kernel = cf.for_each(gpu, n, [] __device__ (T& value){ value = 17; });
+      auto kernel = cf.for_each(
+        gpu, n, [] __device__ (T& val) { val = 65536; }
+      );
       auto d2h = cf.copy(cpu, gpu, n);
       h2d.precede(kernel);
-      kernel.precede(d2h);
+      d2h.succeed(kernel);
     });
 
     cputask.precede(gputask);
     
     executor.run(taskflow).wait();
 
-    for(unsigned i=0; i<n; ++i) {
-      REQUIRE(std::fabs(cpu[i] - (T)17) < 1e4f);
+    for(int i=0; i<n; i++) {
+      REQUIRE(std::fabs(cpu[i] - (T)65536) < eps);
     }
 
     std::free(cpu);
@@ -333,6 +330,79 @@ TEST_CASE("for_each.float" * doctest::timeout(300)) {
 
 TEST_CASE("for_each.double" * doctest::timeout(300)) {
   for_each<double>();
+}
+
+// --------------------------------------------------------
+// Testcase: for_each_index
+// --------------------------------------------------------
+
+//template <typename T>
+//struct Reset {
+//  __device__ void operator () (T& value) {
+//    value = 17;
+//  }
+//};
+
+template <typename T>
+void for_each_index() {
+
+  for(int n=1; n<=123456; n = n*2 + 1) {
+
+    tf::Taskflow taskflow;
+    tf::Executor executor;
+    
+    T* cpu = nullptr;
+    T* gpu = nullptr;
+
+    auto cputask = taskflow.emplace([&](){
+      cpu = static_cast<T*>(std::calloc(n, sizeof(T)));
+      REQUIRE(cudaMalloc(&gpu, n*sizeof(T)) == cudaSuccess);
+    });
+
+    auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
+      auto h2d = cf.copy(gpu, cpu, n);
+      //auto kernel = cf.for_each_index(gpu, n, [] __device__ (T& value){ value = 17; });
+      auto kernel1 = cf.for_each_index(
+        0, n, 2, 
+        [gpu] __device__ (int i) { gpu[i] = 17; }
+      );
+      auto kernel2 = cf.for_each_index(
+        1, n, 2, 
+        [=] __device__ (int i) { gpu[i] = -17; }
+      );
+      auto d2h = cf.copy(cpu, gpu, n);
+      h2d.precede(kernel1, kernel2);
+      d2h.succeed(kernel1, kernel2);
+    });
+
+    cputask.precede(gputask);
+    
+    executor.run(taskflow).wait();
+
+    for(int i=0; i<n; i++) {
+      if(i % 2 == 0) {
+        REQUIRE(std::fabs(cpu[i] - (T)17) < eps);
+      }
+      else {
+        REQUIRE(std::fabs(cpu[i] - (T)(-17)) < eps);
+      }
+    }
+
+    std::free(cpu);
+    REQUIRE(cudaFree(gpu) == cudaSuccess);
+  }
+}
+
+TEST_CASE("for_each_index.int" * doctest::timeout(300)) {
+  for_each_index<int>();
+}
+
+TEST_CASE("for_each_index.float" * doctest::timeout(300)) {
+  for_each_index<float>();
+}
+
+TEST_CASE("for_each_index.double" * doctest::timeout(300)) {
+  for_each_index<double>();
 }
 
 // ----------------------------------------------------------------------------
@@ -405,8 +475,8 @@ TEST_CASE("transform" * doctest::timeout(300) ) {
     for(unsigned i=0; i<n; ++i) {
       REQUIRE(htgt[i] == 17);
       REQUIRE(hsrc1[i] == 1);
-      REQUIRE(std::fabs(hsrc2[i] - 3.0f) < 1e4f);
-      REQUIRE(std::fabs(hsrc3[i] - 5.0) < 1e4f);
+      REQUIRE(std::fabs(hsrc2[i] - 3.0f) < eps);
+      REQUIRE(std::fabs(hsrc3[i] - 5.0) < eps);
     }
 
     std::free(htgt);

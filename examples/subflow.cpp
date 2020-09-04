@@ -1,4 +1,4 @@
-// This example demonstrates how to use cpp-taskflow to create
+// This example demonstrates how to use Taskflow to create
 // dynamic workload during execution.
 //
 // We first create four tasks A, B, C, and D. During the execution

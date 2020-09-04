@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"cuda__task_8hpp_source.html":[10,0,2],
+"dreamplace.html":[6,1],
 "dreamplace.html#UseCasesDreamPlace":[6,1,0],
 "dreamplace.html#UseCasesDreamPlaceConclusion":[6,1,3],
 "dreamplace.html#UseCasesDreamPlacePerformance":[6,1,2],

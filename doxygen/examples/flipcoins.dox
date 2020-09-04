@@ -43,7 +43,7 @@ tf::Task F = taskflow.emplace( [&](){ return std::rand()%2; } ).name("flip-coin-
 // reach the target; record the number of tosses 
 tf::Task G = taskflow.emplace( [&](){ total_tosses += tosses; } ).name("stop");
 
-A.precede(B).name;
+A.precede(B);
 
 // five probabilistic conditions
 B.precede(C, B);

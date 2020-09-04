@@ -28,7 +28,7 @@ A sequential implementation of k-means is described as follows:
 @code{.cpp}
 // sequential implementation of k-means on a CPU
 // N: number of points, K: number of clusters, M: number of iterations, px/py: 2D point vector 
-void kmeans_seq(int N, int K, int M, cconst std::vector<float>& px,  const std::vector<float>& py) {
+void kmeans_seq(int N, int K, int M, const std::vector<float>& px,  const std::vector<float>& py) {
 
   std::vector<int> c(K);
   std::vector<float> sx(K), sy(K), mx(K), my(K);

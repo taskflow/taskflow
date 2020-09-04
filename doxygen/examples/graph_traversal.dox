@@ -29,7 +29,7 @@ struct Node {
   bool visited {false};
 
   std::atomic<size_t> dependents {0};  // number of incoming edges
-  std::array<Node*> successors;        // number of outgoing edges
+  std::vector<Node*> successors;       // number of outgoing edges
 
   void precede(Node& n) {
     successors.emplace_back(&n);

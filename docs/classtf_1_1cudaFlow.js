@@ -6,6 +6,7 @@ var classtf_1_1cudaFlow =
     [ "device", "classtf_1_1cudaFlow.html#a2905a7772fb2c25753e1ae72bb05861b", null ],
     [ "empty", "classtf_1_1cudaFlow.html#a1926f45a038d8faa9c1b1ee43fd29a93", null ],
     [ "fill", "classtf_1_1cudaFlow.html#aee1fa4aff12a41737ea585fa2e106a35", null ],
+    [ "for_each_index", "classtf_1_1cudaFlow.html#a0ce0e99d47822886f8df6a3513fc2e32", null ],
     [ "kernel", "classtf_1_1cudaFlow.html#adb731be71bdd436dfb5e36e6213a9a17", null ],
     [ "kernel_on", "classtf_1_1cudaFlow.html#a4a839dbaa01237a440edfebe8faf4e5b", null ],
     [ "memcpy", "classtf_1_1cudaFlow.html#ad37637606f0643f360e9eda1f9a6e559", null ],
@@ -14,6 +15,7 @@ var classtf_1_1cudaFlow =
     [ "predicate", "classtf_1_1cudaFlow.html#adbd46a1ef9f5ae9e0848ccbefa1e65ee", null ],
     [ "repeat", "classtf_1_1cudaFlow.html#a1eeebb4bbd6436a3145ff950ce282ac4", null ],
     [ "stream", "classtf_1_1cudaFlow.html#a5ccc24918db4d63c50f26b68d17fd452", null ],
+    [ "transform", "classtf_1_1cudaFlow.html#a56d0389eeca479ba73419bc011c1a23e", null ],
     [ "zero", "classtf_1_1cudaFlow.html#a91c1739bb9a2832f306f3d12693a0994", null ],
     [ "Executor", "classtf_1_1cudaFlow.html#a763b2f90bc53f92d680a635fe28e858e", null ]
 ];

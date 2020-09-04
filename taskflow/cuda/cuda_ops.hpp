@@ -15,6 +15,19 @@ __global__ void cuda_for_each(T* data, size_t N, F functor) {
   if (i < N) {
     functor(data[i]);
   }
+
+// ----------------------------------------------------------------------------
+// for_each
+// ----------------------------------------------------------------------------
+}
+
+// Kernel: for_each_index
+template <typename I, typename F>
+__global__ void cuda_for_each_index(I beg, I inc, size_t N, F functor) {
+  size_t i = blockIdx.x*blockDim.x + threadIdx.x;
+  if (i < N) {
+    functor(static_cast<I>(i)*inc + beg);
+  }
 }
 
 // ----------------------------------------------------------------------------

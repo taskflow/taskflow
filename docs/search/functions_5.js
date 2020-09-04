@@ -25,7 +25,7 @@ var searchData=
   ['for_5feach_5fdependent',['for_each_dependent',['../classtf_1_1Task.html#a3bf68937662bf291637e4a763476b2e4',1,'tf::Task::for_each_dependent()'],['../classtf_1_1TaskView.html#a55651e26436bfc2499cadaca4a24e48d',1,'tf::TaskView::for_each_dependent()']]],
   ['for_5feach_5fdynamic',['for_each_dynamic',['../classtf_1_1FlowBuilder.html#a5c044a80450742bf6927d0c343c23853',1,'tf::FlowBuilder']]],
   ['for_5feach_5fguided',['for_each_guided',['../classtf_1_1FlowBuilder.html#a1a294c4fa23d74b82e581b8cfd33acdf',1,'tf::FlowBuilder']]],
-  ['for_5feach_5findex',['for_each_index',['../classtf_1_1FlowBuilder.html#ab8417b211b18bb1e0f45a049331f084d',1,'tf::FlowBuilder']]],
+  ['for_5feach_5findex',['for_each_index',['../classtf_1_1FlowBuilder.html#ab8417b211b18bb1e0f45a049331f084d',1,'tf::FlowBuilder::for_each_index()'],['../classtf_1_1cudaFlow.html#a0ce0e99d47822886f8df6a3513fc2e32',1,'tf::cudaFlow::for_each_index()']]],
   ['for_5feach_5findex_5fdynamic',['for_each_index_dynamic',['../classtf_1_1FlowBuilder.html#a930d0343226874d1d40b9e230cccdd52',1,'tf::FlowBuilder']]],
   ['for_5feach_5findex_5fguided',['for_each_index_guided',['../classtf_1_1FlowBuilder.html#a942449afd25e656b9e14cb526cbd8ad2',1,'tf::FlowBuilder']]],
   ['for_5feach_5findex_5fstatic',['for_each_index_static',['../classtf_1_1FlowBuilder.html#a71f204c670ca5857e5527d6000ba73c4',1,'tf::FlowBuilder']]],
