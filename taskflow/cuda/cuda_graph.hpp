@@ -15,8 +15,8 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 // class: cudaNode
-// each make_native_node is wrapped in a function to call at runtime in order to make_native_node with
-// gpu context
+// each create_native_node is wrapped in a function to call at runtime 
+// in order to work with gpu context
 class cudaNode {
   
   friend class cudaFlow;
@@ -30,10 +30,8 @@ class cudaNode {
   // Noop handle
   struct Noop {
 
-    template <typename C>
-    Noop(C&&);
-
-    std::function<void(cudaGraph_t&, cudaGraphNode_t&)> make_native_node;
+    //template <typename C>
+    //Noop(C&&);
   };
 
   //// Host handle
@@ -42,34 +40,28 @@ class cudaNode {
   //  template <typename C>
   //  Host(C&&);
   //  
-  //  std::function<void(cudaGraph_t&, cudaGraphNode_t&)> make_native_node;
+  //  std::function<void(cudaGraph_t&, cudaGraphNode_t&)> create_native_node;
   //};
 
   // Memset handle
   struct Memset {
     
-    template <typename C>
-    Memset(C&&);
-
-    std::function<void(cudaGraph_t&, cudaGraphNode_t&)> make_native_node;
+    //template <typename C>
+    //Memset(C&&);
   };
 
   // Copy handle
   struct Copy {
     
-    template <typename C>
-    Copy(C&&);
-
-    std::function<void(cudaGraph_t&, cudaGraphNode_t&)> make_native_node;
+    //template <typename C>
+    //Copy(C&&);
   };
   
   // Kernel handle
   struct Kernel {
     
-    template <typename C>
-    Kernel(C&&);
-
-    std::function<void(cudaGraph_t&, cudaGraphNode_t&)> make_native_node;
+    //template <typename C>
+    //Kernel(C&&);
   };
 
   using handle_t = nstd::variant<
@@ -90,12 +82,14 @@ class cudaNode {
 
   public:
     
-    template <typename... ArgsT>
-    cudaNode(ArgsT&&...);
+    template <typename C, typename... ArgsT>
+    cudaNode(C&&, ArgsT&&...);
 
   private:
 
     std::string _name;
+    
+    std::function<void(cudaGraph_t&, cudaGraphNode_t&)> _create_native_node;
     
     handle_t _handle;
 
@@ -128,17 +122,18 @@ class cudaGraph {
     cudaNode* emplace_back(ArgsT&&...);
 
     void clear();
-    void clear_native_graph();
 
     bool empty() const;
 
   private:
     
     cudaGraph_t _native_handle {nullptr};
+    cudaGraphExec_t _native_exec_handle {nullptr};
 
     std::vector<std::unique_ptr<cudaNode>> _nodes;
 
-    void _make_native_graph();
+    void _create_native_graph();
+    void _destroy_native_graph();
 };
 
 // ----------------------------------------------------------------------------
@@ -147,32 +142,34 @@ class cudaGraph {
 
 //// Host handle constructor
 //template <typename C>
-//cudaNode::Host::Host(C&& c) : make_native_node {std::forward<C>(c)} {
+//cudaNode::Host::Host(C&& c) : create_native_node {std::forward<C>(c)} {
 //}
 
-// Noop handle constructor
+/*// Noop handle constructor
 template <typename C>
-cudaNode::Noop::Noop(C&& c) : make_native_node {std::forward<C>(c)} {
+cudaNode::Noop::Noop(C&&) : create_native_node {std::forward<C>(c)} {
 }
 
 // Memset handle constructor
 template <typename C>
-cudaNode::Memset::Memset(C&& c) : make_native_node {std::forward<C>(c)} {
+cudaNode::Memset::Memset(C&& c) : create_native_node {std::forward<C>(c)} {
 }
 
 // Copy handle constructor
 template <typename C>
-cudaNode::Copy::Copy(C&& c) : make_native_node {std::forward<C>(c)} {
+cudaNode::Copy::Copy(C&& c) : create_native_node {std::forward<C>(c)} {
 }
 
 // Kernel handle constructor
 template <typename C>
-cudaNode::Kernel::Kernel(C&& c) : make_native_node {std::forward<C>(c)} {
-}
+cudaNode::Kernel::Kernel(C&&) : create_native_node {std::forward<C>(c)} {
+}*/
 
 // Constructor
-template <typename... ArgsT>
-cudaNode::cudaNode(ArgsT&&... args) : _handle {std::forward<ArgsT>(args)...} {
+template <typename C, typename... ArgsT>
+cudaNode::cudaNode(C&& c, ArgsT&&... args) : 
+  _create_native_node {std::forward<C>(c)},
+  _handle             {std::forward<ArgsT>(args)...} {
 }
 
 // Procedure: _precede
@@ -186,9 +183,7 @@ inline void cudaNode::_precede(cudaNode* v) {
 
 // Destructor
 inline cudaGraph::~cudaGraph() {
-  if(_native_handle) {
-    cudaGraphDestroy(_native_handle);
-  }
+  _destroy_native_graph();
 }
 
 // Function: empty
@@ -199,17 +194,23 @@ inline bool cudaGraph::empty() const {
 // Procedure: clear
 inline void cudaGraph::clear() {
   _nodes.clear();
-  clear_native_graph();
+  _destroy_native_graph();
 }
 
 // Procedure: clear the cudaGraph
-inline void cudaGraph::clear_native_graph() {
+inline void cudaGraph::_destroy_native_graph() {
   if(_native_handle) {
+    TF_CHECK_CUDA(
+      cudaGraphExecDestroy(_native_exec_handle), "failed to destroy the executable graph"
+    );
+    _native_exec_handle = nullptr;
+
     TF_CHECK_CUDA(
       cudaGraphDestroy(_native_handle), "failed to destroy a cudaGraph on clear"
     );
     _native_handle = nullptr;
   }
+  assert(_native_exec_handle == nullptr);
 }
     
 // Function: emplace_back
@@ -221,17 +222,9 @@ cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
 }
 
 
-// Procedure: _make_native_graph
-inline void cudaGraph::_make_native_graph() {
+// Procedure: _create_native_graph
+inline void cudaGraph::_create_native_graph() {
 
-  //// TODO: must be nullptr
-  //if(_native_handle) {
-  //  TF_CHECK_CUDA(
-  //    cudaGraphDestroy(_native_handle), "failed to destroy the previous cudaGraph"
-  //  );
-  //  _native_handle = nullptr;
-  //}
-  //
   assert(_native_handle == nullptr);
 
   TF_CHECK_CUDA(
@@ -240,37 +233,8 @@ inline void cudaGraph::_make_native_graph() {
 
   // create nodes
   for(auto& node : _nodes) {
-    switch(node->_handle.index()) {
-      case cudaNode::NOOP:
-        nstd::get<cudaNode::Noop>(node->_handle).make_native_node(
-          _native_handle, node->_native_handle
-        );
-      break;
-      
-      //case cudaNode::HOST:
-      //  nstd::get<cudaNode::Host>(node->_handle).make_native_node(
-      //    _native_handle, node->_native_handle
-      //  );
-      //break;
-
-      case cudaNode::MEMSET:
-        nstd::get<cudaNode::Memset>(node->_handle).make_native_node(
-          _native_handle, node->_native_handle
-        );
-      break;
-
-      case cudaNode::COPY:
-        nstd::get<cudaNode::Copy>(node->_handle).make_native_node(
-          _native_handle, node->_native_handle
-        );
-      break;
-
-      case cudaNode::KERNEL:
-        nstd::get<cudaNode::Kernel>(node->_handle).make_native_node(
-          _native_handle, node->_native_handle
-        );
-      break;
-    }
+    assert(node->_native_handle == nullptr);
+    node->_create_native_node(_native_handle, node->_native_handle);
   }
 
   // create edges
@@ -284,7 +248,12 @@ inline void cudaGraph::_make_native_graph() {
       );
     }
   }
-
+  
+  // create the executable handle
+  TF_CHECK_CUDA(
+    cudaGraphInstantiate(&_native_exec_handle, _native_handle, nullptr, nullptr, 0),
+    "failed to create an executable cudaGraph"
+  );
 }
 
 

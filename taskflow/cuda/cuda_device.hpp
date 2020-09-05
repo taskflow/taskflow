@@ -91,6 +91,9 @@ inline void cuda_dump_device_property(std::ostream& os, const cudaDeviceProp& p)
      << "Unified Addressing (UVA):      " << p.unifiedAddressing << '\n';
 }
 
+
+
+
 // ----------------------------------------------------------------------------
 // Class definitions
 // ----------------------------------------------------------------------------
@@ -131,6 +134,36 @@ inline cudaScopedDevice::~cudaScopedDevice() {
   }
 }
 
+// ----------------------------------------------------------------------------
+// memory
+// ----------------------------------------------------------------------------
+
+// get the free memory (expensive call)
+inline size_t cuda_get_free_mem(int d) {
+  cudaScopedDevice ctx(d);
+  size_t free, total;
+  TF_CHECK_CUDA(
+    cudaMemGetInfo(&free, &total), "failed to get mem info on device ", d
+  );
+  return free;
+}
+
+// get the free memory (expensive call)
+inline size_t cuda_get_total_mem(int d) {
+  cudaScopedDevice ctx(d);
+  size_t free, total;
+  TF_CHECK_CUDA(
+    cudaMemGetInfo(&free, &total), "failed to get mem info on device ", d
+  );
+  return total;
+}
+
 }  // end of namespace cuda ---------------------------------------------------
+
+
+
+
+
+
 
 

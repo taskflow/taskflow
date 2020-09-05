@@ -24,6 +24,7 @@ an efficient work-stealing scheduling algorithm to run a taskflow.
 class Executor {
 
   friend class Subflow;
+  friend class cudaFlow;
 
   struct Worker {
     size_t id;
@@ -271,17 +272,21 @@ class Executor {
     void _invoke_dynamic_work_external(Node*, Graph&, bool);
     void _invoke_condition_work(Worker&, Node*);
     void _invoke_module_work(Worker&, Node*);
-
-#ifdef TF_ENABLE_CUDA
-    void _invoke_cudaflow_work(Worker&, Node*);
-    void _invoke_cudaflow_work_internal(Worker&, Node*);
-#endif
-
     void _set_up_topology(Topology*);
     void _tear_down_topology(Topology*); 
     void _increment_topology();
     void _decrement_topology();
     void _decrement_topology_and_notify();
+
+#ifdef TF_ENABLE_CUDA
+    void _invoke_cudaflow_work(Worker&, Node*);
+    
+    template <typename P>
+    void _invoke_cudaflow_work_internal(Worker&, cudaFlow&, P&&);
+    
+    template <typename P>
+    void _invoke_cudaflow_work_external(cudaFlow&, P&&);
+#endif
 };
 
 
@@ -993,12 +998,80 @@ inline void Executor::_invoke_condition_work(Worker& worker, Node* node) {
 #ifdef TF_ENABLE_CUDA
 // Procedure: _invoke_cudaflow_work
 inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
+
   _observer_prologue(worker, node);  
-  _invoke_cudaflow_work_internal(worker, node);
+  
+  assert(worker.domain == node->domain());
+  
+  // create a cudaflow
+  auto& h = nstd::get<Node::cudaFlowWork>(node->_handle);
+
+  h.graph.clear();
+
+  cudaFlow cf(*this, h.graph, 0);
+
+  h.work(cf); 
+  
+  // join the cudaflow
+  if(cf._joinable) {
+    _invoke_cudaflow_work_internal(
+      worker, cf, [repeat=1] () mutable { return repeat-- == 0; }
+    );  
+    cf._joinable = false;
+  }
+
   _observer_epilogue(worker, node);
 }
 
 // Procedure: _invoke_cudaflow_work_internal
+template <typename P>
+void Executor::_invoke_cudaflow_work_internal(
+  Worker& w, cudaFlow& cf, P&& predicate
+) {
+  
+  if(cf.empty()) {
+    return;
+  }
+
+  cudaScopedDevice ctx(cf._device);
+  
+  auto s = _cuda_devices[cf._device].streams[w.id - _id_offset[w.domain]];
+  
+  // transforms cudaFlow to a native cudaGraph under the specified device
+  // and launches the graph through a given or an internal device stream
+  // TODO: need to leverage cudaGraphExecUpdate for changes between
+  //       successive offload calls; right now, we assume the graph
+  //       is not changed (only update parameter is allowed)
+  cf._graph._create_native_graph();
+
+  while(!predicate()) {
+
+    TF_CHECK_CUDA(
+      cudaGraphLaunch(cf._graph._native_exec_handle, s), 
+      "failed to launch cudaFlow on device ", cf._device
+    );
+
+    TF_CHECK_CUDA(
+      cudaStreamSynchronize(s), 
+      "failed to synchronize cudaFlow on device ", cf._device
+    );
+  }
+
+  cf._graph._destroy_native_graph();
+}
+
+// Procedure: _invoke_cudaflow_work_external
+template <typename P>
+void Executor::_invoke_cudaflow_work_external(cudaFlow& cf, P&& predicate) {
+
+  auto w = _per_thread().worker;
+  
+  assert(w && w->executor == this);
+
+  _invoke_cudaflow_work_internal(*w, cf, std::forward<P>(predicate));
+}
+
+/*// Procedure: _invoke_cudaflow_work_internal
 inline void Executor::_invoke_cudaflow_work_internal(Worker& w, Node* node) {
   
   assert(w.domain == node->domain());
@@ -1007,7 +1080,7 @@ inline void Executor::_invoke_cudaflow_work_internal(Worker& w, Node* node) {
 
   h.graph.clear();
 
-  cudaFlow cf(h.graph, [repeat=1] () mutable { return repeat-- == 0; });
+  cudaFlow cf(*this, h.graph, 0, [repeat=1] () mutable { return repeat-- == 0; });
 
   h.work(cf); 
 
@@ -1021,21 +1094,14 @@ inline void Executor::_invoke_cudaflow_work_internal(Worker& w, Node* node) {
 
   cudaScopedDevice ctx(d);
   
-  auto s = cf._stream ? *(cf._stream) : 
-                        _cuda_devices[d].streams[w.id - _id_offset[w.domain]];
+  auto s = _cuda_devices[d].streams[w.id - _id_offset[w.domain]];
 
-  h.graph._make_native_graph();
+  h.graph._create_native_graph();
 
-  cudaGraphExec_t exec;
-
-  TF_CHECK_CUDA(
-    cudaGraphInstantiate(&exec, h.graph._native_handle, nullptr, nullptr, 0),
-    "failed to create an executable cudaGraph"
-  );
-  
   while(!cf._predicate()) {
     TF_CHECK_CUDA(
-      cudaGraphLaunch(exec, s), "failed to launch cudaGraph on stream ", s
+      cudaGraphLaunch(h.graph._native_exec_handle, s), 
+      "failed to launch cudaGraph on stream ", s
     );
 
     TF_CHECK_CUDA(
@@ -1043,12 +1109,8 @@ inline void Executor::_invoke_cudaflow_work_internal(Worker& w, Node* node) {
     );
   }
 
-  TF_CHECK_CUDA(
-    cudaGraphExecDestroy(exec), "failed to destroy an executable cudaGraph"
-  );
-
-  h.graph.clear_native_graph();
-}
+  h.graph._destroy_native_graph();
+}*/
 #endif
 
 // Procedure: _invoke_module_work
@@ -1283,6 +1345,34 @@ inline void Subflow::detach() {
   _joinable = false;
 }
 
+// ----------------------------------------------------------------------------
+// cudaFlow
+// ----------------------------------------------------------------------------
+
+#ifdef TF_ENABLE_CUDA
+
+template <typename P>
+void cudaFlow::offload(P&& predicate) {
+
+  if(!_joinable) {
+    TF_THROW("cudaFlow already joined");
+  }
+
+  _executor._invoke_cudaflow_work_external(*this, std::forward<P>(predicate));
+}
+
+template <typename P>
+void cudaFlow::join(P&& predicate) {
+
+  if(!_joinable) {
+    TF_THROW("cudaFlow already joined");
+  }
+
+  _executor._invoke_cudaflow_work_external(*this, std::forward<P>(predicate));
+  _joinable = false;
+}
+
+#endif
 
 }  // end of namespace tf -----------------------------------------------------
 

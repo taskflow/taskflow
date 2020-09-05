@@ -36,9 +36,10 @@ __global__ void k_single_add(T* ptr, int i, T value) {
 // Testcase: Builder
 // --------------------------------------------------------
 TEST_CASE("Builder" * doctest::timeout(300)) {
-
+  
+  tf::Executor E;
   tf::cudaGraph G;
-  tf::cudaFlow cf(G, [](){ return true; });
+  tf::cudaFlow cf(E, G, 0);
 
   int source = 1;
   int target = 1;
@@ -1239,7 +1240,7 @@ TEST_CASE("Predicate") {
     auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
     auto copy = cf.copy(cpu, gpu, n);
     kernel.precede(copy);
-    cf.predicate([i=100]() mutable { return i-- == 0; });
+    cf.join([i=100]() mutable { return i-- == 0; });
   });
 
   auto freetask = taskflow.emplace([&](){
@@ -1282,7 +1283,7 @@ TEST_CASE("Repeat") {
     auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
     auto copy = cf.copy(cpu, gpu, n);
     kernel.precede(copy);
-    cf.repeat(100);
+    cf.join([i=100]() mutable { return i-- == 0; });
   });
 
   auto freetask = taskflow.emplace([&](){
