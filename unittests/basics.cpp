@@ -111,8 +111,8 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
           REQUIRE(counter == i); counter += 1;}
         )
       );
-      if(i>0){
-        taskflow.precede(tasks[i-1], tasks[i]);
+      if(i>0) {
+        tasks[i-1].precede(tasks[i]);
       }
     }
     executor.run(taskflow).get();
@@ -126,8 +126,8 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
       silent_tasks.emplace_back(
         taskflow.emplace([&counter]() {REQUIRE(counter == -1);})
       );
+      src.precede(silent_tasks.back());
     }
-    taskflow.broadcast(src, silent_tasks);
     executor.run(taskflow).get();
     REQUIRE(counter == - 1);
     REQUIRE(taskflow.num_tasks() == num_tasks);
@@ -139,25 +139,28 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
       silent_tasks.emplace_back(
         taskflow.emplace([&counter]() {counter += 1;})
       );
+      dst.succeed(silent_tasks.back());
     }
-    taskflow.succeed(silent_tasks, dst);
     executor.run(taskflow).get();
     REQUIRE(counter == num_tasks - 1);
     REQUIRE(taskflow.num_tasks() == num_tasks);
   }
 
   SUBCASE("MapReduce"){
+
     auto src = taskflow.emplace([&counter]() {counter = 0;});
+    
+    auto dst = taskflow.emplace(
+      [&counter, num_tasks]() { REQUIRE(counter == num_tasks);}
+    );
+
     for(size_t i=0;i<num_tasks;i++){
       silent_tasks.emplace_back(
         taskflow.emplace([&counter]() {counter += 1;})
       );
+      src.precede(silent_tasks.back());
+      dst.succeed(silent_tasks.back());
     }
-    taskflow.broadcast(src, silent_tasks);
-    auto dst = taskflow.emplace(
-      [&counter, num_tasks]() { REQUIRE(counter == num_tasks);}
-    );
-    taskflow.succeed(silent_tasks, dst);
     executor.run(taskflow).get();
     REQUIRE(taskflow.num_tasks() == num_tasks + 2);
   }
@@ -184,13 +187,14 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
           REQUIRE(counter == i); counter += 1; }
         )
       );
+      src.precede(silent_tasks.back());
     }
-    taskflow.broadcast(src, silent_tasks);
     taskflow.linearize(silent_tasks);
     auto dst = taskflow.emplace(
       [&counter, num_tasks]() { REQUIRE(counter == num_tasks);}
     );
-    taskflow.succeed(silent_tasks, dst);
+
+    for(auto task : silent_tasks) dst.succeed(task);
     executor.run(taskflow).get();
     REQUIRE(taskflow.num_tasks() == num_tasks + 2);
   }

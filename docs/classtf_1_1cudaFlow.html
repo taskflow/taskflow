@@ -98,10 +98,6 @@ $(document).ready(function(){initNavTree('classtf_1_1cudaFlow.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af1260436038a5ac06b69daa6e0b6784e"><td class="memTemplParams" colspan="2">template&lt;typename P &gt; </td></tr>
-<tr class="memitem:af1260436038a5ac06b69daa6e0b6784e"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#af1260436038a5ac06b69daa6e0b6784e">cudaFlow</a> (cudaGraph &amp;graph, P &amp;&amp;p)</td></tr>
-<tr class="memdesc:af1260436038a5ac06b69daa6e0b6784e"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> builder object  <a href="#af1260436038a5ac06b69daa6e0b6784e">More...</a><br /></td></tr>
-<tr class="separator:af1260436038a5ac06b69daa6e0b6784e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1926f45a038d8faa9c1b1ee43fd29a93"><td class="memItemLeft" align="right" valign="top"><a id="a1926f45a038d8faa9c1b1ee43fd29a93"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a1926f45a038d8faa9c1b1ee43fd29a93">empty</a> () const</td></tr>
 <tr class="memdesc:a1926f45a038d8faa9c1b1ee43fd29a93"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the emptiness of the graph <br /></td></tr>
@@ -142,21 +138,36 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a2905a7772fb2c25753e1ae72bb05861b">device</a> () const</td></tr>
 <tr class="memdesc:a2905a7772fb2c25753e1ae72bb05861b"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the device associated with the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> <br /></td></tr>
 <tr class="separator:a2905a7772fb2c25753e1ae72bb05861b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ccc24918db4d63c50f26b68d17fd452"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a5ccc24918db4d63c50f26b68d17fd452">stream</a> (cudaStream_t stream)</td></tr>
-<tr class="memdesc:a5ccc24918db4d63c50f26b68d17fd452"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a stream to launch the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a>  <a href="#a5ccc24918db4d63c50f26b68d17fd452">More...</a><br /></td></tr>
-<tr class="separator:a5ccc24918db4d63c50f26b68d17fd452"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbd46a1ef9f5ae9e0848ccbefa1e65ee"><td class="memTemplParams" colspan="2">template&lt;typename P &gt; </td></tr>
-<tr class="memitem:adbd46a1ef9f5ae9e0848ccbefa1e65ee"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#adbd46a1ef9f5ae9e0848ccbefa1e65ee">predicate</a> (P &amp;&amp;p)</td></tr>
-<tr class="memdesc:adbd46a1ef9f5ae9e0848ccbefa1e65ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a predicate to loop the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> until the predicate is satisfied  <a href="#adbd46a1ef9f5ae9e0848ccbefa1e65ee">More...</a><br /></td></tr>
-<tr class="separator:adbd46a1ef9f5ae9e0848ccbefa1e65ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1eeebb4bbd6436a3145ff950ce282ac4"><td class="memItemLeft" align="right" valign="top"><a id="a1eeebb4bbd6436a3145ff950ce282ac4"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a1eeebb4bbd6436a3145ff950ce282ac4">repeat</a> (size_t n)</td></tr>
-<tr class="memdesc:a1eeebb4bbd6436a3145ff950ce282ac4"><td class="mdescLeft">&#160;</td><td class="mdescRight">repeats the execution of the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> by <code>n</code> times <br /></td></tr>
-<tr class="separator:a1eeebb4bbd6436a3145ff950ce282ac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ce0e99d47822886f8df6a3513fc2e32"><td class="memTemplParams" colspan="2">template&lt;typename I , typename C &gt; </td></tr>
-<tr class="memitem:a0ce0e99d47822886f8df6a3513fc2e32"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a0ce0e99d47822886f8df6a3513fc2e32">for_each_index</a> (I beg, I end, I step, C &amp;&amp;callable)</td></tr>
-<tr class="memdesc:a0ce0e99d47822886f8df6a3513fc2e32"><td class="mdescLeft">&#160;</td><td class="mdescRight">applies a callable to each dereferenced element of the data array  <a href="#a0ce0e99d47822886f8df6a3513fc2e32">More...</a><br /></td></tr>
-<tr class="separator:a0ce0e99d47822886f8df6a3513fc2e32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99358da15e3bdfa1faabb3e326130e1f"><td class="memTemplParams" colspan="2">template&lt;typename P &gt; </td></tr>
+<tr class="memitem:a99358da15e3bdfa1faabb3e326130e1f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a99358da15e3bdfa1faabb3e326130e1f">offload_until</a> (P &amp;&amp;predicate)</td></tr>
+<tr class="memdesc:a99358da15e3bdfa1faabb3e326130e1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">offloads the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> onto a GPU and repeatedly running it until the predicate becomes true  <a href="#a99358da15e3bdfa1faabb3e326130e1f">More...</a><br /></td></tr>
+<tr class="separator:a99358da15e3bdfa1faabb3e326130e1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2269fd7dc8ca04a294a718204703dad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#ac2269fd7dc8ca04a294a718204703dad">offload_n</a> (size_t N)</td></tr>
+<tr class="memdesc:ac2269fd7dc8ca04a294a718204703dad"><td class="mdescLeft">&#160;</td><td class="mdescRight">offloads the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> and executes it by the given times  <a href="#ac2269fd7dc8ca04a294a718204703dad">More...</a><br /></td></tr>
+<tr class="separator:ac2269fd7dc8ca04a294a718204703dad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85789ed8a1f47704cf1f1a2b98969444"><td class="memItemLeft" align="right" valign="top"><a id="a85789ed8a1f47704cf1f1a2b98969444"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a85789ed8a1f47704cf1f1a2b98969444">offload</a> ()</td></tr>
+<tr class="memdesc:a85789ed8a1f47704cf1f1a2b98969444"><td class="mdescLeft">&#160;</td><td class="mdescRight">offloads the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> once <br /></td></tr>
+<tr class="separator:a85789ed8a1f47704cf1f1a2b98969444"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea77b710bf74fb3ccc6043592d4cdbc7"><td class="memTemplParams" colspan="2">template&lt;typename P &gt; </td></tr>
+<tr class="memitem:aea77b710bf74fb3ccc6043592d4cdbc7"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#aea77b710bf74fb3ccc6043592d4cdbc7">join_until</a> (P &amp;&amp;predicate)</td></tr>
+<tr class="memdesc:aea77b710bf74fb3ccc6043592d4cdbc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">offloads the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> with the given stop predicate and then joins the execution  <a href="#aea77b710bf74fb3ccc6043592d4cdbc7">More...</a><br /></td></tr>
+<tr class="separator:aea77b710bf74fb3ccc6043592d4cdbc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b28ad99e4d3c0208422a2db094df277"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a9b28ad99e4d3c0208422a2db094df277">join_n</a> (size_t N)</td></tr>
+<tr class="memdesc:a9b28ad99e4d3c0208422a2db094df277"><td class="mdescLeft">&#160;</td><td class="mdescRight">offloads the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> by the given times and then joins the execution  <a href="#a9b28ad99e4d3c0208422a2db094df277">More...</a><br /></td></tr>
+<tr class="separator:a9b28ad99e4d3c0208422a2db094df277"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa479a33e555179c400ba2376b7c5f29"><td class="memItemLeft" align="right" valign="top"><a id="afa479a33e555179c400ba2376b7c5f29"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#afa479a33e555179c400ba2376b7c5f29">join</a> ()</td></tr>
+<tr class="memdesc:afa479a33e555179c400ba2376b7c5f29"><td class="mdescLeft">&#160;</td><td class="mdescRight">offloads the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> once and then joins the execution <br /></td></tr>
+<tr class="separator:afa479a33e555179c400ba2376b7c5f29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39a02c6ad4d335a318870d9e4eba562a"><td class="memTemplParams" colspan="2">template&lt;typename T , typename C &gt; </td></tr>
+<tr class="memitem:a39a02c6ad4d335a318870d9e4eba562a"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a39a02c6ad4d335a318870d9e4eba562a">for_each</a> (T *data, size_t N, C &amp;&amp;callable)</td></tr>
+<tr class="memdesc:a39a02c6ad4d335a318870d9e4eba562a"><td class="mdescLeft">&#160;</td><td class="mdescRight">applies a callable to each dereferenced element of the data array  <a href="#a39a02c6ad4d335a318870d9e4eba562a">More...</a><br /></td></tr>
+<tr class="separator:a39a02c6ad4d335a318870d9e4eba562a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5a7c12e383be4972844a9f29033e487"><td class="memTemplParams" colspan="2">template&lt;typename I , typename C &gt; </td></tr>
+<tr class="memitem:ab5a7c12e383be4972844a9f29033e487"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#ab5a7c12e383be4972844a9f29033e487">for_each_index</a> (I first, I last, I step, C &amp;&amp;callable)</td></tr>
+<tr class="memdesc:ab5a7c12e383be4972844a9f29033e487"><td class="mdescLeft">&#160;</td><td class="mdescRight">applies a callable to each index in the range with the step size  <a href="#ab5a7c12e383be4972844a9f29033e487">More...</a><br /></td></tr>
+<tr class="separator:ab5a7c12e383be4972844a9f29033e487"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56d0389eeca479ba73419bc011c1a23e"><td class="memTemplParams" colspan="2">template&lt;typename T , typename C , typename... S&gt; </td></tr>
 <tr class="memitem:a56d0389eeca479ba73419bc011c1a23e"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a56d0389eeca479ba73419bc011c1a23e">transform</a> (T *tgt, size_t N, C &amp;&amp;callable, S *... srcs)</td></tr>
 <tr class="memdesc:a56d0389eeca479ba73419bc011c1a23e"><td class="mdescLeft">&#160;</td><td class="mdescRight">applies a callable to a source range and stores the result in a target ange  <a href="#a56d0389eeca479ba73419bc011c1a23e">More...</a><br /></td></tr>
@@ -171,53 +182,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></t
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>methods for building a CUDA task dependency graph. </p>
 <p>A <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> is a high-level interface to manipulate GPU tasks using the task dependency graph model. The class provides a set of methods for creating and launch different tasks on one or multiple CUDA devices, for instance, kernel tasks, data transfer tasks, and memory operation tasks. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="af1260436038a5ac06b69daa6e0b6784e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af1260436038a5ac06b69daa6e0b6784e">&#9670;&nbsp;</a></span>cudaFlow()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename P &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">tf::cudaFlow::cudaFlow </td>
-          <td>(</td>
-          <td class="paramtype">cudaGraph &amp;&#160;</td>
-          <td class="paramname"><em>graph</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">P &amp;&amp;&#160;</td>
-          <td class="paramname"><em>p</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>constructs a <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> builder object </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">P</td><td>predicate type</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">graph</td><td>a cudaGraph to manipulate </td></tr>
-    <tr><td class="paramname">p</td><td>predicate which return <code>true</code> if the launching should be contined </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="af03e04771b655f9e629eb4c22e19b19f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af03e04771b655f9e629eb4c22e19b19f">&#9670;&nbsp;</a></span>copy()</h2>
 
@@ -359,31 +324,25 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a0ce0e99d47822886f8df6a3513fc2e32"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0ce0e99d47822886f8df6a3513fc2e32">&#9670;&nbsp;</a></span>for_each_index()</h2>
+<a id="a39a02c6ad4d335a318870d9e4eba562a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39a02c6ad4d335a318870d9e4eba562a">&#9670;&nbsp;</a></span>for_each()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename I , typename C &gt; </div>
+template&lt;typename T , typename C &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> tf::cudaFlow::for_each_index </td>
+          <td class="memname"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> tf::cudaFlow::for_each </td>
           <td>(</td>
-          <td class="paramtype">I&#160;</td>
-          <td class="paramname"><em>beg</em>, </td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">I&#160;</td>
-          <td class="paramname"><em>end</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">I&#160;</td>
-          <td class="paramname"><em>step</em>, </td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>N</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -416,7 +375,137 @@ template&lt;typename I , typename C &gt; </div>
   </dd>
 </dl>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p>
-<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i=0; i&lt;N; i++) {</div><div class="line">  callable(data[i]);</div><div class="line">}</div><div class="line"> /</div><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> C&gt;</div><div class="line">cudaTask <a class="codeRef" doxygen="/home/tsung-wei/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/algorithm/for_each.html">for_each</a>(T* data, <span class="keywordtype">size_t</span> N, C&amp;&amp; callable);</div><div class="line"></div></div><!-- fragment --> 
+<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i=0; i&lt;N; i++) {</div><div class="line">  callable(data[i]);</div><div class="line">}</div></div><!-- fragment --> 
+</div>
+</div>
+<a id="ab5a7c12e383be4972844a9f29033e487"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5a7c12e383be4972844a9f29033e487">&#9670;&nbsp;</a></span>for_each_index()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename I , typename C &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> tf::cudaFlow::for_each_index </td>
+          <td>(</td>
+          <td class="paramtype">I&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">I&#160;</td>
+          <td class="paramname"><em>last</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">I&#160;</td>
+          <td class="paramname"><em>step</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">C &amp;&amp;&#160;</td>
+          <td class="paramname"><em>callable</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>applies a callable to each index in the range with the step size </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">I</td><td>index type </td></tr>
+    <tr><td class="paramname">C</td><td>callable type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>beginning index </td></tr>
+    <tr><td class="paramname">last</td><td>last index </td></tr>
+    <tr><td class="paramname">step</td><td>step size </td></tr>
+    <tr><td class="paramname">callable</td><td>the callable to apply to each element in the data array</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p>
+<div class="fragment"><div class="line"><span class="comment">// step is positive &lt;tt&gt;[first, last)&lt;/tt&gt;</span></div><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first; i&lt;last; i+=step) {</div><div class="line">  callable(i);</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// step is negative &lt;tt&gt;[first, last)&lt;/tt&gt;</span></div><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first; i&gt;last; i+=step) {</div><div class="line">  callable(i);</div><div class="line">}</div></div><!-- fragment --> 
+</div>
+</div>
+<a id="a9b28ad99e4d3c0208422a2db094df277"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b28ad99e4d3c0208422a2db094df277">&#9670;&nbsp;</a></span>join_n()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tf::cudaFlow::join_n </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>N</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>offloads the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> by the given times and then joins the execution </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">N</td><td>number of executions </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aea77b710bf74fb3ccc6043592d4cdbc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea77b710bf74fb3ccc6043592d4cdbc7">&#9670;&nbsp;</a></span>join_until()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename P &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void tf::cudaFlow::join_until </td>
+          <td>(</td>
+          <td class="paramtype">P &amp;&amp;&#160;</td>
+          <td class="paramname"><em>predicate</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>offloads the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> with the given stop predicate and then joins the execution </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">P</td><td>predicate type (a binary callable)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">predicate</td><td>a binary predicate (returns <code>true</code> for stop)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Immediately offloads the present <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> onto a GPU and repeatedly executes it until the predicate returns <code>true</code>. When execution finishes, the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> is joined. A joined cudaflow becomes invalid and cannot take other operations. </p>
+
 </div>
 </div>
 <a id="adb731be71bdd436dfb5e36e6213a9a17"></a>
@@ -697,43 +786,8 @@ template&lt;typename F , typename... ArgsT&gt; </div>
 
 </div>
 </div>
-<a id="adbd46a1ef9f5ae9e0848ccbefa1e65ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adbd46a1ef9f5ae9e0848ccbefa1e65ee">&#9670;&nbsp;</a></span>predicate()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename P &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void tf::cudaFlow::predicate </td>
-          <td>(</td>
-          <td class="paramtype">P &amp;&amp;&#160;</td>
-          <td class="paramname"><em>p</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>assigns a predicate to loop the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> until the predicate is satisfied </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">P</td><td>predicate type </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">p</td><td>predicate which return <code>true</code> if the launching should be contined</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>The execution of <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> is equivalent to: <code>while(!predicate()) { run cudaflow; }</code> </p>
-
-</div>
-</div>
-<a id="a5ccc24918db4d63c50f26b68d17fd452"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5ccc24918db4d63c50f26b68d17fd452">&#9670;&nbsp;</a></span>stream()</h2>
+<a id="ac2269fd7dc8ca04a294a718204703dad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2269fd7dc8ca04a294a718204703dad">&#9670;&nbsp;</a></span>offload_n()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -742,10 +796,10 @@ template&lt;typename P &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void tf::cudaFlow::stream </td>
+          <td class="memname">void tf::cudaFlow::offload_n </td>
           <td>(</td>
-          <td class="paramtype">cudaStream_t&#160;</td>
-          <td class="paramname"><em>stream</em></td><td>)</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>N</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -756,13 +810,48 @@ template&lt;typename P &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>assigns a stream to launch the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">stream</td><td>target stream identifier </td></tr>
+<p>offloads the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> and executes it by the given times </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">N</td><td>number of executions </td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a99358da15e3bdfa1faabb3e326130e1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99358da15e3bdfa1faabb3e326130e1f">&#9670;&nbsp;</a></span>offload_until()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename P &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void tf::cudaFlow::offload_until </td>
+          <td>(</td>
+          <td class="paramtype">P &amp;&amp;&#160;</td>
+          <td class="paramname"><em>predicate</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>offloads the <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> onto a GPU and repeatedly running it until the predicate becomes true </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">P</td><td>predicate type (a binary callable)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">predicate</td><td>a binary predicate (returns <code>true</code> for stop)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Immediately offloads the present <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> onto a GPU and repeatedly executes it until the predicate returns <code>true</code>. </p>
 
 </div>
 </div>
@@ -874,8 +963,9 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="cuda__flow_8hpp_source.html">cuda_flow.hpp</a></li>
+<li><a class="el" href="executor_8hpp_source.html">executor.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

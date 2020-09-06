@@ -1008,7 +1008,7 @@ inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
 
   h.graph.clear();
 
-  cudaFlow cf(*this, h.graph, 0);
+  cudaFlow cf(*this, h.graph);
 
   h.work(cf); 
   
@@ -1032,10 +1032,14 @@ void Executor::_invoke_cudaflow_work_internal(
   if(cf.empty()) {
     return;
   }
+    
+  auto d = cf._device == -1 ? 
+           (w.id - _id_offset[w.domain]) % _cuda_devices.size() :
+           cf._device;
 
-  cudaScopedDevice ctx(cf._device);
+  cudaScopedDevice ctx(d);
   
-  auto s = _cuda_devices[cf._device].streams[w.id - _id_offset[w.domain]];
+  auto s = _cuda_devices[d].streams[w.id - _id_offset[w.domain]];
   
   // transforms cudaFlow to a native cudaGraph under the specified device
   // and launches the graph through a given or an internal device stream
@@ -1047,13 +1051,13 @@ void Executor::_invoke_cudaflow_work_internal(
   while(!predicate()) {
 
     TF_CHECK_CUDA(
-      cudaGraphLaunch(cf._graph._native_exec_handle, s), 
-      "failed to launch cudaFlow on device ", cf._device
+      cudaGraphLaunch(cf._graph._native_handle.image, s), 
+      "failed to launch cudaFlow on device ", d
     );
 
     TF_CHECK_CUDA(
       cudaStreamSynchronize(s), 
-      "failed to synchronize cudaFlow on device ", cf._device
+      "failed to synchronize cudaFlow on device ", d
     );
   }
 
@@ -1070,47 +1074,6 @@ void Executor::_invoke_cudaflow_work_external(cudaFlow& cf, P&& predicate) {
 
   _invoke_cudaflow_work_internal(*w, cf, std::forward<P>(predicate));
 }
-
-/*// Procedure: _invoke_cudaflow_work_internal
-inline void Executor::_invoke_cudaflow_work_internal(Worker& w, Node* node) {
-  
-  assert(w.domain == node->domain());
-
-  auto& h = nstd::get<Node::cudaFlowWork>(node->_handle);
-
-  h.graph.clear();
-
-  cudaFlow cf(*this, h.graph, 0, [repeat=1] () mutable { return repeat-- == 0; });
-
-  h.work(cf); 
-
-  if(h.graph.empty()) {
-    return;
-  }
-  
-  // transforms cudaFlow to a native cudaGraph under the specified device
-  // and launches the graph through a given or an internal device stream
-  const int d = cf._device;
-
-  cudaScopedDevice ctx(d);
-  
-  auto s = _cuda_devices[d].streams[w.id - _id_offset[w.domain]];
-
-  h.graph._create_native_graph();
-
-  while(!cf._predicate()) {
-    TF_CHECK_CUDA(
-      cudaGraphLaunch(h.graph._native_exec_handle, s), 
-      "failed to launch cudaGraph on stream ", s
-    );
-
-    TF_CHECK_CUDA(
-      cudaStreamSynchronize(s), "failed to synchronize stream ", s
-    );
-  }
-
-  h.graph._destroy_native_graph();
-}*/
 #endif
 
 // Procedure: _invoke_module_work
@@ -1351,8 +1314,9 @@ inline void Subflow::detach() {
 
 #ifdef TF_ENABLE_CUDA
 
+// Procedure: offload_until
 template <typename P>
-void cudaFlow::offload(P&& predicate) {
+void cudaFlow::offload_until(P&& predicate) {
 
   if(!_joinable) {
     TF_THROW("cudaFlow already joined");
@@ -1361,8 +1325,19 @@ void cudaFlow::offload(P&& predicate) {
   _executor._invoke_cudaflow_work_external(*this, std::forward<P>(predicate));
 }
 
+// Procedure: offload_n
+inline void cudaFlow::offload_n(size_t n) {
+  offload_until([repeat=n] () mutable { return repeat-- == 0; });
+}
+
+// Procedure: offload
+inline void cudaFlow::offload() {
+  offload_until([repeat=1] () mutable { return repeat-- == 0; });
+}
+
+// Procedure: join_until
 template <typename P>
-void cudaFlow::join(P&& predicate) {
+void cudaFlow::join_until(P&& predicate) {
 
   if(!_joinable) {
     TF_THROW("cudaFlow already joined");
@@ -1371,6 +1346,17 @@ void cudaFlow::join(P&& predicate) {
   _executor._invoke_cudaflow_work_external(*this, std::forward<P>(predicate));
   _joinable = false;
 }
+
+// Procedure: join_n
+inline void cudaFlow::join_n(size_t n) {
+  join_until([repeat=n] () mutable { return repeat-- == 0; });
+}
+
+// Procedure: join
+inline void cudaFlow::join() {
+  join_until([repeat=1] () mutable { return repeat-- == 0; });
+}
+
 
 #endif
 

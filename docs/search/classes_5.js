@@ -15,7 +15,6 @@ var searchData=
   ['front_5finsert_5fiterator',['front_insert_iterator',['http://en.cppreference.com/w/cpp/iterator/front_insert_iterator.html',1,'std']]],
   ['fstream',['fstream',['http://en.cppreference.com/w/cpp/io/basic_fstream.html',1,'std']]],
   ['function',['function',['http://en.cppreference.com/w/cpp/utility/functional/function.html',1,'std']]],
-  ['function_3c_20bool_28_29_3e',['function&lt; bool()&gt;',['http://en.cppreference.com/w/cpp/utility/functional/function.html',1,'std']]],
   ['future',['future',['http://en.cppreference.com/w/cpp/thread/future.html',1,'std']]],
   ['future_5ferror',['future_error',['http://en.cppreference.com/w/cpp/thread/future_error.html',1,'std']]]
 ];

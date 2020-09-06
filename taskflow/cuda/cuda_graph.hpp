@@ -114,6 +114,11 @@ class cudaGraph {
   friend class Taskflow;
   friend class Executor;
 
+  struct NativeHandle {
+    cudaGraph_t graph {nullptr};
+    cudaGraphExec_t image {nullptr};
+  };
+
   public:
 
     ~cudaGraph();
@@ -127,8 +132,7 @@ class cudaGraph {
 
   private:
     
-    cudaGraph_t _native_handle {nullptr};
-    cudaGraphExec_t _native_exec_handle {nullptr};
+    NativeHandle _native_handle;
 
     std::vector<std::unique_ptr<cudaNode>> _nodes;
 
@@ -199,18 +203,20 @@ inline void cudaGraph::clear() {
 
 // Procedure: clear the cudaGraph
 inline void cudaGraph::_destroy_native_graph() {
-  if(_native_handle) {
+  if(_native_handle.graph) {
     TF_CHECK_CUDA(
-      cudaGraphExecDestroy(_native_exec_handle), "failed to destroy the executable graph"
+      cudaGraphExecDestroy(_native_handle.image), 
+      "failed to destroy the native image"
     );
-    _native_exec_handle = nullptr;
+    _native_handle.image = nullptr;
 
     TF_CHECK_CUDA(
-      cudaGraphDestroy(_native_handle), "failed to destroy a cudaGraph on clear"
+      cudaGraphDestroy(_native_handle.graph), 
+      "failed to destroy the native graph"
     );
-    _native_handle = nullptr;
+    _native_handle.graph = nullptr;
   }
-  assert(_native_exec_handle == nullptr);
+  assert(_native_handle.image == nullptr);
 }
     
 // Function: emplace_back
@@ -221,20 +227,20 @@ cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
   return _nodes.back().get();
 }
 
-
 // Procedure: _create_native_graph
 inline void cudaGraph::_create_native_graph() {
 
-  assert(_native_handle == nullptr);
+  assert(_native_handle.graph == nullptr);
 
   TF_CHECK_CUDA(
-    cudaGraphCreate(&_native_handle, 0), "failed to create a cudaGraph"
+    cudaGraphCreate(&_native_handle.graph, 0), 
+    "failed to create a native graph"
   );
 
   // create nodes
   for(auto& node : _nodes) {
     assert(node->_native_handle == nullptr);
-    node->_create_native_node(_native_handle, node->_native_handle);
+    node->_create_native_node(_native_handle.graph, node->_native_handle);
   }
 
   // create edges
@@ -242,7 +248,7 @@ inline void cudaGraph::_create_native_graph() {
     for(auto succ : node->_successors){
       TF_CHECK_CUDA(
         ::cudaGraphAddDependencies(
-          _native_handle, &(node->_native_handle), &(succ->_native_handle), 1
+          _native_handle.graph, &(node->_native_handle), &(succ->_native_handle), 1
         ),
         "failed to add a preceding link"
       );
@@ -251,7 +257,9 @@ inline void cudaGraph::_create_native_graph() {
   
   // create the executable handle
   TF_CHECK_CUDA(
-    cudaGraphInstantiate(&_native_exec_handle, _native_handle, nullptr, nullptr, 0),
+    cudaGraphInstantiate(
+      &_native_handle.image, _native_handle.graph, nullptr, nullptr, 0
+    ),
     "failed to create an executable cudaGraph"
   );
 }

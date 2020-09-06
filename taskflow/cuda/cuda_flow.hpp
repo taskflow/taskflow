@@ -28,14 +28,6 @@ class cudaFlow {
   friend class Executor;
 
   public:
-    
-    /**
-    @brief constructs a cudaFlow builder object
-
-    @param graph a cudaGraph to manipulate
-    @param p predicate which return @c true if the launching should be contined
-    */
-    cudaFlow(Executor& executor, cudaGraph& graph, int d);
 
     /**
     @brief queries the emptiness of the graph
@@ -189,6 +181,8 @@ class cudaFlow {
     /**
     @brief assigns a device to launch the cudaFlow
 
+    A cudaFlow can only be assigned to a device once.
+
     @param device target device identifier
     */
     void device(int device);
@@ -199,20 +193,8 @@ class cudaFlow {
     int device() const;
 
     /**
-    @brief offloads the cudaFlow onto a GPU
-    
-    @tparam P predicate type (a binary callable)
-
-    @param predicate a binary predicate (returns @c true for stop)
-
-    Immediately offloads the present cudaFlow onto a GPU and
-    repeatedly executes it until the predicate returns @c true.
-    */
-    template <typename P>
-    void offload(P&& predicate);
-
-    /**
-    @brief offloads the cudaFlow and then joins the execution
+    @brief offloads the cudaFlow with the given stop predicate and then 
+    joins the execution
 
     @tparam P predicate type (a binary callable)
 
@@ -224,7 +206,19 @@ class cudaFlow {
     A joined cudaflow becomes invalid and cannot take other operations.
     */
     template <typename P>
-    void join(P&& predicate);
+    void join_until(P&& predicate);
+
+    /**
+    @brief offloads the cudaFlow by the given times and then joins the execution
+
+    @tparam N number of executions
+    */
+    void join_n(size_t N);
+
+    /**
+    @brief offloads the cudaFlow once and then joins the execution
+    */
+    void join();
     
     // ------------------------------------------------------------------------
     // generic operations
@@ -246,6 +240,7 @@ class cudaFlow {
     for(size_t i=0; i<N; i++) {
       callable(data[i]);
     }
+    @endcode
     */
     template <typename T, typename C>
     cudaTask for_each(T* data, size_t N, C&& callable);
@@ -276,7 +271,7 @@ class cudaFlow {
     @endcode
     */
     template <typename I, typename C>
-    cudaTask for_each_index(I beg, I end, I step, C&& callable);
+    cudaTask for_each_index(I first, I last, I step, C&& callable);
   
     /**
     @brief applies a callable to a source range and stores the result in a target ange
@@ -303,19 +298,48 @@ class cudaFlow {
 
   private:
     
+    cudaFlow(Executor& executor, cudaGraph& graph);
+    
     Executor& _executor;
     cudaGraph& _graph;
     
-    int _device {0};
+    int _device {-1};
 
     bool _joinable {true};
+    
+    // ---- working items 
+
+    /**
+    @brief offloads the cudaFlow onto a GPU and repeatedly running it until 
+    the predicate becomes true
+    
+    @tparam P predicate type (a binary callable)
+
+    @param predicate a binary predicate (returns @c true for stop)
+
+    Immediately offloads the present cudaFlow onto a GPU and
+    repeatedly executes it until the predicate returns @c true.
+    */
+    template <typename P>
+    void offload_until(P&& predicate);
+    
+    /**
+    @brief offloads the cudaFlow and executes it by the given times
+
+    @tparam N number of executions
+    */
+    void offload_n(size_t N);
+
+    /**
+    @brief offloads the cudaFlow once
+    */
+    void offload();
 };
 
 // Constructor
-inline cudaFlow::cudaFlow(Executor& e, cudaGraph& g, int d) : 
+inline cudaFlow::cudaFlow(Executor& e, cudaGraph& g) : 
   _executor  {e},
-  _graph     {g},
-  _device    {d} {
+  _graph     {g} {
 }
 
 // Function: empty
@@ -325,6 +349,9 @@ inline bool cudaFlow::empty() const {
 
 // Procedure: device
 inline void cudaFlow::device(int d) {
+  if(_device != -1) {
+    TF_THROW("cudaFlow has been assigned to device ", _device); 
+  }
   _device = d;
 }
 
@@ -575,7 +602,7 @@ inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
   );
   return cudaTask(node);
 }
-
+    
 // Function: for_each
 template <typename T, typename C>
 cudaTask cudaFlow::for_each(T* data, size_t N, C&& c) {

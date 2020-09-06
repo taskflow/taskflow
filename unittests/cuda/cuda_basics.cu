@@ -33,38 +33,6 @@ __global__ void k_single_add(T* ptr, int i, T value) {
 }
 
 // --------------------------------------------------------
-// Testcase: Builder
-// --------------------------------------------------------
-TEST_CASE("Builder" * doctest::timeout(300)) {
-  
-  tf::Executor E;
-  tf::cudaGraph G;
-  tf::cudaFlow cf(E, G, 0);
-
-  int source = 1;
-  int target = 1;
-
-  auto copy1 = cf.copy(&target, &source, 1).name("copy1");
-  auto copy2 = cf.copy(&target, &source, 1).name("copy2");
-  auto copy3 = cf.copy(&target, &source, 1).name("copy3");
-
-  REQUIRE(copy1.name() == "copy1");
-  REQUIRE(copy2.name() == "copy2");
-  REQUIRE(copy3.name() == "copy3");
-
-  REQUIRE(!copy1.empty());
-  REQUIRE(!copy2.empty());
-  REQUIRE(!copy3.empty());
-  
-  copy1.precede(copy2);
-  copy2.succeed(copy3);
-
-  REQUIRE(copy1.num_successors() == 1);
-  REQUIRE(copy2.num_successors() == 0);
-  REQUIRE(copy3.num_successors() == 1);
-}
-
-// --------------------------------------------------------
 // Testcase: Empty
 // --------------------------------------------------------
 
@@ -1240,7 +1208,7 @@ TEST_CASE("Predicate") {
     auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
     auto copy = cf.copy(cpu, gpu, n);
     kernel.precede(copy);
-    cf.join([i=100]() mutable { return i-- == 0; });
+    cf.join_until([i=100]() mutable { return i-- == 0; });
   });
 
   auto freetask = taskflow.emplace([&](){
@@ -1283,7 +1251,7 @@ TEST_CASE("Repeat") {
     auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
     auto copy = cf.copy(cpu, gpu, n);
     kernel.precede(copy);
-    cf.join([i=100]() mutable { return i-- == 0; });
+    cf.join_n(100);
   });
 
   auto freetask = taskflow.emplace([&](){

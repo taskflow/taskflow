@@ -1,8 +1,6 @@
 var classtf_1_1FlowBuilder =
 [
     [ "FlowBuilder", "classtf_1_1FlowBuilder.html#a67d023d5493da1594a1d2eaea89da179", null ],
-    [ "broadcast", "classtf_1_1FlowBuilder.html#a3be7d982efad780eb6adbd1cf11a3d97", null ],
-    [ "broadcast", "classtf_1_1FlowBuilder.html#add973c333ea0d51dcefd5ebaef71cff8", null ],
     [ "composed_of", "classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9", null ],
     [ "emplace", "classtf_1_1FlowBuilder.html#a796e29175380f70246cf2a5639adc437", null ],
     [ "emplace", "classtf_1_1FlowBuilder.html#af349d76d7a731b35c7a67c186908ee36", null ],
@@ -20,13 +18,10 @@ var classtf_1_1FlowBuilder =
     [ "linearize", "classtf_1_1FlowBuilder.html#a90f3d9b9d6fcf4df8e7d7878dfdd130d", null ],
     [ "linearize", "classtf_1_1FlowBuilder.html#a4ec89b554d15ad5fb96f4fdb10dbbb16", null ],
     [ "placeholder", "classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf", null ],
-    [ "precede", "classtf_1_1FlowBuilder.html#af7c4a5d732d49bd63d554a92cd240f3f", null ],
     [ "reduce", "classtf_1_1FlowBuilder.html#ad999cd75045db225a42d5881d6db1223", null ],
     [ "reduce_dynamic", "classtf_1_1FlowBuilder.html#a83ec799606b7526787761acf27885b00", null ],
     [ "reduce_guided", "classtf_1_1FlowBuilder.html#a10f13b39b02038c6850aca787923d668", null ],
     [ "reduce_static", "classtf_1_1FlowBuilder.html#a54e36c916ae7dd88bd079d3fd49119f9", null ],
-    [ "succeed", "classtf_1_1FlowBuilder.html#a963e239f17485d0e05a2477f0732df09", null ],
-    [ "succeed", "classtf_1_1FlowBuilder.html#a53927b2b4198b29568f20c43d21ad526", null ],
     [ "transform_reduce", "classtf_1_1FlowBuilder.html#ad8d03524f15292610ebee63d53b89579", null ],
     [ "transform_reduce_dynamic", "classtf_1_1FlowBuilder.html#a6fb87774919f4a570ac505cdcda48249", null ],
     [ "transform_reduce_guided", "classtf_1_1FlowBuilder.html#aa102a40672a331643944cb17c2377118", null ],

@@ -72,7 +72,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"cuda__task_8hpp_source.html"
+"dreamplace.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

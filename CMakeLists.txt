@@ -732,7 +732,6 @@ target_link_libraries(
 )
 target_include_directories(cuda_basics PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
 set(TF_UTEST_CUDA_BASICS ${TF_UTEST_DIR}/cuda/cuda_basics)
-add_test(cuda_basics.builder ${TF_UTEST_CUDA_BASICS} -tc=Builder)
 add_test(cuda_basics.worker_id.1C1G ${TF_UTEST_CUDA_BASICS} -tc=WorkerID.1C1G)
 add_test(cuda_basics.worker_id.1C2G ${TF_UTEST_CUDA_BASICS} -tc=WorkerID.1C2G)
 add_test(cuda_basics.worker_id.1C3G ${TF_UTEST_CUDA_BASICS} -tc=WorkerID.1C3G)
