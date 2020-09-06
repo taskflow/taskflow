@@ -15,11 +15,11 @@ __global__ void cuda_for_each(T* data, size_t N, F functor) {
   if (i < N) {
     functor(data[i]);
   }
+}
 
 // ----------------------------------------------------------------------------
 // for_each
 // ----------------------------------------------------------------------------
-}
 
 // Kernel: for_each_index
 template <typename I, typename F>
