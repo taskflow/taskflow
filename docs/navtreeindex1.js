@@ -1,8 +1,5 @@
 var NAVTREEINDEX1 =
 {
-"dreamplace.html":[6,1],
-"dreamplace.html#UseCasesDreamPlace":[6,1,0],
-"dreamplace.html#UseCasesDreamPlaceConclusion":[6,1,3],
 "dreamplace.html#UseCasesDreamPlacePerformance":[6,1,2],
 "dreamplace.html#UseCasesDreamPlaceProgrammingEffort":[6,1,1],
 "dreamplace.html#UseCasesDreamPlaceReferences":[6,1,4],

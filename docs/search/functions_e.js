@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['offload',['offload',['../classtf_1_1cudaFlow.html#a85789ed8a1f47704cf1f1a2b98969444',1,'tf::cudaFlow']]],
-  ['offload_5fn',['offload_n',['../classtf_1_1cudaFlow.html#ac2269fd7dc8ca04a294a718204703dad',1,'tf::cudaFlow']]],
-  ['offload_5funtil',['offload_until',['../classtf_1_1cudaFlow.html#a99358da15e3bdfa1faabb3e326130e1f',1,'tf::cudaFlow']]],
   ['ofstream',['ofstream',['http://en.cppreference.com/w/cpp/io/basic_ofstream/basic_ofstream.html',1,'std::ofstream']]],
   ['on_5fentry',['on_entry',['../classtf_1_1ObserverInterface.html#afa57654edd6d0fcf188a6064823f3048',1,'tf::ObserverInterface']]],
   ['on_5fexit',['on_exit',['../classtf_1_1ObserverInterface.html#a8fcff02bfcea581d280e4de0247760d3',1,'tf::ObserverInterface']]],
