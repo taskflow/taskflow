@@ -1033,9 +1033,7 @@ void Executor::_invoke_cudaflow_work_internal(
     return;
   }
     
-  auto d = cf._device == -1 ? 
-           (w.id - _id_offset[w.domain]) % _cuda_devices.size() :
-           cf._device;
+  auto d = (cf._device == -1) ? 0 : cf._device;
 
   cudaScopedDevice ctx(d);
   
