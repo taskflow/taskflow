@@ -163,6 +163,19 @@ or from the execution of a task.
 Our scheduler autonomously detects whether the async task is submitted 
 from an external thread or a worker thread and executes it in the work-stealing loop.
 
+@code{.cpp}
+taskflow.emplace([&](){
+  // do some work
+  // ...
+  // launch a task asynchronously
+  executor.async([](){
+    // do another asynchronous work 
+  })
+});
+executor.run(taskflow);
+executor.wait_for_all();   // wait for all tasks to finish
+@endcode
+
 
 @section C2_Observer Observe Thread Activities
 

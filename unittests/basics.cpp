@@ -2765,14 +2765,14 @@ void async(unsigned W) {
 
   tf::Executor executor(W);
 
-  std::vector<std::future<int>> fu1s;
+  std::vector<std::future<int>> fu;
 
   std::atomic<int> counter(0);
   
   int N = 100000;
 
   for(int i=0; i<N; ++i) {
-    fu1s.emplace_back(executor.async([&](){
+    fu.emplace_back(executor.async([&](){
       counter.fetch_add(1, std::memory_order_relaxed);
       return -2;
     }));
@@ -2783,7 +2783,7 @@ void async(unsigned W) {
   REQUIRE(counter == N);
   
   int c = 0; 
-  for(auto& fu : fu1s) {
+  for(auto& fu : fu) {
     c += fu.get();
   }
 
@@ -2818,14 +2818,14 @@ void nested_async(unsigned W) {
 
   tf::Executor executor(W);
 
-  std::vector<std::future<int>> fu1s;
+  std::vector<std::future<int>> fu;
 
   std::atomic<int> counter(0);
   
   int N = 100000;
 
   for(int i=0; i<N; ++i) {
-    fu1s.emplace_back(executor.async([&](){
+    fu.emplace_back(executor.async([&](){
       counter.fetch_add(1, std::memory_order_relaxed);
       executor.async([&](){
         counter.fetch_add(1, std::memory_order_relaxed);
@@ -2845,7 +2845,7 @@ void nested_async(unsigned W) {
   REQUIRE(counter == 4*N);
   
   int c = 0; 
-  for(auto& fu : fu1s) {
+  for(auto& fu : fu) {
     c += fu.get();
   }
 
@@ -2871,4 +2871,75 @@ TEST_CASE("NestedAsync.8threads" * doctest::timeout(300)) {
 TEST_CASE("NestedAsync.16threads" * doctest::timeout(300)) {
   nested_async(16);  
 }
+
+// --------------------------------------------------------
+// Testcase: MixedAsync
+// --------------------------------------------------------
+
+void mixed_async(unsigned W) {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  std::atomic<int> counter(0);
+
+  int N = 1000;
+  
+  for(int i=0; i<N; i=i+1) {
+    tf::Task A, B, C, D;
+    std::tie(A, B, C, D) = taskflow.emplace(
+      [&] () {
+        executor.async([&](){
+          counter.fetch_add(1, std::memory_order_relaxed);
+        });
+      },
+      [&] () {
+        executor.async([&](){
+          counter.fetch_add(1, std::memory_order_relaxed);
+        });
+      },
+      [&] () {
+        executor.async([&](){
+          counter.fetch_add(1, std::memory_order_relaxed);
+        });
+      },
+      [&] () {
+        executor.async([&](){
+          counter.fetch_add(1, std::memory_order_relaxed);
+        });
+      }
+    );
+
+    A.precede(B, C);
+    D.succeed(B, C);
+  }
+  
+  executor.run(taskflow);
+  executor.wait_for_all();
+
+  REQUIRE(counter == 4*N);
+
+}
+
+TEST_CASE("MixedAsync.1thread" * doctest::timeout(300)) {
+  mixed_async(1);  
+}
+
+TEST_CASE("MixedAsync.2threads" * doctest::timeout(300)) {
+  mixed_async(2);  
+}
+
+TEST_CASE("MixedAsync.4threads" * doctest::timeout(300)) {
+  mixed_async(4);  
+}
+
+TEST_CASE("MixedAsync.8threads" * doctest::timeout(300)) {
+  mixed_async(8);  
+}
+
+TEST_CASE("MixedAsync.16threads" * doctest::timeout(300)) {
+  mixed_async(16);  
+}
+
+
 

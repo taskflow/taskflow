@@ -553,6 +553,11 @@ add_test(nested_async.2threads ${TF_UTEST_BASICS} -tc=NestedAsync.2threads)
 add_test(nested_async.4threads ${TF_UTEST_BASICS} -tc=NestedAsync.4threads)
 add_test(nested_async.8threads ${TF_UTEST_BASICS} -tc=NestedAsync.8threads)
 add_test(nested_async.16threads ${TF_UTEST_BASICS} -tc=NestedAsync.16threads)
+add_test(mixed_async.1thread ${TF_UTEST_BASICS} -tc=MixedAsync.1thread)
+add_test(mixed_async.2threads ${TF_UTEST_BASICS} -tc=MixedAsync.2threads)
+add_test(mixed_async.4threads ${TF_UTEST_BASICS} -tc=MixedAsync.4threads)
+add_test(mixed_async.8threads ${TF_UTEST_BASICS} -tc=MixedAsync.8threads)
+add_test(mixed_async.16threads ${TF_UTEST_BASICS} -tc=MixedAsync.16threads)
 
 # unittest for algorithm
 add_executable(algorithm ${TF_UTEST_DIR}/algorithm.cpp)
