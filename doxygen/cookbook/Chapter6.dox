@@ -125,12 +125,11 @@ You can run a %cudaFlow on multiple GPUs by explicitly associating a %cudaFlow o
 with a CUDA device.
 A CUDA device is an integer number in the range of <tt>[0, N)</tt> 
 representing the identifier of a GPU, where @c N is the number of GPUs in a system.
-The code below creates a %cudaFlow that runs on the GPU device 2 through @c my_stream.
+The code below creates a %cudaFlow that runs on the GPU device.
 
 @code{.cpp}
 taskflow.emplace([](tf::cudaFlow& cf) {
   cf.device(2);
-  cf.stream(my_stream);  // by default, a cudaFlow runs on a per-worker stream managed by the executor
   // adding more cudaTasks below (all tasks are placed on GPU 2 unless specified explicitly)
 });
 @endcode
