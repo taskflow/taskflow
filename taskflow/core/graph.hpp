@@ -127,6 +127,15 @@ class Node {
 
     Taskflow* module {nullptr};
   };
+
+  // Async work
+  struct AsyncWork {
+
+    template <typename T>
+    AsyncWork(T&&);
+
+    std::function<void()> work;
+  };
   
   // cudaFlow work handle
 #ifdef TF_ENABLE_CUDA
@@ -149,7 +158,8 @@ class Node {
     StaticWork,       // static tasking
     DynamicWork,      // dynamic tasking
     ConditionWork,    // conditional tasking
-    ModuleWork        // composable tasking
+    ModuleWork,       // composable tasking
+    AsyncWork         // async work
   >;
   
   public:
@@ -160,6 +170,7 @@ class Node {
   constexpr static auto DYNAMIC_WORK     = get_index_v<DynamicWork, handle_t>;
   constexpr static auto CONDITION_WORK   = get_index_v<ConditionWork, handle_t>; 
   constexpr static auto MODULE_WORK      = get_index_v<ModuleWork, handle_t>; 
+  constexpr static auto ASYNC_WORK       = get_index_v<AsyncWork, handle_t>; 
 
 #ifdef TF_ENABLE_CUDA
   constexpr static auto CUDAFLOW_WORK = get_index_v<cudaFlowWork, handle_t>; 
@@ -240,6 +251,15 @@ Node::ConditionWork::ConditionWork(C&& c) : work {std::forward<C>(c)} {
 // Constructor
 template <typename T>
 Node::ModuleWork::ModuleWork(T&& tf) : module {tf} {
+}
+
+// ----------------------------------------------------------------------------
+// Definition for Node::AsyncWork
+// ----------------------------------------------------------------------------
+    
+// Constructor
+template <typename C>
+Node::AsyncWork::AsyncWork(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
@@ -341,6 +361,7 @@ inline Domain Node::domain() const {
     case DYNAMIC_WORK:
     case CONDITION_WORK:
     case MODULE_WORK:
+    case ASYNC_WORK:
       domain = Domain::HOST;
     break;
 

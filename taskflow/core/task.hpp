@@ -22,6 +22,7 @@ enum TaskType {
   DYNAMIC_TASK     = Node::DYNAMIC_WORK,
   CONDITION_TASK   = Node::CONDITION_WORK,
   MODULE_TASK      = Node::MODULE_WORK,
+  ASYNC_TASK       = Node::ASYNC_WORK,
   NUM_TASK_TYPES
 };
 
@@ -41,6 +42,7 @@ inline const char* task_type_to_string(TaskType type) {
     case DYNAMIC_TASK:     val = "subflow";     break;
     case CONDITION_TASK:   val = "condition";   break;
     case MODULE_TASK:      val = "module";      break;
+    case ASYNC_TASK:       val = "async";       break;
     default:               val = "undefined";   break;
   }
 

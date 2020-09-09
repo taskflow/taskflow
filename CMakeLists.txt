@@ -230,13 +230,13 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 #  $<INSTALL_INTERFACE:include/> 
 #)
 #
-add_library(TensorFrame INTERFACE)
-target_compile_features(TensorFrame INTERFACE cxx_std_17)
-target_link_libraries(TensorFrame INTERFACE Threads::Threads)
-target_include_directories(TensorFrame INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  $<INSTALL_INTERFACE:include/> 
-)
+#add_library(TensorFrame INTERFACE)
+#target_compile_features(TensorFrame INTERFACE cxx_std_17)
+#target_link_libraries(TensorFrame INTERFACE Threads::Threads)
+#target_include_directories(TensorFrame INTERFACE
+#  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+#  $<INSTALL_INTERFACE:include/> 
+#)
 
 # -----------------------------------------------------------------------------
 # Example program 
@@ -543,6 +543,16 @@ add_test(cond_subflow.5threads ${TF_UTEST_BASICS} -tc=CondSubflow.5threads)
 add_test(cond_subflow.6threads ${TF_UTEST_BASICS} -tc=CondSubflow.6threads)
 add_test(cond_subflow.7threads ${TF_UTEST_BASICS} -tc=CondSubflow.7threads)
 add_test(cond_subflow.8threads ${TF_UTEST_BASICS} -tc=CondSubflow.8threads)
+add_test(async.1thread ${TF_UTEST_BASICS} -tc=Async.1thread)
+add_test(async.2threads ${TF_UTEST_BASICS} -tc=Async.2threads)
+add_test(async.4threads ${TF_UTEST_BASICS} -tc=Async.4threads)
+add_test(async.8threads ${TF_UTEST_BASICS} -tc=Async.8threads)
+add_test(async.16threads ${TF_UTEST_BASICS} -tc=Async.16threads)
+add_test(nested_async.1thread ${TF_UTEST_BASICS} -tc=NestedAsync.1thread)
+add_test(nested_async.2threads ${TF_UTEST_BASICS} -tc=NestedAsync.2threads)
+add_test(nested_async.4threads ${TF_UTEST_BASICS} -tc=NestedAsync.4threads)
+add_test(nested_async.8threads ${TF_UTEST_BASICS} -tc=NestedAsync.8threads)
+add_test(nested_async.16threads ${TF_UTEST_BASICS} -tc=NestedAsync.16threads)
 
 # unittest for algorithm
 add_executable(algorithm ${TF_UTEST_DIR}/algorithm.cpp)

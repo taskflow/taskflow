@@ -2757,6 +2757,118 @@ TEST_CASE("CondSubflow.8threads") {
   condition_subflow(8);
 }
 
+// --------------------------------------------------------
+// Testcase: Async
+// --------------------------------------------------------
 
+void async(unsigned W) {
 
+  tf::Executor executor(W);
+
+  std::vector<std::future<int>> fu1s;
+
+  std::atomic<int> counter(0);
+  
+  int N = 100000;
+
+  for(int i=0; i<N; ++i) {
+    fu1s.emplace_back(executor.async([&](){
+      counter.fetch_add(1, std::memory_order_relaxed);
+      return -2;
+    }));
+  }
+  
+  executor.wait_for_all();
+
+  REQUIRE(counter == N);
+  
+  int c = 0; 
+  for(auto& fu : fu1s) {
+    c += fu.get();
+  }
+
+  REQUIRE(-c == 2*N);
+}
+
+TEST_CASE("Async.1thread" * doctest::timeout(300)) {
+  async(1);  
+}
+
+TEST_CASE("Async.2threads" * doctest::timeout(300)) {
+  async(2);  
+}
+
+TEST_CASE("Async.4threads" * doctest::timeout(300)) {
+  async(4);  
+}
+
+TEST_CASE("Async.8threads" * doctest::timeout(300)) {
+  async(8);  
+}
+
+TEST_CASE("Async.16threads" * doctest::timeout(300)) {
+  async(16);  
+}
+
+// --------------------------------------------------------
+// Testcase: NestedAsync
+// --------------------------------------------------------
+
+void nested_async(unsigned W) {
+
+  tf::Executor executor(W);
+
+  std::vector<std::future<int>> fu1s;
+
+  std::atomic<int> counter(0);
+  
+  int N = 100000;
+
+  for(int i=0; i<N; ++i) {
+    fu1s.emplace_back(executor.async([&](){
+      counter.fetch_add(1, std::memory_order_relaxed);
+      executor.async([&](){
+        counter.fetch_add(1, std::memory_order_relaxed);
+        executor.async([&](){
+          counter.fetch_add(1, std::memory_order_relaxed);
+          executor.async([&](){
+            counter.fetch_add(1, std::memory_order_relaxed);
+          });
+        });
+      });
+      return -2;
+    }));
+  }
+  
+  executor.wait_for_all();
+
+  REQUIRE(counter == 4*N);
+  
+  int c = 0; 
+  for(auto& fu : fu1s) {
+    c += fu.get();
+  }
+
+  REQUIRE(-c == 2*N);
+}
+
+TEST_CASE("NestedAsync.1thread" * doctest::timeout(300)) {
+  nested_async(1);  
+}
+
+TEST_CASE("NestedAsync.2threads" * doctest::timeout(300)) {
+  nested_async(2);  
+}
+
+TEST_CASE("NestedAsync.4threads" * doctest::timeout(300)) {
+  nested_async(4);  
+}
+
+TEST_CASE("NestedAsync.8threads" * doctest::timeout(300)) {
+  nested_async(8);  
+}
+
+TEST_CASE("NestedAsync.16threads" * doctest::timeout(300)) {
+  nested_async(16);  
+}
 

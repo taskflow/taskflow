@@ -43,6 +43,14 @@ __global__ void cuda_transform(T* data, size_t N, F functor, S*... src) {
   }
 }
 
+// ----------------------------------------------------------------------------
+// reduce
+// ----------------------------------------------------------------------------
+
+template <typename T, typename O>
+__global__ void cuda_reduce(T* data, size_t N, O&& bop) {
+  size_t i = blockIdx.x * blockDim.x + threadIdx.x;
+}
 
 }  // end of namespace tf -----------------------------------------------------
 
