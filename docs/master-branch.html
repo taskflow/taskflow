@@ -32,7 +32,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname"><a href="https://github.com/taskflow/taskflow">Taskflow</a>
-   &#160;<span id="projectnumber">2.7.0(masterbranch)</span>
+   &#160;<span id="projectnumber">2.7.0-master-branch</span>
    </div>
   </td>
  </tr>
@@ -99,13 +99,13 @@ Download</h1>
 <h1><a class="anchor" id="master-branch_working_items"></a>
 Working Items</h1>
 <ul>
-<li>adding tf::Executor::async to support std::async styled tasking </li>
 <li>adding parallel sort tf::Taskflow::sort algorithms </li>
 <li>enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)</li>
 </ul>
 <h1><a class="anchor" id="master-branch_new_features"></a>
 New Features</h1>
 <ul>
+<li>added <a class="el" href="classtf_1_1Executor.html#afdda8e626cfd5d3d53251f2372c86bbf" title="runs a given function asynchronously ">tf::Executor::async</a> to support asynchronously calling a function (see <a class="el" href="chapter2.html#C2_Async">Run a Task Asynchronously</a>) <div class="fragment"><div class="line"><a class="codeRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/thread/future.html">std::future&lt;int&gt;</a> fu = executor.async([](){</div><div class="line">  <span class="comment">// do my work</span></div><div class="line">  <span class="keywordflow">return</span> 1;</div><div class="line">});</div><div class="line"></div><div class="line"><span class="comment">// access the result through fu.get() or wait on the executor</span></div><div class="line">executor.wait_for_all();</div><div class="line">assert(fu.wait_for(<a class="codeRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/chrono/duration.html">std::chrono::seconds</a>(1)) == std::future_status::ready);</div></div><!-- fragment --> </li>
 <li>added kernel algorithm, <a class="el" href="classtf_1_1cudaFlow.html#a39a02c6ad4d335a318870d9e4eba562a" title="applies a callable to each dereferenced element of the data array ">tf::cudaFlow::for_each</a>, <div class="fragment"><div class="line">taskflow.emplace([](<a class="code" href="classtf_1_1cudaFlow.html">tf::cudaFlow</a>&amp; cf){</div><div class="line">  <span class="comment">// ... gpu tasks</span></div><div class="line">  <span class="comment">// assigns one to every element in my_gpu_data (type int*, 1000 elements)</span></div><div class="line">  cf.<a class="code" href="classtf_1_1cudaFlow.html#a39a02c6ad4d335a318870d9e4eba562a">for_each</a>(my_gpu_data, 100, [] __device__ (<span class="keywordtype">int</span>&amp; item) {</div><div class="line">    item = 1;</div><div class="line">  }); </div><div class="line">});</div></div><!-- fragment --> </li>
 <li>added kernel algorithm, <a class="el" href="classtf_1_1cudaFlow.html#ab5a7c12e383be4972844a9f29033e487" title="applies a callable to each index in the range with the step size ">tf::cudaFlow::for_each_index</a> <div class="fragment"><div class="line">taskflow.emplace([](<a class="code" href="classtf_1_1cudaFlow.html">tf::cudaFlow</a>&amp; cf){</div><div class="line">  <span class="comment">// ... gpu tasks</span></div><div class="line">  <span class="comment">// assigns one to every element in my_gpu_data (type int*, 1000 elements)</span></div><div class="line">  cf.<a class="code" href="classtf_1_1cudaFlow.html#ab5a7c12e383be4972844a9f29033e487">for_each_index</a>(0, 100, 1, [my_gpu_data] __device__ (<span class="keywordtype">int</span> idx) {</div><div class="line">    my_gpu_data[idx] = 1;</div><div class="line">  }); </div><div class="line">});</div></div><!-- fragment --> </li>
 <li>added kernel algorithm, <a class="el" href="classtf_1_1cudaFlow.html#a56d0389eeca479ba73419bc011c1a23e" title="applies a callable to a source range and stores the result in a target ange ">tf::cudaFlow::transform</a> </li>

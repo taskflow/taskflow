@@ -124,7 +124,7 @@ while it is participating in an execution.
 
 All @c run\_* methods are @em thread-safe.
 You can have multiple threads call these methods from an executor to run different taskflows.
-However, the order which taskflow runs first is non-deterministics and is up to the 
+However, the order which taskflow runs first is non-deterministic and is up to the 
 runtime.
 
 @code{.cpp}
@@ -141,9 +141,32 @@ runtime.
 It is your responsibility to ensure all taskflows from different threads 
 remain alive during their executions; or it can result unexpected behavior or program crash.
 
+@section C2_Async Run a Task Asynchronously
+
+In addition to run a taskflow, the executor provides a STL-styled method,
+tf::Executor::async,
+for you to run a callable object (e.g., function) asynchronously.
+A common use case of the method is using the executor as a thread pool.
+
+@code{.cpp}
+std::future<int> future = executor.async([](){
+  // do some heavy work
+  // ...
+  return 1;
+});
+executor.wait_for_all();
+assert(future.get() == 1);
+@endcode
+
+The method, tf::Executor::async, is @em thread-safe and can be called from any threads
+or from the execution of a task.
+Our scheduler autonomously detects whether the async task is submitted 
+from an external thread or a worker thread and executes it in the work-stealing loop.
+
+
 @section C2_Observer Observe Thread Activities
 
-You can observe thread activities in an executor when a worker thread particiates in executing
+You can observe thread activities in an executor when a worker thread participates in executing
 a task and leaves the execution using tf::ObserverInterface.
 tf::ObserverInterface is an @em interface class that provides a set of methods for you to define
 what to do when a thread enters and leaves the execution context of a task.
@@ -239,7 +262,7 @@ The above code produces the following output:
 
 @code{.bash}
 constructing observer MyObserver
-settting up observer with 4 workers
+setting up observer with 4 workers
 worker 2 ready to run A
 1
 worker 2 finished running A

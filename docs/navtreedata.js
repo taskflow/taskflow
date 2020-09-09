@@ -95,7 +95,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"dreamplace.html#UseCasesDreamPlacePerformance"
+"dreamplace.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

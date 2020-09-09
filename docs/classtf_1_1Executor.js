@@ -3,6 +3,8 @@ var classtf_1_1Executor =
     [ "Executor", "classtf_1_1Executor.html#aa09f058c7f04941de86e1d06238cdc48", null ],
     [ "Executor", "classtf_1_1Executor.html#a4910e89d89146b6d563d598b795eb4a9", null ],
     [ "~Executor", "classtf_1_1Executor.html#a5a511b0cc23b264826373d3dabcef670", null ],
+    [ "async", "classtf_1_1Executor.html#afdda8e626cfd5d3d53251f2372c86bbf", null ],
+    [ "async", "classtf_1_1Executor.html#a24277675adac344964ed1a2544fad09d", null ],
     [ "make_observer", "classtf_1_1Executor.html#a3e68a0d779cfee1554c88c2596ae9000", null ],
     [ "num_domains", "classtf_1_1Executor.html#a8acfc81ae6a64989761ce229262c9a21", null ],
     [ "num_observers", "classtf_1_1Executor.html#ab92083be20ea77b9fb3eb8ea2d26af68", null ],

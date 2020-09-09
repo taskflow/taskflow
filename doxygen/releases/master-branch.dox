@@ -15,12 +15,22 @@ To download the newest version of %Taskflow, please clone from <a href="https://
 
 @section master-branch_working_items Working Items
 
-@li adding tf::Executor::async to support std::async styled tasking
 @li adding parallel sort tf::Taskflow::sort algorithms
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
 
 @section master-branch_new_features New Features
 
+@li added tf::Executor::async to support asynchronously calling a function (see @ref C2_Async)
+  @code{.cpp}
+  std::future<int> fu = executor.async([](){
+    // do my work
+    return 1;
+  });
+
+  // access the result through fu.get() or wait on the executor
+  executor.wait_for_all();
+  assert(fu.wait_for(std::chrono::seconds(1)) == std::future_status::ready);
+  @endcode
 @li added kernel algorithm, tf::cudaFlow::for_each, 
   @code{.cpp}
   taskflow.emplace([](tf::cudaFlow& cf){

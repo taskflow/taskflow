@@ -18,6 +18,7 @@ var Cookbook =
       [ "Create an Executor", "chapter2.html#C2_CreateAnExecutor", null ],
       [ "Execute a Taskflow", "chapter2.html#C2_ExecuteATaskflow", null ],
       [ "Thread Safety", "chapter2.html#C2_ThreadSafety", null ],
+      [ "Run a Task Asynchronously", "chapter2.html#C2_Async", null ],
       [ "Observe Thread Activities", "chapter2.html#C2_Observer", null ]
     ] ],
     [ "C3: Dynamic Tasking", "chapter3.html", [

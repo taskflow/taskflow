@@ -170,14 +170,15 @@ class Executor {
     int this_worker_id() const;
 
     /** 
-    @brief runs a given function asynchronously and returns a std::future that will
-           eventually hold the result of the function call
+    @brief runs a given function asynchronously
 
     @tparam F callable type
     @tparam ArgsT parameter types
 
     @param f callable object to call
     @param args parameters to pass to the callable
+    
+    @return a std::future that will eventually hold the result of the function call
     */
     template <typename F, typename... ArgsT>
     std::enable_if_t<
@@ -187,14 +188,15 @@ class Executor {
     async(F&& f, ArgsT&&... args);
     
     /**
-    @brief runs a given function asynchronously and returns a std::future that will
-           eventually hold the result (void) of the function call
+    @brief runs a given function asynchronously
     
     @tparam F callable type (return void)
     @tparam ArgsT parameter types
 
     @param f callable object to call
     @param args parameters to pass to the callable
+    
+    @return a std::future that will eventually hold the result of the function call
     */
     template <typename F, typename... ArgsT>
     std::enable_if_t<
@@ -463,6 +465,7 @@ Executor::async(F&& f, ArgsT&&... args) {
   return fu;
 }
 
+// Function: async
 template <typename F, typename... ArgsT>
 std::enable_if_t<
   std::is_same<typename function_traits<F>::return_type, void>::value,

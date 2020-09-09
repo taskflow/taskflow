@@ -24,7 +24,7 @@ class Topology {
     std::promise<void> _promise;
 
     PassiveVector<Node*> _sources;
-    
+
     std::function<bool()> _pred;
     std::function<void()> _call;
 
