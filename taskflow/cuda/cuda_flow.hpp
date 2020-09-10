@@ -295,7 +295,30 @@ class cudaFlow {
     */
     template <typename T, typename C, typename... S>
     cudaTask transform(T* tgt, size_t N, C&& callable, S*... srcs);
+    
+    // TODO: 
+    //template <typename T, typename B>
+    //cudaTask reduce(T* tgt, size_t N, T& init, B&& op);
 
+    //template <typename T>
+    //cudaTask transpose(const T* d_in, T* d_out, size_t rows, size_t cols);
+    //
+    //template <typename T>
+    //cudaTask inplace_transpose(T* data, size_t rows, size_t cols);
+
+    //template <typename T>
+    //cudaTask matmul(const T* A, const T* B, T* C, size_t M, size_t K, size_t N);
+
+    //[] (tf::cudaFlow& cf) {
+    //  
+    //  auto task1 = cf.for_each(...);
+    //  auto task2 = cf.matmul(...);
+    //  
+    //  task1.get<KernelParameter>().block(100);
+
+    //  cf.offload();
+    //  cf.memset();
+    //}
 
   private:
     

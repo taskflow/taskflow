@@ -48,7 +48,7 @@ __global__ void cuda_transform(T* data, size_t N, F functor, S*... src) {
 // ----------------------------------------------------------------------------
 
 template <typename T, typename O>
-__global__ void cuda_reduce(T* data, size_t N, O&& bop) {
+__global__ void cuda_reduce(T* data, size_t N, T& result, O&& bop) {
   size_t i = blockIdx.x * blockDim.x + threadIdx.x;
 }
 
