@@ -2765,14 +2765,14 @@ void async(unsigned W) {
 
   tf::Executor executor(W);
 
-  std::vector<std::future<int>> fu;
+  std::vector<std::future<int>> fus;
 
   std::atomic<int> counter(0);
   
   int N = 100000;
 
   for(int i=0; i<N; ++i) {
-    fu.emplace_back(executor.async([&](){
+    fus.emplace_back(executor.async([&](){
       counter.fetch_add(1, std::memory_order_relaxed);
       return -2;
     }));
@@ -2783,7 +2783,7 @@ void async(unsigned W) {
   REQUIRE(counter == N);
   
   int c = 0; 
-  for(auto& fu : fu) {
+  for(auto& fu : fus) {
     c += fu.get();
   }
 
@@ -2818,14 +2818,14 @@ void nested_async(unsigned W) {
 
   tf::Executor executor(W);
 
-  std::vector<std::future<int>> fu;
+  std::vector<std::future<int>> fus;
 
   std::atomic<int> counter(0);
   
   int N = 100000;
 
   for(int i=0; i<N; ++i) {
-    fu.emplace_back(executor.async([&](){
+    fus.emplace_back(executor.async([&](){
       counter.fetch_add(1, std::memory_order_relaxed);
       executor.async([&](){
         counter.fetch_add(1, std::memory_order_relaxed);
@@ -2845,7 +2845,7 @@ void nested_async(unsigned W) {
   REQUIRE(counter == 4*N);
   
   int c = 0; 
-  for(auto& fu : fu) {
+  for(auto& fu : fus) {
     c += fu.get();
   }
 
