@@ -877,6 +877,9 @@ add_test(cuda_alg.for_each.double ${TF_UTEST_CUDA_ALG} -tc=for_each.double)
 add_test(cuda_alg.for_each_index.int    ${TF_UTEST_CUDA_ALG} -tc=for_each_index.int)
 add_test(cuda_alg.for_each_index.float  ${TF_UTEST_CUDA_ALG} -tc=for_each_index.float)
 add_test(cuda_alg.for_each_index.double ${TF_UTEST_CUDA_ALG} -tc=for_each_index.double)
+add_test(cuda_alg.transpose.int ${TF_UTEST_CUDA_ALG} -tc=transpose_alg.int)
+add_test(cuda_alg.transpose.float ${TF_UTEST_CUDA_ALG} -tc=transpose_alg.float)
+add_test(cuda_alg.transpose.double ${TF_UTEST_CUDA_ALG} -tc=transpose_alg.double)
 
 
 endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
