@@ -821,6 +821,14 @@ inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
 
+  {
+    std::vector<Node*> nodes;
+    if(! node->_acquire_all(nodes)) {
+      for(auto node : nodes) _schedule(node);
+      return;
+    }
+  }
+
   //assert(_workers.size() != 0);
 
   // Here we need to fetch the num_successors first to avoid the invalid memory
@@ -863,6 +871,10 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // async task
     case Node::ASYNC_WORK: {
       _invoke_async_work(worker, node);
+      {
+        auto nodes = node->_release_all();
+        for(auto node : nodes) _schedule(node);
+      }
       _decrement_topology_and_notify();
       return ;
     }
@@ -879,6 +891,11 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // monostate
     default:
     break;
+  }
+
+  {
+    auto nodes = node->_release_all();
+    for(auto node : nodes) _schedule(node);
   }
 
   // We MUST recover the dependency since the graph may have cycles.
