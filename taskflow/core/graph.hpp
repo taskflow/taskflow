@@ -58,6 +58,9 @@ class Constraint {
       _waiters.push_back(node);
     }
 
+    explicit Constraint(int initial) : _counter(initial) {
+    }
+
   private:
 
     int _counter;
@@ -101,6 +104,11 @@ class Graph {
     Node* emplace_back(Args&& ...); 
 
     Node* emplace_back();
+
+    Constraint * new_semaphore(int initial) {
+      _semaphores.emplace_back(initial);
+      return &(_semaphores.back());
+    }
 
   private:
 
