@@ -246,6 +246,11 @@ if(TF_BUILD_EXAMPLES)
 message(STATUS "Building examples ...")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR})
 
+add_executable(onlyone ${TF_EXAMPLE_DIR}/onlyone.cpp)
+target_link_libraries(
+  onlyone ${PROJECT_NAME} tf::default_settings
+)
+
 add_executable(simple ${TF_EXAMPLE_DIR}/simple.cpp)
 target_link_libraries(
   simple ${PROJECT_NAME} tf::default_settings
