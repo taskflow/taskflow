@@ -1,5 +1,3 @@
-message(STATUS "Building examples ...")
-
 set(TF_EXAMPLES
   simple observer subflow fibonacci condition
   visualization reduce parallel_for run composition

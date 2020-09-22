@@ -30,7 +30,6 @@ find_package(TBB REQUIRED tbb_preview)
 cmake_policy(POP)
 
 ## benchmark 1: wavefront computing
-message(STATUS "benchmark 1: wavefront")
 add_executable(
   wavefront 
   ${TF_BENCHMARK_DIR}/wavefront/main.cpp
@@ -50,7 +49,6 @@ target_link_libraries(
 set_target_properties(wavefront PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 2: graph traversal
-message(STATUS "benchmark 2: graph traversal")
 add_executable(
   graph_traversal 
   ${TF_BENCHMARK_DIR}/graph_traversal/main.cpp
@@ -70,7 +68,6 @@ target_link_libraries(
 set_target_properties(graph_traversal PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 3: binary_tree
-message(STATUS "benchmark 3: binary tree")
 add_executable(
   binary_tree 
   ${TF_BENCHMARK_DIR}/binary_tree/main.cpp
@@ -89,7 +86,6 @@ target_link_libraries(
 set_target_properties(binary_tree PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 4: linear_chain
-message(STATUS "benchmark 4: linear_chain")
 add_executable(
   linear_chain
   ${TF_BENCHMARK_DIR}/linear_chain/main.cpp
@@ -108,7 +104,6 @@ target_link_libraries(
 set_target_properties(linear_chain PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 5: MNIST
-message(STATUS "benchmark 5: mnist")
 add_executable(
   mnist 
   ${TF_BENCHMARK_DIR}/mnist/main.cpp
@@ -129,7 +124,6 @@ target_link_libraries(
 set_target_properties(mnist PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 6: matrix multiplication
-message(STATUS "benchmark 6: matrix multiplication")
 add_executable(
   matrix_multiplication 
   ${TF_BENCHMARK_DIR}/matrix_multiplication/main.cpp
@@ -148,7 +142,6 @@ target_link_libraries(
 set_target_properties(matrix_multiplication PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 7: mandelbrot
-message(STATUS "benchmark 7: mandelbrot")
 add_executable(
   mandelbrot 
   ${TF_BENCHMARK_DIR}/mandelbrot/main.cpp
@@ -167,7 +160,6 @@ target_link_libraries(
 set_target_properties(mandelbrot PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 8: black_scholes
-message(STATUS "benchmark 8: black scholes")
 add_executable(
   black_scholes
   ${TF_BENCHMARK_DIR}/black_scholes/main.cpp
@@ -186,7 +178,6 @@ target_link_libraries(
 set_target_properties(black_scholes PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 9: reduce_sum
-message(STATUS "benchmark 9: reduce_sum")
 add_executable(
   reduce_sum
   ${TF_BENCHMARK_DIR}/reduce_sum/main.cpp
@@ -207,7 +198,6 @@ set_target_properties(reduce_sum PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 if(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
 ## cuda benchmark 1: heterogeneous traversal
-message(STATUS "cuda benchmark 1: heterogeneous traversal")
 add_executable(
   hetero_traversal 
   ${TF_BENCHMARK_DIR}/hetero_traversal/main.cu

@@ -1,5 +1,4 @@
 enable_testing()
-message(STATUS "Building unit tests ...")
 
 include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
 
