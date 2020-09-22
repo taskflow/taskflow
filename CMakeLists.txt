@@ -196,6 +196,10 @@ message(STATUS "TF_UTEST_DIR: " ${TF_UTEST_DIR})
 message(STATUS "TF_EXAMPLE_DIR: " ${TF_EXAMPLE_DIR})
 message(STATUS "TF_BENCHMARK_DIR: " ${TF_BENCHMARK_DIR})
 message(STATUS "TF_3RD_PARTY_DIR: " ${TF_3RD_PARTY_DIR})
+if(NOT CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
+  message(WARNING "TF_BUILD_CUDA set but no CUDA compiler found!\n"
+    "NOT building CUDA examples/benchmarks/...")
+endif()
 
 # add the binary tree to the search path for include files
 include_directories(${PROJECT_SOURCE_DIR})
