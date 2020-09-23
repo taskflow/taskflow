@@ -1,24 +1,24 @@
 namespace tf {
 
-/** @page master-branch Master Branch (GitHub)
+/** @page release-2-7-0 Release 2.7.0 (TBD)
 
-%Taskflow master branch is the newest developing line to new features and improvements 
+%Taskflow 2.7.0 is the newest developing line to new features and improvements 
 we continue to support.
 It is also where this documentation is generated.
 Many things are considered @em experimental and may change or break from time to time.
 While it may be difficult to be keep all things consistent when introducing new features, 
 we continue to try our best to ensure backward compatibility.
 
-@section master-branch_download Download
+@section release-2-7-0_download Download
 
 To download the newest version of %Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
 
-@section master-branch_working_items Working Items
+@section release-2-7-0_working_items Working Items
 
 @li adding parallel sort tf::Taskflow::sort algorithms
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
 
-@section master-branch_new_features New Features
+@section release-2-7-0_new_features New Features
 
 @li added tf::Executor::async to support asynchronously calling a function (see @ref C2_Async)
   @code{.cpp}
@@ -54,15 +54,15 @@ To download the newest version of %Taskflow, please clone from <a href="https://
 @li added kernel algorithm, tf::cudaFlow::transform
 @li added explicit join method at tf::cudaFlow::join, tf::cudaFlow::join_n, tf::cudaFlow::join_until
 
-@section master-branch_bug_fixes Bug Fixes 
+@section release-2-7-0_bug_fixes Bug Fixes 
 
-@section master-branch_deprecated_items Deprecated Items 
+@section release-2-7-0_deprecated_items Deprecated Items 
 
 @li removed redundant methods, tf::Taskflow::broadcast, tf::Taskflow::precede, tf::Taskflow::succeed
 @li removed tf::cudaFlow::predicate (replaced with tf::cudaFlow::join_until)
 @li removed tf::cudaFlow::stream; the executor automatically determines a local, faster stream
 
-@section master-branch_miscellaneous_items Miscellaneous Items
+@section release-2-7-0_miscellaneous_items Miscellaneous Items
 
 */
 

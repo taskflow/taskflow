@@ -24,5 +24,6 @@ var searchData=
   ['graph_20traversal',['Graph Traversal',['../graphtraversal.html',1,'Examples']]],
   ['greater',['greater',['http://en.cppreference.com/w/cpp/utility/functional/greater.html',1,'std']]],
   ['greater_5fequal',['greater_equal',['http://en.cppreference.com/w/cpp/utility/functional/greater_equal.html',1,'std']]],
-  ['grouping',['grouping',['http://en.cppreference.com/w/cpp/locale/moneypunct/grouping.html',1,'std::moneypunct_byname::grouping()'],['http://en.cppreference.com/w/cpp/locale/moneypunct/grouping.html',1,'std::moneypunct::grouping()'],['http://en.cppreference.com/w/cpp/locale/numpunct/grouping.html',1,'std::numpunct_byname::grouping()'],['http://en.cppreference.com/w/cpp/locale/numpunct/grouping.html',1,'std::numpunct::grouping()']]]
+  ['grouping',['grouping',['http://en.cppreference.com/w/cpp/locale/moneypunct/grouping.html',1,'std::moneypunct_byname::grouping()'],['http://en.cppreference.com/w/cpp/locale/moneypunct/grouping.html',1,'std::moneypunct::grouping()'],['http://en.cppreference.com/w/cpp/locale/numpunct/grouping.html',1,'std::numpunct_byname::grouping()'],['http://en.cppreference.com/w/cpp/locale/numpunct/grouping.html',1,'std::numpunct::grouping()']]],
+  ['guidelines',['Guidelines',['../guidelines.html',1,'Contributing']]]
 ];
