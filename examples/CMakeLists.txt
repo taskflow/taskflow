@@ -1,7 +1,15 @@
-set(TF_EXAMPLES
-  simple observer subflow fibonacci condition
-  visualization reduce parallel_for run composition
-  )
+list(APPEND TF_EXAMPLES
+  simple 
+  observer 
+  subflow 
+  fibonacci 
+  condition
+  visualization 
+  reduce 
+  parallel_for 
+  run 
+  composition
+)
 
 foreach(example IN LISTS TF_EXAMPLES)
   add_executable(${example} ${example}.cpp)

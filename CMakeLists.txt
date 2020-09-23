@@ -260,9 +260,9 @@ endif(TF_BUILD_TESTS)
 # Benchmarking (enabled by TF_BUILD_BENCHMARKS)
 # -----------------------------------------------------------------------------
 
-if(${TF_BUILD_BENCHMARKS})
+if(TF_BUILD_BENCHMARKS)
   add_subdirectory(benchmarks)
-endif()
+endif(TF_BUILD_BENCHMARKS)
 
 # -----------------------------------------------------------------------------
 # create find_package(Taskflow CONFIG)

@@ -1,7 +1,9 @@
-set(TF_CUDA_EXAMPLES device_property saxpy matmul kmeans)
+list(APPEND TF_CUDA_EXAMPLES 
+  device_property saxpy matmul kmeans
+)
 
-foreach(c in LISTS TF_CUDA_EXAMPLES)
-  add_executable(${c} ${c}.cu)
-  target_link_libraries(${c}
+foreach(cuda_example IN LISTS TF_CUDA_EXAMPLES)
+  add_executable(${cuda_example} ${cuda_example}.cu)
+  target_link_libraries(${cuda_example}
     ${PROJECT_NAME} Threads::Threads tf::default_settings)
 endforeach()

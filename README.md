@@ -713,5 +713,4 @@ Taskflow is licensed under the [MIT License](./LICENSE).
 [SA-PCB]:                https://github.com/choltz95/SA-PCB
 
 [Presentation]:          https://taskflow.github.io/
-[chrome://tracing]:      chrome://tracing
 

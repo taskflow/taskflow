@@ -557,16 +557,16 @@ void transpose() {
   }
 }
 
-TEST_CASE("transpose_alg.int" * doctest::timeout(300) ) {
+TEST_CASE("transpose.int" * doctest::timeout(300) ) {
   transpose<int>();
 }
 
-TEST_CASE("transpose_alg.float" * doctest::timeout(300) ) {
+TEST_CASE("transpose.float" * doctest::timeout(300) ) {
   transpose<float>();
 }
 
 
-TEST_CASE("transpose_alg.double" * doctest::timeout(300) ) {
+TEST_CASE("transpose.double" * doctest::timeout(300) ) {
   transpose<double>();
 }
 
