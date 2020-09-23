@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"codeofconduct.html#ReportViolations":[7,1,1],
 "codeofconduct.html#TaskflowCodeOfConduct":[7,1,0],
 "contributors.html":[7,2],
 "core_2taskflow_8hpp_source.html":[11,0,8],

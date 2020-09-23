@@ -221,13 +221,14 @@ var NAVTREEINDEX0 =
 "classtf_1_1cudaFlow.html":[10,0,0,1],
 "classtf_1_1cudaFlow.html#a079ca65da35301e5aafd45878a19e9d2":[10,0,0,1,13],
 "classtf_1_1cudaFlow.html#a1926f45a038d8faa9c1b1ee43fd29a93":[10,0,0,1,3],
+"classtf_1_1cudaFlow.html#a1e64e55f0bd81c1630b1ee5c64ae0baa":[10,0,0,1,16],
 "classtf_1_1cudaFlow.html#a2905a7772fb2c25753e1ae72bb05861b":[10,0,0,1,2],
 "classtf_1_1cudaFlow.html#a30b2e107cb2c90a37f467b28d1b42a74":[10,0,0,1,14],
 "classtf_1_1cudaFlow.html#a39a02c6ad4d335a318870d9e4eba562a":[10,0,0,1,5],
 "classtf_1_1cudaFlow.html#a4a839dbaa01237a440edfebe8faf4e5b":[10,0,0,1,11],
 "classtf_1_1cudaFlow.html#a56d0389eeca479ba73419bc011c1a23e":[10,0,0,1,15],
-"classtf_1_1cudaFlow.html#a763b2f90bc53f92d680a635fe28e858e":[10,0,0,1,17],
-"classtf_1_1cudaFlow.html#a91c1739bb9a2832f306f3d12693a0994":[10,0,0,1,16],
+"classtf_1_1cudaFlow.html#a763b2f90bc53f92d680a635fe28e858e":[10,0,0,1,18],
+"classtf_1_1cudaFlow.html#a91c1739bb9a2832f306f3d12693a0994":[10,0,0,1,17],
 "classtf_1_1cudaFlow.html#a9b28ad99e4d3c0208422a2db094df277":[10,0,0,1,8],
 "classtf_1_1cudaFlow.html#ab5a7c12e383be4972844a9f29033e487":[10,0,0,1,6],
 "classtf_1_1cudaFlow.html#ad37637606f0643f360e9eda1f9a6e559":[10,0,0,1,12],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "classtf_1_1cudaTask.html#ab81b4f71a44af8d61758524f0c274962":[10,0,0,2,3],
 "classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4":[10,0,0,2,7],
 "classtf_1_1cudaTask.html#af17c570ca9a43ad71c4b626635ea9cbb":[10,0,0,2,6],
-"codeofconduct.html":[7,1],
-"codeofconduct.html#ReportViolations":[7,1,1]
+"codeofconduct.html":[7,1]
 };
