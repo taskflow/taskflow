@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "common.h"
@@ -35,11 +31,12 @@
 // Pass stdmalloc as the 1st command line parameter to use the default "operator new"
 // and see the performance difference.
 #include "tbb/scalable_allocator.h"
+#include "tbb/global_control.h"
 #include "TreeMaker.h"
 #include "tbb/tick_count.h"
-#include "tbb/task_scheduler_init.h"
 
 #include "../../common/utility/utility.h"
+#include "../../common/utility/get_default_num_threads.h"
 
 using namespace std;
 
@@ -56,7 +53,7 @@ int main( int argc, const char *argv[] ) {
 
         // The 1st argument is the function to obtain 'auto' value; the 2nd is the default value
         // The example interprets 0 threads as "run serially, then fully subscribed"
-        utility::thread_number_range threads( tbb::task_scheduler_init::default_num_threads, 0 );
+        utility::thread_number_range threads( utility::get_default_num_threads, 0 );
         long number_of_nodes = 10000000;
         bool silent = false;
         bool use_stdmalloc = false;
@@ -72,7 +69,7 @@ int main( int argc, const char *argv[] ) {
 
         TreeNode* root;
         { // In this scope, TBB will use default number of threads for tree creation
-            tbb::task_scheduler_init init;
+            tbb::global_control c(tbb::global_control::max_allowed_parallelism, utility::get_default_num_threads());
 
             if( use_stdmalloc ) {
                 if ( !silent ) printf("Tree creation using standard operator new\n");
@@ -89,13 +86,13 @@ int main( int argc, const char *argv[] ) {
         if ( threads.first ) {
             for(int p = threads.first;  p <= threads.last; p = threads.step(p) ) {
                 if ( !silent ) printf("threads = %d\n", p );
-                tbb::task_scheduler_init init( p );
+                tbb::global_control c(tbb::global_control::max_allowed_parallelism, p);
                 Run ( "SimpleParallelSumTree", SimpleParallelSumTree, root, silent );
                 Run ( "OptimizedParallelSumTree", OptimizedParallelSumTree, root, silent );
             }
         } else { // Number of threads wasn't set explicitly. Run serial and two parallel versions
             Run ( "SerialSumTree", SerialSumTree, root, silent );
-            tbb::task_scheduler_init init;
+            tbb::global_control c(tbb::global_control::max_allowed_parallelism, utility::get_default_num_threads());
             Run ( "SimpleParallelSumTree", SimpleParallelSumTree, root, silent );
             Run ( "OptimizedParallelSumTree", OptimizedParallelSumTree, root, silent );
         }

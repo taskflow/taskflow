@@ -2,13 +2,292 @@
 The list of most significant changes made over time in
 Intel(R) Threading Building Blocks (Intel(R) TBB).
 
+Intel TBB 2020 Update 3
+TBB_INTERFACE_VERSION == 11103
+
+Changes (w.r.t. Intel TBB 2020 Update 2):
+
+Changes affecting backward compatibility:
+
+- Changed body type concept of the flow::input_node.
+    Set TBB_DEPRECATED_INPUT_NODE_BODY to 1 to compile with the previous
+    concept of the body type.
+
+Bugs fixed:
+
+- Fixed compilation errors in C++20 mode due to ambiguity of comparison
+    operators. Inspired by Barry Revzin
+    (https://github.com/oneapi-src/oneTBB/pull/251).
+
+Open-source contributions integrated:
+
+- Fixed an issue in TBBBuild.cmake that causes the build with no arguments
+    to fail (https://github.com/oneapi-src/oneTBB/pull/233) by tttapa.
+- Added cmake/{TBBConfig,TBBConfigVersion}.cmake to Git ignore list
+    (https://github.com/oneapi-src/oneTBB/pull/239) by Eisuke Kawashima.
+
+------------------------------------------------------------------------
+Intel TBB 2020 Update 2
+TBB_INTERFACE_VERSION == 11102
+
+Changes (w.r.t. Intel TBB 2020 Update 1):
+
+- Cross-allocator copying constructor and copy assignment operator for
+    concurrent_vector are deprecated.
+- Added input_node to the flow graph API. It acts like a source_node 
+    except for being inactive by default; source_node is deprecated.
+- Allocator template parameter for flow graph nodes is deprecated. Set
+    TBB_DEPRECATED_FLOW_NODE_ALLOCATOR to 1 to avoid compilation errors.
+- Flow graph preview hetero-features are deprecated.
+
+Bugs fixed:
+
+- Fixed the task affinity mechanism to prevent unlimited memory
+    consumption in case the number of threads is explicitly decreased.
+- Fixed memory leak related NUMA support functionality in task_arena.
+
+------------------------------------------------------------------------
+Intel TBB 2020 Update 1
+TBB_INTERFACE_VERSION == 11101
+
+Changes (w.r.t. Intel TBB 2020):
+
+Preview features:
+
+- The NUMA support library (tbbbind) no more depends on the main
+    TBB library.
+
+Bugs fixed:
+
+- Fixed the issue of task_arena constraints not propagated on
+    copy construction.
+- Fixed TBBGet.cmake script broken by TBB package name changes
+    (https://github.com/intel/tbb/issues/209).
+
+------------------------------------------------------------------------
+Intel TBB 2020
+TBB_INTERFACE_VERSION == 11100
+
+Changes (w.r.t. Intel TBB 2019 Update 9):
+
+- Extended task_arena interface to simplify development of NUMA-aware
+    applications.
+- Added warning notifications when the deprecated functionality is used.
+
+Open-source contributions integrated:
+
+- Fixed various build warnings
+    (https://github.com/intel/tbb/pull/179) by Raf Schietekat.
+
+------------------------------------------------------------------------
+Intel TBB 2019 Update 9
+TBB_INTERFACE_VERSION == 11009
+
+Changes (w.r.t. Intel TBB 2019 Update 8):
+
+- Multiple APIs are deprecated. For details, please see
+    Deprecated Features appendix in the TBB reference manual.
+- Added C++17 deduction guides for flow graph nodes.
+
+Preview Features:
+
+- Added isolated_task_group class that allows multiple threads to add
+    and execute tasks sharing the same isolation.
+- Extended the flow graph API to simplify connecting nodes.
+- Added erase() by heterogeneous keys for concurrent ordered containers.
+- Added a possibility to suspend task execution at a specific point
+    and resume it later.
+
+Bugs fixed:
+
+- Fixed the emplace() method of concurrent unordered containers to
+    destroy a temporary element that was not inserted.
+- Fixed a bug in the merge() method of concurrent unordered
+    containers.
+- Fixed behavior of a continue_node that follows buffering nodes.
+- Fixed compilation error caused by missed stdlib.h when CMake
+    integration is used (https://github.com/intel/tbb/issues/195).
+    Inspired by Andrew Penkrat.
+
+Open-source contributions integrated:
+
+- Added support for move-only types to tbb::parallel_pipeline
+    (https://github.com/intel/tbb/pull/159) by Raf Schietekat.
+- Fixed detection of clang version when CUDA toolkit is installed
+    (https://github.com/intel/tbb/pull/150) by Guilherme Amadio.
+
+------------------------------------------------------------------------
+Intel TBB 2019 Update 8
+TBB_INTERFACE_VERSION == 11008
+
+Changes (w.r.t. Intel TBB 2019 Update 7):
+
+Bugs fixed:
+
+- Fixed a bug in TBB 2019 Update 7 that could lead to incorrect memory
+    reallocation on Linux (https://github.com/intel/tbb/issues/148).
+- Fixed enqueuing tbb::task into tbb::task_arena not to fail on threads
+    with no task scheduler initialized
+    (https://github.com/intel/tbb/issues/116).
+
+------------------------------------------------------------------------
+Intel TBB 2019 Update 7
+TBB_INTERFACE_VERSION == 11007
+
+Changes (w.r.t. Intel TBB 2019 Update 6):
+
+- Added TBBMALLOC_SET_HUGE_SIZE_THRESHOLD parameter to set the lower
+    bound for allocations that are not released back to OS unless
+    a cleanup is explicitly requested.
+- Added zip_iterator::base() method to get the tuple of underlying
+    iterators.
+- Improved async_node to never block a thread that sends a message
+    through its gateway.
+- Extended decrement port of the tbb::flow::limiter_node to accept
+    messages of integral types.
+- Added support of Windows* to the CMake module TBBInstallConfig.
+- Added packaging of CMake configuration files to TBB packages built
+    using build/build.py script
+    (https://github.com/intel/tbb/issues/141).
+
+Changes affecting backward compatibility:
+
+- Removed the number_of_decrement_predecessors parameter from the
+    constructor of flow::limiter_node. To allow its usage, set
+    TBB_DEPRECATED_LIMITER_NODE_CONSTRUCTOR macro to 1.
+
+Preview Features:
+
+- Added ordered associative containers:
+    concurrent_{map,multimap,set,multiset} (requires C++11).
+
+Open-source contributions integrated:
+
+- Fixed makefiles to properly obtain the GCC version for GCC 7
+    and later (https://github.com/intel/tbb/pull/147) by Timmmm.
+
+------------------------------------------------------------------------
+Intel TBB 2019 Update 6
+TBB_INTERFACE_VERSION == 11006
+
+Changes (w.r.t. Intel TBB 2019 Update 5):
+
+- Added support for Microsoft* Visual Studio* 2019.
+- Added support for enqueuing tbb::task into tbb::task_arena
+    (https://github.com/01org/tbb/issues/116).
+- Improved support for allocator propagation on concurrent_hash_map
+    assigning and swapping.
+- Improved scalable_allocation_command cleanup operations to release
+    more memory buffered by the calling thread.
+- Separated allocation of small and large objects into distinct memory
+    regions, which helps to reduce excessive memory caching inside the
+    TBB allocator.
+
+Preview Features:
+
+- Removed template class gfx_factory from the flow graph API.
+
+------------------------------------------------------------------------
+Intel TBB 2019 Update 5
+TBB_INTERFACE_VERSION == 11005
+
+Changes (w.r.t. Intel TBB 2019 Update 4):
+
+- Associating a task_scheduler_observer with an implicit or explicit
+    task arena is now a fully supported feature.
+- Added a CMake module TBBInstallConfig that allows to generate and
+    install CMake configuration files for TBB packages.
+    Inspired by Hans Johnson (https://github.com/01org/tbb/pull/119).
+- Added node handles, methods merge() and unsafe_extract() to concurrent
+    unordered containers.
+- Added constructors with Compare argument to concurrent_priority_queue
+    (https://github.com/01org/tbb/issues/109).
+- Controlling the stack size of worker threads is now supported for
+    Universal Windows Platform.
+- Improved tbb::zip_iterator to work with algorithms that swap values
+    via iterators.
+- Improved support for user-specified allocators in concurrent_hash_map,
+    including construction of allocator-aware data types.
+- For ReaderWriterMutex types, upgrades and downgrades now succeed if
+    the mutex is already in the requested state.
+    Inspired by Niadb (https://github.com/01org/tbb/pull/122).
+
+Preview Features:
+
+- The task_scheduler_observer::may_sleep() method has been removed.
+
+Bugs fixed:
+
+- Fixed the issue with a pipeline parallel filter executing serially if
+    it follows a thread-bound filter.
+- Fixed a performance regression observed when multiple parallel
+    algorithms start simultaneously.
+
+------------------------------------------------------------------------
+Intel TBB 2019 Update 4
+TBB_INTERFACE_VERSION == 11004
+
+Changes (w.r.t. Intel TBB 2019 Update 3):
+
+- global_control class is now a fully supported feature.
+- Added deduction guides for tbb containers: concurrent_hash_map,
+    concurrent_unordered_map, concurrent_unordered_set.
+- Added tbb::scalable_memory_resource function returning
+    std::pmr::memory_resource interface to the TBB memory allocator.
+- Added tbb::cache_aligned_resource class that implements
+    std::pmr::memory_resource with cache alignment and no false sharing.
+- Added rml::pool_msize function returning the usable size of a memory
+    block allocated from a given memory pool.
+- Added default and copy constructors for tbb::counting_iterator
+    and tbb::zip_iterator.
+- Added TBB_malloc_replacement_log function to obtain the status of
+    dynamic memory allocation replacement (Windows* only).
+- CMake configuration file now supports release-only and debug-only
+    configurations (https://github.com/01org/tbb/issues/113).
+- TBBBuild CMake module takes the C++ version from CMAKE_CXX_STANDARD.
+
+Bugs fixed:
+
+- Fixed compilation for tbb::concurrent_vector when used with
+    std::pmr::polymorphic_allocator.
+
+Open-source contributions integrated:
+
+- TBB_INTERFACE_VERSION is included into TBB version in CMake
+    configuration (https://github.com/01org/tbb/pull/100)
+    by Hans Johnson.
+- Fixed detection of C++17 deduction guides for Visual C++*
+    (https://github.com/01org/tbb/pull/112) by Marian Klymov.
+
+------------------------------------------------------------------------
+Intel TBB 2019 Update 3
+TBB_INTERFACE_VERSION == 11003
+
+Changes (w.r.t. Intel TBB 2019 Update 2):
+
+- Added tbb::transform_iterator.
+- Added new Makefile target 'profile' to flow graph examples enabling
+    additional support for Intel(R) Parallel Studio XE tools.
+- Added TBB_MALLOC_DISABLE_REPLACEMENT environment variable to switch off
+    dynamic memory allocation replacement on Windows*. Inspired by
+    a contribution from Edward Lam.
+
+Preview Features:
+
+- Extended flow graph API to support relative priorities for functional
+    nodes, specified as an optional parameter to the node constructors.
+
+Open-source contributions integrated:
+
+- Enabled using process-local futex operations
+    (https://github.com/01org/tbb/pull/58) by Andrey Semashev.
+
+------------------------------------------------------------------------
 Intel TBB 2019 Update 2
 TBB_INTERFACE_VERSION == 11002
 
 Changes (w.r.t. Intel TBB 2019 Update 1):
 
-- Added constructors with HashCompare argument to concurrent_hash_map
-    (https://github.com/01org/tbb/pull/63).
 - Added overloads for parallel_reduce with default partitioner and
     user-supplied context.
 - Added deduction guides for tbb containers: concurrent_vector,
@@ -24,6 +303,11 @@ Bugs fixed:
 
 - Fixed compilation of task_group.h when targeting macOS* 10.11 or
     earlier (https://github.com/conda-forge/tbb-feedstock/issues/42).
+
+Open-source contributions integrated:
+
+- Added constructors with HashCompare argument to concurrent_hash_map
+    (https://github.com/01org/tbb/pull/63) by arewedancer.
 
 ------------------------------------------------------------------------
 Intel TBB 2019 Update 1
@@ -44,7 +328,7 @@ Bugs fixed:
 - Fixed an issue with dynamic memory allocation replacement on Windows*
     occurred for some versions of ucrtbase.dll.
 - Fixed possible deadlock in tbbmalloc cleanup procedure during process
-    shutdown.
+    shutdown. Inspired by a contribution from Edward Lam.
 - Fixed usage of std::uncaught_exception() deprecated in C++17
    (https://github.com/01org/tbb/issues/67).
 - Fixed a crash when a local observer is activated after an arena
@@ -54,6 +338,11 @@ Bugs fixed:
 - Fixed tbb4py to avoid dependency on Intel(R) C++ Compiler shared
     libraries.
 - Fixed compilation for Anaconda environment with GCC 7.3 and higher.
+
+Open-source contributions integrated:
+
+- Fix various warnings when building with Visual C++
+    (https://github.com/01org/tbb/pull/70) by Edward Lam.
 
 ------------------------------------------------------------------------
 Intel TBB 2019
@@ -87,6 +376,17 @@ Changes affecting backward compatibility:
 Open-source contributions integrated:
 
 - Added support for OpenBSD by Anthony J. Bentley.
+
+------------------------------------------------------------------------
+Intel TBB 2018 Update 6
+TBB_INTERFACE_VERSION == 10006
+
+Changes (w.r.t. Intel TBB 2018 Update 5):
+
+Bugs fixed:
+
+- Fixed an issue with dynamic memory allocation replacement on Windows*
+    occurred for some versions of ucrtbase.dll.
 
 ------------------------------------------------------------------------
 Intel TBB 2018 Update 5
@@ -411,7 +711,7 @@ Changes (w.r.t. Intel TBB 4.4 Update 5):
 - Added TBB_USE_GLIBCXX_VERSION macro to specify the version of GNU
     libstdc++ when it cannot be properly recognized, e.g. when used
     with Clang on Linux* OS. Inspired by a contribution from David A.
-- Added graph/stereo example to demostrate tbb::flow::async_msg.
+- Added graph/stereo example to demonstrate tbb::flow::async_msg.
 - Removed a few cases of excessive user data copying in the flow graph.
 - Reworked split_node to eliminate unnecessary overheads.
 - Added support for C++11 move semantics to the argument of
@@ -1122,7 +1422,7 @@ Changes (w.r.t. Intel TBB 4.1 Update 4):
     were added on OS X*.
 - For OS X* exact exception propagation is supported with Clang;
     it requires use of libc++ and corresponding Intel TBB binaries.
-- Support for C++11 initializer lists in constructor and assigment
+- Support for C++11 initializer lists in constructor and assignment
     has been added to concurrent_hash_map, concurrent_unordered_set,
     concurrent_unordered_multiset, concurrent_unordered_map,
     concurrent_unordered_multimap.
@@ -1718,7 +2018,7 @@ Changes (w.r.t. 20100310 open-source release):
 - Reworked enumerable_thread_specific to use a custom implementation of
     hash map that is more efficient for ETS usage models.
 - Added example for class task_group; see examples/task_group/sudoku.
-- Removed two examples, as they were long outdated and superceded:
+- Removed two examples, as they were long outdated and superseded:
     pipeline/text_filter (use pipeline/square);
     parallel_while/parallel_preorder (use parallel_do/parallel_preorder).
 - PDF documentation updated.
@@ -1936,7 +2236,7 @@ Changes (w.r.t. Intel TBB 2.1 U3 commercial-aligned release):
 
 - Added tests for aligned memory allocations and malloc replacement.
 - Several improvements for better bundling with Intel(R) C++ Compiler.
-- A few other small changes in code and documentaion.
+- A few other small changes in code and documentation.
 
 Bugs fixed:
 

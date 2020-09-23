@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2016-2018 Intel Corporation
+# Copyright (c) 2016-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,10 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 
 from __future__ import print_function
@@ -35,7 +31,7 @@ from .pool import __all__ as pool__all
 __all__ = ["Monkey", "is_active"] + api__all + pool__all
 
 __doc__ = """
-Python API for Intel(R) Threading Building Blocks library (Intel(R) TBB)
+Python API for Intel(R) Threading Building Blocks (Intel(R) TBB)
 extended with standard Python's pools implementation and monkey-patching.
 
 Command-line interface example:
@@ -194,8 +190,10 @@ class Monkey:
         global is_active
         assert is_active == False, "tbb.Monkey does not support nesting yet"
         is_active = True
-        self.env = os.getenv('MKL_THREADING_LAYER')
+        self.env_mkl = os.getenv('MKL_THREADING_LAYER')
         os.environ['MKL_THREADING_LAYER'] = 'TBB'
+        self.env_numba = os.getenv('NUMBA_THREADING_LAYER')
+        os.environ['NUMBA_THREADING_LAYER'] = 'TBB'
 
         if ipc_enabled:
             if sys.version_info.major == 2 and sys.version_info.minor >= 7:
@@ -209,10 +207,14 @@ class Monkey:
         global is_active
         assert is_active == True, "modified?"
         is_active = False
-        if self.env is None:
+        if self.env_mkl is None:
             del os.environ['MKL_THREADING_LAYER']
         else:
-            os.environ['MKL_THREADING_LAYER'] = self.env
+            os.environ['MKL_THREADING_LAYER'] = self.env_mkl
+        if self.env_numba is None:
+            del os.environ['NUMBA_THREADING_LAYER']
+        else:
+            os.environ['NUMBA_THREADING_LAYER'] = self.env_numba
         for name in self._items.keys():
             setattr(self._modules[name], name, self._items[name])
 

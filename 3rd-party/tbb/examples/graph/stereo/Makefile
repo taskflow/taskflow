@@ -1,4 +1,4 @@
-# Copyright (c) 2005-2018 Intel Corporation
+# Copyright (c) 2005-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 # GNU Makefile that builds and runs example.
 run_cmd=
@@ -59,6 +55,9 @@ release: *.cpp
 debug: *.cpp
 	$(CXX) -O0 -g -DTBB_USE_DEBUG $(CXXFLAGS) -o $(PROG) $^ $(TBBLIB_DEBUG) $(OPENCL_LIB) $(LIBS) $(CXX0XFLAGS)
 
+profile: override CXXFLAGS += -DTBB_USE_THREADING_TOOLS -g
+profile: release
+
 clean:
 	$(RM) $(PROG) *.o *.d
 
@@ -69,4 +68,3 @@ perf_build: release
 
 perf_run:
 	$(run_cmd) ./$(PROG) $(PERF_RUN_ARGS)
-

@@ -1,4 +1,4 @@
-# Copyright (c) 2005-2018 Intel Corporation
+# Copyright (c) 2005-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 #------------------------------------------------------------------------------
 # Define rules for making the TBB tests.
@@ -107,6 +103,9 @@ test_dynamic_link.$(TEST_EXT): LIBS += $(LIBDL)
 ifneq (,$(BIGOBJ_KEY))
 TEST_BIGOBJ = test_opencl_node.$(TEST_EXT)      \
     test_atomic.$(TEST_EXT)                     \
+    test_concurrent_hash_map.$(TEST_EXT)        \
+    test_concurrent_set.$(TEST_EXT)             \
+    test_concurrent_map.$(TEST_EXT)             \
     test_concurrent_unordered_set.$(TEST_EXT)   \
     test_concurrent_unordered_map.$(TEST_EXT)   \
     test_join_node_key_matching.$(TEST_EXT)     \
@@ -115,7 +114,7 @@ TEST_BIGOBJ = test_opencl_node.$(TEST_EXT)      \
 $(TEST_BIGOBJ): override CXXFLAGS += $(BIGOBJ_KEY)
 endif
 
-# TODO: remove repetition of .$(TEST_EXT) in the list bellow
+# TODO: remove repetition of .$(TEST_EXT) in the list below
 # The main list of TBB tests
 TEST_TBB_PLAIN.EXE = test_assembly.$(TEST_EXT)   \
 	test_global_control.$(TEST_EXT)              \
@@ -134,6 +133,8 @@ TEST_TBB_PLAIN.EXE = test_assembly.$(TEST_EXT)   \
 	test_concurrent_unordered_set.$(TEST_EXT)    \
 	test_concurrent_unordered_map.$(TEST_EXT)    \
 	test_concurrent_hash_map.$(TEST_EXT)         \
+	test_concurrent_set.$(TEST_EXT)              \
+	test_concurrent_map.$(TEST_EXT)              \
 	test_enumerable_thread_specific.$(TEST_EXT)  \
 	test_handle_perror.$(TEST_EXT)               \
 	test_halt.$(TEST_EXT)                        \
@@ -198,6 +199,7 @@ TEST_TBB_PLAIN.EXE = test_assembly.$(TEST_EXT)   \
 	test_priority_queue_node.$(TEST_EXT)         \
 	test_sequencer_node.$(TEST_EXT)              \
 	test_source_node.$(TEST_EXT)                 \
+	test_input_node.$(TEST_EXT)                  \
 	test_overwrite_node.$(TEST_EXT)              \
 	test_write_once_node.$(TEST_EXT)             \
 	test_indexer_node.$(TEST_EXT)                \
@@ -215,12 +217,12 @@ TEST_TBB_PLAIN.EXE = test_assembly.$(TEST_EXT)   \
 	test_composite_node.$(TEST_EXT)              \
 	test_async_node.$(TEST_EXT)                  \
 	test_async_msg.$(TEST_EXT)                   \
+	test_resumable_tasks.$(TEST_EXT)             \
 	test_tbb_version.$(TEST_EXT)                 # insert new files right above
 
 # These tests depend on other technologies
 TEST_TBB_SPECIAL.EXE = test_openmp.$(TEST_EXT) \
     test_cilk_interop.$(TEST_EXT)              \
-    test_gfx_factory.$(TEST_EXT)               \
     test_opencl_node.$(TEST_EXT)
 
 # skip mode_plugin for now
@@ -241,7 +243,6 @@ ifdef CILK_AVAILABLE
 # The issue reveals itself if a version of binutils is prior to 2.17
 ifeq (linux_icc,$(tbb_os)_$(compiler))
 test_cilk_interop.$(TEST_EXT): LIBS += -lcilkrts
-test_gfx_factory.$(TEST_EXT): LIBS += -lcilkrts
 endif
 test_tbb_cilk: test_cilk_interop.$(TEST_EXT)
 	$(run_cmd) ./test_cilk_interop.$(TEST_EXT) $(args)
@@ -251,6 +252,8 @@ test_tbb_cilk:
 endif
 
 test_opencl_node.$(TEST_EXT): LIBS += $(OPENCL.LIB)
+
+test_arena_constraints_hwloc.$(TEST_EXT): LIBS += $(HWLOC.LIB)
 
 $(TEST_TBB_PLAIN.EXE) $(TEST_TBB_SPECIAL.EXE): WARNING_KEY += $(TEST_WARNING_KEY)
 
@@ -273,7 +276,7 @@ test_tbb_plain: $(TEST_PREREQUISITE) $(TESTS_TO_RUN)
 
 # For deprecated files, we don't mind warnings etc., thus compilation rules are most relaxed
 CPLUS_FLAGS_DEPRECATED = $(DEFINE_KEY)__TBB_TEST_DEPRECATED=1 $(subst $(WARNING_KEY),,$(CPLUS_FLAGS)) $(WARNING_SUPPRESS) $(INCLUDE_KEY)$(tbb_root)/src/test
-TEST_TBB_OLD.OBJ = test_concurrent_vector_v2.$(OBJ) test_concurrent_queue_v2.$(OBJ) test_mutex_v2.$(OBJ) test_task_scheduler_observer_v3.$(OBJ) 
+TEST_TBB_OLD.OBJ = test_concurrent_vector_v2.$(OBJ) test_concurrent_queue_v2.$(OBJ) test_mutex_v2.$(OBJ) test_task_scheduler_observer_v3.$(OBJ)
 
 $(TEST_TBB_OLD.OBJ): CPLUS_FLAGS := $(CPLUS_FLAGS_DEPRECATED)
 

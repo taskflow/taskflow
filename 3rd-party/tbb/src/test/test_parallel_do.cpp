@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "tbb/parallel_do.h"
@@ -336,8 +332,8 @@ namespace TestMoveSem {
         MovePreferable(bool addtofeed_) : Movable(), addtofeed(addtofeed_) {}
         MovePreferable(MovePreferable&& other) : Movable(std::move(other)), addtofeed(other.addtofeed) {};
         // base class is explicitly initialized in the copy ctor to avoid -Wextra warnings
-        MovePreferable(const MovePreferable& other) : Movable(other) { REPORT("Error: copy ctor prefered.\n"); };
-        MovePreferable& operator=(const MovePreferable&) { REPORT("Error: copy assing operator prefered.\n"); return *this; }
+        MovePreferable(const MovePreferable& other) : Movable(other) { REPORT("Error: copy ctor preferred.\n"); };
+        MovePreferable& operator=(const MovePreferable&) { REPORT("Error: copy assign operator preferred.\n"); return *this; }
         bool addtofeed;
     };
     struct MoveOnly : MovePreferable, NoCopy {

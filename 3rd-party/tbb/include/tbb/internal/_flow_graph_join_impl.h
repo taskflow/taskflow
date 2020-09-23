@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB__flow_graph_join_impl_H
@@ -225,7 +221,6 @@ namespace internal {
             , add_blt_pred, del_blt_pred, blt_pred_cnt, blt_pred_cpy
 #endif
         };
-        enum op_stat {WAIT=0, SUCCEEDED, FAILED};
         typedef reserving_port<T> class_type;
 
         class reserving_port_operation : public aggregated_operation<reserving_port_operation> {
@@ -324,7 +319,7 @@ namespace internal {
             return NULL;
         }
 
-        graph& graph_reference() __TBB_override {
+        graph& graph_reference() const __TBB_override {
             return my_join->graph_ref;
         }
 
@@ -421,6 +416,10 @@ namespace internal {
         }
 
     private:
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+        friend class get_graph_helper;
+#endif
+
         forwarding_base *my_join;
         reservable_predecessor_cache< T, null_mutex > my_predecessors;
         bool reserved;
@@ -445,7 +444,6 @@ namespace internal {
             , add_blt_pred, del_blt_pred, blt_pred_cnt, blt_pred_cpy
 #endif
         };
-        enum op_stat {WAIT=0, SUCCEEDED, FAILED};
 
         class queueing_port_operation : public aggregated_operation<queueing_port_operation> {
         public:
@@ -548,7 +546,7 @@ namespace internal {
             return op_data.bypass_t;
         }
 
-        graph& graph_reference() __TBB_override {
+        graph& graph_reference() const __TBB_override {
             return my_join->graph_ref;
         }
 
@@ -628,6 +626,10 @@ namespace internal {
         }
 
     private:
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+        friend class get_graph_helper;
+#endif
+
         forwarding_base *my_join;
 #if TBB_DEPRECATED_FLOW_NODE_EXTRACTION
         edge_container<predecessor_type> my_built_predecessors;
@@ -679,7 +681,6 @@ namespace internal {
            , add_blt_pred, del_blt_pred, blt_pred_cnt, blt_pred_cpy
 #endif
         };
-        enum op_stat {WAIT=0, SUCCEEDED, FAILED};
 
         class key_matching_port_operation : public aggregated_operation<key_matching_port_operation> {
         public:
@@ -767,7 +768,7 @@ namespace internal {
             return rtask;
         }
 
-        graph& graph_reference() __TBB_override {
+        graph& graph_reference() const __TBB_override {
             return my_join->graph_ref;
         }
 
@@ -1067,7 +1068,6 @@ namespace internal {
         // and the output_buffer_type base class
     private:
         enum op_type { res_count, inc_count, may_succeed, try_make };
-        enum op_stat {WAIT=0, SUCCEEDED, FAILED};
         typedef join_node_FE<key_matching<key_type,key_hash_compare>, InputTuple, OutputTuple> class_type;
 
         class key_matching_FE_operation : public aggregated_operation<key_matching_FE_operation> {
@@ -1286,7 +1286,6 @@ namespace internal {
             , add_blt_succ, del_blt_succ, blt_succ_cnt, blt_succ_cpy
 #endif
         };
-        enum op_stat {WAIT=0, SUCCEEDED, FAILED};
         typedef join_node_base<JP,InputTuple,OutputTuple> class_type;
 
         class join_node_base_operation : public aggregated_operation<join_node_base_operation> {

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,18 +12,11 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 /* Common part for the partitioner whitebox tests */
 
 #include <typeinfo>
-
-#include "tbb/tbb_thread.h"
-#include "tbb/enumerable_thread_specific.h"
 
 #include "string.h"
 #include "harness_assert.h"
@@ -37,10 +30,6 @@ const size_t max_simulated_threads = 256;
 const size_t max_simulated_threads = 640;
 #endif
 
-typedef tbb::enumerable_thread_specific<size_t> ThreadNumsType;
-size_t g_threadNumInitialValue = 10;
-ThreadNumsType g_threadNums(g_threadNumInitialValue);
-
 namespace whitebox_simulation {
 size_t whitebox_thread_index = 0;
 test_partitioner_utils::BinaryTree reference_tree;
@@ -50,9 +39,11 @@ test_partitioner_utils::BinaryTree reference_tree;
 namespace tbb {
 namespace internal {
 typedef unsigned short affinity_id;
+void* internal_current_suspend_point() { return NULL; }
 }
 class fake_task {
 public:
+    typedef void* suspend_point;
     typedef internal::affinity_id affinity_id;
     void set_affinity(affinity_id a) { my_affinity = a; }
     affinity_id affinity() const { return my_affinity; }
@@ -83,12 +74,18 @@ inline int current_thread_index() { return (int)whitebox_simulation::whitebox_th
 #define get_initial_auto_partitioner_divisor my_get_initial_auto_partitioner_divisor
 #define affinity_partitioner_base_v3 my_affinity_partitioner_base_v3
 #define task fake_task
+#include "tbb/tbb_thread.h"
+#include "tbb/enumerable_thread_specific.h"
 #define __TBB_STATIC_THRESHOLD 0
 #include "tbb/partitioner.h"
 #undef __TBB_STATIC_THRESHOLD
 #undef task
 #undef affinity_partitioner_base_v3
 #undef get_initial_auto_partitioner_divisor
+
+typedef tbb::enumerable_thread_specific<size_t> ThreadNumsType;
+size_t g_threadNumInitialValue = 10;
+ThreadNumsType g_threadNums(g_threadNumInitialValue);
 
 // replace library functions to simulate concurrency
 namespace tbb {

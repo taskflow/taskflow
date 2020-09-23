@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 TBB_STRING_RESOURCE(FLOW_BROADCAST_NODE, "broadcast_node")
@@ -78,3 +74,6 @@ TBB_STRING_RESOURCE(FLOW_TASKS, "tbb_flow_graph")
 TBB_STRING_RESOURCE(PARALLEL_FOR_TASK, "tbb_parallel_for_task")
 // TODO: Drop following string prefix "fgt_" here and in FGA's collector
 TBB_STRING_RESOURCE(USER_EVENT, "fgt_user_event")
+#if __TBB_CPF_BUILD || (TBB_PREVIEW_FLOW_GRAPH_TRACE && TBB_USE_THREADING_TOOLS)
+TBB_STRING_RESOURCE(CODE_ADDRESS, "code_address")
+#endif

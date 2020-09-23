@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __CONVEX_HULL_H__
@@ -33,8 +29,9 @@
 #include <functional>
 #include <climits>
 #include "tbb/tick_count.h"
-#include "tbb/task_scheduler_init.h"
+#include "tbb/global_control.h"
 #include "../../common/utility/utility.h"
+#include "../../common/utility/get_default_num_threads.h"
 #include "../../common/utility/fast_random.h"
 
 using namespace std;
@@ -42,7 +39,6 @@ using namespace std;
 namespace cfg {
     // convex hull problem user set parameters
     long   numberOfPoints  = 5000000; // problem size
-    utility::thread_number_range threads(tbb::task_scheduler_init::default_num_threads);
 
     // convex hull grain sizes for 3 subproblems. Be sure 16*GS < 512Kb
     const size_t generateGrainSize = 25000;
@@ -56,12 +52,12 @@ namespace util {
     vector<string> OUTPUT;
 
     // utility functionality
-    void ParseInputArgs(int argc, char* argv[]) {
+    void ParseInputArgs(int argc, char* argv[], utility::thread_number_range& threads) {
         utility::parse_cli_arguments(
                 argc,argv,
                 utility::cli_argument_pack()
                     //"-h" option for displaying help is present implicitly
-                    .positional_arg(cfg::threads,"n-of-threads",utility::thread_number_range_desc)
+                    .positional_arg(threads,"n-of-threads",utility::thread_number_range_desc)
                     .positional_arg(cfg::numberOfPoints,"n-of-points","number of points")
                     .arg(silent,"silent","no output except elapsed time")
                     .arg(verbose,"verbose","turns verbose ON")

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #define HARNESS_DEFAULT_MIN_THREADS 2
@@ -41,7 +37,6 @@
 
 
 #include "../tbb/itt_notify.h"
-
 
 template<typename M>
 class WorkEmulator: NoAssign {
@@ -72,7 +67,7 @@ void Test( const char * name ) {
     tbb::parallel_for( tbb::blocked_range<size_t>(0,n,n/100), WorkEmulator<M>(mtx) );
 }
 
-    #define TEST_MUTEX(type, name)  Test<tbb::type>( name )
+#define TEST_MUTEX(type, name)  Test<tbb::type>( name )
 
 #endif /* !DO_ITT_NOTIFY */
 

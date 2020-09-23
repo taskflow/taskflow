@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef _TBB_mailbox_H
@@ -91,6 +87,9 @@ protected:
     //! Pointer to pointer that will point to next item in the queue.  Never NULL.
     proxy_ptr* __TBB_atomic my_last;
 
+    //! Approximate number of tasks in mailbox to prevent an unlimited grow when the owner is not available.
+    tbb::atomic<int> my_task_count;
+
     //! Owner of mailbox is not executing a task, and has drained its own task pool.
     bool my_is_idle;
 };
@@ -98,6 +97,7 @@ protected:
 //! Class representing where mail is put.
 /** Padded to occupy a cache line. */
 class mail_outbox : padded<unpadded_mail_outbox> {
+    static const int mailbox_task_limit = 32;
 
     task_proxy* internal_pop( __TBB_ISOLATION_EXPR(isolation_tag isolation) ) {
         task_proxy* curr = __TBB_load_relaxed( my_first );
@@ -133,6 +133,8 @@ class mail_outbox : padded<unpadded_mail_outbox> {
                 *prev_ptr = second;
             }
         }
+        --my_task_count;
+        __TBB_ASSERT( my_task_count >= 0, NULL );
         __TBB_ASSERT( curr, NULL );
         return curr;
     }
@@ -140,14 +142,19 @@ public:
     friend class mail_inbox;
 
     //! Push task_proxy onto the mailbox queue of another thread.
-    /** Implementation is wait-free. */
-    void push( task_proxy* t ) {
+    /** Implementation is wait-free.
+        Returns false if there are too many tasks. */
+    bool push( task_proxy* t ) {
+        if (my_task_count > mailbox_task_limit)
+            return false;
+        ++my_task_count;
         __TBB_ASSERT(t, NULL);
         t->next_in_mailbox = NULL;
         proxy_ptr * const link = (proxy_ptr *)__TBB_FetchAndStoreW(&my_last,(intptr_t)&t->next_in_mailbox);
         // No release fence required for the next store, because there are no memory operations
         // between the previous fully fenced atomic operation and the store.
         __TBB_store_relaxed(*link, t);
+        return true;
     }
 
     //! Return true if mailbox is empty

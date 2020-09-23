@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 // Declarations for simple estimate of the memory being used by a program.
@@ -41,6 +37,7 @@
 #include __TBB_STD_SWAP_HEADER
 
 #include "tbb/atomic.h"
+#include "tbb/tbb_allocator.h"
 
 #if __SUNPRO_CC
 using std::printf;
@@ -578,6 +575,258 @@ public:
     }
 
 };
+
+template <typename T>
+class pmr_stateful_allocator
+{
+private:
+    pmr_stateful_allocator& operator=(const pmr_stateful_allocator&); /* = deleted */
+public:
+    typedef T value_type;
+    typedef Harness::false_type propagate_on_container_move_assignment;
+    typedef Harness::false_type propagate_on_container_copy_assignment;
+    typedef Harness::false_type propagate_on_container_swap;
+
+// These types are required in C++03
+#if !__TBB_ALLOCATOR_TRAITS_PRESENT
+    typedef value_type* pointer;
+    typedef const value_type* const_pointer;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
+    typedef size_t size_type;
+    typedef ptrdiff_t difference_type;
+    template<class U> struct rebind {
+        typedef pmr_stateful_allocator<U> other;
+    };
+#endif
+
+    pmr_stateful_allocator() throw() : unique_pointer(this) {}
+
+    pmr_stateful_allocator(const pmr_stateful_allocator &a) : unique_pointer(a.unique_pointer) {}
+
+    template<typename U>
+    pmr_stateful_allocator(const pmr_stateful_allocator<U> &a) throw() : unique_pointer(a.unique_pointer) {}
+
+    value_type* allocate( size_t n, const void* /*hint*/ = 0 ) {
+        return static_cast<value_type*>( malloc( n * sizeof(value_type) ) );
+    }
+
+    void deallocate( value_type* p, size_t ) {
+        free( p );
+    }
+
+#if __TBB_ALLOCATOR_CONSTRUCT_VARIADIC
+    //! Copy-construct value at location pointed to by p.
+    template<typename U, typename... Args>
+    void construct(U *p, Args&&... args)
+    {
+        ::new((void *)p) U(std::forward<Args>(args)...);
+    }
+#else // __TBB_ALLOCATOR_CONSTRUCT_VARIADIC
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    void construct(value_type* p, value_type&& value) { ::new((void*)(p)) value_type(std::move(value)); }
+#endif
+    void construct(value_type* p, const value_type& value) { ::new((void*)(p)) value_type(value); }
+#endif // __TBB_ALLOCATOR_CONSTRUCT_VARIADIC
+
+    //! Destroy value at location pointed to by p.
+    void destroy(value_type* p) {
+        p->~value_type();
+        // suppress "unreferenced parameter" warnings by MSVC up to and including 2015
+        tbb::internal::suppress_unused_warning(p);
+    }
+
+    friend bool operator==(pmr_stateful_allocator const& lhs, pmr_stateful_allocator const& rhs){
+        return lhs.unique_pointer == rhs.unique_pointer;
+    }
+
+    friend bool operator!=(pmr_stateful_allocator const& rhs, pmr_stateful_allocator const& lhs){
+        return !(lhs == rhs);
+    }
+
+    void* unique_pointer;
+};
+
+// C++03 allocator doesn't have to be assignable or swappable, so
+// tbb::internal::allocator_traits defines POCCA and POCS as false_type
+#if __TBB_ALLOCATOR_TRAITS_PRESENT
+#include "tbb/internal/_allocator_traits.h" // Need traits_true/false_type
+
+template <typename Allocator, typename POCMA = tbb::internal::traits_false_type,
+          typename POCCA = tbb::internal::traits_false_type, typename POCS = tbb::internal::traits_false_type>
+struct propagating_allocator : Allocator {
+    typedef POCMA propagate_on_container_move_assignment;
+    typedef POCCA propagate_on_container_copy_assignment;
+    typedef POCS propagate_on_container_swap;
+    bool* propagated_on_copy_assignment;
+    bool* propagated_on_move_assignment;
+    bool* propagated_on_swap;
+    bool* selected_on_copy_construction;
+
+    template <typename U>
+    struct rebind {
+        typedef propagating_allocator<typename tbb::internal::allocator_rebind<Allocator, U>::type,
+                                      POCMA, POCCA, POCS> other;
+    };
+
+    propagating_allocator() : propagated_on_copy_assignment(NULL),
+                              propagated_on_move_assignment(NULL),
+                              propagated_on_swap(NULL),
+                              selected_on_copy_construction(NULL) {}
+
+    propagating_allocator(bool& poca, bool& poma, bool& pos, bool& soc)
+        : propagated_on_copy_assignment(&poca),
+          propagated_on_move_assignment(&poma),
+          propagated_on_swap(&pos),
+          selected_on_copy_construction(&soc) {}
+
+    propagating_allocator(const propagating_allocator& other)
+        : Allocator(other),
+          propagated_on_copy_assignment(other.propagated_on_copy_assignment),
+          propagated_on_move_assignment(other.propagated_on_move_assignment),
+          propagated_on_swap(other.propagated_on_swap),
+          selected_on_copy_construction(other.selected_on_copy_construction) {}
+
+    template <typename Allocator2>
+    propagating_allocator(const propagating_allocator<Allocator2, POCMA, POCCA, POCS>& other)
+        : Allocator(other),
+          propagated_on_copy_assignment(other.propagated_on_copy_assignment),
+          propagated_on_move_assignment(other.propagated_on_move_assignment),
+          propagated_on_swap(other.propagated_on_swap),
+          selected_on_copy_construction(other.selected_on_copy_construction) {}
+
+    propagating_allocator& operator=(const propagating_allocator&) {
+        ASSERT(POCCA::value, "Allocator should not copy assign if pocca is false");
+        if (propagated_on_copy_assignment)
+            *propagated_on_copy_assignment = true;
+        return *this;
+    }
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    propagating_allocator& operator=(propagating_allocator&&) {
+        ASSERT(POCMA::value, "Allocator should not move assign if pocma is false");
+        if (propagated_on_move_assignment)
+            *propagated_on_move_assignment = true;
+        return *this;
+    }
+#endif
+
+    propagating_allocator select_on_container_copy_construction() const {
+        if (selected_on_copy_construction)
+            *selected_on_copy_construction = true;
+        return *this;
+    }
+};
+
+namespace propagating_allocators {
+typedef tbb::tbb_allocator<int> base_allocator;
+typedef tbb::internal::traits_true_type true_type;
+typedef tbb::internal::traits_false_type false_type;
+
+typedef propagating_allocator<base_allocator, /*POCMA=*/true_type, /*POCCA=*/true_type,
+                              /*POCS=*/true_type> always_propagating_allocator;
+typedef propagating_allocator<base_allocator, false_type, false_type, false_type> never_propagating_allocator;
+typedef propagating_allocator<base_allocator, true_type, false_type, false_type> pocma_allocator;
+typedef propagating_allocator<base_allocator, false_type, true_type, false_type> pocca_allocator;
+typedef propagating_allocator<base_allocator, false_type, false_type, true_type> pocs_allocator;
+}
+
+template <typename Allocator, typename POCMA, typename POCCA, typename POCS>
+void swap(propagating_allocator<Allocator, POCMA, POCCA, POCS>& lhs,
+          propagating_allocator<Allocator, POCMA, POCCA, POCS>&) {
+    ASSERT(POCS::value, "Allocator should not swap if pocs is false");
+    if (lhs.propagated_on_swap)
+        *lhs.propagated_on_swap = true;
+}
+
+template <typename ContainerType>
+void test_allocator_traits_support() {
+    typedef typename ContainerType::allocator_type allocator_type;
+    typedef std::allocator_traits<allocator_type> allocator_traits;
+    typedef typename allocator_traits::propagate_on_container_copy_assignment pocca_type;
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    typedef typename allocator_traits::propagate_on_container_move_assignment pocma_type;
+#endif
+    typedef typename allocator_traits::propagate_on_container_swap pocs_type;
+
+    bool propagated_on_copy = false;
+    bool propagated_on_move = false;
+    bool propagated_on_swap = false;
+    bool selected_on_copy = false;
+
+    allocator_type alloc(propagated_on_copy, propagated_on_move, propagated_on_swap, selected_on_copy);
+
+    ContainerType c1(alloc), c2(c1);
+    ASSERT(selected_on_copy, "select_on_container_copy_construction function was not called");
+
+    c1 = c2;
+    ASSERT(propagated_on_copy == pocca_type::value, "Unexpected allocator propagation on copy assignment");
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    c2 = std::move(c1);
+    ASSERT(propagated_on_move == pocma_type::value, "Unexpected allocator propagation on move assignment");
+#endif
+
+    c1.swap(c2);
+    ASSERT(propagated_on_swap == pocs_type::value, "Unexpected allocator propagation on swap");
+}
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+class non_movable_object {
+    non_movable_object() {}
+private:
+    non_movable_object(non_movable_object&&);
+    non_movable_object& operator=(non_movable_object&&);
+};
+
+template <typename ContainerType>
+void test_allocator_traits_with_non_movable_value_type() {
+    // Check, that if pocma is true, container allows move assignment without per-element move
+    typedef typename ContainerType::allocator_type allocator_type;
+    typedef std::allocator_traits<allocator_type> allocator_traits;
+    typedef typename allocator_traits::propagate_on_container_move_assignment pocma_type;
+    ASSERT(pocma_type::value, "Allocator POCMA must be true for this test");
+    allocator_type alloc;
+    ContainerType container1(alloc), container2(alloc);
+    container1 = std::move(container2);
+}
+#endif // __TBB_CPP11_RVALUE_REF_PRESENT
+
+#endif // __TBB_ALLOCATOR_TRAITS_PRESENT
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+
+template<typename Allocator>
+class allocator_aware_data {
+public:
+    static bool assert_on_constructions;
+    typedef Allocator allocator_type;
+
+    allocator_aware_data(const allocator_type& allocator = allocator_type())
+        : my_allocator(allocator), my_value(0) {}
+    allocator_aware_data(int v, const allocator_type& allocator = allocator_type())
+        : my_allocator(allocator), my_value(v) {}
+    allocator_aware_data(const allocator_aware_data&) {
+        ASSERT(!assert_on_constructions, "Allocator should propagate to the data during copy construction");
+    }
+    allocator_aware_data(allocator_aware_data&&) {
+        ASSERT(!assert_on_constructions, "Allocator should propagate to the data during move construction");
+    }
+    allocator_aware_data(const allocator_aware_data& rhs, const allocator_type& allocator)
+        : my_allocator(allocator), my_value(rhs.my_value) {}
+    allocator_aware_data(allocator_aware_data&& rhs, const allocator_type& allocator)
+        : my_allocator(allocator), my_value(rhs.my_value) {}
+
+    int value() const { return my_value; }
+private:
+    allocator_type my_allocator;
+    int my_value;
+};
+
+template<typename Allocator>
+bool allocator_aware_data<Allocator>::assert_on_constructions = false;
+
+#endif // __TBB_CPP11_RVALUE_REF_PRESENT
 
 #if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
     // Workaround for overzealous compiler warnings

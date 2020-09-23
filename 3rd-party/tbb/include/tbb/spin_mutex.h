@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_spin_mutex_H
 #define __TBB_spin_mutex_H
+
+#define __TBB_spin_mutex_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 #include <cstddef>
 #include <new>
@@ -208,5 +207,8 @@ typedef interface7::internal::padded_mutex<spin_mutex,false> speculative_spin_mu
 __TBB_DEFINE_PROFILING_SET_NAME(speculative_spin_mutex)
 
 } // namespace tbb
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_spin_mutex_H_include_area
 
 #endif /* __TBB_spin_mutex_H */

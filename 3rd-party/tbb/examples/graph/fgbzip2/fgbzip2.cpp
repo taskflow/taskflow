@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #define TBB_PREVIEW_FLOW_GRAPH_FEATURES 1
@@ -29,12 +25,12 @@
 #include <string>
 #include <memory>
 #include <queue>
+#include <thread>
 
 #include "bzlib.h"
 
 #include "tbb/flow_graph.h"
 #include "tbb/tick_count.h"
-#include "tbb/compat/thread"
 #include "tbb/concurrent_queue.h"
 
 // TODO: change memory allocation/deallocation to be managed in constructor/destructor
@@ -279,7 +275,7 @@ private:
         m_readQueue.pop(readWork);
 
         // Reading thread waits for buffers to be received
-        // (the graph reuses limitted number of buffers)
+        // (the graph reuses limited number of buffers)
         // and reads the file while there is something to read
         while (m_io.hasDataToRead()) {
             readWork.bufferMsg.seqId = m_io.chunksRead();
@@ -382,7 +378,7 @@ void fgCompressionAsyncMsg(IOOperations& io, int blockSizeIn100KB, size_t memory
 void fgCompression(IOOperations& io, int blockSizeIn100KB) {
     tbb::flow::graph g;
 
-    tbb::flow::source_node< BufferMsg > file_reader(g, [&io](BufferMsg& bufferMsg)->bool {
+    tbb::flow::input_node< BufferMsg > file_reader(g, [&io](BufferMsg& bufferMsg)->bool {
         if (io.hasDataToRead()) {
             bufferMsg = BufferMsg::createBufferMsg(io.chunksRead(), io.chunkSize());
             io.readChunk(bufferMsg.inputBuffer);
@@ -406,6 +402,7 @@ void fgCompression(IOOperations& io, int blockSizeIn100KB) {
     make_edge(compressor, ordering);
     make_edge(ordering, output_writer);
 
+    file_reader.activate();
     g.wait_for_all();
 }
 
@@ -475,10 +472,10 @@ int main(int argc, char* argv[]) {
             if (verbose) std::cout << "Running flow graph based compression algorithm." << std::endl;
             fgCompression(io, blockSizeIn100KB);
         } else if (asyncType == "async_node") {
-            if (verbose) std::cout << "Running flow graph based compression algorithm with async_node based asynchronious IO operations." << std::endl;
+            if (verbose) std::cout << "Running flow graph based compression algorithm with async_node based asynchronous IO operations." << std::endl;
             fgCompressionAsyncNode(io, blockSizeIn100KB);
         } else if (asyncType == "async_msg") {
-            if (verbose) std::cout << "Running flow graph based compression algorithm with async_msg based asynchronious IO operations. Using limited memory: " << memoryLimitIn1MB << "MB." << std::endl;
+            if (verbose) std::cout << "Running flow graph based compression algorithm with async_msg based asynchronous IO operations. Using limited memory: " << memoryLimitIn1MB << "MB." << std::endl;
             fgCompressionAsyncMsg(io, blockSizeIn100KB, memoryLimitIn1MB);
         }
 

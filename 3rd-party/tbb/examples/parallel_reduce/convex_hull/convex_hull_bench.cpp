@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 /*
@@ -179,7 +175,6 @@ int main(int argc, char* argv[]) {
 
 #else // USETBB - parallel version of Quick Hull algorithm
 
-#include "tbb/task_scheduler_init.h"
 #include "tbb/parallel_for.h"
 #include "tbb/parallel_reduce.h"
 #include "tbb/blocked_range.h"
@@ -570,7 +565,8 @@ void quickhull(const pointVec_t &points, pointVec_t &hull, bool buffered) {
 }
 
 int main(int argc, char* argv[]) {
-    util::ParseInputArgs(argc, argv);
+    utility::thread_number_range threads(utility::get_default_num_threads);
+    util::ParseInputArgs(argc, argv, threads);
 
     int             nthreads;
     util::my_time_t tm_init, tm_start, tm_end;
@@ -581,11 +577,11 @@ int main(int argc, char* argv[]) {
     std::cout << "Starting STL locked unbuffered push_back version of QUICK HULL algorithm" << std::endl;
 #endif // USECONCVEC
 
-    for(nthreads=cfg::threads.first; nthreads<=cfg::threads.last; nthreads=cfg::threads.step(nthreads)) {
+    for(nthreads=threads.first; nthreads<=threads.last; nthreads=threads.step(nthreads)) {
         pointVec_t      points;
         pointVec_t      hull;
 
-        tbb::task_scheduler_init init(nthreads);
+        tbb::global_control c(tbb::global_control::max_allowed_parallelism, nthreads);
         tm_init = util::gettime();
         initialize<FillRNDPointsVector>(points);
         tm_start = util::gettime();
@@ -603,11 +599,11 @@ int main(int argc, char* argv[]) {
     std::cout << "Starting STL locked buffered version of QUICK HULL algorithm" << std::endl;
 #endif
 
-    for(nthreads=cfg::threads.first; nthreads<=cfg::threads.last; nthreads=cfg::threads.step(nthreads)) {
+    for(nthreads=threads.first; nthreads<=threads.last; nthreads=threads.step(nthreads)) {
         pointVec_t      points;
         pointVec_t      hull;
 
-        tbb::task_scheduler_init init(nthreads);
+        tbb::global_control c(tbb::global_control::max_allowed_parallelism, nthreads);
 
         tm_init = util::gettime();
         initialize<FillRNDPointsVector_buf>(points);

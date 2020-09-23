@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 /*
@@ -1738,7 +1734,7 @@ static unsigned deflateDynamic(ucvector* out, size_t* bp, Hash* hash,
   another huffman tree is used for the dist values ("d"). These two trees are
   stored using their code lengths, and to compress even more these code lengths
   are also run-length encoded and huffman compressed. This gives a huffman tree
-  of code lengths "cl". The code lenghts used to describe this third tree are
+  of code lengths "cl". The code lengths used to describe this third tree are
   the code length code lengths ("clcl").
   */
 
@@ -1750,7 +1746,7 @@ static unsigned deflateDynamic(ucvector* out, size_t* bp, Hash* hash,
   uivector frequencies_ll; /*frequency of lit,len codes*/
   uivector frequencies_d; /*frequency of dist codes*/
   uivector frequencies_cl; /*frequency of code length codes*/
-  uivector bitlen_lld; /*lit,len,dist code lenghts (int bits), literally (without repeat codes).*/
+  uivector bitlen_lld; /*lit,len,dist code lengths (int bits), literally (without repeat codes).*/
   uivector bitlen_lld_e; /*bitlen_lld encoded with repeat codes (this is a rudemtary run length compression)*/
   /*bitlen_cl is the code length code lengths ("clcl"). The bit lengths of codes to represent tree_cl
   (these are written as is in the file, it would be crazy to compress these using yet another huffman
@@ -1891,7 +1887,7 @@ static unsigned deflateDynamic(ucvector* out, size_t* bp, Hash* hash,
     if(!uivector_resize(&bitlen_cl, tree_cl.numcodes)) ERROR_BREAK(83 /*alloc fail*/);
     for(i = 0; i != tree_cl.numcodes; ++i)
     {
-      /*lenghts of code length tree is in the order as specified by deflate*/
+      /*lengths of code length tree is in the order as specified by deflate*/
       bitlen_cl.data[i] = HuffmanTree_getLength(&tree_cl, CLCL_ORDER[i]);
     }
     while(bitlen_cl.data[bitlen_cl.size - 1] == 0 && bitlen_cl.size > 4)
@@ -1907,7 +1903,7 @@ static unsigned deflateDynamic(ucvector* out, size_t* bp, Hash* hash,
     After the BFINAL and BTYPE, the dynamic block consists out of the following:
     - 5 bits HLIT, 5 bits HDIST, 4 bits HCLEN
     - (HCLEN+4)*3 bits code lengths of code length alphabet
-    - HLIT + 257 code lenghts of lit/length alphabet (encoded using the code length
+    - HLIT + 257 code lengths of lit/length alphabet (encoded using the code length
       alphabet, + possible repetition codes 16, 17, 18)
     - HDIST + 1 code lengths of distance alphabet (encoded using the code length
       alphabet, + possible repetition codes 16, 17, 18)
@@ -1930,10 +1926,10 @@ static unsigned deflateDynamic(ucvector* out, size_t* bp, Hash* hash,
     addBitsToStream(bp, out, HDIST, 5);
     addBitsToStream(bp, out, HCLEN, 4);
 
-    /*write the code lenghts of the code length alphabet*/
+    /*write the code lengths of the code length alphabet*/
     for(i = 0; i != HCLEN + 4; ++i) addBitsToStream(bp, out, bitlen_cl.data[i], 3);
 
-    /*write the lenghts of the lit/len AND the dist alphabet*/
+    /*write the lengths of the lit/len AND the dist alphabet*/
     for(i = 0; i != bitlen_lld_e.size; ++i)
     {
       addHuffmanSymbol(bp, out, HuffmanTree_getCode(&tree_cl, bitlen_lld_e.data[i]),
@@ -3825,7 +3821,7 @@ unsigned lodepng_auto_choose_color(LodePNGColorMode* mode_out,
 #endif /* #ifdef LODEPNG_COMPILE_ENCODER */
 
 /*
-Paeth predicter, used by PNG filter type 4
+Paeth predictor, used by PNG filter type 4
 The parameters are of type short, but should come from unsigned chars, the shorts
 are only needed to make the paeth calculation correct.
 */
@@ -4165,7 +4161,7 @@ static unsigned postProcessScanlines(unsigned char* out, unsigned char* in,
   /*
   This function converts the filtered-padded-interlaced data into pure 2D image buffer with the PNG's colortype.
   Steps:
-  *) if no Adam7: 1) unfilter 2) remove padding bits (= posible extra bits per scanline if bpp < 8)
+  *) if no Adam7: 1) unfilter 2) remove padding bits (= possible extra bits per scanline if bpp < 8)
   *) if adam7: 1) 7x unfilter 2) 7x remove padding bits 3) Adam7_deinterlace
   NOTE: the in buffer will be overwritten with intermediate data!
   */
@@ -5513,7 +5509,7 @@ static unsigned preProcessScanlines(unsigned char** out, size_t* outsize, const 
 {
   /*
   This function converts the pure 2D image with the PNG's colortype, into filtered-padded-interlaced data. Steps:
-  *) if no Adam7: 1) add padding bits (= posible extra bits per scanline if bpp < 8) 2) filter
+  *) if no Adam7: 1) add padding bits (= possible extra bits per scanline if bpp < 8) 2) filter
   *) if adam7: 1) Adam7_interlace 2) 7x add padding bits 3) 7x filter
   */
   unsigned bpp = lodepng_get_bpp(&info_png->color);
@@ -5953,7 +5949,7 @@ const char* lodepng_error_text(unsigned code)
     case 54: return "repeat symbol in tree while there was no value symbol yet";
     /*jumped past tree while generating huffman tree, this could be when the
     tree will have more leaves than symbols after generating it out of the
-    given lenghts. They call this an oversubscribed dynamic bit lengths tree in zlib.*/
+    given lengths. They call this an oversubscribed dynamic bit lengths tree in zlib.*/
     case 55: return "jumped past tree while generating huffman tree";
     case 56: return "given output image colortype or bitdepth not supported for color conversion";
     case 57: return "invalid CRC encountered (checking CRC can be disabled)";

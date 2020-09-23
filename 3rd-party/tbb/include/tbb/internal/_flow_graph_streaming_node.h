@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_flow_graph_streaming_H
@@ -42,7 +38,7 @@ struct port_ref_impl {
 // The purpose of the port_ref_impl is the pretty syntax: the deduction of a compile-time constant is processed from the return type.
 // So it is possible to use this helper without parentheses, e.g. "port_ref<0>".
 template <int N1, int N2 = N1>
-internal::port_ref_impl<N1,N2> port_ref() {
+__TBB_DEPRECATED internal::port_ref_impl<N1,N2> port_ref() {
     return internal::port_ref_impl<N1,N2>();
 };
 
@@ -303,10 +299,11 @@ O---O              |   |                      O---O           |   |             
 \--------------------------------------------------------------------------------------------/
 */
 template<typename... Args>
-class streaming_node;
+class __TBB_DEPRECATED streaming_node;
 
 template<typename... Ports, typename JP, typename StreamFactory>
-class streaming_node< tuple<Ports...>, JP, StreamFactory >
+class __TBB_DEPRECATED
+streaming_node< tuple<Ports...>, JP, StreamFactory >
     : public composite_node < typename internal::streaming_node_traits<JP, StreamFactory, Ports...>::input_tuple,
                               typename internal::streaming_node_traits<JP, StreamFactory, Ports...>::output_tuple >
     , public internal::kernel_executor_helper< StreamFactory, typename internal::streaming_node_traits<JP, StreamFactory, Ports...>::kernel_input_tuple >
@@ -466,6 +463,7 @@ private:
         device_selector_base *my_device_selector;
     };
 
+    // TODO: investigate why copy-construction is disallowed
     class args_storage_base : tbb::internal::no_copy {
     public:
         typedef typename kernel_multifunction_node::output_ports_type output_ports_type;
@@ -481,7 +479,7 @@ private:
         {}
 
         args_storage_base( const args_storage_base &k )
-            : my_kernel( k.my_kernel ), my_factory( k.my_factory )
+            : tbb::internal::no_copy(), my_kernel( k.my_kernel ), my_factory( k.my_factory )
         {}
 
         const kernel_type my_kernel;

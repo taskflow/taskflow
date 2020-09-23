@@ -1,4 +1,4 @@
-# Copyright (c) 2005-2018 Intel Corporation
+# Copyright (c) 2005-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 export SHELL = cmd
 
@@ -63,7 +59,11 @@ def_prefix = $(if $(findstring intel64,$(arch)),win64,win32)
 # Target Windows version. Do not increase beyond 0x0502 without prior discussion!
 # Used as the value for macro definition option in windows.cl.inc etc.
 # For tests, we need at least Windows XP SP2 for sake of enabling stack backtraces.
+ifeq (1,$(tbb_cpf))
+_WIN32_WINNT=0x0600
+else
 _WIN32_WINNT=0x0502
+endif
 
 TBB.LST = $(tbb_root)/src/tbb/$(def_prefix)-tbb-export.lst
 TBB.DEF = $(TBB.LST:.lst=.def)
@@ -72,12 +72,19 @@ TBB.LIB = tbb$(CPF_SUFFIX)$(DEBUG_SUFFIX).$(LIBEXT)
 TBB.RES = tbb_resource.res
 # On Windows, we use #pragma comment to set the proper TBB lib to link with.
 # But for cross-configuration testing, need to link explicitly.
-# Tests use this variable to detect dependency on TBB binary, so have to be non-empty. 
+# Tests use this variable to detect dependency on TBB binary, so have to be non-empty.
 LINK_TBB.LIB = $(if $(crosstest),$(TBB.LIB),$(DEFINE_KEY)__TBB_IMPLICITLY_LINKED)
 TBB.MANIFEST =
 ifneq ($(filter vc8 vc9,$(runtime)),)
     TBB.MANIFEST = tbbmanifest.exe.manifest
 endif
+
+TBBBIND.DEF = $(tbb_root)/src/tbb/$(def_prefix)-tbbbind-export.def
+TBBBIND.DLL = tbbbind$(DEBUG_SUFFIX).$(DLL)
+TBBBIND.LIB = tbbbind$(DEBUG_SUFFIX).$(LIBEXT)
+TBBBIND.RES = tbbbind.res
+LINK_TBBBIND.LIB = $(TBBBIND.LIB)
+HWLOC.LIB = libhwloc.$(LIBEXT)
 
 MALLOC.DEF = $(MALLOC_ROOT)/$(def_prefix)-tbbmalloc-export.def
 MALLOC.DLL = tbbmalloc$(DEBUG_SUFFIX).$(DLL)

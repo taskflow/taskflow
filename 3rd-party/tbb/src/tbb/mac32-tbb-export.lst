@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "tbb/tbb_config.h"
@@ -24,7 +20,7 @@
     Sometimes macOS* requires leading underscore (e. g. in export list file), but sometimes not
     (e. g. when searching symbol in a dynamic library via dlsym()). Symbols in this file SHOULD
     be listed WITHOUT one leading underscore. __TBB_SYMBOL macro should add underscore when
-    necessary, depending on the indended usage.
+    necessary, depending on the intended usage.
 */
 
 // cache_aligned_allocator.cpp
@@ -80,6 +76,11 @@ __TBB_SYMBOL( _ZNK3tbb10interface78internal15task_arena_base16internal_executeER
 __TBB_SYMBOL( _ZNK3tbb10interface78internal15task_arena_base13internal_waitEv )
 __TBB_SYMBOL( _ZN3tbb10interface78internal15task_arena_base21internal_current_slotEv )
 __TBB_SYMBOL( _ZN3tbb10interface78internal15task_arena_base24internal_max_concurrencyEPKNS0_10task_arenaE )
+#if __TBB_NUMA_SUPPORT
+__TBB_SYMBOL( _ZN3tbb8internal13numa_topology11nodes_countEv )
+__TBB_SYMBOL( _ZN3tbb8internal13numa_topology4fillEPi )
+__TBB_SYMBOL( _ZN3tbb8internal13numa_topology19default_concurrencyEi )
+#endif /*__TBB_NUMA_SUPPORT*/
 #if __TBB_TASK_ISOLATION
 __TBB_SYMBOL( _ZN3tbb10interface78internal20isolate_within_arenaERNS1_13delegate_baseEl )
 #endif /* __TBB_TASK_ISOLATION */
@@ -198,6 +199,7 @@ __TBB_SYMBOL( _ZN3tbb8internal17itt_task_begin_v7ENS0_15itt_domain_enumEPvyS2_yN
 __TBB_SYMBOL( _ZN3tbb8internal15itt_task_end_v7ENS0_15itt_domain_enumE )
 __TBB_SYMBOL( _ZN3tbb8internal19itt_region_begin_v9ENS0_15itt_domain_enumEPvyS2_yNS0_12string_indexE )
 __TBB_SYMBOL( _ZN3tbb8internal17itt_region_end_v9ENS0_15itt_domain_enumEPvy )
+__TBB_SYMBOL( _ZN3tbb8internal24itt_metadata_ptr_add_v11ENS0_15itt_domain_enumEPvyNS0_12string_indexES2_ )
 
 // pipeline.cpp
 __TBB_SYMBOL( _ZTIN3tbb6filterE )
@@ -406,5 +408,11 @@ __TBB_SYMBOL( _ZN3tbb8internal7move_v3ERNS0_13tbb_thread_v3ES2_ )
 __TBB_SYMBOL( _ZN3tbb10interface914global_control12active_valueEi )
 __TBB_SYMBOL( _ZN3tbb10interface914global_control15internal_createEv )
 __TBB_SYMBOL( _ZN3tbb10interface914global_control16internal_destroyEv )
+
+#if __TBB_PREVIEW_RESUMABLE_TASKS
+__TBB_SYMBOL( _ZN3tbb8internal16internal_suspendEPvS1_ )
+__TBB_SYMBOL( _ZN3tbb8internal15internal_resumeEPv )
+__TBB_SYMBOL( _ZN3tbb8internal30internal_current_suspend_pointEv )
+#endif
 
 #undef __TBB_SYMBOL

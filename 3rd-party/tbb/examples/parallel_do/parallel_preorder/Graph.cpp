@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include <cstdlib>
@@ -23,6 +19,17 @@
 #include <iostream>
 
 using namespace std;
+
+Cell::Cell(const Cell& other)
+    : op( other.op )
+    , value( other.value )
+    , successor( other.successor )
+{
+    ref_count = other.ref_count.load();
+
+    input[0] = other.input[0];
+    input[1] = other.input[1];
+}
 
 void Graph::create_random_dag( size_t number_of_nodes ) {
     my_vertex_set.resize(number_of_nodes);
@@ -41,10 +48,10 @@ void Graph::create_random_dag( size_t number_of_nodes ) {
             case 2:
                 c.op = OP_SUB;
                 break;
-            case 3: 
+            case 3:
                 c.op = OP_ADD;
                 break;
-            case 4: 
+            case 4:
                 c.op = OP_MUL;
                 break;
         }

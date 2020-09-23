@@ -1,6 +1,6 @@
 %pythonbegin %{
 #
-# Copyright (c) 2016-2018 Intel Corporation
+# Copyright (c) 2016-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,10 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 
 __all__ = ["task_arena", "task_group", "task_scheduler_init", "global_control", "default_num_threads"]
@@ -31,7 +27,6 @@ __all__ = ["task_arena", "task_group", "task_scheduler_init", "global_control", 
 #endif
 
 %{
-#define TBB_PREVIEW_GLOBAL_CONTROL 1
 #define TBB_PREVIEW_WAITING_FOR_WORKERS 1
 #include <tbb/tbb.h>
 #include <tbb/compat/condition_variable>

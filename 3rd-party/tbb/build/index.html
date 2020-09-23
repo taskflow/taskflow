@@ -18,6 +18,9 @@ The files here are not intended to be used directly.  See below for usage.
 <DT><A HREF="Makefile.tbbmalloc">Makefile.tbbmalloc</A>
 <DD>Main Makefile to build the Intel TBB scalable memory allocator library as well as its tests.
     Invoked via 'make tbbmalloc' from <A HREF="../Makefile">top-level Makefile</A>.
+<DT><A HREF="Makefile.tbbbind">Makefile.tbbbind</A>
+<DD>Main Makefile to build the tbbbind library.
+    Invoked via 'make tbbbind' from <A HREF="../Makefile">top-level Makefile</A>
 <DT><A HREF="Makefile.test">Makefile.test</A>
 <DD>Main Makefile to build and run the tests for the Intel TBB library.
     Invoked via 'make test' from <A HREF="../Makefile">top-level Makefile</A>.
@@ -73,7 +76,7 @@ or related systems that support both 64-bit and 32-bit libraries), perform the f
 <LI>Explicitly specify the architecture when invoking GNU make, e.g. <TT>make arch=ia32</TT>.
 </OL>
 
-<P>The default make target will build the release and debug versions of the Intel TBB library.</P>
+<P>The default make target will build the release version of the Intel TBB library.</P>
 <P>Other targets are available in the top-level Makefile. You might find the following targets useful:
 <UL>
 <LI><TT>make test</TT> will build and run Intel TBB <A HREF="../src/test">unit-tests</A>;
@@ -111,13 +114,15 @@ To perform different build and/or test operations, use the following steps.
     <DT><TT>cd src;make debug</TT>
     <DD>Build and test debug libraries only. 
     <DT><TT>make tbb</TT>
-    <DD>Make Intel TBB release and debug libraries.
+    <DD>Make Intel TBB release libraries.
     <DT><TT>make tbbmalloc</TT>
     <DD>Make Intel TBB scalable memory allocator libraries.
+    <DT><TT>make tbbbind</TT>
+    <DD>Make the tbbbind library.
     <DT><TT>make test</TT>
     <DD>Compile and run unit-tests
     <DT><TT>make examples</TT>
-    <DD>Build libraries and run all examples, like doing <TT>make debug clean release</TT> from <A HREF="../examples/Makefile">the general example Makefile</A>.
+    <DD>Build libraries and run all examples, like doing <TT>make clean release</TT> from <A HREF="../examples/Makefile">the general example Makefile</A>.
         Available in the open-source version only.
     <DT><TT>make python</TT>
     <DD>Build, install, and test Python* API for Intel TBB. See <A HREF="../python/index.html">details here</A>.
@@ -233,7 +238,7 @@ See the Makefile infrastructure files for examples.
 <HR>
 <A HREF="../index.html">Up to parent directory</A>
 <P></P>
-Copyright &copy; 2005-2018 Intel Corporation.  All Rights Reserved.
+Copyright &copy; 2005-2020 Intel Corporation.  All Rights Reserved.
 <P></P>
 Intel, the Intel logo and Itanium are trademarks of Intel Corporation or its subsidiaries in the U.S. and/or other countries.
 <p></p>

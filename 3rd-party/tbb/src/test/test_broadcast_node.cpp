@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,21 +12,18 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
-
-#include "harness.h"
 
 #if __TBB_CPF_BUILD
 #define TBB_DEPRECATED_FLOW_NODE_EXTRACTION 1
 #endif
 
+#include "harness.h"
+
 #include "tbb/flow_graph.h"
 #include "tbb/task.h"
 #include "tbb/atomic.h"
+#include "test_follows_and_precedes_api.h"
 
 const int N = 1000;
 const int R = 4;
@@ -66,7 +63,7 @@ public:
         return const_cast<tbb::task *>(tbb::flow::internal::SUCCESSFULLY_ENQUEUED);
     }
 
-    tbb::flow::graph& graph_reference() __TBB_override {
+    tbb::flow::graph& graph_reference() const __TBB_override {
         return my_graph;
     }
 
@@ -320,6 +317,43 @@ void test_extract() {
 }
 #endif  // TBB_DEPRECATED_FLOW_NODE_EXTRACTION
 
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+#include <array>
+#include <vector>
+void test_follows_and_precedes_api() {
+    using msg_t = tbb::flow::continue_msg;
+
+    std::array<msg_t, 3> messages_for_follows= { {msg_t(), msg_t(), msg_t()} };
+    std::vector<msg_t> messages_for_precedes = {msg_t()};
+
+    follows_and_precedes_testing::test_follows <msg_t, tbb::flow::broadcast_node<msg_t>>(messages_for_follows);
+    follows_and_precedes_testing::test_precedes <msg_t, tbb::flow::broadcast_node<msg_t>>(messages_for_precedes);
+}
+#endif
+
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+void test_deduction_guides() {
+    using namespace tbb::flow;
+
+    graph g;
+
+    broadcast_node<int> b0(g);
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    buffer_node<int> buf(g);
+
+    broadcast_node b1(follows(buf));
+    static_assert(std::is_same_v<decltype(b1), broadcast_node<int>>);
+
+    broadcast_node b2(precedes(buf));
+    static_assert(std::is_same_v<decltype(b2), broadcast_node<int>>);
+#endif
+
+    broadcast_node b3(b0);
+    static_assert(std::is_same_v<decltype(b3), broadcast_node<int>>);
+    g.wait_for_all();
+}
+#endif
+
 int TestMain() {
     if( MinThread<1 ) {
         REPORT("number of threads must be positive\n");
@@ -339,8 +373,13 @@ int TestMain() {
    test_resets<int>();
    test_resets<float>();
 #if TBB_DEPRECATED_FLOW_NODE_EXTRACTION
-   test_extract();
+    test_extract();
 #endif
-
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    test_follows_and_precedes_api();
+#endif
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+    test_deduction_guides();
+#endif
    return Harness::Done;
 }

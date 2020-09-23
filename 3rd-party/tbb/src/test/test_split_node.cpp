@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,11 +12,10 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
+
+#define TBB_DEPRECATED_FLOW_NODE_ALLOCATOR __TBB_CPF_BUILD
+#define TBB_DEPRECATED_INPUT_NODE_BODY __TBB_CPF_BUILD
 
 #include "harness.h"
 #include "harness_graph.h"
@@ -102,13 +101,25 @@ class source_body {
     int addend;
 public:
     source_body(int init_val, int addto) : my_count(init_val), addend(addto) { }
-    void operator=( const source_body& other) { my_count = other.my_count; addend = other.addend; }
+#if TBB_DEPRECATED_INPUT_NODE_BODY
     bool operator()( TT &v) {
         if(my_count >= Count) return false;
         tuple_helper<N>::set_element(v, my_count);
         my_count += addend;
         return true;
     }
+#else
+    TT operator()( tbb::flow_control &fc) {
+        if(my_count >= Count){
+            fc.stop();
+            return TT();
+        }
+        TT v;
+        tuple_helper<N>::set_element(v, my_count);
+        my_count += addend;
+        return v;
+    }
+#endif
 };
 
 // allocator for split_node.
@@ -212,7 +223,7 @@ template<typename SType>
 class parallel_test {
 public:
     typedef typename SType::input_type TType;
-    typedef tbb::flow::source_node<TType> source_type;
+    typedef tbb::flow::input_node<TType> source_type;
     static const int N = tbb::flow::tuple_size<TType>::value;
     static void test() {
         source_type* all_source_nodes[MaxNSources];
@@ -236,6 +247,7 @@ public:
                 source_type *s = new source_type(g, source_body<TType>(i, nInputs) );
                 tbb::flow::make_edge(*s, *my_split);
                 all_source_nodes[i] = s;
+                s->activate();
             }
 
             g.wait_for_all();
@@ -283,6 +295,45 @@ void test_one_serial( SType &my_split, tbb::flow::graph &g) {
 
 }
 
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+void test_follow_and_precedes_api() {
+    using namespace tbb::flow;
+    using msg_t = tuple<int, float, double>;
+
+    graph g;
+
+    function_node<msg_t, msg_t> f1(g, unlimited, [](msg_t msg) { return msg; } );
+    auto f2(f1);
+    auto f3(f1);
+
+    tbb::atomic<int> body_calls = 0;
+
+    function_node<int, int> f4(g, unlimited, [&](int val) { ++body_calls; return val; } );
+    function_node<float, float> f5(g, unlimited, [&](float val) { ++body_calls; return val; } );
+    function_node<double, double> f6(g, unlimited, [&](double val) { ++body_calls; return val; } );
+
+    split_node<msg_t> following_node(follows(f1, f2, f3));
+    make_edge(output_port<0>(following_node), f4);
+    make_edge(output_port<1>(following_node), f5);
+    make_edge(output_port<2>(following_node), f6);
+
+    split_node<msg_t> preceding_node(precedes(f4, f5, f6));
+    make_edge(f1, preceding_node);
+    make_edge(f2, preceding_node);
+    make_edge(f3, preceding_node);
+
+    msg_t msg(1, 2.2f, 3.3);
+    f1.try_put(msg);
+    f2.try_put(msg);
+    f3.try_put(msg);
+
+    g.wait_for_all();
+
+    // <number of try puts> * <number of splits by a source node> * <number of source nodes>
+    ASSERT((body_calls == 3*3*2), "Not exact edge quantity was made");
+}
+#endif // __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+
 template<typename SType>
 class serial_test {
     typedef typename SType::input_type TType;
@@ -321,39 +372,81 @@ struct generate_test {
     }
 }; // generate_test
 
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+
+void test_deduction_guides() {
+    using namespace tbb::flow;
+    using tuple_type = std::tuple<int, int>;
+
+    graph g;
+    split_node<tuple_type> s0(g);
+
+    split_node s1(s0);
+    static_assert(std::is_same_v<decltype(s1), split_node<tuple_type>>);
+
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    broadcast_node<tuple_type> b1(g), b2(g);
+    broadcast_node<int> b3(g), b4(g);
+
+    split_node s2(follows(b1, b2));
+    static_assert(std::is_same_v<decltype(s2), split_node<tuple_type>>);
+
+    split_node s3(precedes(b3, b4));
+    static_assert(std::is_same_v<decltype(s3), split_node<tuple_type>>);
+#endif
+}
+
+#endif
+
+#if TBB_DEPRECATED_FLOW_NODE_ALLOCATOR
+void test_node_allocator() {
+    tbb::flow::graph g;
+    tbb::flow::split_node< tbb::flow::tuple<int,int>, std::allocator<int> > tmp(g);
+}
+#endif
+
 int TestMain() {
 #if __TBB_USE_TBB_TUPLE
     REMARK("  Using TBB tuple\n");
 #else
     REMARK("  Using platform tuple\n");
 #endif
-   for (int p = 0; p < 2; ++p) {
-       generate_test<serial_test, tbb::flow::tuple<float, double> >::do_test();
+    for (int p = 0; p < 2; ++p) {
+        generate_test<serial_test, tbb::flow::tuple<float, double> >::do_test();
 #if MAX_TUPLE_TEST_SIZE >= 4
-       generate_test<serial_test, tbb::flow::tuple<float, double, int, long> >::do_test();
+        generate_test<serial_test, tbb::flow::tuple<float, double, int, long> >::do_test();
 #endif
 #if MAX_TUPLE_TEST_SIZE >= 6
-       generate_test<serial_test, tbb::flow::tuple<double, double, int, long, int, short> >::do_test();
+        generate_test<serial_test, tbb::flow::tuple<double, double, int, long, int, short> >::do_test();
 #endif
 #if MAX_TUPLE_TEST_SIZE >= 8
-       generate_test<serial_test, tbb::flow::tuple<float, double, double, double, float, int, float, long> >::do_test();
+        generate_test<serial_test, tbb::flow::tuple<float, double, double, double, float, int, float, long> >::do_test();
 #endif
 #if MAX_TUPLE_TEST_SIZE >= 10
-       generate_test<serial_test, tbb::flow::tuple<float, double, int, double, double, float, long, int, float, long> >::do_test();
+        generate_test<serial_test, tbb::flow::tuple<float, double, int, double, double, float, long, int, float, long> >::do_test();
 #endif
-       generate_test<parallel_test, tbb::flow::tuple<float, double> >::do_test();
+        generate_test<parallel_test, tbb::flow::tuple<float, double> >::do_test();
 #if MAX_TUPLE_TEST_SIZE >= 3
-       generate_test<parallel_test, tbb::flow::tuple<float, int, long> >::do_test();
+        generate_test<parallel_test, tbb::flow::tuple<float, int, long> >::do_test();
 #endif
 #if MAX_TUPLE_TEST_SIZE >= 5
-       generate_test<parallel_test, tbb::flow::tuple<double, double, int, int, short> >::do_test();
+        generate_test<parallel_test, tbb::flow::tuple<double, double, int, int, short> >::do_test();
 #endif
 #if MAX_TUPLE_TEST_SIZE >= 7
-       generate_test<parallel_test, tbb::flow::tuple<float, int, double, float, long, float, long> >::do_test();
+        generate_test<parallel_test, tbb::flow::tuple<float, int, double, float, long, float, long> >::do_test();
 #endif
 #if MAX_TUPLE_TEST_SIZE >= 9
-       generate_test<parallel_test, tbb::flow::tuple<float, double, int, double, double, long, int, float, long> >::do_test();
+        generate_test<parallel_test, tbb::flow::tuple<float, double, int, double, double, long, int, float, long> >::do_test();
 #endif
-   }
-   return Harness::Done;
+    }
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    test_follow_and_precedes_api();
+#endif
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+    test_deduction_guides();
+#endif
+#if TBB_DEPRECATED_FLOW_NODE_ALLOCATOR
+    test_node_allocator();
+#endif
+    return Harness::Done;
 }

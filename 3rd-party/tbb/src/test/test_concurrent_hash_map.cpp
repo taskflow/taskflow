@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef TBB_USE_PERFORMANCE_WARNINGS
@@ -502,7 +498,7 @@ void Check( AtomicByte array[], size_t n, size_t expected_size ) {
         }
 }
 
-//! Test travering the tabel with a parallel range
+//! Test traversing the table with a parallel range
 void ParallelTraverseTable( MyTable& table, size_t n, size_t expected_size ) {
     REMARK("testing parallel traversal\n");
     ASSERT( table.size()==expected_size, NULL );
@@ -629,10 +625,9 @@ public:
 
 class RemoveFromTable: NoAssign {
     MyTable& my_table;
-    const int my_nthread;
     const int my_m;
 public:
-    RemoveFromTable( MyTable& table, int nthread, int m ) : my_table(table), my_nthread(nthread), my_m(m) {}
+    RemoveFromTable( MyTable& table, int m ) : my_table(table), my_m(m) {}
     void operator()(int) const {
         for( int i=0; i<my_m; ++i ) {
             bool b;
@@ -667,7 +662,7 @@ void TestConcurrency( int nthread ) {
 
         EraseCount = 0;
         t0 = tbb::tick_count::now();
-        NativeParallelFor( nthread, RemoveFromTable(table,nthread,m) );
+        NativeParallelFor( nthread, RemoveFromTable(table,m) );
         t1 = tbb::tick_count::now();
         REMARK("time for %u deletions = %g with %d threads\n",unsigned(EraseCount),(t1-t0).seconds(),nthread);
         ASSERT( MyDataCount==0, "memory leak detected" );
@@ -884,9 +879,33 @@ void TestRehash() {
     }
 }
 
+template<typename base_alloc_t, typename count_t = tbb::atomic<size_t> >
+class only_node_counting_allocator : public local_counting_allocator<base_alloc_t, count_t> {
+    typedef local_counting_allocator<base_alloc_t, count_t> base_type;
+public:
+    template<typename U>
+    struct rebind {
+        typedef only_node_counting_allocator<typename base_alloc_t::template rebind<U>::other,count_t> other;
+    };
+
+    only_node_counting_allocator() : base_type() {}
+    only_node_counting_allocator(const only_node_counting_allocator& a) : base_type(a) {}
+
+    template<typename U>
+    only_node_counting_allocator(const only_node_counting_allocator<U>& a) : base_type(a) {}
+
+    typename base_type::pointer allocate(const typename base_type::size_type n) {
+        if ( n > 1) {
+            return base_alloc_t::allocate(n);
+        } else {
+            return base_type::allocate(n);
+        }
+    }
+};
+
 #if TBB_USE_EXCEPTIONS
 void TestExceptions() {
-    typedef local_counting_allocator<tbb::tbb_allocator<MyData2> > allocator_t;
+    typedef only_node_counting_allocator<tbb::tbb_allocator<MyData2> > allocator_t;
     typedef tbb::concurrent_hash_map<MyKey,MyData2,MyHashCompare,allocator_t> ThrowingTable;
     enum methods {
         zero_method = 0,
@@ -917,6 +936,14 @@ void TestExceptions() {
                         victim = src;
                     } break;
                 case op_insert: {
+#if __TBB_CPP11_RVALUE_REF_PRESENT && __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT && __TBB_CPP11_TUPLE_PRESENT
+                        // Insertion in cpp11 don't make copy constructions
+                        // during the insertion, so we need to decrement limit
+                        // to throw an exception in the right place and to prevent
+                        // successful insertion of one unexpected item
+                        if (MyDataCountLimit)
+                            --MyDataCountLimit;
+#endif
                         FillTable( victim, 1000 );
                     } break;
                 default:;
@@ -1387,6 +1414,76 @@ void TestMoveSupport(){
 }
 #endif //__TBB_CPP11_RVALUE_REF_PRESENT
 
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+
+template <template <typename...> typename TMap>
+void TestDeductionGuides() {
+    using Key = int;
+    using Value = std::string;
+
+    using ComplexType = std::pair<Key, Value>;
+    using ComplexTypeConst = std::pair<const Key, Value>;
+
+    using DefaultCompare = tbb::tbb_hash_compare<Key>;
+    using Compare = debug_hash_compare<Key>;
+    using DefaultAllocator = tbb::tbb_allocator<ComplexTypeConst>;
+    using Allocator = std::allocator<ComplexType>;
+
+    std::vector<ComplexType> v;
+    auto l = { ComplexTypeConst(1, "one"), ComplexTypeConst(2, "two") };
+    Compare compare;
+    Allocator allocator;
+
+    // check TMap(InputIterator, InputIterator)
+    TMap m1(v.begin(), v.end());
+    static_assert(std::is_same<decltype(m1), TMap<Key, Value, DefaultCompare, DefaultAllocator>>::value);
+
+    // check TMap(InputIterator, InputIterator, HashCompare)
+    TMap m2(v.begin(), v.end(), compare);
+    static_assert(std::is_same<decltype(m2), TMap<Key, Value, Compare>>::value);
+
+    // check TMap(InputIterator, InputIterator, HashCompare, Allocator)
+    TMap m3(v.begin(), v.end(), compare, allocator);
+    static_assert(std::is_same<decltype(m3), TMap<Key, Value, Compare, Allocator>>::value);
+
+    // check TMap(InputIterator, InputIterator, Allocator)
+    TMap m4(v.begin(), v.end(), allocator);
+    static_assert(std::is_same<decltype(m4), TMap<Key, Value, DefaultCompare, Allocator>>::value);
+
+    // check TMap(std::initializer_list)
+    TMap m5(l);
+    static_assert(std::is_same<decltype(m5), TMap<Key, Value, DefaultCompare, DefaultAllocator>>::value);
+
+    // check TMap(std::initializer_list, HashCompare)
+    TMap m6(l, compare);
+    static_assert(std::is_same<decltype(m6), TMap<Key, Value, Compare, DefaultAllocator>>::value);
+
+    // check TMap(std::initializer_list, HashCompare, Allocator)
+    TMap m7(l, compare, allocator);
+    static_assert(std::is_same<decltype(m7), TMap<Key, Value, Compare, Allocator>>::value);
+
+    // check TMap(std::initializer_list, Allocator)
+    TMap m8(l, allocator);
+    static_assert(std::is_same<decltype(m8), TMap<Key, Value, DefaultCompare, Allocator>>::value);
+
+    // check TMap(TMap &)
+    TMap m9(m1);
+    static_assert(std::is_same<decltype(m9), decltype(m1)>::value);
+
+    // check TMap(TMap &, Allocator)
+    TMap m10(m4, allocator);
+    static_assert(std::is_same<decltype(m10), decltype(m4)>::value);
+
+    // check TMap(TMap &&)
+    TMap m11(std::move(m1));
+    static_assert(std::is_same<decltype(m11), decltype(m1)>::value);
+
+    // check TMap(TMap &&, Allocator)
+    TMap m12(std::move(m4), allocator);
+    static_assert(std::is_same<decltype(m12), decltype(m4)>::value);
+}
+#endif // __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+
 template<typename Key>
 struct non_default_constructible_hash_compare : tbb::tbb_hash_compare<Key> {
     non_default_constructible_hash_compare() {
@@ -1417,6 +1514,127 @@ void TestHashCompareConstructors() {
     map_type map7({}, compare);
     map_type map8({}, compare, allocator);
 #endif
+}
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT && __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT && !__TBB_SCOPED_ALLOCATOR_BROKEN
+#include <scoped_allocator>
+
+struct custom_hash_compare {
+    template<typename Allocator>
+    static size_t hash(const allocator_aware_data<Allocator>& key) {
+        return tbb::tbb_hash_compare<int>::hash(key.value());
+    }
+
+    template<typename Allocator>
+    static bool equal(const allocator_aware_data<Allocator>& key1, const allocator_aware_data<Allocator>& key2) {
+        return tbb::tbb_hash_compare<int>::equal(key1.value(), key2.value());
+    }
+};
+
+void TestScopedAllocator() {
+    typedef allocator_aware_data<std::scoped_allocator_adaptor<tbb::tbb_allocator<int>>> allocator_data_type;
+    typedef std::scoped_allocator_adaptor<tbb::tbb_allocator<allocator_data_type>> allocator_type;
+    typedef tbb::concurrent_hash_map<allocator_data_type, allocator_data_type,
+                                     custom_hash_compare, allocator_type> hash_map_type;
+
+    allocator_type allocator;
+    allocator_data_type key1(1, allocator), key2(2, allocator);
+    allocator_data_type data1(1, allocator), data2(data1, allocator);
+    hash_map_type map1(allocator), map2(allocator);
+
+    hash_map_type::value_type v1(key1, data1), v2(key2, data2);
+
+    auto init_list = { v1, v2 };
+
+    allocator_data_type::assert_on_constructions = true;
+    map1.emplace(key1, data1);
+    map2.emplace(key2, std::move(data2));
+
+    map1.clear();
+    map2.clear();
+
+    map1.insert(v1);
+    map2.insert(std::move(v2));
+
+    map1.clear();
+    map2.clear();
+
+    map1.insert(init_list);
+
+    map1.clear();
+    map2.clear();
+
+    hash_map_type::accessor a;
+    map2.insert(a, allocator_data_type(3));
+    a.release();
+
+    map1 = map2;
+    map2 = std::move(map1);
+
+    hash_map_type map3(allocator);
+    map3.rehash(1000);
+    map3 = map2;
+}
+#endif
+
+#if __TBB_ALLOCATOR_TRAITS_PRESENT
+void TestAllocatorTraits() {
+    using namespace propagating_allocators;
+    typedef int key;
+    typedef int mapped;
+    typedef tbb::tbb_hash_compare<key> compare;
+
+    typedef tbb::concurrent_hash_map<key, mapped, compare, always_propagating_allocator> always_propagating_map;
+    typedef tbb::concurrent_hash_map<key, mapped, compare, never_propagating_allocator> never_propagating_map;
+    typedef tbb::concurrent_hash_map<key, mapped, compare, pocma_allocator> pocma_map;
+    typedef tbb::concurrent_hash_map<key, mapped, compare, pocca_allocator> pocca_map;
+    typedef tbb::concurrent_hash_map<key, mapped, compare, pocs_allocator> pocs_map;
+
+    test_allocator_traits_support<always_propagating_map>();
+    test_allocator_traits_support<never_propagating_map>();
+    test_allocator_traits_support<pocma_map>();
+    test_allocator_traits_support<pocca_map>();
+    test_allocator_traits_support<pocs_map>();
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    test_allocator_traits_with_non_movable_value_type<pocma_map>();
+#endif
+}
+#endif // __TBB_ALLOCATOR_TRAITS_PRESENT
+
+// A test for undocumented member function internal_fast_find
+// which is declared protected in concurrent_hash_map for internal TBB use
+void TestInternalFastFind() {
+    typedef tbb::concurrent_hash_map<int, int> basic_chmap_type;
+    typedef basic_chmap_type::const_pointer const_pointer;
+
+    class chmap : public basic_chmap_type {
+    public:
+        chmap() : basic_chmap_type() {}
+
+        using basic_chmap_type::internal_fast_find;
+    };
+
+    chmap m;
+    int sz = 100;
+
+    for (int i = 0; i != sz; ++i) {
+        m.insert(std::make_pair(i, i * i));
+    }
+    ASSERT(m.size() == 100, "Incorrect concurrent_hash_map size");
+
+    for (int i = 0; i != sz; ++i) {
+        const_pointer res = m.internal_fast_find(i);
+        ASSERT(res != NULL, "Incorrect internal_fast_find return value for existing key");
+        basic_chmap_type::value_type val = *res;
+        ASSERT(val.first == i, "Incorrect key in internal_fast_find return value");
+        ASSERT(val.second == i * i, "Incorrect mapped in internal_fast_find return value");
+    }
+
+    for (int i = sz; i != 2 * sz; ++i) {
+        const_pointer res = m.internal_fast_find(i);
+        ASSERT(res == NULL, "Incorrect internal_fast_find return value for not existing key");
+    }
 }
 
 //------------------------------------------------------------------------
@@ -1479,5 +1697,17 @@ int TestMain () {
     TestCPP11Types();
     TestHashCompareConstructors();
 
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+    TestDeductionGuides<tbb::concurrent_hash_map>();
+#endif
+#if __TBB_CPP11_RVALUE_REF_PRESENT && __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT && !__TBB_SCOPED_ALLOCATOR_BROKEN
+    TestScopedAllocator();
+#endif
+
+#if __TBB_ALLOCATOR_TRAITS_PRESENT
+    TestAllocatorTraits();
+#endif
+
+    TestInternalFastFind();
     return Harness::Done;
 }

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "tbb/tbb_config.h"
@@ -41,6 +37,7 @@ static const char _pad[NFS_MaxLineSize - sizeof(int)] = {};
 // governor data
 basic_tls<uintptr_t> governor::theTLS;
 unsigned governor::DefaultNumberOfThreads;
+size_t governor::DefaultPageSize;
 rml::tbb_factory governor::theRMLServerFactory;
 bool governor::UsePrivateRML;
 bool governor::is_speculation_enabled;
@@ -64,7 +61,7 @@ bool __TBB_InitOnce::InitializationDone;
 
 #if DO_ITT_NOTIFY
     static bool ITT_Present;
-    static bool ITT_InitializationDone;
+    static atomic<bool> ITT_InitializationDone;
 #endif
 
 #if !(_WIN32||_WIN64) || __TBB_SOURCE_DIRECTLY_INCLUDED
@@ -75,7 +72,7 @@ bool __TBB_InitOnce::InitializationDone;
 // generic_scheduler data
 
 //! Pointer to the scheduler factory function
-generic_scheduler* (*AllocateSchedulerPtr)( market& );
+generic_scheduler* (*AllocateSchedulerPtr)( market&, bool );
 
 #if __TBB_OLD_PRIMES_RNG
 //! Table of primes used by fast random-number generator (FastRandom).
@@ -161,8 +158,8 @@ static resource_string strings_for_itt[] = {
 #undef TBB_STRING_RESOURCE
 
 static __itt_string_handle *ITT_get_string_handle(int idx) {
-    __TBB_ASSERT(idx >= 0, NULL);
-    return idx < NUM_STRINGS ? strings_for_itt[idx].itt_str_handle : NULL;
+    __TBB_ASSERT( idx >= 0 && idx < NUM_STRINGS, "string handle out of valid range");
+    return (idx >= 0 && idx < NUM_STRINGS) ? strings_for_itt[idx].itt_str_handle : NULL;
 }
 
 static void ITT_init_domains() {
@@ -192,6 +189,8 @@ static void ITT_init() {
 /** Thread-unsafe lazy one-time initialization of tools interop.
     Used by both dummy handlers and general TBB one-time initialization routine. **/
 void ITT_DoUnsafeOneTimeInitialization () {
+    // Double check ITT_InitializationDone is necessary because the first check 
+    // in ITT_DoOneTimeInitialization is not guarded with the __TBB_InitOnce lock.
     if ( !ITT_InitializationDone ) {
         ITT_Present = (__TBB_load_ittnotify()!=0);
         if (ITT_Present) ITT_init();
@@ -204,9 +203,11 @@ void ITT_DoUnsafeOneTimeInitialization () {
     Used by dummy handlers only. **/
 extern "C"
 void ITT_DoOneTimeInitialization() {
-    __TBB_InitOnce::lock();
-    ITT_DoUnsafeOneTimeInitialization();
-    __TBB_InitOnce::unlock();
+    if ( !ITT_InitializationDone ) {
+        __TBB_InitOnce::lock();
+        ITT_DoUnsafeOneTimeInitialization();
+        __TBB_InitOnce::unlock();
+    }
 }
 #endif /* DO_ITT_NOTIFY */
 
@@ -229,6 +230,8 @@ void DoOneTimeInitializations() {
         Scheduler_OneTimeInitialization( itt_present );
         // Force processor groups support detection
         governor::default_num_threads();
+        // Force OS regular page size detection
+        governor::default_page_size();
         // Dump version data
         governor::print_version_info();
         PrintExtraVersionInfo( "Tools support", itt_present ? "enabled" : "disabled" );
@@ -337,6 +340,21 @@ void itt_metadata_str_add_v7( itt_domain_enum domain, void *addr, unsigned long 
     }
 }
 
+void itt_metadata_ptr_add_v11( itt_domain_enum domain, void *addr, unsigned long long addr_extra,
+                              string_index key, void *value ) {
+    if ( __itt_domain *d = get_itt_domain( domain ) ) {
+        __itt_id id = itt_null_id;
+        itt_id_make( &id, addr, addr_extra );
+        __itt_string_handle *k = ITT_get_string_handle(key);
+#if __TBB_x86_32
+        ITTNOTIFY_VOID_D5(metadata_add, d, id, k, __itt_metadata_u32, 1, value);
+#else
+        ITTNOTIFY_VOID_D5(metadata_add, d, id, k, __itt_metadata_u64, 1, value);
+#endif 
+    }
+}
+
+
 void itt_relation_add_v7( itt_domain_enum domain, void *addr0, unsigned long long addr0_extra,
                           itt_relation relation, void *addr1, unsigned long long addr1_extra ) {
     if ( __itt_domain *d = get_itt_domain( domain ) ) {
@@ -402,6 +420,9 @@ void itt_metadata_str_add_v7( itt_domain_enum /*domain*/, void* /*addr*/, unsign
 void itt_relation_add_v7( itt_domain_enum /*domain*/, void* /*addr0*/, unsigned long long /*addr0_extra*/,
                           itt_relation /*relation*/, void* /*addr1*/, unsigned long long /*addr1_extra*/ ) { }
 
+void itt_metadata_ptr_add_v11( itt_domain_enum /*domain*/, void * /*addr*/, unsigned long long /*addr_extra*/,
+                              string_index /*key*/, void * /*value*/ ) {}
+
 void itt_task_begin_v7( itt_domain_enum /*domain*/, void* /*task*/, unsigned long long /*task_extra*/,
                         void* /*parent*/, unsigned long long /*parent_extra*/, string_index /*name_index*/ ) { }
 
@@ -424,7 +445,6 @@ void itt_set_sync_name_v3( void* obj, const tchar* name) {
     ITT_SYNC_RENAME(obj, name);
     suppress_unused_warning(obj, name);
 }
-
 
 class control_storage {
     friend class tbb::interface9::global_control;
@@ -478,8 +498,8 @@ class stack_size_control : public padded<control_storage> {
         return tbb::internal::ThreadStackSize;
     }
     virtual void apply_active() const __TBB_override {
-#if __TBB_WIN8UI_SUPPORT
-        __TBB_ASSERT( false, "For Windows Store* apps we must not set stack size" );
+#if __TBB_WIN8UI_SUPPORT && (_WIN32_WINNT < 0x0A00)
+        __TBB_ASSERT( false, "For Windows 8 Store* apps we must not set stack size" );
 #endif
     }
 };

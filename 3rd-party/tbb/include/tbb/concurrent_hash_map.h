@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_concurrent_hash_map_H
 #define __TBB_concurrent_hash_map_H
+
+#define __TBB_concurrent_hash_map_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 #include "tbb_stddef.h"
 #include <iterator>
@@ -27,13 +26,15 @@
 #include <cstring>      // Need std::memset
 #include __TBB_STD_SWAP_HEADER
 
-#include "cache_aligned_allocator.h"
 #include "tbb_allocator.h"
 #include "spin_rw_mutex.h"
 #include "atomic.h"
 #include "tbb_exception.h"
 #include "tbb_profiling.h"
+#include "aligned_space.h"
 #include "internal/_tbb_hash_compare_impl.h"
+#include "internal/_template_helpers.h"
+#include "internal/_allocator_traits.h"
 #if __TBB_INITIALIZER_LISTS_PRESENT
 #include <initializer_list>
 #endif
@@ -43,12 +44,17 @@
 #if __TBB_STATISTICS
 #include <stdio.h>
 #endif
+#if __TBB_CPP11_RVALUE_REF_PRESENT && __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT && __TBB_CPP11_TUPLE_PRESENT
+// Definition of __TBB_CPP11_RVALUE_REF_PRESENT includes __TBB_CPP11_TUPLE_PRESENT
+// for most of platforms, tuple present macro was added for logical correctness
+#include <tuple>
+#endif
 
 namespace tbb {
 
 namespace interface5 {
 
-    template<typename Key, typename T, typename HashCompare = tbb_hash_compare<Key>, typename A = tbb_allocator<std::pair<Key, T> > >
+    template<typename Key, typename T, typename HashCompare = tbb_hash_compare<Key>, typename A = tbb_allocator<std::pair<const Key, T> > >
     class concurrent_hash_map;
 
     //! @cond INTERNAL
@@ -119,9 +125,10 @@ namespace interface5 {
 #endif
         //! Constructor
         hash_map_base() {
-            std::memset( this, 0, pointers_per_table*sizeof(segment_ptr_t) // 32*4=128   or 64*8=512
-                + sizeof(my_size) + sizeof(my_mask)  // 4+4 or 8+8
-                + embedded_buckets*sizeof(bucket) ); // n*8 or n*16
+            std::memset(my_table, 0, sizeof(my_table));
+            my_mask = 0;
+            my_size = 0;
+            std::memset(my_embedded_segment, 0, sizeof(my_embedded_segment));
             for( size_type i = 0; i < embedded_block; i++ ) // fill the table
                 my_table[i] = my_embedded_segment + segment_base(i);
             my_mask = embedded_buckets - 1;
@@ -179,22 +186,25 @@ namespace interface5 {
         };
 
         //! Enable segment
-        void enable_segment( segment_index_t k, bool is_initial = false ) {
+        template<typename Allocator>
+        void enable_segment( segment_index_t k, const Allocator& allocator, bool is_initial = false ) {
+            typedef typename tbb::internal::allocator_rebind<Allocator, bucket>::type bucket_allocator_type;
+            typedef tbb::internal::allocator_traits<bucket_allocator_type> bucket_allocator_traits;
+            bucket_allocator_type bucket_allocator(allocator);
             __TBB_ASSERT( k, "Zero segment must be embedded" );
             enable_segment_failsafe watchdog( my_table, k );
-            cache_aligned_allocator<bucket> alloc;
             size_type sz;
             __TBB_ASSERT( !is_valid(my_table[k]), "Wrong concurrent assignment");
             if( k >= first_block ) {
                 sz = segment_size( k );
-                segment_ptr_t ptr = alloc.allocate( sz );
+                segment_ptr_t ptr = bucket_allocator_traits::allocate(bucket_allocator, sz);
                 init_buckets( ptr, sz, is_initial );
                 itt_hide_store_word( my_table[k], ptr );
                 sz <<= 1;// double it to get entire capacity of the container
             } else { // the first block
                 __TBB_ASSERT( k == embedded_block, "Wrong segment index" );
                 sz = segment_size( first_block );
-                segment_ptr_t ptr = alloc.allocate( sz - embedded_buckets );
+                segment_ptr_t ptr = bucket_allocator_traits::allocate(bucket_allocator, sz - embedded_buckets);
                 init_buckets( ptr, sz - embedded_buckets, is_initial );
                 ptr -= segment_base(embedded_block);
                 for(segment_index_t i = embedded_block; i < first_block; i++) // calc the offsets
@@ -202,6 +212,22 @@ namespace interface5 {
             }
             itt_store_word_with_release( my_mask, sz-1 );
             watchdog.my_segment_ptr = 0;
+        }
+
+        template<typename Allocator>
+        void delete_segment(segment_index_t s, const Allocator& allocator) {
+            typedef typename tbb::internal::allocator_rebind<Allocator, bucket>::type bucket_allocator_type;
+            typedef tbb::internal::allocator_traits<bucket_allocator_type> bucket_allocator_traits;
+            bucket_allocator_type bucket_allocator(allocator);
+            segment_ptr_t buckets_ptr = my_table[s];
+            size_type sz = segment_size( s ? s : 1 );
+
+            if( s >= first_block) // the first segment or the next
+                bucket_allocator_traits::deallocate(bucket_allocator, buckets_ptr, sz);
+            else if( s == embedded_block && embedded_block != first_block )
+                bucket_allocator_traits::deallocate(bucket_allocator, buckets_ptr,
+                                                    segment_size(first_block) - embedded_buckets);
+            if( s >= embedded_block ) my_table[s] = 0;
         }
 
         //! Get bucket by (masked) hashcode
@@ -272,11 +298,12 @@ namespace interface5 {
         }
 
         //! Prepare enough segments for number of buckets
-        void reserve(size_type buckets) {
+        template<typename Allocator>
+        void reserve(size_type buckets, const Allocator& allocator) {
             if( !buckets-- ) return;
             bool is_initial = !my_size;
             for( size_type m = my_mask; buckets > m; m = my_mask )
-                enable_segment( segment_index_of( m+1 ), is_initial );
+                enable_segment( segment_index_of( m+1 ), allocator, is_initial );
         }
         //! Swap hash_map_bases
         void internal_swap(hash_map_base &table) {
@@ -288,6 +315,25 @@ namespace interface5 {
             for(size_type i = embedded_block; i < pointers_per_table; i++)
                 swap(this->my_table[i], table.my_table[i]);
         }
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+        void internal_move(hash_map_base&& other) {
+            my_mask = other.my_mask;
+            other.my_mask = embedded_buckets - 1;
+            my_size = other.my_size;
+            other.my_size = 0;
+
+            for(size_type i = 0; i < embedded_buckets; ++i) {
+                my_embedded_segment[i].node_list = other.my_embedded_segment[i].node_list;
+                other.my_embedded_segment[i].node_list = NULL;
+            }
+
+            for(size_type i = embedded_block; i < pointers_per_table; ++i) {
+                my_table[i] = other.my_table[i];
+                other.my_table[i] = NULL;
+            }
+        }
+#endif // __TBB_CPP11_RVALUE_REF_PRESENT
     };
 
     template<typename Iterator>
@@ -365,9 +411,17 @@ namespace interface5 {
             my_bucket(other.my_bucket),
             my_node(other.my_node)
         {}
+
+        hash_map_iterator& operator=( const hash_map_iterator<Container,typename Container::value_type> &other ) {
+            my_map = other.my_map;
+            my_index = other.my_index;
+            my_bucket = other.my_bucket;
+            my_node = other.my_node;
+            return *this;
+        }
         Value& operator*() const {
             __TBB_ASSERT( hash_map_base::is_valid(my_node), "iterator uninitialized or at end of container?" );
-            return my_node->item;
+            return my_node->value();
         }
         Value* operator->() const {return &operator*();}
         hash_map_iterator& operator++();
@@ -553,62 +607,80 @@ public:
 
 protected:
     friend class const_accessor;
-    struct node;
-    typedef typename Allocator::template rebind<node>::other node_allocator_type;
+    class node;
+    typedef typename tbb::internal::allocator_rebind<Allocator, node>::type node_allocator_type;
+    typedef tbb::internal::allocator_traits<node_allocator_type> node_allocator_traits;
     node_allocator_type my_allocator;
     HashCompare my_hash_compare;
 
-    struct node : public node_base {
-        value_type item;
-        node( const Key &key ) : item(key, T()) {}
-        node( const Key &key, const T &t ) : item(key, t) {}
-#if __TBB_CPP11_RVALUE_REF_PRESENT
-        node( const Key &key, T &&t ) : item(key, std::move(t)) {}
-        node( value_type&& i ) : item(std::move(i)){}
-#if __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
-        template<typename... Args>
-        node( Args&&... args ) : item(std::forward<Args>(args)...) {}
-#if __TBB_COPY_FROM_NON_CONST_REF_BROKEN
-        node( value_type& i ) : item(const_cast<const value_type&>(i)) {}
-#endif //__TBB_COPY_FROM_NON_CONST_REF_BROKEN
-#endif //__TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
-#endif //__TBB_CPP11_RVALUE_REF_PRESENT
-        node( const value_type& i ) : item(i) {}
-
-        // exception-safe allocation, see C++ Standard 2003, clause 5.3.4p17
-        void *operator new( size_t /*size*/, node_allocator_type &a ) {
-            void *ptr = a.allocate(1);
-            if(!ptr)
-                tbb::internal::throw_exception(tbb::internal::eid_bad_alloc);
-            return ptr;
-        }
-        // match placement-new form above to be called if exception thrown in constructor
-        void operator delete( void *ptr, node_allocator_type &a ) { a.deallocate(static_cast<node*>(ptr),1); }
+    class node : public node_base {
+        tbb::aligned_space<value_type> my_value;
+    public:
+        value_type* storage() { return my_value.begin(); }
+        value_type& value() { return *storage(); }
     };
 
     void delete_node( node_base *n ) {
-        my_allocator.destroy( static_cast<node*>(n) );
-        my_allocator.deallocate( static_cast<node*>(n), 1);
+        node_allocator_traits::destroy(my_allocator, static_cast<node*>(n)->storage());
+        node_allocator_traits::destroy(my_allocator, static_cast<node*>(n));
+        node_allocator_traits::deallocate(my_allocator, static_cast<node*>(n), 1);
+    }
+
+    struct node_scoped_guard : tbb::internal::no_copy {
+        node* my_node;
+        node_allocator_type& my_alloc;
+
+        node_scoped_guard(node* n, node_allocator_type& alloc) : my_node(n), my_alloc(alloc) {}
+        ~node_scoped_guard() {
+            if(my_node) {
+                node_allocator_traits::destroy(my_alloc, my_node);
+                node_allocator_traits::deallocate(my_alloc, my_node, 1);
+            }
+        }
+        void dismiss() { my_node = NULL; }
+    };
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT && __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+    template<typename... Args>
+    static node* create_node(node_allocator_type& allocator, Args&&... args)
+#else
+    template<typename Arg1, typename Arg2>
+    static node* create_node(node_allocator_type& allocator, __TBB_FORWARDING_REF(Arg1) arg1, __TBB_FORWARDING_REF(Arg2) arg2)
+#endif
+    {
+        node* node_ptr = node_allocator_traits::allocate(allocator, 1);
+        node_scoped_guard guard(node_ptr, allocator);
+        node_allocator_traits::construct(allocator, node_ptr);
+#if __TBB_CPP11_RVALUE_REF_PRESENT && __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+        node_allocator_traits::construct(allocator, node_ptr->storage(), std::forward<Args>(args)...);
+#else
+        node_allocator_traits::construct(allocator, node_ptr->storage(), tbb::internal::forward<Arg1>(arg1), tbb::internal::forward<Arg2>(arg2));
+#endif
+        guard.dismiss();
+        return node_ptr;
     }
 
     static node* allocate_node_copy_construct(node_allocator_type& allocator, const Key &key, const T * t){
-        return  new( allocator ) node(key, *t);
+        return create_node(allocator, key, *t);
     }
 
 #if __TBB_CPP11_RVALUE_REF_PRESENT
     static node* allocate_node_move_construct(node_allocator_type& allocator, const Key &key, const T * t){
-        return  new( allocator ) node(key, std::move(*const_cast<T*>(t)));
+        return create_node(allocator, key, std::move(*const_cast<T*>(t)));
     }
-#if __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
-    template<typename... Args>
-    static node* allocate_node_emplace_construct(node_allocator_type& allocator, Args&&... args){
-        return  new( allocator ) node(std::forward<Args>(args)...);
-    }
-#endif //__TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
-#endif //__TBB_CPP11_RVALUE_REF_PRESENT
+#endif
 
     static node* allocate_node_default_construct(node_allocator_type& allocator, const Key &key, const T * ){
-        return  new( allocator ) node(key);
+#if __TBB_CPP11_RVALUE_REF_PRESENT && __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT && __TBB_CPP11_TUPLE_PRESENT
+        // Emplace construct an empty T object inside the pair
+        return create_node(allocator, std::piecewise_construct,
+                           std::forward_as_tuple(key), std::forward_as_tuple());
+#else
+        // Use of a temporary object is impossible, because create_node takes a non-const reference.
+        // copy-initialization is possible because T is already required to be CopyConstructible.
+        T obj = T();
+        return create_node(allocator, key, tbb::internal::move(obj));
+#endif
     }
 
     static node* do_not_allocate_node(node_allocator_type& , const Key &, const T * ){
@@ -618,7 +690,7 @@ protected:
 
     node *search_bucket( const key_type &key, bucket *b ) const {
         node *n = static_cast<node*>( b->node_list );
-        while( is_valid(n) && !my_hash_compare.equal(key, n->item.first) )
+        while( is_valid(n) && !my_hash_compare.equal(key, n->value().first) )
             n = static_cast<node*>( n->next );
         __TBB_ASSERT(n != internal::rehash_req, "Search can be executed only for rehashed bucket");
         return n;
@@ -663,7 +735,7 @@ protected:
         __TBB_ASSERT( (mask&(mask+1))==0 && (h & mask) == h, NULL );
     restart:
         for( node_base **p = &b_old()->node_list, *n = __TBB_load_with_acquire(*p); is_valid(n); n = *p ) {
-            hashcode_t c = my_hash_compare.hash( static_cast<node*>(n)->item.first );
+            hashcode_t c = my_hash_compare.hash( static_cast<node*>(n)->value().first );
 #if TBB_USE_ASSERT
             hashcode_t bmask = h & (mask>>1);
             bmask = bmask==0? 1 : ( 1u<<(__TBB_Log2( bmask )+1 ) ) - 1; // minimal mask of parent bucket
@@ -715,7 +787,7 @@ public:
         //! Return reference to associated value in hash table.
         const_reference operator*() const {
             __TBB_ASSERT( my_node, "attempt to dereference empty accessor" );
-            return my_node->item;
+            return my_node->value();
         }
 
         //! Return pointer to associated value in hash table.
@@ -745,7 +817,7 @@ public:
         //! Return reference to associated value in hash table.
         reference operator*() const {
             __TBB_ASSERT( this->my_node, "attempt to dereference empty accessor" );
-            return this->my_node->item;
+            return this->my_node->value();
         }
 
         //! Return pointer to associated value in hash table.
@@ -767,17 +839,26 @@ public:
     concurrent_hash_map( size_type n, const allocator_type &a = allocator_type() )
         : internal::hash_map_base(), my_allocator(a)
     {
-        reserve( n );
+        reserve( n, my_allocator );
     }
 
     concurrent_hash_map( size_type n, const HashCompare& compare, const allocator_type& a = allocator_type() )
         : internal::hash_map_base(), my_allocator(a), my_hash_compare(compare)
     {
-        reserve( n );
+        reserve( n, my_allocator );
     }
 
     //! Copy constructor
-    concurrent_hash_map( const concurrent_hash_map &table, const allocator_type &a = allocator_type() )
+    concurrent_hash_map( const concurrent_hash_map &table )
+        : internal::hash_map_base(),
+          my_allocator(node_allocator_traits::select_on_container_copy_construction(table.get_allocator()))
+    {
+        call_clear_on_leave scope_guard(this);
+        internal_copy(table);
+        scope_guard.dismiss();
+    }
+
+    concurrent_hash_map( const concurrent_hash_map &table, const allocator_type &a)
         : internal::hash_map_base(), my_allocator(a)
     {
         call_clear_on_leave scope_guard(this);
@@ -790,7 +871,7 @@ public:
     concurrent_hash_map( concurrent_hash_map &&table )
         : internal::hash_map_base(), my_allocator(std::move(table.get_allocator()))
     {
-        swap(table);
+        internal_move(std::move(table));
     }
 
     //! Move constructor
@@ -798,7 +879,7 @@ public:
         : internal::hash_map_base(), my_allocator(a)
     {
         if (a == table.get_allocator()){
-            this->swap(table);
+            internal_move(std::move(table));
         }else{
             call_clear_on_leave scope_guard(this);
             internal_copy(std::make_move_iterator(table.begin()), std::make_move_iterator(table.end()), table.size());
@@ -849,7 +930,9 @@ public:
     //! Assignment
     concurrent_hash_map& operator=( const concurrent_hash_map &table ) {
         if( this!=&table ) {
+            typedef typename node_allocator_traits::propagate_on_container_copy_assignment pocca_type;
             clear();
+            tbb::internal::allocator_copy_assignment(my_allocator, table.my_allocator, pocca_type());
             internal_copy(table);
         }
         return *this;
@@ -858,17 +941,9 @@ public:
 #if __TBB_CPP11_RVALUE_REF_PRESENT
     //! Move Assignment
     concurrent_hash_map& operator=( concurrent_hash_map &&table ) {
-        if(this != &table){
-            typedef typename tbb::internal::allocator_traits<allocator_type>::propagate_on_container_move_assignment pocma_t;
-            if(pocma_t::value || this->my_allocator == table.my_allocator) {
-                concurrent_hash_map trash (std::move(*this));
-                //TODO: swapping allocators here may be a problem, replace with single direction moving iff pocma is set
-                this->swap(table);
-            } else {
-                //do per element move
-                concurrent_hash_map moved_copy(std::move(table), this->my_allocator);
-                this->swap(moved_copy);
-            }
+        if(this != &table) {
+            typedef typename node_allocator_traits::propagate_on_container_move_assignment pocma_type;
+            internal_move_assign(std::move(table), pocma_type());
         }
         return *this;
     }
@@ -1086,8 +1161,8 @@ protected:
     template<typename Accessor, typename... Args>
     bool generic_emplace( Accessor && result, Args &&... args ) {
         result.release();
-        node * node_ptr = allocate_node_emplace_construct(my_allocator, std::forward<Args>(args)...);
-        return lookup(/*insert*/true, node_ptr->item.first, NULL, accessor_location(result), is_write_access_needed(result), &do_not_allocate_node, node_ptr );
+        node * node_ptr = create_node(my_allocator, std::forward<Args>(args)...);
+        return lookup(/*insert*/true, node_ptr->value().first, NULL, accessor_location(result), is_write_access_needed(result), &do_not_allocate_node, node_ptr );
     }
 #endif //__TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
 #endif //__TBB_CPP11_RVALUE_REF_PRESENT
@@ -1104,6 +1179,23 @@ protected:
 
     template<typename I>
     void internal_copy( I first, I last, size_type reserve_size );
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    // A compile-time dispatch to allow move assignment of containers with non-movable value_type if POCMA is true_type
+    void internal_move_assign(concurrent_hash_map&& other, tbb::internal::traits_true_type) {
+        tbb::internal::allocator_move_assignment(my_allocator, other.my_allocator, tbb::internal::traits_true_type());
+        internal_move(std::move(other));
+    }
+
+    void internal_move_assign(concurrent_hash_map&& other, tbb::internal::traits_false_type) {
+        if (this->my_allocator == other.my_allocator) {
+            internal_move(std::move(other));
+        } else {
+            //do per element move
+            internal_copy(std::make_move_iterator(other.begin()), std::make_move_iterator(other.end()), other.size());
+        }
+    }
+#endif
 
     //! Fast find when no concurrent erasure is used. For internal use inside TBB only!
     /** Return pointer to item with given key, or NULL if no such item exists.
@@ -1128,12 +1220,39 @@ protected:
         }
         n = search_bucket( key, b );
         if( n )
-            return &n->item;
+            return n->storage();
         else if( check_mask_race( h, m ) )
             goto restart;
         return 0;
     }
 };
+
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+namespace internal {
+using namespace tbb::internal;
+
+template<template<typename...> typename Map, typename Key, typename T, typename... Args>
+using hash_map_t = Map<
+    Key, T,
+    std::conditional_t< (sizeof...(Args)>0) && !is_allocator_v< pack_element_t<0, Args...> >,
+                        pack_element_t<0, Args...>, tbb_hash_compare<Key> >,
+    std::conditional_t< (sizeof...(Args)>0) && is_allocator_v< pack_element_t<sizeof...(Args)-1, Args...> >,
+                         pack_element_t<sizeof...(Args)-1, Args...>, tbb_allocator<std::pair<const Key, T> > >
+>;
+}
+
+// Deduction guide for the constructor from two iterators and hash_compare/ allocator
+template<typename I, typename... Args>
+concurrent_hash_map(I, I, Args...)
+-> internal::hash_map_t<concurrent_hash_map, internal::iterator_key_t<I>,internal::iterator_mapped_t<I>, Args...>;
+
+// Deduction guide for the constructor from an initializer_list and hash_compare/ allocator
+// Deduction guide for an initializer_list, hash_compare and allocator is implicit
+template<typename Key, typename T, typename CompareOrAllocator>
+concurrent_hash_map(std::initializer_list<std::pair<const Key, T>>, CompareOrAllocator)
+-> internal::hash_map_t<concurrent_hash_map, Key, T, CompareOrAllocator>;
+
+#endif /* __TBB_CPP17_DEDUCTION_GUIDES_PRESENT */
 
 template<typename Key, typename T, typename HashCompare, typename A>
 bool concurrent_hash_map<Key,T,HashCompare,A>::lookup( bool op_insert, const Key &key, const T *t, const_accessor *result, bool write, node* (*allocate_node)(node_allocator_type& , const Key&, const T*), node *tmp_n ) {
@@ -1207,7 +1326,7 @@ check_growth:
 #if __TBB_STATISTICS
         my_info_resizes++; // concurrent ones
 #endif
-        enable_segment( grow_segment );
+        enable_segment( grow_segment, my_allocator );
     }
     if( tmp_n ) // if op_insert only
         delete_node( tmp_n );
@@ -1275,7 +1394,7 @@ restart:
     search:
         node_base **p = &b()->node_list;
         n = *p;
-        while( is_valid(n) && !my_hash_compare.equal(key, static_cast<node*>(n)->item.first ) ) {
+        while( is_valid(n) && !my_hash_compare.equal(key, static_cast<node*>(n)->value().first ) ) {
             p = &n->next;
             n = *p;
         }
@@ -1302,16 +1421,18 @@ restart:
 
 template<typename Key, typename T, typename HashCompare, typename A>
 void concurrent_hash_map<Key,T,HashCompare,A>::swap(concurrent_hash_map<Key,T,HashCompare,A> &table) {
-    //TODO: respect C++11 allocator_traits<A>::propogate_on_constainer_swap
-    using std::swap;
-    swap(this->my_allocator, table.my_allocator);
-    swap(this->my_hash_compare, table.my_hash_compare);
-    internal_swap(table);
+    typedef typename node_allocator_traits::propagate_on_container_swap pocs_type;
+    if (this != &table && (pocs_type::value || my_allocator == table.my_allocator)) {
+        using std::swap;
+        tbb::internal::allocator_swap(this->my_allocator, table.my_allocator, pocs_type());
+        swap(this->my_hash_compare, table.my_hash_compare);
+        internal_swap(table);
+    }
 }
 
 template<typename Key, typename T, typename HashCompare, typename A>
 void concurrent_hash_map<Key,T,HashCompare,A>::rehash(size_type sz) {
-    reserve( sz ); // TODO: add reduction of number of buckets as well
+    reserve( sz, my_allocator ); // TODO: add reduction of number of buckets as well
     hashcode_t mask = my_mask;
     hashcode_t b = (mask+1)>>1; // size or first index of the last segment
     __TBB_ASSERT((b&(b-1))==0, NULL); // zero or power of 2
@@ -1330,7 +1451,7 @@ void concurrent_hash_map<Key,T,HashCompare,A>::rehash(size_type sz) {
             // now h - is index of the root rehashed bucket b_old
             mark_rehashed_levels( h ); // mark all non-rehashed children recursively across all segments
             for( node_base **p = &b_old->node_list, *q = *p; is_valid(q); q = *p ) {
-                hashcode_t c = my_hash_compare.hash( static_cast<node*>(q)->item.first );
+                hashcode_t c = my_hash_compare.hash( static_cast<node*>(q)->value().first );
                 if( (c & mask) != h ) { // should be rehashed
                     *p = q->next; // exclude from b_old
                     bucket *b_new = get_bucket( c & mask );
@@ -1357,7 +1478,7 @@ void concurrent_hash_map<Key,T,HashCompare,A>::rehash(size_type sz) {
 #endif
 #if TBB_USE_ASSERT
         for( ; is_valid(n); n = n->next ) {
-            hashcode_t h = my_hash_compare.hash( static_cast<node*>(n)->item.first ) & mask;
+            hashcode_t h = my_hash_compare.hash( static_cast<node*>(n)->value().first ) & mask;
             __TBB_ASSERT( h == b, "hash() function changed for key in table or internal error" );
         }
 #endif
@@ -1404,7 +1525,7 @@ void concurrent_hash_map<Key,T,HashCompare,A>::clear() {
 #endif
 #if __TBB_EXTRA_DEBUG
         for(; is_valid(n); n = n->next ) {
-            hashcode_t h = my_hash_compare.hash( static_cast<node*>(n)->item.first );
+            hashcode_t h = my_hash_compare.hash( static_cast<node*>(n)->value().first );
             h &= m;
             __TBB_ASSERT( h == b || get_bucket(h)->node_list == internal::rehash_req, "hash() function changed for key in table or internal error" );
         }
@@ -1438,7 +1559,6 @@ void concurrent_hash_map<Key,T,HashCompare,A>::clear() {
     my_size = 0;
     segment_index_t s = segment_index_of( m );
     __TBB_ASSERT( s+1 == pointers_per_table || !my_table[s+1], "wrong mask or concurrent grow" );
-    cache_aligned_allocator<bucket> alloc;
     do {
         __TBB_ASSERT( is_valid( my_table[s] ), "wrong mask or concurrent grow" );
         segment_ptr_t buckets_ptr = my_table[s];
@@ -1448,11 +1568,7 @@ void concurrent_hash_map<Key,T,HashCompare,A>::clear() {
                 buckets_ptr[i].node_list = n->next;
                 delete_node( n );
             }
-        if( s >= first_block) // the first segment or the next
-            alloc.deallocate( buckets_ptr, sz );
-        else if( s == embedded_block && embedded_block != first_block )
-            alloc.deallocate( buckets_ptr, segment_size(first_block)-embedded_buckets );
-        if( s >= embedded_block ) my_table[s] = 0;
+        delete_segment(s, my_allocator);
     } while(s-- > 0);
     my_mask = embedded_buckets - 1;
 }
@@ -1461,7 +1577,7 @@ template<typename Key, typename T, typename HashCompare, typename A>
 void concurrent_hash_map<Key,T,HashCompare,A>::internal_copy( const concurrent_hash_map& source ) {
     hashcode_t mask = source.my_mask;
     if( my_mask == mask ) { // optimized version
-        reserve( source.my_size ); // TODO: load_factor?
+        reserve( source.my_size, my_allocator ); // TODO: load_factor?
         bucket *dst = 0, *src = 0;
         bool rehash_required = false;
         for( hashcode_t k = 0; k <= mask; k++ ) {
@@ -1473,7 +1589,8 @@ void concurrent_hash_map<Key,T,HashCompare,A>::internal_copy( const concurrent_h
                 rehash_required = true;
                 dst->node_list = internal::rehash_req;
             } else for(; n; n = static_cast<node*>( n->next ) ) {
-                add_to_bucket( dst, new( my_allocator ) node(n->item.first, n->item.second) );
+                node* node_ptr = create_node(my_allocator, n->value().first, n->value().second);
+                add_to_bucket( dst, node_ptr);
                 ++my_size; // TODO: replace by non-atomic op
             }
         }
@@ -1484,14 +1601,14 @@ void concurrent_hash_map<Key,T,HashCompare,A>::internal_copy( const concurrent_h
 template<typename Key, typename T, typename HashCompare, typename A>
 template<typename I>
 void concurrent_hash_map<Key,T,HashCompare,A>::internal_copy(I first, I last, size_type reserve_size) {
-    reserve( reserve_size ); // TODO: load_factor?
+    reserve( reserve_size, my_allocator ); // TODO: load_factor?
     hashcode_t m = my_mask;
     for(; first != last; ++first) {
         hashcode_t h = my_hash_compare.hash( (*first).first );
         bucket *b = get_bucket( h & m );
         __TBB_ASSERT( b->node_list != internal::rehash_req, "Invalid bucket in destination table");
-        node *n = new( my_allocator ) node(*first);
-        add_to_bucket( b, n );
+        node* node_ptr = create_node(my_allocator, (*first).first, (*first).second);
+        add_to_bucket( b, node_ptr );
         ++my_size; // TODO: replace by non-atomic op
     }
 }
@@ -1526,5 +1643,8 @@ inline void swap(concurrent_hash_map<Key, T, HashCompare, A> &a, concurrent_hash
 #endif // warning 4127 is back
 
 } // namespace tbb
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_concurrent_hash_map_H_include_area
 
 #endif /* __TBB_concurrent_hash_map_H */

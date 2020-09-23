@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 // Example program that computes number of prime numbers up to n, 
@@ -37,7 +33,6 @@
 #include <cstdlib>
 #include <cctype>
 #include "tbb/parallel_reduce.h"
-#include "tbb/task_scheduler_init.h"
 
 using namespace std;
 
@@ -289,7 +284,7 @@ public:
 //! Count number of primes between 0 and n
 /** This is the parallel version. */
 NumberType ParallelCountPrimes( NumberType n , int number_of_threads, NumberType grain_size ) {
-    tbb::task_scheduler_init init(number_of_threads);
+    tbb::global_control c(tbb::global_control::max_allowed_parallelism, number_of_threads);
 
     // Two is special case
     NumberType count = n>=2;
@@ -300,7 +295,7 @@ NumberType ParallelCountPrimes( NumberType n , int number_of_threads, NumberType
             printf("---\n");
         using namespace tbb;
         // Explicit grain size and simple_partitioner() used here instead of automatic grainsize 
-        // determination becase we want SieveRange to be decomposed down to grainSize or smaller.  
+        // determination because we want SieveRange to be decomposed down to grainSize or smaller.  
         // Doing so improves odds that the working set fits in cache when evaluating Sieve::operator().
         parallel_reduce( SieveRange( s.multiples.m, n, s.multiples.m, grain_size ), s, simple_partitioner() );
         count += s.count;

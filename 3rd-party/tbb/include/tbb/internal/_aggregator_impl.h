@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB__aggregator_impl_H
@@ -164,7 +160,7 @@ template<typename aggregating_class, typename operation_list>
 class aggregating_functor {
     aggregating_class *fi;
 public:
-    aggregating_functor() {}
+    aggregating_functor() : fi() {}
     aggregating_functor(aggregating_class *fi_) : fi(fi_) {}
     void operator()(operation_list* op_list) { fi->handle_operations(op_list); }
 };

@@ -1,4 +1,4 @@
-# Copyright (c) 2005-2018 Intel Corporation
+# Copyright (c) 2005-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 ####### Detections and Commands ###############################################
 
@@ -49,7 +45,7 @@ ifndef arch
 endif
 
 ifndef runtime
-  clang_version:=$(shell clang -v 2>&1 >/dev/null | grep version | sed -e "s/.*version \(.*[0-9]\) .*/\1/")
+  clang_version:=$(shell clang --version | sed -n "1s/.*version \(.*[0-9]\) .*/\1/p")
   ifndef os_version
     os_version:=$(shell /usr/bin/sw_vers -productVersion)
   endif
@@ -105,3 +101,5 @@ LINK_MALLOCPROXY.LIB = $(MALLOCPROXY.LIB)
 TEST_LAUNCHER=sh $(tbb_root)/build/test_launcher.sh $(largs)
 
 OPENCL.LIB = -framework OpenCL
+
+MACOSX_DEPLOYMENT_TARGET ?= 10.11

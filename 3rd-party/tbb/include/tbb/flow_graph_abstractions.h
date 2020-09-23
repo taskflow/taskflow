@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_flow_graph_abstractions_H
@@ -23,7 +19,7 @@
 
 namespace tbb {
 namespace flow {
-namespace interface10 {
+namespace interface11 {
 
 //! Pure virtual template classes that define interfaces for async communication
 class graph_proxy {
@@ -49,8 +45,8 @@ public:
 
 } //interfaceX
 
-using interface10::graph_proxy;
-using interface10::receiver_gateway;
+using interface11::graph_proxy;
+using interface11::receiver_gateway;
 
 } //flow
 } //tbb

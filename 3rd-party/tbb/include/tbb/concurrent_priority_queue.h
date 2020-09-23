@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_concurrent_priority_queue_H
 #define __TBB_concurrent_priority_queue_H
+
+#define __TBB_concurrent_priority_queue_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 #include "atomic.h"
 #include "cache_aligned_allocator.h"
@@ -27,6 +26,8 @@
 #include "tbb_stddef.h"
 #include "tbb_profiling.h"
 #include "internal/_aggregator_impl.h"
+#include "internal/_template_helpers.h"
+#include "internal/_allocator_traits.h"
 #include <vector>
 #include <iterator>
 #include <functional>
@@ -85,14 +86,28 @@ class concurrent_priority_queue {
     typedef A allocator_type;
 
     //! Constructs a new concurrent_priority_queue with default capacity
-    explicit concurrent_priority_queue(const allocator_type& a = allocator_type()) : mark(0), my_size(0), data(a)
+    explicit concurrent_priority_queue(const allocator_type& a = allocator_type()) : mark(0), my_size(0), compare(), data(a)
+    {
+        my_aggregator.initialize_handler(my_functor_t(this));
+    }
+
+    //! Constructs a new concurrent_priority_queue with default capacity
+    explicit concurrent_priority_queue(const Compare& c, const allocator_type& a = allocator_type()) : mark(0), my_size(0), compare(c), data(a)
     {
         my_aggregator.initialize_handler(my_functor_t(this));
     }
 
     //! Constructs a new concurrent_priority_queue with init_sz capacity
     explicit concurrent_priority_queue(size_type init_capacity, const allocator_type& a = allocator_type()) :
-        mark(0), my_size(0), data(a)
+        mark(0), my_size(0), compare(), data(a)
+    {
+        data.reserve(init_capacity);
+        my_aggregator.initialize_handler(my_functor_t(this));
+    }
+
+    //! Constructs a new concurrent_priority_queue with init_sz capacity
+    explicit concurrent_priority_queue(size_type init_capacity, const Compare& c, const allocator_type& a = allocator_type()) :
+        mark(0), my_size(0), compare(c), data(a)
     {
         data.reserve(init_capacity);
         my_aggregator.initialize_handler(my_functor_t(this));
@@ -101,7 +116,17 @@ class concurrent_priority_queue {
     //! [begin,end) constructor
     template<typename InputIterator>
     concurrent_priority_queue(InputIterator begin, InputIterator end, const allocator_type& a = allocator_type()) :
-        mark(0), data(begin, end, a)
+        mark(0), compare(), data(begin, end, a)
+    {
+        my_aggregator.initialize_handler(my_functor_t(this));
+        heapify();
+        my_size = data.size();
+    }
+
+    //! [begin,end) constructor
+    template<typename InputIterator>
+    concurrent_priority_queue(InputIterator begin, InputIterator end, const Compare& c, const allocator_type& a = allocator_type()) :
+        mark(0), compare(c), data(begin, end, a)
     {
         my_aggregator.initialize_handler(my_functor_t(this));
         heapify();
@@ -111,7 +136,16 @@ class concurrent_priority_queue {
 #if __TBB_INITIALIZER_LISTS_PRESENT
     //! Constructor from std::initializer_list
     concurrent_priority_queue(std::initializer_list<T> init_list, const allocator_type &a = allocator_type()) :
-        mark(0),data(init_list.begin(), init_list.end(), a)
+        mark(0), compare(), data(init_list.begin(), init_list.end(), a)
+    {
+        my_aggregator.initialize_handler(my_functor_t(this));
+        heapify();
+        my_size = data.size();
+    }
+
+    //! Constructor from std::initializer_list
+    concurrent_priority_queue(std::initializer_list<T> init_list, const Compare& c, const allocator_type &a = allocator_type()) :
+        mark(0), compare(c), data(init_list.begin(), init_list.end(), a)
     {
         my_aggregator.initialize_handler(my_functor_t(this));
         heapify();
@@ -482,17 +516,37 @@ class concurrent_priority_queue {
 };
 
 #if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+namespace internal {
+
+template<typename T, typename... Args>
+using priority_queue_t = concurrent_priority_queue<
+    T,
+    std::conditional_t< (sizeof...(Args)>0) && !is_allocator_v< pack_element_t<0, Args...> >,
+                        pack_element_t<0, Args...>, std::less<T> >,
+    std::conditional_t< (sizeof...(Args)>0) && is_allocator_v< pack_element_t<sizeof...(Args)-1, Args...> >,
+                         pack_element_t<sizeof...(Args)-1, Args...>, cache_aligned_allocator<T> >
+>;
+}
+
 // Deduction guide for the constructor from two iterators
 template<typename InputIterator,
          typename T = typename std::iterator_traits<InputIterator>::value_type,
-         typename A = cache_aligned_allocator<T>
-> concurrent_priority_queue(InputIterator, InputIterator, const A& = A())
--> concurrent_priority_queue<T, std::less<T>, A>;
+         typename... Args
+> concurrent_priority_queue(InputIterator, InputIterator, Args...)
+-> internal::priority_queue_t<T, Args...>;
+
+template<typename T, typename CompareOrAllocalor>
+concurrent_priority_queue(std::initializer_list<T> init_list, CompareOrAllocalor)
+-> internal::priority_queue_t<T, CompareOrAllocalor>;
+
 #endif /* __TBB_CPP17_DEDUCTION_GUIDES_PRESENT */
 } // namespace interface5
 
 using interface5::concurrent_priority_queue;
 
 } // namespace tbb
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_concurrent_priority_queue_H_include_area
 
 #endif /* __TBB_concurrent_priority_queue_H */

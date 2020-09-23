@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 // Support for GUI display for Polygon overlay demo
@@ -26,7 +22,7 @@
 #include "polymain.h"
 #include "pover_video.h"
 #include "tbb/tick_count.h"
-#include "tbb/task_scheduler_init.h"
+#include "../../common/utility/get_default_num_threads.h"
 #ifndef _WIN32
 #include <sys/time.h>
 #include <unistd.h>
@@ -52,14 +48,14 @@ using namespace std;
 
 bool g_next_frame() {
     if(++n_next_frame_calls >= frame_skips) { // the data race here is benign
-        n_next_frame_calls = 0; 
+        n_next_frame_calls = 0;
         return gVideo->next_frame();
-    } 
+    }
     return gVideo->running;
 }
 
 bool g_last_frame() {
-    if(n_next_frame_calls) return gVideo->next_frame(); 
+    if(n_next_frame_calls) return gVideo->next_frame();
     return gVideo->running;
 }
 
@@ -113,7 +109,7 @@ void pover_video::on_process() {
         if(gCsvFile.is_open()) {
             gCsvFile << "Serial Time," << gSerialTime << std::endl;
             gCsvFile << "Threads,";
-            if(gThreadsLow == THREADS_UNSET || gThreadsLow == tbb::task_scheduler_init::automatic) {
+            if(gThreadsLow == THREADS_UNSET || gThreadsLow == utility::get_default_num_threads()) {
                 gCsvFile << "Threads,Automatic";
             }
             else {

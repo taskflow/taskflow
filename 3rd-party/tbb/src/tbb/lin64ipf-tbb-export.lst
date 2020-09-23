@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "tbb/tbb_config.h"
@@ -173,6 +169,7 @@ __TBB_SYMBOL( _ZN3tbb8internal19itt_relation_add_v7ENS0_15itt_domain_enumEPvyNS0
 __TBB_SYMBOL( _ZN3tbb8internal15itt_task_end_v7ENS0_15itt_domain_enumE )
 __TBB_SYMBOL( _ZN3tbb8internal19itt_region_begin_v9ENS0_15itt_domain_enumEPvyS2_yNS0_12string_indexE )
 __TBB_SYMBOL( _ZN3tbb8internal17itt_region_end_v9ENS0_15itt_domain_enumEPvy )
+__TBB_SYMBOL( _ZN3tbb8internal24itt_metadata_ptr_add_v11ENS0_15itt_domain_enumEPvyNS0_12string_indexES2_ )
 
 /* pipeline.cpp */
 __TBB_SYMBOL( _ZTIN3tbb6filterE )
@@ -420,5 +417,11 @@ __TBB_SYMBOL( __TBB_machine_store1_relaxed )
 __TBB_SYMBOL( _ZN3tbb10interface914global_control12active_valueEi )
 __TBB_SYMBOL( _ZN3tbb10interface914global_control15internal_createEv )
 __TBB_SYMBOL( _ZN3tbb10interface914global_control16internal_destroyEv )
+
+#if __TBB_PREVIEW_RESUMABLE_TASKS
+__TBB_SYMBOL( _ZN3tbb8internal16internal_suspendEPvS1_ )
+__TBB_SYMBOL( _ZN3tbb8internal15internal_resumeEPv )
+__TBB_SYMBOL( _ZN3tbb8internal30internal_current_suspend_pointEv )
+#endif
 
 #undef __TBB_SYMBOL

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,17 +12,13 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_tbb_windef_H
 #error Do not #include this internal file directly; use public TBB headers instead.
 #endif /* __TBB_tbb_windef_H */
 
-// Check that the target Windows version has all API calls requried for TBB.
+// Check that the target Windows version has all API calls required for TBB.
 // Do not increase the version in condition beyond 0x0500 without prior discussion!
 #if defined(_WIN32_WINNT) && _WIN32_WINNT<0x0501
 #error TBB is unable to run on old Windows versions; _WIN32_WINNT must be 0x0501 or greater.
@@ -54,7 +50,7 @@ namespace std {
 #    endif
 #endif
 
-#if (__TBB_BUILD || __TBBMALLOC_BUILD) && !defined(__TBB_NO_IMPLICIT_LINKAGE)
+#if (__TBB_BUILD || __TBBMALLOC_BUILD || __TBBBIND_BUILD) && !defined(__TBB_NO_IMPLICIT_LINKAGE)
 #define __TBB_NO_IMPLICIT_LINKAGE 1
 #endif
 

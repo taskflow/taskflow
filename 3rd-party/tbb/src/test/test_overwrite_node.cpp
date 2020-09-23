@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,20 +12,18 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #if __TBB_CPF_BUILD
 #define TBB_DEPRECATED_FLOW_NODE_EXTRACTION 1
 #endif
 
+#include "harness.h"
 #include "harness_graph.h"
 
 #include "tbb/flow_graph.h"
 #include "tbb/task_scheduler_init.h"
+#include "test_follows_and_precedes_api.h"
 
 #define N 300
 #define T 4
@@ -143,6 +141,41 @@ void parallel_read_write_tests() {
     }
 }
 
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+#include <array>
+#include <vector>
+void test_follows_and_precedes_api() {
+    using msg_t = tbb::flow::continue_msg;
+
+    std::array<msg_t, 3> messages_for_follows = { {msg_t(), msg_t(), msg_t()} };
+    std::vector<msg_t> messages_for_precedes = {msg_t()};
+
+    follows_and_precedes_testing::test_follows<msg_t, tbb::flow::overwrite_node<msg_t>>(messages_for_follows);
+    follows_and_precedes_testing::test_precedes<msg_t, tbb::flow::overwrite_node<msg_t>>(messages_for_precedes);
+}
+#endif
+
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+void test_deduction_guides() {
+    using namespace tbb::flow;
+
+    graph g;
+    broadcast_node<int> b1(g);
+    overwrite_node<int> o0(g);
+
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    overwrite_node o1(follows(b1));
+    static_assert(std::is_same_v<decltype(o1), overwrite_node<int>>);
+
+    overwrite_node o2(precedes(b1));
+    static_assert(std::is_same_v<decltype(o2), overwrite_node<int>>);
+#endif
+
+    overwrite_node o3(o0);
+    static_assert(std::is_same_v<decltype(o3), overwrite_node<int>>);
+}
+#endif
+
 int TestMain() {
     if( MinThread<1 ) {
         REPORT("number of threads must be positive\n");
@@ -160,6 +193,11 @@ int TestMain() {
     test_extract_on_node<tbb::flow::overwrite_node, int>();
     test_extract_on_node<tbb::flow::overwrite_node, float>();
 #endif
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    test_follows_and_precedes_api();
+#endif
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+    test_deduction_guides();
+#endif
     return Harness::Done;
 }
-

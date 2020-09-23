@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,25 +12,22 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 //
 // Example program that reads a file of decimal integers in text format
 // and changes each to its square.
-// 
+//
 #include "tbb/pipeline.h"
 #include "tbb/tick_count.h"
-#include "tbb/task_scheduler_init.h"
 #include "tbb/tbb_allocator.h"
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
 #include <cctype>
+#include "tbb/global_control.h"
 #include "../../common/utility/utility.h"
+#include "../../common/utility/get_default_num_threads.h"
 
 extern void generate_if_needed(const char*);
 
@@ -53,10 +50,10 @@ public:
         t->physical_end = t->begin()+max_size;
         return t;
     }
-    //! Free a TextSlice object 
+    //! Free a TextSlice object
     void free() {
         tbb::tbb_allocator<char>().deallocate((char*)this,sizeof(TextSlice)+(physical_end-begin())+1);
-    } 
+    }
     //! Pointer to beginning of sequence
     char* begin() {return (char*)(this+1);}
     //! Pointer to one past last character in sequence
@@ -78,109 +75,103 @@ size_t MAX_CHAR_PER_INPUT_SLICE = 4000;
 string InputFileName = "input.txt";
 string OutputFileName = "output.txt";
 
-class MyInputFilter: public tbb::filter {
+TextSlice* next_slice = NULL;
+
+class MyInputFunc {
 public:
-    MyInputFilter( FILE* input_file_ );
-    ~MyInputFilter();
+    MyInputFunc(FILE* input_file_);
+    MyInputFunc(const MyInputFunc& f) : input_file(f.input_file) { }
+    ~MyInputFunc();
+    TextSlice* operator()(tbb::flow_control& fc) const;
 private:
     FILE* input_file;
-    TextSlice* next_slice;
-    void* operator()(void*) /*override*/;
 };
 
-MyInputFilter::MyInputFilter( FILE* input_file_ ) : 
-    filter(serial_in_order),
-    input_file(input_file_),
-    next_slice( TextSlice::allocate( MAX_CHAR_PER_INPUT_SLICE ) )
-{ 
+MyInputFunc::MyInputFunc(FILE* input_file_) :
+    input_file(input_file_) { }
+
+MyInputFunc::~MyInputFunc() {
 }
 
-MyInputFilter::~MyInputFilter() {
-    next_slice->free();
-}
- 
-void* MyInputFilter::operator()(void*) {
+TextSlice* MyInputFunc::operator()(tbb::flow_control& fc) const {
     // Read characters into space that is available in the next slice.
+    if (!next_slice)
+        next_slice = TextSlice::allocate(MAX_CHAR_PER_INPUT_SLICE);
     size_t m = next_slice->avail();
-    size_t n = fread( next_slice->end(), 1, m, input_file );
-    if( !n && next_slice->size()==0 ) {
+    size_t n = fread(next_slice->end(), 1, m, input_file);
+    if (!n && next_slice->size() == 0) {
         // No more characters to process
+        fc.stop();
         return NULL;
-    } else {
+    }
+    else {
         // Have more characters to process.
-        TextSlice& t = *next_slice;
-        next_slice = TextSlice::allocate( MAX_CHAR_PER_INPUT_SLICE );
-        char* p = t.end()+n;
-        if( n==m ) {
-            // Might have read partial number.  If so, transfer characters of partial number to next slice.
-            while( p>t.begin() && isdigit(p[-1]) ) 
+        TextSlice* t = next_slice;
+        next_slice = TextSlice::allocate(MAX_CHAR_PER_INPUT_SLICE);
+        char* p = t->end() + n;
+        if (n == m) {
+            // Might have read partial number.
+            // If so, transfer characters of partial number to next slice.
+            while (p > t->begin() && isdigit(p[-1]))
                 --p;
-            next_slice->append( p, t.end()+n );
+            assert(p > t->begin()); // Number too large to fit in buffer
+            next_slice->append(p, t->end() + n);
         }
-        t.set_end(p);
-        return &t;
+        t->set_end(p);
+        return t;
     }
 }
-    
-//! Filter that changes each decimal number to its square.
-class MyTransformFilter: public tbb::filter {
+
+// Functor that changes each decimal number to its square.
+class MyTransformFunc {
 public:
-    MyTransformFilter();
-    void* operator()( void* item ) /*override*/;
+    TextSlice* operator()(TextSlice* input) const;
 };
 
-MyTransformFilter::MyTransformFilter() : 
-    tbb::filter(parallel) 
-{}  
-
-void* MyTransformFilter::operator()( void* item ) {
-    TextSlice& input = *static_cast<TextSlice*>(item);
+TextSlice* MyTransformFunc::operator()(TextSlice* input) const {
     // Add terminating null so that strtol works right even if number is at end of the input.
-    *input.end() = '\0';
-    char* p = input.begin();
-    TextSlice& out = *TextSlice::allocate( 2*MAX_CHAR_PER_INPUT_SLICE );
-    char* q = out.begin();
-    for(;;) {
-        while( p<input.end() && !isdigit(*p) ) 
-            *q++ = *p++; 
-        if( p==input.end() ) 
+    *input->end() = '\0';
+    char* p = input->begin();
+    TextSlice* out = TextSlice::allocate(2 * MAX_CHAR_PER_INPUT_SLICE);
+    char* q = out->begin();
+    for (;;) {
+        while (p < input->end() && !isdigit(*p))
+            *q++ = *p++;
+        if (p == input->end())
             break;
-        long x = strtol( p, &p, 10 );
-        // Note: no overflow checking is needed here, as we have twice the 
-        // input string length, but the square of a non-negative integer n 
+        long x = strtol(p, &p, 10);
+        // Note: no overflow checking is needed here, as we have twice the
+        // input string length, but the square of a non-negative integer n
         // cannot have more than twice as many digits as n.
-        long y = x*x; 
-        sprintf(q,"%ld",y);
-        q = strchr(q,0);
+        long y = x * x;
+        sprintf(q, "%ld", y);
+        q = strchr(q, 0);
     }
-    out.set_end(q);
-    input.free();
-    return &out;
+    out->set_end(q);
+    input->free();
+    return out;
 }
-         
-//! Filter that writes each buffer to a file.
-class MyOutputFilter: public tbb::filter {
+
+// Functor that writes a TextSlice to a file.
+class MyOutputFunc {
     FILE* my_output_file;
 public:
-    MyOutputFilter( FILE* output_file );
-    void* operator()( void* item ) /*override*/;
+    MyOutputFunc(FILE* output_file);
+    void operator()(TextSlice* item) const;
 };
 
-MyOutputFilter::MyOutputFilter( FILE* output_file ) : 
-    tbb::filter(serial_in_order),
+MyOutputFunc::MyOutputFunc(FILE* output_file) :
     my_output_file(output_file)
 {
 }
 
-void* MyOutputFilter::operator()( void* item ) {
-    TextSlice& out = *static_cast<TextSlice*>(item);
-    size_t n = fwrite( out.begin(), 1, out.size(), my_output_file );
-    if( n!=out.size() ) {
-        fprintf(stderr,"Can't write into file '%s'\n", OutputFileName.c_str());
+void MyOutputFunc::operator()(TextSlice* out) const {
+    size_t n = fwrite(out->begin(), 1, out->size(), my_output_file);
+    if (n != out->size()) {
+        fprintf(stderr, "Can't write into file '%s'\n", OutputFileName.c_str());
         exit(1);
     }
-    out.free();
-    return NULL;
+    out->free();
 }
 
 bool silent = false;
@@ -198,26 +189,22 @@ int run_pipeline( int nthreads )
         return 0;
     }
 
-    // Create the pipeline
-    tbb::pipeline pipeline;
-
-    // Create file-reading writing stage and add it to the pipeline
-    MyInputFilter input_filter( input_file );
-    pipeline.add_filter( input_filter );
-
-    // Create squaring stage and add it to the pipeline
-    MyTransformFilter transform_filter; 
-    pipeline.add_filter( transform_filter );
-
-    // Create file-writing stage and add it to the pipeline
-    MyOutputFilter output_filter( output_file );
-    pipeline.add_filter( output_filter );
-
-    // Run the pipeline
     tbb::tick_count t0 = tbb::tick_count::now();
-    // Need more than one token in flight per thread to keep all threads 
+
+    // Need more than one token in flight per thread to keep all threads
     // busy; 2-4 works
-    pipeline.run( nthreads*4 );
+    tbb::parallel_pipeline(
+        nthreads*4,
+        tbb::make_filter<void,TextSlice*>(
+            tbb::filter::serial_in_order, MyInputFunc(input_file) )
+    &
+        tbb::make_filter<TextSlice*,TextSlice*>(
+            tbb::filter::parallel, MyTransformFunc() )
+    &
+        tbb::make_filter<TextSlice*,void>(
+            tbb::filter::serial_in_order, MyOutputFunc(output_file) )
+    );
+
     tbb::tick_count t1 = tbb::tick_count::now();
 
     fclose( output_file );
@@ -234,7 +221,7 @@ int main( int argc, char* argv[] ) {
 
         // The 1st argument is the function to obtain 'auto' value; the 2nd is the default value
         // The example interprets 0 threads as "run serially, then fully subscribed"
-        utility::thread_number_range threads( tbb::task_scheduler_init::default_num_threads, 0 );
+        utility::thread_number_range threads( utility::get_default_num_threads, 0 );
 
         utility::parse_cli_arguments(argc,argv,
             utility::cli_argument_pack()
@@ -250,21 +237,21 @@ int main( int argc, char* argv[] ) {
         if ( threads.first ) {
             for(int p = threads.first;  p <= threads.last; p=threads.step(p) ) {
                 if ( !silent ) printf("threads = %d ", p);
-                tbb::task_scheduler_init init(p);
+                tbb::global_control c(tbb::global_control::max_allowed_parallelism, p);
                 if(!run_pipeline (p))
                     return 1;
             }
         } else { // Number of threads wasn't set explicitly. Run serial and parallel version
             { // serial run
                 if ( !silent ) printf("serial run   ");
-                tbb::task_scheduler_init init_serial(1);
+                tbb::global_control c(tbb::global_control::max_allowed_parallelism, 1);
                 if(!run_pipeline (1))
                     return 1;
             }
             { // parallel run (number of threads is selected automatically)
                 if ( !silent ) printf("parallel run ");
-                tbb::task_scheduler_init init_parallel;
-                if(!run_pipeline (init_parallel.default_num_threads()))
+                tbb::global_control c(tbb::global_control::max_allowed_parallelism, utility::get_default_num_threads());
+                if(!run_pipeline (utility::get_default_num_threads()))
                     return 1;
             }
         }

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef _LEGACY_ITTNOTIFY_H_
@@ -97,17 +93,17 @@
 #endif /* UNICODE || _UNICODE */
 #endif /* ITT_PLATFORM==ITT_PLATFORM_WIN */
 
-#ifndef CDECL
+#ifndef ITTAPI_CDECL
 #  if ITT_PLATFORM==ITT_PLATFORM_WIN
-#    define CDECL __cdecl
+#    define ITTAPI_CDECL __cdecl
 #  else /* ITT_PLATFORM==ITT_PLATFORM_WIN */
 #    if defined _M_IX86 || defined __i386__ 
-#      define CDECL __attribute__ ((cdecl))
+#      define ITTAPI_CDECL __attribute__ ((cdecl))
 #    else  /* _M_IX86 || __i386__ */
-#      define CDECL /* actual only on x86 platform */
+#      define ITTAPI_CDECL /* actual only on x86 platform */
 #    endif /* _M_IX86 || __i386__ */
 #  endif /* ITT_PLATFORM==ITT_PLATFORM_WIN */
-#endif /* CDECL */
+#endif /* ITTAPI_CDECL */
 
 #ifndef STDCALL
 #  if ITT_PLATFORM==ITT_PLATFORM_WIN
@@ -121,12 +117,12 @@
 #  endif /* ITT_PLATFORM==ITT_PLATFORM_WIN */
 #endif /* STDCALL */
 
-#define ITTAPI    CDECL
-#define LIBITTAPI CDECL
+#define ITTAPI    ITTAPI_CDECL
+#define LIBITTAPI ITTAPI_CDECL
 
 /* TODO: Temporary for compatibility! */
-#define ITTAPI_CALL    CDECL
-#define LIBITTAPI_CALL CDECL
+#define ITTAPI_CALL    ITTAPI_CDECL
+#define LIBITTAPI_CALL ITTAPI_CDECL
 
 #if ITT_PLATFORM==ITT_PLATFORM_WIN
 /* use __forceinline (VC++ specific) */

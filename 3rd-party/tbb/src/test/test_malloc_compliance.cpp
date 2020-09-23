@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 bool __tbb_test_errno = false;
@@ -25,7 +21,7 @@ bool __tbb_test_errno = false;
 #include "tbb/tbb_config.h"
 
 #if __TBB_WIN8UI_SUPPORT
-// testing allocator itself not iterfaces
+// testing allocator itself not interfaces
 // so we can use desktop functions
 #define _CRT_USE_WINAPI_FAMILY_DESKTOP_APP !_M_ARM
 #define HARNESS_NO_PARSE_COMMAND_LINE 1
@@ -619,7 +615,7 @@ void CMemTest::AddrArifm()
 {
     PtrSize *arr = (PtrSize*)Tmalloc(COUNT_ELEM*sizeof(PtrSize));
 
-    if (FullLog) REPORT("\nUnique pointer using Address arithmetics\n");
+    if (FullLog) REPORT("\nUnique pointer using Address arithmetic\n");
     if (FullLog) REPORT("malloc....");
     ASSERT(arr, NULL);
     for (int i=0; i<COUNT_ELEM; i++)

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "harness_task.h"
@@ -793,6 +789,532 @@ void TestWaitableTask() {
     tbb::task::destroy(wt);
 }
 
+#if __TBB_PREVIEW_CRITICAL_TASKS && __TBB_TASK_PRIORITY
+#include <stdexcept>
+#include <vector>
+#include <map>
+#include "tbb/parallel_for.h"
+
+namespace CriticalTaskSupport {
+
+using tbb::task;
+task* g_root_task = NULL;
+
+// markers to capture execution profile (declaration order is important)
+enum task_marker_t {
+    no_task, regular_task, isolated_regular_task,
+    outer_critical_task, nested_critical_task, critical_from_isolated_task, bypassed_critical_task
+};
+enum bypassed_critical_task_stage_t { not_bypassed, bypassed, executed };
+
+typedef std::vector< std::vector<task_marker_t> > task_map_t;
+task_map_t g_execution_profile;
+
+const int g_per_thread_regular_tasks_num = 5;
+const int g_isolated_regular_task_num = 3;
+tbb::atomic<bool> g_is_critical_task_submitted;
+size_t g_bypassed_critical_task_index = size_t(-1);
+task* g_bypassed_task_pointer = NULL;
+int g_bypassed_task_creator = -1;
+tbb::atomic<bypassed_critical_task_stage_t> g_bypassed_critical_task_stage;
+tbb::task_arena g_arena;
+Harness::SpinBarrier g_spin_barrier;
+
+struct parallel_for_body {
+    parallel_for_body(task_marker_t task_marker, bool submit_critical = false)
+        : my_task_marker(task_marker), my_submit_critical(submit_critical) {}
+    void operator()( int i ) const;
+private:
+    task_marker_t my_task_marker;
+    bool my_submit_critical;
+};
+
+struct IsolatedFunctor {
+    void operator()() const {
+        parallel_for_body body(isolated_regular_task, /*submit_critical=*/ true);
+        tbb::parallel_for( 0, g_isolated_regular_task_num, body, tbb::simple_partitioner() );
+    }
+};
+
+struct CriticalTaskBody : public task {
+    CriticalTaskBody(task_marker_t task_marker) : my_task_mark(task_marker) {}
+    task* execute() __TBB_override {
+        task* ret_task = NULL;
+        task* nested_task = NULL;
+        int thread_idx = tbb::this_task_arena::current_thread_index();
+        g_execution_profile[thread_idx].push_back(my_task_mark);
+        switch( my_task_mark ) {
+        case outer_critical_task:
+            g_spin_barrier.wait(); // allow each thread to take its own critical task
+            // prefill queue with critical tasks
+            nested_task = new( task::allocate_additional_child_of(*g_root_task) )
+                CriticalTaskBody(nested_critical_task);
+            enqueue( *nested_task, tbb::priority_t(tbb::internal::priority_critical) );
+            if( not_bypassed ==
+                g_bypassed_critical_task_stage.compare_and_swap(bypassed, not_bypassed) ) {
+
+                // first, should process all the work from isolated region
+                tbb::this_task_arena::isolate( IsolatedFunctor() );
+
+                CriticalTaskBody* bypassed_task =
+                    new( task::allocate_additional_child_of(*g_root_task) )
+                    CriticalTaskBody(bypassed_critical_task);
+                g_bypassed_task_pointer = bypassed_task;
+                g_bypassed_critical_task_index = g_execution_profile[thread_idx].size() + 1;
+                g_bypassed_task_creator = thread_idx;
+                tbb::internal::make_critical(*bypassed_task);
+                ret_task = bypassed_task;
+            }
+            g_spin_barrier.wait(); // allow thread to execute isolated region
+            break;
+        case nested_critical_task:
+            // wait until bypassed critical task has been executed
+            g_spin_barrier.wait();
+            break;
+        case bypassed_critical_task:
+            ASSERT( bypassed == g_bypassed_critical_task_stage, "Unexpected bypassed critical task" );
+            g_bypassed_critical_task_stage = executed;
+            ASSERT( thread_idx == g_bypassed_task_creator,
+                    "Bypassed critical task is not being executed by the thread that bypassed it." );
+            ASSERT( g_bypassed_task_pointer == this, "This is not bypassed task." );
+            ASSERT( g_bypassed_critical_task_index == g_execution_profile[thread_idx].size(),
+                    "Bypassed critical task was not selected as the next task." );
+            break;
+        case critical_from_isolated_task:
+            break;
+        default:
+            ASSERT( false, "Incorrect critical task id." );
+        }
+        return ret_task;
+    }
+private:
+    task_marker_t my_task_mark;
+};
+
+void parallel_for_body::operator()( int i ) const {
+    int thread_idx = tbb::this_task_arena::current_thread_index();
+    g_execution_profile[thread_idx].push_back(my_task_marker);
+    if( my_submit_critical && i == 0 ) {
+        task* isolated_task = new( task::allocate_additional_child_of(*g_root_task) )
+            CriticalTaskBody(critical_from_isolated_task);
+        task::enqueue( *isolated_task, tbb::priority_t(tbb::internal::priority_critical) );
+    }
+}
+
+struct TaskBody: public task {
+    TaskBody() {}
+    TaskBody(task_marker_t /*mark*/) {}
+    task* execute() __TBB_override {
+        int thread_idx = tbb::this_task_arena::current_thread_index();
+        g_execution_profile[thread_idx].push_back(regular_task);
+        if( !g_is_critical_task_submitted ) {
+            g_spin_barrier.wait(); // allow each thread to take its own task.
+            // prefill task pools with regular tasks
+            int half = g_per_thread_regular_tasks_num / 2;
+            for( int i = 0; i < half; ++i ) {
+                task& t = *new( task::allocate_additional_child_of(*g_root_task) )
+                    TaskBody;
+                spawn(t);
+            }
+            {
+                // prefill with critical tasks
+                task& t = *new( task::allocate_additional_child_of(*g_root_task) )
+                    CriticalTaskBody(outer_critical_task);
+                tbb::internal::make_critical(t);
+                tbb::task::spawn(t);
+            }
+            // prefill task pools with regular tasks
+            for( int i = half; i < g_per_thread_regular_tasks_num; ++i ) {
+                task& t = *new( task::allocate_additional_child_of(*g_root_task) )
+                    TaskBody;
+                spawn(t);
+            }
+            g_is_critical_task_submitted.store<tbb::relaxed>(true);
+            g_spin_barrier.wait();
+        }
+        return NULL;
+    }
+};
+
+template<typename TaskType, void(*submit_task)(task&)>
+struct WorkCreator {
+    WorkCreator(task*& root_task, size_t num_tasks, size_t num_critical_tasks = 0,
+                tbb::task_group_context* ctx = NULL)
+        : my_root_task(root_task), my_num_tasks(num_tasks), my_num_critical_tasks(num_critical_tasks),
+          my_context(ctx) {}
+    void operator()() const {
+        ASSERT( my_root_task == NULL, "Incorrect test set up." );
+        task* root_task = NULL;
+        if( my_context )
+            root_task = new( task::allocate_root(*my_context) ) TaskType(regular_task);
+        else
+            root_task = new( task::allocate_root() ) TaskType(regular_task);
+        root_task->increment_ref_count();
+        for( size_t i = 0; i < my_num_tasks; ++i ) {
+            task& t = *new( task::allocate_additional_child_of(*root_task) ) TaskType(regular_task);
+            submit_task(t);
+        }
+        for( size_t i = 0; i < my_num_critical_tasks; ++i ) {
+            task& t = *new( task::allocate_additional_child_of(*root_task) )
+                TaskType( outer_critical_task );
+            tbb::task::enqueue( t, tbb::priority_t(tbb::internal::priority_critical) );
+        }
+        my_root_task = root_task;
+    }
+private:
+    task*& my_root_task;
+    size_t my_num_tasks;
+    size_t my_num_critical_tasks;
+    tbb::task_group_context* my_context;
+};
+
+struct WorkAwaiter {
+    WorkAwaiter(task*& root_task) : my_root_task(root_task) {}
+    void operator()() const {
+        while( !my_root_task ) __TBB_Yield(); // waiting on a tree construction
+        my_root_task->wait_for_all();
+        task::destroy(*my_root_task);
+        my_root_task = NULL;
+    }
+private:
+    task*& my_root_task;
+};
+
+void TestSchedulerTaskSelectionWhenSpawn() {
+    REMARK( "\tPreferring critical tasks among spawned\n" );
+    typedef std::multimap<task_marker_t, task_marker_t> state_machine_t;
+    typedef state_machine_t::iterator states_it;
+    task_marker_t from_to_pairs[] = {
+        // from regular
+        regular_task, regular_task,
+        regular_task, outer_critical_task,
+        // from outermost critical
+        outer_critical_task, isolated_regular_task,
+        outer_critical_task, critical_from_isolated_task,
+        outer_critical_task, nested_critical_task,
+        // from isolated regular
+        isolated_regular_task, isolated_regular_task,
+        isolated_regular_task, critical_from_isolated_task,
+        isolated_regular_task, bypassed_critical_task,
+        // from critical that was enqueued from isolated region
+        critical_from_isolated_task, isolated_regular_task,
+        critical_from_isolated_task, nested_critical_task,
+        critical_from_isolated_task, regular_task,
+        critical_from_isolated_task, bypassed_critical_task,
+        // from bypassed critical
+        bypassed_critical_task, nested_critical_task,
+        bypassed_critical_task, critical_from_isolated_task,
+        // from nested critical
+        nested_critical_task, critical_from_isolated_task,
+        nested_critical_task, regular_task
+    };
+
+    state_machine_t allowed_transitions;
+    for( size_t i = 0; i < sizeof(from_to_pairs) / sizeof(from_to_pairs[0]); i += 2 )
+        allowed_transitions.insert( std::make_pair( from_to_pairs[i], from_to_pairs[i+1] ) );
+
+    for( int num_threads = MinThread; num_threads <= MaxThread; ++num_threads ) {
+        for( int repeat = 0; repeat < 10; ++repeat ) {
+            // test initialization
+            g_bypassed_critical_task_stage = not_bypassed;
+            g_is_critical_task_submitted = false;
+            g_bypassed_critical_task_index = size_t(-1);
+            g_bypassed_task_creator = -1;
+            g_bypassed_task_pointer = NULL;
+            g_execution_profile.resize(num_threads);
+            g_spin_barrier.initialize(num_threads);
+            g_arena.initialize(num_threads);
+
+            // test execution
+            g_arena.execute(
+                WorkCreator<TaskBody, task::spawn>(g_root_task, /*num_tasks=*/size_t(num_threads)) );
+            g_arena.execute( WorkAwaiter(g_root_task) );
+
+            // checking how execution went
+            int critical_task_count = 0;
+            for( int thread = 0; thread < num_threads; ++thread ) {
+                bool started_critical_region = false;
+                bool pass_through_critical_region = false;
+                size_t thread_task_num = g_execution_profile[thread].size();
+                for( size_t task_index = 0; task_index < thread_task_num; ++task_index ) {
+                    const task_marker_t& executed_task = g_execution_profile[thread][task_index];
+
+                    if( pass_through_critical_region ) {
+                        ASSERT( executed_task < outer_critical_task,
+                                "Thread did not process all the critical work at once." );
+                    } else if( isolated_regular_task <= executed_task &&
+                               executed_task <= bypassed_critical_task) {
+                        started_critical_region = true;
+                        if( isolated_regular_task < executed_task )
+                            ++critical_task_count;
+                        if( bypassed_critical_task == executed_task ) {
+                            size_t expected_bypass_task_min_index =
+                                /* number of regular task before critical region */1 +
+                                /* number of outermost critical tasks before isolated region */ 1 +
+                                g_isolated_regular_task_num;
+                            size_t expected_bypass_task_max_index = expected_bypass_task_min_index +
+                                /* number of critical tasks inside isolated region */ 1;
+                            ASSERT( expected_bypass_task_min_index <= task_index &&
+                                    task_index <= expected_bypass_task_max_index,
+                                    "Bypassed critical task has been executed in wrong order" );
+                        }
+                    } else if( started_critical_region ) {
+                        pass_through_critical_region = true;
+                        started_critical_region = false;
+                    }
+
+                    if( thread_task_num - 1 == task_index )
+                        continue;   // no transition check for the last executed task
+                    const task_marker_t& next_task = g_execution_profile[thread][task_index + 1];
+                    std::pair<states_it, states_it> range =
+                        allowed_transitions.equal_range( executed_task );
+                    bool is_choosen_task_allowed = false;
+                    for (states_it it = range.first; it != range.second; ++it) {
+                        is_choosen_task_allowed |= next_task == it->second;
+                    }
+                    ASSERT( is_choosen_task_allowed, "Thread chose incorrect task for execution." );
+                }
+            }
+            ASSERT( critical_task_count == 2 * num_threads + 2, "Wrong number of critical tasks" );
+            ASSERT( g_bypassed_critical_task_stage == executed, "Was bypassed critical task executed?" );
+
+            // test deinitialization
+            g_execution_profile.clear();
+            g_arena.terminate();
+        }
+    }
+}
+
+struct TaskTypeExecutionMarker : public task {
+    TaskTypeExecutionMarker( task_marker_t mark ) : my_mark( mark ) {}
+    task* execute() __TBB_override {
+        g_execution_profile[tbb::this_task_arena::current_thread_index()].push_back( my_mark );
+        return NULL;
+    }
+private:
+    task_marker_t my_mark;
+};
+
+struct RegularTaskMarkChecker {
+    bool operator()(const task_marker_t& m) { return regular_task == m; }
+};
+
+void TestSchedulerTaskSelectionWhenEnqueue() {
+    REMARK( "\tPreferring critical tasks among enqueued\n" );
+    g_execution_profile.clear();
+    // creating two profiles because of enforced concurrency
+    g_execution_profile.resize(2);
+    g_root_task = NULL;
+    unsigned task_num = 99;
+    unsigned num_critical_tasks = 1;
+    g_arena.initialize( /*num_threads=*/1, /*reserved_for_masters=*/0 );
+    g_arena.enqueue(
+        WorkCreator<TaskTypeExecutionMarker, task::enqueue>(
+            g_root_task, task_num, num_critical_tasks)
+    );
+    WorkAwaiter awaiter(g_root_task); awaiter(); // waiting outside arena
+    g_arena.terminate();
+
+    unsigned idx = !g_execution_profile[1].empty();
+    ASSERT( g_execution_profile[!idx].empty(), "" );
+
+    ASSERT( g_execution_profile[idx].size() == task_num + num_critical_tasks,
+            "Incorrect number of tasks executed" );
+    ASSERT( *(g_execution_profile[idx].end() - 1) == outer_critical_task,
+            "Critical task was executed in wrong order. It should be the last one." );
+    bool all_regular = true;
+    for( std::vector<task_marker_t>::const_iterator it = g_execution_profile[idx].begin();
+         it != g_execution_profile[idx].end() - 1; ++it )
+        all_regular &= regular_task == *it;
+    ASSERT( all_regular, "Critical task was executed in wrong order. It should be the last one." );
+}
+
+enum ways_to_cancel_t {
+    by_explicit_call = 0,
+    by_exception,
+    no_cancellation
+};
+
+tbb::atomic<size_t> g_num_executed_from_cancelled_context;
+tbb::atomic<size_t> g_num_executed_from_working_context;
+int g_cancelling_task_id = -1;
+
+#if _MSC_VER && !__INTEL_COMPILER
+#pragma warning (push)
+#pragma warning (disable: 4127)  /* suppress conditional expression is constant */
+#endif
+
+template<bool cancelled_group>
+struct ATask : public task {
+    ATask( task_marker_t /*mark*/ ) : my_cancellation_method( no_cancellation ) {}
+    ATask( ways_to_cancel_t cancellation_method ) : my_cancellation_method( cancellation_method ) {}
+    task* execute() __TBB_override {
+        while( ! g_is_critical_task_submitted ) __TBB_Yield();
+        // scheduler should take critical task as the next task for execution.
+        bypassed_critical_task_stage_t previous_critical_task_stage =
+            g_bypassed_critical_task_stage.compare_and_swap(bypassed, not_bypassed);
+        while(
+            cancelled_group                             // Only tasks from cancelled group wait
+            && !this->is_cancelled()                    // for their group to be cancelled
+            && !tbb::internal::is_critical(*this)       // allowing thread that took critical task
+            && bypassed == previous_critical_task_stage // to proceed and cancel the whole group.
+        ) __TBB_Yield();
+        if( cancelled_group )
+            ++g_num_executed_from_cancelled_context;
+        else
+            ++g_num_executed_from_working_context;
+        switch( my_cancellation_method ) {
+        case by_explicit_call:
+            g_cancelling_task_id = int(g_num_executed_from_cancelled_context);
+            self().cancel_group_execution();
+            break;
+        case by_exception:
+            g_cancelling_task_id = int(g_num_executed_from_cancelled_context);
+            throw std::runtime_error("Exception data");
+            break;
+        case no_cancellation: break;
+        default:
+            ASSERT( false, "Should not be here!" );
+            break;
+        }
+        return NULL;
+    }
+private:
+    ways_to_cancel_t my_cancellation_method;
+};
+
+#if _MSC_VER && !__INTEL_COMPILER
+#pragma warning (pop)
+#endif
+
+template<void(*submit_task)(task&)>
+struct SubmitTaskFunctor {
+    SubmitTaskFunctor( task& t ) : my_task( t ) {}
+    void operator()() const {
+        submit_task(my_task);
+    }
+private:
+    task& my_task;
+};
+
+void TestCancellation(bool cancel_by_exception) {
+    g_is_critical_task_submitted = false;
+    g_bypassed_critical_task_stage = not_bypassed;
+    tbb::task_group_context context_to_leave_working;
+    tbb::task_group_context context_to_cancel;
+    task* root_task_of_to_be_cancelled_context = NULL;
+    task* root_task_of_working_to_completion_context = NULL;
+    size_t task_num = 64;
+    size_t task_num_for_cancelled_context = 2 * MaxThread;
+    g_num_executed_from_cancelled_context = g_num_executed_from_working_context = 0;
+    g_cancelling_task_id = -1;
+    g_arena.initialize( MaxThread ); // leaving one slot to be occupied by master to submit the work
+    g_arena.execute(
+        WorkCreator<ATask</*cancelled_group=*/true>, task::spawn>
+        (root_task_of_to_be_cancelled_context, task_num_for_cancelled_context,
+         /*num_critical_tasks=*/0, &context_to_cancel)
+    );
+    g_arena.execute(
+        WorkCreator<ATask</*cancelled_group=*/false>, task::spawn>
+        (root_task_of_working_to_completion_context, task_num, /*num_critical_tasks=*/1,
+         &context_to_leave_working)
+    );
+    ways_to_cancel_t cancellation_method = ways_to_cancel_t( cancel_by_exception );
+    task& terminating_task = *new( task::allocate_additional_child_of(*root_task_of_to_be_cancelled_context) )
+        ATask</*cancelled_group=*/true>( cancellation_method );
+    tbb::internal::make_critical( terminating_task ); // stop the work as soon as possible!
+    g_arena.enqueue( SubmitTaskFunctor<task::enqueue>(terminating_task),
+                     tbb::priority_t(tbb::internal::priority_critical) );
+    g_is_critical_task_submitted = true;
+    try {
+        g_arena.execute( WorkAwaiter(root_task_of_to_be_cancelled_context) );
+    } catch( const std::runtime_error& e ) {
+        ASSERT( cancel_by_exception, "Exception was not expected!" );
+        ASSERT( std::string(e.what()) == "Exception data", "Unexpected exception data!" );
+    } catch( const tbb::captured_exception& e ) {
+        ASSERT( cancel_by_exception, "Exception was not expected!" );
+        ASSERT( std::string(e.what()) == "Exception data", "Unexpected exception data!" );
+    } catch( ... ) {
+        ASSERT( false, "Failed to catch specific exception" );
+    }
+    g_arena.execute( WorkAwaiter(root_task_of_working_to_completion_context) );
+    g_arena.terminate();
+
+    if( !cancel_by_exception ) {
+        ASSERT( context_to_cancel.is_group_execution_cancelled(), "Execution must be cancelled" );
+    }
+    ASSERT( !context_to_leave_working.is_group_execution_cancelled(),
+            "Execution must NOT be cancelled" );
+
+    ASSERT( g_num_executed_from_working_context == task_num + /*one critical*/1,
+            "Incorrect number of tasks executed!" );
+    ASSERT( g_num_executed_from_cancelled_context < task_num_for_cancelled_context,
+            "Number of executed tasks from the cancelled context should be less than submitted!" );
+    ASSERT( 0 < g_cancelling_task_id && g_cancelling_task_id < MaxThread + 1,
+            "Critical task was executed in wrong order." );
+}
+
+void TestCancellationSupport(bool cancel_by_exception) {
+    const char* test_type[] = { "by explicit call to cancel", "by throwing an exception" };
+    REMARK( "\tCancellation support %s\n", test_type[!!cancel_by_exception] );
+    TestCancellation( cancel_by_exception );
+}
+
+namespace NestedArenaCase {
+
+static const size_t g_num_critical_tasks = 10;
+static const size_t g_num_critical_nested = 5;
+
+struct CriticalTask : public task {
+    CriticalTask(task_marker_t /*mark*/) {}
+    task* execute() __TBB_override {
+        ++g_num_executed_from_working_context;
+        task* nested_root = NULL;
+        if( !g_is_critical_task_submitted ) {
+            g_is_critical_task_submitted = true;
+            g_arena.execute(
+                WorkCreator<CriticalTask, task::spawn>(nested_root, /*num_tasks=*/size_t(0),
+                                                       g_num_critical_nested) );
+            g_arena.execute( WorkAwaiter(nested_root) );
+        }
+        return NULL;
+    }
+};
+
+void TestInNestedArena(tbb::task_arena& outer_arena) {
+    g_root_task = NULL;
+    g_is_critical_task_submitted = false;
+    g_num_executed_from_working_context = 0;
+    g_arena.initialize( 1 );
+    outer_arena.execute(
+        WorkCreator<CriticalTask, task::spawn>(
+            g_root_task, /*num_tasks=*/size_t(0), g_num_critical_tasks) );
+    outer_arena.execute( WorkAwaiter(g_root_task) );
+    ASSERT( g_num_executed_from_working_context == g_num_critical_tasks + g_num_critical_nested,
+            "Mismatch in number of critical tasks executed in nested and outer arenas." );
+    g_arena.terminate();
+}
+
+void test() {
+    REMARK( "\tWork in nested arenas\n" );
+    TestInNestedArena( g_arena );
+
+    tbb::task_arena a( 1 );
+    TestInNestedArena( a );
+}
+} // namespace NestedArenaCase
+
+void test() {
+    REMARK("Testing support for critical tasks\n");
+    TestSchedulerTaskSelectionWhenSpawn();
+    TestSchedulerTaskSelectionWhenEnqueue();
+    TestCancellationSupport(/*cancel_by_exception=*/false);
+    TestCancellationSupport(/*cancel_by_exception=*/true);
+    NestedArenaCase::test();
+}
+} // namespace CriticalTaskSupport
+#endif /* __TBB_PREVIEW_CRITICAL_TASKS && __TBB_TASK_PRIORITY */
+
 int TestMain () {
 #if TBB_USE_EXCEPTIONS
     TestUnconstructibleTask<1>();
@@ -816,5 +1338,8 @@ int TestMain () {
         TestMastersIsolation( p );
     }
     TestWaitableTask();
+#if __TBB_PREVIEW_CRITICAL_TASKS && __TBB_TASK_PRIORITY
+    CriticalTaskSupport::test();
+#endif
     return Harness::Done;
 }

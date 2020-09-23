@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 // Before including pipeline.h, set up the variable to count heap allocated
@@ -30,6 +26,10 @@ int filter_node_count = 0;
 
 #include "tbb/tbb_allocator.h"
 #include "tbb/spin_mutex.h"
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+#include <memory> // std::unique_ptr
+#endif
 
 const unsigned n_tokens = 8;
 // we can conceivably have two buffers used in the middle filter for every token in flight, so
@@ -636,12 +636,12 @@ void run_function(const char *l1, const char *l2) {
 int TestMain() {
 #if TBB_USE_DEBUG
     // size and copyability.
-    REMARK("is_large_object<int>::value=%d\n", tbb::interface6::internal::is_large_object<int>::value);
-    REMARK("is_large_object<double>::value=%d\n", tbb::interface6::internal::is_large_object<double>::value);
-    REMARK("is_large_object<int *>::value=%d\n", tbb::interface6::internal::is_large_object<int *>::value);
-    REMARK("is_large_object<check_type<int> >::value=%d\n", tbb::interface6::internal::is_large_object<check_type<int> >::value);
-    REMARK("is_large_object<check_type<int>* >::value=%d\n", tbb::interface6::internal::is_large_object<check_type<int>* >::value);
-    REMARK("is_large_object<check_type<short> >::value=%d\n\n", tbb::interface6::internal::is_large_object<check_type<short> >::value);
+    REMARK("use_allocator<int>::value=%d\n", tbb::interface6::internal::use_allocator<int>::value);
+    REMARK("use_allocator<double>::value=%d\n", tbb::interface6::internal::use_allocator<double>::value);
+    REMARK("use_allocator<int *>::value=%d\n", tbb::interface6::internal::use_allocator<int *>::value);
+    REMARK("use_allocator<check_type<int> >::value=%d\n", tbb::interface6::internal::use_allocator<check_type<int> >::value);
+    REMARK("use_allocator<check_type<int>* >::value=%d\n", tbb::interface6::internal::use_allocator<check_type<int>* >::value);
+    REMARK("use_allocator<check_type<short> >::value=%d\n\n", tbb::interface6::internal::use_allocator<check_type<short> >::value);
 #endif
     // Test with varying number of threads.
     for( int nthread=MinThread; nthread<=MaxThread; ++nthread ) {
@@ -651,17 +651,22 @@ int TestMain() {
 
         // Run test several times with different types
         run_function_spec();
-        run_function<size_t,int>("size_t", "int");
-        run_function<int,double>("int", "double");
-        run_function<size_t,double>("size_t", "double");
-        run_function<size_t,bool>("size_t", "bool");
-        run_function<int,int>("int","int");
-        run_function<check_type<unsigned int>,size_t>("check_type<unsigned int>", "size_t");
-        run_function<check_type<unsigned short>,size_t>("check_type<unsigned short>", "size_t");
-        run_function<check_type<unsigned int>, check_type<unsigned int> >("check_type<unsigned int>", "check_type<unsigned int>");
-        run_function<check_type<unsigned int>, check_type<unsigned short> >("check_type<unsigned int>", "check_type<unsigned short>");
-        run_function<check_type<unsigned short>, check_type<unsigned short> >("check_type<unsigned short>", "check_type<unsigned short>");
-        run_function<double, check_type<unsigned short> >("double", "check_type<unsigned short>");
+        #define RUN_FUNCTION(type1, type2) run_function<type1, type2>(#type1, #type2);
+        RUN_FUNCTION(size_t, int)
+        RUN_FUNCTION(int, double)
+        RUN_FUNCTION(size_t, double)
+        RUN_FUNCTION(size_t, bool)
+        RUN_FUNCTION(int, int)
+        RUN_FUNCTION(check_type<unsigned int>, size_t)
+        RUN_FUNCTION(check_type<unsigned short>, size_t)
+        RUN_FUNCTION(check_type<unsigned int>, check_type<unsigned int>)
+        RUN_FUNCTION(check_type<unsigned int>, check_type<unsigned short>)
+        RUN_FUNCTION(check_type<unsigned short>, check_type<unsigned short>)
+        RUN_FUNCTION(double, check_type<unsigned short>)
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+        RUN_FUNCTION(std::unique_ptr<int>, std::unique_ptr<int>) // move-only type
+#endif
+        #undef RUN_FUNCTION
     }
     return Harness::Done;
 }

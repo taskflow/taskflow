@@ -1,4 +1,4 @@
-# Copyright (c) 2005-2018 Intel Corporation
+# Copyright (c) 2005-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 # GNU Makefile that builds and runs example.
 run_cmd=
@@ -39,13 +35,16 @@ else ifeq ($(shell uname), Darwin)
 override CXXFLAGS += -Wl,-rpath,$(TBBROOT)/lib
 endif
 
+# autodetect C++11 support
+include ../../common/examples-common.inc
+
 all:	release test
 
 release: *.cpp
-	$(CXX) -O2 -DNDEBUG $(CXXFLAGS) -o $(PROG) $^ -ltbb $(LIBS)
+	$(CXX) -O2 -DNDEBUG $(CXXFLAGS) -o $(PROG) $^ -ltbb $(LIBS) $(CXX0XFLAGS)
 
 debug: *.cpp
-	$(CXX) -O0 -g -DTBB_USE_DEBUG $(CXXFLAGS) -o $(PROG) $^ -ltbb_debug $(LIBS)
+	$(CXX) -O0 -g -DTBB_USE_DEBUG $(CXXFLAGS) -o $(PROG) $^ -ltbb_debug $(LIBS) $(CXX0XFLAGS)
 
 clean:
 	$(RM) $(PROG) *.o *.d

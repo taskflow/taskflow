@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 //------------------------------------------------------------------------
@@ -600,6 +596,33 @@ void TestTransaction( const char * name )
 }
 #endif  /* __TBB_TSX_TESTING_ENABLED_FOR_THIS_COMPILER */
 
+template<typename M>
+class RWStateMultipleChangeBody {
+    M& my_mutex;
+public:
+    RWStateMultipleChangeBody(M& m) : my_mutex(m) {}
+
+    void operator()(const tbb::blocked_range<size_t>& r) const {
+        typename M::scoped_lock l(my_mutex, /*write=*/false);
+        for(size_t i = r.begin(); i != r.end(); ++i) {
+            ASSERT(l.downgrade_to_reader(), "Downgrade must succeed for read lock");
+        }
+        l.upgrade_to_writer();
+        for(size_t i = r.begin(); i != r.end(); ++i) {
+            ASSERT(l.upgrade_to_writer(), "Upgrade must succeed for write lock");
+        }
+    }
+};
+
+template<typename M>
+void TestRWStateMultipleChange() {
+    ASSERT(M::is_rw_mutex, "Incorrect mutex type");
+    size_t n = 10000;
+    M mutex;
+    RWStateMultipleChangeBody<M> body(mutex);
+    tbb::parallel_for(tbb::blocked_range<size_t>(0, n, n/10), body);
+}
+
 int TestMain () {
     for( int p=MinThread; p<=MaxThread; ++p ) {
         tbb::task_scheduler_init init( p );
@@ -666,6 +689,10 @@ int TestMain () {
             TestTryAcquire_OneThreadISO<tbb::critical_section>( "ISO Critical Section" );
             TestReaderWriterLockISO<tbb::spin_rw_mutex>( "ISO Spin RW Mutex" );
             TestRecursiveMutexISO<tbb::recursive_mutex>( "ISO Recursive Mutex" );
+
+            TestRWStateMultipleChange<tbb::spin_rw_mutex>();
+            TestRWStateMultipleChange<tbb::speculative_spin_rw_mutex>();
+            TestRWStateMultipleChange<tbb::queuing_rw_mutex>();
         }
     }
 

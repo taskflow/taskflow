@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_concurrent_queue_H
@@ -54,13 +50,13 @@ public:
     //! Prefix on a page
     struct page {
         page* next;
-        uintptr_t mask; 
+        uintptr_t mask;
     };
 
 protected:
     //! Capacity of the queue
     ptrdiff_t my_capacity;
-   
+
     //! Always a power of 2
     size_t items_per_page;
 
@@ -94,7 +90,7 @@ protected:
 
 //! Type-independent portion of concurrent_queue_iterator.
 /** @ingroup containers */
-class concurrent_queue_iterator_base : no_assign{
+class concurrent_queue_iterator_base : no_assign {
     //! concurrent_queue over which we are iterating.
     /** NULL if one past last element in queue. */
     concurrent_queue_iterator_rep* my_rep;
@@ -109,10 +105,10 @@ protected:
     mutable void* my_item;
 
     //! Default constructor
-    __TBB_EXPORTED_METHOD concurrent_queue_iterator_base() : my_rep(NULL), my_item(NULL) {}
+    __TBB_EXPORTED_METHOD concurrent_queue_iterator_base() : no_assign(), my_rep(NULL), my_item(NULL) {}
 
     //! Copy constructor
-    concurrent_queue_iterator_base( const concurrent_queue_iterator_base& i ) : my_rep(NULL), my_item(NULL) {
+    concurrent_queue_iterator_base( const concurrent_queue_iterator_base& i ) : no_assign(), my_rep(NULL), my_item(NULL) {
         assign(i);
     }
 
@@ -139,7 +135,7 @@ class concurrent_queue_iterator: public concurrent_queue_iterator_base {
     friend class ::tbb::concurrent_queue;
 #else
 public: // workaround for MSVC
-#endif 
+#endif
     //! Construct iterator pointing to head of queue.
     concurrent_queue_iterator( const concurrent_queue_base& queue ) :
         concurrent_queue_iterator_base(queue)
@@ -148,7 +144,7 @@ public: // workaround for MSVC
 public:
     concurrent_queue_iterator() {}
 
-    /** If Value==Container::value_type, then this routine is the copy constructor. 
+    /** If Value==Container::value_type, then this routine is the copy constructor.
         If Value==const Container::value_type, then this routine is a conversion constructor. */
     concurrent_queue_iterator( const concurrent_queue_iterator<Container,typename Container::value_type>& other ) :
         concurrent_queue_iterator_base(other)
@@ -160,7 +156,7 @@ public:
         return *this;
     }
 
-    //! Reference to current item 
+    //! Reference to current item
     Value& operator*() const {
         return *static_cast<Value*>(my_item);
     }
@@ -202,12 +198,12 @@ template<typename T>
 class concurrent_queue: public internal::concurrent_queue_base {
     template<typename Container, typename Value> friend class internal::concurrent_queue_iterator;
 
-    //! Class used to ensure exception-safety of method "pop" 
+    //! Class used to ensure exception-safety of method "pop"
     class destroyer {
         T& my_value;
     public:
         destroyer( T& value ) : my_value(value) {}
-        ~destroyer() {my_value.~T();}          
+        ~destroyer() {my_value.~T();}
     };
 
     T& get_ref( page& pg, size_t index ) {
@@ -244,7 +240,7 @@ public:
     typedef std::ptrdiff_t difference_type;
 
     //! Construct empty queue
-    concurrent_queue() : 
+    concurrent_queue() :
         concurrent_queue_base( sizeof(T) )
     {
     }
@@ -278,8 +274,8 @@ public:
     }
 
     //! Return number of pushes minus number of pops.
-    /** Note that the result can be negative if there are pops waiting for the 
-        corresponding pushes.  The result can also exceed capacity() if there 
+    /** Note that the result can be negative if there are pops waiting for the
+        corresponding pushes.  The result can also exceed capacity() if there
         are push operations in flight. */
     size_type size() const {return internal_size();}
 
@@ -308,8 +304,8 @@ public:
     iterator end() {return iterator();}
     const_iterator begin() const {return const_iterator(*this);}
     const_iterator end() const {return const_iterator();}
-    
-}; 
+
+};
 
 template<typename T>
 concurrent_queue<T>::~concurrent_queue() {

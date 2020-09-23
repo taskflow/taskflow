@@ -1,4 +1,4 @@
-# Copyright (c) 2005-2018 Intel Corporation
+# Copyright (c) 2005-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 # The original source for this example is
 # Copyright (c) 1994-2008 John E. Stone
@@ -63,9 +59,10 @@ ARCH2 = $(ARCH1:intel64-=AMD64)
 XARCH = $(ARCH2:-=x86)
 
 # The default runtime arguments
-ARGS = dat\balls.dat
+DATASET = balls
+override ARGS := dat\$(DATASET).dat $(ARGS)
 PERF_RUN_ARGS = silent dat\balls3.dat
-LIGHT_ARGS=dat\model2.dat
+LIGHT_ARGS = dat\model2.dat
 
 # Add these for tbb/tbb1d release builds
 # /GL is a workaround to prevent run-time crash when built by VS2010

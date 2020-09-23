@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 // Source file for miscellaneous entities that are infrequently referenced by
@@ -35,6 +31,10 @@
 
 #if _WIN32||_WIN64
 #include "tbb/machine/windows_api.h"
+#endif
+
+#if !_WIN32
+#include <unistd.h> // sysconf(_SC_PAGESIZE)
 #endif
 
 #define __TBB_STD_RETHROW_EXCEPTION_POSSIBLY_BROKEN                             \
@@ -67,6 +67,15 @@ namespace internal {
     #define DO_THROW(exc, init_args) PRINT_ERROR_AND_ABORT(#exc, #init_args)
 #endif /* !TBB_USE_EXCEPTIONS */
 
+size_t DefaultSystemPageSize() {
+#if _WIN32
+    SYSTEM_INFO si;
+    GetSystemInfo(&si);
+    return si.dwPageSize;
+#else
+    return sysconf(_SC_PAGESIZE);
+#endif
+}
 
 /* The "what" should be fairly short, not more than about 128 characters.
    Because we control all the call sites to handle_perror, it is pointless
@@ -188,16 +197,6 @@ bool gcc_rethrow_exception_broken() {
 void fix_broken_rethrow() {}
 bool gcc_rethrow_exception_broken() { return false; }
 #endif /* __TBB_STD_RETHROW_EXCEPTION_POSSIBLY_BROKEN */
-
-#if __TBB_WIN8UI_SUPPORT
-bool GetBoolEnvironmentVariable( const char * ) { return false;}
-#else  /* __TBB_WIN8UI_SUPPORT */
-bool GetBoolEnvironmentVariable( const char * name ) {
-    if( const char* s = std::getenv(name) )
-        return strcmp(s,"0") != 0;
-    return false;
-}
-#endif /* __TBB_WIN8UI_SUPPORT */
 
 /** The leading "\0" is here so that applying "strings" to the binary delivers a clean result. */
 static const char VersionString[] = "\0" TBB_VERSION_STRINGS;

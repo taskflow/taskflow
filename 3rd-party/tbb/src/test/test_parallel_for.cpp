@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 // Test for function template parallel_for.h
@@ -638,13 +634,17 @@ struct ArenaBody {
 struct CombineBody {
     MapType operator()(MapType x, const MapType& y) const {
         x.insert(y.begin(), y.end());
-        for (MapType::iterator it = x.begin(); it != x.end();++it)
-            for (MapType::iterator internal_it = x.begin(); internal_it != x.end(); ++internal_it) {
-                if (it != internal_it && internal_it->second.first <= it->second.first && it->second.second <= internal_it->second.second) {
-                    x.erase(internal_it);
+        for (MapType::iterator it1 = x.begin(); it1 != x.end(); ++it1) {
+            for (MapType::iterator it2 = x.begin(); it2 != x.end(); ++it2) {
+                if (it1 == it2) continue;
+                bool is_1_subrange_of_2 =
+                    it2->second.first <= it1->second.first && it1->second.second <= it2->second.second;
+                if (is_1_subrange_of_2) {
+                    x.erase(it2);
                     break;
                 }
             }
+        }
         return x;
     }
 };
@@ -652,33 +652,45 @@ struct CombineBody {
 range_borders combine_range(const MapType& map) {
     range_borders result_range = map.begin()->second;
     for (MapType::const_iterator it = map.begin(); it != map.end(); it++)
-        result_range = range_borders((std::min)(result_range.first, it->second.first), (std::max)(result_range.second, it->second.second));
+        result_range = range_borders(
+            (std::min)(result_range.first, it->second.first),
+            (std::max)(result_range.second, it->second.second)
+        );
     return result_range;
 }
 
 template <typename Partitioner>
 void test_body() {
-    for (unsigned int num_threads = tbb::tbb_thread::hardware_concurrency() / 4 + 1; num_threads < tbb::tbb_thread::hardware_concurrency(); num_threads *= 2)
-        for (size_t range_begin = 0, range_end = num_threads * 10 - 1, i = 0; i < 3; range_begin += num_threads, range_end += num_threads + 1, ++i) {
+    unsigned hw_concurrency = tbb::tbb_thread::hardware_concurrency();
+    for (unsigned int num_threads = hw_concurrency / 4 + 1; num_threads < hw_concurrency; num_threads *= 2) {
+        REMARK("  num_threads=%lu\n", num_threads);
+        for (size_t range_begin = 0, range_end = num_threads * 10 - 1, i = 0; i < 3;
+             range_begin += num_threads, range_end += num_threads + 1, ++i) {
+            REMARK("    processing range [%lu, %lu)\n", range_begin, range_end);
             ets = ETSType(MapType());
-            tbb::task_arena limited(num_threads);
+            tbb::task_arena limited(num_threads); // at least two slots in arena.
             limited.execute(ArenaBody<Partitioner>(range_begin, range_end));
             MapType combined_map = ets.combine(CombineBody());
             range_borders result_borders = combine_range(combined_map);
             ASSERT(result_borders.first == range_begin, "Restored range begin does not match initial one");
             ASSERT(result_borders.second == range_end, "Restored range end does not match initial one");
-            ASSERT((combined_map.size() == num_threads), "Incorrect number or post-proportional split ranges");
-            size_t expected_size = (range_end - range_begin) / num_threads;
+            size_t map_size = combined_map.size();
+            // In a single-thread arena, partitioners still do one split of a range.
+            size_t range_partitions = num_threads > 1 ? num_threads : 2;
+            ASSERT((map_size == range_partitions), "Incorrect number or post-proportional split ranges");
+            size_t expected_size = (range_end - range_begin) / range_partitions;
             for (MapType::iterator it = combined_map.begin(); it != combined_map.end(); ++it) {
                 size_t size = it->second.second - it->second.first;
                 ASSERT((size == expected_size || size == expected_size + 1), "Incorrect post-proportional range size");
             }
         }
-
+    }
 }
 
 void test() {
+    REMARK("parallel_for with affinity partitioner within task_arena\n");
     test_body<tbb::affinity_partitioner>();
+    REMARK("parallel_for with static partitioner within task_arena\n");
     test_body<tbb::static_partitioner>();
 }
 

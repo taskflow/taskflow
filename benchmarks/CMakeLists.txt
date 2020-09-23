@@ -17,17 +17,17 @@ message(STATUS "OpenMP_CXX_LIBRARIES: ${OpenMP_CXX_LIBRARIES}")
 
 # tbb package
 if(NOT DEFINED TBB_ROOT)
-  set(TBB_ROOT ${PROJECT_SOURCE_DIR}/3rd-party/tbb)
+  set(TBB_ROOT ${TF_3RD_PARTY_DIR}/tbb)
 endif()
-
-message(STATUS "TBB_ROOT: " ${TBB_ROOT})
 
 include(${TBB_ROOT}/cmake/TBBBuild.cmake)
 tbb_build(TBB_ROOT ${TBB_ROOT} CONFIG_DIR TBB_DIR MAKE_ARGS tbb_cpf=1)
-cmake_policy(PUSH)
-cmake_policy(SET CMP0074 NEW)
+#tbb_build(TBB_ROOT ${TBB_ROOT} CONFIG_DIR TBB_DIR)
+#cmake_policy(PUSH)
+#cmake_policy(SET CMP0074 NEW)
+#find_package(TBB REQUIRED tbb_preview)
 find_package(TBB REQUIRED tbb_preview)
-cmake_policy(POP)
+#cmake_policy(POP)
 
 ## benchmark 1: wavefront computing
 add_executable(

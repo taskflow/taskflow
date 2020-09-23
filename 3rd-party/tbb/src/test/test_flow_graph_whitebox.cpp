@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #define HARNESS_DEFAULT_MIN_THREADS 3
@@ -28,6 +24,8 @@
         #pragma warning (disable: 4702)
     #endif
 #endif
+
+#define TBB_DEPRECATED_INPUT_NODE_BODY __TBB_CPF_BUILD
 
 #include "harness.h"
 #include <string> // merely prevents LNK2001 error to happen (on ICL+VC9 configurations)
@@ -314,7 +312,6 @@ class tag_func {
     TT my_mult;
 public:
     tag_func(TT multiplier) : my_mult(multiplier) { }
-    void operator=( const tag_func& other){my_mult = other.my_mult;}
     // operator() will return [0 .. Count)
     tbb::flow::tag_value operator()( TT v) {
         tbb::flow::tag_value t = tbb::flow::tag_value(v / my_mult);
@@ -413,7 +410,9 @@ TestLimiterNode() {
     ASSERT(ln.decrement.my_predecessor_count == 0, "error in pred count");
     ASSERT(ln.decrement.my_initial_predecessor_count == 0, "error in initial pred count");
     ASSERT(ln.decrement.my_current_count == 0, "error in current count");
+#if TBB_DEPRECATED_LIMITER_NODE_CONSTRUCTOR
     ASSERT(ln.init_decrement_predecessors == 0, "error in decrement predecessors");
+#endif
     ASSERT(ln.my_threshold == 1, "error in my_threshold");
     tbb::flow::queue_node<int> inq(g);
     tbb::flow::queue_node<int> outq(g);
@@ -451,7 +450,9 @@ TestLimiterNode() {
     ASSERT(ln.decrement.my_predecessor_count == 0, "error in pred count");
     ASSERT(ln.decrement.my_initial_predecessor_count == 0, "error in initial pred count");
     ASSERT(ln.decrement.my_current_count == 0, "error in current count");
+#if TBB_DEPRECATED_LIMITER_NODE_CONSTRUCTOR
     ASSERT(ln.init_decrement_predecessors == 0, "error in decrement predecessors");
+#endif
     ASSERT(ln.my_threshold == 1, "error in my_threshold");
     ASSERT(ln.my_predecessors.empty(), "preds not reset(rf_clear_edges)");
     ASSERT(ln.my_successors.empty(), "preds not reset(rf_clear_edges)");
@@ -634,18 +635,28 @@ struct snode_body {
     int max_cnt;
     int my_cnt;
     snode_body( const int &in) : max_cnt(in) { my_cnt = 0; }
+#if TBB_DEPRECATED_INPUT_NODE_BODY
     bool operator()(int &out) {
         if(max_cnt <= my_cnt++) return false;
         out = my_cnt;
         return true;
     }
+#else
+    int operator()(tbb::flow_control &fc) {
+        if(max_cnt <= my_cnt++) {
+            fc.stop();
+            return int();
+        }
+        return my_cnt;
+    }
+#endif
 };
 
 void
 TestSourceNode() {
     tbb::flow::graph g;
-    tbb::flow::source_node<int> sn(g, snode_body(4), false);
-    REMARK("Testing source_node:");
+    tbb::flow::input_node<int> sn(g, snode_body(4));
+    REMARK("Testing input_node:");
     tbb::flow::queue_node<int> qin(g);
     tbb::flow::join_node<tbb::flow::tuple<int,int>, tbb::flow::reserving> jn(g);
     tbb::flow::queue_node<tbb::flow::tuple<int,int> > qout(g);
@@ -673,8 +684,8 @@ TestSourceNode() {
 
     g.wait_for_all();
     g.reset();
-    ASSERT(!sn.my_successors.empty(), "source_node has no successors after reset");
-    ASSERT(tbb::flow::input_port<0>(jn).my_predecessors.empty(), "successor if source_node has pred after reset.");
+    ASSERT(!sn.my_successors.empty(), "input_node has no successors after reset");
+    ASSERT(tbb::flow::input_port<0>(jn).my_predecessors.empty(), "successor of input_node has pred after reset.");
     REMARK(" done\n");
 }
 

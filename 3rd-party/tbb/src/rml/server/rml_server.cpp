@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "rml_tbb.h"
@@ -53,7 +49,7 @@
 #include <concrtrm.h>
 using namespace Concurrency;
 #include <vector>
-#include <hash_map>
+#include <unordered_map>
 #define __RML_REMOVE_VIRTUAL_PROCESSORS_DISABLED 0
 #endif /* RML_USE_WCRM */
 
@@ -151,7 +147,7 @@ enum thread_state_t {
     ts_omp_busy,
     //! Thread is busy doing TBB work.
     ts_tbb_busy,
-    //! For tbb threads only
+    //! For TBB threads only
     ts_done,
     ts_created,
     ts_started,
@@ -874,7 +870,7 @@ skip:
 
 class thread_map : no_copy {
     friend class omp_connection_v2;
-    typedef ::std::hash_map<uintptr_t,server_thread*> hash_map_type;
+    typedef ::std::unordered_map<uintptr_t,server_thread*> unordered_map_type;
     size_t my_min_stack_size;
     size_t my_unrealized_threads;
     ::rml::client& my_client;
@@ -884,7 +880,7 @@ class thread_map : no_copy {
     ref_count my_server_ref_count;
     ref_count my_client_ref_count;
     // FIXME: pad this?
-    hash_map_type my_map;
+    unordered_map_type my_map;
     bool shutdown_in_progress;
     std::vector<IExecutionResource*> original_exec_resources;
     tbb::cache_aligned_allocator<padded<tbb_server_thread> > my_tbb_allocator;
@@ -922,7 +918,7 @@ public:
             my_scavenger_allocator.deallocate(static_cast<padded<thread_scavenger_thread>*>(tst),1);
         }
         // deallocate thread contexts
-        for( hash_map_type::const_iterator hi=my_map.begin(); hi!=my_map.end(); ++hi ) {
+        for( unordered_map_type::const_iterator hi=my_map.begin(); hi!=my_map.end(); ++hi ) {
             server_thread* thr = hi->second;
             if( thr->tbb_thread ) {
                 while( ((tbb_server_thread*)thr)->activation_count>1 )
@@ -943,9 +939,9 @@ public:
             __TBB_ASSERT( !my_scheduler, NULL );
         }
     }
-    typedef hash_map_type::key_type key_type;
-    typedef hash_map_type::value_type value_type;
-    typedef hash_map_type::iterator iterator;
+    typedef unordered_map_type::key_type key_type;
+    typedef unordered_map_type::value_type value_type;
+    typedef unordered_map_type::iterator iterator;
     iterator begin() {return my_map.begin();}
     iterator end() {return my_map.end();}
     iterator find( key_type k ) {return my_map.find( k );}
@@ -1009,7 +1005,7 @@ connection_scavenger_thread connection_scavenger;
 template<typename Server, typename Client>
 struct connection_traits {};
 
-// head of the active tbb connections
+// head of the active TBB connections
 static tbb::atomic<uintptr_t> active_tbb_connections;
 static tbb::atomic<int> current_tbb_conn_readers;
 static size_t current_tbb_conn_reader_epoch;
@@ -1385,7 +1381,7 @@ template<typename Server, typename Client>
 void generic_connection<Server,Client>::request_close_connection( bool ) {
 #endif /* RML_USE_WCRM */
     if( connection_traits<Server,Client>::is_tbb ) {
-        // acquire the head of active tbb connections
+        // acquire the head of active TBB connections
         uintptr_t conn;
         do {
             for( ; (conn=active_tbb_connections)&1; )
@@ -1406,7 +1402,7 @@ void generic_connection<Server,Client>::request_close_connection( bool ) {
         } else
             active_tbb_connections = (uintptr_t) curr_conn->next_conn; // update & release it
         curr_conn->next_conn = NULL;
-        // Increment the tbb connection close event count
+        // Increment the TBB connection close event count
         my_ec = ++close_tbb_connection_event_count;
         // Wait happens in tbb_connection_v2::~tbb_connection_v2()
     }
@@ -1676,12 +1672,12 @@ void omp_connection_v2::reactivate( rml::job* j )
 
 #endif  /* RML_USE_WCRM */
 
-//! Wake up some available tbb threads
+//! Wake up some available TBB threads
 void wakeup_some_tbb_threads()
 {
     /* First, atomically grab the connection, then increase the server ref count to keep
        it from being released prematurely.  Second, check if the balance is available for TBB
-       and the tbb conneciton has slack to exploit.  If the answer is true, go ahead and
+       and the TBB connection has slack to exploit.  If the answer is true, go ahead and
        try to wake some up. */
     if( generic_connection<tbb_server,tbb_client >::get_addr(active_tbb_connections)==0 )
         // the next connection will see the change; return.
@@ -1691,7 +1687,7 @@ start_it_over:
     int n_curr_readers = ++current_tbb_conn_readers;
     if( n_curr_readers>1 ) // I lost
         return;
-    // if n_curr_readers==1, i am the first one, so I will take responsibility for waking tbb threads up.
+    // if n_curr_readers==1, i am the first one, so I will take responsibility for waking TBB threads up.
 
     // update the current epoch
     current_tbb_conn_reader_epoch = close_tbb_connection_event_count;
@@ -1706,7 +1702,7 @@ start_it_over:
     generic_connection<tbb_server,tbb_client>* next_conn_wake_up = generic_connection<tbb_server,tbb_client>::get_addr( active_tbb_connections );
 
     for( ; next_conn_wake_up; ) {
-        /* some threads are creating tbb server threads; they may not see my changes made to the_balance */
+        /* some threads are creating TBB server threads; they may not see my changes made to the_balance */
         /* When a thread is in adjust_job_count_estimate() to increase the slack
            RML tries to activate worker threads on behalf of the requesting thread
            by repeatedly drawing a coin from the bank optimistically and grabbing a
@@ -2080,7 +2076,7 @@ void server_thread::loop() {
         if( s==ts_omp_busy ) {
             // Enslaved by OpenMP team.
             omp_dispatch.consume();
-            /* here wake tbb threads up if feasible */
+            /* here wake TBB threads up if feasible */
             if( ++the_balance>0 )
                 wakeup_some_tbb_threads();
             state = ts_idle;
@@ -2113,7 +2109,7 @@ void server_thread::loop() {
                     }
                 } // else the new request will see my changes to state & the_balance.
             }
-            /* here wake tbb threads up if feasible */
+            /* here wake TBB threads up if feasible */
             if( the_balance>0 )
                 wakeup_some_tbb_threads();
         }
@@ -2233,7 +2229,7 @@ void tbb_server_thread::Dispatch( DispatchState* ) {
     make_job( *tbb_conn, *this );
 
     for( ;; ) {
-        // Try to wake some tbb threads if the balance is positive.
+        // Try to wake some TBB threads if the balance is positive.
         // When a thread is added by ConcRT and enter here for the first time,
         // the thread may wake itself up (i.e., atomically change its state to ts_busy.
         if( the_balance>0 )
@@ -2356,8 +2352,8 @@ bool tbb_server_thread::switch_out() {
             // the thread's state should be either ts_idle or ts_done.
             while( is_removed() )
                 __TBB_Yield();
-            thread_state_t s = read_state();
-            __TBB_ASSERT( s==ts_idle || s==ts_done, NULL );
+            thread_state_t state = read_state();
+            __TBB_ASSERT( state==ts_idle || state==ts_done, NULL );
         }
 #endif
         __TBB_ASSERT( my_state==ts_asleep||my_state==ts_idle, NULL );
@@ -2712,7 +2708,7 @@ void thread_map::mark_virtual_processors_as_lent( IVirtualProcessorRoot** vproot
         iterator i = my_map.find( (key_type) vproots[c] );
         if( i==end ) {
             // The vproc has not been added to the map in create_oversubscribers()
-            my_map.insert( hash_map_type::value_type( (key_type) vproots[c], (server_thread*)1 ) );
+            my_map.insert( unordered_map_type::value_type( (key_type) vproots[c], (server_thread*)1 ) );
         } else {
             server_thread* thr = (*i).second;
             if( ((uintptr_t)thr)&~(uintptr_t)1 ) {
@@ -2730,8 +2726,8 @@ void thread_map::create_oversubscribers( unsigned n, std::vector<server_thread*>
         curr_exec_rsc = original_exec_resources; // copy construct
     }
     typedef std::vector<IExecutionResource*>::iterator iterator_er;
-    typedef ::std::vector<std::pair<hash_map_type::key_type, hash_map_type::mapped_type> > hash_val_vector_t;
-    hash_val_vector_t v_vec(n);
+    typedef ::std::vector<std::pair<unordered_map_type::key_type, unordered_map_type::mapped_type> > map_val_vector_t;
+    map_val_vector_t v_vec(n);
     iterator_er begin = curr_exec_rsc.begin();
     iterator_er end   = curr_exec_rsc.end();
     iterator_er i = begin;
@@ -2739,7 +2735,7 @@ void thread_map::create_oversubscribers( unsigned n, std::vector<server_thread*>
         IVirtualProcessorRoot* vpr = my_scheduler_proxy->CreateOversubscriber( *i );
         omp_server_thread* t = new ( my_omp_allocator.allocate(1) ) omp_server_thread( true, my_scheduler, (IExecutionResource*)vpr, &conn, *this, my_client );
         thr_vec[c] = t;
-        v_vec[c] = hash_map_type::value_type( (key_type) vpr, t );
+        v_vec[c] = unordered_map_type::value_type( (key_type) vpr, t );
         if( ++i==end ) i = begin;
     }
 
@@ -2748,17 +2744,17 @@ void thread_map::create_oversubscribers( unsigned n, std::vector<server_thread*>
 
         if( is_closing() ) return;
 
-        iterator end = my_map.end();
+        iterator map_end = my_map.end();
         unsigned c = 0;
-        for( hash_val_vector_t::iterator vi=v_vec.begin(); vi!=v_vec.end(); ++vi, ++c ) {
-            iterator i = my_map.find( (key_type) (*vi).first );
-            if( i==end ) {
+        for( map_val_vector_t::iterator vi=v_vec.begin(); vi!=v_vec.end(); ++vi, ++c ) {
+            iterator j = my_map.find( (key_type) (*vi).first );
+            if( j==map_end ) {
                 my_map.insert( *vi );
             } else {
                 // the vproc has not been added to the map in mark_virtual_processors_as_returned();
-                uintptr_t lent = (uintptr_t) (*i).second;
+                uintptr_t lent = (uintptr_t) (*j).second;
                 __TBB_ASSERT( lent<=1, "vproc map entry added incorrectly?");
-                (*i).second = thr_vec[c];
+                (*j).second = thr_vec[c];
                 if( lent )
                     ((omp_server_thread*)thr_vec[c])->set_lent();
                 else
@@ -2841,7 +2837,7 @@ void thread_map::mark_virtual_processors_as_returned( IVirtualProcessorRoot** vp
             iterator i = my_map.find( (key_type) vprocs[c] );
             if( i==end ) {
                 // the vproc has not been added to the map in create_oversubscribers()
-                my_map.insert( hash_map_type::value_type( (key_type) vprocs[c], static_cast<server_thread*>(0) ) );
+                my_map.insert( unordered_map_type::value_type( (key_type) vprocs[c], static_cast<server_thread*>(0) ) );
             } else {
                 omp_server_thread* thr = (omp_server_thread*) (*i).second;
                 if( ((uintptr_t)thr)&~(uintptr_t)1 ) {

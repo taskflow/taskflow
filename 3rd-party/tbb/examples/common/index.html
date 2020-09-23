@@ -119,11 +119,11 @@
 		.circ {
 			list-style-type:circle
 		}
-		
+
 		.single {
 			padding: 0 0.5em;
 		}
-		
+
 		/* ------------------------------------------------- */
 		/* Table styles                                      */
 		table{
@@ -150,9 +150,9 @@
 		}
 		th{
 			border:1px #dddddd solid;
-			padding-top:2px;	 	 
+			padding-top:2px;
 			padding-bottom:0px;
-			padding-right:3px;	 	 
+			padding-right:3px;
 			padding-left:3px;
 		}
 		td{
@@ -225,7 +225,7 @@
 			padding-right:5px;
 			vertical-align:top;
 		}
-		
+
 		.specs {
 			border-collapse:collapse;
 		}
@@ -242,7 +242,7 @@
 			padding: 0 0.2em 0.2em;
 			text-align: center;
 		}
-		.specs td tr:last-child td, 
+		.specs td tr:last-child td,
 		.specs td tr:last-child th {
 			padding: 0 0.2em;
 		}
@@ -266,7 +266,7 @@
 	<title>Intel&reg; Threading Building Blocks. Common source code for samples</title>
 </head>
 <body>
-	
+
 	<div id="banner">
 		<img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEMAAAAsCAYAAAA+aAX8AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
 				jwv8YQUAAAAJcEhZcwAALiIAAC4iAari3ZIAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVh
@@ -310,7 +310,7 @@
 				9Or1LzUmVVz+HJXDAAAAAElFTkSuQmCC">
 		<h1 class="title">Intel&reg; Threading Building Blocks.<br>Common source code for samples</h1>
 	</div>
-	
+
 	<p>
 		This directory contains common code that is used in the Intel&reg; Threading Building Blocks (Intel&reg; TBB) samples.
 		<br>
@@ -332,7 +332,7 @@
 					</ul>
 					See the examples that use the GUI
 					(<a href="../graph/stereo/readme.html">stereo</a>,
-					<a href="../parallel_for/tachyon/readme.html">tachyon</a>, 
+					<a href="../parallel_for/tachyon/readme.html">tachyon</a>,
 					<a href="../parallel_for/seismic/readme.html">seismic</a>,
 					<a href="../task_arena/fractal/readme.html">fractal</a>)
 					for more details.
@@ -341,7 +341,7 @@
 				<dt><a href="utility/">utility</a>
 				<dd>Common driver and utility code for examples. Currently provides:
 					<ul>
-						<li>class FastRandom - a random number generator that uses linear congruental method
+						<li>class FastRandom - a random number generator that uses linear congruential method
 							(<a href="utility/fast_random.h">fast_random.h</a>)
 						<li>class thread_number_range - a class to specify the numbers of threads an example should use
 							(<a href="utility/utility.h">utility.h</a>)
@@ -360,21 +360,23 @@
 			<p>
 				Most Intel TBB examples allow to specify <i>n-of-threads</i>, the set of thread numbers that should be used to run an example.
 				<br>Usually, it is a range of the form <i>low[:high[:(+|*|#)S]]</i>, where <i>low</i> and optional <i>high</i>
-				are non-negative integers or 'auto' for the default choice, and optional step expression <i>(+|*|#)S</i> 
+				are non-negative integers or 'auto' for the default choice, and optional step expression <i>(+|*|#)S</i>
 				specifies how thread numbers are chosen within the range:
 				<ul>
 					<li>With <i>+/*</i>, the previous number is incremented/multiplied by <i>S</i>.
 					E.g., expression '12:16:+1' means 12,13,14,15,16 threads, and '1:16:*2' means 1,2,4,8,16 threads.
 					<li>With <i>#</i>, <i>S</i> is the desired number of steps between any subsequent powers of 2;
-					it must be a power of 2 on its own, with most meaningful values being 2, 4, and 8. 
+					it must be a power of 2 on its own, with most meaningful values being 2, 4, and 8.
 					For a given number of threads, the actual step value is computed as the quotient
 					of the nearest smaller power of 2 divided by the number of steps, but is at least 1.
 					E.g., '1:32:#4' means 1,2,3,4,5,6,7,8,10,12,14,16,20,24,28,32 threads;
 					note the step doubling at 8 and 16 to keep 4 steps between powers of 2.
 				</ul>
 				A default value for the number of threads can be customized in an example. If not customized, it is '1:auto:#4'.
-				The 'auto' parameter is substituted with a value returned by a specified function, which typically is
-				<code>tbb::task_scheduler_init::default_num_threads()</code>.
+				The 'auto' parameter is substituted with a value returned by a specified function
+				(this function is typically <code>utility::get_default_num_threads()</code>, which returns a copy of
+				constant that was initialized with <code>tbb::global_control::active_value(tbb::global_control::max_allowed_parallelism)</code>
+				at the start of the program).
 			</p>
 		</div>
 	</div>
@@ -388,8 +390,8 @@
 		<div class="show-hide">
 			<p>
 				Intel and the Intel logo are trademarks of Intel Corporation in the U.S. and/or other countries.
-				<br>* Other names and brands may be claimed as the property of others. 
-				<br>&copy; 2018, Intel Corporation
+				<br>* Other names and brands may be claimed as the property of others.
+				<br>&copy; 2020, Intel Corporation
 			</p>
 		</div>
 	</div>

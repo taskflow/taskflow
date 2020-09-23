@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 /*
@@ -62,5 +58,8 @@ struct __TBB_malloc_proxy_caller {
 } volatile __TBB_malloc_proxy_helper_object;
 
 #endif // _MSC_VER
+
+/* Public Windows API */
+extern "C" int TBB_malloc_replacement_log(char *** function_replacement_log_ptr);
 
 #endif //__TBB_tbbmalloc_proxy_H

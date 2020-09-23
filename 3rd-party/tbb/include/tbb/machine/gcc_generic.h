@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #if !defined(__TBB_machine_H) || defined(__TBB_machine_gcc_generic_H)
@@ -216,9 +212,9 @@ struct machine_load_store_seq_cst {
 
 // __builtin_clz counts the number of leading zeroes
 namespace tbb{ namespace internal { namespace gcc_builtins {
-    inline int clz(unsigned int x){ return __builtin_clz(x); };
-    inline int clz(unsigned long int x){ return __builtin_clzl(x); };
-    inline int clz(unsigned long long int x){ return __builtin_clzll(x); };
+    inline int clz(unsigned int x){ return __builtin_clz(x); }
+    inline int clz(unsigned long int x){ return __builtin_clzl(x); }
+    inline int clz(unsigned long long int x){ return __builtin_clzll(x); }
 }}}
 // logarithm is the index of the most significant non-zero bit
 static inline intptr_t __TBB_machine_lg( uintptr_t x ) {

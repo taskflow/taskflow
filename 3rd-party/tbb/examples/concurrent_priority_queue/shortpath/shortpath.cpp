@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,26 +12,23 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include <cstdio>
 #include <vector>
+#include <atomic>
 #include <math.h>
 
-#include "tbb/atomic.h"
 #include "tbb/tick_count.h"
-#include "tbb/task_scheduler_init.h"
 #include "tbb/task_group.h"
 #include "tbb/concurrent_priority_queue.h"
 #include "tbb/spin_mutex.h"
 #include "tbb/parallel_for.h"
 #include "tbb/blocked_range.h"
+#include "tbb/global_control.h"
 #include "../../common/utility/utility.h"
 #include "../../common/utility/fast_random.h"
+#include "../../common/utility/get_default_num_threads.h"
 
 #if defined(_MSC_VER) && defined(_Wp64)
     // Workaround for overzealous compiler warnings in /Wp64 mode
@@ -78,24 +75,24 @@ typedef size_t vertex_id;
 typedef std::pair<vertex_id,double> vertex_rec;
 typedef vector<vector<vertex_id> > edge_set;
 
-bool verbose = false;          // prints bin details and other diagnostics to screen
-bool silent = false;           // suppress all output except for time
-size_t N = 1000;               // number of vertices
-size_t src = 0;                // start of path
-size_t dst = N-1;              // end of path
-double INF=100000.0;           // infinity
-size_t grainsize = 16;         // number of vertices per task on average
-size_t max_spawn;              // max tasks to spawn
-tbb::atomic<size_t> num_spawn;      // number of active tasks
+bool verbose = false;                       // prints bin details and other diagnostics to screen
+bool silent = false;                        // suppress all output except for time
+size_t N = 1000;                            // number of vertices
+size_t src = 0;                             // start of path
+size_t dst = N-1;                           // end of path
+double INF=100000.0;                        // infinity
+size_t grainsize = 16;                      // number of vertices per task on average
+size_t max_spawn;                           // max tasks to spawn
+std::atomic<size_t> num_spawn;              // number of active tasks
 
-point_set vertices;            // vertices
-edge_set edges;                // edges
-vector<vertex_id> predecessor; // for recreating path from src to dst
+point_set vertices;                         // vertices
+edge_set edges;                             // edges
+vector<vertex_id> predecessor;              // for recreating path from src to dst
 
-vector<double> f_distance;     // estimated distances at particular vertex
-vector<double> g_distance;     // current shortest distances from src vertex
-spin_mutex    *locks;          // a lock for each vertex
-task_group *sp_group;          // task group for tasks executing sub-problems
+vector<double> f_distance;                  // estimated distances at particular vertex
+vector<double> g_distance;                  // current shortest distances from src vertex
+spin_mutex    *locks;                       // a lock for each vertex
+task_group *sp_group;                       // task group for tasks executing sub-problems
 
 class compare_f {
 public:
@@ -204,13 +201,6 @@ void print_path() {
     else if (!silent) printf(" %5.1f\n", path_length);
 }
 
-int get_default_num_threads() {
-    static int threads = 0;
-    if (threads == 0)
-        threads = tbb::task_scheduler_init::default_num_threads();
-    return threads;
-}
-
 #if !__TBB_CPP11_LAMBDAS_PRESENT
 class gen_vertices {
 public:
@@ -250,7 +240,7 @@ public:
 #endif
 
 void InitializeGraph() {
-    task_scheduler_init init(get_default_num_threads());
+    global_control c(tbb::global_control::max_allowed_parallelism, utility::get_default_num_threads());
     vertices.resize(N);
     edges.resize(N);
     predecessor.resize(N);
@@ -298,7 +288,7 @@ void ReleaseGraph() {
 }
 
 void ResetGraph() {
-    task_scheduler_init init(get_default_num_threads());
+    global_control c(tbb::global_control::max_allowed_parallelism, utility::get_default_num_threads());
 #if __TBB_CPP11_LAMBDAS_PRESENT
     parallel_for(blocked_range<size_t>(0,N),
                  [&](blocked_range<size_t>& r) {
@@ -314,7 +304,7 @@ void ResetGraph() {
 
 int main(int argc, char *argv[]) {
     try {
-        utility::thread_number_range threads(get_default_num_threads);
+        utility::thread_number_range threads(utility::get_default_num_threads);
         utility::parse_cli_arguments(argc, argv,
                                      utility::cli_argument_pack()
                                      //"-h" option for displaying help is present implicitly
@@ -343,7 +333,7 @@ int main(int argc, char *argv[]) {
         InitializeGraph();
         for (int n_thr=threads.first; n_thr<=threads.last; n_thr=threads.step(n_thr)) {
             ResetGraph();
-            task_scheduler_init init(n_thr);
+            global_control c(tbb::global_control::max_allowed_parallelism, n_thr);
             t0 = tick_count::now();
             shortpath();
             t1 = tick_count::now();

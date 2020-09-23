@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,17 +12,12 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #define HARNESS_DEFINE_PRIVATE_PUBLIC 1
 #include "harness_inject_scheduler.h"
 #include "harness.h"
 
-#define TBB_PREVIEW_GLOBAL_CONTROL 1
 #include "tbb/global_control.h"
 #include "tbb/task_scheduler_init.h"
 #include "tbb/parallel_for.h"

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_spin_rw_mutex_H
@@ -119,7 +115,7 @@ public:
         /** Returns whether the upgrade happened without releasing and re-acquiring the lock */
         bool upgrade_to_writer() {
             __TBB_ASSERT( mutex, "mutex is not acquired" );
-            __TBB_ASSERT( !is_writer, "not a reader" );
+            if (is_writer) return true; // Already a writer
             is_writer = true;
             return mutex->internal_upgrade();
         }
@@ -141,7 +137,7 @@ public:
         //! Downgrade writer to become a reader.
         bool downgrade_to_reader() {
             __TBB_ASSERT( mutex, "mutex is not acquired" );
-            __TBB_ASSERT( is_writer, "not a writer" );
+            if (!is_writer) return true; // Already a reader
 #if TBB_USE_THREADING_TOOLS||TBB_USE_ASSERT
             mutex->internal_downgrade();
 #else

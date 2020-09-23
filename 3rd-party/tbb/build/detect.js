@@ -1,4 +1,4 @@
-// Copyright (c) 2005-2018 Intel Corporation
+// Copyright (c) 2005-2020 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-//
-//
-//
 
 function readAllFromFile(fname) {
     var fso = new ActiveXObject("Scripting.FileSystemObject");
@@ -55,18 +51,24 @@ function doWork() {
                     WScript.Echo("unknown");
                 }
             } else {
-                tmpExec = WshShell.Exec(compilerPath + " -dumpversion");
+                tmpExec = WshShell.Exec(compilerPath + " -dumpfullversion -dumpversion");
                 var gccVersion = tmpExec.StdOut.ReadLine();
                 if (WScript.Arguments(0) == "/runtime") {
                     WScript.Echo("mingw" + gccVersion);
                 }
                 else if (WScript.Arguments(0) == "/minversion") {
-                    // Comparing strings, not numbers; will not work for two-digit versions
-                    if (gccVersion >= WScript.Arguments(2)) {
-                        WScript.Echo("ok");
-                    } else {
-                        WScript.Echo("fail");
+                    for (var i = 0; i < 3; i++) {
+                        v1 = parseInt(gccVersion.split('.')[i]);
+                        v2 = parseInt(WScript.Arguments(2).split('.')[i]);
+
+                        if (v1 > v2) {
+                            break;
+                        } else if (v1 < v2) {
+                            WScript.Echo("fail");
+                            return;
+                        }
                     }
+                    WScript.Echo("ok");
                 }
             }
             return;
@@ -125,6 +127,8 @@ function doWork() {
         } else if (mapContext.match(vc140)) {
             if (WshShell.ExpandEnvironmentStrings("%VisualStudioVersion%") == "15.0")
                 WScript.Echo("vc14.1");
+            else if (WshShell.ExpandEnvironmentStrings("%VisualStudioVersion%") == "16.0")
+                WScript.Echo("vc14.2");
             else
                 WScript.Echo("vc14");
         } else {

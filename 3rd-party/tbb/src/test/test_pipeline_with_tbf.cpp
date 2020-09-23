@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "tbb/pipeline.h"
@@ -58,12 +54,11 @@ public:
     void probe( ); // defined below
 };
 
-static const unsigned MaxStreamSize = 8000;
+static const unsigned StreamSize = 10;
 //! Maximum number of filters allowed
 static const unsigned MaxFilters = 4;
-static unsigned StreamSize;
 static const unsigned MaxBuffer = 8;
-static bool Done[MaxFilters][MaxStreamSize];
+static bool Done[MaxFilters][StreamSize];
 static waiting_probe WaitTest;
 static unsigned out_of_order_count;
 
@@ -73,16 +68,25 @@ template<typename T>
 class BaseFilter: public T {
     bool* const my_done;
     const bool my_is_last;
-    bool my_is_running;
+    bool concurrency_observed;
+    tbb::atomic<int> running_count;
 public:
     tbb::atomic<tbb::internal::Token> current_token;
     BaseFilter( tbb::filter::mode type, bool done[], bool is_last ) :
         T(type),
         my_done(done),
         my_is_last(is_last),
-        my_is_running(false),
+        concurrency_observed(false),
         current_token()
-    {}
+    {
+        running_count = 0;
+    }
+    ~BaseFilter() {
+        if( this->is_serial() || is_serial_execution )
+            ASSERT( !concurrency_observed, "Unexpected concurrency in a [serial] filter" );
+        else if( sleeptime > 0 )
+            ASSERT( concurrency_observed, "No concurrency in a parallel filter" );
+    }
     virtual Buffer* get_buffer( void* item ) {
         current_token++;
         return static_cast<Buffer*>(item);
@@ -101,18 +105,18 @@ public:
             ASSERT( thread_id == id, "non-thread-bound stages executed on different threads when must be executed on a single one");
         }
         Harness::ConcurrencyTracker ct;
+        concurrency_observed = concurrency_observed || (running_count++ > 0);
         if( this->is_serial() )
-            ASSERT( !my_is_running, "premature entry to serial stage" );
-        my_is_running = true;
+            ASSERT( !concurrency_observed, "premature entry to serial stage" );
+ 
         Buffer* b = get_buffer(item);
         if( b ) {
             if(!this->is_bound() && sleeptime > 0) {
                 if(this->is_serial()) {
                     Harness::Sleep((int)sleeptime);
-                }
-                else {
-                    // early parallel tokens sleep longer...
-                    int i = (int)((5 - b->sequence_number) * sleeptime);
+                } else {
+                    // early parallel tokens sleep longer
+                    int i = (int)((5 - (int)b->sequence_number) * sleeptime);
                     if(i < (int)sleeptime) i = (int)sleeptime;
                     Harness::Sleep(i);
                 }
@@ -136,7 +140,7 @@ public:
                 __TBB_store_with_release(b->is_busy, false);
             }
         }
-        my_is_running = false;
+        concurrency_observed = concurrency_observed || (--running_count > 0);
         return b;
     }
 };
@@ -338,7 +342,6 @@ double PipelineTest::TestOneConfiguration(unsigned numeral, unsigned nthread, un
         parallelism_limit = nthread;
     if( parallelism_limit>ntokens )
         parallelism_limit = (unsigned)ntokens;
-    StreamSize = nthread; // min( MaxStreamSize, nthread * MaxStreamItemsPerThread );
 
     for( unsigned i=0; i<number_of_filters; ++i ) {
         static_cast<BaseFilter<tbb::filter>*>(filter[i])->current_token=0;
@@ -462,15 +465,13 @@ void PipelineTest::TestIdleSpinning( unsigned nthread)  {
             if(s0a > 0.0) {
                 ++v0cnt;
                 s0 = (s0a < s0) ? s0a : s0;
-            }
-            else {
+            } else {
                 ++zero_count;
             }
             if(s1a > 0.0) {
                 ++v1cnt;
                 s1 = (s1a < s1) ? s1a : s1;
-            }
-            else {
+            } else {
                 ++zero_count;
             }
         }

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 // All platform-specific threading support is encapsulated here. */
@@ -28,7 +24,7 @@
 #include <process.h>
 #include <malloc.h> //_alloca
 #include "tbb/tbb_misc.h" // support for processor groups
-#if __TBB_WIN8UI_SUPPORT
+#if __TBB_WIN8UI_SUPPORT && (_WIN32_WINNT < 0x0A00)
 #include <thread>
 #endif
 #elif USE_PTHREAD
@@ -144,13 +140,14 @@ private:
 #define STACK_SIZE_PARAM_IS_A_RESERVATION 0x00010000
 #endif
 
-#if __TBB_WIN8UI_SUPPORT
+// _beginthreadex API is not available in Windows 8 Store* applications, so use std::thread instead
+#if __TBB_WIN8UI_SUPPORT && (_WIN32_WINNT < 0x0A00)
 inline thread_monitor::handle_type thread_monitor::launch( thread_routine_type thread_function, void* arg, size_t, const size_t*) {
 //TODO: check that exception thrown from std::thread is not swallowed silently
     std::thread* thread_tmp=new std::thread(thread_function, arg);
     return thread_tmp->native_handle();
 }
-#else //__TBB_WIN8UI_SUPPORT
+#else
 inline thread_monitor::handle_type thread_monitor::launch( thread_routine_type thread_routine, void* arg, size_t stack_size, const size_t* worker_index ) {
     unsigned thread_id;
     int number_of_processor_groups = ( worker_index ) ? tbb::internal::NumberOfProcessorGroups() : 0;
@@ -167,7 +164,7 @@ inline thread_monitor::handle_type thread_monitor::launch( thread_routine_type t
     }
     return h;
 }
-#endif //__TBB_WIN8UI_SUPPORT
+#endif //__TBB_WIN8UI_SUPPORT && (_WIN32_WINNT < 0x0A00)
 
 void thread_monitor::join(handle_type handle) {
 #if TBB_USE_ASSERT
@@ -192,10 +189,10 @@ void thread_monitor::detach_thread(handle_type handle) {
 
 inline void thread_monitor::yield() {
 // TODO: consider unification via __TBB_Yield or tbb::this_tbb_thread::yield
-#if !__TBB_WIN8UI_SUPPORT
-    SwitchToThread();
-#else
+#if __TBB_WIN8UI_SUPPORT && (_WIN32_WINNT < 0x0A00)
     std::this_thread::yield();
+#else
+    SwitchToThread();
 #endif
 }
 #endif /* USE_WINTHREAD */

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2005-2018 Intel Corporation
+# Copyright (c) 2005-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,15 +13,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
 #setting output format .csv, 'pivot' - is pivot table mode, ++ means append
 export STAT_FORMAT=pivot-csv++
-#check existing files because of apend mode
+#check existing files because of append mode
 ls *.csv
 rm -i *.csv
 #setting a delimiter in txt or csv file

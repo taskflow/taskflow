@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 // Test whether scalable_allocator complies with the requirements in 20.1.5 of ISO C++ Standard (1998).
@@ -203,6 +199,21 @@ int TestMain () {
         }
 
         result += TestMain(tbb::memory_pool_allocator<void>(pool) );
+    }{
+        // Two nested level allocators case with fixed pool allocator as an underlying layer
+        // serving allocRawMem requests for the top level scalable allocator
+        typedef tbb::memory_pool<tbb::memory_pool_allocator<char, tbb::fixed_pool> > NestedPool;
+
+        static char buffer[8*1024*1024];
+        tbb::fixed_pool fixedPool(buffer, sizeof(buffer));
+        // Underlying fixed pool allocator
+        tbb::memory_pool_allocator<char, tbb::fixed_pool> fixedPoolAllocator(fixedPool);
+        // Memory pool that handles fixed pool allocator
+        NestedPool nestedPool(fixedPoolAllocator);
+        // Top level memory pool allocator
+        tbb::memory_pool_allocator<char, NestedPool> nestedAllocator(nestedPool);
+
+        result += TestMain(nestedAllocator);
     }
     TestSmallFixedSizePool();
     TestZeroSpaceMemoryPool();

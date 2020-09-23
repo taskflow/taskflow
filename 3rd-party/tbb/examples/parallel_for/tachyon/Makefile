@@ -1,4 +1,4 @@
-# Copyright (c) 2005-2018 Intel Corporation
+# Copyright (c) 2005-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 # The original source for this example is
 # Copyright (c) 1994-2008 John E. Stone
@@ -52,9 +48,10 @@ CXX=icc
 endif # icc
 
 # The default runtime arguments
-export ARGS = dat/balls.dat
-export PERF_RUN_ARGS = silent dat/balls3.dat
-export LIGHT_ARGS= dat/model2.dat
+DATASET = balls
+override ARGS := dat/$(DATASET).dat $(ARGS)
+PERF_RUN_ARGS = silent dat/balls3.dat
+LIGHT_ARGS = dat/model2.dat
 
 # define name suffix
 SUFFIX = .$(VERSION)
@@ -71,6 +68,9 @@ endif
 endif # X
 
 MYCXXFLAGS = $(CXXFLAGS) $(UI_CXXFLAGS)
+
+# autodetect C++11 support
+include ../../common/examples-common.inc
 
 all: build run
 release: build
@@ -171,9 +171,9 @@ ifeq ($(UI),mac)
 	cp ../../common/gui/xcode/tbbExample/tbbExample-Info.plist $(NAME)$(SUFFIX).app/Contents/Info.plist
 	cp ../../common/gui/xcode/tbbExample/PkgInfo $(NAME)$(SUFFIX).app/Contents
 	cp ../../common/gui/xcode/tbbExample/en.lproj/* $(APPRES)/en.lproj
-	$(CXX_UI) $(MYCXXFLAGS) $(CXXFLAGS) -c $(MACUISOURCES)
+	$(CXX_UI) $(MYCXXFLAGS) $(CXXFLAGS) -c $(MACUISOURCES) $(CXX0XFLAGS)
 endif # macOS*
-	$(CXX) $(MYCXXFLAGS) -o $@ $(SOURCE) $(MACUIOBJS) $(LIBS)
+	$(CXX) $(MYCXXFLAGS) -o $@ $(SOURCE) $(MACUIOBJS) $(LIBS) $(CXX0XFLAGS)
 	$(RM) *.o
 
 clean: VERSION = *

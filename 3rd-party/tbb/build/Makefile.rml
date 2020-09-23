@@ -1,4 +1,4 @@
-# Copyright (c) 2005-2018 Intel Corporation
+# Copyright (c) 2005-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 # TODO: investigate why version_string.ver is not complete when $(RML_SERVER.OBJ) is being compiled.
 .NOTPARALLEL:
@@ -64,6 +60,13 @@ TBB_DEP_NON_RML_TEST?= cache_aligned_allocator_rml.$(OBJ) dynamic_link_rml.$(OBJ
 ifeq ($(cfg),debug)
 RML_TBB_DEP+= spin_mutex_rml.$(OBJ)
 TBB_DEP_RML_TEST?= $(RML_ASM.OBJ) tbb_misc_rml.$(OBJ)
+
+ifeq (windows icl,$(tbb_os) $(compiler_name))
+# Some versions of ICC link to the wrong version of the vc runtime
+# libcpmtd.lib should be used instead of libcpmt.lib
+LIB_LINK_FLAGS += /nodefaultlib:libcpmt.lib
+endif
+
 else
 TBB_DEP_RML_TEST?= $(RML_ASM.OBJ)
 endif

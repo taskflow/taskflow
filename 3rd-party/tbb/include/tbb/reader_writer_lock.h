@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,24 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
+
+#include "internal/_deprecated_header_message_guard.h"
+
+#if !defined(__TBB_show_deprecation_message_reader_writer_lock_H) && defined(__TBB_show_deprecated_header_message)
+#define  __TBB_show_deprecation_message_reader_writer_lock_H
+#pragma message("TBB Warning: tbb/reader_writer_lock.h is deprecated. For details, please see Deprecated Features appendix in the TBB reference manual.")
+#endif
+
+#if defined(__TBB_show_deprecated_header_message)
+#undef __TBB_show_deprecated_header_message
+#endif
 
 #ifndef __TBB_reader_writer_lock_H
 #define __TBB_reader_writer_lock_H
+
+#define __TBB_reader_writer_lock_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 #include "tbb_thread.h"
 #include "tbb_allocator.h"
@@ -31,7 +41,8 @@ namespace interface5 {
 /** Loosely adapted from Mellor-Crummey and Scott pseudocode at
     http://www.cs.rochester.edu/research/synchronization/pseudocode/rw.html#s_wp
     @ingroup synchronization */
-    class reader_writer_lock : tbb::internal::no_copy {
+    class __TBB_DEPRECATED_IN_VERBOSE_MODE_MSG("tbb::reader_writer_lock is deprecated, use std::shared_mutex")
+    reader_writer_lock : tbb::internal::no_copy {
  public:
     friend class scoped_lock;
     friend class scoped_lock_read;
@@ -228,5 +239,8 @@ namespace interface5 {
 using interface5::reader_writer_lock;
 
 } // namespace tbb
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_reader_writer_lock_H_include_area
 
 #endif /* __TBB_reader_writer_lock_H */

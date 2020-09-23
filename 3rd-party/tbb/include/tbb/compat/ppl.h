@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,24 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
+
+#include "../internal/_deprecated_header_message_guard.h"
+
+#if !defined(__TBB_show_deprecation_message_ppl_H) && defined(__TBB_show_deprecated_header_message)
+#define  __TBB_show_deprecation_message_ppl_H
+#pragma message("TBB Warning: tbb/compat/ppl.h is deprecated. For details, please see Deprecated Features appendix in the TBB reference manual.")
+#endif
+
+#if defined(__TBB_show_deprecated_header_message)
+#undef __TBB_show_deprecated_header_message
+#endif
 
 #ifndef __TBB_compat_ppl_H
 #define __TBB_compat_ppl_H
+
+#define __TBB_ppl_H_include_area
+#include "../internal/_warning_suppress_enable_notice.h"
 
 #include "../task_group.h"
 #include "../parallel_invoke.h"
@@ -58,5 +68,8 @@ namespace Concurrency {
     using tbb::improper_lock;
 
 } // namespace Concurrency
+
+#include "../internal/_warning_suppress_disable_notice.h"
+#undef __TBB_ppl_H_include_area
 
 #endif /* __TBB_compat_ppl_H */

@@ -500,6 +500,12 @@ source &lt;<i>installdir</i>&gt;/bin/tbbvars.csh (arch) [platform [TBBROOT_detec
 				<dd>Compile and link against the release version of Intel TBB runtime library. The resulting executable is left in the directory for the example.
 				<dt><tt>make debug</tt>
 				<dd>Compile and link against the debug version of Intel TBB runtime library. The resulting executable is left in the directory for the example.
+				<dt><tt>make profile</tt>
+				<dd>Similar to 'make release' but also enables additional support for Intel&reg; Parallel Studio XE analysis tools.
+                                        <br>
+                                        <div class="note">
+                                                Note: Only flow graph examples are currently supported.
+                                        </div>
 				<dt><tt>make test</tt>
 				<dd>Run an executable previously produced by one of the above commands.
 				<dt><tt>make <b>[</b>(above options or targets)<b>]</b> CXX=<b>{</b>icl, icc<b>}</b></tt>
@@ -566,7 +572,7 @@ source &lt;<i>installdir</i>&gt;/bin/tbbvars.csh (arch) [platform [TBBROOT_detec
 			<p>
 				Intel and the Intel logo are trademarks of Intel Corporation in the U.S. and/or other countries.
 				<br>* Other names and brands may be claimed as the property of others. 
-				<br>&copy; 2018, Intel Corporation
+				<br>&copy; 2020, Intel Corporation
 			</p>
 		</div>
 	</div>	

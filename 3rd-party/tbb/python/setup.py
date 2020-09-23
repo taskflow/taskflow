@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2016-2018 Intel Corporation
+# Copyright (c) 2016-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,10 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 
 # System imports
@@ -73,7 +69,7 @@ _tbb = Extension("tbb._api", ["tbb/api.i"],
         libraries   =(['tbb'] if not use_compiler_tbb else []) +
                      (['irml'] if platform.system() == "Linux" else []),   # TODO: why do we need this?
         library_dirs=[ rundir,                                              # for custom-builds
-                       os.path.join(tbb_root, 'lib', 'intel64', 'gcc4.4'),  # for Linux
+                       os.path.join(tbb_root, 'lib', 'intel64', 'gcc4.8'),  # for Linux
                        os.path.join(tbb_root, 'lib'),                       # for MacOS
                        os.path.join(tbb_root, 'lib', 'intel64', 'vc_mt'),   # for Windows
                      ] if not use_compiler_tbb else [],

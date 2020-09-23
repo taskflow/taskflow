@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,25 +12,21 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 // TO DO: Add overlapping put / receive tests
 
-#include "harness.h"
+#define TBB_DEPRECATED_FLOW_NODE_EXTRACTION __TBB_CPF_BUILD
+#define TBB_DEPRECATED_FLOW_NODE_ALLOCATOR __TBB_CPF_BUILD
 
-#if __TBB_CPF_BUILD
-#define TBB_DEPRECATED_FLOW_NODE_EXTRACTION 1
-#endif
+#include "harness.h"
 
 #include "tbb/flow_graph.h"
 #include "harness_checktype.h"
 #include "tbb/task_scheduler_init.h"
 #include "tbb/tick_count.h"
 #include "harness_graph.h"
+#include "test_follows_and_precedes_api.h"
 
 #include <cstdio>
 
@@ -157,8 +153,8 @@ int test_reservation(int) {
 //
 // Tests
 //
-// multilpe parallel senders, items in FIFO (relatively to sender) order
-// multilpe parallel senders, multiple parallel receivers, items in FIFO order (relative to sender/receiver) and all items received
+// multiple parallel senders, items in FIFO (relatively to sender) order
+// multiple parallel senders, multiple parallel receivers, items in FIFO order (relative to sender/receiver) and all items received
 //   * overlapped puts / gets
 //   * all puts finished before any getS
 //
@@ -336,6 +332,54 @@ int test_serial() {
     return 0;
 }
 
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+#include <array>
+#include <vector>
+void test_follows_and_precedes_api() {
+    std::array<int, 3> messages_for_follows = { {0, 1, 2} };
+    std::vector<int> messages_for_precedes = {0, 1, 2};
+
+    follows_and_precedes_testing::test_follows <int, tbb::flow::priority_queue_node<int>>(messages_for_follows);
+    follows_and_precedes_testing::test_precedes <int, tbb::flow::priority_queue_node<int>>(messages_for_precedes);
+}
+#endif
+
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+void test_deduction_guides() {
+    using namespace tbb::flow;
+
+    graph g;
+    broadcast_node<int> br(g);
+    priority_queue_node<int> pq0(g);
+
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    using compare_type = std::greater<void>;
+    priority_queue_node pq1(follows(br));
+    static_assert(std::is_same_v<decltype(pq1), priority_queue_node<int>>);
+
+    priority_queue_node pq2(follows(br), compare_type());
+    static_assert(std::is_same_v<decltype(pq2), priority_queue_node<int, compare_type>>);
+
+    priority_queue_node pq3(precedes(br));
+    static_assert(std::is_same_v<decltype(pq3), priority_queue_node<int>>);
+
+    priority_queue_node pq4(precedes(br), compare_type());
+    static_assert(std::is_same_v<decltype(pq4), priority_queue_node<int, compare_type>>);
+#endif
+
+    priority_queue_node pq5(pq0);
+    static_assert(std::is_same_v<decltype(pq5), priority_queue_node<int>>);
+    g.wait_for_all();
+}
+#endif
+
+#if TBB_DEPRECATED_FLOW_NODE_ALLOCATOR
+void test_node_allocator() {
+    tbb::flow::graph g;
+    tbb::flow::priority_queue_node< int, std::less<int>, std::allocator<int> > tmp(g);
+}
+#endif
+
 int TestMain() {
     tbb::tick_count start = tbb::tick_count::now(), stop;
     for (int p = 2; p <= 4; ++p) {
@@ -350,8 +394,17 @@ int TestMain() {
     REMARK("Testing resets\n");
     test_resets<int,tbb::flow::priority_queue_node<int> >();
     test_resets<float,tbb::flow::priority_queue_node<float> >();
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    test_follows_and_precedes_api();
+#endif
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+    test_deduction_guides();
+#endif
 #if TBB_DEPRECATED_FLOW_NODE_EXTRACTION
     test_buffer_extract<tbb::flow::priority_queue_node<int> >().run_tests();
+#endif
+#if TBB_DEPRECATED_FLOW_NODE_ALLOCATOR
+    test_node_allocator();
 #endif
     return Harness::Done;
 }

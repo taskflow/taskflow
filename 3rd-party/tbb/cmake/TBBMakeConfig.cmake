@@ -1,4 +1,4 @@
-# Copyright (c) 2017-2018 Intel Corporation
+# Copyright (c) 2017-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 #
 # Usage:
@@ -60,33 +56,16 @@ function(tbb_make_config)
         set(TBB_LIB_EXT "so.2")
 
         # Note: multiline variable
-        set(TBB_CHOOSE_COMPILER_SUBDIR "if (CMAKE_CXX_COMPILER_LOADED)
-    set(_tbb_compiler_id \${CMAKE_CXX_COMPILER_ID})
-    set(_tbb_compiler_ver \${CMAKE_CXX_COMPILER_VERSION})
-elseif (CMAKE_C_COMPILER_LOADED)
-    set(_tbb_compiler_id \${CMAKE_C_COMPILER_ID})
-    set(_tbb_compiler_ver \${CMAKE_C_COMPILER_VERSION})
-endif()
+        set(TBB_CHOOSE_COMPILER_SUBDIR "set(_tbb_compiler_subdir gcc4.8)
 
 # For non-GCC compilers try to find version of system GCC to choose right compiler subdirectory.
-if (NOT _tbb_compiler_id STREQUAL \"GNU\")
-    execute_process(COMMAND gcc --version OUTPUT_VARIABLE _tbb_gcc_ver_output ERROR_QUIET)
-    string(REGEX REPLACE \".*gcc.*([0-9]+\\\\.[0-9]+)\\\\.[0-9]+.*\" \"\\\\1\" _tbb_compiler_ver \"\${_tbb_gcc_ver_output}\")
-    if (NOT _tbb_compiler_ver)
-        message(FATAL_ERROR \"This Intel TBB package is intended to be used only environment with available 'gcc'\")
+if (NOT CMAKE_CXX_COMPILER_ID STREQUAL \"GNU\" AND NOT CMAKE_C_COMPILER_ID STREQUAL \"GNU\")
+    find_program(_gcc_executable gcc)
+    if (NOT _gcc_executable)
+        message(FATAL_ERROR \"This Intel TBB package is intended to be used only in environment with available 'gcc'\")
     endif()
-    unset(_tbb_gcc_ver_output)
-endif()
-
-set(_tbb_compiler_subdir gcc4.1)
-foreach (_tbb_gcc_version 4.1 4.4 4.7)
-    if (NOT _tbb_compiler_ver VERSION_LESS \${_tbb_gcc_version})
-        set(_tbb_compiler_subdir gcc\${_tbb_gcc_version})
-    endif()
-endforeach()
-
-unset(_tbb_compiler_id)
-unset(_tbb_compiler_ver)")
+    unset(_gcc_executable)
+endif()")
 
     elseif (tbb_system_name STREQUAL "Windows")
         set(TBB_SHARED_LIB_DIR "bin")
@@ -100,33 +79,26 @@ unset(_tbb_compiler_ver)")
     message(FATAL_ERROR \"This Intel TBB package is intended to be used only in the project with MSVC\")
 endif()
 
-# Detect the most relevant MSVC subdirectory
-set(_tbb_msvc_1700_subdir vc11)
-set(_tbb_msvc_1800_subdir vc12)
-set(_tbb_msvc_1900_subdir vc14)
-set(_tbb_msvc_ver \${MSVC_VERSION})
-if (MSVC_VERSION VERSION_LESS 1700)
-    message(FATAL_ERROR \"This Intel TBB package is intended to be used only in the project with MSVC version 1700 (vc11) or higher\")
-elseif (MSVC_VERSION VERSION_GREATER 1900)
-    set(_tbb_msvc_ver 1900)
+if (MSVC_VERSION VERSION_LESS 1900)
+    message(FATAL_ERROR \"This Intel TBB package is intended to be used only in the project with MSVC version 1900 (vc14) or higher\")
 endif()
-set(_tbb_compiler_subdir \${_tbb_msvc_\${_tbb_msvc_ver}_subdir})
-unset(_tbb_msvc_1700_subdir)
-unset(_tbb_msvc_1800_subdir)
-unset(_tbb_msvc_1900_subdir)
+
+set(_tbb_compiler_subdir vc14)
 
 if (WINDOWS_STORE)
-    set(_tbb_compiler_subdir \${_tbb_compiler_subdir}_ui)
+    set(_tbb_compiler_subdir \${_tbb_compiler_subdir}_uwp)
 endif()")
 
         if (tbb_MK_CONFIG_FOR_SOURCE)
-            set(TBB_IMPLIB_RELEASE "\nIMPORTED_IMPLIB_RELEASE \"${tbb_MK_TBB_RELEASE_DIR}/\${_tbb_component}.lib\"")
-            set(TBB_IMPLIB_DEBUG "\nIMPORTED_IMPLIB_DEBUG \"${tbb_MK_TBB_DEBUG_DIR}/\${_tbb_component}_debug.lib\"")
+            set(TBB_IMPLIB_RELEASE "
+                                  IMPORTED_IMPLIB_RELEASE \"${tbb_MK_TBB_RELEASE_DIR}/\${_tbb_component}.lib\"")
+            set(TBB_IMPLIB_DEBUG "
+                                  IMPORTED_IMPLIB_DEBUG \"${tbb_MK_TBB_DEBUG_DIR}/\${_tbb_component}_debug.lib\"")
         else()
-            # Note: multiline variable
-            set(TBB_IMPLIB "
-                              IMPORTED_IMPLIB_RELEASE       \"\${_tbb_root}/lib/\${_tbb_arch_subdir}/\${_tbb_compiler_subdir}/\${_tbb_component}.lib\"
-                              IMPORTED_IMPLIB_DEBUG         \"\${_tbb_root}/lib/\${_tbb_arch_subdir}/\${_tbb_compiler_subdir}/\${_tbb_component}_debug.lib\"")
+            set(TBB_IMPLIB_RELEASE "
+                                  IMPORTED_IMPLIB_RELEASE \"\${_tbb_root}/lib/\${_tbb_arch_subdir}/\${_tbb_compiler_subdir}/\${_tbb_component}.lib\"")
+            set(TBB_IMPLIB_DEBUG "
+                                  IMPORTED_IMPLIB_DEBUG \"\${_tbb_root}/lib/\${_tbb_arch_subdir}/\${_tbb_compiler_subdir}/\${_tbb_component}_debug.lib\"")
         endif()
 
         # Note: multiline variable
@@ -158,11 +130,34 @@ endif()")
     set(TBB_VERSION "${_tbb_ver_major}.${_tbb_ver_minor}")
 
     if (tbb_MK_CONFIG_FOR_SOURCE)
-        set(_tbb_config_template TBBConfigForSource.cmake.in)
+        set(TBB_CHOOSE_ARCH_AND_COMPILER "")
+        set(TBB_RELEASE_LIB_PATH "${TBB_RELEASE_DIR}")
+        set(TBB_DEBUG_LIB_PATH "${TBB_DEBUG_DIR}")
+        set(TBB_UNSET_ADDITIONAL_VARIABLES "")
     else()
-        set(_tbb_config_template TBBConfig.cmake.in)
+        # Note: multiline variable
+        set(TBB_CHOOSE_ARCH_AND_COMPILER "
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(_tbb_arch_subdir ${TBB_X64_SUBDIR})
+else()
+    set(_tbb_arch_subdir ${TBB_X32_SUBDIR})
+endif()
+
+${TBB_CHOOSE_COMPILER_SUBDIR}
+
+get_filename_component(_tbb_lib_path \"\${_tbb_root}/${TBB_SHARED_LIB_DIR}/\${_tbb_arch_subdir}/\${_tbb_compiler_subdir}\" ABSOLUTE)
+")
+
+    set(TBB_RELEASE_LIB_PATH "\${_tbb_lib_path}")
+    set(TBB_DEBUG_LIB_PATH "\${_tbb_lib_path}")
+
+    # Note: multiline variable
+    set(TBB_UNSET_ADDITIONAL_VARIABLES "
+unset(_tbb_arch_subdir)
+unset(_tbb_compiler_subdir)")
     endif()
-    configure_file(${_tbb_cmake_module_path}/templates/${_tbb_config_template}   ${tbb_config_dir}/TBBConfig.cmake @ONLY)
+
+    configure_file(${_tbb_cmake_module_path}/templates/TBBConfigInternal.cmake.in ${tbb_config_dir}/TBBConfig.cmake @ONLY)
     configure_file(${_tbb_cmake_module_path}/templates/TBBConfigVersion.cmake.in ${tbb_config_dir}/TBBConfigVersion.cmake @ONLY)
 
     set(${tbb_MK_CONFIG_DIR} ${tbb_config_dir} PARENT_SCOPE)

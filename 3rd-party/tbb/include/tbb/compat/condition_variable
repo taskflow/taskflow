@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,21 +12,31 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
+
+#include "../internal/_deprecated_header_message_guard.h"
+
+#if !defined(__TBB_show_deprecation_message_condition_variable_H) && defined(__TBB_show_deprecated_header_message)
+#define  __TBB_show_deprecation_message_condition_variable_H
+#pragma message("TBB Warning: tbb/compat/condition_variable is deprecated. For details, please see Deprecated Features appendix in the TBB reference manual.")
+#endif
+
+#if defined(__TBB_show_deprecated_header_message)
+#undef __TBB_show_deprecated_header_message
+#endif
 
 #ifndef __TBB_condition_variable_H
 #define __TBB_condition_variable_H
 
+#define __TBB_condition_variable_H_include_area
+#include "../internal/_warning_suppress_enable_notice.h"
+
 #if _WIN32||_WIN64
 #include "../machine/windows_api.h"
 
-namespace tbb { 
+namespace tbb {
 namespace interface5 {
-namespace internal { 
+namespace internal {
 struct condition_variable_using_event
 {
     //! Event for blocking waiting threads.
@@ -69,17 +79,17 @@ namespace interface5 {
 
 // C++0x standard working draft 30.4.3
 // Lock tag types
-struct defer_lock_t { }; //! do not acquire ownership of the mutex
-struct try_to_lock_t { }; //! try to acquire ownership of the mutex without blocking
-struct adopt_lock_t { }; //! assume the calling thread has already
-const defer_lock_t defer_lock = {};
-const try_to_lock_t try_to_lock = {};
-const adopt_lock_t adopt_lock = {};
+struct __TBB_DEPRECATED_IN_VERBOSE_MODE defer_lock_t { }; //! do not acquire ownership of the mutex
+struct __TBB_DEPRECATED_IN_VERBOSE_MODE try_to_lock_t { }; //! try to acquire ownership of the mutex without blocking
+struct __TBB_DEPRECATED_IN_VERBOSE_MODE adopt_lock_t { }; //! assume the calling thread has already
+__TBB_DEPRECATED_IN_VERBOSE_MODE const defer_lock_t defer_lock = {};
+__TBB_DEPRECATED_IN_VERBOSE_MODE const try_to_lock_t try_to_lock = {};
+__TBB_DEPRECATED_IN_VERBOSE_MODE const adopt_lock_t adopt_lock = {};
 
 // C++0x standard working draft 30.4.3.1
-//! lock_guard 
+//! lock_guard
 template<typename M>
-class lock_guard : tbb::internal::no_copy {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE lock_guard : tbb::internal::no_copy {
 public:
     //! mutex type
     typedef M mutex_type;
@@ -88,7 +98,7 @@ public:
     /** precondition: If mutex_type is not a recursive mutex, the calling thread
         does not own the mutex m. */
     explicit lock_guard(mutex_type& m) : pm(m) {m.lock();}
-    
+
     //! Adopt_lock constructor
     /** precondition: the calling thread owns the mutex m. */
     lock_guard(mutex_type& m, adopt_lock_t) : pm(m) {}
@@ -100,9 +110,9 @@ private:
 };
 
 // C++0x standard working draft 30.4.3.2
-//! unique_lock 
+//! unique_lock
 template<typename M>
-class unique_lock : tbb::internal::no_copy {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE unique_lock : tbb::internal::no_copy {
     friend class condition_variable;
 public:
     typedef M mutex_type;
@@ -136,7 +146,7 @@ public:
     unique_lock(mutex_type& m, adopt_lock_t) : pm(&m), owns(true) {}
 
     //! Timed unique_lock acquisition.
-    /** To avoid requiring support for namespace chrono, this method deviates from the working draft in that 
+    /** To avoid requiring support for namespace chrono, this method deviates from the working draft in that
         it uses tbb::tick_count::interval_t to specify the time duration. */
     unique_lock(mutex_type& m, const tick_count::interval_t &i) : pm(&m) {owns = try_lock_for( i );}
 
@@ -169,14 +179,14 @@ public:
             if( !owns ) {
                 pm->lock();
                 owns = true;
-            } else 
+            } else
                 throw_exception_v4( tbb::internal::eid_possible_deadlock );
-        } else 
+        } else
             throw_exception_v4( tbb::internal::eid_operation_not_permitted );
         __TBB_ASSERT( owns, NULL );
     }
 
-    //! Try to lock the mutex. 
+    //! Try to lock the mutex.
     /** If successful, note that this lock owns it. Otherwise, set it false. */
     bool try_lock() {
         if( pm ) {
@@ -184,17 +194,17 @@ public:
                 owns = pm->try_lock();
             else
                 throw_exception_v4( tbb::internal::eid_possible_deadlock );
-        } else 
+        } else
             throw_exception_v4( tbb::internal::eid_operation_not_permitted );
         return owns;
     }
- 
-    //! Try to lock the mutex. 
+
+    //! Try to lock the mutex.
     bool try_lock_for( const tick_count::interval_t &i );
 
     //! Unlock the mutex
     /** And note that this lock no longer owns it. */
-    void unlock() { 
+    void unlock() {
         if( owns ) {
             pm->unlock();
             owns = false;
@@ -212,10 +222,10 @@ public:
 
     //! Release control over the mutex.
     mutex_type* release() {
-        mutex_type* o_pm = pm; 
-        pm = NULL; 
-        owns = false; 
-        return o_pm; 
+        mutex_type* o_pm = pm;
+        pm = NULL;
+        owns = false;
+        return o_pm;
     }
 
     // 30.4.3.2.4 observers
@@ -235,12 +245,12 @@ private:
 };
 
 template<typename M>
-bool unique_lock<M>::try_lock_for( const tick_count::interval_t &i)
-{ 
+__TBB_DEPRECATED_IN_VERBOSE_MODE bool unique_lock<M>::try_lock_for( const tick_count::interval_t &i)
+{
     const int unique_lock_tick = 100; /* microseconds; 0.1 milliseconds */
     // the smallest wait-time is 0.1 milliseconds.
     bool res = pm->try_lock();
-    int duration_in_micro; 
+    int duration_in_micro;
     if( !res && (duration_in_micro=int(i.seconds()*1e6))>unique_lock_tick ) {
         tick_count::interval_t i_100( double(unique_lock_tick)/1e6 /* seconds */); // 100 microseconds = 0.1*10E-3
         do {
@@ -252,7 +262,7 @@ bool unique_lock<M>::try_lock_for( const tick_count::interval_t &i)
     return (owns=res);
 }
 
-//! Swap the two unique locks that have the mutexes of same type 
+//! Swap the two unique locks that have the mutexes of same type
 template<typename M>
 void swap(unique_lock<M>& x, unique_lock<M>& y) { x.swap( y ); }
 
@@ -277,24 +287,24 @@ typedef pthread_cond_t condvar_impl_t;
 
 //! cv_status
 /** C++0x standard working draft 30.5 */
-enum cv_status { no_timeout, timeout }; 
+enum cv_status { no_timeout, timeout };
 
 //! condition variable
-/** C++0x standard working draft 30.5.1 
+/** C++0x standard working draft 30.5.1
     @ingroup synchronization */
-class condition_variable : tbb::internal::no_copy {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE condition_variable : tbb::internal::no_copy {
 public:
     //! Constructor
-    condition_variable() { 
+    condition_variable() {
 #if _WIN32||_WIN64
-        internal_initialize_condition_variable( my_cv ); 
+        internal_initialize_condition_variable( my_cv );
 #else
         pthread_cond_init( &my_cv, NULL );
 #endif
     }
 
     //! Destructor
-    ~condition_variable() { 
+    ~condition_variable() {
         //precondition: There shall be no thread blocked on *this.
 #if _WIN32||_WIN64
         internal_destroy_condition_variable( my_cv );
@@ -304,18 +314,18 @@ public:
     }
 
     //! Notify one thread and wake it up
-    void notify_one() { 
+    void notify_one() {
 #if _WIN32||_WIN64
-        internal_condition_variable_notify_one( my_cv ); 
+        internal_condition_variable_notify_one( my_cv );
 #else
         pthread_cond_signal( &my_cv );
 #endif
     }
 
-    //! Notify all threads 
-    void notify_all() { 
+    //! Notify all threads
+    void notify_all() {
 #if _WIN32||_WIN64
-        internal_condition_variable_notify_all( my_cv ); 
+        internal_condition_variable_notify_all( my_cv );
 #else
         pthread_cond_broadcast( &my_cv );
 #endif
@@ -449,7 +459,7 @@ inline cv_status condition_variable::wait_for( unique_lock<mutex>& lock, const t
 
 __TBB_DEFINE_PROFILING_SET_NAME(interface5::condition_variable)
 
-} // namespace tbb 
+} // namespace tbb
 
 #if TBB_IMPLEMENT_CPP0X
 
@@ -469,8 +479,11 @@ using tbb::interface5::cv_status;
 using tbb::interface5::timeout;
 using tbb::interface5::no_timeout;
 
-} // namespace std 
+} // namespace std
 
 #endif /* TBB_IMPLEMENT_CPP0X */
+
+#include "../internal/_warning_suppress_disable_notice.h"
+#undef __TBB_condition_variable_H_include_area
 
 #endif /* __TBB_condition_variable_H */

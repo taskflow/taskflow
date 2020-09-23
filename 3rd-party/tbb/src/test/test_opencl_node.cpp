@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #define TBB_PREVIEW_FLOW_GRAPH_NODES 1
@@ -99,7 +95,7 @@ public:
         cl_uint selected_platform_index = 0;
         cl_platform_id platform = platforms[selected_platform_index];
 
-        // Count the number of plaform devices and compare with selector list
+        // Count the number of platform devices and compare with selector list
         cl_uint device_count;
         clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, 0, NULL, &device_count);
         // It should be the same
@@ -156,7 +152,7 @@ void TestArgumentPassing() {
     ASSERT( std::all_of( b2.begin(), b2.end(), []( int c ) { return c == 1; } ), "Validation has failed" );
 
     // By default, the first device is used.
-    opencl_device d = *interface10::opencl_info::available_devices().begin();
+    opencl_device d = *interface11::opencl_info::available_devices().begin();
     std::array<size_t, 3> maxSizes = d.max_work_item_sizes();
 
     *err.data() = 0; ASSERT( err.data() != std::string( "Done" ), NULL );
@@ -456,8 +452,8 @@ class ConcurrencyTestBody : NoAssign {
         ~RoundRobinDeviceSelector() {
             ASSERT( !num_checks, "Device Selector has not been called required number of times" );
         }
-        opencl_device operator()( Factory &f ) {
-            const opencl_device_list& devices = f.devices();
+        opencl_device operator()( Factory &a_factory ) {
+            const opencl_device_list& devices = a_factory.devices();
             ASSERT( filteredDevices.size() == devices.size(), "Incorrect list of devices" );
             std::vector<opencl_device>::const_iterator it = filteredDevices.cbegin();
             for ( auto d = devices.begin(); d != devices.end(); ++d ) ASSERT( (*d) == *it++, "Incorrect list of devices" );
@@ -649,7 +645,7 @@ void CustomFactoryTest() {
 
     REMARK( "  One device tests:\n" );
     graph g;
-    opencl_device_list all_devices = interface10::opencl_info::available_devices();
+    opencl_device_list all_devices = interface11::opencl_info::available_devices();
     for ( int i = 0; i < (int)all_devices.size(); ++i ) {
         opencl_device_list::const_iterator it = all_devices.begin();
         std::advance( it, i );
@@ -668,7 +664,7 @@ void CustomFactoryTest() {
 void DefaultConcurrencyTest() {
     REMARK( "DefaultConcurrencyTest: " );
     // By default, the first device is selected.
-    ConcurrencyTest( { *interface10::opencl_info::available_devices().begin() } );
+    ConcurrencyTest( { *interface11::opencl_info::available_devices().begin() } );
     REMARK( "done\n" );
 }
 
@@ -676,7 +672,7 @@ void DefaultConcurrencyTest() {
 void SpirKernelTest() {
     REMARK( "SpirKernelTest:\n" );
 
-    const opencl_device_list devices = interface10::opencl_info::available_devices();
+    const opencl_device_list devices = interface11::opencl_info::available_devices();
 
     for( auto d = devices.begin(); d != devices.end(); d++ ) {
         if( !(*d).extension_available( "cl_khr_spir" ) ) {
@@ -731,7 +727,7 @@ void PrecompiledKernelTest() {
     graph g;
     DefaultFactoryType factory;
 
-    const opencl_device_list devices = interface10::opencl_info::available_devices();
+    const opencl_device_list devices = interface11::opencl_info::available_devices();
     opencl_device_list::const_iterator it = std::find_if(
         devices.cbegin(), devices.cend(),
         []( const opencl_device &d ) {
@@ -799,7 +795,7 @@ struct BufferWithKey : public opencl_buffer<int> {
     KeyType my_key;
     int my_idx;
 
-    // TODO: investigate why defaul ctor is required
+    // TODO: investigate why default ctor is required
     BufferWithKey() {}
     BufferWithKey( size_t N, int idx ) : opencl_buffer<int>( N ), my_idx( idx ) {}
     const KeyType& key() const { return my_key; }

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef TBB_PREVIEW_FLOW_GRAPH_FEATURES
@@ -116,10 +112,6 @@ class UserAsyncMsg1 : public tbb::flow::async_msg<int>
 {
 public:
     typedef tbb::flow::async_msg<int> base;
-
-    UserAsyncMsg1() : base() {}
-    UserAsyncMsg1(int value) : base(value) {}
-    UserAsyncMsg1(const UserAsyncMsg1& msg) : base(msg) {}
 };
 
 struct F2_body : tbb::internal::no_assign
@@ -131,7 +123,7 @@ struct F2_body : tbb::internal::no_assign
 
     F2_body(int& i) : myI(i), myAlive(true) {}
 
-    F2_body(const F2_body& b) : myI(b.myI), myAlive(true) {}
+    F2_body(const F2_body& b) : no_assign(), myI(b.myI), myAlive(true) {}
 
     ~F2_body() {
         myAlive = false;
@@ -212,7 +204,6 @@ public:
 
     UserAsyncMsg() : base() {}
     UserAsyncMsg(int value) : base(value) {}
-    UserAsyncMsg(const UserAsyncMsg& msg) : base(msg) {}
 
     // Notify AsyncActivity that it must return result because async calculation chain is over
     void finalize() const __TBB_override;
@@ -331,7 +322,7 @@ struct F3_body : tbb::internal::no_assign
 
     F3_body(int& _i) : myI(_i), myAlive(true) {}
 
-    F3_body(const F3_body& b) : myI(b.myI), myAlive(true) {}
+    F3_body(const F3_body& b) : no_assign(), myI(b.myI), myAlive(true) {}
 
     ~F3_body() {
         myAlive = false;
@@ -413,13 +404,13 @@ static bool testChaining() {
 namespace testFunctionsAvailabilityNS {
 
 using namespace tbb::flow;
-using tbb::flow::interface10::internal::untyped_sender;
-using tbb::flow::interface10::internal::untyped_receiver;
+using tbb::flow::interface11::internal::untyped_sender;
+using tbb::flow::interface11::internal::untyped_receiver;
 
 using tbb::internal::is_same_type;
 using tbb::internal::strip;
-using tbb::flow::interface10::internal::wrap_tuple_elements;
-using tbb::flow::interface10::internal::async_helpers;
+using tbb::flow::interface11::internal::wrap_tuple_elements;
+using tbb::flow::interface11::internal::async_helpers;
 
 class A {}; // Any type (usually called 'T')
 struct ImpossibleType {};
@@ -463,7 +454,7 @@ struct CheckerMakeEdge {
     static const bool valueRemove = !is_same_type<decltype(checkRemove(static_cast<T1*>(0), static_cast<T2*>(0))), ImpossibleType>::value;
 
     __TBB_STATIC_ASSERT( valueMake == valueRemove, "make_edge() availability is NOT equal to remove_edge() availability" );
-    
+
     static const bool value = valueMake;
 };
 
@@ -473,10 +464,10 @@ struct TypeChecker {
          ++g_CheckerCounter;
 
         REMARK("%d: %s -> %s: %s %s \n", g_CheckerCounter, typeid(T1).name(), typeid(T2).name(),
-            (bAllowed ? "YES" : "no"), (bConvertable ? " (Convertable)" : ""));
+            (bAllowed ? "YES" : "no"), (bConvertible ? " (Convertible)" : ""));
      }
 
-// 
+//
 // Check connection: function_node<continue_msg, SENDING_TYPE> <-> function_node<RECEIVING_TYPE>
 //                                         R E C E I V I N G   T Y P E
 // S     'bAllowed'    | int | float | A | async_msg | async_msg | async_msg | UserAsync | UserAsync | UserAsync |
@@ -491,13 +482,13 @@ struct TypeChecker {
 // Y   UserAsync_int   |  Y  |       |   |           |           |           |    Y      |           |           |
 // P  UserAsync_float  |     |   Y   |   |           |           |           |           |    Y      |           |
 // E   UserAsync_A     |     |       | Y |           |           |           |           |           |    Y      |
-// 
+//
     // Test make_edge() & remove_edge() availability
     static const bool bAllowed = is_same_type<T1, T2>::value
         || is_same_type<typename async_helpers<T1>::filtered_type, T2>::value
         || is_same_type<T1, typename async_helpers<T2>::filtered_type>::value;
 
-    static const bool bConvertable = bAllowed
+    static const bool bConvertible = bAllowed
         || std::is_base_of<T1, T2>::value
         || (is_same_type<typename async_helpers<T1>::filtered_type, int>::value && is_same_type<T2, float>::value)
         || (is_same_type<typename async_helpers<T1>::filtered_type, float>::value && is_same_type<T2, int>::value);
@@ -522,7 +513,7 @@ struct TypeChecker {
     // Test untyped_receiver->try_put(T2) availability
     __TBB_STATIC_ASSERT( (true  == CheckerTryPut<untyped_receiver, T2>::value), "untyped_receiver cannot try_put(T2)" );
     // Test receiver<T1>->try_put(T2) availability
-    __TBB_STATIC_ASSERT( (bConvertable == CheckerTryPut<receiver<T1>, T2>::value), "invalid availability of receiver<T1>->try_put(T2)" );
+    __TBB_STATIC_ASSERT( (bConvertible == CheckerTryPut<receiver<T1>, T2>::value), "invalid availability of receiver<T1>->try_put(T2)" );
 };
 
 template <typename T1>

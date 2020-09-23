@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_concurrent_vector_H
 #define __TBB_concurrent_vector_H
+
+#define __TBB_concurrent_vector_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 #include "tbb_stddef.h"
 #include "tbb_exception.h"
@@ -33,6 +32,8 @@
 #include __TBB_STD_SWAP_HEADER
 #include <algorithm>
 #include <iterator>
+
+#include "internal/_allocator_traits.h"
 
 #if _MSC_VER==1500 && !__INTEL_COMPILER
     // VS2008/VC9 seems to have an issue; limits pull in math.h
@@ -340,6 +341,14 @@ public:
             my_item(other.my_item)
         {}
 
+        vector_iterator& operator=( const vector_iterator<Container,typename Container::value_type>& other )
+        {
+            my_vector=other.my_vector;
+            my_index=other.my_index;
+            my_item=other.my_item;
+            return *this;
+        }
+
         vector_iterator operator+( ptrdiff_t offset ) const {
             return vector_iterator( *my_vector, my_index+offset );
         }
@@ -467,12 +476,9 @@ public:
     template<typename T, class A>
     class allocator_base {
     public:
-        typedef typename A::template
-            rebind<T>::other allocator_type;
+        typedef typename tbb::internal::allocator_rebind<A, T>::type allocator_type;
         allocator_type my_allocator;
-
         allocator_base(const allocator_type &a = allocator_type() ) : my_allocator(a) {}
-
     };
 
 } // namespace internal
@@ -671,7 +677,7 @@ public:
 
     //! Copying constructor for vector with different allocator type
     template<class M>
-    concurrent_vector( const concurrent_vector<T, M>& vector, const allocator_type& a = allocator_type() )
+    __TBB_DEPRECATED concurrent_vector( const concurrent_vector<T, M>& vector, const allocator_type& a = allocator_type() )
         : internal::allocator_base<T, A>(a), internal::concurrent_vector_base()
     {
         vector_allocator_ptr = &internal_allocator;
@@ -742,9 +748,7 @@ public:
         if(pocma_t::value || this->my_allocator == other.my_allocator) {
             concurrent_vector trash (std::move(*this));
             internal_swap(other);
-            if (pocma_t::value) {
-                this->my_allocator = std::move(other.my_allocator);
-            }
+            tbb::internal::allocator_move_assignment(this->my_allocator, other.my_allocator, pocma_t());
         } else {
             internal_assign(other, sizeof(T), &destroy_array, &move_assign_array, &move_array);
         }
@@ -755,7 +759,7 @@ public:
 
     //! Assignment for vector with different allocator type
     template<class M>
-    concurrent_vector& operator=( const concurrent_vector<T, M>& vector ) {
+    __TBB_DEPRECATED concurrent_vector& operator=( const concurrent_vector<T, M>& vector ) {
         if( static_cast<void*>( this ) != static_cast<const void*>( &vector ) )
             internal_assign(vector.internal_vector_base(),
                 sizeof(T), &destroy_array, &assign_array, &copy_array);
@@ -1002,10 +1006,10 @@ public:
 
     //! swap two instances
     void swap(concurrent_vector &vector) {
-        using std::swap;
-        if( this != &vector ) {
+        typedef typename tbb::internal::allocator_traits<A>::propagate_on_container_swap pocs_t;
+        if( this != &vector && (this->my_allocator == vector.my_allocator || pocs_t::value) ) {
             concurrent_vector_base_v3::internal_swap(static_cast<concurrent_vector_base_v3&>(vector));
-            swap(this->my_allocator, vector.my_allocator);
+            tbb::internal::allocator_swap(this->my_allocator, vector.my_allocator, pocs_t());
         }
     }
 
@@ -1042,7 +1046,13 @@ private:
         internal_resize( n, sizeof(T), max_size(), static_cast<const void*>(p), &destroy_array, p? &initialize_array_by : &initialize_array );
     }
 
-    //! helper class
+    //! True/false function override helper
+    /* Functions declarations:
+     *     void foo(is_integer_tag<true>*);
+     *     void foo(is_integer_tag<false>*);
+     * Usage example:
+     *     foo(static_cast<is_integer_tag<std::numeric_limits<T>::is_integer>*>(0));
+     */
     template<bool B> class is_integer_tag;
 
     //! assign integer items by copying when arguments are treated as iterators. See C++ Standard 2003 23.1.1p9
@@ -1378,5 +1388,9 @@ inline void swap(concurrent_vector<T, A> &a, concurrent_vector<T, A> &b)
 #if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
     #pragma warning (pop)
 #endif // warning 4267,4127 are back
+
+
+#undef __TBB_concurrent_vector_H_include_area
+#include "internal/_warning_suppress_disable_notice.h"
 
 #endif /* __TBB_concurrent_vector_H */

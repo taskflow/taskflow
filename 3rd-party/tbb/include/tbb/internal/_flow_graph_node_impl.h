@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB__flow_graph_node_impl_H
@@ -78,7 +74,7 @@ namespace internal {
         typedef typename receiver<input_type>::predecessor_type predecessor_type;
         typedef predecessor_cache<input_type, null_mutex > predecessor_cache_type;
         typedef function_input_queue<input_type, A> input_queue_type;
-        typedef typename A::template rebind< input_queue_type >::other queue_allocator_type;
+        typedef typename tbb::internal::allocator_rebind<A, input_queue_type>::type queue_allocator_type;
         __TBB_STATIC_ASSERT(!((internal::has_policy<queueing, Policy>::value) && (internal::has_policy<rejecting, Policy>::value)),
                               "queueing and rejecting policies can't be specified simultaneously");
 
@@ -88,21 +84,23 @@ namespace internal {
 #endif
 
         //! Constructor for function_input_base
-        function_input_base( graph &g, size_t max_concurrency)
-            : my_graph_ref(g), my_max_concurrency(max_concurrency), my_concurrency(0),
-              my_queue(!internal::has_policy<rejecting, Policy>::value ? new input_queue_type() : NULL),
-            forwarder_busy(false)
+        function_input_base(
+            graph &g, __TBB_FLOW_GRAPH_PRIORITY_ARG1(size_t max_concurrency, node_priority_t priority)
+        ) : my_graph_ref(g), my_max_concurrency(max_concurrency)
+          , __TBB_FLOW_GRAPH_PRIORITY_ARG1(my_concurrency(0), my_priority(priority))
+          , my_queue(!internal::has_policy<rejecting, Policy>::value ? new input_queue_type() : NULL)
+          , forwarder_busy(false)
         {
             my_predecessors.set_owner(this);
             my_aggregator.initialize_handler(handler_type(this));
         }
 
         //! Copy constructor
-        function_input_base( const function_input_base& src) :
-            receiver<Input>(), tbb::internal::no_assign(),
-            my_graph_ref(src.my_graph_ref), my_max_concurrency(src.my_max_concurrency),
-            my_concurrency(0), my_queue(src.my_queue ? new input_queue_type() : NULL),
-            forwarder_busy(false)
+        function_input_base( const function_input_base& src)
+            : receiver<Input>(), tbb::internal::no_assign()
+            , my_graph_ref(src.my_graph_ref), my_max_concurrency(src.my_max_concurrency)
+            , __TBB_FLOW_GRAPH_PRIORITY_ARG1(my_concurrency(0), my_priority(src.my_priority))
+            , my_queue(src.my_queue ? new input_queue_type() : NULL), forwarder_busy(false)
         {
             my_predecessors.set_owner(this);
             my_aggregator.initialize_handler(handler_type(this));
@@ -182,6 +180,7 @@ namespace internal {
         graph& my_graph_ref;
         const size_t my_max_concurrency;
         size_t my_concurrency;
+        __TBB_FLOW_GRAPH_PRIORITY_EXPR( node_priority_t my_priority; )
         input_queue_type *my_queue;
         predecessor_cache<input_type, null_mutex > my_predecessors;
 
@@ -192,7 +191,7 @@ namespace internal {
             __TBB_ASSERT(!(f & rf_clear_edges) || my_predecessors.empty(), "function_input_base reset failed");
         }
 
-        graph& graph_reference() __TBB_override {
+        graph& graph_reference() const __TBB_override {
             return my_graph_ref;
         }
 
@@ -326,7 +325,7 @@ namespace internal {
            }
         }
 
-        //! Tries to spawn bodies if available and if concurrency allows
+        //! Creates tasks for postponed messages if available and if concurrency allows
         void internal_forward(operation_type *op) {
             op->bypass_t = NULL;
             if (my_concurrency < my_max_concurrency || !my_max_concurrency)
@@ -377,23 +376,23 @@ namespace internal {
 
         //! allocates a task to apply a body
         inline task * create_body_task( const input_type &input ) {
-
             return (internal::is_graph_active(my_graph_ref)) ?
-                new(task::allocate_additional_child_of(*(my_graph_ref.root_task())))
-                    apply_body_task_bypass < class_type, input_type >(*this, input) :
-                NULL;
+                new( task::allocate_additional_child_of(*(my_graph_ref.root_task())) )
+                apply_body_task_bypass < class_type, input_type >(
+                    *this, __TBB_FLOW_GRAPH_PRIORITY_ARG1(input, my_priority))
+                : NULL;
         }
 
        //! This is executed by an enqueued task, the "forwarder"
-       task *forward_task() {
+       task* forward_task() {
            operation_type op_data(try_fwd);
-           task *rval = NULL;
+           task* rval = NULL;
            do {
                op_data.status = WAIT;
                my_aggregator.execute(&op_data);
                if(op_data.status == SUCCEEDED) {
-                    // workaround for icc bug
-                   tbb::task *ttask = op_data.bypass_t;
+                   task* ttask = op_data.bypass_t;
+                   __TBB_ASSERT( ttask && ttask != SUCCESSFULLY_ENQUEUED, NULL );
                    rval = combine_tasks(my_graph_ref, rval, ttask);
                }
            } while (op_data.status == SUCCEEDED);
@@ -402,8 +401,9 @@ namespace internal {
 
        inline task *create_forward_task() {
            return (internal::is_graph_active(my_graph_ref)) ?
-               new(task::allocate_additional_child_of(*(my_graph_ref.root_task()))) forward_task_bypass< class_type >(*this) :
-               NULL;
+               new( task::allocate_additional_child_of(*(my_graph_ref.root_task())) )
+               forward_task_bypass< class_type >( __TBB_FLOW_GRAPH_PRIORITY_ARG1(*this, my_priority) )
+               : NULL;
        }
 
        //! Spawns a task that calls forward()
@@ -429,10 +429,12 @@ namespace internal {
 
         // constructor
         template<typename Body>
-        function_input( graph &g, size_t max_concurrency, Body& body ) :
-            base_type(g, max_concurrency),
-            my_body( new internal::function_body_leaf< input_type, output_type, Body>(body) ),
-            my_init_body( new internal::function_body_leaf< input_type, output_type, Body>(body) ) {
+        function_input(
+            graph &g, size_t max_concurrency,
+            __TBB_FLOW_GRAPH_PRIORITY_ARG1(Body& body, node_priority_t priority)
+        ) : base_type(g, __TBB_FLOW_GRAPH_PRIORITY_ARG1(max_concurrency, priority))
+          , my_body( new internal::function_body_leaf< input_type, output_type, Body>(body) )
+          , my_init_body( new internal::function_body_leaf< input_type, output_type, Body>(body) ) {
         }
 
         //! Copy constructor
@@ -465,21 +467,21 @@ namespace internal {
         //TODO: consider moving into the base class
         task * apply_body_impl_bypass( const input_type &i) {
             output_type v = apply_body_impl(i);
-            task* postponed_task = NULL;
 #if TBB_DEPRECATED_MESSAGE_FLOW_ORDER
             task* successor_task = successors().try_put_task(v);
 #endif
-            if(base_type::my_max_concurrency != 0) {
+            task* postponed_task = NULL;
+            if( base_type::my_max_concurrency != 0 ) {
                 postponed_task = base_type::try_get_postponed_task(i);
+                __TBB_ASSERT( !postponed_task || postponed_task != SUCCESSFULLY_ENQUEUED, NULL );
             }
 #if TBB_DEPRECATED_MESSAGE_FLOW_ORDER
             graph& g = base_type::my_graph_ref;
             return combine_tasks(g, successor_task, postponed_task);
 #else
-            // postponed_task is either NULL or the pointer to TBB task
-            if(postponed_task) {
-                // spawn task to make it available for other workers
-                // since we do not know successors' execution policy
+            if( postponed_task ) {
+                // make the task available for other workers since we do not know successors'
+                // execution policy
                 internal::spawn_in_graph_arena(base_type::graph_reference(), *postponed_task);
             }
             task* successor_task = successors().try_put_task(v);
@@ -557,6 +559,79 @@ namespace internal {
     };
 #endif
 
+    template <typename OutputTuple>
+    struct init_output_ports {
+#if __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+        template <typename... Args>
+        static OutputTuple call(graph& g, const tbb::flow::tuple<Args...>&) {
+            return OutputTuple(Args(g)...);
+        }
+#else // __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+        template <typename T1>
+        static OutputTuple call(graph& g, const tbb::flow::tuple<T1>&) {
+            return OutputTuple(T1(g));
+        }
+
+        template <typename T1, typename T2>
+        static OutputTuple call(graph& g, const tbb::flow::tuple<T1, T2>&) {
+            return OutputTuple(T1(g), T2(g));
+        }
+
+        template <typename T1, typename T2, typename T3>
+        static OutputTuple call(graph& g, const tbb::flow::tuple<T1, T2, T3>&) {
+            return OutputTuple(T1(g), T2(g), T3(g));
+        }
+
+        template <typename T1, typename T2, typename T3, typename T4>
+        static OutputTuple call(graph& g, const tbb::flow::tuple<T1, T2, T3, T4>&) {
+            return OutputTuple(T1(g), T2(g), T3(g), T4(g));
+        }
+
+        template <typename T1, typename T2, typename T3, typename T4, typename T5>
+        static OutputTuple call(graph& g, const tbb::flow::tuple<T1, T2, T3, T4, T5>&) {
+            return OutputTuple(T1(g), T2(g), T3(g), T4(g), T5(g));
+        }
+#if __TBB_VARIADIC_MAX >= 6
+        template <typename T1, typename T2, typename T3, typename T4, typename T5, typename T6>
+        static OutputTuple call(graph& g, const tbb::flow::tuple<T1, T2, T3, T4, T5, T6>&) {
+            return OutputTuple(T1(g), T2(g), T3(g), T4(g), T5(g), T6(g));
+        }
+#endif
+#if __TBB_VARIADIC_MAX >= 7
+        template <typename T1, typename T2, typename T3, typename T4,
+                  typename T5, typename T6, typename T7>
+        static OutputTuple call(graph& g,
+                                const tbb::flow::tuple<T1, T2, T3, T4, T5, T6, T7>&) {
+            return OutputTuple(T1(g), T2(g), T3(g), T4(g), T5(g), T6(g), T7(g));
+        }
+#endif
+#if __TBB_VARIADIC_MAX >= 8
+        template <typename T1, typename T2, typename T3, typename T4,
+                  typename T5, typename T6, typename T7, typename T8>
+        static OutputTuple call(graph& g,
+                                const tbb::flow::tuple<T1, T2, T3, T4, T5, T6, T7, T8>&) {
+            return OutputTuple(T1(g), T2(g), T3(g), T4(g), T5(g), T6(g), T7(g), T8(g));
+        }
+#endif
+#if __TBB_VARIADIC_MAX >= 9
+        template <typename T1, typename T2, typename T3, typename T4,
+                  typename T5, typename T6, typename T7, typename T8, typename T9>
+        static OutputTuple call(graph& g,
+                                const tbb::flow::tuple<T1, T2, T3, T4, T5, T6, T7, T8, T9>&) {
+            return OutputTuple(T1(g), T2(g), T3(g), T4(g), T5(g), T6(g), T7(g), T8(g), T9(g));
+        }
+#endif
+#if __TBB_VARIADIC_MAX >= 9
+        template <typename T1, typename T2, typename T3, typename T4, typename T5,
+                  typename T6, typename T7, typename T8, typename T9, typename T10>
+        static OutputTuple call(graph& g,
+                                const tbb::flow::tuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>&) {
+            return OutputTuple(T1(g), T2(g), T3(g), T4(g), T5(g), T6(g), T7(g), T8(g), T9(g), T10(g));
+        }
+#endif
+#endif // __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+    }; // struct init_output_ports
+
     //! Implements methods for a function node that takes a type Input as input
     //  and has a tuple of output ports specified.
     template< typename Input, typename OutputPortSet, typename Policy, typename A>
@@ -572,20 +647,20 @@ namespace internal {
 
         // constructor
         template<typename Body>
-        multifunction_input(
-                graph &g,
-                size_t max_concurrency,
-                Body& body) :
-            base_type(g, max_concurrency),
-            my_body( new internal::multifunction_body_leaf<input_type, output_ports_type, Body>(body) ),
-            my_init_body( new internal::multifunction_body_leaf<input_type, output_ports_type, Body>(body) ) {
+        multifunction_input(graph &g, size_t max_concurrency,
+                            __TBB_FLOW_GRAPH_PRIORITY_ARG1(Body& body, node_priority_t priority)
+        ) : base_type(g, __TBB_FLOW_GRAPH_PRIORITY_ARG1(max_concurrency, priority))
+          , my_body( new internal::multifunction_body_leaf<input_type, output_ports_type, Body>(body) )
+          , my_init_body( new internal::multifunction_body_leaf<input_type, output_ports_type, Body>(body) )
+          , my_output_ports(init_output_ports<output_ports_type>::call(g, my_output_ports)){
         }
 
         //! Copy constructor
         multifunction_input( const multifunction_input& src ) :
                 base_type(src),
                 my_body( src.my_init_body->clone() ),
-                my_init_body(src.my_init_body->clone() ) {
+                my_init_body(src.my_init_body->clone() ),
+                my_output_ports( init_output_ports<output_ports_type>::call(src.my_graph_ref, my_output_ports) ) {
         }
 
         ~multifunction_input() {
@@ -687,16 +762,20 @@ namespace internal {
         typedef continue_input<output_type, Policy> class_type;
 
         template< typename Body >
-        continue_input( graph &g, Body& body )
-            : my_graph_ref(g),
-             my_body( new internal::function_body_leaf< input_type, output_type, Body>(body) ),
-             my_init_body( new internal::function_body_leaf< input_type, output_type, Body>(body) ) { }
+        continue_input( graph &g, __TBB_FLOW_GRAPH_PRIORITY_ARG1(Body& body, node_priority_t priority) )
+            : continue_receiver(__TBB_FLOW_GRAPH_PRIORITY_ARG1(/*number_of_predecessors=*/0, priority))
+            , my_graph_ref(g)
+            , my_body( new internal::function_body_leaf< input_type, output_type, Body>(body) )
+            , my_init_body( new internal::function_body_leaf< input_type, output_type, Body>(body) )
+            { }
 
         template< typename Body >
-        continue_input( graph &g, int number_of_predecessors, Body& body )
-            : continue_receiver( number_of_predecessors ), my_graph_ref(g),
-             my_body( new internal::function_body_leaf< input_type, output_type, Body>(body) ),
-             my_init_body( new internal::function_body_leaf< input_type, output_type, Body>(body) )
+        continue_input( graph &g, int number_of_predecessors,
+                        __TBB_FLOW_GRAPH_PRIORITY_ARG1(Body& body, node_priority_t priority)
+        ) : continue_receiver( __TBB_FLOW_GRAPH_PRIORITY_ARG1(number_of_predecessors, priority) )
+          , my_graph_ref(g)
+          , my_body( new internal::function_body_leaf< input_type, output_type, Body>(body) )
+          , my_init_body( new internal::function_body_leaf< input_type, output_type, Body>(body) )
         { }
 
         continue_input( const continue_input& src ) : continue_receiver(src),
@@ -760,11 +839,12 @@ namespace internal {
             }
             else {
                 return new ( task::allocate_additional_child_of( *(my_graph_ref.root_task()) ) )
-                       apply_body_task_bypass< class_type, continue_msg >( *this, continue_msg() );
+                       apply_body_task_bypass< class_type, continue_msg >(
+                           *this, __TBB_FLOW_GRAPH_PRIORITY_ARG1(continue_msg(), my_priority) );
             }
         }
 
-        graph& graph_reference() __TBB_override {
+        graph& graph_reference() const __TBB_override {
             return my_graph_ref;
         }
     };  // continue_input
@@ -783,8 +863,8 @@ namespace internal {
         typedef typename sender<output_type>::successor_list_type successor_list_type;
 #endif
 
-        function_output() { my_successors.set_owner(this); }
-        function_output(const function_output & /*other*/) : sender<output_type>() {
+        function_output( graph& g) : my_graph_ref(g) { my_successors.set_owner(this); }
+        function_output(const function_output & other) : sender<output_type>(), my_graph_ref(other.my_graph_ref) {
             my_successors.set_owner(this);
         }
 
@@ -834,9 +914,11 @@ namespace internal {
         }
 
         broadcast_cache_type &successors() { return my_successors; }
+
+        graph& graph_reference() const { return my_graph_ref; }
     protected:
         broadcast_cache_type my_successors;
-
+        graph& my_graph_ref;
     };  // function_output
 
     template< typename Output >
@@ -846,8 +928,8 @@ namespace internal {
         typedef function_output<output_type> base_type;
         using base_type::my_successors;
 
-        multifunction_output() : base_type() {my_successors.set_owner(this);}
-        multifunction_output( const multifunction_output &/*other*/) : base_type() { my_successors.set_owner(this); }
+        multifunction_output(graph& g) : base_type(g) {my_successors.set_owner(this);}
+        multifunction_output( const multifunction_output& other) : base_type(other.my_graph_ref) { my_successors.set_owner(this); }
 
         bool try_put(const output_type &i) {
             task *res = try_put_task(i);
@@ -857,6 +939,8 @@ namespace internal {
             }
             return true;
         }
+
+        using base_type::graph_reference;
 
     protected:
 

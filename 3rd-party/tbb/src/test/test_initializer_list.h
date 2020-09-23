@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_test_initializer_list_H
@@ -96,10 +92,10 @@ namespace initializer_list_support_tests{
         element_type test_seq[] = INIT_SEQ;                                                                                                           \
         container_type expected(test_seq,test_seq + Harness::array_length(test_seq));                                                                 \
                                                                                                                                                       \
-        /*test for explicit contructor call*/                                                                                                         \
+        /*test for explicit constructor call*/                                                                                                         \
         container_type vd INIT_SEQ;                                                                                                                   \
         ASSERT(vd == expected,"initialization via explicit constructor call with init list failed");                                                  \
-        /*test for explicit contructor call with std::initializer_list*/                                                                              \
+        /*test for explicit constructor call with std::initializer_list*/                                                                              \
                                                                                                                                                       \
         std::initializer_list<element_type> init_list = INIT_SEQ;                                                                                     \
         container_type v1 (init_list);                                                                                                                \
@@ -126,6 +122,9 @@ namespace initializer_list_support_tests{
             std::vector<T> vec;
             public:
             ad_hoc_container(){}
+            typename std::vector<T>::const_iterator begin() const {return vec.begin();}
+            typename std::vector<T>::const_iterator end() const {return vec.end();}
+            typename std::vector<T>::size_type size() const {return vec.size();}
             template<typename InputIterator>
             ad_hoc_container(InputIterator begin, InputIterator end) : vec(begin,end) {}
             ad_hoc_container(std::initializer_list<T> il) : vec(il.begin(),il.end()) {}

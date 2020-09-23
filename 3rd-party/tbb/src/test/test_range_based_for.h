@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_test_range_based_for_H
@@ -51,6 +47,21 @@ namespace range_based_for_support_tests{
     integral_type gauss_summ_of_int_sequence(integral_type sequence_length){
         return (sequence_length +1)* sequence_length /2;
     }
+
+    struct unified_summer
+    {
+        template <typename type>
+        type operator()(type const& lhs, type const& rhs)
+        {
+            return lhs + rhs;
+        }
+
+        template<typename first_type, typename second_type>
+        second_type operator()(second_type const& lhs, std::pair<first_type, second_type> const& rhs)
+        {
+            return lhs + rhs.second;
+        }
+    };
 
     struct pair_second_summer{
         template<typename first_type, typename second_type>
