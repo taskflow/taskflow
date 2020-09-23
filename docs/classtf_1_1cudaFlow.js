@@ -16,6 +16,7 @@ var classtf_1_1cudaFlow =
     [ "memset", "classtf_1_1cudaFlow.html#a079ca65da35301e5aafd45878a19e9d2", null ],
     [ "noop", "classtf_1_1cudaFlow.html#a30b2e107cb2c90a37f467b28d1b42a74", null ],
     [ "transform", "classtf_1_1cudaFlow.html#a56d0389eeca479ba73419bc011c1a23e", null ],
+    [ "transpose", "classtf_1_1cudaFlow.html#a1e64e55f0bd81c1630b1ee5c64ae0baa", null ],
     [ "zero", "classtf_1_1cudaFlow.html#a91c1739bb9a2832f306f3d12693a0994", null ],
     [ "Executor", "classtf_1_1cudaFlow.html#a763b2f90bc53f92d680a635fe28e858e", null ]
 ];

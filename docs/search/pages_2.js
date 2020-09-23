@@ -7,5 +7,8 @@ var searchData=
   ['c4_3a_20conditional_20tasking',['C4: Conditional Tasking',['../chapter4.html',1,'Cookbook']]],
   ['c5_3a_20composable_20tasking',['C5: Composable Tasking',['../chapter5.html',1,'Cookbook']]],
   ['c6_3a_20cpu_2dgpu_20tasking',['C6: CPU-GPU Tasking',['../chapter6.html',1,'Cookbook']]],
+  ['code_20of_20conduct',['Code of Conduct',['../codeofconduct.html',1,'Contributing']]],
+  ['contributing',['Contributing',['../Contributing.html',1,'']]],
+  ['contributors',['Contributors',['../contributors.html',1,'Contributing']]],
   ['cookbook',['Cookbook',['../Cookbook.html',1,'']]]
 ];

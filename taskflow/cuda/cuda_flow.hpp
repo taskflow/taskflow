@@ -300,9 +300,9 @@ class cudaFlow {
     //template <typename T, typename B>
     //cudaTask reduce(T* tgt, size_t N, T& init, B&& op);
 
-    //template <typename T>
-    //cudaTask transpose(const T* d_in, T* d_out, size_t rows, size_t cols);
-    //
+    template <typename T>
+    cudaTask transpose(const T* d_in, T* d_out, size_t rows, size_t cols);
+
     //template <typename T>
     //cudaTask inplace_transpose(T* data, size_t rows, size_t cols);
 
@@ -678,6 +678,38 @@ cudaTask cudaFlow::transform(T* tgt, size_t N, C&& c, S*... srcs) {
     tgt, N, std::forward<C>(c), srcs...
   );
 }
+
+// Function: row-wise matrix transpose
+template <typename T>
+cudaTask cudaFlow::transpose(const T* d_in, T* d_out, size_t rows, size_t cols) {
+
+  if(rows == 0 || cols == 0) {
+    return noop();
+  }
+
+  size_t grid_dimx = (cols + 31) / 32;
+  size_t grid_dimy = (rows + 31) / 32;
+  
+  return kernel(
+    dim3(grid_dimx, grid_dimy, 1),
+    dim3(32, 8, 1),
+    0,
+    cuda_transpose<T>,
+    d_in,
+    d_out,
+    rows,
+    cols
+  );
+
+}
+
+//template <typename T, typename B>>
+//cudaTask cudaFlow::reduce(T* tgt, size_t N, T& init, B&& op) {
+  //if(N == 0) {
+    //return noop();
+  //}
+  //size_t B = cuda_default_threads_per_block(N);
+//}
 
 
 }  // end of namespace tf -----------------------------------------------------

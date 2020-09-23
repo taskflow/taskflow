@@ -1,3 +1,26 @@
+/*
+@ @licstart  The following is the entire license notice for the
+JavaScript code in this file.
+
+Copyright (C) 1997-2017 by Dimitri van Heesch
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+@licend  The above is the entire license notice
+for the JavaScript code in this file
+*/
 var NAVTREE =
 [
   [ "Taskflow", "index.html", [
@@ -26,6 +49,7 @@ var NAVTREE =
     [ "Algorithms", "Algorithms.html", "Algorithms" ],
     [ "Learning from Examples", "Examples.html", "Examples" ],
     [ "Real Use Cases", "usecases.html", "usecases" ],
+    [ "Contributing", "Contributing.html", "Contributing" ],
     [ "Frequently Asked Questions", "FAQ.html", [
       [ "General Questions", "FAQ.html#GeneralQuestions", [
         [ "Q1: What's the goal of Taskflow?", "FAQ.html#GeneralQuestion1", null ],
@@ -38,7 +62,8 @@ var NAVTREE =
         [ "Q8: What is the overhead of taskflow?", "FAQ.html#GeneralQuestion8", null ],
         [ "Q9: How does it compare to existing task programming systems?", "FAQ.html#GeneralQuestion9", null ],
         [ "Q10: Do you try to simplify the GPU kernel programming?", "FAQ.html#GeneralQuestion10", null ],
-        [ "Q11: Do you have any real use cases?", "FAQ.html#GeneralQuestion11", null ]
+        [ "Q11: Do you have any real use cases?", "FAQ.html#GeneralQuestion11", null ],
+        [ "Q12: Who is the Principal Investigator of Taskflow I can talk to?", "FAQ.html#GeneralQuestion12", null ]
       ] ],
       [ "Programming Questions", "FAQ.html#ProgrammingQuestions", [
         [ "Q1: What is the difference between Taskflow threads and workers?", "FAQ.html#ProgrammingQuestions1", null ],
@@ -63,8 +88,8 @@ var NAVTREE =
         [ "Variables", "functions_vars.html", null ]
       ] ]
     ] ],
-    [ "Files", null, [
-      [ "File List", "files.html", "files" ]
+    [ "Files", "files.html", [
+      [ "File List", "files.html", "files_dup" ]
     ] ]
   ] ]
 ];
@@ -72,7 +97,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"dreamplace.html"
+"codeofconduct.html#ReportViolations"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
