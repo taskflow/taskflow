@@ -1,17 +1,17 @@
 var NAVTREE =
 [
   [ "Taskflow", "index.html", [
-    [ "Quick Start", "QuickStart.html", [
-      [ "Modern C++ Parallel Task Programming", "QuickStart.html#ModernCppParallelTaskProgrammingLibrary", null ],
-      [ "Static and Dynamic Tasking", "QuickStart.html#StaticDynamicTasking", null ],
-      [ "Conditional Tasking", "QuickStart.html#ConditionalTasking", null ],
-      [ "Composable Tasking", "QuickStart.html#ComposableTasking", null ],
-      [ "Concurrent CPU-GPU Tasking", "QuickStart.html#HeterogeneousTasking", null ],
-      [ "How to Install Taskflow?", "QuickStart.html#HowToInstallCppTaskflow", null ],
-      [ "A Simple First Program", "QuickStart.html#ASimpleFirstProgram", null ],
-      [ "Compile and Run Your First Program", "QuickStart.html#CompileAndRunYourFirstProgram", null ],
-      [ "Supported Compilers", "QuickStart.html#SupportedCompilers", null ],
-      [ "License", "QuickStart.html#License", null ]
+    [ "Quick Start", "index.html", [
+      [ "Modern C++ Parallel Task Programming", "index.html#ModernCppParallelTaskProgrammingLibrary", null ],
+      [ "Static and Dynamic Tasking", "index.html#StaticDynamicTasking", null ],
+      [ "Conditional Tasking", "index.html#ConditionalTasking", null ],
+      [ "Composable Tasking", "index.html#ComposableTasking", null ],
+      [ "Concurrent CPU-GPU Tasking", "index.html#HeterogeneousTasking", null ],
+      [ "How to Install Taskflow?", "index.html#HowToInstallCppTaskflow", null ],
+      [ "A Simple First Program", "index.html#ASimpleFirstProgram", null ],
+      [ "Compile and Run Your First Program", "index.html#CompileAndRunYourFirstProgram", null ],
+      [ "Supported Compilers", "index.html#SupportedCompilers", null ],
+      [ "License", "index.html#License", null ]
     ] ],
     [ "Building and Installing", "install.html", [
       [ "Setting Up Taskflow", "install.html#BAISettingUpTaskflow", null ],
@@ -40,7 +40,8 @@ var NAVTREE =
         [ "Q9: How does it compare to existing task programming systems?", "FAQ.html#GeneralQuestion9", null ],
         [ "Q10: Do you try to simplify the GPU kernel programming?", "FAQ.html#GeneralQuestion10", null ],
         [ "Q11: Do you have any real use cases?", "FAQ.html#GeneralQuestion11", null ],
-        [ "Q12: Who is the Principal Investigator of Taskflow I can talk to?", "FAQ.html#GeneralQuestion12", null ]
+        [ "Q12: Who is the Principal Investigator of Taskflow I can talk to?", "FAQ.html#GeneralQuestion12", null ],
+        [ "Q13: Who are developing and maintaining Taskflow?", "FAQ.html#GeneralQuestion13", null ]
       ] ],
       [ "Programming Questions", "FAQ.html#ProgrammingQuestions", [
         [ "Q1: What is the difference between Taskflow threads and workers?", "FAQ.html#ProgrammingQuestions1", null ],
@@ -74,7 +75,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"classtf_1_1cudaTask.html#a1b0da9e643b80008063406fe1bf207b9"
+"codeofconduct.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
