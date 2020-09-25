@@ -3,7 +3,7 @@ var Releases =
     [ "Release Roadmap", "release-roadmap.html", [
       [ "Milestone Summary", "release-roadmap.html#MilestoneSummary", null ]
     ] ],
-    [ "Release 2.7.0 (TBD)", "release-2-7-0.html", [
+    [ "Release 2.7.0 (Master)", "release-2-7-0.html", [
       [ "Download", "release-2-7-0.html#release-2-7-0_download", null ],
       [ "Working Items", "release-2-7-0.html#release-2-7-0_working_items", null ],
       [ "New Features", "release-2-7-0.html#release-2-7-0_new_features", null ],

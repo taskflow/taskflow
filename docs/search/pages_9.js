@@ -9,8 +9,9 @@ var searchData=
   ['release_202_2e4_2e0_20_282020_2f03_2f25_29',['Release 2.4.0 (2020/03/25)',['../release-2-4-0.html',1,'Releases']]],
   ['release_202_2e5_2e0_20_282020_2f06_2f01_29',['Release 2.5.0 (2020/06/01)',['../release-2-5-0.html',1,'Releases']]],
   ['release_202_2e6_2e0_20_282020_2f08_2f25_29',['Release 2.6.0 (2020/08/25)',['../release-2-6-0.html',1,'Releases']]],
-  ['release_202_2e7_2e0_20_28tbd_29',['Release 2.7.0 (TBD)',['../release-2-7-0.html',1,'Releases']]],
+  ['release_202_2e7_2e0_20_28master_29',['Release 2.7.0 (Master)',['../release-2-7-0.html',1,'Releases']]],
   ['release_20roadmap',['Release Roadmap',['../release-roadmap.html',1,'Releases']]],
   ['releases',['Releases',['../Releases.html',1,'']]],
+  ['rules',['Rules',['../rules.html',1,'Governance']]],
   ['real_20use_20cases',['Real Use Cases',['../usecases.html',1,'']]]
 ];

@@ -37,7 +37,7 @@ var searchData=
   ['codecvt_5futf16',['codecvt_utf16',['http://en.cppreference.com/w/cpp/locale/codecvt_utf16.html',1,'std']]],
   ['codecvt_5futf8',['codecvt_utf8',['http://en.cppreference.com/w/cpp/locale/codecvt_utf8.html',1,'std']]],
   ['codecvt_5futf8_5futf16',['codecvt_utf8_utf16',['http://en.cppreference.com/w/cpp/locale/codecvt_utf8_utf16.html',1,'std']]],
-  ['code_20of_20conduct',['Code of Conduct',['../codeofconduct.html',1,'Contributing']]],
+  ['code_20of_20conduct',['Code of Conduct',['../codeofconduct.html',1,'Governance']]],
   ['collate',['collate',['http://en.cppreference.com/w/cpp/locale/collate.html',1,'std::collate'],['http://en.cppreference.com/w/cpp/locale/collate/collate.html',1,'std::collate::collate()']]],
   ['collate_5fbyname',['collate_byname',['http://en.cppreference.com/w/cpp/locale/collate_byname.html',1,'std::collate_byname'],['http://en.cppreference.com/w/cpp/locale/collate_byname.html',1,'std::collate_byname::collate_byname()']]],
   ['combine',['combine',['http://en.cppreference.com/w/cpp/locale/locale/combine.html',1,'std::locale']]],

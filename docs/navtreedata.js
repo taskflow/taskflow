@@ -50,6 +50,7 @@ var NAVTREE =
     [ "Learning from Examples", "Examples.html", "Examples" ],
     [ "Real Use Cases", "usecases.html", "usecases" ],
     [ "Contributing", "Contributing.html", "Contributing" ],
+    [ "Governance", "Governance.html", "Governance" ],
     [ "Frequently Asked Questions", "FAQ.html", [
       [ "General Questions", "FAQ.html#GeneralQuestions", [
         [ "Q1: What's the goal of Taskflow?", "FAQ.html#GeneralQuestion1", null ],
@@ -64,7 +65,9 @@ var NAVTREE =
         [ "Q10: Do you try to simplify the GPU kernel programming?", "FAQ.html#GeneralQuestion10", null ],
         [ "Q11: Do you have any real use cases?", "FAQ.html#GeneralQuestion11", null ],
         [ "Q12: Who is the Principal Investigator of Taskflow I can talk to?", "FAQ.html#GeneralQuestion12", null ],
-        [ "Q13: Who are developing and maintaining Taskflow?", "FAQ.html#GeneralQuestion13", null ]
+        [ "Q13: Who are developing and maintaining Taskflow?", "FAQ.html#GeneralQuestion13", null ],
+        [ "Q14: Is Taskflow just an another API or model?", "FAQ.html#GeneralQuestion14", null ],
+        [ "Q15: How can I contribute?", "FAQ.html#GeneralQuestion15", null ]
       ] ],
       [ "Programming Questions", "FAQ.html#ProgrammingQuestions", [
         [ "Q1: What is the difference between Taskflow threads and workers?", "FAQ.html#ProgrammingQuestions1", null ],
@@ -98,7 +101,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"codeofconduct.html"
+"classtf_1_1cudaTask.html#ab81b4f71a44af8d61758524f0c274962"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
