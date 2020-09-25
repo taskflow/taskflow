@@ -84,7 +84,7 @@ class cudaFlow {
     @tparam F kernel function type
     @tparam ArgsT kernel function parameters type
     
-    @param d device identifier to luanch the kernel
+    @param d device identifier to launch the kernel
     @param g configured grid
     @param b configured block
     @param s configured shared memory
@@ -117,7 +117,7 @@ class cudaFlow {
 
     @return cudaTask handle
 
-    A memcpy task transfers @c bytes of data from a course location
+    A memcpy task transfers @c bytes of data from a source location
     to a target location. Direction can be arbitrary among CPUs and GPUs.
     */ 
     cudaTask memcpy(void* tgt, const void* src, size_t bytes);

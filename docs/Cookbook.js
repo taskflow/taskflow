@@ -29,7 +29,7 @@ var Cookbook =
     ] ],
     [ "C4: Conditional Tasking", "chapter4.html", [
       [ "Create a Condition Task", "chapter4.html#C4_CreateAConditionTask", null ],
-      [ "Strong Dependency vs Weak Dependency", "chapter4.html#C4_StrongDependencyVSWeakDependency", null ],
+      [ "Task Scheduling Policy", "chapter4.html#C4_TaskSchedulingPolicy", null ],
       [ "Common Pitfalls", "chapter4.html#C4_CommonPitfalls", null ]
     ] ],
     [ "C5: Composable Tasking", "chapter5.html", [

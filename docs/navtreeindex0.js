@@ -17,6 +17,7 @@ var NAVTREEINDEX0 =
 "FAQ.html#GeneralQuestion10":[8,0,9],
 "FAQ.html#GeneralQuestion11":[8,0,10],
 "FAQ.html#GeneralQuestion12":[8,0,11],
+"FAQ.html#GeneralQuestion13":[8,0,12],
 "FAQ.html#GeneralQuestion2":[8,0,1],
 "FAQ.html#GeneralQuestion3":[8,0,2],
 "FAQ.html#GeneralQuestion4":[8,0,3],
@@ -64,7 +65,7 @@ var NAVTREEINDEX0 =
 "chapter4.html":[3,4],
 "chapter4.html#C4_CommonPitfalls":[3,4,2],
 "chapter4.html#C4_CreateAConditionTask":[3,4,0],
-"chapter4.html#C4_StrongDependencyVSWeakDependency":[3,4,1],
+"chapter4.html#C4_TaskSchedulingPolicy":[3,4,1],
 "chapter5.html":[3,5],
 "chapter5.html#C5_ComposesATaskflow":[3,5,0],
 "chapter5.html#C5_ModuleTask":[3,5,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "classtf_1_1cudaTask.html#aa80fb7a06b2828bd95c43fb465e10abe":[10,0,0,2,4],
 "classtf_1_1cudaTask.html#ab81b4f71a44af8d61758524f0c274962":[10,0,0,2,3],
 "classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4":[10,0,0,2,7],
-"classtf_1_1cudaTask.html#af17c570ca9a43ad71c4b626635ea9cbb":[10,0,0,2,6],
-"codeofconduct.html":[7,1]
+"classtf_1_1cudaTask.html#af17c570ca9a43ad71c4b626635ea9cbb":[10,0,0,2,6]
 };

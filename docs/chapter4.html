@@ -109,8 +109,8 @@ Create a Condition Task</h1>
 <object type="image/svg+xml" data="conditional-tasking-2.svg" width="100%">conditional-tasking-2.svg</object>
 </div>
 <p>You can use condition tasks to create cycles as long as the graph does not introduce task race during execution. However, cycles are not allowed in non-condition tasks.</p>
-<h1><a class="anchor" id="C4_StrongDependencyVSWeakDependency"></a>
-Strong Dependency vs Weak Dependency</h1>
+<h1><a class="anchor" id="C4_TaskSchedulingPolicy"></a>
+Task Scheduling Policy</h1>
 <p>In order to understand how an executor schedules condition tasks, we define two dependency types, <em>strong dependency</em> and <em>weak dependency</em>. A strong dependency is a preceding link from a non-condition task to another task. A weak dependency is a preceding link from a condition task to another task. The number of dependents of a task is the sum of strong dependency and weak dependency. The table below lists the strong dependency and weak dependency numbers of each task in the previous example.</p>
 <div align="center"> <table class="markdownTable">
 <tr class="markdownTableHead">

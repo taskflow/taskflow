@@ -63,7 +63,8 @@ var NAVTREE =
         [ "Q9: How does it compare to existing task programming systems?", "FAQ.html#GeneralQuestion9", null ],
         [ "Q10: Do you try to simplify the GPU kernel programming?", "FAQ.html#GeneralQuestion10", null ],
         [ "Q11: Do you have any real use cases?", "FAQ.html#GeneralQuestion11", null ],
-        [ "Q12: Who is the Principal Investigator of Taskflow I can talk to?", "FAQ.html#GeneralQuestion12", null ]
+        [ "Q12: Who is the Principal Investigator of Taskflow I can talk to?", "FAQ.html#GeneralQuestion12", null ],
+        [ "Q13: Who are developing and maintaining Taskflow?", "FAQ.html#GeneralQuestion13", null ]
       ] ],
       [ "Programming Questions", "FAQ.html#ProgrammingQuestions", [
         [ "Q1: What is the difference between Taskflow threads and workers?", "FAQ.html#ProgrammingQuestions1", null ],
@@ -97,7 +98,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"codeofconduct.html#ReportViolations"
+"codeofconduct.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
