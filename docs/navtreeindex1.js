@@ -89,6 +89,7 @@ var NAVTREEINDEX1 =
 "opentimer.html#UseCaseOpenTimerReferences":[6,0,4],
 "opentimer.html#UseCasesOpenTimer":[6,0,0],
 "pages.html":[],
+"release-1-x-x.html":[2,10],
 "release-2-0-0.html":[2,9],
 "release-2-0-0.html#release-2-0-0_breaks_and_deprecated_features":[2,9,3],
 "release-2-0-0.html#release-2-0-0_bug_fixes":[2,9,4],

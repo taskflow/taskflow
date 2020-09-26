@@ -58,5 +58,6 @@ var Releases =
       [ "Improvements and Enhancements", "release-2-0-0.html#release-2-0-0_improvements_enhancements", null ],
       [ "Breaks and Deprecated Features", "release-2-0-0.html#release-2-0-0_breaks_and_deprecated_features", null ],
       [ "Bug Fixes", "release-2-0-0.html#release-2-0-0_bug_fixes", null ]
-    ] ]
+    ] ],
+    [ "Release 1.x.x (before 2018)", "release-1-x-x.html", null ]
 ];
