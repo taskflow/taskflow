@@ -1,6 +1,6 @@
 var NAVTREEINDEX1 =
 {
-"classtf_1_1cudaTask.html#ab81b4f71a44af8d61758524f0c274962":[11,0,0,2,3],
+"classtf_1_1cudaTask.html#ab81b4f71a44af8d61758524f0c274962":[11,0,0,2,4],
 "classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4":[11,0,0,2,7],
 "classtf_1_1cudaTask.html#af17c570ca9a43ad71c4b626635ea9cbb":[11,0,0,2,6],
 "codeofconduct.html":[8,2],
