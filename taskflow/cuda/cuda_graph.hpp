@@ -5,8 +5,6 @@
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
 #include "../utility/passive_vector.hpp"
-#include "../nstd/variant.hpp"
-#include "../nstd/optional.hpp"
 
 namespace tf {
 
@@ -64,8 +62,8 @@ class cudaNode {
     //Kernel(C&&);
   };
 
-  using handle_t = nstd::variant<
-    nstd::monostate, 
+  using handle_t = std::variant<
+    std::monostate, 
     Noop, 
     //Host, 
     Memset, 
@@ -120,8 +118,15 @@ class cudaGraph {
   };
 
   public:
-
+    
+    cudaGraph() = default;
     ~cudaGraph();
+
+    cudaGraph(const cudaGraph&) = delete;
+    cudaGraph(cudaGraph&&);
+    
+    cudaGraph& operator = (const cudaGraph&);
+    cudaGraph& operator = (cudaGraph&&);
 
     template <typename... ArgsT>
     cudaNode* emplace_back(ArgsT&&...);
@@ -134,7 +139,8 @@ class cudaGraph {
     
     NativeHandle _native_handle;
 
-    std::vector<std::unique_ptr<cudaNode>> _nodes;
+    //std::vector<std::unique_ptr<cudaNode>> _nodes;
+    std::vector<cudaNode*> _nodes;
 
     void _create_native_graph();
     void _destroy_native_graph();
@@ -187,7 +193,36 @@ inline void cudaNode::_precede(cudaNode* v) {
 
 // Destructor
 inline cudaGraph::~cudaGraph() {
-  _destroy_native_graph();
+  clear();
+}
+
+// Move constructor
+inline cudaGraph::cudaGraph(cudaGraph&& g) :
+  _native_handle {g._native_handle},
+  _nodes         {std::move(g._nodes)} {
+  
+  g._native_handle.graph = nullptr;
+  g._native_handle.image = nullptr;    
+
+  assert(g._nodes.empty());
+}
+
+// Move assignment
+inline cudaGraph& cudaGraph::operator = (cudaGraph&& rhs) {
+
+  clear();
+  
+  // lhs
+  _native_handle = rhs._native_handle;
+  _nodes = std::move(rhs._nodes);
+
+  assert(rhs._nodes.empty());
+
+  // rhs
+  rhs._native_handle.graph = nullptr;
+  rhs._native_handle.image = nullptr;
+
+  return *this; 
 }
 
 // Function: empty
@@ -197,6 +232,9 @@ inline bool cudaGraph::empty() const {
 
 // Procedure: clear
 inline void cudaGraph::clear() {
+  for(auto n : _nodes) {
+    delete n;
+  }
   _nodes.clear();
   _destroy_native_graph();
 }
@@ -222,9 +260,14 @@ inline void cudaGraph::_destroy_native_graph() {
 // Function: emplace_back
 template <typename... ArgsT>
 cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
-  auto node = std::make_unique<cudaNode>(std::forward<ArgsT>(args)...);
-  _nodes.emplace_back(std::move(node));
-  return _nodes.back().get();
+  //auto node = std::make_unique<cudaNode>(std::forward<ArgsT>(args)...);
+  //_nodes.emplace_back(std::move(node));
+  //return _nodes.back().get();
+  
+  // TODO: object pool
+  auto node = new cudaNode(std::forward<ArgsT>(args)...);
+  _nodes.push_back(node);
+  return node;
 }
 
 // Procedure: _create_native_graph

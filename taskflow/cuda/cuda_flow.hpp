@@ -393,7 +393,7 @@ inline cudaTask cudaFlow::noop() {
         "failed to create a no-operation (empty) node"
       );
     },
-    nstd::in_place_type_t<cudaNode::Noop>{}
+    std::in_place_type_t<cudaNode::Noop>{}
   );
   return cudaTask(node);
 }
@@ -401,7 +401,7 @@ inline cudaTask cudaFlow::noop() {
 //// Function: host
 //template <typename C>
 //cudaTask cudaFlow::host(C&& c) {
-//  auto node = _graph.emplace_back(nstd::in_place_type_t<cudaNode::Host>{}, 
+//  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Host>{}, 
 //    [c=std::forward<C>(c)](cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
 //      cudaHostNodeParams p;
 //      p.fn = [] (void* data) { (*static_cast<C*>(data))(); };
@@ -443,7 +443,7 @@ cudaTask cudaFlow::kernel(
         "failed to create a cudaGraph node of kernel task"
       );
     },
-    nstd::in_place_type_t<cudaNode::Kernel>{}
+    std::in_place_type_t<cudaNode::Kernel>{}
   );
   
   return cudaTask(node);
@@ -478,7 +478,7 @@ cudaTask cudaFlow::kernel_on(
         "failed to create a cudaGraph node of kernel_on task"
       );
     },
-    nstd::in_place_type_t<cudaNode::Kernel>{}
+    std::in_place_type_t<cudaNode::Kernel>{}
   );
   
   return cudaTask(node);
@@ -505,7 +505,7 @@ cudaFlow::zero(T* dst, size_t count) {
         "failed to create a cudaGraph node of zero task"
       );
     },
-    nstd::in_place_type_t<cudaNode::Memset>{}
+    std::in_place_type_t<cudaNode::Memset>{}
   );
   return cudaTask(node);
 }
@@ -536,7 +536,7 @@ cudaFlow::fill(T* dst, T value, size_t count) {
         "failed to create a cudaGraph node of fill task"
       );
     },
-    nstd::in_place_type_t<cudaNode::Memset>{}
+    std::in_place_type_t<cudaNode::Memset>{}
   );
   return cudaTask(node);
 }
@@ -568,7 +568,7 @@ cudaTask cudaFlow::copy(T* tgt, const T* src, size_t num) {
         "failed to create a cudaGraph node of copy task"
       );
     },
-    nstd::in_place_type_t<cudaNode::Copy>{}
+    std::in_place_type_t<cudaNode::Copy>{}
   );
 
   return cudaTask(node);
@@ -593,7 +593,7 @@ inline cudaTask cudaFlow::memset(void* dst, int ch, size_t count) {
         "failed to create a cudaGraph node of memset task"
       );
     },
-    nstd::in_place_type_t<cudaNode::Memset>{}
+    std::in_place_type_t<cudaNode::Memset>{}
   );
   
   return cudaTask(node);
@@ -622,7 +622,7 @@ inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
         "failed to create a cudaGraph node of memcpy task"
       );
     },
-    nstd::in_place_type_t<cudaNode::Copy>{}
+    std::in_place_type_t<cudaNode::Copy>{}
   );
   return cudaTask(node);
 }

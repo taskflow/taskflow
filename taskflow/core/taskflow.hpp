@@ -235,7 +235,7 @@ inline void Taskflow::_dump(
   switch(node->_handle.index()) {
 
     case Node::DYNAMIC_WORK: {
-      auto& sbg = nstd::get<Node::DynamicWork>(node->_handle).subgraph;
+      auto& sbg = std::get<Node::DynamicWork>(node->_handle).subgraph;
       if(!sbg.empty()) {
         os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
         if(node->_name.empty()) os << 'p' << node;
@@ -250,7 +250,7 @@ inline void Taskflow::_dump(
 
 #ifdef TF_ENABLE_CUDA
     case Node::CUDAFLOW_WORK: {
-      auto& cfg = nstd::get<Node::cudaFlowWork>(node->_handle).graph;
+      auto& cfg = std::get<Node::cudaFlowWork>(node->_handle).graph;
       if(!cfg.empty()) {
         os << "subgraph cluster_p" << node << " {\nlabel=\"cudaFlow: ";
         if(node->_name.empty()) os << 'p' << node;
@@ -260,9 +260,9 @@ inline void Taskflow::_dump(
 
         for(const auto& v : cfg._nodes) {
 
-          os << 'p' << v.get() << "[label=\"";
+          os << 'p' << v << "[label=\"";
           if(v->_name.empty()) {
-            os << 'p' << v.get() << "\"";
+            os << 'p' << v << "\"";
           }
           else {
             os << v->_name << "\"";
@@ -289,11 +289,11 @@ inline void Taskflow::_dump(
   
           os << "];\n";
           for(const auto s : v->_successors) {
-            os << 'p' << v.get() << " -> " << 'p' << s << ";\n";
+            os << 'p' << v << " -> " << 'p' << s << ";\n";
           }
           
           if(v->_successors.size() == 0) {
-            os << 'p' << v.get() << " -> p" << node << ";\n";
+            os << 'p' << v << " -> p" << node << ";\n";
           }
 
         }
@@ -322,7 +322,7 @@ inline void Taskflow::_dump(
     // module task
     else {
 
-      auto module = nstd::get<Node::ModuleWork>(n->_handle).module;
+      auto module = std::get<Node::ModuleWork>(n->_handle).module;
 
       os << 'p' << n << "[shape=box3d, color=blue, label=\"";
       if(n->_name.empty()) os << n;

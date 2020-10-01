@@ -16,30 +16,6 @@ cache:
 matrix:
   include:
     
-    # Linux g++-5
-    - os: linux
-      compiler: g++
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-      env:
-        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
-    
-    # Linux g++-6
-    - os: linux
-      compiler: g++
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-6
-      env:
-        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
-
     # Linux g++-7
     - os: linux
       compiler: g++

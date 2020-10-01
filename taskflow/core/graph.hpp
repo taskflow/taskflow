@@ -9,7 +9,6 @@
 #include "../utility/singleton.hpp"
 #include "../utility/uuid.hpp"
 #include "../utility/os.hpp"
-#include "../nstd/variant.hpp"
 
 #if defined(__CUDA__) || defined(__CUDACC__)
 #define TF_ENABLE_CUDA
@@ -150,8 +149,8 @@ class Node {
   };
 #endif
     
-  using handle_t = nstd::variant<
-    nstd::monostate,  // placeholder
+  using handle_t = std::variant<
+    std::monostate,  // placeholder
 #ifdef TF_ENABLE_CUDA
     cudaFlowWork,     // cudaFlow
 #endif
@@ -165,7 +164,7 @@ class Node {
   public:
   
   // variant index
-  constexpr static auto PLACEHOLDER_WORK = get_index_v<nstd::monostate, handle_t>;
+  constexpr static auto PLACEHOLDER_WORK = get_index_v<std::monostate, handle_t>;
   constexpr static auto STATIC_WORK      = get_index_v<StaticWork, handle_t>;
   constexpr static auto DYNAMIC_WORK     = get_index_v<DynamicWork, handle_t>;
   constexpr static auto CONDITION_WORK   = get_index_v<ConditionWork, handle_t>; 
@@ -277,7 +276,7 @@ inline Node::~Node() {
 
   if(_handle.index() == DYNAMIC_WORK) {
 
-    auto& subgraph = nstd::get<DynamicWork>(_handle).subgraph;
+    auto& subgraph = std::get<DynamicWork>(_handle).subgraph;
 
     std::vector<Node*> nodes;
 
@@ -292,7 +291,7 @@ inline Node::~Node() {
 
       if(nodes[i]->_handle.index() == DYNAMIC_WORK) {
 
-        auto& sbg = nstd::get<DynamicWork>(nodes[i]->_handle).subgraph;
+        auto& sbg = std::get<DynamicWork>(nodes[i]->_handle).subgraph;
         std::move(
           sbg._nodes.begin(), sbg._nodes.end(), std::back_inserter(nodes)
         );

@@ -454,7 +454,7 @@ Executor::async(F&& f, ArgsT&&... args) {
   auto fu = p.get_future();
 
   auto node = Graph::_node_pool().animate(
-    nstd::in_place_type_t<Node::AsyncWork>{},
+    std::in_place_type_t<Node::AsyncWork>{},
     [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] () {
       p.object.set_value(f(args...));
     }
@@ -480,7 +480,7 @@ Executor::async(F&& f, ArgsT&&... args) {
   auto fu = p.get_future();
 
   auto node = Graph::_node_pool().animate(
-    nstd::in_place_type_t<Node::AsyncWork>{},
+    std::in_place_type_t<Node::AsyncWork>{},
     [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] () {
       f(args...);
       p.object.set_value();
@@ -943,7 +943,7 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
 // Procedure: _invoke_static_work
 inline void Executor::_invoke_static_work(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  nstd::get<Node::StaticWork>(node->_handle).work();
+  std::get<Node::StaticWork>(node->_handle).work();
   _observer_epilogue(worker, node);
 }
 
@@ -952,7 +952,7 @@ inline void Executor::_invoke_dynamic_work(Worker& w, Node* node) {
 
   _observer_prologue(w, node);
 
-  auto& handle = nstd::get<Node::DynamicWork>(node->_handle);
+  auto& handle = std::get<Node::DynamicWork>(node->_handle);
 
   handle.subgraph.clear();
 
@@ -1069,7 +1069,7 @@ inline void Executor::_invoke_condition_work(Worker& worker, Node* node, int& co
 
   _observer_prologue(worker, node);
   
-  cond = nstd::get<Node::ConditionWork>(node->_handle).work();
+  cond = std::get<Node::ConditionWork>(node->_handle).work();
 
   _observer_epilogue(worker, node);
 }
@@ -1083,7 +1083,7 @@ inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
   assert(worker.domain == node->domain());
   
   // create a cudaflow
-  auto& h = nstd::get<Node::cudaFlowWork>(node->_handle);
+  auto& h = std::get<Node::cudaFlowWork>(node->_handle);
 
   h.graph.clear();
 
@@ -1159,7 +1159,7 @@ inline void Executor::_invoke_module_work(Worker& w, Node* node) {
 
   _observer_prologue(w, node);
   
-  auto module = nstd::get<Node::ModuleWork>(node->_handle).module;
+  auto module = std::get<Node::ModuleWork>(node->_handle).module;
   
   _invoke_dynamic_work_internal(w, node, module->_graph, false);
   
@@ -1170,7 +1170,7 @@ inline void Executor::_invoke_module_work(Worker& w, Node* node) {
 inline void Executor::_invoke_async_work(Worker& w, Node* node) {
   _observer_prologue(w, node);
   
-  nstd::get<Node::AsyncWork>(node->_handle).work();
+  std::get<Node::AsyncWork>(node->_handle).work();
 
   _observer_epilogue(w, node);  
   

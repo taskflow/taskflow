@@ -1,12 +1,12 @@
 # CMake version
-cmake_minimum_required (VERSION 3.9)
+cmake_minimum_required (VERSION 3.1)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
 # Turn on the verbose
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Project name
-project(Taskflow VERSION 2.7.0 LANGUAGES CXX)
+project(Taskflow VERSION 3.0.0 LANGUAGES CXX)
 
 # build options
 option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
@@ -20,15 +20,15 @@ include(CheckLanguage)
 # Compiler vendors
 ## g++
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.0")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.0")
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
-    message(FATAL_ERROR "\nTaskflow requires g++ at least v5.0")
+    message(FATAL_ERROR "\nTaskflow requires g++ at least v7.0")
   endif()
 ## clang++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.0")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6.0")
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
-    message(FATAL_ERROR "\nTaskflow requires clang++ at least v4.0")
+    message(FATAL_ERROR "\nTaskflow requires clang++ at least v6.0")
   endif() 
 ## AppleClang
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
@@ -45,8 +45,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 else()
   message(FATAL_ERROR "\n\
 Taskflow currently supports the following compilers:\n\
-  - g++ v5.0 or above\n\
-  - clang++ v4.0 or above\n\
+  - g++ v7.0 or above\n\
+  - clang++ v6.0 or above\n\
   - MSVC++ v19.14 or above\n\
   - AppleClang v8 or above\n\
 ")
@@ -54,6 +54,7 @@ endif()
 
 # NVCC Compiler
 # https://cliutils.gitlab.io/modern-cmake/chapters/packages/CUDA.html
+
 check_language(CUDA)
 if(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
   enable_language(CUDA)
@@ -219,7 +220,7 @@ find_package(Threads REQUIRED)
 # -----------------------------------------------------------------------------
 
 add_library(${PROJECT_NAME} INTERFACE)
-target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_14)
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
 target_link_libraries(${PROJECT_NAME} INTERFACE Threads::Threads)
 target_include_directories(${PROJECT_NAME} INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>

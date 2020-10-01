@@ -605,7 +605,7 @@ auto FlowBuilder::emplace(C&&... cs) {
 template <typename C>
 std::enable_if_t<is_static_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
   auto n = _graph.emplace_back(
-    nstd::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
+    std::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
   );
   return Task(n);
 }
@@ -615,7 +615,7 @@ std::enable_if_t<is_static_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
 template <typename C>
 std::enable_if_t<is_dynamic_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
   auto n = _graph.emplace_back(
-    nstd::in_place_type_t<Node::DynamicWork>{}, std::forward<C>(c)
+    std::in_place_type_t<Node::DynamicWork>{}, std::forward<C>(c)
   );
   return Task(n);
 }
@@ -625,7 +625,7 @@ std::enable_if_t<is_dynamic_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
 template <typename C>
 std::enable_if_t<is_condition_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
   auto n = _graph.emplace_back(
-    nstd::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
+    std::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
   );
   return Task(n);
 }
@@ -636,7 +636,7 @@ std::enable_if_t<is_condition_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
 template <typename C>
 std::enable_if_t<is_cudaflow_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
   auto n = _graph.emplace_back(
-    nstd::in_place_type_t<Node::cudaFlowWork>{}, std::forward<C>(c)
+    std::in_place_type_t<Node::cudaFlowWork>{}, std::forward<C>(c)
   );
   return Task(n);
 }
@@ -645,7 +645,7 @@ std::enable_if_t<is_cudaflow_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
 // Function: composed_of    
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
   auto node = _graph.emplace_back(
-    nstd::in_place_type_t<Node::ModuleWork>{}, &taskflow
+    std::in_place_type_t<Node::ModuleWork>{}, &taskflow
   );
   return Task(node);
 }

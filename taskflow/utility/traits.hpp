@@ -25,8 +25,8 @@
 #include <cassert>
 #include <cmath>
 #include <cstring>
-
-#include "../nstd/variant.hpp"
+#include <variant>
+#include <optional>
 
 namespace tf {
 
@@ -251,7 +251,7 @@ struct function_traits<F&&> : function_traits<F> {};
 
 
 // ----------------------------------------------------------------------------
-// nstd::variant
+// std::variant
 // ----------------------------------------------------------------------------
 template <typename T, typename>
 struct get_index;
@@ -266,7 +266,7 @@ template <size_t I, typename T, typename U, typename... Ts>
 struct get_index_impl<I, T, U, Ts...> : get_index_impl<I+1, T, Ts...>{};
 
 template <typename T, typename... Ts> 
-struct get_index<T, nstd::variant<Ts...>> : get_index_impl<0, T, Ts...>{};
+struct get_index<T, std::variant<Ts...>> : get_index_impl<0, T, Ts...>{};
 
 template <typename T, typename... Ts>
 constexpr auto get_index_v = get_index<T, Ts...>::value;

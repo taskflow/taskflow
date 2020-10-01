@@ -423,7 +423,7 @@ inline void Task::reset() {
 
 // Procedure: reset_work
 inline void Task::reset_work() {
-  _node->_handle = nstd::monostate{};
+  _node->_handle = std::monostate{};
 }
 
 // Function: name
