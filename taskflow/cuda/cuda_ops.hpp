@@ -9,11 +9,11 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 // Kernel: for_each
-template <typename T, typename F>
-__global__ void cuda_for_each(T* data, size_t N, F functor) {
+template <typename I, typename F>
+__global__ void cuda_for_each(I first, size_t N, F functor) {
   size_t i = blockIdx.x*blockDim.x + threadIdx.x;
   if (i < N) {
-    functor(data[i]);
+    functor(*(first+i));
   }
 }
 

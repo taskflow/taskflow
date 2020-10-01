@@ -9,7 +9,7 @@ Many things are considered @em experimental and may change or break from time to
 While it may be difficult to be keep all things consistent when introducing new features, 
 we continue to try our best to ensure backward compatibility.
 
-Starting from v3, we will migrate the codebase to the C++17 standard!
+Starting from v3, we will migrate the codebase to the @CPP17 standard.
 
 @section release-3-0-0_download Download
 
@@ -18,11 +18,11 @@ To download the newest version of %Taskflow, please clone from <a href="https://
 @section release-3-0-0_working_items Working Items
 
 @li migrating to the C++17 standard
-
-@li replacing all non-standard libraries with C++17 STL (e.g., std::optional, std::variant)
+@li replacing all non-standard libraries with C++17 STL (e.g., @std_optional, @std_variant)
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
 @li adding parallel sort tf::Taskflow::sort algorithms
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
+@li adopting <tt>constexpr if</tt> to replace std::enable_if
 
 @section release-3-0-0_new_features New Features
 

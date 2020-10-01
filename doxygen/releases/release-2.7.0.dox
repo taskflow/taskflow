@@ -1,6 +1,6 @@
 namespace tf {
 
-/** @page release-2-7-0 Release 2.7.0
+/** @page release-2-7-0 Release 2.7.0 (2020/10/01)
 
 %Taskflow 2.7.0 is the 9th release in the 2.x line! 
 This release includes several new changes such as CPU-GPU tasking, algorithm collection,
@@ -9,11 +9,6 @@ enhanced web-based profiler, documentation, and unit tests.
 @section release-2-7-0_download Download
 
 %Taskflow 2.7.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v2.7.0">here</a>.
-
-@section release-2-7-0_working_items Working Items
-
-@li adding parallel sort tf::Taskflow::sort algorithms
-@li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
 
 @section release-2-7-0_new_features New Features
 
@@ -28,12 +23,12 @@ enhanced web-based profiler, documentation, and unit tests.
   executor.wait_for_all();
   assert(fu.wait_for(std::chrono::seconds(1)) == std::future_status::ready);
   @endcode
-@li added kernel algorithm, tf::cudaFlow::for_each, 
+@li added kernel algorithm, tf::cudaFlow::for_each
   @code{.cpp}
   taskflow.emplace([](tf::cudaFlow& cf){
     // ... gpu tasks
     // assigns one to every element in my_gpu_data (type int*, 1000 elements)
-    cf.for_each(my_gpu_data, 100, [] __device__ (int& item) {
+    cf.for_each(my_gpu_data, my_gpu_data + 1000, [] __device__ (int& item) {
       item = 1;
     }); 
   });
@@ -48,7 +43,6 @@ enhanced web-based profiler, documentation, and unit tests.
     }); 
   });
   @endcode
-@li added kernel algorithm, tf::cudaFlow::transform
 @li added explicit join method at tf::cudaFlow::join, tf::cudaFlow::join_n, tf::cudaFlow::join_until
 
 @section release-2-7-0_bug_fixes Bug Fixes 

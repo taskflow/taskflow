@@ -300,7 +300,7 @@ void for_each() {
     auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
       auto h2d = cf.copy(gpu, cpu, n);
       auto kernel = cf.for_each(
-        gpu, n, [] __device__ (T& val) { val = 65536; }
+        gpu, gpu+n, [] __device__ (T& val) { val = 65536; }
       );
       auto d2h = cf.copy(cpu, gpu, n);
       h2d.precede(kernel);

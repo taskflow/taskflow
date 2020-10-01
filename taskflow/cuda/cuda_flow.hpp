@@ -227,7 +227,7 @@ class cudaFlow {
     /**
     @brief applies a callable to each dereferenced element of the data array
 
-    @tparam T data type
+    @tparam I iterator type
     @tparam C callable type
 
     @param data pointer to the beginning address of the data array
@@ -237,13 +237,13 @@ class cudaFlow {
     This method is equivalent to the parallel execution of the following loop on a GPU:
     
     @code{.cpp}
-    for(size_t i=0; i<N; i++) {
-      callable(data[i]);
+    for(auto itr = first; itr != last; i++) {
+      callable(*itr);
     }
     @endcode
     */
-    template <typename T, typename C>
-    cudaTask for_each(T* data, size_t N, C&& callable);
+    template <typename I, typename C>
+    cudaTask for_each(I first, I last, C&& callable);
 
     /**
     @brief applies a callable to each index in the range with the step size
@@ -628,17 +628,14 @@ inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
 }
     
 // Function: for_each
-template <typename T, typename C>
-cudaTask cudaFlow::for_each(T* data, size_t N, C&& c) {
-      
-  if(N == 0) {
-    return noop();
-  }
+template <typename I, typename C>
+cudaTask cudaFlow::for_each(I first, I last, C&& c) {
   
+  size_t N = std::distance(first, last);
   size_t B = cuda_default_threads_per_block(N);
 
   return kernel(
-    (N+B-1) / B, B, 0, cuda_for_each<T, C>, data, N, std::forward<C>(c)
+    (N+B-1) / B, B, 0, cuda_for_each<I, C>, first, N, std::forward<C>(c)
   );
 }
 

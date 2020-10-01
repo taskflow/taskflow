@@ -3,9 +3,16 @@ var Releases =
     [ "Release Roadmap", "release-roadmap.html", [
       [ "Milestone Summary", "release-roadmap.html#MilestoneSummary", null ]
     ] ],
-    [ "Release 2.7.0 (Master)", "release-2-7-0.html", [
+    [ "Release 3.0.0 (Master)", "release-3-0-0.html", [
+      [ "Download", "release-3-0-0.html#release-3-0-0_download", null ],
+      [ "Working Items", "release-3-0-0.html#release-3-0-0_working_items", null ],
+      [ "New Features", "release-3-0-0.html#release-3-0-0_new_features", null ],
+      [ "Bug Fixes", "release-3-0-0.html#release-3-0-0_bug_fixes", null ],
+      [ "Deprecated Items", "release-3-0-0.html#release-3-0-0_deprecated_items", null ],
+      [ "Miscellaneous Items", "release-3-0-0.html#release-3-0-0_miscellaneous_items", null ]
+    ] ],
+    [ "Release 2.7.0 (2020/10/01)", "release-2-7-0.html", [
       [ "Download", "release-2-7-0.html#release-2-7-0_download", null ],
-      [ "Working Items", "release-2-7-0.html#release-2-7-0_working_items", null ],
       [ "New Features", "release-2-7-0.html#release-2-7-0_new_features", null ],
       [ "Bug Fixes", "release-2-7-0.html#release-2-7-0_bug_fixes", null ],
       [ "Deprecated Items", "release-2-7-0.html#release-2-7-0_deprecated_items", null ],
