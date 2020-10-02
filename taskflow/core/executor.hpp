@@ -427,7 +427,7 @@ auto Executor::async(F&& f, ArgsT&&... args) {
 
   auto fu = p.get_future();
 
-  auto node = Graph::_node_pool().animate(
+  auto node = node_pool.animate(
     std::in_place_type_t<Node::AsyncWork>{},
     [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] () {
       if constexpr(std::is_same_v<R, void>) {
@@ -917,7 +917,6 @@ inline void Executor::_invoke_dynamic_work(Worker& w, Node* node) {
     _invoke_dynamic_work_internal(w, node, handle.subgraph, false);
   }
   
-  // TODO 
   _observer_epilogue(w, node);
 }
 
@@ -1128,7 +1127,7 @@ inline void Executor::_invoke_async_work(Worker& w, Node* node) {
   _observer_epilogue(w, node);  
   
   // recycle the node
-  Graph::_node_pool().recycle(node);
+  node_pool.recycle(node);
 }
 
 // Function: run

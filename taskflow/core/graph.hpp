@@ -65,7 +65,7 @@ class Graph {
 
   private:
 
-    static ObjectPool<Node>& _node_pool();
+    //static ObjectPool<Node>& _node_pool();
     
     std::vector<Node*> _nodes;
 };
@@ -213,8 +213,13 @@ class Node {
     void _set_up_join_counter();
 
     bool _has_state(int) const;
-
+  
 };
+
+// ----------------------------------------------------------------------------
+// Node Object Pool
+// ----------------------------------------------------------------------------
+inline ObjectPool<Node> node_pool;
 
 // ----------------------------------------------------------------------------
 // Definition for Node::StaticWork
@@ -301,11 +306,9 @@ inline Node::~Node() {
       ++i;
     }
       
-    auto& np = Graph::_node_pool();
+    //auto& np = Graph::_node_pool();
     for(i=0; i<nodes.size(); ++i) {
-      //nodes[i]->~Node();
-      //np.deallocate(nodes[i]);
-      np.recycle(nodes[i]);
+      node_pool.recycle(nodes[i]);
     }
   }
 }
@@ -378,60 +381,6 @@ inline Domain Node::domain() const {
   return domain;
 }
 
-//
-//// Function: dump
-//inline std::string Node::dump() const {
-//  std::ostringstream os;  
-//  dump(os);
-//  return os.str();
-//}
-//
-//// Function: dump
-//inline void Node::dump(std::ostream& os) const {
-//
-//  os << 'p' << this << "[label=\"";
-//  if(_name.empty()) os << 'p' << this;
-//  else os << _name;
-//  os << "\" ";
-//
-//  // condition node is colored green
-//  if(_handle.index() == CONDITION_WORK) {
-//    os << " shape=diamond color=black fillcolor=aquamarine style=filled";
-//  }
-//
-//  os << "];\n";
-//  
-//  for(size_t s=0; s<_successors.size(); ++s) {
-//    if(_handle.index() == CONDITION_WORK) {
-//      // case edge is dashed
-//      os << 'p' << this << " -> p" << _successors[s] 
-//         << " [style=dashed label=\"" << s << "\"];\n";
-//    }
-//    else {
-//      os << 'p' << this << " -> p" << _successors[s] << ";\n";
-//    }
-//  }
-//  
-//  // subflow join node
-//  if(_parent && _successors.size() == 0) {
-//    os << 'p' << this << " -> p" << _parent << ";\n";
-//  }
-//  
-//  if(_subgraph && !_subgraph->empty()) {
-//
-//    os << "subgraph cluster_p" << this << " {\nlabel=\"Subflow: ";
-//    if(_name.empty()) os << 'p' << this;
-//    else os << _name;
-//
-//    os << "\";\n" << "color=blue\n";
-//
-//    for(const auto& n : _subgraph->nodes()) {
-//      n->dump(os);
-//    }
-//    os << "}\n";
-//  }
-//}
-    
 // Procedure: _set_state
 inline void Node::_set_state(int flag) { 
   _state |= flag; 
@@ -473,19 +422,18 @@ inline bool Node::_has_state(int flag) const {
 // Graph definition
 // ----------------------------------------------------------------------------
     
-// Function: _node_pool
-inline ObjectPool<Node>& Graph::_node_pool() {
-  static ObjectPool<Node> pool;
-  return pool;
-}
+//// Function: _node_pool
+//inline ObjectPool<Node>& Graph::_node_pool() {
+//  static ObjectPool<Node> pool;
+//  return pool;
+//}
 
 // Destructor
 inline Graph::~Graph() {
-  auto& np = _node_pool();
+  //auto& np = _node_pool();
   for(auto node : _nodes) {
-    //node->~Node();
-    //np.deallocate(node);
-    np.recycle(node);
+    //np.recycle(node);
+    node_pool.recycle(node);
   }
 }
 
@@ -502,11 +450,11 @@ inline Graph& Graph::operator = (Graph&& other) {
 
 // Procedure: clear
 inline void Graph::clear() {
-  auto& np = _node_pool();
+  //auto& np = _node_pool();
   for(auto node : _nodes) {
     //node->~Node();
     //np.deallocate(node);
-    np.recycle(node);
+    node_pool.recycle(node);
   }
   _nodes.clear();
 }
@@ -518,9 +466,9 @@ inline void Graph::clear_detached() {
     return !(node->_has_state(Node::DETACHED));
   });
   
-  auto& np = _node_pool();
+  //auto& np = _node_pool();
   for(auto itr = mid; itr != _nodes.end(); ++itr) {
-    np.recycle(*itr);
+    node_pool.recycle(*itr);
   }
   _nodes.resize(std::distance(_nodes.begin(), mid));
 }
@@ -552,7 +500,7 @@ Node* Graph::emplace_back(ArgsT&&... args) {
   //auto node = _node_pool().allocate();
   //new (node) Node(std::forward<ArgsT>(args)...);
   //_nodes.push_back(node);
-  _nodes.push_back(_node_pool().animate(std::forward<ArgsT>(args)...));
+  _nodes.push_back(node_pool.animate(std::forward<ArgsT>(args)...));
   return _nodes.back();
 }
 
@@ -562,7 +510,7 @@ inline Node* Graph::emplace_back() {
   //auto node = _node_pool().allocate();
   //new (node) Node();
   //_nodes.push_back(node);
-  _nodes.push_back(_node_pool().animate());
+  _nodes.push_back(node_pool.animate());
   return _nodes.back();
 }
 
