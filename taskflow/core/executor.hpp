@@ -181,29 +181,7 @@ class Executor {
     @return a std::future that will eventually hold the result of the function call
     */
     template <typename F, typename... ArgsT>
-    std::enable_if_t<
-      !std::is_same<typename function_traits<F>::return_type, void>::value,
-      std::future<typename function_traits<F>::return_type>
-    >
-    async(F&& f, ArgsT&&... args);
-    
-    /**
-    @brief runs a given function asynchronously
-    
-    @tparam F callable type (return void)
-    @tparam ArgsT parameter types
-
-    @param f callable object to call
-    @param args parameters to pass to the callable
-    
-    @return a std::future that will eventually hold the result of the function call
-    */
-    template <typename F, typename... ArgsT>
-    std::enable_if_t<
-      std::is_same<typename function_traits<F>::return_type, void>::value,
-      std::future<void>
-    >
-    async(F&& f, ArgsT&&... args);
+    auto async(F&& f, ArgsT&&... args);
     
     /**
     @brief constructs an observer to inspect the activities of worker threads
@@ -439,11 +417,7 @@ inline size_t Executor::num_topologies() const {
     
 // Function: async
 template <typename F, typename... ArgsT>
-std::enable_if_t<
-  !std::is_same<typename function_traits<F>::return_type, void>::value,
-  std::future<typename function_traits<F>::return_type>
->
-Executor::async(F&& f, ArgsT&&... args) {
+auto Executor::async(F&& f, ArgsT&&... args) {
 
   _increment_topology();
 
@@ -456,34 +430,13 @@ Executor::async(F&& f, ArgsT&&... args) {
   auto node = Graph::_node_pool().animate(
     std::in_place_type_t<Node::AsyncWork>{},
     [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] () {
-      p.object.set_value(f(args...));
-    }
-  );
-
-  _schedule(node);
-
-  return fu;
-}
-
-// Function: async
-template <typename F, typename... ArgsT>
-std::enable_if_t<
-  std::is_same<typename function_traits<F>::return_type, void>::value,
-  std::future<void>
->
-Executor::async(F&& f, ArgsT&&... args) {
-
-  _increment_topology();
-
-  std::promise<void> p;
-
-  auto fu = p.get_future();
-
-  auto node = Graph::_node_pool().animate(
-    std::in_place_type_t<Node::AsyncWork>{},
-    [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] () {
-      f(args...);
-      p.object.set_value();
+      if constexpr(std::is_same_v<R, void>) {
+        f(args...);
+        p.object.set_value();
+      }
+      else {
+        p.object.set_value(f(args...));
+      }
     }
   );
 
@@ -701,7 +654,7 @@ template<typename Observer, typename... Args>
 std::shared_ptr<Observer> Executor::make_observer(Args&&... args) {
 
   static_assert(
-    std::is_base_of<ObserverInterface, Observer>::value,
+    std::is_base_of_v<ObserverInterface, Observer>,
     "Observer must be derived from ObserverInterface"
   );
   
@@ -720,7 +673,7 @@ template <typename Observer>
 void Executor::remove_observer(std::shared_ptr<Observer> ptr) {
   
   static_assert(
-    std::is_base_of<ObserverInterface, Observer>::value,
+    std::is_base_of_v<ObserverInterface, Observer>,
     "Observer must be derived from ObserverInterface"
   );
 

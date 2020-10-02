@@ -139,7 +139,7 @@ struct function_traits
     typename function_traits<decltype(&F::operator())>::argument_tuple_type
   >::type;
 
-  static constexpr size_t arity = std::tuple_size<arguments>::value;
+  static constexpr size_t arity = std::tuple_size_v<arguments>;
 
   template <size_t N>
   struct argument {
@@ -276,8 +276,8 @@ constexpr auto get_index_v = get_index<T, Ts...>::value;
 //-----------------------------------------------------------------------------
 template <typename T>
 struct is_pod {
-  static const bool value = std::is_trivial<T>::value && 
-                            std::is_standard_layout<T>::value;
+  static const bool value = std::is_trivial_v<T> && 
+                            std::is_standard_layout_v<T>;
 };
 
 template <typename T>
@@ -289,8 +289,8 @@ constexpr bool is_pod_v = is_pod<T>::value;
 template <class To, class From>
 typename std::enable_if<
   (sizeof(To) == sizeof(From)) &&
-  std::is_trivially_copyable<From>::value &&
-  std::is_trivial<To>::value,
+  std::is_trivially_copyable_v<From> &&
+  std::is_trivial_v<To>,
   // this implementation requires that To is trivially default constructible
   To
 >::type
@@ -331,7 +331,7 @@ struct stateful_iterator {
   using TB = std::decay_t<unwrap_ref_decay_t<B>>;
   using TE = std::decay_t<unwrap_ref_decay_t<E>>;
   
-  static_assert(std::is_same<TB, TE>::value, "decayed iterator types must match");
+  static_assert(std::is_same_v<TB, TE>, "decayed iterator types must match");
 
   using type = TB;
 };
@@ -348,19 +348,19 @@ struct stateful_index {
   using TS = std::decay_t<unwrap_ref_decay_t<S>>;
 
   static_assert(
-    std::is_integral<TB>::value, "decayed beg index must be an integral type"
+    std::is_integral_v<TB>, "decayed beg index must be an integral type"
   );
   
   static_assert(
-    std::is_integral<TE>::value, "decayed end index must be an integral type"
+    std::is_integral_v<TE>, "decayed end index must be an integral type"
   );
   
   static_assert(
-    std::is_integral<TS>::value, "decayed step must be an integral type"
+    std::is_integral_v<TS>, "decayed step must be an integral type"
   );
 
   static_assert(
-    std::is_same<TB, TE>::value && std::is_same<TE, TS>::value,
+    std::is_same_v<TB, TE> && std::is_same_v<TE, TS>,
     "decayed index and step types must match"
   );
 

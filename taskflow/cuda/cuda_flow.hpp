@@ -174,7 +174,7 @@ class cudaFlow {
     */
     template <
       typename T, 
-      std::enable_if_t<!std::is_same<T, void>::value, void>* = nullptr
+      std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
     >
     cudaTask copy(T* tgt, const T* src, size_t num);
 
@@ -544,7 +544,7 @@ cudaFlow::fill(T* dst, T value, size_t count) {
 // Function: copy
 template <
   typename T,
-  std::enable_if_t<!std::is_same<T, void>::value, void>*
+  std::enable_if_t<!std::is_same_v<T, void>, void>*
 >
 cudaTask cudaFlow::copy(T* tgt, const T* src, size_t num) {
 

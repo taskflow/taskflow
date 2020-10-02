@@ -29,7 +29,7 @@ while others can steal data from the queue.
 template <typename T>
 class TaskQueue {
 
-  static_assert(std::is_pointer<T>::value, "T must be a pointer type");
+  static_assert(std::is_pointer_v<T>, "T must be a pointer type");
 
   struct Array {
 
