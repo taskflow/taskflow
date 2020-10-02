@@ -10,10 +10,10 @@ namespace tf {
 
 // Kernel: for_each
 template <typename I, typename F>
-__global__ void cuda_for_each(I first, size_t N, F functor) {
+__global__ void cuda_for_each(I first, size_t N, F op) {
   size_t i = blockIdx.x*blockDim.x + threadIdx.x;
   if (i < N) {
-    functor(*(first+i));
+    op(*(first+i));
   }
 }
 
@@ -23,10 +23,10 @@ __global__ void cuda_for_each(I first, size_t N, F functor) {
 
 // Kernel: for_each_index
 template <typename I, typename F>
-__global__ void cuda_for_each_index(I beg, I inc, size_t N, F functor) {
+__global__ void cuda_for_each_index(I beg, I inc, size_t N, F op) {
   size_t i = blockIdx.x*blockDim.x + threadIdx.x;
   if (i < N) {
-    functor(static_cast<I>(i)*inc + beg);
+    op(static_cast<I>(i)*inc + beg);
   }
 }
 
@@ -35,11 +35,12 @@ __global__ void cuda_for_each_index(I beg, I inc, size_t N, F functor) {
 // ----------------------------------------------------------------------------
 
 // Kernel: for_each
-template <typename T, typename F, typename... S>
-__global__ void cuda_transform(T* data, size_t N, F functor, S*... src) {
+template <typename I, typename F, typename... S>
+__global__ void cuda_transform(I first, size_t N, F op, S... srcs) {
   size_t i = blockIdx.x*blockDim.x + threadIdx.x;
   if (i < N) {
-    data[i] = functor(src[i]...);
+    //data[i] = op(src[i]...);
+    *(first + i) = op((*(srcs+i))...);
   }
 }
 

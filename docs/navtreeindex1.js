@@ -1,12 +1,5 @@
 var NAVTREEINDEX1 =
 {
-"classtf_1_1cudaTask.html#ab81b4f71a44af8d61758524f0c274962":[11,0,0,2,3],
-"classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4":[11,0,0,2,7],
-"classtf_1_1cudaTask.html#af17c570ca9a43ad71c4b626635ea9cbb":[11,0,0,2,6],
-"codeofconduct.html":[8,2],
-"codeofconduct.html#ReportViolations":[8,2,1],
-"codeofconduct.html#TaskflowCodeOfConduct":[8,2,0],
-"contributors.html":[7,1],
 "contributors.html#ThankYouForDevelopingTaskflow":[7,1,0],
 "contributors.html#ThankYouForUsingTaskflow":[7,1,1],
 "core_2taskflow_8hpp_source.html":[12,0,8],

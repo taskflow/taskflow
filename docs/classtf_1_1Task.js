@@ -23,10 +23,7 @@ var classtf_1_1Task =
     [ "reset_work", "classtf_1_1Task.html#aec3ab712e12137542b7e4bc311ee9f20", null ],
     [ "succeed", "classtf_1_1Task.html#a331b1b726555072e7c7d10941257f664", null ],
     [ "type", "classtf_1_1Task.html#af2df95e6c8c5870c033d692e88af0bc2", null ],
-    [ "work", "classtf_1_1Task.html#a2554a0983b10ec7cb2270b4db0334fb7", null ],
-    [ "work", "classtf_1_1Task.html#a29b0523feb88d88780bb0a8d39c9a7f0", null ],
-    [ "work", "classtf_1_1Task.html#ac1d5bd430aaf11c2145b8a5d60999d39", null ],
-    [ "work", "classtf_1_1Task.html#ae94852f20f8f5782476bacf63e6fb663", null ],
+    [ "work", "classtf_1_1Task.html#a2f6f4cec42d016e5eb89390f362ffe99", null ],
     [ "FlowBuilder", "classtf_1_1Task.html#a61184f9bd9c801d0a5eccecfdbddc641", null ],
     [ "Taskflow", "classtf_1_1Task.html#af043dd6f6a359602805d9c7dd7539cca", null ],
     [ "TaskView", "classtf_1_1Task.html#a0aa0e12e4a0ba023033e808fb2132fdf", null ]

@@ -58,7 +58,7 @@ var NAVTREE =
         [ "Q3: What is the difference between static tasking and dynamic tasking?", "FAQ.html#GeneralQuestion3", null ],
         [ "Q4: How many tasks can Taskflow handle?", "FAQ.html#GeneralQuestion4", null ],
         [ "Q5: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?", "FAQ.html#GeneralQuestion5", null ],
-        [ "Q6: Does Taskflow have backward compatibility with C++03/98/11?", "FAQ.html#GeneralQuestion6", null ],
+        [ "Q6: Does Taskflow have backward compatibility with C++03/98/11/14?", "FAQ.html#GeneralQuestion6", null ],
         [ "Q7: How does Taskflow schedule tasks?", "FAQ.html#GeneralQuestion7", null ],
         [ "Q8: What is the overhead of taskflow?", "FAQ.html#GeneralQuestion8", null ],
         [ "Q9: How does it compare to existing task programming systems?", "FAQ.html#GeneralQuestion9", null ],
@@ -101,7 +101,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"classtf_1_1cudaTask.html#ab81b4f71a44af8d61758524f0c274962"
+"contributors.html#ThankYouForDevelopingTaskflow"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

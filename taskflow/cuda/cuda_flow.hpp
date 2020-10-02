@@ -102,6 +102,8 @@ class cudaFlow {
     @param dst pointer to the destination device memory area
     @param v value to set for each byte of specified memory
     @param count size in bytes to set
+    
+    @return cudaTask handle
 
     A memset task fills the first @c count bytes of device memory area 
     pointed by @c dst with the byte value @c v.
@@ -128,6 +130,8 @@ class cudaFlow {
     @tparam T element type (size of @c T must be either 1, 2, or 4)
     @param dst pointer to the destination device memory area
     @param count number of elements
+    
+    @return cudaTask handle
 
     A zero task zeroes the first @c count elements of type @c T 
     in a device memory area pointed by @c dst.
@@ -143,9 +147,12 @@ class cudaFlow {
     @brief creates a fill task that fills a typed memory block with a value
 
     @tparam T element type (size of @c T must be either 1, 2, or 4)
+    
     @param dst pointer to the destination device memory area
     @param value value to fill for each element of type @c T
     @param count number of elements
+    
+    @return cudaTask handle
 
     A fill task fills the first @c count elements of type @c T with @c value
     in a device memory area pointed by @c dst.
@@ -230,9 +237,11 @@ class cudaFlow {
     @tparam I iterator type
     @tparam C callable type
 
-    @param data pointer to the beginning address of the data array
-    @param N size of the data array
-    @param callable the callable to apply to each dereferenced element
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param callable a callable object to apply to the dereferenced iterator 
+    
+    @return cudaTask handle
     
     This method is equivalent to the parallel execution of the following loop on a GPU:
     
@@ -256,6 +265,8 @@ class cudaFlow {
     @param step step size
     @param callable the callable to apply to each element in the data array
     
+    @return cudaTask handle
+    
     This method is equivalent to the parallel execution of the following loop on a GPU:
     
     @code{.cpp}
@@ -276,30 +287,43 @@ class cudaFlow {
     /**
     @brief applies a callable to a source range and stores the result in a target ange
     
-    @tparam T result type
+    @tparam I iterator type
     @tparam C callable type
     @tparam S source types
 
-    @param tgt pointer to the starting address of the target range
-    @param N number of elements in the range
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
     @param callable the callable to apply to each element in the range
-    @param srcs pointers to the starting addresses of source ranges
+    @param srcs iterators to the source ranges
+    
+    @return cudaTask handle
     
     This method is equivalent to the parallel execution of the following loop on a GPU:
     
     @code{.cpp}
-    for(size_t i=0; i<N; i++) {
-      tgt[i] = callable(src1[i], src2[i], src3[i], ...);
+    while (first != last) {
+      *first++ = callable(*src1++, *src2++, *src3++, ...);
     }
     @endcode
     */
-    template <typename T, typename C, typename... S>
-    cudaTask transform(T* tgt, size_t N, C&& callable, S*... srcs);
+    template <typename I, typename C, typename... S>
+    cudaTask transform(I first, I last, C&& callable, S... srcs);
     
     // TODO: 
     //template <typename T, typename B>
     //cudaTask reduce(T* tgt, size_t N, T& init, B&& op);
+    
+    /**
+    @brief transposes a two-dimenstional matrix
 
+    @tparam T data type
+    @param d_in pointer to the source matrix
+    @param d_out pointer to the target matrix
+    @param rows number of rows in the source matrix
+    @param cols number of columns in the source matrix
+
+    @return cudaTask handle
+    */
     template <typename T>
     cudaTask transpose(const T* d_in, T* d_out, size_t rows, size_t cols);
 
@@ -308,17 +332,8 @@ class cudaFlow {
 
     //template <typename T>
     //cudaTask matmul(const T* A, const T* B, T* C, size_t M, size_t K, size_t N);
-
-    //[] (tf::cudaFlow& cf) {
-    //  
-    //  auto task1 = cf.for_each(...);
-    //  auto task2 = cf.matmul(...);
-    //  
-    //  task1.get<KernelParameter>().block(100);
-
-    //  cf.offload();
-    //  cf.memset();
-    //}
+    //
+    //
 
   private:
     
@@ -661,18 +676,19 @@ cudaTask cudaFlow::for_each_index(I beg, I end, I inc, C&& c) {
 }
 
 // Function: transform
-template <typename T, typename C, typename... S>
-cudaTask cudaFlow::transform(T* tgt, size_t N, C&& c, S*... srcs) {
+template <typename I, typename C, typename... S>
+cudaTask cudaFlow::transform(I first, I last, C&& c, S... srcs) {
   
-  if(N == 0) {
-    return noop();
-  }
+  //if(N == 0) {
+  //  return noop();
+  //}
   
+  size_t N = std::distance(first, last);
   size_t B = cuda_default_threads_per_block(N);
 
   return kernel(
-    (N+B-1) / B, B, 0, cuda_transform<T, C, S...>, 
-    tgt, N, std::forward<C>(c), srcs...
+    (N+B-1) / B, B, 0, cuda_transform<I, C, S...>, 
+    first, N, std::forward<C>(c), srcs...
   );
 }
 

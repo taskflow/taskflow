@@ -115,22 +115,10 @@ Inheritance diagram for tf::FlowBuilder:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a796e29175380f70246cf2a5639adc437"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
-<tr class="memitem:a796e29175380f70246cf2a5639adc437"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; is_static_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a796e29175380f70246cf2a5639adc437">emplace</a> (C &amp;&amp;callable)</td></tr>
-<tr class="memdesc:a796e29175380f70246cf2a5639adc437"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a static task from a given callable object  <a href="#a796e29175380f70246cf2a5639adc437">More...</a><br /></td></tr>
-<tr class="separator:a796e29175380f70246cf2a5639adc437"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af349d76d7a731b35c7a67c186908ee36"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
-<tr class="memitem:af349d76d7a731b35c7a67c186908ee36"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; is_dynamic_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#af349d76d7a731b35c7a67c186908ee36">emplace</a> (C &amp;&amp;callable)</td></tr>
-<tr class="memdesc:af349d76d7a731b35c7a67c186908ee36"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a dynamic task from a given callable object  <a href="#af349d76d7a731b35c7a67c186908ee36">More...</a><br /></td></tr>
-<tr class="separator:af349d76d7a731b35c7a67c186908ee36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace957b453a2c603286fd7b42daf6e296"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
-<tr class="memitem:ace957b453a2c603286fd7b42daf6e296"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; is_condition_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#ace957b453a2c603286fd7b42daf6e296">emplace</a> (C &amp;&amp;callable)</td></tr>
-<tr class="memdesc:ace957b453a2c603286fd7b42daf6e296"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a condition task from a given callable object  <a href="#ace957b453a2c603286fd7b42daf6e296">More...</a><br /></td></tr>
-<tr class="separator:ace957b453a2c603286fd7b42daf6e296"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36891a21af0e8e5f13601b7fff311836"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
-<tr class="memitem:a36891a21af0e8e5f13601b7fff311836"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; is_cudaflow_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a36891a21af0e8e5f13601b7fff311836">emplace</a> (C &amp;&amp;callable)</td></tr>
-<tr class="memdesc:a36891a21af0e8e5f13601b7fff311836"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a cudaflow task from a given callable object  <a href="#a36891a21af0e8e5f13601b7fff311836">More...</a><br /></td></tr>
-<tr class="separator:a36891a21af0e8e5f13601b7fff311836"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d52a7fe2814b264846a2085e931652c"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
+<tr class="memitem:a4d52a7fe2814b264846a2085e931652c"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">emplace</a> (C &amp;&amp;callable)</td></tr>
+<tr class="memdesc:a4d52a7fe2814b264846a2085e931652c"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates multiple tasks from a list of callable objects  <a href="#a4d52a7fe2814b264846a2085e931652c">More...</a><br /></td></tr>
+<tr class="separator:a4d52a7fe2814b264846a2085e931652c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f6118326ad434f6c839007a1a79fe1b"><td class="memTemplParams" colspan="2">template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt; </td></tr>
 <tr class="memitem:a1f6118326ad434f6c839007a1a79fe1b"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a1f6118326ad434f6c839007a1a79fe1b">emplace</a> (C &amp;&amp;... callables)</td></tr>
 <tr class="memdesc:a1f6118326ad434f6c839007a1a79fe1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates multiple tasks from a list of callable objects  <a href="#a1f6118326ad434f6c839007a1a79fe1b">More...</a><br /></td></tr>
@@ -262,7 +250,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></t
 <p>creates a module task from a taskflow </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">taskflow</td><td>a taskflow object for the module </td></tr>
+    <tr><td class="paramname">taskflow</td><td>a taskflow object for the module</td></tr>
   </table>
   </dd>
 </dl>
@@ -270,8 +258,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></t
 
 </div>
 </div>
-<a id="a796e29175380f70246cf2a5639adc437"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a796e29175380f70246cf2a5639adc437">&#9670;&nbsp;</a></span>emplace() <span class="overload">[1/5]</span></h2>
+<a id="a4d52a7fe2814b264846a2085e931652c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d52a7fe2814b264846a2085e931652c">&#9670;&nbsp;</a></span>emplace() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -279,7 +267,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></t
 template&lt;typename C &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::enable_if_t&lt; is_static_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt; tf::FlowBuilder::emplace </td>
+          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> tf::FlowBuilder::emplace </td>
           <td>(</td>
           <td class="paramtype">C &amp;&amp;&#160;</td>
           <td class="paramname"><em>callable</em></td><td>)</td>
@@ -288,7 +276,7 @@ template&lt;typename C &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>creates a static task from a given callable object </p>
+<p>creates multiple tasks from a list of callable objects </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">C</td><td>callable type</td></tr>
@@ -297,112 +285,7 @@ template&lt;typename C &gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">callable</td><td>a callable object constructible from std::function&lt;void()&gt;</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
-
-</div>
-</div>
-<a id="af349d76d7a731b35c7a67c186908ee36"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af349d76d7a731b35c7a67c186908ee36">&#9670;&nbsp;</a></span>emplace() <span class="overload">[2/5]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename C &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::enable_if_t&lt; is_dynamic_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt; tf::FlowBuilder::emplace </td>
-          <td>(</td>
-          <td class="paramtype">C &amp;&amp;&#160;</td>
-          <td class="paramname"><em>callable</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>creates a dynamic task from a given callable object </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">C</td><td>callable type</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">callable</td><td>a callable object constructible from std::function&lt;void(Subflow&amp;)&gt;</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
-
-</div>
-</div>
-<a id="ace957b453a2c603286fd7b42daf6e296"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace957b453a2c603286fd7b42daf6e296">&#9670;&nbsp;</a></span>emplace() <span class="overload">[3/5]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename C &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::enable_if_t&lt; is_condition_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt; tf::FlowBuilder::emplace </td>
-          <td>(</td>
-          <td class="paramtype">C &amp;&amp;&#160;</td>
-          <td class="paramname"><em>callable</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>creates a condition task from a given callable object </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">C</td><td>callable type</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">callable</td><td>a callable object constructible from std::function&lt;int()&gt;</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
-
-</div>
-</div>
-<a id="a36891a21af0e8e5f13601b7fff311836"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a36891a21af0e8e5f13601b7fff311836">&#9670;&nbsp;</a></span>emplace() <span class="overload">[4/5]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename C &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::enable_if_t&lt; is_cudaflow_task_v&lt; C &gt;, <a class="el" href="classtf_1_1Task.html">Task</a> &gt; tf::FlowBuilder::emplace </td>
-          <td>(</td>
-          <td class="paramtype">C &amp;&amp;&#160;</td>
-          <td class="paramname"><em>callable</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>creates a cudaflow task from a given callable object </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">C</td><td>callable type</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">callable</td><td>a callable object constructible from std::function&lt;void(cudaFlow&amp;)&gt;</td></tr>
+    <tr><td class="paramname">callable</td><td>callable to construct one of the static, dynamic, condition, and <a class="el" href="classtf_1_1cudaFlow.html" title="methods for building a CUDA task dependency graph. ">cudaFlow</a> tasks</td></tr>
   </table>
   </dd>
 </dl>
@@ -411,7 +294,7 @@ template&lt;typename C &gt; </div>
 </div>
 </div>
 <a id="a1f6118326ad434f6c839007a1a79fe1b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f6118326ad434f6c839007a1a79fe1b">&#9670;&nbsp;</a></span>emplace() <span class="overload">[5/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f6118326ad434f6c839007a1a79fe1b">&#9670;&nbsp;</a></span>emplace() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

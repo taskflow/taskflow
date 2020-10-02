@@ -100,7 +100,7 @@ Q1: What's the goal of Taskflow?</h2>
 <p>Taskflow aims to help C++ developers quickly implement efficient parallel decomposition strategies using task-based approaches.</p>
 <h2><a class="anchor" id="GeneralQuestion2"></a>
 Q2: How do I use Taskflow in my projects?</h2>
-<p>Taskflow is a header-only library with zero dependencies. The only thing you need is a C++14 compiler. To use Taskflow, simply drop the folder <code>taskflow/</code> to your project and include taskflow.hpp.</p>
+<p>Taskflow is a header-only library with zero dependencies. The only thing you need is a C++17 compiler. To use Taskflow, simply drop the folder <code>taskflow/</code> to your project and include taskflow.hpp.</p>
 <h2><a class="anchor" id="GeneralQuestion3"></a>
 Q3: What is the difference between static tasking and dynamic tasking?</h2>
 <p>Static tasking refers to those tasks created before execution, while dynamic tasking refers to those tasks created during the execution of static tasks or dynamic tasks (nested). Dynamic tasks created by the same task node are grouped together to a subflow.</p>
@@ -111,8 +111,8 @@ Q4: How many tasks can Taskflow handle?</h2>
 Q5: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?</h2>
 <p>The hex value represents the memory address of the task. Each task has a method <a class="el" href="classtf_1_1Task.html#a9057ecd0f3833b717480e914f8568f02" title="assigns a name to the task ">tf::Task::name(const std::string&amp;)</a> for user to assign a human readable string to ease the debugging process. If a task is not assigned a name or is an internal node, its address value in the memory is used instead.</p>
 <h2><a class="anchor" id="GeneralQuestion6"></a>
-Q6: Does Taskflow have backward compatibility with C++03/98/11?</h2>
-<p>Unfortunately, Taskflow is heavily relying on modern C++14's features/idoms/STL and it is very difficult to provide a version that compiles under older C++ versions.</p>
+Q6: Does Taskflow have backward compatibility with C++03/98/11/14?</h2>
+<p>Unfortunately, Taskflow is heavily relying on modern C++17's features/idoms/STL and it is very difficult to provide a version that compiles under older C++ versions.</p>
 <h2><a class="anchor" id="GeneralQuestion7"></a>
 Q7: How does Taskflow schedule tasks?</h2>
 <p>Taskflow implemented a very efficient <a href="https://en.wikipedia.org/wiki/Work_stealing">work-stealing scheduler</a> to execute task dependency graphs. The source code is available at <code><a class="el" href="executor_8hpp_source.html">taskflow/core/executor.hpp</a></code>.</p>

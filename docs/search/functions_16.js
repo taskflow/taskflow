@@ -21,7 +21,7 @@ var searchData=
   ['wistream',['wistream',['http://en.cppreference.com/w/cpp/io/basic_istream/basic_istream.html',1,'std::wistream']]],
   ['wistringstream',['wistringstream',['http://en.cppreference.com/w/cpp/io/basic_istringstream/basic_istringstream.html',1,'std::wistringstream']]],
   ['wofstream',['wofstream',['http://en.cppreference.com/w/cpp/io/basic_ofstream/basic_ofstream.html',1,'std::wofstream']]],
-  ['work',['work',['../classtf_1_1Task.html#a2554a0983b10ec7cb2270b4db0334fb7',1,'tf::Task::work(C &amp;&amp;callable)'],['../classtf_1_1Task.html#a29b0523feb88d88780bb0a8d39c9a7f0',1,'tf::Task::work(C &amp;&amp;callable)'],['../classtf_1_1Task.html#ac1d5bd430aaf11c2145b8a5d60999d39',1,'tf::Task::work(C &amp;&amp;callable)'],['../classtf_1_1Task.html#ae94852f20f8f5782476bacf63e6fb663',1,'tf::Task::work(C &amp;&amp;callable)']]],
+  ['work',['work',['../classtf_1_1Task.html#a2f6f4cec42d016e5eb89390f362ffe99',1,'tf::Task']]],
   ['wostream',['wostream',['http://en.cppreference.com/w/cpp/io/basic_ostream/basic_ostream.html',1,'std::wostream']]],
   ['wostringstream',['wostringstream',['http://en.cppreference.com/w/cpp/io/basic_ostringstream/basic_ostringstream.html',1,'std::wostringstream']]],
   ['wregex',['wregex',['http://en.cppreference.com/w/cpp/regex/basic_regex/basic_regex.html',1,'std::wregex']]],

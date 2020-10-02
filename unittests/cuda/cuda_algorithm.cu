@@ -48,7 +48,7 @@ void add2() {
 
       //auto kernel = cf.add(dx, N, dx, dy);
       auto kernel = cf.transform(
-        dx, N, [] __device__ (T& v1, T& v2) { return v1 + v2; }, 
+        dx, dx+N, [] __device__ (T& v1, T& v2) { return v1 + v2; }, 
         dx, dy
       );
       kernel.succeed(h2d_x, h2d_y)
@@ -144,7 +144,7 @@ void add3() {
 
       //auto kernel = cf.add(dx, N, dx, dy, dz);
       auto kernel = cf.transform(
-        dx, N, [] __device__ (T& v1, T& v2, T& v3) { return v1 + v2 + v3; }, 
+        dx, dx+N, [] __device__ (T& v1, T& v2, T& v3) { return v1 + v2 + v3; }, 
         dx, dy, dz
       );
       kernel.succeed(h2d_x, h2d_y, h2d_z)
@@ -234,7 +234,7 @@ void multiply2() {
 
       //auto kernel = cf.multiply(dx, N, dx, dy);
       auto kernel = cf.transform(
-        dx, N, [] __device__ (T& v1, T& v2) { return v1 * v2; }, 
+        dx, dx+N, [] __device__ (T& v1, T& v2) { return v1 * v2; }, 
         dx, dy
       );
       kernel.succeed(h2d_x, h2d_y)
@@ -449,7 +449,7 @@ TEST_CASE("transform" * doctest::timeout(300) ) {
       auto h2d = cf.copy(tgt, htgt, n);
       auto kernel = cf.transform(
         tgt, 
-        n, 
+        tgt+n, 
         [] __device__ (int& v1, float& v2, double& v3) -> int {
           v1 = 1;
           v2 = 3.0f;

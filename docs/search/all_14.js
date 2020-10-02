@@ -48,6 +48,7 @@ var searchData=
   ['transform_5freduce_5fstatic',['transform_reduce_static',['../classtf_1_1FlowBuilder.html#a562e253028680b61de95e305c0224d91',1,'tf::FlowBuilder']]],
   ['translate',['translate',['http://en.cppreference.com/w/cpp/regex/regex_traits/translate.html',1,'std::regex_traits']]],
   ['translate_5fnocase',['translate_nocase',['http://en.cppreference.com/w/cpp/regex/regex_traits/translate_nocase.html',1,'std::regex_traits']]],
+  ['transpose',['transpose',['../classtf_1_1cudaFlow.html#a1e64e55f0bd81c1630b1ee5c64ae0baa',1,'tf::cudaFlow']]],
   ['treat_5fas_5ffloating_5fpoint',['treat_as_floating_point',['http://en.cppreference.com/w/cpp/chrono/treat_as_floating_point.html',1,'std::chrono']]],
   ['true_5ftype',['true_type',['http://en.cppreference.com/w/cpp/types/integral_constant.html',1,'std']]],
   ['truename',['truename',['http://en.cppreference.com/w/cpp/locale/numpunct/truefalsename.html',1,'std::numpunct_byname::truename()'],['http://en.cppreference.com/w/cpp/locale/numpunct/truefalsename.html',1,'std::numpunct::truename()']]],
