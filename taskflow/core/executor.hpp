@@ -427,18 +427,25 @@ auto Executor::async(F&& f, ArgsT&&... args) {
 
   auto fu = p.get_future();
 
-  auto node = node_pool.animate(
-    std::in_place_type_t<Node::AsyncWork>{},
-    [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] () {
-      if constexpr(std::is_same_v<R, void>) {
+  Node* node;
+  
+  if constexpr(std::is_same_v<R, void>) {
+    node = node_pool.animate(
+      std::in_place_type_t<Node::AsyncWork>{},
+      [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] () mutable {
         f(args...);
         p.object.set_value();
       }
-      else {
+    );
+  }
+  else {
+    node = node_pool.animate(
+      std::in_place_type_t<Node::AsyncWork>{},
+      [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] () mutable {
         p.object.set_value(f(args...));
       }
-    }
-  );
+    );
+  };
 
   _schedule(node);
 
