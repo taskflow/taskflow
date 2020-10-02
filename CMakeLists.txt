@@ -1,5 +1,5 @@
 # CMake version
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.10)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
 # Turn on the verbose
@@ -58,9 +58,9 @@ endif()
 check_language(CUDA)
 if(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
   enable_language(CUDA)
-  if(CMAKE_CUDA_COMPILER_VERSION VERSION_LESS "10")
+  if(CMAKE_CUDA_COMPILER_VERSION VERSION_LESS "11")
     message(STATUS "CMAKE_CUDA_COMPILER_VERSION: ${CMAKE_CUDA_COMPILER_VERSION}")
-    message(FATAL_ERROR "\nTaskflow requires CUDA at least v10")
+    message(FATAL_ERROR "\nTaskflow requires CUDA at least v11")
   endif()
 endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
 
