@@ -9,6 +9,55 @@
 namespace tf {
 
 // ----------------------------------------------------------------------------
+// cudaGraph class
+// ----------------------------------------------------------------------------
+
+// class: cudaGraph
+class cudaGraph {
+
+  friend class cudaFlow;
+  friend class cudaNode;
+  friend class cudaTask;
+  
+  friend class Taskflow;
+  friend class Executor;
+
+  struct NativeHandle {
+    cudaGraph_t graph {nullptr};
+    cudaGraphExec_t image {nullptr};
+  };
+
+  public:
+    
+    cudaGraph() = default;
+    ~cudaGraph();
+
+    cudaGraph(const cudaGraph&) = delete;
+    cudaGraph(cudaGraph&&);
+    
+    cudaGraph& operator = (const cudaGraph&);
+    cudaGraph& operator = (cudaGraph&&);
+
+    template <typename... ArgsT>
+    cudaNode* emplace_back(ArgsT&&...);
+
+    void clear();
+
+    bool empty() const;
+
+  private:
+    
+    NativeHandle _native_handle;
+    
+    // TODO: nvcc complains deleter of unique_ptr
+    //std::vector<std::unique_ptr<cudaNode>> _nodes;
+    std::vector<cudaNode*> _nodes;
+
+    void _create_native_graph();
+    void _destroy_native_graph();
+};
+
+// ----------------------------------------------------------------------------
 // cudaNode class
 // ----------------------------------------------------------------------------
 
@@ -23,7 +72,6 @@ class cudaNode {
 
   friend class Taskflow;
   friend class Executor;
-
   
   // Noop handle
   struct Noop {
@@ -96,54 +144,6 @@ class cudaNode {
     PassiveVector<cudaNode*> _successors;
 
     void _precede(cudaNode*);
-};
-
-// ----------------------------------------------------------------------------
-// cudaGraph class
-// ----------------------------------------------------------------------------
-
-// class: cudaGraph
-class cudaGraph {
-
-  friend class cudaFlow;
-  friend class cudaNode;
-  friend class cudaTask;
-  
-  friend class Taskflow;
-  friend class Executor;
-
-  struct NativeHandle {
-    cudaGraph_t graph {nullptr};
-    cudaGraphExec_t image {nullptr};
-  };
-
-  public:
-    
-    cudaGraph() = default;
-    ~cudaGraph();
-
-    cudaGraph(const cudaGraph&) = delete;
-    cudaGraph(cudaGraph&&);
-    
-    cudaGraph& operator = (const cudaGraph&);
-    cudaGraph& operator = (cudaGraph&&);
-
-    template <typename... ArgsT>
-    cudaNode* emplace_back(ArgsT&&...);
-
-    void clear();
-
-    bool empty() const;
-
-  private:
-    
-    NativeHandle _native_handle;
-
-    //std::vector<std::unique_ptr<cudaNode>> _nodes;
-    std::vector<cudaNode*> _nodes;
-
-    void _create_native_graph();
-    void _destroy_native_graph();
 };
 
 // ----------------------------------------------------------------------------

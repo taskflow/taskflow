@@ -226,9 +226,9 @@ class cudaFlow {
     @brief offloads the cudaFlow once and then joins the execution
     */
     void join();
-    
+
     // ------------------------------------------------------------------------
-    // generic operations
+    // generic algorithms
     // ------------------------------------------------------------------------
     
     /**
@@ -334,7 +334,9 @@ class cudaFlow {
     //cudaTask matmul(const T* A, const T* B, T* C, size_t M, size_t K, size_t N);
     //
     //
-
+    //
+    //
+    //
   private:
     
     cudaFlow(Executor& executor, cudaGraph& graph);
