@@ -101,7 +101,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"contributors.html#ThankYouForDevelopingTaskflow"
+"codeofconduct.html#ReportViolations"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

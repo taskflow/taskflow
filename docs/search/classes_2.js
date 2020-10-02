@@ -32,6 +32,7 @@ var searchData=
   ['ctype',['ctype',['http://en.cppreference.com/w/cpp/locale/ctype.html',1,'std']]],
   ['ctype_5fbase',['ctype_base',['http://en.cppreference.com/w/cpp/locale/ctype_base.html',1,'std']]],
   ['ctype_5fbyname',['ctype_byname',['http://en.cppreference.com/w/cpp/locale/ctype_byname.html',1,'std']]],
+  ['cudablaf',['cudaBLAF',['../classtf_1_1cudaBLAF.html',1,'tf']]],
   ['cudaflow',['cudaFlow',['../classtf_1_1cudaFlow.html',1,'tf']]],
   ['cudatask',['cudaTask',['../classtf_1_1cudaTask.html',1,'tf']]]
 ];

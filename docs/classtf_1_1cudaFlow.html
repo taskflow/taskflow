@@ -163,20 +163,19 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ab5a7c12e383be4972844a9f29033e487"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#ab5a7c12e383be4972844a9f29033e487">for_each_index</a> (I first, I last, I step, C &amp;&amp;callable)</td></tr>
 <tr class="memdesc:ab5a7c12e383be4972844a9f29033e487"><td class="mdescLeft">&#160;</td><td class="mdescRight">applies a callable to each index in the range with the step size  <a href="#ab5a7c12e383be4972844a9f29033e487">More...</a><br /></td></tr>
 <tr class="separator:ab5a7c12e383be4972844a9f29033e487"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56d0389eeca479ba73419bc011c1a23e"><td class="memTemplParams" colspan="2">template&lt;typename T , typename C , typename... S&gt; </td></tr>
-<tr class="memitem:a56d0389eeca479ba73419bc011c1a23e"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a56d0389eeca479ba73419bc011c1a23e">transform</a> (T *tgt, size_t N, C &amp;&amp;callable, S *... srcs)</td></tr>
-<tr class="memdesc:a56d0389eeca479ba73419bc011c1a23e"><td class="mdescLeft">&#160;</td><td class="mdescRight">applies a callable to a source range and stores the result in a target ange  <a href="#a56d0389eeca479ba73419bc011c1a23e">More...</a><br /></td></tr>
-<tr class="separator:a56d0389eeca479ba73419bc011c1a23e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e64e55f0bd81c1630b1ee5c64ae0baa"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a1e64e55f0bd81c1630b1ee5c64ae0baa"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a1e64e55f0bd81c1630b1ee5c64ae0baa">transpose</a> (const T *d_in, T *d_out, size_t rows, size_t cols)</td></tr>
-<tr class="memdesc:a1e64e55f0bd81c1630b1ee5c64ae0baa"><td class="mdescLeft">&#160;</td><td class="mdescRight">transposes a two-dimenstional matrix  <a href="#a1e64e55f0bd81c1630b1ee5c64ae0baa">More...</a><br /></td></tr>
-<tr class="separator:a1e64e55f0bd81c1630b1ee5c64ae0baa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a552f2da29009113beee4ee90bc95ae65"><td class="memTemplParams" colspan="2">template&lt;typename I , typename C , typename... S&gt; </td></tr>
+<tr class="memitem:a552f2da29009113beee4ee90bc95ae65"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a552f2da29009113beee4ee90bc95ae65">transform</a> (I first, I last, C &amp;&amp;callable, S... srcs)</td></tr>
+<tr class="memdesc:a552f2da29009113beee4ee90bc95ae65"><td class="mdescLeft">&#160;</td><td class="mdescRight">applies a callable to a source range and stores the result in a target ange  <a href="#a552f2da29009113beee4ee90bc95ae65">More...</a><br /></td></tr>
+<tr class="separator:a552f2da29009113beee4ee90bc95ae65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
 <tr class="memitem:a763b2f90bc53f92d680a635fe28e858e"><td class="memItemLeft" align="right" valign="top"><a id="a763b2f90bc53f92d680a635fe28e858e"></a>
 class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></tr>
 <tr class="separator:a763b2f90bc53f92d680a635fe28e858e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afebf3203026138955ebc3a750d937db6"><td class="memItemLeft" align="right" valign="top"><a id="afebf3203026138955ebc3a750d937db6"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><b>cudaBLAS</b></td></tr>
+<tr class="separator:afebf3203026138955ebc3a750d937db6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>methods for building a CUDA task dependency graph. </p>
@@ -790,25 +789,25 @@ template&lt;typename F , typename... ArgsT&gt; </div>
 
 </div>
 </div>
-<a id="a56d0389eeca479ba73419bc011c1a23e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56d0389eeca479ba73419bc011c1a23e">&#9670;&nbsp;</a></span>transform()</h2>
+<a id="a552f2da29009113beee4ee90bc95ae65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a552f2da29009113beee4ee90bc95ae65">&#9670;&nbsp;</a></span>transform()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename C , typename... S&gt; </div>
+template&lt;typename I , typename C , typename... S&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> tf::cudaFlow::transform </td>
           <td>(</td>
-          <td class="paramtype">T *&#160;</td>
-          <td class="paramname"><em>tgt</em>, </td>
+          <td class="paramtype">I&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>N</em>, </td>
+          <td class="paramtype">I&#160;</td>
+          <td class="paramname"><em>last</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -819,7 +818,7 @@ template&lt;typename T , typename C , typename... S&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">S *...&#160;</td>
+          <td class="paramtype">S...&#160;</td>
           <td class="paramname"><em>srcs</em>&#160;</td>
         </tr>
         <tr>
@@ -833,7 +832,7 @@ template&lt;typename T , typename C , typename... S&gt; </div>
 <p>applies a callable to a source range and stores the result in a target ange </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>result type </td></tr>
+    <tr><td class="paramname">I</td><td>iterator type </td></tr>
     <tr><td class="paramname">C</td><td>callable type </td></tr>
     <tr><td class="paramname">S</td><td>source types</td></tr>
   </table>
@@ -841,76 +840,16 @@ template&lt;typename T , typename C , typename... S&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tgt</td><td>pointer to the starting address of the target range </td></tr>
-    <tr><td class="paramname">N</td><td>number of elements in the range </td></tr>
+    <tr><td class="paramname">first</td><td>iterator to the beginning (inclusive) </td></tr>
+    <tr><td class="paramname">last</td><td>iterator to the end (exclusive) </td></tr>
     <tr><td class="paramname">callable</td><td>the callable to apply to each element in the range </td></tr>
-    <tr><td class="paramname">srcs</td><td>pointers to the starting addresses of source ranges</td></tr>
+    <tr><td class="paramname">srcs</td><td>iterators to the source ranges</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p>
-<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i=0; i&lt;N; i++) {</div><div class="line">  tgt[i] = callable(src1[i], src2[i], src3[i], ...);</div><div class="line">}</div></div><!-- fragment --> 
-</div>
-</div>
-<a id="a1e64e55f0bd81c1630b1ee5c64ae0baa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e64e55f0bd81c1630b1ee5c64ae0baa">&#9670;&nbsp;</a></span>transpose()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> tf::cudaFlow::transpose </td>
-          <td>(</td>
-          <td class="paramtype">const T *&#160;</td>
-          <td class="paramname"><em>d_in</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T *&#160;</td>
-          <td class="paramname"><em>d_out</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>rows</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>cols</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>transposes a two-dimenstional matrix </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>data type </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">d_in</td><td>pointer to the source matrix </td></tr>
-    <tr><td class="paramname">d_out</td><td>pointer to the target matrix </td></tr>
-    <tr><td class="paramname">rows</td><td>number of rows in the source matrix </td></tr>
-    <tr><td class="paramname">cols</td><td>number of columns in the source matrix</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle </dd></dl>
-
+<div class="fragment"><div class="line"><span class="keywordflow">while</span> (first != last) {</div><div class="line">  *first++ = callable(*src1++, *src2++, *src3++, ...);</div><div class="line">}</div></div><!-- fragment --> 
 </div>
 </div>
 <a id="a91c1739bb9a2832f306f3d12693a0994"></a>

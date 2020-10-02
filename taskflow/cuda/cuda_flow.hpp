@@ -1,7 +1,8 @@
 #pragma once
 
 #include "cuda_task.hpp"
-#include "cuda_ops.hpp"
+#include "cuda_algorithm/cuda_for_each.hpp"
+#include "cuda_algorithm/cuda_transform.hpp"
 
 namespace tf {
 
@@ -26,6 +27,7 @@ for instance, kernel tasks, data transfer tasks, and memory operation tasks.
 class cudaFlow {
 
   friend class Executor;
+  friend class cudaBLAS;
 
   public:
 
@@ -313,30 +315,7 @@ class cudaFlow {
     //template <typename T, typename B>
     //cudaTask reduce(T* tgt, size_t N, T& init, B&& op);
     
-    /**
-    @brief transposes a two-dimenstional matrix
 
-    @tparam T data type
-    @param d_in pointer to the source matrix
-    @param d_out pointer to the target matrix
-    @param rows number of rows in the source matrix
-    @param cols number of columns in the source matrix
-
-    @return cudaTask handle
-    */
-    template <typename T>
-    cudaTask transpose(const T* d_in, T* d_out, size_t rows, size_t cols);
-
-    //template <typename T>
-    //cudaTask inplace_transpose(T* data, size_t rows, size_t cols);
-
-    //template <typename T>
-    //cudaTask matmul(const T* A, const T* B, T* C, size_t M, size_t K, size_t N);
-    //
-    //
-    //
-    //
-    //
   private:
     
     cudaFlow(Executor& executor, cudaGraph& graph);
@@ -692,30 +671,6 @@ cudaTask cudaFlow::transform(I first, I last, C&& c, S... srcs) {
     (N+B-1) / B, B, 0, cuda_transform<I, C, S...>, 
     first, N, std::forward<C>(c), srcs...
   );
-}
-
-// Function: row-wise matrix transpose
-template <typename T>
-cudaTask cudaFlow::transpose(const T* d_in, T* d_out, size_t rows, size_t cols) {
-
-  if(rows == 0 || cols == 0) {
-    return noop();
-  }
-
-  size_t grid_dimx = (cols + 31) / 32;
-  size_t grid_dimy = (rows + 31) / 32;
-  
-  return kernel(
-    dim3(grid_dimx, grid_dimy, 1),
-    dim3(32, 8, 1),
-    0,
-    cuda_transpose<T>,
-    d_in,
-    d_out,
-    rows,
-    cols
-  );
-
 }
 
 //template <typename T, typename B>>

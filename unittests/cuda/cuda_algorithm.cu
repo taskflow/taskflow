@@ -521,7 +521,7 @@ void transpose() {
         auto h2d_input = cf.copy(dinput_mat, hinput_mat.data(), rows * cols).name("h2d");
         auto d2h_output = cf.copy(houtput_mat.data(), doutput_mat, rows * cols).name("d2h");
 
-        auto kernel = cf.transpose(
+        auto kernel = tf::cudaBLAF(cf).transpose(
           dinput_mat,
           doutput_mat,
           rows,

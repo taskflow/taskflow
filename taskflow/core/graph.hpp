@@ -13,6 +13,7 @@
 #if defined(__CUDA__) || defined(__CUDACC__)
 #define TF_ENABLE_CUDA
 #include "../cuda/cuda_flow.hpp"
+#include "../cuda/cuda_algorithm/cuda_blaf.hpp"
 #endif
 
 namespace tf {

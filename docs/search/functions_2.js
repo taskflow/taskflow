@@ -39,6 +39,7 @@ var searchData=
   ['csub_5fmatch',['csub_match',['http://en.cppreference.com/w/cpp/regex/sub_match/sub_match.html',1,'std::csub_match']]],
   ['ctype',['ctype',['http://en.cppreference.com/w/cpp/locale/ctype/ctype.html',1,'std::ctype']]],
   ['ctype_5fbyname',['ctype_byname',['http://en.cppreference.com/w/cpp/locale/ctype_byname.html',1,'std::ctype_byname']]],
+  ['cudablaf',['cudaBLAF',['../classtf_1_1cudaBLAF.html#a3525fd83f636825d25e8f4740a1e8cb2',1,'tf::cudaBLAF']]],
   ['cudatask',['cudaTask',['../classtf_1_1cudaTask.html#a68942b759c0420da99b639a8de3cc3d1',1,'tf::cudaTask::cudaTask()=default'],['../classtf_1_1cudaTask.html#a367cf46c1ea828de4502a2ddc805c094',1,'tf::cudaTask::cudaTask(const cudaTask &amp;)=default']]],
   ['curr_5fsymbol',['curr_symbol',['http://en.cppreference.com/w/cpp/locale/moneypunct/curr_symbol.html',1,'std::moneypunct_byname::curr_symbol()'],['http://en.cppreference.com/w/cpp/locale/moneypunct/curr_symbol.html',1,'std::moneypunct::curr_symbol()']]]
 ];
