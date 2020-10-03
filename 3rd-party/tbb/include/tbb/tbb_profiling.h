@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_profiling_H
 #define __TBB_profiling_H
+
+#define __TBB_tbb_profiling_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 namespace tbb {
     namespace internal {
@@ -122,6 +121,7 @@ namespace tbb {
 #endif /* no tools support */
 
 #include "atomic.h"
+
 // Need these to work regardless of tools support
 namespace tbb {
     namespace internal {
@@ -140,6 +140,8 @@ namespace tbb {
                                                          void *parent, unsigned long long parent_extra, string_index name_index );
         void __TBB_EXPORTED_FUNC itt_metadata_str_add_v7( itt_domain_enum domain, void *addr, unsigned long long addr_extra,
                                                           string_index key, const char *value );
+        void __TBB_EXPORTED_FUNC itt_metadata_ptr_add_v11( itt_domain_enum domain, void *addr, unsigned long long addr_extra,
+                                                           string_index key, void* value );
         void __TBB_EXPORTED_FUNC itt_relation_add_v7( itt_domain_enum domain, void *addr0, unsigned long long addr0_extra,
                                                       itt_relation relation, void *addr1, unsigned long long addr1_extra );
         void __TBB_EXPORTED_FUNC itt_task_begin_v7( itt_domain_enum domain, void *task, unsigned long long task_extra,
@@ -241,6 +243,11 @@ namespace tbb {
                                           string_index key, const char *value ) {
             itt_metadata_str_add_v7( domain, addr, addr_extra, key, value );
         }
+        
+        inline void register_node_addr(itt_domain_enum domain, void *addr, unsigned long long addr_extra,
+            string_index key, void *value) {
+            itt_metadata_ptr_add_v11(domain, addr, addr_extra, key, value);
+        }
 
         inline void itt_relation_add( itt_domain_enum domain, void *addr0, unsigned long long addr0_extra,
                                       itt_relation relation, void *addr1, unsigned long long addr1_extra ) {
@@ -265,6 +272,7 @@ namespace tbb {
             itt_region_end_v9( domain, region, region_extra );
         }
 #else
+        inline void register_node_addr( itt_domain_enum /*domain*/, void* /*addr*/, unsigned long long /*addr_extra*/, string_index /*key*/, void* /*value*/ ) {}
         inline void call_itt_notify(notify_type /*t*/, void* /*ptr*/) {}
 
         inline void itt_make_task_group( itt_domain_enum /*domain*/, void* /*group*/, unsigned long long /*group_extra*/,
@@ -340,5 +348,8 @@ using interface10::event;
 } // namespace profiling
 } // namespace tbb
 #endif // TBB_PREVIEW_FLOW_GRAPH_TRACE
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_tbb_profiling_H_include_area
 
 #endif /* __TBB_profiling_H */

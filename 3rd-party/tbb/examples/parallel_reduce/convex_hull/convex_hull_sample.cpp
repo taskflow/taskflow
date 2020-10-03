@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 /*
@@ -28,7 +24,6 @@
 */
 #include "convex_hull.h"
 
-#include "tbb/task_scheduler_init.h"
 #include "tbb/parallel_for.h"
 #include "tbb/parallel_reduce.h"
 #include "tbb/blocked_range.h"
@@ -259,9 +254,10 @@ void quickhull(const pointVec_t &points, pointVec_t &hull) {
 }
 
 int main(int argc, char* argv[]) {
+    utility::thread_number_range threads(utility::get_default_num_threads);
     util::my_time_t tm_main_begin = util::gettime();
 
-    util::ParseInputArgs(argc, argv);
+    util::ParseInputArgs(argc, argv, threads);
 
     pointVec_t      points;
     pointVec_t      hull;
@@ -273,8 +269,8 @@ int main(int argc, char* argv[]) {
         std::cout << "Starting TBB-buffered version of QUICK HULL algorithm" << std::endl;
     }
 
-    for(nthreads=cfg::threads.first; nthreads<=cfg::threads.last; nthreads=cfg::threads.step(nthreads)) {
-        tbb::task_scheduler_init init(nthreads);
+    for(nthreads=threads.first; nthreads<=threads.last; nthreads=threads.step(nthreads)) {
+        tbb::global_control c(tbb::global_control::max_allowed_parallelism, nthreads);
 
         points.clear();
         util::my_time_t tm_init = util::gettime();

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,20 +12,19 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "harness.h"
+
 #if __TBB_CPF_BUILD
 #define TBB_DEPRECATED_FLOW_NODE_EXTRACTION 1
 #include "harness_graph.h"
 #endif
+
 #include "tbb/flow_graph.h"
 #include "tbb/atomic.h"
 #include "tbb/task_scheduler_init.h"
+#include "test_follows_and_precedes_api.h"
 
 const int L = 10;
 const int N = 1000;
@@ -44,7 +43,7 @@ struct serial_receiver : public tbb::flow::receiver<T>, NoAssign {
        return const_cast<tbb::task *>(SUCCESSFULLY_ENQUEUED);
    }
 
-    tbb::flow::graph& graph_reference() __TBB_override {
+    tbb::flow::graph& graph_reference() const __TBB_override {
         return my_graph;
     }
 
@@ -76,7 +75,7 @@ struct parallel_receiver : public tbb::flow::receiver<T>, NoAssign {
        return const_cast<tbb::task *>(tbb::flow::internal::SUCCESSFULLY_ENQUEUED);
     }
 
-    tbb::flow::graph& graph_reference() __TBB_override {
+    tbb::flow::graph& graph_reference() const __TBB_override {
         return my_graph;
     }
 
@@ -166,7 +165,8 @@ void test_puts_with_decrements( int num_threads, tbb::flow::limiter_node< T >& l
     ASSERT(lim.decrement.predecessor_count() == 1, NULL);
     ASSERT(lim.successor_count() == 1, NULL);
     ASSERT(lim.predecessor_count() == 0, NULL);
-    typename tbb::flow::interface10::internal::decrementer<tbb::flow::limiter_node<T> >::predecessor_list_type dec_preds;
+    typename tbb::flow::interface11::internal::decrementer
+        <tbb::flow::limiter_node<T>, tbb::flow::continue_msg>::predecessor_list_type dec_preds;
     lim.decrement.copy_predecessors(dec_preds);
     ASSERT(dec_preds.size() == 1, NULL);
 #endif
@@ -181,7 +181,7 @@ void test_puts_with_decrements( int num_threads, tbb::flow::limiter_node< T >& l
 // Tests
 //
 // limiter only forwards below the limit, multiple parallel senders / single receiver
-// mutiple parallel senders that put to decrement at each accept, limiter accepts new messages
+// multiple parallel senders that put to decrement at each accept, limiter accepts new messages
 //
 //
 template< typename T >
@@ -366,21 +366,57 @@ test_continue_msg_reception() {
     ASSERT(qn.try_get(outint) && outint == 42, "initial put to decrement stops node");
 }
 
+#if TBB_DEPRECATED_LIMITER_NODE_CONSTRUCTOR
+using namespace tbb::flow;
+void run_and_check_result(graph& g, limiter_node<int>& limit, queue_node<int>& queue, broadcast_node<continue_msg>& broad) {
+    ASSERT( limit.try_put(1), NULL );
+    ASSERT( limit.try_put(2), NULL );
+    ASSERT( !limit.try_put(3), NULL );
+    ASSERT( broad.try_put(continue_msg()), NULL );
+    ASSERT( limit.decrement.try_put(continue_msg()), NULL );
+    ASSERT( limit.try_put(4), NULL );
+    ASSERT( !limit.try_put(5), NULL );
+    g.wait_for_all();
 
+    int list[] = {1, 2, 4};
+    int var = 0;
+    for (size_t i = 0; i < sizeof(list)/sizeof(list[0]); i++) {
+        queue.try_get(var);
+        ASSERT(var==list[i], "some data dropped, input does not match output");
+    }
+}
+
+void test_num_decrement_predecessors() {
+    graph g;
+    queue_node<int> output_queue(g);
+    limiter_node<int> limit1(g, 2, /*number_of_predecessors*/1);
+    limiter_node<int, continue_msg> limit2(g, 2, /*number_of_predecessors*/1);
+    broadcast_node<continue_msg> broadcast(g);
+
+    make_edge(limit1, output_queue);
+    make_edge(limit2, output_queue);
+
+    make_edge(broadcast, limit1.decrement);
+    make_edge(broadcast, limit2.decrement);
+
+    run_and_check_result(g, limit1, output_queue, broadcast);
+    run_and_check_result(g, limit2, output_queue, broadcast);
+}
+#else // TBB_DEPRECATED_LIMITER_NODE_CONSTRUCTOR
 //
 // This test ascertains that if a message is not successfully put
 // to a successor, the message is not dropped but released.
 //
 
-using namespace tbb::flow;
 void test_reserve_release_messages() {
+    using namespace tbb::flow;
     graph g;
 
     //making two queue_nodes: one broadcast_node and one limiter_node
     queue_node<int> input_queue(g);
     queue_node<int> output_queue(g);
-    broadcast_node<continue_msg> broad(g);
-    limiter_node<int> limit(g,2,1); //threshold of 2
+    broadcast_node<int> broad(g);
+    limiter_node<int, int> limit(g,2); //threshold of 2
 
     //edges
     make_edge(input_queue, limit);
@@ -396,27 +432,69 @@ void test_reserve_release_messages() {
 
     remove_edge(limit, output_queue); //remove successor
 
-    //sending continue messages to the decrement port of the limiter
-    broad.try_put(continue_msg());
-    broad.try_put(continue_msg()); //failed message retrieved.
+    //sending message to the decrement port of the limiter
+    broad.try_put(1); //failed message retrieved.
     g.wait_for_all();
 
     make_edge(limit, output_queue); //putting the successor back
 
-    broad.try_put(continue_msg());
-    broad.try_put(continue_msg());  //drop the count
+    broad.try_put(1);  //drop the count
 
     input_queue.try_put(list[3]);  //success
     g.wait_for_all();
 
     int var=0;
 
-    for (int i=0; i<4; i++){
-    output_queue.try_get(var);
-    ASSERT(var==list[i], "some data dropped, input does not match output");
-    g.wait_for_all();
-  }
+    for (int i=0; i<4; i++) {
+        output_queue.try_get(var);
+        ASSERT(var==list[i], "some data dropped, input does not match output");
+        g.wait_for_all();
+    }
 }
+
+void test_decrementer() {
+    const int threshold = 5;
+    tbb::flow::graph g;
+    tbb::flow::limiter_node<int, int> limit(g, threshold);
+    tbb::flow::queue_node<int> queue(g);
+    make_edge(limit, queue);
+    int m = 0;
+    ASSERT( limit.try_put( m++ ), "Newly constructed limiter node does not accept message." );
+    ASSERT( limit.decrement.try_put( -threshold ), // close limiter's gate
+            "Limiter node decrementer's port does not accept message." );
+    ASSERT( !limit.try_put( m++ ), "Closed limiter node's accepts message." );
+    ASSERT( limit.decrement.try_put( threshold + 5 ),  // open limiter's gate
+            "Limiter node decrementer's port does not accept message." );
+    for( int i = 0; i < threshold; ++i )
+        ASSERT( limit.try_put( m++ ), "Limiter node does not accept message while open." );
+    ASSERT( !limit.try_put( m ), "Limiter node's gate is not closed." );
+    g.wait_for_all();
+    int expected[] = {0, 2, 3, 4, 5, 6};
+    int actual = -1; m = 0;
+    while( queue.try_get(actual) )
+        ASSERT( actual == expected[m++], NULL );
+    ASSERT( sizeof(expected) / sizeof(expected[0]) == m, "Not all messages have been processed." );
+    g.wait_for_all();
+
+    const size_t threshold2 = size_t(-1);
+    tbb::flow::limiter_node<int, long long> limit2(g, threshold2);
+    make_edge(limit2, queue);
+    ASSERT( limit2.try_put( 1 ), "Newly constructed limiter node does not accept message." );
+    long long decrement_value = (long long)( size_t(-1)/2 );
+    ASSERT( limit2.decrement.try_put( -decrement_value ),
+            "Limiter node decrementer's port does not accept message" );
+    ASSERT( limit2.try_put( 2 ), "Limiter's gate should not be closed yet." );
+    ASSERT( limit2.decrement.try_put( -decrement_value ),
+            "Limiter node decrementer's port does not accept message" );
+    ASSERT( !limit2.try_put( 3 ), "Overflow happened for internal counter." );
+    int expected2[] = {1, 2};
+    actual = -1; m = 0;
+    while( queue.try_get(actual) )
+        ASSERT( actual == expected2[m++], NULL );
+    ASSERT( sizeof(expected2) / sizeof(expected2[0]) == m, "Not all messages have been processed." );
+    g.wait_for_all();
+}
+#endif // TBB_DEPRECATED_LIMITER_NODE_CONSTRUCTOR
 
 #if TBB_DEPRECATED_FLOW_NODE_EXTRACTION
 void test_extract() {
@@ -529,6 +607,44 @@ void test_extract() {
 }
 #endif  // TBB_DEPRECATED_FLOW_NODE_EXTRACTION
 
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+#include <array>
+#include <vector>
+void test_follows_and_precedes_api() {
+    using msg_t = tbb::flow::continue_msg;
+
+    std::array<msg_t, 3> messages_for_follows= { {msg_t(), msg_t(), msg_t()} };
+    std::vector<msg_t> messages_for_precedes = {msg_t()};
+
+    follows_and_precedes_testing::test_follows
+        <msg_t, tbb::flow::limiter_node<msg_t, msg_t>>(messages_for_follows, 1000);
+    follows_and_precedes_testing::test_precedes
+        <msg_t, tbb::flow::limiter_node<msg_t, msg_t>>(messages_for_precedes, 1000);
+
+}
+#endif
+
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+void test_deduction_guides() {
+    using namespace tbb::flow;
+
+    graph g;
+    broadcast_node<int> br(g);
+    limiter_node<int> l0(g, 100);
+
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    limiter_node l1(follows(br), 100);
+    static_assert(std::is_same_v<decltype(l1), limiter_node<int>>);
+
+    limiter_node l2(precedes(br), 100);
+    static_assert(std::is_same_v<decltype(l2), limiter_node<int>>);
+#endif
+
+    limiter_node l3(l0);
+    static_assert(std::is_same_v<decltype(l3), limiter_node<int>>);
+}
+#endif
+
 int TestMain() {
     for (int i = 1; i <= 8; ++i) {
         tbb::task_scheduler_init init(i);
@@ -539,9 +655,20 @@ int TestMain() {
     test_multifunction_to_limiter(30,3);
     test_multifunction_to_limiter(300,13);
     test_multifunction_to_limiter(3000,1);
+#if TBB_DEPRECATED_LIMITER_NODE_CONSTRUCTOR
+    test_num_decrement_predecessors();
+#else
     test_reserve_release_messages();
+    test_decrementer();
+#endif
 #if TBB_DEPRECATED_FLOW_NODE_EXTRACTION
     test_extract();
+#endif
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    test_follows_and_precedes_api();
+#endif
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+    test_deduction_guides();
 #endif
    return Harness::Done;
 }

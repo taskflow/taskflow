@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 /*  The test uses "single produces multiple consumers" (SPMC )pattern to check
@@ -154,6 +150,22 @@ void RunTaskGenerators( bool switchProducer = false, bool checkProducer = false 
     tbb::task::destroy( *dummy_root );
 }
 
+#include "tbb/parallel_for.h"
+#include "tbb/task_arena.h"
+tbb::task_arena* BigArena;
+
+struct AffParFor {
+    void operator()() const {
+        for (int i = 0; i < 10; ++i)
+            tbb::parallel_for(0, BigArena->max_concurrency(), AffParFor(), tbb::static_partitioner());
+    }
+    void operator()(int) const {}
+};
+
+void RunAffinityTaskGenerator() {
+    BigArena->execute(AffParFor());
+}
+
 class TaskList: public tbb::task {
     const int my_num_childs;
 public:
@@ -200,6 +212,12 @@ void TestTaskReclamation() {
 
     tbb::task_scheduler_init init (MinThread);
     REMARK("Starting with %d threads\n", MinThread);
+
+    // Reserve multiple slots for masters to have slots that are never occupied.
+    // "+1" to avoid warning about maximum number of threads.
+    int num_threads = tbb::task_scheduler_init::default_num_threads() < 8 ? tbb::task_scheduler_init::default_num_threads() : 8;
+    BigArena = new tbb::task_arena(2*num_threads, num_threads+1);
+
     // For now, the master will produce "additional" tasks; later a worker will replace it;
     Producer  = internal::governor::local_scheduler();
     int N = InitialStatsIterations;
@@ -208,6 +226,7 @@ void TestTaskReclamation() {
         // First N iterations fill internal buffers and collect initial statistics
         RunTaskGenerators();
         RunTaskListGenerator();
+        RunAffinityTaskGenerator();
 
         size_t m = GetMemoryUsage();
         if( m-initial_amount_of_memory > 0)
@@ -233,6 +252,7 @@ void TestTaskReclamation() {
         // These iterations check for excessive memory use and unreasonable task count
         RunTaskGenerators( switchProducer, checkProducer );
         RunTaskListGenerator();
+        RunAffinityTaskGenerator();
 
         intptr_t n = internal::governor::local_scheduler()->get_task_node_count( /*count_arena_workers=*/true );
         size_t m = GetMemoryUsage();
@@ -260,6 +280,7 @@ void TestTaskReclamation() {
         }
     }
     ASSERT( last_error_iteration < MaxIterations - AsymptoticRange, "The amount of allocated tasks keeps growing. Leak is possible." );
+    delete BigArena;
 }
 
 int TestMain () {

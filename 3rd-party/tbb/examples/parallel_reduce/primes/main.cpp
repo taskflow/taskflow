@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "primes.h"
@@ -47,23 +43,9 @@ struct RunOptions{
     {}
 };
 
-int do_get_default_num_threads() {
-    int threads;
-    #if __TBB_MIC_OFFLOAD
-    #pragma offload target(mic) out(threads)
-    #endif // __TBB_MIC_OFFLOAD
-    threads = tbb::task_scheduler_init::default_num_threads();
-    return threads;
-}
-
-int get_default_num_threads() {
-    static int threads = do_get_default_num_threads();
-    return threads;
-}
-
 //! Parse the command line.
 static RunOptions ParseCommandLine( int argc, const char* argv[] ) {
-    utility::thread_number_range threads( get_default_num_threads, 0, get_default_num_threads() );
+    utility::thread_number_range threads( utility::get_default_num_threads, 0, utility::get_default_num_threads() );
     NumberType grainSize = 1000;
     bool silent = false;
     NumberType number = 100000000;

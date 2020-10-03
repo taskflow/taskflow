@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,16 +12,15 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
+
+#define TBB_DEPRECATED_INPUT_NODE_BODY __TBB_CPF_BUILD
 
 #include "harness_graph.h"
 #include "harness_barrier.h"
 #include "tbb/flow_graph.h"
 #include "tbb/task_scheduler_init.h"
+
 
 const int T = 4;
 const int W = 4;
@@ -250,6 +249,8 @@ struct source_body {
     tbb::task_arena* my_a;
     int counter;
     source_body(tbb::task_arena* a) : my_a(a), counter(0) {}
+
+#if TBB_DEPRECATED_INPUT_NODE_BODY
     bool operator()(const int& /*i*/) {
         check_arena(my_a);
         if (counter < 1) {
@@ -258,6 +259,15 @@ struct source_body {
        }
        return false;
     }
+#else
+    int operator()(tbb::flow_control &fc) {
+        check_arena(my_a);
+        if (counter++ >= 1) {
+            fc.stop();
+        }
+        return int();
+    }
+#endif
 };
 
 struct run_test_functor : tbb::internal::no_assign {
@@ -287,7 +297,7 @@ struct nodes_test_functor : tbb::internal::no_assign {
         // Continue, function, source nodes
         tbb::flow::continue_node< tbb::flow::continue_msg > c_n(my_graph, function_body<tbb::flow::continue_msg>(fg_arena));
         tbb::flow::function_node< int > f_n(my_graph, tbb::flow::unlimited, function_body<int>(fg_arena));
-        tbb::flow::source_node< int > s_n(my_graph, source_body(fg_arena), false);
+        tbb::flow::input_node< int > s_n(my_graph, source_body(fg_arena));
 
         // Multifunction node
         mf_node m_n(my_graph, tbb::flow::unlimited, multifunction_body(fg_arena));

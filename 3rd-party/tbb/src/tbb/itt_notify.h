@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef _TBB_ITT_NOTIFY
@@ -41,10 +37,7 @@ extern "C" void __itt_fini_ittlib(void);
 
 #if _WIN32||_WIN64
     #undef _T
-    #undef __itt_event_create
-    #define __itt_event_create __itt_event_createA
 #endif /* WIN */
-
 
 #endif /* DO_ITT_NOTIFY */
 
@@ -85,6 +78,9 @@ namespace tbb {
             *SyncObj_Mailbox,
             *SyncObj_TaskReturnList,
             *SyncObj_TaskStream,
+#if __TBB_PREVIEW_CRITICAL_TASKS
+            *SyncObj_CriticalTaskStream,
+#endif
             *SyncObj_ContextsList
             ;
 
@@ -92,11 +88,10 @@ namespace tbb {
         void __TBB_EXPORTED_FUNC itt_set_sync_name_v3( void* obj, const tchar* name);
 
     } // namespace internal
-
 } // namespace tbb
 
 // const_cast<void*>() is necessary to cast off volatility
-#define ITT_NOTIFY(name,obj)            __itt_notify_##name(const_cast<void*>(static_cast<volatile void*>(obj)))
+#define ITT_NOTIFY(name,obj)            __itt_##name(const_cast<void*>(static_cast<volatile void*>(obj)))
 #define ITT_THREAD_SET_NAME(name)       __itt_thread_set_name(name)
 #define ITT_FINI_ITTLIB()               __itt_fini_ittlib()
 #define ITT_SYNC_CREATE(obj, type, name) __itt_sync_create((void*)(obj), type, name, 2)

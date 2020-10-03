@@ -1,4 +1,4 @@
-; Copyright (c) 2005-2018 Intel Corporation
+; Copyright (c) 2005-2020 Intel Corporation
 ;
 ; Licensed under the Apache License, Version 2.0 (the "License");
 ; you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 ; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
-;
-;
-;
-;
 
 // This file is organized with a section for each .cpp file.
 // Each of these sections is in alphabetical order.
@@ -77,6 +73,11 @@ __TBB_SYMBOL( ?internal_attach@task_arena_base@internal@interface7@tbb@@IEAAXXZ 
 __TBB_SYMBOL( ?internal_enqueue@task_arena_base@internal@interface7@tbb@@IEBAXAEAVtask@4@_J@Z )
 __TBB_SYMBOL( ?internal_execute@task_arena_base@internal@interface7@tbb@@IEBAXAEAVdelegate_base@234@@Z )
 __TBB_SYMBOL( ?internal_wait@task_arena_base@internal@interface7@tbb@@IEBAXXZ )
+#if __TBB_NUMA_SUPPORT
+__TBB_SYMBOL( ?nodes_count@numa_topology@internal@tbb@@YAIXZ )
+__TBB_SYMBOL( ?fill@numa_topology@internal@tbb@@YAXPEAH@Z )
+__TBB_SYMBOL( ?default_concurrency@numa_topology@internal@tbb@@YAHH@Z )
+#endif /*__TBB_NUMA_SUPPORT*/
 #if __TBB_TASK_ISOLATION
 __TBB_SYMBOL( ?isolate_within_arena@internal@interface7@tbb@@YAXAEAVdelegate_base@123@_J@Z )
 #endif /* __TBB_TASK_ISOLATION */
@@ -140,6 +141,7 @@ __TBB_SYMBOL( ?itt_task_begin_v7@internal@tbb@@YAXW4itt_domain_enum@12@PEAX_K12W
 __TBB_SYMBOL( ?itt_task_end_v7@internal@tbb@@YAXW4itt_domain_enum@12@@Z )
 __TBB_SYMBOL( ?itt_region_begin_v9@internal@tbb@@YAXW4itt_domain_enum@12@PEAX_K12W4string_index@12@@Z )
 __TBB_SYMBOL( ?itt_region_end_v9@internal@tbb@@YAXW4itt_domain_enum@12@PEAX_K@Z )
+__TBB_SYMBOL( ?itt_metadata_ptr_add_v11@internal@tbb@@YAXW4itt_domain_enum@12@PEAX_KW4string_index@12@1@Z )
 
 // pipeline.cpp
 __TBB_SYMBOL( ??_7pipeline@tbb@@6B@ )
@@ -333,5 +335,11 @@ __TBB_SYMBOL( ?internal_destroy_condition_variable@internal@interface5@tbb@@YAXA
 __TBB_SYMBOL( ?active_value@global_control@interface9@tbb@@CA_KH@Z )
 __TBB_SYMBOL( ?internal_create@global_control@interface9@tbb@@AEAAXXZ )
 __TBB_SYMBOL( ?internal_destroy@global_control@interface9@tbb@@AEAAXXZ )
+
+#if __TBB_PREVIEW_RESUMABLE_TASKS
+__TBB_SYMBOL( ?internal_suspend@internal@tbb@@YAXPEAX0@Z )
+__TBB_SYMBOL( ?internal_resume@internal@tbb@@YAXPEAX@Z )
+__TBB_SYMBOL( ?internal_current_suspend_point@internal@tbb@@YAPEAXXZ )
+#endif
 
 #undef __TBB_SYMBOL

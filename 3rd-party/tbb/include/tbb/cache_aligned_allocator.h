@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_cache_aligned_allocator_H
@@ -24,7 +20,11 @@
 #include <new>
 #include "tbb_stddef.h"
 #if __TBB_ALLOCATOR_CONSTRUCT_VARIADIC
- #include <utility> // std::forward
+#include <utility> // std::forward
+#endif
+
+#if __TBB_CPP17_MEMORY_RESOURCE_PRESENT
+#include <memory_resource>
 #endif
 
 namespace tbb {
@@ -69,7 +69,6 @@ public:
     template<typename U> struct rebind {
         typedef cache_aligned_allocator<U> other;
     };
-
     cache_aligned_allocator() throw() {}
     cache_aligned_allocator( const cache_aligned_allocator& ) throw() {}
     template<typename U> cache_aligned_allocator(const cache_aligned_allocator<U>&) throw() {}
@@ -132,6 +131,79 @@ inline bool operator==( const cache_aligned_allocator<T>&, const cache_aligned_a
 template<typename T, typename U>
 inline bool operator!=( const cache_aligned_allocator<T>&, const cache_aligned_allocator<U>& ) {return false;}
 
+#if __TBB_CPP17_MEMORY_RESOURCE_PRESENT
+
+//! C++17 memory resource wrapper to ensure cache line size alignment
+class cache_aligned_resource : public std::pmr::memory_resource {
+public:
+    cache_aligned_resource() : cache_aligned_resource(std::pmr::get_default_resource()) {}
+    explicit cache_aligned_resource(std::pmr::memory_resource* upstream) : m_upstream(upstream) {}
+
+    std::pmr::memory_resource* upstream_resource() const {
+        return m_upstream;
+    }
+
+private:
+    //! We don't know what memory resource set. Use padding to guarantee alignment
+    void* do_allocate(size_t bytes, size_t alignment) override {
+        size_t cache_line_alignment = correct_alignment(alignment);
+        uintptr_t base = (uintptr_t)m_upstream->allocate(correct_size(bytes) + cache_line_alignment);
+        __TBB_ASSERT(base != 0, "Upstream resource returned NULL.");
+#if _MSC_VER && !defined(__INTEL_COMPILER)
+    // unary minus operator applied to unsigned type, result still unsigned
+    #pragma warning(push)
+    #pragma warning(disable: 4146 4706)
+#endif
+        // Round up to the next cache line (align the base address)
+        uintptr_t result = (base + cache_line_alignment) & -cache_line_alignment;
+#if _MSC_VER && !defined(__INTEL_COMPILER)
+    #pragma warning(pop)
+#endif
+        // Record where block actually starts.
+        ((uintptr_t*)result)[-1] = base;
+        return (void*)result;
+    }
+
+    void do_deallocate(void* ptr, size_t bytes, size_t alignment) override {
+        if (ptr) {
+            // Recover where block actually starts
+            uintptr_t base = ((uintptr_t*)ptr)[-1];
+            m_upstream->deallocate((void*)base, correct_size(bytes) + correct_alignment(alignment));
+        }
+    }
+
+    bool do_is_equal(const std::pmr::memory_resource& other) const noexcept override {
+        if (this == &other) { return true; }
+#if __TBB_USE_OPTIONAL_RTTI
+        const cache_aligned_resource* other_res = dynamic_cast<const cache_aligned_resource*>(&other);
+        return other_res && (this->upstream_resource() == other_res->upstream_resource());
+#else
+        return false;
+#endif
+    }
+
+    size_t correct_alignment(size_t alignment) {
+        __TBB_ASSERT(tbb::internal::is_power_of_two(alignment), "Alignment is not a power of 2");
+#if __TBB_CPP17_HW_INTERFERENCE_SIZE_PRESENT
+        size_t cache_line_size = std::hardware_destructive_interference_size;
+#else
+        size_t cache_line_size = internal::NFS_GetLineSize();
+#endif
+        return alignment < cache_line_size ? cache_line_size : alignment;
+    }
+
+    size_t correct_size(size_t bytes) {
+        // To handle the case, when small size requested. There could be not
+        // enough space to store the original pointer.
+        return bytes < sizeof(uintptr_t) ? sizeof(uintptr_t) : bytes;
+    }
+
+    std::pmr::memory_resource* m_upstream;
+};
+
+#endif /* __TBB_CPP17_MEMORY_RESOURCE_PRESENT */
+
 } // namespace tbb
 
 #endif /* __TBB_cache_aligned_allocator_H */
+

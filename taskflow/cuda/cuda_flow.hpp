@@ -84,7 +84,7 @@ class cudaFlow {
     @tparam F kernel function type
     @tparam ArgsT kernel function parameters type
     
-    @param d device identifier to luanch the kernel
+    @param d device identifier to launch the kernel
     @param g configured grid
     @param b configured block
     @param s configured shared memory
@@ -117,7 +117,7 @@ class cudaFlow {
 
     @return cudaTask handle
 
-    A memcpy task transfers @c bytes of data from a course location
+    A memcpy task transfers @c bytes of data from a source location
     to a target location. Direction can be arbitrary among CPUs and GPUs.
     */ 
     cudaTask memcpy(void* tgt, const void* src, size_t bytes);
@@ -227,7 +227,7 @@ class cudaFlow {
     /**
     @brief applies a callable to each dereferenced element of the data array
 
-    @tparam T data type
+    @tparam I iterator type
     @tparam C callable type
 
     @param data pointer to the beginning address of the data array
@@ -237,13 +237,13 @@ class cudaFlow {
     This method is equivalent to the parallel execution of the following loop on a GPU:
     
     @code{.cpp}
-    for(size_t i=0; i<N; i++) {
-      callable(data[i]);
+    for(auto itr = first; itr != last; i++) {
+      callable(*itr);
     }
     @endcode
     */
-    template <typename T, typename C>
-    cudaTask for_each(T* data, size_t N, C&& callable);
+    template <typename I, typename C>
+    cudaTask for_each(I first, I last, C&& callable);
 
     /**
     @brief applies a callable to each index in the range with the step size
@@ -300,9 +300,9 @@ class cudaFlow {
     //template <typename T, typename B>
     //cudaTask reduce(T* tgt, size_t N, T& init, B&& op);
 
-    //template <typename T>
-    //cudaTask transpose(const T* d_in, T* d_out, size_t rows, size_t cols);
-    //
+    template <typename T>
+    cudaTask transpose(const T* d_in, T* d_out, size_t rows, size_t cols);
+
     //template <typename T>
     //cudaTask inplace_transpose(T* data, size_t rows, size_t cols);
 
@@ -628,17 +628,14 @@ inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
 }
     
 // Function: for_each
-template <typename T, typename C>
-cudaTask cudaFlow::for_each(T* data, size_t N, C&& c) {
-      
-  if(N == 0) {
-    return noop();
-  }
+template <typename I, typename C>
+cudaTask cudaFlow::for_each(I first, I last, C&& c) {
   
+  size_t N = std::distance(first, last);
   size_t B = cuda_default_threads_per_block(N);
 
   return kernel(
-    (N+B-1) / B, B, 0, cuda_for_each<T, C>, data, N, std::forward<C>(c)
+    (N+B-1) / B, B, 0, cuda_for_each<I, C>, first, N, std::forward<C>(c)
   );
 }
 
@@ -678,6 +675,38 @@ cudaTask cudaFlow::transform(T* tgt, size_t N, C&& c, S*... srcs) {
     tgt, N, std::forward<C>(c), srcs...
   );
 }
+
+// Function: row-wise matrix transpose
+template <typename T>
+cudaTask cudaFlow::transpose(const T* d_in, T* d_out, size_t rows, size_t cols) {
+
+  if(rows == 0 || cols == 0) {
+    return noop();
+  }
+
+  size_t grid_dimx = (cols + 31) / 32;
+  size_t grid_dimy = (rows + 31) / 32;
+  
+  return kernel(
+    dim3(grid_dimx, grid_dimy, 1),
+    dim3(32, 8, 1),
+    0,
+    cuda_transpose<T>,
+    d_in,
+    d_out,
+    rows,
+    cols
+  );
+
+}
+
+//template <typename T, typename B>>
+//cudaTask cudaFlow::reduce(T* tgt, size_t N, T& init, B&& op) {
+  //if(N == 0) {
+    //return noop();
+  //}
+  //size_t B = cuda_default_threads_per_block(N);
+//}
 
 
 }  // end of namespace tf -----------------------------------------------------

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 /* Container implementations in this header are based on PPL implementations
@@ -44,7 +40,17 @@
     #include <initializer_list>
 #endif
 
+#if __TBB_CPP11_RVALUE_REF_PRESENT && !__TBB_IMPLICIT_COPY_DELETION_BROKEN
+    #define __TBB_UNORDERED_NODE_HANDLE_PRESENT 1
+#endif
+
+#include "_allocator_traits.h"
 #include "_tbb_hash_compare_impl.h"
+#include "_template_helpers.h"
+
+#if __TBB_UNORDERED_NODE_HANDLE_PRESENT
+#include "_node_handle_impl.h"
+#endif // __TBB_UNORDERED_NODE_HANDLE_PRESENT
 
 namespace tbb {
 namespace interface5 {
@@ -77,6 +83,11 @@ public:
     flist_iterator() : my_node_ptr(0) {}
     flist_iterator( const flist_iterator<Solist, typename Solist::value_type> &other )
         : my_node_ptr(other.my_node_ptr) {}
+
+    flist_iterator& operator=( const flist_iterator<Solist, typename Solist::value_type> &other ) {
+        my_node_ptr = other.my_node_ptr;
+        return *this;
+    }
 
     reference operator*() const { return my_node_ptr->my_element; }
     pointer operator->() const { return &**this; }
@@ -124,6 +135,8 @@ class solist_iterator : public flist_iterator<Solist, Value>
     friend class split_ordered_list;
     template<class M, typename V>
     friend class solist_iterator;
+    template <typename Traits>
+    friend class concurrent_unordered_base;
     template<typename M, typename T, typename U>
     friend bool operator==( const solist_iterator<M,T> &i, const solist_iterator<M,U> &j );
     template<typename M, typename T, typename U>
@@ -139,8 +152,14 @@ public:
     typedef typename Solist::reference reference;
 
     solist_iterator() {}
-    solist_iterator(const solist_iterator<Solist, typename Solist::value_type> &other )
+    solist_iterator( const solist_iterator<Solist, typename Solist::value_type> &other )
         : base_type(other), my_list_ptr(other.my_list_ptr) {}
+
+    solist_iterator& operator=( const solist_iterator<Solist, typename Solist::value_type> &other ) {
+        base_type::my_node_ptr = other.get_node_ptr();
+        my_list_ptr = other.my_list_ptr;
+        return *this;
+    }
 
     reference operator*() const {
         return this->base_type::operator*();
@@ -185,17 +204,20 @@ class split_ordered_list
 {
 public:
     typedef split_ordered_list<T, Allocator> self_type;
-    typedef typename Allocator::template rebind<T>::other allocator_type;
+
+    typedef typename tbb::internal::allocator_rebind<Allocator, T>::type allocator_type;
+
     struct node;
     typedef node *nodeptr_t;
 
-    typedef typename allocator_type::size_type size_type;
-    typedef typename allocator_type::difference_type difference_type;
-    typedef typename allocator_type::pointer pointer;
-    typedef typename allocator_type::const_pointer const_pointer;
-    typedef typename allocator_type::reference reference;
-    typedef typename allocator_type::const_reference const_reference;
-    typedef typename allocator_type::value_type value_type;
+    typedef typename tbb::internal::allocator_traits<allocator_type>::value_type value_type;
+    typedef typename tbb::internal::allocator_traits<allocator_type>::size_type size_type;
+    typedef typename tbb::internal::allocator_traits<allocator_type>::difference_type difference_type;
+    typedef typename tbb::internal::allocator_traits<allocator_type>::pointer pointer;
+    typedef typename tbb::internal::allocator_traits<allocator_type>::const_pointer const_pointer;
+    // No support for reference/const_reference in allocator traits
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
 
     typedef solist_iterator<self_type, const value_type> const_iterator;
     typedef solist_iterator<self_type, value_type> iterator;
@@ -218,6 +240,15 @@ public:
         // Return the order key (needed for hashing)
         sokey_t get_order_key() const { // TODO: remove
             return my_order_key;
+        }
+
+        // get() and value() is a common interface for getting access to node`s element (required by node_handle)
+        value_type* storage() {
+            return reinterpret_cast<value_type*>(&my_element);
+        }
+
+        value_type& value() {
+        return *storage();
         }
 
         // Inserts the new element in the list in an atomic fashion
@@ -564,26 +595,48 @@ public:
 
     }
 
-    // This erase function can handle both real and dummy nodes
-    void erase_node(raw_iterator previous, raw_const_iterator& where)
-    {
+    nodeptr_t  erase_node_impl(raw_iterator previous, raw_const_iterator& where) {
         nodeptr_t pnode = (where++).get_node_ptr();
         nodeptr_t prevnode = previous.get_node_ptr();
         __TBB_ASSERT(prevnode->my_next == pnode, "Erase must take consecutive iterators");
         prevnode->my_next = pnode->my_next;
+        return pnode;
+    }
 
+    // This erase function can handle both real and dummy nodes
+    void erase_node(raw_iterator previous, raw_const_iterator& where,
+                    /*allow_destroy*/tbb::internal::true_type)
+    {
+        nodeptr_t pnode = erase_node_impl(previous, where);
         destroy_node(pnode);
     }
 
+    void erase_node(raw_iterator previous, raw_const_iterator& where,
+                    /*allow_destroy*/tbb::internal::false_type)
+    {
+        erase_node_impl(previous, where);
+    }
+
+    void erase_node(raw_iterator previous, raw_const_iterator& where) {
+        erase_node(previous, where, /*allow_destroy*/tbb::internal::true_type());
+    }
+
     // Erase the element (previous node needs to be passed because this is a forward only list)
-    iterator erase_node(raw_iterator previous, const_iterator where)
+    template<typename AllowDestroy>
+    iterator erase_node(raw_iterator previous, const_iterator where, AllowDestroy)
     {
         raw_const_iterator it = where;
-        erase_node(previous, it);
+        erase_node(previous, it, AllowDestroy());
         my_element_count--;
 
         return get_iterator(first_real_iterator(it));
     }
+
+    iterator erase_node(raw_iterator previous, const_iterator& where) {
+        return erase_node(previous, where, /*allow_destroy*/tbb::internal::true_type());
+    }
+
+
 
     // Move all elements from the passed in split-ordered list to this one
     void move_all(self_type& source)
@@ -639,7 +692,7 @@ private:
 #endif
     }
 
-    typename allocator_type::template rebind<node>::other my_node_allocator;  // allocator object for nodes
+    typename tbb::internal::allocator_rebind<allocator_type, node>::type my_node_allocator; // allocator object for nodes
     size_type                                             my_element_count;   // Total item count, not counting dummy nodes
     nodeptr_t                                             my_head;            // pointer to head node
 };
@@ -661,12 +714,15 @@ protected:
     typedef typename Traits::allocator_type allocator_type;
     typedef typename hash_compare::hasher hasher;
     typedef typename hash_compare::key_equal key_equal;
-    typedef typename allocator_type::pointer pointer;
-    typedef typename allocator_type::const_pointer const_pointer;
-    typedef typename allocator_type::reference reference;
-    typedef typename allocator_type::const_reference const_reference;
-    typedef typename allocator_type::size_type size_type;
-    typedef typename allocator_type::difference_type difference_type;
+
+    typedef typename tbb::internal::allocator_traits<allocator_type>::size_type size_type;
+    typedef typename tbb::internal::allocator_traits<allocator_type>::difference_type difference_type;
+    typedef typename tbb::internal::allocator_traits<allocator_type>::pointer pointer;
+    typedef typename tbb::internal::allocator_traits<allocator_type>::const_pointer const_pointer;
+    // No support for reference/const_reference in allocator
+    typedef typename allocator_type::value_type& reference;
+    typedef const typename allocator_type::value_type& const_reference;
+
     typedef split_ordered_list<value_type, typename Traits::allocator_type> solist_t;
     typedef typename solist_t::nodeptr_t nodeptr_t;
     // Iterators that walk the entire split-order list, including dummy nodes
@@ -676,12 +732,19 @@ protected:
     typedef typename solist_t::const_iterator const_iterator;
     typedef iterator local_iterator;
     typedef const_iterator const_local_iterator;
+#if __TBB_UNORDERED_NODE_HANDLE_PRESENT
+    typedef typename Traits::node_type node_type;
+#endif // __TBB_UNORDERED_NODE_HANDLE_PRESENT
     using Traits::my_hash_compare;
     using Traits::get_key;
     using Traits::allow_multimapping;
 
     static const size_type initial_bucket_number = 8;                               // Initial number of buckets
+
 private:
+    template<typename OtherTraits>
+    friend class concurrent_unordered_base;
+
     typedef std::pair<iterator, iterator> pairii_t;
     typedef std::pair<const_iterator, const_iterator> paircc_t;
 
@@ -824,6 +887,49 @@ protected:
         internal_clear();
     }
 
+#if __TBB_UNORDERED_NODE_HANDLE_PRESENT
+    template<typename SourceType>
+    void internal_merge(SourceType& source) {
+        typedef typename SourceType::iterator source_iterator;
+        __TBB_STATIC_ASSERT((tbb::internal::is_same_type<node_type,
+                            typename SourceType::node_type>::value),
+                            "Incompatible containers cannot be merged");
+
+        for(source_iterator it = source.begin(); it != source.end();) {
+            source_iterator where = it++;
+            if (allow_multimapping || find(get_key(*where)) == end()) {
+                std::pair<node_type, raw_iterator> extract_result = source.internal_extract(where);
+
+                // Remember the old order key
+                sokey_t old_order_key = extract_result.first.my_node->get_order_key();
+
+                // If the insertion fails, it returns ownership of the node to extract_result.first
+                // extract_result.first remains valid node handle
+                if (!insert(std::move(extract_result.first)).second) {
+                    raw_iterator next = extract_result.second;
+                    raw_iterator current = next++;
+
+                    // Revert order key to old value
+                    extract_result.first.my_node->init(old_order_key);
+
+                    __TBB_ASSERT(extract_result.first.my_node->get_order_key() >= current.get_node_ptr()->get_order_key(),
+                                "Wrong nodes order in source container");
+                    __TBB_ASSERT(next==source.my_solist.raw_end() ||
+                                 extract_result.first.my_node->get_order_key() <= next.get_node_ptr()->get_order_key(),
+                                 "Wrong nodes order in source container");
+
+                    size_t new_count = 0;// To use try_insert()
+                    bool insert_result =
+                        source.my_solist.try_insert(current, next, extract_result.first.my_node, &new_count).second;
+                    __TBB_ASSERT_EX(insert_result, "Return to source must be successful. "
+                                                   "Changing source container while merging is unsafe.");
+                }
+                extract_result.first.deactivate();
+            }
+        }
+    }
+#endif // __TBB_UNORDERED_NODE_HANDLE_PRESENT
+
 public:
     allocator_type get_allocator() const {
         return my_solist.get_allocator();
@@ -960,7 +1066,8 @@ public:
 
     // Modifiers
     std::pair<iterator, bool> insert(const value_type& value) {
-        return internal_insert</*AllowCreate=*/tbb::internal::true_type>(value);
+        return internal_insert</*AllowCreate=*/tbb::internal::true_type,
+                               /*AllowDestroy=*/tbb::internal::true_type>(value);
     }
 
     iterator insert(const_iterator, const value_type& value) {
@@ -970,23 +1077,43 @@ public:
 
 #if __TBB_CPP11_RVALUE_REF_PRESENT
     std::pair<iterator, bool> insert(value_type&& value) {
-        return internal_insert</*AllowCreate=*/tbb::internal::true_type>(std::move(value));
+        return internal_insert</*AllowCreate=*/tbb::internal::true_type,
+                               /*AllowDestroy=*/tbb::internal::true_type>(std::move(value));
     }
 
     iterator insert(const_iterator, value_type&& value) {
         // Ignore hint
         return insert(std::move(value)).first;
     }
+#endif /*__TBB_CPP11_RVALUE_REF_PRESENT*/
 
-#if __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+#if __TBB_UNORDERED_NODE_HANDLE_PRESENT
+    std::pair<iterator, bool> insert(node_type&& nh) {
+        if (!nh.empty()) {
+            nodeptr_t handled_node = nh.my_node;
+            std::pair<iterator, bool> insert_result =
+                                      internal_insert</*AllowCreate=*/tbb::internal::false_type,
+                                                      /*AllowDestroy=*/tbb::internal::false_type>
+                                                      (handled_node->my_element, handled_node);
+            if (insert_result.second)
+                nh.deactivate();
+            return insert_result;
+        }
+        return std::pair<iterator, bool>(end(), false);
+    }
+
+    iterator insert(const_iterator, node_type&& nh) {
+        return insert(std::move(nh)).first;
+    }
+#endif // __TBB_UNORDERED_NODE_HANDLE_PRESENT
+
+#if __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT && __TBB_CPP11_RVALUE_REF_PRESENT
     template<typename... Args>
     std::pair<iterator, bool> emplace(Args&&... args) {
         nodeptr_t pnode = my_solist.create_node_v(tbb::internal::forward<Args>(args)...);
-        const sokey_t hashed_element_key = (sokey_t) my_hash_compare(get_key(pnode->my_element));
-        const sokey_t order_key = split_order_key_regular(hashed_element_key);
-        pnode->init(order_key);
 
-        return internal_insert</*AllowCreate=*/tbb::internal::false_type>(pnode->my_element, pnode);
+        return internal_insert</*AllowCreate=*/tbb::internal::false_type,
+                               /*AllowDestroy=*/tbb::internal::true_type>(pnode->my_element, pnode);
     }
 
     template<typename... Args>
@@ -994,9 +1121,8 @@ public:
         // Ignore hint
         return emplace(tbb::internal::forward<Args>(args)...).first;
     }
+#endif // __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT && __TBB_CPP11_RVALUE_REF_PRESENT
 
-#endif // __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
-#endif // __TBB_CPP11_RVALUE_REF_PRESENT
 
     template<class Iterator>
     void insert(Iterator first, Iterator last) {
@@ -1028,9 +1154,21 @@ public:
         return item_count;
     }
 
+#if __TBB_UNORDERED_NODE_HANDLE_PRESENT
+    node_type unsafe_extract(const_iterator where) {
+        return internal_extract(where).first;
+    }
+
+    node_type unsafe_extract(const key_type& key) {
+        pairii_t where = equal_range(key);
+        if (where.first == end()) return node_type(); // element was not found
+        return internal_extract(where.first).first;
+    }
+#endif // __TBB_UNORDERED_NODE_HANDLE_PRESENT
+
     void swap(concurrent_unordered_base& right) {
         if (this != &right) {
-            std::swap(my_hash_compare, right.my_hash_compare); // TODO: check what ADL meant here
+            std::swap(my_hash_compare, right.my_hash_compare);
             my_solist.swap(right.my_solist);
             internal_swap_buckets(right);
             std::swap(my_number_of_buckets, right.my_number_of_buckets);
@@ -1262,7 +1400,7 @@ private:
     }
 
     // Insert an element in the hash given its value
-    template<typename AllowCreate, typename ValueType>
+    template<typename AllowCreate, typename AllowDestroy, typename ValueType>
     std::pair<iterator, bool> internal_insert(__TBB_FORWARDING_REF(ValueType) value, nodeptr_t pnode = NULL)
     {
         const key_type *pkey = &get_key(value);
@@ -1272,6 +1410,11 @@ private:
         raw_iterator previous = prepare_bucket(hash_key);
         raw_iterator last = my_solist.raw_end();
         __TBB_ASSERT(previous != last, "Invalid head node");
+
+        if (pnode) {
+            // Set new order_key to node
+            pnode->init(order_key);
+        }
 
         // First node is a dummy node
         for (raw_iterator where = previous;;)
@@ -1311,7 +1454,7 @@ private:
             else if (!allow_multimapping && solist_t::get_order_key(where) == order_key &&
                      !my_hash_compare(get_key(*where), *pkey)) // TODO: fix negation
             { // Element already in the list, return it
-                 if (pnode)
+                 if (pnode && AllowDestroy::value)
                      my_solist.destroy_node(pnode);
                 return std::pair<iterator, bool>(my_solist.get_iterator(where), false);
             }
@@ -1357,14 +1500,33 @@ private:
         __TBB_ASSERT(previous != last, "Invalid head node");
 
         // First node is a dummy node
-        for (raw_iterator where = previous; ; previous = where) {
+        for (raw_iterator where = previous; where != last; previous = where) {
             ++where;
-            if (where == last)
-                return end();
-            else if (my_solist.get_iterator(where) == it)
+            if (my_solist.get_iterator(where) == it)
                 return my_solist.erase_node(previous, it);
         }
+        return end();
     }
+
+#if __TBB_UNORDERED_NODE_HANDLE_PRESENT
+    std::pair<node_type, raw_iterator> internal_extract(const_iterator it) {
+        sokey_t hash_key = sokey_t(my_hash_compare(get_key(*it)));
+        raw_iterator previous = prepare_bucket(hash_key);
+        raw_iterator last = my_solist.raw_end();
+        __TBB_ASSERT(previous != last, "Invalid head node");
+
+        for(raw_iterator where = previous; where != last; previous = where) {
+            ++where;
+            if (my_solist.get_iterator(where) == it) {
+                const_iterator result = it;
+                my_solist.erase_node(previous, it, /*allow_destroy*/tbb::internal::false_type());
+                return std::pair<node_type, raw_iterator>( node_type(result.get_node_ptr()),
+                                                           previous);
+            }
+        }
+        return std::pair<node_type, iterator>(node_type(), end());
+    }
+#endif // __TBB_UNORDERED_NODE_HANDLE_PRESENT
 
     // Return the [begin, end) pair of iterators with the same key values.
     // This operation makes sense only if mapping is many-to-one.
@@ -1507,7 +1669,7 @@ private:
     // Shared variables
     atomic<size_type>                                             my_number_of_buckets;       // Current table size
     solist_t                                                      my_solist;                  // List where all the elements are kept
-    typename allocator_type::template rebind<raw_iterator>::other my_allocator;               // Allocator object for segments
+    typename tbb::internal::allocator_rebind<allocator_type, raw_iterator>::type my_allocator; // Allocator object for segments
     float                                                         my_maximum_bucket_size;     // Maximum size of the bucket
     atomic<raw_iterator*>                                         my_buckets[pointers_per_table]; // The segment table
 };

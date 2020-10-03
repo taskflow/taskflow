@@ -38,7 +38,7 @@ PROJECT_NAME           = "Taskflow"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 2.7.0-master-branch
+PROJECT_NUMBER         = 2.7.0
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -261,7 +261,15 @@ ALIASES                = "std_invoke=<a href=\"https://en.cppreference.com/w/cpp
                          "nvidia_smi=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvidia-smi</a>"\
                          "SLOCCount=<a href=\"https://dwheeler.com/sloccount/\">SLOCCount</a>"\
                          "TBB=<a href=\"https://github.com/oneapi-src/oneTBB\">Intel TBB</a>"\
-                         "StarPU=<a href=\"http://starpu.gforge.inria.fr/\">StarPU</a>"
+                         "StarPU=<a href=\"http://starpu.gforge.inria.fr/\">StarPU</a>"\
+                         "OpenTimerGitHub=<a href=\"https://github.com/OpenTimer/OpenTimer\">OpenTimer</a>"\
+                         "ContactUs=<a href=\"https://taskflow.github.io/#tag_contact\">contact us</a>"\
+                         "ProjectWebsite=<a href=\"https://taskflow.github.io/\">project website</a>"\
+                         "ProjectGitHub=<a href=\"https://github.com/taskflow/\">project GitHub</a>"\
+                         "ShowcasePresentation=<a href=\"https://taskflow.github.io/showcase/index.html\">showcase presentation</a>"\
+                         "IssueTracker=<a href=\"https://github.com/taskflow/taskflow/issues\">issue tracker</a>"\
+                         "PullRequest=<a href=\"https://github.com/taskflow/taskflow/pulls\">pull request</a>"\
+                         "twhuang=<a href=\"https://tsung-wei-huang.github.io/\">Dr. Tsung-Wei Huang</a>"
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"
@@ -827,7 +835,9 @@ INPUT                  = ../taskflow/core/error.hpp \
                          QuickStart.dox \
                          install/install.dox \
                          releases/releases.dox \
-                         releases/master-branch.dox \
+                         releases/release-roadmap.dox \
+                         releases/release-3.0.0.dox \
+                         releases/release-2.7.0.dox \
                          releases/release-2.6.0.dox \
                          releases/release-2.5.0.dox \
                          releases/release-2.4.0.dox \
@@ -836,6 +846,7 @@ INPUT                  = ../taskflow/core/error.hpp \
                          releases/release-2.2.0.dox \
                          releases/release-2.1.0.dox \
                          releases/release-2.0.0.dox \
+                         releases/release-1.x.x.dox \
                          cookbook/Cookbook.dox \
                          cookbook/Chapter0.dox \
                          cookbook/Chapter1.dox \
@@ -857,6 +868,13 @@ INPUT                  = ../taskflow/core/error.hpp \
                          usecases/usecases.dox \
                          usecases/opentimer.dox \
                          usecases/dreamplace.dox \
+                         contributing/contributing.dox \
+                         contributing/guidelines.dox \
+                         contributing/contributors.dox \
+                         governance/governance.dox \
+                         governance/rules.dox \
+                         governance/team.dox \
+                         governance/codeofconduct.dox \
                          FAQ.dox \
                          references/references.dox \
                          header.html

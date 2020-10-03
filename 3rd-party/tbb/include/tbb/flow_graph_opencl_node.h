@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,24 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
+
+#include "internal/_deprecated_header_message_guard.h"
+
+#if !defined(__TBB_show_deprecation_message_flow_graph_opencl_node_H) && defined(__TBB_show_deprecated_header_message)
+#define  __TBB_show_deprecation_message_flow_graph_opencl_node_H
+#pragma message("TBB Warning: tbb/flow_graph_opencl_node.h is deprecated. For details, please see Deprecated Features appendix in the TBB reference manual.")
+#endif
+
+#if defined(__TBB_show_deprecated_header_message)
+#undef __TBB_show_deprecated_header_message
+#endif
 
 #ifndef __TBB_flow_graph_opencl_node_H
 #define __TBB_flow_graph_opencl_node_H
+
+#define __TBB_flow_graph_opencl_node_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 #include "tbb/tbb_config.h"
 #if __TBB_PREVIEW_OPENCL_NODE
@@ -43,7 +53,7 @@
 namespace tbb {
 namespace flow {
 
-namespace interface10 {
+namespace interface11 {
 
 template <typename DeviceFilter>
 class opencl_factory;
@@ -106,7 +116,7 @@ inline std::string platform_info<std::string>(cl_platform_id p, cl_platform_info
 }
 
 
-class opencl_device {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE opencl_device {
 public:
     typedef size_t device_id_type;
     enum : device_id_type {
@@ -254,7 +264,7 @@ private:
 #endif
 };
 
-class opencl_device_list {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE opencl_device_list {
     typedef std::vector<opencl_device> container_type;
 public:
     typedef container_type::iterator iterator;
@@ -352,7 +362,7 @@ public:
 };
 
 template <typename T, typename Factory = opencl_info::default_opencl_factory>
-class opencl_async_msg : public async_msg<T> {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE opencl_async_msg : public async_msg<T> {
 public:
     typedef T value_type;
 
@@ -508,7 +518,7 @@ public:
         my_curr_device_id = my_factory->devices().begin()->my_device_id;
     }
 
-    ~opencl_memory() {
+    virtual ~opencl_memory() {
         if ( my_sending_event_present ) enforce_cl_retcode( clReleaseEvent( my_sending_event ), "Failed to release an event for the OpenCL buffer" );
         enforce_cl_retcode( clReleaseMemObject( my_cl_mem ), "Failed to release an memory object" );
     }
@@ -627,10 +637,12 @@ enum access_type {
 };
 
 template <typename T, typename Factory = opencl_info::default_opencl_factory>
-class opencl_subbuffer;
+class __TBB_DEPRECATED_IN_VERBOSE_MODE
+opencl_subbuffer;
 
 template <typename T, typename Factory = opencl_info::default_opencl_factory>
-class opencl_buffer {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE
+opencl_buffer {
 public:
     typedef cl_mem native_object_type;
     typedef opencl_buffer memory_object_type;
@@ -704,7 +716,8 @@ private:
 };
 
 template <typename T, typename Factory>
-class opencl_subbuffer : public opencl_buffer<T, Factory> {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE
+opencl_subbuffer : public opencl_buffer<T, Factory> {
     opencl_buffer<T, Factory> my_owner;
 public:
     opencl_subbuffer() {}
@@ -780,7 +793,7 @@ typename std::enable_if<is_memory_object_type<T>::value>::type receive_if_memory
 template <typename T>
 typename std::enable_if<!is_memory_object_type<T>::value>::type  receive_if_memory_object( const T& ) {}
 
-class opencl_range {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE opencl_range {
 public:
     typedef size_t range_index_type;
     typedef std::array<range_index_type, 3> nd_range_type;
@@ -790,7 +803,7 @@ public:
     opencl_range(G&& global_work = std::initializer_list<int>({ 0 }), L&& local_work = std::initializer_list<int>({ 0, 0, 0 })) {
         auto g_it = global_work.begin();
         auto l_it = local_work.begin();
-        my_global_work_size = { size_t(-1), size_t(-1), size_t(-1) };
+        my_global_work_size = { {size_t(-1), size_t(-1), size_t(-1)} };
         // my_local_work_size is still uninitialized
         for (int s = 0; s < 3 && g_it != global_work.end(); ++g_it, ++l_it, ++s) {
             __TBB_ASSERT(l_it != local_work.end(), "global_work & local_work must have same size");
@@ -808,7 +821,7 @@ private:
 };
 
 template <typename DeviceFilter>
-class opencl_factory {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE opencl_factory {
 public:
     template<typename T> using async_msg_type = opencl_async_msg<T, opencl_factory<DeviceFilter>>;
     typedef opencl_device device_type;
@@ -1219,7 +1232,7 @@ enum class opencl_program_type {
 };
 
 template <typename Factory = opencl_info::default_opencl_factory>
-class opencl_program : tbb::internal::no_assign {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE opencl_program : tbb::internal::no_assign {
 public:
     typedef typename Factory::kernel_type kernel_type;
 
@@ -1398,15 +1411,15 @@ private:
     template <typename DeviceFilter>
     friend class opencl_factory;
 
-    template <typename DeviceFilter>
-    friend class opencl_factory<DeviceFilter>::kernel;
+    friend class Factory::kernel;
 };
 
 template<typename... Args>
-class opencl_node;
+class __TBB_DEPRECATED_IN_VERBOSE_MODE opencl_node;
 
 template<typename JP, typename Factory, typename... Ports>
-class opencl_node< tuple<Ports...>, JP, Factory > : public streaming_node< tuple<Ports...>, JP, Factory > {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE
+opencl_node< tuple<Ports...>, JP, Factory > : public streaming_node< tuple<Ports...>, JP, Factory > {
     typedef streaming_node < tuple<Ports...>, JP, Factory > base_type;
 public:
     typedef typename base_type::kernel_type kernel_type;
@@ -1414,25 +1427,26 @@ public:
     opencl_node( graph &g, const kernel_type& kernel )
         : base_type( g, kernel, opencl_info::default_device_selector< opencl_info::default_opencl_factory >(), opencl_info::default_factory() )
     {
-        tbb::internal::fgt_multiinput_multioutput_node( tbb::internal::FLOW_OPENCL_NODE, this, &this->my_graph );
+        tbb::internal::fgt_multiinput_multioutput_node( CODEPTR(), tbb::internal::FLOW_OPENCL_NODE, this, &this->my_graph );
     }
 
     opencl_node( graph &g, const kernel_type& kernel, Factory &f )
         : base_type( g, kernel, opencl_info::default_device_selector <Factory >(), f )
     {
-        tbb::internal::fgt_multiinput_multioutput_node( tbb::internal::FLOW_OPENCL_NODE, this, &this->my_graph );
+        tbb::internal::fgt_multiinput_multioutput_node( CODEPTR(), tbb::internal::FLOW_OPENCL_NODE, this, &this->my_graph );
     }
 
     template <typename DeviceSelector>
     opencl_node( graph &g, const kernel_type& kernel, DeviceSelector d, Factory &f)
         : base_type( g, kernel, d, f)
     {
-        tbb::internal::fgt_multiinput_multioutput_node( tbb::internal::FLOW_OPENCL_NODE, this, &this->my_graph );
+        tbb::internal::fgt_multiinput_multioutput_node( CODEPTR(), tbb::internal::FLOW_OPENCL_NODE, this, &this->my_graph );
     }
 };
 
 template<typename JP, typename... Ports>
-class opencl_node< tuple<Ports...>, JP > : public opencl_node < tuple<Ports...>, JP, opencl_info::default_opencl_factory > {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE
+opencl_node< tuple<Ports...>, JP > : public opencl_node < tuple<Ports...>, JP, opencl_info::default_opencl_factory > {
     typedef opencl_node < tuple<Ports...>, JP, opencl_info::default_opencl_factory > base_type;
 public:
     typedef typename base_type::kernel_type kernel_type;
@@ -1448,7 +1462,8 @@ public:
 };
 
 template<typename... Ports>
-class opencl_node< tuple<Ports...> > : public opencl_node < tuple<Ports...>, queueing, opencl_info::default_opencl_factory > {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE
+opencl_node< tuple<Ports...> > : public opencl_node < tuple<Ports...>, queueing, opencl_info::default_opencl_factory > {
     typedef opencl_node < tuple<Ports...>, queueing, opencl_info::default_opencl_factory > base_type;
 public:
     typedef typename base_type::kernel_type kernel_type;
@@ -1463,24 +1478,27 @@ public:
     {}
 };
 
-} // namespace interface10
+} // namespace interfaceX
 
-using interface10::opencl_node;
-using interface10::read_only;
-using interface10::read_write;
-using interface10::write_only;
-using interface10::opencl_buffer;
-using interface10::opencl_subbuffer;
-using interface10::opencl_device;
-using interface10::opencl_device_list;
-using interface10::opencl_program;
-using interface10::opencl_program_type;
-using interface10::opencl_async_msg;
-using interface10::opencl_factory;
-using interface10::opencl_range;
+using interface11::opencl_node;
+using interface11::read_only;
+using interface11::read_write;
+using interface11::write_only;
+using interface11::opencl_buffer;
+using interface11::opencl_subbuffer;
+using interface11::opencl_device;
+using interface11::opencl_device_list;
+using interface11::opencl_program;
+using interface11::opencl_program_type;
+using interface11::opencl_async_msg;
+using interface11::opencl_factory;
+using interface11::opencl_range;
 
 } // namespace flow
 } // namespace tbb
 #endif /* __TBB_PREVIEW_OPENCL_NODE */
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_flow_graph_opencl_node_H_include_area
 
 #endif // __TBB_flow_graph_opencl_node_H

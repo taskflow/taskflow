@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,18 +12,20 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 // have to expose the reset_node method to be able to reset a function_body
+
+#define TBB_USE_SOURCE_NODE_AS_ALIAS __TBB_CPF_BUILD
+#define TBB_DEPRECATED_INPUT_NODE_BODY !__TBB_CPF_BUILD
+
 #include "harness.h"
 
 #if __TBB_CPF_BUILD
 #define TBB_DEPRECATED_FLOW_NODE_EXTRACTION 1
 #endif
+
+
 
 #include "harness_graph.h"
 #include "tbb/flow_graph.h"
@@ -69,7 +71,7 @@ public:
        return const_cast<tbb::task *>(SUCCESSFULLY_ENQUEUED);
     }
 
-    tbb::flow::graph& graph_reference() __TBB_override {
+    tbb::flow::graph& graph_reference() const __TBB_override {
         return my_graph;
     }
 
@@ -79,7 +81,7 @@ public:
 template< typename T >
 class source_body {
 
-   tbb::atomic<int> my_count;
+   unsigned my_count;
    int *ninvocations;
 
 public:
@@ -87,14 +89,27 @@ public:
    source_body() : ninvocations(NULL) { my_count = 0; }
    source_body(int &_inv) : ninvocations(&_inv)  { my_count = 0; }
 
+#if TBB_DEPRECATED_INPUT_NODE_BODY
    bool operator()( T &v ) {
-      v = (T)my_count.fetch_and_increment();
+      v = (T)my_count++;
       if(ninvocations) ++(*ninvocations);
       if ( (int)v < N )
          return true;
       else
          return false;
    }
+#else
+    T operator()( tbb::flow_control& fc ) {
+        T v = (T)my_count++;
+        if(ninvocations) ++(*ninvocations);
+        if ( (int)v < N ){
+            return v;
+        }else{
+            fc.stop();
+            return T();
+        }
+    }
+#endif
 
 };
 
@@ -125,6 +140,9 @@ void test_single_dest() {
    tbb::flow::source_node<T> src(g, source_body<T>() );
    test_push_receiver<T> dest(g);
    tbb::flow::make_edge( src, dest );
+#if TBB_USE_SOURCE_NODE_AS_ALIAS
+   src.activate();
+#endif
    g.wait_for_all();
    for (int i = 0; i < N; ++i ) {
        ASSERT( dest.get_count(i) == 1, NULL );
@@ -136,6 +154,9 @@ void test_single_dest() {
    function_body<T> b3( counters3 );
    tbb::flow::function_node<T,bool> dest3(g, tbb::flow::unlimited, b3 );
    tbb::flow::make_edge( src3, dest3 );
+#if TBB_USE_SOURCE_NODE_AS_ALIAS
+   src3.activate();
+#endif
    g.wait_for_all();
    for (int i = 0; i < N; ++i ) {
        int v = counters3[i];
@@ -146,13 +167,18 @@ void test_single_dest() {
    tbb::flow::source_node<T> src2(g, source_body<T>() );
    tbb::atomic<int> counters2[N];
    function_body<T> b2( counters2 );
-   tbb::flow::function_node<T,bool> dest2(g, tbb::flow::serial, b2 );
+   tbb::flow::function_node<T,bool,tbb::flow::rejecting> dest2(g, tbb::flow::serial, b2 );
    tbb::flow::make_edge( src2, dest2 );
+
 #if TBB_DEPRECATED_FLOW_NODE_EXTRACTION
    ASSERT(src2.successor_count() == 1, NULL);
    typename tbb::flow::source_node<T>::successor_list_type my_succs;
    src2.copy_successors(my_succs);
    ASSERT(my_succs.size() == 1, NULL);
+#endif
+
+#if TBB_USE_SOURCE_NODE_AS_ALIAS
+   src2.activate();
 #endif
    g.wait_for_all();
    for (int i = 0; i < N; ++i ) {
@@ -164,6 +190,9 @@ void test_single_dest() {
    tbb::flow::source_node<T> src_copy(src);
    test_push_receiver<T> dest_c(g);
    ASSERT( src_copy.register_successor(dest_c), NULL );
+#if TBB_USE_SOURCE_NODE_AS_ALIAS
+   src_copy.activate();
+#endif
    g.wait_for_all();
    for (int i = 0; i < N; ++i ) {
        ASSERT( dest_c.get_count(i) == 1, NULL );
@@ -175,11 +204,19 @@ void test_reset() {
     tbb::flow::graph g;
     tbb::atomic<int> counters3[N];
     tbb::flow::source_node<int> src3(g, source_body<int>() );
-    tbb::flow::source_node<int> src_inactive(g, source_body<int>(), /*active*/ false );
+#if TBB_USE_SOURCE_NODE_AS_ALIAS
+    tbb::flow::source_node<int> src_inactive(g, source_body<int>() );
+#else
+    tbb::flow::source_node<int> src_inactive(g, source_body<int>(), /*is_active=*/ false );
+#endif
     function_body<int> b3( counters3 );
     tbb::flow::function_node<int,bool> dest3(g, tbb::flow::unlimited, b3 );
     tbb::flow::make_edge( src3, dest3 );
-    //    source_node already in active state.  Let the graph run,
+
+ #if TBB_USE_SOURCE_NODE_AS_ALIAS
+    src3.activate();
+ #endif
+    //    source_node is now in active state.  Let the graph run,
     g.wait_for_all();
     //    check the array for each value.
     for (int i = 0; i < N; ++i ) {
@@ -188,6 +225,9 @@ void test_reset() {
         counters3[i] = 0;
     }
     g.reset(tbb::flow::rf_reset_bodies);  // <-- re-initializes the counts.
+ #if TBB_USE_SOURCE_NODE_AS_ALIAS
+    src3.activate();
+ #endif
     // and spawns task to run source
     g.wait_for_all();
     //    check output queue again.  Should be the same contents.
@@ -266,7 +306,11 @@ void test_extract() {
     tbb::flow::graph g;
     typedef tbb::flow::source_node<int> snode_type;
     typedef snode_type::successor_list_type successor_list_type;
-    snode_type s0(g, source_body<int>(counts), /*is_active*/false );
+#if TBB_USE_SOURCE_NODE_AS_ALIAS
+    snode_type s0(g, source_body<int>(counts));
+#else
+    snode_type s0(g, source_body<int>(counts), false);
+#endif
     tbb::flow::join_node< tbb::flow::tuple<int,int>, tbb::flow::reserving > j0(g);
     tbb::flow::join_node< tbb::flow::tuple<int,int>, tbb::flow::reserving > j1(g);
     tbb::flow::join_node< tbb::flow::tuple<int,int>, tbb::flow::reserving > j2(g);
@@ -405,6 +449,104 @@ void test_extract() {
 }
 #endif  /* TBB_DEPRECATED_FLOW_NODE_EXTRACTION */
 
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+#if TBB_DEPRECATED_INPUT_NODE_BODY
+    bool source_body_f(int& i) { return i > 5; }
+#else
+    int source_body_f(tbb::flow_control&) { return 42; }
+#endif
+
+void test_deduction_guides() {
+    using namespace tbb::flow;
+    graph g;
+
+#if TBB_DEPRECATED_INPUT_NODE_BODY
+    auto lambda = [](int& i) { return i > 5; };
+    auto non_const_lambda = [](int& i) mutable { return i > 5; };
+#else
+    auto lambda = [](tbb::flow_control&) { return 42; };
+    auto non_const_lambda = [](tbb::flow_control&) mutable { return 42; };
+#endif
+
+    // Tests for source_node(graph&, Body)
+    source_node s1(g, lambda);
+    static_assert(std::is_same_v<decltype(s1), source_node<int>>);
+
+    source_node s2(g, non_const_lambda);
+    static_assert(std::is_same_v<decltype(s2), source_node<int>>);
+
+    source_node s3(g, source_body_f);
+    static_assert(std::is_same_v<decltype(s3), source_node<int>>);
+
+    source_node s4(s3);
+    static_assert(std::is_same_v<decltype(s4), source_node<int>>);
+
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    broadcast_node<int> bc(g);
+
+    // Tests for source_node(const node_set<Args...>&, Body)
+    source_node s5(precedes(bc), lambda);
+    static_assert(std::is_same_v<decltype(s5), source_node<int>>);
+
+    source_node s6(precedes(bc), non_const_lambda);
+    static_assert(std::is_same_v<decltype(s6), source_node<int>>);
+
+    source_node s7(precedes(bc), source_body_f);
+    static_assert(std::is_same_v<decltype(s7), source_node<int>>);
+#endif
+    g.wait_for_all();
+}
+
+#endif // __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+#include <array>
+void test_follows_and_precedes_api() {
+    using namespace tbb::flow;
+
+    graph g;
+
+    std::array<buffer_node<bool>, 3> successors {{
+        buffer_node<bool>(g),
+        buffer_node<bool>(g),
+        buffer_node<bool>(g)
+    }};
+
+    bool do_try_put = true;
+
+    source_node<bool> src(precedes(successors[0], successors[1], successors[2]),
+    #if TBB_DEPRECATED_INPUT_NODE_BODY
+    [&](bool& v) -> bool {
+        if(do_try_put) {
+            v = do_try_put;
+            do_try_put = false;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    #else
+    [&](tbb::flow_control& fc) -> bool {
+        if(!do_try_put)
+            fc.stop();
+        do_try_put = !do_try_put;
+        return true;
+    }
+    #endif
+    );
+
+    src.activate();
+    g.wait_for_all();
+
+    bool storage;
+    for(auto& successor: successors) {
+        ASSERT((successor.try_get(storage) && !successor.try_get(storage)),
+            "Not exact edge quantity was made");
+    }
+}
+#endif // __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+
 int TestMain() {
     if( MinThread<1 ) {
         REPORT("number of threads must be positive\n");
@@ -418,6 +560,12 @@ int TestMain() {
     test_reset();
 #if TBB_DEPRECATED_FLOW_NODE_EXTRACTION
     test_extract();
+#endif
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    test_follows_and_precedes_api();
+#endif
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+    test_deduction_guides();
 #endif
     return Harness::Done;
 }

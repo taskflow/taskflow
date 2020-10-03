@@ -1,16 +1,23 @@
 ------------------------------------------------------------------------
 Intel(R) Threading Building Blocks - Release Notes
-                   Version 2019
+                   Version 2020
 ------------------------------------------------------------------------
 
+Intel(R) Threading Building Blocks (Intel(R) TBB) is planned to be
+improved through renewal and update with latest C++ standards to increase
+usability. Evaluation of some Intel(R) TBB features removal will be
+conducted in some future releases. Features under consideration are mapped
+to updated options as described in the 'TBB Revamp: Background,Changes,
+and Modernization'
+(see https://software.intel.com/en-us/articles/tbb-revamp).
 
 System Requirements
 -------------------
 
-Intel(R) Threading Building Blocks (Intel(R) TBB) is available
-commercially (see http://software.intel.com/en-us/intel-tbb) as a
-binary distribution, and in open source, in both source and binary
-forms (see http://threadingbuildingblocks.org).
+Intel(R) Threading Building Blocks is available commercially
+(see http://software.intel.com/en-us/intel-tbb) as a binary distribution,
+and in open source, in both source and binary forms
+(see https://github.com/intel/tbb).
 
 When built from source, Intel(R) TBB is intended to be highly portable
 and so supports a wide variety of operating systems and platforms (see
@@ -25,11 +32,9 @@ Hardware - Recommended
     Microsoft* Windows* Systems
         Intel(R) Core(TM) processor family
         Intel(R) Xeon(R) processor family
-        Intel(R) Xeon Phi(TM) processor family
     Linux* Systems
         Intel(R) Core(TM) processor family
         Intel(R) Xeon(R) processor family
-        Intel(R) Xeon Phi(TM) processor family
     macOS* Systems
         Intel(R) Core(TM) processor family
     Android* Systems
@@ -37,8 +42,8 @@ Hardware - Recommended
 
 Hardware - Supported
 
-    Intel(R) Pentium(R) 4 processor family
-    Intel(R) Xeon Phi(TM) coprocessor
+    Intel(R) Pentium(R) processor family
+    Intel(R) Xeon Phi(TM) processor family
     Intel(R) Atom(TM) processor family
     Non Intel(R) processors compatible with the above processors
 
@@ -49,56 +54,53 @@ Software - Minimum Requirements
 
 Software - Recommended
 
-    Intel(R) Parallel Studio XE 2018, 2019
-    Intel(R) System Studio 2018, 2019
+    Intel(R) Parallel Studio XE 2019, 2020
+    Intel(R) System Studio 2019, 2020
 
 Software - Supported Operating Systems
 
     Systems with Microsoft* Windows* operating systems
         Microsoft* Windows* 10
-        Microsoft* Windows* 8.1
-        Microsoft* Windows* 7 SP1
         Microsoft* Windows* Server 2016
-        Microsoft* Windows* Server 2012 R2
+        Microsoft* Windows* Server 2019
     Systems with Linux* operating systems
-        CentOS 7.1
-        Debian* 8, 9
-        Fedora* 27
+        CentOS* 7.1
+        Debian* 9, 10
+        Fedora* 30
         Intel(R) Cluster Ready
-        Red Hat* Enterprise Linux* 6, 7
-        SuSE* Linux* Enterprise Server 12
-        Ubuntu* 14.04 LTS, 16.04 LTS, 18.04 LTS
-        WindRiver* Linux 8, 9
-        Yocto 2.3
+        Red Hat* Enterprise Linux* 7, 8
+        SuSE* Linux* Enterprise Server 12,15
+        Ubuntu* 16.04 LTS, 18.04 LTS
+        Ubuntu* 19.04
+        WindRiver* Linux 9
+        Yocto* 2.3
     Systems with OS X* or macOS* operating systems
-        OS X* 10.11
-        macOS* 10.12, 10.13
+        macOS* 10.14, 10.15
     Systems with Android* operating systems
-        Android* 5.x, 6.x, 7.x, 8.x
+        Android* 6.x, 7.x, 8.x, 9.x
 
 Software - Supported Compilers
 
-    Intel(R) C++ Compiler 17, 18 and 19 version
-    Microsoft* Visual C++ 12.0 (Microsoft* Visual Studio* 2013,
-        Windows* OS only)
-    Microsoft* Visual C++ 14.0 (Microsoft* Visual Studio* 2015,
-        Windows* OS only)
+    Intel(R) C++ Compiler 18, 19 and 19.1 version
     Microsoft* Visual C++ 14.1 (Microsoft* Visual Studio* 2017,
+        Windows* OS only)
+    Microsoft* Visual C++ 14.2 (Microsoft* Visual Studio* 2019,
         Windows* OS only)
     Microsoft* Windows* Software Development Kit for Windows* 8.1
     Microsoft* Windows* Software Development Kit for Windows* 10
     For each supported Linux* operating system, the standard gcc
         version provided with that operating system is supported
-            GNU Compilers (gcc) 4.1 - 7.1
-            GNU C Library (glibc) version 2.4 - 2.19
-    Xcode* 7.0 - 9.1
+            GNU Compilers (gcc) 4.8 - 9.1
+            GNU C Library (glibc) version 2.17 - 2.29
+    Clang* 3.8 - 8.0
+    Xcode* 8.x - 11.x
     Android* NDK r10e - r17b
 
 Software - Supported Performance Analysis Tools
 
-    Intel(R) VTune(TM) Amplifier XE 2018, 2019
-    Intel(R) Inspector XE 2018, 2019
-    Intel(R) Advisor XE 2018, 2019
+    Intel(R) VTune(TM) Amplifier XE 2019, 2020
+    Intel(R) Inspector XE 2019, 2020
+    Intel(R) Advisor XE 2019, 2020
 
 Known Issues
 ------------
@@ -110,21 +112,17 @@ Reference for notes applicable to multiple releases of Intel(R) TBB.
 
 Library Issues
 
-    - If you build Intel(R) TBB from sources with GCC 6, specify
-        the -flifetime-dse=1 option to prevent crashes at runtime,
-        or use Intel(R) TBB makefiles that automatically set this option.
-
-    - The current implementation of gfx_factory does not allow memory
-        buffer objects to be used concurrently. As a result, several
-        streaming nodes customized with gfx_factory cannot be connected
-        with each other directly.
+    - If you build Intel(R) TBB from sources with GCC 6 or higher,
+        specify the -flifetime-dse=1 option to prevent crashes at
+        runtime, or use Intel(R) TBB makefiles that automatically set
+        this option.
 
 ------------------------------------------------------------------------
-(C) 2018 Intel Corporation
+(C) 2020 Intel Corporation
 
-Intel, the Intel logo, Intel Core, Intel Atom, Xeon, Intel Xeon Phi and
-Pentium are trademarks of Intel Corporation in the U.S. and/or other
-countries.
+Intel, the Intel logo, Intel Core, Intel Atom, Celeron, Xeon,
+Intel Xeon Phi and Pentium are trademarks of Intel Corporation
+in the U.S. and/or other countries
 
 * Other names and brands may be claimed as the property of others.
 

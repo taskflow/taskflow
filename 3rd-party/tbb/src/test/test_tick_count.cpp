@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "tbb/tick_count.h"
@@ -66,26 +62,19 @@ static void WaitForDuration( double duration ) {
 //! Test that average timer overhead is within acceptable limit.
 /** The 'tolerance' value inside the test specifies the limit. */
 void TestSimpleDelay( int ntrial, double duration, double tolerance ) {
-    double total_worktime = 0;
+    int error_count = 0;
+    double delta = 0;
     // Iteration -1 warms up the code cache.
     for( int trial=-1; trial<ntrial; ++trial ) {
-        tbb::tick_count t0 = tbb::tick_count::now();
+        tbb::tick_count t = tbb::tick_count::now();
         if( duration ) WaitForDuration(duration);
-        tbb::tick_count t1 = tbb::tick_count::now();
-        if( trial>=0 ) {
-            total_worktime += (t1-t0).seconds();
+        delta = (tbb::tick_count::now() - t).seconds() - duration;
+        if( trial>=0 && delta > tolerance ) {
+            error_count++;
         }
+        ASSERT(delta >= 0,"Delta is negative");
     }
-    // Compute average worktime and average delta
-    double worktime = total_worktime/ntrial;
-    double delta = worktime-duration;
-    REMARK("worktime=%g delta=%g tolerance=%g\n", worktime, delta, tolerance);
-
-    // Check that delta is acceptable
-    if( delta<0 )
-        REPORT("ERROR: delta=%g < 0\n",delta);
-    if( delta>tolerance )
-        REPORT("%s: delta=%g > %g=tolerance where duration=%g\n",delta>3*tolerance?"ERROR":"Warning",delta,tolerance,duration);
+    ASSERT(error_count < ntrial / 4, "The number of errors exceeded the threshold");
 }
 
 //------------------------------------------------------------------------
@@ -142,7 +131,7 @@ void TestTickCountDifference( int n ) {
     do {
         NativeParallelFor( n, TickCountDifferenceBody( n ) );
         if ( barrier_time > tolerance )
-            // The machine seems to be oversubscibed so skip the test.
+            // The machine seems to be oversubscribed so skip the test.
             continue;
         for ( int i = 0; i < n; ++i ) {
             for ( int j = 0; j < i; ++j ) {
@@ -156,7 +145,8 @@ void TestTickCountDifference( int n ) {
         // During 5 seconds we are trying to get 10 successful trials.
     } while ( ++num_trials < 10 && (tbb::tick_count::now() - start_time).seconds() < 5 );
     REMARK( "Difference test time: %g sec\n", (tbb::tick_count::now() - start_time).seconds() );
-    ASSERT( num_trials == 10, "The machine seems to be heavily oversubscibed, difference test was skipped." );
+    // TODO: Find the cause of the machine high load, fix it and upgrade ASSERT_WARNING to ASSERT
+    ASSERT_WARNING( num_trials == 10, "The machine seems to be heavily oversubscribed, difference test was skipped." );
     delete[] tick_count_array;
 }
 
@@ -188,9 +178,9 @@ int TestMain () {
     REMARK( "tolerance_multiplier = %g \n", tolerance_multiplier );
 
     tbb::tick_count t0 = tbb::tick_count::now();
-    TestSimpleDelay(/*ntrial=*/1000000,/*duration=*/0,    /*tolerance=*/2E-6 * tolerance_multiplier);
+    TestSimpleDelay(/*ntrial=*/1000000,/*duration=*/0,    /*tolerance=*/6E-6 * tolerance_multiplier);
     tbb::tick_count t1 = tbb::tick_count::now();
-    TestSimpleDelay(/*ntrial=*/1000,   /*duration=*/0.001,/*tolerance=*/5E-6 * tolerance_multiplier);
+    TestSimpleDelay(/*ntrial=*/1000,   /*duration=*/0.001,/*tolerance=*/15E-6 * tolerance_multiplier);
     tbb::tick_count t2 = tbb::tick_count::now();
     TestArithmetic(t0,t1,t2);
 

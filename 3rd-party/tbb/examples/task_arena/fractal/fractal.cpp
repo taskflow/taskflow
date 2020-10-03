@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,26 +12,16 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "fractal.h"
 
 #include "tbb/parallel_for.h"
 #include "tbb/blocked_range2d.h"
-#include "tbb/task_scheduler_init.h"
-#include "tbb/task_arena.h"
-#include "tbb/task_group.h"
 #include "tbb/tick_count.h"
 
 #include <math.h>
 #include <stdio.h>
-
-// Included for __TBB_CPP11_LAMBDAS_PRESENT definition
-#include "tbb/tbb_config.h"
 
 video *v;
 extern bool silent;
@@ -177,16 +167,9 @@ void fractal_group::calc_fractal( int num ) {
     }
 }
 
-void fractal_group::set_priorities() {
-    // set the high priority for the active area and the normal priority for another area
-    context[active].set_priority( tbb::priority_high );
-    context[active^1].set_priority( tbb::priority_low );
-}
-
-void fractal_group::switch_priorities( int new_active ) {
+void fractal_group::switch_active( int new_active ) {
     if( new_active!=-1 ) active = new_active;
     else                 active = 1-active; // assumes 'active' is only 0 or 1
-    set_priorities();
     draw_borders();
 }
 
@@ -195,73 +178,29 @@ void fractal_group::set_num_frames_at_least( int n ) {
     if ( num_frames[1]<n ) num_frames[1] = n;
 }
 
-#if !__TBB_CPP11_LAMBDAS_PRESENT
-class task_group_body {
-    fractal_group &fg;
-public:
-    task_group_body(fractal_group &_fg) : fg(_fg) { }
-
-    void operator() () const { fg.calc_fractal( 1 ); }
-};
-
-class arena_body {
-    task_group_body &tg_body;
-    tbb::task_group &task_group;
-public:
-    arena_body( task_group_body &_tg_body, tbb::task_group &_task_group )
-        :  tg_body( _tg_body ), task_group( _task_group )  { }
-
-    void operator() () const { task_group.run( tg_body ); }
-};
-
-class arena_body_wait {
-    tbb::task_group &group;
-public:
-    arena_body_wait( tbb::task_group &gr ) : group(gr) { }
-
-    void operator() () const { group.wait(); }
-};
-#endif
-
 void fractal_group::run( bool create_second_fractal ) {
-    // initialize task scheduler
-    tbb::task_scheduler_init init( num_threads );
+    // First argument of arenas construntor is used to restrict concurrency
+    arenas[0].initialize(num_threads);
+    arenas[1].initialize(num_threads / 2);
 
-    // create contexts to manage fractal priorities
-    context = new tbb::task_group_context[2];
-
-    set_priorities();
     draw_borders();
-
-    tbb::task_arena arena;
-    tbb::task_group gr;
 
     // the second fractal is calculating on separated thread
     if ( create_second_fractal ) {
-#if __TBB_CPP11_LAMBDAS_PRESENT
-        arena.execute( [&] {
-            gr.run( [&] { calc_fractal( 1 ); } );
+        arenas[1].execute( [&] {
+            groups[1].run( [&] { calc_fractal( 1 ); } );
         } );
-#else
-        task_group_body tg_body( *this );
-        arena_body a_body( tg_body, gr );
-        arena.execute( a_body );
-#endif
     }
 
-    // calculate the first fractal
-    calc_fractal( 0 );
+    arenas[0].execute( [&] {
+        groups[0].run( [&] { calc_fractal( 0 ); } );
+    } );
 
     if ( create_second_fractal ) {
-#if __TBB_CPP11_LAMBDAS_PRESENT
-        // wait for second fractal
-        arena.execute( [&] { gr.wait(); } );
-#else
-        arena.execute( arena_body_wait( gr ) );
-#endif
+        arenas[1].execute( [&] { groups[1].wait(); } );
     }
 
-    delete[] context;
+    arenas[0].execute( [&] { groups[0].wait(); } );
 }
 
 void fractal_group::draw_borders() {
@@ -300,6 +239,6 @@ void fractal_group::mouse_click( int x, int y ) {
     }
 
     if ( new_active != -1 && new_active != active ) {
-        switch_priorities( new_active );
+        switch_active( new_active );
     }
 }

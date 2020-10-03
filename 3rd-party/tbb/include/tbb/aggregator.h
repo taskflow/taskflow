@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB__aggregator_H
 #define __TBB__aggregator_H
+
+#define __TBB_aggregator_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 #if !TBB_PREVIEW_AGGREGATOR
 #error Set TBB_PREVIEW_AGGREGATOR before including aggregator.h
@@ -198,5 +197,8 @@ using interface6::aggregator_ext;
 using interface6::aggregator_operation;
 
 } // namespace tbb
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_aggregator_H_include_area
 
 #endif  // __TBB__aggregator_H

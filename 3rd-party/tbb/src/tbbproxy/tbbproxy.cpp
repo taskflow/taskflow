@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "tbb/tbb_config.h"
@@ -23,6 +19,7 @@
 #define TBB_PREVIEW_RUNTIME_LOADER 1
 #include "tbb/runtime_loader.h"
 #include "tbb/tbb_stddef.h"
+#include "tbb_environment.h"
 
 // C standard headers.
 #include <cctype>            // isspace
@@ -109,8 +106,7 @@ static void _say( char const * format, va_list args ) {
 // To enable printing, the variable must be set and not empty.
 // Do not call it directly, use tell() instead.
 static void _tell( char const * format, va_list args ) {
-    char const * var = getenv( "TBB_VERSION" );
-    if ( var != NULL && var[ 0 ] != 0 ) {
+    if ( tbb::internal::GetBoolEnvironmentVariable("TBB_VERSION") ) {
         _say( format, args );
     } // if
 } // _tell
@@ -352,7 +348,7 @@ static tbb::runtime_loader::error_code _load( char const * dll_name, int min_ver
     tbb::runtime_loader::error_code code = tbb::runtime_loader::ec_ok;
 
     /*
-        If these variables declared at the first usage, Intel C++ Compiler may issue warning(s):
+        If these variables declared at the first usage, Intel(R) C++ Compiler may issue warning(s):
             transfer of control [goto error] bypasses initialization of: ...
         Declaring variables at the beginning of the function eliminates warnings.
     */

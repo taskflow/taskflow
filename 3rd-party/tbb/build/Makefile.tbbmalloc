@@ -1,4 +1,4 @@
-# Copyright (c) 2005-2018 Intel Corporation
+# Copyright (c) 2005-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 # default target
 default_malloc: malloc malloc_test
@@ -143,6 +139,7 @@ MALLOC_TESTS = test_ScalableAllocator.$(TEST_EXT) \
 ifneq (,$(MALLOCPROXY.DLL))
 MALLOC_TESTS += test_malloc_overload.$(TEST_EXT) \
                 test_malloc_overload_proxy.$(TEST_EXT) \
+                test_malloc_overload_disable.$(TEST_EXT) \
                 test_malloc_atexit.$(TEST_EXT) \
                 test_malloc_new_handler.$(TEST_EXT)
 endif
@@ -236,6 +233,7 @@ ifneq (,$(MALLOCPROXY.DLL))
 	$(run_cmd) ./test_malloc_atexit.$(TEST_EXT) $(args)
 	$(run_cmd) $(TEST_LAUNCHER) -l $(MALLOCPROXY.DLL) ./test_malloc_overload.$(TEST_EXT) $(args)
 	$(run_cmd) $(TEST_LAUNCHER) ./test_malloc_overload_proxy.$(TEST_EXT) $(args)
+	$(run_cmd) ./test_malloc_overload_disable.$(TEST_EXT) $(args)
 	$(run_cmd) $(TEST_LAUNCHER) ./test_malloc_new_handler.$(TEST_EXT) $(args)
 endif
 	$(run_cmd) $(TEST_LAUNCHER) ./test_malloc_lib_unload.$(TEST_EXT) $(args)

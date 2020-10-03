@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef _TBB_market_H
@@ -178,6 +174,9 @@ private:
     //! Destroys and deallocates market object created by market::create()
     void destroy ();
 
+    //! Recalculates the number of workers requested from RML and updates the allotment.
+    int update_workers_request();
+
 #if __TBB_TASK_PRIORITY
     //! Returns next arena that needs more workers, or NULL.
     arena* arena_in_need ( arena* prev_arena );
@@ -212,19 +211,33 @@ private:
     //! Recalculates the number of workers assigned to each arena in the list.
     /** The actual number of workers servicing a particular arena may temporarily
         deviate from the calculated value. **/
-    void update_allotment () {
+    void update_allotment (unsigned effective_soft_limit) {
         if ( my_total_demand )
-            update_allotment( my_arenas, my_total_demand, (int)my_num_workers_soft_limit );
+            update_allotment( my_arenas, my_total_demand, (int)effective_soft_limit );
     }
 
     // TODO: consider to rewrite the code with is_arena_in_list function
     //! Returns next arena that needs more workers, or NULL.
-    arena* arena_in_need (arena*) {
+    arena* arena_in_need (arena* prev_arena) {
         if(__TBB_load_with_acquire(my_total_demand) <= 0)
             return NULL;
         arenas_list_mutex_type::scoped_lock lock(my_arenas_list_mutex, /*is_writer=*/false);
-        return arena_in_need(my_arenas, my_next_arena);
+        arena* a = NULL;
+
+        // Checks if arena is alive or not
+        if ( is_arena_in_list( my_arenas, prev_arena ) ) {
+            a = arena_in_need( my_arenas, prev_arena );
+        } else {
+            a = arena_in_need( my_arenas, my_next_arena );
+            if (a) {
+                as_atomic(my_next_arena) = a; // a subject for innocent data race under the reader lock
+                // TODO: rework global round robin policy to local or random to avoid this write
+            }
+        }
+
+        return a;
     }
+
     void assert_market_valid () const {}
 #endif /* !__TBB_TASK_PRIORITY */
 
@@ -237,7 +250,7 @@ private:
 
     arena* arena_in_need ( arena_list_type &arenas, arena *hint );
 
-    static int update_allotment ( arena_list_type& arenas, int total_demand, int max_workers );
+    int update_allotment ( arena_list_type& arenas, int total_demand, int max_workers );
 
     bool is_arena_in_list( arena_list_type &arenas, arena *a );
 
@@ -278,10 +291,13 @@ public:
 
 #if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
     //! Imlpementation of mandatory concurrency enabling
-    bool mandatory_concurrency_enable_impl ( arena *a, bool *enabled = NULL );
+    void enable_mandatory_concurrency_impl ( arena *a );
 
     //! Inform the master that there is an arena with mandatory concurrency
-    bool mandatory_concurrency_enable ( arena *a );
+    void enable_mandatory_concurrency ( arena *a );
+
+    //! Inform the master that the arena is no more interested in mandatory concurrency
+    void disable_mandatory_concurrency_impl(arena* a);
 
     //! Inform the master that the arena is no more interested in mandatory concurrency
     void mandatory_concurrency_disable ( arena *a );

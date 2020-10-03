@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,17 +12,11 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #define TBB_PREVIEW_WAITING_FOR_WORKERS 1
-#define TBB_PREVIEW_GLOBAL_CONTROL 1
 #include "tbb/global_control.h"
 #include "harness.h"
-#define TBB_PREVIEW_LOCAL_OBSERVER 1
 #include "tbb/task_scheduler_observer.h"
 
 const size_t MB = 1024*1024;
@@ -254,12 +248,12 @@ void TestTooBigStack()
     const size_t stack_sizes[] = {512*MB, 2*1024*MB, UINT_MAX, 10LU*1024*MB};
 #endif
 
-#if __TBB_WIN8UI_SUPPORT
+#if __TBB_WIN8UI_SUPPORT && (_WIN32_WINNT < 0x0A00)
     size_t default_ss = tbb::global_control::active_value(tbb::global_control::thread_stack_size);
 #endif
     for (unsigned i = 0; i<Harness::array_length(stack_sizes); i++) {
-        // as no stack size setting for Windows Store* apps, skip it
-#if TRY_BAD_EXPR_ENABLED && __TBB_x86_64 && (_WIN32 || _WIN64) && !__TBB_WIN8UI_SUPPORT
+        // No stack size setting for Windows 8 Store* apps, skip it
+#if TRY_BAD_EXPR_ENABLED && __TBB_x86_64 && (_WIN32 || _WIN64) && !(__TBB_WIN8UI_SUPPORT && (_WIN32_WINNT < 0x0A00))
         if (stack_sizes[i] != (unsigned)stack_sizes[i]) {
             size_t curr_ss = tbb::global_control::active_value(tbb::global_control::thread_stack_size);
             tbb::set_assertion_handler( AssertionFailureHandler );
@@ -271,8 +265,8 @@ void TestTooBigStack()
 #endif
         tbb::global_control s1(tbb::global_control::thread_stack_size, stack_sizes[i]);
         size_t actual_stack_sz = tbb::global_control::active_value(tbb::global_control::thread_stack_size);
-#if __TBB_WIN8UI_SUPPORT
-        ASSERT(actual_stack_sz == default_ss, "It's ignored for Windows Store* apps");
+#if __TBB_WIN8UI_SUPPORT && (_WIN32_WINNT < 0x0A00)
+        ASSERT(actual_stack_sz == default_ss, "It's ignored for Windows 8.x Store* apps");
 #else
         ASSERT(actual_stack_sz==stack_sizes[i], NULL);
 #endif
@@ -624,6 +618,7 @@ void TestParallelismRestored()
         const int P = 4;
         blocking_task_scheduler_init tsi(P);
         {
+            ASSERT(tbb::this_task_arena::max_concurrency() == P, NULL);
             tbb::global_control s(tbb::global_control::max_allowed_parallelism, 1);
             Harness::ExactConcurrencyLevel::check(1);
             // create enforced concurrency in the arena
@@ -631,7 +626,9 @@ void TestParallelismRestored()
                 FFTask* t = new( tbb::task::allocate_root() ) FFTask(&counter);
                 tbb::task::enqueue(*t);
             }
+            ASSERT(tbb::this_task_arena::max_concurrency() == P, NULL);
         }
+        ASSERT(tbb::this_task_arena::max_concurrency() == P, NULL);
         // global control is off, check that concurrency P is available
         Harness::ExactConcurrencyLevel::check(P);
     }
@@ -725,6 +722,7 @@ void TestMultipleControls()
     NativeParallelFor( 2, TestMultipleControlsRun(&barrier) );
 }
 
+#if __TBB_TASK_PRIORITY
 // enqueued tasks with priority below current must not be forgotten,
 // when enqueue enforced priority is enabled
 void TestForgottenEnqueuedTasks()
@@ -753,6 +751,7 @@ void TestForgottenEnqueuedTasks()
     r.wait_for_all();
     tbb::task::destroy(r);
 }
+#endif
 
 int TestMain()
 {
@@ -760,6 +759,7 @@ int TestMain()
     TestConcurrentArenas();
     TestMultipleControls();
     TestNoUnwantedEnforced();
+    TestParallelismRestored();
     const unsigned h_c = tbb::tbb_thread::hardware_concurrency();
     bool excessHC;
     {
@@ -781,8 +781,9 @@ int TestMain()
 
     size_t default_ss = tbb::global_control::active_value(tbb::global_control::thread_stack_size);
     ASSERT(default_ss, NULL);
-#if !__TBB_WIN8UI_SUPPORT
-    // it's impossible to change stack size for Windows Store* apps, so skip the tests
+
+// it's impossible to change stack size for Windows 8 Store* apps, so skip the tests
+#if !(__TBB_WIN8UI_SUPPORT && (_WIN32_WINNT < 0x0A00))
     TestStackSizeSimpleControl();
     TestStackSizeThreadsControl();
 #endif

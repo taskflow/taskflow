@@ -13,6 +13,7 @@
 #define TF_OS_WINDOWS 0
 #define TF_OS_CNK 0
 #define TF_OS_HURD 0
+#define TF_OS_SOLARIS 0
 #define TF_OS_UNIX 0 /* disjunction of TF_OS_LINUX, TF_OS_DARWIN etc. */
 
 #ifdef _WIN32
@@ -65,14 +66,20 @@
 #define TF_OS_HURD 1
 #endif
 
+#if (defined __sun)
+#undef TF_OS_SOLARIS
+#define TF_OS_SOLARIS 1
+#endif
+
 #if (1 !=                                                                  \
      TF_OS_LINUX + TF_OS_DRAGONFLY + TF_OS_FREEBSD + TF_OS_NETBSD +        \
-     TF_OS_OPENBSD + TF_OS_DARWIN + TF_OS_WINDOWS + TF_OS_HURD)
+     TF_OS_OPENBSD + TF_OS_DARWIN + TF_OS_WINDOWS + TF_OS_HURD +           \
+     TF_OS_SOLARIS)
 #error Unknown OS
 #endif
 
 #if TF_OS_LINUX || TF_OS_DRAGONFLY || TF_OS_FREEBSD || TF_OS_NETBSD ||     \
-    TF_OS_OPENBSD || TF_OS_DARWIN || TF_OS_HURD
+    TF_OS_OPENBSD || TF_OS_DARWIN || TF_OS_HURD || TF_OS_SOLARIS
 #undef TF_OS_UNIX
 #define TF_OS_UNIX 1
 #endif

@@ -1,4 +1,4 @@
-# Copyright (c) 2005-2018 Intel Corporation
+# Copyright (c) 2005-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,12 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 tbb_root?=.
+cfg?=release
 include $(tbb_root)/build/common.inc
 .PHONY: default all tbb tbbmalloc tbbproxy test examples
 
@@ -29,25 +26,22 @@ default: tbb tbbmalloc $(if $(use_proxy),tbbproxy)
 all: tbb tbbmalloc tbbproxy test examples
 
 tbb: mkdir
-	$(MAKE) -C "$(work_dir)_debug"  -r -f $(tbb_root)/build/Makefile.tbb cfg=debug
 	$(MAKE) -C "$(work_dir)_release"  -r -f $(tbb_root)/build/Makefile.tbb cfg=release
 
 tbbmalloc: mkdir
-	$(MAKE) -C "$(work_dir)_debug"  -r -f $(tbb_root)/build/Makefile.tbbmalloc cfg=debug malloc
 	$(MAKE) -C "$(work_dir)_release"  -r -f $(tbb_root)/build/Makefile.tbbmalloc cfg=release malloc
 
 tbbproxy: mkdir
-	$(MAKE) -C "$(work_dir)_debug"  -r -f $(tbb_root)/build/Makefile.tbbproxy cfg=debug tbbproxy
 	$(MAKE) -C "$(work_dir)_release"  -r -f $(tbb_root)/build/Makefile.tbbproxy cfg=release tbbproxy
 
+tbbbind: mkdir
+	$(MAKE) -C "$(work_dir)_release"  -r -f $(tbb_root)/build/Makefile.tbbbind cfg=release tbbbind
+
 test: tbb tbbmalloc $(if $(use_proxy),tbbproxy)
-	-$(MAKE) -C "$(work_dir)_debug"  -r -f $(tbb_root)/build/Makefile.tbbmalloc cfg=debug malloc_test
-	-$(MAKE) -C "$(work_dir)_debug"  -r -f $(tbb_root)/build/Makefile.test cfg=debug
 	-$(MAKE) -C "$(work_dir)_release"  -r -f $(tbb_root)/build/Makefile.tbbmalloc cfg=release malloc_test
 	-$(MAKE) -C "$(work_dir)_release"  -r -f $(tbb_root)/build/Makefile.test cfg=release
 
 rml: mkdir
-	$(MAKE) -C "$(work_dir)_debug"  -r -f $(tbb_root)/build/Makefile.rml cfg=debug
 	$(MAKE) -C "$(work_dir)_release"  -r -f $(tbb_root)/build/Makefile.rml cfg=release
 
 examples: tbb tbbmalloc
@@ -64,8 +58,6 @@ doxygen:
 clean: clean_examples
 	$(shell $(RM) $(work_dir)_release$(SLASH)*.* >$(NUL) 2>$(NUL))
 	$(shell $(RD) $(work_dir)_release >$(NUL) 2>$(NUL))
-	$(shell $(RM) $(work_dir)_debug$(SLASH)*.* >$(NUL) 2>$(NUL))
-	$(shell $(RD) $(work_dir)_debug >$(NUL) 2>$(NUL))
 	@echo clean done
 
 clean_examples:
@@ -73,8 +65,7 @@ clean_examples:
 
 mkdir:
 	$(shell $(MD) "$(work_dir)_release" >$(NUL) 2>$(NUL))
-	$(shell $(MD) "$(work_dir)_debug" >$(NUL) 2>$(NUL))
-	@echo Created $(work_dir)_release and ..._debug directories
+	@echo Created the $(work_dir)_release directory
 
 info:
 	@echo OS: $(tbb_os)
@@ -82,4 +73,3 @@ info:
 	@echo compiler=$(compiler)
 	@echo runtime=$(runtime)
 	@echo tbb_build_prefix=$(tbb_build_prefix)
-

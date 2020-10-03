@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 // Polygon overlay
@@ -31,7 +27,6 @@
 #include <cstring>
 
 #include "tbb/tick_count.h"
-#include "tbb/task_scheduler_init.h"
 #include "pover_global.h"
 #include "polyover.h"
 #include "pover_video.h"
@@ -43,7 +38,7 @@ using namespace std;
 const char *faceNames[] = { "North", "East", "South", "West" };
 #endif
 
-/** 
+/**
 **/
 int main( int argc, char **argv) {
     pover_video poly;
@@ -111,7 +106,7 @@ void Usage(int argc, char **argv) {
     if(cmdTail == NULL)  {
         cmdTail = *argv;
     }
-    else { 
+    else {
         cmdTail++;
     }
     cout << cmdTail << " [threads[:threads2]] [--polys npolys] [--size nnnxnnn] [--seed nnn]" << std::endl;
@@ -367,7 +362,7 @@ bool GenerateMap(Polygon_map_t **newMap, int xSize, int ySize, int gNPolygons, c
         (**newMap)[polyIndx].get(&xlow,&ylow,&xhigh,&yhigh);
         xlnew = xlow;
         xhnew = xhigh;
-        ylnew = ylow; 
+        ylnew = ylow;
         yhnew = yhigh;
         // can this polygon be expanded along the chosen side?
         switch(checkSide) {

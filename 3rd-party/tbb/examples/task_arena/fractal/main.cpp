@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #define VIDEO_WINMAIN_ARGS
@@ -27,7 +23,6 @@
 #include "fractal_video.h"
 
 #include "tbb/tick_count.h"
-#include "tbb/task_scheduler_init.h"
 
 #include "../../common/utility/utility.h"
 
@@ -44,7 +39,7 @@ int main(int argc, char *argv[])
         // It is used for console mode for test with different number of threads and also has
         // meaning for GUI: threads.first  - use separate event/updating loop thread (>0) or not (0).
         //                  threads.second - initialization value for scheduler
-        utility::thread_number_range threads( tbb::task_scheduler_init::default_num_threads );
+        utility::thread_number_range threads( utility::get_default_num_threads );
         int num_frames = -1;
         int max_iterations = 1000000;
 

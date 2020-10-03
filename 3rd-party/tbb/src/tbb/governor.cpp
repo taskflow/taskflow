@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include <stdio.h>
@@ -184,7 +180,9 @@ generic_scheduler* governor::init_scheduler( int num_threads, stack_size_type st
             s->attach_arena( market::create_arena( default_num_threads(), 1, 0 ), 0, /*is_master*/true );
             __TBB_ASSERT( s->my_arena_index == 0, "Master thread must occupy the first slot in its arena" );
             s->my_arena_slot->my_scheduler = s;
+#if __TBB_TASK_GROUP_CONTEXT
             s->my_arena->my_default_ctx = s->default_context(); // it also transfers implied ownership
+#endif
             // Mark the scheduler as fully initialized
             assume_scheduler( s );
         }
@@ -294,6 +292,178 @@ __cilk_tbb_retcode governor::stack_op_handler( __cilk_tbb_stack_op op, void* dat
     return 0;
 }
 #endif /* __TBB_SURVIVE_THREAD_SWITCH */
+
+#if __TBB_NUMA_SUPPORT
+
+#if __TBB_WEAK_SYMBOLS_PRESENT
+#pragma weak initialize_numa_topology
+#pragma weak allocate_binding_handler
+#pragma weak deallocate_binding_handler
+#pragma weak bind_to_node
+#pragma weak restore_affinity
+
+extern "C" {
+void initialize_numa_topology(
+    size_t groups_num, int& nodes_count, int*& indexes_list, int*& concurrency_list );
+
+binding_handler* allocate_binding_handler( int slot_num );
+void deallocate_binding_handler( binding_handler* handler_ptr );
+
+void bind_to_node( binding_handler* handler_ptr, int slot_num, int numa_id );
+void restore_affinity( binding_handler* handler_ptr, int slot_num );
+}
+#endif /* __TBB_WEAK_SYMBOLS_PRESENT */
+
+// Handlers for communication with TBBbind
+#if _WIN32 || _WIN64 || __linux__
+static void (*initialize_numa_topology_ptr)(
+    size_t groups_num, int& nodes_count, int*& indexes_list, int*& concurrency_list ) = NULL;
+#endif /* _WIN32 || _WIN64 || __linux__ */
+
+static binding_handler* (*allocate_binding_handler_ptr)( int slot_num ) = NULL;
+static void (*deallocate_binding_handler_ptr)( binding_handler* handler_ptr ) = NULL;
+
+static void (*bind_to_node_ptr)( binding_handler* handler_ptr, int slot_num, int numa_id ) = NULL;
+static void (*restore_affinity_ptr)( binding_handler* handler_ptr, int slot_num ) = NULL;
+
+#if _WIN32 || _WIN64 || __linux__
+// Table describing how to link the handlers.
+static const dynamic_link_descriptor TbbBindLinkTable[] = {
+    DLD(initialize_numa_topology, initialize_numa_topology_ptr),
+    DLD(allocate_binding_handler, allocate_binding_handler_ptr),
+    DLD(deallocate_binding_handler, deallocate_binding_handler_ptr),
+    DLD(bind_to_node, bind_to_node_ptr),
+    DLD(restore_affinity, restore_affinity_ptr)
+};
+
+static const unsigned LinkTableSize = 5;
+
+#if TBB_USE_DEBUG
+#define DEBUG_SUFFIX "_debug"
+#else
+#define DEBUG_SUFFIX
+#endif /* TBB_USE_DEBUG */
+
+#if _WIN32 || _WIN64
+#define TBBBIND_NAME "tbbbind" DEBUG_SUFFIX ".dll"
+#elif __linux__
+#define TBBBIND_NAME "libtbbbind" DEBUG_SUFFIX  __TBB_STRING(.so.TBB_COMPATIBLE_INTERFACE_VERSION)
+#endif /* __linux__ */
+#endif /* _WIN32 || _WIN64 || __linux__ */
+
+// Stubs that will be used if TBBbind library is unavailable.
+static binding_handler* dummy_allocate_binding_handler ( int ) { return NULL; }
+static void dummy_deallocate_binding_handler ( binding_handler* ) { }
+static void dummy_bind_to_node ( binding_handler*, int, int ) { }
+static void dummy_restore_affinity ( binding_handler*, int ) { }
+
+// Representation of NUMA topology information on the TBB side.
+// NUMA topology may be initialized by third-party component (e.g. hwloc)
+// or just filled by default stubs (1 NUMA node with 0 index and
+// default_num_threads value as default_concurrency).
+namespace numa_topology {
+namespace {
+int  numa_nodes_count = 0;
+int* numa_indexes = NULL;
+int* default_concurrency_list = NULL;
+static tbb::atomic<do_once_state> numa_topology_init_state;
+} // internal namespace
+
+// Tries to load TBBbind library API, if success, gets NUMA topology information from it,
+// in another case, fills NUMA topology by stubs.
+// TODO: Add TBBbind loading status if TBB_VERSION is set.
+void initialization_impl() {
+    governor::one_time_init();
+
+#if _WIN32 || _WIN64 || __linux__
+    bool load_tbbbind = true;
+#if _WIN32 && !_WIN64
+    // For 32-bit Windows applications, process affinity masks can only support up to 32 logical CPUs.
+    SYSTEM_INFO si;
+    GetNativeSystemInfo(&si);
+    load_tbbbind = si.dwNumberOfProcessors <= 32;
+#endif /* _WIN32 && !_WIN64 */
+
+    if (load_tbbbind && dynamic_link(TBBBIND_NAME, TbbBindLinkTable, LinkTableSize)) {
+        int number_of_groups = 1;
+#if _WIN32 || _WIN64
+        number_of_groups = NumberOfProcessorGroups();
+#endif /* _WIN32 || _WIN64 */
+        initialize_numa_topology_ptr(
+            number_of_groups, numa_nodes_count, numa_indexes, default_concurrency_list);
+
+        if (numa_nodes_count==1 && numa_indexes[0] >= 0) {
+            __TBB_ASSERT(default_concurrency_list[numa_indexes[0]] == (int)governor::default_num_threads(),
+                "default_concurrency() should be equal to governor::default_num_threads() on single"
+                "NUMA node systems.");
+        }
+        return;
+    }
+#endif /* _WIN32 || _WIN64 || __linux__ */
+
+    static int dummy_index = -1;
+    static int dummy_concurrency = governor::default_num_threads();
+
+    numa_nodes_count = 1;
+    numa_indexes = &dummy_index;
+    default_concurrency_list = &dummy_concurrency;
+
+    allocate_binding_handler_ptr = dummy_allocate_binding_handler;
+    deallocate_binding_handler_ptr = dummy_deallocate_binding_handler;
+
+    bind_to_node_ptr = dummy_bind_to_node;
+    restore_affinity_ptr = dummy_restore_affinity;
+}
+
+void initialize() {
+    atomic_do_once(initialization_impl, numa_topology_init_state);
+}
+
+unsigned nodes_count() {
+    initialize();
+    return numa_nodes_count;
+}
+
+void fill( int* indexes_array ) {
+    initialize();
+    for ( int i = 0; i < numa_nodes_count; i++ ) {
+        indexes_array[i] = numa_indexes[i];
+    }
+}
+
+int default_concurrency( int node_id ) {
+    if (node_id >= 0) {
+        initialize();
+        return default_concurrency_list[node_id];
+    }
+    return governor::default_num_threads();
+}
+
+} // namespace numa_topology
+
+binding_handler* construct_binding_handler(int slot_num) {
+    __TBB_ASSERT(allocate_binding_handler_ptr, "tbbbind loading was not perfromed");
+    return allocate_binding_handler_ptr(slot_num);
+}
+
+void destroy_binding_handler(binding_handler* handler_ptr) {
+    __TBB_ASSERT(deallocate_binding_handler_ptr, "tbbbind loading was not perfromed");
+    deallocate_binding_handler_ptr(handler_ptr);
+}
+
+void bind_thread_to_node(binding_handler* handler_ptr, int slot_num , int numa_id) {
+    __TBB_ASSERT(slot_num >= 0, "Negative thread index");
+    __TBB_ASSERT(bind_to_node_ptr, "tbbbind loading was not perfromed");
+    bind_to_node_ptr(handler_ptr, slot_num, numa_id);
+}
+
+void restore_affinity_mask(binding_handler* handler_ptr, int slot_num) {
+    __TBB_ASSERT(slot_num >= 0, "Negative thread index");
+    __TBB_ASSERT(restore_affinity_ptr, "tbbbind loading was not perfromed");
+    restore_affinity_ptr(handler_ptr, slot_num);
+}
+
+#endif /* __TBB_NUMA_SUPPORT */
 
 } // namespace internal
 

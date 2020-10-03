@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,27 +12,24 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
-#if __TBB_CPF_BUILD
-#define TBB_DEPRECATED_FLOW_NODE_EXTRACTION 1
-#endif
+#define TBB_DEPRECATED_FLOW_NODE_EXTRACTION __TBB_CPF_BUILD
+#define TBB_DEPRECATED_FLOW_NODE_ALLOCATOR __TBB_CPF_BUILD
 
+#include "harness.h"
 #include "harness_graph.h"
 
 #include "tbb/flow_graph.h"
 #include "tbb/task_scheduler_init.h"
 #include "tbb/spin_rw_mutex.h"
+#include "test_follows_and_precedes_api.h"
 
 #define N 100
 #define MAX_NODES 4
 
 //! Performs test on function nodes with limited concurrency and buffering
-/** Theses tests check:
+/** These tests check:
     1) that the number of executing copies never exceed the concurrency limit
     2) that the node never rejects
     3) that no items are lost
@@ -255,7 +252,7 @@ void run_buffered_levels( int c ) {
 
 
 //! Performs test on executable nodes with limited concurrency
-/** Theses tests check:
+/** These tests check:
     1) that the nodes will accepts puts up to the concurrency limit,
     2) the nodes do not exceed the concurrency limit even when run with more threads (this is checked in the harness_graph_executor),
     3) the nodes will receive puts from multiple successors simultaneously,
@@ -386,7 +383,7 @@ struct parallel_puts : private NoAssign {
 };
 
 //! Performs test on executable nodes with unlimited concurrency
-/** Theses tests check:
+/** These tests check:
     1) that the nodes will accept all puts
     2) the nodes will receive puts from multiple predecessors simultaneously,
     and 3) the nodes will send to multiple successors.
@@ -581,6 +578,86 @@ void test_extract() {
 }
 #endif
 
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+#include <array>
+#include <vector>
+void test_follows_and_precedes_api() {
+    using msg_t = tbb::flow::continue_msg;
+
+    std::array<msg_t, 3> messages_for_follows = { {msg_t(), msg_t(), msg_t()} };
+    std::vector<msg_t> messages_for_precedes = { msg_t() };
+
+    pass_through<msg_t> pass_msg;
+
+    follows_and_precedes_testing::test_follows
+        <msg_t, tbb::flow::function_node<msg_t, msg_t>>
+        (messages_for_follows, tbb::flow::unlimited, pass_msg);
+    follows_and_precedes_testing::test_precedes
+        <msg_t, tbb::flow::function_node<msg_t, msg_t>>
+        (messages_for_precedes, tbb::flow::unlimited, pass_msg);
+}
+#endif
+
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+
+int function_body_f(const int&) { return 1; }
+
+template <typename Body>
+void test_deduction_guides_common(Body body) {
+    using namespace tbb::flow;
+    graph g;
+
+    function_node f1(g, unlimited, body);
+    static_assert(std::is_same_v<decltype(f1), function_node<int, int>>);
+
+    function_node f2(g, unlimited, body, rejecting());
+    static_assert(std::is_same_v<decltype(f2), function_node<int, int, rejecting>>);
+
+#if __TBB_PREVIEW_FLOW_GRAPH_PRIORITIES
+    function_node f3(g, unlimited, body, node_priority_t(5));
+    static_assert(std::is_same_v<decltype(f3), function_node<int, int>>);
+
+    function_node f4(g, unlimited, body, rejecting(), node_priority_t(5));
+    static_assert(std::is_same_v<decltype(f4), function_node<int, int, rejecting>>);
+#endif
+
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    function_node f5(follows(f2), unlimited, body);
+    static_assert(std::is_same_v<decltype(f5), function_node<int, int>>);
+
+    function_node f6(follows(f5), unlimited, body, rejecting());
+    static_assert(std::is_same_v<decltype(f6), function_node<int, int, rejecting>>);
+
+#if __TBB_PREVIEW_FLOW_GRAPH_PRIORITIES
+    function_node f7(follows(f6), unlimited, body, node_priority_t(5));
+    static_assert(std::is_same_v<decltype(f7), function_node<int, int>>);
+
+    function_node f8(follows(f7), unlimited, body, rejecting(), node_priority_t(5));
+    static_assert(std::is_same_v<decltype(f8), function_node<int, int, rejecting>>);
+#endif // __TBB_PREVIEW_FLOW_GRAPH_PRIORITIES
+#endif // __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+
+    function_node f9(f1);
+    static_assert(std::is_same_v<decltype(f9), function_node<int, int>>);
+}
+
+void test_deduction_guides() {
+    test_deduction_guides_common([](const int&)->int { return 1; });
+    test_deduction_guides_common([](const int&) mutable ->int { return 1; });
+    test_deduction_guides_common(function_body_f);
+}
+
+#endif
+
+#if TBB_DEPRECATED_FLOW_NODE_ALLOCATOR
+void test_node_allocator(){
+    tbb::flow::graph g;
+    tbb::flow::function_node< int, int, tbb::flow::queueing, std::allocator<int> > tmp(
+        g, tbb::flow::unlimited, pass_through<int>()
+    );
+}
+#endif
+
 int TestMain() {
     if( MinThread<1 ) {
         REPORT("number of threads must be positive\n");
@@ -590,10 +667,18 @@ int TestMain() {
        test_concurrency(p);
    }
    lightweight_testing::test<tbb::flow::function_node>(10);
+#if __TBB_PREVIEW_FLOW_GRAPH_NODE_SET
+    test_follows_and_precedes_api();
+#endif
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+    test_deduction_guides();
+#endif
 #if TBB_DEPRECATED_FLOW_NODE_EXTRACTION
     test_extract<tbb::flow::rejecting>();
     test_extract<tbb::flow::queueing>();
 #endif
+#if TBB_DEPRECATED_FLOW_NODE_ALLOCATOR
+    test_node_allocator();
+#endif
    return Harness::Done;
 }
-

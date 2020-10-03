@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,18 +12,23 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "tbb/tbb_config.h"
 
 #if !__TBB_WIN8UI_SUPPORT && defined(_WIN32)
 
+#ifndef _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_DEPRECATE 1
+#endif
 #define __TBB_NO_IMPLICIT_LINKAGE 1
+
+// no standard-conforming implementation of snprintf prior to VS 2015
+#if !defined(_MSC_VER) || _MSC_VER>=1900
+#define LOG_PRINT(s, n, format, ...) snprintf(s, n, format, __VA_ARGS__)
+#else
+#define LOG_PRINT(s, n, format, ...) _snprintf_s(s, n, _TRUNCATE, format, __VA_ARGS__)
+#endif
 
 #include <windows.h>
 #include <new>
@@ -33,6 +38,57 @@
 
 #include "tbb/tbb_stddef.h"
 #include "../tbb/tbb_assert_impl.h"
+
+// The information about a standard memory allocation function for the replacement log
+struct FunctionInfo {
+    const char* funcName;
+    const char* dllName;
+};
+
+// Namespace that processes and manages the output of records to the Log journal
+// that will be provided to user by TBB_malloc_replacement_log()
+namespace Log {
+    // Value of RECORDS_COUNT is set due to the fact that we maximally
+    // scan 8 modules, and in every module we can swap 6 opcodes. (rounded to 8)
+    static const unsigned RECORDS_COUNT = 8 * 8;
+    static const unsigned RECORD_LENGTH = MAX_PATH;
+
+    // Need to add 1 to count of records, because last record must be always NULL
+    static char *records[RECORDS_COUNT + 1];
+    static bool replacement_status = true;
+
+    // Internal counter that contains number of next string for record
+    static unsigned record_number = 0;
+
+    // Function that writes info about (not)found opcodes to the Log journal
+    // functionInfo - information about a standard memory allocation function for the replacement log
+    // opcodeString - string, that contain byte code of this function
+    // status - information about function replacement status
+    static void record(FunctionInfo functionInfo, const char * opcodeString, bool status) {
+        __TBB_ASSERT(functionInfo.dllName, "Empty DLL name value");
+        __TBB_ASSERT(functionInfo.funcName, "Empty function name value");
+        __TBB_ASSERT(opcodeString, "Empty opcode");
+        __TBB_ASSERT(record_number <= RECORDS_COUNT, "Incorrect record number");
+
+        //If some replacement failed -> set status to false
+        replacement_status &= status;
+
+        // If we reach the end of the log, write this message to the last line
+        if (record_number == RECORDS_COUNT) {
+            // %s - workaround to fix empty variable argument parsing behavior in GCC
+            LOG_PRINT(records[RECORDS_COUNT - 1], RECORD_LENGTH, "%s", "Log was truncated.");
+            return;
+        }
+
+        char* entry = (char*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, RECORD_LENGTH);
+        __TBB_ASSERT(entry, "Invalid memory was returned");
+
+        LOG_PRINT(entry, RECORD_LENGTH, "%s: %s (%s), byte pattern: <%s>",
+            status ? "Success" : "Fail", functionInfo.funcName, functionInfo.dllName, opcodeString);
+
+        records[record_number++] = entry;
+    }
+};
 
 inline UINT_PTR Ptr2Addrint(LPVOID ptr)
 {
@@ -195,14 +251,14 @@ size_t compareStrings( const char *str1, const char *str2 )
 // Dictionary contains opcodes for several full asm instructions
 // + one opcode byte for the next asm instruction for safe address processing
 // RETURN: 1 + the index of the matched pattern, or 0 if no match found.
-static UINT CheckOpcodes( const char ** opcodes, void *inpAddr, bool abortOnError )
+static UINT CheckOpcodes( const char ** opcodes, void *inpAddr, bool abortOnError, const FunctionInfo* functionInfo = NULL)
 {
     static size_t opcodesStringsCount = 0;
     static size_t maxOpcodesLength = 0;
     static size_t opcodes_pointer = (size_t)opcodes;
     char opcodeString[2*MAX_PATTERN_SIZE+1];
     size_t i;
-    size_t result;
+    size_t result = 0;
 
     // Get the values for static variables
     // max length and number of patterns
@@ -225,8 +281,15 @@ static UINT CheckOpcodes( const char ** opcodes, void *inpAddr, bool abortOnErro
     // Compare translated opcodes with patterns
     for( UINT idx=0; idx<opcodesStringsCount; ++idx ){
         result = compareStrings( opcodes[idx],opcodeString );
-        if( result )
-            return idx+1; // avoid 0 which indicates a failure
+        if( result ) {
+            if (functionInfo) {
+                Log::record(*functionInfo, opcodeString, /*status*/ true);
+            }
+            return idx + 1; // avoid 0 which indicates a failure
+        }
+    }
+    if (functionInfo) {
+        Log::record(*functionInfo, opcodeString, /*status*/ false);
     }
     if (abortOnError) {
         // Impossibility to find opcodes in the dictionary is a serious issue,
@@ -493,12 +556,28 @@ FRR_TYPE ReplaceFunctionW(const wchar_t *dllName, const char *funcName, FUNCPTR 
     return FRR_OK;
 }
 
-bool IsPrologueKnown(HMODULE module, const char *funcName, const char **opcodes)
+bool IsPrologueKnown(const char* dllName, const char *funcName, const char **opcodes, HMODULE module)
 {
     FARPROC inpFunc = GetProcAddress(module, funcName);
-    if (!inpFunc)
+    FunctionInfo functionInfo = { funcName, dllName };
+
+    if (!inpFunc) {
+        Log::record(functionInfo, "unknown", /*status*/ false);
         return false;
-    return CheckOpcodes( opcodes, (void*)inpFunc, /*abortOnError=*/false ) != 0;
+    }
+
+    return CheckOpcodes( opcodes, (void*)inpFunc, /*abortOnError=*/false, &functionInfo) != 0;
+}
+
+// Public Windows API
+extern "C" __declspec(dllexport) int TBB_malloc_replacement_log(char *** function_replacement_log_ptr)
+{
+    if (function_replacement_log_ptr != NULL) {
+        *function_replacement_log_ptr = Log::records;
+    }
+
+    // If we have no logs -> return false status
+    return Log::replacement_status && Log::records[0] != NULL ? 0 : -1;
 }
 
 #endif /* !__TBB_WIN8UI_SUPPORT && defined(_WIN32) */

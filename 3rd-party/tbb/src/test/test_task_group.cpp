@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "harness_defs.h"
@@ -93,14 +89,15 @@ enum SharingMode {
     ParallelWait = 2
 };
 
-class  SharedGroupBodyImpl : NoCopy, Harness::NoAfterlife {
+template<typename task_group_type>
+class SharedGroupBodyImpl : NoCopy, Harness::NoAfterlife {
     static const uint_t c_numTasks0 = 4096,
                         c_numTasks1 = 1024;
 
     const uint_t m_numThreads;
     const uint_t m_sharingMode;
 
-    Concurrency::task_group *m_taskGroup;
+    task_group_type *m_taskGroup;
     atomic_t m_tasksSpawned,
              m_threadsReady;
     Harness::SpinBarrier m_barrier;
@@ -179,7 +176,7 @@ public:
         AssertLive();
         if ( idx == 0 ) {
             ASSERT ( !m_taskGroup && !m_tasksSpawned, "SharedGroupBody must be reset before reuse");
-            m_taskGroup = new Concurrency::task_group;
+            m_taskGroup = new task_group_type;
             Spawn( c_numTasks0 );
             Wait();
             if ( m_sharingMode & VagabondGroup )
@@ -204,15 +201,19 @@ public:
     }
 };
 
-atomic_t SharedGroupBodyImpl::s_tasksExecuted;
+template<typename task_group_type>
+atomic_t SharedGroupBodyImpl<task_group_type>::s_tasksExecuted;
 
+template<typename task_group_type>
 class  SharedGroupBody : NoAssign, Harness::NoAfterlife {
     bool m_bOwner;
-    SharedGroupBodyImpl *m_pImpl;
+    SharedGroupBodyImpl<task_group_type> *m_pImpl;
 public:
     SharedGroupBody ( uint_t numThreads, uint_t sharingMode = 0 )
-        : m_bOwner(true)
-        , m_pImpl( new SharedGroupBodyImpl(numThreads, sharingMode) )
+        : NoAssign()
+        , Harness::NoAfterlife()
+        , m_bOwner(true)
+        , m_pImpl( new SharedGroupBodyImpl<task_group_type>(numThreads, sharingMode) )
     {}
     SharedGroupBody ( const SharedGroupBody& src )
         : NoAssign()
@@ -227,12 +228,13 @@ public:
     void operator() ( uint_t idx ) const { m_pImpl->Run(idx); }
 };
 
+template<typename task_group_type>
 class RunAndWaitSyncronizationTestBody : NoAssign {
     Harness::SpinBarrier& m_barrier;
     tbb::atomic<bool>& m_completed;
-    tbb::task_group& m_tg;
+    task_group_type& m_tg;
 public:
-    RunAndWaitSyncronizationTestBody(Harness::SpinBarrier& barrier, tbb::atomic<bool>& completed, tbb::task_group& tg)
+    RunAndWaitSyncronizationTestBody(Harness::SpinBarrier& barrier, tbb::atomic<bool>& completed, task_group_type& tg)
         : m_barrier(barrier), m_completed(completed), m_tg(tg) {}
 
     void operator()() const {
@@ -252,24 +254,38 @@ public:
     }
 };
 
+
+
+template<typename task_group_type>
 void TestParallelSpawn () {
-    NativeParallelFor( g_MaxConcurrency, SharedGroupBody(g_MaxConcurrency) );
+    NativeParallelFor( g_MaxConcurrency, SharedGroupBody<task_group_type>(g_MaxConcurrency) );
 }
 
+template<typename task_group_type>
 void TestParallelWait () {
-    NativeParallelFor( g_MaxConcurrency, SharedGroupBody(g_MaxConcurrency, ParallelWait) );
+    NativeParallelFor( g_MaxConcurrency, SharedGroupBody<task_group_type>(g_MaxConcurrency, ParallelWait) );
 
     Harness::SpinBarrier barrier(g_MaxConcurrency);
     tbb::atomic<bool> completed;
     completed = false;
-    tbb::task_group tg;
-    RunAndWaitSyncronizationTestBody b(barrier, completed, tg);
+    task_group_type tg;
+    RunAndWaitSyncronizationTestBody<task_group_type> b(barrier, completed, tg);
     NativeParallelFor( g_MaxConcurrency, b );
 }
 
 // Tests non-stack-bound task group (the group that is allocated by one thread and destroyed by the other)
+template<typename task_group_type>
 void TestVagabondGroup () {
-    NativeParallelFor( 2, SharedGroupBody(2, VagabondGroup) );
+    NativeParallelFor( 2, SharedGroupBody<task_group_type>(2, VagabondGroup) );
+}
+
+
+
+template<typename task_group_type>
+void TestThreadSafety() {
+    TestParallelSpawn<task_group_type>();
+    TestParallelWait<task_group_type>();
+    TestVagabondGroup<task_group_type>();
 }
 
 //------------------------------------------------------------------------
@@ -289,175 +305,171 @@ atomic_t g_Sum;
     ASSERT( sum == numRepeats * F, NULL ); \
     REMARK("Realized parallelism in Fib test is %u out of %u\n", Harness::ConcurrencyTracker::PeakParallelism(), g_MaxConcurrency)
 
-//------------------------------------------------------------------------
-// Test for a complex tree of task groups
-//
-// The test executes a tree of task groups of the same sort with asymmetric
-// descendant nodes distribution at each level at each level.
-//
-// The chores are specified as functor objects. Each task group contains only one chore.
-//------------------------------------------------------------------------
-
-template<uint_t Func(uint_t)>
-struct FibTask : NoAssign, Harness::NoAfterlife {
-    uint_t* m_pRes;
-    const uint_t m_Num;
-    FibTask( uint_t* y, uint_t n ) : m_pRes(y), m_Num(n) {}
-    void operator() () const {
-        *m_pRes = Func(m_Num);
-    }
-};
-
-uint_t Fib_SpawnRightChildOnly ( uint_t n ) {
-    Harness::ConcurrencyTracker ct;
-    if( n<2 ) {
-        return n;
-    } else {
-        uint_t y = ~0u;
-        Concurrency::task_group tg;
-        tg.run( FibTask<Fib_SpawnRightChildOnly>(&y, n-1) );
-        uint_t x = Fib_SpawnRightChildOnly(n-2);
-        tg.wait();
-        return y+x;
-    }
-}
-
-void TestFib1 () {
-    FIB_TEST_PROLOGUE();
-    uint_t sum = 0;
-    for( unsigned i = 0; i < numRepeats; ++i )
-        sum += Fib_SpawnRightChildOnly(N);
-    FIB_TEST_EPILOGUE(sum);
-}
-
-
-//------------------------------------------------------------------------
-// Test for a mixed tree of task groups.
-//
-// The test executes a tree with multiple task of one sort at the first level,
-// each of which originates in its turn a binary tree of descendant task groups.
-//
-// The chores are specified both as functor objects and as function pointers
-//------------------------------------------------------------------------
-
-uint_t Fib_SpawnBothChildren( uint_t n ) {
-    Harness::ConcurrencyTracker ct;
-    if( n<2 ) {
-        return n;
-    } else {
-        uint_t  y = ~0u,
-                x = ~0u;
-        Concurrency::task_group tg;
-        tg.run( FibTask<Fib_SpawnBothChildren>(&x, n-2) );
-        tg.run( FibTask<Fib_SpawnBothChildren>(&y, n-1) );
-        tg.wait();
-        return y + x;
-    }
-}
-
-void RunFib2 () {
-    g_Sum += Fib_SpawnBothChildren(N);
-}
-
-void TestFib2 () {
-    FIB_TEST_PROLOGUE();
-    g_Sum = 0;
-    Concurrency::task_group rg;
-    for( unsigned i = 0; i < numRepeats - 1; ++i )
-        rg.run( &RunFib2 );
-    rg.wait();
-    rg.run( &RunFib2 );
-    rg.wait();
-    FIB_TEST_EPILOGUE(g_Sum);
-}
-
-
-//------------------------------------------------------------------------
-// Test for a complex tree of task groups
-// The chores are specified as task handles for recursive functor objects.
-//------------------------------------------------------------------------
-
-class FibTask_SpawnRightChildOnly : NoAssign, Harness::NoAfterlife {
+// Fibonacci tasks specified as functors
+template<class task_group_type>
+class FibTaskBase : NoAssign, Harness::NoAfterlife {
+protected:
     uint_t* m_pRes;
     mutable uint_t m_Num;
-
+    virtual void impl() const = 0;
 public:
-    FibTask_SpawnRightChildOnly( uint_t* y, uint_t n ) : m_pRes(y), m_Num(n) {}
-    void operator() () const {
+    FibTaskBase( uint_t* y, uint_t n ) : m_pRes(y), m_Num(n) {}
+    void operator()() const {
         Harness::ConcurrencyTracker ct;
         AssertLive();
         if( m_Num < 2 ) {
             *m_pRes = m_Num;
         } else {
-            uint_t y = ~0u;
-            Concurrency::task_group tg;
-            Concurrency::task_handle<FibTask_SpawnRightChildOnly> h = FibTask_SpawnRightChildOnly(&y, m_Num-1);
-            tg.run( h );
-            m_Num -= 2;
-            tg.run_and_wait( *this );
-            *m_pRes += y;
+            impl();
         }
+    }
+    virtual ~FibTaskBase() {}
+};
+
+template<class task_group_type>
+class FibTaskAsymmetricTreeWithTaskHandle : public FibTaskBase<task_group_type> {
+public:
+    FibTaskAsymmetricTreeWithTaskHandle( uint_t* y, uint_t n ) : FibTaskBase<task_group_type>(y, n) {}
+    virtual void impl() const __TBB_override {
+        uint_t x = ~0u;
+        task_group_type tg;
+        Concurrency::task_handle<FibTaskAsymmetricTreeWithTaskHandle>
+            h = FibTaskAsymmetricTreeWithTaskHandle(&x, this->m_Num-1);
+        tg.run( h );
+        this->m_Num -= 2; (*this)();
+        tg.wait();
+        *(this->m_pRes) += x;
     }
 };
 
-uint_t RunFib3 ( uint_t n ) {
+template<class task_group_type>
+class FibTaskSymmetricTreeWithTaskHandle : public FibTaskBase<task_group_type> {
+public:
+    FibTaskSymmetricTreeWithTaskHandle( uint_t* y, uint_t n ) : FibTaskBase<task_group_type>(y, n) {}
+    virtual void impl() const __TBB_override {
+        uint_t x = ~0u,
+               y = ~0u;
+        task_group_type tg;
+        Concurrency::task_handle<FibTaskSymmetricTreeWithTaskHandle>
+            h1 = FibTaskSymmetricTreeWithTaskHandle(&x, this->m_Num-1),
+            h2 = FibTaskSymmetricTreeWithTaskHandle(&y, this->m_Num-2);
+        tg.run( h1 );
+        tg.run( h2 );
+        tg.wait();
+        *(this->m_pRes) = x + y;
+    }
+};
+
+template<class task_group_type>
+class FibTaskAsymmetricTreeWithFunctor : public FibTaskBase<task_group_type> {
+public:
+    FibTaskAsymmetricTreeWithFunctor( uint_t* y, uint_t n ) : FibTaskBase<task_group_type>(y, n) {}
+    virtual void impl() const __TBB_override {
+        uint_t x = ~0u;
+        task_group_type tg;
+        tg.run( FibTaskAsymmetricTreeWithFunctor(&x, this->m_Num-1) );
+        this->m_Num -= 2; tg.run_and_wait( *this );
+        *(this->m_pRes) += x;
+    }
+};
+
+template<class task_group_type>
+class FibTaskSymmetricTreeWithFunctor : public FibTaskBase<task_group_type> {
+public:
+    FibTaskSymmetricTreeWithFunctor( uint_t* y, uint_t n ) : FibTaskBase<task_group_type>(y, n) {}
+    virtual void impl() const __TBB_override {
+        uint_t x = ~0u,
+               y = ~0u;
+        task_group_type tg;
+        tg.run( FibTaskSymmetricTreeWithFunctor(&x, this->m_Num-1) );
+        tg.run( FibTaskSymmetricTreeWithFunctor(&y, this->m_Num-2) );
+        tg.wait();
+        *(this->m_pRes) = x + y;
+    }
+};
+
+
+
+// Helper functions
+template<class fib_task>
+uint_t RunFibTask(uint_t n) {
     uint_t res = ~0u;
-    FibTask_SpawnRightChildOnly func(&res, n);
-    func();
+    fib_task(&res, n)();
     return res;
 }
 
-void TestTaskHandle () {
+template<typename fib_task>
+void RunFibTest() {
     FIB_TEST_PROLOGUE();
     uint_t sum = 0;
     for( unsigned i = 0; i < numRepeats; ++i )
-        sum += RunFib3(N);
+        sum += RunFibTask<fib_task>(N);
     FIB_TEST_EPILOGUE(sum);
 }
 
-//------------------------------------------------------------------------
-// Test for a mixed tree of task groups.
-// The chores are specified as task handles for both functor objects and function pointers
-//------------------------------------------------------------------------
-
-template<class task_group_type>
-class FibTask_SpawnBothChildren : NoAssign, Harness::NoAfterlife {
-    uint_t* m_pRes;
-    uint_t m_Num;
-public:
-    FibTask_SpawnBothChildren( uint_t* y, uint_t n ) : m_pRes(y), m_Num(n) {}
-    void operator() () const {
-        Harness::ConcurrencyTracker ct;
-        AssertLive();
-        if( m_Num < 2 ) {
-            *m_pRes = m_Num;
-        } else {
-            uint_t  x = ~0u, // initialized only to suppress warning
-                    y = ~0u;
-            task_group_type tg;
-            Concurrency::task_handle<FibTask_SpawnBothChildren> h1 = FibTask_SpawnBothChildren(&y, m_Num-1),
-                                                                h2 = FibTask_SpawnBothChildren(&x, m_Num-2);
-            tg.run( h1 );
-            tg.run( h2 );
-            tg.wait();
-            *m_pRes = x + y;
-        }
-    }
-};
-
-template<class task_group_type>
-void RunFib4 () {
-    uint_t res = ~0u;
-    FibTask_SpawnBothChildren<task_group_type> func(&res, N);
-    func();
-    g_Sum += res;
+template<typename fib_task>
+void FibFunctionNoArgs() {
+    g_Sum += RunFibTask<fib_task>(N);
 }
 
-template<class task_group_type>
-void TestTaskHandle2 () {
+
+
+template<typename task_group_type>
+void TestFibWithTaskHandle() {
+    RunFibTest<FibTaskAsymmetricTreeWithTaskHandle<task_group_type> >();
+    RunFibTest< FibTaskSymmetricTreeWithTaskHandle<task_group_type> >();
+}
+
+#if __TBB_CPP11_LAMBDAS_PRESENT
+template<typename task_group_type>
+void TestFibWithMakeTask() {
+    REMARK ("make_task test\n");
+    atomic_t sum;
+    sum = 0;
+    task_group_type tg;
+    auto h1 = Concurrency::make_task( [&](){sum += RunFibTask<FibTaskSymmetricTreeWithTaskHandle<task_group_type> >(N);} );
+    auto h2 = Concurrency::make_task( [&](){sum += RunFibTask<FibTaskSymmetricTreeWithTaskHandle<task_group_type> >(N);} );
+    tg.run( h1 );
+    tg.run_and_wait( h2 );
+    ASSERT( sum == 2 * F, NULL );
+}
+
+template<typename task_group_type>
+void TestFibWithLambdas() {
+    REMARK ("Lambdas test");
+    FIB_TEST_PROLOGUE();
+    atomic_t sum;
+    sum = 0;
+    task_group_type tg;
+    for( unsigned i = 0; i < numRepeats; ++i )
+        tg.run( [&](){sum += RunFibTask<FibTaskSymmetricTreeWithFunctor<task_group_type> >(N);} );
+    tg.wait();
+    FIB_TEST_EPILOGUE(sum);
+}
+#endif //__TBB_CPP11_LAMBDAS_PRESENT
+
+template<typename task_group_type>
+void TestFibWithFunctor() {
+    RunFibTest<FibTaskAsymmetricTreeWithFunctor<task_group_type> >();
+    RunFibTest< FibTaskSymmetricTreeWithFunctor<task_group_type> >();
+}
+
+template<typename task_group_type>
+void TestFibWithFunctionPtr() {
     FIB_TEST_PROLOGUE();
     g_Sum = 0;
-    task_group_type rg;
+    task_group_type tg;
+    for( unsigned i = 0; i < numRepeats; ++i )
+        tg.run( &FibFunctionNoArgs<FibTaskSymmetricTreeWithFunctor<task_group_type> > );
+    tg.wait();
+    FIB_TEST_EPILOGUE(g_Sum);
+}
+
+template<typename task_group_type>
+void TestFibInvalidMultipleScheduling() {
+    FIB_TEST_PROLOGUE();
+    g_Sum = 0;
+    task_group_type tg;
     typedef tbb::aligned_space<handle_type> handle_space_t;
     handle_space_t *handles = new handle_space_t[numRepeats];
     handle_type *h = NULL;
@@ -468,18 +480,18 @@ void TestTaskHandle2 () {
     for( ;; ++i ) {
         h = handles[i].begin();
 #if __TBB_FUNC_PTR_AS_TEMPL_PARAM_BROKEN
-        new ( h ) handle_type((void(*)())RunFib4<task_group_type>);
+        new ( h ) handle_type((void(*)())FibFunctionNoArgs<FibTaskSymmetricTreeWithTaskHandle<task_group_type> >);
 #else
-        new ( h ) handle_type(RunFib4<task_group_type>);
+        new ( h ) handle_type(FibFunctionNoArgs<FibTaskSymmetricTreeWithTaskHandle<task_group_type> >);
 #endif
         if ( i == numRepeats - 1 )
             break;
-        rg.run( *h );
+        tg.run( *h );
 #if TBB_USE_EXCEPTIONS && !__TBB_THROW_ACROSS_MODULE_BOUNDARY_BROKEN
         bool caught = false;
         try {
-            if( i&1 ) rg.run( *h );
-            else rg.run_and_wait( *h );
+            if( i&1 ) tg.run( *h );
+            else tg.run_and_wait( *h );
         }
         catch ( Concurrency::invalid_multiple_scheduling& e ) {
             ASSERT( e.what(), "Error message is absent" );
@@ -492,7 +504,7 @@ void TestTaskHandle2 () {
 #endif /* TBB_USE_EXCEPTIONS && !__TBB_THROW_ACROSS_MODULE_BOUNDARY_BROKEN */
     }
     ASSERT( i == numRepeats - 1, "unexpected exit from the loop" );
-    rg.run_and_wait( *h );
+    tg.run_and_wait( *h );
 
     for( i = 0; i < numRepeats; ++i )
 #if __TBB_UNQUALIFIED_CALL_OF_DTOR_BROKEN
@@ -504,46 +516,30 @@ void TestTaskHandle2 () {
     FIB_TEST_EPILOGUE(g_Sum);
 }
 
+
+
+template<typename task_group_type>
+void RunFibonacciTests() {
+    TestFibWithTaskHandle<task_group_type>();
 #if __TBB_CPP11_LAMBDAS_PRESENT
-//------------------------------------------------------------------------
-// Test for a mixed tree of task groups.
-// The chores are specified as lambdas
-//------------------------------------------------------------------------
-
-void TestFibWithLambdas () {
-    REMARK ("Lambdas test");
-    FIB_TEST_PROLOGUE();
-    atomic_t sum;
-    sum = 0;
-    Concurrency::task_group rg;
-    for( unsigned i = 0; i < numRepeats; ++i )
-        rg.run( [&](){sum += Fib_SpawnBothChildren(N);} );
-    rg.wait();
-    FIB_TEST_EPILOGUE(sum);
+    TestFibWithMakeTask<task_group_type>();
+    TestFibWithLambdas<task_group_type>();
+#endif
+    TestFibWithFunctor<task_group_type>();
+    TestFibWithFunctionPtr<task_group_type>();
+    TestFibInvalidMultipleScheduling<task_group_type>();
 }
 
-//------------------------------------------------------------------------
-// Test for make_task.
-// The chores are specified as lambdas converted to task_handles.
-//------------------------------------------------------------------------
-
-void TestFibWithMakeTask () {
-    REMARK ("Make_task test\n");
-    atomic_t sum;
-    sum = 0;
-    Concurrency::task_group rg;
-    const auto &h1 = Concurrency::make_task( [&](){sum += Fib_SpawnBothChildren(N);} );
-    const auto &h2 = Concurrency::make_task( [&](){sum += Fib_SpawnBothChildren(N);} );
-    rg.run( h1 );
-    rg.run_and_wait( h2 );
-    ASSERT( sum == 2 * F, NULL );
+// tbb::structured_task_group accepts tasks only as task_handle object
+template<> void RunFibonacciTests<Concurrency::structured_task_group>() {
+    TestFibWithTaskHandle<Concurrency::structured_task_group>();
+#if __TBB_CPP11_LAMBDAS_PRESENT
+    TestFibWithMakeTask<Concurrency::structured_task_group>();
+#endif
+    TestFibInvalidMultipleScheduling<Concurrency::structured_task_group>();
 }
-#endif /* __TBB_CPP11_LAMBDAS_PRESENT */
 
 
-//------------------------------------------------------------------------
-// Tests for exception handling and cancellation behavior.
-//------------------------------------------------------------------------
 
 class test_exception : public std::exception
 {
@@ -591,18 +587,6 @@ bool g_Throw;
     #define CATCH_ANY()  __TBB_CATCH( ... ) { ASSERT( __TBB_EXCEPTION_TYPE_INFO_BROKEN, "Unknown exception" ); }
 #endif
 
-inline
-void ResetGlobals ( bool bThrow, bool bRethrow ) {
-    g_Throw = bThrow;
-    g_Rethrow = bRethrow;
-#if __TBB_SILENT_CANCELLATION_BROKEN
-    g_CancellationPropagationInProgress = false;
-#endif
-    g_ExceptionCount = 0;
-    g_TaskCount = 0;
-    Harness::ConcurrencyTracker::Reset();
-}
-
 class ThrowingTask : NoAssign, Harness::NoAfterlife {
     atomic_t &m_TaskCount;
 public:
@@ -623,10 +607,22 @@ public:
     }
 };
 
-void LaunchChildren () {
+inline void ResetGlobals ( bool bThrow, bool bRethrow ) {
+    g_Throw = bThrow;
+    g_Rethrow = bRethrow;
+#if __TBB_SILENT_CANCELLATION_BROKEN
+    g_CancellationPropagationInProgress = false;
+#endif
+    g_ExceptionCount = 0;
+    g_TaskCount = 0;
+    Harness::ConcurrencyTracker::Reset();
+}
+
+template<typename task_group_type>
+void LaunchChildrenWithFunctor () {
     atomic_t count;
     count = 0;
-    Concurrency::task_group g;
+    task_group_type g;
     bool exceptionCaught = false;
     for( unsigned i = 0; i < NUM_CHORES; ++i )
         g.run( ThrowingTask(count) );
@@ -650,78 +646,11 @@ void LaunchChildren () {
     }
 }
 
-#if TBB_USE_EXCEPTIONS
-void TestEh1 () {
-    ResetGlobals( true, false );
-    Concurrency::task_group rg;
-    for( unsigned i = 0; i < NUM_GROUPS; ++i )
-        // TBB version does not require taking function address
-        rg.run( &LaunchChildren );
-    try {
-        rg.wait();
-    } catch ( ... ) {
-        ASSERT( false, "Unexpected exception" );
-    }
-    ASSERT( g_ExceptionCount <= NUM_GROUPS, "Too many exceptions from the child groups. The test is broken" );
-    ASSERT( g_ExceptionCount == NUM_GROUPS, "Not all child groups threw the exception" );
-}
-
-void TestEh2 () {
-    ResetGlobals( true, true );
-    Concurrency::task_group rg;
-    bool exceptionCaught = false;
-    for( unsigned i = 0; i < NUM_GROUPS; ++i )
-        // TBB version does not require taking function address
-        rg.run( &LaunchChildren );
-    try {
-        rg.wait();
-    } catch ( TestException& e ) {
-        ASSERT( e.what(), "Empty what() string" );
-        ASSERT( __TBB_EXCEPTION_TYPE_INFO_BROKEN || strcmp(e.what(), EXCEPTION_DESCR2) == 0, "Unknown exception" );
-        ASSERT ( !rg.is_canceling(), "wait() has not reset cancellation state" );
-        exceptionCaught = true;
-    } CATCH_ANY();
-    ASSERT( exceptionCaught, "No exception thrown from the root task group" );
-    ASSERT( g_ExceptionCount >= SKIP_GROUPS, "Too few exceptions from the child groups. The test is broken" );
-    ASSERT( g_ExceptionCount <= NUM_GROUPS - SKIP_GROUPS, "Too many exceptions from the child groups. The test is broken" );
-    ASSERT( g_ExceptionCount < NUM_GROUPS - SKIP_GROUPS, "None of the child groups was cancelled" );
-}
-#endif /* TBB_USE_EXCEPTIONS */
-
-//------------------------------------------------------------------------
-// Tests for manual cancellation of the task_group hierarchy
-//------------------------------------------------------------------------
-
-void TestCancellation1 () {
-    ResetGlobals( false, false );
-    Concurrency::task_group rg;
-    for( unsigned i = 0; i < NUM_GROUPS; ++i )
-        // TBB version does not require taking function address
-        rg.run( &LaunchChildren );
-    ASSERT ( !Concurrency::is_current_task_group_canceling(), "Unexpected cancellation" );
-    ASSERT ( !rg.is_canceling(), "Unexpected cancellation" );
-#if __TBB_SILENT_CANCELLATION_BROKEN
-    g_CancellationPropagationInProgress = true;
-#endif
-    while ( g_MaxConcurrency > 1 && g_TaskCount == 0 )
-        __TBB_Yield();
-    rg.cancel();
-    g_ExecutedAtCancellation = g_TaskCount;
-    ASSERT ( rg.is_canceling(), "No cancellation reported" );
-    rg.wait();
-    ASSERT( g_TaskCount <= NUM_GROUPS * NUM_CHORES, "Too many tasks reported. The test is broken" );
-    ASSERT( g_TaskCount < NUM_GROUPS * NUM_CHORES, "No tasks were cancelled. Cancellation model changed?" );
-    ASSERT( g_TaskCount <= g_ExecutedAtCancellation + Harness::ConcurrencyTracker::PeakParallelism(), "Too many tasks survived cancellation" );
-}
-
-//------------------------------------------------------------------------
-// Tests for manual cancellation of the structured_task_group hierarchy
-//------------------------------------------------------------------------
-
-void StructuredLaunchChildren () {
+template<typename task_group_type>
+void LaunchChildrenWithTaskHandle () {
     atomic_t count;
     count = 0;
-    Concurrency::structured_task_group g;
+    task_group_type g;
     bool exceptionCaught = false;
     typedef Concurrency::task_handle<ThrowingTask> throwing_handle_type;
     tbb::aligned_space<throwing_handle_type,NUM_CHORES> handles;
@@ -756,19 +685,20 @@ void StructuredLaunchChildren () {
     }
 }
 
-class StructuredCancellationTestDriver {
+template<typename task_group_type>
+class LaunchChildrenWithTaskHandleDriver {
     tbb::aligned_space<handle_type,NUM_CHORES> m_handles;
 
 public:
-    void Launch ( Concurrency::structured_task_group& rg ) {
+    void Launch ( task_group_type& tg ) {
         ResetGlobals( false, false );
         for( unsigned i = 0; i < NUM_GROUPS; ++i ) {
             handle_type *h = m_handles.begin()+i;
-            new ( h ) handle_type( StructuredLaunchChildren );
-            rg.run( *h );
+            new ( h ) handle_type( LaunchChildrenWithTaskHandle<task_group_type> );
+            tg.run( *h );
         }
         ASSERT ( !Concurrency::is_current_task_group_canceling(), "Unexpected cancellation" );
-        ASSERT ( !rg.is_canceling(), "Unexpected cancellation" );
+        ASSERT ( !tg.is_canceling(), "Unexpected cancellation" );
 #if __TBB_SILENT_CANCELLATION_BROKEN
         g_CancellationPropagationInProgress = true;
 #endif
@@ -783,31 +713,96 @@ public:
         ASSERT( g_TaskCount < NUM_GROUPS * NUM_CHORES, "No tasks were cancelled. Cancellation model changed?" );
         ASSERT( g_TaskCount <= g_ExecutedAtCancellation + g_MaxConcurrency, "Too many tasks survived cancellation" );
     }
-}; // StructuredCancellationTestDriver
+}; // LaunchChildrenWithTaskHandleDriver
 
-void TestStructuredCancellation1 () {
-    StructuredCancellationTestDriver driver;
-    Concurrency::structured_task_group sg;
-    driver.Launch( sg );
-    sg.cancel();
+
+
+// Tests for cancellation and exception handling behavior
+template<typename task_group_type>
+void TestManualCancellationWithFunctor () {
+    ResetGlobals( false, false );
+    task_group_type tg;
+    for( unsigned i = 0; i < NUM_GROUPS; ++i )
+        // TBB version does not require taking function address
+        tg.run( &LaunchChildrenWithFunctor<task_group_type> );
+    ASSERT ( !Concurrency::is_current_task_group_canceling(), "Unexpected cancellation" );
+    ASSERT ( !tg.is_canceling(), "Unexpected cancellation" );
+#if __TBB_SILENT_CANCELLATION_BROKEN
+    g_CancellationPropagationInProgress = true;
+#endif
+    while ( g_MaxConcurrency > 1 && g_TaskCount == 0 )
+        __TBB_Yield();
+    tg.cancel();
     g_ExecutedAtCancellation = g_TaskCount;
-    ASSERT ( sg.is_canceling(), "No cancellation reported" );
-    sg.wait();
+    ASSERT ( tg.is_canceling(), "No cancellation reported" );
+    tg.wait();
+    ASSERT( g_TaskCount <= NUM_GROUPS * NUM_CHORES, "Too many tasks reported. The test is broken" );
+    ASSERT( g_TaskCount < NUM_GROUPS * NUM_CHORES, "No tasks were cancelled. Cancellation model changed?" );
+    ASSERT( g_TaskCount <= g_ExecutedAtCancellation + Harness::ConcurrencyTracker::PeakParallelism(), "Too many tasks survived cancellation" );
+}
+
+template<typename task_group_type>
+void TestManualCancellationWithTaskHandle () {
+    LaunchChildrenWithTaskHandleDriver<task_group_type> driver;
+    task_group_type tg;
+    driver.Launch( tg );
+    tg.cancel();
+    g_ExecutedAtCancellation = g_TaskCount;
+    ASSERT ( tg.is_canceling(), "No cancellation reported" );
+    tg.wait();
     driver.Finish();
 }
 
 #if TBB_USE_EXCEPTIONS
+template<typename task_group_type>
+void TestExceptionHandling1 () {
+    ResetGlobals( true, false );
+    task_group_type tg;
+    for( unsigned i = 0; i < NUM_GROUPS; ++i )
+        // TBB version does not require taking function address
+        tg.run( &LaunchChildrenWithFunctor<task_group_type> );
+    try {
+        tg.wait();
+    } catch ( ... ) {
+        ASSERT( false, "Unexpected exception" );
+    }
+    ASSERT( g_ExceptionCount <= NUM_GROUPS, "Too many exceptions from the child groups. The test is broken" );
+    ASSERT( g_ExceptionCount == NUM_GROUPS, "Not all child groups threw the exception" );
+}
+
+template<typename task_group_type>
+void TestExceptionHandling2 () {
+    ResetGlobals( true, true );
+    task_group_type tg;
+    bool exceptionCaught = false;
+    for( unsigned i = 0; i < NUM_GROUPS; ++i )
+        // TBB version does not require taking function address
+        tg.run( &LaunchChildrenWithFunctor<task_group_type> );
+    try {
+        tg.wait();
+    } catch ( TestException& e ) {
+        ASSERT( e.what(), "Empty what() string" );
+        ASSERT( __TBB_EXCEPTION_TYPE_INFO_BROKEN || strcmp(e.what(), EXCEPTION_DESCR2) == 0, "Unknown exception" );
+        ASSERT ( !tg.is_canceling(), "wait() has not reset cancellation state" );
+        exceptionCaught = true;
+    } CATCH_ANY();
+    ASSERT( exceptionCaught, "No exception thrown from the root task group" );
+    ASSERT( g_ExceptionCount >= SKIP_GROUPS, "Too few exceptions from the child groups. The test is broken" );
+    ASSERT( g_ExceptionCount <= NUM_GROUPS - SKIP_GROUPS, "Too many exceptions from the child groups. The test is broken" );
+    ASSERT( g_ExceptionCount < NUM_GROUPS - SKIP_GROUPS, "None of the child groups was cancelled" );
+}
+
 #if defined(_MSC_VER)
     #pragma warning (disable: 4127)
 #endif
 
-template<bool Throw>
-void TestStructuredCancellation2 () {
+template<typename task_group_type, bool Throw>
+void TestMissingWait () {
     bool exception_occurred = false,
          unexpected_exception = false;
-    StructuredCancellationTestDriver driver;
+    LaunchChildrenWithTaskHandleDriver<task_group_type> driver;
     try {
-        Concurrency::structured_task_group tg;
+        task_group_type tg;
         driver.Launch( tg );
         if ( Throw )
             throw int(); // Initiate stack unwinding
@@ -830,6 +825,37 @@ void TestStructuredCancellation2 () {
 }
 #endif /* TBB_USE_EXCEPTIONS */
 
+template<typename task_group_type>
+void RunCancellationAndExceptionHandlingTests() {
+    TestManualCancellationWithFunctor              <Concurrency::task_group>();
+    TestManualCancellationWithTaskHandle<Concurrency::task_group>();
+#if TBB_USE_EXCEPTIONS && !__TBB_THROW_ACROSS_MODULE_BOUNDARY_BROKEN
+    TestExceptionHandling1<Concurrency::task_group>();
+    TestExceptionHandling2<Concurrency::task_group>();
+
+    TestMissingWait<Concurrency::task_group, true>();
+#if !(__TBB_THROW_FROM_DTOR_BROKEN || __TBB_STD_UNCAUGHT_EXCEPTION_BROKEN)
+    TestMissingWait<Concurrency::task_group, false>();
+#else
+    REPORT("Known issue: TestMissingWait<task_group_type, false>() is skipped.\n");
+#endif
+#endif /* TBB_USE_EXCEPTIONS && !__TBB_THROW_ACROSS_MODULE_BOUNDARY_BROKEN */
+}
+
+template<> void RunCancellationAndExceptionHandlingTests<Concurrency::structured_task_group>() {
+    TestManualCancellationWithTaskHandle<Concurrency::structured_task_group>();
+#if TBB_USE_EXCEPTIONS && !__TBB_THROW_ACROSS_MODULE_BOUNDARY_BROKEN
+    TestMissingWait<Concurrency::structured_task_group, true>();
+#if !(__TBB_THROW_FROM_DTOR_BROKEN || __TBB_STD_UNCAUGHT_EXCEPTION_BROKEN)
+    TestMissingWait<Concurrency::structured_task_group, false>();
+#else
+    REPORT("Known issue: TestMissingWait<task_group_type, false>() is skipped.\n");
+#endif
+#endif /* TBB_USE_EXCEPTIONS && !__TBB_THROW_ACROSS_MODULE_BOUNDARY_BROKEN */
+}
+
+
+
 void EmptyFunction () {}
 
 void TestStructuredWait () {
@@ -847,12 +873,16 @@ struct TestFunctor {
     void operator()() const { /* library requires this overload only */ }
 };
 
+template<typename task_group_type>
 void TestConstantFunctorRequirement() {
-    tbb::task_group g;
+    task_group_type g;
     TestFunctor tf;
     g.run( tf ); g.wait();
     g.run_and_wait( tf );
 }
+
+
+
 //------------------------------------------------------------------------
 #if __TBB_CPP11_RVALUE_REF_PRESENT
 namespace TestMoveSemanticsNS {
@@ -878,10 +908,11 @@ namespace TestMoveSemanticsNS {
         NoMoveNoCopyFunctor(NoMoveNoCopyFunctor&&);
     };
 
+    template<typename task_group_type>
     void TestFunctorsWithinTaskHandles() {
         // working with task_handle rvalues is not supported in task_group
 
-        tbb::task_group tg;
+        task_group_type tg;
         MovePreferableFunctor mpf;
         typedef tbb::task_handle<MoveOnlyFunctor> th_mv_only_type;
         typedef tbb::task_handle<MovePreferableFunctor> th_mv_pref_type;
@@ -916,8 +947,9 @@ namespace TestMoveSemanticsNS {
         mpf.Reset();
     }
 
+    template<typename task_group_type>
     void TestBareFunctors() {
-        tbb::task_group tg;
+        task_group_type tg;
         MovePreferableFunctor mpf;
         // run_and_wait() doesn't have any copies or moves of arguments inside the impl
         tg.run_and_wait( NoMoveNoCopyFunctor() );
@@ -952,16 +984,75 @@ namespace TestMoveSemanticsNS {
 }
 #endif /* __TBB_CPP11_RVALUE_REF_PRESENT */
 
+template<typename task_group_type>
 void TestMoveSemantics() {
 #if __TBB_CPP11_RVALUE_REF_PRESENT
-    TestMoveSemanticsNS::TestBareFunctors();
-    TestMoveSemanticsNS::TestFunctorsWithinTaskHandles();
+    TestMoveSemanticsNS::TestBareFunctors<task_group_type>();
+    TestMoveSemanticsNS::TestFunctorsWithinTaskHandles<task_group_type>();
     TestMoveSemanticsNS::TestMakeTask();
 #else
     REPORT("Known issue: move support tests are skipped.\n");
 #endif
 }
 //------------------------------------------------------------------------
+
+
+#if TBBTEST_USE_TBB && TBB_PREVIEW_ISOLATED_TASK_GROUP
+namespace TestIsolationNS {
+    class DummyFunctor {
+    public:
+        DummyFunctor() {}
+        void operator()() const {
+            for ( volatile int j = 0; j < 10; ++j ) {}
+        }
+    };
+
+    template<typename task_group_type>
+    class ParForBody {
+        task_group_type& m_tg;
+        tbb::atomic<bool>& m_preserved;
+        tbb::enumerable_thread_specific<int>& m_ets;
+    public:
+        ParForBody(
+            task_group_type& tg,
+            tbb::atomic<bool>& preserved,
+            tbb::enumerable_thread_specific<int>& ets
+        ) : m_tg(tg), m_preserved(preserved), m_ets(ets) {}
+
+        void operator()(int) const {
+            if (++m_ets.local() > 1) m_preserved = false;
+
+            for (int i = 0; i < 1000; ++i)
+                m_tg.run(DummyFunctor());
+            m_tg.wait();
+            m_tg.run_and_wait(DummyFunctor());
+
+            --m_ets.local();
+        }
+    };
+
+    template<typename task_group_type>
+    void CheckIsolation(bool isolation_is_expected) {
+        task_group_type tg;
+        tbb::atomic<bool> isolation_is_preserved;
+        isolation_is_preserved = true;
+        tbb::enumerable_thread_specific<int> ets(0);
+
+        tbb::parallel_for(0, 100, ParForBody<task_group_type>(tg, isolation_is_preserved, ets));
+
+        ASSERT(
+            isolation_is_expected == isolation_is_preserved,
+            "Actual and expected isolation-related behaviours are different"
+        );
+    }
+
+    // Should be called only when > 1 thread is used, because otherwise isolation is guaranteed to take place
+    void TestIsolation() {
+        CheckIsolation<tbb::task_group>(false);
+        CheckIsolation<tbb::isolated_task_group>(true);
+    }
+}
+#endif
 
 
 int TestMain () {
@@ -978,42 +1069,38 @@ int TestMain () {
                                 Concurrency::TargetOversubscriptionFactor, 1);
         Concurrency::Scheduler  *s = Concurrency::Scheduler::Create( sp );
 #endif /* !TBBTEST_USE_TBB */
+        if ( p > 1 )
+            TestThreadSafety<Concurrency::task_group>();
+
+        RunFibonacciTests<Concurrency::task_group>();
+        RunFibonacciTests<Concurrency::structured_task_group>();
+
+        RunCancellationAndExceptionHandlingTests<Concurrency::task_group>();
+        RunCancellationAndExceptionHandlingTests<Concurrency::structured_task_group>();
+
+#if TBBTEST_USE_TBB && TBB_PREVIEW_ISOLATED_TASK_GROUP
         if ( p > 1 ) {
-            TestParallelSpawn();
-            TestParallelWait();
-            TestVagabondGroup();
+            TestThreadSafety<tbb::isolated_task_group>();
+            TestIsolationNS::TestIsolation();
         }
-        TestFib1();
-        TestFib2();
-        TestTaskHandle();
-        TestTaskHandle2<Concurrency::task_group>();
-        TestTaskHandle2<Concurrency::structured_task_group>();
-#if __TBB_CPP11_LAMBDAS_PRESENT
-        TestFibWithLambdas();
-        TestFibWithMakeTask();
-#endif
-        TestCancellation1();
-        TestStructuredCancellation1();
-#if TBB_USE_EXCEPTIONS && !__TBB_THROW_ACROSS_MODULE_BOUNDARY_BROKEN
-        TestEh1();
-        TestEh2();
-        TestStructuredWait();
-        TestStructuredCancellation2<true>();
-#if !(__TBB_THROW_FROM_DTOR_BROKEN || __TBB_STD_UNCAUGHT_EXCEPTION_BROKEN)
-        TestStructuredCancellation2<false>();
+        RunFibonacciTests<tbb::isolated_task_group>();
+        RunCancellationAndExceptionHandlingTests<tbb::isolated_task_group>();
+        TestConstantFunctorRequirement<tbb::isolated_task_group>();
+        TestMoveSemantics<tbb::isolated_task_group>();
 #else
-        REPORT("Known issue: TestStructuredCancellation2<false>() is skipped.\n");
+        REPORT ("Known issue: tests for tbb::isolated_task_group are skipped.\n");
 #endif
-#endif /* TBB_USE_EXCEPTIONS && !__TBB_THROW_ACROSS_MODULE_BOUNDARY_BROKEN */
+
 #if !TBBTEST_USE_TBB
         s->Release();
 #endif
     }
-    TestConstantFunctorRequirement();
+    TestStructuredWait();
+    TestConstantFunctorRequirement<Concurrency::task_group>();
+    TestMoveSemantics<Concurrency::task_group>();
 #if __TBB_THROW_ACROSS_MODULE_BOUNDARY_BROKEN
     REPORT("Known issue: exception handling tests are skipped.\n");
 #endif
-    TestMoveSemantics();
     return Harness::Done;
 }
 

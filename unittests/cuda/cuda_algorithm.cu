@@ -300,7 +300,7 @@ void for_each() {
     auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
       auto h2d = cf.copy(gpu, cpu, n);
       auto kernel = cf.for_each(
-        gpu, n, [] __device__ (T& val) { val = 65536; }
+        gpu, gpu+n, [] __device__ (T& val) { val = 65536; }
       );
       auto d2h = cf.copy(cpu, gpu, n);
       h2d.precede(kernel);
@@ -490,4 +490,83 @@ TEST_CASE("transform" * doctest::timeout(300) ) {
   }
 }
 
+// ----------------------------------------------------------------------------
+// transpose
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void transpose() {
+  tf::Executor executor;
+
+  for(int rows = 1; rows <= 7999; rows<<=1) {
+    for(int cols = 1; cols <= 7999; cols<<=1) {
+
+      tf::Taskflow taskflow;
+      std::vector<T> hinput_mat(rows * cols);
+      std::vector<T> houtput_mat(rows * cols);
+
+      std::generate_n(hinput_mat.begin(), rows * cols, [](){ return ::rand(); });
+
+      T* dinput_mat {nullptr};
+      T* doutput_mat {nullptr};
+      
+       //allocate
+      auto allocate = taskflow.emplace([&]() {
+        REQUIRE(cudaMalloc(&dinput_mat, (rows * cols) * sizeof(T)) == cudaSuccess);
+        REQUIRE(cudaMalloc(&doutput_mat, (rows * cols) * sizeof(T)) == cudaSuccess);
+      }).name("allocate");
+
+       //transpose
+      auto cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
+        auto h2d_input = cf.copy(dinput_mat, hinput_mat.data(), rows * cols).name("h2d");
+        auto d2h_output = cf.copy(houtput_mat.data(), doutput_mat, rows * cols).name("d2h");
+
+        auto kernel = cf.transpose(
+          dinput_mat,
+          doutput_mat,
+          rows,
+          cols
+        );
+
+        h2d_input.precede(kernel);
+        kernel.precede(d2h_output);
+      }).name("transpose");
+
+      // Add a verification task
+      auto verifier = taskflow.emplace([&](){
+        for (int i = 0; i < rows; ++i) {
+          for (int j = 0; j < cols; ++j) {
+          REQUIRE(hinput_mat[i * cols + j] ==  houtput_mat[j * rows + i]);
+          }
+        }
+      }).name("verify");
+
+       //free memory
+      auto deallocate = taskflow.emplace([&](){
+        REQUIRE(cudaFree(dinput_mat) == cudaSuccess);
+        REQUIRE(cudaFree(doutput_mat) == cudaSuccess);
+      }).name("deallocate");
+      
+
+      allocate.precede(cudaflow);
+      cudaflow.precede(verifier);
+      verifier.precede(deallocate);
+
+      executor.run(taskflow).wait();
+    }
+  }
+}
+
+TEST_CASE("transpose.int" * doctest::timeout(300) ) {
+  transpose<int>();
+}
+
+TEST_CASE("transpose.float" * doctest::timeout(300) ) {
+  transpose<float>();
+}
+
+
+TEST_CASE("transpose.double" * doctest::timeout(300) ) {
+  transpose<double>();
+}
 

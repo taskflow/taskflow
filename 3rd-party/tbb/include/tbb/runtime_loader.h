@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,24 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
+
+#include "internal/_deprecated_header_message_guard.h"
+
+#if !defined(__TBB_show_deprecation_message_runtime_loader_H) && defined(__TBB_show_deprecated_header_message)
+#define  __TBB_show_deprecation_message_runtime_loader_H
+#pragma message("TBB Warning: tbb/runtime_loader.h is deprecated. For details, please see Deprecated Features appendix in the TBB reference manual.")
+#endif
+
+#if defined(__TBB_show_deprecated_header_message)
+#undef __TBB_show_deprecated_header_message
+#endif
 
 #ifndef __TBB_runtime_loader_H
 #define __TBB_runtime_loader_H
+
+#define __TBB_runtime_loader_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 #if ! TBB_PREVIEW_RUNTIME_LOADER
     #error Set TBB_PREVIEW_RUNTIME_LOADER to include runtime_loader.h
@@ -82,7 +92,7 @@ There are some implications:
 
 */
 
-class runtime_loader : tbb::internal::no_copy {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE runtime_loader : tbb::internal::no_copy {
 
     public:
 
@@ -175,6 +185,9 @@ class runtime_loader : tbb::internal::no_copy {
 using interface6::runtime_loader;
 
 } // namespace tbb
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_runtime_loader_H_include_area
 
 #endif /* __TBB_runtime_loader_H */
 

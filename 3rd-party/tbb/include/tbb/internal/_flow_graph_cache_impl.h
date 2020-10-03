@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB__flow_graph_cache_impl_H
@@ -365,11 +361,11 @@ public:
  };  // successor_cache<T>
 
 //! An abstract cache of successors, specialized to continue_msg
-template<>
-class successor_cache< continue_msg > : tbb::internal::no_copy {
+template<typename M>
+class successor_cache< continue_msg, M > : tbb::internal::no_copy {
 protected:
 
-    typedef spin_rw_mutex mutex_type;
+    typedef M mutex_type;
     mutex_type my_mutex;
 
 #if __TBB_PREVIEW_ASYNC_MSG
@@ -395,22 +391,22 @@ public:
     edge_container<successor_type> &built_successors() { return my_built_successors; }
 
     void internal_add_built_successor( successor_type &r) {
-        mutex_type::scoped_lock l(my_mutex, true);
+        typename mutex_type::scoped_lock l(my_mutex, true);
         my_built_successors.add_edge( r );
     }
 
     void internal_delete_built_successor( successor_type &r) {
-        mutex_type::scoped_lock l(my_mutex, true);
+        typename mutex_type::scoped_lock l(my_mutex, true);
         my_built_successors.delete_edge(r);
     }
 
     void copy_successors( successor_list_type &v) {
-        mutex_type::scoped_lock l(my_mutex, false);
+        typename mutex_type::scoped_lock l(my_mutex, false);
         my_built_successors.copy_edges(v);
     }
 
     size_t successor_count() {
-        mutex_type::scoped_lock l(my_mutex,false);
+        typename mutex_type::scoped_lock l(my_mutex,false);
         return my_built_successors.edge_count();
     }
 
@@ -423,7 +419,7 @@ public:
     virtual ~successor_cache() {}
 
     void register_successor( successor_type &r ) {
-        mutex_type::scoped_lock l(my_mutex, true);
+        typename mutex_type::scoped_lock l(my_mutex, true);
         my_successors.push_back( &r );
         if ( my_owner && r.is_continue_receiver() ) {
             r.register_predecessor( *my_owner );
@@ -431,7 +427,7 @@ public:
     }
 
     void remove_successor( successor_type &r ) {
-        mutex_type::scoped_lock l(my_mutex, true);
+        typename mutex_type::scoped_lock l(my_mutex, true);
         for ( successors_type::iterator i = my_successors.begin();
               i != my_successors.end(); ++i ) {
             if ( *i == & r ) {
@@ -446,7 +442,7 @@ public:
     }
 
     bool empty() {
-        mutex_type::scoped_lock l(my_mutex, false);
+        typename mutex_type::scoped_lock l(my_mutex, false);
         return my_successors.empty();
     }
 
@@ -508,6 +504,40 @@ public:
         return last_task;
     }
 
+    // call try_put_task and return list of received tasks
+#if __TBB_PREVIEW_ASYNC_MSG
+    template<typename X>
+    bool gather_successful_try_puts( const X &t, task_list &tasks ) {
+#else
+    bool gather_successful_try_puts( const T &t, task_list &tasks ) {
+#endif // __TBB_PREVIEW_ASYNC_MSG
+        bool upgraded = true;
+        bool is_at_least_one_put_successful = false;
+        typename mutex_type::scoped_lock l(this->my_mutex, upgraded);
+        typename successors_type::iterator i = this->my_successors.begin();
+        while ( i != this->my_successors.end() ) {
+            task * new_task = (*i)->try_put_task(t);
+            if(new_task) {
+                ++i;
+                if(new_task != SUCCESSFULLY_ENQUEUED) {
+                    tasks.push_back(*new_task);
+                }
+                is_at_least_one_put_successful = true;
+            }
+            else {  // failed
+                if ( (*i)->register_predecessor(*this->my_owner) ) {
+                    if (!upgraded) {
+                        l.upgrade_to_writer();
+                        upgraded = true;
+                    }
+                    i = this->my_successors.erase(i);
+                } else {
+                    ++i;
+                }
+            }
+        }
+        return is_at_least_one_put_successful;
+    }
 };
 
 //! A cache of successors that are put in a round-robin fashion

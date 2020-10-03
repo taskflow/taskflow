@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 /* to prevent loading dynamic TBBmalloc at startup, that is not needed
@@ -109,7 +105,7 @@ public:
         // push to maximal cache limit
         for (int i=0; i<2; i++) {
             const int sizes[] = { MByte/sizeof(int),
-                                  (MByte-2*LargeObjectCache::largeBlockCacheStep)/sizeof(int) };
+                                  (MByte-2*LargeObjectCache::LargeBSProps::CacheStep)/sizeof(int) };
             for (int q=0; q<2; q++) {
                 size_t curr = 0;
                 for (int j=0; j<LARGE_MEM_SIZES_NUM; j++, curr++)
@@ -399,7 +395,7 @@ public:
     StressLOCacheWork(rml::MemoryPool *mallocPool) : my_mallocPool(mallocPool) {}
     void operator()(int) const {
         for (size_t sz=minLargeObjectSize; sz<1*1024*1024;
-             sz+=LargeObjectCache::largeBlockCacheStep) {
+             sz+=LargeObjectCache::LargeBSProps::CacheStep) {
             void *ptr = pool_malloc(my_mallocPool, sz);
             ASSERT(ptr, "Memory was not allocated");
             memset(ptr, sz, sz);
@@ -485,24 +481,25 @@ void TestPools() {
         void *p[5];
         pool_create_v1(0, &pol, &mallocPool);
         const LargeObjectCache *loc = &((rml::internal::MemoryPool*)mallocPool)->extMemPool.loc;
-        p[3] = pool_malloc(mallocPool, minLargeObjectSize+2*LargeObjectCache::largeBlockCacheStep);
+        const int LargeCacheStep = LargeObjectCache::LargeBSProps::CacheStep;
+        p[3] = pool_malloc(mallocPool, minLargeObjectSize+2*LargeCacheStep);
         for (int i=0; i<10; i++) {
             p[0] = pool_malloc(mallocPool, minLargeObjectSize);
-            p[1] = pool_malloc(mallocPool, minLargeObjectSize+LargeObjectCache::largeBlockCacheStep);
+            p[1] = pool_malloc(mallocPool, minLargeObjectSize+LargeCacheStep);
             pool_free(mallocPool, p[0]);
             pool_free(mallocPool, p[1]);
         }
         ASSERT(loc->getUsedSize(), NULL);
         pool_free(mallocPool, p[3]);
-        ASSERT(loc->getLOCSize() < 3*(minLargeObjectSize+LargeObjectCache::largeBlockCacheStep), NULL);
+        ASSERT(loc->getLOCSize() < 3*(minLargeObjectSize+LargeCacheStep), NULL);
         const size_t maxLocalLOCSize = LocalLOCImpl<3,30>::getMaxSize();
         ASSERT(loc->getUsedSize() <= maxLocalLOCSize, NULL);
         for (int i=0; i<3; i++)
-            p[i] = pool_malloc(mallocPool, minLargeObjectSize+i*LargeObjectCache::largeBlockCacheStep);
+            p[i] = pool_malloc(mallocPool, minLargeObjectSize+i*LargeCacheStep);
         size_t currUser = loc->getUsedSize();
-        ASSERT(!loc->getLOCSize() && currUser >= 3*(minLargeObjectSize+LargeObjectCache::largeBlockCacheStep), NULL);
-        p[4] = pool_malloc(mallocPool, minLargeObjectSize+3*LargeObjectCache::largeBlockCacheStep);
-        ASSERT(loc->getUsedSize() - currUser >= minLargeObjectSize+3*LargeObjectCache::largeBlockCacheStep, NULL);
+        ASSERT(!loc->getLOCSize() && currUser >= 3*(minLargeObjectSize+LargeCacheStep), NULL);
+        p[4] = pool_malloc(mallocPool, minLargeObjectSize+3*LargeCacheStep);
+        ASSERT(loc->getUsedSize() - currUser >= minLargeObjectSize+3*LargeCacheStep, NULL);
         pool_free(mallocPool, p[4]);
         ASSERT(loc->getUsedSize() <= currUser+maxLocalLOCSize, NULL);
         pool_reset(mallocPool);
@@ -516,12 +513,13 @@ void TestPools() {
         pool_create_v1(0, &pol, &mallocPool);
         rml::internal::ExtMemoryPool *mPool = &((rml::internal::MemoryPool*)mallocPool)->extMemPool;
         const LargeObjectCache *loc = &((rml::internal::MemoryPool*)mallocPool)->extMemPool.loc;
+        const int LargeCacheStep = LargeObjectCache::LargeBSProps::CacheStep;
         for (int i=0; i<22; i++) {
-            void *o = pool_malloc(mallocPool, minLargeObjectSize+i*LargeObjectCache::largeBlockCacheStep);
+            void *o = pool_malloc(mallocPool, minLargeObjectSize+i*LargeCacheStep);
             bool ret = lLOC.put(((LargeObjectHdr*)o - 1)->memoryBlock, mPool);
             ASSERT(ret, NULL);
 
-            o = pool_malloc(mallocPool, minLargeObjectSize+i*LargeObjectCache::largeBlockCacheStep);
+            o = pool_malloc(mallocPool, minLargeObjectSize+i*LargeCacheStep);
             ret = lLOC.put(((LargeObjectHdr*)o - 1)->memoryBlock, mPool);
             ASSERT(ret, NULL);
         }
@@ -620,9 +618,14 @@ public:
         for (int i=0; i<ITERS; i++) {
             BlockI *slabBlock = backend->getSlabBlock(1);
             ASSERT(slabBlock, "Memory was not allocated");
-            LargeMemoryBlock *lmb = backend->getLargeBlock(8*1024);
+            uintptr_t prevBlock = (uintptr_t)slabBlock;
             backend->putSlabBlock(slabBlock);
-            backend->putLargeBlock(lmb);
+
+            LargeMemoryBlock *largeBlock = backend->getLargeBlock(16*1024);
+            ASSERT(largeBlock, "Memory was not allocated");
+            ASSERT((uintptr_t)largeBlock != prevBlock,
+                    "Large block cannot be reused from slab memory, only in fixed_pool case.");
+            backend->putLargeBlock(largeBlock);
         }
     }
 };
@@ -632,8 +635,7 @@ void TestBackend()
     rml::MemPoolPolicy pol(getMallocMem, putMallocMem);
     rml::MemoryPool *mPool;
     pool_create_v1(0, &pol, &mPool);
-    rml::internal::ExtMemoryPool *ePool =
-        &((rml::internal::MemoryPool*)mPool)->extMemPool;
+    rml::internal::ExtMemoryPool *ePool = &((rml::internal::MemoryPool*)mPool)->extMemPool;
     rml::internal::Backend *backend = &ePool->backend;
 
     for( int p=MaxThread; p>=MinThread; --p ) {
@@ -784,17 +786,25 @@ const int num_allocs = 10*1024;
 void *ptrs[num_allocs];
 tbb::atomic<int> alloc_counter;
 
+inline void multiThreadAlloc(size_t alloc_size) {
+    for( int i = alloc_counter++; i < num_allocs; i = alloc_counter++ ) {
+       ptrs[i] = scalable_malloc( alloc_size );
+       ASSERT( ptrs[i] != NULL, "scalable_malloc returned zero." );
+    }
+}
+inline void crossThreadDealloc() {
+    for( int i = --alloc_counter; i >= 0; i = --alloc_counter ) {
+       if (i < num_allocs) scalable_free( ptrs[i] );
+    }
+}
+
 template<int AllocSize>
 struct TestCleanAllBuffersBody : public SimpleBarrier {
     void operator() ( int ) const {
         barrier.wait();
-        for( int i = alloc_counter++; i < num_allocs; i = alloc_counter++ ) {
-           ptrs[i] = scalable_malloc( AllocSize );
-           ASSERT( ptrs[i] != NULL, "scalable_malloc returned zero." );
-        }
+        multiThreadAlloc(AllocSize);
         barrier.wait();
-        for( int i = --alloc_counter; i >= 0; i = --alloc_counter )
-           if (i<num_allocs) scalable_free( ptrs[i] );
+        crossThreadDealloc();
     }
 };
 
@@ -807,6 +817,7 @@ void TestCleanAllBuffers() {
     size_t memory_in_use_before = getMemSize();
     alloc_counter = 0;
     TestCleanAllBuffersBody<AllocSize>::initBarrier(num_threads);
+
     NativeParallelFor(num_threads, TestCleanAllBuffersBody<AllocSize>());
     // TODO: reproduce the bug conditions more reliably
     if ( defaultMemPool->extMemPool.backend.coalescQ.blocksToFree == NULL )
@@ -819,6 +830,39 @@ void TestCleanAllBuffers() {
     REMARK( "memory_in_use_before = %ld\nmemory_in_use_after = %ld\n", memory_in_use_before, memory_in_use_after );
     ASSERT( memory_leak == 0, "Cleanup was unable to release all allocated memory." );
 }
+
+//! Force cross thread deallocation of small objects to create a set of privatizable slab blocks.
+//! TBBMALLOC_CLEAN_THREAD_BUFFERS command have to privatize all the block.
+struct TestCleanThreadBuffersBody : public SimpleBarrier {
+    void operator() ( int ) const {
+        barrier.wait();
+        multiThreadAlloc(2*1024);
+        barrier.wait();
+        crossThreadDealloc();
+        barrier.wait();
+        int result = scalable_allocation_command(TBBMALLOC_CLEAN_THREAD_BUFFERS,0);
+        ASSERT(result == TBBMALLOC_OK, "Per-thread clean request has not cleaned anything.");
+
+        // Check that TLS was cleaned fully
+        TLSData *tlsCurr = defaultMemPool->getTLS(/*create=*/false);
+        for (int i = 0; i < numBlockBinLimit; i++) {
+            ASSERT(!(tlsCurr->bin[i].activeBlk), "Some bin was not cleaned.");
+        }
+        ASSERT(!(tlsCurr->lloc.head), "Local LOC was not cleaned.");
+        ASSERT(!(tlsCurr->freeSlabBlocks.head), "Free Block pool was not cleaned.");
+    }
+};
+
+void TestCleanThreadBuffers() {
+    const int num_threads = 8;
+    // Clean up if something was allocated before the test
+    scalable_allocation_command(TBBMALLOC_CLEAN_ALL_BUFFERS,0);
+
+    alloc_counter = 0;
+    TestCleanThreadBuffersBody::initBarrier(num_threads);
+    NativeParallelFor(num_threads, TestCleanThreadBuffersBody());
+}
+
 /*---------------------------------------------------------------------------*/
 /*------------------------- Large Object Cache tests ------------------------*/
 #if _MSC_VER==1600 || _MSC_VER==1500
@@ -841,7 +885,7 @@ class CacheBinModel {
 
     // The emulated cache bin.
     CacheBinType cacheBinModel;
-    // The reference to real cahce bin inside the large object cache.
+    // The reference to real cache bin inside the large object cache.
     CacheBinType &cacheBin;
 
     const size_t size;
@@ -947,7 +991,7 @@ public:
 template<typename Props> uintptr_t CacheBinModel<Props>::cacheCurrTime;
 template<typename Props> intptr_t CacheBinModel<Props>::tooLargeLOC;
 
-template <typename Scenarion>
+template <typename Scenario>
 void LOCModelTester() {
     defaultMemPool->extMemPool.loc.cleanAll();
     defaultMemPool->extMemPool.loc.reset();
@@ -961,7 +1005,7 @@ void LOCModelTester() {
     CacheBinModel<rml::internal::LargeObjectCache::LargeCacheTypeProps>::tooLargeLOC = defaultMemPool->extMemPool.loc.largeCache.tooLargeLOC;
     CacheBinModel<rml::internal::LargeObjectCache::LargeCacheTypeProps> cacheBinModel(defaultMemPool->extMemPool.loc.largeCache.bin[binIdx], allocationSize);
 
-    Scenarion scen;
+    Scenario scen;
     for (rml::internal::LargeMemoryBlock *lmb = scen.next(); (intptr_t)lmb != (intptr_t)-1; lmb = scen.next()) {
         if ( lmb ) {
             int num=1;
@@ -1183,21 +1227,21 @@ void TestTHP() {
         // Map memory
         allocPtrs[i] = backend->allocRawMem(allocSize);
 
-        MALLOC_ASSERT(allocPtrs[i], "Allocation not succeded.");
+        MALLOC_ASSERT(allocPtrs[i], "Allocation not succeeded.");
         MALLOC_ASSERT(allocSize == HUGE_PAGE_SIZE,
-            "Allocation size have to be aligned on Huge Page size internaly.");
+            "Allocation size have to be aligned on Huge Page size internally.");
 
         // First touch policy - no real pages allocated by OS without accessing the region
         memset(allocPtrs[i], 1, allocSize);
 
         MALLOC_ASSERT(isAligned(allocPtrs[i], HUGE_PAGE_SIZE),
-            "The pointer returned by scalable_malloc is not alligned on huge page size.");
+            "The pointer returned by scalable_malloc is not aligned on huge page size.");
     }
 
     // Wait for the system to update process memory info files after allocations
     Harness::Sleep(4000);
 
-    // Generaly, kernel tries to allocate transparent huge pages, but sometimes it cannot do this
+    // Generally, kernel tries to allocate transparent huge pages, but sometimes it cannot do this
     // (tested on SLES 11/12), so consider this system info checks as a remark.
     // Also, some systems can allocate more memory then needed in background (tested on Ubuntu 14.04)
     size_t newSystemTHPCount = getSystemTHPCount();
@@ -1254,7 +1298,7 @@ void TestReallocDecreasing() {
     size_t reallocSize = (startSize / 2) - 1000; // exact realloc
     while(reallocSize > maxBinnedSize) {
 
-        // Prevent huge/large objects caching 
+        // Prevent huge/large objects caching
         defaultMemPool->extMemPool.loc.cleanAll();
         // Prevent local large object caching
         TLSData *tls = defaultMemPool->getTLS(/*create=*/false);
@@ -1283,6 +1327,256 @@ void TestReallocDecreasing() {
     /* TODO: Decreasing reallocation of large objects that fit backend cache */
     /* TODO: Small objects decreasing reallocation test */
 }
+#if !__TBB_WIN8UI_SUPPORT && defined(_WIN32)
+
+#include "../src/tbbmalloc/tbb_function_replacement.cpp"
+#include <string>
+namespace FunctionReplacement {
+    FunctionInfo funcInfo = { "funcname","dllname" };
+    char **func_replacement_log;
+    int status;
+
+    void LogCleanup() {
+        // Free all allocated memory
+        for (unsigned i = 0; i < Log::record_number; i++){
+            HeapFree(GetProcessHeap(), 0, Log::records[i]);
+        }
+        for (unsigned i = 0; i < Log::RECORDS_COUNT + 1; i++){
+            Log::records[i] = NULL;
+        }
+        Log::replacement_status = true;
+        Log::record_number = 0;
+    }
+
+    void TestEmptyLog() {
+        status = TBB_malloc_replacement_log(&func_replacement_log);
+
+        ASSERT(status == -1, "Status is true, but log is empty");
+        ASSERT(*func_replacement_log == NULL, "Log must be empty");
+    }
+
+    void TestLogOverload() {
+        for (int i = 0; i < 1000; i++)
+            Log::record(funcInfo, "opcode string", true);
+
+        status = TBB_malloc_replacement_log(&func_replacement_log);
+        // Find last record
+        for (; *(func_replacement_log + 1) != 0; func_replacement_log++) {}
+
+        std::string last_line(*func_replacement_log);
+        ASSERT(status == 0, "False status, but all functions found");
+        ASSERT(last_line.compare("Log was truncated.") == 0, "Log overflow was not handled");
+
+        // Change status
+        Log::record(funcInfo, "opcode string", false);
+        status = TBB_malloc_replacement_log(NULL);
+        ASSERT(status == -1, "Status is true, but we have false search case");
+
+        LogCleanup();
+    }
+
+    void TestFalseSearchCase() {
+        Log::record(funcInfo, "opcode string", false);
+        std::string expected_line = "Fail: "+ std::string(funcInfo.funcName) + " (" +
+                         std::string(funcInfo.dllName) + "), byte pattern: <opcode string>";
+
+        status = TBB_malloc_replacement_log(&func_replacement_log);
+
+        ASSERT(expected_line.compare(*func_replacement_log) == 0, "Wrong last string contnent");
+        ASSERT(status == -1, "Status is true, but we have false search case");
+        LogCleanup();
+    }
+
+    void TestWrongFunctionInDll(){
+        HMODULE ucrtbase_handle = GetModuleHandle("ucrtbase.dll");
+        if (ucrtbase_handle) {
+            IsPrologueKnown("ucrtbase.dll", "fake_function", NULL, ucrtbase_handle);
+            std::string expected_line = "Fail: fake_function (ucrtbase.dll), byte pattern: <unknown>";
+
+            status = TBB_malloc_replacement_log(&func_replacement_log);
+
+            ASSERT(expected_line.compare(*func_replacement_log) == 0, "Wrong last string contnent");
+            ASSERT(status == -1, "Status is true, but we have false search case");
+            LogCleanup();
+        } else {
+            REMARK("Cannot found ucrtbase.dll on system, test skipped!\n");
+        }
+    }
+}
+
+void TesFunctionReplacementLog() {
+    using namespace FunctionReplacement;
+    // Do not reorder the test cases
+    TestEmptyLog();
+    TestLogOverload();
+    TestFalseSearchCase();
+    TestWrongFunctionInDll();
+}
+
+#endif /*!__TBB_WIN8UI_SUPPORT && defined(_WIN32)*/
+
+#include <cmath> // pow function
+
+// Huge objects cache: Size = MinSize * (2 ^ (Index / StepFactor) formula gives value for the bin size,
+// but it is not matched with our sizeToIdx approximation algorithm, where step sizes between major
+// (power of 2) sizes are equal. Used internally for the test. Static cast to avoid warnings.
+inline size_t hocIdxToSizeFormula(int idx) {
+    return static_cast<size_t>(float(rml::internal::LargeObjectCache::maxLargeSize) *
+        pow(2, float(idx) / float(rml::internal::LargeObjectCache::HugeBSProps::StepFactor)));
+}
+// Large objects cache arithmetic progression
+inline size_t locIdxToSizeFormula(int idx) {
+    return rml::internal::LargeObjectCache::LargeBSProps::MinSize +
+        (idx * rml::internal::LargeObjectCache::LargeBSProps::CacheStep);
+}
+
+template <typename CacheType>
+void TestLOCacheBinsConverterImpl(int idx, size_t checkingSize) {
+    size_t alignedSize = CacheType::alignToBin(checkingSize);
+    MALLOC_ASSERT(alignedSize >= checkingSize, "Size is not correctly aligned");
+    int calcIdx = CacheType::sizeToIdx(alignedSize);
+    MALLOC_ASSERT(calcIdx == idx, "Index from size calculated not correctly");
+}
+
+void TestLOCacheBinsConverter(){
+    typedef rml::internal::LargeObjectCache::LargeCacheType LargeCacheType;
+    typedef rml::internal::LargeObjectCache::HugeCacheType HugeCacheType;
+
+    size_t checkingSize = 0;
+    for (int idx = 0; idx < LargeCacheType::numBins; idx++) {
+        checkingSize = locIdxToSizeFormula(idx);
+        TestLOCacheBinsConverterImpl<LargeCacheType>(idx, checkingSize);
+    }
+    for (int idx = 0; idx < HugeCacheType::numBins; idx++) {
+        checkingSize = hocIdxToSizeFormula(idx);
+        TestLOCacheBinsConverterImpl<HugeCacheType>(idx, checkingSize);
+    }
+}
+
+struct HOThresholdTester {
+    LargeObjectCache* loc;
+    size_t hugeSize;
+
+    static const size_t sieveSize = LargeObjectCache::defaultMaxHugeSize;
+    // Sieve starts from 64MB (24-th cache bin), enough to check 4 bins radius range
+    // for decent memory consumption (especially for 32-bit arch)
+    static const int MIN_BIN_IDX = 20;
+    static const int MAX_BIN_IDX = 28;
+
+    enum CleanupType {
+        NO_CLEANUP,
+        REGULAR_CLEANUP,
+        HARD_CLEANUP
+    };
+
+    void populateCache() {
+        LargeMemoryBlock* loArray[MAX_BIN_IDX - MIN_BIN_IDX];
+        // To avoid backend::softCacheCleanup consequences (cleanup by isLOCToolarge),
+        // firstly allocate all objects and then cache them at once.
+        // Morevover, just because first cache item will still be dropped from cache because of the lack of history,
+        // redo allocation 2 times.
+        for (int idx = MIN_BIN_IDX; idx < MAX_BIN_IDX; ++idx) {
+            size_t allocationSize = alignedSizeFromIdx(idx);
+            int localIdx = idx - MIN_BIN_IDX;
+            loArray[localIdx] = defaultMemPool->extMemPool.mallocLargeObject(defaultMemPool, allocationSize);
+            MALLOC_ASSERT(loArray[localIdx], "Large object was not allocated.");
+            loc->put(loArray[localIdx]);
+            loArray[localIdx] = defaultMemPool->extMemPool.mallocLargeObject(defaultMemPool, allocationSize);
+        }
+        for (int idx = MIN_BIN_IDX; idx < MAX_BIN_IDX; ++idx) {
+            loc->put(loArray[idx - MIN_BIN_IDX]);
+        }
+    }
+    void clean(bool all) {
+        if (all) {
+            // Should avoid any threshold and clean all bins
+            loc->cleanAll();
+        } else {
+            // Regular cleanup should do nothing for bins above threshold. Decreasing option used
+            // for the test to be sure that all objects below defaultMaxHugeSize (sieveSize) were cleaned
+            loc->regularCleanup();
+            loc->decreasingCleanup();
+        }
+    }
+    void check(CleanupType type) {
+        for (int idx = MIN_BIN_IDX; idx < MAX_BIN_IDX; ++idx) {
+            size_t objectSize = alignedSizeFromIdx(idx);
+            // Cache object below sieve threshold and above huge object threshold should be cached
+            // (other should be sieved). Unless all cache is dropped. Regular cleanup drops object only below sieve size.
+            if (type == NO_CLEANUP && sizeInCacheRange(objectSize)) {
+                MALLOC_ASSERT(objectInCacheBin(idx, objectSize), "Object was released from cache, it shouldn't.");
+            } else if (type == REGULAR_CLEANUP && (objectSize >= hugeSize)) {
+                MALLOC_ASSERT(objectInCacheBin(idx, objectSize), "Object was released from cache, it shouldn't.");
+            } else { // HARD_CLEANUP
+                MALLOC_ASSERT(cacheBinEmpty(idx), "Object is still cached.");
+            }
+        }
+    }
+
+private:
+    bool cacheBinEmpty(int idx) {
+        return (loc->hugeCache.bin[idx].cachedSize == 0 && loc->hugeCache.bin[idx].get() == NULL);
+    }
+    bool objectInCacheBin(int idx, size_t size) {
+        return (loc->hugeCache.bin[idx].cachedSize != 0 && loc->hugeCache.bin[idx].cachedSize % size == 0);
+    }
+    bool sizeInCacheRange(size_t size) {
+        return size <= sieveSize || size >= hugeSize;
+    }
+    size_t alignedSizeFromIdx(int idx) {
+        return rml::internal::LargeObjectCache::alignToBin(hocIdxToSizeFormula(idx));
+    }
+};
+
+// TBBMALLOC_SET_HUGE_OBJECT_THRESHOLD value should be set before the test,
+// through scalable API or env variable
+void TestHugeSizeThresholdImpl(LargeObjectCache* loc, size_t hugeSize, bool fullTesting) {
+    HOThresholdTester test = {loc, hugeSize};
+    test.populateCache();
+    // Check the default sieve value
+    test.check(HOThresholdTester::NO_CLEANUP);
+
+    if(fullTesting) {
+        // Check that objects above threshold stay in cache after regular cleanup
+        test.clean(/*all*/false);
+        test.check(HOThresholdTester::REGULAR_CLEANUP);
+    }
+    // Check that all objects dropped from cache after hard cleanup (ignore huge obects threshold)
+    test.clean(/*all*/true);
+    test.check(HOThresholdTester::HARD_CLEANUP);
+    // Restore previous settings
+    loc->setHugeSizeThreshold(LargeObjectCache::maxHugeSize);
+    loc->reset();
+}
+
+/*
+ *  Test for default huge size and behaviour when huge object settings defined
+ */
+void TestHugeSizeThreshold() {
+    // Clean up if something was allocated before the test and reset cache state
+    scalable_allocation_command(TBBMALLOC_CLEAN_ALL_BUFFERS, 0);
+    LargeObjectCache* loc = &defaultMemPool->extMemPool.loc;
+    // Restore default settings just in case
+    loc->setHugeSizeThreshold(LargeObjectCache::maxHugeSize);
+    loc->reset();
+    // Firstly check default huge size value (with max huge object threshold).
+    // Everything that more then this value should be released to OS without caching.
+    TestHugeSizeThresholdImpl(loc, loc->hugeSizeThreshold, false);
+    // Then set huge object threshold.
+    // All objects with sizes after threshold will be released only after the hard cleanup.
+#if !__TBB_WIN8UI_SUPPORT
+    // Unit testing for environment variable
+    Harness::SetEnv("TBB_MALLOC_SET_HUGE_SIZE_THRESHOLD","67108864");
+    // Large object cache reads threshold environment during initialization.
+    // Reset the value before the test.
+    loc->hugeSizeThreshold = 0;
+    loc->init(&defaultMemPool->extMemPool);
+    TestHugeSizeThresholdImpl(loc, 64 * MByte, true);
+#endif
+    // Unit testing for scalable_allocation_command
+    scalable_allocation_mode(TBBMALLOC_SET_HUGE_SIZE_THRESHOLD, 56 * MByte);
+    TestHugeSizeThresholdImpl(loc, 56 * MByte, true);
+}
 
 int TestMain () {
     scalable_allocation_mode(USE_HUGE_PAGES, 0);
@@ -1297,6 +1591,7 @@ int TestMain () {
     TestBackRef();
     TestCleanAllBuffers<4*1024>();
     TestCleanAllBuffers<16*1024>();
+    TestCleanThreadBuffers();
     TestPools();
     TestBackend();
 
@@ -1315,6 +1610,8 @@ int TestMain () {
     TestLOC();
     TestSlabAlignment();
     TestReallocDecreasing();
+    TestLOCacheBinsConverter();
+    TestHugeSizeThreshold();
 
 #if __linux__
     if (isTHPEnabledOnMachine()) {
@@ -1322,6 +1619,10 @@ int TestMain () {
     } else {
         REMARK("Transparent Huge Pages is not supported on the system - skipped the test\n");
     }
+#endif
+
+#if !__TBB_WIN8UI_SUPPORT && defined(_WIN32)
+    TesFunctionReplacementLog();
 #endif
     return Harness::Done;
 }

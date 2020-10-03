@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,20 +12,17 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 /*
-    Evolution.cpp: implementation file for evolution classes; evolution 
-                  classes do looped evolution of patterns in a defined 
+    Evolution.cpp: implementation file for evolution classes; evolution
+                  classes do looped evolution of patterns in a defined
                   2 dimensional space
 */
 
 #include "Evolution.h"
 #include "Board.h"
+#include "../../../common/utility/get_default_num_threads.h"
 
 #ifdef USE_SSE
 #define GRAIN_SIZE 14
@@ -39,8 +36,8 @@
 */
 
 /**
-    Evolution::UpdateMatrix() - moves the calculated destination data 
-    to the source data block. No destination zeroing is required since it will 
+    Evolution::UpdateMatrix() - moves the calculated destination data
+    to the source data block. No destination zeroing is required since it will
     be completely overwritten during the next calculation cycle.
 **/
 void Evolution::UpdateMatrix()
@@ -67,7 +64,7 @@ void SequentialEvolution::Run(double execution_time, int nthread)
     tbb::tick_count t0 = tbb::tick_count::now();
     while (!m_done)
     {
-        if( !is_paused ) 
+        if( !is_paused )
         {
             tbb::tick_count t = tbb::tick_count::now();
             Step();
@@ -103,7 +100,7 @@ void SequentialEvolution::Run(double execution_time, int nthread)
 //! SequentialEvolution::Step() - override of step method
 void SequentialEvolution::Step()
 {
-        if( !is_paused ) 
+        if( !is_paused )
     {
 #ifdef USE_SSE
     UpdateState(m_matrix, m_matrix->data, 0, m_matrix->height);
@@ -125,7 +122,7 @@ void ParallelEvolution::Run()
 #else
 void ParallelEvolution::Run(double execution_time, int nthread)
 {
-    if(nthread == tbb::task_scheduler_init::automatic)
+    if(nthread == utility::get_default_num_threads())
         printf("Starting game (Parallel evolution for automatic number of thread(s))\n");
     else
         printf("Starting game (Parallel evolution for %d thread(s))\n", nthread);
@@ -136,13 +133,13 @@ void ParallelEvolution::Run(double execution_time, int nthread)
 
 #ifndef _CONSOLE
     //! start task scheduler as necessary
-    if (m_pInit == NULL)
+    if (m_pGlobControl == NULL)
     {
-        m_pInit = new tbb::task_scheduler_init();
+        m_pGlobControl = new tbb::global_control(tbb::global_control::max_allowed_parallelism, utility::get_default_num_threads());
     }
     m_evt_start_parallel->WaitOne();
 #else
-    tbb::task_scheduler_init init(nthread);
+    tbb::global_control* pGlobControl = new tbb::global_control(tbb::global_control::max_allowed_parallelism, nthread);
 #endif
 
     double  work_time = m_serial_time;
@@ -150,7 +147,7 @@ void ParallelEvolution::Run(double execution_time, int nthread)
 
     while (!m_done)
     {
-        if( !is_paused ) 
+        if( !is_paused )
         {
             tbb::tick_count t = tbb::tick_count::now();
             Step();
@@ -161,7 +158,7 @@ void ParallelEvolution::Run(double execution_time, int nthread)
             if ( real_work_time < work_time )
                 continue;
             m_parallel_time += real_work_time;
-            m_board->draw(m_nIteration); 
+            m_board->draw(m_nIteration);
 #else
             m_parallel_time += real_work_time;
 #endif
@@ -178,19 +175,21 @@ void ParallelEvolution::Run(double execution_time, int nthread)
         if(m_parallel_time > execution_time)
         {
             printf("iterations count = %d time = %g\n", m_nIteration, m_parallel_time);
-            init.terminate();
+            delete pGlobControl; pGlobControl = NULL;
             break;
         }
 #endif
     }
+    if (pGlobControl)
+        delete pGlobControl;
 }
 
 /**
     class tbb_parallel_task
-    
-    TBB requires a class for parallel loop implementations. The actual 
-    loop "chunks" are performed using the () operator of the class. 
-    The blocked_range contains the range to calculate. Please see the 
+
+    TBB requires a class for parallel loop implementations. The actual
+    loop "chunks" are performed using the () operator of the class.
+    The blocked_range contains the range to calculate. Please see the
     TBB documentation for more information.
 **/
 #ifndef _CONSOLE
@@ -207,7 +206,7 @@ public:
         return;
     }
 
-    void operator()( const tbb::blocked_range<size_t>& r ) const 
+    void operator()( const tbb::blocked_range<size_t>& r ) const
     {
         int begin = (int)r.begin();            //! capture lower range number for this chunk
         int end = (int)r.end();                //! capture upper range number for this chunk

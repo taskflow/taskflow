@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,13 +12,11 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
-#if !(_WIN32||_WIN64) || (__MINGW64__||__MINGW32__)
+#include "tbb/tbb_config.h"
+
+#if !(_WIN32||_WIN64) || (__MINGW64__||__MINGW32__) || __TBB_WIN8UI_SUPPORT
 
 #include "harness.h"
 
@@ -44,7 +42,7 @@ int TestMain () {
 #include <stdexcept>
 
 #ifdef HARNESS_USE_RUNTIME_LOADER
-    #undef HARNESS_USE_RUNTIME_LOADER    // We do not want harness to preload tbb.
+    #undef HARNESS_USE_RUNTIME_LOADER    // We do not want harness to preload TBB.
 #endif
 #include "harness.h"
 

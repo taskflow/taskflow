@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 // Header that sets HAVE_m128/HAVE_m256 if vector types (__m128/__m256) are available
@@ -48,6 +44,11 @@ class ClassWithVectorType {
 public:
     ClassWithVectorType() {init(-n);}
     ClassWithVectorType( int i ) {init(i);}
+    ClassWithVectorType( const ClassWithVectorType& src ) {
+        for( int i=0; i<n; ++i ) {
+            field[i] = src.field[i];
+        }
+    }
     void operator=( const ClassWithVectorType& src ) {
         __Mvec stack[n];
         for( int i=0; i<n; ++i )

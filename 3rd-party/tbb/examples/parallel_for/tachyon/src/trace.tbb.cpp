@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 /*
@@ -85,19 +81,20 @@ static int colors[NUM_COLORS][3] = {
     {1,152,231},    {79,235,237},   {52,193,72},    {67,136,151},   {78,87,179},    {143,255,9},
 };
 
-#include "tbb/atomic.h"
+#include <atomic>
 #include "tbb/enumerable_thread_specific.h"
 // storage and counter for thread numbers in order of first task run
 typedef tbb::enumerable_thread_specific< int > thread_id_t;
 thread_id_t thread_ids (-1);
-tbb::atomic<int> thread_number;
+std::atomic<int> thread_number;
 
 #endif
 
-#include "tbb/task_scheduler_init.h"
 #include "tbb/parallel_for.h"
 #include "tbb/spin_mutex.h"
 #include "tbb/blocked_range2d.h"
+#include "tbb/global_control.h"
+#include "../../../common/utility/get_default_num_threads.h"
 
 static tbb::spin_mutex MyMutex, MyMutex2;
 
@@ -112,7 +109,7 @@ static color_t render_one_pixel (int x, int y, unsigned int *local_mbox, unsigne
     ray primary, sample;
     color col, avcol;
     int R,G,B;
-    intersectstruct local_intersections;    
+    intersectstruct local_intersections;
     int alias;
     /* end private */
 
@@ -121,11 +118,11 @@ static color_t render_one_pixel (int x, int y, unsigned int *local_mbox, unsigne
     primary.flags = RT_RAY_REGULAR;
 
     serial++;
-    primary.serial = serial;  
+    primary.serial = serial;
     primary.mbox = local_mbox;
     primary.maxdist = FHUGE;
     primary.scene = &scene;
-    col=trace(&primary);  
+    col=trace(&primary);
 
     serial = primary.serial;
 
@@ -135,7 +132,7 @@ static color_t render_one_pixel (int x, int y, unsigned int *local_mbox, unsigne
 
             serial++; /* increment serial number */
             sample=primary;  /* copy the regular primary ray to start with */
-            sample.serial = serial; 
+            sample.serial = serial;
 
             {
                 tbb::spin_mutex::scoped_lock lock (MyMutex);
@@ -144,7 +141,7 @@ static color_t render_one_pixel (int x, int y, unsigned int *local_mbox, unsigne
                 sample.d.z+=((rand() % 100) - 50) / jitterscale;
             }
 
-            avcol=trace(&sample);  
+            avcol=trace(&sample);
 
             serial = sample.serial; /* update our overall serial # */
 
@@ -176,7 +173,7 @@ static color_t render_one_pixel (int x, int y, unsigned int *local_mbox, unsigne
     G = int((1.0 - alpha) * G + alpha * blend[1]);
     B = int((1.0 - alpha) * B + alpha * blend[2]);
 #endif
-    
+
     return video->get_color(R, G, B);
 }
 
@@ -230,10 +227,10 @@ public:
 void * thread_trace(thr_parms * parms)
 {
 #if !WIN8UI_EXAMPLE
-    int n, nthreads = tbb::task_scheduler_init::automatic;
+    int n, nthreads = utility::get_default_num_threads();
     char *nthreads_str = getenv ("TBB_NUM_THREADS");
     if (nthreads_str && (sscanf (nthreads_str, "%d", &n) > 0) && (n > 0)) nthreads = n;
-    tbb::task_scheduler_init init (nthreads);
+    tbb::global_control c(tbb::global_control::max_allowed_parallelism, nthreads);
 #endif
 
     // shared but read-only so could be private too
@@ -265,5 +262,5 @@ void * thread_trace(thr_parms * parms)
 #endif
         tbb::parallel_for (tbb::blocked_range2d<int> (starty, stopy, grain_size, startx, stopx, grain_size), parallel_task (), tbb::auto_partitioner());
 
-    return(NULL);  
+    return(NULL);
 }

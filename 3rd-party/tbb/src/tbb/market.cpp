@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "tbb/tbb_stddef.h"
@@ -190,7 +186,7 @@ bool market::release ( bool is_public, bool blocking_terminate ) {
                 // Theoretically, new private references to the market can be added during waiting making it potentially
                 // endless.
                 // TODO: revise why the weak scheduler needs market's pointer and try to remove this wait.
-                // Note that the market should know about its schedulers for cancelation/exception/priority propagation,
+                // Note that the market should know about its schedulers for cancellation/exception/priority propagation,
                 // see e.g. task_group_context::cancel_group_execution()
                 while ( __TBB_load_with_acquire( my_public_ref_count ) == 1 && __TBB_load_with_acquire( my_ref_count ) > 1 )
                     __TBB_Yield();
@@ -218,9 +214,25 @@ bool market::release ( bool is_public, bool blocking_terminate ) {
     return false;
 }
 
+int market::update_workers_request() {
+    int old_request = my_num_workers_requested;
+    my_num_workers_requested = min(my_total_demand, (int)my_num_workers_soft_limit);
+#if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
+    if (my_mandatory_num_requested > 0) {
+        __TBB_ASSERT(my_num_workers_soft_limit == 0, NULL);
+        my_num_workers_requested = 1;
+    }
+#endif
+#if __TBB_TASK_PRIORITY
+    my_priority_levels[my_global_top_priority].workers_available = my_num_workers_requested;
+    update_allotment(my_global_top_priority);
+#else
+    update_allotment(my_num_workers_requested);
+#endif
+    return my_num_workers_requested - old_request;
+}
+
 void market::set_active_num_workers ( unsigned soft_limit ) {
-    int old_requested=0, requested=0;
-    bool need_mandatory = false;
     market *m;
 
     {
@@ -228,65 +240,61 @@ void market::set_active_num_workers ( unsigned soft_limit ) {
         if ( !theMarket )
             return; // actual value will be used at market creation
         m = theMarket;
+        if (m->my_num_workers_soft_limit == soft_limit)
+            return;
         ++m->my_ref_count;
     }
     // have my_ref_count for market, use it safely
+
+    int delta = 0;
     {
         arenas_list_mutex_type::scoped_lock lock( m->my_arenas_list_mutex );
         __TBB_ASSERT(soft_limit <= m->my_num_workers_hard_limit, NULL);
-        m->my_num_workers_soft_limit = soft_limit;
+
+#if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
+#if __TBB_TASK_PRIORITY
+#define FOR_EACH_PRIORITY_LEVEL_BEGIN {                                                         \
+        for (int p = m->my_global_top_priority; p >= m->my_global_bottom_priority; --p) {       \
+            priority_level_info& pl = m->my_priority_levels[p];                                 \
+            arena_list_type& arenas = pl.arenas;
+#else
+#define FOR_EACH_PRIORITY_LEVEL_BEGIN { {                                                       \
+            const int p = 0;                                                                    \
+            tbb::internal::suppress_unused_warning(p);                                          \
+            arena_list_type& arenas = m->my_arenas;
+#endif
+#define FOR_EACH_PRIORITY_LEVEL_END } }
+
+        if (m->my_num_workers_soft_limit == 0 && m->my_mandatory_num_requested > 0) {
+            FOR_EACH_PRIORITY_LEVEL_BEGIN
+                for (arena_list_type::iterator it = arenas.begin(); it != arenas.end(); ++it)
+                    if (it->my_global_concurrency_mode)
+                        m->disable_mandatory_concurrency_impl(&*it);
+            FOR_EACH_PRIORITY_LEVEL_END
+        }
+        __TBB_ASSERT(m->my_mandatory_num_requested == 0, NULL);
+#endif
+
+        as_atomic(m->my_num_workers_soft_limit) = soft_limit;
         // report only once after new soft limit value is set
         m->my_workers_soft_limit_to_report = soft_limit;
 
 #if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-        // updates soft_limit to zero must be postponed
-        // while mandatory parallelism is enabled
-        if( !(m->my_mandatory_num_requested && !soft_limit) )
-#endif
-        {
-            const int demand =
-#if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-                m->my_mandatory_num_requested? 0 :
-#endif
-                m->my_total_demand;
-            requested = min(demand, (int)soft_limit);
-            old_requested = m->my_num_workers_requested;
-            m->my_num_workers_requested = requested;
-#if __TBB_TASK_PRIORITY
-            m->my_priority_levels[m->my_global_top_priority].workers_available = soft_limit;
-            m->update_allotment( m->my_global_top_priority );
-#else
-            m->update_allotment();
-#endif
-        }
-#if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-        if( !m->my_mandatory_num_requested && !soft_limit ) {
-            // enable mandatory concurrency, if enqueued tasks are found
-            // and zero soft_limit requested
-#if __TBB_TASK_PRIORITY
-            for( int p = m->my_global_top_priority; p >= m->my_global_bottom_priority; --p ) {
-                priority_level_info &pl = m->my_priority_levels[p];
-                arena_list_type &arenas = pl.arenas;
-#else
-                const int p = 0;
-                arena_list_type &arenas = m->my_arenas;
-#endif /* __TBB_TASK_PRIORITY */
-                for( arena_list_type::iterator it = arenas.begin(); it != arenas.end(); ++it ) {
-                    if( !it->my_task_stream.empty(p) ) {
-                        // switch local_mandatory to global_mandatory unconditionally
-                        if( m->mandatory_concurrency_enable_impl( &*it ) )
-                            need_mandatory = true;
-                    }
+        if (m->my_num_workers_soft_limit == 0) {
+            FOR_EACH_PRIORITY_LEVEL_BEGIN
+                for (arena_list_type::iterator it = arenas.begin(); it != arenas.end(); ++it) {
+                    if (!it->my_task_stream.empty(p))
+                        m->enable_mandatory_concurrency_impl(&*it);
                 }
-#if __TBB_TASK_PRIORITY
-            }
-#endif /* __TBB_TASK_PRIORITY */
+            FOR_EACH_PRIORITY_LEVEL_END
         }
-#endif /* __TBB_ENQUEUE_ENFORCED_CONCURRENCY */
+#undef FOR_EACH_PRIORITY_LEVEL_BEGIN
+#undef FOR_EACH_PRIORITY_LEVEL_END
+#endif
+
+        delta = m->update_workers_request();
     }
     // adjust_job_count_estimate must be called outside of any locks
-    int delta = requested - old_requested;
-    if( need_mandatory ) ++delta;
     if( delta!=0 )
         m->my_server->adjust_job_count_estimate( delta );
     // release internal market reference to match ++m->my_ref_count above
@@ -314,6 +322,9 @@ arena* market::create_arena ( int num_slots, int num_reserved_slots, size_t stac
 void market::detach_arena ( arena& a ) {
     __TBB_ASSERT( theMarket == this, "Global market instance was destroyed prematurely?" );
     __TBB_ASSERT( !a.my_slots[0].my_scheduler, NULL );
+    if (a.my_global_concurrency_mode)
+        disable_mandatory_concurrency_impl(&a);
+
     remove_arena_from_list(a);
     if ( a.my_aba_epoch == my_arenas_aba_epoch )
         ++my_arenas_aba_epoch;
@@ -369,11 +380,7 @@ arena* market::arena_in_need ( arena_list_type &arenas, arena *hint ) {
         arena& a = *it;
         if ( ++it == arenas.end() )
             it = arenas.begin();
-        if( a.num_workers_active() < a.my_num_workers_allotted
-#if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-            && !a.recall_by_mandatory_request()
-#endif
-            ) {
+        if( a.num_workers_active() < a.my_num_workers_allotted ) {
             a.my_references += arena::ref_worker;
             return &a;
         }
@@ -382,34 +389,34 @@ arena* market::arena_in_need ( arena_list_type &arenas, arena *hint ) {
 }
 
 int market::update_allotment ( arena_list_type& arenas, int workers_demand, int max_workers ) {
-    __TBB_ASSERT( workers_demand, NULL );
+    __TBB_ASSERT( workers_demand > 0, NULL );
     max_workers = min(workers_demand, max_workers);
-    int carry = 0;
     int assigned = 0;
-    arena_list_type::iterator it = arenas.begin();
-    for ( ; it != arenas.end(); ++it ) {
+    int carry = 0;
+    for (arena_list_type::iterator it = arenas.begin(); it != arenas.end(); ++it) {
         arena& a = *it;
-        if ( a.my_num_workers_requested <= 0 ) {
-            __TBB_ASSERT( !a.my_num_workers_allotted, NULL );
+        if (a.my_num_workers_requested <= 0) {
+            __TBB_ASSERT(!a.my_num_workers_allotted, NULL);
             continue;
         }
-        int tmp = a.my_num_workers_requested * max_workers + carry;
-        int allotted = tmp / workers_demand;
-        carry = tmp % workers_demand;
-        // a.my_num_workers_requested may temporarily exceed a.my_max_num_workers
-        allotted = min( allotted, (int)a.my_max_num_workers );
+        int allotted = 0;
 #if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-        if ( !allotted && a.must_have_concurrency() )
-            allotted = 1;
+        if (my_num_workers_soft_limit == 0) {
+            __TBB_ASSERT(max_workers == 0 || max_workers == 1, NULL);
+            allotted = a.my_global_concurrency_mode && assigned < max_workers ? 1 : 0;
+        } else
 #endif
+        {
+            int tmp = a.my_num_workers_requested * max_workers + carry;
+            allotted = tmp / workers_demand;
+            carry = tmp % workers_demand;
+            // a.my_num_workers_requested may temporarily exceed a.my_max_num_workers
+            allotted = min(allotted, (int)a.my_max_num_workers);
+        }
         a.my_num_workers_allotted = allotted;
         assigned += allotted;
     }
-#if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-    __TBB_ASSERT( assigned <= workers_demand, NULL ); // weaker assertion due to enforced allotment
-#else
-    __TBB_ASSERT( assigned <= max_workers, NULL );
-#endif
+    __TBB_ASSERT( 0 <= assigned && assigned <= max_workers, NULL );
     return assigned;
 }
 
@@ -474,7 +481,7 @@ void market::update_allotment ( intptr_t highest_affected_priority ) {
         pl.workers_available = available;
         if ( pl.workers_requested ) {
             available -= update_allotment( pl.arenas, pl.workers_requested, available );
-            if ( available < 0 ) { // TODO: assertion?
+            if ( available <= 0 ) { // TODO: assertion?
                 available = 0;
                 break;
             }
@@ -487,103 +494,63 @@ void market::update_allotment ( intptr_t highest_affected_priority ) {
         arena_list_type::iterator it = pl.arenas.begin();
         for ( ; it != pl.arenas.end(); ++it ) {
             __TBB_ASSERT( it->my_num_workers_requested >= 0 || !it->my_num_workers_allotted, NULL );
-#if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-            it->my_num_workers_allotted = it->must_have_concurrency() ? 1 : 0;
-#else
             it->my_num_workers_allotted = 0;
-#endif
         }
     }
 }
 #endif /* __TBB_TASK_PRIORITY */
 
 #if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-bool market::mandatory_concurrency_enable_impl ( arena *a, bool *enabled ) {
-    if( a->my_concurrency_mode==arena_base::cm_enforced_global ) {
-        if( enabled )
-            *enabled = false;
-        return false;
-    }
-    if( enabled )
-        *enabled = true;
-    a->my_max_num_workers = 1;
-    a->my_concurrency_mode = arena_base::cm_enforced_global;
-#if __TBB_TASK_PRIORITY
-    priority_level_info &pl = my_priority_levels[a->my_top_priority];
-    pl.workers_requested++;
-    if( my_global_top_priority < a->my_top_priority ) {
-        my_global_top_priority = a->my_top_priority;
-        advance_global_reload_epoch();
-    }
-#endif
-    a->my_num_workers_requested++;
-    a->my_num_workers_allotted++;
-    if( 1 == ++my_mandatory_num_requested ) {
-        my_total_demand++;
-        return true;
-    }
-    return false;
+void market::enable_mandatory_concurrency_impl ( arena *a ) {
+    __TBB_ASSERT(!a->my_global_concurrency_mode, NULL);
+    __TBB_ASSERT(my_num_workers_soft_limit == 0, NULL);
+
+    a->my_global_concurrency_mode = true;
+    my_mandatory_num_requested++;
 }
 
-bool market::mandatory_concurrency_enable ( arena *a ) {
-    bool add_thread;
-    bool enabled;
+void market::enable_mandatory_concurrency ( arena *a ) {
+    int delta = 0;
     {
         arenas_list_mutex_type::scoped_lock lock(my_arenas_list_mutex);
-        add_thread = mandatory_concurrency_enable_impl(a, &enabled);
+        if (my_num_workers_soft_limit != 0 || a->my_global_concurrency_mode)
+            return;
+
+        enable_mandatory_concurrency_impl(a);
+        delta = update_workers_request();
     }
-    if( add_thread )
-        my_server->adjust_job_count_estimate( 1 );
-    return enabled;
+
+    if (delta != 0)
+        my_server->adjust_job_count_estimate(delta);
+}
+
+void market::disable_mandatory_concurrency_impl(arena* a) {
+    __TBB_ASSERT(a->my_global_concurrency_mode, NULL);
+    __TBB_ASSERT(my_mandatory_num_requested > 0, NULL);
+
+    a->my_global_concurrency_mode = false;
+    my_mandatory_num_requested--;
 }
 
 void market::mandatory_concurrency_disable ( arena *a ) {
-    bool remove_thread = false;
-    int delta_adjust_demand = 0;
-
+    int delta = 0;
     {
         arenas_list_mutex_type::scoped_lock lock(my_arenas_list_mutex);
-
-        if( a->my_concurrency_mode!=arena_base::cm_enforced_global  )
+        if (!a->my_global_concurrency_mode)
             return;
-        __TBB_ASSERT( a->my_max_num_workers==1, NULL );
-        a->my_max_num_workers = 0;
-#if __TBB_TASK_PRIORITY
-        if ( a->my_top_priority != normalized_normal_priority ) {
-            update_arena_top_priority( *a, normalized_normal_priority );
-        }
-        a->my_bottom_priority = normalized_normal_priority;
-#endif
+        // There is a racy window in advertise_new_work between mandtory concurrency enabling and 
+        // setting SNAPSHOT_FULL. It gives a chance to spawn request to disable mandatory concurrency.
+        // Therefore, we double check that there is no enqueued tasks.
+        if (a->has_enqueued_tasks())
+            return;
 
-        int val = --my_mandatory_num_requested;
-        __TBB_ASSERT_EX( val >= 0, NULL );
-        if( val == 0 ) {
-            my_total_demand--;
-            remove_thread = true;
-        }
-        a->my_num_workers_requested--;
-        if (a->my_num_workers_requested > 0)
-            delta_adjust_demand = a->my_num_workers_requested;
-        else
-            a->my_num_workers_allotted = 0;
+        __TBB_ASSERT(my_num_workers_soft_limit == 0, NULL);
+        disable_mandatory_concurrency_impl(a);
 
-#if __TBB_TASK_PRIORITY
-        priority_level_info &pl = my_priority_levels[a->my_top_priority];
-        pl.workers_requested--;
-        intptr_t p = my_global_top_priority;
-        for (; !my_priority_levels[p].workers_requested && p>0; p--)
-            ;
-        if( !p )
-            reset_global_priority();
-        else if( p!= my_global_top_priority )
-            update_global_top_priority(p);
-#endif
-        a->my_concurrency_mode = arena::cm_normal;
+        delta = update_workers_request();
     }
-    if( delta_adjust_demand )
-        adjust_demand( *a, -delta_adjust_demand );
-    if( remove_thread )
-        my_server->adjust_job_count_estimate( -1 );
+    if (delta != 0)
+        my_server->adjust_job_count_estimate(delta);
 }
 #endif /* __TBB_ENQUEUE_ENFORCED_CONCURRENCY */
 
@@ -595,13 +562,7 @@ void market::adjust_demand ( arena& a, int delta ) {
     int prev_req = a.my_num_workers_requested;
     a.my_num_workers_requested += delta;
     if ( a.my_num_workers_requested <= 0 ) {
-#if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-        // must not recall worker from arena with mandatory parallelism
-        if ( a.my_market->my_mandatory_num_requested && a.my_concurrency_mode!=arena_base::cm_normal )
-            a.my_num_workers_allotted = 1;
-        else
-#endif
-            a.my_num_workers_allotted = 0;
+        a.my_num_workers_allotted = 0;
         if ( prev_req <= 0 ) {
             my_arenas_list_mutex.unlock();
             return;
@@ -612,8 +573,13 @@ void market::adjust_demand ( arena& a, int delta ) {
         delta = a.my_num_workers_requested;
     }
     my_total_demand += delta;
+    unsigned effective_soft_limit = my_num_workers_soft_limit;
+    if (my_mandatory_num_requested > 0) {
+        __TBB_ASSERT(effective_soft_limit == 0, NULL);
+        effective_soft_limit = 1;
+    }
 #if !__TBB_TASK_PRIORITY
-    update_allotment();
+    update_allotment(effective_soft_limit);
 #else /* !__TBB_TASK_PRIORITY */
     intptr_t p = a.my_top_priority;
     priority_level_info &pl = my_priority_levels[p];
@@ -635,6 +601,7 @@ void market::adjust_demand ( arena& a, int delta ) {
             else
                 update_global_top_priority(p);
         }
+        my_priority_levels[my_global_top_priority].workers_available = effective_soft_limit;
         update_allotment( my_global_top_priority );
     }
     else if ( p > my_global_top_priority ) {
@@ -642,14 +609,8 @@ void market::adjust_demand ( arena& a, int delta ) {
         // TODO: investigate if the following invariant is always valid
         __TBB_ASSERT( a.my_num_workers_requested >= 0, NULL );
         update_global_top_priority(p);
-        a.my_num_workers_allotted = min( (int)my_num_workers_soft_limit, a.my_num_workers_requested );
-#if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-        // must not recall worker from arena with mandatory parallelism
-        if ( !a.my_num_workers_allotted && a.my_num_workers_requested
-             && a.my_market->my_mandatory_num_requested && a.my_concurrency_mode!=arena_base::cm_normal )
-            a.my_num_workers_allotted = 1;
-#endif
-        my_priority_levels[p - 1].workers_available = my_num_workers_soft_limit - a.my_num_workers_allotted;
+        a.my_num_workers_allotted = min( (int)effective_soft_limit, a.my_num_workers_requested );
+        my_priority_levels[p - 1].workers_available = effective_soft_limit - a.my_num_workers_allotted;
         update_allotment( p - 1 );
     }
     else if ( p == my_global_bottom_priority ) {
@@ -679,15 +640,15 @@ void market::adjust_demand ( arena& a, int delta ) {
     if ( delta > 0 ) {
         // can't overflow soft_limit, but remember values request by arenas in
         // my_total_demand to not prematurely release workers to RML
-        if ( my_num_workers_requested+delta > (int)my_num_workers_soft_limit )
-            delta = my_num_workers_soft_limit - my_num_workers_requested;
+        if ( my_num_workers_requested+delta > (int)effective_soft_limit)
+            delta = effective_soft_limit - my_num_workers_requested;
     } else {
         // the number of workers should not be decreased below my_total_demand
         if ( my_num_workers_requested+delta < my_total_demand )
-            delta = min(my_total_demand, (int)my_num_workers_soft_limit) - my_num_workers_requested;
+            delta = min(my_total_demand, (int)effective_soft_limit) - my_num_workers_requested;
     }
     my_num_workers_requested += delta;
-    __TBB_ASSERT( my_num_workers_requested <= (int)my_num_workers_soft_limit, NULL );
+    __TBB_ASSERT( my_num_workers_requested <= (int)effective_soft_limit, NULL );
 
     my_arenas_list_mutex.unlock();
     // Must be called outside of any locks
@@ -700,42 +661,20 @@ void market::process( job& j ) {
     // s.my_arena can be dead. Don't access it until arena_in_need is called
     arena *a = s.my_arena;
     __TBB_ASSERT( governor::is_set(&s), NULL );
-    enum {
-        query_interval = 1000,
-        first_interval = 1
-    };
-    for(int i = first_interval; ; i--) {
-        while ( (a = arena_in_need(a)) )
-        {
+
+    for (int i = 0; i < 2; ++i) {
+        while ( (a = arena_in_need(a)) ) {
             a->process(s);
-            a = NULL; // To avoid double checks in arena_in_need
-            i = first_interval;
+            a = NULL; // to avoid double checks in arena_in_need(arena*) for the same priority level
         }
         // Workers leave market because there is no arena in need. It can happen earlier than
         // adjust_job_count_estimate() decreases my_slack and RML can put this thread to sleep.
         // It might result in a busy-loop checking for my_slack<0 and calling this method instantly.
-        // first_interval>0 and the yield refines this spinning.
-        if( i > 0 )
+        // the yield refines this spinning.
+        if ( !i )
             __TBB_Yield();
-        else
-#if !__TBB_SLEEP_PERMISSION
-            break;
-#else
-        { // i == 0
-#if __TBB_TASK_PRIORITY
-            arena_list_type &al = my_priority_levels[my_global_top_priority].arenas;
-#else /* __TBB_TASK_PRIORITY */
-            arena_list_type &al = my_arenas;
-#endif /* __TBB_TASK_PRIORITY */
-            if( al.empty() ) // races if any are innocent TODO: replace by an RML query interface
-                break; // no arenas left, perhaps going to shut down
-            if( the_global_observer_list.ask_permission_to_leave() )
-                break; // go sleep
-            __TBB_Yield();
-            i = query_interval;
-        }
-#endif// !__TBB_SLEEP_PERMISSION
     }
+
     GATHER_STATISTIC( ++s.my_counters.market_roundtrips );
 }
 
@@ -762,7 +701,7 @@ void market::acknowledge_close_connection() {
     __TBB_ASSERT( index > 0, NULL );
     ITT_THREAD_SET_NAME(_T("TBB Worker Thread"));
     // index serves as a hint decreasing conflicts between workers when they migrate between arenas
-    generic_scheduler* s = generic_scheduler::create_worker( *this, index );
+    generic_scheduler* s = generic_scheduler::create_worker( *this, index, /* genuine = */ true );
 #if __TBB_TASK_GROUP_CONTEXT
     __TBB_ASSERT( index <= my_num_workers_hard_limit, NULL );
     __TBB_ASSERT( !my_workers[index - 1], NULL );
@@ -866,12 +805,7 @@ bool market::update_arena_priority ( arena& a, intptr_t new_priority ) {
                 && !my_priority_levels[my_global_bottom_priority].workers_requested )
             ++my_global_bottom_priority;
         __TBB_ASSERT( my_global_bottom_priority <= new_priority, NULL );
-#if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-        const bool enforced_concurrency = my_mandatory_num_requested && a.must_have_concurrency();
-#else
-        const bool enforced_concurrency = false;
-#endif
-        __TBB_ASSERT_EX( enforced_concurrency || my_priority_levels[my_global_bottom_priority].workers_requested > 0, NULL );
+        __TBB_ASSERT( my_priority_levels[my_global_bottom_priority].workers_requested > 0, NULL );
     }
     update_allotment( highest_affected_level );
 

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,21 +12,20 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_pipeline_H
 #define __TBB_pipeline_H
+
+#define __TBB_pipeline_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 #include "atomic.h"
 #include "task.h"
 #include "tbb_allocator.h"
 #include <cstddef>
 
-#if __TBB_CPP11_TYPE_PROPERTIES_PRESENT || __TBB_TR1_TYPE_PROPERTIES_IN_STD_PRESENT
+#if __TBB_CPP11_TYPE_PROPERTIES_PRESENT
 #include <type_traits>
 #endif
 
@@ -65,7 +64,7 @@ namespace interface6 {
 class filter: internal::no_copy {
 private:
     //! Value used to mark "not in pipeline"
-    static filter* not_in_pipeline() {return reinterpret_cast<filter*>(intptr_t(-1));}
+    static filter* not_in_pipeline() { return reinterpret_cast<filter*>(intptr_t(-1)); }
 protected:
     //! The lowest bit 0 is for parallel vs. serial
     static const unsigned char filter_is_serial = 0x1;
@@ -157,7 +156,7 @@ public:
     //! Destroys item if pipeline was cancelled.
     /** Required to prevent memory leaks.
         Note it can be called concurrently even for serial filters.*/
-    virtual void finalize( void* /*item*/ ) {};
+    virtual void finalize( void* /*item*/ ) {}
 #endif
 
 private:
@@ -233,7 +232,7 @@ private:
 
 //! A processing pipeline that applies filters to items.
 /** @ingroup algorithms */
-class pipeline {
+class __TBB_DEPRECATED_MSG("tbb::pipeline is deprecated, use tbb::parallel_pipeline") pipeline {
 public:
     //! Construct empty pipeline.
     __TBB_EXPORTED_METHOD pipeline();
@@ -301,6 +300,12 @@ private:
 // Support for lambda-friendly parallel_pipeline interface
 //------------------------------------------------------------------------
 
+namespace flow {
+namespace interface11 {
+    template<typename Output> class input_node;
+}
+}
+
 namespace interface6 {
 
 namespace internal {
@@ -312,6 +317,7 @@ class flow_control {
     bool is_pipeline_stopped;
     flow_control() { is_pipeline_stopped = false; }
     template<typename T, typename U, typename Body> friend class internal::concrete_filter;
+    template<typename Output> friend class flow::interface11::input_node;
 public:
     void stop() { is_pipeline_stopped = true; }
 };
@@ -319,43 +325,58 @@ public:
 //! @cond INTERNAL
 namespace internal {
 
-template<typename T> struct tbb_large_object {enum { value = sizeof(T) > sizeof(void *) }; };
-
-// Obtain type properties in one or another way
+// Emulate std::is_trivially_copyable (false positives not allowed, false negatives suboptimal but safe).
 #if   __TBB_CPP11_TYPE_PROPERTIES_PRESENT
 template<typename T> struct tbb_trivially_copyable { enum { value = std::is_trivially_copyable<T>::value }; };
-#elif __TBB_TR1_TYPE_PROPERTIES_IN_STD_PRESENT
-template<typename T> struct tbb_trivially_copyable { enum { value = std::has_trivial_copy_constructor<T>::value }; };
 #else
-// Explicitly list the types we wish to be placed as-is in the pipeline input_buffers.
-template<typename T> struct tbb_trivially_copyable { enum { value = false }; };
-template<typename T> struct tbb_trivially_copyable <T*> { enum { value = true }; };
-template<> struct tbb_trivially_copyable <short> { enum { value = true }; };
-template<> struct tbb_trivially_copyable <unsigned short> { enum { value = true }; };
-template<> struct tbb_trivially_copyable <int> { enum { value = !tbb_large_object<int>::value }; };
-template<> struct tbb_trivially_copyable <unsigned int> { enum { value = !tbb_large_object<int>::value }; };
-template<> struct tbb_trivially_copyable <long> { enum { value = !tbb_large_object<long>::value }; };
-template<> struct tbb_trivially_copyable <unsigned long> { enum { value = !tbb_large_object<long>::value }; };
-template<> struct tbb_trivially_copyable <float> { enum { value = !tbb_large_object<float>::value }; };
-template<> struct tbb_trivially_copyable <double> { enum { value = !tbb_large_object<double>::value }; };
-#endif // Obtaining type properties
+template<typename T> struct tbb_trivially_copyable                      { enum { value = false }; };
+template<typename T> struct tbb_trivially_copyable <         T*       > { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <         bool     > { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <         char     > { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <  signed char     > { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <unsigned char     > { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <         short    > { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <unsigned short    > { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <         int      > { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <unsigned int      > { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <         long     > { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <unsigned long     > { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <         long long> { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <unsigned long long> { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <         float    > { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <         double   > { enum { value = true  }; };
+template<>           struct tbb_trivially_copyable <    long double   > { enum { value = true  }; };
+#if !_MSC_VER || defined(_NATIVE_WCHAR_T_DEFINED)
+template<>           struct tbb_trivially_copyable <         wchar_t  > { enum { value = true  }; };
+#endif /* _MSC_VER||!defined(_NATIVE_WCHAR_T_DEFINED) */
+#endif // tbb_trivially_copyable
 
-template<typename T> struct is_large_object {enum { value = tbb_large_object<T>::value || !tbb_trivially_copyable<T>::value }; };
+template<typename T>
+struct use_allocator {
+    enum { value = sizeof(T) > sizeof(void *) || !tbb_trivially_copyable<T>::value };
+};
 
-template<typename T, bool> class token_helper;
+// A helper class to customize how a type is passed between filters.
+// Usage: token_helper<T, use_allocator<T>::value>
+template<typename T, bool Allocate> class token_helper;
 
-// large object helper (uses tbb_allocator)
+// using tbb_allocator
 template<typename T>
 class token_helper<T, true> {
-    public:
+public:
     typedef typename tbb::tbb_allocator<T> allocator;
     typedef T* pointer;
     typedef T value_type;
-    static pointer create_token(const value_type & source) {
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    static pointer create_token(value_type && source)
+#else
+    static pointer create_token(const value_type & source)
+#endif
+    {
         pointer output_t = allocator().allocate(1);
-        return new (output_t) T(source);
+        return new (output_t) T(tbb::internal::move(source));
     }
-    static value_type & token(pointer & t) { return *t;}
+    static value_type & token(pointer & t) { return *t; }
     static void * cast_to_void_ptr(pointer ref) { return (void *) ref; }
     static pointer cast_from_void_ptr(void * ref) { return (pointer)ref; }
     static void destroy_token(pointer token) {
@@ -366,30 +387,29 @@ class token_helper<T, true> {
 
 // pointer specialization
 template<typename T>
-class token_helper<T*, false > {
-    public:
+class token_helper<T*, false> {
+public:
     typedef T* pointer;
     typedef T* value_type;
     static pointer create_token(const value_type & source) { return source; }
-    static value_type & token(pointer & t) { return t;}
+    static value_type & token(pointer & t) { return t; }
     static void * cast_to_void_ptr(pointer ref) { return (void *)ref; }
     static pointer cast_from_void_ptr(void * ref) { return (pointer)ref; }
     static void destroy_token( pointer /*token*/) {}
 };
 
-// small object specialization (converts void* to the correct type, passes objects directly.)
+// converting type to and from void*, passing objects directly
 template<typename T>
 class token_helper<T, false> {
     typedef union {
         T actual_value;
         void * void_overlay;
     } type_to_void_ptr_map;
-    public:
+public:
     typedef T pointer;  // not really a pointer in this case.
     typedef T value_type;
-    static pointer create_token(const value_type & source) {
-        return source; }
-    static value_type & token(pointer & t) { return t;}
+    static pointer create_token(const value_type & source) { return source; }
+    static value_type & token(pointer & t) { return t; }
     static void * cast_to_void_ptr(pointer ref) {
         type_to_void_ptr_map mymap;
         mymap.void_overlay = NULL;
@@ -404,17 +424,18 @@ class token_helper<T, false> {
     static void destroy_token( pointer /*token*/) {}
 };
 
+// intermediate
 template<typename T, typename U, typename Body>
 class concrete_filter: public tbb::filter {
     const Body& my_body;
-    typedef token_helper<T,is_large_object<T>::value > t_helper;
+    typedef token_helper<T,use_allocator<T>::value> t_helper;
     typedef typename t_helper::pointer t_pointer;
-    typedef token_helper<U,is_large_object<U>::value > u_helper;
+    typedef token_helper<U,use_allocator<U>::value> u_helper;
     typedef typename u_helper::pointer u_pointer;
 
     void* operator()(void* input) __TBB_override {
         t_pointer temp_input = t_helper::cast_from_void_ptr(input);
-        u_pointer output_u = u_helper::create_token(my_body(t_helper::token(temp_input)));
+        u_pointer output_u = u_helper::create_token(my_body(tbb::internal::move(t_helper::token(temp_input))));
         t_helper::destroy_token(temp_input);
         return u_helper::cast_to_void_ptr(output_u);
     }
@@ -432,7 +453,7 @@ public:
 template<typename U, typename Body>
 class concrete_filter<void,U,Body>: public filter {
     const Body& my_body;
-    typedef token_helper<U, is_large_object<U>::value > u_helper;
+    typedef token_helper<U, use_allocator<U>::value> u_helper;
     typedef typename u_helper::pointer u_pointer;
 
     void* operator()(void*) __TBB_override {
@@ -453,15 +474,16 @@ public:
     {}
 };
 
+// output
 template<typename T, typename Body>
 class concrete_filter<T,void,Body>: public filter {
     const Body& my_body;
-    typedef token_helper<T, is_large_object<T>::value > t_helper;
+    typedef token_helper<T, use_allocator<T>::value> t_helper;
     typedef typename t_helper::pointer t_pointer;
 
     void* operator()(void* input) __TBB_override {
         t_pointer temp_input = t_helper::cast_from_void_ptr(input);
-        my_body(t_helper::token(temp_input));
+        my_body(tbb::internal::move(t_helper::token(temp_input)));
         t_helper::destroy_token(temp_input);
         return NULL;
     }
@@ -478,7 +500,6 @@ template<typename Body>
 class concrete_filter<void,void,Body>: public filter {
     const Body& my_body;
 
-    /** Override privately because it is always called virtually */
     void* operator()(void*) __TBB_override {
         flow_control control;
         my_body(control);
@@ -518,7 +539,7 @@ public:
     //! Add concrete_filter to pipeline
     virtual void add_to( pipeline& ) = 0;
     //! Increment reference count
-    void add_ref() {++ref_count;}
+    void add_ref() { ++ref_count; }
     //! Decrement reference count and delete if it becomes zero.
     void remove_ref() {
         __TBB_ASSERT(ref_count>0,"ref_count underflow");
@@ -534,7 +555,7 @@ public:
 
 //! Node in parse tree representing result of make_filter.
 template<typename T, typename U, typename Body>
-class filter_node_leaf: public filter_node  {
+class filter_node_leaf: public filter_node {
     const tbb::filter::mode mode;
     const Body body;
     void add_to( pipeline& p ) __TBB_override {
@@ -661,5 +682,8 @@ using interface6::make_filter;
 using interface6::parallel_pipeline;
 
 } // tbb
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_pipeline_H_include_area
 
 #endif /* __TBB_pipeline_H */

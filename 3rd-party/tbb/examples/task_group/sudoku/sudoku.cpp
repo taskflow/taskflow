@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,13 +12,10 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "../../common/utility/utility.h"
+#include "../../common/utility/get_default_num_threads.h"
 
 #if __TBB_MIC_OFFLOAD
 #pragma offload_attribute (push,target(mic))
@@ -27,11 +24,11 @@
 #include <cstdio>
 #include <cstdlib>
 #include <string>
+#include <atomic>
 
-#include "tbb/atomic.h"
 #include "tbb/tick_count.h"
-#include "tbb/task_scheduler_init.h"
 #include "tbb/task_group.h"
+#include "tbb/global_control.h"
 
 #pragma warning(disable: 4996)
 
@@ -41,7 +38,7 @@ const unsigned BOARD_DIM=9;
 using namespace tbb;
 using namespace std;
 
-tbb::atomic<unsigned> nSols;
+std::atomic<unsigned> nSols;
 bool find_one = false;
 bool verbose = false;
 unsigned short init_values[BOARD_SIZE] = {1,0,0,9,0,0,0,8,0,0,8,0,2,0,0,0,0,0,0,0,5,0,0,0,7,0,0,0,5,2,1,0,0,4,0,0,0,0,0,0,0,5,0,0,7,4,0,0,7,0,0,0,3,0,0,3,0,0,0,2,0,0,5,0,0,0,0,0,0,1,0,0,5,0,0,0,1,0,0,0,0};
@@ -57,7 +54,7 @@ void read_board(const char *filename) {
     FILE *fp;
     int input;
     fp = fopen(filename, "r");
-    if (!fp) { 
+    if (!fp) {
         fprintf(stderr, "sudoku: Could not open input file '%s'.\n", filename);
         exit(1);
     }
@@ -86,7 +83,7 @@ void print_board(board_element *b) {
 void print_potential_board(board_element *b) {
     for (unsigned row=0; row<BOARD_DIM; ++row) {
         for (unsigned col=0; col<BOARD_DIM; ++col) {
-            if (b[row*BOARD_DIM+col].solved_element) 
+            if (b[row*BOARD_DIM+col].solved_element)
                 printf("  %4d ", b[row*BOARD_DIM+col].solved_element);
             else
                 printf(" [%4d]", b[row*BOARD_DIM+col].potential_set);
@@ -105,7 +102,7 @@ void init_board(board_element *b) {
 
 void init_board(board_element *b, unsigned short arr[81]) {
     for (unsigned i=0; i<BOARD_SIZE; ++i) {
-        b[i].solved_element = arr[i]; 
+        b[i].solved_element = arr[i];
         b[i].potential_set = 0;
     }
 }
@@ -246,7 +243,7 @@ void partial_solve(board_element *b, unsigned first_potential_set) {
 }
 
 unsigned solve(int p) {
-    task_scheduler_init init(p);
+    tbb::global_control c(tbb::global_control::max_allowed_parallelism, p);
     nSols = 0;
     board_element *start_board = (board_element *)malloc(BOARD_SIZE*sizeof(board_element));
     init_board(start_board, init_values);
@@ -263,25 +260,11 @@ unsigned solve(int p) {
 #pragma offload_attribute (pop)
 #endif // __TBB_MIC_OFFLOAD
 
-int do_get_default_num_threads() {
-    int threads;
-    #if __TBB_MIC_OFFLOAD
-    #pragma offload target(mic) out(threads)
-    #endif // __TBB_MIC_OFFLOAD
-    threads = tbb::task_scheduler_init::default_num_threads();
-    return threads;
-}
-
-int get_default_num_threads() {
-    static int threads = do_get_default_num_threads();
-    return threads;
-}
-
 int main(int argc, char *argv[]) {
     try {
         tbb::tick_count mainStartTime = tbb::tick_count::now();
 
-        utility::thread_number_range threads(get_default_num_threads);
+        utility::thread_number_range threads(utility::get_default_num_threads);
         string filename = "";
         bool silent = false;
 

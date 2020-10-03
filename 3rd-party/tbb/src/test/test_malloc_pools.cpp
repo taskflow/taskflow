@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "tbb/scalable_allocator.h"
@@ -249,14 +245,12 @@ public:
             void *ptrLarge = pool_malloc(pool[id], lrgSz);
             ASSERT(ptrLarge, NULL);
             memset(ptrLarge, 1, lrgSz);
-
             // consume all small objects
-            while (pool_malloc(pool[id], 5*1024))
-                ;
-            // releasing of large object can give a chance to allocate more
+            while (pool_malloc(pool[id], 5 * 1024));
+            // releasing of large object will not give a chance to allocate more
+            // since only fixed pool can look at other bins aligned/notAligned
             pool_free(pool[id], ptrLarge);
-
-            ASSERT(pool_malloc(pool[id], 5*1024), NULL);
+            ASSERT(!pool_malloc(pool[id], 5*1024), NULL);
         }
 
         barrier.wait();
@@ -641,8 +635,8 @@ rml::MemoryPool *CreateUsablePool(size_t size)
         return NULL;
     }
     ASSERT(o, "Created pool must be useful.");
-    ASSERT(getMemSuccessful == 1 || getMemAll > getMemSuccessful,
-           "Multiple requests are allowed only when unsuccessful request occurred.");
+    ASSERT(getMemSuccessful == 1 || getMemSuccessful == 5 || getMemAll > getMemSuccessful,
+           "Multiple requests are allowed when unsuccessful request occurred or cannot search in bootstrap memory. ");
     ASSERT(!putMemAll, NULL);
     pool_free(pool, o);
 
@@ -759,7 +753,7 @@ void TestPoolDetection()
         PoolIdentityCheck check(pools, objs);
         if( k&1 )
             NativeParallelFor( POOLS, check);
-        else 
+        else
             for (int i=0; i<POOLS; i++) check(i);
 
         for (int i=0; i<POOLS; i++) {
@@ -844,6 +838,31 @@ void TestDestroyFailed()
            "expect pool_destroy() failure");
 }
 
+void TestPoolMSize() {
+    rml::MemoryPool *pool = CreateUsablePool(1024);
+
+    const int SZ = 10;
+    // Original allocation requests, random numbers from small to large
+    size_t requestedSz[SZ] = {8, 16, 500, 1000, 2000, 4000, 8000, 1024*1024, 4242+4242, 8484+8484};
+
+    // Unlike large objects, small objects do not store its original size along with the object itself
+    // On Power architecture TLS bins are divided differently.
+    size_t allocatedSz[SZ] =
+#if __powerpc64__ || __ppc64__ || __bgp__
+        {8, 16, 512, 1024, 2688, 5376, 8064, 1024*1024, 4242+4242, 8484+8484};
+#else
+        {8, 16, 512, 1024, 2688, 4032, 8128, 1024*1024, 4242+4242, 8484+8484};
+#endif
+    for (int i = 0; i < SZ; i++) {
+        void* obj = pool_malloc(pool, requestedSz[i]);
+        size_t objSize = pool_msize(pool, obj);
+        ASSERT(objSize == allocatedSz[i], "pool_msize returned the wrong value");
+        pool_free(pool, obj);
+    }
+    bool destroyed = pool_destroy(pool);
+    ASSERT(destroyed, NULL);
+}
+
 int TestMain () {
     TestTooSmallBuffer();
     TestPoolReset();
@@ -858,6 +877,7 @@ int TestMain () {
     TestLazyBootstrap();
     TestNoLeakOnDestroy();
     TestDestroyFailed();
+    TestPoolMSize();
 
     return Harness::Done;
 }

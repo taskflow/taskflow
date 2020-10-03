@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_parallel_invoke_H
 #define __TBB_parallel_invoke_H
+
+#define __TBB_parallel_invoke_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 #include "task.h"
 #include "tbb_profiling.h"
@@ -454,5 +453,8 @@ void parallel_invoke(const F0& f0, const F1& f1, const F2& f2, const F3& f3, con
 //@}
 
 } // namespace
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_parallel_invoke_H_include_area
 
 #endif /* __TBB_parallel_invoke_H */

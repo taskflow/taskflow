@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #if _MSC_VER
@@ -407,7 +403,7 @@ void TestSequentialFor() {
     // cross-allocator tests
 #if !defined(_WIN64) || defined(_CPPLIB_VER)
     typedef local_counting_allocator<std::allocator<int>, size_t> allocator1_t;
-    typedef tbb::cache_aligned_allocator<void> allocator2_t;
+    typedef tbb::cache_aligned_allocator<int> allocator2_t;
     typedef tbb::concurrent_vector<FooWithAssign, allocator1_t> V1;
     typedef tbb::concurrent_vector<FooWithAssign, allocator2_t> V2;
     V1 v1( v ); // checking cross-allocator copying
@@ -1750,6 +1746,40 @@ void TestDeductionGuides() {
 }
 #endif
 
+// Currently testing compilation issues with polymorphic allocator, but concurrent_vector does not
+// provide full support yet.
+// TODO: extend test with full checking polymorphic_allocator with concurrent_vector
+void TestPMRSupport() {
+    typedef pmr_stateful_allocator<int> AType;
+    typedef tbb::concurrent_vector<int, AType> VType;
+    const int VEC_SIZE = 1000;
+
+    AType original_alloc;
+    VType c(original_alloc);
+
+    // General compilation test
+    for( int i = 0; i < VEC_SIZE; ++i )  {
+        c.push_back(i*i);
+    }
+    VType::const_iterator p = c.begin();
+    for( int i = 0; i < VEC_SIZE; ++i ) {
+        ASSERT( *p == i*i, NULL ); ++p;
+    }
+
+    // Check that swap is allocator aware
+    AType swap_alloc;
+    VType swap_container(swap_alloc); swap_container.swap(c);
+    ASSERT(c.get_allocator() != swap_container.get_allocator(), "Allocator was swapped, it shouldn't");
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    // Move assignment operator deleted, container is allocator aware
+    AType move_alloc;
+    VType move_container(move_alloc);
+    move_container = std::move(c);
+    ASSERT(c.get_allocator() != move_container.get_allocator(), "Allocator was moved, it shouldn't");
+#endif
+}
+
 int TestMain () {
     if( MinThread<1 ) {
         REPORT("ERROR: MinThread=%d, but must be at least 1\n",MinThread); MinThread = 1;
@@ -1832,6 +1862,8 @@ int TestMain () {
 #if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
     TestDeductionGuides<tbb::concurrent_vector>();
 #endif
+    TestPMRSupport();
+
     ASSERT( !FooCount, NULL );
     REMARK("sizeof(concurrent_vector<int>) == %d\n", (int)sizeof(tbb::concurrent_vector<int>));
     return Harness::Done;

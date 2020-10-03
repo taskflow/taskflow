@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,20 +12,18 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef FRACTAL_H_
 #define FRACTAL_H_
 
+#include <atomic>
 #include "../../common/gui/video.h"
+#include "../../common/utility/get_default_num_threads.h"
 
 #include "tbb/task.h"
-#include "tbb/task_scheduler_init.h"
-#include "tbb/atomic.h"
+#include "tbb/task_arena.h"
+#include "tbb/task_group.h"
 
 //! Fractal class
 class fractal {
@@ -86,9 +84,12 @@ class fractal_group {
     //! Fractals definition
     fractal f0, f1;
     //! Number of frames to calculate
-    tbb::atomic<int> num_frames[2];
-    //! Task group contexts to manage priorities
-    tbb::task_group_context *context;
+    std::atomic<int> num_frames[2];
+
+    //! Contexts, arenas and groups for concurrent computation
+    tbb::task_group_context context[2];
+    tbb::task_arena arenas[2];
+    tbb::task_group groups[2];
 
     //! Border type enumeration
     enum BORDER_TYPE {
@@ -109,7 +110,7 @@ class fractal_group {
 public:
     //! Constructor
     fractal_group( const drawing_memory &_dm,
-            int num_threads = tbb::task_scheduler_init::automatic,
+            int num_threads = utility::get_default_num_threads(),
             unsigned int max_iterations = 100000, int num_frames = 1 );
     //! Run calculation
     void run( bool create_second_fractal=true );
@@ -121,8 +122,8 @@ public:
     int get_num_threads() const { return num_threads; }
     //! Reset the number of frames to be not less than the given value
     void set_num_frames_at_least( int n );
-    //! Switches the priorities of two fractals
-    void switch_priorities( int new_active=-1 );
+    //! Switch active fractal
+    void switch_active( int new_active=-1 );
     //! Get active fractal
     fractal& get_active_fractal() { return  active ? f1 : f0; }
 

@@ -114,7 +114,7 @@ Task FlowBuilder::for_each_guided(B&& beg, E&& end, C&& c, H&& chunk_size){
               q = chunk_size;
             }
             size_t e0 = (q <= r) ? s0 + q : N;
-            if(next.compare_exchange_strong(s0, e0, std::memory_order_relaxed,
+            if(next.compare_exchange_strong(s0, e0, std::memory_order_acquire,
                                                     std::memory_order_relaxed)) {
               std::advance(beg, s0-z);
               for(size_t x = s0; x< e0; x++) {
@@ -212,7 +212,7 @@ Task FlowBuilder::for_each_index_guided(
               q = chunk_size;
             }
             size_t e0 = (q <= r) ? s0 + q : N;
-            if(next.compare_exchange_strong(s0, e0, std::memory_order_relaxed,
+            if(next.compare_exchange_strong(s0, e0, std::memory_order_acquire,
                                                     std::memory_order_relaxed)) {
               auto s = static_cast<I>(s0) * inc + beg;
               for(size_t x=s0; x<e0; x++, s+= inc) {

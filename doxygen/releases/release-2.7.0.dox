@@ -1,0 +1,68 @@
+namespace tf {
+
+/** @page release-2-7-0 Release 2.7.0 (2020/10/01)
+
+%Taskflow 2.7.0 is the 9th release in the 2.x line! 
+This release includes several new changes such as CPU-GPU tasking, algorithm collection,
+enhanced web-based profiler, documentation, and unit tests.
+
+@section release-2-7-0_download Download
+
+%Taskflow 2.7.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v2.7.0">here</a>.
+
+@section release-2-7-0_new_features New Features
+
+@li added tf::Executor::async to support asynchronously calling a function (see @ref C2_Async)
+  @code{.cpp}
+  std::future<int> fu = executor.async([](){
+    // do my work
+    return 1;
+  });
+
+  // access the result through fu.get() or wait on the executor
+  executor.wait_for_all();
+  assert(fu.wait_for(std::chrono::seconds(1)) == std::future_status::ready);
+  @endcode
+@li added kernel algorithm, tf::cudaFlow::for_each
+  @code{.cpp}
+  taskflow.emplace([](tf::cudaFlow& cf){
+    // ... gpu tasks
+    // assigns one to every element in my_gpu_data (type int*, 1000 elements)
+    cf.for_each(my_gpu_data, my_gpu_data + 1000, [] __device__ (int& item) {
+      item = 1;
+    }); 
+  });
+  @endcode
+@li added kernel algorithm, tf::cudaFlow::for_each_index
+  @code{.cpp}
+  taskflow.emplace([](tf::cudaFlow& cf){
+    // ... gpu tasks
+    // assigns one to every element in my_gpu_data (type int*, 1000 elements)
+    cf.for_each_index(0, 100, 1, [my_gpu_data] __device__ (int idx) {
+      my_gpu_data[idx] = 1;
+    }); 
+  });
+  @endcode
+@li added explicit join method at tf::cudaFlow::join, tf::cudaFlow::join_n, tf::cudaFlow::join_until
+
+@section release-2-7-0_bug_fixes Bug Fixes 
+
+There are no bug fixes in this release.
+
+@section release-2-7-0_deprecated_items Deprecated Items 
+
+@li removed redundant methods, tf::Taskflow::broadcast, tf::Taskflow::precede, tf::Taskflow::succeed
+@li removed tf::cudaFlow::predicate (replaced with tf::cudaFlow::join_until)
+@li removed tf::cudaFlow::stream; the executor automatically determines a local, faster stream
+
+@section release-2-7-0_miscellaneous_items Miscellaneous Items
+
+@li added @ref Contributing
+@li added @ref Governance
+@li added @ref release-roadmap
+@li updated @ref FAQ 
+@li improved script through out-of-tree build (thanks to Daniel Jour!)
+
+*/
+
+}

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 /*
@@ -72,10 +68,11 @@ static int stopy;
 static flt jitterscale;
 static int totaly;
 
-#include "tbb/task_scheduler_init.h"
 #include "tbb/parallel_for.h"
 #include "tbb/spin_mutex.h"
 #include "tbb/blocked_range.h"
+#include "tbb/global_control.h"
+#include "../../../common/utility/get_default_num_threads.h"
 
 static tbb::spin_mutex MyMutex, MyMutex2;
 
@@ -86,7 +83,7 @@ static color_t render_one_pixel (int x, int y, unsigned int *local_mbox, unsigne
     ray primary, sample;
     color col, avcol;
     int R,G,B;
-    intersectstruct local_intersections;    
+    intersectstruct local_intersections;
     int alias;
     /* end private */
 
@@ -95,11 +92,11 @@ static color_t render_one_pixel (int x, int y, unsigned int *local_mbox, unsigne
     primary.flags = RT_RAY_REGULAR;
 
     serial++;
-    primary.serial = serial;  
+    primary.serial = serial;
     primary.mbox = local_mbox;
     primary.maxdist = FHUGE;
     primary.scene = &scene;
-    col=trace(&primary);  
+    col=trace(&primary);
 
     serial = primary.serial;
 
@@ -109,7 +106,7 @@ static color_t render_one_pixel (int x, int y, unsigned int *local_mbox, unsigne
 
             serial++; /* increment serial number */
             sample=primary;  /* copy the regular primary ray to start with */
-            sample.serial = serial; 
+            sample.serial = serial;
 
             {
                 tbb::spin_mutex::scoped_lock lock (MyMutex);
@@ -118,7 +115,7 @@ static color_t render_one_pixel (int x, int y, unsigned int *local_mbox, unsigne
                 sample.d.z+=((rand() % 100) - 50) / jitterscale;
             }
 
-            avcol=trace(&sample);  
+            avcol=trace(&sample);
 
             serial = sample.serial; /* update our overall serial # */
 
@@ -174,10 +171,10 @@ public:
 
 void * thread_trace(thr_parms * parms)
 {
-    int n, nthreads = tbb::task_scheduler_init::automatic;
+    int n, nthreads = utility::get_default_num_threads();
     char *nthreads_str = getenv ("TBB_NUM_THREADS");
     if (nthreads_str && (sscanf (nthreads_str, "%d", &n) > 0) && (n > 0)) nthreads = n;
-    tbb::task_scheduler_init init (nthreads);
+    tbb::global_control c(tbb::global_control::max_allowed_parallelism, nthreads);
 
     // shared but read-only so could be private too
     all_parms = parms;
@@ -201,5 +198,5 @@ void * thread_trace(thr_parms * parms)
     else
         tbb::parallel_for (tbb::blocked_range<int> (starty, stopy, grain_size), parallel_task (), tbb::auto_partitioner() );
 
-    return(NULL);  
+    return(NULL);
 }

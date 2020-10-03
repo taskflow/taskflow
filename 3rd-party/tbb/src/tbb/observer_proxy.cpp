@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "tbb/tbb_config.h"
@@ -47,7 +43,7 @@ struct check_observer_proxy_count {
 static check_observer_proxy_count the_check_observer_proxy_count;
 #endif /* TBB_USE_ASSERT */
 
-#if __TBB_ARENA_OBSERVER || __TBB_SLEEP_PERMISSION
+#if __TBB_ARENA_OBSERVER
 interface6::task_scheduler_observer* observer_proxy::get_v6_observer() {
     if(my_version != 6) return NULL;
     return static_cast<interface6::task_scheduler_observer*>(my_observer);
@@ -295,64 +291,6 @@ void observer_list::do_notify_exit_observers( observer_proxy* last, bool worker 
     }
 }
 
-#if __TBB_SLEEP_PERMISSION
-bool observer_list::ask_permission_to_leave() {
-    __TBB_ASSERT( this == &the_global_observer_list, "This method cannot be used on lists of arena observers" );
-    if( !my_head ) return true;
-    // Pointer p marches though the list
-    observer_proxy *p = NULL, *prev = NULL;
-    bool result = true;
-    while( result ) {
-        task_scheduler_observer* tso = NULL;
-        // Hold lock on list only long enough to advance to the next proxy in the list.
-        {
-            scoped_lock lock(mutex(), /*is_writer=*/false);
-            do {
-                if( p ) {
-                    // We were already processing the list.
-                    observer_proxy* q = p->my_next;
-                    // read next, remove the previous reference
-                    if( p == prev )
-                        remove_ref_fast(prev); // sets prev to NULL if successful
-                    if( q ) p = q;
-                    else {
-                        // Reached the end of the list.
-                        if( prev ) {
-                            lock.release();
-                            remove_ref(prev);
-                        }
-                        return result;
-                    }
-                } else {
-                    // Starting pass through the list
-                    p = my_head;
-                    if( !p )
-                        return result;
-                }
-                tso = p->get_v6_observer();
-            } while( !tso );
-            ++p->my_ref_count;
-            ++tso->my_busy_count;
-        }
-        __TBB_ASSERT( !prev || p!=prev, NULL );
-        // Release the proxy pinned before p
-        if( prev )
-            remove_ref(prev);
-        // Do not hold any locks on the list while calling user's code.
-        // Do not intercept any exceptions that may escape the callback so that
-        // they are either handled by the TBB scheduler or passed to the debugger.
-        result = tso->may_sleep();
-        __TBB_ASSERT(p->my_ref_count, NULL);
-        intptr_t bc = --tso->my_busy_count;
-        __TBB_ASSERT_EX( bc>=0, "my_busy_count underflowed" );
-        prev = p;
-    }
-    if( prev )
-        remove_ref(prev);
-    return result;
-}
-#endif//__TBB_SLEEP_PERMISSION
-
 void task_scheduler_observer_v3::observe( bool enable ) {
     if( enable ) {
         if( !my_proxy ) {
@@ -366,7 +304,8 @@ void task_scheduler_observer_v3::observe( bool enable ) {
                 intptr_t tag = my_proxy->get_v6_observer()->my_context_tag;
                 if( tag != interface6::task_scheduler_observer::implicit_tag ) { // explicit arena
                     task_arena *a = reinterpret_cast<task_arena*>(tag);
-                    a->initialize();
+                    if ( a->my_arena==NULL ) // Avoid recursion during arena initialization
+                        a->initialize();
                     my_proxy->my_list = &a->my_arena->my_observers;
                 } else {
                     if( !(s && s->my_arena) )

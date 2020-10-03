@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,11 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "harness.h"
 #if __TBB_FLOW_GRAPH_CPP11_FEATURES
+#define TBB_DEPRECATED_INPUT_NODE_BODY __TBB_CPF_BUILD
 
 #include "tbb/flow_graph.h"
 #include "harness_graph.h"
@@ -39,6 +36,7 @@ class src_body{
     int step;
 public:
     src_body(int f, int s) : start(1), finish(f), step(s) {}
+#if TBB_DEPRECATED_INPUT_NODE_BODY
     bool operator()(int &a) {
        a = start;
        if (start <= finish) {
@@ -49,7 +47,21 @@ public:
        else {
            return false;
        };
-   }
+    }
+#else
+    int operator()(tbb::flow_control& fc) {
+       int a = start;
+       if (start <= finish) {
+           a = start;
+           start+=step;
+           return a;
+       }
+       else {
+           fc.stop();
+           return int();
+       };
+    }
+#endif
 };
 
 struct m_fxn_body{
@@ -101,7 +113,7 @@ void add_all_nodes (){
     //node types
     tbb::flow::continue_node<tbb::flow::continue_msg> ct(g, ct_body());
     tbb::flow::split_node< tbb::flow::tuple<int, int> > s(g);
-    tbb::flow::source_node<int> src(g, src_body(20,5), false);
+    tbb::flow::input_node<int> src(g, src_body(20,5));
     tbb::flow::function_node<int, int> fxn(g, tbb::flow::unlimited, passthru_body());
     tbb::flow::multifunction_node<int, tbb::flow::tuple<int, int> > m_fxn(g, tbb::flow::unlimited, m_fxn_body());
     tbb::flow::broadcast_node<int> bc(g);
@@ -515,7 +527,7 @@ void input_only_output_only_composite(bool hidden) {
 #endif
     typedef tbb::flow::composite_node<tbb::flow::tuple<int>, tbb::flow::tuple<> > input_only_composite;
     typedef tbb::flow::composite_node<tbb::flow::tuple<>, tbb::flow::tuple<int> > output_only_composite;
-    typedef tbb::flow::source_node<int> src_type;
+    typedef tbb::flow::input_node<int> src_type;
     typedef tbb::flow::queue_node<int> q_type;
     typedef tbb::flow::function_node<int, int> f_type;
     typedef tbb::flow::sequencer_node<int> sequencer_type;
@@ -527,7 +539,7 @@ void input_only_output_only_composite(bool hidden) {
     input_only_composite a_in(g);
     output_only_composite a_out(g);
 
-    src_type src(g, src_body(finish, step), false);
+    src_type src(g, src_body(finish, step));
     q_type que(g);
     f_type f(g, 1, passthru_body());
 

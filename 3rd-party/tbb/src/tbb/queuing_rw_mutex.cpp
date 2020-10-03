@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 /** Before making any changes in the implementation, please emulate algorithmic changes
@@ -363,7 +359,7 @@ done:
 
 bool queuing_rw_mutex::scoped_lock::downgrade_to_reader()
 {
-    __TBB_ASSERT( my_state==STATE_WRITER, "no sense to downgrade a reader" );
+    if ( my_state == STATE_ACTIVEREADER ) return true; // Already a reader
 
     ITT_NOTIFY(sync_releasing, my_mutex);
     my_state = STATE_READER;
@@ -390,7 +386,7 @@ bool queuing_rw_mutex::scoped_lock::downgrade_to_reader()
 
 bool queuing_rw_mutex::scoped_lock::upgrade_to_writer()
 {
-    __TBB_ASSERT( my_state==STATE_ACTIVEREADER, "only active reader can be upgraded" );
+    if ( my_state == STATE_WRITER ) return true; // Already a writer
 
     queuing_rw_mutex::scoped_lock * tmp;
     queuing_rw_mutex::scoped_lock * me = this;

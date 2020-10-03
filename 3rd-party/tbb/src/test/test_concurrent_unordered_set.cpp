@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #if _MSC_VER
@@ -79,56 +75,112 @@ struct cu_multiset_type : unordered_move_traits_base {
     typedef FooIterator init_iterator_type;
 };
 #endif /* __TBB_CPP11_RVALUE_REF_PRESENT */
-
-template <bool defCtorPresent, typename value_type>
-void TestTypesSet( const std::list<value_type> &lst ) {
-    TypeTester< defCtorPresent, tbb::concurrent_unordered_set<value_type, tbb::tbb_hash<value_type>, Harness::IsEqual>,
-        tbb::concurrent_unordered_set< value_type, tbb::tbb_hash<value_type>, Harness::IsEqual, debug_allocator<value_type> > >( lst );
-    TypeTester< defCtorPresent, tbb::concurrent_unordered_multiset<value_type, tbb::tbb_hash<value_type>, Harness::IsEqual>,
-        tbb::concurrent_unordered_multiset< value_type, tbb::tbb_hash<value_type>, Harness::IsEqual, debug_allocator<value_type> > >( lst );
-}
+struct UnorderedSetTypesTester {
+    template <bool defCtorPresent, typename value_type>
+    void check( const std::list<value_type> &lst ) {
+        TypeTester< defCtorPresent, tbb::concurrent_unordered_set<value_type, tbb::tbb_hash<value_type>, Harness::IsEqual>,
+            tbb::concurrent_unordered_set< value_type, tbb::tbb_hash<value_type>, Harness::IsEqual, debug_allocator<value_type> > >( lst );
+        TypeTester< defCtorPresent, tbb::concurrent_unordered_multiset<value_type, tbb::tbb_hash<value_type>, Harness::IsEqual>,
+            tbb::concurrent_unordered_multiset< value_type, tbb::tbb_hash<value_type>, Harness::IsEqual, debug_allocator<value_type> > >( lst );
+    }
+};
 
 void TestTypes( ) {
-    const int NUMBER = 10;
+    TestSetCommonTypes<UnorderedSetTypesTester>();
 
-    std::list<int> arrInt;
-    for ( int i = 0; i<NUMBER; ++i ) arrInt.push_back( i );
-    TestTypesSet</*defCtorPresent = */true>( arrInt );
-
-    std::list< tbb::atomic<int> > arrTbb(NUMBER);
-    int seq = 0;
-    for ( std::list< tbb::atomic<int> >::iterator it = arrTbb.begin(); it != arrTbb.end(); ++it, ++seq ) *it = seq;
-    TestTypesSet</*defCtorPresent = */true>( arrTbb );
-
-#if __TBB_CPP11_REFERENCE_WRAPPER_PRESENT && !__TBB_REFERENCE_WRAPPER_COMPILATION_BROKEN
-    std::list< std::reference_wrapper<int> > arrRef;
-    for ( std::list<int>::iterator it = arrInt.begin( ); it != arrInt.end( ); ++it )
-        arrRef.push_back( std::reference_wrapper<int>(*it) );
-    TestTypesSet</*defCtorPresent = */false>( arrRef );
-#endif /* __TBB_CPP11_REFERENCE_WRAPPER_PRESENT && !__TBB_REFERENCE_WRAPPER_COMPILATION_BROKEN */
-
-#if __TBB_CPP11_SMART_POINTERS_PRESENT
-    std::list< std::shared_ptr<int> > arrShr;
-    for ( int i = 0; i<NUMBER; ++i ) arrShr.push_back( std::make_shared<int>( i ) );
-    TestTypesSet</*defCtorPresent = */true>( arrShr );
-
-    std::list< std::weak_ptr<int> > arrWk;
-    std::copy( arrShr.begin( ), arrShr.end( ), std::back_inserter( arrWk ) );
-    TestTypesSet</*defCtorPresent = */true>( arrWk );
-
-#if __TBB_CPP11_RVALUE_REF_PRESENT && __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+#if __TBB_CPP11_RVALUE_REF_PRESENT && __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT && __TBB_CPP11_SMART_POINTERS_PRESENT
     // Regression test for a problem with excessive requirements of emplace()
     test_emplace_insert<tbb::concurrent_unordered_set< test::unique_ptr<int> >,
                         tbb::internal::false_type>( new int, new int );
     test_emplace_insert<tbb::concurrent_unordered_multiset< test::unique_ptr<int> >,
                         tbb::internal::false_type>( new int, new int );
-#endif
-
-#else
-    REPORT( "Known issue: C++11 smart pointer tests are skipped.\n" );
-#endif /* __TBB_CPP11_SMART_POINTERS_PRESENT */
+#endif /*__TBB_CPP11_RVALUE_REF_PRESENT && __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT && __TBB_CPP11_SMART_POINTERS_PRESENT*/
 }
+
 #endif // __TBB_TEST_SECONDARY
+
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+template <template <typename ...> typename TSet>
+void TestDeductionGuides() {
+    using ComplexType = const std::string *;
+    std::vector<ComplexType> v;
+    std::string s = "s";
+    auto l = { ComplexType(&s), ComplexType(&s)};
+
+    // check TSet(InputIterator,InputIterator)
+    TSet s1(v.begin(), v.end());
+    static_assert(std::is_same<decltype(s1), TSet<ComplexType>>::value);
+
+    // check TSet(InputIterator,InputIterator, size_t, Hasher)
+    TSet s2(v.begin(), v.end(), 5, std::hash<ComplexType>());
+    static_assert(std::is_same<decltype(s2), TSet<ComplexType, std::hash<ComplexType>>>::value);
+
+    // check TSet(InputIterator,InputIterator, size_t, Hasher, Equality)
+    TSet s3(v.begin(), v.end(), 5, std::hash<ComplexType>(), std::less<ComplexType>());
+    static_assert(std::is_same<decltype(s3), TSet<ComplexType, std::hash<ComplexType>,
+        std::less<ComplexType>>>::value);
+
+    // check TSet(InputIterator,InputIterator, size_t, Hasher, Equality, Allocator)
+    TSet s4(v.begin(), v.end(), 5, std::hash<ComplexType>(), std::less<ComplexType>(),
+        std::allocator<ComplexType>());
+    static_assert(std::is_same<decltype(s4), TSet<ComplexType, std::hash<ComplexType>,
+        std::less<ComplexType>, std::allocator<ComplexType>>>::value);
+
+    // check TSet(InputIterator,InputIterator, size_t, Allocator)
+    TSet s5(v.begin(), v.end(), 5, std::allocator<ComplexType>());
+    static_assert(std::is_same<decltype(s5), TSet<ComplexType, tbb::tbb_hash<ComplexType>,
+        std::equal_to<ComplexType>, std::allocator<ComplexType>>>::value);
+
+    // check TSet(InputIterator,InputIterator, size_t, Hasher, Allocator)
+    TSet s6(v.begin(), v.end(), 5, std::hash<ComplexType>(), std::allocator<ComplexType>());
+    static_assert(std::is_same<decltype(s6), TSet<ComplexType, std::hash<ComplexType>,
+        std::equal_to<ComplexType>, std::allocator<ComplexType>>>::value);
+
+    // check TSet(std::initializer_list)
+    TSet s7(l);
+    static_assert(std::is_same<decltype(s7), TSet<ComplexType>>::value);
+
+    // check TSet(std::initializer_list, size_t, Hasher)
+    TSet s8(l, 5, std::hash<ComplexType>());
+    static_assert(std::is_same<decltype(s8), TSet<ComplexType, std::hash<ComplexType>>>::value);
+
+    // check TSet(std::initializer_list, size_t, Hasher, Equality)
+    TSet s9(l, 5, std::hash<ComplexType>(), std::less<ComplexType>());
+    static_assert(std::is_same<decltype(s9), TSet<ComplexType, std::hash<ComplexType>,
+        std::less<ComplexType>>>::value);
+
+    // check TSet(std::initializer_list, size_t, Hasher, Equality, Allocator)
+    TSet s10(l, 5, std::hash<ComplexType>(), std::less<ComplexType>(), std::allocator<ComplexType>());
+    static_assert(std::is_same<decltype(s10), TSet<ComplexType, std::hash<ComplexType>,
+        std::less<ComplexType>, std::allocator<ComplexType>>>::value);
+
+    // check TSet(std::initializer_list, size_t, Allocator)
+    TSet s11(l, 5, std::allocator<ComplexType>());
+    static_assert(std::is_same<decltype(s11), TSet<ComplexType, tbb::tbb_hash<ComplexType>,
+        std::equal_to<ComplexType>, std::allocator<ComplexType>>>::value);
+
+    // check TSet(std::initializer_list, size_t, Hasher, Allocator)
+    TSet s12(l, 5, std::hash<ComplexType>(), std::allocator<ComplexType>());
+    static_assert(std::is_same<decltype(s12), TSet<ComplexType, std::hash<ComplexType>,
+        std::equal_to<ComplexType>, std::allocator<ComplexType>>>::value);
+
+    // check TSet(TSet &)
+    TSet s13(s1);
+    static_assert(std::is_same<decltype(s13), decltype(s1)>::value);
+
+    // check TSet(TSet &, Allocator)
+    TSet s14(s5, std::allocator<ComplexType>());
+    static_assert(std::is_same<decltype(s14), decltype(s5)>::value);
+
+    // check TSet(TSet &&)
+    TSet s15(std::move(s1));
+    static_assert(std::is_same<decltype(s15), decltype(s1)>::value);
+
+    // check TSet(TSet &&, Allocator)
+    TSet s16(std::move(s5), std::allocator<ComplexType>());
+    static_assert(std::is_same<decltype(s16), decltype(s5)>::value);
+}
+#endif
 
 #if !__TBB_TEST_SECONDARY
 #define INITIALIZATION_TIME_TEST_NAMESPACE            initialization_time_test
@@ -190,12 +242,29 @@ int TestMain() {
                   tbb::concurrent_unordered_multiset<int> >( {1,2,3,4,5} );
 #endif
 
+#if __TBB_RANGE_BASED_FOR_PRESENT
+    TestRangeBasedFor<MySet>();
+    TestRangeBasedFor<MyMultiSet>();
+#endif
+
 #if __TBB_CPP11_RVALUE_REF_PRESENT
     test_rvalue_ref_support<cu_set_type>( "concurrent unordered set" );
     test_rvalue_ref_support<cu_multiset_type>( "concurrent unordered multiset" );
 #endif /* __TBB_CPP11_RVALUE_REF_PRESENT */
 
     TestTypes();
+
+#if __TBB_CPP17_DEDUCTION_GUIDES_PRESENT
+    TestDeductionGuides<tbb::concurrent_unordered_set>();
+    TestDeductionGuides<tbb::concurrent_unordered_multiset>();
+#endif
+
+#if __TBB_UNORDERED_NODE_HANDLE_PRESENT
+    node_handling::TestNodeHandling<MySet>();
+    node_handling::TestNodeHandling<MyMultiSet>();
+    node_handling::TestMerge<MySet, MyMultiSet>(10000);
+    node_handling::TestMerge<MySet, MyDegenerateSet>(10000);
+#endif /*__TBB_UNORDERED_NODE_HANDLE_PRESENT*/
 
     return Harness::Done;
 }

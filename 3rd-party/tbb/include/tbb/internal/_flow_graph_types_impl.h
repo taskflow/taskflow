@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB__flow_graph_types_impl_H
@@ -48,7 +44,7 @@ namespace internal {
         typedef KHashp KHash;
     };
 
-// wrap each element of a tuple in a template, and make a tuple of the result.
+    // wrap each element of a tuple in a template, and make a tuple of the result.
     template<int N, template<class> class PT, typename TypeTuple>
     struct wrap_tuple_elements;
 
@@ -57,6 +53,19 @@ namespace internal {
     template<int N, template<class> class PT, typename KeyTraits, typename TypeTuple>
     struct wrap_key_tuple_elements;
 
+#if __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT && __TBB_CPP11_VARIADIC_TUPLE_PRESENT
+    template<int N, template<class> class PT,  typename... Args>
+    struct wrap_tuple_elements<N, PT, tbb::flow::tuple<Args...> >{
+        typedef typename tbb::flow::tuple<PT<Args>... > type;
+    };
+
+    template<int N, template<class> class PT, typename KeyTraits, typename... Args>
+    struct wrap_key_tuple_elements<N, PT, KeyTraits, tbb::flow::tuple<Args...> > {
+        typedef typename KeyTraits::key_type K;
+        typedef typename KeyTraits::hash_compare_type KHash;
+        typedef typename tbb::flow::tuple<PT<KeyTrait<K, KHash, Args> >... > type;
+    };
+#else
     template<template<class> class PT, typename TypeTuple>
     struct wrap_tuple_elements<1, PT, TypeTuple> {
         typedef typename tbb::flow::tuple<
@@ -314,6 +323,7 @@ namespace internal {
                 PT<KeyTrait9> > type;
     };
 #endif
+#endif /* __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT && __TBB_CPP11_VARIADIC_TUPLE_PRESENT */
 
 #if __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
     template< int... S > class sequence {};

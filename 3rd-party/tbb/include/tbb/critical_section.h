@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,24 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
+
+#include "internal/_deprecated_header_message_guard.h"
+
+#if !defined(__TBB_show_deprecation_message_critical_section_H) && defined(__TBB_show_deprecated_header_message)
+#define  __TBB_show_deprecation_message_critical_section_H
+#pragma message("TBB Warning: tbb/critical_section.h is deprecated. For details, please see Deprecated Features appendix in the TBB reference manual.")
+#endif
+
+#if defined(__TBB_show_deprecated_header_message)
+#undef __TBB_show_deprecated_header_message
+#endif
 
 #ifndef _TBB_CRITICAL_SECTION_H_
 #define _TBB_CRITICAL_SECTION_H_
+
+#define __TBB_critical_section_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 #if _WIN32||_WIN64
 #include "machine/windows_api.h"
@@ -126,8 +136,12 @@ public:
     static const bool is_fair_mutex = true;
 }; // critical_section_v4
 } // namespace internal
-typedef internal::critical_section_v4 critical_section;
+__TBB_DEPRECATED_IN_VERBOSE_MODE_MSG("tbb::critical_section is deprecated, use std::mutex") typedef internal::critical_section_v4 critical_section;
 
 __TBB_DEFINE_PROFILING_SET_NAME(critical_section)
 } // namespace tbb
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_critical_section_H_include_area
+
 #endif  // _TBB_CRITICAL_SECTION_H_

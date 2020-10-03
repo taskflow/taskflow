@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 /*
@@ -74,7 +70,7 @@
 /* Use prime numbers for best memory system performance */
 #define INTTBSIZE 1024       /* maximum intersections we can hold    */
 #define MAXLIGHTS 39         /* maximum number of lights in a scene  */
-#define MAXIMGS   39         /* maxiumum number of distinct images   */
+#define MAXIMGS   39         /* maximum number of distinct images   */
 #define RPCQSIZE  113	     /* number of RPC messages to queue      */
 
 /* Parameter values for rt_boundmode() */

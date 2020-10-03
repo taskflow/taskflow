@@ -1,12 +1,22 @@
 var Releases =
 [
-    [ "Master Branch (GitHub)", "master-branch.html", [
-      [ "Download", "master-branch.html#master-branch_download", null ],
-      [ "Working Items", "master-branch.html#master-branch_working_items", null ],
-      [ "New Features", "master-branch.html#master-branch_new_features", null ],
-      [ "Bug Fixes", "master-branch.html#master-branch_bug_fixes", null ],
-      [ "Deprecated Items", "master-branch.html#master-branch_deprecated_items", null ],
-      [ "Miscellaneous Items", "master-branch.html#master-branch_miscellaneous_items", null ]
+    [ "Release Roadmap", "release-roadmap.html", [
+      [ "Milestone Summary", "release-roadmap.html#MilestoneSummary", null ]
+    ] ],
+    [ "Release 3.0.0 (Master)", "release-3-0-0.html", [
+      [ "Download", "release-3-0-0.html#release-3-0-0_download", null ],
+      [ "Working Items", "release-3-0-0.html#release-3-0-0_working_items", null ],
+      [ "New Features", "release-3-0-0.html#release-3-0-0_new_features", null ],
+      [ "Bug Fixes", "release-3-0-0.html#release-3-0-0_bug_fixes", null ],
+      [ "Deprecated Items", "release-3-0-0.html#release-3-0-0_deprecated_items", null ],
+      [ "Miscellaneous Items", "release-3-0-0.html#release-3-0-0_miscellaneous_items", null ]
+    ] ],
+    [ "Release 2.7.0 (2020/10/01)", "release-2-7-0.html", [
+      [ "Download", "release-2-7-0.html#release-2-7-0_download", null ],
+      [ "New Features", "release-2-7-0.html#release-2-7-0_new_features", null ],
+      [ "Bug Fixes", "release-2-7-0.html#release-2-7-0_bug_fixes", null ],
+      [ "Deprecated Items", "release-2-7-0.html#release-2-7-0_deprecated_items", null ],
+      [ "Miscellaneous Items", "release-2-7-0.html#release-2-7-0_miscellaneous_items", null ]
     ] ],
     [ "Release 2.6.0 (2020/08/25)", "release-2-6-0.html", [
       [ "Download", "release-2-6-0.html#release-2-6-0_download", null ],
@@ -55,5 +65,6 @@ var Releases =
       [ "Improvements and Enhancements", "release-2-0-0.html#release-2-0-0_improvements_enhancements", null ],
       [ "Breaks and Deprecated Features", "release-2-0-0.html#release-2-0-0_breaks_and_deprecated_features", null ],
       [ "Bug Fixes", "release-2-0-0.html#release-2-0-0_bug_fixes", null ]
-    ] ]
+    ] ],
+    [ "Release 1.x.x (before 2018)", "release-1-x-x.html", null ]
 ];

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,24 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
+
+#include "../internal/_deprecated_header_message_guard.h"
+
+#if !defined(__TBB_show_deprecation_message_tuple_H) && defined(__TBB_show_deprecated_header_message)
+#define  __TBB_show_deprecation_message_tuple_H
+#pragma message("TBB Warning: tbb/compat/tuple is deprecated. For details, please see Deprecated Features appendix in the TBB reference manual.")
+#endif
+
+#if defined(__TBB_show_deprecated_header_message)
+#undef __TBB_show_deprecated_header_message
+#endif
 
 #ifndef __TBB_tuple_H
 #define __TBB_tuple_H
+
+#define __TBB_tuple_H_include_area
+#include "../internal/_warning_suppress_enable_notice.h"
 
 #include <utility>
 #include "../tbb_stddef.h"
@@ -214,7 +224,7 @@ struct cons{
     typedef __HT head_type;
     typedef __TT tail_type;
 
-    head_type head; 
+    head_type head;
     tail_type tail;
 
     static const int length = 1 + tail_type::length;
@@ -276,12 +286,12 @@ struct cons{
 
 
 template <typename __HT>
-struct cons<__HT,null_type> { 
+struct cons<__HT,null_type> {
 
     typedef __HT head_type;
     typedef null_type tail_type;
 
-    head_type head; 
+    head_type head;
 
     static const int length = 1;
 
@@ -350,7 +360,7 @@ inline const __T wrap_dcons(__T*) { return __T(); }
 
 // tuple definition
 template<typename __T0, typename __T1, typename __T2, typename __T3, typename __T4 __TBB_TYPENAME_T_PACK >
-class tuple : public internal::tuple_traits<__T0, __T1, __T2, __T3, __T4 __TBB_T_PACK >::U {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE tuple : public internal::tuple_traits<__T0, __T1, __T2, __T3, __T4 __TBB_T_PACK >::U {
     // friends
     template <typename __T> friend class tuple_size;
     template<int __N, typename __T> friend struct tuple_element;
@@ -366,7 +376,7 @@ class tuple : public internal::tuple_traits<__T0, __T1, __T2, __T3, __T4 __TBB_T
     typedef typename internal::tuple_traits<__T0,__T1,__T2,__T3, __T4 __TBB_T_PACK >::U my_cons;
 
 public:
-    tuple(const __T0& t0=internal::wrap_dcons((__T0*)NULL)
+    __TBB_DEPRECATED_IN_VERBOSE_MODE tuple(const __T0& t0=internal::wrap_dcons((__T0*)NULL)
           ,const __T1& t1=internal::wrap_dcons((__T1*)NULL)
           ,const __T2& t2=internal::wrap_dcons((__T2*)NULL)
           ,const __T3& t3=internal::wrap_dcons((__T3*)NULL)
@@ -425,7 +435,7 @@ public:
 
 // empty tuple
 template<>
-class tuple<null_type, null_type, null_type, null_type, null_type __TBB_NULL_TYPE_PACK > : public null_type {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE tuple<null_type, null_type, null_type, null_type, null_type __TBB_NULL_TYPE_PACK > : public null_type {
 };
 
 // helper classes
@@ -437,7 +447,7 @@ public:
 };
 
 template <>
-class tuple_size<tuple<> > { 
+class tuple_size<tuple<> > {
 public:
     static const size_t value = 0;
 };
@@ -484,5 +494,8 @@ namespace tbb {
 #undef __TBB_CONST_REF_T_PARAM_PACK
 #undef __TBB_T_PARAM_LIST_PACK
 #undef __TBB_CONST_NULL_REF_PACK
- 
+
+#include "../internal/_warning_suppress_disable_notice.h"
+#undef __TBB_tuple_H_include_area
+
 #endif /* __TBB_tuple_H */

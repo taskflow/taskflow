@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,24 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
+
+#include "internal/_deprecated_header_message_guard.h"
+
+#if !defined(__TBB_show_deprecation_message_task_scheduler_init_H) && defined(__TBB_show_deprecated_header_message)
+#define  __TBB_show_deprecation_message_task_scheduler_init_H
+#pragma message("TBB Warning: tbb/task_scheduler_init.h is deprecated. For details, please see Deprecated Features appendix in the TBB reference manual.")
+#endif
+
+#if defined(__TBB_show_deprecated_header_message)
+#undef __TBB_show_deprecated_header_message
+#endif
 
 #ifndef __TBB_task_scheduler_init_H
 #define __TBB_task_scheduler_init_H
+
+#define __TBB_task_scheduler_init_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 #include "tbb_stddef.h"
 #include "limits.h"
@@ -53,7 +63,7 @@ namespace internal {
     and will persist until this thread exits. Default concurrency level is defined
     as described in task_scheduler_init::initialize().
     @ingroup task_scheduling */
-class task_scheduler_init: internal::no_copy {
+class __TBB_DEPRECATED_IN_VERBOSE_MODE task_scheduler_init: internal::no_copy {
     enum ExceptionPropagationMode {
         propagation_mode_exact = 1u,
         propagation_mode_captured = 2u,
@@ -136,8 +146,8 @@ public:
     /** Result returned by this method does not depend on whether the scheduler
         has already been initialized.
 
-        Because tbb 2.0 does not support blocking tasks yet, you may use this method
-        to boost the number of threads in the tbb's internal pool, if your tasks are
+        Because TBB 2.0 does not support blocking tasks yet, you may use this method
+        to boost the number of threads in the TBB's internal pool, if your tasks are
         doing I/O operations. The optimal number of additional threads depends on how
         much time your tasks spend in the blocked state.
 
@@ -157,5 +167,8 @@ public:
 };
 
 } // namespace tbb
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_task_scheduler_init_H_include_area
 
 #endif /* __TBB_task_scheduler_init_H */

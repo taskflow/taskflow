@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #include "tbb/scalable_allocator.h"
@@ -162,8 +158,12 @@ struct TestThread: NoAssign {
 
 // test releasing memory from pthread key destructor
 void TestKeyDtor() {
+    // Allocate region for large objects to prevent whole region release
+    // on scalable_free(currLarge) call, which result in wrong assert inside intersectingObjects check
+    void* preventLargeRelease = scalable_malloc(32*1024);
     for (int i=0; i<4; i++)
         NativeParallelFor( 1, TestThread(1) );
+    scalable_free(preventLargeRelease);
 }
 
 #endif // _WIN32||_WIN64

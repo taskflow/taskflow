@@ -1,4 +1,4 @@
-# Copyright (c) 2005-2018 Intel Corporation
+# Copyright (c) 2005-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 CPLUS ?= clang++
 CONLY ?= clang
@@ -34,16 +30,20 @@ EXPORT_KEY = -Wl,--version-script,
 LIBDL = -ldl
 
 LIB_LINK_FLAGS = $(DYLIB_KEY) -Wl,-soname=$(BUILDING_LIBRARY)
-LIBS += -lpthread -lrt
+LIBS += -lrt
 LINK_FLAGS = -Wl,-rpath-link=. -rdynamic
 C_FLAGS = $(CPLUS_FLAGS)
 
 ifeq ($(cfg), release)
-        CPLUS_FLAGS = $(ITT_NOTIFY) -g -O2 -DUSE_PTHREAD
+        # -g is set intentionally in the release mode. It should not affect performance.
+        CPLUS_FLAGS = -O2 -g
 endif
 ifeq ($(cfg), debug)
-        CPLUS_FLAGS = -DTBB_USE_DEBUG $(ITT_NOTIFY) -g -O0 -DUSE_PTHREAD
+        CPLUS_FLAGS = -DTBB_USE_DEBUG -O0 -g
 endif
+
+CPLUS_FLAGS += $(ITT_NOTIFY) -DUSE_PTHREAD -pthread
+LIB_LINK_FLAGS += -pthread
 
 ifneq (,$(stdlib))
     CPLUS_FLAGS    += -stdlib=$(stdlib)

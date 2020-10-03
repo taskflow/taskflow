@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef __TBB_enumerable_thread_specific_H
 #define __TBB_enumerable_thread_specific_H
+
+#define __TBB_enumerable_thread_specific_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
 
 #include "atomic.h"
 #include "concurrent_vector.h"
@@ -31,6 +30,10 @@
 #include "internal/_tbb_hash_compare_impl.h"
 #include "tbb_profiling.h"
 #include <string.h>  // for memcpy
+
+#if __TBB_PREVIEW_RESUMABLE_TASKS
+#include "task.h" // for task::suspend_point
+#endif
 
 #if _WIN32||_WIN64
 #include "machine/windows_api.h"
@@ -45,7 +48,13 @@
 namespace tbb {
 
 //! enum for selecting between single key and key-per-instance versions
-enum ets_key_usage_type { ets_key_per_instance, ets_no_key };
+enum ets_key_usage_type {
+    ets_key_per_instance
+    , ets_no_key
+#if __TBB_PREVIEW_RESUMABLE_TASKS
+    , ets_suspend_aware
+#endif
+};
 
 namespace interface6 {
 
@@ -58,10 +67,33 @@ namespace interface6 {
 
         using namespace tbb::internal;
 
+        template <ets_key_usage_type ETS_key_type>
+        struct ets_key_selector {
+            typedef tbb_thread::id key_type;
+            static key_type current_key() {
+                return tbb::internal::thread_get_id_v3();
+            }
+        };
+
+#if __TBB_PREVIEW_RESUMABLE_TASKS
+        template <>
+        struct ets_key_selector<ets_suspend_aware> {
+            typedef task::suspend_point key_type;
+            static key_type current_key() {
+                return internal_current_suspend_point();
+            }
+        };
+
+        inline task::suspend_point atomic_compare_and_swap(task::suspend_point& location,
+                const task::suspend_point& value, const task::suspend_point& comparand) {
+            return as_atomic(location).compare_and_swap(value, comparand);
+        }
+#endif
+
         template<ets_key_usage_type ETS_key_type>
         class ets_base: tbb::internal::no_copy {
         protected:
-            typedef tbb_thread::id key_type;
+            typedef typename ets_key_selector<ETS_key_type>::key_type key_type;
 #if __TBB_PROTECTED_NESTED_CLASS_BROKEN
         public:
 #endif
@@ -119,8 +151,9 @@ namespace interface6 {
             void table_clear();
             // The following functions are not used in concurrent context,
             // so we don't need synchronization and ITT annotations there.
+            template <ets_key_usage_type E2>
             void table_elementwise_copy( const ets_base& other,
-                                         void*(*add_element)(ets_base&, void*) ) {
+                                         void*(*add_element)(ets_base<E2>&, void*) ) {
                 __TBB_ASSERT(!my_root,NULL);
                 __TBB_ASSERT(!my_count,NULL);
                 if( !other.my_root ) return;
@@ -135,7 +168,7 @@ namespace interface6 {
                             for( size_t j = root->start(tbb::tbb_hash<key_type>()(s1.key)); ; j=(j+1)&mask ) {
                                 slot& s2 = root->at(j);
                                 if( s2.empty() ) {
-                                    s2.ptr = add_element(*this, s1.ptr);
+                                    s2.ptr = add_element(static_cast<ets_base<E2>&>(*this), s1.ptr);
                                     s2.key = s1.key;
                                     break;
                                 }
@@ -169,7 +202,7 @@ namespace interface6 {
 
         template<ets_key_usage_type ETS_key_type>
         void* ets_base<ETS_key_type>::table_lookup( bool& exists ) {
-            const key_type k = tbb::this_tbb_thread::get_id();
+            const key_type k = ets_key_selector<ETS_key_type>::current_key();
 
             __TBB_ASSERT(k != key_type(),NULL);
             void* found;
@@ -242,7 +275,7 @@ namespace interface6 {
 
         //! Specialization that exploits native TLS
         template <>
-        class ets_base<ets_key_per_instance>: protected ets_base<ets_no_key> {
+        class ets_base<ets_key_per_instance>: public ets_base<ets_no_key> {
             typedef ets_base<ets_no_key> super;
 #if _WIN32||_WIN64
 #if __TBB_WIN8UI_SUPPORT
@@ -799,7 +832,7 @@ namespace interface6 {
             return lref.value_committed();
         }
 
-        static void* create_local_by_copy( internal::ets_base<ets_no_key>& base, void* p ) {
+        static void* create_local_by_copy( internal::ets_base<ETS_key_type>& base, void* p ) {
             enumerable_thread_specific& ets = static_cast<enumerable_thread_specific&>(base);
             padded_element& lref = *ets.my_locals.grow_by(1);
             new(lref.value()) T(*static_cast<T*>(p));
@@ -807,7 +840,7 @@ namespace interface6 {
         }
 
 #if __TBB_ETS_USE_CPP11
-        static void* create_local_by_move( internal::ets_base<ets_no_key>& base, void* p ) {
+        static void* create_local_by_move( internal::ets_base<ETS_key_type>& base, void* p ) {
             enumerable_thread_specific& ets = static_cast<enumerable_thread_specific&>(base);
             padded_element& lref = *ets.my_locals.grow_by(1);
             new(lref.value()) T(std::move(*static_cast<T*>(p)));
@@ -888,7 +921,7 @@ namespace interface6 {
         ~enumerable_thread_specific() {
             if(my_construct_callback) my_construct_callback->destroy();
             // Deallocate the hash table before overridden free_array() becomes inaccessible
-            this->internal::ets_base<ets_no_key>::table_clear();
+            this->internal::ets_base<ETS_key_type>::table_clear();
         }
 
         //! returns reference to local, discarding exists
@@ -1133,5 +1166,8 @@ using interface6::flattened2d;
 using interface6::flatten2d;
 
 } // namespace tbb
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_enumerable_thread_specific_H_include_area
 
 #endif

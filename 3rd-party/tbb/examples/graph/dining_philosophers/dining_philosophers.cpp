@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #if _MSC_VER
@@ -24,13 +20,14 @@
 #endif
 
 #include "tbb/flow_graph.h"
-#include "tbb/task_scheduler_init.h"
 #include "tbb/tick_count.h"
-#include "tbb/tbb_thread.h"
-#include "tbb/atomic.h"
 #include "tbb/spin_mutex.h"
+#include "tbb/global_control.h"
 #include <iostream>
+#include <thread>
+#include <chrono>
 #include "../../common/utility/utility.h"
+#include "../../common/utility/get_default_num_threads.h"
 #include <cstdlib>
 #include <cstdio>
 
@@ -49,8 +46,8 @@
 // eat() function_node.  The output of the eat() function_node is sent to the forward()
 // multifunction_node.
 
-const tbb::tick_count::interval_t think_time(1.0);
-const tbb::tick_count::interval_t eat_time(1.0);
+const std::chrono::seconds think_time (1);
+const std::chrono::seconds eat_time   (1);
 const int num_times = 10;
 
 tbb::tick_count t0;
@@ -73,8 +70,8 @@ struct RunOptions {
 };
 
 RunOptions ParseCommandLine(int argc, char *argv[]) {
-    int auto_threads = tbb::task_scheduler_init::default_num_threads();
-    utility::thread_number_range threads(tbb::task_scheduler_init::default_num_threads, auto_threads, auto_threads);
+    int auto_threads = utility::get_default_num_threads();
+    utility::thread_number_range threads(utility::get_default_num_threads, auto_threads, auto_threads);
     int nPhilosophers = 5;
     bool verbose = false;
     char charbuf[100];
@@ -202,7 +199,7 @@ void philosopher::eat() {
         tbb::spin_mutex::scoped_lock lock(my_mutex);
         std::printf("%s eating\n", name());
     }
-    tbb::this_tbb_thread::sleep(eat_time);
+    std::this_thread::sleep_for(eat_time);
     if(verbose) {
         tbb::spin_mutex::scoped_lock lock(my_mutex);
         std::printf("%s done eating\n", name());
@@ -214,7 +211,7 @@ void philosopher::think() {
         tbb::spin_mutex::scoped_lock lock(my_mutex);
         std::printf("%s thinking\n", name());
     }
-    tbb::this_tbb_thread::sleep(think_time);
+    std::this_thread::sleep_for(think_time);
     if(verbose) {
         tbb::spin_mutex::scoped_lock lock(my_mutex);
         std::printf("%s done thinking\n", name());
@@ -235,7 +232,7 @@ int main(int argc, char *argv[]) {
 
     for(num_threads = options.threads.first; num_threads <= options.threads.last; num_threads = options.threads.step(num_threads)) {
 
-        tbb::task_scheduler_init init(num_threads);
+        tbb::global_control c(tbb::global_control::max_allowed_parallelism, num_threads);
 
             graph g;
 

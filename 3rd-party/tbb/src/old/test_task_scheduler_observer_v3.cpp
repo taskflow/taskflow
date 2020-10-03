@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,13 +12,9 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
-//TODO: when removing TBB_PREVIEW_LOCAL_OBSERVER, change the header or defines here
+#define __TBB_ARENA_OBSERVER 0
 #include "tbb/task_scheduler_observer.h"
 
 typedef uintptr_t FlagType;
@@ -95,7 +91,7 @@ public:
     DoTest( int n ) : nthread(n) {}
     void operator()( int i ) const {
         LocalState->IsMaster = true;
-        if( i==0 ) {   
+        if( i==0 ) {
             tbb::task_scheduler_init init(nthread);
             DoFib(0);
         } else {
@@ -112,8 +108,8 @@ void TestObserver( int p, int q ) {
 }
 
 int TestMain () {
-    for( int p=MinThread; p<=MaxThread; ++p ) 
-        for( int q=MinThread; q<=MaxThread; ++q ) 
+    for( int p=MinThread; p<=MaxThread; ++p )
+        for( int q=MinThread; q<=MaxThread; ++q )
             TestObserver(p,q);
     ASSERT( EntryCount>0, "on_scheduler_entry not exercised" );
     ASSERT( ExitCount>0, "on_scheduler_exit not exercised" );

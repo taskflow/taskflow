@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,21 +12,18 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #define VIDEO_WINMAIN_ARGS
 
 #include <iostream>
 #include "tbb/tick_count.h"
+#include "tbb/global_control.h"
 #include "../../common/utility/utility.h"
+#include "../../common/utility/get_default_num_threads.h"
 
 #include "seismic_video.h"
 #include "universe.h"
-#include "tbb/task_scheduler_init.h"
 
 Universe u;
 
@@ -44,23 +41,9 @@ struct RunOptions {
     }
 };
 
-int do_get_default_num_threads() {
-    int threads;
-#if __TBB_MIC_OFFLOAD
-    #pragma offload target(mic) out(threads)
-#endif // __TBB_MIC_OFFLOAD
-    threads = tbb::task_scheduler_init::default_num_threads();
-    return threads;
-}
-
-int get_default_num_threads() {
-    static int threads = do_get_default_num_threads();
-    return threads;
-}
-
 RunOptions ParseCommandLine(int argc, char *argv[]){
     // zero number of threads means to run serial version
-    utility::thread_number_range threads(get_default_num_threads,0,get_default_num_threads());
+    utility::thread_number_range threads(utility::get_default_num_threads,0,utility::get_default_num_threads());
 
     int numberOfFrames = 0;
     bool silent = false;
@@ -110,7 +93,7 @@ int main(int argc, char *argv[])
 
                 #pragma offload target(mic) in(u, numberOfFrames, p, dmem), out(pMem:length(memSize))
                 {
-                    // It is necessary to update the pointer on mic 
+                    // It is necessary to update the pointer on mic
                     // since the address spaces on host and on target are different
                     dmem.set_address(pMem);
                     u.SetDrawingMemory(dmem);
@@ -121,7 +104,7 @@ int main(int argc, char *argv[])
                             u.SerialUpdateUniverse();
                         }
                     } else {
-                        tbb::task_scheduler_init init(p);
+                        tbb::global_control c(tbb::global_control::max_allowed_parallelism, p);
                         for( int i=0; i<numberOfFrames; ++i ) {
                             u.ParallelUpdateUniverse();
                         }

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #define HARNESS_DEFAULT_MIN_THREADS 2
@@ -43,6 +39,8 @@
 #else
     #define TBB_RUN_BUFFERING_TEST 1
 #endif
+
+#define TBB_DEPRECATED_INPUT_NODE_BODY __TBB_CPF_BUILD
 
 #if TBB_USE_EXCEPTIONS
 #if USE_TASK_SCHEDULER_OBSERVER
@@ -181,6 +179,7 @@ public:
         REMARK("- --------- - - -   constructed %lx\n", (size_t)(my_current_val));
     }
 
+#if TBB_DEPRECATED_INPUT_NODE_BODY
     bool operator()(OutputType & out) {
         UPDATE_COUNTS();
         out = OutputType(my_mult * ++(*my_current_val));
@@ -193,6 +192,19 @@ public:
         WaitAndThrow((int)out,"test_source_body");
         return true;
     }
+#else
+    OutputType operator()(tbb::flow_control& fc) {
+        UPDATE_COUNTS();
+        OutputType ret = OutputType(my_mult * ++(*my_current_val));
+        if(*my_current_val > g_NumItems) {
+            *my_current_val = g_NumItems;
+            fc.stop();
+            return OutputType();
+        }
+        WaitAndThrow((int)ret,"test_input_body");
+        return ret;
+    }
+#endif
 
     int count_value() { return (int)*my_current_val; }
 };
@@ -203,7 +215,7 @@ class test_source_body<tbb::flow::continue_msg, TType> : WaitThrow<serial_type, 
     tbb::atomic<int> *my_current_val;
 public:
     test_source_body(tbb::atomic<int> &my_cnt) : my_current_val(&my_cnt) { }
-
+#if TBB_DEPRECATED_INPUT_NODE_BODY
     bool operator()(tbb::flow::continue_msg & out) {
         UPDATE_COUNTS();
         int outint = ++(*my_current_val);
@@ -215,6 +227,19 @@ public:
         WaitAndThrow(outint,"test_source_body");
         return true;
     }
+#else
+    tbb::flow::continue_msg operator()( tbb::flow_control & fc) {
+        UPDATE_COUNTS();
+        int outint = ++(*my_current_val);
+        if(*my_current_val > g_NumItems) {
+            *my_current_val = g_NumItems;
+            fc.stop();
+            return tbb::flow::continue_msg();
+        }
+        WaitAndThrow(outint,"test_input_body");
+        return tbb::flow::continue_msg();
+    }
+#endif
 
     int count_value() { return (int)*my_current_val; }
 };
@@ -308,7 +333,6 @@ class tag_func {
     TT my_mult;
 public:
     tag_func(TT multiplier) : my_mult(multiplier) { }
-    void operator=( const tag_func& other){my_mult = other.my_mult;}
     // operator() will return [0 .. Count)
     tbb::flow::tag_value operator()( TT v) {
         tbb::flow::tag_value t = tbb::flow::tag_value(v / my_mult);
@@ -325,7 +349,7 @@ class tuple_test_source_body : WaitThrow<serial_type, TType> {
     tbb::atomic<int> *my_current_val;
 public:
     tuple_test_source_body(tbb::atomic<int> &my_cnt) : my_current_val(&my_cnt) { }
-
+#if TBB_DEPRECATED_INPUT_NODE_BODY
     bool operator()(OutputTuple & out) {
         UPDATE_COUNTS();
         int ival = ++(*my_current_val);
@@ -337,6 +361,19 @@ public:
         WaitAndThrow(ival,"tuple_test_source_body");
         return true;
     }
+#else
+    OutputTuple operator()(tbb::flow_control& fc) {
+        UPDATE_COUNTS();
+        int ival = ++(*my_current_val);
+        if(*my_current_val > g_NumItems) {
+            *my_current_val = g_NumItems;  // jam the final value; we assert on it later.
+            fc.stop();
+            return OutputTuple();
+        }
+        WaitAndThrow(ival,"tuple_test_input_body");
+        return OutputTuple(ItemType0(ival),ItemType1(ival));
+    }
+#endif
 
     int count_value() { return (int)*my_current_val; }
 };
@@ -370,7 +407,7 @@ void run_one_source_node_test(bool throwException, bool flog) {
     o.observe(true);
 #endif
 
-    tbb::flow::source_node<ItemType> sn(g, src_body_type(source_body_count),/*is_active*/false);
+    tbb::flow::input_node<ItemType> sn(g, src_body_type(source_body_count));
     parallel_absorb_body_type ab2(absorber_body_count);
     tbb::flow::function_node<ItemType> parallel_fn(g,tbb::flow::unlimited,ab2);
     make_edge(sn, parallel_fn);
@@ -395,29 +432,29 @@ void run_one_source_node_test(bool throwException, bool flog) {
         if(throwException) {
             ASSERT(g.exception_thrown() || okayNoExceptionsCaught, "Exception flag in flow::graph not set");
             ASSERT(g.is_cancelled() || okayNoExceptionsCaught, "canceled flag not set");
-            ASSERT(src_cnt <= g_NumItems, "Too many source_node items emitted");
-            ASSERT(sink_cnt <= src_cnt, "Too many source_node items received");
+            ASSERT(src_cnt <= g_NumItems, "Too many input_node items emitted");
+            ASSERT(sink_cnt <= src_cnt, "Too many input_node items received");
         }
         else {
             ASSERT(!g.exception_thrown(), "Exception flag in flow::graph set but no throw occurred");
             ASSERT(!g.is_cancelled(), "canceled flag set but no throw occurred");
-            ASSERT(src_cnt == g_NumItems, "Incorrect # source_node items emitted");
-            ASSERT(sink_cnt == src_cnt, "Incorrect # source_node items received");
+            ASSERT(src_cnt == g_NumItems, "Incorrect # input_node items emitted");
+            ASSERT(sink_cnt == src_cnt, "Incorrect # input_node items received");
         }
-        g.reset();  // resets the body of the source_node and the absorb_nodes.
+        g.reset();  // resets the body of the input_node and the absorb_nodes.
         source_body_count = 0;
         absorber_body_count = 0;
         ASSERT(!g.exception_thrown(), "Reset didn't clear exception_thrown()");
         ASSERT(!g.is_cancelled(), "Reset didn't clear is_cancelled()");
         src_cnt = tbb::flow::copy_body<src_body_type>(sn).count_value();
         sink_cnt = tbb::flow::copy_body<parallel_absorb_body_type>(parallel_fn).count_value();
-        ASSERT(src_cnt == 0, "source_node count not reset");
+        ASSERT(src_cnt == 0, "input_node count not reset");
         ASSERT(sink_cnt == 0, "sink_node count not reset");
     }
 #if USE_TASK_SCHEDULER_OBSERVER
     o.observe(false);
 #endif
-}  // run_one_source_node_test
+}  // run_one_input_node_test
 
 
 template<class ItemType, TestNodeTypeEnum srcThrowType, TestNodeTypeEnum absorbThrowType>
@@ -505,8 +542,8 @@ run_one_functype_node_test(bool throwException, bool flog, const char * /*name*/
 #endif
 
     g_Master = Harness::CurrentTid();
-    SourceNodeType source0(g, SourceNodeBodyType0(source0_count),/*is_active*/false);
-    SourceNodeType source1(g, SourceNodeBodyType1(source1_count),/*is_active*/false);
+    SourceNodeType source0(g, SourceNodeBodyType0(source0_count));
+    SourceNodeType source1(g, SourceNodeBodyType1(source1_count));
     TestNodeType node_to_test(g, Conc, TestNodeBodyType(test_count));
     SinkNodeType0 sink0(g,tbb::flow::unlimited,SinkNodeBodyType0(sink0_count));
     SinkNodeType1 sink1(g,tbb::flow::unlimited,SinkNodeBodyType1(sink1_count));
@@ -550,11 +587,11 @@ run_one_functype_node_test(bool throwException, bool flog, const char * /*name*/
         else {
             ASSERT(!g.exception_thrown(), "Exception flag in flow::graph set but no throw occurred");
             ASSERT(!g.is_cancelled(), "canceled flag set but no throw occurred");
-            ASSERT(sb0_cnt + sb1_cnt == 2*g_NumItems, "Missing invocations of source_nodes");
+            ASSERT(sb0_cnt + sb1_cnt == 2*g_NumItems, "Missing invocations of input_nodes");
             ASSERT(t_cnt == 2*g_NumItems, "Not all items reached test node");
             ASSERT(nb0_cnt == 2*g_NumItems && nb1_cnt == 2*g_NumItems, "Missing items in absorbers");
         }
-        g.reset();  // resets the body of the source_nodes, test_node and the absorb_nodes.
+        g.reset();  // resets the body of the input_nodes, test_node and the absorb_nodes.
         source0_count = source1_count = sink0_count = sink1_count = test_count = 0;
         ASSERT(0 == tbb::flow::copy_body<SourceNodeBodyType0>(source0).count_value(),"Reset source 0 failed");
         ASSERT(0 == tbb::flow::copy_body<SourceNodeBodyType1>(source1).count_value(),"Reset source 1 failed");
@@ -573,11 +610,11 @@ run_one_functype_node_test(bool throwException, bool flog, const char * /*name*/
 //
 // graph being tested is
 //
-//        source_node -\                 /- parallel function_node
+//         input_node -\                 /- parallel function_node
 //                      \               /
 //                       +function_node+
 //                      /               \                                  x
-//        source_node -/                 \- parallel function_node
+//         input_node -/                 \- parallel function_node
 //
 //    After each run the graph is reset(), to test the reset functionality.
 //
@@ -600,7 +637,7 @@ void run_function_node_test() {
     typedef absorber_body<Item23,tbb::flow::continue_msg, NType1, unlimited_type> SinkBodyType1;
     typedef absorber_body<Item23,tbb::flow::continue_msg, NType2, unlimited_type> SinkBodyType2;
 
-    typedef tbb::flow::source_node<Item12> SrcType;
+    typedef tbb::flow::input_node<Item12> SrcType;
     typedef tbb::flow::function_node<Item12, Item23, NodePolicy> TestType;
     typedef tbb::flow::function_node<Item23,tbb::flow::continue_msg> SnkType;
 
@@ -675,11 +712,11 @@ void test_function_node() {
 //
 // graph being tested is
 //
-//        source_node -\                      /- parallel function_node
+//         input_node -\                      /- parallel function_node
 //                      \                    /
 //                       +multifunction_node+
 //                      /                    \                                  x
-//        source_node -/                      \- parallel function_node
+//         input_node -/                      \- parallel function_node
 //
 //    After each run the graph is reset(), to test the reset functionality.  The
 //    multifunction_node will put an item to each successor for every item
@@ -706,7 +743,7 @@ void run_multifunction_node_test() {
     typedef absorber_body<Item23Type0,tbb::flow::continue_msg, NType1, unlimited_type> SinkBodyType1;
     typedef absorber_body<Item23Type1,tbb::flow::continue_msg, NType2, unlimited_type> SinkBodyType2;
 
-    typedef tbb::flow::source_node<Item12> SrcType;
+    typedef tbb::flow::input_node<Item12> SrcType;
     typedef tbb::flow::multifunction_node<Item12, ItemTuple, NodePolicy> TestType;
     typedef tbb::flow::function_node<Item23Type0,tbb::flow::continue_msg> SnkType0;
     typedef tbb::flow::function_node<Item23Type1,tbb::flow::continue_msg> SnkType1;
@@ -787,7 +824,7 @@ void test_multifunction_node() {
 //
 //                                          +broadcast_node+
 //                                         /                \             ___
-//      source_node+------>+broadcast_node+                  +continue_node+--->+absorber
+//       input_node+------>+broadcast_node+                  +continue_node+--->+absorber
 //                                         \                /
 //                                          +broadcast_node+
 //
@@ -810,7 +847,7 @@ void run_one_continue_node_test (bool throwException, bool flog) {
     o.observe(true);
 #endif
     g_Master = Harness::CurrentTid();
-    SourceNodeType source(g, SourceNodeBodyType(source_count),/*is_active*/false);
+    SourceNodeType source(g, SourceNodeBodyType(source_count));
     TTestNodeType node_to_test(g, TestNodeBodyType(test_count));
     SinkNodeType sink(g,tbb::flow::unlimited,SinkNodeBodyType(sink_count));
     tbb::flow::broadcast_node<tbb::flow::continue_msg> b1(g), b2(g), b3(g);
@@ -848,11 +885,11 @@ void run_one_continue_node_test (bool throwException, bool flog) {
         else {
             ASSERT(!g.exception_thrown(), "Exception flag in flow::graph set but no throw occurred");
             ASSERT(!g.is_cancelled(), "canceled flag set but no throw occurred");
-            ASSERT(sb_cnt == g_NumItems, "Missing invocations of source_node");
+            ASSERT(sb_cnt == g_NumItems, "Missing invocations of input_node");
             ASSERT(t_cnt == g_NumItems, "Not all items reached test node");
             ASSERT(nb_cnt == g_NumItems, "Missing items in absorbers");
         }
-        g.reset();  // resets the body of the source_nodes, test_node and the absorb_nodes.
+        g.reset();  // resets the body of the input_nodes, test_node and the absorb_nodes.
         source_count = test_count = sink_count = 0;
         ASSERT(0 == (int)test_count, "Atomic wasn't reset properly");
         ASSERT(0 == tbb::flow::copy_body<SourceNodeBodyType>(source).count_value(),"Reset source failed");
@@ -874,7 +911,7 @@ void run_continue_node_test() {
     typedef absorber_body<tbb::flow::continue_msg,ItemType,CType,unlimited_type> ContBodyType;
     typedef absorber_body<ItemType,tbb::flow::continue_msg, AType, unlimited_type> SinkBodyType;
 
-    typedef tbb::flow::source_node<tbb::flow::continue_msg> SrcType;
+    typedef tbb::flow::input_node<tbb::flow::continue_msg> SrcType;
     typedef tbb::flow::continue_node<ItemType> TestType;
     typedef tbb::flow::function_node<ItemType,tbb::flow::continue_msg> SnkType;
 
@@ -930,7 +967,7 @@ void run_one_buffer_node_test(bool throwException,bool flog) {
     o.observe(true);
 #endif
     g_Master = Harness::CurrentTid();
-    SourceNodeType source(g, SourceNodeBodyType(source_count),/*is_active*/false);
+    SourceNodeType source(g, SourceNodeBodyType(source_count));
     TestNodeType node_to_test(g);
     SinkNodeType sink(g,tbb::flow::unlimited,SinkNodeBodyType(sink_count));
     make_edge(source,node_to_test);
@@ -961,7 +998,7 @@ void run_one_buffer_node_test(bool throwException,bool flog) {
         else {
             ASSERT(!g.exception_thrown(), "Exception flag in flow::graph set but no throw occurred");
             ASSERT(!g.is_cancelled(), "canceled flag set but no throw occurred");
-            ASSERT(sb_cnt == g_NumItems, "Missing invocations of source_node");
+            ASSERT(sb_cnt == g_NumItems, "Missing invocations of input_node");
             ASSERT(nb_cnt == g_NumItems, "Missing items in absorbers");
         }
         if(iter == 0) {
@@ -994,7 +1031,7 @@ void run_buffer_queue_and_overwrite_node_test() {
     typedef test_source_body<BufferItemType,SourceThrowType> SourceBodyType;
     typedef absorber_body<BufferItemType,tbb::flow::continue_msg,SinkThrowType,unlimited_type> SinkBodyType;
 
-    typedef tbb::flow::source_node<BufferItemType> SrcType;
+    typedef tbb::flow::input_node<BufferItemType> SrcType;
     typedef tbb::flow::buffer_node<BufferItemType> BufType;
     typedef tbb::flow::queue_node<BufferItemType>  QueType;
     typedef tbb::flow::overwrite_node<BufferItemType>  OvrType;
@@ -1070,7 +1107,7 @@ void run_one_sequencer_node_test(bool throwException,bool flog) {
     o.observe(true);
 #endif
     g_Master = Harness::CurrentTid();
-    SourceNodeType source(g, SourceNodeBodyType(source_count),/*is_active*/false);
+    SourceNodeType source(g, SourceNodeBodyType(source_count));
     TestNodeType node_to_test(g,SeqBodyType());
     SinkNodeType sink(g,tbb::flow::unlimited,SinkNodeBodyType(sink_count));
     make_edge(source,node_to_test);
@@ -1101,7 +1138,7 @@ void run_one_sequencer_node_test(bool throwException,bool flog) {
         else {
             ASSERT(!g.exception_thrown(), "Exception flag in flow::graph set but no throw occurred");
             ASSERT(!g.is_cancelled(), "canceled flag set but no throw occurred");
-            ASSERT(sb_cnt == g_NumItems, "Missing invocations of source_node");
+            ASSERT(sb_cnt == g_NumItems, "Missing invocations of input_node");
             ASSERT(nb_cnt == g_NumItems, "Missing items in absorbers");
         }
         if(iter == 0) {
@@ -1135,7 +1172,7 @@ void run_sequencer_node_test() {
     typedef absorber_body<BufferItemType,tbb::flow::continue_msg,SinkThrowType,unlimited_type> SinkBodyType;
     typedef sequencer_body<BufferItemType> SeqBodyType;
 
-    typedef tbb::flow::source_node<BufferItemType> SrcType;
+    typedef tbb::flow::input_node<BufferItemType> SrcType;
     typedef tbb::flow::sequencer_node<BufferItemType>  SeqType;
     typedef tbb::flow::function_node<BufferItemType,tbb::flow::continue_msg> SnkType;
 
@@ -1190,7 +1227,7 @@ void run_one_priority_queue_node_test(bool throwException,bool flog) {
     o.observe(true);
 #endif
     g_Master = Harness::CurrentTid();
-    SourceNodeType source(g, SourceNodeBodyType(source_count),/*is_active*/false);
+    SourceNodeType source(g, SourceNodeBodyType(source_count));
 
     TestNodeType node_to_test(g);
 
@@ -1224,7 +1261,7 @@ void run_one_priority_queue_node_test(bool throwException,bool flog) {
         else {
             ASSERT(!g.exception_thrown(), "Exception flag in flow::graph set but no throw occurred");
             ASSERT(!g.is_cancelled(), "canceled flag set but no throw occurred");
-            ASSERT(sb_cnt == g_NumItems, "Missing invocations of source_node");
+            ASSERT(sb_cnt == g_NumItems, "Missing invocations of input_node");
             ASSERT(nb_cnt == g_NumItems, "Missing items in absorbers");
         }
         if(iter == 0) {
@@ -1259,7 +1296,7 @@ void run_priority_queue_node_test() {
     typedef absorber_body<BufferItemType,tbb::flow::continue_msg,SinkThrowType,unlimited_type> SinkBodyType;
     typedef less_body<BufferItemType> LessBodyType;
 
-    typedef tbb::flow::source_node<BufferItemType> SrcType;
+    typedef tbb::flow::input_node<BufferItemType> SrcType;
     typedef tbb::flow::priority_queue_node<BufferItemType,LessBodyType>  PrqType;
     typedef tbb::flow::function_node<BufferItemType,tbb::flow::continue_msg> SnkType;
 
@@ -1333,8 +1370,8 @@ struct run_one_join_node_test {
         o.observe(true);
 #endif
         g_Master = Harness::CurrentTid();
-        SourceType0 source0(g, SourceBodyType0(source0_count),/*is_active*/false);
-        SourceType1 source1(g, SourceBodyType1(source1_count),/*is_active*/false);
+        SourceType0 source0(g, SourceBodyType0(source0_count));
+        SourceType1 source1(g, SourceBodyType1(source1_count));
         TestJoinType node_to_test(g);
         SinkType sink(g,tbb::flow::unlimited,SinkBodyType(sink_count));
         make_edge(source0,tbb::flow::input_port<0>(node_to_test));
@@ -1375,8 +1412,8 @@ struct run_one_join_node_test {
                     REMARK("sb0_cnt == %d\n", (int)sb0_cnt);
                     REMARK("g_NumItems == %d\n", (int)g_NumItems);
                 }
-                ASSERT(sb0_cnt == g_NumItems, "Missing invocations of source_node0");  // this one
-                ASSERT(sb1_cnt == g_NumItems, "Missing invocations of source_node1");
+                ASSERT(sb0_cnt == g_NumItems, "Missing invocations of input_node0");  // this one
+                ASSERT(sb1_cnt == g_NumItems, "Missing invocations of input_node1");
                 ASSERT(nb_cnt == g_NumItems, "Missing items in absorbers");
             }
             if(iter == 0) {
@@ -1443,8 +1480,8 @@ struct run_one_join_node_test<
         o.observe(true);
 #endif
         g_Master = Harness::CurrentTid();
-        SourceType0 source0(g, SourceBodyType0(source0_count, 2),/*is_active*/false);
-        SourceType1 source1(g, SourceBodyType1(source1_count, 3),/*is_active*/false);
+        SourceType0 source0(g, SourceBodyType0(source0_count, 2));
+        SourceType1 source1(g, SourceBodyType1(source1_count, 3));
         TestJoinType node_to_test(g, tag_func<ItemType0>(ItemType0(2)), tag_func<ItemType1>(ItemType1(3)));
         SinkType sink(g,tbb::flow::unlimited,SinkBodyType(sink_count));
         make_edge(source0,tbb::flow::input_port<0>(node_to_test));
@@ -1479,8 +1516,8 @@ struct run_one_join_node_test<
             else {
                 ASSERT(!g.exception_thrown(), "Exception flag in flow::graph set but no throw occurred");
                 ASSERT(!g.is_cancelled(), "canceled flag set but no throw occurred");
-                ASSERT(sb0_cnt == g_NumItems, "Missing invocations of source_node0");
-                ASSERT(sb1_cnt == g_NumItems, "Missing invocations of source_node1");
+                ASSERT(sb0_cnt == g_NumItems, "Missing invocations of input_node0");
+                ASSERT(sb1_cnt == g_NumItems, "Missing invocations of input_node1");
                 ASSERT(nb_cnt == g_NumItems, "Missing items in absorbers");
             }
             if(iter == 0) {
@@ -1488,7 +1525,7 @@ struct run_one_join_node_test<
                 tbb::flow::input_port<0>(node_to_test).try_put(ItemType0(g_NumItems + 4));
                 tbb::flow::input_port<1>(node_to_test).try_put(ItemType1(g_NumItems + 2));
                 g.wait_for_all();   // have to wait for the graph to stop again....
-                g.reset();  // resets the body of the source_nodes, test_node and the absorb_nodes.
+                g.reset();  // resets the body of the input_nodes, test_node and the absorb_nodes.
                 source0_count = source1_count = sink_count = 0;
                 make_edge(node_to_test, sink);
                 g.wait_for_all();   // have to wait for the graph to stop again....
@@ -1520,8 +1557,8 @@ void run_join_node_test() {
     typedef test_source_body<ItemType1,SourceThrowType> SourceBodyType1;
     typedef absorber_body<OutputTuple,tbb::flow::continue_msg,SinkThrowType,unlimited_type> SinkBodyType;
 
-    typedef typename tbb::flow::source_node<ItemType0> SourceType0;
-    typedef typename tbb::flow::source_node<ItemType1> SourceType1;
+    typedef typename tbb::flow::input_node<ItemType0> SourceType0;
+    typedef typename tbb::flow::input_node<ItemType1> SourceType1;
     typedef typename tbb::flow::join_node<OutputTuple,JP> TestJoinType;
     typedef typename tbb::flow::function_node<OutputTuple,tbb::flow::continue_msg> SinkType;
 
@@ -1577,7 +1614,7 @@ void run_one_limiter_node_test(bool throwException,bool flog) {
     o.observe(true);
 #endif
     g_Master = Harness::CurrentTid();
-    SourceNodeType source(g, SourceNodeBodyType(source_count),/*is_active*/false);
+    SourceNodeType source(g, SourceNodeBodyType(source_count));
     TestNodeType node_to_test(g,g_NumThreads + 1);
     SinkNodeType sink(g,tbb::flow::unlimited,SinkNodeBodyType(sink_count));
     make_edge(source,node_to_test);
@@ -1608,9 +1645,9 @@ void run_one_limiter_node_test(bool throwException,bool flog) {
         else {
             ASSERT(!g.exception_thrown(), "Exception flag in flow::graph set but no throw occurred");
             ASSERT(!g.is_cancelled(), "canceled flag set but no throw occurred");
-            // we stop after limiter's limit, which is g_NumThreads + 1.  The source_node
+            // we stop after limiter's limit, which is g_NumThreads + 1.  The input_node
             // is invoked one extra time, filling its buffer, so its limit is g_NumThreads + 2.
-            ASSERT(sb_cnt == g_NumThreads + 2, "Missing invocations of source_node");
+            ASSERT(sb_cnt == g_NumThreads + 2, "Missing invocations of input_node");
             ASSERT(nb_cnt == g_NumThreads + 1, "Missing items in absorbers");
         }
         if(iter == 0) {
@@ -1645,7 +1682,7 @@ void run_limiter_node_test() {
     typedef test_source_body<BufferItemType,SourceThrowType> SourceBodyType;
     typedef absorber_body<BufferItemType,tbb::flow::continue_msg,SinkThrowType,unlimited_type> SinkBodyType;
 
-    typedef tbb::flow::source_node<BufferItemType> SrcType;
+    typedef tbb::flow::input_node<BufferItemType> SrcType;
     typedef tbb::flow::limiter_node<BufferItemType>  LmtType;
     typedef tbb::flow::function_node<BufferItemType,tbb::flow::continue_msg> SnkType;
 
@@ -1700,7 +1737,7 @@ void run_one_split_node_test(bool throwException, bool flog) {
 #endif
 
     g_Master = Harness::CurrentTid();
-    SourceType source(g, SourceBodyType(source_count),/*is_active*/false);
+    SourceType source(g, SourceBodyType(source_count));
     TestSplitType node_to_test(g);
     SinkType0 sink0(g,tbb::flow::unlimited,SinkBodyType0(sink0_count));
     SinkType1 sink1(g,tbb::flow::unlimited,SinkBodyType1(sink1_count));
@@ -1735,10 +1772,10 @@ void run_one_split_node_test(bool throwException, bool flog) {
         else {
             ASSERT(!g.exception_thrown(), "Exception flag in flow::graph set but no throw occurred");
             ASSERT(!g.is_cancelled(), "canceled flag set but no throw occurred");
-            ASSERT(sb_cnt == g_NumItems, "Missing invocations of source_nodes");
+            ASSERT(sb_cnt == g_NumItems, "Missing invocations of input_nodes");
             ASSERT(nb0_cnt == g_NumItems && nb1_cnt == g_NumItems, "Missing items in absorbers");
         }
-        g.reset();  // resets the body of the source_nodes and the absorb_nodes.
+        g.reset();  // resets the body of the input_nodes and the absorb_nodes.
         source_count = sink0_count = sink1_count = 0;
         ASSERT(0 == tbb::flow::copy_body<SourceBodyType>(source).count_value(),"Reset source failed");
         ASSERT(0 == tbb::flow::copy_body<SinkBodyType0>(sink0).count_value(),"Reset sink 0 failed");
@@ -1759,7 +1796,7 @@ void run_split_node_test() {
     typedef absorber_body<ItemType0,tbb::flow::continue_msg,SinkThrowType,unlimited_type> SinkBodyType0;
     typedef absorber_body<ItemType1,tbb::flow::continue_msg,SinkThrowType,unlimited_type> SinkBodyType1;
 
-    typedef typename tbb::flow::source_node<InputTuple> SourceType;
+    typedef typename tbb::flow::input_node<InputTuple> SourceType;
     typedef typename tbb::flow::split_node<InputTuple> TestSplitType;
     typedef typename tbb::flow::function_node<ItemType0,tbb::flow::continue_msg> SinkType0;
     typedef typename tbb::flow::function_node<ItemType1,tbb::flow::continue_msg> SinkType1;
@@ -1817,8 +1854,8 @@ void run_one_indexer_node_test(bool throwException,bool flog) {
     o.observe(true);
 #endif
     g_Master = Harness::CurrentTid();
-    SourceType0 source0(g, SourceBodyType0(source0_count),/*is_active*/false);
-    SourceType1 source1(g, SourceBodyType1(source1_count),/*is_active*/false);
+    SourceType0 source0(g, SourceBodyType0(source0_count));
+    SourceType1 source1(g, SourceBodyType1(source1_count));
     TestNodeType node_to_test(g);
     SinkType sink(g,tbb::flow::unlimited,SinkBodyType(sink_count));
     make_edge(source0,tbb::flow::input_port<0>(node_to_test));
@@ -1853,8 +1890,8 @@ void run_one_indexer_node_test(bool throwException,bool flog) {
         else {
             ASSERT(!g.exception_thrown(), "Exception flag in flow::graph set but no throw occurred");
             ASSERT(!g.is_cancelled(), "canceled flag set but no throw occurred");
-            ASSERT(sb0_cnt == g_NumItems, "Missing invocations of source_node0");
-            ASSERT(sb1_cnt == g_NumItems, "Missing invocations of source_node1");
+            ASSERT(sb0_cnt == g_NumItems, "Missing invocations of input_node0");
+            ASSERT(sb1_cnt == g_NumItems, "Missing invocations of input_node1");
             ASSERT(nb_cnt == 2*g_NumItems, "Missing items in absorbers");
         }
         if(iter == 0) {
@@ -1894,8 +1931,8 @@ void run_indexer_node_test() {
     typedef typename tbb::flow::indexer_node<ItemType0, ItemType1> TestNodeType;
     typedef absorber_body<typename TestNodeType::output_type,tbb::flow::continue_msg,SinkThrowType,unlimited_type> SinkBodyType;
 
-    typedef typename tbb::flow::source_node<ItemType0> SourceType0;
-    typedef typename tbb::flow::source_node<ItemType1> SourceType1;
+    typedef typename tbb::flow::input_node<ItemType0> SourceType0;
+    typedef typename tbb::flow::input_node<ItemType1> SourceType1;
     typedef typename tbb::flow::function_node<typename TestNodeType::output_type,tbb::flow::continue_msg> SinkType;
 
     for(int i = 0; i < 4; ++i) {
@@ -1936,7 +1973,7 @@ public:
     Foo(std::vector<int>& vec) : m_vec(&vec) { }
     void operator() (tbb::flow::continue_msg) const {
         ++nExceptions;
-        m_vec->at(m_vec->size()); // Will throw out_of_range exception
+        tbb::internal::suppress_unused_warning( m_vec->at(m_vec->size()) ); // Will throw out_of_range exception
         ASSERT(false, "Exception not thrown by invalid access");
     }
 };

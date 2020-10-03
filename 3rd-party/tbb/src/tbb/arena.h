@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #ifndef _TBB_arena_H
@@ -28,7 +24,11 @@
 
 #include "scheduler_common.h"
 #include "intrusive_list.h"
+#if __TBB_PREVIEW_CRITICAL_TASKS && __TBB_CPF_BUILD
+#include "task_stream_extended.h"
+#else
 #include "task_stream.h"
+#endif
 #include "../rml/include/rml_tbb.h"
 #include "mailbox.h"
 #include "observer_proxy.h"
@@ -36,12 +36,108 @@
 #include "governor.h"
 #include "concurrent_monitor.h"
 
+#if __TBB_PREVIEW_RESUMABLE_TASKS
+#include "tbb/spin_mutex.h"
+#endif
+
 namespace tbb {
 
 class task_group_context;
 class allocate_root_with_context_proxy;
 
 namespace internal {
+
+#if __TBB_NUMA_SUPPORT
+class numa_binding_observer;
+#endif /*__TBB_NUMA_SUPPORT*/
+
+#if __TBB_PREVIEW_RESUMABLE_TASKS
+//! Bounded coroutines cache LIFO ring buffer
+class arena_co_cache {
+    //! Ring buffer storage
+    generic_scheduler** my_co_scheduler_cache;
+    //! Current cache index
+    unsigned my_head;
+    //! Cache capacity for arena
+    unsigned my_max_index;
+    //! Accessor lock for modification operations
+    tbb::spin_mutex my_co_cache_mutex;
+
+    unsigned next_index() {
+        return ( my_head == my_max_index ) ? 0 : my_head + 1;
+    }
+
+    unsigned prev_index() {
+        return ( my_head == 0 ) ? my_max_index : my_head - 1;
+    }
+
+    bool internal_empty() {
+        return my_co_scheduler_cache[prev_index()] == NULL;
+    }
+
+    void internal_scheduler_cleanup(generic_scheduler* to_cleanup) {
+        to_cleanup->my_arena_slot = NULL;
+        // Needed by cleanup_worker function, as well as arena slot clearing
+        governor::assume_scheduler(to_cleanup);
+        generic_scheduler::cleanup_worker(to_cleanup, true);
+    }
+
+public:
+    void init(unsigned cache_capacity) {
+        size_t alloc_size = cache_capacity * sizeof(generic_scheduler*);
+        my_co_scheduler_cache = (generic_scheduler**)NFS_Allocate(1, alloc_size, NULL);
+        memset( my_co_scheduler_cache, 0, alloc_size );
+        my_head = 0;
+        my_max_index = cache_capacity - 1;
+    }
+
+    void cleanup() {
+        generic_scheduler* current = governor::local_scheduler_if_initialized();
+        while (generic_scheduler* to_cleanup = pop()) {
+            internal_scheduler_cleanup(to_cleanup);
+        }
+        governor::assume_scheduler(current);
+        NFS_Free(my_co_scheduler_cache);
+    }
+
+    //! Insert scheduler to the current available place.
+    //! Replace an old value, if necessary.
+    void push(generic_scheduler* s) {
+        generic_scheduler* to_cleanup = NULL;
+        {
+            tbb::spin_mutex::scoped_lock lock(my_co_cache_mutex);
+            // Check if we are replacing some existing buffer entrance
+            if (my_co_scheduler_cache[my_head] != NULL) {
+                to_cleanup = my_co_scheduler_cache[my_head];
+            }
+            // Store the cached value
+            my_co_scheduler_cache[my_head] = s;
+            // Move head index to the next slot
+            my_head = next_index();
+        }
+        // Cleanup replaced buffer if any
+        if (to_cleanup) {
+            generic_scheduler* current = governor::local_scheduler_if_initialized();
+            internal_scheduler_cleanup(to_cleanup);
+            governor::assume_scheduler(current);
+        }
+    }
+
+    //! Get a cached scheduler if any
+    generic_scheduler* pop() {
+        tbb::spin_mutex::scoped_lock lock(my_co_cache_mutex);
+        // No cached coroutine
+        if (internal_empty()) return NULL;
+        // Move head index to the currently available value
+        my_head = prev_index();
+        // Retrieve the value from the buffer
+        generic_scheduler* to_return = my_co_scheduler_cache[my_head];
+        // Clear the previous entrance value
+        my_co_scheduler_cache[my_head] = NULL;
+        return to_return;
+    }
+};
+#endif // __TBB_PREVIEW_RESUMABLE_TASKS
 
 //! The structure of an arena, except the array of slots.
 /** Separated in order to simplify padding.
@@ -70,7 +166,20 @@ struct arena_base : padded<intrusive_list_node> {
           relaxed FIFO order);
         - the enqueuing thread does not call any of wait_for_all methods.
         Depending on __TBB_TASK_PRIORITY, num_priority_levels can be 1 or more. **/
+#if __TBB_PREVIEW_CRITICAL_TASKS && __TBB_CPF_BUILD
+    task_stream<num_priority_levels, front_accessor> my_task_stream; // heavy use in stealing loop
+#else
     task_stream<num_priority_levels> my_task_stream; // heavy use in stealing loop
+#endif
+
+#if __TBB_PREVIEW_CRITICAL_TASKS
+    //! Task pool for the tasks with critical property set.
+    /** Critical tasks are scheduled for execution ahead of other sources (including local task pool
+        and even bypassed tasks) unless the thread already executes a critical task in an outer
+        dispatch loop **/
+    // used on the hot path of the task dispatch loop
+    task_stream<1, back_nonnull_accessor> my_critical_task_stream;
+#endif
 
     //! The number of workers requested by the master thread owning the arena.
     unsigned my_max_num_workers;
@@ -89,6 +198,11 @@ struct arena_base : padded<intrusive_list_node> {
     //! The list of local observers attached to this arena.
     observer_list my_observers;
 #endif
+
+#if __TBB_NUMA_SUPPORT
+    //! Pointer to internal observer that allows to bind threads in arena to certain NUMA node.
+    numa_binding_observer* my_numa_binding_observer;
+#endif /*__TBB_NUMA_SUPPORT*/
 
 #if __TBB_TASK_PRIORITY
     //! The lowest normalized priority of available spawned or enqueued tasks.
@@ -139,19 +253,19 @@ struct arena_base : padded<intrusive_list_node> {
     unsigned my_num_reserved_slots;
 
 #if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-    //! Possible states for the concurrency mode of an arena.
-    enum concurrency_mode {
-        cm_normal =  0,     // arena is served by workers as usual
-        cm_enforced_local,  // arena needs an extra worker despite the arena limit
-        cm_enforced_global  // arena needs an extra worker despite a global limit
-    };
-
-    //! The concurrency mode of an arena.
-    concurrency_mode my_concurrency_mode;
+    // arena needs an extra worker despite the arena limit
+    bool my_local_concurrency_mode;
+    // arena needs an extra worker despite a global limit
+    bool my_global_concurrency_mode;
 #endif /* __TBB_ENQUEUE_ENFORCED_CONCURRENCY */
 
     //! Waiting object for master threads that cannot join the arena.
     concurrent_monitor my_exit_monitors;
+
+#if __TBB_PREVIEW_RESUMABLE_TASKS
+    //! Coroutines cache buffer
+    arena_co_cache my_co_cache;
+#endif
 
 #if TBB_USE_ASSERT
     //! Used to trap accesses to the object after its destruction.
@@ -217,8 +331,13 @@ public:
     static bool is_busy_or_empty( pool_state_t s ) { return s < SNAPSHOT_FULL; }
 
     //! The number of workers active in the arena.
-    unsigned num_workers_active( ) {
+    unsigned num_workers_active() const {
         return my_references >> ref_external_bits;
+    }
+
+    //! Check if the recall is requested by the market.
+    bool is_recall_requested() const {
+        return num_workers_active() > my_num_workers_allotted;
     }
 
     //! If necessary, raise a flag that there is new job in arena.
@@ -260,18 +379,6 @@ public:
     //! Check for the presence of enqueued tasks at all priority levels
     bool has_enqueued_tasks();
 
-#if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-    //! Recall worker if global mandatory is enabled, but not for this arena
-    bool recall_by_mandatory_request() const {
-        return my_market->my_mandatory_num_requested && my_concurrency_mode==cm_normal;
-    }
-
-    //! The arena is currently in an enforced concurrency mode
-    bool must_have_concurrency() const {
-        return my_num_workers_requested &&
-               ( my_concurrency_mode==cm_enforced_local || my_concurrency_mode==cm_enforced_global );
-    }
-#endif
     static const size_t out_of_arena = ~size_t(0);
     //! Tries to occupy a slot in the arena. On success, returns the slot index; if no slot is available, returns out_of_arena.
     template <bool as_worker>
@@ -355,8 +462,9 @@ inline void arena::on_thread_leaving ( ) {
     // TODO: consider more strict conditions for the cleanup,
     // because it can create the demand of workers,
     // but the arena can be already empty (and so ready for destroying)
+    // TODO: Fix the race: while we check soft limit and it might be changed.
     if( ref_param==ref_external && my_num_slots != my_num_reserved_slots
-        && 0 == m->my_num_workers_soft_limit && my_concurrency_mode==cm_normal ) {
+        && 0 == m->my_num_workers_soft_limit && !my_global_concurrency_mode ) {
         bool is_out = false;
         for (int i=0; i<num_priority_levels; i++) {
             is_out = is_out_of_work();
@@ -364,7 +472,7 @@ inline void arena::on_thread_leaving ( ) {
                 break;
         }
         // We expect, that in worst case it's enough to have num_priority_levels-1
-        // calls to restore priorities and and yet another is_out_of_work() to conform
+        // calls to restore priorities and yet another is_out_of_work() to conform
         // that no work was found. But as market::set_active_num_workers() can be called
         // concurrently, can't guarantee last is_out_of_work() return true.
     }
@@ -376,19 +484,15 @@ inline void arena::on_thread_leaving ( ) {
 template<arena::new_work_type work_type> void arena::advertise_new_work() {
     if( work_type == work_enqueued ) {
 #if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
-        if( my_market->my_num_workers_soft_limit == 0 ) {
-            if( my_concurrency_mode!=cm_enforced_global ) {
-                if( my_market->mandatory_concurrency_enable( this ) ) {
-                    my_pool_state = SNAPSHOT_FULL;
-                    return;
-                }
-            }
-        } else if( my_max_num_workers==0 && my_num_reserved_slots==1 ) {
-            my_max_num_workers = 1;
-            __TBB_ASSERT(my_concurrency_mode==cm_normal, NULL);
-            my_concurrency_mode = cm_enforced_local;
+        if ( as_atomic(my_market->my_num_workers_soft_limit) == 0 && as_atomic(my_global_concurrency_mode) == false )
+            my_market->enable_mandatory_concurrency(this);
+
+        if ( my_max_num_workers == 0 && my_num_reserved_slots == 1 ) {
+            __TBB_ASSERT(!my_local_concurrency_mode, NULL);
+            my_local_concurrency_mode = true;
             my_pool_state = SNAPSHOT_FULL;
-            my_market->adjust_demand( *this, 1 );
+            my_max_num_workers = 1;
+            my_market->adjust_demand(*this, my_max_num_workers);
             return;
         }
 #endif /* __TBB_ENQUEUE_ENFORCED_CONCURRENCY */
@@ -425,29 +529,22 @@ template<arena::new_work_type work_type> void arena::advertise_new_work() {
             // telling the market that there is work to do.
 #if __TBB_ENQUEUE_ENFORCED_CONCURRENCY
             if( work_type == work_spawned ) {
-                if( my_concurrency_mode!=cm_normal ) {
-                    switch( my_concurrency_mode ) {
-                    case cm_enforced_local:
-                        __TBB_ASSERT(my_max_num_workers==1, "");
-                        __TBB_ASSERT(!governor::local_scheduler()->is_worker(), "");
-                        // There was deliberate oversubscription on 1 core for sake of starvation-resistant tasks.
-                        // Now a single active thread (must be the master) supposedly starts a new parallel region
-                        // with relaxed sequential semantics, and oversubscription should be avoided.
-                        // Demand for workers has been decreased to 0 during SNAPSHOT_EMPTY, so just keep it.
-                        my_max_num_workers = 0;
-                        my_concurrency_mode = cm_normal;
-                        break;
-                    case cm_enforced_global:
-                        my_market->mandatory_concurrency_disable( this );
-                        restore_priority_if_need();
-                        break;
-                    default:
-                        break;
-                    }
+                if( my_local_concurrency_mode ) {
+                    __TBB_ASSERT(my_max_num_workers==1, "");
+                    __TBB_ASSERT(!governor::local_scheduler()->is_worker(), "");
+                    // There was deliberate oversubscription on 1 core for sake of starvation-resistant tasks.
+                    // Now a single active thread (must be the master) supposedly starts a new parallel region
+                    // with relaxed sequential semantics, and oversubscription should be avoided.
+                    // Demand for workers has been decreased to 0 during SNAPSHOT_EMPTY, so just keep it.
+                    my_max_num_workers = 0;
+                    my_local_concurrency_mode = false;
                     return;
                 }
+                if ( as_atomic(my_global_concurrency_mode) == true )
+                    my_market->mandatory_concurrency_disable( this );
             }
 #endif /* __TBB_ENQUEUE_ENFORCED_CONCURRENCY */
+            // TODO: investigate adjusting of arena's demand by a single worker.
             my_market->adjust_demand( *this, my_max_num_workers );
         }
     }

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2018 Intel Corporation
+    Copyright (c) 2005-2020 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
 
 #define _VARIADIC_MAX 10   // Visual Studio 2012
@@ -52,7 +48,7 @@ typedef tbb::flow::tagged_msg<size_t, int, char, double, odd_array_type, odder_a
 
 // test base of tagged_msg
 void TestWrapper() {
-    using tbb::flow::interface10::internal::Wrapper;
+    using tbb::flow::interface11::internal::Wrapper;
     Wrapper<int> wi(42);
     Wrapper<int> wic(23);
 
@@ -177,7 +173,7 @@ void RunTests() {
     try {
         int *iip = cast_to<int *>(counted_array_tagged_msg);
         ASSERT(false, "did not throw on invalid cast");
-        *iip = 2;  // avoids "ipp set but not used" warning
+        *iip = 2;  // avoids "iip set but not used" warning
     }
     catch(std::runtime_error &re) {
         REMARK("attempt to cast to invalid type caught %s\n", re.what());

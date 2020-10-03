@@ -1,4 +1,4 @@
-# Copyright (c) 2005-2018 Intel Corporation
+# Copyright (c) 2005-2020 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-#
-#
-#
 
 CPLUS ?= g++
 CONLY ?= gcc
@@ -35,27 +31,27 @@ EXPORT_KEY = -Wl,--version-script,
 LIBDL = -ldl
 
 LIB_LINK_FLAGS = $(DYLIB_KEY) -Wl,-soname=$(BUILDING_LIBRARY)
-LIBS += -lpthread -lrt
+LIBS += -lrt
 LINK_FLAGS = -Wl,-rpath-link=. -rdynamic
 C_FLAGS = $(CPLUS_FLAGS)
 
 # gcc 4.2 and higher support OpenMP
-ifneq (,$(shell $(CONLY) -dumpversion | egrep  "^(4\.[2-9]|[5-9])"))
+ifneq (,$(shell $(CONLY) -dumpfullversion -dumpversion | egrep  "^(4\.[2-9]|[5-9]|1[0-9])"))
     OPENMP_FLAG = -fopenmp
 endif
 
 # gcc 4.8 and later support RTM intrinsics, but require command line switch to enable them
-ifneq (,$(shell $(CONLY) -dumpversion | egrep  "^(4\.[8-9]|[5-9])"))
+ifneq (,$(shell $(CONLY) -dumpfullversion -dumpversion | egrep  "^(4\.[8-9]|[5-9]|1[0-9])"))
     RTM_KEY = -mrtm
 endif
 
 # gcc 4.0 and later have -Wextra that is used by some our customers.
-ifneq (,$(shell $(CONLY) -dumpversion | egrep  "^([4-9])"))
+ifneq (,$(shell $(CONLY) -dumpfullversion -dumpversion | egrep  "^([4-9]|1[0-9])"))
     WARNING_KEY += -Wextra
 endif
 
 # gcc 5.0 and later have -Wsuggest-override and -Wno-sized-deallocation options
-ifneq (,$(shell $(CONLY) -dumpversion | egrep  "^([5-9])"))
+ifneq (,$(shell $(CONLY) -dumpfullversion -dumpversion | egrep  "^([5-9]|1[0-9])"))
     # enable -Wsuggest-override via a pre-included header in order to limit to C++11 and above
     INCLUDE_TEST_HEADERS = -include $(tbb_root)/src/test/harness_preload.h
     WARNING_SUPPRESS += -Wno-sized-deallocation
@@ -63,17 +59,21 @@ endif
 
 # gcc 6.0 and later have -flifetime-dse option that controls
 # elimination of stores done outside the object lifetime
-ifneq (,$(shell $(CONLY) -dumpversion | egrep  "^([6-9])"))
+ifneq (,$(shell $(CONLY) -dumpfullversion -dumpversion | egrep  "^([6-9]|1[0-9])"))
     # keep pre-contruction stores for zero initialization
     DSE_KEY = -flifetime-dse=1
 endif
 
 ifeq ($(cfg), release)
-        CPLUS_FLAGS = $(ITT_NOTIFY) -g -O2 -DUSE_PTHREAD
+        # -g is set intentionally in the release mode. It should not affect performance.
+        CPLUS_FLAGS = -O2 -g
 endif
 ifeq ($(cfg), debug)
-        CPLUS_FLAGS = -DTBB_USE_DEBUG $(ITT_NOTIFY) -g -O0 -DUSE_PTHREAD
+        CPLUS_FLAGS = -DTBB_USE_DEBUG -O0 -g
 endif
+
+CPLUS_FLAGS += $(ITT_NOTIFY) -DUSE_PTHREAD -pthread
+LIB_LINK_FLAGS += -pthread
 
 TBB_ASM.OBJ=
 MALLOC_ASM.OBJ=
