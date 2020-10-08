@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cuda_device.hpp"
+#include "cuda_statgrab.hpp"
 
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
