@@ -400,7 +400,7 @@ inline cudaTask cudaFlow::noop() {
 //  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Host>{}, 
 //    [c=std::forward<C>(c)](cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
 //      cudaHostNodeParams p;
-//      p.fn = [] (void* data) { (*static_cast<C*>(data))(); };
+//      p.fn = [] __host__ __device__ (void* data) { (*static_cast<C*>(data))(); };
 //      p.userData = &c;
 //      TF_CHECK_CUDA(
 //        ::cudaGraphAddHostNode(&node, graph, nullptr, 0, &p),
