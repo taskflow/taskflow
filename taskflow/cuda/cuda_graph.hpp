@@ -55,6 +55,7 @@ class cudaGraph {
 
     void _create_native_graph();
     void _destroy_native_graph();
+    //void _update_native_graph();
 };
 
 // ----------------------------------------------------------------------------
@@ -105,9 +106,10 @@ class cudaNode {
   
   // Kernel handle
   struct Kernel {
+    template <typename C>
+    Kernel(C&& c) : func{ std::forward<C>(c) } {}
     
-    //template <typename C>
-    //Kernel(C&&);
+    void* func;
   };
 
   using handle_t = std::variant<
@@ -184,6 +186,7 @@ cudaNode::cudaNode(C&& c, ArgsT&&... args) :
 
 // Procedure: _precede
 inline void cudaNode::_precede(cudaNode* v) {
+
   _successors.push_back(v);
 }
 
@@ -264,7 +267,10 @@ cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
   //_nodes.emplace_back(std::move(node));
   //return _nodes.back().get();
   
+  assert(_native_handle.graph == nullptr);
+
   // TODO: object pool
+
   auto node = new cudaNode(std::forward<ArgsT>(args)...);
   _nodes.push_back(node);
   return node;
@@ -307,7 +313,6 @@ inline void cudaGraph::_create_native_graph() {
   );
 }
 
-
 //inline void cudaGraph::run() {
 //  cudaGraphExec_t graphExec;
 //  TF_CHECK_CUDA(
@@ -320,10 +325,6 @@ inline void cudaGraph::_create_native_graph() {
 //    cudaGraphExecDestroy(graphExec), "failed to destroy an executable cudaGraph"
 //  );
 //}
-
-
-
-
 
 }  // end of namespace tf -----------------------------------------------------
 

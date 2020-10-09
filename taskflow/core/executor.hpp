@@ -1049,6 +1049,11 @@ inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
   cudaFlow cf(*this, h.graph);
 
   h.work(cf); 
+
+  //auto d = (cf._device == -1) ? 0 : cf._device;
+
+  //TODO: set device?
+  //cudaScopedDevice ctx(d);
   
   // join the cudaflow
   if(cf._joinable) {
@@ -1057,6 +1062,8 @@ inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
     );  
     cf._joinable = false;
   }
+
+  cf._graph._destroy_native_graph();
 
   _observer_epilogue(worker, node);
 }
@@ -1072,6 +1079,7 @@ void Executor::_invoke_cudaflow_work_internal(
   }
   
   // by default, we stick with device 0  
+  // //TODO device?
   auto d = (cf._device == -1) ? 0 : cf._device;
 
   cudaScopedDevice ctx(d);
@@ -1080,10 +1088,9 @@ void Executor::_invoke_cudaflow_work_internal(
   
   // transforms cudaFlow to a native cudaGraph under the specified device
   // and launches the graph through a given or an internal device stream
-  // TODO: need to leverage cudaGraphExecUpdate for changes between
-  //       successive offload calls; right now, we assume the graph
-  //       is not changed (only update parameter is allowed)
-  cf._graph._create_native_graph();
+  if(cf._graph._native_handle.graph == nullptr) {
+    cf._graph._create_native_graph();
+  }
 
   while(!predicate()) {
 
@@ -1098,7 +1105,6 @@ void Executor::_invoke_cudaflow_work_internal(
     );
   }
 
-  cf._graph._destroy_native_graph();
 }
 
 // Procedure: _invoke_cudaflow_work_external
