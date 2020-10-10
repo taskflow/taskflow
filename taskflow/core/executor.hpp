@@ -796,32 +796,32 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // switch is faster than nested if-else due to jump table
   switch(type) {
     // static task
-    case Node::STATIC_WORK:{
+    case Node::STATIC_TASK:{
       _invoke_static_work(worker, node);
     } 
     break;
     
     // dynamic task
-    case Node::DYNAMIC_WORK: {
+    case Node::DYNAMIC_TASK: {
       _invoke_dynamic_work(worker, node);
     }
     break;
     
     // condition task
-    case Node::CONDITION_WORK: {
+    case Node::CONDITION_TASK: {
       _invoke_condition_work(worker, node, cond);
     }
     break;
     //}  // no need to add a break here due to the immediate return
 
     // module task
-    case Node::MODULE_WORK: {
+    case Node::MODULE_TASK: {
       _invoke_module_work(worker, node);
     }
     break;
 
     // async task
-    case Node::ASYNC_WORK: {
+    case Node::ASYNC_TASK: {
       _invoke_async_work(worker, node);
       _decrement_topology_and_notify();
       return ;
@@ -830,7 +830,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
     // cudaflow task
 #ifdef TF_ENABLE_CUDA
-    case Node::CUDAFLOW_WORK: {
+    case Node::CUDAFLOW_TASK: {
       _invoke_cudaflow_work(worker, node);
     }
     break; 
@@ -857,7 +857,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   
   // At this point, the node storage might be destructed (to be verified)
   // case 1: non-condition task
-  if(type != Node::CONDITION_WORK) {
+  if(type != Node::CONDITION_TASK) {
     for(size_t i=0; i<num_successors; ++i) {
       if(--(node->_successors[i]->_join_counter) == 0) {
         c.fetch_add(1);

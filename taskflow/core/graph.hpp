@@ -165,15 +165,15 @@ class Node {
   public:
   
   // variant index
-  constexpr static auto PLACEHOLDER_WORK = get_index_v<std::monostate, handle_t>;
-  constexpr static auto STATIC_WORK      = get_index_v<StaticWork, handle_t>;
-  constexpr static auto DYNAMIC_WORK     = get_index_v<DynamicWork, handle_t>;
-  constexpr static auto CONDITION_WORK   = get_index_v<ConditionWork, handle_t>; 
-  constexpr static auto MODULE_WORK      = get_index_v<ModuleWork, handle_t>; 
-  constexpr static auto ASYNC_WORK       = get_index_v<AsyncWork, handle_t>; 
+  constexpr static auto PLACEHOLDER_TASK = get_index_v<std::monostate, handle_t>;
+  constexpr static auto STATIC_TASK      = get_index_v<StaticWork, handle_t>;
+  constexpr static auto DYNAMIC_TASK     = get_index_v<DynamicWork, handle_t>;
+  constexpr static auto CONDITION_TASK   = get_index_v<ConditionWork, handle_t>; 
+  constexpr static auto MODULE_TASK      = get_index_v<ModuleWork, handle_t>; 
+  constexpr static auto ASYNC_TASK       = get_index_v<AsyncWork, handle_t>; 
 
 #ifdef TF_ENABLE_CUDA
-  constexpr static auto CUDAFLOW_WORK = get_index_v<cudaFlowWork, handle_t>; 
+  constexpr static auto CUDAFLOW_TASK = get_index_v<cudaFlowWork, handle_t>; 
 #endif
 
     template <typename... Args>
@@ -280,7 +280,7 @@ Node::Node(Args&&... args): _handle{std::forward<Args>(args)...} {
 inline Node::~Node() {
   // this is to avoid stack overflow
 
-  if(_handle.index() == DYNAMIC_WORK) {
+  if(_handle.index() == DYNAMIC_TASK) {
 
     auto& subgraph = std::get<DynamicWork>(_handle).subgraph;
 
@@ -295,7 +295,7 @@ inline Node::~Node() {
 
     while(i < nodes.size()) {
 
-      if(nodes[i]->_handle.index() == DYNAMIC_WORK) {
+      if(nodes[i]->_handle.index() == DYNAMIC_TASK) {
 
         auto& sbg = std::get<DynamicWork>(nodes[i]->_handle).subgraph;
         std::move(
@@ -335,7 +335,7 @@ inline size_t Node::num_weak_dependents() const {
   return std::count_if(
     _dependents.begin(), 
     _dependents.end(), 
-    [](Node* node){ return node->_handle.index() == Node::CONDITION_WORK; } 
+    [](Node* node){ return node->_handle.index() == Node::CONDITION_TASK; } 
   );
 }
 
@@ -344,7 +344,7 @@ inline size_t Node::num_strong_dependents() const {
   return std::count_if(
     _dependents.begin(), 
     _dependents.end(), 
-    [](Node* node){ return node->_handle.index() != Node::CONDITION_WORK; } 
+    [](Node* node){ return node->_handle.index() != Node::CONDITION_TASK; } 
   );
 }
 
@@ -360,16 +360,16 @@ inline Domain Node::domain() const {
 
   switch(_handle.index()) {
 
-    case STATIC_WORK:
-    case DYNAMIC_WORK:
-    case CONDITION_WORK:
-    case MODULE_WORK:
-    case ASYNC_WORK:
+    case STATIC_TASK:
+    case DYNAMIC_TASK:
+    case CONDITION_TASK:
+    case MODULE_TASK:
+    case ASYNC_TASK:
       domain = Domain::HOST;
     break;
 
 #ifdef TF_ENABLE_CUDA
-    case CUDAFLOW_WORK:
+    case CUDAFLOW_TASK:
       domain = Domain::CUDA;
     break;
 #endif
@@ -403,7 +403,7 @@ inline void Node::_set_up_join_counter() {
   int c = 0;
 
   for(auto p : _dependents) {
-    if(p->_handle.index() == Node::CONDITION_WORK) {
+    if(p->_handle.index() == Node::CONDITION_TASK) {
       _set_state(Node::BRANCHED);
     }
     else {

@@ -14,15 +14,15 @@ namespace tf {
 @brief enumeration of all task types
 */
 enum TaskType {
-  PLACEHOLDER_TASK = Node::PLACEHOLDER_WORK,
+  PLACEHOLDER_TASK = Node::PLACEHOLDER_TASK,
 #ifdef TF_ENABLE_CUDA
-  CUDAFLOW_TASK    = Node::CUDAFLOW_WORK,
+  CUDAFLOW_TASK    = Node::CUDAFLOW_TASK,
 #endif
-  STATIC_TASK      = Node::STATIC_WORK,
-  DYNAMIC_TASK     = Node::DYNAMIC_WORK,
-  CONDITION_TASK   = Node::CONDITION_WORK,
-  MODULE_TASK      = Node::MODULE_WORK,
-  ASYNC_TASK       = Node::ASYNC_WORK,
+  STATIC_TASK      = Node::STATIC_TASK,
+  DYNAMIC_TASK     = Node::DYNAMIC_TASK,
+  CONDITION_TASK   = Node::CONDITION_TASK,
+  MODULE_TASK      = Node::MODULE_TASK,
+  ASYNC_TASK       = Node::ASYNC_TASK,
   NUM_TASK_TYPES
 };
 

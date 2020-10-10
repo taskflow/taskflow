@@ -259,7 +259,8 @@ class cudaFlow {
     // ------------------------------------------------------------------------
     // update APIs
     // ------------------------------------------------------------------------
-  // TODO update_kernel_on
+  
+    // TODO update_kernel_on
 
     // Function: update kernel parameters
     template <typename... ArgsT>
@@ -392,8 +393,8 @@ inline void cudaFlow::device(int d) {
   //
   //assert(_graph._native_handle.graph == nullptr);
   //
-  if(_device != -1) {
-    TF_THROW("cudaFlow has been assigned to device ", _device); 
+  if(_graph._native_handle.graph != nullptr) {
+    TF_THROW("cudaFlow has been instantiated on device ", _device); 
   }
   _device = d;
 }
@@ -654,28 +655,29 @@ inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
 
 // Function: update kernel parameters
 template <typename... ArgsT>
-void cudaFlow::update_kernel(cudaTask ct, dim3 g, dim3 b, size_t s, ArgsT&&... args) {
-  assert((ct._node)->_handle.index() == cudNode::KERNEL);
+void cudaFlow::update_kernel(
+  cudaTask ct, dim3 g, dim3 b, size_t s, ArgsT&&... args
+) {
+  assert((ct._node)->_handle.index() == cudNode::KERNEL_TASK);
 
   cudaKernelNodeParams p;
 
   void* arguments[sizeof...(ArgsT)] = { (void*)(&args)... };
-  p.func = std::get<cudaNode::KERNEL>((ct._node)->_handle).func;
+  p.func = std::get<cudaNode::KERNEL_TASK>((ct._node)->_handle).func;
   p.gridDim = g;
   p.blockDim = b;
   p.sharedMemBytes = s;
   p.kernelParams = arguments;
   p.extra = nullptr;
-
   
-  TF_CHECK_CUDA(
-    cudaGraphKernelNodeSetParams(ct._node->_native_handle, &p),
-    "failed to update a cudaGraph node of kernel task"
-  );
+  //TF_CHECK_CUDA(
+  //  cudaGraphKernelNodeSetParams(ct._node->_native_handle, &p),
+  //  "failed to update a cudaGraph node of kernel task"
+  //);
 
   TF_CHECK_CUDA(
     cudaGraphExecKernelNodeSetParams(_graph._native_handle.image, ct._node->_native_handle, &p),
-    "failed to update a cudaExecGraph node of memcpy task"
+    "failed to update kernel parameter on kernel task ", ct.name()
   );
 } 
 
@@ -685,7 +687,7 @@ template <
   std::enable_if_t<!std::is_same_v<T, void>, void>*
 >
 void cudaFlow::update_copy(cudaTask ct, T* tgt, const T* src, size_t num) {
-  assert(ct._handle.index() == cudNode::COPY);
+  assert(ct._handle.index() == cudNode::MEMCPY_TASK);
 
   using U = std::decay_t<T>;
 
@@ -700,10 +702,10 @@ void cudaFlow::update_copy(cudaTask ct, T* tgt, const T* src, size_t num) {
   p.extent = ::make_cudaExtent(num*sizeof(U), 1, 1);
   p.kind = cudaMemcpyDefault;
 
-  TF_CHECK_CUDA(
-    cudaGraphMemcpyNodeSetParams(ct._node->_native_handle, &p),
-    "failed to update a cudaGraph node of memcpy task"
-  );
+  //TF_CHECK_CUDA(
+  //  cudaGraphMemcpyNodeSetParams(ct._node->_native_handle, &p),
+  //  "failed to update a cudaGraph node of memcpy task"
+  //);
 
   TF_CHECK_CUDA(
     cudaGraphExecMemcpyNodeSetParams(_graph._native_handle.image, ct._node->_native_handle, &p),
@@ -714,7 +716,7 @@ void cudaFlow::update_copy(cudaTask ct, T* tgt, const T* src, size_t num) {
 // Function: update memcpy parameters
 inline 
 void cudaFlow::update_memcpy(cudaTask ct, void* tgt, const void* src, size_t bytes) {
-  assert(ct._handle.index() == cudNode::COPY);
+  assert(ct._handle.index() == cudNode::MEMCPY_TASK);
 
   cudaMemcpy3DParms p;
 
@@ -727,10 +729,10 @@ void cudaFlow::update_memcpy(cudaTask ct, void* tgt, const void* src, size_t byt
   p.extent = ::make_cudaExtent(bytes, 1, 1);
   p.kind = cudaMemcpyDefault;
 
-  TF_CHECK_CUDA(
-    cudaGraphMemcpyNodeSetParams(ct._node->_native_handle, &p),
-    "failed to update a cudaGraph node of memcpy task"
-  );
+  //TF_CHECK_CUDA(
+  //  cudaGraphMemcpyNodeSetParams(ct._node->_native_handle, &p),
+  //  "failed to update a cudaGraph node of memcpy task"
+  //);
 
   TF_CHECK_CUDA(
     cudaGraphExecMemcpyNodeSetParams(_graph._native_handle.image, ct._node->_native_handle, &p),
@@ -740,7 +742,8 @@ void cudaFlow::update_memcpy(cudaTask ct, void* tgt, const void* src, size_t byt
 
 inline
 void cudaFlow::update_memset(cudaTask ct, void* dst, int ch, size_t count) {
-  assert(ct._handle.index() == cudNode::MEMSET);
+
+  assert(ct._handle.index() == cudNode::MEMSET_TASK);
 
   cudaMemsetParams p;
   p.dst = dst;
@@ -752,16 +755,20 @@ void cudaFlow::update_memset(cudaTask ct, void* dst, int ch, size_t count) {
   p.width = count;
   p.height = 1;
 
-  TF_CHECK_CUDA(
-    cudaGraphMemsetNodeSetParams(ct._node->_native_handle, &p),
-    "failed to update a cudaGraph node of memset task"
-  );
+  //TF_CHECK_CUDA(
+  //  cudaGraphMemsetNodeSetParams(ct._node->_native_handle, &p),
+  //  "failed to update a cudaGraph node of memset task"
+  //);
 
   TF_CHECK_CUDA(
     cudaGraphExecMemsetNodeSetParams(_graph._native_handle.image, ct._node->_native_handle, &p),
     "failed to update a cudaExecGraph node of memset task"
   );
 }
+
+// ----------------------------------------------------------------------------
+// Generic Algorithm API
+// ----------------------------------------------------------------------------
 
 // Function: for_each
 template <typename I, typename C>
@@ -800,6 +807,7 @@ cudaTask cudaFlow::for_each_index(I beg, I end, I inc, C&& c) {
 template <typename I, typename C, typename... S>
 cudaTask cudaFlow::transform(I first, I last, C&& c, S... srcs) {
   
+  // TODO
   //if(N == 0) {
   //  return noop();
   //}

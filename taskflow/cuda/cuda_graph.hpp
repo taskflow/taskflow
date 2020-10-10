@@ -122,11 +122,11 @@ class cudaNode {
   >;
   
   // variant index
-  constexpr static auto NOOP   = get_index_v<Noop, handle_t>;
+  constexpr static auto NOOP_TASK   = get_index_v<Noop, handle_t>;
   //constexpr static auto HOST   = get_index_v<Host, handle_t>;
-  constexpr static auto MEMSET = get_index_v<Memset, handle_t>;
-  constexpr static auto COPY   = get_index_v<Copy, handle_t>; 
-  constexpr static auto KERNEL = get_index_v<Kernel, handle_t>;
+  constexpr static auto MEMSET_TASK = get_index_v<Memset, handle_t>;
+  constexpr static auto MEMCPY_TASK   = get_index_v<Copy, handle_t>; 
+  constexpr static auto KERNEL_TASK = get_index_v<Kernel, handle_t>;
 
   public:
     
