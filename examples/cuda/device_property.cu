@@ -7,7 +7,7 @@ int main() {
             << tf::cuda_get_runtime_version()/1000.0f << '\n';
 
   // Number of CUDA devices
-  auto num_cuda_devices = tf::cuda_num_devices();
+  auto num_cuda_devices = tf::cuda_get_num_devices();
 
   std::cout << "There are " << num_cuda_devices << " CUDA devices.\n";
 

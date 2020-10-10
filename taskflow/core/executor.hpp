@@ -54,7 +54,7 @@ class Executor {
     */
     explicit Executor(
       size_t N = std::thread::hardware_concurrency(),
-      size_t M = cuda_num_devices()
+      size_t M = cuda_get_num_devices()
     );
 #else
     /**
@@ -291,7 +291,7 @@ inline Executor::Executor(size_t N, size_t M) :
   _MAX_STEALS   {(N + M + 1) << 1},
   _MAX_YIELDS   {100},
   _workers      {N + M},
-  _cuda_devices {cuda_num_devices()},
+  _cuda_devices {cuda_get_num_devices()},
   _notifier     {Notifier(N), Notifier(M)} {
 
   if(N == 0) {
