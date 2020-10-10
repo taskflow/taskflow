@@ -200,7 +200,6 @@ class cudaFlow {
     @brief queries the device associated with the cudaFlow
     */
     int device() const;
-
     
     /**
     @brief offloads the cudaFlow onto a GPU and repeatedly running it until 
@@ -264,7 +263,7 @@ class cudaFlow {
 
     // Function: update kernel parameters
     template <typename... ArgsT>
-    void update_kernel(cudaTask ct, dim3 g, dim3 b, size_t s, ArgsT&&... args);
+    void update_kernel(cudaTask ct, dim3 g, dim3 b, size_t shm, ArgsT&&... args);
 
     template <
       typename T, 
@@ -389,10 +388,6 @@ inline bool cudaFlow::empty() const {
 
 // Procedure: device
 inline void cudaFlow::device(int d) {
-  //TODO 
-  //
-  //assert(_graph._native_handle.graph == nullptr);
-  //
   if(_graph._native_handle.graph != nullptr) {
     TF_THROW("cudaFlow has been instantiated on device ", _device); 
   }
@@ -658,12 +653,15 @@ template <typename... ArgsT>
 void cudaFlow::update_kernel(
   cudaTask ct, dim3 g, dim3 b, size_t s, ArgsT&&... args
 ) {
-  assert((ct._node)->_handle.index() == cudNode::KERNEL_TASK);
+
+  if(ct.type() != CUDA_KERNEL_TASK) {
+    TF_THROW("task ", ct.name(), " is not a kernel task");
+  }
 
   cudaKernelNodeParams p;
-
+  
   void* arguments[sizeof...(ArgsT)] = { (void*)(&args)... };
-  p.func = std::get<cudaNode::KERNEL_TASK>((ct._node)->_handle).func;
+  p.func = std::get<cudaNode::CUDA_KERNEL_TASK>((ct._node)->_handle).func;
   p.gridDim = g;
   p.blockDim = b;
   p.sharedMemBytes = s;
@@ -676,8 +674,10 @@ void cudaFlow::update_kernel(
   //);
 
   TF_CHECK_CUDA(
-    cudaGraphExecKernelNodeSetParams(_graph._native_handle.image, ct._node->_native_handle, &p),
-    "failed to update kernel parameter on kernel task ", ct.name()
+    cudaGraphExecKernelNodeSetParams(
+      _graph._native_handle.image, ct._node->_native_handle, &p
+    ),
+    "failed to update kernel task ", ct.name()
   );
 } 
 
@@ -687,7 +687,10 @@ template <
   std::enable_if_t<!std::is_same_v<T, void>, void>*
 >
 void cudaFlow::update_copy(cudaTask ct, T* tgt, const T* src, size_t num) {
-  assert(ct._handle.index() == cudNode::MEMCPY_TASK);
+  
+  if(ct.type() != CUDA_MEMCPY_TASK) {
+    TF_THROW("task ", ct.name(), " is not a memcpy task");
+  }
 
   using U = std::decay_t<T>;
 
@@ -708,15 +711,20 @@ void cudaFlow::update_copy(cudaTask ct, T* tgt, const T* src, size_t num) {
   //);
 
   TF_CHECK_CUDA(
-    cudaGraphExecMemcpyNodeSetParams(_graph._native_handle.image, ct._node->_native_handle, &p),
-    "failed to update a cudaExecGraph node of memcpy task"
+    cudaGraphExecMemcpyNodeSetParams(
+      _graph._native_handle.image, ct._node->_native_handle, &p
+    ),
+    "failed to update memcpy task ", ct.name()
   );
 }
 
 // Function: update memcpy parameters
 inline 
 void cudaFlow::update_memcpy(cudaTask ct, void* tgt, const void* src, size_t bytes) {
-  assert(ct._handle.index() == cudNode::MEMCPY_TASK);
+  
+  if(ct.type() != CUDA_MEMCPY_TASK) {
+    TF_THROW("task ", ct.name(), " is not a memcpy task");
+  }
 
   cudaMemcpy3DParms p;
 
@@ -736,14 +744,16 @@ void cudaFlow::update_memcpy(cudaTask ct, void* tgt, const void* src, size_t byt
 
   TF_CHECK_CUDA(
     cudaGraphExecMemcpyNodeSetParams(_graph._native_handle.image, ct._node->_native_handle, &p),
-    "failed to update a cudaExecGraph node of memcpy task"
+    "failed to update memcpy task ", ct.name()
   );
 }
 
 inline
 void cudaFlow::update_memset(cudaTask ct, void* dst, int ch, size_t count) {
 
-  assert(ct._handle.index() == cudNode::MEMSET_TASK);
+  if(ct.type() != CUDA_MEMSET_TASK) {
+    TF_THROW("task ", ct.name(), " is not a memset task");
+  }
 
   cudaMemsetParams p;
   p.dst = dst;
@@ -761,8 +771,10 @@ void cudaFlow::update_memset(cudaTask ct, void* dst, int ch, size_t count) {
   //);
 
   TF_CHECK_CUDA(
-    cudaGraphExecMemsetNodeSetParams(_graph._native_handle.image, ct._node->_native_handle, &p),
-    "failed to update a cudaExecGraph node of memset task"
+    cudaGraphExecMemsetNodeSetParams(
+      _graph._native_handle.image, ct._node->_native_handle, &p
+    ),
+    "failed to update memset task ", ct.name()
   );
 }
 

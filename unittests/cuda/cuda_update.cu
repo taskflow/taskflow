@@ -114,8 +114,6 @@ TEST_CASE("offload" * doctest::timeout(300)) {
     verify_t.precede(deallocate_t);
 
     executor.run(taskflow).wait();
-
-
   }
 }
 

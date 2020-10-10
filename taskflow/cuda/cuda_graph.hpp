@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cuda_statgrab.hpp"
+#include "cuda_memory.hpp"
 
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
@@ -120,15 +120,15 @@ class cudaNode {
     Copy, 
     Kernel
   >;
-  
-  // variant index
-  constexpr static auto NOOP_TASK   = get_index_v<Noop, handle_t>;
-  //constexpr static auto HOST   = get_index_v<Host, handle_t>;
-  constexpr static auto MEMSET_TASK = get_index_v<Memset, handle_t>;
-  constexpr static auto MEMCPY_TASK   = get_index_v<Copy, handle_t>; 
-  constexpr static auto KERNEL_TASK = get_index_v<Kernel, handle_t>;
 
   public:
+  
+  // variant index
+  constexpr static auto CUDA_NOOP_TASK   = get_index_v<Noop, handle_t>;
+  //constexpr static auto HOST_TASK = get_index_v<Host, handle_t>;
+  constexpr static auto CUDA_MEMSET_TASK = get_index_v<Memset, handle_t>;
+  constexpr static auto CUDA_MEMCPY_TASK   = get_index_v<Copy, handle_t>; 
+  constexpr static auto CUDA_KERNEL_TASK = get_index_v<Kernel, handle_t>;
     
     template <typename C, typename... ArgsT>
     cudaNode(C&&, ArgsT&&...);

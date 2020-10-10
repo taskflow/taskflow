@@ -4,6 +4,26 @@
 
 namespace tf {
 
+// ----------------------------------------------------------------------------
+// cudaTask Types
+// ----------------------------------------------------------------------------
+
+/**
+@enum cudaTaskType
+
+@brief enumeration of all cudaTask types
+*/
+enum cudaTaskType {
+  CUDA_NOOP_TASK   = cudaNode::CUDA_NOOP_TASK,
+  CUDA_MEMSET_TASK = cudaNode::CUDA_MEMSET_TASK,
+  CUDA_MEMCPY_TASK = cudaNode::CUDA_MEMCPY_TASK,
+  CUDA_KERNEL_TASK = cudaNode::CUDA_KERNEL_TASK
+};
+
+// ----------------------------------------------------------------------------
+// cudaTask 
+// ----------------------------------------------------------------------------
+
 /**
 @class cudaTask
 
@@ -78,27 +98,16 @@ class cudaTask {
     */
     bool empty() const;
 
+    /**
+    @brief queries the task type
+    */
+    cudaTaskType type() const;
+
   private:
     
     cudaTask(cudaNode*);
 
     cudaNode* _node {nullptr};
-    
-    /// @private
-    template <typename T>
-    void _precede(T&&);
-
-    /// @private
-    template <typename T, typename... Ts>
-    void _precede(T&&, Ts&&...);
-    
-    /// @private
-    template <typename T>
-    void _succeed(T&&);
-
-    // @private
-    template <typename T, typename... Ts>
-    void _succeed(T&&, Ts&&...);
 };
 
 // Constructor
@@ -108,45 +117,15 @@ inline cudaTask::cudaTask(cudaNode* node) : _node {node} {
 // Function: precede
 template <typename... Ts>
 cudaTask& cudaTask::precede(Ts&&... tasks) {
-  _precede(std::forward<Ts>(tasks)...);
+  (_node->_precede(tasks._node), ...);
   return *this;
-}
-
-/// @private
-// Procedure: precede
-template <typename T>
-void cudaTask::_precede(T&& other) {
-  _node->_precede(other._node);
-}
-
-/// @private
-// Procedure: _precede
-template <typename T, typename... Ts>
-void cudaTask::_precede(T&& task, Ts&&... others) {
-  _precede(std::forward<T>(task));
-  _precede(std::forward<Ts>(others)...);
 }
 
 // Function: succeed
 template <typename... Ts>
 cudaTask& cudaTask::succeed(Ts&&... tasks) {
-  _succeed(std::forward<Ts>(tasks)...);
+  (tasks._node->_precede(_node), ...);
   return *this;
-}
-
-/// @private
-// Procedure: _succeed
-template <typename T>
-void cudaTask::_succeed(T&& other) {
-  other._node->_precede(_node);
-}
-
-/// @private
-// Procedure: _succeed
-template <typename T, typename... Ts>
-void cudaTask::_succeed(T&& task, Ts&&... others) {
-  _succeed(std::forward<T>(task));
-  _succeed(std::forward<Ts>(others)...);
 }
 
 // Function: empty
@@ -170,4 +149,12 @@ inline size_t cudaTask::num_successors() const {
   return _node->_successors.size();
 }
 
+// Function: type
+inline cudaTaskType cudaTask::type() const {
+  return static_cast<cudaTaskType>(_node->_handle.index());
+}
+
 }  // end of namespace tf -----------------------------------------------------
+
+
+

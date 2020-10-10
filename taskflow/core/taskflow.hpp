@@ -269,14 +269,14 @@ inline void Taskflow::_dump(
           }
           
           switch(v->_handle.index()) {
-            case cudaNode::NOOP_TASK:
+            case cudaNode::CUDA_NOOP_TASK:
             break;
 
-            case cudaNode::MEMCPY_TASK:
+            case cudaNode::CUDA_MEMCPY_TASK:
               //os << " shape=\"cds\"";
             break;
 
-            case cudaNode::KERNEL_TASK:
+            case cudaNode::CUDA_KERNEL_TASK:
               os << " style=\"filled\""
                  << " color=\"white\" fillcolor=\"black\""
                  << " fontcolor=\"white\""

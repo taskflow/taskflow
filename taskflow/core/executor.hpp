@@ -275,10 +275,10 @@ class Executor {
     void _invoke_cudaflow_work(Worker&, Node*);
     
     template <typename P>
-    void _invoke_cudaflow_work_internal(Worker&, cudaFlow&, P&&);
+    void _invoke_cudaflow_work_internal(Worker&, cudaFlow&, P&&, bool);
     
     template <typename P>
-    void _invoke_cudaflow_work_external(cudaFlow&, P&&);
+    void _invoke_cudaflow_work_external(cudaFlow&, P&&, bool);
 #endif
 };
 
@@ -1058,12 +1058,10 @@ inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
   // join the cudaflow
   if(cf._joinable) {
     _invoke_cudaflow_work_internal(
-      worker, cf, [repeat=1] () mutable { return repeat-- == 0; }
+      worker, cf, [repeat=1] () mutable { return repeat-- == 0; }, true
     );  
     cf._joinable = false;
   }
-
-  cf._graph._destroy_native_graph();
 
   _observer_epilogue(worker, node);
 }
@@ -1071,7 +1069,7 @@ inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
 // Procedure: _invoke_cudaflow_work_internal
 template <typename P>
 void Executor::_invoke_cudaflow_work_internal(
-  Worker& w, cudaFlow& cf, P&& predicate
+  Worker& w, cudaFlow& cf, P&& predicate, bool join
 ) {
   
   if(cf.empty()) {
@@ -1105,17 +1103,22 @@ void Executor::_invoke_cudaflow_work_internal(
     );
   }
 
+  if(join) {
+    cf._graph._destroy_native_graph();
+  }
 }
 
 // Procedure: _invoke_cudaflow_work_external
 template <typename P>
-void Executor::_invoke_cudaflow_work_external(cudaFlow& cf, P&& predicate) {
+void Executor::_invoke_cudaflow_work_external(
+  cudaFlow& cf, P&& predicate, bool join
+) {
 
   auto w = _per_thread().worker;
   
   assert(w && w->executor == this);
 
-  _invoke_cudaflow_work_internal(*w, cf, std::forward<P>(predicate));
+  _invoke_cudaflow_work_internal(*w, cf, std::forward<P>(predicate), join);
 }
 #endif
 
@@ -1379,7 +1382,9 @@ void cudaFlow::offload_until(P&& predicate) {
     TF_THROW("cudaFlow already joined");
   }
 
-  _executor._invoke_cudaflow_work_external(*this, std::forward<P>(predicate));
+  _executor._invoke_cudaflow_work_external(
+    *this, std::forward<P>(predicate), false
+  );
 }
 
 // Procedure: offload_n
@@ -1400,7 +1405,10 @@ void cudaFlow::join_until(P&& predicate) {
     TF_THROW("cudaFlow already joined");
   }
 
-  _executor._invoke_cudaflow_work_external(*this, std::forward<P>(predicate));
+  _executor._invoke_cudaflow_work_external(
+    *this, std::forward<P>(predicate), true
+  );
+
   _joinable = false;
 }
 

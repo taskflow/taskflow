@@ -22,8 +22,7 @@ enum TaskType {
   DYNAMIC_TASK     = Node::DYNAMIC_TASK,
   CONDITION_TASK   = Node::CONDITION_TASK,
   MODULE_TASK      = Node::MODULE_TASK,
-  ASYNC_TASK       = Node::ASYNC_TASK,
-  NUM_TASK_TYPES
+  ASYNC_TASK       = Node::ASYNC_TASK
 };
 
 /**
