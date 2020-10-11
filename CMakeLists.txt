@@ -20,6 +20,7 @@ set(TF_EXAMPLE_DIR ${PROJECT_SOURCE_DIR}/examples)
 set(TF_BENCHMARK_DIR ${PROJECT_SOURCE_DIR}/benchmarks)
 set(TF_3RD_PARTY_DIR ${PROJECT_SOURCE_DIR}/3rd-party)
 set(TF_CMAKE_DIR ${PROJECT_SOURCE_DIR}/cmake)
+set(TF_DEFAULT_BUILD_TYPE "Release")
 
 # Turn on the verbose
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -67,6 +68,7 @@ endif()
 # https://cliutils.gitlab.io/modern-cmake/chapters/packages/CUDA.html
 # -----------------------------------------------------------------------------
 if(TF_BUILD_CUDA)
+  message(STATUS "Configuring CUDA ...")
   check_language(CUDA)
   if(NOT CMAKE_CUDA_COMPILER)
     message(FATAL_ERROR "\nNo CUDA compiler found")
@@ -82,22 +84,29 @@ endif()
 # find ComputeCpp
 # https://developer.codeplay.com/products/computecpp/ce/guides/integration-guide
 # -----------------------------------------------------------------------------
+# Users can specify:
+# 1. -DComputeCpp_DIR=/path/to/ComputeCpp/
+# 2. -DCOMPUTECPP_BITCODE=ptx64 (default spir64)
+# For example:
+# cmake ../ -DTF_BUILD_SYCL=ON 
+#           -DCOMPUTECPP_BITCODE=ptx64 
+#           -DComputeCpp_DIR=$COMPUTECPP_HOME
 if(TF_BUILD_SYCL)
+  message(STATUS "Configuring ComputeCpp for SYCL ...")
+  #message(STATUS "You may specify '-DComputeCpp_DIR=/path/to/ComputeCpp/'")
+  message(STATUS "You may specify '-DCOMPUTECPP_BITCODE=ptx64' for Nvidia devices")
   list(APPEND CMAKE_MODULE_PATH ${TF_CMAKE_DIR}/ComputeCpp/Modules/)
   if(NOT ComputeCpp_DIR)
-    message(FATAL_ERROR "\nPlese define ComputeCpp_DIR to the ComputeCpp installation")
+    message(FATAL_ERROR "Please specify -DComputeCpp_DIR=/path/to/ComputeCpp/")
   endif()
-  include(FindComputeCpp)
-  if(NOT ComputeCpp_INCLUDE_DIRS)
-    message(FATAL_ERROR "\nComputeCpp_INCLUDE_DIRS not found")
-  endif()
+  #include(FindComputeCpp)
+  find_package(ComputeCpp REQUIRED)
   include_directories(${ComputeCpp_INCLUDE_DIRS})
 endif()
 
 # -----------------------------------------------------------------------------
 # defult release build
 # -----------------------------------------------------------------------------
-set(TF_DEFAULT_BUILD_TYPE "Release")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to '${TF_DEFAULT_BUILD_TYPE}'")
   set(

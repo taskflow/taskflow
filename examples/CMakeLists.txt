@@ -28,9 +28,9 @@ endif()
 # -----------------------------------------------------------------------------
 # sycl examples
 # -----------------------------------------------------------------------------
-#if (CMAKE_SYCL_COMPILER AND TF_BUILD_CUDA)
-#  add_subdirectory(sycl)
-#endif()
+if(TF_BUILD_SYCL)
+  add_subdirectory(sycl)
+endif()
 
 
 #### TensorFrame Project
