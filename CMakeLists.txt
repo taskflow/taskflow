@@ -7,7 +7,7 @@ project(Taskflow VERSION 3.0.0 LANGUAGES CXX)
 
 # build options
 option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
-option(TF_BUILD_CUDA "Enables build of cuda code" ON)
+option(TF_BUILD_CUDA "Enables build of cuda code" OFF)
 option(TF_BUILD_SYCL "Enables build of sycl code" OFF)
 option(TF_BUILD_TESTS "Enables build of tests" ON)
 option(TF_BUILD_EXAMPLES "Enables build of examples" ON)
