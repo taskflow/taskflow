@@ -20,6 +20,23 @@ enum cudaTaskType {
   CUDA_KERNEL_TASK = cudaNode::CUDA_KERNEL_TASK
 };
 
+/**
+@brief convert a cuda_task type to a human-readable string
+*/
+inline const char* cuda_task_type_to_string(cudaTaskType type) {
+
+  const char* val;
+
+  switch(type) {
+    case CUDA_NOOP_TASK:   val = "noop";      break;
+    case CUDA_MEMSET_TASK: val = "memset";    break;
+    case CUDA_MEMCPY_TASK: val = "memcpy";    break;
+    case CUDA_KERNEL_TASK: val = "kernel";    break;
+    default:               val = "undefined"; break;
+  }
+  return val;
+}
+
 // ----------------------------------------------------------------------------
 // cudaTask 
 // ----------------------------------------------------------------------------
@@ -32,6 +49,8 @@ enum cudaTaskType {
 class cudaTask {
 
   friend class cudaFlow;
+
+  friend std::ostream& operator << (std::ostream&, const cudaTask&);
 
   public:
     
@@ -103,6 +122,11 @@ class cudaTask {
     */
     cudaTaskType type() const;
 
+    /**
+    @brief dumps the task through an output stream
+    */
+    void dump(std::ostream& os) const;
+
   private:
     
     cudaTask(cudaNode*);
@@ -152,6 +176,26 @@ inline size_t cudaTask::num_successors() const {
 // Function: type
 inline cudaTaskType cudaTask::type() const {
   return static_cast<cudaTaskType>(_node->_handle.index());
+}
+
+// Procedure: dump
+inline void cudaTask::dump(std::ostream& os) const {
+  os << "cudaTask ";
+  if(_node->_name.empty()) os << _node;
+  else os << _node->_name;
+  os << " [type=" << cuda_task_type_to_string(type()) << ']';
+}
+
+// ----------------------------------------------------------------------------
+// global ostream
+// ----------------------------------------------------------------------------
+
+/**
+@brief overload of ostream inserter operator for cudaTask
+*/
+inline std::ostream& operator << (std::ostream& os, const cudaTask& ct) {
+  ct.dump(os);
+  return os;
 }
 
 }  // end of namespace tf -----------------------------------------------------

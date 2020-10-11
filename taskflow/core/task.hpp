@@ -270,6 +270,11 @@ class Task {
     */
     TaskType type() const;
 
+    /**
+    @brief dumps the task through an output stream
+    */
+    void dump(std::ostream& os) const;
+
   private:
     
     Task(Node*);
@@ -406,6 +411,14 @@ inline size_t Task::hash_value() const {
   return std::hash<Node*>{}(_node);
 }
 
+// Procedure: dump
+inline void Task::dump(std::ostream& os) const {
+  os << "task ";
+  if(name().empty()) os << _node;
+  else os << name();
+  os << " [type=" << task_type_to_string(type()) << ']';
+}
+
 // Function: work
 template <typename C>
 Task& Task::work(C&& c) {
@@ -427,6 +440,18 @@ Task& Task::work(C&& c) {
     static_assert(dependent_false_v<C>, "invalid task callable");
   }
   return *this;
+}
+
+// ----------------------------------------------------------------------------
+// global ostream
+// ----------------------------------------------------------------------------
+
+/**
+@brief overload of ostream inserter operator for cudaTask
+*/
+inline std::ostream& operator << (std::ostream& os, const Task& task) {
+  task.dump(os);
+  return os;
 }
 
 // ----------------------------------------------------------------------------

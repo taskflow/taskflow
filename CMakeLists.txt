@@ -2,17 +2,27 @@
 cmake_minimum_required (VERSION 3.10)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
-# Turn on the verbose
-set(CMAKE_VERBOSE_MAKEFILE ON)
-
 # Project name
 project(Taskflow VERSION 3.0.0 LANGUAGES CXX)
 
 # build options
 option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
-option(TF_BUILD_CUDA "Enables build of CUDA code" ON)
+option(TF_BUILD_CUDA "Enables build of cuda code" ON)
+option(TF_BUILD_SYCL "Enables build of sycl code" OFF)
 option(TF_BUILD_TESTS "Enables build of tests" ON)
 option(TF_BUILD_EXAMPLES "Enables build of examples" ON)
+
+# project-specific variables
+set(TF_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
+set(TF_LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib")
+set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittests)
+set(TF_EXAMPLE_DIR ${PROJECT_SOURCE_DIR}/examples)
+set(TF_BENCHMARK_DIR ${PROJECT_SOURCE_DIR}/benchmarks)
+set(TF_3RD_PARTY_DIR ${PROJECT_SOURCE_DIR}/3rd-party)
+set(TF_CMAKE_DIR ${PROJECT_SOURCE_DIR}/cmake)
+
+# Turn on the verbose
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Include additional language check
 include(CheckLanguage)
@@ -52,19 +62,41 @@ Taskflow currently supports the following compilers:\n\
 ")
 endif()
 
-# NVCC Compiler
+# -----------------------------------------------------------------------------
+# find nvcc
 # https://cliutils.gitlab.io/modern-cmake/chapters/packages/CUDA.html
-
-check_language(CUDA)
-if(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
+# -----------------------------------------------------------------------------
+if(TF_BUILD_CUDA)
+  check_language(CUDA)
+  if(NOT CMAKE_CUDA_COMPILER)
+    message(FATAL_ERROR "\nNo CUDA compiler found")
+  endif()
   enable_language(CUDA)
   if(CMAKE_CUDA_COMPILER_VERSION VERSION_LESS "11")
     message(STATUS "CMAKE_CUDA_COMPILER_VERSION: ${CMAKE_CUDA_COMPILER_VERSION}")
     message(FATAL_ERROR "\nTaskflow requires CUDA at least v11")
   endif()
-endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
+endif()
 
+# -----------------------------------------------------------------------------
+# find ComputeCpp
+# https://developer.codeplay.com/products/computecpp/ce/guides/integration-guide
+# -----------------------------------------------------------------------------
+if(TF_BUILD_SYCL)
+  list(APPEND CMAKE_MODULE_PATH ${TF_CMAKE_DIR}/ComputeCpp/Modules/)
+  if(NOT ComputeCpp_DIR)
+    message(FATAL_ERROR "\nPlese define ComputeCpp_DIR to the ComputeCpp installation")
+  endif()
+  include(FindComputeCpp)
+  if(NOT ComputeCpp_INCLUDE_DIRS)
+    message(FATAL_ERROR "\nComputeCpp_INCLUDE_DIRS not found")
+  endif()
+  include_directories(${ComputeCpp_INCLUDE_DIRS})
+endif()
+
+# -----------------------------------------------------------------------------
 # defult release build
+# -----------------------------------------------------------------------------
 set(TF_DEFAULT_BUILD_TYPE "Release")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to '${TF_DEFAULT_BUILD_TYPE}'")
@@ -102,14 +134,14 @@ target_compile_options(
   #$<$<CXX_COMPILER_ID:NVIDIA>:-Xcompiler=-Wall,-Wextra,-Wfatal-errors>
 )
 
-if(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
+if(TF_BUILD_CUDA)
   target_compile_options(
     error_settings
     BEFORE
     INTERFACE
     $<$<COMPILE_LANGUAGE:CUDA>:--extended-lambda -Xcompiler=-Wall,-Wextra,-Wfatal-errors>
   )
-endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
+endif(TF_BUILD_CUDA)
 
 # additional features
 add_library(features_settings INTERFACE)
@@ -161,14 +193,11 @@ target_link_libraries(
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_EXTENSIONS OFF)
 
-# installation path
-set(TF_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
-set(TF_LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib")
-set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittests)
-set(TF_EXAMPLE_DIR ${PROJECT_SOURCE_DIR}/examples)
-set(TF_BENCHMARK_DIR ${PROJECT_SOURCE_DIR}/benchmarks)
-set(TF_3RD_PARTY_DIR ${PROJECT_SOURCE_DIR}/3rd-party)
+# -----------------------------------------------------------------------------
+# start build
+# -----------------------------------------------------------------------------
 
+message(STATUS "PROJECT_NAME: " ${PROJECT_NAME})
 message(STATUS "CMAKE_HOST_SYSTEM: ${CMAKE_HOST_SYSTEM}")
 message(STATUS "CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
 message(STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER})
@@ -182,13 +211,14 @@ message(STATUS "CMAKE_CUDA_FLAGS: " ${CMAKE_CUDA_FLAGS})
 message(STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH})
 message(STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR})
 message(STATUS "CMAKE_CURRENT_BINARY_DIR: " ${CMAKE_CURRENT_BINARY_DIR})
+message(STATUS "CMAKE_CURRENT_LIST_DIR: " ${CMAKE_CURRENT_LIST_DIR})
 message(STATUS "CMAKE_EXE_LINKER_FLAGS: " ${CMAKE_EXE_LINKER_FLAGS})
 message(STATUS "CMAKE_INSTALL_PREFIX: " ${CMAKE_INSTALL_PREFIX})
 message(STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH})
 message(STATUS "CMAKE_PREFIX_PATH: " ${CMAKE_PREFIX_PATH})
-message(STATUS "PROJECT_NAME: " ${PROJECT_NAME})
 message(STATUS "TF_BUILD_BENCHMARKS: " ${TF_BUILD_BENCHMARKS})
 message(STATUS "TF_BUILD_CUDA: " ${TF_BUILD_CUDA})
+message(STATUS "TF_BUILD_SYCL: " ${TF_BUILD_SYCL})
 message(STATUS "TF_BUILD_TESTS: " ${TF_BUILD_TESTS})
 message(STATUS "TF_BUILD_EXAMPLES: " ${TF_BUILD_EXAMPLES})
 message(STATUS "TF_INC_INSTALL_DIR: " ${TF_INC_INSTALL_DIR})
@@ -197,10 +227,8 @@ message(STATUS "TF_UTEST_DIR: " ${TF_UTEST_DIR})
 message(STATUS "TF_EXAMPLE_DIR: " ${TF_EXAMPLE_DIR})
 message(STATUS "TF_BENCHMARK_DIR: " ${TF_BENCHMARK_DIR})
 message(STATUS "TF_3RD_PARTY_DIR: " ${TF_3RD_PARTY_DIR})
-if(NOT CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
-  message(WARNING "TF_BUILD_CUDA set but no CUDA compiler found!\n"
-    "NOT building CUDA examples/benchmarks/...")
-endif()
+message(STATUS "ComputeCpp_DIR: " ${ComputeCpp_DIR})
+message(STATUS "ComputeCpp_INCLUDE_DIRS: " ${ComputeCpp_INCLUDE_DIRS})
 
 # add the binary tree to the search path for include files
 include_directories(${PROJECT_SOURCE_DIR})
@@ -258,7 +286,7 @@ if(TF_BUILD_TESTS)
 endif(TF_BUILD_TESTS)
 
 # -----------------------------------------------------------------------------
-# Benchmarking (enabled by TF_BUILD_BENCHMARKS)
+# Benchmarking
 # -----------------------------------------------------------------------------
 
 if(TF_BUILD_BENCHMARKS)

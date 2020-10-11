@@ -27,6 +27,8 @@ for instance, kernel tasks, data transfer tasks, and memory operation tasks.
 class cudaFlow {
 
   friend class Executor;
+
+  friend class cfBLAS;
   //friend class cudaBLAF;
 
   public:
@@ -211,6 +213,10 @@ class cudaFlow {
 
     Immediately offloads the present cudaFlow onto a GPU and
     repeatedly executes it until the predicate returns @c true.
+
+    A offloaded cudaFlow force the underlying graph to be instantiated.
+    After the instantiation, you should not modify the graph topology
+    but update node parameters.
     */
     template <typename P>
     void offload_until(P&& predicate);
@@ -218,12 +224,12 @@ class cudaFlow {
     /**
     @brief offloads the cudaFlow and executes it by the given times
 
-    @tparam N number of executions
+    @param N number of executions
     */
     void offload_n(size_t N);
 
     /**
-    @brief offloads the cudaFlow once
+    @brief offloads the cudaFlow and executes it once
     */
     void offload();
 
@@ -244,35 +250,48 @@ class cudaFlow {
     void join_until(P&& predicate);
 
     /**
-    @brief offloads the cudaFlow by the given times and then joins the execution
+    @brief offloads the cudaFlow and executes it by the given times,
+           and then joins the execution
 
-    @tparam N number of executions
+    @param N number of executions before join
     */
     void join_n(size_t N);
 
     /**
-    @brief offloads the cudaFlow once and then joins the execution
+    @brief offloads the cudaFlow and executes it once, 
+           and then joins the execution
     */
     void join();
 
     // ------------------------------------------------------------------------
-    // update APIs
+    // update methods
     // ------------------------------------------------------------------------
   
     // TODO update_kernel_on
 
-    // Function: update kernel parameters
+    /**
+    @brief updates parameters of a kernel task
+    */
     template <typename... ArgsT>
     void update_kernel(cudaTask ct, dim3 g, dim3 b, size_t shm, ArgsT&&... args);
 
+    /**
+    @brief updates parameters of a copy task
+    */
     template <
       typename T, 
       std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
     >
     void update_copy(cudaTask ct, T* tgt, const T* src, size_t num);
 
+    /**
+    @brief updates parameters of a memcpy task
+    */
     void update_memcpy(cudaTask ct, void* tgt, const void* src, size_t bytes);
 
+    /**
+    @brief updates parameters of a memset task
+    */
     void update_memset(cudaTask ct, void* dst, int ch, size_t count);
 
 
@@ -361,7 +380,13 @@ class cudaFlow {
     // TODO: 
     //template <typename T, typename B>
     //cudaTask reduce(T* tgt, size_t N, T& init, B&& op);
+    //
     
+    // ------------------------------------------------------------------------
+    // cuda sdk
+    // ------------------------------------------------------------------------
+    //cudaTask cuBLAS([](cfDNN&){}) 
+    //cudaTask cuDNN([(cfDNN&)])
 
   private:
     
@@ -645,7 +670,7 @@ inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
 }
 
 // ------------------------------------------------------------------------
-// update APIs
+// update methods
 // ------------------------------------------------------------------------
 
 // Function: update kernel parameters
@@ -655,7 +680,7 @@ void cudaFlow::update_kernel(
 ) {
 
   if(ct.type() != CUDA_KERNEL_TASK) {
-    TF_THROW("task ", ct.name(), " is not a kernel task");
+    TF_THROW(ct, " is not a kernel task");
   }
 
   cudaKernelNodeParams p;
@@ -677,7 +702,7 @@ void cudaFlow::update_kernel(
     cudaGraphExecKernelNodeSetParams(
       _graph._native_handle.image, ct._node->_native_handle, &p
     ),
-    "failed to update kernel task ", ct.name()
+    "failed to update kernel parameter on ", ct
   );
 } 
 
@@ -689,7 +714,7 @@ template <
 void cudaFlow::update_copy(cudaTask ct, T* tgt, const T* src, size_t num) {
   
   if(ct.type() != CUDA_MEMCPY_TASK) {
-    TF_THROW("task ", ct.name(), " is not a memcpy task");
+    TF_THROW(ct, " is not a memcpy task");
   }
 
   using U = std::decay_t<T>;
@@ -714,7 +739,7 @@ void cudaFlow::update_copy(cudaTask ct, T* tgt, const T* src, size_t num) {
     cudaGraphExecMemcpyNodeSetParams(
       _graph._native_handle.image, ct._node->_native_handle, &p
     ),
-    "failed to update memcpy task ", ct.name()
+    "failed to update memcpy parameter on ", ct
   );
 }
 
@@ -723,7 +748,7 @@ inline
 void cudaFlow::update_memcpy(cudaTask ct, void* tgt, const void* src, size_t bytes) {
   
   if(ct.type() != CUDA_MEMCPY_TASK) {
-    TF_THROW("task ", ct.name(), " is not a memcpy task");
+    TF_THROW(ct, " is not a memcpy task");
   }
 
   cudaMemcpy3DParms p;
@@ -744,7 +769,7 @@ void cudaFlow::update_memcpy(cudaTask ct, void* tgt, const void* src, size_t byt
 
   TF_CHECK_CUDA(
     cudaGraphExecMemcpyNodeSetParams(_graph._native_handle.image, ct._node->_native_handle, &p),
-    "failed to update memcpy task ", ct.name()
+    "failed to update memcpy parameter on ", ct
   );
 }
 
@@ -752,7 +777,7 @@ inline
 void cudaFlow::update_memset(cudaTask ct, void* dst, int ch, size_t count) {
 
   if(ct.type() != CUDA_MEMSET_TASK) {
-    TF_THROW("task ", ct.name(), " is not a memset task");
+    TF_THROW(ct, " is not a memset task");
   }
 
   cudaMemsetParams p;
@@ -774,7 +799,7 @@ void cudaFlow::update_memset(cudaTask ct, void* dst, int ch, size_t count) {
     cudaGraphExecMemsetNodeSetParams(
       _graph._native_handle.image, ct._node->_native_handle, &p
     ),
-    "failed to update memset task ", ct.name()
+    "failed to update memset parameter on ", ct
   );
 }
 
@@ -801,13 +826,10 @@ cudaTask cudaFlow::for_each_index(I beg, I end, I inc, C&& c) {
   if(is_range_invalid(beg, end, inc)) {
     TF_THROW("invalid range [", beg, ", ", end, ") with inc size ", inc);
   }
-        
-  size_t N = distance(beg, end, inc);
+  
+  // TODO: special case when N is 0?
 
-  if(N == 0) {
-    return noop();
-  }
-      
+  size_t N = distance(beg, end, inc);
   size_t B = cuda_default_threads_per_block(N);
 
   return kernel(

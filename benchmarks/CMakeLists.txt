@@ -196,7 +196,7 @@ target_link_libraries(
 set_target_properties(reduce_sum PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
-if(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
+if(TF_BUILD_CUDA)
 ## cuda benchmark 1: heterogeneous traversal
 add_executable(
   hetero_traversal 
@@ -215,4 +215,4 @@ target_link_libraries(
   tf::default_settings
 )
 set_target_properties(hetero_traversal PROPERTIES COMPILE_FLAGS "-Xcompiler ${OpenMP_CXX_FLAGS}")
-endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
+endif(TF_BUILD_CUDA)

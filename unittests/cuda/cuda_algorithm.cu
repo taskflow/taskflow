@@ -346,7 +346,7 @@ TEST_CASE("for_each.double" * doctest::timeout(300)) {
 template <typename T>
 void for_each_index() {
 
-  for(int n=1; n<=123456; n = n*2 + 1) {
+  for(int n=10; n<=123456; n = n*2 + 1) {
 
     tf::Taskflow taskflow;
     tf::Executor executor;
