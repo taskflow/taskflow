@@ -197,22 +197,39 @@ set_target_properties(reduce_sum PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
 if(TF_BUILD_CUDA)
-## cuda benchmark 1: heterogeneous traversal
-add_executable(
-  hetero_traversal 
-  ${TF_BENCHMARK_DIR}/hetero_traversal/main.cu
-  ${TF_BENCHMARK_DIR}/hetero_traversal/taskflow.cu
-  ${TF_BENCHMARK_DIR}/hetero_traversal/tbb.cu
-  ${TF_BENCHMARK_DIR}/hetero_traversal/omp.cu
-)
-target_include_directories(hetero_traversal PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-target_link_libraries(
-  hetero_traversal 
-  ${PROJECT_NAME} 
-  Threads::Threads 
-  ${TBB_IMPORTED_TARGETS} 
-  ${OpenMP_CXX_LIBRARIES} 
-  tf::default_settings
-)
-set_target_properties(hetero_traversal PROPERTIES COMPILE_FLAGS "-Xcompiler ${OpenMP_CXX_FLAGS}")
+
+  ## cuda benchmark 1: heterogeneous traversal
+  add_executable(
+    hetero_traversal 
+    ${TF_BENCHMARK_DIR}/hetero_traversal/main.cu
+    ${TF_BENCHMARK_DIR}/hetero_traversal/taskflow.cu
+    ${TF_BENCHMARK_DIR}/hetero_traversal/tbb.cu
+    ${TF_BENCHMARK_DIR}/hetero_traversal/omp.cu
+  )
+  
+  target_include_directories(
+    hetero_traversal PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11
+  )
+  
+  target_link_libraries(
+    hetero_traversal 
+    ${PROJECT_NAME} 
+    Threads::Threads 
+    ${TBB_IMPORTED_TARGETS} 
+    ${OpenMP_CXX_LIBRARIES} 
+    tf::default_settings
+  )
+  
+  set_target_properties(
+    hetero_traversal PROPERTIES COMPILE_FLAGS "-Xcompiler ${OpenMP_CXX_FLAGS}"
+  )
+  
+  # avoid cmake 3.18+ warning
+  # we let nvcc to decide the flag if the architecture is not given
+  if(NOT CUDA_ARCHITECTURES)
+    set_property(TARGET ${cudatest} PROPERTY CUDA_ARCHITECTURES OFF)
+  endif()
+
+
 endif(TF_BUILD_CUDA)
+
