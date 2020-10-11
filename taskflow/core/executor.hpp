@@ -256,7 +256,7 @@ class Executor {
     void _exploit_task(Worker&, Node*&);
     void _explore_task(Worker&, Node*&);
     void _schedule(Node*);
-    void _schedule(PassiveVector<Node*>&);
+    void _schedule(std::vector<Node*>&);
     void _invoke(Worker&, Node*);
     void _invoke_static_work(Worker&, Node*);
     void _invoke_dynamic_work(Worker&, Node*);
@@ -726,7 +726,7 @@ inline void Executor::_schedule(Node* node) {
 // Procedure: _schedule
 // The main procedure to schedule a set of task nodes.
 // Each task node has two types of tasks - regular and subflow.
-inline void Executor::_schedule(PassiveVector<Node*>& nodes) {
+inline void Executor::_schedule(std::vector<Node*>& nodes) {
 
   //assert(_workers.size() != 0);
   
@@ -946,7 +946,7 @@ inline void Executor::_invoke_dynamic_work_internal(
 
   if(g.empty()) return;
 
-  PassiveVector<Node*> src; 
+  std::vector<Node*> src; 
 
   for(auto n : g._nodes) {
 

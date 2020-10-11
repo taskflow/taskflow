@@ -5,7 +5,6 @@
 #include "../utility/iterator.hpp"
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
-#include "../utility/passive_vector.hpp"
 #include "../utility/singleton.hpp"
 #include "../utility/uuid.hpp"
 #include "../utility/os.hpp"
@@ -196,8 +195,8 @@ class Node {
 
     handle_t _handle;
 
-    PassiveVector<Node*> _successors;
-    PassiveVector<Node*> _dependents;
+    std::vector<Node*> _successors;
+    std::vector<Node*> _dependents;
 
     Topology* _topology {nullptr};
     

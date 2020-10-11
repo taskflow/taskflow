@@ -143,7 +143,7 @@ class cudaNode {
 
     cudaGraphNode_t _native_handle {nullptr};
 
-    PassiveVector<cudaNode*> _successors;
+    std::vector<cudaNode*> _successors;
 
     void _precede(cudaNode*);
 };
