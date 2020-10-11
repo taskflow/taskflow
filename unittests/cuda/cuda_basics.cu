@@ -730,7 +730,7 @@ void worker_id(unsigned N, unsigned M) {
   REQUIRE(executor.num_workers() == (N + M));
   REQUIRE(executor.num_domains() == 2);
 
-  const unsigned s = 1000;
+  const unsigned s = 100;
 
   for(unsigned k=0; k<s; ++k) {
     
@@ -786,7 +786,7 @@ void worker_id(unsigned N, unsigned M) {
     chktask.precede(subflow);
   }
 
-  executor.run_n(taskflow, 100).wait();
+  executor.run_n(taskflow, 10).wait();
 }
 
 TEST_CASE("WorkerID.1C1G") {
@@ -863,7 +863,7 @@ void multiruns(unsigned N, unsigned M) {
   tf::Executor executor(N, M);
 
   const unsigned n = 1000;
-  const unsigned s = 1000;
+  const unsigned s = 100;
 
   int *cpu[s] = {0};
   int *gpu[s] = {0};

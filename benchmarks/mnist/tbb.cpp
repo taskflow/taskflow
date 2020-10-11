@@ -1,6 +1,7 @@
+
 #include "dnn.hpp"
 #include <memory>  // unique_ptr
-#include <tbb/task_scheduler_init.h>
+#include <tbb/global_control.h>
 #include <tbb/flow_graph.h>
 
 void run_tbb(MNIST& D, unsigned num_threads) {
@@ -8,7 +9,10 @@ void run_tbb(MNIST& D, unsigned num_threads) {
   using namespace tbb;
   using namespace tbb::flow;
 
-  tbb::task_scheduler_init init(num_threads);
+  tbb::global_control c(
+    tbb::global_control::max_allowed_parallelism, num_threads
+  );
+
   tbb::flow::graph G;
 
   std::vector<std::unique_ptr<continue_node<continue_msg>>> forward_tasks;

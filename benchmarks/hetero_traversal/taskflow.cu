@@ -43,7 +43,7 @@ void taskflow(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
         auto h2d_gx = cf.copy(gx, cx, N);
         auto h2d_gy = cf.copy(gy, cy, N);
         auto h2d_gz = cf.copy(gz, cz, N);
-        auto kernel = cf.kernel((N+255)/256, 256, 0, add, gx, gy, gz, N);
+        auto kernel = cf.kernel((N+255)/256, 256, 0, add<int>, gx, gy, gz, N);
         auto d2h_gx = cf.copy(cx, gx, N);
         auto d2h_gy = cf.copy(cy, gy, N);
         auto d2h_gz = cf.copy(cz, gz, N);

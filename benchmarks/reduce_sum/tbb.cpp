@@ -1,21 +1,19 @@
 #include "reduce_sum.hpp"
-#include <tbb/tbb.h>
-#include <tbb/task_scheduler_init.h>
 #include <tbb/parallel_reduce.h>
 #include <tbb/blocked_range.h>
+#include <tbb/global_control.h>
 
 // reduce_sum_tbb
 void reduce_sum_tbb(unsigned num_threads) {
 
-  using namespace tbb;
-  using namespace tbb::flow;
- 
-  tbb::task_scheduler_init init(num_threads);
+  tbb::global_control c(
+    tbb::global_control::max_allowed_parallelism, num_threads
+  );
 
   tbb::parallel_reduce(
     tbb::blocked_range<double*>(vec.data(), vec.data() + vec.size()),
     0.0,
-    [](const blocked_range<double*>& r, double value) {
+    [](const tbb::blocked_range<double*>& r, double value) {
       return std::accumulate(r.begin(), r.end(), value);
     },
     [](double l, double r) -> double {

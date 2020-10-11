@@ -1,10 +1,14 @@
 #include "mandel.hpp"
-#include "tbb/task_scheduler_init.h"
-#include "tbb/parallel_for.h"
-#include "tbb/blocked_range.h"
+#include <tbb/global_control.h>
+#include <tbb/parallel_for.h>
+#include <tbb/blocked_range.h>
 
 void mandelbrot_tbb(unsigned num_threads, int d = D) {
-  tbb::task_scheduler_init init(num_threads);
+  
+  tbb::global_control c(
+    tbb::global_control::max_allowed_parallelism, num_threads
+  );
+
   tbb::parallel_for(0, H, 1, [&](int i) {
     for(int j=0; j<W; j++) {
       auto xy = scale_xy(i, j);
