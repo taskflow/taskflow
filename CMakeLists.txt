@@ -125,6 +125,10 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 
+# -----------------------------------------------------------------------------
+# tf::default_setting
+# -----------------------------------------------------------------------------
+
 # error setting
 add_library(error_settings INTERFACE)
 add_library(tf::error_settings ALIAS error_settings)
