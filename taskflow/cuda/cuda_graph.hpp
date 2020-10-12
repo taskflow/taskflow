@@ -81,14 +81,12 @@ class cudaNode {
     //Noop(C&&);
   };
 
-  //// Host handle
-  //struct Host {
+  // Host handle
+  struct Host {
 
-  //  template <typename C>
-  //  Host(C&&);
-  //  
-  //  std::function<void(cudaGraph_t&, cudaGraphNode_t&)> create_native_node;
-  //};
+    //template <typename C>
+    //Host(C&);
+  };
 
   // Memset handle
   struct Memset {
@@ -115,7 +113,7 @@ class cudaNode {
   using handle_t = std::variant<
     std::monostate, 
     Noop, 
-    //Host, 
+    Host, 
     Memset, 
     Copy, 
     Kernel
@@ -125,7 +123,7 @@ class cudaNode {
   
   // variant index
   constexpr static auto CUDA_NOOP_TASK   = get_index_v<Noop, handle_t>;
-  //constexpr static auto HOST_TASK = get_index_v<Host, handle_t>;
+  constexpr static auto CUDA_HOST_TASK = get_index_v<Host, handle_t>;
   constexpr static auto CUDA_MEMSET_TASK = get_index_v<Memset, handle_t>;
   constexpr static auto CUDA_MEMCPY_TASK   = get_index_v<Copy, handle_t>; 
   constexpr static auto CUDA_KERNEL_TASK = get_index_v<Kernel, handle_t>;
@@ -186,7 +184,6 @@ cudaNode::cudaNode(C&& c, ArgsT&&... args) :
 
 // Procedure: _precede
 inline void cudaNode::_precede(cudaNode* v) {
-
   _successors.push_back(v);
 }
 

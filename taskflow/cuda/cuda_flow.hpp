@@ -50,20 +50,18 @@ class cudaFlow {
     */
     cudaTask noop();
     
-    // CUDA seems pretty restrictive about calling host in a cudaGraph.
-    // We disable this function and wait for future stability.
-    //
-    //@brief creates a host execution task
-    //
-    //@tparam C callable type
-    //
-    //@param c a callable object constructible from std::function<void()>.
+    /**
+    @brief creates a host execution task
+    
+    @tparam C callable type
+    
+    @param callable a callable object with neither arguments nor return
 
-    //A host can only execute CPU-specific functions and cannot do any CUDA calls 
-    //(e.g., cudaMalloc).
-    //
-    //template <typename C>
-    //cudaTask host(C&& c);
+    A host task can only execute CPU-specific functions and cannot do any CUDA calls 
+    (e.g., cudaMalloc).
+    */
+    template <typename C>
+    cudaTask host(C&& callable);
     
     /**
     @brief creates a kernel task
@@ -438,22 +436,23 @@ inline cudaTask cudaFlow::noop() {
   return cudaTask(node);
 }
 
-//// Function: host
-//template <typename C>
-//cudaTask cudaFlow::host(C&& c) {
-//  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Host>{}, 
-//    [c=std::forward<C>(c)](cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
-//      cudaHostNodeParams p;
-//      p.fn = [] __host__ __device__ (void* data) { (*static_cast<C*>(data))(); };
-//      p.userData = &c;
-//      TF_CHECK_CUDA(
-//        ::cudaGraphAddHostNode(&node, graph, nullptr, 0, &p),
-//        "failed to create a host node"
-//      );
-//    }
-//  );
-//  return cudaTask(node);
-//}
+// Function: host
+template <typename C>
+cudaTask cudaFlow::host(C&& c) {
+  auto node = _graph.emplace_back(
+    [c=std::forward<C>(c)] (cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
+      cudaHostNodeParams p;
+      p.fn = [] (void* data) { (*static_cast<C*>(data))(); };
+      p.userData = &c;
+      TF_CHECK_CUDA(
+        ::cudaGraphAddHostNode(&node, graph, nullptr, 0, &p),
+        "failed to create a host node"
+      );
+    },
+    std::in_place_type_t<cudaNode::Host>{}
+  );
+  return cudaTask(node);
+}
 
 // Function: kernel
 template <typename F, typename... ArgsT>
