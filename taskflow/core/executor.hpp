@@ -17,8 +17,8 @@ namespace tf {
 
 @brief execution interface for running a taskflow graph
 
-An executor object manages a set of worker threads and internalements 
-an efficient work-stealing scheduling algorithm to run a taskflow.
+An executor object manages a set of worker threads to run taskflow(s)
+using an efficient work-stealing scheduling algorithm.
 
 */
 class Executor {

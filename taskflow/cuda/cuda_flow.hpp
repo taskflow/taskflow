@@ -351,7 +351,7 @@ class cudaFlow {
     cudaTask for_each_index(I first, I last, I step, C&& callable);
   
     /**
-    @brief applies a callable to a source range and stores the result in a target ange
+    @brief applies a callable to a source range and stores the result in a target range
     
     @tparam I iterator type
     @tparam C callable type
