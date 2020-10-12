@@ -39,6 +39,25 @@ int main() {
       });
     });
   }
+
+  /*
+  auto Task = taskflow.emplace([&] (tf::syclFlow& sf) {
+
+    auto inA = bufA.get_access<cl::sycl::access::mode::read>(sf);
+    auto inB = bufA.get_access<cl::sycl::access::mode::read>(sf);
+    auto out = bufA.get_access<cl::sycl::access::mode::write>(sf);
+
+    auto task1 = sf.parallel_for<add>(c::sycl::range<1>(dA.size()), [=](cl::sycl::id<1> i) {
+       out[i] = inA[i] + inB[i]; 
+    });
+    
+    auto task2 = sf.parallel_for<add>(c::sycl::range<1>(dA.size()), [=](cl::sycl::id<1> i) {
+       out[i] = inA[i] + inB[i] + out[i]; 
+    });
+
+    task2.precede(task1);
+  });
+  */
   
   bool correct = true;
   for(int i=0; i<N; i++) {

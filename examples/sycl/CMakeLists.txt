@@ -1,5 +1,5 @@
 list(APPEND TF_SYCL_EXAMPLES 
- vector_add
+  vector_add
 )
 
 foreach(sycl_example IN LISTS TF_SYCL_EXAMPLES)
