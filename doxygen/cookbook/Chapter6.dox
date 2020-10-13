@@ -95,7 +95,7 @@ a native CUDA toolkit, while leaving difficult task parallelism to %Taskflow.
 Use @nvcc (at least v10) to compile a %cudaFlow program:
 
 @code{.sh}
-~$ nvcc my_cudaflow.cu -I path/to/include/taskflow -O2 -o my_cudaflow
+~$ nvcc -std=c++17 my_cudaflow.cu -I path/to/include/taskflow -O2 -o my_cudaflow
 ~$ ./my_cudaflow
 @endcode
 

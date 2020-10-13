@@ -4,6 +4,7 @@ var annotated_dup =
       [ "ChromeObserver", "classtf_1_1ChromeObserver.html", "classtf_1_1ChromeObserver" ],
       [ "cudaBLAF", "classtf_1_1cudaBLAF.html", "classtf_1_1cudaBLAF" ],
       [ "cudaFlow", "classtf_1_1cudaFlow.html", "classtf_1_1cudaFlow" ],
+      [ "cudaScopedDevice", "classtf_1_1cudaScopedDevice.html", "classtf_1_1cudaScopedDevice" ],
       [ "cudaTask", "classtf_1_1cudaTask.html", "classtf_1_1cudaTask" ],
       [ "Executor", "classtf_1_1Executor.html", "classtf_1_1Executor" ],
       [ "FlowBuilder", "classtf_1_1FlowBuilder.html", "classtf_1_1FlowBuilder" ],

@@ -2,6 +2,7 @@ var hierarchy =
 [
     [ "tf::cudaBLAF", "classtf_1_1cudaBLAF.html", null ],
     [ "tf::cudaFlow", "classtf_1_1cudaFlow.html", null ],
+    [ "tf::cudaScopedDevice", "classtf_1_1cudaScopedDevice.html", null ],
     [ "tf::cudaTask", "classtf_1_1cudaTask.html", null ],
     [ "tf::Executor", "classtf_1_1Executor.html", null ],
     [ "tf::FlowBuilder", "classtf_1_1FlowBuilder.html", [
