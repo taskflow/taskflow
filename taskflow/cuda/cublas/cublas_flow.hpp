@@ -4,34 +4,44 @@
 
 namespace tf {
 
-class cudaBLASNode {
+class cublasNode {
   
    
   private:
 
     std::string _name;
 
-    std::vector<cudaBLASNode*> _successors;
+    std::vector<cublasNode*> _successors;
 };
 
-class cudaBLAS {
+class cublasFlow {
 
   public:
     
     template <typename T>
-    cudaBLASNode* amax(int N, const T* x, int incx, int* result); 
+    cublasNode* amax(int N, const T* x, int incx, int* result); 
 
   private:
 
+    cudaFlow& _cudaflow;
+
 };
 
-//cf.blas([] (tf::cudaBLAS& blas) {
-//  auto task = blas.gemm<float>(); 
-//  auto task2 = blas.for_each
-//
-//  tf::cudaBLAS blas(cf);
-//  blas.
-//});
 
+// ----------------------------------------------------------------------------
+// cudaFlow::child([](cublasFlow&))
+// ----------------------------------------------------------------------------
+
+// Function: child
+template <typename C, std::enable_if_t<is_cublas_child_v<C>, void>*>
+cudaTask cudaFlow::child(C&& callable) {
+}
 
 }  // end of namespace tf -----------------------------------------------------
+
+
+
+
+
+
+

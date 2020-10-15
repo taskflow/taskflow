@@ -21,12 +21,12 @@ class ObserverInterface;
 class ChromeTracingObserver;
 class TFProfObserver;
 
-// cudaflow
+// cuda
 class cudaNode;
 class cudaGraph;
 class cudaTask;
 class cudaFlow;
-
+class cublasFlow;
 
 
 }  // end of namespace tf -----------------------------------------------------

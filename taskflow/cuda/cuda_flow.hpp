@@ -14,6 +14,20 @@ constexpr size_t cuda_default_threads_per_block(size_t N) {
 }
 
 /**
+@struct is_cublas_child
+
+@brief determines if a callable spawns a cublas child graph
+
+A cublas child is a callable object constructible from function<void(cublasFlow&)>.
+*/
+template <typename C>
+constexpr bool is_cublas_child_v = std::is_invocable_r_v<void, C, cublasFlow&>;
+
+// ----------------------------------------------------------------------------
+// cudaFlow definition
+// ----------------------------------------------------------------------------
+
+/**
 @class cudaFlow
 
 @brief methods for building a CUDA task dependency graph.
@@ -381,10 +395,21 @@ class cudaFlow {
     //
     
     // ------------------------------------------------------------------------
-    // cuda sdk
+    // child flow
     // ------------------------------------------------------------------------
-    //cudaTask cuBLAS([](cfDNN&){}) 
-    //cudaTask cuDNN([(cfDNN&)])
+    
+    /**
+    @brief constructs a cublas child graph to perform cuBLAS operations
+    
+    @tparam C callable type
+
+    @return cudaTask handle
+
+    A cublas child graph forms a cudaGraph of cuBLAS operations and 
+    their dependencies.
+    */
+    template <typename C, std::enable_if_t<is_cublas_child_v<C>, void>* = nullptr>
+    cudaTask child(C&& callable);
 
   private:
     

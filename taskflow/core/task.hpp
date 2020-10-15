@@ -60,8 +60,8 @@ inline const char* task_type_to_string(TaskType type) {
 A static task is a callable object constructible from std::function<void()>.
 */
 template <typename C>
-constexpr bool is_static_task_v = is_invocable_r_v<void, C> &&
-                                 !is_invocable_r_v<int, C>;
+constexpr bool is_static_task_v = std::is_invocable_r_v<void, C> &&
+                                 !std::is_invocable_r_v<int, C>;
 
 /**
 @struct is_dynamic_task
@@ -71,7 +71,7 @@ constexpr bool is_static_task_v = is_invocable_r_v<void, C> &&
 A dynamic task is a callable object constructible from std::function<void(Subflow&)>.
 */
 template <typename C>
-constexpr bool is_dynamic_task_v = is_invocable_r_v<void, C, Subflow&>;
+constexpr bool is_dynamic_task_v = std::is_invocable_r_v<void, C, Subflow&>;
 
 /**
 @struct is_condition_task
@@ -81,7 +81,7 @@ constexpr bool is_dynamic_task_v = is_invocable_r_v<void, C, Subflow&>;
 A condition task is a callable object constructible from std::function<int()>.
 */
 template <typename C>
-constexpr bool is_condition_task_v = is_invocable_r_v<int, C>;
+constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C>;
 
 #ifdef TF_ENABLE_CUDA
 /**
@@ -92,7 +92,7 @@ constexpr bool is_condition_task_v = is_invocable_r_v<int, C>;
 A cudaFlow task is a callable object constructible from std::function<void(cudaFlow&)>.
 */
 template <typename C>
-constexpr bool is_cudaflow_task_v = is_invocable_r_v<void, C, cudaFlow&>;
+constexpr bool is_cudaflow_task_v = std::is_invocable_r_v<void, C, cudaFlow&>;
 #endif
 
 
