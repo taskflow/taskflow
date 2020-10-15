@@ -1,8 +1,8 @@
 #pragma once
 
 #include "core/executor.hpp"
-#include "algorithm/for_each.hpp"
-#include "algorithm/reduce.hpp"
+#include "core/algorithm/for_each.hpp"
+#include "core/algorithm/reduce.hpp"
 
 // TF_VERSION % 100 is the patch level
 // TF_VERSION / 100 % 1000 is the minor version

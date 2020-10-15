@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "../core/executor.hpp"
+#include "../executor.hpp"
 
 namespace tf {
 

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "cuda_task.hpp"
-#include "cuda_algorithm/cuda_for_each.hpp"
-#include "cuda_algorithm/cuda_transform.hpp"
+#include "cuda_for_each.hpp"
+#include "cuda_transform.hpp"
 
 namespace tf {
 

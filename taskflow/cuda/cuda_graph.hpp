@@ -107,8 +107,13 @@ class cudaNode {
     template <typename C>
     Kernel(C&& c) : func{ std::forward<C>(c) } {}
     
-    void* func;
+    void* func {nullptr};
   };
+
+  // BLAS handle
+  //struct BLAS {
+  //  cudaGraph_t graph {nullptr};
+  //};
 
   using handle_t = std::variant<
     std::monostate, 

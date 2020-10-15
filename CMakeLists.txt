@@ -78,6 +78,14 @@ if(TF_BUILD_CUDA)
     message(STATUS "CMAKE_CUDA_COMPILER_VERSION: ${CMAKE_CUDA_COMPILER_VERSION}")
     message(FATAL_ERROR "\nTaskflow requires CUDA at least v11")
   endif()
+  
+  # configure cuBLAS
+  message(STATUS "Configuring CUDA BLAS ...")
+  list(APPEND CMAKE_MODULE_PATH ${TF_CMAKE_DIR}/cuda/modules/)
+  find_package(cuBLAS)
+  message(STATUS "CUBLAS_INCLUDE_DIRS: ${CUBLAS_INCLUDE_DIRS}")
+  message(STATUS "CUBLAS_LIBRARIES: ${CUBLAS_LIBRARIES}")
+  include_directories(${CUBLAS_INCLUDE_DIRS})
 endif()
 
 # -----------------------------------------------------------------------------
@@ -99,8 +107,9 @@ if(TF_BUILD_SYCL)
   if(NOT ComputeCpp_DIR)
     message(FATAL_ERROR "Please specify -DComputeCpp_DIR=/path/to/ComputeCpp/")
   endif()
-  #include(FindComputeCpp)
   find_package(ComputeCpp REQUIRED)
+  message(STATUS "ComputeCpp_DIR: " ${ComputeCpp_DIR})
+  message(STATUS "ComputeCpp_INCLUDE_DIRS: " ${ComputeCpp_INCLUDE_DIRS})
   include_directories(${ComputeCpp_INCLUDE_DIRS})
 endif()
 
@@ -240,8 +249,6 @@ message(STATUS "TF_UTEST_DIR: " ${TF_UTEST_DIR})
 message(STATUS "TF_EXAMPLE_DIR: " ${TF_EXAMPLE_DIR})
 message(STATUS "TF_BENCHMARK_DIR: " ${TF_BENCHMARK_DIR})
 message(STATUS "TF_3RD_PARTY_DIR: " ${TF_3RD_PARTY_DIR})
-message(STATUS "ComputeCpp_DIR: " ${ComputeCpp_DIR})
-message(STATUS "ComputeCpp_INCLUDE_DIRS: " ${ComputeCpp_INCLUDE_DIRS})
 
 # add the binary tree to the search path for include files
 include_directories(${PROJECT_SOURCE_DIR})
