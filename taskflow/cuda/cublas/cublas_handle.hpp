@@ -1,11 +1,11 @@
 #pragma once
 
-#include "cuda_blas_error.hpp"
+#include "cublas_error.hpp"
 
 namespace tf {
 
 /**
-@class cudaBLASHandleManager
+@class cublasHandleManager
 
 @brief class object to manage a cuBLAS handle per device
 
@@ -14,39 +14,39 @@ and it is desirable to reuse the handle as much as possible.
 The manager class abstracts the creation and destroy of a cuBLAS handle 
 on each device.
 */
-class cudaBLASHandleManager {
+class cublasHandleManager {
    
   public:
     
     /**
     @brief constructs a cuBLAS handle manager
     */
-    cudaBLASHandleManager() = default;
+    cublasHandleManager() = default;
     
     /**
     @brief disables copy constructor
     */
-    cudaBLASHandleManager(const cudaBLASHandleManager&) = delete;
+    cublasHandleManager(const cublasHandleManager&) = delete;
     
     /**
     @brief disables move constructor
     */
-    cudaBLASHandleManager(cudaBLASHandleManager&&) = delete;
+    cublasHandleManager(cublasHandleManager&&) = delete;
     
     /**
     @brief disables copy assignment
     */
-    cudaBLASHandleManager& operator = (const cudaBLASHandleManager&) = delete;
+    cublasHandleManager& operator = (const cublasHandleManager&) = delete;
     
     /**
     @brief disables move assignment
     */
-    cudaBLASHandleManager& operator = (cudaBLASHandleManager&&) = delete;
+    cublasHandleManager& operator = (cublasHandleManager&&) = delete;
     
     /**
     @brief destructs the manager object and destroys the associated cuBLAS handles
     */
-    ~cudaBLASHandleManager() {
+    ~cublasHandleManager() {
       clear();
     }
 
@@ -92,13 +92,13 @@ class cudaBLASHandleManager {
 /**
 @brief per thread cuBLAS handle manager
 */
-inline thread_local cudaBLASHandleManager cuda_blas_per_thread_handle_manager;
+inline thread_local cublasHandleManager cublas_per_thread_handle_manager;
 
 /**
 @brief gets per-thread cublas handle
 */
-inline cublasHandle_t cuda_blas_per_thread_handle(int d) {
-  return cuda_blas_per_thread_handle_manager.get(d);
+inline cublasHandle_t cublas_per_thread_handle(int d) {
+  return cublas_per_thread_handle_manager.get(d);
 }
 
 }  // end of namespace tf -----------------------------------------------------

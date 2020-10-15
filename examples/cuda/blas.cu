@@ -6,7 +6,7 @@
 #include <math.h>
 
 #include <taskflow/taskflow.hpp>
-#include <taskflow/cuda/cuda_blas.hpp>
+#include <taskflow/cuda/cublas.hpp>
 
 #define M 6
 #define N 5
@@ -47,7 +47,7 @@ int main (void){
     }
 
     auto beg = std::chrono::steady_clock::now();
-    auto handle = tf::cuda_blas_per_thread_handle(0);
+    auto handle = tf::cublas_per_thread_handle(0);
     auto end = std::chrono::steady_clock::now();
 
     std::cout << "create handle: "
