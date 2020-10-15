@@ -1,25 +1,26 @@
 /*
-@ @licstart  The following is the entire license notice for the
-JavaScript code in this file.
+ @licstart  The following is the entire license notice for the JavaScript code in this file.
 
-Copyright (C) 1997-2017 by Dimitri van Heesch
+ The MIT License (MIT)
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+ Copyright (C) 1997-2020 by Dimitri van Heesch
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ and associated documentation files (the "Software"), to deal in the Software without restriction,
+ including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ The above copyright notice and this permission notice shall be included in all copies or
+ substantial portions of the Software.
 
-@licend  The above is the entire license notice
-for the JavaScript code in this file
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+ @licend  The above is the entire license notice for the JavaScript code in this file
 */
 var NAVTREE =
 [
@@ -37,12 +38,12 @@ var NAVTREE =
       [ "License", "index.html#License", null ]
     ] ],
     [ "Building and Installing", "install.html", [
-      [ "Setting Up Taskflow", "install.html#BAISettingUpTaskflow", null ],
-      [ "Compile and Link Flags", "install.html#BAICompileAndLinkFlag", null ],
       [ "Supported Compilers", "install.html#BAISupportedCompilers", null ],
+      [ "Integrate Taskflow to Your Project", "install.html#BAIIntegrateTaskflowToYourProject", null ],
       [ "Build Examples and Unit Tests", "install.html#BAIBuildExamplesAndUnitTests", null ],
-      [ "Available CMake Options", "install.html#BAIAvailableCMakeOptions", null ],
-      [ "Build Benchmarks", "install.html#BAIBuildBenchmarks", null ]
+      [ "Configure CMake Options", "install.html#BAIConfigureCMakeOptions", null ],
+      [ "Build CUDA Code", "install.html#BAIBuildCUDACode", null ],
+      [ "Build SYCL Code", "install.html#BAIBuildSYCLCode", null ]
     ] ],
     [ "Releases", "Releases.html", "Releases" ],
     [ "Cookbook", "Cookbook.html", "Cookbook" ],
@@ -58,7 +59,7 @@ var NAVTREE =
         [ "Q3: What is the difference between static tasking and dynamic tasking?", "FAQ.html#GeneralQuestion3", null ],
         [ "Q4: How many tasks can Taskflow handle?", "FAQ.html#GeneralQuestion4", null ],
         [ "Q5: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?", "FAQ.html#GeneralQuestion5", null ],
-        [ "Q6: Does Taskflow have backward compatibility with C++03/98/11?", "FAQ.html#GeneralQuestion6", null ],
+        [ "Q6: Does Taskflow have backward compatibility with C++03/98/11/14?", "FAQ.html#GeneralQuestion6", null ],
         [ "Q7: How does Taskflow schedule tasks?", "FAQ.html#GeneralQuestion7", null ],
         [ "Q8: What is the overhead of taskflow?", "FAQ.html#GeneralQuestion8", null ],
         [ "Q9: How does it compare to existing task programming systems?", "FAQ.html#GeneralQuestion9", null ],
@@ -89,7 +90,8 @@ var NAVTREE =
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
         [ "Functions", "functions_func.html", null ],
-        [ "Variables", "functions_vars.html", null ]
+        [ "Variables", "functions_vars.html", null ],
+        [ "Related Functions", "functions_rela.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [
@@ -100,8 +102,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-".html",
-"classtf_1_1cudaTask.html#ab81b4f71a44af8d61758524f0c274962"
+"A0ForEach.html",
+"classtf_1_1cudaScopedDevice.html#aa6be941424258b7ca7993b54f2c8090c"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

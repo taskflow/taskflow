@@ -13,6 +13,6 @@ foreach(unittest IN LISTS TF_UNITTESTS)
   doctest_discover_tests(${unittest})
 endforeach()
 
-if(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
+if(TF_BUILD_CUDA)
   add_subdirectory(${TF_UTEST_DIR}/cuda)
 endif()

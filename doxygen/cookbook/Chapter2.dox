@@ -176,6 +176,8 @@ executor.run(taskflow);
 executor.wait_for_all();   // wait for all tasks to finish
 @endcode
 
+The future object returned from the tf::Executor::async call does not block on destruction.
+
 
 @section C2_Observer Observe Thread Activities
 

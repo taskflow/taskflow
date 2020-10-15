@@ -5,7 +5,19 @@ namespace tf {
 This page describes how to set up %Taskflow in your project. 
 We will also go through the building process of unit tests and examples.
 
-@section BAISettingUpTaskflow Setting Up Taskflow
+@section BAISupportedCompilers Supported Compilers
+
+To use %Taskflow, you only need a compiler that supports C++17:
+
+@li GNU C++ Compiler at least v7.0 with -std=c++17
+@li Clang C++ Compiler at least v6.0 with -std=c++17
+@li Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)
+@li AppleClang Xode Version at least v8
+@li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.0 with -std=c++17
+
+%Taskflow works on Linux, Windows, and Mac OS X.
+
+@section BAIIntegrateTaskflowToYourProject Integrate Taskflow to Your Project
 
 %Taskflow is *header-only* and there is no need for installation.
 Simply download the source and copy the headers under the directory @c taskflow/
@@ -17,9 +29,7 @@ to your project.
 ~$ cp -r taskflow myproject/include/
 @endcode
 
-@section BAICompileAndLinkFlag Compile and Link Flags
-
-%Taskflow is written in C++14 and is built on top of 
+%Taskflow is written in C++17 and is built on top of 
 C++ standardized threading libraries to improve portability.
 To compile a %Taskflow program, say <tt>simple.cpp</tt>, you need to tell the compiler
 where to find the %Taskflow header files and link it through the system thread library
@@ -27,20 +37,9 @@ where to find the %Taskflow header files and link it through the system thread l
 Take gcc for an example:
 
 @code{.sh}
-~$ g++ simple.cpp -I myproject/include/ -O2 -pthread -o simple
+~$ g++ simple.cpp -std=c++17 -I myproject/include/ -O2 -pthread -o simple
 @endcode
 
-@section BAISupportedCompilers Supported Compilers
-
-To use %Taskflow, you only need a compiler that supports C++14:
-
-@li GNU C++ Compiler at least v5.0 with -std=c++14
-@li Clang C++ Compiler at least v4.0 with -std=c++14
-@li Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)
-@li AppleClang Xode Version at least v8
-@li Nvidia CUDA Toolkit and Compiler (nvcc) at least v10.0 with -std=c++14
-
-%Taskflow works on Linux, Windows, and Mac OS X.
 
 @section BAIBuildExamplesAndUnitTests Build Examples and Unit Tests
 
@@ -65,10 +64,6 @@ Test project /home/tsung-wei/Code/taskflow/build
         Start   3: object_pool.sequential
   3/254 Test   #3: object_pool.sequential ...........   Passed    0.10 sec
 ...
-        Start 253: cuda_kmeans.1000.8C8G
-253/254 Test #253: cuda_kmeans.1000.8C8G ............   Passed    0.19 sec
-        Start 254: cuda_kmeans.1000.16C16G
-254/254 Test #254: cuda_kmeans.1000.16C16G ..........   Passed    0.24 sec
 
 100% tests passed, 0 tests failed out of 254
 
@@ -77,20 +72,19 @@ Total Test time (real) =  29.67 sec
 
 When the building completes, you can find the executables for examples and tests
 under the two folders, @c examples/ and @c unittests/.
-By default, our CMake script automatically detects the existence of a CUDA compiler
-and compiles all GPU tests and examples if one is available.
 
 
-
-@section BAIAvailableCMakeOptions Available CMake Options
+@section BAIConfigureCMakeOptions Configure CMake Options
 
 You can list a set of available options in the cmake.
 
 @code{.sh}
 ~$ cmake -LA
 ...
+TF_BUILD_EXAMPLES:BOOL=ON       # by default, we compile examples
+TF_BUILD_TESTS:BOOL=ON          # by default, we compile tests
 TF_BUILD_BENCHMARKS:BOOL=OFF    # by default, we don't compile benchmarks 
-TF_BUILD_CUDA:BOOL=ON           # by default, we compile CUDA code
+TF_BUILD_CUDA:BOOL=OFF          # by default, we don't compile CUDA code
 ...
 ... more options
 @endcode
@@ -100,30 +94,46 @@ Currently, our CMake script supports the following options:
 <div align="center">
 | CMake Option        | Default   | Usage   |
 | :-:                 | :-:       | :-:     |
-| TF_BUILD_BENCHMARKS | OFF       | enable/disable building benchmarks |
-| TF_BUILD_CUDA       | ON        | enable/disable building CUDA code  |
 | TF_BUILD_EXAMPLES   | ON        | enable/disable building examples   |
 | TF_BUILD_TESTS      | ON        | enable/disable building unit tests |
+| TF_BUILD_BENCHMARKS | OFF       | enable/disable building benchmarks |
+| TF_BUILD_CUDA       | OFF       | enable/disable building CUDA code  |
+| TF_BUILD_SYCL       | OFF       | enable/disable building SYCL code  |
 </div>
 
 To enable or disable a specific option, use @c -D in the CMake build. 
 For example:
 
 @code{.sh}
-~$ cmake ../ -DTF_BUILD_CUDA=OFF    # disable building CUDA code
+~$ cmake ../ -DTF_BUILD_EXAMPLES=OFF
 @endcode
 
-@section BAIBuildBenchmarks Build Benchmarks
+The above command turns off building %Taskflow examples.
 
-We have developed a set of benchmarks comparing %Taskflow with OpenMP and Intel Threading Building Blocks (TBB) libraries.
-To build these benchmarks, you need to configure the option @c TF_BUILD_BENCHMARKS to @c ON.
+@section BAIBuildCUDACode Build CUDA Code
+
+To build CUDA code, including unit tests and examples, 
+define the CMake option @c TF_BUILD_CUDA to @c ON as follows:
 
 @code{.sh}
-~$ cmake ../ -DTF_BUILD_BENCHMARKS=ON
-~$ make                                  
+~$ cmake ../ -DTF_BUILD_CUDA=ON
+~$ make
 @endcode
 
-You can find the binary of each benchmark under the folder @c benchmarks/.
+To compile a %Taskflow program with CUDA (e.g., tf::cudaFlow), 
+use @nvcc with C++17 enabled as follows:
+
+@code{.sh}
+~$ nvcc my_taskflow_cuda_program.cu -std=c++17 -o my_taskflow_cuda_program
+@endcode
+
+%Taskflow's tasking interface for CUDA GPU programming 
+is built on top of @cudaGraph, which allows work to be efficiently defined as 
+graphs rather than single operations. 
+
+@section BAIBuildSYCLCode Build SYCL Code
+
+TBD
 
 */
 

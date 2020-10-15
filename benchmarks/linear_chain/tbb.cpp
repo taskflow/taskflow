@@ -1,5 +1,5 @@
 #include "linear_chain.hpp"
-#include <tbb/task_scheduler_init.h>
+#include <tbb/global_control.h>
 #include <tbb/flow_graph.h>
 
 // linear_chain_tbb
@@ -10,7 +10,9 @@ void linear_chain_tbb(size_t length, unsigned num_threads) {
 
   size_t counter = 0;
   
-  tbb::task_scheduler_init init(num_threads);
+  tbb::global_control c(
+    tbb::global_control::max_allowed_parallelism, num_threads
+  );
 
   graph g;
     

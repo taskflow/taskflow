@@ -48,7 +48,7 @@ void add2() {
 
       //auto kernel = cf.add(dx, N, dx, dy);
       auto kernel = cf.transform(
-        dx, N, [] __device__ (T& v1, T& v2) { return v1 + v2; }, 
+        dx, dx+N, [] __device__ (T& v1, T& v2) { return v1 + v2; }, 
         dx, dy
       );
       kernel.succeed(h2d_x, h2d_y)
@@ -144,7 +144,7 @@ void add3() {
 
       //auto kernel = cf.add(dx, N, dx, dy, dz);
       auto kernel = cf.transform(
-        dx, N, [] __device__ (T& v1, T& v2, T& v3) { return v1 + v2 + v3; }, 
+        dx, dx+N, [] __device__ (T& v1, T& v2, T& v3) { return v1 + v2 + v3; }, 
         dx, dy, dz
       );
       kernel.succeed(h2d_x, h2d_y, h2d_z)
@@ -234,7 +234,7 @@ void multiply2() {
 
       //auto kernel = cf.multiply(dx, N, dx, dy);
       auto kernel = cf.transform(
-        dx, N, [] __device__ (T& v1, T& v2) { return v1 * v2; }, 
+        dx, dx+N, [] __device__ (T& v1, T& v2) { return v1 * v2; }, 
         dx, dy
       );
       kernel.succeed(h2d_x, h2d_y)
@@ -346,7 +346,7 @@ TEST_CASE("for_each.double" * doctest::timeout(300)) {
 template <typename T>
 void for_each_index() {
 
-  for(int n=1; n<=123456; n = n*2 + 1) {
+  for(int n=10; n<=123456; n = n*2 + 1) {
 
     tf::Taskflow taskflow;
     tf::Executor executor;
@@ -449,7 +449,7 @@ TEST_CASE("transform" * doctest::timeout(300) ) {
       auto h2d = cf.copy(tgt, htgt, n);
       auto kernel = cf.transform(
         tgt, 
-        n, 
+        tgt+n, 
         [] __device__ (int& v1, float& v2, double& v3) -> int {
           v1 = 1;
           v2 = 3.0f;
@@ -491,55 +491,73 @@ TEST_CASE("transform" * doctest::timeout(300) ) {
 }
 
 // ----------------------------------------------------------------------------
-// transpose
+// row-major transpose
 // ----------------------------------------------------------------------------
+template <typename T>
+__global__
+void verify(const T* din_mat, const T* dout_mat, bool* check, size_t rows, size_t cols) {
+  
+  size_t tid = blockDim.x * blockIdx.x + threadIdx.x;
+  size_t size = rows * cols;
+  for(; tid < size; tid += gridDim.x * blockDim.x) {
+    if(din_mat[tid] != dout_mat[tid / cols + (tid % cols) * rows]) {
+      *check = false;
+      return;
+    }
+  }
+}
 
 template <typename T>
 void transpose() {
   tf::Executor executor;
 
-  for(int rows = 1; rows <= 7999; rows<<=1) {
-    for(int cols = 1; cols <= 7999; cols<<=1) {
+  for(size_t rows = 1; rows <= 7999; rows*=2+3) {
+    for(size_t cols = 1; cols <= 8021; cols*=3+5) {
 
       tf::Taskflow taskflow;
       std::vector<T> hinput_mat(rows * cols);
-      std::vector<T> houtput_mat(rows * cols);
 
       std::generate_n(hinput_mat.begin(), rows * cols, [](){ return ::rand(); });
 
       T* dinput_mat {nullptr};
       T* doutput_mat {nullptr};
+      bool* check {nullptr};
       
        //allocate
       auto allocate = taskflow.emplace([&]() {
         REQUIRE(cudaMalloc(&dinput_mat, (rows * cols) * sizeof(T)) == cudaSuccess);
         REQUIRE(cudaMalloc(&doutput_mat, (rows * cols) * sizeof(T)) == cudaSuccess);
+        REQUIRE(cudaMallocManaged(&check, sizeof(bool)) == cudaSuccess);
+        *check = true;
       }).name("allocate");
 
        //transpose
       auto cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
-        auto h2d_input = cf.copy(dinput_mat, hinput_mat.data(), rows * cols).name("h2d");
-        auto d2h_output = cf.copy(houtput_mat.data(), doutput_mat, rows * cols).name("d2h");
+        auto h2d_input_t = cf.copy(dinput_mat, hinput_mat.data(), rows * cols).name("h2d");
 
-        auto kernel = cf.transpose(
+        auto kernel_t = tf::cudaBLAF(cf).transpose(
           dinput_mat,
           doutput_mat,
           rows,
           cols
         );
 
-        h2d_input.precede(kernel);
-        kernel.precede(d2h_output);
+        auto verify_t = cf.kernel(
+          32,
+          512,
+          0,
+          verify<T>,
+          dinput_mat,
+          doutput_mat,
+          check,
+          rows,
+          cols
+        );
+
+        h2d_input_t.precede(kernel_t);
+        kernel_t.precede(verify_t);
       }).name("transpose");
 
-      // Add a verification task
-      auto verifier = taskflow.emplace([&](){
-        for (int i = 0; i < rows; ++i) {
-          for (int j = 0; j < cols; ++j) {
-          REQUIRE(hinput_mat[i * cols + j] ==  houtput_mat[j * rows + i]);
-          }
-        }
-      }).name("verify");
 
        //free memory
       auto deallocate = taskflow.emplace([&](){
@@ -549,10 +567,10 @@ void transpose() {
       
 
       allocate.precede(cudaflow);
-      cudaflow.precede(verifier);
-      verifier.precede(deallocate);
+      cudaflow.precede(deallocate);
 
       executor.run(taskflow).wait();
+      REQUIRE(*check);
     }
   }
 }
@@ -568,5 +586,94 @@ TEST_CASE("transpose.float" * doctest::timeout(300) ) {
 
 TEST_CASE("transpose.double" * doctest::timeout(300) ) {
   transpose<double>();
+}
+
+// ----------------------------------------------------------------------------
+// row-major matrix multiplication
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void matmul() {
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+  
+  std::vector<T> a, b, c;
+
+  for(int m=1; m<=1992; m=2*m+1) {
+    for(int k=1; k<=1012; k=2*k+3) {
+      for(int n=1; n<=1998; n=2*n+8) {
+
+        taskflow.clear();
+
+        T* ha {nullptr};
+        T* hb {nullptr};
+        T* hc {nullptr};
+        T* da {nullptr};
+        T* db {nullptr};
+        T* dc {nullptr};
+      
+        T val_a = ::rand()%5-1;
+        T val_b = ::rand()%7-3;
+
+        auto hosta = taskflow.emplace([&](){ 
+          a.resize(m*k);
+          std::fill_n(a.begin(), m*k, val_a);
+          ha = a.data();
+          REQUIRE(cudaMalloc(&da, m*k*sizeof(T)) == cudaSuccess);
+        }).name("ha");
+
+        auto hostb = taskflow.emplace([&](){ 
+          b.resize(k*n);
+          std::fill_n(b.begin(), k*n, val_b);
+          hb = b.data();
+          REQUIRE(cudaMalloc(&db, k*n*sizeof(T)) == cudaSuccess);
+        }).name("hb");
+
+        auto hostc = taskflow.emplace([&](){
+          c.resize(m*n);
+          hc = c.data();
+          REQUIRE(cudaMalloc(&dc, m*n*sizeof(T)) == cudaSuccess);
+        }).name("hc");
+
+        auto cuda = taskflow.emplace([&](tf::cudaFlow& cf){
+          auto pa = cf.copy(da, ha, m*k);
+          auto pb = cf.copy(db, hb, k*n);
+
+          auto op = tf::cudaBLAF(cf).matmul(
+            da, db, dc, m, k, n 
+          ).name("op");
+
+          auto cc = cf.copy(hc, dc, m*n).name("cc");
+
+          op.precede(cc).succeed(pa, pb);
+        });
+
+        cuda.succeed(hosta, hostb, hostc);
+
+        executor.run(taskflow).wait();
+
+        int ans = val_a*val_b*k;
+        for(const auto& x : c) {
+          REQUIRE((int)x == ans);
+        }
+
+        REQUIRE(cudaFree(da) == cudaSuccess);
+        REQUIRE(cudaFree(db) == cudaSuccess);
+        REQUIRE(cudaFree(dc) == cudaSuccess);
+      }
+    }
+  }
+}
+
+TEST_CASE("matmul.int" * doctest::timeout(300) ) {
+  matmul<int>();
+}
+
+TEST_CASE("matmul.float" * doctest::timeout(300) ) {
+  matmul<float>();
+}
+
+TEST_CASE("matmul.double" * doctest::timeout(300) ) {
+  matmul<double>();
 }
 

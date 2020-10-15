@@ -14,16 +14,15 @@ namespace tf {
 @brief enumeration of all task types
 */
 enum TaskType {
-  PLACEHOLDER_TASK = Node::PLACEHOLDER_WORK,
+  PLACEHOLDER_TASK = Node::PLACEHOLDER_TASK,
 #ifdef TF_ENABLE_CUDA
-  CUDAFLOW_TASK    = Node::CUDAFLOW_WORK,
+  CUDAFLOW_TASK    = Node::CUDAFLOW_TASK,
 #endif
-  STATIC_TASK      = Node::STATIC_WORK,
-  DYNAMIC_TASK     = Node::DYNAMIC_WORK,
-  CONDITION_TASK   = Node::CONDITION_WORK,
-  MODULE_TASK      = Node::MODULE_WORK,
-  ASYNC_TASK       = Node::ASYNC_WORK,
-  NUM_TASK_TYPES
+  STATIC_TASK      = Node::STATIC_TASK,
+  DYNAMIC_TASK     = Node::DYNAMIC_TASK,
+  CONDITION_TASK   = Node::CONDITION_TASK,
+  MODULE_TASK      = Node::MODULE_TASK,
+  ASYNC_TASK       = Node::ASYNC_TASK
 };
 
 /**
@@ -61,8 +60,8 @@ inline const char* task_type_to_string(TaskType type) {
 A static task is a callable object constructible from std::function<void()>.
 */
 template <typename C>
-constexpr bool is_static_task_v = is_invocable_r_v<void, C> &&
-                                 !is_invocable_r_v<int, C>;
+constexpr bool is_static_task_v = std::is_invocable_r_v<void, C> &&
+                                 !std::is_invocable_r_v<int, C>;
 
 /**
 @struct is_dynamic_task
@@ -72,7 +71,7 @@ constexpr bool is_static_task_v = is_invocable_r_v<void, C> &&
 A dynamic task is a callable object constructible from std::function<void(Subflow&)>.
 */
 template <typename C>
-constexpr bool is_dynamic_task_v = is_invocable_r_v<void, C, Subflow&>;
+constexpr bool is_dynamic_task_v = std::is_invocable_r_v<void, C, Subflow&>;
 
 /**
 @struct is_condition_task
@@ -82,7 +81,7 @@ constexpr bool is_dynamic_task_v = is_invocable_r_v<void, C, Subflow&>;
 A condition task is a callable object constructible from std::function<int()>.
 */
 template <typename C>
-constexpr bool is_condition_task_v = is_invocable_r_v<int, C>;
+constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C>;
 
 #ifdef TF_ENABLE_CUDA
 /**
@@ -93,7 +92,7 @@ constexpr bool is_condition_task_v = is_invocable_r_v<int, C>;
 A cudaFlow task is a callable object constructible from std::function<void(cudaFlow&)>.
 */
 template <typename C>
-constexpr bool is_cudaflow_task_v = is_invocable_r_v<void, C, cudaFlow&>;
+constexpr bool is_cudaflow_task_v = std::is_invocable_r_v<void, C, cudaFlow&>;
 #endif
 
 
@@ -185,55 +184,17 @@ class Task {
     Task& name(const std::string& name);
 
     /**
-    @brief assigns a static task
+    @brief assigns a callable
 
-    @tparam C callable object type
+    @tparam C callable type
 
-    @param callable a callable object constructible from std::function<void()>
+    @param callable callable to construct one of the static, dynamic, condition, and cudaFlow tasks
 
     @return @c *this
     */
     template <typename C>
-    std::enable_if_t<is_static_task_v<C>, Task>& work(C&& callable);
+    Task& work(C&& callable);
     
-    /**
-    @brief assigns a dynamic task
-
-    @tparam C callable object type
-
-    @param callable a callable object constructible from std::function<void(Subflow&)>
-
-    @return @c *this
-    */
-    template <typename C>
-    std::enable_if_t<is_dynamic_task_v<C>, Task>& work(C&& callable);
-    
-    /**
-    @brief assigns a condition task
-
-    @tparam C callable object type
-
-    @param callable a callable object constructible from std::function<int()>
-
-    @return @c *this
-    */
-    template <typename C>
-    std::enable_if_t<is_condition_task_v<C>, Task>& work(C&& callable);
-
-#ifdef TF_ENABLE_CUDA    
-    /**
-    @brief assigns a cudaFlow task
-
-    @tparam C callable object type
-
-    @param callable a callable object constructible from std::function<void(cudaFlow&)>
-
-    @return @c *this
-    */
-    template <typename C>
-    std::enable_if_t<is_cudaflow_task_v<C>, Task>& work(C&& callable);
-#endif
-
     /**
     @brief creates a module task from a taskflow
 
@@ -309,23 +270,16 @@ class Task {
     */
     TaskType type() const;
 
+    /**
+    @brief dumps the task through an output stream
+    */
+    void dump(std::ostream& os) const;
+
   private:
     
     Task(Node*);
 
     Node* _node {nullptr};
-
-    template <typename T>
-    void _precede(T&&);
-    
-    template <typename T, typename... Rest>
-    void _precede(T&&, Rest&&...);
-    
-    template <typename T>
-    void _succeed(T&&);
-    
-    template <typename T, typename... Rest>
-    void _succeed(T&&, Rest&&...);
 };
 
 // Constructor
@@ -339,47 +293,17 @@ inline Task::Task(const Task& rhs) : _node {rhs._node} {
 // Function: precede
 template <typename... Ts>
 Task& Task::precede(Ts&&... tasks) {
-  //(_node->_precede(tgts._node), ...);
-  _precede(std::forward<Ts>(tasks)...);
+  (_node->_precede(tasks._node), ...);
+  //_precede(std::forward<Ts>(tasks)...);
   return *this;
-}
-
-/// @private
-// Procedure: _precede
-template <typename T>
-void Task::_precede(T&& other) {
-  _node->_precede(other._node);
-}
-
-/// @private
-// Procedure: _precede
-template <typename T, typename... Ts>
-void Task::_precede(T&& task, Ts&&... others) {
-  _precede(std::forward<T>(task));
-  _precede(std::forward<Ts>(others)...);
 }
 
 // Function: succeed
 template <typename... Ts>
 Task& Task::succeed(Ts&&... tasks) {
-  //(tasks._node->_precede(_node), ...);
-  _succeed(std::forward<Ts>(tasks)...);
+  (tasks._node->_precede(_node), ...);
+  //_succeed(std::forward<Ts>(tasks)...);
   return *this;
-}
-
-/// @private
-// Procedure: succeed
-template <typename T>
-void Task::_succeed(T&& other) {
-  other._node->_precede(_node);
-}
-
-/// @private
-// Procedure: _succeed
-template <typename T, typename... Ts>
-void Task::_succeed(T&& task, Ts&&... others) {
-  _succeed(std::forward<T>(task));
-  _succeed(std::forward<Ts>(others)...);
 }
 
 // Function: composed_of
@@ -423,7 +347,7 @@ inline void Task::reset() {
 
 // Procedure: reset_work
 inline void Task::reset_work() {
-  _node->_handle = nstd::monostate{};
+  _node->_handle = std::monostate{};
 }
 
 // Function: name
@@ -487,39 +411,48 @@ inline size_t Task::hash_value() const {
   return std::hash<Node*>{}(_node);
 }
 
-// Function: work
-// assign a static work
-template <typename C>
-std::enable_if_t<is_static_task_v<C>, Task>& Task::work(C&& c) {
-  _node->_handle.emplace<Node::StaticWork>(std::forward<C>(c));
-  return *this;
+// Procedure: dump
+inline void Task::dump(std::ostream& os) const {
+  os << "task ";
+  if(name().empty()) os << _node;
+  else os << name();
+  os << " [type=" << task_type_to_string(type()) << ']';
 }
 
 // Function: work
-// assigns a dynamic work
 template <typename C>
-std::enable_if_t<is_dynamic_task_v<C>, Task>& Task::work(C&& c) {
-  _node->_handle.emplace<Node::DynamicWork>(std::forward<C>(c));
-  return *this;
-}
-
-// Function: work
-// assigns a condition work
-template <typename C>
-std::enable_if_t<is_condition_task_v<C>, Task>& Task::work(C&& c) {
-  _node->_handle.emplace<Node::ConditionWork>(std::forward<C>(c));
-  return *this;
-}
-
+Task& Task::work(C&& c) {
+  if constexpr(is_static_task_v<C>) {
+    _node->_handle.emplace<Node::StaticWork>(std::forward<C>(c));
+  }
+  else if constexpr(is_dynamic_task_v<C>) {
+    _node->_handle.emplace<Node::DynamicWork>(std::forward<C>(c));
+  }
+  else if constexpr(is_condition_task_v<C>) {
+    _node->_handle.emplace<Node::ConditionWork>(std::forward<C>(c));
+  }
 #ifdef TF_ENABLE_CUDA
-// Function: work
-// assigns a cudaFlow work
-template <typename C>
-std::enable_if_t<is_cudaflow_task_v<C>, Task>& Task::work(C&& c) {
-  _node->_handle.emplace<Node::cudaFlowWork>(std::forward<C>(c));
+  else if constexpr(is_cudaflow_task_v<C>) {
+    _node->_handle.emplace<Node::cudaFlowWork>(std::forward<C>(c));
+  }
+#endif
+  else {
+    static_assert(dependent_false_v<C>, "invalid task callable");
+  }
   return *this;
 }
-#endif
+
+// ----------------------------------------------------------------------------
+// global ostream
+// ----------------------------------------------------------------------------
+
+/**
+@brief overload of ostream inserter operator for cudaTask
+*/
+inline std::ostream& operator << (std::ostream& os, const Task& task) {
+  task.dump(os);
+  return os;
+}
 
 // ----------------------------------------------------------------------------
 

@@ -1,10 +1,14 @@
+# -----------------------------------------------------------------------------
 # eigen package 
+# -----------------------------------------------------------------------------
 if(NOT DEFINED EIGEN_ROOT)
   set(EIGEN_ROOT ${PROJECT_SOURCE_DIR}/3rd-party/eigen-3.3.7)
 endif()
 include_directories(${EIGEN_ROOT})
 
+# -----------------------------------------------------------------------------
 # find OpenMP package
+# -----------------------------------------------------------------------------
 include(FindOpenMP)
 
 if(NOT OpenMP_CXX_FOUND)
@@ -15,19 +19,27 @@ message(STATUS "OpenMP_VERSION: ${OpenMP_VERSION}")
 message(STATUS "OpenMP_CXX_FLAGS: ${OpenMP_CXX_FLAGS}")
 message(STATUS "OpenMP_CXX_LIBRARIES: ${OpenMP_CXX_LIBRARIES}")
 
+# -----------------------------------------------------------------------------
 # tbb package
-if(NOT DEFINED TBB_ROOT)
-  set(TBB_ROOT ${TF_3RD_PARTY_DIR}/tbb)
+# -----------------------------------------------------------------------------
+cmake_policy(PUSH)
+cmake_policy(SET CMP0074 NEW)
+if(NOT DEFINED TBB_ROOT_DIR)
+  set(TBB_ROOT_DIR ${TF_3RD_PARTY_DIR}/tbb)
 endif()
 
-include(${TBB_ROOT}/cmake/TBBBuild.cmake)
-tbb_build(TBB_ROOT ${TBB_ROOT} CONFIG_DIR TBB_DIR MAKE_ARGS tbb_cpf=1)
-#tbb_build(TBB_ROOT ${TBB_ROOT} CONFIG_DIR TBB_DIR)
-#cmake_policy(PUSH)
-#cmake_policy(SET CMP0074 NEW)
+include(${TBB_ROOT_DIR}/cmake/TBBBuild.cmake)
+#tbb_build(TBB_ROOT ${TBB_ROOT_DIR} CONFIG_DIR TBB_DIR MAKE_ARGS tbb_cpf=1)
+tbb_build(TBB_ROOT ${TBB_ROOT_DIR} CONFIG_DIR TBB_DIR)
+unset(TBB_ROOT)  # unset is needed to pop CMP0074 without warning
+cmake_policy(POP)
 #find_package(TBB REQUIRED tbb_preview)
-find_package(TBB REQUIRED tbb_preview)
+find_package(TBB REQUIRED)
 #cmake_policy(POP)
+
+# -----------------------------------------------------------------------------
+# Benchmarks
+# -----------------------------------------------------------------------------
 
 ## benchmark 1: wavefront computing
 add_executable(
@@ -196,23 +208,40 @@ target_link_libraries(
 set_target_properties(reduce_sum PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
-if(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
-## cuda benchmark 1: heterogeneous traversal
-add_executable(
-  hetero_traversal 
-  ${TF_BENCHMARK_DIR}/hetero_traversal/main.cu
-  ${TF_BENCHMARK_DIR}/hetero_traversal/taskflow.cu
-  ${TF_BENCHMARK_DIR}/hetero_traversal/tbb.cu
-  ${TF_BENCHMARK_DIR}/hetero_traversal/omp.cu
-)
-target_include_directories(hetero_traversal PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-target_link_libraries(
-  hetero_traversal 
-  ${PROJECT_NAME} 
-  Threads::Threads 
-  ${TBB_IMPORTED_TARGETS} 
-  ${OpenMP_CXX_LIBRARIES} 
-  tf::default_settings
-)
-set_target_properties(hetero_traversal PROPERTIES COMPILE_FLAGS "-Xcompiler ${OpenMP_CXX_FLAGS}")
-endif(CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
+if(TF_BUILD_CUDA)
+
+  ## cuda benchmark 1: heterogeneous traversal
+  add_executable(
+    hetero_traversal 
+    ${TF_BENCHMARK_DIR}/hetero_traversal/main.cu
+    ${TF_BENCHMARK_DIR}/hetero_traversal/taskflow.cu
+    ${TF_BENCHMARK_DIR}/hetero_traversal/tbb.cu
+    ${TF_BENCHMARK_DIR}/hetero_traversal/omp.cu
+  )
+  
+  target_include_directories(
+    hetero_traversal PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11
+  )
+  
+  target_link_libraries(
+    hetero_traversal 
+    ${PROJECT_NAME} 
+    Threads::Threads 
+    ${TBB_IMPORTED_TARGETS} 
+    ${OpenMP_CXX_LIBRARIES} 
+    tf::default_settings
+  )
+  
+  set_target_properties(
+    hetero_traversal PROPERTIES COMPILE_FLAGS "-Xcompiler ${OpenMP_CXX_FLAGS}"
+  )
+  
+  # avoid cmake 3.18+ warning
+  # we let nvcc to decide the flag if the architecture is not given
+  if(NOT CUDA_ARCHITECTURES)
+    set_property(TARGET hetero_traversal PROPERTY CUDA_ARCHITECTURES OFF)
+  endif()
+
+
+endif(TF_BUILD_CUDA)
+

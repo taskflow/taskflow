@@ -200,12 +200,12 @@ inline void Taskflow::_dump(
   // shape for node
   switch(node->_handle.index()) {
 
-    case Node::CONDITION_WORK:
+    case Node::CONDITION_TASK:
       os << "shape=diamond color=black fillcolor=aquamarine style=filled";
     break;
 
 #ifdef TF_ENABLE_CUDA
-    case Node::CUDAFLOW_WORK:
+    case Node::CUDAFLOW_TASK:
       os << "shape=folder fillcolor=cyan style=filled";
     break;
 #endif
@@ -217,7 +217,7 @@ inline void Taskflow::_dump(
   os << "];\n";
   
   for(size_t s=0; s<node->_successors.size(); ++s) {
-    if(node->_handle.index() == Node::CONDITION_WORK) {
+    if(node->_handle.index() == Node::CONDITION_TASK) {
       // case edge is dashed
       os << 'p' << node << " -> p" << node->_successors[s] 
          << " [style=dashed label=\"" << s << "\"];\n";
@@ -234,8 +234,8 @@ inline void Taskflow::_dump(
 
   switch(node->_handle.index()) {
 
-    case Node::DYNAMIC_WORK: {
-      auto& sbg = nstd::get<Node::DynamicWork>(node->_handle).subgraph;
+    case Node::DYNAMIC_TASK: {
+      auto& sbg = std::get<Node::DynamicWork>(node->_handle).subgraph;
       if(!sbg.empty()) {
         os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
         if(node->_name.empty()) os << 'p' << node;
@@ -249,8 +249,8 @@ inline void Taskflow::_dump(
     break;
 
 #ifdef TF_ENABLE_CUDA
-    case Node::CUDAFLOW_WORK: {
-      auto& cfg = nstd::get<Node::cudaFlowWork>(node->_handle).graph;
+    case Node::CUDAFLOW_TASK: {
+      auto& cfg = std::get<Node::cudaFlowWork>(node->_handle).graph;
       if(!cfg.empty()) {
         os << "subgraph cluster_p" << node << " {\nlabel=\"cudaFlow: ";
         if(node->_name.empty()) os << 'p' << node;
@@ -260,23 +260,23 @@ inline void Taskflow::_dump(
 
         for(const auto& v : cfg._nodes) {
 
-          os << 'p' << v.get() << "[label=\"";
+          os << 'p' << v << "[label=\"";
           if(v->_name.empty()) {
-            os << 'p' << v.get() << "\"";
+            os << 'p' << v << "\"";
           }
           else {
             os << v->_name << "\"";
           }
           
           switch(v->_handle.index()) {
-            case cudaNode::NOOP:
+            case cudaNode::CUDA_NOOP_TASK:
             break;
 
-            case cudaNode::COPY:
+            case cudaNode::CUDA_MEMCPY_TASK:
               //os << " shape=\"cds\"";
             break;
 
-            case cudaNode::KERNEL:
+            case cudaNode::CUDA_KERNEL_TASK:
               os << " style=\"filled\""
                  << " color=\"white\" fillcolor=\"black\""
                  << " fontcolor=\"white\""
@@ -289,11 +289,11 @@ inline void Taskflow::_dump(
   
           os << "];\n";
           for(const auto s : v->_successors) {
-            os << 'p' << v.get() << " -> " << 'p' << s << ";\n";
+            os << 'p' << v << " -> " << 'p' << s << ";\n";
           }
           
           if(v->_successors.size() == 0) {
-            os << 'p' << v.get() << " -> p" << node << ";\n";
+            os << 'p' << v << " -> p" << node << ";\n";
           }
 
         }
@@ -316,13 +316,13 @@ inline void Taskflow::_dump(
   for(const auto& n : graph._nodes) {
 
     // regular task
-    if(n->_handle.index() != Node::MODULE_WORK) {
+    if(n->_handle.index() != Node::MODULE_TASK) {
       _dump(os, n, dumper);
     }
     // module task
     else {
 
-      auto module = nstd::get<Node::ModuleWork>(n->_handle).module;
+      auto module = std::get<Node::ModuleWork>(n->_handle).module;
 
       os << 'p' << n << "[shape=box3d, color=blue, label=\"";
       if(n->_name.empty()) os << n;

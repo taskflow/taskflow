@@ -1,13 +1,13 @@
 #include "graph.hpp"
 
-#include <tbb/task_scheduler_init.h>
+#include <tbb/global_control.h>
 #include <tbb/flow_graph.h>
 
 struct cudaStream {
 
   std::vector<std::vector<cudaStream_t>> streams;
 
-  cudaStream(unsigned N) : streams(tf::cuda_num_devices()) {
+  cudaStream(unsigned N) : streams(tf::cuda_get_num_devices()) {
     for(size_t i=0; i<streams.size(); ++i) {
       streams[i].resize(N);
       tf::cudaScopedDevice ctx(i);
@@ -39,7 +39,9 @@ void TBB(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
   using namespace tbb;
   using namespace tbb::flow;
     
-  tbb::task_scheduler_init init(num_cpus + num_gpus);
+  tbb::global_control c(
+    tbb::global_control::max_allowed_parallelism, num_cpus + num_gpus
+  );
   tbb::flow::graph G;
 
   cudaStream streams(num_cpus + num_gpus);
@@ -141,7 +143,7 @@ void TBB(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
           // kernel
           cudaKernelNodeParams kp;
           void* arguments[4] = { (void*)(&gx), (void*)(&gy), (void*)(&gz), (void*)(&N) };
-          kp.func = (void*)add;
+          kp.func = (void*)add<int>;
           kp.gridDim = (N+255)/256;
           kp.blockDim = 256;
           kp.sharedMemBytes = 0;

@@ -1,5 +1,5 @@
 #include "binary_tree.hpp"
-#include <tbb/task_scheduler_init.h>
+#include <tbb/global_control.h>
 #include <tbb/flow_graph.h>
 
 // binary_tree_tbb
@@ -8,8 +8,10 @@ void binary_tree_tbb(size_t num_layers, unsigned num_threads) {
   using namespace tbb;
   using namespace tbb::flow;
   
-  tbb::task_scheduler_init init(num_threads);
-  
+  tbb::global_control c(
+    tbb::global_control::max_allowed_parallelism, num_threads
+  );
+
   std::atomic<size_t> counter {0};
    
   graph g;

@@ -38,7 +38,7 @@ PROJECT_NAME           = "Taskflow"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 2.7.0
+PROJECT_NUMBER         = 3.0.0-Master-Branch
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -239,37 +239,41 @@ TAB_SIZE               = 4
 # newlines (in the resulting output). You can put ^^ in the value part of an
 # alias to insert a newline as if a physical newline was in the original file.
 
-ALIASES                = "std_invoke=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/invoke\">std::invoke</a>" \
-                         "std_future=<a href=\"https://en.cppreference.com/w/cpp/thread/future\">std::future</a>" \
-                         "std_shared_future=<a href=\"https://en.cppreference.com/w/cpp/thread/shared_future\">std::shared_future</a>" \
-                         "std_function=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/function\">std::function</a>" \
-                         "std_pair=<a href=\"https://en.cppreference.com/w/cpp/utility/pair\">std::pair</a>" \
-                         "std_tuple=<a href=\"https://en.cppreference.com/w/cpp/utility/tuple\">std::tuple</a>" \
-                         "std_shared_ptr=<a href=\"https://en.cppreference.com/w/cpp/memory/shared_ptr\">std::shared_ptr</a>" \
-                         "std_thread_hardware_concurrency=<a href=\"https://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency\">std::thread::hardware_concurrency</a>" \
-                         "std_thread_get_id=<a href=\"https://en.cppreference.com/w/cpp/thread/get_id\">std::thread::get_id</a>" \
-                         "std_ostream=<a href=\"https://en.cppreference.com/w/cpp/io/basic_ostream\">std::ostream</a>" \
-                         "std_string=<a href=\"https://en.cppreference.com/w/cpp/string/basic_string\">std::string</a>" \
-                         "std_min=<a href=\"https://en.cppreference.com/w/cpp/algorithm/min\">std::min</a>" \
-                         "std_max=<a href=\"https://en.cppreference.com/w/cpp/algorithm/max\">std::max</a>" \
-                         "std_variant=<a href=\"https://en.cppreference.com/w/cpp/utility/variant\">std::variant</a>" \
-                         "std_optional=<a href=\"https://en.cppreference.com/w/cpp/utility/optional\">std::optional</a>" \
-                         "std_nullopt=<a href=\"https://en.cppreference.com/w/cpp/utility/optional/nullopt\">std::nullopt</a>" \
-                         "GraphVizOnline=<a href=\"https://dreampuf.github.io/GraphvizOnline/\">GraphViz Online</a>" \
-                         "CPP17=<a href=\"https://en.wikipedia.org/wiki/C%2B%2B17\">C++17</a>" \
-                         "nvcc=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvcc</a>"\
-                         "nvidia_smi=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvidia-smi</a>"\
-                         "SLOCCount=<a href=\"https://dwheeler.com/sloccount/\">SLOCCount</a>"\
-                         "TBB=<a href=\"https://github.com/oneapi-src/oneTBB\">Intel TBB</a>"\
-                         "StarPU=<a href=\"http://starpu.gforge.inria.fr/\">StarPU</a>"\
-                         "OpenTimerGitHub=<a href=\"https://github.com/OpenTimer/OpenTimer\">OpenTimer</a>"\
-                         "ContactUs=<a href=\"https://taskflow.github.io/#tag_contact\">contact us</a>"\
-                         "ProjectWebsite=<a href=\"https://taskflow.github.io/\">project website</a>"\
-                         "ProjectGitHub=<a href=\"https://github.com/taskflow/\">project GitHub</a>"\
-                         "ShowcasePresentation=<a href=\"https://taskflow.github.io/showcase/index.html\">showcase presentation</a>"\
-                         "IssueTracker=<a href=\"https://github.com/taskflow/taskflow/issues\">issue tracker</a>"\
-                         "PullRequest=<a href=\"https://github.com/taskflow/taskflow/pulls\">pull request</a>"\
-                         "twhuang=<a href=\"https://tsung-wei-huang.github.io/\">Dr. Tsung-Wei Huang</a>"
+ALIASES                = \
+  "std_invoke=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/invoke\">std::invoke</a>" \
+  "std_future=<a href=\"https://en.cppreference.com/w/cpp/thread/future\">std::future</a>" \
+  "std_shared_future=<a href=\"https://en.cppreference.com/w/cpp/thread/shared_future\">std::shared_future</a>" \
+  "std_function=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/function\">std::function</a>" \
+  "std_pair=<a href=\"https://en.cppreference.com/w/cpp/utility/pair\">std::pair</a>" \
+  "std_tuple=<a href=\"https://en.cppreference.com/w/cpp/utility/tuple\">std::tuple</a>" \
+  "std_shared_ptr=<a href=\"https://en.cppreference.com/w/cpp/memory/shared_ptr\">std::shared_ptr</a>" \
+  "std_thread_hardware_concurrency=<a href=\"https://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency\">std::thread::hardware_concurrency</a>" \
+  "std_thread_get_id=<a href=\"https://en.cppreference.com/w/cpp/thread/get_id\">std::thread::get_id</a>" \
+  "std_ostream=<a href=\"https://en.cppreference.com/w/cpp/io/basic_ostream\">std::ostream</a>" \
+  "std_string=<a href=\"https://en.cppreference.com/w/cpp/string/basic_string\">std::string</a>" \
+  "std_min=<a href=\"https://en.cppreference.com/w/cpp/algorithm/min\">std::min</a>" \
+  "std_max=<a href=\"https://en.cppreference.com/w/cpp/algorithm/max\">std::max</a>" \
+  "std_variant=<a href=\"https://en.cppreference.com/w/cpp/utility/variant\">std::variant</a>" \
+  "std_optional=<a href=\"https://en.cppreference.com/w/cpp/utility/optional\">std::optional</a>" \
+  "std_nullopt=<a href=\"https://en.cppreference.com/w/cpp/utility/optional/nullopt\">std::nullopt</a>" \
+  "GraphVizOnline=<a href=\"https://dreampuf.github.io/GraphvizOnline/\">GraphViz Online</a>" \
+  "CPP17=<a href=\"https://en.wikipedia.org/wiki/C%2B%2B17\">C++17</a>" \
+  "nvcc=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvcc</a>"\
+  "cudaGraph=<a href=\"https://developer.nvidia.com/blog/cuda-graphs/\">CUDA Graph</a>"\
+  "cuBLAS=<a href=\"https://docs.nvidia.com/cuda/cublas/index.html\">cuBLAS</a>"\
+  "cuDNN=<a href=\"https://developer.nvidia.com/cudnn\">cuDNN</a>"\
+  "nvidia_smi=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvidia-smi</a>"\
+  "SLOCCount=<a href=\"https://dwheeler.com/sloccount/\">SLOCCount</a>"\
+  "TBB=<a href=\"https://github.com/oneapi-src/oneTBB\">Intel TBB</a>"\
+  "StarPU=<a href=\"http://starpu.gforge.inria.fr/\">StarPU</a>"\
+  "OpenTimerGitHub=<a href=\"https://github.com/OpenTimer/OpenTimer\">OpenTimer</a>"\
+  "ContactUs=<a href=\"https://taskflow.github.io/#tag_contact\">contact us</a>"\
+  "ProjectWebsite=<a href=\"https://taskflow.github.io/\">project website</a>"\
+  "ProjectGitHub=<a href=\"https://github.com/taskflow/\">project GitHub</a>"\
+  "ShowcasePresentation=<a href=\"https://taskflow.github.io/showcase/index.html\">showcase presentation</a>"\
+  "IssueTracker=<a href=\"https://github.com/taskflow/taskflow/issues\">issue tracker</a>"\
+  "PullRequest=<a href=\"https://github.com/taskflow/taskflow/pulls\">pull request</a>"\
+  "twhuang=<a href=\"https://tsung-wei-huang.github.io/\">Dr. Tsung-Wei Huang</a>"
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"
@@ -828,9 +832,11 @@ INPUT                  = ../taskflow/core/error.hpp \
                          ../taskflow/core/taskflow.hpp \
                          ../taskflow/core/observer.hpp \
                          ../taskflow/cuda/cuda_error.hpp \
+                         ../taskflow/cuda/cuda_statgrab.hpp \
+                         ../taskflow/cuda/cuda_memory.hpp \
                          ../taskflow/cuda/cuda_task.hpp \
                          ../taskflow/cuda/cuda_flow.hpp \
-                         ../taskflow/version.hpp \
+                         ../taskflow/cuda/cuda_algorithm/cuda_blaf.hpp \
                          ../taskflow/taskflow.hpp \
                          QuickStart.dox \
                          install/install.dox \

@@ -1,11 +1,13 @@
 #include "common.hpp" 
-#include <tbb/task_scheduler_init.h>
+#include <tbb/global_control.h>
 #include <tbb/blocked_range.h>
 #include <tbb/parallel_for.h>
 
 void bs_tbb(unsigned num_threads) {
 
-  tbb::task_scheduler_init init(num_threads);
+  tbb::global_control control(
+    tbb::global_control::max_allowed_parallelism, num_threads
+  );
 
 	for (int j=0; j<NUM_RUNS; j++) {
     tbb::parallel_for(0, numOptions, 1, [&](int i){

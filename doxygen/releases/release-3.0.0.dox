@@ -17,14 +17,20 @@ To download the newest version of %Taskflow, please clone from <a href="https://
 
 @section release-3-0-0_working_items Working Items
 
-@li migrating to the C++17 standard
+@li migrating to the C++17 standard to simplify the codebase with improved performance
 @li replacing all non-standard libraries with C++17 STL (e.g., @std_optional, @std_variant)
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
 @li adding parallel sort tf::Taskflow::sort algorithms
-@li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
 @li adopting <tt>constexpr if</tt> to replace std::enable_if
+@li adding methods for updating cudaFlow (with unittests)
+@li adding support for @cuBLAS
+@li adding support for @cuDNN
+@li adding support for SYCL (ComputeCpp)
 
 @section release-3-0-0_new_features New Features
+
+@li added a set of functions to grab the cuda device properties
+@li added a set of memory-related functions
 
 @section release-3-0-0_bug_fixes Bug Fixes 
 

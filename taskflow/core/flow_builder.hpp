@@ -17,55 +17,17 @@ class FlowBuilder {
   public:
     
     /**
-    @brief creates a static task from a given callable object
+    @brief creates multiple tasks from a list of callable objects
     
     @tparam C callable type
-    
-    @param callable a callable object constructible from std::function<void()>
+
+    @param callable callable to construct one of the static, dynamic, condition, and cudaFlow tasks
 
     @return a Task handle
     */
     template <typename C>
-    std::enable_if_t<is_static_task_v<C>, Task> emplace(C&& callable);
-
-    /**
-    @brief creates a dynamic task from a given callable object
+    Task emplace(C&& callable);
     
-    @tparam C callable type
-    
-    @param callable a callable object constructible from std::function<void(Subflow&)>
-
-    @return a Task handle
-    */
-    template <typename C>
-    std::enable_if_t<is_dynamic_task_v<C>, Task> emplace(C&& callable);
-
-    /**
-    @brief creates a condition task from a given callable object
-    
-    @tparam C callable type
-    
-    @param callable a callable object constructible from std::function<int()>
-
-    @return a Task handle
-    */
-    template <typename C>
-    std::enable_if_t<is_condition_task_v<C>, Task> emplace(C&& callable);
-
-#ifdef TF_ENABLE_CUDA
-    /**
-    @brief creates a cudaflow task from a given callable object
-    
-    @tparam C callable type
-    
-    @param callable a callable object constructible from std::function<void(cudaFlow&)>
-
-    @return a Task handle
-    */
-    template <typename C>
-    std::enable_if_t<is_cudaflow_task_v<C>, Task> emplace(C&& callable);
-#endif 
-
     /**
     @brief creates multiple tasks from a list of callable objects
     
@@ -82,6 +44,7 @@ class FlowBuilder {
     @brief creates a module task from a taskflow
 
     @param taskflow a taskflow object for the module
+
     @return a Task handle
     */
     Task composed_of(Taskflow& taskflow);
@@ -595,57 +558,48 @@ inline FlowBuilder::FlowBuilder(Graph& graph) :
 }
 
 // Function: emplace
+template <typename C>
+Task FlowBuilder::emplace(C&& c) {
+  Node* n;
+  if constexpr(is_static_task_v<C>) {
+    n = _graph.emplace_back(
+      std::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
+    );
+  }
+  else if constexpr(is_dynamic_task_v<C>) {
+    n = _graph.emplace_back(
+      std::in_place_type_t<Node::DynamicWork>{}, std::forward<C>(c)
+    );
+  }
+  else if constexpr(is_condition_task_v<C>) {
+    n = _graph.emplace_back(
+      std::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
+    );
+  }
+#ifdef TF_ENABLE_CUDA
+  else if constexpr(is_cudaflow_task_v<C>) {
+    n = _graph.emplace_back(
+      std::in_place_type_t<Node::cudaFlowWork>{}, std::forward<C>(c)
+    );
+  }
+#endif
+  else {
+     static_assert(dependent_false_v<C>, "invalid task callable");
+  }
+  
+  return Task(n);
+}
+
+// Function: emplace
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
 auto FlowBuilder::emplace(C&&... cs) {
   return std::make_tuple(emplace(std::forward<C>(cs))...);
 }
 
-// Function: emplace
-// emplaces a static task
-template <typename C>
-std::enable_if_t<is_static_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
-  auto n = _graph.emplace_back(
-    nstd::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
-  );
-  return Task(n);
-}
-
-// Function: emplace
-// emplaces a dynamic task
-template <typename C>
-std::enable_if_t<is_dynamic_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
-  auto n = _graph.emplace_back(
-    nstd::in_place_type_t<Node::DynamicWork>{}, std::forward<C>(c)
-  );
-  return Task(n);
-}
-
-// Function: emplace 
-// emplaces a condition task
-template <typename C>
-std::enable_if_t<is_condition_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
-  auto n = _graph.emplace_back(
-    nstd::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
-  );
-  return Task(n);
-}
-
-#ifdef TF_ENABLE_CUDA
-// Function: emplace
-// emplaces a cudaflow task
-template <typename C>
-std::enable_if_t<is_cudaflow_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
-  auto n = _graph.emplace_back(
-    nstd::in_place_type_t<Node::cudaFlowWork>{}, std::forward<C>(c)
-  );
-  return Task(n);
-}
-#endif
-
 // Function: composed_of    
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
   auto node = _graph.emplace_back(
-    nstd::in_place_type_t<Node::ModuleWork>{}, &taskflow
+    std::in_place_type_t<Node::ModuleWork>{}, &taskflow
   );
   return Task(node);
 }

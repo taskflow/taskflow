@@ -4,6 +4,43 @@
 
 namespace tf {
 
+// ----------------------------------------------------------------------------
+// cudaTask Types
+// ----------------------------------------------------------------------------
+
+/**
+@enum cudaTaskType
+
+@brief enumeration of all cudaTask types
+*/
+enum cudaTaskType {
+  CUDA_NOOP_TASK   = cudaNode::CUDA_NOOP_TASK,
+  CUDA_MEMSET_TASK = cudaNode::CUDA_MEMSET_TASK,
+  CUDA_MEMCPY_TASK = cudaNode::CUDA_MEMCPY_TASK,
+  CUDA_KERNEL_TASK = cudaNode::CUDA_KERNEL_TASK
+};
+
+/**
+@brief convert a cuda_task type to a human-readable string
+*/
+inline const char* cuda_task_type_to_string(cudaTaskType type) {
+
+  const char* val;
+
+  switch(type) {
+    case CUDA_NOOP_TASK:   val = "noop";      break;
+    case CUDA_MEMSET_TASK: val = "memset";    break;
+    case CUDA_MEMCPY_TASK: val = "memcpy";    break;
+    case CUDA_KERNEL_TASK: val = "kernel";    break;
+    default:               val = "undefined"; break;
+  }
+  return val;
+}
+
+// ----------------------------------------------------------------------------
+// cudaTask 
+// ----------------------------------------------------------------------------
+
 /**
 @class cudaTask
 
@@ -12,6 +49,8 @@ namespace tf {
 class cudaTask {
 
   friend class cudaFlow;
+
+  friend std::ostream& operator << (std::ostream&, const cudaTask&);
 
   public:
     
@@ -78,27 +117,21 @@ class cudaTask {
     */
     bool empty() const;
 
+    /**
+    @brief queries the task type
+    */
+    cudaTaskType type() const;
+
+    /**
+    @brief dumps the task through an output stream
+    */
+    void dump(std::ostream& os) const;
+
   private:
     
     cudaTask(cudaNode*);
 
     cudaNode* _node {nullptr};
-    
-    /// @private
-    template <typename T>
-    void _precede(T&&);
-
-    /// @private
-    template <typename T, typename... Ts>
-    void _precede(T&&, Ts&&...);
-    
-    /// @private
-    template <typename T>
-    void _succeed(T&&);
-
-    // @private
-    template <typename T, typename... Ts>
-    void _succeed(T&&, Ts&&...);
 };
 
 // Constructor
@@ -108,45 +141,15 @@ inline cudaTask::cudaTask(cudaNode* node) : _node {node} {
 // Function: precede
 template <typename... Ts>
 cudaTask& cudaTask::precede(Ts&&... tasks) {
-  _precede(std::forward<Ts>(tasks)...);
+  (_node->_precede(tasks._node), ...);
   return *this;
-}
-
-/// @private
-// Procedure: precede
-template <typename T>
-void cudaTask::_precede(T&& other) {
-  _node->_precede(other._node);
-}
-
-/// @private
-// Procedure: _precede
-template <typename T, typename... Ts>
-void cudaTask::_precede(T&& task, Ts&&... others) {
-  _precede(std::forward<T>(task));
-  _precede(std::forward<Ts>(others)...);
 }
 
 // Function: succeed
 template <typename... Ts>
 cudaTask& cudaTask::succeed(Ts&&... tasks) {
-  _succeed(std::forward<Ts>(tasks)...);
+  (tasks._node->_precede(_node), ...);
   return *this;
-}
-
-/// @private
-// Procedure: _succeed
-template <typename T>
-void cudaTask::_succeed(T&& other) {
-  other._node->_precede(_node);
-}
-
-/// @private
-// Procedure: _succeed
-template <typename T, typename... Ts>
-void cudaTask::_succeed(T&& task, Ts&&... others) {
-  _succeed(std::forward<T>(task));
-  _succeed(std::forward<Ts>(others)...);
 }
 
 // Function: empty
@@ -170,4 +173,32 @@ inline size_t cudaTask::num_successors() const {
   return _node->_successors.size();
 }
 
+// Function: type
+inline cudaTaskType cudaTask::type() const {
+  return static_cast<cudaTaskType>(_node->_handle.index());
+}
+
+// Procedure: dump
+inline void cudaTask::dump(std::ostream& os) const {
+  os << "cudaTask ";
+  if(_node->_name.empty()) os << _node;
+  else os << _node->_name;
+  os << " [type=" << cuda_task_type_to_string(type()) << ']';
+}
+
+// ----------------------------------------------------------------------------
+// global ostream
+// ----------------------------------------------------------------------------
+
+/**
+@brief overload of ostream inserter operator for cudaTask
+*/
+inline std::ostream& operator << (std::ostream& os, const cudaTask& ct) {
+  ct.dump(os);
+  return os;
+}
+
 }  // end of namespace tf -----------------------------------------------------
+
+
+
