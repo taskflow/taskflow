@@ -308,7 +308,7 @@ Task& Task::succeed(Ts&&... tasks) {
 
 // Function: composed_of
 inline Task& Task::composed_of(Taskflow& tf) {
-  _node->_handle.emplace<Node::ModuleWork>(&tf);
+  _node->_handle.emplace<Node::ModuleTask>(&tf);
   return *this;
 }
 
@@ -423,17 +423,17 @@ inline void Task::dump(std::ostream& os) const {
 template <typename C>
 Task& Task::work(C&& c) {
   if constexpr(is_static_task_v<C>) {
-    _node->_handle.emplace<Node::StaticWork>(std::forward<C>(c));
+    _node->_handle.emplace<Node::StaticTask>(std::forward<C>(c));
   }
   else if constexpr(is_dynamic_task_v<C>) {
-    _node->_handle.emplace<Node::DynamicWork>(std::forward<C>(c));
+    _node->_handle.emplace<Node::DynamicTask>(std::forward<C>(c));
   }
   else if constexpr(is_condition_task_v<C>) {
-    _node->_handle.emplace<Node::ConditionWork>(std::forward<C>(c));
+    _node->_handle.emplace<Node::ConditionTask>(std::forward<C>(c));
   }
 #ifdef TF_ENABLE_CUDA
   else if constexpr(is_cudaflow_task_v<C>) {
-    _node->_handle.emplace<Node::cudaFlowWork>(std::forward<C>(c));
+    _node->_handle.emplace<Node::cudaFlowTask>(std::forward<C>(c));
   }
 #endif
   else {

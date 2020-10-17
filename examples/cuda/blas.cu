@@ -108,6 +108,26 @@ int main (void){
         printf ("\n");
     }
     free(a);
+    
+    beg = std::chrono::steady_clock::now();
+    cudaStream_t stream;
+    cudaStreamCreate(&stream);
+    end = std::chrono::steady_clock::now();
+    std::cout << "create stream: "
+              << std::chrono::duration_cast<std::chrono::microseconds>(end - beg).count()
+              << " us\n";
+    
+    std::function<void()> test =[](){ int dev; cudaGetDevice(&dev);};
+
+    beg = std::chrono::steady_clock::now();
+    //int dev;
+    //cudaStreamDestroy(stream);
+    //cudaGetDevice(&dev);
+    test();
+    end = std::chrono::steady_clock::now();
+    std::cout << "destroy stream: "
+              << std::chrono::duration_cast<std::chrono::nanoseconds>(end - beg).count()
+              << " us\n";
   }
   return EXIT_SUCCESS;
 }

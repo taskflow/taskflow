@@ -102,5 +102,3 @@ inline cublasHandle_t cublas_per_thread_handle(int d) {
 }
 
 }  // end of namespace tf -----------------------------------------------------
-
-

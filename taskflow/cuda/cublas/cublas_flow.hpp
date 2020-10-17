@@ -4,37 +4,59 @@
 
 namespace tf {
 
-class cublasNode {
-  
-   
-  private:
+// ----------------------------------------------------------------------------
+// cublasFlow definition
+// ----------------------------------------------------------------------------
 
-    std::string _name;
-
-    std::vector<cublasNode*> _successors;
-};
-
+/**
+@brief class object to construct a cuBLAS task graph
+*/
 class cublasFlow {
 
   public:
     
+    /**
+    @brief constructs a cublasFlow object
+     */
+    cublasFlow(cudaGraph& graph);
+    
     template <typename T>
-    cublasNode* amax(int N, const T* x, int incx, int* result); 
+    cudaTask amax(int N, const T* x, int incx, int* result) {
+      /*
+       [](cublasHandle_t){
+       }
+       */
+      //return cudaTask(node);
+    }
 
   private:
 
-    cudaFlow& _cudaflow;
+    //cudaFlow& _cudaflow;
+    cudaGraph& _graph;
 
 };
 
+// Constructor
+inline cublasFlow::cublasFlow(cudaGraph& graph) : _graph {graph} {
+}
 
 // ----------------------------------------------------------------------------
-// cudaFlow::child([](cublasFlow&))
+// cudaFlow 
 // ----------------------------------------------------------------------------
 
-// Function: child
-template <typename C, std::enable_if_t<is_cublas_child_v<C>, void>*>
-cudaTask cudaFlow::child(C&& callable) {
+// Function: subflow
+template <typename C, std::enable_if_t<is_cublas_subflow_v<C>, void>*>
+cudaTask cudaFlow::subflow(C&& c) {
+
+  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Subflow>{});
+  
+  auto& h = std::get<cudaNode::Subflow>(node->_handle);
+
+  cublasFlow cbf(h.graph);
+  
+  c(cbf);
+  
+  return cudaTask(node);
 }
 
 }  // end of namespace tf -----------------------------------------------------

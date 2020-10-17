@@ -14,14 +14,14 @@ constexpr size_t cuda_default_threads_per_block(size_t N) {
 }
 
 /**
-@struct is_cublas_child
+@struct is_cublas_subflow
 
-@brief determines if a callable spawns a cublas child graph
+@brief determines if a callable spawns a cublas subflow graph
 
-A cublas child is a callable object constructible from function<void(cublasFlow&)>.
+A cublas subflow is a callable object constructible from function<void(cublasFlow&)>.
 */
 template <typename C>
-constexpr bool is_cublas_child_v = std::is_invocable_r_v<void, C, cublasFlow&>;
+constexpr bool is_cublas_subflow_v = std::is_invocable_r_v<void, C, cublasFlow&>;
 
 // ----------------------------------------------------------------------------
 // cudaFlow definition
@@ -42,7 +42,6 @@ class cudaFlow {
 
   friend class Executor;
 
-  friend class cfBLAS;
   //friend class cudaBLAF;
 
   public:
@@ -51,6 +50,16 @@ class cudaFlow {
     @brief queries the emptiness of the graph
     */
     bool empty() const;
+
+    /**
+    @brief queries the device associated with the cudaFlow
+    */
+    int device() const;
+
+    /**
+    @brief queries if the cudaflow is joinable
+    */
+    bool joinable() const;
     
     /**
     @brief creates a no-operation task
@@ -64,7 +73,7 @@ class cudaFlow {
     */
     cudaTask noop();
     
-    /**
+    /*
     @brief creates a host execution task
     
     @tparam C callable type
@@ -73,9 +82,8 @@ class cudaFlow {
 
     A host task can only execute CPU-specific functions and cannot do any CUDA calls 
     (e.g., cudaMalloc).
-    */
-    template <typename C>
-    cudaTask host(C&& callable);
+    //template <typename C>
+    //cudaTask host(C&& callable); */
     
     /**
     @brief creates a kernel task
@@ -200,20 +208,6 @@ class cudaFlow {
       std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
     >
     cudaTask copy(T* tgt, const T* src, size_t num);
-
-    /**
-    @brief assigns a device to launch the cudaFlow
-
-    A cudaFlow can only be assigned to a device once.
-
-    @param device target device identifier
-    */
-    void device(int device);
-
-    /**
-    @brief queries the device associated with the cudaFlow
-    */
-    int device() const;
     
     /**
     @brief offloads the cudaFlow onto a GPU and repeatedly running it until 
@@ -395,25 +389,27 @@ class cudaFlow {
     //
     
     // ------------------------------------------------------------------------
-    // child flow
+    // subflow
     // ------------------------------------------------------------------------
     
     /**
-    @brief constructs a cublas child graph to perform cuBLAS operations
+    @brief constructs a cublas subflow graph to perform cuBLAS operations
     
     @tparam C callable type
 
     @return cudaTask handle
 
-    A cublas child graph forms a cudaGraph of cuBLAS operations and 
+    A cublas subflow graph forms a cudaGraph of cuBLAS operations and 
     their dependencies.
     */
-    template <typename C, std::enable_if_t<is_cublas_child_v<C>, void>* = nullptr>
-    cudaTask child(C&& callable);
+    template <typename C, std::enable_if_t<is_cublas_subflow_v<C>, void>* = nullptr>
+    cudaTask subflow(C&& callable);
 
   private:
     
-    cudaFlow(Executor& executor, cudaGraph& graph);
+    //cudaFlow(int, Executor&, cudaGraph&);
+    cudaFlow(Executor& executor, cudaGraph& graph, int ctx);
+    ~cudaFlow();
     
     Executor& _executor;
     cudaGraph& _graph;
@@ -421,12 +417,44 @@ class cudaFlow {
     int _device {-1};
 
     bool _joinable {true};
+    
+    cudaGraphExec_t _executable {nullptr};
+
+    void _create_executable();
+    void _destroy_executable();
 };
 
 // Constructor
-inline cudaFlow::cudaFlow(Executor& e, cudaGraph& g) : 
-  _executor  {e},
-  _graph     {g} {
+inline cudaFlow::cudaFlow(Executor& e, cudaGraph& g, int d) : 
+  _executor{e},
+  _graph   {g},
+  _device  {d} {
+}
+
+// Destructor
+inline cudaFlow::~cudaFlow() {
+  assert(_executable == nullptr);
+}
+
+// Procedure: _create_executable
+inline void cudaFlow::_create_executable() {
+  assert(_executable == nullptr);
+  TF_CHECK_CUDA(
+    cudaGraphInstantiate(
+      &_executable, _graph._native_handle, nullptr, nullptr, 0
+    ),
+    "failed to create an executable cudaGraph"
+  );
+}
+
+// Procedure: _destroy_executable
+inline void cudaFlow::_destroy_executable() {
+  assert(_executable != nullptr);
+  TF_CHECK_CUDA(
+    cudaGraphExecDestroy(_executable), 
+    "failed to destroy the native image"
+  );
+  _executable = nullptr;
 }
 
 // Function: empty
@@ -434,13 +462,10 @@ inline bool cudaFlow::empty() const {
   return _graph._nodes.empty();
 }
 
-// Procedure: device
-inline void cudaFlow::device(int d) {
-  if(_graph._native_handle.graph != nullptr) {
-    TF_THROW("cudaFlow has been instantiated on device ", _device); 
-  }
-  _device = d;
-}
+// Function: joinable
+inline bool cudaFlow::joinable() const {
+  return _joinable;
+} 
 
 // Function: device
 inline int cudaFlow::device() const {
@@ -449,35 +474,38 @@ inline int cudaFlow::device() const {
 
 // Function: noop
 inline cudaTask cudaFlow::noop() {
+
   auto node = _graph.emplace_back( 
-    [](cudaGraph_t& graph, cudaGraphNode_t& node){
-      TF_CHECK_CUDA(
-        ::cudaGraphAddEmptyNode(&node, graph, nullptr, 0),
-        "failed to create a no-operation (empty) node"
-      );
-    },
     std::in_place_type_t<cudaNode::Noop>{}
   );
+
+  TF_CHECK_CUDA(
+    cudaGraphAddEmptyNode(
+      &node->_native_handle, _graph._native_handle, nullptr, 0
+    ),
+    "failed to create a no-operation (empty) node"
+  );
+
   return cudaTask(node);
 }
 
-// Function: host
-template <typename C>
-cudaTask cudaFlow::host(C&& c) {
-  auto node = _graph.emplace_back(
-    [c=std::forward<C>(c)] (cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
-      cudaHostNodeParams p;
-      p.fn = [] (void* data) { (*static_cast<C*>(data))(); };
-      p.userData = &c;
-      TF_CHECK_CUDA(
-        ::cudaGraphAddHostNode(&node, graph, nullptr, 0, &p),
-        "failed to create a host node"
-      );
-    },
-    std::in_place_type_t<cudaNode::Host>{}
-  );
-  return cudaTask(node);
-}
+//// Function: host
+//template <typename C>
+//cudaTask cudaFlow::host(C&& c) {
+//  auto node = _graph.emplace_back(
+//    std::in_place_type_t<cudaNode::Host>{},
+//    [c=std::forward<C>(c)] (cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
+//      cudaHostNodeParams p;
+//      p.fn = [] (void* data) { (*static_cast<C*>(data))(); };
+//      p.userData = &c;
+//      TF_CHECK_CUDA(
+//        ::cudaGraphAddHostNode(&node, graph, nullptr, 0, &p),
+//        "failed to create a host node"
+//      );
+//    }
+//  );
+//  return cudaTask(node);
+//}
 
 // Function: kernel
 template <typename F, typename... ArgsT>
@@ -488,29 +516,28 @@ cudaTask cudaFlow::kernel(
   using traits = function_traits<F>;
 
   static_assert(traits::arity == sizeof...(ArgsT), "arity mismatches");
-  
+
   auto node = _graph.emplace_back(
-    [g, b, s, f=(void*)f, args...] 
-    (cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
-
-      cudaKernelNodeParams p;
-      void* arguments[sizeof...(ArgsT)] = { (void*)(&args)... };
-      p.func = f;
-      p.gridDim = g;
-      p.blockDim = b;
-      p.sharedMemBytes = s;
-      p.kernelParams = arguments;
-      p.extra = nullptr;
-
-      TF_CHECK_CUDA(
-        ::cudaGraphAddKernelNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node of kernel task"
-      );
-    },
     std::in_place_type_t<cudaNode::Kernel>{},
     (void*)f
   );
   
+  cudaKernelNodeParams p;
+  void* arguments[sizeof...(ArgsT)] = { (void*)(&args)... };
+  p.func = (void*)f;
+  p.gridDim = g;
+  p.blockDim = b;
+  p.sharedMemBytes = s;
+  p.kernelParams = arguments;
+  p.extra = nullptr;
+
+  TF_CHECK_CUDA(
+    cudaGraphAddKernelNode(
+      &node->_native_handle, _graph._native_handle, nullptr, 0, &p
+    ),
+    "failed to create a cudaGraph node of kernel task"
+  );
+
   return cudaTask(node);
 }
 
@@ -525,26 +552,24 @@ cudaTask cudaFlow::kernel_on(
   static_assert(traits::arity == sizeof...(ArgsT), "arity mismatches");
   
   auto node = _graph.emplace_back(
-    [d, g, b, s, f=(void*)f, args...] 
-    (cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
+    std::in_place_type_t<cudaNode::Kernel>{}, (void*)f
+  );
+  
+  cudaKernelNodeParams p;
+  void* arguments[sizeof...(ArgsT)] = { (void*)(&args)... };
+  p.func = (void*)f;
+  p.gridDim = g;
+  p.blockDim = b;
+  p.sharedMemBytes = s;
+  p.kernelParams = arguments;
+  p.extra = nullptr;
 
-      cudaKernelNodeParams p;
-      void* arguments[sizeof...(ArgsT)] = { (void*)(&args)... };
-      p.func = f;
-      p.gridDim = g;
-      p.blockDim = b;
-      p.sharedMemBytes = s;
-      p.kernelParams = arguments;
-      p.extra = nullptr;
-
-      cudaScopedDevice ctx(d);
-      TF_CHECK_CUDA(
-        ::cudaGraphAddKernelNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node of kernel_on task"
-      );
-    },
-    std::in_place_type_t<cudaNode::Kernel>{},
-    (void*)f
+  cudaScopedDevice ctx(d);
+  TF_CHECK_CUDA(
+    ::cudaGraphAddKernelNode(
+      &node->_native_handle, _graph._native_handle, nullptr, 0, &p
+    ),
+    "failed to create a kernel task on device ", d
   );
 
   return cudaTask(node);
@@ -557,22 +582,24 @@ std::enable_if_t<
   cudaTask
 > 
 cudaFlow::zero(T* dst, size_t count) {
-  auto node = _graph.emplace_back(
-    [dst, count] (cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
-      cudaMemsetParams p;
-      p.dst = dst;
-      p.value = 0;
-      p.pitch = 0;
-      p.elementSize = sizeof(T);  // either 1, 2, or 4
-      p.width = count;
-      p.height = 1;
-      TF_CHECK_CUDA(
-        cudaGraphAddMemsetNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node of zero task"
-      );
-    },
-    std::in_place_type_t<cudaNode::Memset>{}
+
+  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Memset>{});
+  
+  cudaMemsetParams p;
+  p.dst = dst;
+  p.value = 0;
+  p.pitch = 0;
+  p.elementSize = sizeof(T);  // either 1, 2, or 4
+  p.width = count;
+  p.height = 1;
+
+  TF_CHECK_CUDA(
+    cudaGraphAddMemsetNode(
+      &node->_native_handle, _graph._native_handle, nullptr, 0, &p
+    ),
+    "failed to create a zero task"
   );
+
   return cudaTask(node);
 }
     
@@ -583,27 +610,28 @@ std::enable_if_t<
   cudaTask
 >
 cudaFlow::fill(T* dst, T value, size_t count) {
-  auto node = _graph.emplace_back(
-    [dst, value, count] (cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
-      cudaMemsetParams p;
-      p.dst = dst;
 
-      // perform bit-wise copy
-      p.value = 0;  // crucial
-      static_assert(sizeof(T) <= sizeof(p.value), "internal error");
-      std::memcpy(&p.value, &value, sizeof(T));
+  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Memset>{});
+  
+  cudaMemsetParams p;
+  p.dst = dst;
 
-      p.pitch = 0;
-      p.elementSize = sizeof(T);  // either 1, 2, or 4
-      p.width = count;
-      p.height = 1;
-      TF_CHECK_CUDA(
-        cudaGraphAddMemsetNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node of fill task"
-      );
-    },
-    std::in_place_type_t<cudaNode::Memset>{}
+  // perform bit-wise copy
+  p.value = 0;  // crucial
+  static_assert(sizeof(T) <= sizeof(p.value), "internal error");
+  std::memcpy(&p.value, &value, sizeof(T));
+
+  p.pitch = 0;
+  p.elementSize = sizeof(T);  // either 1, 2, or 4
+  p.width = count;
+  p.height = 1;
+  TF_CHECK_CUDA(
+    cudaGraphAddMemsetNode(
+      &node->_native_handle, _graph._native_handle, nullptr, 0, &p
+    ),
+    "failed to create a fill task"
   );
+
   return cudaTask(node);
 }
 
@@ -616,25 +644,23 @@ cudaTask cudaFlow::copy(T* tgt, const T* src, size_t num) {
 
   using U = std::decay_t<T>;
 
-  auto node = _graph.emplace_back(
-    [tgt, src, num] (cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
+  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Memcpy>{});
+  
+  cudaMemcpy3DParms p;
+  p.srcArray = nullptr;
+  p.srcPos = ::make_cudaPos(0, 0, 0);
+  p.srcPtr = ::make_cudaPitchedPtr(const_cast<T*>(src), num*sizeof(U), num, 1);
+  p.dstArray = nullptr;
+  p.dstPos = ::make_cudaPos(0, 0, 0);
+  p.dstPtr = ::make_cudaPitchedPtr(tgt, num*sizeof(U), num, 1);
+  p.extent = ::make_cudaExtent(num*sizeof(U), 1, 1);
+  p.kind = cudaMemcpyDefault;
 
-      cudaMemcpy3DParms p;
-      p.srcArray = nullptr;
-      p.srcPos = ::make_cudaPos(0, 0, 0);
-      p.srcPtr = ::make_cudaPitchedPtr(const_cast<T*>(src), num*sizeof(U), num, 1);
-      p.dstArray = nullptr;
-      p.dstPos = ::make_cudaPos(0, 0, 0);
-      p.dstPtr = ::make_cudaPitchedPtr(tgt, num*sizeof(U), num, 1);
-      p.extent = ::make_cudaExtent(num*sizeof(U), 1, 1);
-      p.kind = cudaMemcpyDefault;
-
-      TF_CHECK_CUDA(
-        cudaGraphAddMemcpyNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node of copy task"
-      );
-    },
-    std::in_place_type_t<cudaNode::Copy>{}
+  TF_CHECK_CUDA(
+    cudaGraphAddMemcpyNode(
+      &node->_native_handle, _graph._native_handle, nullptr, 0, &p
+    ),
+    "failed to create a cudaGraph node of copy task"
   );
 
   return cudaTask(node);
@@ -643,23 +669,22 @@ cudaTask cudaFlow::copy(T* tgt, const T* src, size_t num) {
 // Function: memset
 inline cudaTask cudaFlow::memset(void* dst, int ch, size_t count) {
 
-  auto node = _graph.emplace_back(
-    [dst, ch, count] (cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
-      cudaMemsetParams p;
-      p.dst = dst;
-      p.value = ch;
-      p.pitch = 0;
-      //p.elementSize = (count & 1) == 0 ? ((count & 3) == 0 ? 4 : 2) : 1;
-      //p.width = (count & 1) == 0 ? ((count & 3) == 0 ? count >> 2 : count >> 1) : count;
-      p.elementSize = 1;  // either 1, 2, or 4
-      p.width = count;
-      p.height = 1;
-      TF_CHECK_CUDA(
-        cudaGraphAddMemsetNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node of memset task"
-      );
-    },
-    std::in_place_type_t<cudaNode::Memset>{}
+  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Memset>{});
+  
+  cudaMemsetParams p;
+  p.dst = dst;
+  p.value = ch;
+  p.pitch = 0;
+  //p.elementSize = (count & 1) == 0 ? ((count & 3) == 0 ? 4 : 2) : 1;
+  //p.width = (count & 1) == 0 ? ((count & 3) == 0 ? count >> 2 : count >> 1) : count;
+  p.elementSize = 1;  // either 1, 2, or 4
+  p.width = count;
+  p.height = 1;
+  TF_CHECK_CUDA(
+    cudaGraphAddMemsetNode(
+      &node->_native_handle, _graph._native_handle, nullptr, 0, &p
+    ),
+    "failed to create a cudaGraph node of memset task"
   );
   
   return cudaTask(node);
@@ -667,28 +692,27 @@ inline cudaTask cudaFlow::memset(void* dst, int ch, size_t count) {
 
 // Function: memcpy
 inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
-  auto node = _graph.emplace_back(
-    [tgt, src, bytes] (cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
-      // Parameters in cudaPitchedPtr
-      // d   - Pointer to allocated memory
-      // p   - Pitch of allocated memory in bytes
-      // xsz - Logical width of allocation in elements
-      // ysz - Logical height of allocation in elements
-      cudaMemcpy3DParms p;
-      p.srcArray = nullptr;
-      p.srcPos = ::make_cudaPos(0, 0, 0);
-      p.srcPtr = ::make_cudaPitchedPtr(const_cast<void*>(src), bytes, bytes, 1);
-      p.dstArray = nullptr;
-      p.dstPos = ::make_cudaPos(0, 0, 0);
-      p.dstPtr = ::make_cudaPitchedPtr(tgt, bytes, bytes, 1);
-      p.extent = ::make_cudaExtent(bytes, 1, 1);
-      p.kind = cudaMemcpyDefault;
-      TF_CHECK_CUDA(
-        cudaGraphAddMemcpyNode(&node, graph, nullptr, 0, &p),
-        "failed to create a cudaGraph node of memcpy task"
-      );
-    },
-    std::in_place_type_t<cudaNode::Copy>{}
+  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Memcpy>{});
+  
+  // Parameters in cudaPitchedPtr
+  // d   - Pointer to allocated memory
+  // p   - Pitch of allocated memory in bytes
+  // xsz - Logical width of allocation in elements
+  // ysz - Logical height of allocation in elements
+  cudaMemcpy3DParms p;
+  p.srcArray = nullptr;
+  p.srcPos = ::make_cudaPos(0, 0, 0);
+  p.srcPtr = ::make_cudaPitchedPtr(const_cast<void*>(src), bytes, bytes, 1);
+  p.dstArray = nullptr;
+  p.dstPos = ::make_cudaPos(0, 0, 0);
+  p.dstPtr = ::make_cudaPitchedPtr(tgt, bytes, bytes, 1);
+  p.extent = ::make_cudaExtent(bytes, 1, 1);
+  p.kind = cudaMemcpyDefault;
+  TF_CHECK_CUDA(
+    cudaGraphAddMemcpyNode(
+      &node->_native_handle, _graph._native_handle, nullptr, 0, &p
+    ),
+    "failed to create a cudaGraph node of memcpy task"
   );
   return cudaTask(node);
 }
@@ -710,7 +734,7 @@ void cudaFlow::update_kernel(
   cudaKernelNodeParams p;
   
   void* arguments[sizeof...(ArgsT)] = { (void*)(&args)... };
-  p.func = std::get<cudaNode::CUDA_KERNEL_TASK>((ct._node)->_handle).func;
+  p.func = std::get<cudaNode::Kernel>((ct._node)->_handle).func;
   p.gridDim = g;
   p.blockDim = b;
   p.sharedMemBytes = s;
@@ -724,7 +748,7 @@ void cudaFlow::update_kernel(
 
   TF_CHECK_CUDA(
     cudaGraphExecKernelNodeSetParams(
-      _graph._native_handle.image, ct._node->_native_handle, &p
+      _executable, ct._node->_native_handle, &p
     ),
     "failed to update kernel parameter on ", ct
   );
@@ -761,7 +785,7 @@ void cudaFlow::update_copy(cudaTask ct, T* tgt, const T* src, size_t num) {
 
   TF_CHECK_CUDA(
     cudaGraphExecMemcpyNodeSetParams(
-      _graph._native_handle.image, ct._node->_native_handle, &p
+      _executable, ct._node->_native_handle, &p
     ),
     "failed to update memcpy parameter on ", ct
   );
@@ -792,7 +816,7 @@ void cudaFlow::update_memcpy(cudaTask ct, void* tgt, const void* src, size_t byt
   //);
 
   TF_CHECK_CUDA(
-    cudaGraphExecMemcpyNodeSetParams(_graph._native_handle.image, ct._node->_native_handle, &p),
+    cudaGraphExecMemcpyNodeSetParams(_executable, ct._node->_native_handle, &p),
     "failed to update memcpy parameter on ", ct
   );
 }
@@ -821,7 +845,7 @@ void cudaFlow::update_memset(cudaTask ct, void* dst, int ch, size_t count) {
 
   TF_CHECK_CUDA(
     cudaGraphExecMemsetNodeSetParams(
-      _graph._native_handle.image, ct._node->_native_handle, &p
+      _executable, ct._node->_native_handle, &p
     ),
     "failed to update memset parameter on ", ct
   );
@@ -865,10 +889,7 @@ cudaTask cudaFlow::for_each_index(I beg, I end, I inc, C&& c) {
 template <typename I, typename C, typename... S>
 cudaTask cudaFlow::transform(I first, I last, C&& c, S... srcs) {
   
-  // TODO
-  //if(N == 0) {
-  //  return noop();
-  //}
+  // TODO: special case when N is 0?
   
   size_t N = std::distance(first, last);
   size_t B = cuda_default_threads_per_block(N);

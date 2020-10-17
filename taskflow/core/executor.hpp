@@ -23,6 +23,7 @@ using an efficient work-stealing scheduling algorithm.
 */
 class Executor {
 
+  friend class FlowBuilder;
   friend class Subflow;
   friend class cudaFlow;
 
@@ -258,13 +259,13 @@ class Executor {
     void _schedule(Node*);
     void _schedule(std::vector<Node*>&);
     void _invoke(Worker&, Node*);
-    void _invoke_static_work(Worker&, Node*);
-    void _invoke_dynamic_work(Worker&, Node*);
-    void _invoke_dynamic_work_internal(Worker&, Node*, Graph&, bool);
-    void _invoke_dynamic_work_external(Node*, Graph&, bool);
-    void _invoke_condition_work(Worker&, Node*, int&);
-    void _invoke_module_work(Worker&, Node*);
-    void _invoke_async_work(Worker&, Node*);
+    void _invoke_static_task(Worker&, Node*);
+    void _invoke_dynamic_task(Worker&, Node*);
+    void _invoke_dynamic_task_internal(Worker&, Node*, Graph&, bool);
+    void _invoke_dynamic_task_external(Node*, Graph&, bool);
+    void _invoke_condition_task(Worker&, Node*, int&);
+    void _invoke_module_task(Worker&, Node*);
+    void _invoke_async_task(Worker&, Node*);
     void _set_up_topology(Topology*);
     void _tear_down_topology(Topology*); 
     void _increment_topology();
@@ -272,13 +273,16 @@ class Executor {
     void _decrement_topology_and_notify();
 
 #ifdef TF_ENABLE_CUDA
-    void _invoke_cudaflow_work(Worker&, Node*);
+    void _invoke_cudaflow_task(Worker&, Node*);
+    
+    template <typename C>
+    void _invoke_cudaflow_task_entry(C&&, int, Node*);
     
     template <typename P>
-    void _invoke_cudaflow_work_internal(Worker&, cudaFlow&, P&&, bool);
+    void _invoke_cudaflow_task_internal(Worker&, cudaFlow&, P&&, bool);
     
     template <typename P>
-    void _invoke_cudaflow_work_external(cudaFlow&, P&&, bool);
+    void _invoke_cudaflow_task_external(cudaFlow&, P&&, bool);
 #endif
 };
 
@@ -431,7 +435,7 @@ auto Executor::async(F&& f, ArgsT&&... args) {
   
   if constexpr(std::is_same_v<R, void>) {
     node = node_pool.animate(
-      std::in_place_type_t<Node::AsyncWork>{},
+      std::in_place_type_t<Node::AsyncTask>{},
       [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] () mutable {
         f(args...);
         p.object.set_value();
@@ -440,7 +444,7 @@ auto Executor::async(F&& f, ArgsT&&... args) {
   }
   else {
     node = node_pool.animate(
-      std::in_place_type_t<Node::AsyncWork>{},
+      std::in_place_type_t<Node::AsyncTask>{},
       [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] () mutable {
         p.object.set_value(f(args...));
       }
@@ -797,32 +801,32 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   switch(type) {
     // static task
     case Node::STATIC_TASK:{
-      _invoke_static_work(worker, node);
+      _invoke_static_task(worker, node);
     } 
     break;
     
     // dynamic task
     case Node::DYNAMIC_TASK: {
-      _invoke_dynamic_work(worker, node);
+      _invoke_dynamic_task(worker, node);
     }
     break;
     
     // condition task
     case Node::CONDITION_TASK: {
-      _invoke_condition_work(worker, node, cond);
+      _invoke_condition_task(worker, node, cond);
     }
     break;
     //}  // no need to add a break here due to the immediate return
 
     // module task
     case Node::MODULE_TASK: {
-      _invoke_module_work(worker, node);
+      _invoke_module_task(worker, node);
     }
     break;
 
     // async task
     case Node::ASYNC_TASK: {
-      _invoke_async_work(worker, node);
+      _invoke_async_task(worker, node);
       _decrement_topology_and_notify();
       return ;
     }
@@ -831,7 +835,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // cudaflow task
 #ifdef TF_ENABLE_CUDA
     case Node::CUDAFLOW_TASK: {
-      _invoke_cudaflow_work(worker, node);
+      _invoke_cudaflow_task(worker, node);
     }
     break; 
 #endif
@@ -900,19 +904,19 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
   }
 }
 
-// Procedure: _invoke_static_work
-inline void Executor::_invoke_static_work(Worker& worker, Node* node) {
+// Procedure: _invoke_static_task
+inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  std::get<Node::StaticWork>(node->_handle).work();
+  std::get<Node::StaticTask>(node->_handle).work();
   _observer_epilogue(worker, node);
 }
 
-// Procedure: _invoke_dynamic_work
-inline void Executor::_invoke_dynamic_work(Worker& w, Node* node) {
+// Procedure: _invoke_dynamic_task
+inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
 
   _observer_prologue(w, node);
 
-  auto& handle = std::get<Node::DynamicWork>(node->_handle);
+  auto& handle = std::get<Node::DynamicTask>(node->_handle);
 
   handle.subgraph.clear();
 
@@ -921,24 +925,24 @@ inline void Executor::_invoke_dynamic_work(Worker& w, Node* node) {
   handle.work(sf);
 
   if(sf._joinable) {
-    _invoke_dynamic_work_internal(w, node, handle.subgraph, false);
+    _invoke_dynamic_task_internal(w, node, handle.subgraph, false);
   }
   
   _observer_epilogue(w, node);
 }
 
-// Procedure: _invoke_dynamic_work_external
-inline void Executor::_invoke_dynamic_work_external(Node*p, Graph& g, bool detach) {
+// Procedure: _invoke_dynamic_task_external
+inline void Executor::_invoke_dynamic_task_external(Node*p, Graph& g, bool detach) {
 
   auto worker = _per_thread().worker;
 
   assert(worker && worker->executor == this);
   
-  _invoke_dynamic_work_internal(*worker, p, g, detach);
+  _invoke_dynamic_task_internal(*worker, p, g, detach);
 }
 
-// Procedure: _invoke_dynamic_work_internal
-inline void Executor::_invoke_dynamic_work_internal(
+// Procedure: _invoke_dynamic_task_internal
+inline void Executor::_invoke_dynamic_task_internal(
   Worker& w, Node* p, Graph& g, bool detach
 ) {
 
@@ -1023,52 +1027,54 @@ inline void Executor::_invoke_dynamic_work_internal(
   }
 }
 
-// Procedure: _invoke_condition_work
-inline void Executor::_invoke_condition_work(Worker& worker, Node* node, int& cond) {
+// Procedure: _invoke_condition_task
+inline void Executor::_invoke_condition_task(Worker& worker, Node* node, int& cond) {
 
   _observer_prologue(worker, node);
   
-  cond = std::get<Node::ConditionWork>(node->_handle).work();
+  cond = std::get<Node::ConditionTask>(node->_handle).work();
 
   _observer_epilogue(worker, node);
 }
 
 #ifdef TF_ENABLE_CUDA
-// Procedure: _invoke_cudaflow_work
-inline void Executor::_invoke_cudaflow_work(Worker& worker, Node* node) {
-
+// Procedure: _invoke_cudaflow_task
+inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);  
-  
   assert(worker.domain == node->domain());
-  
-  // create a cudaflow
-  auto& h = std::get<Node::cudaFlowWork>(node->_handle);
-
-  h.graph.clear();
-
-  cudaFlow cf(*this, h.graph);
-
-  h.work(cf); 
-
-  //auto d = (cf._device == -1) ? 0 : cf._device;
-
-  //TODO: set device?
-  //cudaScopedDevice ctx(d);
-  
-  // join the cudaflow
-  if(cf._joinable) {
-    _invoke_cudaflow_work_internal(
-      worker, cf, [repeat=1] () mutable { return repeat-- == 0; }, true
-    );  
-    cf._joinable = false;
-  }
-
+  std::get<Node::cudaFlowTask>(node->_handle).work(*this, node);
   _observer_epilogue(worker, node);
 }
 
-// Procedure: _invoke_cudaflow_work_internal
+// Procedure: _invoke_cudaflow_task_entry
+template <typename C>
+void Executor::_invoke_cudaflow_task_entry(C&& c, int d, Node* node) {
+
+  auto& h = std::get<Node::cudaFlowTask>(node->_handle);
+  
+  h.graph.clear();
+
+  h.graph._create_native_graph();
+  
+  //h.graph._make_native_graph();
+  cudaFlow cf(*this, h.graph, d);
+
+  c(cf); 
+
+  // join the cudaflow
+  if(cf._joinable) {
+    _invoke_cudaflow_task_external(
+      cf, [repeat=1] () mutable { return repeat-- == 0; }, true
+    );  
+    cf._joinable = false;
+  }
+   
+  h.graph._destroy_native_graph();
+}
+
+// Procedure: _invoke_cudaflow_task_internal
 template <typename P>
-void Executor::_invoke_cudaflow_work_internal(
+void Executor::_invoke_cudaflow_task_internal(
   Worker& w, cudaFlow& cf, P&& predicate, bool join
 ) {
   
@@ -1078,22 +1084,22 @@ void Executor::_invoke_cudaflow_work_internal(
   
   // by default, we stick with device 0  
   // //TODO device?
-  auto d = (cf._device == -1) ? 0 : cf._device;
+  auto d = cf._device;
 
-  cudaScopedDevice ctx(d);
+  //cudaScopedDevice ctx(d);
   
   auto s = _cuda_devices[d].streams[w.id - _id_offset[w.domain]];
   
   // transforms cudaFlow to a native cudaGraph under the specified device
   // and launches the graph through a given or an internal device stream
-  if(cf._graph._native_handle.graph == nullptr) {
-    cf._graph._create_native_graph();
+  if(cf._executable == nullptr) {
+    cf._create_executable();
   }
 
   while(!predicate()) {
 
     TF_CHECK_CUDA(
-      cudaGraphLaunch(cf._graph._native_handle.image, s), 
+      cudaGraphLaunch(cf._executable, s), 
       "failed to launch cudaFlow on device ", d
     );
 
@@ -1104,13 +1110,13 @@ void Executor::_invoke_cudaflow_work_internal(
   }
 
   if(join) {
-    cf._graph._destroy_native_graph();
+    cf._destroy_executable();
   }
 }
 
-// Procedure: _invoke_cudaflow_work_external
+// Procedure: _invoke_cudaflow_task_external
 template <typename P>
-void Executor::_invoke_cudaflow_work_external(
+void Executor::_invoke_cudaflow_task_external(
   cudaFlow& cf, P&& predicate, bool join
 ) {
 
@@ -1118,27 +1124,27 @@ void Executor::_invoke_cudaflow_work_external(
   
   assert(w && w->executor == this);
 
-  _invoke_cudaflow_work_internal(*w, cf, std::forward<P>(predicate), join);
+  _invoke_cudaflow_task_internal(*w, cf, std::forward<P>(predicate), join);
 }
 #endif
 
-// Procedure: _invoke_module_work
-inline void Executor::_invoke_module_work(Worker& w, Node* node) {
+// Procedure: _invoke_module_task
+inline void Executor::_invoke_module_task(Worker& w, Node* node) {
 
   _observer_prologue(w, node);
   
-  auto module = std::get<Node::ModuleWork>(node->_handle).module;
+  auto module = std::get<Node::ModuleTask>(node->_handle).module;
   
-  _invoke_dynamic_work_internal(w, node, module->_graph, false);
+  _invoke_dynamic_task_internal(w, node, module->_graph, false);
   
   _observer_epilogue(w, node);  
 }
 
-// Procedure: _invoke_async_work
-inline void Executor::_invoke_async_work(Worker& w, Node* node) {
+// Procedure: _invoke_async_task
+inline void Executor::_invoke_async_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
   
-  std::get<Node::AsyncWork>(node->_handle).work();
+  std::get<Node::AsyncTask>(node->_handle).work();
 
   _observer_epilogue(w, node);  
   
@@ -1354,7 +1360,7 @@ inline void Subflow::join() {
     TF_THROW("subflow not joinable");
   }
 
-  _executor._invoke_dynamic_work_external(_parent, _graph, false);
+  _executor._invoke_dynamic_task_external(_parent, _graph, false);
   _joinable = false;
 }
 
@@ -1364,15 +1370,29 @@ inline void Subflow::detach() {
     TF_THROW("subflow already joined or detached");
   }
 
-  _executor._invoke_dynamic_work_external(_parent, _graph, true);
+  _executor._invoke_dynamic_task_external(_parent, _graph, true);
   _joinable = false;
 }
 
 // ----------------------------------------------------------------------------
-// cudaFlow
+// FlowBuilder and cudaFlow
 // ----------------------------------------------------------------------------
 
 #ifdef TF_ENABLE_CUDA
+
+template <typename C, typename D>
+std::enable_if_t<is_cudaflow_task_v<C>, Task> 
+FlowBuilder::emplace_on(C&& callable, D&& device) {
+  auto n = _graph.emplace_back(
+    std::in_place_type_t<Node::cudaFlowTask>{},
+    [c=std::forward<C>(callable), d=std::forward<D>(device)]
+    (Executor& executor, Node* node) mutable {
+      cudaScopedDevice ctx(d);
+      executor._invoke_cudaflow_task_entry(c, d, node);
+    }
+  );
+  return Task(n);
+}
 
 // Procedure: offload_until
 template <typename P>
@@ -1382,7 +1402,7 @@ void cudaFlow::offload_until(P&& predicate) {
     TF_THROW("cudaFlow already joined");
   }
 
-  _executor._invoke_cudaflow_work_external(
+  _executor._invoke_cudaflow_task_external(
     *this, std::forward<P>(predicate), false
   );
 }
@@ -1404,11 +1424,9 @@ void cudaFlow::join_until(P&& predicate) {
   if(!_joinable) {
     TF_THROW("cudaFlow already joined");
   }
-
-  _executor._invoke_cudaflow_work_external(
+  _executor._invoke_cudaflow_task_external(
     *this, std::forward<P>(predicate), true
   );
-
   _joinable = false;
 }
 
@@ -1422,18 +1440,9 @@ inline void cudaFlow::join() {
   join_until([repeat=1] () mutable { return repeat-- == 0; });
 }
 
-
-#endif
+#endif  
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-
-
-
-
-
-
 
 
 

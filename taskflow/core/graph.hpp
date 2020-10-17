@@ -91,59 +91,60 @@ class Node {
   constexpr static int DETACHED = 0x2;
   
   // static work handle
-  struct StaticWork {
+  struct StaticTask {
 
     template <typename C> 
-    StaticWork(C&&);
+    StaticTask(C&&);
 
     std::function<void()> work;
   };
 
   // dynamic work handle
-  struct DynamicWork {
+  struct DynamicTask {
 
     template <typename C> 
-    DynamicWork(C&&);
+    DynamicTask(C&&);
 
     std::function<void(Subflow&)> work;
     Graph subgraph;
   };
   
   // condition work handle
-  struct ConditionWork {
+  struct ConditionTask {
 
     template <typename C> 
-    ConditionWork(C&&);
+    ConditionTask(C&&);
 
     std::function<int()> work;
   };
 
   // module work handle
-  struct ModuleWork {
+  struct ModuleTask {
 
     template <typename T>
-    ModuleWork(T&&);
+    ModuleTask(T&&);
 
     Taskflow* module {nullptr};
   };
 
   // Async work
-  struct AsyncWork {
+  struct AsyncTask {
 
     template <typename T>
-    AsyncWork(T&&);
+    AsyncTask(T&&);
 
     std::function<void()> work;
   };
   
   // cudaFlow work handle
 #ifdef TF_ENABLE_CUDA
-  struct cudaFlowWork {
+  struct cudaFlowTask {
     
     template <typename C> 
-    cudaFlowWork(C&& c) : work {std::forward<C>(c)} {}
+    cudaFlowTask(C&& c) : work {std::forward<C>(c)} {}
 
-    std::function<void(cudaFlow&)> work;
+    //std::function<void(cudaFlow&)> work;
+    std::function<void(Executor&, Node*)> work;
 
     cudaGraph graph;
   };
@@ -152,27 +153,27 @@ class Node {
   using handle_t = std::variant<
     std::monostate,  // placeholder
 #ifdef TF_ENABLE_CUDA
-    cudaFlowWork,     // cudaFlow
+    cudaFlowTask,     // cudaFlow
 #endif
-    StaticWork,       // static tasking
-    DynamicWork,      // dynamic tasking
-    ConditionWork,    // conditional tasking
-    ModuleWork,       // composable tasking
-    AsyncWork         // async work
+    StaticTask,       // static tasking
+    DynamicTask,      // dynamic tasking
+    ConditionTask,    // conditional tasking
+    ModuleTask,       // composable tasking
+    AsyncTask         // async work
   >;
   
   public:
   
   // variant index
   constexpr static auto PLACEHOLDER_TASK = get_index_v<std::monostate, handle_t>;
-  constexpr static auto STATIC_TASK      = get_index_v<StaticWork, handle_t>;
-  constexpr static auto DYNAMIC_TASK     = get_index_v<DynamicWork, handle_t>;
-  constexpr static auto CONDITION_TASK   = get_index_v<ConditionWork, handle_t>; 
-  constexpr static auto MODULE_TASK      = get_index_v<ModuleWork, handle_t>; 
-  constexpr static auto ASYNC_TASK       = get_index_v<AsyncWork, handle_t>; 
+  constexpr static auto STATIC_TASK      = get_index_v<StaticTask, handle_t>;
+  constexpr static auto DYNAMIC_TASK     = get_index_v<DynamicTask, handle_t>;
+  constexpr static auto CONDITION_TASK   = get_index_v<ConditionTask, handle_t>; 
+  constexpr static auto MODULE_TASK      = get_index_v<ModuleTask, handle_t>; 
+  constexpr static auto ASYNC_TASK       = get_index_v<AsyncTask, handle_t>; 
 
 #ifdef TF_ENABLE_CUDA
-  constexpr static auto CUDAFLOW_TASK = get_index_v<cudaFlowWork, handle_t>; 
+  constexpr static auto CUDAFLOW_TASK = get_index_v<cudaFlowTask, handle_t>; 
 #endif
 
     template <typename... Args>
@@ -222,48 +223,48 @@ class Node {
 inline ObjectPool<Node> node_pool;
 
 // ----------------------------------------------------------------------------
-// Definition for Node::StaticWork
+// Definition for Node::StaticTask
 // ----------------------------------------------------------------------------
     
 // Constructor
 template <typename C> 
-Node::StaticWork::StaticWork(C&& c) : work {std::forward<C>(c)} {
+Node::StaticTask::StaticTask(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
-// Definition for Node::DynamicWork
+// Definition for Node::DynamicTask
 // ----------------------------------------------------------------------------
     
 // Constructor
 template <typename C> 
-Node::DynamicWork::DynamicWork(C&& c) : work {std::forward<C>(c)} {
+Node::DynamicTask::DynamicTask(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
-// Definition for Node::ConditionWork
+// Definition for Node::ConditionTask
 // ----------------------------------------------------------------------------
     
 // Constructor
 template <typename C> 
-Node::ConditionWork::ConditionWork(C&& c) : work {std::forward<C>(c)} {
+Node::ConditionTask::ConditionTask(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
-// Definition for Node::ModuleWork
+// Definition for Node::ModuleTask
 // ----------------------------------------------------------------------------
     
 // Constructor
 template <typename T>
-Node::ModuleWork::ModuleWork(T&& tf) : module {tf} {
+Node::ModuleTask::ModuleTask(T&& tf) : module {tf} {
 }
 
 // ----------------------------------------------------------------------------
-// Definition for Node::AsyncWork
+// Definition for Node::AsyncTask
 // ----------------------------------------------------------------------------
     
 // Constructor
 template <typename C>
-Node::AsyncWork::AsyncWork(C&& c) : work {std::forward<C>(c)} {
+Node::AsyncTask::AsyncTask(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
@@ -281,7 +282,7 @@ inline Node::~Node() {
 
   if(_handle.index() == DYNAMIC_TASK) {
 
-    auto& subgraph = std::get<DynamicWork>(_handle).subgraph;
+    auto& subgraph = std::get<DynamicTask>(_handle).subgraph;
 
     std::vector<Node*> nodes;
 
@@ -296,7 +297,7 @@ inline Node::~Node() {
 
       if(nodes[i]->_handle.index() == DYNAMIC_TASK) {
 
-        auto& sbg = std::get<DynamicWork>(nodes[i]->_handle).subgraph;
+        auto& sbg = std::get<DynamicTask>(nodes[i]->_handle).subgraph;
         std::move(
           sbg._nodes.begin(), sbg._nodes.end(), std::back_inserter(nodes)
         );

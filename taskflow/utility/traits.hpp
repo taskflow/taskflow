@@ -27,6 +27,7 @@
 #include <cstring>
 #include <variant>
 #include <optional>
+#include <any>
 
 namespace tf {
 
@@ -83,14 +84,14 @@ auto make_moc(T&& m) {
 // Functors.
 //-----------------------------------------------------------------------------
 
-//// Overloadded.
-//template <typename... Ts>
-//struct Functors : Ts... { 
-//  using Ts::operator()... ;
-//};
-//
-//template <typename... Ts>
-//Functors(Ts...) -> Functors<Ts...>;
+// Overloadded.
+template <typename... Ts>
+struct Functors : Ts... { 
+  using Ts::operator()... ;
+};
+
+template <typename... Ts>
+Functors(Ts...) -> Functors<Ts...>;
 
 // ----------------------------------------------------------------------------
 // callable traits
