@@ -14,12 +14,12 @@ namespace tf {
 @brief enumeration of all cudaTask types
 */
 enum cudaTaskType {
-  CUDA_NOOP_TASK   = cudaNode::CUDA_NOOP_TASK,
-  CUDA_MEMSET_TASK = cudaNode::CUDA_MEMSET_TASK,
-  CUDA_MEMCPY_TASK = cudaNode::CUDA_MEMCPY_TASK,
-  CUDA_KERNEL_TASK = cudaNode::CUDA_KERNEL_TASK,
-  CUDA_SUBFLOW_TASK = cudaNode::CUDA_SUBFLOW_TASK,
-  CUDA_CAPTURE_TASK = cudaNode::CUDA_CAPTURE_TASK
+  CUDA_NOOP_TASK      = cudaNode::CUDA_NOOP_TASK,
+  CUDA_MEMSET_TASK    = cudaNode::CUDA_MEMSET_TASK,
+  CUDA_MEMCPY_TASK    = cudaNode::CUDA_MEMCPY_TASK,
+  CUDA_KERNEL_TASK    = cudaNode::CUDA_KERNEL_TASK,
+  CUDA_CHILDFLOW_TASK = cudaNode::CUDA_CHILDFLOW_TASK,
+  CUDA_CAPTURE_TASK   = cudaNode::CUDA_CAPTURE_TASK
 };
 
 /**
@@ -30,13 +30,13 @@ inline const char* cuda_task_type_to_string(cudaTaskType type) {
   const char* val;
 
   switch(type) {
-    case CUDA_NOOP_TASK:    val = "cuda_noop";    break;
-    case CUDA_MEMSET_TASK:  val = "cuda_memset";  break;
-    case CUDA_MEMCPY_TASK:  val = "cuda_memcpy";  break;
-    case CUDA_KERNEL_TASK:  val = "cuda_kernel";  break;
-    case CUDA_SUBFLOW_TASK: val = "cuda_subflow"; break;
-    case CUDA_CAPTURE_TASK: val = "cuda_capture"; break;
-    default:                val = "undefined";    break;
+    case CUDA_NOOP_TASK:      val = "cuda_noop";    break;
+    case CUDA_MEMSET_TASK:    val = "cuda_memset";  break;
+    case CUDA_MEMCPY_TASK:    val = "cuda_memcpy";  break;
+    case CUDA_KERNEL_TASK:    val = "cuda_kernel";  break;
+    case CUDA_CHILDFLOW_TASK: val = "cuda_childflow"; break;
+    case CUDA_CAPTURE_TASK:   val = "cuda_capture"; break;
+    default:                  val = "undefined";    break;
   }
   return val;
 }

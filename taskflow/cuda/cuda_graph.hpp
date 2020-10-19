@@ -97,8 +97,8 @@ class cudaNode {
     void* func {nullptr};
   };
 
-  // Subflow handle
-  struct Subflow {
+  // Childflow handle
+  struct Childflow {
     cudaGraph graph;
   };
 
@@ -111,19 +111,19 @@ class cudaNode {
     Memset, 
     Memcpy, 
     Kernel,
-    Subflow,
+    Childflow,
     Capture
   >;
 
   public:
   
   // variant index
-  constexpr static auto CUDA_NOOP_TASK    = get_index_v<Noop, handle_t>;
-  constexpr static auto CUDA_MEMSET_TASK  = get_index_v<Memset, handle_t>;
-  constexpr static auto CUDA_MEMCPY_TASK  = get_index_v<Memcpy, handle_t>; 
-  constexpr static auto CUDA_KERNEL_TASK  = get_index_v<Kernel, handle_t>;
-  constexpr static auto CUDA_SUBFLOW_TASK = get_index_v<Subflow, handle_t>;
-  constexpr static auto CUDA_CAPTURE_TASK = get_index_v<Capture, handle_t>;
+  constexpr static auto CUDA_NOOP_TASK      = get_index_v<Noop, handle_t>;
+  constexpr static auto CUDA_MEMSET_TASK    = get_index_v<Memset, handle_t>;
+  constexpr static auto CUDA_MEMCPY_TASK    = get_index_v<Memcpy, handle_t>; 
+  constexpr static auto CUDA_KERNEL_TASK    = get_index_v<Kernel, handle_t>;
+  constexpr static auto CUDA_CHILDFLOW_TASK = get_index_v<Childflow, handle_t>;
+  constexpr static auto CUDA_CAPTURE_TASK   = get_index_v<Capture, handle_t>;
     
     template <typename... ArgsT>
     cudaNode(cudaGraph&, ArgsT&&...);
@@ -243,7 +243,7 @@ cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
   //return _nodes.back().get();
   // TODO: object pool
 
-  auto node = new cudaNode(*this, std::forward<ArgsT>(args)...);
+  auto node = new cudaNode(std::forward<ArgsT>(args)...);
   _nodes.push_back(node);
   return node;
 }

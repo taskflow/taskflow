@@ -47,7 +47,8 @@ int main (void){
     }
 
     auto beg = std::chrono::steady_clock::now();
-    auto handle = tf::cublas_per_thread_handle(0);
+    auto hptr = tf::cublas_per_thread_handle_pool.acquire(0);
+    auto handle = hptr->native_handle;
     auto end = std::chrono::steady_clock::now();
 
     std::cout << "create handle: "
@@ -117,15 +118,17 @@ int main (void){
               << std::chrono::duration_cast<std::chrono::microseconds>(end - beg).count()
               << " us\n";
     
-    std::function<void()> test =[](){ int dev; cudaGetDevice(&dev);};
-
     beg = std::chrono::steady_clock::now();
-    //int dev;
-    //cudaStreamDestroy(stream);
-    //cudaGetDevice(&dev);
-    test();
+    cudaStreamDestroy(stream);
     end = std::chrono::steady_clock::now();
     std::cout << "destroy stream: "
+              << std::chrono::duration_cast<std::chrono::nanoseconds>(end - beg).count()
+              << " us\n";
+    
+    beg = std::chrono::steady_clock::now();
+    tf::cublas_per_thread_handle_pool.release(std::move(hptr));
+    end = std::chrono::steady_clock::now();
+    std::cout << "release handle: "
               << std::chrono::duration_cast<std::chrono::nanoseconds>(end - beg).count()
               << " us\n";
   }

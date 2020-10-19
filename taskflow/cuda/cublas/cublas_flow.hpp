@@ -14,12 +14,7 @@ namespace tf {
 class cublasFlow {
 
   public:
-    
-    /**
-    @brief constructs a cublasFlow object
-     */
-    cublasFlow(cudaGraph& graph);
-    
+
     template <typename T>
     cudaTask amax(int N, const T* x, int incx, int* result) {
       /*
@@ -31,30 +26,39 @@ class cublasFlow {
 
   private:
 
-    //cudaFlow& _cudaflow;
     cudaGraph& _graph;
 
+    cublasHandle_t _native_handle;
+
+    cublasFlow(cudaGraph&, cublasHandle_t);
 };
 
 // Constructor
-inline cublasFlow::cublasFlow(cudaGraph& graph) : _graph {graph} {
+inline cublasFlow::cublasFlow(cudaGraph& graph, cublasHandle_t handle) : 
+  _graph {graph}, _native_handle {handle} {
 }
 
 // ----------------------------------------------------------------------------
 // cudaFlow 
 // ----------------------------------------------------------------------------
 
-// Function: subflow
-template <typename C, std::enable_if_t<is_cublas_subflow_v<C>, void>*>
-cudaTask cudaFlow::subflow(C&& c) {
+// Function: childflow
+template <typename C, std::enable_if_t<is_cublasflow_v<C>, void>*>
+cudaTask cudaFlow::childflow(C&& c) {
 
-  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Subflow>{});
+  auto node = _graph.emplace_back(
+    _graph, std::in_place_type_t<cudaNode::Childflow>{}
+  );
   
-  auto& h = std::get<cudaNode::Subflow>(node->_handle);
+  auto& h = std::get<cudaNode::Childflow>(node->_handle);
 
-  cublasFlow cbf(h.graph);
+  auto ptr = cublas_per_thread_handle_pool.acquire(_device);
+
+  cublasFlow cbf(h.graph, ptr->native_handle);
   
   c(cbf);
+
+  cublas_per_thread_handle_pool.release(std::move(ptr));
   
   return cudaTask(node);
 }

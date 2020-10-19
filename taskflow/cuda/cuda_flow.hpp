@@ -1,8 +1,8 @@
 #pragma once
 
 #include "cuda_task.hpp"
-#include "cuda_for_each.hpp"
-#include "cuda_transform.hpp"
+#include "cuda_algorithm/cuda_for_each.hpp"
+#include "cuda_algorithm/cuda_transform.hpp"
 
 namespace tf {
 
@@ -14,14 +14,14 @@ constexpr size_t cuda_default_threads_per_block(size_t N) {
 }
 
 /**
-@struct is_cublas_subflow
+@struct is_cublasflow
 
-@brief determines if a callable spawns a cublas subflow graph
+@brief determines if a callable spawns a cublas childflow graph
 
-A cublas subflow is a callable object constructible from function<void(cublasFlow&)>.
+A cublas childflow is a callable object constructible from function<void(cublasFlow&)>.
 */
 template <typename C>
-constexpr bool is_cublas_subflow_v = std::is_invocable_r_v<void, C, cublasFlow&>;
+constexpr bool is_cublasflow_v = std::is_invocable_r_v<void, C, cublasFlow&>;
 
 // ----------------------------------------------------------------------------
 // cudaFlow definition
@@ -389,21 +389,21 @@ class cudaFlow {
     //
     
     // ------------------------------------------------------------------------
-    // subflow
+    // childflow
     // ------------------------------------------------------------------------
     
     /**
-    @brief constructs a cublas subflow graph to perform cuBLAS operations
+    @brief constructs a cublas childflow graph to perform cuBLAS operations
     
     @tparam C callable type
 
     @return cudaTask handle
 
-    A cublas subflow graph forms a cudaGraph of cuBLAS operations and 
+    A cublas childflow graph forms a cudaGraph of cuBLAS operations and 
     their dependencies.
     */
-    template <typename C, std::enable_if_t<is_cublas_subflow_v<C>, void>* = nullptr>
-    cudaTask subflow(C&& callable);
+    template <typename C, std::enable_if_t<is_cublasflow_v<C>, void>* = nullptr>
+    cudaTask childflow(C&& callable);
 
   private:
     
@@ -476,7 +476,7 @@ inline int cudaFlow::device() const {
 inline cudaTask cudaFlow::noop() {
 
   auto node = _graph.emplace_back( 
-    std::in_place_type_t<cudaNode::Noop>{}
+    _graph, std::in_place_type_t<cudaNode::Noop>{}
   );
 
   TF_CHECK_CUDA(
@@ -518,8 +518,7 @@ cudaTask cudaFlow::kernel(
   static_assert(traits::arity == sizeof...(ArgsT), "arity mismatches");
 
   auto node = _graph.emplace_back(
-    std::in_place_type_t<cudaNode::Kernel>{},
-    (void*)f
+    _graph, std::in_place_type_t<cudaNode::Kernel>{}, (void*)f
   );
   
   cudaKernelNodeParams p;
@@ -583,7 +582,9 @@ std::enable_if_t<
 > 
 cudaFlow::zero(T* dst, size_t count) {
 
-  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Memset>{});
+  auto node = _graph.emplace_back(
+    _graph, std::in_place_type_t<cudaNode::Memset>{}
+  );
   
   cudaMemsetParams p;
   p.dst = dst;
@@ -611,7 +612,9 @@ std::enable_if_t<
 >
 cudaFlow::fill(T* dst, T value, size_t count) {
 
-  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Memset>{});
+  auto node = _graph.emplace_back(
+    _graph, std::in_place_type_t<cudaNode::Memset>{}
+  );
   
   cudaMemsetParams p;
   p.dst = dst;
@@ -644,7 +647,9 @@ cudaTask cudaFlow::copy(T* tgt, const T* src, size_t num) {
 
   using U = std::decay_t<T>;
 
-  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Memcpy>{});
+  auto node = _graph.emplace_back(
+    _graph, std::in_place_type_t<cudaNode::Memcpy>{}
+  );
   
   cudaMemcpy3DParms p;
   p.srcArray = nullptr;
@@ -669,7 +674,9 @@ cudaTask cudaFlow::copy(T* tgt, const T* src, size_t num) {
 // Function: memset
 inline cudaTask cudaFlow::memset(void* dst, int ch, size_t count) {
 
-  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Memset>{});
+  auto node = _graph.emplace_back(
+    _graph, std::in_place_type_t<cudaNode::Memset>{}
+  );
   
   cudaMemsetParams p;
   p.dst = dst;
@@ -692,7 +699,9 @@ inline cudaTask cudaFlow::memset(void* dst, int ch, size_t count) {
 
 // Function: memcpy
 inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
-  auto node = _graph.emplace_back(std::in_place_type_t<cudaNode::Memcpy>{});
+  auto node = _graph.emplace_back(
+    _graph, std::in_place_type_t<cudaNode::Memcpy>{}
+  );
   
   // Parameters in cudaPitchedPtr
   // d   - Pointer to allocated memory
@@ -792,8 +801,9 @@ void cudaFlow::update_copy(cudaTask ct, T* tgt, const T* src, size_t num) {
 }
 
 // Function: update memcpy parameters
-inline 
-void cudaFlow::update_memcpy(cudaTask ct, void* tgt, const void* src, size_t bytes) {
+inline void cudaFlow::update_memcpy(
+  cudaTask ct, void* tgt, const void* src, size_t bytes
+) {
   
   if(ct.type() != CUDA_MEMCPY_TASK) {
     TF_THROW(ct, " is not a memcpy task");
