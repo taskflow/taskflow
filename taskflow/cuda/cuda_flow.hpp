@@ -551,7 +551,7 @@ cudaTask cudaFlow::kernel_on(
   static_assert(traits::arity == sizeof...(ArgsT), "arity mismatches");
   
   auto node = _graph.emplace_back(
-    std::in_place_type_t<cudaNode::Kernel>{}, (void*)f
+    _graph, std::in_place_type_t<cudaNode::Kernel>{}, (void*)f
   );
   
   cudaKernelNodeParams p;

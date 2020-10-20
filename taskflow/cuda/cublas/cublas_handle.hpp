@@ -12,6 +12,10 @@ struct cublasHandleCreator {
     TF_CHECK_CUBLAS(
       cublasCreate(&handle), "failed to create a cublas handle"
     );
+    TF_CHECK_CUBLAS(
+      cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE),
+      "failed to set cublas pointer mode on device"
+    );
     std::cout << "create cublas handle " << handle << '\n';
     return handle;
   }

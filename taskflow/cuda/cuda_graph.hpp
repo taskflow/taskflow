@@ -15,9 +15,10 @@ namespace tf {
 // class: cudaGraph
 class cudaGraph {
 
-  friend class cudaFlow;
   friend class cudaNode;
   friend class cudaTask;
+  friend class cudaFlow;
+  friend class cublasFlow;
   
   friend class Taskflow;
   friend class Executor;
@@ -61,9 +62,10 @@ class cudaGraph {
 // in order to work with gpu context
 class cudaNode {
   
-  friend class cudaFlow;
   friend class cudaGraph;
   friend class cudaTask;
+  friend class cudaFlow;
+  friend class cublasFlow;
 
   friend class Taskflow;
   friend class Executor;
@@ -104,6 +106,11 @@ class cudaNode {
 
   // Capture
   struct Capture {
+    
+    template <typename C>
+    Capture(C&&);
+
+    std::function<void()> work;
   };
 
   using handle_t = std::variant<
@@ -155,6 +162,12 @@ class cudaNode {
 // Kernel handle constructor
 inline cudaNode::Kernel::Kernel(void* ptr) : 
   func {ptr} {
+}
+
+// Capture handle constructor
+template <typename C>
+cudaNode::Capture::Capture(C&& work) : 
+  work {std::forward<C>(work)} {
 }
 
 // Constructor

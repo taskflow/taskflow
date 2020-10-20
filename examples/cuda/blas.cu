@@ -8,16 +8,48 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/cuda/cublas.hpp>
 
-#define M 6
+int main() {
+  
+  //tf::Taskflow taskflow;
+  //tf::Executor executor;
+
+  //size_t N = 1024;
+  //float* x = nullptr;
+  //int* r;
+
+  //TF_CHECK_CUDA(cudaMallocManaged(&x, N*sizeof(float)), "failed to malloc x");
+  //TF_CHECK_CUDA(cudaMallocManaged(&r, sizeof(int)), "failed to malloc r");
+
+  //taskflow.emplace([&](tf::cudaFlow& cf){
+
+  //  cudaTask task1 = cf.copy(...);
+
+  //  cudaTask task2 = cf.childflow([&](tf::cublasFlow& cbf){  /// childflow
+  //    cudaTask cbft1 = cbf.amax<float>(N, x, 1, r);  
+  //    cudaTask cbft2 = cbf.gemm<float>(....);
+  //    cbft1.precede(cbft2);
+  //  });
+
+  //  task1.precede(task2);
+  //});
+
+  //executor.run(taskflow).wait();
+  //
+  //TF_CHECK_CUDA(cudaFree(x), "failed to free x");
+
+  return 0;
+}
+
+/*#define M 6
 #define N 5
 #define IDX2C(i,j,ld) (((j)*(ld))+(i))
 
-static __inline__ void modify (cublasHandle_t handle, float *m, int ldm, int n, int p, int q, float alpha, float beta){
-    cublasSscal (handle, n-q, &alpha, &m[IDX2C(p,q,ldm)], ldm);
-    cublasSscal (handle, ldm-p, &beta, &m[IDX2C(p,q,ldm)], 1);
+static __inline__ void modify (
+  cublasHandle_t handle, float *m, int ldm, int n, int p, int q, float alpha, float beta
+){
+  cublasSscal (handle, n-q, &alpha, &m[IDX2C(p,q,ldm)], ldm);
+  cublasSscal (handle, ldm-p, &beta, &m[IDX2C(p,q,ldm)], 1);
 }
-
-
 
 int main (void){
 
@@ -133,5 +165,5 @@ int main (void){
               << " us\n";
   }
   return EXIT_SUCCESS;
-}
+}*/
 
