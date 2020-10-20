@@ -26,6 +26,7 @@ class cudaPerThreadHandlePool {
 
     int device;
     H native_handle;
+    cudaStream_t stream;
 
     cudaHandle(int);
     ~cudaHandle();
@@ -76,11 +77,16 @@ template <typename H, typename C, typename D>
 cudaPerThreadHandlePool<H, C, D>::cudaHandle::cudaHandle(int d) : device {d} {
   cudaScopedDevice ctx(device);
   native_handle = C{}();
+  
+  TF_CHECK_CUDA(cudaStreamCreate(&stream), 
+    "failed to create a cublas stream on device ", device
+  );
 }
 
 template <typename H, typename C, typename D>
 cudaPerThreadHandlePool<H, C, D>::cudaHandle::~cudaHandle() {
   cudaScopedDevice ctx(device);
+  cudaStreamDestroy(stream);
   D{}(native_handle);
 }
 

@@ -9,10 +9,9 @@ namespace tf {
 struct cublasHandleCreator {
   cublasHandle_t operator () () const {
     cublasHandle_t handle;
-    auto stat = cublasCreate(&handle);
-    if (stat != CUBLAS_STATUS_SUCCESS) {
-      throw std::runtime_error("cublas initialization failed\n");
-    }
+    TF_CHECK_CUBLAS(
+      cublasCreate(&handle), "failed to create a cublas handle"
+    );
     std::cout << "create cublas handle " << handle << '\n';
     return handle;
   }
