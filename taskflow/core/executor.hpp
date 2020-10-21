@@ -41,11 +41,11 @@ class Executor {
     Worker* worker {nullptr};
   };
 
-#ifdef TF_ENABLE_CUDA
-  struct cudaDevice {
-    std::vector<cudaStream_t> streams;
-  };
-#endif
+//#ifdef TF_ENABLE_CUDA
+//  struct cudaDevice {
+//    std::vector<cudaStream_t> streams;
+//  };
+//#endif
 
   public:
 
@@ -226,9 +226,9 @@ class Executor {
     std::vector<Worker> _workers;
     std::vector<std::thread> _threads;
 
-#ifdef TF_ENABLE_CUDA
-    std::vector<cudaDevice> _cuda_devices;
-#endif
+//#ifdef TF_ENABLE_CUDA
+//    std::vector<cudaDevice> _cuda_devices;
+//#endif
     
     Notifier _notifier[NUM_DOMAINS];
 
@@ -295,7 +295,7 @@ inline Executor::Executor(size_t N, size_t M) :
   _MAX_STEALS   {(N + M + 1) << 1},
   _MAX_YIELDS   {100},
   _workers      {N + M},
-  _cuda_devices {cuda_get_num_devices()},
+  //_cuda_devices {cuda_get_num_devices()},
   _notifier     {Notifier(N), Notifier(M)} {
 
   if(N == 0) {
@@ -311,17 +311,17 @@ inline Executor::Executor(size_t N, size_t M) :
     _num_thieves[i].store(0, std::memory_order_relaxed); 
   }
   
-  // create a per-worker stream on each cuda device
-  for(size_t i=0; i<_cuda_devices.size(); ++i) {
-    _cuda_devices[i].streams.resize(M);
-    cudaScopedDevice ctx(i);
-    for(size_t m=0; m<M; ++m) {
-      TF_CHECK_CUDA(
-        cudaStreamCreate(&(_cuda_devices[i].streams[m])),
-        "failed to create a cudaStream for worker ", m, " on device ", i
-      );
-    }
-  }
+  //// create a per-worker stream on each cuda device
+  //for(size_t i=0; i<_cuda_devices.size(); ++i) {
+  //  _cuda_devices[i].streams.resize(M);
+  //  cudaScopedDevice ctx(i);
+  //  for(size_t m=0; m<M; ++m) {
+  //    TF_CHECK_CUDA(
+  //      cudaStreamCreate(&(_cuda_devices[i].streams[m])),
+  //      "failed to create a cudaStream for worker ", m, " on device ", i
+  //    );
+  //  }
+  //}
 
   _spawn(N, HOST);
   _spawn(M, CUDA);
@@ -373,15 +373,15 @@ inline Executor::~Executor() {
     t.join();
   } 
   
-#ifdef TF_ENABLE_CUDA  
-  // clean up the cuda streams
-  for(size_t i=0; i<_cuda_devices.size(); ++i) {
-    cudaScopedDevice ctx(i);
-    for(size_t m=0; m<_cuda_devices[i].streams.size(); ++m) {
-      cudaStreamDestroy(_cuda_devices[i].streams[m]);
-    }
-  }
-#endif
+//#ifdef TF_ENABLE_CUDA  
+//  // clean up the cuda streams
+//  for(size_t i=0; i<_cuda_devices.size(); ++i) {
+//    cudaScopedDevice ctx(i);
+//    for(size_t m=0; m<_cuda_devices[i].streams.size(); ++m) {
+//      cudaStreamDestroy(_cuda_devices[i].streams[m]);
+//    }
+//  }
+//#endif
   
   // flush the default observer
   _flush_tfprof();
@@ -1075,7 +1075,7 @@ void Executor::_invoke_cudaflow_task_entry(C&& c, int d, Node* node) {
 // Procedure: _invoke_cudaflow_task_internal
 template <typename P>
 void Executor::_invoke_cudaflow_task_internal(
-  Worker& w, cudaFlow& cf, P&& predicate, bool join
+  Worker&, cudaFlow& cf, P&& predicate, bool join
 ) {
   
   if(cf.empty()) {
@@ -1088,7 +1088,7 @@ void Executor::_invoke_cudaflow_task_internal(
 
   //cudaScopedDevice ctx(d);
   
-  auto s = _cuda_devices[d].streams[w.id - _id_offset[w.domain]];
+  //auto s = _cuda_devices[d].streams[w.id - _id_offset[w.domain]];
   
   // transforms cudaFlow to a native cudaGraph under the specified device
   // and launches the graph through a given or an internal device stream
@@ -1096,7 +1096,7 @@ void Executor::_invoke_cudaflow_task_internal(
     cf._create_executable();
   }
 
-  //cudaScopedPerThreadStream s(d);
+  cudaScopedPerThreadStream s(d);
 
   while(!predicate()) {
 
