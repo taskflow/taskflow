@@ -10,32 +10,40 @@
 
 int main() {
   
-  //tf::Taskflow taskflow;
-  //tf::Executor executor;
+  tf::Taskflow taskflow;
+  tf::Executor executor;
 
-  //size_t N = 1024;
-  //float* x = nullptr;
-  //int* r;
+  size_t N = 1024;
+  float* x = nullptr;
+  int* r;
+  int res;
 
-  //TF_CHECK_CUDA(cudaMallocManaged(&x, N*sizeof(float)), "failed to malloc x");
-  //TF_CHECK_CUDA(cudaMallocManaged(&r, sizeof(int)), "failed to malloc r");
+  std::vector<float> host(N, 0.0f);
+  host[N/2] = 100.0f;  // artificially set the mid-pos as the largest
 
-  //taskflow.emplace([&](tf::cudaFlow& cf){
+  TF_CHECK_CUDA(cudaMalloc(&x, N*sizeof(float)), "failed to malloc x");
+  TF_CHECK_CUDA(cudaMalloc(&r, sizeof(int)), "failed to malloc r");
 
-  //  cudaTask task1 = cf.copy(...);
+  taskflow.emplace([&](tf::cudaFlow& cf){
 
-  //  cudaTask task2 = cf.childflow([&](tf::cublasFlow& cbf){  /// childflow
-  //    cudaTask cbft1 = cbf.amax<float>(N, x, 1, r);  
-  //    cudaTask cbft2 = cbf.gemm<float>(....);
-  //    cbft1.precede(cbft2);
-  //  });
+    auto h2d = cf.copy(x, host.data(), N);
 
-  //  task1.precede(task2);
-  //});
+    auto child = cf.childflow([&](tf::cublasFlow& cbf){  /// childflow
+      cbf.amax<float>(N, x, 1, r);  
+    });
 
-  //executor.run(taskflow).wait();
-  //
-  //TF_CHECK_CUDA(cudaFree(x), "failed to free x");
+    auto d2h = cf.copy(&res, r, 1);
+
+    child.succeed(h2d)
+         .precede(d2h);
+  });
+
+  executor.run(taskflow).wait();
+
+  std::cout << "res: " << res << '\n';
+  
+  TF_CHECK_CUDA(cudaFree(x), "failed to free x");
+  TF_CHECK_CUDA(cudaFree(r), "failed to free r");
 
   return 0;
 }

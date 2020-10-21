@@ -443,7 +443,7 @@ inline void cudaFlow::_create_executable() {
     cudaGraphInstantiate(
       &_executable, _graph._native_handle, nullptr, nullptr, 0
     ),
-    "failed to create an executable cudaGraph"
+    "failed to create an cuda executable graph"
   );
 }
 
@@ -534,7 +534,7 @@ cudaTask cudaFlow::kernel(
     cudaGraphAddKernelNode(
       &node->_native_handle, _graph._native_handle, nullptr, 0, &p
     ),
-    "failed to create a cudaGraph node of kernel task"
+    "failed to create a cuda kernel task"
   );
 
   return cudaTask(node);
@@ -568,7 +568,7 @@ cudaTask cudaFlow::kernel_on(
     ::cudaGraphAddKernelNode(
       &node->_native_handle, _graph._native_handle, nullptr, 0, &p
     ),
-    "failed to create a kernel task on device ", d
+    "failed to create a cuda kernel task on device ", d
   );
 
   return cudaTask(node);
@@ -598,7 +598,7 @@ cudaFlow::zero(T* dst, size_t count) {
     cudaGraphAddMemsetNode(
       &node->_native_handle, _graph._native_handle, nullptr, 0, &p
     ),
-    "failed to create a zero task"
+    "failed to create a cuda memset (zero) task"
   );
 
   return cudaTask(node);
@@ -632,7 +632,7 @@ cudaFlow::fill(T* dst, T value, size_t count) {
     cudaGraphAddMemsetNode(
       &node->_native_handle, _graph._native_handle, nullptr, 0, &p
     ),
-    "failed to create a fill task"
+    "failed to create a cuda memset (fill) task"
   );
 
   return cudaTask(node);
@@ -665,7 +665,7 @@ cudaTask cudaFlow::copy(T* tgt, const T* src, size_t num) {
     cudaGraphAddMemcpyNode(
       &node->_native_handle, _graph._native_handle, nullptr, 0, &p
     ),
-    "failed to create a cudaGraph node of copy task"
+    "failed to create a cuda memcpy (copy) task"
   );
 
   return cudaTask(node);
@@ -691,7 +691,7 @@ inline cudaTask cudaFlow::memset(void* dst, int ch, size_t count) {
     cudaGraphAddMemsetNode(
       &node->_native_handle, _graph._native_handle, nullptr, 0, &p
     ),
-    "failed to create a cudaGraph node of memset task"
+    "failed to create a cuda memset task"
   );
   
   return cudaTask(node);
@@ -717,12 +717,14 @@ inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
   p.dstPtr = ::make_cudaPitchedPtr(tgt, bytes, bytes, 1);
   p.extent = ::make_cudaExtent(bytes, 1, 1);
   p.kind = cudaMemcpyDefault;
+
   TF_CHECK_CUDA(
     cudaGraphAddMemcpyNode(
       &node->_native_handle, _graph._native_handle, nullptr, 0, &p
     ),
-    "failed to create a cudaGraph node of memcpy task"
+    "failed to create a cuda memcpy task"
   );
+
   return cudaTask(node);
 }
 

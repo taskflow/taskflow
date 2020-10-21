@@ -9,14 +9,17 @@ namespace tf {
 struct cublasHandleCreator {
   cublasHandle_t operator () () const {
     cublasHandle_t handle;
+
     TF_CHECK_CUBLAS(
       cublasCreate(&handle), "failed to create a cublas handle"
     );
+
     TF_CHECK_CUBLAS(
       cublasSetPointerMode(handle, CUBLAS_POINTER_MODE_DEVICE),
       "failed to set cublas pointer mode on device"
     );
-    std::cout << "create cublas handle " << handle << '\n';
+
+    //std::cout << "create cublas handle " << handle << '\n';
     return handle;
   }
 };
@@ -24,7 +27,7 @@ struct cublasHandleCreator {
 // Function object class to delete a cublas handle.
 struct cublasHandleDeleter {
   void operator () (cublasHandle_t ptr) const {
-    std::cout << "destroy cublas handle " << ptr << '\n';
+    //std::cout << "destroy cublas handle " << ptr << '\n';
     cublasDestroy(ptr);
   }
 };

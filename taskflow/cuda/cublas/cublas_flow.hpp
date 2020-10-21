@@ -20,11 +20,6 @@ class cublasFlow {
     template <typename T>
     std::enable_if_t<std::is_same_v<T, float>, cudaTask>
     amax(int n, const T* x, int incx, int* result) {
-      //TF_CHECK_CUBLAS(
-      //  cublasIsamax(_native_handle, n, x, incx, result),
-      //  "???"
-      //);
-      //return cudaTask(nullptr);
       auto node = _graph.emplace_back(_graph,
         std::in_place_type_t<cudaNode::Capture>{},
         [&, n, x, incx, result] () mutable {
@@ -58,47 +53,37 @@ inline cublasFlow::cublasFlow(cudaGraph& graph, cublasHandle_t handle) :
 // Function: childflow
 template <typename C, std::enable_if_t<is_cublasflow_v<C>, void>*>
 cudaTask cudaFlow::childflow(C&& c) {
+  
+  auto cublas_handle = cublas_per_thread_handle_pool.acquire(_device);
 
-  //auto node = _graph.emplace_back(
-  //  _graph, std::in_place_type_t<cudaNode::Childflow>{}
-  //);
-  //
-  //auto& h = std::get<cudaNode::Childflow>(node->_handle);
+  auto node = _graph.emplace_back(
+    _graph, std::in_place_type_t<cudaNode::Childflow>{}
+  );
+  
+  auto& node_handle = std::get<cudaNode::Childflow>(node->_handle);
 
-  //auto ptr = cublas_per_thread_handle_pool.acquire(_device);
+  cudaStream_t stream;
+  
+  // create 
+  TF_CHECK_CUDA(cudaStreamCreate(&stream), "");
+  TF_CHECK_CUDA(cudaStreamBeginCapture(stream, cudaStreamCaptureModeGlobal), "");
 
-  //cudaStream_t stream;
+  cublasSetStream(cublas_handle->native_handle, stream);
 
-  //TF_CHECK_CUDA(
-  //  cudaStreamCreate(&stream), "failed to create a stream"
-  //);
+  cublasFlow cbf(node_handle.graph, cublas_handle->native_handle);
 
-  //TF_CHECK_CUDA(
-  //  cudaStreamBeginCapture(stream, cudaStreamCaptureModeGlobal), 
-  //  "failed to begin capture on a stream"
-  //);
+  c(cbf);
 
-  //cublasSetStream(ptr->native_handle, stream);
+  // TODO (dian-lun): need to topologically sort the nodes
+  // for now I didn't do anything but just assume a linear chain
+  for(auto& node : node_handle.graph._nodes) {
+    std::get<cudaNode::Capture>(node->_handle).work();  
+  }
 
-  //cublasFlow cbf(h.graph, ptr->native_handle);
+  cudaGraph_t graph;
 
-  //c(cbf);
-
-  //// TODO:
-  //// topological_sort(h.graph)
-  //for(auto& node : h.graph._nodes) {
-  //  cublasSetStream(ptr->native_handle(), /* another stream */)
-  //  cudaStreamEvenRecrod(stream);
-  //  std::get<cudaNode::Capture>(node->_handle).work();  
-  //}
-
-
-  //cudaGraph_t graph;
-
-  //TF_CHECK_CUDA(
-  //  cudaStreamEndCapture(stream, &graph),
-  //  "failed to end capture on a stream"
-  //);
+  TF_CHECK_CUDA(cudaStreamEndCapture(stream, &graph), "");
+  TF_CHECK_CUDA(cudaStreamDestroy(stream), "");
 
   //cudaGraphNode_t nodes[100];
   //size_t num_nodes = 100;
@@ -109,24 +94,18 @@ cudaTask cudaFlow::childflow(C&& c) {
 
   //std::cout << num_nodes << '\n';
 
-
-
-  //cublas_per_thread_handle_pool.release(std::move(ptr));
-
-  //TF_THROW("ffff");
-  //
-  ////TF_CHECK_CUDA(
-  ////  cudaGraphAddChildNode(
-  ////    &node->_native_handle, _graph._native_handle, graph 
-  ////  ),
-  ////  "failed to create a no-operation (empty) node"
-  ////);
-  //
-  //TF_CHECK_CUDA(
-  //  cudaGraphDestroy(graph), "failed to destroy captured graph"
-  //);
-  //
-  //return cudaTask(node);
+  TF_CHECK_CUDA(
+    cudaGraphAddChildGraphNode(
+      &node->_native_handle, _graph._native_handle, nullptr, 0, graph
+    ), 
+    "failed to add a cuda childflow task"
+  );
+  
+  TF_CHECK_CUDA(cudaGraphDestroy(graph), "failed to destroy captured graph");
+  
+  cublas_per_thread_handle_pool.release(std::move(cublas_handle));
+  
+  return cudaTask(node);
 }
 
 }  // end of namespace tf -----------------------------------------------------
