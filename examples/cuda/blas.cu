@@ -21,8 +21,8 @@ int main() {
   std::vector<float> host(N, 0.0f);
   host[N/2] = 100.0f;  // artificially set the mid-pos as the largest
 
-  TF_CHECK_CUDA(cudaMalloc(&x, N*sizeof(float)), "failed to malloc x");
-  TF_CHECK_CUDA(cudaMalloc(&r, sizeof(int)), "failed to malloc r");
+  TF_CHECK_CUDA(cudaMallocManaged(&x, N*sizeof(float)), "failed to malloc x");
+  TF_CHECK_CUDA(cudaMallocManaged(&r, sizeof(int)), "failed to malloc r");
 
   taskflow.emplace([&](tf::cudaFlow& cf){
 
