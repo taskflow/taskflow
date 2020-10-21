@@ -1096,6 +1096,8 @@ void Executor::_invoke_cudaflow_task_internal(
     cf._create_executable();
   }
 
+  //cudaScopedPerThreadStream s(d);
+
   while(!predicate()) {
 
     TF_CHECK_CUDA(
@@ -1112,6 +1114,7 @@ void Executor::_invoke_cudaflow_task_internal(
   if(join) {
     cf._destroy_executable();
   }
+
 }
 
 // Procedure: _invoke_cudaflow_task_external
