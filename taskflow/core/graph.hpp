@@ -62,11 +62,13 @@ class Graph {
     Node* emplace_back(Args&& ...); 
 
     Node* emplace_back();
+    
+    // TODO
+    template <typename T>
+    void dump(T& os, Taskflow* = nullptr);
 
   private:
 
-    //static ObjectPool<Node>& _node_pool();
-    
     std::vector<Node*> _nodes;
 };
 

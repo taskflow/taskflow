@@ -423,9 +423,8 @@ to copy the results of clusters to @c h_mx and @c h_my and then deallocate all G
 @section BuiltInPredicate Built-in Predicate
 
 We observe the GPU task graph parameters remain @em unchanged across all k-means iterations.
-In this case, we can leverage tf::cudaFlow::repeat or tf::cudaFlow::predicate 
-to create the %cudaFlow once and launch it repeatedly as rapidly as possible without participating in
-conditional tasking.
+In this case, we can leverage tf::cudaFlow::join_until or tf::cudaFlow::join_n
+to run it repeatedly without conditional tasking.
 
 @code{.cpp}
 tf::Task kmeans = taskflow.emplace([&](tf::cudaFlow& cf){
@@ -447,9 +446,8 @@ tf::Task kmeans = taskflow.emplace([&](tf::cudaFlow& cf){
   cluster.precede(new_centroid)
          .succeed(zero_c, zero_sx, zero_sy);
   
-  // we ask the executor to launch the cudaFlow by M times;
-  // equivalent to: cf.predicate( [m=M] () mutable { return m-- == 0; } );
-  cf.repeat(M);
+  // we ask the executor to launch the cudaFlow by M times and then join
+  cf.join_n(M);
 }).name("update_means");
 
 // ...
@@ -463,17 +461,14 @@ kmeans.succeed(allocate_sx, allocate_sy, allocate_c, h2d)
 stop.precede(free);
 @endcode
 
-At the last line of the %cudaFlow closure, we call <tt>cf.repeat(M)</tt> to ask the executor to 
-repeatedly run the %cudaFlow by @c M times.
+At the last line of the %cudaFlow closure, we call <tt>cf.join_n(M)</tt> to ask the executor to 
+repeatedly run the %cudaFlow by @c M times and then join.
 Compared with the version using conditional tasking, the %cudaFlow here is created only one time
 and thus the overhead is reduced.
 
 @image html images/kmeans_5.svg width=100%
 
 We can see from the above taskflow the condition task is removed.
-Not all problems can benefit from tf::cudaFlow::repeat.
-If the graph parameters change at each iteration, you may use conditional tasking or resort to
-other client-side decision.
 
 
 @section KMeansBenchmarking Benchmarking

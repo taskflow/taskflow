@@ -4,6 +4,7 @@
 
 #include "flow_builder.hpp"
 #include "topology.hpp"
+#include "dump.hpp"
 
 namespace tf {
 
@@ -44,11 +45,13 @@ class Taskflow : public FlowBuilder {
     virtual ~Taskflow();
     
     /**
-    @brief dumps the taskflow to a std::ostream in DOT format
-
-    @param ostream a std::ostream target
+    @brief dumps the taskflow to a DOT format through an output stream
+    
+    @tparam T output stream type with insertion operator (<<) defined
+    @param ostream an output stream target
     */
-    void dump(std::ostream& ostream) const;
+    template <typename T>
+    void dump(T& ostream) const;
     
     /**
     @brief dumps the taskflow in DOT format to a std::string
@@ -97,10 +100,15 @@ class Taskflow : public FlowBuilder {
     std::mutex _mtx;
 
     std::list<Topology> _topologies;
-
-    void _dump(std::ostream&, const Taskflow*) const;
-    void _dump(std::ostream&, const Node*, Dumper&) const;
-    void _dump(std::ostream&, const Graph&, Dumper&) const;
+    
+    template <typename T>
+    void _dump(T&, const Taskflow*) const;
+    
+    template <typename T>
+    void _dump(T&, const Node*, Dumper&) const;
+    
+    template <typename T>
+    void _dump(T&, const Graph&, Dumper&) const;
 };
 
 // Constructor
@@ -123,7 +131,7 @@ inline void Taskflow::clear() {
   _graph.clear();
 }
 
-// Function: num_noces
+// Function: num_tasks
 inline size_t Taskflow::num_tasks() const {
   return _graph.size();
 }
@@ -159,14 +167,16 @@ inline std::string Taskflow::dump() const {
 }
 
 // Function: dump
-inline void Taskflow::dump(std::ostream& os) const {
+template <typename T>
+void Taskflow::dump(T& os) const {
   os << "digraph Taskflow {\n";
   _dump(os, this);
   os << "}\n";
 }
 
 // Procedure: _dump
-inline void Taskflow::_dump(std::ostream& os, const Taskflow* top) const {
+template <typename T>
+void Taskflow::_dump(T& os, const Taskflow* top) const {
   
   Dumper dumper;
   
@@ -188,9 +198,8 @@ inline void Taskflow::_dump(std::ostream& os, const Taskflow* top) const {
 }
 
 // Procedure: _dump
-inline void Taskflow::_dump(
-  std::ostream& os, const Node* node, Dumper& dumper
-) const {
+template <typename T>
+void Taskflow::_dump(T& os, const Node* node, Dumper& dumper) const {
 
   os << 'p' << node << "[label=\"";
   if(node->_name.empty()) os << 'p' << node;
@@ -206,7 +215,10 @@ inline void Taskflow::_dump(
 
 #ifdef TF_ENABLE_CUDA
     case Node::CUDAFLOW_TASK:
-      os << "shape=folder fillcolor=cyan style=filled";
+      os << " style=\"filled\""
+         << " color=\"black\" fillcolor=\"purple\""
+         << " fontcolor=\"white\""
+         << " shape=\"folder\"";
     break;
 #endif
 
@@ -250,55 +262,7 @@ inline void Taskflow::_dump(
 
 #ifdef TF_ENABLE_CUDA
     case Node::CUDAFLOW_TASK: {
-      auto& cfg = std::get<Node::cudaFlowTask>(node->_handle).graph;
-      if(!cfg.empty()) {
-        os << "subgraph cluster_p" << node << " {\nlabel=\"cudaFlow: ";
-        if(node->_name.empty()) os << 'p' << node;
-        else os << node->_name;
-
-        os << "\";\n" << "color=\"purple\"\n";
-
-        for(const auto& v : cfg._nodes) {
-
-          os << 'p' << v << "[label=\"";
-          if(v->_name.empty()) {
-            os << 'p' << v << "\"";
-          }
-          else {
-            os << v->_name << "\"";
-          }
-          
-          switch(v->_handle.index()) {
-            case cudaNode::CUDA_NOOP_TASK:
-            break;
-
-            case cudaNode::CUDA_MEMCPY_TASK:
-              //os << " shape=\"cds\"";
-            break;
-
-            case cudaNode::CUDA_KERNEL_TASK:
-              os << " style=\"filled\""
-                 << " color=\"white\" fillcolor=\"black\""
-                 << " fontcolor=\"white\""
-                 << " shape=\"box3d\"";
-            break;
-
-            default:
-            break;
-          }
-  
-          os << "];\n";
-          for(const auto s : v->_successors) {
-            os << 'p' << v << " -> " << 'p' << s << ";\n";
-          }
-          
-          if(v->_successors.size() == 0) {
-            os << 'p' << v << " -> p" << node << ";\n";
-          }
-
-        }
-        os << "}\n";
-      }
+      std::get<Node::cudaFlowTask>(node->_handle).graph.dump(os, node);
     }
     break;
 #endif
@@ -309,9 +273,8 @@ inline void Taskflow::_dump(
 }
 
 // Procedure: _dump
-inline void Taskflow::_dump(
-  std::ostream& os, const Graph& graph, Dumper& dumper
-) const {
+template <typename T>
+void Taskflow::_dump(T& os, const Graph& graph, Dumper& dumper) const {
     
   for(const auto& n : graph._nodes) {
 

@@ -1,16 +1,15 @@
 namespace tf {
 
-/** @page chapter6 C6: CPU-GPU Tasking
+/** @page chapter6 C6: CPU-GPU Tasking (CUDA)
 
 Modern scientific computing typically leverages 
 GPU-powered parallel processing cores to speed up large-scale applications.
-This chapters discusses how to implement heterogeneous decomposition algorithms
-using CPU-GPU collaborative tasking.
+This chapters discusses how to implement CPU-GPU heterogeneous tasking algorithms
+with @NvidiaCUDA.
 
 @section C6_Create_a_cudaFlow Create a cudaFlow
 
-%Taskflow enables concurrent CPU-GPU tasking by leveraging 
-<a href="https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__GRAPH.html">CUDA Graph</a>.
+%Taskflow enables concurrent CPU-GPU tasking by leveraging @cudaGraph.
 The tasking interface is referred to as @em %cudaFlow.
 A %cudaFlow is a graph object of type tf::cudaFlow created at runtime similar to dynamic tasking. 
 It manages a task node in a taskflow and associates it with a CUDA Graph. 
@@ -92,7 +91,7 @@ a native CUDA toolkit, while leaving difficult task parallelism to %Taskflow.
 
 @section C6_Compile_a_cudaFlow_program Compile a cudaFlow Program
 
-Use @nvcc (at least v10) to compile a %cudaFlow program:
+Use @nvcc (at least v11) to compile a %cudaFlow program:
 
 @code{.sh}
 ~$ nvcc -std=c++17 my_cudaflow.cu -I path/to/include/taskflow -O2 -o my_cudaflow
@@ -121,6 +120,7 @@ highly optimized for performance.
 
 @section C6_run_a_cudaflow_on_multiple_gpus Run a cudaFlow on Multiple GPUs
 
+By default, a %cudaFlow runs on the GPU 0. 
 You can run a %cudaFlow on multiple GPUs by explicitly associating a %cudaFlow or a kernel task
 with a CUDA device.
 A CUDA device is an integer number in the range of <tt>[0, N)</tt> 
@@ -128,10 +128,7 @@ representing the identifier of a GPU, where @c N is the number of GPUs in a syst
 The code below creates a %cudaFlow that runs on the GPU device.
 
 @code{.cpp}
-taskflow.emplace([](tf::cudaFlow& cf) {
-  cf.device(2);
-  // adding more cudaTasks below (all tasks are placed on GPU 2 unless specified explicitly)
-});
+taskflow.emplace_on([] (tf::cudaFlow& cf) {}, 2);  // place the cudaFlow on GPU 2
 @endcode
 
 You can place a kernel on a device explicitly through the method tf::cudaFlow::kernel_on
@@ -171,8 +168,8 @@ that takes the device identifier in the first argument.
 31:   tf::Executor executor;
 32:  
 33:   taskflow.emplace([&](tf::cudaFlow& cf){
-34:     // launch the cudaFlow on GPU 0
-35:     cf.device(0);
+34:     // By default, cf runs on GPU 0.
+35:     // The scheduler will switch to the context of GPU 0 when running cf.
 36:
 37:     // launch the first saxpy kernel on GPU 1
 38:     cf.kernel_on(1, (N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z1);
@@ -201,8 +198,7 @@ Debrief:
 @li Lines 3-9 define a CUDA saxpy kernel that stores the result to z  
 @li Lines 15-23 declare four unified memory blocks accessible from any processor
 @li Lines 25-28 initialize @c dx and @c dy blocks by CPU
-@li Lines 33-42 create a %cudaFlow task
-@li Lines 34-35 associate the %cudaFlow on GPU 0
+@li Lines 33-42 create a %cudaFlow task on GPU 0 (default)
 @li Lines 37-38 create a kernel task to launch the first saxpy on GPU 1 and store the result in @c z1
 @li Lines 40-41 create a kernel task to launch the second saxpy on GPU 3 and store the result in @c z2
 @li Lines 44-55 run the taskflow and verify the result (@c max_error should be zero)
@@ -253,15 +249,13 @@ The overhead of creating a kernel on the same device as a %cudaFlow is
 much less than the different one. 
 
 @code{.cpp}
-tf::Task cudaFlow_on_gpu1 = taskflow.emplace([&](tf::cudaFlow& cf){
-  cf.device(1);
+tf::Task cudaFlow_on_gpu1 = taskflow.emplace_on([&](tf::cudaFlow& cf){
   cf.kernel((N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z1);
-});
+}, 1);
 
-tf::Task cudaFlow_on_gpu3 = taskflow.emplace([&](tf::cudaFlow& cf){
-  cf.device(3);
+tf::Task cudaFlow_on_gpu3 = taskflow.emplace_on([&](tf::cudaFlow& cf){
   cf.kernel((N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z2);
-});
+}, 3);
 @endcode
 
 @section C6_GPUMemoryOperations GPU Memory Operations
@@ -306,24 +300,24 @@ taskflow.emplace([&](tf::cudaFlow& cf){
 });
 @endcode
 
-@section C6_LaunchcudaFlowRepeatedly Iterate a cudaFlow
+@section C6_OffloadAcudaFlow Offload a cudaFlow
 
-You can create a %cudaFlow once and launch it multiple times using cudaFlow::repeat or cudaFlow::predicate,
-given that the graph parameters remain @em unchanged across all iterations.
+TBD
 
 @code{.cpp}
 taskflow.emplace([&] (tf::cudaFlow& cf) {
-  // construct the GPU task dependency graph ...
-  
-  // launch the cudaFlow 10 times
-  cf.repeat(10);
-
-  // equivalently
-  cf.predicate([n=10] () mutable { return n-- == 0; });
 });
 @endcode
 
-The executor iterate the execution of the %cudaFlow until the predicate evaluates to @c true.
+@section C6_JoinAcudaFlow Join a cudaFlow
+
+TBD
+
+@code{.cpp}
+taskflow.emplace([&] (tf::cudaFlow& cf) {
+});
+@endcode
+
 
 @section C6_Granularity Granularity
 

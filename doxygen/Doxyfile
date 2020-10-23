@@ -260,6 +260,7 @@ ALIASES                = \
   "CPP17=<a href=\"https://en.wikipedia.org/wiki/C%2B%2B17\">C++17</a>" \
   "nvcc=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvcc</a>"\
   "cudaGraph=<a href=\"https://developer.nvidia.com/blog/cuda-graphs/\">CUDA Graph</a>"\
+  "NvidiaCUDA=<a href=\"https://developer.nvidia.com/cuda-zone\">Nvidia CUDA</a>"\
   "cuBLAS=<a href=\"https://docs.nvidia.com/cuda/cublas/index.html\">cuBLAS</a>"\
   "cuDNN=<a href=\"https://developer.nvidia.com/cudnn\">cuDNN</a>"\
   "nvidia_smi=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvidia-smi</a>"\
@@ -832,11 +833,11 @@ INPUT                  = ../taskflow/core/error.hpp \
                          ../taskflow/core/taskflow.hpp \
                          ../taskflow/core/observer.hpp \
                          ../taskflow/cuda/cuda_error.hpp \
-                         ../taskflow/cuda/cuda_statgrab.hpp \
+                         ../taskflow/cuda/cuda_device.hpp \
                          ../taskflow/cuda/cuda_memory.hpp \
+                         ../taskflow/cuda/cuda_stream.hpp \
                          ../taskflow/cuda/cuda_task.hpp \
                          ../taskflow/cuda/cuda_flow.hpp \
-                         ../taskflow/cuda/cuda_algorithm/cuda_blaf.hpp \
                          ../taskflow/taskflow.hpp \
                          QuickStart.dox \
                          install/install.dox \
@@ -1235,6 +1236,8 @@ HTML_EXTRA_STYLESHEET  =
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
 HTML_EXTRA_FILES       = favicon/favicon.ico \
+                         references/iccad20.pdf \
+                         references/icpads20.pdf \
                          references/ipdps19.pdf \
                          references/huang_15_01.pdf \
                          references/lin_19_01.pdf \

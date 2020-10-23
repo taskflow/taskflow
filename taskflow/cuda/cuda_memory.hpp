@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cuda_statgrab.hpp"
+#include "cuda_device.hpp"
 
 namespace tf {
 

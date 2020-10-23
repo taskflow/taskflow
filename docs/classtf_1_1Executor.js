@@ -19,5 +19,6 @@ var classtf_1_1Executor =
     [ "this_worker_id", "classtf_1_1Executor.html#a6487d589cb1f6b078b69fd3bb1082345", null ],
     [ "wait_for_all", "classtf_1_1Executor.html#ab9aa252f70e9a40020a1e5a89d485b85", null ],
     [ "cudaFlow", "classtf_1_1Executor.html#a9f64f729511a922781a59663ff1c6250", null ],
+    [ "FlowBuilder", "classtf_1_1Executor.html#a61184f9bd9c801d0a5eccecfdbddc641", null ],
     [ "Subflow", "classtf_1_1Executor.html#aa48945297ede77a161defc88033ce8a6", null ]
 ];

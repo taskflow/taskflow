@@ -1056,7 +1056,6 @@ void Executor::_invoke_cudaflow_task_entry(C&& c, int d, Node* node) {
 
   h.graph._create_native_graph();
   
-  //h.graph._make_native_graph();
   cudaFlow cf(*this, h.graph, d);
 
   c(cf); 
@@ -1068,7 +1067,9 @@ void Executor::_invoke_cudaflow_task_entry(C&& c, int d, Node* node) {
     );  
     cf._joinable = false;
   }
-   
+
+  //h.graph.dump(std::cout, node);
+    
   h.graph._destroy_native_graph();
 }
 
@@ -1082,39 +1083,34 @@ void Executor::_invoke_cudaflow_task_internal(
     return;
   }
   
-  // by default, we stick with device 0  
-  // //TODO device?
-  auto d = cf._device;
-
-  //cudaScopedDevice ctx(d);
-  
   //auto s = _cuda_devices[d].streams[w.id - _id_offset[w.domain]];
   
   // transforms cudaFlow to a native cudaGraph under the specified device
   // and launches the graph through a given or an internal device stream
   if(cf._executable == nullptr) {
     cf._create_executable();
+    //cuda_dump_graph(std::cout, cf._graph._native_handle);
   }
 
-  cudaScopedPerThreadStream s(d);
+  cudaScopedPerThreadStream s(cf._device);
 
   while(!predicate()) {
 
     TF_CHECK_CUDA(
       cudaGraphLaunch(cf._executable, s), 
-      "failed to launch cudaFlow on device ", d
+      "failed to launch cudaFlow on device ", cf._device
     );
 
     TF_CHECK_CUDA(
       cudaStreamSynchronize(s), 
-      "failed to synchronize cudaFlow on device ", d
+      "failed to synchronize cudaFlow on device ", cf._device
     );
   }
 
   if(join) {
+    //cuda_dump_graph(std::cout, cf._graph._native_handle);
     cf._destroy_executable();
   }
-
 }
 
 // Procedure: _invoke_cudaflow_task_external

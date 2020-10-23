@@ -14,7 +14,7 @@ namespace tf {
 @brief enumeration of all cudaTask types
 */
 enum cudaTaskType {
-  CUDA_NOOP_TASK      = cudaNode::CUDA_NOOP_TASK,
+  CUDA_EMPTY_TASK      = cudaNode::CUDA_EMPTY_TASK,
   CUDA_MEMSET_TASK    = cudaNode::CUDA_MEMSET_TASK,
   CUDA_MEMCPY_TASK    = cudaNode::CUDA_MEMCPY_TASK,
   CUDA_KERNEL_TASK    = cudaNode::CUDA_KERNEL_TASK,
@@ -26,19 +26,15 @@ enum cudaTaskType {
 @brief convert a cuda_task type to a human-readable string
 */
 inline const char* cuda_task_type_to_string(cudaTaskType type) {
-
-  const char* val;
-
   switch(type) {
-    case CUDA_NOOP_TASK:      val = "cuda_noop";    break;
-    case CUDA_MEMSET_TASK:    val = "cuda_memset";  break;
-    case CUDA_MEMCPY_TASK:    val = "cuda_memcpy";  break;
-    case CUDA_KERNEL_TASK:    val = "cuda_kernel";  break;
-    case CUDA_CHILDFLOW_TASK: val = "cuda_childflow"; break;
-    case CUDA_CAPTURE_TASK:   val = "cuda_capture"; break;
-    default:                  val = "undefined";    break;
+    case CUDA_EMPTY_TASK:     return "empty";
+    case CUDA_MEMSET_TASK:    return "memset";
+    case CUDA_MEMCPY_TASK:    return "memcpy";
+    case CUDA_KERNEL_TASK:    return "kernel";
+    case CUDA_CHILDFLOW_TASK: return "childflow";
+    case CUDA_CAPTURE_TASK:   return "capture";
   }
-  return val;
+  return "undefined";
 }
 
 // ----------------------------------------------------------------------------
@@ -129,8 +125,12 @@ class cudaTask {
 
     /**
     @brief dumps the task through an output stream
+    
+    @tparam T output stream type with insertion operator (<<) defined
+    @param ostream an output stream target
     */
-    void dump(std::ostream& os) const;
+    template <typename T>
+    void dump(T& ostream) const;
 
   private:
     
@@ -184,7 +184,8 @@ inline cudaTaskType cudaTask::type() const {
 }
 
 // Procedure: dump
-inline void cudaTask::dump(std::ostream& os) const {
+template <typename T>
+void cudaTask::dump(T& os) const {
   os << "cudaTask ";
   if(_node->_name.empty()) os << _node;
   else os << _node->_name;

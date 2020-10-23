@@ -9,7 +9,8 @@ Many things are considered @em experimental and may change or break from time to
 While it may be difficult to be keep all things consistent when introducing new features, 
 we continue to try our best to ensure backward compatibility.
 
-Starting from v3, we will migrate the codebase to the @CPP17 standard.
+Starting from v3, we have migrated the codebase to the @CPP17 standard
+with improved expressivity and efficiency.
 
 @section release-3-0-0_download Download
 
@@ -21,22 +22,28 @@ To download the newest version of %Taskflow, please clone from <a href="https://
 @li replacing all non-standard libraries with C++17 STL (e.g., @std_optional, @std_variant)
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
 @li adding parallel sort tf::Taskflow::sort algorithms
-@li adopting <tt>constexpr if</tt> to replace std::enable_if
 @li adding methods for updating cudaFlow (with unittests)
 @li adding support for @cuBLAS
 @li adding support for @cuDNN
-@li adding support for SYCL (ComputeCpp)
+@li adding support for SYCL (ComputeCpp and DPC++)
 
 @section release-3-0-0_new_features New Features
 
 @li added a set of functions to grab the cuda device properties
-@li added a set of memory-related functions
+@li added a set of memory-related functions to control cuda memory
+@li added cuda pool class to manage device objects with improved efficiency
+@li added RAII-styled stream acquition tf::cudaScopedPerThreadStream
+@li supported recursive %cudaFlow dump (with child graph)
+@li supported updating a %cudaFlow through tf::cudaFlow::offload (see @ref C6_OffloadAcudaFlow)
+@li supported iterating a %cudaFlow through tf::cudaFlow::join_until (see @ref C6_JoinAcudaFlow)
 
 @section release-3-0-0_bug_fixes Bug Fixes 
 
 There are no bug fixes in this release.
 
 @section release-3-0-0_deprecated_items Deprecated Items 
+
+@li removed tf::cudaFlow::device; users may call tf::Taskflow::emplace_on to associate a cudaflow with a GPU device
 
 @section release-3-0-0_miscellaneous_items Miscellaneous Items
 

@@ -54,23 +54,26 @@ inline cublasFlow::cublasFlow(cudaGraph& graph, cublasHandle_t handle) :
 template <typename C, std::enable_if_t<is_cublasflow_v<C>, void>*>
 cudaTask cudaFlow::childflow(C&& c) {
   
-  auto cublas_handle = cublas_per_thread_handle_pool.acquire(_device);
-
+  // insert a childflow node
   auto node = _graph.emplace_back(
     _graph, std::in_place_type_t<cudaNode::Childflow>{}
   );
   
   auto& node_handle = std::get<cudaNode::Childflow>(node->_handle);
-
-  cudaStream_t stream;
   
-  // create 
-  TF_CHECK_CUDA(cudaStreamCreate(&stream), "");
-  TF_CHECK_CUDA(cudaStreamBeginCapture(stream, cudaStreamCaptureModeGlobal), "");
-
-  cublasSetStream(cublas_handle->native_handle, stream);
-
-  cublasFlow cbf(node_handle.graph, cublas_handle->native_handle);
+  // acquire per-thread cublas handle and stream
+  cublasScopedPerThreadHandle cublas_handle(_device);
+  cudaScopedPerThreadStream stream(_device);
+  
+  // turn the stream into capture and associate it with the cublas handle
+  TF_CHECK_CUDA(
+    cudaStreamBeginCapture(stream, cudaStreamCaptureModeGlobal), 
+    "failed to turn stream into capture mode"
+  );
+  cublasSetStream(cublas_handle, stream);
+  
+  // construct a cublas flow from the callable
+  cublasFlow cbf(node_handle.graph, cublas_handle);
 
   c(cbf);
 
@@ -81,18 +84,11 @@ cudaTask cudaFlow::childflow(C&& c) {
   }
 
   cudaGraph_t graph;
+  
+  // stop the capture to get a cuda graph
+  TF_CHECK_CUDA(cudaStreamEndCapture(stream, &graph), "failed to end capture");
 
-  TF_CHECK_CUDA(cudaStreamEndCapture(stream, &graph), "");
-  TF_CHECK_CUDA(cudaStreamDestroy(stream), "");
-
-  //cudaGraphNode_t nodes[100];
-  //size_t num_nodes = 100;
-
-  //TF_CHECK_CUDA(
-  //  cudaGraphGetNodes(graph, nodes, &num_nodes), "failed to get nodes"
-  //);
-
-  //std::cout << num_nodes << '\n';
+  //cuda_dump_graph(std::cout, graph);
 
   TF_CHECK_CUDA(
     cudaGraphAddChildGraphNode(
@@ -102,8 +98,6 @@ cudaTask cudaFlow::childflow(C&& c) {
   );
   
   TF_CHECK_CUDA(cudaGraphDestroy(graph), "failed to destroy captured graph");
-  
-  cublas_per_thread_handle_pool.release(std::move(cublas_handle));
   
   return cudaTask(node);
 }

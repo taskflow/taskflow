@@ -5,33 +5,54 @@
 namespace tf {
 
 /**
-@brief per-thread object pool to manage CUDA context objects
+@brief per-thread object pool to manage CUDA device object
 
 @tparam H object type
 @tparam C function object to create a library object
 @tparam D function object to delete a library object
 
-Creating a CUDA library object on a device is typically expensive (e.g., 200ms).
-It is desirable to reuse the object as much as possible.
-The manager class abstracts the creation and destruction of a CUDA library 
-object on each device.
+A CUDA device object has a lifetime associated with a device,
+for example, @c cudaStream_t, @c cublasHandle_t, etc.
+Creating a device object is typically expensive (e.g., 10-200 ms)
+and destroying it may trigger implicit device synchronization.
+For applications tha intensively make use of device objects,
+it is desirable to reuse them as much as possible.
+
+There exists an one-to-one relationship between CUDA devices in CUDA Runtime API
+and CUcontexts in the CUDA Driver API within a process.
+The specific context which the CUDA Runtime API uses for a device 
+is called the device's primary context. 
+From the perspective of the CUDA Runtime API, 
+a device and its primary context are synonymous.
+
+We design the device object pool in a decentralized fashion by keeping
+(1) a global pool to keep track of potentially usable objects and
+(2) a per-thread pool to footprint objects with shared ownership.
+The global pool does not own the object and therefore do not destruct any of them.
+The per-thread pool owns the object with shared ownership and will perform
+destruction depending on which thread holds the last reference count.
+The motivation of this decentralized control is to avoid device objects
+from being destroyed while the context had been destroyed due to driver shutdown.
 
 */
 template <typename H, typename C, typename D>
-class cudaPerThreadContextObjectPool {
+class cudaPerThreadDeviceObjectPool {
   
   public: 
-
-  struct cudaContextObject {
+  
+  /**
+  @brief structure to store a context object 
+   */
+  struct cudaDeviceObject {
 
     int device;
     H object;
 
-    cudaContextObject(int);
-    ~cudaContextObject();
+    cudaDeviceObject(int);
+    ~cudaDeviceObject();
 
-    cudaContextObject(const cudaContextObject&) = delete;
-    cudaContextObject(cudaContextObject&&) = delete;
+    cudaDeviceObject(const cudaDeviceObject&) = delete;
+    cudaDeviceObject(cudaDeviceObject&&) = delete;
   };
 
   private:
@@ -42,56 +63,68 @@ class cudaPerThreadContextObjectPool {
   // Therefore, we use a decentralized approach to let child thread
   // destroy cuda objects while the master thread only keeps a weak reference
   // to those objects for reuse.
-  struct cudaGlobalContextObjectPool {
+  struct cudaGlobalDeviceObjectPool {
   
-    std::shared_ptr<cudaContextObject> acquire(int);
-    void release(int, std::weak_ptr<cudaContextObject>);
+    std::shared_ptr<cudaDeviceObject> acquire(int);
+    void release(int, std::weak_ptr<cudaDeviceObject>);
   
     std::mutex mutex;
-    std::unordered_map<int, std::vector<std::weak_ptr<cudaContextObject>>> pool;
+    std::unordered_map<int, std::vector<std::weak_ptr<cudaDeviceObject>>> pool;
   };
 
   public:
     
-    cudaPerThreadContextObjectPool() = default;
+    /**
+    @brief default constructor
+     */ 
+    cudaPerThreadDeviceObjectPool() = default;
     
-    std::shared_ptr<cudaContextObject> acquire(int);
-
-    void release(std::shared_ptr<cudaContextObject>&&);
-
+    /**
+    @brief acquires a device object with shared ownership
+     */
+    std::shared_ptr<cudaDeviceObject> acquire(int);
+    
+    /**
+    @brief releases a device object with moved ownership
+    */
+    void release(std::shared_ptr<cudaDeviceObject>&&);
+    
+    /**
+    @brief queries the number of device objects with shared ownership
+     */
     size_t footprint_size() const;
     
   private: 
 
-    inline static cudaGlobalContextObjectPool _cuda_object_pool;
+    inline static cudaGlobalDeviceObjectPool _cuda_object_pool;
 
-    std::unordered_set<std::shared_ptr<cudaContextObject>> _footprint;
+    std::unordered_set<std::shared_ptr<cudaDeviceObject>> _footprint;
 }; 
 
 // ----------------------------------------------------------------------------
-// cudaPerThreadContextObject::cudaHanalde definition
+// cudaPerThreadDeviceObject::cudaHanalde definition
 // ----------------------------------------------------------------------------
 
 template <typename H, typename C, typename D>
-cudaPerThreadContextObjectPool<H, C, D>::cudaContextObject::cudaContextObject(int d) : 
+cudaPerThreadDeviceObjectPool<H, C, D>::cudaDeviceObject::cudaDeviceObject(int d) : 
   device {d} {
   cudaScopedDevice ctx(device);
   object = C{}();
 }
 
 template <typename H, typename C, typename D>
-cudaPerThreadContextObjectPool<H, C, D>::cudaContextObject::~cudaContextObject() {
+cudaPerThreadDeviceObjectPool<H, C, D>::cudaDeviceObject::~cudaDeviceObject() {
   cudaScopedDevice ctx(device);
   D{}(object);
 }
 
 // ----------------------------------------------------------------------------
-// cudaPerThreadContextObject::cudaHanaldePool definition
+// cudaPerThreadDeviceObject::cudaHanaldePool definition
 // ----------------------------------------------------------------------------
 
 template <typename H, typename C, typename D>
-std::shared_ptr<typename cudaPerThreadContextObjectPool<H, C, D>::cudaContextObject>
-cudaPerThreadContextObjectPool<H, C, D>::cudaGlobalContextObjectPool::acquire(int d) {
+std::shared_ptr<typename cudaPerThreadDeviceObjectPool<H, C, D>::cudaDeviceObject>
+cudaPerThreadDeviceObjectPool<H, C, D>::cudaGlobalDeviceObjectPool::acquire(int d) {
   std::scoped_lock lock(mutex);
   if(auto itr = pool.find(d); itr != pool.end()) {
     while(!itr->second.empty()) {
@@ -106,98 +139,42 @@ cudaPerThreadContextObjectPool<H, C, D>::cudaGlobalContextObjectPool::acquire(in
 }
 
 template <typename H, typename C, typename D>
-void cudaPerThreadContextObjectPool<H, C, D>::cudaGlobalContextObjectPool::release(
-  int d, std::weak_ptr<cudaContextObject> ptr
+void cudaPerThreadDeviceObjectPool<H, C, D>::cudaGlobalDeviceObjectPool::release(
+  int d, std::weak_ptr<cudaDeviceObject> ptr
 ) {
   std::scoped_lock lock(mutex);
   pool[d].push_back(ptr);
 }
 
 // ----------------------------------------------------------------------------
-// cudaPerThreadContextObject definition
+// cudaPerThreadDeviceObject definition
 // ----------------------------------------------------------------------------
 
 template <typename H, typename C, typename D>
-std::shared_ptr<typename cudaPerThreadContextObjectPool<H, C, D>::cudaContextObject> 
-cudaPerThreadContextObjectPool<H, C, D>::acquire(int d) {
+std::shared_ptr<typename cudaPerThreadDeviceObjectPool<H, C, D>::cudaDeviceObject> 
+cudaPerThreadDeviceObjectPool<H, C, D>::acquire(int d) {
 
   auto ptr = _cuda_object_pool.acquire(d);
 
   if(!ptr) {
-    ptr = std::make_shared<cudaContextObject>(d);
+    ptr = std::make_shared<cudaDeviceObject>(d);
   }
 
   return ptr;
 }
 
 template <typename H, typename C, typename D>
-void cudaPerThreadContextObjectPool<H, C, D>::release(
-  std::shared_ptr<cudaContextObject>&& ptr) {
+void cudaPerThreadDeviceObjectPool<H, C, D>::release(
+  std::shared_ptr<cudaDeviceObject>&& ptr
+) {
   _cuda_object_pool.release(ptr->device, ptr);
   _footprint.insert(std::move(ptr));
 }
 
 template <typename H, typename C, typename D>
-size_t cudaPerThreadContextObjectPool<H, C, D>::footprint_size() const {
+size_t cudaPerThreadDeviceObjectPool<H, C, D>::footprint_size() const {
   return _footprint.size();
 }
-
-// ----------------------------------------------------------------------------
-
-// Function object class to create a cuda stream
-struct cudaStreamCreator {
-  cudaStream_t operator () () const {
-    cudaStream_t stream;
-    TF_CHECK_CUDA(
-      cudaStreamCreate(&stream), "failed to create a cuda stream"
-    );
-    return stream;
-  }
-};
-
-// Function object class to delete a cuda stream
-struct cudaStreamDeleter {
-  void operator () (cudaStream_t ptr) const {
-    cudaStreamDestroy(ptr);
-  }
-};
-
-
-using cudaPerThreadStreamPool = cudaPerThreadContextObjectPool<
-  cudaStream_t, cudaStreamCreator, cudaStreamDeleter
->;
-
-/**
-@brief per thread cudaStream pool
-*/
-inline thread_local cudaPerThreadStreamPool cuda_per_thread_stream_pool;
-
-
-class cudaScopedPerThreadStream {
-  
-  public:
-
-  explicit cudaScopedPerThreadStream(int d) : 
-    _ptr {cuda_per_thread_stream_pool.acquire(d)} {
-  }
-  
-  cudaScopedPerThreadStream() : 
-    _ptr {cuda_per_thread_stream_pool.acquire(0)} {
-  }
-
-  ~cudaScopedPerThreadStream() {
-    cuda_per_thread_stream_pool.release(std::move(_ptr));
-  }
-
-  operator cudaStream_t () const {
-    return _ptr->object;
-  }
-
-  private:
-
-  std::shared_ptr<cudaPerThreadStreamPool::cudaContextObject> _ptr;
-
-};
 
 }  // end of namespace tf -----------------------------------------------------
 

@@ -272,8 +272,12 @@ class Task {
 
     /**
     @brief dumps the task through an output stream
+
+    @tparam T output stream type with insertion operator (<<) defined
+    @param ostream an output stream target
     */
-    void dump(std::ostream& os) const;
+    template <typename T>
+    void dump(T& ostream) const;
 
   private:
     
@@ -412,7 +416,8 @@ inline size_t Task::hash_value() const {
 }
 
 // Procedure: dump
-inline void Task::dump(std::ostream& os) const {
+template <typename T>
+void Task::dump(T& os) const {
   os << "task ";
   if(name().empty()) os << _node;
   else os << name();

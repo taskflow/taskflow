@@ -1,11 +1,13 @@
 #pragma once
 
 #include "cublas_error.hpp"
-#include "../cuda_handle.hpp"
+#include "../cuda_pool.hpp"
 
 namespace tf {
 
-// Function object class to create a cublas handle
+/**
+@brief function object class to create a cublas handle.
+*/
 struct cublasHandleCreator {
   cublasHandle_t operator () () const {
     cublasHandle_t handle;
@@ -24,7 +26,9 @@ struct cublasHandleCreator {
   }
 };
 
-// Function object class to delete a cublas handle.
+/**
+@brief function object class to delete a cublas handle.
+*/
 struct cublasHandleDeleter {
   void operator () (cublasHandle_t ptr) const {
     //std::cout << "destroy cublas handle " << ptr << '\n';
@@ -33,11 +37,80 @@ struct cublasHandleDeleter {
 };
 
 /**
-@brief per thread cuBLAS handle pool
-*/
-inline thread_local cudaPerThreadHandlePool<
+@brief alias of per-thread cublas handle pool type
+ */
+using cublasPerThreadHandlePool = cudaPerThreadDeviceObjectPool<
   cublasHandle_t, cublasHandleCreator, cublasHandleDeleter
-> cublas_per_thread_handle_pool;
+>;
+
+/**
+@brief per-thread cublas stream pool
+*/
+inline thread_local cublasPerThreadHandlePool cublas_per_thread_handle_pool;
+
+// ----------------------------------------------------------------------------
+// cublasScopedPerThreadHandle definition
+// ----------------------------------------------------------------------------
+
+/**
+@brief class to provide RAII-styled guard of cublas handle acquisition
+
+Sample usage:
+    
+@code{.cpp}
+{
+  cublasScopedPerThreadHandle handle(1);  // acquires a cublas handle on device 1
+
+  // use handle as a normal cublas handle (cublasHandle_t)
+  cublasSetStream(handle, stream);
+
+}  // leaving the scope to release the handle back to the pool on device 1
+@endcode
+
+ */
+class cublasScopedPerThreadHandle {
+  
+  public:
+
+  /**
+  @brief constructs a scoped handle under the given device
+
+  The constructor acquires a handle from a per-thread handle pool.
+  */
+  explicit cublasScopedPerThreadHandle(int d) : 
+    _ptr {cublas_per_thread_handle_pool.acquire(d)} {
+  }
+  
+  /**
+  @brief constructs a scoped handle under the default device 0.
+
+  The constructor acquires a handle from a per-thread handle pool.
+  */
+  cublasScopedPerThreadHandle() : 
+    _ptr {cublas_per_thread_handle_pool.acquire(cuda_get_device())} {
+  }
+
+  /**
+  @brief destructs the scoped handle guard
+
+  The destructor releases the handle to the per-thread handle pool.
+  */
+  ~cublasScopedPerThreadHandle() {
+    cublas_per_thread_handle_pool.release(std::move(_ptr));
+  }
+
+  /**
+  @brief implicit conversion to the native cublas handle (cublasHandle_t)
+   */
+  operator cublasHandle_t () const {
+    return _ptr->object;
+  }
+
+  private:
+
+  std::shared_ptr<cublasPerThreadHandlePool::cudaDeviceObject> _ptr;
+
+};
 
 
 

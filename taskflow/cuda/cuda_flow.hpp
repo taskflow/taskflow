@@ -30,9 +30,9 @@ constexpr bool is_cublasflow_v = std::is_invocable_r_v<void, C, cublasFlow&>;
 /**
 @class cudaFlow
 
-@brief methods for building a CUDA task dependency graph.
+@brief class for building a CUDA task dependency graph
 
-A cudaFlow is a high-level interface to manipulate GPU tasks using 
+A %cudaFlow is a high-level interface to manipulate GPU tasks using 
 the task dependency graph model.
 The class provides a set of methods for creating and launch different tasks
 on one or multiple CUDA devices,
@@ -52,7 +52,7 @@ class cudaFlow {
     bool empty() const;
 
     /**
-    @brief queries the device associated with the cudaFlow
+    @brief queries the device associated with the %cudaFlow
     */
     int device() const;
 
@@ -210,17 +210,17 @@ class cudaFlow {
     cudaTask copy(T* tgt, const T* src, size_t num);
     
     /**
-    @brief offloads the cudaFlow onto a GPU and repeatedly running it until 
+    @brief offloads the %cudaFlow onto a GPU and repeatedly running it until 
     the predicate becomes true
     
     @tparam P predicate type (a binary callable)
 
     @param predicate a binary predicate (returns @c true for stop)
 
-    Immediately offloads the present cudaFlow onto a GPU and
+    Immediately offloads the present %cudaFlow onto a GPU and
     repeatedly executes it until the predicate returns @c true.
 
-    A offloaded cudaFlow force the underlying graph to be instantiated.
+    A offloaded %cudaFlow force the underlying graph to be instantiated.
     After the instantiation, you should not modify the graph topology
     but update node parameters.
     */
@@ -228,35 +228,35 @@ class cudaFlow {
     void offload_until(P&& predicate);
     
     /**
-    @brief offloads the cudaFlow and executes it by the given times
+    @brief offloads the %cudaFlow and executes it by the given times
 
     @param N number of executions
     */
     void offload_n(size_t N);
 
     /**
-    @brief offloads the cudaFlow and executes it once
+    @brief offloads the %cudaFlow and executes it once
     */
     void offload();
 
     /**
-    @brief offloads the cudaFlow with the given stop predicate and then 
+    @brief offloads the %cudaFlow with the given stop predicate and then 
     joins the execution
 
     @tparam P predicate type (a binary callable)
 
     @param predicate a binary predicate (returns @c true for stop)
 
-    Immediately offloads the present cudaFlow onto a GPU 
+    Immediately offloads the present %cudaFlow onto a GPU 
     and repeatedly executes it until the predicate returns @c true.
-    When execution finishes, the cudaFlow is joined. 
+    When execution finishes, the %cudaFlow is joined. 
     A joined cudaflow becomes invalid and cannot take other operations.
     */
     template <typename P>
     void join_until(P&& predicate);
 
     /**
-    @brief offloads the cudaFlow and executes it by the given times,
+    @brief offloads the %cudaFlow and executes it by the given times,
            and then joins the execution
 
     @param N number of executions before join
@@ -264,7 +264,7 @@ class cudaFlow {
     void join_n(size_t N);
 
     /**
-    @brief offloads the cudaFlow and executes it once, 
+    @brief offloads the %cudaFlow and executes it once, 
            and then joins the execution
     */
     void join();
@@ -299,7 +299,6 @@ class cudaFlow {
     @brief updates parameters of a memset task
     */
     void update_memset(cudaTask ct, void* dst, int ch, size_t count);
-
 
     // ------------------------------------------------------------------------
     // generic algorithms
@@ -344,12 +343,12 @@ class cudaFlow {
     This method is equivalent to the parallel execution of the following loop on a GPU:
     
     @code{.cpp}
-    // step is positive <tt>[first, last)</tt>
+    // step is positive [first, last)
     for(auto i=first; i<last; i+=step) {
       callable(i);
     }
 
-    // step is negative <tt>[first, last)</tt>
+    // step is negative [first, last)
     for(auto i=first; i>last; i+=step) {
       callable(i);
     }
@@ -408,7 +407,7 @@ class cudaFlow {
   private:
     
     //cudaFlow(int, Executor&, cudaGraph&);
-    cudaFlow(Executor& executor, cudaGraph& graph, int ctx);
+    cudaFlow(Executor& executor, cudaGraph&, int);
     ~cudaFlow();
     
     Executor& _executor;
@@ -476,7 +475,7 @@ inline int cudaFlow::device() const {
 inline cudaTask cudaFlow::noop() {
 
   auto node = _graph.emplace_back( 
-    _graph, std::in_place_type_t<cudaNode::Noop>{}
+    _graph, std::in_place_type_t<cudaNode::Empty>{}
   );
 
   TF_CHECK_CUDA(

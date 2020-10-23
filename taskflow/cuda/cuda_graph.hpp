@@ -1,13 +1,214 @@
 #pragma once
 
 #include "cuda_memory.hpp"
-#include "cuda_pool.hpp"
+#include "cuda_stream.hpp"
 
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
 #include "../utility/passive_vector.hpp"
 
 namespace tf {
+
+// ----------------------------------------------------------------------------
+// cudaGraph_t routines
+// ----------------------------------------------------------------------------
+
+/**
+@brief queries the number of root nodes in a native CUDA graph
+*/
+inline size_t cuda_get_graph_num_root_nodes(cudaGraph_t graph) {
+  size_t num_nodes;
+  TF_CHECK_CUDA(
+    cudaGraphGetRootNodes(graph, nullptr, &num_nodes), 
+    "failed to get native graph root nodes"
+  );
+  return num_nodes; 
+}
+
+/**
+@brief queries the number of nodes in a native CUDA graph
+*/
+inline size_t cuda_get_graph_num_nodes(cudaGraph_t graph) {
+  size_t num_nodes;
+  TF_CHECK_CUDA(
+    cudaGraphGetNodes(graph, nullptr, &num_nodes), 
+    "failed to get native graph nodes"
+  );
+  return num_nodes; 
+}
+
+/**
+@brief queries the number of edges in a native CUDA graph
+*/
+inline size_t cuda_get_graph_num_edges(cudaGraph_t graph) {
+  size_t num_edges;
+  TF_CHECK_CUDA(
+    cudaGraphGetEdges(graph, nullptr, nullptr, &num_edges), 
+    "failed to get native graph edges"
+  );
+  return num_edges;
+}
+
+/**
+@brief acquires the nodes in a native CUDA graph
+*/
+inline std::vector<cudaGraphNode_t> cuda_get_graph_nodes(cudaGraph_t graph) {
+  size_t num_nodes = cuda_get_graph_num_nodes(graph);
+  std::vector<cudaGraphNode_t> nodes(num_nodes);
+  TF_CHECK_CUDA(
+    cudaGraphGetNodes(graph, nodes.data(), &num_nodes),
+    "failed to get native graph nodes"
+  );
+  return nodes;
+}
+
+/**
+@brief acquires the root nodes in a native CUDA graph
+*/
+inline std::vector<cudaGraphNode_t> cuda_get_graph_root_nodes(cudaGraph_t graph) {
+  size_t num_nodes = cuda_get_graph_num_root_nodes(graph);
+  std::vector<cudaGraphNode_t> nodes(num_nodes);
+  TF_CHECK_CUDA(
+    cudaGraphGetRootNodes(graph, nodes.data(), &num_nodes),
+    "failed to get native graph nodes"
+  );
+  return nodes;
+}
+
+/**
+@brief acquires the edges in a native CUDA graph
+*/
+inline std::vector<std::pair<cudaGraphNode_t, cudaGraphNode_t>>
+cuda_get_graph_edges(cudaGraph_t graph) {
+  size_t num_edges = cuda_get_graph_num_edges(graph);
+  std::vector<cudaGraphNode_t> froms(num_edges), tos(num_edges);
+  TF_CHECK_CUDA(
+    cudaGraphGetEdges(graph, froms.data(), tos.data(), &num_edges),
+    "failed to get native graph edges"
+  );
+  std::vector<std::pair<cudaGraphNode_t, cudaGraphNode_t>> edges(num_edges);
+  for(size_t i=0; i<num_edges; i++) {
+    edges[i] = std::make_pair(froms[i], tos[i]);
+  }
+  return edges;
+}
+
+/**
+@brief queries the type of a native CUDA graph node
+
+valid type values are:
+  + cudaGraphNodeTypeKernel      = 0x00
+  + cudaGraphNodeTypeMemcpy      = 0x01
+  + cudaGraphNodeTypeMemset      = 0x02
+  + cudaGraphNodeTypeHost        = 0x03
+  + cudaGraphNodeTypeGraph       = 0x04
+  + cudaGraphNodeTypeEmpty       = 0x05
+  + cudaGraphNodeTypeWaitEvent   = 0x06
+  + cudaGraphNodeTypeEventRecord = 0x07
+*/
+inline cudaGraphNodeType cuda_get_graph_node_type(cudaGraphNode_t node) {
+  cudaGraphNodeType type;
+  TF_CHECK_CUDA(
+    cudaGraphNodeGetType(node, &type), "failed to get native graph node type"
+  );
+  return type;
+}
+
+/**
+@brief convert the type of a native CUDA graph node to a readable string
+*/
+inline const char* cuda_graph_node_type_to_string(cudaGraphNodeType type) {
+  switch(type) {
+    case cudaGraphNodeTypeKernel      : return "kernel";
+    case cudaGraphNodeTypeMemcpy      : return "memcpy";
+    case cudaGraphNodeTypeMemset      : return "memset";
+    case cudaGraphNodeTypeHost        : return "host";
+    case cudaGraphNodeTypeGraph       : return "subflow";
+    case cudaGraphNodeTypeEmpty       : return "empty";
+    case cudaGraphNodeTypeWaitEvent   : return "event_wait";
+    case cudaGraphNodeTypeEventRecord : return "event_record";
+    default                           : return "undefined";
+  }
+}
+
+/**
+@brief dumps a native CUDA graph and all associated child graphs to a DOT format
+
+@tparam T output stream target
+@param os target output stream
+@param graph native CUDA graph
+*/
+template <typename T>
+void cuda_dump_graph(T& os, cudaGraph_t graph) {
+  
+  os << "digraph cudaGraph {\n";
+
+  std::stack<std::tuple<cudaGraph_t, cudaGraphNode_t, int>> stack;
+  stack.push(std::make_tuple(graph, nullptr, 1));
+
+  int pl = 0;
+
+  while(stack.empty() == false) {
+
+    auto [graph, parent, l] = stack.top();
+    stack.pop();
+
+    for(int i=0; i<pl-l+1; i++) {
+      os << "}\n";
+    }
+
+    os << "subgraph cluster_p" << graph << " {\n"
+       << "label=\"cudaGraph-L" << l << "\";\n"
+       << "color=\"purple\";\n";
+
+    auto nodes = cuda_get_graph_nodes(graph);
+    auto edges = cuda_get_graph_edges(graph);
+
+    for(auto& [from, to] : edges) {
+      os << 'p' << from << " -> " << 'p' << to << ";\n";
+    }
+  
+    for(auto& node : nodes) {
+      auto type = cuda_get_graph_node_type(node);
+      if(type == cudaGraphNodeTypeGraph) {
+
+        cudaGraph_t graph;
+        TF_CHECK_CUDA(cudaGraphChildGraphNodeGetGraph(node, &graph), "");
+        stack.push(std::make_tuple(graph, node, l+1));
+
+        os << 'p' << node << "["
+           << "shape=folder, style=filled, fontcolor=white, fillcolor=purple, "
+           << "label=\"cudaGraph-L" << l+1
+           << "\"];\n";
+      }
+      else {
+        os << 'p' << node << "[label=\"" 
+           << cuda_graph_node_type_to_string(type) 
+           << "\"];\n";
+      }
+    }
+
+    // precede to parent
+    if(parent != nullptr) {
+      std::unordered_set<cudaGraphNode_t> successors;
+      for(const auto& p : edges) {
+        successors.insert(p.first);
+      }
+      for(auto node : nodes) {
+        if(successors.find(node) == successors.end()) {
+          os << 'p' << node << " -> " << 'p' << parent << ";\n";
+        }
+      }
+    }
+    
+    // set the previous level
+    pl = l;
+  }
+
+  for(int i=0; i<=pl; i++) {
+    os << "}\n";
+  }
+}
 
 // ----------------------------------------------------------------------------
 // cudaGraph class
@@ -42,6 +243,9 @@ class cudaGraph {
 
     bool empty() const;
 
+    template <typename T>
+    void dump(T&, const Node* = nullptr) const;
+
   private:
 
     cudaGraph_t _native_handle {nullptr};
@@ -71,8 +275,8 @@ class cudaNode {
   friend class Taskflow;
   friend class Executor;
   
-  // Noop handle
-  struct Noop {
+  // Empty handle
+  struct Empty {
   };
 
   //// Host handle
@@ -94,8 +298,9 @@ class cudaNode {
   
   // Kernel handle
   struct Kernel {
-
-    Kernel(void*);
+    
+    template <typename F>
+    Kernel(F&& f);
     
     void* func {nullptr};
   };
@@ -115,7 +320,7 @@ class cudaNode {
   };
 
   using handle_t = std::variant<
-    Noop, 
+    Empty, 
     Memset, 
     Memcpy, 
     Kernel,
@@ -126,7 +331,7 @@ class cudaNode {
   public:
   
   // variant index
-  constexpr static auto CUDA_NOOP_TASK      = get_index_v<Noop, handle_t>;
+  constexpr static auto CUDA_EMPTY_TASK     = get_index_v<Empty, handle_t>;
   constexpr static auto CUDA_MEMSET_TASK    = get_index_v<Memset, handle_t>;
   constexpr static auto CUDA_MEMCPY_TASK    = get_index_v<Memcpy, handle_t>; 
   constexpr static auto CUDA_KERNEL_TASK    = get_index_v<Kernel, handle_t>;
@@ -161,8 +366,9 @@ class cudaNode {
 //}
 
 // Kernel handle constructor
-inline cudaNode::Kernel::Kernel(void* ptr) : 
-  func {ptr} {
+template <typename F>
+cudaNode::Kernel::Kernel(F&& f) : 
+  func {std::forward<F>(f)} {
 }
 
 // Capture handle constructor
@@ -181,6 +387,8 @@ cudaNode::cudaNode(cudaGraph& graph, ArgsT&&... args) :
 // Procedure: _precede
 inline void cudaNode::_precede(cudaNode* v) {
   _successors.push_back(v);
+
+  // TODO: capture node doesn't have this
   TF_CHECK_CUDA(
     ::cudaGraphAddDependencies(
       _graph._native_handle, &_native_handle, &v->_native_handle, 1
@@ -284,5 +492,9 @@ inline void cudaGraph::_create_native_graph() {
 //  );
 //}
 
+
 }  // end of namespace tf -----------------------------------------------------
+
+
+
 
