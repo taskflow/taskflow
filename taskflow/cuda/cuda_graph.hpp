@@ -318,7 +318,7 @@ class cudaNode {
     Capture(C&&);
     
     // TODO: probably better to use void(cudaStream_t)
-    std::function<void()> work;
+    std::function<void(cudaStream_t)> work;
   };
 
   using handle_t = std::variant<

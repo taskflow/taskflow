@@ -57,7 +57,7 @@ class cublasFlow {
     cudaTask amax(int n, const T* x, int incx, int* result) {
       auto node = _graph.emplace_back(_graph,
         std::in_place_type_t<cudaNode::Capture>{},
-        [&, n, x, incx, result] () mutable {
+        [&, n, x, incx, result] (cudaStream_t stream) mutable {
           TF_CHECK_CUBLAS(
             cublasIsamax(_native_handle, n, x, incx, result),
             "failed to launch cublasIsamax"
@@ -158,7 +158,7 @@ cudaTask cublasFlow::gemm(
 ) {
   auto node = _graph.emplace_back(_graph,
     std::in_place_type_t<cudaNode::Capture>{},
-    [=, &h=this->_native_handle] () mutable {
+    [=, &h=this->_native_handle] (cudaStream_t stream) mutable {
       cublasStatus_t stat;
       if constexpr(std::is_same_v<T, float>) {
         stat = cublasSgemm(
@@ -193,7 +193,7 @@ cudaTask cublasFlow::c_gemm(
 ) {
   auto node = _graph.emplace_back(_graph,
     std::in_place_type_t<cudaNode::Capture>{},
-    [=, &h=this->_native_handle] () mutable {
+    [=, &h=this->_native_handle] (cudaStream_t stream) mutable {
       cublasStatus_t stat;
       if constexpr(std::is_same_v<T, float>) {
         stat = cublasSgemm(
@@ -249,7 +249,7 @@ cudaTask cudaFlow::childflow(C&& c) {
   // TODO (dian-lun): need to topologically sort the nodes
   // for now I didn't do anything but just assume a linear chain
   for(auto& node : node_handle.graph._nodes) {
-    std::get<cudaNode::Capture>(node->_handle).work();  
+    std::get<cudaNode::Capture>(node->_handle).work(nullptr);  
   }
 
   cudaGraph_t graph;
