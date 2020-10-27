@@ -14,7 +14,7 @@ namespace tf {
 @brief enumeration of all cudaTask types
 */
 enum cudaTaskType {
-  CUDA_EMPTY_TASK      = cudaNode::CUDA_EMPTY_TASK,
+  CUDA_EMPTY_TASK     = cudaNode::CUDA_EMPTY_TASK,
   CUDA_MEMSET_TASK    = cudaNode::CUDA_MEMSET_TASK,
   CUDA_MEMCPY_TASK    = cudaNode::CUDA_MEMCPY_TASK,
   CUDA_KERNEL_TASK    = cudaNode::CUDA_KERNEL_TASK,

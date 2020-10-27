@@ -37,6 +37,7 @@ int main() {
   
   // saxpy
   auto cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
+
     std::cout << "running cudaflow ...\n";
     auto h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
     auto h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
@@ -46,6 +47,7 @@ int main() {
                     .name("saxpy");
     kernel.succeed(h2d_x, h2d_y)
           .precede(d2h_x, d2h_y);
+    auto host = cf.host([](){std::cout << "fuck\n"; });
   }).name("saxpy");
 
   cudaflow.succeed(allocate_x, allocate_y);

@@ -42,8 +42,6 @@ class cudaFlow {
 
   friend class Executor;
 
-  //friend class cudaBLAF;
-
   public:
 
     /**
@@ -78,12 +76,14 @@ class cudaFlow {
     
     @tparam C callable type
     
-    @param callable a callable object with neither arguments nor return
+    @param callable a callable object with neither arguments nor return 
+    (i.e., constructible from std::function<void()>)
 
     A host task can only execute CPU-specific functions and cannot do any CUDA calls 
     (e.g., cudaMalloc).
-    //template <typename C>
-    //cudaTask host(C&& callable); */
+    */
+    template <typename C>
+    cudaTask host(C&& callable);
     
     /**
     @brief creates a kernel task
@@ -488,23 +488,27 @@ inline cudaTask cudaFlow::noop() {
   return cudaTask(node);
 }
 
-//// Function: host
-//template <typename C>
-//cudaTask cudaFlow::host(C&& c) {
-//  auto node = _graph.emplace_back(
-//    std::in_place_type_t<cudaNode::Host>{},
-//    [c=std::forward<C>(c)] (cudaGraph_t& graph, cudaGraphNode_t& node) mutable {
-//      cudaHostNodeParams p;
-//      p.fn = [] (void* data) { (*static_cast<C*>(data))(); };
-//      p.userData = &c;
-//      TF_CHECK_CUDA(
-//        ::cudaGraphAddHostNode(&node, graph, nullptr, 0, &p),
-//        "failed to create a host node"
-//      );
-//    }
-//  );
-//  return cudaTask(node);
-//}
+// Function: host
+template <typename C>
+cudaTask cudaFlow::host(C&& c) {
+  
+  auto node = _graph.emplace_back(
+    _graph, std::in_place_type_t<cudaNode::Host>{}, std::forward<C>(c)
+  );
+
+  auto& h = std::get<cudaNode::Host>(node->_handle);
+
+  cudaHostNodeParams p;
+  p.fn = cudaNode::Host::callback;
+  p.userData = &h;
+
+  TF_CHECK_CUDA(
+    ::cudaGraphAddHostNode(&node->_native_handle, _graph._native_handle, nullptr, 0, &p),
+    "failed to create a host node"
+  );
+  
+  return cudaTask(node);
+}
 
 // Function: kernel
 template <typename F, typename... ArgsT>

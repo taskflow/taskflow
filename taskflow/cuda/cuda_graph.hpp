@@ -279,14 +279,15 @@ class cudaNode {
   struct Empty {
   };
 
-  //// Host handle
-  //struct Host {
+  // Host handle
+  struct Host {
+    template <typename C>
+    Host(C&&);
 
-  //  template <typename C>
-  //  Host(C&&);
-
-  //  std::function<void(cudaGraph_t&, cudaGraphNode_t&)> create_native_node;
-  //};
+    std::function<void()> func;
+    
+    static void callback(void*);
+  };
 
   // Memset handle
   struct Memset {
@@ -315,12 +316,14 @@ class cudaNode {
     
     template <typename C>
     Capture(C&&);
-
+    
+    // TODO: probably better to use void(cudaStream_t)
     std::function<void()> work;
   };
 
   using handle_t = std::variant<
     Empty, 
+    Host,
     Memset, 
     Memcpy, 
     Kernel,
@@ -332,6 +335,7 @@ class cudaNode {
   
   // variant index
   constexpr static auto CUDA_EMPTY_TASK     = get_index_v<Empty, handle_t>;
+  constexpr static auto CUDA_HOST_TASK      = get_index_v<Host, handle_t>;
   constexpr static auto CUDA_MEMSET_TASK    = get_index_v<Memset, handle_t>;
   constexpr static auto CUDA_MEMCPY_TASK    = get_index_v<Memcpy, handle_t>; 
   constexpr static auto CUDA_KERNEL_TASK    = get_index_v<Kernel, handle_t>;
@@ -360,10 +364,15 @@ class cudaNode {
 // cudaNode definitions
 // ----------------------------------------------------------------------------
 
-//// Host handle constructor
-//template <typename C>
-//cudaNode::Host::Host(C&& c) : create_native_node {std::forward<C>(c)} {
-//}
+// Host handle constructor
+template <typename C>
+cudaNode::Host::Host(C&& c) : func {std::forward<C>(c)} {
+}
+
+// Host callback    
+inline void cudaNode::Host::callback(void* data) { 
+  static_cast<Host*>(data)->func(); 
+};
 
 // Kernel handle constructor
 template <typename F>

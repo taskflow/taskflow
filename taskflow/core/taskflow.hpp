@@ -307,10 +307,6 @@ void Taskflow::_dump(T& os, const Graph& graph, Dumper& dumper) const {
   }
 }
 
-// ----------------------------------------------------------------------------
-// Backward compatibility
-// ----------------------------------------------------------------------------
-using Framework = Taskflow;
 
 }  // end of namespace tf. ---------------------------------------------------
 
