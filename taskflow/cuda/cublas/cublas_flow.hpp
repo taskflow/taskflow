@@ -85,11 +85,11 @@ class cublasFlow {
     dimension @c op(B) as @c k by @c n, and @c C as @c m by @c n.
 
     @tparam T data type
-    @param transa transport operation to @c A
-    @param transb transport operation to @c B
-    @param m number of rows of @c C
-    @param n number of columns of @c C
-    @param k number of columns of @c A (must equal the number of rows of @c B)
+    @param transa transport operation @c op(A)
+    @param transb transport operation @c op(B)
+    @param m number of rows of matrix @c C and @c op(A)
+    @param n number of columns of matrix @c C and @c op(B)
+    @param k number of columns of @c op(A) and rows of @c op(B)
     @param alpha pointer to the @c alpha scalar
     @param A pointer to the address of @c A
     @param lda leading dimension of 2D array used to store the matrix @c A
@@ -111,8 +111,7 @@ class cublasFlow {
       T *C, int ldc
     );
 
-    // TODO
-    /** similar to gemm but operates on C-styled row-major layout
+    /** @brief similar to gemm but operates on C-styled row-major layout
     */
     template <typename T>
     cudaTask c_gemm(
@@ -171,21 +170,46 @@ cudaTask cublasFlow::gemm(
           h, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc
         );
       }
-      else if constexpr(std::is_same_v<T, cuComplex>) {
-        stat = cublasCgemm(
-          h, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc
+      else {
+        static_assert(dependent_false_v<T>, "unknown cublas data type");
+      }
+
+      TF_CHECK_CUBLAS(stat, "failed to capture gemm");
+    }
+  );
+  return cudaTask(node);
+}
+
+// Function: c_gemm
+template <typename T>
+cudaTask cublasFlow::c_gemm(
+  cublasOperation_t ta, cublasOperation_t tb,
+  int m, int n, int k,
+  const T *alpha,
+  const T *A, int lda,
+  const T *B, int ldb,
+  const T *beta,
+  T *C, int ldc
+) {
+  auto node = _graph.emplace_back(_graph,
+    std::in_place_type_t<cudaNode::Capture>{},
+    [=, &h=this->_native_handle] () mutable {
+      cublasStatus_t stat;
+      if constexpr(std::is_same_v<T, float>) {
+        stat = cublasSgemm(
+          h, tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
         );
       }
-      else if constexpr(std::is_same_v<T, cuDoubleComplex>) {
-        stat = cublasZgemm(
-          h, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc
+      else if constexpr(std::is_same_v<T, double>) {
+        stat = cublasDgemm(
+          h, tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
         );
       }
       else {
         static_assert(dependent_false_v<T>, "unknown cublas data type");
       }
 
-      TF_CHECK_CUBLAS(stat, "failed to capture gemm");
+      TF_CHECK_CUBLAS(stat, "failed to capture c_gemm");
     }
   );
   return cudaTask(node);
