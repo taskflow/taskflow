@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"classtf_1_1cudaFlow.html#af03e04771b655f9e629eb4c22e19b19f":[11,0,0,1,1],
+"classtf_1_1cudaFlow.html#afa479a33e555179c400ba2376b7c5f29":[11,0,0,1,8],
 "classtf_1_1cudaScopedDevice.html":[11,0,0,2],
 "classtf_1_1cudaScopedDevice.html#aa6be941424258b7ca7993b54f2c8090c":[11,0,0,2,0],
 "classtf_1_1cudaScopedDevice.html#ad2c9212f42d80d1f7436bb52651006ee":[11,0,0,2,1],
@@ -17,8 +19,8 @@ var NAVTREEINDEX1 =
 "classtf_1_1cudaTask.html#a7eab02ec6633a5cf17cc15898db2d648":[11,0,0,6,10],
 "classtf_1_1cudaTask.html#a9f64f729511a922781a59663ff1c6250":[11,0,0,6,12],
 "classtf_1_1cudaTask.html#aa48fa98a827ff71f8c3845a29f5e4d10":[11,0,0,6,13],
-"classtf_1_1cudaTask.html#aa80fb7a06b2828bd95c43fb465e10abe":[11,0,0,6,5],
-"classtf_1_1cudaTask.html#ab81b4f71a44af8d61758524f0c274962":[11,0,0,6,4],
+"classtf_1_1cudaTask.html#aa80fb7a06b2828bd95c43fb465e10abe":[11,0,0,6,4],
+"classtf_1_1cudaTask.html#ab81b4f71a44af8d61758524f0c274962":[11,0,0,6,5],
 "classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4":[11,0,0,6,8],
 "classtf_1_1cudaTask.html#af17c570ca9a43ad71c4b626635ea9cbb":[11,0,0,6,7],
 "classtf_1_1cudaTask.html#af2ce580b0bfb771e463e66af64c2c571":[11,0,0,6,2],
@@ -75,8 +77,8 @@ var NAVTREEINDEX1 =
 "guidelines.html#Step3WriteATaskflowProgram":[7,0,2,2],
 "guidelines.html#YourVoiceMatters":[7,0,7],
 "hierarchy.html":[11,2],
-"index.html":[0],
 "index.html":[],
+"index.html":[0],
 "index.html#ASimpleFirstProgram":[0,6],
 "index.html#CompileAndRunYourFirstProgram":[0,7],
 "index.html#ComposableTasking":[0,3],
