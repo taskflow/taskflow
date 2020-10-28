@@ -30,12 +30,13 @@ inline constexpr bool is_cublas_data_type_v = is_cublas_data_type<T>::value;
 @brief class object to construct a cuBLAS task graph
 
 A cublasFlow provides a higher-level interface over the cuBLAS library.
-By default, the cublasFlow uses column-major storage, and 1-based indexing. 
+By default, %cublasFlow uses column-major storage, and 1-based indexing. 
+Since C/C++ uses row-major storage, we provides methods of prefix @c c_* 
+for the equivalents. 
 
-Assuming @c A is a 2D matrix, @c A^T in row-major layout 
-is equivalent to @c A in column-major layout.
-
-All pointers used to create %cublasFlow tasks must be on the device memory.
+All pointers used to %cublasFlow methods must be on device or managed 
+(i.e., @c cudaMallocManaged),
+including scalars, @c alpha and @c beta, input data and output data pointers.
 
 */
 class cublasFlow {
@@ -52,12 +53,29 @@ class cublasFlow {
     // getmat  : cublasGetMatrixAsync (column major)
     // c_getmat: cublasGetMatrixAsync (row major)
     
+    // ------------------------------------------------------------------------
+    // Helper methods
+    // ------------------------------------------------------------------------
+    
+    /**
+    @brief runs a callable with only a single kernel thread
+
+    @tparam C callable type
+
+    @param callable callable to run by a single kernel thread
+    */
+    template <typename C>
+    cudaTask single_task(C&& callable);
+    
+    // ------------------------------------------------------------------------
     // Level-1 vector-vector operations
+    // ------------------------------------------------------------------------
     template <typename T>
     cudaTask amax(int n, const T* x, int incx, int* result) {
       auto node = _graph.emplace_back(_graph,
         std::in_place_type_t<cudaNode::Capture>{},
-        [&, n, x, incx, result] (cudaStream_t stream) mutable {
+        [=, &h=this->_native_handle] (cudaStream_t stream) mutable {
+          cublasSetStream(h, stream);
           TF_CHECK_CUBLAS(
             cublasIsamax(_native_handle, n, x, incx, result),
             "failed to launch cublasIsamax"
@@ -69,10 +87,13 @@ class cublasFlow {
 
     // TODO: amin, asum, axpy, copy, dot, nrm2, scal, sawp, etc.
 
+    // ------------------------------------------------------------------------
     // TODO Level-2 matrix_vector operations
-    // gemm(int m, int n, int k, const T* A, const T* B, T* C);
+    // ------------------------------------------------------------------------
     
+    // ------------------------------------------------------------------------
     // TODO Level-3 matrix-matrix operations
+    // ------------------------------------------------------------------------
     
     /** 
     @brief constructs a task to perform matrix-matrix multiplication
@@ -125,8 +146,7 @@ class cublasFlow {
     );
     
     // reference: https://docs.anaconda.com/accelerate/2.0/cublas/
-
-
+    
   private:
 
     cudaGraph& _graph;
@@ -139,6 +159,22 @@ class cublasFlow {
 // Constructor
 inline cublasFlow::cublasFlow(cudaGraph& graph, cublasHandle_t handle) : 
   _graph {graph}, _native_handle {handle} {
+}
+
+// ---------------------------------------------------------------------------- 
+// Helper functions
+// ---------------------------------------------------------------------------- 
+
+// Function: single_task
+template <typename C>
+cudaTask cublasFlow::single_task(C&& callable) {
+  auto node = _graph.emplace_back(_graph,
+    std::in_place_type_t<cudaNode::Capture>{},
+    [c=std::forward<C>(callable)] (cudaStream_t stream) mutable {
+      cuda_single_task<C><<<1, 1, 0, stream>>>(c);
+    }
+  );
+  return cudaTask(node);
 }
     
 // ---------------------------------------------------------------------------- 
@@ -159,6 +195,7 @@ cudaTask cublasFlow::gemm(
   auto node = _graph.emplace_back(_graph,
     std::in_place_type_t<cudaNode::Capture>{},
     [=, &h=this->_native_handle] (cudaStream_t stream) mutable {
+      cublasSetStream(h, stream);
       cublasStatus_t stat;
       if constexpr(std::is_same_v<T, float>) {
         stat = cublasSgemm(
@@ -194,6 +231,7 @@ cudaTask cublasFlow::c_gemm(
   auto node = _graph.emplace_back(_graph,
     std::in_place_type_t<cudaNode::Capture>{},
     [=, &h=this->_native_handle] (cudaStream_t stream) mutable {
+      cublasSetStream(h, stream);
       cublasStatus_t stat;
       if constexpr(std::is_same_v<T, float>) {
         stat = cublasSgemm(
@@ -239,7 +277,6 @@ cudaTask cudaFlow::childflow(C&& c) {
     cudaStreamBeginCapture(stream, cudaStreamCaptureModeGlobal), 
     "failed to turn stream into capture mode"
   );
-  cublasSetStream(cublas_handle, stream);
   
   // construct a cublas flow from the callable
   cublasFlow cbf(node_handle.graph, cublas_handle);
@@ -249,7 +286,7 @@ cudaTask cudaFlow::childflow(C&& c) {
   // TODO (dian-lun): need to topologically sort the nodes
   // for now I didn't do anything but just assume a linear chain
   for(auto& node : node_handle.graph._nodes) {
-    std::get<cudaNode::Capture>(node->_handle).work(nullptr);  
+    std::get<cudaNode::Capture>(node->_handle).work(stream);  
   }
 
   cudaGraph_t graph;

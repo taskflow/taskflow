@@ -305,6 +305,16 @@ class cudaFlow {
     // ------------------------------------------------------------------------
     
     /**
+    @brief runs a callable with only a single kernel thread
+
+    @tparam C callable type
+
+    @param callable callable to run by a single kernel thread
+    */
+    template <typename C>
+    cudaTask single_task(C&& callable);
+    
+    /**
     @brief applies a callable to each dereferenced element of the data array
 
     @tparam I iterator type
@@ -869,6 +879,14 @@ void cudaFlow::update_memset(cudaTask ct, void* dst, int ch, size_t count) {
 // ----------------------------------------------------------------------------
 // Generic Algorithm API
 // ----------------------------------------------------------------------------
+    
+// Function: single_task
+template <typename C>
+cudaTask cudaFlow::single_task(C&& c) {
+  return kernel(
+    1, 1, 0, cuda_single_task<C>, std::forward<C>(c)
+  );
+}
 
 // Function: for_each
 template <typename I, typename C>

@@ -43,12 +43,9 @@ void gemm(
     auto dA = tf::cuda_malloc_device<T>(K*M, d);
     auto dB = tf::cuda_malloc_device<T>(K*N, d);
     auto dC = tf::cuda_malloc_device<T>(M*N, d);
-    auto dAlpha = tf::cuda_malloc_shared<T>(1);
-    auto dBeta  = tf::cuda_malloc_shared<T>(1);
+    auto dAlpha = tf::cuda_malloc_device<T>(1, d);
+    auto dBeta  = tf::cuda_malloc_device<T>(1, d);
 
-    *dAlpha = 1;
-    *dBeta  = 0;
-  
     T* hC = new T[N*M];
 
     auto cudaflow = taskflow.emplace_on([=, &hA, &hB](tf::cudaFlow& cf){
@@ -57,6 +54,8 @@ void gemm(
       
       auto copyA = cf.copy(dA, hA.data(), K*M);
       auto copyB = cf.copy(dB, hB.data(), K*N);
+      auto alpha = cf.single_task([=] __device__ () { *dAlpha = 1; });
+      auto beta  = cf.single_task([=] __device__ () { *dBeta  = 0; });
 
       tf::cudaTask gemm; 
       
@@ -136,7 +135,7 @@ void gemm(
       auto copyC = cf.copy(hC, dC, M*N);
 
       gemm.precede(copyC)
-          .succeed(copyA, copyB);
+          .succeed(copyA, copyB, alpha, beta);
     }, d);
 
     auto verify = taskflow.emplace([=, &golden](){
