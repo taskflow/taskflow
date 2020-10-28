@@ -154,11 +154,20 @@ class cublasFlow {
     cublasHandle_t _native_handle;
 
     cublasFlow(cudaGraph&, cublasHandle_t);
+
+    void _stream(cudaStream_t);
 };
 
 // Constructor
 inline cublasFlow::cublasFlow(cudaGraph& graph, cublasHandle_t handle) : 
   _graph {graph}, _native_handle {handle} {
+}
+
+// Procedure: _stream
+inline void cublasFlow::_stream(cudaStream_t stream) {
+  TF_CHECK_CUBLAS(
+    cublasSetStream(_native_handle, stream), "failed to set cublas stream"
+  );
 }
 
 // ---------------------------------------------------------------------------- 
@@ -194,17 +203,20 @@ cudaTask cublasFlow::gemm(
 ) {
   auto node = _graph.emplace_back(_graph,
     std::in_place_type_t<cudaNode::Capture>{},
-    [=, &h=this->_native_handle] (cudaStream_t stream) mutable {
-      cublasSetStream(h, stream);
+    [this, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc] 
+    (cudaStream_t stream) mutable {
+
+      _stream(stream);
+
       cublasStatus_t stat;
       if constexpr(std::is_same_v<T, float>) {
-        stat = cublasSgemm(
-          h, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc
+        stat = cublasSgemm(_native_handle,
+          ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc
         );
       }
       else if constexpr(std::is_same_v<T, double>) {
-        stat = cublasDgemm(
-          h, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc
+        stat = cublasDgemm(_native_handle,
+          ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc
         );
       }
       else {
@@ -230,17 +242,20 @@ cudaTask cublasFlow::c_gemm(
 ) {
   auto node = _graph.emplace_back(_graph,
     std::in_place_type_t<cudaNode::Capture>{},
-    [=, &h=this->_native_handle] (cudaStream_t stream) mutable {
-      cublasSetStream(h, stream);
+    [this, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc] 
+    (cudaStream_t stream) mutable {
+
+      _stream(stream);
+
       cublasStatus_t stat;
       if constexpr(std::is_same_v<T, float>) {
-        stat = cublasSgemm(
-          h, tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
+        stat = cublasSgemm(_native_handle,
+          tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
         );
       }
       else if constexpr(std::is_same_v<T, double>) {
-        stat = cublasDgemm(
-          h, tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
+        stat = cublasDgemm(_native_handle,
+          tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
         );
       }
       else {
