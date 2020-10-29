@@ -398,21 +398,21 @@ class cudaFlow {
     //
     
     // ------------------------------------------------------------------------
-    // childflow
+    // subflow
     // ------------------------------------------------------------------------
     
     /**
-    @brief constructs a cublas childflow graph to perform cuBLAS operations
+    @brief constructs a cublas subflow graph to perform cuBLAS operations
     
     @tparam C callable type
 
     @return cudaTask handle
 
-    A cublas childflow graph forms a cudaGraph of cuBLAS operations and 
+    A cublas subflow graph forms a cudaGraph of cuBLAS operations and 
     their dependencies.
     */
     template <typename C, std::enable_if_t<is_cublasflow_v<C>, void>* = nullptr>
-    cudaTask childflow(C&& callable);
+    cudaTask subflow(C&& callable);
 
   private:
     

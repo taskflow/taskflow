@@ -368,9 +368,9 @@ void Taskflow::_dump(T& os, const cudaGraph& g, const Node* root) const {
              << " shape=\"box3d\"";
         break;
 
-        case cudaNode::CUDA_CHILDFLOW_TASK:
+        case cudaNode::CUDA_SUBFLOW_TASK:
           stack.push(std::make_tuple(
-            &std::get<cudaNode::Childflow>(v->_handle).graph, v, l+1)
+            &std::get<cudaNode::Subflow>(v->_handle).graph, v, l+1)
           );
           os << " style=\"filled\""
              << " color=\"black\" fillcolor=\"purple\""

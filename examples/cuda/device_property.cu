@@ -4,7 +4,9 @@ int main() {
 
   // CUDA version
   std::cout << "CUDA version: " 
-            << tf::cuda_get_runtime_version()/1000.0f << '\n';
+            << tf::cuda_get_runtime_version() << '\n'
+            << "CUDA driver version: " 
+            << tf::cuda_get_driver_version() << '\n';
 
   // Number of CUDA devices
   auto num_cuda_devices = tf::cuda_get_num_devices();

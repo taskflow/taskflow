@@ -399,6 +399,11 @@ inline void Node::_clear_state() {
   _state = 0; 
 }
 
+// Function: _has_state
+inline bool Node::_has_state(int flag) const {
+  return _state & flag;
+}
+
 // Procedure: _set_up_join_counter
 inline void Node::_set_up_join_counter() {
 
@@ -416,10 +421,6 @@ inline void Node::_set_up_join_counter() {
   _join_counter.store(c, std::memory_order_relaxed);
 }
 
-// Function: _has_state
-inline bool Node::_has_state(int flag) const {
-  return _state & flag;
-}
 
 // ----------------------------------------------------------------------------
 // Graph definition

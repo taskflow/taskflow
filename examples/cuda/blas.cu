@@ -28,10 +28,12 @@ int main() {
 
     auto h2d = cf.copy(x, host.data(), N).name("h2d");
 
-    auto child = cf.childflow([&](tf::cublasFlow& cbf){  /// childflow
-      cbf.amax<float>(N, x, 1, r).name("amax");  
-      cbf.amax<float>(N, x, 1, r).name("amax");  
-      cbf.amax<float>(N, x, 1, r).name("amax");  
+    auto child = cf.subflow([&](tf::cublasFlow& cbf){  /// subflow
+      auto t1 = cbf.amax<float>(N, x, 1, r).name("amax1");  
+      auto t2 = cbf.amax<float>(N, x, 1, r).name("amax2");  
+      auto t3 = cbf.amax<float>(N, x, 1, r).name("amax3");  
+      t2.precede(t1);
+      t1.precede(t3);
     }).name("cublas");
     
     auto d2h = cf.copy(&res, r, 1).name("d2h");
@@ -48,8 +50,6 @@ int main() {
   
   TF_CHECK_CUDA(cudaFree(x), "failed to free x");
   TF_CHECK_CUDA(cudaFree(r), "failed to free r");
-
-  //std::cout << CUBLAS_OP_N << '\n';
 
   return 0;
 }

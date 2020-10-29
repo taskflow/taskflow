@@ -123,7 +123,7 @@ inline const char* cuda_graph_node_type_to_string(cudaGraphNodeType type) {
     case cudaGraphNodeTypeMemcpy      : return "memcpy";
     case cudaGraphNodeTypeMemset      : return "memset";
     case cudaGraphNodeTypeHost        : return "host";
-    case cudaGraphNodeTypeGraph       : return "subflow";
+    case cudaGraphNodeTypeGraph       : return "graph";
     case cudaGraphNodeTypeEmpty       : return "empty";
     case cudaGraphNodeTypeWaitEvent   : return "event_wait";
     case cudaGraphNodeTypeEventRecord : return "event_record";
@@ -256,6 +256,8 @@ class cudaGraph {
 
     void _create_native_graph();
     void _destroy_native_graph();
+
+    std::vector<cudaNode*> _toposort();
 };
 
 // ----------------------------------------------------------------------------
@@ -281,6 +283,7 @@ class cudaNode {
 
   // Host handle
   struct Host {
+
     template <typename C>
     Host(C&&);
 
@@ -306,8 +309,8 @@ class cudaNode {
     void* func {nullptr};
   };
 
-  // Childflow handle
-  struct Childflow {
+  // Subflow handle
+  struct Subflow {
     cudaGraph graph;
   };
 
@@ -327,9 +330,11 @@ class cudaNode {
     Memset, 
     Memcpy, 
     Kernel,
-    Childflow,
+    Subflow,
     Capture
   >;
+
+  constexpr static auto STATE_VISITED = 0x1;
 
   public:
   
@@ -339,13 +344,17 @@ class cudaNode {
   constexpr static auto CUDA_MEMSET_TASK    = get_index_v<Memset, handle_t>;
   constexpr static auto CUDA_MEMCPY_TASK    = get_index_v<Memcpy, handle_t>; 
   constexpr static auto CUDA_KERNEL_TASK    = get_index_v<Kernel, handle_t>;
-  constexpr static auto CUDA_CHILDFLOW_TASK = get_index_v<Childflow, handle_t>;
+  constexpr static auto CUDA_SUBFLOW_TASK = get_index_v<Subflow, handle_t>;
   constexpr static auto CUDA_CAPTURE_TASK   = get_index_v<Capture, handle_t>;
+
+    cudaNode() = delete;
     
     template <typename... ArgsT>
     cudaNode(cudaGraph&, ArgsT&&...);
 
   private:
+    
+    int _state;
 
     cudaGraph& _graph;
 
@@ -358,6 +367,10 @@ class cudaNode {
     std::vector<cudaNode*> _successors;
 
     void _precede(cudaNode*);
+    void _set_state(int);
+    void _unset_state(int);
+    void _clear_state();
+    bool _has_state(int) const;
 };
 
 // ----------------------------------------------------------------------------
@@ -395,15 +408,38 @@ cudaNode::cudaNode(cudaGraph& graph, ArgsT&&... args) :
 
 // Procedure: _precede
 inline void cudaNode::_precede(cudaNode* v) {
+
   _successors.push_back(v);
 
-  // TODO: capture node doesn't have this
-  TF_CHECK_CUDA(
-    ::cudaGraphAddDependencies(
-      _graph._native_handle, &_native_handle, &v->_native_handle, 1
-    ),
-    "failed to add a preceding link ", this, "->", v
-  );
+  // capture node doesn't have the native graph yet
+  if(_handle.index() != CUDA_CAPTURE_TASK) {
+    TF_CHECK_CUDA(
+      ::cudaGraphAddDependencies(
+        _graph._native_handle, &_native_handle, &v->_native_handle, 1
+      ),
+      "failed to add a preceding link ", this, "->", v
+    );
+  }
+}
+    
+// Procedure: _set_state
+inline void cudaNode::_set_state(int flag) { 
+  _state |= flag; 
+}
+
+// Procedure: _unset_state
+inline void cudaNode::_unset_state(int flag) { 
+  _state &= ~flag; 
+}
+
+// Procedure: _clear_state
+inline void cudaNode::_clear_state() { 
+  _state = 0; 
+}
+
+// Function: _has_state
+inline bool cudaNode::_has_state(int flag) const {
+  return _state & flag;
 }
 
 // ----------------------------------------------------------------------------
@@ -486,6 +522,47 @@ inline void cudaGraph::_create_native_graph() {
     cudaGraphCreate(&_native_handle, 0), 
     "failed to create a native graph"
   );
+}
+
+// Procedure: _toposort
+// topological sort iteratively
+inline std::vector<cudaNode*> cudaGraph::_toposort() {
+
+  std::stack<cudaNode*> dfs;
+  std::vector<cudaNode*> res;
+
+  for(auto node : _nodes) {
+    node->_unset_state(cudaNode::STATE_VISITED);
+  }
+
+  for(auto node : _nodes) {
+    if(!node->_has_state(cudaNode::STATE_VISITED)) {
+      dfs.push(node);
+    }
+
+    while(!dfs.empty()) {
+      auto u = dfs.top();
+      dfs.pop();
+
+      if(u->_has_state(cudaNode::STATE_VISITED)){
+        res.push_back(u);
+        continue;
+      }
+
+      u->_set_state(cudaNode::STATE_VISITED);
+      dfs.push(u);
+
+      for(auto s : u->_successors) {
+        if(!(s->_has_state(cudaNode::STATE_VISITED))) {
+          dfs.push(s);
+        }
+      }
+    }
+  }
+
+  std::reverse(res.begin(), res.end());
+  
+  return res;
 }
 
 //inline void cudaGraph::run() {

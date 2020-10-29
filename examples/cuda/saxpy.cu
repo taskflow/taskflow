@@ -47,7 +47,6 @@ int main() {
                     .name("saxpy");
     kernel.succeed(h2d_x, h2d_y)
           .precede(d2h_x, d2h_y);
-    auto host = cf.host([](){std::cout << "fuck\n"; });
   }).name("saxpy");
 
   cudaflow.succeed(allocate_x, allocate_y);

@@ -38,6 +38,8 @@ All pointers used to %cublasFlow methods must be on device or managed
 (i.e., @c cudaMallocManaged),
 including scalars, @c alpha and @c beta, input data and output data pointers.
 
+Currently, we %cublasFlow supports only float and double data types.
+
 */
 class cublasFlow {
 
@@ -74,11 +76,11 @@ class cublasFlow {
     cudaTask amax(int n, const T* x, int incx, int* result) {
       auto node = _graph.emplace_back(_graph,
         std::in_place_type_t<cudaNode::Capture>{},
-        [=, &h=this->_native_handle] (cudaStream_t stream) mutable {
-          cublasSetStream(h, stream);
+        [this, n, x, incx, result] (cudaStream_t stream) mutable {
+          _stream(stream);
           TF_CHECK_CUBLAS(
             cublasIsamax(_native_handle, n, x, incx, result),
-            "failed to launch cublasIsamax"
+            "failed to capture cublasIsamax"
           );
         }
       );
@@ -98,8 +100,10 @@ class cublasFlow {
     /** 
     @brief constructs a task to perform matrix-matrix multiplication
 
-    This method constructs a task to perform matrix-matrix multiplication,
+    This method constructs a task to perform matrix-matrix multiplication:
+
     <tt>C = alpha * op (A) * op (B) + beta * C</tt>,
+
     where @c alpha and @c beta are scalars, and @c A, @c B, and @c C
     are 2D matrices stored in column-major format 
     with dimension @c op(A) as @c m by @c k,
@@ -132,7 +136,8 @@ class cublasFlow {
       T *C, int ldc
     );
 
-    /** @brief similar to gemm but operates on C-styled row-major layout
+    /** 
+    @brief similar to gemm but operates on C-styled row-major layout
     */
     template <typename T>
     cudaTask c_gemm(
@@ -143,6 +148,145 @@ class cublasFlow {
       const T *B, int ldb,
       const T *beta,
       T *C, int ldc
+    );
+
+    /**
+    @brief constructs a task to perform matrix-matrix multiplication 
+           over a batch of matrices
+    
+    @tparam T data type
+    @param transa transport operation @c op(A[i])
+    @param transb transport operation @c op(B[i])
+    @param m number of rows of matrix @c C[i] and @c op(A[i])
+    @param n number of columns of matrix @c C[i] and @c op(B[i])
+    @param k number of columns of @c op(A[i]) and rows of @c op(B[i])
+    @param alpha pointer to the @c alpha scalar
+    @param A array pointer to @c A batch
+    @param lda leading dimension of 2D array used to store the matrix @c A[i]
+    @param B array pointer to @c B batch
+    @param ldb leading dimension of 2D array used to store the matrix @c B[i]
+    @param beta pointer to the @c beta scalar
+    @param C array pointer to @c C batch
+    @param ldc leading dimension of 2D array used to store the matrix @c C[i]
+    @param batch_count batch size (number of matrices)
+
+    The batch must be @i uniform.
+    All instances in the batch must have the same dimensions <tt>(m, n, k)</tt>, 
+    leading dimensions <tt>(lda, ldb, ldc)</tt> and transpositions 
+    <tt>(transa, transb)</tt> for their respective @c A, @c B and @c C matrices. 
+    The address of the input matrices and the output matrix of each instance 
+    of the batch are read from arrays of pointers passed to the function by the caller.
+
+    <tt>C[i]= alpha * op (A[i]) * op (B[i]) + beta * C[i], i in [0, batch_count)</tt>,
+
+    where @c alpha and @c beta are scalars, and @c A[i], @c B[i], and @c C[i]
+    are 2D matrices stored in column-major format 
+    with dimension @c op(A) as @c m by @c k,
+    dimension @c op(B) as @c k by @c n, and @c C as @c m by @c n.
+    
+    */
+    template <typename T>
+    cudaTask gemm_batched(
+      cublasOperation_t transa, cublasOperation_t transb,
+      int m, int n, int k,
+      const T *alpha,
+      const T *A[], int lda,
+      const T *B[], int ldb,
+      const T *beta,
+      T *C[], int ldc,
+      int batch_count
+    );
+    
+    /**
+    @brief similar to gemm_batched but operates on C-styled row-major layout
+    */ 
+    template <typename T>
+    cudaTask c_gemm_batched(
+      cublasOperation_t transa, cublasOperation_t transb,
+      int m, int n, int k,
+      const T *alpha,
+      const T *A[], int lda,
+      const T *B[], int ldb,
+      const T *beta,
+      T *C[], int ldc,
+      int batch_count
+    );
+    
+    /**
+    @brief constructs a task to perform matrix-matrix multiplication 
+           over a batch of matrices with strided memory access
+    
+    Here, we use @c A[i], @c B[i], @c C[i] as notation 
+    for A, B and C matrices in the @c i-th instance of the batch, 
+    implicitly assuming they are respectively address offsets 
+    @c strideA, @c strideB, @c strideC away from @c A[i-1], @c B[i-1], @c C[i-1].
+
+    @tparam T data type
+    @param transa transport operation @c op(A[i])
+    @param transb transport operation @c op(B[i])
+    @param m number of rows of matrix @c C[i] and @c op(A[i])
+    @param n number of columns of matrix @c C[i] and @c op(B[i])
+    @param k number of columns of @c op(A[i]) and rows of @c op(B[i])
+    @param alpha pointer to the @c alpha scalar
+    @param A pointer to @c A batch
+    @param lda leading dimension of 2D array used to store the matrix @c A[i]
+    @param strideA address offset between @c A[i] and @c A[i+1]
+    @param B pointer to @c B batch
+    @param ldb leading dimension of 2D array used to store the matrix @c B[i]
+    @param strideB address offset between @c B[i] and @c B[i+1]
+    @param beta pointer to the @c beta scalar
+    @param C pointer to @c C batch
+    @param ldc leading dimension of 2D array used to store the matrix @c C[i]
+    @param strideC address offset between @c C[i] and @c C[i+1]
+    @param batch_count batch size (number of matrices)
+
+    The batch must be @i uniform. 
+    All instances in the batch must have the same dimensions <tt>(m, n, k)</tt>, 
+    leading dimensions <tt>(lda, ldb, ldc)</tt> and transpositions 
+    <tt>(transa, transb)</tt> for their respective @c A, @c B and @c C matrices. 
+    Input matrices @c A, @c B and output matrix @c C for each instance of the batch 
+    are located at fixed address offsets from their locations in the previous instance. 
+    Pointers to @c A, @c B and @c C matrices for the first instance are passed 
+    to the function by the user along with the address offsets - 
+    @c strideA, @c strideB and @c strideC that determine the locations 
+    of input and output matrices in future instances.
+
+    <tt>C + i*strideC = alpha * op (A + i*strideA) * op (B + i*strideB) 
+                      + beta * (C + i*strideC), i in [0, batch_count)</tt>,
+
+    where @c alpha and @c beta are scalars, and @c A[i], @c B[i], and @c C[i]
+    are 2D matrices stored in column-major format 
+    with dimension @c op(A) as @c m by @c k,
+    dimension @c op(B) as @c k by @c n, and @c C as @c m by @c n.
+
+    On certain problem sizes, it might be advantageous to create multiple gemm tasks
+    to take advantage of concurrent kernels, rather than this method.
+    */
+    template <typename T>
+    cudaTask gemm_batched(
+      cublasOperation_t transa, cublasOperation_t transb,
+      int m, int n, int k,
+      const T *alpha,
+      const T *A, int lda, long long int strideA,
+      const T *B, int ldb, long long int strideB,
+      const T *beta,
+      T *C, int ldc, long long int strideC,
+      int batch_count
+    );
+    
+    /** 
+    @brief similar to gemm_batached but operates on C-styled row-major layout
+    */
+    template <typename T>
+    cudaTask c_gemm_batched(
+      cublasOperation_t transa, cublasOperation_t transb,
+      int m, int n, int k,
+      const T *alpha,
+      const T *A, int lda, long long int strideA,
+      const T *B, int ldb, long long int strideB,
+      const T *beta,
+      T *C, int ldc, long long int strideC,
+      int batch_count
     );
     
     // reference: https://docs.anaconda.com/accelerate/2.0/cublas/
@@ -209,6 +353,7 @@ cudaTask cublasFlow::gemm(
       _stream(stream);
 
       cublasStatus_t stat;
+
       if constexpr(std::is_same_v<T, float>) {
         stat = cublasSgemm(_native_handle,
           ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc
@@ -248,6 +393,7 @@ cudaTask cublasFlow::c_gemm(
       _stream(stream);
 
       cublasStatus_t stat;
+
       if constexpr(std::is_same_v<T, float>) {
         stat = cublasSgemm(_native_handle,
           tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
@@ -267,21 +413,99 @@ cudaTask cublasFlow::c_gemm(
   );
   return cudaTask(node);
 }
+    
+// Function: gemm_batched
+template <typename T>
+cudaTask cublasFlow::gemm_batched(
+  cublasOperation_t ta, cublasOperation_t tb,
+  int m, int n, int k,
+  const T *alpha,
+  const T *A[], int lda,
+  const T *B[], int ldb,
+  const T *beta,
+  T *C[], int ldc,
+  int batch_count
+) {
+  auto node = _graph.emplace_back(_graph,
+    std::in_place_type_t<cudaNode::Capture>{},
+    [this, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc, batch_count] 
+    (cudaStream_t stream) mutable {
+
+      _stream(stream);
+
+      cublasStatus_t stat;
+
+      if constexpr(std::is_same_v<T, float>) {
+        stat = cublasSgemmBatched(_native_handle,
+          ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc, batch_count
+        );
+      }
+      else if constexpr(std::is_same_v<T, double>) {
+        stat = cublasDgemmBatched(_native_handle,
+          ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc, batch_count
+        );
+      }
+      else static_assert(dependent_false_v<T>, "unknown cublas data type");
+
+      TF_CHECK_CUBLAS(stat, "failed to capture gemm_batched");
+    }
+  );
+  return cudaTask(node);
+}
+
+// Function: c_gemm_batched
+template <typename T>
+cudaTask cublasFlow::c_gemm_batched(
+  cublasOperation_t ta, cublasOperation_t tb,
+  int m, int n, int k,
+  const T *alpha,
+  const T *A[], int lda,
+  const T *B[], int ldb,
+  const T *beta,
+  T *C[], int ldc,
+  int batch_count
+) {
+  auto node = _graph.emplace_back(_graph,
+    std::in_place_type_t<cudaNode::Capture>{},
+    [this, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc, batch_count] 
+    (cudaStream_t stream) mutable {
+
+      _stream(stream);
+
+      cublasStatus_t stat;
+
+      if constexpr(std::is_same_v<T, float>) {
+        stat = cublasSgemmBatched(_native_handle,
+          tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc, batch_count
+        );
+      }
+      else if constexpr(std::is_same_v<T, double>) {
+        stat = cublasDgemmBatched(_native_handle,
+          tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc, batch_count
+        );
+      }
+      else static_assert(dependent_false_v<T>, "unknown cublas data type");
+
+      TF_CHECK_CUBLAS(stat, "failed to capture c_gemm_batched");
+    }
+  );
+  return cudaTask(node);
+}
 
 // ----------------------------------------------------------------------------
 // cudaFlow 
 // ----------------------------------------------------------------------------
 
-// Function: childflow
+// Function: subflow
 template <typename C, std::enable_if_t<is_cublasflow_v<C>, void>*>
-cudaTask cudaFlow::childflow(C&& c) {
+cudaTask cudaFlow::subflow(C&& c) {
   
-  // insert a childflow node
+  // insert a subflow node
   auto node = _graph.emplace_back(
-    _graph, std::in_place_type_t<cudaNode::Childflow>{}
+    _graph, std::in_place_type_t<cudaNode::Subflow>{}
   );
   
-  auto& node_handle = std::get<cudaNode::Childflow>(node->_handle);
+  auto& node_handle = std::get<cudaNode::Subflow>(node->_handle);
   
   // acquire per-thread cublas handle and stream
   cublasScopedPerThreadHandle cublas_handle(_device);
@@ -298,9 +522,10 @@ cudaTask cudaFlow::childflow(C&& c) {
 
   c(cbf);
 
-  // TODO (dian-lun): need to topologically sort the nodes
-  // for now I didn't do anything but just assume a linear chain
-  for(auto& node : node_handle.graph._nodes) {
+  // TODO: need an efficient algorithm
+  auto ordered = node_handle.graph._toposort();
+  for(auto& node : ordered) {
+    //std::cout << node->_name << '\n';
     std::get<cudaNode::Capture>(node->_handle).work(stream);  
   }
 
@@ -315,7 +540,7 @@ cudaTask cudaFlow::childflow(C&& c) {
     cudaGraphAddChildGraphNode(
       &node->_native_handle, _graph._native_handle, nullptr, 0, graph
     ), 
-    "failed to add a cuda childflow task"
+    "failed to add a cuda subflow task"
   );
   
   TF_CHECK_CUDA(cudaGraphDestroy(graph), "failed to destroy captured graph");
@@ -324,10 +549,5 @@ cudaTask cudaFlow::childflow(C&& c) {
 }
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-
-
-
 
 
