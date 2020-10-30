@@ -103,10 +103,28 @@ class cublasFlow : public cudaFlowCapturer {
     // ------------------------------------------------------------------------
     
     /** 
+    @brief performs matrix-matrix addition/transposition on column-major layout
+    
+    This method effectively calls tf::cublas_geam with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlow.
+    */
+    template <typename... Ts>
+    cudaTask geam(Ts&&... args);
+    
+    /** 
+    @brief performs matrix-matrix addition/transposition on row-major layout
+    
+    This method effectively calls tf::cublas_c_geam with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlow.
+    */
+    template <typename... Ts>
+    cudaTask c_geam(Ts&&... args);
+    
+    /** 
     @brief performs matrix-matrix multiplication on column-major layout
     
-    This method effectively calls <tt>cublas_gemm(handle, args...)</tt>
-    with @c handle managed by the %cublasFlow.
+    This method effectively calls tf::cublas_gemm with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlow.
     */
     template <typename... Ts>
     cudaTask gemm(Ts&&... args);
@@ -114,8 +132,8 @@ class cublasFlow : public cudaFlowCapturer {
     /** 
     @brief performs matrix-matrix multiplication on C-styled row-major layout
     
-    This method effectively calls <tt>cublas_c_gemm(handle, args...)</tt>
-    with @c handle managed by the %cublasFlow.
+    This method effectively calls tf::cublas_c_gemm with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlow.
     */
     template <typename... Ts>
     cudaTask c_gemm(Ts&&... args);
@@ -123,8 +141,8 @@ class cublasFlow : public cudaFlowCapturer {
     /**
     @brief performs batched matrix-matrix multiplication on column-major layout
     
-    This method effectively calls <tt>cublas_gemm_batched(handle, args...)</tt>
-    with @c handle managed by the %cublasFlow.
+    This method effectively calls tf::cublas_gemm_batched with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlow.
     */
     template <typename... Ts>
     cudaTask gemm_batched(Ts&&... args);
@@ -132,8 +150,8 @@ class cublasFlow : public cudaFlowCapturer {
     /**
     @brief performs batched matrix-matrix multiplication on C-styled row-major layout
     
-    This method effectively calls <tt>cublas_c_gemm_batched(handle, args...)</tt>
-    with @c handle managed by the %cublasFlow.
+    This method effectively calls tf::cublas_c_gemm_batched with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlow.
     */ 
     template <typename... Ts>
     cudaTask c_gemm_batched(Ts&&... args);
@@ -142,8 +160,8 @@ class cublasFlow : public cudaFlowCapturer {
     @brief performs batched matrix-matrix multiplication on column-major layout
            with strided memory access
     
-    This method effectively calls <tt>cublas_gemm_sbatched(handle, args...)</tt>
-    with @c handle managed by the %cublasFlow.
+    This method effectively calls tf::cublas_gemm_sbatched with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlow.
     */
     template <typename... Ts>
     cudaTask gemm_sbatched(Ts&&... args);
@@ -152,19 +170,14 @@ class cublasFlow : public cudaFlowCapturer {
     @brief performs batched matrix-matrix multiplication on C-styled row-major 
            layout with strided memory access
     
-    This method effectively calls <tt>cublas_c_gemm_sbatched(handle, args...)</tt>
-    with @c handle managed by the %cublasFlow.
+    This method effectively calls tf::cublas_c_gemm_sbatched with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlow.
     */
     template <typename... Ts>
     cudaTask c_gemm_sbatched(Ts&&... args);
     
-    // reference: https://docs.anaconda.com/accelerate/2.0/cublas/
-
-    
   private:
 
-    //cublasHandle_t _handle;
-    
     cublasScopedPerThreadHandle _handle;
 
     cublasFlow(cudaGraph&);
@@ -212,6 +225,24 @@ cudaTask cublasFlow::getvec(Ts&&... args) {
 // ---------------------------------------------------------------------------- 
 // Level-3 functions
 // ---------------------------------------------------------------------------- 
+
+// Function: geam
+template <typename... Ts>
+cudaTask cublasFlow::geam(Ts&&... args) {
+  return on([this, args...] (cudaStream_t stream) mutable {
+    _stream(stream);
+    cublas_geam(_handle, args...);
+  });
+}
+
+// Function: geam
+template <typename... Ts>
+cudaTask cublasFlow::c_geam(Ts&&... args) {
+  return on([this, args...] (cudaStream_t stream) mutable {
+    _stream(stream);
+    cublas_c_geam(_handle, args...);
+  });
+}
 
 // Function: gemm
 template <typename... Ts>

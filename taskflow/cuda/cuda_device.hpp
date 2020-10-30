@@ -321,6 +321,31 @@ inline cudaScopedDevice::~cudaScopedDevice() {
   }
 }
 
+// ----------------------------------------------------------------------------
+// Kernel
+// ----------------------------------------------------------------------------
+
+/**
+@brief offloads a kernel asynchronously through a stream
+
+@tparam F kernel function type
+@tparam ArgsT arguments types
+
+@param stream stream identifier
+@param g grid dimension
+@param b block dimension
+@param shm shared memory size
+@param f kernel function
+@param args arguments to pass to the kernel function
+
+The function calls <tt>f<<<g, b, shm, stream>>>(args...)</tt>.
+*/
+template <typename F, typename... ArgsT>
+void cuda_offload_async(
+  cudaStream_t stream, dim3 g, dim3 b, size_t shm, F&& f, ArgsT&&... args
+) {
+  f<<<g, b, shm, stream>>>(args...);
+}
 
 }  // end of namespace cuda ---------------------------------------------------
 

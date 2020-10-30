@@ -6,6 +6,9 @@ namespace tf {
 
 /**
 @brief function object class to create a cublas handle.
+
+By default, the cublas handle has a pointer mode set to device
+(i.e., @c CUBLAS_POINTER_MODE_DEVICE).
 */
 struct cublasHandleCreator {
   cublasHandle_t operator () () const {
@@ -65,6 +68,9 @@ Sample usage:
 
 }  // leaving the scope to release the handle back to the pool on device 1
 @endcode
+
+By default, the cublas handle has a pointer mode set to device
+(i.e., @c CUBLAS_POINTER_MODE_DEVICE).
 
  */
 class cublasScopedPerThreadHandle {

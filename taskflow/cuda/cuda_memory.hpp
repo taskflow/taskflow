@@ -78,7 +78,14 @@ T* cuda_malloc_shared(size_t N) {
 }
 
 /**
-@brief frees cuda memory on the given device
+@brief frees memory on the GPU device
+
+@tparam T pointer type
+@param ptr device pointer to memory to free
+@param d device context identifier
+
+This methods call @c cudaFree to free the memory space pointed to by @c ptr
+using the given device context.
 */
 template <typename T>
 void cuda_free(T* ptr, int d) {
@@ -87,11 +94,59 @@ void cuda_free(T* ptr, int d) {
 }
 
 /**
-@brief frees cuda memory on the current device associated with the caller
+@brief frees memory on the GPU device
+
+@tparam T pointer type
+@param ptr device pointer to memory to free
+
+This methods call @c cudaFree to free the memory space pointed to by @c ptr
+using the current device context of the caller.
 */
 template <typename T>
 void cuda_free(T* ptr) {
   cuda_free(ptr, cuda_get_device());
+}
+
+/**
+@brief copies data between host and device asynchronously through a stream
+
+@param stream stream identifier
+@param dst destination memory address
+@param src source memory address
+@param count size in bytes to copy
+
+The method calls @c cudaMemcpyAsync with the given @c stream
+using @c cudaMemcpyDefault to infer the memory space of the source and 
+the destination pointers. The memory areas may not overlap. 
+*/
+inline void cuda_memcpy_async(
+  cudaStream_t stream, void* dst, const void* src, size_t count
+) {
+  TF_CHECK_CUDA(
+    cudaMemcpyAsync(dst, src, count, cudaMemcpyDefault, stream),
+    "failed to perform cudaMemcpyAsync"
+  );
+}
+
+/**
+@brief initializes or sets GPU memory to the given value byte by byte
+
+@param stream stream identifier
+@param devPtr pointer to GPU mempry
+@param value value to set for each byte of the specified memory
+@param count size in bytes to set
+
+The method calls @c cudaMemsetAsync with the given @c stream
+to fill the first @c count bytes of the memory area pointed to by @c devPtr 
+with the constant byte value @c value.
+*/
+inline void cuda_memset_async(
+  cudaStream_t stream, void* devPtr, int value, size_t count
+){
+  TF_CHECK_CUDA(
+    cudaMemsetAsync(devPtr, value, count, stream),
+    "failed to perform cudaMemsetAsync"
+  );
 }
 
 }  // end of namespace tf -----------------------------------------------------

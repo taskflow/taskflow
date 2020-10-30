@@ -5,7 +5,101 @@
 namespace tf {
 
 // ----------------------------------------------------------------------------
-// C++ wrapper over cublas functions
+// geam
+// ----------------------------------------------------------------------------
+
+/**
+@brief performs matrix-matrix addition/transposition
+
+This function performs the matrix-matrix addition/transposition:
+
+  <tt>C = alpha * op(A) + beta * op(B)</tt>,
+
+where @c alpha and @c beta are scalars, and @c A, @c B and @c C are matrices 
+stored in column-major format with dimensions @c op(A) as @c m by @c n, 
+@c op(B) as @c m by @c n and @c C as @c m by @c n, respectively. 
+
+The operation is out-of-place if @c C does not overlap @c A or @c B.
+
+The in-place mode supports the following two operations:
+
+  1. <tt>C = alpha * C + beta * op(B)</tt>
+  2. <Tt>C = alpha op(A) + beta * C</tt>
+
+The operation includes the following special cases:
+
+  1. the user can reset matrix C to zero by setting @c alpha and @c beta to 0
+  2. the user can transpose matrix A by setting @c alpha to 1 and @c beta to 0
+
+The input matrices are in column-major storage.
+*/
+template <typename T>
+void cublas_geam(
+  cublasHandle_t native_handle,
+  cublasOperation_t ta, cublasOperation_t tb,
+  int m, int n,
+  const T *alpha,
+  const T *A, int lda,
+  const T *beta,
+  const T *B, int ldb,
+  T *C, int ldc
+) {
+
+  cublasStatus_t stat;
+
+  if constexpr(std::is_same_v<T, float>) {
+    stat = cublasSgeam(native_handle,
+      ta, tb, m, n, alpha, A, lda, beta, B, ldb, C, ldc
+    );
+  }
+  else if constexpr(std::is_same_v<T, double>) {
+    stat = cublasDgeam(native_handle,
+      ta, tb, m, n, alpha, A, lda, beta, B, ldb, C, ldc
+    );
+  }
+  else {
+    static_assert(dependent_false_v<T>, "unknown cublas data type");
+  }
+
+  TF_CHECK_CUBLAS(stat, "failed to run geam");
+}
+
+/**
+@brief similar to tf::cublas_geam but operates on C-styled row-major layout
+*/
+template <typename T>
+void cublas_c_geam(
+  cublasHandle_t native_handle,
+  cublasOperation_t ta, cublasOperation_t tb,
+  int m, int n,
+  const T *alpha,
+  const T *A, int lda,
+  const T *beta,
+  const T *B, int ldb,
+  T *C, int ldc
+) {
+
+  cublasStatus_t stat;
+
+  if constexpr(std::is_same_v<T, float>) {
+    stat = cublasSgeam(native_handle,
+      ta, tb, n, m, alpha, A, lda, beta, B, ldb, C, ldc
+    );
+  }
+  else if constexpr(std::is_same_v<T, double>) {
+    stat = cublasDgeam(native_handle,
+      ta, tb, n, m, alpha, A, lda, beta, B, ldb, C, ldc
+    );
+  }
+  else {
+    static_assert(dependent_false_v<T>, "unknown cublas data type");
+  }
+
+  TF_CHECK_CUBLAS(stat, "failed to run c_geam");
+}
+
+// ----------------------------------------------------------------------------
+// gemm
 // ----------------------------------------------------------------------------
 
 /** 
@@ -19,6 +113,8 @@ where @c alpha and @c beta are scalars, and @c A, @c B, and @c C
 are 2D matrices stored in column-major format 
 with dimension @c op(A) as @c m by @c k,
 dimension @c op(B) as @c k by @c n, and @c C as @c m by @c n.
+
+The input matrices are in column-major storage.
 
 @tparam T data type
 @param ta transport operation @c op(A)
@@ -68,7 +164,7 @@ void cublas_gemm(
 }
 
 /** 
-@brief similar to gemm but operates on C-styled row-major layout
+@brief similar to tf::cublas_gemm but operates on C-styled row-major layout
 */
 template <typename T>
 void cublas_c_gemm(
@@ -101,8 +197,28 @@ void cublas_c_gemm(
   TF_CHECK_CUBLAS(stat, "failed to run c_gemm");
 }
 
+// ----------------------------------------------------------------------------
+// gemm_batched
+// ----------------------------------------------------------------------------
+
 /**
-@brief performs matrix-matrix multiplication over a batch of matrices
+@brief performs matrix-matrix multiplication over a batch of matrices 
+
+The batch must be @i uniform.
+All instances in the batch must have the same dimensions <tt>(m, n, k)</tt>, 
+leading dimensions <tt>(lda, ldb, ldc)</tt> and transpositions 
+<tt>(ta, tb)</tt> for their respective @c A, @c B and @c C matrices. 
+The address of the input matrices and the output matrix of each instance 
+of the batch are read from arrays of pointers passed to the function by the caller.
+
+<tt>C[i]= alpha * op (A[i]) * op (B[i]) + beta * C[i], i in [0, bc)</tt>,
+
+where @c alpha and @c beta are scalars, and @c A[i], @c B[i], and @c C[i]
+are 2D matrices stored in column-major format 
+with dimension @c op(A) as @c m by @c k,
+dimension @c op(B) as @c k by @c n, and @c C as @c m by @c n.
+
+The input matrices are in column-major storage.
 
 @tparam T data type
 @param ta transport operation @c op(A[i])
@@ -119,20 +235,6 @@ void cublas_c_gemm(
 @param C array pointer to @c C batch
 @param ldc leading dimension of 2D array used to store the matrix @c C[i]
 @param bc batch size (number of matrices)
-
-The batch must be @i uniform.
-All instances in the batch must have the same dimensions <tt>(m, n, k)</tt>, 
-leading dimensions <tt>(lda, ldb, ldc)</tt> and transpositions 
-<tt>(ta, tb)</tt> for their respective @c A, @c B and @c C matrices. 
-The address of the input matrices and the output matrix of each instance 
-of the batch are read from arrays of pointers passed to the function by the caller.
-
-<tt>C[i]= alpha * op (A[i]) * op (B[i]) + beta * C[i], i in [0, bc)</tt>,
-
-where @c alpha and @c beta are scalars, and @c A[i], @c B[i], and @c C[i]
-are 2D matrices stored in column-major format 
-with dimension @c op(A) as @c m by @c k,
-dimension @c op(B) as @c k by @c n, and @c C as @c m by @c n.
 
 */
 template <typename T>
@@ -166,7 +268,7 @@ void cublas_gemm_batched(
 }
 
 /**
-@brief similar to gemm_batched but operates on C-styled row-major layout
+@brief similar to tf::cublas_gemm_batched but operates on C-styled row-major layout
 */ 
 template <typename T>
 void cublas_c_gemm_batched(
@@ -197,6 +299,10 @@ void cublas_c_gemm_batched(
   TF_CHECK_CUBLAS(stat, "failed to run c_gemm_batched");
 }
 
+// ----------------------------------------------------------------------------
+// gemm_sbatched
+// ----------------------------------------------------------------------------
+//
 /**
 @brief performs matrix-matrix multiplication over a batch of matrices 
        with strided memory access
@@ -205,6 +311,8 @@ Here, we use @c A[i], @c B[i], @c C[i] as notation
 for A, B and C matrices in the @c i-th instance of the batch, 
 implicitly assuming they are respectively address offsets 
 @c sA, @c sB, @c sC away from @c A[i-1], @c B[i-1], @c C[i-1].
+
+The input matrices are in column-major storage.
 
 @tparam T data type
 @param ta transport operation @c op(A[i])
@@ -278,7 +386,8 @@ void cublas_gemm_sbatched(
 }
 
 /** 
-@brief similar to gemm_batached but operates on C-styled row-major layout
+@brief similar to tf::cublas_gemm_sbatached but operates on 
+       C-styled row-major layout
 */
 template <typename T>
 void cublas_c_gemm_sbatched(
@@ -308,10 +417,7 @@ void cublas_c_gemm_sbatched(
   else static_assert(dependent_false_v<T>, "unknown cublas data type");
 
   TF_CHECK_CUBLAS(stat, "failed to run c_gemm_sbatched");
-
 }
-
-
 
 }  // end of namespace tf -----------------------------------------------------
 

@@ -19,6 +19,298 @@ std::vector<T> transpose(int M, int N, std::vector<T>& in) {
   return out;
 }
 
+
+template <typename T>
+void geam(
+  bool row_major,
+  const int M, 
+  const int N, 
+  const std::vector<T>& hA,
+  const std::vector<T>& hB,
+  const std::vector<T>& golden,
+  bool tranA,
+  bool tranB
+) {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  for(size_t d=0; d<tf::cuda_get_num_devices(); d++) {
+
+    auto dA = tf::cuda_malloc_device<T>(M*N, d);
+    auto dB = tf::cuda_malloc_device<T>(M*N, d);
+    auto dC = tf::cuda_malloc_device<T>(M*N, d);
+    auto dAlpha = tf::cuda_malloc_device<T>(1, d);
+    auto dBeta  = tf::cuda_malloc_device<T>(1, d);
+
+    T* hC = new T[N*M];
+
+    auto cudaflow = taskflow.emplace_on([=, &hA, &hB](tf::cudaFlow& cf){
+
+      REQUIRE(tf::cuda_get_device() == d);
+      
+      auto copyA = cf.copy(dA, hA.data(), M*N);
+      auto copyB = cf.copy(dB, hB.data(), M*N);
+      auto alpha = cf.single_task([=] __device__ () { *dAlpha = 1; });
+      auto beta  = cf.single_task([=] __device__ () { *dBeta  = 2; });
+
+      tf::cudaTask geam; 
+      
+      if(tranA && !tranB) {        // C = A^T + B
+        if (row_major) {
+          geam = cf.cublas([&](tf::cublasFlow& flow){
+            flow.c_geam(CUBLAS_OP_T, CUBLAS_OP_N,
+              M, N, dAlpha, dA, M, dBeta, dB, N, dC, N
+            );
+          });
+        }
+        else {
+          geam = cf.cublas([&](tf::cublasFlow& flow){
+            flow.geam(CUBLAS_OP_T, CUBLAS_OP_N,
+              N, M, dAlpha, dA, M, dBeta, dB, N, dC, N
+            );
+          });
+        }
+      }
+      else if(!tranA && !tranB) {  // C = A + B (r-major)
+        if (row_major) {
+          geam = cf.cublas([&](tf::cublasFlow& flow){
+            flow.c_geam(CUBLAS_OP_N, CUBLAS_OP_N,
+              M, N, dAlpha, dA, N, dBeta, dB, N, dC, N
+            );
+          });
+        }
+        else {
+          geam = cf.cublas([&](tf::cublasFlow& flow){
+            flow.geam(CUBLAS_OP_N, CUBLAS_OP_N,
+              N, M, dAlpha, dA, N, dBeta, dB, N, dC, N
+            );
+          });
+        }
+      }
+      else if(!tranA && tranB) {   // C = A + B^T (r-major)
+        if(row_major) {
+          geam = cf.cublas([&](tf::cublasFlow& flow){
+            flow.c_geam(CUBLAS_OP_N, CUBLAS_OP_T,
+              M, N, dAlpha, dA, N, dBeta, dB, M, dC, N
+            );
+          });
+        }
+        else {
+          geam = cf.cublas([&](tf::cublasFlow& flow){
+            flow.geam(CUBLAS_OP_N, CUBLAS_OP_T,
+              N, M, dAlpha, dA, N, dBeta, dB, M, dC, N
+            );
+          });
+        }
+      }
+      else {                       // C = A^T * B^T (r-major)
+        if (row_major) {
+          geam = cf.cublas([&](tf::cublasFlow& flow){
+            flow.c_geam(CUBLAS_OP_T, CUBLAS_OP_T,
+              M, N, dAlpha, dA, M, dBeta, dB, M, dC, N
+            );
+          });
+        }
+        else {
+          geam = cf.cublas([&](tf::cublasFlow& flow){
+            flow.geam(CUBLAS_OP_T, CUBLAS_OP_T,
+              N, M, dAlpha, dA, M, dBeta, dB, M, dC, N
+            );
+          });
+        }
+      }
+      
+      auto copyC = cf.copy(hC, dC, M*N);
+
+      geam.precede(copyC)
+          .succeed(copyA, copyB, alpha, beta);
+    }, d);
+
+    auto verify = taskflow.emplace([=, &golden](){
+      for(size_t i=0; i<golden.size(); i++) {
+        REQUIRE(std::fabs(hC[i]-golden[i]) < 0.0001);
+      }
+      tf::cuda_free(dA);
+      tf::cuda_free(dB);
+      tf::cuda_free(dC);
+      tf::cuda_free(dAlpha);
+      tf::cuda_free(dBeta);
+      delete [] hC;
+    });
+    
+    cudaflow.precede(verify);
+  }
+
+  executor.run(taskflow).wait();
+}
+
+// C = A^T + B
+template <typename T>
+void geam_tn(bool row_major) {
+
+  int M = 2, N = 3;
+
+  const std::vector<T> hA = {
+    11, 14,
+    12, 15,
+    13, 16
+  };  // 3x2
+
+  const std::vector<T> hB = {
+     1,  1,  1,
+    -1, -1, -1
+  };  // 2x3
+
+  const std::vector<T> golden = {
+    13, 14, 15,
+    12, 13, 14
+  };  // 2x3
+  
+  geam<T>(row_major, M, N, hA, hB, golden, true, false);
+}
+
+// C = A + B
+template <typename T>
+void geam_nn(bool row_major) {
+
+  int M = 2, N = 3;
+
+  const std::vector<T> hA = {
+    11, 12, 13,
+    14, 15, 16
+  };  // 2x3
+
+  const std::vector<T> hB = {
+     1,  1,  1,
+    -1, -1, -1
+  };  // 2x3
+
+  const std::vector<T> golden = {
+    13, 14, 15,
+    12, 13, 14
+  };  // 2x3
+  
+  geam<T>(row_major, M, N, hA, hB, golden, false, false);
+}
+
+// C = A + B^T
+template <typename T>
+void geam_nt(bool row_major) {
+
+  int M = 2, N = 3;
+
+  const std::vector<T> hA = {
+    11, 12, 13,
+    14, 15, 16
+  };  // 2x3
+
+  const std::vector<T> hB = {
+    1, -1,
+    1, -1,
+    1, -1
+  };  // 3x2
+
+  const std::vector<T> golden = {
+    13, 14, 15,
+    12, 13, 14
+  };  // 2x3
+  
+  geam<T>(row_major, M, N, hA, hB, golden, false, true);
+}
+
+// C = A^T + B^T
+template <typename T>
+void geam_tt(bool row_major) {
+
+  int M = 2, N = 3;
+
+  const std::vector<T> hA = {
+    11, 14,
+    12, 15,
+    13, 16
+  };  // 3x2
+
+  const std::vector<T> hB = {
+    1, -1,
+    1, -1,
+    1, -1
+  };  // 3x2
+
+  const std::vector<T> golden = {
+    13, 14, 15,
+    12, 13, 14
+  };  // 2x3
+  
+  geam<T>(row_major, M, N, hA, hB, golden, true, true);
+}
+
+// column major
+TEST_CASE("geam_tn.float") {
+  geam_tn<float>(false);
+}
+
+TEST_CASE("geam_nn.float") {
+  geam_nn<float>(false);
+}
+
+TEST_CASE("geam_nt.float") {
+  geam_nt<float>(false);
+}
+
+TEST_CASE("geam_tt.float") {
+  geam_tt<float>(false);
+}
+
+TEST_CASE("geam_tn.double") {
+  geam_tn<double>(false);
+}
+
+TEST_CASE("geam_nn.double") {
+  geam_nn<double>(false);
+}
+
+TEST_CASE("geam_nt.double") {
+  geam_nt<double>(false);
+}
+
+TEST_CASE("geam_tt.double") {
+  geam_tt<double>(false);
+}
+
+// row major
+TEST_CASE("c_geam_tn.float") {
+  geam_tn<float>(true);
+}
+
+TEST_CASE("c_geam_nn.float") {
+  geam_nn<float>(true);
+}
+
+TEST_CASE("c_geam_nt.float") {
+  geam_nt<float>(true);
+}
+
+TEST_CASE("c_geam_tt.float") {
+  geam_tt<float>(true);
+}
+
+TEST_CASE("c_geam_tn.double") {
+  geam_tn<double>(true);
+}
+
+TEST_CASE("c_geam_nn.double") {
+  geam_nn<double>(true);
+}
+
+TEST_CASE("c_geam_nt.double") {
+  geam_nt<double>(true);
+}
+
+TEST_CASE("c_geam_tt.double") {
+  geam_tt<double>(true);
+}
+
 // ----------------------------------------------------------------------------
 // Testcase: gemm and c_gemm
 // ----------------------------------------------------------------------------

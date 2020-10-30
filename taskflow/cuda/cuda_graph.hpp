@@ -341,13 +341,13 @@ class cudaNode {
   public:
   
   // variant index
-  constexpr static auto CUDA_EMPTY_TASK     = get_index_v<Empty, handle_t>;
-  constexpr static auto CUDA_HOST_TASK      = get_index_v<Host, handle_t>;
-  constexpr static auto CUDA_MEMSET_TASK    = get_index_v<Memset, handle_t>;
-  constexpr static auto CUDA_MEMCPY_TASK    = get_index_v<Memcpy, handle_t>; 
-  constexpr static auto CUDA_KERNEL_TASK    = get_index_v<Kernel, handle_t>;
+  constexpr static auto CUDA_EMPTY_TASK   = get_index_v<Empty, handle_t>;
+  constexpr static auto CUDA_HOST_TASK    = get_index_v<Host, handle_t>;
+  constexpr static auto CUDA_MEMSET_TASK  = get_index_v<Memset, handle_t>;
+  constexpr static auto CUDA_MEMCPY_TASK  = get_index_v<Memcpy, handle_t>; 
+  constexpr static auto CUDA_KERNEL_TASK  = get_index_v<Kernel, handle_t>;
   constexpr static auto CUDA_SUBFLOW_TASK = get_index_v<Subflow, handle_t>;
-  constexpr static auto CUDA_CAPTURE_TASK   = get_index_v<Capture, handle_t>;
+  constexpr static auto CUDA_CAPTURE_TASK = get_index_v<Capture, handle_t>;
 
     cudaNode() = delete;
     

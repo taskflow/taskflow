@@ -1,7 +1,7 @@
 #pragma once
 
 #include "cuda_task.hpp"
-#include "cuda_capture.hpp"
+#include "cuda_capturer.hpp"
 #include "cuda_algorithm/cuda_for_each.hpp"
 #include "cuda_algorithm/cuda_transform.hpp"
 
