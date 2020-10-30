@@ -4,6 +4,33 @@
 
 namespace tf {
 
+// ----------------------------------------------------------------------------
+// c++ wrapper over cudaStream functions
+// ----------------------------------------------------------------------------
+
+/**
+@brief turns on capture for the given stream
+*/
+inline void start_stream_capture(cudaStream_t stream) {
+  TF_CHECK_CUDA(
+    cudaStreamBeginCapture(stream, cudaStreamCaptureModeGlobal), 
+    "failed to turn stream into capture mode"
+  );
+}
+
+/**
+@brief turns off capture for the given stream and returns the captured graph
+*/  
+inline cudaGraph_t cease_stream_capture(cudaStream_t stream) {
+  cudaGraph_t graph;
+  TF_CHECK_CUDA(cudaStreamEndCapture(stream, &graph), "failed to end capture");
+  return graph;
+}
+
+// ----------------------------------------------------------------------------
+// cudaStreamCreator and cudaStreamDeleter for per-thread stream pool
+// ----------------------------------------------------------------------------
+
 /**
 @brief function object class to create a CUDA stream
 */

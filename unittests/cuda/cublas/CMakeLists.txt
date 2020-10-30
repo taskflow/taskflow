@@ -2,6 +2,7 @@
 # cuBLAS unittests
 # -----------------------------------------------------------------------------
 list(APPEND TF_CUBLAS_UNITTESTS
+  helper
   level3
 )
 

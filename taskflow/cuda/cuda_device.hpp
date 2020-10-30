@@ -272,6 +272,55 @@ inline int cuda_get_runtime_version() {
   return num;
 }
 
+// ----------------------------------------------------------------------------
+// cudaScopedDevice
+// ----------------------------------------------------------------------------
+
+/** @class cudaScopedDevice
+
+@brief RAII-styled device context switch
+
+*/
+class cudaScopedDevice {
+
+  public:
+    
+    /**
+    @brief constructs a RAII-styled device switcher
+    */
+    explicit cudaScopedDevice(int d);
+
+    /**
+    @brief destructs the guard and returns back to the original device
+    */
+    ~cudaScopedDevice();
+
+  private:
+    
+    cudaScopedDevice() = delete;
+
+    int _p;
+};
+
+// Constructor
+inline cudaScopedDevice::cudaScopedDevice(int dev) { 
+  TF_CHECK_CUDA(cudaGetDevice(&_p), "failed to get current device scope");
+  if(_p == dev) {
+    _p = -1;
+  }
+  else {
+    TF_CHECK_CUDA(cudaSetDevice(dev), "failed to scope on device ", dev);
+  }
+}
+
+// Destructor
+inline cudaScopedDevice::~cudaScopedDevice() { 
+  if(_p != -1) {
+    cudaSetDevice(_p);
+    //TF_CHECK_CUDA(cudaSetDevice(_p), "failed to scope back to device ", _p);
+  }
+}
+
 
 }  // end of namespace cuda ---------------------------------------------------
 

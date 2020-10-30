@@ -62,7 +62,7 @@ void gemm(
       
       if(tranA && !tranB) {        // C = A^T * B (r-major)
         if (row_major) {
-          gemm = cf.subflow([&](tf::cublasFlow& flow){
+          gemm = cf.cublas([&](tf::cublasFlow& flow){
             flow.c_gemm(
               CUBLAS_OP_T, CUBLAS_OP_N,
               M, N, K, dAlpha, dA, M, dB, N, dBeta, dC, N
@@ -70,7 +70,7 @@ void gemm(
           });
         }
         else {
-          gemm = cf.subflow([&](tf::cublasFlow& flow){
+          gemm = cf.cublas([&](tf::cublasFlow& flow){
             flow.gemm(
               CUBLAS_OP_N, CUBLAS_OP_T,
               N, M, K, dAlpha, dB, N, dA, M, dBeta, dC, N
@@ -80,7 +80,7 @@ void gemm(
       }
       else if(!tranA && !tranB) {  // C = A * B (r-major)
         if (row_major) {
-          gemm = cf.subflow([&](tf::cublasFlow& flow){
+          gemm = cf.cublas([&](tf::cublasFlow& flow){
             flow.c_gemm(
               CUBLAS_OP_N, CUBLAS_OP_N,
               M, N, K, dAlpha, dA, K, dB, N, dBeta, dC, N
@@ -88,7 +88,7 @@ void gemm(
           });
         }
         else {
-          gemm = cf.subflow([&](tf::cublasFlow& flow){
+          gemm = cf.cublas([&](tf::cublasFlow& flow){
             flow.gemm(
               CUBLAS_OP_N, CUBLAS_OP_N,
               N, M, K, dAlpha, dB, N, dA, K, dBeta, dC, N
@@ -98,7 +98,7 @@ void gemm(
       }
       else if(!tranA && tranB) {   // C = A * B^T (r-major)
         if(row_major) {
-          gemm = cf.subflow([&](tf::cublasFlow& flow){
+          gemm = cf.cublas([&](tf::cublasFlow& flow){
             flow.c_gemm(
               CUBLAS_OP_N, CUBLAS_OP_T,
               M, N, K, dAlpha, dA, K, dB, K, dBeta, dC, N
@@ -106,7 +106,7 @@ void gemm(
           });
         }
         else {
-          gemm = cf.subflow([&](tf::cublasFlow& flow){
+          gemm = cf.cublas([&](tf::cublasFlow& flow){
             flow.gemm(
               CUBLAS_OP_T, CUBLAS_OP_N,
               N, M, K, dAlpha, dB, K, dA, K, dBeta, dC, N
@@ -116,7 +116,7 @@ void gemm(
       }
       else {                       // C = A^T * B^T (r-major)
         if (row_major) {
-          gemm = cf.subflow([&](tf::cublasFlow& flow){
+          gemm = cf.cublas([&](tf::cublasFlow& flow){
             flow.c_gemm(
               CUBLAS_OP_T, CUBLAS_OP_T,
               M, N, K, dAlpha, dA, M, dB, K, dBeta, dC, N
@@ -124,7 +124,7 @@ void gemm(
           });
         }
         else {
-          gemm = cf.subflow([&](tf::cublasFlow& flow){
+          gemm = cf.cublas([&](tf::cublasFlow& flow){
             flow.gemm(
               CUBLAS_OP_T, CUBLAS_OP_T,
               N, M, K, dAlpha, dB, K, dA, M, dBeta, dC, N
@@ -364,8 +364,6 @@ void gemm_batched(
 
   auto cudaflow = taskflow.emplace([&](tf::cudaFlow& cf){
 
-    REQUIRE(tf::cuda_get_device() == d);
-    
     tf::cudaTask copyA[S], copyB[S];
 
     for(size_t s=0; s<S; s++) {
@@ -387,14 +385,14 @@ void gemm_batched(
     
     if(!tranA && !tranB) {  // C = A * B (r-major)
       if (row_major) {
-        gemm = cf.subflow([&](tf::cublasFlow& flow){
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
           flow.c_gemm_batched(CUBLAS_OP_N, CUBLAS_OP_N,
             M, N, K, dAlpha, (const T**)dAs, K, (const T**)dBs, N, dBeta, dCs, N, S
           );
         });
       }
       else {
-        gemm = cf.subflow([&](tf::cublasFlow& flow){
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
           flow.gemm_batched(CUBLAS_OP_N, CUBLAS_OP_N,
             N, M, K, dAlpha, (const T**)dBs, N, (const T**)dAs, K, dBeta, dCs, N, S
           );
@@ -403,14 +401,14 @@ void gemm_batched(
     }
     else if(tranA && !tranB) {        // C = A^T * B (r-major)
       if (row_major) {
-        gemm = cf.subflow([&](tf::cublasFlow& flow){
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
           flow.c_gemm_batched(CUBLAS_OP_T, CUBLAS_OP_N,
             M, N, K, dAlpha, (const T**)dAs, M, (const T**)dBs, N, dBeta, dCs, N, S
           );
         });
       }
       else {
-        gemm = cf.subflow([&](tf::cublasFlow& flow){
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
           flow.gemm_batched(CUBLAS_OP_N, CUBLAS_OP_T,
             N, M, K, dAlpha, (const T**)dBs, N, (const T**)dAs, M, dBeta, dCs, N, S
           );
@@ -419,14 +417,14 @@ void gemm_batched(
     }
     else if(!tranA && tranB) {   // C = A * B^T (r-major)
       if(row_major) {
-        gemm = cf.subflow([&](tf::cublasFlow& flow){
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
           flow.c_gemm_batched(CUBLAS_OP_N, CUBLAS_OP_T,
             M, N, K, dAlpha, (const T**)dAs, K, (const T**)dBs, K, dBeta, dCs, N, S
           );
         });
       }
       else {
-        gemm = cf.subflow([&](tf::cublasFlow& flow){
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
           flow.gemm_batched(CUBLAS_OP_T, CUBLAS_OP_N,
             N, M, K, dAlpha, (const T**)dBs, K, (const T**)dAs, K, dBeta, dCs, N, S
           );
@@ -435,14 +433,14 @@ void gemm_batched(
     }
     else {                       // C = A^T * B^T (r-major)
       if (row_major) {
-        gemm = cf.subflow([&](tf::cublasFlow& flow){
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
           flow.c_gemm_batched(CUBLAS_OP_T, CUBLAS_OP_T,
             M, N, K, dAlpha, (const T**)dAs, M, (const T**)dBs, K, dBeta, dCs, N, S
           );
         });
       }
       else {
-        gemm = cf.subflow([&](tf::cublasFlow& flow){
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
           flow.gemm_batched(CUBLAS_OP_T, CUBLAS_OP_T,
             N, M, K, dAlpha, (const T**)dBs, K, (const T**)dAs, M, dBeta, dCs, N, S
           );
@@ -686,7 +684,342 @@ TEST_CASE("c_gemm_batched_tt.double") {
 }
 
 // ----------------------------------------------------------------------------
-// Testcase: gemm_sbatched
+// Testcase: gemm_strided_batched
 // ----------------------------------------------------------------------------
 
+template <typename T>
+void gemm_strided_batched(
+  bool row_major,
+  const int M, 
+  const int N, 
+  const int K,
+  const T* hA,
+  const T* hB,
+  const std::vector<T>& golden,
+  bool tranA,
+  bool tranB
+) {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  int d = 0;
+  
+  auto dA = tf::cuda_malloc_device<T>(S*K*M, d);
+  auto dB = tf::cuda_malloc_device<T>(S*K*N, d);
+  auto dC = tf::cuda_malloc_device<T>(S*M*N, d);
+  auto dAlpha = tf::cuda_malloc_device<T>(1, d);
+  auto dBeta  = tf::cuda_malloc_device<T>(1, d);
+  auto hC = new T[S*M*N];
+
+  int sA = K*M;
+  int sB = K*N;
+  int sC = M*N;
+
+  auto cudaflow = taskflow.emplace([&](tf::cudaFlow& cf){
+
+    auto copyA = cf.copy(dA, hA, S*K*M);
+    auto copyB = cf.copy(dB, hB, S*K*N);
+
+    auto alpha = cf.single_task([=] __device__ () { *dAlpha = 1; });
+    auto beta  = cf.single_task([=] __device__ () { *dBeta  = 0; });
+
+    tf::cudaTask gemm; 
+    
+    if(!tranA && !tranB) {  // C = A * B (r-major)
+      if (row_major) {
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
+          flow.c_gemm_sbatched(CUBLAS_OP_N, CUBLAS_OP_N,
+            M, N, K, dAlpha, dA, K, sA, dB, N, sB, dBeta, dC, N, sC, S
+          );
+        });
+      }
+      else {
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
+          flow.gemm_sbatched(CUBLAS_OP_N, CUBLAS_OP_N,
+            N, M, K, dAlpha, dB, N, sB, dA, K, sA, dBeta, dC, N, sC, S
+          );
+        });
+      }
+    }
+    else if(tranA && !tranB) {        // C = A^T * B (r-major)
+      if (row_major) {
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
+          flow.c_gemm_sbatched(CUBLAS_OP_T, CUBLAS_OP_N,
+            M, N, K, dAlpha, dA, M, sA, dB, N, sB, dBeta, dC, N, sC, S
+          );
+        });
+      }
+      else {
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
+          flow.gemm_sbatched(CUBLAS_OP_N, CUBLAS_OP_T,
+            N, M, K, dAlpha, dB, N, sB, dA, M, sA, dBeta, dC, N, sC, S
+          );
+        });
+      }
+    }
+    else if(!tranA && tranB) {   // C = A * B^T (r-major)
+      if(row_major) {
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
+          flow.c_gemm_sbatched(CUBLAS_OP_N, CUBLAS_OP_T,
+            M, N, K, dAlpha, dA, K, sA, dB, K, sB, dBeta, dC, N, sC, S
+          );
+        });
+      }
+      else {
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
+          flow.gemm_sbatched(CUBLAS_OP_T, CUBLAS_OP_N,
+            N, M, K, dAlpha, dB, K, sB, dA, K, sA, dBeta, dC, N, sC, S
+          );
+        });
+      }
+    }
+    else {                       // C = A^T * B^T (r-major)
+      if (row_major) {
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
+          flow.c_gemm_sbatched(CUBLAS_OP_T, CUBLAS_OP_T,
+            M, N, K, dAlpha, dA, M, sA, dB, K, sB, dBeta, dC, N, sC, S
+          );
+        });
+      }
+      else {
+        gemm = cf.cublas([&](tf::cublasFlow& flow){
+          flow.gemm_sbatched(CUBLAS_OP_T, CUBLAS_OP_T,
+            N, M, K, dAlpha, dB, K, sB, dA, M, sA, dBeta, dC, N, sC, S
+          );
+        });
+      }
+    }
+      
+    auto copyC = cf.copy(hC, dC, S*M*N);
+    
+    gemm.succeed(alpha, beta, copyA, copyB)
+        .precede(copyC);
+  });
+
+  auto verify = taskflow.emplace([&](){
+    for(size_t s=0; s<S; s++) {
+      auto p = hC + s*M*N;
+      for(size_t i=0; i<golden.size(); i++) {
+        REQUIRE(std::fabs(p[i]-golden[i]) < 0.0001);
+      }
+    }
+    tf::cuda_free(dA);
+    tf::cuda_free(dB);
+    tf::cuda_free(dC);
+    tf::cuda_free(dAlpha);
+    tf::cuda_free(dBeta);
+    delete [] hC;
+  });
+  
+  cudaflow.precede(verify);
+
+  executor.run(taskflow).wait();
+}
+
+// C = A * B
+template <typename T>
+void gemm_strided_batched_nn(bool row_major) {
+
+  const int N = 4, M = 2, K = 3;
+
+  const std::vector<T> hA = {
+    11, 12, 13, 
+    14, 15, 16
+  };
+
+  const std::vector<T> hB = {
+    11, 12, 13, 14,
+    15, 16, 17, 18,
+    19, 20, 21, 22
+  };
+
+  const std::vector<T> golden = {
+    548, 584, 620, 656,
+    683, 728, 773, 818 
+  }; //  MxN
+
+  std::vector<T> hAs, hBs;
+
+  for(size_t s=0; s<S; s++) {
+    for(auto a : hA) hAs.push_back(a);
+    for(auto b : hB) hBs.push_back(b);
+  }
+
+  gemm_strided_batched<T>(
+    row_major, M, N, K, hAs.data(), hBs.data(), golden, false, false
+  );
+}
+
+// C = A^T * B
+template <typename T>
+void gemm_strided_batched_tn(bool row_major) {
+
+  const int N = 4, M = 2, K = 3;
+
+  const std::vector<T> hA = {
+    11, 14,
+    12, 15,
+    13, 16
+  };
+
+  const std::vector<T> hB = {
+    11, 12, 13, 14,
+    15, 16, 17, 18,
+    19, 20, 21, 22
+  };
+
+  const std::vector<T> golden = {
+    548, 584, 620, 656,
+    683, 728, 773, 818 
+  }; //  MxN
+
+  std::vector<T> hAs, hBs;
+
+  for(size_t s=0; s<S; s++) {
+    for(auto a : hA) hAs.push_back(a);
+    for(auto b : hB) hBs.push_back(b);
+  }
+
+  gemm_strided_batched<T>(
+    row_major, M, N, K, hAs.data(), hBs.data(), golden, true, false
+  );
+}
+
+// C = A * B^T
+template <typename T>
+void gemm_strided_batched_nt(bool row_major) {
+
+  const int N = 4, M = 2, K = 3;
+
+  const std::vector<T> hA = {
+    11, 12, 13, 
+    14, 15, 16
+  };
+
+  const std::vector<T> hB = {
+    11, 15, 19,
+    12, 16, 20,
+    13, 17, 21,
+    14, 18, 22
+  };
+
+  const std::vector<T> golden = {
+    548, 584, 620, 656,
+    683, 728, 773, 818 
+  }; //  MxN
+
+  std::vector<T> hAs, hBs;
+
+  for(size_t s=0; s<S; s++) {
+    for(auto a : hA) hAs.push_back(a);
+    for(auto b : hB) hBs.push_back(b);
+  }
+
+  gemm_strided_batched<T>(
+    row_major, M, N, K, hAs.data(), hBs.data(), golden, false, true
+  );
+}
+
+// C = A^T * B^T
+template <typename T>
+void gemm_strided_batched_tt(bool row_major) {
+
+  const int N = 4, M = 2, K = 3;
+
+  const std::vector<T> hA = {
+    11, 14,
+    12, 15,
+    13, 16
+  };
+
+  const std::vector<T> hB = {
+    11, 15, 19,
+    12, 16, 20,
+    13, 17, 21,
+    14, 18, 22
+  };
+
+  const std::vector<T> golden = {
+    548, 584, 620, 656,
+    683, 728, 773, 818 
+  }; //  MxN
+
+  std::vector<T> hAs, hBs;
+
+  for(size_t s=0; s<S; s++) {
+    for(auto a : hA) hAs.push_back(a);
+    for(auto b : hB) hBs.push_back(b);
+  }
+
+  gemm_strided_batched<T>(
+    row_major, M, N, K, hAs.data(), hBs.data(), golden, true, true
+  );
+}
+
+// gemm_strided_batched (column-major)
+TEST_CASE("gemm_strided_batched_nn.float") {
+  gemm_strided_batched_nn<float>(false);
+}
+
+TEST_CASE("gemm_strided_batched_tn.float") {
+  gemm_strided_batched_tn<float>(false);
+}
+
+TEST_CASE("gemm_strided_batched_nt.float") {
+  gemm_strided_batched_nt<float>(false);
+}
+
+TEST_CASE("gemm_strided_batched_tt.float") {
+  gemm_strided_batched_tt<float>(false);
+}
+
+TEST_CASE("gemm_strided_batched_nn.double") {
+  gemm_strided_batched_nn<double>(false);
+}
+
+TEST_CASE("gemm_strided_batched_tn.double") {
+  gemm_strided_batched_tn<double>(false);
+}
+
+TEST_CASE("gemm_strided_batched_nt.double") {
+  gemm_strided_batched_nt<double>(false);
+}
+
+TEST_CASE("gemm_strided_batched_tt.double") {
+  gemm_strided_batched_tt<double>(false);
+}
+
+// gemm_strided_batched (row-major)
+TEST_CASE("c_gemm_strided_batched_nn.float") {
+  gemm_strided_batched_nn<float>(true);
+}
+
+TEST_CASE("c_gemm_strided_batched_tn.float") {
+  gemm_strided_batched_tn<float>(true);
+}
+
+TEST_CASE("c_gemm_strided_batched_nt.float") {
+  gemm_strided_batched_nt<float>(true);
+}
+
+TEST_CASE("c_gemm_strided_batched_tt.float") {
+  gemm_strided_batched_tt<float>(true);
+}
+
+TEST_CASE("c_gemm_strided_batched_nn.double") {
+  gemm_strided_batched_nn<double>(true);
+}
+
+TEST_CASE("c_gemm_strided_batched_tn.double") {
+  gemm_strided_batched_tn<double>(true);
+}
+
+TEST_CASE("c_gemm_strided_batched_nt.double") {
+  gemm_strided_batched_nt<double>(true);
+}
+
+TEST_CASE("c_gemm_strided_batched_tt.double") {
+  gemm_strided_batched_tt<double>(true);
+}
 

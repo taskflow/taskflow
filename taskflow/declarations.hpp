@@ -25,6 +25,7 @@ class TFProfObserver;
 class cudaNode;
 class cudaGraph;
 class cudaTask;
+class cudaFlowCapturer;
 class cudaFlow;
 class cublasFlow;
 

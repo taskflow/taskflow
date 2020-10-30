@@ -4,54 +4,13 @@
 
 namespace tf {
 
-/** @class cudaScopedDevice
-
-@brief RAII-styled device context switcher
-
-*/
-class cudaScopedDevice {
-
-  public:
-    
-    /**
-    @brief constructs a RAII-styled device switcher
-    */
-    cudaScopedDevice(int d);
-
-    /**
-    @brief destructs the guard and returns back to the original device
-    */
-    ~cudaScopedDevice();
-
-  private:
-
-    int _p;
-};
-
-// Constructor
-inline cudaScopedDevice::cudaScopedDevice(int dev) { 
-  TF_CHECK_CUDA(cudaGetDevice(&_p), "failed to get current device scope");
-  if(_p == dev) {
-    _p = -1;
-  }
-  else {
-    TF_CHECK_CUDA(cudaSetDevice(dev), "failed to scope on device ", dev);
-  }
-}
-
-// Destructor
-inline cudaScopedDevice::~cudaScopedDevice() { 
-  if(_p != -1) {
-    cudaSetDevice(_p);
-    //TF_CHECK_CUDA(cudaSetDevice(_p), "failed to scope back to device ", _p);
-  }
-}
-
 // ----------------------------------------------------------------------------
 // memory
 // ----------------------------------------------------------------------------
 
-// get the free memory (expensive call)
+/** 
+@brief queries the free memory (expensive call) 
+*/
 inline size_t cuda_get_free_mem(int d) {
   cudaScopedDevice ctx(d);
   size_t free, total;
@@ -61,7 +20,9 @@ inline size_t cuda_get_free_mem(int d) {
   return free;
 }
 
-// get the free memory (expensive call)
+/** 
+@brief queries the total available memory (expensive call) 
+*/
 inline size_t cuda_get_total_mem(int d) {
   cudaScopedDevice ctx(d);
   size_t free, total;
@@ -79,7 +40,7 @@ on the given device @c d and returns a pointer to the starting address of
 the device memory.
 */
 template <typename T>
-inline T* cuda_malloc_device(size_t N, int d) {
+T* cuda_malloc_device(size_t N, int d) {
   cudaScopedDevice ctx(d);
   T* ptr {nullptr};
   TF_CHECK_CUDA(
@@ -87,6 +48,17 @@ inline T* cuda_malloc_device(size_t N, int d) {
     "failed to allocate memory (", N*sizeof(T), "bytes) on device ", d
   )
   return ptr;
+}
+
+/**
+@brief allocates memory on the current device associated with the caller
+
+The function calls cuda_malloc_device from the current device associated
+with the caller.
+*/
+template <typename T>
+T* cuda_malloc_device(size_t N) {
+  return cuda_malloc_device<T>(N, cuda_get_device());
 }
 
 /**
@@ -106,11 +78,20 @@ T* cuda_malloc_shared(size_t N) {
 }
 
 /**
-@brief frees cuda memory 
+@brief frees cuda memory on the given device
+*/
+template <typename T>
+void cuda_free(T* ptr, int d) {
+  cudaScopedDevice ctx(d);
+  TF_CHECK_CUDA(cudaFree(ptr), "failed to free memory ", ptr);
+}
+
+/**
+@brief frees cuda memory on the current device associated with the caller
 */
 template <typename T>
 void cuda_free(T* ptr) {
-  TF_CHECK_CUDA(cudaFree(ptr), "failed to free memory ", ptr);
+  cuda_free(ptr, cuda_get_device());
 }
 
 }  // end of namespace tf -----------------------------------------------------

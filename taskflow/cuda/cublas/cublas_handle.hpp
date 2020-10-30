@@ -1,7 +1,6 @@
 #pragma once
 
 #include "cublas_error.hpp"
-#include "../cuda_pool.hpp"
 
 namespace tf {
 
@@ -104,6 +103,13 @@ class cublasScopedPerThreadHandle {
    */
   operator cublasHandle_t () const {
     return _ptr->object;
+  }
+
+  /**
+  @brief returns the number of shared owners
+   */
+  long use_count() const {
+    return _ptr.use_count();
   }
 
   private:

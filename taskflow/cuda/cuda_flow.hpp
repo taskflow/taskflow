@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cuda_task.hpp"
+#include "cuda_capture.hpp"
 #include "cuda_algorithm/cuda_for_each.hpp"
 #include "cuda_algorithm/cuda_transform.hpp"
 
@@ -14,14 +15,13 @@ constexpr size_t cuda_default_threads_per_block(size_t N) {
 }
 
 /**
-@struct is_cublasflow
+@struct is_cublas_flow
 
-@brief determines if a callable spawns a cublas childflow graph
-
-A cublas childflow is a callable object constructible from function<void(cublasFlow&)>.
+@brief determines if a callable spawns a cublas flow graph (constructible
+       from std::function<void(tf::cublasFlow&)>
 */
 template <typename C>
-constexpr bool is_cublasflow_v = std::is_invocable_r_v<void, C, cublasFlow&>;
+constexpr bool is_cublas_flow_v = std::is_invocable_r_v<void, C, cublasFlow&>;
 
 // ----------------------------------------------------------------------------
 // cudaFlow definition
@@ -203,8 +203,7 @@ class cudaFlow {
     A copy task transfers <tt>num*sizeof(T)</tt> bytes of data from a source location
     to a target location. Direction can be arbitrary among CPUs and GPUs.
     */
-    template <
-      typename T, 
+    template <typename T, 
       std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
     >
     cudaTask copy(T* tgt, const T* src, size_t num);
@@ -250,7 +249,7 @@ class cudaFlow {
     Immediately offloads the present %cudaFlow onto a GPU 
     and repeatedly executes it until the predicate returns @c true.
     When execution finishes, the %cudaFlow is joined. 
-    A joined cudaflow becomes invalid and cannot take other operations.
+    A joined cudaflow becomes @em invalid and cannot take other operations.
     */
     template <typename P>
     void join_until(P&& predicate);
@@ -402,17 +401,26 @@ class cudaFlow {
     // ------------------------------------------------------------------------
     
     /**
+    @brief constructs a subflow graph through capture
+
+    @tparam C callable type constructible from std::function<void(tf::cudaFlowCapturer&)>
+    @param callable the callable to construct a capture flow
+     */
+    template <typename C>
+    cudaTask capture(C&& callable);
+
+    /**
     @brief constructs a cublas subflow graph to perform cuBLAS operations
     
-    @tparam C callable type
+    @tparam C callable type constructible from std::function<void(tf::cublasFlow&)>
+    @param callable the callable to construct a cublas flow
 
     @return cudaTask handle
-
-    A cublas subflow graph forms a cudaGraph of cuBLAS operations and 
-    their dependencies.
     */
-    template <typename C, std::enable_if_t<is_cublasflow_v<C>, void>* = nullptr>
-    cudaTask subflow(C&& callable);
+    template <typename C, 
+      std::enable_if_t<is_cublas_flow_v<C>, void>* = nullptr
+    >
+    cudaTask cublas(C&& callable);
 
   private:
     
@@ -452,7 +460,7 @@ inline void cudaFlow::_create_executable() {
     cudaGraphInstantiate(
       &_executable, _graph._native_handle, nullptr, nullptr, 0
     ),
-    "failed to create an cuda executable graph"
+    "failed to create an executable graph"
   );
 }
 
@@ -460,8 +468,7 @@ inline void cudaFlow::_create_executable() {
 inline void cudaFlow::_destroy_executable() {
   assert(_executable != nullptr);
   TF_CHECK_CUDA(
-    cudaGraphExecDestroy(_executable), 
-    "failed to destroy the native image"
+    cudaGraphExecDestroy(_executable), "failed to destroy executable graph"
   );
   _executable = nullptr;
 }
@@ -940,6 +947,40 @@ cudaTask cudaFlow::transform(I first, I last, C&& c, S... srcs) {
   //}
   //size_t B = cuda_default_threads_per_block(N);
 //}
+
+// ----------------------------------------------------------------------------
+// cudaFlowCapturer
+// ----------------------------------------------------------------------------
+
+// Function: capture
+template <typename C>
+cudaTask cudaFlow::capture(C&& c) {
+  
+  // insert a subflow node
+  auto node = _graph.emplace_back(
+    _graph, std::in_place_type_t<cudaNode::Subflow>{}
+  );
+  
+  // construct a cublas flow from the callable
+  auto& node_handle = std::get<cudaNode::Subflow>(node->_handle);
+  cudaFlowCapturer capturer(node_handle.graph);
+  c(capturer);
+  
+  // obtain the optimized captured graph
+  auto captured = capturer._capture();
+  //cuda_dump_graph(std::cout, captured);
+
+  TF_CHECK_CUDA(
+    cudaGraphAddChildGraphNode(
+      &node->_native_handle, _graph._native_handle, nullptr, 0, captured
+    ), 
+    "failed to add a cudaFlow capturer task"
+  );
+  
+  TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
+  
+  return cudaTask(node);
+}
 
 
 }  // end of namespace tf -----------------------------------------------------
