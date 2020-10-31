@@ -19,7 +19,6 @@ std::vector<T> transpose(int M, int N, std::vector<T>& in) {
   return out;
 }
 
-
 template <typename T>
 void geam(
   bool row_major,
@@ -58,15 +57,17 @@ void geam(
       
       if(tranA && !tranB) {        // C = A^T + B
         if (row_major) {
-          geam = cf.cublas([&](tf::cublasFlow& flow){
-            flow.c_geam(CUBLAS_OP_T, CUBLAS_OP_N,
+          geam = cf.capture([&](tf::cudaFlowCapturer& cap){
+            cap.make_capturer<tf::cublasFlowCapturer>()->c_geam(
+              CUBLAS_OP_T, CUBLAS_OP_N,
               M, N, dAlpha, dA, M, dBeta, dB, N, dC, N
             );
           });
         }
         else {
-          geam = cf.cublas([&](tf::cublasFlow& flow){
-            flow.geam(CUBLAS_OP_T, CUBLAS_OP_N,
+          geam = cf.capture([&](tf::cudaFlowCapturer& cap){
+            cap.make_capturer<tf::cublasFlowCapturer>()->geam(
+              CUBLAS_OP_T, CUBLAS_OP_N,
               N, M, dAlpha, dA, M, dBeta, dB, N, dC, N
             );
           });
@@ -74,15 +75,17 @@ void geam(
       }
       else if(!tranA && !tranB) {  // C = A + B (r-major)
         if (row_major) {
-          geam = cf.cublas([&](tf::cublasFlow& flow){
-            flow.c_geam(CUBLAS_OP_N, CUBLAS_OP_N,
+          geam = cf.capture([&](tf::cudaFlowCapturer& cap){
+            cap.make_capturer<tf::cublasFlowCapturer>()->c_geam(
+              CUBLAS_OP_N, CUBLAS_OP_N,
               M, N, dAlpha, dA, N, dBeta, dB, N, dC, N
             );
           });
         }
         else {
-          geam = cf.cublas([&](tf::cublasFlow& flow){
-            flow.geam(CUBLAS_OP_N, CUBLAS_OP_N,
+          geam = cf.capture([&](tf::cudaFlowCapturer& cap){
+            cap.make_capturer<tf::cublasFlowCapturer>()->geam(
+              CUBLAS_OP_N, CUBLAS_OP_N,
               N, M, dAlpha, dA, N, dBeta, dB, N, dC, N
             );
           });
@@ -90,15 +93,17 @@ void geam(
       }
       else if(!tranA && tranB) {   // C = A + B^T (r-major)
         if(row_major) {
-          geam = cf.cublas([&](tf::cublasFlow& flow){
-            flow.c_geam(CUBLAS_OP_N, CUBLAS_OP_T,
+          geam = cf.capture([&](tf::cudaFlowCapturer& cap){
+            cap.make_capturer<tf::cublasFlowCapturer>()->c_geam(
+              CUBLAS_OP_N, CUBLAS_OP_T,
               M, N, dAlpha, dA, N, dBeta, dB, M, dC, N
             );
           });
         }
         else {
-          geam = cf.cublas([&](tf::cublasFlow& flow){
-            flow.geam(CUBLAS_OP_N, CUBLAS_OP_T,
+          geam = cf.capture([&](tf::cudaFlowCapturer& cap){
+            cap.make_capturer<tf::cublasFlowCapturer>()->geam(
+              CUBLAS_OP_N, CUBLAS_OP_T,
               N, M, dAlpha, dA, N, dBeta, dB, M, dC, N
             );
           });
@@ -106,15 +111,17 @@ void geam(
       }
       else {                       // C = A^T * B^T (r-major)
         if (row_major) {
-          geam = cf.cublas([&](tf::cublasFlow& flow){
-            flow.c_geam(CUBLAS_OP_T, CUBLAS_OP_T,
+          geam = cf.capture([&](tf::cudaFlowCapturer& cap){
+            cap.make_capturer<tf::cublasFlowCapturer>()->c_geam(
+              CUBLAS_OP_T, CUBLAS_OP_T,
               M, N, dAlpha, dA, M, dBeta, dB, M, dC, N
             );
           });
         }
         else {
-          geam = cf.cublas([&](tf::cublasFlow& flow){
-            flow.geam(CUBLAS_OP_T, CUBLAS_OP_T,
+          geam = cf.capture([&](tf::cudaFlowCapturer& cap){
+            cap.make_capturer<tf::cublasFlowCapturer>()->geam(
+              CUBLAS_OP_T, CUBLAS_OP_T,
               N, M, dAlpha, dA, M, dBeta, dB, M, dC, N
             );
           });
@@ -354,16 +361,16 @@ void gemm(
       
       if(tranA && !tranB) {        // C = A^T * B (r-major)
         if (row_major) {
-          gemm = cf.cublas([&](tf::cublasFlow& flow){
-            flow.c_gemm(
+          gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+            flow.make_capturer<tf::cublasFlowCapturer>()->c_gemm(
               CUBLAS_OP_T, CUBLAS_OP_N,
               M, N, K, dAlpha, dA, M, dB, N, dBeta, dC, N
             );
           });
         }
         else {
-          gemm = cf.cublas([&](tf::cublasFlow& flow){
-            flow.gemm(
+          gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+            flow.make_capturer<tf::cublasFlowCapturer>()->gemm(
               CUBLAS_OP_N, CUBLAS_OP_T,
               N, M, K, dAlpha, dB, N, dA, M, dBeta, dC, N
             );
@@ -372,16 +379,16 @@ void gemm(
       }
       else if(!tranA && !tranB) {  // C = A * B (r-major)
         if (row_major) {
-          gemm = cf.cublas([&](tf::cublasFlow& flow){
-            flow.c_gemm(
+          gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+            flow.make_capturer<tf::cublasFlowCapturer>()->c_gemm(
               CUBLAS_OP_N, CUBLAS_OP_N,
               M, N, K, dAlpha, dA, K, dB, N, dBeta, dC, N
             );
           });
         }
         else {
-          gemm = cf.cublas([&](tf::cublasFlow& flow){
-            flow.gemm(
+          gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+            flow.make_capturer<tf::cublasFlowCapturer>()->gemm(
               CUBLAS_OP_N, CUBLAS_OP_N,
               N, M, K, dAlpha, dB, N, dA, K, dBeta, dC, N
             );
@@ -390,16 +397,16 @@ void gemm(
       }
       else if(!tranA && tranB) {   // C = A * B^T (r-major)
         if(row_major) {
-          gemm = cf.cublas([&](tf::cublasFlow& flow){
-            flow.c_gemm(
+          gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+            flow.make_capturer<tf::cublasFlowCapturer>()->c_gemm(
               CUBLAS_OP_N, CUBLAS_OP_T,
               M, N, K, dAlpha, dA, K, dB, K, dBeta, dC, N
             );
           });
         }
         else {
-          gemm = cf.cublas([&](tf::cublasFlow& flow){
-            flow.gemm(
+          gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+            flow.make_capturer<tf::cublasFlowCapturer>()->gemm(
               CUBLAS_OP_T, CUBLAS_OP_N,
               N, M, K, dAlpha, dB, K, dA, K, dBeta, dC, N
             );
@@ -408,16 +415,16 @@ void gemm(
       }
       else {                       // C = A^T * B^T (r-major)
         if (row_major) {
-          gemm = cf.cublas([&](tf::cublasFlow& flow){
-            flow.c_gemm(
+          gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+            flow.make_capturer<tf::cublasFlowCapturer>()->c_gemm(
               CUBLAS_OP_T, CUBLAS_OP_T,
               M, N, K, dAlpha, dA, M, dB, K, dBeta, dC, N
             );
           });
         }
         else {
-          gemm = cf.cublas([&](tf::cublasFlow& flow){
-            flow.gemm(
+          gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+            flow.make_capturer<tf::cublasFlowCapturer>()->gemm(
               CUBLAS_OP_T, CUBLAS_OP_T,
               N, M, K, dAlpha, dB, K, dA, M, dBeta, dC, N
             );
@@ -619,6 +626,7 @@ TEST_CASE("c_gemm_tt.double") {
   gemm_tt<double>(true);
 }
 
+
 // ----------------------------------------------------------------------------
 // Testcase: gemm_batched and c_gemm_batched
 // ----------------------------------------------------------------------------
@@ -677,15 +685,15 @@ void gemm_batched(
     
     if(!tranA && !tranB) {  // C = A * B (r-major)
       if (row_major) {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.c_gemm_batched(CUBLAS_OP_N, CUBLAS_OP_N,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->c_gemm_batched(CUBLAS_OP_N, CUBLAS_OP_N,
             M, N, K, dAlpha, (const T**)dAs, K, (const T**)dBs, N, dBeta, dCs, N, S
           );
         });
       }
       else {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.gemm_batched(CUBLAS_OP_N, CUBLAS_OP_N,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->gemm_batched(CUBLAS_OP_N, CUBLAS_OP_N,
             N, M, K, dAlpha, (const T**)dBs, N, (const T**)dAs, K, dBeta, dCs, N, S
           );
         });
@@ -693,15 +701,15 @@ void gemm_batched(
     }
     else if(tranA && !tranB) {        // C = A^T * B (r-major)
       if (row_major) {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.c_gemm_batched(CUBLAS_OP_T, CUBLAS_OP_N,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->c_gemm_batched(CUBLAS_OP_T, CUBLAS_OP_N,
             M, N, K, dAlpha, (const T**)dAs, M, (const T**)dBs, N, dBeta, dCs, N, S
           );
         });
       }
       else {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.gemm_batched(CUBLAS_OP_N, CUBLAS_OP_T,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->gemm_batched(CUBLAS_OP_N, CUBLAS_OP_T,
             N, M, K, dAlpha, (const T**)dBs, N, (const T**)dAs, M, dBeta, dCs, N, S
           );
         });
@@ -709,15 +717,15 @@ void gemm_batched(
     }
     else if(!tranA && tranB) {   // C = A * B^T (r-major)
       if(row_major) {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.c_gemm_batched(CUBLAS_OP_N, CUBLAS_OP_T,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->c_gemm_batched(CUBLAS_OP_N, CUBLAS_OP_T,
             M, N, K, dAlpha, (const T**)dAs, K, (const T**)dBs, K, dBeta, dCs, N, S
           );
         });
       }
       else {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.gemm_batched(CUBLAS_OP_T, CUBLAS_OP_N,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->gemm_batched(CUBLAS_OP_T, CUBLAS_OP_N,
             N, M, K, dAlpha, (const T**)dBs, K, (const T**)dAs, K, dBeta, dCs, N, S
           );
         });
@@ -725,15 +733,15 @@ void gemm_batched(
     }
     else {                       // C = A^T * B^T (r-major)
       if (row_major) {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.c_gemm_batched(CUBLAS_OP_T, CUBLAS_OP_T,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->c_gemm_batched(CUBLAS_OP_T, CUBLAS_OP_T,
             M, N, K, dAlpha, (const T**)dAs, M, (const T**)dBs, K, dBeta, dCs, N, S
           );
         });
       }
       else {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.gemm_batched(CUBLAS_OP_T, CUBLAS_OP_T,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->gemm_batched(CUBLAS_OP_T, CUBLAS_OP_T,
             N, M, K, dAlpha, (const T**)dBs, K, (const T**)dAs, M, dBeta, dCs, N, S
           );
         });
@@ -1020,15 +1028,17 @@ void gemm_strided_batched(
     
     if(!tranA && !tranB) {  // C = A * B (r-major)
       if (row_major) {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.c_gemm_sbatched(CUBLAS_OP_N, CUBLAS_OP_N,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->c_gemm_sbatched(
+            CUBLAS_OP_N, CUBLAS_OP_N,
             M, N, K, dAlpha, dA, K, sA, dB, N, sB, dBeta, dC, N, sC, S
           );
         });
       }
       else {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.gemm_sbatched(CUBLAS_OP_N, CUBLAS_OP_N,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->gemm_sbatched(
+            CUBLAS_OP_N, CUBLAS_OP_N,
             N, M, K, dAlpha, dB, N, sB, dA, K, sA, dBeta, dC, N, sC, S
           );
         });
@@ -1036,15 +1046,17 @@ void gemm_strided_batched(
     }
     else if(tranA && !tranB) {        // C = A^T * B (r-major)
       if (row_major) {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.c_gemm_sbatched(CUBLAS_OP_T, CUBLAS_OP_N,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->c_gemm_sbatched(
+            CUBLAS_OP_T, CUBLAS_OP_N,
             M, N, K, dAlpha, dA, M, sA, dB, N, sB, dBeta, dC, N, sC, S
           );
         });
       }
       else {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.gemm_sbatched(CUBLAS_OP_N, CUBLAS_OP_T,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->gemm_sbatched(
+            CUBLAS_OP_N, CUBLAS_OP_T,
             N, M, K, dAlpha, dB, N, sB, dA, M, sA, dBeta, dC, N, sC, S
           );
         });
@@ -1052,15 +1064,17 @@ void gemm_strided_batched(
     }
     else if(!tranA && tranB) {   // C = A * B^T (r-major)
       if(row_major) {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.c_gemm_sbatched(CUBLAS_OP_N, CUBLAS_OP_T,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->c_gemm_sbatched(
+            CUBLAS_OP_N, CUBLAS_OP_T,
             M, N, K, dAlpha, dA, K, sA, dB, K, sB, dBeta, dC, N, sC, S
           );
         });
       }
       else {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.gemm_sbatched(CUBLAS_OP_T, CUBLAS_OP_N,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->gemm_sbatched(
+            CUBLAS_OP_T, CUBLAS_OP_N,
             N, M, K, dAlpha, dB, K, sB, dA, K, sA, dBeta, dC, N, sC, S
           );
         });
@@ -1068,15 +1082,17 @@ void gemm_strided_batched(
     }
     else {                       // C = A^T * B^T (r-major)
       if (row_major) {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.c_gemm_sbatched(CUBLAS_OP_T, CUBLAS_OP_T,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->c_gemm_sbatched(
+            CUBLAS_OP_T, CUBLAS_OP_T,
             M, N, K, dAlpha, dA, M, sA, dB, K, sB, dBeta, dC, N, sC, S
           );
         });
       }
       else {
-        gemm = cf.cublas([&](tf::cublasFlow& flow){
-          flow.gemm_sbatched(CUBLAS_OP_T, CUBLAS_OP_T,
+        gemm = cf.capture([&](tf::cudaFlowCapturer& flow){
+          flow.make_capturer<tf::cublasFlowCapturer>()->gemm_sbatched(
+            CUBLAS_OP_T, CUBLAS_OP_T,
             N, M, K, dAlpha, dB, K, sB, dA, M, sA, dBeta, dC, N, sC, S
           );
         });
@@ -1313,5 +1329,5 @@ TEST_CASE("c_gemm_strided_batched_nt.double") {
 
 TEST_CASE("c_gemm_strided_batched_tt.double") {
   gemm_strided_batched_tt<double>(true);
-}
+} 
 

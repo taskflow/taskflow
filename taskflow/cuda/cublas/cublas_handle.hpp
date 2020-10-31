@@ -72,6 +72,7 @@ Sample usage:
 By default, the cublas handle has a pointer mode set to device
 (i.e., @c CUBLAS_POINTER_MODE_DEVICE).
 
+%cublasScopedPerThreadHandle is neither movable nor copyable.
  */
 class cublasScopedPerThreadHandle {
   
@@ -119,6 +120,9 @@ class cublasScopedPerThreadHandle {
   }
 
   private:
+
+  cublasScopedPerThreadHandle(const cublasScopedPerThreadHandle&) = delete;
+  cublasScopedPerThreadHandle(cublasScopedPerThreadHandle&&) = delete;
 
   std::shared_ptr<cublasPerThreadHandlePool::cudaDeviceObject> _ptr;
 

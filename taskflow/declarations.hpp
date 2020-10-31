@@ -25,9 +25,10 @@ class TFProfObserver;
 class cudaNode;
 class cudaGraph;
 class cudaTask;
-class cudaFlowCapturer;
 class cudaFlow;
-class cublasFlow;
+class cudaFlowCapturer;
+class cudaFlowCapturerBase;
+class cublasFlowCapturer;
 
 
 }  // end of namespace tf -----------------------------------------------------

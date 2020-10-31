@@ -90,6 +90,7 @@ Sample usage:
 }  // leaving the scope to release the stream back to the pool on device 1
 @endcode
 
+%cudaScopedPerThreadStream is neither copyable nor movable.
 */
 class cudaScopedPerThreadStream {
   
@@ -130,6 +131,9 @@ class cudaScopedPerThreadStream {
   }
 
   private:
+
+  cudaScopedPerThreadStream(const cudaScopedPerThreadStream&) = delete;
+  cudaScopedPerThreadStream(cudaScopedPerThreadStream&&) = delete;
 
   std::shared_ptr<cudaPerThreadStreamPool::cudaDeviceObject> _ptr;
 

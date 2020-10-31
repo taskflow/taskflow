@@ -6,16 +6,27 @@
 namespace tf {
 
 /**
-@class cudaFlowCapturer
+@class cudaFlowCapturerBase
 
-@brief class object to construct a CUDA graph through stream capture
+@brief base class of methods to capture CUDA operations through
+       CUDA streams
 */
-class cudaFlowCapturer {
+class cudaFlowCapturerBase {
 
-  friend class cudaFlow;
+  friend class cudaFlowCapturer;
 
   public:
 
+    /**
+    @brief default constructor
+     */
+    cudaFlowCapturerBase() = default;
+
+    /**
+    @brief default virtual destructor
+     */
+    virtual ~cudaFlowCapturerBase() = default;
+  
     /**
     @brief runs a callable with only a single kernel thread
 
@@ -72,22 +83,21 @@ class cudaFlowCapturer {
     template <typename... ArgsT>
     cudaTask kernel(ArgsT&&... args);
 
-  protected:
+  private:
 
-    cudaGraph& _graph;
+    cudaGraph* _graph {nullptr};
 
-    cudaFlowCapturer(cudaGraph&);
-
-    cudaGraph_t _capture();
+    cudaFlowCapturerBase(cudaGraph&);
 };
 
-// constructor
-inline cudaFlowCapturer::cudaFlowCapturer(cudaGraph& g) : _graph {g} {
+// Constructor
+inline cudaFlowCapturerBase::cudaFlowCapturerBase(cudaGraph& g) :
+  _graph {&g} {
 }
 
 // Function: single_task
 template <typename C>
-cudaTask cudaFlowCapturer::single_task(C&& callable) {
+cudaTask cudaFlowCapturerBase::single_task(C&& callable) {
   return on([c=std::forward<C>(callable)] (cudaStream_t stream) mutable {
     cuda_single_task<C><<<1, 1, 0, stream>>>(c);
   });
@@ -95,8 +105,8 @@ cudaTask cudaFlowCapturer::single_task(C&& callable) {
 
 // Function: capture
 template <typename C>
-cudaTask cudaFlowCapturer::on(C&& callable) {
-  auto node = _graph.emplace_back(_graph,
+cudaTask cudaFlowCapturerBase::on(C&& callable) {
+  auto node = _graph->emplace_back(*_graph,
     std::in_place_type_t<cudaNode::Capture>{}, std::forward<C>(callable)
   );
   return cudaTask(node);
@@ -104,7 +114,7 @@ cudaTask cudaFlowCapturer::on(C&& callable) {
 
 // Function: memcpy
 template <typename... ArgsT>
-cudaTask cudaFlowCapturer::memcpy(ArgsT&&... args) {
+cudaTask cudaFlowCapturerBase::memcpy(ArgsT&&... args) {
   return on([args...] (cudaStream_t stream) mutable {
     cuda_memcpy_async(stream, args...);
   });
@@ -112,7 +122,7 @@ cudaTask cudaFlowCapturer::memcpy(ArgsT&&... args) {
 
 // Function: memset
 template <typename... ArgsT>
-cudaTask cudaFlowCapturer::memset(ArgsT&&... args) {
+cudaTask cudaFlowCapturerBase::memset(ArgsT&&... args) {
   return on([args...] (cudaStream_t stream) mutable {
     cuda_memset_async(stream, args...);
   });
@@ -120,10 +130,63 @@ cudaTask cudaFlowCapturer::memset(ArgsT&&... args) {
     
 // Function: kernel
 template <typename... ArgsT>
-cudaTask cudaFlowCapturer::kernel(ArgsT&&... args) {
+cudaTask cudaFlowCapturerBase::kernel(ArgsT&&... args) {
   return on([args...] (cudaStream_t stream) mutable {
     cuda_offload_async(stream, args...);
   });
+}
+
+
+
+// ----------------------------------------------------------------------------
+// cudaFlowCapturer
+// ----------------------------------------------------------------------------
+
+/**
+@class cudaFlowCapturer
+
+@brief class object to construct a CUDA graph through stream capture
+
+A %cudaFlowCapturer inherits all the base methods from tf::cudaFlowCapturerBase 
+to construct a CUDA graph through stream capturer. 
+This class also defines a factory interface tf::cudaFlowCapturer::make_capturer 
+for users to create custom capturers and manages their lifetimes.
+
+*/
+class cudaFlowCapturer : public cudaFlowCapturerBase {
+
+  friend class cudaFlow;
+
+  public:
+    
+    /**
+    @brief creates a custom capturer derived from tf::cudaFlowCapturerBase
+     */
+    template <typename T, typename... ArgsT>
+    T* make_capturer(ArgsT&&... args);
+
+  private:
+    
+    std::vector<std::unique_ptr<cudaFlowCapturerBase>> _capturers;
+
+    cudaFlowCapturer(cudaGraph&);
+    
+    cudaGraph_t _capture();
+};
+
+// constructor
+inline cudaFlowCapturer::cudaFlowCapturer(cudaGraph& g) :
+  cudaFlowCapturerBase{g} {
+}
+
+// Function: make_capturer
+template <typename T, typename... ArgsT>
+T* cudaFlowCapturer::make_capturer(ArgsT&&... args) {
+  auto ptr = std::make_unique<T>(std::forward<ArgsT>(args)...);
+  ptr->_graph = this->_graph;
+  auto raw = ptr.get();
+  _capturers.push_back(std::move(ptr));
+  return raw;
 }
 
 // Procedure
@@ -134,7 +197,7 @@ inline cudaGraph_t cudaFlowCapturer::_capture() {
   start_stream_capture(stream);
 
   // TODO: need an efficient algorithm
-  auto ordered = _graph._toposort();
+  auto ordered = _graph->_toposort();
   for(auto& node : ordered) {
     std::get<cudaNode::Capture>(node->_handle).work(stream);  
   }
@@ -146,5 +209,5 @@ inline cudaGraph_t cudaFlowCapturer::_capture() {
   return g;
 }
 
-
 }  // end of namespace tf -----------------------------------------------------
+

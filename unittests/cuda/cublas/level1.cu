@@ -34,15 +34,16 @@ void amax_amin_asum() {
   tf::Executor executor;
 
   taskflow.emplace([&](tf::cudaFlow& cf){
-    auto cublas = cf.cublas([&](tf::cublasFlow& capturer){
-      auto amax = capturer.amax(N, gpu, 1, max_i);
-      auto amin = capturer.amin(N, gpu, 1, min_i);
-      auto vset = capturer.vset(N, host.data(), 1, gpu, 1);
-      auto back = capturer.single_task([min_i, max_i] __device__ () {
+    auto cublas = cf.capture([&](tf::cudaFlowCapturer& cap){
+      auto capturer = cap.make_capturer<tf::cublasFlowCapturer>();
+      auto amax = capturer->amax(N, gpu, 1, max_i);
+      auto amin = capturer->amin(N, gpu, 1, min_i);
+      auto vset = capturer->vset(N, host.data(), 1, gpu, 1);
+      auto back = cap.single_task([min_i, max_i] __device__ () {
         (*min_i)--;
         (*max_i)--;
       });
-      auto asum = capturer.asum(N, gpu, 1, gsum);
+      auto asum = capturer->asum(N, gpu, 1, gsum);
       vset.precede(amin, amax, asum);
       back.succeed(amin, amax);
     });
@@ -97,14 +98,15 @@ void axpy() {
   tf::Executor executor;
 
   taskflow.emplace([&](tf::cudaFlow& cf){
-    cf.cublas([&](tf::cublasFlow& capturer){
-      auto vsetx = capturer.vset(N, hx.data(), 1, dx, 1);
-      auto vsety = capturer.vset(N, hy.data(), 1, dy, 1);
-      auto spar = capturer.single_task([alpha] __device__ () {
+    cf.capture([&](tf::cudaFlowCapturer& cap){
+      auto capturer = cap.make_capturer<tf::cublasFlowCapturer>();
+      auto vsetx = capturer->vset(N, hx.data(), 1, dx, 1);
+      auto vsety = capturer->vset(N, hy.data(), 1, dy, 1);
+      auto spar = cap.single_task([alpha] __device__ () {
         *alpha = 2;
       });
-      auto axpy = capturer.axpy(N, alpha, dx, 1, dy, 1);
-      auto vgety = capturer.vget(N, dy, 1, res.data(), 1);
+      auto axpy = capturer->axpy(N, alpha, dx, 1, dy, 1);
+      auto vgety = capturer->vget(N, dy, 1, res.data(), 1);
       axpy.succeed(vsetx, vsety, spar)
           .precede(vgety);
     });
@@ -155,11 +157,12 @@ void dot() {
   tf::Executor executor;
 
   taskflow.emplace([&](tf::cudaFlow& cf){
-    cf.cublas([&](tf::cublasFlow& capturer){
-      auto vsetx = capturer.vset(N, hx.data(), 1, dx, 1);
-      auto vsety = capturer.vset(N, hy.data(), 1, dy, 1);
-      auto xydot = capturer.dot(N, dx, 1, dy, 1, dr);
-      auto copyr = capturer.memcpy(&res, dr, sizeof(T));
+    cf.capture([&](tf::cudaFlowCapturer& cap){
+      auto capturer = cap.make_capturer<tf::cublasFlowCapturer>();
+      auto vsetx = capturer->vset(N, hx.data(), 1, dx, 1);
+      auto vsety = capturer->vset(N, hy.data(), 1, dy, 1);
+      auto xydot = capturer->dot(N, dx, 1, dy, 1, dr);
+      auto copyr = cap.memcpy(&res, dr, sizeof(T));
       xydot.succeed(vsetx, vsety)
            .precede(copyr);
     });
@@ -205,12 +208,13 @@ void swap() {
   tf::Executor executor;
 
   taskflow.emplace([&](tf::cudaFlow& cf){
-    cf.cublas([&](tf::cublasFlow& capturer){
-      auto vsetx = capturer.vset(N, hx.data(), 1, dx, 1);
-      auto vsety = capturer.vset(N, hy.data(), 1, dy, 1);
-      auto xyswp = capturer.swap(N, dx, 1, dy, 1);
-      auto copyx = capturer.memcpy(rx.data(), dx, N*sizeof(T));
-      auto copyy = capturer.memcpy(ry.data(), dy, N*sizeof(T));
+    cf.capture([&](tf::cudaFlowCapturer& cap){
+      auto capturer = cap.make_capturer<tf::cublasFlowCapturer>();
+      auto vsetx = capturer->vset(N, hx.data(), 1, dx, 1);
+      auto vsety = capturer->vset(N, hy.data(), 1, dy, 1);
+      auto xyswp = capturer->swap(N, dx, 1, dy, 1);
+      auto copyx = cap.memcpy(rx.data(), dx, N*sizeof(T));
+      auto copyy = cap.memcpy(ry.data(), dy, N*sizeof(T));
       xyswp.succeed(vsetx, vsety)
            .precede(copyx, copyy);
     });
@@ -258,13 +262,14 @@ void scal() {
   tf::Executor executor;
 
   taskflow.emplace([&](tf::cudaFlow& cf){
-    cf.cublas([&](tf::cublasFlow& capturer){
-      auto vsetx = capturer.vset(N, hx.data(), 1, dx, 1);
-      auto spar = capturer.single_task([alpha] __device__ () {
+    cf.capture([&](tf::cudaFlowCapturer& cap){
+      auto capturer = cap.make_capturer<tf::cublasFlowCapturer>();
+      auto vsetx = capturer->vset(N, hx.data(), 1, dx, 1);
+      auto spar = cap.single_task([alpha] __device__ () {
         *alpha = 2;
       });
-      auto vgetx = capturer.vget(N, dx, 1, rx.data(), 1);
-      auto scal = capturer.scal(N, alpha, dx, 1);
+      auto vgetx = capturer->vget(N, dx, 1, rx.data(), 1);
+      auto scal = capturer->scal(N, alpha, dx, 1);
       scal.succeed(vsetx, spar)
           .precede(vgetx);
     });
@@ -286,4 +291,4 @@ TEST_CASE("scal.float") {
 
 TEST_CASE("scal.double") {
   scal<double>();
-}
+} 

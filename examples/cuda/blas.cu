@@ -10,7 +10,7 @@
 
 int main() {
 
-  tf::Taskflow taskflow;
+  /*tf::Taskflow taskflow;
   tf::Executor executor;
 
   size_t N = 1024;
@@ -49,7 +49,7 @@ int main() {
   std::cout << "res: " << res << '\n';
   
   TF_CHECK_CUDA(cudaFree(x), "failed to free x");
-  TF_CHECK_CUDA(cudaFree(r), "failed to free r");
+  TF_CHECK_CUDA(cudaFree(r), "failed to free r"); */
 
   return 0;
 }

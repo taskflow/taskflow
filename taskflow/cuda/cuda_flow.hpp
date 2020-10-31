@@ -14,15 +14,6 @@ constexpr size_t cuda_default_threads_per_block(size_t N) {
   return N >= 256 ? 256 : 128;
 }
 
-/**
-@struct is_cublas_flow
-
-@brief determines if a callable spawns a cublas flow graph (constructible
-       from std::function<void(tf::cublasFlow&)>
-*/
-template <typename C>
-constexpr bool is_cublas_flow_v = std::is_invocable_r_v<void, C, cublasFlow&>;
-
 // ----------------------------------------------------------------------------
 // cudaFlow definition
 // ----------------------------------------------------------------------------
@@ -408,19 +399,6 @@ class cudaFlow {
      */
     template <typename C>
     cudaTask capture(C&& callable);
-
-    /**
-    @brief constructs a cublas subflow graph to perform cuBLAS operations
-    
-    @tparam C callable type constructible from std::function<void(tf::cublasFlow&)>
-    @param callable the callable to construct a cublas flow
-
-    @return cudaTask handle
-    */
-    template <typename C, 
-      std::enable_if_t<is_cublas_flow_v<C>, void>* = nullptr
-    >
-    cudaTask cublas(C&& callable);
 
   private:
     
@@ -961,9 +939,10 @@ cudaTask cudaFlow::capture(C&& c) {
     _graph, std::in_place_type_t<cudaNode::Subflow>{}
   );
   
-  // construct a cublas flow from the callable
+  // construct a capturer flow from the callable
   auto& node_handle = std::get<cudaNode::Subflow>(node->_handle);
   cudaFlowCapturer capturer(node_handle.graph);
+
   c(capturer);
   
   // obtain the optimized captured graph
@@ -978,7 +957,7 @@ cudaTask cudaFlow::capture(C&& c) {
   );
   
   TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
-  
+
   return cudaTask(node);
 }
 

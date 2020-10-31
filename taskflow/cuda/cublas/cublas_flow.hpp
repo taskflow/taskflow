@@ -25,31 +25,34 @@ template <typename T>
 inline constexpr bool is_cublas_data_type_v = is_cublas_data_type<T>::value;
 
 // ----------------------------------------------------------------------------
-// cublasFlow definition
+// cublasFlowCapturer definition
 // ----------------------------------------------------------------------------
 
 /**
-@class cublasFlow
+@class cublasFlowCapturer
 
 @brief class object to construct a cuBLAS task graph
 
-A %cublasFlow provides a higher-level interface over the cuBLAS library
+A %cublasFlowCapturer provides a higher-level interface over the cuBLAS library
 and hide concurrency details from users.
 
-All pointers used to %cublasFlow methods must be in GPU memory space or managed 
+All pointers used to %cublasFlowCapturer methods must be in GPU memory space or managed 
 (i.e., @c cudaMallocManaged),
 including scalars, @c alpha and @c beta, input data and output data pointers.
 
-Currently,  %cublasFlow supports only float and double data types.
+Currently,  %cublasFlowCapturer supports only float and double data types.
 */
-class cublasFlow : public cudaFlowCapturer {
-
-  friend class cudaFlow;
+class cublasFlowCapturer : public cudaFlowCapturerBase {
 
   public:
     
     /**
-    @brief gets the native cublas handle associated with this %cublasFlow
+    @brief constructs a cublas flow capturer
+     */
+    cublasFlowCapturer() = default;
+    
+    /**
+    @brief gets the native cublas handle associated with this %cublasFlowCapturer
     */
     cublasHandle_t native_handle();
     
@@ -61,7 +64,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief copies vector data from host to device
 
     This method effectively calls <tt>cublas_vset_async(stream, args...)</tt>
-    with @c stream managed by the %cublasFlow.
+    with @c stream managed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask vset(Ts&&... args);
@@ -70,7 +73,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief copies vector data from device to host
 
     This method effectively calls <tt>cublas_vget_async(stream, args...)</tt>
-    with @c stream managed by the %cublasFlow.
+    with @c stream managed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask vget(Ts&&... args);
@@ -83,7 +86,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief finds the smallest index of the element of the maximum absolute magnitude
     
     This method effectively calls tf::cublas_amax with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask amax(Ts&&... args);
@@ -92,7 +95,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief finds the smallest index of the element of the minimum absolute magnitude
     
     This method effectively calls tf::cublas_amin with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask amin(Ts&&... args);
@@ -101,7 +104,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief finds the sum of absolute values of elements in a vector
     
     This method effectively calls tf::cublas_asum with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask asum(Ts&&... args);
@@ -110,7 +113,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief multiplies a vector by a scalar and adds it to a vector
     
     This method effectively calls tf::cublas_axpy with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask axpy(Ts&&... args);
@@ -119,7 +122,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief copies a vector to another vector
     
     This method effectively calls tf::cublas_copy with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask vcopy(Ts&&... args);
@@ -128,7 +131,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief computes the dot product of two vectors
     
     This method effectively calls tf::cublas_dot with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask dot(Ts&&... args);
@@ -137,7 +140,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief computes the Euclidean norm of a vector
     
     This method effectively calls tf::cublas_nrm2 with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask nrm2(Ts&&... args);
@@ -146,7 +149,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief multiples a vector by a scalar
     
     This method effectively calls tf::cublas_scal with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask scal(Ts&&... args);
@@ -155,7 +158,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief swaps the elements of two vectors
     
     This method effectively calls tf::cublas_swap with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask swap(Ts&&... args);
@@ -174,7 +177,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief performs matrix-matrix addition/transposition on column-major layout
     
     This method effectively calls tf::cublas_geam with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask geam(Ts&&... args);
@@ -183,7 +186,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief performs matrix-matrix addition/transposition on row-major layout
     
     This method effectively calls tf::cublas_c_geam with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is manaed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask c_geam(Ts&&... args);
@@ -192,7 +195,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief performs matrix-matrix multiplication on column-major layout
     
     This method effectively calls tf::cublas_gemm with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask gemm(Ts&&... args);
@@ -201,7 +204,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief performs matrix-matrix multiplication on C-styled row-major layout
     
     This method effectively calls tf::cublas_c_gemm with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask c_gemm(Ts&&... args);
@@ -210,7 +213,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief performs batched matrix-matrix multiplication on column-major layout
     
     This method effectively calls tf::cublas_gemm_batched with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask gemm_batched(Ts&&... args);
@@ -219,7 +222,7 @@ class cublasFlow : public cudaFlowCapturer {
     @brief performs batched matrix-matrix multiplication on C-styled row-major layout
     
     This method effectively calls tf::cublas_c_gemm_batched with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlowCapturer.
     */ 
     template <typename... Ts>
     cudaTask c_gemm_batched(Ts&&... args);
@@ -229,7 +232,7 @@ class cublasFlow : public cudaFlowCapturer {
            with strided memory access
     
     This method effectively calls tf::cublas_gemm_sbatched with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask gemm_sbatched(Ts&&... args);
@@ -239,34 +242,27 @@ class cublasFlow : public cudaFlowCapturer {
            layout with strided memory access
     
     This method effectively calls tf::cublas_c_gemm_sbatched with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlow.
+    <tt>(handle, args...)</tt>, where @c handle is managed by the %cublasFlowCapturer.
     */
     template <typename... Ts>
     cudaTask c_gemm_sbatched(Ts&&... args);
     
   private:
-
+    
     cublasScopedPerThreadHandle _handle;
-
-    cublasFlow(cudaGraph&);
 
     void _stream(cudaStream_t);
 };
 
-// Constructor
-inline cublasFlow::cublasFlow(cudaGraph& graph) : 
-  cudaFlowCapturer {graph} {
-}
-
 // Procedure: _stream
-inline void cublasFlow::_stream(cudaStream_t stream) {
+inline void cublasFlowCapturer::_stream(cudaStream_t stream) {
   TF_CHECK_CUBLAS(
     cublasSetStream(_handle, stream), "failed to set cublas stream"
   );
 }
 
 // Function: native_handle
-inline cublasHandle_t cublasFlow::native_handle() {
+inline cublasHandle_t cublasFlowCapturer::native_handle() {
   return _handle;
 }
 
@@ -276,7 +272,7 @@ inline cublasHandle_t cublasFlow::native_handle() {
 
 // Function: vset
 template <typename... Ts>
-cudaTask cublasFlow::vset(Ts&&... args) {
+cudaTask cublasFlowCapturer::vset(Ts&&... args) {
   return on([args...] (cudaStream_t stream) mutable {
     cublas_vset_async(stream, args...);
   });
@@ -284,7 +280,7 @@ cudaTask cublasFlow::vset(Ts&&... args) {
 
 // Function: vget
 template <typename... Ts>
-cudaTask cublasFlow::vget(Ts&&... args) {
+cudaTask cublasFlowCapturer::vget(Ts&&... args) {
   return on([args...] (cudaStream_t stream) mutable {
     cublas_vget_async(stream, args...);
   });
@@ -296,7 +292,7 @@ cudaTask cublasFlow::vget(Ts&&... args) {
 
 // Function: amax
 template <typename... Ts>
-cudaTask cublasFlow::amax(Ts&&... args) {
+cudaTask cublasFlowCapturer::amax(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_amax(_handle, args...);
@@ -305,7 +301,7 @@ cudaTask cublasFlow::amax(Ts&&... args) {
 
 // Function: amin
 template <typename... Ts>
-cudaTask cublasFlow::amin(Ts&&... args) {
+cudaTask cublasFlowCapturer::amin(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_amin(_handle, args...);
@@ -314,7 +310,7 @@ cudaTask cublasFlow::amin(Ts&&... args) {
 
 // Function: asum
 template <typename... Ts>
-cudaTask cublasFlow::asum(Ts&&... args) {
+cudaTask cublasFlowCapturer::asum(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_asum(_handle, args...);
@@ -323,7 +319,7 @@ cudaTask cublasFlow::asum(Ts&&... args) {
 
 // Function: axpy
 template <typename... Ts>
-cudaTask cublasFlow::axpy(Ts&&... args) {
+cudaTask cublasFlowCapturer::axpy(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_axpy(_handle, args...);
@@ -332,7 +328,7 @@ cudaTask cublasFlow::axpy(Ts&&... args) {
 
 // Function: vcopy
 template <typename... Ts>
-cudaTask cublasFlow::vcopy(Ts&&... args) {
+cudaTask cublasFlowCapturer::vcopy(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_copy(_handle, args...);
@@ -341,7 +337,7 @@ cudaTask cublasFlow::vcopy(Ts&&... args) {
 
 // Function: dot
 template <typename... Ts>
-cudaTask cublasFlow::dot(Ts&&... args) {
+cudaTask cublasFlowCapturer::dot(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_dot(_handle, args...);
@@ -350,7 +346,7 @@ cudaTask cublasFlow::dot(Ts&&... args) {
 
 // Function: nrm2
 template <typename... Ts>
-cudaTask cublasFlow::nrm2(Ts&&... args) {
+cudaTask cublasFlowCapturer::nrm2(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_nrm2(_handle, args...);
@@ -359,7 +355,7 @@ cudaTask cublasFlow::nrm2(Ts&&... args) {
 
 // Function: scal
 template <typename... Ts>
-cudaTask cublasFlow::scal(Ts&&... args) {
+cudaTask cublasFlowCapturer::scal(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_scal(_handle, args...);
@@ -368,7 +364,7 @@ cudaTask cublasFlow::scal(Ts&&... args) {
 
 // Function: swap
 template <typename... Ts>
-cudaTask cublasFlow::swap(Ts&&... args) {
+cudaTask cublasFlowCapturer::swap(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_swap(_handle, args...);
@@ -381,7 +377,7 @@ cudaTask cublasFlow::swap(Ts&&... args) {
 
 // Function: geam
 template <typename... Ts>
-cudaTask cublasFlow::geam(Ts&&... args) {
+cudaTask cublasFlowCapturer::geam(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_geam(_handle, args...);
@@ -390,7 +386,7 @@ cudaTask cublasFlow::geam(Ts&&... args) {
 
 // Function: geam
 template <typename... Ts>
-cudaTask cublasFlow::c_geam(Ts&&... args) {
+cudaTask cublasFlowCapturer::c_geam(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_c_geam(_handle, args...);
@@ -399,7 +395,7 @@ cudaTask cublasFlow::c_geam(Ts&&... args) {
 
 // Function: gemm
 template <typename... Ts>
-cudaTask cublasFlow::gemm(Ts&&... args) {
+cudaTask cublasFlowCapturer::gemm(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_gemm(_handle, args...);
@@ -408,7 +404,7 @@ cudaTask cublasFlow::gemm(Ts&&... args) {
 
 // Function: c_gemm
 template <typename... Ts>
-cudaTask cublasFlow::c_gemm(Ts&&... args) {
+cudaTask cublasFlowCapturer::c_gemm(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_c_gemm(_handle, args...);
@@ -417,7 +413,7 @@ cudaTask cublasFlow::c_gemm(Ts&&... args) {
     
 // Function: gemm_batched
 template <typename... Ts>
-cudaTask cublasFlow::gemm_batched(Ts&&... args) {
+cudaTask cublasFlowCapturer::gemm_batched(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_gemm_batched(_handle, args...);
@@ -426,7 +422,7 @@ cudaTask cublasFlow::gemm_batched(Ts&&... args) {
 
 // Function: c_gemm_batched
 template <typename... Ts>
-cudaTask cublasFlow::c_gemm_batched(Ts&&... args) {
+cudaTask cublasFlowCapturer::c_gemm_batched(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_c_gemm_batched(_handle, args...);
@@ -435,7 +431,7 @@ cudaTask cublasFlow::c_gemm_batched(Ts&&... args) {
 
 // Function: gemm_sbatched (strided)    
 template <typename... Ts>
-cudaTask cublasFlow::gemm_sbatched(Ts&&... args) {
+cudaTask cublasFlowCapturer::gemm_sbatched(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_gemm_sbatched(_handle, args...);
@@ -444,47 +440,11 @@ cudaTask cublasFlow::gemm_sbatched(Ts&&... args) {
 
 // Function: c_gemm_sbatched (strided)    
 template <typename... Ts>
-cudaTask cublasFlow::c_gemm_sbatched(Ts&&... args) {
+cudaTask cublasFlowCapturer::c_gemm_sbatched(Ts&&... args) {
   return on([this, args...] (cudaStream_t stream) mutable {
     _stream(stream);
     cublas_c_gemm_sbatched(_handle, args...);
   });
-}
-
-// ----------------------------------------------------------------------------
-// cudaFlow::cublas
-// ----------------------------------------------------------------------------
-
-// Function: cublas
-template <typename C, std::enable_if_t<is_cublas_flow_v<C>, void>*>
-cudaTask cudaFlow::cublas(C&& c) {
-  
-  // insert a subflow node
-  auto node = _graph.emplace_back(
-    _graph, std::in_place_type_t<cudaNode::Subflow>{}
-  );
-  
-  // construct a cublas flow from the callable
-  auto& node_handle = std::get<cudaNode::Subflow>(node->_handle);
-  cublasFlow cbf(node_handle.graph);
-  c(cbf);
-
-  // obtain the optimized captured graph
-  auto captured = cbf._capture();
-  //cuda_dump_graph(std::cout, captured);
-
-  TF_CHECK_CUDA(
-    cudaGraphAddChildGraphNode(
-      &node->_native_handle, _graph._native_handle, nullptr, 0, captured
-    ), 
-    "failed to add a cublas flow task"
-  );
-  
-  TF_CHECK_CUDA(
-    cudaGraphDestroy(captured), "failed to destroy captured cublasFlow graph"
-  );
-  
-  return cudaTask(node);
 }
 
 }  // end of namespace tf -----------------------------------------------------

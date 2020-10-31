@@ -15,9 +15,10 @@ void copy_vec() {
   auto gpu = tf::cuda_malloc_device<T>(1024);
 
   taskflow.emplace([&](tf::cudaFlow& cf){
-    cf.cublas([&](tf::cublasFlow& bf) {
-      auto h2d = bf.vset(1024, host1.data(), 1, gpu, 1);
-      auto d2h = bf.vget(1024, gpu, 1, host2.data(), 1);
+    cf.capture([&](tf::cudaFlowCapturer& cap) {
+      auto bf = cap.make_capturer<tf::cublasFlowCapturer>();
+      auto h2d = bf->vset(1024, host1.data(), 1, gpu, 1);
+      auto d2h = bf->vget(1024, gpu, 1, host2.data(), 1);
       h2d.precede(d2h);
     });
   });
@@ -35,34 +36,6 @@ TEST_CASE("copy_vec.float") {
 TEST_CASE("copy_vec.double") {
   copy_vec<double>();
 }
-
-// ----------------------------------------------------------------------------
-// copy through capture
-// ----------------------------------------------------------------------------
-
-TEST_CASE("capture.copy") {
-  
-  tf::Taskflow taskflow;
-  tf::Executor executor;
-
-  std::vector<float> host1(1024, -1), host2(1024, 1);
-
-  auto gpu = tf::cuda_malloc_device<float>(1024);
-
-  taskflow.emplace([&](tf::cudaFlow& cf){
-    cf.cublas([&](tf::cublasFlow& bf) {
-      bf.on([&](cudaStream_t stream){
-        tf::cublas_vset_async(stream, 1024, host1.data(), 1, gpu, 1);
-        tf::cublas_vget_async(stream, 1024, gpu, 1, host2.data(), 1);
-      });
-    });
-  });
-
-  executor.run(taskflow).wait();
-
-  REQUIRE(host1 == host2);
-}
-
 
 
 

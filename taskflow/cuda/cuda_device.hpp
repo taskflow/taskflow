@@ -280,6 +280,7 @@ inline int cuda_get_runtime_version() {
 
 @brief RAII-styled device context switch
 
+%cudaScopedDevice is neither movable nor copyable.
 */
 class cudaScopedDevice {
 
@@ -298,6 +299,8 @@ class cudaScopedDevice {
   private:
     
     cudaScopedDevice() = delete;
+    cudaScopedDevice(const cudaScopedDevice&) = delete;
+    cudaScopedDevice(cudaScopedDevice&&) = delete;
 
     int _p;
 };

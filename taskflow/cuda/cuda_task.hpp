@@ -48,9 +48,9 @@ inline const char* cuda_task_type_to_string(cudaTaskType type) {
 */
 class cudaTask {
 
-  friend class cudaFlowCapturer;
   friend class cudaFlow;
-  friend class cublasFlow;
+  friend class cudaFlowCapturer;
+  friend class cudaFlowCapturerBase;
 
   friend std::ostream& operator << (std::ostream&, const cudaTask&);
 

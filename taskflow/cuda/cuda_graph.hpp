@@ -219,9 +219,9 @@ class cudaGraph {
 
   friend class cudaNode;
   friend class cudaTask;
+  friend class cudaFlowCapturerBase;
   friend class cudaFlowCapturer;
   friend class cudaFlow;
-  friend class cublasFlow;
   
   friend class Taskflow;
   friend class Executor;
@@ -272,9 +272,9 @@ class cudaNode {
   
   friend class cudaGraph;
   friend class cudaTask;
-  friend class cudaFlowCapturer;
   friend class cudaFlow;
-  friend class cublasFlow;
+  friend class cudaFlowCapturer;
+  friend class cudaFlowCapturerBase;
 
   friend class Taskflow;
   friend class Executor;
