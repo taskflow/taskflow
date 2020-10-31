@@ -291,9 +291,7 @@ where @c j is the index of element in @c y with a step size @c incy and
 */
 template <typename T>
 void cublas_swap(
-  cublasHandle_t handle, int n, 
-  const T* x, int incx, 
-  const T* y, int incy
+  cublasHandle_t handle, int n, T* x, int incx, T* y, int incy
 ) {
   cublasStatus_t stat;
   if constexpr(std::is_same_v<T, float>) {
