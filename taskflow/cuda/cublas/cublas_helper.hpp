@@ -4,11 +4,6 @@
 
 namespace tf {
 
-__constant__ float  cublas_f32_one  = 1.0f;
-__constant__ float  cublas_f32_zero = 0.0f;
-__constant__ double cublas_f64_one  = 1.0;
-__constant__ double cublas_f64_zero = 0.0;
-
 /**
 @brief copies vector data from host to device
 

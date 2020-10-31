@@ -29,9 +29,9 @@ int main() {
     auto h2d = cf.copy(x, host.data(), N).name("h2d");
 
     auto child = cf.cublas([&](tf::cublasFlow& cbf){  /// cublas
-      auto t1 = cbf.amax<float>(N, x, 1, r).name("amax1");  
-      auto t2 = cbf.amax<float>(N, x, 1, r).name("amax2");  
-      auto t3 = cbf.amax<float>(N, x, 1, r).name("amax3");  
+      auto t1 = cbf.amax(N, x, 1, r).name("amax1");  
+      auto t2 = cbf.amax(N, x, 1, r).name("amax2");  
+      auto t3 = cbf.amax(N, x, 1, r).name("amax3");  
       t2.precede(t1);
       t1.precede(t3);
     }).name("cublas");
