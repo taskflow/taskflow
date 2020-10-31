@@ -29,25 +29,25 @@ the source vector @c h and by @c incd for the destination vector @c d.
 template <typename T,
   std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
 >
-void cublas_setvec_async(
+void cublas_vset_async(
   cudaStream_t stream, size_t n, const T* h, int inch, T* d, int incd
 ) {
   TF_CHECK_CUBLAS(
     cublasSetVectorAsync(n, sizeof(T), h, inch, d, incd, stream),
-    "failed to run setvec_async"
+    "failed to run vset_async"
   );
 }
 
 /**
-@brief similar to tf::cublas_setvec_async but operates synchronously
+@brief similar to tf::cublas_vset_async but operates synchronously
 */
 template <typename T,
   std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
 >
-void cublas_setvec(size_t n, const T* h, int inch, T* d, int incd) {
+void cublas_vset(size_t n, const T* h, int inch, T* d, int incd) {
   TF_CHECK_CUBLAS(
     cublasSetVector(n, sizeof(T), h, inch, d, incd),
-    "failed to run setvec"
+    "failed to run vset"
   );
 }
 
@@ -71,24 +71,24 @@ the target vector @c h and by @c incd for the source vector @c d.
 template <typename T,
   std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
 >
-void cublas_getvec_async(
+void cublas_vget_async(
   cudaStream_t stream, size_t n, const T* d, int incd, T* h, int inch
 ) {
   TF_CHECK_CUBLAS(
     cublasGetVectorAsync(n, sizeof(T), d, incd, h, inch, stream),
-    "failed to run getvec_async"
+    "failed to run vget_async"
   );
 }
 
 /**
-@brief similar to tf::cublas_getvec_async but operates synchronously
+@brief similar to tf::cublas_vget_async but operates synchronously
 */
 template <typename T,
   std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
 >
-void cublas_getvec_async(size_t n, const T* d, int incd, T* h, int inch) {
+void cublas_vget_async(size_t n, const T* d, int incd, T* h, int inch) {
   TF_CHECK_CUBLAS(
-    cublasGetVector(n, sizeof(T), d, incd, h, inch), "failed to run getvec"
+    cublasGetVector(n, sizeof(T), d, incd, h, inch), "failed to run vget"
   );
 }
 

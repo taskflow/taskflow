@@ -32,10 +32,26 @@ The operation includes the following special cases:
   2. the user can transpose matrix A by setting @c alpha to 1 and @c beta to 0
 
 The input matrices are in column-major storage.
+
+@tparam T data type
+
+@param handle cublas library handle
+@param ta transport operation @c op(A)
+@param tb transport operation @c op(B)
+@param m number of rows of matrix @c C and @c op(A)
+@param n number of columns of matrix @c C and @c op(B)
+@param alpha pointer to the @c alpha scalar
+@param A pointer to the address of @c A
+@param lda leading dimension of 2D array used to store the matrix @c A
+@param beta pointer to the @c beta scalar
+@param B pointer to the address of @c B
+@param ldb leading dimension of 2D array used to store the matrix @c B
+@param C pointer to the address of @c C 
+@param ldc leading dimension of 2D array used to store the matrix @c C
 */
 template <typename T>
 void cublas_geam(
-  cublasHandle_t native_handle,
+  cublasHandle_t handle,
   cublasOperation_t ta, cublasOperation_t tb,
   int m, int n,
   const T *alpha,
@@ -48,12 +64,12 @@ void cublas_geam(
   cublasStatus_t stat;
 
   if constexpr(std::is_same_v<T, float>) {
-    stat = cublasSgeam(native_handle,
+    stat = cublasSgeam(handle,
       ta, tb, m, n, alpha, A, lda, beta, B, ldb, C, ldc
     );
   }
   else if constexpr(std::is_same_v<T, double>) {
-    stat = cublasDgeam(native_handle,
+    stat = cublasDgeam(handle,
       ta, tb, m, n, alpha, A, lda, beta, B, ldb, C, ldc
     );
   }
@@ -69,7 +85,7 @@ void cublas_geam(
 */
 template <typename T>
 void cublas_c_geam(
-  cublasHandle_t native_handle,
+  cublasHandle_t handle,
   cublasOperation_t ta, cublasOperation_t tb,
   int m, int n,
   const T *alpha,
@@ -82,12 +98,12 @@ void cublas_c_geam(
   cublasStatus_t stat;
 
   if constexpr(std::is_same_v<T, float>) {
-    stat = cublasSgeam(native_handle,
+    stat = cublasSgeam(handle,
       ta, tb, n, m, alpha, A, lda, beta, B, ldb, C, ldc
     );
   }
   else if constexpr(std::is_same_v<T, double>) {
-    stat = cublasDgeam(native_handle,
+    stat = cublasDgeam(handle,
       ta, tb, n, m, alpha, A, lda, beta, B, ldb, C, ldc
     );
   }
@@ -117,6 +133,8 @@ dimension @c op(B) as @c k by @c n, and @c C as @c m by @c n.
 The input matrices are in column-major storage.
 
 @tparam T data type
+
+@param handle cublas library handle
 @param ta transport operation @c op(A)
 @param tb transport operation @c op(B)
 @param m number of rows of matrix @c C and @c op(A)
@@ -134,7 +152,7 @@ The input matrices are in column-major storage.
 */
 template <typename T>
 void cublas_gemm(
-  cublasHandle_t native_handle,
+  cublasHandle_t handle,
   cublasOperation_t ta, cublasOperation_t tb,
   int m, int n, int k,
   const T *alpha,
@@ -147,12 +165,12 @@ void cublas_gemm(
   cublasStatus_t stat;
 
   if constexpr(std::is_same_v<T, float>) {
-    stat = cublasSgemm(native_handle,
+    stat = cublasSgemm(handle,
       ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc
     );
   }
   else if constexpr(std::is_same_v<T, double>) {
-    stat = cublasDgemm(native_handle,
+    stat = cublasDgemm(handle,
       ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc
     );
   }
@@ -168,7 +186,7 @@ void cublas_gemm(
 */
 template <typename T>
 void cublas_c_gemm(
-  cublasHandle_t native_handle,
+  cublasHandle_t handle,
   cublasOperation_t ta, cublasOperation_t tb,
   int m, int n, int k,
   const T *alpha,
@@ -181,12 +199,12 @@ void cublas_c_gemm(
   cublasStatus_t stat;
 
   if constexpr(std::is_same_v<T, float>) {
-    stat = cublasSgemm(native_handle,
+    stat = cublasSgemm(handle,
       tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
     );
   }
   else if constexpr(std::is_same_v<T, double>) {
-    stat = cublasDgemm(native_handle,
+    stat = cublasDgemm(handle,
       tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
     );
   }
@@ -221,6 +239,8 @@ dimension @c op(B) as @c k by @c n, and @c C as @c m by @c n.
 The input matrices are in column-major storage.
 
 @tparam T data type
+
+@param handle cublas library handle
 @param ta transport operation @c op(A[i])
 @param tb transport operation @c op(B[i])
 @param m number of rows of matrix @c C[i] and @c op(A[i])
@@ -239,7 +259,7 @@ The input matrices are in column-major storage.
 */
 template <typename T>
 void cublas_gemm_batched(
-  cublasHandle_t native_handle,
+  cublasHandle_t handle,
   cublasOperation_t ta, cublasOperation_t tb,
   int m, int n, int k,
   const T *alpha,
@@ -253,12 +273,12 @@ void cublas_gemm_batched(
   cublasStatus_t stat;
 
   if constexpr(std::is_same_v<T, float>) {
-    stat = cublasSgemmBatched(native_handle,
+    stat = cublasSgemmBatched(handle,
       ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc, bc
     );
   }
   else if constexpr(std::is_same_v<T, double>) {
-    stat = cublasDgemmBatched(native_handle,
+    stat = cublasDgemmBatched(handle,
       ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc, bc
     );
   }
@@ -272,7 +292,7 @@ void cublas_gemm_batched(
 */ 
 template <typename T>
 void cublas_c_gemm_batched(
-  cublasHandle_t native_handle,
+  cublasHandle_t handle,
   cublasOperation_t ta, cublasOperation_t tb,
   int m, int n, int k,
   const T *alpha,
@@ -285,12 +305,12 @@ void cublas_c_gemm_batched(
   cublasStatus_t stat;
 
   if constexpr(std::is_same_v<T, float>) {
-    stat = cublasSgemmBatched(native_handle,
+    stat = cublasSgemmBatched(handle,
       tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc, bc
     );
   }
   else if constexpr(std::is_same_v<T, double>) {
-    stat = cublasDgemmBatched(native_handle,
+    stat = cublasDgemmBatched(handle,
       tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc, bc
     );
   }
@@ -315,6 +335,8 @@ implicitly assuming they are respectively address offsets
 The input matrices are in column-major storage.
 
 @tparam T data type
+
+@param handle cublas library handle
 @param ta transport operation @c op(A[i])
 @param tb transport operation @c op(B[i])
 @param m number of rows of matrix @c C[i] and @c op(A[i])
@@ -357,7 +379,7 @@ to take advantage of concurrent kernels, rather than this method.
 */
 template <typename T>
 void cublas_gemm_sbatched(
-  cublasHandle_t native_handle,
+  cublasHandle_t handle,
   cublasOperation_t ta, cublasOperation_t tb,
   int m, int n, int k,
   const T *alpha,
@@ -371,12 +393,12 @@ void cublas_gemm_sbatched(
   cublasStatus_t stat;
 
   if constexpr(std::is_same_v<T, float>) {
-    stat = cublasSgemmStridedBatched(native_handle,
+    stat = cublasSgemmStridedBatched(handle,
       ta, tb, m, n, k, alpha, A, lda, sA, B, ldb, sB, beta, C, ldc, sC, bc
     );
   }
   else if constexpr(std::is_same_v<T, double>) {
-    stat = cublasDgemmStridedBatched(native_handle,
+    stat = cublasDgemmStridedBatched(handle,
       ta, tb, m, n, k, alpha, A, lda, sA, B, ldb, sB, beta, C, ldc, sC, bc
     );
   }
@@ -391,7 +413,7 @@ void cublas_gemm_sbatched(
 */
 template <typename T>
 void cublas_c_gemm_sbatched(
-  cublasHandle_t native_handle,
+  cublasHandle_t handle,
   cublasOperation_t ta, cublasOperation_t tb,
   int m, int n, int k,
   const T *alpha,
@@ -405,12 +427,12 @@ void cublas_c_gemm_sbatched(
   cublasStatus_t stat;
 
   if constexpr(std::is_same_v<T, float>) {
-    stat = cublasSgemmStridedBatched(native_handle,
+    stat = cublasSgemmStridedBatched(handle,
       tb, ta, n, m, k, alpha, B, ldb, sB, A, lda, sA, beta, C, ldc, sC, bc
     );
   }
   else if constexpr(std::is_same_v<T, double>) {
-    stat = cublasDgemmStridedBatched(native_handle,
+    stat = cublasDgemmStridedBatched(handle,
       tb, ta, n, m, k, alpha, B, ldb, sB, A, lda, sA, beta, C, ldc, sC, bc
     );
   }

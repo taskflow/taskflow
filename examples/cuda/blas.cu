@@ -9,7 +9,7 @@
 #include <taskflow/cuda/cublas.hpp>
 
 int main() {
-  
+
   tf::Taskflow taskflow;
   tf::Executor executor;
 

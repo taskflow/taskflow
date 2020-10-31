@@ -955,7 +955,7 @@ cudaTask cudaFlow::transform(I first, I last, C&& c, S... srcs) {
 // Function: capture
 template <typename C>
 cudaTask cudaFlow::capture(C&& c) {
-  
+
   // insert a subflow node
   auto node = _graph.emplace_back(
     _graph, std::in_place_type_t<cudaNode::Subflow>{}

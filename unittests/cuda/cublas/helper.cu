@@ -16,8 +16,8 @@ void copy_vec() {
 
   taskflow.emplace([&](tf::cudaFlow& cf){
     cf.cublas([&](tf::cublasFlow& bf) {
-      auto h2d = bf.setvec(1024, host1.data(), 1, gpu, 1);
-      auto d2h = bf.getvec(1024, gpu, 1, host2.data(), 1);
+      auto h2d = bf.vset(1024, host1.data(), 1, gpu, 1);
+      auto d2h = bf.vget(1024, gpu, 1, host2.data(), 1);
       h2d.precede(d2h);
     });
   });
@@ -52,8 +52,8 @@ TEST_CASE("capture.copy") {
   taskflow.emplace([&](tf::cudaFlow& cf){
     cf.cublas([&](tf::cublasFlow& bf) {
       bf.on([&](cudaStream_t stream){
-        tf::cublas_setvec_async(stream, 1024, host1.data(), 1, gpu, 1);
-        tf::cublas_getvec_async(stream, 1024, gpu, 1, host2.data(), 1);
+        tf::cublas_vset_async(stream, 1024, host1.data(), 1, gpu, 1);
+        tf::cublas_vget_async(stream, 1024, gpu, 1, host2.data(), 1);
       });
     });
   });
