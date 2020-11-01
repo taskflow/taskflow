@@ -50,38 +50,65 @@ class cudaFlowCapturerBase {
     cudaTask on(C&& callable);
     
     /**
-    @brief captures a memcpy task
+    @brief copies data between host and device asynchronously through a stream
     
-    This method effectively calls tf::cuda_memcpy_async with packed
-    arguments <tt>(stream, args...)</tt> where @c stream is managed
-    by the flow capturer.
+    @param dst destination memory address
+    @param src source memory address
+    @param count size in bytes to copy
+    
+    The method captures a @c cudaMemcpyAsync operation through an 
+    internal stream.
     */ 
-    template <typename... ArgsT>
-    cudaTask memcpy(ArgsT&&... args);
+    cudaTask memcpy(void* dst, const void* src, size_t count);
 
     /**
-    @brief captures a memset task
+    @brief captures a copy task of typed data
     
-    This method effectively calls tf::cuda_memset_async with packed
-    arguments <tt>(stream, args...)</tt> where @c stream is managed
-    by the flow capturer.
-    */ 
-    template <typename... ArgsT>
-    cudaTask memset(ArgsT&&... args);
+    @tparam T element type (non-void)
+
+    @param tgt pointer to the target memory block
+    @param src pointer to the source memory block
+    @param num number of elements to copy
+
+    @return cudaTask handle
+
+    A copy task transfers <tt>num*sizeof(T)</tt> bytes of data from a source location
+    to a target location. Direction can be arbitrary among CPUs and GPUs.
+    */
+    template <typename T, 
+      std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
+    >
+    cudaTask copy(T* tgt, const T* src, size_t num);
 
     /**
-    @brief captures a kernel task
+    @brief initializes or sets GPU memory to the given value byte by byte
     
-    This method effectively calls tf::cuda_offload_async with packed
-    arguments <tt>(stream, args...)</tt> where @c stream is managed
-    by the flow capturer.
-
-    The arguments @c args are in the order of (1) grid dimsntion,
-    (2) block dimension, (3) shared memory size, (4) kernel function,
-    and (5) parameters to pass to the kernel function.
+    @param devPtr pointer to GPU mempry
+    @param value value to set for each byte of the specified memory
+    @param count size in bytes to set
+    
+    The method captures a @c cudaMemsetAsync operation through an
+    internal stream to fill the first @c count bytes of the memory area 
+    pointed to by @c devPtr with the constant byte value @c value.
     */ 
-    template <typename... ArgsT>
-    cudaTask kernel(ArgsT&&... args);
+    cudaTask memset(void* devPtr, int value, size_t count);
+
+    /**
+    @brief captures a kernel
+    
+    @tparam F kernel function type
+    @tparam ArgsT kernel function parameters type
+
+    @param g configured grid
+    @param b configured block
+    @param s configured shared memory
+    @param f kernel function
+    @param args arguments to forward to the kernel function by copy
+
+    @return cudaTask handle
+    */ 
+    template <typename F, typename... ArgsT>
+    cudaTask kernel(dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
 
   private:
 
@@ -113,26 +140,43 @@ cudaTask cudaFlowCapturerBase::on(C&& callable) {
 }
 
 // Function: memcpy
-template <typename... ArgsT>
-cudaTask cudaFlowCapturerBase::memcpy(ArgsT&&... args) {
-  return on([args...] (cudaStream_t stream) mutable {
-    cuda_memcpy_async(stream, args...);
+inline cudaTask cudaFlowCapturerBase::memcpy(
+  void* dst, const void* src, size_t count
+) {
+  return on([dst, src, count] (cudaStream_t stream) mutable {
+    TF_CHECK_CUDA(
+      cudaMemcpyAsync(dst, src, count, cudaMemcpyDefault, stream),
+      "failed to capture memcpy"
+    );
+  });
+}
+    
+template <typename T, std::enable_if_t<!std::is_same_v<T, void>, void>*>
+cudaTask cudaFlowCapturerBase::copy(T* tgt, const T* src, size_t num) {
+  return on([tgt, src, num] (cudaStream_t stream) mutable {
+    TF_CHECK_CUDA(
+      cudaMemcpyAsync(tgt, src, sizeof(T)*num, cudaMemcpyDefault, stream),
+      "failed to capture copy"
+    );
   });
 }
 
 // Function: memset
-template <typename... ArgsT>
-cudaTask cudaFlowCapturerBase::memset(ArgsT&&... args) {
-  return on([args...] (cudaStream_t stream) mutable {
-    cuda_memset_async(stream, args...);
+inline cudaTask cudaFlowCapturerBase::memset(void* ptr, int v, size_t n) {
+  return on([ptr, v, n] (cudaStream_t stream) mutable {
+    TF_CHECK_CUDA(
+      cudaMemsetAsync(ptr, v, n, stream), "failed to capture memset"
+    );
   });
 }
     
 // Function: kernel
-template <typename... ArgsT>
-cudaTask cudaFlowCapturerBase::kernel(ArgsT&&... args) {
-  return on([args...] (cudaStream_t stream) mutable {
-    cuda_offload_async(stream, args...);
+template <typename F, typename... ArgsT>
+cudaTask cudaFlowCapturerBase::kernel(
+  dim3 g, dim3 b, size_t shm, F&& f, ArgsT&&... args
+) {
+  return on([g, b, shm, f, args...] (cudaStream_t stream) mutable {
+    f<<<g, b, shm, stream>>>(args...);
   });
 }
 

@@ -77,9 +77,9 @@ void amax_amin_asum() {
     auto asum = capturer->asum(N, gpu, 1, gsum);
     vset.precede(amin, amax, asum);
     back.succeed(amin, amax);
-    auto copy_min_i = cap.memcpy(&h_min_i, min_i, sizeof(int));
-    auto copy_max_i = cap.memcpy(&h_max_i, max_i, sizeof(int));
-    auto copy_sum   = cap.memcpy(&h_sum, gsum, sizeof(T));
+    auto copy_min_i = cap.copy(&h_min_i, min_i, 1);
+    auto copy_max_i = cap.memcpy(&h_max_i, max_i, sizeof(h_max_i));
+    auto copy_sum   = cap.copy(&h_sum, gsum, 1);
     back.precede(copy_min_i, copy_max_i, copy_sum);
   });
 

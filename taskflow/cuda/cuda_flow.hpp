@@ -176,7 +176,7 @@ class cudaFlow {
     fill(T* dst, T value, size_t count);
     
     /**
-    @brief creates a copy task
+    @brief creates a copy task of typed data
     
     @tparam T element type (non-void)
 
