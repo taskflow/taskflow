@@ -41,11 +41,6 @@ class cudaFlow {
     bool empty() const;
 
     /**
-    @brief queries the device associated with the %cudaFlow
-    */
-    int device() const;
-
-    /**
     @brief queries if the cudaflow is joinable
     */
     bool joinable() const;
@@ -403,14 +398,12 @@ class cudaFlow {
   private:
     
     //cudaFlow(int, Executor&, cudaGraph&);
-    cudaFlow(Executor& executor, cudaGraph&, int);
+    cudaFlow(Executor& executor, cudaGraph&);
     ~cudaFlow();
     
     Executor& _executor;
     cudaGraph& _graph;
     
-    int _device {-1};
-
     bool _joinable {true};
     
     cudaGraphExec_t _executable {nullptr};
@@ -420,10 +413,8 @@ class cudaFlow {
 };
 
 // Constructor
-inline cudaFlow::cudaFlow(Executor& e, cudaGraph& g, int d) : 
-  _executor{e},
-  _graph   {g},
-  _device  {d} {
+inline cudaFlow::cudaFlow(Executor& e, cudaGraph& g) :
+  _executor{e}, _graph {g} {
 }
 
 // Destructor
@@ -460,11 +451,6 @@ inline bool cudaFlow::empty() const {
 inline bool cudaFlow::joinable() const {
   return _joinable;
 } 
-
-// Function: device
-inline int cudaFlow::device() const {
-  return _device;
-}
 
 // Function: noop
 inline cudaTask cudaFlow::noop() {

@@ -274,12 +274,12 @@ class Executor {
     template <typename C, std::enable_if_t<
       std::is_invocable_r_v<void, C, cudaFlow&>, void>* = nullptr
     >
-    void _invoke_cudaflow_task_entry(C&&, int, Node*);
+    void _invoke_cudaflow_task_entry(C&&, Node*);
     
     template <typename C, std::enable_if_t<
       std::is_invocable_r_v<void, C, cudaFlowCapturer&>, void>* = nullptr
     >
-    void _invoke_cudaflow_task_entry(C&&, int, Node*);
+    void _invoke_cudaflow_task_entry(C&&, Node*);
     
     template <typename P>
     void _invoke_cudaflow_task_internal(Worker&, cudaFlow&, P&&, bool);
@@ -1030,7 +1030,7 @@ inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node) {
 template <typename C,
   std::enable_if_t<std::is_invocable_r_v<void, C, cudaFlow&>, void>*
 >
-void Executor::_invoke_cudaflow_task_entry(C&& c, int d, Node* node) {
+void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
 
   auto& h = std::get<Node::cudaFlowTask>(node->_handle);
   
@@ -1038,7 +1038,7 @@ void Executor::_invoke_cudaflow_task_entry(C&& c, int d, Node* node) {
 
   h.graph._create_native_graph();
   
-  cudaFlow cf(*this, h.graph, d);
+  cudaFlow cf(*this, h.graph);
 
   c(cf); 
 
@@ -1059,7 +1059,7 @@ void Executor::_invoke_cudaflow_task_entry(C&& c, int d, Node* node) {
 template <typename C, 
   std::enable_if_t<std::is_invocable_r_v<void, C, cudaFlowCapturer&>, void>*
 >
-void Executor::_invoke_cudaflow_task_entry(C&& c, int d, Node* node) {
+void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
 
   auto& h = std::get<Node::cudaFlowTask>(node->_handle);
   
@@ -1101,8 +1101,6 @@ void Executor::_invoke_cudaflow_task_internal(
     return;
   }
   
-  //auto s = _cuda_devices[d].streams[w.id - _id_offset[w.domain]];
-  
   // transforms cudaFlow to a native cudaGraph under the specified device
   // and launches the graph through a given or an internal device stream
   if(cf._executable == nullptr) {
@@ -1110,18 +1108,16 @@ void Executor::_invoke_cudaflow_task_internal(
     //cuda_dump_graph(std::cout, cf._graph._native_handle);
   }
 
-  cudaScopedPerThreadStream s(cf._device);
+  cudaScopedPerThreadStream s;
 
   while(!predicate()) {
 
     TF_CHECK_CUDA(
-      cudaGraphLaunch(cf._executable, s), 
-      "failed to launch cudaFlow on device ", cf._device
+      cudaGraphLaunch(cf._executable, s), "failed to execute cudaFlow"
     );
 
     TF_CHECK_CUDA(
-      cudaStreamSynchronize(s), 
-      "failed to synchronize cudaFlow on device ", cf._device
+      cudaStreamSynchronize(s), "failed to synchronize cudaFlow execution"
     );
   }
 
@@ -1405,10 +1401,7 @@ FlowBuilder::emplace_on(C&& callable, D&& device) {
     [c=std::forward<C>(callable), d=std::forward<D>(device)]
     (Executor& executor, Node* node) mutable {
       cudaScopedDevice ctx(d);
-      // cudaFlow
-      //if constexpr(std::is_invocable_r_v<C, void, tf::cudaFlow&>) {
-        executor._invoke_cudaflow_task_entry(c, d, node);
-      //}
+      executor._invoke_cudaflow_task_entry(c, node);
     }
   );
   return Task(n);
