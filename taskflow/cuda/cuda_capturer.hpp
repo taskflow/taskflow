@@ -136,8 +136,6 @@ cudaTask cudaFlowCapturerBase::kernel(ArgsT&&... args) {
   });
 }
 
-
-
 // ----------------------------------------------------------------------------
 // cudaFlowCapturer
 // ----------------------------------------------------------------------------
@@ -161,6 +159,11 @@ class cudaFlowCapturer : public cudaFlowCapturerBase {
     
     /**
     @brief creates a custom capturer derived from tf::cudaFlowCapturerBase
+
+    @tparam T custom capturer type
+    @tparam ArgsT arguments types
+
+    @param args arguments to forward to construct the custom capturer
      */
     template <typename T, typename... ArgsT>
     T* make_capturer(ArgsT&&... args);
@@ -203,7 +206,7 @@ inline cudaGraph_t cudaFlowCapturer::_capture() {
   }
 
   auto g = cease_stream_capture(stream);
-  
+
   //cuda_dump_graph(std::cout, g);
   
   return g;

@@ -927,7 +927,7 @@ cudaTask cudaFlow::transform(I first, I last, C&& c, S... srcs) {
 //}
 
 // ----------------------------------------------------------------------------
-// cudaFlowCapturer
+// captured flow 
 // ----------------------------------------------------------------------------
 
 // Function: capture
@@ -939,7 +939,7 @@ cudaTask cudaFlow::capture(C&& c) {
     _graph, std::in_place_type_t<cudaNode::Subflow>{}
   );
   
-  // construct a capturer flow from the callable
+  // construct a captured flow from the callable
   auto& node_handle = std::get<cudaNode::Subflow>(node->_handle);
   cudaFlowCapturer capturer(node_handle.graph);
 
