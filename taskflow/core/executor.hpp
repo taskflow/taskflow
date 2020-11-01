@@ -226,10 +226,6 @@ class Executor {
     std::vector<Worker> _workers;
     std::vector<std::thread> _threads;
 
-//#ifdef TF_ENABLE_CUDA
-//    std::vector<cudaDevice> _cuda_devices;
-//#endif
-    
     Notifier _notifier[NUM_DOMAINS];
 
     TaskQueue<Node*> _wsq[NUM_DOMAINS];
@@ -275,7 +271,14 @@ class Executor {
 #ifdef TF_ENABLE_CUDA
     void _invoke_cudaflow_task(Worker&, Node*);
     
-    template <typename C>
+    template <typename C, std::enable_if_t<
+      std::is_invocable_r_v<void, C, cudaFlow&>, void>* = nullptr
+    >
+    void _invoke_cudaflow_task_entry(C&&, int, Node*);
+    
+    template <typename C, std::enable_if_t<
+      std::is_invocable_r_v<void, C, cudaFlowCapturer&>, void>* = nullptr
+    >
     void _invoke_cudaflow_task_entry(C&&, int, Node*);
     
     template <typename P>
@@ -295,7 +298,6 @@ inline Executor::Executor(size_t N, size_t M) :
   _MAX_STEALS   {(N + M + 1) << 1},
   _MAX_YIELDS   {100},
   _workers      {N + M},
-  //_cuda_devices {cuda_get_num_devices()},
   _notifier     {Notifier(N), Notifier(M)} {
 
   if(N == 0) {
@@ -311,18 +313,6 @@ inline Executor::Executor(size_t N, size_t M) :
     _num_thieves[i].store(0, std::memory_order_relaxed); 
   }
   
-  //// create a per-worker stream on each cuda device
-  //for(size_t i=0; i<_cuda_devices.size(); ++i) {
-  //  _cuda_devices[i].streams.resize(M);
-  //  cudaScopedDevice ctx(i);
-  //  for(size_t m=0; m<M; ++m) {
-  //    TF_CHECK_CUDA(
-  //      cudaStreamCreate(&(_cuda_devices[i].streams[m])),
-  //      "failed to create a cudaStream for worker ", m, " on device ", i
-  //    );
-  //  }
-  //}
-
   _spawn(N, HOST);
   _spawn(M, CUDA);
 
@@ -372,16 +362,6 @@ inline Executor::~Executor() {
   for(auto& t : _threads){
     t.join();
   } 
-  
-//#ifdef TF_ENABLE_CUDA  
-//  // clean up the cuda streams
-//  for(size_t i=0; i<_cuda_devices.size(); ++i) {
-//    cudaScopedDevice ctx(i);
-//    for(size_t m=0; m<_cuda_devices[i].streams.size(); ++m) {
-//      cudaStreamDestroy(_cuda_devices[i].streams[m]);
-//    }
-//  }
-//#endif
   
   // flush the default observer
   _flush_tfprof();
@@ -1047,7 +1027,9 @@ inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node) {
 }
 
 // Procedure: _invoke_cudaflow_task_entry
-template <typename C>
+template <typename C,
+  std::enable_if_t<std::is_invocable_r_v<void, C, cudaFlow&>, void>*
+>
 void Executor::_invoke_cudaflow_task_entry(C&& c, int d, Node* node) {
 
   auto& h = std::get<Node::cudaFlowTask>(node->_handle);
@@ -1071,6 +1053,42 @@ void Executor::_invoke_cudaflow_task_entry(C&& c, int d, Node* node) {
   //h.graph.dump(std::cout, node);
     
   h.graph._destroy_native_graph();
+}
+
+// Procedure: _invoke_cudaflow_task_entry
+template <typename C, 
+  std::enable_if_t<std::is_invocable_r_v<void, C, cudaFlowCapturer&>, void>*
+>
+void Executor::_invoke_cudaflow_task_entry(C&& c, int d, Node* node) {
+
+  auto& h = std::get<Node::cudaFlowTask>(node->_handle);
+  
+  h.graph.clear();
+  
+  cudaFlowCapturer fc(h.graph);
+
+  c(fc);
+  
+  auto captured = fc._capture();
+  
+  TF_CHECK_CUDA(
+    cudaGraphInstantiate(
+      &fc._executable, captured, nullptr, nullptr, 0
+    ),
+    "failed to create an executable graph"
+  );
+  
+  cudaScopedPerThreadStream s;
+
+  TF_CHECK_CUDA(cudaGraphLaunch(fc._executable, s), "failed to exec");
+  TF_CHECK_CUDA(cudaStreamSynchronize(s), "failed to synchronize stream");
+  TF_CHECK_CUDA(cudaGraphExecDestroy(fc._executable), "failed to destroy exec");
+
+  fc._executable = nullptr;
+  
+  TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
+
+  // TODO: how do we support the update?
 }
 
 // Procedure: _invoke_cudaflow_task_internal
@@ -1387,7 +1405,10 @@ FlowBuilder::emplace_on(C&& callable, D&& device) {
     [c=std::forward<C>(callable), d=std::forward<D>(device)]
     (Executor& executor, Node* node) mutable {
       cudaScopedDevice ctx(d);
-      executor._invoke_cudaflow_task_entry(c, d, node);
+      // cudaFlow
+      //if constexpr(std::is_invocable_r_v<C, void, tf::cudaFlow&>) {
+        executor._invoke_cudaflow_task_entry(c, d, node);
+      //}
     }
   );
   return Task(n);

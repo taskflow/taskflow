@@ -154,8 +154,14 @@ for users to create custom capturers and manages their lifetimes.
 class cudaFlowCapturer : public cudaFlowCapturerBase {
 
   friend class cudaFlow;
+  friend class Executor;
 
   public:
+    
+    /**
+    @brief queries the emptiness of the graph
+    */
+    bool empty() const;
     
     /**
     @brief creates a custom capturer derived from tf::cudaFlowCapturerBase
@@ -164,6 +170,9 @@ class cudaFlowCapturer : public cudaFlowCapturerBase {
     @tparam ArgsT arguments types
 
     @param args arguments to forward to construct the custom capturer
+
+    This %cudaFlowCapturer object keeps a factory of created custom capturers
+    and manages their lifetimes.
      */
     template <typename T, typename... ArgsT>
     T* make_capturer(ArgsT&&... args);
@@ -175,6 +184,11 @@ class cudaFlowCapturer : public cudaFlowCapturerBase {
     cudaFlowCapturer(cudaGraph&);
     
     cudaGraph_t _capture();
+    
+    cudaGraphExec_t _executable {nullptr};
+    
+    //void _create_executable();
+    //void _destroy_executable();
 };
 
 // constructor
@@ -182,9 +196,37 @@ inline cudaFlowCapturer::cudaFlowCapturer(cudaGraph& g) :
   cudaFlowCapturerBase{g} {
 }
 
+// Function: empty
+inline bool cudaFlowCapturer::empty() const {
+  return _graph->empty();
+}
+
+//// Procedure: _create_executable
+//inline void cudaFlowCapturer::_create_executable() {
+//  assert(_executable == nullptr);
+//  TF_CHECK_CUDA(
+//    cudaGraphInstantiate(
+//      &_executable, _graph->_native_handle, nullptr, nullptr, 0
+//    ),
+//    "failed to create an executable graph"
+//  );
+//}
+//
+//// Procedure: _destroy_executable
+//inline void cudaFlowCapturer::_destroy_executable() {
+//  assert(_executable != nullptr);
+//  TF_CHECK_CUDA(
+//    cudaGraphExecDestroy(_executable), "failed to destroy executable graph"
+//  );
+//  _executable = nullptr;
+//}
+
 // Function: make_capturer
 template <typename T, typename... ArgsT>
 T* cudaFlowCapturer::make_capturer(ArgsT&&... args) {
+
+  static_assert(std::is_base_of_v<cudaFlowCapturerBase, T>);
+
   auto ptr = std::make_unique<T>(std::forward<ArgsT>(args)...);
   ptr->_graph = this->_graph;
   auto raw = ptr.get();

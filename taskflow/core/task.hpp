@@ -89,10 +89,12 @@ constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C>;
 
 @brief determines if a callable is a cudaflow task
 
-A cudaFlow task is a callable object constructible from std::function<void(cudaFlow&)>.
+A cudaFlow task is a callable object constructible from 
+std::function<void(tf::cudaFlow&)> or std::function<void(tf::cudaFlowCapturer&)>.
 */
 template <typename C>
-constexpr bool is_cudaflow_task_v = std::is_invocable_r_v<void, C, cudaFlow&>;
+constexpr bool is_cudaflow_task_v = std::is_invocable_r_v<void, C, cudaFlow&> ||
+                                    std::is_invocable_r_v<void, C, cudaFlowCapturer&>;
 #endif
 
 

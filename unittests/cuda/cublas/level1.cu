@@ -52,6 +52,36 @@ void amax_amin_asum() {
     auto copy_sum   = cf.copy(&h_sum, gsum, 1);
     cublas.precede(copy_min_i, copy_max_i, copy_sum);
   });
+  
+  executor.run(taskflow).wait();
+  
+  REQUIRE(std::abs(host[h_min_i]) == min_v);
+  REQUIRE(std::abs(host[h_max_i]) == max_v);
+  REQUIRE(std::abs(sum-h_sum) < 0.0001);
+
+  taskflow.clear();
+  h_min_i = -1;
+  h_max_i = -1;
+
+  // pure capturer
+  
+  taskflow.emplace([&](tf::cudaFlowCapturer& cap){
+    auto capturer = cap.make_capturer<tf::cublasFlowCapturer>();
+    auto amax = capturer->amax(N, gpu, 1, max_i);
+    auto amin = capturer->amin(N, gpu, 1, min_i);
+    auto vset = capturer->vset(N, host.data(), 1, gpu, 1);
+    auto back = cap.single_task([min_i, max_i] __device__ () {
+      (*min_i)--;
+      (*max_i)--;
+    });
+    auto asum = capturer->asum(N, gpu, 1, gsum);
+    vset.precede(amin, amax, asum);
+    back.succeed(amin, amax);
+    auto copy_min_i = cap.memcpy(&h_min_i, min_i, sizeof(int));
+    auto copy_max_i = cap.memcpy(&h_max_i, max_i, sizeof(int));
+    auto copy_sum   = cap.memcpy(&h_sum, gsum, sizeof(T));
+    back.precede(copy_min_i, copy_max_i, copy_sum);
+  });
 
   executor.run(taskflow).wait();
   
