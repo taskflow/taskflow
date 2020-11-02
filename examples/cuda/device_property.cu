@@ -3,7 +3,8 @@
 int main() {
 
   // CUDA version
-  std::cout << "CUDA version: " 
+  std::cout << "========================================\n"
+            << "CUDA version: " 
             << tf::cuda_get_runtime_version() << '\n'
             << "CUDA driver version: " 
             << tf::cuda_get_driver_version() << '\n';

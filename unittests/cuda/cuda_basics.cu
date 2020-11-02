@@ -36,28 +36,36 @@ __global__ void k_single_add(T* ptr, int i, T value) {
 // Testcase: Empty
 // --------------------------------------------------------
 
-TEST_CASE("Empty" * doctest::timeout(300)) {
-
+template <typename T>
+void empty() {
   std::atomic<int> counter{0};
   
   tf::Taskflow taskflow;
   tf::Executor executor;
 
-  taskflow.emplace([&](tf::cudaFlow&){ 
+  taskflow.emplace([&](T&){ 
     ++counter; 
   });
   
-  taskflow.emplace([&](tf::cudaFlow&){ 
+  taskflow.emplace([&](T&){ 
     ++counter; 
   });
   
-  taskflow.emplace([&](tf::cudaFlow&){ 
+  taskflow.emplace([&](T&){ 
     ++counter; 
   });
 
   executor.run_n(taskflow, 100).wait();
 
   REQUIRE(counter == 300);
+}
+
+TEST_CASE("Empty" * doctest::timeout(300)) {
+  empty<tf::cudaFlow>();
+}
+
+TEST_CASE("EmptyCapture" * doctest::timeout(300)) {
+  empty<tf::cudaFlowCapturer>();
 }
 
 // --------------------------------------------------------
@@ -183,7 +191,7 @@ TEST_CASE("Add.i32" * doctest::timeout(300)) {
 // --------------------------------------------------------
 // Testcase: Binary Set
 // --------------------------------------------------------
-template <typename T>
+template <typename T, typename F>
 void bset() {
 
   const unsigned n = 10000;
@@ -199,7 +207,7 @@ void bset() {
     REQUIRE(cudaMalloc(&gpu, n*sizeof(T)) == cudaSuccess);
   });
 
-  auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
+  auto gputask = taskflow.emplace([&](F& cf) {
     dim3 g = {1, 1, 1};
     dim3 b = {1, 1, 1};
     auto h2d = cf.copy(gpu, cpu, n);
@@ -233,21 +241,35 @@ void bset() {
 }
 
 TEST_CASE("BSet.i8" * doctest::timeout(300)) {
-  bset<int8_t>();
+  bset<int8_t, tf::cudaFlow>();
 }
 
 TEST_CASE("BSet.i16" * doctest::timeout(300)) {
-  bset<int16_t>();
+  bset<int16_t, tf::cudaFlow>();
 }
 
 TEST_CASE("BSet.i32" * doctest::timeout(300)) {
-  bset<int32_t>();
+  bset<int32_t, tf::cudaFlow>();
+}
+
+TEST_CASE("CapturedBSet.i8" * doctest::timeout(300)) {
+  bset<int8_t, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("CapturedBSet.i16" * doctest::timeout(300)) {
+  bset<int16_t, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("CapturedBSet.i32" * doctest::timeout(300)) {
+  bset<int32_t, tf::cudaFlowCapturer>();
 }
 
 // --------------------------------------------------------
 // Testcase: Memset
 // --------------------------------------------------------
-TEST_CASE("Memset") {
+
+template <typename F>
+void memset() {
   
   tf::Taskflow taskflow;
   tf::Executor executor;
@@ -267,12 +289,12 @@ TEST_CASE("Memset") {
       cpu[i] = 999;
     }
     
-    taskflow.emplace([&](tf::cudaFlow& cf){
+    taskflow.emplace([&](F& cf){
       dim3 g = {(unsigned)(N+255)/256, 1, 1};
       dim3 b = {256, 1, 1};
       auto kset = cf.kernel(g, b, 0, k_set<int>, gpu, N, 123);
-      auto zero = cf.memset(gpu+start, 0x3f, (N-start)*sizeof(int));
       auto copy = cf.copy(cpu, gpu, N);
+      auto zero = cf.memset(gpu+start, 0x3f, (N-start)*sizeof(int));
       kset.precede(zero);
       zero.precede(copy);
     });
@@ -291,10 +313,18 @@ TEST_CASE("Memset") {
   REQUIRE(cudaFree(gpu) == cudaSuccess);
 }
 
+TEST_CASE("Memset" * doctest::timeout(300)) {
+  memset<tf::cudaFlow>();
+}
+
+TEST_CASE("CapturedMemset" * doctest::timeout(300)) {
+  memset<tf::cudaFlowCapturer>();
+}
+
 // --------------------------------------------------------
 // Testcase: Memset0
 // --------------------------------------------------------
-template <typename T>
+template <typename T, typename F>
 void memset0() {
   
   tf::Taskflow taskflow;
@@ -315,7 +345,7 @@ void memset0() {
       cpu[i] = (T)999;
     }
     
-    taskflow.emplace([&](tf::cudaFlow& cf){
+    taskflow.emplace([&](F& cf){
       dim3 g = {(unsigned)(N+255)/256, 1, 1};
       dim3 b = {256, 1, 1};
       auto kset = cf.kernel(g, b, 0, k_set<T>, gpu, N, (T)123);
@@ -340,29 +370,49 @@ void memset0() {
 }
 
 TEST_CASE("Memset0.i8") {
-  memset0<int8_t>();
+  memset0<int8_t, tf::cudaFlow>();
 }
 
 TEST_CASE("Memset0.i16") {
-  memset0<int16_t>();
+  memset0<int16_t, tf::cudaFlow>();
 }
 
 TEST_CASE("Memset0.i32") {
-  memset0<int32_t>();
+  memset0<int32_t, tf::cudaFlow>();
 }
 
 TEST_CASE("Memset0.f32") {
-  memset0<float>();
+  memset0<float, tf::cudaFlow>();
 }
 
 TEST_CASE("Memset0.f64") {
-  memset0<double>();
+  memset0<double, tf::cudaFlow>();
+}
+
+TEST_CASE("CapturedMemset0.i8") {
+  memset0<int8_t, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("CapturedMemset0.i16") {
+  memset0<int16_t, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("CapturedMemset0.i32") {
+  memset0<int32_t, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("CapturedMemset0.f32") {
+  memset0<float, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("CapturedMemset0.f64") {
+  memset0<double, tf::cudaFlowCapturer>();
 }
 
 // --------------------------------------------------------
 // Testcase: Memcpy
 // --------------------------------------------------------
-template <typename T>
+template <typename T, typename F>
 void memcpy() {
   
   tf::Taskflow taskflow;
@@ -383,7 +433,7 @@ void memcpy() {
       cpu[i] = (T)999;
     }
     
-    taskflow.emplace([&](tf::cudaFlow& cf){
+    taskflow.emplace([&](F& cf){
       dim3 g = {(unsigned)(N+255)/256, 1, 1};
       dim3 b = {256, 1, 1};
       auto kset = cf.kernel(g, b, 0, k_set<T>, gpu, N, (T)123);
@@ -408,23 +458,43 @@ void memcpy() {
 }
 
 TEST_CASE("Memcpy.i8") {
-  memcpy<int8_t>();
+  memcpy<int8_t, tf::cudaFlow>();
 }
 
 TEST_CASE("Memcpy.i16") {
-  memcpy<int16_t>();
+  memcpy<int16_t, tf::cudaFlow>();
 }
 
 TEST_CASE("Memcpy.i32") {
-  memcpy<int32_t>();
+  memcpy<int32_t, tf::cudaFlow>();
 }
 
 TEST_CASE("Memcpy.f32") {
-  memcpy<float>();
+  memcpy<float, tf::cudaFlow>();
 }
 
 TEST_CASE("Memcpy.f64") {
-  memcpy<double>();
+  memcpy<double, tf::cudaFlow>();
+}
+
+TEST_CASE("CapturedMemcpy.i8") {
+  memcpy<int8_t, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("CapturedMemcpy.i16") {
+  memcpy<int16_t, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("CapturedMemcpy.i32") {
+  memcpy<int32_t, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("CapturedMemcpy.f32") {
+  memcpy<float, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("CapturedMemcpy.f64") {
+  memcpy<double, tf::cudaFlowCapturer>();
 }
 
 // --------------------------------------------------------
@@ -630,9 +700,10 @@ TEST_CASE("Barrier.i32" * doctest::timeout(300)) {
 // ----------------------------------------------------------------------------
 // NestedRuns
 // ----------------------------------------------------------------------------
-
-TEST_CASE("NestedRuns") {
   
+template <typename F>
+void nested_runs() {
+
   int* cpu = nullptr;
   int* gpu = nullptr;
 
@@ -649,17 +720,17 @@ TEST_CASE("NestedRuns") {
     void run(int* cpu, int* gpu, unsigned n) {
       taskflow.clear();
 
-      auto A1 = taskflow.emplace([&](tf::cudaFlow& cf) {  
+      auto A1 = taskflow.emplace([&](F& cf) {  
         cf.copy(gpu, cpu, n);
       });
 
-      auto A2 = taskflow.emplace([&](tf::cudaFlow& cf) { 
+      auto A2 = taskflow.emplace([&](F& cf) { 
         dim3 g = {(n+255)/256, 1, 1};
         dim3 b = {256, 1, 1};
         cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
       });
 
-      auto A3 = taskflow.emplace([&] (tf::cudaFlow& cf) {
+      auto A3 = taskflow.emplace([&] (F& cf) {
         cf.copy(cpu, gpu, n);
       });
 
@@ -683,7 +754,7 @@ TEST_CASE("NestedRuns") {
       taskflow.clear();
       
       auto B0 = taskflow.emplace([] () {});
-      auto B1 = taskflow.emplace([&] (tf::cudaFlow& cf) { 
+      auto B1 = taskflow.emplace([&] (F& cf) { 
         dim3 g = {(n+255)/256, 1, 1};
         dim3 b = {256, 1, 1};
         auto h2d = cf.copy(gpu, cpu, n);
@@ -693,7 +764,7 @@ TEST_CASE("NestedRuns") {
         kernel.precede(d2h);
       });
       auto B2 = taskflow.emplace([&] () { a.run(cpu, gpu, n); });
-      auto B3 = taskflow.emplace([&] (tf::cudaFlow&) { 
+      auto B3 = taskflow.emplace([&] (F&) { 
         for(unsigned i=0; i<n; ++i) {
           cpu[i]++;
         }
@@ -716,6 +787,14 @@ TEST_CASE("NestedRuns") {
     
   REQUIRE(cudaFree(gpu) == cudaSuccess);
   std::free(cpu);
+}
+
+TEST_CASE("NestedRuns" * doctest::timeout(300)) {
+  nested_runs<tf::cudaFlow>();
+}
+
+TEST_CASE("CapturedNestedRuns" * doctest::timeout(300)) {
+  nested_runs<tf::cudaFlowCapturer>();
 }
 
 // ----------------------------------------------------------------------------
@@ -969,8 +1048,8 @@ TEST_CASE("Multiruns.4C4G") {
 // Subflow
 // ----------------------------------------------------------------------------
 
-TEST_CASE("Subflow") {
-
+template <typename F>
+void subflow() {
   tf::Taskflow taskflow;
   tf::Executor executor;
     
@@ -986,7 +1065,7 @@ TEST_CASE("Subflow") {
       REQUIRE(cudaMalloc(&gpu, n*sizeof(int)) == cudaSuccess);
     });
     
-    auto gputask = sf.emplace([&](tf::cudaFlow& cf) {
+    auto gputask = sf.emplace([&](F& cf) {
       dim3 g = {(n+255)/256, 1, 1};
       dim3 b = {256, 1, 1};
       auto h2d = cf.copy(gpu, cpu, n);
@@ -1013,11 +1092,20 @@ TEST_CASE("Subflow") {
 
 }
 
+TEST_CASE("Subflow" * doctest::timeout(300)) {
+  subflow<tf::cudaFlow>();
+}
+
+TEST_CASE("CapturedSubflow" * doctest::timeout(300)) {
+  subflow<tf::cudaFlowCapturer>();
+}
+
 // ----------------------------------------------------------------------------
 // NestedSubflow
 // ----------------------------------------------------------------------------
 
-TEST_CASE("NestedSubflow") {
+template <typename F>
+void nested_subflow() {
 
   tf::Taskflow taskflow;
   tf::Executor executor;
@@ -1034,7 +1122,7 @@ TEST_CASE("NestedSubflow") {
 
   auto partask = taskflow.emplace([&](tf::Subflow& sf){
     
-    auto gputask1 = sf.emplace([&](tf::cudaFlow& cf) {
+    auto gputask1 = sf.emplace([&](F& cf) {
       dim3 g = {(n+255)/256, 1, 1};
       dim3 b = {256, 1, 1};
       auto h2d = cf.copy(gpu, cpu, n);
@@ -1045,7 +1133,7 @@ TEST_CASE("NestedSubflow") {
     });
 
     auto subtask1 = sf.emplace([&](tf::Subflow& sf) {
-      auto gputask2 = sf.emplace([&](tf::cudaFlow& cf) {
+      auto gputask2 = sf.emplace([&](F& cf) {
         dim3 g = {(n+255)/256, 1, 1};
         dim3 b = {256, 1, 1};
         auto h2d = cf.copy(gpu, cpu, n);
@@ -1056,7 +1144,7 @@ TEST_CASE("NestedSubflow") {
       });
       
       auto subtask2 = sf.emplace([&](tf::Subflow& sf){
-        sf.emplace([&](tf::cudaFlow& cf) {
+        sf.emplace([&](F& cf) {
           dim3 g = {(n+255)/256, 1, 1};
           dim3 b = {256, 1, 1};
           auto h2d = cf.copy(gpu, cpu, n);
@@ -1088,11 +1176,21 @@ TEST_CASE("NestedSubflow") {
 
 }
 
+TEST_CASE("NestedSubflow" * doctest::timeout(300) ) {
+  nested_subflow<tf::cudaFlow>();
+}
+
+TEST_CASE("CapturedNestedSubflow" * doctest::timeout(300) ) {
+  nested_subflow<tf::cudaFlowCapturer>();
+}
+
+
 // ----------------------------------------------------------------------------
 // DetachedSubflow
 // ----------------------------------------------------------------------------
 
-TEST_CASE("DetachedSubflow") {
+template <typename F>
+void detached_subflow() {
 
   tf::Taskflow taskflow;
   tf::Executor executor;
@@ -1109,7 +1207,7 @@ TEST_CASE("DetachedSubflow") {
       REQUIRE(cudaMalloc(&gpu, n*sizeof(int)) == cudaSuccess);
     });
     
-    auto gputask = sf.emplace([&](tf::cudaFlow& cf) {
+    auto gputask = sf.emplace([&](F& cf) {
       dim3 g = {(n+255)/256, 1, 1};
       dim3 b = {256, 1, 1};
       auto h2d = cf.copy(gpu, cpu, n);
@@ -1133,11 +1231,20 @@ TEST_CASE("DetachedSubflow") {
   std::free(cpu);
 }
 
+TEST_CASE("DetachedSubflow" * doctest::timeout(300)) {
+  detached_subflow<tf::cudaFlow>();
+}
+
+TEST_CASE("CapturedDetachedSubflow" * doctest::timeout(300)) {
+  detached_subflow<tf::cudaFlowCapturer>();
+}
+
 // ----------------------------------------------------------------------------
 // Conditional GPU tasking
 // ----------------------------------------------------------------------------
 
-TEST_CASE("Loop") {
+template <typename F>
+void loop() {
 
   tf::Taskflow taskflow;
   tf::Executor executor;
@@ -1152,7 +1259,7 @@ TEST_CASE("Loop") {
     REQUIRE(cudaMalloc(&gpu, n*sizeof(int)) == cudaSuccess);
   });
 
-  auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
+  auto gputask = taskflow.emplace([&](F& cf) {
     dim3 g = {(n+255)/256, 1, 1};
     dim3 b = {256, 1, 1};
     auto h2d = cf.copy(gpu, cpu, n);
@@ -1181,6 +1288,15 @@ TEST_CASE("Loop") {
   
   executor.run(taskflow).wait();
 }
+
+TEST_CASE("Loop" * doctest::timeout(300)) {
+  loop<tf::cudaFlow>();
+}
+
+TEST_CASE("CapturedLoop" * doctest::timeout(300)) {
+  loop<tf::cudaFlowCapturer>();
+}
+
 
 // ----------------------------------------------------------------------------
 // Predicate

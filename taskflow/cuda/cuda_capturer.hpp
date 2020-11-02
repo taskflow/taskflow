@@ -2,8 +2,20 @@
 
 #include "cuda_task.hpp"
 #include "cuda_algorithm/cuda_for_each.hpp"
+#include "cuda_algorithm/cuda_transform.hpp"
 
 namespace tf {
+
+/**
+@brief the default number of threads per block in an 1D vector of N elements
+*/
+constexpr size_t cuda_default_threads_per_block(size_t N) {
+  return N >= 256 ? 256 : 128;
+}
+
+// ----------------------------------------------------------------------------
+// class definition: cudaFlowCapturerBase
+// ----------------------------------------------------------------------------
 
 /**
 @class cudaFlowCapturerBase
@@ -26,16 +38,7 @@ class cudaFlowCapturerBase {
     @brief default virtual destructor
      */
     virtual ~cudaFlowCapturerBase() = default;
-  
-    /**
-    @brief runs a callable with only a single kernel thread
 
-    @tparam C callable type
-
-    @param callable callable to run by a single kernel thread
-    */
-    template <typename C>
-    cudaTask single_task(C&& callable);
     
     /**
     @brief captures a sequential CUDA operations from the given callable
@@ -109,6 +112,101 @@ class cudaFlowCapturerBase {
     */ 
     template <typename F, typename... ArgsT>
     cudaTask kernel(dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
+    
+    // ------------------------------------------------------------------------
+    // generic algorithms
+    // ------------------------------------------------------------------------
+    
+    /**
+    @brief capturers a kernel to runs the given callable with only one thread
+
+    @tparam C callable type
+
+    @param callable callable to run by a single kernel thread
+    */
+    template <typename C>
+    cudaTask single_task(C&& callable);
+    
+    /**
+    @brief captures a kernel that applies a callable to each dereferenced element 
+           of the data array
+
+    @tparam I iterator type
+    @tparam C callable type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param callable a callable object to apply to the dereferenced iterator 
+    
+    @return cudaTask handle
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    for(auto itr = first; itr != last; i++) {
+      callable(*itr);
+    }
+    @endcode
+    */
+    template <typename I, typename C>
+    cudaTask for_each(I first, I last, C&& callable);
+
+    /**
+    @brief captures a kernel that applies a callable to each index in the range 
+           with the step size
+    
+    @tparam I index type
+    @tparam C callable type
+    
+    @param first beginning index
+    @param last last index
+    @param step step size
+    @param callable the callable to apply to each element in the data array
+    
+    @return cudaTask handle
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    // step is positive [first, last)
+    for(auto i=first; i<last; i+=step) {
+      callable(i);
+    }
+
+    // step is negative [first, last)
+    for(auto i=first; i>last; i+=step) {
+      callable(i);
+    }
+    @endcode
+    */
+    template <typename I, typename C>
+    cudaTask for_each_index(I first, I last, I step, C&& callable);
+  
+    /**
+    @brief captures a kernel that applies a callable to a source range and 
+           stores the result in a target range
+    
+    @tparam I iterator type
+    @tparam C callable type
+    @tparam S source types
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param callable the callable to apply to each element in the range
+    @param srcs iterators to the source ranges
+    
+    @return cudaTask handle
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    while (first != last) {
+      *first++ = callable(*src1++, *src2++, *src3++, ...);
+    }
+    @endcode
+    */
+    template <typename I, typename C, typename... S>
+    cudaTask transform(I first, I last, C&& callable, S... srcs);
 
   private:
 
@@ -120,14 +218,6 @@ class cudaFlowCapturerBase {
 // Constructor
 inline cudaFlowCapturerBase::cudaFlowCapturerBase(cudaGraph& g) :
   _graph {&g} {
-}
-
-// Function: single_task
-template <typename C>
-cudaTask cudaFlowCapturerBase::single_task(C&& callable) {
-  return on([c=std::forward<C>(callable)] (cudaStream_t stream) mutable {
-    cuda_single_task<C><<<1, 1, 0, stream>>>(c);
-  });
 }
 
 // Function: capture
@@ -180,8 +270,53 @@ cudaTask cudaFlowCapturerBase::kernel(
   });
 }
 
+// Function: single_task
+template <typename C>
+cudaTask cudaFlowCapturerBase::single_task(C&& callable) {
+  return on([c=std::forward<C>(callable)] (cudaStream_t stream) mutable {
+    cuda_single_task<C><<<1, 1, 0, stream>>>(c);
+  });
+}
+
+// Function: for_each
+template <typename I, typename C>
+cudaTask cudaFlowCapturerBase::for_each(I first, I last, C&& c) {
+  return on([first, last, c=std::forward<C>(c)](cudaStream_t stream) mutable {
+    size_t N = std::distance(first, last);
+    size_t B = cuda_default_threads_per_block(N);
+    cuda_for_each<I, C><<<(N+B-1)/B, B, 0, stream>>>(first, N, c);
+  });
+}
+
+// Function: for_each_index
+template <typename I, typename C>
+cudaTask cudaFlowCapturerBase::for_each_index(I beg, I end, I inc, C&& c) {
+      
+  if(is_range_invalid(beg, end, inc)) {
+    TF_THROW("invalid range [", beg, ", ", end, ") with inc size ", inc);
+  }
+  
+  return on([beg, end, inc, c=std::forward<C>(c)] (cudaStream_t stream) mutable {
+    // TODO: special case when N is 0?
+    size_t N = distance(beg, end, inc);
+    size_t B = cuda_default_threads_per_block(N);
+    cuda_for_each_index<I, C><<<(N+B-1)/B, B, 0, stream>>>(beg, inc, N, c);
+  });
+}
+
+// Function: transform
+template <typename I, typename C, typename... S>
+cudaTask cudaFlowCapturerBase::transform(I first, I last, C&& c, S... srcs) {
+  return on([first, last, c=std::forward<C>(c), srcs...] (cudaStream_t stream) mutable {
+    // TODO: special case when N is 0?
+    size_t N = std::distance(first, last);
+    size_t B = cuda_default_threads_per_block(N);
+    cuda_transform<I, C, S...><<<(N+B-1)/B, B, 0, stream>>>(first, N, c, srcs...);
+  });
+}
+
 // ----------------------------------------------------------------------------
-// cudaFlowCapturer
+// class definition: cudaFlowCapturer
 // ----------------------------------------------------------------------------
 
 /**
@@ -252,7 +387,7 @@ inline bool cudaFlowCapturer::empty() const {
 //    cudaGraphInstantiate(
 //      &_executable, _graph->_native_handle, nullptr, nullptr, 0
 //    ),
-//    "failed to create an executable graph"
+//    "failed to create an executable for captured graph"
 //  );
 //}
 //

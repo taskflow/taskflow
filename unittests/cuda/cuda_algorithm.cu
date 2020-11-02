@@ -8,7 +8,7 @@ constexpr float eps = 0.0001f;
 // --------------------------------------------------------
 // Testcase: add2
 // --------------------------------------------------------
-template <typename T>
+template <typename T, typename F>
 void add2() {
 
   //const unsigned N = 1<<20;
@@ -39,13 +39,12 @@ void add2() {
       REQUIRE(cudaMalloc(&dy, N*sizeof(T)) == cudaSuccess);
     }).name("allocate_y");
     
-    // saxpy
-    auto cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
+    // axpy
+    auto cudaflow = taskflow.emplace([&](F& cf) {
       auto h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
       auto h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
       auto d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
       auto d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
-
       //auto kernel = cf.add(dx, N, dx, dy);
       auto kernel = cf.transform(
         dx, dx+N, [] __device__ (T& v1, T& v2) { return v1 + v2; }, 
@@ -80,21 +79,34 @@ void add2() {
 }
 
 TEST_CASE("add2.int" * doctest::timeout(300)) {
-  add2<int>();
+  add2<int, tf::cudaFlow>();
 }
 
 TEST_CASE("add2.float" * doctest::timeout(300)) {
-  add2<float>();
+  add2<float, tf::cudaFlow>();
 }
 
 TEST_CASE("add2.double" * doctest::timeout(300)) {
-  add2<double>();
+  add2<double, tf::cudaFlow>();
+}
+
+TEST_CASE("capture_add2.int" * doctest::timeout(300)) {
+  add2<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_add2.float" * doctest::timeout(300)) {
+  add2<float, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_add2.double" * doctest::timeout(300)) {
+  add2<double, tf::cudaFlowCapturer>();
 }
 
 // --------------------------------------------------------
 // Testcase: add3
 // --------------------------------------------------------
-template <typename T>
+
+template <typename T, typename F>
 void add3() {
 
   //const unsigned N = 1<<20;
@@ -134,7 +146,7 @@ void add3() {
     }).name("allocate_y");
     
     // saxpy
-    auto cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
+    auto cudaflow = taskflow.emplace([&](F& cf) {
       auto h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
       auto h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
       auto h2d_z = cf.copy(dz, hz.data(), N).name("h2d_z");
@@ -180,21 +192,33 @@ void add3() {
 }
 
 TEST_CASE("add3.int" * doctest::timeout(300)) {
-  add3<int>();
+  add3<int, tf::cudaFlow>();
 }
 
 TEST_CASE("add3.float" * doctest::timeout(300)) {
-  add3<float>();
+  add3<float, tf::cudaFlow>();
 }
 
 TEST_CASE("add3.double" * doctest::timeout(300)) {
-  add3<double>();
+  add3<double, tf::cudaFlow>();
+}
+
+TEST_CASE("capture_add3.int" * doctest::timeout(300)) {
+  add3<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_add3.float" * doctest::timeout(300)) {
+  add3<float, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_add3.double" * doctest::timeout(300)) {
+  add3<double, tf::cudaFlowCapturer>();
 }
 
 // --------------------------------------------------------
 // Testcase: multiply2
 // --------------------------------------------------------
-template <typename T>
+template <typename T, typename F>
 void multiply2() {
 
   //const unsigned N = 1<<20;
@@ -226,7 +250,7 @@ void multiply2() {
     }).name("allocate_y");
     
     // saxpy
-    auto cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
+    auto cudaflow = taskflow.emplace([&](F& cf) {
       auto h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
       auto h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
       auto d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
@@ -266,22 +290,34 @@ void multiply2() {
 }
 
 TEST_CASE("multiply2.int" * doctest::timeout(300)) {
-  multiply2<int>();
+  multiply2<int, tf::cudaFlow>();
 }
 
 TEST_CASE("multiply2.float" * doctest::timeout(300)) {
-  multiply2<float>();
+  multiply2<float, tf::cudaFlow>();
 }
 
 TEST_CASE("multiply2.double" * doctest::timeout(300)) {
-  multiply2<double>();
+  multiply2<double, tf::cudaFlow>();
+}
+
+TEST_CASE("capture_multiply2.int" * doctest::timeout(300)) {
+  multiply2<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_multiply2.float" * doctest::timeout(300)) {
+  multiply2<float, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_multiply2.double" * doctest::timeout(300)) {
+  multiply2<double, tf::cudaFlowCapturer>();
 }
 
 // ----------------------------------------------------------------------------
 // for_each
 // ----------------------------------------------------------------------------
 
-template <typename T>
+template <typename T, typename F>
 void for_each() {
 
   for(int n=1; n<=123456; n = n*2 + 1) {
@@ -297,12 +333,14 @@ void for_each() {
       REQUIRE(cudaMalloc(&gpu, n*sizeof(T)) == cudaSuccess);
     });
 
-    auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
+    tf::Task gputask;
+    
+    gputask = taskflow.emplace([&](F& cf) {
+      auto d2h = cf.copy(cpu, gpu, n);
       auto h2d = cf.copy(gpu, cpu, n);
       auto kernel = cf.for_each(
         gpu, gpu+n, [] __device__ (T& val) { val = 65536; }
       );
-      auto d2h = cf.copy(cpu, gpu, n);
       h2d.precede(kernel);
       d2h.succeed(kernel);
     });
@@ -321,29 +359,34 @@ void for_each() {
 }
 
 TEST_CASE("for_each.int" * doctest::timeout(300)) {
-  for_each<int>();
+  for_each<int, tf::cudaFlow>();
 }
 
 TEST_CASE("for_each.float" * doctest::timeout(300)) {
-  for_each<float>();
+  for_each<float, tf::cudaFlow>();
 }
 
 TEST_CASE("for_each.double" * doctest::timeout(300)) {
-  for_each<double>();
+  for_each<double, tf::cudaFlow>();
+}
+
+TEST_CASE("capture_for_each.int" * doctest::timeout(300)) {
+  for_each<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_for_each.float" * doctest::timeout(300)) {
+  for_each<float, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_for_each.double" * doctest::timeout(300)) {
+  for_each<double, tf::cudaFlowCapturer>();
 }
 
 // --------------------------------------------------------
 // Testcase: for_each_index
 // --------------------------------------------------------
 
-//template <typename T>
-//struct Reset {
-//  __device__ void operator () (T& value) {
-//    value = 17;
-//  }
-//};
-
-template <typename T>
+template <typename T, typename F>
 void for_each_index() {
 
   for(int n=10; n<=123456; n = n*2 + 1) {
@@ -359,7 +402,8 @@ void for_each_index() {
       REQUIRE(cudaMalloc(&gpu, n*sizeof(T)) == cudaSuccess);
     });
 
-    auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
+    auto gputask = taskflow.emplace([&](F& cf) {
+      auto d2h = cf.copy(cpu, gpu, n);
       auto h2d = cf.copy(gpu, cpu, n);
       //auto kernel = cf.for_each_index(gpu, n, [] __device__ (T& value){ value = 17; });
       auto kernel1 = cf.for_each_index(
@@ -370,7 +414,6 @@ void for_each_index() {
         1, n, 2, 
         [=] __device__ (int i) { gpu[i] = -17; }
       );
-      auto d2h = cf.copy(cpu, gpu, n);
       h2d.precede(kernel1, kernel2);
       d2h.succeed(kernel1, kernel2);
     });
@@ -394,15 +437,27 @@ void for_each_index() {
 }
 
 TEST_CASE("for_each_index.int" * doctest::timeout(300)) {
-  for_each_index<int>();
+  for_each_index<int, tf::cudaFlow>();
 }
 
 TEST_CASE("for_each_index.float" * doctest::timeout(300)) {
-  for_each_index<float>();
+  for_each_index<float, tf::cudaFlow>();
 }
 
 TEST_CASE("for_each_index.double" * doctest::timeout(300)) {
-  for_each_index<double>();
+  for_each_index<double, tf::cudaFlow>();
+}
+
+TEST_CASE("capture_for_each_index.int" * doctest::timeout(300)) {
+  for_each_index<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_for_each_index.float" * doctest::timeout(300)) {
+  for_each_index<float, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_for_each_index.double" * doctest::timeout(300)) {
+  for_each_index<double, tf::cudaFlowCapturer>();
 }
 
 // ----------------------------------------------------------------------------
@@ -418,7 +473,8 @@ struct TransformFunc {
   }
 };
 
-TEST_CASE("transform" * doctest::timeout(300) ) {
+template <typename F>
+void transform() {
 
   for(unsigned n=1; n<=123456; n = n*2 + 1) {
 
@@ -445,25 +501,22 @@ TEST_CASE("transform" * doctest::timeout(300) ) {
       REQUIRE(cudaMalloc(&src3, n*sizeof(double)) == cudaSuccess);
     });
 
-    auto gputask = taskflow.emplace([&](tf::cudaFlow& cf) {
-      auto h2d = cf.copy(tgt, htgt, n);
+    auto gputask = taskflow.emplace([&](F& cf) {
+      auto d2h = cf.copy(htgt, tgt, n);
+      auto d2h3 = cf.copy(hsrc3, src3, n);
+      auto d2h2 = cf.copy(hsrc2, src2, n);
+      auto d2h1 = cf.copy(hsrc1, src1, n);
       auto kernel = cf.transform(
-        tgt, 
-        tgt+n, 
+        tgt, tgt+n, 
         [] __device__ (int& v1, float& v2, double& v3) -> int {
           v1 = 1;
           v2 = 3.0f;
           v3 = 5.0;
           return 17;
         }, 
-        src1, 
-        src2, 
-        src3
+        src1, src2, src3
       );
-      auto d2h = cf.copy(htgt, tgt, n);
-      auto d2h1 = cf.copy(hsrc1, src1, n);
-      auto d2h2 = cf.copy(hsrc2, src2, n);
-      auto d2h3 = cf.copy(hsrc3, src3, n);
+      auto h2d = cf.copy(tgt, htgt, n);
       h2d.precede(kernel);
       kernel.precede(d2h, d2h1, d2h2, d2h3);
     });
@@ -490,9 +543,22 @@ TEST_CASE("transform" * doctest::timeout(300) ) {
   }
 }
 
-// ----------------------------------------------------------------------------
+TEST_CASE("transform" * doctest::timeout(300)) {
+  transform<tf::cudaFlow>();
+}
+
+TEST_CASE("capture_transform" * doctest::timeout(300) ) {
+  transform<tf::cudaFlowCapturer>();
+}
+
+
+
+/*// ----------------------------------------------------------------------------
 // row-major transpose
 // ----------------------------------------------------------------------------
+
+// Disable for now - better to use cublasFlowCapturer
+
 template <typename T>
 __global__
 void verify(const T* din_mat, const T* dout_mat, bool* check, size_t rows, size_t cols) {
@@ -675,5 +741,5 @@ TEST_CASE("matmul.float" * doctest::timeout(300) ) {
 
 TEST_CASE("matmul.double" * doctest::timeout(300) ) {
   matmul<double>();
-}
+}*/
 

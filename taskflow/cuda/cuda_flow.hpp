@@ -7,15 +7,8 @@
 
 namespace tf {
 
-/**
-@brief the default number of threads per block in an 1D vector of N elements
-*/
-constexpr size_t cuda_default_threads_per_block(size_t N) {
-  return N >= 256 ? 256 : 128;
-}
-
 // ----------------------------------------------------------------------------
-// cudaFlow definition
+// class definition: cudaFlow
 // ----------------------------------------------------------------------------
 
 /**
@@ -865,6 +858,8 @@ cudaTask cudaFlow::for_each(I first, I last, C&& c) {
   
   size_t N = std::distance(first, last);
   size_t B = cuda_default_threads_per_block(N);
+  
+  // TODO: special case when N is 0?
 
   return kernel(
     (N+B-1) / B, B, 0, cuda_for_each<I, C>, first, N, std::forward<C>(c)
