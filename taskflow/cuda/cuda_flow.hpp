@@ -54,7 +54,7 @@ class cudaFlow {
     */
     cudaTask noop();
     
-    /*
+    /**
     @brief creates a host execution task
     
     @tparam C callable type

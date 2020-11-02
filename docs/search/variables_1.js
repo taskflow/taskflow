@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cublas_5fper_5fthread_5fhandle_5fpool',['cublas_per_thread_handle_pool',['../cublas__handle_8hpp.html#a5c2ccb319036bfc232bd41734b47dbc5',1,'tf']]]
+  ['cuda_5fper_5fthread_5fstream_5fpool',['cuda_per_thread_stream_pool',['../cuda__stream_8hpp.html#aca7cfd8b94b9f95cfc22532a32a8a76e',1,'tf']]]
 ];

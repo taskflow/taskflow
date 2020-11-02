@@ -2,6 +2,10 @@
 
 #include "cuda_error.hpp"
 
+/**
+@file cuda_device.hpp
+*/
+
 namespace tf { 
 
 /**
@@ -240,12 +244,7 @@ inline bool cuda_get_device_unified_addressing(int d) {
 // ----------------------------------------------------------------------------
 
 /**
-@brief queries the latest CUDA version supported by the driver
-
-Returns the latest version of CUDA supported by the driver. 
-The version is returned as (1000 major + 10 minor). 
-For example, CUDA 9.2 would be represented by 9020. 
-If no driver is installed, then 0 is returned as the driver version.
+@brief queries the latest CUDA version (1000 * major + 10 * minor) supported by the driver 
 */
 inline int cuda_get_driver_version() {
   int num = 0;
@@ -257,12 +256,7 @@ inline int cuda_get_driver_version() {
 }
 
 /**
-@brief queries the CUDA Runtime version
-
-Returns the CUDA Runtime version.
-The version is returned as (1000 major + 10 minor). 
-For example, CUDA 9.2 would be represented by 9020. 
-If no driver is installed, then 0 is returned as the driver version.
+@brief queries the CUDA Runtime version (1000 * major + 10 * minor)
 */
 inline int cuda_get_runtime_version() {
   int num = 0;
@@ -288,8 +282,10 @@ class cudaScopedDevice {
     
     /**
     @brief constructs a RAII-styled device switcher
+
+    @param device device context to scope in the guard
     */
-    explicit cudaScopedDevice(int d);
+    explicit cudaScopedDevice(int device);
 
     /**
     @brief destructs the guard and returns back to the original device

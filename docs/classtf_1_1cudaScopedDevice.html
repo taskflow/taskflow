@@ -103,10 +103,9 @@ $(document).ready(function(){initNavTree('classtf_1_1cudaScopedDevice.html','');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa6be941424258b7ca7993b54f2c8090c"><td class="memItemLeft" align="right" valign="top"><a id="aa6be941424258b7ca7993b54f2c8090c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaScopedDevice.html#aa6be941424258b7ca7993b54f2c8090c">cudaScopedDevice</a> (int d)</td></tr>
-<tr class="memdesc:aa6be941424258b7ca7993b54f2c8090c"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a RAII-styled device switcher <br /></td></tr>
-<tr class="separator:aa6be941424258b7ca7993b54f2c8090c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03d75e2c0b084c8e926a00a922302653"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaScopedDevice.html#a03d75e2c0b084c8e926a00a922302653">cudaScopedDevice</a> (int device)</td></tr>
+<tr class="memdesc:a03d75e2c0b084c8e926a00a922302653"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a RAII-styled device switcher  <a href="#a03d75e2c0b084c8e926a00a922302653">More...</a><br /></td></tr>
+<tr class="separator:a03d75e2c0b084c8e926a00a922302653"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2c9212f42d80d1f7436bb52651006ee"><td class="memItemLeft" align="right" valign="top"><a id="ad2c9212f42d80d1f7436bb52651006ee"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaScopedDevice.html#ad2c9212f42d80d1f7436bb52651006ee">~cudaScopedDevice</a> ()</td></tr>
 <tr class="memdesc:ad2c9212f42d80d1f7436bb52651006ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">destructs the guard and returns back to the original device <br /></td></tr>
@@ -115,7 +114,42 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>RAII-styled device context switch. </p>
 <p>cudaScopedDevice is neither movable nor copyable. </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a03d75e2c0b084c8e926a00a922302653"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03d75e2c0b084c8e926a00a922302653">&#9670;&nbsp;</a></span>cudaScopedDevice()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">tf::cudaScopedDevice::cudaScopedDevice </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>device</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>constructs a RAII-styled device switcher </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">device</td><td>device context to scope in the guard </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="cuda__device_8hpp_source.html">cuda_device.hpp</a></li>
 </ul>
 </div><!-- contents -->

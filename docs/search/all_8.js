@@ -9,5 +9,6 @@ var searchData=
   ['hash_5fvalue',['hash_value',['../classtf_1_1Task.html#a1c9301f2a330cc23ee18e8f61688141f',1,'tf::Task']]],
   ['hecto',['hecto',['http://en.cppreference.com/w/cpp/numeric/ratio/ratio.html',1,'std']]],
   ['high_5fresolution_5fclock',['high_resolution_clock',['http://en.cppreference.com/w/cpp/chrono/high_resolution_clock.html',1,'std::chrono']]],
+  ['host',['host',['../classtf_1_1cudaFlow.html#a060e1c96111c2134ce0f896420a42cd0',1,'tf::cudaFlow']]],
   ['hours',['hours',['http://en.cppreference.com/w/cpp/chrono/duration.html',1,'std::chrono::hours'],['http://en.cppreference.com/w/cpp/chrono/duration/duration.html',1,'std::chrono::hours::hours()']]]
 ];

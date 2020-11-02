@@ -152,7 +152,6 @@ The input matrices are in column-major storage.
 @param beta pointer to the @c beta scalar
 @param C pointer to the address of @c C 
 @param ldc leading dimension of 2D array used to store the matrix @c C
-
 */
 template <typename T>
 void cublas_gemm(
@@ -199,9 +198,7 @@ void cublas_c_gemm(
   const T *beta,
   T *C, int ldc
 ) {
-
   cublasStatus_t stat;
-
   if constexpr(std::is_same_v<T, float>) {
     stat = cublasSgemm(handle,
       tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
@@ -215,7 +212,6 @@ void cublas_c_gemm(
   else {
     static_assert(dependent_false_v<T>, "unknown cublas data type");
   }
-
   TF_CHECK_CUBLAS(stat, "failed to run c_gemm");
 }
 
@@ -326,7 +322,7 @@ void cublas_c_gemm_batched(
 // ----------------------------------------------------------------------------
 // gemm_sbatched
 // ----------------------------------------------------------------------------
-//
+
 /**
 @brief performs matrix-matrix multiplication over a batch of matrices 
        with strided memory access
@@ -392,9 +388,7 @@ void cublas_gemm_sbatched(
   T *C, int ldc, long long int sC,
   int bc
 ) {
-      
   cublasStatus_t stat;
-
   if constexpr(std::is_same_v<T, float>) {
     stat = cublasSgemmStridedBatched(handle,
       ta, tb, m, n, k, alpha, A, lda, sA, B, ldb, sB, beta, C, ldc, sC, bc
@@ -406,7 +400,6 @@ void cublas_gemm_sbatched(
     );
   }
   else static_assert(dependent_false_v<T>, "unknown cublas data type");
-  
   TF_CHECK_CUBLAS(stat, "failed to run gemm_sbatched");
 }
 
@@ -426,9 +419,7 @@ void cublas_c_gemm_sbatched(
   T *C, int ldc, long long int sC,
   int bc
 ){
-      
   cublasStatus_t stat;
-
   if constexpr(std::is_same_v<T, float>) {
     stat = cublasSgemmStridedBatched(handle,
       tb, ta, n, m, k, alpha, B, ldb, sB, A, lda, sA, beta, C, ldc, sC, bc

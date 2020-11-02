@@ -88,8 +88,8 @@ var NAVTREE =
       [ "Class Index", "classes.html", null ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
-        [ "All", "functions.html", null ],
-        [ "Functions", "functions_func.html", null ],
+        [ "All", "functions.html", "functions_dup" ],
+        [ "Functions", "functions_func.html", "functions_func" ],
         [ "Variables", "functions_vars.html", null ],
         [ "Related Functions", "functions_rela.html", null ]
       ] ]
@@ -103,8 +103,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"classtf_1_1cublasScopedPerThreadHandle.html#ab38a12915fc954f3c3527fcbc74bc6b7",
-"release-2-5-0.html#release-2-5-0_download"
+"classtf_1_1cublasFlowCapturer.html#aa38b7cfce0505d84d712f747fcfc580f",
+"functions_z.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

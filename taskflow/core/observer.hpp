@@ -512,13 +512,6 @@ inline const char* observer_type_to_string(ObserverType type) {
   return val;
 }
 
-// ----------------------------------------------------------------------------
-// Legacy Alias
-// ----------------------------------------------------------------------------
-using ExecutorObserverInterface = ObserverInterface;
-using ExecutorObserver          = ChromeObserver;
-
-
 }  // end of namespace tf -----------------------------------------------------
 
 

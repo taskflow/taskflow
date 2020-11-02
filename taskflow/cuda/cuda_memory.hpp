@@ -2,6 +2,10 @@
 
 #include "cuda_device.hpp"
 
+/**
+@file cuda_memory.hpp
+*/
+
 namespace tf {
 
 // ----------------------------------------------------------------------------

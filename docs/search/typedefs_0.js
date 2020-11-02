@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cublasperthreadhandlepool',['cublasPerThreadHandlePool',['../cublas__handle_8hpp.html#adb40ee6a2cc5f4eb13495d86c63dea20',1,'tf']]]
+  ['cudaperthreadstreampool',['cudaPerThreadStreamPool',['../cuda__stream_8hpp.html#a632bb71dc4ddedbf2c26f6f25a2d6a49',1,'tf']]]
 ];

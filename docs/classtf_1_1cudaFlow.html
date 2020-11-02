@@ -115,9 +115,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a30b2e107cb2c90a37f467b28d1b42a74"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a30b2e107cb2c90a37f467b28d1b42a74">noop</a> ()</td></tr>
 <tr class="memdesc:a30b2e107cb2c90a37f467b28d1b42a74"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a no-operation task  <a href="#a30b2e107cb2c90a37f467b28d1b42a74">More...</a><br /></td></tr>
 <tr class="separator:a30b2e107cb2c90a37f467b28d1b42a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a060e1c96111c2134ce0f896420a42cd0"><td class="memTemplParams" colspan="2"><a id="a060e1c96111c2134ce0f896420a42cd0"></a>
-template&lt;typename C &gt; </td></tr>
-<tr class="memitem:a060e1c96111c2134ce0f896420a42cd0"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><b>host</b> (C &amp;&amp;callable)</td></tr>
+<tr class="memitem:a060e1c96111c2134ce0f896420a42cd0"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
+<tr class="memitem:a060e1c96111c2134ce0f896420a42cd0"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a060e1c96111c2134ce0f896420a42cd0">host</a> (C &amp;&amp;callable)</td></tr>
+<tr class="memdesc:a060e1c96111c2134ce0f896420a42cd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a host execution task  <a href="#a060e1c96111c2134ce0f896420a42cd0">More...</a><br /></td></tr>
 <tr class="separator:a060e1c96111c2134ce0f896420a42cd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb731be71bdd436dfb5e36e6213a9a17"><td class="memTemplParams" colspan="2">template&lt;typename F , typename... ArgsT&gt; </td></tr>
 <tr class="memitem:adb731be71bdd436dfb5e36e6213a9a17"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#adb731be71bdd436dfb5e36e6213a9a17">kernel</a> (dim3 g, dim3 b, size_t s, F &amp;&amp;f, ArgsT &amp;&amp;... args)</td></tr>
@@ -473,6 +473,41 @@ template&lt;typename I , typename C &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p>
 <div class="fragment"><div class="line"><span class="comment">// step is positive [first, last)</span></div><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first; i&lt;last; i+=step) {</div><div class="line">  callable(i);</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// step is negative [first, last)</span></div><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first; i&gt;last; i+=step) {</div><div class="line">  callable(i);</div><div class="line">}</div></div><!-- fragment --> 
+</div>
+</div>
+<a id="a060e1c96111c2134ce0f896420a42cd0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a060e1c96111c2134ce0f896420a42cd0">&#9670;&nbsp;</a></span>host()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> tf::cudaFlow::host </td>
+          <td>(</td>
+          <td class="paramtype">C &amp;&amp;&#160;</td>
+          <td class="paramname"><em>callable</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>creates a host execution task </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">C</td><td>callable type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callable</td><td>a callable object with neither arguments nor return (i.e., constructible from std::function&lt;void()&gt;)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>A host task can only execute CPU-specific functions and cannot do any CUDA calls (e.g., cudaMalloc). </p>
+
 </div>
 </div>
 <a id="a9b28ad99e4d3c0208422a2db094df277"></a>

@@ -18,6 +18,7 @@ var searchData=
   ['notify_5fone',['notify_one',['http://en.cppreference.com/w/cpp/thread/condition_variable_any/notify_one.html',1,'std::condition_variable_any::notify_one()'],['http://en.cppreference.com/w/cpp/thread/condition_variable/notify_one.html',1,'std::condition_variable::notify_one()']]],
   ['now',['now',['http://en.cppreference.com/w/cpp/chrono/steady_clock/now.html',1,'std::chrono::steady_clock::now()'],['http://en.cppreference.com/w/cpp/chrono/system_clock/now.html',1,'std::chrono::system_clock::now()'],['http://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now.html',1,'std::chrono::high_resolution_clock::now()']]],
   ['nrm2',['nrm2',['../classtf_1_1cublasFlowCapturer.html#a4e34dc4611f37b1ee3205f18b3d691ba',1,'tf::cublasFlowCapturer']]],
+  ['nrm22',['nrm22',['../classtf_1_1cublasFlowCapturer.html#adaa7e273e93e608450e30f4036b01057',1,'tf::cublasFlowCapturer']]],
   ['num_5fdependents',['num_dependents',['../classtf_1_1Task.html#a974dc1d738b62b829ad261beeafbd67c',1,'tf::Task::num_dependents()'],['../classtf_1_1TaskView.html#acc4e2bef464e8fbb5706cefdf482a24f',1,'tf::TaskView::num_dependents()']]],
   ['num_5fdomains',['num_domains',['../classtf_1_1Executor.html#a8acfc81ae6a64989761ce229262c9a21',1,'tf::Executor']]],
   ['num_5fget',['num_get',['http://en.cppreference.com/w/cpp/locale/num_get/num_get.html',1,'std::num_get']]],

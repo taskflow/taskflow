@@ -2,6 +2,10 @@
 
 #include "cuda_pool.hpp"
 
+/**
+@file cuda_stream.hpp
+*/
+
 namespace tf {
 
 // ----------------------------------------------------------------------------
@@ -96,6 +100,8 @@ class cudaScopedPerThreadStream {
   @brief constructs a scoped stream under the given device
 
   The constructor acquires a stream from a per-thread stream pool.
+
+  @param device device context of the requested stream
   */
   explicit cudaScopedPerThreadStream(int device) : 
     _ptr {cuda_per_thread_stream_pool.acquire(device)} {

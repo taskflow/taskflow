@@ -2,11 +2,11 @@
 
 #include "cublas_handle.hpp"
 
-namespace tf {
-
 /** 
 @file cublas_level1.hpp
 */
+
+namespace tf {
 
 // ----------------------------------------------------------------------------
 // amax
@@ -136,7 +136,6 @@ void cublas_axpy(
   else {
     static_assert(dependent_false_v<T>, "unknown cublas data type");
   }
-
   TF_CHECK_CUBLAS(stat, "failed to run cublas<t>axpy");
 }
 

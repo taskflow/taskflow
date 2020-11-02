@@ -6,5 +6,6 @@ var searchData=
   ['hash_5fcode',['hash_code',['http://en.cppreference.com/w/cpp/types/type_info/hash_code.html',1,'std::type_info::hash_code()'],['http://en.cppreference.com/w/cpp/types/type_index/hash_code.html',1,'std::type_index::hash_code()']]],
   ['hash_5ffunction',['hash_function',['http://en.cppreference.com/w/cpp/container/unordered_map/hash_function.html',1,'std::unordered_map::hash_function()'],['http://en.cppreference.com/w/cpp/container/unordered_multimap/hash_function.html',1,'std::unordered_multimap::hash_function()'],['http://en.cppreference.com/w/cpp/container/unordered_multiset/hash_function.html',1,'std::unordered_multiset::hash_function()'],['http://en.cppreference.com/w/cpp/container/unordered_set/hash_function.html',1,'std::unordered_set::hash_function()']]],
   ['hash_5fvalue',['hash_value',['../classtf_1_1Task.html#a1c9301f2a330cc23ee18e8f61688141f',1,'tf::Task']]],
+  ['host',['host',['../classtf_1_1cudaFlow.html#a060e1c96111c2134ce0f896420a42cd0',1,'tf::cudaFlow']]],
   ['hours',['hours',['http://en.cppreference.com/w/cpp/chrono/duration/duration.html',1,'std::chrono::hours']]]
 ];
