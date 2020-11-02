@@ -2,11 +2,11 @@
 
 #include "cublas_handle.hpp"
 
-namespace tf {
-
 /** 
 @file cublas_helper.hpp
 */
+
+namespace tf {
 
 /**
 @brief copies vector data from host to device
@@ -34,19 +34,6 @@ void cublas_vset_async(
   TF_CHECK_CUBLAS(
     cublasSetVectorAsync(n, sizeof(T), h, inch, d, incd, stream),
     "failed to run vset_async"
-  );
-}
-
-/**
-@brief similar to tf::cublas_vset_async but operates synchronously
-*/
-template <typename T,
-  std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
->
-void cublas_vset(size_t n, const T* h, int inch, T* d, int incd) {
-  TF_CHECK_CUBLAS(
-    cublasSetVector(n, sizeof(T), h, inch, d, incd),
-    "failed to run vset"
   );
 }
 
@@ -79,16 +66,36 @@ void cublas_vget_async(
   );
 }
 
-/**
-@brief similar to tf::cublas_vget_async but operates synchronously
-*/
+// ---------------------------------------------------------------------------- 
+// cublasFlowCapturer helper functions
+// ---------------------------------------------------------------------------- 
+
+// Function: vset
 template <typename T,
-  std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
+  std::enable_if_t<!std::is_same_v<T, void>, void>*
 >
-void cublas_vget_async(size_t n, const T* d, int incd, T* h, int inch) {
-  TF_CHECK_CUBLAS(
-    cublasGetVector(n, sizeof(T), d, incd, h, inch), "failed to run vget"
-  );
+cudaTask cublasFlowCapturer::vset(
+  size_t n, const T* h, int inch, T* d, int incd
+) {
+  return on([n, h, inch, d, incd] (cudaStream_t stream) mutable {
+    TF_CHECK_CUBLAS(
+      cublasSetVectorAsync(n, sizeof(T), h, inch, d, incd, stream),
+      "failed to run vset_async"
+    );
+  });
+}
+
+// Function: vget 
+template <typename T,
+  std::enable_if_t<!std::is_same_v<T, void>, void>*
+>
+cudaTask cublasFlowCapturer::vget(size_t n, const T* d, int incd, T* h, int inch) {
+  return on([n, d, incd, h, inch] (cudaStream_t stream) mutable {
+    TF_CHECK_CUBLAS(
+      cublasGetVectorAsync(n, sizeof(T), d, incd, h, inch, stream),
+      "failed to run vget_async"
+    );
+  });
 }
 
 }  // end of namespace tf -----------------------------------------------------

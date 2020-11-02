@@ -2004,7 +2004,7 @@ void observer(unsigned w) {
 
   tf::Executor executor(w);
 
-  auto observer = executor.make_observer<tf::ExecutorObserver>();    
+  auto observer = executor.make_observer<tf::ChromeObserver>();    
 
   tf::Taskflow taskflowA;
   std::vector<tf::Task> tasks;
