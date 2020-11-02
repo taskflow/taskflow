@@ -94,73 +94,93 @@ $(document).ready(function(){initNavTree('cuda__stream_8hpp_source.html',''); in
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span>tf {</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="structtf_1_1cudaStreamCreator.html">   10</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structtf_1_1cudaStreamCreator.html">cudaStreamCreator</a> {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="structtf_1_1cudaStreamCreator.html#a45240b5459cef8b2d5c8d48d57cc3910">   15</a></span>&#160;  cudaStream_t <a class="code" href="structtf_1_1cudaStreamCreator.html#a45240b5459cef8b2d5c8d48d57cc3910">operator () </a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    cudaStream_t stream;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    TF_CHECK_CUDA(cudaStreamCreate(&amp;stream), <span class="stringliteral">&quot;failed to create a CUDA stream&quot;</span>);</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordflow">return</span> stream;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  }</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;};</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="structtf_1_1cudaStreamDeleter.html">   25</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structtf_1_1cudaStreamDeleter.html">cudaStreamDeleter</a> {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="structtf_1_1cudaStreamDeleter.html#a626619c00a871c7be86071fe262ce63e">   30</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="structtf_1_1cudaStreamDeleter.html#a626619c00a871c7be86071fe262ce63e">operator () </a>(cudaStream_t stream)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    cudaStreamDestroy(stream);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  }</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;};</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">using</span> cudaPerThreadStreamPool = cudaPerThreadDeviceObjectPool&lt;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  cudaStream_t, cudaStreamCreator, cudaStreamDeleter</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;&gt;;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">inline</span> thread_local cudaPerThreadStreamPool cuda_per_thread_stream_pool;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">// ----------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment">// c++ wrapper over cudaStream functions</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">// ----------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> start_stream_capture(cudaStream_t stream) {</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  TF_CHECK_CUDA(</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    cudaStreamBeginCapture(stream, cudaStreamCaptureModeGlobal), </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="stringliteral">&quot;failed to turn stream into capture mode&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  );</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;}</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">inline</span> cudaGraph_t cease_stream_capture(cudaStream_t stream) {</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  cudaGraph_t graph;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  TF_CHECK_CUDA(cudaStreamEndCapture(stream, &amp;graph), <span class="stringliteral">&quot;failed to end capture&quot;</span>);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keywordflow">return</span> graph;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;}</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment">// ----------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">// cudaStreamCreator and cudaStreamDeleter for per-thread stream pool</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">// ----------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">struct </span>cudaStreamCreator {</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  cudaStream_t operator () ()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    cudaStream_t stream;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    TF_CHECK_CUDA(cudaStreamCreate(&amp;stream), <span class="stringliteral">&quot;failed to create a CUDA stream&quot;</span>);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordflow">return</span> stream;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  }</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;};</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">// ----------------------------------------------------------------------------</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">// cudaScopedPerThreadStream definition</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">// ----------------------------------------------------------------------------</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="classtf_1_1cudaScopedPerThreadStream.html">   67</a></span>&#160;<span class="keyword">class </span><a class="code" href="classtf_1_1cudaScopedPerThreadStream.html">cudaScopedPerThreadStream</a> {</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  </div>
-<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classtf_1_1cudaScopedPerThreadStream.html#af7845519bb39a1503f68cabd904b9058">   76</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="classtf_1_1cudaScopedPerThreadStream.html#af7845519bb39a1503f68cabd904b9058">cudaScopedPerThreadStream</a>(<span class="keywordtype">int</span> device) : </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    _ptr {cuda_per_thread_stream_pool.acquire(device)} {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  }</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  </div>
-<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="classtf_1_1cudaScopedPerThreadStream.html#a622ecdebd6a710b8487ce64d7a57ae8d">   85</a></span>&#160;  <a class="code" href="classtf_1_1cudaScopedPerThreadStream.html#a622ecdebd6a710b8487ce64d7a57ae8d">cudaScopedPerThreadStream</a>() : </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    _ptr {cuda_per_thread_stream_pool.acquire(cuda_get_device())} {</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  }</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00094"></a><span class="lineno"><a class="line" href="classtf_1_1cudaScopedPerThreadStream.html#afc14e0188999c6e258a7f1d8f64aeea5">   94</a></span>&#160;  <a class="code" href="classtf_1_1cudaScopedPerThreadStream.html#afc14e0188999c6e258a7f1d8f64aeea5">~cudaScopedPerThreadStream</a>() {</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    cuda_per_thread_stream_pool.release(std::move(_ptr));</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  }</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  </div>
-<div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="classtf_1_1cudaScopedPerThreadStream.html#a950b52dc159d34977807026e73b1b50c">  101</a></span>&#160;  <span class="keyword">operator</span> cudaStream_t ()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordflow">return</span> _ptr-&gt;object;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  }</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;  <a class="codeRef" href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html">std::shared_ptr&lt;cudaPerThreadStreamPool::cudaDeviceObject&gt;</a> _ptr;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;};</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;}  <span class="comment">// end of namespace tf -----------------------------------------------------</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">struct </span>cudaStreamDeleter {</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keywordtype">void</span> operator () (cudaStream_t stream)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    cudaStreamDestroy(stream);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  }</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;};</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">using</span> cudaPerThreadStreamPool = cudaPerThreadDeviceObjectPool&lt;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  cudaStream_t, cudaStreamCreator, cudaStreamDeleter</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;&gt;;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="keyword">inline</span> thread_local cudaPerThreadStreamPool cuda_per_thread_stream_pool;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">// ----------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment">// cudaScopedPerThreadStream definition</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment">// ----------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="classtf_1_1cudaScopedPerThreadStream.html">   91</a></span>&#160;<span class="keyword">class </span><a class="code" href="classtf_1_1cudaScopedPerThreadStream.html">cudaScopedPerThreadStream</a> {</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  </div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="classtf_1_1cudaScopedPerThreadStream.html#af7845519bb39a1503f68cabd904b9058">  100</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="classtf_1_1cudaScopedPerThreadStream.html#af7845519bb39a1503f68cabd904b9058">cudaScopedPerThreadStream</a>(<span class="keywordtype">int</span> device) : </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    _ptr {cuda_per_thread_stream_pool.acquire(device)} {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  }</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  </div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classtf_1_1cudaScopedPerThreadStream.html#a622ecdebd6a710b8487ce64d7a57ae8d">  109</a></span>&#160;  <a class="code" href="classtf_1_1cudaScopedPerThreadStream.html#a622ecdebd6a710b8487ce64d7a57ae8d">cudaScopedPerThreadStream</a>() : </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    _ptr {cuda_per_thread_stream_pool.acquire(cuda_get_device())} {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  }</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="classtf_1_1cudaScopedPerThreadStream.html#afc14e0188999c6e258a7f1d8f64aeea5">  118</a></span>&#160;  <a class="code" href="classtf_1_1cudaScopedPerThreadStream.html#afc14e0188999c6e258a7f1d8f64aeea5">~cudaScopedPerThreadStream</a>() {</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    cuda_per_thread_stream_pool.release(std::move(_ptr));</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  }</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  </div>
+<div class="line"><a name="l00125"></a><span class="lineno"><a class="line" href="classtf_1_1cudaScopedPerThreadStream.html#a950b52dc159d34977807026e73b1b50c">  125</a></span>&#160;  <span class="keyword">operator</span> cudaStream_t ()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keywordflow">return</span> _ptr-&gt;object;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  }</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  <a class="code" href="classtf_1_1cudaScopedPerThreadStream.html#a622ecdebd6a710b8487ce64d7a57ae8d">cudaScopedPerThreadStream</a>(<span class="keyword">const</span> <a class="code" href="classtf_1_1cudaScopedPerThreadStream.html">cudaScopedPerThreadStream</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  <a class="code" href="classtf_1_1cudaScopedPerThreadStream.html#a622ecdebd6a710b8487ce64d7a57ae8d">cudaScopedPerThreadStream</a>(<a class="code" href="classtf_1_1cudaScopedPerThreadStream.html">cudaScopedPerThreadStream</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  <a class="codeRef" href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html">std::shared_ptr&lt;cudaPerThreadStreamPool::cudaDeviceObject&gt;</a> _ptr;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;};</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;}  <span class="comment">// end of namespace tf -----------------------------------------------------</span></div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="ashared_ptr_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html">std::shared_ptr&lt; cudaPerThreadStreamPool::cudaDeviceObject &gt;</a></div></div>
-<div class="ttc" id="aclasstf_1_1cudaScopedPerThreadStream_html_afc14e0188999c6e258a7f1d8f64aeea5"><div class="ttname"><a href="classtf_1_1cudaScopedPerThreadStream.html#afc14e0188999c6e258a7f1d8f64aeea5">tf::cudaScopedPerThreadStream::~cudaScopedPerThreadStream</a></div><div class="ttdeci">~cudaScopedPerThreadStream()</div><div class="ttdoc">destructs the scoped stream guard</div><div class="ttdef"><b>Definition:</b> cuda_stream.hpp:94</div></div>
-<div class="ttc" id="aclasstf_1_1cudaScopedPerThreadStream_html_a622ecdebd6a710b8487ce64d7a57ae8d"><div class="ttname"><a href="classtf_1_1cudaScopedPerThreadStream.html#a622ecdebd6a710b8487ce64d7a57ae8d">tf::cudaScopedPerThreadStream::cudaScopedPerThreadStream</a></div><div class="ttdeci">cudaScopedPerThreadStream()</div><div class="ttdoc">constructs a scoped stream under the current device.</div><div class="ttdef"><b>Definition:</b> cuda_stream.hpp:85</div></div>
-<div class="ttc" id="astructtf_1_1cudaStreamCreator_html_a45240b5459cef8b2d5c8d48d57cc3910"><div class="ttname"><a href="structtf_1_1cudaStreamCreator.html#a45240b5459cef8b2d5c8d48d57cc3910">tf::cudaStreamCreator::operator()</a></div><div class="ttdeci">cudaStream_t operator()() const</div><div class="ttdoc">operator to create a CUDA stream</div><div class="ttdef"><b>Definition:</b> cuda_stream.hpp:15</div></div>
-<div class="ttc" id="astructtf_1_1cudaStreamCreator_html"><div class="ttname"><a href="structtf_1_1cudaStreamCreator.html">tf::cudaStreamCreator</a></div><div class="ttdoc">function object class to create a CUDA stream</div><div class="ttdef"><b>Definition:</b> cuda_stream.hpp:10</div></div>
-<div class="ttc" id="astructtf_1_1cudaStreamDeleter_html_a626619c00a871c7be86071fe262ce63e"><div class="ttname"><a href="structtf_1_1cudaStreamDeleter.html#a626619c00a871c7be86071fe262ce63e">tf::cudaStreamDeleter::operator()</a></div><div class="ttdeci">void operator()(cudaStream_t stream) const</div><div class="ttdoc">operator to destroy a CUDA stream</div><div class="ttdef"><b>Definition:</b> cuda_stream.hpp:30</div></div>
-<div class="ttc" id="aclasstf_1_1cudaScopedPerThreadStream_html"><div class="ttname"><a href="classtf_1_1cudaScopedPerThreadStream.html">tf::cudaScopedPerThreadStream</a></div><div class="ttdoc">class to provide RAII-styled guard of stream acquisition</div><div class="ttdef"><b>Definition:</b> cuda_stream.hpp:67</div></div>
-<div class="ttc" id="astructtf_1_1cudaStreamDeleter_html"><div class="ttname"><a href="structtf_1_1cudaStreamDeleter.html">tf::cudaStreamDeleter</a></div><div class="ttdoc">function object class to destroy a cuda stream</div><div class="ttdef"><b>Definition:</b> cuda_stream.hpp:25</div></div>
-<div class="ttc" id="aclasstf_1_1cudaScopedPerThreadStream_html_af7845519bb39a1503f68cabd904b9058"><div class="ttname"><a href="classtf_1_1cudaScopedPerThreadStream.html#af7845519bb39a1503f68cabd904b9058">tf::cudaScopedPerThreadStream::cudaScopedPerThreadStream</a></div><div class="ttdeci">cudaScopedPerThreadStream(int device)</div><div class="ttdoc">constructs a scoped stream under the given device</div><div class="ttdef"><b>Definition:</b> cuda_stream.hpp:76</div></div>
+<div class="ttc" id="aclasstf_1_1cudaScopedPerThreadStream_html_afc14e0188999c6e258a7f1d8f64aeea5"><div class="ttname"><a href="classtf_1_1cudaScopedPerThreadStream.html#afc14e0188999c6e258a7f1d8f64aeea5">tf::cudaScopedPerThreadStream::~cudaScopedPerThreadStream</a></div><div class="ttdeci">~cudaScopedPerThreadStream()</div><div class="ttdoc">destructs the scoped stream guard</div><div class="ttdef"><b>Definition:</b> cuda_stream.hpp:118</div></div>
+<div class="ttc" id="aclasstf_1_1cudaScopedPerThreadStream_html_a622ecdebd6a710b8487ce64d7a57ae8d"><div class="ttname"><a href="classtf_1_1cudaScopedPerThreadStream.html#a622ecdebd6a710b8487ce64d7a57ae8d">tf::cudaScopedPerThreadStream::cudaScopedPerThreadStream</a></div><div class="ttdeci">cudaScopedPerThreadStream()</div><div class="ttdoc">constructs a scoped stream under the current device.</div><div class="ttdef"><b>Definition:</b> cuda_stream.hpp:109</div></div>
+<div class="ttc" id="aclasstf_1_1cudaScopedPerThreadStream_html"><div class="ttname"><a href="classtf_1_1cudaScopedPerThreadStream.html">tf::cudaScopedPerThreadStream</a></div><div class="ttdoc">class to provide RAII-styled guard of stream acquisition</div><div class="ttdef"><b>Definition:</b> cuda_stream.hpp:91</div></div>
+<div class="ttc" id="aclasstf_1_1cudaScopedPerThreadStream_html_af7845519bb39a1503f68cabd904b9058"><div class="ttname"><a href="classtf_1_1cudaScopedPerThreadStream.html#af7845519bb39a1503f68cabd904b9058">tf::cudaScopedPerThreadStream::cudaScopedPerThreadStream</a></div><div class="ttdeci">cudaScopedPerThreadStream(int device)</div><div class="ttdoc">constructs a scoped stream under the given device</div><div class="ttdef"><b>Definition:</b> cuda_stream.hpp:100</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

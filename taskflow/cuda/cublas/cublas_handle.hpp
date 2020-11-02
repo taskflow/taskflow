@@ -4,12 +4,7 @@
 
 namespace tf {
 
-/**
-@brief function object class to create a cublas handle.
-
-By default, the cublas handle has a pointer mode set to device
-(i.e., @c CUBLAS_POINTER_MODE_DEVICE).
-*/
+/** @private */
 struct cublasHandleCreator {
   cublasHandle_t operator () () const {
     cublasHandle_t handle;
@@ -28,9 +23,7 @@ struct cublasHandleCreator {
   }
 };
 
-/**
-@brief function object class to delete a cublas handle.
-*/
+/** @private */
 struct cublasHandleDeleter {
   void operator () (cublasHandle_t ptr) const {
     //std::cout << "destroy cublas handle " << ptr << '\n';

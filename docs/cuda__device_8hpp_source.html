@@ -292,16 +292,57 @@ $(document).ready(function(){initNavTree('cuda__device_8hpp_source.html',''); in
 <div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;  <span class="keywordflow">return</span> num;</div>
 <div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;}</div>
 <div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160; </div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;}  <span class="comment">// end of namespace cuda ---------------------------------------------------</span></div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160; </div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="comment">// ----------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;<span class="comment">// cudaScopedDevice</span></div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;<span class="comment">// ----------------------------------------------------------------------------</span></div>
 <div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160; </div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160; </div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160; </div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160; </div>
+<div class="line"><a name="l00285"></a><span class="lineno"><a class="line" href="classtf_1_1cudaScopedDevice.html">  285</a></span>&#160;<span class="keyword">class </span><a class="code" href="classtf_1_1cudaScopedDevice.html">cudaScopedDevice</a> {</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160; </div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    </div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classtf_1_1cudaScopedDevice.html">cudaScopedDevice</a>(<span class="keywordtype">int</span> d);</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160; </div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    <a class="code" href="classtf_1_1cudaScopedDevice.html#ad2c9212f42d80d1f7436bb52651006ee">~cudaScopedDevice</a>();</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160; </div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;  <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    </div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    <a class="code" href="classtf_1_1cudaScopedDevice.html">cudaScopedDevice</a>() = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    <a class="code" href="classtf_1_1cudaScopedDevice.html">cudaScopedDevice</a>(<span class="keyword">const</span> <a class="code" href="classtf_1_1cudaScopedDevice.html">cudaScopedDevice</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    <a class="code" href="classtf_1_1cudaScopedDevice.html">cudaScopedDevice</a>(<a class="code" href="classtf_1_1cudaScopedDevice.html">cudaScopedDevice</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160; </div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <span class="keywordtype">int</span> _p;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;};</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160; </div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;<span class="comment">// Constructor</span></div>
+<div class="line"><a name="l00309"></a><span class="lineno"><a class="line" href="classtf_1_1cudaScopedDevice.html#aa6be941424258b7ca7993b54f2c8090c">  309</a></span>&#160;<span class="keyword">inline</span> cudaScopedDevice::cudaScopedDevice(<span class="keywordtype">int</span> dev) { </div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;  TF_CHECK_CUDA(cudaGetDevice(&amp;_p), <span class="stringliteral">&quot;failed to get current device scope&quot;</span>);</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;  <span class="keywordflow">if</span>(_p == dev) {</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    _p = -1;</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;  }</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;  <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    TF_CHECK_CUDA(cudaSetDevice(dev), <span class="stringliteral">&quot;failed to scope on device &quot;</span>, dev);</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;  }</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;}</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160; </div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;<span class="comment">// Destructor</span></div>
+<div class="line"><a name="l00320"></a><span class="lineno"><a class="line" href="classtf_1_1cudaScopedDevice.html#ad2c9212f42d80d1f7436bb52651006ee">  320</a></span>&#160;<span class="keyword">inline</span> <a class="code" href="classtf_1_1cudaScopedDevice.html#ad2c9212f42d80d1f7436bb52651006ee">cudaScopedDevice::~cudaScopedDevice</a>() { </div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;  <span class="keywordflow">if</span>(_p != -1) {</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    cudaSetDevice(_p);</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    <span class="comment">//TF_CHECK_CUDA(cudaSetDevice(_p), &quot;failed to scope back to device &quot;, _p);</span></div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;  }</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;}</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160; </div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;}  <span class="comment">// end of namespace cuda ---------------------------------------------------</span></div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160; </div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160; </div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160; </div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160; </div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="aclasstf_1_1cudaScopedDevice_html_ad2c9212f42d80d1f7436bb52651006ee"><div class="ttname"><a href="classtf_1_1cudaScopedDevice.html#ad2c9212f42d80d1f7436bb52651006ee">tf::cudaScopedDevice::~cudaScopedDevice</a></div><div class="ttdeci">~cudaScopedDevice()</div><div class="ttdoc">destructs the guard and returns back to the original device</div><div class="ttdef"><b>Definition:</b> cuda_device.hpp:320</div></div>
 <div class="ttc" id="abasic_ostream_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a></div></div>
+<div class="ttc" id="aclasstf_1_1cudaScopedDevice_html"><div class="ttname"><a href="classtf_1_1cudaScopedDevice.html">tf::cudaScopedDevice</a></div><div class="ttdoc">RAII-styled device context switch.</div><div class="ttdef"><b>Definition:</b> cuda_device.hpp:285</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

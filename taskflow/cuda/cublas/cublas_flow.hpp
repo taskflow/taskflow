@@ -6,24 +6,6 @@
 
 namespace tf {
 
-template <typename T>
-struct is_cublas_data_type : std::false_type {};
-
-template <>
-struct is_cublas_data_type<float> : std::true_type {};
-
-template <>
-struct is_cublas_data_type<double> : std::true_type {};
-
-template <>
-struct is_cublas_data_type<cuComplex> : std::true_type {};
-
-template <>
-struct is_cublas_data_type<cuDoubleComplex> : std::true_type {};
-
-template <typename T>
-inline constexpr bool is_cublas_data_type_v = is_cublas_data_type<T>::value;
-
 // ----------------------------------------------------------------------------
 // cublasFlowCapturer definition
 // ----------------------------------------------------------------------------

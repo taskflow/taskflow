@@ -104,10 +104,6 @@ Public Member Functions</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a1926f45a038d8faa9c1b1ee43fd29a93">empty</a> () const</td></tr>
 <tr class="memdesc:a1926f45a038d8faa9c1b1ee43fd29a93"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the emptiness of the graph <br /></td></tr>
 <tr class="separator:a1926f45a038d8faa9c1b1ee43fd29a93"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2905a7772fb2c25753e1ae72bb05861b"><td class="memItemLeft" align="right" valign="top"><a id="a2905a7772fb2c25753e1ae72bb05861b"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a2905a7772fb2c25753e1ae72bb05861b">device</a> () const</td></tr>
-<tr class="memdesc:a2905a7772fb2c25753e1ae72bb05861b"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the device associated with the cudaFlow <br /></td></tr>
-<tr class="separator:a2905a7772fb2c25753e1ae72bb05861b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac29d95787db4b622e1458bb64da11264"><td class="memItemLeft" align="right" valign="top"><a id="ac29d95787db4b622e1458bb64da11264"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#ac29d95787db4b622e1458bb64da11264">joinable</a> () const</td></tr>
 <tr class="memdesc:ac29d95787db4b622e1458bb64da11264"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries if the cudaflow is joinable <br /></td></tr>
@@ -143,7 +139,7 @@ template&lt;typename C &gt; </td></tr>
 <tr class="separator:aee1fa4aff12a41737ea585fa2e106a35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af03e04771b655f9e629eb4c22e19b19f"><td class="memTemplParams" colspan="2">template&lt;typename T , std::enable_if_t&lt;!std::is_same_v&lt; T, void &gt;, void &gt; *  = nullptr&gt; </td></tr>
 <tr class="memitem:af03e04771b655f9e629eb4c22e19b19f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#af03e04771b655f9e629eb4c22e19b19f">copy</a> (T *tgt, const T *src, size_t num)</td></tr>
-<tr class="memdesc:af03e04771b655f9e629eb4c22e19b19f"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a copy task  <a href="classtf_1_1cudaFlow.html#af03e04771b655f9e629eb4c22e19b19f">More...</a><br /></td></tr>
+<tr class="memdesc:af03e04771b655f9e629eb4c22e19b19f"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a copy task of typed data  <a href="classtf_1_1cudaFlow.html#af03e04771b655f9e629eb4c22e19b19f">More...</a><br /></td></tr>
 <tr class="separator:af03e04771b655f9e629eb4c22e19b19f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99358da15e3bdfa1faabb3e326130e1f"><td class="memTemplParams" colspan="2">template&lt;typename P &gt; </td></tr>
 <tr class="memitem:a99358da15e3bdfa1faabb3e326130e1f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a99358da15e3bdfa1faabb3e326130e1f">offload_until</a> (P &amp;&amp;predicate)</td></tr>
@@ -201,10 +197,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a552f2da29009113beee4ee90bc95ae65"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a552f2da29009113beee4ee90bc95ae65">transform</a> (I first, I last, C &amp;&amp;callable, S... srcs)</td></tr>
 <tr class="memdesc:a552f2da29009113beee4ee90bc95ae65"><td class="mdescLeft">&#160;</td><td class="mdescRight">applies a callable to a source range and stores the result in a target range  <a href="classtf_1_1cudaFlow.html#a552f2da29009113beee4ee90bc95ae65">More...</a><br /></td></tr>
 <tr class="separator:a552f2da29009113beee4ee90bc95ae65"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4d33c2367abcb83df98cec3e91eefbe"><td class="memTemplParams" colspan="2">template&lt;typename C , std::enable_if_t&lt; is_cublasflow_v&lt; C &gt;, void &gt; *  = nullptr&gt; </td></tr>
-<tr class="memitem:ae4d33c2367abcb83df98cec3e91eefbe"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#ae4d33c2367abcb83df98cec3e91eefbe">childflow</a> (C &amp;&amp;callable)</td></tr>
-<tr class="memdesc:ae4d33c2367abcb83df98cec3e91eefbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a cublas childflow graph to perform cuBLAS operations  <a href="classtf_1_1cudaFlow.html#ae4d33c2367abcb83df98cec3e91eefbe">More...</a><br /></td></tr>
-<tr class="separator:ae4d33c2367abcb83df98cec3e91eefbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89c389fff64a16e5dd8c60875d3b514d"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
+<tr class="memitem:a89c389fff64a16e5dd8c60875d3b514d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a89c389fff64a16e5dd8c60875d3b514d">capture</a> (C &amp;&amp;callable)</td></tr>
+<tr class="memdesc:a89c389fff64a16e5dd8c60875d3b514d"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a subflow graph through capture  <a href="classtf_1_1cudaFlow.html#a89c389fff64a16e5dd8c60875d3b514d">More...</a><br /></td></tr>
+<tr class="separator:a89c389fff64a16e5dd8c60875d3b514d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -216,16 +212,16 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></t
 <div class="textblock"><p>class for building a CUDA task dependency graph </p>
 <p>A cudaFlow is a high-level interface to manipulate GPU tasks using the task dependency graph model. The class provides a set of methods for creating and launch different tasks on one or multiple CUDA devices, for instance, kernel tasks, data transfer tasks, and memory operation tasks. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae4d33c2367abcb83df98cec3e91eefbe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae4d33c2367abcb83df98cec3e91eefbe">&#9670;&nbsp;</a></span>childflow()</h2>
+<a id="a89c389fff64a16e5dd8c60875d3b514d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a89c389fff64a16e5dd8c60875d3b514d">&#9670;&nbsp;</a></span>capture()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename C , std::enable_if_t&lt; is_cublasflow_v&lt; C &gt;, void &gt; *  = nullptr&gt; </div>
+template&lt;typename C &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> tf::cudaFlow::childflow </td>
+          <td class="memname"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> tf::cudaFlow::capture </td>
           <td>(</td>
           <td class="paramtype">C &amp;&amp;&#160;</td>
           <td class="paramname"><em>callable</em></td><td>)</td>
@@ -234,15 +230,19 @@ template&lt;typename C , std::enable_if_t&lt; is_cublasflow_v&lt; C &gt;, void &
       </table>
 </div><div class="memdoc">
 
-<p>constructs a cublas childflow graph to perform cuBLAS operations </p>
+<p>constructs a subflow graph through capture </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">C</td><td>callable type</td></tr>
+    <tr><td class="paramname">C</td><td>callable type constructible from std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt; </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph">cudaTask</a> handle</dd></dl>
-<p>A cublas childflow graph forms a cudaGraph of cuBLAS operations and their dependencies. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callable</td><td>the callable to construct a capture flow </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -280,7 +280,7 @@ template&lt;typename T , std::enable_if_t&lt;!std::is_same_v&lt; T, void &gt;, v
       </table>
 </div><div class="memdoc">
 
-<p>creates a copy task </p>
+<p>creates a copy task of typed data </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>element type (non-void)</td></tr>
@@ -548,7 +548,7 @@ template&lt;typename P &gt; </div>
   </table>
   </dd>
 </dl>
-<p>Immediately offloads the present cudaFlow onto a GPU and repeatedly executes it until the predicate returns <code>true</code>. When execution finishes, the cudaFlow is joined. A joined cudaflow becomes invalid and cannot take other operations. </p>
+<p>Immediately offloads the present cudaFlow onto a GPU and repeatedly executes it until the predicate returns <code>true</code>. When execution finishes, the cudaFlow is joined. A joined cudaflow becomes <em>invalid</em> and cannot take other operations. </p>
 
 </div>
 </div>

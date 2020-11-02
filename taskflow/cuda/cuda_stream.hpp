@@ -31,9 +31,7 @@ inline cudaGraph_t cease_stream_capture(cudaStream_t stream) {
 // cudaStreamCreator and cudaStreamDeleter for per-thread stream pool
 // ----------------------------------------------------------------------------
 
-/**
-@brief function object class to create a CUDA stream
-*/
+/** @private */
 struct cudaStreamCreator {
 
   /**
@@ -46,9 +44,7 @@ struct cudaStreamCreator {
   }
 };
 
-/**
-@brief function object class to destroy a cuda stream
-*/
+/** @private */
 struct cudaStreamDeleter {
 
   /**

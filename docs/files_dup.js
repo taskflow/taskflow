@@ -1,5 +1,10 @@
 var files_dup =
 [
+    [ "cublas_flow.hpp", "cublas__flow_8hpp_source.html", null ],
+    [ "cublas_handle.hpp", "cublas__handle_8hpp_source.html", null ],
+    [ "cublas_helper.hpp", "cublas__helper_8hpp_source.html", null ],
+    [ "cublas_level3.hpp", "cublas__level3_8hpp_source.html", null ],
+    [ "cuda_capturer.hpp", "cuda__capturer_8hpp_source.html", null ],
     [ "cuda_device.hpp", "cuda__device_8hpp_source.html", null ],
     [ "cuda_error.hpp", "cuda__error_8hpp_source.html", null ],
     [ "cuda_flow.hpp", "cuda__flow_8hpp_source.html", null ],

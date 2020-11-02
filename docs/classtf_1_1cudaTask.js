@@ -11,7 +11,8 @@ var classtf_1_1cudaTask =
     [ "precede", "classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4", null ],
     [ "succeed", "classtf_1_1cudaTask.html#a4a9ca1a34bac47e4c9b04eb4fb2f7775", null ],
     [ "type", "classtf_1_1cudaTask.html#a7eab02ec6633a5cf17cc15898db2d648", null ],
-    [ "cublasFlow", "classtf_1_1cudaTask.html#afe742df9901e1f7475c61c37c6303f9b", null ],
     [ "cudaFlow", "classtf_1_1cudaTask.html#a9f64f729511a922781a59663ff1c6250", null ],
+    [ "cudaFlowCapturer", "classtf_1_1cudaTask.html#a672b45d300c57d726c203c62f950efbd", null ],
+    [ "cudaFlowCapturerBase", "classtf_1_1cudaTask.html#a8a72366cffc8beb57fb68b1591df56e4", null ],
     [ "operator<<", "classtf_1_1cudaTask.html#aa48fa98a827ff71f8c3845a29f5e4d10", null ]
 ];
