@@ -13,7 +13,7 @@ namespace tf {
 
 @brief The interface class for creating an executor observer.
 
-The tf::ExecutorObserver class let users define methods to monitor the behaviors
+The ObserverInterface class let users define methods to monitor the behaviors
 of an executor. 
 This is particularly useful when you want to inspect the performance of an executor.
 */
