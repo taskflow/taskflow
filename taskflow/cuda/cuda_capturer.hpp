@@ -326,12 +326,35 @@ cudaTask cudaFlowCapturerBase::transform(I first, I last, C&& c, S... srcs) {
 /**
 @class cudaFlowCapturer
 
-@brief class object to construct a CUDA graph through stream capture
+@brief class for building a CUDA task dependency graph through stream capture
 
 A %cudaFlowCapturer inherits all the base methods from tf::cudaFlowCapturerBase 
-to construct a CUDA graph through stream capturer. 
+to construct a CUDA task graph through <i>stream capturer</i>. 
 This class also defines a factory interface tf::cudaFlowCapturer::make_capturer 
-for users to create custom capturers and manages their lifetimes.
+for users to create custom capturers with their lifetimes managed by the factory.
+
+The usage of tf::cudaFlowCapturer is similar to tf::cudaFlow, except users can
+call the method tf::cudaFlowCapturer::on to capture a sequence of asynchronous 
+CUDA operations through the given stream.
+The following example creates a CUDA graph that captures two kernel tasks,
+@c task_1 and @c task_2, where @c task_1 runs before @c task_2. 
+
+@code{.cpp}
+taskflow.emplace([](tf::cudaFlowCapturer& capturer){
+
+  // capture my_kernel_1
+  auto task_1 = capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
+    my_kernel_1<<<grid_1, block_1, shm_size_1, stream>>>(my_parameters_1);
+  });
+
+  // capture my_kernel_2
+  auto task_2 = capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
+    my_kernel_2<<<grid_2, block_2, shm_size_2, stream>>>(my_parameters_2);
+  });
+
+  task_1.precede(task_2);
+});
+@endcode
 
 */
 class cudaFlowCapturer : public cudaFlowCapturerBase {

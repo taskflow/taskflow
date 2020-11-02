@@ -107,7 +107,7 @@ Inheritance diagram for tf::cudaFlowCapturerBase:</div>
 <div class="center"><img src="classtf_1_1cudaFlowCapturerBase__inherit__graph.png" border="0" usemap="#tf_1_1cudaFlowCapturerBase_inherit__map" alt="Inheritance graph"/></div>
 <map name="tf_1_1cudaFlowCapturerBase_inherit__map" id="tf_1_1cudaFlowCapturerBase_inherit__map">
 <area shape="rect" id="node2" href="classtf_1_1cublasFlowCapturer.html" title="class object to construct a cuBLAS task graph " alt="" coords="5,79,160,104"/>
-<area shape="rect" id="node3" href="classtf_1_1cudaFlowCapturer.html" title="class object to construct a CUDA graph through stream capture " alt="" coords="183,79,329,104"/>
+<area shape="rect" id="node3" href="classtf_1_1cudaFlowCapturer.html" title="class for building a CUDA task dependency graph through stream capture " alt="" coords="183,79,329,104"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -214,7 +214,7 @@ template&lt;typename T , std::enable_if_t&lt;!std::is_same_v&lt; T, void &gt;, v
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">cudaTask</a> handle</dd></dl>
 <p>A copy task transfers <code>num*sizeof(T)</code> bytes of data from a source location to a target location. Direction can be arbitrary among CPUs and GPUs. </p>
 
 </div>
@@ -269,7 +269,7 @@ template&lt;typename I , typename C &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">cudaTask</a> handle</dd></dl>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p>
 <div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> itr = first; itr != last; i++) {</div><div class="line">  callable(*itr);</div><div class="line">}</div></div><!-- fragment --> 
 </div>
@@ -331,7 +331,7 @@ template&lt;typename I , typename C &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">cudaTask</a> handle</dd></dl>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p>
 <div class="fragment"><div class="line"><span class="comment">// step is positive [first, last)</span></div><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first; i&lt;last; i+=step) {</div><div class="line">  callable(i);</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// step is negative [first, last)</span></div><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first; i&gt;last; i+=step) {</div><div class="line">  callable(i);</div><div class="line">}</div></div><!-- fragment --> 
 </div>
@@ -400,7 +400,7 @@ template&lt;typename F , typename... ArgsT&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">cudaTask</a> handle </dd></dl>
 
 </div>
 </div>
@@ -637,7 +637,7 @@ template&lt;typename I , typename C , typename... S&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">cudaTask</a> handle</dd></dl>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p>
 <div class="fragment"><div class="line"><span class="keywordflow">while</span> (first != last) {</div><div class="line">  *first++ = callable(*src1++, *src2++, *src3++, ...);</div><div class="line">}</div></div><!-- fragment --> 
 </div>

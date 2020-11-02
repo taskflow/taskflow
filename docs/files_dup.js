@@ -3,17 +3,12 @@ var files_dup =
     [ "cublas_flow.hpp", "cublas__flow_8hpp.html", [
       [ "cublasFlowCapturer", "classtf_1_1cublasFlowCapturer.html", "classtf_1_1cublasFlowCapturer" ]
     ] ],
-    [ "cublas_handle.hpp", "cublas__handle_8hpp.html", "cublas__handle_8hpp" ],
-    [ "cublas_helper.hpp", "cublas__helper_8hpp.html", "cublas__helper_8hpp" ],
-    [ "cublas_level1.hpp", "cublas__level1_8hpp.html", "cublas__level1_8hpp" ],
-    [ "cublas_level3.hpp", "cublas__level3_8hpp.html", "cublas__level3_8hpp" ],
     [ "cuda_capturer.hpp", "cuda__capturer_8hpp.html", "cuda__capturer_8hpp" ],
     [ "cuda_device.hpp", "cuda__device_8hpp.html", "cuda__device_8hpp" ],
     [ "cuda_flow.hpp", "cuda__flow_8hpp.html", [
       [ "cudaFlow", "classtf_1_1cudaFlow.html", "classtf_1_1cudaFlow" ]
     ] ],
     [ "cuda_memory.hpp", "cuda__memory_8hpp.html", "cuda__memory_8hpp" ],
-    [ "cuda_stream.hpp", "cuda__stream_8hpp.html", "cuda__stream_8hpp" ],
     [ "cuda_task.hpp", "cuda__task_8hpp.html", "cuda__task_8hpp" ],
     [ "executor.hpp", "executor_8hpp.html", [
       [ "Executor", "classtf_1_1Executor.html", "classtf_1_1Executor" ]

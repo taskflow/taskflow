@@ -33,11 +33,9 @@ var searchData=
   ['ctype_5fbase',['ctype_base',['http://en.cppreference.com/w/cpp/locale/ctype_base.html',1,'std']]],
   ['ctype_5fbyname',['ctype_byname',['http://en.cppreference.com/w/cpp/locale/ctype_byname.html',1,'std']]],
   ['cublasflowcapturer',['cublasFlowCapturer',['../classtf_1_1cublasFlowCapturer.html',1,'tf']]],
-  ['cublasscopedperthreadhandle',['cublasScopedPerThreadHandle',['../classtf_1_1cublasScopedPerThreadHandle.html',1,'tf']]],
   ['cudaflow',['cudaFlow',['../classtf_1_1cudaFlow.html',1,'tf']]],
   ['cudaflowcapturer',['cudaFlowCapturer',['../classtf_1_1cudaFlowCapturer.html',1,'tf']]],
   ['cudaflowcapturerbase',['cudaFlowCapturerBase',['../classtf_1_1cudaFlowCapturerBase.html',1,'tf']]],
   ['cudascopeddevice',['cudaScopedDevice',['../classtf_1_1cudaScopedDevice.html',1,'tf']]],
-  ['cudascopedperthreadstream',['cudaScopedPerThreadStream',['../classtf_1_1cudaScopedPerThreadStream.html',1,'tf']]],
   ['cudatask',['cudaTask',['../classtf_1_1cudaTask.html',1,'tf']]]
 ];

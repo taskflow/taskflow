@@ -91,8 +91,7 @@ $(document).ready(function(){initNavTree('task_8hpp.html','');});
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">task.hpp File Reference</div>  </div>
 </div><!--header-->
@@ -133,59 +132,9 @@ const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="separator:ab1887c186d5570390859f16705d79bf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad216aea4d0f648e149e47374ad015b1f"><td class="memItemLeft" align="right" valign="top"><a id="ad216aea4d0f648e149e47374ad015b1f"></a>
 <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="task_8hpp.html#ad216aea4d0f648e149e47374ad015b1f">tf::operator&lt;&lt;</a> (<a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> &amp;os, const Task &amp;task)</td></tr>
-<tr class="memdesc:ad216aea4d0f648e149e47374ad015b1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload of ostream inserter operator for <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> <br /></td></tr>
+<tr class="memdesc:ad216aea4d0f648e149e47374ad015b1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload of ostream inserter operator for <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">cudaTask</a> <br /></td></tr>
 <tr class="separator:ad216aea4d0f648e149e47374ad015b1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a11fc9c98eb3a0d3a9aa55598b1f4d614"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
-<tr class="memitem:a11fc9c98eb3a0d3a9aa55598b1f4d614"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>tf::is_static_task_v</b></td></tr>
-<tr class="separator:a11fc9c98eb3a0d3a9aa55598b1f4d614"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1eea7593f25ab348cfb656dbdf4e5b05"><td class="memTemplParams" colspan="2"><a id="a1eea7593f25ab348cfb656dbdf4e5b05"></a>
-template&lt;typename C &gt; </td></tr>
-<tr class="memitem:a1eea7593f25ab348cfb656dbdf4e5b05"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>tf::is_dynamic_task_v</b> = std::is_invocable_r_v&lt;void, C, Subflow&amp;&gt;</td></tr>
-<tr class="separator:a1eea7593f25ab348cfb656dbdf4e5b05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00ca2fc2de0e679a7d9b8039340343df"><td class="memTemplParams" colspan="2"><a id="a00ca2fc2de0e679a7d9b8039340343df"></a>
-template&lt;typename C &gt; </td></tr>
-<tr class="memitem:a00ca2fc2de0e679a7d9b8039340343df"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>tf::is_condition_task_v</b> = std::is_invocable_r_v&lt;int, C&gt;</td></tr>
-<tr class="separator:a00ca2fc2de0e679a7d9b8039340343df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb8433555d8cdc0b3c5d95e8d51a90f0"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
-<tr class="memitem:adb8433555d8cdc0b3c5d95e8d51a90f0"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>tf::is_cudaflow_task_v</b></td></tr>
-<tr class="separator:adb8433555d8cdc0b3c5d95e8d51a90f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="file_adb8433555d8cdc0b3c5d95e8d51a90f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#file_adb8433555d8cdc0b3c5d95e8d51a90f0">&#9670;&nbsp;</a></span>is_cudaflow_task_v</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename C &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr bool tf::is_cudaflow_task_v</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= std::is_invocable_r_v&lt;void, C, cudaFlow&amp;&gt; ||</div><div class="line">                                    std::is_invocable_r_v&lt;void, C, cudaFlowCapturer&amp;&gt;</div></div><!-- fragment -->
-</div>
-</div>
-<a id="file_a11fc9c98eb3a0d3a9aa55598b1f4d614"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#file_a11fc9c98eb3a0d3a9aa55598b1f4d614">&#9670;&nbsp;</a></span>is_static_task_v</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename C &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr bool tf::is_static_task_v</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= std::is_invocable_r_v&lt;void, C&gt; &amp;&amp;</div><div class="line">                                 !std::is_invocable_r_v&lt;int, C&gt;</div></div><!-- fragment -->
-</div>
-</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

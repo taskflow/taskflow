@@ -133,14 +133,14 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ad37637606f0643f360e9eda1f9a6e559"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#ad37637606f0643f360e9eda1f9a6e559">memcpy</a> (void *tgt, const void *src, size_t bytes)</td></tr>
 <tr class="memdesc:ad37637606f0643f360e9eda1f9a6e559"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a memcpy task  <a href="#ad37637606f0643f360e9eda1f9a6e559">More...</a><br /></td></tr>
 <tr class="separator:ad37637606f0643f360e9eda1f9a6e559"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91c1739bb9a2832f306f3d12693a0994"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a91c1739bb9a2832f306f3d12693a0994"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), <a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a91c1739bb9a2832f306f3d12693a0994">zero</a> (T *dst, size_t count)</td></tr>
-<tr class="memdesc:a91c1739bb9a2832f306f3d12693a0994"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a zero task that zeroes a typed memory block  <a href="#a91c1739bb9a2832f306f3d12693a0994">More...</a><br /></td></tr>
-<tr class="separator:a91c1739bb9a2832f306f3d12693a0994"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee1fa4aff12a41737ea585fa2e106a35"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aee1fa4aff12a41737ea585fa2e106a35"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), <a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#aee1fa4aff12a41737ea585fa2e106a35">fill</a> (T *dst, T value, size_t count)</td></tr>
-<tr class="memdesc:aee1fa4aff12a41737ea585fa2e106a35"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a fill task that fills a typed memory block with a value  <a href="#aee1fa4aff12a41737ea585fa2e106a35">More...</a><br /></td></tr>
-<tr class="separator:aee1fa4aff12a41737ea585fa2e106a35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40172fac4464f6d805f75921ea3c2a3b"><td class="memTemplParams" colspan="2">template&lt;typename T , std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void &gt; *  = nullptr&gt; </td></tr>
+<tr class="memitem:a40172fac4464f6d805f75921ea3c2a3b"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a40172fac4464f6d805f75921ea3c2a3b">zero</a> (T *dst, size_t count)</td></tr>
+<tr class="memdesc:a40172fac4464f6d805f75921ea3c2a3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a zero task that zeroes a typed memory block  <a href="#a40172fac4464f6d805f75921ea3c2a3b">More...</a><br /></td></tr>
+<tr class="separator:a40172fac4464f6d805f75921ea3c2a3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21d4447bc834f4d3e1bb4772c850d090"><td class="memTemplParams" colspan="2">template&lt;typename T , std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), cudaTask &gt; *  = nullptr&gt; </td></tr>
+<tr class="memitem:a21d4447bc834f4d3e1bb4772c850d090"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a21d4447bc834f4d3e1bb4772c850d090">fill</a> (T *dst, T value, size_t count)</td></tr>
+<tr class="memdesc:a21d4447bc834f4d3e1bb4772c850d090"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a fill task that fills a typed memory block with a value  <a href="#a21d4447bc834f4d3e1bb4772c850d090">More...</a><br /></td></tr>
+<tr class="separator:a21d4447bc834f4d3e1bb4772c850d090"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af03e04771b655f9e629eb4c22e19b19f"><td class="memTemplParams" colspan="2">template&lt;typename T , std::enable_if_t&lt;!std::is_same_v&lt; T, void &gt;, void &gt; *  = nullptr&gt; </td></tr>
 <tr class="memitem:af03e04771b655f9e629eb4c22e19b19f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#af03e04771b655f9e629eb4c22e19b19f">copy</a> (T *tgt, const T *src, size_t num)</td></tr>
 <tr class="memdesc:af03e04771b655f9e629eb4c22e19b19f"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a copy task of typed data  <a href="#af03e04771b655f9e629eb4c22e19b19f">More...</a><br /></td></tr>
@@ -203,7 +203,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:a552f2da29009113beee4ee90bc95ae65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89c389fff64a16e5dd8c60875d3b514d"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
 <tr class="memitem:a89c389fff64a16e5dd8c60875d3b514d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html#a89c389fff64a16e5dd8c60875d3b514d">capture</a> (C &amp;&amp;callable)</td></tr>
-<tr class="memdesc:a89c389fff64a16e5dd8c60875d3b514d"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a subflow graph through capture  <a href="#a89c389fff64a16e5dd8c60875d3b514d">More...</a><br /></td></tr>
+<tr class="memdesc:a89c389fff64a16e5dd8c60875d3b514d"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a subflow graph through <a class="el" href="classtf_1_1cudaFlowCapturer.html" title="class for building a CUDA task dependency graph through stream capture ">tf::cudaFlowCapturer</a>  <a href="#a89c389fff64a16e5dd8c60875d3b514d">More...</a><br /></td></tr>
 <tr class="separator:a89c389fff64a16e5dd8c60875d3b514d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
@@ -214,8 +214,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></t
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>class for building a CUDA task dependency graph </p>
-<p>A cudaFlow is a high-level interface over CUDA Graph to perform GPU operations using the task dependency graph model. The class provides a set of methods for creating and launch different tasks on one or multiple CUDA devices, for instance, kernel tasks, data transfer tasks, and memory operation tasks. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+<p>A cudaFlow is a high-level interface over CUDA Graph to perform GPU operations using the task dependency graph model. The class provides a set of methods for creating and launch different tasks on one or multiple CUDA devices, for instance, kernel tasks, data transfer tasks, and memory operation tasks. The following example creates a cudaFlow of two kernel tasks, <code>task_1</code> and <code>task_2</code>, where <code>task_1</code> runs before <code>task_2</code>.</p>
+<div class="fragment"><div class="line"><a class="code" href="classtf_1_1Taskflow.html">tf::Taskflow</a> taskflow;</div><div class="line"><a class="code" href="classtf_1_1Executor.html">tf::Executor</a> executor;</div><div class="line"></div><div class="line">taskflow.<a class="code" href="classtf_1_1FlowBuilder.html#a796e29175380f70246cf2a5639adc437">emplace</a>([&amp;](<a class="code" href="classtf_1_1cudaFlow.html">tf::cudaFlow</a>&amp; cf){</div><div class="line">  <span class="comment">// create two kernel tasks </span></div><div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> task_1 = cf.<a class="code" href="classtf_1_1cudaFlow.html#adb731be71bdd436dfb5e36e6213a9a17">kernel</a>(grid_1, block_1, shm_size_1, kernel_1, my_args_1);</div><div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> task_2 = cf.<a class="code" href="classtf_1_1cudaFlow.html#adb731be71bdd436dfb5e36e6213a9a17">kernel</a>(grid_2, block_2, shm_size_2, kernel_2, my_args_2);</div><div class="line">  </div><div class="line">  <span class="comment">// kernel_1 runs before kernel_2</span></div><div class="line">  task_1.<a class="code" href="classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4">precede</a>(task_2);</div><div class="line">});</div><div class="line"></div><div class="line">executor.<a class="code" href="classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa">run</a>(taskflow).wait();</div></div><!-- fragment --> </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a89c389fff64a16e5dd8c60875d3b514d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a89c389fff64a16e5dd8c60875d3b514d">&#9670;&nbsp;</a></span>capture()</h2>
 
@@ -234,20 +234,23 @@ template&lt;typename C &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>constructs a subflow graph through capture </p>
+<p>constructs a subflow graph through <a class="el" href="classtf_1_1cudaFlowCapturer.html" title="class for building a CUDA task dependency graph through stream capture ">tf::cudaFlowCapturer</a> </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">C</td><td>callable type constructible from std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt; </td></tr>
+    <tr><td class="paramname">C</td><td>callable type constructible from <code>std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;</code> </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">callable</td><td>the callable to construct a capture flow </td></tr>
+    <tr><td class="paramname">callable</td><td>the callable to construct a capture flow</td></tr>
   </table>
   </dd>
 </dl>
-
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">tf::cudaTask</a> handle</dd></dl>
+<p>A captured subflow forms a sub-graph to the cudaFlow and can be used to capture custom (or third-party) kernels that cannot be directly constructed from the cudaFlow.</p>
+<p>Example usage:</p>
+<div class="fragment"><div class="line">taskflow.<a class="code" href="classtf_1_1FlowBuilder.html#a796e29175380f70246cf2a5639adc437">emplace</a>([&amp;](<a class="code" href="classtf_1_1cudaFlow.html">tf::cudaFlow</a>&amp; cf){</div><div class="line">  </div><div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> my_kernel = cf.<a class="code" href="classtf_1_1cudaFlow.html#adb731be71bdd436dfb5e36e6213a9a17">kernel</a>(my_arguments);</div><div class="line">  </div><div class="line">  <span class="comment">// create a flow capturer to capture custom kernels</span></div><div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> my_subflow = cf.<a class="code" href="classtf_1_1cudaFlow.html#a89c389fff64a16e5dd8c60875d3b514d">capture</a>([&amp;](<a class="code" href="classtf_1_1cudaFlowCapturer.html">tf::cudaFlowCapturer</a>&amp; capturer){</div><div class="line">    capturer.<a class="code" href="classtf_1_1cudaFlowCapturerBase.html#adf651356def71f613c589c29588398c2">on</a>([&amp;](cudaStream_t stream){</div><div class="line">      invoke_custom_kernel_with_stream(stream, custom_arguments);</div><div class="line">    }); </div><div class="line">  });</div><div class="line"></div><div class="line">  my_kernel.<a class="code" href="classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4">precede</a>(my_subflow);</div><div class="line">});</div></div><!-- fragment --> 
 </div>
 </div>
 <a id="af03e04771b655f9e629eb4c22e19b19f"></a>
@@ -299,21 +302,21 @@ template&lt;typename T , std::enable_if_t&lt;!std::is_same_v&lt; T, void &gt;, v
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">tf::cudaTask</a> handle</dd></dl>
 <p>A copy task transfers <code>num*sizeof(T)</code> bytes of data from a source location to a target location. Direction can be arbitrary among CPUs and GPUs. </p>
 
 </div>
 </div>
-<a id="aee1fa4aff12a41737ea585fa2e106a35"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aee1fa4aff12a41737ea585fa2e106a35">&#9670;&nbsp;</a></span>fill()</h2>
+<a id="a21d4447bc834f4d3e1bb4772c850d090"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21d4447bc834f4d3e1bb4772c850d090">&#9670;&nbsp;</a></span>fill()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;typename T , std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), cudaTask &gt; * &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), <a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> &gt; tf::cudaFlow::fill </td>
+          <td class="memname"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> tf::cudaFlow::fill </td>
           <td>(</td>
           <td class="paramtype">T *&#160;</td>
           <td class="paramname"><em>dst</em>, </td>
@@ -353,7 +356,7 @@ template&lt;typename T &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">tf::cudaTask</a> handle</dd></dl>
 <p>A fill task fills the first <code>count</code> elements of type <code>T</code> with <code>value</code> in a device memory area pointed by <code>dst</code>. The value to fill is interpreted in type <code>T</code> rather than byte. </p>
 
 </div>
@@ -408,7 +411,7 @@ template&lt;typename I , typename C &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">cudaTask</a> handle</dd></dl>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p>
 <div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> itr = first; itr != last; i++) {</div><div class="line">  callable(*itr);</div><div class="line">}</div></div><!-- fragment --> 
 </div>
@@ -470,7 +473,7 @@ template&lt;typename I , typename C &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">cudaTask</a> handle</dd></dl>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p>
 <div class="fragment"><div class="line"><span class="comment">// step is positive [first, last)</span></div><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first; i&lt;last; i+=step) {</div><div class="line">  callable(i);</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// step is negative [first, last)</span></div><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first; i&gt;last; i+=step) {</div><div class="line">  callable(i);</div><div class="line">}</div></div><!-- fragment --> 
 </div>
@@ -506,6 +509,7 @@ template&lt;typename C &gt; </div>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">tf::cudaTask</a> handle</dd></dl>
 <p>A host task can only execute CPU-specific functions and cannot do any CUDA calls (e.g., cudaMalloc). </p>
 
 </div>
@@ -643,7 +647,7 @@ template&lt;typename F , typename... ArgsT&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">tf::cudaTask</a> handle </dd></dl>
 
 </div>
 </div>
@@ -718,7 +722,7 @@ template&lt;typename F , typename... ArgsT&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">tf::cudaTask</a> handle </dd></dl>
 
 </div>
 </div>
@@ -771,7 +775,7 @@ template&lt;typename F , typename... ArgsT&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">tf::cudaTask</a> handle</dd></dl>
 <p>A memcpy task transfers <code>bytes</code> of data from a source location to a target location. Direction can be arbitrary among CPUs and GPUs. </p>
 
 </div>
@@ -825,7 +829,7 @@ template&lt;typename F , typename... ArgsT&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">tf::cudaTask</a> handle</dd></dl>
 <p>A memset task fills the first <code>count</code> bytes of device memory area pointed by <code>dst</code> with the byte value <code>v</code>. </p>
 
 </div>
@@ -854,6 +858,7 @@ template&lt;typename F , typename... ArgsT&gt; </div>
 </div><div class="memdoc">
 
 <p>creates a no-operation task </p>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">tf::cudaTask</a> handle</dd></dl>
 <p>An empty node performs no operation during execution, but can be used for transitive ordering. For example, a phased execution graph with 2 groups of n nodes with a barrier between them can be represented using an empty node and 2*n dependency edges, rather than no empty node and n^2 dependency edges. </p>
 
 </div>
@@ -955,10 +960,11 @@ template&lt;typename C &gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">callable</td><td>callable to run by a single kernel thread </td></tr>
+    <tr><td class="paramname">callable</td><td>callable to run by a single kernel thread</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">tf::cudaTask</a> handle </dd></dl>
 
 </div>
 </div>
@@ -1020,21 +1026,21 @@ template&lt;typename I , typename C , typename... S&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">cudaTask</a> handle</dd></dl>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p>
 <div class="fragment"><div class="line"><span class="keywordflow">while</span> (first != last) {</div><div class="line">  *first++ = callable(*src1++, *src2++, *src3++, ...);</div><div class="line">}</div></div><!-- fragment --> 
 </div>
 </div>
-<a id="a91c1739bb9a2832f306f3d12693a0994"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91c1739bb9a2832f306f3d12693a0994">&#9670;&nbsp;</a></span>zero()</h2>
+<a id="a40172fac4464f6d805f75921ea3c2a3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40172fac4464f6d805f75921ea3c2a3b">&#9670;&nbsp;</a></span>zero()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;typename T , std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void &gt; * &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), <a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> &gt; tf::cudaFlow::zero </td>
+          <td class="memname"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> tf::cudaFlow::zero </td>
           <td>(</td>
           <td class="paramtype">T *&#160;</td>
           <td class="paramname"><em>dst</em>, </td>
@@ -1067,7 +1073,7 @@ template&lt;typename T &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtf_1_1cudaTask.html" title="handle to a node in a cudaGraph ">cudaTask</a> handle</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">tf::cudaTask</a> handle</dd></dl>
 <p>A zero task zeroes the first <code>count</code> elements of type <code>T</code> in a device memory area pointed by <code>dst</code>. </p>
 
 </div>

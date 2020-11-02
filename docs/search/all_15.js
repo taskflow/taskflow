@@ -46,6 +46,6 @@ var searchData=
   ['update_5fmemcpy',['update_memcpy',['../classtf_1_1cudaFlow.html#a8703eba0d22464208b2581d99306d709',1,'tf::cudaFlow']]],
   ['update_5fmemset',['update_memset',['../classtf_1_1cudaFlow.html#ab40c77439e98d51070e32762d2323de1',1,'tf::cudaFlow']]],
   ['upper_5fbound',['upper_bound',['http://en.cppreference.com/w/cpp/container/multiset/upper_bound.html',1,'std::multiset::upper_bound()'],['http://en.cppreference.com/w/cpp/container/set/upper_bound.html',1,'std::set::upper_bound()'],['http://en.cppreference.com/w/cpp/container/map/upper_bound.html',1,'std::map::upper_bound()'],['http://en.cppreference.com/w/cpp/container/multimap/upper_bound.html',1,'std::multimap::upper_bound()']]],
-  ['use_5fcount',['use_count',['http://en.cppreference.com/w/cpp/memory/weak_ptr/use_count.html',1,'std::weak_ptr::use_count()'],['../classtf_1_1cublasScopedPerThreadHandle.html#a006ac650347d4ac7091c0b4a2c4aaa54',1,'tf::cublasScopedPerThreadHandle::use_count()']]],
+  ['use_5fcount',['use_count',['http://en.cppreference.com/w/cpp/memory/weak_ptr/use_count.html',1,'std::weak_ptr']]],
   ['uses_5fallocator',['uses_allocator',['http://en.cppreference.com/w/cpp/memory/uses_allocator.html',1,'std']]]
 ];

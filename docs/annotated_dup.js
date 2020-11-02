@@ -3,12 +3,10 @@ var annotated_dup =
     [ "tf", null, [
       [ "ChromeObserver", "classtf_1_1ChromeObserver.html", "classtf_1_1ChromeObserver" ],
       [ "cublasFlowCapturer", "classtf_1_1cublasFlowCapturer.html", "classtf_1_1cublasFlowCapturer" ],
-      [ "cublasScopedPerThreadHandle", "classtf_1_1cublasScopedPerThreadHandle.html", "classtf_1_1cublasScopedPerThreadHandle" ],
       [ "cudaFlow", "classtf_1_1cudaFlow.html", "classtf_1_1cudaFlow" ],
       [ "cudaFlowCapturer", "classtf_1_1cudaFlowCapturer.html", "classtf_1_1cudaFlowCapturer" ],
       [ "cudaFlowCapturerBase", "classtf_1_1cudaFlowCapturerBase.html", "classtf_1_1cudaFlowCapturerBase" ],
       [ "cudaScopedDevice", "classtf_1_1cudaScopedDevice.html", "classtf_1_1cudaScopedDevice" ],
-      [ "cudaScopedPerThreadStream", "classtf_1_1cudaScopedPerThreadStream.html", "classtf_1_1cudaScopedPerThreadStream" ],
       [ "cudaTask", "classtf_1_1cudaTask.html", "classtf_1_1cudaTask" ],
       [ "Executor", "classtf_1_1Executor.html", "classtf_1_1Executor" ],
       [ "FlowBuilder", "classtf_1_1FlowBuilder.html", "classtf_1_1FlowBuilder" ],
@@ -18,9 +16,5 @@ var annotated_dup =
       [ "Taskflow", "classtf_1_1Taskflow.html", "classtf_1_1Taskflow" ],
       [ "TaskView", "classtf_1_1TaskView.html", "classtf_1_1TaskView" ],
       [ "TFProfObserver", "classtf_1_1TFProfObserver.html", "classtf_1_1TFProfObserver" ]
-    ] ],
-    [ "is_condition_task", "structis__condition__task.html", null ],
-    [ "is_cudaflow_task", "structis__cudaflow__task.html", null ],
-    [ "is_dynamic_task", "structis__dynamic__task.html", null ],
-    [ "is_static_task", "structis__static__task.html", null ]
+    ] ]
 ];

@@ -103,20 +103,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a427bcf1001ac292d3ac85e45ae11e7b7"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cublas__helper_8hpp.html#a427bcf1001ac292d3ac85e45ae11e7b7">tf::cublas_vset_async</a> (cudaStream_t stream, size_t n, const T *h, int inch, T *d, int incd)</td></tr>
 <tr class="memdesc:a427bcf1001ac292d3ac85e45ae11e7b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">copies vector data from host to device  <a href="cublas__helper_8hpp.html#a427bcf1001ac292d3ac85e45ae11e7b7">More...</a><br /></td></tr>
 <tr class="separator:a427bcf1001ac292d3ac85e45ae11e7b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2ba43c171b025a409e4e436b8a2e5ed"><td class="memTemplParams" colspan="2"><a id="ae2ba43c171b025a409e4e436b8a2e5ed"></a>
-template&lt;typename T , std::enable_if_t&lt;!std::is_same_v&lt; T, void &gt;, void &gt; *  = nullptr&gt; </td></tr>
-<tr class="memitem:ae2ba43c171b025a409e4e436b8a2e5ed"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cublas__helper_8hpp.html#ae2ba43c171b025a409e4e436b8a2e5ed">tf::cublas_vset</a> (size_t n, const T *h, int inch, T *d, int incd)</td></tr>
-<tr class="memdesc:ae2ba43c171b025a409e4e436b8a2e5ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">similar to tf::cublas_vset_async but operates synchronously <br /></td></tr>
-<tr class="separator:ae2ba43c171b025a409e4e436b8a2e5ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2bc6a2d6eecb1c976e87f343ff750878"><td class="memTemplParams" colspan="2">template&lt;typename T , std::enable_if_t&lt;!std::is_same_v&lt; T, void &gt;, void &gt; *  = nullptr&gt; </td></tr>
 <tr class="memitem:a2bc6a2d6eecb1c976e87f343ff750878"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cublas__helper_8hpp.html#a2bc6a2d6eecb1c976e87f343ff750878">tf::cublas_vget_async</a> (cudaStream_t stream, size_t n, const T *d, int incd, T *h, int inch)</td></tr>
 <tr class="memdesc:a2bc6a2d6eecb1c976e87f343ff750878"><td class="mdescLeft">&#160;</td><td class="mdescRight">copies vector data from device to host  <a href="cublas__helper_8hpp.html#a2bc6a2d6eecb1c976e87f343ff750878">More...</a><br /></td></tr>
 <tr class="separator:a2bc6a2d6eecb1c976e87f343ff750878"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:addf89ab8c083d629d79ce66a7ffbff3a"><td class="memTemplParams" colspan="2"><a id="addf89ab8c083d629d79ce66a7ffbff3a"></a>
-template&lt;typename T , std::enable_if_t&lt;!std::is_same_v&lt; T, void &gt;, void &gt; *  = nullptr&gt; </td></tr>
-<tr class="memitem:addf89ab8c083d629d79ce66a7ffbff3a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cublas__helper_8hpp.html#addf89ab8c083d629d79ce66a7ffbff3a">tf::cublas_vget_async</a> (size_t n, const T *d, int incd, T *h, int inch)</td></tr>
-<tr class="memdesc:addf89ab8c083d629d79ce66a7ffbff3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">similar to tf::cublas_vget_async but operates synchronously <br /></td></tr>
-<tr class="separator:addf89ab8c083d629d79ce66a7ffbff3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="file_a2bc6a2d6eecb1c976e87f343ff750878"></a>

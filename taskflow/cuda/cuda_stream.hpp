@@ -90,6 +90,9 @@ Sample usage:
 }  // leaving the scope to release the stream back to the pool on device 1
 @endcode
 
+The scoped per-thread stream is primarily used by tf::Executor to execute
+CUDA related operations.
+
 %cudaScopedPerThreadStream is neither copyable nor movable.
 */
 class cudaScopedPerThreadStream {

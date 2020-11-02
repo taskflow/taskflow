@@ -57,7 +57,7 @@ inline const char* task_type_to_string(TaskType type) {
 // ----------------------------------------------------------------------------
 
 /**
-@struct is_static_task
+@private is_static_task
 
 @brief determines if a callable is a static task
 
@@ -68,7 +68,7 @@ constexpr bool is_static_task_v = std::is_invocable_r_v<void, C> &&
                                  !std::is_invocable_r_v<int, C>;
 
 /**
-@struct is_dynamic_task
+@private is_dynamic_task
 
 @brief determines if a callable is a dynamic task
 
@@ -78,7 +78,7 @@ template <typename C>
 constexpr bool is_dynamic_task_v = std::is_invocable_r_v<void, C, Subflow&>;
 
 /**
-@struct is_condition_task
+@private is_condition_task
 
 @brief determines if a callable is a condition task
 
@@ -89,7 +89,7 @@ constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C>;
 
 #ifdef TF_ENABLE_CUDA
 /**
-@struct is_cudaflow_task
+@private is_cudaflow_task
 
 @brief determines if a callable is a cudaflow task
 

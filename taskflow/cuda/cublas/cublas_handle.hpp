@@ -67,7 +67,9 @@ Sample usage:
 @endcode
 
 By default, the cublas handle has a pointer mode set to device
-(i.e., @c CUBLAS_POINTER_MODE_DEVICE).
+(i.e., @c CUBLAS_POINTER_MODE_DEVICE),
+that is required for capturing cublas kernels.
+The scoped per-thread cublas handle is primarily used by tf::cublasFlowCapturer.
 
 %cublasScopedPerThreadHandle is neither movable nor copyable.
  */

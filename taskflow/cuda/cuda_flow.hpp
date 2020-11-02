@@ -25,6 +25,24 @@ using the task dependency graph model.
 The class provides a set of methods for creating and launch different tasks
 on one or multiple CUDA devices,
 for instance, kernel tasks, data transfer tasks, and memory operation tasks.
+The following example creates a %cudaFlow of two kernel tasks, @c task_1 and 
+@c task_2, where @c task_1 runs before @c task_2.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+taskflow.emplace([&](tf::cudaFlow& cf){
+  // create two kernel tasks 
+  tf::cudaTask task_1 = cf.kernel(grid_1, block_1, shm_size_1, kernel_1, my_args_1);
+  tf::cudaTask task_2 = cf.kernel(grid_2, block_2, shm_size_2, kernel_2, my_args_2);
+  
+  // kernel_1 runs before kernel_2
+  task_1.precede(task_2);
+});
+
+executor.run(taskflow).wait();
+@endcode
 */
 class cudaFlow {
 
@@ -44,6 +62,8 @@ class cudaFlow {
     
     /**
     @brief creates a no-operation task
+    
+    @return a tf::cudaTask handle
 
     An empty node performs no operation during execution, 
     but can be used for transitive ordering. 
@@ -61,6 +81,8 @@ class cudaFlow {
     
     @param callable a callable object with neither arguments nor return 
     (i.e., constructible from std::function<void()>)
+    
+    @return a tf::cudaTask handle
 
     A host task can only execute CPU-specific functions and cannot do any CUDA calls 
     (e.g., cudaMalloc).
@@ -80,7 +102,7 @@ class cudaFlow {
     @param f kernel function
     @param args arguments to forward to the kernel function by copy
 
-    @return cudaTask handle
+    @return a tf::cudaTask handle
     */
     template <typename F, typename... ArgsT>
     cudaTask kernel(dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
@@ -98,7 +120,7 @@ class cudaFlow {
     @param f kernel function
     @param args arguments to forward to the kernel function by copy
 
-    @return cudaTask handle
+    @return a tf::cudaTask handle
     */
     template <typename F, typename... ArgsT>
     cudaTask kernel_on(int d, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
@@ -110,7 +132,7 @@ class cudaFlow {
     @param v value to set for each byte of specified memory
     @param count size in bytes to set
     
-    @return cudaTask handle
+    @return a tf::cudaTask handle
 
     A memset task fills the first @c count bytes of device memory area 
     pointed by @c dst with the byte value @c v.
@@ -124,7 +146,7 @@ class cudaFlow {
     @param src pointer to the source memory block
     @param bytes bytes to copy
 
-    @return cudaTask handle
+    @return a tf::cudaTask handle
 
     A memcpy task transfers @c bytes of data from a source location
     to a target location. Direction can be arbitrary among CPUs and GPUs.
@@ -138,17 +160,15 @@ class cudaFlow {
     @param dst pointer to the destination device memory area
     @param count number of elements
     
-    @return cudaTask handle
+    @return a tf::cudaTask handle
 
     A zero task zeroes the first @c count elements of type @c T 
     in a device memory area pointed by @c dst.
     */
-    template <typename T>
-    std::enable_if_t<
-      is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), 
-      cudaTask
-    > 
-    zero(T* dst, size_t count);
+    template <typename T, std::enable_if_t<
+      is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>* = nullptr
+    >
+    cudaTask zero(T* dst, size_t count);
 
     /**
     @brief creates a fill task that fills a typed memory block with a value
@@ -159,18 +179,16 @@ class cudaFlow {
     @param value value to fill for each element of type @c T
     @param count number of elements
     
-    @return cudaTask handle
+    @return a tf::cudaTask handle
 
     A fill task fills the first @c count elements of type @c T with @c value
     in a device memory area pointed by @c dst.
     The value to fill is interpreted in type @c T rather than byte.
     */
-    template <typename T>
-    std::enable_if_t<
-      is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), 
-      cudaTask
+    template <typename T, std::enable_if_t<
+      is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), cudaTask>* = nullptr
     >
-    fill(T* dst, T value, size_t count);
+    cudaTask fill(T* dst, T value, size_t count);
     
     /**
     @brief creates a copy task of typed data
@@ -181,7 +199,7 @@ class cudaFlow {
     @param src pointer to the source memory block
     @param num number of elements to copy
 
-    @return cudaTask handle
+    @return a tf::cudaTask handle
 
     A copy task transfers <tt>num*sizeof(T)</tt> bytes of data from a source location
     to a target location. Direction can be arbitrary among CPUs and GPUs.
@@ -292,6 +310,8 @@ class cudaFlow {
     @tparam C callable type
 
     @param callable callable to run by a single kernel thread
+    
+    @return a tf::cudaTask handle
     */
     template <typename C>
     cudaTask single_task(C&& callable);
@@ -384,10 +404,36 @@ class cudaFlow {
     // ------------------------------------------------------------------------
     
     /**
-    @brief constructs a subflow graph through capture
+    @brief constructs a subflow graph through tf::cudaFlowCapturer
 
-    @tparam C callable type constructible from std::function<void(tf::cudaFlowCapturer&)>
+    @tparam C callable type constructible from 
+              @c std::function<void(tf::cudaFlowCapturer&)>
+
     @param callable the callable to construct a capture flow
+
+    @return a tf::cudaTask handle
+
+    A captured subflow forms a sub-graph to the %cudaFlow and can be used to 
+    capture custom (or third-party) kernels that cannot be directly constructed
+    from the %cudaFlow.
+
+    Example usage:
+
+    @code{.cpp}
+    taskflow.emplace([&](tf::cudaFlow& cf){
+      
+      tf::cudaTask my_kernel = cf.kernel(my_arguments);
+      
+      // create a flow capturer to capture custom kernels
+      tf::cudaTask my_subflow = cf.capture([&](tf::cudaFlowCapturer& capturer){
+        capturer.on([&](cudaStream_t stream){
+          invoke_custom_kernel_with_stream(stream, custom_arguments);
+        }); 
+      });
+
+      my_kernel.precede(my_subflow);
+    });
+    @endcode
      */
     template <typename C>
     cudaTask capture(C&& callable);
@@ -556,12 +602,10 @@ cudaTask cudaFlow::kernel_on(
 }
 
 // Function: zero
-template <typename T>
-std::enable_if_t<
-  is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), 
-  cudaTask
-> 
-cudaFlow::zero(T* dst, size_t count) {
+template <typename T, std::enable_if_t<
+  is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>*
+>
+cudaTask cudaFlow::zero(T* dst, size_t count) {
 
   auto node = _graph.emplace_back(
     _graph, std::in_place_type_t<cudaNode::Memset>{}
@@ -586,12 +630,10 @@ cudaFlow::zero(T* dst, size_t count) {
 }
     
 // Function: fill
-template <typename T>
-std::enable_if_t<
-  is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), 
-  cudaTask
+template <typename T, std::enable_if_t<
+  is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), cudaTask>*
 >
-cudaFlow::fill(T* dst, T value, size_t count) {
+cudaTask cudaFlow::fill(T* dst, T value, size_t count) {
 
   auto node = _graph.emplace_back(
     _graph, std::in_place_type_t<cudaNode::Memset>{}

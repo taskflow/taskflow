@@ -48,7 +48,7 @@ inline const char* cuda_task_type_to_string(cudaTaskType type) {
 /**
 @class cudaTask
 
-@brief handle to a node in a cudaGraph
+@brief handle to a node of the internal CUDA graph
 */
 class cudaTask {
 

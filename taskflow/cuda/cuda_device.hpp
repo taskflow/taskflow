@@ -274,6 +274,19 @@ inline int cuda_get_runtime_version() {
 
 @brief RAII-styled device context switch
 
+Sample usage:
+    
+@code{.cpp}
+{
+  tf::cudaScopedDevice device(1);  // switch to the device context 1
+
+  // create a stream under device context 1
+  cudaStream_t stream;
+  cudaStreamCreate(&stream);
+
+}  // leaving the scope and goes back to the previous device context
+@endcode
+
 %cudaScopedDevice is neither movable nor copyable.
 */
 class cudaScopedDevice {

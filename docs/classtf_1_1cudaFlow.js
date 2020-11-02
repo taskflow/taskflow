@@ -3,7 +3,7 @@ var classtf_1_1cudaFlow =
     [ "capture", "classtf_1_1cudaFlow.html#a89c389fff64a16e5dd8c60875d3b514d", null ],
     [ "copy", "classtf_1_1cudaFlow.html#af03e04771b655f9e629eb4c22e19b19f", null ],
     [ "empty", "classtf_1_1cudaFlow.html#a1926f45a038d8faa9c1b1ee43fd29a93", null ],
-    [ "fill", "classtf_1_1cudaFlow.html#aee1fa4aff12a41737ea585fa2e106a35", null ],
+    [ "fill", "classtf_1_1cudaFlow.html#a21d4447bc834f4d3e1bb4772c850d090", null ],
     [ "for_each", "classtf_1_1cudaFlow.html#a97c248490dbde983378f757239eaed4a", null ],
     [ "for_each_index", "classtf_1_1cudaFlow.html#ab5a7c12e383be4972844a9f29033e487", null ],
     [ "host", "classtf_1_1cudaFlow.html#a060e1c96111c2134ce0f896420a42cd0", null ],
@@ -25,6 +25,6 @@ var classtf_1_1cudaFlow =
     [ "update_kernel", "classtf_1_1cudaFlow.html#aa841b36aca935162489b5e7430dafe99", null ],
     [ "update_memcpy", "classtf_1_1cudaFlow.html#a8703eba0d22464208b2581d99306d709", null ],
     [ "update_memset", "classtf_1_1cudaFlow.html#ab40c77439e98d51070e32762d2323de1", null ],
-    [ "zero", "classtf_1_1cudaFlow.html#a91c1739bb9a2832f306f3d12693a0994", null ],
+    [ "zero", "classtf_1_1cudaFlow.html#a40172fac4464f6d805f75921ea3c2a3b", null ],
     [ "Executor", "classtf_1_1cudaFlow.html#a763b2f90bc53f92d680a635fe28e858e", null ]
 ];

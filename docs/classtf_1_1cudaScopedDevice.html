@@ -113,7 +113,8 @@ Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>RAII-styled device context switch. </p>
-<p>cudaScopedDevice is neither movable nor copyable. </p>
+<p>Sample usage:</p>
+<div class="fragment"><div class="line">{</div><div class="line">  <a class="code" href="classtf_1_1cudaScopedDevice.html">tf::cudaScopedDevice</a> device(1);  <span class="comment">// switch to the device context 1</span></div><div class="line"></div><div class="line">  <span class="comment">// create a stream under device context 1</span></div><div class="line">  cudaStream_t stream;</div><div class="line">  cudaStreamCreate(&amp;stream);</div><div class="line"></div><div class="line">}  <span class="comment">// leaving the scope and goes back to the previous device context</span></div></div><!-- fragment --><p>cudaScopedDevice is neither movable nor copyable. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a03d75e2c0b084c8e926a00a922302653"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a03d75e2c0b084c8e926a00a922302653">&#9670;&nbsp;</a></span>cudaScopedDevice()</h2>
