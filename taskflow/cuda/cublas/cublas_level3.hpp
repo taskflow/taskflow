@@ -4,12 +4,16 @@
 
 namespace tf {
 
+/** 
+@file cublas_level3.hpp
+*/
+
 // ----------------------------------------------------------------------------
 // geam
 // ----------------------------------------------------------------------------
 
 /**
-@brief performs matrix-matrix addition/transposition
+@brief performs matrix-matrix addition and transposition
 
 This function performs the matrix-matrix addition/transposition:
 
@@ -222,7 +226,7 @@ void cublas_c_gemm(
 /**
 @brief performs matrix-matrix multiplication over a batch of matrices 
 
-The batch must be @i uniform.
+The batch must be @em uniform.
 All instances in the batch must have the same dimensions <tt>(m, n, k)</tt>, 
 leading dimensions <tt>(lda, ldb, ldc)</tt> and transpositions 
 <tt>(ta, tb)</tt> for their respective @c A, @c B and @c C matrices. 
@@ -355,19 +359,18 @@ The input matrices are in column-major storage.
 @param sC address offset between @c C[i] and @c C[i+1]
 @param bc batch size (number of matrices)
 
-The batch must be @i uniform. 
+The batch must be @em uniform. 
 All instances in the batch must have the same dimensions <tt>(m, n, k)</tt>, 
 leading dimensions <tt>(lda, ldb, ldc)</tt> and transpositions 
 <tt>(ta, tb)</tt> for their respective @c A, @c B and @c C matrices. 
 Input matrices @c A, @c B and output matrix @c C for each instance of the batch 
 are located at fixed address offsets from their locations in the previous instance. 
 Pointers to @c A, @c B and @c C matrices for the first instance are passed 
-to the function by the user along with the address offsets - 
+to the function by the user along with the address @em offsets - 
 @c sA, @c sB and @c sC that determine the locations 
 of input and output matrices in future instances.
 
-<tt>C + i*sC = alpha * op (A + i*sA) * op (B + i*sB) 
-                  + beta * (C + i*sC), i in [0, bc)</tt>,
+<tt>C + i*sC = alpha * op (A + i*sA) * op (B + i*sB) + beta * (C + i*sC), i in [0, bc)</tt>,
 
 where @c alpha and @c beta are scalars, and @c A[i], @c B[i], and @c C[i]
 are 2D matrices stored in column-major format 

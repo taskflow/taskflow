@@ -4,10 +4,14 @@
 #include "cuda_algorithm/cuda_for_each.hpp"
 #include "cuda_algorithm/cuda_transform.hpp"
 
+/** 
+@file cuda_capturer.hpp
+*/
+
 namespace tf {
 
 /**
-@brief the default number of threads per block in an 1D vector of N elements
+@private the default number of threads per block in an 1D vector of N elements
 */
 constexpr size_t cuda_default_threads_per_block(size_t N) {
   return N >= 256 ? 256 : 128;

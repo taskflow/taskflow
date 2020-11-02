@@ -2,6 +2,10 @@
 
 #include "cublas_error.hpp"
 
+/** 
+@file cublas_handle.hpp
+*/
+
 namespace tf {
 
 /** @private */
@@ -32,14 +36,14 @@ struct cublasHandleDeleter {
 };
 
 /**
-@brief alias of per-thread cublas handle pool type
+@private alias of per-thread cublas handle pool type
  */
 using cublasPerThreadHandlePool = cudaPerThreadDeviceObjectPool<
   cublasHandle_t, cublasHandleCreator, cublasHandleDeleter
 >;
 
 /**
-@brief per-thread cublas stream pool
+@private per-thread cublas stream pool
 */
 inline thread_local cublasPerThreadHandlePool cublas_per_thread_handle_pool;
 
@@ -54,7 +58,7 @@ Sample usage:
     
 @code{.cpp}
 {
-  cublasScopedPerThreadHandle handle(1);  // acquires a cublas handle on device 1
+  tf::cublasScopedPerThreadHandle handle(1);  // acquires a cublas handle on device 1
 
   // use handle as a normal cublas handle (cublasHandle_t)
   cublasSetStream(handle, stream);
@@ -72,7 +76,7 @@ class cublasScopedPerThreadHandle {
   public:
 
   /**
-  @brief constructs a scoped handle under the given device
+  @brief constructs a scoped handle under the given device context
 
   The constructor acquires a handle from a per-thread handle pool.
   */
@@ -81,7 +85,7 @@ class cublasScopedPerThreadHandle {
   }
   
   /**
-  @brief constructs a scoped handle under the default device 0.
+  @brief constructs a scoped handle under caller's device context
 
   The constructor acquires a handle from a per-thread handle pool.
   */

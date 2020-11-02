@@ -72,13 +72,13 @@ inline thread_local cudaPerThreadStreamPool cuda_per_thread_stream_pool;
 // ----------------------------------------------------------------------------
 
 /**
-@brief class to provide RAII-styled guard of stream acquisition
+@brief class that provides RAII-styled guard of stream acquisition
 
 Sample usage:
     
 @code{.cpp}
 {
-  cudaScopedPerThreadStream stream(1);  // acquires a stream on device 1
+  tf::cudaScopedPerThreadStream stream(1);  // acquires a stream on device 1
 
   // use stream as a normal cuda stream (cudaStream_t)
   cudaStreamWaitEvent(stream, ...);

@@ -4,6 +4,10 @@
 
 namespace tf {
 
+/** 
+@file cublas_level1.hpp
+*/
+
 // ----------------------------------------------------------------------------
 // amax
 // ----------------------------------------------------------------------------
@@ -188,7 +192,7 @@ void cublas_copy(
 @param incx stride between consecutive elements of @c x
 @param y pointer to the memory address of the vector @c y
 @param incy stride between consecutive elements of @c y
-@param the resulting dot product
+@param result the resulting dot product
 */
 template <typename T>
 void cublas_dot(
@@ -247,7 +251,7 @@ void cublas_nrm2(
 
 @param handle cublas library handle
 @param n number of elements in vector @c x
-@param alpha scalar used for multiplication
+@param scalar scalar used for multiplication
 @param x pointer to the memory address of the vector
 @param incx stride between consecutive elements of @c x
 */

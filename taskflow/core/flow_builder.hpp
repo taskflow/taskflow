@@ -2,6 +2,10 @@
 
 #include "task.hpp"
 
+/** 
+@file flow_builder.hpp
+*/
+
 namespace tf {
 
 /** 
@@ -749,12 +753,6 @@ inline Subflow::Subflow(Executor& executor, Node* parent, Graph& graph) :
 inline bool Subflow::joinable() const {
   return _joinable;
 }
-
-// ----------------------------------------------------------------------------
-// Legacy code
-// ----------------------------------------------------------------------------
-
-using SubflowBuilder = Subflow;
 
 }  // end of namespace tf. ---------------------------------------------------
 

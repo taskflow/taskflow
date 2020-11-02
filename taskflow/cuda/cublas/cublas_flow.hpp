@@ -4,6 +4,10 @@
 #include "cublas_level1.hpp"
 #include "cublas_level3.hpp"
 
+/** 
+@file cublas_flow.hpp
+*/
+
 namespace tf {
 
 // ----------------------------------------------------------------------------

@@ -4,6 +4,10 @@
 
 namespace tf {
 
+/** 
+@file cublas_helper.hpp
+*/
+
 /**
 @brief copies vector data from host to device
 

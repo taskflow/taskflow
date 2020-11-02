@@ -5,6 +5,10 @@
 #include "cuda_algorithm/cuda_for_each.hpp"
 #include "cuda_algorithm/cuda_transform.hpp"
 
+/** 
+@file cuda_flow.hpp
+*/
+
 namespace tf {
 
 // ----------------------------------------------------------------------------
@@ -16,8 +20,8 @@ namespace tf {
 
 @brief class for building a CUDA task dependency graph
 
-A %cudaFlow is a high-level interface to manipulate GPU tasks using 
-the task dependency graph model.
+A %cudaFlow is a high-level interface over CUDA Graph to perform GPU operations 
+using the task dependency graph model.
 The class provides a set of methods for creating and launch different tasks
 on one or multiple CUDA devices,
 for instance, kernel tasks, data transfer tasks, and memory operation tasks.
