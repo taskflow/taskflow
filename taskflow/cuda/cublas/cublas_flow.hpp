@@ -349,6 +349,13 @@ class cublasFlowCapturer : public cudaFlowCapturerBase {
     // TODO Level-2 matrix_vector operations
     // ------------------------------------------------------------------------
     
+    // Documentation
+    template <typename T>
+    cudaTask gemv();
+
+    template <typename T>
+    cudaTask c_gemv();
+    
     // ------------------------------------------------------------------------
     // Level-3 matrix-matrix operations
     // ------------------------------------------------------------------------
