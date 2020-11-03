@@ -17,7 +17,7 @@ namespace tf {
 */
 inline void start_stream_capture(cudaStream_t stream) {
   TF_CHECK_CUDA(
-    cudaStreamBeginCapture(stream, cudaStreamCaptureModeGlobal), 
+    cudaStreamBeginCapture(stream, cudaStreamCaptureModeThreadLocal), 
     "failed to turn stream into capture mode"
   );
 }

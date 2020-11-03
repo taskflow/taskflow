@@ -445,7 +445,11 @@ inline cudaGraph_t cudaFlowCapturer::_capture() {
 
   // acquire per-thread stream and turn it into capture mode
   cudaScopedPerThreadStream stream;
-  start_stream_capture(stream);
+  
+  TF_CHECK_CUDA(
+    cudaStreamBeginCapture(stream, cudaStreamCaptureModeThreadLocal), 
+    "failed to turn stream into per-thread capture mode"
+  );
 
   // TODO: need an efficient algorithm
   auto ordered = _graph->_toposort();
@@ -453,7 +457,11 @@ inline cudaGraph_t cudaFlowCapturer::_capture() {
     std::get<cudaNode::Capture>(node->_handle).work(stream);  
   }
 
-  auto g = cease_stream_capture(stream);
+  cudaGraph_t g;
+
+  TF_CHECK_CUDA(
+    cudaStreamEndCapture(stream, &g), "failed to end capture"
+  );
 
   //cuda_dump_graph(std::cout, g);
   
