@@ -56,6 +56,8 @@ D.succeed(B, C);  // D runs after  B and C
 executor.run(taskflow).wait();     
 @endcode
 
+Please refer to @ref Cookbook to learn more about each task type.
+
 */
 class Taskflow : public FlowBuilder {
 
