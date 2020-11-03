@@ -36,14 +36,17 @@ var Cookbook =
       [ "Composes a Taskflow", "chapter5.html#C5_ComposesATaskflow", null ],
       [ "Module Task", "chapter5.html#C5_ModuleTask", null ]
     ] ],
-    [ "C6: CPU-GPU Tasking (CUDA)", "chapter6.html", [
+    [ "C6: GPU Tasking (cudaFlow)", "chapter6.html", [
       [ "Create a cudaFlow", "chapter6.html#C6_Create_a_cudaFlow", null ],
       [ "Compile a cudaFlow Program", "chapter6.html#C6_Compile_a_cudaFlow_program", null ],
       [ "Configure the Number of GPU workers", "chapter6.html#C6_configure_the_number_of_gpu_workers", null ],
       [ "Run a cudaFlow on Multiple GPUs", "chapter6.html#C6_run_a_cudaflow_on_multiple_gpus", null ],
       [ "GPU Memory Operations", "chapter6.html#C6_GPUMemoryOperations", null ],
+      [ "Granularity", "chapter6.html#C6_Granularity", null ],
       [ "Offload a cudaFlow", "chapter6.html#C6_OffloadAcudaFlow", null ],
-      [ "Join a cudaFlow", "chapter6.html#C6_JoinAcudaFlow", null ],
-      [ "Granularity", "chapter6.html#C6_Granularity", null ]
+      [ "Join a cudaFlow", "chapter6.html#C6_JoinAcudaFlow", null ]
+    ] ],
+    [ "C7: GPU Tasking (cudaFlowCapturer)", "chapter7.html", [
+      [ "Capture a cudaFlow", "chapter7.html#C7_Capture_a_cudaFlow", null ]
     ] ]
 ];

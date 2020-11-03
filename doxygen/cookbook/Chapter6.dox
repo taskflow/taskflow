@@ -1,6 +1,6 @@
 namespace tf {
 
-/** @page chapter6 C6: CPU-GPU Tasking (CUDA)
+/** @page chapter6 C6: GPU Tasking (%cudaFlow)
 
 Modern scientific computing typically leverages 
 GPU-powered parallel processing cores to speed up large-scale applications.
@@ -71,7 +71,7 @@ The following example implements the canonical saxpy (A·X Plus Y) task graph.
 51: }
 @endcode
 
-@image html images/saxpy.svg width=80%
+@image html images/saxpy.svg width=60%
 
 Debrief:
 
@@ -91,7 +91,7 @@ a native CUDA toolkit, while leaving difficult task parallelism to %Taskflow.
 
 @section C6_Compile_a_cudaFlow_program Compile a cudaFlow Program
 
-Use @nvcc (at least v11) to compile a %cudaFlow program:
+Use @nvcc (at least v11.1) to compile a %cudaFlow program:
 
 @code{.sh}
 ~$ nvcc -std=c++17 my_cudaflow.cu -I path/to/include/taskflow -O2 -o my_cudaflow
@@ -300,24 +300,6 @@ taskflow.emplace([&](tf::cudaFlow& cf){
 });
 @endcode
 
-@section C6_OffloadAcudaFlow Offload a cudaFlow
-
-TBD
-
-@code{.cpp}
-taskflow.emplace([&] (tf::cudaFlow& cf) {
-});
-@endcode
-
-@section C6_JoinAcudaFlow Join a cudaFlow
-
-TBD
-
-@code{.cpp}
-taskflow.emplace([&] (tf::cudaFlow& cf) {
-});
-@endcode
-
 
 @section C6_Granularity Granularity
 
@@ -371,6 +353,24 @@ tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
 We encourage users to study and understand the parallel structure of their applications,
 in order to come up with the best granularity of task decomposition.
 A refined task graph can have significant performance difference from the raw counterpart.
+
+@section C6_OffloadAcudaFlow Offload a cudaFlow
+
+TBD
+
+@code{.cpp}
+taskflow.emplace([&] (tf::cudaFlow& cf) {
+});
+@endcode
+
+@section C6_JoinAcudaFlow Join a cudaFlow
+
+TBD
+
+@code{.cpp}
+taskflow.emplace([&] (tf::cudaFlow& cf) {
+});
+@endcode
 
 */
 

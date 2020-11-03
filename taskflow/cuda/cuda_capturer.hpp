@@ -24,8 +24,7 @@ constexpr size_t cuda_default_threads_per_block(size_t N) {
 /**
 @class cudaFlowCapturerBase
 
-@brief base class of methods to capture CUDA operations through
-       CUDA streams
+@brief base class to construct a CUDA task graph through stream capture
 */
 class cudaFlowCapturerBase {
 
@@ -377,8 +376,9 @@ class cudaFlowCapturer : public cudaFlowCapturerBase {
 
     @param args arguments to forward to construct the custom capturer
 
-    This %cudaFlowCapturer object keeps a factory of created custom capturers
-    and manages their lifetimes.
+    This %cudaFlowCapturer object keeps a list of custom capturers
+    and manages their lifetimes. The lifetime of each custom capturer is
+    the same as the capturer.
      */
     template <typename T, typename... ArgsT>
     T* make_capturer(ArgsT&&... args);
@@ -440,10 +440,11 @@ T* cudaFlowCapturer::make_capturer(ArgsT&&... args) {
   return raw;
 }
 
-// Procedure
+// Function: _capture
 inline cudaGraph_t cudaFlowCapturer::_capture() {
 
   // acquire per-thread stream and turn it into capture mode
+  // we must use ThreadLocal mode to avoid clashing with CUDA global states
   cudaScopedPerThreadStream stream;
   
   TF_CHECK_CUDA(

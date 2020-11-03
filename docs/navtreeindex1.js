@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"classtf_1_1cudaFlow.html#a079ca65da35301e5aafd45878a19e9d2":[11,0,0,2,14],
+"classtf_1_1cudaFlow.html#a1926f45a038d8faa9c1b1ee43fd29a93":[11,0,0,2,2],
 "classtf_1_1cudaFlow.html#a21d4447bc834f4d3e1bb4772c850d090":[11,0,0,2,3],
 "classtf_1_1cudaFlow.html#a30b2e107cb2c90a37f467b28d1b42a74":[11,0,0,2,15],
 "classtf_1_1cudaFlow.html#a40172fac4464f6d805f75921ea3c2a3b":[11,0,0,2,25],
@@ -247,7 +249,5 @@ var NAVTREEINDEX1 =
 "release-2-7-0.html#release-2-7-0_bug_fixes":[2,2,2],
 "release-2-7-0.html#release-2-7-0_deprecated_items":[2,2,3],
 "release-2-7-0.html#release-2-7-0_download":[2,2,0],
-"release-2-7-0.html#release-2-7-0_miscellaneous_items":[2,2,4],
-"release-2-7-0.html#release-2-7-0_new_features":[2,2,1],
-"release-3-0-0.html":[2,1]
+"release-2-7-0.html#release-2-7-0_miscellaneous_items":[2,2,4]
 };

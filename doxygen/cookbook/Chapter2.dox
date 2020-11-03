@@ -182,19 +182,15 @@ The future object returned from the tf::Executor::async call does not block on d
 @section C2_Observer Observe Thread Activities
 
 You can observe thread activities in an executor when a worker thread participates in executing
-a task and leaves the execution using tf::ObserverInterface.
-tf::ObserverInterface is an @em interface class that provides a set of methods for you to define
+a task and leaves the execution using tf::ObserverInterface --
+an @em interface class that provides a set of methods for you to define
 what to do when a thread enters and leaves the execution context of a task.
 
 @code{.cpp}
 class ObserverInterface {
-
   virtual ~ObserverInterface() = default;
-  
   virtual void set_up(size_t num_workers) = 0;
-  
   virtual void on_entry(size_t worker_id, tf::TaskView task_view) = 0;
-  
   virtual void on_exit(size_t worker_id, tf::TaskView task_view) = 0;
 };
 @endcode

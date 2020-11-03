@@ -112,9 +112,9 @@ constexpr bool is_cudaflow_task_v = std::is_invocable_r_v<void, C, cudaFlow&> ||
 
 @brief handle to a node in a task dependency graph
 
-A Task is handle object of a node in a dependency graph. 
+A Task is handle to manipulate a node in a taskflow graph. 
 It provides a set of methods for users to access and modify the attributes of 
-the associated graph node.
+the associated graph node without directly touching internal node data.
 
 */
 class Task {

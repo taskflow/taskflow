@@ -1,8 +1,8 @@
 var searchData=
 [
   ['a',['a',['http://en.cppreference.com/w/cpp/numeric/random/extreme_value_distribution/params.html',1,'std::extreme_value_distribution::a()'],['http://en.cppreference.com/w/cpp/numeric/random/uniform_real_distribution/params.html',1,'std::uniform_real_distribution::a()'],['http://en.cppreference.com/w/cpp/numeric/random/weibull_distribution/params.html',1,'std::weibull_distribution::a()'],['http://en.cppreference.com/w/cpp/numeric/random/uniform_int_distribution/params.html',1,'std::uniform_int_distribution::a()'],['http://en.cppreference.com/w/cpp/numeric/random/cauchy_distribution/params.html',1,'std::cauchy_distribution::a()']]],
-  ['a0_3a_20parallel_20iterations',['A0: Parallel Iterations',['../A0ForEach.html',1,'Algorithms']]],
-  ['a1_3a_20parallel_20reduction',['A1: Parallel Reduction',['../A1Reduce.html',1,'Algorithms']]],
+  ['a1_3a_20parallel_20iterations',['A1: Parallel Iterations',['../A1ForEach.html',1,'Algorithms']]],
+  ['a2_3a_20parallel_20reduction',['A2: Parallel Reduction',['../A2Reduce.html',1,'Algorithms']]],
   ['add_5fconst',['add_const',['http://en.cppreference.com/w/cpp/types/add_cv.html',1,'std']]],
   ['add_5fcv',['add_cv',['http://en.cppreference.com/w/cpp/types/add_cv.html',1,'std']]],
   ['add_5flvalue_5freference',['add_lvalue_reference',['http://en.cppreference.com/w/cpp/types/add_reference.html',1,'std']]],

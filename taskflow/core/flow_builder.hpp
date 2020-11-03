@@ -706,10 +706,35 @@ inline void FlowBuilder::linearize(std::initializer_list<Task> keys) {
 /** 
 @class Subflow
 
-@brief building methods of a subflow graph in dynamic tasking
+@brief class to construct a subflow graph from the execution of a dynamic task
 
-By default, a subflow automatically joins its parent node. You may explicitly
-join or detach a subflow by calling Subflow::join or Subflow::detach.
+By default, a subflow automatically @em joins its parent node. 
+You may explicitly join or detach a subflow by calling tf::Subflow::join 
+or tf::Subflow::detach, respectively.
+The following example creates a taskflow graph that spawns a subflow from
+the execution of task @c B, and the subflow contains three tasks, @c B1,
+@c B2, and @c B3, where @c B3 runs after @c B1 and @c B2.
+
+@code{.cpp}
+// create three regular tasks
+tf::Task A = taskflow.emplace([](){}).name("A");
+tf::Task C = taskflow.emplace([](){}).name("C");
+tf::Task D = taskflow.emplace([](){}).name("D");
+
+// create a subflow graph (dynamic tasking)
+tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) {
+  tf::Task B1 = subflow.emplace([](){}).name("B1");
+  tf::Task B2 = subflow.emplace([](){}).name("B2");
+  tf::Task B3 = subflow.emplace([](){}).name("B3");
+  B1.precede(B3);
+  B2.precede(B3);
+}).name("B");
+            
+A.precede(B);  // B runs after A 
+A.precede(C);  // C runs after A 
+B.precede(D);  // D runs after B 
+C.precede(D);  // D runs after C 
+@endcode
 
 */ 
 class Subflow : public FlowBuilder {

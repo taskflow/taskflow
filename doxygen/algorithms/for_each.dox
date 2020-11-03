@@ -1,10 +1,10 @@
 namespace tf {
 
-/** @page A0ForEach A0: Parallel Iterations
+/** @page A1ForEach A1: Parallel Iterations
 
 %Taskflow provides template function that constructs a task to perform parallel iterations over a range of items.
 
-@section A0IndexBasedParallelFor Index-based Parallel Iterations
+@section A1IndexBasedParallelFor Index-based Parallel Iterations
 
 Index-based parallel-for performs parallel iterations over a range <tt>[beg, end)</tt> with the given @c step size.
 The task created by tf::Taskflow::for_each_index(B&& first, E&& last, S&& step, C&& callable) represents parallel execution of the following loop:
@@ -65,7 +65,7 @@ When @c init finishes, the parallel-for task @c pf will see @c first as 0 and @c
 This property is especially important for task graph parallelism, because users can define end-to-end parallelism through stateful closures that marshal parameter exchange between dependent tasks.
 
 
-@section A0IteratorBasedParallelFor Iterator-based Parallel Iterations
+@section A1IteratorBasedParallelFor Iterator-based Parallel Iterations
 
 Iterator-based parallel-for performs parallel iterations over a range specified by two <a href="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</a>, @c first and @c last. 
 The task created by tf::Taskflow::for_each(B&& first, E&& last, C&& callable) represents 
@@ -120,7 +120,7 @@ init.precede(pf);
 When @c init finishes, the parallel-for task @c pf will see @c first pointing to the beginning of @c vec and @c last pointing to the end of @c vec and performs parallel iterations over the 1000 items. The two tasks form an end-to-end task graph where the parameters of parallel-for are computed on the fly.
 
 
-@section A0PartitionAlgorithms Partition Algorithms
+@section A1PartitionAlgorithms Partition Algorithms
 
 At runtime, the parallel-for task automatically partitions the range into @em chunks and assign each chunk a task in the spawned subflow.
 Inspired by the <a href="http://jakascorner.com/blog/2016/06/omp-for-scheduling.html">scheduling algorithms of OpenMP</a>, we support three partition algorithms, @em static partition, @em dynamic partition, and @em guided partition.
