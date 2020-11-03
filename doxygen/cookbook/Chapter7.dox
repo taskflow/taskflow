@@ -15,6 +15,7 @@ A %cudaFlowCapturer is similar to a %cudaFlow except it froms a GPU task graph
 through stream capture.
 You use the method tf::cudaFlowCapturer::on
 to capture a sequence of @em asynchronous CUDA operations through the given stream.
+
 The following example creates a CUDA graph that captures two kernel tasks, 
 @c task_1 and @c task_2, where @c task_1 (i.e., @c my_kernel_1) 
 runs before @c task_2 (i.e., @c my_kernel_2).
@@ -22,13 +23,15 @@ runs before @c task_2 (i.e., @c my_kernel_2).
 @code{.cpp}
 taskflow.emplace([](tf::cudaFlowCapturer& capturer){
   // capture my_kernel_1
-  auto task_1 = capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
+  tf::cudaTask task_1 = capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
     my_kernel_1<<<grid_1, block_1, shm_size_1, stream>>>(my_parameters_1);
   });
+
   // capture my_kernel_2
-  auto task_2 = capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
+  tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
     my_kernel_2<<<grid_2, block_2, shm_size_2, stream>>>(my_parameters_2);
   });
+
   // my_kernel_1 runs before my_kernel_2
   task_1.precede(task_2);
 });
@@ -42,8 +45,30 @@ and it depends on how the internal optimization algorithm maximizes the
 GPU parallelism.
 
 A %cudaFlowCapturer inherits tf::cudaFlowCapturerBase that defines a set of 
-methods for capturing common GPU operations.
+methods for capturing common GPU operations,
+including tf::cudaFlowCapturerBase::kernel, tf::cudaFlowCapturerBase::memcpy,
+and tf::cudaFlowCapturerBase::memset.
+For example, the following code snippet constructs a GPU task graph of
+one host-to-device copy, kernel, and one device-to-host copy,
+in this order of dependencies.
 
+@code{.cpp}
+taskflow.emplace([](tf::cudaFlowCapturer& capturer){
+  // copy data from host_data to gpu_data
+  tf::cudaTask h2d = capturer.memcpy(gpu_data, host_data, bytes);
+
+  // launch my_kernel to do computation on gpu_data
+  tf::cudaTask kernel = capturer.kernel(
+    grid, block, shared_mem_size, my_kernel, gpu_data, my_kernel_arg1, ...
+  );
+
+  // copy data from gpu_data to host_data
+  tf::cudaTask d2h = capturer.memcpy(host_data, gpu_data, bytes);
+  
+  h2d.precede(kernel);
+  kernel.precede(d2h);
+});
+@endcode
 
 */
 
