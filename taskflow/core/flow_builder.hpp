@@ -29,8 +29,10 @@ class FlowBuilder {
 
     @return a Task handle
     */
-    template <typename C>
-    std::enable_if_t<is_static_task_v<C>, Task> emplace(C&& callable);
+    template <typename C, 
+      std::enable_if_t<is_static_task_v<C>, void>* = nullptr
+    >
+    Task emplace(C&& callable);
     
     /**
     @brief creates a dynamic task
@@ -41,8 +43,10 @@ class FlowBuilder {
 
     @return a Task handle
     */
-    template <typename C>
-    std::enable_if_t<is_dynamic_task_v<C>, Task> emplace(C&& callable);
+    template <typename C, 
+      std::enable_if_t<is_dynamic_task_v<C>, void>* = nullptr
+    >
+    Task emplace(C&& callable);
     
     /**
     @brief creates a condition task
@@ -53,8 +57,10 @@ class FlowBuilder {
 
     @return a Task handle
     */
-    template <typename C>
-    std::enable_if_t<is_condition_task_v<C>, Task> emplace(C&& callable);
+    template <typename C, 
+      std::enable_if_t<is_condition_task_v<C>, void>* = nullptr
+    >
+    Task emplace(C&& callable);
 
     /**
     @brief creates multiple tasks from a list of callable objects
@@ -88,15 +94,18 @@ class FlowBuilder {
     /**
     @brief creates a cudaflow task on the default device 0
 
-    @tparam C callable type constructible from std::function<void(tf::cudaFlow&)>
-    @tparam D device type, either int or std::ref<int> (stateful)
+    @tparam C callable type constructible from @c std::function<void(tf::cudaFlow&)>
+    @tparam D device type, either int or @c std::ref<int> (stateful)
 
     @return a Task handle
 
-    This method is equivalent to calling emplace_on(callable, 0).
+    This method is equivalent to calling tf::Taskflow::emplace_on(callable, d)
+    where @c d is the caller's device context.
     */
-    template <typename C>
-    std::enable_if_t<is_cudaflow_task_v<C>, Task> emplace(C&& callable);
+    template <typename C, 
+      std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr
+    >
+    Task emplace(C&& callable);
     
     /**
     @brief creates a cudaflow task on the given device
@@ -106,9 +115,10 @@ class FlowBuilder {
 
     @return a Task handle
     */
-    template <typename C, typename D>
-    std::enable_if_t<is_cudaflow_task_v<C>, Task> 
-    emplace_on(C&& callable, D&& device);
+    template <typename C, typename D, 
+      std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr
+    >
+    Task emplace_on(C&& callable, D&& device);
 #endif
 
     /**
@@ -613,33 +623,33 @@ inline FlowBuilder::FlowBuilder(Graph& graph) :
 }
 
 // Function: emplace
-template <typename C>
-std::enable_if_t<is_static_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
+template <typename C, std::enable_if_t<is_static_task_v<C>, void>*>
+Task FlowBuilder::emplace(C&& c) {
   return Task(_graph.emplace_back(
     std::in_place_type_t<Node::StaticTask>{}, std::forward<C>(c)
   ));
 }
 
 // Function: emplace
-template <typename C>
-std::enable_if_t<is_dynamic_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
+template <typename C, std::enable_if_t<is_dynamic_task_v<C>, void>*>
+Task FlowBuilder::emplace(C&& c) {
   return Task(_graph.emplace_back(
     std::in_place_type_t<Node::DynamicTask>{}, std::forward<C>(c)
   ));
 }
 
 // Function: emplace
-template <typename C>
-std::enable_if_t<is_condition_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
+template <typename C, std::enable_if_t<is_condition_task_v<C>, void>*>
+Task FlowBuilder::emplace(C&& c) {
   return Task(_graph.emplace_back(
     std::in_place_type_t<Node::ConditionTask>{}, std::forward<C>(c)
   ));
 }
 
 #ifdef TF_ENABLE_CUDA
-template <typename C>
-std::enable_if_t<is_cudaflow_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
-  return emplace_on(std::forward<C>(c), 0);
+template <typename C, std::enable_if_t<is_cudaflow_task_v<C>, void>*>
+Task FlowBuilder::emplace(C&& c) {
+  return emplace_on(std::forward<C>(c), tf::cuda_get_device());
 }
 #endif
 

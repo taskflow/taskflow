@@ -86,6 +86,10 @@ class cublasFlowCapturer : public cudaFlowCapturerBase {
     The storage spacing between consecutive elements is given by @c inch for 
     the source vector @c h and by @c incd for the destination vector @c d.
     
+    This method calls native @c cublasSetVectorAsync with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is manaed by 
+    the %cublasFlowCapturer and @c args... are the given arguments.
+    
     @tparam T data type
     @param n number of elements
     @param d target device pointer
@@ -107,6 +111,10 @@ class cublasFlowCapturer : public cudaFlowCapturerBase {
     to a vector @c h in host memory space. 
     The storage spacing between consecutive elements is given by @c inch for 
     the target vector @c h and by @c incd for the source vector @c d.
+    
+    This method calls native @c cublasGetVectorAsync with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is manaed by 
+    the %cublasFlowCapturer and @c args... are the given arguments.
     
     @tparam T data type
     @param n number of elements

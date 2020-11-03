@@ -98,7 +98,7 @@ $(document).ready(function(){initNavTree('classtf_1_1TFProfObserver.html','');})
 </div><!--header-->
 <div class="contents">
 
-<p>observer designed based on taskflow board format  
+<p>observer interface based on <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a> format  
  <a href="classtf_1_1TFProfObserver.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="observer_8hpp_source.html">observer.hpp</a>&gt;</code></p>
@@ -121,18 +121,22 @@ Collaboration diagram for tf::TFProfObserver:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9f1e839e2a8d3abd0b91ac454f0d078b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1TFProfObserver.html#a9f1e839e2a8d3abd0b91ac454f0d078b">dump</a> (<a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> &amp;ostream) const</td></tr>
-<tr class="memdesc:a9f1e839e2a8d3abd0b91ac454f0d078b"><td class="mdescLeft">&#160;</td><td class="mdescRight">dump the timelines in JSON format to an ostream  <a href="#a9f1e839e2a8d3abd0b91ac454f0d078b">More...</a><br /></td></tr>
-<tr class="separator:a9f1e839e2a8d3abd0b91ac454f0d078b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59e82cb3f9b0ada38aa1ddea14f14d02"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1TFProfObserver.html#a59e82cb3f9b0ada38aa1ddea14f14d02">dump</a> () const</td></tr>
-<tr class="memdesc:a59e82cb3f9b0ada38aa1ddea14f14d02"><td class="mdescLeft">&#160;</td><td class="mdescRight">dump the timelines in JSON to a <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>  <a href="#a59e82cb3f9b0ada38aa1ddea14f14d02">More...</a><br /></td></tr>
+<tr class="memitem:a663445b21a03abaccfd32b199b7b10a1"><td class="memTemplParams" colspan="2"><a id="a663445b21a03abaccfd32b199b7b10a1"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a663445b21a03abaccfd32b199b7b10a1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1TFProfObserver.html#a663445b21a03abaccfd32b199b7b10a1">dump</a> (T &amp;ostream) const</td></tr>
+<tr class="memdesc:a663445b21a03abaccfd32b199b7b10a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">dumps the timelines into a <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a> format through an output stream object that defines stream insertion operator <code>&lt;&lt;</code> <br /></td></tr>
+<tr class="separator:a663445b21a03abaccfd32b199b7b10a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59e82cb3f9b0ada38aa1ddea14f14d02"><td class="memItemLeft" align="right" valign="top"><a id="a59e82cb3f9b0ada38aa1ddea14f14d02"></a>
+<a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1TFProfObserver.html#a59e82cb3f9b0ada38aa1ddea14f14d02">dump</a> () const</td></tr>
+<tr class="memdesc:a59e82cb3f9b0ada38aa1ddea14f14d02"><td class="mdescLeft">&#160;</td><td class="mdescRight">dumps the timelines into a JSON string <br /></td></tr>
 <tr class="separator:a59e82cb3f9b0ada38aa1ddea14f14d02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e1f63034a96a5a79cef6da412efd203"><td class="memItemLeft" align="right" valign="top"><a id="a5e1f63034a96a5a79cef6da412efd203"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1TFProfObserver.html#a5e1f63034a96a5a79cef6da412efd203">clear</a> ()</td></tr>
-<tr class="memdesc:a5e1f63034a96a5a79cef6da412efd203"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear the timeline data <br /></td></tr>
+<tr class="memdesc:a5e1f63034a96a5a79cef6da412efd203"><td class="mdescLeft">&#160;</td><td class="mdescRight">clears the timeline data <br /></td></tr>
 <tr class="separator:a5e1f63034a96a5a79cef6da412efd203"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b3b0bee8762af654cfebd2bb2ee98ed"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1TFProfObserver.html#a8b3b0bee8762af654cfebd2bb2ee98ed">num_tasks</a> () const</td></tr>
-<tr class="memdesc:a8b3b0bee8762af654cfebd2bb2ee98ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">get the number of total tasks in the observer  <a href="#a8b3b0bee8762af654cfebd2bb2ee98ed">More...</a><br /></td></tr>
+<tr class="memitem:a8b3b0bee8762af654cfebd2bb2ee98ed"><td class="memItemLeft" align="right" valign="top"><a id="a8b3b0bee8762af654cfebd2bb2ee98ed"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1TFProfObserver.html#a8b3b0bee8762af654cfebd2bb2ee98ed">num_tasks</a> () const</td></tr>
+<tr class="memdesc:a8b3b0bee8762af654cfebd2bb2ee98ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the number of tasks observed <br /></td></tr>
 <tr class="separator:a8b3b0bee8762af654cfebd2bb2ee98ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtf_1_1ObserverInterface"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtf_1_1ObserverInterface')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtf_1_1ObserverInterface.html">tf::ObserverInterface</a></td></tr>
 <tr class="memitem:adfd71c3af3ae2ea4f41eed26c1b6f604 inherit pub_methods_classtf_1_1ObserverInterface"><td class="memItemLeft" align="right" valign="top"><a id="adfd71c3af3ae2ea4f41eed26c1b6f604"></a>
@@ -147,99 +151,10 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></t
 <tr class="separator:a763b2f90bc53f92d680a635fe28e858e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>observer designed based on taskflow board format </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a9f1e839e2a8d3abd0b91ac454f0d078b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9f1e839e2a8d3abd0b91ac454f0d078b">&#9670;&nbsp;</a></span>dump() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tf::TFProfObserver::dump </td>
-          <td>(</td>
-          <td class="paramtype"><a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> &amp;&#160;</td>
-          <td class="paramname"><em>ostream</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>dump the timelines in JSON format to an ostream </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">ostream</td><td>the target <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> to dump </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a59e82cb3f9b0ada38aa1ddea14f14d02"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a59e82cb3f9b0ada38aa1ddea14f14d02">&#9670;&nbsp;</a></span>dump() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> tf::TFProfObserver::dump </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>dump the timelines in JSON to a <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>a JSON string </dd></dl>
-
-</div>
-</div>
-<a id="a8b3b0bee8762af654cfebd2bb2ee98ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8b3b0bee8762af654cfebd2bb2ee98ed">&#9670;&nbsp;</a></span>num_tasks()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t tf::TFProfObserver::num_tasks </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>get the number of total tasks in the observer </p>
-<dl class="section return"><dt>Returns</dt><dd>number of total tasks </dd></dl>
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<div class="textblock"><p>observer interface based on <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a> format </p>
+<p>A <a class="el" href="classtf_1_1TFProfObserver.html" title="observer interface based on Taskflow Profiler format ">tf::TFProfObserver</a> inherits <a class="el" href="classtf_1_1ObserverInterface.html" title="The interface class for creating an executor observer. ">tf::ObserverInterface</a> and defines methods to dump the observed thread activities into a format that can be visualized through <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a>.</p>
+<div class="fragment"><div class="line"><a class="code" href="classtf_1_1Taskflow.html">tf::Taskflow</a> taskflow;</div><div class="line"><a class="code" href="classtf_1_1Executor.html">tf::Executor</a> executor;</div><div class="line"></div><div class="line"><span class="comment">// insert tasks into taskflow</span></div><div class="line"><span class="comment">// ...</span></div><div class="line">  </div><div class="line"><span class="comment">// create a custom observer</span></div><div class="line"><a class="codeRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html">std::shared_ptr&lt;tf::TFProfObserver&gt;</a> observer = executor.<a class="code" href="classtf_1_1Executor.html#a3e68a0d779cfee1554c88c2596ae9000">make_observer</a>&lt;<a class="code" href="classtf_1_1TFProfObserver.html">tf::TFProfObserver</a>&gt;();</div><div class="line"></div><div class="line"><span class="comment">// run the taskflow</span></div><div class="line">executor.<a class="code" href="classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa">run</a>(taskflow).wait();</div><div class="line"></div><div class="line"><span class="comment">// dump the thread activities to Taskflow Profiler format.</span></div><div class="line">observer-&gt;dump(<a class="codeRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a>);</div></div><!-- fragment --><p>We recommend using our <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a> python script to observe thread activities instead of the raw function call. The script will turn on environment variables needed for observing all executors in a taskflow program and dump the result to a valid, clean JSON file compatible with the format of <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a>. </p>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="observer_8hpp_source.html">observer.hpp</a></li>
 </ul>
 </div><!-- contents -->

@@ -158,7 +158,7 @@ Q4: Is executor thread-safe?</h2>
 <p>Yes, the executor object is thread-safe. You can have multiple threads run their taskflows on one executor.</p>
 <h2><a class="anchor" id="ProgrammingQuestions5"></a>
 Q5: My program hangs and never returns after dispatching a taskflow graph. What's wrong?</h2>
-<p>When the program hangs forever it is very likely your taskflow graph has a cycle or not properly conditioned (see <a class="el" href="chapter4.html">C4: Conditional Tasking</a>). Try the <a class="el" href="classtf_1_1Taskflow.html#a4725d8ea5ff7595d9d71593360538e00" title="dumps the taskflow to a DOT format through an output stream ">tf::Taskflow::dump</a> method to debug the graph before dispatching your taskflow graph.</p>
+<p>When the program hangs forever it is very likely your taskflow graph has a cycle or not properly conditioned (see <a class="el" href="chapter4.html">C4: Conditional Tasking</a>). Try the <a class="el" href="classtf_1_1Taskflow.html#a4725d8ea5ff7595d9d71593360538e00" title="dumps the taskflow to a DOT format through an output stream that defines the stream insertion operato...">tf::Taskflow::dump</a> method to debug the graph before dispatching your taskflow graph.</p>
 <h2><a class="anchor" id="ProgrammingQuestions6"></a>
 Q6: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?</h2>
 <div class="image">

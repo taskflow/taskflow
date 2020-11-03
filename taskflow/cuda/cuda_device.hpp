@@ -301,7 +301,7 @@ class cudaScopedDevice {
     explicit cudaScopedDevice(int device);
 
     /**
-    @brief destructs the guard and returns back to the original device
+    @brief destructs the guard and switches back to the previous device context
     */
     ~cudaScopedDevice();
 

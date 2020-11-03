@@ -18,6 +18,44 @@ namespace tf {
 
 @brief main entry to create a task dependency graph
 
+A %taskflow manages a task dependency graph where each task represents a 
+callable object (e.g., @std_lambda, @std_function) and an edge represents a 
+dependency between two tasks. A task is one of the following five types:
+  
+  1. static task: the callable constructible from 
+                  @c std::function<void()>
+  2. dynamic task: the callable constructible from 
+                   @c std::function<void(tf::Subflow&)>
+  3. condition task: the callable constructible from 
+                     @c std::function<int()>
+  4. module task: the task constructed from tf::Taskflow::composed_of
+  5. %cudaFlow task: the callable constructible from 
+                     @c std::function<void(tf::cudaFlow)> or
+                     @c std::function<void(tf::cudaFlowCapturer)>
+  
+
+The following example creates a simple taskflow graph of four static tasks, 
+@c A, @c B, @c C, and @c D, where
+@c A runs before @c B and @c C and 
+@c D runs after  @c B and @c C.
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow("simple");
+
+auto [A, B, C, D] = taskflow.emplace(
+  []() { std::cout << "TaskA\n"; },
+  []() { std::cout << "TaskB\n"; },
+  []() { std::cout << "TaskC\n"; },
+  []() { std::cout << "TaskD\n"; }
+);
+
+A.precede(B, C);  // A runs before B and C
+D.succeed(B, C);  // D runs after  B and C
+                                   
+executor.run(taskflow).wait();     
+@endcode
+
 */
 class Taskflow : public FlowBuilder {
 
@@ -33,7 +71,7 @@ class Taskflow : public FlowBuilder {
   public:
 
     /**
-    @brief constructs a taskflow with a given name
+    @brief constructs a taskflow with the given name
     */
     Taskflow(const std::string& name);
 
@@ -49,15 +87,13 @@ class Taskflow : public FlowBuilder {
     
     /**
     @brief dumps the taskflow to a DOT format through an output stream
-    
-    @tparam T output stream type with insertion operator (<<) defined
-    @param ostream an output stream target
+           that defines the stream insertion operator @c <<
     */
     template <typename T>
     void dump(T& ostream) const;
     
     /**
-    @brief dumps the taskflow in DOT format to a std::string
+    @brief dumps the taskflow to a std::string of DOT format
     */
     std::string dump() const;
     
@@ -73,8 +109,6 @@ class Taskflow : public FlowBuilder {
 
     /**
     @brief sets the name of the taskflow
-    
-    @return @c *this
     */
     void name(const std::string&); 
 
@@ -90,6 +124,16 @@ class Taskflow : public FlowBuilder {
 
     /**
     @brief applies an visitor callable to each task in the taskflow
+
+    The visitor is a callable that takes an argument of type tf::Task
+    and returns nothing. The following example iterates each task in a
+    taskflow and prints its name:
+
+    @code{.cpp}
+    taskflow.for_each_task([](tf::Task task){
+      std::cout << task.name() << '\n';
+    });
+    @endcode
     */
     template <typename V>
     void for_each_task(V&& visitor) const;

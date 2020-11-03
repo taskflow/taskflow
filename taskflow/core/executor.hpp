@@ -1397,9 +1397,10 @@ inline void Subflow::detach() {
 
 #ifdef TF_ENABLE_CUDA
 
-template <typename C, typename D>
-std::enable_if_t<is_cudaflow_task_v<C>, Task> 
-FlowBuilder::emplace_on(C&& callable, D&& device) {
+template <typename C, typename D,
+  std::enable_if_t<is_cudaflow_task_v<C>, void>*
+>
+Task FlowBuilder::emplace_on(C&& callable, D&& device) {
   auto n = _graph.emplace_back(
     std::in_place_type_t<Node::cudaFlowTask>{},
     [c=std::forward<C>(callable), d=std::forward<D>(device)]

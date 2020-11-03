@@ -98,7 +98,7 @@ $(document).ready(function(){initNavTree('classtf_1_1ChromeObserver.html','');})
 </div><!--header-->
 <div class="contents">
 
-<p>observer designed based on chrome tracing format  
+<p>observer interface based on <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</a> format  
  <a href="classtf_1_1ChromeObserver.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="observer_8hpp_source.html">observer.hpp</a>&gt;</code></p>
@@ -121,18 +121,22 @@ Collaboration diagram for tf::ChromeObserver:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a5df3852d8525cabafee696d5f77b3fd7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1ChromeObserver.html#a5df3852d8525cabafee696d5f77b3fd7">dump</a> (<a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> &amp;ostream) const</td></tr>
-<tr class="memdesc:a5df3852d8525cabafee696d5f77b3fd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">dump the timelines in JSON format to an ostream  <a href="#a5df3852d8525cabafee696d5f77b3fd7">More...</a><br /></td></tr>
-<tr class="separator:a5df3852d8525cabafee696d5f77b3fd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a414d60cee91db1d3924636fcea5f4ea7"><td class="memItemLeft" align="right" valign="top"><a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1ChromeObserver.html#a414d60cee91db1d3924636fcea5f4ea7">dump</a> () const</td></tr>
-<tr class="memdesc:a414d60cee91db1d3924636fcea5f4ea7"><td class="mdescLeft">&#160;</td><td class="mdescRight">dump the timelines in JSON to a <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>  <a href="#a414d60cee91db1d3924636fcea5f4ea7">More...</a><br /></td></tr>
+<tr class="memitem:a4be827e5de1354fad55b5c12154ca412"><td class="memTemplParams" colspan="2"><a id="a4be827e5de1354fad55b5c12154ca412"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a4be827e5de1354fad55b5c12154ca412"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1ChromeObserver.html#a4be827e5de1354fad55b5c12154ca412">dump</a> (T &amp;ostream) const</td></tr>
+<tr class="memdesc:a4be827e5de1354fad55b5c12154ca412"><td class="mdescLeft">&#160;</td><td class="mdescRight">dumps the timelines into a <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</a> format through an output stream object that defines stream insertion operator <code>&lt;&lt;</code> <br /></td></tr>
+<tr class="separator:a4be827e5de1354fad55b5c12154ca412"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a414d60cee91db1d3924636fcea5f4ea7"><td class="memItemLeft" align="right" valign="top"><a id="a414d60cee91db1d3924636fcea5f4ea7"></a>
+<a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1ChromeObserver.html#a414d60cee91db1d3924636fcea5f4ea7">dump</a> () const</td></tr>
+<tr class="memdesc:a414d60cee91db1d3924636fcea5f4ea7"><td class="mdescLeft">&#160;</td><td class="mdescRight">dumps the timelines into a <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</a> format <br /></td></tr>
 <tr class="separator:a414d60cee91db1d3924636fcea5f4ea7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3948e57186155a6934c100447cb9332d"><td class="memItemLeft" align="right" valign="top"><a id="a3948e57186155a6934c100447cb9332d"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1ChromeObserver.html#a3948e57186155a6934c100447cb9332d">clear</a> ()</td></tr>
-<tr class="memdesc:a3948e57186155a6934c100447cb9332d"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear the timeline data <br /></td></tr>
+<tr class="memdesc:a3948e57186155a6934c100447cb9332d"><td class="mdescLeft">&#160;</td><td class="mdescRight">clears the timeline data <br /></td></tr>
 <tr class="separator:a3948e57186155a6934c100447cb9332d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44032b7607de5dd929683739f4df9ef2"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1ChromeObserver.html#a44032b7607de5dd929683739f4df9ef2">num_tasks</a> () const</td></tr>
-<tr class="memdesc:a44032b7607de5dd929683739f4df9ef2"><td class="mdescLeft">&#160;</td><td class="mdescRight">get the number of total tasks in the observer  <a href="#a44032b7607de5dd929683739f4df9ef2">More...</a><br /></td></tr>
+<tr class="memitem:a44032b7607de5dd929683739f4df9ef2"><td class="memItemLeft" align="right" valign="top"><a id="a44032b7607de5dd929683739f4df9ef2"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1ChromeObserver.html#a44032b7607de5dd929683739f4df9ef2">num_tasks</a> () const</td></tr>
+<tr class="memdesc:a44032b7607de5dd929683739f4df9ef2"><td class="mdescLeft">&#160;</td><td class="mdescRight">queries the number of tasks observed <br /></td></tr>
 <tr class="separator:a44032b7607de5dd929683739f4df9ef2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtf_1_1ObserverInterface"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtf_1_1ObserverInterface')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtf_1_1ObserverInterface.html">tf::ObserverInterface</a></td></tr>
 <tr class="memitem:adfd71c3af3ae2ea4f41eed26c1b6f604 inherit pub_methods_classtf_1_1ObserverInterface"><td class="memItemLeft" align="right" valign="top"><a id="adfd71c3af3ae2ea4f41eed26c1b6f604"></a>
@@ -147,99 +151,9 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></t
 <tr class="separator:a763b2f90bc53f92d680a635fe28e858e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>observer designed based on chrome tracing format </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a5df3852d8525cabafee696d5f77b3fd7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5df3852d8525cabafee696d5f77b3fd7">&#9670;&nbsp;</a></span>dump() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tf::ChromeObserver::dump </td>
-          <td>(</td>
-          <td class="paramtype"><a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> &amp;&#160;</td>
-          <td class="paramname"><em>ostream</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>dump the timelines in JSON format to an ostream </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">ostream</td><td>the target <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> to dump </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a414d60cee91db1d3924636fcea5f4ea7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a414d60cee91db1d3924636fcea5f4ea7">&#9670;&nbsp;</a></span>dump() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> tf::ChromeObserver::dump </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>dump the timelines in JSON to a <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>a JSON string </dd></dl>
-
-</div>
-</div>
-<a id="a44032b7607de5dd929683739f4df9ef2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a44032b7607de5dd929683739f4df9ef2">&#9670;&nbsp;</a></span>num_tasks()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t tf::ChromeObserver::num_tasks </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>get the number of total tasks in the observer </p>
-<dl class="section return"><dt>Returns</dt><dd>number of total tasks </dd></dl>
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<div class="textblock"><p>observer interface based on <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</a> format </p>
+<p>A <a class="el" href="classtf_1_1ChromeObserver.html" title="observer interface based on Chrome Tracing format ">tf::ChromeObserver</a> inherits <a class="el" href="classtf_1_1ObserverInterface.html" title="The interface class for creating an executor observer. ">tf::ObserverInterface</a> and defines methods to dump the observed thread activities into a format that can be visualized through <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</a>.</p>
+<div class="fragment"><div class="line"><a class="code" href="classtf_1_1Taskflow.html">tf::Taskflow</a> taskflow;</div><div class="line"><a class="code" href="classtf_1_1Executor.html">tf::Executor</a> executor;</div><div class="line"></div><div class="line"><span class="comment">// insert tasks into taskflow</span></div><div class="line"><span class="comment">// ...</span></div><div class="line">  </div><div class="line"><span class="comment">// create a custom observer</span></div><div class="line"><a class="codeRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html">std::shared_ptr&lt;tf::ChromeObserver&gt;</a> observer = executor.<a class="code" href="classtf_1_1Executor.html#a3e68a0d779cfee1554c88c2596ae9000">make_observer</a>&lt;<a class="code" href="classtf_1_1ChromeObserver.html">tf::ChromeObserver</a>&gt;();</div><div class="line"></div><div class="line"><span class="comment">// run the taskflow</span></div><div class="line">executor.<a class="code" href="classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa">run</a>(taskflow).wait();</div><div class="line"></div><div class="line"><span class="comment">// dump the thread activities to a chrome-tracing format.</span></div><div class="line">observer-&gt;dump(<a class="codeRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a>);</div></div><!-- fragment --> </div><hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="observer_8hpp_source.html">observer.hpp</a></li>
 </ul>
 </div><!-- contents -->
