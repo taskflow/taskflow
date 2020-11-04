@@ -5,10 +5,11 @@ var Releases =
     ] ],
     [ "Release 3.0.0 (Master)", "release-3-0-0.html", [
       [ "Download", "release-3-0-0.html#release-3-0-0_download", null ],
+      [ "System Requirements", "release-3-0-0.html#release-3-0-0_system_requirements", null ],
       [ "Working Items", "release-3-0-0.html#release-3-0-0_working_items", null ],
       [ "New Features", "release-3-0-0.html#release-3-0-0_new_features", null ],
       [ "Bug Fixes", "release-3-0-0.html#release-3-0-0_bug_fixes", null ],
-      [ "Deprecated Items", "release-3-0-0.html#release-3-0-0_deprecated_items", null ],
+      [ "Deprecated and Removed Items", "release-3-0-0.html#release-3-0-0_deprecated_items", null ],
       [ "Miscellaneous Items", "release-3-0-0.html#release-3-0-0_miscellaneous_items", null ]
     ] ],
     [ "Release 2.7.0 (2020/10/01)", "release-2-7-0.html", [

@@ -83,9 +83,10 @@ var NAVTREEINDEX0 =
 "chapter6.html#C6_configure_the_number_of_gpu_workers":[3,6,2],
 "chapter6.html#C6_run_a_cudaflow_on_multiple_gpus":[3,6,3],
 "chapter7.html":[3,7],
+"chapter7.html#C7_CaptureAcudaFlowOnASpecificGPU":[3,7,3],
+"chapter7.html#C7_CaptureWithinAcudaFlow":[3,7,1],
 "chapter7.html#C7_Capture_a_cudaFlow":[3,7,0],
-"chapter7.html#C7_CommonCaptureMethods":[3,7,1],
-"chapter7.html#C7_CreateACustimCapturer":[3,7,2],
+"chapter7.html#C7_CommonCaptureMethods":[3,7,2],
 "classes.html":[11,1],
 "classtf_1_1ChromeObserver.html":[11,0,0,0],
 "classtf_1_1ChromeObserver.html#a3948e57186155a6934c100447cb9332d":[11,0,0,0,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "classtf_1_1cublasFlowCapturer.html#adb8f5d3137f5ccb3469a5bdde454a8bf":[11,0,0,1,18],
 "classtf_1_1cublasFlowCapturer.html#ae57c53a1a07c0b4f73d90bf21fee4e1c":[11,0,0,1,8],
 "classtf_1_1cublasFlowCapturer.html#aecfd3b623b457d277dca40c2e1b3c1c0":[11,0,0,1,6],
-"classtf_1_1cublasFlowCapturer.html#af315b411bcaa2bd2bc1436f7f2ca5e21":[11,0,0,1,20],
-"classtf_1_1cublasFlowCapturer.html#af8f5052cbe1203d6ee3d3d40dffbb8eb":[11,0,0,1,21]
+"classtf_1_1cublasFlowCapturer.html#af315b411bcaa2bd2bc1436f7f2ca5e21":[11,0,0,1,20]
 };

@@ -11,7 +11,7 @@ managed by a @em %cudaFlowCapturer.
 When your program has no access to direct kernel calls but invoke
 it through a stream-based interface (e.g., @cuBLAS library functions),
 you can use tf::cudaFlowCapturer to capture the GPU activities into a %cudaFlow.
-A %cudaFlowCapturer is similar to a %cudaFlow except it froms a GPU task graph
+A %cudaFlowCapturer is similar to a %cudaFlow except it forms a GPU task graph
 through stream capture.
 You use the method tf::cudaFlowCapturer::on
 to capture a sequence of @em asynchronous CUDA operations through the given stream.
@@ -48,6 +48,32 @@ A %cudaFlowCapturer lives with the callable.
 When the executor invoke the capturer callable, it creates the %cudaFlowCapturer
 and will destroy it until all internal operations finish.
 
+@section C7_CaptureWithinAcudaFlow Capture within a cudaFlow
+
+Within a parent %cudaFlow, you can capture a %cudaFlow to form a @em child graph node
+in the underlying CUDA task graph.
+The following example defines a captured flow @c task2 of two dependent tasks,
+@c task2_1 and @c task2_2, and @c task2 runs after @c task1.
+
+@code{.cpp}
+tf::Task task = taskflow.emplace([&](tf::cudaFlow& cf){
+
+  tf::cudaTask task1 = cf.kernel(grid, block, shm, my_kernel, args...);
+
+  tf::cudaTask task2 = cf.capture([&](tf::cudaFlowCapturer& capturer){
+    tf::cudaTask task2_1 = capturer.on([&](cudaStream_t stream){  
+      my_kernel2<<<grid1, block1, shm_size1, stream>>>(args1...);
+    });
+    tf::cudaTask task2_2 = capturer.on([&](cudaStream_t stream){  
+      my_kernel2<<<grid2, block2, shm_size2, stream>>>(args2...);
+    });
+    task2_1.precede(task2_2);
+  });
+
+  task1.precede(task2);
+});
+@endcode
+
 @section C7_CommonCaptureMethods Common Capture Methods
 
 A %cudaFlowCapturer inherits tf::cudaFlowCapturerBase that defines a set of 
@@ -76,14 +102,13 @@ tf::Task task = taskflow.emplace([](tf::cudaFlowCapturer& capturer){
 });
 @endcode
 
-@section C7_CreateACustimCapturer Create a Custom Capturer
-
-You can create your own capturer that is specific to a CUDA library by inheriting
-tf::cudaFlowCapturerBase.
+By inheriting tf::cudaFlowCapturerBase, you can create your own capturer.
 The tf::cudaFlowCapturer has a factory interface, tf::cudaFlowCapturer::make_capturer,
 for users to create custom capturers with lifetimes managed by the capturer.
-This is convenient when you need certain objects alive during the capturing,
-for example, handle object in @cuBLAS to associate operations with streams.
+This is convenient when you need certain objects alive during the capturing.
+
+The following example shows a custom capturer on top of @cuBLAS that
+includes the @c cublasHandle object @c _handle to associate operations with streams.
 
 @code{.cpp}
 class MyCapturer : public tf::cudaFlowCapturerBase {
@@ -97,7 +122,7 @@ class MyCapturer : public tf::cudaFlowCapturerBase {
   tf::cudaTask matrix_multiplication(args...) {
     return on([this, args...](cudaStream_t stream){
       cublasSetStream(_handle, stream);
-      cublasSgemm(_handle, ...);
+      cublasSgemm(_handle, args...);
     });
   }
 
@@ -120,9 +145,30 @@ tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
 });
 @endcode
 
-In the code snippet above, the custom capturer object (pointed to by @c mc) 
-created from tf::cudaFlowCapturer::make_capturer is guaranteed to remain
-alive along with @c capturer.
+@section C7_CaptureAcudaFlowOnASpecificGPU Capture a cudaFlow on a Specific GPU
+
+You can capture a %cudaFlow on a specific GPU by calling tf::Taskflow::emplace_on.
+By default, a %cudaFlow runs on the current GPU associated with the caller, 
+which is typically 0.
+Similar to @ref C6_run_a_cudaflow_on_multiple_gpus,
+you can emplace a %cudaFlowCapturer on a specific GPU.
+
+@code{.cpp}
+tf::Task task = taskflow.emplace_on([](tf::cudaFlowCapturer& capturer){
+  // here, capturer is under GPU device context 2
+  // ...
+}, 2);
+@endcode
+
+The above example creates a capturer on GPU 2. 
+When the executor runs the callable, it switches to context 2 
+and all the functions within the callable are called under this context.
+Keep in mind, %Taskflow does not deal with memory.
+It is users' responsibility to ensure the allocated memory to sit in the right context.
+In this example, the GPU memory you created must be from context 2 as well.
+You may use unified shared memory (i.e., @c cudaMallocManaged) to avoid this pitfall,
+if the extra cost of automatic memory migration is not hurting your application 
+performance.
 
 */
 

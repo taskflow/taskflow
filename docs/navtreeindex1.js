@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"classtf_1_1cublasFlowCapturer.html#af8f5052cbe1203d6ee3d3d40dffbb8eb":[11,0,0,1,21],
 "classtf_1_1cublasFlowCapturer.html#afdfa01d9f277051e44d7ed9663555b52":[11,0,0,1,10],
 "classtf_1_1cudaFlow.html":[11,0,0,2],
 "classtf_1_1cudaFlow.html#a060e1c96111c2134ce0f896420a42cd0":[11,0,0,2,6],
@@ -165,8 +166,8 @@ var NAVTREEINDEX1 =
 "guidelines.html#Step3WriteATaskflowProgram":[7,0,2,2],
 "guidelines.html#YourVoiceMatters":[7,0,7],
 "hierarchy.html":[11,2],
-"index.html":[],
 "index.html":[0],
+"index.html":[],
 "index.html#ASimpleFirstProgram":[0,6],
 "index.html#CompileAndRunYourFirstProgram":[0,7],
 "index.html#ComposableTasking":[0,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "release-2-6-0.html#release-2-6-0_deprecated_items":[2,3,3],
 "release-2-6-0.html#release-2-6-0_download":[2,3,0],
 "release-2-6-0.html#release-2-6-0_miscellaneous_items":[2,3,4],
-"release-2-6-0.html#release-2-6-0_new_features":[2,3,1],
-"release-2-7-0.html":[2,2]
+"release-2-6-0.html#release-2-6-0_new_features":[2,3,1]
 };

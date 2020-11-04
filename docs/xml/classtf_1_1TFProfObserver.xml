@@ -1,0 +1,274 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="classtf_1_1TFProfObserver" kind="class" language="C++" prot="public">
+    <compoundname>tf::TFProfObserver</compoundname>
+    <basecompoundref refid="classtf_1_1ObserverInterface" prot="public" virt="non-virtual">tf::ObserverInterface</basecompoundref>
+    <includes refid="observer_8hpp" local="no">observer.hpp</includes>
+    <innerclass refid="structtf_1_1TFProfObserver_1_1Segment" prot="private">tf::TFProfObserver::Segment</innerclass>
+    <innerclass refid="structtf_1_1TFProfObserver_1_1Timeline" prot="private">tf::TFProfObserver::Timeline</innerclass>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classtf_1_1TFProfObserver_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class Executor</definition>
+        <argsstring></argsstring>
+        <name>Executor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="358" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="358" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classtf_1_1TFProfObserver_1a38776d45d5d762b56c28c034d71170a9" prot="private" static="no" mutable="no">
+        <type>Timeline</type>
+        <definition>Timeline tf::TFProfObserver::_timeline</definition>
+        <argsstring></argsstring>
+        <name>_timeline</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="420" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="420" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1TFProfObserver_1a689ea7d2a99d23b46d9d0fe29c90c2ec" prot="private" static="no" mutable="no">
+        <type>UUID</type>
+        <definition>UUID tf::TFProfObserver::_uuid</definition>
+        <argsstring></argsstring>
+        <name>_uuid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="422" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="422" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1TFProfObserver_1a663445b21a03abaccfd32b199b7b10a1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::TFProfObserver::dump</definition>
+        <argsstring>(T &amp;ostream) const</argsstring>
+        <name>dump</name>
+        <param>
+          <type>T &amp;</type>
+          <declname>ostream</declname>
+        </param>
+        <briefdescription>
+<para>dumps the timelines into a <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink> format through an output stream object that defines stream insertion operator <computeroutput>&lt;&lt;</computeroutput> </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="397" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="489" bodyend="559"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TFProfObserver_1a59e82cb3f9b0ada38aa1ddea14f14d02" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
+        <definition>std::string tf::TFProfObserver::dump</definition>
+        <argsstring>() const</argsstring>
+        <name>dump</name>
+        <briefdescription>
+<para>dumps the timelines into a JSON string </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="402" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="562" bodyend="566"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TFProfObserver_1a5e1f63034a96a5a79cef6da412efd203" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::TFProfObserver::clear</definition>
+        <argsstring>()</argsstring>
+        <name>clear</name>
+        <briefdescription>
+<para>clears the timeline data </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="407" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="476" bodyend="485"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TFProfObserver_1a8b3b0bee8762af654cfebd2bb2ee98ed" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::TFProfObserver::num_tasks</definition>
+        <argsstring>() const</argsstring>
+        <name>num_tasks</name>
+        <briefdescription>
+<para>queries the number of tasks observed </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="412" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="569" bodyend="576"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classtf_1_1TFProfObserver_1aa030d8154dd03aea3b8fa8ce42e1151b" prot="private" static="no" const="no" explicit="no" inline="yes" final="yes" virt="virtual">
+        <type>void</type>
+        <definition>void tf::TFProfObserver::set_up</definition>
+        <argsstring>(size_t num_workers) override final</argsstring>
+        <name>set_up</name>
+        <reimplements refid="classtf_1_1ObserverInterface_1a41e6e62f12bf9d9dc4fa74632f6825d9">set_up</reimplements>
+        <param>
+          <type>size_t</type>
+          <declname>num_workers</declname>
+        </param>
+        <briefdescription>
+<para>constructor-like method to call when the executor observer is fully created </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>num_workers</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the number of the worker threads in the executor </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="416" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="445" bodyend="451"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TFProfObserver_1ac582109f407e3b29bd6ad9d05494ef91" prot="private" static="no" const="no" explicit="no" inline="yes" final="yes" virt="virtual">
+        <type>void</type>
+        <definition>void tf::TFProfObserver::on_entry</definition>
+        <argsstring>(size_t worker_id, TaskView task_view) override final</argsstring>
+        <name>on_entry</name>
+        <reimplements refid="classtf_1_1ObserverInterface_1afa57654edd6d0fcf188a6064823f3048">on_entry</reimplements>
+        <param>
+          <type>size_t</type>
+          <declname>worker_id</declname>
+        </param>
+        <param>
+          <type><ref refid="classtf_1_1TaskView" kindref="compound">TaskView</ref></type>
+          <declname>task_view</declname>
+        </param>
+        <briefdescription>
+<para>method to call before a worker thread executes a closure </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>worker_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the id of this worker thread </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>task_view</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a constant wrapper object to the task </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="417" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="454" bodyend="456"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TFProfObserver_1acc1ed9df521bd37781fb530263578247" prot="private" static="no" const="no" explicit="no" inline="yes" final="yes" virt="virtual">
+        <type>void</type>
+        <definition>void tf::TFProfObserver::on_exit</definition>
+        <argsstring>(size_t worker_id, TaskView task_view) override final</argsstring>
+        <name>on_exit</name>
+        <reimplements refid="classtf_1_1ObserverInterface_1a8fcff02bfcea581d280e4de0247760d3">on_exit</reimplements>
+        <param>
+          <type>size_t</type>
+          <declname>worker_id</declname>
+        </param>
+        <param>
+          <type><ref refid="classtf_1_1TaskView" kindref="compound">TaskView</ref></type>
+          <declname>task_view</declname>
+        </param>
+        <briefdescription>
+<para>method to call after a worker thread executed a closure </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>worker_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the id of this worker thread </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>task_view</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a constant wrapper object to the task </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="418" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="459" bodyend="473"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>observer interface based on <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink> format </para>    </briefdescription>
+    <detaileddescription>
+<para>A <ref refid="classtf_1_1TFProfObserver" kindref="compound">tf::TFProfObserver</ref> inherits <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref> and defines methods to dump the observed thread activities into a format that can be visualized through <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>insert<sp/>tasks<sp/>into<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>custom<sp/>observer</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr&lt;tf::TFProfObserver&gt;</ref><sp/>observer<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a3e68a0d779cfee1554c88c2596ae9000" kindref="member">make_observer</ref>&lt;<ref refid="classtf_1_1TFProfObserver" kindref="compound">tf::TFProfObserver</ref>&gt;();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>thread<sp/>activities<sp/>to<sp/>Taskflow<sp/>Profiler<sp/>format.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">observer-&gt;dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+</programlisting></para><para>We recommend using our <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink> python script to observe thread activities instead of the raw function call. The script will turn on environment variables needed for observing all executors in a taskflow program and dump the result to a valid, clean JSON file compatible with the format of <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink>. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="62">
+        <label>tf::ObserverInterface</label>
+        <link refid="classtf_1_1ObserverInterface"/>
+      </node>
+      <node id="61">
+        <label>tf::TFProfObserver</label>
+        <link refid="classtf_1_1TFProfObserver"/>
+        <childnode refid="62" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="64">
+        <label>tf::ObserverInterface</label>
+        <link refid="classtf_1_1ObserverInterface"/>
+      </node>
+      <node id="63">
+        <label>tf::TFProfObserver</label>
+        <link refid="classtf_1_1TFProfObserver"/>
+        <childnode refid="64" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="356" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="356" bodyend="423"/>
+    <listofallmembers>
+      <member refid="classtf_1_1TFProfObserver_1a38776d45d5d762b56c28c034d71170a9" prot="private" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>_timeline</name></member>
+      <member refid="classtf_1_1TFProfObserver_1a689ea7d2a99d23b46d9d0fe29c90c2ec" prot="private" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>_uuid</name></member>
+      <member refid="classtf_1_1TFProfObserver_1a5e1f63034a96a5a79cef6da412efd203" prot="public" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>clear</name></member>
+      <member refid="classtf_1_1TFProfObserver_1a663445b21a03abaccfd32b199b7b10a1" prot="public" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>dump</name></member>
+      <member refid="classtf_1_1TFProfObserver_1a59e82cb3f9b0ada38aa1ddea14f14d02" prot="public" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>dump</name></member>
+      <member refid="classtf_1_1TFProfObserver_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>Executor</name></member>
+      <member refid="classtf_1_1TFProfObserver_1a8b3b0bee8762af654cfebd2bb2ee98ed" prot="public" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>num_tasks</name></member>
+      <member refid="classtf_1_1TFProfObserver_1ac582109f407e3b29bd6ad9d05494ef91" prot="private" virt="virtual"><scope>tf::TFProfObserver</scope><name>on_entry</name></member>
+      <member refid="classtf_1_1TFProfObserver_1acc1ed9df521bd37781fb530263578247" prot="private" virt="virtual"><scope>tf::TFProfObserver</scope><name>on_exit</name></member>
+      <member refid="classtf_1_1TFProfObserver_1aa030d8154dd03aea3b8fa8ce42e1151b" prot="private" virt="virtual"><scope>tf::TFProfObserver</scope><name>set_up</name></member>
+      <member refid="classtf_1_1ObserverInterface_1adfd71c3af3ae2ea4f41eed26c1b6f604" prot="public" virt="virtual"><scope>tf::TFProfObserver</scope><name>~ObserverInterface</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

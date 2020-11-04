@@ -120,12 +120,13 @@ highly optimized for performance.
 
 @section C6_run_a_cudaflow_on_multiple_gpus Run a cudaFlow on Multiple GPUs
 
-By default, a %cudaFlow runs on the GPU 0. 
+By default, a %cudaFlow runs on the current GPU associated with the caller, 
+which is typically 0.
 You can run a %cudaFlow on multiple GPUs by explicitly associating a %cudaFlow or a kernel task
 with a CUDA device.
 A CUDA device is an integer number in the range of <tt>[0, N)</tt> 
 representing the identifier of a GPU, where @c N is the number of GPUs in a system.
-The code below creates a %cudaFlow that runs on the GPU device.
+The code below creates a %cudaFlow that runs on the GPU device 2.
 
 @code{.cpp}
 taskflow.emplace_on([] (tf::cudaFlow& cf) {}, 2);  // place the cudaFlow on GPU 2

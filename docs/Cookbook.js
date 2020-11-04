@@ -48,7 +48,8 @@ var Cookbook =
     ] ],
     [ "C7: GPU Tasking (cudaFlowCapturer)", "chapter7.html", [
       [ "Capture a cudaFlow", "chapter7.html#C7_Capture_a_cudaFlow", null ],
+      [ "Capture within a cudaFlow", "chapter7.html#C7_CaptureWithinAcudaFlow", null ],
       [ "Common Capture Methods", "chapter7.html#C7_CommonCaptureMethods", null ],
-      [ "Create a Custom Capturer", "chapter7.html#C7_CreateACustimCapturer", null ]
+      [ "Capture a cudaFlow on a Specific GPU", "chapter7.html#C7_CaptureAcudaFlowOnASpecificGPU", null ]
     ] ]
 ];

@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="structtf_1_1ChromeObserver_1_1Timeline" kind="struct" language="C++" prot="private">
+    <compoundname>tf::ChromeObserver::Timeline</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structtf_1_1ChromeObserver_1_1Timeline_1a1e13b185df12152589abaceead57979c" prot="public" static="no" mutable="no">
+        <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
+        <definition>std::chrono::time_point&lt;std::chrono::steady_clock&gt; tf::ChromeObserver::Timeline::origin</definition>
+        <argsstring></argsstring>
+        <name>origin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="152" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="152" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" prot="public" static="no" mutable="no">
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Segment &gt; &gt;</type>
+        <definition>std::vector&lt;std::vector&lt;Segment&gt; &gt; tf::ChromeObserver::Timeline::segments</definition>
+        <argsstring></argsstring>
+        <name>segments</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="153" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="153" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtf_1_1ChromeObserver_1_1Timeline_1a77e174ff85f9b0a0dce2688d160bad85" prot="public" static="no" mutable="no">
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/stack" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::stack</ref>&lt; <ref refid="cpp/chrono/time_point" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt; &gt; &gt;</type>
+        <definition>std::vector&lt;std::stack&lt;std::chrono::time_point&lt;std::chrono::steady_clock&gt; &gt; &gt; tf::ChromeObserver::Timeline::stacks</definition>
+        <argsstring></argsstring>
+        <name>stacks</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="154" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="154" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="72">
+        <label>std::vector&lt; std::vector&lt; Segment &gt; &gt;</label>
+      </node>
+      <node id="71">
+        <label>tf::ChromeObserver::Timeline</label>
+        <childnode refid="72" relation="usage">
+          <edgelabel>segments</edgelabel>
+        </childnode>
+        <childnode refid="73" relation="usage">
+          <edgelabel>stacks</edgelabel>
+        </childnode>
+        <childnode refid="74" relation="usage">
+          <edgelabel>origin</edgelabel>
+        </childnode>
+      </node>
+      <node id="74">
+        <label>std::chrono::time_point&lt; std::chrono::steady_clock &gt;</label>
+      </node>
+      <node id="73">
+        <label>std::vector&lt; std::stack&lt; std::chrono::time_point&lt; std::chrono::steady_clock &gt; &gt; &gt;</label>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" line="151" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/observer.hpp" bodystart="151" bodyend="155"/>
+    <listofallmembers>
+      <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a1e13b185df12152589abaceead57979c" prot="public" virt="non-virtual"><scope>tf::ChromeObserver::Timeline</scope><name>origin</name></member>
+      <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" prot="public" virt="non-virtual"><scope>tf::ChromeObserver::Timeline</scope><name>segments</name></member>
+      <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a77e174ff85f9b0a0dce2688d160bad85" prot="public" virt="non-virtual"><scope>tf::ChromeObserver::Timeline</scope><name>stacks</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

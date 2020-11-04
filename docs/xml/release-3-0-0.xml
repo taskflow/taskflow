@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="release-3-0-0" kind="page">
+    <compoundname>release-3-0-0</compoundname>
+    <title>Release 3.0.0 (Master)</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Taskflow 3.0.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</para><para>Starting from v3, we have migrated the codebase to the <ulink url="https://en.wikipedia.org/wiki/C%2B%2B17">C++17</ulink> standard with improved expressivity and efficiency.</para><sect1 id="release-3-0-0_1release-3-0-0_download">
+<title>Download</title>
+<para>To download the newest version of Taskflow, please clone from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para></sect1>
+<sect1 id="release-3-0-0_1release-3-0-0_system_requirements">
+<title>System Requirements</title>
+<para>To use Taskflow v3.0.0, you need a compiler that supports C++17:</para><para><itemizedlist>
+<listitem><para>GNU C++ Compiler at least v7.0 with -std=c++17 </para></listitem>
+<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para></listitem>
+<listitem><para>Microsoft Visual Studio at least v15.7 (MSVC++ 19.14) </para></listitem>
+<listitem><para>AppleClang Xode Version at least v8 </para></listitem>
+<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17</para></listitem>
+</itemizedlist>
+Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
+<sect1 id="release-3-0-0_1release-3-0-0_working_items">
+<title>Working Items</title>
+<para><itemizedlist>
+<listitem><para>enhancing the taskflow profiler (<ulink url="https://github.com/taskflow/tfprof">TFProf</ulink>) </para></listitem>
+<listitem><para>adding parallel sort tf::Taskflow::sort algorithms </para></listitem>
+<listitem><para>adding methods for updating <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> (with unittests) </para></listitem>
+<listitem><para>adding support for <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> </para></listitem>
+<listitem><para>adding support for <ulink url="https://developer.nvidia.com/cudnn">cuDNN</ulink> </para></listitem>
+<listitem><para>adding support for SYCL (ComputeCpp and DPC++)</para></listitem>
+</itemizedlist>
+</para></sect1>
+<sect1 id="release-3-0-0_1release-3-0-0_new_features">
+<title>New Features</title>
+<para><itemizedlist>
+<listitem><para>replaced all non-standard libraries with C++17 STL (e.g., <ulink url="https://en.cppreference.com/w/cpp/utility/optional">std::optional</ulink>, <ulink url="https://en.cppreference.com/w/cpp/utility/variant">std::variant</ulink>) </para></listitem>
+<listitem><para>added utility functions to grab the cuda device properties (see <ref refid="cuda__device_8hpp" kindref="compound">cuda_device.hpp</ref>) </para></listitem>
+<listitem><para>added utility functions to control cuda memory (see <ref refid="cuda__memory_8hpp" kindref="compound">cuda_memory.hpp</ref>) </para></listitem>
+<listitem><para>added per-thread pool for CUDA streams to improve performance </para></listitem>
+<listitem><para>added a new interface <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> for building a GPU task graph through stream capture <programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>capturer){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>capture<sp/>my_kernel_1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task_1<sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturerBase_1adf651356def71f613c589c29588398c2" kindref="member">on</ref>([&amp;](cudaStream_t<sp/>stream){<sp/><sp/></highlight><highlight class="comment">//<sp/>stream<sp/>is<sp/>managed<sp/>by<sp/>the<sp/>capturer</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>my_kernel_1&lt;&lt;&lt;grid_1,<sp/>block_1,<sp/>shm_size_1,<sp/>stream&gt;&gt;&gt;(my_parameters_1);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>capture<sp/>my_kernel_2</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task_2<sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturerBase_1adf651356def71f613c589c29588398c2" kindref="member">on</ref>([&amp;](cudaStream_t<sp/>stream){<sp/><sp/></highlight><highlight class="comment">//<sp/>stream<sp/>is<sp/>managed<sp/>by<sp/>the<sp/>capturer</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>my_kernel_2&lt;&lt;&lt;grid_2,<sp/>block_2,<sp/>shm_size_2,<sp/>stream&gt;&gt;&gt;(my_parameters_2);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>my_kernel_1<sp/>runs<sp/>before<sp/>my_kernel_2</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>task_1.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(task_2);</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting> </para></listitem>
+<listitem><para>added a new interface <ref refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" kindref="member">tf::cudaFlow::capture</ref> for capturing a CUDA task graph within a parent cudaFlow <programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>capture_task<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" kindref="member">capture</ref>([&amp;](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>capturer){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturerBase_1adf651356def71f613c589c29588398c2" kindref="member">on</ref>([&amp;](cudaStream_t<sp/>stream){<sp/><sp/></highlight><highlight class="comment">//<sp/>stream<sp/>is<sp/>managed<sp/>by<sp/>the<sp/>capturer</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>my_kernel_2&lt;&lt;&lt;grid_2,<sp/>block_2,<sp/>shm_size_2,<sp/>stream&gt;&gt;&gt;(my_parameters_2);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting> </para></listitem>
+<listitem><para>added a new method <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref> to place a cudaFlow (<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>) on the given device context <programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>cudaFlow<sp/>cf<sp/>runs<sp/>on<sp/>GPU<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">},<sp/>1);</highlight></codeline>
+</programlisting> </para></listitem>
+<listitem><para>supported recursive dump of a cudaFlow with child graphs </para></listitem>
+<listitem><para>supported updating a cudaFlow through <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> (see <ref refid="chapter6_1C6_OffloadAcudaFlow" kindref="member">Offload a cudaFlow</ref>) </para></listitem>
+<listitem><para>supported iterating a cudaFlow through <ref refid="classtf_1_1cudaFlow_1aea77b710bf74fb3ccc6043592d4cdbc7" kindref="member">tf::cudaFlow::join_until</ref> (see <ref refid="chapter6_1C6_JoinAcudaFlow" kindref="member">Join a cudaFlow</ref>)</para></listitem>
+</itemizedlist>
+</para></sect1>
+<sect1 id="release-3-0-0_1release-3-0-0_bug_fixes">
+<title>Bug Fixes</title>
+<para><itemizedlist>
+<listitem><para>fixed a bug in stream capturing (need to use <computeroutput>ThreadLocal</computeroutput> mode)</para></listitem>
+</itemizedlist>
+</para></sect1>
+<sect1 id="release-3-0-0_1release-3-0-0_deprecated_items">
+<title>Deprecated and Removed Items</title>
+<para><itemizedlist>
+<listitem><para>removed tf::cudaFlow::device; users may call <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref> to associate a cudaflow with a GPU device</para></listitem>
+</itemizedlist>
+</para></sect1>
+<sect1 id="release-3-0-0_1release-3-0-0_miscellaneous_items">
+<title>Miscellaneous Items</title>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>
