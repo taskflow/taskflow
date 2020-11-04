@@ -173,7 +173,7 @@ class PassiveVector {
 
     size_type size() const     { return _num; }
     size_type capacity() const { return _cap; }
-    size_type max_size() const { return std::numeric_limits<size_type>::max(); }
+    size_type max_size() const { return (std::numeric_limits<size_type>::max)(); }
 
     bool operator == (const PassiveVector& rhs) const {
       if(_num != rhs._num) {
