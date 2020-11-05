@@ -41,6 +41,8 @@ var NAVTREEINDEX0 =
 "ForEachCUDA.html#ForEachCUDAIteratorBasedParallelIterations":[5,0,1],
 "GPUAlgorithms.html":[5],
 "Governance.html":[9],
+"ParallelTransformCUDA.html":[5,1],
+"ParallelTransformCUDA.html#IteratorBasedParallelTransformCUDA":[5,1,0],
 "References.html":[11],
 "References.html#RefConference":[11,0],
 "References.html#RefJournal":[11,1],
@@ -131,8 +133,8 @@ var NAVTREEINDEX0 =
 "classtf_1_1FlowBuilder.html#a562e253028680b61de95e305c0224d91":[12,0,0,8,26],
 "classtf_1_1FlowBuilder.html#a564252001be679600b20ca9ed9920f6a":[12,0,0,8,8],
 "classtf_1_1FlowBuilder.html#a5c044a80450742bf6927d0c343c23853":[12,0,0,8,9],
-"classtf_1_1FlowBuilder.html#a60d7a666cab71ecfa3010b2efb0d6b57":[12,0,0,8,2],
 "classtf_1_1FlowBuilder.html#a60d7a666cab71ecfa3010b2efb0d6b57":[12,0,0,8,3],
+"classtf_1_1FlowBuilder.html#a60d7a666cab71ecfa3010b2efb0d6b57":[12,0,0,8,2],
 "classtf_1_1FlowBuilder.html#a60d7a666cab71ecfa3010b2efb0d6b57":[12,0,0,8,4],
 "classtf_1_1FlowBuilder.html#a60d7a666cab71ecfa3010b2efb0d6b57":[12,0,0,8,6],
 "classtf_1_1FlowBuilder.html#a67d023d5493da1594a1d2eaea89da179":[12,0,0,8,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX0 =
 "classtf_1_1cublasFlowCapturer.html#a8adbe06476f146b27bb00ba6054e5879":[12,0,0,1,12],
 "classtf_1_1cublasFlowCapturer.html#aa9415957e3e48df65dc3baad86d05b38":[12,0,0,1,7],
 "classtf_1_1cublasFlowCapturer.html#ab1357bb1728f5fe526acef8afee7111e":[12,0,0,1,1],
-"classtf_1_1cublasFlowCapturer.html#ab7672cee3d219ccc75c48b62cf1d1bad":[12,0,0,1,3],
-"classtf_1_1cublasFlowCapturer.html#abb9bfb78d3f0f006a5b3e0791d2e2883":[12,0,0,1,15],
-"classtf_1_1cublasFlowCapturer.html#acd81da28696e8b1efb2bb45058a2f0e3":[12,0,0,1,0]
+"classtf_1_1cublasFlowCapturer.html#ab7672cee3d219ccc75c48b62cf1d1bad":[12,0,0,1,3]
 };

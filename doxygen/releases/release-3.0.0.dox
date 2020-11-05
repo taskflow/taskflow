@@ -76,6 +76,7 @@ tf::Task task = taskflow.emplace_on([&](tf::cudaFlow& cf){
   // the cudaFlow cf runs on GPU 1
 }, 1);
 @endcode
+@li added @ref GPUAlgorithms documentation pages
 @li supported recursive dump of a %cudaFlow with child graphs
 @li supported updating a %cudaFlow through tf::cudaFlow::offload (see @ref C6_OffloadAcudaFlow)
 @li supported iterating a %cudaFlow through tf::cudaFlow::join_until (see @ref C6_JoinAcudaFlow)
