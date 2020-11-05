@@ -16,32 +16,84 @@ with improved expressivity and efficiency.
 
 To download the newest version of %Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
 
+@section release-3-0-0_system_requirements System Requirements
+
+To use %Taskflow v3.0.0, you need a compiler that supports C++17:
+
+@li GNU C++ Compiler at least v7.0 with -std=c++17
+@li Clang C++ Compiler at least v6.0 with -std=c++17
+@li Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)
+@li AppleClang Xode Version at least v12.0 with -std=c++17
+@li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
+
+%Taskflow works on Linux, Windows, and Mac OS X.
+
 @section release-3-0-0_working_items Working Items
 
-@li migrating to the C++17 standard to simplify the codebase with improved performance
-@li replacing all non-standard libraries with C++17 STL (e.g., @std_optional, @std_variant)
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
 @li adding parallel sort tf::Taskflow::sort algorithms
-@li adding methods for updating cudaFlow (with unittests)
+@li adding methods for updating tf::cudaFlow (with unittests)
 @li adding support for @cuBLAS
 @li adding support for @cuDNN
 @li adding support for SYCL (ComputeCpp and DPC++)
 
 @section release-3-0-0_new_features New Features
 
-@li added a set of functions to grab the cuda device properties
-@li added a set of memory-related functions to control cuda memory
-@li added cuda pool class to manage device objects with improved efficiency
-@li added RAII-styled stream acquition tf::cudaScopedPerThreadStream
-@li supported recursive %cudaFlow dump (with child graph)
+@li replaced all non-standard libraries with C++17 STL (e.g., @std_optional, @std_variant)
+@li added utility functions to grab the cuda device properties (see cuda_device.hpp)
+@li added utility functions to control cuda memory (see cuda_memory.hpp)
+@li added per-thread pool for CUDA streams to improve performance
+@li added a new interface tf::cudaFlowCapturer for building a GPU task graph through stream capture
+@code{.cpp}
+tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+  // capture my_kernel_1
+  tf::cudaTask task_1 = capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
+    my_kernel_1<<<grid_1, block_1, shm_size_1, stream>>>(my_parameters_1);
+  });
+
+  // capture my_kernel_2
+  tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
+    my_kernel_2<<<grid_2, block_2, shm_size_2, stream>>>(my_parameters_2);
+  });
+
+  // my_kernel_1 runs before my_kernel_2
+  task_1.precede(task_2);
+});
+@endcode
+@li added a new interface tf::cudaFlow::capture for capturing a CUDA task graph within a parent %cudaFlow
+@code{.cpp}
+tf::Task task = taskflow.emplace([&](tf::cudaFlow& cf){
+  tf::cudaTask capture_task = cf.capture([&](tf::cudaFlowCapturer& capturer){
+    capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
+      my_kernel_2<<<grid_2, block_2, shm_size_2, stream>>>(my_parameters_2);
+    });
+  });
+});
+@endcode
+@li added a new method tf::Taskflow::emplace_on to place a %cudaFlow (tf::cudaFlow and tf::cudaFlowCapturer) on the given device context
+@code{.cpp}
+tf::Task task = taskflow.emplace_on([&](tf::cudaFlow& cf){
+  // the cudaFlow cf runs on GPU 1
+}, 1);
+@endcode
+
+@li supported recursive dump of a %cudaFlow with child graphs
 @li supported updating a %cudaFlow through tf::cudaFlow::offload (see @ref C6_OffloadAcudaFlow)
 @li supported iterating a %cudaFlow through tf::cudaFlow::join_until (see @ref C6_JoinAcudaFlow)
 
+@section release-3-0-0_documentation Documentation
+
+@li added @ref chapter7 documentation page
+@li added @ref GPUAlgorithms documentation pages
+  + @ref SingleTaskCUDA to run a kernel function in just a single thread
+  + @ref ForEachCUDA to perform parallel iterations over a range
+  + @ref ParallelTransformsCUDA to perform parallel transforms over a range
+
 @section release-3-0-0_bug_fixes Bug Fixes 
 
-There are no bug fixes in this release.
+@li fixed a bug in stream capturing (need to use @c ThreadLocal mode)
 
-@section release-3-0-0_deprecated_items Deprecated Items 
+@section release-3-0-0_deprecated_items Deprecated and Removed Items 
 
 @li removed tf::cudaFlow::device; users may call tf::Taskflow::emplace_on to associate a cudaflow with a GPU device
 

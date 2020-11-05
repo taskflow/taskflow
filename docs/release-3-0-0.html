@@ -93,14 +93,23 @@ $(document).ready(function(){initNavTree('release-3-0-0.html',''); initResizable
 <h1><a class="anchor" id="release-3-0-0_download"></a>
 Download</h1>
 <p>To download the newest version of Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">Taskflow's GitHub</a>.</p>
+<h1><a class="anchor" id="release-3-0-0_system_requirements"></a>
+System Requirements</h1>
+<p>To use Taskflow v3.0.0, you need a compiler that supports C++17:</p>
+<ul>
+<li>GNU C++ Compiler at least v7.0 with -std=c++17 </li>
+<li>Clang C++ Compiler at least v6.0 with -std=c++17 </li>
+<li>Microsoft Visual Studio at least v15.7 (MSVC++ 19.14) </li>
+<li>AppleClang Xode Version at least v12.0 with -std=c++17 </li>
+<li>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17</li>
+</ul>
+<p>Taskflow works on Linux, Windows, and Mac OS X.</p>
 <h1><a class="anchor" id="release-3-0-0_working_items"></a>
 Working Items</h1>
 <ul>
-<li>migrating to the C++17 standard to simplify the codebase with improved performance </li>
-<li>replacing all non-standard libraries with C++17 STL (e.g., <a href="https://en.cppreference.com/w/cpp/utility/optional">std::optional</a>, <a href="https://en.cppreference.com/w/cpp/utility/variant">std::variant</a>) </li>
 <li>enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>) </li>
 <li>adding parallel sort tf::Taskflow::sort algorithms </li>
-<li>adding methods for updating <a class="el" href="classtf_1_1cudaFlow.html" title="class for building a CUDA task dependency graph">cudaFlow</a> (with unittests) </li>
+<li>adding methods for updating <a class="el" href="classtf_1_1cudaFlow.html" title="class for building a CUDA task dependency graph">tf::cudaFlow</a> (with unittests) </li>
 <li>adding support for <a href="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</a> </li>
 <li>adding support for <a href="https://developer.nvidia.com/cudnn">cuDNN</a> </li>
 <li>adding support for SYCL (ComputeCpp and DPC++)</li>
@@ -108,19 +117,61 @@ Working Items</h1>
 <h1><a class="anchor" id="release-3-0-0_new_features"></a>
 New Features</h1>
 <ul>
-<li>added a set of functions to grab the cuda device properties </li>
-<li>added a set of memory-related functions to control cuda memory </li>
-<li>added cuda pool class to manage device objects with improved efficiency </li>
-<li>added RAII-styled stream acquition tf::cudaScopedPerThreadStream </li>
-<li>supported recursive cudaFlow dump (with child graph) </li>
+<li>replaced all non-standard libraries with C++17 STL (e.g., <a href="https://en.cppreference.com/w/cpp/utility/optional">std::optional</a>, <a href="https://en.cppreference.com/w/cpp/utility/variant">std::variant</a>) </li>
+<li>added utility functions to grab the cuda device properties (see <a class="el" href="cuda__device_8hpp.html">cuda_device.hpp</a>) </li>
+<li>added utility functions to control cuda memory (see <a class="el" href="cuda__memory_8hpp.html">cuda_memory.hpp</a>) </li>
+<li>added per-thread pool for CUDA streams to improve performance </li>
+<li>added a new interface <a class="el" href="classtf_1_1cudaFlowCapturer.html" title="class for building a CUDA task dependency graph through stream capture">tf::cudaFlowCapturer</a> for building a GPU task graph through stream capture <div class="fragment"><div class="line"><a class="code" href="classtf_1_1Task.html">tf::Task</a> task = taskflow.emplace([&amp;](<a class="code" href="classtf_1_1cudaFlowCapturer.html">tf::cudaFlowCapturer</a>&amp; capturer){</div>
+<div class="line">  <span class="comment">// capture my_kernel_1</span></div>
+<div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> task_1 = capturer.<a class="code" href="classtf_1_1cudaFlowCapturerBase.html#adf651356def71f613c589c29588398c2">on</a>([&amp;](cudaStream_t stream){  <span class="comment">// stream is managed by the capturer</span></div>
+<div class="line">    my_kernel_1&lt;&lt;&lt;grid_1, block_1, shm_size_1, stream&gt;&gt;&gt;(my_parameters_1);</div>
+<div class="line">  });</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// capture my_kernel_2</span></div>
+<div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> task_2 = capturer.<a class="code" href="classtf_1_1cudaFlowCapturerBase.html#adf651356def71f613c589c29588398c2">on</a>([&amp;](cudaStream_t stream){  <span class="comment">// stream is managed by the capturer</span></div>
+<div class="line">    my_kernel_2&lt;&lt;&lt;grid_2, block_2, shm_size_2, stream&gt;&gt;&gt;(my_parameters_2);</div>
+<div class="line">  });</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// my_kernel_1 runs before my_kernel_2</span></div>
+<div class="line">  task_1.<a class="code" href="classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4">precede</a>(task_2);</div>
+<div class="line">});</div>
+</div><!-- fragment --> </li>
+<li>added a new interface <a class="el" href="classtf_1_1cudaFlow.html#a89c389fff64a16e5dd8c60875d3b514d" title="constructs a subflow graph through tf::cudaFlowCapturer">tf::cudaFlow::capture</a> for capturing a CUDA task graph within a parent cudaFlow <div class="fragment"><div class="line"><a class="code" href="classtf_1_1Task.html">tf::Task</a> task = taskflow.emplace([&amp;](<a class="code" href="classtf_1_1cudaFlow.html">tf::cudaFlow</a>&amp; cf){</div>
+<div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> capture_task = cf.<a class="code" href="classtf_1_1cudaFlow.html#a89c389fff64a16e5dd8c60875d3b514d">capture</a>([&amp;](<a class="code" href="classtf_1_1cudaFlowCapturer.html">tf::cudaFlowCapturer</a>&amp; capturer){</div>
+<div class="line">    capturer.<a class="code" href="classtf_1_1cudaFlowCapturerBase.html#adf651356def71f613c589c29588398c2">on</a>([&amp;](cudaStream_t stream){  <span class="comment">// stream is managed by the capturer</span></div>
+<div class="line">      my_kernel_2&lt;&lt;&lt;grid_2, block_2, shm_size_2, stream&gt;&gt;&gt;(my_parameters_2);</div>
+<div class="line">    });</div>
+<div class="line">  });</div>
+<div class="line">});</div>
+</div><!-- fragment --> </li>
+<li>added a new method <a class="el" href="classtf_1_1FlowBuilder.html#afdf47fd1a358fb64f8c1b89e2a393169" title="creates a cudaflow task on the given device">tf::Taskflow::emplace_on</a> to place a cudaFlow (<a class="el" href="classtf_1_1cudaFlow.html" title="class for building a CUDA task dependency graph">tf::cudaFlow</a> and <a class="el" href="classtf_1_1cudaFlowCapturer.html" title="class for building a CUDA task dependency graph through stream capture">tf::cudaFlowCapturer</a>) on the given device context <div class="fragment"><div class="line"><a class="code" href="classtf_1_1Task.html">tf::Task</a> task = taskflow.emplace_on([&amp;](<a class="code" href="classtf_1_1cudaFlow.html">tf::cudaFlow</a>&amp; cf){</div>
+<div class="line">  <span class="comment">// the cudaFlow cf runs on GPU 1</span></div>
+<div class="line">}, 1);</div>
+</div><!-- fragment --></li>
+</ul>
+<ul>
+<li>supported recursive dump of a cudaFlow with child graphs </li>
 <li>supported updating a cudaFlow through <a class="el" href="classtf_1_1cudaFlow.html#a85789ed8a1f47704cf1f1a2b98969444" title="offloads the cudaFlow and executes it once">tf::cudaFlow::offload</a> (see <a class="el" href="chapter6.html#C6_OffloadAcudaFlow">Offload a cudaFlow</a>) </li>
 <li>supported iterating a cudaFlow through <a class="el" href="classtf_1_1cudaFlow.html#aea77b710bf74fb3ccc6043592d4cdbc7" title="offloads the cudaFlow with the given stop predicate and then joins the execution">tf::cudaFlow::join_until</a> (see <a class="el" href="chapter6.html#C6_JoinAcudaFlow">Join a cudaFlow</a>)</li>
 </ul>
+<h1><a class="anchor" id="release-3-0-0_documentation"></a>
+Documentation</h1>
+<ul>
+<li>added <a class="el" href="chapter7.html">C7: GPU Tasking (cudaFlowCapturer)</a> documentation page </li>
+<li>added <a class="el" href="GPUAlgorithms.html">GPU Algorithms</a> documentation pages<ul>
+<li><a class="el" href="SingleTaskCUDA.html">Single Task (cudaFlow)</a> to run a kernel function in just a single thread</li>
+<li><a class="el" href="ForEachCUDA.html">Parallel Iterations (cudaFlow)</a> to perform parallel iterations over a range</li>
+<li><a class="el" href="ParallelTransformsCUDA.html">Parallel Transforms (cudaFlow)</a> to perform parallel transforms over a range</li>
+</ul>
+</li>
+</ul>
 <h1><a class="anchor" id="release-3-0-0_bug_fixes"></a>
 Bug Fixes</h1>
-<p>There are no bug fixes in this release.</p>
+<ul>
+<li>fixed a bug in stream capturing (need to use <code>ThreadLocal</code> mode)</li>
+</ul>
 <h1><a class="anchor" id="release-3-0-0_deprecated_items"></a>
-Deprecated Items</h1>
+Deprecated and Removed Items</h1>
 <ul>
 <li>removed tf::cudaFlow::device; users may call <a class="el" href="classtf_1_1FlowBuilder.html#afdf47fd1a358fb64f8c1b89e2a393169" title="creates a cudaflow task on the given device">tf::Taskflow::emplace_on</a> to associate a cudaflow with a GPU device</li>
 </ul>
@@ -129,6 +180,13 @@ Miscellaneous Items</h1>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
+<div class="ttc" id="aclasstf_1_1cudaFlow_html_a89c389fff64a16e5dd8c60875d3b514d"><div class="ttname"><a href="classtf_1_1cudaFlow.html#a89c389fff64a16e5dd8c60875d3b514d">tf::cudaFlow::capture</a></div><div class="ttdeci">cudaTask capture(C &amp;&amp;callable)</div><div class="ttdoc">constructs a subflow graph through tf::cudaFlowCapturer</div><div class="ttdef"><b>Definition:</b> cuda_flow.hpp:962</div></div>
+<div class="ttc" id="aclasstf_1_1cudaFlowCapturerBase_html_adf651356def71f613c589c29588398c2"><div class="ttname"><a href="classtf_1_1cudaFlowCapturerBase.html#adf651356def71f613c589c29588398c2">tf::cudaFlowCapturerBase::on</a></div><div class="ttdeci">cudaTask on(C &amp;&amp;callable)</div><div class="ttdoc">captures a sequential CUDA operations from the given callable</div><div class="ttdef"><b>Definition:</b> cuda_capturer.hpp:228</div></div>
+<div class="ttc" id="aclasstf_1_1Task_html"><div class="ttname"><a href="classtf_1_1Task.html">tf::Task</a></div><div class="ttdoc">handle to a node in a task dependency graph</div><div class="ttdef"><b>Definition:</b> task.hpp:120</div></div>
+<div class="ttc" id="aclasstf_1_1cudaFlowCapturer_html"><div class="ttname"><a href="classtf_1_1cudaFlowCapturer.html">tf::cudaFlowCapturer</a></div><div class="ttdoc">class for building a CUDA task dependency graph through stream capture</div><div class="ttdef"><b>Definition:</b> cuda_capturer.hpp:359</div></div>
+<div class="ttc" id="aclasstf_1_1cudaTask_html_abdd68287ec4dff4216af34d1db44d1b4"><div class="ttname"><a href="classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4">tf::cudaTask::precede</a></div><div class="ttdeci">cudaTask &amp; precede(Ts &amp;&amp;... tasks)</div><div class="ttdoc">adds precedence links from this to other tasks</div><div class="ttdef"><b>Definition:</b> cuda_task.hpp:153</div></div>
+<div class="ttc" id="aclasstf_1_1cudaFlow_html"><div class="ttname"><a href="classtf_1_1cudaFlow.html">tf::cudaFlow</a></div><div class="ttdoc">class for building a CUDA task dependency graph</div><div class="ttdef"><b>Definition:</b> cuda_flow.hpp:47</div></div>
+<div class="ttc" id="aclasstf_1_1cudaTask_html"><div class="ttname"><a href="classtf_1_1cudaTask.html">tf::cudaTask</a></div><div class="ttdoc">handle to a node of the internal CUDA graph</div><div class="ttdef"><b>Definition:</b> cuda_task.hpp:53</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

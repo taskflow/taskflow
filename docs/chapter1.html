@@ -181,9 +181,9 @@ Modify Task Attributes</h1>
 <div class="line">14:   tasks[0].precede(tasks[1]);</div>
 <div class="line">15:</div>
 <div class="line">16:   <span class="keywordflow">for</span>(<span class="keyword">auto</span> task : tasks) {          <span class="comment">// print out each task&#39;s attributes</span></div>
-<div class="line">17:     <a class="codeRef" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a> &lt;&lt; task.name() &lt;&lt; <span class="stringliteral">&quot;: &quot;</span></div>
-<div class="line">18:               &lt;&lt; <span class="stringliteral">&quot;num_dependents=&quot;</span> &lt;&lt; task.num_dependents() &lt;&lt; <span class="stringliteral">&quot;, &quot;</span></div>
-<div class="line">19:               &lt;&lt; <span class="stringliteral">&quot;num_successors=&quot;</span> &lt;&lt; task.num_successors() &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
+<div class="line">17:     <a class="codeRef" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a> &lt;&lt; task.<a class="code" href="classtf_1_1Task.html#a08ada0425b490997b6ff7f310107e5e3">name</a>() &lt;&lt; <span class="stringliteral">&quot;: &quot;</span></div>
+<div class="line">18:               &lt;&lt; <span class="stringliteral">&quot;num_dependents=&quot;</span> &lt;&lt; task.<a class="code" href="classtf_1_1Task.html#a974dc1d738b62b829ad261beeafbd67c">num_dependents</a>() &lt;&lt; <span class="stringliteral">&quot;, &quot;</span></div>
+<div class="line">19:               &lt;&lt; <span class="stringliteral">&quot;num_successors=&quot;</span> &lt;&lt; task.<a class="code" href="classtf_1_1Task.html#a1a0afc89e8a6a416c511e74d82df135d">num_successors</a>() &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
 <div class="line">20:   }</div>
 <div class="line">21:</div>
 <div class="line">22:   taskflow.<a class="code" href="classtf_1_1Taskflow.html#a4725d8ea5ff7595d9d71593360538e00">dump</a>(<a class="codeRef" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::cout</a>);         <span class="comment">// dump the taskflow graph</span></div>
