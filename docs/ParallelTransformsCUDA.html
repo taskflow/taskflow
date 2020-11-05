@@ -69,7 +69,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('cuda__flow_8hpp.html','');});
+$(document).ready(function(){initNavTree('ParallelTransformsCUDA.html','');});
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -88,27 +88,25 @@ $(document).ready(function(){initNavTree('cuda__flow_8hpp.html','');});
 </div>
 
 <div class="header">
-  <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
   <div class="headertitle">
-<div class="title">cuda_flow.hpp File Reference</div>  </div>
+<div class="title">Parallel Transforms (cudaFlow) </div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p><a href="cuda__flow_8hpp_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1cudaFlow.html">tf::cudaFlow</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">class for building a CUDA task dependency graph  <a href="classtf_1_1cudaFlow.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-</div><!-- contents -->
+<div class="textblock"><p>cudaFlow provides a template function that applies the given function to a range and sotres the result in another range</p>
+<h1><a class="anchor" id="IteratorBasedParallelTransformCUDA"></a>
+Iterator-based Parallel Transforms</h1>
+<p>Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified by two iterators, <code>first</code> and <code>last</code>. The two iterators are typically two raw pointers to the first element and the next to the last element in the range in GPU memory space. The task created by <a class="el" href="classtf_1_1cudaFlow.html#a552f2da29009113beee4ee90bc95ae65" title="applies a callable to a source range and stores the result in a target range ">tf::cudaFlow::transform</a>(I first, I last, C&amp;&amp; callable, S... srcs) represents a kernel of parallel execution for the following loop:</p>
+<div class="fragment"><div class="line"><span class="keywordflow">while</span> (first != last) {</div><div class="line">  *first++ = callable(*src1++, *src2++, *src3++, ...);</div><div class="line">}</div></div><!-- fragment --><p>The two iterators, <code>first</code> and <code>last</code>, are typically two raw pointers to the first element and the next to the last element in the range. The following example creates a <code>transform</code> kernel that assigns each element, starting from <code>gpu_data</code> to <code>gpu_data + 1000</code>, to the sum of the corresponding elements at <code>gpu_data_x</code>, <code>gpu_data_y</code>, and <code>gpu_data_z</code>.</p>
+<div class="fragment"><div class="line">taskflow.<a class="code" href="classtf_1_1FlowBuilder.html#a60d7a666cab71ecfa3010b2efb0d6b57">emplace</a>([](<a class="code" href="classtf_1_1cudaFlow.html">tf::cudaFlow</a>&amp; cf){</div><div class="line">  <span class="comment">// ... create gpu tasks</span></div><div class="line">  <span class="comment">// create a kernel for computing gpu_data[i] = gpu_data_x[i] + gpu_data_y[i] + gpu_data_z[i]</span></div><div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> task = cf.<a class="code" href="classtf_1_1cudaFlow.html#a552f2da29009113beee4ee90bc95ae65">transform</a>(</div><div class="line">    gpu_data, gpu_data + 1000, </div><div class="line">    [] __device__ (<span class="keywordtype">int</span>&amp; xi, <span class="keywordtype">int</span>&amp; yi, <span class="keywordtype">int</span> &amp;zi) { <span class="keywordflow">return</span> xi + yi + zi; },</div><div class="line">    gpu_data_x, gpu_data_y, gpu_data_z</div><div class="line">  ); </div><div class="line">});</div></div><!-- fragment --><p>Each iteration is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <code>__device__</code> specifier.</p>
+<h1><a class="anchor" id="ParallelTransformCUDAMiscellaneousItems"></a>
+Miscellaneous Items</h1>
+<p>The parallel-transform algorithm is also available in <a class="el" href="classtf_1_1cudaFlowCapturerBase.html#a44fb0c626c46de1bb95369e33194f5c7" title="captures a kernel that applies a callable to a source range and stores the result in a target range ...">tf::cudaFlowCapturer::transform</a>. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_88dad41ea55ca2177e141d32a93e931c.html">taskflow</a></li><li class="navelem"><a class="el" href="dir_638d51f8e6f20ea8c720cc8c006296ba.html">cuda</a></li><li class="navelem"><a class="el" href="cuda__flow_8hpp.html">cuda_flow.hpp</a></li>
+    <li class="navelem"><a class="el" href="GPUAlgorithms.html">GPU Algorithms</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.14 </li>

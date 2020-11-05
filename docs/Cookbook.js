@@ -50,6 +50,6 @@ var Cookbook =
       [ "Capture a cudaFlow", "chapter7.html#C7_Capture_a_cudaFlow", null ],
       [ "Capture within a cudaFlow", "chapter7.html#C7_CaptureWithinAcudaFlow", null ],
       [ "Common Capture Methods", "chapter7.html#C7_CommonCaptureMethods", null ],
-      [ "Capture a cudaFlow on a Specific GPU", "chapter7.html#C7_CaptureAcudaFlowOnASpecificGPU", null ]
+      [ "Capture on a Specific GPU", "chapter7.html#C7_CaptureOnASpecificGPU", null ]
     ] ]
 ];
