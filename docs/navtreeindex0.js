@@ -1,5 +1,6 @@
 var NAVTREEINDEX0 =
 {
+"":[11,0,0],
 "A1ForEach.html":[4,0],
 "A1ForEach.html#A1IndexBasedParallelFor":[4,0,0],
 "A1ForEach.html#A1IteratorBasedParallelFor":[4,0,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "classtf_1_1cublasFlowCapturer.html#afdfa01d9f277051e44d7ed9663555b52":[11,0,0,1,9],
 "classtf_1_1cudaFlow.html":[11,0,0,2],
 "classtf_1_1cudaFlow.html#a060e1c96111c2134ce0f896420a42cd0":[11,0,0,2,6],
-"classtf_1_1cudaFlow.html#a0644814008b31c7a9bcc64dada5d0ca9":[11,0,0,2,21],
-"classtf_1_1cudaFlow.html#a079ca65da35301e5aafd45878a19e9d2":[11,0,0,2,14]
+"classtf_1_1cudaFlow.html#a0644814008b31c7a9bcc64dada5d0ca9":[11,0,0,2,21]
 };
