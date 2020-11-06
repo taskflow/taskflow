@@ -172,7 +172,7 @@ Configure the Number of GPU workers</h1>
 Run a cudaFlow on Multiple GPUs</h1>
 <p>By default, a cudaFlow runs on the current GPU associated with the caller, which is typically 0. You can run a cudaFlow on multiple GPUs by explicitly associating a cudaFlow or a kernel task with a CUDA device. A CUDA device is an integer number in the range of <code>[0, N)</code> representing the identifier of a GPU, where <code>N</code> is the number of GPUs in a system. The code below creates a cudaFlow that runs on the GPU device 2.</p>
 <div class="fragment"><div class="line">taskflow.<a class="code" href="classtf_1_1FlowBuilder.html#afdf47fd1a358fb64f8c1b89e2a393169">emplace_on</a>([] (<a class="code" href="classtf_1_1cudaFlow.html">tf::cudaFlow</a>&amp; cf) {}, 2);  <span class="comment">// place the cudaFlow on GPU 2</span></div>
-</div><!-- fragment --><p>You can place a kernel on a device explicitly through the method <a class="el" href="classtf_1_1cudaFlow.html#a4a839dbaa01237a440edfebe8faf4e5b" title="creates a kernel task on a device">tf::cudaFlow::kernel_on</a> that takes the device identifier in the first argument.</p>
+</div><!-- fragment --><p>You can place a kernel on a GPU explicitly through the method <a class="el" href="classtf_1_1cudaFlow.html#a4a839dbaa01237a440edfebe8faf4e5b" title="creates a kernel task on a device">tf::cudaFlow::kernel_on</a> that takes the GPU device identifier in the first argument.</p>
 <div class="fragment"><div class="line"> 1: #include &lt;taskflow/taskflow.hpp&gt;</div>
 <div class="line"> 2: </div>
 <div class="line"> 3: <span class="comment">// saxpy (single-precision A·X Plus Y) kernel</span></div>
@@ -205,16 +205,16 @@ Run a cudaFlow on Multiple GPUs</h1>
 <div class="line">30:   <a class="code" href="classtf_1_1Taskflow.html">tf::Taskflow</a> taskflow;</div>
 <div class="line">31:   <a class="code" href="classtf_1_1Executor.html">tf::Executor</a> executor;</div>
 <div class="line">32:  </div>
-<div class="line">33:   taskflow.<a class="code" href="classtf_1_1FlowBuilder.html#a60d7a666cab71ecfa3010b2efb0d6b57">emplace</a>([&amp;](<a class="code" href="classtf_1_1cudaFlow.html">tf::cudaFlow</a>&amp; cf){</div>
-<div class="line">34:     <span class="comment">// By default, cf runs on GPU 0.</span></div>
-<div class="line">35:     <span class="comment">// The scheduler will switch to the context of GPU 0 when running cf.</span></div>
+<div class="line">33:   taskflow.<a class="code" href="classtf_1_1FlowBuilder.html#afdf47fd1a358fb64f8c1b89e2a393169">emplace_on</a>([&amp;](<a class="code" href="classtf_1_1cudaFlow.html">tf::cudaFlow</a>&amp; cf){</div>
+<div class="line">34:     <span class="comment">// We create a cudaFlow on GPU 2.</span></div>
+<div class="line">35:     <span class="comment">// The scheduler will switch to the GPU context 2 when running this callable.</span></div>
 <div class="line">36:</div>
 <div class="line">37:     <span class="comment">// launch the first saxpy kernel on GPU 1</span></div>
 <div class="line">38:     cf.<a class="code" href="classtf_1_1cudaFlow.html#a4a839dbaa01237a440edfebe8faf4e5b">kernel_on</a>(1, (N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z1);</div>
 <div class="line">39:</div>
 <div class="line">40:     <span class="comment">// launch the second saxpy kernel on GPU 3</span></div>
 <div class="line">41:     cf.<a class="code" href="classtf_1_1cudaFlow.html#a4a839dbaa01237a440edfebe8faf4e5b">kernel_on</a>(3, (N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z2);</div>
-<div class="line">42:   });</div>
+<div class="line">42:   }, 2);</div>
 <div class="line">43:</div>
 <div class="line">44:   executor.<a class="code" href="classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa">run</a>(taskflow).wait();</div>
 <div class="line">45:</div>
@@ -235,7 +235,7 @@ Run a cudaFlow on Multiple GPUs</h1>
  </li>
 <li>Lines 15-23 declare four unified memory blocks accessible from any processor </li>
 <li>Lines 25-28 initialize <code>dx</code> and <code>dy</code> blocks by CPU </li>
-<li>Lines 33-42 create a cudaFlow task on GPU 0 (default) </li>
+<li>Lines 33-42 create a cudaFlow task on GPU 2 using <a class="el" href="classtf_1_1FlowBuilder.html#afdf47fd1a358fb64f8c1b89e2a393169" title="creates a cudaflow task on the given device">tf::Taskflow::emplace_on</a> </li>
 <li>Lines 37-38 create a kernel task to launch the first saxpy on GPU 1 and store the result in <code>z1</code> </li>
 <li>Lines 40-41 create a kernel task to launch the second saxpy on GPU 3 and store the result in <code>z2</code> </li>
 <li>Lines 44-55 run the taskflow and verify the result (<code>max_error</code> should be zero)</li>
@@ -268,7 +268,7 @@ Run a cudaFlow on Multiple GPUs</h1>
 <div class="line">|    1     53869      C   ./a.out                                      155MiB |</div>
 <div class="line">|    3     53869      C   ./a.out                                      155MiB |</div>
 <div class="line">+-----------------------------------------------------------------------------+</div>
-</div><!-- fragment --><p>Even if cudaFlow provides interface for device placement, it is your responsibility to ensure correct memory access. For example, you may not allocate a memory block on GPU 2 using <code>cudaMalloc</code> and access it from a kernel on GPU 1. A safe practice is to allocate unified memory blocks using <code>cudaMallocManaged</code> and let the CUDA runtime perform automatic memory migration between processors (as demonstrated in the code example above).</p>
+</div><!-- fragment --><p>Even if cudaFlow provides interface for device placement, it is your responsibility to ensure correct memory access. For example, you may not allocate a memory block on GPU 2 using <code>cudaMalloc</code> and access it from a kernel on GPU 1. An easy practice is to allocate <em>unified shared memory</em> using <code>cudaMallocManaged</code> and let the CUDA runtime perform automatic memory migration between processors (as demonstrated in the code example above).</p>
 <p>As the same example, you may create two cudaFlows for the two kernels on two GPUs, respectively. The overhead of creating a kernel on the same device as a cudaFlow is much less than the different one.</p>
 <div class="fragment"><div class="line"><a class="code" href="classtf_1_1Task.html">tf::Task</a> cudaFlow_on_gpu1 = taskflow.<a class="code" href="classtf_1_1FlowBuilder.html#afdf47fd1a358fb64f8c1b89e2a393169">emplace_on</a>([&amp;](<a class="code" href="classtf_1_1cudaFlow.html">tf::cudaFlow</a>&amp; cf){</div>
 <div class="line">  cf.<a class="code" href="classtf_1_1cudaFlow.html#adb731be71bdd436dfb5e36e6213a9a17">kernel</a>((N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z1);</div>
@@ -279,7 +279,7 @@ Run a cudaFlow on Multiple GPUs</h1>
 <div class="line">}, 3);</div>
 </div><!-- fragment --><h1><a class="anchor" id="C6_GPUMemoryOperations"></a>
 GPU Memory Operations</h1>
-<p><a class="el" href="classtf_1_1cudaFlow.html" title="class for building a CUDA task dependency graph">cudaFlow</a> provides a set of methods for users to manipulate device memory data. There are two categories, raw data and typed data. Raw data operations are methods with prefix <code>mem</code>, such as <code>memcpy</code> and <code>memset</code>, that take action on a device memory area in <em>bytes</em>. Typed data operations such as <code>copy</code>, <code>fill</code>, and <code>zero</code>, take <em>logical count</em> of elements. For instance, the following three methods have the same result of zeroing <code>sizeof(int)*count</code> bytes of the device memory area pointed by <code>target</code>.</p>
+<p><a class="el" href="classtf_1_1cudaFlow.html" title="class for building a CUDA task dependency graph">cudaFlow</a> provides a set of methods for users to manipulate device memory data. There are two categories, raw data and typed data. Raw data operations are methods with prefix <code>mem</code>, such as <code>memcpy</code> and <code>memset</code>, that take action on GPU memory area in <em>bytes</em>. Typed data operations such as <code>copy</code>, <code>fill</code>, and <code>zero</code>, take <em>logical count</em> of elements. For instance, the following three methods have the same result of zeroing <code>sizeof(int)*count</code> bytes of the device memory area pointed by <code>target</code>.</p>
 <div class="fragment"><div class="line"><span class="keywordtype">int</span>* target;</div>
 <div class="line">cudaMalloc(&amp;target, count*<span class="keyword">sizeof</span>(<span class="keywordtype">int</span>));</div>
 <div class="line"> </div>

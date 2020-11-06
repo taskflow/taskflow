@@ -132,8 +132,8 @@ The code below creates a %cudaFlow that runs on the GPU device 2.
 taskflow.emplace_on([] (tf::cudaFlow& cf) {}, 2);  // place the cudaFlow on GPU 2
 @endcode
 
-You can place a kernel on a device explicitly through the method tf::cudaFlow::kernel_on
-that takes the device identifier in the first argument.
+You can place a kernel on a GPU explicitly through the method tf::cudaFlow::kernel_on
+that takes the GPU device identifier in the first argument.
 
 @code{.cpp}
  1: #include <taskflow/taskflow.hpp>
@@ -168,16 +168,16 @@ that takes the device identifier in the first argument.
 30:   tf::Taskflow taskflow;
 31:   tf::Executor executor;
 32:  
-33:   taskflow.emplace([&](tf::cudaFlow& cf){
-34:     // By default, cf runs on GPU 0.
-35:     // The scheduler will switch to the context of GPU 0 when running cf.
+33:   taskflow.emplace_on([&](tf::cudaFlow& cf){
+34:     // We create a cudaFlow on GPU 2.
+35:     // The scheduler will switch to the GPU context 2 when running this callable.
 36:
 37:     // launch the first saxpy kernel on GPU 1
 38:     cf.kernel_on(1, (N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z1);
 39:
 40:     // launch the second saxpy kernel on GPU 3
 41:     cf.kernel_on(3, (N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z2);
-42:   });
+42:   }, 2);
 43:
 44:   executor.run(taskflow).wait();
 45:
@@ -199,7 +199,7 @@ Debrief:
 @li Lines 3-9 define a CUDA saxpy kernel that stores the result to z  
 @li Lines 15-23 declare four unified memory blocks accessible from any processor
 @li Lines 25-28 initialize @c dx and @c dy blocks by CPU
-@li Lines 33-42 create a %cudaFlow task on GPU 0 (default)
+@li Lines 33-42 create a %cudaFlow task on GPU 2 using tf::Taskflow::emplace_on
 @li Lines 37-38 create a kernel task to launch the first saxpy on GPU 1 and store the result in @c z1
 @li Lines 40-41 create a kernel task to launch the second saxpy on GPU 3 and store the result in @c z2
 @li Lines 44-55 run the taskflow and verify the result (@c max_error should be zero)
@@ -241,7 +241,7 @@ Even if %cudaFlow provides interface for device placement,
 it is your responsibility to ensure correct memory access.
 For example, you may not allocate a memory block on GPU 2 using @c cudaMalloc and 
 access it from a kernel on GPU 1.
-A safe practice is to allocate unified memory blocks using @c cudaMallocManaged 
+An easy practice is to allocate <i>unified shared memory</i> using @c cudaMallocManaged 
 and let the CUDA runtime  perform automatic memory migration between processors
 (as demonstrated in the code example above).
 
@@ -264,7 +264,7 @@ tf::Task cudaFlow_on_gpu3 = taskflow.emplace_on([&](tf::cudaFlow& cf){
 cudaFlow provides a set of methods for users to manipulate device memory data.
 There are two categories, raw data and typed data.
 Raw data operations are methods with prefix @c mem, such as @c memcpy and @c memset,
-that take action on a device memory area in @em bytes.
+that take action on GPU memory area in @em bytes.
 Typed data operations such as @c copy, @c fill, and @c zero,
 take <i>logical count</i> of elements.
 For instance, the following three methods have the same result of zeroing

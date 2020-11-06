@@ -1,5 +1,6 @@
 var NAVTREEINDEX0 =
 {
+"":[12,0,0],
 "A1ForEach.html":[4,0],
 "A1ForEach.html#A1IndexBasedParallelFor":[4,0,0],
 "A1ForEach.html#A1IteratorBasedParallelFor":[4,0,1],
@@ -93,7 +94,7 @@ var NAVTREEINDEX0 =
 "chapter6.html#C6_configure_the_number_of_gpu_workers":[3,6,2],
 "chapter6.html#C6_run_a_cudaflow_on_multiple_gpus":[3,6,3],
 "chapter7.html":[3,7],
-"chapter7.html#C7_CaptureAcudaFlowOnASpecificGPU":[3,7,3],
+"chapter7.html#C7_CaptureOnASpecificGPU":[3,7,3],
 "chapter7.html#C7_CaptureWithinAcudaFlow":[3,7,1],
 "chapter7.html#C7_Capture_a_cudaFlow":[3,7,0],
 "chapter7.html#C7_CommonCaptureMethods":[3,7,2],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "classtf_1_1cublasFlowCapturer.html#a56f8649d43652597da1c9b0a5f88b0ee":[12,0,0,1,4],
 "classtf_1_1cublasFlowCapturer.html#a5e5d2a2502fcfe0094d5ac354995cb71":[12,0,0,1,22],
 "classtf_1_1cublasFlowCapturer.html#a756dc6637521ef4f2249711effd1d0f5":[12,0,0,1,5],
-"classtf_1_1cublasFlowCapturer.html#a7a6485c37d50b9c79205f728ab380929":[12,0,0,1,2],
-"classtf_1_1cublasFlowCapturer.html#a8000fc6dbbb6f6f5a033f1b365e80d38":[12,0,0,1,17]
+"classtf_1_1cublasFlowCapturer.html#a7a6485c37d50b9c79205f728ab380929":[12,0,0,1,2]
 };

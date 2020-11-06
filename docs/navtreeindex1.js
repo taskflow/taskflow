@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"classtf_1_1cublasFlowCapturer.html#a8000fc6dbbb6f6f5a033f1b365e80d38":[12,0,0,1,17],
 "classtf_1_1cublasFlowCapturer.html#a8adbe06476f146b27bb00ba6054e5879":[12,0,0,1,12],
 "classtf_1_1cublasFlowCapturer.html#aa9415957e3e48df65dc3baad86d05b38":[12,0,0,1,7],
 "classtf_1_1cublasFlowCapturer.html#ab1357bb1728f5fe526acef8afee7111e":[12,0,0,1,1],
@@ -176,8 +177,8 @@ var NAVTREEINDEX1 =
 "guidelines.html#Step3WriteATaskflowProgram":[8,0,2,2],
 "guidelines.html#YourVoiceMatters":[8,0,7],
 "hierarchy.html":[12,2],
-"index.html":[0],
 "index.html":[],
+"index.html":[0],
 "index.html#ASimpleFirstProgram":[0,6],
 "index.html#CompileAndRunYourFirstProgram":[0,7],
 "index.html#ComposableTasking":[0,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "release-2-4-0.html#release-2-4-0_bug_fixes":[2,5,2],
 "release-2-4-0.html#release-2-4-0_download":[2,5,0],
 "release-2-4-0.html#release-2-4-0_miscellaneous_items":[2,5,3],
-"release-2-4-0.html#release-2-4-0_new_features":[2,5,1],
-"release-2-5-0.html":[2,4]
+"release-2-4-0.html#release-2-4-0_new_features":[2,5,1]
 };

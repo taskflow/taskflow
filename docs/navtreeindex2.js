@@ -1,5 +1,6 @@
 var NAVTREEINDEX2 =
 {
+"release-2-5-0.html":[2,4],
 "release-2-5-0.html#release-2-5-0_bug_fixes":[2,4,2],
 "release-2-5-0.html#release-2-5-0_download":[2,4,0],
 "release-2-5-0.html#release-2-5-0_miscellaneous_items":[2,4,3],
@@ -61,6 +62,5 @@ var NAVTREEINDEX2 =
 "usecases.html":[7],
 "wavefront.html":[6,0],
 "wavefront.html#WavefrontComputingFormulation":[6,0,0],
-"wavefront.html#WavefrontTaskGraph":[6,0,1],
-"":[12,0,0]
+"wavefront.html#WavefrontTaskGraph":[6,0,1]
 };
