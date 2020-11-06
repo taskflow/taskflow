@@ -12,6 +12,8 @@ we continue to try our best to ensure backward compatibility.
 Starting from v3, we have migrated the codebase to the @CPP17 standard
 with improved expressivity and efficiency.
 
+[TOC]
+
 @section release-3-0-0_download Download
 
 To download the newest version of %Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
@@ -60,6 +62,7 @@ tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
   task_1.precede(task_2);
 });
 @endcode
+@li added a new interface tf::cudaFlowCapturerBase to support custom-defined capturers (see @ref C7_CreateCustomCapturer)
 @li added a new interface tf::cudaFlow::capture for capturing a CUDA task graph within a parent %cudaFlow
 @code{.cpp}
 tf::Task task = taskflow.emplace([&](tf::cudaFlow& cf){

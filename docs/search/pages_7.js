@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['matrix_20multiplication_2642',['Matrix Multiplication',['../matrix_multiplication.html',1,'Examples']]]
+  ['learning_20from_20examples',['Learning from Examples',['../Examples.html',1,'']]]
 ];
