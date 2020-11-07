@@ -171,14 +171,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a32451b05fd7eb937ce8e807b5d5abe1f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cublasFlowCapturer.html#a32451b05fd7eb937ce8e807b5d5abe1f">swap</a> (int n, T *x, int incx, T *y, int incy)</td></tr>
 <tr class="memdesc:a32451b05fd7eb937ce8e807b5d5abe1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">swaps elements between two vectors  <a href="#a32451b05fd7eb937ce8e807b5d5abe1f">More...</a><br /></td></tr>
 <tr class="separator:a32451b05fd7eb937ce8e807b5d5abe1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb9bfb78d3f0f006a5b3e0791d2e2883"><td class="memTemplParams" colspan="2"><a id="abb9bfb78d3f0f006a5b3e0791d2e2883"></a>
+<tr class="memitem:a72185bf94321948b5b3657cc9c52ad0a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a72185bf94321948b5b3657cc9c52ad0a"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cublasFlowCapturer.html#a72185bf94321948b5b3657cc9c52ad0a">gemv</a> (cublasOperation_t trans, int m, int n, const T *alpha, const T *A, int lda, const T *x, int incx, const T *beta, T *y, int incy)</td></tr>
+<tr class="memdesc:a72185bf94321948b5b3657cc9c52ad0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">performs matrix-vector multiplication  <a href="#a72185bf94321948b5b3657cc9c52ad0a">More...</a><br /></td></tr>
+<tr class="separator:a72185bf94321948b5b3657cc9c52ad0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a492f3f22949e0e6b1058113eb475d0"><td class="memTemplParams" colspan="2"><a id="a3a492f3f22949e0e6b1058113eb475d0"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:abb9bfb78d3f0f006a5b3e0791d2e2883"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><b>gemv</b> ()</td></tr>
-<tr class="separator:abb9bfb78d3f0f006a5b3e0791d2e2883"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a556f8a2f50cc5e28fb84395155cc3297"><td class="memTemplParams" colspan="2"><a id="a556f8a2f50cc5e28fb84395155cc3297"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a556f8a2f50cc5e28fb84395155cc3297"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><b>c_gemv</b> ()</td></tr>
-<tr class="separator:a556f8a2f50cc5e28fb84395155cc3297"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a492f3f22949e0e6b1058113eb475d0"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cublasFlowCapturer.html#a3a492f3f22949e0e6b1058113eb475d0">c_gemv</a> (cublasOperation_t trans, int m, int n, const T *alpha, const T *A, int lda, const T *x, int incx, const T *beta, T *y, int incy)</td></tr>
+<tr class="memdesc:a3a492f3f22949e0e6b1058113eb475d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">similar to <a class="el" href="classtf_1_1cublasFlowCapturer.html#a72185bf94321948b5b3657cc9c52ad0a" title="performs matrix-vector multiplication ">tf::cublasFlowCapturer::gemv</a> but operates on C-styled row-major layout <br /></td></tr>
+<tr class="separator:a3a492f3f22949e0e6b1058113eb475d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30b437e511b5719f6253d3a9cf0a992c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a30b437e511b5719f6253d3a9cf0a992c"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cublasFlowCapturer.html#a30b437e511b5719f6253d3a9cf0a992c">geam</a> (cublasOperation_t ta, cublasOperation_t tb, int m, int n, const T *alpha, const T *A, int lda, const T *beta, const T *B, int ldb, T *C, int ldc)</td></tr>
 <tr class="memdesc:a30b437e511b5719f6253d3a9cf0a992c"><td class="mdescLeft">&#160;</td><td class="mdescRight">performs matrix-matrix addition and transposition  <a href="#a30b437e511b5719f6253d3a9cf0a992c">More...</a><br /></td></tr>
@@ -1152,6 +1153,120 @@ template&lt;typename T &gt; </div>
 <p><code>C + i*sC = alpha * op (A + i*sA) * op (B + i*sB) + beta * (C + i*sC), i in [0, bc)</code>,</p>
 <p>where <code>alpha</code> and <code>beta</code> are scalars, and <code>A</code>[i], <code>B</code>[i], and <code>C</code>[i] are 2D matrices stored in column-major format with dimension <code>op(A)</code> as <code>m</code> by <code>k</code>, dimension <code>op(B)</code> as <code>k</code> by <code>n</code>, and <code>C</code> as <code>m</code> by <code>n</code>.</p>
 <p>On certain problem sizes, it might be advantageous to create multiple gemm tasks to take advantage of concurrent kernels, rather than this method. </p>
+
+</div>
+</div>
+<a id="a72185bf94321948b5b3657cc9c52ad0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72185bf94321948b5b3657cc9c52ad0a">&#9670;&nbsp;</a></span>gemv()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> tf::cublasFlowCapturer::gemv </td>
+          <td>(</td>
+          <td class="paramtype">cublasOperation_t&#160;</td>
+          <td class="paramname"><em>trans</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>m</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T *&#160;</td>
+          <td class="paramname"><em>alpha</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T *&#160;</td>
+          <td class="paramname"><em>A</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>lda</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T *&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>incx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T *&#160;</td>
+          <td class="paramname"><em>beta</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>incy</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>performs matrix-vector multiplication </p>
+<p>This function performs matrix-vector multiplication:</p>
+<p><code>y = alpha * op (A) * x + beta * y</code>,</p>
+<p>where <code>alpha</code> and <code>beta</code> are scalars, <code>A</code> is 2D matrices stored in column-major format with dimension <code>op(A)</code> as <code>m</code> by <code>n</code>, and <code>x</code>, <code>y</code> are vectors with dimension <code>x</code> as <code>n</code>, and <code>y</code> as <code>m</code>.</p>
+<p>The input matrices are in column-major storage.</p>
+<p>This method calls native <code>cublas&lt;t&gt;gemv</code> with packed parameters, <code>(handle, args...)</code>, where <code>handle</code> is manaed by the cublasFlowCapturer and <code>args</code>... are the given arguments.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>data type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">trans</td><td>transport operation <code>op(A)</code> </td></tr>
+    <tr><td class="paramname">m</td><td>number of rows of matrix <code>op(A)</code> </td></tr>
+    <tr><td class="paramname">n</td><td>number of columns of matrix <code>op(A)</code> </td></tr>
+    <tr><td class="paramname">alpha</td><td>pointer to the <code>alpha</code> scalar </td></tr>
+    <tr><td class="paramname">A</td><td>pointer to the address of <code>A</code> </td></tr>
+    <tr><td class="paramname">lda</td><td>leading dimension of 2D array used to store the matrix <code>A</code> </td></tr>
+    <tr><td class="paramname">x</td><td>pointer to the address of <code>x</code> </td></tr>
+    <tr><td class="paramname">incx</td><td>stride between consecutive elements of <code>x</code> </td></tr>
+    <tr><td class="paramname">beta</td><td>pointer to the <code>beta</code> scalar </td></tr>
+    <tr><td class="paramname">y</td><td>pointer to the address of <code>y</code> </td></tr>
+    <tr><td class="paramname">incy</td><td>stride between consecutive elements of <code>y</code> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">tf::cudaTask</a> handle </dd></dl>
 
 </div>
 </div>

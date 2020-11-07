@@ -43,7 +43,7 @@ var Cookbook =
       [ "Run a cudaFlow on Multiple GPUs", "chapter6.html#C6_run_a_cudaflow_on_multiple_gpus", null ],
       [ "GPU Memory Operations", "chapter6.html#C6_GPUMemoryOperations", null ],
       [ "Granularity", "chapter6.html#C6_Granularity", null ],
-      [ "Offload a cudaFlow", "chapter6.html#C6_OffloadAcudaFlow", null ],
+      [ "Offload & Updating a cudaFlow", "chapter6.html#C6_OffloadAcudaFlow", null ],
       [ "Join a cudaFlow", "chapter6.html#C6_JoinAcudaFlow", null ]
     ] ],
     [ "GPU Tasking (cudaFlowCapturer)", "chapter7.html", [
