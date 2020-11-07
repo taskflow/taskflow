@@ -405,7 +405,7 @@ std::pair<std::vector<float>, std::vector<float>> gpu_predicate(
     cluster.precede(new_centroid)
            .succeed(zero_c, zero_sx, zero_sy);
 
-    cf.join_n(M);
+    cf.offload_n(M);
   }).name("update_means");
 
   auto stop = taskflow.emplace([&](tf::cudaFlow& cf){

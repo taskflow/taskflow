@@ -78,7 +78,7 @@ TEST_CASE("offload" * doctest::timeout(300)) {
         a, a, a, N
       );
 
-      cf.offload_n(times);
+      cf.offload_n(times+1);
     }).name("offload");
 
     //verify
@@ -96,7 +96,7 @@ TEST_CASE("offload" * doctest::timeout(300)) {
 
       ans_t.precede(verify_t);
 
-      cf.join();
+      cf.offload();
       REQUIRE(*check);
     }).name("verify");
 
@@ -157,7 +157,7 @@ TEST_CASE("join" * doctest::timeout(300)) {
         a, a, a, N
       );
 
-      cf.join_n(times);
+      cf.offload_n(times);
     }).name("join");
 
     //verify
@@ -175,7 +175,7 @@ TEST_CASE("join" * doctest::timeout(300)) {
 
       ans_t.precede(verify_t);
 
-      cf.join();
+      cf.offload();
       REQUIRE(*check);
     }).name("verify");
 
@@ -283,7 +283,7 @@ void update_kernel() {
         operand[ind[2]], operand[ind[1]], operand[ind[0]], N
       );
 
-      cf.join();
+      cf.offload();
     }).name("add");
 
     //verify
@@ -349,7 +349,7 @@ void update_kernel() {
       multi3_t.precede(add3_t);
       add3_t.precede(verify1_t).precede(verify2_t).precede(verify3_t);
 
-      cf.join();
+      cf.offload();
       REQUIRE(*check);
 
     }).name("verify");
@@ -426,7 +426,7 @@ void update_copy() {
       cf.offload();
 
       cf.update_copy(h2d_t, dc, hc.data(), N);
-      cf.join();
+      cf.offload();
 
     });
 
@@ -451,7 +451,7 @@ void update_copy() {
       cf.offload();
 
       cf.update_copy(d2h_t, hz.data(), dz, N);
-      cf.join();
+      cf.offload();
 
     });
 
@@ -537,7 +537,7 @@ void update_memcpy() {
       cf.offload();
 
       cf.update_memcpy(h2d_t, dc, hc.data(), sizeof(T) * N);
-      cf.join();
+      cf.offload();
 
     });
 
@@ -562,7 +562,7 @@ void update_memcpy() {
       cf.offload();
 
       cf.update_memcpy(d2h_t, hz.data(), dz, sizeof(T) * N);
-      cf.join();
+      cf.offload();
 
     });
 
@@ -659,7 +659,7 @@ void update_memset() {
       cf.offload();
 
       cf.update_memset(memset_t, b, 1, (N + 37) * sizeof(T));
-      cf.join();
+      cf.offload();
     }).name("memset");
 
     //verify
@@ -676,7 +676,7 @@ void update_memset() {
         b, ans_b, check, N + 37
       );
 
-      cf.join();
+      cf.offload();
       REQUIRE(*check);
     }).name("verify");
 
@@ -773,7 +773,7 @@ void update_transpose() {
           rows,
           cols
         );
-        cf.join();
+        cf.offload();
 
 
       }).name("transpose");
@@ -794,7 +794,7 @@ void update_transpose() {
           rows * cols
         );
 
-        cf.join();
+        cf.offload();
 
         REQUIRE(*check);
 
@@ -912,7 +912,7 @@ void update_matmul() {
           k,
           n
         );
-        cf.join();
+        cf.offload();
 
       }).name("matmul");
       
@@ -954,7 +954,7 @@ void update_matmul() {
         matmul1_t.precede(verify1_t);
         matmul2_t.precede(verify2_t);
 
-        cf.join();
+        cf.offload();
 
         REQUIRE(*check);
 

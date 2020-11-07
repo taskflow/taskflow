@@ -285,11 +285,11 @@ class Executor {
     >
     void _invoke_cudaflow_task_entry(C&&, Node*);
     
-    template <typename P>
-    void _invoke_cudaflow_task_internal(Worker&, cudaFlow&, P&&, bool);
+    //template <typename P>
+    //void _invoke_cudaflow_task_internal(cudaFlow&, P&&, bool);
     
-    template <typename P>
-    void _invoke_cudaflow_task_external(cudaFlow&, P&&, bool);
+    //template <typename P>
+    //void _invoke_cudaflow_task_external(cudaFlow&, P&&, bool);
 #endif
 };
 
@@ -1040,23 +1040,14 @@ void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
   
   h.graph.clear();
 
-  h.graph._create_native_graph();
-  
   cudaFlow cf(*this, h.graph);
 
   c(cf); 
 
-  // join the cudaflow
-  if(cf._joinable) {
-    _invoke_cudaflow_task_external(
-      cf, [repeat=1] () mutable { return repeat-- == 0; }, true
-    );  
-    cf._joinable = false;
+  // join the cudaflow if never offloaded
+  if(cf._executable == nullptr) {
+    cf.offload();
   }
-
-  //h.graph.dump(std::cout, node);
-    
-  h.graph._destroy_native_graph();
 }
 
 // Procedure: _invoke_cudaflow_task_entry
@@ -1095,54 +1086,54 @@ void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
   // TODO: how do we support the update?
 }
 
-// Procedure: _invoke_cudaflow_task_internal
-template <typename P>
-void Executor::_invoke_cudaflow_task_internal(
-  Worker&, cudaFlow& cf, P&& predicate, bool join
-) {
-  
-  if(cf.empty()) {
-    return;
-  }
-  
-  // transforms cudaFlow to a native cudaGraph under the specified device
-  // and launches the graph through a given or an internal device stream
-  if(cf._executable == nullptr) {
-    cf._create_executable();
-    //cuda_dump_graph(std::cout, cf._graph._native_handle);
-  }
+//// Procedure: _invoke_cudaflow_task_internal
+//template <typename P>
+//void Executor::_invoke_cudaflow_task_internal(
+//  cudaFlow& cf, P&& predicate, bool join
+//) {
+//  
+//  if(cf.empty()) {
+//    return;
+//  }
+//  
+//  // transforms cudaFlow to a native cudaGraph under the specified device
+//  // and launches the graph through a given or an internal device stream
+//  if(cf._executable == nullptr) {
+//    cf._create_executable();
+//    //cuda_dump_graph(std::cout, cf._graph._native_handle);
+//  }
+//
+//  cudaScopedPerThreadStream s;
+//
+//  while(!predicate()) {
+//
+//    TF_CHECK_CUDA(
+//      cudaGraphLaunch(cf._executable, s), "failed to execute cudaFlow"
+//    );
+//
+//    TF_CHECK_CUDA(
+//      cudaStreamSynchronize(s), "failed to synchronize cudaFlow execution"
+//    );
+//  }
+//
+//  if(join) {
+//    //cuda_dump_graph(std::cout, cf._graph._native_handle);
+//    cf._destroy_executable();
+//  }
+//}
 
-  cudaScopedPerThreadStream s;
-
-  while(!predicate()) {
-
-    TF_CHECK_CUDA(
-      cudaGraphLaunch(cf._executable, s), "failed to execute cudaFlow"
-    );
-
-    TF_CHECK_CUDA(
-      cudaStreamSynchronize(s), "failed to synchronize cudaFlow execution"
-    );
-  }
-
-  if(join) {
-    //cuda_dump_graph(std::cout, cf._graph._native_handle);
-    cf._destroy_executable();
-  }
-}
-
-// Procedure: _invoke_cudaflow_task_external
-template <typename P>
-void Executor::_invoke_cudaflow_task_external(
-  cudaFlow& cf, P&& predicate, bool join
-) {
-
-  auto w = _per_thread().worker;
-  
-  assert(w && w->executor == this);
-
-  _invoke_cudaflow_task_internal(*w, cf, std::forward<P>(predicate), join);
-}
+//// Procedure: _invoke_cudaflow_task_external
+//template <typename P>
+//void Executor::_invoke_cudaflow_task_external(
+//  cudaFlow& cf, P&& predicate, bool join
+//) {
+//
+//  auto w = _per_thread().worker;
+//  
+//  assert(w && w->executor == this);
+//
+//  _invoke_cudaflow_task_internal(*w, cf, std::forward<P>(predicate), join);
+//}
 #endif
 
 // Procedure: _invoke_module_task
@@ -1392,7 +1383,7 @@ inline void Subflow::detach() {
 }
 
 // ----------------------------------------------------------------------------
-// FlowBuilder and cudaFlow
+// FlowBuilder
 // ----------------------------------------------------------------------------
 
 #ifdef TF_ENABLE_CUDA
@@ -1410,52 +1401,6 @@ Task FlowBuilder::emplace_on(C&& callable, D&& device) {
     }
   );
   return Task(n);
-}
-
-// Procedure: offload_until
-template <typename P>
-void cudaFlow::offload_until(P&& predicate) {
-
-  if(!_joinable) {
-    TF_THROW("cudaFlow already joined");
-  }
-
-  _executor._invoke_cudaflow_task_external(
-    *this, std::forward<P>(predicate), false
-  );
-}
-
-// Procedure: offload_n
-inline void cudaFlow::offload_n(size_t n) {
-  offload_until([repeat=n] () mutable { return repeat-- == 0; });
-}
-
-// Procedure: offload
-inline void cudaFlow::offload() {
-  offload_until([repeat=1] () mutable { return repeat-- == 0; });
-}
-
-// Procedure: join_until
-template <typename P>
-void cudaFlow::join_until(P&& predicate) {
-
-  if(!_joinable) {
-    TF_THROW("cudaFlow already joined");
-  }
-  _executor._invoke_cudaflow_task_external(
-    *this, std::forward<P>(predicate), true
-  );
-  _joinable = false;
-}
-
-// Procedure: join_n
-inline void cudaFlow::join_n(size_t n) {
-  join_until([repeat=n] () mutable { return repeat-- == 0; });
-}
-
-// Procedure: join
-inline void cudaFlow::join() {
-  join_until([repeat=1] () mutable { return repeat-- == 0; });
 }
 
 #endif  

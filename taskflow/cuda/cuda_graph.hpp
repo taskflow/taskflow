@@ -244,8 +244,8 @@ class cudaGraph {
 
     bool empty() const;
 
-    template <typename T>
-    void dump(T&, const Node* = nullptr) const;
+    //template <typename T>
+    //void dump(T&, const Node* = nullptr) const;
 
   private:
 
@@ -254,10 +254,6 @@ class cudaGraph {
     // TODO: nvcc complains deleter of unique_ptr
     //std::vector<std::unique_ptr<cudaNode>> _nodes;
     std::vector<cudaNode*> _nodes;
-
-    void _create_native_graph();
-    void _destroy_native_graph();
-
     std::vector<cudaNode*> _toposort();
 };
 
@@ -494,16 +490,6 @@ inline void cudaGraph::clear() {
   _nodes.clear();
 }
 
-// Procedure: clear the cudaGraph
-inline void cudaGraph::_destroy_native_graph() {
-  assert(_native_handle != nullptr);
-  TF_CHECK_CUDA(
-    cudaGraphDestroy(_native_handle), 
-    "failed to destroy the native graph"
-  );
-  _native_handle = nullptr;
-}
-    
 // Function: emplace_back
 template <typename... ArgsT>
 cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
@@ -515,15 +501,6 @@ cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
   auto node = new cudaNode(std::forward<ArgsT>(args)...);
   _nodes.push_back(node);
   return node;
-}
-
-// Procedure: _create_native_graph
-inline void cudaGraph::_create_native_graph() {
-  assert(_native_handle == nullptr);
-  TF_CHECK_CUDA(
-    cudaGraphCreate(&_native_handle, 0), 
-    "failed to create a native graph"
-  );
 }
 
 // Procedure: _toposort

@@ -43,23 +43,55 @@ taskflow.emplace([&](tf::cudaFlow& cf){
 
 executor.run(taskflow).wait();
 @endcode
+
+A %cudaFlow is a task and will be run by one worker thread in the executor.
+That is, the callable that defines how the given %cudaFlow runs 
+will be executed sequentially.
 */
 class cudaFlow {
 
   friend class Executor;
 
+  struct External {
+    cudaGraph graph;
+  };
+
+  struct Internal {
+    Executor& executor;
+    Internal(Executor& e) : executor {e} {}
+  };
+
+  using handle_t = std::variant<External, Internal>;
+
   public:
+
+    /**
+    @brief constructs a standalone %cudaFlow
+    */
+    cudaFlow();
+    
+    /**
+    @brief destroys the %cudaFlow and its associated native CUDA graph
+           and executable graph
+     */
+    ~cudaFlow();
 
     /**
     @brief queries the emptiness of the graph
     */
     bool empty() const;
-
-    /**
-    @brief queries if the cudaflow is joinable
-    */
-    bool joinable() const;
     
+    /**
+    @brief dumps the native CUDA graph into a DOT format through an
+           output stream that defines the stream insertion operator @c <<
+    */
+    template<typename T>
+    void dump_native_graph(T& os) const;
+
+    // ------------------------------------------------------------------------
+    // Graph building routines
+    // ------------------------------------------------------------------------
+
     /**
     @brief creates a no-operation task
     
@@ -223,6 +255,9 @@ class cudaFlow {
     A offloaded %cudaFlow force the underlying graph to be instantiated.
     After the instantiation, you should not modify the graph topology
     but update node parameters.
+
+    By default, if users do not offload the %cudaFlow, 
+    the executor will offload it once.
     */
     template <typename P>
     void offload_until(P&& predicate);
@@ -238,36 +273,6 @@ class cudaFlow {
     @brief offloads the %cudaFlow and executes it once
     */
     void offload();
-
-    /**
-    @brief offloads the %cudaFlow with the given stop predicate and then 
-    joins the execution
-
-    @tparam P predicate type (a binary callable)
-
-    @param predicate a binary predicate (returns @c true for stop)
-
-    Immediately offloads the present %cudaFlow onto a GPU 
-    and repeatedly executes it until the predicate returns @c true.
-    When execution finishes, the %cudaFlow is joined. 
-    A joined cudaflow becomes @em invalid and cannot take other operations.
-    */
-    template <typename P>
-    void join_until(P&& predicate);
-
-    /**
-    @brief offloads the %cudaFlow and executes it by the given times,
-           and then joins the execution
-
-    @param N number of executions before join
-    */
-    void join_n(size_t N);
-
-    /**
-    @brief offloads the %cudaFlow and executes it once, 
-           and then joins the execution
-    */
-    void join();
 
     // ------------------------------------------------------------------------
     // update methods
@@ -439,50 +444,47 @@ class cudaFlow {
     cudaTask capture(C&& callable);
 
   private:
+
+    handle_t _handle;
     
-    //cudaFlow(int, Executor&, cudaGraph&);
-    cudaFlow(Executor& executor, cudaGraph&);
-    ~cudaFlow();
-    
-    Executor& _executor;
     cudaGraph& _graph;
     
-    bool _joinable {true};
-    
     cudaGraphExec_t _executable {nullptr};
-
-    void _create_executable();
-    void _destroy_executable();
+    
+    cudaFlow(Executor&, cudaGraph&);
 };
 
-// Constructor
+// Construct a standalone cudaFlow
+inline cudaFlow::cudaFlow() :
+  _handle {std::in_place_type_t<External>{}},
+  _graph  {std::get<External>(_handle).graph} {
+  
+  TF_CHECK_CUDA(
+    cudaGraphCreate(&_graph._native_handle, 0), 
+    "cudaFlow failed to create a native graph (external mode)"
+  );
+}
+
+// Construct the cudaFlow from executor (internal graph)
 inline cudaFlow::cudaFlow(Executor& e, cudaGraph& g) :
-  _executor{e}, _graph {g} {
+  _handle {std::in_place_type_t<Internal>{}, e},
+  _graph  {g} {
+
+  assert(_graph._native_handle == nullptr);
+
+  TF_CHECK_CUDA(
+    cudaGraphCreate(&_graph._native_handle, 0), 
+    "cudaFlow failed to create a native graph (internal mode)"
+  );
 }
 
 // Destructor
 inline cudaFlow::~cudaFlow() {
-  assert(_executable == nullptr);
-}
-
-// Procedure: _create_executable
-inline void cudaFlow::_create_executable() {
-  assert(_executable == nullptr);
-  TF_CHECK_CUDA(
-    cudaGraphInstantiate(
-      &_executable, _graph._native_handle, nullptr, nullptr, 0
-    ),
-    "failed to create an executable graph"
-  );
-}
-
-// Procedure: _destroy_executable
-inline void cudaFlow::_destroy_executable() {
-  assert(_executable != nullptr);
-  TF_CHECK_CUDA(
-    cudaGraphExecDestroy(_executable), "failed to destroy executable graph"
-  );
-  _executable = nullptr;
+  if(_executable) {
+    cudaGraphExecDestroy(_executable);
+  }
+  cudaGraphDestroy(_graph._native_handle);
+  _graph._native_handle = nullptr;
 }
 
 // Function: empty
@@ -490,10 +492,15 @@ inline bool cudaFlow::empty() const {
   return _graph._nodes.empty();
 }
 
-// Function: joinable
-inline bool cudaFlow::joinable() const {
-  return _joinable;
-} 
+// Procedure: dump
+template <typename T>
+void cudaFlow::dump_native_graph(T& os) const {
+  cuda_dump_graph(os, _graph._native_handle);
+}
+
+// ----------------------------------------------------------------------------
+// Graph building methods
+// ----------------------------------------------------------------------------
 
 // Function: noop
 inline cudaTask cudaFlow::noop() {
@@ -986,6 +993,53 @@ cudaTask cudaFlow::capture(C&& c) {
   TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
 
   return cudaTask(node);
+}
+
+// ----------------------------------------------------------------------------
+// Offload methods
+// ----------------------------------------------------------------------------
+
+// Procedure: offload_until
+template <typename P>
+void cudaFlow::offload_until(P&& predicate) {
+
+  //_executor->_invoke_cudaflow_task_internal(
+  //  *this, std::forward<P>(predicate), false
+  //);
+  
+  // transforms cudaFlow to a native cudaGraph under the specified device
+  // and launches the graph through a given or an internal device stream
+  if(_executable == nullptr) {
+    TF_CHECK_CUDA(
+      cudaGraphInstantiate(
+        &_executable, _graph._native_handle, nullptr, nullptr, 0
+      ),
+      "failed to create an executable graph"
+    );
+    //cuda_dump_graph(std::cout, cf._graph._native_handle);
+  }
+
+  cudaScopedPerThreadStream s;
+
+  while(!predicate()) {
+    TF_CHECK_CUDA(
+      cudaGraphLaunch(_executable, s), "failed to execute cudaFlow"
+    );
+
+    TF_CHECK_CUDA(
+      cudaStreamSynchronize(s), "failed to synchronize cudaFlow execution"
+    );
+  }
+}
+
+// Procedure: offload_n
+inline void cudaFlow::offload_n(size_t n) {
+  offload_until([repeat=n] () mutable { return repeat-- == 0; });
+}
+
+// Procedure: offload
+inline void cudaFlow::offload() {
+  offload_until([repeat=1] () mutable { return repeat-- == 0; });
 }
 
 

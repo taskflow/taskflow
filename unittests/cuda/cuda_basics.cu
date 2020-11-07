@@ -69,6 +69,46 @@ TEST_CASE("EmptyCapture" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Standalone
+// --------------------------------------------------------
+
+TEST_CASE("Standalone") {
+
+  tf::cudaFlow cf;
+  REQUIRE(cf.empty());
+
+  unsigned N = 1024;
+    
+  auto cpu = static_cast<int*>(std::calloc(N, sizeof(int)));
+  auto gpu = tf::cuda_malloc_device<int>(N);
+
+  dim3 g = {(N+255)/256, 1, 1};
+  dim3 b = {256, 1, 1};
+  auto h2d = cf.copy(gpu, cpu, N);
+  auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, N, 17);
+  auto d2h = cf.copy(cpu, gpu, N);
+  h2d.precede(kernel);
+  kernel.precede(d2h);
+    
+  for(unsigned i=0; i<N; ++i) {
+    REQUIRE(cpu[i] == 0);
+  }
+  
+  cf.offload();
+  for(unsigned i=0; i<N; ++i) {
+    REQUIRE(cpu[i] == 17);
+  }
+  
+  cf.offload_n(9);
+  for(unsigned i=0; i<N; ++i) {
+    REQUIRE(cpu[i] == 170);
+  }
+  
+  std::free(cpu);
+  tf::cuda_free(gpu);
+}
+
+// --------------------------------------------------------
 // Testcase: Set
 // --------------------------------------------------------
 template <typename T>
@@ -1324,7 +1364,7 @@ TEST_CASE("Predicate") {
     auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
     auto copy = cf.copy(cpu, gpu, n);
     kernel.precede(copy);
-    cf.join_until([i=100]() mutable { return i-- == 0; });
+    cf.offload_until([i=100]() mutable { return i-- == 0; });
   });
 
   auto freetask = taskflow.emplace([&](){
@@ -1367,7 +1407,7 @@ TEST_CASE("Repeat") {
     auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, n, 1);
     auto copy = cf.copy(cpu, gpu, n);
     kernel.precede(copy);
-    cf.join_n(100);
+    cf.offload_n(100);
   });
 
   auto freetask = taskflow.emplace([&](){

@@ -391,9 +391,6 @@ class cudaFlowCapturer : public cudaFlowCapturerBase {
     cudaGraph_t _capture();
     
     cudaGraphExec_t _executable {nullptr};
-    
-    //void _create_executable();
-    //void _destroy_executable();
 };
 
 // constructor
