@@ -93,11 +93,19 @@ $(document).ready(function(){initNavTree('GPUAlgorithms.html','');});
 <div class="title">GPU Algorithms </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Taskflow provides several algorithms for users to express common GPU workloads.</p>
-<p><a class="el" href="SingleTaskCUDA.html">Single Task (cudaFlow)</a> <br />
-<a class="el" href="ForEachCUDA.html">Parallel Iterations (cudaFlow)</a> <br />
-<a class="el" href="ParallelTransformsCUDA.html">Parallel Transforms (cudaFlow)</a> <br />
-</p>
+<div class="textblock"><p>Taskflow provides algorithms and libraries for users to express common GPU workloads.</p>
+<h1><a class="anchor" id="cudaFlowAlgorithms"></a>
+cudaFlow Algorithms</h1>
+<p>cudaFlow defines several templates to express generic GPU algorithms:</p>
+<ul>
+<li><a class="el" href="SingleTaskCUDA.html">Single Task (cudaFlow)</a></li>
+<li><a class="el" href="ForEachCUDA.html">Parallel Iterations (cudaFlow)</a></li>
+<li><a class="el" href="ParallelTransformsCUDA.html">Parallel Transforms (cudaFlow)</a></li>
+</ul>
+<p>cudaFlow defines serveral task-based interfaces on top of external CUDA libraries to express domain-specific algorithms:</p>
+<ul>
+<li><a class="el" href="LinearAlgebracublasFlowCapturer.html">Linear Algebra (cublasFlowCapturer)</a> </li>
+</ul>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

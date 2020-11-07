@@ -104,8 +104,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"classtf_1_1cublasFlowCapturer.html#a7a6485c37d50b9c79205f728ab380929",
-"release-2-4-0.html#release-2-4-0_new_features"
+"classtf_1_1cublasFlowCapturer.html#a2701b05226ef193e45482c1bb56f93de",
+"release-2-3-0.html#release-2-3-0_download"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

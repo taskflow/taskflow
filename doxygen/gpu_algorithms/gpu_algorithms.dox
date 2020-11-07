@@ -2,11 +2,19 @@ namespace tf {
 
 /** @page GPUAlgorithms GPU Algorithms
 
-  %Taskflow provides several algorithms for users to express common GPU workloads.
-  
-  @subpage SingleTaskCUDA @n
-  @subpage ForEachCUDA @n
-  @subpage ParallelTransformsCUDA @n
+  %Taskflow provides algorithms and libraries for users to express common GPU workloads.
+
+  @section cudaFlowAlgorithms cudaFlow Algorithms
+
+  %cudaFlow defines several templates to express generic GPU algorithms:
+
+  + @subpage SingleTaskCUDA 
+  + @subpage ForEachCUDA 
+  + @subpage ParallelTransformsCUDA 
+
+  %cudaFlow defines serveral task-based interfaces on top of external CUDA libraries to express domain-specific algorithms:
+
+  + @subpage LinearAlgebracublasFlowCapturer
 
 */
 

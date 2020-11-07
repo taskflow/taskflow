@@ -1,5 +1,14 @@
 var NAVTREEINDEX1 =
 {
+"classtf_1_1cublasFlowCapturer.html#a2701b05226ef193e45482c1bb56f93de":[12,0,0,1,16],
+"classtf_1_1cublasFlowCapturer.html#a30b437e511b5719f6253d3a9cf0a992c":[12,0,0,1,11],
+"classtf_1_1cublasFlowCapturer.html#a32451b05fd7eb937ce8e807b5d5abe1f":[12,0,0,1,19],
+"classtf_1_1cublasFlowCapturer.html#a36ecdcea0f24575187e44374e583df2e":[12,0,0,1,14],
+"classtf_1_1cublasFlowCapturer.html#a556f8a2f50cc5e28fb84395155cc3297":[12,0,0,1,9],
+"classtf_1_1cublasFlowCapturer.html#a56af0e8ed80e5626fe2f594608afa405":[12,0,0,1,13],
+"classtf_1_1cublasFlowCapturer.html#a56f8649d43652597da1c9b0a5f88b0ee":[12,0,0,1,4],
+"classtf_1_1cublasFlowCapturer.html#a5e5d2a2502fcfe0094d5ac354995cb71":[12,0,0,1,22],
+"classtf_1_1cublasFlowCapturer.html#a756dc6637521ef4f2249711effd1d0f5":[12,0,0,1,5],
 "classtf_1_1cublasFlowCapturer.html#a7a6485c37d50b9c79205f728ab380929":[12,0,0,1,2],
 "classtf_1_1cublasFlowCapturer.html#a8000fc6dbbb6f6f5a033f1b365e80d38":[12,0,0,1,17],
 "classtf_1_1cublasFlowCapturer.html#a8adbe06476f146b27bb00ba6054e5879":[12,0,0,1,12],
@@ -178,8 +187,8 @@ var NAVTREEINDEX1 =
 "guidelines.html#Step3WriteATaskflowProgram":[8,0,2,2],
 "guidelines.html#YourVoiceMatters":[8,0,7],
 "hierarchy.html":[12,2],
-"index.html":[],
 "index.html":[0],
+"index.html":[],
 "index.html#ASimpleFirstProgram":[0,6],
 "index.html#CompileAndRunYourFirstProgram":[0,7],
 "index.html#ComposableTasking":[0,3],
@@ -240,14 +249,5 @@ var NAVTREEINDEX1 =
 "release-2-2-0.html#release-2-2-0_new_features":[2,8,1],
 "release-2-3-0.html":[2,7],
 "release-2-3-0.html#release-2-3-0_bug_fixes":[2,7,2],
-"release-2-3-0.html#release-2-3-0_deprecated_items":[2,7,3],
-"release-2-3-0.html#release-2-3-0_download":[2,7,0],
-"release-2-3-0.html#release-2-3-0_new_features":[2,7,1],
-"release-2-3-1.html":[2,6],
-"release-2-3-1.html#release-2-3-1_bug_fixes":[2,6,1],
-"release-2-3-1.html#release-2-3-1_download":[2,6,0],
-"release-2-4-0.html":[2,5],
-"release-2-4-0.html#release-2-4-0_bug_fixes":[2,5,2],
-"release-2-4-0.html#release-2-4-0_download":[2,5,0],
-"release-2-4-0.html#release-2-4-0_miscellaneous_items":[2,5,3]
+"release-2-3-0.html#release-2-3-0_deprecated_items":[2,7,3]
 };

@@ -8,6 +8,7 @@ var searchData=
   ['less',['less',['http://en.cppreference.com/w/cpp/utility/functional/less.html',1,'std']]],
   ['less_5fequal',['less_equal',['http://en.cppreference.com/w/cpp/utility/functional/less_equal.html',1,'std']]],
   ['linear_5fcongruential_5fengine',['linear_congruential_engine',['http://en.cppreference.com/w/cpp/numeric/random/linear_congruential_engine.html',1,'std::linear_congruential_engine'],['http://en.cppreference.com/w/cpp/numeric/random/linear_congruential_engine/linear_congruential_engine.html',1,'std::linear_congruential_engine::linear_congruential_engine()']]],
+  ['linear_20algebra_20_28_25cublasflowcapturer_29',['Linear Algebra (%cublasFlowCapturer)',['../LinearAlgebracublasFlowCapturer.html',1,'GPUAlgorithms']]],
   ['linearize',['linearize',['../classtf_1_1FlowBuilder.html#a90f3d9b9d6fcf4df8e7d7878dfdd130d',1,'tf::FlowBuilder::linearize(std::vector&lt; Task &gt; &amp;tasks)'],['../classtf_1_1FlowBuilder.html#a4ec89b554d15ad5fb96f4fdb10dbbb16',1,'tf::FlowBuilder::linearize(std::initializer_list&lt; Task &gt; tasks)']]],
   ['list',['list',['http://en.cppreference.com/w/cpp/container/list.html',1,'std::list'],['http://en.cppreference.com/w/cpp/container/list/list.html',1,'std::list::list()']]],
   ['list_3c_20topology_20_3e',['list&lt; Topology &gt;',['http://en.cppreference.com/w/cpp/container/list.html',1,'std']]],
