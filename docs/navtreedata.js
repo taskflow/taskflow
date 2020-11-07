@@ -47,7 +47,6 @@ var NAVTREE =
     [ "Releases", "Releases.html", "Releases" ],
     [ "Cookbook", "Cookbook.html", "Cookbook" ],
     [ "Algorithms", "Algorithms.html", "Algorithms" ],
-    [ "GPU Algorithms", "GPUAlgorithms.html", "GPUAlgorithms" ],
     [ "Learning from Examples", "Examples.html", "Examples" ],
     [ "Real Use Cases", "usecases.html", "usecases" ],
     [ "Contributing", "Contributing.html", "Contributing" ],
@@ -104,8 +103,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"classtf_1_1cublasFlowCapturer.html#adb8f5d3137f5ccb3469a5bdde454a8bf",
-"release-2-6-0.html#release-2-6-0_deprecated_items"
+"classtf_1_1cublasFlowCapturer.html#af8f5052cbe1203d6ee3d3d40dffbb8eb",
+"release-2-7-0.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -170,14 +170,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a32451b05fd7eb937ce8e807b5d5abe1f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cublasFlowCapturer.html#a32451b05fd7eb937ce8e807b5d5abe1f">swap</a> (int n, T *x, int incx, T *y, int incy)</td></tr>
 <tr class="memdesc:a32451b05fd7eb937ce8e807b5d5abe1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">swaps elements between two vectors  <a href="#a32451b05fd7eb937ce8e807b5d5abe1f">More...</a><br /></td></tr>
 <tr class="separator:a32451b05fd7eb937ce8e807b5d5abe1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb9bfb78d3f0f006a5b3e0791d2e2883"><td class="memTemplParams" colspan="2"><a id="abb9bfb78d3f0f006a5b3e0791d2e2883"></a>
+<tr class="memitem:a72185bf94321948b5b3657cc9c52ad0a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a72185bf94321948b5b3657cc9c52ad0a"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cublasFlowCapturer.html#a72185bf94321948b5b3657cc9c52ad0a">gemv</a> (cublasOperation_t trans, int m, int n, const T *alpha, const T *A, int lda, const T *x, int incx, const T *beta, T *y, int incy)</td></tr>
+<tr class="memdesc:a72185bf94321948b5b3657cc9c52ad0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">performs matrix-vector multiplication  <a href="#a72185bf94321948b5b3657cc9c52ad0a">More...</a><br /></td></tr>
+<tr class="separator:a72185bf94321948b5b3657cc9c52ad0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a492f3f22949e0e6b1058113eb475d0"><td class="memTemplParams" colspan="2"><a id="a3a492f3f22949e0e6b1058113eb475d0"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:abb9bfb78d3f0f006a5b3e0791d2e2883"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><b>gemv</b> ()</td></tr>
-<tr class="separator:abb9bfb78d3f0f006a5b3e0791d2e2883"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a556f8a2f50cc5e28fb84395155cc3297"><td class="memTemplParams" colspan="2"><a id="a556f8a2f50cc5e28fb84395155cc3297"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a556f8a2f50cc5e28fb84395155cc3297"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><b>c_gemv</b> ()</td></tr>
-<tr class="separator:a556f8a2f50cc5e28fb84395155cc3297"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a492f3f22949e0e6b1058113eb475d0"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cublasFlowCapturer.html#a3a492f3f22949e0e6b1058113eb475d0">c_gemv</a> (cublasOperation_t trans, int m, int n, const T *alpha, const T *A, int lda, const T *x, int incx, const T *beta, T *y, int incy)</td></tr>
+<tr class="memdesc:a3a492f3f22949e0e6b1058113eb475d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">similar to <a class="el" href="classtf_1_1cublasFlowCapturer.html#a72185bf94321948b5b3657cc9c52ad0a" title="performs matrix-vector multiplication ">tf::cublasFlowCapturer::gemv</a> but operates on C-styled row-major layout <br /></td></tr>
+<tr class="separator:a3a492f3f22949e0e6b1058113eb475d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30b437e511b5719f6253d3a9cf0a992c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a30b437e511b5719f6253d3a9cf0a992c"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1cublasFlowCapturer.html#a30b437e511b5719f6253d3a9cf0a992c">geam</a> (cublasOperation_t ta, cublasOperation_t tb, int m, int n, const T *alpha, const T *A, int lda, const T *beta, const T *B, int ldb, T *C, int ldc)</td></tr>
 <tr class="memdesc:a30b437e511b5719f6253d3a9cf0a992c"><td class="mdescLeft">&#160;</td><td class="mdescRight">performs matrix-matrix addition and transposition  <a href="#a30b437e511b5719f6253d3a9cf0a992c">More...</a><br /></td></tr>
@@ -261,7 +262,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>class object to construct a cuBLAS task graph </p>
 <p>cublasFlowCapturer provides a higher-level interface over the <a href="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</a> library and hide concurrency details from users. It inherits methods from <a class="el" href="classtf_1_1cudaFlowCapturerBase.html" title="base class to construct a CUDA task graph through stream capture ">tf::cudaFlowCapturerBase</a> and must be used from a <a class="el" href="classtf_1_1cudaFlowCapturer.html" title="class for building a CUDA task dependency graph through stream capture ">tf::cudaFlowCapturer</a> object. All pointers used to cublasFlowCapturer methods must be in GPU memory space or managed (i.e., <code>cudaMallocManaged</code>), including scalars, <code>alpha</code> and <code>beta</code>, input data and output data pointers. The following example uses <code>cublas&lt;t&gt;amax</code> to find the minimum index of the element of the maximum absolute magnitude in a vector.</p>
-<div class="fragment"><div class="line"><a class="code" href="classtf_1_1Executor.html">tf::Executor</a> executor;</div><div class="line"><a class="code" href="classtf_1_1Taskflow.html">tf::Taskflow</a> taskflow;</div><div class="line"></div><div class="line"><span class="keywordtype">size_t</span> N = 1024;</div><div class="line"><span class="keywordtype">float</span> *x = <span class="keyword">nullptr</span>;</div><div class="line"><span class="keywordtype">int</span> *d_res;</div><div class="line"><span class="keywordtype">int</span>  h_res;</div><div class="line"></div><div class="line"><a class="codeRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;float&gt;</a> host(N, 0.0f);</div><div class="line">host[512] = 100.0f;  <span class="comment">// artificially set the mid-position to the largest</span></div><div class="line"></div><div class="line">cudaMalloc(&amp;x, N*<span class="keyword">sizeof</span>(<span class="keywordtype">float</span>));</div><div class="line">cudaMalloc(&amp;d_res, <span class="keyword">sizeof</span>(<span class="keywordtype">int</span>));</div><div class="line"></div><div class="line">taskflow.<a class="code" href="classtf_1_1FlowBuilder.html#a60d7a666cab71ecfa3010b2efb0d6b57">emplace</a>([&amp;](<a class="code" href="classtf_1_1cudaFlowCapturer.html">tf::cudaFlowCapturer</a>&amp; capturer){</div><div class="line">  <a class="code" href="classtf_1_1cublasFlowCapturer.html">tf::cublasFlowCapturer</a>* cublas = capturer.<a class="code" href="classtf_1_1cudaFlowCapturer.html#a49dd9727aeb5bccd7d826c6b11a6882d">make_capturer</a>&lt;<a class="code" href="classtf_1_1cublasFlowCapturer.html">tf::cublasFlowCapturer</a>&gt;();</div><div class="line"></div><div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> h2d      = capturer.<a class="code" href="classtf_1_1cudaFlowCapturerBase.html#a9fd8983c782f841bba6b10de39becdf6">copy</a>(x, host.data(), N);</div><div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> find_max = cublas-&gt;<a class="code" href="classtf_1_1cublasFlowCapturer.html#ab1357bb1728f5fe526acef8afee7111e">amax</a>(N, x, 1, d_res);  </div><div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> d2h      = capturer.<a class="code" href="classtf_1_1cudaFlowCapturerBase.html#a9fd8983c782f841bba6b10de39becdf6">copy</a>(&amp;h_res, d_res, 1);</div><div class="line">  </div><div class="line">  h2d.<a class="code" href="classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4">precede</a>(find_max);  <span class="comment">// amax runs before host-to-device copy</span></div><div class="line">  find_max.<a class="code" href="classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4">precede</a>(d2h);  <span class="comment">// amax runs after  device-to-host copy</span></div><div class="line">});</div><div class="line"></div><div class="line">executor.<a class="code" href="classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa">run</a>(taskflow).wait();</div><div class="line"></div><div class="line">assert(h_res == 512);</div></div><!-- fragment --><p>Currently, cublasFlowCapturer supports only <code>float</code> and <code>double</code> data types.</p>
+<div class="fragment"><div class="line"><a class="code" href="classtf_1_1Executor.html">tf::Executor</a> executor;</div><div class="line"><a class="code" href="classtf_1_1Taskflow.html">tf::Taskflow</a> taskflow;</div><div class="line"></div><div class="line"><span class="keywordtype">size_t</span> N = 1024;</div><div class="line"><span class="keywordtype">float</span> *x = <span class="keyword">nullptr</span>;</div><div class="line"><span class="keywordtype">int</span> *d_res;</div><div class="line"><span class="keywordtype">int</span>  h_res;</div><div class="line"></div><div class="line"><a class="codeRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;float&gt;</a> host(N, 0.0f);</div><div class="line">host[512] = 100.0f;  <span class="comment">// artificially set the mid-position to the largest</span></div><div class="line"></div><div class="line">cudaMalloc(&amp;x, N*<span class="keyword">sizeof</span>(<span class="keywordtype">float</span>));</div><div class="line">cudaMalloc(&amp;d_res, <span class="keyword">sizeof</span>(<span class="keywordtype">int</span>));</div><div class="line"></div><div class="line">taskflow.<a class="code" href="classtf_1_1FlowBuilder.html#a60d7a666cab71ecfa3010b2efb0d6b57">emplace</a>([&amp;](<a class="code" href="classtf_1_1cudaFlowCapturer.html">tf::cudaFlowCapturer</a>&amp; capturer){</div><div class="line">  <a class="code" href="classtf_1_1cublasFlowCapturer.html">tf::cublasFlowCapturer</a>* cublas = capturer.<a class="code" href="classtf_1_1cudaFlowCapturer.html#a49dd9727aeb5bccd7d826c6b11a6882d">make_capturer</a>&lt;<a class="code" href="classtf_1_1cublasFlowCapturer.html">tf::cublasFlowCapturer</a>&gt;();</div><div class="line"></div><div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> h2d      = capturer.<a class="code" href="classtf_1_1cudaFlowCapturerBase.html#a9fd8983c782f841bba6b10de39becdf6">copy</a>(x, host.data(), N);</div><div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> find_max = cublas-&gt;<a class="code" href="classtf_1_1cublasFlowCapturer.html#ab1357bb1728f5fe526acef8afee7111e">amax</a>(N, x, 1, d_res);  </div><div class="line">  <a class="code" href="classtf_1_1cudaTask.html">tf::cudaTask</a> d2h      = capturer.<a class="code" href="classtf_1_1cudaFlowCapturerBase.html#a9fd8983c782f841bba6b10de39becdf6">copy</a>(&amp;h_res, d_res, 1);</div><div class="line">  </div><div class="line">  h2d.<a class="code" href="classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4">precede</a>(find_max);  <span class="comment">// amax runs before host-to-device copy</span></div><div class="line">  find_max.<a class="code" href="classtf_1_1cudaTask.html#abdd68287ec4dff4216af34d1db44d1b4">precede</a>(d2h);  <span class="comment">// amax runs after  device-to-host copy</span></div><div class="line">});</div><div class="line"></div><div class="line">executor.<a class="code" href="classtf_1_1Executor.html#a81f35d5b0a20ac0646447eb80d97c0aa">run</a>(taskflow).wait();</div><div class="line"></div><div class="line">assert(h_res == 512);</div></div><!-- fragment --><p>Currently, cublasFlowCapturer supports only <code>float</code> and <code>double</code> data types.</p>
 <p>Please refer to <a href="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</a> for more details. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ab1357bb1728f5fe526acef8afee7111e"></a>
@@ -1151,6 +1152,120 @@ template&lt;typename T &gt; </div>
 <p><code>C + i*sC = alpha * op (A + i*sA) * op (B + i*sB) + beta * (C + i*sC), i in [0, bc)</code>,</p>
 <p>where <code>alpha</code> and <code>beta</code> are scalars, and <code>A</code>[i], <code>B</code>[i], and <code>C</code>[i] are 2D matrices stored in column-major format with dimension <code>op(A)</code> as <code>m</code> by <code>k</code>, dimension <code>op(B)</code> as <code>k</code> by <code>n</code>, and <code>C</code> as <code>m</code> by <code>n</code>.</p>
 <p>On certain problem sizes, it might be advantageous to create multiple gemm tasks to take advantage of concurrent kernels, rather than this method. </p>
+
+</div>
+</div>
+<a id="a72185bf94321948b5b3657cc9c52ad0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72185bf94321948b5b3657cc9c52ad0a">&#9670;&nbsp;</a></span>gemv()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1cudaTask.html">cudaTask</a> tf::cublasFlowCapturer::gemv </td>
+          <td>(</td>
+          <td class="paramtype">cublasOperation_t&#160;</td>
+          <td class="paramname"><em>trans</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>m</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T *&#160;</td>
+          <td class="paramname"><em>alpha</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T *&#160;</td>
+          <td class="paramname"><em>A</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>lda</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T *&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>incx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T *&#160;</td>
+          <td class="paramname"><em>beta</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>incy</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>performs matrix-vector multiplication </p>
+<p>This function performs matrix-vector multiplication:</p>
+<p><code>y = alpha * op (A) * x + beta * y</code>,</p>
+<p>where <code>alpha</code> and <code>beta</code> are scalars, <code>A</code> is 2D matrices stored in column-major format with dimension <code>op(A)</code> as <code>m</code> by <code>n</code>, and <code>x</code>, <code>y</code> are vectors with dimension <code>x</code> as <code>n</code>, and <code>y</code> as <code>m</code>.</p>
+<p>The input matrices are in column-major storage.</p>
+<p>This method calls native <code>cublas&lt;t&gt;gemv</code> with packed parameters, <code>(handle, args...)</code>, where <code>handle</code> is manaed by the cublasFlowCapturer and <code>args</code>... are the given arguments.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>data type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">trans</td><td>transport operation <code>op(A)</code> </td></tr>
+    <tr><td class="paramname">m</td><td>number of rows of matrix <code>op(A)</code> </td></tr>
+    <tr><td class="paramname">n</td><td>number of columns of matrix <code>op(A)</code> </td></tr>
+    <tr><td class="paramname">alpha</td><td>pointer to the <code>alpha</code> scalar </td></tr>
+    <tr><td class="paramname">A</td><td>pointer to the address of <code>A</code> </td></tr>
+    <tr><td class="paramname">lda</td><td>leading dimension of 2D array used to store the matrix <code>A</code> </td></tr>
+    <tr><td class="paramname">x</td><td>pointer to the address of <code>x</code> </td></tr>
+    <tr><td class="paramname">incx</td><td>stride between consecutive elements of <code>x</code> </td></tr>
+    <tr><td class="paramname">beta</td><td>pointer to the <code>beta</code> scalar </td></tr>
+    <tr><td class="paramname">y</td><td>pointer to the address of <code>y</code> </td></tr>
+    <tr><td class="paramname">incy</td><td>stride between consecutive elements of <code>y</code> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1cudaTask.html" title="handle to a node of the internal CUDA graph ">tf::cudaTask</a> handle </dd></dl>
 
 </div>
 </div>

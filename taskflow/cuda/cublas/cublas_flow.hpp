@@ -348,13 +348,68 @@ class cublasFlowCapturer : public cudaFlowCapturerBase {
     // ------------------------------------------------------------------------
     // TODO Level-2 matrix_vector operations
     // ------------------------------------------------------------------------
+    //
+    /** 
+    @brief performs matrix-vector multiplication
     
-    // Documentation
+    This function performs matrix-vector multiplication:
+    
+    <tt>y = alpha * op (A) * x + beta * y</tt>,
+    
+    where @c alpha and @c beta are scalars, @c A
+    is 2D matrices stored in column-major format with dimension 
+    @c op(A) as @c m by @c n, and @c x, @c y are vectors
+    with dimension @c x as @c n, and @c y as @c m.
+    
+    The input matrices are in column-major storage.
+    
+    This method calls native @c cublas<t>gemv with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is manaed by 
+    the %cublasFlowCapturer and @c args... are the given arguments.
+    
+    @tparam T data type
+    
+    @param trans transport operation @c op(A)
+    @param m number of rows of matrix @c op(A)
+    @param n number of columns of matrix @c op(A)
+    @param alpha pointer to the @c alpha scalar
+    @param A pointer to the address of @c A
+    @param lda leading dimension of 2D array used to store the matrix @c A
+    @param x pointer to the address of @c x
+    @param incx stride between consecutive elements of @c x
+    @param beta pointer to the @c beta scalar
+    @param y pointer to the address of @c y
+    @param incy stride between consecutive elements of @c y
+    
+    @return a tf::cudaTask handle
+    */
+    
     template <typename T>
-    cudaTask gemv();
+    cudaTask gemv(
+      cublasOperation_t trans,
+      int m, int n,
+      const T *alpha,
+      const T *A, int lda,
+      const T *x, int incx,
+      const T *beta,
+      T *y, int incy
+    );
+
+    /**
+    @brief similar to tf::cublasFlowCapturer::gemv but operates on C-styled 
+           row-major layout
+    */
 
     template <typename T>
-    cudaTask c_gemv();
+    cudaTask c_gemv(
+      cublasOperation_t trans,
+      int m, int n,
+      const T *alpha,
+      const T *A, int lda,
+      const T *x, int incx,
+      const T *beta,
+      T *y, int incy
+    );
     
     // ------------------------------------------------------------------------
     // Level-3 matrix-matrix operations

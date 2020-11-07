@@ -145,10 +145,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afdf47fd1a358fb64f8c1b89e2a393169"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#afdf47fd1a358fb64f8c1b89e2a393169">emplace_on</a> (C &amp;&amp;callable, D &amp;&amp;device)</td></tr>
 <tr class="memdesc:afdf47fd1a358fb64f8c1b89e2a393169"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a cudaflow task on the given device  <a href="#afdf47fd1a358fb64f8c1b89e2a393169">More...</a><br /></td></tr>
 <tr class="separator:afdf47fd1a358fb64f8c1b89e2a393169"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90f3d9b9d6fcf4df8e7d7878dfdd130d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a90f3d9b9d6fcf4df8e7d7878dfdd130d">linearize</a> (<a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;tasks)</td></tr>
+<tr class="memitem:a90f3d9b9d6fcf4df8e7d7878dfdd130d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a90f3d9b9d6fcf4df8e7d7878dfdd130d">linearize</a> (<a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;tasks)</td></tr>
 <tr class="memdesc:a90f3d9b9d6fcf4df8e7d7878dfdd130d"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds adjacent dependency links to a linear list of tasks  <a href="#a90f3d9b9d6fcf4df8e7d7878dfdd130d">More...</a><br /></td></tr>
 <tr class="separator:a90f3d9b9d6fcf4df8e7d7878dfdd130d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ec89b554d15ad5fb96f4fdb10dbbb16"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a4ec89b554d15ad5fb96f4fdb10dbbb16">linearize</a> (<a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; tasks)</td></tr>
+<tr class="memitem:a4ec89b554d15ad5fb96f4fdb10dbbb16"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1FlowBuilder.html#a4ec89b554d15ad5fb96f4fdb10dbbb16">linearize</a> (<a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; tasks)</td></tr>
 <tr class="memdesc:a4ec89b554d15ad5fb96f4fdb10dbbb16"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds adjacent dependency links to a linear list of tasks  <a href="#a4ec89b554d15ad5fb96f4fdb10dbbb16">More...</a><br /></td></tr>
 <tr class="separator:a4ec89b554d15ad5fb96f4fdb10dbbb16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a564252001be679600b20ca9ed9920f6a"><td class="memTemplParams" colspan="2">template&lt;typename B , typename E , typename C &gt; </td></tr>
@@ -539,7 +539,7 @@ template&lt;typename B , typename E , typename C &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
 <p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[first, last)</code>. By default, we employ the guided partition algorithm with chunk size equal to one.</p>
 <p>This method is equivalent to the parallel execution of the following loop:</p>
-<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> itr=first; itr!=last; itr++) {</div><div class="line">  callable(*itr);</div><div class="line">}</div></div><!-- fragment --><p>Arguments templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
+<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> itr=first; itr!=last; itr++) {</div><div class="line">  callable(*itr);</div><div class="line">}</div></div><!-- fragment --><p>Arguments templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the dereferenced type. </p>
 
 </div>
@@ -605,7 +605,7 @@ template&lt;typename B , typename E , typename C , typename H  = size_t&gt; </di
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
 <p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[beg, end)</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</p>
-<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the dereferenced type. </p>
 
 </div>
@@ -671,7 +671,7 @@ template&lt;typename B , typename E , typename C , typename H  = size_t&gt; </di
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
 <p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[beg, end)</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</p>
-<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the dereferenced type. </p>
 
 </div>
@@ -738,7 +738,7 @@ template&lt;typename B , typename E , typename S , typename C &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
 <p>The task spawns a subflow that applies the callable object to each index in the range <code>[first, last)</code> with the step size. By default, we employ the guided partition algorithm with chunk size equal to one.</p>
 <p>This method is equivalent to the parallel execution of the following loop:</p>
-<div class="fragment"><div class="line"><span class="comment">// case 1: step size is positive</span></div><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first; i&lt;last; i+=step) {</div><div class="line">  callable(i);</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// case 2: step size is negative</span></div><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first, i&gt;last; i+=step) {</div><div class="line">  callable(i);</div><div class="line">}</div></div><!-- fragment --><p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
+<div class="fragment"><div class="line"><span class="comment">// case 1: step size is positive</span></div><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first; i&lt;last; i+=step) {</div><div class="line">  callable(i);</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// case 2: step size is negative</span></div><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first, i&gt;last; i+=step) {</div><div class="line">  callable(i);</div><div class="line">}</div></div><!-- fragment --><p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the index type. </p>
 
 </div>
@@ -812,7 +812,7 @@ template&lt;typename B , typename E , typename S , typename C , typename H  = si
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
 <p>The task spawns a subflow that applies the callable object to each index in the range <code>[beg, end)</code> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</p>
-<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the index type. </p>
 
 </div>
@@ -886,7 +886,7 @@ template&lt;typename B , typename E , typename S , typename C , typename H  = si
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
 <p>The task spawns a subflow that applies the callable object to each index in the range <code>[beg, end)</code> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</p>
-<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the index type. </p>
 
 </div>
@@ -960,7 +960,7 @@ template&lt;typename B , typename E , typename S , typename C , typename H  = si
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
 <p>The task spawns a subflow that applies the callable object to each index in the range <code>[beg, end)</code> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</p>
-<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the index type. </p>
 
 </div>
@@ -1026,7 +1026,7 @@ template&lt;typename B , typename E , typename C , typename H  = size_t&gt; </di
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
 <p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[beg, end)</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</p>
-<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <p>The callable needs to take a single argument of the dereferenced type. </p>
 
 </div>
@@ -1043,7 +1043,7 @@ template&lt;typename B , typename E , typename C , typename H  = size_t&gt; </di
         <tr>
           <td class="memname">void tf::FlowBuilder::linearize </td>
           <td>(</td>
-          <td class="paramtype"><a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;&#160;</td>
+          <td class="paramtype"><a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>tasks</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1077,7 +1077,7 @@ template&lt;typename B , typename E , typename C , typename H  = size_t&gt; </di
         <tr>
           <td class="memname">void tf::FlowBuilder::linearize </td>
           <td>(</td>
-          <td class="paramtype"><a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td>
+          <td class="paramtype"><a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="el" href="classtf_1_1Task.html">Task</a> &gt;&#160;</td>
           <td class="paramname"><em>tasks</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1189,7 +1189,7 @@ template&lt;typename B , typename E , typename T , typename O &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
 <p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.</p>
 <p>This method is equivalent to the parallel execution of the following loop:</p>
-<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> itr=first; itr!=last; itr++) {</div><div class="line">  init = bop(init, *itr);</div><div class="line">}</div></div><!-- fragment --><p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
+<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> itr=first; itr!=last; itr++) {</div><div class="line">  init = bop(init, *itr);</div><div class="line">}</div></div><!-- fragment --><p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
 
 </div>
 </div>
@@ -1261,7 +1261,7 @@ template&lt;typename B , typename E , typename T , typename O , typename H  = si
   </dd>
 </dl>
 <p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p>
-<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
 
 </div>
@@ -1334,7 +1334,7 @@ template&lt;typename B , typename E , typename T , typename O , typename H  = si
   </dd>
 </dl>
 <p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p>
-<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
 
 </div>
@@ -1407,7 +1407,7 @@ template&lt;typename B , typename E , typename T , typename O , typename H  = si
   </dd>
 </dl>
 <p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p>
-<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle </dd></dl>
 
 </div>
@@ -1482,7 +1482,7 @@ template&lt;typename B , typename E , typename T , typename BOP , typename UOP &
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
 <p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.</p>
 <p>This method is equivalent to the parallel execution of the following loop:</p>
-<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> itr=first; itr!=last; itr++) {</div><div class="line">  init = bop(init, uop(*itr));</div><div class="line">}</div></div><!-- fragment --><p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
+<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> itr=first; itr!=last; itr++) {</div><div class="line">  init = bop(init, uop(*itr));</div><div class="line">}</div></div><!-- fragment --><p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
 
 </div>
 </div>
@@ -1563,7 +1563,7 @@ template&lt;typename B , typename E , typename T , typename BOP , typename UOP ,
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
 <p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p>
-<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
 
 </div>
 </div>
@@ -1644,7 +1644,7 @@ template&lt;typename B , typename E , typename T , typename BOP , typename UOP ,
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
 <p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p>
-<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
 
 </div>
 </div>
@@ -1725,7 +1725,7 @@ template&lt;typename B , typename E , typename T , typename BOP , typename UOP ,
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="handle to a node in a task dependency graph ">Task</a> handle</dd></dl>
 <p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p>
-<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
+<p>Arguments are templated to enable stateful passing using <a class="elRef" doxygen="/Users/luan/taskflow/doxygen/cppreference-doxygen-web.tag.xml:http://en.cppreference.com/w/" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a>. </p>
 
 </div>
 </div>
