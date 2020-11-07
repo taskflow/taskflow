@@ -95,7 +95,8 @@ cudaTask cublasFlowCapturer::gemv(
   const T *beta,
   T *y, int incy
 ) {
-  return on([this, trans, m, n, alpha, A, lda, x, incx, beta, y, incy] (cudaStream_t stream) mutable {
+  return on([this, trans, m, n, alpha, A, lda, x, incx, beta, y, incy] 
+  (cudaStream_t stream) mutable {
     _stream(stream);
 
     cublasStatus_t stat;
@@ -128,7 +129,8 @@ cudaTask cublasFlowCapturer::c_gemv(
   const T *beta,
   T *y, int incy
 ) {
-  return on([this, trans, m, n, alpha, A, lda, x, incx, beta, y, incy] (cudaStream_t stream) mutable {
+  return on([this, trans, m, n, alpha, A, lda, x, incx, beta, y, incy] 
+  (cudaStream_t stream) mutable {
     _stream(stream);
 
     cublasStatus_t stat;
@@ -149,7 +151,7 @@ cudaTask cublasFlowCapturer::c_gemv(
       static_assert(dependent_false_v<T>, "unknown cublas data type");
     }
 
-    TF_CHECK_CUBLAS(stat, "failed to capture gemv");
+    TF_CHECK_CUBLAS(stat, "failed to capture c_gemv");
   });
 }
 

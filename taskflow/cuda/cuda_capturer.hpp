@@ -41,7 +41,6 @@ class cudaFlowCapturerBase {
     @brief default virtual destructor
      */
     virtual ~cudaFlowCapturerBase() = default;
-
     
     /**
     @brief captures a sequential CUDA operations from the given callable
