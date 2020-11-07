@@ -355,21 +355,83 @@ We encourage users to study and understand the parallel structure of their appli
 in order to come up with the best granularity of task decomposition.
 A refined task graph can have significant performance difference from the raw counterpart.
 
-@section C6_OffloadAcudaFlow Offload a cudaFlow
+@section C6_OffloadAcudaFlow Offload & Updating a cudaFlow
 
-TBD
+In some situations (e.g., machine learnging workflow), the workflow is launched many times wihout changing the graph topology. Only node parameters, such as kernel parameters and cudaMemcpy addresses, will be updated. cudaFlow allows you to update node parameters without having to rebuild the graph and thus reduce the graph-rebuilding overhead. After creating a cudaFlow, you can call offload method to launch the entire graph immediately. You then can call update methods (e.g., cudaFlow::update_kernel) to update node parameters. Note that once you launch the entire graph, you can only change node parameters. The graph topology should remain unchanged. See 
+https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#graph-update-limitations more updating limitations. 
 
 @code{.cpp}
+cudaMallocManaged(&A, N * sizeof(int)));
+cudaMallocManaged(&B, N * sizeof(int)));
+cudaMallocManaged(&C, N * sizeof(int)));
+
+/* 
+  assign values to A, B, and C 
+*/
+
 taskflow.emplace([&] (tf::cudaFlow& cf) {
+
+  auto add_t = cf.kernel(
+    32, 512, 0,
+    add<T>,
+    A, B, C, N
+  );
+
+
+  cf.offload();
+
+  cf.update_kernel(
+    add_t,
+    16, 256, 0,
+    C, B, A, N
+  );
+
+  cf.offload();
+
+  cf.update_kernel(
+    add_t,
+    4, 128, 0,
+    B, A, C, N
+  );
 });
 @endcode
 
 @section C6_JoinAcudaFlow Join a cudaFlow
 
-TBD
+The join method launches the entire graph immediately. When execution finishes, the cudaFlow is joined. A joined cudaflow becomes invalid and cannot take other operations.
 
 @code{.cpp}
+cudaMallocManaged(&A, N * sizeof(int)));
+cudaMallocManaged(&B, N * sizeof(int)));
+cudaMallocManaged(&C, N * sizeof(int)));
+
+/* 
+  assign values to A, B, and C 
+*/
+
 taskflow.emplace([&] (tf::cudaFlow& cf) {
+    auto add_t = cf.kernel(
+      32, 512, 0,
+      add<T>,
+      A, B, C, N
+    );
+
+    auto add_2_t = cf.kernel(
+      16, 256, 0,
+      add<T>,
+      C, B, A, N
+    );
+
+    auto add_3_t = cf.kernel(
+      4, 128, 0,
+      add<T>,
+      B, A, C, N
+    );
+
+    add_t.precede(add_2_t);
+    add_2_t.precede(add_3_t);
+
+    cf.join();
 });
 @endcode
 
