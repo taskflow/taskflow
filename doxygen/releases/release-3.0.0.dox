@@ -12,6 +12,8 @@ we continue to try our best to ensure backward compatibility.
 Starting from v3, we have migrated the codebase to the @CPP17 standard
 with improved expressivity and efficiency.
 
+[TOC]
+
 @section release-3-0-0_download Download
 
 To download the newest version of %Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
@@ -23,7 +25,7 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li GNU C++ Compiler at least v7.0 with -std=c++17
 @li Clang C++ Compiler at least v6.0 with -std=c++17
 @li Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)
-@li AppleClang Xode Version at least v8
+@li AppleClang Xode Version at least v12.0 with -std=c++17
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
 
 %Taskflow works on Linux, Windows, and Mac OS X.
@@ -60,6 +62,7 @@ tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
   task_1.precede(task_2);
 });
 @endcode
+@li added a new interface tf::cudaFlowCapturerBase to support custom-defined capturers (see @ref C7_CreateCustomCapturer)
 @li added a new interface tf::cudaFlow::capture for capturing a CUDA task graph within a parent %cudaFlow
 @code{.cpp}
 tf::Task task = taskflow.emplace([&](tf::cudaFlow& cf){
@@ -76,9 +79,26 @@ tf::Task task = taskflow.emplace_on([&](tf::cudaFlow& cf){
   // the cudaFlow cf runs on GPU 1
 }, 1);
 @endcode
+
 @li supported recursive dump of a %cudaFlow with child graphs
 @li supported updating a %cudaFlow through tf::cudaFlow::offload (see @ref C6_OffloadAcudaFlow)
 @li supported iterating a %cudaFlow through tf::cudaFlow::join_until (see @ref C6_JoinAcudaFlow)
+
+@section release-3-0-0_documentation Documentation
+
+@li added @ref chapter7
+@li added @ref GPUAlgorithms
+  + @ref SingleTaskCUDA to run a kernel function in just a single thread
+  + @ref ForEachCUDA to perform parallel iterations over a range
+  + @ref ParallelTransformsCUDA to perform parallel transforms over a range
+@li added @ref Governance
+  + @ref rules
+  + @ref team
+  + @ref codeofconduct
+@li added @ref Contributing
+  + @ref guidelines
+  + @ref contributors
+@li improved documentation pages for files
 
 @section release-3-0-0_bug_fixes Bug Fixes 
 
