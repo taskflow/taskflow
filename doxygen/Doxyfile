@@ -869,7 +869,9 @@ INPUT                  = ../taskflow/core/flow_builder.hpp \
                          algorithms/for_each.dox \
                          algorithms/reduce.dox \
                          gpu_algorithms/gpu_algorithms.dox \
+                         gpu_algorithms/single_task_cuda.dox \
                          gpu_algorithms/for_each_cuda.dox \
+                         gpu_algorithms/transform_cuda.dox \
                          examples/examples.dox \
                          examples/wavefront.dox \
                          examples/matrix_multiplication.dox \
@@ -1230,7 +1232,7 @@ HTML_STYLESHEET        =
 # list). For an example see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_STYLESHEET  = 
+HTML_EXTRA_STYLESHEET  = taskflow.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note

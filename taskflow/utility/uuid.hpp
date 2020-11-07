@@ -75,8 +75,8 @@ inline UUID::UUID() {
   static thread_local std::mt19937 engine {rd()};
 
   std::uniform_int_distribution<unsigned long> distribution(
-    std::numeric_limits<unsigned long>::min(),
-    std::numeric_limits<unsigned long>::max()
+    (std::numeric_limits<unsigned long>::min)(),
+    (std::numeric_limits<unsigned long>::max)()
   );
   
   int i = 0;

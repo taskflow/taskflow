@@ -65,7 +65,7 @@ template <typename T, size_t S = 65536>
 class ObjectPool { 
   
   // the data column must be sufficient to hold the pointer in freelist  
-  constexpr static size_t X = std::max(sizeof(T*), sizeof(T));
+  constexpr static size_t X = (std::max)(sizeof(T*), sizeof(T));
   //constexpr static size_t X = sizeof(long double) + std::max(sizeof(T*), sizeof(T));
   //constexpr static size_t M = (S - offsetof(Block, data)) / X;
   constexpr static size_t M = S / X;
