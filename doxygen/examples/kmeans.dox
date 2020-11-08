@@ -241,7 +241,8 @@ the condition task returns 0 to let the execution path go back to @c clean_up.
 Otherwise, it returns 1 to stop (i.e., no successor tasks at index 1).
 The taskflow graph is illustrated below:
 
-@image html images/kmeans_2.svg width=100%
+<!-- @image html images/kmeans_2.svg width=100% -->
+@dotfile images/kmeans_2.dot
 
 The scheduler starts with @c init, moves on to @c clean_up, and then enters the
 parallel-for task @c paralle-for that spawns a subflow of 12 workers to perform 
@@ -443,7 +444,9 @@ parameters in the closure and offloaded to the GPU.
 
 The second dump after executing the taskflow produces the following diagram, with all cudaFlows expanded:
 
-@image html images/kmeans_4.svg width=100%
+<!-- @image html images/kmeans_4.svg width=100% -->
+
+@dotfile images/kmeans_4.dot
 
 The main %cudaFlow task, @c update_means, must not run before all required data has settled down.
 It precedes a condition task that circles back to itself until we reach @c M iterations.
@@ -496,7 +499,8 @@ repeatedly run the %cudaFlow by @c M times and then join.
 Compared with the version using conditional tasking, the %cudaFlow here is created only one time
 and thus the overhead is reduced.
 
-@image html images/kmeans_5.svg width=100%
+<!-- @image html images/kmeans_5.svg width=100% -->
+@dotfile images/kmeans_5.dot
 
 We can see from the above taskflow the condition task is removed.
 

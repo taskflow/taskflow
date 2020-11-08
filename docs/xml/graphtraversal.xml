@@ -131,7 +131,7 @@
 <codeline><highlight class="normal"><sp/><sp/>assert(nodes[i].visited);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(nodes[i].dependents<sp/>==<sp/>0);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para><image type="html" name="graph_traversal_1.svg" width="90%"></image>
+</programlisting></para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/graph_traversal_1.dot"></dotfile>
 </para><para>In general, the dynamic version of graph traversal is slower than the static version due to the overhead incurred by spawning subflows. However, it may be useful for the situation where the graph structure is unknown at once but being partially explored during the traversal. </para></sect1>
     </detaileddescription>
   </compounddef>

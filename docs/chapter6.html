@@ -112,7 +112,100 @@
 <span class="mi">48</span><span class="o">:</span>   <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 <span class="mi">49</span><span class="o">:</span>
 <span class="mi">50</span><span class="o">:</span>   <span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>                  <span class="c1">// dump the taskflow</span>
-<span class="mi">51</span><span class="o">:</span> <span class="p">}</span></pre><img class="m-image" src="saxpy.svg" alt="Image" style="width: 60%;" /><p>Debrief:</p><ul><li>Lines 3-9 define a saxpy kernel using CUDA</li><li>Lines 19-20 declare two host vectors, <code>hx</code> and <code>hy</code></li><li>Lines 22-23 declare two device vector pointers, <code>dx</code> and <code>dy</code></li><li>Lines 25-31 declare two tasks to allocate memory for <code>dx</code> and <code>dy</code> on device, each of <code>N*sizeof(float)</code> bytes</li><li>Lines 33-45 create a cudaFlow to capture kernel work in a graph (two host-to-device data transfer tasks, one saxpy kernel task, and two device-to-host data transfer tasks)</li><li>Lines 46-48 define the task dependency between host tasks and the cudaFlow tasks and execute the taskflow</li></ul><p>Taskflow does not expend unnecessary efforts on kernel programming but focus on tasking CUDA operations with CPU work. We give users full privileges to craft a CUDA kernel that is commensurate with their domain knowledge. Users focus on developing high-performance kernels using a native CUDA toolkit, while leaving difficult task parallelism to Taskflow.</p></section><section id="C6_Compile_a_cudaFlow_program"><h2><a href="#C6_Compile_a_cudaFlow_program">Compile a cudaFlow Program</a></h2><p>Use <a href="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</a> (at least v11.1) to compile a cudaFlow program:</p><pre class="m-console"><span class="go">~$ nvcc -std=c++17 my_cudaflow.cu -I path/to/include/taskflow -O2 -o my_cudaflow</span>
+<span class="mi">51</span><span class="o">:</span> <span class="p">}</span></pre><div class="m-graph"><svg style="width: 28.875rem; height: 14.250rem;" viewBox="0.00 0.00 461.67 228.00">
+<g transform="scale(1 1) rotate(0) translate(4 224)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x55b2191178a8</title>
+<polygon points="8,-46 8,-176 445.6744,-176 445.6744,-46 8,-46"/>
+<text text-anchor="middle" x="226.8372" y="-159.2">cudaFlow: saxpy</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x55b219117698</title>
+<ellipse cx="284.8139" cy="-202" rx="59.1273" ry="18"/>
+<text text-anchor="middle" x="284.8139" y="-197.2">allocate_x</text>
+</g>
+<g class="m-node">
+<title>p0x55b2191178a8</title>
+<polygon points="437.5732,-117 434.5732,-121 413.5732,-121 410.5732,-117 379.9788,-117 379.9788,-81 437.5732,-81 437.5732,-117"/>
+<text text-anchor="middle" x="408.776" y="-94.2">saxpy</text>
+</g>
+<g class="m-edge">
+<title>p0x55b219117698&#45;&gt;p0x55b2191178a8</title>
+<path d="M327.2341,-189.4104C333.091,-186.7716 338.8229,-183.6541 343.8776,-180 363.8988,-165.5264 381.0892,-143.3234 392.7384,-125.8213"/>
+<polygon points="395.8418,-127.4663 398.3107,-117.1631 389.9556,-123.6779 395.8418,-127.4663"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x55b2191177a0</title>
+<ellipse cx="284.8139" cy="-18" rx="59.1273" ry="18"/>
+<text text-anchor="middle" x="284.8139" y="-13.2">allocate_y</text>
+</g>
+<g class="m-edge">
+<title>p0x55b2191177a0&#45;&gt;p0x55b2191178a8</title>
+<path d="M323.8539,-31.6929C330.7263,-34.7063 337.6625,-38.161 343.8776,-42 358.1826,-50.8361 372.4065,-62.8666 383.8761,-73.5981"/>
+<polygon points="381.7053,-76.3658 391.3437,-80.7648 386.5523,-71.3153 381.7053,-76.3658"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f2870401a50</title>
+<ellipse cx="55.9767" cy="-126" rx="39.9534" ry="18"/>
+<text text-anchor="middle" x="55.9767" y="-121.2">h2d_x</text>
+</g>
+<g class="m-node">
+<title>p0x7f2870402bc0</title>
+<polygon points="189.6491,-117 136.0546,-117 132.0546,-113 132.0546,-81 185.6491,-81 189.6491,-85 189.6491,-117"/>
+<polyline points="185.6491,-113 132.0546,-113 "/>
+<polyline points="185.6491,-113 185.6491,-81 "/>
+<polyline points="185.6491,-113 189.6491,-117 "/>
+<text text-anchor="middle" x="160.8518" y="-94.2">saxpy</text>
+</g>
+<g class="m-edge">
+<title>p0x7f2870401a50&#45;&gt;p0x7f2870402bc0</title>
+<path d="M90.8986,-117.0094C100.9091,-114.4322 111.8818,-111.6073 122.1075,-108.9747"/>
+<polygon points="123.2093,-112.3053 132.0208,-106.4225 121.464,-105.5263 123.2093,-112.3053"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f2870402310</title>
+<ellipse cx="284.8139" cy="-72" rx="39.9534" ry="18"/>
+<text text-anchor="middle" x="284.8139" y="-67.2">d2h_x</text>
+</g>
+<g class="m-edge">
+<title>p0x7f2870402bc0&#45;&gt;p0x7f2870402310</title>
+<path d="M189.9154,-92.6697C204.3753,-89.5202 222.2025,-85.6373 238.487,-82.0904"/>
+<polygon points="239.3571,-85.483 248.3831,-79.9349 237.8673,-78.6434 239.3571,-85.483"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f2870402780</title>
+<ellipse cx="284.8139" cy="-126" rx="39.9534" ry="18"/>
+<text text-anchor="middle" x="284.8139" y="-121.2">d2h_y</text>
+</g>
+<g class="m-edge">
+<title>p0x7f2870402bc0&#45;&gt;p0x7f2870402780</title>
+<path d="M189.9154,-105.3303C204.3753,-108.4798 222.2025,-112.3627 238.487,-115.9096"/>
+<polygon points="237.8673,-119.3566 248.3831,-118.0651 239.3571,-112.517 237.8673,-119.3566"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f2870401eb0</title>
+<ellipse cx="55.9767" cy="-72" rx="39.9534" ry="18"/>
+<text text-anchor="middle" x="55.9767" y="-67.2">h2d_y</text>
+</g>
+<g class="m-edge">
+<title>p0x7f2870401eb0&#45;&gt;p0x7f2870402bc0</title>
+<path d="M90.8986,-80.9906C100.9091,-83.5678 111.8818,-86.3927 122.1075,-89.0253"/>
+<polygon points="121.464,-92.4737 132.0208,-91.5775 123.2093,-85.6947 121.464,-92.4737"/>
+</g>
+<g class="m-edge">
+<title>p0x7f2870402310&#45;&gt;p0x55b2191178a8</title>
+<path d="M321.0021,-79.8821C336.3611,-83.2274 354.2919,-87.1329 369.9291,-90.5388"/>
+<polygon points="369.3078,-93.9855 379.8236,-92.6939 370.7976,-87.1458 369.3078,-93.9855"/>
+</g>
+<g class="m-edge">
+<title>p0x7f2870402780&#45;&gt;p0x55b2191178a8</title>
+<path d="M321.0021,-118.1179C336.3611,-114.7726 354.2919,-110.8671 369.9291,-107.4612"/>
+<polygon points="370.7976,-110.8542 379.8236,-105.3061 369.3078,-104.0145 370.7976,-110.8542"/>
+</g>
+</g>
+</svg>
+</div><p>Debrief:</p><ul><li>Lines 3-9 define a saxpy kernel using CUDA</li><li>Lines 19-20 declare two host vectors, <code>hx</code> and <code>hy</code></li><li>Lines 22-23 declare two device vector pointers, <code>dx</code> and <code>dy</code></li><li>Lines 25-31 declare two tasks to allocate memory for <code>dx</code> and <code>dy</code> on device, each of <code>N*sizeof(float)</code> bytes</li><li>Lines 33-45 create a cudaFlow to capture kernel work in a graph (two host-to-device data transfer tasks, one saxpy kernel task, and two device-to-host data transfer tasks)</li><li>Lines 46-48 define the task dependency between host tasks and the cudaFlow tasks and execute the taskflow</li></ul><p>Taskflow does not expend unnecessary efforts on kernel programming but focus on tasking CUDA operations with CPU work. We give users full privileges to craft a CUDA kernel that is commensurate with their domain knowledge. Users focus on developing high-performance kernels using a native CUDA toolkit, while leaving difficult task parallelism to Taskflow.</p></section><section id="C6_Compile_a_cudaFlow_program"><h2><a href="#C6_Compile_a_cudaFlow_program">Compile a cudaFlow Program</a></h2><p>Use <a href="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</a> (at least v11.1) to compile a cudaFlow program:</p><pre class="m-console"><span class="go">~$ nvcc -std=c++17 my_cudaflow.cu -I path/to/include/taskflow -O2 -o my_cudaflow</span>
 <span class="go">~$ ./my_cudaflow</span></pre><p>Our source autonomously enables cudaFlow when detecting a CUDA compiler.</p></section><section id="C6_configure_the_number_of_gpu_workers"><h2><a href="#C6_configure_the_number_of_gpu_workers">Configure the Number of GPU workers</a></h2><p>By default, the executor spawns one worker per GPU. We dedicate a worker set to each heterogeneous domain, for example, host domain and CUDA domain. If your systems has 4 CPU cores and 2 GPUs, the default number of workers spawned by the executor is 4+2, where 4 workers run CPU tasks and 2 workers run GPU tasks (cudaFlow). You can construct an executor with different numbers of GPU workers.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">8</span><span class="p">);</span>  <span class="c1">// 17 CPU workers and 8 GPU workers</span></pre><p>The above executor spawns 17 and 8 workers for running CPU and GPU tasks, respectively. These workers coordinate with each other to balance the load in a work-stealing loop highly optimized for performance.</p></section><section id="C6_run_a_cudaflow_on_multiple_gpus"><h2><a href="#C6_run_a_cudaflow_on_multiple_gpus">Run a cudaFlow on Multiple GPUs</a></h2><p>By default, a cudaFlow runs on the current GPU associated with the caller, which is typically <code>0</code>. You can run a cudaFlow on multiple GPUs by explicitly associating a cudaFlow or a kernel task with a CUDA device. A CUDA device is an integer number in the range of <code>[0, N)</code> representing the identifier of a GPU, where <code>N</code> is the number of GPUs in a system. The code below creates a cudaFlow that runs on GPU <code>0</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([]</span> <span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">)</span> <span class="p">{},</span> <span class="mi">0</span><span class="p">);</span>  <span class="c1">// place the cudaFlow on GPU 0</span></pre><p>You can place a kernel on a GPU explicitly through the method <a href="classtf_1_1cudaFlow.html#a4a839dbaa01237a440edfebe8faf4e5b" class="m-doc">tf::<wbr />cudaFlow::<wbr />kernel_on</a> that takes the GPU device identifier in the first argument.</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="err">#</span><span class="n">include</span> <span class="o">&lt;</span><span class="n">taskflow</span><span class="o">/</span><span class="n">taskflow</span><span class="p">.</span><span class="n">hpp</span><span class="o">&gt;</span>
  <span class="mi">2</span><span class="o">:</span> 
  <span class="mi">3</span><span class="o">:</span> <span class="c1">// saxpy (single-precision A·X Plus Y) kernel</span>

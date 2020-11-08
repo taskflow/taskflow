@@ -45,7 +45,7 @@
 <codeline><highlight class="normal">34:<sp/>f1_module_task.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(f2D);</highlight></codeline>
 <codeline><highlight class="normal">35:</highlight></codeline>
 <codeline><highlight class="normal">36:<sp/>f2.<ref refid="classtf_1_1Taskflow_1a4725d8ea5ff7595d9d71593360538e00" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
-</programlisting></para><para><image type="html" name="composition_static_1.svg" width="40%"></image>
+</programlisting></para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/composition_static_1.dot"></dotfile>
 </para><para>Debrief:</para><para><itemizedlist>
 <listitem><para>Line 1-12 creates a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C </para></listitem>
 <listitem><para>Line 17-30 creates a taskflow of four tasks f2A, f2B, f2C, and f2D </para></listitem>
@@ -56,8 +56,8 @@
 </para></sect1>
 <sect1 id="chapter5_1C5_ModuleTask">
 <title>Module Task</title>
-<para>The task created from <ref refid="classtf_1_1FlowBuilder_1a0a01192f4f92c15380a4f259e2fec2d9" kindref="member">Taskflow::composed_of</ref> is a <emphasis>module</emphasis> task that runs on a pre-defined taskflow. A module task does not own the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <computeroutput>module1</computeroutput> and <computeroutput>module2</computeroutput> refer to the same taskflow <computeroutput>F1</computeroutput>, the dependency link prevents <computeroutput>F1</computeroutput> from multiple executions at the same time.</para><para><image type="html" name="composition_static_2.svg" width="60%"></image>
-</para><para>However, the following composition is <emphasis>invalid</emphasis>. Both module tasks refer to the same taskflow. They can not run at the same time because they are associated with the same graph.</para><para><image type="html" name="composition_static_invalid.svg" width="60%"></image>
+<para>The task created from <ref refid="classtf_1_1FlowBuilder_1a0a01192f4f92c15380a4f259e2fec2d9" kindref="member">Taskflow::composed_of</ref> is a <emphasis>module</emphasis> task that runs on a pre-defined taskflow. A module task does not own the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <computeroutput>module1</computeroutput> and <computeroutput>module2</computeroutput> refer to the same taskflow <computeroutput>F1</computeroutput>, the dependency link prevents <computeroutput>F1</computeroutput> from multiple executions at the same time.</para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/composition_static_2.dot"></dotfile>
+</para><para>However, the following composition is <emphasis>invalid</emphasis>. Both module tasks refer to the same taskflow. They can not run at the same time because they are associated with the same graph.</para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/composition_static_invalid.dot"></dotfile>
  </para></sect1>
     </detaileddescription>
   </compounddef>

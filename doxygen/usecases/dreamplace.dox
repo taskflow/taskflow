@@ -42,7 +42,8 @@ we unroll their task graphs across fixed-length iterations found in hindsight.
 The figure below shows a partial taskflow of 4 %cudaFlows, 1 conditioned cycle, and 12 static tasks 
 for one placement iteration.
 
-@image html images/dreamplace_3.svg 
+<!-- @image html images/dreamplace_3.svg  -->
+@dotfile images/dreamplace_3.dot
 
 The table below lists the programming effort of each method, measured by @SLOCCount.
 %Taskflow outperforms TBB and StarPU in all aspects. 

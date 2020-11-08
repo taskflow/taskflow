@@ -1200,7 +1200,8 @@ div.m-plot svg .m-error {
   stroke-width: 1.5;
 }
 div.m-plot svg .m-label.m-dim { fill: #747474; }
-.m-graph g.m-edge path, .m-graph g.m-node.m-flat ellipse,
+.m-graph g.m-edge path, .m-graph g.m-cluster polygon,
+.m-graph g.m-node.m-flat ellipse,
 .m-graph g.m-node.m-flat polygon {
   fill: none;
 }
@@ -1514,11 +1515,13 @@ div.m-plot svg .m-bar.m-default,
 .m-graph g.m-node:not(.m-flat) polygon,
 .m-graph g.m-edge text,
 .m-graph g.m-node.m-flat text,
+.m-graph g.m-cluster text,
 .m-graph.m-default g.m-edge polygon,
 .m-graph.m-default g.m-node:not(.m-flat) ellipse,
 .m-graph.m-default g.m-node:not(.m-flat) polygon,
 .m-graph.m-default g.m-edge text,
-.m-graph.m-default g.m-node.m-flat text {
+.m-graph.m-default g.m-node.m-flat text,
+.m-graph.m-default g.m-cluster text {
   fill: #dcdcdc;
 }
 .m-graph g.m-edge polygon,
@@ -1526,11 +1529,13 @@ div.m-plot svg .m-bar.m-default,
 .m-graph g.m-node ellipse,
 .m-graph g.m-node polygon,
 .m-graph g.m-node polyline,
+.m-graph g.m-cluster polygon,
 .m-graph.m-default g.m-edge polygon,
 .m-graph.m-default g.m-edge path,
 .m-graph.m-default g.m-node ellipse,
 .m-graph.m-default g.m-node polygon,
-.m-graph.m-default g.m-node polyline {
+.m-graph.m-default g.m-node polyline,
+.m-graph.m-default g.m-cluster polygon {
   stroke: #dcdcdc;
 }
 .m-math.m-primary, .m-math g.m-primary, .m-math rect.m-primary,
@@ -1539,14 +1544,16 @@ div.m-plot svg .m-bar.m-primary,
 .m-graph.m-primary g.m-node:not(.m-flat) ellipse,
 .m-graph.m-primary g.m-node:not(.m-flat) polygon,
 .m-graph.m-primary g.m-edge text,
-.m-graph.m-primary g.m-node.m-flat text {
+.m-graph.m-primary g.m-node.m-flat text,
+.m-graph.m-primary g.m-cluster text {
   fill: #a5c9ea;
 }
 .m-graph.m-primary g.m-edge polygon,
 .m-graph.m-primary g.m-edge path,
 .m-graph.m-primary g.m-node ellipse,
 .m-graph.m-primary g.m-node polygon,
-.m-graph.m-primary g.m-node polyline {
+.m-graph.m-primary g.m-node polyline,
+.m-graph.m-primary g.m-cluster polygon {
   stroke: #a5c9ea;
 }
 .m-math.m-success, .m-math g.m-success, .m-math rect.m-success,
@@ -1555,14 +1562,16 @@ div.m-plot svg .m-bar.m-success,
 .m-graph.m-success g.m-node:not(.m-flat) ellipse,
 .m-graph.m-success g.m-node:not(.m-flat) polygon,
 .m-graph.m-success g.m-edge text,
-.m-graph.m-success g.m-node.m-flat text {
+.m-graph.m-success g.m-node.m-flat text,
+.m-graph.m-success g.m-cluster text {
   fill: #3bd267;
 }
 .m-graph.m-success g.m-edge polygon,
 .m-graph.m-success g.m-edge path,
 .m-graph.m-success g.m-node ellipse,
 .m-graph.m-success g.m-node polygon,
-.m-graph.m-success g.m-node polyline {
+.m-graph.m-success g.m-node polyline,
+.m-graph.m-success g.m-cluster polygon {
   stroke: #3bd267;
 }
 .m-math.m-warning, .m-math g.m-warning, .m-math rect.m-warning,
@@ -1571,14 +1580,16 @@ div.m-plot svg .m-bar.m-warning,
 .m-graph.m-warning g.m-node:not(.m-flat) ellipse,
 .m-graph.m-warning g.m-node:not(.m-flat) polygon,
 .m-graph.m-warning g.m-edge text,
-.m-graph.m-warning g.m-node.m-flat text {
+.m-graph.m-warning g.m-node.m-flat text,
+.m-graph.m-warning g.m-cluster text {
   fill: #c7cf2f;
 }
 .m-graph.m-warning g.m-edge polygon,
 .m-graph.m-warning g.m-edge path,
 .m-graph.m-warning g.m-node ellipse,
 .m-graph.m-warning g.m-node polygon,
-.m-graph.m-warning g.m-node polyline {
+.m-graph.m-warning g.m-node polyline,
+.m-graph.m-warning g.m-cluster polygon {
   stroke: #c7cf2f;
 }
 .m-math.m-danger, .m-math g.m-danger, .m-math rect.m-danger,
@@ -1587,14 +1598,16 @@ div.m-plot svg .m-bar.m-danger,
 .m-graph.m-danger g.m-node:not(.m-flat) ellipse,
 .m-graph.m-danger g.m-node:not(.m-flat) polygon,
 .m-graph.m-danger g.m-edge text,
-.m-graph.m-danger g.m-node.m-flat text {
+.m-graph.m-danger g.m-node.m-flat text,
+.m-graph.m-danger g.m-cluster text {
   fill: #cd3431;
 }
 .m-graph.m-danger g.m-edge polygon,
 .m-graph.m-danger g.m-edge path,
 .m-graph.m-danger g.m-node ellipse,
 .m-graph.m-danger g.m-node polygon,
-.m-graph.m-danger g.m-node polyline {
+.m-graph.m-danger g.m-node polyline,
+.m-graph.m-danger g.m-cluster polygon {
   stroke: #cd3431;
 }
 .m-math.m-info, .m-math g.m-info, .m-math rect.m-info,
@@ -1603,14 +1616,16 @@ div.m-plot svg .m-bar.m-info,
 .m-graph.m-info g.m-node:not(.m-flat) ellipse,
 .m-graph.m-info g.m-node:not(.m-flat) polygon,
 .m-graph.m-info g.m-edge text,
-.m-graph.m-info g.m-node.m-flat text {
+.m-graph.m-info g.m-node.m-flat text,
+.m-graph.m-info g.m-cluster text {
   fill: #2f83cc;
 }
 .m-graph.m-info g.m-edge polygon,
 .m-graph.m-info g.m-edge path,
 .m-graph.m-info g.m-node ellipse,
 .m-graph.m-info g.m-node polygon,
-.m-graph.m-info g.m-node polyline {
+.m-graph.m-info g.m-node polyline,
+.m-graph.m-info g.m-cluster polygon {
   stroke: #2f83cc;
 }
 .m-math.m-dim, .m-math g.m-dim, .m-math rect.m-dim,
@@ -1619,112 +1634,128 @@ div.m-plot svg .m-bar.m-dim,
 .m-graph.m-dim g.m-node:not(.m-flat) ellipse,
 .m-graph.m-dim g.m-node:not(.m-flat) polygon,
 .m-graph.m-dim g.m-edge text,
-.m-graph.m-dim g.m-node.m-flat text {
+.m-graph.m-dim g.m-node.m-flat text,
+.m-graph.m-dim g.m-cluster text {
   fill: #747474;
 }
 .m-graph.m-dim g.m-edge polygon,
 .m-graph.m-dim g.m-edge path,
 .m-graph.m-dim g.m-node ellipse,
 .m-graph.m-dim g.m-node polygon,
-.m-graph.m-dim g.m-node polyline {
+.m-graph.m-dim g.m-node polyline,
+.m-graph.m-dim g.m-cluster polygon {
   stroke: #747474;
 }
 .m-graph g.m-edge.m-default polygon,
 .m-graph g.m-node.m-default:not(.m-flat) ellipse,
 .m-graph g.m-node.m-default:not(.m-flat) polygon,
 .m-graph g.m-edge.m-default text,
-.m-graph g.m-node.m-default.m-flat text {
+.m-graph g.m-node.m-default.m-flat text,
+.m-graph g.m-cluster.m-default text {
   fill: #dcdcdc;
 }
 .m-graph g.m-edge.m-default polygon,
 .m-graph g.m-edge.m-default path,
 .m-graph g.m-node.m-default ellipse,
 .m-graph g.m-node.m-default polygon,
-.m-graph g.m-node.m-default polyline {
+.m-graph g.m-node.m-default polyline,
+.m-graph g.m-cluster.m-default polygon {
   stroke: #dcdcdc;
 }
 .m-graph g.m-edge.m-primary polygon,
 .m-graph g.m-node.m-primary:not(.m-flat) ellipse,
 .m-graph g.m-node.m-primary:not(.m-flat) polygon,
 .m-graph g.m-edge.m-primary text,
-.m-graph g.m-node.m-primary.m-flat text {
+.m-graph g.m-node.m-primary.m-flat text,
+.m-graph g.m-cluster.m-primary text {
   fill: #a5c9ea;
 }
 .m-graph g.m-edge.m-primary polygon,
 .m-graph g.m-edge.m-primary path,
 .m-graph g.m-node.m-primary ellipse,
 .m-graph g.m-node.m-primary polygon,
-.m-graph g.m-node.m-primary polyline {
+.m-graph g.m-node.m-primary polyline,
+.m-graph g.m-cluster.m-primary polygon {
   stroke: #a5c9ea;
 }
 .m-graph g.m-edge.m-success polygon,
 .m-graph g.m-node.m-success:not(.m-flat) ellipse,
 .m-graph g.m-node.m-success:not(.m-flat) polygon,
 .m-graph g.m-edge.m-success text,
-.m-graph g.m-node.m-success.m-flat text {
+.m-graph g.m-node.m-success.m-flat text,
+.m-graph g.m-cluster.m-success text {
   fill: #3bd267;
 }
 .m-graph g.m-edge.m-success polygon,
 .m-graph g.m-edge.m-success path,
 .m-graph g.m-node.m-success ellipse,
 .m-graph g.m-node.m-success polygon,
-.m-graph g.m-node.m-success polyline {
+.m-graph g.m-node.m-success polyline,
+.m-graph g.m-cluster.m-success polygon {
   stroke: #3bd267;
 }
 .m-graph g.m-edge.m-warning polygon,
 .m-graph g.m-node.m-warning:not(.m-flat) ellipse,
 .m-graph g.m-node.m-warning:not(.m-flat) polygon,
 .m-graph g.m-edge.m-warning text,
-.m-graph g.m-node.m-warning.m-flat text {
+.m-graph g.m-node.m-warning.m-flat text,
+.m-graph g.m-cluster.m-warning text {
   fill: #c7cf2f;
 }
 .m-graph g.m-edge.m-warning polygon,
 .m-graph g.m-edge.m-warning path,
 .m-graph g.m-node.m-warning ellipse,
 .m-graph g.m-node.m-warning polygon,
-.m-graph g.m-node.m-warning polyline {
+.m-graph g.m-node.m-warning polyline,
+.m-graph g.m-cluster.m-warning polygon {
   stroke: #c7cf2f;
 }
 .m-graph g.m-edge.m-danger polygon,
 .m-graph g.m-node.m-danger:not(.m-flat) ellipse,
 .m-graph g.m-node.m-danger:not(.m-flat) polygon,
 .m-graph g.m-edge.m-danger text,
-.m-graph g.m-node.m-danger.m-flat text {
+.m-graph g.m-node.m-danger.m-flat text,
+.m-graph g.m-cluster.m-danger text {
   fill: #cd3431;
 }
 .m-graph g.m-edge.m-danger polygon,
 .m-graph g.m-edge.m-danger path,
 .m-graph g.m-node.m-danger ellipse,
 .m-graph g.m-node.m-danger polygon,
-.m-graph g.m-node.m-danger polyline {
+.m-graph g.m-node.m-danger polyline,
+.m-graph g.m-cluster.m-danger polygon {
   stroke: #cd3431;
 }
 .m-graph g.m-edge.m-info polygon,
 .m-graph g.m-node.m-info:not(.m-flat) ellipse,
 .m-graph g.m-node.m-info:not(.m-flat) polygon,
 .m-graph g.m-edge.m-info text,
-.m-graph g.m-node.m-info.m-flat text {
+.m-graph g.m-node.m-info.m-flat text,
+.m-graph g.m-cluster.m-info text {
   fill: #2f83cc;
 }
 .m-graph g.m-edge.m-info polygon,
 .m-graph g.m-edge.m-info path,
 .m-graph g.m-node.m-info ellipse,
 .m-graph g.m-node.m-info polygon,
-.m-graph g.m-node.m-info polyline {
+.m-graph g.m-node.m-info polyline,
+.m-graph g.m-cluster.m-info polygon {
   stroke: #2f83cc;
 }
 .m-graph g.m-edge.m-dim polygon,
 .m-graph g.m-node.m-dim:not(.m-flat) ellipse,
 .m-graph g.m-node.m-dim:not(.m-flat) polygon,
 .m-graph g.m-edge.m-dim text,
-.m-graph g.m-node.m-dim.m-flat text {
+.m-graph g.m-node.m-dim.m-flat text,
+.m-graph g.m-cluster.m-dim text {
   fill: #747474;
 }
 .m-graph g.m-edge.m-dim polygon,
 .m-graph g.m-edge.m-dim path,
 .m-graph g.m-node.m-dim ellipse,
 .m-graph g.m-node.m-dim polygon,
-.m-graph g.m-node.m-dim polyline {
+.m-graph g.m-node.m-dim polyline,
+.m-graph g.m-cluster.m-dim polygon {
   stroke: #747474;
 }
 p, ul, ol, dl, blockquote, pre, .m-code-figure, .m-console-figure, hr, .m-note,
@@ -2562,7 +2593,6 @@ article:last-child, article section:last-child { margin-bottom: 0; }
 .m-console .g-AnsiBackgroundBrightWhite { background-color: #ffffff }
 .m-console .g-AnsiBackgroundBrightYellow { background-color: #fdbc4b }
 .m-console .g-AnsiBackgroundCyan { background-color: #1abc9c }
-.m-console .g-AnsiBackgroundDefault { background-color: #fcfcfc }
 .m-console .g-AnsiBackgroundGreen { background-color: #11d116 }
 .m-console .g-AnsiBackgroundMagenta { background-color: #9b59b6 }
 .m-console .g-AnsiBackgroundRed { background-color: #ed1515 }
@@ -2580,7 +2610,6 @@ article:last-child, article section:last-child { margin-bottom: 0; }
 .m-console .g-AnsiBrightWhite { color: #ffffff; font-weight: bold }
 .m-console .g-AnsiBrightYellow { color: #fdbc4b; font-weight: bold }
 .m-console .g-AnsiCyan { color: #1abc9c }
-.m-console .g-AnsiDefault { color: #fcfcfc }
 .m-console .g-AnsiGreen { color: #11d116 }
 .m-console .g-AnsiMagenta { color: #9b59b6 }
 .m-console .g-AnsiRed { color: #ed1515 }

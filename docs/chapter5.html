@@ -91,7 +91,302 @@
 <span class="mi">33</span><span class="o">:</span> <span class="n">f2C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f1_module_task</span><span class="p">);</span>
 <span class="mi">34</span><span class="o">:</span> <span class="n">f1_module_task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f2D</span><span class="p">);</span>
 <span class="mi">35</span><span class="o">:</span>
-<span class="mi">36</span><span class="o">:</span> <span class="n">f2</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><img class="m-image" src="composition_static_1.svg" alt="Image" style="width: 40%;" /><p>Debrief:</p><ul><li>Line 1-12 creates a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C</li><li>Line 17-30 creates a taskflow of four tasks f2A, f2B, f2C, and f2D</li><li>Line 32 creates a module task from taskflow f1 through the method <a href="classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9" class="m-doc">Taskflow::<wbr />composed_of</a></li><li>Line 33 enforces task f2C to run before the module task</li><li>Line 34 enforces the module task to run before task f2D</li></ul></section><section id="C5_ModuleTask"><h2><a href="#C5_ModuleTask">Module Task</a></h2><p>The task created from <a href="classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9" class="m-doc">Taskflow::<wbr />composed_of</a> is a <em>module</em> task that runs on a pre-defined taskflow. A module task does not own the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <code>module1</code> and <code>module2</code> refer to the same taskflow <code>F1</code>, the dependency link prevents <code>F1</code> from multiple executions at the same time.</p><img class="m-image" src="composition_static_2.svg" alt="Image" style="width: 60%;" /><p>However, the following composition is <em>invalid</em>. Both module tasks refer to the same taskflow. They can not run at the same time because they are associated with the same graph.</p><img class="m-image" src="composition_static_invalid.svg" alt="Image" style="width: 60%;" /></section>
+<span class="mi">36</span><span class="o">:</span> <span class="n">f2</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 22.500rem; height: 19.750rem;" viewBox="0.00 0.00 360.00 316.00">
+<g transform="scale(1 1) rotate(0) translate(4 312)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x7ffee9223970</title>
+<polygon points="8,-8 8,-300 194,-300 194,-8 8,-8"/>
+<text text-anchor="middle" x="101" y="-283.2">Taskflow: F2</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7ffee92238d0</title>
+<polygon points="202,-152 202,-300 344,-300 344,-152 202,-152"/>
+<text text-anchor="middle" x="273" y="-283.2">Taskflow: F1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402b60</title>
+<ellipse cx="137" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="137" y="-245.2">f2A</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402d80</title>
+<ellipse cx="101" cy="-178" rx="27.3712" ry="18"/>
+<text text-anchor="middle" x="101" y="-173.2">f2C</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402b60&#45;&gt;p0x7f816f402d80</title>
+<path d="M128.2854,-232.5708C124.0403,-224.0807 118.8464,-213.6929 114.1337,-204.2674"/>
+<polygon points="117.237,-202.6477 109.6343,-195.2687 110.976,-205.7782 117.237,-202.6477"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402fa0</title>
+<polygon points="186.2268,-124 19.7732,-124 15.7732,-120 15.7732,-88 182.2268,-88 186.2268,-92 186.2268,-124"/>
+<polyline points="182.2268,-120 15.7732,-120 "/>
+<polyline points="182.2268,-120 182.2268,-88 "/>
+<polyline points="182.2268,-120 186.2268,-124 "/>
+<text text-anchor="middle" x="101" y="-101.2">module [Taskflow: F1]</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa0</title>
+<path d="M101,-159.8314C101,-152.131 101,-142.9743 101,-134.4166"/>
+<polygon points="104.5001,-134.4132 101,-124.4133 97.5001,-134.4133 104.5001,-134.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402c70</title>
+<ellipse cx="65" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="65" y="-245.2">f2B</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402c70&#45;&gt;p0x7f816f402d80</title>
+<path d="M73.7146,-232.5708C77.9597,-224.0807 83.1536,-213.6929 87.8663,-204.2674"/>
+<polygon points="91.024,-205.7782 92.3657,-195.2687 84.763,-202.6477 91.024,-205.7782"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402e90</title>
+<ellipse cx="101" cy="-34" rx="27.3712" ry="18"/>
+<text text-anchor="middle" x="101" y="-29.2">f2D</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402fa0&#45;&gt;p0x7f816f402e90</title>
+<path d="M101,-87.8314C101,-80.131 101,-70.9743 101,-62.4166"/>
+<polygon points="104.5001,-62.4132 101,-52.4133 97.5001,-62.4133 104.5001,-62.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402830</title>
+<ellipse cx="309" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="309" y="-245.2">f1A</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402a50</title>
+<ellipse cx="273" cy="-178" rx="27.3712" ry="18"/>
+<text text-anchor="middle" x="273" y="-173.2">f1C</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402830&#45;&gt;p0x7f816f402a50</title>
+<path d="M300.2854,-232.5708C296.0403,-224.0807 290.8464,-213.6929 286.1337,-204.2674"/>
+<polygon points="289.237,-202.6477 281.6343,-195.2687 282.976,-205.7782 289.237,-202.6477"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402940</title>
+<ellipse cx="237" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="237" y="-245.2">f1B</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402940&#45;&gt;p0x7f816f402a50</title>
+<path d="M245.7146,-232.5708C249.9597,-224.0807 255.1536,-213.6929 259.8663,-204.2674"/>
+<polygon points="263.024,-205.7782 264.3657,-195.2687 256.763,-202.6477 263.024,-205.7782"/>
+</g>
+</g>
+</svg>
+</div><p>Debrief:</p><ul><li>Line 1-12 creates a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C</li><li>Line 17-30 creates a taskflow of four tasks f2A, f2B, f2C, and f2D</li><li>Line 32 creates a module task from taskflow f1 through the method <a href="classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9" class="m-doc">Taskflow::<wbr />composed_of</a></li><li>Line 33 enforces task f2C to run before the module task</li><li>Line 34 enforces the module task to run before task f2D</li></ul></section><section id="C5_ModuleTask"><h2><a href="#C5_ModuleTask">Module Task</a></h2><p>The task created from <a href="classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9" class="m-doc">Taskflow::<wbr />composed_of</a> is a <em>module</em> task that runs on a pre-defined taskflow. A module task does not own the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <code>module1</code> and <code>module2</code> refer to the same taskflow <code>F1</code>, the dependency link prevents <code>F1</code> from multiple executions at the same time.</p><div class="m-graph"><svg style="width: 22.500rem; height: 24.250rem;" viewBox="0.00 0.00 360.00 388.00">
+<g transform="scale(1 1) rotate(0) translate(4 384)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x7ffee9223970</title>
+<polygon points="8,-8 8,-372 194,-372 194,-8 8,-8"/>
+<text text-anchor="middle" x="101" y="-355.2">Taskflow: F2</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7ffee92238d0</title>
+<polygon points="202,-224 202,-372 344,-372 344,-224 202,-224"/>
+<text text-anchor="middle" x="273" y="-355.2">Taskflow: F1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402b60</title>
+<ellipse cx="137" cy="-322" rx="27" ry="18"/>
+<text text-anchor="middle" x="137" y="-317.2">f2A</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402d80</title>
+<ellipse cx="101" cy="-250" rx="27.3712" ry="18"/>
+<text text-anchor="middle" x="101" y="-245.2">f2C</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402b60&#45;&gt;p0x7f816f402d80</title>
+<path d="M128.2854,-304.5708C124.0403,-296.0807 118.8464,-285.6929 114.1337,-276.2674"/>
+<polygon points="117.237,-274.6477 109.6343,-267.2687 110.976,-277.7782 117.237,-274.6477"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402fa0</title>
+<polygon points="186.2268,-196 19.7732,-196 15.7732,-192 15.7732,-160 182.2268,-160 186.2268,-164 186.2268,-196"/>
+<polyline points="182.2268,-192 15.7732,-192 "/>
+<polyline points="182.2268,-192 182.2268,-160 "/>
+<polyline points="182.2268,-192 186.2268,-196 "/>
+<text text-anchor="middle" x="101" y="-173.2">module [Taskflow: F1]</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa0</title>
+<path d="M101,-231.8314C101,-224.131 101,-214.9743 101,-206.4166"/>
+<polygon points="104.5001,-206.4132 101,-196.4133 97.5001,-206.4133 104.5001,-206.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402c70</title>
+<ellipse cx="65" cy="-322" rx="27" ry="18"/>
+<text text-anchor="middle" x="65" y="-317.2">f2B</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402c70&#45;&gt;p0x7f816f402d80</title>
+<path d="M73.7146,-304.5708C77.9597,-296.0807 83.1536,-285.6929 87.8663,-276.2674"/>
+<polygon points="91.024,-277.7782 92.3657,-267.2687 84.763,-274.6477 91.024,-277.7782"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402fa1</title>
+<polygon points="186.2268,-124 19.7732,-124 15.7732,-120 15.7732,-88 182.2268,-88 186.2268,-92 186.2268,-124"/>
+<polyline points="182.2268,-120 15.7732,-120 "/>
+<polyline points="182.2268,-120 182.2268,-88 "/>
+<polyline points="182.2268,-120 186.2268,-124 "/>
+<text text-anchor="middle" x="101" y="-101.2">module [Taskflow: F1]</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402fa0&#45;&gt;p0x7f816f402fa1</title>
+<path d="M101,-159.8314C101,-152.131 101,-142.9743 101,-134.4166"/>
+<polygon points="104.5001,-134.4132 101,-124.4133 97.5001,-134.4133 104.5001,-134.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402e90</title>
+<ellipse cx="101" cy="-34" rx="27.3712" ry="18"/>
+<text text-anchor="middle" x="101" y="-29.2">f2D</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402fa1&#45;&gt;p0x7f816f402e90</title>
+<path d="M101,-87.8314C101,-80.131 101,-70.9743 101,-62.4166"/>
+<polygon points="104.5001,-62.4132 101,-52.4133 97.5001,-62.4133 104.5001,-62.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402830</title>
+<ellipse cx="309" cy="-322" rx="27" ry="18"/>
+<text text-anchor="middle" x="309" y="-317.2">f1A</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402a50</title>
+<ellipse cx="273" cy="-250" rx="27.3712" ry="18"/>
+<text text-anchor="middle" x="273" y="-245.2">f1C</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402830&#45;&gt;p0x7f816f402a50</title>
+<path d="M300.2854,-304.5708C296.0403,-296.0807 290.8464,-285.6929 286.1337,-276.2674"/>
+<polygon points="289.237,-274.6477 281.6343,-267.2687 282.976,-277.7782 289.237,-274.6477"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402940</title>
+<ellipse cx="237" cy="-322" rx="27" ry="18"/>
+<text text-anchor="middle" x="237" y="-317.2">f1B</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402940&#45;&gt;p0x7f816f402a50</title>
+<path d="M245.7146,-304.5708C249.9597,-296.0807 255.1536,-285.6929 259.8663,-276.2674"/>
+<polygon points="263.024,-277.7782 264.3657,-267.2687 256.763,-274.6477 263.024,-277.7782"/>
+</g>
+</g>
+</svg>
+</div><p>However, the following composition is <em>invalid</em>. Both module tasks refer to the same taskflow. They can not run at the same time because they are associated with the same graph.</p><div class="m-graph"><svg style="width: 34.312rem; height: 19.750rem;" viewBox="0.00 0.00 549.00 316.00">
+<g transform="scale(1 1) rotate(0) translate(4 312)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x7ffee9223970</title>
+<polygon points="8,-8 8,-300 383,-300 383,-8 8,-8"/>
+<text text-anchor="middle" x="195.5" y="-283.2">Taskflow: F2</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7ffee92238d0</title>
+<polygon points="391,-152 391,-300 533,-300 533,-152 391,-152"/>
+<text text-anchor="middle" x="462" y="-283.2">Taskflow: F1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402b60</title>
+<ellipse cx="144" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="144" y="-245.2">f2A</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402d80</title>
+<ellipse cx="122" cy="-178" rx="27.3712" ry="18"/>
+<text text-anchor="middle" x="122" y="-173.2">f2C</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402b60&#45;&gt;p0x7f816f402d80</title>
+<path d="M138.5618,-232.2022C136.1026,-224.1541 133.1402,-214.4588 130.4048,-205.5067"/>
+<polygon points="133.7214,-204.3833 127.4519,-195.8425 127.0269,-206.4289 133.7214,-204.3833"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402fa0</title>
+<polygon points="186.2268,-124 19.7732,-124 15.7732,-120 15.7732,-88 182.2268,-88 186.2268,-92 186.2268,-124"/>
+<polyline points="182.2268,-120 15.7732,-120 "/>
+<polyline points="182.2268,-120 182.2268,-88 "/>
+<polyline points="182.2268,-120 186.2268,-124 "/>
+<text text-anchor="middle" x="101" y="-101.2">module [Taskflow: F1]</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa0</title>
+<path d="M116.809,-160.2022C114.4793,-152.2146 111.6763,-142.6045 109.0817,-133.7087"/>
+<polygon points="112.4372,-132.7131 106.2772,-124.0931 105.7172,-134.6731 112.4372,-132.7131"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402fa1</title>
+<polygon points="375.2268,-124 208.7732,-124 204.7732,-120 204.7732,-88 371.2268,-88 375.2268,-92 375.2268,-124"/>
+<polyline points="371.2268,-120 204.7732,-120 "/>
+<polyline points="371.2268,-120 371.2268,-88 "/>
+<polyline points="371.2268,-120 375.2268,-124 "/>
+<text text-anchor="middle" x="290" y="-101.2">module [Taskflow: F1]</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa1</title>
+<path d="M145.0074,-168.1397C168.9509,-157.8782 207.2389,-141.4691 238.4581,-128.0894"/>
+<polygon points="240.0834,-131.2008 247.8961,-124.0445 237.3259,-124.7668 240.0834,-131.2008"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402c70</title>
+<ellipse cx="72" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="72" y="-245.2">f2B</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402c70&#45;&gt;p0x7f816f402d80</title>
+<path d="M83.3458,-233.6621C89.5855,-224.6768 97.4623,-213.3343 104.4749,-203.2362"/>
+<polygon points="107.5229,-204.983 110.3521,-194.7729 101.7733,-200.9902 107.5229,-204.983"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402e90</title>
+<ellipse cx="195" cy="-34" rx="27.3712" ry="18"/>
+<text text-anchor="middle" x="195" y="-29.2">f2D</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402fa0&#45;&gt;p0x7f816f402e90</title>
+<path d="M124.7202,-87.8314C138.1421,-77.5507 154.9528,-64.6744 168.7673,-54.0931"/>
+<polygon points="171.114,-56.7044 176.9245,-47.845 166.8575,-51.1473 171.114,-56.7044"/>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402fa1&#45;&gt;p0x7f816f402e90</title>
+<path d="M266.0275,-87.8314C252.3717,-77.4817 235.245,-64.5015 221.2311,-53.8804"/>
+<polygon points="223.0503,-50.8675 212.9665,-47.6167 218.8221,-56.4463 223.0503,-50.8675"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402830</title>
+<ellipse cx="498" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="498" y="-245.2">f1A</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402a50</title>
+<ellipse cx="462" cy="-178" rx="27.3712" ry="18"/>
+<text text-anchor="middle" x="462" y="-173.2">f1C</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402830&#45;&gt;p0x7f816f402a50</title>
+<path d="M489.2854,-232.5708C485.0403,-224.0807 479.8464,-213.6929 475.1337,-204.2674"/>
+<polygon points="478.237,-202.6477 470.6343,-195.2687 471.976,-205.7782 478.237,-202.6477"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f816f402940</title>
+<ellipse cx="426" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="426" y="-245.2">f1B</text>
+</g>
+<g class="m-edge">
+<title>p0x7f816f402940&#45;&gt;p0x7f816f402a50</title>
+<path d="M434.7146,-232.5708C438.9597,-224.0807 444.1536,-213.6929 448.8663,-204.2674"/>
+<polygon points="452.024,-205.7782 453.3657,-195.2687 445.763,-202.6477 452.024,-205.7782"/>
+</g>
+</g>
+</svg>
+</div></section>
       </div>
     </div>
   </div>

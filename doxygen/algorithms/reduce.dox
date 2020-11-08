@@ -26,9 +26,9 @@ It is your responsibility to ensure @c result remains alive during the parallel 
 int sum = 100;
 std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-tf::Task task = taskflow.reduce(vec.begin(), vec.end(), sum, [] (int l, int r) { 
-  return l + r;    // binary reducer operator
-});
+tf::Task task = taskflow.reduce(vec.begin(), vec.end(), sum, 
+  [] (int l, int r) { return l + r; }  // binary reducer operator
+);
 executor.run(taskflow).wait();
 
 assert(sum == 100 + 55);
@@ -53,9 +53,9 @@ tf::Task init = taskflow.emplace([&](){
   last  = vec.end();
 });
 
-tf::Task task = taskflow.reduce(std::ref(first), std::ref(last), sum, [] (int l, int r) { 
-  return l + r;    // binary reducer operator
-});
+tf::Task task = taskflow.reduce(std::ref(first), std::ref(last), sum, 
+  [] (int l, int r) { return l + r; }  // binary reducer operator
+);
 
 // wrong! must use std::ref, or first and last are captured by copy
 // tf::Task task = taskflow.reduce(first, last, sum, [] (int l, int r) { 

@@ -900,7 +900,382 @@
 <span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">assert</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">visited</span><span class="p">);</span>
   <span class="n">assert</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">dependents</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
-<span class="p">}</span></pre><img class="m-image" src="graph_traversal_1.svg" alt="Image" style="width: 90%;" /><p>In general, the dynamic version of graph traversal is slower than the static version due to the overhead incurred by spawning subflows. However, it may be useful for the situation where the graph structure is unknown at once but being partially explored during the traversal.</p></section>
+<span class="p">}</span></pre><div class="m-graph"><svg style="width: 70.062rem; height: 64.250rem;" viewBox="0.00 0.00 1121.00 1028.00">
+<g transform="scale(1 1) rotate(0) translate(4 1024)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x7fd36b804d90</title>
+<polygon points="206,-80 206,-980 639,-980 639,-80 206,-80"/>
+<text text-anchor="middle" x="422.5" y="-963.2">Subflow: 3</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36c005e90</title>
+<polygon points="276,-152 276,-948 631,-948 631,-152 276,-152"/>
+<text text-anchor="middle" x="453.5" y="-931.2">Subflow: 3</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36c005c50</title>
+<polygon points="382,-224 382,-916 623,-916 623,-224 382,-224"/>
+<text text-anchor="middle" x="502.5" y="-899.2">Subflow: 4</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36c005a10</title>
+<polygon points="452,-296 452,-884 615,-884 615,-296 452,-296"/>
+<text text-anchor="middle" x="533.5" y="-867.2">Subflow: 6</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36c005470</title>
+<polygon points="460,-380 460,-852 607,-852 607,-380 460,-380"/>
+<text text-anchor="middle" x="533.5" y="-835.2">Subflow: 9</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36c005590</title>
+<polygon points="468,-464 468,-820 599,-820 599,-464 468,-464"/>
+<text text-anchor="middle" x="533.5" y="-803.2">Subflow: 11</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36c0057d0</title>
+<polygon points="476,-536 476,-788 591,-788 591,-536 476,-536"/>
+<text text-anchor="middle" x="533.5" y="-771.2">Subflow: 12</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36c005350</title>
+<polygon points="484,-608 484,-756 583,-756 583,-608 484,-608"/>
+<text text-anchor="middle" x="533.5" y="-739.2">Subflow: 13</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36c005b30</title>
+<polygon points="284,-224 284,-372 374,-372 374,-224 284,-224"/>
+<text text-anchor="middle" x="329" y="-355.2">Subflow: 4</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36b804eb0</title>
+<polygon points="647,-8 647,-1012 1105,-1012 1105,-8 647,-8"/>
+<text text-anchor="middle" x="876" y="-995.2">Subflow: 4</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36b00dc30</title>
+<polygon points="717,-80 717,-980 1097,-980 1097,-80 717,-80"/>
+<text text-anchor="middle" x="907" y="-963.2">Subflow: 15</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36b00de70</title>
+<polygon points="725,-152 725,-948 1089,-948 1089,-152 725,-152"/>
+<text text-anchor="middle" x="907" y="-931.2">Subflow: 17</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36b00df90</title>
+<polygon points="733,-224 733,-916 1081,-916 1081,-224 733,-224"/>
+<text text-anchor="middle" x="907" y="-899.2">Subflow: 19</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36b00e0b0</title>
+<polygon points="848,-296 848,-884 1073,-884 1073,-296 848,-296"/>
+<text text-anchor="middle" x="960.5" y="-867.2">Subflow: 20</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36b00e410</title>
+<polygon points="918,-380 918,-852 1065,-852 1065,-380 918,-380"/>
+<text text-anchor="middle" x="991.5" y="-835.2">Subflow: 21</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36b00e650</title>
+<polygon points="926,-464 926,-820 1057,-820 1057,-464 926,-464"/>
+<text text-anchor="middle" x="991.5" y="-803.2">Subflow: 24</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36b00e770</title>
+<polygon points="934,-536 934,-788 1049,-788 1049,-536 934,-536"/>
+<text text-anchor="middle" x="991.5" y="-771.2">Subflow: 26</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36b00e890</title>
+<polygon points="942,-608 942,-756 1041,-756 1041,-608 942,-608"/>
+<text text-anchor="middle" x="991.5" y="-739.2">Subflow: 27</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fd36b00e1d0</title>
+<polygon points="741,-296 741,-456 840,-456 840,-296 741,-296"/>
+<text text-anchor="middle" x="790.5" y="-439.2">Subflow: 20</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b804c70</title>
+<ellipse cx="27" cy="-706" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-701.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b804a30</title>
+<ellipse cx="99" cy="-706" rx="27" ry="18"/>
+<text text-anchor="middle" x="99" y="-701.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b804b50</title>
+<ellipse cx="171" cy="-706" rx="27" ry="18"/>
+<text text-anchor="middle" x="171" y="-701.2">2</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b804d90</title>
+<ellipse cx="280" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="280" y="-101.2">3</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36c005e90</title>
+<ellipse cx="329" cy="-178" rx="27" ry="18"/>
+<text text-anchor="middle" x="329" y="-173.2">3</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36c005e90&#45;&gt;p0x7fd36b804d90</title>
+<path d="M317.6353,-161.3008C311.5127,-152.3043 303.8363,-141.0247 297.0159,-131.0029"/>
+<polygon points="299.8229,-128.9066 291.3031,-122.6087 294.0359,-132.845 299.8229,-128.9066"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36c005c50</title>
+<ellipse cx="417" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="417" y="-245.2">4</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36c005c50&#45;&gt;p0x7fd36c005e90</title>
+<path d="M399.614,-235.7751C386.7175,-225.2234 368.9349,-210.674 354.4415,-198.8157"/>
+<polygon points="356.3058,-195.8189 346.3499,-192.1953 351.8731,-201.2366 356.3058,-195.8189"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36c005a10</title>
+<ellipse cx="492" cy="-322" rx="27" ry="18"/>
+<text text-anchor="middle" x="492" y="-317.2">6</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36c005a10&#45;&gt;p0x7fd36c005c50</title>
+<path d="M476.46,-307.0816C465.901,-296.945 451.7556,-283.3654 439.9108,-271.9944"/>
+<polygon points="442.1579,-269.2998 432.5201,-264.8993 437.3102,-274.3495 442.1579,-269.2998"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36c005470</title>
+<ellipse cx="499" cy="-406" rx="27" ry="18"/>
+<text text-anchor="middle" x="499" y="-401.2">9</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36c005470&#45;&gt;p0x7fd36c005a10</title>
+<path d="M497.4811,-387.7733C496.573,-376.8758 495.3996,-362.7946 494.3716,-350.4587"/>
+<polygon points="497.8344,-349.8659 493.5159,-340.1912 490.8586,-350.4473 497.8344,-349.8659"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36c005590</title>
+<ellipse cx="507" cy="-490" rx="27" ry="18"/>
+<text text-anchor="middle" x="507" y="-485.2">11</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36c005590&#45;&gt;p0x7fd36c005470</title>
+<path d="M505.2641,-471.7733C504.2263,-460.8758 502.8852,-446.7946 501.7104,-434.4587"/>
+<polygon points="505.1649,-433.8143 500.7325,-424.1912 498.1964,-434.478 505.1649,-433.8143"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36c0057d0</title>
+<ellipse cx="515" cy="-562" rx="27" ry="18"/>
+<text text-anchor="middle" x="515" y="-557.2">12</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36c0057d0&#45;&gt;p0x7fd36c005590</title>
+<path d="M512.9813,-543.8314C512.1257,-536.131 511.1083,-526.9743 510.1574,-518.4166"/>
+<polygon points="513.6289,-517.9656 509.0459,-508.4133 506.6717,-518.7386 513.6289,-517.9656"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36c005350</title>
+<ellipse cx="519" cy="-634" rx="27" ry="18"/>
+<text text-anchor="middle" x="519" y="-629.2">13</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36c005350&#45;&gt;p0x7fd36c0057d0</title>
+<path d="M517.9906,-615.8314C517.5628,-608.131 517.0541,-598.9743 516.5787,-590.4166"/>
+<polygon points="520.0724,-590.2037 516.023,-580.4133 513.0831,-590.592 520.0724,-590.2037"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36c005230</title>
+<ellipse cx="519" cy="-706" rx="27" ry="18"/>
+<text text-anchor="middle" x="519" y="-701.2">14</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36c005230&#45;&gt;p0x7fd36c005350</title>
+<path d="M519,-687.8314C519,-680.131 519,-670.9743 519,-662.4166"/>
+<polygon points="522.5001,-662.4132 519,-652.4133 515.5001,-662.4133 522.5001,-662.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36c0058f0</title>
+<ellipse cx="417" cy="-322" rx="27" ry="18"/>
+<text text-anchor="middle" x="417" y="-317.2">6</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36c0058f0&#45;&gt;p0x7fd36c005c50</title>
+<path d="M417,-303.8314C417,-296.131 417,-286.9743 417,-278.4166"/>
+<polygon points="420.5001,-278.4132 417,-268.4133 413.5001,-278.4133 420.5001,-278.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36c005b30</title>
+<ellipse cx="329" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="329" y="-245.2">4</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36c005b30&#45;&gt;p0x7fd36c005e90</title>
+<path d="M329,-231.8314C329,-224.131 329,-214.9743 329,-206.4166"/>
+<polygon points="332.5001,-206.4132 329,-196.4133 325.5001,-206.4133 332.5001,-206.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36c0056b0</title>
+<ellipse cx="329" cy="-322" rx="27" ry="18"/>
+<text text-anchor="middle" x="329" y="-317.2">7</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36c0056b0&#45;&gt;p0x7fd36c005b30</title>
+<path d="M329,-303.8314C329,-296.131 329,-286.9743 329,-278.4166"/>
+<polygon points="332.5001,-278.4132 329,-268.4133 325.5001,-278.4133 332.5001,-278.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36c005d70</title>
+<ellipse cx="241" cy="-178" rx="27" ry="18"/>
+<text text-anchor="middle" x="241" y="-173.2">3</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36c005d70&#45;&gt;p0x7fd36b804d90</title>
+<path d="M250.2425,-160.937C254.9537,-152.2393 260.7817,-141.4799 266.0278,-131.7948"/>
+<polygon points="269.1385,-133.4005 270.8239,-122.9405 262.9835,-130.0664 269.1385,-133.4005"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b804eb0</title>
+<ellipse cx="718" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="718" y="-29.2">4</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b00dc30</title>
+<ellipse cx="757" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="757" y="-101.2">15</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36b00dc30&#45;&gt;p0x7fd36b804eb0</title>
+<path d="M747.7575,-88.937C743.0463,-80.2393 737.2183,-69.4799 731.9722,-59.7948"/>
+<polygon points="735.0165,-58.0664 727.1761,-50.9405 728.8615,-61.4005 735.0165,-58.0664"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b00de70</title>
+<ellipse cx="768" cy="-178" rx="27" ry="18"/>
+<text text-anchor="middle" x="768" y="-173.2">17</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36b00de70&#45;&gt;p0x7fd36b00dc30</title>
+<path d="M765.2242,-159.8314C764.0297,-152.0125 762.6058,-142.6923 761.2812,-134.0221"/>
+<polygon points="764.707,-133.2701 759.7368,-123.9134 757.7873,-134.3273 764.707,-133.2701"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b00df90</title>
+<ellipse cx="790" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="790" y="-245.2">19</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36b00df90&#45;&gt;p0x7fd36b00de70</title>
+<path d="M784.5618,-232.2022C782.1026,-224.1541 779.1402,-214.4588 776.4048,-205.5067"/>
+<polygon points="779.7214,-204.3833 773.4519,-195.8425 773.0269,-206.4289 779.7214,-204.3833"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b00e0b0</title>
+<ellipse cx="883" cy="-322" rx="27" ry="18"/>
+<text text-anchor="middle" x="883" y="-317.2">20</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36b00e0b0&#45;&gt;p0x7fd36b00df90</title>
+<path d="M865.0687,-308.1177C851.1736,-297.3602 831.7219,-282.3009 816.1009,-270.2072"/>
+<polygon points="817.9262,-267.1939 807.8763,-263.8397 813.6409,-272.729 817.9262,-267.1939"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b00e410</title>
+<ellipse cx="958" cy="-406" rx="27" ry="18"/>
+<text text-anchor="middle" x="958" y="-401.2">21</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36b00e410&#45;&gt;p0x7fd36b00e0b0</title>
+<path d="M943.8931,-390.2002C932.5794,-377.5289 916.5358,-359.5601 903.7566,-345.2474"/>
+<polygon points="906.3147,-342.8572 897.0437,-337.7289 901.0931,-347.5194 906.3147,-342.8572"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b00e650</title>
+<ellipse cx="965" cy="-490" rx="27" ry="18"/>
+<text text-anchor="middle" x="965" y="-485.2">24</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36b00e650&#45;&gt;p0x7fd36b00e410</title>
+<path d="M963.4811,-471.7733C962.573,-460.8758 961.3996,-446.7946 960.3716,-434.4587"/>
+<polygon points="963.8344,-433.8659 959.5159,-424.1912 956.8586,-434.4473 963.8344,-433.8659"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b00e770</title>
+<ellipse cx="973" cy="-562" rx="27" ry="18"/>
+<text text-anchor="middle" x="973" y="-557.2">26</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36b00e770&#45;&gt;p0x7fd36b00e650</title>
+<path d="M970.9813,-543.8314C970.1257,-536.131 969.1083,-526.9743 968.1574,-518.4166"/>
+<polygon points="971.6289,-517.9656 967.0459,-508.4133 964.6717,-518.7386 971.6289,-517.9656"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b00e890</title>
+<ellipse cx="977" cy="-634" rx="27" ry="18"/>
+<text text-anchor="middle" x="977" y="-629.2">27</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36b00e890&#45;&gt;p0x7fd36b00e770</title>
+<path d="M975.9906,-615.8314C975.5628,-608.131 975.0541,-598.9743 974.5787,-590.4166"/>
+<polygon points="978.0724,-590.2037 974.023,-580.4133 971.0831,-590.592 978.0724,-590.2037"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b00e9b0</title>
+<ellipse cx="977" cy="-706" rx="27" ry="18"/>
+<text text-anchor="middle" x="977" y="-701.2">28</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36b00e9b0&#45;&gt;p0x7fd36b00e890</title>
+<path d="M977,-687.8314C977,-680.131 977,-670.9743 977,-662.4166"/>
+<polygon points="980.5001,-662.4132 977,-652.4133 973.5001,-662.4133 980.5001,-662.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b00e530</title>
+<ellipse cx="883" cy="-406" rx="27" ry="18"/>
+<text text-anchor="middle" x="883" y="-401.2">21</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36b00e530&#45;&gt;p0x7fd36b00e0b0</title>
+<path d="M883,-387.7733C883,-376.8758 883,-362.7946 883,-350.4587"/>
+<polygon points="886.5001,-350.1911 883,-340.1912 879.5001,-350.1912 886.5001,-350.1911"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b00e1d0</title>
+<ellipse cx="790" cy="-322" rx="27" ry="18"/>
+<text text-anchor="middle" x="790" y="-317.2">20</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36b00e1d0&#45;&gt;p0x7fd36b00df90</title>
+<path d="M790,-303.8314C790,-296.131 790,-286.9743 790,-278.4166"/>
+<polygon points="793.5001,-278.4132 790,-268.4133 786.5001,-278.4133 793.5001,-278.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b00e2f0</title>
+<ellipse cx="790" cy="-406" rx="27" ry="18"/>
+<text text-anchor="middle" x="790" y="-401.2">22</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36b00e2f0&#45;&gt;p0x7fd36b00e1d0</title>
+<path d="M790,-387.7733C790,-376.8758 790,-362.7946 790,-350.4587"/>
+<polygon points="793.5001,-350.1911 790,-340.1912 786.5001,-350.1912 793.5001,-350.1911"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd36b00dd50</title>
+<ellipse cx="682" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="682" y="-101.2">15</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd36b00dd50&#45;&gt;p0x7fd36b804eb0</title>
+<path d="M690.7146,-88.5708C694.9597,-80.0807 700.1536,-69.6929 704.8663,-60.2674"/>
+<polygon points="708.024,-61.7782 709.3657,-51.2687 701.763,-58.6477 708.024,-61.7782"/>
+</g>
+</g>
+</svg>
+</div><p>In general, the dynamic version of graph traversal is slower than the static version due to the overhead incurred by spawning subflows. However, it may be useful for the situation where the graph structure is unknown at once but being partially explored during the traversal.</p></section>
       </div>
     </div>
   </div>

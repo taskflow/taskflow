@@ -45,7 +45,11 @@ All methods you find in tf::Taskflow are applicable for tf::Subflow.
 22: taskflow.dump(std::cout);      // dump the taskflow to a DOT format
 @endcode
 
-@image html images/subflow_join.svg width=35%
+<!--@image html images/subflow_join.svg width=35%-->
+
+@parblock
+@dotfile images/subflow-join.dot
+@endparblock
 
 Debrief:
 @li Line 1-2 creates a taskflow and an executor
@@ -85,18 +89,19 @@ int spawn(int n, tf::Subflow& sbf) {
 }
   
 taskflow.emplace([&res] (tf::Subflow& sbf) { 
-  res = spawn(10, sbf);  
+  res = spawn(5, sbf);  
 });
 
 executor.run(taskflow).wait();
 @endcode
 
-The code above computes the 10th fibonacci number using recursive subflow.
+The code above computes the fifth fibonacci number using recursive subflow.
 Calling tf::Subflow::join @em immediately materializes the subflow by executing all associated
 tasks to recursively compute fibonacci numbers.
 The taskflow graph is shown below:
 
-@image html images/fibonacci_10.svg width=100%
+<!-- @image html images/fibonacci_10.svg width=100% -->
+@dotfile images/fibonacci_7.dot
 
 Our implementation to join subflows is @em recursive in order to
 preserve the thread context in each subflow task.
@@ -136,22 +141,24 @@ you can detach a subflow from its parent task, allowing its execution to flow in
 The figure below demonstrates a detached subflow based on the previous example.
 A detached subflow will eventually join the topology of its parent task.
 
-@image html images/subflow_detach.svg width=45%
+<!-- @image html images/subflow_detach.svg width=45% -->
+@dotfile images/subflow-detach.dot
 
 Detached subflow becomes an independent graph attached to the top-most taskflow.
 Running a taskflow multiple times will accumulate all detached tasks
 in the graph.
-For example, running the above taskflow 10 times results in a total of 34 tasks.
+For example, running the above taskflow 5 times results in a total of 19 tasks.
 
 @code{.cpp}
-executor.run_n(taskflow, 10).wait();
-assert(taskflow.num_tasks() == 34);
+executor.run_n(taskflow, 5).wait();
+assert(taskflow.num_tasks() == 19);
 taskflow.dump(std::cout);
 @endcode
 
 The dumped graph is shown as follows:
 
-@image html images/subflow_detach_10.svg width=100%
+<!-- @image html images/subflow_detach_10.svg width=100% -->
+@dotfile images/subflow_detach_5.dot
 
 @section NestedSubflow Nested Subflow
 
@@ -185,7 +192,8 @@ You can create another subflow from the execution of a subflow and so on.
 24: taskflow.dump(std::cout);
 @endcode
 
-@image html images/nested_subflow.svg 
+<!-- @image html images/nested_subflow.svg  -->
+@dotfile images/nested_subflow.dot
 
 Debrief:
 @li Line 1 creates a taskflow object

@@ -225,7 +225,198 @@
            <span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">update_cluster</span><span class="p">);</span>
 
   <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
-<span class="p">}</span></pre><p>The taskflow consists of two parts, a <code>clean_up</code> task and a parallel-for graph. The former cleans up the storage <code>sx</code>, <code>sy</code>, and <code>c</code> that are used to average points for new centroids, and the later parallelizes the searching for nearest centroids across individual points using 12 tasks (may vary depending on the machine). If the iteration count is smaller than <code>M</code>, the condition task returns 0 to let the execution path go back to <code>clean_up</code>. Otherwise, it returns 1 to stop (i.e., no successor tasks at index 1). The taskflow graph is illustrated below:</p><img class="m-image" src="kmeans_2.svg" alt="Image" style="width: 100%;" /><p>The scheduler starts with <code>init</code>, moves on to <code>clean_up</code>, and then enters the parallel-for task <code>paralle-for</code> that spawns a subflow of 12 workers to perform parallel iterations. When <code>parallel-for</code> completes, it updates the cluster centroids and checks if they have converged through a condition task. If not, the condition task informs the scheduler to go back to <code>clean_up</code> and then <code>parallel-for</code>; otherwise, it returns a nominal index to stop the scheduler.</p></section><section id="ParallelKMeansUsingGPUs"><h2><a href="#ParallelKMeansUsingGPUs">Parallel k-means using GPUs</a></h2><p>We observe Step 2 and Step 3 of the algorithm are parallelizable across individual points for use to harness the power of GPU:</p><ol><li>for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>for every centroid, move the centroid to the average of the points assigned to that centroid.</li></ol><p>At a fine-grained level, we request one GPU thread to work on one point for Step 2 and one GPU thread to work on one centroid for Step 3.</p><pre class="m-code"><span class="c1">// px/py: 2D points</span>
+<span class="p">}</span></pre><p>The taskflow consists of two parts, a <code>clean_up</code> task and a parallel-for graph. The former cleans up the storage <code>sx</code>, <code>sy</code>, and <code>c</code> that are used to average points for new centroids, and the later parallelizes the searching for nearest centroids across individual points using 12 tasks (may vary depending on the machine). If the iteration count is smaller than <code>M</code>, the condition task returns 0 to let the execution path go back to <code>clean_up</code>. Otherwise, it returns 1 to stop (i.e., no successor tasks at index 1). The taskflow graph is illustrated below:</p><div class="m-graph"><svg style="width: 79.125rem; height: 26.812rem;" viewBox="0.00 0.00 1266.00 429.00">
+<g transform="scale(1 1) rotate(0) translate(4 425)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x1dcb6e0</title>
+<polygon points="8,-226 8,-413 1250,-413 1250,-226 8,-226"/>
+<text text-anchor="middle" x="629" y="-396.2">Subflow: parallel&#45;for</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x1dcb4c0</title>
+<ellipse cx="557" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="557" y="-101.2">init</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x1dcb5d0</title>
+<ellipse cx="612" cy="-18" rx="54.1003" ry="18"/>
+<text text-anchor="middle" x="612" y="-13.2">clean_up</text>
+</g>
+<g class="m-edge">
+<title>p0x1dcb4c0&#45;&gt;p0x1dcb5d0</title>
+<path d="M567.6046,-89.0327C575.5148,-76.3764 586.47,-58.848 595.5184,-44.3705"/>
+<polygon points="598.5296,-46.1564 600.8616,-35.8214 592.5936,-42.4463 598.5296,-46.1564"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x1dcb6e0</title>
+<ellipse cx="646" cy="-252" rx="61.3755" ry="18"/>
+<text text-anchor="middle" x="646" y="-247.2">parallel&#45;for</text>
+</g>
+<g class="m-edge">
+<title>p0x1dcb5d0&#45;&gt;p0x1dcb6e0</title>
+<path d="M614.619,-36.0394C619.3064,-68.3229 629.4403,-138.1111 638,-197 639.263,-205.6894 640.639,-215.1508 641.888,-223.7375"/>
+<polygon points="638.4292,-224.2748 643.3324,-233.6668 645.3563,-223.2671 638.4292,-224.2748"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x1dcb7f0</title>
+<ellipse cx="728" cy="-179" rx="81.2864" ry="18"/>
+<text text-anchor="middle" x="728" y="-174.2">update_cluster</text>
+</g>
+<g class="m-edge">
+<title>p0x1dcb6e0&#45;&gt;p0x1dcb7f0</title>
+<path d="M665.4329,-234.7C675.8995,-225.3822 688.9876,-213.7306 700.484,-203.4959"/>
+<polygon points="702.9952,-205.9464 708.137,-196.6829 698.3407,-200.718 702.9952,-205.9464"/>
+</g>
+<g class="m-node">
+<title>p0x1dcb900</title>
+<polygon points="735,-124 640.4897,-106 735,-88 829.5103,-106 735,-124"/>
+<text text-anchor="middle" x="735" y="-101.2">converged?</text>
+</g>
+<g class="m-edge">
+<title>p0x1dcb7f0&#45;&gt;p0x1dcb900</title>
+<path d="M729.7303,-160.9551C730.5102,-152.8221 731.4491,-143.0303 732.3171,-133.979"/>
+<polygon points="735.819,-134.1258 733.2896,-123.8374 728.8509,-133.4576 735.819,-134.1258"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd610000b50</title>
+<ellipse cx="1204" cy="-363" rx="37.6845" ry="18"/>
+<text text-anchor="middle" x="1204" y="-358.2">pfg_0</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd610000b50&#45;&gt;p0x1dcb6e0</title>
+<path d="M1175.5827,-350.8973C1169.831,-348.7277 1163.7749,-346.6391 1158,-345 1021.9741,-306.3911 984.1259,-313.2522 845,-288 799.2387,-279.694 747.5519,-270.3446 708.3251,-263.2557"/>
+<polygon points="708.8396,-259.792 698.3766,-261.458 707.5948,-266.6805 708.8396,-259.792"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd610000c60</title>
+<ellipse cx="1111" cy="-363" rx="37.6845" ry="18"/>
+<text text-anchor="middle" x="1111" y="-358.2">pfg_1</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd610000c60&#45;&gt;p0x1dcb6e0</title>
+<path d="M1082.5314,-351.0719C1076.7839,-348.8879 1070.7425,-346.7494 1065,-345 940.979,-307.2191 791.9904,-277.8343 709.2631,-262.8851"/>
+<polygon points="709.7251,-259.4122 699.2641,-261.0903 708.4884,-266.3021 709.7251,-259.4122"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd610000d70</title>
+<ellipse cx="1018" cy="-363" rx="37.6845" ry="18"/>
+<text text-anchor="middle" x="1018" y="-358.2">pfg_2</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd610000d70&#45;&gt;p0x1dcb6e0</title>
+<path d="M988.9523,-351.152C983.3611,-349.0085 977.5254,-346.8645 972,-345 878.5118,-313.4534 767.6647,-283.3418 702.2856,-266.3142"/>
+<polygon points="703.1434,-262.921 692.5849,-263.7969 701.3851,-269.6965 703.1434,-262.921"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd610000e80</title>
+<ellipse cx="925" cy="-363" rx="37.6845" ry="18"/>
+<text text-anchor="middle" x="925" y="-358.2">pfg_3</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd610000e80&#45;&gt;p0x1dcb6e0</title>
+<path d="M895.9317,-351.4352C847.5114,-332.1712 749.9569,-293.3592 692.0862,-270.3354"/>
+<polygon points="693.0437,-266.9495 682.4582,-266.5049 690.4559,-273.4537 693.0437,-266.9495"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd610000f90</title>
+<ellipse cx="832" cy="-363" rx="37.6845" ry="18"/>
+<text text-anchor="middle" x="832" y="-358.2">pfg_4</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd610000f90&#45;&gt;p0x1dcb6e0</title>
+<path d="M808.443,-348.9418C776.6317,-329.9576 719.6355,-295.9438 682.3199,-273.6748"/>
+<polygon points="683.6649,-270.4016 673.2842,-268.2825 680.0777,-276.4126 683.6649,-270.4016"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd6100010a0</title>
+<ellipse cx="739" cy="-363" rx="37.6845" ry="18"/>
+<text text-anchor="middle" x="739" y="-358.2">pfg_5</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd6100010a0&#45;&gt;p0x1dcb6e0</title>
+<path d="M724.8753,-346.1415C709.6233,-327.9375 685.1462,-298.7229 667.502,-277.6637"/>
+<polygon points="669.9794,-275.1707 660.8744,-269.7533 664.6138,-279.6663 669.9794,-275.1707"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd6100011b0</title>
+<ellipse cx="646" cy="-363" rx="37.6845" ry="18"/>
+<text text-anchor="middle" x="646" y="-358.2">pfg_6</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd6100011b0&#45;&gt;p0x1dcb6e0</title>
+<path d="M646,-344.6706C646,-327.2373 646,-300.7482 646,-280.5489"/>
+<polygon points="649.5001,-280.3566 646,-270.3566 642.5001,-280.3567 649.5001,-280.3566"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd6100012c0</title>
+<ellipse cx="553" cy="-363" rx="37.6845" ry="18"/>
+<text text-anchor="middle" x="553" y="-358.2">pfg_7</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd6100012c0&#45;&gt;p0x1dcb6e0</title>
+<path d="M570.3369,-346.606C576.4229,-340.6086 583.1875,-333.6589 589,-327 602.6653,-311.3448 616.8074,-292.7538 627.5866,-277.9979"/>
+<polygon points="630.4887,-279.9576 633.5155,-269.8043 624.8177,-275.854 630.4887,-279.9576"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd6100013d0</title>
+<ellipse cx="460" cy="-363" rx="37.6845" ry="18"/>
+<text text-anchor="middle" x="460" y="-358.2">pfg_8</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd6100013d0&#45;&gt;p0x1dcb6e0</title>
+<path d="M489.1734,-351.474C504.6332,-344.9708 523.7365,-336.2971 540,-327 567.0061,-311.562 595.6958,-290.9762 616.4079,-275.2775"/>
+<polygon points="618.6748,-277.9501 624.4893,-269.0933 614.4207,-272.391 618.6748,-277.9501"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd6100014e0</title>
+<ellipse cx="367" cy="-363" rx="37.6845" ry="18"/>
+<text text-anchor="middle" x="367" y="-358.2">pfg_9</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd6100014e0&#45;&gt;p0x1dcb6e0</title>
+<path d="M396.1657,-351.4812C401.746,-349.3074 407.5475,-347.068 413,-345 434.6928,-336.7724 440.3656,-335.3799 462,-327 509.6888,-308.5281 563.8512,-286.2982 600.996,-270.8577"/>
+<polygon points="602.643,-273.9633 610.5296,-266.8885 599.9525,-267.501 602.643,-273.9633"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd6100015f0</title>
+<ellipse cx="268" cy="-363" rx="43.6229" ry="18"/>
+<text text-anchor="middle" x="268" y="-358.2">pfg_10</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd6100015f0&#45;&gt;p0x1dcb6e0</title>
+<path d="M301.1974,-351.2021C307.4249,-349.0762 313.8958,-346.9256 320,-345 414.3029,-315.2522 525.2407,-284.4938 590.36,-266.8644"/>
+<polygon points="591.6672,-270.1368 600.4083,-264.1498 589.8415,-263.379 591.6672,-270.1368"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd610001700</title>
+<ellipse cx="164" cy="-363" rx="42.5413" ry="18"/>
+<text text-anchor="middle" x="164" y="-358.2">pfg_11</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd610001700&#45;&gt;p0x1dcb6e0</title>
+<path d="M196.177,-350.9495C202.3786,-348.8247 208.8567,-346.7393 215,-345 344.1667,-308.4294 498.6254,-278.3203 583.1079,-262.9818"/>
+<polygon points="583.8386,-266.4066 593.0574,-261.1851 582.5945,-259.518 583.8386,-266.4066"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fd610001810</title>
+<ellipse cx="60" cy="-363" rx="43.6229" ry="18"/>
+<text text-anchor="middle" x="60" y="-358.2">pfg_12</text>
+</g>
+<g class="m-edge">
+<title>p0x7fd610001810&#45;&gt;p0x1dcb6e0</title>
+<path d="M92.4871,-350.8576C98.8983,-348.7167 105.6178,-346.6489 112,-345 277.3828,-302.2708 476.7046,-273.3801 578.6908,-260.1856"/>
+<polygon points="579.3758,-263.6265 588.8488,-258.8818 578.4845,-256.6834 579.3758,-263.6265"/>
+</g>
+<g class="m-edge">
+<title>p0x1dcb900&#45;&gt;p0x1dcb5d0</title>
+<path stroke-dasharray="5,2" d="M714.9642,-91.6654C695.5277,-77.7596 665.7486,-56.4543 643.2068,-40.3268"/>
+<polygon points="645.1278,-37.3977 634.9584,-34.4255 641.0548,-43.0907 645.1278,-37.3977"/>
+<text text-anchor="middle" x="688.4492" y="-57.2">0</text>
+</g>
+</g>
+</svg>
+</div><p>The scheduler starts with <code>init</code>, moves on to <code>clean_up</code>, and then enters the parallel-for task <code>paralle-for</code> that spawns a subflow of 12 workers to perform parallel iterations. When <code>parallel-for</code> completes, it updates the cluster centroids and checks if they have converged through a condition task. If not, the condition task informs the scheduler to go back to <code>clean_up</code> and then <code>parallel-for</code>; otherwise, it returns a nominal index to stop the scheduler.</p></section><section id="ParallelKMeansUsingGPUs"><h2><a href="#ParallelKMeansUsingGPUs">Parallel k-means using GPUs</a></h2><p>We observe Step 2 and Step 3 of the algorithm are parallelizable across individual points for use to harness the power of GPU:</p><ol><li>for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>for every centroid, move the centroid to the average of the points assigned to that centroid.</li></ol><p>At a fine-grained level, we request one GPU thread to work on one point for Step 2 and one GPU thread to work on one centroid for Step 3.</p><pre class="m-code"><span class="c1">// px/py: 2D points</span>
 <span class="c1">// N: number of points</span>
 <span class="c1">// mx/my: centroids</span>
 <span class="c1">// K: number of clusters</span>
@@ -507,7 +698,265 @@
 </g>
 </g>
 </svg>
-</div><p>The second dump after executing the taskflow produces the following diagram, with all cudaFlows expanded:</p><img class="m-image" src="kmeans_4.svg" alt="Image" style="width: 100%;" /><p>The main cudaFlow task, <code>update_means</code>, must not run before all required data has settled down. It precedes a condition task that circles back to itself until we reach <code>M</code> iterations. When iteration completes, the condition task directs the execution path to the cudaFlow, <code>h2d</code>, to copy the results of clusters to <code>h_mx</code> and <code>h_my</code> and then deallocate all GPU memory.</p></section><section id="BuiltInPredicate"><h2><a href="#BuiltInPredicate">Built-in Predicate</a></h2><p>We observe the GPU task graph parameters remain <em>unchanged</em> across all k-means iterations. In this case, we can leverage tf::cudaFlow::join_until or tf::cudaFlow::join_n to run it repeatedly without conditional tasking.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">kmeans</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">){</span>
+</div><p>The second dump after executing the taskflow produces the following diagram, with all cudaFlows expanded:</p><div class="m-graph"><svg style="width: 82.500rem; height: 49.438rem;" viewBox="0.00 0.00 1319.58 791.00">
+<g transform="scale(1 1) rotate(0) translate(4 787)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x562f9807b550</title>
+<polygon points="279.7546,-447 279.7546,-685 695.0286,-685 695.0286,-447 279.7546,-447"/>
+<text text-anchor="middle" x="487.3916" y="-668.2">cudaFlow: h2d</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x562f9807b440</title>
+<polygon points="8,-157 8,-341 891.3182,-341 891.3182,-157 8,-157"/>
+<text text-anchor="middle" x="449.6591" y="-324.2">cudaFlow: update_means</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x562f9807b220</title>
+<polygon points="765.471,-8 765.471,-138 1224.1254,-138 1224.1254,-8 765.471,-8"/>
+<text text-anchor="middle" x="994.7982" y="-121.2">cudaFlow: h2d</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807bcc0</title>
+<ellipse cx="490.594" cy="-711" rx="65.0658" ry="18"/>
+<text text-anchor="middle" x="490.594" y="-706.2">allocate_px</text>
+</g>
+<g class="m-node">
+<title>p0x562f9807b550</title>
+<polygon points="687.0286,-545 684.0286,-549 663.0286,-549 660.0286,-545 633.0286,-545 633.0286,-509 687.0286,-509 687.0286,-545"/>
+<text text-anchor="middle" x="660.0286" y="-522.2">h2d</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807bcc0&#45;&gt;p0x562f9807b550</title>
+<path d="M540.5757,-699.3701C547.0071,-696.6044 553.2158,-693.1959 558.5984,-689 604.4083,-653.2894 634.9937,-590.674 649.757,-554.6425"/>
+<polygon points="653.0574,-555.8148 653.501,-545.2292 646.553,-553.2277 653.0574,-555.8148"/>
+</g>
+<g class="m-node">
+<title>p0x562f9807b440</title>
+<polygon points="883.2479,-201 880.2479,-205 859.2479,-205 856.2479,-201 761.529,-201 761.529,-165 883.2479,-165 883.2479,-201"/>
+<text text-anchor="middle" x="822.3885" y="-178.2">update_means</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b550&#45;&gt;p0x562f9807b440</title>
+<path d="M668.5292,-508.9894C695.2083,-452.463 777.4039,-278.311 809.4279,-210.4601"/>
+<polygon points="812.673,-211.7846 813.7762,-201.2473 806.3427,-208.7968 812.673,-211.7846"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807bbb0</title>
+<ellipse cx="490.594" cy="-421" rx="65.0658" ry="18"/>
+<text text-anchor="middle" x="490.594" y="-416.2">allocate_py</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807bbb0&#45;&gt;p0x562f9807b550</title>
+<path d="M537.667,-433.6378C544.8703,-436.303 552.0727,-439.4157 558.5984,-443 587.4357,-458.8393 615.9018,-483.4126 635.3026,-501.8965"/>
+<polygon points="632.9125,-504.4541 642.529,-508.9008 637.7844,-499.4277 632.9125,-504.4541"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807baa0</title>
+<ellipse cx="490.594" cy="-367" rx="68.0088" ry="18"/>
+<text text-anchor="middle" x="490.594" y="-362.2">allocate_mx</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807baa0&#45;&gt;p0x562f9807b550</title>
+<path d="M535.2592,-380.6975C543.4533,-384.3033 551.6133,-388.7053 558.5984,-394 596.8123,-422.9662 627.9296,-469.9013 645.2058,-499.5722"/>
+<polygon points="642.3305,-501.596 650.3201,-508.5543 648.4136,-498.1324 642.3305,-501.596"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807b990</title>
+<ellipse cx="490.594" cy="-765" rx="68.0088" ry="18"/>
+<text text-anchor="middle" x="490.594" y="-760.2">allocate_my</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b990&#45;&gt;p0x562f9807b550</title>
+<path d="M537.5863,-751.7401C545.202,-748.1419 552.5588,-743.6301 558.5984,-738 613.5083,-686.813 641.9824,-599.6586 653.5847,-555.0777"/>
+<polygon points="657.0199,-555.7679 656.0547,-545.2171 650.2297,-554.0669 657.0199,-555.7679"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807b880</title>
+<ellipse cx="660.0286" cy="-131" rx="64.3605" ry="18"/>
+<text text-anchor="middle" x="660.0286" y="-126.2">allocate_sx</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b880&#45;&gt;p0x562f9807b440</title>
+<path d="M702.6867,-144.6624C719.0171,-149.8926 738.0549,-155.99 756.0799,-161.763"/>
+<polygon points="755.375,-165.2122 765.966,-164.9292 757.5101,-158.5458 755.375,-165.2122"/>
+</g>
+<g class="m-node">
+<title>p0x562f9807b330</title>
+<polygon points="1022.7218,-182 928.2114,-164 1022.7218,-146 1117.2321,-164 1022.7218,-182"/>
+<text text-anchor="middle" x="1022.7218" y="-159.2">converged?</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b440&#45;&gt;p0x562f9807b330</title>
+<path d="M883.3922,-182.6127C892.397,-182.265 901.5554,-181.7499 910.2166,-181 927.7374,-179.483 946.6783,-176.9651 963.9326,-174.326"/>
+<polygon points="964.5375,-177.774 973.8733,-172.7648 963.4514,-170.8588 964.5375,-177.774"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807b770</title>
+<ellipse cx="660.0286" cy="-77" rx="64.3605" ry="18"/>
+<text text-anchor="middle" x="660.0286" y="-72.2">allocate_sy</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b770&#45;&gt;p0x562f9807b440</title>
+<path d="M700.5105,-91.0269C708.7568,-94.6805 717.1405,-99.0171 724.4588,-104 743.9434,-117.2667 743.3618,-126.8952 761.4588,-142 768.6472,-147.9998 776.7254,-153.9314 784.5913,-159.34"/>
+<polygon points="782.7385,-162.3117 792.9912,-164.9822 786.6416,-156.5009 782.7385,-162.3117"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807b660</title>
+<ellipse cx="660.0286" cy="-23" rx="59.1273" ry="18"/>
+<text text-anchor="middle" x="660.0286" y="-18.2">allocate_c</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b660&#45;&gt;p0x562f9807b440</title>
+<path d="M703.2031,-35.4722C710.9813,-39.1951 718.4991,-43.9536 724.4588,-50 755.3963,-81.3878 733.7319,-107.743 761.4588,-142 766.5348,-148.2715 772.8244,-153.9478 779.4174,-158.9398"/>
+<polygon points="777.6718,-161.9914 787.8623,-164.8905 781.7039,-156.2693 777.6718,-161.9914"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fbc54000b20</title>
+<ellipse cx="336.6721" cy="-635" rx="45.892" ry="18"/>
+<text text-anchor="middle" x="336.6721" y="-630.2">h2d_px</text>
+</g>
+<g class="m-edge">
+<title>p0x7fbc54000b20&#45;&gt;p0x562f9807b550</title>
+<path d="M371.8924,-623.2365C433.5756,-602.6345 560.548,-560.2262 623.2869,-539.2716"/>
+<polygon points="624.4086,-542.5871 632.7848,-536.0993 622.191,-535.9476 624.4086,-542.5871"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fbc54000c00</title>
+<ellipse cx="336.6721" cy="-581" rx="45.892" ry="18"/>
+<text text-anchor="middle" x="336.6721" y="-576.2">h2d_py</text>
+</g>
+<g class="m-edge">
+<title>p0x7fbc54000c00&#45;&gt;p0x562f9807b550</title>
+<path d="M378.9453,-573.9404C442.7058,-563.2925 562.4451,-543.2963 622.9791,-533.1872"/>
+<polygon points="623.5814,-536.6352 632.8683,-531.5357 622.4283,-529.7308 623.5814,-536.6352"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fbc54000ce0</title>
+<ellipse cx="336.6721" cy="-527" rx="48.8351" ry="18"/>
+<text text-anchor="middle" x="336.6721" y="-522.2">h2d_mx</text>
+</g>
+<g class="m-edge">
+<title>p0x7fbc54000ce0&#45;&gt;p0x562f9807b550</title>
+<path d="M385.783,-527C450.8155,-527 564.0858,-527 622.6229,-527"/>
+<polygon points="622.8922,-530.5001 632.8921,-527 622.8921,-523.5001 622.8922,-530.5001"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fbc54000db0</title>
+<ellipse cx="336.6721" cy="-473" rx="48.8351" ry="18"/>
+<text text-anchor="middle" x="336.6721" y="-468.2">h2d_my</text>
+</g>
+<g class="m-edge">
+<title>p0x7fbc54000db0&#45;&gt;p0x562f9807b550</title>
+<path d="M381.2939,-480.4518C445.5255,-491.1783 562.8838,-510.777 622.7524,-520.7749"/>
+<polygon points="622.4506,-524.2729 632.8905,-522.468 623.6036,-517.3685 622.4506,-524.2729"/>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b330&#45;&gt;p0x562f9807b440</title>
+<path stroke-dasharray="5,2" d="M956.6656,-158.5301C938.6504,-158.0811 919.1783,-158.5575 901.3182,-161 897.6493,-161.5018 893.9104,-162.1289 890.1537,-162.8509"/>
+<polygon points="889.2595,-159.4626 880.2038,-164.962 890.7125,-166.3101 889.2595,-159.4626"/>
+<text text-anchor="middle" x="905.7674" y="-164.2">0</text>
+</g>
+<g class="m-node">
+<title>p0x562f9807b220</title>
+<polygon points="1216.1254,-106 1213.1254,-110 1192.1254,-110 1189.1254,-106 1162.1254,-106 1162.1254,-70 1216.1254,-70 1216.1254,-106"/>
+<text text-anchor="middle" x="1189.1254" y="-83.2">h2d</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b330&#45;&gt;p0x562f9807b220</title>
+<path stroke-dasharray="5,2" d="M1075.0275,-155.8821C1089.1242,-152.6165 1104.0976,-148.1242 1117.2269,-142 1133.2423,-134.5296 1149.1528,-123.1068 1161.9195,-112.6879"/>
+<polygon points="1164.4253,-115.1537 1169.8245,-106.0378 1159.919,-109.7971 1164.4253,-115.1537"/>
+<text text-anchor="middle" x="1139.6761" y="-135.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fbc540051d0</title>
+<ellipse cx="64.3148" cy="-291" rx="42.8965" ry="18"/>
+<text text-anchor="middle" x="64.3148" y="-286.2">zero_c</text>
+</g>
+<g class="m-node">
+<title>p0x7fbc540053d0</title>
+<polygon points="250.8172,-227 191.567,-227 187.567,-223 187.567,-191 246.8172,-191 250.8172,-195 250.8172,-227"/>
+<polyline points="246.8172,-223 187.567,-223 "/>
+<polyline points="246.8172,-223 246.8172,-191 "/>
+<polyline points="246.8172,-223 250.8172,-227 "/>
+<text text-anchor="middle" x="219.1921" y="-204.2">cluster</text>
+</g>
+<g class="m-edge">
+<title>p0x7fbc540051d0&#45;&gt;p0x7fbc540053d0</title>
+<path d="M91.2924,-276.7167C115.3525,-263.978 150.9238,-245.1447 178.4493,-230.5713"/>
+<polygon points="180.2473,-233.5797 187.4474,-225.8073 176.9719,-227.3933 180.2473,-233.5797"/>
+</g>
+<g class="m-node">
+<title>p0x7fbc54005470</title>
+<polygon points="546.266,-214 438.922,-214 434.922,-210 434.922,-178 542.266,-178 546.266,-182 546.266,-214"/>
+<polyline points="542.266,-210 434.922,-210 "/>
+<polyline points="542.266,-210 542.266,-178 "/>
+<polyline points="542.266,-210 546.266,-214 "/>
+<text text-anchor="middle" x="490.594" y="-191.2">new_centroid</text>
+</g>
+<g class="m-edge">
+<title>p0x7fbc540053d0&#45;&gt;p0x7fbc54005470</title>
+<path d="M250.8565,-207.4833C293.3093,-205.4498 369.7117,-201.7902 424.8738,-199.148"/>
+<polygon points="425.0926,-202.6416 434.9136,-198.6671 424.7576,-195.6496 425.0926,-202.6416"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fbc54005270</title>
+<ellipse cx="64.3148" cy="-237" rx="48.1303" ry="18"/>
+<text text-anchor="middle" x="64.3148" y="-232.2">zero_sx</text>
+</g>
+<g class="m-edge">
+<title>p0x7fbc54005270&#45;&gt;p0x7fbc540053d0</title>
+<path d="M107.8689,-229.1259C129.5515,-225.206 155.6489,-220.4879 177.124,-216.6054"/>
+<polygon points="178.0377,-219.9971 187.2555,-214.7738 176.7923,-213.1087 178.0377,-219.9971"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fbc54005330</title>
+<ellipse cx="64.3148" cy="-183" rx="48.1303" ry="18"/>
+<text text-anchor="middle" x="64.3148" y="-178.2">zero_sy</text>
+</g>
+<g class="m-edge">
+<title>p0x7fbc54005330&#45;&gt;p0x7fbc540053d0</title>
+<path d="M108.6964,-190.4506C130.3587,-194.0871 156.2696,-198.4369 177.554,-202.01"/>
+<polygon points="177.1506,-205.4912 187.5921,-203.6952 178.3096,-198.5878 177.1506,-205.4912"/>
+</g>
+<g class="m-edge">
+<title>p0x7fbc54005470&#45;&gt;p0x562f9807b440</title>
+<path d="M546.5032,-193.8094C602.807,-191.6034 689.8736,-188.192 751.1064,-185.7929"/>
+<polygon points="751.6079,-189.276 761.4632,-185.3871 751.3338,-182.2814 751.6079,-189.276"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807b110</title>
+<ellipse cx="1282.3532" cy="-88" rx="29.4575" ry="18"/>
+<text text-anchor="middle" x="1282.3532" y="-83.2">free</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b220&#45;&gt;p0x562f9807b110</title>
+<path d="M1216.5926,-88C1224.7767,-88 1233.914,-88 1242.7122,-88"/>
+<polygon points="1242.8073,-91.5001 1252.8073,-88 1242.8073,-84.5001 1242.8073,-91.5001"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fbc5400bf40</title>
+<ellipse cx="822.3885" cy="-88" rx="48.8351" ry="18"/>
+<text text-anchor="middle" x="822.3885" y="-83.2">d2h_mx</text>
+</g>
+<g class="m-edge">
+<title>p0x7fbc5400bf40&#45;&gt;p0x562f9807b220</title>
+<path d="M871.4677,-88C945.7606,-88 1085.1563,-88 1151.795,-88"/>
+<polygon points="1151.8444,-91.5001 1161.8443,-88 1151.8443,-84.5001 1151.8444,-91.5001"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fbc54008020</title>
+<ellipse cx="822.3885" cy="-34" rx="48.8351" ry="18"/>
+<text text-anchor="middle" x="822.3885" y="-29.2">d2h_my</text>
+</g>
+<g class="m-edge">
+<title>p0x7fbc54008020&#45;&gt;p0x562f9807b220</title>
+<path d="M868.0944,-40.73C941.3636,-51.5184 1083.7365,-72.4821 1151.5118,-82.4616"/>
+<polygon points="1151.3236,-85.9716 1161.7268,-83.9657 1152.3434,-79.0462 1151.3236,-85.9716"/>
+</g>
+</g>
+</svg>
+</div><p>The main cudaFlow task, <code>update_means</code>, must not run before all required data has settled down. It precedes a condition task that circles back to itself until we reach <code>M</code> iterations. When iteration completes, the condition task directs the execution path to the cudaFlow, <code>h2d</code>, to copy the results of clusters to <code>h_mx</code> and <code>h_my</code> and then deallocate all GPU memory.</p></section><section id="BuiltInPredicate"><h2><a href="#BuiltInPredicate">Built-in Predicate</a></h2><p>We observe the GPU task graph parameters remain <em>unchanged</em> across all k-means iterations. In this case, we can leverage tf::cudaFlow::join_until or tf::cudaFlow::join_n to run it repeatedly without conditional tasking.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">kmeans</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">){</span>
 
   <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">zero_c</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_c</span><span class="p">,</span> <span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_c&quot;</span><span class="p">);</span>
   <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">zero_sx</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_sx</span><span class="p">,</span> <span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_sx&quot;</span><span class="p">);</span>
@@ -538,7 +987,248 @@
 <span class="n">kmeans</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">allocate_sx</span><span class="p">,</span> <span class="n">allocate_sy</span><span class="p">,</span> <span class="n">allocate_c</span><span class="p">,</span> <span class="n">h2d</span><span class="p">)</span>
       <span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span>
 
-<span class="n">stop</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">free</span><span class="p">);</span></pre><p>At the last line of the cudaFlow closure, we call <code>cf.join_n(M)</code> to ask the executor to repeatedly run the cudaFlow by <code>M</code> times and then join. Compared with the version using conditional tasking, the cudaFlow here is created only one time and thus the overhead is reduced.</p><img class="m-image" src="kmeans_5.svg" alt="Image" style="width: 100%;" /><p>We can see from the above taskflow the condition task is removed.</p></section><section id="KMeansBenchmarking"><h2><a href="#KMeansBenchmarking">Benchmarking</a></h2><p>We run three versions of k-means, sequential CPU, parallel CPUs, and one GPU, on a machine of 6 Intel i7-8700 CPUs at 3.20GHz and a Nvidia RTX 2080 GPU using various numbers of 2D point counts and iterations.</p><table class="m-table"><thead><tr><th>N</th><th>K</th><th>M</th><th>CPU Sequential</th><th>CPU Parallel</th><th>GPU (conditional taksing)</th><th>GPU (with predicate)</th></tr></thead><tbody><tr><td>10</td><td>5</td><td>10</td><td>0.14 ms</td><td>77 ms</td><td>1 ms</td><td>1 ms</td></tr><tr><td>100</td><td>10</td><td>100</td><td>0.56 ms</td><td>86 ms</td><td>7 ms</td><td>1 ms</td></tr><tr><td>1000</td><td>10</td><td>1000</td><td>10 ms</td><td>98 ms</td><td>55 ms</td><td>13 ms</td></tr><tr><td>10000</td><td>10</td><td>10000</td><td>1006 ms</td><td>713 ms</td><td>458 ms</td><td>183 ms</td></tr><tr><td>100000</td><td>10</td><td>100000</td><td>102483 ms</td><td>49966 ms</td><td>7952 ms</td><td>4725 ms</td></tr></tbody></table><p>When the number of points is larger than 10K, both parallel CPU and GPU implementations start to pick up the speed over than the sequential version. We can see using the built-in predicate of cudaFlow is two times faster than conditional tasking.</p></section>
+<span class="n">stop</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">free</span><span class="p">);</span></pre><p>At the last line of the cudaFlow closure, we call <code>cf.join_n(M)</code> to ask the executor to repeatedly run the cudaFlow by <code>M</code> times and then join. Compared with the version using conditional tasking, the cudaFlow here is created only one time and thus the overhead is reduced.</p><div class="m-graph"><svg style="width: 112.750rem; height: 28.750rem;" viewBox="0.00 0.00 1804.10 460.00">
+<g transform="scale(1 1) rotate(0) translate(4 456)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x55764dbce0d0</title>
+<polygon points="140.0329,-220 140.0329,-368 590.0329,-368 590.0329,-220 140.0329,-220"/>
+<text text-anchor="middle" x="365.0329" y="-351.2">cudaFlow: h2d</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x55764dbce1e0</title>
+<polygon points="1046.0329,-136 1046.0329,-444 1377.0329,-444 1377.0329,-136 1046.0329,-136"/>
+<text text-anchor="middle" x="1211.5329" y="-427.2">cudaFlow: update_means</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x55764dbce2f0</title>
+<polygon points="1385.0329,-64 1385.0329,-212 1615.0329,-212 1615.0329,-64 1385.0329,-64"/>
+<text text-anchor="middle" x="1500.0329" y="-195.2">cudaFlow: d2h</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x55764dbcd960</title>
+<ellipse cx="65.0329" cy="-318" rx="65.0658" ry="18"/>
+<text text-anchor="middle" x="65.0329" y="-313.2">allocate_px</text>
+</g>
+<g class="m-node">
+<title>p0x55764dbce0d0</title>
+<polygon points="563.0329,-264 560.0329,-268 539.0329,-268 536.0329,-264 509.0329,-264 509.0329,-228 563.0329,-228 563.0329,-264"/>
+<text text-anchor="middle" x="536.0329" y="-241.2">h2d</text>
+</g>
+<g class="m-edge">
+<title>p0x55764dbcd960&#45;&gt;p0x55764dbce0d0</title>
+<path d="M111.8383,-305.3303C119.8737,-303.3861 128.1676,-301.5228 136.0329,-300 268.217,-274.4085 427.3043,-256.8133 498.4518,-249.6271"/>
+<polygon points="499.0957,-253.0803 508.698,-248.6031 498.3995,-246.115 499.0957,-253.0803"/>
+</g>
+<g class="m-node">
+<title>p0x55764dbce1e0</title>
+<polygon points="1368.8923,-180 1365.8923,-184 1344.8923,-184 1341.8923,-180 1247.1734,-180 1247.1734,-144 1368.8923,-144 1368.8923,-180"/>
+<text text-anchor="middle" x="1308.0329" y="-157.2">update_means</text>
+</g>
+<g class="m-edge">
+<title>p0x55764dbce0d0&#45;&gt;p0x55764dbce1e0</title>
+<path d="M563.0561,-243.0596C670.8832,-231.3272 1072.4588,-187.6324 1237.0158,-169.7272"/>
+<polygon points="1237.4727,-173.1983 1247.0354,-168.637 1236.7154,-166.2394 1237.4727,-173.1983"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x55764dbcda70</title>
+<ellipse cx="665.0329" cy="-318" rx="65.0658" ry="18"/>
+<text text-anchor="middle" x="665.0329" y="-313.2">allocate_py</text>
+</g>
+<g class="m-edge">
+<title>p0x55764dbcda70&#45;&gt;p0x55764dbce0d0</title>
+<path d="M636.0828,-301.8418C617.1438,-291.2712 592.258,-277.3815 572.044,-266.0992"/>
+<polygon points="573.5612,-262.9378 563.1234,-261.1203 570.1496,-269.0502 573.5612,-262.9378"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x55764dbcdb80</title>
+<ellipse cx="816.0329" cy="-318" rx="68.0088" ry="18"/>
+<text text-anchor="middle" x="816.0329" y="-313.2">allocate_mx</text>
+</g>
+<g class="m-edge">
+<title>p0x55764dbcdb80&#45;&gt;p0x55764dbce0d0</title>
+<path d="M766.9402,-305.3762C711.6221,-291.1515 622.9429,-268.3483 573.1162,-255.5357"/>
+<polygon points="573.9514,-252.1367 563.3948,-253.0359 572.208,-258.9161 573.9514,-252.1367"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x55764dbcdc90</title>
+<ellipse cx="970.0329" cy="-318" rx="68.0088" ry="18"/>
+<text text-anchor="middle" x="970.0329" y="-313.2">allocate_my</text>
+</g>
+<g class="m-edge">
+<title>p0x55764dbcdc90&#45;&gt;p0x55764dbce0d0</title>
+<path d="M920.0384,-305.7047C911.0732,-303.6737 901.796,-301.6843 893.0329,-300 777.2849,-277.7535 638.9724,-259.0546 573.6878,-250.6937"/>
+<polygon points="573.8419,-247.1851 563.4801,-249.3946 572.9582,-254.1291 573.8419,-247.1851"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x55764dbcdda0</title>
+<ellipse cx="1449.0329" cy="-246" rx="64.3605" ry="18"/>
+<text text-anchor="middle" x="1449.0329" y="-241.2">allocate_sx</text>
+</g>
+<g class="m-edge">
+<title>p0x55764dbcdda0&#45;&gt;p0x55764dbce1e0</title>
+<path d="M1415.691,-230.462C1404.5007,-224.95 1392.0659,-218.4955 1381.0329,-212 1367.5884,-204.0848 1353.3218,-194.5803 1341.0015,-185.9933"/>
+<polygon points="1343.0075,-183.1252 1332.817,-180.2259 1338.9753,-188.8472 1343.0075,-183.1252"/>
+</g>
+<g class="m-node">
+<title>p0x55764dbce2f0</title>
+<polygon points="1469.0329,-108 1466.0329,-112 1445.0329,-112 1442.0329,-108 1415.0329,-108 1415.0329,-72 1469.0329,-72 1469.0329,-108"/>
+<text text-anchor="middle" x="1442.0329" y="-85.2">d2h</text>
+</g>
+<g class="m-edge">
+<title>p0x55764dbce1e0&#45;&gt;p0x55764dbce2f0</title>
+<path d="M1341.8468,-143.8314C1361.3909,-133.33 1385.9753,-120.1205 1405.8994,-109.415"/>
+<polygon points="1407.8242,-112.3541 1414.9765,-104.5378 1404.5109,-106.1879 1407.8242,-112.3541"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x55764dbcdeb0</title>
+<ellipse cx="1596.0329" cy="-246" rx="64.3605" ry="18"/>
+<text text-anchor="middle" x="1596.0329" y="-241.2">allocate_sy</text>
+</g>
+<g class="m-edge">
+<title>p0x55764dbcdeb0&#45;&gt;p0x55764dbce1e0</title>
+<path d="M1559.7166,-230.9561C1547.896,-226.6807 1534.5847,-222.5088 1522.0329,-220 1491.2579,-213.8488 1410.7373,-222.1284 1381.0329,-212 1364.8123,-206.4693 1348.8656,-196.2633 1336.0346,-186.5074"/>
+<polygon points="1338.0951,-183.6747 1328.0811,-180.215 1333.7519,-189.1644 1338.0951,-183.6747"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x55764dbcdfc0</title>
+<ellipse cx="1737.0329" cy="-246" rx="59.1273" ry="18"/>
+<text text-anchor="middle" x="1737.0329" y="-241.2">allocate_c</text>
+</g>
+<g class="m-edge">
+<title>p0x55764dbcdfc0&#45;&gt;p0x55764dbce1e0</title>
+<path d="M1704.1489,-230.8655C1693.2093,-226.5289 1680.809,-222.3441 1669.0329,-220 1637.6365,-213.7504 1411.4785,-221.8923 1381.0329,-212 1364.6142,-206.6653 1348.5427,-196.3786 1335.6776,-186.5158"/>
+<polygon points="1337.7119,-183.6611 1327.715,-180.152 1333.3416,-189.1293 1337.7119,-183.6611"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fc258000ba0</title>
+<ellipse cx="536.0329" cy="-318" rx="45.892" ry="18"/>
+<text text-anchor="middle" x="536.0329" y="-313.2">h2d_px</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc258000ba0&#45;&gt;p0x55764dbce0d0</title>
+<path d="M536.0329,-299.8314C536.0329,-292.131 536.0329,-282.9743 536.0329,-274.4166"/>
+<polygon points="539.533,-274.4132 536.0329,-264.4133 532.533,-274.4133 539.533,-274.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fc258000c40</title>
+<ellipse cx="426.0329" cy="-318" rx="45.892" ry="18"/>
+<text text-anchor="middle" x="426.0329" y="-313.2">h2d_py</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc258000c40&#45;&gt;p0x55764dbce0d0</title>
+<path d="M449.6307,-302.5542C464.4677,-292.8426 483.89,-280.1299 500.5612,-269.2178"/>
+<polygon points="502.5394,-272.1062 508.9896,-263.7011 498.7057,-266.2492 502.5394,-272.1062"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fc258000dd0</title>
+<ellipse cx="313.0329" cy="-318" rx="48.8351" ry="18"/>
+<text text-anchor="middle" x="313.0329" y="-313.2">h2d_mx</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc258000dd0&#45;&gt;p0x55764dbce0d0</title>
+<path d="M349.8568,-306.1107C391.2278,-292.7532 457.9836,-271.1998 499.3123,-257.856"/>
+<polygon points="500.5472,-261.1352 508.9881,-254.7319 498.3964,-254.4738 500.5472,-261.1352"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fc258000ea0</title>
+<ellipse cx="197.0329" cy="-318" rx="48.8351" ry="18"/>
+<text text-anchor="middle" x="197.0329" y="-313.2">h2d_my</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc258000ea0&#45;&gt;p0x55764dbce0d0</title>
+<path d="M233.6781,-305.9533C240.726,-303.8281 248.0783,-301.7417 255.0329,-300 341.3216,-278.3903 444.3776,-260.5915 498.5281,-251.845"/>
+<polygon points="499.366,-255.2555 508.6866,-250.218 498.2589,-248.3436 499.366,-255.2555"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x55764dbce400</title>
+<ellipse cx="1442.0329" cy="-18" rx="29.4575" ry="18"/>
+<text text-anchor="middle" x="1442.0329" y="-13.2">free</text>
+</g>
+<g class="m-edge">
+<title>p0x55764dbce2f0&#45;&gt;p0x55764dbce400</title>
+<path d="M1442.0329,-71.8314C1442.0329,-64.131 1442.0329,-54.9743 1442.0329,-46.4166"/>
+<polygon points="1445.533,-46.4132 1442.0329,-36.4133 1438.533,-46.4133 1445.533,-46.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fc2580032e0</title>
+<ellipse cx="1326.0329" cy="-394" rx="42.8965" ry="18"/>
+<text text-anchor="middle" x="1326.0329" y="-389.2">zero_c</text>
+</g>
+<g class="m-node">
+<title>p0x7fc2580034e0</title>
+<polygon points="1293.658,-336 1234.4078,-336 1230.4078,-332 1230.4078,-300 1289.658,-300 1293.658,-304 1293.658,-336"/>
+<polyline points="1289.658,-332 1230.4078,-332 "/>
+<polyline points="1289.658,-332 1289.658,-300 "/>
+<polyline points="1289.658,-332 1293.658,-336 "/>
+<text text-anchor="middle" x="1262.0329" y="-313.2">cluster</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc2580032e0&#45;&gt;p0x7fc2580034e0</title>
+<path d="M1311.5103,-376.7544C1303.399,-367.1222 1293.1264,-354.9236 1284.0462,-344.1408"/>
+<polygon points="1286.5091,-341.6318 1277.3905,-336.2371 1281.1547,-346.1407 1286.5091,-341.6318"/>
+</g>
+<g class="m-node">
+<title>p0x7fc258003580</title>
+<polygon points="1340.7049,-264 1233.3609,-264 1229.3609,-260 1229.3609,-228 1336.7049,-228 1340.7049,-232 1340.7049,-264"/>
+<polyline points="1336.7049,-260 1229.3609,-260 "/>
+<polyline points="1336.7049,-260 1336.7049,-228 "/>
+<polyline points="1336.7049,-260 1340.7049,-264 "/>
+<text text-anchor="middle" x="1285.0329" y="-241.2">new_centroid</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc2580034e0&#45;&gt;p0x7fc258003580</title>
+<path d="M1267.8368,-299.8314C1270.3236,-292.0463 1273.286,-282.7729 1276.0454,-274.1347"/>
+<polygon points="1279.4419,-275.0041 1279.1509,-264.4133 1272.7738,-272.874 1279.4419,-275.0041"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fc258003380</title>
+<ellipse cx="1217.0329" cy="-394" rx="48.1303" ry="18"/>
+<text text-anchor="middle" x="1217.0329" y="-389.2">zero_sx</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc258003380&#45;&gt;p0x7fc2580034e0</title>
+<path d="M1227.4699,-376.373C1233.0124,-367.0125 1239.9413,-355.3102 1246.1372,-344.8461"/>
+<polygon points="1249.2567,-346.4471 1251.34,-336.0591 1243.2334,-342.8806 1249.2567,-346.4471"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fc258003440</title>
+<ellipse cx="1102.0329" cy="-394" rx="48.1303" ry="18"/>
+<text text-anchor="middle" x="1102.0329" y="-389.2">zero_sy</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc258003440&#45;&gt;p0x7fc2580034e0</title>
+<path d="M1132.1277,-379.705C1157.3399,-367.7292 1193.5627,-350.5234 1221.3565,-337.3213"/>
+<polygon points="1222.8999,-340.463 1230.431,-333.0109 1219.8965,-334.14 1222.8999,-340.463"/>
+</g>
+<g class="m-edge">
+<title>p0x7fc258003580&#45;&gt;p0x55764dbce1e0</title>
+<path d="M1290.0236,-227.7733C1293.0375,-216.7657 1296.9409,-202.5098 1300.3428,-190.0854"/>
+<polygon points="1303.7868,-190.7605 1303.052,-180.1912 1297.0353,-188.9118 1303.7868,-190.7605"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fc258005800</title>
+<ellipse cx="1558.0329" cy="-162" rx="48.8351" ry="18"/>
+<text text-anchor="middle" x="1558.0329" y="-157.2">d2h_mx</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc258005800&#45;&gt;p0x55764dbce2f0</title>
+<path d="M1532.8626,-146.3771C1516.8611,-136.4451 1495.8887,-123.4278 1478.1284,-112.4041"/>
+<polygon points="1479.5193,-109.1481 1469.1771,-106.8481 1475.8277,-115.0955 1479.5193,-109.1481"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fc2580058a0</title>
+<ellipse cx="1442.0329" cy="-162" rx="48.8351" ry="18"/>
+<text text-anchor="middle" x="1442.0329" y="-157.2">d2h_my</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc2580058a0&#45;&gt;p0x55764dbce2f0</title>
+<path d="M1442.0329,-143.8314C1442.0329,-136.131 1442.0329,-126.9743 1442.0329,-118.4166"/>
+<polygon points="1445.533,-118.4132 1442.0329,-108.4133 1438.533,-118.4133 1445.533,-118.4132"/>
+</g>
+</g>
+</svg>
+</div><p>We can see from the above taskflow the condition task is removed.</p></section><section id="KMeansBenchmarking"><h2><a href="#KMeansBenchmarking">Benchmarking</a></h2><p>We run three versions of k-means, sequential CPU, parallel CPUs, and one GPU, on a machine of 6 Intel i7-8700 CPUs at 3.20GHz and a Nvidia RTX 2080 GPU using various numbers of 2D point counts and iterations.</p><table class="m-table"><thead><tr><th>N</th><th>K</th><th>M</th><th>CPU Sequential</th><th>CPU Parallel</th><th>GPU (conditional taksing)</th><th>GPU (with predicate)</th></tr></thead><tbody><tr><td>10</td><td>5</td><td>10</td><td>0.14 ms</td><td>77 ms</td><td>1 ms</td><td>1 ms</td></tr><tr><td>100</td><td>10</td><td>100</td><td>0.56 ms</td><td>86 ms</td><td>7 ms</td><td>1 ms</td></tr><tr><td>1000</td><td>10</td><td>1000</td><td>10 ms</td><td>98 ms</td><td>55 ms</td><td>13 ms</td></tr><tr><td>10000</td><td>10</td><td>10000</td><td>1006 ms</td><td>713 ms</td><td>458 ms</td><td>183 ms</td></tr><tr><td>100000</td><td>10</td><td>100000</td><td>102483 ms</td><td>49966 ms</td><td>7952 ms</td><td>4725 ms</td></tr></tbody></table><p>When the number of points is larger than 10K, both parallel CPU and GPU implementations start to pick up the speed over than the sequential version. We can see using the built-in predicate of cudaFlow is two times faster than conditional tasking.</p></section>
       </div>
     </div>
   </div>

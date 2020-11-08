@@ -41,7 +41,7 @@ int spawn(int n, tf::Subflow& sbf) {
 
 int main(int argc, char* argv[]) {
   
-  int N = 7;
+  int N = 5;
   int res;
 
   tf::Executor executor;
@@ -60,10 +60,11 @@ int main(int argc, char* argv[]) {
 }
 @endcode
 
-The spawned taskflow graph for computing up to the 7th fibonacci number is shown below:
+The spawned taskflow graph for computing up to the fifth fibonacci number is shown below:
 
 
-@image html images/fibonacci_7.svg width=100%
+<!-- @image html images/fibonacci_7.svg width=100% -->
+@dotfile images/fibonacci_7.dot
 
 Even if recursive dynamic tasking or subflows are permitted, 
 the recursion depth may not be too deep or it can cause stack overflow.

@@ -31,8 +31,8 @@
 <codeline><highlight class="normal">20:</highlight></codeline>
 <codeline><highlight class="normal">21:<sp/>executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).get();<sp/><sp/></highlight><highlight class="comment">//<sp/>execute<sp/>the<sp/>graph<sp/>to<sp/>spawn<sp/>the<sp/>subflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">22:<sp/>taskflow.<ref refid="classtf_1_1Taskflow_1a4725d8ea5ff7595d9d71593360538e00" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>taskflow<sp/>to<sp/>a<sp/>DOT<sp/>format</highlight></codeline>
-</programlisting></para><para><image type="html" name="subflow_join.svg" width="35%"></image>
-</para><para>Debrief: <itemizedlist>
+</programlisting></para><para><parblock><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/subflow-join.dot"></dotfile>
+ </para></parblock></para><para>Debrief: <itemizedlist>
 <listitem><para>Line 1-2 creates a taskflow and an executor </para></listitem>
 <listitem><para>Line 4-6 creates three tasks, A, C, and D </para></listitem>
 <listitem><para>Line 8-14 creates a task B that spawns a task dependency graph of three tasks B1, B2, and B3 </para></listitem>
@@ -53,11 +53,11 @@ Line 8-14 is the main block to enable dynamic tasking. Taskflow uses a <ulink ur
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;res]<sp/>(<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sbf)<sp/>{<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>res<sp/>=<sp/>spawn(10,<sp/>sbf);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>res<sp/>=<sp/>spawn(5,<sp/>sbf);<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting></para><para>The code above computes the 10th fibonacci number using recursive subflow. Calling <ref refid="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" kindref="member">tf::Subflow::join</ref> <emphasis>immediately</emphasis> materializes the subflow by executing all associated tasks to recursively compute fibonacci numbers. The taskflow graph is shown below:</para><para><image type="html" name="fibonacci_10.svg" width="100%"></image>
+</programlisting></para><para>The code above computes the fifth fibonacci number using recursive subflow. Calling <ref refid="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" kindref="member">tf::Subflow::join</ref> <emphasis>immediately</emphasis> materializes the subflow by executing all associated tasks to recursively compute fibonacci numbers. The taskflow graph is shown below:</para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/fibonacci_7.dot"></dotfile>
 </para><para>Our implementation to join subflows is <emphasis>recursive</emphasis> in order to preserve the thread context in each subflow task. Having a deep recursion of subflows may cause stack overflow.</para></sect1>
 <sect1 id="chapter3_1DetachASubflow">
 <title>Detach a Subflow</title>
@@ -84,11 +84,11 @@ Line 8-14 is the main block to enable dynamic tasking. Taskflow uses a <ulink ur
 <codeline><highlight class="normal">21:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal">22:<sp/>executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>execute<sp/>the<sp/>graph<sp/>to<sp/>spawn<sp/>the<sp/>subflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">22:<sp/>taskflow.<ref refid="classtf_1_1Taskflow_1a4725d8ea5ff7595d9d71593360538e00" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>taskflow<sp/>to<sp/>DOT<sp/>format</highlight></codeline>
-</programlisting></para><para>The figure below demonstrates a detached subflow based on the previous example. A detached subflow will eventually join the topology of its parent task.</para><para><image type="html" name="subflow_detach.svg" width="45%"></image>
-</para><para>Detached subflow becomes an independent graph attached to the top-most taskflow. Running a taskflow multiple times will accumulate all detached tasks in the graph. For example, running the above taskflow 10 times results in a total of 34 tasks.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1adca6cd0ce1bd7e6fa2ed2a55c9ae15e6" kindref="member">run_n</ref>(taskflow,<sp/>10).wait();</highlight></codeline>
-<codeline><highlight class="normal">assert(taskflow.<ref refid="classtf_1_1Taskflow_1af4f03bca084deb5c2228ac8936d33649" kindref="member">num_tasks</ref>()<sp/>==<sp/>34);</highlight></codeline>
+</programlisting></para><para>The figure below demonstrates a detached subflow based on the previous example. A detached subflow will eventually join the topology of its parent task.</para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/subflow-detach.dot"></dotfile>
+</para><para>Detached subflow becomes an independent graph attached to the top-most taskflow. Running a taskflow multiple times will accumulate all detached tasks in the graph. For example, running the above taskflow 5 times results in a total of 19 tasks.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1adca6cd0ce1bd7e6fa2ed2a55c9ae15e6" kindref="member">run_n</ref>(taskflow,<sp/>5).wait();</highlight></codeline>
+<codeline><highlight class="normal">assert(taskflow.<ref refid="classtf_1_1Taskflow_1af4f03bca084deb5c2228ac8936d33649" kindref="member">num_tasks</ref>()<sp/>==<sp/>19);</highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1a4725d8ea5ff7595d9d71593360538e00" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
-</programlisting></para><para>The dumped graph is shown as follows:</para><para><image type="html" name="subflow_detach_10.svg" width="100%"></image>
+</programlisting></para><para>The dumped graph is shown as follows:</para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/subflow_detach_5.dot"></dotfile>
 </para></sect1>
 <sect1 id="chapter3_1NestedSubflow">
 <title>Nested Subflow</title>
@@ -116,7 +116,7 @@ Line 8-14 is the main block to enable dynamic tasking. Taskflow uses a <ulink ur
 <codeline><highlight class="normal">22:<sp/></highlight><highlight class="comment">//<sp/>execute<sp/>the<sp/>graph<sp/>to<sp/>spawn<sp/>the<sp/>subflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">23:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>().<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).get();</highlight></codeline>
 <codeline><highlight class="normal">24:<sp/>taskflow.<ref refid="classtf_1_1Taskflow_1a4725d8ea5ff7595d9d71593360538e00" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
-</programlisting></para><para><image type="html" name="nested_subflow.svg"></image>
+</programlisting></para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/nested_subflow.dot"></dotfile>
 </para><para>Debrief: <itemizedlist>
 <listitem><para>Line 1 creates a taskflow object </para></listitem>
 <listitem><para>Line 3-20 creates a task to spawn a subflow of two tasks A1 and A2 </para></listitem>

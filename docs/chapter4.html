@@ -315,7 +315,246 @@
 <span class="mi">6</span><span class="o">:</span>
 <span class="mi">7</span><span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">task</span><span class="p">.</span><span class="n">num_dependents</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
 <span class="mi">8</span><span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">task</span><span class="p">.</span><span class="n">num_strong_dependents</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span> 
-<span class="mi">9</span><span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">task</span><span class="p">.</span><span class="n">num_weak_dependents</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span></pre><p>When you submit a task to an executor, the scheduler starts with tasks of <em>zero dependents</em> (both zero strong and weak dependencies) and continues to execute successive tasks whenever their <em>strong dependencies</em> are met. However, the scheduler skips this rule when executing a condition task and jumps directly to its successors indexed by the return value.</p><img class="m-image" src="conditional-tasking-rules.svg" alt="Image" style="width: 100%;" /><p>Each task has an <em>atomic</em> join counter to keep track of strong dependents that are met at runtime. When a task completes, the join counter is restored to the task&#x27;s strong dependency number in the graph, such that the subsequent execution can reuse the counter again.</p></section><section id="C4_CommonPitfalls"><h2><a href="#C4_CommonPitfalls">Common Pitfalls</a></h2><p>Condition tasks are handy in creasing dynamic and cyclic control flows, but they are also easy to make mistakes. It is your responsibility to ensure a taskflow is properly conditioned. Top things to avoid include <em>no source tasks</em> to start with and <em>task race</em>. The figure below shows common pitfalls and their remedies.</p><img class="m-image" src="conditional-tasking-pitfalls.svg" alt="Image" style="width: 100%;" /><p>In the error1 scenario, there is no source task for the scheduler to start with, and the simplest fix is to add a task S that has no dependents. In the error2 scenario, D might be scheduled twice by E through the strong dependency and C through the weak dependency (on return 1). To fix this problem, you can add an auxiliary task D-aux to break the mixed use of strong dependency and weak dependency. In the risky scenario, task X may not be raced if P and M is exclusively branching to X.</p><p>A good practice for avoiding mistakes of conditional tasking is to infer the execution flow of your graphs based on our scheduling rules. Make sure there is no task race.</p></section>
+<span class="mi">9</span><span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">task</span><span class="p">.</span><span class="n">num_weak_dependents</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span></pre><p>When you submit a task to an executor, the scheduler starts with tasks of <em>zero dependents</em> (both zero strong and weak dependencies) and continues to execute successive tasks whenever their <em>strong dependencies</em> are met. However, the scheduler skips this rule when executing a condition task and jumps directly to its successors indexed by the return value.</p><img class="m-image" src="conditional-tasking-rules.svg" alt="Image" style="width: 100%;" /><p>Each task has an <em>atomic</em> join counter to keep track of strong dependents that are met at runtime. When a task completes, the join counter is restored to the task&#x27;s strong dependency number in the graph, such that the subsequent execution can reuse the counter again.</p></section><section id="C4_CommonPitfalls"><h2><a href="#C4_CommonPitfalls">Common Pitfalls</a></h2><p>Condition tasks are handy in creasing dynamic and cyclic control flows, but they are also easy to make mistakes. It is your responsibility to ensure a taskflow is properly conditioned. Top things to avoid include <em>no source tasks</em> to start with and <em>task race</em>. The figure below shows common pitfalls and their remedies.</p><div class="m-graph"><svg style="width: 61.188rem; height: 22.000rem;" viewBox="0.00 0.00 979.00 352.00">
+<g transform="scale(1 1) rotate(0) translate(4 348)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_error1</title>
+<polygon points="8,-134 8,-336 187,-336 187,-134 8,-134"/>
+<text text-anchor="middle" x="97.5" y="-319.2">error1: no source tasks</text>
+</g>
+<g class="m-cluster">
+<title>cluster_fix1</title>
+<polygon points="195,-8 195,-336 345,-336 345,-8 195,-8"/>
+<text text-anchor="middle" x="270" y="-319.2">fix1: adds a source</text>
+</g>
+<g class="m-cluster">
+<title>cluster_error2</title>
+<polygon points="353,-134 353,-336 495,-336 495,-134 353,-134"/>
+<text text-anchor="middle" x="424" y="-319.2">errorf: race on D</text>
+</g>
+<g class="m-cluster">
+<title>cluster_fix2</title>
+<polygon points="503,-8 503,-336 741,-336 741,-8 503,-8"/>
+<text text-anchor="middle" x="622" y="-319.2">fix2: adds an auxiliary task</text>
+</g>
+<g class="m-cluster">
+<title>cluster_risky</title>
+<polygon points="749,-134 749,-336 963,-336 963,-134 749,-134"/>
+<text text-anchor="middle" x="856" y="-319.2">risky: X might be raced</text>
+</g>
+<g class="m-node">
+<title>e1A</title>
+<polygon points="65,-304 38,-286 65,-268 92,-286 65,-304"/>
+<text text-anchor="middle" x="65" y="-281.2">A</text>
+</g>
+<g class="m-edge">
+<title>e1A&#45;&gt;e1A</title>
+<path stroke-dasharray="5,2" d="M83.4896,-292.0233C96.7706,-293.9843 110,-291.9766 110,-286 110,-281.5643 102.7127,-279.3147 93.5255,-279.2514"/>
+<polygon points="93.2112,-275.7649 83.4896,-279.9767 93.7159,-282.7467 93.2112,-275.7649"/>
+<text text-anchor="middle" x="114.4492" y="-281.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>e1B</title>
+<ellipse cx="54" cy="-160" rx="27" ry="18"/>
+<text text-anchor="middle" x="54" y="-155.2">B</text>
+</g>
+<g class="m-edge">
+<title>e1A&#45;&gt;e1B</title>
+<path stroke-dasharray="5,2" d="M63.4936,-268.7444C61.6894,-248.0782 58.6413,-213.1635 56.4862,-188.4784"/>
+<polygon points="59.9516,-187.9287 55.5951,-178.271 52.9781,-188.5375 59.9516,-187.9287"/>
+<text text-anchor="middle" x="64.4492" y="-218.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>e1C</title>
+<ellipse cx="126" cy="-160" rx="27" ry="18"/>
+<text text-anchor="middle" x="126" y="-155.2">C</text>
+</g>
+<g class="m-edge">
+<title>e1A&#45;&gt;e1C</title>
+<path stroke-dasharray="5,2" d="M71.7611,-272.0344C81.7182,-251.4673 100.509,-212.6535 113.1435,-186.5561"/>
+<polygon points="116.4458,-187.767 117.6531,-177.2412 110.1453,-184.7167 116.4458,-187.767"/>
+<text text-anchor="middle" x="102.4492" y="-218.2">2</text>
+</g>
+<g class="m-node m-flat">
+<title>f1S</title>
+<ellipse cx="252" cy="-286" rx="27" ry="18"/>
+<text text-anchor="middle" x="252" y="-281.2">S</text>
+</g>
+<g class="m-node">
+<title>f1A</title>
+<polygon points="252,-178 225,-160 252,-142 279,-160 252,-178"/>
+<text text-anchor="middle" x="252" y="-155.2">A</text>
+</g>
+<g class="m-edge">
+<title>f1S&#45;&gt;f1A</title>
+<path d="M252,-267.9473C252,-247.0823 252,-212.4928 252,-188.1006"/>
+<polygon points="255.5001,-188.0192 252,-178.0192 248.5001,-188.0193 255.5001,-188.0192"/>
+</g>
+<g class="m-edge">
+<title>f1A&#45;&gt;f1A</title>
+<path stroke-dasharray="5,2" d="M270.4896,-166.0233C283.7706,-167.9843 297,-165.9766 297,-160 297,-155.5643 289.7127,-153.3147 280.5255,-153.2514"/>
+<polygon points="280.2112,-149.7649 270.4896,-153.9767 280.7159,-156.7467 280.2112,-149.7649"/>
+<text text-anchor="middle" x="301.4492" y="-155.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>f1B</title>
+<ellipse cx="234" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="234" y="-29.2">B</text>
+</g>
+<g class="m-edge">
+<title>f1A&#45;&gt;f1B</title>
+<path stroke-dasharray="5,2" d="M249.6468,-143.5277C246.695,-122.8653 241.588,-87.1163 238.0139,-62.0974"/>
+<polygon points="241.4659,-61.5117 236.5867,-52.1072 234.5362,-62.5017 241.4659,-61.5117"/>
+<text text-anchor="middle" x="247.4492" y="-92.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>f1C</title>
+<ellipse cx="306" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="306" y="-29.2">C</text>
+</g>
+<g class="m-edge">
+<title>f1A&#45;&gt;f1C</title>
+<path stroke-dasharray="5,2" d="M258.1945,-145.5462C267.0379,-124.9116 283.437,-86.6471 294.5326,-60.7573"/>
+<polygon points="297.7764,-62.0734 298.4986,-51.5032 291.3424,-59.3159 297.7764,-62.0734"/>
+<text text-anchor="middle" x="285.4492" y="-92.2">2</text>
+</g>
+<g class="m-node">
+<title>e2C</title>
+<polygon points="460,-304 433,-286 460,-268 487,-286 460,-304"/>
+<text text-anchor="middle" x="460" y="-281.2">C</text>
+</g>
+<g class="m-node m-flat">
+<title>e2D</title>
+<ellipse cx="388" cy="-160" rx="27" ry="18"/>
+<text text-anchor="middle" x="388" y="-155.2">D</text>
+</g>
+<g class="m-edge">
+<title>e2C&#45;&gt;e2D</title>
+<path stroke-dasharray="5,2" d="M452.2947,-272.5158C440.5341,-251.9346 417.8899,-212.3072 402.8596,-186.0043"/>
+<polygon points="405.7012,-183.9225 397.7009,-176.9766 399.6235,-187.3955 405.7012,-183.9225"/>
+<text text-anchor="middle" x="431.4492" y="-218.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>e2F</title>
+<ellipse cx="460" cy="-160" rx="27" ry="18"/>
+<text text-anchor="middle" x="460" y="-155.2">F</text>
+</g>
+<g class="m-edge">
+<title>e2C&#45;&gt;e2F</title>
+<path stroke-dasharray="5,2" d="M460,-267.9473C460,-247.0823 460,-212.4928 460,-188.1006"/>
+<polygon points="463.5001,-188.0192 460,-178.0192 456.5001,-188.0193 463.5001,-188.0192"/>
+<text text-anchor="middle" x="464.4492" y="-218.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>e2E</title>
+<ellipse cx="388" cy="-286" rx="27" ry="18"/>
+<text text-anchor="middle" x="388" y="-281.2">E</text>
+</g>
+<g class="m-edge">
+<title>e2E&#45;&gt;e2D</title>
+<path d="M388,-267.9473C388,-247.0823 388,-212.4928 388,-188.1006"/>
+<polygon points="391.5001,-188.0192 388,-178.0192 384.5001,-188.0193 391.5001,-188.0192"/>
+</g>
+<g class="m-node">
+<title>f2C</title>
+<polygon points="664,-304 637,-286 664,-268 691,-286 664,-304"/>
+<text text-anchor="middle" x="664" y="-281.2">C</text>
+</g>
+<g class="m-node m-flat">
+<title>f2Daux</title>
+<ellipse cx="622" cy="-160" rx="39.2275" ry="18"/>
+<text text-anchor="middle" x="622" y="-155.2">D&#45;aux</text>
+</g>
+<g class="m-edge">
+<title>f2C&#45;&gt;f2Daux</title>
+<path stroke-dasharray="5,2" d="M659.0171,-271.0514C652.188,-250.5641 639.7951,-213.3854 631.242,-187.7261"/>
+<polygon points="634.5436,-186.5627 628.0609,-178.1827 627.9029,-188.7764 634.5436,-186.5627"/>
+<text text-anchor="middle" x="649.4492" y="-218.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>f2F</title>
+<ellipse cx="706" cy="-160" rx="27" ry="18"/>
+<text text-anchor="middle" x="706" y="-155.2">F</text>
+</g>
+<g class="m-edge">
+<title>f2C&#45;&gt;f2F</title>
+<path stroke-dasharray="5,2" d="M668.9829,-271.0514C675.8503,-250.449 688.3443,-212.9672 696.9018,-187.2947"/>
+<polygon points="700.2372,-188.3562 700.0791,-177.7626 693.5964,-186.1426 700.2372,-188.3562"/>
+<text text-anchor="middle" x="691.4492" y="-218.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>f2D</title>
+<ellipse cx="580" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="580" y="-29.2">D</text>
+</g>
+<g class="m-edge">
+<title>f2Daux&#45;&gt;f2D</title>
+<path d="M615.9824,-141.9473C608.9566,-120.8697 597.2621,-85.7863 589.1193,-61.358"/>
+<polygon points="592.3537,-59.993 585.871,-51.613 585.713,-62.2067 592.3537,-59.993"/>
+</g>
+<g class="m-node m-flat">
+<title>f2E</title>
+<ellipse cx="538" cy="-160" rx="27" ry="18"/>
+<text text-anchor="middle" x="538" y="-155.2">E</text>
+</g>
+<g class="m-edge">
+<title>f2E&#45;&gt;f2D</title>
+<path d="M543.9285,-142.2145C550.9326,-121.2023 562.6642,-86.0074 570.8397,-61.4808"/>
+<polygon points="574.2597,-62.2887 574.1017,-51.695 567.6189,-60.075 574.2597,-62.2887"/>
+</g>
+<g class="m-node">
+<title>rP</title>
+<polygon points="906,-304 879,-286 906,-268 933,-286 906,-304"/>
+<text text-anchor="middle" x="906" y="-281.2">P</text>
+</g>
+<g class="m-node m-flat">
+<title>rQ</title>
+<ellipse cx="928" cy="-160" rx="27" ry="18"/>
+<text text-anchor="middle" x="928" y="-155.2">Q</text>
+</g>
+<g class="m-edge">
+<title>rP&#45;&gt;rQ</title>
+<path stroke-dasharray="5,2" d="M908.8311,-269.7857C912.4258,-249.1978 918.6869,-213.3388 923.0725,-188.2212"/>
+<polygon points="926.5517,-188.6431 924.824,-178.1901 919.656,-187.439 926.5517,-188.6431"/>
+<text text-anchor="middle" x="922.4492" y="-218.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>rX</title>
+<ellipse cx="856" cy="-160" rx="27" ry="18"/>
+<text text-anchor="middle" x="856" y="-155.2">X</text>
+</g>
+<g class="m-edge">
+<title>rP&#45;&gt;rX</title>
+<path stroke-dasharray="5,2" d="M900.2644,-271.5462C892.1121,-251.0025 877.0253,-212.9838 866.754,-187.1001"/>
+<polygon points="869.8875,-185.5071 862.9457,-177.5032 863.381,-188.0891 869.8875,-185.5071"/>
+<text text-anchor="middle" x="887.4492" y="-218.2">1</text>
+</g>
+<g class="m-node">
+<title>rM</title>
+<polygon points="812,-304 784.3527,-286 812,-268 839.6473,-286 812,-304"/>
+<text text-anchor="middle" x="812" y="-281.2">M</text>
+</g>
+<g class="m-edge">
+<title>rM&#45;&gt;rX</title>
+<path stroke-dasharray="5,2" d="M817.2202,-271.0514C824.4146,-250.449 837.5035,-212.9672 846.4685,-187.2947"/>
+<polygon points="849.8046,-188.3574 849.7972,-177.7626 843.196,-186.0496 849.8046,-188.3574"/>
+<text text-anchor="middle" x="840.4492" y="-218.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>rN</title>
+<ellipse cx="784" cy="-160" rx="27" ry="18"/>
+<text text-anchor="middle" x="784" y="-155.2">N</text>
+</g>
+<g class="m-edge">
+<title>rM&#45;&gt;rN</title>
+<path stroke-dasharray="5,2" d="M808.4538,-270.042C803.8699,-249.4144 795.8121,-213.1545 790.2042,-187.9189"/>
+<polygon points="793.5541,-186.8589 787.9681,-177.8563 786.7208,-188.3775 793.5541,-186.8589"/>
+<text text-anchor="middle" x="803.4492" y="-218.2">1</text>
+</g>
+</g>
+</svg>
+</div><p>In the error1 scenario, there is no source task for the scheduler to start with, and the simplest fix is to add a task S that has no dependents. In the error2 scenario, D might be scheduled twice by E through the strong dependency and C through the weak dependency (on return 1). To fix this problem, you can add an auxiliary task D-aux to break the mixed use of strong dependency and weak dependency. In the risky scenario, task X may not be raced if P and M is exclusively branching to X.</p><p>A good practice for avoiding mistakes of conditional tasking is to infer the execution flow of your graphs based on our scheduling rules. Make sure there is no task race.</p></section>
       </div>
     </div>
   </div>

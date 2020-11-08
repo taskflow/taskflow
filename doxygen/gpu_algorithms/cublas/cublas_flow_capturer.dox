@@ -27,9 +27,15 @@ and it allows users to access the computational resources of NVIDIA GPUs.
 
 @section HowToUsecublasFlowCapturer What is a cublasFlow Capturer? Why?
 
-tf::cublasFlowCapturer provides an interface over native cublas functions
+tf::cublasFlowCapturer provides an interface over native cuBLAS functions
 and allows users to express linear algebra algorithms using a <i>task graph model</i>.
-We transform the task graph into a CUDA graph using streams 
+We transform the task graph into a CUDA graph using a stream capture algorithm
+optimized for maximum concurrency.
+When a cuBLAS program is transformed into a CUDA graph,
+we can launch the entire graph using a single kernel call to largely reduce
+the kernel call overheads and efficiently overlap concurrent kernels.
+This organization is particularly suitable for large linear algebra programs
+that contain hundreds of cuBLAS operations.
 
 @section DataModelOscublasFlowCapturer Understand the Data Model
 
@@ -41,7 +47,21 @@ You must allocate required matrices and vectors in the GPU memory space,
 fill them with data, call the methods defined in tf::cublasFlowCapturer,
 and then upload the results from GPU memory space back to the host.
 
-\note We currently support only @c float and @c double data types.
+@note tf::cublasFlowCapturer currently supports only @c float 
+and @c double data types.
+
+The cuBLAS library uses <i>column-major storage</i> and 1-based indexing.
+Since C/C++ adopts row-major storage, we cannot use the native array semantics
+when matrix-matrix or matrix-vector operations are involved.
+We often need extra transposition on input matrices before these operations
+can take place correctly.
+In terms of storage, 
+a row-major matrix is equivalent to a transposed column-major matrix,
+as shown below:
+
+@f[
+A_{RowMajor} \iff A^T_{ColumnMajor}
+@f]
 
 @section cublasFlowCapturerLevel-1 Use Level-1 Methods
 
@@ -67,6 +87,10 @@ with internal stream(s) optimized for maximum concurrency.
 @section cublasFlowCapturerLeve2-1 Use Level-2 Methods
 
 We currently support the following level-2 methods:
+  
+  + tf::cublasFlowCapturer::gemv performs general matrix-vector multiplication
+  + tf::cublasFlowCapturer::c_geam performs general matrix-vector multiplication
+    on C-styled row-major layout
 
 Our level-2 methods capture the native <a href="https://docs.nvidia.com/cuda/cublas/index.html#cublas-level-2-function-reference">cublas level-2 calls</a>
 with internal stream(s) optimized for maximum concurrency.
@@ -95,6 +119,13 @@ Our level-3 methods capture the native <a href="https://docs.nvidia.com/cuda/cub
 with internal stream(s) optimized for maximum concurrency.
 
 @section cublasFlowCapturerExtension Extend to Other cuBLAS Methods
+
+tf::cublasFlowCapturer is derived from tf::cudaFlowCapturerBase
+and is created from a factory interface tf::cudaFlowCapturer::make_capturer.
+This design enables a @em flat flow graph that combines the advantages of 
+tf::cudaFlowCapturer and tf::cublasFlowCapturer
+for users to efficiently create large linear algebra applications.
+
 
 
 */
