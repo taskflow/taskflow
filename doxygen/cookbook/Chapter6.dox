@@ -60,17 +60,19 @@ The following example implements the canonical saxpy (A·X Plus Y) task graph.
 38:     tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N);  // copy dy to cpu
 39:
 40:     // launch saxpy<<<(N+255)/256, 256, 0>>>(N, 2.0f, dx, dy)
-41:     tf::cudaTask kernel = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy);
-42:
-43:     kernel.succeed(h2d_x, h2d_y)
-44:           .precede(d2h_x, d2h_y);
-45:   });
-46:   cudaflow.succeed(allocate_x, allocate_y);  // overlap memory alloc
-47:  
-48:   executor.run(taskflow).wait();
-49:
-50:   taskflow.dump(std::cout);                  // dump the taskflow
-51: }
+41:     tf::cudaTask kernel = cf.kernel(
+42:       (N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy
+43:     );
+44:
+45:     kernel.succeed(h2d_x, h2d_y)
+46:           .precede(d2h_x, d2h_y);
+48:   });
+49:   cudaflow.succeed(allocate_x, allocate_y);  // overlap memory alloc
+50:  
+51:   executor.run(taskflow).wait();
+52:
+53:   taskflow.dump(std::cout);                  // dump the taskflow
+54: }
 @endcode
 
 <!-- @image html images/saxpy.svg width=60% -->
@@ -82,8 +84,8 @@ Debrief:
 @li Lines 19-20 declare two host vectors, @c hx and @c hy
 @li Lines 22-23 declare two device vector pointers, @c dx and @c dy
 @li Lines 25-31 declare two tasks to allocate memory for @c dx and @c dy on device, each of <tt>N*sizeof(float)</tt> bytes
-@li Lines 33-45 create a %cudaFlow to capture kernel work in a graph (two host-to-device data transfer tasks, one saxpy kernel task, and two device-to-host data transfer tasks)
-@li Lines 46-48 define the task dependency between host tasks and the %cudaFlow tasks and execute the taskflow
+@li Lines 33-48 create a %cudaFlow to define a GPU task graph (two host-to-device data transfer tasks, one saxpy kernel task, and two device-to-host data transfer tasks)
+@li Lines 49-53 define the task dependency between host tasks and the %cudaFlow tasks and execute the taskflow
 
 %Taskflow does not expend unnecessary efforts on kernel programming but focus on 
 tasking CUDA operations with CPU work.
@@ -173,7 +175,7 @@ that takes the GPU device identifier in the first argument.
 32:  
 33:   taskflow.emplace_on([&](tf::cudaFlow& cf){
 34:     // We create a cudaFlow on GPU 0. The scheduler will switch to 
-35:     // GPU context 2 when running this callable.
+35:     // GPU context 0 when running this callable.
 36:
 37:     // launch the first saxpy kernel on GPU 1
 38:     cf.kernel_on(1, (N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z1);
@@ -273,7 +275,7 @@ that take action on GPU memory area in @em bytes.
 Typed data operations such as @c copy, @c fill, and @c zero,
 take <i>logical count</i> of elements.
 For instance, the following three methods have the same result of zeroing
-<tt>sizeof(int)*count</tt> bytes of the device memory area pointed by @c target.
+<tt>sizeof(int)*count</tt> bytes of the device memory area pointed to by @c target.
 
 @code{.cpp}
 int* target;
@@ -318,43 +320,48 @@ using one %cudaFlow per GPU operation.
 
 @code{.cpp}
 tf::Task h2d_x = taskflow.emplace([&](tf::cudaFlow& cf) {
-  cf.copy(dx, hx.data(), N);
-};
+  cf.copy(dx, hx.data(), N).name("h2d_x");
+}).name("h2d_x");
 
 tf::Task h2d_y = taskflow.emplace([&](tf::cudaFlow& cf) {
-  cf.copy(dy, hy.data(), N);
-};
+  cf.copy(dy, hy.data(), N).name("h2d_y");
+}).name("h2d_y");
 
 tf::Task d2h_x = taskflow.emplace([&](tf::cudaFlow& cf) {
-  cf.copy(hx.data(), dx, N);
-};
+  cf.copy(hx.data(), dx, N).name("d2h_x");
+}).name("d2h_x");
 
 tf::Task d2h_y = taskflow.emplace([&](tf::cudaFlow& cf) {
-  cf.copy(hy.data(), dy, N);
-};
+  cf.copy(hy.data(), dy, N).name("d2h_y");
+}).name("d2h_y");
 
 tf::Task kernel = taskflow.emplace([&](tf::cudaFlow& cf) {
-  cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy);
-};
+  cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy).name("saxpy");
+}).name("kernel");
 
 kernel.succeed(h2d_x, h2d_y)
       .precede(d2h_x, d2h_y);
 @endcode
+
+@dotfile images/saxpy_5_cudaflow.dot
 
 The following code aggregates the five GPU operations
 using one %cudaFlow and achieves better performance.
 
 @code{.cpp}
 tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
-  tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N);
-  tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N);
-  tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N);
-  tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N);
-  tf::cudaTask kernel = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy);
-  kernel.succeed(h2d_x, h2d_y)
-        .precede(d2h_x, d2h_y);
+  tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
+  tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
+  tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
+  tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
+  tf::cudaTask saxpy = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy)
+                         .name("saxpy");
+  saxpy.succeed(h2d_x, h2d_y)
+       .precede(d2h_x, d2h_y);
 });
 @endcode
+
+@dotfile images/saxpy_1_cudaflow.dot
 
 @note
 We encourage users to study and understand the parallel structure of their applications,
@@ -414,22 +421,23 @@ for the standalone use.
 @code{.cpp}
 tf::cudaFlow cf;  // create a standalone cudaFlow
 
-tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N);
-tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N);
-tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N);
-tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N);
-tf::cudaTask kernel = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy);
+tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
+tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
+tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
+tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
+tf::cudaTask saxpy = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy)
+                       .name("saxpy");
 
-kernel.succeed(h2d_x, h2d_y)   // kernel runs after  host-to-device copy
-      .precede(d2h_x, d2h_y);  // kernel runs before device-to-host copy
+saxpy.succeed(h2d_x, h2d_y)   // kernel runs after  host-to-device copy
+     .precede(d2h_x, d2h_y);  // kernel runs before device-to-host copy
 
-cf.offload();  // offload and runs the cudaFlow once
+cf.offload();  // offload and runs the standalone cudaFlow once
 @endcode
 
 @attention
 When using %cudaFlow in a standalone environment, it is your choice
-and responsibility to decide its GPU context such that GPU memory operations
-are correctly performed.
+and responsibility to decide its GPU context and ensure that GPU memory 
+operations are correctly performed.
 
 */
 

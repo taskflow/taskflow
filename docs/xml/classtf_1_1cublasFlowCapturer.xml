@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="classtf_1_1cublasFlowCapturer" kind="class" language="C++" prot="public">
     <compoundname>tf::cublasFlowCapturer</compoundname>
     <basecompoundref refid="classtf_1_1cudaFlowCapturerBase" prot="public" virt="non-virtual">tf::cudaFlowCapturerBase</basecompoundref>
@@ -16,7 +16,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="713" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="713" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="713" column="33" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="713" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -26,12 +26,13 @@
         <argsstring>()=default</argsstring>
         <name>cublasFlowCapturer</name>
         <briefdescription>
-<para>constructs a cublas flow capturer </para>        </briefdescription>
+<para>constructs a cublas flow capturer </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="73" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="73" column="5"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a2701b05226ef193e45482c1bb56f93de" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>cublasHandle_t</type>
@@ -39,13 +40,16 @@
         <argsstring>()</argsstring>
         <name>native_handle</name>
         <briefdescription>
-<para>gets the native cublas handle associated with this cublasFlowCapturer </para>        </briefdescription>
+<para>gets the native cublas handle associated with this cublasFlowCapturer </para>
+        </briefdescription>
         <detaileddescription>
-<para><simplesect kind="return"><para>a native cublas handle of type cublasHandle_t </para></simplesect>
-</para>        </detaileddescription>
+<para><simplesect kind="return"><para>a native cublas handle of type cublasHandle_t </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="80" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="726" bodyend="728"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="80" column="20" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="726" bodyend="728"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a5e5d2a2502fcfe0094d5ac354995cb71" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -82,14 +86,18 @@
           <declname>incd</declname>
         </param>
         <briefdescription>
-<para>copies vector data from host to device </para>        </briefdescription>
+<para>copies vector data from host to device </para>
+        </briefdescription>
         <detaileddescription>
-<para>This method copies <computeroutput>n</computeroutput> elements from a vector <computeroutput>h</computeroutput> in host memory space to a vector <computeroutput>d</computeroutput> in GPU memory space. The storage spacing between consecutive elements is given by <computeroutput>inch</computeroutput> for the source vector <computeroutput>h</computeroutput> and by <computeroutput>incd</computeroutput> for the destination vector <computeroutput>d</computeroutput>.</para><para>This method calls native <computeroutput>cublasSetVectorAsync</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>This method copies <computeroutput>n</computeroutput> elements from a vector <computeroutput>h</computeroutput> in host memory space to a vector <computeroutput>d</computeroutput> in GPU memory space. The storage spacing between consecutive elements is given by <computeroutput>inch</computeroutput> for the source vector <computeroutput>h</computeroutput> and by <computeroutput>incd</computeroutput> for the destination vector <computeroutput>d</computeroutput>.</para>
+<para>This method calls native <computeroutput>cublasSetVectorAsync</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type </para></parameterdescription>
+<para>data type </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -97,42 +105,49 @@
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of elements </para></parameterdescription>
+<para>number of elements </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>d</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>target device pointer </para></parameterdescription>
+<para>target device pointer </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incd</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>spacing between consecutive elements in <computeroutput>d</computeroutput> </para></parameterdescription>
+<para>spacing between consecutive elements in <computeroutput>d</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>h</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>source host pointer </para></parameterdescription>
+<para>source host pointer </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>inch</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>spacing between consecutive elements in <computeroutput>h</computeroutput> </para></parameterdescription>
+<para>spacing between consecutive elements in <computeroutput>h</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="106" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="106" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1af8f5052cbe1203d6ee3d3d40dffbb8eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -169,14 +184,18 @@
           <declname>inch</declname>
         </param>
         <briefdescription>
-<para>copies vector data from device to host </para>        </briefdescription>
+<para>copies vector data from device to host </para>
+        </briefdescription>
         <detaileddescription>
-<para>This method copies <computeroutput>n</computeroutput> elements from a vector <computeroutput>d</computeroutput> in GPU memory space to a vector <computeroutput>h</computeroutput> in host memory space. The storage spacing between consecutive elements is given by <computeroutput>inch</computeroutput> for the target vector <computeroutput>h</computeroutput> and by <computeroutput>incd</computeroutput> for the source vector <computeroutput>d</computeroutput>.</para><para>This method calls native <computeroutput>cublasGetVectorAsync</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>This method copies <computeroutput>n</computeroutput> elements from a vector <computeroutput>d</computeroutput> in GPU memory space to a vector <computeroutput>h</computeroutput> in host memory space. The storage spacing between consecutive elements is given by <computeroutput>inch</computeroutput> for the target vector <computeroutput>h</computeroutput> and by <computeroutput>incd</computeroutput> for the source vector <computeroutput>d</computeroutput>.</para>
+<para>This method calls native <computeroutput>cublasGetVectorAsync</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type </para></parameterdescription>
+<para>data type </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -184,42 +203,49 @@
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of elements </para></parameterdescription>
+<para>number of elements </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>h</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>target host pointer </para></parameterdescription>
+<para>target host pointer </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>inch</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>spacing between consecutive elements in <computeroutput>h</computeroutput> </para></parameterdescription>
+<para>spacing between consecutive elements in <computeroutput>h</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>d</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>source device pointer </para></parameterdescription>
+<para>source device pointer </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incd</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>spacing between consecutive elements in <computeroutput>d</computeroutput> </para></parameterdescription>
+<para>spacing between consecutive elements in <computeroutput>d</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="132" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="132" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1ab1357bb1728f5fe526acef8afee7111e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -248,14 +274,17 @@
           <declname>result</declname>
         </param>
         <briefdescription>
-<para>finds the smallest index of the element of the maximum absolute magnitude </para>        </briefdescription>
+<para>finds the smallest index of the element of the maximum absolute magnitude </para>
+        </briefdescription>
         <detaileddescription>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;amax</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;amax</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -263,35 +292,41 @@
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of elements in vector <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>number of elements in vector <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the memory address of the vector </para></parameterdescription>
+<para>pointer to the memory address of the vector </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incx</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>result</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the resulting index (1-based indexing)</para></parameterdescription>
+<para>the resulting index (1-based indexing)</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="156" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="156" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a7a6485c37d50b9c79205f728ab380929" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -320,14 +355,17 @@
           <declname>result</declname>
         </param>
         <briefdescription>
-<para>finds the smallest index of the element of the minimum absolute magnitude </para>        </briefdescription>
+<para>finds the smallest index of the element of the minimum absolute magnitude </para>
+        </briefdescription>
         <detaileddescription>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;amin</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;amin</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -335,35 +373,41 @@
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of elements in vector <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>number of elements in vector <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the memory address of the vector </para></parameterdescription>
+<para>pointer to the memory address of the vector </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incx</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>result</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the resulting index (1-based indexing)</para></parameterdescription>
+<para>the resulting index (1-based indexing)</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="176" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="176" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1ab7672cee3d219ccc75c48b62cf1d1bad" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -392,14 +436,17 @@
           <declname>result</declname>
         </param>
         <briefdescription>
-<para>finds the sum of absolute values of the elements over a vector </para>        </briefdescription>
+<para>finds the sum of absolute values of the elements over a vector </para>
+        </briefdescription>
         <detaileddescription>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;asum</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;asum</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -407,35 +454,41 @@
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of elements in vector <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>number of elements in vector <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the memory address of the vector </para></parameterdescription>
+<para>pointer to the memory address of the vector </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incx</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>result</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the result</para></parameterdescription>
+<para>the result</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="195" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="195" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a56f8649d43652597da1c9b0a5f88b0ee" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -472,14 +525,20 @@
           <declname>incy</declname>
         </param>
         <briefdescription>
-<para>multiples a vector by a scalar and adds it to a vector </para>        </briefdescription>
+<para>multiples a vector by a scalar and adds it to a vector </para>
+        </briefdescription>
         <detaileddescription>
-<para>This function multiplies the vector <computeroutput>x</computeroutput> by the scalar <computeroutput>alpha</computeroutput> and adds it to the vector <computeroutput>y</computeroutput> overwriting the latest vector with the result. Hence, the performed operation is:</para><para><computeroutput>y[j] = alpha * x[k] + y[j]</computeroutput>,</para><para>where <computeroutput>j</computeroutput> and <computeroutput>k</computeroutput> are indices of <computeroutput>n</computeroutput> elements with step sizes <computeroutput>incy</computeroutput> and <computeroutput>incx</computeroutput>.</para><para>This method calls native <computeroutput>cublas&lt;t&gt;asum</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>This function multiplies the vector <computeroutput>x</computeroutput> by the scalar <computeroutput>alpha</computeroutput> and adds it to the vector <computeroutput>y</computeroutput> overwriting the latest vector with the result. Hence, the performed operation is:</para>
+<para><computeroutput>y[j] = alpha * x[k] + y[j]</computeroutput>,</para>
+<para>where <computeroutput>j</computeroutput> and <computeroutput>k</computeroutput> are indices of <computeroutput>n</computeroutput> elements with step sizes <computeroutput>incy</computeroutput> and <computeroutput>incx</computeroutput>.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;asum</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -487,49 +546,57 @@
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of elements in vectors <computeroutput>x</computeroutput> and <computeroutput>y</computeroutput> </para></parameterdescription>
+<para>number of elements in vectors <computeroutput>x</computeroutput> and <computeroutput>y</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>alpha</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>scalar used to multiplication </para></parameterdescription>
+<para>scalar used to multiplication </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the memory address of the vector <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>pointer to the memory address of the vector <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incx</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>y</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the memory address of the vector <computeroutput>y</computeroutput> </para></parameterdescription>
+<para>pointer to the memory address of the vector <computeroutput>y</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incy</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>y</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>y</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="225" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="225" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1af315b411bcaa2bd2bc1436f7f2ca5e21" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -562,14 +629,21 @@
           <declname>incy</declname>
         </param>
         <briefdescription>
-<para>copies a vector to another vector </para>        </briefdescription>
+<para>copies a vector to another vector </para>
+        </briefdescription>
         <detaileddescription>
-<para>This function copies <computeroutput>n</computeroutput> elements from a vector <computeroutput>x</computeroutput> of a step size <computeroutput>incx</computeroutput> to another vector <computeroutput>y</computeroutput> of step size <computeroutput>incy</computeroutput>.</para><para>adds it to the vector <computeroutput>y</computeroutput> overwriting the latest vector with the result. Hence, the performed operation is:</para><para><computeroutput>y[j] = x[k]</computeroutput>,</para><para>where <computeroutput>j</computeroutput> and <computeroutput>k</computeroutput> are indices of <computeroutput>n</computeroutput> elements with step sizes <computeroutput>incy</computeroutput> and <computeroutput>incx</computeroutput>.</para><para>This method calls native <computeroutput>cublas&lt;t&gt;copy</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>This function copies <computeroutput>n</computeroutput> elements from a vector <computeroutput>x</computeroutput> of a step size <computeroutput>incx</computeroutput> to another vector <computeroutput>y</computeroutput> of step size <computeroutput>incy</computeroutput>.</para>
+<para>adds it to the vector <computeroutput>y</computeroutput> overwriting the latest vector with the result. Hence, the performed operation is:</para>
+<para><computeroutput>y[j] = x[k]</computeroutput>,</para>
+<para>where <computeroutput>j</computeroutput> and <computeroutput>k</computeroutput> are indices of <computeroutput>n</computeroutput> elements with step sizes <computeroutput>incy</computeroutput> and <computeroutput>incx</computeroutput>.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;copy</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -577,42 +651,49 @@
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of elements to copy </para></parameterdescription>
+<para>number of elements to copy </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the memory address of the vector <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>pointer to the memory address of the vector <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incx</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>y</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the memory address of the vector <computeroutput>y</computeroutput> </para></parameterdescription>
+<para>pointer to the memory address of the vector <computeroutput>y</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incy</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>y</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>y</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="258" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="258" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1afdfa01d9f277051e44d7ed9663555b52" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -649,14 +730,18 @@
           <declname>result</declname>
         </param>
         <briefdescription>
-<para>computes the dot product of two vectors </para>        </briefdescription>
+<para>computes the dot product of two vectors </para>
+        </briefdescription>
         <detaileddescription>
-<para><computeroutput>sum += x[i] * y[i]</computeroutput></para><para>This method calls native <computeroutput>cublas&lt;t&gt;dot</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para><computeroutput>sum += x[i] * y[i]</computeroutput></para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;dot</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -664,49 +749,57 @@
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of elements to perform the dot product </para></parameterdescription>
+<para>number of elements to perform the dot product </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the memory address of the vector <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>pointer to the memory address of the vector <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incx</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>y</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the memory address of the vector <computeroutput>y</computeroutput> </para></parameterdescription>
+<para>pointer to the memory address of the vector <computeroutput>y</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incy</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>y</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>y</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>result</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the resulting dot product</para></parameterdescription>
+<para>the resulting dot product</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="281" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="281" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a8000fc6dbbb6f6f5a033f1b365e80d38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -735,14 +828,17 @@
           <declname>result</declname>
         </param>
         <briefdescription>
-<para>computes the Euclidean norm of a vector </para>        </briefdescription>
+<para>computes the Euclidean norm of a vector </para>
+        </briefdescription>
         <detaileddescription>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;nrm2</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;nrm2</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -750,35 +846,41 @@
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of elements in vector <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>number of elements in vector <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the memory address of the vector </para></parameterdescription>
+<para>pointer to the memory address of the vector </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incx</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>result</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the result</para></parameterdescription>
+<para>the result</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="300" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="300" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1adb8f5d3137f5ccb3469a5bdde454a8bf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -807,14 +909,17 @@
           <declname>incx</declname>
         </param>
         <briefdescription>
-<para>scales a vector by a scalar </para>        </briefdescription>
+<para>scales a vector by a scalar </para>
+        </briefdescription>
         <detaileddescription>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;scal</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;scal</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -822,35 +927,41 @@
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of elements in vector <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>number of elements in vector <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>scalar</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>scalar used for multiplication </para></parameterdescription>
+<para>scalar used for multiplication </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the memory address of the vector </para></parameterdescription>
+<para>pointer to the memory address of the vector </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incx</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="319" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="319" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a32451b05fd7eb937ce8e807b5d5abe1f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -883,14 +994,20 @@
           <declname>incy</declname>
         </param>
         <briefdescription>
-<para>swaps elements between two vectors </para>        </briefdescription>
+<para>swaps elements between two vectors </para>
+        </briefdescription>
         <detaileddescription>
-<para>This function interchanges the elements of vectors <computeroutput>x</computeroutput> and <computeroutput>y</computeroutput>. Hence, the performed operation is:</para><para><computeroutput>y[j] &lt;-&gt; x[k]</computeroutput>,</para><para>where <computeroutput>j</computeroutput> is the index of element in <computeroutput>y</computeroutput> with a step size <computeroutput>incy</computeroutput> and <computeroutput>k</computeroutput> is the index of element in <computeroutput>x</computeroutput> with a step size <computeroutput>incx</computeroutput>.</para><para>This method calls native <computeroutput>cublas&lt;t&gt;swap</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>This function interchanges the elements of vectors <computeroutput>x</computeroutput> and <computeroutput>y</computeroutput>. Hence, the performed operation is:</para>
+<para><computeroutput>y[j] &lt;-&gt; x[k]</computeroutput>,</para>
+<para>where <computeroutput>j</computeroutput> is the index of element in <computeroutput>y</computeroutput> with a step size <computeroutput>incy</computeroutput> and <computeroutput>k</computeroutput> is the index of element in <computeroutput>x</computeroutput> with a step size <computeroutput>incx</computeroutput>.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;swap</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -898,42 +1015,49 @@
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of elements to perform the dot product </para></parameterdescription>
+<para>number of elements to perform the dot product </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the memory address of the vector <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>pointer to the memory address of the vector <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incx</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>y</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the memory address of the vector <computeroutput>y</computeroutput> </para></parameterdescription>
+<para>pointer to the memory address of the vector <computeroutput>y</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incy</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>y</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>y</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="347" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="347" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a72185bf94321948b5b3657cc9c52ad0a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -990,14 +1114,21 @@
           <declname>incy</declname>
         </param>
         <briefdescription>
-<para>performs matrix-vector multiplication </para>        </briefdescription>
+<para>performs matrix-vector multiplication </para>
+        </briefdescription>
         <detaileddescription>
-<para>This function performs matrix-vector multiplication:</para><para><computeroutput>y = alpha * op (A) * x + beta * y</computeroutput>,</para><para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, <computeroutput>A</computeroutput> is 2D matrices stored in column-major format with dimension <computeroutput>op(A)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>, and <computeroutput>x</computeroutput>, <computeroutput>y</computeroutput> are vectors with dimension <computeroutput>x</computeroutput> as <computeroutput>n</computeroutput>, and <computeroutput>y</computeroutput> as <computeroutput>m</computeroutput>.</para><para>The input matrices are in column-major storage.</para><para>This method calls native <computeroutput>cublas&lt;t&gt;gemv</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>This function performs matrix-vector multiplication:</para>
+<para><computeroutput>y = alpha * op (A) * x + beta * y</computeroutput>,</para>
+<para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, <computeroutput>A</computeroutput> is 2D matrices stored in column-major format with dimension <computeroutput>op(A)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>, and <computeroutput>x</computeroutput>, <computeroutput>y</computeroutput> are vectors with dimension <computeroutput>x</computeroutput> as <computeroutput>n</computeroutput>, and <computeroutput>y</computeroutput> as <computeroutput>m</computeroutput>.</para>
+<para>The input matrices are in column-major storage.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;gemv</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1005,84 +1136,97 @@
 <parametername>trans</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>transport operation <computeroutput>op(A)</computeroutput> </para></parameterdescription>
+<para>transport operation <computeroutput>op(A)</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>m</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of rows of matrix <computeroutput>op(A)</computeroutput> </para></parameterdescription>
+<para>number of rows of matrix <computeroutput>op(A)</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of columns of matrix <computeroutput>op(A)</computeroutput> </para></parameterdescription>
+<para>number of columns of matrix <computeroutput>op(A)</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>alpha</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the <computeroutput>alpha</computeroutput> scalar </para></parameterdescription>
+<para>pointer to the <computeroutput>alpha</computeroutput> scalar </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>A</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the address of <computeroutput>A</computeroutput> </para></parameterdescription>
+<para>pointer to the address of <computeroutput>A</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>lda</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>leading dimension of 2D array used to store the matrix <computeroutput>A</computeroutput> </para></parameterdescription>
+<para>leading dimension of 2D array used to store the matrix <computeroutput>A</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>x</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the address of <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>pointer to the address of <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incx</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>x</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>beta</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the <computeroutput>beta</computeroutput> scalar </para></parameterdescription>
+<para>pointer to the <computeroutput>beta</computeroutput> scalar </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>y</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the address of <computeroutput>y</computeroutput> </para></parameterdescription>
+<para>pointer to the address of <computeroutput>y</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>incy</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>stride between consecutive elements of <computeroutput>y</computeroutput> </para></parameterdescription>
+<para>stride between consecutive elements of <computeroutput>y</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="389" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="389" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a3a492f3f22949e0e6b1058113eb475d0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1139,12 +1283,13 @@
           <declname>incy</declname>
         </param>
         <briefdescription>
-<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1a72185bf94321948b5b3657cc9c52ad0a" kindref="member">tf::cublasFlowCapturer::gemv</ref> but operates on C-styled row-major layout </para>        </briefdescription>
+<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1a72185bf94321948b5b3657cc9c52ad0a" kindref="member">tf::cublasFlowCapturer::gemv</ref> but operates on C-styled row-major layout </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="405" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="405" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a30b437e511b5719f6253d3a9cf0a992c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1205,18 +1350,34 @@
           <declname>ldc</declname>
         </param>
         <briefdescription>
-<para>performs matrix-matrix addition and transposition </para>        </briefdescription>
+<para>performs matrix-matrix addition and transposition </para>
+        </briefdescription>
         <detaileddescription>
-<para>This function performs the matrix-matrix addition/transposition:</para><para><computeroutput>C = alpha * op(A) + beta * op(B)</computeroutput>,</para><para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, and <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> are matrices stored in column-major format with dimensions <computeroutput>op(A)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>, <computeroutput>op(B)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput> and <computeroutput>C</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>, respectively.</para><para>The operation is out-of-place if <computeroutput>C</computeroutput> does not overlap <computeroutput>A</computeroutput> or <computeroutput>B</computeroutput>.</para><para>The in-place mode supports the following two operations:</para><para><orderedlist>
-<listitem><para><computeroutput>C = alpha * C + beta * op(B)</computeroutput></para></listitem><listitem><para><computeroutput>C = alpha op(A) + beta * C</computeroutput></para></listitem></orderedlist>
-</para><para>The operation includes the following special cases:</para><para><orderedlist>
-<listitem><para>the user can reset matrix <computeroutput>C</computeroutput> to zero by setting <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> to 0</para></listitem><listitem><para>the user can transpose matrix <computeroutput>A</computeroutput> by setting <computeroutput>alpha</computeroutput> to 1 and <computeroutput>beta</computeroutput> to 0</para></listitem></orderedlist>
-</para><para>The input matrices are in column-major storage.</para><para>This method calls native <computeroutput>cublas&lt;t&gt;geam</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>This function performs the matrix-matrix addition/transposition:</para>
+<para><computeroutput>C = alpha * op(A) + beta * op(B)</computeroutput>,</para>
+<para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, and <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> are matrices stored in column-major format with dimensions <computeroutput>op(A)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>, <computeroutput>op(B)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput> and <computeroutput>C</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>, respectively.</para>
+<para>The operation is out-of-place if <computeroutput>C</computeroutput> does not overlap <computeroutput>A</computeroutput> or <computeroutput>B</computeroutput>.</para>
+<para>The in-place mode supports the following two operations:</para>
+<para><orderedlist>
+<listitem><para><computeroutput>C = alpha * C + beta * op(B)</computeroutput></para>
+</listitem><listitem><para><computeroutput>C = alpha op(A) + beta * C</computeroutput></para>
+</listitem></orderedlist>
+</para>
+<para>The operation includes the following special cases:</para>
+<para><orderedlist>
+<listitem><para>the user can reset matrix <computeroutput>C</computeroutput> to zero by setting <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> to 0</para>
+</listitem><listitem><para>the user can transpose matrix <computeroutput>A</computeroutput> by setting <computeroutput>alpha</computeroutput> to 1 and <computeroutput>beta</computeroutput> to 0</para>
+</listitem></orderedlist>
+</para>
+<para>The input matrices are in column-major storage.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;geam</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1224,91 +1385,105 @@
 <parametername>ta</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>transport operation <computeroutput>op(A)</computeroutput> </para></parameterdescription>
+<para>transport operation <computeroutput>op(A)</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>tb</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>transport operation <computeroutput>op(B)</computeroutput> </para></parameterdescription>
+<para>transport operation <computeroutput>op(B)</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>m</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of rows of matrix <computeroutput>C</computeroutput> and <computeroutput>op(A)</computeroutput> </para></parameterdescription>
+<para>number of rows of matrix <computeroutput>C</computeroutput> and <computeroutput>op(A)</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of columns of matrix <computeroutput>C</computeroutput> and <computeroutput>op(B)</computeroutput> </para></parameterdescription>
+<para>number of columns of matrix <computeroutput>C</computeroutput> and <computeroutput>op(B)</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>alpha</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the <computeroutput>alpha</computeroutput> scalar </para></parameterdescription>
+<para>pointer to the <computeroutput>alpha</computeroutput> scalar </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>A</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the address of <computeroutput>A</computeroutput> </para></parameterdescription>
+<para>pointer to the address of <computeroutput>A</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>lda</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>leading dimension of 2D array used to store the matrix <computeroutput>A</computeroutput> </para></parameterdescription>
+<para>leading dimension of 2D array used to store the matrix <computeroutput>A</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>beta</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the <computeroutput>beta</computeroutput> scalar </para></parameterdescription>
+<para>pointer to the <computeroutput>beta</computeroutput> scalar </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the address of <computeroutput>B</computeroutput> </para></parameterdescription>
+<para>pointer to the address of <computeroutput>B</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>ldb</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>leading dimension of 2D array used to store the matrix <computeroutput>B</computeroutput> </para></parameterdescription>
+<para>leading dimension of 2D array used to store the matrix <computeroutput>B</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the address of <computeroutput>C</computeroutput> </para></parameterdescription>
+<para>pointer to the address of <computeroutput>C</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>ldc</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>leading dimension of 2D array used to store the matrix <computeroutput>C</computeroutput> </para></parameterdescription>
+<para>leading dimension of 2D array used to store the matrix <computeroutput>C</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="468" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="468" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a756dc6637521ef4f2249711effd1d0f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1369,12 +1544,13 @@
           <declname>ldc</declname>
         </param>
         <briefdescription>
-<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1a30b437e511b5719f6253d3a9cf0a992c" kindref="member">tf::cublasFlowCapturer::geam</ref> but on row-major layout </para>        </briefdescription>
+<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1a30b437e511b5719f6253d3a9cf0a992c" kindref="member">tf::cublasFlowCapturer::geam</ref> but on row-major layout </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="482" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="482" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a8adbe06476f146b27bb00ba6054e5879" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1439,14 +1615,21 @@
           <declname>ldc</declname>
         </param>
         <briefdescription>
-<para>performs matrix-matrix multiplication </para>        </briefdescription>
+<para>performs matrix-matrix multiplication </para>
+        </briefdescription>
         <detaileddescription>
-<para>This function performs matrix-matrix multiplication:</para><para><computeroutput>C = alpha * op (A) * op (B) + beta * C</computeroutput>,</para><para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, and <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput> are 2D matrices stored in column-major format with dimension <computeroutput>op(A)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>k</computeroutput>, dimension <computeroutput>op(B)</computeroutput> as <computeroutput>k</computeroutput> by <computeroutput>n</computeroutput>, and <computeroutput>C</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>.</para><para>The input matrices are in column-major storage.</para><para>This method calls native <computeroutput>cublas&lt;t&gt;gemm</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>This function performs matrix-matrix multiplication:</para>
+<para><computeroutput>C = alpha * op (A) * op (B) + beta * C</computeroutput>,</para>
+<para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, and <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput> are 2D matrices stored in column-major format with dimension <computeroutput>op(A)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>k</computeroutput>, dimension <computeroutput>op(B)</computeroutput> as <computeroutput>k</computeroutput> by <computeroutput>n</computeroutput>, and <computeroutput>C</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>.</para>
+<para>The input matrices are in column-major storage.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;gemm</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1454,98 +1637,113 @@
 <parametername>ta</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>transport operation <computeroutput>op(A)</computeroutput> </para></parameterdescription>
+<para>transport operation <computeroutput>op(A)</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>tb</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>transport operation <computeroutput>op(B)</computeroutput> </para></parameterdescription>
+<para>transport operation <computeroutput>op(B)</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>m</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of rows of matrix <computeroutput>C</computeroutput> and <computeroutput>op(A)</computeroutput> </para></parameterdescription>
+<para>number of rows of matrix <computeroutput>C</computeroutput> and <computeroutput>op(A)</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of columns of matrix <computeroutput>C</computeroutput> and <computeroutput>op(B)</computeroutput> </para></parameterdescription>
+<para>number of columns of matrix <computeroutput>C</computeroutput> and <computeroutput>op(B)</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>k</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of columns of <computeroutput>op(A)</computeroutput> and rows of <computeroutput>op(B)</computeroutput> </para></parameterdescription>
+<para>number of columns of <computeroutput>op(A)</computeroutput> and rows of <computeroutput>op(B)</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>alpha</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the <computeroutput>alpha</computeroutput> scalar </para></parameterdescription>
+<para>pointer to the <computeroutput>alpha</computeroutput> scalar </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>A</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the address of <computeroutput>A</computeroutput> </para></parameterdescription>
+<para>pointer to the address of <computeroutput>A</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>lda</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>leading dimension of 2D array used to store the matrix <computeroutput>A</computeroutput> </para></parameterdescription>
+<para>leading dimension of 2D array used to store the matrix <computeroutput>A</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the address of <computeroutput>B</computeroutput> </para></parameterdescription>
+<para>pointer to the address of <computeroutput>B</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>ldb</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>leading dimension of 2D array used to store the matrix <computeroutput>B</computeroutput> </para></parameterdescription>
+<para>leading dimension of 2D array used to store the matrix <computeroutput>B</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>beta</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the <computeroutput>beta</computeroutput> scalar </para></parameterdescription>
+<para>pointer to the <computeroutput>beta</computeroutput> scalar </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the address of <computeroutput>C</computeroutput> </para></parameterdescription>
+<para>pointer to the address of <computeroutput>C</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>ldc</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>leading dimension of 2D array used to store the matrix <computeroutput>C</computeroutput> </para></parameterdescription>
+<para>leading dimension of 2D array used to store the matrix <computeroutput>C</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="529" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="529" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1aecfd3b623b457d277dca40c2e1b3c1c0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1610,12 +1808,13 @@
           <declname>ldc</declname>
         </param>
         <briefdescription>
-<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1a8adbe06476f146b27bb00ba6054e5879" kindref="member">tf::cublasFlowCapturer::gemm</ref> but operates on C-styled row-major layout </para>        </briefdescription>
+<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1a8adbe06476f146b27bb00ba6054e5879" kindref="member">tf::cublasFlowCapturer::gemm</ref> but operates on C-styled row-major layout </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="544" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="544" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a56af0e8ed80e5626fe2f594608afa405" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1687,14 +1886,21 @@
           <declname>bc</declname>
         </param>
         <briefdescription>
-<para>performs matrix-matrix multiplication over a batch of matrices </para>        </briefdescription>
+<para>performs matrix-matrix multiplication over a batch of matrices </para>
+        </briefdescription>
         <detaileddescription>
-<para>The batch must be <emphasis>uniform</emphasis>. All instances in the batch must have the same dimensions <computeroutput>(m, n, k)</computeroutput>, leading dimensions <computeroutput>(lda, ldb, ldc)</computeroutput> and transpositions <computeroutput>(ta, tb)</computeroutput> for their respective <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> matrices. The address of the input matrices and the output matrix of each instance of the batch are read from arrays of pointers passed to the function by the caller.</para><para><computeroutput>C[i]= alpha * op (A[i]) * op (B[i]) + beta * C[i], i in [0, bc)</computeroutput>,</para><para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, and <computeroutput>A</computeroutput>[i], <computeroutput>B</computeroutput>[i], and <computeroutput>C</computeroutput>[i] are 2D matrices stored in column-major format with dimension <computeroutput>op(A)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>k</computeroutput>, dimension <computeroutput>op(B)</computeroutput> as <computeroutput>k</computeroutput> by <computeroutput>n</computeroutput>, and <computeroutput>C</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>.</para><para>The input matrices are in column-major storage.</para><para>This method calls native <computeroutput>cublas&lt;t&gt;gemmBatched</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>The batch must be <emphasis>uniform</emphasis>. All instances in the batch must have the same dimensions <computeroutput>(m, n, k)</computeroutput>, leading dimensions <computeroutput>(lda, ldb, ldc)</computeroutput> and transpositions <computeroutput>(ta, tb)</computeroutput> for their respective <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> matrices. The address of the input matrices and the output matrix of each instance of the batch are read from arrays of pointers passed to the function by the caller.</para>
+<para><computeroutput>C[i]= alpha * op (A[i]) * op (B[i]) + beta * C[i], i in [0, bc)</computeroutput>,</para>
+<para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, and <computeroutput>A</computeroutput>[i], <computeroutput>B</computeroutput>[i], and <computeroutput>C</computeroutput>[i] are 2D matrices stored in column-major format with dimension <computeroutput>op(A)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>k</computeroutput>, dimension <computeroutput>op(B)</computeroutput> as <computeroutput>k</computeroutput> by <computeroutput>n</computeroutput>, and <computeroutput>C</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>.</para>
+<para>The input matrices are in column-major storage.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;gemmBatched</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1702,105 +1908,121 @@
 <parametername>ta</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>transport operation <computeroutput>op(A[i])</computeroutput> </para></parameterdescription>
+<para>transport operation <computeroutput>op(A[i])</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>tb</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>transport operation <computeroutput>op(B[i])</computeroutput> </para></parameterdescription>
+<para>transport operation <computeroutput>op(B[i])</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>m</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of rows of matrix <computeroutput>C</computeroutput>[i] and <computeroutput>op(A[i])</computeroutput> </para></parameterdescription>
+<para>number of rows of matrix <computeroutput>C</computeroutput>[i] and <computeroutput>op(A[i])</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of columns of matrix <computeroutput>C</computeroutput>[i] and <computeroutput>op(B[i])</computeroutput> </para></parameterdescription>
+<para>number of columns of matrix <computeroutput>C</computeroutput>[i] and <computeroutput>op(B[i])</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>k</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of columns of <computeroutput>op(A[i])</computeroutput> and rows of <computeroutput>op(B[i])</computeroutput> </para></parameterdescription>
+<para>number of columns of <computeroutput>op(A[i])</computeroutput> and rows of <computeroutput>op(B[i])</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>alpha</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the <computeroutput>alpha</computeroutput> scalar </para></parameterdescription>
+<para>pointer to the <computeroutput>alpha</computeroutput> scalar </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>A</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>array pointer to <computeroutput>A</computeroutput> batch </para></parameterdescription>
+<para>array pointer to <computeroutput>A</computeroutput> batch </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>lda</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>leading dimension of 2D array used to store the matrix <computeroutput>A</computeroutput>[i] </para></parameterdescription>
+<para>leading dimension of 2D array used to store the matrix <computeroutput>A</computeroutput>[i] </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>array pointer to <computeroutput>B</computeroutput> batch </para></parameterdescription>
+<para>array pointer to <computeroutput>B</computeroutput> batch </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>ldb</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>leading dimension of 2D array used to store the matrix <computeroutput>B</computeroutput>[i] </para></parameterdescription>
+<para>leading dimension of 2D array used to store the matrix <computeroutput>B</computeroutput>[i] </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>beta</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the <computeroutput>beta</computeroutput> scalar </para></parameterdescription>
+<para>pointer to the <computeroutput>beta</computeroutput> scalar </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>array pointer to <computeroutput>C</computeroutput> batch </para></parameterdescription>
+<para>array pointer to <computeroutput>C</computeroutput> batch </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>ldc</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>leading dimension of 2D array used to store the matrix <computeroutput>C</computeroutput>[i] </para></parameterdescription>
+<para>leading dimension of 2D array used to store the matrix <computeroutput>C</computeroutput>[i] </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>bc</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>batch size (number of matrices)</para></parameterdescription>
+<para>batch size (number of matrices)</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="598" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="598" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1aa9415957e3e48df65dc3baad86d05b38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1872,12 +2094,13 @@
           <declname>bc</declname>
         </param>
         <briefdescription>
-<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1a56af0e8ed80e5626fe2f594608afa405" kindref="member">tf::cublasFlowCapturer::gemm_batched</ref> but operates on C-styled row-major layout </para>        </briefdescription>
+<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1a56af0e8ed80e5626fe2f594608afa405" kindref="member">tf::cublasFlowCapturer::gemm_batched</ref> but operates on C-styled row-major layout </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="614" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="614" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a36ecdcea0f24575187e44374e583df2e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1958,14 +2181,19 @@
           <declname>bc</declname>
         </param>
         <briefdescription>
-<para>performs matrix-matrix multiplication over a batch of matrices with strided memory access </para>        </briefdescription>
+<para>performs matrix-matrix multiplication over a batch of matrices with strided memory access </para>
+        </briefdescription>
         <detaileddescription>
-<para>Here, we use <computeroutput>A</computeroutput>[i], <computeroutput>B</computeroutput>[i], <computeroutput>C</computeroutput>[i] as notation for A, B and C matrices in the <computeroutput>i-th</computeroutput> instance of the batch, implicitly assuming they are respectively address offsets <computeroutput>sA</computeroutput>, <computeroutput>sB</computeroutput>, <computeroutput>sC</computeroutput> away from <computeroutput>A</computeroutput>[i-1], <computeroutput>B</computeroutput>[i-1], <computeroutput>C</computeroutput>[i-1].</para><para>The input matrices are in column-major storage.</para><para>This method calls native <computeroutput>cublas&lt;t&gt;gemmStridedBatched</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para><para><parameterlist kind="templateparam"><parameteritem>
+<para>Here, we use <computeroutput>A</computeroutput>[i], <computeroutput>B</computeroutput>[i], <computeroutput>C</computeroutput>[i] as notation for A, B and C matrices in the <computeroutput>i-th</computeroutput> instance of the batch, implicitly assuming they are respectively address offsets <computeroutput>sA</computeroutput>, <computeroutput>sB</computeroutput>, <computeroutput>sC</computeroutput> away from <computeroutput>A</computeroutput>[i-1], <computeroutput>B</computeroutput>[i-1], <computeroutput>C</computeroutput>[i-1].</para>
+<para>The input matrices are in column-major storage.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;gemmStridedBatched</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>data type</para></parameterdescription>
+<para>data type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1973,126 +2201,148 @@
 <parametername>ta</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>transport operation <computeroutput>op(A[i])</computeroutput> </para></parameterdescription>
+<para>transport operation <computeroutput>op(A[i])</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>tb</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>transport operation <computeroutput>op(B[i])</computeroutput> </para></parameterdescription>
+<para>transport operation <computeroutput>op(B[i])</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>m</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of rows of matrix <computeroutput>C</computeroutput>[i] and <computeroutput>op(A[i])</computeroutput> </para></parameterdescription>
+<para>number of rows of matrix <computeroutput>C</computeroutput>[i] and <computeroutput>op(A[i])</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of columns of matrix <computeroutput>C</computeroutput>[i] and <computeroutput>op(B[i])</computeroutput> </para></parameterdescription>
+<para>number of columns of matrix <computeroutput>C</computeroutput>[i] and <computeroutput>op(B[i])</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>k</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of columns of <computeroutput>op(A[i])</computeroutput> and rows of <computeroutput>op(B[i])</computeroutput> </para></parameterdescription>
+<para>number of columns of <computeroutput>op(A[i])</computeroutput> and rows of <computeroutput>op(B[i])</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>alpha</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the <computeroutput>alpha</computeroutput> scalar </para></parameterdescription>
+<para>pointer to the <computeroutput>alpha</computeroutput> scalar </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>A</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to <computeroutput>A</computeroutput> batch </para></parameterdescription>
+<para>pointer to <computeroutput>A</computeroutput> batch </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>lda</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>leading dimension of 2D array used to store the matrix <computeroutput>A</computeroutput>[i] </para></parameterdescription>
+<para>leading dimension of 2D array used to store the matrix <computeroutput>A</computeroutput>[i] </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>sA</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>address offset between <computeroutput>A</computeroutput>[i] and <computeroutput>A</computeroutput>[i+1] </para></parameterdescription>
+<para>address offset between <computeroutput>A</computeroutput>[i] and <computeroutput>A</computeroutput>[i+1] </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to <computeroutput>B</computeroutput> batch </para></parameterdescription>
+<para>pointer to <computeroutput>B</computeroutput> batch </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>ldb</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>leading dimension of 2D array used to store the matrix <computeroutput>B</computeroutput>[i] </para></parameterdescription>
+<para>leading dimension of 2D array used to store the matrix <computeroutput>B</computeroutput>[i] </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>sB</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>address offset between <computeroutput>B</computeroutput>[i] and <computeroutput>B</computeroutput>[i+1] </para></parameterdescription>
+<para>address offset between <computeroutput>B</computeroutput>[i] and <computeroutput>B</computeroutput>[i+1] </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>beta</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the <computeroutput>beta</computeroutput> scalar </para></parameterdescription>
+<para>pointer to the <computeroutput>beta</computeroutput> scalar </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to <computeroutput>C</computeroutput> batch </para></parameterdescription>
+<para>pointer to <computeroutput>C</computeroutput> batch </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>ldc</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>leading dimension of 2D array used to store the matrix <computeroutput>C</computeroutput>[i] </para></parameterdescription>
+<para>leading dimension of 2D array used to store the matrix <computeroutput>C</computeroutput>[i] </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>sC</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>address offset between <computeroutput>C</computeroutput>[i] and <computeroutput>C</computeroutput>[i+1] </para></parameterdescription>
+<para>address offset between <computeroutput>C</computeroutput>[i] and <computeroutput>C</computeroutput>[i+1] </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>bc</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>batch size (number of matrices)</para></parameterdescription>
+<para>batch size (number of matrices)</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para></simplesect>
-The batch must be <emphasis>uniform</emphasis>. All instances in the batch must have the same dimensions <computeroutput>(m, n, k)</computeroutput>, leading dimensions <computeroutput>(lda, ldb, ldc)</computeroutput> and transpositions <computeroutput>(ta, tb)</computeroutput> for their respective <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> matrices. Input matrices <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput> and output matrix <computeroutput>C</computeroutput> for each instance of the batch are located at fixed address offsets from their locations in the previous instance. Pointers to <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> matrices for the first instance are passed to the function by the user along with the address <emphasis>offsets</emphasis> - <computeroutput>sA</computeroutput>, <computeroutput>sB</computeroutput> and <computeroutput>sC</computeroutput> that determine the locations of input and output matrices in future instances.</para><para><computeroutput>C + i*sC = alpha * op (A + i*sA) * op (B + i*sB) + beta * (C + i*sC), i in [0, bc)</computeroutput>,</para><para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, and <computeroutput>A</computeroutput>[i], <computeroutput>B</computeroutput>[i], and <computeroutput>C</computeroutput>[i] are 2D matrices stored in column-major format with dimension <computeroutput>op(A)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>k</computeroutput>, dimension <computeroutput>op(B)</computeroutput> as <computeroutput>k</computeroutput> by <computeroutput>n</computeroutput>, and <computeroutput>C</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>.</para><para>On certain problem sizes, it might be advantageous to create multiple gemm tasks to take advantage of concurrent kernels, rather than this method. </para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
+</simplesect>
+The batch must be <emphasis>uniform</emphasis>. All instances in the batch must have the same dimensions <computeroutput>(m, n, k)</computeroutput>, leading dimensions <computeroutput>(lda, ldb, ldc)</computeroutput> and transpositions <computeroutput>(ta, tb)</computeroutput> for their respective <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> matrices. Input matrices <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput> and output matrix <computeroutput>C</computeroutput> for each instance of the batch are located at fixed address offsets from their locations in the previous instance. Pointers to <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> matrices for the first instance are passed to the function by the user along with the address <emphasis>offsets</emphasis> - <computeroutput>sA</computeroutput>, <computeroutput>sB</computeroutput> and <computeroutput>sC</computeroutput> that determine the locations of input and output matrices in future instances.</para>
+<para><computeroutput>C + i*sC = alpha * op (A + i*sA) * op (B + i*sB) + beta * (C + i*sC), i in [0, bc)</computeroutput>,</para>
+<para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, and <computeroutput>A</computeroutput>[i], <computeroutput>B</computeroutput>[i], and <computeroutput>C</computeroutput>[i] are 2D matrices stored in column-major format with dimension <computeroutput>op(A)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>k</computeroutput>, dimension <computeroutput>op(B)</computeroutput> as <computeroutput>k</computeroutput> by <computeroutput>n</computeroutput>, and <computeroutput>C</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>.</para>
+<para>On certain problem sizes, it might be advantageous to create multiple gemm tasks to take advantage of concurrent kernels, rather than this method. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="684" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="684" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1ae57c53a1a07c0b4f73d90bf21fee4e1c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2173,12 +2423,13 @@ The batch must be <emphasis>uniform</emphasis>. All instances in the batch must 
           <declname>bc</declname>
         </param>
         <briefdescription>
-<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1ae57c53a1a07c0b4f73d90bf21fee4e1c" kindref="member">tf::cublasFlowCapturer::c_gemm_sbatched</ref> but operates on C-styled row-major layout </para>        </briefdescription>
+<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1ae57c53a1a07c0b4f73d90bf21fee4e1c" kindref="member">tf::cublasFlowCapturer::c_gemm_sbatched</ref> but operates on C-styled row-major layout </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="700" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="700" column="14"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -2197,13 +2448,15 @@ The batch must be <emphasis>uniform</emphasis>. All instances in the batch must 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="715" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="719" bodyend="723"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="715" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="719" bodyend="723"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class object to construct a cuBLAS task graph </para>    </briefdescription>
+<para>class object to construct a cuBLAS task graph </para>
+    </briefdescription>
     <detaileddescription>
-<para>cublasFlowCapturer provides a higher-level interface over the <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> library and hide concurrency details from users. It inherits methods from <ref refid="classtf_1_1cudaFlowCapturerBase" kindref="compound">tf::cudaFlowCapturerBase</ref> and must be used from a <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> object. All pointers used to cublasFlowCapturer methods must be in GPU memory space or managed (i.e., <computeroutput>cudaMallocManaged</computeroutput>), including scalars, <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput>, input data and output data pointers. The following example uses <computeroutput>cublas&lt;t&gt;amax</computeroutput> to find the minimum index of the element of the maximum absolute magnitude in a vector.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<para>cublasFlowCapturer provides a higher-level interface over the <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> library and hide concurrency details from users. It inherits methods from <ref refid="classtf_1_1cudaFlowCapturerBase" kindref="compound">tf::cudaFlowCapturerBase</ref> and must be used from a <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> object. All pointers used to cublasFlowCapturer methods must be in GPU memory space or managed (i.e., <computeroutput>cudaMallocManaged</computeroutput>), including scalars, <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput>, input data and output data pointers. The following example uses <computeroutput>cublas&lt;t&gt;amax</computeroutput> to find the minimum index of the element of the maximum absolute magnitude in a vector.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1024;</highlight></codeline>
@@ -2211,7 +2464,7 @@ The batch must be <emphasis>uniform</emphasis>. All instances in the batch must 
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>*d_res;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/>h_res;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref><sp/>host(N,<sp/>0.0f);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref><sp/>host(N,<sp/>0.0f);</highlight></codeline>
 <codeline><highlight class="normal">host[512]<sp/>=<sp/>100.0f;<sp/><sp/></highlight><highlight class="comment">//<sp/>artificially<sp/>set<sp/>the<sp/>mid-position<sp/>to<sp/>the<sp/>largest</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">cudaMalloc(&amp;x,<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">));</highlight></codeline>
@@ -2231,32 +2484,35 @@ The batch must be <emphasis>uniform</emphasis>. All instances in the batch must 
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(h_res<sp/>==<sp/>512);</highlight></codeline>
-</programlisting></para><para>Currently, cublasFlowCapturer supports only <computeroutput>float</computeroutput> and <computeroutput>double</computeroutput> data types.</para><para>Please refer to <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> for more details. </para>    </detaileddescription>
+</programlisting></para>
+<para>Currently, cublasFlowCapturer supports only <computeroutput>float</computeroutput> and <computeroutput>double</computeroutput> data types.</para>
+<para>Please refer to <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> for more details. </para>
+    </detaileddescription>
     <inheritancegraph>
-      <node id="5">
+      <node id="2">
         <label>tf::cudaFlowCapturerBase</label>
         <link refid="classtf_1_1cudaFlowCapturerBase"/>
       </node>
-      <node id="4">
+      <node id="1">
         <label>tf::cublasFlowCapturer</label>
         <link refid="classtf_1_1cublasFlowCapturer"/>
-        <childnode refid="5" relation="public-inheritance">
+        <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="7">
+      <node id="2">
         <label>tf::cudaFlowCapturerBase</label>
         <link refid="classtf_1_1cudaFlowCapturerBase"/>
       </node>
-      <node id="6">
+      <node id="1">
         <label>tf::cublasFlowCapturer</label>
         <link refid="classtf_1_1cublasFlowCapturer"/>
-        <childnode refid="7" relation="public-inheritance">
+        <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="66" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="66" bodyend="716"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="66" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="66" bodyend="716"/>
     <listofallmembers>
       <member refid="classtf_1_1cublasFlowCapturer_1ad796516fe795c451719db8c4a1ac292b" prot="private" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>_handle</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1afa60d91ed10ca36aff546ac2fce2dd46" prot="private" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>_stream</name></member>

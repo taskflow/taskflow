@@ -144,11 +144,8 @@ This is convenient when you need certain objects alive during the capturing.
 class MyCapturer : public tf::cudaFlowCapturerBase {
 
   public:
-
-  MyCapturer(args_to_construct_MyCapturer) {
-    // ...
-  }
-
+  
+  // capture a matrix multiplication kernel through the given stream
   tf::cudaTask matrix_multiplication(args...) {
     return on([this, args...](cudaStream_t stream){
       cublasSetStream(_handle, stream);
@@ -163,8 +160,8 @@ class MyCapturer : public tf::cudaFlowCapturerBase {
 };
 
 tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
-
-  MyCapturer* mc = capturer.make_capturer<MyCapturer>(args_to_MyCapturer);
+  // create a custom capturer 
+  MyCapturer* mc = capturer.make_capturer<MyCapturer>();
 
   tf::cudaTask task_1 = mc->matrix_multiplication(args...);
   tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){

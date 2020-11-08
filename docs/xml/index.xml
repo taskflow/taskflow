@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.14">
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.20" xml:lang="en-US">
   <compound refid="classtf_1_1ChromeObserver" kind="class"><name>tf::ChromeObserver</name>
     <member refid="classtf_1_1ChromeObserver_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1ChromeObserver_1aee57a7a03bb4af2aadd2fdefbebd9e7b" kind="variable"><name>_timeline</name></member>
@@ -165,9 +165,10 @@
     <member refid="classtf_1_1Executor_1a8acfc81ae6a64989761ce229262c9a21" kind="function"><name>num_domains</name></member>
     <member refid="classtf_1_1Executor_1a6487d589cb1f6b078b69fd3bb1082345" kind="function"><name>this_worker_id</name></member>
     <member refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kind="function"><name>async</name></member>
-    <member refid="classtf_1_1Executor_1aff77def96ae740d648dd84e571237c83" kind="function"><name>make_observer</name></member>
+    <member refid="classtf_1_1Executor_1ab5a793a0f2ce41cd49ca45e9f0a6962c" kind="function"><name>make_observer</name></member>
     <member refid="classtf_1_1Executor_1a31081f492c376f7b798de0e430534531" kind="function"><name>remove_observer</name></member>
     <member refid="classtf_1_1Executor_1ab92083be20ea77b9fb3eb8ea2d26af68" kind="function"><name>num_observers</name></member>
+    <member refid="classtf_1_1Executor_1aa30b3c22898516b9c6616594779fd87c" kind="function"><name>make_observer</name></member>
     <member refid="classtf_1_1Executor_1a9061ff1510d0871eda2ba350dd4bdb59" kind="function"><name>_per_thread</name></member>
     <member refid="classtf_1_1Executor_1a57f5105dc812d83f259ec8cab7c96228" kind="function"><name>_wait_for_task</name></member>
     <member refid="classtf_1_1Executor_1a078146af1cc8decfd7df9fcf3b45c0d1" kind="function"><name>_instantiate_tfprof</name></member>
@@ -179,7 +180,7 @@
     <member refid="classtf_1_1Executor_1a0b4f231e11016194980b14e76262c8a7" kind="function"><name>_exploit_task</name></member>
     <member refid="classtf_1_1Executor_1aab7cc2e53d75fcc87fcc919f29bf9ca9" kind="function"><name>_explore_task</name></member>
     <member refid="classtf_1_1Executor_1a685c08b62a494359e34c6de2a700fdab" kind="function"><name>_schedule</name></member>
-    <member refid="classtf_1_1Executor_1a47bd2f62cf78a4ee6fe8586c750573d1" kind="function"><name>_schedule</name></member>
+    <member refid="classtf_1_1Executor_1ab535b5b0870522a3518acf053b888149" kind="function"><name>_schedule</name></member>
     <member refid="classtf_1_1Executor_1ad16165142908aca9444ea88e65040219" kind="function"><name>_invoke</name></member>
     <member refid="classtf_1_1Executor_1ac243d2a08b5a4a75dd440dc063b886ce" kind="function"><name>_invoke_static_task</name></member>
     <member refid="classtf_1_1Executor_1a4a000baf70b108201e3787787309c272" kind="function"><name>_invoke_dynamic_task</name></member>
@@ -363,15 +364,15 @@
     <member refid="classtf_1_1TFProfObserver_1ac582109f407e3b29bd6ad9d05494ef91" kind="function"><name>on_entry</name></member>
     <member refid="classtf_1_1TFProfObserver_1acc1ed9df521bd37781fb530263578247" kind="function"><name>on_exit</name></member>
   </compound>
-  <compound refid="structtf_1_1TFProfObserver_1_1Timeline" kind="struct"><name>tf::TFProfObserver::Timeline</name>
-    <member refid="structtf_1_1TFProfObserver_1_1Timeline_1a3320fbeeb400c9cdcff91f69f120e4c9" kind="variable"><name>origin</name></member>
-    <member refid="structtf_1_1TFProfObserver_1_1Timeline_1a1738a7ba6a218a3a9434f8623e6361de" kind="variable"><name>segments</name></member>
-    <member refid="structtf_1_1TFProfObserver_1_1Timeline_1a137f922e5b5bbbd501b46f75a112f5f3" kind="variable"><name>stacks</name></member>
-  </compound>
   <compound refid="structtf_1_1ChromeObserver_1_1Timeline" kind="struct"><name>tf::ChromeObserver::Timeline</name>
     <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a1e13b185df12152589abaceead57979c" kind="variable"><name>origin</name></member>
     <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" kind="variable"><name>segments</name></member>
     <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a77e174ff85f9b0a0dce2688d160bad85" kind="variable"><name>stacks</name></member>
+  </compound>
+  <compound refid="structtf_1_1TFProfObserver_1_1Timeline" kind="struct"><name>tf::TFProfObserver::Timeline</name>
+    <member refid="structtf_1_1TFProfObserver_1_1Timeline_1a3320fbeeb400c9cdcff91f69f120e4c9" kind="variable"><name>origin</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1Timeline_1a1738a7ba6a218a3a9434f8623e6361de" kind="variable"><name>segments</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1Timeline_1a137f922e5b5bbbd501b46f75a112f5f3" kind="variable"><name>stacks</name></member>
   </compound>
   <compound refid="structtf_1_1Executor_1_1Worker" kind="struct"><name>tf::Executor::Worker</name>
     <member refid="structtf_1_1Executor_1_1Worker_1a14be955a5d2e0c18fee29603aa206b43" kind="variable"><name>id</name></member>
@@ -1195,13 +1196,35 @@
   </compound>
   <compound refid="References" kind="page"><name>References</name>
   </compound>
+  <compound refid="dir_73635165b734e23094c358e517ec45fc" kind="dir"><name>algorithms</name>
+  </compound>
+  <compound refid="dir_ecfa7d70310a08b350e190615cc70712" kind="dir"><name>contributing</name>
+  </compound>
+  <compound refid="dir_61bd9e18b52c497a2e6d3af3a72c0d02" kind="dir"><name>cookbook</name>
+  </compound>
   <compound refid="dir_220cd4d9b8cb38c840b455d5d75c25bb" kind="dir"><name>core</name>
+  </compound>
+  <compound refid="dir_6826fcd91b6c20b635c7529d8da8ba89" kind="dir"><name>cublas</name>
   </compound>
   <compound refid="dir_17d5535b0ea413f2e7c8668276eab781" kind="dir"><name>cublas</name>
   </compound>
   <compound refid="dir_638d51f8e6f20ea8c720cc8c006296ba" kind="dir"><name>cuda</name>
   </compound>
+  <compound refid="dir_0c6655e7a474ec7aa2f43d8d56b9e1c1" kind="dir"><name>examples</name>
+  </compound>
+  <compound refid="dir_87abf3142b2bf0ff331672dc90c991b0" kind="dir"><name>governance</name>
+  </compound>
+  <compound refid="dir_66eab6e74be8ecc93fa9a6dc28be8ee1" kind="dir"><name>gpu_algorithms</name>
+  </compound>
+  <compound refid="dir_13901390c6d5ee592c18c2f167e01d4f" kind="dir"><name>install</name>
+  </compound>
+  <compound refid="dir_d7a9e4fcc659571fb4c113eec28c5eeb" kind="dir"><name>references</name>
+  </compound>
+  <compound refid="dir_7c512093e4879e21c0dd502d7d593a16" kind="dir"><name>releases</name>
+  </compound>
   <compound refid="dir_88dad41ea55ca2177e141d32a93e931c" kind="dir"><name>taskflow</name>
+  </compound>
+  <compound refid="dir_183ade9c70bd4384e3037d383160f942" kind="dir"><name>usecases</name>
   </compound>
   <compound refid="indexpage" kind="page"><name>index</name>
   </compound>
