@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1cudaFlowCapturerBase" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaFlowCapturerBase</compoundname>
     <derivedcompoundref refid="classtf_1_1cublasFlowCapturer" prot="public" virt="non-virtual">tf::cublasFlowCapturer</derivedcompoundref>
@@ -17,7 +17,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="32" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="32" bodyend="-1"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="32" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="32" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -33,7 +33,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="216" column="15" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="216" bodyend="-1"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="223" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="223" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -43,13 +43,12 @@
         <argsstring>()=default</argsstring>
         <name>cudaFlowCapturerBase</name>
         <briefdescription>
-<para>default constructor </para>
-        </briefdescription>
+<para>default constructor </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="39" column="5"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="39" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturerBase_1a09d58616acdfe01dfe09271f8b3587ff" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
         <type></type>
@@ -57,13 +56,34 @@
         <argsstring>()=default</argsstring>
         <name>~cudaFlowCapturerBase</name>
         <briefdescription>
-<para>default virtual destructor </para>
-        </briefdescription>
+<para>default virtual destructor </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="44" column="13"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="44" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaFlowCapturerBase_1a56ef35d257232a3dc0d8ad86b5380215" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cudaFlowCapturerBase::dump</definition>
+        <argsstring>(T &amp;os) const</argsstring>
+        <name>dump</name>
+        <param>
+          <type>T &amp;</type>
+          <declname>os</declname>
+        </param>
+        <briefdescription>
+<para>dumps the capture graph into a DOT format through an output stream that defines the stream insertion operator <computeroutput>&lt;&lt;</computeroutput> </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="51" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="235" bodyend="237"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturerBase_1adf651356def71f613c589c29588398c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -80,16 +100,14 @@
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>captures a sequential CUDA operations from the given callable </para>
-        </briefdescription>
+<para>captures a sequential CUDA operations from the given callable </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible with <computeroutput>std::function&lt;void(cudaStream_t)&gt;</computeroutput> </para>
-</parameterdescription>
+<para>callable type constructible with <computeroutput>std::function&lt;void(cudaStream_t)&gt;</computeroutput> </para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -97,15 +115,13 @@
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable to capture CUDA operations with the stream</para>
-</parameterdescription>
+<para>a callable to capture CUDA operations with the stream</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-This methods applies a stream created by the flow to capture a sequence of CUDA operations defined in the callable. </para>
-        </detaileddescription>
+This methods applies a stream created by the flow to capture a sequence of CUDA operations defined in the callable. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="56" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="228" bodyend="233"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="63" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="241" bodyend="246"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturerBase_1a38adf66dfcc0829708db653d153a83e2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -125,39 +141,34 @@ This methods applies a stream created by the flow to capture a sequence of CUDA 
           <declname>count</declname>
         </param>
         <briefdescription>
-<para>copies data between host and device asynchronously through a stream </para>
-        </briefdescription>
+<para>copies data between host and device asynchronously through a stream </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>dst</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>destination memory address </para>
-</parameterdescription>
+<para>destination memory address </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>src</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>source memory address </para>
-</parameterdescription>
+<para>source memory address </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>count</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>size in bytes to copy</para>
-</parameterdescription>
+<para>size in bytes to copy</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-The method captures a <computeroutput>cudaMemcpyAsync</computeroutput> operation through an internal stream. </para>
-        </detaileddescription>
+The method captures a <computeroutput>cudaMemcpyAsync</computeroutput> operation through an internal stream. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="68" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="236" bodyend="245"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="75" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="249" bodyend="258"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturerBase_1a9fd8983c782f841bba6b10de39becdf6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -186,16 +197,14 @@ The method captures a <computeroutput>cudaMemcpyAsync</computeroutput> operation
           <declname>num</declname>
         </param>
         <briefdescription>
-<para>captures a copy task of typed data </para>
-        </briefdescription>
+<para>captures a copy task of typed data </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>element type (non-void)</para>
-</parameterdescription>
+<para>element type (non-void)</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -203,33 +212,28 @@ The method captures a <computeroutput>cudaMemcpyAsync</computeroutput> operation
 <parametername>tgt</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the target memory block </para>
-</parameterdescription>
+<para>pointer to the target memory block </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>src</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the source memory block </para>
-</parameterdescription>
+<para>pointer to the source memory block </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>num</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of elements to copy</para>
-</parameterdescription>
+<para>number of elements to copy</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref> handle</para>
-</simplesect>
-A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of data from a source location to a target location. Direction can be arbitrary among CPUs and GPUs. </para>
-        </detaileddescription>
+<simplesect kind="return"><para><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref> handle</para></simplesect>
+A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of data from a source location to a target location. Direction can be arbitrary among CPUs and GPUs. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="87" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="248" bodyend="255"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="94" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="261" bodyend="268"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturerBase_1a8e3071171c0875c93dcc077a2e0a435a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -249,39 +253,34 @@ A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of da
           <declname>count</declname>
         </param>
         <briefdescription>
-<para>initializes or sets GPU memory to the given value byte by byte </para>
-        </briefdescription>
+<para>initializes or sets GPU memory to the given value byte by byte </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>devPtr</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to GPU mempry </para>
-</parameterdescription>
+<para>pointer to GPU mempry </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>value</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>value to set for each byte of the specified memory </para>
-</parameterdescription>
+<para>value to set for each byte of the specified memory </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>count</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>size in bytes to set</para>
-</parameterdescription>
+<para>size in bytes to set</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation through an internal stream to fill the first <computeroutput>count</computeroutput> bytes of the memory area pointed to by <computeroutput>devPtr</computeroutput> with the constant byte value <computeroutput>value</computeroutput>. </para>
-        </detaileddescription>
+The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation through an internal stream to fill the first <computeroutput>count</computeroutput> bytes of the memory area pointed to by <computeroutput>devPtr</computeroutput> with the constant byte value <computeroutput>value</computeroutput>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="100" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="258" bodyend="264"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="107" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="271" bodyend="277"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturerBase_1ad836d32cc2e9532ce57fe3ad6cc67d5d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -319,24 +318,21 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
           <declname>args</declname>
         </param>
         <briefdescription>
-<para>captures a kernel </para>
-        </briefdescription>
+<para>captures a kernel </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>F</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>kernel function type </para>
-</parameterdescription>
+<para>kernel function type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>ArgsT</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>kernel function parameters type</para>
-</parameterdescription>
+<para>kernel function parameters type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -344,49 +340,42 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
 <parametername>g</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>configured grid </para>
-</parameterdescription>
+<para>configured grid </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>b</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>configured block </para>
-</parameterdescription>
+<para>configured block </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>s</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>configured shared memory </para>
-</parameterdescription>
+<para>configured shared memory </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>f</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>kernel function </para>
-</parameterdescription>
+<para>kernel function </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>args</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>arguments to forward to the kernel function by copy</para>
-</parameterdescription>
+<para>arguments to forward to the kernel function by copy</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref> handle </para>
-</simplesect>
-</para>
-        </detaileddescription>
+<simplesect kind="return"><para><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref> handle </para></simplesect>
+</para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="117" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="268" bodyend="274"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="124" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="281" bodyend="287"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturerBase_1ac25236625772a0a2c66831517b9ec288" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -403,16 +392,14 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>capturers a kernel to runs the given callable with only one thread </para>
-        </briefdescription>
+<para>capturers a kernel to runs the given callable with only one thread </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type</para>
-</parameterdescription>
+<para>callable type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -420,15 +407,13 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable to run by a single kernel thread </para>
-</parameterdescription>
+<para>callable to run by a single kernel thread </para></parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>
-        </detaileddescription>
+</para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="131" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="278" bodyend="282"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="138" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="291" bodyend="295"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturerBase_1a583e4df1139cf6f20b6e79dfde977a51" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -456,24 +441,21 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>captures a kernel that applies a callable to each dereferenced element of the data array </para>
-        </briefdescription>
+<para>captures a kernel that applies a callable to each dereferenced element of the data array </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>I</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator type </para>
-</parameterdescription>
+<para>iterator type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type</para>
-</parameterdescription>
+<para>callable type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -481,37 +463,31 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para>
-</parameterdescription>
+<para>iterator to the beginning (inclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para>
-</parameterdescription>
+<para>iterator to the end (exclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable object to apply to the dereferenced iterator</para>
-</parameterdescription>
+<para>a callable object to apply to the dereferenced iterator</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref> handle</para>
-</simplesect>
-This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr<sp/>=<sp/>first;<sp/>itr<sp/>!=<sp/>last;<sp/>i++)<sp/>{</highlight></codeline>
+<simplesect kind="return"><para><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref> handle</para></simplesect>
+This method is equivalent to the parallel execution of the following loop on a GPU:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr<sp/>=<sp/>first;<sp/>itr<sp/>!=<sp/>last;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
+</programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="155" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="286" bodyend="292"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="162" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="299" bodyend="305"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturerBase_1a0320596ee37d68cfce5746027ebc97de" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -543,24 +519,21 @@ This method is equivalent to the parallel execution of the following loop on a G
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>captures a kernel that applies a callable to each index in the range with the step size </para>
-        </briefdescription>
+<para>captures a kernel that applies a callable to each index in the range with the step size </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>I</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>index type </para>
-</parameterdescription>
+<para>index type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type</para>
-</parameterdescription>
+<para>callable type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -568,38 +541,32 @@ This method is equivalent to the parallel execution of the following loop on a G
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning index </para>
-</parameterdescription>
+<para>beginning index </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>last index </para>
-</parameterdescription>
+<para>last index </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>step</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>step size </para>
-</parameterdescription>
+<para>step size </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the callable to apply to each element in the data array</para>
-</parameterdescription>
+<para>the callable to apply to each element in the data array</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref> handle</para>
-</simplesect>
-This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>step<sp/>is<sp/>positive<sp/>[first,<sp/>last)</highlight><highlight class="normal"></highlight></codeline>
+<simplesect kind="return"><para><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref> handle</para></simplesect>
+This method is equivalent to the parallel execution of the following loop on a GPU:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>step<sp/>is<sp/>positive<sp/>[first,<sp/>last)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -608,11 +575,10 @@ This method is equivalent to the parallel execution of the following loop on a G
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&gt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
+</programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="186" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="296" bodyend="308"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="193" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="309" bodyend="321"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturerBase_1a44fb0c626c46de1bb95369e33194f5c7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -649,32 +615,28 @@ This method is equivalent to the parallel execution of the following loop on a G
           <declname>srcs</declname>
         </param>
         <briefdescription>
-<para>captures a kernel that applies a callable to a source range and stores the result in a target range </para>
-        </briefdescription>
+<para>captures a kernel that applies a callable to a source range and stores the result in a target range </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>I</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator type </para>
-</parameterdescription>
+<para>iterator type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type </para>
-</parameterdescription>
+<para>callable type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>S</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>source types</para>
-</parameterdescription>
+<para>source types</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -682,45 +644,38 @@ This method is equivalent to the parallel execution of the following loop on a G
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para>
-</parameterdescription>
+<para>iterator to the beginning (inclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para>
-</parameterdescription>
+<para>iterator to the end (exclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the callable to apply to each element in the range </para>
-</parameterdescription>
+<para>the callable to apply to each element in the range </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>srcs</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterators to the source ranges</para>
-</parameterdescription>
+<para>iterators to the source ranges</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref> handle</para>
-</simplesect>
-This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
+<simplesect kind="return"><para><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref> handle</para></simplesect>
+This method is equivalent to the parallel execution of the following loop on a GPU:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*first++<sp/>=<sp/>callable(*src1++,<sp/>*src2++,<sp/>*src3++,<sp/>...);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
+</programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="212" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="312" bodyend="319"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="219" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="325" bodyend="332"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -739,39 +694,39 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="218" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="222" bodyend="224"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="225" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="229" bodyend="231"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>base class to construct a CUDA task graph through stream capture </para>
-    </briefdescription>
+<para>base class to construct a CUDA task graph through stream capture </para>    </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="1">
+      <node id="14">
         <label>tf::cudaFlowCapturerBase</label>
         <link refid="classtf_1_1cudaFlowCapturerBase"/>
       </node>
-      <node id="3">
+      <node id="16">
         <label>tf::cudaFlowCapturer</label>
         <link refid="classtf_1_1cudaFlowCapturer"/>
-        <childnode refid="1" relation="public-inheritance">
+        <childnode refid="14" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="2">
+      <node id="15">
         <label>tf::cublasFlowCapturer</label>
         <link refid="classtf_1_1cublasFlowCapturer"/>
-        <childnode refid="1" relation="public-inheritance">
+        <childnode refid="14" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="30" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="30" bodyend="219"/>
+    <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="30" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="30" bodyend="226"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaFlowCapturerBase_1a20df5703896c8b581b6aa06417d79c70" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturerBase</scope><name>_graph</name></member>
       <member refid="classtf_1_1cudaFlowCapturerBase_1a9fd8983c782f841bba6b10de39becdf6" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturerBase</scope><name>copy</name></member>
       <member refid="classtf_1_1cudaFlowCapturerBase_1a672b45d300c57d726c203c62f950efbd" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturerBase</scope><name>cudaFlowCapturer</name></member>
       <member refid="classtf_1_1cudaFlowCapturerBase_1a43739b92f51358bd144270664c6fdf8e" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturerBase</scope><name>cudaFlowCapturerBase</name></member>
       <member refid="classtf_1_1cudaFlowCapturerBase_1a61bd20a2dda9636e32947e861a4ef692" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturerBase</scope><name>cudaFlowCapturerBase</name></member>
+      <member refid="classtf_1_1cudaFlowCapturerBase_1a56ef35d257232a3dc0d8ad86b5380215" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturerBase</scope><name>dump</name></member>
       <member refid="classtf_1_1cudaFlowCapturerBase_1a583e4df1139cf6f20b6e79dfde977a51" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturerBase</scope><name>for_each</name></member>
       <member refid="classtf_1_1cudaFlowCapturerBase_1a0320596ee37d68cfce5746027ebc97de" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturerBase</scope><name>for_each_index</name></member>
       <member refid="classtf_1_1cudaFlowCapturerBase_1ad836d32cc2e9532ce57fe3ad6cc67d5d" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturerBase</scope><name>kernel</name></member>

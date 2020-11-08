@@ -66,11 +66,11 @@
 
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">){</span>
   <span class="c1">// create two kernel tasks </span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">task_1</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid_1</span><span class="p">,</span> <span class="n">block_1</span><span class="p">,</span> <span class="n">shm_size_1</span><span class="p">,</span> <span class="n">kernel_1</span><span class="p">,</span> <span class="n">my_args_1</span><span class="p">);</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">task_2</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid_2</span><span class="p">,</span> <span class="n">block_2</span><span class="p">,</span> <span class="n">shm_size_2</span><span class="p">,</span> <span class="n">kernel_2</span><span class="p">,</span> <span class="n">my_args_2</span><span class="p">);</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">task1</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid1</span><span class="p">,</span> <span class="n">block1</span><span class="p">,</span> <span class="n">shm_size1</span><span class="p">,</span> <span class="n">kernel1</span><span class="p">,</span> <span class="n">args1</span><span class="p">);</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">task2</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid2</span><span class="p">,</span> <span class="n">block2</span><span class="p">,</span> <span class="n">shm_size2</span><span class="p">,</span> <span class="n">kernel2</span><span class="p">,</span> <span class="n">args2</span><span class="p">);</span>
   
-  <span class="c1">// kernel_1 runs before kernel_2</span>
-  <span class="n">task_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task_2</span><span class="p">);</span>
+  <span class="c1">// kernel1 runs before kernel2</span>
+  <span class="n">task_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span>
 <span class="p">});</span>
 
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>A cudaFlow is a task and will be run by one worker thread in the executor. That is, the callable that defines how the given cudaFlow runs will be executed sequentially.</p>
@@ -94,9 +94,14 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a1926f45a038d8faa9c1b1ee43fd29a93" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
             </dt>
             <dd>queries the emptiness of the graph</dd>
-            <dt id="a5131b64df24d6c0b6d02c3e33c60003c">
+            <dt id="aae23bdac4c64b842db5b6d4363d331fd">
               <div class="m-doc-template">template&lt;typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a5131b64df24d6c0b6d02c3e33c60003c" class="m-doc-self">dump_native_graph</a>(</span><span class="m-doc-wrap">T&amp; os) const</span>
+              <span class="m-doc-wrap-bumper">void <a href="#aae23bdac4c64b842db5b6d4363d331fd" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap">T&amp; os) const</span>
+            </dt>
+            <dd>dumps the cudaFlow graph into a DOT format through an output stream that defines the stream insertion operator <code>&lt;&lt;</code></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a5131b64df24d6c0b6d02c3e33c60003c" class="m-doc">dump_native_graph</a>(</span><span class="m-doc-wrap">T&amp; os) const</span>
             </dt>
             <dd>dumps the native CUDA graph into a DOT format through an output stream that defines the stream insertion operator <code>&lt;&lt;</code></dd>
             <dt>
@@ -240,6 +245,16 @@
         </section>
         <section>
           <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a5131b64df24d6c0b6d02c3e33c60003c"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5131b64df24d6c0b6d02c3e33c60003c" class="m-doc-self">dump_native_graph</a>(</span><span class="m-doc-wrap">T&amp; os) const</span></span>
+            </h3>
+            <p>dumps the native CUDA graph into a DOT format through an output stream that defines the stream insertion operator <code>&lt;&lt;</code></p>
+<p>The native CUDA graph may be different from the upper-level cudaFlow graph when flow capture is involved.</p>
+          </div></section>
           <section class="m-doc-details" id="a30b2e107cb2c90a37f467b28d1b42a74"><div>
             <h3>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a30b2e107cb2c90a37f467b28d1b42a74" class="m-doc-self">noop</a>(</span><span class="m-doc-wrap">)</span></span>
@@ -966,7 +981,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

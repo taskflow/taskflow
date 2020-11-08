@@ -49,6 +49,7 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li added a new interface tf::cudaFlowCapturerBase to support custom-defined capturers (see @ref C7_CreateCustomCapturer)
 @li added a new interface tf::cudaFlow::capture for capturing a CUDA task graph within a parent %cudaFlow
 @li added a new method tf::Taskflow::emplace_on to place a %cudaFlow (tf::cudaFlow and tf::cudaFlowCapturer) on the given device context
+@li added tf::cudaFlow::dump and tf::cudaFlowCapturerBase::dump to visualize %cudaFlow
 @li supported standalone %cudaFlow without going through tf::Taskflow 
     (see @ref C6_UsecudaFlowInAStandaloneEnvironment)
 @li supported recursive dump of a %cudaFlow with child graphs

@@ -49,6 +49,16 @@
           <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
           Static Tasking
         </h1>
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#C1_CreateATaskDependencyGraph">Create a Task Dependency Graph</a></li>
+            <li><a href="#C1_VisualizeATaskDependencyGraph">Visualize a Task Dependency Graph</a></li>
+            <li><a href="#C1_ModifyTaskAttributes">Modify Task Attributes</a></li>
+            <li><a href="#C1_TraverseAdjacentTasks">Traverse Adjacent Tasks</a></li>
+            <li><a href="#C1_LifetimeOfATask">Lifetime of A Task</a></li>
+          </ul>
+        </div>
 <p>This chapter demonstrates how to create a static task dependency graph. Static tasking captures the static parallel structure of a decomposition and is defined only by the program itself. It has a flat task hierarchy and cannot spawn new tasks from a running dependency graph.</p><section id="C1_CreateATaskDependencyGraph"><h2><a href="#C1_CreateATaskDependencyGraph">Create a Task Dependency Graph</a></h2><p>A task in Taskflow is a <em>callable</em> object for which the operation <a href="https://en.cppreference.com/w/cpp/utility/functional/invoke">std::<wbr />invoke</a> is applicable. It can be either a functor, a lambda expression, a bind expression, or a class objects with <code>operator()</code> overloaded. All tasks are created from <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a>, the class that manages a task dependency graph. Taskflow provides two methods, <a href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf" class="m-doc">tf::<wbr />Taskflow::<wbr />placeholder</a> and <a href="classtf_1_1FlowBuilder.html#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">tf::<wbr />Taskflow::<wbr />emplace</a> to create a task.</p><pre class="m-code"><span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 <span class="mi">2</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">placeholder</span><span class="p">();</span>
 <span class="mi">3</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">B</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;task B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
@@ -89,48 +99,48 @@
 <span class="mi">17</span><span class="o">:</span>   <span class="n">C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">);</span>
 <span class="mi">18</span><span class="o">:</span>
 <span class="mi">19</span><span class="o">:</span>   <span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
-<span class="mi">20</span><span class="o">:</span> <span class="p">}</span></pre><p>Debrief:</p><ul><li>Line 5 creates a taskflow object</li><li>Line 8-11 creates four tasks</li><li>Line 14-17 adds four task dependencies</li><li>Line 19 dumps the taskflow in the DOT format through standard output</li></ul><div class="m-graph"><svg style="width: 15.125rem; height: 6.250rem;" viewBox="0.00 0.00 242.00 99.77">
-<g transform="scale(1 1) rotate(0) translate(4 95.77)">
+<span class="mi">20</span><span class="o">:</span> <span class="p">}</span></pre><p>Debrief:</p><ul><li>Line 5 creates a taskflow object</li><li>Line 8-11 creates four tasks</li><li>Line 14-17 adds four task dependencies</li><li>Line 19 dumps the taskflow in the DOT format through standard output</li></ul><div class="m-graph"><svg style="width: 15.125rem; height: 6.125rem;" viewBox="0.00 0.00 242.00 98.00">
+<g transform="scale(1 1) rotate(0) translate(4 94)">
 <title>G</title>
 <g class="m-node m-flat">
 <title>A</title>
-<ellipse cx="27" cy="-45.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="27" y="-41.58">A</text>
+<ellipse cx="27" cy="-45" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-40.2">A</text>
 </g>
 <g class="m-node m-flat">
 <title>B</title>
-<ellipse cx="117" cy="-73.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="117" y="-69.58">B</text>
+<ellipse cx="117" cy="-72" rx="27" ry="18"/>
+<text text-anchor="middle" x="117" y="-67.2">B</text>
 </g>
 <g class="m-edge">
 <title>A&#45;&gt;B</title>
-<path d="M52.05,-53.04C61.44,-56.02 72.36,-59.5 82.5,-62.73"/>
-<polygon points="81.7,-66.14 92.29,-65.84 83.82,-59.47 81.7,-66.14"/>
+<path d="M52.07,-52.521C61.5102,-55.3531 72.4169,-58.6251 82.564,-61.6692"/>
+<polygon points="81.7915,-65.0915 92.3755,-64.6126 83.803,-58.3867 81.7915,-65.0915"/>
 </g>
 <g class="m-node m-flat">
 <title>C</title>
-<ellipse cx="117" cy="-18.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="117" y="-14.58">C</text>
+<ellipse cx="117" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="117" y="-13.2">C</text>
 </g>
 <g class="m-edge">
 <title>A&#45;&gt;C</title>
-<path d="M52.05,-38.01C61.36,-35.15 72.18,-31.83 82.25,-28.74"/>
-<polygon points="83.45,-32.03 91.98,-25.75 81.4,-25.34 83.45,-32.03"/>
+<path d="M52.07,-37.479C61.5102,-34.6469 72.4169,-31.3749 82.564,-28.3308"/>
+<polygon points="83.803,-31.6133 92.3755,-25.3874 81.7915,-24.9085 83.803,-31.6133"/>
 </g>
 <g class="m-node m-flat">
 <title>D</title>
-<ellipse cx="207" cy="-45.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="207" y="-41.58">D</text>
+<ellipse cx="207" cy="-45" rx="27" ry="18"/>
+<text text-anchor="middle" x="207" y="-40.2">D</text>
 </g>
 <g class="m-edge">
 <title>B&#45;&gt;D</title>
-<path d="M142.05,-65.73C151.44,-62.75 162.36,-59.27 172.5,-56.04"/>
-<polygon points="173.82,-59.3 182.29,-52.93 171.7,-52.63 173.82,-59.3"/>
+<path d="M142.07,-64.479C151.5102,-61.6469 162.4169,-58.3749 172.564,-55.3308"/>
+<polygon points="173.803,-58.6133 182.3755,-52.3874 171.7915,-51.9085 173.803,-58.6133"/>
 </g>
 <g class="m-edge">
 <title>C&#45;&gt;D</title>
-<path d="M142.05,-25.76C151.36,-28.62 162.18,-31.94 172.25,-35.03"/>
-<polygon points="171.4,-38.43 181.98,-38.02 173.45,-31.74 171.4,-38.43"/>
+<path d="M142.07,-25.521C151.5102,-28.3531 162.4169,-31.6251 172.564,-34.6692"/>
+<polygon points="171.7915,-38.0915 182.3755,-37.6126 173.803,-31.3867 171.7915,-38.0915"/>
 </g>
 </g>
 </svg>
@@ -220,7 +230,7 @@ digraph Taskflow <span class="o">{</span>
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

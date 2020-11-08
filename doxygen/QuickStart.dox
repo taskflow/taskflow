@@ -119,7 +119,92 @@ TaskB
 TaskD
 @endcode
 
-The execution order of B and C might differ as they can run concurrently.
+The execution order of @c B and @c C might differ as they can run concurrently.
+
+@section QuickStartCreateASubflowGraph Create a Subflow Graph
+
+%Taskflow supports <i>dynamic tasking</i> for you to create a subflow
+graph from the execution of a task to perform dynamic parallelism.
+
+@code{.cpp}
+tf::Task A = taskflow.emplace([](){}).name("A");  
+tf::Task C = taskflow.emplace([](){}).name("C");  
+tf::Task D = taskflow.emplace([](){}).name("D");  
+
+tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) { // subflow task B
+  tf::Task B1 = subflow.emplace([](){}).name("B1");  
+  tf::Task B2 = subflow.emplace([](){}).name("B2");  
+  tf::Task B3 = subflow.emplace([](){}).name("B3");  
+  B3.succeed(B1, B2);  // B3 runs after B1 and B2
+}).name("B");
+
+A.precede(B, C);  // A runs before B and C
+D.succeed(B, C);  // D runs after  B and C
+@endcode
+
+@dotfile images/subflow-join.dot
+
+@section QuickStartIntegrateControlFlowIntoATaskGraph Integrate Control Flow into a Task Graph
+
+%Taskflow supports <i>conditional tasking</i> for you to make rapid 
+control-flow decisions across dependent tasks to implement cycles 
+and conditions in an @em end-to-end task graph.
+
+@code{.cpp}
+tf::Task init = taskflow.emplace([](){}).name("init");
+tf::Task stop = taskflow.emplace([](){}).name("stop");
+
+// creates a condition task that returns a random binary
+tf::Task cond = taskflow.emplace([](){ return std::rand() % 2; }).name("cond");
+
+// creates a feedback loop {0: cond, 1: stop}
+init.precede(cond);
+cond.precede(cond, stop);
+@endcode
+
+@dotfile images/conditional-tasking-1.dot
+
+@section QuickStartOffloadComputationToGPU Offload Computation to GPU
+
+%Taskflow supports heterogeneous tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing.
+
+@code{.cpp}
+tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
+  tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
+  tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
+  tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
+  tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
+  tf::cudaTask saxpy = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy)
+                         .name("saxpy");
+  saxpy.succeed(h2d_x, h2d_y)
+       .precede(d2h_x, d2h_y);
+});
+@endcode
+
+@dotfile images/saxpy_1_cudaflow.dot
+
+
+@section QuickStartComposeTaskGraphs Compose Task Graphs
+
+%Taskflow is composable. You can create large parallel graphs through composition of modular and reusable blocks that are easier to optimize at an individual scope.
+
+@code{.cpp}
+tf::Taskflow f1, f2;
+
+tf::Task f1A = f1.emplace([]() { std::cout << "Task f1A\n"; }).name("f1A");
+tf::Task f1B = f1.emplace([]() { std::cout << "Task f1B\n"; }).name("f1B");
+
+tf::Task f2A = f2.emplace([]() { std::cout << "Task f2A\n"; }).name("f2A");
+tf::Task f2B = f2.emplace([]() { std::cout << "Task f2B\n"; }).name("f2B");
+tf::Task f2C = f2.emplace([]() { std::cout << "Task f2C\n"; }).name("f2C");
+tf::Task f1_module_task = f2.composed_of(f1).name("module");
+
+f1_module_task.succeed(f2A, f2B)
+              .precede(f2C);
+@endcode
+
+@dotfile images/composition.dot
+
 
 @section SupportedCompilers Supported Compilers
 
