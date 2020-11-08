@@ -59,9 +59,14 @@
             <li><a href="#KMeansBenchmarking">Benchmarking</a></li>
           </ul>
         </div>
-<p>We study a fundamental clustering problem in unsupervised learning, <em>k-means clustering</em>. We will begin by discussing the problem formulation and then learn how to write a parallel k-means algorithm.</p><section id="KMeansProblemFormulation"><h2><a href="#KMeansProblemFormulation">Problem Formulation</a></h2><p>k-means clustering uses <em>centroids</em>, k different randomly-initiated points in the data, and assigns every data point to the nearest centroid. After every point has been assigned, the centroid is moved to the average of all of the points assigned to it. We describe the k-means algorithm in the following steps:</p><ul><li>Step 1: initialize k random centroids</li><li>Step 2: for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>Step 3: for every centroid, move the centroid to the average of the points assigned to that centroid</li><li>Step 4: go to Step 2 until converged (no more changes in the last few iterations) or maximum iterations reached</li></ul><p>The algorithm is illustrated as follows:</p><img class="m-image" src="kmeans_1.png" alt="Image" style="width: 100%;" /><p>A sequential implementation of k-means is described as follows:</p><pre class="m-code"><span class="c1">// sequential implementation of k-means on a CPU</span>
-<span class="c1">// N: number of points, K: number of clusters, M: number of iterations, px/py: 2D point vector </span>
-<span class="kt">void</span> <span class="nf">kmeans_seq</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span> <span class="n">M</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">px</span><span class="p">,</span>  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">py</span><span class="p">)</span> <span class="p">{</span>
+<p>We study a fundamental clustering problem in unsupervised learning, <em>k-means clustering</em>. We will begin by discussing the problem formulation and then learn how to write a parallel k-means algorithm.</p><section id="KMeansProblemFormulation"><h2><a href="#KMeansProblemFormulation">Problem Formulation</a></h2><p>k-means clustering uses <em>centroids</em>, k different randomly-initiated points in the data, and assigns every data point to the nearest centroid. After every point has been assigned, the centroid is moved to the average of all of the points assigned to it. We describe the k-means algorithm in the following steps:</p><ul><li>Step 1: initialize k random centroids</li><li>Step 2: for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>Step 3: for every centroid, move the centroid to the average of the points assigned to that centroid</li><li>Step 4: go to Step 2 until converged (no more changes in the last few iterations) or maximum iterations reached</li></ul><p>The algorithm is illustrated as follows:</p><img class="m-image" src="kmeans_1.png" alt="Image" /><p>A sequential implementation of k-means is described as follows:</p><pre class="m-code"><span class="c1">// sequential implementation of k-means on a CPU</span>
+<span class="c1">// N: number of points</span>
+<span class="c1">// K: number of clusters</span>
+<span class="c1">// M: number of iterations</span>
+<span class="c1">// px/py: 2D point vector </span>
+<span class="kt">void</span> <span class="nf">kmeans_seq</span><span class="p">(</span>
+  <span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span> <span class="n">M</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">px</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">py</span>
+<span class="p">)</span> <span class="p">{</span>
 
   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">c</span><span class="p">(</span><span class="n">K</span><span class="p">);</span>
   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">sx</span><span class="p">(</span><span class="n">K</span><span class="p">),</span> <span class="n">sy</span><span class="p">(</span><span class="n">K</span><span class="p">),</span> <span class="n">mx</span><span class="p">(</span><span class="n">K</span><span class="p">),</span> <span class="n">my</span><span class="p">(</span><span class="n">K</span><span class="p">);</span>
@@ -143,8 +148,13 @@
   <span class="p">}</span>
 <span class="p">});</span></pre><p>To describe <code>M</code> iterations, we create a condition task that loops the second step of the algorithm by <code>M</code> times. The return value of zero goes to the first successor which we will connect to the task of the second step later; otherwise, k-means completes.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">M</span><span class="p">]()</span> <span class="k">mutable</span> <span class="p">{</span>
   <span class="k">return</span> <span class="p">(</span><span class="n">m</span><span class="o">++</span> <span class="o">&lt;</span> <span class="n">M</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
-<span class="p">});</span></pre><p>The entire code of CPU-parallel k-means is shown below. Here we use an additional storage, <code>best_ks</code>, to record the nearest centroid of a point at an iteration.</p><pre class="m-code"><span class="c1">// N: number of points, K: number of clusters, M: number of iterations, px/py: 2D point vector </span>
-<span class="kt">void</span> <span class="nf">kmeans_par</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span> <span class="n">M</span><span class="p">,</span> <span class="n">cconst</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">px</span><span class="p">,</span>  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">py</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">});</span></pre><p>The entire code of CPU-parallel k-means is shown below. Here we use an additional storage, <code>best_ks</code>, to record the nearest centroid of a point at an iteration.</p><pre class="m-code"><span class="c1">// N: number of points</span>
+<span class="c1">// K: number of clusters</span>
+<span class="c1">// M: number of iterations</span>
+<span class="c1">// px/py: 2D point vector </span>
+<span class="kt">void</span> <span class="nf">kmeans_par</span><span class="p">(</span>
+  <span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span> <span class="n">M</span><span class="p">,</span> <span class="n">cconst</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">px</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">py</span>
+<span class="p">)</span> <span class="p">{</span>
 
   <span class="kt">unsigned</span> <span class="n">P</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>  <span class="c1">// 12 partitions of the parallel-for graph</span>
 
@@ -215,10 +225,14 @@
            <span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">update_cluster</span><span class="p">);</span>
 
   <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
-<span class="p">}</span></pre><p>The taskflow consists of two parts, a <code>clean_up</code> task and a parallel-for graph. The former cleans up the storage <code>sx</code>, <code>sy</code>, and <code>c</code> that are used to average points for new centroids, and the later parallelizes the searching for nearest centroids across individual points using 12 tasks (may vary depending on the machine). If the iteration count is smaller than <code>M</code>, the condition task returns 0 to let the execution path go back to <code>clean_up</code>. Otherwise, it returns 1 to stop (i.e., no successor tasks at index 1). The taskflow graph is illustrated below:</p><img class="m-image" src="kmeans_2.svg" alt="Image" style="width: 100%;" /><p>The scheduler starts with <code>init</code>, moves on to <code>clean_up</code>, and then enters the parallel-for task <code>paralle-for</code> that spawns a subflow of 12 workers to perform parallel iterations. When <code>parallel-for</code> completes, it updates the cluster centroids and checks if they have converged through a condition task. If not, the condition task informs the scheduler to go back to <code>clean_up</code> and then <code>parallel-for</code>; otherwise, it returns a nominal index to stop the scheduler.</p></section><section id="ParallelKMeansUsingGPUs"><h2><a href="#ParallelKMeansUsingGPUs">Parallel k-means using GPUs</a></h2><p>We observe Step 2 and Step 3 of the algorithm are parallelizable across individual points for use to harness the power of GPU:</p><ol><li>for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>for every centroid, move the centroid to the average of the points assigned to that centroid.</li></ol><p>At a fine-grained level, we request one GPU thread to work on one point for Step 2 and one GPU thread to work on one centroid for Step 3.</p><pre class="m-code"><span class="c1">// px/py: 2D points, N: number of points, mx/my: centroids, K: number of clusters</span>
+<span class="p">}</span></pre><p>The taskflow consists of two parts, a <code>clean_up</code> task and a parallel-for graph. The former cleans up the storage <code>sx</code>, <code>sy</code>, and <code>c</code> that are used to average points for new centroids, and the later parallelizes the searching for nearest centroids across individual points using 12 tasks (may vary depending on the machine). If the iteration count is smaller than <code>M</code>, the condition task returns 0 to let the execution path go back to <code>clean_up</code>. Otherwise, it returns 1 to stop (i.e., no successor tasks at index 1). The taskflow graph is illustrated below:</p><img class="m-image" src="kmeans_2.svg" alt="Image" style="width: 100%;" /><p>The scheduler starts with <code>init</code>, moves on to <code>clean_up</code>, and then enters the parallel-for task <code>paralle-for</code> that spawns a subflow of 12 workers to perform parallel iterations. When <code>parallel-for</code> completes, it updates the cluster centroids and checks if they have converged through a condition task. If not, the condition task informs the scheduler to go back to <code>clean_up</code> and then <code>parallel-for</code>; otherwise, it returns a nominal index to stop the scheduler.</p></section><section id="ParallelKMeansUsingGPUs"><h2><a href="#ParallelKMeansUsingGPUs">Parallel k-means using GPUs</a></h2><p>We observe Step 2 and Step 3 of the algorithm are parallelizable across individual points for use to harness the power of GPU:</p><ol><li>for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>for every centroid, move the centroid to the average of the points assigned to that centroid.</li></ol><p>At a fine-grained level, we request one GPU thread to work on one point for Step 2 and one GPU thread to work on one centroid for Step 3.</p><pre class="m-code"><span class="c1">// px/py: 2D points</span>
+<span class="c1">// N: number of points</span>
+<span class="c1">// mx/my: centroids</span>
+<span class="c1">// K: number of clusters</span>
 <span class="c1">// sx/sy/c: storage to compute the average</span>
 <span class="n">__global__</span> <span class="kt">void</span> <span class="n">assign_clusters</span><span class="p">(</span>
-  <span class="kt">float</span><span class="o">*</span> <span class="n">px</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">py</span><span class="p">,</span> <span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">mx</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">my</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">sx</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">sy</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">c</span>
+  <span class="kt">float</span><span class="o">*</span> <span class="n">px</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">py</span><span class="p">,</span> <span class="kt">int</span> <span class="n">N</span><span class="p">,</span> 
+  <span class="kt">float</span><span class="o">*</span> <span class="n">mx</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">my</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">sx</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">sy</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">c</span>
 <span class="p">)</span> <span class="p">{</span>
   <span class="k">const</span> <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">blockDim</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
 
@@ -246,14 +260,20 @@
 <span class="p">}</span>
 
 <span class="c1">// mx/my: centroids, sx/sy/c: storage to compute the average</span>
-<span class="n">__global__</span> <span class="kt">void</span> <span class="n">compute_new_means</span><span class="p">(</span><span class="kt">float</span><span class="o">*</span> <span class="n">mx</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">my</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">sx</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">sy</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">c</span>
+<span class="n">__global__</span> <span class="kt">void</span> <span class="n">compute_new_means</span><span class="p">(</span>
+  <span class="kt">float</span><span class="o">*</span> <span class="n">mx</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">my</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">sx</span><span class="p">,</span> <span class="kt">float</span><span class="o">*</span> <span class="n">sy</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">c</span>
 <span class="p">)</span> <span class="p">{</span>
   <span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
   <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>  <span class="c1">// turn 0/0 to 0/1</span>
   <span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">sx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">count</span><span class="p">;</span>
   <span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">sy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">count</span><span class="p">;</span>
-<span class="p">}</span></pre><p>When we recompute the cluster centroids to be the mean of all points assigned to a particular centroid, multiple GPU threads may access the sum arrays, <code>sx</code> and <code>sy</code>, and the count array, <code>c</code>. To avoid data race, we use a simple <code>atomicAdd</code> method. Based on the two kernels, the entire code of CPU-GPU collaborative tasking is described as follows:</p><pre class="m-code"><span class="c1">// N: number of points, K: number of clusters, M: number of iterations, px/py: 2D point vector </span>
-<span class="kt">void</span> <span class="nf">kmeans_gpu</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span> <span class="n">M</span><span class="p">,</span> <span class="n">cconst</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">px</span><span class="p">,</span>  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">py</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span></pre><p>When we recompute the cluster centroids to be the mean of all points assigned to a particular centroid, multiple GPU threads may access the sum arrays, <code>sx</code> and <code>sy</code>, and the count array, <code>c</code>. To avoid data race, we use a simple <code>atomicAdd</code> method. Based on the two kernels, the entire code of CPU-GPU collaborative tasking is described as follows:</p><pre class="m-code"><span class="c1">// N: number of points</span>
+<span class="c1">// K: number of clusters</span>
+<span class="c1">// M: number of iterations</span>
+<span class="c1">// px/py: 2D point vector </span>
+<span class="kt">void</span> <span class="nf">kmeans_gpu</span><span class="p">(</span>
+  <span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span> <span class="n">M</span><span class="p">,</span> <span class="n">cconst</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">px</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">py</span>
+<span class="p">)</span> <span class="p">{</span>
 
   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">h_mx</span><span class="p">,</span> <span class="n">h_my</span><span class="p">;</span>
   <span class="kt">float</span> <span class="o">*</span><span class="n">d_px</span><span class="p">,</span> <span class="o">*</span><span class="n">d_py</span><span class="p">,</span> <span class="o">*</span><span class="n">d_mx</span><span class="p">,</span> <span class="o">*</span><span class="n">d_my</span><span class="p">,</span> <span class="o">*</span><span class="n">d_sx</span><span class="p">,</span> <span class="o">*</span><span class="n">d_sy</span><span class="p">,</span> <span class="o">*</span><span class="n">d_c</span><span class="p">;</span>
@@ -268,23 +288,29 @@
   <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;K-Means&quot;</span><span class="p">);</span>
   
   <span class="c1">// allocate GPU memory</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_px</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_px</span><span class="p">,</span> <span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span> <span class="p">})</span>
-                             <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_px&quot;</span><span class="p">);</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_px</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> 
+    <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_px</span><span class="p">,</span> <span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span> 
+  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_px&quot;</span><span class="p">);</span>
 
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_py</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_py</span><span class="p">,</span> <span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span> <span class="p">})</span>
-                             <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_py&quot;</span><span class="p">);</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_py</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> 
+    <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_py</span><span class="p">,</span> <span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span> 
+  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_py&quot;</span><span class="p">);</span>
 
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_mx</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_mx</span><span class="p">,</span> <span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span> <span class="p">})</span>
-                             <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_mx&quot;</span><span class="p">);</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_mx</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> 
+    <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_mx</span><span class="p">,</span> <span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span> <span class="p">}</span>
+  <span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_mx&quot;</span><span class="p">);</span>
 
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_my</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_my</span><span class="p">,</span> <span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span> <span class="p">})</span>
-                             <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_my&quot;</span><span class="p">);</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_my</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> 
+    <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_my</span><span class="p">,</span> <span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span> 
+  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_my&quot;</span><span class="p">);</span>
 
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_sy</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_sy</span><span class="p">,</span> <span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span> <span class="p">})</span>
-                             <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_sy&quot;</span><span class="p">);</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_sy</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> 
+    <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_sy</span><span class="p">,</span> <span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span> 
+  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_sy&quot;</span><span class="p">);</span>
 
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_c</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_c</span><span class="p">,</span> <span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span> <span class="p">})</span>
-                            <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_c&quot;</span><span class="p">);</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_c</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> 
+    <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_c</span><span class="p">,</span> <span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span> 
+  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_c&quot;</span><span class="p">);</span>
   
   <span class="c1">// transfer data from the host to the GPU</span>
   <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">h2d</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">){</span>
@@ -302,7 +328,8 @@
     <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">zero_sy</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_sy</span><span class="p">,</span> <span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_sy&quot;</span><span class="p">);</span>
 
     <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">cluster</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span>
-      <span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1024-1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">assign_clusters</span><span class="p">,</span> <span class="n">d_px</span><span class="p">,</span> <span class="n">d_py</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">d_mx</span><span class="p">,</span> <span class="n">d_my</span><span class="p">,</span> <span class="n">d_sx</span><span class="p">,</span> <span class="n">d_sy</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">d_c</span>
+      <span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1024-1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> 
+      <span class="n">assign_clusters</span><span class="p">,</span> <span class="n">d_px</span><span class="p">,</span> <span class="n">d_py</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">d_mx</span><span class="p">,</span> <span class="n">d_my</span><span class="p">,</span> <span class="n">d_sx</span><span class="p">,</span> <span class="n">d_sy</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">d_c</span>
     <span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cluster&quot;</span><span class="p">);</span>
 
     <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">new_centroid</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span>
@@ -353,7 +380,134 @@
   
   <span class="c1">// dump the entire taskflow</span>
   <span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
-<span class="p">}</span></pre><p>The first dump before executing the taskflow produces the following diagram. The condition tasks introduces a cycle between itself and <code>update_means</code>. Each time it goes back to <code>update_means</code>, the cudaFlow is reconstructed with captured parameters in the closure and offloaded to the GPU.</p><img class="m-image" src="kmeans_3.svg" alt="Image" style="width: 80%;" /><p>The second dump after executing the taskflow produces the following diagram, with all cudaFlows expanded:</p><img class="m-image" src="kmeans_4.svg" alt="Image" style="width: 100%;" /><p>The main cudaFlow task, <code>update_means</code>, must not run before all required data has settled down. It precedes a condition task that circles back to itself until we reach <code>M</code> iterations. When iteration completes, the condition task directs the execution path to the cudaFlow, <code>h2d</code>, to copy the results of clusters to <code>h_mx</code> and <code>h_my</code> and then deallocate all GPU memory.</p></section><section id="BuiltInPredicate"><h2><a href="#BuiltInPredicate">Built-in Predicate</a></h2><p>We observe the GPU task graph parameters remain <em>unchanged</em> across all k-means iterations. In this case, we can leverage tf::cudaFlow::join_until or tf::cudaFlow::join_n to run it repeatedly without conditional tasking.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">kmeans</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">){</span>
+<span class="p">}</span></pre><p>The first dump before executing the taskflow produces the following diagram. The condition tasks introduces a cycle between itself and <code>update_means</code>. Each time it goes back to <code>update_means</code>, the cudaFlow is reconstructed with captured parameters in the closure and offloaded to the GPU.</p><div class="m-graph"><svg style="width: 56.062rem; height: 17.938rem;" viewBox="0.00 0.00 896.99 287.00">
+<g transform="scale(1 1) rotate(0) translate(4 283)">
+<title>Taskflow</title>
+<g class="m-node m-flat">
+<title>p0x562f9807bcc0</title>
+<ellipse cx="68.0044" cy="-261" rx="65.0658" ry="18"/>
+<text text-anchor="middle" x="68.0044" y="-256.2">allocate_px</text>
+</g>
+<g class="m-node">
+<title>p0x562f9807b550</title>
+<polygon points="264.439,-198 261.439,-202 240.439,-202 237.439,-198 210.439,-198 210.439,-162 264.439,-162 264.439,-198"/>
+<text text-anchor="middle" x="237.439" y="-175.2">h2d</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807bcc0&#45;&gt;p0x562f9807b550</title>
+<path d="M106.8029,-246.4587C116.435,-242.6131 126.6716,-238.3228 136.0088,-234 158.1007,-223.7722 182.1787,-211.025 201.3294,-200.4843"/>
+<polygon points="203.2562,-203.418 210.3045,-195.5077 199.8617,-197.2961 203.2562,-203.418"/>
+</g>
+<g class="m-node">
+<title>p0x562f9807b440</title>
+<polygon points="460.6584,-117 457.6584,-121 436.6584,-121 433.6584,-117 338.9395,-117 338.9395,-81 460.6584,-81 460.6584,-117"/>
+<text text-anchor="middle" x="399.7989" y="-94.2">update_means</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b550&#45;&gt;p0x562f9807b440</title>
+<path d="M264.685,-169.3379C276.2736,-164.6092 289.8585,-158.8075 301.8692,-153 321.368,-143.5719 342.4688,-132.1067 360.0728,-122.17"/>
+<polygon points="361.97,-125.1176 368.9329,-117.132 358.5099,-119.0325 361.97,-125.1176"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807bbb0</title>
+<ellipse cx="68.0044" cy="-207" rx="65.0658" ry="18"/>
+<text text-anchor="middle" x="68.0044" y="-202.2">allocate_py</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807bbb0&#45;&gt;p0x562f9807b550</title>
+<path d="M124.4237,-198.0094C149.3553,-194.0365 177.9811,-189.4748 200.1847,-185.9366"/>
+<polygon points="200.886,-189.3691 210.2106,-184.339 199.7843,-182.4563 200.886,-189.3691"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807baa0</title>
+<ellipse cx="68.0044" cy="-153" rx="68.0088" ry="18"/>
+<text text-anchor="middle" x="68.0044" y="-148.2">allocate_mx</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807baa0&#45;&gt;p0x562f9807b550</title>
+<path d="M126.3142,-162.2919C150.8289,-166.1984 178.6215,-170.6272 200.2797,-174.0785"/>
+<polygon points="199.9517,-177.5703 210.3779,-175.6877 201.0533,-170.6576 199.9517,-177.5703"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807b990</title>
+<ellipse cx="68.0044" cy="-99" rx="68.0088" ry="18"/>
+<text text-anchor="middle" x="68.0044" y="-94.2">allocate_my</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b990&#45;&gt;p0x562f9807b550</title>
+<path d="M109.0499,-113.3569C118.1284,-117.0619 127.5559,-121.3362 136.0088,-126 153.8332,-135.8343 155.2781,-142.9979 173.0088,-153 181.7113,-157.9092 191.4851,-162.4548 200.7395,-166.3626"/>
+<polygon points="199.5476,-169.6563 210.1289,-170.1924 202.1914,-163.1748 199.5476,-169.6563"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807b880</title>
+<ellipse cx="237.439" cy="-126" rx="64.3605" ry="18"/>
+<text text-anchor="middle" x="237.439" y="-121.2">allocate_sx</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b880&#45;&gt;p0x562f9807b440</title>
+<path d="M292.86,-116.7836C304.4148,-114.8621 316.7463,-112.8114 328.7756,-110.811"/>
+<polygon points="329.495,-114.2395 338.7854,-109.1464 328.3466,-107.3343 329.495,-114.2395"/>
+</g>
+<g class="m-node">
+<title>p0x562f9807b330</title>
+<polygon points="600.1322,-117 505.6219,-99 600.1322,-81 694.6425,-99 600.1322,-117"/>
+<text text-anchor="middle" x="600.1322" y="-94.2">converged?</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b440&#45;&gt;p0x562f9807b330</title>
+<path d="M460.984,-100.7033C466.9797,-100.8242 472.9719,-100.9271 478.7286,-101 487.6292,-101.1127 496.8966,-101.1339 506.1678,-101.0906"/>
+<polygon points="506.2372,-104.5903 516.2121,-101.0195 506.1876,-97.5904 506.2372,-104.5903"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807b770</title>
+<ellipse cx="237.439" cy="-72" rx="64.3605" ry="18"/>
+<text text-anchor="middle" x="237.439" y="-67.2">allocate_sy</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b770&#45;&gt;p0x562f9807b440</title>
+<path d="M292.86,-81.2164C304.4148,-83.1379 316.7463,-85.1886 328.7756,-87.189"/>
+<polygon points="328.3466,-90.6657 338.7854,-88.8536 329.495,-83.7605 328.3466,-90.6657"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807b660</title>
+<ellipse cx="237.439" cy="-18" rx="59.1273" ry="18"/>
+<text text-anchor="middle" x="237.439" y="-13.2">allocate_c</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b660&#45;&gt;p0x562f9807b440</title>
+<path d="M273.5265,-32.3223C282.8477,-36.2393 292.8066,-40.618 301.8692,-45 321.368,-54.4281 342.4688,-65.8933 360.0728,-75.83"/>
+<polygon points="358.5099,-78.9675 368.9329,-80.868 361.97,-72.8824 358.5099,-78.9675"/>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b330&#45;&gt;p0x562f9807b440</title>
+<path stroke-dasharray="5,2" d="M561.9472,-88.207C538.0819,-82.7374 506.6778,-77.8535 478.7286,-81 476.0706,-81.2992 473.3715,-81.6535 470.6523,-82.0529"/>
+<polygon points="470.0551,-78.604 460.7549,-83.679 471.19,-85.5114 470.0551,-78.604"/>
+<text text-anchor="middle" x="483.1778" y="-84.2">0</text>
+</g>
+<g class="m-node">
+<title>p0x562f9807b220</title>
+<polygon points="793.5358,-117 790.5358,-121 769.5358,-121 766.5358,-117 739.5358,-117 739.5358,-81 793.5358,-81 793.5358,-117"/>
+<text text-anchor="middle" x="766.5358" y="-94.2">d2h</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b330&#45;&gt;p0x562f9807b220</title>
+<path stroke-dasharray="5,2" d="M695,-99C707.0258,-99 718.7198,-99 729.0503,-99"/>
+<polygon points="729.2789,-102.5001 739.2789,-99 729.2788,-95.5001 729.2789,-102.5001"/>
+<text text-anchor="middle" x="717.0866" y="-102.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x562f9807b110</title>
+<ellipse cx="859.7637" cy="-99" rx="29.4575" ry="18"/>
+<text text-anchor="middle" x="859.7637" y="-94.2">free</text>
+</g>
+<g class="m-edge">
+<title>p0x562f9807b220&#45;&gt;p0x562f9807b110</title>
+<path d="M794.003,-99C802.1872,-99 811.3245,-99 820.1226,-99"/>
+<polygon points="820.2178,-102.5001 830.2178,-99 820.2177,-95.5001 820.2178,-102.5001"/>
+</g>
+</g>
+</svg>
+</div><p>The second dump after executing the taskflow produces the following diagram, with all cudaFlows expanded:</p><img class="m-image" src="kmeans_4.svg" alt="Image" style="width: 100%;" /><p>The main cudaFlow task, <code>update_means</code>, must not run before all required data has settled down. It precedes a condition task that circles back to itself until we reach <code>M</code> iterations. When iteration completes, the condition task directs the execution path to the cudaFlow, <code>h2d</code>, to copy the results of clusters to <code>h_mx</code> and <code>h_my</code> and then deallocate all GPU memory.</p></section><section id="BuiltInPredicate"><h2><a href="#BuiltInPredicate">Built-in Predicate</a></h2><p>We observe the GPU task graph parameters remain <em>unchanged</em> across all k-means iterations. In this case, we can leverage tf::cudaFlow::join_until or tf::cudaFlow::join_n to run it repeatedly without conditional tasking.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">kmeans</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">){</span>
 
   <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">zero_c</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_c</span><span class="p">,</span> <span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_c&quot;</span><span class="p">);</span>
   <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">zero_sx</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_sx</span><span class="p">,</span> <span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_sx&quot;</span><span class="p">);</span>

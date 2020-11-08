@@ -13,31 +13,9 @@
 <sect1 id="release-2-7-0_1release-2-7-0_new_features">
 <title>New Features</title>
 <para><itemizedlist>
-<listitem><para>added <ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">tf::Executor::async</ref> to support asynchronously calling a function (see <ref refid="chapter2_1C2_Async" kindref="member">Run a Task Asynchronously</ref>) <programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>fu<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">async</ref>([](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>my<sp/>work</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>access<sp/>the<sp/>result<sp/>through<sp/>fu.get()<sp/>or<sp/>wait<sp/>on<sp/>the<sp/>executor</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
-<codeline><highlight class="normal">assert(fu.wait_for(<ref refid="cpp/chrono/duration" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::seconds</ref>(1))<sp/>==<sp/>std::future_status::ready);</highlight></codeline>
-</programlisting> </para></listitem>
-<listitem><para>added kernel algorithm, <ref refid="classtf_1_1cudaFlow_1a97c248490dbde983378f757239eaed4a" kindref="member">tf::cudaFlow::for_each</ref> <programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...<sp/>gpu<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>assigns<sp/>one<sp/>to<sp/>every<sp/>element<sp/>in<sp/>my_gpu_data<sp/>(type<sp/>int*,<sp/>1000<sp/>elements)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1a97c248490dbde983378f757239eaed4a" kindref="member">for_each</ref>(my_gpu_data,<sp/>my_gpu_data<sp/>+<sp/>1000,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>item)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>item<sp/>=<sp/>1;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>});<sp/></highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
-</programlisting> </para></listitem>
-<listitem><para>added kernel algorithm, <ref refid="classtf_1_1cudaFlow_1ab5a7c12e383be4972844a9f29033e487" kindref="member">tf::cudaFlow::for_each_index</ref> <programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...<sp/>gpu<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>assigns<sp/>one<sp/>to<sp/>every<sp/>element<sp/>in<sp/>my_gpu_data<sp/>(type<sp/>int*,<sp/>1000<sp/>elements)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ab5a7c12e383be4972844a9f29033e487" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/>[my_gpu_data]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>idx)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>my_gpu_data[idx]<sp/>=<sp/>1;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>});<sp/></highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
-</programlisting> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">tf::Executor::async</ref> to support asynchronously calling a function (see <ref refid="chapter2_1C2_Async" kindref="member">Run a Task Asynchronously</ref>) </para></listitem>
+<listitem><para>added kernel algorithm, <ref refid="classtf_1_1cudaFlow_1a97c248490dbde983378f757239eaed4a" kindref="member">tf::cudaFlow::for_each</ref> </para></listitem>
+<listitem><para>added kernel algorithm, <ref refid="classtf_1_1cudaFlow_1ab5a7c12e383be4972844a9f29033e487" kindref="member">tf::cudaFlow::for_each_index</ref> </para></listitem>
 <listitem><para>added explicit join method at tf::cudaFlow::join, tf::cudaFlow::join_n, tf::cudaFlow::join_until</para></listitem>
 </itemizedlist>
 </para></sect1>

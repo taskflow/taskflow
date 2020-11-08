@@ -46,55 +46,11 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li added utility functions to control cuda memory (see cuda_memory.hpp)
 @li added per-thread pool for CUDA streams to improve performance
 @li added a new interface tf::cudaFlowCapturer for building a GPU task graph through stream capture
-@code{.cpp}
-tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
-  // capture my_kernel_1 through a stream managed by the capturer
-  tf::cudaTask task_1 = capturer.on([&](cudaStream_t stream){ 
-    my_kernel_1<<<grid_1, block_1, shm_size_1, stream>>>(my_parameters_1);
-  });
-
-  // capture my_kernel_2 through a stream managed by the capturer
-  tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){ 
-    my_kernel_2<<<grid_2, block_2, shm_size_2, stream>>>(my_parameters_2);
-  });
-
-  // my_kernel_1 runs before my_kernel_2
-  task_1.precede(task_2);
-});
-@endcode
 @li added a new interface tf::cudaFlowCapturerBase to support custom-defined capturers (see @ref C7_CreateCustomCapturer)
 @li added a new interface tf::cudaFlow::capture for capturing a CUDA task graph within a parent %cudaFlow
-@code{.cpp}
-tf::Task task = taskflow.emplace([&](tf::cudaFlow& cf){
-  tf::cudaTask capture_task = cf.capture([&](tf::cudaFlowCapturer& capturer){
-    capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
-      my_kernel_2<<<grid_2, block_2, shm_size_2, stream>>>(my_parameters_2);
-    });
-  });
-});
-@endcode
 @li added a new method tf::Taskflow::emplace_on to place a %cudaFlow (tf::cudaFlow and tf::cudaFlowCapturer) on the given device context
-@code{.cpp}
-tf::Task task = taskflow.emplace_on([&](tf::cudaFlow& cf){
-  // the cudaFlow cf runs on GPU 1
-}, 1);
-@endcode
 @li supported standalone %cudaFlow without going through tf::Taskflow 
     (see @ref C6_UsecudaFlowInAStandaloneEnvironment)
-@code{.cpp}
-tf::cudaFlow cf;  // create a standalone cudaFlow
-
-tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N);
-tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N);
-tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N);
-tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N);
-tf::cudaTask kernel = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy);
-
-kernel.succeed(h2d_x, h2d_y)   // kernel runs after  host-to-device copy
-      .precede(d2h_x, d2h_y);  // kernel runs before device-to-host copy
-
-cf.offload();  // offload and runs the cudaFlow once
-@endcode
 @li supported recursive dump of a %cudaFlow with child graphs
 @li supported updating a %cudaFlow through tf::cudaFlow::offload 
     (see @ref C6_OffloadAndUpdateAcudaFlow)
@@ -122,6 +78,7 @@ cf.offload();  // offload and runs the cudaFlow once
 @section release-3-0-0_deprecated_items Deprecated and Removed Items 
 
 @li removed tf::cudaFlow::device; users may call tf::Taskflow::emplace_on to associate a cudaflow with a GPU device
+@li removed tf::cudaFlow::join, use tf::cudaFlow::offload instead
 
 @section release-3-0-0_miscellaneous_items Miscellaneous Items
 

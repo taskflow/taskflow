@@ -19,14 +19,14 @@
 Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="install_1BAIIntegrateTaskflowToYourProject">
 <title>Integrate Taskflow to Your Project</title>
-<para>Taskflow is <emphasis>header-only</emphasis> and there is no need for installation. Simply download the source and copy the headers under the directory <computeroutput>taskflow/</computeroutput> to your project.</para><para><programlisting filename=".sh"><codeline><highlight class="normal">~$<sp/>git<sp/>clone<sp/>https://github.com/taskflow/taskflow.git</highlight></codeline>
+<para>Taskflow is <emphasis>header-only</emphasis> and there is no need for installation. Simply download the source and copy the headers under the directory <computeroutput>taskflow/</computeroutput> to your project.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>git<sp/>clone<sp/>https://github.com/taskflow/taskflow.git</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cd<sp/>taskflow/</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cp<sp/>-r<sp/>taskflow<sp/>myproject/include/</highlight></codeline>
-</programlisting></para><para>Taskflow is written in C++17 and is built on top of C++ standardized threading libraries to improve portability. To compile a Taskflow program, say <computeroutput>simple.cpp</computeroutput>, you need to tell the compiler where to find the Taskflow header files and link it through the system thread library (usually <ulink url="http://man7.org/linux/man-pages/man7/pthreads.7.html">POSIX threads</ulink> in Linux-like systems). Take gcc for an example:</para><para><programlisting filename=".sh"><codeline><highlight class="normal">~$<sp/>g++<sp/>simple.cpp<sp/>-std=c++17<sp/>-I<sp/>myproject/include/<sp/>-O2<sp/>-pthread<sp/>-o<sp/>simple</highlight></codeline>
+</programlisting></para><para>Taskflow is written in C++17 and is built on top of C++ standardized threading libraries to improve portability. To compile a Taskflow program, say <computeroutput>simple.cpp</computeroutput>, you need to tell the compiler where to find the Taskflow header files and link it through the system thread library (usually <ulink url="http://man7.org/linux/man-pages/man7/pthreads.7.html">POSIX threads</ulink> in Linux-like systems). Take gcc for an example:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>g++<sp/>simple.cpp<sp/>-std=c++17<sp/>-I<sp/>myproject/include/<sp/>-O2<sp/>-pthread<sp/>-o<sp/>simple</highlight></codeline>
 </programlisting></para></sect1>
 <sect1 id="install_1BAIBuildExamplesAndUnitTests">
 <title>Build Examples and Unit Tests</title>
-<para>Taskflow uses CMake to build examples and unit tests. We recommend using out-of-source build.</para><para><programlisting filename=".sh"><codeline><highlight class="normal">~$<sp/>cd<sp/>path/to/taskflow</highlight></codeline>
+<para>Taskflow uses CMake to build examples and unit tests. We recommend using out-of-source build.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cd<sp/>path/to/taskflow</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>mkdir<sp/>build</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cd<sp/>build</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cmake<sp/>../</highlight></codeline>
@@ -50,7 +50,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 </programlisting></para><para>When the building completes, you can find the executables for examples and tests under the two folders, <computeroutput>examples/</computeroutput> and <computeroutput>unittests/</computeroutput>.</para></sect1>
 <sect1 id="install_1BAIConfigureCMakeOptions">
 <title>Configure CMake Options</title>
-<para>You can list a set of available options in the cmake.</para><para><programlisting filename=".sh"><codeline><highlight class="normal">~$<sp/>cmake<sp/>-LA</highlight></codeline>
+<para>You can list a set of available options in the cmake.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>-LA</highlight></codeline>
 <codeline><highlight class="normal">...</highlight></codeline>
 <codeline><highlight class="normal">TF_BUILD_EXAMPLES:BOOL=ON<sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>by<sp/>default,<sp/>we<sp/>compile<sp/>examples</highlight></codeline>
 <codeline><highlight class="normal">TF_BUILD_TESTS:BOOL=ON<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>by<sp/>default,<sp/>we<sp/>compile<sp/>tests</highlight></codeline>
@@ -71,13 +71,13 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <row>
 <entry thead="no"><para>TF_BUILD_SYCL  </para></entry><entry thead="no"><para>OFF  </para></entry><entry thead="no"><para>enable/disable building SYCL code   </para></entry></row>
 </table>
-</para><para>To enable or disable a specific option, use <computeroutput>-D</computeroutput> in the CMake build. For example:</para><para><programlisting filename=".sh"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_EXAMPLES=OFF</highlight></codeline>
+</para><para>To enable or disable a specific option, use <computeroutput>-D</computeroutput> in the CMake build. For example:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_EXAMPLES=OFF</highlight></codeline>
 </programlisting></para><para>The above command turns off building Taskflow examples.</para></sect1>
 <sect1 id="install_1BAIBuildCUDACode">
 <title>Build CUDA Code</title>
-<para>To build CUDA code, including unit tests and examples, define the CMake option <computeroutput>TF_BUILD_CUDA</computeroutput> to <computeroutput>ON</computeroutput> as follows:</para><para><programlisting filename=".sh"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_CUDA=ON</highlight></codeline>
+<para>To build CUDA code, including unit tests and examples, define the CMake option <computeroutput>TF_BUILD_CUDA</computeroutput> to <computeroutput>ON</computeroutput> as follows:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_CUDA=ON</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
-</programlisting></para><para>To compile a Taskflow program with CUDA (e.g., <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>), use <ulink url="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</ulink> with C++17 enabled as follows:</para><para><programlisting filename=".sh"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>my_taskflow_cuda_program.cu<sp/>-std=c++17<sp/>-o<sp/>my_taskflow_cuda_program</highlight></codeline>
+</programlisting></para><para>To compile a Taskflow program with CUDA (e.g., <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>), use <ulink url="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</ulink> with C++17 enabled as follows:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>my_taskflow_cuda_program.cu<sp/>-std=c++17<sp/>-o<sp/>my_taskflow_cuda_program</highlight></codeline>
 </programlisting></para><para>Taskflow&apos;s tasking interface for CUDA GPU programming is built on top of <ulink url="https://developer.nvidia.com/blog/cuda-graphs/">CUDA Graph</ulink>, which allows work to be efficiently defined as graphs rather than single operations.</para></sect1>
 <sect1 id="install_1BAIBuildSYCLCode">
 <title>Build SYCL Code</title>

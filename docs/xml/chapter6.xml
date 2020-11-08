@@ -72,7 +72,7 @@
 Taskflow does not expend unnecessary efforts on kernel programming but focus on tasking CUDA operations with CPU work. We give users full privileges to craft a CUDA kernel that is commensurate with their domain knowledge. Users focus on developing high-performance kernels using a native CUDA toolkit, while leaving difficult task parallelism to Taskflow.</para></sect1>
 <sect1 id="chapter6_1C6_Compile_a_cudaFlow_program">
 <title>Compile a cudaFlow Program</title>
-<para>Use <ulink url="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</ulink> (at least v11.1) to compile a cudaFlow program:</para><para><programlisting filename=".sh"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-std=c++17<sp/>my_cudaflow.cu<sp/>-I<sp/>path/to/include/taskflow<sp/>-O2<sp/>-o<sp/>my_cudaflow</highlight></codeline>
+<para>Use <ulink url="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</ulink> (at least v11.1) to compile a cudaFlow program:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-std=c++17<sp/>my_cudaflow.cu<sp/>-I<sp/>path/to/include/taskflow<sp/>-O2<sp/>-o<sp/>my_cudaflow</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./my_cudaflow</highlight></codeline>
 </programlisting></para><para>Our source autonomously enables cudaFlow when detecting a CUDA compiler.</para></sect1>
 <sect1 id="chapter6_1C6_configure_the_number_of_gpu_workers">
@@ -147,7 +147,7 @@ Taskflow does not expend unnecessary efforts on kernel programming but focus on 
 <listitem><para>Lines 40-41 create a kernel task to launch the second saxpy on GPU <computeroutput>3</computeroutput> and store the result in <computeroutput>z2</computeroutput> </para></listitem>
 <listitem><para>Lines 44-55 run the taskflow and verify the result (<computeroutput>max_error</computeroutput> should be zero)</para></listitem>
 </itemizedlist>
-Running the program gives the following <ulink url="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvidia-smi</ulink> snapshot in a system of 4 GPUs:</para><para><programlisting filename=".sh"><codeline><highlight class="normal">+-----------------------------------------------------------------------------+</highlight></codeline>
+Running the program gives the following <ulink url="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvidia-smi</ulink> snapshot in a system of 4 GPUs:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">+-----------------------------------------------------------------------------+</highlight></codeline>
 <codeline><highlight class="normal">|<sp/>NVIDIA-SMI<sp/>430.50<sp/><sp/><sp/><sp/><sp/><sp/><sp/>Driver<sp/>Version:<sp/>430.50<sp/><sp/><sp/><sp/><sp/><sp/><sp/>CUDA<sp/>Version:<sp/>10.1<sp/><sp/><sp/><sp/><sp/>|</highlight></codeline>
 <codeline><highlight class="normal">|-------------------------------+----------------------+----------------------+</highlight></codeline>
 <codeline><highlight class="normal">|<sp/>GPU<sp/><sp/>Name<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Persistence-M|<sp/>Bus-Id<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Disp.A<sp/>|<sp/>Volatile<sp/>Uncorr.<sp/>ECC<sp/>|</highlight></codeline>

@@ -95,7 +95,7 @@ a native CUDA toolkit, while leaving difficult task parallelism to %Taskflow.
 
 Use @nvcc (at least v11.1) to compile a %cudaFlow program:
 
-@code{.sh}
+@code{.shell-session}
 ~$ nvcc -std=c++17 my_cudaflow.cu -I path/to/include/taskflow -O2 -o my_cudaflow
 ~$ ./my_cudaflow
 @endcode
@@ -209,7 +209,7 @@ Debrief:
 Running the program gives the following 
 @nvidia_smi snapshot in a system of 4 GPUs:
 
-@code{.sh}
+@code{.shell-session}
 +-----------------------------------------------------------------------------+
 | NVIDIA-SMI 430.50       Driver Version: 430.50       CUDA Version: 10.1     |
 |-------------------------------+----------------------+----------------------+

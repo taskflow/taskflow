@@ -116,7 +116,7 @@ Line 8-14 is the main block to enable dynamic tasking. Taskflow uses a <ulink ur
 <codeline><highlight class="normal">22:<sp/></highlight><highlight class="comment">//<sp/>execute<sp/>the<sp/>graph<sp/>to<sp/>spawn<sp/>the<sp/>subflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">23:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>().<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).get();</highlight></codeline>
 <codeline><highlight class="normal">24:<sp/>taskflow.<ref refid="classtf_1_1Taskflow_1a4725d8ea5ff7595d9d71593360538e00" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
-</programlisting></para><para><image type="html" name="nested_subflow.svg" width="55%"></image>
+</programlisting></para><para><image type="html" name="nested_subflow.svg"></image>
 </para><para>Debrief: <itemizedlist>
 <listitem><para>Line 1 creates a taskflow object </para></listitem>
 <listitem><para>Line 3-20 creates a task to spawn a subflow of two tasks A1 and A2 </para></listitem>

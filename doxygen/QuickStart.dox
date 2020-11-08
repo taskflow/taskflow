@@ -73,7 +73,7 @@ by harnessing the power of CPU-GPU collaborative computing.
 
 @section ASimpleFirstProgram Start Your First Taskflow Program
 
-The following simple program (@c simple.cpp) creates four tasks 
+The following program (@c simple.cpp) creates four tasks 
 @c A, @c B, @c C, and @c D, where @c A runs before @c B and @c C, and @c D
 runs after @c B and @c C.
 
@@ -89,19 +89,17 @@ int main(){
   tf::Executor executor;
   tf::Taskflow taskflow;
 
-  auto [A, B, C, D] = taskflow.emplace(
-    [] () { std::cout << "TaskA\n"; },   //  task dependency graph
-    [] () { std::cout << "TaskB\n"; },   // 
-    [] () { std::cout << "TaskC\n"; },   //          +---+          
-    [] () { std::cout << "TaskD\n"; }    //    +---->| B |-----+   
-  );                                     //    |     +---+     |
-                                         //  +---+           +-v-+ 
-  A.precede(B);  // A runs before B      //  | A |           | D | 
-  A.precede(C);  // A runs before C      //  +---+           +-^-+ 
-  B.precede(D);  // B runs before D      //    |     +---+     |    
-  C.precede(D);  // C runs before D      //    +---->| C |-----+    
-                                         //          +---+          
-  executor.run(taskflow).wait();
+  auto [A, B, C, D] = taskflow.emplace(  // create 4 tasks
+    [] () { std::cout << "TaskA\n"; },
+    [] () { std::cout << "TaskB\n"; },
+    [] () { std::cout << "TaskC\n"; },
+    [] () { std::cout << "TaskD\n"; } 
+  );                                  
+                                      
+  A.precede(B, C);  // A runs before B and C
+  D.succeed(B, C);  // D runs after  B and C
+                                      
+  executor.run(taskflow).wait(); 
 
   return 0;
 }
@@ -111,7 +109,7 @@ int main(){
 To compile the program, clone the %Taskflow project and 
 tell the compiler to include the headers under @c taskflow/.
 
-@code{.sh}
+@code{.shell-session}
 ~$ git clone https://github.com/taskflow/taskflow.git  # clone it only once
 ~$ g++ -std=c++17 simple.cpp -I taskflow/taskflow -O2 -pthread -o simple
 ~$ ./simple

@@ -9,7 +9,7 @@
     <detaileddescription>
 <para>We study the wavefront parallelism, which is a common pattern in dynamic programming to sweep elements in a diagonal direction.</para><sect1 id="wavefront_1WavefrontComputingFormulation">
 <title>Problem Formulation</title>
-<para>The computation starts at a singular point at a corner of a data plan (e.g., grid) and propagates its effect diagonally to other elements. This sweep of computation is known as <emphasis>wavefront</emphasis>. Each point in the wavefront can be computed in parallel. The following example shows a wavefront parallelism in a 2D matrix.</para><para><image type="html" name="wavefront_1.png" width="50%"></image>
+<para>The computation starts at a singular point at a corner of a data plan (e.g., grid) and propagates its effect diagonally to other elements. This sweep of computation is known as <emphasis>wavefront</emphasis>. Each point in the wavefront can be computed in parallel. The following example shows a wavefront parallelism in a 2D matrix.</para><para><image type="html" name="wavefront_1.png" width="70%"></image>
 </para><para>We partition the 9x9 grid into a 3x3 block and assign a task to one block. The wavefront propagates task dependencies from the top-left block all the way to the bottom-right block. Each task precedes two tasks, one to the right and another below.</para></sect1>
 <sect1 id="wavefront_1WavefrontTaskGraph">
 <title>Wavefront Task Graph</title>

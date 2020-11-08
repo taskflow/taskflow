@@ -23,14 +23,19 @@ We describe the k-means algorithm in the following steps:
 
 The algorithm is illustrated as follows:
 
-@image html images/kmeans_1.png width=100%
+@image html images/kmeans_1.png
 
 A sequential implementation of k-means is described as follows:
 
 @code{.cpp}
 // sequential implementation of k-means on a CPU
-// N: number of points, K: number of clusters, M: number of iterations, px/py: 2D point vector 
-void kmeans_seq(int N, int K, int M, const std::vector<float>& px,  const std::vector<float>& py) {
+// N: number of points
+// K: number of clusters
+// M: number of iterations
+// px/py: 2D point vector 
+void kmeans_seq(
+  int N, int K, int M, const std::vector<float>& px, const std::vector<float>& py
+) {
 
   std::vector<int> c(K);
   std::vector<float> sx(K), sy(K), mx(K), my(K);
@@ -146,8 +151,13 @@ The entire code of CPU-parallel k-means is shown below.
 Here we use an additional storage, @c best_ks, to record the nearest centroid of a point at an iteration.
 
 @code{.cpp}
-// N: number of points, K: number of clusters, M: number of iterations, px/py: 2D point vector 
-void kmeans_par(int N, int K, int M, cconst std::vector<float>& px,  const std::vector<float>& py) {
+// N: number of points
+// K: number of clusters
+// M: number of iterations
+// px/py: 2D point vector 
+void kmeans_par(
+  int N, int K, int M, cconst std::vector<float>& px, const std::vector<float>& py
+) {
 
   unsigned P = 12;  // 12 partitions of the parallel-for graph
 
@@ -256,10 +266,14 @@ At a fine-grained level, we request one GPU thread to work on one point for Step
 and one GPU thread to work on one centroid for Step 3.
 
 @code{.cpp}
-// px/py: 2D points, N: number of points, mx/my: centroids, K: number of clusters
+// px/py: 2D points
+// N: number of points
+// mx/my: centroids
+// K: number of clusters
 // sx/sy/c: storage to compute the average
 __global__ void assign_clusters(
-  float* px, float* py, int N, float* mx, float* my, float* sx, float* sy, int K, int* c
+  float* px, float* py, int N, 
+  float* mx, float* my, float* sx, float* sy, int K, int* c
 ) {
   const int index = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -287,7 +301,8 @@ __global__ void assign_clusters(
 }
 
 // mx/my: centroids, sx/sy/c: storage to compute the average
-__global__ void compute_new_means(float* mx, float* my, float* sx, float* sy, int* c
+__global__ void compute_new_means(
+  float* mx, float* my, float* sx, float* sy, int* c
 ) {
   int k = threadIdx.x;
   int count = max(1, c[k]);  // turn 0/0 to 0/1
@@ -302,8 +317,13 @@ To avoid data race, we use a simple @c atomicAdd method.
 Based on the two kernels, the entire code of CPU-GPU collaborative tasking is described as follows:
 
 @code{.cpp}
-// N: number of points, K: number of clusters, M: number of iterations, px/py: 2D point vector 
-void kmeans_gpu(int N, int K, int M, cconst std::vector<float>& px,  const std::vector<float>& py) {
+// N: number of points
+// K: number of clusters
+// M: number of iterations
+// px/py: 2D point vector 
+void kmeans_gpu(
+  int N, int K, int M, cconst std::vector<float>& px, const std::vector<float>& py
+) {
 
   std::vector<float> h_mx, h_my;
   float *d_px, *d_py, *d_mx, *d_my, *d_sx, *d_sy, *d_c;
@@ -318,23 +338,29 @@ void kmeans_gpu(int N, int K, int M, cconst std::vector<float>& px,  const std::
   tf::Taskflow taskflow("K-Means");
   
   // allocate GPU memory
-  tf::Task allocate_px = taskflow.emplace([&](){ cudaMalloc(&d_px, N*sizeof(float)); })
-                             .name("allocate_px");
+  tf::Task allocate_px = taskflow.emplace([&](){ 
+    cudaMalloc(&d_px, N*sizeof(float)); 
+  }).name("allocate_px");
 
-  tf::Task allocate_py = taskflow.emplace([&](){ cudaMalloc(&d_py, N*sizeof(float)); })
-                             .name("allocate_py");
+  tf::Task allocate_py = taskflow.emplace([&](){ 
+    cudaMalloc(&d_py, N*sizeof(float)); 
+  }).name("allocate_py");
 
-  tf::Task allocate_mx = taskflow.emplace([&](){ cudaMalloc(&d_mx, K*sizeof(float)); })
-                             .name("allocate_mx");
+  tf::Task allocate_mx = taskflow.emplace([&](){ 
+    cudaMalloc(&d_mx, K*sizeof(float)); }
+  ).name("allocate_mx");
 
-  tf::Task allocate_my = taskflow.emplace([&](){ cudaMalloc(&d_my, K*sizeof(float)); })
-                             .name("allocate_my");
+  tf::Task allocate_my = taskflow.emplace([&](){ 
+    cudaMalloc(&d_my, K*sizeof(float)); 
+  }).name("allocate_my");
 
-  tf::Task allocate_sy = taskflow.emplace([&](){ cudaMalloc(&d_sy, K*sizeof(float)); })
-                             .name("allocate_sy");
+  tf::Task allocate_sy = taskflow.emplace([&](){ 
+    cudaMalloc(&d_sy, K*sizeof(float)); 
+  }).name("allocate_sy");
 
-  tf::Task allocate_c = taskflow.emplace([&](){ cudaMalloc(&d_c, K*sizeof(float)); })
-                            .name("allocate_c");
+  tf::Task allocate_c = taskflow.emplace([&](){ 
+    cudaMalloc(&d_c, K*sizeof(float)); 
+  }).name("allocate_c");
   
   // transfer data from the host to the GPU
   tf::Task h2d = taskflow.emplace([&](tf::cudaFlow& cf){
@@ -352,7 +378,8 @@ void kmeans_gpu(int N, int K, int M, cconst std::vector<float>& px,  const std::
     tf::cudaTask zero_sy = cf.zero(d_sy, K).name("zero_sy");
 
     tf::cudaTask cluster = cf.kernel(
-      (N+1024-1) / 1024, 1024, 0, assign_clusters, d_px, d_py, N, d_mx, d_my, d_sx, d_sy, K, d_c
+      (N+1024-1) / 1024, 1024, 0, 
+      assign_clusters, d_px, d_py, N, d_mx, d_my, d_sx, d_sy, K, d_c
     ).name("cluster");
 
     tf::cudaTask new_centroid = cf.kernel(
@@ -411,7 +438,8 @@ The condition tasks introduces a cycle between itself and @c update_means.
 Each time it goes back to @c update_means, the %cudaFlow is reconstructed with captured 
 parameters in the closure and offloaded to the GPU.
 
-@image html images/kmeans_3.svg width=80%
+<!-- @image html images/kmeans_3.svg width=80% -->
+@dotfile images/kmeans_3.dot
 
 The second dump after executing the taskflow produces the following diagram, with all cudaFlows expanded:
 

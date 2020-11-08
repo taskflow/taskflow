@@ -101,7 +101,7 @@
     <span class="p">}</span>
     <span class="n">c</span><span class="p">[</span><span class="n">row</span> <span class="o">*</span> <span class="n">N</span> <span class="o">+</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum</span><span class="p">;</span>
   <span class="p">}</span>
-<span class="p">}</span></pre><p>Each CUDA thread corresponds to an element of C and compute its result. Instead of storing each matrix in a 2D array, we use 1D layout to ease the data transfer between CPU and GPU. In a row-major layout, an element <code>(x, y)</code> in the 2D matrix can be addressed at <code>x * width + y</code> in the transformed 1D layout.</p><img class="m-image" src="matrix_multiplication_4.png" alt="Image" style="width: 50%;" /><p>The next step is to allocate memory for A, B, and C at a GPU. We create three tasks each calling <code>cudaMalloc</code> to allocate space for one matrix. Then, we create a cudaFlow to offload matrix multiplication to a GPU. The entire code is described as follows:</p><pre class="m-code"><span class="kt">void</span> <span class="nf">matrix_multiplication</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span> <span class="n">A</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">B</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">C</span><span class="p">,</span> <span class="kt">int</span> <span class="n">M</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span> <span class="n">N</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span></pre><p>Each CUDA thread corresponds to an element of C and compute its result. Instead of storing each matrix in a 2D array, we use 1D layout to ease the data transfer between CPU and GPU. In a row-major layout, an element <code>(x, y)</code> in the 2D matrix can be addressed at <code>x * width + y</code> in the transformed 1D layout.</p><img class="m-image" src="matrix_multiplication_4.png" alt="Image" style="width: 70%;" /><p>The next step is to allocate memory for A, B, and C at a GPU. We create three tasks each calling <code>cudaMalloc</code> to allocate space for one matrix. Then, we create a cudaFlow to offload matrix multiplication to a GPU. The entire code is described as follows:</p><pre class="m-code"><span class="kt">void</span> <span class="nf">matrix_multiplication</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span> <span class="n">A</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">B</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">C</span><span class="p">,</span> <span class="kt">int</span> <span class="n">M</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span> <span class="n">N</span><span class="p">)</span> <span class="p">{</span>
   
   <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
   <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
@@ -159,7 +159,57 @@
 
   <span class="c1">// dump the entire execution graph including unfolded cudaFlow</span>
   <span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
-<span class="p">}</span></pre><p>Within the cudaFlow, we create two host-to-device (H2D) tasks that copy data from <code>A</code> and <code>B</code> to <code>da</code> and <code>db</code>, one device-to-host (D2H) task that copies the result from <code>dc</code> to <code>C</code>, and one kernel task that launches <code>matmul</code> on the GPU (by default, GPU 0). H2D tasks precede the kernel and the kernel precedes the D2H task. These GPU operations form a GPU task graph managed by a cudaFlow. The first dump of the taskflow gives the following graph:</p><img class="m-image" src="matrix_multiplication_5.svg" alt="Image" style="width: 40%;" /><p>A cudaFlow encapsulates a GPU task dependency graph similar to a subflow (see <a href="chapter3.html" class="m-doc">Dynamic Tasking</a>). In order to visualize it, we need to execute the graph first and then dump the taskflow.</p><img class="m-image" src="matrix_multiplication_6.svg" alt="Image" style="width: 50%;" /></section><section id="MatrixMultiplicationBenchmarking"><h2><a href="#MatrixMultiplicationBenchmarking">Benchmarking</a></h2><p>We run three versions of matrix multiplication, sequential CPU, parallel CPUs, and one GPU, on a machine of 6 Intel i7-8700 CPUs at 3.20GHz and a Nvidia RTX 2080 GPU using various matrix sizes of A, B, and C.</p><table class="m-table"><thead><tr><th>A</th><th>B</th><th>C</th><th>CPU Sequential</th><th>CPU Parallel</th><th>GPU Parallel</th></tr></thead><tbody><tr><td>10x10</td><td>10x10</td><td>10x10</td><td>0.142 ms</td><td>0.414 ms</td><td>82 ms</td></tr><tr><td>100x100</td><td>100x100</td><td>100x100</td><td>1.641 ms</td><td>0.733 ms</td><td>83 ms</td></tr><tr><td>1000x1000</td><td>1000x1000</td><td>1000x1000</td><td>1532 ms</td><td>504 ms</td><td>85 ms</td></tr><tr><td>2000x2000</td><td>2000x2000</td><td>2000x2000</td><td>25688 ms</td><td>4387 ms</td><td>133 ms</td></tr><tr><td>3000x3000</td><td>3000x3000</td><td>3000x3000</td><td>104838 ms</td><td>16170 ms</td><td>214 ms</td></tr><tr><td>4000x4000</td><td>4000x4000</td><td>4000x4000</td><td>250133 ms</td><td>39646 ms</td><td>427 ms</td></tr></tbody></table><p>With the matrix size going up to 1000, the speed-up of GPU over CPUs becomes prominent.</p></section>
+<span class="p">}</span></pre><p>Within the cudaFlow, we create two host-to-device (H2D) tasks that copy data from <code>A</code> and <code>B</code> to <code>da</code> and <code>db</code>, one device-to-host (D2H) task that copies the result from <code>dc</code> to <code>C</code>, and one kernel task that launches <code>matmul</code> on the GPU (by default, GPU 0). H2D tasks precede the kernel and the kernel precedes the D2H task. These GPU operations form a GPU task graph managed by a cudaFlow. The first dump of the taskflow gives the following graph:</p><div class="m-graph"><svg style="width: 25.062rem; height: 11.750rem;" viewBox="0.00 0.00 400.73 188.00">
+<g transform="scale(1 1) rotate(0) translate(4 184)">
+<title>Taskflow</title>
+<g class="m-node m-flat">
+<title>p0x55d923794f10</title>
+<ellipse cx="59.6663" cy="-162" rx="59.8331" ry="18"/>
+<text text-anchor="middle" x="59.6663" y="-157.2">allocate_a</text>
+</g>
+<g class="m-node">
+<title>p0x55d923795240</title>
+<polygon points="239.1442,-108 236.1442,-112 215.1442,-112 212.1442,-108 154.1884,-108 154.1884,-72 239.1442,-72 239.1442,-108"/>
+<text text-anchor="middle" x="196.6663" y="-85.2">cudaFlow</text>
+</g>
+<g class="m-edge">
+<title>p0x55d923794f10&#45;&gt;p0x55d923795240</title>
+<path d="M89.3933,-146.3771C108.0395,-136.5776 132.401,-123.7745 153.1949,-112.8463"/>
+<polygon points="154.9381,-115.8842 162.1618,-108.1338 151.6815,-109.6878 154.9381,-115.8842"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x55d923795350</title>
+<ellipse cx="196.6663" cy="-18" rx="29.4575" ry="18"/>
+<text text-anchor="middle" x="196.6663" y="-13.2">free</text>
+</g>
+<g class="m-edge">
+<title>p0x55d923795240&#45;&gt;p0x55d923795350</title>
+<path d="M196.6663,-71.8314C196.6663,-64.131 196.6663,-54.9743 196.6663,-46.4166"/>
+<polygon points="200.1664,-46.4132 196.6663,-36.4133 193.1664,-46.4133 200.1664,-46.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x55d923795020</title>
+<ellipse cx="196.6663" cy="-162" rx="59.8331" ry="18"/>
+<text text-anchor="middle" x="196.6663" y="-157.2">allocate_b</text>
+</g>
+<g class="m-edge">
+<title>p0x55d923795020&#45;&gt;p0x55d923795240</title>
+<path d="M196.6663,-143.8314C196.6663,-136.131 196.6663,-126.9743 196.6663,-118.4166"/>
+<polygon points="200.1664,-118.4132 196.6663,-108.4133 193.1664,-118.4133 200.1664,-118.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x55d923795130</title>
+<ellipse cx="333.6663" cy="-162" rx="59.1273" ry="18"/>
+<text text-anchor="middle" x="333.6663" y="-157.2">allocate_c</text>
+</g>
+<g class="m-edge">
+<title>p0x55d923795130&#45;&gt;p0x55d923795240</title>
+<path d="M303.9394,-146.3771C285.2931,-136.5776 260.9316,-123.7745 240.1378,-112.8463"/>
+<polygon points="241.6511,-109.6878 231.1709,-108.1338 238.3946,-115.8842 241.6511,-109.6878"/>
+</g>
+</g>
+</svg>
+</div><p>A cudaFlow encapsulates a GPU task dependency graph similar to a subflow (see <a href="chapter3.html" class="m-doc">Dynamic Tasking</a>). In order to visualize it, we need to execute the graph first and then dump the taskflow.</p><img class="m-image" src="matrix_multiplication_6.svg" alt="Image" style="width: 50%;" /></section><section id="MatrixMultiplicationBenchmarking"><h2><a href="#MatrixMultiplicationBenchmarking">Benchmarking</a></h2><p>We run three versions of matrix multiplication, sequential CPU, parallel CPUs, and one GPU, on a machine of 6 Intel i7-8700 CPUs at 3.20GHz and a Nvidia RTX 2080 GPU using various matrix sizes of A, B, and C.</p><table class="m-table"><thead><tr><th>A</th><th>B</th><th>C</th><th>CPU Sequential</th><th>CPU Parallel</th><th>GPU Parallel</th></tr></thead><tbody><tr><td>10x10</td><td>10x10</td><td>10x10</td><td>0.142 ms</td><td>0.414 ms</td><td>82 ms</td></tr><tr><td>100x100</td><td>100x100</td><td>100x100</td><td>1.641 ms</td><td>0.733 ms</td><td>83 ms</td></tr><tr><td>1000x1000</td><td>1000x1000</td><td>1000x1000</td><td>1532 ms</td><td>504 ms</td><td>85 ms</td></tr><tr><td>2000x2000</td><td>2000x2000</td><td>2000x2000</td><td>25688 ms</td><td>4387 ms</td><td>133 ms</td></tr><tr><td>3000x3000</td><td>3000x3000</td><td>3000x3000</td><td>104838 ms</td><td>16170 ms</td><td>214 ms</td></tr><tr><td>4000x4000</td><td>4000x4000</td><td>4000x4000</td><td>250133 ms</td><td>39646 ms</td><td>427 ms</td></tr></tbody></table><p>With the matrix size going up to 1000, the speed-up of GPU over CPUs becomes prominent.</p></section>
       </div>
     </div>
   </div>

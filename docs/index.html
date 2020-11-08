@@ -48,7 +48,7 @@
         <h1>
           Modern C++ Parallel Task Programming
         </h1>
-<p>Taskflow helps you quickly write parallel and heterogeneous task programs with <em>high performance</em> and simultaneous <em>high productivity</em>. It is faster, more expressive, fewer lines of code, and easier for drop-in integration than many of existing task programming frameworks.</p><section id="ASimpleFirstProgram"><h2><a href="#ASimpleFirstProgram">Start Your First Taskflow Program</a></h2><p>The following simple program (<code>simple.cpp</code>) creates four tasks <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code>, where <code>A</code> runs before <code>B</code> and <code>C</code>, and <code>D</code> runs after <code>B</code> and <code>C</code>.</p><div class="m-graph"><svg style="width: 15.125rem; height: 6.125rem;" viewBox="0.00 0.00 242.00 98.00">
+<p>Taskflow helps you quickly write parallel and heterogeneous task programs with <em>high performance</em> and simultaneous <em>high productivity</em>. It is faster, more expressive, fewer lines of code, and easier for drop-in integration than many of existing task programming frameworks.</p><section id="ASimpleFirstProgram"><h2><a href="#ASimpleFirstProgram">Start Your First Taskflow Program</a></h2><p>The following program (<code>simple.cpp</code>) creates four tasks <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code>, where <code>A</code> runs before <code>B</code> and <code>C</code>, and <code>D</code> runs after <code>B</code> and <code>C</code>.</p><div class="m-graph"><svg style="width: 15.125rem; height: 6.125rem;" viewBox="0.00 0.00 242.00 98.00">
 <g transform="scale(1 1) rotate(0) translate(4 94)">
 <title>G</title>
 <g class="m-node m-flat">
@@ -100,28 +100,26 @@
   <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
   <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 
-  <span class="k">auto</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
-    <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskA</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>   <span class="c1">//  task dependency graph</span>
-    <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskB</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>   <span class="c1">// </span>
-    <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskC</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>   <span class="c1">//          +---+          </span>
-    <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskD</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>    <span class="c1">//    +----&gt;| B |-----+   </span>
-  <span class="p">);</span>                                     <span class="c1">//    |     +---+     |</span>
-                                         <span class="c1">//  +---+           +-v-+ </span>
-  <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">);</span>  <span class="c1">// A runs before B      //  | A |           | D | </span>
-  <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">C</span><span class="p">);</span>  <span class="c1">// A runs before C      //  +---+           +-^-+ </span>
-  <span class="n">B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">);</span>  <span class="c1">// B runs before D      //    |     +---+     |    </span>
-  <span class="n">C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">);</span>  <span class="c1">// C runs before D      //    +----&gt;| C |-----+    </span>
-                                         <span class="c1">//          +---+          </span>
-  <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+  <span class="k">auto</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>  <span class="c1">// create 4 tasks</span>
+    <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskA</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
+    <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskB</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
+    <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskC</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
+    <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskD</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span> 
+  <span class="p">);</span>                                  
+                                      
+  <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">);</span>  <span class="c1">// A runs before B and C</span>
+  <span class="n">D</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">);</span>  <span class="c1">// D runs after  B and C</span>
+                                      
+  <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span> 
 
   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre><p>Taskflow is <em>header-only</em> and there is no wrangle with installation. To compile the program, clone the Taskflow project and tell the compiler to include the headers under <code>taskflow/</code>.</p><pre class="m-code">~$ git clone https://github.com/taskflow/taskflow.git  <span class="c1"># clone it only once</span>
-~$ g++ -std<span class="o">=</span>c++17 simple.cpp -I taskflow/taskflow -O2 -pthread -o simple
-~$ ./simple
-TaskA
-TaskC 
-TaskB 
-TaskD</pre><p>The execution order of B and C might differ as they can run concurrently.</p></section><section id="SupportedCompilers"><h2><a href="#SupportedCompilers">Supported Compilers</a></h2><p>To use Taskflow, you only need a compiler that supports C++17:</p><ul><li>GNU C++ Compiler at least v7.0 with -std=c++17</li><li>Clang C++ Compiler at least v6.0 with -std=c++17</li><li>Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)</li><li>AppleClang Xode Version at least v12.0 with -std=c++17</li><li>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17</li></ul><p>Taskflow works on Linux, Windows, and Mac OS X.</p></section><section id="License"><h2><a href="#License">License</a></h2><p>Taskflow is open-source under permissive MIT license.</p></section>
+<span class="p">}</span></pre><p>Taskflow is <em>header-only</em> and there is no wrangle with installation. To compile the program, clone the Taskflow project and tell the compiler to include the headers under <code>taskflow/</code>.</p><pre class="m-console"><span class="go">~$ git clone https://github.com/taskflow/taskflow.git  # clone it only once</span>
+<span class="go">~$ g++ -std=c++17 simple.cpp -I taskflow/taskflow -O2 -pthread -o simple</span>
+<span class="go">~$ ./simple</span>
+<span class="go">TaskA</span>
+<span class="go">TaskC </span>
+<span class="go">TaskB </span>
+<span class="go">TaskD</span></pre><p>The execution order of B and C might differ as they can run concurrently.</p></section><section id="SupportedCompilers"><h2><a href="#SupportedCompilers">Supported Compilers</a></h2><p>To use Taskflow, you only need a compiler that supports C++17:</p><ul><li>GNU C++ Compiler at least v7.0 with -std=c++17</li><li>Clang C++ Compiler at least v6.0 with -std=c++17</li><li>Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)</li><li>AppleClang Xode Version at least v12.0 with -std=c++17</li><li>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17</li></ul><p>Taskflow works on Linux, Windows, and Mac OS X.</p></section><section id="License"><h2><a href="#License">License</a></h2><p>Taskflow is open-source under permissive MIT license.</p></section>
       </div>
     </div>
   </div>
