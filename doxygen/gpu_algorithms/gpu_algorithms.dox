@@ -6,13 +6,16 @@ namespace tf {
 
   @section cudaFlowAlgorithms cudaFlow Algorithms
 
-  %cudaFlow defines several templates to express generic GPU algorithms:
+  %Taskflow provides several templates to express generic GPU algorithms 
+  in tf::cudaFlow:
 
   + @subpage SingleTaskCUDA 
   + @subpage ForEachCUDA 
   + @subpage ParallelTransformsCUDA 
 
-  %cudaFlow defines serveral task-based interfaces on top of external CUDA libraries to express domain-specific algorithms:
+  %Taskflow provides serveral task-based interfaces on top of external 
+  CUDA libraries to express domain-specific algorithms 
+  in tf::cudaFlowCapturer:
 
   + @subpage LinearAlgebracublasFlowCapturer
 

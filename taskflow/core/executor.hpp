@@ -7,6 +7,7 @@
 
 /** 
 @file executor.hpp
+@brief executor include file
 */
 
 namespace tf {
@@ -194,14 +195,14 @@ class Executor {
     Each executor manage a list of observers in shared ownership with callers.
     
     @tparam Observer observer type derived from tf::ObserverInterface
-    @tparam ArgsT... argument parameter pack
+    @tparam ArgsT argument parameter pack
 
     @param args arguments to forward to the constructor of the observer
     
     @return a shared pointer to the created observer
     */
-    template <typename Observer, typename... Args>
-    std::shared_ptr<Observer> make_observer(Args&&... args);
+    template <typename Observer, typename... ArgsT>
+    std::shared_ptr<Observer> make_observer(ArgsT&&... args);
     
     /**
     @brief removes the associated observer

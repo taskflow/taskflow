@@ -17,7 +17,7 @@ However, efficient parallel timing analysis is extremely challenging to design a
 to large irregularity and graph-oriented computing.
 The following figure shows an extracted timing graph from an industrial design.
 
-@image html images/opentimer_1.png width=100%
+@image html images/opentimer_1.png
 
 We consider our research project [OpenTimer](https://github.com/OpenTimer/OpenTimer),
 an open-source static timing analyzer that has been used in
@@ -53,7 +53,8 @@ The task dependency graph flows computations naturally with the timing graph,
 providing improved asynchrony and performance.
 The following figure shows a task graph to carry one iteration of timing update.
 
-@image html images/opentimer_4.svg width=100%
+<!-- @image html images/opentimer_4.svg width=100% -->
+@dotfile images/opentimer_4.dot
 
 @section UseCaseOpenTimerPerformanceImprovement Performance Improvement
 
@@ -67,7 +68,7 @@ OpenMP to alter the task dependencies.
 In v2, this includes
 the time to create and launch a new task dependency graph
 
-@image html images/opentimer_2.png width=70%
+@image html images/opentimer_2.png
 
 The scalability of %Taskflow is shown in the Figure below.
 We used two million-scale designs, netcard (1.4M gates) and leon3mp (1.2M gates)
@@ -81,7 +82,7 @@ CPU numbers except one. This highlights that %Taskflow's
 programming model largely improves the design of a parallel VLSI timing engine 
 that would otherwise not be possible with OpenMP.
 
-@image html images/opentimer_3.png width=70%
+@image html images/opentimer_3.png
 
 @section UseCaseOpenTimerConclusion Conclusion
 

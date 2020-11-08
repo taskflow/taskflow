@@ -6,6 +6,7 @@
 
 /** 
 @file cuda_capturer.hpp
+@brief cudaFlowCapturer include file
 */
 
 namespace tf {

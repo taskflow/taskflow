@@ -15,7 +15,8 @@ we would like to traverse each vertex in order without breaking dependency const
 The following figure shows a graph of six vertices and seven edges.
 Each vertex represents a particular task and each edge represents a task dependency between two tasks.
 
-@image html images/task-level-parallelism.svg width=50%
+<!-- @image html images/task-level-parallelism.svg width=50% -->
+@dotfile images/task-level-parallelism.dot
 
 Traversing the above graph in parallel, the maximum parallelism we can acquire is three.
 When Task1 finishes, we can run Task2, Task3, and Task4 in parallel.
@@ -119,7 +120,9 @@ Second, it iterates each outgoing edge of a node and creates a dependency betwee
 (successor) of that edge.
 The resulting taskflow structure is topologically equivalent to the given graph.
 
-@image html images/graph_traversal_2.svg width=100%
+<!-- @image html images/graph_traversal_2.svg width=100% -->
+
+@dotfile images/graph_traversal_2.dot
 
 With task parallelism, we flow computation naturally with the graph structure.
 The runtime autonomously distributes tasks across processor cores to obtain maximum task parallelism.

@@ -4,6 +4,7 @@
 
 /** 
 @file flow_builder.hpp
+@brief flow builder include file
 */
 
 namespace tf {
@@ -27,7 +28,7 @@ class FlowBuilder {
 
     @param callable callable to construct a static task
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     template <typename C, 
       std::enable_if_t<is_static_task_v<C>, void>* = nullptr
@@ -41,7 +42,7 @@ class FlowBuilder {
 
     @param callable callable to construct a dynamic task
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     template <typename C, 
       std::enable_if_t<is_dynamic_task_v<C>, void>* = nullptr
@@ -55,7 +56,7 @@ class FlowBuilder {
 
     @param callable callable to construct a condition task
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     template <typename C, 
       std::enable_if_t<is_condition_task_v<C>, void>* = nullptr
@@ -65,11 +66,11 @@ class FlowBuilder {
     /**
     @brief creates multiple tasks from a list of callable objects
     
-    @tparam C... callable types
+    @tparam C callable types
 
     @param callables one or multiple callable objects constructible from each task category
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
     auto emplace(C&&... callables);
@@ -79,14 +80,14 @@ class FlowBuilder {
 
     @param taskflow a taskflow object for the module
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     Task composed_of(Taskflow& taskflow);
 
     /**
     @brief creates an empty task
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     Task placeholder();
 
@@ -95,9 +96,8 @@ class FlowBuilder {
     @brief creates a cudaflow task on the default device 0
 
     @tparam C callable type constructible from @c std::function<void(tf::cudaFlow&)>
-    @tparam D device type, either int or @c std::ref<int> (stateful)
 
-    @return a Task handle
+    @return a tf::Task handle
 
     This method is equivalent to calling tf::Taskflow::emplace_on(callable, d)
     where @c d is the caller's device context.
@@ -111,9 +111,9 @@ class FlowBuilder {
     @brief creates a cudaflow task on the given device
 
     @tparam C callable type constructible from std::function<void(tf::cudaFlow&)>
-    @tparam D device type, either int or std::ref<int> (stateful)
+    @tparam D device type, either @c int or @c std::ref<int> (stateful)
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     template <typename C, typename D, 
       std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr
@@ -150,7 +150,7 @@ class FlowBuilder {
     @param last iterator to the end (exclusive)
     @param callable a callable object to apply to the dereferenced iterator 
 
-    @return a Task handle
+    @return a tf::Task handle
 
     The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[first, last)</tt>. By default, we employ the guided partition algorithm with chunk size equal to one.
     
@@ -182,7 +182,7 @@ class FlowBuilder {
     @param callable a callable object to apply to the dereferenced iterator 
     @param chunk_size chunk size
 
-    @return a Task handle
+    @return a tf::Task handle
 
     The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.
     
@@ -206,7 +206,7 @@ class FlowBuilder {
     @param callable a callable object to apply to the dereferenced iterator 
     @param chunk_size chunk size
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.
     
@@ -230,7 +230,7 @@ class FlowBuilder {
     @param callable a callable object to apply to the dereferenced iterator 
     @param chunk_size chunk size
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.
     
@@ -256,7 +256,7 @@ class FlowBuilder {
     @param step step size 
     @param callable a callable object to apply to each valid index
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow that applies the callable object to each index in the range <tt>[first, last)</tt> with the step size. By default, we employ the guided partition algorithm with chunk size equal to one.
     
@@ -297,7 +297,7 @@ class FlowBuilder {
     @param callable a callable object to apply to each valid index
     @param chunk_size chunk size (default 1)
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.
 
@@ -325,7 +325,7 @@ class FlowBuilder {
     @param callable a callable object to apply to each valid index
     @param chunk_size chunk size (default 1)
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.
 
@@ -353,7 +353,7 @@ class FlowBuilder {
     @param callable a callable object to apply to each valid index
     @param chunk_size chunk size (default 0)
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.
 
@@ -383,7 +383,7 @@ class FlowBuilder {
     @param init initial value of the reduction and the storage for the reduced result
     @param bop binary operator that will be applied 
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.
     
@@ -419,7 +419,7 @@ class FlowBuilder {
 
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     template <typename B, typename E, typename T, typename O, typename H = size_t>
     Task reduce_guided(
@@ -445,7 +445,7 @@ class FlowBuilder {
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     template <typename B, typename E, typename T, typename O, typename H = size_t>
     Task reduce_dynamic(
@@ -471,7 +471,7 @@ class FlowBuilder {
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     template <typename B, typename E, typename T, typename O, typename H = size_t>
     Task reduce_static(
@@ -497,7 +497,7 @@ class FlowBuilder {
     @param bop binary operator that will be applied in unspecified order to the results of @c uop
     @param uop unary operator that will be applied to transform each element in the range to the result type
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.
     
@@ -531,7 +531,7 @@ class FlowBuilder {
     @param uop unary operator that will be applied to transform each element in the range to the result type
     @param chunk_size chunk size
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
     
@@ -559,7 +559,7 @@ class FlowBuilder {
     @param uop unary operator that will be applied to transform each element in the range to the result type
     @param chunk_size chunk size
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
     
@@ -587,7 +587,7 @@ class FlowBuilder {
     @param uop unary operator that will be applied to transform each element in the range to the result type
     @param chunk_size chunk size
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
     

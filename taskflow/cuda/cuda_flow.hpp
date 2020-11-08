@@ -7,6 +7,7 @@
 
 /** 
 @file cuda_flow.hpp
+@brief cudaFlow include file
 */
 
 namespace tf {
@@ -331,7 +332,7 @@ class cudaFlow {
     @param last iterator to the end (exclusive)
     @param callable a callable object to apply to the dereferenced iterator 
     
-    @return cudaTask handle
+    @return a tf::cudaTask handle
     
     This method is equivalent to the parallel execution of the following loop on a GPU:
     
@@ -355,7 +356,7 @@ class cudaFlow {
     @param step step size
     @param callable the callable to apply to each element in the data array
     
-    @return cudaTask handle
+    @return a tf::cudaTask handle
     
     This method is equivalent to the parallel execution of the following loop on a GPU:
     
@@ -386,7 +387,7 @@ class cudaFlow {
     @param callable the callable to apply to each element in the range
     @param srcs iterators to the source ranges
     
-    @return cudaTask handle
+    @return a tf::cudaTask handle
     
     This method is equivalent to the parallel execution of the following loop on a GPU:
     

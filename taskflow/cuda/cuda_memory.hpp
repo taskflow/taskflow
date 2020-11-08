@@ -4,6 +4,7 @@
 
 /**
 @file cuda_memory.hpp
+@brief CUDA memory utilities include file
 */
 
 namespace tf {

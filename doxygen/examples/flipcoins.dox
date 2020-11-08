@@ -15,7 +15,8 @@ We flip the coin for five times.
 Apparently, the probability for the result to be all heads is 1/32.
 It is equivalently to say the expected number we need to toss for obtaining five heads is 32.
 
-@image html images/flipcoins_1.svg width=80%
+<!-- @image html images/flipcoins_1.svg width=80% -->
+@dotfile images/flipcoins_1.dot
 
 @section FlipCoinsProbabilistic Probabilistic Conditions
 
@@ -66,7 +67,8 @@ assert(std::fabs(average_tosses-32.0)<1.0);
 Running the taskflow by a fair number of times, the average tosses we have is close to 32.
 The taskflow diagram is depicted below.
 
-@image html images/flipcoins_2.svg width=100%
+<!-- @image html images/flipcoins_2.svg width=100% -->
+@dotfile images/flipcoins_2.dot
 
 Although the execution of this taskflow is non-deterministic,
 its control flow can expand to a tree of tasks based on our scheduling rule for conditional tasking
@@ -113,7 +115,8 @@ average_tosses = total_tosses / (double)rounds;
 assert(std::fabs(average_tosses-243.0)<1.0);
 @endcode
 
-@image html images/flipcoins_3.svg width=100%
+<!-- @image html images/flipcoins_3.svg width=100% -->
+@dotfile images/flipcoins_3.dot 
 
 Similarly, we can extend the probabilistic condition to any degree.
 

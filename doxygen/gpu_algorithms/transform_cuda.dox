@@ -33,7 +33,8 @@ at @c gpu_data_x, @c gpu_data_y, and @c gpu_data_z.
 @code{.cpp}
 taskflow.emplace([](tf::cudaFlow& cf){
   // ... create gpu tasks
-  // create a kernel for computing gpu_data[i] = gpu_data_x[i] + gpu_data_y[i] + gpu_data_z[i]
+  // create a kernel for performing the following parallel transforms:
+  // gpu_data[i] = gpu_data_x[i] + gpu_data_y[i] + gpu_data_z[i]
   tf::cudaTask task = cf.transform(
     gpu_data, gpu_data + 1000, 
     [] __device__ (int& xi, int& yi, int &zi) { return xi + yi + zi; },

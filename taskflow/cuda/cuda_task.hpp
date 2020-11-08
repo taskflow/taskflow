@@ -4,6 +4,7 @@
 
 /** 
 @file cuda_task.hpp
+@brief cudaTask include file
 */
 
 namespace tf {
@@ -78,7 +79,7 @@ class cudaTask {
     /**
     @brief adds precedence links from this to other tasks
 
-    @tparam Ts... parameter pack
+    @tparam Ts parameter pack
 
     @param tasks one or multiple tasks
 
@@ -90,7 +91,7 @@ class cudaTask {
     /**
     @brief adds precedence links from other tasks to this
 
-    @tparam Ts... parameter pack
+    @tparam Ts parameter pack
 
     @param tasks one or multiple tasks
 

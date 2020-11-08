@@ -1,10 +1,5 @@
 digraph Taskflow {
-subgraph cluster_p0x7ffdfe380c30 {
-label="Taskflow: parallel-for";
 p0xce2720[label="[0, 100) with the step size of 2" ];
-subgraph cluster_p0xce2720 {
-label="Subflow: parallel-for-task";
-color=blue
 p0x7f322c000b50[label="pfg_0" ];
 p0x7f322c000b50 -> p0xce2720;
 p0x7f322c000c58[label="pfg_1" ];
@@ -29,6 +24,4 @@ p0x7f322c0015a0[label="pfg_10" ];
 p0x7f322c0015a0 -> p0xce2720;
 p0x7f322c0016a8[label="pfg_11" ];
 p0x7f322c0016a8 -> p0xce2720;
-}
-}
 }

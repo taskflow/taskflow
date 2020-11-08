@@ -24,13 +24,13 @@ runs before @c task_2 (i.e., @c my_kernel_2).
 
 @code{.cpp}
 tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
-  // capture my_kernel_1
-  tf::cudaTask task_1 = capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
+  // capture my_kernel_1 through a stream managed by capturer
+  tf::cudaTask task_1 = capturer.on([&](cudaStream_t stream){ 
     my_kernel_1<<<grid_1, block_1, shm_size_1, stream>>>(my_parameters_1);
   });
 
-  // capture my_kernel_2
-  tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
+  // capture my_kernel_2 through a stream managed by capturer
+  tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){ 
     my_kernel_2<<<grid_2, block_2, shm_size_2, stream>>>(my_parameters_2);
   });
 
@@ -39,18 +39,20 @@ tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
 });
 @endcode
 
-Inside tf::cudaFlowCapturer::on, you should @em NOT modify the properties of 
-the stream argument but use it to capture @em asynchronous GPU operations
-(e.g., @c kernel, @c cudaMemcpyAsync).
 The stream object passed to each tf::cudaFlowCapturer::on call may differ,
 and it depends on how the internal optimization algorithm maximizes the 
 GPU parallelism.
+
+@warning
+Inside tf::cudaFlowCapturer::on, you should @em NOT modify the properties of 
+the stream argument but use it to capture @em asynchronous GPU operations
+(e.g., @c kernel, @c cudaMemcpyAsync).
 
 A %cudaFlowCapturer lives with the callable.
 When the executor invoke the capturer callable, it creates the %cudaFlowCapturer
 and will destroy it until all internal operations finish.
 
-@section C7_CreateACaptureWithinAcudaFlow Create a Capture within a cudaFlow
+@section C7_CreateACapturerWithinAcudaFlow Create a Capturer within a cudaFlow
 
 Within a parent %cudaFlow, you can capture a %cudaFlow to form a subflow that 
 eventually becomes a @em child node in the underlying CUDA task graph.
@@ -61,7 +63,8 @@ The following example defines a captured flow @c task2 of two dependent tasks,
 tf::Task task = taskflow.emplace([&](tf::cudaFlow& cf){
 
   tf::cudaTask task1 = cf.kernel(grid, block, shm, my_kernel, args...);
-
+  
+  // task2 forms a child node in cf (and the underlying CUDA graph)
   tf::cudaTask task2 = cf.capture([&](tf::cudaFlowCapturer& capturer){
     tf::cudaTask task2_1 = capturer.on([&](cudaStream_t stream){  
       my_kernel2<<<grid1, block1, shm_size1, stream>>>(args1...);
@@ -93,7 +96,7 @@ tf::Task task = taskflow.emplace([](tf::cudaFlowCapturer& capturer){
 
   // capture my_kernel to do computation on gpu_data
   tf::cudaTask kernel = capturer.on([&](cudaStream_t stream){  
-    my_kernel<<<grid, block, shm_size, stream>>>(gpu_data, arg1, arg2, arg3, ...);
+    my_kernel<<<grid, block, shm_size, stream>>>(gpu_data, arg1, arg2, ...);
   });
 
   // copy data from gpu_data to host_data
@@ -104,7 +107,7 @@ tf::Task task = taskflow.emplace([](tf::cudaFlowCapturer& capturer){
 });
 @endcode
 
-@section C7_CreateACaptureOnASpecificGPU Create a Capture on a Specific GPU
+@section C7_CreateACapturerOnASpecificGPU Create a Capturer on a Specific GPU
 
 You can capture a %cudaFlow on a specific GPU by calling tf::Taskflow::emplace_on.
 By default, a %cudaFlow runs on the current GPU associated with the caller, 
@@ -161,7 +164,7 @@ class MyCapturer : public tf::cudaFlowCapturerBase {
 
 tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
 
-  MyCapturer* mc = capturer.make_capturer<MyCapturer>(args_to_construct_MyCapturer);
+  MyCapturer* mc = capturer.make_capturer<MyCapturer>(args_to_MyCapturer);
 
   tf::cudaTask task_1 = mc->matrix_multiplication(args...);
   tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){

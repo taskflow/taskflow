@@ -103,7 +103,8 @@ Debrief:
 @li Line 14-17 adds four task dependencies
 @li Line 19 dumps the taskflow in the DOT format through standard output
 
-@image html images/simple.svg width=40%
+<!-- @image html images/simple.svg width=40% -->
+@dotfile images/simple.dot
 
 
 @section C1_ModifyTaskAttributes Modify Task Attributes
@@ -193,6 +194,8 @@ The lifetime of a task refers to the user-given callable object,
 including captured values.
 As long as the graph is alive,
 all the associated tasks exist.
+
+@attention
 It is your responsibility to keep tasks and graph alive during their execution.
 
 

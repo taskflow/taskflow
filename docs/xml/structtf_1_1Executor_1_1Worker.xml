@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="structtf_1_1Executor_1_1Worker" kind="struct" language="C++" prot="private">
+    <compoundname>tf::Executor::Worker</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structtf_1_1Executor_1_1Worker_1a14be955a5d2e0c18fee29603aa206b43" prot="public" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t tf::Executor::Worker::id</definition>
+        <argsstring></argsstring>
+        <name>id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" line="36" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtf_1_1Executor_1_1Worker_1ad54a48118e63e781383c6e874995eb46" prot="public" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t tf::Executor::Worker::vtm</definition>
+        <argsstring></argsstring>
+        <name>vtm</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" line="37" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtf_1_1Executor_1_1Worker_1a48be67d8abe6aa815511efa00726e250" prot="public" static="no" mutable="no">
+        <type>Domain</type>
+        <definition>Domain tf::Executor::Worker::domain</definition>
+        <argsstring></argsstring>
+        <name>domain</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" line="38" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtf_1_1Executor_1_1Worker_1aea62cc56d6b289ae61eb96f3711d8232" prot="public" static="no" mutable="no">
+        <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> *</type>
+        <definition>Executor* tf::Executor::Worker::executor</definition>
+        <argsstring></argsstring>
+        <name>executor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" line="39" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtf_1_1Executor_1_1Worker_1aa41135527498805d8ed72854c93f43e8" prot="public" static="no" mutable="no">
+        <type>Notifier::Waiter *</type>
+        <definition>Notifier::Waiter* tf::Executor::Worker::waiter</definition>
+        <argsstring></argsstring>
+        <name>waiter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" line="40" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtf_1_1Executor_1_1Worker_1aa4fb088b7181cbc950e171b33bdaf7fb" prot="public" static="no" mutable="no">
+        <type><ref refid="cpp/numeric/random/mersenne_twister_engine" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::mt19937</ref></type>
+        <definition>std::mt19937 tf::Executor::Worker::rdgen</definition>
+        <argsstring></argsstring>
+        <name>rdgen</name>
+        <initializer>{ <ref refid="cpp/numeric/random/random_device" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::random_device</ref>{}() }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" line="41" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtf_1_1Executor_1_1Worker_1a2214057ab040f72bbe26d78e65226a08" prot="public" static="no" mutable="no">
+        <type>TaskQueue&lt; Node * &gt;</type>
+        <definition>TaskQueue&lt;Node*&gt; tf::Executor::Worker::wsq[NUM_DOMAINS]</definition>
+        <argsstring>[NUM_DOMAINS]</argsstring>
+        <name>wsq</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" line="42" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="81">
+        <label>tf::Executor::Worker</label>
+        <childnode refid="82" relation="usage">
+          <edgelabel>executor</edgelabel>
+        </childnode>
+        <childnode refid="83" relation="usage">
+          <edgelabel>rdgen</edgelabel>
+        </childnode>
+      </node>
+      <node id="83">
+        <label>std::mt19937</label>
+      </node>
+      <node id="82">
+        <label>tf::Executor</label>
+        <link refid="classtf_1_1Executor"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" line="35" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" bodystart="35" bodyend="43"/>
+    <listofallmembers>
+      <member refid="structtf_1_1Executor_1_1Worker_1a48be67d8abe6aa815511efa00726e250" prot="public" virt="non-virtual"><scope>tf::Executor::Worker</scope><name>domain</name></member>
+      <member refid="structtf_1_1Executor_1_1Worker_1aea62cc56d6b289ae61eb96f3711d8232" prot="public" virt="non-virtual"><scope>tf::Executor::Worker</scope><name>executor</name></member>
+      <member refid="structtf_1_1Executor_1_1Worker_1a14be955a5d2e0c18fee29603aa206b43" prot="public" virt="non-virtual"><scope>tf::Executor::Worker</scope><name>id</name></member>
+      <member refid="structtf_1_1Executor_1_1Worker_1aa4fb088b7181cbc950e171b33bdaf7fb" prot="public" virt="non-virtual"><scope>tf::Executor::Worker</scope><name>rdgen</name></member>
+      <member refid="structtf_1_1Executor_1_1Worker_1ad54a48118e63e781383c6e874995eb46" prot="public" virt="non-virtual"><scope>tf::Executor::Worker</scope><name>vtm</name></member>
+      <member refid="structtf_1_1Executor_1_1Worker_1aa41135527498805d8ed72854c93f43e8" prot="public" virt="non-virtual"><scope>tf::Executor::Worker</scope><name>waiter</name></member>
+      <member refid="structtf_1_1Executor_1_1Worker_1a2214057ab040f72bbe26d78e65226a08" prot="public" virt="non-virtual"><scope>tf::Executor::Worker</scope><name>wsq</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

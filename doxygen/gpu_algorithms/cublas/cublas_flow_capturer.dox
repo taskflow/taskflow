@@ -1,0 +1,107 @@
+namespace tf {
+
+/** @page LinearAlgebracublasFlowCapturer Linear Algebra (%cublasFlowCapturer)
+
+%Taskflow provides a library tf::cublasFlowCapturer to program and accelerate 
+<i>basic linear algebra subprograms</i>
+(BLAS) on top of @cuBLAS.
+
+[TOC]
+
+@image html images/LinearAlgebra.png width=50%
+
+@section WhatIsBLAS What is BLAS?
+
+The BLAS (Basic Linear Algebra Subprograms) are routines that provide standard 
+building blocks for performing basic vector and matrix operations. 
+There are three levels:
+
+  1. Level 1: performs scalar, vector, and vector-vector operations
+  2. Level 2: performs matrix-vector operations
+  3. Level 3: performs matrix-matrix operations
+
+BLAS is commonly used by linear algebra software. 
+The @cuBLAS library is an implementation of BLAS (Basic Linear Algebra Subprograms) 
+on top of the NVIDIA CUDA runtime
+and it allows users to access the computational resources of NVIDIA GPUs.
+
+@section HowToUsecublasFlowCapturer What is a cublasFlow Capturer? Why?
+
+tf::cublasFlowCapturer provides an interface over native cublas functions
+and allows users to express linear algebra algorithms using a <i>task graph model</i>.
+We transform the task graph into a CUDA graph using streams 
+
+@section DataModelOscublasFlowCapturer Understand the Data Model
+
+The data pointers used within tf::cublasFlowCapturer must sit
+in GPU memory space, including scalar pointers (@c alpha and @c beta),
+input pointers (e.g., vectors, matrices), and output pointers (e.g., result).
+By default, we set the pointer mode to @c CUBLAS_POINTER_MODE_DEVICE.
+You must allocate required matrices and vectors in the GPU memory space,
+fill them with data, call the methods defined in tf::cublasFlowCapturer,
+and then upload the results from GPU memory space back to the host.
+
+\note We currently support only @c float and @c double data types.
+
+@section cublasFlowCapturerLevel-1 Use Level-1 Methods
+
+We currently support the following level-1 methods:
+
+  + tf::cublasFlowCapturer::amax finds the smallest element index of 
+  the maximum absolute magnitude over a vector
+  + tf::cublasFlowCapturer::amin finds the smallest element index of
+  the minimum absolute magnitude over a vector 
+  + tf::cublasFlowCapturer::asum computes the sum of absolute values of 
+  elements over a vector
+  + tf::cublasFlowCapturer::axpy multiplies a vector by a scalar and adds
+  it to another vector
+  + tf::cublasFlowCapturer::copy copies a vector into another vector
+  + tf::cublasFlowCapturer::dot computes the dot product of two vectors
+  + tf::cublasFlowCapturer::nrm2 computes the Euclidean norm of a vector
+  + tf::cublasFlowCapturer::scal multiples a vector by a scalar
+  + tf::cublasFlowCapturer::swap interchanges the elements of two vectors
+
+Our level-1 methods capture the native <a href="https://docs.nvidia.com/cuda/cublas/index.html#cublas-level-1-function-reference">cublas level-1 calls</a>
+with internal stream(s) optimized for maximum concurrency.
+
+@section cublasFlowCapturerLeve2-1 Use Level-2 Methods
+
+We currently support the following level-2 methods:
+
+Our level-2 methods capture the native <a href="https://docs.nvidia.com/cuda/cublas/index.html#cublas-level-2-function-reference">cublas level-2 calls</a>
+with internal stream(s) optimized for maximum concurrency.
+
+@section cublasFlowCapturerLevel-3 Use Level-3 Methods
+
+We currently support the following level-3 methods:
+  
+  + tf::cublasFlowCapturer::geam performs matrix-matrix addition/transposition
+  + tf::cublasFlowCapturer::c_geam performs matrix-matrix addition/transposition 
+    on C-styled row-major storage
+  + tf::cublasFlowCapturer::gemm performs general matrix-matrix multiplication
+  + tf::cublasFlowCapturer::c_gemm performs general matrix-matrix multiplication 
+    on C-styled row-major storage
+  + tf::cublasFlowCapturer::gemm_batched performs batched general 
+    matrix-matrix multiplication 
+  + tf::cublasFlowCapturer::c_gemm_batched performs batched general 
+    matrix-matrix multiplication on C-styled row-major storage
+  + tf::cublasFlowCapturer::gemm_sbatched performs batched general 
+    matrix-matrix multiplication with strided memory access
+  + tf::cublasFlowCapturer::c_gemm_sbatched performs batched general 
+    matrix-matrix multiplication with strided memory access on C-styled row-major storage
+
+Our level-3 methods capture the native <a href="https://docs.nvidia.com/cuda/cublas/index.html#cublas-level-2-function-reference">cublas level-3 calls</a> and
+<a href="https://docs.nvidia.com/cuda/cublas/index.html#blas-like-extension">cublas-extension calls</a>
+with internal stream(s) optimized for maximum concurrency.
+
+@section cublasFlowCapturerExtension Extend to Other cuBLAS Methods
+
+
+*/
+}
+
+
+
+
+
+

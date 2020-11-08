@@ -4,6 +4,7 @@
 
 /**
 @file cuda_device.hpp
+@brief CUDA device utilities include file
 */
 
 namespace tf { 

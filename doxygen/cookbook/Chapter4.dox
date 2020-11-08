@@ -33,7 +33,8 @@ The index is defined with respect to the order of its successor construction.
 16: executor.run(taskflow).wait();
 @endcode
 
-@image html images/conditional-tasking-1.svg width=45%
+<!-- @image html images/conditional-tasking-1.svg width=45% -->
+@dotfile images/conditional-tasking-1.dot
 
 The example above implements a simple yet commonly used feedback loop through
 a condition task (line 7-10) that returns
@@ -85,7 +86,8 @@ Debrief:
 @li Line 30 creates a condition task that goes to G and H on return 0 and 1, respectively
 @li Line 31 creates a condition task that loops back to itself on return 0, and proceeds to L on return 1
 
-@image html images/conditional-tasking-2.svg width=100%
+<!-- @image html images/conditional-tasking-2.svg width=100% -->
+@dotfile images/conditional-tasking-2.dot
 
 You can use condition tasks to create cycles as long as the graph does not introduce task race during execution. However, cycles are not allowed in non-condition tasks.
 

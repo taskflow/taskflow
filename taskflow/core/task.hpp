@@ -4,6 +4,7 @@
 
 /** 
 @file task.hpp
+@brief task include file
 */
 
 namespace tf {
@@ -213,7 +214,7 @@ class Task {
     /**
     @brief adds precedence links from this to other tasks
 
-    @tparam Ts... parameter pack
+    @tparam Ts parameter pack
 
     @param tasks one or multiple tasks
 

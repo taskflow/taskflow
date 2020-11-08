@@ -80,7 +80,8 @@ executor.run(taskflow);         // execution 3
 executor.wait_for_all();        // execution 1 -> execution 2 -> execution 3
 @endcode
 
-A key point to notice is a running taskflow must remain alive during its execution.
+@attention
+A running taskflow must remain alive during its execution.
 It is your responsibility to ensure a taskflow not being destructed
 when it is running.
 For example, the code below can result undefined behavior.
@@ -140,6 +141,7 @@ runtime.
  8: }
 @endcode
 
+@attention
 It is your responsibility to ensure all taskflows from different threads 
 remain alive during their executions; or it can result unexpected behavior or program crash.
 

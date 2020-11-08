@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="structtf_1_1Executor_1_1PerThread" kind="struct" language="C++" prot="private">
+    <compoundname>tf::Executor::PerThread</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structtf_1_1Executor_1_1PerThread_1ad0b3f53bc3ba6574b1546d564926e1bb" prot="public" static="no" mutable="no">
+        <type>Worker *</type>
+        <definition>Worker* tf::Executor::PerThread::worker</definition>
+        <argsstring></argsstring>
+        <name>worker</name>
+        <initializer>{nullptr}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" line="46" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="43">
+        <label>tf::Executor::Worker</label>
+        <childnode refid="44" relation="usage">
+          <edgelabel>executor</edgelabel>
+        </childnode>
+        <childnode refid="45" relation="usage">
+          <edgelabel>rdgen</edgelabel>
+        </childnode>
+      </node>
+      <node id="42">
+        <label>tf::Executor::PerThread</label>
+        <childnode refid="43" relation="usage">
+          <edgelabel>worker</edgelabel>
+        </childnode>
+      </node>
+      <node id="45">
+        <label>std::mt19937</label>
+      </node>
+      <node id="44">
+        <label>tf::Executor</label>
+        <link refid="classtf_1_1Executor"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" line="45" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/executor.hpp" bodystart="45" bodyend="47"/>
+    <listofallmembers>
+      <member refid="structtf_1_1Executor_1_1PerThread_1ad0b3f53bc3ba6574b1546d564926e1bb" prot="public" virt="non-virtual"><scope>tf::Executor::PerThread</scope><name>worker</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

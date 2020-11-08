@@ -36,7 +36,8 @@ In the positive case, the 50 items are 0, 2, 4, 6, 8, ..., 96, 98.
 In the negative case, the 50 items are 100, 98, 96, 04, ... 4, 2.
 An example of the %Taskflow graph for the positive case under 12 workers is depicted below:
 
-@image html images/parallel_for_1.svg width=100%
+<!-- @image html images/parallel_for_1.svg width=100% -->
+@dotfile images/parallel_for_1.dot
 
 The index types, @c B, @c E, and @c S, are templates to preserve the variable types and their underlying types must be of the same @em integral type (e.g., @c int, @c size_t, @c unsigned).
 By default, tf::Taskflow::for_each_index creates a task that spawns a subflow (see @ref chapter3) to run iterations in parallel. The subflow closure captures all input arguments through perfect forwarding to form a stateful closure such that any changes on the arguments will be visible to the execution context of the subflow. For example:
