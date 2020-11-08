@@ -93,7 +93,7 @@ TEST_CASE("Standalone") {
   for(unsigned i=0; i<N; ++i) {
     REQUIRE(cpu[i] == 0);
   }
-  
+
   cf.offload();
   for(unsigned i=0; i<N; ++i) {
     REQUIRE(cpu[i] == 17);

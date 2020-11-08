@@ -35,11 +35,11 @@ tf::Executor executor;
 
 taskflow.emplace([&](tf::cudaFlow& cf){
   // create two kernel tasks 
-  tf::cudaTask task_1 = cf.kernel(grid_1, block_1, shm_size_1, kernel_1, my_args_1);
-  tf::cudaTask task_2 = cf.kernel(grid_2, block_2, shm_size_2, kernel_2, my_args_2);
+  tf::cudaTask task1 = cf.kernel(grid1, block1, shm_size1, kernel1, args1);
+  tf::cudaTask task2 = cf.kernel(grid2, block2, shm_size2, kernel2, args2);
   
-  // kernel_1 runs before kernel_2
-  task_1.precede(task_2);
+  // kernel1 runs before kernel2
+  task_1.precede(task2);
 });
 
 executor.run(taskflow).wait();
@@ -83,8 +83,18 @@ class cudaFlow {
     bool empty() const;
     
     /**
+    @brief dumps the %cudaFlow graph into a DOT format through an
+           output stream that defines the stream insertion operator @c <<
+    */
+    template<typename T>
+    void dump(T& os) const;
+    
+    /**
     @brief dumps the native CUDA graph into a DOT format through an
            output stream that defines the stream insertion operator @c <<
+
+    The native CUDA graph may be different from the upper-level %cudaFlow 
+    graph when flow capture is involved.
     */
     template<typename T>
     void dump_native_graph(T& os) const;
@@ -491,6 +501,12 @@ inline cudaFlow::~cudaFlow() {
 // Function: empty
 inline bool cudaFlow::empty() const {
   return _graph._nodes.empty();
+}
+
+// Procedure: dump
+template <typename T>
+void cudaFlow::dump(T& os) const {
+  _graph.dump(os, nullptr, "");
 }
 
 // Procedure: dump

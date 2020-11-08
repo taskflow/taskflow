@@ -44,6 +44,13 @@ class cudaFlowCapturerBase {
     virtual ~cudaFlowCapturerBase() = default;
     
     /**
+    @brief dumps the capture graph into a DOT format through an
+           output stream that defines the stream insertion operator @c <<
+    */
+    template<typename T>
+    void dump(T& os) const;
+    
+    /**
     @brief captures a sequential CUDA operations from the given callable
     
     @tparam C callable type constructible with @c std::function<void(cudaStream_t)>
@@ -223,6 +230,12 @@ inline cudaFlowCapturerBase::cudaFlowCapturerBase(cudaGraph& g) :
   _graph {&g} {
 }
 
+// Procedure: dump
+template <typename T>
+void cudaFlowCapturerBase::dump(T& os) const {
+  _graph->dump(os, nullptr, "");
+}
+
 // Function: capture
 template <typename C>
 cudaTask cudaFlowCapturerBase::on(C&& callable) {
@@ -341,13 +354,13 @@ The following example creates a CUDA graph that captures two kernel tasks,
 @code{.cpp}
 taskflow.emplace([](tf::cudaFlowCapturer& capturer){
 
-  // capture my_kernel_1
-  auto task_1 = capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
+  // capture my_kernel_1 through the given stream managed by the capturer
+  auto task_1 = capturer.on([&](cudaStream_t stream){ 
     my_kernel_1<<<grid_1, block_1, shm_size_1, stream>>>(my_parameters_1);
   });
 
-  // capture my_kernel_2
-  auto task_2 = capturer.on([&](cudaStream_t stream){  // stream is managed by the capturer
+  // capture my_kernel_2 through the given stream managed by the capturer
+  auto task_2 = capturer.on([&](cudaStream_t stream){ 
     my_kernel_2<<<grid_2, block_2, shm_size_2, stream>>>(my_parameters_2);
   });
 
