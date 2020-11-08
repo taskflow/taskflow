@@ -9,7 +9,7 @@
 //     |     +---+     |           
 //     +---->| C |-----+           
 //           +---+
-//           
+//
 #include <taskflow/taskflow.hpp>  // the only include you need
 
 int main(){
@@ -26,9 +26,8 @@ int main(){
 
   A.precede(B, C);  // A runs before B and C
   D.succeed(B, C);  // D runs after  B and C
-                                     
-  executor.run(taskflow).wait();     
+
+  executor.run(taskflow).wait();
 
   return 0;
 }
-
