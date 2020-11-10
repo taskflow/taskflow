@@ -186,7 +186,7 @@ my_task.for_each_dependent([d=0] (tf::Task dependent) mutable {
 @endcode
 
 
-@section C1_LifetimeOfATask Lifetime of A Task
+@section C1_UnderstandTheLifetimeOfATask Understand the Lifetime of a Task
 
 A task lives with its graph and belongs to only a graph at a time, 
 and is not destroyed until the graph gets cleaned up.

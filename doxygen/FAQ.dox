@@ -130,7 +130,7 @@ Please refer to @ref C2_CreateAnExecutor for more details.
 
 The lifetime of a task sticks with its parent graph. 
 A task is not destroyed until its parent graph is destroyed.
-Please refer to @ref C1_LifetimeOfATask for more details.
+Please refer to @ref C1_UnderstandTheLifetimeOfATask for more details.
 
 @subsection ProgrammingQuestions3 Q3: Is taskflow thread-safe?
 
@@ -148,16 +148,26 @@ not properly conditioned (see @ref chapter4).
 Try the tf::Taskflow::dump method to debug the graph before dispatching your taskflow graph.
 
 
-@subsection ProgrammingQuestions6 Q6: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?
+@subsection ProgrammingQuestions6 Q6: In the following example where B spawns a joined subflow of three tasks B1, B2, and B3, do they run concurrently with task A?
 
-@image html images/dynamic_graph.png width=60%
+@dotfile images/subflow-join.dot
 
-No. The subflow is spawned during the execution of B, and at this point A must finish
-because A precedes B. This gives rise to the fact B1 and B2 must run after A. 
-This graph may looks strange because B seems to run twice!
-However, B will run only once to create its subflow.
-Whether this subflow joins or detaches from B only affects the future object returned from B.
+No. The subflow is spawned during the execution of @c B, 
+and at this point @c A must have finished
+because @c A precedes @c B. This gives rise to the fact @c B1 and @c B2 
+must run after @c A. 
 
+@subsection ProgrammingQuestions7 Q7: What is the purpose of a condition task?
+
+A condition task lets you perform @em in-task decision making so you can 
+integrate control flow into a task graph with end-to-end parallelism
+without synchronizing or partitioning your parallelism across conditionals.
+
+@subsection ProgrammingQuestions8 Q8: Is the program master thread involved in running tasks?
+
+No, the program master thread is not involved in running taskflows. 
+The executor keeps a set of private worker threads spawned upon 
+construction time to run tasks.
 
 */
 

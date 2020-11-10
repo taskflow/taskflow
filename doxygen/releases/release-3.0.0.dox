@@ -49,12 +49,13 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li added a new interface tf::cudaFlowCapturerBase to support custom-defined capturers (see @ref C7_CreateCustomCapturer)
 @li added a new interface tf::cudaFlow::capture for capturing a CUDA task graph within a parent %cudaFlow
 @li added a new method tf::Taskflow::emplace_on to place a %cudaFlow (tf::cudaFlow and tf::cudaFlowCapturer) on the given device context
+  + removed tf::cudaFlow::device
 @li added tf::cudaFlow::dump and tf::cudaFlowCapturerBase::dump to visualize %cudaFlow
-@li supported standalone %cudaFlow without going through tf::Taskflow 
+  + supported recursive dump of a %cudaFlow with child graphs
+@li added standalone %cudaFlow without going through tf::Taskflow 
     (see @ref C6_UsecudaFlowInAStandaloneEnvironment)
-@li supported recursive dump of a %cudaFlow with child graphs
-@li supported updating a %cudaFlow through tf::cudaFlow::offload 
-    (see @ref C6_OffloadAndUpdateAcudaFlow)
+@li added tf::cudaFlow::offload and update methods to run a %cudaFlow from the task callable and update task parameters (see @ref C6_OffloadAndUpdateAcudaFlow)
+@li added a new library tf::cublasFlowCapturer to support BLAS on top of @cuBLAS (see @ref LinearAlgebracublasFlowCapturer)
 
 @section release-3-0-0_documentation Documentation
 
@@ -63,6 +64,8 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
   + @ref SingleTaskCUDA to run a kernel function in just a single thread
   + @ref ForEachCUDA to perform parallel iterations over a range
   + @ref ParallelTransformsCUDA to perform parallel transforms over a range
+  + @ref LinearAlgebracublasFlowCapturer to build GPU-accelerated 
+         linear algebra applications
 @li added @ref Governance
   + @ref rules
   + @ref team
@@ -80,6 +83,7 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 
 @li removed tf::cudaFlow::device; users may call tf::Taskflow::emplace_on to associate a cudaflow with a GPU device
 @li removed tf::cudaFlow::join, use tf::cudaFlow::offload instead
+@li removed the legacy tf::Framework
 
 @section release-3-0-0_miscellaneous_items Miscellaneous Items
 

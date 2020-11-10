@@ -78,10 +78,19 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <para>To build CUDA code, including unit tests and examples, define the CMake option <computeroutput>TF_BUILD_CUDA</computeroutput> to <computeroutput>ON</computeroutput> as follows:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_CUDA=ON</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
 </programlisting></para><para>To compile a Taskflow program with CUDA (e.g., <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>), use <ulink url="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</ulink> with C++17 enabled as follows:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>my_taskflow_cuda_program.cu<sp/>-std=c++17<sp/>-o<sp/>my_taskflow_cuda_program</highlight></codeline>
-</programlisting></para><para>Taskflow&apos;s tasking interface for CUDA GPU programming is built on top of <ulink url="https://developer.nvidia.com/blog/cuda-graphs/">CUDA Graph</ulink>, which allows work to be efficiently defined as graphs rather than single operations.</para></sect1>
+</programlisting></para><para>Taskflow&apos;s tasking interface for GPU programming is built on top of <ulink url="https://developer.nvidia.com/blog/cuda-graphs/">CUDA Graph</ulink>, which allows work to be efficiently defined as graphs rather than single operations.</para></sect1>
 <sect1 id="install_1BAIBuildSYCLCode">
 <title>Build SYCL Code</title>
-<para>TBD </para></sect1>
+<para>TBD</para></sect1>
+<sect1 id="install_1BAIBuildDocumentation">
+<title>Build Documentation</title>
+<para>Taskflow uses <ulink url="https://www.doxygen.nl/index.html">Doxygen</ulink> and <ulink url="https://mcss.mosra.cz/documentation/doxygen/">m.css</ulink> to generate this documentation. The source of documentation is located in the folder <computeroutput>taskflow/doxygen</computeroutput> and the generated html is output to the folder <computeroutput>taskflow/docs</computeroutput>. To generate the documentation, clone the m.css project and enter the <computeroutput>m.css/documentation</computeroutput> directory:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>git<sp/>clone<sp/>git://github.com/mosra/m.css</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>cd<sp/>m.css/documentation</highlight></codeline>
+</programlisting></para><para>The script <computeroutput>doxygen.py</computeroutput> requires Python 3.6, depends on <ulink url="http://jinja.pocoo.org/">Jinja2</ulink> for templating and <ulink url="http://pygments.org/">Pygments</ulink> for code block highlighting. You can install the dependencies via <computeroutput>pip</computeroutput> or your distribution package manager:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>You<sp/>may<sp/>need<sp/>sudo<sp/>here</highlight></codeline>
+<codeline><highlight class="normal">#<sp/>More<sp/>details<sp/>are<sp/>available<sp/>at<sp/>https://mcss.mosra.cz/documentation/doxygen/</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>pip3<sp/>install<sp/>jinja2<sp/>Pygments</highlight></codeline>
+</programlisting></para><para>Next, invoke <computeroutput>doxygen.py</computeroutput> and point it to the <computeroutput>taskflow/doxygen/conf.py</computeroutput>:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>./doxygen.py<sp/>path/to/taskflow/doxygen/conf.py</highlight></codeline>
+</programlisting></para><para>You can find the documentation output in <computeroutput>taskflow/docs</computeroutput>. </para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

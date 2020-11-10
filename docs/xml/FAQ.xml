@@ -63,7 +63,7 @@
 <para>The master thread owns the thread pool and can spawn workers to run tasks or shutdown the pool. Giving taskflow <computeroutput>N</computeroutput> threads means using <computeroutput>N</computeroutput> threads to do the works, and there is a total of <computeroutput>N+1</computeroutput> threads (including the master thread) in the program. Please refer to <ref refid="chapter2_1C2_CreateAnExecutor" kindref="member">Create an Executor</ref> for more details.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions2">
 <title>Q2: What is the Lifetime of a Task and a Graph?</title>
-<para>The lifetime of a task sticks with its parent graph. A task is not destroyed until its parent graph is destroyed. Please refer to <ref refid="chapter1_1C1_LifetimeOfATask" kindref="member">Lifetime of A Task</ref> for more details.</para></sect2>
+<para>The lifetime of a task sticks with its parent graph. A task is not destroyed until its parent graph is destroyed. Please refer to <ref refid="chapter1_1C1_UnderstandTheLifetimeOfATask" kindref="member">Understand the Lifetime of a Task</ref> for more details.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions3">
 <title>Q3: Is taskflow thread-safe?</title>
 <para>No, the taskflow object is not thread-safe. Multiple threads cannot create tasks from the same taskflow at the same time.</para></sect2>
@@ -74,9 +74,15 @@
 <title>Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?</title>
 <para>When the program hangs forever it is very likely your taskflow graph has a cycle or not properly conditioned (see <ref refid="chapter4" kindref="compound">Conditional Tasking</ref>). Try the <ref refid="classtf_1_1Taskflow_1a4725d8ea5ff7595d9d71593360538e00" kindref="member">tf::Taskflow::dump</ref> method to debug the graph before dispatching your taskflow graph.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions6">
-<title>Q6: In the following example where B spawns a joined subflow of two tasks B1 and B2, do they run concurrently with task A?</title>
-<para><image type="html" name="dynamic_graph.png" width="60%"></image>
-</para><para>No. The subflow is spawned during the execution of B, and at this point A must finish because A precedes B. This gives rise to the fact B1 and B2 must run after A. This graph may looks strange because B seems to run twice! However, B will run only once to create its subflow. Whether this subflow joins or detaches from B only affects the future object returned from B. </para></sect2>
+<title>Q6: In the following example where B spawns a joined subflow of three tasks B1, B2, and B3, do they run concurrently with task A?</title>
+<para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/subflow-join.dot"></dotfile>
+</para><para>No. The subflow is spawned during the execution of <computeroutput>B</computeroutput>, and at this point <computeroutput>A</computeroutput> must have finished because <computeroutput>A</computeroutput> precedes <computeroutput>B</computeroutput>. This gives rise to the fact <computeroutput>B1</computeroutput> and <computeroutput>B2</computeroutput> must run after <computeroutput>A</computeroutput>.</para></sect2>
+<sect2 id="FAQ_1ProgrammingQuestions7">
+<title>Q7: What is the purpose of a condition task?</title>
+<para>A condition task lets you perform <emphasis>in-task</emphasis> decision making so you can integrate control flow into a task graph with end-to-end parallelism without synchronizing or partitioning your parallelism across conditionals.</para></sect2>
+<sect2 id="FAQ_1ProgrammingQuestions8">
+<title>Q8: Is the program master thread involved in running tasks?</title>
+<para>No, the program master thread is not involved in running taskflows. The executor keeps a set of private worker threads spawned upon construction time to run tasks. </para></sect2>
 </sect1>
     </detaileddescription>
   </compounddef>

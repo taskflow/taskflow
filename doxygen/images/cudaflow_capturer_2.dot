@@ -1,0 +1,8 @@
+digraph cudaFlowCapturer {
+  rankdir="LR";
+  subgraph cluster_capturer{
+    label="cudaFlow: capturer"
+    h2d -> my_kernel;
+    my_kernel -> dh2;
+  }
+}

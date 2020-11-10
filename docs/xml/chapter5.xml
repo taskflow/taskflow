@@ -7,8 +7,8 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Composition is a key to improve the programmability of a complex workflow. This chapter describes how to create a large parallel graph through composition of modular and reusable blocks that are easier to optimize.</para><sect1 id="chapter5_1C5_ComposesATaskflow">
-<title>Composes a Taskflow</title>
+<para>Composition is a key to improve the programmability of a complex workflow. This chapter describes how to create a large parallel graph through composition of modular and reusable blocks that are easier to optimize.</para><sect1 id="chapter5_1C5_ComposeATaskflow">
+<title>Compose a Taskflow</title>
 <para>A powerful feature of <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> is its <emphasis>composable</emphasis> interface. You can break down a large parallel workload into smaller pieces each designed to run a specific task dependency graph. This largely facilitates the <emphasis>modularity</emphasis> of writing a parallel task program.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/></highlight><highlight class="comment">//<sp/>f1<sp/>has<sp/>three<sp/>independent<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>f1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:<sp/>f1.<ref refid="classtf_1_1Taskflow_1ad5706e5819aa01a63c4aa2e3485546b9" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;F1&quot;</highlight><highlight class="normal">);</highlight></codeline>
@@ -54,8 +54,8 @@
 <listitem><para>Line 34 enforces the module task to run before task f2D</para></listitem>
 </itemizedlist>
 </para></sect1>
-<sect1 id="chapter5_1C5_ModuleTask">
-<title>Module Task</title>
+<sect1 id="chapter5_1C5_CreateAModuleTask">
+<title>Create a Module Task</title>
 <para>The task created from <ref refid="classtf_1_1FlowBuilder_1a0a01192f4f92c15380a4f259e2fec2d9" kindref="member">Taskflow::composed_of</ref> is a <emphasis>module</emphasis> task that runs on a pre-defined taskflow. A module task does not own the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <computeroutput>module1</computeroutput> and <computeroutput>module2</computeroutput> refer to the same taskflow <computeroutput>F1</computeroutput>, the dependency link prevents <computeroutput>F1</computeroutput> from multiple executions at the same time.</para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/composition_static_2.dot"></dotfile>
 </para><para>However, the following composition is <emphasis>invalid</emphasis>. Both module tasks refer to the same taskflow. They can not run at the same time because they are associated with the same graph.</para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/composition_static_invalid.dot"></dotfile>
  </para></sect1>

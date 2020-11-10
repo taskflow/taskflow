@@ -135,8 +135,8 @@ You can change the name and work of a task at anytime before running the graph. 
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;dependent<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>d++<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para></sect1>
-<sect1 id="chapter1_1C1_LifetimeOfATask">
-<title>Lifetime of A Task</title>
+<sect1 id="chapter1_1C1_UnderstandTheLifetimeOfATask">
+<title>Understand the Lifetime of a Task</title>
 <para>A task lives with its graph and belongs to only a graph at a time, and is not destroyed until the graph gets cleaned up. The lifetime of a task refers to the user-given callable object, including captured values. As long as the graph is alive, all the associated tasks exist.</para><para><simplesect kind="attention"><para>It is your responsibility to keep tasks and graph alive during their execution. </para></simplesect>
 </para></sect1>
     </detaileddescription>

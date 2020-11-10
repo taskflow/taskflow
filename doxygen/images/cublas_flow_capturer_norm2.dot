@@ -1,0 +1,17 @@
+digraph Taskflow {
+rankdir="LR";
+subgraph cluster_p0x7ffe27cbbb00 {
+label="Taskflow: cublas 2-norm";
+p0x190c880[label="capturer"  style="filled" color="black" fillcolor="purple" fontcolor="white" shape="folder"];
+subgraph cluster_p0x190c880 {
+label="cudaFlow: capturer";
+color="purple"
+p0x7f05aa4b43b0[label="h2d"];
+p0x7f05aa4b43b0 -> p0x7f05aa4b4470;
+p0x7f05aa4b4470[label="2-norm"];
+p0x7f05aa4b4470 -> p0x7f05aa4b4540;
+p0x7f05aa4b4540[label="d2h"];
+p0x7f05aa4b4540 -> p0x190c880;
+}
+}
+}

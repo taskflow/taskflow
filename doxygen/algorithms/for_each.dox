@@ -26,8 +26,8 @@ for(auto i=first; i>last; i+=step) {
 We support only integer-based range. The range can go positive or negative direction. 
 
 @code{.cpp}
-taskflow.for_each_index(0, 100,  2, [](int i) { });  // loop 50 items with a positive step
-taskflow.for_each_index(100, 0, -2, [](int i) { });  // loop 50 items with a negative step
+taskflow.for_each_index(0, 100,  2, [](int i) { });  // 50 loops with a + step
+taskflow.for_each_index(100, 0, -2, [](int i) { });  // 50 loops with a - step
 @endcode
 
 Notice that either positive or negative direction is defined in terms of the range,
@@ -52,9 +52,11 @@ auto init = taskflow.emplace([&](){
   vec = new int[1000];  
 });
 
-auto pf = taskflow.for_each_index(std::ref(first), std::ref(last), 1, [&](int i) {
-  std::cout << "parallel iteration on index " << vec[i] << '\n';
-});
+auto pf = taskflow.for_each_index(std::ref(first), std::ref(last), 1, 
+  [&] (int i) {
+    std::cout << "parallel iteration on index " << vec[i] << '\n';
+  }
+);
 
 // wrong! must use std::ref, or first and last are captured by copy
 // auto pf = taskflow.for_each_index(first, last, 1, [&](int i) {

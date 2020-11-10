@@ -27,17 +27,19 @@ tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
   // capture my_kernel_1 through a stream managed by capturer
   tf::cudaTask task_1 = capturer.on([&](cudaStream_t stream){ 
     my_kernel_1<<<grid_1, block_1, shm_size_1, stream>>>(my_parameters_1);
-  });
+  }).name("my_kernel_1");
 
   // capture my_kernel_2 through a stream managed by capturer
   tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){ 
     my_kernel_2<<<grid_2, block_2, shm_size_2, stream>>>(my_parameters_2);
-  });
+  }).name("my_kernel_2");
 
   // my_kernel_1 runs before my_kernel_2
   task_1.precede(task_2);
-});
+}).name("capturer");
 @endcode
+
+@dotfile images/cudaflow_capturer_1.dot
 
 The stream object passed to each tf::cudaFlowCapturer::on call may differ,
 and it depends on how the internal optimization algorithm maximizes the 
@@ -52,32 +54,7 @@ A %cudaFlowCapturer lives with the callable.
 When the executor invoke the capturer callable, it creates the %cudaFlowCapturer
 and will destroy it until all internal operations finish.
 
-@section C7_CreateACapturerWithinAcudaFlow Create a Capturer within a cudaFlow
 
-Within a parent %cudaFlow, you can capture a %cudaFlow to form a subflow that 
-eventually becomes a @em child node in the underlying CUDA task graph.
-The following example defines a captured flow @c task2 of two dependent tasks,
-@c task2_1 and @c task2_2, and @c task2 runs after @c task1.
-
-@code{.cpp}
-tf::Task task = taskflow.emplace([&](tf::cudaFlow& cf){
-
-  tf::cudaTask task1 = cf.kernel(grid, block, shm, my_kernel, args...);
-  
-  // task2 forms a child node in cf (and the underlying CUDA graph)
-  tf::cudaTask task2 = cf.capture([&](tf::cudaFlowCapturer& capturer){
-    tf::cudaTask task2_1 = capturer.on([&](cudaStream_t stream){  
-      my_kernel2<<<grid1, block1, shm_size1, stream>>>(args1...);
-    });
-    tf::cudaTask task2_2 = capturer.on([&](cudaStream_t stream){  
-      my_kernel2<<<grid2, block2, shm_size2, stream>>>(args2...);
-    });
-    task2_1.precede(task2_2);
-  });
-
-  task1.precede(task2);
-});
-@endcode
 
 @section C7_CommonCaptureMethods Common Capture Methods
 
@@ -92,20 +69,22 @@ in this order of their dependencies.
 @code{.cpp}
 tf::Task task = taskflow.emplace([](tf::cudaFlowCapturer& capturer){
   // copy data from host_data to gpu_data
-  tf::cudaTask h2d = capturer.memcpy(gpu_data, host_data, bytes);
+  tf::cudaTask h2d = capturer.memcpy(gpu_data, host_data, bytes).name("h2d");
 
   // capture my_kernel to do computation on gpu_data
   tf::cudaTask kernel = capturer.on([&](cudaStream_t stream){  
     my_kernel<<<grid, block, shm_size, stream>>>(gpu_data, arg1, arg2, ...);
-  });
+  }).name("my_kernel");
 
   // copy data from gpu_data to host_data
-  tf::cudaTask d2h = capturer.memcpy(host_data, gpu_data, bytes);
+  tf::cudaTask d2h = capturer.memcpy(host_data, gpu_data, bytes).name("d2h");
   
   h2d.precede(kernel);
   kernel.precede(d2h);
-});
+}).name("capturer");
 @endcode
+
+@dotfile images/cudaflow_capturer_2.dot
 
 @section C7_CreateACapturerOnASpecificGPU Create a Capturer on a Specific GPU
 
@@ -125,12 +104,43 @@ tf::Task task = taskflow.emplace_on([](tf::cudaFlowCapturer& capturer){
 The above example creates a capturer on GPU 2. 
 When the executor runs the callable, it switches to GPU 2 
 and all the functions within the callable are called under this context.
-Keep in mind, %Taskflow does not deal with memory.
-It is users' responsibility to ensure the allocated memory to sit in the right context.
-In this example, the GPU memory you created must come from context 2 as well.
-You may use unified shared memory (i.e., @c cudaMallocManaged) to avoid this pitfall,
-given that the extra cost of automatic memory migration is 
-not hurting your application performance.
+
+@attention
+It is your responsibility to ensure the allocated memory to sit 
+in the same context as the capturer.
+
+@section C7_CreateACapturerWithinAcudaFlow Create a Capturer within a cudaFlow
+
+Within a parent %cudaFlow, you can capture a %cudaFlow to form a subflow that 
+eventually becomes a @em child node in the underlying CUDA task graph.
+The following example defines a captured flow @c task2 of two dependent tasks,
+@c task2_1 and @c task2_2, and @c task2 runs after @c task1.
+
+@code{.cpp}
+tf::Task task = taskflow.emplace([&](tf::cudaFlow& cf){
+
+  tf::cudaTask task1 = cf.kernel(grid, block, shm, my_kernel, args...)
+                         .name("my_kernel");
+  
+  // task2 forms a subflow in cf and becomes a child node in the underlying 
+  // CUDA graph
+  tf::cudaTask task2 = cf.capture([&](tf::cudaFlowCapturer& capturer){
+    tf::cudaTask task2_1 = capturer.on([&](cudaStream_t stream){  
+      my_kernel2<<<grid1, block1, shm_size1, stream>>>(args1...);
+    }).name("my_kernel1");  // capture my_kernel1 using the given stream
+
+    tf::cudaTask task2_2 = capturer.on([&](cudaStream_t stream){  
+      my_kernel2<<<grid2, block2, shm_size2, stream>>>(args2...);
+    }).name("my_kernel2");  // capture my_kernel2 using the given stream 
+
+    task2_1.precede(task2_2);
+  }).name("capturer");
+
+  task1.precede(task2);
+}).name("cudaFlow");
+@endcode
+
+@dotfile images/cudaflow_capturer_3.dot
 
 
 @section C7_CreateCustomCapturer Create a Custom Capturer
@@ -139,41 +149,40 @@ By inheriting tf::cudaFlowCapturerBase, you can create your own capturer.
 The tf::cudaFlowCapturer has a factory interface, tf::cudaFlowCapturer::make_capturer,
 for users to create custom capturers with lifetimes managed by the capturer.
 This is convenient when you need certain objects alive during the capturing.
+The following example defines a custom capturer that takes the given
+stream from tf::cudaFlowCapturer::on to capture a custom kernel.
 
 @code{.cpp}
 class MyCapturer : public tf::cudaFlowCapturerBase {
 
   public:
-  
-  // capture a matrix multiplication kernel through the given stream
-  tf::cudaTask matrix_multiplication(args...) {
+
+  // capture a custom kernel
+  tf::cudaTask capture_custom_kernel(args...) {
     return on([this, args...](cudaStream_t stream){
-      cublasSetStream(_handle, stream);
-      cublasSgemm(_handle, args...);
+      invoke_custom_kernel(stream, args...);
     });
   }
-
-  private:
-
-    cuBlasHandle_t _handle;
-    Data _other_internal_data;
 };
 
 tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
-  // create a custom capturer 
+  // create a custom capturer, MyCapturer, from the factory in capturer
   MyCapturer* mc = capturer.make_capturer<MyCapturer>();
 
-  tf::cudaTask task_1 = mc->matrix_multiplication(args...);
+  tf::cudaTask task_1 = mc->capture_custom_kernel(args...).name("custom_kernel");
   tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){
     other_kernel<<<grid, block, shm_size, stream>>>(other_args...);
-  });
+  }).name("other_kernel");
 
   task_1.precede(task_2);
-});
+}).name("capturer");
 @endcode
 
-The above example shows a custom capturer on top of @cuBLAS that
-includes the @c cublasHandle object @c _handle to associate operations with streams.
+@dotfile images/cudaflow_capturer_1.dot
+
+%Taskflow provides several class interfaces, such as tf::cublasFlowCapturer,
+on top of tf::cudaFlowCapturerBase for users to use
+external high-performance CUDA libraries together with %Taskflow.
 
 */
 

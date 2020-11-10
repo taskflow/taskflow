@@ -292,29 +292,47 @@ class cudaFlow {
     // TODO update_kernel_on
 
     /**
-    @brief updates parameters of a kernel task
+    @brief updates parameters of a kernel task created from tf::cudaFlow::kernel
+
+    The method updates the parameters of a kernel associated with the given 
+    @c task. We do not allow you to change the kernel function.
     */
     template <typename... ArgsT>
-    void update_kernel(cudaTask ct, dim3 g, dim3 b, size_t shm, ArgsT&&... args);
+    void update_kernel(cudaTask task, dim3 g, dim3 b, size_t shm, ArgsT&&... args);
 
     /**
-    @brief updates parameters of a copy task
+    @brief updates parameters of a copy task created from tf::cudaFlow::copy
+
+    The method updates the parameters of a copy task.
+    The source/destination memory may have different address values but 
+    must be allocated from the same contexts as the original 
+    source/destination memory.
     */
     template <
       typename T, 
       std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
     >
-    void update_copy(cudaTask ct, T* tgt, const T* src, size_t num);
+    void update_copy(cudaTask task, T* tgt, const T* src, size_t num);
 
     /**
-    @brief updates parameters of a memcpy task
+    @brief updates parameters of a memcpy task created from tf::cudaFlow::memcpy
+    
+    The method updates the parameters of a memcpy task.
+    The source/destination memory may have different address values but 
+    must be allocated from the same contexts as the original 
+    source/destination memory.
     */
-    void update_memcpy(cudaTask ct, void* tgt, const void* src, size_t bytes);
+    void update_memcpy(cudaTask task, void* tgt, const void* src, size_t bytes);
 
     /**
-    @brief updates parameters of a memset task
+    @brief updates parameters of a memset task created from tf::cudaFlow::memset
+    
+    The method updates the parameters of a memset task.
+    The source/destination memory may have different address values but
+    must be allocated from the same contexts as the original 
+    source/destination memory.
     */
-    void update_memset(cudaTask ct, void* dst, int ch, size_t count);
+    void update_memset(cudaTask task, void* dst, int ch, size_t count);
 
     // ------------------------------------------------------------------------
     // generic algorithms

@@ -90,8 +90,8 @@ Line 8-14 is the main block to enable dynamic tasking. Taskflow uses a <ulink ur
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1a4725d8ea5ff7595d9d71593360538e00" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 </programlisting></para><para>The dumped graph is shown as follows:</para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/subflow_detach_5.dot"></dotfile>
 </para></sect1>
-<sect1 id="chapter3_1NestedSubflow">
-<title>Nested Subflow</title>
+<sect1 id="chapter3_1MakeANestedSubflow">
+<title>Make a Nested Subflow</title>
 <para>A subflow can be nested or recursive. You can create another subflow from the execution of a subflow and so on.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>(<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sbf){</highlight></codeline>

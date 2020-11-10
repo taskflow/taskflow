@@ -22,8 +22,8 @@ There are three levels:
 
 BLAS is commonly used by linear algebra software. 
 The @cuBLAS library is an implementation of BLAS (Basic Linear Algebra Subprograms) 
-on top of the NVIDIA CUDA runtime
-and it allows users to access the computational resources of NVIDIA GPUs.
+on top of the Nvidia CUDA runtime
+and it allows users to access the computational resources of Nvidia GPUs.
 
 @section HowToUsecublasFlowCapturer What is a cublasFlow Capturer? Why?
 
@@ -36,6 +36,41 @@ we can launch the entire graph using a single kernel call to largely reduce
 the kernel call overheads and efficiently overlap concurrent kernels.
 This organization is particularly suitable for large linear algebra programs
 that contain hundreds of cuBLAS operations.
+
+The following example use tf::cublasFlowCapturer to perform a 2-norm operation
+on a vector.
+
+@code{.cpp}
+const int N = 1024;
+
+tf::Executor executor;
+tf::Taskflow taskflow("cublas 2-norm");          // initialize an unit vector
+
+std::vector<float> hvec(N, 1); 
+float  hres;                                     // cpu vector
+float* gvec = tf::cuda_malloc_device<float>(N);  // gpu vector
+float* gres = tf::cuda_malloc_device<float>(1);  // gpu result
+
+taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+  // create a cuBLAS flow capturer
+  auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
+  
+  tf::cudaTask h2d = capturer.copy(gvec, hvec.data(), N).name("h2d");
+  tf::cudaTask nrm = blas->nrm2(N, gvec, 1, gres).name("2-norm");
+  tf::cudaTask d2h = capturer.copy(&hres, gres, 1).name("d2h");
+
+  nrm.precede(d2h)
+     .succeed(h2d);
+}).name("capturer");
+
+executor.run(taskflow).wait();
+
+taskflow.dump(std::cout);
+
+assert(hres == 32);
+@endcode
+
+@dotfile images/cublas_flow_capturer_norm2.dot
 
 @section DataModelOscublasFlowCapturer Understand the Data Model
 
@@ -63,6 +98,26 @@ as shown below:
 A_{RowMajor} \iff A^T_{ColumnMajor}
 @f]
 
+@subsection cublasFlowCapturerDataModelExample Example
+
+Suppose we have a method <tt>matmul(A, B, C)</tt> that multiplies two matrices
+@c A and @c B and stores the result in @c C,
+using column-major storage.
+In C/C++, data layout is mostly row-major.
+Since we know a row-major matrix is equivalent in storage 
+to a transposed column-major matrix,
+we can take a transposed view of this multiplication:
+
+@f[
+C^T = B^T \times A^T
+@f]
+
+If the given matrices @c A, @c B, and @c C are in row-major storage,
+calling <tt>matmul(A, B, C)</tt> is equivalent to the above transposed version.
+The function stores the result of transposed @c C in column-major storage
+which in turns translates to row-major layout of @c C -- 
+<i>our desired solution</i>.
+
 @section cublasFlowCapturerLevel-1 Use Level-1 Methods
 
 We currently support the following level-1 methods:
@@ -89,7 +144,7 @@ with internal stream(s) optimized for maximum concurrency.
 We currently support the following level-2 methods:
   
   + tf::cublasFlowCapturer::gemv performs general matrix-vector multiplication
-  + tf::cublasFlowCapturer::c_geam performs general matrix-vector multiplication
+  + tf::cublasFlowCapturer::c_gemv performs general matrix-vector multiplication
     on C-styled row-major layout
 
 Our level-2 methods capture the native <a href="https://docs.nvidia.com/cuda/cublas/index.html#cublas-level-2-function-reference">cublas level-2 calls</a>
@@ -122,9 +177,32 @@ with internal stream(s) optimized for maximum concurrency.
 
 tf::cublasFlowCapturer is derived from tf::cudaFlowCapturerBase
 and is created from a factory interface tf::cudaFlowCapturer::make_capturer.
-This design enables a @em flat flow graph that combines the advantages of 
-tf::cudaFlowCapturer and tf::cublasFlowCapturer
-for users to efficiently create large linear algebra applications.
+You can use all the base methods tf::cudaFlowCapturerBase::on to capture
+other cuBLAS methods that are not defined in tf::cudaFlowCapturer.
+The following example captures the Hermitian rank-k update,
+@c cublasCherkx.
+
+@code{.cpp}
+taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+  // create a cublasFlow capturer
+  auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
+
+  // use the base method tf::cudaFlowCapturer::on to capture other functions
+  blas->on([&](cudaStream_t stream){
+    cublasSetStream(blas->native_handle(), stream);
+    cublasCherkx(blas->native_handle(), your_args...);
+  }).name("Hermitian rank-k update");
+
+}).name("capturer");
+@endcode
+
+@section cublasFlowCapturerKnowMore Know More About cublasFlow Capturer
+
+We summarize below resources for you to know more about 
+tf::cublasFlowCapturer:
+  + Study the reference of tf::cublasFlowCapturer and tf::cudaFlowCapturer
+  + Contribute to cublas_flow.hpp by adding more BLAS methods
+  + See the complete list of BLAS functions offered by @cuBLAS
 
 
 

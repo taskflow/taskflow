@@ -41,11 +41,15 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <listitem><para>added a new interface <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> for building a GPU task graph through stream capture </para></listitem>
 <listitem><para>added a new interface <ref refid="classtf_1_1cudaFlowCapturerBase" kindref="compound">tf::cudaFlowCapturerBase</ref> to support custom-defined capturers (see <ref refid="chapter7_1C7_CreateCustomCapturer" kindref="member">Create a Custom Capturer</ref>) </para></listitem>
 <listitem><para>added a new interface <ref refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" kindref="member">tf::cudaFlow::capture</ref> for capturing a CUDA task graph within a parent cudaFlow </para></listitem>
-<listitem><para>added a new method <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref> to place a cudaFlow (<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>) on the given device context </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1aae23bdac4c64b842db5b6d4363d331fd" kindref="member">tf::cudaFlow::dump</ref> and <ref refid="classtf_1_1cudaFlowCapturerBase_1a56ef35d257232a3dc0d8ad86b5380215" kindref="member">tf::cudaFlowCapturerBase::dump</ref> to visualize cudaFlow </para></listitem>
-<listitem><para>supported standalone cudaFlow without going through <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> (see <ref refid="chapter6_1C6_UsecudaFlowInAStandaloneEnvironment" kindref="member">Use cudaFlow in a Standalone Environment</ref>) </para></listitem>
-<listitem><para>supported recursive dump of a cudaFlow with child graphs </para></listitem>
-<listitem><para>supported updating a cudaFlow through <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> (see <ref refid="chapter6_1C6_OffloadAndUpdateAcudaFlow" kindref="member">Offload and Update a cudaFlow</ref>)</para></listitem>
+<listitem><para>added a new method <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref> to place a cudaFlow (<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>) on the given device context<itemizedlist>
+<listitem><para>removed tf::cudaFlow::device </para></listitem></itemizedlist>
+</para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1aae23bdac4c64b842db5b6d4363d331fd" kindref="member">tf::cudaFlow::dump</ref> and <ref refid="classtf_1_1cudaFlowCapturerBase_1a56ef35d257232a3dc0d8ad86b5380215" kindref="member">tf::cudaFlowCapturerBase::dump</ref> to visualize cudaFlow<itemizedlist>
+<listitem><para>supported recursive dump of a cudaFlow with child graphs </para></listitem></itemizedlist>
+</para></listitem>
+<listitem><para>added standalone cudaFlow without going through <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> (see <ref refid="chapter6_1C6_UsecudaFlowInAStandaloneEnvironment" kindref="member">Use cudaFlow in a Standalone Environment</ref>) </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> and update methods to run a cudaFlow from the task callable and update task parameters (see <ref refid="chapter6_1C6_OffloadAndUpdateAcudaFlow" kindref="member">Offload and Update a cudaFlow</ref>) </para></listitem>
+<listitem><para>added a new library <ref refid="classtf_1_1cublasFlowCapturer" kindref="compound">tf::cublasFlowCapturer</ref> to support BLAS on top of <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> (see <ref refid="LinearAlgebracublasFlowCapturer" kindref="compound">Linear Algebra (cublasFlowCapturer)</ref>)</para></listitem>
 </itemizedlist>
 </para></sect1>
 <sect1 id="release-3-0-0_1release-3-0-0_documentation">
@@ -53,7 +57,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <para><itemizedlist>
 <listitem><para>added <ref refid="chapter7" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref> </para></listitem>
 <listitem><para>added <ref refid="GPUAlgorithms" kindref="compound">GPU Algorithms</ref><itemizedlist>
-<listitem><para><ref refid="SingleTaskCUDA" kindref="compound">Single Task (cudaFlow)</ref> to run a kernel function in just a single thread</para></listitem><listitem><para><ref refid="ForEachCUDA" kindref="compound">Parallel Iterations (cudaFlow)</ref> to perform parallel iterations over a range</para></listitem><listitem><para><ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms (cudaFlow)</ref> to perform parallel transforms over a range </para></listitem></itemizedlist>
+<listitem><para><ref refid="SingleTaskCUDA" kindref="compound">Single Task (cudaFlow)</ref> to run a kernel function in just a single thread</para></listitem><listitem><para><ref refid="ForEachCUDA" kindref="compound">Parallel Iterations (cudaFlow)</ref> to perform parallel iterations over a range</para></listitem><listitem><para><ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms (cudaFlow)</ref> to perform parallel transforms over a range</para></listitem><listitem><para><ref refid="LinearAlgebracublasFlowCapturer" kindref="compound">Linear Algebra (cublasFlowCapturer)</ref> to build GPU-accelerated linear algebra applications </para></listitem></itemizedlist>
 </para></listitem>
 <listitem><para>added <ref refid="Governance" kindref="compound">Governance</ref><itemizedlist>
 <listitem><para><ref refid="rules" kindref="compound">Rules</ref></para></listitem><listitem><para><ref refid="team" kindref="compound">Team</ref></para></listitem><listitem><para><ref refid="codeofconduct" kindref="compound">Code of Conduct</ref> </para></listitem></itemizedlist>
@@ -74,7 +78,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <title>Deprecated and Removed Items</title>
 <para><itemizedlist>
 <listitem><para>removed tf::cudaFlow::device; users may call <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref> to associate a cudaflow with a GPU device </para></listitem>
-<listitem><para>removed tf::cudaFlow::join, use <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> instead</para></listitem>
+<listitem><para>removed tf::cudaFlow::join, use <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> instead </para></listitem>
+<listitem><para>removed the legacy tf::Framework</para></listitem>
 </itemizedlist>
 </para></sect1>
 <sect1 id="release-3-0-0_1release-3-0-0_miscellaneous_items">

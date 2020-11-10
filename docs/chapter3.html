@@ -55,7 +55,7 @@
             <li><a href="#C3_CreateASubflow">Create a Subflow</a></li>
             <li><a href="#JoinASubflow">Join a Subflow</a></li>
             <li><a href="#DetachASubflow">Detach a Subflow</a></li>
-            <li><a href="#NestedSubflow">Nested Subflow</a></li>
+            <li><a href="#MakeANestedSubflow">Make a Nested Subflow</a></li>
           </ul>
         </div>
 <p>It is very common for a parallel program to spawn task dependency graphs at runtime. In Taskflow, we call this <em>dynamic tasking</em>.</p><section id="C3_CreateASubflow"><h2><a href="#C3_CreateASubflow">Create a Subflow</a></h2><p>Dynamic tasks are those created during the execution of a graph. These tasks are spawned from a parent task and are grouped together to a <em>subflow</em> dependency graph. Taskflow has an unified interface for static and dynamic tasking. To create a subflow, emplace a callable that takes an argument of type <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a>. A <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> object will be created and forwarded to the execution context of the task. All methods you find in <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> are applicable for <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a>.</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
@@ -641,7 +641,7 @@
 </g>
 </g>
 </svg>
-</div></section><section id="NestedSubflow"><h2><a href="#NestedSubflow">Nested Subflow</a></h2><p>A subflow can be nested or recursive. You can create another subflow from the execution of a subflow and so on.</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+</div></section><section id="MakeANestedSubflow"><h2><a href="#MakeANestedSubflow">Make a Nested Subflow</a></h2><p>A subflow can be nested or recursive. You can create another subflow from the execution of a subflow and so on.</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
  <span class="mi">2</span><span class="o">:</span>
  <span class="mi">3</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span> <span class="n">sbf</span><span class="p">){</span>
  <span class="mi">4</span><span class="o">:</span>   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;A spawns A1 &amp; subflow A2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>

@@ -53,11 +53,16 @@
           <h3>Contents</h3>
           <ul>
             <li><a href="#C4_CreateAConditionTask">Create a Condition Task</a></li>
-            <li><a href="#C4_TaskSchedulingPolicy">Task Scheduling Policy</a></li>
-            <li><a href="#C4_CommonPitfalls">Common Pitfalls</a></li>
+            <li>
+              <a href="#C4_TaskSchedulingPolicy">Understand our Task-level Scheduling</a>
+              <ul>
+                <li><a href="#TaskLevelSchedulingExample">Example</a></li>
+              </ul>
+            </li>
+            <li><a href="#C4_AvoidCommonPitfalls">Avoid Common Pitfalls</a></li>
           </ul>
         </div>
-<p>Parallel workloads often require making control-flow decisions across dependent tasks. Taskflow supports an very efficient interface of conditional tasking for users to implement general control flow such as dynamic flows, cycles, and conditionals that are otherwise difficult to do with existing frameworks.</p><section id="C4_CreateAConditionTask"><h2><a href="#C4_CreateAConditionTask">Create a Condition Task</a></h2><p>A condition task evalutes a set of instructions and returns an integer index of the next immediate successor to execute. The index is defined with respect to the order of its successor construction.</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+<p>Parallel workloads often require making control-flow decisions across dependent tasks. Taskflow supports an very efficient interface of conditional tasking for users to implement general control flow such as dynamic flow, cycles, and conditionals that are otherwise difficult to do with existing frameworks.</p><section id="C4_CreateAConditionTask"><h2><a href="#C4_CreateAConditionTask">Create a Condition Task</a></h2><p>A condition task evalutes a set of instructions and returns an integer index of the next immediate successor to execute. The index is defined with respect to the order of its successor construction.</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
  <span class="mi">2</span><span class="o">:</span> 
  <span class="mi">3</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">init</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;init&quot;</span><span class="p">);</span>
  <span class="mi">4</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">stop</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;stop&quot;</span><span class="p">);</span>
@@ -68,9 +73,9 @@
  <span class="mi">9</span><span class="o">:</span>  <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="mi">2</span><span class="p">;</span>
 <span class="mi">10</span><span class="o">:</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cond&quot;</span><span class="p">);</span>
 <span class="mi">11</span><span class="o">:</span>
-<span class="mi">12</span><span class="o">:</span> <span class="c1">// creates a feedback loop</span>
+<span class="mi">12</span><span class="o">:</span> <span class="c1">// creates a feedback loop {0: cond, 1: stop}</span>
 <span class="mi">13</span><span class="o">:</span> <span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cond</span><span class="p">);</span>
-<span class="mi">14</span><span class="o">:</span> <span class="n">cond</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cond</span><span class="p">,</span> <span class="n">stop</span><span class="p">);</span>  <span class="c1">// cond--0--&gt;cond, cond--1--&gt;stop</span>
+<span class="mi">14</span><span class="o">:</span> <span class="n">cond</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cond</span><span class="p">,</span> <span class="n">stop</span><span class="p">);</span>  <span class="c1">// returns 0 to &#39;cond&#39; or 1 to &#39;stop&#39;</span>
 <span class="mi">15</span><span class="o">:</span>
 <span class="mi">16</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><div class="m-graph"><svg style="width: 18.875rem; height: 4.875rem;" viewBox="0.00 0.00 302.13 78.00">
 <g transform="scale(1 1) rotate(0) translate(4 74)">
@@ -109,39 +114,39 @@
 </g>
 </g>
 </svg>
-</div><p>The example above implements a simple yet commonly used feedback loop through a condition task (line 7-10) that returns a random binary value. If the return value from <code>cond</code> is 0, it loops back to itself, or otherwise to <code>stop</code>. Our conditional tasking interface is very neat and expressive. A complex flow control often just takes a few lines of code to implement. The code below creates another taskflow with three condition tasks.</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
- <span class="mi">2</span><span class="o">:</span>
- <span class="mi">3</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>
- <span class="mi">4</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">B</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span>
- <span class="mi">5</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">C</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span>
- <span class="mi">6</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">D</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span>
- <span class="mi">7</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">E</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;E&quot;</span><span class="p">);</span>
- <span class="mi">8</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">F</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;F&quot;</span><span class="p">);</span>
- <span class="mi">9</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">G</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;G&quot;</span><span class="p">);</span>
-<span class="mi">10</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">H</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;H&quot;</span><span class="p">);</span>
-<span class="mi">11</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">I</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;I&quot;</span><span class="p">);</span>
-<span class="mi">12</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">K</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;K&quot;</span><span class="p">);</span>
-<span class="mi">13</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">L</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;L&quot;</span><span class="p">);</span>
-<span class="mi">14</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">M</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;M&quot;</span><span class="p">);</span>
-<span class="mi">15</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">cond_1</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">2</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cond_1&quot;</span><span class="p">);</span>
-<span class="mi">16</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">cond_2</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">2</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cond_2&quot;</span><span class="p">);</span>
-<span class="mi">17</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">cond_3</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">2</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cond_3&quot;</span><span class="p">);</span>
-<span class="mi">18</span><span class="o">:</span>
-<span class="mi">19</span><span class="o">:</span> <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">F</span><span class="p">);</span>
-<span class="mi">20</span><span class="o">:</span> <span class="n">B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">C</span><span class="p">);</span>
-<span class="mi">21</span><span class="o">:</span> <span class="n">C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">);</span>
-<span class="mi">22</span><span class="o">:</span> <span class="n">D</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cond_1</span><span class="p">);</span>
-<span class="mi">23</span><span class="o">:</span> <span class="n">E</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">K</span><span class="p">);</span>
-<span class="mi">24</span><span class="o">:</span> <span class="n">F</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cond_2</span><span class="p">);</span>
-<span class="mi">25</span><span class="o">:</span> <span class="n">H</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">I</span><span class="p">);</span>
-<span class="mi">26</span><span class="o">:</span> <span class="n">I</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cond_3</span><span class="p">);</span>
-<span class="mi">27</span><span class="o">:</span> <span class="n">L</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">M</span><span class="p">);</span>
-<span class="mi">28</span><span class="o">:</span>
-<span class="mi">29</span><span class="o">:</span> <span class="n">cond_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">E</span><span class="p">);</span>
-<span class="mi">30</span><span class="o">:</span> <span class="n">cond_2</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">H</span><span class="p">);</span>
-<span class="mi">31</span><span class="o">:</span> <span class="n">cond_3</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cond_3</span><span class="p">,</span> <span class="n">L</span><span class="p">);</span>
-<span class="mi">32</span><span class="o">:</span>
-<span class="mi">33</span><span class="o">:</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><p>Debrief:</p><ul><li>Line 29 creates a condition task that loops back to B on return 0, and proceeds to E on return 1</li><li>Line 30 creates a condition task that goes to G and H on return 0 and 1, respectively</li><li>Line 31 creates a condition task that loops back to itself on return 0, and proceeds to L on return 1</li></ul><div class="m-graph"><svg style="width: 59.438rem; height: 12.000rem;" viewBox="0.00 0.00 950.56 192.00">
+</div><p>The example above implements a simple yet commonly used feedback loop through a condition task (line 7-10) that returns a random binary value. If the return value from <code>cond</code> is <code>0</code>, it loops back to itself, or otherwise to <code>stop</code>. Our conditional tasking interface is very neat and expressive. A complex flow control often just takes a few lines of code to implement. The code below creates another taskflow with three condition tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">B</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">C</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">D</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">E</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;E&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">F</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;F&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">G</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;G&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">H</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;H&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">I</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;I&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">K</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;K&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">L</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;L&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">M</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;M&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">cond_1</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">2</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cond_1&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">cond_2</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">2</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cond_2&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">cond_3</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">2</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cond_3&quot;</span><span class="p">);</span>
+
+<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">F</span><span class="p">);</span>
+<span class="n">B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">C</span><span class="p">);</span>
+<span class="n">C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">);</span>
+<span class="n">D</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cond_1</span><span class="p">);</span>
+<span class="n">E</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">K</span><span class="p">);</span>
+<span class="n">F</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cond_2</span><span class="p">);</span>
+<span class="n">H</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">I</span><span class="p">);</span>
+<span class="n">I</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cond_3</span><span class="p">);</span>
+<span class="n">L</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">M</span><span class="p">);</span>
+
+<span class="n">cond_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">E</span><span class="p">);</span>       <span class="c1">// return 0 to &#39;B&#39; or 1 to &#39;E&#39;</span>
+<span class="n">cond_2</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">H</span><span class="p">);</span>       <span class="c1">// return 0 to &#39;G&#39; or 1 to &#39;H&#39;</span>
+<span class="n">cond_3</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cond_3</span><span class="p">,</span> <span class="n">L</span><span class="p">);</span>  <span class="c1">// return 0 to &#39;cond_3&#39; or 1 to &#39;L&#39;</span>
+
+<span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><p>The above code creates three condition tasks: (1) a condition task <code>cond_1</code> that loops back to <code>B</code> on returning <code>0</code>, or proceeds to <code>E</code> on returning <code>1</code>, (2) a condition task <code>cond_2</code> that goes to <code>G</code> on returning <code>0</code>, or <code>H</code> on returning <code>1</code>, (3) a condition task <code>cond_3</code> that loops back to itself on returning <code>0</code>, or proceeds to <code>L</code> on returning <code>1</code></p><div class="m-graph"><svg style="width: 59.438rem; height: 12.000rem;" viewBox="0.00 0.00 950.56 192.00">
 <g transform="scale(1 1) rotate(0) translate(4 188)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
@@ -307,7 +312,7 @@
 </g>
 </g>
 </svg>
-</div><p>You can use condition tasks to create cycles as long as the graph does not introduce task race during execution. However, cycles are not allowed in non-condition tasks.</p></section><section id="C4_TaskSchedulingPolicy"><h2><a href="#C4_TaskSchedulingPolicy">Task Scheduling Policy</a></h2><p>In order to understand how an executor schedules condition tasks, we define two dependency types, <em>strong dependency</em> and <em>weak dependency</em>. A strong dependency is a preceding link from a non-condition task to another task. A weak dependency is a preceding link from a condition task to another task. The number of dependents of a task is the sum of strong dependency and weak dependency. The table below lists the strong dependency and weak dependency numbers of each task in the previous example.</p><table class="m-table"><thead><tr><th>task</th><th>strong dependency</th><th>weak dependency</th><th>dependents</th></tr></thead><tbody><tr><td>A</td><td>0</td><td>0</td><td>0</td></tr><tr><td>B</td><td>1</td><td>1</td><td>2</td></tr><tr><td>C</td><td>1</td><td>0</td><td>1</td></tr><tr><td>D</td><td>1</td><td>0</td><td>1</td></tr><tr><td>E</td><td>0</td><td>1</td><td>1</td></tr><tr><td>F</td><td>1</td><td>0</td><td>1</td></tr><tr><td>G</td><td>0</td><td>1</td><td>1</td></tr><tr><td>H</td><td>0</td><td>1</td><td>1</td></tr><tr><td>I</td><td>1</td><td>0</td><td>1</td></tr><tr><td>K</td><td>1</td><td>0</td><td>1</td></tr><tr><td>L</td><td>0</td><td>1</td><td>1</td></tr><tr><td>M</td><td>1</td><td>0</td><td>1</td></tr><tr><td>cond_1</td><td>1</td><td>0</td><td>1</td></tr><tr><td>cond_2</td><td>1</td><td>0</td><td>1</td></tr><tr><td>cond_3</td><td>1</td><td>1</td><td>2</td></tr></tbody></table><p>You can query the number of strong dependents, the number of weak dependents, and the number of dependents of a task.</p><pre class="m-code"><span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+</div><p>You can use condition tasks to create cycles as long as the graph does not introduce task race during execution. However, cycles are not allowed in non-condition tasks.</p></section><section id="C4_TaskSchedulingPolicy"><h2><a href="#C4_TaskSchedulingPolicy">Understand our Task-level Scheduling</a></h2><p>In order to understand how an executor schedules condition tasks, we define two dependency types, <em>strong dependency</em> and <em>weak dependency</em>. A strong dependency is a preceding link from a non-condition task to another task. A weak dependency is a preceding link from a condition task to another task. The number of dependents of a task is the sum of strong dependency and weak dependency. The table below lists the strong dependency and weak dependency numbers of each task in the previous example.</p><table class="m-table"><thead><tr><th>task</th><th>strong dependency</th><th>weak dependency</th><th>dependents</th></tr></thead><tbody><tr><td>A</td><td>0</td><td>0</td><td>0</td></tr><tr><td>B</td><td>1</td><td>1</td><td>2</td></tr><tr><td>C</td><td>1</td><td>0</td><td>1</td></tr><tr><td>D</td><td>1</td><td>0</td><td>1</td></tr><tr><td>E</td><td>0</td><td>1</td><td>1</td></tr><tr><td>F</td><td>1</td><td>0</td><td>1</td></tr><tr><td>G</td><td>0</td><td>1</td><td>1</td></tr><tr><td>H</td><td>0</td><td>1</td><td>1</td></tr><tr><td>I</td><td>1</td><td>0</td><td>1</td></tr><tr><td>K</td><td>1</td><td>0</td><td>1</td></tr><tr><td>L</td><td>0</td><td>1</td><td>1</td></tr><tr><td>M</td><td>1</td><td>0</td><td>1</td></tr><tr><td>cond_1</td><td>1</td><td>0</td><td>1</td></tr><tr><td>cond_2</td><td>1</td><td>0</td><td>1</td></tr><tr><td>cond_3</td><td>1</td><td>1</td><td>2</td></tr></tbody></table><p>You can query the number of strong dependents, the number of weak dependents, and the number of dependents of a task.</p><pre class="m-code"><span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 <span class="mi">2</span><span class="o">:</span> 
 <span class="mi">3</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">task</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
 <span class="mi">4</span><span class="o">:</span> 
@@ -315,7 +320,116 @@
 <span class="mi">6</span><span class="o">:</span>
 <span class="mi">7</span><span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">task</span><span class="p">.</span><span class="n">num_dependents</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
 <span class="mi">8</span><span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">task</span><span class="p">.</span><span class="n">num_strong_dependents</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span> 
-<span class="mi">9</span><span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">task</span><span class="p">.</span><span class="n">num_weak_dependents</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span></pre><p>When you submit a task to an executor, the scheduler starts with tasks of <em>zero dependents</em> (both zero strong and weak dependencies) and continues to execute successive tasks whenever their <em>strong dependencies</em> are met. However, the scheduler skips this rule when executing a condition task and jumps directly to its successors indexed by the return value.</p><img class="m-image" src="conditional-tasking-rules.svg" alt="Image" style="width: 100%;" /><p>Each task has an <em>atomic</em> join counter to keep track of strong dependents that are met at runtime. When a task completes, the join counter is restored to the task&#x27;s strong dependency number in the graph, such that the subsequent execution can reuse the counter again.</p></section><section id="C4_CommonPitfalls"><h2><a href="#C4_CommonPitfalls">Common Pitfalls</a></h2><p>Condition tasks are handy in creasing dynamic and cyclic control flows, but they are also easy to make mistakes. It is your responsibility to ensure a taskflow is properly conditioned. Top things to avoid include <em>no source tasks</em> to start with and <em>task race</em>. The figure below shows common pitfalls and their remedies.</p><div class="m-graph"><svg style="width: 61.188rem; height: 22.000rem;" viewBox="0.00 0.00 979.00 352.00">
+<span class="mi">9</span><span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">task</span><span class="p">.</span><span class="n">num_weak_dependents</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span></pre><p>When you submit a task to an executor, the scheduler starts with tasks of <em>zero dependents</em> (both zero strong and weak dependencies) and continues to execute successive tasks whenever their <em>strong dependencies</em> are met. However, the scheduler skips this rule when executing a condition task and jumps directly to its successors indexed by the return value.</p><div class="m-graph"><svg style="width: 61.125rem; height: 21.938rem;" viewBox="0.00 0.00 978.13 351.00">
+<g transform="scale(1 1) rotate(0) translate(4 347)">
+<title>G</title>
+<g class="m-node m-flat">
+<title>atask</title>
+<ellipse cx="599.8666" cy="-325" rx="48.9376" ry="18"/>
+<text text-anchor="middle" x="599.8666" y="-320.2">a task T</text>
+</g>
+<g class="m-node">
+<title>cond</title>
+<polygon points="599.8666,-270 442.4074,-252 599.8666,-234 757.3258,-252 599.8666,-270"/>
+<text text-anchor="middle" x="599.8666" y="-247.2">is T a condition task?</text>
+</g>
+<g class="m-edge">
+<title>atask&#45;&gt;cond</title>
+<path d="M599.8666,-306.9551C599.8666,-298.8828 599.8666,-289.1764 599.8666,-280.1817"/>
+<polygon points="603.3667,-280.0903 599.8666,-270.0904 596.3667,-280.0904 603.3667,-280.0903"/>
+</g>
+<g class="m-node m-flat">
+<title>invokeN</title>
+<ellipse cx="525.8666" cy="-164" rx="55.4265" ry="18"/>
+<text text-anchor="middle" x="525.8666" y="-159.2">invoke(T)</text>
+</g>
+<g class="m-edge">
+<title>cond&#45;&gt;invokeN</title>
+<path stroke-dasharray="5,2" d="M585.9478,-235.4479C574.9969,-222.4252 559.5547,-204.0615 547.0681,-189.2126"/>
+<polygon points="549.5973,-186.7821 540.4825,-181.381 544.2397,-191.2873 549.5973,-186.7821"/>
+<text text-anchor="middle" x="578.7651" y="-203.2">no</text>
+</g>
+<g class="m-node m-flat">
+<title>invokeY</title>
+<ellipse cx="760.8666" cy="-164" rx="75.3927" ry="18"/>
+<text text-anchor="middle" x="760.8666" y="-159.2">R = invoke(T)</text>
+</g>
+<g class="m-edge">
+<title>cond&#45;&gt;invokeY</title>
+<path stroke-dasharray="5,2" d="M627.1781,-237.072C653.0832,-222.9127 692.2897,-201.483 721.5552,-185.487"/>
+<polygon points="723.5821,-188.3679 730.6782,-180.5005 720.2248,-182.2255 723.5821,-188.3679"/>
+<text text-anchor="middle" x="707.3158" y="-203.2">yes</text>
+</g>
+<g class="m-node m-flat">
+<title>decrement</title>
+<ellipse cx="309.8666" cy="-91" rx="309.7333" ry="18"/>
+<text text-anchor="middle" x="309.8666" y="-86.2">decrement strong dependencies of each successor of T by one</text>
+</g>
+<g class="m-edge">
+<title>invokeN&#45;&gt;decrement</title>
+<path d="M487.2501,-150.9491C455.392,-140.1822 409.5655,-124.6945 372.4724,-112.1584"/>
+<polygon points="373.3479,-108.7599 362.7537,-108.8739 371.1066,-115.3914 373.3479,-108.7599"/>
+</g>
+<g class="m-node m-flat">
+<title>enqueueR</title>
+<ellipse cx="803.8666" cy="-91" rx="166.0176" ry="18"/>
+<text text-anchor="middle" x="803.8666" y="-86.2">enqueue the R&#45;th successor of T</text>
+</g>
+<g class="m-edge">
+<title>invokeY&#45;&gt;enqueueR</title>
+<path d="M771.4958,-145.9551C776.5091,-137.4441 782.5925,-127.1165 788.1263,-117.7219"/>
+<polygon points="791.151,-119.4831 793.2106,-109.0904 785.1195,-115.9303 791.151,-119.4831"/>
+</g>
+<g class="m-node m-flat">
+<title>enqueueS</title>
+<ellipse cx="309.8666" cy="-18" rx="241.7843" ry="18"/>
+<text text-anchor="middle" x="309.8666" y="-13.2">enqueue successors of zero strong dpendencies</text>
+</g>
+<g class="m-edge">
+<title>decrement&#45;&gt;enqueueS</title>
+<path d="M309.8666,-72.9551C309.8666,-64.8828 309.8666,-55.1764 309.8666,-46.1817"/>
+<polygon points="313.3667,-46.0903 309.8666,-36.0904 306.3667,-46.0904 313.3667,-46.0903"/>
+</g>
+</g>
+</svg>
+</div><p>Each task has an <em>atomic</em> join counter to keep track of strong dependents that are met at runtime. When a task completes, the join counter is restored to the task&#x27;s strong dependency number in the graph, such that the subsequent execution can reuse the counter again.</p><section id="TaskLevelSchedulingExample"><h3><a href="#TaskLevelSchedulingExample">Example</a></h3><p>Let&#x27;s take a look at an example to understand how task-level scheduling works. Suppose we have the following taskflow of one condition task <code>cond</code> that forms a loop to itself on returning <code>0</code> and moves on to <code>stop</code> on returning <code>1</code>:</p><div class="m-graph"><svg style="width: 18.875rem; height: 4.875rem;" viewBox="0.00 0.00 302.13 78.00">
+<g transform="scale(1 1) rotate(0) translate(4 74)">
+<title>Taskflow</title>
+<g class="m-node">
+<title>cond</title>
+<polygon points="139.0938,-36 90.906,-18 139.0938,0 187.2816,-18 139.0938,-36"/>
+<text text-anchor="middle" x="139.0938" y="-13.2">cond</text>
+</g>
+<g class="m-edge">
+<title>cond&#45;&gt;cond</title>
+<path stroke-dasharray="5,2" d="M128.317,-32.0417C124.2867,-42.9126 127.879,-54 139.0938,-54 146.804,-54 150.9113,-48.7595 151.4158,-41.9516"/>
+<polygon points="154.8695,-41.3831 149.8706,-32.0417 147.9531,-42.4616 154.8695,-41.3831"/>
+<text text-anchor="middle" x="139.0938" y="-57.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>stop</title>
+<ellipse cx="263.1062" cy="-18" rx="31.0404" ry="18"/>
+<text text-anchor="middle" x="263.1062" y="-13.2">stop</text>
+</g>
+<g class="m-edge">
+<title>cond&#45;&gt;stop</title>
+<path stroke-dasharray="5,2" d="M187.3953,-18C198.7337,-18 210.7157,-18 221.7198,-18"/>
+<polygon points="221.9178,-21.5001 231.9177,-18 221.9177,-14.5001 221.9178,-21.5001"/>
+<text text-anchor="middle" x="209.6368" y="-21.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>init</title>
+<ellipse cx="27" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-13.2">init</text>
+</g>
+<g class="m-edge">
+<title>init&#45;&gt;cond</title>
+<path d="M54.1348,-18C62.2239,-18 71.4195,-18 80.701,-18"/>
+<polygon points="80.7579,-21.5001 90.7579,-18 80.7578,-14.5001 80.7579,-21.5001"/>
+</g>
+</g>
+</svg>
+</div><p>The scheduler starts with <code>init</code> task because it has no dependencies (both strong and weak dependencies). Then, the scheduler moves on to the condition task <code>cond</code>. If <code>cond</code> returns <code>0</code>, the scheduler enqueues <code>cond</code> and runs it again. If <code>cond</code> returns <code>1</code>, the scheduler enqueues <code>stop</code> and then moves on.</p></section></section><section id="C4_AvoidCommonPitfalls"><h2><a href="#C4_AvoidCommonPitfalls">Avoid Common Pitfalls</a></h2><p>Condition tasks are handy in creasing dynamic and cyclic control flows, but they are also easy to make mistakes. It is your responsibility to ensure a taskflow is properly conditioned. Top things to avoid include <em>no source tasks</em> to start with and <em>task race</em>. The figure below shows common pitfalls and their remedies.</p><div class="m-graph"><svg style="width: 61.188rem; height: 22.000rem;" viewBox="0.00 0.00 979.00 352.00">
 <g transform="scale(1 1) rotate(0) translate(4 348)">
 <title>Taskflow</title>
 <g class="m-cluster">
@@ -331,7 +445,7 @@
 <g class="m-cluster">
 <title>cluster_error2</title>
 <polygon points="353,-134 353,-336 495,-336 495,-134 353,-134"/>
-<text text-anchor="middle" x="424" y="-319.2">errorf: race on D</text>
+<text text-anchor="middle" x="424" y="-319.2">error2: race on D</text>
 </g>
 <g class="m-cluster">
 <title>cluster_fix2</title>
@@ -554,7 +668,7 @@
 </g>
 </g>
 </svg>
-</div><p>In the error1 scenario, there is no source task for the scheduler to start with, and the simplest fix is to add a task S that has no dependents. In the error2 scenario, D might be scheduled twice by E through the strong dependency and C through the weak dependency (on return 1). To fix this problem, you can add an auxiliary task D-aux to break the mixed use of strong dependency and weak dependency. In the risky scenario, task X may not be raced if P and M is exclusively branching to X.</p><p>A good practice for avoiding mistakes of conditional tasking is to infer the execution flow of your graphs based on our scheduling rules. Make sure there is no task race.</p></section>
+</div><p>In the <code>error1</code> scenario, there is no source task for the scheduler to start with, and the simplest fix is to add a task <code>S</code> that has no dependents. In the <code>error2</code> scenario, <code>D</code> might be scheduled twice by <code>E</code> through the strong dependency and <code>C</code> through the weak dependency (on returning <code>1</code>). To fix this problem, you can add an auxiliary task <code>D-aux</code> to break the mixed use of strong dependency and weak dependency. In the risky scenario, task <code>X</code> may be raced by <code>M</code> and <code>P</code> if <code>M</code> returns <code>0</code> and P returns <code>1</code>.</p><aside class="m-note m-warning"><h4>Attention</h4><p>It is your responsibility to ensure a written taskflow graph is properly conditioned. We suggest that you <a href="chapter4.html#C4_TaskSchedulingPolicy" class="m-doc">Understand our Task-level Scheduling</a> and infer if task race exists in the execution of your graph.</p></aside></section>
       </div>
     </div>
   </div>

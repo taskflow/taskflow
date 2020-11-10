@@ -129,13 +129,45 @@ use @nvcc with C++17 enabled as follows:
 ~$ nvcc my_taskflow_cuda_program.cu -std=c++17 -o my_taskflow_cuda_program
 @endcode
 
-%Taskflow's tasking interface for CUDA GPU programming 
+%Taskflow's tasking interface for GPU programming 
 is built on top of @cudaGraph, which allows work to be efficiently defined as 
 graphs rather than single operations. 
 
 @section BAIBuildSYCLCode Build SYCL Code
 
 TBD
+
+@section BAIBuildDocumentation Build Documentation
+
+%Taskflow uses @Doxygen and @MCSS to generate this documentation.
+The source of documentation is located in the folder @c taskflow/doxygen
+and the generated html is output to the folder @c taskflow/docs.
+To generate the documentation, clone the m.css project and enter
+the @c m.css/documentation directory:
+
+@code{.shell-session}
+~$ git clone git://github.com/mosra/m.css
+~$ cd m.css/documentation
+@endcode
+
+The script @c doxygen.py requires Python 3.6, depends on 
+<a href="http://jinja.pocoo.org/">Jinja2</a> for templating and 
+<a href="http://pygments.org/">Pygments</a> for code block highlighting. 
+You can install the dependencies via @c pip or your distribution package manager:
+
+@code{.shell-session}
+# You may need sudo here
+# More details are available at https://mcss.mosra.cz/documentation/doxygen/
+~$ pip3 install jinja2 Pygments
+@endcode
+
+Next, invoke @c doxygen.py and point it to the @c taskflow/doxygen/conf.py:
+
+@code{.shell-session}
+~$ ./doxygen.py path/to/taskflow/doxygen/conf.py
+@endcode
+
+You can find the documentation output in @c taskflow/docs.
 
 */
 

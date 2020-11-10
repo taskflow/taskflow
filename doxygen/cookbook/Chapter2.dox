@@ -19,7 +19,8 @@ tf::Executor takes an unsigned integer to construct with @c N worker threads.
 The default value is std::thread::hardware_concurrency.
 
 @code{.cpp}
-tf::Executor executor1;     // create an executor of std::thread::hardware_concurrency worker threads
+tf::Executor executor1;     // create an executor with the number of workers
+                            // equal to std::thread::hardware_concurrency
 tf::Executor executor2(4);  // create an executor of 4 worker threads
 @endcode
 
@@ -53,11 +54,11 @@ The code below shows several ways to run a taskflow.
 13: std::future<void> fu = executor.run(taskflow);
 14: fu.wait();                // block until the execution completes
 15:
-16: executor.run(taskflow, [](){ std::cout << "end of one execution\n"; }).wait();
+16: executor.run(taskflow, [](){ std::cout << "end of 1 run"; }).wait();
 17: executor.run_n(taskflow, 4);
 18: executor.wait_for_all();  // block until all associated executions finish
-19: executor.run_n(taskflow, 4, [](){ std::cout << "end of four executions\n"; }).wait();
-20: executor.run_until(taskflow, [int cnt=0] () mutable { return (++cnt == 10); });
+19: executor.run_n(taskflow, 4, [](){ std::cout << "end of 4 runs"; }).wait();
+20: executor.run_until(taskflow, [cnt=0] () mutable { return ++cnt == 10; });
 @endcode
 
 
@@ -123,7 +124,7 @@ A rule of thumb is to always keep a taskflow alive in your function scope
 while it is participating in an execution.
 
 
-@section C2_ThreadSafety Thread Safety
+@section C2_ThreadSafety Touch an Executor from Multiple Threads
 
 All @c run\_* methods are @em thread-safe.
 You can have multiple threads call these methods from an executor to run different taskflows.
@@ -218,59 +219,61 @@ We use std::shared_ptr to manage the ownership of an observer.
 The executor loops through each observer and invoke the corresponding methods accordingly.
 
 @code{.cpp}
- 1 #include <taskflow/taskflow.hpp>
- 2
- 3 struct MyObserver : public tf::ObserverInterface {
- 4
- 5   MyObserver(const std::string& name) {
- 6     std::cout << "constructing observer " << name << '\n';
- 7   }
- 8
- 9   void set_up(size_t num_workers) override final {
-10     std::cout << "settting up observer with " << num_workers << " workers\n";
-11   }
-12
-13   void on_entry(size_t w, tf::TaskView tv) override final {
-14     std::ostringstream oss;
-15     oss << "worker " << w << " ready to run " << tv.name() << '\n';
-16     std::cout << oss.str();
-17   }
-18
-19   void on_exit(size_t w, tf::TaskView tv) override final {
-20     std::ostringstream oss;
-21     oss << "worker " << w << " finished running " << tv.name() << '\n';
-22     std::cout << oss.str();
-23   }
-24
-25 };
-26
-27 int main(){
-28
-29   tf::Executor executor(4);
-30
-31   // Create a taskflow of eight tasks
-32   tf::Taskflow taskflow;
-33
-34   auto A = taskflow.emplace([] () { std::cout << "1\n"; }).name("A");
-35   auto B = taskflow.emplace([] () { std::cout << "2\n"; }).name("B");
-36   auto C = taskflow.emplace([] () { std::cout << "3\n"; }).name("C");
-37   auto D = taskflow.emplace([] () { std::cout << "4\n"; }).name("D");
-38   auto E = taskflow.emplace([] () { std::cout << "5\n"; }).name("E");
-39   auto F = taskflow.emplace([] () { std::cout << "6\n"; }).name("F");
-40   auto G = taskflow.emplace([] () { std::cout << "7\n"; }).name("G");
-41   auto H = taskflow.emplace([] () { std::cout << "8\n"; }).name("H");
-42 
-43   // create an observer
-44   std::shared_ptr<MyObserver> observer = executor.make_observer<MyObserver>("MyObserver");
-45 
-46   // run the taskflow
-47   executor.run(taskflow).get();
-48 
-49   // remove the observer (optional)
-50   executor.remove_observer(std::move(observer));
-51 
-52   return 0;
-53 }
+#include <taskflow/taskflow.hpp>
+
+struct MyObserver : public tf::ObserverInterface {
+
+  MyObserver(const std::string& name) {
+    std::cout << "constructing observer " << name << '\n';
+  }
+
+  void set_up(size_t num_workers) override final {
+    std::cout << "settting up observer with " << num_workers << " workers\n";
+  }
+
+  void on_entry(size_t w, tf::TaskView tv) override final {
+    std::ostringstream oss;
+    oss << "worker " << w << " ready to run " << tv.name() << '\n';
+    std::cout << oss.str();
+  }
+
+  void on_exit(size_t w, tf::TaskView tv) override final {
+    std::ostringstream oss;
+    oss << "worker " << w << " finished running " << tv.name() << '\n';
+    std::cout << oss.str();
+  }
+
+};
+
+int main(){
+
+  tf::Executor executor(4);
+
+  // Create a taskflow of eight tasks
+  tf::Taskflow taskflow;
+
+  auto A = taskflow.emplace([] () { std::cout << "1\n"; }).name("A");
+  auto B = taskflow.emplace([] () { std::cout << "2\n"; }).name("B");
+  auto C = taskflow.emplace([] () { std::cout << "3\n"; }).name("C");
+  auto D = taskflow.emplace([] () { std::cout << "4\n"; }).name("D");
+  auto E = taskflow.emplace([] () { std::cout << "5\n"; }).name("E");
+  auto F = taskflow.emplace([] () { std::cout << "6\n"; }).name("F");
+  auto G = taskflow.emplace([] () { std::cout << "7\n"; }).name("G");
+  auto H = taskflow.emplace([] () { std::cout << "8\n"; }).name("H");
+
+  // create an observer
+  std::shared_ptr<MyObserver> observer = executor.make_observer<MyObserver>(
+    "MyObserver"
+  );
+
+  // run the taskflow
+  executor.run(taskflow).get();
+
+  // remove the observer (optional)
+  executor.remove_observer(std::move(observer));
+
+  return 0;
+}
 @endcode
 
 The above code produces the following output:
