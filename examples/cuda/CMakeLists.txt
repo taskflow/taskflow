@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 
 list(APPEND TF_CUDA_EXAMPLES 
-  device_property saxpy matmul kmeans blas
+  device_property saxpy matmul kmeans
 )
 
 foreach(cuda_example IN LISTS TF_CUDA_EXAMPLES)
@@ -19,9 +19,9 @@ foreach(cuda_example IN LISTS TF_CUDA_EXAMPLES)
   endif()
 endforeach()
 
-## -----------------------------------------------------------------------------
-## CUDA BLAS examples
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# CUDA BLAS examples
+# -----------------------------------------------------------------------------
 #list(APPEND TF_CUDA_BLAS_EXAMPLES
 #  blas
 #)

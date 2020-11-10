@@ -43,14 +43,9 @@ class Executor {
   };
     
   struct PerThread {
-    Worker* worker {nullptr};
+    Worker* worker;
+    PerThread() : worker {nullptr} { }
   };
-
-//#ifdef TF_ENABLE_CUDA
-//  struct cudaDevice {
-//    std::vector<cudaStream_t> streams;
-//  };
-//#endif
 
   public:
 
@@ -216,6 +211,8 @@ class Executor {
     size_t num_observers() const;
 
   private:
+
+    static inline thread_local PerThread _per_thread;
     
     const size_t _VICTIM_BEG;
     const size_t _VICTIM_END;
@@ -245,8 +242,6 @@ class Executor {
 
     TFProfObserver* _tfprof;
     
-    PerThread& _per_thread() const;
-
     bool _wait_for_task(Worker&, Node*&);
     
     void _instantiate_tfprof();
@@ -441,15 +436,9 @@ auto Executor::async(F&& f, ArgsT&&... args) {
   return fu;
 }
 
-// Function: _per_thread
-inline Executor::PerThread& Executor::_per_thread() const {
-  thread_local PerThread pt;
-  return pt;
-}
-
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
-  auto worker = _per_thread().worker;
+  auto worker = _per_thread.worker;
   return worker ? static_cast<int>(worker->id) : -1;
 }
 
@@ -470,8 +459,7 @@ inline void Executor::_spawn(size_t N, Domain d) {
     
     _threads.emplace_back([this] (Worker& w) -> void {
 
-      PerThread& pt = _per_thread();  
-      pt.worker = &w;
+      _per_thread.worker = &w;
 
       Node* t = nullptr;
 
@@ -691,7 +679,7 @@ inline void Executor::_schedule(Node* node) {
   const auto d = node->domain();
   
   // caller is a worker to this pool
-  auto worker = _per_thread().worker;
+  auto worker = _per_thread.worker;
 
   if(worker != nullptr && worker->executor == this) {
     worker->wsq[d].push(node);
@@ -728,7 +716,7 @@ inline void Executor::_schedule(std::vector<Node*>& nodes) {
   }
 
   // worker thread
-  auto worker = _per_thread().worker;
+  auto worker = _per_thread.worker;
 
   // task counts
   size_t tcount[NUM_DOMAINS] = {0};
@@ -919,7 +907,7 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
 // Procedure: _invoke_dynamic_task_external
 inline void Executor::_invoke_dynamic_task_external(Node*p, Graph& g, bool detach) {
 
-  auto worker = _per_thread().worker;
+  auto worker = _per_thread.worker;
 
   assert(worker && worker->executor == this);
   
