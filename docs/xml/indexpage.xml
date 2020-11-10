@@ -69,8 +69,8 @@
 <codeline><highlight class="normal">cond.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(cond,<sp/>stop);<sp/><sp/></highlight><highlight class="comment">//<sp/>moves<sp/>on<sp/>to<sp/>&apos;cond&apos;<sp/>on<sp/>returning<sp/>0,<sp/>or<sp/>&apos;stop&apos;<sp/>on<sp/>1</highlight></codeline>
 </programlisting></para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/conditional-tasking-1.dot"></dotfile>
 </para></sect1>
-<sect1 id="index_1QuickStartOffloadComputationToGPU">
-<title>Offload Computation to GPU</title>
+<sect1 id="index_1QuickStartOffloadTasksToGPU">
+<title>Offload Tasks to GPU</title>
 <para>Taskflow supports heterogeneous tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>cudaflow<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d_x<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(dx,<sp/>hx.data(),<sp/>N).name(</highlight><highlight class="stringliteral">&quot;h2d_x&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d_y<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(dy,<sp/>hy.data(),<sp/>N).name(</highlight><highlight class="stringliteral">&quot;h2d_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
@@ -114,7 +114,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="index_1QuickStartGetInvolved">
 <title>Get Involved</title>
 <para>Visit our <ulink url="https://taskflow.github.io/">project website</ulink> and <ulink url="https://taskflow.github.io/showcase/index.html">showcase presentation</ulink> to learn more about Taskflow. To get involved:</para><para><itemizedlist>
-<listitem><para>See release notes at <ref refid="Releases" kindref="compound">Releases</ref></para></listitem><listitem><para>Read the step-by-step tutorial at <ref refid="Cookbook" kindref="compound">Cookbook</ref></para></listitem><listitem><para>Submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink></para></listitem></itemizedlist>
+<listitem><para>See release notes at <ref refid="Releases" kindref="compound">Releases</ref></para></listitem><listitem><para>Read the step-by-step tutorial at <ref refid="Cookbook" kindref="compound">Cookbook</ref></para></listitem><listitem><para>Submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink></para></listitem><listitem><para>Learn more about our technical details at <ref refid="References" kindref="compound">References</ref></para></listitem><listitem><para>Watch our <ulink url="https://www.youtube.com/watch?v=MX15huP5DsM">CppCon20 Taskflow Talk</ulink></para></listitem></itemizedlist>
 </para><para>We are committed to support trustworthy developments for both academic and industrial research projects in parallel and heterogeneous computing.</para></sect1>
 <sect1 id="index_1License">
 <title>License</title>
