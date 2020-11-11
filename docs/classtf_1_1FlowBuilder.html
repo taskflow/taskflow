@@ -89,17 +89,17 @@
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
             <dt>
-              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;is_static_task_v&lt;C&gt;, void&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a11fc9c98eb3a0d3a9aa55598b1f4d614" class="m-doc">is_<wbr />static_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates a static task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;is_dynamic_task_v&lt;C&gt;, void&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a1eea7593f25ab348cfb656dbdf4e5b05" class="m-doc">is_<wbr />dynamic_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates a dynamic task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;is_condition_task_v&lt;C&gt;, void&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a00ca2fc2de0e679a7d9b8039340343df" class="m-doc">is_<wbr />condition_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates a condition task</dd>
@@ -117,12 +117,12 @@
             </dt>
             <dd>creates an empty task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;is_cudaflow_task_v&lt;C&gt;, void&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc">is_<wbr />cudaflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates a cudaflow task on the default device 0</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename C, typename D, std::enable_if_t&lt;is_cudaflow_task_v&lt;C&gt;, void&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename C, typename D, std::enable_if_t&lt;<a href="namespacetf.html#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc">is_<wbr />cudaflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#afdf47fd1a358fb64f8c1b89e2a393169" class="m-doc">emplace_on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
               D&amp;&amp; device) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
@@ -291,7 +291,7 @@
           <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename C, std::enable_if_t&lt;is_static_task_v&lt;C&gt;, void&gt;* = nullptr&gt;
+                template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a11fc9c98eb3a0d3a9aa55598b1f4d614" class="m-doc">is_<wbr />static_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
             </h3>
@@ -326,7 +326,7 @@
           <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename C, std::enable_if_t&lt;is_dynamic_task_v&lt;C&gt;, void&gt;* = nullptr&gt;
+                template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a1eea7593f25ab348cfb656dbdf4e5b05" class="m-doc">is_<wbr />dynamic_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
             </h3>
@@ -361,7 +361,7 @@
           <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename C, std::enable_if_t&lt;is_condition_task_v&lt;C&gt;, void&gt;* = nullptr&gt;
+                template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a00ca2fc2de0e679a7d9b8039340343df" class="m-doc">is_<wbr />condition_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
             </h3>
@@ -472,7 +472,7 @@
           <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename C, std::enable_if_t&lt;is_cudaflow_task_v&lt;C&gt;, void&gt;* = nullptr&gt;
+                template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc">is_<wbr />cudaflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
             </h3>
@@ -499,7 +499,7 @@
           <section class="m-doc-details" id="afdf47fd1a358fb64f8c1b89e2a393169"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename C, typename D, std::enable_if_t&lt;is_cudaflow_task_v&lt;C&gt;, void&gt;* = nullptr&gt;
+                template&lt;typename C, typename D, std::enable_if_t&lt;<a href="namespacetf.html#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc">is_<wbr />cudaflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afdf47fd1a358fb64f8c1b89e2a393169" class="m-doc-self">emplace_on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
               D&amp;&amp; device)</span></span>

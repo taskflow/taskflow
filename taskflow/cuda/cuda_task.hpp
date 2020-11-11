@@ -16,7 +16,7 @@ namespace tf {
 /**
 @enum cudaTaskType
 
-@brief enumeration of all cudaTask types
+@brief enumeration of all %cudaTask types
 */
 enum cudaTaskType {
   CUDA_EMPTY_TASK   = cudaNode::CUDA_EMPTY_TASK,

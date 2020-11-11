@@ -73,7 +73,7 @@
   <span class="n">task_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span>
 <span class="p">});</span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>A cudaFlow is a task and will be run by one worker thread in the executor. That is, the callable that defines how the given cudaFlow runs will be executed sequentially.</p>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>A cudaFlow can be a task created from <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> and will be run by one worker thread in the executor. That is, the callable that defines how the given cudaFlow runs will be executed sequentially.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
@@ -110,7 +110,7 @@
               <div class="m-doc-template">template&lt;typename C&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a060e1c96111c2134ce0f896420a42cd0" class="m-doc">host</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
-            <dd>creates a host execution task</dd>
+            <dd>creates a host task that runs a callable on the host</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#adb731be71bdd436dfb5e36e6213a9a17" class="m-doc">kernel</a>(</span><span class="m-doc-wrap">dim3 g,
@@ -129,39 +129,39 @@
               F&amp;&amp; f,
               ArgsT &amp;&amp; ... args) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
-            <dd>creates a kernel task on a device</dd>
+            <dd>creates a kernel task on a specific GPU</dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a079ca65da35301e5aafd45878a19e9d2" class="m-doc">memset</a>(</span><span class="m-doc-wrap">void* dst,
               int v,
               size_t count) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
-            <dd>creates a memset task</dd>
+            <dd>creates a memset task that fills untyped data with a byte value</dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#ad37637606f0643f360e9eda1f9a6e559" class="m-doc">memcpy</a>(</span><span class="m-doc-wrap">void* tgt,
               const void* src,
               size_t bytes) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
-            <dd>creates a memcpy task</dd>
+            <dd>creates a memcpy task that copies untyped data in bytes</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T, std::enable_if_t&lt;is_pod_v&lt;T&gt; &amp;&amp; (sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a40172fac4464f6d805f75921ea3c2a3b" class="m-doc">zero</a>(</span><span class="m-doc-wrap">T* dst,
               size_t count) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
-            <dd>creates a zero task that zeroes a typed memory block</dd>
+            <dd>creates a memset task that sets a typed memory block to zero</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename T, std::enable_if_t&lt;is_pod_v&lt;T&gt; &amp;&amp; (sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename T, std::enable_if_t&lt;is_pod_v&lt;T&gt; &amp;&amp; (sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a21d4447bc834f4d3e1bb4772c850d090" class="m-doc">fill</a>(</span><span class="m-doc-wrap">T* dst,
               T value,
               size_t count) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
-            <dd>creates a fill task that fills a typed memory block with a value</dd>
+            <dd>creates a memset task that fills a typed memory block with a value</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T, std::enable_if_t&lt;!std::is_same_v&lt;T, void&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#af03e04771b655f9e629eb4c22e19b19f" class="m-doc">copy</a>(</span><span class="m-doc-wrap">T* tgt,
               const T* src,
               size_t num) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
-            <dd>creates a copy task of typed data</dd>
+            <dd>creates a memcopy task that copies typed data</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a99358da15e3bdfa1faabb3e326130e1f" class="m-doc">offload_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span>
@@ -175,6 +175,12 @@
               <span class="m-doc-wrap-bumper">void <a href="#a85789ed8a1f47704cf1f1a2b98969444" class="m-doc-self">offload</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>offloads the cudaFlow and executes it once</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#ac54401e49da65ce06669646546600755" class="m-doc">update_host</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              C&amp;&amp; callable)</span>
+            </dt>
+            <dd>updates parameters of a host task created from <a href="classtf_1_1cudaFlow.html#a060e1c96111c2134ce0f896420a42cd0" class="m-doc">tf::<wbr />cudaFlow::<wbr />host</a></dd>
             <dt>
               <div class="m-doc-template">template&lt;typename... ArgsT&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#abab3a11129e6286c1de3deecedae8090" class="m-doc">update_kernel</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
@@ -191,21 +197,36 @@
               const T* src,
               size_t num)</span>
             </dt>
-            <dd>updates parameters of a copy task created from <a href="classtf_1_1cudaFlow.html#af03e04771b655f9e629eb4c22e19b19f" class="m-doc">tf::<wbr />cudaFlow::<wbr />copy</a></dd>
+            <dd>updates parameters of a memcpy task to form a copy task</dd>
             <dt>
               <span class="m-doc-wrap-bumper">void <a href="#af5f4cd1fc858a7725bbf57db629bdc34" class="m-doc">update_memcpy</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
               void* tgt,
               const void* src,
               size_t bytes)</span>
             </dt>
-            <dd>updates parameters of a memcpy task created from <a href="classtf_1_1cudaFlow.html#ad37637606f0643f360e9eda1f9a6e559" class="m-doc">tf::<wbr />cudaFlow::<wbr />memcpy</a></dd>
+            <dd>updates parameters of a memcpy task</dd>
             <dt>
               <span class="m-doc-wrap-bumper">void <a href="#a603072d44265de60647a7bcc5aaebace" class="m-doc">update_memset</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
               void* dst,
               int ch,
               size_t count)</span>
             </dt>
-            <dd>updates parameters of a memset task created from <a href="classtf_1_1cudaFlow.html#a079ca65da35301e5aafd45878a19e9d2" class="m-doc">tf::<wbr />cudaFlow::<wbr />memset</a></dd>
+            <dd>updates parameters of a memset task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T, std::enable_if_t&lt;is_pod_v&lt;T&gt; &amp;&amp; (sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a4a319c3e47fc538f6c31a7317c6a17e0" class="m-doc">update_fill</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              T* dst,
+              T value,
+              size_t count)</span>
+            </dt>
+            <dd>updates parameters of a memset task to form a fill task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T, std::enable_if_t&lt;is_pod_v&lt;T&gt; &amp;&amp; (sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a62a042795e4a089ab633d809af6108a6" class="m-doc">update_zero</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              T* dst,
+              size_t count)</span>
+            </dt>
+            <dd>updates parameters of a memset task to form a zero task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a53927cca2d935fa7ab2b33e3d6b13dab" class="m-doc">single_task</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
@@ -263,7 +284,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>An empty node performs no operation during execution, but can be used for transitive ordering. For example, a phased execution graph with 2 groups of n nodes with a barrier between them can be represented using an empty node and 2*n dependency edges, rather than no empty node and n^2 dependency edges.</p>
+<p>An empty node performs no operation during execution, but can be used for transitive ordering. For example, a phased execution graph with 2 groups of <code>n</code> nodes with a barrier between them can be represented using an empty node and <code>2*n</code> dependency edges, rather than no empty node and <code>n^2</code> dependency edges.</p>
           </div></section>
           <section class="m-doc-details" id="a060e1c96111c2134ce0f896420a42cd0"><div>
             <h3>
@@ -272,7 +293,7 @@
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a060e1c96111c2134ce0f896420a42cd0" class="m-doc-self">host</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
             </h3>
-            <p>creates a host execution task</p>
+            <p>creates a host task that runs a callable on the host</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -289,7 +310,7 @@
               <tbody>
                 <tr>
                   <td>callable</td>
-                  <td>a callable object with neither arguments nor return (i.e., constructible from std::function&lt;void()&gt;)</td>
+                  <td>a callable object with neither arguments nor return (i.e., constructible from <code>std::function&lt;void()&gt;</code>)</td>
                 </tr>
               </tbody>
               <tfoot>
@@ -299,7 +320,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>A host task can only execute CPU-specific functions and cannot do any CUDA calls (e.g., cudaMalloc).</p>
+<p>A host task can only execute CPU-specific functions and cannot do any CUDA calls (e.g., <code>cudaMalloc</code>).</p>
           </div></section>
           <section class="m-doc-details" id="adb731be71bdd436dfb5e36e6213a9a17"><div>
             <h3>
@@ -372,7 +393,7 @@
               F&amp;&amp; f,
               ArgsT &amp;&amp; ... args)</span></span>
             </h3>
-            <p>creates a kernel task on a device</p>
+            <p>creates a kernel task on a specific GPU</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -430,7 +451,7 @@
               int v,
               size_t count)</span></span>
             </h3>
-            <p>creates a memset task</p>
+            <p>creates a memset task that fills untyped data with a byte value</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -464,7 +485,7 @@
               const void* src,
               size_t bytes)</span></span>
             </h3>
-            <p>creates a memcpy task</p>
+            <p>creates a memcpy task that copies untyped data in bytes</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -500,7 +521,7 @@
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a40172fac4464f6d805f75921ea3c2a3b" class="m-doc-self">zero</a>(</span><span class="m-doc-wrap">T* dst,
               size_t count)</span></span>
             </h3>
-            <p>creates a zero task that zeroes a typed memory block</p>
+            <p>creates a memset task that sets a typed memory block to zero</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -536,13 +557,13 @@
           <section class="m-doc-details" id="a21d4447bc834f4d3e1bb4772c850d090"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename T, std::enable_if_t&lt;is_pod_v&lt;T&gt; &amp;&amp; (sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>&gt;* = nullptr&gt;
+                template&lt;typename T, std::enable_if_t&lt;is_pod_v&lt;T&gt; &amp;&amp; (sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void&gt;* = nullptr&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a21d4447bc834f4d3e1bb4772c850d090" class="m-doc-self">fill</a>(</span><span class="m-doc-wrap">T* dst,
               T value,
               size_t count)</span></span>
             </h3>
-            <p>creates a fill task that fills a typed memory block with a value</p>
+            <p>creates a memset task that fills a typed memory block with a value</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -588,7 +609,7 @@
               const T* src,
               size_t num)</span></span>
             </h3>
-            <p>creates a copy task of typed data</p>
+            <p>creates a memcopy task that copies typed data</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -672,6 +693,17 @@
               </tbody>
             </table>
           </div></section>
+          <section class="m-doc-details" id="ac54401e49da65ce06669646546600755"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac54401e49da65ce06669646546600755" class="m-doc-self">update_host</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>updates parameters of a host task created from <a href="classtf_1_1cudaFlow.html#a060e1c96111c2134ce0f896420a42cd0" class="m-doc">tf::<wbr />cudaFlow::<wbr />host</a></p>
+<p>The method updates the parameters of a host callable associated with the given <code>task</code>.</p>
+          </div></section>
           <section class="m-doc-details" id="abab3a11129e6286c1de3deecedae8090"><div>
             <h3>
               <div class="m-doc-template">
@@ -696,7 +728,7 @@
               const T* src,
               size_t num)</span></span>
             </h3>
-            <p>updates parameters of a copy task created from <a href="classtf_1_1cudaFlow.html#af03e04771b655f9e629eb4c22e19b19f" class="m-doc">tf::<wbr />cudaFlow::<wbr />copy</a></p>
+            <p>updates parameters of a memcpy task to form a copy task</p>
 <p>The method updates the parameters of a copy task. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
           </div></section>
           <section class="m-doc-details" id="af5f4cd1fc858a7725bbf57db629bdc34"><div>
@@ -706,7 +738,7 @@
               const void* src,
               size_t bytes)</span></span>
             </h3>
-            <p>updates parameters of a memcpy task created from <a href="classtf_1_1cudaFlow.html#ad37637606f0643f360e9eda1f9a6e559" class="m-doc">tf::<wbr />cudaFlow::<wbr />memcpy</a></p>
+            <p>updates parameters of a memcpy task</p>
 <p>The method updates the parameters of a memcpy task. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
           </div></section>
           <section class="m-doc-details" id="a603072d44265de60647a7bcc5aaebace"><div>
@@ -716,8 +748,33 @@
               int ch,
               size_t count)</span></span>
             </h3>
-            <p>updates parameters of a memset task created from <a href="classtf_1_1cudaFlow.html#a079ca65da35301e5aafd45878a19e9d2" class="m-doc">tf::<wbr />cudaFlow::<wbr />memset</a></p>
+            <p>updates parameters of a memset task</p>
 <p>The method updates the parameters of a memset task. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+          </div></section>
+          <section class="m-doc-details" id="a4a319c3e47fc538f6c31a7317c6a17e0"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T, std::enable_if_t&lt;is_pod_v&lt;T&gt; &amp;&amp; (sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4a319c3e47fc538f6c31a7317c6a17e0" class="m-doc-self">update_fill</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              T* dst,
+              T value,
+              size_t count)</span></span>
+            </h3>
+            <p>updates parameters of a memset task to form a fill task</p>
+<p>The method updates the parameters of a copy task. The given arguments and type must comply with the rules of <a href="classtf_1_1cudaFlow.html#a21d4447bc834f4d3e1bb4772c850d090" class="m-doc">tf::<wbr />cudaFlow::<wbr />fill</a>. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+          </div></section>
+          <section class="m-doc-details" id="a62a042795e4a089ab633d809af6108a6"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T, std::enable_if_t&lt;is_pod_v&lt;T&gt; &amp;&amp; (sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a62a042795e4a089ab633d809af6108a6" class="m-doc-self">update_zero</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              T* dst,
+              size_t count)</span></span>
+            </h3>
+            <p>updates parameters of a memset task to form a zero task</p>
+<p>The method updates the parameters of a copy task. The given arguments and type must comply with the rules of <a href="classtf_1_1cudaFlow.html#a40172fac4464f6d805f75921ea3c2a3b" class="m-doc">tf::<wbr />cudaFlow::<wbr />zero</a>. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
           </div></section>
           <section class="m-doc-details" id="a53927cca2d935fa7ab2b33e3d6b13dab"><div>
             <h3>

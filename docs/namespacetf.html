@@ -141,20 +141,21 @@
               <a href="#a0681fa0518bdd3e3d198e1b1b744c06fa1e85afc1441ef240c50d4608d57236cf" class="m-doc">ASYNC_TASK</a> = Node::ASYNC_TASK }</span>
             </dt>
             <dd>enumeration of all task types</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">enum <a href="#a0b4825761897c52f8f7e8f0b6c219d1a" class="m-doc">ObserverType</a> { </span><span class="m-doc-wrap"><a href="#a0b4825761897c52f8f7e8f0b6c219d1aa5a9fee7b05b17964502cd5f7730cb62e" class="m-doc">TFPROF</a> = 1,
+            <dt id="a0b4825761897c52f8f7e8f0b6c219d1a">
+              <span class="m-doc-wrap-bumper">enum <a href="#a0b4825761897c52f8f7e8f0b6c219d1a" class="m-doc-self">ObserverType</a> { </span><span class="m-doc-wrap"><a href="#a0b4825761897c52f8f7e8f0b6c219d1aa5a9fee7b05b17964502cd5f7730cb62e" class="m-doc">TFPROF</a> = 1,
               <a href="#a0b4825761897c52f8f7e8f0b6c219d1aaeb9e68a92dd2a6c466df87dbcbb9a167" class="m-doc">CHROME</a> = 2 }</span>
             </dt>
-            <dd></dd>
+            <dd>enumeration of all observer types</dd>
             <dt id="ac747e6c7cf88c7b1ff7126e62babebb8">
               <span class="m-doc-wrap-bumper">enum <a href="#ac747e6c7cf88c7b1ff7126e62babebb8" class="m-doc-self">cudaTaskType</a> { </span><span class="m-doc-wrap"><a href="#ac747e6c7cf88c7b1ff7126e62babebb8a19a6291214c2a3228e59a60cb7eab63a" class="m-doc">CUDA_EMPTY_TASK</a> = cudaNode::CUDA_EMPTY_TASK,
+              <a href="#ac747e6c7cf88c7b1ff7126e62babebb8aa0305bd26260bedea85880413f3390b4" class="m-doc">CUDA_HOST_TASK</a> = cudaNode::CUDA_HOST_TASK,
               <a href="#ac747e6c7cf88c7b1ff7126e62babebb8a4934734274edc2e2eef735490964fbd5" class="m-doc">CUDA_MEMSET_TASK</a> = cudaNode::CUDA_MEMSET_TASK,
               <a href="#ac747e6c7cf88c7b1ff7126e62babebb8a240fd9c2eda4988c75d8d5f0e64bed69" class="m-doc">CUDA_MEMCPY_TASK</a> = cudaNode::CUDA_MEMCPY_TASK,
               <a href="#ac747e6c7cf88c7b1ff7126e62babebb8a3ac59c1b13df906316fd0ad2dc318e2b" class="m-doc">CUDA_KERNEL_TASK</a> = cudaNode::CUDA_KERNEL_TASK,
               <a href="#ac747e6c7cf88c7b1ff7126e62babebb8a930dbba0e8f56b29ac3ea395017cec1f" class="m-doc">CUDA_SUBFLOW_TASK</a> = cudaNode::CUDA_SUBFLOW_TASK,
               <a href="#ac747e6c7cf88c7b1ff7126e62babebb8a14e9fb7dc6b0d37a40046f685c6aa79a" class="m-doc">CUDA_CAPTURE_TASK</a> = cudaNode::CUDA_CAPTURE_TASK }</span>
             </dt>
-            <dd>enumeration of all <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> types</dd>
+            <dd>enumeration of all cudaTask types</dd>
           </dl>
         </section>
         <section id="func-members">
@@ -313,10 +314,10 @@
               const <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>&amp; ct) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
             </dt>
             <dd>overload of ostream inserter operator for <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a50a8f777333cc26d5f5d8c4d37bcdc73" class="m-doc">cuda_default_threads_per_block</a>(</span><span class="m-doc-wrap">size_t N) -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span></span>
+            <dt id="a50a8f777333cc26d5f5d8c4d37bcdc73">
+              <span class="m-doc-wrap-bumper">auto <a href="#a50a8f777333cc26d5f5d8c4d37bcdc73" class="m-doc-self">cuda_default_threads_per_block</a>(</span><span class="m-doc-wrap">size_t N) -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
-            <dd></dd>
+            <dd>the default number of threads per block in an 1D vector of N elements</dd>
             <dt id="a30fa078dcf625e9eada5a95af1467588">
               <span class="m-doc-wrap-bumper">auto <a href="#a30fa078dcf625e9eada5a95af1467588" class="m-doc-self">version</a>(</span><span class="m-doc-wrap">) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
@@ -347,15 +348,6 @@
             </dt>
             <dd>determines if a callable is a cudaflow task</dd>
           </dl>
-        </section>
-        <section>
-          <h2>Enum documentation</h2>
-          <section class="m-doc-details" id="a0b4825761897c52f8f7e8f0b6c219d1a"><div>
-            <h3>
-              enum tf::<wbr /><a href="#a0b4825761897c52f8f7e8f0b6c219d1a" class="m-doc-self">ObserverType</a>
-            </h3>
-<p>built-in observer types</p>
-          </div></section>
         </section>
         <section>
           <h2>Function documentation</h2>
@@ -521,12 +513,6 @@
             </table>
 <p>The method calls <code>cudaMemsetAsync</code> with the given <code>stream</code> to fill the first <code>count</code> bytes of the memory area pointed to by <code>devPtr</code> with the constant byte value <code>value</code>.</p>
           </div></section>
-          <section class="m-doc-details" id="a50a8f777333cc26d5f5d8c4d37bcdc73"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">size_t tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a50a8f777333cc26d5f5d8c4d37bcdc73" class="m-doc-self">cuda_default_threads_per_block</a>(</span><span class="m-doc-wrap">size_t N) <span class="m-label m-danger">private</span> <span class="m-label m-primary">constexpr</span></span></span>
-            </h3>
-<p>the default number of threads per block in an 1D vector of N elements</p>
-          </div></section>
         </section>
         <section>
           <h2>Variable documentation</h2>
@@ -538,7 +524,7 @@
               bool tf::<wbr /><a href="#a11fc9c98eb3a0d3a9aa55598b1f4d614" class="m-doc-self">is_static_task_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>
             <p>determines if a callable is a static task</p>
-<p>is_static_task</p><p>A static task is a callable object constructible from std::function&lt;void()&gt;.</p>
+<p>A static task is a callable object constructible from std::function&lt;void()&gt;.</p>
           </div></section>
           <section class="m-doc-details" id="a1eea7593f25ab348cfb656dbdf4e5b05"><div>
             <h3>
@@ -548,7 +534,7 @@
               bool tf::<wbr /><a href="#a1eea7593f25ab348cfb656dbdf4e5b05" class="m-doc-self">is_dynamic_task_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>
             <p>determines if a callable is a dynamic task</p>
-<p>is_dynamic_task</p><p>A dynamic task is a callable object constructible from std::function&lt;void(Subflow&amp;)&gt;.</p>
+<p>A dynamic task is a callable object constructible from std::function&lt;void(Subflow&amp;)&gt;.</p>
           </div></section>
           <section class="m-doc-details" id="a00ca2fc2de0e679a7d9b8039340343df"><div>
             <h3>
@@ -558,7 +544,7 @@
               bool tf::<wbr /><a href="#a00ca2fc2de0e679a7d9b8039340343df" class="m-doc-self">is_condition_task_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>
             <p>determines if a callable is a condition task</p>
-<p>is_condition_task</p><p>A condition task is a callable object constructible from std::function&lt;int()&gt;.</p>
+<p>A condition task is a callable object constructible from std::function&lt;int()&gt;.</p>
           </div></section>
           <section class="m-doc-details" id="adb8433555d8cdc0b3c5d95e8d51a90f0"><div>
             <h3>
@@ -568,7 +554,7 @@
               bool tf::<wbr /><a href="#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc-self">is_cudaflow_task_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>
             <p>determines if a callable is a cudaflow task</p>
-<p>is_cudaflow_task</p><p>A <a href="classtf_1_1cudaFlow.html" class="m-doc">cudaFlow</a> task is a callable object constructible from std::function&lt;void(tf::cudaFlow&amp;)&gt; or std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;.</p>
+<p>A <a href="classtf_1_1cudaFlow.html" class="m-doc">cudaFlow</a> task is a callable object constructible from std::function&lt;void(tf::cudaFlow&amp;)&gt; or std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;.</p>
           </div></section>
         </section>
       </div>

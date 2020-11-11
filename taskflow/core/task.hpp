@@ -54,8 +54,6 @@ inline const char* task_type_to_string(TaskType type) {
 // ----------------------------------------------------------------------------
 
 /**
-@private is_static_task
-
 @brief determines if a callable is a static task
 
 A static task is a callable object constructible from std::function<void()>.
@@ -65,8 +63,6 @@ constexpr bool is_static_task_v = std::is_invocable_r_v<void, C> &&
                                  !std::is_invocable_r_v<int, C>;
 
 /**
-@private is_dynamic_task
-
 @brief determines if a callable is a dynamic task
 
 A dynamic task is a callable object constructible from std::function<void(Subflow&)>.
@@ -75,8 +71,6 @@ template <typename C>
 constexpr bool is_dynamic_task_v = std::is_invocable_r_v<void, C, Subflow&>;
 
 /**
-@private is_condition_task
-
 @brief determines if a callable is a condition task
 
 A condition task is a callable object constructible from std::function<int()>.
@@ -85,8 +79,6 @@ template <typename C>
 constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C>;
 
 /**
-@private is_cudaflow_task
-
 @brief determines if a callable is a cudaflow task
 
 A cudaFlow task is a callable object constructible from 

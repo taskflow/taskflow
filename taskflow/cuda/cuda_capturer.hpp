@@ -12,7 +12,7 @@
 namespace tf {
 
 /**
-@private the default number of threads per block in an 1D vector of N elements
+@brief the default number of threads per block in an 1D vector of N elements
 */
 constexpr size_t cuda_default_threads_per_block(size_t N) {
   return N >= 256 ? 256 : 128;

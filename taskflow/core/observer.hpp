@@ -578,7 +578,7 @@ inline size_t TFProfObserver::num_tasks() const {
 
 /** @enum ObserverType
 
-built-in observer types
+@brief enumeration of all observer types
 
 */
 enum ObserverType {
