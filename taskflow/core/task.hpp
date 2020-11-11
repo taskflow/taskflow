@@ -20,9 +20,7 @@ namespace tf {
 */
 enum TaskType {
   PLACEHOLDER_TASK = Node::PLACEHOLDER_TASK,
-#ifdef TF_ENABLE_CUDA
   CUDAFLOW_TASK    = Node::CUDAFLOW_TASK,
-#endif
   STATIC_TASK      = Node::STATIC_TASK,
   DYNAMIC_TASK     = Node::DYNAMIC_TASK,
   CONDITION_TASK   = Node::CONDITION_TASK,
@@ -39,9 +37,7 @@ inline const char* task_type_to_string(TaskType type) {
 
   switch(type) {
     case PLACEHOLDER_TASK: val = "placeholder"; break;
-#ifdef TF_ENABLE_CUDA
     case CUDAFLOW_TASK:    val = "cudaflow";    break;
-#endif
     case STATIC_TASK:      val = "static";      break;
     case DYNAMIC_TASK:     val = "subflow";     break;
     case CONDITION_TASK:   val = "condition";   break;
@@ -88,7 +84,6 @@ A condition task is a callable object constructible from std::function<int()>.
 template <typename C>
 constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C>;
 
-#ifdef TF_ENABLE_CUDA
 /**
 @private is_cudaflow_task
 
@@ -100,7 +95,6 @@ std::function<void(tf::cudaFlow&)> or std::function<void(tf::cudaFlowCapturer&)>
 template <typename C>
 constexpr bool is_cudaflow_task_v = std::is_invocable_r_v<void, C, cudaFlow&> ||
                                     std::is_invocable_r_v<void, C, cudaFlowCapturer&>;
-#endif
 
 
 
@@ -443,11 +437,9 @@ Task& Task::work(C&& c) {
   else if constexpr(is_condition_task_v<C>) {
     _node->_handle.emplace<Node::ConditionTask>(std::forward<C>(c));
   }
-#ifdef TF_ENABLE_CUDA
   else if constexpr(is_cudaflow_task_v<C>) {
     _node->_handle.emplace<Node::cudaFlowTask>(std::forward<C>(c));
   }
-#endif
   else {
     static_assert(dependent_false_v<C>, "invalid task callable");
   }

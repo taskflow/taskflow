@@ -2,6 +2,7 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
+#include <taskflow/cudaflow.hpp>
 
 // ----------------------------------------------------------------------------
 // kernel helper
@@ -844,10 +845,9 @@ TEST_CASE("CapturedNestedRuns" * doctest::timeout(300)) {
 void worker_id(unsigned N, unsigned M) {
   
   tf::Taskflow taskflow;
-  tf::Executor executor(N, M);
+  tf::Executor executor(N + M);
 
   REQUIRE(executor.num_workers() == (N + M));
-  REQUIRE(executor.num_domains() == 2);
 
   const unsigned s = 100;
 
@@ -856,45 +856,45 @@ void worker_id(unsigned N, unsigned M) {
     auto cputask = taskflow.emplace([&](){
       auto id = executor.this_worker_id();
       REQUIRE(id >= 0);
-      REQUIRE(id <  N);
+      REQUIRE(id <  N+M);
     });
     
     auto gputask = taskflow.emplace([&](tf::cudaFlow&) {
       auto id = executor.this_worker_id();
-      REQUIRE(id >= N);
+      REQUIRE(id >= 0);
       REQUIRE(id <  N+M);
     });
 
     auto chktask = taskflow.emplace([&] () {
       auto id = executor.this_worker_id();
       REQUIRE(id >= 0);
-      REQUIRE(id <  N);
+      REQUIRE(id <  N+M);
     });
     
     taskflow.emplace([&](tf::cudaFlow&) {
       auto id = executor.this_worker_id();
-      REQUIRE(id >= N);
+      REQUIRE(id >= 0);
       REQUIRE(id <  N+M);
     });
     
     taskflow.emplace([&]() {
       auto id = executor.this_worker_id();
       REQUIRE(id >= 0);
-      REQUIRE(id <  N);
+      REQUIRE(id <  N+M);
     });
 
     auto subflow = taskflow.emplace([&](tf::Subflow& sf){
       auto id = executor.this_worker_id();
       REQUIRE(id >= 0);
-      REQUIRE(id <  N);
+      REQUIRE(id <  N+M);
       auto t1 = sf.emplace([&](){
         auto id = executor.this_worker_id();
         REQUIRE(id >= 0);
-        REQUIRE(id <  N);
+        REQUIRE(id <  N+M);
       });
       auto t2 = sf.emplace([&](tf::cudaFlow&){
         auto id = executor.this_worker_id();
-        REQUIRE(id >= N);
+        REQUIRE(id >= 0);
         REQUIRE(id <  N+M);
       });
       t1.precede(t2);
@@ -979,7 +979,7 @@ TEST_CASE("WorkerID.4C4G") {
 void multiruns(unsigned N, unsigned M) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(N, M);
+  tf::Executor executor(N + M);
 
   const unsigned n = 1000;
   const unsigned s = 100;

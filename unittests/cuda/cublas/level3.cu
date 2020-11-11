@@ -2,7 +2,7 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
-#include <taskflow/cuda/cublas.hpp>
+#include <taskflow/cublasflow.hpp>
 
 // ----------------------------------------------------------------------------
 // utilities

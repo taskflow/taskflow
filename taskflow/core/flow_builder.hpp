@@ -91,7 +91,6 @@ class FlowBuilder {
     */
     Task placeholder();
 
-#ifdef TF_ENABLE_CUDA
     /**
     @brief creates a cudaflow task on the default device 0
 
@@ -119,7 +118,6 @@ class FlowBuilder {
       std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr
     >
     Task emplace_on(C&& callable, D&& device);
-#endif
 
     /**
     @brief adds adjacent dependency links to a linear list of tasks
@@ -645,13 +643,6 @@ Task FlowBuilder::emplace(C&& c) {
     std::in_place_type_t<Node::ConditionTask>{}, std::forward<C>(c)
   ));
 }
-
-#ifdef TF_ENABLE_CUDA
-template <typename C, std::enable_if_t<is_cudaflow_task_v<C>, void>*>
-Task FlowBuilder::emplace(C&& c) {
-  return emplace_on(std::forward<C>(c), tf::cuda_get_device());
-}
-#endif
 
 // Function: emplace
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>

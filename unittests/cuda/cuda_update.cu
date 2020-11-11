@@ -3,6 +3,7 @@
 #include <doctest.h>
 
 #include <taskflow/taskflow.hpp>
+#include <taskflow/cudaflow.hpp>
 
 //verify
 template <typename T>
@@ -710,6 +711,7 @@ TEST_CASE("update.memset.double" * doctest::timeout(300)) {
   update_memset<double>();
 }
 
+/*
 //----------------------------------------------------------------------
 //update transpose
 //----------------------------------------------------------------------
@@ -998,3 +1000,5 @@ TEST_CASE("update.matmul.float" * doctest::timeout(300) ) {
 TEST_CASE("update.matmul.double" * doctest::timeout(300) ) {
   update_matmul<double>();
 }
+
+*/

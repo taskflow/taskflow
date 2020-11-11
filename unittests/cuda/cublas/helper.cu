@@ -2,7 +2,8 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
-#include <taskflow/cuda/cublas.hpp>
+#include <taskflow/cudaflow.hpp>
+#include <taskflow/cublasflow.hpp>
 
 template <typename T>
 void copy_vec() {

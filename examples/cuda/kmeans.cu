@@ -5,6 +5,7 @@
 //  - gpu without conditional tasking
 
 #include <taskflow/taskflow.hpp>
+#include <taskflow/cudaflow.hpp>
 
 #include <iomanip>
 #include <cfloat>

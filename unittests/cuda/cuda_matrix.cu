@@ -2,6 +2,7 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
+#include <taskflow/cudaflow.hpp>
 
 // ----------------------------------------------------------------------------
 // Matrix Multiplication Kernel

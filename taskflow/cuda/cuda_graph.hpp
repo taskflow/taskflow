@@ -215,7 +215,7 @@ void cuda_dump_graph(T& os, cudaGraph_t graph) {
 // ----------------------------------------------------------------------------
 
 // class: cudaGraph
-class cudaGraph {
+class cudaGraph : public CustomGraphBase {
 
   friend class cudaNode;
   friend class cudaTask;
@@ -244,8 +244,7 @@ class cudaGraph {
 
     bool empty() const;
 
-    template <typename T>
-    void dump(T&, const void*, const std::string&) const;
+    void dump(std::ostream&, const void*, const std::string&) const override final;
 
   private:
 
@@ -545,9 +544,8 @@ inline std::vector<cudaNode*> cudaGraph::_toposort() {
 }
 
 // Procedure: dump the graph to a DOT format
-template <typename T>
-void cudaGraph::dump(
-  T& os, const void* root, const std::string& root_name
+inline void cudaGraph::dump(
+  std::ostream& os, const void* root, const std::string& root_name
 ) const {
   
   // recursive dump with stack

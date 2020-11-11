@@ -21,7 +21,7 @@ class ObserverInterface;
 class ChromeTracingObserver;
 class TFProfObserver;
 
-// cuda
+// cudaFlow
 class cudaNode;
 class cudaGraph;
 class cudaTask;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "error.hpp"
-#include "../declarations.hpp"
+#include "declarations.hpp"
 #include "../utility/iterator.hpp"
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
@@ -9,26 +9,18 @@
 #include "../utility/uuid.hpp"
 #include "../utility/os.hpp"
 
-#if defined(__CUDA__) || defined(__CUDACC__)
-#define TF_ENABLE_CUDA
-#include "../cuda/cuda_flow.hpp"
-#include "../cuda/cuda_algorithm/cuda_blaf.hpp"
-#endif
-
 namespace tf {
 
 // ----------------------------------------------------------------------------
-// domain
+// Class: CustomGraphBase
 // ----------------------------------------------------------------------------
+class CustomGraphBase {
 
-enum Domain : int {
-  HOST = 0,
-#ifdef TF_ENABLE_CUDA
-  CUDA,
-#endif
-  NUM_DOMAINS
+  public:
+  
+  virtual void dump(std::ostream&, const void*, const std::string&) const = 0;
+  virtual ~CustomGraphBase() = default;  
 };
-
 
 // ----------------------------------------------------------------------------
 // Class: Graph
@@ -139,24 +131,19 @@ class Node {
   };
   
   // cudaFlow work handle
-#ifdef TF_ENABLE_CUDA
   struct cudaFlowTask {
     
-    template <typename C> 
-    cudaFlowTask(C&& c) : work {std::forward<C>(c)} {}
+    template <typename C, typename G> 
+    cudaFlowTask(C&& c, G&& g);
 
-    //std::function<void(cudaFlow&)> work;
     std::function<void(Executor&, Node*)> work;
 
-    cudaGraph graph;
+    std::unique_ptr<CustomGraphBase> graph;
   };
-#endif
     
   using handle_t = std::variant<
     std::monostate,  // placeholder
-#ifdef TF_ENABLE_CUDA
     cudaFlowTask,     // cudaFlow
-#endif
     StaticTask,       // static tasking
     DynamicTask,      // dynamic tasking
     ConditionTask,    // conditional tasking
@@ -173,10 +160,7 @@ class Node {
   constexpr static auto CONDITION_TASK   = get_index_v<ConditionTask, handle_t>; 
   constexpr static auto MODULE_TASK      = get_index_v<ModuleTask, handle_t>; 
   constexpr static auto ASYNC_TASK       = get_index_v<AsyncTask, handle_t>; 
-
-#ifdef TF_ENABLE_CUDA
   constexpr static auto CUDAFLOW_TASK = get_index_v<cudaFlowTask, handle_t>; 
-#endif
 
     template <typename... Args>
     Node(Args&&... args);
@@ -189,8 +173,6 @@ class Node {
     size_t num_weak_dependents() const;
     
     const std::string& name() const;
-
-    Domain domain() const;
 
   private:
 
@@ -251,6 +233,16 @@ template <typename C>
 Node::ConditionTask::ConditionTask(C&& c) : work {std::forward<C>(c)} {
 }
 
+// ----------------------------------------------------------------------------
+// Definition for Node::cudaFlowTask
+// ----------------------------------------------------------------------------
+
+template <typename C, typename G>
+Node::cudaFlowTask::cudaFlowTask(C&& c, G&& g) :
+  work  {std::forward<C>(c)},
+  graph {std::forward<G>(g)} {
+}
+    
 // ----------------------------------------------------------------------------
 // Definition for Node::ModuleTask
 // ----------------------------------------------------------------------------
@@ -353,35 +345,6 @@ inline size_t Node::num_strong_dependents() const {
 // Function: name
 inline const std::string& Node::name() const {
   return _name;
-}
-
-// Function: domain
-inline Domain Node::domain() const {
-
-  Domain domain;
-
-  switch(_handle.index()) {
-
-    case STATIC_TASK:
-    case DYNAMIC_TASK:
-    case CONDITION_TASK:
-    case MODULE_TASK:
-    case ASYNC_TASK:
-      domain = Domain::HOST;
-    break;
-
-#ifdef TF_ENABLE_CUDA
-    case CUDAFLOW_TASK:
-      domain = Domain::CUDA;
-    break;
-#endif
-
-    default:
-      domain = Domain::HOST;
-    break;
-  }
-
-  return domain;
 }
 
 // Procedure: _set_state

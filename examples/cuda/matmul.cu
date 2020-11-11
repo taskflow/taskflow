@@ -2,6 +2,7 @@
 // of two 2D matrices.
 
 #include <taskflow/taskflow.hpp>
+#include <taskflow/cudaflow.hpp>
 
 // Kernel: matmul
 __global__ void matmul(int *a, int *b, int *c, int m, int n, int k) {

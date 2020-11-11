@@ -35,11 +35,10 @@ class Executor {
   struct Worker {
     size_t id;
     size_t vtm;
-    Domain domain;
     Executor* executor;
     Notifier::Waiter* waiter;
     std::mt19937 rdgen { std::random_device{}() };
-    TaskQueue<Node*> wsq[NUM_DOMAINS];
+    TaskQueue<Node*> wsq;
   };
     
   struct PerThread {
@@ -49,20 +48,10 @@ class Executor {
 
   public:
 
-#ifdef TF_ENABLE_CUDA    
-    /**
-    @brief constructs the executor with N/M cpu/gpu worker threads
-    */
-    explicit Executor(
-      size_t N = std::thread::hardware_concurrency(),
-      size_t M = cuda_get_num_devices()
-    );
-#else
     /**
     @brief constructs the executor with N worker threads
     */
     explicit Executor(size_t N = std::thread::hardware_concurrency());
-#endif
     
     /**
     @brief destructs the executor 
@@ -155,14 +144,6 @@ class Executor {
     size_t num_topologies() const;
 
     /**
-    @brief queries the number of worker domains 
-
-    Each domain manages a subset of worker threads to execute domain-specific tasks,
-    for example, HOST tasks and CUDA tasks.
-    */
-    size_t num_domains() const;
-
-    /**
     @brief queries the id of the caller thread in this executor
 
     Each worker has an unique id from 0 to N-1 exclusive to the associated executor.
@@ -228,14 +209,12 @@ class Executor {
     std::vector<Worker> _workers;
     std::vector<std::thread> _threads;
 
-    Notifier _notifier[NUM_DOMAINS];
+    Notifier _notifier;
 
-    TaskQueue<Node*> _wsq[NUM_DOMAINS];
+    TaskQueue<Node*> _wsq;
 
-    size_t _id_offset[NUM_DOMAINS] = {0};
-
-    std::atomic<size_t> _num_actives[NUM_DOMAINS];
-    std::atomic<size_t> _num_thieves[NUM_DOMAINS];
+    std::atomic<size_t> _num_actives {0};
+    std::atomic<size_t> _num_thieves {0};
     std::atomic<bool>   _done {0};
     
     std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
@@ -248,7 +227,7 @@ class Executor {
     void _flush_tfprof();
     void _observer_prologue(Worker&, Node*);
     void _observer_epilogue(Worker&, Node*);
-    void _spawn(size_t, Domain);
+    void _spawn(size_t);
     void _worker_loop(Worker&);
     void _exploit_task(Worker&, Node*&);
     void _explore_task(Worker&, Node*&);
@@ -268,7 +247,7 @@ class Executor {
     void _decrement_topology();
     void _decrement_topology_and_notify();
 
-#ifdef TF_ENABLE_CUDA
+
     void _invoke_cudaflow_task(Worker&, Node*);
     
     template <typename C, std::enable_if_t<
@@ -286,41 +265,9 @@ class Executor {
     
     //template <typename P>
     //void _invoke_cudaflow_task_external(cudaFlow&, P&&, bool);
-#endif
 };
 
 
-#ifdef TF_ENABLE_CUDA
-// Constructor
-inline Executor::Executor(size_t N, size_t M) :
-  _VICTIM_BEG   {0},
-  _VICTIM_END   {N + M - 1},
-  _MAX_STEALS   {(N + M + 1) << 1},
-  _MAX_YIELDS   {100},
-  _workers      {N + M},
-  _notifier     {Notifier(N), Notifier(M)} {
-
-  if(N == 0) {
-    TF_THROW("no cpu workers to execute taskflows");
-  }
-
-  if(M == 0) {
-    TF_THROW("no gpu workers to execute cudaflows");
-  }
-
-  for(int i=0; i<NUM_DOMAINS; ++i) {
-    _num_actives[i].store(0, std::memory_order_relaxed);
-    _num_thieves[i].store(0, std::memory_order_relaxed); 
-  }
-  
-  _spawn(N, HOST);
-  _spawn(M, CUDA);
-
-  // initiate the observer if requested
-  _instantiate_tfprof();
-}
-
-#else
 // Constructor
 inline Executor::Executor(size_t N) : 
   _VICTIM_BEG {0},
@@ -328,23 +275,17 @@ inline Executor::Executor(size_t N) :
   _MAX_STEALS {(N + 1) << 1},
   _MAX_YIELDS {100},
   _workers    {N},
-  _notifier   {Notifier(N)} {
+  _notifier   {N} {
   
   if(N == 0) {
     TF_THROW("no cpu workers to execute taskflows");
   }
   
-  for(int i=0; i<NUM_DOMAINS; ++i) {
-    _num_actives[i].store(0, std::memory_order_relaxed);
-    _num_thieves[i].store(0, std::memory_order_relaxed); 
-  }
-
-  _spawn(N, HOST);
+  _spawn(N);
 
   // instantite the default observer if requested
   _instantiate_tfprof();
 }
-#endif
 
 // Destructor
 inline Executor::~Executor() {
@@ -355,9 +296,7 @@ inline Executor::~Executor() {
   // shut down the scheduler
   _done = true;
 
-  for(int i=0; i<NUM_DOMAINS; ++i) {
-    _notifier[i].notify(true);
-  }
+  _notifier.notify(true);
   
   for(auto& t : _threads){
     t.join();
@@ -387,11 +326,6 @@ inline void Executor::_flush_tfprof() {
 // Function: num_workers
 inline size_t Executor::num_workers() const {
   return _workers.size();
-}
-
-// Function: num_domains
-inline size_t Executor::num_domains() const {
-  return NUM_DOMAINS;
 }
 
 // Function: num_topologies
@@ -443,19 +377,16 @@ inline int Executor::this_worker_id() const {
 }
 
 // Procedure: _spawn
-inline void Executor::_spawn(size_t N, Domain d) {
+inline void Executor::_spawn(size_t N) {
   
   auto id = _threads.size();
-
-  _id_offset[d] = id;
 
   for(size_t i=0; i<N; ++i, ++id) {
 
     _workers[id].id = id;
     _workers[id].vtm = id;
-    _workers[id].domain = d;
     _workers[id].executor = this;
-    _workers[id].waiter = &_notifier[d]._waiters[i];
+    _workers[id].waiter = &_notifier._waiters[i];
     
     _threads.emplace_back([this] (Worker& w) -> void {
 
@@ -486,8 +417,6 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
   //assert(_workers[w].wsq.empty());
   assert(!t);
 
-  const auto d = w.domain;
-
   size_t num_steals = 0;
   size_t num_yields = 0;
 
@@ -512,7 +441,7 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
   //}
 
   do {
-    t = (w.id == w.vtm) ? _wsq[d].steal() : _workers[w.vtm].wsq[d].steal();
+    t = (w.id == w.vtm) ? _wsq.steal() : _workers[w.vtm].wsq.steal();
 
     if(t) {
       break;
@@ -535,10 +464,8 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
   
   if(t) {
 
-    const auto d = w.domain;
-
-    if(_num_actives[d].fetch_add(1) == 0 && _num_thieves[d] == 0) {
-      _notifier[d].notify(false);
+    if(_num_actives.fetch_add(1) == 0 && _num_thieves == 0) {
+      _notifier.notify(false);
     }
 
     while(t) {
@@ -553,47 +480,45 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
       //  t->_parent->_join_counter.fetch_sub(1);
       //}
 
-      t = w.wsq[d].pop();
+      t = w.wsq.pop();
     }
 
-    --_num_actives[d];
+    --_num_actives;
   }
 }
 
 // Function: _wait_for_task
 inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
-  const auto d = worker.domain;
-
   wait_for_task:
 
   assert(!t);
 
-  ++_num_thieves[d];
+  ++_num_thieves;
 
   explore_task:
 
   _explore_task(worker, t);
 
   if(t) {
-    if(_num_thieves[d].fetch_sub(1) == 1) {
-      _notifier[d].notify(false);
+    if(_num_thieves.fetch_sub(1) == 1) {
+      _notifier.notify(false);
     }
     return true;
   }
 
-  _notifier[d].prepare_wait(worker.waiter);
+  _notifier.prepare_wait(worker.waiter);
   
   //if(auto vtm = _find_vtm(me); vtm != _workers.size()) {
-  if(!_wsq[d].empty()) {
+  if(!_wsq.empty()) {
 
-    _notifier[d].cancel_wait(worker.waiter);
+    _notifier.cancel_wait(worker.waiter);
     //t = (vtm == me) ? _wsq.steal() : _workers[vtm].wsq.steal();
     
-    t = _wsq[d].steal();  // must steal here
+    t = _wsq.steal();  // must steal here
     if(t) {
-      if(_num_thieves[d].fetch_sub(1) == 1) {
-        _notifier[d].notify(false);
+      if(_num_thieves.fetch_sub(1) == 1) {
+        _notifier.notify(false);
       }
       return true;
     }
@@ -604,31 +529,29 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   }
 
   if(_done) {
-    _notifier[d].cancel_wait(worker.waiter);
-    for(int i=0; i<NUM_DOMAINS; ++i) {
-      _notifier[i].notify(true);
-    }
-    --_num_thieves[d];
+    _notifier.cancel_wait(worker.waiter);
+    _notifier.notify(true);
+    --_num_thieves;
     return false;
   }
 
-  if(_num_thieves[d].fetch_sub(1) == 1) {
-    if(_num_actives[d]) {
-      _notifier[d].cancel_wait(worker.waiter);
+  if(_num_thieves.fetch_sub(1) == 1) {
+    if(_num_actives) {
+      _notifier.cancel_wait(worker.waiter);
       goto wait_for_task;
     }
-    // check all domain queue again
+    // check all queues again
     for(auto& w : _workers) {
-      if(!w.wsq[d].empty()) {
+      if(!w.wsq.empty()) {
         worker.vtm = w.id;
-        _notifier[d].cancel_wait(worker.waiter);
+        _notifier.cancel_wait(worker.waiter);
         goto wait_for_task;
       }
     }
   }
     
   // Now I really need to relinguish my self to others
-  _notifier[d].commit_wait(worker.waiter);
+  _notifier.commit_wait(worker.waiter);
 
   return true;
 }
@@ -676,28 +599,21 @@ inline void Executor::_schedule(Node* node) {
   
   //assert(_workers.size() != 0);
 
-  const auto d = node->domain();
-  
   // caller is a worker to this pool
   auto worker = _per_thread.worker;
 
   if(worker != nullptr && worker->executor == this) {
-    worker->wsq[d].push(node);
-    if(worker->domain != d) {
-      if(_num_actives[d] == 0 && _num_thieves[d] == 0) {
-        _notifier[d].notify(false);
-      }
-    }
+    worker->wsq.push(node);
     return;
   }
 
   // other threads
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
-    _wsq[d].push(node);
+    _wsq.push(node);
   }
 
-  _notifier[d].notify(false);
+  _notifier.notify(false);
 }
 
 // Procedure: _schedule
@@ -718,24 +634,10 @@ inline void Executor::_schedule(std::vector<Node*>& nodes) {
   // worker thread
   auto worker = _per_thread.worker;
 
-  // task counts
-  size_t tcount[NUM_DOMAINS] = {0};
-
   if(worker != nullptr && worker->executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
-      const auto d = nodes[i]->domain();
-      worker->wsq[d].push(nodes[i]);
-      tcount[d]++;
+      worker->wsq.push(nodes[i]);
     }
-    
-    for(int d=0; d<NUM_DOMAINS; ++d) {
-      if(tcount[d] && d != worker->domain) {
-        if(_num_actives[d] == 0 && _num_thieves[d] == 0) {
-          _notifier[d].notify_n(tcount[d]);
-        }
-      }
-    }
-
     return;
   }
   
@@ -743,15 +645,11 @@ inline void Executor::_schedule(std::vector<Node*>& nodes) {
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      const auto d = nodes[k]->domain();
-      _wsq[d].push(nodes[k]);
-      tcount[d]++;
+      _wsq.push(nodes[k]);
     }
   }
   
-  for(int d=0; d<NUM_DOMAINS; ++d) {
-    _notifier[d].notify_n(tcount[d]);
-  }
+  _notifier.notify_n(num_nodes);
 }
 
 
@@ -806,12 +704,10 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     break;
 
     // cudaflow task
-#ifdef TF_ENABLE_CUDA
     case Node::CUDAFLOW_TASK: {
       _invoke_cudaflow_task(worker, node);
     }
     break; 
-#endif
 
     // monostate
     default:
@@ -964,7 +860,7 @@ inline void Executor::_invoke_dynamic_task_internal(
 
     while(p->_join_counter != 0) {
 
-      t = w.wsq[w.domain].pop();
+      t = w.wsq.pop();
 
       exploit:
 
@@ -982,8 +878,7 @@ inline void Executor::_invoke_dynamic_task_internal(
       else {
 
         explore:
-        t = (w.id == w.vtm) ? _wsq[w.domain].steal() : 
-                              _workers[w.vtm].wsq[w.domain].steal();
+        t = (w.id == w.vtm) ? _wsq.steal() : _workers[w.vtm].wsq.steal();
         if(t) {
           goto exploit;
         }
@@ -1001,78 +896,19 @@ inline void Executor::_invoke_dynamic_task_internal(
 }
 
 // Procedure: _invoke_condition_task
-inline void Executor::_invoke_condition_task(Worker& worker, Node* node, int& cond) {
-
+inline void Executor::_invoke_condition_task(
+  Worker& worker, Node* node, int& cond
+) {
   _observer_prologue(worker, node);
-  
   cond = std::get<Node::ConditionTask>(node->_handle).work();
-
   _observer_epilogue(worker, node);
 }
 
-#ifdef TF_ENABLE_CUDA
 // Procedure: _invoke_cudaflow_task
 inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);  
-  assert(worker.domain == node->domain());
   std::get<Node::cudaFlowTask>(node->_handle).work(*this, node);
   _observer_epilogue(worker, node);
-}
-
-// Procedure: _invoke_cudaflow_task_entry
-template <typename C,
-  std::enable_if_t<std::is_invocable_r_v<void, C, cudaFlow&>, void>*
->
-void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
-
-  auto& h = std::get<Node::cudaFlowTask>(node->_handle);
-  
-  h.graph.clear();
-
-  cudaFlow cf(*this, h.graph);
-
-  c(cf); 
-
-  // join the cudaflow if never offloaded
-  if(cf._executable == nullptr) {
-    cf.offload();
-  }
-}
-
-// Procedure: _invoke_cudaflow_task_entry
-template <typename C, 
-  std::enable_if_t<std::is_invocable_r_v<void, C, cudaFlowCapturer&>, void>*
->
-void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
-
-  auto& h = std::get<Node::cudaFlowTask>(node->_handle);
-  
-  h.graph.clear();
-  
-  cudaFlowCapturer fc(h.graph);
-
-  c(fc);
-  
-  auto captured = fc._capture();
-  
-  TF_CHECK_CUDA(
-    cudaGraphInstantiate(
-      &fc._executable, captured, nullptr, nullptr, 0
-    ),
-    "failed to create an executable graph"
-  );
-  
-  cudaScopedPerThreadStream s;
-
-  TF_CHECK_CUDA(cudaGraphLaunch(fc._executable, s), "failed to exec");
-  TF_CHECK_CUDA(cudaStreamSynchronize(s), "failed to synchronize stream");
-  TF_CHECK_CUDA(cudaGraphExecDestroy(fc._executable), "failed to destroy exec");
-
-  fc._executable = nullptr;
-  
-  TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
-
-  // TODO: how do we support the update?
 }
 
 //// Procedure: _invoke_cudaflow_task_internal
@@ -1123,7 +959,6 @@ void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
 //
 //  _invoke_cudaflow_task_internal(*w, cf, std::forward<P>(predicate), join);
 //}
-#endif
 
 // Procedure: _invoke_module_task
 inline void Executor::_invoke_module_task(Worker& w, Node* node) {
@@ -1347,9 +1182,9 @@ inline void Executor::wait_for_all() {
   _topology_cv.wait(lock, [&](){ return _num_topologies == 0; });
 }
 
-// ----------------------------------------------------------------------------
-// Subflow Definition
-// ----------------------------------------------------------------------------
+// ############################################################################
+// Forward Declaration: Subflow
+// ############################################################################
 
 inline void Subflow::join() {
 
@@ -1371,28 +1206,6 @@ inline void Subflow::detach() {
   _joinable = false;
 }
 
-// ----------------------------------------------------------------------------
-// FlowBuilder
-// ----------------------------------------------------------------------------
-
-#ifdef TF_ENABLE_CUDA
-
-template <typename C, typename D,
-  std::enable_if_t<is_cudaflow_task_v<C>, void>*
->
-Task FlowBuilder::emplace_on(C&& callable, D&& device) {
-  auto n = _graph.emplace_back(
-    std::in_place_type_t<Node::cudaFlowTask>{},
-    [c=std::forward<C>(callable), d=std::forward<D>(device)]
-    (Executor& executor, Node* node) mutable {
-      cudaScopedDevice ctx(d);
-      executor._invoke_cudaflow_task_entry(c, node);
-    }
-  );
-  return Task(n);
-}
-
-#endif  
 
 }  // end of namespace tf -----------------------------------------------------
 

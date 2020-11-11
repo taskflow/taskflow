@@ -1077,6 +1077,97 @@ inline void cudaFlow::offload() {
   offload_until([repeat=1] () mutable { return repeat-- == 0; });
 }
 
+// ############################################################################
+// Forward declaration: FlowBuilder
+// ############################################################################
+    
+// FlowBuilder::emplace_on
+template <typename C, typename D,
+  std::enable_if_t<is_cudaflow_task_v<C>, void>*
+>
+Task FlowBuilder::emplace_on(C&& callable, D&& device) {
+  auto n = _graph.emplace_back(
+    std::in_place_type_t<Node::cudaFlowTask>{},
+    [c=std::forward<C>(callable), d=std::forward<D>(device)]
+    (Executor& executor, Node* node) mutable {
+      cudaScopedDevice ctx(d);
+      executor._invoke_cudaflow_task_entry(c, node);
+    },
+    std::make_unique<cudaGraph>()
+  );
+  return Task(n);
+}
+
+// FlowBuilder::emplace
+template <typename C, std::enable_if_t<is_cudaflow_task_v<C>, void>*>
+Task FlowBuilder::emplace(C&& c) {
+  return emplace_on(std::forward<C>(c), tf::cuda_get_device());
+}
+
+// ----------------------------------------------------------------------------
+// Forward declaration: Executor
+// ----------------------------------------------------------------------------
+
+// Procedure: _invoke_cudaflow_task_entry
+template <typename C,
+  std::enable_if_t<std::is_invocable_r_v<void, C, cudaFlow&>, void>*
+>
+void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
+
+  auto& h = std::get<Node::cudaFlowTask>(node->_handle);
+
+  cudaGraph* g = dynamic_cast<cudaGraph*>(h.graph.get());
+  
+  g->clear();
+
+  cudaFlow cf(*this, *g);
+
+  c(cf); 
+
+  // join the cudaflow if never offloaded
+  if(cf._executable == nullptr) {
+    cf.offload();
+  }
+}
+
+// Procedure: _invoke_cudaflow_task_entry
+template <typename C, 
+  std::enable_if_t<std::is_invocable_r_v<void, C, cudaFlowCapturer&>, void>*
+>
+void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
+
+  auto& h = std::get<Node::cudaFlowTask>(node->_handle);
+
+  cudaGraph* g = dynamic_cast<cudaGraph*>(h.graph.get());
+  
+  g->clear();
+  
+  cudaFlowCapturer fc(*g);
+
+  c(fc);
+  
+  auto captured = fc._capture();
+  
+  TF_CHECK_CUDA(
+    cudaGraphInstantiate(
+      &fc._executable, captured, nullptr, nullptr, 0
+    ),
+    "failed to create an executable graph"
+  );
+  
+  cudaScopedPerThreadStream s;
+
+  TF_CHECK_CUDA(cudaGraphLaunch(fc._executable, s), "failed to exec");
+  TF_CHECK_CUDA(cudaStreamSynchronize(s), "failed to synchronize stream");
+  TF_CHECK_CUDA(cudaGraphExecDestroy(fc._executable), "failed to destroy exec");
+
+  fc._executable = nullptr;
+  
+  TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
+
+  // TODO: how do we support the update?
+}
+
 
 }  // end of namespace tf -----------------------------------------------------
 

@@ -2,6 +2,7 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
+#include <taskflow/cudaflow.hpp>
 
 constexpr float eps = 0.0001f;
 

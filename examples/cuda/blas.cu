@@ -1,4 +1,5 @@
 #include <taskflow/taskflow.hpp>
+#include <taskflow/cudaflow.hpp>
 #include <taskflow/cuda/cublas.hpp>
 
 int main() {

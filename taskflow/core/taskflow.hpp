@@ -159,11 +159,6 @@ class Taskflow : public FlowBuilder {
     
     template <typename T>
     void _dump(T&, const Graph&, Dumper&) const;
-
-#ifdef TF_ENABLE_CUDA
-    template <typename T>
-    void _dump(T&, const cudaGraph&, const Node*) const;
-#endif
 };
 
 // Constructor
@@ -268,14 +263,12 @@ void Taskflow::_dump(T& os, const Node* node, Dumper& dumper) const {
       os << "shape=diamond color=black fillcolor=aquamarine style=filled";
     break;
 
-#ifdef TF_ENABLE_CUDA
     case Node::CUDAFLOW_TASK:
       os << " style=\"filled\""
          << " color=\"black\" fillcolor=\"purple\""
          << " fontcolor=\"white\""
          << " shape=\"folder\"";
     break;
-#endif
 
     default:
     break;
@@ -314,15 +307,14 @@ void Taskflow::_dump(T& os, const Node* node, Dumper& dumper) const {
       }
     }
     break;
-
-#ifdef TF_ENABLE_CUDA
+    
+    // TODO
     case Node::CUDAFLOW_TASK: {
-      std::get<Node::cudaFlowTask>(node->_handle).graph.dump(
+      std::get<Node::cudaFlowTask>(node->_handle).graph->dump(
         os, node, node->_name
       );
     }
     break;
-#endif
 
     default:
     break;

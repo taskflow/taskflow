@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../cuda_flow.hpp"
 #include "cuda_transpose.hpp"
 #include "cuda_matmul.hpp"
 
