@@ -36,6 +36,7 @@ See a quick <a href="https://taskflow.github.io/">presentation</a> and visit our
 The following program (@c simple.cpp) creates four tasks 
 @c A, @c B, @c C, and @c D, where @c A runs before @c B and @c C, and @c D
 runs after @c B and @c C.
+When @c A finishes, @c B and @c C can run in parallel.
 
 
 <!-- @image html images/simple.svg width=35% -->
@@ -88,6 +89,7 @@ for profiling your %Taskflow programs.
 
 %Taskflow supports <i>dynamic tasking</i> for you to create a subflow
 graph from the execution of a task to perform dynamic parallelism.
+The following program spawns a task dependency graph parented at task @c B.
 
 @code{.cpp}
 tf::Task A = taskflow.emplace([](){}).name("A");  
@@ -138,7 +140,7 @@ tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
   tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
   tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
   tf::cudaTask saxpy = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy)
-                         .name("saxpy");
+                         .name("saxpy");  // parameters to the saxpy kernel
   saxpy.succeed(h2d_x, h2d_y)
        .precede(d2h_x, d2h_y);
 }).name("cudaFlow");
@@ -176,7 +178,7 @@ To use %Taskflow, you only need a compiler that supports C++17:
 
 @li GNU C++ Compiler at least v7.0 with -std=c++17
 @li Clang C++ Compiler at least v6.0 with -std=c++17
-@li Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)
+@li Microsoft Visual Studio at least v19.27 with /std:c++17
 @li AppleClang Xode Version at least v12.0 with -std=c++17
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
 
@@ -201,6 +203,7 @@ and heterogeneous computing.
 @section License License
 
 %Taskflow is open-source under permissive MIT license.
+The source code is available in @ProjectGitHub.
 
 */
 

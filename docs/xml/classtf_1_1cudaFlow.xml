@@ -47,7 +47,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="477" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="477" bodyend="-1"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="475" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="475" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1cudaFlow_1aa8b4d0cddb73fec80fd7ac2fd58cfefc" prot="private" static="no" mutable="no">
         <type>cudaGraph &amp;</type>
@@ -60,7 +60,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="479" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="479" bodyend="-1"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="477" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="477" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1cudaFlow_1aa9f806b778db070e544686487bc88faf" prot="private" static="no" mutable="no">
         <type>cudaGraphExec_t</type>
@@ -74,7 +74,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="481" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="481" bodyend="-1"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="479" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="479" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -89,7 +89,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="72" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="487" bodyend="495"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="72" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="485" bodyend="493"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a19eda378f8c0ef4495e08996f63f5144" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -102,7 +102,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="78" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="511" bodyend="517"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="78" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="509" bodyend="515"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a1926f45a038d8faa9c1b1ee43fd29a93" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -115,51 +115,41 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="83" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="520" bodyend="522"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="83" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="518" bodyend="520"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1aae23bdac4c64b842db5b6d4363d331fd" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename T</type>
-          </param>
-        </templateparamlist>
+      <memberdef kind="function" id="classtf_1_1cudaFlow_1a7f97b68fa7c889db49b26aa71a46a7cf" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaFlow::dump</definition>
-        <argsstring>(T &amp;os) const</argsstring>
+        <argsstring>(std::ostream &amp;os) const</argsstring>
         <name>dump</name>
         <param>
-          <type>T &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <briefdescription>
-<para>dumps the cudaFlow graph into a DOT format through an output stream that defines the stream insertion operator <computeroutput>&lt;&lt;</computeroutput> </para>        </briefdescription>
+<para>dumps the cudaFlow graph into a DOT format through an output stream </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="90" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="526" bodyend="528"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="89" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="523" bodyend="525"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a5131b64df24d6c0b6d02c3e33c60003c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename T</type>
-          </param>
-        </templateparamlist>
+      <memberdef kind="function" id="classtf_1_1cudaFlow_1a43507f21eb9cb77667ffe0ac7e6ae635" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaFlow::dump_native_graph</definition>
-        <argsstring>(T &amp;os) const</argsstring>
+        <argsstring>(std::ostream &amp;os) const</argsstring>
         <name>dump_native_graph</name>
         <param>
-          <type>T &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <briefdescription>
-<para>dumps the native CUDA graph into a DOT format through an output stream that defines the stream insertion operator <computeroutput>&lt;&lt;</computeroutput> </para>        </briefdescription>
+<para>dumps the native CUDA graph into a DOT format through an output stream </para>        </briefdescription>
         <detaileddescription>
 <para>The native CUDA graph may be different from the upper-level cudaFlow graph when flow capture is involved. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="100" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="532" bodyend="534"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="98" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="528" bodyend="530"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a30b2e107cb2c90a37f467b28d1b42a74" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -173,7 +163,7 @@
 An empty node performs no operation during execution, but can be used for transitive ordering. For example, a phased execution graph with 2 groups of n nodes with a barrier between them can be represented using an empty node and 2*n dependency edges, rather than no empty node and n^2 dependency edges. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="118" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="541" bodyend="555"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="116" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="537" bodyend="551"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a060e1c96111c2134ce0f896420a42cd0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -212,7 +202,7 @@ An empty node performs no operation during execution, but can be used for transi
 A host task can only execute CPU-specific functions and cannot do any CUDA calls (e.g., cudaMalloc). </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="134" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="559" bodyend="577"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="132" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="555" bodyend="573"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -307,7 +297,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="151" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="581" bodyend="610"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="149" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="577" bodyend="606"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a4a839dbaa01237a440edfebe8faf4e5b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -413,7 +403,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="169" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="614" bodyend="644"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="167" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="610" bodyend="640"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a079ca65da35301e5aafd45878a19e9d2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -461,7 +451,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
 A memset task fills the first <computeroutput>count</computeroutput> bytes of device memory area pointed by <computeroutput>dst</computeroutput> with the byte value <computeroutput>v</computeroutput>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="183" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="740" bodyend="763"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="181" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="736" bodyend="759"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1ad37637606f0643f360e9eda1f9a6e559" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -509,7 +499,7 @@ A memset task fills the first <computeroutput>count</computeroutput> bytes of de
 A memcpy task transfers <computeroutput>bytes</computeroutput> of data from a source location to a target location. Direction can be arbitrary among CPUs and GPUs. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="197" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="766" bodyend="794"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="195" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="762" bodyend="790"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a40172fac4464f6d805f75921ea3c2a3b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -563,7 +553,7 @@ A memcpy task transfers <computeroutput>bytes</computeroutput> of data from a so
 A zero task zeroes the first <computeroutput>count</computeroutput> elements of type <computeroutput>T</computeroutput> in a device memory area pointed by <computeroutput>dst</computeroutput>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="214" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="650" bodyend="672"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="212" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="646" bodyend="668"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a21d4447bc834f4d3e1bb4772c850d090" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -628,7 +618,7 @@ A zero task zeroes the first <computeroutput>count</computeroutput> elements of 
 A fill task fills the first <computeroutput>count</computeroutput> elements of type <computeroutput>T</computeroutput> with <computeroutput>value</computeroutput> in a device memory area pointed by <computeroutput>dst</computeroutput>. The value to fill is interpreted in type <computeroutput>T</computeroutput> rather than byte. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="234" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="678" bodyend="704"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="232" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="674" bodyend="700"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -693,7 +683,7 @@ A fill task fills the first <computeroutput>count</computeroutput> elements of t
 A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of data from a source location to a target location. Direction can be arbitrary among CPUs and GPUs. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="253" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="711" bodyend="737"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="251" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="707" bodyend="733"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a99358da15e3bdfa1faabb3e326130e1f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -731,7 +721,7 @@ A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of da
 Immediately offloads the present cudaFlow onto a GPU and repeatedly executes it until the predicate returns <computeroutput>true</computeroutput>.</para><para>A offloaded cudaFlow force the underlying graph to be instantiated. After the instantiation, you should not modify the graph topology but update node parameters.</para><para>By default, if users do not offload the cudaFlow, the executor will offload it once. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="274" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1039" bodyend="1068"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="272" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1035" bodyend="1064"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1ac2269fd7dc8ca04a294a718204703dad" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -756,7 +746,7 @@ Immediately offloads the present cudaFlow onto a GPU and repeatedly executes it 
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="281" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1071" bodyend="1073"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="279" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1067" bodyend="1069"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -769,7 +759,7 @@ Immediately offloads the present cudaFlow onto a GPU and repeatedly executes it 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="286" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1076" bodyend="1078"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="284" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1072" bodyend="1074"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1abab3a11129e6286c1de3deecedae8090" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -809,7 +799,7 @@ Immediately offloads the present cudaFlow onto a GPU and repeatedly executes it 
 <para>The method updates the parameters of a kernel associated with the given <computeroutput>task</computeroutput>. We do not allow you to change the kernel function. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="301" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="802" bodyend="831"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="299" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="798" bodyend="827"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a7972c77ba5f533b69e4b1dc55e87374d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -847,7 +837,7 @@ Immediately offloads the present cudaFlow onto a GPU and repeatedly executes it 
 <para>The method updates the parameters of a copy task. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="315" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="838" bodyend="868"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="313" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="834" bodyend="864"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1af5f4cd1fc858a7725bbf57db629bdc34" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -876,7 +866,7 @@ Immediately offloads the present cudaFlow onto a GPU and repeatedly executes it 
 <para>The method updates the parameters of a memcpy task. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="325" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="871" bodyend="899"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="323" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="867" bodyend="895"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a603072d44265de60647a7bcc5aaebace" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -905,7 +895,7 @@ Immediately offloads the present cudaFlow onto a GPU and repeatedly executes it 
 <para>The method updates the parameters of a memset task. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="335" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="902" bodyend="929"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="333" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="898" bodyend="925"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a53927cca2d935fa7ab2b33e3d6b13dab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -944,7 +934,7 @@ Immediately offloads the present cudaFlow onto a GPU and repeatedly executes it 
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="351" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="937" bodyend="941"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="349" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="933" bodyend="937"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a97c248490dbde983378f757239eaed4a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1018,7 +1008,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="374" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="945" bodyend="955"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="372" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="941" bodyend="951"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1ab5a7c12e383be4972844a9f29033e487" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1109,7 +1099,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="404" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="959" bodyend="973"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="402" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="955" bodyend="969"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a552f2da29009113beee4ee90bc95ae65" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1206,7 +1196,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="429" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="977" bodyend="988"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="427" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="973" bodyend="984"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1258,7 +1248,7 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="473" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1004" bodyend="1031"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="471" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1000" bodyend="1027"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -1281,7 +1271,7 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="483" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="498" bodyend="508"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="481" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="496" bodyend="506"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -1301,7 +1291,7 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para><para>A cudaFlow is a task and will be run by one worker thread in the executor. That is, the callable that defines how the given cudaFlow runs will be executed sequentially. </para>    </detaileddescription>
-    <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="52" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="52" bodyend="484"/>
+    <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" line="52" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="52" bodyend="482"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaFlow_1aa9f806b778db070e544686487bc88faf" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>_executable</name></member>
       <member refid="classtf_1_1cudaFlow_1aa8b4d0cddb73fec80fd7ac2fd58cfefc" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>_graph</name></member>
@@ -1310,8 +1300,8 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
       <member refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>copy</name></member>
       <member refid="classtf_1_1cudaFlow_1ad4c3e001db151486c8479151a2108d37" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>cudaFlow</name></member>
       <member refid="classtf_1_1cudaFlow_1a46c82c98d0fc7724394de77f4e3ecbce" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>cudaFlow</name></member>
-      <member refid="classtf_1_1cudaFlow_1aae23bdac4c64b842db5b6d4363d331fd" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>dump</name></member>
-      <member refid="classtf_1_1cudaFlow_1a5131b64df24d6c0b6d02c3e33c60003c" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>dump_native_graph</name></member>
+      <member refid="classtf_1_1cudaFlow_1a7f97b68fa7c889db49b26aa71a46a7cf" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>dump</name></member>
+      <member refid="classtf_1_1cudaFlow_1a43507f21eb9cb77667ffe0ac7e6ae635" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>dump_native_graph</name></member>
       <member refid="classtf_1_1cudaFlow_1a1926f45a038d8faa9c1b1ee43fd29a93" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>empty</name></member>
       <member refid="classtf_1_1cudaFlow_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>Executor</name></member>
       <member refid="classtf_1_1cudaFlow_1a21d4447bc834f4d3e1bb4772c850d090" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>fill</name></member>
