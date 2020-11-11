@@ -14,6 +14,116 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 /**
+@brief gets the memcpy node parameter of a copy task
+*/
+template <typename T, 
+  std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
+>
+cudaMemcpy3DParms cuda_get_copy_parms(T* tgt, const T* src, size_t num) {
+
+  using U = std::decay_t<T>;
+
+  cudaMemcpy3DParms p;
+
+  p.srcArray = nullptr;
+  p.srcPos = ::make_cudaPos(0, 0, 0);
+  p.srcPtr = ::make_cudaPitchedPtr(const_cast<T*>(src), num*sizeof(U), num, 1);
+  p.dstArray = nullptr;
+  p.dstPos = ::make_cudaPos(0, 0, 0);
+  p.dstPtr = ::make_cudaPitchedPtr(tgt, num*sizeof(U), num, 1);
+  p.extent = ::make_cudaExtent(num*sizeof(U), 1, 1);
+  p.kind = cudaMemcpyDefault;
+
+  return p;
+}
+
+/**
+@brief gets the memcpy node parameter of a memcpy task (untyped)
+*/
+inline cudaMemcpy3DParms cuda_get_memcpy_parms(
+  void* tgt, const void* src, size_t bytes
+)  {
+
+  // Parameters in cudaPitchedPtr
+  // d   - Pointer to allocated memory
+  // p   - Pitch of allocated memory in bytes
+  // xsz - Logical width of allocation in elements
+  // ysz - Logical height of allocation in elements
+  cudaMemcpy3DParms p;
+  p.srcArray = nullptr;
+  p.srcPos = ::make_cudaPos(0, 0, 0);
+  p.srcPtr = ::make_cudaPitchedPtr(const_cast<void*>(src), bytes, bytes, 1);
+  p.dstArray = nullptr;
+  p.dstPos = ::make_cudaPos(0, 0, 0);
+  p.dstPtr = ::make_cudaPitchedPtr(tgt, bytes, bytes, 1);
+  p.extent = ::make_cudaExtent(bytes, 1, 1);
+  p.kind = cudaMemcpyDefault;
+
+  return p;
+}
+
+/**
+@brief gets the memset node parameter of a memcpy task (untyped)
+*/
+inline cudaMemsetParams cuda_get_memset_parms(void* dst, int ch, size_t count) {
+
+  cudaMemsetParams p;
+  p.dst = dst;
+  p.value = ch;
+  p.pitch = 0;
+  //p.elementSize = (count & 1) == 0 ? ((count & 3) == 0 ? 4 : 2) : 1;
+  //p.width = (count & 1) == 0 ? ((count & 3) == 0 ? count >> 2 : count >> 1) : count;
+  p.elementSize = 1;  // either 1, 2, or 4
+  p.width = count;
+  p.height = 1;
+
+  return p;
+}
+
+/**
+@brief gets the memset node parameter of a fill task (typed)
+*/
+template <typename T, std::enable_if_t<
+  is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>* = nullptr
+>
+cudaMemsetParams cuda_get_fill_parms(T* dst, T value, size_t count) {
+  
+  cudaMemsetParams p;
+  p.dst = dst;
+
+  // perform bit-wise copy
+  p.value = 0;  // crucial
+  static_assert(sizeof(T) <= sizeof(p.value), "internal error");
+  std::memcpy(&p.value, &value, sizeof(T));
+
+  p.pitch = 0;
+  p.elementSize = sizeof(T);  // either 1, 2, or 4
+  p.width = count;
+  p.height = 1;
+
+  return p;
+}
+
+/**
+@brief gets the memset node parameter of a zero task (typed)
+*/
+template <typename T, std::enable_if_t<
+  is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>* = nullptr
+>
+cudaMemsetParams cuda_get_zero_parms(T* dst, size_t count) {
+
+  cudaMemsetParams p;
+  p.dst = dst;
+  p.value = 0;
+  p.pitch = 0;
+  p.elementSize = sizeof(T);  // either 1, 2, or 4
+  p.width = count;
+  p.height = 1;
+
+  return p;
+}
+
+/**
 @brief queries the number of root nodes in a native CUDA graph
 */
 inline size_t cuda_get_graph_num_root_nodes(cudaGraph_t graph) {

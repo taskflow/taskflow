@@ -432,14 +432,14 @@ taskflow.emplace(tf::cudaFlow& cf) {
 
 We currently support the following methods to update task parameters
 from an offloaded %cudaFlow:
-  + tf::cudaFlow::update_kernel updates the kernel parameters from a kernel task
-    created from tf::cudaFlow::kernel and tf::cudaFlow::kernel_on
-  + tf::cudaFlow::update_copy updates the memcpy parameters from a copy task
-    created from tf::cudaFlow::copy
-  + tf::cudaFlow::update_memcpy updates the memcpy parameters from a memcpy task
-    created from tf::cudaFlow::memcpy
-  + tf::cudaFlow::update_memset updates the memset parameters from a memset task
-    created from tf::cudaFlow::memset
+  + tf::cudaFlow::update_kernel updates the parameters of a kernel task
+  + tf::cudaFlow::update_copy updates the parameters of a memcpy task to form a copy task
+  + tf::cudaFlow::update_memcpy updates the parameters of a memcpy task
+  + tf::cudaFlow::update_memset updates the parameters of a memset task
+  + tf::cudaFlow::update_fill updates the parameters of a memset task to form a fill task
+  + tf::cudaFlow::update_zero updates the parameters of a memset task to form a zero task
+
+Please visit the reference page of tf::cudaFlow for more details.
 
 @attention
 There are quite a few limitations on update methods:

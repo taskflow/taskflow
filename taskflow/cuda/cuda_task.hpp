@@ -19,12 +19,13 @@ namespace tf {
 @brief enumeration of all cudaTask types
 */
 enum cudaTaskType {
-  CUDA_EMPTY_TASK     = cudaNode::CUDA_EMPTY_TASK,
-  CUDA_MEMSET_TASK    = cudaNode::CUDA_MEMSET_TASK,
-  CUDA_MEMCPY_TASK    = cudaNode::CUDA_MEMCPY_TASK,
-  CUDA_KERNEL_TASK    = cudaNode::CUDA_KERNEL_TASK,
+  CUDA_EMPTY_TASK   = cudaNode::CUDA_EMPTY_TASK,
+  CUDA_HOST_TASK    = cudaNode::CUDA_HOST_TASK,
+  CUDA_MEMSET_TASK  = cudaNode::CUDA_MEMSET_TASK,
+  CUDA_MEMCPY_TASK  = cudaNode::CUDA_MEMCPY_TASK,
+  CUDA_KERNEL_TASK  = cudaNode::CUDA_KERNEL_TASK,
   CUDA_SUBFLOW_TASK = cudaNode::CUDA_SUBFLOW_TASK,
-  CUDA_CAPTURE_TASK   = cudaNode::CUDA_CAPTURE_TASK
+  CUDA_CAPTURE_TASK = cudaNode::CUDA_CAPTURE_TASK
 };
 
 /**
@@ -33,6 +34,7 @@ enum cudaTaskType {
 inline const char* cuda_task_type_to_string(cudaTaskType type) {
   switch(type) {
     case CUDA_EMPTY_TASK:   return "empty";
+    case CUDA_HOST_TASK:    return "host";
     case CUDA_MEMSET_TASK:  return "memset";
     case CUDA_MEMCPY_TASK:  return "memcpy";
     case CUDA_KERNEL_TASK:  return "kernel";
