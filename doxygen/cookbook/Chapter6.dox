@@ -199,25 +199,6 @@ Running the program gives the following
 
 @code{.shell-session}
 +-----------------------------------------------------------------------------+
-| NVIDIA-SMI 430.50       Driver Version: 430.50       CUDA Version: 10.1     |
-|-------------------------------+----------------------+----------------------+
-| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
-|===============================+======================+======================|
-|   0  GeForce RTX 208...  Off  | 00000000:18:00.0 Off |                  N/A |
-| 32%   35C    P2    68W / 250W |    163MiB / 11019MiB |      0%      Default |
-+-------------------------------+----------------------+----------------------+
-|   1  GeForce RTX 208...  Off  | 00000000:3B:00.0 Off |                  N/A |
-| 33%   43C    P2   247W / 250W |    293MiB / 11019MiB |    100%      Default |
-+-------------------------------+----------------------+----------------------+
-|   2  GeForce RTX 208...  Off  | 00000000:86:00.0 Off |                  N/A |
-| 32%   37C    P0    72W / 250W |     10MiB / 11019MiB |      0%      Default |
-+-------------------------------+----------------------+----------------------+
-|   3  GeForce RTX 208...  Off  | 00000000:AF:00.0 Off |                  N/A |
-| 31%   43C    P2   245W / 250W |    293MiB / 11019MiB |    100%      Default |
-+-------------------------------+----------------------+----------------------+
-                                                                               
-+-----------------------------------------------------------------------------+
 | Processes:                                                       GPU Memory |
 |  GPU       PID   Type   Process name                             Usage      |
 |=============================================================================|
@@ -454,7 +435,7 @@ tf::cudaTask saxpy = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy)
 saxpy.succeed(h2d_x, h2d_y)   // kernel runs after  host-to-device copy
      .precede(d2h_x, d2h_y);  // kernel runs before device-to-host copy
 
-cf.offload();  // offload and runs the standalone cudaFlow once
+cf.offload();  // offload and run the standalone cudaFlow once
 @endcode
 
 @attention

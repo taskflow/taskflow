@@ -23,20 +23,34 @@ The following example creates a CUDA graph that captures two kernel tasks,
 runs before @c task_2 (i.e., @c my_kernel_2).
 
 @code{.cpp}
-tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
-  // capture my_kernel_1 through a stream managed by capturer
-  tf::cudaTask task_1 = capturer.on([&](cudaStream_t stream){ 
-    my_kernel_1<<<grid_1, block_1, shm_size_1, stream>>>(my_parameters_1);
-  }).name("my_kernel_1");
+#include <taskflow/cudaflow.hpp>
 
-  // capture my_kernel_2 through a stream managed by capturer
-  tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){ 
-    my_kernel_2<<<grid_2, block_2, shm_size_2, stream>>>(my_parameters_2);
-  }).name("my_kernel_2");
+int main() {
 
-  // my_kernel_1 runs before my_kernel_2
-  task_1.precede(task_2);
-}).name("capturer");
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+    // capture my_kernel_1 through a stream managed by capturer
+    tf::cudaTask task_1 = capturer.on([&](cudaStream_t stream){ 
+      my_kernel_1<<<grid_1, block_1, shm_size_1, stream>>>(my_parameters_1);
+    }).name("my_kernel_1");
+  
+    // capture my_kernel_2 through a stream managed by capturer
+    tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){ 
+      my_kernel_2<<<grid_2, block_2, shm_size_2, stream>>>(my_parameters_2);
+    }).name("my_kernel_2");
+  
+    // my_kernel_1 runs before my_kernel_2
+    task_1.precede(task_2);
+  }).name("capturer");
+
+  executor.run(taskflow).wait();
+
+  taskflow.dump(std::cout);
+
+  return 0;
+}
 @endcode
 
 @dotfile images/cudaflow_capturer_1.dot
