@@ -45,10 +45,9 @@ class cudaFlowCapturerBase {
     
     /**
     @brief dumps the capture graph into a DOT format through an
-           output stream that defines the stream insertion operator @c <<
+           output stream
     */
-    template<typename T>
-    void dump(T& os) const;
+    void dump(std::ostream& os) const;
     
     /**
     @brief captures a sequential CUDA operations from the given callable
@@ -231,8 +230,7 @@ inline cudaFlowCapturerBase::cudaFlowCapturerBase(cudaGraph& g) :
 }
 
 // Procedure: dump
-template <typename T>
-void cudaFlowCapturerBase::dump(T& os) const {
+inline void cudaFlowCapturerBase::dump(std::ostream& os) const {
   _graph->dump(os, nullptr, "");
 }
 

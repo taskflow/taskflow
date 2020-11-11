@@ -84,20 +84,18 @@ class cudaFlow {
     
     /**
     @brief dumps the %cudaFlow graph into a DOT format through an
-           output stream that defines the stream insertion operator @c <<
+           output stream
     */
-    template<typename T>
-    void dump(T& os) const;
+    void dump(std::ostream& os) const;
     
     /**
     @brief dumps the native CUDA graph into a DOT format through an
-           output stream that defines the stream insertion operator @c <<
+           output stream 
 
     The native CUDA graph may be different from the upper-level %cudaFlow 
     graph when flow capture is involved.
     */
-    template<typename T>
-    void dump_native_graph(T& os) const;
+    void dump_native_graph(std::ostream& os) const;
 
     // ------------------------------------------------------------------------
     // Graph building routines
@@ -522,14 +520,12 @@ inline bool cudaFlow::empty() const {
 }
 
 // Procedure: dump
-template <typename T>
-void cudaFlow::dump(T& os) const {
+inline void cudaFlow::dump(std::ostream& os) const {
   _graph.dump(os, nullptr, "");
 }
 
 // Procedure: dump
-template <typename T>
-void cudaFlow::dump_native_graph(T& os) const {
+inline void cudaFlow::dump_native_graph(std::ostream& os) const {
   cuda_dump_graph(os, _graph._native_handle);
 }
 

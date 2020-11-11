@@ -159,10 +159,9 @@ class ChromeObserver : public ObserverInterface {
 
     /**
     @brief dumps the timelines into a @ChromeTracing format through 
-           an output stream object that defines stream insertion operator @c <<
+           an output stream 
     */
-    template <typename T>
-    void dump(T& ostream) const;
+    void dump(std::ostream& ostream) const;
 
     /**
     @brief dumps the timelines into a @ChromeTracing format
@@ -245,8 +244,7 @@ inline void ChromeObserver::clear() {
 }
 
 // Procedure: dump
-template <typename T>
-void ChromeObserver::dump(T& os) const {
+inline void ChromeObserver::dump(std::ostream& os) const {
 
   size_t first;
 
@@ -392,25 +390,24 @@ class TFProfObserver : public ObserverInterface {
     
     /**
     @brief dumps the timelines into a @TFProf format through 
-           an output stream object that defines stream insertion operator @c <<
+           an output stream
     */
-    template <typename T>
-    void dump(T& ostream) const;
+    void dump(std::ostream& ostream) const;
 
     /**
     @brief dumps the timelines into a JSON string
     */
-    inline std::string dump() const;
+    std::string dump() const;
 
     /**
     @brief clears the timeline data
     */
-    inline void clear();
+    void clear();
 
     /**
     @brief queries the number of tasks observed
     */
-    inline size_t num_tasks() const;
+    size_t num_tasks() const;
 
   private:
     
@@ -486,8 +483,7 @@ inline void TFProfObserver::clear() {
 }
 
 // Procedure: dump
-template <typename T>
-void TFProfObserver::dump(T& os) const {
+inline void TFProfObserver::dump(std::ostream& os) const {
 
   size_t first;
 

@@ -90,10 +90,9 @@ class Taskflow : public FlowBuilder {
     
     /**
     @brief dumps the taskflow to a DOT format through an output stream
-           that defines the stream insertion operator @c <<
+           using the stream insertion operator @c <<
     */
-    template <typename T>
-    void dump(T& ostream) const;
+    void dump(std::ostream& ostream) const;
     
     /**
     @brief dumps the taskflow to a std::string of DOT format
@@ -151,14 +150,11 @@ class Taskflow : public FlowBuilder {
 
     std::list<Topology> _topologies;
     
-    template <typename T>
-    void _dump(T&, const Taskflow*) const;
+    void _dump(std::ostream&, const Taskflow*) const;
     
-    template <typename T>
-    void _dump(T&, const Node*, Dumper&) const;
+    void _dump(std::ostream&, const Node*, Dumper&) const;
     
-    template <typename T>
-    void _dump(T&, const Graph&, Dumper&) const;
+    void _dump(std::ostream&, const Graph&, Dumper&) const;
 };
 
 // Constructor
@@ -217,16 +213,14 @@ inline std::string Taskflow::dump() const {
 }
 
 // Function: dump
-template <typename T>
-void Taskflow::dump(T& os) const {
+inline void Taskflow::dump(std::ostream& os) const {
   os << "digraph Taskflow {\n";
   _dump(os, this);
   os << "}\n";
 }
 
 // Procedure: _dump
-template <typename T>
-void Taskflow::_dump(T& os, const Taskflow* top) const {
+inline void Taskflow::_dump(std::ostream& os, const Taskflow* top) const {
   
   Dumper dumper;
   
@@ -248,8 +242,9 @@ void Taskflow::_dump(T& os, const Taskflow* top) const {
 }
 
 // Procedure: _dump
-template <typename T>
-void Taskflow::_dump(T& os, const Node* node, Dumper& dumper) const {
+inline void Taskflow::_dump(
+  std::ostream& os, const Node* node, Dumper& dumper
+) const {
 
   os << 'p' << node << "[label=\"";
   if(node->_name.empty()) os << 'p' << node;
@@ -322,8 +317,9 @@ void Taskflow::_dump(T& os, const Node* node, Dumper& dumper) const {
 }
 
 // Procedure: _dump
-template <typename T>
-void Taskflow::_dump(T& os, const Graph& graph, Dumper& dumper) const {
+inline void Taskflow::_dump(
+  std::ostream& os, const Graph& graph, Dumper& dumper
+) const {
     
   for(const auto& n : graph._nodes) {
 

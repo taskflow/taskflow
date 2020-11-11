@@ -55,10 +55,6 @@ class Graph {
 
     Node* emplace_back();
     
-    // TODO
-    template <typename T>
-    void dump(T& os, Taskflow* = nullptr);
-
   private:
 
     std::vector<Node*> _nodes;
@@ -143,12 +139,12 @@ class Node {
     
   using handle_t = std::variant<
     std::monostate,  // placeholder
-    cudaFlowTask,     // cudaFlow
-    StaticTask,       // static tasking
-    DynamicTask,      // dynamic tasking
-    ConditionTask,    // conditional tasking
-    ModuleTask,       // composable tasking
-    AsyncTask         // async work
+    StaticTask,      // static tasking
+    DynamicTask,     // dynamic tasking
+    ConditionTask,   // conditional tasking
+    ModuleTask,      // composable tasking
+    AsyncTask,       // async work
+    cudaFlowTask     // cudaFlow
   >;
   
   public:
@@ -160,7 +156,7 @@ class Node {
   constexpr static auto CONDITION_TASK   = get_index_v<ConditionTask, handle_t>; 
   constexpr static auto MODULE_TASK      = get_index_v<ModuleTask, handle_t>; 
   constexpr static auto ASYNC_TASK       = get_index_v<AsyncTask, handle_t>; 
-  constexpr static auto CUDAFLOW_TASK = get_index_v<cudaFlowTask, handle_t>; 
+  constexpr static auto CUDAFLOW_TASK    = get_index_v<cudaFlowTask, handle_t>; 
 
     template <typename... Args>
     Node(Args&&... args);

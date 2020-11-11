@@ -317,7 +317,6 @@ class cudaNode {
     template <typename C>
     Capture(C&&);
     
-    // TODO: probably better to use void(cudaStream_t)
     std::function<void(cudaStream_t)> work;
   };
 
