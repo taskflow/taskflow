@@ -112,7 +112,7 @@ For example:
 
 The above command turns off building %Taskflow examples.
 
-@section BAIBuildCUDACode Build CUDA Code
+@section BAIBuildCUDACode Build CUDA Examples and Unit Tests
 
 To build CUDA code, including unit tests and examples, 
 define the CMake option @c TF_BUILD_CUDA to @c ON as follows:
@@ -122,18 +122,12 @@ define the CMake option @c TF_BUILD_CUDA to @c ON as follows:
 ~$ make
 @endcode
 
-To compile a %Taskflow program with CUDA (e.g., tf::cudaFlow), 
-use @nvcc with C++17 enabled as follows:
+@subsection BAICompileTaskflowWithCUDA Compile Taskflow with CUDA
 
-@code{.shell-session}
-~$ nvcc my_taskflow_cuda_program.cu -std=c++17 -o my_taskflow_cuda_program
-@endcode
+Please visit the page @subpage CompileTaskflowWithCUDA for details.
 
-%Taskflow's tasking interface for GPU programming 
-is built on top of @cudaGraph, which allows work to be efficiently defined as 
-graphs rather than single operations. 
 
-@section BAIBuildSYCLCode Build SYCL Code
+@section BAIBuildSYCLCode Build SYCL Code Examples and Unit Tests
 
 TBD
 

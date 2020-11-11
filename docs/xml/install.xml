@@ -3,6 +3,7 @@
   <compounddef id="install" kind="page">
     <compoundname>install</compoundname>
     <title>Building and Installing</title>
+    <innerpage refid="CompileTaskflowWithCUDA">Compile Taskflow with CUDA</innerpage>
     <tableofcontents/>
     <briefdescription>
     </briefdescription>
@@ -74,13 +75,15 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 </para><para>To enable or disable a specific option, use <computeroutput>-D</computeroutput> in the CMake build. For example:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_EXAMPLES=OFF</highlight></codeline>
 </programlisting></para><para>The above command turns off building Taskflow examples.</para></sect1>
 <sect1 id="install_1BAIBuildCUDACode">
-<title>Build CUDA Code</title>
+<title>Build CUDA Examples and Unit Tests</title>
 <para>To build CUDA code, including unit tests and examples, define the CMake option <computeroutput>TF_BUILD_CUDA</computeroutput> to <computeroutput>ON</computeroutput> as follows:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_CUDA=ON</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
-</programlisting></para><para>To compile a Taskflow program with CUDA (e.g., <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>), use <ulink url="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</ulink> with C++17 enabled as follows:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>my_taskflow_cuda_program.cu<sp/>-std=c++17<sp/>-o<sp/>my_taskflow_cuda_program</highlight></codeline>
-</programlisting></para><para>Taskflow&apos;s tasking interface for GPU programming is built on top of <ulink url="https://developer.nvidia.com/blog/cuda-graphs/">CUDA Graph</ulink>, which allows work to be efficiently defined as graphs rather than single operations.</para></sect1>
+</programlisting></para><sect2 id="install_1BAICompileTaskflowWithCUDA">
+<title>Compile Taskflow with CUDA</title>
+<para>Please visit the page <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref> for details.</para></sect2>
+</sect1>
 <sect1 id="install_1BAIBuildSYCLCode">
-<title>Build SYCL Code</title>
+<title>Build SYCL Code Examples and Unit Tests</title>
 <para>TBD</para></sect1>
 <sect1 id="install_1BAIBuildDocumentation">
 <title>Build Documentation</title>

@@ -100,7 +100,8 @@ tf::Executor executor;  // create an executor
   // run the taskflow
   executor.run(f);
 
-} // at this point, taskflow might get destructed while it is running, resulting in undefined behavior
+} // leaving the scope will destroy taskflow while it is running, 
+  // resulting in undefined behavior
 @endcode
 
 Similarly, you should avoid touching a taskflow while it is running.
@@ -120,8 +121,8 @@ std::future<void> future = taskflow.run(f);  // non-blocking return
 f.emplace([](){ std::cout << "Add a new task\n"; });
 @endcode
 
-A rule of thumb is to always keep a taskflow alive in your function scope 
-while it is participating in an execution.
+You must always keep a taskflow alive and must not modify it while 
+it is being run by an executor.
 
 
 @section C2_ThreadSafety Touch an Executor from Multiple Threads
@@ -142,9 +143,6 @@ runtime.
  8: }
 @endcode
 
-@attention
-It is your responsibility to ensure all taskflows from different threads 
-remain alive during their executions; or it can result unexpected behavior or program crash.
 
 @section C2_Async Run a Task Asynchronously
 
@@ -181,7 +179,9 @@ executor.run(taskflow);
 executor.wait_for_all();   // wait for all tasks to finish
 @endcode
 
-The future object returned from the tf::Executor::async call does not block on destruction.
+@attention
+An @c async task does not belong to any taskflows.
+The future object returned from tf::Executor::async does not block on destruction.
 
 
 @section C2_Observer Observe Thread Activities

@@ -65,11 +65,6 @@
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
-            <dt id="a342562766963b1bbf65225803d93c071">
-              <span class="m-doc-wrap-bumper"><a href="#a342562766963b1bbf65225803d93c071" class="m-doc-self">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>(),
-              size_t M = <a href="namespacetf.html#abffa70155a5f160b7ceb86ee52ab2136" class="m-doc">cuda_<wbr />get_<wbr />num_<wbr />devices</a>()) <span class="m-label m-flat m-info">explicit</span> </span>
-            </dt>
-            <dd>constructs the executor with N/M cpu/gpu worker threads</dd>
             <dt id="a4910e89d89146b6d563d598b795eb4a9">
               <span class="m-doc-wrap-bumper"><a href="#a4910e89d89146b6d563d598b795eb4a9" class="m-doc-self">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>()) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
@@ -130,10 +125,6 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a6d6c28ed58211e4c27a99571e5bf0b6c" class="m-doc">num_topologies</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of running topologies at the time of this call</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a8acfc81ae6a64989761ce229262c9a21" class="m-doc">num_domains</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
-            </dt>
-            <dd>queries the number of worker domains</dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a6487d589cb1f6b078b69fd3bb1082345" class="m-doc">this_worker_id</a>(</span><span class="m-doc-wrap">) const -&gt; int</span>
             </dt>
@@ -353,13 +344,6 @@
             </h3>
             <p>queries the number of running topologies at the time of this call</p>
 <p>When a taskflow is submitted to an executor, a topology is created to store runtime metadata of the running taskflow.</p>
-          </div></section>
-          <section class="m-doc-details" id="a8acfc81ae6a64989761ce229262c9a21"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">size_t tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8acfc81ae6a64989761ce229262c9a21" class="m-doc-self">num_domains</a>(</span><span class="m-doc-wrap">) const</span></span>
-            </h3>
-            <p>queries the number of worker domains</p>
-<p>Each domain manages a subset of worker threads to execute domain-specific tasks, for example, HOST tasks and CUDA tasks.</p>
           </div></section>
           <section class="m-doc-details" id="a6487d589cb1f6b078b69fd3bb1082345"><div>
             <h3>

@@ -60,7 +60,8 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(f);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>at<sp/>this<sp/>point,<sp/>taskflow<sp/>might<sp/>get<sp/>destructed<sp/>while<sp/>it<sp/>is<sp/>running,<sp/>resulting<sp/>in<sp/>undefined<sp/>behavior</highlight></codeline>
+<codeline><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>leaving<sp/>the<sp/>scope<sp/>will<sp/>destroy<sp/>taskflow<sp/>while<sp/>it<sp/>is<sp/>running,<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>resulting<sp/>in<sp/>undefined<sp/>behavior</highlight></codeline>
 </programlisting></para><para>Similarly, you should avoid touching a taskflow while it is running.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Add<sp/>tasks<sp/>into<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
@@ -73,7 +74,7 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>alter<sp/>the<sp/>taskflow<sp/>while<sp/>running<sp/>leads<sp/>to<sp/>undefined<sp/>behavior<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">f.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Add<sp/>a<sp/>new<sp/>task\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-</programlisting></para><para>A rule of thumb is to always keep a taskflow alive in your function scope while it is participating in an execution.</para></sect1>
+</programlisting></para><para>You must always keep a taskflow alive and must not modify it while it is being run by an executor.</para></sect1>
 <sect1 id="chapter2_1C2_ThreadSafety">
 <title>Touch an Executor from Multiple Threads</title>
 <para>All <computeroutput>run_*</computeroutput> methods are <emphasis>thread-safe</emphasis>. You can have multiple threads call these methods from an executor to run different taskflows. However, the order which taskflow runs first is non-deterministic and is up to the runtime.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">1:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
@@ -84,8 +85,7 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal">6:<sp/><sp/><sp/><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflows[i]);<sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>my<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">7:<sp/><sp/><sp/>}).detach();</highlight></codeline>
 <codeline><highlight class="normal">8:<sp/>}</highlight></codeline>
-</programlisting></para><para><simplesect kind="attention"><para>It is your responsibility to ensure all taskflows from different threads remain alive during their executions; or it can result unexpected behavior or program crash.</para></simplesect>
-</para></sect1>
+</programlisting></para></sect1>
 <sect1 id="chapter2_1C2_Async">
 <title>Run a Task Asynchronously</title>
 <para>In addition to run a taskflow, the executor provides a STL-styled method, <ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">tf::Executor::async</ref>, for you to run a callable object (e.g., function) asynchronously. A common use case of the method is using the executor as a thread pool.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>future<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">async</ref>([](){</highlight></codeline>
@@ -105,7 +105,8 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow);</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>all<sp/>tasks<sp/>to<sp/>finish</highlight></codeline>
-</programlisting></para><para>The future object returned from the <ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">tf::Executor::async</ref> call does not block on destruction.</para></sect1>
+</programlisting></para><para><simplesect kind="attention"><para>An <computeroutput>async</computeroutput> task does not belong to any taskflows. The future object returned from <ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">tf::Executor::async</ref> does not block on destruction.</para></simplesect>
+</para></sect1>
 <sect1 id="chapter2_1C2_Observer">
 <title>Observe Thread Activities</title>
 <para>You can observe thread activities in an executor when a worker thread participates in executing a task and leaves the execution using <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref> <ndash/> an <emphasis>interface</emphasis> class that provides a set of methods for you to define what to do when a thread enters and leaves the execution context of a task.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">ObserverInterface<sp/>{</highlight></codeline>

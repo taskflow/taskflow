@@ -10,7 +10,7 @@ While it may be difficult to be keep all things consistent when introducing new 
 we continue to try our best to ensure backward compatibility.
 
 Starting from v3, we have migrated the codebase to the @CPP17 standard
-with improved expressivity and efficiency.
+to largely improve the expressivity and efficiency of the codebase.
 
 [TOC]
 
@@ -24,7 +24,7 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 
 @li GNU C++ Compiler at least v7.0 with -std=c++17
 @li Clang C++ Compiler at least v6.0 with -std=c++17
-@li Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)
+@li Microsoft Visual Studio at least v19.27 with /std:c++17
 @li AppleClang Xode Version at least v12.0 with -std=c++17
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
 
@@ -56,9 +56,12 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
     (see @ref C6_UsecudaFlowInAStandaloneEnvironment)
 @li added tf::cudaFlow::offload and update methods to run a %cudaFlow from the task callable and update task parameters (see @ref C6_OffloadAndUpdateAcudaFlow)
 @li added a new library tf::cublasFlowCapturer to support BLAS on top of @cuBLAS (see @ref LinearAlgebracublasFlowCapturer)
+@li added a custom graph interface to support dynamic polymorphism for tf::cudaGraph
+@li added support for compiling %Taskflow and CUDA source code separately (see @ref CompileTaskflowWithCUDA)
 
 @section release-3-0-0_documentation Documentation
 
+@li added @ref CompileTaskflowWithCUDA
 @li added @ref chapter7
 @li added @ref GPUAlgorithms
   + @ref SingleTaskCUDA to run a kernel function in just a single thread

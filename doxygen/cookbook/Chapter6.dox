@@ -20,7 +20,7 @@ The following example implements the canonical saxpy (A·X Plus Y) task graph.
 
 
 @code{.cpp}
- 1: #include <taskflow/taskflow.hpp>
+ 1: #include <taskflow/cudaflow.hpp>
  2: 
  3: // saxpy (single-precision A·X Plus Y) kernel
  4: __global__ void saxpy(int n, float a, float *x, float *y) {
@@ -94,6 +94,9 @@ that is commensurate with their domain knowledge.
 Users focus on developing high-performance kernels using 
 a native CUDA toolkit, while leaving difficult task parallelism to %Taskflow.
 
+@attention
+You need to include @c taskflow/cudaflow.hpp in order to use tf::cudaFlow.
+
 @section C6_Compile_a_cudaFlow_program Compile a cudaFlow Program
 
 Use @nvcc (at least v11.1) to compile a %cudaFlow program:
@@ -103,25 +106,7 @@ Use @nvcc (at least v11.1) to compile a %cudaFlow program:
 ~$ ./my_cudaflow
 @endcode
 
-Our source autonomously enables %cudaFlow when detecting a CUDA compiler.
-
-@section C6_configure_the_number_of_gpu_workers Configure the Number of GPU workers
-
-By default, the executor spawns one worker per GPU. 
-We dedicate a worker set to each heterogeneous domain, for example, 
-host domain and CUDA domain.
-If your systems has 4 CPU cores and 2 GPUs, the default number of workers
-spawned by the executor is 4+2, 
-where 4 workers run CPU tasks and 2 workers run GPU tasks (%cudaFlow).
-You can construct an executor with different numbers of GPU workers.
-
-@code{.cpp}
-tf::Executor executor(17, 8);  // 17 CPU workers and 8 GPU workers
-@endcode
-
-The above executor spawns 17 and 8 workers for running CPU and GPU tasks, respectively.
-These workers coordinate with each other to balance the load in a work-stealing loop
-highly optimized for performance.
+Please visit the page @ref CompileTaskflowWithCUDA for more details.
 
 @section C6_run_a_cudaflow_on_multiple_gpus Run a cudaFlow on Multiple GPUs
 
@@ -141,7 +126,7 @@ You can place a kernel on a GPU explicitly through the method tf::cudaFlow::kern
 that takes the GPU device identifier in the first argument.
 
 @code{.cpp}
- 1: #include <taskflow/taskflow.hpp>
+ 1: #include <taskflow/cudaflow.hpp>
  2: 
  3: // saxpy (single-precision A·X Plus Y) kernel
  4: __global__ void saxpy(int n, float a, float *x, float *y, float *z) {
@@ -214,25 +199,6 @@ Running the program gives the following
 
 @code{.shell-session}
 +-----------------------------------------------------------------------------+
-| NVIDIA-SMI 430.50       Driver Version: 430.50       CUDA Version: 10.1     |
-|-------------------------------+----------------------+----------------------+
-| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
-|===============================+======================+======================|
-|   0  GeForce RTX 208...  Off  | 00000000:18:00.0 Off |                  N/A |
-| 32%   35C    P2    68W / 250W |    163MiB / 11019MiB |      0%      Default |
-+-------------------------------+----------------------+----------------------+
-|   1  GeForce RTX 208...  Off  | 00000000:3B:00.0 Off |                  N/A |
-| 33%   43C    P2   247W / 250W |    293MiB / 11019MiB |    100%      Default |
-+-------------------------------+----------------------+----------------------+
-|   2  GeForce RTX 208...  Off  | 00000000:86:00.0 Off |                  N/A |
-| 32%   37C    P0    72W / 250W |     10MiB / 11019MiB |      0%      Default |
-+-------------------------------+----------------------+----------------------+
-|   3  GeForce RTX 208...  Off  | 00000000:AF:00.0 Off |                  N/A |
-| 31%   43C    P2   245W / 250W |    293MiB / 11019MiB |    100%      Default |
-+-------------------------------+----------------------+----------------------+
-                                                                               
-+-----------------------------------------------------------------------------+
 | Processes:                                                       GPU Memory |
 |  GPU       PID   Type   Process name                             Usage      |
 |=============================================================================|
@@ -294,9 +260,7 @@ given that <tt>sizeof(T)</tt> is 1, 2, or 4 bytes.
 For example, the following code sets each element in the array @c target to 1234.
 
 @code{.cpp}
-taskflow.emplace([&](tf::cudaFlow& cf){
-  cf.fill(target, 1234, count);
-});
+taskflow.emplace([&](tf::cudaFlow& cf){ cf.fill(target, 1234, count); });
 @endcode
 
 Similar concept applies to cudaFlow::memcpy and cudaFlow::copy as well.
@@ -471,7 +435,7 @@ tf::cudaTask saxpy = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy)
 saxpy.succeed(h2d_x, h2d_y)   // kernel runs after  host-to-device copy
      .precede(d2h_x, d2h_y);  // kernel runs before device-to-host copy
 
-cf.offload();  // offload and runs the standalone cudaFlow once
+cf.offload();  // offload and run the standalone cudaFlow once
 @endcode
 
 @attention

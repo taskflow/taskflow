@@ -7,7 +7,7 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 3.0.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</para><para>Starting from v3, we have migrated the codebase to the <ulink url="https://en.wikipedia.org/wiki/C%2B%2B17">C++17</ulink> standard with improved expressivity and efficiency.</para><sect1 id="release-3-0-0_1release-3-0-0_download">
+<para>Taskflow 3.0.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</para><para>Starting from v3, we have migrated the codebase to the <ulink url="https://en.wikipedia.org/wiki/C%2B%2B17">C++17</ulink> standard to largely improve the expressivity and efficiency of the codebase.</para><sect1 id="release-3-0-0_1release-3-0-0_download">
 <title>Download</title>
 <para>To download the newest version of Taskflow, please clone from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para></sect1>
 <sect1 id="release-3-0-0_1release-3-0-0_system_requirements">
@@ -15,7 +15,7 @@
 <para>To use Taskflow v3.0.0, you need a compiler that supports C++17:</para><para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v7.0 with -std=c++17 </para></listitem>
 <listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para></listitem>
-<listitem><para>Microsoft Visual Studio at least v15.7 (MSVC++ 19.14) </para></listitem>
+<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para></listitem>
 <listitem><para>AppleClang Xode Version at least v12.0 with -std=c++17 </para></listitem>
 <listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17</para></listitem>
 </itemizedlist>
@@ -44,17 +44,20 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <listitem><para>added a new method <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref> to place a cudaFlow (<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>) on the given device context<itemizedlist>
 <listitem><para>removed tf::cudaFlow::device </para></listitem></itemizedlist>
 </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1aae23bdac4c64b842db5b6d4363d331fd" kindref="member">tf::cudaFlow::dump</ref> and <ref refid="classtf_1_1cudaFlowCapturerBase_1a56ef35d257232a3dc0d8ad86b5380215" kindref="member">tf::cudaFlowCapturerBase::dump</ref> to visualize cudaFlow<itemizedlist>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a7f97b68fa7c889db49b26aa71a46a7cf" kindref="member">tf::cudaFlow::dump</ref> and <ref refid="classtf_1_1cudaFlowCapturerBase_1ad785ad88cdcb896903e9fdc845d30bea" kindref="member">tf::cudaFlowCapturerBase::dump</ref> to visualize cudaFlow<itemizedlist>
 <listitem><para>supported recursive dump of a cudaFlow with child graphs </para></listitem></itemizedlist>
 </para></listitem>
 <listitem><para>added standalone cudaFlow without going through <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> (see <ref refid="chapter6_1C6_UsecudaFlowInAStandaloneEnvironment" kindref="member">Use cudaFlow in a Standalone Environment</ref>) </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> and update methods to run a cudaFlow from the task callable and update task parameters (see <ref refid="chapter6_1C6_OffloadAndUpdateAcudaFlow" kindref="member">Offload and Update a cudaFlow</ref>) </para></listitem>
-<listitem><para>added a new library <ref refid="classtf_1_1cublasFlowCapturer" kindref="compound">tf::cublasFlowCapturer</ref> to support BLAS on top of <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> (see <ref refid="LinearAlgebracublasFlowCapturer" kindref="compound">Linear Algebra (cublasFlowCapturer)</ref>)</para></listitem>
+<listitem><para>added a new library <ref refid="classtf_1_1cublasFlowCapturer" kindref="compound">tf::cublasFlowCapturer</ref> to support BLAS on top of <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> (see <ref refid="LinearAlgebracublasFlowCapturer" kindref="compound">Linear Algebra (cublasFlowCapturer)</ref>) </para></listitem>
+<listitem><para>added a custom graph interface to support dynamic polymorphism for tf::cudaGraph </para></listitem>
+<listitem><para>added support for compiling Taskflow and CUDA source code separately (see <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref>)</para></listitem>
 </itemizedlist>
 </para></sect1>
 <sect1 id="release-3-0-0_1release-3-0-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
+<listitem><para>added <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref> </para></listitem>
 <listitem><para>added <ref refid="chapter7" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref> </para></listitem>
 <listitem><para>added <ref refid="GPUAlgorithms" kindref="compound">GPU Algorithms</ref><itemizedlist>
 <listitem><para><ref refid="SingleTaskCUDA" kindref="compound">Single Task (cudaFlow)</ref> to run a kernel function in just a single thread</para></listitem><listitem><para><ref refid="ForEachCUDA" kindref="compound">Parallel Iterations (cudaFlow)</ref> to perform parallel iterations over a range</para></listitem><listitem><para><ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms (cudaFlow)</ref> to perform parallel transforms over a range</para></listitem><listitem><para><ref refid="LinearAlgebracublasFlowCapturer" kindref="compound">Linear Algebra (cublasFlowCapturer)</ref> to build GPU-accelerated linear algebra applications </para></listitem></itemizedlist>
