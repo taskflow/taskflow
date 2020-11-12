@@ -5,6 +5,28 @@
 namespace tf {
 
 // ---------------------------------------------------------------------------- 
+// global utility functions
+// ---------------------------------------------------------------------------- 
+//
+template <typename T, std::enable_if<
+  std::is_same_v<T, float> && std::is_same_v<T, double>, void>* = nullptr
+>
+constexpr cublasOperation_t cublas_transpose_tran(cublasOperation_t op) {
+  if(op != CUBLAS_OP_N && op != CUBLAS_OP_T) {
+    TF_THROW("invalid transposition op for floating data types"); 
+  }
+  return (op == CUBLAS_OP_N) ? CUBLAS_OP_T : CUBLAS_OP_N;
+}
+
+constexpr cublasFillMode_t cublas_transpose_fill(cublasFillMode_t uplo) {
+  switch(uplo) {
+    case CUBLAS_FILL_MODE_LOWER: return CUBLAS_FILL_MODE_UPPER;
+    case CUBLAS_FILL_MODE_UPPER: return CUBLAS_FILL_MODE_LOWER;
+    default: return uplo;
+  }
+}
+
+// ---------------------------------------------------------------------------- 
 // cublasFlowCapturer helper functions
 // ---------------------------------------------------------------------------- 
 

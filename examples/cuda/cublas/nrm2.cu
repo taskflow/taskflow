@@ -1,13 +1,13 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/cudaflow.hpp>
-#include <taskflow/cuda/cublas.hpp>
+#include <taskflow/cublasflow.hpp>
 
 int main() {
 
   const int N = 1024;
   
   tf::Executor executor;
-  tf::Taskflow taskflow("cublas 2-norm");
+  tf::Taskflow taskflow("2-norm");
 
   std::vector<float> hvec(N, 1);
   float  hres;
@@ -31,7 +31,8 @@ int main() {
 
   taskflow.dump(std::cout);
 
-  std::cout << hres << '\n';  // 32
+  std::cout << "2-norm of an unity vector of 1024 elements is: " 
+            << hres << '\n';  // 32
 
   return 0;
 }

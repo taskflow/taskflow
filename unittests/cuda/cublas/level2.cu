@@ -184,3 +184,73 @@ TEST_CASE("c_gemv_t.float") {
 TEST_CASE("c_gemv_t.double") {
   gemv_test<double>(true, true);
 }
+
+// ----------------------------------------------------------------------------
+// trsv
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void c_trsv_test() {
+
+  int N = 3;
+
+  const std::vector<T> hA = {
+    2, 0, 0,
+    1, 2, 0,
+    1, 1, 2
+  };
+
+  const std::vector<T> hB = {
+    5,
+    4,
+    7
+  };
+
+  const std::vector<T> sol = {
+    2.5,
+    0.75,
+    1.875
+  };
+
+  std::vector<T> res(N, 0);
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  auto dA = tf::cuda_malloc_device<T>(hA.size());
+  auto dB = tf::cuda_malloc_device<T>(hB.size());
+
+  taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+    auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
+    auto h2dA = blas->copy(dA, hA.data(), hA.size());
+    auto h2dB = blas->copy(dB, hB.data(), hB.size());
+    auto trsv = blas->c_trsv(CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, CUBLAS_DIAG_NON_UNIT, 
+      N, dA, N, dB, 1
+    );
+    auto d2h = blas->copy(res.data(), dB, res.size());
+
+    trsv.succeed(h2dA, h2dB)
+        .precede(d2h);
+  });
+
+  executor.run(taskflow).wait();
+  
+  for(size_t i=0; i<res.size(); ++i) {
+    //std::cout << res[i] << '\n';
+    REQUIRE(std::fabs(res[i] - sol[i]) < 0.0001);
+  }
+
+}
+
+TEST_CASE("c_trsv.float") {
+  c_trsv_test<float>();
+}
+
+TEST_CASE("c_trsv.double") {
+  c_trsv_test<double>();
+}
+
+
+
+
+

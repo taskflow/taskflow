@@ -31,7 +31,7 @@ enum cudaTaskType {
 /**
 @brief convert a cuda_task type to a human-readable string
 */
-inline const char* cuda_task_type_to_string(cudaTaskType type) {
+constexpr const char* cuda_task_type_to_string(cudaTaskType type) {
   switch(type) {
     case CUDA_EMPTY_TASK:   return "empty";
     case CUDA_HOST_TASK:    return "host";

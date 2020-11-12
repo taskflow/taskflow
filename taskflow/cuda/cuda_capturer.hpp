@@ -58,7 +58,9 @@ class cudaFlowCapturerBase {
     This methods applies a stream created by the flow to capture 
     a sequence of CUDA operations defined in the callable.
     */
-    template <typename C>
+    template <typename C, std::enable_if_t<
+      std::is_invocable_r_v<void, C, cudaStream_t>, void>* = nullptr
+    >
     cudaTask on(C&& callable);
     
     /**
@@ -235,7 +237,9 @@ inline void cudaFlowCapturerBase::dump(std::ostream& os) const {
 }
 
 // Function: capture
-template <typename C>
+template <typename C, std::enable_if_t<
+  std::is_invocable_r_v<void, C, cudaStream_t>, void>*
+>
 cudaTask cudaFlowCapturerBase::on(C&& callable) {
   auto node = _graph->emplace_back(*_graph,
     std::in_place_type_t<cudaNode::Capture>{}, std::forward<C>(callable)

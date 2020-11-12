@@ -78,7 +78,7 @@ class cublasFlowCapturer : public cudaFlowCapturerBase {
     @return a native cublas handle of type cublasHandle_t
     */
     cublasHandle_t native_handle();
-    
+
     /**
     @brief copies vector data from host to device
     
@@ -410,6 +410,49 @@ class cublasFlowCapturer : public cudaFlowCapturerBase {
       const T *x, int incx,
       const T *beta,
       T *y, int incy
+    );
+    
+    /**
+    @brief solves the triangular linear system with a single right-hand-side
+
+    This function solves the triangular linear system with a single right-hand-side
+
+    <tt>op(A) x = b</tt>,
+
+    where @c A is a triangular matrix stored in lower or upper mode 
+    with or without the main diagonal, and @c x and @c b are vectors.
+
+    @tparam T data type
+    @param uplo indicates if matrix @c A lower or upper part is stored, 
+                the other part is not referenced and is inferred from 
+                the stored elements
+    @param tran transpose operation @c op(A)
+    @param diag indicates if the elements on the main diagonal of matrix @c A 
+                are unity (i.e., all 1s) and of no need to be accessed
+    @param n number of rows and columns of matrix @c A
+    @param A pointer to the address of A
+    @param lda leading dimension of 2D array used to store matrix @c A
+    @param x input of vector @c b and output of the solution on exit
+    @param incx stride between consecutive elements of @c x
+    */
+    template <typename T>
+    cudaTask trsv(
+      cublasFillMode_t uplo,
+      cublasOperation_t tran, cublasDiagType_t diag,
+      int n, const T* A, int lda,
+      T *x, int incx
+    );
+
+    /**
+    @brief similar to tf::cublasFlowCapturer::trsv but operates on C-styled 
+    row-major layout
+    */
+    template <typename T>
+    cudaTask c_trsv(
+      cublasFillMode_t uplo,
+      cublasOperation_t tran, cublasDiagType_t diag,
+      int n, const T* A, int lda,
+      T *x, int incx
     );
     
     // ------------------------------------------------------------------------

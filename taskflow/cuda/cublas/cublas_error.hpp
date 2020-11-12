@@ -5,7 +5,7 @@
 namespace tf {
 
 // cuBLAS API errors
-inline const char* cublas_error_to_string(cublasStatus_t error) {
+constexpr const char* cublas_error_to_string(cublasStatus_t error) {
   switch (error) {
     case CUBLAS_STATUS_SUCCESS:
       return "CUBLAS_STATUS_SUCCESS";
@@ -40,6 +40,8 @@ inline const char* cublas_error_to_string(cublasStatus_t error) {
 
   return "unknown cublas error";
 }  
+
+
 
 #define TF_CHECK_CUBLAS(...)                                   \
 if(TF_CUDA_GET_FIRST(__VA_ARGS__) != CUBLAS_STATUS_SUCCESS) {  \

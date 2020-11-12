@@ -1,3 +1,5 @@
+// This program performs a simple single-precision Ax+Y operation
+// using cudaFlow and verifies its result.
 
 #include <taskflow/cudaflow.hpp>
 #include <taskflow/taskflow.hpp>
