@@ -1,6 +1,7 @@
 #pragma once
 
 #include "task.hpp"
+#include "worker.hpp"
 
 /** 
 @file observer.hpp
@@ -18,9 +19,11 @@ The tf::ObserverInterface class let users define custom methods to monitor
 the behaviors of an executor. This is particularly useful when you want to 
 inspect the performance of an executor and visualize when each thread 
 participates in the execution of a task.
-To prevent users from direct access to the internal tasks, 
-tf::ObserverInterface provides an immutable wrapper tf::TaskView over
-these internal tasks.
+To prevent users from direct access to the internal threads and tasks, 
+tf::ObserverInterface provides immutable wrappers,
+tf::WorkerView and tf::TaskView, over workers and tasks.
+
+Please refer to tf::WorkerView and tf::TaskView for details.
 
 Example usage:
 
@@ -36,15 +39,15 @@ struct MyObserver : public tf::ObserverInterface {
     std::cout << "settting up observer with " << num_workers << " workers\n";
   }
 
-  void on_entry(size_t w, tf::TaskView tv) override final {
+  void on_entry(WorkerView w, tf::TaskView tv) override final {
     std::ostringstream oss;
-    oss << "worker " << w << " ready to run " << tv.name() << '\n';
+    oss << "worker " << w.id() << " ready to run " << tv.name() << '\n';
     std::cout << oss.str();
   }
 
-  void on_exit(size_t w, tf::TaskView tv) override final {
+  void on_exit(WorkerView w, tf::TaskView tv) override final {
     std::ostringstream oss;
-    oss << "worker " << w << " finished running " << tv.name() << '\n';
+    oss << "worker " << w.id() << " finished running " << tv.name() << '\n';
     std::cout << oss.str();
   }
 };
@@ -81,17 +84,17 @@ class ObserverInterface {
   
   /**
   @brief method to call before a worker thread executes a closure 
-  @param worker_id the id of this worker thread 
+  @param w an immutable view of this worker thread 
   @param task_view a constant wrapper object to the task 
   */
-  virtual void on_entry(size_t worker_id, TaskView task_view) = 0;
+  virtual void on_entry(WorkerView w, TaskView task_view) = 0;
   
   /**
   @brief method to call after a worker thread executed a closure
-  @param worker_id the id of this worker thread 
+  @param w an immutable view of this worker thread
   @param task_view a constant wrapper object to the task
   */
-  virtual void on_exit(size_t worker_id, TaskView task_view) = 0;
+  virtual void on_exit(WorkerView w, TaskView task_view) = 0;
 };
 
 // ----------------------------------------------------------------------------
@@ -181,8 +184,8 @@ class ChromeObserver : public ObserverInterface {
   private:
     
     inline void set_up(size_t num_workers) override final;
-    inline void on_entry(size_t worker_id, TaskView task_view) override final;
-    inline void on_exit(size_t worker_id, TaskView task_view) override final;
+    inline void on_entry(WorkerView w, TaskView task_view) override final;
+    inline void on_exit(WorkerView w, TaskView task_view) override final;
 
     Timeline _timeline;
 };  
@@ -217,12 +220,15 @@ inline void ChromeObserver::set_up(size_t num_workers) {
 }
 
 // Procedure: on_entry
-inline void ChromeObserver::on_entry(size_t w, TaskView) {
-  _timeline.stacks[w].push(std::chrono::steady_clock::now());
+inline void ChromeObserver::on_entry(WorkerView wv, TaskView) {
+  _timeline.stacks[wv.id()].push(std::chrono::steady_clock::now());
 }
 
 // Procedure: on_exit
-inline void ChromeObserver::on_exit(size_t w, TaskView tv) {
+inline void ChromeObserver::on_exit(WorkerView wv, TaskView tv) {
+
+  size_t w = wv.id();
+
   assert(!_timeline.stacks[w].empty());
 
   auto beg = _timeline.stacks[w].top();
@@ -412,8 +418,8 @@ class TFProfObserver : public ObserverInterface {
   private:
     
     inline void set_up(size_t num_workers) override final;
-    inline void on_entry(size_t worker_id, TaskView task_view) override final;
-    inline void on_exit(size_t worker_id, TaskView task_view) override final;
+    inline void on_entry(WorkerView, TaskView) override final;
+    inline void on_exit(WorkerView, TaskView) override final;
 
     Timeline _timeline;
 
@@ -449,12 +455,14 @@ inline void TFProfObserver::set_up(size_t num_workers) {
 }
 
 // Procedure: on_entry
-inline void TFProfObserver::on_entry(size_t w, TaskView) {
-  _timeline.stacks[w].push(std::chrono::steady_clock::now());
+inline void TFProfObserver::on_entry(WorkerView wv, TaskView) {
+  _timeline.stacks[wv.id()].push(std::chrono::steady_clock::now());
 }
 
 // Procedure: on_exit
-inline void TFProfObserver::on_exit(size_t w, TaskView tv) {
+inline void TFProfObserver::on_exit(WorkerView wv, TaskView tv) {
+
+  size_t w = wv.id();
 
   assert(!_timeline.stacks[w].empty());
   

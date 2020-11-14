@@ -752,12 +752,12 @@ typename ObjectPool<T, S>::LocalHeap&
 ObjectPool<T, S>::_this_heap() {
   // here we don't use thread local since object pool might be
   // created and destroyed multiple times
-  thread_local auto hv = std::hash<std::thread::id>()(std::this_thread::get_id());
-  return _lheaps[hv & _lheap_mask];
+  //thread_local auto hv = std::hash<std::thread::id>()(std::this_thread::get_id());
+  //return _lheaps[hv & _lheap_mask];
 
-  //return _lheaps[
-  //  std::hash<std::thread::id>()(std::this_thread::get_id()) & _lheap_mask
-  //];
+  return _lheaps[
+    std::hash<std::thread::id>()(std::this_thread::get_id()) & _lheap_mask
+  ];
 }
 
 // Function: _next_power_of_two

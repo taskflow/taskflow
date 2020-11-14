@@ -459,46 +459,6 @@ class TaskView {
   public:
 
     /**
-    @brief constructs an empty task view
-    */
-    TaskView() = default;
-
-    /**
-    @brief constructs a task view from a task
-    */
-    TaskView(const Task& task);
-    
-    /**
-    @brief constructs the task with the copy of the other task
-    */
-    TaskView(const TaskView& other);
-    
-    /**
-    @brief replaces the contents with a copy of the other task
-    */
-    TaskView& operator = (const TaskView& other);
-    
-    /**
-    @brief replaces the contents with another task
-    */
-    TaskView& operator = (const Task& other);
-    
-    /**
-    @brief replaces the contents with a null pointer
-    */
-    TaskView& operator = (std::nullptr_t);
-
-    /**
-    @brief compares if two taskviews are associated with the same task
-    */
-    bool operator == (const TaskView&) const;
-    
-    /**
-    @brief compares if two taskviews are associated with different tasks
-    */
-    bool operator != (const TaskView&) const;
-    
-    /**
     @brief queries the name of the task
     */
     const std::string& name() const;
@@ -524,16 +484,6 @@ class TaskView {
     size_t num_weak_dependents() const;
 
     /**
-    @brief resets to an empty view
-    */
-    void reset();
-
-    /**
-    @brief queries if the task view is empty
-    */
-    bool empty() const;
-    
-    /**
     @brief applies an visitor callable to each successor of the task
     */
     template <typename V>
@@ -552,104 +502,59 @@ class TaskView {
     
   private:
     
-    TaskView(Node*);
+    TaskView(const Node&);
+    TaskView(const TaskView&) = default;
 
-    Node* _node {nullptr};
+    const Node& _node;
 };
 
 // Constructor
-inline TaskView::TaskView(Node* node) : _node {node} {
-}
-
-// Constructor
-inline TaskView::TaskView(const TaskView& rhs) : _node {rhs._node} {
-}
-
-// Constructor
-inline TaskView::TaskView(const Task& task) : _node {task._node} {
-}
-
-// Operator =
-inline TaskView& TaskView::operator = (const TaskView& rhs) {
-  _node = rhs._node;
-  return *this;
-}
-
-// Operator =
-inline TaskView& TaskView::operator = (const Task& rhs) {
-  _node = rhs._node;
-  return *this;
-}
-
-// Operator =
-inline TaskView& TaskView::operator = (std::nullptr_t ptr) {
-  _node = ptr;
-  return *this;
+inline TaskView::TaskView(const Node& node) : _node {node} {
 }
 
 // Function: name
 inline const std::string& TaskView::name() const {
-  return _node->_name;
+  return _node._name;
 }
 
 // Function: num_dependents
 inline size_t TaskView::num_dependents() const {
-  return _node->num_dependents();
+  return _node.num_dependents();
 }
 
 // Function: num_strong_dependents
 inline size_t TaskView::num_strong_dependents() const {
-  return _node->num_strong_dependents();
+  return _node.num_strong_dependents();
 }
 
 // Function: num_weak_dependents
 inline size_t TaskView::num_weak_dependents() const {
-  return _node->num_weak_dependents();
+  return _node.num_weak_dependents();
 }
 
 // Function: num_successors
 inline size_t TaskView::num_successors() const {
-  return _node->num_successors();
-}
-
-// Function: reset
-inline void TaskView::reset() {
-  _node = nullptr;
-}
-
-// Function: empty
-inline bool TaskView::empty() const {
-  return _node == nullptr;
+  return _node.num_successors();
 }
 
 // Function: type
 inline TaskType TaskView::type() const {
-  return static_cast<TaskType>(_node->_handle.index());
-}
-
-// Operator ==
-inline bool TaskView::operator == (const TaskView& rhs) const {
-  return _node == rhs._node;
-}
-
-// Operator !=
-inline bool TaskView::operator != (const TaskView& rhs) const {
-  return _node != rhs._node;
+  return static_cast<TaskType>(_node._handle.index());
 }
 
 // Function: for_each_successor
 template <typename V>
 void TaskView::for_each_successor(V&& visitor) const {
-  for(size_t i=0; i<_node->_successors.size(); ++i) {
-    visitor(TaskView(_node->_successors[i]));
+  for(size_t i=0; i<_node._successors.size(); ++i) {
+    visitor(TaskView(_node._successors[i]));
   }
 }
 
 // Function: for_each_dependent
 template <typename V>
 void TaskView::for_each_dependent(V&& visitor) const {
-  for(size_t i=0; i<_node->_dependents.size(); ++i) {
-    visitor(TaskView(_node->_dependents[i]));
+  for(size_t i=0; i<_node._dependents.size(); ++i) {
+    visitor(TaskView(_node._dependents[i]));
   }
 }
 

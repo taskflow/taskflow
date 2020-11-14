@@ -1,6 +1,3 @@
-// 2020/02/24 - created by twhuang
-//  - specialized work stealing queue for pointer
-
 #pragma once
 
 #include <atomic>

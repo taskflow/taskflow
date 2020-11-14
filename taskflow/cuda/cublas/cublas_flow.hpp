@@ -349,34 +349,35 @@ class cublasFlowCapturer : public cudaFlowCapturerBase {
     // ------------------------------------------------------------------------
     // TODO Level-2 matrix_vector operations
     // ------------------------------------------------------------------------
-    //
+    
     /** 
     @brief performs matrix-vector multiplication
     
     This function performs matrix-vector multiplication:
     
-    <tt>y = alpha * op (A) * x + beta * y</tt>,
+    <tt>y = alpha * op(A) * x + beta * y</tt>,
     
     where @c alpha and @c beta are scalars, @c A
-    is 2D matrices stored in column-major format with dimension 
-    @c op(A) as @c m by @c n, and @c x, @c y are vectors
-    with dimension @c x as @c n, and @c y as @c m.
+    is a 2D matrix stored in column-major format, 
+    and @c x, @c y are vectors.
     
     The input matrices are in column-major storage.
     
     This method calls native @c cublas<t>gemv with packed parameters,
-    <tt>(handle, args...)</tt>, where @c handle is manaed by 
+    <tt>(handle, args...)</tt>, where @c handle is managed by 
     the %cublasFlowCapturer and @c args... are the given arguments.
     
     @tparam T data type
     
     @param trans transport operation @c op(A)
-    @param m number of rows of matrix @c op(A)
-    @param n number of columns of matrix @c op(A)
+    @param m number of rows of matrix @c A 
+    @param n number of columns of matrix @c A
     @param alpha pointer to the @c alpha scalar
     @param A pointer to the address of @c A
     @param lda leading dimension of 2D array used to store the matrix @c A
-    @param x pointer to the address of @c x
+    @param x pointer to the address of @c x of at least 
+             <tt>(1 + (n - 1) * abs(incx))</tt> elements if no transposition,
+             or <tt>(1 + (m - 1) * abs(incx))</tt> elements otherwise.
     @param incx stride between consecutive elements of @c x
     @param beta pointer to the @c beta scalar
     @param y pointer to the address of @c y
@@ -412,10 +413,224 @@ class cublasFlowCapturer : public cudaFlowCapturerBase {
       T *y, int incy
     );
     
+    /** 
+    @brief performs symmetric matrix-vector multiplication
+    
+    This function performs symmetric matrix-vector multiplication:
+    
+    <tt>y = alpha * A * x + beta * y</tt>,
+    
+    where @c alpha and @c beta are scalars, @c A
+    is a 2D symmetric matrix stored in column-major format,
+    and @c x, @c y are vectors
+    
+    This method calls native @c cublas<t>symv with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is managed by 
+    the %cublasFlowCapturer and @c args... are the given arguments.
+    
+    @tparam T data type
+    
+    @param trans transport operation @c op(A)
+    @param uplo indicates if matrix @c A lower or upper part is stored, 
+                the other symmetric part is not referenced and is inferred 
+                from the stored elements
+    @param n number of rows and columns of matrix @c A
+    @param alpha pointer to the @c alpha scalar
+    @param A pointer to the address of @c A
+    @param lda leading dimension of 2D array used to store the matrix @c A
+    @param x pointer to the address of @c x
+    @param incx stride between consecutive elements of @c x
+    @param beta pointer to the @c beta scalar
+    @param y pointer to the address of @c y
+    @param incy stride between consecutive elements of @c y
+    
+    @return a tf::cudaTask handle
+    */
+    template <typename T>
+    cudaTask symv(
+      cublasFillMode_t uplo,
+      int n,
+      const T *alpha,
+      const T *A, int lda,
+      const T *x, int incx,
+      const T *beta,
+      T *y, int incy
+    );
+    
+    /**
+    @brief similar to tf::cublasFlowCapturer::symv but operates on 
+           C-styled row-major layout
+    */
+    template <typename T>
+    cudaTask c_symv(
+      cublasFillMode_t uplo,
+      int n,
+      const T *alpha,
+      const T *A, int lda,
+      const T *x, int incx,
+      const T *beta,
+      T *y, int incy
+    );
+    
+    /** 
+    @brief performs symmetric rank-1 update
+    
+    This function performs symmetric rank-1 update:
+    
+    <tt>A = alpha * x * x^T + A</tt>,
+    
+    where @c alpha is a scalar, @c A
+    is a 2D symmetric matrix stored in column-major format,
+    and @c x is a vector.
+
+    The result is also symmetric and is stored on in the @c uplo part
+    of @c A.
+    
+    This method calls native @c cublas<t>syr with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is managed by 
+    the %cublasFlowCapturer and @c args... are the given arguments.
+    
+    @tparam T data type
+    
+    @param uplo indicates if matrix @c A lower or upper part is stored, 
+                the other symmetric part is not referenced and is inferred 
+                from the stored elements
+    @param n number of rows and columns of matrix @c A
+    @param alpha pointer to the @c alpha scalar
+    @param x pointer to the address of @c x
+    @param incx stride between consecutive elements of @c x
+    @param A pointer to the address of @c A
+    @param lda leading dimension of 2D array used to store the matrix @c A
+    
+    @return a tf::cudaTask handle
+    */
+    template <typename T>
+    cudaTask syr(
+      cublasFillMode_t uplo,
+      int n,
+      const T *alpha,
+      const T *x, int incx,
+      T *A, int lda
+    );
+    
+    /**
+    @brief similar to tf::cublasFlowCapturer::c_syr but operates on 
+           C-styled row-major layout
+    */
+    template <typename T>
+    cudaTask c_syr(
+      cublasFillMode_t uplo,
+      int n,
+      const T *alpha,
+      const T *x, int incx,
+      T *A, int lda
+    );
+    
+    /** 
+    @brief performs symmetric rank-2 update
+    
+    This function performs symmetric rank-2 update:
+    
+    <tt>A = alpha * x * y^T + y * x^T + A</tt>,
+    
+    where @c alpha is a scalar, @c A
+    is a 2D symmetric matrix stored in column-major format,
+    and @c x and @c y are vectors.
+
+    The result is also symmetric and is stored on in the @c uplo part
+    of @c A.
+    
+    This method calls native @c cublas<t>syr2 with packed parameters,
+    <tt>(handle, args...)</tt>, where @c handle is managed by 
+    the %cublasFlowCapturer and @c args... are the given arguments.
+    
+    @tparam T data type
+    
+    @param uplo indicates if matrix @c A lower or upper part is stored, 
+                the other symmetric part is not referenced and is inferred 
+                from the stored elements
+    @param n number of rows and columns of matrix @c A
+    @param alpha pointer to the @c alpha scalar
+    @param x pointer to the address of @c x
+    @param incx stride between consecutive elements of @c x
+    @param y pointer to the address of @c y
+    @param incy stride between consecutive elements of @c y
+    @param A pointer to the address of @c A
+    @param lda leading dimension of 2D array used to store the matrix @c A
+    
+    @return a tf::cudaTask handle
+    */
+    template <typename T>
+    cudaTask syr2(
+      cublasFillMode_t uplo,
+      int n,
+      const T *alpha,
+      const T *x, int incx,
+      const T *y, int incy,
+      T *A, int lda
+    );
+    
+    /**
+    @brief similar to tf::cublasFlowCapturer::syr2 but operates on 
+           C-styled row-major layout
+    */
+    template <typename T>
+    cudaTask c_syr2(
+      cublasFillMode_t uplo,
+      int n,
+      const T *alpha,
+      const T *x, int incx,
+      const T *y, int incy,
+      T *A, int lda
+    );
+
+    /**
+    @brief performs the triangular matrix-vector multiplication
+
+    This method performs the triangular matrix-vector multiplication:
+
+    <tt>x = op(A)</tt>,
+
+    where @c A is a triangular matrix stored in lower or upper mode 
+    with or without the main diagonal, and @c x is a vector.
+
+    @tparam T data type
+    @param uplo indicates if matrix @c A lower or upper part is stored, 
+                the other part is not referenced and is inferred from 
+                the stored elements
+    @param tran transpose operation @c op(A)
+    @param diag indicates if the elements on the main diagonal of matrix @c A 
+                are unity (i.e., all 1s) and of no need to be accessed
+    @param n number of rows and columns of matrix @c A
+    @param A pointer to the address of A
+    @param lda leading dimension of 2D array used to store matrix @c A
+    @param x input of vector @c b and output of the solution on exit
+    @param incx stride between consecutive elements of @c x
+    */
+    template <typename T>
+    cudaTask trmv(
+      cublasFillMode_t uplo,
+      cublasOperation_t tran, cublasDiagType_t diag,
+      int n, const T* A, int lda,
+      T *x, int incx
+    );
+    
+    /**
+    @brief similar to tf::cublasFlowCapturer::trmv but operates on C-styled
+           row-major layout
+    */
+    template <typename T>
+    cudaTask c_trmv(
+      cublasFillMode_t uplo,
+      cublasOperation_t tran, cublasDiagType_t diag,
+      int n, const T* A, int lda,
+      T *x, int incx
+    );
+    
     /**
     @brief solves the triangular linear system with a single right-hand-side
 
-    This function solves the triangular linear system with a single right-hand-side
+    This method solves the triangular linear system with a single right-hand-side
 
     <tt>op(A) x = b</tt>,
 
@@ -462,7 +677,7 @@ class cublasFlowCapturer : public cudaFlowCapturerBase {
     /**
     @brief performs matrix-matrix addition and transposition
     
-    This function performs the matrix-matrix addition/transposition:
+    This method performs the matrix-matrix addition/transposition:
     
       <tt>C = alpha * op(A) + beta * op(B)</tt>,
     

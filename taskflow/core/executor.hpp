@@ -1,7 +1,5 @@
 #pragma once
 
-#include "tsq.hpp"
-#include "notifier.hpp"
 #include "observer.hpp"
 #include "taskflow.hpp"
 
@@ -32,15 +30,6 @@ class Executor {
   friend class Subflow;
   friend class cudaFlow;
 
-  struct Worker {
-    size_t id;
-    size_t vtm;
-    Executor* executor;
-    Notifier::Waiter* waiter;
-    std::mt19937 rdgen { std::random_device{}() };
-    TaskQueue<Node*> wsq;
-  };
-    
   struct PerThread {
     Worker* worker;
     PerThread() : worker {nullptr} { }
@@ -193,7 +182,7 @@ class Executor {
 
   private:
 
-    static inline thread_local PerThread _per_thread;
+    inline static thread_local PerThread _per_thread;
     
     const size_t _VICTIM_BEG;
     const size_t _VICTIM_END;
@@ -246,7 +235,6 @@ class Executor {
     void _increment_topology();
     void _decrement_topology();
     void _decrement_topology_and_notify();
-
 
     void _invoke_cudaflow_task(Worker&, Node*);
     
@@ -470,16 +458,6 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
 
     while(t) {
       _invoke(w, t);
-      
-      //if(t->_parent == nullptr) {
-      //  if(t->_topology->_join_counter.fetch_sub(1) == 1) {
-      //    _tear_down_topology(t->_topology);
-      //  }
-      //}
-      //else {  // joined subflow
-      //  t->_parent->_join_counter.fetch_sub(1);
-      //}
-
       t = w.wsq.pop();
     }
 
@@ -762,14 +740,14 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 // Procedure: _observer_prologue
 inline void Executor::_observer_prologue(Worker& worker, Node* node) {
   for(auto& observer : _observers) {
-    observer->on_entry(worker.id, TaskView(node));
+    observer->on_entry(WorkerView(worker), TaskView(*node));
   }
 }
 
 // Procedure: _observer_epilogue
 inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
   for(auto& observer : _observers) {
-    observer->on_exit(worker.id, TaskView(node));
+    observer->on_exit(WorkerView(worker), TaskView(*node));
   }
 }
 
@@ -866,14 +844,6 @@ inline void Executor::_invoke_dynamic_task_internal(
 
       if(t) {
         _invoke(w, t);
-        //if(t->_parent == nullptr) {
-        //  if(t->_topology->_join_counter.fetch_sub(1) == 1) {
-        //    _tear_down_topology(t->_topology);
-        //  }
-        //}
-        //else {  // joined subflow
-        //  t->_parent->_join_counter.fetch_sub(1);
-        //}
       }
       else {
 

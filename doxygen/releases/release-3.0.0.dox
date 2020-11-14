@@ -58,6 +58,8 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li added a new library tf::cublasFlowCapturer to support BLAS on top of @cuBLAS (see @ref LinearAlgebracublasFlowCapturer)
 @li added a custom graph interface to support dynamic polymorphism for tf::cudaGraph
 @li added support for compiling %Taskflow and CUDA source code separately (see @ref CompileTaskflowWithCUDA)
+@li added tf::WorkerView for users to observer the worker that runs the task
+@li modified tf::ObserverInterface::on_entry and tf::ObserverInterface::on_exit to take tf::WorkerView instead of uninformative @c size_t
 
 @section release-3-0-0_documentation Documentation
 
@@ -87,6 +89,11 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li removed tf::cudaFlow::device; users may call tf::Taskflow::emplace_on to associate a cudaflow with a GPU device
 @li removed tf::cudaFlow::join, use tf::cudaFlow::offload instead
 @li removed the legacy tf::Framework
+@li removed external mutable use of tf::TaskView
+  + tf::TaskView::TaskView() 
+  + tf::TaskView::operator ==
+  + tf::TaskView::operator !=
+  + tf::TaskView::reset
 
 @section release-3-0-0_miscellaneous_items Miscellaneous Items
 
