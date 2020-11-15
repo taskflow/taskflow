@@ -5,7 +5,7 @@ namespace tf {
 Composition is a key to improve the programmability of a complex workflow.
 This chapter describes how to create a large parallel graph through composition of modular and reusable blocks that are easier to optimize.
 
-[TOC]
+@tableofcontents
 
 @section C5_ComposeATaskflow Compose a Taskflow
 
@@ -58,8 +58,8 @@ This largely facilitates the @em modularity of writing a parallel task program.
 
 Debrief:
 
-@li Line 1-12  creates a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C
-@li Line 17-30 creates a taskflow of four tasks f2A, f2B, f2C, and f2D 
+@li Lines 1-12 create a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C
+@li Lines 17-30 create a taskflow of four tasks f2A, f2B, f2C, and f2D 
 @li Line 32 creates a module task from taskflow f1 through the method Taskflow::composed_of
 @li Line 33 enforces task f2C to run before the module task 
 @li Line 34 enforces the module task to run before task f2D

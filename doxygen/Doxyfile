@@ -277,7 +277,8 @@ ALIASES                = \
   "ProjectWebsite=<a href=\"https://taskflow.github.io/\">project website</a>"\
   "ProjectGitHub=<a href=\"https://github.com/taskflow/\">project GitHub</a>"\
   "ShowcasePresentation=<a href=\"https://taskflow.github.io/showcase/index.html\">showcase presentation</a>"\
-  "CppCon20Talk=<a href=\"https://www.youtube.com/watch?v=MX15huP5DsM\">CppCon20 Taskflow Talk</a>"\
+  "CppCon20Talk=<a href=\"https://www.youtube.com/watch?v=MX15huP5DsM\">2020 CppCon Taskflow Talk</a>"\
+  "MUCpp20Talk=<a href=\"https://www.youtube.com/watch?v=u8Mc_WgGwVY\">2020 MUC++ Taskflow Talk</a>"\
   "IssueTracker=<a href=\"https://github.com/taskflow/taskflow/issues\">issue tracker</a>"\
   "PullRequest=<a href=\"https://github.com/taskflow/taskflow/pulls\">pull request</a>"\
   "twhuang=<a href=\"https://tsung-wei-huang.github.io/\">Dr. Tsung-Wei Huang</a>"
@@ -833,6 +834,7 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = ../taskflow/core/flow_builder.hpp \
+                         ../taskflow/core/worker.hpp \
                          ../taskflow/core/executor.hpp \
                          ../taskflow/core/task.hpp \
                          ../taskflow/core/taskflow.hpp \
@@ -847,8 +849,6 @@ INPUT                  = ../taskflow/core/flow_builder.hpp \
                          ../taskflow/cudaflow.hpp \
                          ../taskflow/cublasflow.hpp \
                          QuickStart.dox \
-                         install/install.dox \
-                         install/cuda_compile.dox \
                          releases/releases.dox \
                          releases/release-roadmap.dox \
                          releases/release-3.0.0.dox \
@@ -862,6 +862,8 @@ INPUT                  = ../taskflow/core/flow_builder.hpp \
                          releases/release-2.1.0.dox \
                          releases/release-2.0.0.dox \
                          releases/release-1.x.x.dox \
+                         install/install.dox \
+                         install/cuda_compile.dox \
                          cookbook/Cookbook.dox \
                          cookbook/Chapter0.dox \
                          cookbook/Chapter1.dox \

@@ -430,7 +430,6 @@ class cublasFlowCapturer : public cudaFlowCapturerBase {
     
     @tparam T data type
     
-    @param trans transport operation @c op(A)
     @param uplo indicates if matrix @c A lower or upper part is stored, 
                 the other symmetric part is not referenced and is inferred 
                 from the stored elements

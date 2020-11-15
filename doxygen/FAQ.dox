@@ -6,7 +6,7 @@ This page summarizes a list of frequently asked questions about %Taskflow.
 If you cannot find a solution here, please post an issue at
 <a href="https://github.com/taskflow/taskflow/issues">here</a>.
 
-[TOC]
+@tableofcontents
 
 @section GeneralQuestions General Questions
 
@@ -168,6 +168,18 @@ without synchronizing or partitioning your parallelism across conditionals.
 No, the program master thread is not involved in running taskflows. 
 The executor keeps a set of private worker threads spawned upon 
 construction time to run tasks.
+
+@subsection ProgrammingQuestions9 Q9: Are there any limits on the branches of conditional tasking?
+
+No, as long as the return value points to a valid successors, 
+your conditional tasking is valid.
+
+@subsection ProgrammingQuestions10 Q10: Why does Taskflow program GPU in a task graph?
+
+We ask users to describe a GPU workload in a task graph and execute it
+in a second moment. 
+This organization minimizes kernels launch overhead and 
+allows the GPU runtime (e.g., CUDA) to optimize the whole workflow.
 
 */
 

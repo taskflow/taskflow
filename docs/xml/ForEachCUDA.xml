@@ -1,15 +1,30 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="ForEachCUDA" kind="page">
     <compoundname>ForEachCUDA</compoundname>
     <title>Parallel Iterations (cudaFlow)</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Index-based Parallel Iterations</name>
+        <reference>ForEachCUDA_1ForEachCUDAIndexBasedParallelFor</reference>
+    </tocsect>
+      <tocsect>
+        <name>Iterator-based Parallel Iterations</name>
+        <reference>ForEachCUDA_1ForEachCUDAIteratorBasedParallelIterations</reference>
+    </tocsect>
+      <tocsect>
+        <name>Miscellaneous Items</name>
+        <reference>ForEachCUDA_1ForEachCUDAMiscellaneousItems</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>cudaFlow provides a template function that constructs a task to perform parallel iterations over a range of items.</para><sect1 id="ForEachCUDA_1ForEachCUDAIndexBasedParallelFor">
+<para>cudaFlow provides a template function that constructs a task to perform parallel iterations over a range of items.</para>
+<sect1 id="ForEachCUDA_1ForEachCUDAIndexBasedParallelFor">
 <title>Index-based Parallel Iterations</title>
-<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[beg, end)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by <ref refid="classtf_1_1cudaFlow_1ab5a7c12e383be4972844a9f29033e487" kindref="member">tf::cudaFlow::for_each_index(I first, I last, I step, C&amp;&amp; callable)</ref> represents a kernel of parallel execution for the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>positive<sp/>step</highlight><highlight class="normal"></highlight></codeline>
+<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[beg, end)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by <ref refid="classtf_1_1cudaFlow_1ab5a7c12e383be4972844a9f29033e487" kindref="member">tf::cudaFlow::for_each_index(I first, I last, I step, C&amp;&amp; callable)</ref> represents a kernel of parallel execution for the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>positive<sp/>step</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -18,30 +33,39 @@
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&gt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Each iteration <computeroutput>i</computeroutput> is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier. The following example creates a kernel that assigns each entry of <computeroutput>gpu_data</computeroutput> to 1 over the range <computeroutput></computeroutput>[0, 100) with step size 1.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+</programlisting></para>
+<para>Each iteration <computeroutput>i</computeroutput> is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier. The following example creates a kernel that assigns each entry of <computeroutput>gpu_data</computeroutput> to 1 over the range <computeroutput></computeroutput>[0, 100) with step size 1.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...<sp/>create<sp/>other<sp/>gpu<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>assigns<sp/>each<sp/>element<sp/>in<sp/>gpu_data<sp/>to<sp/>1<sp/>over<sp/>the<sp/>range<sp/>[0,<sp/>100)<sp/>with<sp/>step<sp/>size<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ab5a7c12e383be4972844a9f29033e487" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/>[gpu_data]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>idx)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>gpu_data[idx]<sp/>=<sp/>1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="ForEachCUDA_1ForEachCUDAIteratorBasedParallelIterations">
 <title>Iterator-based Parallel Iterations</title>
-<para>Iterator-based parallel-for performs parallel iterations over a range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="classtf_1_1cudaFlow_1a97c248490dbde983378f757239eaed4a" kindref="member">tf::cudaFlow::for_each(I first, I last, C&amp;&amp; callable)</ref> represents a parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i++)<sp/>{</highlight></codeline>
+<para>Iterator-based parallel-for performs parallel iterations over a range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="classtf_1_1cudaFlow_1a97c248490dbde983378f757239eaed4a" kindref="member">tf::cudaFlow::for_each(I first, I last, C&amp;&amp; callable)</ref> represents a parallel execution of the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(*i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>, are typically two raw pointers to the first element and the next to the last element in the range in GPU memory space. The following example creates a <computeroutput>for_each</computeroutput> kernel that assigns each element in <computeroutput>gpu_data</computeroutput> to 1 over the range <computeroutput>[gpu_data, gpu_data + 1000)</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+</programlisting></para>
+<para>The two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>, are typically two raw pointers to the first element and the next to the last element in the range in GPU memory space. The following example creates a <computeroutput>for_each</computeroutput> kernel that assigns each element in <computeroutput>gpu_data</computeroutput> to 1 over the range <computeroutput>[gpu_data, gpu_data + 1000)</computeroutput>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...<sp/>create<sp/>gpu<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>assigns<sp/>each<sp/>element<sp/>to<sp/>1<sp/>over<sp/>the<sp/>range<sp/>[gpu_data,<sp/>gpu_data<sp/>+<sp/>1000)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1a97c248490dbde983378f757239eaed4a" kindref="member">for_each</ref>(gpu_data,<sp/>gpu_data<sp/>+<sp/>1000,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>item)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>item<sp/>=<sp/>1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});<sp/></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para><para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier.</para></sect1>
+</programlisting></para>
+<para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier.</para>
+</sect1>
 <sect1 id="ForEachCUDA_1ForEachCUDAMiscellaneousItems">
 <title>Miscellaneous Items</title>
-<para>The parallel-iteration algorithms are also available in <ref refid="classtf_1_1cudaFlowCapturerBase_1a583e4df1139cf6f20b6e79dfde977a51" kindref="member">tf::cudaFlowCapturer::for_each</ref> and <ref refid="classtf_1_1cudaFlowCapturerBase_1a0320596ee37d68cfce5746027ebc97de" kindref="member">tf::cudaFlowCapturer::for_each_index</ref>. </para></sect1>
+<para>The parallel-iteration algorithms are also available in <ref refid="classtf_1_1cudaFlowCapturerBase_1a583e4df1139cf6f20b6e79dfde977a51" kindref="member">tf::cudaFlowCapturer::for_each</ref> and <ref refid="classtf_1_1cudaFlowCapturerBase_1a0320596ee37d68cfce5746027ebc97de" kindref="member">tf::cudaFlowCapturer::for_each_index</ref>. </para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

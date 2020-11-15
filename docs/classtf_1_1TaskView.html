@@ -55,52 +55,14 @@
             <li>
               Reference
               <ul>
-                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
                 <li><a href="#pub-methods">Public functions</a></li>
               </ul>
             </li>
           </ul>
         </div>
-        <section id="typeless-methods">
-          <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
-          <dl class="m-doc">
-            <dt id="ada6755eb9db8badbf290eb25532a8d7f">
-              <span class="m-doc-wrap-bumper"><a href="#ada6755eb9db8badbf290eb25532a8d7f" class="m-doc-self">TaskView</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
-            </dt>
-            <dd>constructs an empty task view</dd>
-            <dt id="adcc3095bec2afe51fffb0d2314c0e836">
-              <span class="m-doc-wrap-bumper"><a href="#adcc3095bec2afe51fffb0d2314c0e836" class="m-doc-self">TaskView</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; task)</span>
-            </dt>
-            <dd>constructs a task view from a task</dd>
-            <dt id="a7c7b4378a67f39ee33724a4f96bc6abd">
-              <span class="m-doc-wrap-bumper"><a href="#a7c7b4378a67f39ee33724a4f96bc6abd" class="m-doc-self">TaskView</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a>&amp; other)</span>
-            </dt>
-            <dd>constructs the task with the copy of the other task</dd>
-          </dl>
-        </section>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a6228f57867fcaeec9fd47e58be2773fd">
-              <span class="m-doc-wrap-bumper">auto <a href="#a6228f57867fcaeec9fd47e58be2773fd" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a>&amp; other) -&gt; <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a>&amp;</span>
-            </dt>
-            <dd>replaces the contents with a copy of the other task</dd>
-            <dt id="a4b8af1becc79b92d0f97b8397dc4c05b">
-              <span class="m-doc-wrap-bumper">auto <a href="#a4b8af1becc79b92d0f97b8397dc4c05b" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; other) -&gt; <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a>&amp;</span>
-            </dt>
-            <dd>replaces the contents with another task</dd>
-            <dt id="a148557f80bb73e600c00a4fde25ff5f7">
-              <span class="m-doc-wrap-bumper">auto <a href="#a148557f80bb73e600c00a4fde25ff5f7" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/types/nullptr_t.html" class="m-doc-external">std::<wbr />nullptr_t</a>) -&gt; <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a>&amp;</span>
-            </dt>
-            <dd>replaces the contents with a null pointer</dd>
-            <dt id="ac31f08774b5cb89bc56367739614abcd">
-              <span class="m-doc-wrap-bumper">auto <a href="#ac31f08774b5cb89bc56367739614abcd" class="m-doc-self">operator==</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a>&amp;) const -&gt; bool</span>
-            </dt>
-            <dd>compares if two taskviews are associated with the same task</dd>
-            <dt id="adb557ad6ea636a2276022b04062e4725">
-              <span class="m-doc-wrap-bumper">auto <a href="#adb557ad6ea636a2276022b04062e4725" class="m-doc-self">operator!=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a>&amp;) const -&gt; bool</span>
-            </dt>
-            <dd>compares if two taskviews are associated with different tasks</dd>
             <dt id="ac8cd58171de8ab4865e3c3f142db2db1">
               <span class="m-doc-wrap-bumper">auto <a href="#ac8cd58171de8ab4865e3c3f142db2db1" class="m-doc-self">name</a>(</span><span class="m-doc-wrap">) const -&gt; const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp;</span>
             </dt>
@@ -121,14 +83,6 @@
               <span class="m-doc-wrap-bumper">auto <a href="#ad1ddd9a7e68a81feee1785ece99e58f5" class="m-doc-self">num_weak_dependents</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of weak dependents of the task</dd>
-            <dt id="a04c63b3e737474fb4157534d8a94eb64">
-              <span class="m-doc-wrap-bumper">void <a href="#a04c63b3e737474fb4157534d8a94eb64" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">)</span>
-            </dt>
-            <dd>resets to an empty view</dd>
-            <dt id="a29d974f0b79e5e8da9c935dfa28492d9">
-              <span class="m-doc-wrap-bumper">auto <a href="#a29d974f0b79e5e8da9c935dfa28492d9" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
-            </dt>
-            <dd>queries if the task view is empty</dd>
             <dt id="a3cb647dc0064b5d11e0c87226c47f8f8">
               <div class="m-doc-template">template&lt;typename V&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a3cb647dc0064b5d11e0c87226c47f8f8" class="m-doc-self">for_each_successor</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
@@ -189,7 +143,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

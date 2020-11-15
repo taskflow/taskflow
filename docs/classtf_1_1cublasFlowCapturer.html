@@ -243,6 +243,130 @@
             <dd>similar to <a href="classtf_1_1cublasFlowCapturer.html#a72185bf94321948b5b3657cc9c52ad0a" class="m-doc">tf::<wbr />cublasFlowCapturer::<wbr />gemv</a> but operates on C-styled row-major layout</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#aed19fb69f2242f4ac6429f94d7776727" class="m-doc">symv</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              int n,
+              const T* alpha,
+              const T* A,
+              int lda,
+              const T* x,
+              int incx,
+              const T* beta,
+              T* y,
+              int incy) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>performs symmetric matrix-vector multiplication</dd>
+            <dt id="a128ac1083f1dd05690998f5dac01959e">
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a128ac1083f1dd05690998f5dac01959e" class="m-doc-self">c_symv</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              int n,
+              const T* alpha,
+              const T* A,
+              int lda,
+              const T* x,
+              int incx,
+              const T* beta,
+              T* y,
+              int incy) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>similar to <a href="classtf_1_1cublasFlowCapturer.html#aed19fb69f2242f4ac6429f94d7776727" class="m-doc">tf::<wbr />cublasFlowCapturer::<wbr />symv</a> but operates on C-styled row-major layout</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a6765f845c7b95daefa197fdc2a1b426d" class="m-doc">syr</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              int n,
+              const T* alpha,
+              const T* x,
+              int incx,
+              T* A,
+              int lda) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>performs symmetric rank-1 update</dd>
+            <dt id="afd79fe59e463b91feb2cbb94079c7c8c">
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#afd79fe59e463b91feb2cbb94079c7c8c" class="m-doc-self">c_syr</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              int n,
+              const T* alpha,
+              const T* x,
+              int incx,
+              T* A,
+              int lda) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>similar to <a href="classtf_1_1cublasFlowCapturer.html#afd79fe59e463b91feb2cbb94079c7c8c" class="m-doc">tf::<wbr />cublasFlowCapturer::<wbr />c_syr</a> but operates on C-styled row-major layout</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a46443a7e6c36f2a0d655041f6227b544" class="m-doc">syr2</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              int n,
+              const T* alpha,
+              const T* x,
+              int incx,
+              const T* y,
+              int incy,
+              T* A,
+              int lda) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>performs symmetric rank-2 update</dd>
+            <dt id="ac3ebc265f36b4c1205360a055f197873">
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ac3ebc265f36b4c1205360a055f197873" class="m-doc-self">c_syr2</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              int n,
+              const T* alpha,
+              const T* x,
+              int incx,
+              const T* y,
+              int incy,
+              T* A,
+              int lda) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>similar to <a href="classtf_1_1cublasFlowCapturer.html#a46443a7e6c36f2a0d655041f6227b544" class="m-doc">tf::<wbr />cublasFlowCapturer::<wbr />syr2</a> but operates on C-styled row-major layout</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#af0ff6efaa01bffbd20d2760b6f82bcb1" class="m-doc">trmv</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              cublasOperation_t tran,
+              cublasDiagType_t diag,
+              int n,
+              const T* A,
+              int lda,
+              T* x,
+              int incx) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>performs the triangular matrix-vector multiplication</dd>
+            <dt id="adb57fd25e55f0b4e2f4f0045a169f8d9">
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#adb57fd25e55f0b4e2f4f0045a169f8d9" class="m-doc-self">c_trmv</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              cublasOperation_t tran,
+              cublasDiagType_t diag,
+              int n,
+              const T* A,
+              int lda,
+              T* x,
+              int incx) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>similar to <a href="classtf_1_1cublasFlowCapturer.html#af0ff6efaa01bffbd20d2760b6f82bcb1" class="m-doc">tf::<wbr />cublasFlowCapturer::<wbr />trmv</a> but operates on C-styled row-major layout</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a5f10c25901bff8c626235dfdd6d10b57" class="m-doc">trsv</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              cublasOperation_t tran,
+              cublasDiagType_t diag,
+              int n,
+              const T* A,
+              int lda,
+              T* x,
+              int incx) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>solves the triangular linear system with a single right-hand-side</dd>
+            <dt id="a27ae640e916e5f3d74886c57fe19342a">
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a27ae640e916e5f3d74886c57fe19342a" class="m-doc-self">c_trsv</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              cublasOperation_t tran,
+              cublasDiagType_t diag,
+              int n,
+              const T* A,
+              int lda,
+              T* x,
+              int incx) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>similar to <a href="classtf_1_1cublasFlowCapturer.html#a5f10c25901bff8c626235dfdd6d10b57" class="m-doc">tf::<wbr />cublasFlowCapturer::<wbr />trsv</a> but operates on C-styled row-major layout</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a30b437e511b5719f6253d3a9cf0a992c" class="m-doc">geam</a>(</span><span class="m-doc-wrap">cublasOperation_t ta,
               cublasOperation_t tb,
               int m,
@@ -1042,11 +1166,92 @@
                 </tr>
                 <tr>
                   <td>m</td>
-                  <td>number of rows of matrix <code>op(A)</code></td>
+                  <td>number of rows of matrix <code>A</code></td>
                 </tr>
                 <tr>
                   <td>n</td>
-                  <td>number of columns of matrix <code>op(A)</code></td>
+                  <td>number of columns of matrix <code>A</code></td>
+                </tr>
+                <tr>
+                  <td>alpha</td>
+                  <td>pointer to the <code>alpha</code> scalar</td>
+                </tr>
+                <tr>
+                  <td>A</td>
+                  <td>pointer to the address of <code>A</code></td>
+                </tr>
+                <tr>
+                  <td>lda</td>
+                  <td>leading dimension of 2D array used to store the matrix <code>A</code></td>
+                </tr>
+                <tr>
+                  <td>x</td>
+                  <td>pointer to the address of <code>x</code> of at least <code>(1 + (n - 1) * abs(incx))</code> elements if no transposition, or <code>(1 + (m - 1) * abs(incx))</code> elements otherwise.</td>
+                </tr>
+                <tr>
+                  <td>incx</td>
+                  <td>stride between consecutive elements of <code>x</code></td>
+                </tr>
+                <tr>
+                  <td>beta</td>
+                  <td>pointer to the <code>beta</code> scalar</td>
+                </tr>
+                <tr>
+                  <td>y</td>
+                  <td>pointer to the address of <code>y</code></td>
+                </tr>
+                <tr>
+                  <td>incy</td>
+                  <td>stride between consecutive elements of <code>y</code></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This function performs matrix-vector multiplication:</p><p><code>y = alpha * op(A) * x + beta * y</code>,</p><p>where <code>alpha</code> and <code>beta</code> are scalars, <code>A</code> is a 2D matrix stored in column-major format, and <code>x</code>, <code>y</code> are vectors.</p><p>The input matrices are in column-major storage.</p><p>This method calls native <code>cublas&lt;t&gt;gemv</code> with packed parameters, <code>(handle, args...)</code>, where <code>handle</code> is managed by the cublasFlowCapturer and <code>args</code>... are the given arguments.</p>
+          </div></section>
+          <section class="m-doc-details" id="aed19fb69f2242f4ac6429f94d7776727"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cublasFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aed19fb69f2242f4ac6429f94d7776727" class="m-doc-self">symv</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              int n,
+              const T* alpha,
+              const T* A,
+              int lda,
+              const T* x,
+              int incx,
+              const T* beta,
+              T* y,
+              int incy)</span></span>
+            </h3>
+            <p>performs symmetric matrix-vector multiplication</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>data type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>uplo</td>
+                  <td>indicates if matrix <code>A</code> lower or upper part is stored, the other symmetric part is not referenced and is inferred from the stored elements</td>
+                </tr>
+                <tr>
+                  <td>n</td>
+                  <td>number of rows and columns of matrix <code>A</code></td>
                 </tr>
                 <tr>
                   <td>alpha</td>
@@ -1088,7 +1293,279 @@
                 </tr>
               </tfoot>
             </table>
-<p>This function performs matrix-vector multiplication:</p><p><code>y = alpha * op (A) * x + beta * y</code>,</p><p>where <code>alpha</code> and <code>beta</code> are scalars, <code>A</code> is 2D matrices stored in column-major format with dimension <code>op(A)</code> as <code>m</code> by <code>n</code>, and <code>x</code>, <code>y</code> are vectors with dimension <code>x</code> as <code>n</code>, and <code>y</code> as <code>m</code>.</p><p>The input matrices are in column-major storage.</p><p>This method calls native <code>cublas&lt;t&gt;gemv</code> with packed parameters, <code>(handle, args...)</code>, where <code>handle</code> is manaed by the cublasFlowCapturer and <code>args</code>... are the given arguments.</p>
+<p>This function performs symmetric matrix-vector multiplication:</p><p><code>y = alpha * A * x + beta * y</code>,</p><p>where <code>alpha</code> and <code>beta</code> are scalars, <code>A</code> is a 2D symmetric matrix stored in column-major format, and <code>x</code>, <code>y</code> are vectors</p><p>This method calls native <code>cublas&lt;t&gt;symv</code> with packed parameters, <code>(handle, args...)</code>, where <code>handle</code> is managed by the cublasFlowCapturer and <code>args</code>... are the given arguments.</p>
+          </div></section>
+          <section class="m-doc-details" id="a6765f845c7b95daefa197fdc2a1b426d"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cublasFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6765f845c7b95daefa197fdc2a1b426d" class="m-doc-self">syr</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              int n,
+              const T* alpha,
+              const T* x,
+              int incx,
+              T* A,
+              int lda)</span></span>
+            </h3>
+            <p>performs symmetric rank-1 update</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>data type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>uplo</td>
+                  <td>indicates if matrix <code>A</code> lower or upper part is stored, the other symmetric part is not referenced and is inferred from the stored elements</td>
+                </tr>
+                <tr>
+                  <td>n</td>
+                  <td>number of rows and columns of matrix <code>A</code></td>
+                </tr>
+                <tr>
+                  <td>alpha</td>
+                  <td>pointer to the <code>alpha</code> scalar</td>
+                </tr>
+                <tr>
+                  <td>x</td>
+                  <td>pointer to the address of <code>x</code></td>
+                </tr>
+                <tr>
+                  <td>incx</td>
+                  <td>stride between consecutive elements of <code>x</code></td>
+                </tr>
+                <tr>
+                  <td>A</td>
+                  <td>pointer to the address of <code>A</code></td>
+                </tr>
+                <tr>
+                  <td>lda</td>
+                  <td>leading dimension of 2D array used to store the matrix <code>A</code></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This function performs symmetric rank-1 update:</p><p><code>A = alpha * x * x^T + A</code>,</p><p>where <code>alpha</code> is a scalar, <code>A</code> is a 2D symmetric matrix stored in column-major format, and <code>x</code> is a vector.</p><p>The result is also symmetric and is stored on in the <code>uplo</code> part of <code>A</code>.</p><p>This method calls native <code>cublas&lt;t&gt;syr</code> with packed parameters, <code>(handle, args...)</code>, where <code>handle</code> is managed by the cublasFlowCapturer and <code>args</code>... are the given arguments.</p>
+          </div></section>
+          <section class="m-doc-details" id="a46443a7e6c36f2a0d655041f6227b544"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cublasFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a46443a7e6c36f2a0d655041f6227b544" class="m-doc-self">syr2</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              int n,
+              const T* alpha,
+              const T* x,
+              int incx,
+              const T* y,
+              int incy,
+              T* A,
+              int lda)</span></span>
+            </h3>
+            <p>performs symmetric rank-2 update</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>data type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>uplo</td>
+                  <td>indicates if matrix <code>A</code> lower or upper part is stored, the other symmetric part is not referenced and is inferred from the stored elements</td>
+                </tr>
+                <tr>
+                  <td>n</td>
+                  <td>number of rows and columns of matrix <code>A</code></td>
+                </tr>
+                <tr>
+                  <td>alpha</td>
+                  <td>pointer to the <code>alpha</code> scalar</td>
+                </tr>
+                <tr>
+                  <td>x</td>
+                  <td>pointer to the address of <code>x</code></td>
+                </tr>
+                <tr>
+                  <td>incx</td>
+                  <td>stride between consecutive elements of <code>x</code></td>
+                </tr>
+                <tr>
+                  <td>y</td>
+                  <td>pointer to the address of <code>y</code></td>
+                </tr>
+                <tr>
+                  <td>incy</td>
+                  <td>stride between consecutive elements of <code>y</code></td>
+                </tr>
+                <tr>
+                  <td>A</td>
+                  <td>pointer to the address of <code>A</code></td>
+                </tr>
+                <tr>
+                  <td>lda</td>
+                  <td>leading dimension of 2D array used to store the matrix <code>A</code></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This function performs symmetric rank-2 update:</p><p><code>A = alpha * x * y^T + y * x^T + A</code>,</p><p>where <code>alpha</code> is a scalar, <code>A</code> is a 2D symmetric matrix stored in column-major format, and <code>x</code> and <code>y</code> are vectors.</p><p>The result is also symmetric and is stored on in the <code>uplo</code> part of <code>A</code>.</p><p>This method calls native <code>cublas&lt;t&gt;syr2</code> with packed parameters, <code>(handle, args...)</code>, where <code>handle</code> is managed by the cublasFlowCapturer and <code>args</code>... are the given arguments.</p>
+          </div></section>
+          <section class="m-doc-details" id="af0ff6efaa01bffbd20d2760b6f82bcb1"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cublasFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af0ff6efaa01bffbd20d2760b6f82bcb1" class="m-doc-self">trmv</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              cublasOperation_t tran,
+              cublasDiagType_t diag,
+              int n,
+              const T* A,
+              int lda,
+              T* x,
+              int incx)</span></span>
+            </h3>
+            <p>performs the triangular matrix-vector multiplication</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>data type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>uplo</td>
+                  <td>indicates if matrix <code>A</code> lower or upper part is stored, the other part is not referenced and is inferred from the stored elements</td>
+                </tr>
+                <tr>
+                  <td>tran</td>
+                  <td>transpose operation <code>op(A)</code></td>
+                </tr>
+                <tr>
+                  <td>diag</td>
+                  <td>indicates if the elements on the main diagonal of matrix <code>A</code> are unity (i.e., all 1s) and of no need to be accessed</td>
+                </tr>
+                <tr>
+                  <td>n</td>
+                  <td>number of rows and columns of matrix <code>A</code></td>
+                </tr>
+                <tr>
+                  <td>A</td>
+                  <td>pointer to the address of A</td>
+                </tr>
+                <tr>
+                  <td>lda</td>
+                  <td>leading dimension of 2D array used to store matrix <code>A</code></td>
+                </tr>
+                <tr>
+                  <td>x</td>
+                  <td>input of vector <code>b</code> and output of the solution on exit</td>
+                </tr>
+                <tr>
+                  <td>incx</td>
+                  <td>stride between consecutive elements of <code>x</code></td>
+                </tr>
+              </tbody>
+            </table>
+<p>This method performs the triangular matrix-vector multiplication:</p><p><code>x = op(A)</code>,</p><p>where <code>A</code> is a triangular matrix stored in lower or upper mode with or without the main diagonal, and <code>x</code> is a vector.</p>
+          </div></section>
+          <section class="m-doc-details" id="a5f10c25901bff8c626235dfdd6d10b57"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cublasFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5f10c25901bff8c626235dfdd6d10b57" class="m-doc-self">trsv</a>(</span><span class="m-doc-wrap">cublasFillMode_t uplo,
+              cublasOperation_t tran,
+              cublasDiagType_t diag,
+              int n,
+              const T* A,
+              int lda,
+              T* x,
+              int incx)</span></span>
+            </h3>
+            <p>solves the triangular linear system with a single right-hand-side</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>data type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>uplo</td>
+                  <td>indicates if matrix <code>A</code> lower or upper part is stored, the other part is not referenced and is inferred from the stored elements</td>
+                </tr>
+                <tr>
+                  <td>tran</td>
+                  <td>transpose operation <code>op(A)</code></td>
+                </tr>
+                <tr>
+                  <td>diag</td>
+                  <td>indicates if the elements on the main diagonal of matrix <code>A</code> are unity (i.e., all 1s) and of no need to be accessed</td>
+                </tr>
+                <tr>
+                  <td>n</td>
+                  <td>number of rows and columns of matrix <code>A</code></td>
+                </tr>
+                <tr>
+                  <td>A</td>
+                  <td>pointer to the address of A</td>
+                </tr>
+                <tr>
+                  <td>lda</td>
+                  <td>leading dimension of 2D array used to store matrix <code>A</code></td>
+                </tr>
+                <tr>
+                  <td>x</td>
+                  <td>input of vector <code>b</code> and output of the solution on exit</td>
+                </tr>
+                <tr>
+                  <td>incx</td>
+                  <td>stride between consecutive elements of <code>x</code></td>
+                </tr>
+              </tbody>
+            </table>
+<p>This method solves the triangular linear system with a single right-hand-side</p><p><code>op(A) x = b</code>,</p><p>where <code>A</code> is a triangular matrix stored in lower or upper mode with or without the main diagonal, and <code>x</code> and <code>b</code> are vectors.</p>
           </div></section>
           <section class="m-doc-details" id="a30b437e511b5719f6253d3a9cf0a992c"><div>
             <h3>
@@ -1179,7 +1656,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>This function performs the matrix-matrix addition/transposition:</p><p><code>C = alpha * op(A) + beta * op(B)</code>,</p><p>where <code>alpha</code> and <code>beta</code> are scalars, and <code>A</code>, <code>B</code> and <code>C</code> are matrices stored in column-major format with dimensions <code>op(A)</code> as <code>m</code> by <code>n</code>, <code>op(B)</code> as <code>m</code> by <code>n</code> and <code>C</code> as <code>m</code> by <code>n</code>, respectively.</p><p>The operation is out-of-place if <code>C</code> does not overlap <code>A</code> or <code>B</code>.</p><p>The in-place mode supports the following two operations:</p><ol><li><code>C = alpha * C + beta * op(B)</code></li><li><code>C = alpha op(A) + beta * C</code></li></ol><p>The operation includes the following special cases:</p><ol><li>the user can reset matrix <code>C</code> to zero by setting <code>alpha</code> and <code>beta</code> to 0</li><li>the user can transpose matrix <code>A</code> by setting <code>alpha</code> to 1 and <code>beta</code> to 0</li></ol><p>The input matrices are in column-major storage.</p><p>This method calls native <code>cublas&lt;t&gt;geam</code> with packed parameters, <code>(handle, args...)</code>, where <code>handle</code> is manaed by the cublasFlowCapturer and <code>args</code>... are the given arguments.</p>
+<p>This method performs the matrix-matrix addition/transposition:</p><p><code>C = alpha * op(A) + beta * op(B)</code>,</p><p>where <code>alpha</code> and <code>beta</code> are scalars, and <code>A</code>, <code>B</code> and <code>C</code> are matrices stored in column-major format with dimensions <code>op(A)</code> as <code>m</code> by <code>n</code>, <code>op(B)</code> as <code>m</code> by <code>n</code> and <code>C</code> as <code>m</code> by <code>n</code>, respectively.</p><p>The operation is out-of-place if <code>C</code> does not overlap <code>A</code> or <code>B</code>.</p><p>The in-place mode supports the following two operations:</p><ol><li><code>C = alpha * C + beta * op(B)</code></li><li><code>C = alpha op(A) + beta * C</code></li></ol><p>The operation includes the following special cases:</p><ol><li>the user can reset matrix <code>C</code> to zero by setting <code>alpha</code> and <code>beta</code> to 0</li><li>the user can transpose matrix <code>A</code> by setting <code>alpha</code> to 1 and <code>beta</code> to 0</li></ol><p>The input matrices are in column-major storage.</p><p>This method calls native <code>cublas&lt;t&gt;geam</code> with packed parameters, <code>(handle, args...)</code>, where <code>handle</code> is manaed by the cublasFlowCapturer and <code>args</code>... are the given arguments.</p>
           </div></section>
           <section class="m-doc-details" id="a8adbe06476f146b27bb00ba6054e5879"><div>
             <h3>
@@ -1539,7 +2016,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

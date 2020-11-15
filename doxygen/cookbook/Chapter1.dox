@@ -5,7 +5,7 @@ namespace tf {
 This chapter demonstrates how to create a static task dependency graph. Static tasking captures the static parallel structure of a decomposition and is defined only by the program itself.
 It has a flat task hierarchy and cannot spawn new tasks from a running dependency graph.
 
-[TOC]
+@tableofcontents
 
 @section C1_CreateATaskDependencyGraph Create a Task Dependency Graph
 
@@ -31,7 +31,7 @@ Debrief:
 @li Line 1 creates a taskflow object, or a @em graph
 @li Line 2 creates a placeholder task without work (i.e., callable)
 @li Line 3 creates a task from a given callable object and returns a task handle
-@li Line 5-9 creates three tasks in one call using C++ structured binding coupled with std::tuple
+@li Lines 5-9 create three tasks in one call using C++ structured binding coupled with std::tuple
 
 Each time you create a task, 
 the taskflow object creates a node in the task graph
@@ -60,10 +60,10 @@ such as adding dependencies, naming, and assigning a new work.
 
 Debrief:
 @li Line 1 creates a taskflow object
-@li Line 2-3 creates two tasks A and B
-@li Line 5-6 assigns a name and a work to task A, and add a precedence link to task B
+@li Lines 2-3 create two tasks A and B
+@li Lines 5-6 assign a name and a work to task A, and add a precedence link to task B
 @li Line 7 adds a dependency link from A to B
-@li Line 9-14 dumps the task attributes 
+@li Lines 9-14 dump the task attributes 
 
 %Taskflow uses general-purpose polymorphic function wrapper, std::function,
 to store and invoke a callable in a task.
@@ -99,8 +99,8 @@ You can dump a taskflow to a DOT format and visualize the graph using free onlin
 
 Debrief:
 @li Line 5 creates a taskflow object
-@li Line 8-11 creates four tasks
-@li Line 14-17 adds four task dependencies
+@li Lines 8-11 create four tasks
+@li Lines 14-17 add four task dependencies
 @li Line 19 dumps the taskflow in the DOT format through standard output
 
 <!-- @image html images/simple.svg width=40% -->
@@ -157,12 +157,12 @@ digraph Taskflow {
 
 Debrief:
 @li Line 5 creates a taskflow object
-@li Line 7-10 creates two placeholder tasks with no works and stores the corresponding task handles in a vector
-@li Line 12-13 names the two tasks with human-readable strings 
+@li Lines 7-10 create two placeholder tasks with no works and stores the corresponding task handles in a vector
+@li Lines 12-13 name the two tasks with human-readable strings 
 @li Line 14 adds a dependency link from the first task to the second task
-@li Line 16-20 prints out the name of each task, the number of dependents, and the number of successors
+@li Lines 16-20 print out the name of each task, the number of dependents, and the number of successors
 @li Line 22 dumps the task dependency graph to a @GraphVizOnline format (dot)
-@li Line 24-25 assigns a new target to each task
+@li Lines 24-25 assign a new target to each task
 
 You can change the name and work of a task at anytime before running the graph.
 The later assignment overwrites the previous values.

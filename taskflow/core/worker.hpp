@@ -36,8 +36,13 @@ struct Worker {
 /**
 @class WorkerView
 
-@brief class to create an immutable view of worker used by 
-       tf::ObserverInterface
+@brief class to create an immutable view of a worker in an executor
+       from tf::ObserverInterface
+
+An executor keeps a set of internal worker threads to run tasks.
+A worker view provides users an immutable interface to observe
+when a worker runs a task, and the view object is only accessible
+from an observer.
 */
 class WorkerView {
   
@@ -49,7 +54,8 @@ class WorkerView {
     @brief queries the worker id associated with the executor
 
     A worker id is a unsigned integer in the range <tt>[0, N)</tt>,
-    where @c N is the number of workers spawned by the executor
+    where @c N is the number of workers spawned at the construction
+    time of the executor.
     */
     size_t id() const;
     

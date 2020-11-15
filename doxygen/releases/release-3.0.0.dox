@@ -12,7 +12,7 @@ we continue to try our best to ensure backward compatibility.
 Starting from v3, we have migrated the codebase to the @CPP17 standard
 to largely improve the expressivity and efficiency of the codebase.
 
-[TOC]
+@tableofcontents
 
 @section release-3-0-0_download Download
 
@@ -82,7 +82,10 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 
 @section release-3-0-0_bug_fixes Bug Fixes 
 
-@li fixed a bug in stream capturing (need to use @c ThreadLocal mode)
+@li fixed the bug in stream capturing (need to use @c ThreadLocal mode)
+@li fixed the bug in reporting wrong worker ids when compiling 
+    a shared library due to the use of @c thread_local (now with C++17 
+    @c inline variable)
 
 @section release-3-0-0_deprecated_items Deprecated and Removed Items 
 
@@ -91,12 +94,23 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li removed the legacy tf::Framework
 @li removed external mutable use of tf::TaskView
   + tf::TaskView::TaskView() 
+  + tf::TaskView::TaskView(const tf::TaskView&)
+  + tf::TaskView::TaskView(tf::TaskView&&)
   + tf::TaskView::operator ==
   + tf::TaskView::operator !=
+  + tf::TaskView::operator =
   + tf::TaskView::reset
 
 @section release-3-0-0_miscellaneous_items Miscellaneous Items
 
+We have presented %Taskflow in the following C++ venues with recorded videos:
+  + @CppCon20Talk
+  + @MUCpp20Talk
+
+We have published %Taskflow in the following conferences and journals:
+  + Tsung-Wei Huang, &quot;[A General-purpose Parallel and Heterogeneous Task Programming System for VLSI CAD](iccad20.pdf),&quot; <i>IEEE/ACM International Conference on Computer-aided Design (ICCAD)</i>, CA, 2020
+  + Chun-Xun Lin, Tsung-Wei Huang, and Martin Wong, &quot;[An Efficient Work-Stealing Scheduler for Task Dependency Graph](icpads20.pdf),&quot; <i>IEEE International Conference on Parallel and Distributed Systems (ICPADS)</i>, Hong Kong, 2020
+  + Tsung-Wei Huang, Dian-Lun Lin, Yibo Lin, and Chun-Xun Lin, &quot;Cpp-Taskflow: A General-purpose Parallel %Task Programming System at Scale,&quot;	<em>IEEE Transactions on Computer-aided Design of Integrated Circuits and Systems (TCAD)</em>, to appear, 2020
 
 */
 

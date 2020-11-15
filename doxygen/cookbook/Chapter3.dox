@@ -6,7 +6,7 @@ It is very common for a parallel program to
 spawn task dependency graphs at runtime.
 In %Taskflow, we call this <em>dynamic tasking</em>.
 
-[TOC]
+@tableofcontents
 
 @section C3_CreateASubflow Create a Subflow
 
@@ -52,14 +52,14 @@ All methods you find in tf::Taskflow are applicable for tf::Subflow.
 @endparblock
 
 Debrief:
-@li Line 1-2 creates a taskflow and an executor
-@li Line 4-6 creates three tasks, A, C, and D
-@li Line 8-14 creates a task B that spawns a task dependency graph of three tasks B1, B2, and B3
-@li Line 16-19 adds dependencies among A, B, C, and D
+@li Lines 1-2 create a taskflow and an executor
+@li Lines 4-6 create three tasks, A, C, and D
+@li Lines 8-14 create a task B that spawns a task dependency graph of three tasks B1, B2, and B3
+@li Lines 16-19 add dependencies among A, B, C, and D
 @li Line 21 submits the graph to an executor and waits until it finishes
 @li Line 22 dumps the entire task dependency graph
 
-Line 8-14 is the main block to enable dynamic tasking.
+Lines 8-14 are the main block to enable dynamic tasking.
 %Taskflow uses a @std_variant date type to 
 unify the interface of static tasking and dynamic tasking.
 The runtime will create a tf::Subflow passing it to task B,
@@ -197,9 +197,9 @@ You can create another subflow from the execution of a subflow and so on.
 
 Debrief:
 @li Line 1 creates a taskflow object
-@li Line 3-20 creates a task to spawn a subflow of two tasks A1 and A2
-@li Line 9-18 spawns another subflow of two tasks A2_1 and A2_2 out of its parent task A2
-@li Line 23-24 dispatches the graph asynchronously and dump its structure when it finishes
+@li Lines 3-20 create a task to spawn a subflow of two tasks A1 and A2
+@li Lines 9-18 spawn another subflow of two tasks A2_1 and A2_2 out of its parent task A2
+@li Lines 23-24 runs the graph asynchronously and dump its structure when it finishes
 
 Similarly, you can detach a nested subflow from its parent subflow.
 A detached subflow will run independently and eventually join the topology
