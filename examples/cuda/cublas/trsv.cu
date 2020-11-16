@@ -43,6 +43,7 @@ int main() {
   }).name("cublasFlow");
 
   executor.run(taskflow).wait();
+  taskflow.dump(std::cout);
   
   std::cout << "solution of the linear system: \n";
   for(size_t i=0; i<res.size(); ++i) {
