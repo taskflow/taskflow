@@ -366,15 +366,12 @@ inline int Executor::this_worker_id() const {
 
 // Procedure: _spawn
 inline void Executor::_spawn(size_t N) {
-  
-  auto id = _threads.size();
-
-  for(size_t i=0; i<N; ++i, ++id) {
+  for(size_t id=0; id<N; ++id) {
 
     _workers[id].id = id;
     _workers[id].vtm = id;
     _workers[id].executor = this;
-    _workers[id].waiter = &_notifier._waiters[i];
+    _workers[id].waiter = &_notifier._waiters[id];
     
     _threads.emplace_back([this] (Worker& w) -> void {
 
