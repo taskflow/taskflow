@@ -964,7 +964,69 @@ class cublasFlowCapturer : public cudaFlowCapturerBase {
       T *C, int ldc, long long int sC,
       int bc
     );
+  
+    /**
+    @brief performs the symmetric matrix-matrix multiplication
+
+    The method performs symmetric matrix-matrix multiplication:
+
+    <tt>C = alpha * A * B + beta * C, if side == CUBLAS_SIDE_LEFT</tt>, or 
     
+    <tt>C = alpha * B * A + beta * C, if side == CUBLAS_SIDE_RIGHT</tt>.
+
+    @c A is a symmetric matrix stored in lower or upper mode, 
+    @c B and @c C are @c m by @c n matrices, and @c alpha and @c beta 
+    are scalars.
+    
+    This method calls native @c cublas<t>symm with 
+    packed parameters, <tt>(handle, args...)</tt>, where @c handle is manaed by 
+    the %cublasFlowCapturer and @c args... are the given arguments.
+
+    @tparam T data type
+    @param side indicates if matrix @c A is on the left or right of @c B.
+    @param uplo indicates if matrix @c A lower or upper part is stored, 
+                the other symmetric part is not referenced and 
+                is inferred from the stored elements.
+    @param m number of rows of matrix @c C and @c B, 
+             with matrix @c A sized accordingly
+    @param n number of columns of matrix @c C and @c B,
+             with matrix @c A sized accordingly
+    @param alpha scalar used for multiplication
+    @param A pointer to the address of matrix @c A
+    @param lda leading dimension of the 2D array used to store A
+    @param B pointer to the address of matrix @c B
+    @param ldb leading dimension of the 2D array used to store B
+    @param beta scalar used for multiplication
+    @param C pointer to the address of matrix @c C
+    @param ldc leading dimension of the 2D array used to store C
+
+    */
+    template <typename T>
+    cudaTask symm(
+      cublasSideMode_t side, cublasFillMode_t uplo,
+      int m, int n,
+      const T *alpha,
+      const T *A, int lda,
+      const T *B, int ldb,
+      const T *beta,
+      T *C, int ldc
+    );
+    
+    /**
+    @brief similar to tf::cublasFlowCapturer::symm but operates on 
+           C-styled row-major layout
+    */
+    template <typename T>
+    cudaTask c_symm(
+      cublasSideMode_t side, cublasFillMode_t uplo,
+      int m, int n,
+      const T *alpha,
+      const T *A, int lda,
+      const T *B, int ldb,
+      const T *beta,
+      T *C, int ldc
+    );
+
   private:
     
     cublasScopedPerThreadHandle _handle;

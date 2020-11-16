@@ -53,30 +53,9 @@ cudaTask cublasFlowCapturer::c_gemv(
   const T *beta,
   T *y, int incy
 ) {
-  return on([this, trans, m, n, alpha, A, lda, x, incx, beta, y, incy] 
-  (cudaStream_t stream) mutable {
-    _stream(stream);
-
-    cublasStatus_t stat;
-
-    trans = cublas_transpose_tran<T>(trans);
-    
-    if constexpr(std::is_same_v<T, float>) {
-      stat = cublasSgemv(_handle,
-        trans, n, m, alpha, A, lda, x, incx, beta, y, incy
-      );
-    }
-    else if constexpr(std::is_same_v<T, double>) {
-      stat = cublasDgemv(_handle,
-        trans, n, m, alpha, A, lda, x, incx, beta, y, incy
-      );
-    }
-    else {
-      static_assert(dependent_false_v<T>, "unknown cublas data type");
-    }
-
-    TF_CHECK_CUBLAS(stat, "failed to capture c_gemv");
-  });
+  return gemv(
+    cublas_rtran<T>(trans), n, m, alpha, A, lda, x, incx, beta, y, incy
+  );
 }
 
 // trmv
@@ -116,28 +95,9 @@ cudaTask cublasFlowCapturer::c_trmv(
   int n, const T* A, int lda,
   T *x, int incx
 ) {
-  return on([this, uplo, tran, diag, n, A, lda, x, incx] 
-  (cudaStream_t stream) mutable {
-
-    _stream(stream);
-
-    cublasStatus_t stat;
-
-    tran = cublas_transpose_tran<T>(tran);
-    uplo = cublas_transpose_fill(uplo);
-
-    if constexpr(std::is_same_v<T, float>) {
-      stat = cublasStrmv(_handle, uplo, tran, diag, n, A, lda, x, incx);
-    }
-    else if constexpr(std::is_same_v<T, double>) {
-      stat = cublasDtrmv(_handle, uplo, tran, diag, n, A, lda, x, incx);
-    }
-    else {
-      static_assert(dependent_false_v<T>, "unknown cublas data type");
-    }
-
-    TF_CHECK_CUBLAS(stat, "failed to capture c_trmv");
-  });
+  return trmv(
+    cublas_rfill(uplo), cublas_rtran<T>(tran), diag, n, A, lda, x, incx
+  );
 }
 
 // trsv
@@ -177,28 +137,9 @@ cudaTask cublasFlowCapturer::c_trsv(
   int n, const T* A, int lda,
   T *x, int incx
 ) {
-  return on([this, uplo, tran, diag, n, A, lda, x, incx] 
-  (cudaStream_t stream) mutable {
-
-    _stream(stream);
-
-    cublasStatus_t stat;
-
-    tran = cublas_transpose_tran<T>(tran);
-    uplo = cublas_transpose_fill(uplo);
-    
-    if constexpr(std::is_same_v<T, float>) {
-      stat = cublasStrsv(_handle, uplo, tran, diag, n, A, lda, x, incx);
-    }
-    else if constexpr(std::is_same_v<T, double>) {
-      stat = cublasDtrsv(_handle, uplo, tran, diag, n, A, lda, x, incx);
-    }
-    else {
-      static_assert(dependent_false_v<T>, "unknown cublas data type");
-    }
-
-    TF_CHECK_CUBLAS(stat, "failed to capture c_trsv");
-  });
+  return trsv(
+    cublas_rfill(uplo), cublas_rtran<T>(tran), diag, n, A, lda, x, incx
+  );
 }
 
 // symv
@@ -244,27 +185,9 @@ cudaTask cublasFlowCapturer::c_symv(
   const T *beta,
   T *y, int incy
 ) {
-  return on([this, uplo, n, alpha, A, lda, x, incx, beta, y, incy] 
-  (cudaStream_t stream) mutable {
-
-    _stream(stream);
-
-    cublasStatus_t stat;
-    
-    uplo = cublas_transpose_fill(uplo);
-
-    if constexpr(std::is_same_v<T, float>) {
-      stat = cublasSsymv(_handle, uplo, n, alpha, A, lda, x, incx, beta, y, incy);
-    }
-    else if constexpr(std::is_same_v<T, double>) {
-      stat = cublasDsymv(_handle, uplo, n, alpha, A, lda, x, incx, beta, y, incy);
-    }
-    else {
-      static_assert(dependent_false_v<T>, "unknown cublas data type");
-    }
-
-    TF_CHECK_CUBLAS(stat, "failed to capture c_symv");
-  });
+  return symv(
+    cublas_rfill(uplo), n, alpha, A, lda, x, incx, beta, y, incy
+  );
 }
     
 // syr
@@ -307,28 +230,9 @@ cudaTask cublasFlowCapturer::c_syr(
   const T *x, int incx,
   T *A, int lda
 ) {
-
-  return on([this, uplo, n, alpha, x, incx, A, lda] 
-  (cudaStream_t stream) mutable {
-
-    _stream(stream);
-
-    cublasStatus_t stat;
-    
-    uplo = cublas_transpose_fill(uplo);
-
-    if constexpr(std::is_same_v<T, float>) {
-      stat = cublasSsyr(_handle, uplo, n, alpha, x, incx, A, lda);
-    }
-    else if constexpr(std::is_same_v<T, double>) {
-      stat = cublasDsyr(_handle, uplo, n, alpha, x, incx, A, lda);
-    }
-    else {
-      static_assert(dependent_false_v<T>, "unknown cublas data type");
-    }
-
-    TF_CHECK_CUBLAS(stat, "failed to capture c_syr");
-  });
+  return syr(
+    cublas_rfill(uplo), n, alpha, x, incx, A, lda
+  );
 }
 
 // syr2
@@ -373,28 +277,9 @@ cudaTask cublasFlowCapturer::c_syr2(
   const T *y, int incy,
   T *A, int lda
 ) {
-
-  return on([this, uplo, n, alpha, x, incx, y, incy, A, lda] 
-  (cudaStream_t stream) mutable {
-
-    _stream(stream);
-    
-    uplo = cublas_transpose_fill(uplo);
-
-    cublasStatus_t stat;
-
-    if constexpr(std::is_same_v<T, float>) {
-      stat = cublasSsyr2(_handle, uplo, n, alpha, x, incx, y, incy, A, lda);
-    }
-    else if constexpr(std::is_same_v<T, double>) {
-      stat = cublasDsyr2(_handle, uplo, n, alpha, x, incx, y, incy, A, lda);
-    }
-    else {
-      static_assert(dependent_false_v<T>, "unknown cublas data type");
-    }
-
-    TF_CHECK_CUBLAS(stat, "failed to capture c_syr2");
-  });
+  return syr2(
+    cublas_rfill(uplo), n, alpha, x, incx, y, incy, A, lda
+  );
 }
 
 }  // end of namespace tf -----------------------------------------------------

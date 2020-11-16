@@ -51,25 +51,9 @@ cudaTask cublasFlowCapturer::c_geam(
   const T *B, int ldb,
   T *C, int ldc
 ) {
-  return on([this, ta, tb, m, n, alpha, A, lda, beta, B, ldb, C, ldc] 
-  (cudaStream_t stream) mutable {
-    _stream(stream);
-    cublasStatus_t stat;
-    if constexpr(std::is_same_v<T, float>) {
-      stat = cublasSgeam(_handle,
-        ta, tb, n, m, alpha, A, lda, beta, B, ldb, C, ldc
-      );
-    }
-    else if constexpr(std::is_same_v<T, double>) {
-      stat = cublasDgeam(_handle,
-        ta, tb, n, m, alpha, A, lda, beta, B, ldb, C, ldc
-      );
-    }
-    else {
-      static_assert(dependent_false_v<T>, "unknown cublas data type");
-    }
-    TF_CHECK_CUBLAS(stat, "failed to run c_geam");
-  });
+  return geam(
+    ta, tb, n, m, alpha, A, lda, beta, B, ldb, C, ldc
+  );
 }
 
 // Function: gemm
@@ -114,25 +98,9 @@ cudaTask cublasFlowCapturer::c_gemm(
   const T *beta,
   T *C, int ldc
 ) {
-  return on([this, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc] 
-  (cudaStream_t stream) mutable {
-    _stream(stream);
-    cublasStatus_t stat;
-    if constexpr(std::is_same_v<T, float>) {
-      stat = cublasSgemm(_handle,
-        tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
-      );
-    }
-    else if constexpr(std::is_same_v<T, double>) {
-      stat = cublasDgemm(_handle,
-        tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
-      );
-    }
-    else {
-      static_assert(dependent_false_v<T>, "unknown cublas data type");
-    }
-    TF_CHECK_CUBLAS(stat, "failed to run c_gemm");
-  });
+  return gemm(
+    tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
+  );
 }
     
 // Function: gemm_batched
@@ -178,23 +146,9 @@ cudaTask cublasFlowCapturer::c_gemm_batched(
   T *C[], int ldc,
   int bc
 ) {
-  return on([this, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc, bc] 
-  (cudaStream_t stream) mutable {
-    _stream(stream);
-    cublasStatus_t stat;
-    if constexpr(std::is_same_v<T, float>) {
-      stat = cublasSgemmBatched(_handle,
-        tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc, bc
-      );
-    }
-    else if constexpr(std::is_same_v<T, double>) {
-      stat = cublasDgemmBatched(_handle,
-        tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc, bc
-      );
-    }
-    else static_assert(dependent_false_v<T>, "unknown cublas data type");
-    TF_CHECK_CUBLAS(stat, "failed to run c_gemm_batched");
-  });
+  return gemm_batched(
+    tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc, bc
+  );
 }
 
 // Function: gemm_sbatched (strided)    
@@ -240,23 +194,74 @@ cudaTask cublasFlowCapturer::c_gemm_sbatched(
   T *C, int ldc, long long int sC,
   int bc
 ){
+  return gemm_sbatched(
+    tb, ta, n, m, k, alpha, B, ldb, sB, A, lda, sA, beta, C, ldc, sC, bc
+  );
+}
+
+// symm    
+template <typename T>
+cudaTask cublasFlowCapturer::symm(
+  cublasSideMode_t side, cublasFillMode_t uplo,
+  int m, int n,
+  const T *alpha,
+  const T *A, int lda,
+  const T *B, int ldb,
+  const T *beta,
+  T *C, int ldc
+) {
   return on(
-  [this, ta, tb, m, n, k, alpha, A, lda, sA, B, ldb, sB, beta, C, ldc, sC, bc] 
+  [this, side, uplo, m, n, alpha, A, lda, B, ldb, beta, C, ldc] 
   (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
     if constexpr(std::is_same_v<T, float>) {
-      stat = cublasSgemmStridedBatched(_handle,
-        tb, ta, n, m, k, alpha, B, ldb, sB, A, lda, sA, beta, C, ldc, sC, bc
+      stat = cublasSsymm(_handle,
+        side, uplo, m, n, alpha, A, lda, B, ldb, beta, C, ldc
       );
     }
     else if constexpr(std::is_same_v<T, double>) {
-      stat = cublasDgemmStridedBatched(_handle,
-        tb, ta, n, m, k, alpha, B, ldb, sB, A, lda, sA, beta, C, ldc, sC, bc
+      stat = cublasDsymm(_handle,
+        side, uplo, m, n, alpha, A, lda, B, ldb, beta, C, ldc
       );
     }
     else static_assert(dependent_false_v<T>, "unknown cublas data type");
-    TF_CHECK_CUBLAS(stat, "failed to run c_gemm_sbatched");
+    TF_CHECK_CUBLAS(stat, "failed to run symm");
+  });
+}
+
+// c_symm    
+template <typename T>
+cudaTask cublasFlowCapturer::c_symm(
+  cublasSideMode_t side, cublasFillMode_t uplo,
+  int m, int n,
+  const T *alpha,
+  const T *A, int lda,
+  const T *B, int ldb,
+  const T *beta,
+  T *C, int ldc
+) {
+  return on(
+  [this, side, uplo, m, n, alpha, A, lda, B, ldb, beta, C, ldc] 
+  (cudaStream_t stream) mutable {
+    _stream(stream);
+    cublasStatus_t stat;
+
+    side = cublas_rside(side);
+    uplo = cublas_rfill(uplo);
+
+    if constexpr(std::is_same_v<T, float>) {
+      stat = cublasSsymm(_handle,
+        side, uplo, n, m, alpha, A, lda, B, ldb, beta, C, ldc
+      );
+    }
+    else if constexpr(std::is_same_v<T, double>) {
+      stat = cublasDsymm(_handle,
+        side, uplo, n, m, alpha, A, lda, B, ldb, beta, C, ldc
+      );
+    }
+    else static_assert(dependent_false_v<T>, "unknown cublas data type");
+    TF_CHECK_CUBLAS(stat, "failed to run c_symm");
   });
 }
 

@@ -7,22 +7,32 @@ namespace tf {
 // ---------------------------------------------------------------------------- 
 // global utility functions
 // ---------------------------------------------------------------------------- 
-//
+// find the tranposed op
 template <typename T, std::enable_if<
   std::is_same_v<T, float> && std::is_same_v<T, double>, void>* = nullptr
 >
-constexpr cublasOperation_t cublas_transpose_tran(cublasOperation_t op) {
+constexpr cublasOperation_t cublas_rtran(cublasOperation_t op) {
   if(op != CUBLAS_OP_N && op != CUBLAS_OP_T) {
     TF_THROW("invalid transposition op for floating data types"); 
   }
   return (op == CUBLAS_OP_N) ? CUBLAS_OP_T : CUBLAS_OP_N;
 }
 
-constexpr cublasFillMode_t cublas_transpose_fill(cublasFillMode_t uplo) {
+// find the transposed fill
+constexpr cublasFillMode_t cublas_rfill(cublasFillMode_t uplo) {
   switch(uplo) {
     case CUBLAS_FILL_MODE_LOWER: return CUBLAS_FILL_MODE_UPPER;
     case CUBLAS_FILL_MODE_UPPER: return CUBLAS_FILL_MODE_LOWER;
     default: return uplo;
+  }
+}
+
+// find the transposed side
+constexpr cublasSideMode_t cublas_rside(cublasSideMode_t side) {
+  switch(side) {
+    case CUBLAS_SIDE_LEFT : return CUBLAS_SIDE_RIGHT;
+    case CUBLAS_SIDE_RIGHT: return CUBLAS_SIDE_LEFT;
+    default: return side;
   }
 }
 
