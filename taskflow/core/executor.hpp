@@ -532,8 +532,8 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 }
 
 // Function: make_observer    
-template<typename Observer, typename... Args>
-std::shared_ptr<Observer> Executor::make_observer(Args&&... args) {
+template<typename Observer, typename... ArgsT>
+std::shared_ptr<Observer> Executor::make_observer(ArgsT&&... args) {
 
   static_assert(
     std::is_base_of_v<ObserverInterface, Observer>,
@@ -541,7 +541,7 @@ std::shared_ptr<Observer> Executor::make_observer(Args&&... args) {
   );
   
   // use a local variable to mimic the constructor 
-  auto ptr = std::make_shared<Observer>(std::forward<Args>(args)...);
+  auto ptr = std::make_shared<Observer>(std::forward<ArgsT>(args)...);
   
   ptr->set_up(_workers.size());
 

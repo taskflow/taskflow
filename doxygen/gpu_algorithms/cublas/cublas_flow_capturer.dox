@@ -170,8 +170,8 @@ We currently support the following level-2 methods:
   + tf::cublasFlowCapturer::c_syr2 performs symmetric rank-2 update on row-major layout
   + tf::cublasFlowCapturer::trmv performs triangular matrix-vector multiplication
   + tf::cublasFlowCapturer::c_trmv performs triangular matrix-vector multiplication on row-major layout
-  + tf::cublasFlowCapturer::trsv solves triangular linear system with a single right-hand side
-  + tf::cublasFlowCapturer::c_trsv solves triangular linear system with a single right-hand side on row-major layout
+  + tf::cublasFlowCapturer::trsv solves triangular linear system with a single right-hand-side
+  + tf::cublasFlowCapturer::c_trsv solves triangular linear system with a single right-hand-side on row-major layout
 
 Our level-2 methods capture the native <a href="https://docs.nvidia.com/cuda/cublas/index.html#cublas-level-2-function-reference">cublas level-2 calls</a>
 with internal stream(s) optimized for maximum concurrency.
@@ -262,6 +262,18 @@ We currently support the following level-3 methods:
     matrix-matrix multiplication with strided memory access
   + tf::cublasFlowCapturer::c_gemm_sbatched performs batched general 
     matrix-matrix multiplication with strided memory access on row-major layout
+  + tf::cublasFlowCapturer::symm performs symmetric matrix-matrix multiplication
+  + tf::cublasFlowCapturer::c_symm performs symmetric matrix-matrix multiplicaiton on row-major layout
+  + tf::cublasFlowCapturer::syrk performs symmetric rank-k update
+  + tf::cublasFlowCapturer::c_syrk performs symmetric rank-k update on row-major layout
+  + tf::cublasFlowCapturer::syr2k performs symmetric rank-2k update
+  + tf::cublasFlowCapturer::c_syr2k performs symmetric rank-2k update on row-major layout
+  + tf::cublasFlowCapturer::syrkx performs a variantion of symmetric rank-k update
+  + tf::cublasFlowCapturer::c_syrkx performs a variantion of symmetric rank-k update on row-major layout
+  + tf::cublasFlowCapturer::trmm performs triangular matrix-matrix multiplication
+  + tf::cublasFlowCapturer::c_trmm performs triangular matrix-matrix multiplication on row-major layout
+  + tf::cublasFlowCapturer::trsm solves a triangular linear system with multiple right-hand-sides
+  + tf::cublasFlowCapturer::c_trsm solves a triangular linear system with multiple right-hand-sides on row-major layout
 
 Our level-3 methods capture the native <a href="https://docs.nvidia.com/cuda/cublas/index.html#cublas-level-2-function-reference">cublas level-3 calls</a> and
 <a href="https://docs.nvidia.com/cuda/cublas/index.html#blas-like-extension">cublas-extension calls</a>
@@ -396,13 +408,14 @@ taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
 }).name("capturer");
 @endcode
 
-@attention
+@warning
 While tf::cublasFlowCapturer::native_handle returns the native cublas handle,
-you must not change its properties %Taskflow has initialized.
-By default, we use @c CUBLAS_POINTER_MODE_DEVICE, and the scalars, 
-@c alpha and/or @c beta, 
-must be accessible on the device and their values should not 
-be modified until the kernels are done. 
+you must not change its properties.
+
+By default, we associate the native cublas handler 
+with @c CUBLAS_POINTER_MODE_DEVICE.
+The two scalars, @c alpha and/or @c beta, 
+and input/output matrices must be accessible in GPU memory space.
 
 @section cublasFlowCapturerKnowMore Know More About cublasFlow Capturer
 

@@ -160,8 +160,8 @@ The cuBLAS library uses <emphasis>column-major storage</emphasis> and 1-based in
 </listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1ac3ebc265f36b4c1205360a055f197873" kindref="member">tf::cublasFlowCapturer::c_syr2</ref> performs symmetric rank-2 update on row-major layout</para>
 </listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1af0ff6efaa01bffbd20d2760b6f82bcb1" kindref="member">tf::cublasFlowCapturer::trmv</ref> performs triangular matrix-vector multiplication</para>
 </listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1adb57fd25e55f0b4e2f4f0045a169f8d9" kindref="member">tf::cublasFlowCapturer::c_trmv</ref> performs triangular matrix-vector multiplication on row-major layout</para>
-</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1a5f10c25901bff8c626235dfdd6d10b57" kindref="member">tf::cublasFlowCapturer::trsv</ref> solves triangular linear system with a single right-hand side</para>
-</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1a27ae640e916e5f3d74886c57fe19342a" kindref="member">tf::cublasFlowCapturer::c_trsv</ref> solves triangular linear system with a single right-hand side on row-major layout</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1a5f10c25901bff8c626235dfdd6d10b57" kindref="member">tf::cublasFlowCapturer::trsv</ref> solves triangular linear system with a single right-hand-side</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1a27ae640e916e5f3d74886c57fe19342a" kindref="member">tf::cublasFlowCapturer::c_trsv</ref> solves triangular linear system with a single right-hand-side on row-major layout</para>
 </listitem></itemizedlist>
 </para>
 <para>Our level-2 methods capture the native <ulink url="https://docs.nvidia.com/cuda/cublas/index.html#cublas-level-2-function-reference">cublas level-2 calls</ulink> with internal stream(s) optimized for maximum concurrency. The two scalars, <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput>, and input and output matrices must sit in GPU memory space.</para>
@@ -235,6 +235,18 @@ The cuBLAS library uses <emphasis>column-major storage</emphasis> and 1-based in
 </listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1aa9415957e3e48df65dc3baad86d05b38" kindref="member">tf::cublasFlowCapturer::c_gemm_batched</ref> performs batched general matrix-matrix multiplication on row-major layout</para>
 </listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1a36ecdcea0f24575187e44374e583df2e" kindref="member">tf::cublasFlowCapturer::gemm_sbatched</ref> performs batched general matrix-matrix multiplication with strided memory access</para>
 </listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1ae57c53a1a07c0b4f73d90bf21fee4e1c" kindref="member">tf::cublasFlowCapturer::c_gemm_sbatched</ref> performs batched general matrix-matrix multiplication with strided memory access on row-major layout</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1a9d0eb2c37b48120bd40b1f725b507c42" kindref="member">tf::cublasFlowCapturer::symm</ref> performs symmetric matrix-matrix multiplication</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1a23a4636954cfdb34835b0d7a275fe4a8" kindref="member">tf::cublasFlowCapturer::c_symm</ref> performs symmetric matrix-matrix multiplicaiton on row-major layout</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1aade5e9a358b7f4195367ef460921a236" kindref="member">tf::cublasFlowCapturer::syrk</ref> performs symmetric rank-k update</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1af9b146e7a3d4afb6658fa5fd8a860527" kindref="member">tf::cublasFlowCapturer::c_syrk</ref> performs symmetric rank-k update on row-major layout</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1a45f110bd529b49531e3c83458a8990ac" kindref="member">tf::cublasFlowCapturer::syr2k</ref> performs symmetric rank-2k update</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1ab2f1c253b6808ac011b7ea9d2fc82e58" kindref="member">tf::cublasFlowCapturer::c_syr2k</ref> performs symmetric rank-2k update on row-major layout</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1af5461904ac5714c5cc7eb7bbd8e2883e" kindref="member">tf::cublasFlowCapturer::syrkx</ref> performs a variantion of symmetric rank-k update</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1a18ef82f489aaaa80d3d3c7cde6750729" kindref="member">tf::cublasFlowCapturer::c_syrkx</ref> performs a variantion of symmetric rank-k update on row-major layout</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1a11e49f148b84ebc95ddeb5f4c3af78d8" kindref="member">tf::cublasFlowCapturer::trmm</ref> performs triangular matrix-matrix multiplication</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1ad9118a1eff03514a0c9f75e21e76fe35" kindref="member">tf::cublasFlowCapturer::c_trmm</ref> performs triangular matrix-matrix multiplication on row-major layout</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1aa8cc2fcfeb3ffbc1146dda358b2b8188" kindref="member">tf::cublasFlowCapturer::trsm</ref> solves a triangular linear system with multiple right-hand-sides</para>
+</listitem><listitem><para><ref refid="classtf_1_1cublasFlowCapturer_1a7a0282cc21707315d347b5e4d8d3f25e" kindref="member">tf::cublasFlowCapturer::c_trsm</ref> solves a triangular linear system with multiple right-hand-sides on row-major layout</para>
 </listitem></itemizedlist>
 </para>
 <para>Our level-3 methods capture the native <ulink url="https://docs.nvidia.com/cuda/cublas/index.html#cublas-level-2-function-reference">cublas level-3 calls</ulink> and <ulink url="https://docs.nvidia.com/cuda/cublas/index.html#blas-like-extension">cublas-extension calls</ulink> with internal stream(s) optimized for maximum concurrency. The two scalars, <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput>, and input and output matrices must sit in GPU memory space.</para>
@@ -344,9 +356,9 @@ The cuBLAS library uses <emphasis>column-major storage</emphasis> and 1-based in
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}).name(</highlight><highlight class="stringliteral">&quot;capturer&quot;</highlight><highlight class="normal">);</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="attention"><para>While <ref refid="classtf_1_1cublasFlowCapturer_1a2701b05226ef193e45482c1bb56f93de" kindref="member">tf::cublasFlowCapturer::native_handle</ref> returns the native cublas handle, you must not change its properties Taskflow has initialized. By default, we use <computeroutput>CUBLAS_POINTER_MODE_DEVICE</computeroutput>, and the scalars, <computeroutput>alpha</computeroutput> and/or <computeroutput>beta</computeroutput>, must be accessible on the device and their values should not be modified until the kernels are done.</para>
+<para><simplesect kind="warning"><para>While <ref refid="classtf_1_1cublasFlowCapturer_1a2701b05226ef193e45482c1bb56f93de" kindref="member">tf::cublasFlowCapturer::native_handle</ref> returns the native cublas handle, you must not change its properties.</para>
 </simplesect>
-</para>
+By default, we associate the native cublas handler with <computeroutput>CUBLAS_POINTER_MODE_DEVICE</computeroutput>. The two scalars, <computeroutput>alpha</computeroutput> and/or <computeroutput>beta</computeroutput>, and input/output matrices must be accessible in GPU memory space.</para>
 </sect1>
 <sect1 id="LinearAlgebracublasFlowCapturer_1cublasFlowCapturerKnowMore">
 <title>Know More About cublasFlow Capturer</title>

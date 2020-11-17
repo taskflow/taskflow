@@ -94,11 +94,11 @@ void amax_amin_asum() {
   tf::cuda_free(max_i);
 }
 
-TEST_CASE("amax-amin-asum.float") {
+TEST_CASE("amax-amin-asum.float" * doctest::timeout(300)) {
   amax_amin_asum<float>();
 }
 
-TEST_CASE("amax-amin-asum.double") {
+TEST_CASE("amax-amin-asum.double" * doctest::timeout(300)) {
   amax_amin_asum<double>();
 }
 
@@ -153,11 +153,11 @@ void axpy() {
   tf::cuda_free(alpha);
 }
 
-TEST_CASE("axpy.float") {
+TEST_CASE("axpy.float" * doctest::timeout(300)) {
   axpy<float>();
 }
 
-TEST_CASE("axpy.double") {
+TEST_CASE("axpy.double" * doctest::timeout(300)) {
   axpy<double>();
 }
 
@@ -207,11 +207,11 @@ void dot() {
   tf::cuda_free(dr);
 }
 
-TEST_CASE("dot.float") {
+TEST_CASE("dot.float" * doctest::timeout(300)) {
   dot<float>();
 }
 
-TEST_CASE("dot.double") {
+TEST_CASE("dot.double" * doctest::timeout(300)) {
   dot<double>();
 }
 
@@ -261,11 +261,11 @@ void swap() {
   tf::cuda_free(dy);
 }
 
-TEST_CASE("swap.float") {
+TEST_CASE("swap.float" * doctest::timeout(300)) {
   swap<float>();
 }
 
-TEST_CASE("swap.double") {
+TEST_CASE("swap.double" * doctest::timeout(300)) {
   swap<double>();
 }
 
@@ -315,10 +315,12 @@ void scal() {
   tf::cuda_free(alpha);
 }
 
-TEST_CASE("scal.float") {
+TEST_CASE("scal.float" * doctest::timeout(300)) {
   scal<float>();
 }
 
-TEST_CASE("scal.double") {
+TEST_CASE("scal.double" * doctest::timeout(300)) {
   scal<double>();
 } 
+
+

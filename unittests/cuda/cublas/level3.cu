@@ -20,6 +20,18 @@ std::vector<T> transpose(int M, int N, std::vector<T>& in) {
 }
 
 template <typename T>
+void print_matrix(int M, int N, const std::vector<T>& mat) {
+  for(int i=0; i<M; i++) {
+    for(int j=0; j<N; j++) {
+      std::cout << mat[i*N+j] << ' ';
+    }
+    std::cout << '\n';
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+template <typename T>
 void geam(
   bool row_major,
   const int M, 
@@ -253,68 +265,68 @@ void geam_tt(bool row_major) {
 }
 
 // column major
-TEST_CASE("geam_tn.float") {
+TEST_CASE("geam_tn.float" * doctest::timeout(300)) {
   geam_tn<float>(false);
 }
 
-TEST_CASE("geam_nn.float") {
+TEST_CASE("geam_nn.float" * doctest::timeout(300)) {
   geam_nn<float>(false);
 }
 
-TEST_CASE("geam_nt.float") {
+TEST_CASE("geam_nt.float" * doctest::timeout(300)) {
   geam_nt<float>(false);
 }
 
-TEST_CASE("geam_tt.float") {
+TEST_CASE("geam_tt.float" * doctest::timeout(300)) {
   geam_tt<float>(false);
 }
 
-TEST_CASE("geam_tn.double") {
+TEST_CASE("geam_tn.double" * doctest::timeout(300)) {
   geam_tn<double>(false);
 }
 
-TEST_CASE("geam_nn.double") {
+TEST_CASE("geam_nn.double" * doctest::timeout(300)) {
   geam_nn<double>(false);
 }
 
-TEST_CASE("geam_nt.double") {
+TEST_CASE("geam_nt.double" * doctest::timeout(300)) {
   geam_nt<double>(false);
 }
 
-TEST_CASE("geam_tt.double") {
+TEST_CASE("geam_tt.double" * doctest::timeout(300)) {
   geam_tt<double>(false);
 }
 
 // row major
-TEST_CASE("c_geam_tn.float") {
+TEST_CASE("c_geam_tn.float" * doctest::timeout(300)) {
   geam_tn<float>(true);
 }
 
-TEST_CASE("c_geam_nn.float") {
+TEST_CASE("c_geam_nn.float" * doctest::timeout(300)) {
   geam_nn<float>(true);
 }
 
-TEST_CASE("c_geam_nt.float") {
+TEST_CASE("c_geam_nt.float" * doctest::timeout(300)) {
   geam_nt<float>(true);
 }
 
-TEST_CASE("c_geam_tt.float") {
+TEST_CASE("c_geam_tt.float" * doctest::timeout(300)) {
   geam_tt<float>(true);
 }
 
-TEST_CASE("c_geam_tn.double") {
+TEST_CASE("c_geam_tn.double" * doctest::timeout(300)) {
   geam_tn<double>(true);
 }
 
-TEST_CASE("c_geam_nn.double") {
+TEST_CASE("c_geam_nn.double" * doctest::timeout(300)) {
   geam_nn<double>(true);
 }
 
-TEST_CASE("c_geam_nt.double") {
+TEST_CASE("c_geam_nt.double" * doctest::timeout(300)) {
   geam_nt<double>(true);
 }
 
-TEST_CASE("c_geam_tt.double") {
+TEST_CASE("c_geam_tt.double" * doctest::timeout(300)) {
   geam_tt<double>(true);
 }
 
@@ -561,68 +573,68 @@ void gemm_tt(bool row_major) {
 }
 
 // gemm (column-major)
-TEST_CASE("gemm_nn.float") {
+TEST_CASE("gemm_nn.float" * doctest::timeout(300)) {
   gemm_nn<float>(false);
 }
 
-TEST_CASE("gemm_nn.double") {
+TEST_CASE("gemm_nn.double" * doctest::timeout(300)) {
   gemm_nn<double>(false);
 }
 
-TEST_CASE("gemm_tn.float") {
+TEST_CASE("gemm_tn.float" * doctest::timeout(300)) {
   gemm_tn<float>(false);
 }
 
-TEST_CASE("gemm_tn.double") {
+TEST_CASE("gemm_tn.double" * doctest::timeout(300)) {
   gemm_tn<double>(false);
 }
 
-TEST_CASE("gemm_nt.float") {
+TEST_CASE("gemm_nt.float" * doctest::timeout(300)) {
   gemm_nt<float>(false);
 }
 
-TEST_CASE("gemm_nt.double") {
+TEST_CASE("gemm_nt.double" * doctest::timeout(300)) {
   gemm_nt<double>(false);
 }
 
-TEST_CASE("gemm_tt.float") {
+TEST_CASE("gemm_tt.float" * doctest::timeout(300)) {
   gemm_tt<float>(false);
 }
 
-TEST_CASE("gemm_tt.double") {
+TEST_CASE("gemm_tt.double" * doctest::timeout(300)) {
   gemm_tt<double>(false);
 }
 
 // c_gemm (row_major)
-TEST_CASE("c_gemm_nn.float") {
+TEST_CASE("c_gemm_nn.float" * doctest::timeout(300)) {
   gemm_nn<float>(true);
 }
 
-TEST_CASE("c_gemm_nn.double") {
+TEST_CASE("c_gemm_nn.double" * doctest::timeout(300)) {
   gemm_nn<double>(true);
 }
 
-TEST_CASE("c_gemm_tn.float") {
+TEST_CASE("c_gemm_tn.float" * doctest::timeout(300)) {
   gemm_tn<float>(true);
 }
 
-TEST_CASE("c_gemm_tn.double") {
+TEST_CASE("c_gemm_tn.double" * doctest::timeout(300)) {
   gemm_tn<double>(true);
 }
 
-TEST_CASE("c_gemm_nt.float") {
+TEST_CASE("c_gemm_nt.float" * doctest::timeout(300)) {
   gemm_nt<float>(true);
 }
 
-TEST_CASE("c_gemm_nt.double") {
+TEST_CASE("c_gemm_nt.double" * doctest::timeout(300)) {
   gemm_nt<double>(true);
 }
 
-TEST_CASE("c_gemm_tt.float") {
+TEST_CASE("c_gemm_tt.float" * doctest::timeout(300)) {
   gemm_tt<float>(true);
 }
 
-TEST_CASE("c_gemm_tt.double") {
+TEST_CASE("c_gemm_tt.double" * doctest::timeout(300)) {
   gemm_tt<double>(true);
 }
 
@@ -918,68 +930,68 @@ void gemm_batched_tt(bool row_major) {
 }
 
 // gemm_batched (column-major)
-TEST_CASE("gemm_batched_nn.float") {
+TEST_CASE("gemm_batched_nn.float" * doctest::timeout(300)) {
   gemm_batched_nn<float>(false);
 }
 
-TEST_CASE("gemm_batched_tn.float") {
+TEST_CASE("gemm_batched_tn.float" * doctest::timeout(300)) {
   gemm_batched_tn<float>(false);
 }
 
-TEST_CASE("gemm_batched_nt.float") {
+TEST_CASE("gemm_batched_nt.float" * doctest::timeout(300)) {
   gemm_batched_nt<float>(false);
 }
 
-TEST_CASE("gemm_batched_tt.float") {
+TEST_CASE("gemm_batched_tt.float" * doctest::timeout(300)) {
   gemm_batched_tt<float>(false);
 }
 
-TEST_CASE("gemm_batched_nn.double") {
+TEST_CASE("gemm_batched_nn.double" * doctest::timeout(300)) {
   gemm_batched_nn<double>(false);
 }
 
-TEST_CASE("gemm_batched_tn.double") {
+TEST_CASE("gemm_batched_tn.double" * doctest::timeout(300)) {
   gemm_batched_tn<double>(false);
 }
 
-TEST_CASE("gemm_batched_nt.double") {
+TEST_CASE("gemm_batched_nt.double" * doctest::timeout(300)) {
   gemm_batched_nt<double>(false);
 }
 
-TEST_CASE("gemm_batched_tt.double") {
+TEST_CASE("gemm_batched_tt.double" * doctest::timeout(300)) {
   gemm_batched_tt<double>(false);
 }
     
 // c_gemm_batched (row-major)
-TEST_CASE("c_gemm_batched_nn.float") {
+TEST_CASE("c_gemm_batched_nn.float" * doctest::timeout(300)) {
   gemm_batched_nn<float>(true);
 }
 
-TEST_CASE("c_gemm_batched_tn.float") {
+TEST_CASE("c_gemm_batched_tn.float" * doctest::timeout(300)) {
   gemm_batched_tn<float>(true);
 }
 
-TEST_CASE("c_gemm_batched_nt.float") {
+TEST_CASE("c_gemm_batched_nt.float" * doctest::timeout(300)) {
   gemm_batched_nt<float>(true);
 }
 
-TEST_CASE("c_gemm_batched_tt.float") {
+TEST_CASE("c_gemm_batched_tt.float" * doctest::timeout(300)) {
   gemm_batched_tt<float>(true);
 }
 
-TEST_CASE("c_gemm_batched_nn.double") {
+TEST_CASE("c_gemm_batched_nn.double" * doctest::timeout(300)) {
   gemm_batched_nn<double>(true);
 }
 
-TEST_CASE("c_gemm_batched_tn.double") {
+TEST_CASE("c_gemm_batched_tn.double" * doctest::timeout(300)) {
   gemm_batched_tn<double>(true);
 }
 
-TEST_CASE("c_gemm_batched_nt.double") {
+TEST_CASE("c_gemm_batched_nt.double" * doctest::timeout(300)) {
   gemm_batched_nt<double>(true);
 }
 
-TEST_CASE("c_gemm_batched_tt.double") {
+TEST_CASE("c_gemm_batched_tt.double" * doctest::timeout(300)) {
   gemm_batched_tt<double>(true);
 }
 
@@ -1266,68 +1278,454 @@ void gemm_strided_batched_tt(bool row_major) {
 }
 
 // gemm_strided_batched (column-major)
-TEST_CASE("gemm_strided_batched_nn.float") {
+TEST_CASE("gemm_strided_batched_nn.float" * doctest::timeout(300)) {
   gemm_strided_batched_nn<float>(false);
 }
 
-TEST_CASE("gemm_strided_batched_tn.float") {
+TEST_CASE("gemm_strided_batched_tn.float" * doctest::timeout(300)) {
   gemm_strided_batched_tn<float>(false);
 }
 
-TEST_CASE("gemm_strided_batched_nt.float") {
+TEST_CASE("gemm_strided_batched_nt.float" * doctest::timeout(300)) {
   gemm_strided_batched_nt<float>(false);
 }
 
-TEST_CASE("gemm_strided_batched_tt.float") {
+TEST_CASE("gemm_strided_batched_tt.float" * doctest::timeout(300)) {
   gemm_strided_batched_tt<float>(false);
 }
 
-TEST_CASE("gemm_strided_batched_nn.double") {
+TEST_CASE("gemm_strided_batched_nn.double" * doctest::timeout(300)) {
   gemm_strided_batched_nn<double>(false);
 }
 
-TEST_CASE("gemm_strided_batched_tn.double") {
+TEST_CASE("gemm_strided_batched_tn.double" * doctest::timeout(300)) {
   gemm_strided_batched_tn<double>(false);
 }
 
-TEST_CASE("gemm_strided_batched_nt.double") {
+TEST_CASE("gemm_strided_batched_nt.double" * doctest::timeout(300)) {
   gemm_strided_batched_nt<double>(false);
 }
 
-TEST_CASE("gemm_strided_batched_tt.double") {
+TEST_CASE("gemm_strided_batched_tt.double" * doctest::timeout(300)) {
   gemm_strided_batched_tt<double>(false);
 }
 
 // gemm_strided_batched (row-major)
-TEST_CASE("c_gemm_strided_batched_nn.float") {
+TEST_CASE("c_gemm_strided_batched_nn.float" * doctest::timeout(300)) {
   gemm_strided_batched_nn<float>(true);
 }
 
-TEST_CASE("c_gemm_strided_batched_tn.float") {
+TEST_CASE("c_gemm_strided_batched_tn.float" * doctest::timeout(300)) {
   gemm_strided_batched_tn<float>(true);
 }
 
-TEST_CASE("c_gemm_strided_batched_nt.float") {
+TEST_CASE("c_gemm_strided_batched_nt.float" * doctest::timeout(300)) {
   gemm_strided_batched_nt<float>(true);
 }
 
-TEST_CASE("c_gemm_strided_batched_tt.float") {
+TEST_CASE("c_gemm_strided_batched_tt.float" * doctest::timeout(300)) {
   gemm_strided_batched_tt<float>(true);
 }
 
-TEST_CASE("c_gemm_strided_batched_nn.double") {
+TEST_CASE("c_gemm_strided_batched_nn.double" * doctest::timeout(300)) {
   gemm_strided_batched_nn<double>(true);
 }
 
-TEST_CASE("c_gemm_strided_batched_tn.double") {
+TEST_CASE("c_gemm_strided_batched_tn.double" * doctest::timeout(300)) {
   gemm_strided_batched_tn<double>(true);
 }
 
-TEST_CASE("c_gemm_strided_batched_nt.double") {
+TEST_CASE("c_gemm_strided_batched_nt.double" * doctest::timeout(300)) {
   gemm_strided_batched_nt<double>(true);
 }
 
-TEST_CASE("c_gemm_strided_batched_tt.double") {
+TEST_CASE("c_gemm_strided_batched_tt.double" * doctest::timeout(300)) {
   gemm_strided_batched_tt<double>(true);
 } 
 
+// ----------------------------------------------------------------------------
+// symm
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void symm_test() {
+
+  int M = 3;
+  int N = 4;
+  int LA = 6, LB = 6, LC = N;
+
+  const std::vector<T> hA = {
+   -1, -1, -1, -1, -1, -1,
+   -1,  2,  0,  0, -1, -1,
+   -1,  1,  2,  0, -1, -1,
+   -1,  1,  1,  2, -1, -1
+  };
+  
+  const std::vector<T> hB = {
+   -1, -1, -1, -1, -1, -1,
+   -1,  1,  1,  3,  1, -1,
+   -1,  1,  4,  1,  1, -1,
+   -1,  1,  1,  7,  1, -1
+  };
+
+  const std::vector<T> gold = {
+    4, 7,  14, 4, 
+    4, 10, 12, 4, 
+    4, 7,  18, 4 
+  };
+
+  std::vector<T> hC(M*N);
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  auto dA = tf::cuda_malloc_device<T>(hA.size());
+  auto dB = tf::cuda_malloc_device<T>(hB.size());
+  auto dC = tf::cuda_malloc_device<T>(hC.size());
+  auto dalpha = tf::cuda_malloc_device<T>(1);
+  auto dbeta  = tf::cuda_malloc_device<T>(1);
+
+  taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+    auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
+    auto alpha = blas->single_task([=] __device__ () { *dalpha = 1; });
+    auto beta  = blas->single_task([=] __device__ () { *dbeta = 0; });
+    auto h2dA  = blas->copy(dA, hA.data(), hA.size());
+    auto h2dB  = blas->copy(dB, hB.data(), hB.size());
+    auto symm  = blas->c_symm(
+      CUBLAS_SIDE_LEFT, CUBLAS_FILL_MODE_LOWER, 
+      M, N, dalpha, dA + 7, LA, dB + 7, LB, dbeta, dC, LC
+    );
+    auto d2hC = blas->copy(hC.data(), dC, hC.size());
+
+    symm.succeed(h2dA, h2dB, alpha, beta)
+        .precede(d2hC);
+  });
+
+  executor.run(taskflow).wait();
+
+  for(size_t i=0; i<hC.size(); i++) {
+    REQUIRE(std::fabs(hC[i] - gold[i]) < 0.0001);
+  }
+
+}
+
+TEST_CASE("c_symm.float" * doctest::timeout(300)) {
+  symm_test<float>();
+}
+
+TEST_CASE("c_symm.double" * doctest::timeout(300)) {
+  symm_test<double>();
+}
+  
+// ----------------------------------------------------------------------------
+// syrk
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void syrk_test() {
+
+  int N = 3;
+  int K = 4;
+  int LA = 6, LC = 6;
+
+  std::vector<T> hC = {
+   -1, -1, -1, -1, -1, -1,
+   -1,  2,  0,  0, -1, -1,
+   -1,  1,  2,  0, -1, -1,
+   -1,  1,  1,  2, -1, -1
+  };
+  
+  const std::vector<T> hA = {
+   -1, -1, -1, -1, -1, -1,
+   -1,  1,  1,  3,  1, -1,
+   -1,  1,  4,  1,  1, -1,
+   -1,  1,  1,  7,  1, -1
+  };
+
+  const std::vector<T> gold = {
+   -1, -1, -1, -1, -1, -1,
+   -1, 14,  0,  0, -1, -1,
+   -1, 10, 21,  0, -1, -1,
+   -1, 25, 14, 54, -1, -1
+  };
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  auto dA = tf::cuda_malloc_device<T>(hA.size());
+  auto dC = tf::cuda_malloc_device<T>(hC.size());
+  auto dalpha = tf::cuda_malloc_device<T>(1);
+  auto dbeta  = tf::cuda_malloc_device<T>(1);
+
+  taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+    auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
+    auto alpha = blas->single_task([=] __device__ () { *dalpha = 1; });
+    auto beta  = blas->single_task([=] __device__ () { *dbeta = 1; });
+    auto h2dA  = blas->copy(dA, hA.data(), hA.size());
+    auto h2dC  = blas->copy(dC, hC.data(), hC.size());
+    auto syrk  = blas->c_syrk(
+      CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N,
+      N, K, dalpha, dA + 7, LA, dbeta, dC + 7, LC
+    );
+    auto d2hC = blas->copy(hC.data(), dC, hC.size());
+
+    syrk.succeed(h2dA, h2dC, alpha, beta)
+        .precede(d2hC);
+  });
+
+  executor.run(taskflow).wait();
+
+  //print_matrix(4, 6, hC);
+
+  for(size_t i=0; i<hC.size(); i++) {
+    REQUIRE(std::fabs(hC[i] - gold[i]) < 0.0001);
+  }
+
+}
+
+TEST_CASE("c_syrk.float" * doctest::timeout(300)) {
+  syrk_test<float>();
+}
+
+TEST_CASE("c_syrk.double" * doctest::timeout(300)) {
+  syrk_test<double>();
+}
+  
+// ----------------------------------------------------------------------------
+// syr2k
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void syr2k_test() {
+
+  int N = 3;
+  int K = 4;
+  int LA = 6, LC = 6, LB = 6;
+
+  std::vector<T> hC = {
+   -1, -1, -1, -1, -1, -1,
+   -1,  2,  0,  0, -1, -1,
+   -1,  1,  2,  0, -1, -1,
+   -1,  1,  1,  2, -1, -1
+  };
+  
+  const std::vector<T> hA = {
+   -1, -1, -1, -1, -1, -1,
+   -1,  1,  1,  3,  1, -1,
+   -1,  1,  4,  1,  1, -1,
+   -1,  1,  1,  7,  1, -1
+  };
+  
+  const std::vector<T> hB = {
+   -1, -1, -1, -1, -1, -1,
+   -1,  1, 10,  2,  9, -1,
+   -1,  8, 14,  2,  1, -1,
+   -1, 13,  3,  1,  4, -1
+  };
+
+  const std::vector<T> gold = {
+   -1, -1, -1, -1, -1, -1,
+   -1, 54,  0,  0, -1, -1,
+   -1, 82, 136, 0, -1, -1,
+   -1, 58, 68, 56, -1, -1
+  };
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  auto dA = tf::cuda_malloc_device<T>(hA.size());
+  auto dB = tf::cuda_malloc_device<T>(hB.size());
+  auto dC = tf::cuda_malloc_device<T>(hC.size());
+  auto dalpha = tf::cuda_malloc_device<T>(1);
+  auto dbeta  = tf::cuda_malloc_device<T>(1);
+
+  taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+    auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
+    auto alpha = blas->single_task([=] __device__ () { *dalpha = 1; });
+    auto beta  = blas->single_task([=] __device__ () { *dbeta = 1; });
+    auto h2dA  = blas->copy(dA, hA.data(), hA.size());
+    auto h2dB  = blas->copy(dB, hB.data(), hB.size());
+    auto h2dC  = blas->copy(dC, hC.data(), hC.size());
+    auto syr2k  = blas->c_syr2k(
+      CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N,
+      N, K, dalpha, dA + 7, LA, dB + 7, LB, dbeta, dC + 7, LC
+    );
+    auto d2hC = blas->copy(hC.data(), dC, hC.size());
+
+    syr2k.succeed(h2dA, h2dC, h2dB, alpha, beta)
+         .precede(d2hC);
+  });
+
+  executor.run(taskflow).wait();
+
+  //print_matrix(4, 6, hC);
+
+  for(size_t i=0; i<hC.size(); i++) {
+    REQUIRE(std::fabs(hC[i] - gold[i]) < 0.0001);
+  }
+
+}
+
+TEST_CASE("c_syr2k.float" * doctest::timeout(300)) {
+  syr2k_test<float>();
+}
+
+TEST_CASE("c_syr2k.double" * doctest::timeout(300)) {
+  syr2k_test<double>();
+}
+
+// ----------------------------------------------------------------------------
+// trmm
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void trmm_test() {
+
+  int N = 4;
+  int M = 3;
+  int LA = 6, LC = 6, LB = 6;
+
+  std::vector<T> hC = {
+   -1,  1,  1,  1,  1, -1,
+   -1,  2,  0,  0, -1, -1,
+   -1,  1,  2,  0, -1, -1,
+   -1,  1,  1,  2, -1, -1
+  };
+  
+  const std::vector<T> hA = {
+   -1, -1, -1, -1, -1, -1,
+   -1,  1,  0,  0, -1, -1,
+   -1,  1,  4,  0, -1, -1,
+   -1,  1,  1,  7, -1, -1
+  };
+  
+  const std::vector<T> hB = {
+   -1, -1, -1, -1, -1, -1,
+   -1,  1, 10,  2,  9, -1,
+   -1,  8, 14,  2,  1, -1,
+   -1, 13,  3,  1,  4, -1
+  };
+
+  const std::vector<T> gold = {
+    -1, -1, -1, -1, -1, -1,
+    -1, 1, 10, 2, 9, -1,
+    -1, 33, 66, 10, 13, -1,
+    -1, 100, 45, 11, 38, -1
+  };
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  auto dA = tf::cuda_malloc_device<T>(hA.size());
+  auto dB = tf::cuda_malloc_device<T>(hB.size());
+  auto dC = tf::cuda_malloc_device<T>(hC.size());
+  auto dalpha = tf::cuda_malloc_device<T>(1);
+
+  taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+    auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
+    auto alpha = blas->single_task([=] __device__ () { *dalpha = 1; });
+    auto h2dA  = blas->copy(dA, hA.data(), hA.size());
+    auto h2dB  = blas->copy(dB, hB.data(), hB.size());
+    auto setC  = blas->for_each(dC, dC + hC.size(), 
+      []__device__(T& v) { v = -1; });
+    auto trmm  = blas->c_trmm(
+      CUBLAS_SIDE_LEFT, CUBLAS_FILL_MODE_LOWER,
+      CUBLAS_OP_N, CUBLAS_DIAG_NON_UNIT,
+      M, N, dalpha, dA + 7, LA, dB + 7, LB, dC + 7, LC
+    );
+    auto d2hC = blas->copy(hC.data(), dC, hC.size());
+
+    trmm.succeed(h2dA, h2dB, alpha, setC)
+        .precede(d2hC);
+  });
+
+  executor.run(taskflow).wait();
+
+  //print_matrix(4, 6, hC);
+
+  for(size_t i=0; i<hC.size(); i++) {
+    REQUIRE(std::fabs(hC[i] - gold[i]) < 0.0001);
+  }
+}
+
+TEST_CASE("c_trmm.float" * doctest::timeout(300)) {
+  trmm_test<float>();
+}
+
+TEST_CASE("c_trmm.double" * doctest::timeout(300)) {
+  trmm_test<double>();
+}
+
+// ----------------------------------------------------------------------------
+// trsm
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void trsm_test() {
+
+  int N = 2;
+  int M = 3;
+  int LA = 6;
+  int LB = 2;
+
+  const std::vector<T> hA = {
+   -1, -1, -1, -1, -1, -1,
+   -1,  2,  0,  0, -1, -1,
+   -1,  1,  2,  0, -1, -1,
+   -1,  1,  1,  2, -1, -1
+  };
+
+  std::vector<T> hB = {
+    5, 10,
+    4, 8,
+    7, 14
+  };
+
+  const std::vector<T> sol = {
+    2.5, 5, 
+    0.75, 1.5,
+    1.875, 3.75
+  };
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  auto dA = tf::cuda_malloc_device<T>(hA.size());
+  auto dB = tf::cuda_malloc_device<T>(hB.size());
+  auto dAlpha = tf::cuda_malloc_device<T>(1);
+
+  taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+    auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
+    auto alpha = capturer.single_task([=] __device__ () { *dAlpha = 1; });
+    auto h2dA = blas->copy(dA, hA.data(), hA.size());
+    auto h2dB = blas->copy(dB, hB.data(), hB.size());
+    auto trsm = blas->c_trsm(
+      CUBLAS_SIDE_LEFT, CUBLAS_FILL_MODE_LOWER, 
+      CUBLAS_OP_N, CUBLAS_DIAG_NON_UNIT, 
+      M, N, dAlpha, dA + 7, LA, dB, LB
+    );
+    auto d2h = blas->copy(hB.data(), dB, hB.size());
+
+    trsm.succeed(h2dA, h2dB, alpha)
+        .precede(d2h);
+  });
+
+  executor.run(taskflow).wait();
+
+  //print_matrix(3, 2, hB);
+  
+  for(size_t i=0; i<hB.size(); ++i) {
+    //std::cout << res[i] << '\n';
+    REQUIRE(std::fabs(hB[i] - sol[i]) < 0.0001);
+  }
+
+}
+
+TEST_CASE("c_trsm.float" * doctest::timeout(300)) {
+  trsm_test<float>();
+}
+
+TEST_CASE("c_trsm.double" * doctest::timeout(300)) {
+  trsm_test<double>();
+}
+  

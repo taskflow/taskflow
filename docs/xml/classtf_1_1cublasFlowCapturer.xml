@@ -16,7 +16,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="970" column="33" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="970" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1341" column="33" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="1341" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -32,7 +32,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="73" column="5"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="80" column="5"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a2701b05226ef193e45482c1bb56f93de" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>cublasHandle_t</type>
@@ -49,7 +49,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="80" column="20" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="983" bodyend="985"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="87" column="20" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="1354" bodyend="1356"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a5e5d2a2502fcfe0094d5ac354995cb71" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -90,7 +90,7 @@
         </briefdescription>
         <detaileddescription>
 <para>This method copies <computeroutput>n</computeroutput> elements from a vector <computeroutput>h</computeroutput> in host memory space to a vector <computeroutput>d</computeroutput> in GPU memory space. The storage spacing between consecutive elements is given by <computeroutput>inch</computeroutput> for the source vector <computeroutput>h</computeroutput> and by <computeroutput>incd</computeroutput> for the destination vector <computeroutput>d</computeroutput>.</para>
-<para>This method calls native <computeroutput>cublasSetVectorAsync</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublasSetVectorAsync</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -147,7 +147,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="106" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="113" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1af8f5052cbe1203d6ee3d3d40dffbb8eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -188,7 +188,7 @@
         </briefdescription>
         <detaileddescription>
 <para>This method copies <computeroutput>n</computeroutput> elements from a vector <computeroutput>d</computeroutput> in GPU memory space to a vector <computeroutput>h</computeroutput> in host memory space. The storage spacing between consecutive elements is given by <computeroutput>inch</computeroutput> for the target vector <computeroutput>h</computeroutput> and by <computeroutput>incd</computeroutput> for the source vector <computeroutput>d</computeroutput>.</para>
-<para>This method calls native <computeroutput>cublasGetVectorAsync</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublasGetVectorAsync</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -245,7 +245,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="132" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="139" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1ab1357bb1728f5fe526acef8afee7111e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -277,7 +277,7 @@
 <para>finds the smallest index of the element of the maximum absolute magnitude </para>
         </briefdescription>
         <detaileddescription>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;amax</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;amax</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -326,7 +326,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="156" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="163" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a7a6485c37d50b9c79205f728ab380929" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -358,7 +358,7 @@
 <para>finds the smallest index of the element of the minimum absolute magnitude </para>
         </briefdescription>
         <detaileddescription>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;amin</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;amin</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -407,7 +407,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="176" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="183" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1ab7672cee3d219ccc75c48b62cf1d1bad" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -439,7 +439,7 @@
 <para>finds the sum of absolute values of the elements over a vector </para>
         </briefdescription>
         <detaileddescription>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;asum</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;asum</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -488,7 +488,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="195" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="202" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a56f8649d43652597da1c9b0a5f88b0ee" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -531,7 +531,7 @@
 <para>This function multiplies the vector <computeroutput>x</computeroutput> by the scalar <computeroutput>alpha</computeroutput> and adds it to the vector <computeroutput>y</computeroutput> overwriting the latest vector with the result. Hence, the performed operation is:</para>
 <para><computeroutput>y[j] = alpha * x[k] + y[j]</computeroutput>,</para>
 <para>where <computeroutput>j</computeroutput> and <computeroutput>k</computeroutput> are indices of <computeroutput>n</computeroutput> elements with step sizes <computeroutput>incy</computeroutput> and <computeroutput>incx</computeroutput>.</para>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;asum</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;asum</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -596,7 +596,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="225" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="232" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1af315b411bcaa2bd2bc1436f7f2ca5e21" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -636,7 +636,7 @@
 <para>adds it to the vector <computeroutput>y</computeroutput> overwriting the latest vector with the result. Hence, the performed operation is:</para>
 <para><computeroutput>y[j] = x[k]</computeroutput>,</para>
 <para>where <computeroutput>j</computeroutput> and <computeroutput>k</computeroutput> are indices of <computeroutput>n</computeroutput> elements with step sizes <computeroutput>incy</computeroutput> and <computeroutput>incx</computeroutput>.</para>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;copy</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;copy</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -693,7 +693,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="258" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="265" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1afdfa01d9f277051e44d7ed9663555b52" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -734,7 +734,7 @@
         </briefdescription>
         <detaileddescription>
 <para><computeroutput>sum += x[i] * y[i]</computeroutput></para>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;dot</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;dot</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -799,7 +799,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="281" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="288" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a8000fc6dbbb6f6f5a033f1b365e80d38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -831,7 +831,7 @@
 <para>computes the Euclidean norm of a vector </para>
         </briefdescription>
         <detaileddescription>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;nrm2</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;nrm2</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -880,7 +880,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="300" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="307" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1adb8f5d3137f5ccb3469a5bdde454a8bf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -912,7 +912,7 @@
 <para>scales a vector by a scalar </para>
         </briefdescription>
         <detaileddescription>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;scal</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;scal</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -961,7 +961,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="319" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="326" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a32451b05fd7eb937ce8e807b5d5abe1f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1000,7 +1000,7 @@
 <para>This function interchanges the elements of vectors <computeroutput>x</computeroutput> and <computeroutput>y</computeroutput>. Hence, the performed operation is:</para>
 <para><computeroutput>y[j] &lt;-&gt; x[k]</computeroutput>,</para>
 <para>where <computeroutput>j</computeroutput> is the index of element in <computeroutput>y</computeroutput> with a step size <computeroutput>incy</computeroutput> and <computeroutput>k</computeroutput> is the index of element in <computeroutput>x</computeroutput> with a step size <computeroutput>incx</computeroutput>.</para>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;swap</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;swap</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -1057,7 +1057,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="347" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="354" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a72185bf94321948b5b3657cc9c52ad0a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1226,7 +1226,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="390" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="397" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a3a492f3f22949e0e6b1058113eb475d0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1289,7 +1289,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="406" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="413" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1aed19fb69f2242f4ac6429f94d7776727" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1445,7 +1445,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="449" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="456" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a128ac1083f1dd05690998f5dac01959e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1504,7 +1504,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="464" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="471" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a6765f845c7b95daefa197fdc2a1b426d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1625,7 +1625,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="507" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="514" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1afd79fe59e463b91feb2cbb94079c7c8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1672,7 +1672,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="520" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="527" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a46443a7e6c36f2a0d655041f6227b544" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1817,7 +1817,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="563" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="570" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1ac3ebc265f36b4c1205360a055f197873" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1872,7 +1872,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="577" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="584" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1af0ff6efaa01bffbd20d2760b6f82bcb1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2001,7 +2001,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="610" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="617" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1adb57fd25e55f0b4e2f4f0045a169f8d9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2052,7 +2052,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="622" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="629" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a5f10c25901bff8c626235dfdd6d10b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2181,7 +2181,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="653" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="660" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a27ae640e916e5f3d74886c57fe19342a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2232,7 +2232,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="665" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="672" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a30b437e511b5719f6253d3a9cf0a992c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2303,9 +2303,10 @@
 <para>The in-place mode supports the following two operations:</para>
 <para><orderedlist>
 <listitem><para><computeroutput>C = alpha * C + beta * op(B)</computeroutput></para>
-</listitem><listitem><para><computeroutput>C = alpha op(A) + beta * C</computeroutput></para>
+</listitem><listitem><para><computeroutput>C = alpha * op(A) + beta * C</computeroutput></para>
 </listitem></orderedlist>
 </para>
+<para>For in-place mode, if <computeroutput>C</computeroutput> equals <computeroutput>A</computeroutput>, <computeroutput>ldc</computeroutput> equals <computeroutput>lda</computeroutput> and <computeroutput>ta</computeroutput> equals <computeroutput>CUBLAS_OP_N</computeroutput>. If <computeroutput>C</computeroutput> equals <computeroutput>B</computeroutput>, <computeroutput>ldc</computeroutput> equals <computeroutput>ldb</computeroutput> and <computeroutput>tb</computeroutput> equals CUBLAS_OP_N.</para>
 <para>The operation includes the following special cases:</para>
 <para><orderedlist>
 <listitem><para>the user can reset matrix <computeroutput>C</computeroutput> to zero by setting <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> to 0</para>
@@ -2313,7 +2314,7 @@
 </listitem></orderedlist>
 </para>
 <para>The input matrices are in column-major storage.</para>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;geam</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;geam</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -2426,7 +2427,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="725" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="736" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a756dc6637521ef4f2249711effd1d0f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2493,7 +2494,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="739" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="750" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a8adbe06476f146b27bb00ba6054e5879" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2565,7 +2566,7 @@
 <para><computeroutput>C = alpha * op (A) * op (B) + beta * C</computeroutput>,</para>
 <para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, and <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput> are 2D matrices stored in column-major format with dimension <computeroutput>op(A)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>k</computeroutput>, dimension <computeroutput>op(B)</computeroutput> as <computeroutput>k</computeroutput> by <computeroutput>n</computeroutput>, and <computeroutput>C</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>.</para>
 <para>The input matrices are in column-major storage.</para>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;gemm</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;gemm</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -2686,7 +2687,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="786" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="797" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1aecfd3b623b457d277dca40c2e1b3c1c0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2757,7 +2758,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="801" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="812" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a56af0e8ed80e5626fe2f594608afa405" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2836,7 +2837,7 @@
 <para><computeroutput>C[i]= alpha * op (A[i]) * op (B[i]) + beta * C[i], i in [0, bc)</computeroutput>,</para>
 <para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, and <computeroutput>A</computeroutput>[i], <computeroutput>B</computeroutput>[i], and <computeroutput>C</computeroutput>[i] are 2D matrices stored in column-major format with dimension <computeroutput>op(A)</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>k</computeroutput>, dimension <computeroutput>op(B)</computeroutput> as <computeroutput>k</computeroutput> by <computeroutput>n</computeroutput>, and <computeroutput>C</computeroutput> as <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput>.</para>
 <para>The input matrices are in column-major storage.</para>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;gemmBatched</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;gemmBatched</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -2965,7 +2966,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="855" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="866" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1aa9415957e3e48df65dc3baad86d05b38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3043,7 +3044,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="871" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="882" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a36ecdcea0f24575187e44374e583df2e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3129,7 +3130,7 @@
         <detaileddescription>
 <para>Here, we use <computeroutput>A</computeroutput>[i], <computeroutput>B</computeroutput>[i], <computeroutput>C</computeroutput>[i] as notation for A, B and C matrices in the <computeroutput>i-th</computeroutput> instance of the batch, implicitly assuming they are respectively address offsets <computeroutput>sA</computeroutput>, <computeroutput>sB</computeroutput>, <computeroutput>sC</computeroutput> away from <computeroutput>A</computeroutput>[i-1], <computeroutput>B</computeroutput>[i-1], <computeroutput>C</computeroutput>[i-1].</para>
 <para>The input matrices are in column-major storage.</para>
-<para>This method calls native <computeroutput>cublas&lt;t&gt;gemmStridedBatched</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is manaed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;gemmStridedBatched</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -3285,7 +3286,7 @@ The batch must be <emphasis>uniform</emphasis>. All instances in the batch must 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="941" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="952" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1ae57c53a1a07c0b4f73d90bf21fee4e1c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3372,7 +3373,1452 @@ The batch must be <emphasis>uniform</emphasis>. All instances in the batch must 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="957" column="14"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="968" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a9d0eb2c37b48120bd40b1f725b507c42" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cublasFlowCapturer::symm</definition>
+        <argsstring>(cublasSideMode_t side, cublasFillMode_t uplo, int m, int n, const T *alpha, const T *A, int lda, const T *B, int ldb, const T *beta, T *C, int ldc)</argsstring>
+        <name>symm</name>
+        <param>
+          <type>cublasSideMode_t</type>
+          <declname>side</declname>
+        </param>
+        <param>
+          <type>cublasFillMode_t</type>
+          <declname>uplo</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lda</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldb</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>beta</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>C</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldc</declname>
+        </param>
+        <briefdescription>
+<para>performs the symmetric matrix-matrix multiplication </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The method performs symmetric matrix-matrix multiplication:</para>
+<para><computeroutput>C = alpha * A * B + beta * C, if side == CUBLAS_SIDE_LEFT</computeroutput>, or</para>
+<para><computeroutput>C = alpha * B * A + beta * C, if side == CUBLAS_SIDE_RIGHT</computeroutput>.</para>
+<para><computeroutput>A</computeroutput> is a symmetric matrix stored in lower or upper mode, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> are <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput> matrices, and <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;symm</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data type </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>side</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>indicates if matrix <computeroutput>A</computeroutput> is on the left or right of <computeroutput>B</computeroutput>. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uplo</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>indicates if matrix <computeroutput>A</computeroutput> lower or upper part is stored, the other symmetric part is not referenced and is inferred from the stored elements. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>m</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of rows of matrix <computeroutput>C</computeroutput> and <computeroutput>B</computeroutput>, with matrix <computeroutput>A</computeroutput> sized accordingly </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of columns of matrix <computeroutput>C</computeroutput> and <computeroutput>B</computeroutput>, with matrix <computeroutput>A</computeroutput> sized accordingly </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>alpha</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>scalar used for multiplication </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>A</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of matrix <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lda</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store A </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>B</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of matrix <computeroutput>B</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ldb</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store B </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>beta</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>scalar used for multiplication </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>C</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of matrix <computeroutput>C</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ldc</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store C </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1016" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a23a4636954cfdb34835b0d7a275fe4a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cublasFlowCapturer::c_symm</definition>
+        <argsstring>(cublasSideMode_t side, cublasFillMode_t uplo, int m, int n, const T *alpha, const T *A, int lda, const T *B, int ldb, const T *beta, T *C, int ldc)</argsstring>
+        <name>c_symm</name>
+        <param>
+          <type>cublasSideMode_t</type>
+          <declname>side</declname>
+        </param>
+        <param>
+          <type>cublasFillMode_t</type>
+          <declname>uplo</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lda</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldb</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>beta</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>C</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldc</declname>
+        </param>
+        <briefdescription>
+<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1a9d0eb2c37b48120bd40b1f725b507c42" kindref="member">tf::cublasFlowCapturer::symm</ref> but operates on C-styled row-major layout </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1031" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1aade5e9a358b7f4195367ef460921a236" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cublasFlowCapturer::syrk</definition>
+        <argsstring>(cublasFillMode_t uplo, cublasOperation_t tran, int n, int k, const T *alpha, const T *A, int lda, const T *beta, T *C, int ldc)</argsstring>
+        <name>syrk</name>
+        <param>
+          <type>cublasFillMode_t</type>
+          <declname>uplo</declname>
+        </param>
+        <param>
+          <type>cublasOperation_t</type>
+          <declname>tran</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lda</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>beta</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>C</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldc</declname>
+        </param>
+        <briefdescription>
+<para>performs the symmetric rank-k update </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method performs the symmetric rank-k update :</para>
+<para><computeroutput>C = alpha * op(A) * op(A)^T + beta * C</computeroutput>,</para>
+<para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, <computeroutput>C</computeroutput> is a symmetric matrix stored in lower or upper mode, and <computeroutput>A</computeroutput> is a matrix with dimension <computeroutput>op(A)</computeroutput> <computeroutput>n</computeroutput> by <computeroutput>k</computeroutput>.</para>
+<para>The result is stored to <computeroutput>uplo</computeroutput> part of <computeroutput>C</computeroutput>.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;syrk</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data type </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>uplo</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>indicates if matrix <computeroutput>C</computeroutput> lower or upper part is stored, the other symmetric part is not referenced and is inferred from the stored elements. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>tran</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>transposition operation to apply to <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of rows of matrix <computeroutput>C</computeroutput> and <computeroutput>op(A)</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>k</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of columns of matrix <computeroutput>op(A)</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>alpha</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>scalar used for multiplication </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>A</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lda</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>beta</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>scalar used for multiplication </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>C</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of <computeroutput>C</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ldc</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store <computeroutput>C</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1073" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1af9b146e7a3d4afb6658fa5fd8a860527" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cublasFlowCapturer::c_syrk</definition>
+        <argsstring>(cublasFillMode_t uplo, cublasOperation_t tran, int n, int k, const T *alpha, const T *A, int lda, const T *beta, T *C, int ldc)</argsstring>
+        <name>c_syrk</name>
+        <param>
+          <type>cublasFillMode_t</type>
+          <declname>uplo</declname>
+        </param>
+        <param>
+          <type>cublasOperation_t</type>
+          <declname>tran</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lda</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>beta</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>C</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldc</declname>
+        </param>
+        <briefdescription>
+<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1af9b146e7a3d4afb6658fa5fd8a860527" kindref="member">tf::cublasFlowCapturer::c_syrk</ref> but operates on C-styled row-major layout </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1087" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a45f110bd529b49531e3c83458a8990ac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cublasFlowCapturer::syr2k</definition>
+        <argsstring>(cublasFillMode_t uplo, cublasOperation_t tran, int n, int k, const T *alpha, const T *A, int lda, const T *B, int ldb, const T *beta, T *C, int ldc)</argsstring>
+        <name>syr2k</name>
+        <param>
+          <type>cublasFillMode_t</type>
+          <declname>uplo</declname>
+        </param>
+        <param>
+          <type>cublasOperation_t</type>
+          <declname>tran</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lda</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldb</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>beta</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>C</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldc</declname>
+        </param>
+        <briefdescription>
+<para>performs the symmetric rank-2k update </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method performs the symmetric rank-2k update :</para>
+<para><computeroutput>C = alpha * (op(A) * op(B)^T + op(B) * op(A)^T) + beta * C</computeroutput>,</para>
+<para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, <computeroutput>C</computeroutput> is a symmetric matrix stored in lower or upper mode, and <computeroutput>A</computeroutput> and <computeroutput>B</computeroutput> are two matrices with dimensions <computeroutput>op(A)</computeroutput> and op(B) <computeroutput>n</computeroutput> by <computeroutput>k</computeroutput>.</para>
+<para>The result is stored to <computeroutput>uplo</computeroutput> part of <computeroutput>C</computeroutput>.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;syr2k</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data type </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>uplo</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>indicates if matrix <computeroutput>C</computeroutput> lower or upper part is stored, the other symmetric part is not referenced and is inferred from the stored elements. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>tran</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>transposition operation to apply to <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of rows of matrix <computeroutput>C</computeroutput> and <computeroutput>op(A)</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>k</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of columns of matrix <computeroutput>op(A)</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>alpha</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>scalar used for multiplication </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>A</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lda</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>B</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of <computeroutput>B</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ldb</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store <computeroutput>B</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>beta</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>scalar used for multiplication </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>C</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of <computeroutput>C</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ldc</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store <computeroutput>C</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1130" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1ab2f1c253b6808ac011b7ea9d2fc82e58" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cublasFlowCapturer::c_syr2k</definition>
+        <argsstring>(cublasFillMode_t uplo, cublasOperation_t tran, int n, int k, const T *alpha, const T *A, int lda, const T *B, int ldb, const T *beta, T *C, int ldc)</argsstring>
+        <name>c_syr2k</name>
+        <param>
+          <type>cublasFillMode_t</type>
+          <declname>uplo</declname>
+        </param>
+        <param>
+          <type>cublasOperation_t</type>
+          <declname>tran</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lda</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldb</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>beta</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>C</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldc</declname>
+        </param>
+        <briefdescription>
+<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1a45f110bd529b49531e3c83458a8990ac" kindref="member">tf::cublasFlowCapturer::syr2k</ref> but operates on C-styled row-major layout </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1145" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1af5461904ac5714c5cc7eb7bbd8e2883e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cublasFlowCapturer::syrkx</definition>
+        <argsstring>(cublasFillMode_t uplo, cublasOperation_t tran, int n, int k, const T *alpha, const T *A, int lda, const T *B, int ldb, const T *beta, T *C, int ldc)</argsstring>
+        <name>syrkx</name>
+        <param>
+          <type>cublasFillMode_t</type>
+          <declname>uplo</declname>
+        </param>
+        <param>
+          <type>cublasOperation_t</type>
+          <declname>tran</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lda</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldb</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>beta</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>C</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldc</declname>
+        </param>
+        <briefdescription>
+<para>performs a variation of the symmetric rank-k update </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method performs a variation of the symmetric rank-k update:</para>
+<para><computeroutput>C = alpha * op(A) * op(B)^T + beta * C</computeroutput>,</para>
+<para>where <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput> are scalars, <computeroutput>C</computeroutput> is a symmetric matrix stored in lower or upper mode, and <computeroutput>A</computeroutput> and <computeroutput>B</computeroutput> are two matrices with dimensions <computeroutput>op(A)</computeroutput> and op(B) <computeroutput>n</computeroutput> by <computeroutput>k</computeroutput>.</para>
+<para>The result is stored to <computeroutput>uplo</computeroutput> part of <computeroutput>C</computeroutput>.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;syr2k</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data type </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>uplo</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>indicates if matrix <computeroutput>C</computeroutput> lower or upper part is stored, the other symmetric part is not referenced and is inferred from the stored elements. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>tran</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>transposition operation to apply to <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of rows of matrix <computeroutput>C</computeroutput> and <computeroutput>op(A)</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>k</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of columns of matrix <computeroutput>op(A)</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>alpha</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>scalar used for multiplication </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>A</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lda</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>B</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of <computeroutput>B</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ldb</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store <computeroutput>B</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>beta</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>scalar used for multiplication </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>C</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of <computeroutput>C</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ldc</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store <computeroutput>C</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1189" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a18ef82f489aaaa80d3d3c7cde6750729" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cublasFlowCapturer::c_syrkx</definition>
+        <argsstring>(cublasFillMode_t uplo, cublasOperation_t tran, int n, int k, const T *alpha, const T *A, int lda, const T *B, int ldb, const T *beta, T *C, int ldc)</argsstring>
+        <name>c_syrkx</name>
+        <param>
+          <type>cublasFillMode_t</type>
+          <declname>uplo</declname>
+        </param>
+        <param>
+          <type>cublasOperation_t</type>
+          <declname>tran</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lda</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldb</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>beta</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>C</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldc</declname>
+        </param>
+        <briefdescription>
+<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1af5461904ac5714c5cc7eb7bbd8e2883e" kindref="member">tf::cublasFlowCapturer::syrkx</ref> but operates on C-styled row-major layout </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1204" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a11e49f148b84ebc95ddeb5f4c3af78d8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cublasFlowCapturer::trmm</definition>
+        <argsstring>(cublasSideMode_t side, cublasFillMode_t uplo, cublasOperation_t tran, cublasDiagType_t diag, int m, int n, const T *alpha, const T *A, int lda, const T *B, int ldb, T *C, int ldc)</argsstring>
+        <name>trmm</name>
+        <param>
+          <type>cublasSideMode_t</type>
+          <declname>side</declname>
+        </param>
+        <param>
+          <type>cublasFillMode_t</type>
+          <declname>uplo</declname>
+        </param>
+        <param>
+          <type>cublasOperation_t</type>
+          <declname>tran</declname>
+        </param>
+        <param>
+          <type>cublasDiagType_t</type>
+          <declname>diag</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lda</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldb</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>C</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldc</declname>
+        </param>
+        <briefdescription>
+<para>performs triangular matrix-matrix multiplication </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method performs triangular matrix-matrix multiplication:</para>
+<para><computeroutput>C = alpha * op(A) * B</computeroutput>, if <computeroutput>side == CUBLAS_SIDE_LEFT</computeroutput>, or</para>
+<para><computeroutput>C = alpha * B * op(A)</computeroutput>, if <computeroutput>side == CUBLAS_SIDE_RIGHT</computeroutput>,</para>
+<para>where <computeroutput>A</computeroutput> is a triangular matrix stored in lower or upper mode with or without the main diagonal, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> are <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput> matrix, and <computeroutput>alpha</computeroutput> is a scalar.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;trmm</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data type </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>side</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>indicates if matrix <computeroutput>A</computeroutput> is on the left or right of <computeroutput>B</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uplo</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>indicates if matrix <computeroutput>A</computeroutput> lower or upper part is stored, the other part is not referenced and is inferred from the stored elements </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>tran</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>transposition operation to apply to <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>diag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>indicates if the elements on the main diagonal of matrix <computeroutput>A</computeroutput> are unity and should not be accessed. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>m</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of rows of matrix <computeroutput>B</computeroutput>, with matrix <computeroutput>A</computeroutput> sized accordingly </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of columns of matrix <computeroutput>B</computeroutput>, with matrix <computeroutput>A</computeroutput> sized accordingly </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>alpha</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>scalar used for multiplication </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>A</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of matrix <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lda</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>B</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of matrix <computeroutput>B</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ldb</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store <computeroutput>B</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>C</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of matrix <computeroutput>C</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ldc</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store <computeroutput>C</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+Notice that in this method, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> can point to the same address in which case the in-place implementation is performed (with results written back to <computeroutput>B</computeroutput>). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1254" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1ad9118a1eff03514a0c9f75e21e76fe35" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cublasFlowCapturer::c_trmm</definition>
+        <argsstring>(cublasSideMode_t side, cublasFillMode_t uplo, cublasOperation_t tran, cublasDiagType_t diag, int m, int n, const T *alpha, const T *A, int lda, const T *B, int ldb, T *C, int ldc)</argsstring>
+        <name>c_trmm</name>
+        <param>
+          <type>cublasSideMode_t</type>
+          <declname>side</declname>
+        </param>
+        <param>
+          <type>cublasFillMode_t</type>
+          <declname>uplo</declname>
+        </param>
+        <param>
+          <type>cublasOperation_t</type>
+          <declname>tran</declname>
+        </param>
+        <param>
+          <type>cublasDiagType_t</type>
+          <declname>diag</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lda</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldb</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>C</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldc</declname>
+        </param>
+        <briefdescription>
+<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1a11e49f148b84ebc95ddeb5f4c3af78d8" kindref="member">tf::cublasFlowCapturer::trmm</ref> but oeprates on C-styled row-major layout </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1269" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1aa8cc2fcfeb3ffbc1146dda358b2b8188" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cublasFlowCapturer::trsm</definition>
+        <argsstring>(cublasSideMode_t side, cublasFillMode_t uplo, cublasOperation_t tran, cublasDiagType_t diag, int m, int n, const T *alpha, const T *A, int lda, T *B, int ldb)</argsstring>
+        <name>trsm</name>
+        <param>
+          <type>cublasSideMode_t</type>
+          <declname>side</declname>
+        </param>
+        <param>
+          <type>cublasFillMode_t</type>
+          <declname>uplo</declname>
+        </param>
+        <param>
+          <type>cublasOperation_t</type>
+          <declname>tran</declname>
+        </param>
+        <param>
+          <type>cublasDiagType_t</type>
+          <declname>diag</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lda</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldb</declname>
+        </param>
+        <briefdescription>
+<para>solves the triangular linear system with multiple right-hand-sides </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method solves the triangular linear system with multiple right-hand-sides:</para>
+<para><computeroutput>op(A) * X = alpha * B</computeroutput>, if <computeroutput>side == CUBLAS_SIDE_LEFT</computeroutput>, or</para>
+<para><computeroutput>X * op(A) = alpha * B</computeroutput>, if <computeroutput>side == CUBLAS_SIDE_RIGHT</computeroutput>,</para>
+<para>where <computeroutput>A</computeroutput> is a triangular matrix stored in lower or upper mode with or without the main diagonal, <computeroutput>X</computeroutput> and <computeroutput>B</computeroutput> are <computeroutput>m</computeroutput> by <computeroutput>n</computeroutput> matrices, and <computeroutput>alpha</computeroutput> is a scalar.</para>
+<para>The solution <computeroutput>X</computeroutput> overwrites the right-hand-sides <computeroutput>B</computeroutput> on exit.</para>
+<para>This method calls native <computeroutput>cublas&lt;t&gt;trsm</computeroutput> with packed parameters, <computeroutput>(handle, args...)</computeroutput>, where <computeroutput>handle</computeroutput> is managed by the cublasFlowCapturer and <computeroutput>args</computeroutput>... are the given arguments.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data type </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>side</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>indicates if <computeroutput>A</computeroutput> is on the left or right side of <computeroutput>X</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uplo</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>indicates if matrix <computeroutput>A</computeroutput> lower or upper part is stored, the other part is not referenced and is inferred from the stored elements </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>tran</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>transposition operation to apply to <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>diag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>indicates if the elements on the main diagonal of matrix <computeroutput>A</computeroutput> are unity and should not be accessed </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>m</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of rows in matrix <computeroutput>B</computeroutput>, with matrix <computeroutput>A</computeroutput> sized accordingly </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of columns in matrix <computeroutput>B</computeroutput>, with matrix <computeroutput>A</computeroutput> sized accordingly </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>alpha</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>scalar to apply to <computeroutput>B</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>A</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of matrix <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lda</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store <computeroutput>A</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>B</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the address of matrix <computeroutput>B</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ldb</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>leading dimension of the 2D array used to store <computeroutput>B</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1316" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cublasFlowCapturer_1a7a0282cc21707315d347b5e4d8d3f25e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cublasFlowCapturer::c_trsm</definition>
+        <argsstring>(cublasSideMode_t side, cublasFillMode_t uplo, cublasOperation_t tran, cublasDiagType_t diag, int m, int n, const T *alpha, const T *A, int lda, T *B, int ldb)</argsstring>
+        <name>c_trsm</name>
+        <param>
+          <type>cublasSideMode_t</type>
+          <declname>side</declname>
+        </param>
+        <param>
+          <type>cublasFillMode_t</type>
+          <declname>uplo</declname>
+        </param>
+        <param>
+          <type>cublasOperation_t</type>
+          <declname>tran</declname>
+        </param>
+        <param>
+          <type>cublasDiagType_t</type>
+          <declname>diag</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>lda</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ldb</declname>
+        </param>
+        <briefdescription>
+<para>similar to <ref refid="classtf_1_1cublasFlowCapturer_1aa8cc2fcfeb3ffbc1146dda358b2b8188" kindref="member">tf::cublasFlowCapturer::trsm</ref> but operates on C-styled row-major layout </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1330" column="14"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -3391,45 +4837,49 @@ The batch must be <emphasis>uniform</emphasis>. All instances in the batch must 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="972" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="976" bodyend="980"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="1343" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="1347" bodyend="1351"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class object to construct a cuBLAS task graph </para>
+<para>class to construct a cuBLAS task graph </para>
     </briefdescription>
     <detaileddescription>
 <para>cublasFlowCapturer provides a higher-level interface over the <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> library and hide concurrency details from users. It inherits methods from <ref refid="classtf_1_1cudaFlowCapturerBase" kindref="compound">tf::cudaFlowCapturerBase</ref> and must be used from a <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> object. All pointers used to cublasFlowCapturer methods must be in GPU memory space or managed (i.e., <computeroutput>cudaMallocManaged</computeroutput>), including scalars, <computeroutput>alpha</computeroutput> and <computeroutput>beta</computeroutput>, input data and output data pointers. The following example uses <computeroutput>cublas&lt;t&gt;amax</computeroutput> to find the minimum index of the element of the maximum absolute magnitude in a vector.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="cublasflow_8hpp" kindref="compound">taskflow/cublasflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1024;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>*x<sp/>=<sp/></highlight><highlight class="keyword">nullptr</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>*d_res;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/>h_res;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref><sp/>host(N,<sp/>0.0f);</highlight></codeline>
-<codeline><highlight class="normal">host[512]<sp/>=<sp/>100.0f;<sp/><sp/></highlight><highlight class="comment">//<sp/>artificially<sp/>set<sp/>the<sp/>mid-position<sp/>to<sp/>the<sp/>largest</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">cudaMalloc(&amp;x,<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">));</highlight></codeline>
-<codeline><highlight class="normal">cudaMalloc(&amp;d_res,<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>capturer){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cublasFlowCapturer" kindref="compound">tf::cublasFlowCapturer</ref>*<sp/>cublas<sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturer_1a49dd9727aeb5bccd7d826c6b11a6882d" kindref="member">make_capturer</ref>&lt;<ref refid="classtf_1_1cublasFlowCapturer" kindref="compound">tf::cublasFlowCapturer</ref>&gt;();</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d<sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturerBase_1a9fd8983c782f841bba6b10de39becdf6" kindref="member">copy</ref>(x,<sp/>host.data(),<sp/>N);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>find_max<sp/>=<sp/>cublas-&gt;<ref refid="classtf_1_1cublasFlowCapturer_1ab1357bb1728f5fe526acef8afee7111e" kindref="member">amax</ref>(N,<sp/>x,<sp/>1,<sp/>d_res);<sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>d2h<sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturerBase_1a9fd8983c782f841bba6b10de39becdf6" kindref="member">copy</ref>(&amp;h_res,<sp/>d_res,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>h2d.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(find_max);<sp/><sp/></highlight><highlight class="comment">//<sp/>amax<sp/>runs<sp/>before<sp/>host-to-device<sp/>copy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>find_max.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(d2h);<sp/><sp/></highlight><highlight class="comment">//<sp/>amax<sp/>runs<sp/>after<sp/><sp/>device-to-host<sp/>copy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">assert(h_res<sp/>==<sp/>512);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1024;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>*x<sp/>=<sp/></highlight><highlight class="keyword">nullptr</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>*d_res;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/>h_res;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref><sp/>host(N,<sp/>0.0f);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>host[512]<sp/>=<sp/>100.0f;<sp/><sp/></highlight><highlight class="comment">//<sp/>artificially<sp/>set<sp/>the<sp/>mid-position<sp/>to<sp/>the<sp/>largest</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>cudaMalloc(&amp;x,<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>cudaMalloc(&amp;d_res,<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>capturer){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">*<sp/>cublas<sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturer_1a49dd9727aeb5bccd7d826c6b11a6882d" kindref="member">make_capturer</ref>&lt;<ref refid="classtf_1_1cublasFlowCapturer" kindref="compound">tf::cublasFlowCapturer</ref>&gt;();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d<sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturerBase_1a9fd8983c782f841bba6b10de39becdf6" kindref="member">copy</ref>(x,<sp/>host.data(),<sp/>N);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>find_max<sp/>=<sp/>cublas-&gt;amax(N,<sp/>x,<sp/>1,<sp/>d_res);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>d2h<sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturerBase_1a9fd8983c782f841bba6b10de39becdf6" kindref="member">copy</ref>(&amp;h_res,<sp/>d_res,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>h2d.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(find_max);<sp/><sp/></highlight><highlight class="comment">//<sp/>amax<sp/>runs<sp/>before<sp/>host-to-device<sp/>copy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>find_max.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(d2h);<sp/><sp/></highlight><highlight class="comment">//<sp/>amax<sp/>runs<sp/>after<sp/><sp/>device-to-host<sp/>copy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>assert(h_res<sp/>==<sp/>512);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>Currently, cublasFlowCapturer supports only <computeroutput>float</computeroutput> and <computeroutput>double</computeroutput> data types.</para>
-<para>Please refer to <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> for more details. </para>
+<para>We design most <ref refid="classtf_1_1cublasFlowCapturer" kindref="compound">tf::cublasFlowCapturer</ref> methods on top of the native, high-performance <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> library. You may refer to <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> for more details. </para>
     </detaileddescription>
     <inheritancegraph>
       <node id="2">
@@ -3455,7 +4905,7 @@ The batch must be <emphasis>uniform</emphasis>. All instances in the batch must 
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="66" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="66" bodyend="973"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" line="73" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cublas/cublas_flow.hpp" bodystart="73" bodyend="1344"/>
     <listofallmembers>
       <member refid="classtf_1_1cublasFlowCapturer_1ad796516fe795c451719db8c4a1ac292b" prot="private" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>_handle</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1afa60d91ed10ca36aff546ac2fce2dd46" prot="private" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>_stream</name></member>
@@ -3468,10 +4918,16 @@ The batch must be <emphasis>uniform</emphasis>. All instances in the batch must 
       <member refid="classtf_1_1cublasFlowCapturer_1aa9415957e3e48df65dc3baad86d05b38" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_gemm_batched</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1ae57c53a1a07c0b4f73d90bf21fee4e1c" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_gemm_sbatched</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1a3a492f3f22949e0e6b1058113eb475d0" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_gemv</name></member>
+      <member refid="classtf_1_1cublasFlowCapturer_1a23a4636954cfdb34835b0d7a275fe4a8" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_symm</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1a128ac1083f1dd05690998f5dac01959e" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_symv</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1afd79fe59e463b91feb2cbb94079c7c8c" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_syr</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1ac3ebc265f36b4c1205360a055f197873" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_syr2</name></member>
+      <member refid="classtf_1_1cublasFlowCapturer_1ab2f1c253b6808ac011b7ea9d2fc82e58" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_syr2k</name></member>
+      <member refid="classtf_1_1cublasFlowCapturer_1af9b146e7a3d4afb6658fa5fd8a860527" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_syrk</name></member>
+      <member refid="classtf_1_1cublasFlowCapturer_1a18ef82f489aaaa80d3d3c7cde6750729" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_syrkx</name></member>
+      <member refid="classtf_1_1cublasFlowCapturer_1ad9118a1eff03514a0c9f75e21e76fe35" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_trmm</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1adb57fd25e55f0b4e2f4f0045a169f8d9" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_trmv</name></member>
+      <member refid="classtf_1_1cublasFlowCapturer_1a7a0282cc21707315d347b5e4d8d3f25e" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_trsm</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1a27ae640e916e5f3d74886c57fe19342a" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>c_trsv</name></member>
       <member refid="classtf_1_1cudaFlowCapturerBase_1a9fd8983c782f841bba6b10de39becdf6" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>copy</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1acd81da28696e8b1efb2bb45058a2f0e3" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>cublasFlowCapturer</name></member>
@@ -3494,11 +4950,17 @@ The batch must be <emphasis>uniform</emphasis>. All instances in the batch must 
       <member refid="classtf_1_1cublasFlowCapturer_1adb8f5d3137f5ccb3469a5bdde454a8bf" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>scal</name></member>
       <member refid="classtf_1_1cudaFlowCapturerBase_1ac25236625772a0a2c66831517b9ec288" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>single_task</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1a32451b05fd7eb937ce8e807b5d5abe1f" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>swap</name></member>
+      <member refid="classtf_1_1cublasFlowCapturer_1a9d0eb2c37b48120bd40b1f725b507c42" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>symm</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1aed19fb69f2242f4ac6429f94d7776727" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>symv</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1a6765f845c7b95daefa197fdc2a1b426d" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>syr</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1a46443a7e6c36f2a0d655041f6227b544" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>syr2</name></member>
+      <member refid="classtf_1_1cublasFlowCapturer_1a45f110bd529b49531e3c83458a8990ac" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>syr2k</name></member>
+      <member refid="classtf_1_1cublasFlowCapturer_1aade5e9a358b7f4195367ef460921a236" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>syrk</name></member>
+      <member refid="classtf_1_1cublasFlowCapturer_1af5461904ac5714c5cc7eb7bbd8e2883e" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>syrkx</name></member>
       <member refid="classtf_1_1cudaFlowCapturerBase_1a44fb0c626c46de1bb95369e33194f5c7" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>transform</name></member>
+      <member refid="classtf_1_1cublasFlowCapturer_1a11e49f148b84ebc95ddeb5f4c3af78d8" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>trmm</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1af0ff6efaa01bffbd20d2760b6f82bcb1" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>trmv</name></member>
+      <member refid="classtf_1_1cublasFlowCapturer_1aa8cc2fcfeb3ffbc1146dda358b2b8188" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>trsm</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1a5f10c25901bff8c626235dfdd6d10b57" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>trsv</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1af315b411bcaa2bd2bc1436f7f2ca5e21" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>vcopy</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1af8f5052cbe1203d6ee3d3d40dffbb8eb" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>vget</name></member>
