@@ -152,36 +152,36 @@ void gemv_test(bool row_major, bool trans) {
 }
 
 // gemv (column-major)
-TEST_CASE("gemv_n.float") {
+TEST_CASE("gemv_n.float" * doctest::timeout(300)) {
   gemv_test<float>(false, false);
 }
 
-TEST_CASE("gemv_n.double") {
+TEST_CASE("gemv_n.double" * doctest::timeout(300)) {
   gemv_test<double>(false, false);
 }
 
-TEST_CASE("gemv_t.float") {
+TEST_CASE("gemv_t.float" * doctest::timeout(300)) {
   gemv_test<float>(false, true);
 }
 
-TEST_CASE("gemv_t.double") {
+TEST_CASE("gemv_t.double" * doctest::timeout(300)) {
   gemv_test<double>(false, true);
 }
 
 // gemv (row-major)
-TEST_CASE("c_gemv_n.float") {
+TEST_CASE("c_gemv_n.float" * doctest::timeout(300)) {
   gemv_test<float>(true, false);
 }
 
-TEST_CASE("c_gemv_n.double") {
+TEST_CASE("c_gemv_n.double" * doctest::timeout(300)) {
   gemv_test<double>(true, false);
 }
 
-TEST_CASE("c_gemv_t.float") {
+TEST_CASE("c_gemv_t.float" * doctest::timeout(300)) {
   gemv_test<float>(true, true);
 }
 
-TEST_CASE("c_gemv_t.double") {
+TEST_CASE("c_gemv_t.double" * doctest::timeout(300)) {
   gemv_test<double>(true, true);
 }
 
@@ -245,14 +245,13 @@ void c_trsv_test() {
 
 }
 
-TEST_CASE("c_trsv.float") {
+TEST_CASE("c_trsv.float" * doctest::timeout(300)) {
   c_trsv_test<float>();
 }
 
-TEST_CASE("c_trsv.double") {
+TEST_CASE("c_trsv.double" * doctest::timeout(300)) {
   c_trsv_test<double>();
 }
-
 
 // ----------------------------------------------------------------------------
 // trmv
@@ -319,11 +318,11 @@ void c_trmv_test() {
 
 }
 
-TEST_CASE("c_trmv.float") {
+TEST_CASE("c_trmv.float" * doctest::timeout(300)) {
   c_trmv_test<float>();
 }
 
-TEST_CASE("c_trmv.double") {
+TEST_CASE("c_trmv.double" * doctest::timeout(300)) {
   c_trmv_test<double>();
 }
 
@@ -404,11 +403,11 @@ void c_symv_test() {
   }
 }
 
-TEST_CASE("c_symv.float") {
+TEST_CASE("c_symv.float" * doctest::timeout(300)) {
   c_symv_test<float>();
 }
 
-TEST_CASE("c_symv.double") {
+TEST_CASE("c_symv.double" * doctest::timeout(300)) {
   c_symv_test<double>();
 }
 
@@ -473,11 +472,11 @@ void c_syr_test() {
   }
 }
 
-TEST_CASE("c_syr.float") {
+TEST_CASE("c_syr.float" * doctest::timeout(300)) {
   c_syr_test<float>();
 }
 
-TEST_CASE("c_syr.double") {
+TEST_CASE("c_syr.double" * doctest::timeout(300)) {
   c_syr_test<double>();
 }
 
@@ -562,11 +561,11 @@ void c_syr2_test() {
   }
 }
 
-TEST_CASE("c_syr2.float") {
+TEST_CASE("c_syr2.float" * doctest::timeout(300)) {
   c_syr2_test<float>();
 }
 
-TEST_CASE("c_syr2.double") {
+TEST_CASE("c_syr2.double" * doctest::timeout(300)) {
   c_syr2_test<double>();
 }
 
