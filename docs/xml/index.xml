@@ -46,6 +46,18 @@
     <member refid="classtf_1_1cublasFlowCapturer_1aa9415957e3e48df65dc3baad86d05b38" kind="function"><name>c_gemm_batched</name></member>
     <member refid="classtf_1_1cublasFlowCapturer_1a36ecdcea0f24575187e44374e583df2e" kind="function"><name>gemm_sbatched</name></member>
     <member refid="classtf_1_1cublasFlowCapturer_1ae57c53a1a07c0b4f73d90bf21fee4e1c" kind="function"><name>c_gemm_sbatched</name></member>
+    <member refid="classtf_1_1cublasFlowCapturer_1a9d0eb2c37b48120bd40b1f725b507c42" kind="function"><name>symm</name></member>
+    <member refid="classtf_1_1cublasFlowCapturer_1a23a4636954cfdb34835b0d7a275fe4a8" kind="function"><name>c_symm</name></member>
+    <member refid="classtf_1_1cublasFlowCapturer_1aade5e9a358b7f4195367ef460921a236" kind="function"><name>syrk</name></member>
+    <member refid="classtf_1_1cublasFlowCapturer_1af9b146e7a3d4afb6658fa5fd8a860527" kind="function"><name>c_syrk</name></member>
+    <member refid="classtf_1_1cublasFlowCapturer_1a45f110bd529b49531e3c83458a8990ac" kind="function"><name>syr2k</name></member>
+    <member refid="classtf_1_1cublasFlowCapturer_1ab2f1c253b6808ac011b7ea9d2fc82e58" kind="function"><name>c_syr2k</name></member>
+    <member refid="classtf_1_1cublasFlowCapturer_1af5461904ac5714c5cc7eb7bbd8e2883e" kind="function"><name>syrkx</name></member>
+    <member refid="classtf_1_1cublasFlowCapturer_1a18ef82f489aaaa80d3d3c7cde6750729" kind="function"><name>c_syrkx</name></member>
+    <member refid="classtf_1_1cublasFlowCapturer_1a11e49f148b84ebc95ddeb5f4c3af78d8" kind="function"><name>trmm</name></member>
+    <member refid="classtf_1_1cublasFlowCapturer_1ad9118a1eff03514a0c9f75e21e76fe35" kind="function"><name>c_trmm</name></member>
+    <member refid="classtf_1_1cublasFlowCapturer_1aa8cc2fcfeb3ffbc1146dda358b2b8188" kind="function"><name>trsm</name></member>
+    <member refid="classtf_1_1cublasFlowCapturer_1a7a0282cc21707315d347b5e4d8d3f25e" kind="function"><name>c_trsm</name></member>
     <member refid="classtf_1_1cublasFlowCapturer_1afa60d91ed10ca36aff546ac2fce2dd46" kind="function"><name>_stream</name></member>
   </compound>
   <compound refid="classtf_1_1cudaFlow" kind="class"><name>tf::cudaFlow</name>
@@ -178,10 +190,9 @@
     <member refid="classtf_1_1Executor_1a6d6c28ed58211e4c27a99571e5bf0b6c" kind="function"><name>num_topologies</name></member>
     <member refid="classtf_1_1Executor_1a6487d589cb1f6b078b69fd3bb1082345" kind="function"><name>this_worker_id</name></member>
     <member refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kind="function"><name>async</name></member>
-    <member refid="classtf_1_1Executor_1ab5a793a0f2ce41cd49ca45e9f0a6962c" kind="function"><name>make_observer</name></member>
+    <member refid="classtf_1_1Executor_1aff77def96ae740d648dd84e571237c83" kind="function"><name>make_observer</name></member>
     <member refid="classtf_1_1Executor_1a31081f492c376f7b798de0e430534531" kind="function"><name>remove_observer</name></member>
     <member refid="classtf_1_1Executor_1ab92083be20ea77b9fb3eb8ea2d26af68" kind="function"><name>num_observers</name></member>
-    <member refid="classtf_1_1Executor_1aa30b3c22898516b9c6616594779fd87c" kind="function"><name>make_observer</name></member>
     <member refid="classtf_1_1Executor_1a57f5105dc812d83f259ec8cab7c96228" kind="function"><name>_wait_for_task</name></member>
     <member refid="classtf_1_1Executor_1a078146af1cc8decfd7df9fcf3b45c0d1" kind="function"><name>_instantiate_tfprof</name></member>
     <member refid="classtf_1_1Executor_1a7701d8e40dfcbc6b74c44c5d6c0c4d61" kind="function"><name>_flush_tfprof</name></member>

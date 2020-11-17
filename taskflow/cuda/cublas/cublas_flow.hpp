@@ -16,7 +16,7 @@ namespace tf {
 /**
 @class cublasFlowCapturer
 
-@brief class object to construct a cuBLAS task graph
+@brief class to construct a cuBLAS task graph
 
 %cublasFlowCapturer provides a higher-level interface over the @cuBLAS library
 and hide concurrency details from users.
@@ -29,39 +29,46 @@ The following example uses @c cublas<t>amax to find the minimum index of the ele
 of the maximum absolute magnitude in a vector.
 
 @code{.cpp}
-tf::Executor executor;
-tf::Taskflow taskflow;
+#include <taskflow/cublasflow.hpp>
 
-size_t N = 1024;
-float *x = nullptr;
-int *d_res;
-int  h_res;
-
-std::vector<float> host(N, 0.0f);
-host[512] = 100.0f;  // artificially set the mid-position to the largest
-
-cudaMalloc(&x, N*sizeof(float));
-cudaMalloc(&d_res, sizeof(int));
-
-taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
-  tf::cublasFlowCapturer* cublas = capturer.make_capturer<tf::cublasFlowCapturer>();
-
-  tf::cudaTask h2d      = capturer.copy(x, host.data(), N);
-  tf::cudaTask find_max = cublas->amax(N, x, 1, d_res);  
-  tf::cudaTask d2h      = capturer.copy(&h_res, d_res, 1);
+int main() {
+  tf::Executor executor;
+  tf::Taskflow taskflow;
   
-  h2d.precede(find_max);  // amax runs before host-to-device copy
-  find_max.precede(d2h);  // amax runs after  device-to-host copy
-});
-
-executor.run(taskflow).wait();
-
-assert(h_res == 512);
+  size_t N = 1024;
+  float *x = nullptr;
+  int *d_res;
+  int  h_res;
+  
+  std::vector<float> host(N, 0.0f);
+  host[512] = 100.0f;  // artificially set the mid-position to the largest
+  
+  cudaMalloc(&x, N*sizeof(float));
+  cudaMalloc(&d_res, sizeof(int));
+  
+  taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+    auto* cublas = capturer.make_capturer<tf::cublasFlowCapturer>();
+  
+    tf::cudaTask h2d      = capturer.copy(x, host.data(), N);
+    tf::cudaTask find_max = cublas->amax(N, x, 1, d_res);  
+    tf::cudaTask d2h      = capturer.copy(&h_res, d_res, 1);
+    
+    h2d.precede(find_max);  // amax runs before host-to-device copy
+    find_max.precede(d2h);  // amax runs after  device-to-host copy
+  });
+  
+  executor.run(taskflow).wait();
+  
+  assert(h_res == 512);
+}
 @endcode
 
 Currently, %cublasFlowCapturer supports only @c float and @c double data types.
 
-Please refer to @cuBLAS for more details.
+We design most tf::cublasFlowCapturer methods on top of the native,
+high-performance @cuBLAS library.
+You may refer to @cuBLAS for more details.
+
 */
 class cublasFlowCapturer : public cudaFlowCapturerBase {
 
@@ -1237,6 +1244,7 @@ class cublasFlowCapturer : public cudaFlowCapturerBase {
     @param B pointer to the address of matrix @c B
     @param ldb leading dimension of the 2D array used to store @c B
     @param C pointer to the address of matrix @c C
+    @param ldc leading dimension of the 2D array used to store @c C
     
     Notice that in this method, @c B and @c C can point to the same address
     in which case the in-place implementation is performed
