@@ -9,7 +9,7 @@ struct MyObserver : public tf::ObserverInterface {
   }
 
   void set_up(size_t num_workers) override final {
-    std::cout << "settting up observer with " << num_workers << " workers\n";
+    std::cout << "setting up observer with " << num_workers << " workers\n";
   }
 
   void on_entry(tf::WorkerView wv, tf::TaskView tv) override final {
