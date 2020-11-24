@@ -1010,11 +1010,12 @@ TEST_CASE("ps.ldouble.4.100000") {
 }
 
 struct Object {
+
   std::array<int, 10> integers;
 
   int sum() const {
     int s = 0;
-    for(auto i : integers) {
+    for(const auto i : integers) {
       s += i;
     }
     return s;

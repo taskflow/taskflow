@@ -310,12 +310,12 @@ TEST_CASE("ObjectPool.Sequential" * doctest::timeout(300)) {
     REQUIRE(pool.num_objects_per_block() > 0);
     REQUIRE(pool.emptiness_threshold() > 0);
     
-    // fill out all object objects
-    int N = 100*pool.num_objects_per_block();
+    // fill out all objects
+    size_t N = 100*pool.num_objects_per_block();
 
     std::set<Poolable*> set;
 
-    for(int i=0; i<N; ++i) {
+    for(size_t i=0; i<N; ++i) {
       auto item = pool.animate();
       REQUIRE(set.find(item) == set.end());
       set.insert(item);
@@ -331,7 +331,7 @@ TEST_CASE("ObjectPool.Sequential" * doctest::timeout(300)) {
     REQUIRE(N == pool.num_available_objects());
     REQUIRE(0 == pool.num_allocated_objects());
     
-    for(int i=0; i<N; ++i) {
+    for(size_t i=0; i<N; ++i) {
       auto item = pool.animate();
       REQUIRE(set.find(item) != set.end());
     }
