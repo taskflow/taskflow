@@ -596,6 +596,28 @@ class FlowBuilder {
       B&& first, E&& last, T& init, BOP&& bop, UOP&& uop, H&& chunk_size = 1
     );
     
+    // ------------------------------------------------------------------------
+    // sort
+    // ------------------------------------------------------------------------
+    
+    /**
+    @brief constructs a dynamic task to perform STL-styled parallel sort
+  
+    @tparam B beginning iterator type
+    @tparam E ending iterator type
+    @tparam C comparator type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param cmp comparison function object
+    
+    The task spawns a subflow to parallelly sort elements in the range 
+    <tt>[first, last)</tt>. 
+    
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    */
+    template <typename B, typename E, typename C>
+    Task sort(B&& first, E&& last, C&& cmp);
     
   protected:
     
