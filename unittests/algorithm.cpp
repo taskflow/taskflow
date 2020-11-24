@@ -7,6 +7,7 @@
 #include <utility>
 #include <chrono>
 #include <limits.h>
+#include <array>
 
 // --------------------------------------------------------
 // Testcase: for_each
