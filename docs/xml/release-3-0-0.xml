@@ -68,8 +68,6 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para><itemizedlist>
 <listitem><para>enhancing the taskflow profiler (<ulink url="https://github.com/taskflow/tfprof">TFProf</ulink>) </para>
 </listitem>
-<listitem><para>adding parallel sort tf::Taskflow::sort algorithms </para>
-</listitem>
 <listitem><para>adding methods for updating <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> (with unittests) </para>
 </listitem>
 <listitem><para>adding support for <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> </para>
@@ -85,6 +83,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <title>New Features</title>
 <para><itemizedlist>
 <listitem><para>replaced all non-standard libraries with C++17 STL (e.g., <ulink url="https://en.cppreference.com/w/cpp/utility/optional">std::optional</ulink>, <ulink url="https://en.cppreference.com/w/cpp/utility/variant">std::variant</ulink>) </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1FlowBuilder_1af4848ab51fa3bf5525af58e2440b01c1" kindref="member">tf::Taskflow::sort</ref> to perform parallel sort over a range of elements (see <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref>) </para>
 </listitem>
 <listitem><para>added utility functions to grab the cuda device properties (see <ref refid="cuda__device_8hpp" kindref="compound">cuda_device.hpp</ref>) </para>
 </listitem>

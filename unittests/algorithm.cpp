@@ -961,8 +961,8 @@ void ps_pod(size_t W, size_t N) {
 
   std::vector<T> data(N);
 
-  for(size_t i=0; i<N; i++) {
-    data[i] = ::rand() % 1000 - 500;
+  for(auto& d : data) {
+    d = ::rand() % 1000 - 500;
   }
 
   tf::Taskflow taskflow;
@@ -1025,8 +1025,8 @@ void ps_object(size_t W, size_t N) {
 
   std::vector<Object> data(N);
   
-  for(size_t i=0; i<N; ++i) {
-    for(auto& i : data[i].integers) {
+  for(auto& d : data) {
+    for(auto& i : d.integers) {
       i = ::rand();
     }
   }

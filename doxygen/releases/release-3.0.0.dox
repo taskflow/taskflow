@@ -33,7 +33,6 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @section release-3-0-0_working_items Working Items
 
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
-@li adding parallel sort tf::Taskflow::sort algorithms
 @li adding methods for updating tf::cudaFlow (with unittests)
 @li adding support for @cuBLAS
 @li adding support for @cuDNN
@@ -42,6 +41,8 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @section release-3-0-0_new_features New Features
 
 @li replaced all non-standard libraries with C++17 STL (e.g., @std_optional, @std_variant)
+@li added tf::Taskflow::sort to perform parallel sort over a range of elements
+(see @ref ParallelSort)
 @li added utility functions to grab the cuda device properties (see cuda_device.hpp)
 @li added utility functions to control cuda memory (see cuda_memory.hpp)
 @li added per-thread pool for CUDA streams to improve performance

@@ -275,6 +275,13 @@
               H&amp;&amp; chunk_size = 1) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a STL-styled parallel transform-reduce task using the dynamic partition algorithm</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename B, typename E, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#af4848ab51fa3bf5525af58e2440b01c1" class="m-doc">sort</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
+              E&amp;&amp; last,
+              C&amp;&amp; cmp) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>constructs a dynamic task to perform STL-styled parallel sort</dd>
           </dl>
         </section>
         <section id="pro-attribs">
@@ -1686,6 +1693,54 @@
               </tfoot>
             </table>
 <p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p>
+          </div></section>
+          <section class="m-doc-details" id="af4848ab51fa3bf5525af58e2440b01c1"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename B, typename E, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af4848ab51fa3bf5525af58e2440b01c1" class="m-doc-self">sort</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
+              E&amp;&amp; last,
+              C&amp;&amp; cmp)</span></span>
+            </h3>
+            <p>constructs a dynamic task to perform STL-styled parallel sort</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">B</td>
+                  <td>beginning iterator type</td>
+                </tr>
+                <tr>
+                  <td>E</td>
+                  <td>ending iterator type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>comparator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning (inclusive)</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end (exclusive)</td>
+                </tr>
+                <tr>
+                  <td>cmp</td>
+                  <td>comparison function object</td>
+                </tr>
+              </tbody>
+            </table>
+<p>The task spawns a subflow to parallelly sort elements in the range <code>[first, last)</code>.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p>
           </div></section>
         </section>
       </div>

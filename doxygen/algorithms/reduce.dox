@@ -39,8 +39,8 @@ In other words, the elements of the range may be grouped and rearranged in arbit
 The result and the argument types of the binary operator must be consistent with the input data type .
 
 Similar to @ref A1ForEach, 
-you may leverage std::reference_wrapper to enable stateful parameter passing between tasks
-for expressing end-to-end parallelism.
+you can use std::reference_wrapper to enable stateful parameter passing 
+between the reduction task and others.
 
 @code{.cpp}
 int sum = 100;
