@@ -2899,12 +2899,12 @@ void mixed_async(unsigned W) {
         });
       },
       [&] () {
-        executor.async([&](){
+        executor.silent_async([&](){
           counter.fetch_add(1, std::memory_order_relaxed);
         });
       },
       [&] () {
-        executor.async([&](){
+        executor.silent_async([&](){
           counter.fetch_add(1, std::memory_order_relaxed);
         });
       }
@@ -2941,5 +2941,126 @@ TEST_CASE("MixedAsync.16threads" * doctest::timeout(300)) {
   mixed_async(16);  
 }
 
+// --------------------------------------------------------
+// Testcase: SubflowAsync
+// --------------------------------------------------------
+
+void subflow_async(size_t W) {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  std::atomic<int> counter{0};
+
+  auto A = taskflow.emplace(
+    [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
+  );
+  auto B = taskflow.emplace(
+    [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
+  );
+  
+  taskflow.emplace(
+    [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
+  );
+
+  auto S1 = taskflow.emplace([&] (tf::Subflow& sf){
+    for(int i=0; i<100; i++) {
+      sf.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+    }
+  });
+  
+  auto S2 = taskflow.emplace([&] (tf::Subflow& sf){
+    sf.emplace([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+    for(int i=0; i<100; i++) {
+      sf.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+    }
+  });
+  
+  taskflow.emplace([&] (tf::Subflow& sf){
+    sf.emplace([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+    for(int i=0; i<100; i++) {
+      sf.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+    }
+    sf.join();
+  });
+  
+  taskflow.emplace([&] (tf::Subflow& sf){
+    for(int i=0; i<100; i++) {
+      sf.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+    }
+    sf.join();
+  });
+
+  A.precede(S1, S2);
+  B.succeed(S1, S2);
+
+  executor.run(taskflow).wait();
+
+  REQUIRE(counter == 405);
+}
+
+TEST_CASE("SubflowAsync.1thread") {
+  subflow_async(1);
+}
+
+TEST_CASE("SubflowAsync.3threads") {
+  subflow_async(3);
+}
+
+TEST_CASE("SubflowAsync.11threads") {
+  subflow_async(11);
+}
+
+// --------------------------------------------------------
+// Testcase: NestedSubflowAsync
+// --------------------------------------------------------
+
+void nested_subflow_async(size_t W) {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  std::atomic<int> counter{0};
+
+  taskflow.emplace([&](tf::Subflow& sf1){ 
+
+    for(int i=0; i<100; i++) {
+      sf1.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+    }
+
+    sf1.emplace([&](tf::Subflow& sf2){
+      for(int i=0; i<100; i++) {
+        sf2.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+        sf1.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+      }
+
+      sf2.emplace([&](tf::Subflow& sf3){
+        for(int i=0; i<100; i++) {
+          sf3.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+          sf2.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+          sf1.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+        }
+      });
+    });
+
+    sf1.join();
+    REQUIRE(counter == 600);
+  });
+
+  executor.run(taskflow).wait();
+  REQUIRE(counter == 600);
+}
+
+TEST_CASE("NestedSubflowAsync.1thread") {
+  nested_subflow_async(1);
+}
+
+TEST_CASE("NestedSubflowAsync.3threads") {
+  nested_subflow_async(3);
+}
+
+TEST_CASE("NestedSubflowAsync.11threads") {
+  nested_subflow_async(11);
+}
 
 

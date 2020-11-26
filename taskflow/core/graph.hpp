@@ -8,6 +8,7 @@
 #include "../utility/singleton.hpp"
 #include "../utility/uuid.hpp"
 #include "../utility/os.hpp"
+#include "../utility/math.hpp"
 
 namespace tf {
 

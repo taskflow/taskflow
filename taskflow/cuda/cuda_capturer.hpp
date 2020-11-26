@@ -3,6 +3,7 @@
 #include "cuda_task.hpp"
 #include "cuda_algorithm/cuda_for_each.hpp"
 #include "cuda_algorithm/cuda_transform.hpp"
+#include "cuda_algorithm/cuda_reduce.hpp"
 
 /** 
 @file cuda_capturer.hpp
@@ -12,10 +13,21 @@
 namespace tf {
 
 /**
-@brief the default number of threads per block in an 1D vector of N elements
+@brief queries the maximum threads allowed per block
+*/
+constexpr size_t cuda_default_max_threads_per_block() {
+  return 512;
+}
+
+/**
+@brief queries the default number of threads per block in an 1D vector of N elements
 */
 constexpr size_t cuda_default_threads_per_block(size_t N) {
-  return N >= 256 ? 256 : 128;
+  // TODO: special case when N == 0?
+  if(N <= 32) return 32;
+  else {
+    return std::min(cuda_default_max_threads_per_block(), next_pow2(N));
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -218,6 +230,48 @@ class cudaFlowCapturerBase {
     */
     template <typename I, typename C, typename... S>
     cudaTask transform(I first, I last, C&& callable, S... srcs);
+      
+    /**
+    @brief captures a kernel that performs parallel reduction over a range of items
+
+    @tparam I input iterator type
+    @tparam T value type
+    @tparam C callable type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param result pointer to the result with an initialized value
+    @param callable binary reduction operator
+    
+    @return a tf::cudaTask handle
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    while (first != last) {
+      *result = callable(*result, *first++);
+    }
+    @endcode
+    */
+    template <typename I, typename T, typename C>
+    cudaTask reduce(I first, I last, T* result, C&& op);
+    
+    /**
+    @brief similar to tf::cudaFlowCapturerBase::reduce but does not assum 
+           any initial value to reduce
+    
+    This method is equivalent to the parallel execution of the following loop 
+    on a GPU:
+    
+    @code{.cpp}
+    *result = *first++;
+    while (first != last) {
+      *result = callable(*result, *first++);
+    }
+    @endcode
+    */
+    template <typename I, typename T, typename C>
+    cudaTask uninitialized_reduce(I first, I last, T* result, C&& op);
 
   private:
 
@@ -300,6 +354,7 @@ cudaTask cudaFlowCapturerBase::single_task(C&& callable) {
 template <typename I, typename C>
 cudaTask cudaFlowCapturerBase::for_each(I first, I last, C&& c) {
   return on([first, last, c=std::forward<C>(c)](cudaStream_t stream) mutable {
+    // TODO: special case for N == 0?
     size_t N = std::distance(first, last);
     size_t B = cuda_default_threads_per_block(N);
     cuda_for_each<I, C><<<(N+B-1)/B, B, 0, stream>>>(first, N, c);
@@ -325,11 +380,50 @@ cudaTask cudaFlowCapturerBase::for_each_index(I beg, I end, I inc, C&& c) {
 // Function: transform
 template <typename I, typename C, typename... S>
 cudaTask cudaFlowCapturerBase::transform(I first, I last, C&& c, S... srcs) {
-  return on([first, last, c=std::forward<C>(c), srcs...] (cudaStream_t stream) mutable {
+  return on([first, last, c=std::forward<C>(c), srcs...] 
+  (cudaStream_t stream) mutable {
     // TODO: special case when N is 0?
     size_t N = std::distance(first, last);
     size_t B = cuda_default_threads_per_block(N);
     cuda_transform<I, C, S...><<<(N+B-1)/B, B, 0, stream>>>(first, N, c, srcs...);
+  });
+}
+
+// Function: reduce
+template <typename I, typename T, typename C>
+cudaTask cudaFlowCapturerBase::reduce(I first, I last, T* result, C&& c) {
+  
+  return on([first, last, result, c=std::forward<C>(c)] 
+  (cudaStream_t stream) mutable {
+    //using value_t = std::decay_t<decltype(*std::declval<I>())>;
+    
+    // TODO: special case N == 0?
+    size_t N = std::distance(first, last);
+    size_t B = cuda_default_threads_per_block(N);
+
+    cuda_reduce<I, T, C, false><<<1, B, B*sizeof(T), stream>>>(
+      first, N, result, c
+    );
+  });
+}
+
+// Function: uninitialized_reduce
+template <typename I, typename T, typename C>
+cudaTask cudaFlowCapturerBase::uninitialized_reduce(
+  I first, I last, T* result, C&& c
+) {
+  
+  return on([first, last, result, c=std::forward<C>(c)] 
+  (cudaStream_t stream) mutable {
+    //using value_t = std::decay_t<decltype(*std::declval<I>())>;
+    
+    // TODO: special case N == 0?
+    size_t N = std::distance(first, last);
+    size_t B = cuda_default_threads_per_block(N);
+
+    cuda_reduce<I, T, C, true><<<1, B, B*sizeof(T), stream>>>(
+      first, N, result, c
+    );
   });
 }
 

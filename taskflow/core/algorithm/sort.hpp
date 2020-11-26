@@ -10,7 +10,7 @@ constexpr size_t qsort3w_cutoff() {
 
   using value_type = std::decay_t<decltype(*std::declval<I>())>;
 
-  size_t object_size = sizeof(value_type);
+  constexpr size_t object_size = sizeof(value_type);
 
   if constexpr(std::is_same_v<value_type, std::string>) {
     return 128;
@@ -61,20 +61,26 @@ void qsort3w(tf::Subflow& sf, I first, I last, C& compare) {
       f++;
     }
   }
-
+  
   if(l - first > 1 && is_swapped_l) {
-    sf.emplace([&](tf::Subflow& sfl){
-      qsort3w(sfl, first, l-1, compare);
+    //sf.emplace([&](tf::Subflow& sfl){
+    //  qsort3w(sfl, first, l-1, compare);
+    //});
+    sf.silent_async([&sf, first, l, &compare](){
+      qsort3w(sf, first, l-1, compare);
     });
   }
 
   if(last - r > 1 && is_swapped_r) {
-    sf.emplace([&](tf::Subflow& sfr){
-      qsort3w(sfr, r+1, last, compare);
+    //sf.emplace([&](tf::Subflow& sfr){
+    //  qsort3w(sfr, r+1, last, compare);
+    //});
+    sf.silent_async([&sf, r, last, compare](){
+      qsort3w(sf, r+1, last, compare);
     });
   }
 
-  sf.join();
+  //sf.join();
 }
 
 // Function: sort
@@ -107,9 +113,23 @@ Task FlowBuilder::sort(B&& beg, E&& end, C&& cmp) {
     }
 
     qsort3w(sf, beg, end-1, c);
+
+    sf.join();
   });  
 
   return task;
+}
+
+// Function: sort
+template <typename B, typename E>
+Task FlowBuilder::sort(B&& beg, E&& end) {
+  
+  using I = stateful_iterator_t<B, E>;
+  using value_type = std::decay_t<decltype(*std::declval<I>())>;
+
+  return sort(
+    std::forward<B>(beg), std::forward<E>(end), std::less<value_type>{}
+  );
 }
 
 }  // namespace tf ------------------------------------------------------------

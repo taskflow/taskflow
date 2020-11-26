@@ -5,17 +5,19 @@
 
 namespace tf {
 
-// Procedure: stringify
+// Procedure: ostreamize
 template <typename T>
 void ostreamize(std::ostringstream& oss, T&& token) {
   oss << std::forward<T>(token);  
 }
 
-// Procedure: stringify
+// Procedure: ostreamize
 template <typename T, typename... Rest>
 void ostreamize(std::ostringstream& oss, T&& token, Rest&&... rest) {
   oss << std::forward<T>(token);
   ostreamize(oss, std::forward<Rest>(rest)...);
 }
+
+
 
 }  // end of namespace tf -----------------------------------------------------

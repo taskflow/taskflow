@@ -25,7 +25,7 @@ struct Worker {
   size_t vtm;
   Executor* executor;
   Notifier::Waiter* waiter;
-  std::mt19937 rdgen { std::random_device{}() };
+  std::default_random_engine rdgen { std::random_device{}() };
   TaskQueue<Node*> wsq;
 };
 

@@ -968,10 +968,8 @@ void ps_pod(size_t W, size_t N) {
 
   tf::Taskflow taskflow;
   tf::Executor executor(W);
-
-  taskflow.sort(data.begin(), data.end(), [](const T& l, const T& r){
-    return l < r;
-  });
+  
+  taskflow.sort(data.begin(), data.end());
 
   executor.run(taskflow).wait();
 

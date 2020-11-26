@@ -154,6 +154,183 @@ inline void cuda_memset_async(
   );
 }
 
+// ----------------------------------------------------------------------------
+// Shared Memory
+// ----------------------------------------------------------------------------
+//
+// Because dynamically sized shared memory arrays are declared "extern",
+// we can't templatize them directly.  To get around this, we declare a
+// simple wrapper struct that will declare the extern array with a different
+// name depending on the type.  This avoids compiler errors about duplicate
+// definitions.
+//
+// To use dynamically allocated shared memory in a templatized __global__ or
+// __device__ function, just replace code like this:
+//
+//  template<class T>
+//  __global__ void
+//  foo( T* g_idata, T* g_odata)
+//  {
+//      // Shared mem size is determined by the host app at run time
+//      extern __shared__  T sdata[];
+//      ...
+//      doStuff(sdata);
+//      ...
+//   }
+//
+//  With this:
+//
+//  template<class T>
+//  __global__ void
+//  foo( T* g_idata, T* g_odata)
+//  {
+//      // Shared mem size is determined by the host app at run time
+//      cudaSharedMemory<T> smem;
+//      T* sdata = smem.get();
+//      ...
+//      doStuff(sdata);
+//      ...
+//   }
+// ----------------------------------------------------------------------------
+
+// This is the un-specialized struct.  Note that we prevent instantiation of this
+// struct by putting an undefined symbol in the function body so it won't compile.
+template <typename T>
+struct cudaSharedMemory
+{
+  // Ensure that we won't compile any un-specialized types
+  __device__ T *get()
+  {
+    extern __device__ void error(void);
+    error();
+    return NULL;
+  }
+};
+
+// Following are the specializations for the following types.
+// int, uint, char, uchar, short, ushort, long, ulong, bool, float, and double
+// One could also specialize it for user-defined types.
+
+template <>
+struct cudaSharedMemory <int>
+{
+  __device__ int *get()
+  {
+    extern __shared__ int s_int[];
+    return s_int;
+  }
+};
+
+template <>
+struct cudaSharedMemory <unsigned int>
+{
+  __device__ unsigned int *get()
+  {
+    extern __shared__ unsigned int s_uint[];
+    return s_uint;
+  }
+};
+
+template <>
+struct cudaSharedMemory <char>
+{
+  __device__ char *get()
+  {
+    extern __shared__ char s_char[];
+    return s_char;
+  }
+};
+
+template <>
+struct cudaSharedMemory <unsigned char>
+{
+  __device__ unsigned char *get()
+  {
+    extern __shared__ unsigned char s_uchar[];
+    return s_uchar;
+  }
+};
+
+template <>
+struct cudaSharedMemory <short>
+{
+  __device__ short *get()
+  {
+    extern __shared__ short s_short[];
+    return s_short;
+  }
+};
+
+template <>
+struct cudaSharedMemory <unsigned short>
+{
+  __device__ unsigned short *get()
+  {
+    extern __shared__ unsigned short s_ushort[];
+    return s_ushort;
+  }
+};
+
+template <>
+struct cudaSharedMemory <long>
+{
+  __device__ long *get()
+  {
+    extern __shared__ long s_long[];
+    return s_long;
+  }
+};
+
+template <>
+struct cudaSharedMemory <unsigned long>
+{
+  __device__ unsigned long *get()
+  {
+    extern __shared__ unsigned long s_ulong[];
+    return s_ulong;
+  }
+};
+
+//template <>
+//struct cudaSharedMemory <size_t>
+//{
+//  __device__ size_t *get()
+//  {
+//    extern __shared__ size_t s_sizet[];
+//    return s_sizet;
+//  }
+//};
+
+template <>
+struct cudaSharedMemory <bool>
+{
+  __device__ bool *get()
+  {
+    extern __shared__ bool s_bool[];
+    return s_bool;
+  }
+};
+
+template <>
+struct cudaSharedMemory <float>
+{
+  __device__ float *get()
+  {
+    extern __shared__ float s_float[];
+    return s_float;
+  }
+};
+
+template <>
+struct cudaSharedMemory <double>
+{
+  __device__ double *get()
+  {
+    extern __shared__ double s_double[];
+    return s_double;
+  }
+};
+
 }  // end of namespace tf -----------------------------------------------------
 
 

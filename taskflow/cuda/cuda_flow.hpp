@@ -4,6 +4,7 @@
 #include "cuda_capturer.hpp"
 #include "cuda_algorithm/cuda_for_each.hpp"
 #include "cuda_algorithm/cuda_transform.hpp"
+#include "cuda_algorithm/cuda_reduce.hpp"
 
 /** 
 @file cuda_flow.hpp
@@ -403,7 +404,7 @@ class cudaFlow {
     This method is equivalent to the parallel execution of the following loop on a GPU:
     
     @code{.cpp}
-    for(auto itr = first; itr != last; i++) {
+    for(auto itr = first; itr != last; itr++) {
       callable(*itr);
     }
     @endcode
@@ -466,10 +467,47 @@ class cudaFlow {
     template <typename I, typename C, typename... S>
     cudaTask transform(I first, I last, C&& callable, S... srcs);
     
-    // TODO: 
-    //template <typename T, typename B>
-    //cudaTask reduce(T* tgt, size_t N, T& init, B&& op);
-    //
+    /**
+    @brief performs parallel reduction over a range of items
+    
+    @tparam I input iterator type
+    @tparam T value type
+    @tparam C callable type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param result pointer to the result with an initialized value
+    @param callable binary reduction operator
+    
+    @return a tf::cudaTask handle
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    while (first != last) {
+      *result = callable(*result, *first++);
+    }
+    @endcode
+    */
+    template <typename I, typename T, typename C>
+    cudaTask reduce(I first, I last, T* result, C&& op);
+    
+    /**
+    @brief similar to tf::cudaFlow::reduce but does not assume any initial
+           value to reduce
+    
+    This method is equivalent to the parallel execution of the following loop 
+    on a GPU:
+    
+    @code{.cpp}
+    *result = *first++;
+    while (first != last) {
+      *result = callable(*result, *first++);
+    }
+    @endcode
+    */
+    template <typename I, typename T, typename C>
+    cudaTask uninitialized_reduce(I first, I last, T* result, C&& op);
     
     // ------------------------------------------------------------------------
     // subflow
@@ -986,13 +1024,37 @@ cudaTask cudaFlow::transform(I first, I last, C&& c, S... srcs) {
   );
 }
 
-//template <typename T, typename B>>
-//cudaTask cudaFlow::reduce(T* tgt, size_t N, T& init, B&& op) {
-  //if(N == 0) {
-    //return noop();
-  //}
-  //size_t B = cuda_default_threads_per_block(N);
-//}
+// Function: reduce
+template <typename I, typename T, typename C>
+cudaTask cudaFlow::reduce(I first, I last, T* result, C&& op) {
+  
+  //using value_t = std::decay_t<decltype(*std::declval<I>())>;
+
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = cuda_default_threads_per_block(N);
+  
+  return kernel(
+    1, B, B*sizeof(T), cuda_reduce<I, T, C, false>, 
+    first, N, result, std::forward<C>(op)
+  );
+}
+
+// Function: uninitialized_reduce
+template <typename I, typename T, typename C>
+cudaTask cudaFlow::uninitialized_reduce(I first, I last, T* result, C&& op) {
+  
+  //using value_t = std::decay_t<decltype(*std::declval<I>())>;
+
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = cuda_default_threads_per_block(N);
+  
+  return kernel(
+    1, B, B*sizeof(T), cuda_reduce<I, T, C, true>, 
+    first, N, result, std::forward<C>(op)
+  );
+}
 
 // ----------------------------------------------------------------------------
 // captured flow 

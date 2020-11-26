@@ -603,8 +603,8 @@ class FlowBuilder {
     /**
     @brief constructs a dynamic task to perform STL-styled parallel sort
   
-    @tparam B beginning iterator type
-    @tparam E ending iterator type
+    @tparam B beginning iterator type (random-accessible)
+    @tparam E ending iterator type (random-accessible)
     @tparam C comparator type
 
     @param first iterator to the beginning (inclusive)
@@ -618,6 +618,24 @@ class FlowBuilder {
     */
     template <typename B, typename E, typename C>
     Task sort(B&& first, E&& last, C&& cmp);
+    
+    /**
+    @brief constructs a dynamic task to perform STL-styled parallel sort using
+           the @c std::less<T> comparator, where @c T is the element type
+    
+    @tparam B beginning iterator type (random-accessible)
+    @tparam E ending iterator type (random-accessible)
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    
+    The task spawns a subflow to parallelly sort elements in the range 
+    <tt>[first, last)</tt>. 
+
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+     */
+    template <typename B, typename E>
+    Task sort(B&& first, E&& last);
     
   protected:
     
@@ -779,6 +797,48 @@ class Subflow : public FlowBuilder {
     When a subflow is joined or detached, it becomes not joinable.
     */
     bool joinable() const;
+
+    /** 
+    @brief runs a given function asynchronously
+
+    @tparam F callable type
+    @tparam ArgsT parameter types
+
+    @param f callable object to call
+    @param args parameters to pass to the callable
+    
+    @return a std::future that will eventually hold the result of the function call
+
+    This method is thread-safe and can be called by multiple tasks in the 
+    subflow at the same time.
+    The difference to tf::Executor::async is that the created asynchronous task
+    pertains to the subflow. 
+    When the subflow joins, all asynchronous tasks created from the subflow
+    are guaranteed to finish before the join.
+    For example:
+
+    @code{.cpp}
+    std::atomic<int> counter(0);
+    taskflow.empalce([&](tf::Subflow& sf){
+      for(int i=0; i<100; i++) {
+        sf.async([&](){ counter++; });
+      }
+      sf.join();
+      assert(counter == 100);
+    });
+    @endcode
+
+    You cannot create asynchronous tasks from a detached subflow.
+    Doing this results in undefined behavior.
+    */
+    template <typename F, typename... ArgsT>
+    auto async(F&& f, ArgsT&&... args);
+    
+    /**
+    @brief similar to tf::Subflow::async but did not return a future object
+     */
+    template <typename F, typename... ArgsT>
+    void silent_async(F&& f, ArgsT&&... args);
 
   private:
     

@@ -10,7 +10,6 @@
 
 namespace tf {
 
-
 // ----------------------------------------------------------------------------
 // Executor Definition
 // ----------------------------------------------------------------------------
@@ -150,9 +149,18 @@ class Executor {
     @param args parameters to pass to the callable
     
     @return a std::future that will eventually hold the result of the function call
+
+    This method is thread-safe. Multiple threads can launch asynchronous tasks 
+    at the same time.
     */
     template <typename F, typename... ArgsT>
     auto async(F&& f, ArgsT&&... args);
+    
+    /**
+    @brief similar to tf::Executor::async but does not return a future object
+    */
+    template <typename F, typename... ArgsT>
+    void silent_async(F&& f, ArgsT&&... args);
     
     /**
     @brief constructs an observer to inspect the activities of worker threads
@@ -358,6 +366,20 @@ auto Executor::async(F&& f, ArgsT&&... args) {
   return fu;
 }
 
+// Function: silent_async
+template <typename F, typename... ArgsT>
+void Executor::silent_async(F&& f, ArgsT&&... args) {
+
+  _increment_topology();
+
+  Node* node = node_pool.animate(
+    std::in_place_type_t<Node::AsyncTask>{},
+    [f=std::forward<F>(f), args...] () mutable { f(args...); }
+  );
+
+  _schedule(node);
+}
+
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
   auto worker = _per_thread.worker;
@@ -393,7 +415,6 @@ inline void Executor::_spawn(size_t N) {
       
     }, std::ref(_workers[id]));     
   }
-
 }
 
 // Function: _explore_task
@@ -673,7 +694,14 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // async task
     case Node::ASYNC_TASK: {
       _invoke_async_task(worker, node);
-      _decrement_topology_and_notify();
+      if(node->_parent) {
+        node->_parent->_join_counter.fetch_sub(1);
+      }
+      else {
+        _decrement_topology_and_notify();
+      }
+      // recycle the node
+      node_pool.recycle(node);
       return ;
     }
     break;
@@ -790,9 +818,10 @@ inline void Executor::_invoke_dynamic_task_internal(
   Worker& w, Node* p, Graph& g, bool detach
 ) {
 
-  assert(p);
-
-  if(g.empty()) return;
+  // graph is empty and has no async tasks
+  if(g.empty() && p->_join_counter == 0) {
+    return;
+  }
 
   std::vector<Node*> src; 
 
@@ -946,9 +975,6 @@ inline void Executor::_invoke_async_task(Worker& w, Node* node) {
   std::get<Node::AsyncTask>(node->_handle).work();
 
   _observer_epilogue(w, node);  
-  
-  // recycle the node
-  node_pool.recycle(node);
 }
 
 // Function: run
@@ -1171,6 +1197,56 @@ inline void Subflow::detach() {
 
   _executor._invoke_dynamic_task_external(_parent, _graph, true);
   _joinable = false;
+}
+
+// Function: async
+template <typename F, typename... ArgsT>
+auto Subflow::async(F&& f, ArgsT&&... args) {
+
+  _parent->_join_counter.fetch_add(1);
+
+  using R = typename function_traits<F>::return_type;
+
+  std::promise<R> p;
+
+  auto fu = p.get_future();
+
+  auto node = node_pool.animate(
+    std::in_place_type_t<Node::AsyncTask>{},
+    [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] () mutable {
+      if constexpr(std::is_same_v<R, void>) {
+        f(args...);
+        p.object.set_value();
+      }
+      else {
+        p.object.set_value(f(args...));
+      }
+    }
+  );
+
+  node->_topology = _parent->_topology;
+  node->_parent = _parent;
+
+  _executor._schedule(node);
+
+  return fu;
+}
+
+// Function: silent_async
+template <typename F, typename... ArgsT>
+void Subflow::silent_async(F&& f, ArgsT&&... args) {
+
+  _parent->_join_counter.fetch_add(1);
+
+  auto node = node_pool.animate(
+    std::in_place_type_t<Node::AsyncTask>{},
+    [f=std::forward<F>(f), args...] () mutable { f(args...); }
+  );
+
+  node->_topology = _parent->_topology;
+  node->_parent = _parent;
+
+  _executor._schedule(node);
 }
 
 
