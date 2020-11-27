@@ -39,7 +39,7 @@
 #define TF_PATCH_VERSION TF_VERSION%100
 
 /**
-@brief The taskflow namespace
+@brief taskflow namespace
 */
 namespace tf {
 

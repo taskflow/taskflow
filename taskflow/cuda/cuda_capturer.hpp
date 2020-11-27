@@ -241,7 +241,7 @@ class cudaFlowCapturerBase {
     @param first iterator to the beginning (inclusive)
     @param last iterator to the end (exclusive)
     @param result pointer to the result with an initialized value
-    @param callable binary reduction operator
+    @param op binary reduction operator
     
     @return a tf::cudaTask handle
     
@@ -249,7 +249,7 @@ class cudaFlowCapturerBase {
     
     @code{.cpp}
     while (first != last) {
-      *result = callable(*result, *first++);
+      *result = op(*result, *first++);
     }
     @endcode
     */
@@ -264,9 +264,9 @@ class cudaFlowCapturerBase {
     on a GPU:
     
     @code{.cpp}
-    *result = *first++;
+    *result = *first++;  // no initial values partitipcate in the loop
     while (first != last) {
-      *result = callable(*result, *first++);
+      *result = op(*result, *first++);
     }
     @endcode
     */
@@ -464,6 +464,11 @@ taskflow.emplace([](tf::cudaFlowCapturer& capturer){
 });
 @endcode
 
+Similar to tf::cudaFlow, a %cudaFlowCapturer is a task (tf::Task) 
+created from tf::Taskflow 
+and will be run by @em one worker thread in the executor.
+That is, the callable that describes a %cudaFlowCapturer 
+will be executed sequentially.
 */
 class cudaFlowCapturer : public cudaFlowCapturerBase {
 

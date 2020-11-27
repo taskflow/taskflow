@@ -23,7 +23,7 @@
 <para>Taskflow provides template function that constructs a task to perform parallel iterations over a range of items.</para>
 <sect1 id="A1ForEach_1A1IndexBasedParallelFor">
 <title>Index-based Parallel Iterations</title>
-<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[beg, end)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by <ref refid="classtf_1_1FlowBuilder_1ab8417b211b18bb1e0f45a049331f084d" kindref="member">tf::Taskflow::for_each_index(B&amp;&amp; first, E&amp;&amp; last, S&amp;&amp; step, C&amp;&amp; callable)</ref> represents parallel execution of the following loop:</para>
+<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[first, last)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by <ref refid="classtf_1_1FlowBuilder_1ab8417b211b18bb1e0f45a049331f084d" kindref="member">tf::Taskflow::for_each_index(B&amp;&amp; first, E&amp;&amp; last, S&amp;&amp; step, C&amp;&amp; callable)</ref> represents parallel execution of the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>positive<sp/>step</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>

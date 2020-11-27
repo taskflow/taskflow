@@ -135,6 +135,12 @@
               ArgsT &amp;&amp; ... args) -&gt; auto</span>
             </dt>
             <dd>runs a given function asynchronously</dd>
+            <dt id="abf71e7ec0026ddfce79c912264369bc9">
+              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#abf71e7ec0026ddfce79c912264369bc9" class="m-doc-self">silent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args)</span>
+            </dt>
+            <dd>similar to <a href="classtf_1_1Executor.html#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">tf::<wbr />Executor::<wbr />async</a> but does not return a future object</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename Observer, typename... ArgsT&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#aff77def96ae740d648dd84e571237c83" class="m-doc">make_observer</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;Observer&gt;</span>
@@ -395,6 +401,7 @@
                 </tr>
               </tfoot>
             </table>
+<p>This method is thread-safe. Multiple threads can launch asynchronous tasks at the same time.</p>
           </div></section>
           <section class="m-doc-details" id="aff77def96ae740d648dd84e571237c83"><div>
             <h3>

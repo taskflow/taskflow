@@ -1,43 +1,43 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
-  <compounddef id="chapter6" kind="page">
-    <compoundname>chapter6</compoundname>
+  <compounddef id="GPUTaskingcudaFlow" kind="page">
+    <compoundname>GPUTaskingcudaFlow</compoundname>
     <title>GPU Tasking (cudaFlow)</title>
     <tableofcontents>
       <tocsect>
         <name>Create a cudaFlow</name>
-        <reference>chapter6_1C6_Create_a_cudaFlow</reference>
+        <reference>GPUTaskingcudaFlow_1C6_Create_a_cudaFlow</reference>
     </tocsect>
       <tocsect>
         <name>Compile a cudaFlow Program</name>
-        <reference>chapter6_1C6_Compile_a_cudaFlow_program</reference>
+        <reference>GPUTaskingcudaFlow_1C6_Compile_a_cudaFlow_program</reference>
     </tocsect>
       <tocsect>
         <name>Run a cudaFlow on Multiple GPUs</name>
-        <reference>chapter6_1C6_run_a_cudaflow_on_multiple_gpus</reference>
+        <reference>GPUTaskingcudaFlow_1C6_run_a_cudaflow_on_multiple_gpus</reference>
     </tocsect>
       <tocsect>
         <name>Access GPU Memory</name>
-        <reference>chapter6_1C6_GPUMemoryOperations</reference>
+        <reference>GPUTaskingcudaFlow_1C6_GPUMemoryOperations</reference>
     </tocsect>
       <tocsect>
         <name>Study the Granularity</name>
-        <reference>chapter6_1C6_Granularity</reference>
+        <reference>GPUTaskingcudaFlow_1C6_Granularity</reference>
     </tocsect>
       <tocsect>
         <name>Offload and Update a cudaFlow</name>
-        <reference>chapter6_1C6_OffloadAndUpdateAcudaFlow</reference>
+        <reference>GPUTaskingcudaFlow_1C6_OffloadAndUpdateAcudaFlow</reference>
     </tocsect>
       <tocsect>
         <name>Use cudaFlow in a Standalone Environment</name>
-        <reference>chapter6_1C6_UsecudaFlowInAStandaloneEnvironment</reference>
+        <reference>GPUTaskingcudaFlow_1C6_UsecudaFlowInAStandaloneEnvironment</reference>
     </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Modern scientific computing typically leverages GPU-powered parallel processing cores to speed up large-scale applications. This chapters discusses how to implement CPU-GPU heterogeneous tasking algorithms with <ulink url="https://developer.nvidia.com/cuda-zone">Nvidia CUDA</ulink>.</para>
-<sect1 id="chapter6_1C6_Create_a_cudaFlow">
+<para>Modern scientific computing typically leverages GPU-powered parallel processing cores to speed up large-scale applications. This chapter discusses how to implement CPU-GPU heterogeneous tasking algorithms with <ulink url="https://developer.nvidia.com/cuda-zone">Nvidia CUDA</ulink>.</para>
+<sect1 id="GPUTaskingcudaFlow_1C6_Create_a_cudaFlow">
 <title>Create a cudaFlow</title>
 <para>Taskflow enables concurrent CPU-GPU tasking by leveraging <ulink url="https://developer.nvidia.com/blog/cuda-graphs/">CUDA Graph</ulink>. The tasking interface is referred to as <emphasis>cudaFlow</emphasis>. A cudaFlow is a graph object of type <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> created at runtime similar to dynamic tasking. It manages a task node in a taskflow and associates it with a CUDA Graph. To create a cudaFlow, emplace a callable with an argument of type <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>. The following example implements the canonical saxpy (A·X Plus Y) task graph.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/>#include<sp/>&lt;taskflow/cudaflow.hpp&gt;</highlight></codeline>
@@ -116,7 +116,7 @@ Taskflow does not expend unnecessary efforts on kernel programming but focus on 
 </simplesect>
 </para>
 </sect1>
-<sect1 id="chapter6_1C6_Compile_a_cudaFlow_program">
+<sect1 id="GPUTaskingcudaFlow_1C6_Compile_a_cudaFlow_program">
 <title>Compile a cudaFlow Program</title>
 <para>Use <ulink url="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</ulink> (at least v11.1) to compile a cudaFlow program:</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-std=c++17<sp/>my_cudaflow.cu<sp/>-I<sp/>path/to/include/taskflow<sp/>-O2<sp/>-o<sp/>my_cudaflow</highlight></codeline>
@@ -124,7 +124,7 @@ Taskflow does not expend unnecessary efforts on kernel programming but focus on 
 </programlisting></para>
 <para>Please visit the page <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref> for more details.</para>
 </sect1>
-<sect1 id="chapter6_1C6_run_a_cudaflow_on_multiple_gpus">
+<sect1 id="GPUTaskingcudaFlow_1C6_run_a_cudaflow_on_multiple_gpus">
 <title>Run a cudaFlow on Multiple GPUs</title>
 <para>By default, a cudaFlow runs on the current GPU associated with the caller, which is typically <computeroutput>0</computeroutput>. You can run a cudaFlow on multiple GPUs by explicitly associating a cudaFlow or a kernel task with a CUDA device. A CUDA device is an integer number in the range of <computeroutput>[0, N)</computeroutput> representing the identifier of a GPU, where <computeroutput>N</computeroutput> is the number of GPUs in a system. The code below creates a cudaFlow that runs on GPU <computeroutput>0</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([]<sp/>(<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf)<sp/>{},<sp/>0);<sp/><sp/></highlight><highlight class="comment">//<sp/>place<sp/>the<sp/>cudaFlow<sp/>on<sp/>GPU<sp/>0</highlight></codeline>
@@ -227,7 +227,7 @@ An easy practice is to allocate <emphasis>unified shared memory</emphasis> using
 <codeline><highlight class="normal">},<sp/>3);</highlight></codeline>
 </programlisting></para>
 </sect1>
-<sect1 id="chapter6_1C6_GPUMemoryOperations">
+<sect1 id="GPUTaskingcudaFlow_1C6_GPUMemoryOperations">
 <title>Access GPU Memory</title>
 <para><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> provides a set of methods for users to manipulate device memory data. There are two categories, raw data and typed data. Raw data operations are methods with prefix <computeroutput>mem</computeroutput>, such as <computeroutput>memcpy</computeroutput> and <computeroutput>memset</computeroutput>, that take action on GPU memory area in <emphasis>bytes</emphasis>. Typed data operations such as <computeroutput>copy</computeroutput>, <computeroutput>fill</computeroutput>, and <computeroutput>zero</computeroutput>, take <emphasis>logical count</emphasis> of elements. For instance, the following three methods have the same result of zeroing <computeroutput>sizeof(int)*count</computeroutput> bytes of the device memory area pointed to by <computeroutput>target</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>target;</highlight></codeline>
@@ -249,7 +249,7 @@ An easy practice is to allocate <emphasis>unified shared memory</emphasis> using
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para>
 </sect1>
-<sect1 id="chapter6_1C6_Granularity">
+<sect1 id="GPUTaskingcudaFlow_1C6_Granularity">
 <title>Study the Granularity</title>
 <para>Creating a cudaFlow has certain overhead, which means fined-grained tasking such as one GPU operation per cudaFlow may not give you any performance gain. You should aggregate as many GPU operations as possible in a cudaFlow to launch the entire graph once instead of separate calls. For example, the following code creates the saxpy task graph at a very fine-grained level using one cudaFlow per GPU operation.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>h2d_x<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf)<sp/>{</highlight></codeline>
@@ -295,7 +295,7 @@ An easy practice is to allocate <emphasis>unified shared memory</emphasis> using
 </simplesect>
 </para>
 </sect1>
-<sect1 id="chapter6_1C6_OffloadAndUpdateAcudaFlow">
+<sect1 id="GPUTaskingcudaFlow_1C6_OffloadAndUpdateAcudaFlow">
 <title>Offload and Update a cudaFlow</title>
 <para>Many GPU applications require you to launch a cudaFlow mutiple times and update node parameters (e.g., kernel parameters and memory addresses) between iterations. <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> allows you to execute the graph immediately and then update the parameters for the next execution. When you offload a cudaFlow, an executable graph will be created, and you must NOT change the topology but the node parameters between successive executions.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">1:<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;]<sp/>(<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf)<sp/>{</highlight></codeline>
@@ -357,7 +357,7 @@ An easy practice is to allocate <emphasis>unified shared memory</emphasis> using
 </simplesect>
 </para>
 </sect1>
-<sect1 id="chapter6_1C6_UsecudaFlowInAStandaloneEnvironment">
+<sect1 id="GPUTaskingcudaFlow_1C6_UsecudaFlowInAStandaloneEnvironment">
 <title>Use cudaFlow in a Standalone Environment</title>
 <para>You can use <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> in a standalone environment without going through <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and offloads it to GPU from the caller thread. All the features we have discussed so far are applicable for the standalone use.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;<sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>standalone<sp/>cudaFlow</highlight><highlight class="normal"></highlight></codeline>

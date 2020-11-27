@@ -16,6 +16,10 @@
         <name>Link Objects Using nvcc</name>
         <reference>CompileTaskflowWithCUDA_1CompileTaskflowWithCUDANaiveLinking</reference>
     </tocsect>
+      <tocsect>
+        <name>Link Objects Using Different Linkers</name>
+        <reference>CompileTaskflowWithCUDA_1CompileTaskflowWithCUDADifferentLinkers</reference>
+    </tocsect>
     </tableofcontents>
     </tocsect>
     </tableofcontents>
@@ -114,8 +118,8 @@
 <codeline><highlight class="normal">cudaflow.cpp!</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="CompileTaskflowWithCUDA_1CompileTaskflowWithCUDANaiveLinking">
-<title>Link Objects Using nvcc</title>
+<sect2 id="CompileTaskflowWithCUDA_1CompileTaskflowWithCUDADifferentLinkers">
+<title>Link Objects Using Different Linkers</title>
 <para>You can choose to use a compiler other than <computeroutput>nvcc</computeroutput> for the final link step. Since your CPU compiler does not know how to link CUDA device code, you have to add a step in your build to have <computeroutput>nvcc</computeroutput> link the CUDA device code, using the option <computeroutput>-dlink:</computeroutput> </para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-o<sp/>gpuCode.o<sp/>-dlink<sp/>main.o<sp/>cudaflow.o</highlight></codeline>
 </programlisting></para>

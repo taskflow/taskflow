@@ -55,7 +55,6 @@
             <li><a href="#C2_CreateAnExecutor">Create an Executor</a></li>
             <li><a href="#C2_ExecuteATaskflow">Execute a Taskflow</a></li>
             <li><a href="#C2_ThreadSafety">Touch an Executor from Multiple Threads</a></li>
-            <li><a href="#C2_Async">Run a Task Asynchronously</a></li>
             <li><a href="#C2_Observer">Observe Thread Activities</a></li>
           </ul>
         </div>
@@ -114,22 +113,7 @@
 <span class="mi">5</span><span class="o">:</span>     <span class="c1">// ... modify my taskflow</span>
 <span class="mi">6</span><span class="o">:</span>     <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflows</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>  <span class="c1">// run my taskflow</span>
 <span class="mi">7</span><span class="o">:</span>   <span class="p">}).</span><span class="n">detach</span><span class="p">();</span>
-<span class="mi">8</span><span class="o">:</span> <span class="p">}</span></pre></section><section id="C2_Async"><h2><a href="#C2_Async">Run a Task Asynchronously</a></h2><p>In addition to run a taskflow, the executor provides a STL-styled method, <a href="classtf_1_1Executor.html#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">tf::<wbr />Executor::<wbr />async</a>, for you to run a callable object (e.g., function) asynchronously. A common use case of the method is using the executor as a thread pool.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">future</span> <span class="o">=</span> <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span>
-  <span class="c1">// do some heavy work</span>
-  <span class="c1">// ...</span>
-  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-<span class="p">});</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span>
-<span class="n">assert</span><span class="p">(</span><span class="n">future</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">);</span></pre><p>The method, <a href="classtf_1_1Executor.html#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">tf::<wbr />Executor::<wbr />async</a>, is <em>thread-safe</em> and can be called from any threads or from the execution of a task. Our scheduler autonomously detects whether the async task is submitted from an external thread or a worker thread and executes it in the work-stealing loop.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-  <span class="c1">// do some work</span>
-  <span class="c1">// ...</span>
-  <span class="c1">// launch a task asynchronously</span>
-  <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span>
-    <span class="c1">// do another asynchronous work </span>
-  <span class="p">})</span>
-<span class="p">});</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span>   <span class="c1">// wait for all tasks to finish</span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>An <code>async</code> task does not belong to any taskflows. The future object returned from <a href="classtf_1_1Executor.html#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">tf::<wbr />Executor::<wbr />async</a> does not block on destruction.</p></aside></section><section id="C2_Observer"><h2><a href="#C2_Observer">Observe Thread Activities</a></h2><p>You can observe thread activities in an executor when a worker thread participates in executing a task and leaves the execution using <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> &ndash; an <em>interface</em> class that provides a set of methods for you to define what to do when a thread enters and leaves the execution context of a task.</p><pre class="m-code"><span class="k">class</span> <span class="nc">ObserverInterface</span> <span class="p">{</span>
+<span class="mi">8</span><span class="o">:</span> <span class="p">}</span></pre></section><section id="C2_Observer"><h2><a href="#C2_Observer">Observe Thread Activities</a></h2><p>You can observe thread activities in an executor when a worker thread participates in executing a task and leaves the execution using <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> &ndash; an <em>interface</em> class that provides a set of methods for you to define what to do when a thread enters and leaves the execution context of a task.</p><pre class="m-code"><span class="k">class</span> <span class="nc">ObserverInterface</span> <span class="p">{</span>
   <span class="k">virtual</span> <span class="o">~</span><span class="n">ObserverInterface</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
   <span class="k">virtual</span> <span class="kt">void</span> <span class="n">set_up</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">num_workers</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
   <span class="k">virtual</span> <span class="kt">void</span> <span class="n">on_entry</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">worker_id</span><span class="p">,</span> <span class="n">tf</span><span class="o">::</span><span class="n">TaskView</span> <span class="n">task_view</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>

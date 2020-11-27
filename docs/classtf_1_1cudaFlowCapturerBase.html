@@ -156,6 +156,22 @@
               S... srcs) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
             <dd>captures a kernel that applies a callable to a source range and stores the result in a target range</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename T, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#aab12ff998a789efe0ad302bf86254f0d" class="m-doc">reduce</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              T* result,
+              C&amp;&amp; op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures a kernel that performs parallel reduction over a range of items</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename T, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a407504f1295f5f658abfbee081a0b057" class="m-doc">uninitialized_reduce</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              T* result,
+              C&amp;&amp; op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>similar to <a href="classtf_1_1cudaFlowCapturerBase.html#aab12ff998a789efe0ad302bf86254f0d" class="m-doc">tf::<wbr />cudaFlowCapturerBase::<wbr />reduce</a> but does not assum any initial value to reduce</dd>
           </dl>
         </section>
         <section>
@@ -554,6 +570,83 @@
             </table>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
   <span class="o">*</span><span class="n">first</span><span class="o">++</span> <span class="o">=</span> <span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">src1</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src2</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src3</span><span class="o">++</span><span class="p">,</span> <span class="p">...);</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="aab12ff998a789efe0ad302bf86254f0d"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename T, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturerBase::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aab12ff998a789efe0ad302bf86254f0d" class="m-doc-self">reduce</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              T* result,
+              C&amp;&amp; op)</span></span>
+            </h3>
+            <p>captures a kernel that performs parallel reduction over a range of items</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>input iterator type</td>
+                </tr>
+                <tr>
+                  <td>T</td>
+                  <td>value type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>callable type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning (inclusive)</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end (exclusive)</td>
+                </tr>
+                <tr>
+                  <td>result</td>
+                  <td>pointer to the result with an initialized value</td>
+                </tr>
+                <tr>
+                  <td>op</td>
+                  <td>binary reduction operator</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a407504f1295f5f658abfbee081a0b057"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename T, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturerBase::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a407504f1295f5f658abfbee081a0b057" class="m-doc-self">uninitialized_reduce</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              T* result,
+              C&amp;&amp; op)</span></span>
+            </h3>
+            <p>similar to <a href="classtf_1_1cudaFlowCapturerBase.html#aab12ff998a789efe0ad302bf86254f0d" class="m-doc">tf::<wbr />cudaFlowCapturerBase::<wbr />reduce</a> but does not assum any initial value to reduce</p>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">;</span>  <span class="c1">// no initial values partitipcate in the loop</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
 <span class="p">}</span></pre>
           </div></section>
         </section>

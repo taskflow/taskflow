@@ -9,7 +9,7 @@ namespace tf {
 @section A2ParallelReduction Parallel Reduction
 
 The reduction task created by tf::Taskflow::reduce(B&& first, E&& last, T& result, O&& bop) performs
-parallel reduction over a range of elements specified by <tt>[beg, end)</tt> using the binary operator @c bop and stores the reduced result in @c result.
+parallel reduction over a range of elements specified by <tt>[first, last)</tt> using the binary operator @c bop and stores the reduced result in @c result.
 It represents the parallel execution of the following reduction loop:
 
 @code{.cpp}

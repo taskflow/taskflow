@@ -46,9 +46,9 @@ taskflow.emplace([&](tf::cudaFlow& cf){
 executor.run(taskflow).wait();
 @endcode
 
-A %cudaFlow can be a task created from tf::Taskflow 
-and will be run by one worker thread in the executor.
-That is, the callable that defines how the given %cudaFlow runs 
+A %cudaFlow is a task (tf::Task) created from tf::Taskflow 
+and will be run by @em one worker thread in the executor.
+That is, the callable that describes a %cudaFlow 
 will be executed sequentially.
 */
 class cudaFlow {
@@ -477,7 +477,7 @@ class cudaFlow {
     @param first iterator to the beginning (inclusive)
     @param last iterator to the end (exclusive)
     @param result pointer to the result with an initialized value
-    @param callable binary reduction operator
+    @param op binary reduction operator
     
     @return a tf::cudaTask handle
     
@@ -485,7 +485,7 @@ class cudaFlow {
     
     @code{.cpp}
     while (first != last) {
-      *result = callable(*result, *first++);
+      *result = op(*result, *first++);
     }
     @endcode
     */
@@ -500,9 +500,9 @@ class cudaFlow {
     on a GPU:
     
     @code{.cpp}
-    *result = *first++;
+    *result = *first++;  // no initial values partitipcate in the loop
     while (first != last) {
-      *result = callable(*result, *first++);
+      *result = op(*result, *first++);
     }
     @endcode
     */

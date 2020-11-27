@@ -23,7 +23,7 @@
 <para>cudaFlow provides a template function that constructs a task to perform parallel iterations over a range of items.</para>
 <sect1 id="ForEachCUDA_1ForEachCUDAIndexBasedParallelFor">
 <title>Index-based Parallel Iterations</title>
-<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[beg, end)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by <ref refid="classtf_1_1cudaFlow_1ab5a7c12e383be4972844a9f29033e487" kindref="member">tf::cudaFlow::for_each_index(I first, I last, I step, C&amp;&amp; callable)</ref> represents a kernel of parallel execution for the following loop:</para>
+<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[first, last)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by <ref refid="classtf_1_1cudaFlow_1ab5a7c12e383be4972844a9f29033e487" kindref="member">tf::cudaFlow::for_each_index(I first, I last, I step, C&amp;&amp; callable)</ref> represents a kernel of parallel execution for the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>positive<sp/>step</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>

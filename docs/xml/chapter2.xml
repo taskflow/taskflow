@@ -17,10 +17,6 @@
         <reference>chapter2_1C2_ThreadSafety</reference>
     </tocsect>
       <tocsect>
-        <name>Run a Task Asynchronously</name>
-        <reference>chapter2_1C2_Async</reference>
-    </tocsect>
-      <tocsect>
         <name>Observe Thread Activities</name>
         <reference>chapter2_1C2_Observer</reference>
     </tocsect>
@@ -128,33 +124,6 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal">7:<sp/><sp/><sp/>}).detach();</highlight></codeline>
 <codeline><highlight class="normal">8:<sp/>}</highlight></codeline>
 </programlisting></para>
-</sect1>
-<sect1 id="chapter2_1C2_Async">
-<title>Run a Task Asynchronously</title>
-<para>In addition to run a taskflow, the executor provides a STL-styled method, <ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">tf::Executor::async</ref>, for you to run a callable object (e.g., function) asynchronously. A common use case of the method is using the executor as a thread pool.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>future<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">async</ref>([](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>some<sp/>heavy<sp/>work</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
-<codeline><highlight class="normal">assert(future.get()<sp/>==<sp/>1);</highlight></codeline>
-</programlisting></para>
-<para>The method, <ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">tf::Executor::async</ref>, is <emphasis>thread-safe</emphasis> and can be called from any threads or from the execution of a task. Our scheduler autonomously detects whether the async task is submitted from an external thread or a worker thread and executes it in the work-stealing loop.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>some<sp/>work</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>launch<sp/>a<sp/>task<sp/>asynchronously</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">async</ref>([](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>another<sp/>asynchronous<sp/>work<sp/></highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>})</highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow);</highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>all<sp/>tasks<sp/>to<sp/>finish</highlight></codeline>
-</programlisting></para>
-<para><simplesect kind="attention"><para>An <computeroutput>async</computeroutput> task does not belong to any taskflows. The future object returned from <ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">tf::Executor::async</ref> does not block on destruction.</para>
-</simplesect>
-</para>
 </sect1>
 <sect1 id="chapter2_1C2_Observer">
 <title>Observe Thread Activities</title>

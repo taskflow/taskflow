@@ -195,6 +195,9 @@ inline void cuda_memset_async(
 
 // This is the un-specialized struct.  Note that we prevent instantiation of this
 // struct by putting an undefined symbol in the function body so it won't compile.
+/**
+@private
+*/
 template <typename T>
 struct cudaSharedMemory
 {
@@ -211,6 +214,9 @@ struct cudaSharedMemory
 // int, uint, char, uchar, short, ushort, long, ulong, bool, float, and double
 // One could also specialize it for user-defined types.
 
+/**
+@private
+*/
 template <>
 struct cudaSharedMemory <int>
 {
@@ -221,6 +227,9 @@ struct cudaSharedMemory <int>
   }
 };
 
+/**
+@private
+*/
 template <>
 struct cudaSharedMemory <unsigned int>
 {
@@ -231,6 +240,9 @@ struct cudaSharedMemory <unsigned int>
   }
 };
 
+/**
+@private
+*/
 template <>
 struct cudaSharedMemory <char>
 {
@@ -241,6 +253,9 @@ struct cudaSharedMemory <char>
   }
 };
 
+/**
+@private
+*/
 template <>
 struct cudaSharedMemory <unsigned char>
 {
@@ -251,6 +266,9 @@ struct cudaSharedMemory <unsigned char>
   }
 };
 
+/**
+@private
+*/
 template <>
 struct cudaSharedMemory <short>
 {
@@ -261,6 +279,9 @@ struct cudaSharedMemory <short>
   }
 };
 
+/**
+@private
+*/
 template <>
 struct cudaSharedMemory <unsigned short>
 {
@@ -271,6 +292,9 @@ struct cudaSharedMemory <unsigned short>
   }
 };
 
+/**
+@private
+*/
 template <>
 struct cudaSharedMemory <long>
 {
@@ -281,6 +305,9 @@ struct cudaSharedMemory <long>
   }
 };
 
+/**
+@private
+*/
 template <>
 struct cudaSharedMemory <unsigned long>
 {
@@ -301,6 +328,9 @@ struct cudaSharedMemory <unsigned long>
 //  }
 //};
 
+/**
+@private
+*/
 template <>
 struct cudaSharedMemory <bool>
 {
@@ -311,6 +341,9 @@ struct cudaSharedMemory <bool>
   }
 };
 
+/**
+@private
+*/
 template <>
 struct cudaSharedMemory <float>
 {
@@ -321,6 +354,9 @@ struct cudaSharedMemory <float>
   }
 };
 
+/**
+@private
+*/
 template <>
 struct cudaSharedMemory <double>
 {

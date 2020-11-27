@@ -563,10 +563,9 @@ void TaskView::for_each_dependent(V&& visitor) const {
 namespace std {
 
 /**
-@class hash<tf::Task>
+@struct hash
 
 @brief hash specialization for std::hash<tf::Task>
-
 */
 template <>
 struct hash<tf::Task> {

@@ -8,7 +8,7 @@ namespace tf {
 
 @section A1IndexBasedParallelFor Index-based Parallel Iterations
 
-Index-based parallel-for performs parallel iterations over a range <tt>[beg, end)</tt> with the given @c step size.
+Index-based parallel-for performs parallel iterations over a range <tt>[first, last)</tt> with the given @c step size.
 The task created by tf::Taskflow::for_each_index(B&& first, E&& last, S&& step, C&& callable) represents parallel execution of the following loop:
 
 @code{.cpp}

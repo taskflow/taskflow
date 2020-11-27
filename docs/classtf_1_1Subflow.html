@@ -103,6 +103,18 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a4c4b56476ca907ceca75dd8a861e1145" class="m-doc">joinable</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
             </dt>
             <dd>queries if the subflow is joinable</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a70681068507b224a96df69cc1f3168f1" class="m-doc">async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args) -&gt; auto</span>
+            </dt>
+            <dd>runs a given function asynchronously</dd>
+            <dt id="af9671aa8548882b3425e5a1f10f7a868">
+              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#af9671aa8548882b3425e5a1f10f7a868" class="m-doc-self">silent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args)</span>
+            </dt>
+            <dd>similar to <a href="classtf_1_1Subflow.html#a70681068507b224a96df69cc1f3168f1" class="m-doc">tf::<wbr />Subflow::<wbr />async</a> but did not return a future object</dd>
           </dl>
         </section>
         <section>
@@ -127,6 +139,58 @@
             </h3>
             <p>queries if the subflow is joinable</p>
 <p>When a subflow is joined or detached, it becomes not joinable.</p>
+          </div></section>
+          <section class="m-doc-details" id="a70681068507b224a96df69cc1f3168f1"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename F, typename... ArgsT&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">auto tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a70681068507b224a96df69cc1f3168f1" class="m-doc-self">async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args)</span></span>
+            </h3>
+            <p>runs a given function asynchronously</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">F</td>
+                  <td>callable type</td>
+                </tr>
+                <tr>
+                  <td>ArgsT</td>
+                  <td>parameter types</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>f</td>
+                  <td>callable object to call</td>
+                </tr>
+                <tr>
+                  <td>args</td>
+                  <td>parameters to pass to the callable</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a> that will eventually hold the result of the function call</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This method is thread-safe and can be called by multiple tasks in the subflow at the same time. The difference to <a href="classtf_1_1Executor.html#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">tf::<wbr />Executor::<wbr />async</a> is that the created asynchronous task pertains to the subflow. When the subflow joins, all asynchronous tasks created from the subflow are guaranteed to finish before the join. For example:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">empalce</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span> <span class="n">sf</span><span class="p">){</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">sf</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">counter</span><span class="o">++</span><span class="p">;</span> <span class="p">});</span>
+  <span class="p">}</span>
+  <span class="n">sf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+  <span class="n">assert</span><span class="p">(</span><span class="n">counter</span> <span class="o">==</span> <span class="mi">100</span><span class="p">);</span>
+<span class="p">});</span></pre><p>You cannot create asynchronous tasks from a detached subflow. Doing this results in undefined behavior.</p>
           </div></section>
         </section>
       </div>

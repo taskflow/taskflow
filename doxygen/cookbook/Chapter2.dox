@@ -144,45 +144,6 @@ runtime.
 @endcode
 
 
-@section C2_Async Run a Task Asynchronously
-
-In addition to run a taskflow, the executor provides a STL-styled method,
-tf::Executor::async,
-for you to run a callable object (e.g., function) asynchronously.
-A common use case of the method is using the executor as a thread pool.
-
-@code{.cpp}
-std::future<int> future = executor.async([](){
-  // do some heavy work
-  // ...
-  return 1;
-});
-executor.wait_for_all();
-assert(future.get() == 1);
-@endcode
-
-The method, tf::Executor::async, is @em thread-safe and can be called from any threads
-or from the execution of a task.
-Our scheduler autonomously detects whether the async task is submitted 
-from an external thread or a worker thread and executes it in the work-stealing loop.
-
-@code{.cpp}
-taskflow.emplace([&](){
-  // do some work
-  // ...
-  // launch a task asynchronously
-  executor.async([](){
-    // do another asynchronous work 
-  })
-});
-executor.run(taskflow);
-executor.wait_for_all();   // wait for all tasks to finish
-@endcode
-
-@attention
-An @c async task does not belong to any taskflows.
-The future object returned from tf::Executor::async does not block on destruction.
-
 
 @section C2_Observer Observe Thread Activities
 

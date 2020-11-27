@@ -8,6 +8,18 @@
     <innerclass refid="classtf_1_1cudaFlowCapturer" prot="public">tf::cudaFlowCapturer</innerclass>
     <innerclass refid="classtf_1_1cudaFlowCapturerBase" prot="public">tf::cudaFlowCapturerBase</innerclass>
     <innerclass refid="classtf_1_1cudaScopedDevice" prot="public">tf::cudaScopedDevice</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01bool_01_4" prot="private">tf::cudaSharedMemory&lt; bool &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01char_01_4" prot="private">tf::cudaSharedMemory&lt; char &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01double_01_4" prot="private">tf::cudaSharedMemory&lt; double &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01float_01_4" prot="private">tf::cudaSharedMemory&lt; float &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01int_01_4" prot="private">tf::cudaSharedMemory&lt; int &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01long_01_4" prot="private">tf::cudaSharedMemory&lt; long &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01short_01_4" prot="private">tf::cudaSharedMemory&lt; short &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01char_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned char &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01int_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned int &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01long_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned long &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01short_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned short &gt;</innerclass>
     <innerclass refid="classtf_1_1cudaTask" prot="public">tf::cudaTask</innerclass>
     <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
@@ -1060,6 +1072,20 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="210" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="210" bodyend="213"/>
       </memberdef>
+      <memberdef kind="function" id="namespacetf_1ae680bf7822f2b6b66a6199f0b77f7241" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>constexpr size_t</type>
+        <definition>constexpr size_t tf::cuda_default_max_threads_per_block</definition>
+        <argsstring>()</argsstring>
+        <name>cuda_default_max_threads_per_block</name>
+        <briefdescription>
+<para>queries the maximum threads allowed per block </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="18" column="18" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="18" bodyend="20"/>
+      </memberdef>
       <memberdef kind="function" id="namespacetf_1a50a8f777333cc26d5f5d8c4d37bcdc73" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr size_t</type>
         <definition>constexpr size_t tf::cuda_default_threads_per_block</definition>
@@ -1070,13 +1096,13 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
           <declname>N</declname>
         </param>
         <briefdescription>
-<para>the default number of threads per block in an 1D vector of N elements </para>
+<para>queries the default number of threads per block in an 1D vector of N elements </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="17" column="18" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="17" bodyend="19"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="25" column="18" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="25" bodyend="31"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a30fa078dcf625e9eada5a95af1467588" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr const char *</type>
@@ -1094,7 +1120,7 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>The taskflow namespace. </para>
+<para>taskflow namespace </para>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>

@@ -19,6 +19,34 @@
       <tocsect>
         <name>New Features</name>
         <reference>release-3-0-0_1release-3-0-0_new_features</reference>
+    <tableofcontents>
+      <tocsect>
+        <name>Taskflow Core</name>
+        <reference>release-3-0-0_1release-3-0-0_taskflow_core</reference>
+    </tocsect>
+      <tocsect>
+        <name>cudaFlow</name>
+        <reference>release-3-0-0_1release-3-0-0_cudaflow</reference>
+    </tocsect>
+      <tocsect>
+        <name>Utilities</name>
+        <reference>release-3-0-0_1release-3-0-0_utilities</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
+      <tocsect>
+        <name>New Algorithms</name>
+        <reference>release-3-0-0_1release-3-0-0_new_algorithms</reference>
+    <tableofcontents>
+      <tocsect>
+        <name>CPU Algorithms</name>
+        <reference>release-3-0-0_1release-3-0-0_cpu_algorithms</reference>
+    </tocsect>
+      <tocsect>
+        <name>GPU Algorithms</name>
+        <reference>release-3-0-0_1release-3-0-0_gpu_algorithms</reference>
+    </tocsect>
+    </tableofcontents>
     </tocsect>
       <tocsect>
         <name>Documentation</name>
@@ -81,61 +109,100 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-0-0_1release-3-0-0_new_features">
 <title>New Features</title>
+<sect2 id="release-3-0-0_1release-3-0-0_taskflow_core">
+<title>Taskflow Core</title>
 <para><itemizedlist>
 <listitem><para>replaced all non-standard libraries with C++17 STL (e.g., <ulink url="https://en.cppreference.com/w/cpp/utility/optional">std::optional</ulink>, <ulink url="https://en.cppreference.com/w/cpp/utility/variant">std::variant</ulink>) </para>
 </listitem>
-<listitem><para>added <ref refid="classtf_1_1FlowBuilder_1af4848ab51fa3bf5525af58e2440b01c1" kindref="member">tf::Taskflow::sort</ref> to perform parallel sort over a range of elements (see <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref>) </para>
+<listitem><para>added <ref refid="classtf_1_1WorkerView" kindref="compound">tf::WorkerView</ref> for users to observer the worker that runs the task </para>
 </listitem>
+<listitem><para>added asynchronous tasking (see <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref>) </para>
+</listitem>
+<listitem><para>modified <ref refid="classtf_1_1ObserverInterface_1a3e3a9f7f1d43691794e487b8787b01a0" kindref="member">tf::ObserverInterface::on_entry</ref> and <ref refid="classtf_1_1ObserverInterface_1aa59a59a59eadd4eb6ba20ecdfcae882b" kindref="member">tf::ObserverInterface::on_exit</ref> to take <ref refid="classtf_1_1WorkerView" kindref="compound">tf::WorkerView</ref> </para>
+</listitem>
+<listitem><para>added a custom graph interface to support dynamic polymorphism for tf::cudaGraph </para>
+</listitem>
+<listitem><para>supported separate compilations between Taskflow and CUDA (see <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref>)</para>
+</listitem>
+</itemizedlist>
+</para>
+</sect2>
+<sect2 id="release-3-0-0_1release-3-0-0_cudaflow">
+<title>cudaFlow</title>
+<para><itemizedlist>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> for building a cudaFlow through stream capture (see <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref>) </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturerBase" kindref="compound">tf::cudaFlowCapturerBase</ref> for creating custom capturers </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" kindref="member">tf::cudaFlow::capture</ref> for capturing a cudaFlow within a parent cudaFlow </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref> to place a cudaFlow on a GPU </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a7f97b68fa7c889db49b26aa71a46a7cf" kindref="member">tf::cudaFlow::dump</ref> and <ref refid="classtf_1_1cudaFlowCapturerBase_1ad785ad88cdcb896903e9fdc845d30bea" kindref="member">tf::cudaFlowCapturer::dump</ref> to visualize cudaFlow </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> and update methods to run and update a cudaFlow explicitly </para>
+</listitem>
+<listitem><para>supported standalone use of cudaFlow (see <ref refid="GPUTaskingcudaFlow_1C6_UsecudaFlowInAStandaloneEnvironment" kindref="member">Use cudaFlow in a Standalone Environment</ref>) </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cublasFlowCapturer" kindref="compound">tf::cublasFlowCapturer</ref> to support <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> (see <ref refid="LinearAlgebracublasFlowCapturer" kindref="compound">Linear Algebra (cublasFlowCapturer)</ref>)</para>
+</listitem>
+</itemizedlist>
+</para>
+</sect2>
+<sect2 id="release-3-0-0_1release-3-0-0_utilities">
+<title>Utilities</title>
+<para><itemizedlist>
 <listitem><para>added utility functions to grab the cuda device properties (see <ref refid="cuda__device_8hpp" kindref="compound">cuda_device.hpp</ref>) </para>
 </listitem>
 <listitem><para>added utility functions to control cuda memory (see <ref refid="cuda__memory_8hpp" kindref="compound">cuda_memory.hpp</ref>) </para>
 </listitem>
-<listitem><para>added per-thread pool for CUDA streams to improve performance </para>
+<listitem><para>added utility functions for common mathematics operations </para>
 </listitem>
-<listitem><para>added a new interface <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> for building a GPU task graph through stream capture </para>
-</listitem>
-<listitem><para>added a new interface <ref refid="classtf_1_1cudaFlowCapturerBase" kindref="compound">tf::cudaFlowCapturerBase</ref> to support custom-defined capturers (see <ref refid="chapter7_1C7_CreateCustomCapturer" kindref="member">Create a Custom Capturer</ref>) </para>
-</listitem>
-<listitem><para>added a new interface <ref refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" kindref="member">tf::cudaFlow::capture</ref> for capturing a CUDA task graph within a parent cudaFlow </para>
-</listitem>
-<listitem><para>added a new method <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref> to place a cudaFlow (<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>) on the given device context<itemizedlist>
-<listitem><para>removed tf::cudaFlow::device </para>
-</listitem></itemizedlist>
-</para>
-</listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a7f97b68fa7c889db49b26aa71a46a7cf" kindref="member">tf::cudaFlow::dump</ref> and <ref refid="classtf_1_1cudaFlowCapturerBase_1ad785ad88cdcb896903e9fdc845d30bea" kindref="member">tf::cudaFlowCapturerBase::dump</ref> to visualize cudaFlow<itemizedlist>
-<listitem><para>supported recursive dump of a cudaFlow with child graphs </para>
-</listitem></itemizedlist>
-</para>
-</listitem>
-<listitem><para>added standalone cudaFlow without going through <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> (see <ref refid="chapter6_1C6_UsecudaFlowInAStandaloneEnvironment" kindref="member">Use cudaFlow in a Standalone Environment</ref>) </para>
-</listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> and update methods to run a cudaFlow from the task callable and update task parameters (see <ref refid="chapter6_1C6_OffloadAndUpdateAcudaFlow" kindref="member">Offload and Update a cudaFlow</ref>) </para>
-</listitem>
-<listitem><para>added a new library <ref refid="classtf_1_1cublasFlowCapturer" kindref="compound">tf::cublasFlowCapturer</ref> to support BLAS on top of <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> (see <ref refid="LinearAlgebracublasFlowCapturer" kindref="compound">Linear Algebra (cublasFlowCapturer)</ref>) </para>
-</listitem>
-<listitem><para>added a custom graph interface to support dynamic polymorphism for tf::cudaGraph </para>
-</listitem>
-<listitem><para>added support for compiling Taskflow and CUDA source code separately (see <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref>) </para>
-</listitem>
-<listitem><para>added <ref refid="classtf_1_1WorkerView" kindref="compound">tf::WorkerView</ref> for users to observer the worker that runs the task </para>
-</listitem>
-<listitem><para>modified <ref refid="classtf_1_1ObserverInterface_1a3e3a9f7f1d43691794e487b8787b01a0" kindref="member">tf::ObserverInterface::on_entry</ref> and <ref refid="classtf_1_1ObserverInterface_1aa59a59a59eadd4eb6ba20ecdfcae882b" kindref="member">tf::ObserverInterface::on_exit</ref> to take <ref refid="classtf_1_1WorkerView" kindref="compound">tf::WorkerView</ref> instead of uninformative <computeroutput>size_t</computeroutput> </para>
+<listitem><para>added per-thread pool for CUDA streams to improve performance</para>
 </listitem>
 </itemizedlist>
 </para>
+</sect2>
+</sect1>
+<sect1 id="release-3-0-0_1release-3-0-0_new_algorithms">
+<title>New Algorithms</title>
+<sect2 id="release-3-0-0_1release-3-0-0_cpu_algorithms">
+<title>CPU Algorithms</title>
+<para><itemizedlist>
+<listitem><para>added parallel sort (see <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref>)</para>
+</listitem>
+</itemizedlist>
+</para>
+</sect2>
+<sect2 id="release-3-0-0_1release-3-0-0_gpu_algorithms">
+<title>GPU Algorithms</title>
+<para><itemizedlist>
+<listitem><para>added single task (see <ref refid="SingleTaskCUDA" kindref="compound">Single Task (cudaFlow)</ref>) </para>
+</listitem>
+<listitem><para>added parallel iterations (see <ref refid="ForEachCUDA" kindref="compound">Parallel Iterations (cudaFlow)</ref>) </para>
+</listitem>
+<listitem><para>added parallel transforms (see <ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms (cudaFlow)</ref>) </para>
+</listitem>
+<listitem><para>added parallel reduction (see <ref refid="CUDAReduce" kindref="compound">Parallel Reduction (cudaFlow)</ref>)</para>
+</listitem>
+</itemizedlist>
+</para>
+</sect2>
 </sect1>
 <sect1 id="release-3-0-0_1release-3-0-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
 <listitem><para>added <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref> </para>
 </listitem>
-<listitem><para>added <ref refid="chapter7" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref> </para>
+<listitem><para>added <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref> </para>
 </listitem>
 <listitem><para>added <ref refid="GPUAlgorithms" kindref="compound">GPU Algorithms</ref><itemizedlist>
 <listitem><para><ref refid="SingleTaskCUDA" kindref="compound">Single Task (cudaFlow)</ref> to run a kernel function in just a single thread</para>
-</listitem><listitem><para><ref refid="ForEachCUDA" kindref="compound">Parallel Iterations (cudaFlow)</ref> to perform parallel iterations over a range</para>
-</listitem><listitem><para><ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms (cudaFlow)</ref> to perform parallel transforms over a range</para>
+</listitem><listitem><para><ref refid="ForEachCUDA" kindref="compound">Parallel Iterations (cudaFlow)</ref> to perform parallel iterations over a range of items</para>
+</listitem><listitem><para><ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms (cudaFlow)</ref> to perform parallel transforms over a range of items</para>
+</listitem><listitem><para><ref refid="CUDAReduce" kindref="compound">Parallel Reduction (cudaFlow)</ref> to perform parallel reduction over a range of items</para>
 </listitem><listitem><para><ref refid="LinearAlgebracublasFlowCapturer" kindref="compound">Linear Algebra (cublasFlowCapturer)</ref> to build GPU-accelerated linear algebra applications </para>
 </listitem></itemizedlist>
 </para>
@@ -177,16 +244,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem>
 <listitem><para>removed the legacy tf::Framework </para>
 </listitem>
-<listitem><para>removed external mutable use of <ref refid="classtf_1_1TaskView" kindref="compound">tf::TaskView</ref><itemizedlist>
-<listitem><para>tf::TaskView::TaskView()</para>
-</listitem><listitem><para>tf::TaskView::TaskView(const tf::TaskView&amp;)</para>
-</listitem><listitem><para>tf::TaskView::TaskView(tf::TaskView&amp;&amp;)</para>
-</listitem><listitem><para>tf::TaskView::operator ==</para>
-</listitem><listitem><para>tf::TaskView::operator !=</para>
-</listitem><listitem><para>tf::TaskView::operator =</para>
-</listitem><listitem><para>tf::TaskView::reset</para>
-</listitem></itemizedlist>
-</para>
+<listitem><para>removed external mutable use of <ref refid="classtf_1_1TaskView" kindref="compound">tf::TaskView</ref></para>
 </listitem>
 </itemizedlist>
 </para>

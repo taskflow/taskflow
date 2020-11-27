@@ -83,9 +83,9 @@
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="27" column="20" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="27" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structtf_1_1Worker_1a7199199ea711ad35181d793c17366a7d" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/numeric/random/mersenne_twister_engine" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::mt19937</ref></type>
-        <definition>std::mt19937 tf::Worker::rdgen</definition>
+      <memberdef kind="variable" id="structtf_1_1Worker_1a3602f343b074832f9e575d964163627f" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/numeric/random" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::default_random_engine</ref></type>
+        <definition>std::default_random_engine tf::Worker::rdgen</definition>
         <argsstring></argsstring>
         <name>rdgen</name>
         <initializer>{ <ref refid="cpp/numeric/random/random_device" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::random_device</ref>{}() }</initializer>
@@ -95,7 +95,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="28" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="28" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="28" column="30" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="28" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Worker_1adaec69d6f991dd2b27ca984f87c5c8ed" prot="private" static="no" mutable="no">
         <type>TaskQueue&lt; Node * &gt;</type>
@@ -120,7 +120,7 @@
       <member refid="structtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>Executor</name></member>
       <member refid="structtf_1_1Worker_1a5b0603992927b351e534fb6dec200172" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>executor</name></member>
       <member refid="structtf_1_1Worker_1af88d0e613ae0edd8ab5dba95b48a91f6" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>id</name></member>
-      <member refid="structtf_1_1Worker_1a7199199ea711ad35181d793c17366a7d" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>rdgen</name></member>
+      <member refid="structtf_1_1Worker_1a3602f343b074832f9e575d964163627f" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>rdgen</name></member>
       <member refid="structtf_1_1Worker_1a267d680b8b68254db14aea8254311bb9" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>vtm</name></member>
       <member refid="structtf_1_1Worker_1a3d29700ee379fefb6cfb96a0354e2301" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>waiter</name></member>
       <member refid="structtf_1_1Worker_1a0f36eeb628ab3803180651682f5821f3" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>WorkerView</name></member>
