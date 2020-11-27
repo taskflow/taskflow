@@ -11,8 +11,8 @@ int main(int argc, char* argv[]) {
   unsigned num_gpus {1};
   app.add_option("-g,--num_gpus", num_gpus, "number of gpus (default=1)");
 
-  unsigned num_rounds {5};  
-  app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=5)");
+  unsigned num_rounds {1};  
+  app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
   unsigned cuda_ratio {2};
   app.add_option(
