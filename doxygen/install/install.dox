@@ -115,7 +115,7 @@ The above command turns off building %Taskflow examples.
 @section BAIBuildCUDACode Build CUDA Examples and Unit Tests
 
 To build CUDA code, including unit tests and examples, 
-define the CMake option @c TF_BUILD_CUDA to @c ON as follows:
+enable the CMake option @c TF_BUILD_CUDA to @c ON as follows:
 
 @code{.shell-session}
 ~$ cmake ../ -DTF_BUILD_CUDA=ON
@@ -130,6 +130,22 @@ Please visit the page @subpage CompileTaskflowWithCUDA for details.
 @section BAIBuildSYCLCode Build SYCL Code Examples and Unit Tests
 
 TBD
+
+@section BAIBuildBenchmarks Build Benchmarks
+
+The %Taskflow project contains a set of benchmarks to evaluate and compare 
+the performance of Taskflow with existing parallel programming libraries.
+To build the benchmark code,
+enable the CMake option @c TF_BUILD_BENCHMARKS to @c ON as follows:
+
+@code{.shell-session}
+~$ cmake ../ -DTF_BUILD_BENCHMARKS=ON
+~$ make
+@endcode
+
+@subsection BAIBenchmarkTaskflow Benchmark Taskflow
+
+Please visit the page @subpage BenchmarkTaskflow for details.
 
 @section BAIBuildDocumentation Build Documentation
 
