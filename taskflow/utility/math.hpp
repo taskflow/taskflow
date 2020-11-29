@@ -7,6 +7,7 @@ template <typename T, std::enable_if_t<
   (std::is_unsigned_v<std::decay_t<T>> && sizeof(T) == 8) , void
 >* = nullptr>
 constexpr T next_pow2(T x) {
+  if(x == 0) return 1;
   x--;
   x |= x>>1;
 	x |= x>>2;
@@ -23,6 +24,7 @@ template <typename T, std::enable_if_t<
   (std::is_unsigned_v<std::decay_t<T>> && sizeof(T) == 4), void
 >* = nullptr>
 constexpr T next_pow2(T x) {
+  if(x == 0) return 1;
   x--;
   x |= x>>1;
 	x |= x>>2;
@@ -50,9 +52,11 @@ constexpr bool is_pow2(const T& x) {
 //  return (x-1) / y + 1;
 //}
 
-// Returns floor(log2(n)), assumes n > 0.
+/**
+@brief returns floor(log2(n)), assumes n > 0
+*/
 template<typename T>
-int log2(T n) {
+constexpr int log2(T n) {
   int log = 0;
   while (n >>= 1) {
     ++log;
@@ -85,7 +89,6 @@ RandItr pseudo_median_of_nine(RandItr beg, RandItr end, C cmp) {
     cmp
   );
 }
-
 
 /**
 @brief sorts two elements of dereferenced iterators using the given

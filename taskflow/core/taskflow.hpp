@@ -33,7 +33,6 @@ dependency between two tasks. A task is one of the following five types:
   5. %cudaFlow task: the callable constructible from 
                      @c std::function<void(tf::cudaFlow)> or
                      @c std::function<void(tf::cudaFlowCapturer)>
-  
 
 The following example creates a simple taskflow graph of four static tasks, 
 @c A, @c B, @c C, and @c D, where
@@ -83,11 +82,6 @@ class Taskflow : public FlowBuilder {
     */
     Taskflow();
 
-    /**
-    @brief destroy the taskflow (virtual call)
-    */
-    virtual ~Taskflow();
-    
     /**
     @brief dumps the taskflow to a DOT format through an output stream
            using the stream insertion operator @c <<
@@ -165,11 +159,6 @@ inline Taskflow::Taskflow(const std::string& name) :
 
 // Constructor
 inline Taskflow::Taskflow() : FlowBuilder{_graph} {
-}
-
-// Destructor
-inline Taskflow::~Taskflow() {
-  assert(_topologies.empty());
 }
 
 // Procedure:

@@ -576,12 +576,14 @@ TEST_CASE("FunctionTraits" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("NextPow2") {
 
+  static_assert(tf::next_pow2(0u) == 1);
+  static_assert(tf::next_pow2(1u) == 1);
   static_assert(tf::next_pow2(100u) == 128u);
   static_assert(tf::next_pow2(245u) == 256u);
   static_assert(tf::next_pow2(512u) == 512u);
   static_assert(tf::next_pow2(513u) == 1024u);
 
-  REQUIRE(tf::next_pow2(0u) == 0u);
+  REQUIRE(tf::next_pow2(0u) == 1u);
   REQUIRE(tf::next_pow2(2u) == 2u);
   REQUIRE(tf::next_pow2(1u) == 1u);
   REQUIRE(tf::next_pow2(33u) == 64u);
@@ -589,8 +591,10 @@ TEST_CASE("NextPow2") {
   REQUIRE(tf::next_pow2(211u) == 256u);
   REQUIRE(tf::next_pow2(23u) == 32u);
   REQUIRE(tf::next_pow2(54u) == 64u);
-
+  
+  uint64_t z = 0;
   uint64_t a = 1;
+  REQUIRE(tf::next_pow2(z) == 1);
   REQUIRE(tf::next_pow2(a) == a);
   REQUIRE(tf::next_pow2((a<<5)  + 0) == (a<<5));
   REQUIRE(tf::next_pow2((a<<5)  + 1) == (a<<6));

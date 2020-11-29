@@ -1,6 +1,5 @@
 // This example demonstrates how to use different methods to
-// run a taskflow object.
-
+// run a taskflow.
 #include <taskflow/taskflow.hpp>  
 
 int main(){
@@ -26,35 +25,36 @@ int main(){
   B.precede(D); 
   C.precede(D);
 
-  std::cout << "Run the framework once without callback\n";
-
-  std::cout << "Dump the framework before execution:\n";
+  std::cout << "Dump the taskflow before execution:\n";
   taskflow.dump(std::cout);
+  
+  std::cout << "Run the taskflow once without callback\n";
   std::cout << std::endl;
 
   executor.run(taskflow).get();
   std::cout << std::endl;
 
-  std::cout << "Dump after execution:\n";
+  std::cout << "Dump the taskflow after execution:\n";
   taskflow.dump(std::cout);
   std::cout << std::endl;
 
-  std::cout << "Use wait_for_all to wait for the run to finish\n";
+  std::cout << "Use wait_for_all to wait for the execution to finish\n";
   executor.run(taskflow);
   executor.wait_for_all();
   std::cout << std::endl;
 
-  std::cout << "Execute the framework two times without a callback\n";
+  std::cout << "Execute the taskflow two times without a callback\n";
   executor.run_n(taskflow, 2).get();
   std::cout << "Dump after two executions:\n";
   taskflow.dump(std::cout);
   std::cout << std::endl;
 
-  std::cout << "Execute the framework four times with a callback\n";
-  executor.run_n(taskflow, 4, [] () { std::cout << "The framework finishes\n"; }).get();
+  std::cout << "Execute the taskflow four times with a callback\n";
+  executor.run_n(taskflow, 4, [] () { std::cout << "finishes 4 runs\n"; })
+          .get();
   std::cout << std::endl;
 
-  std::cout << "Run the framework until a counter (init value=3) becomes zero\n"; 
+  std::cout << "Run the taskflow until the predicate returns true\n"; 
   executor.run_until(taskflow, [counter=3]() mutable { 
     std::cout << "Counter = " << counter << std::endl; 
     return counter -- == 0; 

@@ -156,7 +156,7 @@ class ObjectPool {
 
     LocalHeap& _this_heap();
 
-    constexpr unsigned _next_power_of_two(unsigned n) const;
+    constexpr unsigned _next_pow2(unsigned n) const;
 
     template <class P, class Q>
     constexpr size_t _offset_in_class(const Q P::*member) const;
@@ -204,10 +204,10 @@ class ObjectPool {
 // Constructor
 template <typename T, size_t S>
 ObjectPool<T, S>::ObjectPool(unsigned t) :
-  //_heap_mask   {(_next_power_of_two(t) << 1) - 1u},
-  //_heap_mask   { _next_power_of_two(t<<1) - 1u },
+  //_heap_mask   {(_next_pow2(t) << 1) - 1u},
+  //_heap_mask   { _next_pow2(t<<1) - 1u },
   //_heap_mask   {(t << 1) - 1},
-  _lheap_mask { _next_power_of_two((t+1) << 1) - 1 },
+  _lheap_mask { _next_pow2((t+1) << 1) - 1 },
   _lheaps     { _lheap_mask + 1 } {
 
   _blocklist_init_head(&_gheap.list);
@@ -760,9 +760,10 @@ ObjectPool<T, S>::_this_heap() {
   ];
 }
 
-// Function: _next_power_of_two
+// Function: _next_pow2
 template <typename T, size_t S>
-constexpr unsigned ObjectPool<T, S>::_next_power_of_two(unsigned n) const { 
+constexpr unsigned ObjectPool<T, S>::_next_pow2(unsigned n) const { 
+  if(n == 0) return 1;
   n--; 
   n |= n >> 1; 
   n |= n >> 2; 

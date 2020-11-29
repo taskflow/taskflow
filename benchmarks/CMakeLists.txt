@@ -225,6 +225,10 @@ target_link_libraries(
 )
 set_target_properties(parallel_sort PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+###############################################################################
+# CUDA benchmarks
+###############################################################################
+
 if(TF_BUILD_CUDA)
 
   ## cuda benchmark 1: heterogeneous traversal

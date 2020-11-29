@@ -1,5 +1,7 @@
 list(APPEND TF_EXAMPLES
   simple 
+  async
+  subflow_async
   observer 
   subflow 
   fibonacci 

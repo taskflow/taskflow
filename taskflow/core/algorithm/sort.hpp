@@ -283,7 +283,9 @@ void parallel_pdqsort(
     }
 
     // Partition and get results.
-    auto [pivot_pos, already_partitioned] = partition_right(begin, end, comp);
+    auto pair = partition_right(begin, end, comp);
+    auto pivot_pos = pair.first;
+    auto already_partitioned = pair.second;
 
     // Check for a highly unbalanced partition.
     //diff_t l_size = pivot_pos - begin;
@@ -306,7 +308,6 @@ void parallel_pdqsort(
       if (l_size >= insertion_sort_threshold) {
         std::iter_swap(begin, begin + l_size / 4);
         std::iter_swap(pivot_pos - 1, pivot_pos - l_size / 4);
-
         if (l_size > ninther_threshold) {
           std::iter_swap(begin + 1, begin + (l_size / 4 + 1));
           std::iter_swap(begin + 2, begin + (l_size / 4 + 2));
@@ -318,7 +319,6 @@ void parallel_pdqsort(
       if (r_size >= insertion_sort_threshold) {
         std::iter_swap(pivot_pos + 1, pivot_pos + (1 + r_size / 4));
         std::iter_swap(end - 1,                   end - r_size / 4);
-
         if (r_size > ninther_threshold) {
           std::iter_swap(pivot_pos + 2, pivot_pos + (2 + r_size / 4));
           std::iter_swap(pivot_pos + 3, pivot_pos + (3 + r_size / 4));
