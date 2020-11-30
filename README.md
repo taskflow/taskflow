@@ -530,7 +530,7 @@ A.work([] () { std::cout << "hello world!"; });
 
 ### *precede/succeed*
 
-The method `precede/succedd` lets you add a preceding/succeeding link between tasks.
+The method `precede/succeed` lets you add a preceding/succeeding link between tasks.
 
 <img align="right" width="30%" src="image/broadcast.svg">
 
