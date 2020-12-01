@@ -21,6 +21,8 @@ class FlowBuilder {
 
   public:
 
+    Semaphore semaphore(int);
+
     /**
     @brief creates a static task
     
@@ -658,6 +660,10 @@ class FlowBuilder {
 // Constructor
 inline FlowBuilder::FlowBuilder(Graph& graph) :
   _graph {graph} {
+}
+
+inline Semaphore FlowBuilder::semaphore(int const initial) {
+  return Semaphore(_graph.new_semaphore(initial));
 }
 
 // Function: emplace

@@ -23,6 +23,45 @@ class CustomGraphBase {
   virtual ~CustomGraphBase() = default;  
 };
 
+// Class: Constraint
+class Constraint {
+
+  public:
+
+    bool try_acquire() {
+      const std::lock_guard<std::mutex> lock(_mtx);
+      if(_counter > 0) {
+        --_counter;
+        return true;
+      }
+      return false;
+    }
+    std::vector<Node*> release() {
+      const std::lock_guard<std::mutex> lock(_mtx);
+      ++_counter;
+      std::vector<Node*> r;
+      using std::swap;
+      swap(r, _waiters);
+      return r;
+    }
+    void wait(Node* node) {
+      const std::lock_guard<std::mutex> lock(_mtx);
+      _waiters.push_back(node);
+    }
+
+    explicit Constraint(int initial) : _counter(initial) {
+    }
+
+  private:
+
+    int _counter;
+
+    std::mutex _mtx;
+
+    std::vector<Node*> _waiters;
+
+};
+
 // ----------------------------------------------------------------------------
 // Class: Graph
 // ----------------------------------------------------------------------------
@@ -55,10 +94,17 @@ class Graph {
     Node* emplace_back(Args&& ...); 
 
     Node* emplace_back();
-    
+
+    Constraint * new_semaphore(int initial) {
+      _semaphores.emplace_back(initial);
+      return &(_semaphores.back());
+    }
+
   private:
 
     std::vector<Node*> _nodes;
+
+    std::list<Constraint> _semaphores;
 };
 
 // ----------------------------------------------------------------------------
@@ -187,6 +233,9 @@ class Node {
     int _state {0};
 
     std::atomic<size_t> _join_counter {0};
+
+    std::vector<Constraint*> _to_acquire;
+    std::vector<Constraint*> _to_release;
     
     void _precede(Node*);
     void _set_state(int);
@@ -195,7 +244,11 @@ class Node {
     void _set_up_join_counter();
 
     bool _has_state(int) const;
+
   
+    bool _acquire_all(std::vector<Node*>&);
+    std::vector<Node*> _release_all();
+
 };
 
 // ----------------------------------------------------------------------------
@@ -381,6 +434,31 @@ inline void Node::_set_up_join_counter() {
   _join_counter.store(c, std::memory_order_relaxed);
 }
 
+
+// Function: _acquire_all
+inline bool Node::_acquire_all(std::vector<Node*> & nodes) {
+  for(std::size_t i = 0; i < _to_acquire.size(); ++i) {
+    if(! _to_acquire[i]->try_acquire()) {
+      for(std::size_t j = 1; j <= i; ++j) {
+        auto r = _to_acquire[i-j]->release();
+        nodes.insert(end(nodes), begin(r), end(r));
+      }
+      _to_acquire[i]->wait(this);
+      return false;
+    }
+  }
+  return true;
+}
+
+// Function: _release_all
+inline std::vector<Node*> Node::_release_all() {
+  std::vector<Node*> nodes;
+  for(auto const & sem : _to_release) {
+    auto r = sem->release();
+    nodes.insert(end(nodes), begin(r), end(r));
+  }
+  return nodes;
+}
 
 // ----------------------------------------------------------------------------
 // Graph definition

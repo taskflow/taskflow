@@ -11,6 +11,7 @@ list(APPEND TF_EXAMPLES
   parallel_for 
   run 
   composition
+  onlyone
 )
 
 foreach(example IN LISTS TF_EXAMPLES)
