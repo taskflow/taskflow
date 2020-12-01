@@ -53,6 +53,11 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
     message(FATAL_ERROR "\nTaskflow requires MSVC++ at least v14.14") 
   endif()
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0.1")
+    message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
+    message(FATAL_ERROR "\nTaskflow requires icpc at least v19.0.1")
+  endif()
 else()
   message(FATAL_ERROR "\n\
 Taskflow currently supports the following compilers:\n\
@@ -60,6 +65,7 @@ Taskflow currently supports the following compilers:\n\
   - clang++ v6.0 or above\n\
   - MSVC++ v19.14 or above\n\
   - AppleClang v8 or above\n\
+  - Intel v19.0.1 or above\n\
 ")
 endif()
 
