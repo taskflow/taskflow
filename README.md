@@ -583,6 +583,7 @@ To use the latest [Taskflow](https://github.com/taskflow/taskflow/archive/master
 + Clang C++ Compiler at least v6.0 with -std=c++17
 + Microsoft Visual Studio at least v15.7 (MSVC++ 19.14); see [vcpkg guide](https://github.com/taskflow/taskflow/issues/143)
 + AppleClang Xode Version at least v8
++ Intel C++ Compiler at least v19.0.1
 + Nvidia CUDA Toolkit and Compiler ([nvcc][nvcc]) at least v11.0 with -std=c++17
 
 Taskflow works on Linux, Windows, and Mac OS X. See the [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support) status.
