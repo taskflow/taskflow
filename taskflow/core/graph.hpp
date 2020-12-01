@@ -1,36 +1,27 @@
 #pragma once
 
 #include "error.hpp"
-#include "../declarations.hpp"
+#include "declarations.hpp"
 #include "../utility/iterator.hpp"
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
-#include "../utility/passive_vector.hpp"
 #include "../utility/singleton.hpp"
 #include "../utility/uuid.hpp"
 #include "../utility/os.hpp"
-#include "../nstd/variant.hpp"
-
-#if defined(__CUDA__) || defined(__CUDACC__)
-#define TF_ENABLE_CUDA
-#include "../cuda/cuda_flow.hpp"
-#endif
+#include "../utility/math.hpp"
 
 namespace tf {
 
 // ----------------------------------------------------------------------------
-// domain
+// Class: CustomGraphBase
 // ----------------------------------------------------------------------------
+class CustomGraphBase {
 
-enum Domain : int {
-  HOST = 0,
-#ifdef TF_ENABLE_CUDA
-  CUDA,
-#endif
-  NUM_DOMAINS
+  public:
+  
+  virtual void dump(std::ostream&, const void*, const std::string&) const = 0;
+  virtual ~CustomGraphBase() = default;  
 };
-
-class Node;
 
 // Class: Constraint
 class Constraint {
@@ -70,7 +61,6 @@ class Constraint {
     std::vector<Node*> _waiters;
 
 };
-
 
 // ----------------------------------------------------------------------------
 // Class: Graph
@@ -112,8 +102,6 @@ class Graph {
 
   private:
 
-    static ObjectPool<Node>& _node_pool();
-    
     std::vector<Node*> _nodes;
 
     std::list<Constraint> _semaphores;
@@ -140,89 +128,82 @@ class Node {
   constexpr static int DETACHED = 0x2;
   
   // static work handle
-  struct StaticWork {
+  struct StaticTask {
 
     template <typename C> 
-    StaticWork(C&&);
+    StaticTask(C&&);
 
     std::function<void()> work;
   };
 
   // dynamic work handle
-  struct DynamicWork {
+  struct DynamicTask {
 
     template <typename C> 
-    DynamicWork(C&&);
+    DynamicTask(C&&);
 
     std::function<void(Subflow&)> work;
     Graph subgraph;
   };
   
   // condition work handle
-  struct ConditionWork {
+  struct ConditionTask {
 
     template <typename C> 
-    ConditionWork(C&&);
+    ConditionTask(C&&);
 
     std::function<int()> work;
   };
 
   // module work handle
-  struct ModuleWork {
+  struct ModuleTask {
 
     template <typename T>
-    ModuleWork(T&&);
+    ModuleTask(T&&);
 
     Taskflow* module {nullptr};
   };
 
   // Async work
-  struct AsyncWork {
+  struct AsyncTask {
 
     template <typename T>
-    AsyncWork(T&&);
+    AsyncTask(T&&);
 
     std::function<void()> work;
   };
   
   // cudaFlow work handle
-#ifdef TF_ENABLE_CUDA
-  struct cudaFlowWork {
+  struct cudaFlowTask {
     
-    template <typename C> 
-    cudaFlowWork(C&& c) : work {std::forward<C>(c)} {}
+    template <typename C, typename G> 
+    cudaFlowTask(C&& c, G&& g);
 
-    std::function<void(cudaFlow&)> work;
+    std::function<void(Executor&, Node*)> work;
 
-    cudaGraph graph;
+    std::unique_ptr<CustomGraphBase> graph;
   };
-#endif
     
-  using handle_t = nstd::variant<
-    nstd::monostate,  // placeholder
-#ifdef TF_ENABLE_CUDA
-    cudaFlowWork,     // cudaFlow
-#endif
-    StaticWork,       // static tasking
-    DynamicWork,      // dynamic tasking
-    ConditionWork,    // conditional tasking
-    ModuleWork,       // composable tasking
-    AsyncWork         // async work
+  using handle_t = std::variant<
+    std::monostate,  // placeholder
+    StaticTask,      // static tasking
+    DynamicTask,     // dynamic tasking
+    ConditionTask,   // conditional tasking
+    ModuleTask,      // composable tasking
+    AsyncTask,       // async work
+    cudaFlowTask     // cudaFlow
   >;
   
   public:
   
   // variant index
-  constexpr static auto PLACEHOLDER_WORK = get_index_v<nstd::monostate, handle_t>;
-  constexpr static auto STATIC_WORK      = get_index_v<StaticWork, handle_t>;
-  constexpr static auto DYNAMIC_WORK     = get_index_v<DynamicWork, handle_t>;
-  constexpr static auto CONDITION_WORK   = get_index_v<ConditionWork, handle_t>; 
-  constexpr static auto MODULE_WORK      = get_index_v<ModuleWork, handle_t>; 
-  constexpr static auto ASYNC_WORK       = get_index_v<AsyncWork, handle_t>; 
-
-#ifdef TF_ENABLE_CUDA
-  constexpr static auto CUDAFLOW_WORK = get_index_v<cudaFlowWork, handle_t>; 
-#endif
+  constexpr static auto PLACEHOLDER_TASK = get_index_v<std::monostate, handle_t>;
+  constexpr static auto STATIC_TASK      = get_index_v<StaticTask, handle_t>;
+  constexpr static auto DYNAMIC_TASK     = get_index_v<DynamicTask, handle_t>;
+  constexpr static auto CONDITION_TASK   = get_index_v<ConditionTask, handle_t>; 
+  constexpr static auto MODULE_TASK      = get_index_v<ModuleTask, handle_t>; 
+  constexpr static auto ASYNC_TASK       = get_index_v<AsyncTask, handle_t>; 
+  constexpr static auto CUDAFLOW_TASK    = get_index_v<cudaFlowTask, handle_t>; 
 
     template <typename... Args>
     Node(Args&&... args);
@@ -236,16 +217,14 @@ class Node {
     
     const std::string& name() const;
 
-    Domain domain() const;
-
   private:
 
     std::string _name;
 
     handle_t _handle;
 
-    PassiveVector<Node*> _successors;
-    PassiveVector<Node*> _dependents;
+    std::vector<Node*> _successors;
+    std::vector<Node*> _dependents;
 
     Topology* _topology {nullptr};
     
@@ -266,54 +245,70 @@ class Node {
 
     bool _has_state(int) const;
 
+  
     bool _acquire_all(std::vector<Node*>&);
     std::vector<Node*> _release_all();
 
 };
 
 // ----------------------------------------------------------------------------
-// Definition for Node::StaticWork
+// Node Object Pool
+// ----------------------------------------------------------------------------
+inline ObjectPool<Node> node_pool;
+
+// ----------------------------------------------------------------------------
+// Definition for Node::StaticTask
 // ----------------------------------------------------------------------------
     
 // Constructor
 template <typename C> 
-Node::StaticWork::StaticWork(C&& c) : work {std::forward<C>(c)} {
+Node::StaticTask::StaticTask(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
-// Definition for Node::DynamicWork
+// Definition for Node::DynamicTask
 // ----------------------------------------------------------------------------
     
 // Constructor
 template <typename C> 
-Node::DynamicWork::DynamicWork(C&& c) : work {std::forward<C>(c)} {
+Node::DynamicTask::DynamicTask(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
-// Definition for Node::ConditionWork
+// Definition for Node::ConditionTask
 // ----------------------------------------------------------------------------
     
 // Constructor
 template <typename C> 
-Node::ConditionWork::ConditionWork(C&& c) : work {std::forward<C>(c)} {
+Node::ConditionTask::ConditionTask(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
-// Definition for Node::ModuleWork
+// Definition for Node::cudaFlowTask
+// ----------------------------------------------------------------------------
+
+template <typename C, typename G>
+Node::cudaFlowTask::cudaFlowTask(C&& c, G&& g) :
+  work  {std::forward<C>(c)},
+  graph {std::forward<G>(g)} {
+}
+    
+// ----------------------------------------------------------------------------
+// Definition for Node::ModuleTask
 // ----------------------------------------------------------------------------
     
 // Constructor
 template <typename T>
-Node::ModuleWork::ModuleWork(T&& tf) : module {tf} {
+Node::ModuleTask::ModuleTask(T&& tf) : module {tf} {
 }
 
 // ----------------------------------------------------------------------------
-// Definition for Node::AsyncWork
+// Definition for Node::AsyncTask
 // ----------------------------------------------------------------------------
     
 // Constructor
 template <typename C>
-Node::AsyncWork::AsyncWork(C&& c) : work {std::forward<C>(c)} {
+Node::AsyncTask::AsyncTask(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
@@ -329,9 +324,9 @@ Node::Node(Args&&... args): _handle{std::forward<Args>(args)...} {
 inline Node::~Node() {
   // this is to avoid stack overflow
 
-  if(_handle.index() == DYNAMIC_WORK) {
+  if(_handle.index() == DYNAMIC_TASK) {
 
-    auto& subgraph = nstd::get<DynamicWork>(_handle).subgraph;
+    auto& subgraph = std::get<DynamicTask>(_handle).subgraph;
 
     std::vector<Node*> nodes;
 
@@ -344,9 +339,9 @@ inline Node::~Node() {
 
     while(i < nodes.size()) {
 
-      if(nodes[i]->_handle.index() == DYNAMIC_WORK) {
+      if(nodes[i]->_handle.index() == DYNAMIC_TASK) {
 
-        auto& sbg = nstd::get<DynamicWork>(nodes[i]->_handle).subgraph;
+        auto& sbg = std::get<DynamicTask>(nodes[i]->_handle).subgraph;
         std::move(
           sbg._nodes.begin(), sbg._nodes.end(), std::back_inserter(nodes)
         );
@@ -356,11 +351,9 @@ inline Node::~Node() {
       ++i;
     }
       
-    auto& np = Graph::_node_pool();
+    //auto& np = Graph::_node_pool();
     for(i=0; i<nodes.size(); ++i) {
-      //nodes[i]->~Node();
-      //np.deallocate(nodes[i]);
-      np.recycle(nodes[i]);
+      node_pool.recycle(nodes[i]);
     }
   }
 }
@@ -386,7 +379,7 @@ inline size_t Node::num_weak_dependents() const {
   return std::count_if(
     _dependents.begin(), 
     _dependents.end(), 
-    [](Node* node){ return node->_handle.index() == Node::CONDITION_WORK; } 
+    [](Node* node){ return node->_handle.index() == Node::CONDITION_TASK; } 
   );
 }
 
@@ -395,7 +388,7 @@ inline size_t Node::num_strong_dependents() const {
   return std::count_if(
     _dependents.begin(), 
     _dependents.end(), 
-    [](Node* node){ return node->_handle.index() != Node::CONDITION_WORK; } 
+    [](Node* node){ return node->_handle.index() != Node::CONDITION_TASK; } 
   );
 }
 
@@ -404,89 +397,6 @@ inline const std::string& Node::name() const {
   return _name;
 }
 
-// Function: domain
-inline Domain Node::domain() const {
-
-  Domain domain;
-
-  switch(_handle.index()) {
-
-    case STATIC_WORK:
-    case DYNAMIC_WORK:
-    case CONDITION_WORK:
-    case MODULE_WORK:
-    case ASYNC_WORK:
-      domain = Domain::HOST;
-    break;
-
-#ifdef TF_ENABLE_CUDA
-    case CUDAFLOW_WORK:
-      domain = Domain::CUDA;
-    break;
-#endif
-
-    default:
-      domain = Domain::HOST;
-    break;
-  }
-
-  return domain;
-}
-
-//
-//// Function: dump
-//inline std::string Node::dump() const {
-//  std::ostringstream os;  
-//  dump(os);
-//  return os.str();
-//}
-//
-//// Function: dump
-//inline void Node::dump(std::ostream& os) const {
-//
-//  os << 'p' << this << "[label=\"";
-//  if(_name.empty()) os << 'p' << this;
-//  else os << _name;
-//  os << "\" ";
-//
-//  // condition node is colored green
-//  if(_handle.index() == CONDITION_WORK) {
-//    os << " shape=diamond color=black fillcolor=aquamarine style=filled";
-//  }
-//
-//  os << "];\n";
-//  
-//  for(size_t s=0; s<_successors.size(); ++s) {
-//    if(_handle.index() == CONDITION_WORK) {
-//      // case edge is dashed
-//      os << 'p' << this << " -> p" << _successors[s] 
-//         << " [style=dashed label=\"" << s << "\"];\n";
-//    }
-//    else {
-//      os << 'p' << this << " -> p" << _successors[s] << ";\n";
-//    }
-//  }
-//  
-//  // subflow join node
-//  if(_parent && _successors.size() == 0) {
-//    os << 'p' << this << " -> p" << _parent << ";\n";
-//  }
-//  
-//  if(_subgraph && !_subgraph->empty()) {
-//
-//    os << "subgraph cluster_p" << this << " {\nlabel=\"Subflow: ";
-//    if(_name.empty()) os << 'p' << this;
-//    else os << _name;
-//
-//    os << "\";\n" << "color=blue\n";
-//
-//    for(const auto& n : _subgraph->nodes()) {
-//      n->dump(os);
-//    }
-//    os << "}\n";
-//  }
-//}
-    
 // Procedure: _set_state
 inline void Node::_set_state(int flag) { 
   _state |= flag; 
@@ -502,13 +412,18 @@ inline void Node::_clear_state() {
   _state = 0; 
 }
 
+// Function: _has_state
+inline bool Node::_has_state(int flag) const {
+  return _state & flag;
+}
+
 // Procedure: _set_up_join_counter
 inline void Node::_set_up_join_counter() {
 
   int c = 0;
 
   for(auto p : _dependents) {
-    if(p->_handle.index() == Node::CONDITION_WORK) {
+    if(p->_handle.index() == Node::CONDITION_TASK) {
       _set_state(Node::BRANCHED);
     }
     else {
@@ -519,10 +434,6 @@ inline void Node::_set_up_join_counter() {
   _join_counter.store(c, std::memory_order_relaxed);
 }
 
-// Function: _has_state
-inline bool Node::_has_state(int flag) const {
-  return _state & flag;
-}
 
 // Function: _acquire_all
 inline bool Node::_acquire_all(std::vector<Node*> & nodes) {
@@ -553,19 +464,18 @@ inline std::vector<Node*> Node::_release_all() {
 // Graph definition
 // ----------------------------------------------------------------------------
     
-// Function: _node_pool
-inline ObjectPool<Node>& Graph::_node_pool() {
-  static ObjectPool<Node> pool;
-  return pool;
-}
+//// Function: _node_pool
+//inline ObjectPool<Node>& Graph::_node_pool() {
+//  static ObjectPool<Node> pool;
+//  return pool;
+//}
 
 // Destructor
 inline Graph::~Graph() {
-  auto& np = _node_pool();
+  //auto& np = _node_pool();
   for(auto node : _nodes) {
-    //node->~Node();
-    //np.deallocate(node);
-    np.recycle(node);
+    //np.recycle(node);
+    node_pool.recycle(node);
   }
 }
 
@@ -582,11 +492,11 @@ inline Graph& Graph::operator = (Graph&& other) {
 
 // Procedure: clear
 inline void Graph::clear() {
-  auto& np = _node_pool();
+  //auto& np = _node_pool();
   for(auto node : _nodes) {
     //node->~Node();
     //np.deallocate(node);
-    np.recycle(node);
+    node_pool.recycle(node);
   }
   _nodes.clear();
 }
@@ -598,9 +508,9 @@ inline void Graph::clear_detached() {
     return !(node->_has_state(Node::DETACHED));
   });
   
-  auto& np = _node_pool();
+  //auto& np = _node_pool();
   for(auto itr = mid; itr != _nodes.end(); ++itr) {
-    np.recycle(*itr);
+    node_pool.recycle(*itr);
   }
   _nodes.resize(std::distance(_nodes.begin(), mid));
 }
@@ -632,7 +542,7 @@ Node* Graph::emplace_back(ArgsT&&... args) {
   //auto node = _node_pool().allocate();
   //new (node) Node(std::forward<ArgsT>(args)...);
   //_nodes.push_back(node);
-  _nodes.push_back(_node_pool().animate(std::forward<ArgsT>(args)...));
+  _nodes.push_back(node_pool.animate(std::forward<ArgsT>(args)...));
   return _nodes.back();
 }
 
@@ -642,7 +552,7 @@ inline Node* Graph::emplace_back() {
   //auto node = _node_pool().allocate();
   //new (node) Node();
   //_nodes.push_back(node);
-  _nodes.push_back(_node_pool().animate());
+  _nodes.push_back(node_pool.animate());
   return _nodes.back();
 }
 

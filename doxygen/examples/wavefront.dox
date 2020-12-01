@@ -5,6 +5,8 @@ namespace tf {
 We study the wavefront parallelism, which is a common pattern in dynamic programming to sweep elements 
 in a diagonal direction.
 
+@tableofcontents
+
 @section WavefrontComputingFormulation Problem Formulation
 
 The computation starts at a singular point at a corner of a data plan (e.g., grid) and propagates its effect
@@ -13,7 +15,7 @@ This sweep of computation is known as @em wavefront.
 Each point in the wavefront can be computed in parallel. 
 The following example shows a wavefront parallelism in a 2D matrix.
 
-@image html images/wavefront_1.png width=50%
+@image html images/wavefront_1.png width=70%
 
 We partition the 9x9 grid into a 3x3 block and assign a task to one block.
 The wavefront propagates task dependencies from the top-left block all the way 
@@ -61,7 +63,8 @@ void wavefront() {
 
 The taskflow below depicts the wavefront parallelism in a 3x3 grid.
 
-@image html images/wavefront_2.svg width=80%
+<!-- @image html images/wavefront_2.svg width=80% -->
+@dotfile images/wavefront_2.dot
 
 Wavefront parallelism has many variations in different applications,
 for instance, Smith-Waterman sequencing, video encoding algorithms, and image analysis.

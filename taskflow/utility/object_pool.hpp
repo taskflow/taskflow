@@ -65,7 +65,7 @@ template <typename T, size_t S = 65536>
 class ObjectPool { 
   
   // the data column must be sufficient to hold the pointer in freelist  
-  constexpr static size_t X = std::max(sizeof(T*), sizeof(T));
+  constexpr static size_t X = (std::max)(sizeof(T*), sizeof(T));
   //constexpr static size_t X = sizeof(long double) + std::max(sizeof(T*), sizeof(T));
   //constexpr static size_t M = (S - offsetof(Block, data)) / X;
   constexpr static size_t M = S / X;
@@ -156,7 +156,7 @@ class ObjectPool {
 
     LocalHeap& _this_heap();
 
-    constexpr unsigned _next_power_of_two(unsigned n) const;
+    constexpr unsigned _next_pow2(unsigned n) const;
 
     template <class P, class Q>
     constexpr size_t _offset_in_class(const Q P::*member) const;
@@ -204,10 +204,10 @@ class ObjectPool {
 // Constructor
 template <typename T, size_t S>
 ObjectPool<T, S>::ObjectPool(unsigned t) :
-  //_heap_mask   {(_next_power_of_two(t) << 1) - 1u},
-  //_heap_mask   { _next_power_of_two(t<<1) - 1u },
+  //_heap_mask   {(_next_pow2(t) << 1) - 1u},
+  //_heap_mask   { _next_pow2(t<<1) - 1u },
   //_heap_mask   {(t << 1) - 1},
-  _lheap_mask { _next_power_of_two((t+1) << 1) - 1 },
+  _lheap_mask { _next_pow2((t+1) << 1) - 1 },
   _lheaps     { _lheap_mask + 1 } {
 
   _blocklist_init_head(&_gheap.list);
@@ -752,17 +752,18 @@ typename ObjectPool<T, S>::LocalHeap&
 ObjectPool<T, S>::_this_heap() {
   // here we don't use thread local since object pool might be
   // created and destroyed multiple times
-  thread_local auto hv = std::hash<std::thread::id>()(std::this_thread::get_id());
-  return _lheaps[hv & _lheap_mask];
+  //thread_local auto hv = std::hash<std::thread::id>()(std::this_thread::get_id());
+  //return _lheaps[hv & _lheap_mask];
 
-  //return _lheaps[
-  //  std::hash<std::thread::id>()(std::this_thread::get_id()) & _lheap_mask
-  //];
+  return _lheaps[
+    std::hash<std::thread::id>()(std::this_thread::get_id()) & _lheap_mask
+  ];
 }
 
-// Function: _next_power_of_two
+// Function: _next_pow2
 template <typename T, size_t S>
-constexpr unsigned ObjectPool<T, S>::_next_power_of_two(unsigned n) const { 
+constexpr unsigned ObjectPool<T, S>::_next_pow2(unsigned n) const { 
+  if(n == 0) return 1;
   n--; 
   n |= n >> 1; 
   n |= n >> 2; 

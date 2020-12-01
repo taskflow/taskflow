@@ -6,6 +6,8 @@ We study the classic problem, <em>2D matrix multiplication</em>.
 We will start with a short introduction about the problem and then discuss how to solve it using
 CPU and GPU parallel computing.
 
+@tableofcontents
+
 @section MatrixMultiplicationProblem Problem Formulation
 
 We are multiplying two matrices, A (MxK) and B (KxN).
@@ -83,7 +85,7 @@ tf::Task task = taskflow.parallel_for(0, M, 1, [&] (int m) {
 }); 
 @endcode
 
-Please visit @ref A0ForEach for more details.
+Please visit @ref A1ForEach for more details.
 
 @section GPUAcceleratedMatrixMultiplication GPU-based Acceleration
 
@@ -113,7 +115,7 @@ we use 1D layout to ease the data transfer between CPU and GPU.
 In a row-major layout, an element <tt>(x, y)</tt> in the 2D matrix 
 can be addressed at <tt>x * width + y</tt> in the transformed 1D layout.
 
-@image html images/matrix_multiplication_4.png width=50%
+@image html images/matrix_multiplication_4.png width=70%
 
 The next step is to allocate memory for A, B, and C at a GPU.
 We create three tasks each calling @c cudaMalloc to allocate space for one matrix.
@@ -191,13 +193,15 @@ H2D tasks precede the kernel and the kernel precedes the D2H task.
 These GPU operations form a GPU task graph managed by a %cudaFlow.
 The first dump of the taskflow gives the following graph:
 
-@image html images/matrix_multiplication_5.svg width=40%
+<!-- @image html images/matrix_multiplication_5.svg width=40% -->
+@dotfile images/matrix_multiplication_5.dot
 
 A %cudaFlow encapsulates a GPU task dependency graph similar to a subflow (see @ref chapter3). 
 In order to visualize it, we need to execute 
 the graph first and then dump the taskflow.
 
-@image html images/matrix_multiplication_6.svg width=50%
+<!-- @image html images/matrix_multiplication_6.svg width=50% -->
+@dotfile images/matrix_multiplication_6.dot
 
 @section MatrixMultiplicationBenchmarking Benchmarking
 

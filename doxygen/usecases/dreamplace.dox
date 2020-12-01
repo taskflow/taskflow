@@ -6,13 +6,15 @@ We applied %Taskflow to solve a VLSI placement problem.
 The goal is to determine the physical locations of cells
 (logic gates) in a fixed layout region using minimal interconnect wirelength.
 
+@tableofcontents
+
 @section UseCasesDreamPlace DreamPlace: GPU-accelerated Placement Engine
 
 Placement is an important step in the layout generation stage of a circuit design.
 It places each cell of synthesized netlists in a region and optimizes their interconnect.
 The following figure shows a placement layout of an industrial design, adaptec1.
 
-@image html images/dreamplace_1.png width=50%
+@image html images/dreamplace_1.png
 
 Modern placement typically incorporates hundreds of millions of cells and takes several
 hours to finish.
@@ -28,7 +30,7 @@ The algorithm iterates the following:
 Each iteration contains overlapped CPU and
 GPU tasks with nested conditions to decide the convergence.
 
-@image html images/dreamplace_2.png width=100%
+@image html images/dreamplace_2.png 
 
 @section UseCasesDreamPlaceProgrammingEffort Programming Effort
 
@@ -40,7 +42,8 @@ we unroll their task graphs across fixed-length iterations found in hindsight.
 The figure below shows a partial taskflow of 4 %cudaFlows, 1 conditioned cycle, and 12 static tasks 
 for one placement iteration.
 
-@image html images/dreamplace_3.svg width=100%
+<!-- @image html images/dreamplace_3.svg  -->
+@dotfile images/dreamplace_3.dot
 
 The table below lists the programming effort of each method, measured by @SLOCCount.
 %Taskflow outperforms TBB and StarPU in all aspects. 
@@ -64,7 +67,7 @@ than TBB and StarPU.
 We observed similar results using other CPU numbers. 
 Performance saturates at about 16 CPUs, primarily due to the inherent irregularity of the placement algorithm.
 
-@image html images/dreamplace_4.png width=70%
+@image html images/dreamplace_4.png
 
 
 The memory footprint shows the benefit of our conditional tasking. 
@@ -74,7 +77,7 @@ At a vertical scale, increasing the number of CPUs bumps
 up the memory usage of all methods, but the growth rate of
 %Taskflow is much slower than the others. 
 
-@image html images/dreamplace_5.png width=70%
+@image html images/dreamplace_5.png
 
 In terms of energy, our scheduler is very power efficient in completing the
 placement workload, regardless of problem sizes and CPU
@@ -82,7 +85,7 @@ numbers. Beyond 16 CPUs where performance saturates, our
 system does not suffer from increasing power as StarPU, 
 due to our adaptive task scheduling algorithm.
 
-@image html images/dreamplace_6.png width=70%
+@image html images/dreamplace_6.png
 
 For irregular task graphs akin to this placement workload, 
 resource utilization is critical to the system throughput. 
@@ -92,7 +95,7 @@ We plot the throughput using <em>weighted speed-up</em> across nine coruns at tw
 Both %Taskflow and TBB achieve higher throughput than StarPU. 
 At the largest problem size, %Taskflow outperforms TBB and StarPU across all coruns.
 
-@image html images/dreamplace_7.png width=70%
+@image html images/dreamplace_7.png
 
 @section UseCasesDreamPlaceConclusion Conclusion
 

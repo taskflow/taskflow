@@ -71,12 +71,13 @@ struct UUID {
 // Constructor
 inline UUID::UUID() {
 
-  static thread_local std::random_device rd;
-  static thread_local std::mt19937 engine {rd()};
+  static thread_local std::default_random_engine engine {
+    std::random_device{}()
+  };
 
   std::uniform_int_distribution<unsigned long> distribution(
-    std::numeric_limits<unsigned long>::min(),
-    std::numeric_limits<unsigned long>::max()
+    (std::numeric_limits<unsigned long>::min)(),
+    (std::numeric_limits<unsigned long>::max)()
   );
   
   int i = 0;

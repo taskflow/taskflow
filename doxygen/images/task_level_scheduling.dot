@@ -1,0 +1,15 @@
+digraph G {
+atask [label="a task T"];
+cond [label="is T a condition task?" shape=diamond color=black fillcolor=aquamarine style=filled];
+atask->cond
+invokeN [label="invoke(T)"]
+invokeY [label="R = invoke(T)"]
+enqueueR [label="enqueue the R-th successor of T"]
+decrement [label="decrement strong dependencies of each successor of T by one"]
+enqueueS [label="enqueue successors of zero strong dpendencies"]
+invokeN->decrement;
+decrement->enqueueS;
+invokeY->enqueueR;
+cond->invokeY[style=dashed,label="yes"];
+cond->invokeN[style=dashed,label="no"];
+}

@@ -1,0 +1,234 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+  <compounddef id="matrix_multiplication" kind="page">
+    <compoundname>matrix_multiplication</compoundname>
+    <title>Matrix Multiplication</title>
+    <tableofcontents>
+      <tocsect>
+        <name>Problem Formulation</name>
+        <reference>matrix_multiplication_1MatrixMultiplicationProblem</reference>
+    </tocsect>
+      <tocsect>
+        <name>Parallel Patterns</name>
+        <reference>matrix_multiplication_1MatrixMultiplicationParallelPattern</reference>
+    </tocsect>
+      <tocsect>
+        <name>GPU-based Acceleration</name>
+        <reference>matrix_multiplication_1GPUAcceleratedMatrixMultiplication</reference>
+    </tocsect>
+      <tocsect>
+        <name>Benchmarking</name>
+        <reference>matrix_multiplication_1MatrixMultiplicationBenchmarking</reference>
+    </tocsect>
+    </tableofcontents>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>We study the classic problem, <emphasis>2D matrix multiplication</emphasis>. We will start with a short introduction about the problem and then discuss how to solve it using CPU and GPU parallel computing.</para>
+<sect1 id="matrix_multiplication_1MatrixMultiplicationProblem">
+<title>Problem Formulation</title>
+<para>We are multiplying two matrices, A (MxK) and B (KxN). The numbers of columns of A must match the number of rows of B. The output matrix C has the shape of (MxN) where M is the rows of A and N the columns of B. The following example multiplies a 3x3 matrix with a 3x2 matrix to derive a 3x2 matrix.</para>
+<para><image type="html" name="matrix_multiplication_1.png" width="50%"></image>
+</para>
+<para>As a general view, for each element of C we iterate a complete row of A and a complete column of B, multiplying each element and summing them.</para>
+<para><image type="html" name="matrix_multiplication_2.png" width="50%"></image>
+</para>
+<para>We can implement matrix multiplication using three nested loops.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m=0;<sp/>m&lt;M;<sp/>m++)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n=0;<sp/>n&lt;N;<sp/>n++)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>C[m][n]<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;K;<sp/>k++)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>C[m][n]<sp/>+=<sp/>A[m][k]<sp/>*<sp/>B[k][n];</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="matrix_multiplication_1MatrixMultiplicationParallelPattern">
+<title>Parallel Patterns</title>
+<para>At a fine-grained level, computing each element of C is independent of each other. Similarly, computing each row of C or each column of C is also independent of one another. With task parallelism, we prefer <emphasis>coarse-grained</emphasis> model to have each task perform rather large computation to amortize the overhead of creating and scheduling tasks. In this case, we avoid intensive tasks each working on only a single element. by creating a task per row of C to multiply a row of A by every column of B.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>C<sp/>=<sp/>A<sp/>*<sp/>B</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>A<sp/>is<sp/>a<sp/>MxK<sp/>matrix,<sp/>B<sp/>is<sp/>a<sp/>KxN<sp/>matrix,<sp/>and<sp/>C<sp/>is<sp/>a<sp/>MxN<sp/>matrix</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>matrix_multiplication(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">**<sp/>A,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">**<sp/>B,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">**<sp/>C,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m=0;<sp/>m&lt;M;<sp/>++m)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([m,<sp/>&amp;]<sp/>()<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n=0;<sp/>n&lt;N;<sp/>n++)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;K;<sp/>k++)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>C[m][n]<sp/>+=<sp/>A[m][k]<sp/>*<sp/>B[k][n];</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+<para>Instead of creating tasks one-by-one over a loop, you can leverage Taskflow::parallel_for to create a <emphasis>parallel-for</emphasis> task. A parallel-for task spawns a subflow to perform parallel iterations over the given range.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>perform<sp/>parallel<sp/>iterations<sp/>on<sp/>the<sp/>range<sp/>[0,<sp/>M)<sp/>with<sp/>the<sp/>step<sp/>size<sp/>of<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.parallel_for(0,<sp/>M,<sp/>1,<sp/>[&amp;]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n=0;<sp/>n&lt;N;<sp/>n++)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;K;<sp/>k++)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>C[m][n]<sp/>+=<sp/>A[m][k]<sp/>*<sp/>B[k][n];</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}<sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">});<sp/></highlight></codeline>
+</programlisting></para>
+<para>Please visit <ref refid="A1ForEach" kindref="compound">Parallel Iterations</ref> for more details.</para>
+</sect1>
+<sect1 id="matrix_multiplication_1GPUAcceleratedMatrixMultiplication">
+<title>GPU-based Acceleration</title>
+<para>GPU is able to do a lot of parallel computations more than CPUs. It is especially useful for data-intensive computing such as matrix multiplication. With GPU, we express the parallel patterns at a fine-grained level. The kernel, written in CUDA, is described as follows:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>CUDA<sp/>kernel<sp/>to<sp/>perform<sp/>matrix<sp/>multiplication</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">__global__<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>matmul(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>*A,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>*B,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>*C,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>row<sp/>=<sp/>blockIdx.y<sp/>*<sp/>blockDim.y<sp/>+<sp/>threadIdx.y;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>col<sp/>=<sp/>blockIdx.x<sp/>*<sp/>blockDim.x<sp/>+<sp/>threadIdx.x;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sum<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(col<sp/>&lt;<sp/>N<sp/>&amp;&amp;<sp/>row<sp/>&lt;<sp/>M)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;<sp/>K;<sp/>i++)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sum<sp/>+=<sp/>a[row<sp/>*<sp/>K<sp/>+<sp/>i]<sp/>*<sp/>b[i<sp/>*<sp/>N<sp/>+<sp/>col];</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>c[row<sp/>*<sp/>N<sp/>+<sp/>col]<sp/>=<sp/>sum;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+<para>Each CUDA thread corresponds to an element of C and compute its result. Instead of storing each matrix in a 2D array, we use 1D layout to ease the data transfer between CPU and GPU. In a row-major layout, an element <computeroutput>(x, y)</computeroutput> in the 2D matrix can be addressed at <computeroutput>x * width + y</computeroutput> in the transformed 1D layout.</para>
+<para><image type="html" name="matrix_multiplication_4.png" width="70%"></image>
+</para>
+<para>The next step is to allocate memory for A, B, and C at a GPU. We create three tasks each calling <computeroutput>cudaMalloc</computeroutput> to allocate space for one matrix. Then, we create a cudaFlow to offload matrix multiplication to a GPU. The entire code is described as follows:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>matrix_multiplication(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>A,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>B,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>C,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>allocate<sp/>the<sp/>host<sp/>and<sp/>gpu<sp/>storage<sp/>for<sp/>A</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>allocate_a<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMalloc(&amp;da,<sp/>M*K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;allocate_a&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>allocate<sp/>the<sp/>host<sp/>and<sp/>gpu<sp/>storage<sp/>for<sp/>B</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>allocate_b<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMalloc(&amp;db,<sp/>K*N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;allocate_b&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>allocate<sp/>the<sp/>host<sp/>and<sp/>gpu<sp/>storage<sp/>for<sp/>C</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>allocate_c<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMalloc(&amp;dc,<sp/>M*N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;allocate_c&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>cudaFlow<sp/>to<sp/>run<sp/>the<sp/>matrix<sp/>multiplication</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>cudaFlow<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>copy<sp/>data<sp/>to<sp/>da,<sp/>db,<sp/>and<sp/>dc</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>copy_da<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(da,<sp/>A,<sp/>M*K).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;H2D_A&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>copy_db<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(db,<sp/>B,<sp/>K*N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;H2D_B&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>copy_hc<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(C,<sp/>dc,<sp/>M*N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;D2H_C&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>dim3<sp/>grid<sp/><sp/>((K+16-1)/16,<sp/>(M+16-1)/16);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>dim3<sp/>block<sp/>(16,<sp/>16);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kmatmul<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" kindref="member">kernel</ref>(grid,<sp/>block,<sp/>0,<sp/>matmul,<sp/>da,<sp/>db,<sp/>dc,<sp/>M,<sp/>K,<sp/>N)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;matmul&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>kmatmul.<ref refid="classtf_1_1cudaTask_1a4a9ca1a34bac47e4c9b04eb4fb2f7775" kindref="member">succeed</ref>(copy_da,<sp/>copy_db)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(copy_hc);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;cudaFlow&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>free<sp/>the<sp/>gpu<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="cpp/memory/c/free" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">free</ref><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaFree(da);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaFree(db);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaFree(dc);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;free&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>dependency</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>cudaFlow.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(allocate_a,<sp/>allocate_b,<sp/>allocate_c)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(free);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>graph<sp/>without<sp/>unfolding<sp/>the<sp/>cudaFlow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>entire<sp/>execution<sp/>graph<sp/>including<sp/>unfolded<sp/>cudaFlow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+<para>Within the cudaFlow, we create two host-to-device (H2D) tasks that copy data from <computeroutput>A</computeroutput> and <computeroutput>B</computeroutput> to <computeroutput>da</computeroutput> and <computeroutput>db</computeroutput>, one device-to-host (D2H) task that copies the result from <computeroutput>dc</computeroutput> to <computeroutput>C</computeroutput>, and one kernel task that launches <computeroutput>matmul</computeroutput> on the GPU (by default, GPU 0). H2D tasks precede the kernel and the kernel precedes the D2H task. These GPU operations form a GPU task graph managed by a cudaFlow. The first dump of the taskflow gives the following graph:</para>
+<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/matrix_multiplication_5.dot"></dotfile>
+</para>
+<para>A cudaFlow encapsulates a GPU task dependency graph similar to a subflow (see <ref refid="chapter3" kindref="compound">Dynamic Tasking</ref>). In order to visualize it, we need to execute the graph first and then dump the taskflow.</para>
+<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/matrix_multiplication_6.dot"></dotfile>
+</para>
+</sect1>
+<sect1 id="matrix_multiplication_1MatrixMultiplicationBenchmarking">
+<title>Benchmarking</title>
+<para>We run three versions of matrix multiplication, sequential CPU, parallel CPUs, and one GPU, on a machine of 6 Intel i7-8700 CPUs at 3.20GHz and a Nvidia RTX 2080 GPU using various matrix sizes of A, B, and C.</para>
+<para> <table rows="7" cols="6"><row>
+<entry thead="yes" align='center'><para>A  </para>
+</entry><entry thead="yes" align='center'><para>B  </para>
+</entry><entry thead="yes" align='center'><para>C  </para>
+</entry><entry thead="yes" align='center'><para>CPU Sequential  </para>
+</entry><entry thead="yes" align='center'><para>CPU Parallel  </para>
+</entry><entry thead="yes" align='center'><para>GPU Parallel   </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>10x10  </para>
+</entry><entry thead="no" align='center'><para>10x10  </para>
+</entry><entry thead="no" align='center'><para>10x10  </para>
+</entry><entry thead="no" align='center'><para>0.142 ms  </para>
+</entry><entry thead="no" align='center'><para>0.414 ms  </para>
+</entry><entry thead="no" align='center'><para>82 ms   </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>100x100  </para>
+</entry><entry thead="no" align='center'><para>100x100  </para>
+</entry><entry thead="no" align='center'><para>100x100  </para>
+</entry><entry thead="no" align='center'><para>1.641 ms  </para>
+</entry><entry thead="no" align='center'><para>0.733 ms  </para>
+</entry><entry thead="no" align='center'><para>83 ms   </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>1000x1000  </para>
+</entry><entry thead="no" align='center'><para>1000x1000  </para>
+</entry><entry thead="no" align='center'><para>1000x1000  </para>
+</entry><entry thead="no" align='center'><para>1532 ms  </para>
+</entry><entry thead="no" align='center'><para>504 ms  </para>
+</entry><entry thead="no" align='center'><para>85 ms   </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>2000x2000  </para>
+</entry><entry thead="no" align='center'><para>2000x2000  </para>
+</entry><entry thead="no" align='center'><para>2000x2000  </para>
+</entry><entry thead="no" align='center'><para>25688 ms  </para>
+</entry><entry thead="no" align='center'><para>4387 ms  </para>
+</entry><entry thead="no" align='center'><para>133 ms   </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>3000x3000  </para>
+</entry><entry thead="no" align='center'><para>3000x3000  </para>
+</entry><entry thead="no" align='center'><para>3000x3000  </para>
+</entry><entry thead="no" align='center'><para>104838 ms  </para>
+</entry><entry thead="no" align='center'><para>16170 ms  </para>
+</entry><entry thead="no" align='center'><para>214 ms   </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>4000x4000  </para>
+</entry><entry thead="no" align='center'><para>4000x4000  </para>
+</entry><entry thead="no" align='center'><para>4000x4000  </para>
+</entry><entry thead="no" align='center'><para>250133 ms  </para>
+</entry><entry thead="no" align='center'><para>39646 ms  </para>
+</entry><entry thead="no" align='center'><para>427 ms   </para>
+</entry></row>
+</table>
+</para>
+<para>With the matrix size going up to 1000, the speed-up of GPU over CPUs becomes prominent. </para>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

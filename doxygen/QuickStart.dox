@@ -1,15 +1,14 @@
 namespace tf {
 
-/** @mainpage Quick Start
+/** @mainpage Modern C++ Parallel Task Programming
 
-@section ModernCppParallelTaskProgrammingLibrary Modern C++ Parallel Task Programming
-
-%Taskflow helps you quickly write parallel task programs with high performance scalability
-and simultaneous high productivity.
+%Taskflow helps you quickly write parallel and heterogeneous 
+task programs with <i>high performance</i>
+and simultaneous <i>high productivity</i>.
 It is faster, more expressive, fewer lines of code, and easier for drop-in integration
 than many of existing task programming frameworks.
 
-@image html images/performance.png width=100%
+<!-- @image html images/performance.png width=100%
 
 %Taskflow is committed to support both academic and industry research projects,
 making it reliable and cost-efficient to develop large-scale parallel applications.
@@ -25,65 +24,23 @@ Our users say:
 See a quick <a href="https://taskflow.github.io/">presentation</a> and visit our <a href="https://github.com/taskflow/taskflow">GitHub</a> to learn more about %Taskflow.
 
 
-@section StaticDynamicTasking Static and Dynamic Tasking
-
-%Taskflow has a unified interface for both @em static tasking and @em dynamic tasking,
-allowing users to quickly master our parallel task programming model in a natural idiom.
-
-<table width="100%">
-<tr>
-  <td align="center">Static Tasking</td>
-  <td align="center">Dynamic Tasking</td>
-</tr>
-<tr>
-  <td>@image html images/static_graph.svg width=100%</td>
-  <td>@image html images/dynamic_graph.svg width=100%</td>
-</tr>
-</table>
-
-@section ConditionalTasking Conditional Tasking
-
-%Taskflow supports conditional tasking for you to implement cyclic and 
-dynamic control flows that are otherwise difficult to do 
-with existing task programming frameworks.
-
-@image html images/condition.svg width=100%
-
-@section ComposableTasking Composable Tasking
-
-%Taskflow is composable. You can create large parallel graphs through
-composition of modular and reusable blocks that are easier to optimize
-at an individual scope.
-
-@image html images/framework.svg width=100%
-
-@section HeterogeneousTasking Concurrent CPU-GPU Tasking
-
-%Taskflow supports heterogeneous tasking for you to 
-accelerate a wide range of scientific computing applications
-by harnessing the power of CPU-GPU collaborative computing.
-
-@image html images/cudaflow.svg width=100%
-
-%Taskflow provides visualization and tooling (<a href="https://github.com/taskflow/tfprof">tfprof</a>) needed for profiling %Taskflow programs.
+%Taskflow provides visualization and tooling (<a href="https://github.com/taskflow/tfprof">tfprof</a>) for profiling %Taskflow programs.
 
 @image html images/tfprof.png width=100%
+-->
 
 
-@section HowToInstallCppTaskflow How to Install Taskflow?
 
-%Taskflow is *header-only* and there is no need for installation.
-Simply download the source and copy the headers under the directory @c taskflow/ to your project.
+@section ASimpleFirstProgram Start Your First Taskflow Program
 
-@code{.sh}
-~$ git clone https://github.com/taskflow/taskflow.git
-~$ cd taskflow/
-~$ cp -r taskflow myproject/include/
-@endcode
+The following program (@c simple.cpp) creates four tasks 
+@c A, @c B, @c C, and @c D, where @c A runs before @c B and @c C, and @c D
+runs after @c B and @c C.
+When @c A finishes, @c B and @c C can run in parallel.
 
-@section ASimpleFirstProgram A Simple First Program
 
-Here is a rather simple program to get you started.
+<!-- @image html images/simple.svg width=35% -->
+@dotfile images/simple.dot
 
 @code{.cpp}
 #include <taskflow/taskflow.hpp>  // Taskflow is header-only
@@ -93,42 +50,29 @@ int main(){
   tf::Executor executor;
   tf::Taskflow taskflow;
 
-  auto [A, B, C, D] = taskflow.emplace(
-    [] () { std::cout << "TaskA\n"; },   //  task dependency graph
-    [] () { std::cout << "TaskB\n"; },   // 
-    [] () { std::cout << "TaskC\n"; },   //          +---+          
-    [] () { std::cout << "TaskD\n"; }    //    +---->| B |-----+   
-  );                                     //    |     +---+     |
-                                         //  +---+           +-v-+ 
-  A.precede(B);  // A runs before B      //  | A |           | D | 
-  A.precede(C);  // A runs before C      //  +---+           +-^-+ 
-  B.precede(D);  // B runs before D      //    |     +---+     |    
-  C.precede(D);  // C runs before D      //    +---->| C |-----+    
-                                         //          +---+          
-  executor.run(taskflow).wait();
+  auto [A, B, C, D] = taskflow.emplace(  // create 4 tasks
+    [] () { std::cout << "TaskA\n"; },
+    [] () { std::cout << "TaskB\n"; },
+    [] () { std::cout << "TaskC\n"; },
+    [] () { std::cout << "TaskD\n"; } 
+  );                                  
+                                      
+  A.precede(B, C);  // A runs before B and C
+  D.succeed(B, C);  // D runs after  B and C
+                                      
+  executor.run(taskflow).wait(); 
 
   return 0;
 }
 @endcode
 
+%Taskflow is *header-only* and there is no wrangle with installation.
+To compile the program, clone the %Taskflow project and 
+tell the compiler to include the headers under @c taskflow/.
 
-
-The program creates four tasks A, B, C, and D.
-The dependency constraints force A to run before B and C, and D to run after B and C.
-The maximum concurrency is this example is two, where B and C can run at the same time.
-
-@image html images/simple.svg width=35%
-
-@section CompileAndRunYourFirstProgram Compile and Run Your First Program
-
-%Taskflow is written in C++14 and is built on top of 
-C++ standardized threading libraries.
-To compile the above program, you need to tell the compiler
-where to find the %Taskflow header files.
-For example, with gcc you need the `-I` option.
-
-@code{.sh}
-~$ g++ simple.cpp -I myproject/include/ -O2 -pthread -o simple
+@code{.shell-session}
+~$ git clone https://github.com/taskflow/taskflow.git  # clone it only once
+~$ g++ -std=c++17 simple.cpp -I taskflow/taskflow -O2 -pthread -o simple
 ~$ ./simple
 TaskA
 TaskC 
@@ -136,23 +80,131 @@ TaskB
 TaskD
 @endcode
 
-The execution order of B and C might differ as they can run concurrently.
+%Taskflow provides visualization and tooling, @TFProf,
+for profiling your %Taskflow programs.
+
+@image html images/tfprof.png 
+
+@section QuickStartCreateASubflowGraph Create a Subflow Graph
+
+%Taskflow supports <i>dynamic tasking</i> for you to create a subflow
+graph from the execution of a task to perform dynamic parallelism.
+The following program spawns a task dependency graph parented at task @c B.
+
+@code{.cpp}
+tf::Task A = taskflow.emplace([](){}).name("A");  
+tf::Task C = taskflow.emplace([](){}).name("C");  
+tf::Task D = taskflow.emplace([](){}).name("D");  
+
+tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) { // subflow task B
+  tf::Task B1 = subflow.emplace([](){}).name("B1");  
+  tf::Task B2 = subflow.emplace([](){}).name("B2");  
+  tf::Task B3 = subflow.emplace([](){}).name("B3");  
+  B3.succeed(B1, B2);  // B3 runs after B1 and B2
+}).name("B");
+
+A.precede(B, C);  // A runs before B and C
+D.succeed(B, C);  // D runs after  B and C
+@endcode
+
+@dotfile images/subflow-join.dot
+
+@section QuickStartIntegrateControlFlowIntoATaskGraph Integrate Control Flow into a Task Graph
+
+%Taskflow supports <i>conditional tasking</i> for you to make rapid 
+control-flow decisions across dependent tasks to implement cycles 
+and conditions in an @em end-to-end task graph.
+
+@code{.cpp}
+tf::Task init = taskflow.emplace([](){}).name("init");
+tf::Task stop = taskflow.emplace([](){}).name("stop");
+
+// creates a condition task that returns a random binary
+tf::Task cond = taskflow.emplace([](){ return std::rand() % 2; }).name("cond");
+
+// creates a feedback loop {0: cond, 1: stop}
+init.precede(cond);
+cond.precede(cond, stop);  // moves on to 'cond' on returning 0, or 'stop' on 1
+@endcode
+
+@dotfile images/conditional-tasking-1.dot
+
+@section QuickStartOffloadTasksToGPU Offload Tasks to GPU
+
+%Taskflow supports heterogeneous tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing.
+
+@code{.cpp}
+tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
+  tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
+  tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
+  tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
+  tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
+  tf::cudaTask saxpy = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy)
+                         .name("saxpy");  // parameters to the saxpy kernel
+  saxpy.succeed(h2d_x, h2d_y)
+       .precede(d2h_x, d2h_y);
+}).name("cudaFlow");
+@endcode
+
+@dotfile images/saxpy_1_cudaflow.dot
+
+
+@section QuickStartComposeTaskGraphs Compose Task Graphs
+
+%Taskflow is composable. You can create large parallel graphs through composition of modular and reusable blocks that are easier to optimize at an individual scope.
+
+@code{.cpp}
+tf::Taskflow f1, f2;
+
+// create taskflow f1 of two tasks
+tf::Task f1A = f1.emplace([]() { std::cout << "Task f1A\n"; }).name("f1A");
+tf::Task f1B = f1.emplace([]() { std::cout << "Task f1B\n"; }).name("f1B");
+
+// create taskflow f2 with one module task composed of f1
+tf::Task f2A = f2.emplace([]() { std::cout << "Task f2A\n"; }).name("f2A");
+tf::Task f2B = f2.emplace([]() { std::cout << "Task f2B\n"; }).name("f2B");
+tf::Task f2C = f2.emplace([]() { std::cout << "Task f2C\n"; }).name("f2C");
+tf::Task f1_module_task = f2.composed_of(f1).name("module");
+
+f1_module_task.succeed(f2A, f2B)
+              .precede(f2C);
+@endcode
+
+@dotfile images/composition.dot
 
 @section SupportedCompilers Supported Compilers
 
-To use %Taskflow, you only need a compiler that supports C++14:
+To use %Taskflow, you only need a compiler that supports C++17:
 
-@li GNU C++ Compiler at least v5.0 with -std=c++14
-@li Clang C++ Compiler at least v4.0 with -std=c++14
-@li Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)
-@li AppleClang Xode Version at least v8
-@li Nvidia CUDA Toolkit and Compiler (nvcc) at least v10.0 with -std=c++14
+@li GNU C++ Compiler at least v7.0 with -std=c++17
+@li Clang C++ Compiler at least v6.0 with -std=c++17
+@li Microsoft Visual Studio at least v19.27 with /std:c++17
+@li AppleClang Xode Version at least v12.0 with -std=c++17
+@li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
+@li Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17
 
 %Taskflow works on Linux, Windows, and Mac OS X.
+
+@section QuickStartGetInvolved Get Involved
+
+Visit our @ProjectWebsite and @ShowcasePresentation 
+to learn more about %Taskflow. To get involved:
+
+  + See release notes at @ref Releases
+  + Read the step-by-step tutorial at @ref Cookbook
+  + Submit an issue at @IssueTracker
+  + Learn more about our technical details at @ref References
+  + Watch our @CppCon20Talk and @MUCpp20Talk
+
+We are committed to support trustworthy developments for 
+both academic and industrial research projects in parallel 
+and heterogeneous computing. 
+
 
 @section License License
 
 %Taskflow is open-source under permissive MIT license.
+The source code is available in @ProjectGitHub.
 
 */
 

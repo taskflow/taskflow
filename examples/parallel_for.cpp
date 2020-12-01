@@ -1,12 +1,13 @@
-// This program demonstrates how to use Taskflow to
-// write loop-based parallelism.
+// This program demonstrates loop-based parallelism using:
+//   + STL-styled iterators
+//   + plain integral indices
 
 #include <taskflow/taskflow.hpp>
 #include <cassert>
 #include <numeric>
 
-// Procedure: for_each_on_range
-void for_each_on_range(int N) {
+// Procedure: for_each
+void for_each(int N) {
 
   tf::Executor executor;
   tf::Taskflow taskflow;
@@ -19,11 +20,10 @@ void for_each_on_range(int N) {
   });
 
   executor.run(taskflow).get();
-  taskflow.dump(std::cout);
 }
 
-// Procedure: for_each_on_index
-void for_each_on_index(int N) {
+// Procedure: for_each_index
+void for_each_index(int N) {
   
   tf::Executor executor;
   tf::Taskflow taskflow;
@@ -34,7 +34,6 @@ void for_each_on_index(int N) {
   });
 
   executor.run(taskflow).get();
-  taskflow.dump(std::cout);
 }
 
 // ----------------------------------------------------------------------------
@@ -42,8 +41,8 @@ void for_each_on_index(int N) {
 // Function: main
 int main() {
   
-  for_each_on_range(100);
-  for_each_on_index(100);
+  for_each(100);
+  for_each_index(100);
 
   return 0;
 }

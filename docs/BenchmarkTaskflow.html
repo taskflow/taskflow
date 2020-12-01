@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Building and Installing &raquo; Benchmark Taskflow | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="install.html">Building and Installing</a> &raquo;</span>
+          Benchmark Taskflow
+        </h1>
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#CompileAndRunBenchmarks">Compile and Run Benchmarks</a></li>
+            <li>
+              <a href="#ConfigureRunOptions">Configure Run Options</a>
+              <ul>
+                <li><a href="#SpecifyTheRunModel">Specify the Run Model</a></li>
+                <li><a href="#SpecifyTheNumberOfThreads">Specify the Number of Threads</a></li>
+                <li><a href="#SpecifyTheNumberOfRounds">Specify the Number of Rounds</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+<section id="CompileAndRunBenchmarks"><h2><a href="#CompileAndRunBenchmarks">Compile and Run Benchmarks</a></h2><p>To build the benchmark code, enable the CMake option <code>TF_BUILD_BENCHMARKS</code> to <code>ON</code> as follows:</p><pre class="m-console"><span class="gp">#</span> under /taskflow/build
+<span class="go">~$ cmake ../ -DTF_BUILD_BENCHMARKS=ON</span>
+<span class="go">~$ make</span></pre><p>After you successfully build the benchmark code, you can find all benchmark instances in the <code>benchmarks/</code> folder. You can run the executable of each instance in the corresponding folder.</p><pre class="m-console"><span class="go">~$ cd benchmarks &amp; ls</span>
+<span class="go">black_scholes binary_tree graph_traversal ...</span>
+<span class="go">~$ cd graph_traversal &amp; ./graph_traversal</span>
+<span class="go">|V|+|E|     Runtime</span>
+<span class="go">      2       0.197</span>
+<span class="go">    842       0.198</span>
+<span class="go">   3284       0.488</span>
+<span class="go">   7288       0.774</span>
+<span class="go">    ...         ...</span>
+<span class="go">    ...         ...</span>
+<span class="go"> 619802      75.135</span>
+<span class="go"> 664771      77.436</span>
+<span class="go"> 711200      83.957</span></pre><p>You can display the help message by giving the option <code>&ndash;help</code>.</p><pre class="m-console"><span class="go">~$ ./graph_traversal --help</span>
+<span class="go">Graph Traversal</span>
+<span class="go">Usage: ./graph_traversal [OPTIONS]</span>
+
+<span class="go">Options:</span>
+<span class="go">  -h,--help                   Print this help message and exit</span>
+<span class="go">  -t,--num_threads UINT       number of threads (default=1)</span>
+<span class="go">  -r,--num_rounds UINT        number of rounds (default=1)</span>
+<span class="go">  -m,--model TEXT             model name tbb|omp|tf (default=tf)</span></pre><p>We currently implement the following instances that are commonly used by the parallel computing community to evaluate the system performance.</p><table class="m-table"><thead><tr><th>Instance</th><th>Description</th></tr></thead><tbody><tr><td>binary_tree</td><td>traverses a complete binary tree</td></tr><tr><td>black_scholes</td><td>computes option pricing with Black-Shcoles Models</td></tr><tr><td>graph_traversal</td><td>traverses a randomly generated direct acyclic graph</td></tr><tr><td>linear_chain</td><td>traverses a linear chain of tasks</td></tr><tr><td>mandelbrot</td><td>exploits imbalanced workloads in a Mandelbrot set</td></tr><tr><td>matrix_multiplication</td><td>multiplies two 2D matrices</td></tr><tr><td>mnist</td><td>trains a neural network-based image classifier on the MNIST dataset</td></tr><tr><td>parallel_sort</td><td>sorts a range of items</td></tr><tr><td>reduce_sum</td><td>sums a range of items using reduction</td></tr><tr><td>wavefront</td><td>propagates computations in a 2D grid</td></tr></tbody></table></section><section id="ConfigureRunOptions"><h2><a href="#ConfigureRunOptions">Configure Run Options</a></h2><p>We implement consistent options for each benchmark instance. Common options are:</p><table class="m-table"><thead><tr><th>option</th><th>value</th><th>function</th></tr></thead><tbody><tr><td><code>-h</code></td><td>none</td><td>display the help message</td></tr><tr><td><code>-t</code></td><td>integer</td><td>configure the number of threads to run</td></tr><tr><td><code>-r</code></td><td>integer</td><td>configure the number of rounds to run</td></tr><tr><td><code>-m</code></td><td>string</td><td>configure the baseline models to run, tbb, omp, or tf</td></tr></tbody></table><p>You can configure the benchmarking environment by giving different options.</p><section id="SpecifyTheRunModel"><h3><a href="#SpecifyTheRunModel">Specify the Run Model</a></h3><p>In addition to a Taskflow-based implementation for each benchmark instance, we have implemented two baseline models using the state-of-the-art parallel programming libraries, <a href="https://www.openmp.org/">OpenMP</a> and <a href="https://github.com/oneapi-src/oneTBB">Intel TBB</a>, to measure and evaluate the performance of Taskflow. You can select different implementations by passing the option <code>-m</code>.</p><pre class="m-console"><span class="go">~$ ./graph_traversal -m tf   # run the Taskflow implementation (default)</span>
+<span class="go">~$ ./graph_traversal -m tbb  # run the TBB implementation</span>
+<span class="go">~$ ./graph_traversal -m omp  # run the OpenMP implementation</span></pre></section><section id="SpecifyTheNumberOfThreads"><h3><a href="#SpecifyTheNumberOfThreads">Specify the Number of Threads</a></h3><p>You can configure the number of threads to run a benchmark instance by passing the option <code>-t</code>. The default value is one.</p><pre class="m-console"><span class="gp">#</span> run the Taskflow implementation using <span class="m">4</span> threads
+<span class="go">~$ ./graph_traversal -m tf -t 4</span></pre><p>Depending on your environment, you may need to use <code>taskset</code> to set the CPU affinity of the running process. This allows the OS scheduler to keep process on the same CPU(s) as long as practical for performance reason.</p><pre class="m-console"><span class="gp">#</span> affine the process to <span class="m">4</span> CPUs, CPU <span class="m">0</span>, CPU <span class="m">1</span>, CPU <span class="m">2</span>, and CPU <span class="m">3</span>
+<span class="go">~$ taskset -c 0-3 graph_traversal -t 4  </span></pre></section><section id="SpecifyTheNumberOfRounds"><h3><a href="#SpecifyTheNumberOfRounds">Specify the Number of Rounds</a></h3><p>Each benchmark instance evaluates the runtime of the implementation at different problem sizes. Each problem size corresponds to one iteration. You can configure the number of rounds per iteration to average the runtime.</p><pre class="m-console"><span class="gp">#</span> measure the runtime in an average of <span class="m">10</span> runs
+<span class="go">~$ ./graph_traversal -r 10</span>
+<span class="go">|V|+|E|     Runtime</span>
+<span class="go">      2       0.109   # the runtime value 0.109 is an average of 10 runs</span>
+<span class="go">    842       0.298</span>
+<span class="go">    ...         ...</span>
+<span class="go"> 619802      73.135</span>
+<span class="go"> 664771      74.436</span></pre></section></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

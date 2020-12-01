@@ -6,43 +6,17 @@ namespace tf {
 This release includes several new changes such as CPU-GPU tasking, algorithm collection,
 enhanced web-based profiler, documentation, and unit tests.
 
+@tableofcontents
+
 @section release-2-7-0_download Download
 
 %Taskflow 2.7.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v2.7.0">here</a>.
 
 @section release-2-7-0_new_features New Features
 
-@li added tf::Executor::async to support asynchronously calling a function (see @ref C2_Async)
-  @code{.cpp}
-  std::future<int> fu = executor.async([](){
-    // do my work
-    return 1;
-  });
-
-  // access the result through fu.get() or wait on the executor
-  executor.wait_for_all();
-  assert(fu.wait_for(std::chrono::seconds(1)) == std::future_status::ready);
-  @endcode
+@li added tf::Executor::async to support asynchronously calling a function (see @ref AsyncTasking)
 @li added kernel algorithm, tf::cudaFlow::for_each
-  @code{.cpp}
-  taskflow.emplace([](tf::cudaFlow& cf){
-    // ... gpu tasks
-    // assigns one to every element in my_gpu_data (type int*, 1000 elements)
-    cf.for_each(my_gpu_data, my_gpu_data + 1000, [] __device__ (int& item) {
-      item = 1;
-    }); 
-  });
-  @endcode
 @li added kernel algorithm, tf::cudaFlow::for_each_index
-  @code{.cpp}
-  taskflow.emplace([](tf::cudaFlow& cf){
-    // ... gpu tasks
-    // assigns one to every element in my_gpu_data (type int*, 1000 elements)
-    cf.for_each_index(0, 100, 1, [my_gpu_data] __device__ (int idx) {
-      my_gpu_data[idx] = 1;
-    }); 
-  });
-  @endcode
 @li added explicit join method at tf::cudaFlow::join, tf::cudaFlow::join_n, tf::cudaFlow::join_until
 
 @section release-2-7-0_bug_fixes Bug Fixes 

@@ -2,6 +2,7 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
+#include <taskflow/cudaflow.hpp>
 
 #define L2(x1, y1, x2, y2) ((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2))
 
@@ -79,7 +80,7 @@ void kmeans(int N, int K, int M, size_t num_cpus, size_t num_gpus) {
   }
   
   tf::Taskflow taskflow;
-  tf::Executor executor(num_cpus, num_gpus);
+  tf::Executor executor(num_cpus + num_gpus);
   
   // cpu version 
   auto init = taskflow.emplace([&](){

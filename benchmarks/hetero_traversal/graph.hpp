@@ -1,4 +1,5 @@
 #include <taskflow/taskflow.hpp>
+#include <taskflow/cudaflow.hpp>
 #include <fstream>
 
 struct pair_hash {
@@ -28,7 +29,7 @@ struct Graph {
   std::vector<Node> nodes;
 
   Graph(const std::string& path) :
-    num_gpus  {static_cast<int>(tf::cuda_num_devices())} {
+    num_gpus  {static_cast<int>(tf::cuda_get_num_devices())} {
 
     std::ifstream ifs(path);
 
@@ -52,7 +53,7 @@ struct Graph {
   Graph(int V, int E, int cuda_ratio) : 
     num_nodes {V}, 
     num_edges {E},
-    num_gpus  {static_cast<int>(tf::cuda_num_devices())} {
+    num_gpus  {static_cast<int>(tf::cuda_get_num_devices())} {
 
     std::unordered_set<std::pair<int, int>, pair_hash> set;
 
@@ -107,7 +108,8 @@ struct Graph {
 };
 
 // saxpy kernel
-inline __global__ void add(int* x, int* y, int* z, int n) {
+template <typename T>
+__global__ void add(T* x, T* y, T* z, int n) {
   int i = blockIdx.x*blockDim.x + threadIdx.x;
   if (i < n) {
     z[i] = x[i] + y[i];

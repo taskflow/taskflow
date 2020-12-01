@@ -1,7 +1,5 @@
-// 2019/03/12 - created by Chun-Xun Lin
-//  - added an example showing how to use framework decomposition
-
-#include <taskflow/taskflow.hpp>  // the only include you need
+// This example shows how to compose a taskflow 
+#include <taskflow/taskflow.hpp>
 
 void composition_example_1() {
 
@@ -90,15 +88,23 @@ void composition_example_2() {
 
   f4.dump(std::cout);
 
-  executor.run_until(f4, [iter = 1] () mutable { std::cout << '\n'; return iter-- == 0; }, [](){ 
-    std::cout << "First run_until finished\n"; 
-  }).get();
-  executor.run_until(f4, [iter = 2] () mutable { std::cout << '\n'; return iter-- == 0; }, [](){
-    std::cout << "Second run_until finished\n"; 
-  });
-  executor.run_until(f4, [iter = 3] () mutable { std::cout << '\n'; return iter-- == 0; }, [](){
-    std::cout << "Third run_until finished\n"; 
-  }).get();
+  executor.run_until(
+    f4, 
+    [iter = 1] () mutable { std::cout << '\n'; return iter-- == 0; }, 
+    [](){ std::cout << "First run_until finished\n"; }
+  ).get();
+
+  executor.run_until(
+    f4, 
+    [iter = 2] () mutable { std::cout << '\n'; return iter-- == 0; }, 
+    [](){ std::cout << "Second run_until finished\n"; }
+  );
+
+  executor.run_until(
+    f4, 
+    [iter = 3] () mutable { std::cout << '\n'; return iter-- == 0; }, 
+    [](){ std::cout << "Third run_until finished\n"; }
+  ).get();
 }
 
 int main(){

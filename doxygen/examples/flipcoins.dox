@@ -6,6 +6,8 @@ We study dynamic control flow of non-determinism using conditional tasking.
 Non-deterministic control flow is a fundamental building block in many optimization and simulation algorithms
 that rely on stochastic convergence rules or probabilistic pruning.
 
+@tableofcontents
+
 @section FlipCoinsProblemFormulation Problem Formulation
 
 We have a fair binary coin and want to simulate its tosses.
@@ -13,7 +15,8 @@ We flip the coin for five times.
 Apparently, the probability for the result to be all heads is 1/32.
 It is equivalently to say the expected number we need to toss for obtaining five heads is 32.
 
-@image html images/flipcoins_1.svg width=80%
+<!-- @image html images/flipcoins_1.svg width=80% -->
+@dotfile images/flipcoins_1.dot
 
 @section FlipCoinsProbabilistic Probabilistic Conditions
 
@@ -31,17 +34,23 @@ size_t tosses = 0;
 size_t total_tosses = 0; 
 double average_tosses = 0.0; 
 
-tf::Task A = taskflow.emplace( [&](){ tosses = 0; } ).name("init"); 
+tf::Task A = taskflow.emplace([&](){ tosses = 0; })
+                     .name("init"); 
 
-// start over the flip again
-tf::Task B = taskflow.emplace( [&](){ ++tosses; return std::rand()%2; } ).name("flip-coin-1");
-tf::Task C = taskflow.emplace( [&](){ return std::rand()%2; } ).name("flip-coin-2");
-tf::Task D = taskflow.emplace( [&](){ return std::rand()%2; } ).name("flip-coin-3");
-tf::Task E = taskflow.emplace( [&](){ return std::rand()%2; } ).name("flip-coin-4");
-tf::Task F = taskflow.emplace( [&](){ return std::rand()%2; } ).name("flip-coin-5");
+tf::Task B = taskflow.emplace([&](){ ++tosses; return std::rand()%2; })
+                     .name("flip-coin-1");
+tf::Task C = taskflow.emplace([&](){ return std::rand()%2; })
+                     .name("flip-coin-2");
+tf::Task D = taskflow.emplace([&](){ return std::rand()%2; })
+                     .name("flip-coin-3");
+tf::Task E = taskflow.emplace([&](){ return std::rand()%2; })
+                     .name("flip-coin-4");
+tf::Task F = taskflow.emplace([&](){ return std::rand()%2; })
+                     .name("flip-coin-5");
 
 // reach the target; record the number of tosses 
-tf::Task G = taskflow.emplace( [&](){ total_tosses += tosses; } ).name("stop");
+tf::Task G = taskflow.emplace([&](){ total_tosses += tosses; })
+                     .name("stop");
 
 A.precede(B);
 
@@ -64,7 +73,8 @@ assert(std::fabs(average_tosses-32.0)<1.0);
 Running the taskflow by a fair number of times, the average tosses we have is close to 32.
 The taskflow diagram is depicted below.
 
-@image html images/flipcoins_2.svg width=100%
+<!-- @image html images/flipcoins_2.svg width=100% -->
+@dotfile images/flipcoins_2.dot
 
 Although the execution of this taskflow is non-deterministic,
 its control flow can expand to a tree of tasks based on our scheduling rule for conditional tasking
@@ -81,17 +91,24 @@ The expected number of tosses to reach
 five identical results is 3*3*3*3*3 = 243.
 
 @code{.cpp}
-tf::Task A = taskflow.emplace( [&](){ tosses = 0; } ).name("init"); 
+tf::Task A = taskflow.emplace( [&](){ tosses = 0; } )
+                     .name("init"); 
 
 // start over the flip again
-tf::Task B = taskflow.emplace( [&](){ ++tosses; return std::rand()%3; } ).name("flip-coin-1");
-tf::Task C = taskflow.emplace( [&](){ return std::rand()%3; } ).name("flip-coin-2");
-tf::Task D = taskflow.emplace( [&](){ return std::rand()%3; } ).name("flip-coin-3");
-tf::Task E = taskflow.emplace( [&](){ return std::rand()%3; } ).name("flip-coin-4");
-tf::Task F = taskflow.emplace( [&](){ return std::rand()%3; } ).name("flip-coin-5");
+tf::Task B = taskflow.emplace([&](){ ++tosses; return std::rand()%3; })
+                     .name("flip-coin-1");
+tf::Task C = taskflow.emplace([&](){ return std::rand()%3; })
+                     .name("flip-coin-2");
+tf::Task D = taskflow.emplace([&](){ return std::rand()%3; })
+                     .name("flip-coin-3");
+tf::Task E = taskflow.emplace([&](){ return std::rand()%3; })
+                     .name("flip-coin-4");
+tf::Task F = taskflow.emplace([&](){ return std::rand()%3; })
+                     .name("flip-coin-5");
 
 // reach the target; record the number of tosses 
-tf::Task G = taskflow.emplace( [&](){ total_tosses += tosses; } ).name("stop");
+tf::Task G = taskflow.emplace([&](){ total_tosses += tosses; })
+                     .name("stop");
 
 A.precede(B);
 
@@ -111,7 +128,8 @@ average_tosses = total_tosses / (double)rounds;
 assert(std::fabs(average_tosses-243.0)<1.0);
 @endcode
 
-@image html images/flipcoins_3.svg width=100%
+<!-- @image html images/flipcoins_3.svg width=100% -->
+@dotfile images/flipcoins_3.dot 
 
 Similarly, we can extend the probabilistic condition to any degree.
 

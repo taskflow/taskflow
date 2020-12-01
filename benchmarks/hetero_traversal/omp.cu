@@ -8,7 +8,7 @@ struct cudaStream {
 
   std::vector<std::vector<cudaStream_t>> streams;
 
-  cudaStream(unsigned N) : streams(tf::cuda_num_devices()) {
+  cudaStream(unsigned N) : streams(tf::cuda_get_num_devices()) {
     for(size_t i=0; i<streams.size(); ++i) {
       streams[i].resize(N);
       tf::cudaScopedDevice ctx(i);
@@ -166,7 +166,7 @@ void omp(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
         // kernel
         cudaKernelNodeParams kp;
         void* arguments[4] = { (void*)(&gx), (void*)(&gy), (void*)(&gz), (void*)(&N) };
-        kp.func = (void*)add;
+        kp.func = (void*)add<int>;
         kp.gridDim = (N+255)/256;
         kp.blockDim = 256;
         kp.sharedMemBytes = 0;

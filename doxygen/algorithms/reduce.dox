@@ -1,13 +1,15 @@
 namespace tf {
 
-/** @page A1Reduce A1: Parallel Reduction
+/** @page A2Reduce Parallel Reduction
 
 %Taskflow provides template function that constructs a task to perform parallel reduction over a range of items.
 
-@section A1ParallelReduction Parallel Reduction
+@tableofcontents
+
+@section A2ParallelReduction Parallel Reduction
 
 The reduction task created by tf::Taskflow::reduce(B&& first, E&& last, T& result, O&& bop) performs
-parallel reduction over a range of elements specified by <tt>[beg, end)</tt> using the binary operator @c bop and stores the reduced result in @c result.
+parallel reduction over a range of elements specified by <tt>[first, last)</tt> using the binary operator @c bop and stores the reduced result in @c result.
 It represents the parallel execution of the following reduction loop:
 
 @code{.cpp}
@@ -24,9 +26,9 @@ It is your responsibility to ensure @c result remains alive during the parallel 
 int sum = 100;
 std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-tf::Task task = taskflow.reduce(vec.begin(), vec.end(), sum, [] (int l, int r) { 
-  return l + r;    // binary reducer operator
-});
+tf::Task task = taskflow.reduce(vec.begin(), vec.end(), sum, 
+  [] (int l, int r) { return l + r; }  // binary reducer operator
+);
 executor.run(taskflow).wait();
 
 assert(sum == 100 + 55);
@@ -36,9 +38,9 @@ The order in which the binary operator is applied to pairs of elements is @em un
 In other words, the elements of the range may be grouped and rearranged in arbitrary order.
 The result and the argument types of the binary operator must be consistent with the input data type .
 
-Similar to @ref A0ForEach, 
-you may leverage std::reference_wrapper to enable stateful parameter passing between tasks
-for expressing end-to-end parallelism.
+Similar to @ref A1ForEach, 
+you can use std::reference_wrapper to enable stateful parameter passing 
+between the reduction task and others.
 
 @code{.cpp}
 int sum = 100;
@@ -51,9 +53,9 @@ tf::Task init = taskflow.emplace([&](){
   last  = vec.end();
 });
 
-tf::Task task = taskflow.reduce(std::ref(first), std::ref(last), sum, [] (int l, int r) { 
-  return l + r;    // binary reducer operator
-});
+tf::Task task = taskflow.reduce(std::ref(first), std::ref(last), sum, 
+  [] (int l, int r) { return l + r; }  // binary reducer operator
+);
 
 // wrong! must use std::ref, or first and last are captured by copy
 // tf::Task task = taskflow.reduce(first, last, sum, [] (int l, int r) { 
@@ -72,7 +74,7 @@ In the above example, when @c init finishes, @c vec has been initialized to 10 e
 (i.e., end of the range).
 These changes are visible to the execution context of the reduction task.
 
-@section A1ParallelTransformationReduction Parallel Transformation-Reduction
+@section A2ParallelTransformationReduction Parallel Transformation-Reduction
 
 It is common to transform each element into a new data type and
 then perform reduction on the transformed elements.

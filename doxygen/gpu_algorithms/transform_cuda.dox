@@ -1,0 +1,63 @@
+namespace tf {
+
+/** @page ParallelTransformsCUDA Parallel Transforms (%cudaFlow)
+
+%cudaFlow provides a template function that applies the given function to a range
+and sotres the result in another range
+
+@tableofcontents
+
+@section IteratorBasedParallelTransformCUDA Iterator-based Parallel Transforms
+
+Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified 
+by two iterators, @c first and @c last.
+The two iterators are typically two raw pointers to the 
+first element and the next to the last element in the range in GPU memory space.
+The task created by tf::cudaFlow::transform(I first, I last, C&& callable, S... srcs) 
+represents a kernel of parallel execution
+for the following loop:
+    
+@code{.cpp}
+while (first != last) {
+  *first++ = callable(*src1++, *src2++, *src3++, ...);
+}
+@endcode
+
+The two iterators, @c first and @c last, are typically two raw pointers to the 
+first element and the next to the last element in the range.
+The following example creates a @c transform kernel that assigns each element,
+starting from @c gpu_data to <tt>gpu_data + 1000</tt>, 
+to the sum of the corresponding elements 
+at @c gpu_data_x, @c gpu_data_y, and @c gpu_data_z.
+
+@code{.cpp}
+taskflow.emplace([](tf::cudaFlow& cf){
+  // ... create gpu tasks
+  // create a kernel for performing the following parallel transforms:
+  // gpu_data[i] = gpu_data_x[i] + gpu_data_y[i] + gpu_data_z[i]
+  tf::cudaTask task = cf.transform(
+    gpu_data, gpu_data + 1000, 
+    [] __device__ (int& xi, int& yi, int &zi) { return xi + yi + zi; },
+    gpu_data_x, gpu_data_y, gpu_data_z
+  ); 
+});
+@endcode
+
+Each iteration is independent of each other and is assigned one kernel thread 
+to run the callable.
+Since the callable runs on GPU, it must be declared with a <tt>%__device__</tt> 
+specifier.
+
+@section ParallelTransformCUDAMiscellaneousItems Miscellaneous Items
+
+The parallel-transform algorithm is also available in
+tf::cudaFlowCapturerBase::transform.
+
+*/
+}
+
+
+
+
+
+

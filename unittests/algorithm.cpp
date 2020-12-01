@@ -7,6 +7,7 @@
 #include <utility>
 #include <chrono>
 #include <limits.h>
+#include <array>
 
 // --------------------------------------------------------
 // Testcase: for_each
@@ -951,4 +952,117 @@ TEST_CASE("ptrs.11threads" * doctest::timeout(300)) {
 TEST_CASE("ptrs.12threads" * doctest::timeout(300)) {
   transform_reduce(12, STATIC);
 }
+
+// ----------------------------------------------------------------------------
+// parallel sort
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void ps_pod(size_t W, size_t N) {
+
+  std::srand(time(0));
+
+  std::vector<T> data(N);
+
+  for(auto& d : data) {
+    d = ::rand() % 1000 - 500;
+  }
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+  
+  taskflow.sort(data.begin(), data.end());
+
+  executor.run(taskflow).wait();
+
+  REQUIRE(std::is_sorted(data.begin(), data.end()));
+}
+
+TEST_CASE("ps.int.1.100000") {
+  ps_pod<int>(1, 100000);
+}
+
+TEST_CASE("ps.int.2.100000") {
+  ps_pod<int>(2, 100000);
+}
+
+TEST_CASE("ps.int.3.100000") {
+  ps_pod<int>(3, 100000);
+}
+
+TEST_CASE("ps.int.4.100000") {
+  ps_pod<int>(4, 100000);
+}
+
+TEST_CASE("ps.ldouble.1.100000") {
+  ps_pod<long double>(1, 100000);
+}
+
+TEST_CASE("ps.ldouble.2.100000") {
+  ps_pod<long double>(2, 100000);
+}
+
+TEST_CASE("ps.ldouble.3.100000") {
+  ps_pod<long double>(3, 100000);
+}
+
+TEST_CASE("ps.ldouble.4.100000") {
+  ps_pod<long double>(4, 100000);
+}
+
+struct Object {
+
+  std::array<int, 10> integers;
+
+  int sum() const {
+    int s = 0;
+    for(const auto i : integers) {
+      s += i;
+    }
+    return s;
+  }
+};
+
+void ps_object(size_t W, size_t N) {
+  
+  std::srand(time(0));
+
+  std::vector<Object> data(N);
+  
+  for(auto& d : data) {
+    for(auto& i : d.integers) {
+      i = ::rand();
+    }
+  }
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  taskflow.sort(data.begin(), data.end(), [](const auto& l, const auto& r){
+    return l.sum() < r.sum();
+  });
+
+  executor.run(taskflow).wait();
+  
+  REQUIRE(std::is_sorted(data.begin(), data.end(), 
+    [](const auto& l, const auto& r){ return l.sum() < r.sum(); }
+  ));
+}
+
+TEST_CASE("ps.object.1.100000") {
+  ps_object(1, 100000);
+}
+
+TEST_CASE("ps.object.2.100000") {
+  ps_object(2, 100000);
+}
+
+TEST_CASE("ps.object.3.100000") {
+  ps_object(3, 100000);
+}
+
+TEST_CASE("ps.object.4.100000") {
+  ps_object(4, 100000);
+}
+
 

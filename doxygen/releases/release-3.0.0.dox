@@ -9,31 +9,126 @@ Many things are considered @em experimental and may change or break from time to
 While it may be difficult to be keep all things consistent when introducing new features, 
 we continue to try our best to ensure backward compatibility.
 
-Starting from v3, we will migrate the codebase to the @CPP17 standard.
+Starting from v3, we have migrated the codebase to the @CPP17 standard
+to largely improve the expressivity and efficiency of the codebase.
+
+@tableofcontents
 
 @section release-3-0-0_download Download
 
 To download the newest version of %Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
 
+@section release-3-0-0_system_requirements System Requirements
+
+To use %Taskflow v3.0.0, you need a compiler that supports C++17:
+
+@li GNU C++ Compiler at least v7.0 with -std=c++17
+@li Clang C++ Compiler at least v6.0 with -std=c++17
+@li Microsoft Visual Studio at least v19.27 with /std:c++17
+@li AppleClang Xode Version at least v12.0 with -std=c++17
+@li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
+
+%Taskflow works on Linux, Windows, and Mac OS X.
+
 @section release-3-0-0_working_items Working Items
 
-@li migrating to the C++17 standard
-@li replacing all non-standard libraries with C++17 STL (e.g., @std_optional, @std_variant)
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
-@li adding parallel sort tf::Taskflow::sort algorithms
-@li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
-@li adopting <tt>constexpr if</tt> to replace std::enable_if
+@li adding methods for updating tf::cudaFlow (with unittests)
+@li adding support for @cuBLAS
+@li adding support for @cuDNN
+@li adding support for SYCL (ComputeCpp and DPC++)
 
 @section release-3-0-0_new_features New Features
 
+@subsection release-3-0-0_taskflow_core Taskflow Core
+
+@li replaced all non-standard libraries with C++17 STL (e.g., @std_optional, @std_variant)
+@li added tf::WorkerView for users to observer the worker that runs the task
+@li added asynchronous tasking (see @ref AsyncTasking)
+@li modified tf::ObserverInterface::on_entry and tf::ObserverInterface::on_exit to take tf::WorkerView
+@li added a custom graph interface to support dynamic polymorphism for tf::cudaGraph
+@li supported separate compilations between %Taskflow and CUDA (see @ref CompileTaskflowWithCUDA)
+
+@subsection release-3-0-0_cudaflow cudaFlow
+
+
+@li added tf::cudaFlowCapturer for building a %cudaFlow through stream capture (see @ref GPUTaskingcudaFlowCapturer)
+@li added tf::cudaFlowCapturerBase for creating custom capturers
+@li added tf::cudaFlow::capture for capturing a %cudaFlow within a parent %cudaFlow
+@li added tf::Taskflow::emplace_on to place a %cudaFlow on a GPU
+@li added tf::cudaFlow::dump and tf::cudaFlowCapturer::dump to visualize %cudaFlow
+@li added tf::cudaFlow::offload and update methods to run and update a %cudaFlow explicitly
+@li supported standalone use of %cudaFlow (see @ref C6_UsecudaFlowInAStandaloneEnvironment)
+@li added tf::cublasFlowCapturer to support @cuBLAS (see @ref LinearAlgebracublasFlowCapturer)
+
+
+@subsection release-3-0-0_utilities Utilities
+
+@li added utility functions to grab the cuda device properties (see cuda_device.hpp)
+@li added utility functions to control cuda memory (see cuda_memory.hpp)
+@li added utility functions for common mathematics operations
+@li added per-thread pool for CUDA streams to improve performance
+
+@section release-3-0-0_new_algorithms New Algorithms
+
+@subsection release-3-0-0_cpu_algorithms CPU Algorithms
+
+@li added parallel sort (see @ref ParallelSort) 
+
+@subsection release-3-0-0_gpu_algorithms GPU Algorithms
+
+@li added single task (see @ref SingleTaskCUDA)
+@li added parallel iterations (see @ref ForEachCUDA)
+@li added parallel transforms (see @ref ParallelTransformsCUDA)
+@li added parallel reduction (see @ref CUDAReduce)
+
+
+@section release-3-0-0_documentation Documentation
+
+@li added @ref CompileTaskflowWithCUDA
+@li added @ref BenchmarkTaskflow
+@li added @ref AsyncTasking 
+@li added @ref GPUTaskingcudaFlowCapturer
+@li added @ref GPUAlgorithms
+  + @ref SingleTaskCUDA to run a kernel function in just a single thread
+  + @ref ForEachCUDA to perform parallel iterations over a range of items
+  + @ref ParallelTransformsCUDA to perform parallel transforms over a range of items
+  + @ref CUDAReduce to perform parallel reduction over a range of items
+  + @ref LinearAlgebracublasFlowCapturer to build GPU-accelerated 
+         linear algebra applications
+@li added @ref Governance
+  + @ref rules
+  + @ref team
+  + @ref codeofconduct
+@li added @ref Contributing
+  + @ref guidelines
+  + @ref contributors
+@li improved documentation pages for files
+
 @section release-3-0-0_bug_fixes Bug Fixes 
 
-There are no bug fixes in this release.
+@li fixed the bug in stream capturing (need to use @c ThreadLocal mode)
+@li fixed the bug in reporting wrong worker ids when compiling 
+    a shared library due to the use of @c thread_local (now with C++17 
+    @c inline variable)
 
-@section release-3-0-0_deprecated_items Deprecated Items 
+@section release-3-0-0_deprecated_items Deprecated and Removed Items 
+
+@li removed tf::cudaFlow::device; users may call tf::Taskflow::emplace_on to associate a cudaflow with a GPU device
+@li removed tf::cudaFlow::join, use tf::cudaFlow::offload instead
+@li removed the legacy tf::Framework
+@li removed external mutable use of tf::TaskView
 
 @section release-3-0-0_miscellaneous_items Miscellaneous Items
 
+We have presented %Taskflow in the following C++ venues with recorded videos:
+  + @CppCon20Talk
+  + @MUCpp20Talk
+
+We have published %Taskflow in the following conferences and journals:
+  + Tsung-Wei Huang, &quot;[A General-purpose Parallel and Heterogeneous Task Programming System for VLSI CAD](iccad20.pdf),&quot; <i>IEEE/ACM International Conference on Computer-aided Design (ICCAD)</i>, CA, 2020
+  + Chun-Xun Lin, Tsung-Wei Huang, and Martin Wong, &quot;[An Efficient Work-Stealing Scheduler for Task Dependency Graph](icpads20.pdf),&quot; <i>IEEE International Conference on Parallel and Distributed Systems (ICPADS)</i>, Hong Kong, 2020
+  + Tsung-Wei Huang, Dian-Lun Lin, Yibo Lin, and Chun-Xun Lin, &quot;Cpp-Taskflow: A General-purpose Parallel %Task Programming System at Scale,&quot;	<em>IEEE Transactions on Computer-aided Design of Integrated Circuits and Systems (TCAD)</em>, to appear, 2020
 
 */
 

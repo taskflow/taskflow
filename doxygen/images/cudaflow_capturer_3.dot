@@ -1,0 +1,20 @@
+digraph Taskflow {
+rankdir="LR";
+p0x14117f0[label="cudaFlow"  style="filled" color="black" fillcolor="purple" fontcolor="white" shape="folder"];
+subgraph cluster_p0x14117f0 {
+label="cudaFlow: cudaFlow";
+color="purple"
+p0x7fb730000e60[label="my_kernel" style="filled" color="white" fillcolor="black" fontcolor="white" shape="box3d"];
+p0x7fb730000e60 -> p0x7fb730001510;
+p0x7fb730001510[label="capturer" style="filled" color="black" fillcolor="purple" fontcolor="white" shape="folder"];
+p0x7fb730001510 -> p0x14117f0;
+subgraph cluster_p0x7fb730001510 {
+label="cudaSubflow: capturer";
+color="purple"
+p0x7fb7300015b0[label="my_kernel1"];
+p0x7fb7300015b0 -> p0x7fb730001650;
+p0x7fb730001650[label="my_kernel2"];
+p0x7fb730001650 -> p0x7fb730001510;
+}
+}
+}

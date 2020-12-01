@@ -7,6 +7,7 @@
 #include <taskflow/utility/passive_vector.hpp>
 #include <taskflow/utility/uuid.hpp>
 #include <taskflow/utility/iterator.hpp>
+#include <taskflow/utility/math.hpp>
 
 // --------------------------------------------------------
 // Testcase: PassiveVector
@@ -310,12 +311,12 @@ TEST_CASE("ObjectPool.Sequential" * doctest::timeout(300)) {
     REQUIRE(pool.num_objects_per_block() > 0);
     REQUIRE(pool.emptiness_threshold() > 0);
     
-    // fill out all object objects
-    int N = 100*pool.num_objects_per_block();
+    // fill out all objects
+    size_t N = 100*pool.num_objects_per_block();
 
     std::set<Poolable*> set;
 
-    for(int i=0; i<N; ++i) {
+    for(size_t i=0; i<N; ++i) {
       auto item = pool.animate();
       REQUIRE(set.find(item) == set.end());
       set.insert(item);
@@ -331,7 +332,7 @@ TEST_CASE("ObjectPool.Sequential" * doctest::timeout(300)) {
     REQUIRE(N == pool.num_available_objects());
     REQUIRE(0 == pool.num_allocated_objects());
     
-    for(int i=0; i<N; ++i) {
+    for(size_t i=0; i<N; ++i) {
       auto item = pool.animate();
       REQUIRE(set.find(item) != set.end());
     }
@@ -570,6 +571,47 @@ TEST_CASE("FunctionTraits" * doctest::timeout(300)) {
   }
 }
 
+// --------------------------------------------------------
+// Math utilities
+// --------------------------------------------------------
+TEST_CASE("NextPow2") {
+
+  static_assert(tf::next_pow2(0u) == 1);
+  static_assert(tf::next_pow2(1u) == 1);
+  static_assert(tf::next_pow2(100u) == 128u);
+  static_assert(tf::next_pow2(245u) == 256u);
+  static_assert(tf::next_pow2(512u) == 512u);
+  static_assert(tf::next_pow2(513u) == 1024u);
+
+  REQUIRE(tf::next_pow2(0u) == 1u);
+  REQUIRE(tf::next_pow2(2u) == 2u);
+  REQUIRE(tf::next_pow2(1u) == 1u);
+  REQUIRE(tf::next_pow2(33u) == 64u);
+  REQUIRE(tf::next_pow2(100u) == 128u);
+  REQUIRE(tf::next_pow2(211u) == 256u);
+  REQUIRE(tf::next_pow2(23u) == 32u);
+  REQUIRE(tf::next_pow2(54u) == 64u);
+  
+  uint64_t z = 0;
+  uint64_t a = 1;
+  REQUIRE(tf::next_pow2(z) == 1);
+  REQUIRE(tf::next_pow2(a) == a);
+  REQUIRE(tf::next_pow2((a<<5)  + 0) == (a<<5));
+  REQUIRE(tf::next_pow2((a<<5)  + 1) == (a<<6));
+  REQUIRE(tf::next_pow2((a<<32) + 0) == (a<<32));
+  REQUIRE(tf::next_pow2((a<<32) + 1) == (a<<33));
+  REQUIRE(tf::next_pow2((a<<41) + 0) == (a<<41));
+  REQUIRE(tf::next_pow2((a<<41) + 1) == (a<<42));
+  
+  REQUIRE(tf::is_pow2(0) == false);  
+  REQUIRE(tf::is_pow2(1) == true);  
+  REQUIRE(tf::is_pow2(2) == true);  
+  REQUIRE(tf::is_pow2(3) == false);  
+  REQUIRE(tf::is_pow2(0u) == false);
+  REQUIRE(tf::is_pow2(1u) == true);
+  REQUIRE(tf::is_pow2(54u) == false);  
+  REQUIRE(tf::is_pow2(64u) == true);  
+}
 
 
 

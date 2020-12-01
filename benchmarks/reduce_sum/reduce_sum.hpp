@@ -9,7 +9,7 @@
 #include <cmath>
 #include <atomic>
 
-extern std::vector<double> vec;
+inline std::vector<double> vec;
 
 std::chrono::microseconds measure_time_taskflow(unsigned);
 std::chrono::microseconds measure_time_tbb(unsigned);

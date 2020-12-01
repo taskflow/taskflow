@@ -1,4 +1,4 @@
-// The example creates the following cyclic graph:
+// The example creates the following cyclic graph of one iterative loop:
 //
 //       A
 //       |
@@ -13,9 +13,9 @@
 //
 // - A is a task that initializes a counter to zero
 // - B is a task that increments the counter
-// - C is a condition task that loops around B until the counter 
+// - C is a condition task that loops with B until the counter 
 //   reaches a breaking number
-// - D is a task that wraps up the result
+// - D is a task that finalizes the result
 
 #include <taskflow/taskflow.hpp>
 

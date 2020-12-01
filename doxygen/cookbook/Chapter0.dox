@@ -1,11 +1,13 @@
 namespace tf {
 
-/** @page chapter0 C0: Project Motivation
+/** @page chapter0 Project Motivation
 
 %Taskflow addresses a long-standing problem,
 <em>how can we make it easier for C++ developers to 
 quickly write parallel and heterogeneous programs with high performance scalability
 and simultaneous high productivity?</em>
+
+@tableofcontents
 
 @section TheEraOfMulticore The Era of Multicore
 
@@ -70,7 +72,8 @@ To address these challenges,
 parallel programming and libraries are evolving from the tradition loop-based parallelism to
 the *task-based* model.
 
-@image html images/task-level-parallelism.svg width=60%
+<!-- @image html images/task-level-parallelism.svg width=60% -->
+@dotfile images/task-level-parallelism.dot
 
 The above figure shows an example *task dependency graph*.
 Each node in the graph represents a task unit at function level and each

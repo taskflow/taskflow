@@ -1,0 +1,19 @@
+digraph Taskflow {
+rankdir="LR";
+subgraph cluster_p0x7ffea58711b0 {
+label="Taskflow: Ax = b";
+p0x18c01a0[label="cublasFlow"  style="filled" color="black" fillcolor="purple" fontcolor="white" shape="folder"];
+subgraph cluster_p0x18c01a0 {
+label="cudaFlow: cublasFlow";
+color="purple"
+p0x7f7e06617130[label="copy A"];
+p0x7f7e06617130 -> p0x7f7e066172d0;
+p0x7f7e06617200[label="copy B"];
+p0x7f7e06617200 -> p0x7f7e066172d0;
+p0x7f7e066172d0[label="trsv"];
+p0x7f7e066172d0 -> p0x7f7e066173d0;
+p0x7f7e066173d0[label="copy result"];
+p0x7f7e066173d0 -> p0x18c01a0;
+}
+}
+}

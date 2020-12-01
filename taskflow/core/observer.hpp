@@ -1,6 +1,12 @@
 #pragma once
 
 #include "task.hpp"
+#include "worker.hpp"
+
+/** 
+@file observer.hpp
+@brief observer include file
+*/
 
 namespace tf {
 
@@ -9,9 +15,55 @@ namespace tf {
 
 @brief The interface class for creating an executor observer.
 
-The tf::ExecutorObserver class let users define methods to monitor the behaviors
-of an executor. 
-This is particularly useful when you want to inspect the performance of an executor.
+The tf::ObserverInterface class let users define custom methods to monitor 
+the behaviors of an executor. This is particularly useful when you want to 
+inspect the performance of an executor and visualize when each thread 
+participates in the execution of a task.
+To prevent users from direct access to the internal threads and tasks, 
+tf::ObserverInterface provides immutable wrappers,
+tf::WorkerView and tf::TaskView, over workers and tasks.
+
+Please refer to tf::WorkerView and tf::TaskView for details.
+
+Example usage:
+
+@code{.cpp}
+
+struct MyObserver : public tf::ObserverInterface {
+
+  MyObserver(const std::string& name) {
+    std::cout << "constructing observer " << name << '\n';
+  }
+
+  void set_up(size_t num_workers) override final {
+    std::cout << "setting up observer with " << num_workers << " workers\n";
+  }
+
+  void on_entry(WorkerView w, tf::TaskView tv) override final {
+    std::ostringstream oss;
+    oss << "worker " << w.id() << " ready to run " << tv.name() << '\n';
+    std::cout << oss.str();
+  }
+
+  void on_exit(WorkerView w, tf::TaskView tv) override final {
+    std::ostringstream oss;
+    oss << "worker " << w.id() << " finished running " << tv.name() << '\n';
+    std::cout << oss.str();
+  }
+};
+  
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+// insert tasks into taskflow
+// ...
+  
+// create a custom observer
+std::shared_ptr<MyObserver> observer = executor.make_observer<MyObserver>("MyObserver");
+
+// run the taskflow
+executor.run(taskflow).wait();
+@endcode
 */
 class ObserverInterface {
 
@@ -32,17 +84,17 @@ class ObserverInterface {
   
   /**
   @brief method to call before a worker thread executes a closure 
-  @param worker_id the id of this worker thread 
+  @param w an immutable view of this worker thread 
   @param task_view a constant wrapper object to the task 
   */
-  virtual void on_entry(size_t worker_id, TaskView task_view) = 0;
+  virtual void on_entry(WorkerView w, TaskView task_view) = 0;
   
   /**
   @brief method to call after a worker thread executed a closure
-  @param worker_id the id of this worker thread 
+  @param w an immutable view of this worker thread
   @param task_view a constant wrapper object to the task
   */
-  virtual void on_exit(size_t worker_id, TaskView task_view) = 0;
+  virtual void on_exit(WorkerView w, TaskView task_view) = 0;
 };
 
 // ----------------------------------------------------------------------------
@@ -52,8 +104,28 @@ class ObserverInterface {
 /**
 @class: ChromeObserver
 
-@brief observer designed based on chrome tracing format
+@brief observer interface based on @ChromeTracing format
 
+A tf::ChromeObserver inherits tf::ObserverInterface and defines methods to dump
+the observed thread activities into a format that can be visualized through
+@ChromeTracing.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+// insert tasks into taskflow
+// ...
+  
+// create a custom observer
+std::shared_ptr<tf::ChromeObserver> observer = executor.make_observer<tf::ChromeObserver>();
+
+// run the taskflow
+executor.run(taskflow).wait();
+
+// dump the thread activities to a chrome-tracing format.
+observer->dump(std::cout);
+@endcode
 */
 class ChromeObserver : public ObserverInterface {
 
@@ -89,33 +161,31 @@ class ChromeObserver : public ObserverInterface {
   public:
 
     /**
-    @brief dump the timelines in JSON format to an ostream
-    @param ostream the target std::ostream to dump
+    @brief dumps the timelines into a @ChromeTracing format through 
+           an output stream 
     */
-    inline void dump(std::ostream& ostream) const;
+    void dump(std::ostream& ostream) const;
 
     /**
-    @brief dump the timelines in JSON to a std::string
-    @return a JSON string 
+    @brief dumps the timelines into a @ChromeTracing format
     */
     inline std::string dump() const;
 
     /**
-    @brief clear the timeline data
+    @brief clears the timeline data
     */
     inline void clear();
 
     /**
-    @brief get the number of total tasks in the observer
-    @return number of total tasks
+    @brief queries the number of tasks observed
     */
     inline size_t num_tasks() const;
 
   private:
     
     inline void set_up(size_t num_workers) override final;
-    inline void on_entry(size_t worker_id, TaskView task_view) override final;
-    inline void on_exit(size_t worker_id, TaskView task_view) override final;
+    inline void on_entry(WorkerView w, TaskView task_view) override final;
+    inline void on_exit(WorkerView w, TaskView task_view) override final;
 
     Timeline _timeline;
 };  
@@ -150,12 +220,15 @@ inline void ChromeObserver::set_up(size_t num_workers) {
 }
 
 // Procedure: on_entry
-inline void ChromeObserver::on_entry(size_t w, TaskView) {
-  _timeline.stacks[w].push(std::chrono::steady_clock::now());
+inline void ChromeObserver::on_entry(WorkerView wv, TaskView) {
+  _timeline.stacks[wv.id()].push(std::chrono::steady_clock::now());
 }
 
 // Procedure: on_exit
-inline void ChromeObserver::on_exit(size_t w, TaskView tv) {
+inline void ChromeObserver::on_exit(WorkerView wv, TaskView tv) {
+
+  size_t w = wv.id();
+
   assert(!_timeline.stacks[w].empty());
 
   auto beg = _timeline.stacks[w].top();
@@ -254,10 +327,36 @@ inline size_t ChromeObserver::num_tasks() const {
 // ----------------------------------------------------------------------------
 
 /**
-@class: TFProfObserver
+@class TFProfObserver
 
-@brief observer designed based on taskflow board format
+@brief observer interface based on @TFProf format
 
+A tf::TFProfObserver inherits tf::ObserverInterface and defines methods to dump
+the observed thread activities into a format that can be visualized through
+@TFProf.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+// insert tasks into taskflow
+// ...
+  
+// create a custom observer
+std::shared_ptr<tf::TFProfObserver> observer = executor.make_observer<tf::TFProfObserver>();
+
+// run the taskflow
+executor.run(taskflow).wait();
+
+// dump the thread activities to Taskflow Profiler format.
+observer->dump(std::cout);
+@endcode
+
+We recommend using our @TFProf python script to observe thread activities 
+instead of the raw function call.
+The script will turn on environment variables needed for observing all executors 
+in a taskflow program and dump the result to a valid, clean JSON file
+compatible with the format of @TFProf.
 */
 class TFProfObserver : public ObserverInterface {
 
@@ -296,33 +395,31 @@ class TFProfObserver : public ObserverInterface {
   public:
     
     /**
-    @brief dump the timelines in JSON format to an ostream
-    @param ostream the target std::ostream to dump
+    @brief dumps the timelines into a @TFProf format through 
+           an output stream
     */
-    inline void dump(std::ostream& ostream) const;
+    void dump(std::ostream& ostream) const;
 
     /**
-    @brief dump the timelines in JSON to a std::string
-    @return a JSON string 
+    @brief dumps the timelines into a JSON string
     */
-    inline std::string dump() const;
+    std::string dump() const;
 
     /**
-    @brief clear the timeline data
+    @brief clears the timeline data
     */
-    inline void clear();
+    void clear();
 
     /**
-    @brief get the number of total tasks in the observer
-    @return number of total tasks
+    @brief queries the number of tasks observed
     */
-    inline size_t num_tasks() const;
+    size_t num_tasks() const;
 
   private:
     
     inline void set_up(size_t num_workers) override final;
-    inline void on_entry(size_t worker_id, TaskView task_view) override final;
-    inline void on_exit(size_t worker_id, TaskView task_view) override final;
+    inline void on_entry(WorkerView, TaskView) override final;
+    inline void on_exit(WorkerView, TaskView) override final;
 
     Timeline _timeline;
 
@@ -358,12 +455,14 @@ inline void TFProfObserver::set_up(size_t num_workers) {
 }
 
 // Procedure: on_entry
-inline void TFProfObserver::on_entry(size_t w, TaskView) {
-  _timeline.stacks[w].push(std::chrono::steady_clock::now());
+inline void TFProfObserver::on_entry(WorkerView wv, TaskView) {
+  _timeline.stacks[wv.id()].push(std::chrono::steady_clock::now());
 }
 
 // Procedure: on_exit
-inline void TFProfObserver::on_exit(size_t w, TaskView tv) {
+inline void TFProfObserver::on_exit(WorkerView wv, TaskView tv) {
+
+  size_t w = wv.id();
 
   assert(!_timeline.stacks[w].empty());
   
@@ -487,7 +586,7 @@ inline size_t TFProfObserver::num_tasks() const {
 
 /** @enum ObserverType
 
-built-in observer types
+@brief enumeration of all observer types
 
 */
 enum ObserverType {
@@ -507,13 +606,6 @@ inline const char* observer_type_to_string(ObserverType type) {
   }
   return val;
 }
-
-// ----------------------------------------------------------------------------
-// Legacy Alias
-// ----------------------------------------------------------------------------
-using ExecutorObserverInterface = ObserverInterface;
-using ExecutorObserver          = ChromeObserver;
-
 
 }  // end of namespace tf -----------------------------------------------------
 

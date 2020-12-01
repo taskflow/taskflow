@@ -2,6 +2,11 @@
 
 #include "task.hpp"
 
+/** 
+@file flow_builder.hpp
+@brief flow builder include file
+*/
+
 namespace tf {
 
 /** 
@@ -17,65 +22,57 @@ class FlowBuilder {
   public:
 
     Semaphore semaphore(int);
-    
-    /**
-    @brief creates a static task from a given callable object
-    
-    @tparam C callable type
-    
-    @param callable a callable object constructible from std::function<void()>
-
-    @return a Task handle
-    */
-    template <typename C>
-    std::enable_if_t<is_static_task_v<C>, Task> emplace(C&& callable);
 
     /**
-    @brief creates a dynamic task from a given callable object
+    @brief creates a static task
     
-    @tparam C callable type
-    
-    @param callable a callable object constructible from std::function<void(Subflow&)>
+    @tparam C callable type constructible from std::function<void()>
 
-    @return a Task handle
+    @param callable callable to construct a static task
+
+    @return a tf::Task handle
     */
-    template <typename C>
-    std::enable_if_t<is_dynamic_task_v<C>, Task> emplace(C&& callable);
-
+    template <typename C, 
+      std::enable_if_t<is_static_task_v<C>, void>* = nullptr
+    >
+    Task emplace(C&& callable);
+    
     /**
-    @brief creates a condition task from a given callable object
+    @brief creates a dynamic task
     
-    @tparam C callable type
-    
-    @param callable a callable object constructible from std::function<int()>
+    @tparam C callable type constructible from std::function<void(tf::Subflow)>
 
-    @return a Task handle
+    @param callable callable to construct a dynamic task
+
+    @return a tf::Task handle
     */
-    template <typename C>
-    std::enable_if_t<is_condition_task_v<C>, Task> emplace(C&& callable);
-
-#ifdef TF_ENABLE_CUDA
+    template <typename C, 
+      std::enable_if_t<is_dynamic_task_v<C>, void>* = nullptr
+    >
+    Task emplace(C&& callable);
+    
     /**
-    @brief creates a cudaflow task from a given callable object
+    @brief creates a condition task
     
-    @tparam C callable type
-    
-    @param callable a callable object constructible from std::function<void(cudaFlow&)>
+    @tparam C callable type constructible from std::function<int()>
 
-    @return a Task handle
+    @param callable callable to construct a condition task
+
+    @return a tf::Task handle
     */
-    template <typename C>
-    std::enable_if_t<is_cudaflow_task_v<C>, Task> emplace(C&& callable);
-#endif 
+    template <typename C, 
+      std::enable_if_t<is_condition_task_v<C>, void>* = nullptr
+    >
+    Task emplace(C&& callable);
 
     /**
     @brief creates multiple tasks from a list of callable objects
     
-    @tparam C... callable types
+    @tparam C callable types
 
     @param callables one or multiple callable objects constructible from each task category
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
     auto emplace(C&&... callables);
@@ -84,16 +81,45 @@ class FlowBuilder {
     @brief creates a module task from a taskflow
 
     @param taskflow a taskflow object for the module
-    @return a Task handle
+
+    @return a tf::Task handle
     */
     Task composed_of(Taskflow& taskflow);
-    
+
     /**
     @brief creates an empty task
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     Task placeholder();
+
+    /**
+    @brief creates a cudaflow task on the default device 0
+
+    @tparam C callable type constructible from @c std::function<void(tf::cudaFlow&)>
+
+    @return a tf::Task handle
+
+    This method is equivalent to calling tf::Taskflow::emplace_on(callable, d)
+    where @c d is the caller's device context.
+    */
+    template <typename C, 
+      std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr
+    >
+    Task emplace(C&& callable);
+    
+    /**
+    @brief creates a cudaflow task on the given device
+
+    @tparam C callable type constructible from std::function<void(tf::cudaFlow&)>
+    @tparam D device type, either @c int or @c std::ref<int> (stateful)
+
+    @return a tf::Task handle
+    */
+    template <typename C, typename D, 
+      std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr
+    >
+    Task emplace_on(C&& callable, D&& device);
 
     /**
     @brief adds adjacent dependency links to a linear list of tasks
@@ -124,7 +150,7 @@ class FlowBuilder {
     @param last iterator to the end (exclusive)
     @param callable a callable object to apply to the dereferenced iterator 
 
-    @return a Task handle
+    @return a tf::Task handle
 
     The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[first, last)</tt>. By default, we employ the guided partition algorithm with chunk size equal to one.
     
@@ -156,7 +182,7 @@ class FlowBuilder {
     @param callable a callable object to apply to the dereferenced iterator 
     @param chunk_size chunk size
 
-    @return a Task handle
+    @return a tf::Task handle
 
     The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.
     
@@ -180,7 +206,7 @@ class FlowBuilder {
     @param callable a callable object to apply to the dereferenced iterator 
     @param chunk_size chunk size
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.
     
@@ -204,7 +230,7 @@ class FlowBuilder {
     @param callable a callable object to apply to the dereferenced iterator 
     @param chunk_size chunk size
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.
     
@@ -230,7 +256,7 @@ class FlowBuilder {
     @param step step size 
     @param callable a callable object to apply to each valid index
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow that applies the callable object to each index in the range <tt>[first, last)</tt> with the step size. By default, we employ the guided partition algorithm with chunk size equal to one.
     
@@ -271,7 +297,7 @@ class FlowBuilder {
     @param callable a callable object to apply to each valid index
     @param chunk_size chunk size (default 1)
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.
 
@@ -299,7 +325,7 @@ class FlowBuilder {
     @param callable a callable object to apply to each valid index
     @param chunk_size chunk size (default 1)
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.
 
@@ -327,7 +353,7 @@ class FlowBuilder {
     @param callable a callable object to apply to each valid index
     @param chunk_size chunk size (default 0)
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.
 
@@ -357,7 +383,7 @@ class FlowBuilder {
     @param init initial value of the reduction and the storage for the reduced result
     @param bop binary operator that will be applied 
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.
     
@@ -393,7 +419,7 @@ class FlowBuilder {
 
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     template <typename B, typename E, typename T, typename O, typename H = size_t>
     Task reduce_guided(
@@ -419,7 +445,7 @@ class FlowBuilder {
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     template <typename B, typename E, typename T, typename O, typename H = size_t>
     Task reduce_dynamic(
@@ -445,7 +471,7 @@ class FlowBuilder {
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
 
-    @return a Task handle
+    @return a tf::Task handle
     */
     template <typename B, typename E, typename T, typename O, typename H = size_t>
     Task reduce_static(
@@ -471,7 +497,7 @@ class FlowBuilder {
     @param bop binary operator that will be applied in unspecified order to the results of @c uop
     @param uop unary operator that will be applied to transform each element in the range to the result type
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.
     
@@ -505,7 +531,7 @@ class FlowBuilder {
     @param uop unary operator that will be applied to transform each element in the range to the result type
     @param chunk_size chunk size
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
     
@@ -533,7 +559,7 @@ class FlowBuilder {
     @param uop unary operator that will be applied to transform each element in the range to the result type
     @param chunk_size chunk size
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
     
@@ -561,7 +587,7 @@ class FlowBuilder {
     @param uop unary operator that will be applied to transform each element in the range to the result type
     @param chunk_size chunk size
 
-    @return a Task handle
+    @return a tf::Task handle
     
     The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
     
@@ -572,6 +598,46 @@ class FlowBuilder {
       B&& first, E&& last, T& init, BOP&& bop, UOP&& uop, H&& chunk_size = 1
     );
     
+    // ------------------------------------------------------------------------
+    // sort
+    // ------------------------------------------------------------------------
+    
+    /**
+    @brief constructs a dynamic task to perform STL-styled parallel sort
+  
+    @tparam B beginning iterator type (random-accessible)
+    @tparam E ending iterator type (random-accessible)
+    @tparam C comparator type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param cmp comparison function object
+    
+    The task spawns a subflow to parallelly sort elements in the range 
+    <tt>[first, last)</tt>. 
+    
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    */
+    template <typename B, typename E, typename C>
+    Task sort(B&& first, E&& last, C&& cmp);
+    
+    /**
+    @brief constructs a dynamic task to perform STL-styled parallel sort using
+           the @c std::less<T> comparator, where @c T is the element type
+    
+    @tparam B beginning iterator type (random-accessible)
+    @tparam E ending iterator type (random-accessible)
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    
+    The task spawns a subflow to parallelly sort elements in the range 
+    <tt>[first, last)</tt>. 
+
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+     */
+    template <typename B, typename E>
+    Task sort(B&& first, E&& last);
     
   protected:
     
@@ -601,57 +667,39 @@ inline Semaphore FlowBuilder::semaphore(int const initial) {
 }
 
 // Function: emplace
+template <typename C, std::enable_if_t<is_static_task_v<C>, void>*>
+Task FlowBuilder::emplace(C&& c) {
+  return Task(_graph.emplace_back(
+    std::in_place_type_t<Node::StaticTask>{}, std::forward<C>(c)
+  ));
+}
+
+// Function: emplace
+template <typename C, std::enable_if_t<is_dynamic_task_v<C>, void>*>
+Task FlowBuilder::emplace(C&& c) {
+  return Task(_graph.emplace_back(
+    std::in_place_type_t<Node::DynamicTask>{}, std::forward<C>(c)
+  ));
+}
+
+// Function: emplace
+template <typename C, std::enable_if_t<is_condition_task_v<C>, void>*>
+Task FlowBuilder::emplace(C&& c) {
+  return Task(_graph.emplace_back(
+    std::in_place_type_t<Node::ConditionTask>{}, std::forward<C>(c)
+  ));
+}
+
+// Function: emplace
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
 auto FlowBuilder::emplace(C&&... cs) {
   return std::make_tuple(emplace(std::forward<C>(cs))...);
 }
 
-// Function: emplace
-// emplaces a static task
-template <typename C>
-std::enable_if_t<is_static_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
-  auto n = _graph.emplace_back(
-    nstd::in_place_type_t<Node::StaticWork>{}, std::forward<C>(c)
-  );
-  return Task(n);
-}
-
-// Function: emplace
-// emplaces a dynamic task
-template <typename C>
-std::enable_if_t<is_dynamic_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
-  auto n = _graph.emplace_back(
-    nstd::in_place_type_t<Node::DynamicWork>{}, std::forward<C>(c)
-  );
-  return Task(n);
-}
-
-// Function: emplace 
-// emplaces a condition task
-template <typename C>
-std::enable_if_t<is_condition_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
-  auto n = _graph.emplace_back(
-    nstd::in_place_type_t<Node::ConditionWork>{}, std::forward<C>(c)
-  );
-  return Task(n);
-}
-
-#ifdef TF_ENABLE_CUDA
-// Function: emplace
-// emplaces a cudaflow task
-template <typename C>
-std::enable_if_t<is_cudaflow_task_v<C>, Task> FlowBuilder::emplace(C&& c) {
-  auto n = _graph.emplace_back(
-    nstd::in_place_type_t<Node::cudaFlowWork>{}, std::forward<C>(c)
-  );
-  return Task(n);
-}
-#endif
-
 // Function: composed_of    
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
   auto node = _graph.emplace_back(
-    nstd::in_place_type_t<Node::ModuleWork>{}, &taskflow
+    std::in_place_type_t<Node::ModuleTask>{}, &taskflow
   );
   return Task(node);
 }
@@ -695,10 +743,35 @@ inline void FlowBuilder::linearize(std::initializer_list<Task> keys) {
 /** 
 @class Subflow
 
-@brief building methods of a subflow graph in dynamic tasking
+@brief class to construct a subflow graph from the execution of a dynamic task
 
-By default, a subflow automatically joins its parent node. You may explicitly
-join or detach a subflow by calling Subflow::join or Subflow::detach.
+By default, a subflow automatically @em joins its parent node. 
+You may explicitly join or detach a subflow by calling tf::Subflow::join 
+or tf::Subflow::detach, respectively.
+The following example creates a taskflow graph that spawns a subflow from
+the execution of task @c B, and the subflow contains three tasks, @c B1,
+@c B2, and @c B3, where @c B3 runs after @c B1 and @c B2.
+
+@code{.cpp}
+// create three regular tasks
+tf::Task A = taskflow.emplace([](){}).name("A");
+tf::Task C = taskflow.emplace([](){}).name("C");
+tf::Task D = taskflow.emplace([](){}).name("D");
+
+// create a subflow graph (dynamic tasking)
+tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) {
+  tf::Task B1 = subflow.emplace([](){}).name("B1");
+  tf::Task B2 = subflow.emplace([](){}).name("B2");
+  tf::Task B3 = subflow.emplace([](){}).name("B3");
+  B1.precede(B3);
+  B2.precede(B3);
+}).name("B");
+            
+A.precede(B);  // B runs after A 
+A.precede(C);  // C runs after A 
+B.precede(D);  // D runs after B 
+C.precede(D);  // D runs after C 
+@endcode
 
 */ 
 class Subflow : public FlowBuilder {
@@ -731,6 +804,48 @@ class Subflow : public FlowBuilder {
     */
     bool joinable() const;
 
+    /** 
+    @brief runs a given function asynchronously
+
+    @tparam F callable type
+    @tparam ArgsT parameter types
+
+    @param f callable object to call
+    @param args parameters to pass to the callable
+    
+    @return a std::future that will eventually hold the result of the function call
+
+    This method is thread-safe and can be called by multiple tasks in the 
+    subflow at the same time.
+    The difference to tf::Executor::async is that the created asynchronous task
+    pertains to the subflow. 
+    When the subflow joins, all asynchronous tasks created from the subflow
+    are guaranteed to finish before the join.
+    For example:
+
+    @code{.cpp}
+    std::atomic<int> counter(0);
+    taskflow.empalce([&](tf::Subflow& sf){
+      for(int i=0; i<100; i++) {
+        sf.async([&](){ counter++; });
+      }
+      sf.join();
+      assert(counter == 100);
+    });
+    @endcode
+
+    You cannot create asynchronous tasks from a detached subflow.
+    Doing this results in undefined behavior.
+    */
+    template <typename F, typename... ArgsT>
+    auto async(F&& f, ArgsT&&... args);
+    
+    /**
+    @brief similar to tf::Subflow::async but did not return a future object
+     */
+    template <typename F, typename... ArgsT>
+    void silent_async(F&& f, ArgsT&&... args);
+
   private:
     
     Subflow(Executor&, Node*, Graph&);
@@ -752,12 +867,6 @@ inline Subflow::Subflow(Executor& executor, Node* parent, Graph& graph) :
 inline bool Subflow::joinable() const {
   return _joinable;
 }
-
-// ----------------------------------------------------------------------------
-// Legacy code
-// ----------------------------------------------------------------------------
-
-using SubflowBuilder = Subflow;
 
 }  // end of namespace tf. ---------------------------------------------------
 

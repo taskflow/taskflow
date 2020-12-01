@@ -3,7 +3,7 @@
 #include <omp.h>
 
 #include "levelgraph.hpp"
-#include <tbb/task_scheduler_init.h>
+#include <tbb/global_control.h>
 #include <tbb/flow_graph.h>
   
 using namespace tbb;
@@ -13,7 +13,9 @@ struct TBB {
   
   TBB(LevelGraph& graph, unsigned num_threads) {
 
-    tbb::task_scheduler_init init(num_threads);
+    tbb::global_control c(
+      tbb::global_control::max_allowed_parallelism, num_threads
+    );
 
     tasks.resize(graph.level()); 
     for(size_t i=0; i<tasks.size(); ++i) {

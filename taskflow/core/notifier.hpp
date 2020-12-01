@@ -257,15 +257,6 @@ class Notifier {
     }
   }
 
-  Notifier(const Notifier&) = delete;
-  Notifier& operator=(const Notifier&) = delete;
-
-  Notifier(Notifier&& rhs) : 
-    _state   {rhs._state.load()},
-    _waiters {std::move(rhs._waiters)} {
-  }
-
-  
 };
 
 

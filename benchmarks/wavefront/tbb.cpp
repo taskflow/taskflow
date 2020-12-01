@@ -1,5 +1,6 @@
 #include "matrix.hpp"
-#include <tbb/task_scheduler_init.h>
+
+#include <tbb/global_control.h>
 #include <tbb/flow_graph.h>
 
 // the wavefront computation
@@ -8,7 +9,9 @@ void wavefront_tbb(unsigned num_threads) {
   using namespace tbb;
   using namespace tbb::flow;
   
-  tbb::task_scheduler_init init(num_threads);
+  tbb::global_control c(
+    tbb::global_control::max_allowed_parallelism, num_threads
+  );
     
   continue_node<continue_msg> ***node = new continue_node<continue_msg> **[MB];
 

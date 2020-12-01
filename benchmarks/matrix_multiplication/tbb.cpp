@@ -1,14 +1,18 @@
 #include "matrix_multiplication.hpp"
-#include <tbb/tbb.h>
-#include <tbb/task_scheduler_init.h>
+#include <tbb/global_control.h>
+#include <tbb/flow_graph.h>
+#include <tbb/parallel_for.h>
 
 // matrix_multiplication_tbb
 void matrix_multiplication_tbb(unsigned num_threads) {
 
   using namespace tbb;
   using namespace tbb::flow;
+  
+  tbb::global_control control(
+    tbb::global_control::max_allowed_parallelism, num_threads
+  );
  
-  tbb::task_scheduler_init init(num_threads);
   //tbb::flow::graph G;
 
   //std::vector<std::unique_ptr<continue_node<continue_msg>>> tasks;

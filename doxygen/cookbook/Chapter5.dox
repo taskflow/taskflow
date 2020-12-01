@@ -1,12 +1,13 @@
 namespace tf {
 
-/** @page chapter5 C5: Composable Tasking
+/** @page chapter5 Composable Tasking
 
 Composition is a key to improve the programmability of a complex workflow.
 This chapter describes how to create a large parallel graph through composition of modular and reusable blocks that are easier to optimize.
 
+@tableofcontents
 
-@section C5_ComposesATaskflow Composes a Taskflow
+@section C5_ComposeATaskflow Compose a Taskflow
 
 A powerful feature of tf::Taskflow is its @em composable interface.
 You can break down a large parallel workload into smaller pieces
@@ -52,18 +53,19 @@ This largely facilitates the @em modularity of writing a parallel task program.
 36: f2.dump(std::cout);
 @endcode
 
-@image html images/composition_static_1.svg width=40%
+<!-- @image html images/composition_static_1.svg width=40% -->
+@dotfile images/composition_static_1.dot
 
 Debrief:
 
-@li Line 1-12  creates a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C
-@li Line 17-30 creates a taskflow of four tasks f2A, f2B, f2C, and f2D 
+@li Lines 1-12 create a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C
+@li Lines 17-30 create a taskflow of four tasks f2A, f2B, f2C, and f2D 
 @li Line 32 creates a module task from taskflow f1 through the method Taskflow::composed_of
 @li Line 33 enforces task f2C to run before the module task 
 @li Line 34 enforces the module task to run before task f2D
 
 
-@section C5_ModuleTask Module Task
+@section C5_CreateAModuleTask Create a Module Task
 
 The task created from Taskflow::composed_of is a @em module task
 that runs on a pre-defined taskflow.
@@ -75,21 +77,15 @@ For example, the following composition is valid.
 Even though the two module tasks @c module1 and @c module2 refer to the same taskflow @c F1,
 the dependency link prevents @c F1 from multiple executions at the same time.
 
-@image html images/composition_static_2.svg width=60%
+<!-- @image html images/composition_static_2.svg width=60% -->
+@dotfile images/composition_static_2.dot
 
 However, the following composition is @em invalid.
 Both module tasks refer to the same taskflow. They can not run at the same time because
 they are associated with the same graph.
 
-@image html images/composition_static_invalid.svg width=60%
-
-
-
-
-
-
-
-
+<!-- @image html images/composition_static_invalid.svg width=60% -->
+@dotfile images/composition_static_invalid.dot
 
 */
 

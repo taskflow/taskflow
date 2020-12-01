@@ -1,0 +1,41 @@
+digraph Taskflow {
+p0x21987b0[label="h2d_x"  style="filled" color="black" fillcolor="purple" fontcolor="white" shape="folder"];
+p0x21987b0 -> p0x2198ab0;
+subgraph cluster_p0x21987b0 {
+label="cudaFlow: h2d_x";
+color="purple"
+p0x7fe390000e60[label="h2d_x"];
+p0x7fe390000e60 -> p0x21987b0;
+}
+p0x2198870[label="h2d_y"  style="filled" color="black" fillcolor="purple" fontcolor="white" shape="folder"];
+p0x2198870 -> p0x2198ab0;
+subgraph cluster_p0x2198870 {
+label="cudaFlow: h2d_y";
+color="purple"
+p0x7fe390001890[label="h2d_y"];
+p0x7fe390001890 -> p0x2198870;
+}
+p0x2198930[label="d2h_x"  style="filled" color="black" fillcolor="purple" fontcolor="white" shape="folder"];
+subgraph cluster_p0x2198930 {
+label="cudaFlow: d2h_x";
+color="purple"
+p0x7fe39000b790[label="d2h_x"];
+p0x7fe39000b790 -> p0x2198930;
+}
+p0x21989f0[label="d2h_y"  style="filled" color="black" fillcolor="purple" fontcolor="white" shape="folder"];
+subgraph cluster_p0x21989f0 {
+label="cudaFlow: d2h_y";
+color="purple"
+p0x7fe3900017e0[label="d2h_y"];
+p0x7fe3900017e0 -> p0x21989f0;
+}
+p0x2198ab0[label="kernel"  style="filled" color="black" fillcolor="purple" fontcolor="white" shape="folder"];
+p0x2198ab0 -> p0x2198930;
+p0x2198ab0 -> p0x21989f0;
+subgraph cluster_p0x2198ab0 {
+label="cudaFlow: kernel";
+color="purple"
+p0x7fe390002000[label="saxpy" style="filled" color="white" fillcolor="black" fontcolor="white" shape="box3d"];
+p0x7fe390002000 -> p0x2198ab0;
+}
+}

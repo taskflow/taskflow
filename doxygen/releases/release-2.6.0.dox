@@ -8,6 +8,8 @@ enhanced web-based profiler, documentation, and unit tests.
 
 We have a new <a href="https://taskflow.github.io/">webpage</a> for %Taskflow!
 
+@tableofcontents
+
 @section release-2-6-0_download Download
 
 %Taskflow 2.6.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v2.6.0">here</a>.
@@ -16,23 +18,12 @@ We have a new <a href="https://taskflow.github.io/">webpage</a> for %Taskflow!
 
 @li added explicit join behavior of tf::Subflow (see @ref JoinASubflow and @ref fibonacci)
 @li added version macro (@c TF_VERSION, @c TF_MAJOR_VERSION, @c TF_MINOR_VERSION, @c TF_PATCH_VERSION) to retrieve version info programmatically (tf::version)
-@li added @c TF_BUILD_TESTS and @c TF_BUILD_EXAMPLES (default on) to let users disable the build of tests and examples (see @ref BAIAvailableCMakeOptions)
+@li added @c TF_BUILD_TESTS and @c TF_BUILD_EXAMPLES (default on) to let users disable the build of tests and examples (see @ref BAIConfigureCMakeOptions)
 @li renamed tf::Taskflkow::parallel_for to tf::Taskflow::for_each to follow the STL convention
-@li redesigned tf::Taskflow::for_each and tf::Taskflow::for_each_index using OpenMP-styled scheduling algorithms; this redesign largely improved the performance of parallel-for using a single dynamic task return, but it breaks the previous API that returned a std::pair of tasks to synchronize on a set of static parallel-for tasks. Yet, we believe adopting this change is not difficult (see @ref A0ForEach).
-@code{.cpp}
-// index-based parallel-for in the range [0, 100) with the step size equal to one
-tf::Task task1 = taskflow.for_each_index(0, 100, 1, 
-  [](int id) { std::cout << "parallel for on index" << id << '\n'; }
-);
-
-// iterator-based parallel-for in the range [first, last)
-tf::Task task2 = taskflow.for_each(first, last, 
-  [](auto item) { std::cout << "parallel for on object " << item << '\n'; }
-);
-@endcode
+@li redesigned tf::Taskflow::for_each and tf::Taskflow::for_each_index using OpenMP-styled scheduling algorithms; this redesign largely improved the performance of parallel-for using a single dynamic task return, but it breaks the previous API that returned a std::pair of tasks to synchronize on a set of static parallel-for tasks. Yet, we believe adopting this change is not difficult (see @ref A1ForEach).
 @li added multiple unit tests for tf::Taskflow::for_each and tf::Taskflow::for_each_index at different partition algorithms; we have implemented our partition algorithms based on the OpenMP library implementation of LLVM and GCC.
 @li added Mandelbrot application in the benchmark to evaluate the performance of parallel-for
-@li redesigned tf::Taskflow::reduce and tf::Taskflow::transform_reduce based on the parallel architecture of tf::Taskflow::for_each (see @ref A1Reduce).
+@li redesigned tf::Taskflow::reduce and tf::Taskflow::transform_reduce based on the parallel architecture of tf::Taskflow::for_each (see @ref A2Reduce).
 
 
 @section release-2-6-0_bug_fixes Bug Fixes 

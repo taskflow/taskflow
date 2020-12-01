@@ -4,7 +4,7 @@
 #include <sstream>
 #include <exception>
 
-#include "../utility/stringify.hpp"
+#include "../utility/stream.hpp"
 
 namespace tf {
 
@@ -15,8 +15,8 @@ template <typename... ArgsT>
 void throw_re(const char* fname, const size_t line, ArgsT&&... args) {
   std::ostringstream oss;
   oss << "[" << fname << ":" << line << "] ";
-  ostreamize(oss, std::forward<ArgsT>(args)...);
-  //(oss << ... << args);
+  //ostreamize(oss, std::forward<ArgsT>(args)...);
+  (oss << ... << args);
   throw std::runtime_error(oss.str());
 }
 

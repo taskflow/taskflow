@@ -3,6 +3,11 @@
 #include "graph.hpp"
 #include "semaphore.hpp"
 
+/** 
+@file task.hpp
+@brief task include file
+*/
+
 namespace tf {
 
 // ----------------------------------------------------------------------------
@@ -15,16 +20,13 @@ namespace tf {
 @brief enumeration of all task types
 */
 enum TaskType {
-  PLACEHOLDER_TASK = Node::PLACEHOLDER_WORK,
-#ifdef TF_ENABLE_CUDA
-  CUDAFLOW_TASK    = Node::CUDAFLOW_WORK,
-#endif
-  STATIC_TASK      = Node::STATIC_WORK,
-  DYNAMIC_TASK     = Node::DYNAMIC_WORK,
-  CONDITION_TASK   = Node::CONDITION_WORK,
-  MODULE_TASK      = Node::MODULE_WORK,
-  ASYNC_TASK       = Node::ASYNC_WORK,
-  NUM_TASK_TYPES
+  PLACEHOLDER_TASK = Node::PLACEHOLDER_TASK,
+  CUDAFLOW_TASK    = Node::CUDAFLOW_TASK,
+  STATIC_TASK      = Node::STATIC_TASK,
+  DYNAMIC_TASK     = Node::DYNAMIC_TASK,
+  CONDITION_TASK   = Node::CONDITION_TASK,
+  MODULE_TASK      = Node::MODULE_TASK,
+  ASYNC_TASK       = Node::ASYNC_TASK
 };
 
 /**
@@ -36,9 +38,7 @@ inline const char* task_type_to_string(TaskType type) {
 
   switch(type) {
     case PLACEHOLDER_TASK: val = "placeholder"; break;
-#ifdef TF_ENABLE_CUDA
     case CUDAFLOW_TASK:    val = "cudaflow";    break;
-#endif
     case STATIC_TASK:      val = "static";      break;
     case DYNAMIC_TASK:     val = "subflow";     break;
     case CONDITION_TASK:   val = "condition";   break;
@@ -55,47 +55,39 @@ inline const char* task_type_to_string(TaskType type) {
 // ----------------------------------------------------------------------------
 
 /**
-@struct is_static_task
-
 @brief determines if a callable is a static task
 
 A static task is a callable object constructible from std::function<void()>.
 */
 template <typename C>
-constexpr bool is_static_task_v = is_invocable_r_v<void, C> &&
-                                 !is_invocable_r_v<int, C>;
+constexpr bool is_static_task_v = std::is_invocable_r_v<void, C> &&
+                                 !std::is_invocable_r_v<int, C>;
 
 /**
-@struct is_dynamic_task
-
 @brief determines if a callable is a dynamic task
 
 A dynamic task is a callable object constructible from std::function<void(Subflow&)>.
 */
 template <typename C>
-constexpr bool is_dynamic_task_v = is_invocable_r_v<void, C, Subflow&>;
+constexpr bool is_dynamic_task_v = std::is_invocable_r_v<void, C, Subflow&>;
 
 /**
-@struct is_condition_task
-
 @brief determines if a callable is a condition task
 
 A condition task is a callable object constructible from std::function<int()>.
 */
 template <typename C>
-constexpr bool is_condition_task_v = is_invocable_r_v<int, C>;
+constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C>;
 
-#ifdef TF_ENABLE_CUDA
 /**
-@struct is_cudaflow_task
-
 @brief determines if a callable is a cudaflow task
 
-A cudaFlow task is a callable object constructible from std::function<void(cudaFlow&)>.
+A cudaFlow task is a callable object constructible from 
+std::function<void(tf::cudaFlow&)> or std::function<void(tf::cudaFlowCapturer&)>.
 */
 template <typename C>
-constexpr bool is_cudaflow_task_v = is_invocable_r_v<void, C, cudaFlow&>;
-#endif
+constexpr bool is_cudaflow_task_v = std::is_invocable_r_v<void, C, cudaFlow&> ||
+                                    std::is_invocable_r_v<void, C, cudaFlowCapturer&>;
 
 
 
@@ -108,9 +100,9 @@ constexpr bool is_cudaflow_task_v = is_invocable_r_v<void, C, cudaFlow&>;
 
 @brief handle to a node in a task dependency graph
 
-A Task is handle object of a node in a dependency graph. 
+A Task is handle to manipulate a node in a taskflow graph. 
 It provides a set of methods for users to access and modify the attributes of 
-the associated graph node.
+the associated graph node without directly touching internal node data.
 
 */
 class Task {
@@ -186,55 +178,17 @@ class Task {
     Task& name(const std::string& name);
 
     /**
-    @brief assigns a static task
+    @brief assigns a callable
 
-    @tparam C callable object type
+    @tparam C callable type
 
-    @param callable a callable object constructible from std::function<void()>
+    @param callable callable to construct one of the static, dynamic, condition, and cudaFlow tasks
 
     @return @c *this
     */
     template <typename C>
-    std::enable_if_t<is_static_task_v<C>, Task>& work(C&& callable);
+    Task& work(C&& callable);
     
-    /**
-    @brief assigns a dynamic task
-
-    @tparam C callable object type
-
-    @param callable a callable object constructible from std::function<void(Subflow&)>
-
-    @return @c *this
-    */
-    template <typename C>
-    std::enable_if_t<is_dynamic_task_v<C>, Task>& work(C&& callable);
-    
-    /**
-    @brief assigns a condition task
-
-    @tparam C callable object type
-
-    @param callable a callable object constructible from std::function<int()>
-
-    @return @c *this
-    */
-    template <typename C>
-    std::enable_if_t<is_condition_task_v<C>, Task>& work(C&& callable);
-
-#ifdef TF_ENABLE_CUDA    
-    /**
-    @brief assigns a cudaFlow task
-
-    @tparam C callable object type
-
-    @param callable a callable object constructible from std::function<void(cudaFlow&)>
-
-    @return @c *this
-    */
-    template <typename C>
-    std::enable_if_t<is_cudaflow_task_v<C>, Task>& work(C&& callable);
-#endif
-
     /**
     @brief creates a module task from a taskflow
 
@@ -247,7 +201,7 @@ class Task {
     /**
     @brief adds precedence links from this to other tasks
 
-    @tparam Ts... parameter pack
+    @tparam Ts parameter pack
 
     @param tasks one or multiple tasks
 
@@ -320,23 +274,16 @@ class Task {
     */
     TaskType type() const;
 
+    /**
+    @brief dumps the task through an output stream
+    */
+    void dump(std::ostream& ostream) const;
+
   private:
     
     Task(Node*);
 
     Node* _node {nullptr};
-
-    template <typename T>
-    void _precede(T&&);
-    
-    template <typename T, typename... Rest>
-    void _precede(T&&, Rest&&...);
-    
-    template <typename T>
-    void _succeed(T&&);
-    
-    template <typename T, typename... Rest>
-    void _succeed(T&&, Rest&&...);
 };
 
 // Constructor
@@ -350,52 +297,22 @@ inline Task::Task(const Task& rhs) : _node {rhs._node} {
 // Function: precede
 template <typename... Ts>
 Task& Task::precede(Ts&&... tasks) {
-  //(_node->_precede(tgts._node), ...);
-  _precede(std::forward<Ts>(tasks)...);
+  (_node->_precede(tasks._node), ...);
+  //_precede(std::forward<Ts>(tasks)...);
   return *this;
-}
-
-/// @private
-// Procedure: _precede
-template <typename T>
-void Task::_precede(T&& other) {
-  _node->_precede(other._node);
-}
-
-/// @private
-// Procedure: _precede
-template <typename T, typename... Ts>
-void Task::_precede(T&& task, Ts&&... others) {
-  _precede(std::forward<T>(task));
-  _precede(std::forward<Ts>(others)...);
 }
 
 // Function: succeed
 template <typename... Ts>
 Task& Task::succeed(Ts&&... tasks) {
-  //(tasks._node->_precede(_node), ...);
-  _succeed(std::forward<Ts>(tasks)...);
+  (tasks._node->_precede(_node), ...);
+  //_succeed(std::forward<Ts>(tasks)...);
   return *this;
-}
-
-/// @private
-// Procedure: succeed
-template <typename T>
-void Task::_succeed(T&& other) {
-  other._node->_precede(_node);
-}
-
-/// @private
-// Procedure: _succeed
-template <typename T, typename... Ts>
-void Task::_succeed(T&& task, Ts&&... others) {
-  _succeed(std::forward<T>(task));
-  _succeed(std::forward<Ts>(others)...);
 }
 
 // Function: composed_of
 inline Task& Task::composed_of(Taskflow& tf) {
-  _node->_handle.emplace<Node::ModuleWork>(&tf);
+  _node->_handle.emplace<Node::ModuleTask>(&tf);
   return *this;
 }
 
@@ -442,7 +359,7 @@ inline void Task::reset() {
 
 // Procedure: reset_work
 inline void Task::reset_work() {
-  _node->_handle = nstd::monostate{};
+  _node->_handle.emplace<std::monostate>();
 }
 
 // Function: name
@@ -506,39 +423,46 @@ inline size_t Task::hash_value() const {
   return std::hash<Node*>{}(_node);
 }
 
-// Function: work
-// assign a static work
-template <typename C>
-std::enable_if_t<is_static_task_v<C>, Task>& Task::work(C&& c) {
-  _node->_handle.emplace<Node::StaticWork>(std::forward<C>(c));
-  return *this;
+// Procedure: dump
+inline void Task::dump(std::ostream& os) const {
+  os << "task ";
+  if(name().empty()) os << _node;
+  else os << name();
+  os << " [type=" << task_type_to_string(type()) << ']';
 }
 
 // Function: work
-// assigns a dynamic work
 template <typename C>
-std::enable_if_t<is_dynamic_task_v<C>, Task>& Task::work(C&& c) {
-  _node->_handle.emplace<Node::DynamicWork>(std::forward<C>(c));
+Task& Task::work(C&& c) {
+  if constexpr(is_static_task_v<C>) {
+    _node->_handle.emplace<Node::StaticTask>(std::forward<C>(c));
+  }
+  else if constexpr(is_dynamic_task_v<C>) {
+    _node->_handle.emplace<Node::DynamicTask>(std::forward<C>(c));
+  }
+  else if constexpr(is_condition_task_v<C>) {
+    _node->_handle.emplace<Node::ConditionTask>(std::forward<C>(c));
+  }
+  else if constexpr(is_cudaflow_task_v<C>) {
+    _node->_handle.emplace<Node::cudaFlowTask>(std::forward<C>(c));
+  }
+  else {
+    static_assert(dependent_false_v<C>, "invalid task callable");
+  }
   return *this;
 }
 
-// Function: work
-// assigns a condition work
-template <typename C>
-std::enable_if_t<is_condition_task_v<C>, Task>& Task::work(C&& c) {
-  _node->_handle.emplace<Node::ConditionWork>(std::forward<C>(c));
-  return *this;
-}
+// ----------------------------------------------------------------------------
+// global ostream
+// ----------------------------------------------------------------------------
 
-#ifdef TF_ENABLE_CUDA
-// Function: work
-// assigns a cudaFlow work
-template <typename C>
-std::enable_if_t<is_cudaflow_task_v<C>, Task>& Task::work(C&& c) {
-  _node->_handle.emplace<Node::cudaFlowWork>(std::forward<C>(c));
-  return *this;
+/**
+@brief overload of ostream inserter operator for cudaTask
+*/
+inline std::ostream& operator << (std::ostream& os, const Task& task) {
+  task.dump(os);
+  return os;
 }
-#endif
 
 // ----------------------------------------------------------------------------
 
@@ -553,46 +477,6 @@ class TaskView {
 
   public:
 
-    /**
-    @brief constructs an empty task view
-    */
-    TaskView() = default;
-
-    /**
-    @brief constructs a task view from a task
-    */
-    TaskView(const Task& task);
-    
-    /**
-    @brief constructs the task with the copy of the other task
-    */
-    TaskView(const TaskView& other);
-    
-    /**
-    @brief replaces the contents with a copy of the other task
-    */
-    TaskView& operator = (const TaskView& other);
-    
-    /**
-    @brief replaces the contents with another task
-    */
-    TaskView& operator = (const Task& other);
-    
-    /**
-    @brief replaces the contents with a null pointer
-    */
-    TaskView& operator = (std::nullptr_t);
-
-    /**
-    @brief compares if two taskviews are associated with the same task
-    */
-    bool operator == (const TaskView&) const;
-    
-    /**
-    @brief compares if two taskviews are associated with different tasks
-    */
-    bool operator != (const TaskView&) const;
-    
     /**
     @brief queries the name of the task
     */
@@ -619,16 +503,6 @@ class TaskView {
     size_t num_weak_dependents() const;
 
     /**
-    @brief resets to an empty view
-    */
-    void reset();
-
-    /**
-    @brief queries if the task view is empty
-    */
-    bool empty() const;
-    
-    /**
     @brief applies an visitor callable to each successor of the task
     */
     template <typename V>
@@ -647,104 +521,59 @@ class TaskView {
     
   private:
     
-    TaskView(Node*);
+    TaskView(const Node&);
+    TaskView(const TaskView&) = default;
 
-    Node* _node {nullptr};
+    const Node& _node;
 };
 
 // Constructor
-inline TaskView::TaskView(Node* node) : _node {node} {
-}
-
-// Constructor
-inline TaskView::TaskView(const TaskView& rhs) : _node {rhs._node} {
-}
-
-// Constructor
-inline TaskView::TaskView(const Task& task) : _node {task._node} {
-}
-
-// Operator =
-inline TaskView& TaskView::operator = (const TaskView& rhs) {
-  _node = rhs._node;
-  return *this;
-}
-
-// Operator =
-inline TaskView& TaskView::operator = (const Task& rhs) {
-  _node = rhs._node;
-  return *this;
-}
-
-// Operator =
-inline TaskView& TaskView::operator = (std::nullptr_t ptr) {
-  _node = ptr;
-  return *this;
+inline TaskView::TaskView(const Node& node) : _node {node} {
 }
 
 // Function: name
 inline const std::string& TaskView::name() const {
-  return _node->_name;
+  return _node._name;
 }
 
 // Function: num_dependents
 inline size_t TaskView::num_dependents() const {
-  return _node->num_dependents();
+  return _node.num_dependents();
 }
 
 // Function: num_strong_dependents
 inline size_t TaskView::num_strong_dependents() const {
-  return _node->num_strong_dependents();
+  return _node.num_strong_dependents();
 }
 
 // Function: num_weak_dependents
 inline size_t TaskView::num_weak_dependents() const {
-  return _node->num_weak_dependents();
+  return _node.num_weak_dependents();
 }
 
 // Function: num_successors
 inline size_t TaskView::num_successors() const {
-  return _node->num_successors();
-}
-
-// Function: reset
-inline void TaskView::reset() {
-  _node = nullptr;
-}
-
-// Function: empty
-inline bool TaskView::empty() const {
-  return _node == nullptr;
+  return _node.num_successors();
 }
 
 // Function: type
 inline TaskType TaskView::type() const {
-  return static_cast<TaskType>(_node->_handle.index());
-}
-
-// Operator ==
-inline bool TaskView::operator == (const TaskView& rhs) const {
-  return _node == rhs._node;
-}
-
-// Operator !=
-inline bool TaskView::operator != (const TaskView& rhs) const {
-  return _node != rhs._node;
+  return static_cast<TaskType>(_node._handle.index());
 }
 
 // Function: for_each_successor
 template <typename V>
 void TaskView::for_each_successor(V&& visitor) const {
-  for(size_t i=0; i<_node->_successors.size(); ++i) {
-    visitor(TaskView(_node->_successors[i]));
+  for(size_t i=0; i<_node._successors.size(); ++i) {
+    visitor(TaskView(_node._successors[i]));
   }
 }
 
 // Function: for_each_dependent
 template <typename V>
 void TaskView::for_each_dependent(V&& visitor) const {
-  for(size_t i=0; i<_node->_dependents.size(); ++i) {
-    visitor(TaskView(_node->_dependents[i]));
+  for(size_t i=0; i<_node._dependents.size(); ++i) {
+    visitor(TaskView(_node._dependents[i]));
   }
 }
 
@@ -753,10 +582,9 @@ void TaskView::for_each_dependent(V&& visitor) const {
 namespace std {
 
 /**
-@class hash<tf::Task>
+@struct hash
 
 @brief hash specialization for std::hash<tf::Task>
-
 */
 template <>
 struct hash<tf::Task> {

@@ -1,5 +1,7 @@
 list(APPEND TF_EXAMPLES
   simple 
+  async
+  subflow_async
   observer 
   subflow 
   fibonacci 
@@ -19,8 +21,18 @@ foreach(example IN LISTS TF_EXAMPLES)
     )
 endforeach()
 
-if (CMAKE_CUDA_COMPILER AND TF_BUILD_CUDA)
+# -----------------------------------------------------------------------------
+# cuda examples
+# -----------------------------------------------------------------------------
+if(TF_BUILD_CUDA)
   add_subdirectory(cuda)
+endif()
+
+# -----------------------------------------------------------------------------
+# sycl examples
+# -----------------------------------------------------------------------------
+if(TF_BUILD_SYCL)
+  add_subdirectory(sycl)
 endif()
 
 

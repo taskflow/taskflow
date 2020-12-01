@@ -5,6 +5,11 @@
 #include "flow_builder.hpp"
 #include "topology.hpp"
 
+/** 
+@file core/taskflow.hpp
+@brief taskflow include file
+*/
+
 namespace tf {
 
 // ----------------------------------------------------------------------------
@@ -13,6 +18,45 @@ namespace tf {
 @class Taskflow 
 
 @brief main entry to create a task dependency graph
+
+A %taskflow manages a task dependency graph where each task represents a 
+callable object (e.g., @std_lambda, @std_function) and an edge represents a 
+dependency between two tasks. A task is one of the following five types:
+  
+  1. static task: the callable constructible from 
+                  @c std::function<void()>
+  2. dynamic task: the callable constructible from 
+                   @c std::function<void(tf::Subflow&)>
+  3. condition task: the callable constructible from 
+                     @c std::function<int()>
+  4. module task: the task constructed from tf::Taskflow::composed_of
+  5. %cudaFlow task: the callable constructible from 
+                     @c std::function<void(tf::cudaFlow)> or
+                     @c std::function<void(tf::cudaFlowCapturer)>
+
+The following example creates a simple taskflow graph of four static tasks, 
+@c A, @c B, @c C, and @c D, where
+@c A runs before @c B and @c C and 
+@c D runs after  @c B and @c C.
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow("simple");
+
+auto [A, B, C, D] = taskflow.emplace(
+  []() { std::cout << "TaskA\n"; },
+  []() { std::cout << "TaskB\n"; },
+  []() { std::cout << "TaskC\n"; },
+  []() { std::cout << "TaskD\n"; }
+);
+
+A.precede(B, C);  // A runs before B and C
+D.succeed(B, C);  // D runs after  B and C
+                                   
+executor.run(taskflow).wait();     
+@endcode
+
+Please refer to @ref Cookbook to learn more about each task type.
 
 */
 class Taskflow : public FlowBuilder {
@@ -29,7 +73,7 @@ class Taskflow : public FlowBuilder {
   public:
 
     /**
-    @brief constructs a taskflow with a given name
+    @brief constructs a taskflow with the given name
     */
     Taskflow(const std::string& name);
 
@@ -39,19 +83,13 @@ class Taskflow : public FlowBuilder {
     Taskflow();
 
     /**
-    @brief destroy the taskflow (virtual call)
-    */
-    virtual ~Taskflow();
-    
-    /**
-    @brief dumps the taskflow to a std::ostream in DOT format
-
-    @param ostream a std::ostream target
+    @brief dumps the taskflow to a DOT format through an output stream
+           using the stream insertion operator @c <<
     */
     void dump(std::ostream& ostream) const;
     
     /**
-    @brief dumps the taskflow in DOT format to a std::string
+    @brief dumps the taskflow to a std::string of DOT format
     */
     std::string dump() const;
     
@@ -67,8 +105,6 @@ class Taskflow : public FlowBuilder {
 
     /**
     @brief sets the name of the taskflow
-    
-    @return @c *this
     */
     void name(const std::string&); 
 
@@ -84,6 +120,16 @@ class Taskflow : public FlowBuilder {
 
     /**
     @brief applies an visitor callable to each task in the taskflow
+
+    The visitor is a callable that takes an argument of type tf::Task
+    and returns nothing. The following example iterates each task in a
+    taskflow and prints its name:
+
+    @code{.cpp}
+    taskflow.for_each_task([](tf::Task task){
+      std::cout << task.name() << '\n';
+    });
+    @endcode
     */
     template <typename V>
     void for_each_task(V&& visitor) const;
@@ -97,9 +143,11 @@ class Taskflow : public FlowBuilder {
     std::mutex _mtx;
 
     std::list<Topology> _topologies;
-
+    
     void _dump(std::ostream&, const Taskflow*) const;
+    
     void _dump(std::ostream&, const Node*, Dumper&) const;
+    
     void _dump(std::ostream&, const Graph&, Dumper&) const;
 };
 
@@ -113,17 +161,12 @@ inline Taskflow::Taskflow(const std::string& name) :
 inline Taskflow::Taskflow() : FlowBuilder{_graph} {
 }
 
-// Destructor
-inline Taskflow::~Taskflow() {
-  assert(_topologies.empty());
-}
-
 // Procedure:
 inline void Taskflow::clear() {
   _graph.clear();
 }
 
-// Function: num_noces
+// Function: num_tasks
 inline size_t Taskflow::num_tasks() const {
   return _graph.size();
 }
@@ -200,15 +243,16 @@ inline void Taskflow::_dump(
   // shape for node
   switch(node->_handle.index()) {
 
-    case Node::CONDITION_WORK:
+    case Node::CONDITION_TASK:
       os << "shape=diamond color=black fillcolor=aquamarine style=filled";
     break;
 
-#ifdef TF_ENABLE_CUDA
-    case Node::CUDAFLOW_WORK:
-      os << "shape=folder fillcolor=cyan style=filled";
+    case Node::CUDAFLOW_TASK:
+      os << " style=\"filled\""
+         << " color=\"black\" fillcolor=\"purple\""
+         << " fontcolor=\"white\""
+         << " shape=\"folder\"";
     break;
-#endif
 
     default:
     break;
@@ -217,7 +261,7 @@ inline void Taskflow::_dump(
   os << "];\n";
   
   for(size_t s=0; s<node->_successors.size(); ++s) {
-    if(node->_handle.index() == Node::CONDITION_WORK) {
+    if(node->_handle.index() == Node::CONDITION_TASK) {
       // case edge is dashed
       os << 'p' << node << " -> p" << node->_successors[s] 
          << " [style=dashed label=\"" << s << "\"];\n";
@@ -234,8 +278,8 @@ inline void Taskflow::_dump(
 
   switch(node->_handle.index()) {
 
-    case Node::DYNAMIC_WORK: {
-      auto& sbg = nstd::get<Node::DynamicWork>(node->_handle).subgraph;
+    case Node::DYNAMIC_TASK: {
+      auto& sbg = std::get<Node::DynamicTask>(node->_handle).subgraph;
       if(!sbg.empty()) {
         os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
         if(node->_name.empty()) os << 'p' << node;
@@ -247,61 +291,13 @@ inline void Taskflow::_dump(
       }
     }
     break;
-
-#ifdef TF_ENABLE_CUDA
-    case Node::CUDAFLOW_WORK: {
-      auto& cfg = nstd::get<Node::cudaFlowWork>(node->_handle).graph;
-      if(!cfg.empty()) {
-        os << "subgraph cluster_p" << node << " {\nlabel=\"cudaFlow: ";
-        if(node->_name.empty()) os << 'p' << node;
-        else os << node->_name;
-
-        os << "\";\n" << "color=\"purple\"\n";
-
-        for(const auto& v : cfg._nodes) {
-
-          os << 'p' << v.get() << "[label=\"";
-          if(v->_name.empty()) {
-            os << 'p' << v.get() << "\"";
-          }
-          else {
-            os << v->_name << "\"";
-          }
-          
-          switch(v->_handle.index()) {
-            case cudaNode::NOOP:
-            break;
-
-            case cudaNode::COPY:
-              //os << " shape=\"cds\"";
-            break;
-
-            case cudaNode::KERNEL:
-              os << " style=\"filled\""
-                 << " color=\"white\" fillcolor=\"black\""
-                 << " fontcolor=\"white\""
-                 << " shape=\"box3d\"";
-            break;
-
-            default:
-            break;
-          }
-  
-          os << "];\n";
-          for(const auto s : v->_successors) {
-            os << 'p' << v.get() << " -> " << 'p' << s << ";\n";
-          }
-          
-          if(v->_successors.size() == 0) {
-            os << 'p' << v.get() << " -> p" << node << ";\n";
-          }
-
-        }
-        os << "}\n";
-      }
+    
+    case Node::CUDAFLOW_TASK: {
+      std::get<Node::cudaFlowTask>(node->_handle).graph->dump(
+        os, node, node->_name
+      );
     }
     break;
-#endif
 
     default:
     break;
@@ -316,13 +312,13 @@ inline void Taskflow::_dump(
   for(const auto& n : graph._nodes) {
 
     // regular task
-    if(n->_handle.index() != Node::MODULE_WORK) {
+    if(n->_handle.index() != Node::MODULE_TASK) {
       _dump(os, n, dumper);
     }
     // module task
     else {
 
-      auto module = nstd::get<Node::ModuleWork>(n->_handle).module;
+      auto module = std::get<Node::ModuleTask>(n->_handle).module;
 
       os << 'p' << n << "[shape=box3d, color=blue, label=\"";
       if(n->_name.empty()) os << n;
@@ -343,11 +339,6 @@ inline void Taskflow::_dump(
     }
   }
 }
-
-// ----------------------------------------------------------------------------
-// Backward compatibility
-// ----------------------------------------------------------------------------
-using Framework = Taskflow;
 
 }  // end of namespace tf. ---------------------------------------------------
 

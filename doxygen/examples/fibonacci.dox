@@ -5,14 +5,14 @@ namespace tf {
 We study the classic problem, <em>Fibonacci Number</em>, 
 to demonstrate the use of recursive task parallelism.
 
+@tableofcontents
+
 @section FibonacciNumberProblem Problem Formulation
 
 In mathematics, the Fibonacci numbers, commonly denoted @c F(n), form a sequence
 such that each number is the sum of the two preceding ones, starting from 0 and 1.
 
-<center>
-0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...
-</center>
+<tt>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...</tt>
 
 A common solution for computing fibonacci numbers is @em recursion.
 
@@ -31,21 +31,24 @@ We use tf::Subflow to recursively compute fibonacci numbers in parallel.
 int spawn(int n, tf::Subflow& sbf) {
   if (n < 2) return n;
   int res1, res2;
-  sbf.emplace([&res1, n] (tf::Subflow& sbf) { res1 = spawn(n - 1, sbf); } ).name(std::to_string(n-1));  
-  sbf.emplace([&res2, n] (tf::Subflow& sbf) { res2 = spawn(n - 2, sbf); } ).name(std::to_string(n-2));
+  sbf.emplace([&res1, n] (tf::Subflow& sbf) { res1 = spawn(n - 1, sbf); } )
+     .name(std::to_string(n-1));  
+  sbf.emplace([&res2, n] (tf::Subflow& sbf) { res2 = spawn(n - 2, sbf); } )
+     .name(std::to_string(n-2));
   sbf.join();
   return res1 + res2;
 }
 
 int main(int argc, char* argv[]) {
   
-  int N = 7;
+  int N = 5;
   int res;
 
   tf::Executor executor;
   tf::Taskflow taskflow("fibonacci");
 
-  taskflow.emplace([&res, N] (tf::Subflow& sbf) { res = spawn(N, sbf); }).name(std::to_string(N));
+  taskflow.emplace([&res, N] (tf::Subflow& sbf) { res = spawn(N, sbf); })
+          .name(std::to_string(N));
 
   executor.run(taskflow).wait();
 
@@ -57,10 +60,11 @@ int main(int argc, char* argv[]) {
 }
 @endcode
 
-The spawned taskflow graph for computing up to the 7th fibonacci number is shown below:
+The spawned taskflow graph for computing up to the fifth fibonacci number is shown below:
 
 
-@image html images/fibonacci_7.svg width=100%
+<!-- @image html images/fibonacci_7.svg width=100% -->
+@dotfile images/fibonacci_7.dot
 
 Even if recursive dynamic tasking or subflows are permitted, 
 the recursion depth may not be too deep or it can cause stack overflow.

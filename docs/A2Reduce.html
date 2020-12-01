@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Algorithms &raquo; Parallel Reduction | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Algorithms.html">Algorithms</a> &raquo;</span>
+          Parallel Reduction
+        </h1>
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#A2ParallelReduction">Parallel Reduction</a></li>
+            <li><a href="#A2ParallelTransformationReduction">Parallel Transformation-Reduction</a></li>
+          </ul>
+        </div>
+<p>Taskflow provides template function that constructs a task to perform parallel reduction over a range of items.</p><section id="A2ParallelReduction"><h2><a href="#A2ParallelReduction">Parallel Reduction</a></h2><p>The reduction task created by <a href="classtf_1_1FlowBuilder.html#ad999cd75045db225a42d5881d6db1223" class="m-doc">tf::<wbr />Taskflow::<wbr />reduce(B&amp;&amp; first, E&amp;&amp; last, T&amp; result, O&amp;&amp; bop)</a> performs parallel reduction over a range of elements specified by <code>[first, last)</code> using the binary operator <code>bop</code> and stores the reduced result in <code>result</code>. It represents the parallel execution of the following reduction loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">itr</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">itr</span><span class="p">);</span>
+<span class="p">}</span></pre><p>At runtime, the reduction task spawns a subflow to perform parallel reduction. The reduced result is stored in <code>result</code> that will be captured by reference in the reduction task. It is your responsibility to ensure <code>result</code> remains alive during the parallel execution.</p><pre class="m-code"><span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vec</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">};</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">task</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">vec</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">vec</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">sum</span><span class="p">,</span> 
+  <span class="p">[]</span> <span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">l</span> <span class="o">+</span> <span class="n">r</span><span class="p">;</span> <span class="p">}</span>  <span class="c1">// binary reducer operator</span>
+<span class="p">);</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+
+<span class="n">assert</span><span class="p">(</span><span class="n">sum</span> <span class="o">==</span> <span class="mi">100</span> <span class="o">+</span> <span class="mi">55</span><span class="p">);</span></pre><p>The order in which the binary operator is applied to pairs of elements is <em>unspecified</em>. In other words, the elements of the range may be grouped and rearranged in arbitrary order. The result and the argument types of the binary operator must be consistent with the input data type .</p><p>Similar to <a href="A1ForEach.html" class="m-doc">Parallel Iterations</a>, you can use <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a> to enable stateful parameter passing between the reduction task and others.</p><pre class="m-code"><span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">;</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">init</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+  <span class="n">vec</span>   <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">};</span>
+  <span class="n">first</span> <span class="o">=</span> <span class="n">vec</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+  <span class="n">last</span>  <span class="o">=</span> <span class="n">vec</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">task</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">ref</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">ref</span><span class="p">(</span><span class="n">last</span><span class="p">),</span> <span class="n">sum</span><span class="p">,</span> 
+  <span class="p">[]</span> <span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">l</span> <span class="o">+</span> <span class="n">r</span><span class="p">;</span> <span class="p">}</span>  <span class="c1">// binary reducer operator</span>
+<span class="p">);</span>
+
+<span class="c1">// wrong! must use std::ref, or first and last are captured by copy</span>
+<span class="c1">// tf::Task task = taskflow.reduce(first, last, sum, [] (int l, int r) { </span>
+<span class="c1">//   return l + r;    // binary reducer operator</span>
+<span class="c1">// });</span>
+
+<span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task</span><span class="p">);</span>
+
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+
+<span class="n">assert</span><span class="p">(</span><span class="n">sum</span> <span class="o">==</span> <span class="mi">100</span> <span class="o">+</span> <span class="mi">55</span><span class="p">);</span></pre><p>In the above example, when <code>init</code> finishes, <code>vec</code> has been initialized to 10 elements with <code>first</code> pointing to the first element and <code>last</code> pointing to the next of the last element (i.e., end of the range). These changes are visible to the execution context of the reduction task.</p></section><section id="A2ParallelTransformationReduction"><h2><a href="#A2ParallelTransformationReduction">Parallel Transformation-Reduction</a></h2><p>It is common to transform each element into a new data type and then perform reduction on the transformed elements. Taskflow provides a method, <a href="classtf_1_1FlowBuilder.html#ad8d03524f15292610ebee63d53b89579" class="m-doc">tf::<wbr />Taskflow::<wbr />transform_reduce(B&amp;&amp; first, E&amp;&amp; last, T&amp; result, BOP&amp;&amp; bop, UOP&amp;&amp; uop)</a>, that applies <code>uop</code> to transform each element in the specified range and then perform parallel reduction over <code>result</code> and transformed elements. It represents the parallel execution of the following reduction loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">itr</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">));</span>
+<span class="p">}</span></pre><p>The example below transforms each digit in a string to an integer number and then sums up all integers in parallel.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">str</span> <span class="o">=</span> <span class="s">&quot;12345678&quot;</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">sum</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">task</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">transform_reduce</span><span class="p">(</span><span class="n">str</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">str</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">sum</span><span class="p">,</span>
+  <span class="p">[]</span> <span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>      <span class="c1">// binary reduction operator</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span>
+  <span class="p">},</span>  
+  <span class="p">[]</span> <span class="p">(</span><span class="kt">char</span> <span class="n">c</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">int</span> <span class="p">{</span>     <span class="c1">// unary transformation operator</span>
+    <span class="k">return</span> <span class="n">c</span> <span class="o">-</span> <span class="sc">&#39;0&#39;</span><span class="p">;</span>
+  <span class="p">}</span>   
+<span class="p">);</span> 
+
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span> 
+
+<span class="n">assert</span><span class="p">(</span><span class="n">sum</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">+</span> <span class="mi">8</span><span class="p">);</span>  <span class="c1">// sum will be 36 </span></pre><p>The order in which we apply the binary operator on the transformed elements is <em>unspecified</em>. It is possible that the binary operator will take <em>r-value</em> in both arguments, for example, <code>bop(uop(*itr1), uop(*itr2))</code>, due to the transformed temporaries. When data passing is expensive, you may define the result type <code>T</code> to be move-constructible.</p></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

@@ -38,20 +38,20 @@ PROJECT_NAME           = "Taskflow"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 2.7.0
+PROJECT_NUMBER         = 3.0.0-Master-Branch
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          =
+PROJECT_BRIEF          = 
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           = 
+PROJECT_LOGO           = images/taskflow_logo.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
@@ -239,37 +239,50 @@ TAB_SIZE               = 4
 # newlines (in the resulting output). You can put ^^ in the value part of an
 # alias to insert a newline as if a physical newline was in the original file.
 
-ALIASES                = "std_invoke=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/invoke\">std::invoke</a>" \
-                         "std_future=<a href=\"https://en.cppreference.com/w/cpp/thread/future\">std::future</a>" \
-                         "std_shared_future=<a href=\"https://en.cppreference.com/w/cpp/thread/shared_future\">std::shared_future</a>" \
-                         "std_function=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/function\">std::function</a>" \
-                         "std_pair=<a href=\"https://en.cppreference.com/w/cpp/utility/pair\">std::pair</a>" \
-                         "std_tuple=<a href=\"https://en.cppreference.com/w/cpp/utility/tuple\">std::tuple</a>" \
-                         "std_shared_ptr=<a href=\"https://en.cppreference.com/w/cpp/memory/shared_ptr\">std::shared_ptr</a>" \
-                         "std_thread_hardware_concurrency=<a href=\"https://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency\">std::thread::hardware_concurrency</a>" \
-                         "std_thread_get_id=<a href=\"https://en.cppreference.com/w/cpp/thread/get_id\">std::thread::get_id</a>" \
-                         "std_ostream=<a href=\"https://en.cppreference.com/w/cpp/io/basic_ostream\">std::ostream</a>" \
-                         "std_string=<a href=\"https://en.cppreference.com/w/cpp/string/basic_string\">std::string</a>" \
-                         "std_min=<a href=\"https://en.cppreference.com/w/cpp/algorithm/min\">std::min</a>" \
-                         "std_max=<a href=\"https://en.cppreference.com/w/cpp/algorithm/max\">std::max</a>" \
-                         "std_variant=<a href=\"https://en.cppreference.com/w/cpp/utility/variant\">std::variant</a>" \
-                         "std_optional=<a href=\"https://en.cppreference.com/w/cpp/utility/optional\">std::optional</a>" \
-                         "std_nullopt=<a href=\"https://en.cppreference.com/w/cpp/utility/optional/nullopt\">std::nullopt</a>" \
-                         "GraphVizOnline=<a href=\"https://dreampuf.github.io/GraphvizOnline/\">GraphViz Online</a>" \
-                         "CPP17=<a href=\"https://en.wikipedia.org/wiki/C%2B%2B17\">C++17</a>" \
-                         "nvcc=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvcc</a>"\
-                         "nvidia_smi=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvidia-smi</a>"\
-                         "SLOCCount=<a href=\"https://dwheeler.com/sloccount/\">SLOCCount</a>"\
-                         "TBB=<a href=\"https://github.com/oneapi-src/oneTBB\">Intel TBB</a>"\
-                         "StarPU=<a href=\"http://starpu.gforge.inria.fr/\">StarPU</a>"\
-                         "OpenTimerGitHub=<a href=\"https://github.com/OpenTimer/OpenTimer\">OpenTimer</a>"\
-                         "ContactUs=<a href=\"https://taskflow.github.io/#tag_contact\">contact us</a>"\
-                         "ProjectWebsite=<a href=\"https://taskflow.github.io/\">project website</a>"\
-                         "ProjectGitHub=<a href=\"https://github.com/taskflow/\">project GitHub</a>"\
-                         "ShowcasePresentation=<a href=\"https://taskflow.github.io/showcase/index.html\">showcase presentation</a>"\
-                         "IssueTracker=<a href=\"https://github.com/taskflow/taskflow/issues\">issue tracker</a>"\
-                         "PullRequest=<a href=\"https://github.com/taskflow/taskflow/pulls\">pull request</a>"\
-                         "twhuang=<a href=\"https://tsung-wei-huang.github.io/\">Dr. Tsung-Wei Huang</a>"
+ALIASES                = \
+  "std_invoke=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/invoke\">std::invoke</a>" \
+  "std_future=<a href=\"https://en.cppreference.com/w/cpp/thread/future\">std::future</a>" \
+  "std_shared_future=<a href=\"https://en.cppreference.com/w/cpp/thread/shared_future\">std::shared_future</a>" \
+  "std_function=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/function\">std::function</a>" \
+  "std_lambda=<a href=\"https://en.cppreference.com/w/cpp/language/lambda\">lambda</a>" \
+  "std_pair=<a href=\"https://en.cppreference.com/w/cpp/utility/pair\">std::pair</a>" \
+  "std_tuple=<a href=\"https://en.cppreference.com/w/cpp/utility/tuple\">std::tuple</a>" \
+  "std_shared_ptr=<a href=\"https://en.cppreference.com/w/cpp/memory/shared_ptr\">std::shared_ptr</a>" \
+  "std_thread_hardware_concurrency=<a href=\"https://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency\">std::thread::hardware_concurrency</a>" \
+  "std_thread_get_id=<a href=\"https://en.cppreference.com/w/cpp/thread/get_id\">std::thread::get_id</a>" \
+  "std_ostream=<a href=\"https://en.cppreference.com/w/cpp/io/basic_ostream\">std::ostream</a>" \
+  "std_string=<a href=\"https://en.cppreference.com/w/cpp/string/basic_string\">std::string</a>" \
+  "std_min=<a href=\"https://en.cppreference.com/w/cpp/algorithm/min\">std::min</a>" \
+  "std_max=<a href=\"https://en.cppreference.com/w/cpp/algorithm/max\">std::max</a>" \
+  "std_variant=<a href=\"https://en.cppreference.com/w/cpp/utility/variant\">std::variant</a>" \
+  "std_optional=<a href=\"https://en.cppreference.com/w/cpp/utility/optional\">std::optional</a>" \
+  "std_nullopt=<a href=\"https://en.cppreference.com/w/cpp/utility/optional/nullopt\">std::nullopt</a>" \
+  "Doxygen=<a href=\"https://www.doxygen.nl/index.html\">Doxygen</a>" \
+  "MCSS=<a href=\"https://mcss.mosra.cz/documentation/doxygen/\">m.css</a>" \
+  "GraphVizOnline=<a href=\"https://dreampuf.github.io/GraphvizOnline/\">GraphViz Online</a>" \
+  "ChromeTracing=<a href=\"https://www.chromium.org/developers/how-tos/trace-event-profiling-tool\">Chrome Tracing</a>" \
+  "TFProf=<a href=\"https://taskflow.github.io/tfprof/\">Taskflow Profiler</a>" \
+  "CPP17=<a href=\"https://en.wikipedia.org/wiki/C%2B%2B17\">C++17</a>" \
+  "nvcc=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvcc</a>"\
+  "cudaGraph=<a href=\"https://developer.nvidia.com/blog/cuda-graphs/\">CUDA Graph</a>"\
+  "NvidiaCUDA=<a href=\"https://developer.nvidia.com/cuda-zone\">Nvidia CUDA</a>"\
+  "cuBLAS=<a href=\"https://docs.nvidia.com/cuda/cublas/index.html\">cuBLAS</a>"\
+  "cuDNN=<a href=\"https://developer.nvidia.com/cudnn\">cuDNN</a>"\
+  "nvidia_smi=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvidia-smi</a>"\
+  "SLOCCount=<a href=\"https://dwheeler.com/sloccount/\">SLOCCount</a>"\
+  "TBB=<a href=\"https://github.com/oneapi-src/oneTBB\">Intel TBB</a>"\
+  "OpenMP=<a href=\"https://www.openmp.org/\">OpenMP</a>"\
+  "StarPU=<a href=\"http://starpu.gforge.inria.fr/\">StarPU</a>"\
+  "OpenTimerGitHub=<a href=\"https://github.com/OpenTimer/OpenTimer\">OpenTimer</a>"\
+  "ContactUs=<a href=\"https://taskflow.github.io/#tag_contact\">contact us</a>"\
+  "ProjectWebsite=<a href=\"https://taskflow.github.io/\">project website</a>"\
+  "ProjectGitHub=<a href=\"https://github.com/taskflow/\">project GitHub</a>"\
+  "ShowcasePresentation=<a href=\"https://taskflow.github.io/showcase/index.html\">showcase presentation</a>"\
+  "CppCon20Talk=<a href=\"https://www.youtube.com/watch?v=MX15huP5DsM\">2020 CppCon Taskflow Talk</a>"\
+  "MUCpp20Talk=<a href=\"https://www.youtube.com/watch?v=u8Mc_WgGwVY\">2020 MUC++ Taskflow Talk</a>"\
+  "IssueTracker=<a href=\"https://github.com/taskflow/taskflow/issues\">issue tracker</a>"\
+  "PullRequest=<a href=\"https://github.com/taskflow/taskflow/pulls\">pull request</a>"\
+  "twhuang=<a href=\"https://tsung-wei-huang.github.io/\">Dr. Tsung-Wei Huang</a>"
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"
@@ -821,19 +834,22 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = ../taskflow/core/error.hpp \
-                         ../taskflow/core/flow_builder.hpp \
+INPUT                  = ../taskflow/core/flow_builder.hpp \
+                         ../taskflow/core/worker.hpp \
                          ../taskflow/core/executor.hpp \
                          ../taskflow/core/task.hpp \
                          ../taskflow/core/taskflow.hpp \
                          ../taskflow/core/observer.hpp \
-                         ../taskflow/cuda/cuda_error.hpp \
+                         ../taskflow/cuda/cuda_device.hpp \
+                         ../taskflow/cuda/cuda_memory.hpp \
                          ../taskflow/cuda/cuda_task.hpp \
                          ../taskflow/cuda/cuda_flow.hpp \
-                         ../taskflow/version.hpp \
+                         ../taskflow/cuda/cuda_capturer.hpp \
+                         ../taskflow/cuda/cublas/cublas_flow.hpp \
                          ../taskflow/taskflow.hpp \
+                         ../taskflow/cudaflow.hpp \
+                         ../taskflow/cublasflow.hpp \
                          QuickStart.dox \
-                         install/install.dox \
                          releases/releases.dox \
                          releases/release-roadmap.dox \
                          releases/release-3.0.0.dox \
@@ -847,6 +863,9 @@ INPUT                  = ../taskflow/core/error.hpp \
                          releases/release-2.1.0.dox \
                          releases/release-2.0.0.dox \
                          releases/release-1.x.x.dox \
+                         install/install.dox \
+                         install/cuda_compile.dox \
+                         install/benchmark_taskflow.dox \
                          cookbook/Cookbook.dox \
                          cookbook/Chapter0.dox \
                          cookbook/Chapter1.dox \
@@ -854,10 +873,19 @@ INPUT                  = ../taskflow/core/error.hpp \
                          cookbook/Chapter3.dox \
                          cookbook/Chapter4.dox \
                          cookbook/Chapter5.dox \
-                         cookbook/Chapter6.dox \
+                         cookbook/async_tasking.dox \
+                         cookbook/gpu_tasking_cudaflow.dox \
+                         cookbook/gpu_tasking_cudaflow_capturer.dox \
                          algorithms/algorithms.dox \
                          algorithms/for_each.dox \
                          algorithms/reduce.dox \
+                         algorithms/sort.dox \
+                         gpu_algorithms/gpu_algorithms.dox \
+                         gpu_algorithms/single_task_cuda.dox \
+                         gpu_algorithms/for_each_cuda.dox \
+                         gpu_algorithms/transform_cuda.dox \
+                         gpu_algorithms/cuda_reduce.dox \
+                         gpu_algorithms/cublas/cublas_flow_capturer.dox \
                          examples/examples.dox \
                          examples/wavefront.dox \
                          examples/matrix_multiplication.dox \
@@ -1218,7 +1246,7 @@ HTML_STYLESHEET        =
 # list). For an example see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_STYLESHEET  =
+HTML_EXTRA_STYLESHEET  = 
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
@@ -1229,6 +1257,8 @@ HTML_EXTRA_STYLESHEET  =
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
 HTML_EXTRA_FILES       = favicon/favicon.ico \
+                         references/iccad20.pdf \
+                         references/icpads20.pdf \
                          references/ipdps19.pdf \
                          references/huang_15_01.pdf \
                          references/lin_19_01.pdf \
@@ -2274,14 +2304,15 @@ DOT_NUM_THREADS        = 0
 # The default value is: Helvetica.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-DOT_FONTNAME           = Helvetica
+#DOT_FONTNAME           = Helvetica
+DOT_FONTNAME            = Source Sans Pro
 
 # The DOT_FONTSIZE tag can be used to set the size (in points) of the font of
 # dot graphs.
 # Minimum value: 4, maximum value: 24, default value: 10.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-DOT_FONTSIZE           = 10
+DOT_FONTSIZE           = 16
 
 # By default doxygen will tell dot to use the default font as specified with
 # DOT_FONTNAME. If you specify a different font using DOT_FONTNAME you can set
@@ -2439,7 +2470,7 @@ DOT_PATH               =
 # command).
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-DOTFILE_DIRS           =
+DOTFILE_DIRS           = ./
 
 # The MSCFILE_DIRS tag can be used to specify one or more directories that
 # contain msc files that are included in the documentation (see the \mscfile

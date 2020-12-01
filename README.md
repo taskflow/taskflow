@@ -5,7 +5,7 @@
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/rbjl16i6c9ahxr16?svg=true)](https://ci.appveyor.com/project/tsung-wei-huang/taskflow)
 [![Wiki](image/api-doc.svg)][wiki]
 [![TFProf](image/tfprof.svg)](https://taskflow.github.io/tfprof/)
-[![Cite](image/cite-arXiv.svg)](https://arxiv.org/abs/2004.10908v2)
+[![Cite](image/cite-ipdps.svg)][IPDPS19]
 
 Taskflow helps you quickly write parallel tasks programs in modern C++
 
@@ -530,7 +530,7 @@ A.work([] () { std::cout << "hello world!"; });
 
 ### *precede/succeed*
 
-The method `precede/succedd` lets you add a preceding/succeeding link between tasks.
+The method `precede/succeed` lets you add a preceding/succeeding link between tasks.
 
 <img align="right" width="30%" src="image/broadcast.svg">
 
@@ -577,13 +577,14 @@ The first run finishes before the second run, and the second run finishes before
 
 # System Requirements
 
-To use the latest [Taskflow](https://github.com/taskflow/taskflow/archive/master.zip), you only need a [C++14][C++14] compiler.
+To use the latest [Taskflow](https://github.com/taskflow/taskflow/archive/master.zip), you only need a [C++17][C++17] compiler.
 
-+ GNU C++ Compiler at least v5.0 with -std=c++14
-+ Clang C++ Compiler at least v4.0 with -std=c++14
++ GNU C++ Compiler at least v7.0 with -std=c++17
++ Clang C++ Compiler at least v6.0 with -std=c++17
 + Microsoft Visual Studio at least v15.7 (MSVC++ 19.14); see [vcpkg guide](https://github.com/taskflow/taskflow/issues/143)
 + AppleClang Xode Version at least v8
-+ Nvidia CUDA Toolkit and Compiler ([nvcc][nvcc]) at least v10.0 with -std=c++14
++ Intel C++ Compiler at least v19.0.1
++ Nvidia CUDA Toolkit and Compiler ([nvcc][nvcc]) at least v11.0 with -std=c++17
 
 Taskflow works on Linux, Windows, and Mac OS X. See the [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support) status.
 
@@ -632,7 +633,7 @@ Taskflow is being used in both industry and academic projects to scale up existi
 that incorporate complex task dependencies. 
 
 - [OpenTimer][OpenTimer]: A High-performance Timing Analysis Tool for Very Large Scale Integration (VLSI) Systems
-- [NovusCore][NovusCore]: An emulating project for World of Warraft (Wrath of the Lich King 3.3.5a 12340 client build)
+- [NovusCore][NovusCore]: An emulating project for World of Warcraft (Wrath of the Lich King 3.3.5a 12340 client build)
 - [SA-PCB][SA-PCB]: Annealing-based Printed Circuit Board (PCB) Placement Tool
 - [LPMP](https://github.com/LPMP/LPMP): A C++ framework for developing scalable Lagrangian decomposition solvers for discrete optimization problems
 - [OpenPhySyn](https://github.com/The-OpenROAD-Project/OpenPhySyn): A plugin-based physical synthesis optimization kit as part of the OpenRoad flow

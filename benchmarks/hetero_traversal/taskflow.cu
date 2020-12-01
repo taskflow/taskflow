@@ -17,8 +17,7 @@ void taskflow(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
   TF_CHECK_CUDA(cudaMallocManaged(&gz, N*sizeof(int)), "failed at cudaMalloc");
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_cpus, num_gpus);
-
+  tf::Executor executor(num_cpus + num_gpus);
 
   std::vector<tf::Task> tasks(g.num_nodes);
   
@@ -34,16 +33,15 @@ void taskflow(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
       });
     }
     else {
-      tasks[v.v] = taskflow.emplace([&, d=v.g](tf::cudaFlow& cf){
+      tasks[v.v] = taskflow.emplace_on([&](tf::cudaFlow& cf){
         ++counter;
-        cf.device(d);
         auto sgx = cf.zero(gx, N);
         auto sgy = cf.zero(gy, N);
         auto sgz = cf.zero(gz, N);
         auto h2d_gx = cf.copy(gx, cx, N);
         auto h2d_gy = cf.copy(gy, cy, N);
         auto h2d_gz = cf.copy(gz, cz, N);
-        auto kernel = cf.kernel((N+255)/256, 256, 0, add, gx, gy, gz, N);
+        auto kernel = cf.kernel((N+255)/256, 256, 0, add<int>, gx, gy, gz, N);
         auto d2h_gx = cf.copy(cx, gx, N);
         auto d2h_gy = cf.copy(cy, gy, N);
         auto d2h_gz = cf.copy(cz, gz, N);
@@ -52,7 +50,7 @@ void taskflow(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
         sgz.precede(h2d_gz);
         kernel.succeed(h2d_gx, h2d_gy, h2d_gz)
               .precede(d2h_gx, d2h_gy, d2h_gz);
-      });
+      }, v.g);
     }
   }
   for(const auto& e : g.edges) {
