@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/executor.hpp"
+#include "core/algorithm/critical.hpp"
 #include "core/algorithm/for_each.hpp"
 #include "core/algorithm/reduce.hpp"
 #include "core/algorithm/sort.hpp"

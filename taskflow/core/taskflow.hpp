@@ -145,9 +145,7 @@ class Taskflow : public FlowBuilder {
     std::list<Topology> _topologies;
     
     void _dump(std::ostream&, const Taskflow*) const;
-    
     void _dump(std::ostream&, const Node*, Dumper&) const;
-    
     void _dump(std::ostream&, const Graph&, Dumper&) const;
 };
 

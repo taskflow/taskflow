@@ -6,6 +6,7 @@ namespace tf {
 class Node;
 class Graph;
 class FlowBuilder;
+class Semaphore;
 class Subflow;
 class Task;
 class TaskView;

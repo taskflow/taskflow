@@ -1,7 +1,6 @@
 #pragma once
 
 #include "graph.hpp"
-#include "semaphore.hpp"
 
 /** 
 @file task.hpp
@@ -225,12 +224,12 @@ class Task {
     /**
     @brief make the task release this semaphore
     */
-    void release(Semaphore const &);
+    Task& release(Semaphore&);
 
     /**
     @brief make the task acquire this semaphore
     */
-    void acquire(Semaphore const &);
+    Task& acquire(Semaphore&);
     
     /**
     @brief resets the task handle to null
@@ -344,12 +343,14 @@ inline Task& Task::name(const std::string& name) {
   return *this;
 }
 
-inline void Task::acquire(Semaphore const & s) {
-  _node->_to_acquire.push_back(s._constraint);
+inline Task& Task::acquire(Semaphore& s) {
+  _node->_to_acquire.push_back(&s);
+  return *this;
 }
 
-inline void Task::release(Semaphore const & s) {
-  _node->_to_release.push_back(s._constraint);
+inline Task& Task::release(Semaphore& s) {
+  _node->_to_release.push_back(&s);
+  return *this;
 }
 
 // Procedure: reset

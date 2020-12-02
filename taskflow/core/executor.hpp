@@ -229,7 +229,7 @@ class Executor {
     void _exploit_task(Worker&, Node*&);
     void _explore_task(Worker&, Node*&);
     void _schedule(Node*);
-    void _schedule(std::vector<Node*>&);
+    void _schedule(const std::vector<Node*>&);
     void _invoke(Worker&, Node*);
     void _invoke_static_task(Worker&, Node*);
     void _invoke_dynamic_task(Worker&, Node*);
@@ -608,7 +608,7 @@ inline void Executor::_schedule(Node* node) {
 // Procedure: _schedule
 // The main procedure to schedule a set of task nodes.
 // Each task node has two types of tasks - regular and subflow.
-inline void Executor::_schedule(std::vector<Node*>& nodes) {
+inline void Executor::_schedule(const std::vector<Node*>& nodes) {
 
   //assert(_workers.size() != 0);
   
@@ -644,11 +644,12 @@ inline void Executor::_schedule(std::vector<Node*>& nodes) {
 
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
-
-  {
+  
+  // if acquiring semaphore(s) exists, acquire them first
+  if(!node->_to_acquire.empty()) {
     std::vector<Node*> nodes;
-    if(! node->_acquire_all(nodes)) {
-      for(auto node : nodes) _schedule(node);
+    if(!node->_acquire_all(nodes)) {
+      _schedule(nodes);
       return;
     }
   }
@@ -718,9 +719,9 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     break;
   }
 
-  {
-    auto nodes = node->_release_all();
-    for(auto node : nodes) _schedule(node);
+  // if releasing semaphores exist, release them
+  if(!node->_to_release.empty()) {
+    _schedule(node->_release_all());
   }
 
   // We MUST recover the dependency since the graph may have cycles.
