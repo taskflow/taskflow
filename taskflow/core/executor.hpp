@@ -646,7 +646,7 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
 inline void Executor::_invoke(Worker& worker, Node* node) {
   
   // if acquiring semaphore(s) exists, acquire them first
-  if(!node->_to_acquire.empty()) {
+  if(node->_semaphores && !node->_semaphores->to_acquire.empty()) {
     std::vector<Node*> nodes;
     if(!node->_acquire_all(nodes)) {
       _schedule(nodes);
@@ -720,7 +720,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   }
 
   // if releasing semaphores exist, release them
-  if(!node->_to_release.empty()) {
+  if(node->_semaphores && !node->_semaphores->to_release.empty()) {
     _schedule(node->_release_all());
   }
 

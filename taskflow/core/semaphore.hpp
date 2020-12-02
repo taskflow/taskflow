@@ -33,10 +33,10 @@ class Semaphore {
     /**
     @brief constructs a semaphore with the given counter
     */
-    explicit Semaphore(int initial);
+    explicit Semaphore(int max_workers);
     
     /**
-    @brief queries the counter value (not thread-safe)
+    @brief queries the counter value (not thread-safe during the run)
     */
     int count() const;
     
@@ -48,24 +48,25 @@ class Semaphore {
 
     std::vector<Node*> _waiters;
     
-    bool _try_acquire();
+    bool _try_acquire_or_wait(Node*);
 
     std::vector<Node*> _release();
-
-    void _wait(Node* me);
 };
 
-inline Semaphore::Semaphore(int initial) : 
-  _counter(initial) {
+inline Semaphore::Semaphore(int max_workers) : 
+  _counter(max_workers) {
 }
     
-inline bool Semaphore::_try_acquire() {
+inline bool Semaphore::_try_acquire_or_wait(Node* me) {
   std::lock_guard<std::mutex> lock(_mtx);
   if(_counter > 0) {
     --_counter;
     return true;
   }
-  return false;
+  else {
+    _waiters.push_back(me);
+    return false;
+  }
 }
 
 inline std::vector<Node*> Semaphore::_release() {
@@ -77,11 +78,6 @@ inline std::vector<Node*> Semaphore::_release() {
 
 inline int Semaphore::count() const {
   return _counter;
-}
-
-inline void Semaphore::_wait(Node* me) {
-  std::lock_guard<std::mutex> lock(_mtx);
-  _waiters.push_back(me);
 }
 
 }  // end of namespace tf. ---------------------------------------------------

@@ -148,6 +148,11 @@ class Node {
     AsyncTask,       // async work
     cudaFlowTask     // cudaFlow
   >;
+    
+  struct Semaphores {  
+    std::vector<Semaphore*> to_acquire;
+    std::vector<Semaphore*> to_release;
+  };
 
   public:
   
@@ -180,8 +185,8 @@ class Node {
 
     std::vector<Node*> _successors;
     std::vector<Node*> _dependents;
-    std::vector<Semaphore*> _to_acquire;
-    std::vector<Semaphore*> _to_release;
+
+    std::optional<Semaphores> _semaphores;
 
     Topology* _topology {nullptr};
     
@@ -388,14 +393,16 @@ inline void Node::_set_up_join_counter() {
 
 
 // Function: _acquire_all
-inline bool Node::_acquire_all(std::vector<Node*> & nodes) {
-  for(size_t i = 0; i < _to_acquire.size(); ++i) {
-    if(! _to_acquire[i]->_try_acquire()) {
+inline bool Node::_acquire_all(std::vector<Node*>& nodes) {
+
+  auto& to_acquire = _semaphores->to_acquire;
+
+  for(size_t i = 0; i < to_acquire.size(); ++i) {
+    if(!to_acquire[i]->_try_acquire_or_wait(this)) {
       for(size_t j = 1; j <= i; ++j) {
-        auto r = _to_acquire[i-j]->_release();
+        auto r = to_acquire[i-j]->_release();
         nodes.insert(end(nodes), begin(r), end(r));
       }
-      _to_acquire[i]->_wait(this);
       return false;
     }
   }
@@ -404,8 +411,11 @@ inline bool Node::_acquire_all(std::vector<Node*> & nodes) {
 
 // Function: _release_all
 inline std::vector<Node*> Node::_release_all() {
+
+  auto& to_release = _semaphores->to_release;
+
   std::vector<Node*> nodes;
-  for(auto const & sem : _to_release) {
+  for(auto const & sem : to_release) {
     auto r = sem->_release();
     nodes.insert(end(nodes), begin(r), end(r));
   }

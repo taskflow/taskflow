@@ -18,28 +18,30 @@ namespace tf {
 
 @brief class to create a critical region of limited workers to run tasks
  */
-class CriticalRegion {
+class CriticalRegion : public Semaphore {
 
   public:
-
+    
+    /**
+    @brief constructs a critical region of a limited number of workers
+    */
     explicit CriticalRegion(int max_workers = 1);
     
+    /**
+    @brief adds a task into the critical region
+    */
     template <typename... Tasks>
     void add(Tasks...tasks);
-
-  private:
-
-    Semaphore _semaphore;
 };
 
 inline CriticalRegion::CriticalRegion(int max_workers) : 
-  _semaphore {max_workers} {
+  Semaphore {max_workers} {
 }
 
 template <typename... Tasks>
 void CriticalRegion::add(Tasks... tasks) {
-  (tasks.acquire(_semaphore), ...);
-  (tasks.release(_semaphore), ...);
+  (tasks.acquire(*this), ...);
+  (tasks.release(*this), ...);
 }
 
 

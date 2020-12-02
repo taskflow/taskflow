@@ -3063,4 +3063,105 @@ TEST_CASE("NestedSubflowAsync.11threads") {
   nested_subflow_async(11);
 }
 
+// --------------------------------------------------------
+// Testcase: CriticalRegion
+// --------------------------------------------------------
+
+void critical_region(size_t W) {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+  tf::CriticalRegion region(1);
+  
+  int N = 1000;
+  int counter = 0;
+
+  for(int i=0; i<N; ++i) {
+    tf::Task task = taskflow.emplace([&](){ counter++; })
+                            .name(std::to_string(i));
+    region.add(task);
+  }
+
+  executor.run(taskflow).wait();
+
+  REQUIRE(counter == N);
+
+  executor.run(taskflow);
+  executor.run(taskflow);
+  executor.run(taskflow);
+
+  executor.wait_for_all();
+
+  REQUIRE(counter == 4*N);
+  REQUIRE(region.count() == 1);
+}
+
+TEST_CASE("CriticalRegion.1thread") {
+  critical_region(1);
+}
+
+TEST_CASE("CriticalRegion.2threads") {
+  critical_region(2);
+}
+
+TEST_CASE("CriticalRegion.3threads") {
+  critical_region(3);
+}
+
+TEST_CASE("CriticalRegion.7threads") {
+  critical_region(7);
+}
+
+TEST_CASE("CriticalRegion.11threads") {
+  critical_region(11);
+}
+
+TEST_CASE("CriticalRegion.16threads") {
+  critical_region(16);
+}
+
+// --------------------------------------------------------
+// Testcase: Semaphore
+// --------------------------------------------------------
+
+void semaphore(size_t W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+  tf::Semaphore semaphore(1);
+
+  int N = 1000;
+  int counter = 0;
+
+  for(int i=0; i<N; i++) {
+    auto f = taskflow.emplace([&](){ counter++; });
+    auto t = taskflow.emplace([&](){ counter++; });
+    f.precede(t);
+    f.acquire(semaphore);
+    t.release(semaphore);
+  }
+  
+  executor.run(taskflow).wait();
+
+  REQUIRE(counter == 2*N);
+
+}
+
+TEST_CASE("Semaphore.1thread") {
+  semaphore(1);
+}
+
+TEST_CASE("Semaphore.2threads") {
+  semaphore(2);
+}
+
+TEST_CASE("Semaphore.4threads") {
+  semaphore(4);
+}
+
+TEST_CASE("Semaphore.8threads") {
+  semaphore(8);
+}
+
+
 

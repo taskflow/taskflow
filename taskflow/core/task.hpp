@@ -222,14 +222,14 @@ class Task {
     Task& succeed(Ts&&... tasks);
 
     /**
-    @brief make the task release this semaphore
+    @brief makes the task release this semaphore
     */
-    Task& release(Semaphore&);
+    Task& release(Semaphore& semaphore);
 
     /**
-    @brief make the task acquire this semaphore
+    @brief makes the task acquire this semaphore
     */
-    Task& acquire(Semaphore&);
+    Task& acquire(Semaphore& semaphore);
     
     /**
     @brief resets the task handle to null
@@ -343,13 +343,21 @@ inline Task& Task::name(const std::string& name) {
   return *this;
 }
 
+// Function: acquire
 inline Task& Task::acquire(Semaphore& s) {
-  _node->_to_acquire.push_back(&s);
+  if(!_node->_semaphores) {
+    _node->_semaphores.emplace();
+  }
+  _node->_semaphores->to_acquire.push_back(&s);
   return *this;
 }
 
+// Function: release
 inline Task& Task::release(Semaphore& s) {
-  _node->_to_release.push_back(&s);
+  if(!_node->_semaphores) {
+    _node->_semaphores.emplace();
+  }
+  _node->_semaphores->to_release.push_back(&s);
   return *this;
 }
 
