@@ -3064,14 +3064,14 @@ TEST_CASE("NestedSubflowAsync.11threads") {
 }
 
 // --------------------------------------------------------
-// Testcase: CriticalRegion
+// Testcase: CriticalSection
 // --------------------------------------------------------
 
-void critical_region(size_t W) {
+void critical_section(size_t W) {
   
   tf::Taskflow taskflow;
   tf::Executor executor(W);
-  tf::CriticalRegion region(1);
+  tf::CriticalSection section(1);
   
   int N = 1000;
   int counter = 0;
@@ -3079,7 +3079,7 @@ void critical_region(size_t W) {
   for(int i=0; i<N; ++i) {
     tf::Task task = taskflow.emplace([&](){ counter++; })
                             .name(std::to_string(i));
-    region.add(task);
+    section.add(task);
   }
 
   executor.run(taskflow).wait();
@@ -3093,31 +3093,31 @@ void critical_region(size_t W) {
   executor.wait_for_all();
 
   REQUIRE(counter == 4*N);
-  REQUIRE(region.count() == 1);
+  REQUIRE(section.count() == 1);
 }
 
-TEST_CASE("CriticalRegion.1thread") {
-  critical_region(1);
+TEST_CASE("CriticalSection.1thread") {
+  critical_section(1);
 }
 
-TEST_CASE("CriticalRegion.2threads") {
-  critical_region(2);
+TEST_CASE("CriticalSection.2threads") {
+  critical_section(2);
 }
 
-TEST_CASE("CriticalRegion.3threads") {
-  critical_region(3);
+TEST_CASE("CriticalSection.3threads") {
+  critical_section(3);
 }
 
-TEST_CASE("CriticalRegion.7threads") {
-  critical_region(7);
+TEST_CASE("CriticalSection.7threads") {
+  critical_section(7);
 }
 
-TEST_CASE("CriticalRegion.11threads") {
-  critical_region(11);
+TEST_CASE("CriticalSection.11threads") {
+  critical_section(11);
 }
 
-TEST_CASE("CriticalRegion.16threads") {
-  critical_region(16);
+TEST_CASE("CriticalSection.16threads") {
+  critical_section(16);
 }
 
 // --------------------------------------------------------

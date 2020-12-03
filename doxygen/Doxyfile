@@ -841,6 +841,7 @@ INPUT                  = ../taskflow/core/flow_builder.hpp \
                          ../taskflow/core/semaphore.hpp \
                          ../taskflow/core/taskflow.hpp \
                          ../taskflow/core/observer.hpp \
+                         ../taskflow/core/algorithm/critical.hpp \
                          ../taskflow/cuda/cuda_device.hpp \
                          ../taskflow/cuda/cuda_memory.hpp \
                          ../taskflow/cuda/cuda_task.hpp \
@@ -868,12 +869,13 @@ INPUT                  = ../taskflow/core/flow_builder.hpp \
                          install/cuda_compile.dox \
                          install/benchmark_taskflow.dox \
                          cookbook/Cookbook.dox \
-                         cookbook/Chapter0.dox \
-                         cookbook/Chapter1.dox \
-                         cookbook/Chapter2.dox \
-                         cookbook/Chapter3.dox \
-                         cookbook/Chapter4.dox \
-                         cookbook/Chapter5.dox \
+                         cookbook/motivation.dox \
+                         cookbook/static_tasking.dox \
+                         cookbook/executor.dox \
+                         cookbook/dynamic_tasking.dox \
+                         cookbook/conditional_tasking.dox \
+                         cookbook/composable_tasking.dox \
+                         cookbook/semaphore.dox \
                          cookbook/async_tasking.dox \
                          cookbook/gpu_tasking_cudaflow.dox \
                          cookbook/gpu_tasking_cudaflow_capturer.dox \
@@ -881,7 +883,6 @@ INPUT                  = ../taskflow/core/flow_builder.hpp \
                          algorithms/for_each.dox \
                          algorithms/reduce.dox \
                          algorithms/sort.dox \
-                         algorithms/critical.dox \
                          gpu_algorithms/gpu_algorithms.dox \
                          gpu_algorithms/single_task_cuda.dox \
                          gpu_algorithms/for_each_cuda.dox \

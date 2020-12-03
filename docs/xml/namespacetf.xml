@@ -3,6 +3,7 @@
   <compounddef id="namespacetf" kind="namespace" language="C++">
     <compoundname>tf</compoundname>
     <innerclass refid="classtf_1_1ChromeObserver" prot="public">tf::ChromeObserver</innerclass>
+    <innerclass refid="classtf_1_1CriticalSection" prot="public">tf::CriticalSection</innerclass>
     <innerclass refid="classtf_1_1cublasFlowCapturer" prot="public">tf::cublasFlowCapturer</innerclass>
     <innerclass refid="classtf_1_1cudaFlow" prot="public">tf::cudaFlow</innerclass>
     <innerclass refid="classtf_1_1cudaFlowCapturer" prot="public">tf::cudaFlowCapturer</innerclass>
@@ -24,6 +25,7 @@
     <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
     <innerclass refid="classtf_1_1ObserverInterface" prot="public">tf::ObserverInterface</innerclass>
+    <innerclass refid="classtf_1_1Semaphore" prot="public">tf::Semaphore</innerclass>
     <innerclass refid="classtf_1_1Subflow" prot="public">tf::Subflow</innerclass>
     <innerclass refid="classtf_1_1Task" prot="public">tf::Task</innerclass>
     <innerclass refid="classtf_1_1Taskflow" prot="public">tf::Taskflow</innerclass>
@@ -324,7 +326,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="443" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="443" bodyend="446"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="471" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="471" bodyend="474"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a4eea58a9e7eab408c44378dbc2be4f43" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -1116,7 +1118,7 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/taskflow.hpp" line="49" column="22" bodyfile="/Users/twhuang/Code/taskflow/taskflow/taskflow.hpp" bodystart="49" bodyend="51"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/taskflow.hpp" line="50" column="22" bodyfile="/Users/twhuang/Code/taskflow/taskflow/taskflow.hpp" bodystart="50" bodyend="52"/>
       </memberdef>
       </sectiondef>
     <briefdescription>

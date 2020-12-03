@@ -11,6 +11,10 @@
     <member refid="classtf_1_1ChromeObserver_1a6fa502ca5ef6bfb9d2168db190125855" kind="function"><name>on_entry</name></member>
     <member refid="classtf_1_1ChromeObserver_1a62ae8c50814d285d29e50a322461a803" kind="function"><name>on_exit</name></member>
   </compound>
+  <compound refid="classtf_1_1CriticalSection" kind="class"><name>tf::CriticalSection</name>
+    <member refid="classtf_1_1CriticalSection_1a64e16d9410b9a31e1f0e2c8bd562480f" kind="function"><name>CriticalSection</name></member>
+    <member refid="classtf_1_1CriticalSection_1abf9cbde9354a06e0fee5fee2ea2bfc45" kind="function"><name>add</name></member>
+  </compound>
   <compound refid="classtf_1_1cublasFlowCapturer" kind="class"><name>tf::cublasFlowCapturer</name>
     <member refid="classtf_1_1cublasFlowCapturer_1ad796516fe795c451719db8c4a1ac292b" kind="variable"><name>_handle</name></member>
     <member refid="classtf_1_1cublasFlowCapturer_1acd81da28696e8b1efb2bb45058a2f0e3" kind="function"><name>cublasFlowCapturer</name></member>
@@ -244,7 +248,7 @@
     <member refid="classtf_1_1Executor_1a0b4f231e11016194980b14e76262c8a7" kind="function"><name>_exploit_task</name></member>
     <member refid="classtf_1_1Executor_1aab7cc2e53d75fcc87fcc919f29bf9ca9" kind="function"><name>_explore_task</name></member>
     <member refid="classtf_1_1Executor_1a685c08b62a494359e34c6de2a700fdab" kind="function"><name>_schedule</name></member>
-    <member refid="classtf_1_1Executor_1ab535b5b0870522a3518acf053b888149" kind="function"><name>_schedule</name></member>
+    <member refid="classtf_1_1Executor_1a8b28e234949b06adad56b2c4c4c01d1e" kind="function"><name>_schedule</name></member>
     <member refid="classtf_1_1Executor_1ad16165142908aca9444ea88e65040219" kind="function"><name>_invoke</name></member>
     <member refid="classtf_1_1Executor_1ac243d2a08b5a4a75dd440dc063b886ce" kind="function"><name>_invoke_static_task</name></member>
     <member refid="classtf_1_1Executor_1a4a000baf70b108201e3787787309c272" kind="function"><name>_invoke_dynamic_task</name></member>
@@ -329,6 +333,16 @@
     <member refid="structtf_1_1TFProfObserver_1_1Segment_1af0084d90c6850afb3aa6637d732fc064" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1TFProfObserver_1_1Segment_1a6e56461ff1959efe855dcef756d0dfff" kind="function"><name>Segment</name></member>
   </compound>
+  <compound refid="classtf_1_1Semaphore" kind="class"><name>tf::Semaphore</name>
+    <member refid="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" kind="friend"><name>Node</name></member>
+    <member refid="classtf_1_1Semaphore_1a329424188b5287ca596f1af3f6db58f1" kind="variable"><name>_mtx</name></member>
+    <member refid="classtf_1_1Semaphore_1a895f01222afdc86d9d475d0d9c15524b" kind="variable"><name>_counter</name></member>
+    <member refid="classtf_1_1Semaphore_1ab05d171c0852d2c6584d62de004f52fb" kind="variable"><name>_waiters</name></member>
+    <member refid="classtf_1_1Semaphore_1a383f31970a822941988f1641da914302" kind="function"><name>Semaphore</name></member>
+    <member refid="classtf_1_1Semaphore_1ad6cad6f9cb643348adf27fc491c918ef" kind="function"><name>count</name></member>
+    <member refid="classtf_1_1Semaphore_1aeb12ad1db7794e13829a0a62549d157b" kind="function"><name>_try_acquire_or_wait</name></member>
+    <member refid="classtf_1_1Semaphore_1a47b8ed63d5deecb0878a0b9cc99da20e" kind="function"><name>_release</name></member>
+  </compound>
   <compound refid="classtf_1_1Subflow" kind="class"><name>tf::Subflow</name>
     <member refid="classtf_1_1Subflow_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1Subflow_1a61184f9bd9c801d0a5eccecfdbddc641" kind="friend"><name>FlowBuilder</name></member>
@@ -363,6 +377,8 @@
     <member refid="classtf_1_1Task_1ac5278492a4d43a191b321eee60e7d629" kind="function"><name>composed_of</name></member>
     <member refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kind="function"><name>precede</name></member>
     <member refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kind="function"><name>succeed</name></member>
+    <member refid="classtf_1_1Task_1a26709523eb112f2d024f4c0e9d2f0019" kind="function"><name>release</name></member>
+    <member refid="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" kind="function"><name>acquire</name></member>
     <member refid="classtf_1_1Task_1a302f51ed717d0a4e99edc50f92a571f3" kind="function"><name>reset</name></member>
     <member refid="classtf_1_1Task_1aec3ab712e12137542b7e4bc311ee9f20" kind="function"><name>reset_work</name></member>
     <member refid="classtf_1_1Task_1a8149edcf9ec2bfac18dd171f7a55ce06" kind="function"><name>empty</name></member>
@@ -384,7 +400,6 @@
     <member refid="classtf_1_1Taskflow_1acc7859e706bff76049b719f201d7941c" kind="variable"><name>_topologies</name></member>
     <member refid="classtf_1_1Taskflow_1a7242a74dcb16731b4e40816647b93305" kind="function"><name>Taskflow</name></member>
     <member refid="classtf_1_1Taskflow_1ade7fc641d136a3f8c96682c08040626a" kind="function"><name>Taskflow</name></member>
-    <member refid="classtf_1_1Taskflow_1a00325e9799c833b75455ba1407b2695c" kind="function"><name>~Taskflow</name></member>
     <member refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kind="function"><name>dump</name></member>
     <member refid="classtf_1_1Taskflow_1a9c4900da1831dce708664a06b3e3a3fb" kind="function"><name>dump</name></member>
     <member refid="classtf_1_1Taskflow_1af4f03bca084deb5c2228ac8936d33649" kind="function"><name>num_tasks</name></member>
@@ -1045,25 +1060,19 @@
   </compound>
   <compound refid="benchmark__taskflow_8dox" kind="file"><name>benchmark_taskflow.dox</name>
   </compound>
-  <compound refid="Chapter0_8dox" kind="file"><name>Chapter0.dox</name>
-  </compound>
-  <compound refid="Chapter1_8dox" kind="file"><name>Chapter1.dox</name>
-  </compound>
-  <compound refid="Chapter2_8dox" kind="file"><name>Chapter2.dox</name>
-  </compound>
-  <compound refid="Chapter3_8dox" kind="file"><name>Chapter3.dox</name>
-  </compound>
-  <compound refid="Chapter4_8dox" kind="file"><name>Chapter4.dox</name>
-  </compound>
-  <compound refid="Chapter5_8dox" kind="file"><name>Chapter5.dox</name>
-  </compound>
   <compound refid="codeofconduct_8dox" kind="file"><name>codeofconduct.dox</name>
+  </compound>
+  <compound refid="composable__tasking_8dox" kind="file"><name>composable_tasking.dox</name>
+  </compound>
+  <compound refid="conditional__tasking_8dox" kind="file"><name>conditional_tasking.dox</name>
   </compound>
   <compound refid="contributing_8dox" kind="file"><name>contributing.dox</name>
   </compound>
   <compound refid="contributors_8dox" kind="file"><name>contributors.dox</name>
   </compound>
   <compound refid="Cookbook_8dox" kind="file"><name>Cookbook.dox</name>
+  </compound>
+  <compound refid="critical_8hpp" kind="file"><name>critical.hpp</name>
   </compound>
   <compound refid="cublas__flow_8hpp" kind="file"><name>cublas_flow.hpp</name>
   </compound>
@@ -1089,7 +1098,11 @@
   </compound>
   <compound refid="dreamplace_8dox" kind="file"><name>dreamplace.dox</name>
   </compound>
+  <compound refid="dynamic__tasking_8dox" kind="file"><name>dynamic_tasking.dox</name>
+  </compound>
   <compound refid="examples_8dox" kind="file"><name>examples.dox</name>
+  </compound>
+  <compound refid="executor_8dox" kind="file"><name>executor.dox</name>
   </compound>
   <compound refid="executor_8hpp" kind="file"><name>executor.hpp</name>
   </compound>
@@ -1124,6 +1137,8 @@
   <compound refid="kmeans_8dox" kind="file"><name>kmeans.dox</name>
   </compound>
   <compound refid="matrix__multiplication_8dox" kind="file"><name>matrix_multiplication.dox</name>
+  </compound>
+  <compound refid="motivation_8dox" kind="file"><name>motivation.dox</name>
   </compound>
   <compound refid="observer_8hpp" kind="file"><name>observer.hpp</name>
   </compound>
@@ -1163,9 +1178,15 @@
   </compound>
   <compound refid="rules_8dox" kind="file"><name>rules.dox</name>
   </compound>
+  <compound refid="semaphore_8dox" kind="file"><name>semaphore.dox</name>
+  </compound>
+  <compound refid="semaphore_8hpp" kind="file"><name>semaphore.hpp</name>
+  </compound>
   <compound refid="single__task__cuda_8dox" kind="file"><name>single_task_cuda.dox</name>
   </compound>
   <compound refid="sort_8dox" kind="file"><name>sort.dox</name>
+  </compound>
+  <compound refid="static__tasking_8dox" kind="file"><name>static_tasking.dox</name>
   </compound>
   <compound refid="task_8hpp" kind="file"><name>task.hpp</name>
   </compound>
@@ -1228,6 +1249,8 @@
   <compound refid="chapter4" kind="page"><name>chapter4</name>
   </compound>
   <compound refid="chapter5" kind="page"><name>chapter5</name>
+  </compound>
+  <compound refid="LimitTheMaximumConcurrency" kind="page"><name>LimitTheMaximumConcurrency</name>
   </compound>
   <compound refid="AsyncTasking" kind="page"><name>AsyncTasking</name>
   </compound>
@@ -1292,6 +1315,8 @@
   <compound refid="FAQ" kind="page"><name>FAQ</name>
   </compound>
   <compound refid="References" kind="page"><name>References</name>
+  </compound>
+  <compound refid="dir_6ca04c2d47d1a3b7e60c2f1c28fb8440" kind="dir"><name>algorithm</name>
   </compound>
   <compound refid="dir_73635165b734e23094c358e517ec45fc" kind="dir"><name>algorithms</name>
   </compound>

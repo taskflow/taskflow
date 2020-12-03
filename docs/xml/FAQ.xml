@@ -114,6 +114,10 @@
         <name>Q10: Why does Taskflow program GPU in a task graph?</name>
         <reference>FAQ_1ProgrammingQuestions10</reference>
     </tocsect>
+      <tocsect>
+        <name>Q11: Can I limit the concurrency in certain sections of tasks?</name>
+        <reference>FAQ_1ProgrammingQuestions11</reference>
+    </tocsect>
     </tableofcontents>
     </tocsect>
     </tableofcontents>
@@ -203,7 +207,7 @@
 </sect2>
 <sect2 id="FAQ_1ProgrammingQuestions4">
 <title>Q4: Is executor thread-safe?</title>
-<para>Yes, the executor object is thread-safe. You can have multiple threads run their taskflows on one executor.</para>
+<para>Yes, the executor object is thread-safe. You can have multiple threads submit different taskflows to the same executor.</para>
 </sect2>
 <sect2 id="FAQ_1ProgrammingQuestions5">
 <title>Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?</title>
@@ -229,7 +233,11 @@
 </sect2>
 <sect2 id="FAQ_1ProgrammingQuestions10">
 <title>Q10: Why does Taskflow program GPU in a task graph?</title>
-<para>We ask users to describe a GPU workload in a task graph and execute it in a second moment. This organization minimizes kernels launch overhead and allows the GPU runtime (e.g., CUDA) to optimize the whole workflow. </para>
+<para>We ask users to describe a GPU workload in a task graph and execute it in a second moment. This organization minimizes kernels launch overhead and allows the GPU runtime (e.g., CUDA) to optimize the whole workflow.</para>
+</sect2>
+<sect2 id="FAQ_1ProgrammingQuestions11">
+<title>Q11: Can I limit the concurrency in certain sections of tasks?</title>
+<para>Yes, Taskflow provides a lightweight mechanism, <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref>, for you to limit the maximum concurrency (i.e., the number of workers) in a section of tasks. Please refer to <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref>. </para>
 </sect2>
 </sect1>
     </detaileddescription>

@@ -19,13 +19,13 @@ int main() {
   // define a critical region of 1 worker
   tf::Semaphore semaphore(1); 
 
-  // create give tasks in taskflow1
+  // create give tasks in taskflow
   std::vector<tf::Task> tasks {
-    taskflow.emplace([](){ sl(); std::cout << "A1" << std::endl; }),
-    taskflow.emplace([](){ sl(); std::cout << "B1" << std::endl; }),
-    taskflow.emplace([](){ sl(); std::cout << "C1" << std::endl; }),
-    taskflow.emplace([](){ sl(); std::cout << "D1" << std::endl; }),
-    taskflow.emplace([](){ sl(); std::cout << "E1" << std::endl; })
+    taskflow.emplace([](){ sl(); std::cout << "A" << std::endl; }),
+    taskflow.emplace([](){ sl(); std::cout << "B" << std::endl; }),
+    taskflow.emplace([](){ sl(); std::cout << "C" << std::endl; }),
+    taskflow.emplace([](){ sl(); std::cout << "D" << std::endl; }),
+    taskflow.emplace([](){ sl(); std::cout << "E" << std::endl; })
   };
 
   for(auto & task : tasks) {

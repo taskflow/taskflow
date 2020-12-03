@@ -122,7 +122,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem>
 <listitem><para>added a custom graph interface to support dynamic polymorphism for tf::cudaGraph </para>
 </listitem>
-<listitem><para>supported separate compilations between Taskflow and CUDA (see <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref>)</para>
+<listitem><para>supported separate compilations between Taskflow and CUDA (see <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref>) </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> and <ref refid="classtf_1_1CriticalSection" kindref="compound">tf::CriticalSection</ref> to limit the maximum concurrency </para>
+</listitem>
+<listitem><para>added support for Intel C++ compiler at least v19.0.1 (oneAPI toolchain)</para>
 </listitem>
 </itemizedlist>
 </para>
@@ -195,6 +199,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <listitem><para>added <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref> </para>
 </listitem>
 <listitem><para>added <ref refid="BenchmarkTaskflow" kindref="compound">Benchmark Taskflow</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref> </para>
 </listitem>
 <listitem><para>added <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref> </para>
 </listitem>
