@@ -3,10 +3,6 @@
 
 #include <taskflow/taskflow.hpp>
 
-#include <iostream>
-#include <chrono>
-#include <thread>
-
 void sl() {
   std::this_thread::sleep_for(std::chrono::seconds(1));
 }

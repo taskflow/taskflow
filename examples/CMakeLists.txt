@@ -12,6 +12,7 @@ list(APPEND TF_EXAMPLES
   run 
   composition
   onlyone
+  parallel_sort
 )
 
 foreach(example IN LISTS TF_EXAMPLES)

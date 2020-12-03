@@ -68,7 +68,7 @@ in parallel computing. Check out [Who is Using Taskflow](#who-is-using-taskflow)
 
 See a quick [presentation][Presentation] and 
 visit the [documentation][wiki] to learn more about Taskflow.
-Technical details can be referred to our [arXiv paper](https://arxiv.org/abs/2004.10908v2).
+Technical details can be referred to our [IPDPS paper][IPDPS19].
 
 # Table of Contents
 

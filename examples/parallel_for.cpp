@@ -3,8 +3,6 @@
 //   + plain integral indices
 
 #include <taskflow/taskflow.hpp>
-#include <cassert>
-#include <numeric>
 
 // Procedure: for_each
 void for_each(int N) {
