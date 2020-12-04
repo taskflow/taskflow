@@ -191,7 +191,7 @@ class Executor {
   private:
 
     inline static thread_local PerThread _per_thread;
-    
+
     const size_t _VICTIM_BEG;
     const size_t _VICTIM_END;
     const size_t _MAX_STEALS;
@@ -313,7 +313,7 @@ inline void Executor::_instantiate_tfprof() {
 inline void Executor::_flush_tfprof() {
   if(_tfprof) {
     std::ostringstream fpath;
-    fpath << get_env("TF_ENABLE_PROFILER") << _tfprof->_uuid << ".tfp";
+    fpath << get_env("TF_ENABLE_PROFILER") << _tfprof->_UID << ".tfp";
     std::ofstream ofs(fpath.str());
     _tfprof->dump(ofs);
   }
@@ -965,22 +965,16 @@ inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node) {
 
 // Procedure: _invoke_module_task
 inline void Executor::_invoke_module_task(Worker& w, Node* node) {
-
   _observer_prologue(w, node);
-  
   auto module = std::get<Node::ModuleTask>(node->_handle).module;
-  
   _invoke_dynamic_task_internal(w, node, module->_graph, false);
-  
   _observer_epilogue(w, node);  
 }
 
 // Procedure: _invoke_async_task
 inline void Executor::_invoke_async_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  
   std::get<Node::AsyncTask>(node->_handle).work();
-
   _observer_epilogue(w, node);  
 }
 
