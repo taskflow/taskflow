@@ -1,14 +1,9 @@
 #include <taskflow/taskflow.hpp>
-#include <filesystem>
 #include "httplib.hpp"
 
 // TODO
 
 int main() {
-
-  std::filesystem::path path;
-
-  std::cout << std::filesystem::current_path() << std::endl;
 
   httplib::Server svr;
 
