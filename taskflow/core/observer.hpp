@@ -374,12 +374,6 @@ class TFProfObserver : public ObserverInterface {
     Segment(
       const std::string& n,
       TaskType t,
-      std::chrono::time_point<std::chrono::steady_clock> b
-    );
-
-    Segment(
-      const std::string& n,
-      TaskType t,
       std::chrono::time_point<std::chrono::steady_clock> b,
       std::chrono::time_point<std::chrono::steady_clock> e
     );
@@ -425,15 +419,6 @@ class TFProfObserver : public ObserverInterface {
 
     UUID _uuid;
 };  
-
-// constructor
-inline TFProfObserver::Segment::Segment(
-  const std::string& n,
-  TaskType t,
-  std::chrono::time_point<std::chrono::steady_clock> b
-) :
-  name {n}, type {t}, beg {b} {
-} 
 
 // constructor
 inline TFProfObserver::Segment::Segment(
