@@ -216,12 +216,10 @@ class Executor {
     
     std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
-    TFProfObserver* _tfprof;
-    
     bool _wait_for_task(Worker&, Node*&);
     
-    void _instantiate_tfprof();
-    void _flush_tfprof();
+    //void _instantiate_tfprof();
+    //void _flush_tfprof();
     void _observer_prologue(Worker&, Node*);
     void _observer_epilogue(Worker&, Node*);
     void _spawn(size_t);
@@ -280,7 +278,9 @@ inline Executor::Executor(size_t N) :
   _spawn(N);
 
   // instantite the default observer if requested
-  _instantiate_tfprof();
+  if(has_env(TF_ENABLE_PROFILER)) {
+    TFProfManager::get()._manage(make_observer<TFProfObserver>());
+  }
 }
 
 // Destructor
@@ -299,25 +299,25 @@ inline Executor::~Executor() {
   } 
   
   // flush the default observer
-  _flush_tfprof();
+  //_flush_tfprof();
 }
 
 // Procedure: _instantiate_tfprof
-inline void Executor::_instantiate_tfprof() {
-  // TF_OBSERVER_TYPE
-  _tfprof = get_env("TF_ENABLE_PROFILER").empty() ? 
-    nullptr : make_observer<TFProfObserver>().get();
-}
+//inline void Executor::_instantiate_tfprof() {
+  //// TF_OBSERVER_TYPE
+  //_tfprof = get_env(TF_ENABLE_PROFILER).empty() ? 
+  //  nullptr : make_observer<TFProfObserver>().get();
+//}
 
-// Procedure: _flush_tfprof
-inline void Executor::_flush_tfprof() {
-  if(_tfprof) {
-    std::ostringstream fpath;
-    fpath << get_env("TF_ENABLE_PROFILER") << _tfprof->_UID << ".tfp";
-    std::ofstream ofs(fpath.str());
-    _tfprof->dump(ofs);
-  }
-}
+//// Procedure: _flush_tfprof
+//inline void Executor::_flush_tfprof() {
+//  if(_tfprof) {
+//    std::ostringstream fpath;
+//    fpath << get_env(TF_ENABLE_PROFILER) << _tfprof->_UID << ".tfp";
+//    std::ofstream ofs(fpath.str());
+//    _tfprof->dump(ofs);
+//  }
+//}
 
 // Function: num_workers
 inline size_t Executor::num_workers() const {

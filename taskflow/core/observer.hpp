@@ -597,7 +597,12 @@ inline size_t TFProfObserver::num_tasks() const {
 // TFProfManager
 // ----------------------------------------------------------------------------
 
+/**
+@private
+*/
 class TFProfManager {
+
+  friend class Executor;
 
   public:
     
@@ -608,43 +613,45 @@ class TFProfManager {
 
     static TFProfManager& get();
 
-    void manage(std::shared_ptr<TFProfObserver> observer);
-
     void dump(std::ostream& ostream) const;
 
   private:
     
-    TFProfManager();
+    const std::string _fpath {get_env(TF_ENABLE_PROFILER)};
 
     std::mutex _mutex;
     std::vector<std::shared_ptr<TFProfObserver>> _observers;
+    
+    TFProfManager() = default;
+
+    void _manage(std::shared_ptr<TFProfObserver> observer);
 };
 
 // Procedure: manage
-inline void TFProfManager::manage(std::shared_ptr<TFProfObserver> observer) {
+inline void TFProfManager::_manage(std::shared_ptr<TFProfObserver> observer) {
   std::lock_guard lock(_mutex);
   _observers.push_back(std::move(observer));
 }
 
 // Procedure: dump
 inline void TFProfManager::dump(std::ostream& os) const {
-  os << '[';
   for(size_t i=0; i<_observers.size(); ++i) {
     if(i) os << ',';
     _observers[i]->dump(os); 
   }
-  os << ']' << std::endl;
-}
-
-// Constructor
-inline TFProfManager::TFProfManager() {
-  std::cout << "constructing tfpmgr...\n";
 }
 
 // Destructor
 inline TFProfManager::~TFProfManager() {
-  //dump(std::cout);
-  std::cout << "destructing me ...\n";
+  std::ofstream ofs(_fpath);
+  if(ofs) {
+    ofs << "[\n";
+    for(size_t i=0; i<_observers.size(); ++i) {
+      if(i) ofs << ',';
+      _observers[i]->dump(ofs);
+    }
+    ofs << "]\n";
+  }
 }
     
 // Function: get
