@@ -19,12 +19,6 @@
     <script type="text/javascript" src="js/d3/d3.v5.min.js"></script>
     <script type="text/javascript" src="js/d3/d3-tip.min.js"></script>
     
-    <!-- jquery terminal -->
-    <link rel="stylesheet" href="node_modules/xterm/css/xterm.css" />
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://unpkg.com/jquery.terminal@2.x.x/js/jquery.terminal.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/jquery.terminal@2.x.x/css/jquery.terminal.min.css"/>
-    
     <!-- tfp -->
     <link rel="stylesheet" href="css/tfp.css">
   </head>
@@ -38,6 +32,16 @@
       <!-- left-side navbar -->
       <ul class="navbar-nav mr-auto">
         <!--<li class="nav-item"><a class="nav-link" href="">MainBoard</a></li>-->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+            Examples
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" id="tfp_composition" href="#">Hierarchical Composition</a>
+            <a class="dropdown-item" id="tfp_inference" href="#">Machine Learning Inference</a>
+            <a class="dropdown-item" id="tfp_dreamplace" href="#">Integrated Circuit Placement</a>
+          </div>
+        </li>
       </ul>
       <!-- right-side navbar 
       <form class="form-inline my-2 my-lg-0" action="https://github.com/taskflow/tfprof">
@@ -46,9 +50,6 @@
       <a class="btn btn-primary" href="https://github.com/taskflow/tfprof" role="button">GitHub</a>
       <a class="btn btn-light ml-2" href="https://taskflow.github.io/" role="button">Project Page</a>
     </nav>
-
-
-
 
     <div class="mb-2 btn-toolbar" role="toolbar" style="margin-left: 100px">
 
@@ -86,39 +87,18 @@
       
     <!-- svg -->
     <div class="container-fluidic" id="tfp"></div>
-    
-    <div class="container-fluidic ml-4 mr-4" id="terminal"></div>
+
+    <div class="form-group mr-4 ml-4 mt-2">
+      <textarea class="form-control" id="tfp_textarea" placeholder="Paste .tfp data" rows="8"></textarea>
+      <div class="invalid-feedback"><p>Wrong format! Please visit: https://github.com/taskflow/tfprof</p>
+      </div>
+    </div>
 
     <script src="js/simple.js"></script>
+    <script src="js/composition.js"></script>
+    <script src="js/inference.js"></script>
+    <script src="js/dreamplace.js"></script>
     <script src="js/index.js"></script>
-
-    <script>
-    $(function() {
-      $('#terminal').terminal(function(command) {
-        if (command !== '') {
-            try {
-                var result = window.eval(command);
-                if (result !== undefined) {
-                    this.echo(new String(result));
-                }
-            } catch(e) {
-                this.error(new String(e));
-            }
-        } else {
-           this.echo('');
-        }
-      }, {
-        greetings: `
- ______         __    _____          
-/_  __/__ ____ / /__ / _/ /__ _    __
- / / / _  (_-</  '_// _/ / _ \\ |/|/ /
-/_/  \\_,_/___/_/\\_\\/_//_/\\___/__,__/ 
-`,
-        name: 'js_demo',
-        prompt: 'tfp> '
-      });
-    });
-    </script>
  
     <footer class="page-footer font-small blue">
       <div><br></div>
@@ -127,7 +107,5 @@
   </body>
 
 </html>
-
-
 
 

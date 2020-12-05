@@ -1,10 +1,24 @@
 #include <taskflow/taskflow.hpp>
-#include "httplib.hpp"
+#include <httplib/httplib.hpp>
+#include <CLI11/CLI11.hpp>
 
 // TODO
 
-int main() {
+int main(int argc, char* argv[]) {
+  
+  // parse arguments
+  CLI::App app{"tfprof"};
 
+  int port {8080};  
+  app.add_option("-p,--port", port, "port to listen (default=8080)");
+
+  std::string input;
+  app.add_option("-i,--input", input, "input profiling file")
+     ->required();
+
+  CLI11_PARSE(app, argc, argv);
+  
+  // launc the server
   httplib::Server svr;
 
   auto ret = svr.set_mount_point("/", "../");
