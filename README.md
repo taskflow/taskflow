@@ -1,13 +1,12 @@
 # Taskflow <img align="right" width="10%" src="image/taskflow_logo.png">
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3bbdc89f9a7a41eaa17559fab8a64cde)](https://app.codacy.com/gh/taskflow/taskflow?utm_source=github.com&utm_medium=referral&utm_content=taskflow/taskflow&utm_campaign=Badge_Grade_Dashboard)
 [![Linux Build Status](https://travis-ci.com/taskflow/taskflow.svg?branch=master)](https://travis-ci.com/taskflow/taskflow)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/rbjl16i6c9ahxr16?svg=true)](https://ci.appveyor.com/project/tsung-wei-huang/taskflow)
 [![Wiki](image/api-doc.svg)][wiki]
 [![TFProf](image/tfprof.svg)](https://taskflow.github.io/tfprof/)
 [![Cite](image/cite-ipdps.svg)][IPDPS19]
 
-Taskflow helps you quickly write parallel tasks programs in modern C++
+Taskflow helps you quickly write parallel and heterogeneous tasks programs in modern C++
 
 # Why Taskflow?
 
@@ -84,9 +83,7 @@ Technical details can be referred to our [IPDPS paper][IPDPS19].
    * [Step 1: Create a cudaFlow](#step-1-create-a-cudaflow)
    * [Step 2: Compile and Execute a cudaFlow](#step-2-compile-and-execute-a-cudaflow)
 * [Visualize a Taskflow Graph](#visualize-a-taskflow-graph)
-* [API Reference](#api-reference)
 * [System Requirements](#system-requirements)
-* [Compile Unit Tests, Examples, and Benchmarks](#compile-unit-tests-examples-and-benchmarks)
 * [Who is Using Taskflow?](#who-is-using-taskflow)
 
 
@@ -451,130 +448,6 @@ tf.dump(std::cout);       // dump the graph including dynamic tasks
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 
-
-
-
-# API Reference
-
-The official [documentation][wiki] explains a complete list of 
-Taskflow API. 
-Here, we highlight commonly used methods.
-
-## Taskflow API
-
-The class `tf::Taskflow` is the main place to create a task dependency graph.
-
-### *emplace/placeholder*
-
-You can use `emplace` to create a task from a target callable.
-
-```cpp
-tf::Task task = taskflow.emplace([] () { std::cout << "my task\n"; });
-```
-
-When a task cannot be determined beforehand, you can create a placeholder and assign the callable later.
-
-```cpp
-tf::Task A = taskflow.emplace([](){});
-tf::Task B = taskflow.placeholder();
-A.precede(B);
-B.work([](){ /* do something */ });
-```
-
-### *for_each/for_each_index*
-
-The method `for_each` creates a subflow to perform parallel iterations over a range of elements
-specified by `[beg, end)`.
-
-```cpp
-auto v = {'A', 'B', 'C', 'D'};
-auto t = taskflow.for_each(v.begin(), v.end(),
-  [] (char i) { 
-    std::cout << "parallel iteration on character " << i << '\n';
-  }
-);
-```
-
-You can also specify an *index-based* range with the given step size.
-
-```cpp
-// [0, 11) with a step size of 2, i.e., 0, 2, 4, 6, 8, 10
-auto t = taskflow.for_each_index(0, 11, 2, 
-  [] (int i) {
-    std::cout << "parallel iteration on index " << i << std::endl;
-  } 
-);
-```
-
-## Task API
-
-Each time you create a task, the taskflow object adds a node to the present task dependency graph
-and return a *task handle* to you.
-You can access or modify the attributes of the associated task node.
-
-### *name*
-
-The method `name` lets you assign a human-readable string to a task.
-
-```cpp
-A.name("my name is A");
-```
-
-### *work*
-
-The method `work` lets you assign a callable to a task.
-
-```cpp
-A.work([] () { std::cout << "hello world!"; });
-```
-
-### *precede/succeed*
-
-The method `precede/succeed` lets you add a preceding/succeeding link between tasks.
-
-<img align="right" width="30%" src="image/broadcast.svg">
-
-```cpp
-// A runs before B, C, D, and E
-A.precede(B, C, D, E);
-```
-
-The method `succeed` is similar to `precede` but operates in the opposite direction.
-
-### *empty/has_work*
-
-A task is empty if it is not associated with any graph node.
-
-```cpp
-tf::Task task;  // assert(task.empty());
-```
-
-A placeholder task is associated with a graph node but has no work assigned yet.
-
-```
-tf::Task task = taskflow.placeholder();  // assert(!task.has_work());
-```
-
-## Executor API
-
-The class `tf::Executor` is used for executing one or multiple taskflow objects.
-
-### *run/run_n/run_until*
-
-The run series are *thread-safe* and *non-blocking* calls to execute a taskflow.
-Issuing multiple runs on the same taskflow will automatically synchronize 
-to a sequential chain of executions.
-
-```cpp
-executor.run(taskflow);                 // runs a graph once
-executor.run_n(taskflow, 5);            // runs a graph five times
-executor.run_until(taskflow, my_pred);  // keeps running until the my_pred becomes true
-executor.wait_for_all();                // blocks until all tasks finish
-```
-
-The first run finishes before the second run, and the second run finishes before the third run.
- <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
-
 # System Requirements
 
 To use the latest [Taskflow](https://github.com/taskflow/taskflow/archive/master.zip), you only need a [C++17][C++17] compiler.
@@ -584,46 +457,9 @@ To use the latest [Taskflow](https://github.com/taskflow/taskflow/archive/master
 + Microsoft Visual Studio at least v15.7 (MSVC++ 19.14); see [vcpkg guide](https://github.com/taskflow/taskflow/issues/143)
 + AppleClang Xode Version at least v8
 + Intel C++ Compiler at least v19.0.1
-+ Nvidia CUDA Toolkit and Compiler ([nvcc][nvcc]) at least v11.0 with -std=c++17
++ Nvidia CUDA Toolkit and Compiler ([nvcc][nvcc]) at least v11.1 with -std=c++17
 
 Taskflow works on Linux, Windows, and Mac OS X. See the [C++ compiler support](https://en.cppreference.com/w/cpp/compiler_support) status.
-
-<div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
-
-# Compile Unit Tests, Examples, and Benchmarks
-
-Taskflow uses [CMake](https://cmake.org/) to build examples and unit tests.
-We recommend using out-of-source build.
-
-```bash
-~$ cmake --version   # must be at least 3.9 or higher
-~$ mkdir build
-~$ cd build
-~$ cmake ../ 
-~$ make & make test  # run all unit tests
-```
-
-## Examples
-
-The folder `examples/` contains several examples and is a great place to learn to use Taskflow.
-
-| Example |  Description |
-| ------- |  ----------- | 
-| [simple.cpp](./examples/simple.cpp) | uses basic task building blocks to create a trivial taskflow  graph |
-| [visualization.cpp](./examples/visualization.cpp)| inspects a taskflow through the dump method |
-| [parallel_for.cpp](./examples/parallel_for.cpp)| parallelizes a for loop with unbalanced workload |
-| [subflow.cpp](./examples/subflow.cpp)| demonstrates how to create a subflow graph that spawns three dynamic tasks |
-| [run_variants.cpp](./examples/run_variants.cpp)| shows multiple ways to run a taskflow graph |
-| [composition.cpp](./examples/composition.cpp)| demonstrates the decomposable interface of taskflow |
-| [observer.cpp](./examples/observer.cpp)| demonstrates how to monitor the thread activities in scheduling and running tasks |
-| [condition.cpp](./examples/condition.cpp) | creates a conditional tasking graph with a feedback loop control flow |
-| [cuda/saxpy.cu](./examples/cuda/saxpy.cu) | uses cudaFlow to create a saxpy (single-precision A·X Plus Y) task graph |
-| [cuda/matmul.cu](./examples/cuda/matmul.cu) | uses cudaFlow to create a matrix multiplication workload and compares it with a CPU basline |
-
-## Benchmarks
-
-Please visit [benchmarks](benchmarks/benchmarks.md) to learn to
-compile the benchmarks.
 
 <div align="right"><b><a href="#table-of-contents">[↑]</a></b></div>
 

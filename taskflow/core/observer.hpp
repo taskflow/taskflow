@@ -361,6 +361,7 @@ compatible with the format of @TFProf.
 class TFProfObserver : public ObserverInterface {
 
   friend class Executor;
+  friend class TFProfManager;
   
   // data structure to record each task execution
   struct Segment {
@@ -387,7 +388,7 @@ class TFProfObserver : public ObserverInterface {
   };  
 
   public:
-    
+
     /**
     @brief dumps the timelines into a @TFProf format through 
            an output stream
@@ -409,15 +410,22 @@ class TFProfObserver : public ObserverInterface {
     */
     size_t num_tasks() const;
 
+    /**
+    @brief queries the program-wise unique identifier of this observer
+    */
+    size_t uid() const;
+
   private:
+    
+    const size_t _UID {unique_id<size_t>()};
+
+    Timeline _timeline;
     
     inline void set_up(size_t num_workers) override final;
     inline void on_entry(WorkerView, TaskView) override final;
     inline void on_exit(WorkerView, TaskView) override final;
 
-    Timeline _timeline;
-
-    UUID _uuid;
+    void _register();
 };  
 
 // constructor
@@ -463,6 +471,11 @@ inline void TFProfObserver::on_exit(WorkerView wv, TaskView tv) {
   );
 }
 
+// Function: uid
+inline size_t TFProfObserver::uid() const {
+  return _UID;
+}
+
 // Function: clear
 inline void TFProfObserver::clear() {
   for(size_t w=0; w<_timeline.segments.size(); ++w) {
@@ -492,7 +505,7 @@ inline void TFProfObserver::dump(std::ostream& os) const {
     return;
   }
 
-  os << "{\"executor\":\"" << _uuid << "\",\"data\":[";
+  os << "{\"executor\":\"" << _UID << "\",\"data\":[";
 
   bool comma = false;
 
@@ -566,6 +579,73 @@ inline size_t TFProfObserver::num_tasks() const {
 }
 
 // ----------------------------------------------------------------------------
+// TFProfManager
+// ----------------------------------------------------------------------------
+
+/**
+@private
+*/
+class TFProfManager {
+
+  friend class Executor;
+
+  public:
+    
+    ~TFProfManager();
+    
+    TFProfManager(const TFProfManager&) = delete;
+    TFProfManager& operator=(const TFProfManager&) = delete;
+
+    static TFProfManager& get();
+
+    void dump(std::ostream& ostream) const;
+
+  private:
+    
+    const std::string _fpath {get_env(TF_ENABLE_PROFILER)};
+
+    std::mutex _mutex;
+    std::vector<std::shared_ptr<TFProfObserver>> _observers;
+    
+    TFProfManager() = default;
+
+    void _manage(std::shared_ptr<TFProfObserver> observer);
+};
+
+// Procedure: manage
+inline void TFProfManager::_manage(std::shared_ptr<TFProfObserver> observer) {
+  std::lock_guard lock(_mutex);
+  _observers.push_back(std::move(observer));
+}
+
+// Procedure: dump
+inline void TFProfManager::dump(std::ostream& os) const {
+  for(size_t i=0; i<_observers.size(); ++i) {
+    if(i) os << ',';
+    _observers[i]->dump(os); 
+  }
+}
+
+// Destructor
+inline TFProfManager::~TFProfManager() {
+  std::ofstream ofs(_fpath);
+  if(ofs) {
+    ofs << "[\n";
+    for(size_t i=0; i<_observers.size(); ++i) {
+      if(i) ofs << ',';
+      _observers[i]->dump(ofs);
+    }
+    ofs << "]\n";
+  }
+}
+    
+// Function: get
+inline TFProfManager& TFProfManager::get() {
+  static TFProfManager mgr;
+  return mgr;
+}
+
+// ----------------------------------------------------------------------------
 // Identifier for Each Built-in Observer
 // ----------------------------------------------------------------------------
 
@@ -591,6 +671,7 @@ inline const char* observer_type_to_string(ObserverType type) {
   }
   return val;
 }
+
 
 }  // end of namespace tf -----------------------------------------------------
 

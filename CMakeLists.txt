@@ -6,11 +6,12 @@ MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 project(Taskflow VERSION 3.0.0 LANGUAGES CXX)
 
 # build options
-option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
-option(TF_BUILD_CUDA "Enables build of cuda code" OFF)
-option(TF_BUILD_SYCL "Enables build of sycl code" OFF)
-option(TF_BUILD_TESTS "Enables build of tests" ON)
-option(TF_BUILD_EXAMPLES "Enables build of examples" ON)
+option(TF_BUILD_BENCHMARKS "Enables builds of benchmarks" OFF)
+option(TF_BUILD_CUDA "Enables builds of cuda code" OFF)
+option(TF_BUILD_SYCL "Enables builds of sycl code" OFF)
+option(TF_BUILD_TESTS "Enables builds of tests" ON)
+option(TF_BUILD_EXAMPLES "Enables builds of examples" ON)
+option(TF_BUILD_PROFILER "Enables builds of profiler" ON)
 
 # project-specific variables
 set(TF_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
@@ -297,6 +298,13 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 #  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 #  $<INSTALL_INTERFACE:include/> 
 #)
+
+# -----------------------------------------------------------------------------
+# profiler program 
+# -----------------------------------------------------------------------------
+if(TF_BUILD_PROFILER)
+  add_subdirectory(tfprof/server)
+endif(TF_BUILD_PROFILER)
 
 # -----------------------------------------------------------------------------
 # Example program 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <atomic>
+
 namespace tf {
 
 // rounds the given 64-bit unsigned integer to the nearest power of 2
@@ -108,6 +110,15 @@ void sort3(Iter a, Iter b, Iter c, Compare comp) {
   sort2(a, b, comp);
   sort2(b, c, comp);
   sort2(a, b, comp);
+}
+
+/**
+@brief generates a program-wise unique id of the give type (thread-safe)
+*/
+template <typename T, std::enable_if_t<std::is_integral_v<T>, void>* = nullptr>
+T unique_id() {
+  static std::atomic<T> counter{0};
+  return counter.fetch_add(1, std::memory_order_relaxed);
 }
 
 }  // end of namespace tf -----------------------------------------------------
