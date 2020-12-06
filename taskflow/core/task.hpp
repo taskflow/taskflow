@@ -29,6 +29,19 @@ enum TaskType {
 };
 
 /**
+@brief array of all task types (used for iterating task types)
+*/
+inline constexpr std::array<TaskType, 7> TASK_TYPES {
+  PLACEHOLDER_TASK,
+  CUDAFLOW_TASK,
+  STATIC_TASK,
+  DYNAMIC_TASK,
+  CONDITION_TASK,
+  MODULE_TASK,
+  ASYNC_TASK      
+};
+
+/**
 @brief convert a task type to a human-readable string
 */
 inline const char* task_type_to_string(TaskType type) {

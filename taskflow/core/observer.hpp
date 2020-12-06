@@ -10,6 +10,101 @@
 
 namespace tf {
 
+// ----------------------------------------------------------------------------
+// timeline data structure
+// ----------------------------------------------------------------------------
+
+using observer_clock_t = std::chrono::steady_clock;
+using observer_stamp_t = std::chrono::time_point<observer_clock_t>;
+
+/**
+@private
+*/
+struct Segment {
+
+  std::string name;
+  TaskType type;
+
+  observer_stamp_t beg;
+  observer_stamp_t end;
+
+  template <typename Archiver>
+  auto save(Archiver& ar) const {
+    return ar(name, type, beg, end);
+  }
+
+  template <typename Archiver>
+  auto load(Archiver& ar) {
+    return ar(name, type, beg, end);
+  }
+
+  Segment() = default;
+
+  Segment(
+    const std::string& n, TaskType t, observer_stamp_t b, observer_stamp_t e
+  ) : name {n}, type {t}, beg {b}, end {e} {
+  }
+};
+
+/**
+@private
+*/
+struct Timeline {
+
+  size_t uid;
+
+  observer_stamp_t origin;
+  std::vector<std::vector<std::vector<Segment>>> segments;
+
+  Timeline() = default;
+
+  Timeline(const Timeline& rhs) = delete;
+  Timeline(Timeline&& rhs) = default;
+
+  Timeline& operator = (const Timeline& rhs) = delete;
+  Timeline& operator = (Timeline&& rhs) = default;
+
+  template <typename Archiver>
+  auto save(Archiver& ar) const {
+    return ar(uid, origin, segments);
+  }
+
+  template <typename Archiver>
+  auto load(Archiver& ar) {
+    return ar(uid, origin, segments);
+  }
+};  
+
+/**
+@private
+ */
+struct ProfileData {
+
+  std::vector<Timeline> timelines;
+
+  ProfileData() = default;
+
+  ProfileData(const ProfileData& rhs) = delete;
+  ProfileData(ProfileData&& rhs) = default;
+
+  ProfileData& operator = (const ProfileData& rhs) = delete;
+  ProfileData& operator = (ProfileData&&) = default;
+  
+  template <typename Archiver>
+  auto save(Archiver& ar) const {
+    return ar(timelines);
+  }
+
+  template <typename Archiver>
+  auto load(Archiver& ar) {
+    return ar(timelines);
+  }
+};
+
+// ----------------------------------------------------------------------------
+// observer interface 
+// ----------------------------------------------------------------------------
+
 /**
 @class: ObserverInterface
 
@@ -136,26 +231,21 @@ class ChromeObserver : public ObserverInterface {
 
     std::string name;
 
-    std::chrono::time_point<std::chrono::steady_clock> beg;
-    std::chrono::time_point<std::chrono::steady_clock> end;
+    observer_stamp_t beg;
+    observer_stamp_t end;
 
     Segment(
       const std::string& n,
-      std::chrono::time_point<std::chrono::steady_clock> b
-    );
-
-    Segment(
-      const std::string& n,
-      std::chrono::time_point<std::chrono::steady_clock> b,
-      std::chrono::time_point<std::chrono::steady_clock> e
+      observer_stamp_t b,
+      observer_stamp_t e
     );
   };
   
   // data structure to store the entire execution timeline
   struct Timeline {
-    std::chrono::time_point<std::chrono::steady_clock> origin;
+    observer_stamp_t origin;
     std::vector<std::vector<Segment>> segments;
-    std::vector<std::stack<std::chrono::time_point<std::chrono::steady_clock>>> stacks;
+    std::vector<std::stack<observer_stamp_t>> stacks;
   };  
 
   public:
@@ -193,16 +283,8 @@ class ChromeObserver : public ObserverInterface {
 // constructor
 inline ChromeObserver::Segment::Segment(
   const std::string& n,
-  std::chrono::time_point<std::chrono::steady_clock> b
-) :
-  name {n}, beg {b} {
-} 
-
-// constructor
-inline ChromeObserver::Segment::Segment(
-  const std::string& n,
-  std::chrono::time_point<std::chrono::steady_clock> b,
-  std::chrono::time_point<std::chrono::steady_clock> e
+  observer_stamp_t b,
+  observer_stamp_t e
 ) :
   name {n}, beg {b}, end {e} {
 }
@@ -216,12 +298,12 @@ inline void ChromeObserver::set_up(size_t num_workers) {
     _timeline.segments[w].reserve(32);
   }
   
-  _timeline.origin = std::chrono::steady_clock::now();
+  _timeline.origin = observer_clock_t::now();
 }
 
 // Procedure: on_entry
 inline void ChromeObserver::on_entry(WorkerView wv, TaskView) {
-  _timeline.stacks[wv.id()].push(std::chrono::steady_clock::now());
+  _timeline.stacks[wv.id()].push(observer_clock_t::now());
 }
 
 // Procedure: on_exit
@@ -235,7 +317,7 @@ inline void ChromeObserver::on_exit(WorkerView wv, TaskView tv) {
   _timeline.stacks[w].pop();
 
   _timeline.segments[w].emplace_back(
-    tv.name(), beg, std::chrono::steady_clock::now()
+    tv.name(), beg, observer_clock_t::now()
   );
 }
 
@@ -363,30 +445,6 @@ class TFProfObserver : public ObserverInterface {
   friend class Executor;
   friend class TFProfManager;
   
-  // data structure to record each task execution
-  struct Segment {
-
-    std::string name;
-    TaskType type;
-
-    std::chrono::time_point<std::chrono::steady_clock> beg;
-    std::chrono::time_point<std::chrono::steady_clock> end;
-
-    Segment(
-      const std::string& n,
-      TaskType t,
-      std::chrono::time_point<std::chrono::steady_clock> b,
-      std::chrono::time_point<std::chrono::steady_clock> e
-    );
-  };
-  
-  // data structure to store the entire execution timeline
-  struct Timeline {
-    std::chrono::time_point<std::chrono::steady_clock> origin;
-    std::vector<std::vector<std::vector<Segment>>> segments;
-    std::vector<std::stack<std::chrono::time_point<std::chrono::steady_clock>>> stacks;
-  };  
-
   public:
 
     /**
@@ -410,46 +468,28 @@ class TFProfObserver : public ObserverInterface {
     */
     size_t num_tasks() const;
 
-    /**
-    @brief queries the program-wise unique identifier of this observer
-    */
-    size_t uid() const;
-
   private:
     
-    const size_t _UID {unique_id<size_t>()};
-
     Timeline _timeline;
+  
+    std::vector<std::stack<observer_stamp_t>> _stacks;
     
     inline void set_up(size_t num_workers) override final;
     inline void on_entry(WorkerView, TaskView) override final;
     inline void on_exit(WorkerView, TaskView) override final;
-
-    void _register();
 };  
-
-// constructor
-inline TFProfObserver::Segment::Segment(
-  const std::string& n,
-  TaskType t,
-  std::chrono::time_point<std::chrono::steady_clock> b,
-  std::chrono::time_point<std::chrono::steady_clock> e
-) :
-  name {n}, type {t}, beg {b}, end {e} {
-}
 
 // Procedure: set_up
 inline void TFProfObserver::set_up(size_t num_workers) {
-
+  _timeline.uid = unique_id<size_t>();
+  _timeline.origin = observer_clock_t::now();
   _timeline.segments.resize(num_workers);
-  _timeline.stacks.resize(num_workers);
-
-  _timeline.origin = std::chrono::steady_clock::now();
+  _stacks.resize(num_workers);
 }
 
 // Procedure: on_entry
 inline void TFProfObserver::on_entry(WorkerView wv, TaskView) {
-  _timeline.stacks[wv.id()].push(std::chrono::steady_clock::now());
+  _stacks[wv.id()].push(observer_clock_t::now());
 }
 
 // Procedure: on_exit
@@ -457,23 +497,18 @@ inline void TFProfObserver::on_exit(WorkerView wv, TaskView tv) {
 
   size_t w = wv.id();
 
-  assert(!_timeline.stacks[w].empty());
+  assert(!_stacks[w].empty());
   
-  if(_timeline.stacks.size() > _timeline.segments[w].size()){
-    _timeline.segments[w].resize(_timeline.stacks.size());
+  if(_stacks.size() > _timeline.segments[w].size()) {
+    _timeline.segments[w].resize(_stacks.size());
   }
 
-  auto beg = _timeline.stacks[w].top();
-  _timeline.stacks[w].pop();
+  auto beg = _stacks[w].top();
+  _stacks[w].pop();
 
-  _timeline.segments[w][_timeline.stacks[w].size()].emplace_back(
-    tv.name(), tv.type(), beg, std::chrono::steady_clock::now()
+  _timeline.segments[w][_stacks[w].size()].emplace_back(
+    tv.name(), tv.type(), beg, observer_clock_t::now()
   );
-}
-
-// Function: uid
-inline size_t TFProfObserver::uid() const {
-  return _UID;
 }
 
 // Function: clear
@@ -482,8 +517,8 @@ inline void TFProfObserver::clear() {
     for(size_t l=0; l<_timeline.segments[w].size(); ++l) {
       _timeline.segments[w][l].clear();
     }
-    while(!_timeline.stacks[w].empty()) {
-      _timeline.stacks[w].pop();
+    while(!_stacks[w].empty()) {
+      _stacks[w].pop();
     }
   }
 }
@@ -505,7 +540,7 @@ inline void TFProfObserver::dump(std::ostream& os) const {
     return;
   }
 
-  os << "{\"executor\":\"" << _UID << "\",\"data\":[";
+  os << "{\"executor\":\"" << _timeline.uid << "\",\"data\":[";
 
   bool comma = false;
 
@@ -630,12 +665,25 @@ inline void TFProfManager::dump(std::ostream& os) const {
 inline TFProfManager::~TFProfManager() {
   std::ofstream ofs(_fpath);
   if(ofs) {
-    ofs << "[\n";
-    for(size_t i=0; i<_observers.size(); ++i) {
-      if(i) ofs << ',';
-      _observers[i]->dump(ofs);
+    // .tfp
+    if(_fpath.rfind(".tfp") != std::string::npos) {
+      ProfileData data;
+      data.timelines.reserve(_observers.size());
+      for(size_t i=0; i<_observers.size(); ++i) {
+        data.timelines.push_back(std::move(_observers[i]->_timeline));
+      }
+      Serializer serializer(ofs); 
+      serializer(data);
     }
-    ofs << "]\n";
+    // .json
+    else {
+      ofs << "[\n";
+      for(size_t i=0; i<_observers.size(); ++i) {
+        if(i) ofs << ',';
+        _observers[i]->dump(ofs);
+      }
+      ofs << "]\n";
+    }
   }
 }
     

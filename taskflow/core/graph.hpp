@@ -6,6 +6,7 @@
 #include "../utility/singleton.hpp"
 #include "../utility/os.hpp"
 #include "../utility/math.hpp"
+#include "../utility/serializer.hpp"
 #include "error.hpp"
 #include "declarations.hpp"
 #include "semaphore.hpp"
