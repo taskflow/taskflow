@@ -33,14 +33,6 @@
       <ul class="navbar-nav mr-auto">
         <!--<li class="nav-item"><a class="nav-link" href="">MainBoard</a></li>-->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-            Examples
-          </a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" id="tfp_composition" href="#">Hierarchical Composition</a>
-            <a class="dropdown-item" id="tfp_inference" href="#">Machine Learning Inference</a>
-            <a class="dropdown-item" id="tfp_dreamplace" href="#">Integrated Circuit Placement</a>
-          </div>
         </li>
       </ul>
       <!-- right-side navbar 
@@ -59,13 +51,10 @@
         <div class="dropdown-menu tfp-menu-workers" id="tfp_menu_workers"></div>
       </div>
       
-
-
-      <!-- tfp-menu-rank -->
+      <!-- tfp-menu-rank 
       <div class="btn-group" role="group">
         <button type="button" class="btn btn-outline-success ml-2 dropdown-toggle" data-toggle="dropdown">Select Rank</button>
         <div class="dropdown-menu tfp-menu-rank" id="tfp_menu_rank">
-          <!--<a class="dropdown-item tfp-menu-rank-10">top 1-10</a>-->
           <a class="dropdown-item">
             <input class="mr-2" type="number" value="" min="1" id="tfp_menu_rank_from">
             <label> (From)</label>
@@ -75,7 +64,7 @@
             <label> (to)</label>
           </a>
         </div>
-      </div>
+      </div>-->
       
       
       <!-- tfp-menu-reset -->
@@ -88,18 +77,8 @@
     <!-- svg -->
     <div class="container-fluidic" id="tfp"></div>
 
-    <div class="form-group mr-4 ml-4 mt-2">
-      <textarea class="form-control" id="tfp_textarea" placeholder="Paste .tfp data" rows="8"></textarea>
-      <div class="invalid-feedback"><p>Wrong format! Please visit: https://github.com/taskflow/tfprof</p>
-      </div>
-    </div>
-
-    <script src="js/simple.js"></script>
-    <script src="js/composition.js"></script>
-    <script src="js/inference.js"></script>
-    <script src="js/dreamplace.js"></script>
     <script src="js/index.js"></script>
- 
+
     <footer class="page-footer font-small blue">
       <div><br></div>
     </footer>

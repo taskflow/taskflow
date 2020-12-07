@@ -1,7 +1,9 @@
 #include <taskflow/taskflow.hpp>
+#include <cmath>
 #include <httplib/httplib.hpp>
 #include <CLI11/CLI11.hpp>
-
+#include <nlohmann/json.hpp>
+  
 // TODO
 namespace tf {
 
@@ -10,12 +12,23 @@ class Database {
   public:
 
   struct ZoomX {
-    size_t beg;
-    size_t end;
+    double beg;
+    double end;
+
+    ZoomX() = default;
+    ZoomX(double b, double e) : beg{b}, end{e} {}
   };
 
   struct ZoomY {
-    std::vector<std::tuple<size_t, size_t, size_t>> workers;
+
+    std::vector<std::string> workers;
+    
+    ZoomY() = default;
+    ZoomY(const ZoomY&) = delete;
+    ZoomY(ZoomY&&) = default;
+
+    ZoomY& operator = (const ZoomY&) = delete;
+    ZoomY& operator = (ZoomY&&) = delete;
   };
 
   struct TaskData {
@@ -42,8 +55,10 @@ class Database {
     size_t lid;
     std::vector<TaskData> tasks; 
 
-    WorkerData(size_t e, size_t w, size_t l) : 
-      eid{e}, wid{w}, lid{l} {
+    std::string name;
+
+    WorkerData(size_t e, size_t w, size_t l, const std::string& n) : 
+      eid{e}, wid{w}, lid{l}, name {n} {
     }
 
     WorkerData(const WorkerData&) = delete;
@@ -78,7 +93,13 @@ class Database {
 
   public:
 
-  Database(const std::string fpath) {
+  Database(const std::string& fpath, size_t render_limit) {
+
+    if(render_limit == 0) {
+      TF_THROW("maximum rendered tasks must be at least 1");
+    }
+
+    _max_rendered_tasks = render_limit;
 
     std::ifstream ifs(fpath);
 
@@ -99,20 +120,14 @@ class Database {
     }
     
     // conver to flat data
-    size_t idx = 0;
-
-    _ewl2wd.resize(pd.timelines.size());
     for(size_t e=0; e<pd.timelines.size(); e++) {
-      _ewl2wd[e].resize(pd.timelines[e].segments.size());
       for(size_t w=0; w<pd.timelines[e].segments.size(); w++) {
-        _ewl2wd[e][w].resize(pd.timelines[e].segments[w].size());
         for(size_t l=0; l<pd.timelines[e].segments[w].size(); l++) {
-
-          _ewl2wd[e][w][l] = idx++;
           _num_tasks += pd.timelines[e].segments[w][l].size();
 
           // a new worker data
-          WorkerData wd(e, w, l);
+          WorkerData wd(e, w, l, stringify("E", e, ".W", w, ".L", l));
+
           for(size_t s=0; s<pd.timelines[e].segments[w][l].size(); s++) {
             auto& t = wd.tasks.emplace_back(
               std::move(pd.timelines[e].segments[w][l][s].name),
@@ -128,6 +143,7 @@ class Database {
             if(t.beg < _minX) _minX = t.beg;
             if(t.end > _maxX) _maxX = t.end;
           }
+          _wdmap[wd.name] = _wd.size();
           _wd.push_back(std::move(wd));
         }
       }
@@ -146,8 +162,11 @@ class Database {
     if(zoomy) {
       w.resize(zoomy->workers.size());
       for(size_t i=0; i<zoomy->workers.size(); i++) {
-        const auto& [eid, wid, lid] = zoomy->workers[i];
-        w[i] = _ewl2wd[eid][wid][lid];
+        auto itr = _wdmap.find(zoomy->workers[i]);
+        if(itr == _wdmap.end()) {
+          TF_THROW("failed to find worker ", zoomy->workers[i]);
+        }
+        w[i] = itr->second;
       }
     }
     else {
@@ -158,8 +177,16 @@ class Database {
     }
 
     if(!zoomx) {
-      zoomx = ZoomX{_minX, _maxX};
+      zoomx.emplace(_minX, _maxX);
     }
+
+    std::cout << "query zoomX=[" << zoomx->beg << ", " << zoomx->end 
+              << "] zoomY=[";
+    for(size_t i=0; i<w.size(); ++i) {
+      if(i) std::cout << ", ";
+      std::cout << _wd[w[i]].name;
+    }
+    std::cout << "]\n";
 
     std::vector<std::list<Cluster>> clusters{w.size()};
     ClusterHeap heap;
@@ -185,7 +212,6 @@ class Database {
         }
       }
       
-      // TODO
       if(r == std::nullopt) {
         continue;
       }
@@ -203,51 +229,47 @@ class Database {
         }
       };
       
-      // TODO
       if(l == std::nullopt || *l > *r) {
         continue;
       }
       
       // range ok
-      //_wd[wd[i]].tbeg = *l;
-      //_wd[wd[i]].tend = *r+1;
-      //R += (*r + 1 - *l);
-      
-      // TODO: can we use priority queue to do clustering
       for(size_t s=*l; s<=*r; s++) {
+
         if(s != *r) {
-          clusters[w[i]].emplace_back(
-            w[i], 
+          clusters[i].emplace_back(
+            i, 
             s, 
             s,
             _wd[w[i]].tasks[s+1].end - _wd[w[i]].tasks[s].beg
           );
         }
         else {  // boundary
-          clusters[w[i]].emplace_back(
-            w[i], s, s, std::numeric_limits<size_t>::max()
+          clusters[i].emplace_back(
+            i, s, s, std::numeric_limits<size_t>::max()
           );
         }
 
-        auto itr = std::prev(clusters[w[i]].end());
-        heap.push(itr);
-    
-        while(heap.size() && heap.size() >= _max_rendered_tasks) {
+        heap.push(std::prev(clusters[i].end()));
+      }
+        
+      // while loop must sit after clustering is done
+      // because we have std::next(top)-> = top->f
+      while(heap.size() && heap.size() > _max_rendered_tasks) {
 
-          auto top = heap.top(); 
+        auto top = heap.top(); 
 
-          // if all clusters are in boundary - no need to cluster anymore
-          if(top->g == std::numeric_limits<size_t>::max()) {
-            break;
-          }
-          
-          // remove the top element and cluster it with the next
-          heap.pop();
-          
-          // merge top with top->next 
-          std::next(top)->f = top->f;
-          clusters[top->w].erase(top);
+        // if all clusters are in boundary - no need to cluster anymore
+        if(top->g == std::numeric_limits<size_t>::max()) {
+          break;
         }
+        
+        // remove the top element and cluster it with the next
+        heap.pop();
+        
+        // merge top with top->next 
+        std::next(top)->f = top->f;
+        clusters[top->w].erase(top);
       }
     }
 
@@ -264,16 +286,14 @@ class Database {
       }
 
       os << "{\"executor\":\"" << _wd[w[i]].eid << "\","
-         << "\"worker\":\"" << "E" << _wd[w[i]].eid 
-                            << ".W" << _wd[w[i]].wid 
-                            << ".L" << _wd[w[i]].lid << "\","
-         << "\"tasks\":\"" << clusters[w[i]].size() << "\","
+         << "\"worker\":\"" << _wd[w[i]].name << "\","
+         << "\"tasks\":\"" << clusters[i].size() << "\","
          << "\"segs\": [";
       
       size_t T=0, loads[TASK_TYPES.size()] = {0};
       bool first_cluster = true;
         
-      for(const auto& cluster : clusters[w[i]]) {  
+      for(const auto& cluster : clusters[i]) {  
 
         if(!first_cluster) {
           os << ",";
@@ -330,6 +350,18 @@ class Database {
     os << "]";
   }
 
+  size_t minX() const {
+    return _minX;
+  } 
+
+  size_t maxX() const {
+    return _maxX;
+  }
+
+  size_t num_tasks() const {
+    return _num_tasks;
+  }
+
   private:
 
     std::vector<WorkerData> _wd;
@@ -339,7 +371,7 @@ class Database {
     size_t _num_tasks {0};
     size_t _max_rendered_tasks {500};
 
-    std::vector<std::vector<std::vector<size_t>>> _ewl2wd;
+    std::unordered_map<std::string, size_t> _wdmap;
 };
 
 }  // namespace tf ------------------------------------------------------------
@@ -349,45 +381,61 @@ int main(int argc, char* argv[]) {
   // parse arguments
   CLI::App app{"tfprof"};
 
-  int port {8080};  
+  int port{8080};  
   app.add_option("-p,--port", port, "port to listen (default=8080)");
+
+  size_t render_limit{500};
+  app.add_option(
+    "-r,--render_limit", render_limit, "render limit of tasks (default=500)"
+  );
 
   std::string input;
   app.add_option("-i,--input", input, "input profiling file")
      ->required();
 
+  std::string mount;
+  app.add_option("-m,--mount", mount, "mount path to index.html")
+     ->required();
+
   CLI11_PARSE(app, argc, argv);
-
-  tf::Database db(input);
-
-  tf::Database::ZoomX zoomx;
-  tf::Database::ZoomY zoomy;
-
-  zoomx.beg = 0, zoomx.end = 100;
-
-  std::ostringstream oss;
-
-  db.query(oss, std::nullopt, std::nullopt);
-
-  std::cout << oss.str() << '\n';
   
+  // create a database
+  tf::Database db(input, render_limit);
+
   // launc the server
   httplib::Server svr;
 
-  auto ret = svr.set_mount_point("/", "../");
+  auto ret = svr.set_mount_point("/", mount.c_str());
   if (!ret) {
-    std::cout << "folder doesn't exist ...\n";
+    TF_THROW("failed to mount path to ", mount);
   }
-  //svr.Get(R"/zoomX=[", [](const httplib::Request &req, httplib::Response &res) {
-  //  std::cout << "get /gg\n";
-  //  std::cout << req.method << '\n';
-  //  std::cout << req.body << '\n';
-  //  res.set_content("Hello World!", "text/plain");
-  //});
-  svr.Post("/query", [](const httplib::Request& req, httplib::Response& res){
+
+  svr.Put("/queryData", [&db](const httplib::Request& req, httplib::Response& res){
     std::cout << req.method << '\n';
     std::cout << req.body << '\n';
-    res.set_content("{\"a\": 123, \"b\": 456}", "application/json");
+    
+    auto body = nlohmann::json::parse(req.body);
+
+    const auto& zx = body["zoomX"];
+    const auto& zy = body["zoomY"];
+
+    std::optional<tf::Database::ZoomX> zoomx;
+    std::optional<tf::Database::ZoomY> zoomy;
+
+    if(zx.is_array() && zx.size() == 2) {
+      zoomx.emplace(zx[0], zx[1]);
+    }
+
+    if(zy.is_array()) {
+      zoomy.emplace();
+      for(auto& w : zy) {
+        zoomy->workers.push_back(std::move(w));
+      }
+    }
+
+    std::ostringstream oss;
+    db.query(oss, std::move(zoomx), std::move(zoomy));
+    res.set_content(oss.str().c_str(), "application/json");
   });
 
   svr.listen("0.0.0.0", 8080);

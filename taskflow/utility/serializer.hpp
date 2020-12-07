@@ -687,7 +687,7 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 // Function: _variant_helper
 template <typename Device, typename SizeType>
 template <size_t I, typename... ArgsT, std::enable_if_t<I==sizeof...(ArgsT)>*>
-SizeType Deserializer<Device, SizeType>::_variant_helper(size_t i, std::variant<ArgsT...>& v) {
+SizeType Deserializer<Device, SizeType>::_variant_helper(size_t, std::variant<ArgsT...>&) {
   return 0;
 }
 

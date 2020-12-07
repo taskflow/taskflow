@@ -499,8 +499,8 @@ inline void TFProfObserver::on_exit(WorkerView wv, TaskView tv) {
 
   assert(!_stacks[w].empty());
   
-  if(_stacks.size() > _timeline.segments[w].size()) {
-    _timeline.segments[w].resize(_stacks.size());
+  if(_stacks[w].size() > _timeline.segments[w].size()) {
+    _timeline.segments[w].resize(_stacks[w].size());
   }
 
   auto beg = _stacks[w].top();
