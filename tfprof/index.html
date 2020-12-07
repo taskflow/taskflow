@@ -39,44 +39,62 @@
       <form class="form-inline my-2 my-lg-0" action="https://github.com/taskflow/tfprof">
         <button class="btn btn-primary my-2 my-sm-0" type="submit">GitHub</button>
       </form>-->
-      <a class="btn btn-primary" href="https://github.com/taskflow/tfprof" role="button">GitHub</a>
-      <a class="btn btn-light ml-2" href="https://taskflow.github.io/" role="button">Project Page</a>
+      <!--<a class="btn btn-light" href="https://github.com/taskflow/tfprof" role="button">.tfp (12345 tasks)</a>
+      <a class="btn btn-light ml-2" href="https://taskflow.github.io/" role="button">12345 tasks</a>-->
+
+
+      <button type="button" class="btn btn-light">
+        <span class="badge" id="tfp_tb_finfo"></span>
+        <span class="badge badge-info" id="tfp_tb_tinfo">? tasks</span>
+        <span class="badge badge-info" id="tfp_tb_einfo">? executors</span>
+        <span class="badge badge-info" id="tfp_tb_winfo">? workers</span>
+      </button>
     </nav>
+    
+    <!-- loader -->
+    <div class="container loader" id="tfp_loader"></div>
+    
+    <!-- toolbar -->
+    <div class="btn-toolbar" role="toolbar" style="margin-left: 100px; display:none;" id="tfp_toolbar">
 
-    <div class="mb-2 btn-toolbar" role="toolbar" style="margin-left: 100px">
-
-      <!-- tfp-menu-workers -->
-      <div class="btn-group" role="group">
-        <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown">Select Workers</button>
-        <div class="dropdown-menu tfp-menu-workers" id="tfp_menu_workers"></div>
+      <!-- tfp-tb-workers -->
+      <div class="btn-group mb-2 mr-2" role="group">
+        <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown">Workers</button>
+        <div class="dropdown-menu tfp-tb-workers" id="tfp_tb_workers"></div>
       </div>
-      
-      <!-- tfp-menu-rank 
-      <div class="btn-group" role="group">
-        <button type="button" class="btn btn-outline-success ml-2 dropdown-toggle" data-toggle="dropdown">Select Rank</button>
-        <div class="dropdown-menu tfp-menu-rank" id="tfp_menu_rank">
-          <a class="dropdown-item">
-            <input class="mr-2" type="number" value="" min="1" id="tfp_menu_rank_from">
-            <label> (From)</label>
-          </a>
-          <a class="dropdown-item">
-            <input class="mr-2" type="number" value="" min="1" id="tfp_menu_rank_to">
-            <label> (to)</label>
-          </a>
+
+      <div class="btn-group mb-2 mr-2" role="group">
+        <button type="button" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown">View</button>
+        <div class="dropdown-menu tfp-tb-view" id="tfp_tb_view">
+          <a class="dropdown-item">Criticality</a>
+          <a class="dropdown-item">Cluster</a>
         </div>
-      </div>-->
-      
-      
-      <!-- tfp-menu-reset -->
-      <div class="btn-group" role="group">
-        <button type="button" class="btn btn-outline-secondary ml-2" id="tfp_menu_reset_zoom">Reset Zoom</button>
       </div>
+
+      <!-- tfp-tb-reset -->
+      <div class="btn-group mb-2 mr-2" role="group">
+        <button type="button" class="btn btn-outline-secondary" id="tfp_tb_reset_zoom">Reset Zoom</button>
+      </div>
+      
+      <!-- tfp-tb-limit -->
+      <div class="btn-group mb-2 mr-2" role="group">
+        <input id="tfp_tb_limit" class="border-0 mr-2" type="range" />
+        <button type="button" class="btn btn-primary" id="tfp_tb_limit_button">Limit</button>
+      </div>
+      
+      <div class="btn-group mb-2" role="group">
+      <div class="spinner-grow text-dark" role="status" style="display:none" id="tfp_tb_loader"></div>
+      </div>
+
 
     </div>
-      
-    <!-- svg -->
-    <div class="container-fluidic" id="tfp"></div>
+    
 
+
+    <!-- svg -->
+    <div style="display:none;" class="container-fluidic" id="tfp"></div>
+    
+    <!-- js -->
     <script src="js/index.js"></script>
 
     <footer class="page-footer font-small blue">
