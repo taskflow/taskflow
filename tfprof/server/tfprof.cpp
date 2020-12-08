@@ -1,8 +1,13 @@
-#include <taskflow/taskflow.hpp>
-#include <cmath>
+// 3rd-party include
+
 #include <httplib/httplib.hpp>
 #include <CLI11/CLI11.hpp>
 #include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
+
+#include <taskflow/taskflow.hpp>
+#include <cmath>
+
   
 // TODO
 namespace tf {
@@ -211,25 +216,8 @@ class Database {
   ) const {
 
     // Acquire the range of worker id
-    std::vector<size_t> w;
+    auto w = _decode_zoomy(zoomy);
     
-    if(zoomy) {
-      w.resize(zoomy->workers.size());
-      for(size_t i=0; i<zoomy->workers.size(); i++) {
-        auto itr = _wdmap.find(zoomy->workers[i]);
-        if(itr == _wdmap.end()) {
-          TF_THROW("failed to find worker ", zoomy->workers[i]);
-        }
-        w[i] = itr->second;
-      }
-    }
-    else {
-      w.resize(_wd.size());
-      for(size_t i=0; i<_wd.size(); i++) {
-        w[i] = i;
-      }
-    }
-
     if(!zoomx) {
       zoomx.emplace(_minX, _maxX);
     }
@@ -419,7 +407,7 @@ class Database {
   private:
 
     std::vector<WorkerData> _wd;
-
+    
     size_t _minX {std::numeric_limits<size_t>::max()};
     size_t _maxX {std::numeric_limits<size_t>::min()};
     size_t _num_tasks {0};
@@ -427,6 +415,27 @@ class Database {
     size_t _num_workers {0};
 
     std::unordered_map<std::string, size_t> _wdmap;
+
+    std::vector<size_t> _decode_zoomy(const std::optional<ZoomY>& zoomy) const {
+      std::vector<size_t> w;
+      if(zoomy) {
+        w.resize(zoomy->workers.size());
+        for(size_t i=0; i<zoomy->workers.size(); i++) {
+          auto itr = _wdmap.find(zoomy->workers[i]);
+          if(itr == _wdmap.end()) {
+            TF_THROW("failed to find worker ", zoomy->workers[i]);
+          }
+          w[i] = itr->second;
+        }
+      }
+      else {
+        w.resize(_wd.size());
+        for(size_t i=0; i<_wd.size(); i++) {
+          w[i] = i;
+        }
+      }
+      return w;
+    }
 };
 
 }  // namespace tf ------------------------------------------------------------
@@ -448,35 +457,58 @@ int main(int argc, char* argv[]) {
      ->required();
 
   CLI11_PARSE(app, argc, argv);
+    
+  // change log pattern
+  spdlog::set_pattern("[%^%L %D %H:%M:%S.%e%$] %v");
+  spdlog::set_level(spdlog::level::debug); // Set global log level to debug
+    
+  spdlog::info("reading database {} ...", input);
+  //  spdlog::error("Some error message with arg: {}", 1);
+
+  //  spdlog::warn("Easy padding in numbers like {:08d}", 12);
+  //  spdlog::critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);
+  //  spdlog::info("Support for floats {:03.2f}", 1.23456);
+  //  spdlog::info("Positional args are {1} {0}..", "too", "supported");
+  //  spdlog::info("{:<30}", "left aligned");
+
+
+  //  spdlog::debug("This message should be displayed..");
+
   
   // create a database
   tf::Database db(input);
+  spdlog::info(
+    "read {} (#tasks={:d}, #executors={:d}, #workers={:d})", 
+    input, db.num_tasks(), db.num_executors(), db.num_workers()
+  );
 
-  // launc the server
-  httplib::Server svr;
+  // create a http server
+  httplib::Server server;
 
-  auto ret = svr.set_mount_point("/", mount.c_str());
-  if (!ret) {
-    TF_THROW("failed to mount path to ", mount);
+  if(server.set_mount_point("/", mount.c_str())) {
+    spdlog::info("mounted '/' to {}", mount);
+  }
+  else {
+    spdlog::critical("failed to mount '/' to {}", mount);
   }
   
-  svr.Put("/queryInfo", [&db, &input](const httplib::Request& req, httplib::Response& res){
-    std::cout << req.method << " /queryInfo" << std::endl;
+  // Put method: queryInfo
+  server.Put("/queryInfo", [&db, &input](const httplib::Request&, httplib::Response& res){
+    spdlog::info("/queryInfo requesting ...");
    
     std::ostringstream oss;
-
     oss << "{\"tfpFile\":\"" << input << "\""
         << ",\"numTasks\":" << db.num_tasks() 
         << ",\"numExecutors\":" << db.num_executors()
         << ",\"numWorkers\":" << db.num_workers() << '}'; 
 
     res.set_content(oss.str().c_str(), "application/json");
+    spdlog::info("/queryInfo sent {0:d} bytes", oss.str().size());
   });
 
-  svr.Put("/queryData", [&db](const httplib::Request& req, httplib::Response& res){
-    
-    std::cout << req.method << " /queryData" << '\n';
-    std::cout << req.body << '\n';
+  // Put method: queryData
+  server.Put("/queryData", [&db](const httplib::Request& req, httplib::Response& res){
+    spdlog::info("/queryData requesting ...");
     
     auto body = nlohmann::json::parse(req.body);
 
@@ -488,7 +520,7 @@ int main(int argc, char* argv[]) {
     std::optional<tf::Database::ZoomX> zoomx;
     std::optional<tf::Database::ZoomY> zoomy;
     tf::Database::ViewType view_type = tf::Database::CRITICALITY;
-
+    
     if(jx.is_array() && jx.size() == 2) {
       zoomx.emplace(jx[0], jx[1]);
     }
@@ -508,9 +540,12 @@ int main(int argc, char* argv[]) {
     db.query(oss, std::move(zoomx), std::move(zoomy), view_type, jl);
 
     res.set_content(oss.str().c_str(), "application/json");
+    spdlog::info("/queryData sent {0:d} bytes", oss.str().size());
   });
 
-  svr.listen("0.0.0.0", port);
+  spdlog::info("listening to localhost:{:d} ...", port);
+  server.listen("0.0.0.0", port);
+  spdlog::info("shut down server");
 
   return 0;
 }
