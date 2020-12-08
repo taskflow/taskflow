@@ -81,8 +81,9 @@ const tfp = {
   // data field
   zoomXs: [],       // scoped time data
   zoomY : null,     // scoped worker
-  view  : "Criticality",  // default view type
+  view  : "Cluster",  // default view type
   limit : 500,
+  maxLimit: 1000,
   data: null,
   tfpFile: null,
   numTasks: null,
@@ -115,6 +116,8 @@ async function queryInfo() {
   tfp.numTasks = info.numTasks;
   tfp.numExecutors = info.numExecutors;
   tfp.numWorkers = info.numWorkers;
+  tfp.maxLimit = Math.max(1, Math.min(tfp.maxLimit, tfp.numTasks));
+  tfp.limit = Math.min(tfp.limit, tfp.maxLimit)
 }
 
 async function queryData(zoomX, zoomY, view, limit) {
@@ -399,7 +402,7 @@ function _render_ovInfo() {
     .attr('x', tfp.ovW + tfp.innerW)
     .attr('y', tfp.ovH/2)
     .attr('font-size', 16)
-    .html(`&#10144; ${d3.sum(tfp.data, d=>d.tasks)} tasks`);
+    .html(`${d3.sum(tfp.data, d=>d.tasks)} tasks drawn`);
 }
 
 function _render_ov() {
@@ -863,7 +866,7 @@ function _adjust_tb() {
   let numTasks = d3.sum(tfp.data, d=>d.segs.length);
   let limit = document.getElementById('tfp_tb_limit');
   limit.min = 1;
-  limit.max = Math.min(tfp.numTasks, tfp.limit);
+  limit.max = tfp.maxLimit;
   limit.value = tfp.limit;
   
   // rank tb

@@ -27,27 +27,45 @@
   <body>
     
     <nav class="navbar navbar-expand-sm mb-3 navbar-dark bg-dark">
+    <!--<nav class="navbar navbar-expand-md mb-3 navbar-dark fixed-top bg-dark" >-->
       <!-- Brand -->
       <a class="navbar-brand" href=""><img src="images/logo.png" alt="Logo" style="width:40px;"> Taskflow Profiler</a>
-      <!-- left-side navbar -->
+
+      <!-- left-side navbar 
+      <div class="btn-group mr-2" role="group">
+        <button type="button" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown">View</button>
+        <div class="dropdown-menu tfp-tb-view" id="tfp_tb_view">
+          <a class="dropdown-item">Cluster</a>
+          <a class="dropdown-item">Criticality</a>
+        </div>
+      </div> -->
+      
+      <!-- tfp-tb-workers 
+      <div class="btn-group mr-2" role="group">
+        <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown">Workers</button>
+        <div class="dropdown-menu tfp-tb-workers" id="tfp_tb_workers"></div>
+      </div> -->
+
+      <!-- tfp-tb-reset 
+      <div class="btn-group mr-2" role="group">
+        <button type="button" class="btn btn-outline-secondary" id="tfp_tb_reset_zoom">Reset Zoom</button>
+      </div> -->
+      
+      <!-- tfp-tb-limit 
+      <div class="btn-group mr-2" role="group">
+        <input id="tfp_tb_limit" class="border-0 mr-2" type="range" />
+        <button type="button" class="btn btn-primary">Limit</button>
+      </div> -->
+
       <ul class="navbar-nav mr-auto">
         <!--<li class="nav-item"><a class="nav-link" href="">MainBoard</a></li>-->
-        <li class="nav-item dropdown">
-        </li>
       </ul>
-      <!-- right-side navbar 
-      <form class="form-inline my-2 my-lg-0" action="https://github.com/taskflow/tfprof">
-        <button class="btn btn-primary my-2 my-sm-0" type="submit">GitHub</button>
-      </form>-->
-      <!--<a class="btn btn-light" href="https://github.com/taskflow/tfprof" role="button">.tfp (12345 tasks)</a>
-      <a class="btn btn-light ml-2" href="https://taskflow.github.io/" role="button">12345 tasks</a>-->
-
 
       <button type="button" class="btn btn-light">
         <span class="badge" id="tfp_tb_finfo"></span>
-        <span class="badge badge-info" id="tfp_tb_tinfo">? tasks</span>
-        <span class="badge badge-info" id="tfp_tb_einfo">? executors</span>
-        <span class="badge badge-info" id="tfp_tb_winfo">? workers</span>
+        <span class="badge badge-info" id="tfp_tb_einfo">- executors</span>
+        <span class="badge badge-info" id="tfp_tb_winfo">- workers</span>
+        <span class="badge badge-info" id="tfp_tb_tinfo">- tasks</span>
       </button>
     </nav>
     
@@ -61,8 +79,8 @@
       <div class="btn-group mb-2 mr-2" role="group">
         <button type="button" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown">View</button>
         <div class="dropdown-menu tfp-tb-view" id="tfp_tb_view">
-          <a class="dropdown-item">Criticality</a>
           <a class="dropdown-item">Cluster</a>
+          <a class="dropdown-item">Criticality</a>
         </div>
       </div>
 
@@ -80,9 +98,10 @@
       <!-- tfp-tb-limit -->
       <div class="btn-group mb-2 mr-2" role="group">
         <input id="tfp_tb_limit" class="border-0 mr-2" type="range" />
-        <button type="button" class="btn btn-primary" id="tfp_tb_limit_button">Limit</button>
+        <button type="button" class="btn btn-primary">Limit</button>
       </div>
       
+      <!-- tfp-tb-loader -->
       <div class="btn-group mb-2" role="group">
       <div class="spinner-grow text-dark" role="status" style="display:none" id="tfp_tb_loader"></div>
       </div>

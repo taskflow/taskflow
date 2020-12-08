@@ -81,8 +81,8 @@ class Database {
     WorkerData& operator = (const WorkerData&) = delete;
     WorkerData& operator = (WorkerData&&) = default; 
 
-    template <typename T>
-    std::optional<size_t> lower_bound(T value) const {
+    template <typename V>
+    std::optional<size_t> lower_bound(V value) const {
       
       size_t slen = tasks.size();
       size_t beg, end, mid;
@@ -104,8 +104,8 @@ class Database {
       return l;
     }
     
-    template <typename T>
-    std::optional<size_t> upper_bound(T value) const {
+    template <typename V>
+    std::optional<size_t> upper_bound(V value) const {
       
       size_t slen = tasks.size();
       size_t beg, end, mid;
@@ -128,29 +128,62 @@ class Database {
     }
   };
 
+  struct Criticality {
+
+    size_t i;
+    std::vector<TaskData>::const_iterator key;
+
+    Criticality(size_t in_i, std::vector<TaskData>::const_iterator in_key) :
+      i{in_i}, key{in_key} {
+    }
+  };
+
+  struct CriticalityComparator {
+    bool operator () (const Criticality& a, const Criticality& b) const {
+      return a.key->span() > b.key->span();
+    }
+  };
+  
+  struct CriticalityHeap : public std::priority_queue<
+    Criticality, std::vector<Criticality>, CriticalityComparator
+  > {
+    
+    void sort() {
+      std::sort(c.begin(), c.end(), [] (const auto& a, const auto& b) {
+        if(a.i == b.i) {
+          return a.key->beg < b.key->beg;
+        }
+        return a.i < b.i;
+      });
+    }
+
+    const std::vector<Criticality>& get() const {
+      return c;
+    }
+  };
+
   struct Cluster {
-    size_t w;
+    size_t i;
     size_t f;  // from task
     size_t t;  // to task   (inclusive)
     size_t k;  // key
 
-    Cluster(size_t in_w, size_t in_f, size_t in_t, size_t in_k) :
-      w{in_w}, f{in_f}, t{in_t}, k{in_k} {
+    Cluster(size_t in_i, size_t in_f, size_t in_t, size_t in_k) :
+      i{in_i}, f{in_f}, t{in_t}, k{in_k} {
     }
 
     using iterator_t = std::list<Cluster>::iterator;
   };
 
   struct ClusterComparator {
-    bool operator () (Cluster::iterator_t a, Cluster::iterator_t b) {
+    bool operator () (Cluster::iterator_t a, Cluster::iterator_t b) const {
       return a->k > b->k;
     }
   };
 
-  struct ClusterHeap : public std::priority_queue<
+  using ClusterHeap = std::priority_queue<
     Cluster::iterator_t, std::vector<Cluster::iterator_t>, ClusterComparator
-  > {
-  };
+  >;
 
   public:
 
@@ -206,12 +239,128 @@ class Database {
       }
     }
   }
-
-  void query(
+  
+  void query_criticality(
     std::ostream& os, 
     std::optional<ZoomX> zoomx, 
     std::optional<ZoomY> zoomy,
-    ViewType method,
+    size_t limit
+  ) const {
+
+    // Acquire the range of worker id
+    auto w = _decode_zoomy(zoomy);
+    
+    if(!zoomx) {
+      zoomx.emplace(_minX, _maxX);
+    }
+
+    CriticalityHeap heap;
+    
+    // bsearch the range of segments for each worker data
+    // TODO: parallel_for?
+    for(size_t i=0; i<w.size(); i++) {
+
+      // r = maxArg {span[0] <= zoomX[1]}
+      auto r = _wd[w[i]].upper_bound(zoomx->end);
+      if(r == std::nullopt) {
+        continue;
+      }
+      
+      // l = minArg {span[1] >= zoomX[0]}
+      auto l = _wd[w[i]].lower_bound(zoomx->beg);
+      if(l == std::nullopt || *l > *r) {
+        continue;
+      }
+      
+      // range ok
+      for(size_t s=*l; s<=*r; s++) {
+        heap.emplace(i, _wd[w[i]].tasks.begin() + s);
+        while(heap.size() > limit) {
+          heap.pop();
+        }
+      }
+    }
+
+    heap.sort();
+
+    auto& crits = heap.get();
+
+    size_t cursor = 0;
+
+    // Output the segments
+    bool first_worker = true;
+    os << "[";
+    for(size_t i=0; i<w.size(); i++) {
+
+      if(cursor < crits.size() && crits[cursor].i < i) {
+        TF_THROW("impossible ...");
+      }
+
+      if(!first_worker) {
+        os << ",";
+      }
+      else {
+        first_worker = false;
+      }
+
+      os << "{\"executor\":\"" << _wd[w[i]].eid << "\","
+         << "\"worker\":\"" << _wd[w[i]].name << "\","
+         << "\"segs\": [";
+      
+      size_t T=0, loads[TASK_TYPES.size()] = {0}, n=0;
+      bool first_crit = true;
+
+      for(; cursor < crits.size() && crits[cursor].i == i; cursor++) {
+
+        n++;
+
+        if(!first_crit) {
+          os << ",";
+        }
+        else {
+          first_crit = false;
+        }
+
+        // single task
+        os << "{";
+        const auto& task = *crits[cursor].key;
+        os << "\"name\":\"" << task.name << "\","
+           << "\"type\":\""  << task_type_to_string(task.type) << "\","
+           << "\"span\": ["  << task.beg << "," << task.end << "]";
+        os << "}";
+
+        // calculate load
+        size_t t = task.span();
+        T += t;
+        loads[task.type] += t;
+      }
+      os << "],\"tasks\":\"" << n << "\",";
+
+      // load
+      os << "\"load\":[";
+      size_t x = 0;
+      for(size_t k=0; k<TASK_TYPES.size(); k++) {
+        auto type = TASK_TYPES[k];
+        if(k) os << ",";
+        os << "{\"type\":\"" << task_type_to_string(type) << "\","
+           << "\"span\":[" << x << "," << x+loads[type] << "],"
+           << "\"ratio\":" << (T>0 ? loads[type]*100.0f/T : 0) << "}";
+        x+=loads[type];
+      }
+      os << "],";
+      
+      // totalTime
+      os << "\"totalTime\":" << T;
+
+      os << "}";
+    }
+    os << "]"; 
+  }
+
+  void query_cluster(
+    std::ostream& os, 
+    std::optional<ZoomX> zoomx, 
+    std::optional<ZoomY> zoomy,
     size_t limit
   ) const {
 
@@ -251,60 +400,41 @@ class Database {
       
       // range ok
       for(size_t s=*l; s<=*r; s++) {
-        
-        switch(method) {
-          case CLUSTER:
-          if(s != *r) {
-            clusters[i].emplace_back(
-              i, 
-              s, 
-              s,
-              _wd[w[i]].tasks[s+1].end - _wd[w[i]].tasks[s].beg
-            );
-          }
-          else {  // boundary
-            clusters[i].emplace_back(
-              i, s, s, std::numeric_limits<size_t>::max()
-            );
-          }
-          break;
-
-          case CRITICALITY:
-            clusters[i].emplace_back(i, s, s, _wd[w[i]].tasks[s].span());
-          break;
+        if(s != *r) {
+          clusters[i].emplace_back(
+            i, 
+            s, 
+            s,
+            _wd[w[i]].tasks[s+1].end - _wd[w[i]].tasks[s].beg
+          );
         }
-
+        else {  // boundary
+          clusters[i].emplace_back(
+            i, s, s, std::numeric_limits<size_t>::max()
+          );
+        }
         heap.push(std::prev(clusters[i].end()));
-
-        if(method == CRITICALITY) {
-          while(heap.size() > limit) {
-            auto top = heap.top();
-            clusters[top->w].erase(top);
-            heap.pop();
-          }
-        }
       }
       
-      if(method == CLUSTER) {
-        // while loop must sit after clustering is done
-        // because we have std::next(top)-> = top->f
-        while(heap.size() > limit) {
+      // while loop must sit after clustering is done
+      // because we have std::next(top)-> = top->f
+      while(heap.size() > limit) {
 
-          auto top = heap.top(); 
+        auto top = heap.top(); 
 
-          // if all clusters are in boundary - no need to cluster anymore
-          if(top->k == std::numeric_limits<size_t>::max()) {
-            break;
-          }
-          
-          // remove the top element and cluster it with the next
-          heap.pop();
-          
-          // merge top with top->next 
-          std::next(top)->f = top->f;
-          clusters[top->w].erase(top);
+        // if all clusters are in boundary - no need to cluster anymore
+        if(top->k == std::numeric_limits<size_t>::max()) {
+          break;
         }
+        
+        // remove the top element and cluster it with the next
+        heap.pop();
+        
+        // merge top with top->next 
+        std::next(top)->f = top->f;
+        clusters[top->i].erase(top);
       }
+      
     }
 
     // Output the segments
@@ -409,7 +539,7 @@ class Database {
     std::vector<WorkerData> _wd;
     
     size_t _minX {std::numeric_limits<size_t>::max()};
-    size_t _maxX {std::numeric_limits<size_t>::min()};
+    size_t _maxX {std::numeric_limits<size_t>::lowest()};
     size_t _num_tasks {0};
     size_t _num_executors {0};
     size_t _num_workers {0};
@@ -494,8 +624,6 @@ int main(int argc, char* argv[]) {
   
   // Put method: queryInfo
   server.Put("/queryInfo", [&db, &input](const httplib::Request&, httplib::Response& res){
-    spdlog::info("/queryInfo requesting ...");
-   
     std::ostringstream oss;
     oss << "{\"tfpFile\":\"" << input << "\""
         << ",\"numTasks\":" << db.num_tasks() 
@@ -503,12 +631,11 @@ int main(int argc, char* argv[]) {
         << ",\"numWorkers\":" << db.num_workers() << '}'; 
 
     res.set_content(oss.str().c_str(), "application/json");
-    spdlog::info("/queryInfo sent {0:d} bytes", oss.str().size());
+    spdlog::info("/queryInfo: sent {0:d} bytes", oss.str().size());
   });
 
   // Put method: queryData
   server.Put("/queryData", [&db](const httplib::Request& req, httplib::Response& res){
-    spdlog::info("/queryData requesting ...");
     
     auto body = nlohmann::json::parse(req.body);
 
@@ -516,10 +643,14 @@ int main(int argc, char* argv[]) {
     const auto& jy = body["zoomY"];
     const auto& jv = body["view"];
     size_t jl = body["limit"];
+    
+    spdlog::info("/queryData: zoomX={}, zoomY={}, view={}, limit={}", 
+      jx.dump(), jy.dump(), jv.dump(), jl
+    );
 
     std::optional<tf::Database::ZoomX> zoomx;
     std::optional<tf::Database::ZoomY> zoomy;
-    tf::Database::ViewType view_type = tf::Database::CRITICALITY;
+    tf::Database::ViewType view_type = tf::Database::CLUSTER;
     
     if(jx.is_array() && jx.size() == 2) {
       zoomx.emplace(jx[0], jx[1]);
@@ -532,15 +663,23 @@ int main(int argc, char* argv[]) {
       }
     }
 
-    if(jv == "Cluster") {
-      view_type = tf::Database::CLUSTER;
+    if(jv == "Criticality") {
+      view_type = tf::Database::CRITICALITY;
     }
 
     std::ostringstream oss;
-    db.query(oss, std::move(zoomx), std::move(zoomy), view_type, jl);
+
+    switch(view_type) {
+      case tf::Database::CRITICALITY:
+        db.query_criticality(oss, std::move(zoomx), std::move(zoomy), jl);
+      break;
+      case tf::Database::CLUSTER:
+        db.query_cluster(oss, std::move(zoomx), std::move(zoomy), jl);
+      break;
+    }
 
     res.set_content(oss.str().c_str(), "application/json");
-    spdlog::info("/queryData sent {0:d} bytes", oss.str().size());
+    spdlog::info("/queryData: sent {0:d} bytes", oss.str().size());
   });
 
   spdlog::info("listening to localhost:{:d} ...", port);
