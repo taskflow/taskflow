@@ -94,16 +94,18 @@ void unguarded_insertion_sort(RandItr begin, RandItr end, Compare comp) {
 // and abort sorting. Otherwise it will successfully sort and return true.
 template<typename RandItr, typename Compare>
 bool partial_insertion_sort(RandItr begin, RandItr end, Compare comp) {
+  
+  using T = typename std::iterator_traits<RandItr>::value_type;
+  using D = typename std::iterator_traits<RandItr>::difference_type;
 
   // When we detect an already sorted partition, attempt an insertion sort 
   // that allows this amount of element moves before giving up.
-  constexpr auto partial_insertion_sort_limit = 8;
-
-  using T = typename std::iterator_traits<RandItr>::value_type;
+  constexpr auto partial_insertion_sort_limit = D{8};
 
   if (begin == end) return true;
 
-  int limit = 0;
+  auto limit = D{0};
+
   for (RandItr cur = begin + 1; cur != end; ++cur) {
 
     if (limit > partial_insertion_sort_limit) {
