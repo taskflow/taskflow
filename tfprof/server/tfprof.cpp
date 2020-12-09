@@ -188,8 +188,8 @@ class Database {
   template <typename D> 
   void query_criticality(
     std::ostream& os, 
-    std::optional<D> xbeg, std::optional<D> xend, 
-    const std::vector<std::string>& workers,
+    const std::optional<D>& xbeg, const std::optional<D>& xend, 
+    const std::optional<std::vector<std::string>>& workers,
     size_t limit
   ) const {
 
@@ -305,8 +305,8 @@ class Database {
   template <typename D>
   void query_cluster(
     std::ostream& os, 
-    std::optional<D> xbeg, std::optional<D> xend, 
-    const std::vector<std::string>& workers,
+    const std::optional<D>& xbeg, const std::optional<D>& xend, 
+    const std::optional<std::vector<std::string>>& workers,
     size_t limit
   ) const {
     
@@ -498,25 +498,25 @@ class Database {
       return {b, e};
     }
 
-    std::vector<size_t> decode_zoomy(const std::vector<std::string>& zoomy) const {
-      std::vector<size_t> w;
-      if(zoomy.size()) {
-        w.resize(zoomy.size());
-        for(size_t i=0; i<zoomy.size(); i++) {
-          auto itr = _wdmap.find(zoomy[i]);
+    std::vector<size_t> decode_zoomy(std::optional<std::vector<std::string>> zoomy) const {
+      if(zoomy) {
+        std::vector<size_t> w(zoomy->size());
+        for(size_t i=0; i<zoomy->size(); i++) {
+          auto itr = _wdmap.find((*zoomy)[i]);
           if(itr == _wdmap.end()) {
-            TF_THROW("failed to find worker ", zoomy[i]);
+            TF_THROW("failed to find worker ", (*zoomy)[i]);
           }
           w[i] = itr->second;
         }
+        return w;
       }
       else {
-        w.resize(_wd.size());
+        std::vector<size_t> w(_wd.size());
         for(size_t i=0; i<_wd.size(); i++) {
           w[i] = i;
         }
+        return w;
       }
-      return w;
     }
 };
 
@@ -599,7 +599,7 @@ int main(int argc, char* argv[]) {
       );
 
       std::optional<std::chrono::microseconds> xbeg, xend;
-      std::vector<std::string> y;
+      std::optional<std::vector<std::string>> y;
       tf::Database::ViewType view_type = tf::Database::CLUSTER;
       
       if(jx.is_array() && jx.size() == 2) {
@@ -608,8 +608,9 @@ int main(int argc, char* argv[]) {
       }
 
       if(jy.is_array()) {
+        y.emplace();
         for(auto& w : jy) {
-          y.push_back(std::move(w));
+          y->push_back(std::move(w));
         }
       }
 

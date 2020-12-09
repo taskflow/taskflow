@@ -122,6 +122,7 @@ async function queryInfo() {
 
 async function queryData(zoomX, zoomY, view, limit) {
 
+  //console.log(zoomY);
   //$('#tfp_tb_loader').css("display", "block");
 
   const response = await fetch(`/queryData`, {
