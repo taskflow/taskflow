@@ -6,7 +6,7 @@ namespace tf {
 task programs with <i>high performance</i>
 and simultaneous <i>high productivity</i>.
 It is faster, more expressive, fewer lines of code, and easier for drop-in integration
-than many of existing task programming frameworks.
+than many of existing task programming libraries.
 
 <!-- @image html images/performance.png width=100%
 
@@ -80,10 +80,20 @@ TaskB
 TaskD
 @endcode
 
-%Taskflow provides visualization and tooling, @TFProf,
-for profiling your %Taskflow programs.
+%Taskflow comes with a built-in profiler, @TFProf, 
+for you to profile and visualize taskflow programs
+in an easy-to-use web-based interface.
 
 @image html images/tfprof.png 
+
+@code{.shell-session}
+~$ TF_ENABLE_PROFILER=simple.json ./simple
+~$ cat simple.json
+[
+{"executor":"0","data":[{"worker":0,"level":0,"data":[{"span":[172,186],"name":"0_0","type":"static"},{"span":[187,189],"name":"0_1","type":"static"}]},{"worker":2,"level":0,"data":[{"span":[93,164],"name":"2_0","type":"static"},{"span":[170,179],"name":"2_1","type":"static"}]}]}
+]
+# paste the profiling json data to https://taskflow.github.io/tfprof/
+@endcode
 
 @section QuickStartCreateASubflowGraph Create a Subflow Graph
 
@@ -172,6 +182,32 @@ f1_module_task.succeed(f2A, f2B)
 
 @dotfile images/composition.dot
 
+@section QuickStartLaunchAsyncTasks Launch Asynchronous Tasks
+
+%Taskflow supports @em asynchronous tasking.
+You can launch tasks asynchronously to incorporate independent, dynamic 
+parallelism in your taskflows.
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+// create asynchronous tasks directly from an executor
+std::future<int> future = executor.async([](){ 
+  std::cout << "async task returns 1\n";
+  return 1;
+}); 
+executor.silent_async([](){ std::cout << "async task does not return\n"; });
+
+// launch an asynchronous task from a running task
+taskflow.emplace([&](){
+  executor.async([](){ std::cout << "async task created within a task\n"; });
+});
+
+executor.run(taskflow).wait();
+@endcode
+
+
 @section SupportedCompilers Supported Compilers
 
 To use %Taskflow, you only need a compiler that supports C++17:
@@ -199,7 +235,7 @@ to learn more about %Taskflow. To get involved:
 We are committed to support trustworthy developments for 
 both academic and industrial research projects in parallel 
 and heterogeneous computing. 
-
+At the same time, we appreciate all %Taskflow @ref contributors!
 
 
 @section License License
