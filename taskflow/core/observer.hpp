@@ -14,6 +14,9 @@ namespace tf {
 // timeline data structure
 // ----------------------------------------------------------------------------
 
+/**
+@brief default time point type of observers
+*/
 using observer_stamp_t = std::chrono::time_point<std::chrono::steady_clock>;
 
 /**

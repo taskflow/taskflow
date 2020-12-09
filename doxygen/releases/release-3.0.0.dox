@@ -63,13 +63,18 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li supported standalone use of %cudaFlow (see @ref C6_UsecudaFlowInAStandaloneEnvironment)
 @li added tf::cublasFlowCapturer to support @cuBLAS (see @ref LinearAlgebracublasFlowCapturer)
 
-
 @subsection release-3-0-0_utilities Utilities
 
 @li added utility functions to grab the cuda device properties (see cuda_device.hpp)
 @li added utility functions to control cuda memory (see cuda_memory.hpp)
 @li added utility functions for common mathematics operations
+@li added serializer and deserializer libraries to support tfprof
 @li added per-thread pool for CUDA streams to improve performance
+
+@subsection release-3-0-0_profiler Taskflow Profiler (TFProf)
+
+@li added visualization for asynchronous tasks
+@li added local-mode profiler to support large profiling data (see @ref Profiler)
 
 @section release-3-0-0_new_algorithms New Algorithms
 
@@ -84,7 +89,6 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li added parallel transforms (see @ref ParallelTransformsCUDA)
 @li added parallel reduction (see @ref CUDAReduce)
 
-
 @section release-3-0-0_documentation Documentation
 
 @li added @ref CompileTaskflowWithCUDA
@@ -92,6 +96,7 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li added @ref LimitTheMaximumConcurrency
 @li added @ref AsyncTasking 
 @li added @ref GPUTaskingcudaFlowCapturer
+@li added @ref Profiler
 @li added @ref GPUAlgorithms
   + @ref SingleTaskCUDA to run a kernel function in just a single thread
   + @ref ForEachCUDA to perform parallel iterations over a range of items

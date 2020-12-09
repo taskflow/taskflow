@@ -1,0 +1,46 @@
+namespace tf {
+
+/** @page Profiler Profile Taskflow Programs
+
+%Taskflow comes with a built-in profiler, @em TFProf, 
+for you to profile and visualize taskflow programs.
+
+@tableofcontents
+
+@image html images/tfprof.png width=100%
+
+@section ProfilerEnableTFProf Enable Taskflow Profiler
+
+By default, all taskflow programs have implemented a lightweight profiling module 
+in each executor to observer when a worker participates in running a task.
+To enable the profiler,
+set the environment variable @c TF_ENABLE_PROFILER to a file name
+in which the profiling result will be stored.
+
+@code{.shell-session}
+~$ TF_ENABLE_PROFILER=result ./my_taskflow_program
+~$ cat result
+[
+{"executor":"0","data":[{"worker":12,"level":0,"data":[{"span":[72,117],"name":"12_0","type":"static"},{"span":[121,123],"name":"12_1","type":"static"},{"span":[123,125],"name":"12_2","type":"static"},{"span":[125,127],"name":"12_3","type":"static"}]}]}
+]
+@endcode
+
+When the program finishes, it generates and saves the profiling data to @c result
+in JavaScript Object Notation (JSON) format.
+You can then paste the JSON data to our web-based interface, @TFProf,
+to visualize the execution timelines of tasks and workers.
+
+@section ProfilerEnableTFProfLocal Enable Taskflow Profiler on a Local Machine
+
+@image html images/tfprof-local.png
+
+*/
+
+}
+
+
+
+
+
+
+

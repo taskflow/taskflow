@@ -25,12 +25,16 @@
     <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
     <innerclass refid="classtf_1_1ObserverInterface" prot="public">tf::ObserverInterface</innerclass>
+    <innerclass refid="structtf_1_1ProfileData" prot="private">tf::ProfileData</innerclass>
+    <innerclass refid="structtf_1_1Segment" prot="private">tf::Segment</innerclass>
     <innerclass refid="classtf_1_1Semaphore" prot="public">tf::Semaphore</innerclass>
     <innerclass refid="classtf_1_1Subflow" prot="public">tf::Subflow</innerclass>
     <innerclass refid="classtf_1_1Task" prot="public">tf::Task</innerclass>
     <innerclass refid="classtf_1_1Taskflow" prot="public">tf::Taskflow</innerclass>
     <innerclass refid="classtf_1_1TaskView" prot="public">tf::TaskView</innerclass>
+    <innerclass refid="classtf_1_1TFProfManager" prot="private">tf::TFProfManager</innerclass>
     <innerclass refid="classtf_1_1TFProfObserver" prot="public">tf::TFProfObserver</innerclass>
+    <innerclass refid="structtf_1_1Timeline" prot="private">tf::Timeline</innerclass>
     <innerclass refid="structtf_1_1Worker" prot="private">tf::Worker</innerclass>
     <innerclass refid="classtf_1_1WorkerView" prot="public">tf::WorkerView</innerclass>
       <sectiondef kind="enum">
@@ -128,7 +132,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="592" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="592" bodyend="595"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="709" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="709" bodyend="712"/>
       </memberdef>
       <memberdef kind="enum" id="namespacetf_1ac747e6c7cf88c7b1ff7126e62babebb8" prot="public" static="no" strong="no">
         <type></type>
@@ -199,7 +203,46 @@
         <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="21" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="21" bodyend="29"/>
       </memberdef>
       </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" prot="public" static="no">
+        <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
+        <definition>using tf::observer_stamp_t = typedef std::chrono::time_point&lt;std::chrono::steady_clock&gt;</definition>
+        <argsstring></argsstring>
+        <name>observer_stamp_t</name>
+        <briefdescription>
+<para>default time point type of observers </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="20" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
       <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacetf_1a3d823d8776745f3348dc87bba2fcc91b" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a0681fa0518bdd3e3d198e1b1b744c06f" kindref="member">TaskType</ref>, 7 &gt;</type>
+        <definition>constexpr std::array&lt;TaskType, 7&gt; tf::TASK_TYPES</definition>
+        <argsstring></argsstring>
+        <name>TASK_TYPES</name>
+        <initializer>= {
+  PLACEHOLDER_TASK,
+  CUDAFLOW_TASK,
+  STATIC_TASK,
+  DYNAMIC_TASK,
+  CONDITION_TASK,
+  MODULE_TASK,
+  ASYNC_TASK
+}</initializer>
+        <briefdescription>
+<para>array of all task types (used for iterating task types) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="34" column="29" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="34" bodyend="-1"/>
+      </memberdef>
       <memberdef kind="variable" id="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
           <param>
@@ -220,7 +263,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="62" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="62" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="75" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="75" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -241,7 +284,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="71" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="71" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="84" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="84" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -262,7 +305,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="79" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="79" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="92" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="92" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1adb8433555d8cdc0b3c5d95e8d51a90f0" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -284,7 +327,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="88" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="88" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="101" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="101" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
@@ -304,7 +347,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="34" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="34" bodyend="50"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="47" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="47" bodyend="63"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ad216aea4d0f648e149e47374ad015b1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
@@ -326,7 +369,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="471" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="471" bodyend="474"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="484" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="484" bodyend="487"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a4eea58a9e7eab408c44378dbc2be4f43" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -344,7 +387,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="600" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="600" bodyend="608"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="717" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="717" bodyend="725"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abffa70155a5f160b7ceb86ee52ab2136" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>

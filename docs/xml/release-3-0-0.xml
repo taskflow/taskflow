@@ -32,6 +32,10 @@
         <name>Utilities</name>
         <reference>release-3-0-0_1release-3-0-0_utilities</reference>
     </tocsect>
+      <tocsect>
+        <name>Taskflow Profiler (TFProf)</name>
+        <reference>release-3-0-0_1release-3-0-0_profiler</reference>
+    </tocsect>
     </tableofcontents>
     </tocsect>
       <tocsect>
@@ -162,7 +166,19 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem>
 <listitem><para>added utility functions for common mathematics operations </para>
 </listitem>
+<listitem><para>added serializer and deserializer libraries to support tfprof </para>
+</listitem>
 <listitem><para>added per-thread pool for CUDA streams to improve performance</para>
+</listitem>
+</itemizedlist>
+</para>
+</sect2>
+<sect2 id="release-3-0-0_1release-3-0-0_profiler">
+<title>Taskflow Profiler (TFProf)</title>
+<para><itemizedlist>
+<listitem><para>added visualization for asynchronous tasks </para>
+</listitem>
+<listitem><para>added local-mode profiler to support large profiling data (see <ref refid="Profiler" kindref="compound">Profile Taskflow Programs</ref>)</para>
 </listitem>
 </itemizedlist>
 </para>
@@ -205,6 +221,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <listitem><para>added <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref> </para>
 </listitem>
 <listitem><para>added <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="Profiler" kindref="compound">Profile Taskflow Programs</ref> </para>
 </listitem>
 <listitem><para>added <ref refid="GPUAlgorithms" kindref="compound">GPU Algorithms</ref><itemizedlist>
 <listitem><para><ref refid="SingleTaskCUDA" kindref="compound">Single Task (cudaFlow)</ref> to run a kernel function in just a single thread</para>

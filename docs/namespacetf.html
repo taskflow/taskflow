@@ -57,6 +57,7 @@
               <ul>
                 <li><a href="#nested-classes">Classes</a></li>
                 <li><a href="#enum-members">Enums</a></li>
+                <li><a href="#typedef-members">Typedefs</a></li>
                 <li><a href="#func-members">Functions</a></li>
                 <li><a href="#var-members">Variables</a></li>
               </ul>
@@ -168,6 +169,15 @@
               <a href="#ac747e6c7cf88c7b1ff7126e62babebb8a14e9fb7dc6b0d37a40046f685c6aa79a" class="m-doc">CUDA_CAPTURE_TASK</a> = cudaNode::CUDA_CAPTURE_TASK }</span>
             </dt>
             <dd>enumeration of all cudaTask types</dd>
+          </dl>
+        </section>
+        <section id="typedef-members">
+          <h2><a href="#typedef-members">Typedefs</a></h2>
+          <dl class="m-doc">
+            <dt id="a8cff4bbd797dde4dfab096c3cc657833">
+              using <a href="#a8cff4bbd797dde4dfab096c3cc657833" class="m-doc-self">observer_stamp_t</a> = <a href="http://en.cppreference.com/w/cpp/chrono/time_point.html" class="m-doc-external">std::<wbr />chrono::<wbr />time_point</a>&lt;<a href="http://en.cppreference.com/w/cpp/chrono/steady_clock.html" class="m-doc-external">std::<wbr />chrono::<wbr />steady_clock</a>&gt;
+            </dt>
+            <dd>default time point type of observers</dd>
           </dl>
         </section>
         <section id="func-members">
@@ -343,6 +353,10 @@
         <section id="var-members">
           <h2><a href="#var-members">Variables</a></h2>
           <dl class="m-doc">
+            <dt id="a3d823d8776745f3348dc87bba2fcc91b">
+              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a0681fa0518bdd3e3d198e1b1b744c06f" class="m-doc">TaskType</a>, 7&gt; <a href="#a3d823d8776745f3348dc87bba2fcc91b" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>array of all task types (used for iterating task types)</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
               bool <a href="#a11fc9c98eb3a0d3a9aa55598b1f4d614" class="m-doc">is_static_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
