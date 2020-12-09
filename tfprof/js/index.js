@@ -82,8 +82,8 @@ const tfp = {
   zoomXs: [],       // scoped time data
   zoomY : null,     // scoped worker
   view  : "Cluster",  // default view type
-  limit : 500,
-  maxLimit: 1000,
+  limit : 256,
+  maxLimit: 512,
   data: null,
   tfpFile: null,
   numTasks: null,
@@ -122,7 +122,7 @@ async function queryInfo() {
 
 async function queryData(zoomX, zoomY, view, limit) {
 
-  $('#tfp_tb_loader').css("display", "block");
+  //$('#tfp_tb_loader').css("display", "block");
 
   const response = await fetch(`/queryData`, {
     method: 'put', 
@@ -147,7 +147,7 @@ async function queryData(zoomX, zoomY, view, limit) {
     return {executor: e, workers: eMeta[e]} 
   });
   
-  $('#tfp_tb_loader').css("display", "none");
+  //$('#tfp_tb_loader').css("display", "none");
 }
 
 function _adjustDim() {
@@ -402,7 +402,7 @@ function _render_ovInfo() {
     .attr('x', tfp.ovW + tfp.innerW)
     .attr('y', tfp.ovH/2)
     .attr('font-size', 16)
-    .html(`${d3.sum(tfp.data, d=>d.tasks)} tasks drawn`);
+    .html(`${d3.sum(tfp.data, d=>d.tasks)} tasks`);
 }
 
 function _render_ov() {
@@ -662,7 +662,7 @@ async function main() {
   
   await queryInfo();
   
-  $('#tfp_tb_finfo').text(tfp.tfpFile);
+  $('#tfp_tb_finfo').text(tfp.tfpFile.split(/(\\|\/)/g).pop()); // filename
   $('#tfp_tb_tinfo').text(`${tfp.numTasks} tasks`);
   $('#tfp_tb_einfo').text(`${tfp.numExecutors} executors`);
   $('#tfp_tb_winfo').text(`${tfp.numWorkers} workers`);
@@ -685,8 +685,11 @@ async function main() {
   
   tfp.ovXDomain = [minX, maxX];
   tfp.ovXSel = [minX, maxX];
-  tfp.zoomXs = [[minX, maxX]];  // clear cached data
+  tfp.zoomXs = [[minX, maxX]];
   tfp.zoomY = tfp.data.map(d=>d.worker);
+  
+  // adjust the margin to the current nav
+  tfp.topMargin += $('nav').outerHeight(true);
   
   // clean-up the loader 
   $('#tfp_loader').css("display", "none");

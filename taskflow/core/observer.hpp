@@ -14,8 +14,7 @@ namespace tf {
 // timeline data structure
 // ----------------------------------------------------------------------------
 
-using observer_clock_t = std::chrono::steady_clock;
-using observer_stamp_t = std::chrono::time_point<observer_clock_t>;
+using observer_stamp_t = std::chrono::time_point<std::chrono::steady_clock>;
 
 /**
 @private
@@ -44,6 +43,10 @@ struct Segment {
     const std::string& n, TaskType t, observer_stamp_t b, observer_stamp_t e
   ) : name {n}, type {t}, beg {b}, end {e} {
   }
+
+  auto span() const {
+    return end-beg;
+  } 
 };
 
 /**
@@ -282,9 +285,7 @@ class ChromeObserver : public ObserverInterface {
     
 // constructor
 inline ChromeObserver::Segment::Segment(
-  const std::string& n,
-  observer_stamp_t b,
-  observer_stamp_t e
+  const std::string& n, observer_stamp_t b, observer_stamp_t e
 ) :
   name {n}, beg {b}, end {e} {
 }
@@ -298,12 +299,12 @@ inline void ChromeObserver::set_up(size_t num_workers) {
     _timeline.segments[w].reserve(32);
   }
   
-  _timeline.origin = observer_clock_t::now();
+  _timeline.origin = observer_stamp_t::clock::now();
 }
 
 // Procedure: on_entry
 inline void ChromeObserver::on_entry(WorkerView wv, TaskView) {
-  _timeline.stacks[wv.id()].push(observer_clock_t::now());
+  _timeline.stacks[wv.id()].push(observer_stamp_t::clock::now());
 }
 
 // Procedure: on_exit
@@ -317,7 +318,7 @@ inline void ChromeObserver::on_exit(WorkerView wv, TaskView tv) {
   _timeline.stacks[w].pop();
 
   _timeline.segments[w].emplace_back(
-    tv.name(), beg, observer_clock_t::now()
+    tv.name(), beg, observer_stamp_t::clock::now()
   );
 }
 
@@ -482,14 +483,14 @@ class TFProfObserver : public ObserverInterface {
 // Procedure: set_up
 inline void TFProfObserver::set_up(size_t num_workers) {
   _timeline.uid = unique_id<size_t>();
-  _timeline.origin = observer_clock_t::now();
+  _timeline.origin = observer_stamp_t::clock::now();
   _timeline.segments.resize(num_workers);
   _stacks.resize(num_workers);
 }
 
 // Procedure: on_entry
 inline void TFProfObserver::on_entry(WorkerView wv, TaskView) {
-  _stacks[wv.id()].push(observer_clock_t::now());
+  _stacks[wv.id()].push(observer_stamp_t::clock::now());
 }
 
 // Procedure: on_exit
@@ -507,7 +508,7 @@ inline void TFProfObserver::on_exit(WorkerView wv, TaskView tv) {
   _stacks[w].pop();
 
   _timeline.segments[w][_stacks[w].size()].emplace_back(
-    tv.name(), tv.type(), beg, observer_clock_t::now()
+    tv.name(), tv.type(), beg, observer_stamp_t::clock::now()
   );
 }
 

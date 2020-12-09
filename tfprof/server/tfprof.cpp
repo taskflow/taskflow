@@ -8,8 +8,6 @@
 #include <taskflow/taskflow.hpp>
 #include <cmath>
 
-  
-// TODO
 namespace tf {
 
 class Database {
@@ -21,58 +19,17 @@ class Database {
     CRITICALITY
   };
 
-  struct ZoomX {
-    double beg;
-    double end;
-
-    ZoomX() = default;
-    ZoomX(double b, double e) : beg{b}, end{e} {}
-  };
-
-  struct ZoomY {
-
-    std::vector<std::string> workers;
-    
-    ZoomY() = default;
-    ZoomY(const ZoomY&) = delete;
-    ZoomY(ZoomY&&) = default;
-
-    ZoomY& operator = (const ZoomY&) = delete;
-    ZoomY& operator = (ZoomY&&) = delete;
-  };
-
-  struct TaskData {
-
-    std::string name;
-    TaskType type;
-    size_t beg;     // beg time
-    size_t end;     // end time
-
-    TaskData(std::string s, TaskType t, size_t b, size_t e) :
-      name{std::move(s)}, type{t}, beg{b}, end{e} {
-    }
-
-    TaskData(const TaskData&) = delete;
-    TaskData(TaskData&&) = default;
-
-    TaskData& operator = (const TaskData&) = delete;
-    TaskData& operator = (TaskData&&) = default;
-
-    size_t span() const {
-      return end - beg;
-    }
-  };
-
   struct WorkerData {
     size_t eid;
     size_t wid;
     size_t lid;
-    std::vector<TaskData> tasks; 
-
     std::string name;
+    std::vector<Segment> tasks; 
 
-    WorkerData(size_t e, size_t w, size_t l, const std::string& n) : 
-      eid{e}, wid{w}, lid{l}, name {n} {
+    WorkerData(
+      size_t e, size_t w, size_t l, std::string n, std::vector<Segment> t
+    ) : 
+      eid{e}, wid{w}, lid{l}, name {std::move(n)}, tasks{std::move(t)} {
     }
 
     WorkerData(const WorkerData&) = delete;
@@ -81,8 +38,7 @@ class Database {
     WorkerData& operator = (const WorkerData&) = delete;
     WorkerData& operator = (WorkerData&&) = default; 
 
-    template <typename V>
-    std::optional<size_t> lower_bound(V value) const {
+    std::optional<size_t> lower_bound(observer_stamp_t value) const {
       
       size_t slen = tasks.size();
       size_t beg, end, mid;
@@ -104,8 +60,7 @@ class Database {
       return l;
     }
     
-    template <typename V>
-    std::optional<size_t> upper_bound(V value) const {
+    std::optional<size_t> upper_bound(observer_stamp_t value) const {
       
       size_t slen = tasks.size();
       size_t beg, end, mid;
@@ -131,9 +86,9 @@ class Database {
   struct Criticality {
 
     size_t i;
-    std::vector<TaskData>::const_iterator key;
+    std::vector<Segment>::const_iterator key;
 
-    Criticality(size_t in_i, std::vector<TaskData>::const_iterator in_key) :
+    Criticality(size_t in_i, std::vector<Segment>::const_iterator in_key) :
       i{in_i}, key{in_key} {
     }
   };
@@ -166,9 +121,9 @@ class Database {
     size_t i;
     size_t f;  // from task
     size_t t;  // to task   (inclusive)
-    size_t k;  // key
+    observer_stamp_t::duration k;  // key
 
-    Cluster(size_t in_i, size_t in_f, size_t in_t, size_t in_k) :
+    Cluster(size_t in_i, size_t in_f, size_t in_t, observer_stamp_t::duration in_k) :
       i{in_i}, f{in_f}, t{in_t}, k{in_k} {
     }
 
@@ -200,10 +155,10 @@ class Database {
     deserializer(pd);
     
     // find the minimum starting point
-    auto origin = tf::observer_stamp_t::max();
+
     for(auto& timeline : pd.timelines) {
-      if(timeline.origin < origin) {
-        origin = timeline.origin; 
+      if(timeline.origin < _minX) {
+        _minX = timeline.origin; 
       }
     }
     
@@ -213,26 +168,16 @@ class Database {
       _num_workers += pd.timelines[e].segments.size();
       for(size_t w=0; w<pd.timelines[e].segments.size(); w++) {
         for(size_t l=0; l<pd.timelines[e].segments[w].size(); l++) {
-          _num_tasks += pd.timelines[e].segments[w][l].size();
-
           // a new worker data
-          WorkerData wd(e, w, l, stringify("E", e, ".W", w, ".L", l));
-
-          for(size_t s=0; s<pd.timelines[e].segments[w][l].size(); s++) {
-            auto& t = wd.tasks.emplace_back(
-              std::move(pd.timelines[e].segments[w][l][s].name),
-              pd.timelines[e].segments[w][l][s].type,
-              std::chrono::duration_cast<std::chrono::microseconds>(
-                pd.timelines[e].segments[w][l][s].beg - origin
-              ).count(),
-              std::chrono::duration_cast<std::chrono::microseconds>(
-                pd.timelines[e].segments[w][l][s].end - origin
-              ).count()
-            );
-            
-            if(t.beg < _minX) _minX = t.beg;
-            if(t.end > _maxX) _maxX = t.end;
+          WorkerData wd(
+            e, w, l, stringify("E", e, ".W", w, ".L", l), 
+            std::move(pd.timelines[e].segments[w][l])
+          );
+          if(!wd.tasks.empty()) {
+            if(wd.tasks.front().beg < _minX) _minX = wd.tasks.front().beg;
+            if(wd.tasks.back().end > _maxX) _maxX = wd.tasks.back().end;
           }
+          _num_tasks += wd.tasks.size();
           _wdmap[wd.name] = _wd.size();
           _wd.push_back(std::move(wd));
         }
@@ -240,19 +185,16 @@ class Database {
     }
   }
   
+  template <typename D> 
   void query_criticality(
     std::ostream& os, 
-    std::optional<ZoomX> zoomx, 
-    std::optional<ZoomY> zoomy,
+    std::optional<D> xbeg, std::optional<D> xend, 
+    const std::vector<std::string>& workers,
     size_t limit
   ) const {
 
-    // Acquire the range of worker id
-    auto w = _decode_zoomy(zoomy);
-    
-    if(!zoomx) {
-      zoomx.emplace(_minX, _maxX);
-    }
+    auto x = decode_zoomx(xbeg, xend);
+    auto w = decode_zoomy(workers);
 
     CriticalityHeap heap;
     
@@ -261,13 +203,13 @@ class Database {
     for(size_t i=0; i<w.size(); i++) {
 
       // r = maxArg {span[0] <= zoomX[1]}
-      auto r = _wd[w[i]].upper_bound(zoomx->end);
+      auto r = _wd[w[i]].upper_bound(x.second);
       if(r == std::nullopt) {
         continue;
       }
       
       // l = minArg {span[1] >= zoomX[0]}
-      auto l = _wd[w[i]].lower_bound(zoomx->beg);
+      auto l = _wd[w[i]].lower_bound(x.first);
       if(l == std::nullopt || *l > *r) {
         continue;
       }
@@ -325,12 +267,15 @@ class Database {
         os << "{";
         const auto& task = *crits[cursor].key;
         os << "\"name\":\"" << task.name << "\","
-           << "\"type\":\""  << task_type_to_string(task.type) << "\","
-           << "\"span\": ["  << task.beg << "," << task.end << "]";
+           << "\"type\":\"" << task_type_to_string(task.type) << "\","
+           << "\"span\": [" << std::chrono::duration_cast<D>(task.beg-_minX).count() 
+                            << "," 
+                            << std::chrono::duration_cast<D>(task.end-_minX).count() 
+                            << "]";
         os << "}";
 
         // calculate load
-        size_t t = task.span();
+        size_t t = std::chrono::duration_cast<D>(task.span()).count();
         T += t;
         loads[task.type] += t;
       }
@@ -357,27 +302,16 @@ class Database {
     os << "]"; 
   }
 
+  template <typename D>
   void query_cluster(
     std::ostream& os, 
-    std::optional<ZoomX> zoomx, 
-    std::optional<ZoomY> zoomy,
+    std::optional<D> xbeg, std::optional<D> xend, 
+    const std::vector<std::string>& workers,
     size_t limit
   ) const {
-
-    // Acquire the range of worker id
-    auto w = _decode_zoomy(zoomy);
     
-    if(!zoomx) {
-      zoomx.emplace(_minX, _maxX);
-    }
-
-    /*std::cout << "query zoomX=[" << zoomx->beg << ", " << zoomx->end 
-              << "] zoomY=[";
-    for(size_t i=0; i<w.size(); ++i) {
-      if(i) std::cout << ", ";
-      std::cout << _wd[w[i]].name;
-    }
-    std::cout << "] limit=" << limit << '\n';*/
+    auto x = decode_zoomx(xbeg, xend);
+    auto w = decode_zoomy(workers);
 
     std::vector<std::list<Cluster>> clusters{w.size()};
     ClusterHeap heap;
@@ -387,13 +321,13 @@ class Database {
     for(size_t i=0; i<w.size(); i++) {
 
       // r = maxArg {span[0] <= zoomX[1]}
-      auto r = _wd[w[i]].upper_bound(zoomx->end);
+      auto r = _wd[w[i]].upper_bound(x.second);
       if(r == std::nullopt) {
         continue;
       }
       
       // l = minArg {span[1] >= zoomX[0]}
-      auto l = _wd[w[i]].lower_bound(zoomx->beg);
+      auto l = _wd[w[i]].lower_bound(x.first);
       if(l == std::nullopt || *l > *r) {
         continue;
       }
@@ -410,7 +344,7 @@ class Database {
         }
         else {  // boundary
           clusters[i].emplace_back(
-            i, s, s, std::numeric_limits<size_t>::max()
+            i, s, s, observer_stamp_t::duration::max()
           );
         }
         heap.push(std::prev(clusters[i].end()));
@@ -423,7 +357,7 @@ class Database {
         auto top = heap.top(); 
 
         // if all clusters are in boundary - no need to cluster anymore
-        if(top->k == std::numeric_limits<size_t>::max()) {
+        if(top->k == observer_stamp_t::duration::max()) {
           break;
         }
         
@@ -471,22 +405,28 @@ class Database {
         if(cluster.f == cluster.t) {
           const auto& task = _wd[w[i]].tasks[cluster.f];
           os << "\"name\":\"" << task.name << "\","
-             << "\"type\":\""  << task_type_to_string(task.type) << "\","
-             << "\"span\": ["  << task.beg << "," << task.end << "]";
+             << "\"type\":\"" << task_type_to_string(task.type) << "\","
+             << "\"span\": [" << std::chrono::duration_cast<D>(task.beg-_minX).count()
+                              << "," 
+                              << std::chrono::duration_cast<D>(task.end-_minX).count() 
+                              << "]";
         }
         else {
           const auto& ftask = _wd[w[i]].tasks[cluster.f];
           const auto& ttask = _wd[w[i]].tasks[cluster.t];
           os << "\"name\":\"(" << (cluster.t-cluster.f+1) << " tasks)\","
              << "\"type\":\"clustered\","
-             << "\"span\": ["  << ftask.beg << "," << ttask.end << "]";
+             << "\"span\": ["  << std::chrono::duration_cast<D>(ftask.beg-_minX).count() 
+                               << "," 
+                               << std::chrono::duration_cast<D>(ttask.end-_minX).count() 
+                               << "]";
         }
         os << "}";
 
         // calculate load
         // TODO optimization with DP
         for(size_t j=cluster.f; j<=cluster.t; j++) {
-          size_t t = _wd[w[i]].tasks[j].end - _wd[w[i]].tasks[j].beg;
+          size_t t = std::chrono::duration_cast<D>(_wd[w[i]].tasks[j].span()).count();
           T += t;
           loads[_wd[w[i]].tasks[j].type] += t;
         }
@@ -514,11 +454,11 @@ class Database {
     os << "]";
   }
 
-  size_t minX() const {
+  observer_stamp_t minX() const {
     return _minX;
   } 
 
-  size_t maxX() const {
+  observer_stamp_t maxX() const {
     return _maxX;
   }
 
@@ -538,22 +478,34 @@ class Database {
 
     std::vector<WorkerData> _wd;
     
-    size_t _minX {std::numeric_limits<size_t>::max()};
-    size_t _maxX {std::numeric_limits<size_t>::lowest()};
+    // {std::numeric_limits<size_t>::max()};
+    // {std::numeric_limits<size_t>::lowest()};
+    
+    observer_stamp_t _minX {observer_stamp_t::max()};
+    observer_stamp_t _maxX {observer_stamp_t::min()};
+
     size_t _num_tasks {0};
     size_t _num_executors {0};
     size_t _num_workers {0};
 
     std::unordered_map<std::string, size_t> _wdmap;
+    
+    template <typename D>
+    std::pair<observer_stamp_t, observer_stamp_t> 
+    decode_zoomx(std::optional<D> beg, std::optional<D> end) const {
+      observer_stamp_t b = beg ? *beg + _minX : _minX;
+      observer_stamp_t e = end ? *end + _minX : _maxX;
+      return {b, e};
+    }
 
-    std::vector<size_t> _decode_zoomy(const std::optional<ZoomY>& zoomy) const {
+    std::vector<size_t> decode_zoomy(const std::vector<std::string>& zoomy) const {
       std::vector<size_t> w;
-      if(zoomy) {
-        w.resize(zoomy->workers.size());
-        for(size_t i=0; i<zoomy->workers.size(); i++) {
-          auto itr = _wdmap.find(zoomy->workers[i]);
+      if(zoomy.size()) {
+        w.resize(zoomy.size());
+        for(size_t i=0; i<zoomy.size(); i++) {
+          auto itr = _wdmap.find(zoomy[i]);
           if(itr == _wdmap.end()) {
-            TF_THROW("failed to find worker ", zoomy->workers[i]);
+            TF_THROW("failed to find worker ", zoomy[i]);
           }
           w[i] = itr->second;
         }
@@ -593,17 +545,6 @@ int main(int argc, char* argv[]) {
   spdlog::set_level(spdlog::level::debug); // Set global log level to debug
     
   spdlog::info("reading database {} ...", input);
-  //  spdlog::error("Some error message with arg: {}", 1);
-
-  //  spdlog::warn("Easy padding in numbers like {:08d}", 12);
-  //  spdlog::critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);
-  //  spdlog::info("Support for floats {:03.2f}", 1.23456);
-  //  spdlog::info("Positional args are {1} {0}..", "too", "supported");
-  //  spdlog::info("{:<30}", "left aligned");
-
-
-  //  spdlog::debug("This message should be displayed..");
-
   
   // create a database
   tf::Database db(input);
@@ -623,66 +564,76 @@ int main(int argc, char* argv[]) {
   }
   
   // Put method: queryInfo
-  server.Put("/queryInfo", [&db, &input](const httplib::Request&, httplib::Response& res){
-    std::ostringstream oss;
-    oss << "{\"tfpFile\":\"" << input << "\""
-        << ",\"numTasks\":" << db.num_tasks() 
-        << ",\"numExecutors\":" << db.num_executors()
-        << ",\"numWorkers\":" << db.num_workers() << '}'; 
+  server.Put("/queryInfo", 
+    [&db, &input](const httplib::Request& req, httplib::Response& res){
+      spdlog::info(
+        "/queryInfo: connected a new client {0}:{1:d}", 
+        req.remote_addr, req.remote_port
+      );
 
-    res.set_content(oss.str().c_str(), "application/json");
-    spdlog::info("/queryInfo: sent {0:d} bytes", oss.str().size());
-  });
+      std::ostringstream oss;
+      oss << "{\"tfpFile\":\"" << input << "\""
+          << ",\"numTasks\":" << db.num_tasks() 
+          << ",\"numExecutors\":" << db.num_executors()
+          << ",\"numWorkers\":" << db.num_workers() << '}'; 
+
+      res.set_content(oss.str().c_str(), "application/json");
+      spdlog::info("/queryInfo: sent {0:d} bytes", oss.str().size());
+    }
+  );
 
   // Put method: queryData
-  server.Put("/queryData", [&db](const httplib::Request& req, httplib::Response& res){
+  server.Put("/queryData", 
+    [&db](const httplib::Request& req, httplib::Response& res){
     
-    auto body = nlohmann::json::parse(req.body);
+      auto body = nlohmann::json::parse(req.body);
 
-    const auto& jx = body["zoomX"];
-    const auto& jy = body["zoomY"];
-    const auto& jv = body["view"];
-    size_t jl = body["limit"];
-    
-    spdlog::info("/queryData: zoomX={}, zoomY={}, view={}, limit={}", 
-      jx.dump(), jy.dump(), jv.dump(), jl
-    );
+      const auto& jx = body["zoomX"];
+      const auto& jy = body["zoomY"];
+      const auto& jv = body["view"];
+      size_t jl = body["limit"];
+      
+      spdlog::info(
+        "/queryData: zoomX={}, zoomY=[...{} workers], view={}, limit={}", 
+        jx.dump(), jy.size(), jv.dump(), jl
+      );
 
-    std::optional<tf::Database::ZoomX> zoomx;
-    std::optional<tf::Database::ZoomY> zoomy;
-    tf::Database::ViewType view_type = tf::Database::CLUSTER;
-    
-    if(jx.is_array() && jx.size() == 2) {
-      zoomx.emplace(jx[0], jx[1]);
-    }
-
-    if(jy.is_array()) {
-      zoomy.emplace();
-      for(auto& w : jy) {
-        zoomy->workers.push_back(std::move(w));
+      std::optional<std::chrono::microseconds> xbeg, xend;
+      std::vector<std::string> y;
+      tf::Database::ViewType view_type = tf::Database::CLUSTER;
+      
+      if(jx.is_array() && jx.size() == 2) {
+        xbeg = std::chrono::microseconds(std::llround((double)jx[0]));
+        xend = std::chrono::microseconds(std::llround((double)jx[1]));
       }
+
+      if(jy.is_array()) {
+        for(auto& w : jy) {
+          y.push_back(std::move(w));
+        }
+      }
+
+      if(jv == "Criticality") {
+        view_type = tf::Database::CRITICALITY;
+      }
+
+      std::ostringstream oss;
+
+      switch(view_type) {
+        case tf::Database::CRITICALITY:
+          db.query_criticality<std::chrono::microseconds>(oss, xbeg, xend, y, jl);
+        break;
+        case tf::Database::CLUSTER:
+          db.query_cluster<std::chrono::microseconds>(oss, xbeg, xend, y, jl);
+        break;
+      }
+
+      res.set_content(oss.str().c_str(), "application/json");
+      spdlog::info("/queryData: sent {0:d} bytes", oss.str().size());
     }
+  );
 
-    if(jv == "Criticality") {
-      view_type = tf::Database::CRITICALITY;
-    }
-
-    std::ostringstream oss;
-
-    switch(view_type) {
-      case tf::Database::CRITICALITY:
-        db.query_criticality(oss, std::move(zoomx), std::move(zoomy), jl);
-      break;
-      case tf::Database::CLUSTER:
-        db.query_cluster(oss, std::move(zoomx), std::move(zoomy), jl);
-      break;
-    }
-
-    res.set_content(oss.str().c_str(), "application/json");
-    spdlog::info("/queryData: sent {0:d} bytes", oss.str().size());
-  });
-
-  spdlog::info("listening to localhost:{:d} ...", port);
+  spdlog::info("listening to http://localhost:{:d} ...", port);
   server.listen("0.0.0.0", port);
   spdlog::info("shut down server");
 

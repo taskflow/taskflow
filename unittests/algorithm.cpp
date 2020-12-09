@@ -960,7 +960,7 @@ TEST_CASE("ptrs.12threads" * doctest::timeout(300)) {
 template <typename T>
 void ps_pod(size_t W, size_t N) {
 
-  std::srand(time(0));
+  std::srand(static_cast<unsigned int>(time(NULL)));
 
   std::vector<T> data(N);
 
@@ -1025,7 +1025,7 @@ struct Object {
 
 void ps_object(size_t W, size_t N) {
   
-  std::srand(time(0));
+  std::srand(static_cast<unsigned int>(time(NULL)));
 
   std::vector<Object> data(N);
   

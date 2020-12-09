@@ -26,42 +26,42 @@
 <!-- BEG BODY -->
   <body>
     
-    <nav class="navbar navbar-expand-sm mb-3 navbar-dark bg-dark">
-    <!--<nav class="navbar navbar-expand-md mb-3 navbar-dark fixed-top bg-dark" >-->
-      <!-- Brand -->
-      <a class="navbar-brand" href=""><img src="images/logo.png" alt="Logo" style="width:40px;"> Taskflow Profiler</a>
+    <!--<nav class="navbar navbar-expand-sm mb-3 navbar-dark bg-dark">-->
+    <nav class="navbar navbar-expand-md mb-2 navbar-dark fixed-top bg-dark" >
+      <!-- Brand
+      <a class="navbar-brand" href=""><img src="images/logo.png" alt="Logo" style="width:40px;"></a>-->
 
-      <!-- left-side navbar 
+      <!-- left-side navbar -->
       <div class="btn-group mr-2" role="group">
-        <button type="button" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown">View</button>
+        <button type="button" class="btn btn-outline-success btn-sm dropdown-toggle" data-toggle="dropdown">View</button>
         <div class="dropdown-menu tfp-tb-view" id="tfp_tb_view">
           <a class="dropdown-item">Cluster</a>
           <a class="dropdown-item">Criticality</a>
         </div>
-      </div> -->
+      </div>
       
-      <!-- tfp-tb-workers 
+      <!-- tfp-tb-workers -->
       <div class="btn-group mr-2" role="group">
-        <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown">Workers</button>
+        <button type="button" class="btn btn-outline-info btn-sm dropdown-toggle" data-toggle="dropdown">Workers</button>
         <div class="dropdown-menu tfp-tb-workers" id="tfp_tb_workers"></div>
-      </div> -->
+      </div> 
 
-      <!-- tfp-tb-reset 
+      <!-- tfp-tb-reset -->
       <div class="btn-group mr-2" role="group">
-        <button type="button" class="btn btn-outline-secondary" id="tfp_tb_reset_zoom">Reset Zoom</button>
-      </div> -->
-      
-      <!-- tfp-tb-limit 
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="tfp_tb_reset_zoom">Zoom</button>
+      </div> 
+    
+      <!-- tfp-tb-limit -->
       <div class="btn-group mr-2" role="group">
         <input id="tfp_tb_limit" class="border-0 mr-2" type="range" />
-        <button type="button" class="btn btn-primary">Limit</button>
-      </div> -->
+        <button type="button" class="btn btn-primary btn-sm">Limit</button>
+      </div>
 
       <ul class="navbar-nav mr-auto">
         <!--<li class="nav-item"><a class="nav-link" href="">MainBoard</a></li>-->
       </ul>
 
-      <button type="button" class="btn btn-light">
+      <button type="button" class="btn btn-light btn-sm">
         <span class="badge" id="tfp_tb_finfo"></span>
         <span class="badge badge-info" id="tfp_tb_einfo">- executors</span>
         <span class="badge badge-info" id="tfp_tb_winfo">- workers</span>
@@ -75,36 +75,36 @@
     <!-- toolbar -->
     <div class="btn-toolbar" role="toolbar" style="margin-left: 100px; display:none;" id="tfp_toolbar">
       
-      <!-- tfp-tb-view -->
+      <!-- tfp-tb-view
       <div class="btn-group mb-2 mr-2" role="group">
         <button type="button" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown">View</button>
         <div class="dropdown-menu tfp-tb-view" id="tfp_tb_view">
           <a class="dropdown-item">Cluster</a>
           <a class="dropdown-item">Criticality</a>
         </div>
-      </div>
+      </div> -->
 
-      <!-- tfp-tb-workers -->
+      <!-- tfp-tb-workers
       <div class="btn-group mb-2 mr-2" role="group">
         <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown">Workers</button>
         <div class="dropdown-menu tfp-tb-workers" id="tfp_tb_workers"></div>
-      </div>
+      </div> -->
 
-      <!-- tfp-tb-reset -->
+      <!-- tfp-tb-reset
       <div class="btn-group mb-2 mr-2" role="group">
         <button type="button" class="btn btn-outline-secondary" id="tfp_tb_reset_zoom">Reset Zoom</button>
-      </div>
+      </div> -->
       
-      <!-- tfp-tb-limit -->
+      <!-- tfp-tb-limit
       <div class="btn-group mb-2 mr-2" role="group">
         <input id="tfp_tb_limit" class="border-0 mr-2" type="range" />
         <button type="button" class="btn btn-primary">Limit</button>
-      </div>
+      </div>-->
       
-      <!-- tfp-tb-loader -->
+      <!-- tfp-tb-loader 
       <div class="btn-group mb-2" role="group">
-      <div class="spinner-grow text-dark" role="status" style="display:none" id="tfp_tb_loader"></div>
-      </div>
+        <div class="spinner-grow text-dark" role="status" style="display:none" id="tfp_tb_loader"></div>
+      </div>-->
 
 
     </div>

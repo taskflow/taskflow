@@ -24,6 +24,7 @@
 #include <iomanip>
 #include <cassert>
 #include <cmath>
+#include <array>
 #include <cstring>
 #include <variant>
 #include <optional>
