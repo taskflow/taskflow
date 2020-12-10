@@ -66,7 +66,7 @@ in parallel computing. Check out [Who is Using Taskflow](#who-is-using-taskflow)
 + *"Second Prize of Open-source Software Competition." [ACM Multimedia Conference 2019](https://tsung-wei-huang.github.io/img/mm19-ossc-award.jpg)*
 
 See a quick [presentation](https://taskflow.github.io/) and
-visit the [documentation][wiki] to learn more about Taskflow.
+visit the [documentation][documentation] to learn more about Taskflow.
 Technical details can be referred to our [IPDPS paper][IPDPS19].
 
 # Start Your First Taskflow Program
@@ -135,8 +135,34 @@ in an easy-to-use web-based interface.
 # paste the profiling json data to https://taskflow.github.io/tfprof/
 ```
 
-Visit [documentation](https://taskflow.github.io/taskflow/index.html) 
-for a complete overview of Taskflow.
+# Supported Compilers
+
+To use Taskflow, you only need a compiler that supports C++17:
+
++ GNU C++ Compiler at least v7.0 with -std=c++17
++ Clang C++ Compiler at least v6.0 with -std=c++17
++ Microsoft Visual Studio at least v19.27 with /std:c++17
++ AppleClang Xode Version at least v12.0 with -std=c++17
++ Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
++ Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17
+
+Taskflow works on Linux, Windows, and Mac OS X.
+
+# Learn More about Taskflow
+
+Visit our [project website][Project Website] and [documentation][documentation]
+to learn more about Taskflow. To get involved:
+
+  + See [release notes][release notes] to stay up-to-date with newest versions
+  + Read the step-by-step tutorial at [cookbook][cookbook]
+  + Submit an issue at [GitHub issues][GitHub issues]
+  + Find out our technical details at [references][references]
+  + Watch our [CppCon20 Tech Talk][cppcon20 talk]
+
+We are committed to support trustworthy developments for 
+both academic and industrial research projects in parallel 
+and heterogeneous computing. 
+At the same time, we appreciate all Taskflow [contributors][contributors]!
 
 # License
 
@@ -153,9 +179,10 @@ You are completely free to re-distribute your work derived from Taskflow.
 [GitHub issues]:         https://github.com/taskflow/taskflow/issues
 [GitHub insights]:       https://github.com/taskflow/taskflow/pulse
 [GitHub pull requests]:  https://github.com/taskflow/taskflow/pulls
-[GitHub contributors]:   https://github.com/taskflow/taskflow/graphs/contributors
 [GraphViz]:              https://www.graphviz.org/
-[AwesomeGraphViz]:       https://dreampuf.github.io/GraphvizOnline/
+[Project Website]:       https://taskflow.github.io/
+[cppcon20 talk]:         https://www.youtube.com/watch?v=MX15huP5DsM
+[contributors]:          https://taskflow.github.io/taskflow/contributors.html
 [OpenMP Tasking]:        https://www.openmp.org/spec-html/5.0/openmpsu99.html 
 [TBB FlowGraph]:         https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph
 [OpenTimer]:             https://github.com/OpenTimer/OpenTimer
@@ -164,14 +191,15 @@ You are completely free to re-distribute your work derived from Taskflow.
 [damienhocking]:         https://github.com/damienhocking
 [ForgeMistress]:         https://github.com/ForgeMistress
 [Patrik Huber]:          https://github.com/patrikhuber
-[DARPA IDEA]:            https://www.darpa.mil/news-events/2017-09-13
 [KingDuckZ]:             https://github.com/KingDuckZ
 [NSF]:                   https://www.nsf.gov/
 [UIUC]:                  https://illinois.edu/
 [CSL]:                   https://csl.illinois.edu/
 [UofU]:                  https://www.utah.edu/
-[wiki]:                  https://taskflow.github.io/taskflow/index.html
+[documentation]:         https://taskflow.github.io/taskflow/index.html
 [release notes]:         https://taskflow.github.io/taskflow/Releases.html
+[cookbook]:              https://taskflow.github.io/taskflow/pages.html
+[references]:            https://taskflow.github.io/taskflow/References.html
 [PayMe]:                 https://www.paypal.me/twhuang/10
 [C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
 [C++14]:                 https://en.wikipedia.org/wiki/C%2B%2B14
@@ -181,12 +209,8 @@ You are completely free to re-distribute your work derived from Taskflow.
 [IPDPS19]:               https://tsung-wei-huang.github.io/papers/ipdps19.pdf
 [WorkStealing Wiki]:     https://en.wikipedia.org/wiki/Work_stealing
 
-[std::invoke]:           https://en.cppreference.com/w/cpp/utility/functional/invoke
-[std::future]:           https://en.cppreference.com/w/cpp/thread/future
-
 [cuda-zone]:             https://developer.nvidia.com/cuda-zone
 [nvcc]:                  https://developer.nvidia.com/cuda-llvm-compiler
-[cuda-toolkit]:          https://developer.nvidia.com/cuda-toolkit
 [cudaGraph]:             https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__GRAPH.html
 
 [Firestorm]:             https://github.com/ForgeMistress/Firestorm
@@ -194,6 +218,4 @@ You are completely free to re-distribute your work derived from Taskflow.
 [PID Framework]:         http://pid.lirmm.net/pid-framework/index.html
 [NovusCore]:             https://github.com/novuscore/NovusCore
 [SA-PCB]:                https://github.com/choltz95/SA-PCB
-
-[Presentation]:          https://taskflow.github.io/
 
