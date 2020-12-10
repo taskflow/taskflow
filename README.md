@@ -76,9 +76,7 @@ The following program (`simple.cpp`) creates four tasks
 runs after `B` and `C`.
 When `A` finishes, `B` and `C` can run in parallel.
 
-<p align="center">
-<img src="doxygen/images/simple.svg">
-</p>
+
 
 ```cpp
 #include <taskflow/taskflow.hpp>  // Taskflow is header-only
@@ -118,6 +116,8 @@ TaskB
 TaskD
 ```
 
+# Visualize Your First Taskflow Program
+
 Taskflow comes with a built-in profiler, 
 [TFProf](https://taskflow.github.io/tfprof/), 
 for you to profile and visualize taskflow programs
@@ -134,6 +134,16 @@ in an easy-to-use web-based interface.
 ]
 # paste the profiling json data to https://taskflow.github.io/tfprof/
 ```
+
+In addition to execution diagram, you can dump the graph to a DOT format 
+and visualize it using a number of free [GraphViz][GraphViz] tools.
+
+```
+// dump the taskflow graph to a DOT format through std::cout
+taskflow.dump(std::cout); 
+```
+
+<p align="center"><img src="doxygen/images/simple.svg"></p>
 
 # Supported Compilers
 
