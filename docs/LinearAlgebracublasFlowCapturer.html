@@ -108,53 +108,53 @@
   <span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
   
   <span class="n">assert</span><span class="p">(</span><span class="n">hres</span> <span class="o">==</span> <span class="mi">32</span><span class="p">);</span>
-<span class="p">}</span></pre><div class="m-graph"><svg style="width: 28.812rem; height: 9.000rem;" viewBox="0.00 0.00 460.62 144.00">
-<g transform="scale(1 1) rotate(0) translate(4 140)">
+<span class="p">}</span></pre><div class="m-graph"><svg style="width: 27.688rem; height: 8.750rem;" viewBox="0.00 0.00 442.72 140.00">
+<g transform="scale(1 1) rotate(0) translate(4 136)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffe27cbbb00</title>
-<polygon points="8,-8 8,-128 444.62,-128 444.62,-8 8,-8"/>
-<text text-anchor="middle" x="226.31" y="-111.2">Taskflow: cublas 2&#45;norm</text>
+<polygon points="8,-8 8,-124 426.719,-124 426.719,-8 8,-8"/>
+<text text-anchor="middle" x="217.3595" y="-107.2">Taskflow: cublas 2&#45;norm</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x190c880</title>
-<polygon points="16,-16 16,-94 436.62,-94 436.62,-16 16,-16"/>
-<text text-anchor="middle" x="226.31" y="-77.2">cudaFlow: capturer</text>
+<polygon points="16,-16 16,-92 418.719,-92 418.719,-16 16,-16"/>
+<text text-anchor="middle" x="217.3595" y="-75.2">cudaFlow: capturer</text>
 </g>
 <g class="m-node">
 <title>p0x190c880</title>
-<polygon points="428.62,-60 425.62,-64 404.62,-64 401.62,-60 352.62,-60 352.62,-24 428.62,-24 428.62,-60"/>
-<text text-anchor="middle" x="390.62" y="-38.2">capturer</text>
+<polygon points="410.5673,-60 407.5673,-64 386.5673,-64 383.5673,-60 336.1755,-60 336.1755,-24 410.5673,-24 410.5673,-60"/>
+<text text-anchor="middle" x="373.3714" y="-37.2">capturer</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f05aa4b43b0</title>
-<ellipse cx="55.11" cy="-42" rx="31.23" ry="18.27"/>
-<text text-anchor="middle" x="55.11" y="-38.2">h2d</text>
+<ellipse cx="52.6409" cy="-42" rx="28.7825" ry="18"/>
+<text text-anchor="middle" x="52.6409" y="-37.2">h2d</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f05aa4b4470</title>
-<ellipse cx="170.31" cy="-42" rx="48.17" ry="18.27"/>
-<text text-anchor="middle" x="170.31" y="-38.2">2&#45;norm</text>
+<ellipse cx="162.0119" cy="-42" rx="44.9614" ry="18"/>
+<text text-anchor="middle" x="162.0119" y="-37.2">2&#45;norm</text>
 </g>
 <g class="m-edge">
 <title>p0x7f05aa4b43b0&#45;&gt;p0x7f05aa4b4470</title>
-<path d="M86.45,-42C94.26,-42 102.93,-42 111.64,-42"/>
-<polygon points="111.82,-45.5 121.82,-42 111.82,-38.5 111.82,-45.5"/>
+<path d="M81.3768,-42C89.2011,-42 97.948,-42 106.7159,-42"/>
+<polygon points="106.9642,-45.5001 116.9642,-42 106.9641,-38.5001 106.9642,-45.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f05aa4b4540</title>
-<ellipse cx="285.5" cy="-42" rx="31.23" ry="18.27"/>
-<text text-anchor="middle" x="285.5" y="-38.2">d2h</text>
+<ellipse cx="271.3828" cy="-42" rx="28.7825" ry="18"/>
+<text text-anchor="middle" x="271.3828" y="-37.2">d2h</text>
 </g>
 <g class="m-edge">
 <title>p0x7f05aa4b4470&#45;&gt;p0x7f05aa4b4540</title>
-<path d="M218.66,-42C227.09,-42 235.81,-42 244.03,-42"/>
-<polygon points="244.12,-45.5 254.12,-42 244.12,-38.5 244.12,-45.5"/>
+<path d="M206.8128,-42C215.2746,-42 224.063,-42 232.3308,-42"/>
+<polygon points="232.4614,-45.5001 242.4613,-42 232.4613,-38.5001 232.4614,-45.5001"/>
 </g>
 <g class="m-edge">
 <title>p0x7f05aa4b4540&#45;&gt;p0x190c880</title>
-<path d="M316.88,-42C324.91,-42 333.77,-42 342.46,-42"/>
-<polygon points="342.52,-45.5 352.52,-42 342.52,-38.5 342.52,-45.5"/>
+<path d="M300.0638,-42C308.1097,-42 317.0787,-42 325.9061,-42"/>
+<polygon points="326.1397,-45.5001 336.1397,-42 326.1397,-38.5001 326.1397,-45.5001"/>
 </g>
 </g>
 </svg>
@@ -276,63 +276,63 @@
   <span class="p">}</span>
 
   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre><p>The program uses one cudaFlow task that spawns a capturer of (1) two copy tasks, <code>h2dA</code> and <code>h2dB</code>, to copy the triangular matrix <code>A</code> and the solution vector <code>b</code>, (2) one kernel task <code>trsv</code> to solve the triangular linear system storing the result in <code>dB</code>, and (3) one copy task <code>d2h</code> to copy the solution in <code>dB</code> to <code>r</code>.</p><div class="m-graph"><svg style="width: 34.375rem; height: 12.438rem;" viewBox="0.00 0.00 550.50 199.00">
-<g transform="scale(1 1) rotate(0) translate(4 195)">
+<span class="p">}</span></pre><p>The program uses one cudaFlow task that spawns a capturer of (1) two copy tasks, <code>h2dA</code> and <code>h2dB</code>, to copy the triangular matrix <code>A</code> and the solution vector <code>b</code>, (2) one kernel task <code>trsv</code> to solve the triangular linear system storing the result in <code>dB</code>, and (3) one copy task <code>d2h</code> to copy the solution in <code>dB</code> to <code>r</code>.</p><div class="m-graph"><svg style="width: 33.000rem; height: 12.125rem;" viewBox="0.00 0.00 528.43 194.00">
+<g transform="scale(1 1) rotate(0) translate(4 190)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffea58711b0</title>
-<polygon points="8,-8 8,-183 534.5,-183 534.5,-8 8,-8"/>
-<text text-anchor="middle" x="271.25" y="-166.2">Taskflow: Ax = b</text>
+<polygon points="8,-8 8,-178 512.4328,-178 512.4328,-8 8,-8"/>
+<text text-anchor="middle" x="260.2164" y="-161.2">Taskflow: Ax = b</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x18c01a0</title>
-<polygon points="16,-16 16,-149 526.5,-149 526.5,-16 16,-16"/>
-<text text-anchor="middle" x="271.25" y="-132.2">cudaFlow: cublasFlow</text>
+<polygon points="16,-16 16,-146 504.4328,-146 504.4328,-16 16,-16"/>
+<text text-anchor="middle" x="260.2164" y="-129.2">cudaFlow: cublasFlow</text>
 </g>
 <g class="m-node">
 <title>p0x18c01a0</title>
-<polygon points="518.5,-87 515.5,-91 494.5,-91 491.5,-87 420.5,-87 420.5,-51 518.5,-51 518.5,-87"/>
-<text text-anchor="middle" x="469.5" y="-65.2">cublasFlow</text>
+<polygon points="496.4484,-87 493.4484,-91 472.4484,-91 469.4484,-87 400.3859,-87 400.3859,-51 496.4484,-51 496.4484,-87"/>
+<text text-anchor="middle" x="448.4172" y="-64.2">cublasFlow</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f7e06617130</title>
-<ellipse cx="70.67" cy="-97" rx="45.92" ry="18.27"/>
-<text text-anchor="middle" x="70.67" y="-93.2">copy A</text>
+<ellipse cx="67.5457" cy="-96" rx="42.9175" ry="18"/>
+<text text-anchor="middle" x="67.5457" y="-91.2">copy A</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f7e066172d0</title>
-<ellipse cx="183.74" cy="-69" rx="30.31" ry="18.27"/>
-<text text-anchor="middle" x="183.74" y="-65.2">trsv</text>
+<ellipse cx="175.1138" cy="-69" rx="28.045" ry="18"/>
+<text text-anchor="middle" x="175.1138" y="-64.2">trsv</text>
 </g>
 <g class="m-edge">
 <title>p0x7f7e06617130&#45;&gt;p0x7f7e066172d0</title>
-<path d="M109.89,-87.36C121.45,-84.45 134.11,-81.26 145.59,-78.37"/>
-<polygon points="146.47,-81.75 155.32,-75.91 144.76,-74.96 146.47,-81.75"/>
+<path d="M104.5645,-86.7081C115.7315,-83.9052 127.9699,-80.8333 139.0723,-78.0466"/>
+<polygon points="140.0387,-81.4126 148.8857,-75.5834 138.3345,-74.6233 140.0387,-81.4126"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f7e066173d0</title>
-<ellipse cx="317.32" cy="-69" rx="67.35" ry="18.27"/>
-<text text-anchor="middle" x="317.32" y="-65.2">copy result</text>
+<ellipse cx="301.7689" cy="-69" rx="62.7655" ry="18"/>
+<text text-anchor="middle" x="301.7689" y="-64.2">copy result</text>
 </g>
 <g class="m-edge">
 <title>p0x7f7e066172d0&#45;&gt;p0x7f7e066173d0</title>
-<path d="M214.27,-69C222.04,-69 230.78,-69 239.8,-69"/>
-<polygon points="240.06,-72.5 250.06,-69 240.06,-65.5 240.06,-72.5"/>
+<path d="M203.2227,-69C210.9535,-69 219.711,-69 228.7379,-69"/>
+<polygon points="229.0038,-72.5001 239.0038,-69 229.0037,-65.5001 229.0038,-72.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f7e06617200</title>
-<ellipse cx="70.67" cy="-42" rx="46.84" ry="18.27"/>
-<text text-anchor="middle" x="70.67" y="-38.2">copy B</text>
+<ellipse cx="67.5457" cy="-42" rx="43.5914" ry="18"/>
+<text text-anchor="middle" x="67.5457" y="-37.2">copy B</text>
 </g>
 <g class="m-edge">
 <title>p0x7f7e06617200&#45;&gt;p0x7f7e066172d0</title>
-<path d="M110.83,-51.52C122.02,-54.24 134.18,-57.2 145.27,-59.89"/>
-<polygon points="144.55,-63.32 155.09,-62.28 146.2,-56.51 144.55,-63.32"/>
+<path d="M104.8659,-51.3675C115.923,-54.1429 128.0074,-57.1761 138.9875,-59.9322"/>
+<polygon points="138.1484,-63.33 148.6996,-62.3699 139.8526,-56.5406 138.1484,-63.33"/>
 </g>
 <g class="m-edge">
 <title>p0x7f7e066173d0&#45;&gt;p0x18c01a0</title>
-<path d="M384.63,-69C393.12,-69 401.76,-69 410.12,-69"/>
-<polygon points="410.13,-72.5 420.13,-69 410.13,-65.5 410.13,-72.5"/>
+<path d="M364.812,-69C373.1088,-69 381.5847,-69 389.8034,-69"/>
+<polygon points="390.0435,-72.5001 400.0435,-69 390.0434,-65.5001 390.0435,-72.5001"/>
 </g>
 </g>
 </svg>
@@ -417,133 +417,133 @@
   <span class="p">}</span>
 
   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre><p>The program uses five static tasks to allocate GPU memory for <code>dA</code>, <code>dB</code>, <code>dC</code>, <code>dAlpha</code>, and <code>dBeta</code>, in parallel such that the expensive GPU memory operations can overlap with each other as much as possible. The <code>cublasFlow</code> task spawns a cublasFlow capturer of (1) one single kernel task <code>alpha</code> to set <code>dAlpha</code> to 1, (2) one single kernel task <code>beta</code> to set <code>dBeta</code> to 0, (3) two copy tasks, <code>copyA</code> and <code>copyB</code>, to copy data from CPU to GPU, (4) one kernel task <code>gemm</code> to perform <code>dC = dA * dB</code>, and (5) one copy task <code>copyC</code> to copy the result from GPU to CPU.</p><div class="m-graph"><svg style="width: 52.375rem; height: 35.125rem;" viewBox="0.00 0.00 837.58 562.00">
-<g transform="scale(1 1) rotate(0) translate(4 558)">
+<span class="p">}</span></pre><p>The program uses five static tasks to allocate GPU memory for <code>dA</code>, <code>dB</code>, <code>dC</code>, <code>dAlpha</code>, and <code>dBeta</code>, in parallel such that the expensive GPU memory operations can overlap with each other as much as possible. The <code>cublasFlow</code> task spawns a cublasFlow capturer of (1) one single kernel task <code>alpha</code> to set <code>dAlpha</code> to 1, (2) one single kernel task <code>beta</code> to set <code>dBeta</code> to 0, (3) two copy tasks, <code>copyA</code> and <code>copyB</code>, to copy data from CPU to GPU, (4) one kernel task <code>gemm</code> to perform <code>dC = dA * dB</code>, and (5) one copy task <code>copyC</code> to copy the result from GPU to CPU.</p><div class="m-graph"><svg style="width: 50.250rem; height: 34.500rem;" viewBox="0.00 0.00 803.61 552.00">
+<g transform="scale(1 1) rotate(0) translate(4 548)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7fff9680d710</title>
-<polygon points="8,-8 8,-546 821.58,-546 821.58,-8 8,-8"/>
-<text text-anchor="middle" x="414.79" y="-529.2">Taskflow: Matrix Multiplication</text>
+<polygon points="8,-8 8,-536 787.6054,-536 787.6054,-8 8,-8"/>
+<text text-anchor="middle" x="397.8027" y="-519.2">Taskflow: Matrix Multiplication</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0xe0e598</title>
-<polygon points="16,-60 16,-303 813.58,-303 813.58,-60 16,-60"/>
-<text text-anchor="middle" x="414.79" y="-286.2">cudaFlow: cublasFlow</text>
+<polygon points="16,-60 16,-298 779.6054,-298 779.6054,-60 16,-60"/>
+<text text-anchor="middle" x="397.8027" y="-281.2">cudaFlow: cublasFlow</text>
 </g>
 <g class="m-node m-flat">
 <title>p0xe0e200</title>
-<ellipse cx="584.61" cy="-494" rx="65.11" ry="18.27"/>
-<text text-anchor="middle" x="584.61" y="-490.2">malloc_dA</text>
+<ellipse cx="558.4363" cy="-486" rx="60.6914" ry="18"/>
+<text text-anchor="middle" x="558.4363" y="-481.2">malloc_dA</text>
 </g>
 <g class="m-node">
 <title>p0xe0e598</title>
-<polygon points="805.58,-269 802.58,-273 781.58,-273 778.58,-269 707.58,-269 707.58,-233 805.58,-233 805.58,-269"/>
-<text text-anchor="middle" x="756.58" y="-247.2">cublasFlow</text>
+<polygon points="771.621,-266 768.621,-270 747.621,-270 744.621,-266 675.5585,-266 675.5585,-230 771.621,-230 771.621,-266"/>
+<text text-anchor="middle" x="723.5898" y="-243.2">cublasFlow</text>
 </g>
 <g class="m-edge">
 <title>p0xe0e200&#45;&gt;p0xe0e598</title>
-<path d="M640.04,-484.25C651.52,-480.14 662.8,-474.3 671.58,-466 725.68,-414.94 745.49,-324.89 752.29,-279.24"/>
-<polygon points="755.79,-279.54 753.69,-269.16 748.85,-278.58 755.79,-279.54"/>
+<path d="M610.1976,-476.2127C620.8848,-472.2707 631.3692,-466.7448 639.5741,-459 692.6642,-408.8878 712.9075,-320.8874 720.0458,-276.0197"/>
+<polygon points="723.5116,-276.5082 721.5201,-266.1022 716.5877,-275.4788 723.5116,-276.5082"/>
 </g>
 <g class="m-node m-flat">
 <title>p0xe0e2b8</title>
-<ellipse cx="584.61" cy="-439" rx="65.11" ry="18.27"/>
-<text text-anchor="middle" x="584.61" y="-435.2">malloc_dB</text>
+<ellipse cx="558.4363" cy="-432" rx="60.6914" ry="18"/>
+<text text-anchor="middle" x="558.4363" y="-427.2">malloc_dB</text>
 </g>
 <g class="m-edge">
 <title>p0xe0e2b8&#45;&gt;p0xe0e598</title>
-<path d="M638.93,-428.67C650.59,-424.58 662.23,-418.9 671.58,-411 713.26,-375.82 737.07,-314.64 748.06,-278.99"/>
-<polygon points="751.47,-279.81 750.94,-269.23 744.75,-277.83 751.47,-279.81"/>
+<path d="M608.7251,-421.8162C619.7289,-417.8847 630.72,-412.4629 639.5741,-405 680.5585,-370.4555 704.5658,-310.6858 715.7927,-275.7062"/>
+<polygon points="719.1464,-276.7076 718.7478,-266.1202 712.4571,-274.6454 719.1464,-276.7076"/>
 </g>
 <g class="m-node m-flat">
 <title>p0xe0e370</title>
-<ellipse cx="584.61" cy="-384" rx="65.52" ry="18.27"/>
-<text text-anchor="middle" x="584.61" y="-380.2">malloc_dC</text>
+<ellipse cx="558.4363" cy="-378" rx="61.3755" ry="18"/>
+<text text-anchor="middle" x="558.4363" y="-373.2">malloc_dC</text>
 </g>
 <g class="m-edge">
 <title>p0xe0e370&#45;&gt;p0xe0e598</title>
-<path d="M637,-372.63C648.99,-368.56 661.26,-363.15 671.58,-356 701.07,-335.59 725.41,-301.87 740.17,-278.16"/>
-<polygon points="743.35,-279.67 745.53,-269.3 737.36,-276.05 743.35,-279.67"/>
+<path d="M606.8935,-366.8254C618.2085,-362.9101 629.7981,-357.7443 639.5741,-351 668.5841,-330.9866 692.8827,-298.1932 707.7663,-274.9917"/>
+<polygon points="710.8584,-276.6479 713.1846,-266.3116 704.9203,-272.9412 710.8584,-276.6479"/>
 </g>
 <g class="m-node m-flat">
 <title>p0xe0e428</title>
-<ellipse cx="584.61" cy="-329" rx="86.95" ry="18.27"/>
-<text text-anchor="middle" x="584.61" y="-325.2">malloc_dAlpha</text>
+<ellipse cx="558.4363" cy="-324" rx="81.2759" ry="18"/>
+<text text-anchor="middle" x="558.4363" y="-319.2">malloc_dAlpha</text>
 </g>
 <g class="m-edge">
 <title>p0xe0e428&#45;&gt;p0xe0e598</title>
-<path d="M647.07,-315.99C655.46,-313.43 663.84,-310.45 671.58,-307 690.36,-298.63 709.56,-286.18 724.86,-275.14"/>
-<polygon points="726.96,-277.94 732.93,-269.18 722.8,-272.3 726.96,-277.94"/>
+<path d="M615.0832,-311.0431C623.4423,-308.4449 631.8379,-305.4364 639.5741,-302 657.5892,-293.9978 676.1729,-282.4533 691.2674,-272.0909"/>
+<polygon points="693.5435,-274.7695 699.7209,-266.1619 689.524,-269.0386 693.5435,-274.7695"/>
 </g>
 <g class="m-node m-flat">
 <title>p0xe0e4e0</title>
-<ellipse cx="584.61" cy="-34" rx="81.13" ry="18.27"/>
-<text text-anchor="middle" x="584.61" y="-30.2">malloc_dBeta</text>
+<ellipse cx="558.4363" cy="-34" rx="75.5328" ry="18"/>
+<text text-anchor="middle" x="558.4363" y="-29.2">malloc_dBeta</text>
 </g>
 <g class="m-edge">
 <title>p0xe0e4e0&#45;&gt;p0xe0e598</title>
-<path d="M652.09,-44.27C659.15,-47.26 665.85,-51.09 671.58,-56 722.73,-99.72 743.65,-180.23 751.44,-222.84"/>
-<polygon points="748.01,-223.55 753.15,-232.81 754.91,-222.36 748.01,-223.55"/>
+<path d="M620.3517,-44.3778C627.3254,-47.3422 633.9368,-51.1394 639.5741,-56 689.6395,-99.1675 710.9587,-177.7695 719.1173,-219.7672"/>
+<polygon points="715.7199,-220.6463 720.959,-229.8551 722.6061,-219.3891 715.7199,-220.6463"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4711d8d260</title>
-<ellipse cx="76.33" cy="-251" rx="52.15" ry="18.27"/>
-<text text-anchor="middle" x="76.33" y="-247.2">alpha=1</text>
+<ellipse cx="73.2319" cy="-248" rx="49.465" ry="18"/>
+<text text-anchor="middle" x="73.2319" y="-243.2">alpha=1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4711d8d510</title>
-<ellipse cx="313.14" cy="-196" rx="148.48" ry="18.27"/>
-<text text-anchor="middle" x="313.14" y="-192.2">C = alpha * A * B + beta * C</text>
+<ellipse cx="299.8812" cy="-194" rx="141.3347" ry="18"/>
+<text text-anchor="middle" x="299.8812" y="-189.2">C = alpha * A * B + beta * C</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4711d8d260&#45;&gt;p0x7f4711d8d510</title>
-<path d="M120.4,-240.91C151.75,-233.57 195.13,-223.41 232.7,-214.61"/>
-<polygon points="233.68,-217.97 242.61,-212.29 232.08,-211.16 233.68,-217.97"/>
+<path d="M114.5394,-238.1584C144.7672,-230.9565 186.6675,-220.9736 222.9831,-212.3212"/>
+<polygon points="224.1471,-215.642 233.0636,-209.9195 222.5247,-208.8326 224.1471,-215.642"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4711d8d620</title>
-<ellipse cx="584.61" cy="-224" rx="43.68" ry="18.27"/>
-<text text-anchor="middle" x="584.61" y="-220.2">copyC</text>
+<ellipse cx="558.4363" cy="-221" rx="41.3124" ry="18"/>
+<text text-anchor="middle" x="558.4363" y="-216.2">copyC</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4711d8d510&#45;&gt;p0x7f4711d8d620</title>
-<path d="M427.64,-207.79C463.8,-211.55 502.04,-215.52 531.61,-218.6"/>
-<polygon points="531.39,-222.09 541.69,-219.64 532.11,-215.13 531.39,-222.09"/>
+<path d="M409.5318,-205.4504C443.8546,-209.0346 480.0672,-212.8162 508.1863,-215.7526"/>
+<polygon points="507.8518,-219.2366 518.1613,-216.7942 508.5789,-212.2744 507.8518,-219.2366"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4711d8d310</title>
-<ellipse cx="76.33" cy="-196" rx="46.84" ry="18.27"/>
-<text text-anchor="middle" x="76.33" y="-192.2">beta=0</text>
+<ellipse cx="73.2319" cy="-194" rx="43.7207" ry="18"/>
+<text text-anchor="middle" x="73.2319" y="-189.2">beta=0</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4711d8d310&#45;&gt;p0x7f4711d8d510</title>
-<path d="M123.16,-196C132.66,-196 143.18,-196 154.24,-196"/>
-<polygon points="154.54,-199.5 164.54,-196 154.54,-192.5 154.54,-199.5"/>
+<path d="M117.2009,-194C126.5642,-194 136.9538,-194 147.8892,-194"/>
+<polygon points="148.0716,-197.5001 158.0716,-194 148.0716,-190.5001 148.0716,-197.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4711d8d3c0</title>
-<ellipse cx="76.33" cy="-141" rx="43.68" ry="18.27"/>
-<text text-anchor="middle" x="76.33" y="-137.2">copyA</text>
+<ellipse cx="73.2319" cy="-140" rx="40.6274" ry="18"/>
+<text text-anchor="middle" x="73.2319" y="-135.2">copyA</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4711d8d3c0&#45;&gt;p0x7f4711d8d510</title>
-<path d="M115.05,-149.84C146.73,-157.25 193.04,-168.1 232.82,-177.42"/>
-<polygon points="232.25,-180.88 242.78,-179.75 233.84,-174.06 232.25,-180.88"/>
+<path d="M109.1452,-148.5565C139.6242,-155.8182 184.4137,-166.4895 222.9317,-175.6665"/>
+<polygon points="222.5539,-179.1744 233.0929,-178.0874 224.1763,-172.365 222.5539,-179.1744"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4711d8d480</title>
-<ellipse cx="76.33" cy="-86" rx="43.68" ry="18.27"/>
-<text text-anchor="middle" x="76.33" y="-82.2">copyB</text>
+<ellipse cx="73.2319" cy="-86" rx="40.6274" ry="18"/>
+<text text-anchor="middle" x="73.2319" y="-81.2">copyB</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4711d8d480&#45;&gt;p0x7f4711d8d510</title>
-<path d="M106.12,-99.49C145.73,-118.04 217.51,-151.67 265.01,-173.92"/>
-<polygon points="263.63,-177.14 274.17,-178.21 266.6,-170.8 263.63,-177.14"/>
+<path d="M101.0236,-99.2429C139.1764,-117.423 208.2526,-150.3383 254.1021,-172.186"/>
+<polygon points="252.6968,-175.3933 263.2299,-176.5354 255.708,-169.0741 252.6968,-175.3933"/>
 </g>
 <g class="m-edge">
 <title>p0x7f4711d8d620&#45;&gt;p0xe0e598</title>
-<path d="M625.89,-230.4C647.28,-233.8 673.95,-238.03 697.54,-241.78"/>
-<polygon points="697,-245.24 707.43,-243.35 698.1,-238.33 697,-245.24"/>
+<path d="M597.1575,-227.3303C617.4136,-230.6419 642.6296,-234.7643 665.2011,-238.4544"/>
+<polygon points="664.9246,-241.9556 675.3584,-240.1149 666.0541,-235.0473 664.9246,-241.9556"/>
 </g>
 </g>
 </svg>
@@ -602,7 +602,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

@@ -8,29 +8,6 @@ and simultaneous <i>high productivity</i>.
 It is faster, more expressive, fewer lines of code, and easier for drop-in integration
 than many of existing task programming libraries.
 
-<!-- @image html images/performance.png width=100%
-
-%Taskflow is committed to support both academic and industry research projects,
-making it reliable and cost-efficient to develop large-scale parallel applications.
-Our users say:
-
-@li \"<em>%Taskflow has the cleanest task API I've ever seen.</em>\" <a href="http://coreliuminc.com">Damien Hocking \@Corelium Inc</a>
-@li \"<em>%Taskflow has a very simple and elegant tasking interface. The performance also scales very well.</em>\" <a href="https://github.com/totalgee">Glen Fraser</a>
-@li \"<em>%Taskflow lets me handle parallel processing in a smart way.</em>\" <a href="https://cpp-learning.com/cpp-taskflow/">Hayabusa \@Learning</a>
-@li \"<em>%Taskflow helps improve the throughput of our graph processing engine in just a few hours of coding.</em>\" <a href="https://ossia.io/">Jean-Michaël \@KDAB</a>
-@li \"<em>Best poster award for the open-source parallel programming library.</em>\" <a href="https://github.com/CppCon/CppCon2018">2018 Cpp Conference</a>
-@li \"<em>Second Place in Open Source Software Competition.</em>\" 2019 ACM Multimedia Conference</a>
-
-See a quick <a href="https://taskflow.github.io/">presentation</a> and visit our <a href="https://github.com/taskflow/taskflow">GitHub</a> to learn more about %Taskflow.
-
-
-%Taskflow provides visualization and tooling (<a href="https://github.com/taskflow/tfprof">tfprof</a>) for profiling %Taskflow programs.
-
-@image html images/tfprof.png width=100%
--->
-
-
-
 @section ASimpleFirstProgram Start Your First Taskflow Program
 
 The following program (@c simple.cpp) creates four tasks 
@@ -87,6 +64,7 @@ in an easy-to-use web-based interface.
 @image html images/tfprof.png 
 
 @code{.shell-session}
+# run the program with the environment variable TF_ENABLE_PROFILER enabled
 ~$ TF_ENABLE_PROFILER=simple.json ./simple
 ~$ cat simple.json
 [
