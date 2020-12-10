@@ -167,7 +167,11 @@ to learn more about Taskflow. To get involved:
   + Read the step-by-step tutorial at [cookbook][cookbook]
   + Submit an issue at [GitHub issues][GitHub issues]
   + Find out our technical details at [references][references]
-  + Watch our [CppCon20 Tech Talk][cppcon20 talk]
+  + Watch our technical talks at YouTube
+
+| [CppCon20 Tech Talk][cppcon20 talk] | [MUC++ Tech Talk](https://www.youtube.com/watch?v=u8Mc_WgGwVY) |
+| :------------: | :-------------: |
+| ![](doxygen/images/cppcon20-thumbnail.jpg) | <img align="right" src="doxygen/images/muc++20-thumbnail.jpg" width="100%"> |
 
 We are committed to support trustworthy developments for 
 both academic and industrial research projects in parallel 
@@ -215,9 +219,7 @@ You are completely free to re-distribute your work derived from Taskflow.
 [C++14]:                 https://en.wikipedia.org/wiki/C%2B%2B14
 [email me]:              mailto:twh760812@gmail.com
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
-[ChromeTracing]:         https://www.chromium.org/developers/how-tos/trace-event-profiling-tool
 [IPDPS19]:               https://tsung-wei-huang.github.io/papers/ipdps19.pdf
-[WorkStealing Wiki]:     https://en.wikipedia.org/wiki/Work_stealing
 
 [cuda-zone]:             https://developer.nvidia.com/cuda-zone
 [nvcc]:                  https://developer.nvidia.com/cuda-llvm-compiler
