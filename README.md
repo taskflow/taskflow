@@ -2,7 +2,7 @@
 
 [![Linux Build Status](https://travis-ci.com/taskflow/taskflow.svg?branch=master)](https://travis-ci.com/taskflow/taskflow)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/rbjl16i6c9ahxr16?svg=true)](https://ci.appveyor.com/project/tsung-wei-huang/taskflow)
-[![Wiki](image/api-doc.svg)][wiki]
+[![Wiki](image/api-doc.svg)][documentation]
 [![TFProf](image/tfprof.svg)](https://taskflow.github.io/tfprof/)
 [![Cite](image/cite-ipdps.svg)][IPDPS19]
 
