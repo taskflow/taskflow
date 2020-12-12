@@ -1051,13 +1051,11 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
   //assert(&tpg == &(f._topologies.front()));
 
   // case 1: we still need to run the topology again
-  if(! tpg->_pred() ) {
+  if(! tpg->_pred() &&  !tpg->is_cancel) {
     //tpg->_recover_num_sinks();
-    if (!tpg->is_cancel){
       assert(tpg->_join_counter == 0);
       tpg->_join_counter = tpg->_sources.size();
        _schedule(tpg->_sources); 
-    }
   }
   // case 2: the final run of this topology
   else {
