@@ -175,7 +175,7 @@ class Node {
     size_t num_dependents() const;
     size_t num_strong_dependents() const;
     size_t num_weak_dependents() const;
-    
+    std::atomic<bool> async_cancelled {false};
     const std::string& name() const;
 
   private:
