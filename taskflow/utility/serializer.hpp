@@ -448,6 +448,8 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
   else {
     return t.save(*this);
   }
+
+  return -1;  // for nvcc warning
 }
 
 // ----------------------------------------------------------------------------
@@ -682,6 +684,8 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
   else {
     return t.load(*this);
   }
+
+  return -1;  // for nvcc warning
 }
   
 // Function: _variant_helper

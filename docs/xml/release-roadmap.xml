@@ -1,77 +1,37 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="release-roadmap" kind="page">
     <compoundname>release-roadmap</compoundname>
     <title>Release Roadmap</title>
-    <tableofcontents>
-      <tocsect>
-        <name>Milestone Summary</name>
-        <reference>release-roadmap_1MilestoneSummary</reference>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>This page describes the upcoming milestones of the Taskflow project.</para>
-<para><image type="html" name="roadmap.png"></image>
-</para>
-<sect1 id="release-roadmap_1MilestoneSummary">
+<para>This page describes the upcoming milestones of the Taskflow project.</para><para><image type="html" name="roadmap.png"></image>
+</para><sect1 id="release-roadmap_1MilestoneSummary">
 <title>Milestone Summary</title>
-<para>The table below summarizes the milestones of Taskflow we plan to achieve by the end of 2021. Each milestone releases technical items that significantly enhances the capability of Taskflow.</para>
-<para> <table rows="10" cols="3"><row>
-<entry thead="yes" align='center'><para>Milestone  </para>
-</entry><entry thead="yes" align='center'><para>Release  </para>
-</entry><entry thead="yes" align='center'><para>Eesimated Time of Arrival   </para>
-</entry></row>
+<para>The table below summarizes the milestones of Taskflow we plan to achieve by the end of 2021. Each milestone releases technical items that significantly enhances the capability of Taskflow.</para><para> <table rows="10" cols="3"><row>
+<entry thead="yes"><para>Milestone  </para></entry><entry thead="yes"><para>Release  </para></entry><entry thead="yes"><para>Eesimated Time of Arrival   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Migrate the codebase to C++17  </para>
-</entry><entry thead="no" align='center'><para>v3.0  </para>
-</entry><entry thead="no" align='center'><para>2020/12/31   </para>
-</entry></row>
+<entry thead="no"><para>Migrate the codebase to C++17  </para></entry><entry thead="no"><para>v3.0  </para></entry><entry thead="no"><para>2020/12/31   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Support large profile data in tfprof  </para>
-</entry><entry thead="no" align='center'><para>v3.x  </para>
-</entry><entry thead="no" align='center'><para>2021/01/31   </para>
-</entry></row>
+<entry thead="no"><para>Support large profile data in tfprof  </para></entry><entry thead="no"><para>v3.x  </para></entry><entry thead="no"><para>2021/01/31   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Support graph and path visualization in tfprof  </para>
-</entry><entry thead="no" align='center'><para>v3.x  </para>
-</entry><entry thead="no" align='center'><para>2021/02/28   </para>
-</entry></row>
+<entry thead="no"><para>Support graph and path visualization in tfprof  </para></entry><entry thead="no"><para>v3.x  </para></entry><entry thead="no"><para>2021/02/28   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Provide a python binding layer (py-taskflow)  </para>
-</entry><entry thead="no" align='center'><para>v3.x  </para>
-</entry><entry thead="no" align='center'><para>2021/03/31   </para>
-</entry></row>
+<entry thead="no"><para>Provide a python binding layer (py-taskflow)  </para></entry><entry thead="no"><para>v3.x  </para></entry><entry thead="no"><para>2021/03/31   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Integrate OpenCL and SYCL to tf::syclFlow  </para>
-</entry><entry thead="no" align='center'><para>v3.x  </para>
-</entry><entry thead="no" align='center'><para>(under discussion with Codeplay)   </para>
-</entry></row>
+<entry thead="no"><para>Integrate OpenCL and SYCL to tf::syclFlow  </para></entry><entry thead="no"><para>v3.x  </para></entry><entry thead="no"><para>(under discussion with Codeplay)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Integrate <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> into <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>  </para>
-</entry><entry thead="no" align='center'><para>v3.0  </para>
-</entry><entry thead="no" align='center'><para>2020/12/31   </para>
-</entry></row>
+<entry thead="no"><para>Integrate <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> into <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>  </para></entry><entry thead="no"><para>v3.0  </para></entry><entry thead="no"><para>2020/12/31   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Integrate <ulink url="https://developer.nvidia.com/cudnn">cuDNN</ulink> into <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>  </para>
-</entry><entry thead="no" align='center'><para>v3.0  </para>
-</entry><entry thead="no" align='center'><para>2020/12/31   </para>
-</entry></row>
+<entry thead="no"><para>Integrate <ulink url="https://developer.nvidia.com/cudnn">cuDNN</ulink> into <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>  </para></entry><entry thead="no"><para>v3.0  </para></entry><entry thead="no"><para>2020/12/31   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Design a distributed tasking interface with scheduling  </para>
-</entry><entry thead="no" align='center'><para>v3.x  </para>
-</entry><entry thead="no" align='center'><para>2021/09/01   </para>
-</entry></row>
+<entry thead="no"><para>Design a distributed tasking interface with scheduling  </para></entry><entry thead="no"><para>v3.x  </para></entry><entry thead="no"><para>2021/09/01   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Migrate the codebase to C++20  </para>
-</entry><entry thead="no" align='center'><para>v4.0  </para>
-</entry><entry thead="no" align='center'><para>2021/12/31   </para>
-</entry></row>
+<entry thead="no"><para>Migrate the codebase to C++20  </para></entry><entry thead="no"><para>v4.0  </para></entry><entry thead="no"><para>2021/12/31   </para></entry></row>
 </table>
-</para>
-<para>Along with the project development, we expect to have multiple releases for feature requests, bug fixes, and technical improvement. </para>
-</sect1>
+</para><para>Along with the project development, we expect to have multiple releases for feature requests, bug fixes, and technical improvement. </para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

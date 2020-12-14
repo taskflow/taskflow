@@ -758,8 +758,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     }
   }
 
-  tear_down_topology:
-
   // tear down topology if the node is the last one
   if(node->_parent == nullptr) {
     if(node->_topology->_join_counter.fetch_sub(1) == 1) {

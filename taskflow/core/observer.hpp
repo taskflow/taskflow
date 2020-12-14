@@ -641,15 +641,21 @@ class TFProfManager {
 
   private:
     
-    const std::string _fpath {get_env(TF_ENABLE_PROFILER)};
+    const std::string _fpath;
 
     std::mutex _mutex;
     std::vector<std::shared_ptr<TFProfObserver>> _observers;
     
-    TFProfManager() = default;
+    TFProfManager();
 
     void _manage(std::shared_ptr<TFProfObserver> observer);
 };
+
+// constructor
+inline TFProfManager::TFProfManager() :
+  _fpath {get_env(TF_ENABLE_PROFILER)} {
+
+}
 
 // Procedure: manage
 inline void TFProfManager::_manage(std::shared_ptr<TFProfObserver> observer) {
