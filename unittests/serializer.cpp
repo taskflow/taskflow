@@ -44,7 +44,7 @@ std::enable_if_t<std::is_same<T, std::string>::value, T> random(
 ) {
   std::string str(len, ' ');
   for(auto& c : str) {
-    c = random<std::string::value_type>(from, to);
+    c = random<int>(from, to) % 128;
   }
   return str;
 }
