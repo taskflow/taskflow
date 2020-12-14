@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <system_error>
+#include <optional>
 
 namespace tf {
 
