@@ -354,7 +354,7 @@ auto Executor::async(F&& f, ArgsT&&... args) {
   );
 
   _schedule(node);
-
+  fu.set_async_node(node);
   return fu;
 }
 
@@ -1242,7 +1242,7 @@ auto Subflow::async(F&& f, ArgsT&&... args) {
   node->_parent = _parent;
 
   _executor._schedule(node);
-
+  fu.set_async_node(node);
   return fu;
 }
 
