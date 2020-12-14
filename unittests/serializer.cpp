@@ -49,51 +49,6 @@ std::enable_if_t<std::is_same<T, std::string>::value, T> random(
   return str;
 }
 
-// Function: random
-// Randomly generate a string.
-template <typename T>
-std::enable_if_t<std::is_same<T, std::wstring>::value, T> random(
-  const std::wstring::value_type from = ' ',
-  const std::wstring::value_type to = '~',
-  const std::wstring::size_type len = 16
-) {
-  std::wstring str(len, ' ');
-  for(auto& c : str) {
-    c = random<std::wstring::value_type>(from, to);
-  }
-  return str;
-}
-
-// Function: random
-// Randomly generate a string.
-template <typename T>
-std::enable_if_t<std::is_same<T, std::u16string>::value, T> random(
-  const std::u16string::value_type from = ' ',
-  const std::u16string::value_type to = '~',
-  const std::u16string::size_type len = 16
-) {
-  std::u16string str(len, ' ');
-  for(auto& c : str) {
-    c = random<std::u16string::value_type>(from, to);
-  }
-  return str;
-}
-
-// Function: random
-// Randomly generate a string.
-template <typename T>
-std::enable_if_t<std::is_same<T, std::u32string>::value, T> random(
-  const std::u32string::value_type from = ' ',
-  const std::u32string::value_type to = '~',
-  const std::u32string::size_type len = 32
-) {
-  std::u32string str(len, ' ');
-  for(auto& c : str) {
-    c = random<std::u32string::value_type>(from, to);
-  }
-  return str;
-}
-
 // ----------------------------------------------------------------------------
 
 // Struct: PODs
@@ -604,21 +559,6 @@ TEST_CASE("POD-Struct" * doctest::timeout(60)) {
 // std::string
 TEST_CASE("string" * doctest::timeout(60)) {
   test_string<std::string>();
-}
-
-// std::wstring
-TEST_CASE("wstring" * doctest::timeout(60)) {
-  test_string<std::wstring>();
-}
-
-// std::u16string
-TEST_CASE("u16string" * doctest::timeout(60)) {
-  test_string<std::u16string>();
-}
-
-// std::u32string
-TEST_CASE("u32string" * doctest::timeout(60)) {
-  test_string<std::u32string>();
 }
 
 // std::vector
