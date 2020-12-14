@@ -274,7 +274,7 @@ for(size_t i=0; i<1024; i++) {                                 \
                                                                \
   for(auto& v : o_int32s)  v = random<int>();              \
   for(auto& v : o_int64s)  v = random<long long>();              \
-  for(auto& v : o_chars)   v = random<char>();                 \
+  for(auto& v : o_chars)   v = random<int>();                 \
   for(auto& v : o_floats)  v = random<float>();                \
   for(auto& v : o_doubles) v = random<double>();               \
   for(auto& v : o_strings) v = random<std::string>();          \
@@ -322,7 +322,7 @@ for (size_t i = 0; i < 1024; i++) {                                             
   for (size_t j = 0; j < num_data; j++) {                                        \
     o_int32s.emplace(random<int>(), random<int>());                      \
     o_int64s.emplace(random<long long>(), random<long long>());                      \
-    o_chars.emplace(random<char>(), random<char>());                             \
+    o_chars.emplace(random<int>(), random<int>());                             \
     o_floats.emplace(random<float_t>(), random<float_t>());                      \
     o_doubles.emplace(random<double_t>(), random<double_t>());                   \
     o_strings.emplace(random<std::string>(), random<std::string>());             \
@@ -370,7 +370,7 @@ for (size_t i = 0; i < 1024; i++) {                                             
   for (size_t j = 0; j < num_data; j++) {                                       \
     o_int32s.emplace(random<int>());                                        \
     o_int64s.emplace(random<long long>());                                        \
-    o_chars.emplace(random<char>());                                            \
+    o_chars.emplace(random<int>());                                            \
     o_floats.emplace(random<float_t>());                                        \
     o_doubles.emplace(random<double_t>());                                      \
     o_strings.emplace(random<std::string>());                                   \
@@ -411,7 +411,7 @@ void test_array() {
     std::array<double, 1024> odouble;
     std::array<std::string, 2048> ostring;
 
-    for(auto &i : ochar) i = random<char>();
+    for(auto &i : ochar) i = random<int>();
     for(auto &i : oint) i = random<int>();
     for(auto &i : odouble) i = random<double>();
     for(auto &i : ostring) i = random<std::string>();
