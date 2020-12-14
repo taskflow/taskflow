@@ -99,8 +99,6 @@ std::enable_if_t<std::is_same<T, std::u32string>::value, T> random(
 // Struct: PODs
 struct PODs {
 
-  char          pod_char   = random<decltype(pod_char)>();  
-  unsigned char pod_uchar  = random<decltype(pod_uchar)>(); 
   unsigned      pod_uint32 = random<decltype(pod_uint32)>();
   int           pod_int32  = random<decltype(pod_int32)>(); 
   unsigned long long pod_uint64 = random<decltype(pod_uint64)>();
@@ -111,8 +109,6 @@ struct PODs {
   template <typename ArchiverT>
   auto save( ArchiverT& ar ) const {
     return ar(
-      pod_char,  
-      pod_uchar, 
       pod_uint32,
       pod_int32, 
       pod_uint64,
@@ -125,8 +121,6 @@ struct PODs {
   template <typename ArchiverT>
   auto load( ArchiverT& ar ) {
     return ar(
-      pod_char,  
-      pod_uchar, 
       pod_uint32,
       pod_int32, 
       pod_uint64,
@@ -137,9 +131,7 @@ struct PODs {
   }
 
   bool operator == (const PODs& rhs) const {
-    return pod_char   == rhs.pod_char   && 
-           pod_uchar  == rhs.pod_uchar  &&  
-           pod_uint32 == rhs.pod_uint32 && 
+    return pod_uint32 == rhs.pod_uint32 && 
            pod_int32  == rhs.pod_int32  && 
            pod_uint64 == rhs.pod_uint64 && 
            pod_int64  == rhs.pod_int64  && 
@@ -161,8 +153,6 @@ void test_pod() {
   std::ostringstream os;
   tf::Serializer oar(os);
 
-  const auto o_char   = random<char>(); 
-  const auto o_uchar  = random<unsigned char>();
   const auto o_uint32 = random<unsigned>();     
   const auto o_int32  = random<int>();      
   const auto o_uint64 = random<unsigned long long>();     
@@ -171,8 +161,6 @@ void test_pod() {
   const auto o_double = random<double>();       
   
   auto o_sz = oar(
-    o_char,  
-    o_uchar, 
     o_uint32,
     o_int32, 
     o_uint64,
@@ -187,8 +175,6 @@ void test_pod() {
   std::istringstream is(os.str()); 
   tf::Deserializer iar(is);
 
-  auto i_char   = random<char>(); 
-  auto i_uchar  = random<unsigned char>();
   auto i_uint32 = random<unsigned>();     
   auto i_int32  = random<int>();      
   auto i_uint64 = random<unsigned long long>();     
@@ -197,8 +183,6 @@ void test_pod() {
   auto i_double = random<double>();       
 
   auto i_sz = iar(
-    i_char,  
-    i_uchar, 
     i_uint32,
     i_int32, 
     i_uint64,
@@ -209,8 +193,6 @@ void test_pod() {
   REQUIRE(is.rdbuf()->in_avail() == 0);
 
   REQUIRE(i_sz == o_sz);
-  REQUIRE(o_char == i_char);
-  REQUIRE(o_uchar == i_uchar);
   REQUIRE(o_uint32 == i_uint32);
   REQUIRE(o_int32 == i_int32);
   REQUIRE(o_uint64 == i_uint64);
