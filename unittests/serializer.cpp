@@ -99,52 +99,52 @@ std::enable_if_t<std::is_same<T, std::u32string>::value, T> random(
 // Struct: PODs
 struct PODs {
 
-  char          _char   = random<decltype(_char)>();  
-  unsigned char _uchar  = random<decltype(_uchar)>(); 
-  unsigned      _uint32 = random<decltype(_uint32)>();
-  int       _int32  = random<decltype(_int32)>(); 
-  unsigned long long      _uint64 = random<decltype(_uint64)>();
-  long long       _int64  = random<decltype(_int64)>(); 
-  float_t       _float  = random<decltype(_float)>(); 
-  double_t      _double = random<decltype(_double)>();
+  char          pod_char   = random<decltype(pod_char)>();  
+  unsigned char pod_uchar  = random<decltype(pod_uchar)>(); 
+  unsigned      pod_uint32 = random<decltype(pod_uint32)>();
+  int           pod_int32  = random<decltype(pod_int32)>(); 
+  unsigned long long pod_uint64 = random<decltype(pod_uint64)>();
+  long long     pod_int64  = random<decltype(pod_int64)>(); 
+  float_t       pod_float  = random<decltype(pod_float)>(); 
+  double_t      pod_double = random<decltype(pod_double)>();
 
   template <typename ArchiverT>
   auto save( ArchiverT& ar ) const {
     return ar(
-      _char,  
-      _uchar, 
-      _uint32,
-      _int32, 
-      _uint64,
-      _int64, 
-      _float, 
-      _double
+      pod_char,  
+      pod_uchar, 
+      pod_uint32,
+      pod_int32, 
+      pod_uint64,
+      pod_int64, 
+      pod_float, 
+      pod_double
     );
   }
   
   template <typename ArchiverT>
   auto load( ArchiverT& ar ) {
     return ar(
-      _char,  
-      _uchar, 
-      _uint32,
-      _int32, 
-      _uint64,
-      _int64, 
-      _float, 
-      _double
+      pod_char,  
+      pod_uchar, 
+      pod_uint32,
+      pod_int32, 
+      pod_uint64,
+      pod_int64, 
+      pod_float, 
+      pod_double
     );
   }
 
   bool operator == (const PODs& rhs) const {
-    return _char   == rhs._char   && 
-           _uchar  == rhs._uchar  &&  
-           _uint32 == rhs._uint32 && 
-           _int32  == rhs._int32  && 
-           _uint64 == rhs._uint64 && 
-           _int64  == rhs._int64  && 
-           _float  == rhs._float  && 
-           _double == rhs._double; 
+    return pod_char   == rhs.pod_char   && 
+           pod_uchar  == rhs.pod_uchar  &&  
+           pod_uint32 == rhs.pod_uint32 && 
+           pod_int32  == rhs.pod_int32  && 
+           pod_uint64 == rhs.pod_uint64 && 
+           pod_int64  == rhs.pod_int64  && 
+           pod_float  == rhs.pod_float  && 
+           pod_double == rhs.pod_double; 
   }
 
   bool operator != (const PODs& rhs) const {
