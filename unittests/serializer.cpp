@@ -101,8 +101,6 @@ struct PODs {
 
   char          _char   = random<decltype(_char)>();  
   unsigned char _uchar  = random<decltype(_uchar)>(); 
-  unsigned short      _uint16 = random<decltype(_uint16)>();
-  short       _int16  = random<decltype(_int16)>(); 
   unsigned      _uint32 = random<decltype(_uint32)>();
   int       _int32  = random<decltype(_int32)>(); 
   unsigned long long      _uint64 = random<decltype(_uint64)>();
@@ -115,8 +113,6 @@ struct PODs {
     return ar(
       _char,  
       _uchar, 
-      _uint16,
-      _int16, 
       _uint32,
       _int32, 
       _uint64,
@@ -131,8 +127,6 @@ struct PODs {
     return ar(
       _char,  
       _uchar, 
-      _uint16,
-      _int16, 
       _uint32,
       _int32, 
       _uint64,
@@ -145,8 +139,6 @@ struct PODs {
   bool operator == (const PODs& rhs) const {
     return _char   == rhs._char   && 
            _uchar  == rhs._uchar  &&  
-           _uint16 == rhs._uint16 &&  
-           _int16  == rhs._int16  && 
            _uint32 == rhs._uint32 && 
            _int32  == rhs._int32  && 
            _uint64 == rhs._uint64 && 
@@ -171,8 +163,6 @@ void test_pod() {
 
   const auto o_char   = random<char>(); 
   const auto o_uchar  = random<unsigned char>();
-  const auto o_uint16 = random<unsigned short>();     
-  const auto o_int16  = random<short>();       
   const auto o_uint32 = random<unsigned>();     
   const auto o_int32  = random<int>();      
   const auto o_uint64 = random<unsigned long long>();     
@@ -183,8 +173,6 @@ void test_pod() {
   auto o_sz = oar(
     o_char,  
     o_uchar, 
-    o_uint16,
-    o_int16, 
     o_uint32,
     o_int32, 
     o_uint64,
@@ -201,8 +189,6 @@ void test_pod() {
 
   auto i_char   = random<char>(); 
   auto i_uchar  = random<unsigned char>();
-  auto i_uint16 = random<unsigned short>();     
-  auto i_int16  = random<short>();       
   auto i_uint32 = random<unsigned>();     
   auto i_int32  = random<int>();      
   auto i_uint64 = random<unsigned long long>();     
@@ -213,8 +199,6 @@ void test_pod() {
   auto i_sz = iar(
     i_char,  
     i_uchar, 
-    i_uint16,
-    i_int16, 
     i_uint32,
     i_int32, 
     i_uint64,
@@ -227,8 +211,6 @@ void test_pod() {
   REQUIRE(i_sz == o_sz);
   REQUIRE(o_char == i_char);
   REQUIRE(o_uchar == i_uchar);
-  REQUIRE(o_uint16 == i_uint16);
-  REQUIRE(o_int16 == i_int16);
   REQUIRE(o_uint32 == i_uint32);
   REQUIRE(o_int32 == i_int32);
   REQUIRE(o_uint64 == i_uint64);
