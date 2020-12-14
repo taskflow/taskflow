@@ -344,6 +344,7 @@ class Future: public std::future<T>  {
   friend class Node;
   friend class Topology;
   friend class Executor;
+  friend class Subflow;
   public:
     Future():std::future<T> {}{}
     
