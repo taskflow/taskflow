@@ -99,28 +99,22 @@ std::enable_if_t<std::is_same<T, std::u32string>::value, T> random(
 // Struct: PODs
 struct PODs {
 
-  uint8_t       _bool   = random<decltype(_bool)>(); 
   char          _char   = random<decltype(_char)>();  
   unsigned char _uchar  = random<decltype(_uchar)>(); 
-  uint8_t       _uint8  = random<decltype(_uint8)>();
-  int8_t        _int8   = random<decltype(_int8)>();  
-  uint16_t      _uint16 = random<decltype(_uint16)>();
-  int16_t       _int16  = random<decltype(_int16)>(); 
-  uint32_t      _uint32 = random<decltype(_uint32)>();
-  int32_t       _int32  = random<decltype(_int32)>(); 
-  uint64_t      _uint64 = random<decltype(_uint64)>();
-  int64_t       _int64  = random<decltype(_int64)>(); 
+  unsigned short      _uint16 = random<decltype(_uint16)>();
+  short       _int16  = random<decltype(_int16)>(); 
+  unsigned      _uint32 = random<decltype(_uint32)>();
+  int       _int32  = random<decltype(_int32)>(); 
+  unsigned long long      _uint64 = random<decltype(_uint64)>();
+  long long       _int64  = random<decltype(_int64)>(); 
   float_t       _float  = random<decltype(_float)>(); 
   double_t      _double = random<decltype(_double)>();
 
   template <typename ArchiverT>
   auto save( ArchiverT& ar ) const {
     return ar(
-      _bool,  
       _char,  
       _uchar, 
-      _uint8,
-      _int8,  
       _uint16,
       _int16, 
       _uint32,
@@ -135,11 +129,8 @@ struct PODs {
   template <typename ArchiverT>
   auto load( ArchiverT& ar ) {
     return ar(
-      _bool,  
       _char,  
       _uchar, 
-      _uint8,
-      _int8,  
       _uint16,
       _int16, 
       _uint32,
@@ -152,11 +143,8 @@ struct PODs {
   }
 
   bool operator == (const PODs& rhs) const {
-    return _bool   == rhs._bool   && 
-           _char   == rhs._char   && 
+    return _char   == rhs._char   && 
            _uchar  == rhs._uchar  &&  
-           _uint8  == rhs._uint8  &&  
-           _int8   == rhs._int8   && 
            _uint16 == rhs._uint16 &&  
            _int16  == rhs._int16  && 
            _uint32 == rhs._uint32 && 
@@ -181,26 +169,20 @@ void test_pod() {
   std::ostringstream os;
   tf::Serializer oar(os);
 
-  const auto o_bool   = random<int8_t>();
   const auto o_char   = random<char>(); 
   const auto o_uchar  = random<unsigned char>();
-  const auto o_uint8  = random<uint8_t>();      
-  const auto o_int8   = random<int8_t>();      
-  const auto o_uint16 = random<uint16_t>();     
-  const auto o_int16  = random<int16_t>();       
-  const auto o_uint32 = random<uint32_t>();     
-  const auto o_int32  = random<int32_t>();      
-  const auto o_uint64 = random<uint64_t>();     
-  const auto o_int64  = random<int64_t>();      
+  const auto o_uint16 = random<unsigned short>();     
+  const auto o_int16  = random<short>();       
+  const auto o_uint32 = random<unsigned>();     
+  const auto o_int32  = random<int>();      
+  const auto o_uint64 = random<unsigned long long>();     
+  const auto o_int64  = random<long long>();      
   const auto o_float  = random<float>();        
   const auto o_double = random<double>();       
   
   auto o_sz = oar(
-    o_bool,  
     o_char,  
     o_uchar, 
-    o_uint8,
-    o_int8,  
     o_uint16,
     o_int16, 
     o_uint32,
@@ -217,26 +199,20 @@ void test_pod() {
   std::istringstream is(os.str()); 
   tf::Deserializer iar(is);
 
-  auto i_bool   = random<int8_t>();
   auto i_char   = random<char>(); 
   auto i_uchar  = random<unsigned char>();
-  auto i_uint8  = random<uint8_t>();      
-  auto i_int8   = random<int8_t>();      
-  auto i_uint16 = random<uint16_t>();     
-  auto i_int16  = random<int16_t>();       
-  auto i_uint32 = random<uint32_t>();     
-  auto i_int32  = random<int32_t>();      
-  auto i_uint64 = random<uint64_t>();     
-  auto i_int64  = random<int64_t>();      
+  auto i_uint16 = random<unsigned short>();     
+  auto i_int16  = random<short>();       
+  auto i_uint32 = random<unsigned>();     
+  auto i_int32  = random<int>();      
+  auto i_uint64 = random<unsigned long long>();     
+  auto i_int64  = random<long long>();      
   auto i_float  = random<float>();        
   auto i_double = random<double>();       
 
   auto i_sz = iar(
-    i_bool,  
     i_char,  
     i_uchar, 
-    i_uint8,
-    i_int8,  
     i_uint16,
     i_int16, 
     i_uint32,
@@ -249,11 +225,8 @@ void test_pod() {
   REQUIRE(is.rdbuf()->in_avail() == 0);
 
   REQUIRE(i_sz == o_sz);
-  REQUIRE(o_bool == i_bool);
   REQUIRE(o_char == i_char);
   REQUIRE(o_uchar == i_uchar);
-  REQUIRE(o_uint8 == i_uint8);
-  REQUIRE(o_int8 == i_int8);
   REQUIRE(o_uint16 == i_uint16);
   REQUIRE(o_int16 == i_int16);
   REQUIRE(o_uint32 == i_uint32);
@@ -327,16 +300,16 @@ for(size_t i=0; i<1024; i++) {                                 \
   std::ostringstream os;                                       \
   tf::Serializer oar(os);                                          \
                                                                \
-  std::container <int32_t>     o_int32s  (num_data);           \
-  std::container <int64_t>     o_int64s  (num_data);           \
+  std::container <int>     o_int32s  (num_data);           \
+  std::container <long long>     o_int64s  (num_data);           \
   std::container <char>        o_chars   (num_data);           \
   std::container <float>       o_floats  (num_data);           \
   std::container <double>      o_doubles (num_data);           \
   std::container <std::string> o_strings (num_data);           \
   std::container <PODs>        o_podses  (num_data);           \
                                                                \
-  for(auto& v : o_int32s)  v = random<int32_t>();              \
-  for(auto& v : o_int64s)  v = random<int64_t>();              \
+  for(auto& v : o_int32s)  v = random<int>();              \
+  for(auto& v : o_int64s)  v = random<long long>();              \
   for(auto& v : o_chars)   v = random<char>();                 \
   for(auto& v : o_floats)  v = random<float>();                \
   for(auto& v : o_doubles) v = random<double>();               \
@@ -347,8 +320,8 @@ for(size_t i=0; i<1024; i++) {                                 \
   std::istringstream is(os.str());                             \
   tf::Deserializer iar(is);                                          \
                                                                \
-  std::container <int32_t>     i_int32s;                       \
-  std::container <int64_t>     i_int64s;                       \
+  std::container <int>     i_int32s;                       \
+  std::container <long long>     i_int64s;                       \
   std::container <char>        i_chars;                        \
   std::container <float>       i_floats;                       \
   std::container <double>      i_doubles;                      \
@@ -375,16 +348,16 @@ for (size_t i = 0; i < 1024; i++) {                                             
   std::ostringstream os;                                                         \
   tf::Serializer oar(os);                                                            \
                                                                                  \
-  std::container<int32_t, int32_t> o_int32s;                                     \
-  std::container<int64_t, int64_t> o_int64s;                                     \
+  std::container<int, int> o_int32s;                                     \
+  std::container<long long, long long> o_int64s;                                     \
   std::container<char, char> o_chars;                                            \
   std::container<float, float> o_floats;                                         \
   std::container<double, double> o_doubles;                                      \
   std::container<std::string, std::string> o_strings;                            \
                                                                                  \
   for (size_t j = 0; j < num_data; j++) {                                        \
-    o_int32s.emplace(random<int32_t>(), random<int32_t>());                      \
-    o_int64s.emplace(random<int64_t>(), random<int64_t>());                      \
+    o_int32s.emplace(random<int>(), random<int>());                      \
+    o_int64s.emplace(random<long long>(), random<long long>());                      \
     o_chars.emplace(random<char>(), random<char>());                             \
     o_floats.emplace(random<float_t>(), random<float_t>());                      \
     o_doubles.emplace(random<double_t>(), random<double_t>());                   \
@@ -396,8 +369,8 @@ for (size_t i = 0; i < 1024; i++) {                                             
   std::istringstream is(os.str());                                               \
   tf::Deserializer iar(is);                                                            \
                                                                                  \
-  std::container<int32_t, int32_t> i_int32s;                                     \
-  std::container<int64_t, int64_t> i_int64s;                                     \
+  std::container<int, int> i_int32s;                                     \
+  std::container<long long, long long> i_int64s;                                     \
   std::container<char, char> i_chars;                                            \
   std::container<float, float> i_floats;                                         \
   std::container<double, double> i_doubles;                                      \
@@ -423,16 +396,16 @@ for (size_t i = 0; i < 1024; i++) {                                             
   std::ostringstream os;                                                        \
   tf::Serializer oar(os);                                             \
                                                                                 \
-  std::container<int32_t> o_int32s;                                             \
-  std::container<int64_t> o_int64s;                                             \
+  std::container<int> o_int32s;                                             \
+  std::container<long long> o_int64s;                                             \
   std::container<char> o_chars;                                                 \
   std::container<float> o_floats;                                               \
   std::container<double> o_doubles;                                             \
   std::container<std::string> o_strings;                                        \
                                                                                 \
   for (size_t j = 0; j < num_data; j++) {                                       \
-    o_int32s.emplace(random<int32_t>());                                        \
-    o_int64s.emplace(random<int64_t>());                                        \
+    o_int32s.emplace(random<int>());                                        \
+    o_int64s.emplace(random<long long>());                                        \
     o_chars.emplace(random<char>());                                            \
     o_floats.emplace(random<float_t>());                                        \
     o_doubles.emplace(random<double_t>());                                      \
@@ -443,8 +416,8 @@ for (size_t i = 0; i < 1024; i++) {                                             
   std::istringstream is(os.str());                                              \
   tf::Deserializer iar(is);                                             \
                                                                                 \
-  std::container<int32_t> i_int32s;                                             \
-  std::container<int64_t> i_int64s;                                             \
+  std::container<int> i_int32s;                                             \
+  std::container<long long> i_int64s;                                             \
   std::container<char> i_chars;                                                 \
   std::container<float> i_floats;                                               \
   std::container<double> i_doubles;                                             \

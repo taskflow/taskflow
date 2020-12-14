@@ -19,6 +19,7 @@
 #include <unordered_set>
 #include <system_error>
 #include <optional>
+#include <array>
 
 namespace tf {
 
