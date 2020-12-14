@@ -140,10 +140,10 @@ is done.
 This constraint forces each pair of tasks to run sequentially,
 while the order of which pair runs first is up to the scheduler.
 
-@section CriticalRegion Critical Region
+@section CriticalRegion Critical Section
 
-A tf::CriticalSection is a wrapper over tf::Semaphore and is specialized for
-limiting the maximum concurrency over a set of tasks.
+tf::CriticalSection is a wrapper over tf::Semaphore specialized for
+limiting the maximum concurrency over a section of tasks.
 A critical section starts with an initial count representing that limit.
 When a task is added to the critical section,
 the task acquires and releases the semaphore internal to the critical section.
