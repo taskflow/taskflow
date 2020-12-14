@@ -338,9 +338,7 @@ auto Executor::async(F&& f, ArgsT&&... args) {
   using R = typename function_traits<F>::return_type;
 
   std::promise<R> p;
-  tf::Future<R> fu;
-  //auto fu = p.get_future();
-  fu.future_obj=p.get_future();
+  tf::Future<R> fu(p.get_future());
 
   auto node = node_pool.animate(
     std::in_place_type_t<Node::AsyncTask>{},
@@ -1126,14 +1124,12 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
   if(f.empty() || pred()) {
     std::promise<void> promise;
     promise.set_value();
-    tf::Future<void> future;
     Topology temp( f, pred, c);
-    future.future_obj=promise.get_future();
+    tf::Future<void> future(promise.get_future());
     future.set_tpg(&temp);
     _decrement_topology_and_notify();
 
     return future;
-    //return promise.get_future();
   }
   
   // Multi-threaded execution.
@@ -1145,11 +1141,9 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
     std::lock_guard<std::mutex> lock(f._mtx);
 
     // create a topology for this run
-    //tpg = &(f._topologies.emplace_back(f, std::forward<P>(pred), std::forward<C>(c)));
     f._topologies.emplace_back(f, std::forward<P>(pred), std::forward<C>(c));
     tpg = &(f._topologies.back());
-    //future = tpg->_promise.get_future();
-    future.future_obj = tpg->_promise.get_future();
+    future= Future<void>(tpg->_promise.get_future());
     future.set_tpg(tpg);
    
     if(f._topologies.size() == 1) {
@@ -1229,9 +1223,7 @@ auto Subflow::async(F&& f, ArgsT&&... args) {
 
   std::promise<R> p;
 
-  tf::Future<R> fu;
-  //auto fu = p.get_future();
-  fu.future_obj=p.get_future();
+  tf::Future<R> fu(p.get_future());
 
   auto node = node_pool.animate(
     std::in_place_type_t<Node::AsyncTask>{},
