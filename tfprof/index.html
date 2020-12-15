@@ -31,8 +31,13 @@
       <!-- Brand
       <a class="navbar-brand" href=""><img src="images/logo.png" alt="Logo" style="width:40px;"></a>-->
 
+      <button class="navbar-toggler btn-sm" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+
       <!-- left-side navbar -->
-      <div class="btn-group mr-2" role="group">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="btn-group mr-1 mb-1 mt-1" role="group">
         <button type="button" class="btn btn-outline-success btn-sm dropdown-toggle" data-toggle="dropdown">View</button>
         <div class="dropdown-menu tfp-tb-view" id="tfp_tb_view">
           <a class="dropdown-item">Cluster</a>
@@ -41,19 +46,19 @@
       </div>
       
       <!-- tfp-tb-workers -->
-      <div class="btn-group mr-2" role="group">
+      <div class="btn-group mr-1 mb-1 mt-1" role="group">
         <button type="button" class="btn btn-outline-info btn-sm dropdown-toggle" data-toggle="dropdown">Workers</button>
         <div class="dropdown-menu tfp-tb-workers" id="tfp_tb_workers"></div>
       </div> 
 
       <!-- tfp-tb-reset -->
-      <div class="btn-group mr-2" role="group">
+      <div class="btn-group mr-1 mb-1 mt-1" role="group">
         <button type="button" class="btn btn-outline-secondary btn-sm" id="tfp_tb_reset_zoom">Zoom</button>
       </div> 
     
       <!-- tfp-tb-limit -->
-      <div class="btn-group mr-2" role="group">
-        <input id="tfp_tb_limit" class="border-0 mr-2" type="range" />
+      <div class="btn-group mr-1 mb-1 mt-1" role="group">
+        <input id="tfp_tb_limit" class="border-0 mr-1" type="range" />
         <button type="button" class="btn btn-primary btn-sm">Limit</button>
       </div>
 
@@ -61,56 +66,18 @@
         <!--<li class="nav-item"><a class="nav-link" href="">MainBoard</a></li>-->
       </ul>
 
-      <button type="button" class="btn btn-light btn-sm">
+      <button type="button" class="btn btn-light btn-sm mb-1 mt-1">
         <span class="badge" id="tfp_tb_finfo"></span>
         <span class="badge badge-info" id="tfp_tb_einfo">- executors</span>
         <span class="badge badge-info" id="tfp_tb_winfo">- workers</span>
         <span class="badge badge-info" id="tfp_tb_tinfo">- tasks</span>
       </button>
+      </div>
     </nav>
     
     <!-- loader -->
     <div class="container loader" id="tfp_loader"></div>
     
-    <!-- toolbar -->
-    <div class="btn-toolbar" role="toolbar" style="margin-left: 100px; display:none;" id="tfp_toolbar">
-      
-      <!-- tfp-tb-view
-      <div class="btn-group mb-2 mr-2" role="group">
-        <button type="button" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown">View</button>
-        <div class="dropdown-menu tfp-tb-view" id="tfp_tb_view">
-          <a class="dropdown-item">Cluster</a>
-          <a class="dropdown-item">Criticality</a>
-        </div>
-      </div> -->
-
-      <!-- tfp-tb-workers
-      <div class="btn-group mb-2 mr-2" role="group">
-        <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown">Workers</button>
-        <div class="dropdown-menu tfp-tb-workers" id="tfp_tb_workers"></div>
-      </div> -->
-
-      <!-- tfp-tb-reset
-      <div class="btn-group mb-2 mr-2" role="group">
-        <button type="button" class="btn btn-outline-secondary" id="tfp_tb_reset_zoom">Reset Zoom</button>
-      </div> -->
-      
-      <!-- tfp-tb-limit
-      <div class="btn-group mb-2 mr-2" role="group">
-        <input id="tfp_tb_limit" class="border-0 mr-2" type="range" />
-        <button type="button" class="btn btn-primary">Limit</button>
-      </div>-->
-      
-      <!-- tfp-tb-loader 
-      <div class="btn-group mb-2" role="group">
-        <div class="spinner-grow text-dark" role="status" style="display:none" id="tfp_tb_loader"></div>
-      </div>-->
-
-
-    </div>
-    
-
-
     <!-- svg -->
     <div style="display:none;" class="container-fluidic" id="tfp"></div>
     
