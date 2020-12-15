@@ -415,7 +415,7 @@ inline size_t ChromeObserver::num_tasks() const {
 /**
 @class TFProfObserver
 
-@brief observer interface based on @TFProf format
+@brief observer interface based on the built-in taskflow profiler format
 
 A tf::TFProfObserver inherits tf::ObserverInterface and defines methods to dump
 the observed thread activities into a format that can be visualized through

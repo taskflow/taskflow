@@ -9,10 +9,10 @@ list(APPEND TF_EXAMPLES
   visualization 
   reduce 
   parallel_for 
+  string_sort
   run 
   composition
-  onlyone
-  parallel_sort
+  semaphore
 )
 
 foreach(example IN LISTS TF_EXAMPLES)

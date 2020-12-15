@@ -196,9 +196,7 @@ function _render_tlXAxis() {
 
 function _render_tlWAxis() {
 
-
   tfp.tlWScale
-    //.domain(tfp.data.map(d=>`${d.executor}+&+${d.worker}`))
     .domain(tfp.data.map(d=>d.worker))
     .range([0, tfp.tlH]);
 
@@ -659,6 +657,69 @@ function numXTicks(W) {
   return Math.max(2, Math.min(12, Math.round(W * 0.012)));
 }
 
+
+function _adjust_tb() {
+  
+  // flattern the executors and workers
+  let flat = [];
+
+  for(let l=0; l<tfp.eMeta.length; l++) {
+    flat.push(`E${tfp.eMeta[l].executor}`)
+    flat.push(...tfp.eMeta[l].workers)
+  }
+
+  // worker tb
+  var wtb = d3.select('#tfp_tb_workers').selectAll('a').data(flat);
+
+  wtb.selectAll('input').remove();
+  wtb.selectAll('label').remove();
+
+  wtb.exit().remove();
+  
+  wtb = wtb.merge(wtb.enter().append('a')
+    .attr('class', 'dropdown-item')
+  );
+  
+  wtb.append('input')
+    .attr('type', 'checkbox')
+    .attr('class', d=>{ return d.split('.').length == 1 ? 'mr-2' : 'mr-2 ml-4'})
+    .attr('value', d=>d)
+    .attr('id', d=>d)
+    .property('checked', true)
+    .attr('name', d=>{ return d.split('.').length == 1 ? 'executor' : 'worker'});
+
+  wtb.append('label').attr('for', d=>d).text(d => {
+    const wl = d.split('.');
+    if(wl.length == 1) {
+      return `Executor ${wl[0]}`;
+    }
+    else {
+      return `${d} (Worker ${wl[1]} @ Level ${wl[2]})`;
+    }
+  });
+
+  // limit tb
+  let numTasks = d3.sum(tfp.data, d=>d.segs.length);
+  let limit = document.getElementById('tfp_tb_limit');
+  limit.min = 1;
+  limit.max = tfp.maxLimit;
+  limit.value = tfp.limit;
+  
+  // rank tb
+  //document.getElementById('tfp_tb_rank_from').value = 1;
+  //document.getElementById('tfp_tb_rank_to').value = 50;
+}
+
+function _render(adjustDim) {
+  if(adjustDim) {
+    _adjustDim();
+  }
+  _render_tl();
+  _render_load();
+  _render_ov();
+  _render_rank();
+}
+
 async function main() {
   
   await queryInfo();
@@ -826,156 +887,110 @@ async function main() {
 
   tfp.svg.call(tfp.rankTooltip);
   
-
   _adjust_tb();
-  _adjustDim();
-  _render_tl();
-  _render_load();
-  _render_ov();
-  _render_rank();
-}
-
-function _adjust_tb() {
+  _render(true)
   
-  // worker tb
-  var wtb = d3.select('#tfp_tb_workers').selectAll('a').data(tfp.data);
-
-  wtb.selectAll('input').remove();
-  wtb.selectAll('label').remove();
-
-  wtb.exit().remove();
-  
-  wtb = wtb.merge(wtb.enter().append('a')
-    .attr('class', 'dropdown-item')
-    //.attr('data-value', d => d.worker)
-    //.attr('tabIndex', '-1')
-    //.on('mouseover', tfp.executorTooltip.show)
-    //.on('mouseout', tfp.executorTooltip.hide);
-  );
-  
-  wtb.append('input')
-    .attr('type', 'checkbox')
-    .attr('class', 'mr-2')
-    .attr('value', d=>d.worker)
-    .attr('id', d=>d.worker)
-    .property('checked', true)
-    .attr('name', 'worker');
-
-  wtb.append('label').attr('for', d=>d.worker).text(d => {
-    const wl = d.worker.split('.');
-    return `${d.worker} (Executor ${wl[0]}::Worker ${wl[1]} @ Level ${wl[2]})`
+  // set up the jquery
+  $("#tfp_tb_workers").on('click', function(event){
+    event.stopPropagation();
   });
 
-  // limit tb
-  let numTasks = d3.sum(tfp.data, d=>d.segs.length);
-  let limit = document.getElementById('tfp_tb_limit');
-  limit.min = 1;
-  limit.max = tfp.maxLimit;
-  limit.value = tfp.limit;
+  $("#tfp_tb_workers input[name='executor']").on('click', async function(event) {
+    event.stopPropagation();
+    //console.log("executor click!!", $(this).val(), $(this).is(':checked'));
+    
+    let v = $(this).is(':checked');
+    let e = $(this).val();
+    
+    $.each($("#tfp_tb_workers input[name='worker']"), function(){
+      if($(this).val().split('.')[0] == e) {
+        $(this).prop('checked', v);
+      }
+    });
+    
+    var zoomY = [];
+    $.each($("input[name='worker']:checked"), function(){
+      zoomY.push($(this).val());
+    });
+    
+    tfp.ovXSel = tfp.zoomXs[tfp.zoomXs.length-1];
+    tfp.zoomY  = zoomY;
+
+    await queryData(tfp.zoomXs[tfp.zoomXs.length-1], tfp.zoomY, tfp.view, tfp.limit);
+    
+    _render(true);
+  });
   
-  // rank tb
-  //document.getElementById('tfp_tb_rank_from').value = 1;
-  //document.getElementById('tfp_tb_rank_to').value = 50;
+  $("#tfp_tb_workers input[name='worker']").on('click', async function(event) {
+    event.stopPropagation();
+    //console.log("worker click!!", $(this).val(), $(this).is(':checked'));
+    
+    let v = $(this).is(':checked');
+    let e = $(this).val().split('.')[0];
+    
+    // check or uncheck the executor
+    let m = true;
+    $.each($("#tfp_tb_workers input[name='worker']"), function(){
+      if($(this).val().split('.')[0] == e && !$(this).is(':checked')) {
+        m = false;
+      }
+    });
+    $(`#${e}`).prop('checked', m);
+  
+    var zoomY = [];
+    $.each($("input[name='worker']:checked"), function(){
+      zoomY.push($(this).val());
+    });
+    
+    tfp.ovXSel = tfp.zoomXs[tfp.zoomXs.length-1];
+    tfp.zoomY  = zoomY;
+
+    await queryData(tfp.zoomXs[tfp.zoomXs.length-1], tfp.zoomY, tfp.view, tfp.limit);
+    
+    _render(true);
+  });
+
+  $('#tfp_tb_view a').on('click', async function() {
+  
+    //event.stopPropagation();  // keep dropdown alive
+  
+    tfp.view = $(this).text();
+  
+    //console.log($(this).siblings('.hidden').text());
+    $(this).parent().siblings('.btn').text($(this).text());
+  
+    tfp.ovXSel = tfp.zoomXs[tfp.zoomXs.length-1];
+    
+    await queryData(tfp.zoomXs[tfp.zoomXs.length-1], tfp.zoomY, tfp.view, tfp.limit);
+  
+    _render(false);
+  });
+  
+  $('#tfp_tb_reset_zoom').on('click', async function() {
+    tfp.zoomXs = [tfp.ovXDomain];  // clear cached data
+    await _onZoomX(tfp.zoomXs[tfp.zoomXs.length-1], true);
+  });
+  
+  $('#tfp_tb_limit').on('input change', function (){
+  
+    $(this).siblings('.btn').text($(this).val());
+  
+    if($(this).data('timeout')) {
+      clearTimeout($(this).data('timeout'));
+    }
+  
+    // get selected option and change background
+    $(this).data('timeout', setTimeout(async ()=>{
+      tfp.limit = +$(this).val();
+      tfp.ovXSel = tfp.zoomXs[tfp.zoomXs.length-1];
+    
+      await queryData(tfp.zoomXs[tfp.zoomXs.length-1], tfp.zoomY, tfp.view, tfp.limit);
+      
+      _render(false);
+    }, 1000));
+  });
 }
 
 main();
-
-// ---- jquery ----
-$('#tfp_tb_workers').on('click', async function( event ) {
-  
-  event.stopPropagation();  // keep dropdown alive
-
-  //console.log("dropdown")
-
-  var zoomY = [];
-  $.each($("input[name='worker']:checked"), function(){
-    zoomY.push($(this).val());
-  });
-
-  //console.log(zoomY.join(', '))
-  
-  tfp.ovXSel = tfp.zoomXs[tfp.zoomXs.length-1];
-  tfp.zoomY  = zoomY;
-
-  await queryData(tfp.zoomXs[tfp.zoomXs.length-1], tfp.zoomY, tfp.view, tfp.limit);
-
-  //console.log(tfp.data)
-
-  _adjustDim();
-  _render_tl();
-  _render_load();
-  _render_ov();
-  _render_rank();
-});
-
-$('#tfp_tb_view a').on('click', async function() {
-
-  //event.stopPropagation();  // keep dropdown alive
-
-  tfp.view = $(this).text();
-
-  //console.log($(this).siblings('.hidden').text());
-  $(this).parent().siblings('.btn').text($(this).text());
-
-  tfp.ovXSel = tfp.zoomXs[tfp.zoomXs.length-1];
-  
-  await queryData(tfp.zoomXs[tfp.zoomXs.length-1], tfp.zoomY, tfp.view, tfp.limit);
-
-  _render_tl();
-  _render_load();
-  _render_ov();
-  _render_rank();
-})
-
-//$('#tfp_tb_rank').on('input', function (event) {
-//  
-//  event.stopPropagation();
-//  
-//  if($(this).data('timeout')) {
-//    clearTimeout($(this).data('timeout'));
-//  }
-//
-//  // get selected option and change background
-//  $(this).data('timeout', setTimeout(()=>{
-//    _render_rankGraph();
-//  }, 1000));
-//})
-
-$('#tfp_tb_reset_zoom').on('click', async function() {
-  tfp.zoomXs = [tfp.ovXDomain];  // clear cached data
-  await _onZoomX(tfp.zoomXs[tfp.zoomXs.length-1], true);
-})
-
-$('#tfp_tb_limit').on('input change', function (){
-
-  $(this).siblings('.btn').text($(this).val());
-
-  if($(this).data('timeout')) {
-    clearTimeout($(this).data('timeout'));
-  }
-
-  // get selected option and change background
-  $(this).data('timeout', setTimeout(async ()=>{
-    tfp.limit = +$(this).val();
-    tfp.ovXSel = tfp.zoomXs[tfp.zoomXs.length-1];
-  
-    await queryData(tfp.zoomXs[tfp.zoomXs.length-1], tfp.zoomY, tfp.view, tfp.limit);
-
-    _render_tl();
-    _render_load();
-    _render_ov();
-    _render_rank();
-  }, 1000));
-})
-
-//$(document).ready(function() {
-//  const $valueButton = $('.tfp_tb_limit_button');
-//  const $value = $('#tfp_tb_limit');
-//  $valueButton.html($value.val());
-//  $value.on('input change', () => {
-//    $valueButton.html($value.val());
-//  });
-//});
-
 
 
