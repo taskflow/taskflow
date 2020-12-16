@@ -218,8 +218,6 @@ class Executor {
 
     bool _wait_for_task(Worker&, Node*&);
     
-    //void _instantiate_tfprof();
-    //void _flush_tfprof();
     void _observer_prologue(Worker&, Node*);
     void _observer_epilogue(Worker&, Node*);
     void _spawn(size_t);
@@ -302,23 +300,6 @@ inline Executor::~Executor() {
   //_flush_tfprof();
 }
 
-// Procedure: _instantiate_tfprof
-//inline void Executor::_instantiate_tfprof() {
-  //// TF_OBSERVER_TYPE
-  //_tfprof = get_env(TF_ENABLE_PROFILER).empty() ? 
-  //  nullptr : make_observer<TFProfObserver>().get();
-//}
-
-//// Procedure: _flush_tfprof
-//inline void Executor::_flush_tfprof() {
-//  if(_tfprof) {
-//    std::ostringstream fpath;
-//    fpath << get_env(TF_ENABLE_PROFILER) << _tfprof->_UID << ".tfp";
-//    std::ofstream ofs(fpath.str());
-//    _tfprof->dump(ofs);
-//  }
-//}
-
 // Function: num_workers
 inline size_t Executor::num_workers() const {
   return _workers.size();
@@ -376,17 +357,17 @@ void Executor::silent_async(F&& f, ArgsT&&... args) {
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
   auto worker = _per_thread.worker;
-  return worker ? static_cast<int>(worker->id) : -1;
+  return worker ? static_cast<int>(worker->_id) : -1;
 }
 
 // Procedure: _spawn
 inline void Executor::_spawn(size_t N) {
   for(size_t id=0; id<N; ++id) {
 
-    _workers[id].id = id;
-    _workers[id].vtm = id;
-    _workers[id].executor = this;
-    _workers[id].waiter = &_notifier._waiters[id];
+    _workers[id]._id = id;
+    _workers[id]._vtm = id;
+    _workers[id]._executor = this;
+    _workers[id]._waiter = &_notifier._waiters[id];
     
     _threads.emplace_back([this] (Worker& w) -> void {
 
@@ -423,9 +404,9 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
 
   //while(!_done) {
   //
-  //  size_t vtm = rdvtm(w.rdgen);
+  //  size_t vtm = rdvtm(w._rdgen);
   //    
-  //  t = (vtm == w.id) ? _wsq[d].steal() : _workers[vtm].wsq[d].steal();
+  //  t = (vtm == w._id) ? _wsq[d].steal() : _workers[vtm].wsq[d].steal();
 
   //  if(t) {
   //    break;
@@ -440,7 +421,7 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
   //}
 
   do {
-    t = (w.id == w.vtm) ? _wsq.steal() : _workers[w.vtm].wsq.steal();
+    t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
 
     if(t) {
       break;
@@ -453,7 +434,7 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
       }
     }
     
-    w.vtm = rdvtm(w.rdgen);
+    w._vtm = rdvtm(w._rdgen);
   } while(!_done);
 
 }
@@ -469,7 +450,7 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
 
     while(t) {
       _invoke(w, t);
-      t = w.wsq.pop();
+      t = w._wsq.pop();
     }
 
     --_num_actives;
@@ -496,12 +477,12 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     return true;
   }
 
-  _notifier.prepare_wait(worker.waiter);
+  _notifier.prepare_wait(worker._waiter);
   
   //if(auto vtm = _find_vtm(me); vtm != _workers.size()) {
   if(!_wsq.empty()) {
 
-    _notifier.cancel_wait(worker.waiter);
+    _notifier.cancel_wait(worker._waiter);
     //t = (vtm == me) ? _wsq.steal() : _workers[vtm].wsq.steal();
     
     t = _wsq.steal();  // must steal here
@@ -512,13 +493,13 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
       return true;
     }
     else {
-      worker.vtm = worker.id;
+      worker._vtm = worker._id;
       goto explore_task;
     }
   }
 
   if(_done) {
-    _notifier.cancel_wait(worker.waiter);
+    _notifier.cancel_wait(worker._waiter);
     _notifier.notify(true);
     --_num_thieves;
     return false;
@@ -526,21 +507,21 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
   if(_num_thieves.fetch_sub(1) == 1) {
     if(_num_actives) {
-      _notifier.cancel_wait(worker.waiter);
+      _notifier.cancel_wait(worker._waiter);
       goto wait_for_task;
     }
     // check all queues again
     for(auto& w : _workers) {
-      if(!w.wsq.empty()) {
-        worker.vtm = w.id;
-        _notifier.cancel_wait(worker.waiter);
+      if(!w._wsq.empty()) {
+        worker._vtm = w._id;
+        _notifier.cancel_wait(worker._waiter);
         goto wait_for_task;
       }
     }
   }
     
   // Now I really need to relinguish my self to others
-  _notifier.commit_wait(worker.waiter);
+  _notifier.commit_wait(worker._waiter);
 
   return true;
 }
@@ -591,8 +572,8 @@ inline void Executor::_schedule(Node* node) {
   // caller is a worker to this pool
   auto worker = _per_thread.worker;
 
-  if(worker != nullptr && worker->executor == this) {
-    worker->wsq.push(node);
+  if(worker != nullptr && worker->_executor == this) {
+    worker->_wsq.push(node);
     return;
   }
 
@@ -623,9 +604,9 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
   // worker thread
   auto worker = _per_thread.worker;
 
-  if(worker != nullptr && worker->executor == this) {
+  if(worker != nullptr && worker->_executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
-      worker->wsq.push(nodes[i]);
+      worker->_wsq.push(nodes[i]);
     }
     return;
   }
@@ -871,7 +852,7 @@ inline void Executor::_invoke_dynamic_task_internal(
 
     while(p->_join_counter != 0) {
 
-      t = w.wsq.pop();
+      t = w._wsq.pop();
 
       exploit:
 
@@ -881,13 +862,13 @@ inline void Executor::_invoke_dynamic_task_internal(
       else {
 
         explore:
-        t = (w.id == w.vtm) ? _wsq.steal() : _workers[w.vtm].wsq.steal();
+        t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
         if(t) {
           goto exploit;
         }
         else if(p->_join_counter != 0){
           std::this_thread::yield();
-          w.vtm = rdvtm(w.rdgen);
+          w._vtm = rdvtm(w._rdgen);
           goto explore;
         }
         else {
