@@ -338,5 +338,46 @@ inline void Taskflow::_dump(
   }
 }
 
+
+template <typename T>
+class Future: public std::future<T>  {
+  friend class Node;
+  friend class Topology;
+  friend class Executor;
+  friend class Subflow;
+  public:
+    Future():std::future<T> {}{}
+    
+    Future(std::future<T> f): std::future<T> {std::move(f)} {}
+    
+
+    //method for setting is_cancel variable of the topology to true
+    void cancel(){
+      _topology->is_cancel=true;
+      return;
+    }
+
+    void cancel_async(){
+      _node->async_cancelled=true;
+      return;
+    }
+
+  private:
+    Topology* _topology {nullptr};
+    Node* _node {nullptr};
+
+
+    void set_tpg(Topology* tpg){
+      _topology=tpg;
+      return;
+    }
+
+    void set_async_node(Node* node){
+      _node=node;
+      return;
+    }
+
+};
+
 }  // end of namespace tf. ---------------------------------------------------
 
