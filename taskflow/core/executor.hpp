@@ -635,8 +635,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     }
   }
 
-  //assert(_workers.size() != 0);
-
   // Here we need to fetch the num_successors first to avoid the invalid memory
   // access caused by topology clear.
   const auto num_successors = node->num_successors();
@@ -677,7 +675,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // async task
     case Node::ASYNC_TASK: {
       _invoke_async_task(worker, node);
-      if(node->_parent) {
+      if(node->_parent) {  
+        // assert(node->_topology);
         node->_parent->_join_counter.fetch_sub(1);
       }
       else {
@@ -895,54 +894,6 @@ inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node) {
   _observer_epilogue(worker, node);
 }
 
-//// Procedure: _invoke_cudaflow_task_internal
-//template <typename P>
-//void Executor::_invoke_cudaflow_task_internal(
-//  cudaFlow& cf, P&& predicate, bool join
-//) {
-//  
-//  if(cf.empty()) {
-//    return;
-//  }
-//  
-//  // transforms cudaFlow to a native cudaGraph under the specified device
-//  // and launches the graph through a given or an internal device stream
-//  if(cf._executable == nullptr) {
-//    cf._create_executable();
-//    //cuda_dump_graph(std::cout, cf._graph._native_handle);
-//  }
-//
-//  cudaScopedPerThreadStream s;
-//
-//  while(!predicate()) {
-//
-//    TF_CHECK_CUDA(
-//      cudaGraphLaunch(cf._executable, s), "failed to execute cudaFlow"
-//    );
-//
-//    TF_CHECK_CUDA(
-//      cudaStreamSynchronize(s), "failed to synchronize cudaFlow execution"
-//    );
-//  }
-//
-//  if(join) {
-//    //cuda_dump_graph(std::cout, cf._graph._native_handle);
-//    cf._destroy_executable();
-//  }
-//}
-
-//// Procedure: _invoke_cudaflow_task_external
-//template <typename P>
-//void Executor::_invoke_cudaflow_task_external(
-//  cudaFlow& cf, P&& predicate, bool join
-//) {
-//
-//  auto w = _per_thread().worker;
-//  
-//  assert(w && w->executor == this);
-//
-//  _invoke_cudaflow_task_internal(*w, cf, std::forward<P>(predicate), join);
-//}
 
 // Procedure: _invoke_module_task
 inline void Executor::_invoke_module_task(Worker& w, Node* node) {
