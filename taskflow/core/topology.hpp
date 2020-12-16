@@ -16,7 +16,7 @@ class Topology {
 
     template <typename P, typename C>
     Topology(Taskflow&, P&&, C&&);
-    
+    std::atomic<bool> is_cancel {false};
   private:
 
     Taskflow& _taskflow;

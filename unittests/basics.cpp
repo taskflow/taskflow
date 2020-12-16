@@ -515,7 +515,7 @@ void sequential_runs(unsigned W) {
     B.precede(D); 
     C.precede(D);
 
-    std::list<std::future<void>> fu_list;
+    std::list<tf::Future<void>> fu_list;
     for(size_t i=0; i<500; i++) {
       if(i == 499) {
         executor.run(f).get();   // Synchronize the first 500 runs
@@ -2765,7 +2765,7 @@ void async(unsigned W) {
 
   tf::Executor executor(W);
 
-  std::vector<std::future<int>> fus;
+  std::vector<tf::Future<int>> fus;
 
   std::atomic<int> counter(0);
   
@@ -2818,7 +2818,7 @@ void nested_async(unsigned W) {
 
   tf::Executor executor(W);
 
-  std::vector<std::future<int>> fus;
+  std::vector<tf::Future<int>> fus;
 
   std::atomic<int> counter(0);
   

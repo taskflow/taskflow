@@ -21,6 +21,11 @@
 #define TF_OS_WINDOWS 1
 #endif
 
+#ifdef __CYGWIN__
+#undef TF_OS_WINDOWS
+#define TF_OS_WINDOWS 1
+#endif
+
 #if (defined __APPLE__ && defined __MACH__)
 #undef TF_OS_DARWIN
 #define TF_OS_DARWIN 1
