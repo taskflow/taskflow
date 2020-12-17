@@ -175,7 +175,6 @@ class Node {
     size_t num_dependents() const;
     size_t num_strong_dependents() const;
     size_t num_weak_dependents() const;
-    std::atomic<bool> async_cancelled {false};
     const std::string& name() const;
 
   private:
@@ -204,8 +203,8 @@ class Node {
     void _set_up_join_counter();
 
     bool _has_state(int) const;
-
     bool _acquire_all(std::vector<Node*>&);
+
     std::vector<Node*> _release_all();
 };
 
@@ -416,7 +415,7 @@ inline std::vector<Node*> Node::_release_all() {
   auto& to_release = _semaphores->to_release;
 
   std::vector<Node*> nodes;
-  for(auto const & sem : to_release) {
+  for(const auto& sem : to_release) {
     auto r = sem->_release();
     nodes.insert(end(nodes), begin(r), end(r));
   }

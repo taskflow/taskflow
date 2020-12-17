@@ -319,7 +319,8 @@ auto Executor::async(F&& f, ArgsT&&... args) {
   using R = typename function_traits<F>::return_type;
 
   std::promise<R> p;
-  tf::Future<R> fu(p.get_future());
+
+  auto fu = p.get_future();
 
   auto node = node_pool.animate(
     std::in_place_type_t<Node::AsyncTask>{},
@@ -335,7 +336,6 @@ auto Executor::async(F&& f, ArgsT&&... args) {
   );
 
   _schedule(node);
-  fu.set_async_node(node);
   return fu;
 }
 
@@ -624,7 +624,11 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
 
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
-  
+
+  //if(node->_topology && node->_topology->_is_cancelled) {
+  //  goto tear_down_invoke;
+  //}
+
   // if acquiring semaphore(s) exists, acquire them first
   if(node->_semaphores && !node->_semaphores->to_acquire.empty()) {
     std::vector<Node*> nodes;
@@ -637,9 +641,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // Here we need to fetch the num_successors first to avoid the invalid memory
   // access caused by topology clear.
   const auto num_successors = node->num_successors();
-  
-  // task type
-  auto type = node->_handle.index();
+  const auto type = node->_handle.index();
   
   // condition task
   int cond = -1;
@@ -673,9 +675,9 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
     // async task
     case Node::ASYNC_TASK: {
+      //assert(node->_topology == nullptr);
       _invoke_async_task(worker, node);
       if(node->_parent) {  
-        // assert(node->_topology);
         node->_parent->_join_counter.fetch_sub(1);
       }
       else {
@@ -722,10 +724,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   if(type != Node::CONDITION_TASK) {
     for(size_t i=0; i<num_successors; ++i) {
       if(--(node->_successors[i]->_join_counter) == 0) {
-        if (!node->_topology->is_cancel){
-          c.fetch_add(1);
-          _schedule(node->_successors[i]);
-        }
+        c.fetch_add(1);
+        _schedule(node->_successors[i]);
       }
     }
   }
@@ -734,14 +734,14 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     if(cond >= 0 && static_cast<size_t>(cond) < num_successors) {
       auto s = node->_successors[cond];
       s->_join_counter.store(0);  // seems redundant but just for invariant
-      if (!node->_topology->is_cancel){
-        c.fetch_add(1);
-        _schedule(s);
-      }
+      c.fetch_add(1);
+      _schedule(s);
     }
   }
+  
+  //tear_down_invoke:
 
-  // tear down topology if the node is the last one
+  // tear down topology if the node is the last leaf
   if(node->_parent == nullptr) {
     if(node->_topology->_join_counter.fetch_sub(1) == 1) {
       _tear_down_topology(node->_topology);
@@ -769,9 +769,7 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
 // Procedure: _invoke_static_task
 inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  if (!node->_topology->is_cancel){
-    std::get<Node::StaticTask>(node->_handle).work();
-  }
+  std::get<Node::StaticTask>(node->_handle).work();
   _observer_epilogue(worker, node);
 }
 
@@ -888,18 +886,14 @@ inline void Executor::_invoke_condition_task(
   Worker& worker, Node* node, int& cond
 ) {
   _observer_prologue(worker, node);
-  if (!node->_topology->is_cancel){
-    cond = std::get<Node::ConditionTask>(node->_handle).work();
-  }
+  cond = std::get<Node::ConditionTask>(node->_handle).work();
   _observer_epilogue(worker, node);
 }
 
 // Procedure: _invoke_cudaflow_task
 inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);  
-  if (!node->_topology->is_cancel){
-    std::get<Node::cudaFlowTask>(node->_handle).work(*this, node);
-  }
+  std::get<Node::cudaFlowTask>(node->_handle).work(*this, node);
   _observer_epilogue(worker, node);
 }
 
@@ -915,9 +909,7 @@ inline void Executor::_invoke_module_task(Worker& w, Node* node) {
 // Procedure: _invoke_async_task
 inline void Executor::_invoke_async_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  if (!node->async_cancelled){
-    std::get<Node::AsyncTask>(node->_handle).work();
-  }
+  std::get<Node::AsyncTask>(node->_handle).work();
   _observer_epilogue(w, node);  
 }
 
@@ -981,11 +973,10 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
   //assert(&tpg == &(f._topologies.front()));
 
   // case 1: we still need to run the topology again
-  if(! tpg->_pred() &&  !tpg->is_cancel) {
-    //tpg->_recover_num_sinks();
-      assert(tpg->_join_counter == 0);
-      tpg->_join_counter = tpg->_sources.size();
-       _schedule(tpg->_sources); 
+  if(!tpg->_is_cancelled && !tpg->_pred()) {
+    assert(tpg->_join_counter == 0);
+    tpg->_join_counter = tpg->_sources.size();
+    _schedule(tpg->_sources); 
   }
   // case 2: the final run of this topology
   else {
@@ -1009,19 +1000,10 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
       // decrement the topology but since this is not the last we don't notify
       _decrement_topology();
 
-      tpg = &(f._topologies.front());
+      tpg = f._topologies.front().get();
 
       _set_up_topology(tpg);
       _schedule(tpg->_sources);
-
-      //f._topologies.front()._bind(f._graph);
-      //*tpg = &(f._topologies.front());
-
-      //assert(f._topologies.front()._join_counter == 0);
-
-      //f._topologies.front()._join_counter = f._topologies.front()._sources.size();
-
-      //_schedule(f._topologies.front()._sources);
     }
     else {
       assert(f._topologies.size() == 1);
@@ -1030,8 +1012,9 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
       // destroy before taskflow leaves
       auto p {std::move(tpg->_promise)};
 
-      // Back up lambda capture in case it has the topology pointer, to avoid it releasing on 
-      // pop_front ahead of _mtx.unlock & _promise.set_value. Released safely when leaving scope.
+      // Back up lambda capture in case it has the topology pointer, 
+      // to avoid it releasing on pop_front ahead of _mtx.unlock & 
+      // _promise.set_value. Released safely when leaving scope.
       auto bc{ std::move( tpg->_call ) };
 
       f._topologies.pop_front();
@@ -1051,32 +1034,32 @@ template <typename P, typename C>
 tf::Future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
 
   _increment_topology();
+  
+  tf::Future<void> future;
 
   // Special case of predicate
   if(f.empty() || pred()) {
     std::promise<void> promise;
     promise.set_value();
-    Topology temp( f, pred, c);
-    tf::Future<void> future(promise.get_future());
-    future.set_tpg(&temp);
     _decrement_topology_and_notify();
-
+    future._assign_future(promise.get_future());
     return future;
   }
   
   // Multi-threaded execution.
   bool run_now {false};
   Topology* tpg;
-  tf::Future<void> future;
   
   {
     std::lock_guard<std::mutex> lock(f._mtx);
 
     // create a topology for this run
-    f._topologies.emplace_back(f, std::forward<P>(pred), std::forward<C>(c));
-    tpg = &(f._topologies.back());
-    future= Future<void>(tpg->_promise.get_future());
-    future.set_tpg(tpg);
+    f._topologies.emplace_back(
+      std::make_shared<Topology>(f, std::forward<P>(pred), std::forward<C>(c))
+    );
+    tpg = f._topologies.back().get();
+    future._assign_future(tpg->_promise.get_future());
+    future._topology = f._topologies.back();
    
     if(f._topologies.size() == 1) {
       run_now = true;
@@ -1155,7 +1138,7 @@ auto Subflow::async(F&& f, ArgsT&&... args) {
 
   std::promise<R> p;
 
-  tf::Future<R> fu(p.get_future());
+  auto fu = p.get_future();
 
   auto node = node_pool.animate(
     std::in_place_type_t<Node::AsyncTask>{},
@@ -1174,7 +1157,7 @@ auto Subflow::async(F&& f, ArgsT&&... args) {
   node->_parent = _parent;
 
   _executor._schedule(node);
-  fu.set_async_node(node);
+
   return fu;
 }
 

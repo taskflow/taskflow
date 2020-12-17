@@ -2765,7 +2765,7 @@ void async(unsigned W) {
 
   tf::Executor executor(W);
 
-  std::vector<tf::Future<int>> fus;
+  std::vector<std::future<int>> fus;
 
   std::atomic<int> counter(0);
   
@@ -2818,7 +2818,7 @@ void nested_async(unsigned W) {
 
   tf::Executor executor(W);
 
-  std::vector<tf::Future<int>> fus;
+  std::vector<std::future<int>> fus;
 
   std::atomic<int> counter(0);
   

@@ -142,7 +142,7 @@ class Taskflow : public FlowBuilder {
 
     std::mutex _mtx;
 
-    std::list<Topology> _topologies;
+    std::list<std::shared_ptr<Topology>> _topologies;
     
     void _dump(std::ostream&, const Taskflow*) const;
     void _dump(std::ostream&, const Node*, Dumper&) const;
@@ -338,46 +338,87 @@ inline void Taskflow::_dump(
   }
 }
 
+// ----------------------------------------------------------------------------
+// class definition: Future
+// ----------------------------------------------------------------------------
 
+/**
+@class Future
+
+tf::Future is a derived class from std::future to associate each submitted
+taskflow with execution control, for example, waiting until the execution 
+completes or canceling the execution.
+
+*/
 template <typename T>
-class Future: public std::future<T>  {
-  friend class Node;
-  friend class Topology;
+class Future : public std::future<T>  {
+
   friend class Executor;
-  friend class Subflow;
+
   public:
-    Future():std::future<T> {}{}
     
-    Future(std::future<T> f): std::future<T> {std::move(f)} {}
+    /**
+    @brief default constructor
+    */
+    Future() = default;
+
+    /**
+    @brief disabled copy constructor
+    */
+    Future(const Future&) = delete;
     
+    /**
+    @brief default move constructor
+    */
+    Future(Future&&) = default;
+    
+    /**
+    @brief disabled copy assignment
+    */
+    Future& operator = (const Future&) = delete;
 
-    //method for setting is_cancel variable of the topology to true
-    void cancel(){
-      _topology->is_cancel=true;
-      return;
-    }
+    /**
+    @brief default move assignment
+    */
+    Future& operator = (Future&&) = default;
 
-    void cancel_async(){
-      _node->async_cancelled=true;
-      return;
-    }
+    /**
+    @brief cancels the execution of the associated submission
+
+    The method cancels the execution of the associated submission. 
+    Each submission corresponds to a unique run (e.g., tf::Executor::run) 
+    of a taskflow.
+    The method returns true if the execution can be cancelled or false
+    if the execution has completed.
+    */
+    bool cancel();
 
   private:
-    Topology* _topology {nullptr};
-    Node* _node {nullptr};
 
+    std::weak_ptr<Topology> _topology;
 
-    void set_tpg(Topology* tpg){
-      _topology=tpg;
-      return;
-    }
-
-    void set_async_node(Node* node){
-      _node=node;
-      return;
-    }
-
+    void _assign_future(std::future<T>&&);
 };
 
+template <typename T>
+void Future<T>::_assign_future(std::future<T>&& fu) {
+  std::future<T>::operator = (std::move(fu));
+}
+
+// Function: cancel
+template <typename T>
+bool Future<T>::cancel() {
+  auto ptr = _topology.lock();
+  if(ptr) {
+    ptr->_is_cancelled.store(true, std::memory_order_relaxed);
+    return true;
+  }
+  return false;
+}
+
+
 }  // end of namespace tf. ---------------------------------------------------
+
+
+
 
