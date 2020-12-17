@@ -410,7 +410,7 @@ template <typename T>
 bool Future<T>::cancel() {
   auto ptr = _topology.lock();
   if(ptr) {
-    ptr->_is_cancelled.store(true, std::memory_order_relaxed);
+    ptr->_is_cancelled = true;
     return true;
   }
   return false;

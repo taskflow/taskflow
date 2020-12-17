@@ -236,6 +236,7 @@ class Executor {
     void _invoke_async_task(Worker&, Node*);
     void _set_up_topology(Topology*);
     void _tear_down_topology(Topology*); 
+    void _tear_down_invoke(Node*);
     void _increment_topology();
     void _decrement_topology();
     void _decrement_topology_and_notify();
@@ -625,9 +626,10 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
 
-  //if(node->_topology && node->_topology->_is_cancelled) {
-  //  goto tear_down_invoke;
-  //}
+  if(node->_topology && node->_topology->_is_cancelled) {
+    _tear_down_invoke(node);
+    return;
+  }
 
   // if acquiring semaphore(s) exists, acquire them first
   if(node->_semaphores && !node->_semaphores->to_acquire.empty()) {
@@ -641,13 +643,12 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // Here we need to fetch the num_successors first to avoid the invalid memory
   // access caused by topology clear.
   const auto num_successors = node->num_successors();
-  const auto type = node->_handle.index();
   
   // condition task
   int cond = -1;
   
   // switch is faster than nested if-else due to jump table
-  switch(type) {
+  switch(node->_handle.index()) {
     // static task
     case Node::STATIC_TASK:{
       _invoke_static_task(worker, node);
@@ -675,16 +676,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
     // async task
     case Node::ASYNC_TASK: {
-      //assert(node->_topology == nullptr);
       _invoke_async_task(worker, node);
-      if(node->_parent) {  
-        node->_parent->_join_counter.fetch_sub(1);
-      }
-      else {
-        _decrement_topology_and_notify();
-      }
-      // recycle the node
-      node_pool.recycle(node);
+      _tear_down_invoke(node);
       return ;
     }
     break;
@@ -721,7 +714,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   
   // At this point, the node storage might be destructed (to be verified)
   // case 1: non-condition task
-  if(type != Node::CONDITION_TASK) {
+  if(node->_handle.index() != Node::CONDITION_TASK) {
     for(size_t i=0; i<num_successors; ++i) {
       if(--(node->_successors[i]->_join_counter) == 0) {
         c.fetch_add(1);
@@ -739,16 +732,38 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     }
   }
   
-  //tear_down_invoke:
+  // tear_down the invoke
+  _tear_down_invoke(node);
+}
 
-  // tear down topology if the node is the last leaf
-  if(node->_parent == nullptr) {
-    if(node->_topology->_join_counter.fetch_sub(1) == 1) {
-      _tear_down_topology(node->_topology);
+// Procedure: _tear_down_invoke
+inline void Executor::_tear_down_invoke(Node* node) {
+
+  switch(node->_handle.index()) {
+    case Node::ASYNC_TASK: {
+      if(node->_parent) {  
+        node->_parent->_join_counter.fetch_sub(1);
+      }
+      else {
+        _decrement_topology_and_notify();
+      }
+      // recycle the node
+      node_pool.recycle(node);
+    } 
+    break;
+
+    default: {
+      // tear down topology if the node is the last leaf
+      if(node->_parent == nullptr) {
+        if(node->_topology->_join_counter.fetch_sub(1) == 1) {
+          _tear_down_topology(node->_topology);
+        }
+      }
+      else {  // joined subflow
+        node->_parent->_join_counter.fetch_sub(1);
+      }
     }
-  }
-  else {  // joined subflow
-    node->_parent->_join_counter.fetch_sub(1);
+    break;
   }
 }
 
@@ -980,6 +995,8 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
   }
   // case 2: the final run of this topology
   else {
+
+    // TODO: if the topology is cancelled, need to release all constraints
     
     if(tpg->_call != nullptr) {
       tpg->_call();

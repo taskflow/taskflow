@@ -9,7 +9,7 @@ list(APPEND TF_EXAMPLES
   visualization 
   reduce 
   parallel_for 
-  string_sort
+  parallel_sort
   run 
   composition
   semaphore

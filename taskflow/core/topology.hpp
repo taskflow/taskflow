@@ -19,6 +19,8 @@ class Topology {
 
     Taskflow& _taskflow;
 
+    bool _is_cancelled {false};  // may be raced, but it's ok
+
     std::promise<void> _promise;
 
     std::vector<Node*> _sources;
@@ -27,7 +29,6 @@ class Topology {
     std::function<void()> _call;
 
     std::atomic<size_t> _join_counter {0};
-    std::atomic<bool> _is_cancelled {false};
 };
 
 // Constructor

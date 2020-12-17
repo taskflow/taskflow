@@ -207,23 +207,23 @@ target_link_libraries(
 )
 set_target_properties(reduce_sum PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-## benchmark 10: parallel_sort
+## benchmark 10: sort
 add_executable(
-  parallel_sort
-  ${TF_BENCHMARK_DIR}/parallel_sort/main.cpp
-  ${TF_BENCHMARK_DIR}/parallel_sort/omp.cpp
-  ${TF_BENCHMARK_DIR}/parallel_sort/tbb.cpp
-  ${TF_BENCHMARK_DIR}/parallel_sort/taskflow.cpp
+  sort
+  ${TF_BENCHMARK_DIR}/sort/main.cpp
+  ${TF_BENCHMARK_DIR}/sort/omp.cpp
+  ${TF_BENCHMARK_DIR}/sort/tbb.cpp
+  ${TF_BENCHMARK_DIR}/sort/taskflow.cpp
 )
-target_include_directories(parallel_sort PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(sort PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  parallel_sort 
+  sort 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(parallel_sort PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(sort PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ###############################################################################
 # CUDA benchmarks
