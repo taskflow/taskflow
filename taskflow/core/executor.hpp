@@ -625,7 +625,8 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
 
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
-
+  
+  // no need to do other things if the topology is cancelled
   if(node->_topology && node->_topology->_is_cancelled) {
     _tear_down_invoke(node);
     return;
@@ -740,8 +741,11 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 inline void Executor::_tear_down_invoke(Node* node) {
 
   switch(node->_handle.index()) {
+
+    // async task is a special case
     case Node::ASYNC_TASK: {
       if(node->_parent) {  
+        assert(node->_topology);
         node->_parent->_join_counter.fetch_sub(1);
       }
       else {
