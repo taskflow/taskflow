@@ -9,7 +9,7 @@ jobs:
 
       - run:
           name: Install required tools
-          command: 'apt-get update && apt-get install -y gcc-8 g++-8 git cmake'
+          command: 'apt-get update && apt-get install -y gcc g++ git cmake'
       - run:
           name: Run CMake
           command: 'mkdir build ; cd build ; cmake ..'
@@ -29,7 +29,7 @@ jobs:
 
       - run:
           name: Install required tools
-          command: 'pacman -Sy --noconfirm base base-devel gcc-8 git cmake'
+          command: 'pacman -Sy --noconfirm base base-devel gcc git cmake'
       - run:
           name: Run CMake
           command: 'mkdir build ; cd build ; cmake .. '
