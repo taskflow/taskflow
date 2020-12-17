@@ -745,7 +745,7 @@ inline void Executor::_tear_down_invoke(Node* node) {
     // async task is a special case
     case Node::ASYNC_TASK: {
       if(node->_parent) {  
-        assert(node->_topology);
+        //assert(node->_topology);
         node->_parent->_join_counter.fetch_sub(1);
       }
       else {
