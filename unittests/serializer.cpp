@@ -547,76 +547,76 @@ void test_tuple() {
 // ----------------------------------------------------------------------------
 
 // POD
-TEST_CASE("POD" * doctest::timeout(60)) {
+TEST_CASE("POD" * doctest::timeout(300)) {
   test_pod();
 }
 
 // POD-struct
-TEST_CASE("POD-Struct" * doctest::timeout(60)) {
+TEST_CASE("POD-Struct" * doctest::timeout(300)) {
   test_struct();
 }
 
 // std::string
-TEST_CASE("string" * doctest::timeout(60)) {
+TEST_CASE("string" * doctest::timeout(300)) {
   test_string<std::string>();
 }
 
 // std::vector
-TEST_CASE("vector" * doctest::timeout(60)) {
+TEST_CASE("vector" * doctest::timeout(300)) {
   TEST_SEQ_CONT_BODY(vector)
 }
 
 // std::deque
-TEST_CASE("deque" * doctest::timeout(60)) {
+TEST_CASE("deque" * doctest::timeout(300)) {
   TEST_SEQ_CONT_BODY(deque)
 }
 
 // std::list
-TEST_CASE("list" * doctest::timeout(60)) {
+TEST_CASE("list" * doctest::timeout(300)) {
   TEST_SEQ_CONT_BODY(list)
 }
 
 // std::forward_list
-TEST_CASE("forward_list" * doctest::timeout(60)) {
+TEST_CASE("forward_list" * doctest::timeout(300)) {
   TEST_SEQ_CONT_BODY(forward_list)
 }
 
 // std::map
-TEST_CASE("map" * doctest::timeout(60)) {
+TEST_CASE("map" * doctest::timeout(300)) {
   TEST_MAP_CONT_BODY(map);
 }
 
 // std::unordered_map
-TEST_CASE("unordered_map" * doctest::timeout(60)) {
+TEST_CASE("unordered_map" * doctest::timeout(300)) {
   TEST_MAP_CONT_BODY(unordered_map);
 }
 
 // std::set
-TEST_CASE("set" * doctest::timeout(60)) {
+TEST_CASE("set" * doctest::timeout(300)) {
   TEST_SET_CONT_BODY(set);
 }
 
 // std::unordered_set
-TEST_CASE("unordered_set" * doctest::timeout(60)) {
+TEST_CASE("unordered_set" * doctest::timeout(300)) {
   TEST_SET_CONT_BODY(unordered_set);
 }
 
 // std::array
-TEST_CASE("array" * doctest::timeout(60)) {
+TEST_CASE("array" * doctest::timeout(300)) {
   test_array();
 }
 
 // std::chrono::time_point
-TEST_CASE("time_point" * doctest::timeout(60)) {
+TEST_CASE("time_point" * doctest::timeout(300)) {
   test_time_point();
 }
 
 // std::optional
-TEST_CASE("optional" * doctest::timeout(60)) {
+TEST_CASE("optional" * doctest::timeout(300)) {
   test_optional();
 }
 
 // std::tuple
-TEST_CASE("tuple" * doctest::timeout(60)) {
+TEST_CASE("tuple" * doctest::timeout(300)) {
   test_tuple();
 }

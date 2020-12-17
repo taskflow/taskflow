@@ -12,7 +12,7 @@ jobs:
           command: 'pacman -Sy --noconfirm base base-devel gcc git cmake'
       - run:
           name: Run CMake
-          command: 'mkdir build ; cd build ; cmake .. '
+          command: 'mkdir build ; cd build ; cmake .. -D CMAKE_BUILD_TYPE=Debug -D CMAKE_BUILD_BENCHMARKS=ON -D CMAKE_BUILD_PROFILER=ON'
       - run:
           name: Compile
           command: 'cmake --build build'
