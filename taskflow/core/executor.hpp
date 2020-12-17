@@ -813,7 +813,7 @@ inline void Executor::_invoke_dynamic_task_external(Node*p, Graph& g, bool detac
 
   auto worker = _per_thread.worker;
 
-  assert(worker && worker->executor == this);
+  assert(worker && worker->_executor == this);
   
   _invoke_dynamic_task_internal(*worker, p, g, detach);
 }
