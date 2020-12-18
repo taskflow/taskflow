@@ -9,6 +9,9 @@ class Topology {
   
   friend class Taskflow;
   friend class Executor;
+
+  template <typename T>
+  friend class Future;
   
   public:
 

@@ -13,6 +13,7 @@ list(APPEND TF_EXAMPLES
   run 
   composition
   semaphore
+  cancel
 )
 
 foreach(example IN LISTS TF_EXAMPLES)

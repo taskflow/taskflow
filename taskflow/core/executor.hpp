@@ -881,7 +881,6 @@ inline void Executor::_invoke_dynamic_task_internal(
         _invoke(w, t);
       }
       else {
-
         explore:
         t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
         if(t) {
