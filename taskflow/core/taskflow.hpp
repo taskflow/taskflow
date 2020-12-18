@@ -345,9 +345,33 @@ inline void Taskflow::_dump(
 /**
 @class Future
 
-tf::Future is a derived class from std::future to associate each submitted
-taskflow with execution control, for example, waiting until the execution 
-completes or canceling the execution.
+tf::Future is a derived class from std::future that will eventually hold the
+execution result of a submitted taskflow (e.g., tf::Executor::run).
+In addition to base methods of std::future,
+you can call tf::Future::cancel to cancel the execution of the running taskflow
+associated with this future object.
+The following example cancels a submission of a taskflow that contains
+1000 tasks each running one second.
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+for(int i=0; i<1000; i++) {
+  taskflow.emplace([](){ 
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  });
+}
+
+// submit the taskflow
+tf::Future fu = executor.run(taskflow);
+
+// request to cancel the submitted execution above
+fu.cancel();
+
+// wait until the cancellation finishes
+fu.get();
+@endcode
 
 */
 template <typename T>
@@ -383,13 +407,11 @@ class Future : public std::future<T>  {
     Future& operator = (Future&&) = default;
 
     /**
-    @brief cancels the execution of the associated submission
+    @brief cancels the execution of the running taskflow associated with 
+           this future object
 
-    The method cancels the execution of the associated submission. 
-    Each submission corresponds to a unique run (e.g., tf::Executor::run) 
-    of a taskflow.
-    The method returns true if the execution can be cancelled or false
-    if the execution has completed.
+    @return @c true if the execution can be cancelled or
+            @c false if the execution has already completed
     */
     bool cancel();
 

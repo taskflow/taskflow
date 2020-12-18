@@ -44,16 +44,15 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @subsection release-3-0-0_taskflow_core Taskflow Core
 
 @li replaced all non-standard libraries with C++17 STL (e.g., @std_optional, @std_variant)
-@li added tf::WorkerView for users to observer the worker that runs the task
+@li added tf::WorkerView for users to observe the running works of tasks
 @li added asynchronous tasking (see @ref AsyncTasking)
 @li modified tf::ObserverInterface::on_entry and tf::ObserverInterface::on_exit to take tf::WorkerView
 @li added a custom graph interface to support dynamic polymorphism for tf::cudaGraph
 @li supported separate compilations between %Taskflow and CUDA (see @ref CompileTaskflowWithCUDA)
 @li added tf::Semaphore and tf::CriticalSection to limit the maximum concurrency
-@li added support for Intel C++ compiler at least v19.0.1 (oneAPI toolchain)
+@li added tf::Future to support cancellation of running taskflows (see @ref CancelARunningTaskflow)
 
 @subsection release-3-0-0_cudaflow cudaFlow
-
 
 @li added tf::cudaFlowCapturer for building a %cudaFlow through stream capture (see @ref GPUTaskingcudaFlowCapturer)
 @li added tf::cudaFlowCapturerBase for creating custom capturers

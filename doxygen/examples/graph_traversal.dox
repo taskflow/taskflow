@@ -79,7 +79,7 @@ Each task does nothing but marks @c visited to @c true
 and subtracts @c dependents from one, both of which are used for validation after the graph is traversed.
 In practice, this computation may be replaced with a heavy function.
 
-@code{.cpp}    
+@code{.cpp}
 tf::Taskflow taskflow;
 tf::Executor executor;
 
