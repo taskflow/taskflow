@@ -14,6 +14,7 @@ list(APPEND TF_EXAMPLES
   composition
   semaphore
   cancel
+  cancel_async
 )
 
 foreach(example IN LISTS TF_EXAMPLES)
