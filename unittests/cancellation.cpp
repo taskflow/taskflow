@@ -284,6 +284,11 @@ TEST_CASE("CancelAsync") {
   executor.wait_for_all();
 
   REQUIRE(n_success > n_failure);
+
+  for(auto& fu : futures) {
+    REQUIRE(fu.valid());
+    CHECK_NOTHROW(fu.get());
+  }
 }
 
 // cancel subflow async tasks
@@ -317,6 +322,11 @@ TEST_CASE("CancelSubflowAsync") {
 
   executor.wait_for_all();
   REQUIRE(n_success > n_failure);
+  
+  for(auto& fu : futures) {
+    REQUIRE(fu.valid());
+    CHECK_NOTHROW(fu.get());
+  }
 }
 
 

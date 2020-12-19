@@ -8,7 +8,7 @@ int main() {
   
   // create asynchronous tasks from the executor
   // (using executor as a thread pool)
-  std::future<int> future1 = executor.async([](){
+  tf::Future<std::optional<int>> future1 = executor.async([](){
     std::cout << "async task 1 returns 1\n";
     return 1;
   });

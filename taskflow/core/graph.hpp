@@ -131,7 +131,7 @@ class Node {
     template <typename T>
     AsyncTask(T&&, std::shared_ptr<AsyncTopology>);
 
-    std::function<void()> work;
+    std::function<void(bool)> work;
 
     std::shared_ptr<AsyncTopology> topology;
   };

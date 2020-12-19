@@ -21,5 +21,7 @@ int main() {
     fu.cancel();
   }
 
+  executor.wait_for_all();
+
   return 0;
 }
