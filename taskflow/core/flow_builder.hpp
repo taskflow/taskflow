@@ -807,7 +807,7 @@ class Subflow : public FlowBuilder {
     @param f callable object to call
     @param args parameters to pass to the callable
     
-    @return a std::future that will eventually hold the result of the function call
+    @return a tf::Future that will holds the result of the execution
 
     This method is thread-safe and can be called by multiple tasks in the 
     subflow at the same time.

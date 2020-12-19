@@ -2,17 +2,32 @@
 
 namespace tf {
 
+class TopologyBase {
+  
+  friend class Executor;
+  friend class Node;
+  
+  template <typename T>
+  friend class Future;
+
+  protected:
+
+  bool _is_cancelled { false };
+};
+
+// ----------------------------------------------------------------------------
+
+// class: AsyncTopology
+class AsyncTopology : public TopologyBase {
+};
+
 // ----------------------------------------------------------------------------
   
 // class: Topology
-class Topology {
+class Topology : public TopologyBase {
   
-  friend class Taskflow;
   friend class Executor;
 
-  template <typename T>
-  friend class Future;
-  
   public:
 
     template <typename P, typename C>
@@ -21,8 +36,6 @@ class Topology {
   private:
 
     Taskflow& _taskflow;
-
-    bool _is_cancelled {false};  // may be raced, but it's ok
 
     std::promise<void> _promise;
 

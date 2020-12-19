@@ -1,9 +1,6 @@
 #pragma once
 
-#include <stack>
-
 #include "flow_builder.hpp"
-#include "topology.hpp"
 
 /** 
 @file core/taskflow.hpp
@@ -372,12 +369,20 @@ fu.cancel();
 // wait until the cancellation finishes
 fu.get();
 @endcode
-
 */
 template <typename T>
 class Future : public std::future<T>  {
 
   friend class Executor;
+  friend class Subflow;
+  
+  using handle_t = std::variant<
+    std::monostate, std::weak_ptr<Topology>, std::weak_ptr<AsyncTopology>
+  >;
+
+  // variant index
+  constexpr static auto ASYNC = get_index_v<std::weak_ptr<AsyncTopology>, handle_t>;
+  constexpr static auto TASKFLOW = get_index_v<std::weak_ptr<Topology>, handle_t>; 
 
   public:
     
@@ -416,11 +421,21 @@ class Future : public std::future<T>  {
     bool cancel();
 
   private:
+    
+    handle_t _handle;
 
-    std::weak_ptr<Topology> _topology;
+    template <typename P>
+    Future(std::future<T>&&, P&&);
 
     void _assign_future(std::future<T>&&);
 };
+
+template <typename T>
+template <typename P>
+Future<T>::Future(std::future<T>&& fu, P&& p) :
+  std::future<T> {std::move(fu)},
+  _handle        {std::forward<P>(p)} {
+}
 
 template <typename T>
 void Future<T>::_assign_future(std::future<T>&& fu) {
@@ -430,12 +445,20 @@ void Future<T>::_assign_future(std::future<T>&& fu) {
 // Function: cancel
 template <typename T>
 bool Future<T>::cancel() {
-  auto ptr = _topology.lock();
-  if(ptr) {
-    ptr->_is_cancelled = true;
-    return true;
-  }
-  return false;
+  return std::visit([](auto&& arg){
+    using P = std::decay_t<decltype(arg)>;
+    if constexpr(std::is_same_v<P, std::monostate>) {
+      return false;
+    }
+    else {
+      auto ptr = arg.lock();
+      if(ptr) {
+        ptr->_is_cancelled = true;
+        return true;
+      }
+      return false;
+    }
+  }, _handle);
 }
 
 

@@ -82,17 +82,17 @@ auto make_moc(T&& m) {
 }
 
 //-----------------------------------------------------------------------------
-// Functors.
+// Visitors.
 //-----------------------------------------------------------------------------
 
 // Overloadded.
 template <typename... Ts>
-struct Functors : Ts... { 
+struct Visitors : Ts... { 
   using Ts::operator()... ;
 };
 
 template <typename... Ts>
-Functors(Ts...) -> Functors<Ts...>;
+Visitors(Ts...) -> Visitors<Ts...>;
 
 // ----------------------------------------------------------------------------
 // Function Traits

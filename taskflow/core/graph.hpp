@@ -11,6 +11,7 @@
 #include "declarations.hpp"
 #include "semaphore.hpp"
 #include "environment.hpp"
+#include "topology.hpp"
 
 namespace tf {
 
@@ -82,6 +83,7 @@ class Node {
   // state bit flag
   constexpr static int BRANCHED = 0x1;
   constexpr static int DETACHED = 0x2;
+  constexpr static int ACQUIRED = 0x4;
   
   // static work handle
   struct StaticTask {
@@ -126,7 +128,12 @@ class Node {
     template <typename T>
     AsyncTask(T&&);
 
+    template <typename T>
+    AsyncTask(T&&, std::shared_ptr<AsyncTopology>);
+
     std::function<void()> work;
+
+    std::shared_ptr<AsyncTopology> topology;
   };
   
   // cudaFlow work handle
@@ -175,6 +182,7 @@ class Node {
     size_t num_dependents() const;
     size_t num_strong_dependents() const;
     size_t num_weak_dependents() const;
+
     const std::string& name() const;
 
   private:
@@ -203,6 +211,7 @@ class Node {
     void _set_up_join_counter();
 
     bool _has_state(int) const;
+    bool _is_cancelled() const;
     bool _acquire_all(std::vector<Node*>&);
 
     std::vector<Node*> _release_all();
@@ -266,6 +275,13 @@ Node::ModuleTask::ModuleTask(T&& tf) : module {tf} {
 // Constructor
 template <typename C>
 Node::AsyncTask::AsyncTask(C&& c) : work {std::forward<C>(c)} {
+}
+
+// Constructor
+template <typename C>
+Node::AsyncTask::AsyncTask(C&& c, std::shared_ptr<AsyncTopology>tpg) : 
+  work {std::forward<C>(c)},
+  topology {std::move(tpg)} {
 }
 
 // ----------------------------------------------------------------------------
@@ -372,6 +388,18 @@ inline void Node::_clear_state() {
 // Function: _has_state
 inline bool Node::_has_state(int flag) const {
   return _state & flag;
+}
+
+// Function: _is_cancelled
+inline bool Node::_is_cancelled() const {
+  if(_handle.index() == Node::ASYNC_TASK) {
+    auto& h = std::get<Node::AsyncTask>(_handle);
+    if(h.topology && h.topology->_is_cancelled) {
+      return true;
+    }
+  }
+  // async tasks spawned from subflow does not have topology
+  return _topology && _topology->_is_cancelled;
 }
 
 // Procedure: _set_up_join_counter

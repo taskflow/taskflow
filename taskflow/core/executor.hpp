@@ -51,7 +51,7 @@ class Executor {
     
     @param taskflow a tf::Taskflow object
 
-    @return a std::future to access the execution status of the taskflow
+    @return a tf::Future that will holds the result of the execution
     */
     tf::Future<void> run(Taskflow& taskflow);
 
@@ -61,7 +61,7 @@ class Executor {
     @param taskflow a tf::Taskflow object 
     @param callable a callable object to be invoked after this run
 
-    @return a std::future to access the execution status of the taskflow
+    @return a tf::Future that will holds the result of the execution
     */
     template<typename C>
     tf::Future<void> run(Taskflow& taskflow, C&& callable);
@@ -72,7 +72,7 @@ class Executor {
     @param taskflow a tf::Taskflow object
     @param N number of runs
 
-    @return a std::future to access the execution status of the taskflow
+    @return a tf::Future that will holds the result of the execution
     */
     tf::Future<void> run_n(Taskflow& taskflow, size_t N);
 
@@ -83,7 +83,7 @@ class Executor {
     @param N number of runs
     @param callable a callable object to be invoked after this run
 
-    @return a std::future to access the execution status of the taskflow
+    @return a tf::Future that will holds the result of the execution
     */
     template<typename C>
     tf::Future<void> run_n(Taskflow& taskflow, size_t N, C&& callable);
@@ -95,7 +95,7 @@ class Executor {
     @param taskflow a tf::Taskflow 
     @param pred a boolean predicate to return true for stop
 
-    @return a std::future to access the execution status of the taskflow
+    @return a tf::Future that will holds the result of the execution
     */
     template<typename P>
     tf::Future<void> run_until(Taskflow& taskflow, P&& pred);
@@ -108,7 +108,7 @@ class Executor {
     @param pred a boolean predicate to return true for stop
     @param callable a callable object to be invoked after this run
 
-    @return a std::future to access the execution status of the taskflow
+    @return a tf::Future that will holds the result of the execution
     */
     template<typename P, typename C>
     tf::Future<void> run_until(Taskflow& taskflow, P&& pred, C&& callable);
@@ -148,7 +148,7 @@ class Executor {
     @param f callable object to call
     @param args parameters to pass to the callable
     
-    @return a std::future that will eventually hold the result of the function call
+    @return a tf::Future that will holds the result of the execution
 
     This method is thread-safe. Multiple threads can launch asynchronous tasks 
     at the same time.
@@ -217,6 +217,7 @@ class Executor {
     std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
     bool _wait_for_task(Worker&, Node*&);
+    bool _is_cancelled(Node*) const;
     
     void _observer_prologue(Worker&, Node*);
     void _observer_epilogue(Worker&, Node*);
@@ -240,7 +241,6 @@ class Executor {
     void _increment_topology();
     void _decrement_topology();
     void _decrement_topology_and_notify();
-
     void _invoke_cudaflow_task(Worker&, Node*);
     
     template <typename C, std::enable_if_t<
@@ -321,7 +321,9 @@ auto Executor::async(F&& f, ArgsT&&... args) {
 
   std::promise<R> p;
 
-  auto fu = p.get_future();
+  auto tpg = std::make_shared<AsyncTopology>();
+
+  Future<R> fu(p.get_future(), tpg);
 
   auto node = node_pool.animate(
     std::in_place_type_t<Node::AsyncTask>{},
@@ -333,10 +335,12 @@ auto Executor::async(F&& f, ArgsT&&... args) {
       else {
         p.object.set_value(f(args...));
       }
-    }
+    },
+    std::move(tpg)
   );
 
   _schedule(node);
+
   return fu;
 }
 
@@ -622,12 +626,12 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
   _notifier.notify_n(num_nodes);
 }
 
-
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
   
   // no need to do other things if the topology is cancelled
-  if(node->_topology && node->_topology->_is_cancelled) {
+  //if(node->_topology && node->_topology->_is_cancelled) {
+  if(node->_is_cancelled()) {
     _tear_down_invoke(node);
     return;
   }
@@ -639,6 +643,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       _schedule(nodes);
       return;
     }
+    node->_set_state(Node::ACQUIRED);
   }
 
   // Here we need to fetch the num_successors first to avoid the invalid memory
@@ -741,7 +746,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 inline void Executor::_tear_down_invoke(Node* node) {
 
   switch(node->_handle.index()) {
-
     // async task is a special case
     case Node::ASYNC_TASK: {
       if(node->_parent) {  
@@ -1015,12 +1019,12 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
       // Set the promise
       tpg->_promise.set_value();
       f._topologies.pop_front();
+      tpg = f._topologies.front().get();
+
       f._mtx.unlock();
       
       // decrement the topology but since this is not the last we don't notify
       _decrement_topology();
-
-      tpg = f._topologies.front().get();
 
       _set_up_topology(tpg);
       _schedule(tpg->_sources);
@@ -1079,7 +1083,7 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
     );
     tpg = f._topologies.back().get();
     future._assign_future(tpg->_promise.get_future());
-    future._topology = f._topologies.back();
+    future._handle = f._topologies.back();
    
     if(f._topologies.size() == 1) {
       run_now = true;
@@ -1158,7 +1162,9 @@ auto Subflow::async(F&& f, ArgsT&&... args) {
 
   std::promise<R> p;
 
-  auto fu = p.get_future();
+  auto tpg = std::make_shared<AsyncTopology>();
+
+  Future<R> fu(p.get_future(), tpg);
 
   auto node = node_pool.animate(
     std::in_place_type_t<Node::AsyncTask>{},
@@ -1170,7 +1176,8 @@ auto Subflow::async(F&& f, ArgsT&&... args) {
       else {
         p.object.set_value(f(args...));
       }
-    }
+    },
+    std::move(tpg)
   );
 
   node->_topology = _parent->_topology;
