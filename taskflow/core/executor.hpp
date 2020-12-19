@@ -217,7 +217,6 @@ class Executor {
     std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
     bool _wait_for_task(Worker&, Node*&);
-    bool _is_cancelled(Node*) const;
     
     void _observer_prologue(Worker&, Node*);
     void _observer_epilogue(Worker&, Node*);
@@ -237,7 +236,7 @@ class Executor {
     void _invoke_async_task(Worker&, Node*);
     void _set_up_topology(Topology*);
     void _tear_down_topology(Topology*); 
-    void _tear_down_invoke(Node*);
+    void _tear_down_invoke(Node*, bool);
     void _increment_topology();
     void _decrement_topology();
     void _decrement_topology_and_notify();
@@ -259,7 +258,6 @@ class Executor {
     //template <typename P>
     //void _invoke_cudaflow_task_external(cudaFlow&, P&&, bool);
 };
-
 
 // Constructor
 inline Executor::Executor(size_t N) : 
@@ -317,7 +315,8 @@ auto Executor::async(F&& f, ArgsT&&... args) {
 
   _increment_topology();
 
-  using R = typename function_traits<F>::return_type;
+  using T = typename function_traits<F>::return_type;
+  using R = std::conditional_t<std::is_same_v<T, void>, void, std::optional<T>>;
 
   std::promise<R> p;
 
@@ -327,13 +326,16 @@ auto Executor::async(F&& f, ArgsT&&... args) {
 
   auto node = node_pool.animate(
     std::in_place_type_t<Node::AsyncTask>{},
-    [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] () mutable {
+    [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] 
+    (bool cancel) mutable {
       if constexpr(std::is_same_v<R, void>) {
-        f(args...);
+        if(!cancel) {
+          f(args...);
+        }
         p.object.set_value();
       }
       else {
-        p.object.set_value(f(args...));
+        p.object.set_value(cancel ? std::nullopt : std::make_optional(f(args...)));
       }
     },
     std::move(tpg)
@@ -352,7 +354,11 @@ void Executor::silent_async(F&& f, ArgsT&&... args) {
 
   Node* node = node_pool.animate(
     std::in_place_type_t<Node::AsyncTask>{},
-    [f=std::forward<F>(f), args...] () mutable { f(args...); }
+    [f=std::forward<F>(f), args...] (bool cancel) mutable { 
+      if(!cancel) {
+        f(args...); 
+      }
+    }
   );
 
   _schedule(node);
@@ -632,7 +638,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // no need to do other things if the topology is cancelled
   //if(node->_topology && node->_topology->_is_cancelled) {
   if(node->_is_cancelled()) {
-    _tear_down_invoke(node);
+    _tear_down_invoke(node, true);
     return;
   }
 
@@ -683,7 +689,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // async task
     case Node::ASYNC_TASK: {
       _invoke_async_task(worker, node);
-      _tear_down_invoke(node);
+      _tear_down_invoke(node, false);
       return ;
     }
     break;
@@ -739,15 +745,21 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   }
   
   // tear_down the invoke
-  _tear_down_invoke(node);
+  _tear_down_invoke(node, false);
 }
 
 // Procedure: _tear_down_invoke
-inline void Executor::_tear_down_invoke(Node* node) {
+inline void Executor::_tear_down_invoke(Node* node, bool cancel) {
 
   switch(node->_handle.index()) {
     // async task is a special case
     case Node::ASYNC_TASK: {
+      
+      // still need to carry out the promise
+      if(cancel) {
+        std::get<Node::AsyncTask>(node->_handle).work(true);
+      }
+
       if(node->_parent) {  
         //assert(node->_topology);
         node->_parent->_join_counter.fetch_sub(1);
@@ -931,7 +943,7 @@ inline void Executor::_invoke_module_task(Worker& w, Node* node) {
 // Procedure: _invoke_async_task
 inline void Executor::_invoke_async_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  std::get<Node::AsyncTask>(node->_handle).work();
+  std::get<Node::AsyncTask>(node->_handle).work(false);
   _observer_epilogue(w, node);  
 }
 
@@ -1158,7 +1170,8 @@ auto Subflow::async(F&& f, ArgsT&&... args) {
 
   _parent->_join_counter.fetch_add(1);
 
-  using R = typename function_traits<F>::return_type;
+  using T = typename function_traits<F>::return_type;
+  using R = std::conditional_t<std::is_same_v<T, void>, void, std::optional<T>>;
 
   std::promise<R> p;
 
@@ -1168,13 +1181,16 @@ auto Subflow::async(F&& f, ArgsT&&... args) {
 
   auto node = node_pool.animate(
     std::in_place_type_t<Node::AsyncTask>{},
-    [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] () mutable {
+    [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] 
+    (bool cancel) mutable {
       if constexpr(std::is_same_v<R, void>) {
-        f(args...);
+        if(!cancel) {
+          f(args...);
+        }
         p.object.set_value();
       }
       else {
-        p.object.set_value(f(args...));
+        p.object.set_value(cancel ? std::nullopt : std::make_optional(f(args...)));
       }
     },
     std::move(tpg)
@@ -1196,7 +1212,11 @@ void Subflow::silent_async(F&& f, ArgsT&&... args) {
 
   auto node = node_pool.animate(
     std::in_place_type_t<Node::AsyncTask>{},
-    [f=std::forward<F>(f), args...] () mutable { f(args...); }
+    [f=std::forward<F>(f), args...] (bool cancel) mutable { 
+      if(!cancel) {
+        f(args...); 
+      }
+    }
   );
 
   node->_topology = _parent->_topology;
