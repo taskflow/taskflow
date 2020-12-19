@@ -36,7 +36,7 @@
 </sect1>
 <sect1 id="chapter2_1C2_ExecuteATaskflow">
 <title>Execute a Taskflow</title>
-<para><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> provides a set of <computeroutput>run_*</computeroutput> methods, <ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">tf::Executor::run</ref>, <ref refid="classtf_1_1Executor_1a6d0617eebc9421f1ba1f82ce6dd02c00" kindref="member">tf::Executor::run_n</ref>, and <ref refid="classtf_1_1Executor_1a0f52e9dd64b65aba32ca0e13c1ed300a" kindref="member">tf::Executor::run_until</ref> to run a taskflow for one time, multiple times, or until a given predicate evaluates to true. All methods accept an optional callback to invoke after the execution completes, and return a <ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref> for users to access the execution status. The code below shows several ways to run a taskflow.</para>
+<para><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> provides a set of <computeroutput>run_*</computeroutput> methods, <ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">tf::Executor::run</ref>, <ref refid="classtf_1_1Executor_1a6d0617eebc9421f1ba1f82ce6dd02c00" kindref="member">tf::Executor::run_n</ref>, and <ref refid="classtf_1_1Executor_1a0f52e9dd64b65aba32ca0e13c1ed300a" kindref="member">tf::Executor::run_until</ref> to run a taskflow for one time, multiple times, or until a given predicate evaluates to true. All methods accept an optional callback to invoke after the execution completes, and return a <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> for users to access the execution status. The code below shows several ways to run a taskflow.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/></highlight><highlight class="comment">//<sp/>Declare<sp/>an<sp/>executor<sp/>and<sp/>a<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
@@ -49,7 +49,7 @@
 <codeline><highlight class="normal">10:<sp/></highlight><highlight class="comment">//<sp/>Build<sp/>precedence<sp/>between<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">11:<sp/>A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C);<sp/></highlight></codeline>
 <codeline><highlight class="normal">12:<sp/></highlight></codeline>
-<codeline><highlight class="normal">13:<sp/><ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;void&gt;</ref><sp/>fu<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow);</highlight></codeline>
+<codeline><highlight class="normal">13:<sp/><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;void&gt;</ref><sp/>fu<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow);</highlight></codeline>
 <codeline><highlight class="normal">14:<sp/>fu.wait();<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>block<sp/>until<sp/>the<sp/>execution<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">15:</highlight></codeline>
 <codeline><highlight class="normal">16:<sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow,<sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;end<sp/>of<sp/>1<sp/>run&quot;</highlight><highlight class="normal">;<sp/>}).wait();</highlight></codeline>
@@ -62,7 +62,7 @@
 <para><itemizedlist>
 <listitem><para>Lines 6-8 create a taskflow of three tasks A, B, and C </para>
 </listitem>
-<listitem><para>Lines 13-14 run the taskflow once and use <ref refid="cpp/thread/future/wait" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future::wait</ref> to wait for completion </para>
+<listitem><para>Lines 13-14 run the taskflow once and wait for completion </para>
 </listitem>
 <listitem><para>Line 16 runs the taskflow once with a callback to invoke when the execution finishes </para>
 </listitem>
@@ -105,7 +105,7 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Declare<sp/>an<sp/>executor</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;void&gt;</ref><sp/>future<sp/>=<sp/>taskflow.run(f);<sp/><sp/></highlight><highlight class="comment">//<sp/>non-blocking<sp/>return</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;void&gt;</ref><sp/>future<sp/>=<sp/>taskflow.run(f);<sp/><sp/></highlight><highlight class="comment">//<sp/>non-blocking<sp/>return</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>alter<sp/>the<sp/>taskflow<sp/>while<sp/>running<sp/>leads<sp/>to<sp/>undefined<sp/>behavior<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">f.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Add<sp/>a<sp/>new<sp/>task\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>

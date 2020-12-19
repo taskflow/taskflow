@@ -88,7 +88,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="784" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1131" bodyend="1139"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="784" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1135" bodyend="1143"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1acfdedc7e9676126e9a38ecf7b5a37864" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -103,7 +103,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="792" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1141" bodyend="1149"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="792" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1145" bodyend="1153"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1a4c4b56476ca907ceca75dd8a861e1145" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -181,7 +181,7 @@
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref> that will eventually hold the result of the function call</para>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> that will holds the result of the execution</para>
 </simplesect>
 This method is thread-safe and can be called by multiple tasks in the subflow at the same time. The difference to <ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">tf::Executor::async</ref> is that the created asynchronous task pertains to the subflow. When the subflow joins, all asynchronous tasks created from the subflow are guaranteed to finish before the join. For example:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/>counter(0);</highlight></codeline>
@@ -197,7 +197,7 @@ This method is thread-safe and can be called by multiple tasks in the subflow at
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="835" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1153" bodyend="1182"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="835" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1157" bodyend="1189"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1af9671aa8548882b3425e5a1f10f7a868" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -229,7 +229,7 @@ This method is thread-safe and can be called by multiple tasks in the subflow at
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="841" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1186" bodyend="1199"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="841" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1193" bodyend="1206"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">

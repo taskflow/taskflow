@@ -53,16 +53,20 @@
     </tableofcontents>
     </tocsect>
       <tocsect>
-        <name>Documentation</name>
-        <reference>release-3-0-0_1release-3-0-0_documentation</reference>
-    </tocsect>
-      <tocsect>
         <name>Bug Fixes</name>
         <reference>release-3-0-0_1release-3-0-0_bug_fixes</reference>
     </tocsect>
       <tocsect>
+        <name>Breaking Changes</name>
+        <reference>release-3-0-0_1release-3-0-0_breaking_changes</reference>
+    </tocsect>
+      <tocsect>
         <name>Deprecated and Removed Items</name>
         <reference>release-3-0-0_1release-3-0-0_deprecated_items</reference>
+    </tocsect>
+      <tocsect>
+        <name>Documentation</name>
+        <reference>release-3-0-0_1release-3-0-0_documentation</reference>
     </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
@@ -132,7 +136,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem>
 <listitem><para>added <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> and <ref refid="classtf_1_1CriticalSection" kindref="compound">tf::CriticalSection</ref> to limit the maximum concurrency </para>
 </listitem>
-<listitem><para>added <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> to support cancellation of running taskflows (see <ref refid="CancelARunningTaskflow" kindref="compound">Cancel a Running Taskflow</ref>)</para>
+<listitem><para>added <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> to support cancellation of submitted tasks (see <ref refid="RequestCancellation" kindref="compound">Request Cancellation</ref>)</para>
 </listitem>
 </itemizedlist>
 </para>
@@ -211,6 +215,38 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect2>
 </sect1>
+<sect1 id="release-3-0-0_1release-3-0-0_bug_fixes">
+<title>Bug Fixes</title>
+<para><itemizedlist>
+<listitem><para>fixed the bug in stream capturing (need to use <computeroutput>ThreadLocal</computeroutput> mode) </para>
+</listitem>
+<listitem><para>fixed the bug in reporting wrong worker ids when compiling a shared library due to the use of <computeroutput>thread_local</computeroutput> (now with C++17 <computeroutput>inline</computeroutput> variable)</para>
+</listitem>
+</itemizedlist>
+</para>
+</sect1>
+<sect1 id="release-3-0-0_1release-3-0-0_breaking_changes">
+<title>Breaking Changes</title>
+<para><itemizedlist>
+<listitem><para>changed the returned values of asynchronous tasks to be <ulink url="https://en.cppreference.com/w/cpp/utility/optional">std::optional</ulink> in order to support cancellation (see <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref> and <ref refid="RequestCancellation" kindref="compound">Request Cancellation</ref>)</para>
+</listitem>
+</itemizedlist>
+</para>
+</sect1>
+<sect1 id="release-3-0-0_1release-3-0-0_deprecated_items">
+<title>Deprecated and Removed Items</title>
+<para><itemizedlist>
+<listitem><para>removed tf::cudaFlow::device; users may call <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref> to associate a cudaflow with a GPU device </para>
+</listitem>
+<listitem><para>removed tf::cudaFlow::join, use <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> instead </para>
+</listitem>
+<listitem><para>removed the legacy tf::Framework </para>
+</listitem>
+<listitem><para>removed external mutable use of <ref refid="classtf_1_1TaskView" kindref="compound">tf::TaskView</ref></para>
+</listitem>
+</itemizedlist>
+</para>
+</sect1>
 <sect1 id="release-3-0-0_1release-3-0-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
@@ -223,6 +259,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <listitem><para>added <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref> </para>
 </listitem>
 <listitem><para>added <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="RequestCancellation" kindref="compound">Request Cancellation</ref> </para>
 </listitem>
 <listitem><para>added <ref refid="Profiler" kindref="compound">Profile Taskflow Programs</ref> </para>
 </listitem>
@@ -249,30 +287,6 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </listitem>
 <listitem><para>improved documentation pages for files</para>
-</listitem>
-</itemizedlist>
-</para>
-</sect1>
-<sect1 id="release-3-0-0_1release-3-0-0_bug_fixes">
-<title>Bug Fixes</title>
-<para><itemizedlist>
-<listitem><para>fixed the bug in stream capturing (need to use <computeroutput>ThreadLocal</computeroutput> mode) </para>
-</listitem>
-<listitem><para>fixed the bug in reporting wrong worker ids when compiling a shared library due to the use of <computeroutput>thread_local</computeroutput> (now with C++17 <computeroutput>inline</computeroutput> variable)</para>
-</listitem>
-</itemizedlist>
-</para>
-</sect1>
-<sect1 id="release-3-0-0_1release-3-0-0_deprecated_items">
-<title>Deprecated and Removed Items</title>
-<para><itemizedlist>
-<listitem><para>removed tf::cudaFlow::device; users may call <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref> to associate a cudaflow with a GPU device </para>
-</listitem>
-<listitem><para>removed tf::cudaFlow::join, use <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> instead </para>
-</listitem>
-<listitem><para>removed the legacy tf::Framework </para>
-</listitem>
-<listitem><para>removed external mutable use of <ref refid="classtf_1_1TaskView" kindref="compound">tf::TaskView</ref></para>
 </listitem>
 </itemizedlist>
 </para>

@@ -238,6 +238,7 @@
     <member refid="classtf_1_1Executor_1a31081f492c376f7b798de0e430534531" kind="function"><name>remove_observer</name></member>
     <member refid="classtf_1_1Executor_1ab92083be20ea77b9fb3eb8ea2d26af68" kind="function"><name>num_observers</name></member>
     <member refid="classtf_1_1Executor_1a57f5105dc812d83f259ec8cab7c96228" kind="function"><name>_wait_for_task</name></member>
+    <member refid="classtf_1_1Executor_1adb01b9b53068459c34b49248eb27068a" kind="function"><name>_is_cancelled</name></member>
     <member refid="classtf_1_1Executor_1ae023614977a19def9e04cf7212eab65b" kind="function"><name>_observer_prologue</name></member>
     <member refid="classtf_1_1Executor_1a9cd8c1a72af4477bc0f9575b68ffb16a" kind="function"><name>_observer_epilogue</name></member>
     <member refid="classtf_1_1Executor_1a8aee6c0ec55b4bfb3909601203e98514" kind="function"><name>_spawn</name></member>
@@ -302,14 +303,19 @@
     <member refid="classtf_1_1FlowBuilder_1a04115519f61efc42d018ea697054135d" kind="function"><name>_linearize</name></member>
   </compound>
   <compound refid="classtf_1_1Future" kind="class"><name>tf::Future</name>
+    <member refid="classtf_1_1Future_1a680305aa8ac807796dabfaa82040f47d" kind="typedef"><name>handle_t</name></member>
     <member refid="classtf_1_1Future_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
-    <member refid="classtf_1_1Future_1ab2925106300ed72a886dd4a46a212114" kind="variable"><name>_topology</name></member>
+    <member refid="classtf_1_1Future_1aa48945297ede77a161defc88033ce8a6" kind="friend"><name>Subflow</name></member>
+    <member refid="classtf_1_1Future_1a1c752286473736b4182de7ef7d2163eb" kind="variable"><name>ASYNC</name></member>
+    <member refid="classtf_1_1Future_1ac730915f7451075781f77fd692b4b723" kind="variable"><name>TASKFLOW</name></member>
+    <member refid="classtf_1_1Future_1a55bc4d50e32e28e8c904a75f9e7c7e9f" kind="variable"><name>_handle</name></member>
     <member refid="classtf_1_1Future_1a520785365a129094d7ecf11e217509db" kind="function"><name>Future</name></member>
     <member refid="classtf_1_1Future_1ad22645f2bcbd2af449cfcd36eace9a1b" kind="function"><name>Future</name></member>
     <member refid="classtf_1_1Future_1ae6c5f935a2062f58054b067d39f5e78a" kind="function"><name>Future</name></member>
     <member refid="classtf_1_1Future_1af33647f94075cbbacc260f36917e6ff2" kind="function"><name>operator=</name></member>
     <member refid="classtf_1_1Future_1af3f3c745d9359478e12560ceb2157fc6" kind="function"><name>operator=</name></member>
     <member refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kind="function"><name>cancel</name></member>
+    <member refid="classtf_1_1Future_1a26402c8b71a99835902794f4257dbc35" kind="function"><name>Future</name></member>
     <member refid="classtf_1_1Future_1ad7ad20004a5f6b105d90ef130d9d7e15" kind="function"><name>_assign_future</name></member>
   </compound>
   <compound refid="structtf_1_1cudaFlow_1_1Internal" kind="struct"><name>tf::cudaFlow::Internal</name>
@@ -337,6 +343,12 @@
     <member refid="structtf_1_1ProfileData_1ac8bd5a12ea62aa7f5c1afbcceae1b075" kind="function"><name>save</name></member>
     <member refid="structtf_1_1ProfileData_1a8ba1ef7e916c4b827707a48c886381c4" kind="function"><name>load</name></member>
   </compound>
+  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
+  </compound>
   <compound refid="structtf_1_1Segment" kind="struct"><name>tf::Segment</name>
     <member refid="structtf_1_1Segment_1a3e259f6da83dcf714ec785aa1a3d14bd" kind="variable"><name>name</name></member>
     <member refid="structtf_1_1Segment_1a8f567dbac067898e2e5c4d4947b04fb4" kind="variable"><name>type</name></member>
@@ -347,12 +359,6 @@
     <member refid="structtf_1_1Segment_1ad6393c5cf90f07b0eda6bf0c0321322d" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1aab1d1ddd792d5b7b312ad14532034054" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1a336d5825032b4b9085f1e78a1fa26341" kind="function"><name>span</name></member>
-  </compound>
-  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
   </compound>
   <compound refid="classtf_1_1Semaphore" kind="class"><name>tf::Semaphore</name>
     <member refid="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" kind="friend"><name>Node</name></member>
@@ -473,11 +479,6 @@
     <member refid="classtf_1_1TFProfObserver_1a5debfce27f7e012d22872c134b261c63" kind="function"><name>on_entry</name></member>
     <member refid="classtf_1_1TFProfObserver_1af3a1630b5b1db5341a239a5d4c12c891" kind="function"><name>on_exit</name></member>
   </compound>
-  <compound refid="structtf_1_1ChromeObserver_1_1Timeline" kind="struct"><name>tf::ChromeObserver::Timeline</name>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" kind="variable"><name>origin</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" kind="variable"><name>segments</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" kind="variable"><name>stacks</name></member>
-  </compound>
   <compound refid="structtf_1_1Timeline" kind="struct"><name>tf::Timeline</name>
     <member refid="structtf_1_1Timeline_1ad2de68d870637ec1fccd98c2c8973c9f" kind="variable"><name>uid</name></member>
     <member refid="structtf_1_1Timeline_1ad38c8a527bc603571c53cfce08ccbab7" kind="variable"><name>origin</name></member>
@@ -489,6 +490,11 @@
     <member refid="structtf_1_1Timeline_1a9f315578cf84dd0ddfa4bff43762eebb" kind="function"><name>operator=</name></member>
     <member refid="structtf_1_1Timeline_1a435fff911fa14d75c7000f1a908cee57" kind="function"><name>save</name></member>
     <member refid="structtf_1_1Timeline_1af08d956eca1550dcbe161eb53a11fe46" kind="function"><name>load</name></member>
+  </compound>
+  <compound refid="structtf_1_1ChromeObserver_1_1Timeline" kind="struct"><name>tf::ChromeObserver::Timeline</name>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" kind="variable"><name>origin</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" kind="variable"><name>segments</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" kind="variable"><name>stacks</name></member>
   </compound>
   <compound refid="structtf_1_1Worker" kind="struct"><name>tf::Worker</name>
     <member refid="structtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -1306,7 +1312,7 @@
   </compound>
   <compound refid="GPUTaskingcudaFlowCapturer" kind="page"><name>GPUTaskingcudaFlowCapturer</name>
   </compound>
-  <compound refid="CancelARunningTaskflow" kind="page"><name>CancelARunningTaskflow</name>
+  <compound refid="RequestCancellation" kind="page"><name>RequestCancellation</name>
   </compound>
   <compound refid="Profiler" kind="page"><name>Profiler</name>
   </compound>

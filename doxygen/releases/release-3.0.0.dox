@@ -50,7 +50,7 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li added a custom graph interface to support dynamic polymorphism for tf::cudaGraph
 @li supported separate compilations between %Taskflow and CUDA (see @ref CompileTaskflowWithCUDA)
 @li added tf::Semaphore and tf::CriticalSection to limit the maximum concurrency
-@li added tf::Future to support cancellation of running taskflows (see @ref CancelARunningTaskflow)
+@li added tf::Future to support cancellation of submitted tasks (see @ref RequestCancellation)
 
 @subsection release-3-0-0_cudaflow cudaFlow
 
@@ -89,6 +89,26 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li added parallel transforms (see @ref ParallelTransformsCUDA)
 @li added parallel reduction (see @ref CUDAReduce)
 
+
+@section release-3-0-0_bug_fixes Bug Fixes 
+
+@li fixed the bug in stream capturing (need to use @c ThreadLocal mode)
+@li fixed the bug in reporting wrong worker ids when compiling 
+    a shared library due to the use of @c thread_local (now with C++17 
+    @c inline variable)
+
+@section release-3-0-0_breaking_changes Breaking Changes
+
+@li changed the returned values of asynchronous tasks to be @std_optional in order
+to support cancellation (see @ref AsyncTasking and @ref RequestCancellation)
+
+@section release-3-0-0_deprecated_items Deprecated and Removed Items 
+
+@li removed tf::cudaFlow::device; users may call tf::Taskflow::emplace_on to associate a cudaflow with a GPU device
+@li removed tf::cudaFlow::join, use tf::cudaFlow::offload instead
+@li removed the legacy tf::Framework
+@li removed external mutable use of tf::TaskView
+
 @section release-3-0-0_documentation Documentation
 
 @li added @ref CompileTaskflowWithCUDA
@@ -96,6 +116,7 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li added @ref LimitTheMaximumConcurrency
 @li added @ref AsyncTasking 
 @li added @ref GPUTaskingcudaFlowCapturer
+@li added @ref RequestCancellation
 @li added @ref Profiler
 @li added @ref GPUAlgorithms
   + @ref SingleTaskCUDA to run a kernel function in just a single thread
@@ -112,20 +133,6 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
   + @ref guidelines
   + @ref contributors
 @li improved documentation pages for files
-
-@section release-3-0-0_bug_fixes Bug Fixes 
-
-@li fixed the bug in stream capturing (need to use @c ThreadLocal mode)
-@li fixed the bug in reporting wrong worker ids when compiling 
-    a shared library due to the use of @c thread_local (now with C++17 
-    @c inline variable)
-
-@section release-3-0-0_deprecated_items Deprecated and Removed Items 
-
-@li removed tf::cudaFlow::device; users may call tf::Taskflow::emplace_on to associate a cudaflow with a GPU device
-@li removed tf::cudaFlow::join, use tf::cudaFlow::offload instead
-@li removed the legacy tf::Framework
-@li removed external mutable use of tf::TaskView
 
 @section release-3-0-0_miscellaneous_items Miscellaneous Items
 

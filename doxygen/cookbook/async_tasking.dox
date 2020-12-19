@@ -12,16 +12,19 @@ so that you can incorporate independent, dynamic parallelism in your taskflows.
 %Taskflow executor provides a STL-styled method, 
 tf::Executor::async,
 for you to run a callable object asynchronously.
-The method returns a @std_future that will eventually hold the result
+The method returns a tf::Future object derived from @std_future 
+that will eventually hold the result
 of that function call.
+The result may be optional due to tf::Future::cancel 
+(see @ref RequestCancellation for details).
 
 @code{.cpp}
-std::future<int> future = executor.async([](){
-  // do some stuff ...
-  return 1;
-});
+tf::Future<std::optional<int>> future = executor.async([](){ return 1; });
 executor.wait_for_all();
 assert(future.get() == 1);
+
+tf::Future<void> future_of_void_return = executor.async([](){});
+future_of_void_return.get();
 @endcode
 
 @note
@@ -35,7 +38,6 @@ an asynchronous task compared to tf::Executor::async.
 executor.silent_async([](){
   // just do some stuff in the background ...
 });
-executor.wait_for_all();
 @endcode
 
 Launching asynchronous tasks from an executor is 
@@ -82,7 +84,7 @@ tf::Executor executor;
 std::atomic<int> counter{0};
 
 taskflow.emplace([&] (tf::Subflow& sf){
-  std::vector<std::future<void>> futures;
+  std::vector<tf::Future<void>> futures;
   for(int i=0; i<100; i++) {
     futures.emplace_back(sf.async([&](){ ++counter; }));
   }

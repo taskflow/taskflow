@@ -343,7 +343,8 @@ inline void Taskflow::_dump(
 @class Future
 
 tf::Future is a derived class from std::future that will eventually hold the
-execution result of a submitted taskflow (e.g., tf::Executor::run).
+execution result of a submitted taskflow (e.g., tf::Executor::run)
+or an asynchronous task (e.g., tf::Executor::async).
 In addition to base methods of std::future,
 you can call tf::Future::cancel to cancel the execution of the running taskflow
 associated with this future object.
