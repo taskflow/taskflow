@@ -678,7 +678,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       _invoke_condition_task(worker, node, cond);
     }
     break;
-    //}  // no need to add a break here due to the immediate return
 
     // module task
     case Node::MODULE_TASK: {
@@ -1030,7 +1029,7 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
 
       // Set the promise
       tpg->_promise.set_value();
-      f._topologies.pop_front();
+      f._topologies.pop();
       tpg = f._topologies.front().get();
 
       f._mtx.unlock();
@@ -1045,15 +1044,15 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
       assert(f._topologies.size() == 1);
 
       // Need to back up the promise first here becuz taskflow might be 
-      // destroy before taskflow leaves
+      // destroy soon after calling get
       auto p {std::move(tpg->_promise)};
 
       // Back up lambda capture in case it has the topology pointer, 
       // to avoid it releasing on pop_front ahead of _mtx.unlock & 
       // _promise.set_value. Released safely when leaving scope.
-      auto bc{ std::move( tpg->_call ) };
+      auto c { std::move( tpg->_call ) };
 
-      f._topologies.pop_front();
+      f._topologies.pop();
 
       f._mtx.unlock();
 
@@ -1071,43 +1070,39 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
 
   _increment_topology();
   
-  tf::Future<void> future;
-
   // Special case of predicate
   if(f.empty() || pred()) {
     std::promise<void> promise;
     promise.set_value();
     _decrement_topology_and_notify();
-    future._assign_future(promise.get_future());
-    return future;
+    return tf::Future<void>(promise.get_future(), std::monostate{});
   }
   
   // Multi-threaded execution.
   bool run_now {false};
-  Topology* tpg;
   
+  // create a topology for this run
+  auto tpg = std::make_shared<Topology>(
+    f, std::forward<P>(pred), std::forward<C>(c)
+  );
+  
+  // need to create future before the topology got torn down quickly
+  tf::Future<void> future(tpg->_promise.get_future(), tpg);
+
   {
     std::lock_guard<std::mutex> lock(f._mtx);
-
-    // create a topology for this run
-    f._topologies.emplace_back(
-      std::make_shared<Topology>(f, std::forward<P>(pred), std::forward<C>(c))
-    );
-    tpg = f._topologies.back().get();
-    future._assign_future(tpg->_promise.get_future());
-    future._handle = f._topologies.back();
+    
+    f._topologies.push(tpg);
    
     if(f._topologies.size() == 1) {
       run_now = true;
-      //tpg->_bind(f._graph);
-      //_schedule(tpg->_sources);
     }
   }
   
   // Notice here calling schedule may cause the topology to be removed sonner 
   // before the function leaves.
   if(run_now) {
-    _set_up_topology(tpg);
+    _set_up_topology(tpg.get());
     _schedule(tpg->_sources);
   }
 

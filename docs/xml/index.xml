@@ -238,7 +238,6 @@
     <member refid="classtf_1_1Executor_1a31081f492c376f7b798de0e430534531" kind="function"><name>remove_observer</name></member>
     <member refid="classtf_1_1Executor_1ab92083be20ea77b9fb3eb8ea2d26af68" kind="function"><name>num_observers</name></member>
     <member refid="classtf_1_1Executor_1a57f5105dc812d83f259ec8cab7c96228" kind="function"><name>_wait_for_task</name></member>
-    <member refid="classtf_1_1Executor_1adb01b9b53068459c34b49248eb27068a" kind="function"><name>_is_cancelled</name></member>
     <member refid="classtf_1_1Executor_1ae023614977a19def9e04cf7212eab65b" kind="function"><name>_observer_prologue</name></member>
     <member refid="classtf_1_1Executor_1a9cd8c1a72af4477bc0f9575b68ffb16a" kind="function"><name>_observer_epilogue</name></member>
     <member refid="classtf_1_1Executor_1a8aee6c0ec55b4bfb3909601203e98514" kind="function"><name>_spawn</name></member>
@@ -257,7 +256,7 @@
     <member refid="classtf_1_1Executor_1a505ccafa7ab1855c200d5590499adf5a" kind="function"><name>_invoke_async_task</name></member>
     <member refid="classtf_1_1Executor_1a086b6cfc6a5c57dedcdb35e72c5c2386" kind="function"><name>_set_up_topology</name></member>
     <member refid="classtf_1_1Executor_1aac98be37af843c4ce0c2e56a0c8560e5" kind="function"><name>_tear_down_topology</name></member>
-    <member refid="classtf_1_1Executor_1a70c283d404da3fc252f8cf2a6d775abb" kind="function"><name>_tear_down_invoke</name></member>
+    <member refid="classtf_1_1Executor_1ad6003f99446940bc44d08802ed0f58ac" kind="function"><name>_tear_down_invoke</name></member>
     <member refid="classtf_1_1Executor_1ab85dc42b3e9b18e4b975bd5e9a8c5e72" kind="function"><name>_increment_topology</name></member>
     <member refid="classtf_1_1Executor_1a8728f22f6d177fad84ce667e02a7a3b9" kind="function"><name>_decrement_topology</name></member>
     <member refid="classtf_1_1Executor_1a08945917285cd57d33efc99530fbd384" kind="function"><name>_decrement_topology_and_notify</name></member>
@@ -316,7 +315,6 @@
     <member refid="classtf_1_1Future_1af3f3c745d9359478e12560ceb2157fc6" kind="function"><name>operator=</name></member>
     <member refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kind="function"><name>cancel</name></member>
     <member refid="classtf_1_1Future_1a26402c8b71a99835902794f4257dbc35" kind="function"><name>Future</name></member>
-    <member refid="classtf_1_1Future_1ad7ad20004a5f6b105d90ef130d9d7e15" kind="function"><name>_assign_future</name></member>
   </compound>
   <compound refid="structtf_1_1cudaFlow_1_1Internal" kind="struct"><name>tf::cudaFlow::Internal</name>
     <member refid="structtf_1_1cudaFlow_1_1Internal_1a699f86e6abe3d2aa41432898feb5f281" kind="variable"><name>executor</name></member>
@@ -424,7 +422,7 @@
     <member refid="classtf_1_1Taskflow_1a5f4243689c241ccb5ca4316211d21a62" kind="variable"><name>_name</name></member>
     <member refid="classtf_1_1Taskflow_1a78a7df50a7d2aeacb7c5c6948f5dd94a" kind="variable"><name>_graph</name></member>
     <member refid="classtf_1_1Taskflow_1ad586987506faac6758bcdc6399e4e835" kind="variable"><name>_mtx</name></member>
-    <member refid="classtf_1_1Taskflow_1a19edd1bcd4e3c8cf8b4a3519efa95871" kind="variable"><name>_topologies</name></member>
+    <member refid="classtf_1_1Taskflow_1a7016553915989a1725addcf7d4e975bf" kind="variable"><name>_topologies</name></member>
     <member refid="classtf_1_1Taskflow_1a7242a74dcb16731b4e40816647b93305" kind="function"><name>Taskflow</name></member>
     <member refid="classtf_1_1Taskflow_1ade7fc641d136a3f8c96682c08040626a" kind="function"><name>Taskflow</name></member>
     <member refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kind="function"><name>dump</name></member>
@@ -479,6 +477,11 @@
     <member refid="classtf_1_1TFProfObserver_1a5debfce27f7e012d22872c134b261c63" kind="function"><name>on_entry</name></member>
     <member refid="classtf_1_1TFProfObserver_1af3a1630b5b1db5341a239a5d4c12c891" kind="function"><name>on_exit</name></member>
   </compound>
+  <compound refid="structtf_1_1ChromeObserver_1_1Timeline" kind="struct"><name>tf::ChromeObserver::Timeline</name>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" kind="variable"><name>origin</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" kind="variable"><name>segments</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" kind="variable"><name>stacks</name></member>
+  </compound>
   <compound refid="structtf_1_1Timeline" kind="struct"><name>tf::Timeline</name>
     <member refid="structtf_1_1Timeline_1ad2de68d870637ec1fccd98c2c8973c9f" kind="variable"><name>uid</name></member>
     <member refid="structtf_1_1Timeline_1ad38c8a527bc603571c53cfce08ccbab7" kind="variable"><name>origin</name></member>
@@ -490,11 +493,6 @@
     <member refid="structtf_1_1Timeline_1a9f315578cf84dd0ddfa4bff43762eebb" kind="function"><name>operator=</name></member>
     <member refid="structtf_1_1Timeline_1a435fff911fa14d75c7000f1a908cee57" kind="function"><name>save</name></member>
     <member refid="structtf_1_1Timeline_1af08d956eca1550dcbe161eb53a11fe46" kind="function"><name>load</name></member>
-  </compound>
-  <compound refid="structtf_1_1ChromeObserver_1_1Timeline" kind="struct"><name>tf::ChromeObserver::Timeline</name>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" kind="variable"><name>origin</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" kind="variable"><name>segments</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" kind="variable"><name>stacks</name></member>
   </compound>
   <compound refid="structtf_1_1Worker" kind="struct"><name>tf::Worker</name>
     <member refid="structtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>

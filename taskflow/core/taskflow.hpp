@@ -139,7 +139,7 @@ class Taskflow : public FlowBuilder {
 
     std::mutex _mtx;
 
-    std::list<std::shared_ptr<Topology>> _topologies;
+    std::queue<std::shared_ptr<Topology>> _topologies;
     
     void _dump(std::ostream&, const Taskflow*) const;
     void _dump(std::ostream&, const Node*, Dumper&) const;
@@ -342,6 +342,8 @@ inline void Taskflow::_dump(
 /**
 @class Future
 
+@brief class to access the result of task execution
+
 tf::Future is a derived class from std::future that will eventually hold the
 execution result of a submitted taskflow (e.g., tf::Executor::run)
 or an asynchronous task (e.g., tf::Executor::async).
@@ -427,8 +429,6 @@ class Future : public std::future<T>  {
 
     template <typename P>
     Future(std::future<T>&&, P&&);
-
-    void _assign_future(std::future<T>&&);
 };
 
 template <typename T>
@@ -436,11 +436,6 @@ template <typename P>
 Future<T>::Future(std::future<T>&& fu, P&& p) :
   std::future<T> {std::move(fu)},
   _handle        {std::forward<P>(p)} {
-}
-
-template <typename T>
-void Future<T>::_assign_future(std::future<T>&& fu) {
-  std::future<T>::operator = (std::move(fu));
 }
 
 // Function: cancel

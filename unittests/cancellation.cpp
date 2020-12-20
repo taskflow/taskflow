@@ -167,7 +167,7 @@ TEST_CASE("CancelSubflowAsyncTasks" * doctest::timeout(300)) {
   
   // artificially long (possible larger than 300 seconds)
   for(int i=0; i<100; i++) {
-    taskflow.emplace([&, i](tf::Subflow& sf){
+    taskflow.emplace([&](tf::Subflow& sf){
       for(int j=0; j<100; j++) {
         auto a = sf.emplace([&](){
           std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -302,7 +302,7 @@ TEST_CASE("CancelSubflowAsync") {
 
   taskflow.emplace([&](tf::Subflow& sf){
     for(int i=0; i<10000; i++) {
-      futures.push_back(sf.async([i](){
+      futures.push_back(sf.async([](){
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
       }));
     }

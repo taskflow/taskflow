@@ -86,9 +86,9 @@
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="140" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="140" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Taskflow_1a19edd1bcd4e3c8cf8b4a3519efa95871" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/list" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::list</ref>&lt; <ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; Topology &gt; &gt;</type>
-        <definition>std::list&lt;std::shared_ptr&lt;Topology&gt; &gt; tf::Taskflow::_topologies</definition>
+      <memberdef kind="variable" id="classtf_1_1Taskflow_1a7016553915989a1725addcf7d4e975bf" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/container/queue" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::queue</ref>&lt; <ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; Topology &gt; &gt;</type>
+        <definition>std::queue&lt;std::shared_ptr&lt;Topology&gt; &gt; tf::Taskflow::_topologies</definition>
         <argsstring></argsstring>
         <name>_topologies</name>
         <briefdescription>
@@ -97,7 +97,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="142" column="15" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="142" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="142" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="142" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -404,7 +404,7 @@
       <member refid="classtf_1_1Taskflow_1a78a7df50a7d2aeacb7c5c6948f5dd94a" prot="private" virt="non-virtual"><scope>tf::Taskflow</scope><name>_graph</name></member>
       <member refid="classtf_1_1Taskflow_1ad586987506faac6758bcdc6399e4e835" prot="private" virt="non-virtual"><scope>tf::Taskflow</scope><name>_mtx</name></member>
       <member refid="classtf_1_1Taskflow_1a5f4243689c241ccb5ca4316211d21a62" prot="private" virt="non-virtual"><scope>tf::Taskflow</scope><name>_name</name></member>
-      <member refid="classtf_1_1Taskflow_1a19edd1bcd4e3c8cf8b4a3519efa95871" prot="private" virt="non-virtual"><scope>tf::Taskflow</scope><name>_topologies</name></member>
+      <member refid="classtf_1_1Taskflow_1a7016553915989a1725addcf7d4e975bf" prot="private" virt="non-virtual"><scope>tf::Taskflow</scope><name>_topologies</name></member>
       <member refid="classtf_1_1Taskflow_1a1f00bbe72a1553c9656ecae4d98bb9af" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>clear</name></member>
       <member refid="classtf_1_1FlowBuilder_1a0a01192f4f92c15380a4f259e2fec2d9" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>composed_of</name></member>
       <member refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>dump</name></member>

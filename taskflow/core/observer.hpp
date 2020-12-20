@@ -205,7 +205,7 @@ class ObserverInterface {
 /**
 @class: ChromeObserver
 
-@brief observer interface based on @ChromeTracing format
+@brief observer interface based on Chrome tracing format
 
 A tf::ChromeObserver inherits tf::ObserverInterface and defines methods to dump
 the observed thread activities into a format that can be visualized through
