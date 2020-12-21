@@ -664,7 +664,7 @@ inline FlowBuilder::FlowBuilder(Graph& graph) :
 template <typename C, std::enable_if_t<is_static_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph.emplace_back(
-    std::in_place_type_t<Node::StaticTask>{}, std::forward<C>(c)
+    std::in_place_type_t<Node::Static>{}, std::forward<C>(c)
   ));
 }
 
@@ -672,7 +672,7 @@ Task FlowBuilder::emplace(C&& c) {
 template <typename C, std::enable_if_t<is_dynamic_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph.emplace_back(
-    std::in_place_type_t<Node::DynamicTask>{}, std::forward<C>(c)
+    std::in_place_type_t<Node::Dynamic>{}, std::forward<C>(c)
   ));
 }
 
@@ -680,7 +680,7 @@ Task FlowBuilder::emplace(C&& c) {
 template <typename C, std::enable_if_t<is_condition_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph.emplace_back(
-    std::in_place_type_t<Node::ConditionTask>{}, std::forward<C>(c)
+    std::in_place_type_t<Node::Condition>{}, std::forward<C>(c)
   ));
 }
 
@@ -693,7 +693,7 @@ auto FlowBuilder::emplace(C&&... cs) {
 // Function: composed_of    
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
   auto node = _graph.emplace_back(
-    std::in_place_type_t<Node::ModuleTask>{}, &taskflow
+    std::in_place_type_t<Node::Module>{}, &taskflow
   );
   return Task(node);
 }

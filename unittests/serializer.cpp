@@ -161,7 +161,7 @@ void test_pod() {
 // and input archiver type.
 void test_struct() {
 
-  for(size_t i=0; i<1024; ++i) {
+  for(size_t i=0; i<64; ++i) {
     
     // POD struct.
     PODs o_pods;
@@ -214,22 +214,22 @@ void test_string() {
 
 #define TEST_SEQ_CONT_BODY(container)                          \
                                                                \
-for(size_t i=0; i<1024; i++) {                                 \
+for(size_t i=0; i<64; i++) {                                   \
   const size_t num_data = random<size_t>(1, 1024);             \
   std::ostringstream os;                                       \
-  tf::Serializer oar(os);                                          \
+  tf::Serializer oar(os);                                      \
                                                                \
-  std::container <int>     o_int32s  (num_data);           \
-  std::container <long long>     o_int64s  (num_data);           \
+  std::container <int>     o_int32s  (num_data);               \
+  std::container <long long>     o_int64s  (num_data);         \
   std::container <char>        o_chars   (num_data);           \
   std::container <float>       o_floats  (num_data);           \
   std::container <double>      o_doubles (num_data);           \
   std::container <std::string> o_strings (num_data);           \
   std::container <PODs>        o_podses  (num_data);           \
                                                                \
-  for(auto& v : o_int32s)  v = random<int>();              \
-  for(auto& v : o_int64s)  v = random<long long>();              \
-  for(auto& v : o_chars)   v = random<int>();                 \
+  for(auto& v : o_int32s)  v = random<int>();                  \
+  for(auto& v : o_int64s)  v = random<long long>();            \
+  for(auto& v : o_chars)   v = random<int>();                  \
   for(auto& v : o_floats)  v = random<float>();                \
   for(auto& v : o_doubles) v = random<double>();               \
   for(auto& v : o_strings) v = random<std::string>();          \
@@ -237,10 +237,10 @@ for(size_t i=0; i<1024; i++) {                                 \
   auto o_sz = oar(o_int32s, o_int64s, o_chars, o_floats, o_doubles, o_strings, o_podses);\
                                                                \
   std::istringstream is(os.str());                             \
-  tf::Deserializer iar(is);                                          \
+  tf::Deserializer iar(is);                                    \
                                                                \
-  std::container <int>     i_int32s;                       \
-  std::container <long long>     i_int64s;                       \
+  std::container <int>     i_int32s;                           \
+  std::container <long long>     i_int64s;                     \
   std::container <char>        i_chars;                        \
   std::container <float>       i_floats;                       \
   std::container <double>      i_doubles;                      \
@@ -262,7 +262,7 @@ for(size_t i=0; i<1024; i++) {                                 \
 
 #define TEST_MAP_CONT_BODY(container)                                            \
                                                                                  \
-for (size_t i = 0; i < 1024; i++) {                                              \
+for (size_t i = 0; i < 64; i++) {                                              \
   const size_t num_data = random<size_t>(1, 1024);                               \
   std::ostringstream os;                                                         \
   tf::Serializer oar(os);                                                            \
@@ -310,7 +310,7 @@ for (size_t i = 0; i < 1024; i++) {                                             
 
 #define TEST_SET_CONT_BODY(container)                                           \
                                                                                 \
-for (size_t i = 0; i < 1024; i++) {                                             \
+for (size_t i = 0; i < 64; i++) {                                             \
   const size_t num_data = random<size_t>(1, 1024);                              \
   std::ostringstream os;                                                        \
   tf::Serializer oar(os);                                             \
@@ -358,7 +358,7 @@ for (size_t i = 0; i < 1024; i++) {                                             
 // Template procedure for testing array container.
 void test_array() {
 
-  for(size_t i=0; i<1024; ++i) {
+  for(size_t i=0; i<64; ++i) {
 
     // Output
     std::array<char, 1> ochar;
@@ -398,7 +398,7 @@ void test_array() {
 // Procedure: test_variant
 void test_variant() {
 
-  for (size_t i = 0; i < 1024; i++) {            
+  for (size_t i = 0; i < 64; i++) {            
     
     // Single POD variant.
     std::variant<int> opod1 = random<int>();
@@ -443,7 +443,7 @@ void test_variant() {
 // Procedure: test_time_point
 void test_time_point() {
 
-  for(auto i=0; i<1024; ++i) {
+  for(auto i=0; i<64; ++i) {
 
     auto o_tpt1 = std::chrono::system_clock::now();
     auto o_tpt2 = std::chrono::steady_clock::now();
@@ -485,7 +485,7 @@ void test_time_point() {
 // Procedure: test_optional
 void test_optional() {
 
-  for(auto i=0; i<1024; ++i) {
+  for(auto i=0; i<64; ++i) {
 
     std::optional<bool> o_nbool, i_nbool{true};
     std::optional<bool> o_ybool{true}, i_ybool;
@@ -515,7 +515,7 @@ void test_optional() {
 // Procedure: test_tuple
 void test_tuple() {
 
-  for(auto i=0; i<1024; ++i) {
+  for(auto i=0; i<64; ++i) {
 
     std::tuple<> o0, i0;
     std::tuple<char> o1 {'a'}, i1 {'b'};

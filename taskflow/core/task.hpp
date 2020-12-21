@@ -19,13 +19,13 @@ namespace tf {
 @brief enumeration of all task types
 */
 enum TaskType {
-  PLACEHOLDER_TASK = Node::PLACEHOLDER_TASK,
-  CUDAFLOW_TASK    = Node::CUDAFLOW_TASK,
-  STATIC_TASK      = Node::STATIC_TASK,
-  DYNAMIC_TASK     = Node::DYNAMIC_TASK,
-  CONDITION_TASK   = Node::CONDITION_TASK,
-  MODULE_TASK      = Node::MODULE_TASK,
-  ASYNC_TASK       = Node::ASYNC_TASK
+  PLACEHOLDER_TASK = Node::PLACEHOLDER,
+  CUDAFLOW_TASK    = Node::CUDAFLOW,
+  STATIC_TASK      = Node::STATIC,
+  DYNAMIC_TASK     = Node::DYNAMIC,
+  CONDITION_TASK   = Node::CONDITION,
+  MODULE_TASK      = Node::MODULE,
+  ASYNC_TASK       = Node::ASYNC
 };
 
 /**
@@ -324,7 +324,7 @@ Task& Task::succeed(Ts&&... tasks) {
 
 // Function: composed_of
 inline Task& Task::composed_of(Taskflow& tf) {
-  _node->_handle.emplace<Node::ModuleTask>(&tf);
+  _node->_handle.emplace<Node::Module>(&tf);
   return *this;
 }
 
@@ -457,16 +457,16 @@ inline void Task::dump(std::ostream& os) const {
 template <typename C>
 Task& Task::work(C&& c) {
   if constexpr(is_static_task_v<C>) {
-    _node->_handle.emplace<Node::StaticTask>(std::forward<C>(c));
+    _node->_handle.emplace<Node::Static>(std::forward<C>(c));
   }
   else if constexpr(is_dynamic_task_v<C>) {
-    _node->_handle.emplace<Node::DynamicTask>(std::forward<C>(c));
+    _node->_handle.emplace<Node::Dynamic>(std::forward<C>(c));
   }
   else if constexpr(is_condition_task_v<C>) {
-    _node->_handle.emplace<Node::ConditionTask>(std::forward<C>(c));
+    _node->_handle.emplace<Node::Condition>(std::forward<C>(c));
   }
   else if constexpr(is_cudaflow_task_v<C>) {
-    _node->_handle.emplace<Node::cudaFlowTask>(std::forward<C>(c));
+    _node->_handle.emplace<Node::cudaFlow>(std::forward<C>(c));
   }
   else {
     static_assert(dependent_false_v<C>, "invalid task callable");
