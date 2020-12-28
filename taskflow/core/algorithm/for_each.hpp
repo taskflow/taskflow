@@ -85,7 +85,7 @@ Task FlowBuilder::for_each_guided(B&& beg, E&& end, C&& c, H&& chunk_size){
         
         size_t z = 0;
         size_t p1 = 2 * W * (chunk_size + 1);
-        double p2 = 0.5 / W;
+        double p2 = 0.5 / static_cast<double>(W);
         size_t s0 = next.load(std::memory_order_relaxed);
 
         while(s0 < N) {
@@ -110,7 +110,7 @@ Task FlowBuilder::for_each_guided(B&& beg, E&& end, C&& c, H&& chunk_size){
           }
           // coarse-grained
           else {
-            size_t q = static_cast<size_t>(p2 * r);
+            size_t q = static_cast<size_t>(p2 * static_cast<double>(r));
             if(q < chunk_size) {
               q = chunk_size;
             }
@@ -185,7 +185,7 @@ Task FlowBuilder::for_each_index_guided(
       sf.silent_async([&next, beg, inc, N, chunk_size, W, &c] () mutable {
         
         size_t p1 = 2 * W * (chunk_size + 1);
-        double p2 = 0.5 / W;
+        double p2 = 0.5 / static_cast<double>(W);
         size_t s0 = next.load(std::memory_order_relaxed);
 
         while(s0 < N) {
@@ -209,7 +209,7 @@ Task FlowBuilder::for_each_index_guided(
           }
           // coarse-grained
           else {
-            size_t q = static_cast<size_t>(p2 * r);
+            size_t q = static_cast<size_t>(p2 * static_cast<double>(r));
             if(q < chunk_size) {
               q = chunk_size;
             }

@@ -346,14 +346,14 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
   // std::basic_string
   else if constexpr(is_std_basic_string_v<U>) {
     auto sz = _save(make_size_tag(t.size()));
-    _device.write(reinterpret_cast<const char*>(t.data()), t.size()*sizeof(typename U::value_type));
-    return sz + t.size()*sizeof(typename U::value_type);
+    _device.write(reinterpret_cast<const char*>(t.data()), static_cast<SizeType>(t.size()*sizeof(typename U::value_type)));
+    return sz + static_cast<SizeType>(t.size()) * static_cast<SizeType>(sizeof(typename U::value_type));
   }
   // std::vector
   else if constexpr(is_std_vector_v<U>) {
     if constexpr (std::is_arithmetic_v<typename U::value_type>) {
       auto sz = _save(make_size_tag(t.size()));
-      _device.write(reinterpret_cast<const char*>(t.data()), t.size() * sizeof(typename U::value_type));
+      _device.write(reinterpret_cast<const char*>(t.data()), static_cast<size_t>(t.size() * sizeof(typename U::value_type)));
       return sz + t.size() * sizeof(typename U::value_type);
     } else {
       auto sz = _save(make_size_tag(t.size()));

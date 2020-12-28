@@ -349,20 +349,20 @@ inline size_t Node::num_dependents() const {
 
 // Function: num_weak_dependents
 inline size_t Node::num_weak_dependents() const {
-  return std::count_if(
+  return static_cast<size_t>(std::count_if(
     _dependents.begin(), 
     _dependents.end(), 
     [](Node* node){ return node->_handle.index() == Node::CONDITION_TASK; } 
-  );
+  ));
 }
 
 // Function: num_strong_dependents
 inline size_t Node::num_strong_dependents() const {
-  return std::count_if(
+  return static_cast<size_t>(std::count_if(
     _dependents.begin(), 
     _dependents.end(), 
     [](Node* node){ return node->_handle.index() != Node::CONDITION_TASK; } 
-  );
+  ));
 }
 
 // Function: name
@@ -416,7 +416,7 @@ inline void Node::_set_up_join_counter() {
     }
   }
 
-  _join_counter.store(c, std::memory_order_relaxed);
+  _join_counter.store(static_cast<size_t>(c), std::memory_order_relaxed);
 }
 
 
@@ -502,7 +502,7 @@ inline void Graph::clear_detached() {
   for(auto itr = mid; itr != _nodes.end(); ++itr) {
     node_pool.recycle(*itr);
   }
-  _nodes.resize(std::distance(_nodes.begin(), mid));
+  _nodes.resize(static_cast<std::vector<Node*>::size_type>(std::distance(_nodes.begin(), mid)));
 }
 
 // Procedure: merge
