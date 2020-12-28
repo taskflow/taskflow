@@ -21,12 +21,12 @@ struct Worker {
 
   private:
 
-  size_t id;
-  size_t vtm;
-  Executor* executor;
-  Notifier::Waiter* waiter;
-  std::mt19937 rdgen { std::random_device{}() };
-  TaskQueue<Node*> wsq;
+    size_t _id;
+    size_t _vtm;
+    Executor* _executor;
+    Notifier::Waiter* _waiter;
+    std::default_random_engine _rdgen { std::random_device{}() };
+    TaskQueue<Node*> _wsq;
 };
 
 // ----------------------------------------------------------------------------
@@ -84,17 +84,17 @@ inline WorkerView::WorkerView(const Worker& w) : _worker{w} {
 
 // function: id
 inline size_t WorkerView::id() const {
-  return _worker.id;
+  return _worker._id;
 }
 
 // Function: queue_size
 inline size_t WorkerView::queue_size() const {
-  return _worker.wsq.size();
+  return _worker._wsq.size();
 }
 
 // Function: queue_capacity
 inline size_t WorkerView::queue_capacity() const {
-  return static_cast<size_t>(_worker.wsq.capacity());
+  return static_cast<size_t>(_worker._wsq.capacity());
 }
 
 

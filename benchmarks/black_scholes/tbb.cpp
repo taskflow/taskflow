@@ -19,7 +19,7 @@ void bs_tbb(unsigned num_threads) {
 
       prices[i] = price;
 #ifdef ERR_CHK 
-    check_error(i, price);
+      check_error(i, price);
 #endif
     });
 	}

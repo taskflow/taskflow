@@ -16,6 +16,10 @@
         <name>Link Objects Using nvcc</name>
         <reference>CompileTaskflowWithCUDA_1CompileTaskflowWithCUDANaiveLinking</reference>
     </tocsect>
+      <tocsect>
+        <name>Link Objects Using Different Linkers</name>
+        <reference>CompileTaskflowWithCUDA_1CompileTaskflowWithCUDADifferentLinkers</reference>
+    </tocsect>
     </tableofcontents>
     </tocsect>
     </tableofcontents>
@@ -42,7 +46,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task1.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(task2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
@@ -74,7 +78,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task1.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(task2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -114,8 +118,8 @@
 <codeline><highlight class="normal">cudaflow.cpp!</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="CompileTaskflowWithCUDA_1CompileTaskflowWithCUDANaiveLinking">
-<title>Link Objects Using nvcc</title>
+<sect2 id="CompileTaskflowWithCUDA_1CompileTaskflowWithCUDADifferentLinkers">
+<title>Link Objects Using Different Linkers</title>
 <para>You can choose to use a compiler other than <computeroutput>nvcc</computeroutput> for the final link step. Since your CPU compiler does not know how to link CUDA device code, you have to add a step in your build to have <computeroutput>nvcc</computeroutput> link the CUDA device code, using the option <computeroutput>-dlink:</computeroutput> </para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-o<sp/>gpuCode.o<sp/>-dlink<sp/>main.o<sp/>cudaflow.o</highlight></codeline>
 </programlisting></para>

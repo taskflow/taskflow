@@ -4,8 +4,6 @@
     <compoundname>tf::TFProfObserver</compoundname>
     <basecompoundref refid="classtf_1_1ObserverInterface" prot="public" virt="non-virtual">tf::ObserverInterface</basecompoundref>
     <includes refid="observer_8hpp" local="no">observer.hpp</includes>
-    <innerclass refid="structtf_1_1TFProfObserver_1_1Segment" prot="private">tf::TFProfObserver::Segment</innerclass>
-    <innerclass refid="structtf_1_1TFProfObserver_1_1Timeline" prot="private">tf::TFProfObserver::Timeline</innerclass>
       <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1TFProfObserver_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>friend class</type>
@@ -18,7 +16,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="363" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="363" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="449" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="449" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1TFProfObserver_1a7857257f009bf5cae6bda4505fffbd2d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class TFProfManager</definition>
+        <argsstring></argsstring>
+        <name>TFProfManager</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="450" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="450" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -33,20 +44,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="424" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="424" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="477" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="477" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1TFProfObserver_1a689ea7d2a99d23b46d9d0fe29c90c2ec" prot="private" static="no" mutable="no">
-        <type>UUID</type>
-        <definition>UUID tf::TFProfObserver::_uuid</definition>
+      <memberdef kind="variable" id="classtf_1_1TFProfObserver_1a07f9db5edc30436d8ec55bdaecca5aaa" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/stack" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::stack</ref>&lt; <ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref> &gt; &gt;</type>
+        <definition>std::vector&lt;std::stack&lt;observer_stamp_t&gt; &gt; tf::TFProfObserver::_stacks</definition>
         <argsstring></argsstring>
-        <name>_uuid</name>
+        <name>_stacks</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="426" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="426" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="479" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="479" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -66,7 +77,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="401" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="494" bodyend="564"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="458" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="531" bodyend="601"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TFProfObserver_1a59e82cb3f9b0ada38aa1ddea14f14d02" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
@@ -80,7 +91,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="406" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="567" bodyend="571"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="463" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="604" bodyend="608"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TFProfObserver_1a5e1f63034a96a5a79cef6da412efd203" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -94,7 +105,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="411" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="482" bodyend="491"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="468" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="519" bodyend="528"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TFProfObserver_1a8b3b0bee8762af654cfebd2bb2ee98ed" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -108,7 +119,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="416" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="574" bodyend="581"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="473" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="611" bodyend="618"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -139,7 +150,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="420" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="449" bodyend="455"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="481" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="487" bodyend="492"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TFProfObserver_1a5debfce27f7e012d22872c134b261c63" prot="private" static="no" const="no" explicit="no" inline="yes" final="yes" virt="virtual">
         <type>void</type>
@@ -180,7 +191,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="421" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="458" bodyend="460"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="482" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="495" bodyend="497"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TFProfObserver_1af3a1630b5b1db5341a239a5d4c12c891" prot="private" static="no" const="no" explicit="no" inline="yes" final="yes" virt="virtual">
         <type>void</type>
@@ -221,11 +232,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="422" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="463" bodyend="479"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="483" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="500" bodyend="516"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>observer interface based on <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink> format </para>
+<para>observer interface based on the built-in taskflow profiler format </para>
     </briefdescription>
     <detaileddescription>
 <para>A <ref refid="classtf_1_1TFProfObserver" kindref="compound">tf::TFProfObserver</ref> inherits <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref> and defines methods to dump the observed thread activities into a format that can be visualized through <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink>.</para>
@@ -239,7 +250,7 @@
 <codeline><highlight class="normal"><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr&lt;tf::TFProfObserver&gt;</ref><sp/>observer<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1aff77def96ae740d648dd84e571237c83" kindref="member">make_observer</ref>&lt;<ref refid="classtf_1_1TFProfObserver" kindref="compound">tf::TFProfObserver</ref>&gt;();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>thread<sp/>activities<sp/>to<sp/>Taskflow<sp/>Profiler<sp/>format.</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">observer-&gt;dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
@@ -270,10 +281,10 @@
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="361" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="361" bodyend="427"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="447" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="447" bodyend="484"/>
     <listofallmembers>
+      <member refid="classtf_1_1TFProfObserver_1a07f9db5edc30436d8ec55bdaecca5aaa" prot="private" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>_stacks</name></member>
       <member refid="classtf_1_1TFProfObserver_1a38776d45d5d762b56c28c034d71170a9" prot="private" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>_timeline</name></member>
-      <member refid="classtf_1_1TFProfObserver_1a689ea7d2a99d23b46d9d0fe29c90c2ec" prot="private" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>_uuid</name></member>
       <member refid="classtf_1_1TFProfObserver_1a5e1f63034a96a5a79cef6da412efd203" prot="public" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>clear</name></member>
       <member refid="classtf_1_1TFProfObserver_1a9f1e839e2a8d3abd0b91ac454f0d078b" prot="public" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>dump</name></member>
       <member refid="classtf_1_1TFProfObserver_1a59e82cb3f9b0ada38aa1ddea14f14d02" prot="public" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>dump</name></member>
@@ -282,6 +293,7 @@
       <member refid="classtf_1_1TFProfObserver_1a5debfce27f7e012d22872c134b261c63" prot="private" virt="virtual"><scope>tf::TFProfObserver</scope><name>on_entry</name></member>
       <member refid="classtf_1_1TFProfObserver_1af3a1630b5b1db5341a239a5d4c12c891" prot="private" virt="virtual"><scope>tf::TFProfObserver</scope><name>on_exit</name></member>
       <member refid="classtf_1_1TFProfObserver_1aa030d8154dd03aea3b8fa8ce42e1151b" prot="private" virt="virtual"><scope>tf::TFProfObserver</scope><name>set_up</name></member>
+      <member refid="classtf_1_1TFProfObserver_1a7857257f009bf5cae6bda4505fffbd2d" prot="private" virt="non-virtual"><scope>tf::TFProfObserver</scope><name>TFProfManager</name></member>
       <member refid="classtf_1_1ObserverInterface_1adfd71c3af3ae2ea4f41eed26c1b6f604" prot="public" virt="virtual"><scope>tf::TFProfObserver</scope><name>~ObserverInterface</name></member>
     </listofallmembers>
   </compounddef>

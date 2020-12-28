@@ -80,7 +80,8 @@ Task FlowBuilder::for_each_guided(B&& beg, E&& end, C&& c, H&& chunk_size){
 
     for(size_t w=0; w<W; w++) {
 
-      sf.emplace([&next, beg, N, chunk_size, W, &c] () mutable {
+      //sf.emplace([&next, beg, N, chunk_size, W, &c] () mutable {
+      sf.silent_async([&next, beg, N, chunk_size, W, &c] () mutable {
         
         size_t z = 0;
         size_t p1 = 2 * W * (chunk_size + 1);
@@ -125,8 +126,8 @@ Task FlowBuilder::for_each_guided(B&& beg, E&& end, C&& c, H&& chunk_size){
             }
           }
         }
-
-      }).name("pfg_"s + std::to_string(w));
+      //}).name("pfg_"s + std::to_string(w));
+      });
     }
     
     sf.join();
@@ -180,7 +181,8 @@ Task FlowBuilder::for_each_index_guided(
 
     for(size_t w=0; w<W; w++) {
 
-      sf.emplace([&next, beg, inc, N, chunk_size, W, &c] () mutable {
+      //sf.emplace([&next, beg, inc, N, chunk_size, W, &c] () mutable {
+      sf.silent_async([&next, beg, inc, N, chunk_size, W, &c] () mutable {
         
         size_t p1 = 2 * W * (chunk_size + 1);
         double p2 = 0.5 / W;
@@ -222,7 +224,8 @@ Task FlowBuilder::for_each_index_guided(
             }
           }
         } 
-      }).name("pfg_"s + std::to_string(w));
+      //}).name("pfg_"s + std::to_string(w));
+      });
     }
     
     sf.join();
@@ -430,7 +433,8 @@ Task FlowBuilder::for_each_dynamic(
 
     for(size_t w=0; w<W; w++) {
 
-      sf.emplace([&next, beg, N, chunk_size, &c] () mutable {
+      //sf.emplace([&next, beg, N, chunk_size, &c] () mutable {
+      sf.silent_async([&next, beg, N, chunk_size, &c] () mutable {
         
         size_t z = 0;
 
@@ -449,8 +453,8 @@ Task FlowBuilder::for_each_dynamic(
           }
           z = e0;
         }
-
-      }).name("pfd_"s + std::to_string(w));
+      //}).name("pfd_"s + std::to_string(w));
+      });
     }
     
     sf.join();
@@ -502,7 +506,8 @@ Task FlowBuilder::for_each_index_dynamic(
 
     for(size_t w=0; w<W; w++) {
 
-      sf.emplace([&next, beg, inc, N, chunk_size, &c] () mutable {
+      //sf.emplace([&next, beg, inc, N, chunk_size, &c] () mutable {
+      sf.silent_async([&next, beg, inc, N, chunk_size, &c] () mutable {
 
         while(1) {
           
@@ -518,7 +523,8 @@ Task FlowBuilder::for_each_index_dynamic(
             c(s);
           }
         }
-      }).name("pfd_"s + std::to_string(w));
+      //}).name("pfd_"s + std::to_string(w));
+      });
     }
     
     sf.join();
@@ -583,13 +589,15 @@ Task FlowBuilder::for_each_static(
           break;
         }
         
-        sf.emplace([&next, beg, items, &c] () mutable {
+        //sf.emplace([&next, beg, items, &c] () mutable {
+        sf.silent_async([&next, beg, items, &c] () mutable {
           size_t s0 = next.fetch_add(items, std::memory_order_relaxed);
           std::advance(beg, s0);
           for(size_t i=0; i<items; i++) {
             c(*beg++);
           }
-        }).name("pfs_"s + std::to_string(i));
+        //}).name("pfs_"s + std::to_string(i));
+        });
       }
 
     }
@@ -602,7 +610,8 @@ Task FlowBuilder::for_each_static(
           break;
         }
 
-        sf.emplace([&next, beg, end, chunk_size, N, W, &c] () mutable {
+        //sf.emplace([&next, beg, end, chunk_size, N, W, &c] () mutable {
+        sf.silent_async([&next, beg, end, chunk_size, N, W, &c] () mutable {
 
           size_t trip = W*chunk_size;
           size_t s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
@@ -627,8 +636,8 @@ Task FlowBuilder::for_each_static(
 
             std::advance(beg, trip);
           }
-
-        }).name("pfs_"s + std::to_string(i));
+        //}).name("pfs_"s + std::to_string(i));
+        });
       }
     }
 
@@ -690,7 +699,8 @@ Task FlowBuilder::for_each_index_static(
           break;
         }
         
-        sf.emplace([&next, beg, &inc, items, &c] () mutable {
+        //sf.emplace([&next, beg, &inc, items, &c] () mutable {
+        sf.silent_async([&next, beg, &inc, items, &c] () mutable {
 
           size_t s0 = next.fetch_add(items, std::memory_order_relaxed);
         
@@ -699,7 +709,8 @@ Task FlowBuilder::for_each_index_static(
           for(size_t x=0; x<items; x++, s+=inc) {
             c(s);
           }
-        }).name("pfs_"s + std::to_string(i));
+        //}).name("pfs_"s + std::to_string(i));
+        });
       }
 
     }
@@ -711,7 +722,8 @@ Task FlowBuilder::for_each_index_static(
           break;
         }
 
-        sf.emplace([&next, beg, inc, chunk_size, N, W, &c] () mutable {
+        //sf.emplace([&next, beg, inc, chunk_size, N, W, &c] () mutable {
+        sf.silent_async([&next, beg, inc, chunk_size, N, W, &c] () mutable {
 
           size_t trip = W * chunk_size;
           size_t s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
@@ -740,8 +752,8 @@ Task FlowBuilder::for_each_index_static(
               break;
             }
           }
-
-        }).name("pfs_"s + std::to_string(i));
+        //}).name("pfs_"s + std::to_string(i));
+        });
       }
     }
 

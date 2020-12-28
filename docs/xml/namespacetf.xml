@@ -3,20 +3,39 @@
   <compounddef id="namespacetf" kind="namespace" language="C++">
     <compoundname>tf</compoundname>
     <innerclass refid="classtf_1_1ChromeObserver" prot="public">tf::ChromeObserver</innerclass>
+    <innerclass refid="classtf_1_1CriticalSection" prot="public">tf::CriticalSection</innerclass>
     <innerclass refid="classtf_1_1cublasFlowCapturer" prot="public">tf::cublasFlowCapturer</innerclass>
     <innerclass refid="classtf_1_1cudaFlow" prot="public">tf::cudaFlow</innerclass>
     <innerclass refid="classtf_1_1cudaFlowCapturer" prot="public">tf::cudaFlowCapturer</innerclass>
     <innerclass refid="classtf_1_1cudaFlowCapturerBase" prot="public">tf::cudaFlowCapturerBase</innerclass>
     <innerclass refid="classtf_1_1cudaScopedDevice" prot="public">tf::cudaScopedDevice</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01bool_01_4" prot="private">tf::cudaSharedMemory&lt; bool &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01char_01_4" prot="private">tf::cudaSharedMemory&lt; char &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01double_01_4" prot="private">tf::cudaSharedMemory&lt; double &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01float_01_4" prot="private">tf::cudaSharedMemory&lt; float &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01int_01_4" prot="private">tf::cudaSharedMemory&lt; int &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01long_01_4" prot="private">tf::cudaSharedMemory&lt; long &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01short_01_4" prot="private">tf::cudaSharedMemory&lt; short &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01char_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned char &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01int_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned int &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01long_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned long &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01short_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned short &gt;</innerclass>
     <innerclass refid="classtf_1_1cudaTask" prot="public">tf::cudaTask</innerclass>
     <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
+    <innerclass refid="classtf_1_1Future" prot="public">tf::Future</innerclass>
     <innerclass refid="classtf_1_1ObserverInterface" prot="public">tf::ObserverInterface</innerclass>
+    <innerclass refid="structtf_1_1ProfileData" prot="private">tf::ProfileData</innerclass>
+    <innerclass refid="structtf_1_1Segment" prot="private">tf::Segment</innerclass>
+    <innerclass refid="classtf_1_1Semaphore" prot="public">tf::Semaphore</innerclass>
     <innerclass refid="classtf_1_1Subflow" prot="public">tf::Subflow</innerclass>
     <innerclass refid="classtf_1_1Task" prot="public">tf::Task</innerclass>
     <innerclass refid="classtf_1_1Taskflow" prot="public">tf::Taskflow</innerclass>
     <innerclass refid="classtf_1_1TaskView" prot="public">tf::TaskView</innerclass>
+    <innerclass refid="classtf_1_1TFProfManager" prot="private">tf::TFProfManager</innerclass>
     <innerclass refid="classtf_1_1TFProfObserver" prot="public">tf::TFProfObserver</innerclass>
+    <innerclass refid="structtf_1_1Timeline" prot="private">tf::Timeline</innerclass>
     <innerclass refid="structtf_1_1Worker" prot="private">tf::Worker</innerclass>
     <innerclass refid="classtf_1_1WorkerView" prot="public">tf::WorkerView</innerclass>
       <sectiondef kind="enum">
@@ -114,7 +133,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="592" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="592" bodyend="595"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="715" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="715" bodyend="718"/>
       </memberdef>
       <memberdef kind="enum" id="namespacetf_1ac747e6c7cf88c7b1ff7126e62babebb8" prot="public" static="no" strong="no">
         <type></type>
@@ -185,7 +204,46 @@
         <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="21" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="21" bodyend="29"/>
       </memberdef>
       </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" prot="public" static="no">
+        <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
+        <definition>using tf::observer_stamp_t = typedef std::chrono::time_point&lt;std::chrono::steady_clock&gt;</definition>
+        <argsstring></argsstring>
+        <name>observer_stamp_t</name>
+        <briefdescription>
+<para>default time point type of observers </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="20" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
       <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacetf_1a3d823d8776745f3348dc87bba2fcc91b" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a0681fa0518bdd3e3d198e1b1b744c06f" kindref="member">TaskType</ref>, 7 &gt;</type>
+        <definition>constexpr std::array&lt;TaskType, 7&gt; tf::TASK_TYPES</definition>
+        <argsstring></argsstring>
+        <name>TASK_TYPES</name>
+        <initializer>= {
+  PLACEHOLDER_TASK,
+  CUDAFLOW_TASK,
+  STATIC_TASK,
+  DYNAMIC_TASK,
+  CONDITION_TASK,
+  MODULE_TASK,
+  ASYNC_TASK
+}</initializer>
+        <briefdescription>
+<para>array of all task types (used for iterating task types) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="34" column="29" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="34" bodyend="-1"/>
+      </memberdef>
       <memberdef kind="variable" id="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
           <param>
@@ -206,7 +264,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="62" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="62" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="75" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="75" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -227,7 +285,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="71" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="71" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="84" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="84" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -248,7 +306,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="79" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="79" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="92" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="92" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1adb8433555d8cdc0b3c5d95e8d51a90f0" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -270,7 +328,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="88" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="88" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="101" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="101" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
@@ -290,7 +348,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="34" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="34" bodyend="50"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="47" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="47" bodyend="63"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ad216aea4d0f648e149e47374ad015b1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
@@ -312,7 +370,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="443" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="443" bodyend="446"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="484" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="484" bodyend="487"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a4eea58a9e7eab408c44378dbc2be4f43" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -330,7 +388,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="600" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="600" bodyend="608"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="723" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="723" bodyend="731"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abffa70155a5f160b7ceb86ee52ab2136" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -1060,6 +1118,20 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="210" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="210" bodyend="213"/>
       </memberdef>
+      <memberdef kind="function" id="namespacetf_1ae680bf7822f2b6b66a6199f0b77f7241" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>constexpr size_t</type>
+        <definition>constexpr size_t tf::cuda_default_max_threads_per_block</definition>
+        <argsstring>()</argsstring>
+        <name>cuda_default_max_threads_per_block</name>
+        <briefdescription>
+<para>queries the maximum threads allowed per block </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="18" column="18" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="18" bodyend="20"/>
+      </memberdef>
       <memberdef kind="function" id="namespacetf_1a50a8f777333cc26d5f5d8c4d37bcdc73" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr size_t</type>
         <definition>constexpr size_t tf::cuda_default_threads_per_block</definition>
@@ -1070,13 +1142,13 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
           <declname>N</declname>
         </param>
         <briefdescription>
-<para>the default number of threads per block in an 1D vector of N elements </para>
+<para>queries the default number of threads per block in an 1D vector of N elements </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="17" column="18" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="17" bodyend="19"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="25" column="18" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="25" bodyend="31"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a30fa078dcf625e9eada5a95af1467588" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr const char *</type>
@@ -1090,11 +1162,11 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/taskflow.hpp" line="49" column="22" bodyfile="/Users/twhuang/Code/taskflow/taskflow/taskflow.hpp" bodystart="49" bodyend="51"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/taskflow.hpp" line="50" column="22" bodyfile="/Users/twhuang/Code/taskflow/taskflow/taskflow.hpp" bodystart="50" bodyend="52"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>The taskflow namespace. </para>
+<para>taskflow namespace </para>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>

@@ -1,16 +1,17 @@
 #pragma once
 #include "./graph_base.hpp"
 
-//   o
-// / | \
-//o  o  o
-// \ | /
-//   o
-// / | \
-//o  o  o
-// \ | /
-//   o
-//  ...
+/*
+   o
+ / | \
+o  o  o
+ \ | /
+   o
+ / | \
+o  o  o
+ \ | /
+   o
+*/
 class Diamond: public Graph {
 
   public:

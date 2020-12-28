@@ -282,6 +282,12 @@
               C&amp;&amp; cmp) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a dynamic task to perform STL-styled parallel sort</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename B, typename E&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a559afa5066782bc6c38738260e3d4c2e" class="m-doc">sort</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
+              E&amp;&amp; last) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>constructs a dynamic task to perform STL-styled parallel sort using the <code>std::less&lt;T&gt;</code> comparator, where <code>T</code> is the element type</dd>
           </dl>
         </section>
         <section id="pro-attribs">
@@ -1711,11 +1717,11 @@
               <tbody>
                 <tr>
                   <td style="width: 1%">B</td>
-                  <td>beginning iterator type</td>
+                  <td>beginning iterator type (random-accessible)</td>
                 </tr>
                 <tr>
                   <td>E</td>
-                  <td>ending iterator type</td>
+                  <td>ending iterator type (random-accessible)</td>
                 </tr>
                 <tr>
                   <td>C</td>
@@ -1737,6 +1743,45 @@
                 <tr>
                   <td>cmp</td>
                   <td>comparison function object</td>
+                </tr>
+              </tbody>
+            </table>
+<p>The task spawns a subflow to parallelly sort elements in the range <code>[first, last)</code>.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p>
+          </div></section>
+          <section class="m-doc-details" id="a559afa5066782bc6c38738260e3d4c2e"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename B, typename E&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a559afa5066782bc6c38738260e3d4c2e" class="m-doc-self">sort</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
+              E&amp;&amp; last)</span></span>
+            </h3>
+            <p>constructs a dynamic task to perform STL-styled parallel sort using the <code>std::less&lt;T&gt;</code> comparator, where <code>T</code> is the element type</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">B</td>
+                  <td>beginning iterator type (random-accessible)</td>
+                </tr>
+                <tr>
+                  <td>E</td>
+                  <td>ending iterator type (random-accessible)</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning (inclusive)</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end (exclusive)</td>
                 </tr>
               </tbody>
             </table>

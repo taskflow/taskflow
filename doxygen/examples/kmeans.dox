@@ -98,7 +98,7 @@ std::vector<int> best_ks(N);  // nearest centroid of each point
 unsigned P = 12;  // 12 partitioned tasks
 
 // update cluster
-taskflow.parallel_for(0, N, 1, [&](int i){
+taskflow.for_each_index(0, N, 1, [&](int i){
   float x = px[i];
   float y = py[i];
   float best_d = std::numeric_limits<float>::max();
@@ -185,7 +185,7 @@ void kmeans_par(
   }).name("clean_up");
 
   // update cluster
-  tf::Task pf = taskflow.parallel_for(0, N, 1, [&](int i){
+  tf::Task pf = taskflow.for_each_index(0, N, 1, [&](int i){
     float x = px[i];
     float y = py[i];
     float best_d = std::numeric_limits<float>::max();

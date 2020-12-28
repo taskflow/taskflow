@@ -20,7 +20,7 @@ class FlowBuilder {
   friend class Executor;
 
   public:
-
+    
     /**
     @brief creates a static task
     
@@ -603,8 +603,8 @@ class FlowBuilder {
     /**
     @brief constructs a dynamic task to perform STL-styled parallel sort
   
-    @tparam B beginning iterator type
-    @tparam E ending iterator type
+    @tparam B beginning iterator type (random-accessible)
+    @tparam E ending iterator type (random-accessible)
     @tparam C comparator type
 
     @param first iterator to the beginning (inclusive)
@@ -619,6 +619,24 @@ class FlowBuilder {
     template <typename B, typename E, typename C>
     Task sort(B&& first, E&& last, C&& cmp);
     
+    /**
+    @brief constructs a dynamic task to perform STL-styled parallel sort using
+           the @c std::less<T> comparator, where @c T is the element type
+    
+    @tparam B beginning iterator type (random-accessible)
+    @tparam E ending iterator type (random-accessible)
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    
+    The task spawns a subflow to parallelly sort elements in the range 
+    <tt>[first, last)</tt>. 
+
+    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+     */
+    template <typename B, typename E>
+    Task sort(B&& first, E&& last);
+    
   protected:
     
     /**
@@ -630,7 +648,7 @@ class FlowBuilder {
     @brief associated graph object
     */
     Graph& _graph;
-
+    
   private:
 
     template <typename L>
@@ -646,7 +664,7 @@ inline FlowBuilder::FlowBuilder(Graph& graph) :
 template <typename C, std::enable_if_t<is_static_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph.emplace_back(
-    std::in_place_type_t<Node::StaticTask>{}, std::forward<C>(c)
+    std::in_place_type_t<Node::Static>{}, std::forward<C>(c)
   ));
 }
 
@@ -654,7 +672,7 @@ Task FlowBuilder::emplace(C&& c) {
 template <typename C, std::enable_if_t<is_dynamic_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph.emplace_back(
-    std::in_place_type_t<Node::DynamicTask>{}, std::forward<C>(c)
+    std::in_place_type_t<Node::Dynamic>{}, std::forward<C>(c)
   ));
 }
 
@@ -662,7 +680,7 @@ Task FlowBuilder::emplace(C&& c) {
 template <typename C, std::enable_if_t<is_condition_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph.emplace_back(
-    std::in_place_type_t<Node::ConditionTask>{}, std::forward<C>(c)
+    std::in_place_type_t<Node::Condition>{}, std::forward<C>(c)
   ));
 }
 
@@ -675,7 +693,7 @@ auto FlowBuilder::emplace(C&&... cs) {
 // Function: composed_of    
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
   auto node = _graph.emplace_back(
-    std::in_place_type_t<Node::ModuleTask>{}, &taskflow
+    std::in_place_type_t<Node::Module>{}, &taskflow
   );
   return Task(node);
 }
@@ -779,6 +797,48 @@ class Subflow : public FlowBuilder {
     When a subflow is joined or detached, it becomes not joinable.
     */
     bool joinable() const;
+
+    /** 
+    @brief runs a given function asynchronously
+
+    @tparam F callable type
+    @tparam ArgsT parameter types
+
+    @param f callable object to call
+    @param args parameters to pass to the callable
+    
+    @return a tf::Future that will holds the result of the execution
+
+    This method is thread-safe and can be called by multiple tasks in the 
+    subflow at the same time.
+    The difference to tf::Executor::async is that the created asynchronous task
+    pertains to the subflow. 
+    When the subflow joins, all asynchronous tasks created from the subflow
+    are guaranteed to finish before the join.
+    For example:
+
+    @code{.cpp}
+    std::atomic<int> counter(0);
+    taskflow.empalce([&](tf::Subflow& sf){
+      for(int i=0; i<100; i++) {
+        sf.async([&](){ counter++; });
+      }
+      sf.join();
+      assert(counter == 100);
+    });
+    @endcode
+
+    You cannot create asynchronous tasks from a detached subflow.
+    Doing this results in undefined behavior.
+    */
+    template <typename F, typename... ArgsT>
+    auto async(F&& f, ArgsT&&... args);
+    
+    /**
+    @brief similar to tf::Subflow::async but did not return a future object
+     */
+    template <typename F, typename... ArgsT>
+    void silent_async(F&& f, ArgsT&&... args);
 
   private:
     

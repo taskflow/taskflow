@@ -19,7 +19,7 @@
 <para>Taskflow provides template function that constructs a task to perform parallel reduction over a range of items.</para>
 <sect1 id="A2Reduce_1A2ParallelReduction">
 <title>Parallel Reduction</title>
-<para>The reduction task created by <ref refid="classtf_1_1FlowBuilder_1ad999cd75045db225a42d5881d6db1223" kindref="member">tf::Taskflow::reduce(B&amp;&amp; first, E&amp;&amp; last, T&amp; result, O&amp;&amp; bop)</ref> performs parallel reduction over a range of elements specified by <computeroutput>[beg, end)</computeroutput> using the binary operator <computeroutput>bop</computeroutput> and stores the reduced result in <computeroutput>result</computeroutput>. It represents the parallel execution of the following reduction loop:</para>
+<para>The reduction task created by <ref refid="classtf_1_1FlowBuilder_1ad999cd75045db225a42d5881d6db1223" kindref="member">tf::Taskflow::reduce(B&amp;&amp; first, E&amp;&amp; last, T&amp; result, O&amp;&amp; bop)</ref> performs parallel reduction over a range of elements specified by <computeroutput>[first, last)</computeroutput> using the binary operator <computeroutput>bop</computeroutput> and stores the reduced result in <computeroutput>result</computeroutput>. It represents the parallel execution of the following reduction loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr&lt;last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>result<sp/>=<sp/>bop(result,<sp/>*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -31,7 +31,7 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1ad999cd75045db225a42d5881d6db1223" kindref="member">reduce</ref>(vec.begin(),<sp/>vec.end(),<sp/>sum,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>r)<sp/>{<sp/>return<sp/>l<sp/>+<sp/>r;<sp/>}<sp/><sp/></highlight><highlight class="comment">//<sp/>binary<sp/>reducer<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(sum<sp/>==<sp/>100<sp/>+<sp/>55);</highlight></codeline>
 </programlisting></para>
@@ -58,7 +58,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">init.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(task);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(sum<sp/>==<sp/>100<sp/>+<sp/>55);</highlight></codeline>
 </programlisting></para>
@@ -84,7 +84,7 @@
 <codeline><highlight class="normal"><sp/><sp/>}<sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">);<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();<sp/></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(sum<sp/>==<sp/>1<sp/>+<sp/>2<sp/>+<sp/>3<sp/>+<sp/>4<sp/>+<sp/>5<sp/>+<sp/>6<sp/>+<sp/>7<sp/>+<sp/>8);<sp/><sp/></highlight><highlight class="comment">//<sp/>sum<sp/>will<sp/>be<sp/>36<sp/></highlight></codeline>
 </programlisting></para>

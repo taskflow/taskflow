@@ -19,13 +19,26 @@ namespace tf {
 @brief enumeration of all task types
 */
 enum TaskType {
-  PLACEHOLDER_TASK = Node::PLACEHOLDER_TASK,
-  CUDAFLOW_TASK    = Node::CUDAFLOW_TASK,
-  STATIC_TASK      = Node::STATIC_TASK,
-  DYNAMIC_TASK     = Node::DYNAMIC_TASK,
-  CONDITION_TASK   = Node::CONDITION_TASK,
-  MODULE_TASK      = Node::MODULE_TASK,
-  ASYNC_TASK       = Node::ASYNC_TASK
+  PLACEHOLDER_TASK = Node::PLACEHOLDER,
+  CUDAFLOW_TASK    = Node::CUDAFLOW,
+  STATIC_TASK      = Node::STATIC,
+  DYNAMIC_TASK     = Node::DYNAMIC,
+  CONDITION_TASK   = Node::CONDITION,
+  MODULE_TASK      = Node::MODULE,
+  ASYNC_TASK       = Node::ASYNC
+};
+
+/**
+@brief array of all task types (used for iterating task types)
+*/
+inline constexpr std::array<TaskType, 7> TASK_TYPES = {
+  PLACEHOLDER_TASK,
+  CUDAFLOW_TASK,
+  STATIC_TASK,
+  DYNAMIC_TASK,
+  CONDITION_TASK,
+  MODULE_TASK,
+  ASYNC_TASK
 };
 
 /**
@@ -220,6 +233,16 @@ class Task {
     */
     template <typename... Ts>
     Task& succeed(Ts&&... tasks);
+
+    /**
+    @brief makes the task release this semaphore
+    */
+    Task& release(Semaphore& semaphore);
+
+    /**
+    @brief makes the task acquire this semaphore
+    */
+    Task& acquire(Semaphore& semaphore);
     
     /**
     @brief resets the task handle to null
@@ -301,7 +324,7 @@ Task& Task::succeed(Ts&&... tasks) {
 
 // Function: composed_of
 inline Task& Task::composed_of(Taskflow& tf) {
-  _node->_handle.emplace<Node::ModuleTask>(&tf);
+  _node->_handle.emplace<Node::Module>(&tf);
   return *this;
 }
 
@@ -333,6 +356,24 @@ inline Task& Task::name(const std::string& name) {
   return *this;
 }
 
+// Function: acquire
+inline Task& Task::acquire(Semaphore& s) {
+  if(!_node->_semaphores) {
+    _node->_semaphores.emplace();
+  }
+  _node->_semaphores->to_acquire.push_back(&s);
+  return *this;
+}
+
+// Function: release
+inline Task& Task::release(Semaphore& s) {
+  if(!_node->_semaphores) {
+    _node->_semaphores.emplace();
+  }
+  _node->_semaphores->to_release.push_back(&s);
+  return *this;
+}
+
 // Procedure: reset
 inline void Task::reset() {
   _node = nullptr;
@@ -340,7 +381,7 @@ inline void Task::reset() {
 
 // Procedure: reset_work
 inline void Task::reset_work() {
-  _node->_handle = std::monostate{};
+  _node->_handle.emplace<std::monostate>();
 }
 
 // Function: name
@@ -416,16 +457,16 @@ inline void Task::dump(std::ostream& os) const {
 template <typename C>
 Task& Task::work(C&& c) {
   if constexpr(is_static_task_v<C>) {
-    _node->_handle.emplace<Node::StaticTask>(std::forward<C>(c));
+    _node->_handle.emplace<Node::Static>(std::forward<C>(c));
   }
   else if constexpr(is_dynamic_task_v<C>) {
-    _node->_handle.emplace<Node::DynamicTask>(std::forward<C>(c));
+    _node->_handle.emplace<Node::Dynamic>(std::forward<C>(c));
   }
   else if constexpr(is_condition_task_v<C>) {
-    _node->_handle.emplace<Node::ConditionTask>(std::forward<C>(c));
+    _node->_handle.emplace<Node::Condition>(std::forward<C>(c));
   }
   else if constexpr(is_cudaflow_task_v<C>) {
-    _node->_handle.emplace<Node::cudaFlowTask>(std::forward<C>(c));
+    _node->_handle.emplace<Node::cudaFlow>(std::forward<C>(c));
   }
   else {
     static_assert(dependent_false_v<C>, "invalid task callable");
@@ -563,10 +604,9 @@ void TaskView::for_each_dependent(V&& visitor) const {
 namespace std {
 
 /**
-@class hash<tf::Task>
+@struct hash
 
 @brief hash specialization for std::hash<tf::Task>
-
 */
 template <>
 struct hash<tf::Task> {

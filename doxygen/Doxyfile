@@ -271,6 +271,7 @@ ALIASES                = \
   "nvidia_smi=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvidia-smi</a>"\
   "SLOCCount=<a href=\"https://dwheeler.com/sloccount/\">SLOCCount</a>"\
   "TBB=<a href=\"https://github.com/oneapi-src/oneTBB\">Intel TBB</a>"\
+  "OpenMP=<a href=\"https://www.openmp.org/\">OpenMP</a>"\
   "StarPU=<a href=\"http://starpu.gforge.inria.fr/\">StarPU</a>"\
   "OpenTimerGitHub=<a href=\"https://github.com/OpenTimer/OpenTimer\">OpenTimer</a>"\
   "ContactUs=<a href=\"https://taskflow.github.io/#tag_contact\">contact us</a>"\
@@ -837,8 +838,10 @@ INPUT                  = ../taskflow/core/flow_builder.hpp \
                          ../taskflow/core/worker.hpp \
                          ../taskflow/core/executor.hpp \
                          ../taskflow/core/task.hpp \
+                         ../taskflow/core/semaphore.hpp \
                          ../taskflow/core/taskflow.hpp \
                          ../taskflow/core/observer.hpp \
+                         ../taskflow/core/algorithm/critical.hpp \
                          ../taskflow/cuda/cuda_device.hpp \
                          ../taskflow/cuda/cuda_memory.hpp \
                          ../taskflow/cuda/cuda_task.hpp \
@@ -864,15 +867,20 @@ INPUT                  = ../taskflow/core/flow_builder.hpp \
                          releases/release-1.x.x.dox \
                          install/install.dox \
                          install/cuda_compile.dox \
+                         install/benchmark_taskflow.dox \
                          cookbook/Cookbook.dox \
-                         cookbook/Chapter0.dox \
-                         cookbook/Chapter1.dox \
-                         cookbook/Chapter2.dox \
-                         cookbook/Chapter3.dox \
-                         cookbook/Chapter4.dox \
-                         cookbook/Chapter5.dox \
-                         cookbook/Chapter6.dox \
-                         cookbook/Chapter7.dox \
+                         cookbook/motivation.dox \
+                         cookbook/static_tasking.dox \
+                         cookbook/executor.dox \
+                         cookbook/dynamic_tasking.dox \
+                         cookbook/conditional_tasking.dox \
+                         cookbook/composable_tasking.dox \
+                         cookbook/semaphore.dox \
+                         cookbook/async_tasking.dox \
+                         cookbook/gpu_tasking_cudaflow.dox \
+                         cookbook/gpu_tasking_cudaflow_capturer.dox \
+                         cookbook/cancellation.dox \
+                         cookbook/profiler.dox \
                          algorithms/algorithms.dox \
                          algorithms/for_each.dox \
                          algorithms/reduce.dox \
@@ -881,6 +889,7 @@ INPUT                  = ../taskflow/core/flow_builder.hpp \
                          gpu_algorithms/single_task_cuda.dox \
                          gpu_algorithms/for_each_cuda.dox \
                          gpu_algorithms/transform_cuda.dox \
+                         gpu_algorithms/cuda_reduce.dox \
                          gpu_algorithms/cublas/cublas_flow_capturer.dox \
                          examples/examples.dox \
                          examples/wavefront.dox \

@@ -104,15 +104,14 @@
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>after<sp/>the<sp/>graph<sp/>is<sp/>traversed,<sp/>all<sp/>nodes<sp/>must<sp/>be<sp/>visited<sp/>with<sp/>no<sp/>dependents</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;num_nodes;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(nodes[i].visited);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(nodes[i].dependents<sp/>==<sp/>0);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> <linebreak/>
-</para>
+</programlisting></para>
 <para>The code above has two parts to construct the parallel graph traversal. First, it iterates each node and constructs a traversal task for that node. Second, it iterates each outgoing edge of a node and creates a dependency between the node and the other end (successor) of that edge. The resulting taskflow structure is topologically equivalent to the given graph.</para>
 <para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/graph_traversal_2.dot"></dotfile>
 </para>
@@ -157,7 +156,7 @@
 <codeline><highlight class="normal"><sp/><sp/>}).name(nodes[i].name);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>after<sp/>the<sp/>graph<sp/>is<sp/>traversed,<sp/>all<sp/>nodes<sp/>must<sp/>be<sp/>visited<sp/>with<sp/>no<sp/>dependents</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;num_nodes;<sp/>i++)<sp/>{</highlight></codeline>

@@ -1,5 +1,7 @@
 list(APPEND TF_EXAMPLES
   simple 
+  async
+  subflow_async
   observer 
   subflow 
   fibonacci 
@@ -7,8 +9,12 @@ list(APPEND TF_EXAMPLES
   visualization 
   reduce 
   parallel_for 
+  parallel_sort
   run 
   composition
+  semaphore
+  cancel
+  cancel_async
 )
 
 foreach(example IN LISTS TF_EXAMPLES)

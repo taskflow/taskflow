@@ -48,7 +48,23 @@
         <h1>
           Modern C++ Parallel Task Programming
         </h1>
-<p>Taskflow helps you quickly write parallel and heterogeneous task programs with <em>high performance</em> and simultaneous <em>high productivity</em>. It is faster, more expressive, fewer lines of code, and easier for drop-in integration than many of existing task programming frameworks.</p><section id="ASimpleFirstProgram"><h2><a href="#ASimpleFirstProgram">Start Your First Taskflow Program</a></h2><p>The following program (<code>simple.cpp</code>) creates four tasks <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code>, where <code>A</code> runs before <code>B</code> and <code>C</code>, and <code>D</code> runs after <code>B</code> and <code>C</code>. When <code>A</code> finishes, <code>B</code> and <code>C</code> can run in parallel.</p><div class="m-graph"><svg style="width: 15.125rem; height: 6.250rem;" viewBox="0.00 0.00 242.00 99.77">
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#ASimpleFirstProgram">Start Your First Taskflow Program</a></li>
+            <li><a href="#QuickStartCreateASubflowGraph">Create a Subflow Graph</a></li>
+            <li><a href="#QuickStartIntegrateControlFlowIntoATaskGraph">Integrate Control Flow into a Task Graph</a></li>
+            <li><a href="#QuickStartOffloadTasksToGPU">Offload Tasks to GPU</a></li>
+            <li><a href="#QuickStartComposeTaskGraphs">Compose Task Graphs</a></li>
+            <li><a href="#QuickStartLaunchAsyncTasks">Launch Asynchronous Tasks</a></li>
+            <li><a href="#QuickStartExecuteATaskflowInDifferentWays">Execute a Taskflow in Different Ways</a></li>
+            <li><a href="#QuickStartVisualizeATaskflow">Visualize Taskflow Graphs</a></li>
+            <li><a href="#SupportedCompilers">Supported Compilers</a></li>
+            <li><a href="#QuickStartGetInvolved">Get Involved</a></li>
+            <li><a href="#License">License</a></li>
+          </ul>
+        </div>
+<p>Taskflow helps you quickly write parallel and heterogeneous task programs with <em>high performance</em> and simultaneous <em>high productivity</em>. It is faster, more expressive, fewer lines of code, and easier for drop-in integration than many of existing task programming libraries.</p><section id="ASimpleFirstProgram"><h2><a href="#ASimpleFirstProgram">Start Your First Taskflow Program</a></h2><p>The following program (<code>simple.cpp</code>) creates four tasks <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code>, where <code>A</code> runs before <code>B</code> and <code>C</code>, and <code>D</code> runs after <code>B</code> and <code>C</code>. When <code>A</code> finishes, <code>B</code> and <code>C</code> can run in parallel.</p><div class="m-graph"><svg style="width: 15.125rem; height: 6.250rem;" viewBox="0.00 0.00 242.00 99.77">
 <g transform="scale(1 1) rotate(0) translate(4 95.77)">
 <title>G</title>
 <g class="m-node m-flat">
@@ -119,7 +135,13 @@
 <span class="go">TaskA</span>
 <span class="go">TaskC </span>
 <span class="go">TaskB </span>
-<span class="go">TaskD</span></pre><p>Taskflow provides visualization and tooling, <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a>, for profiling your Taskflow programs.</p><img class="m-image" src="tfprof.png" alt="Image" /></section><section id="QuickStartCreateASubflowGraph"><h2><a href="#QuickStartCreateASubflowGraph">Create a Subflow Graph</a></h2><p>Taskflow supports <em>dynamic tasking</em> for you to create a subflow graph from the execution of a task to perform dynamic parallelism. The following program spawns a task dependency graph parented at task <code>B</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>  
+<span class="go">TaskD</span></pre><p>Taskflow comes with a built-in profiler, <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a>, for you to profile and visualize taskflow programs in an easy-to-use web-based interface.</p><img class="m-image" src="tfprof.png" alt="Image" /><pre class="m-console"><span class="gp">#</span> run the program with the environment variable TF_ENABLE_PROFILER enabled
+<span class="go">~$ TF_ENABLE_PROFILER=simple.json ./simple</span>
+<span class="go">~$ cat simple.json</span>
+<span class="go">[</span>
+<span class="go">{&quot;executor&quot;:&quot;0&quot;,&quot;data&quot;:[{&quot;worker&quot;:0,&quot;level&quot;:0,&quot;data&quot;:[{&quot;span&quot;:[172,186],&quot;name&quot;:&quot;0_0&quot;,&quot;type&quot;:&quot;static&quot;},{&quot;span&quot;:[187,189],&quot;name&quot;:&quot;0_1&quot;,&quot;type&quot;:&quot;static&quot;}]},{&quot;worker&quot;:2,&quot;level&quot;:0,&quot;data&quot;:[{&quot;span&quot;:[93,164],&quot;name&quot;:&quot;2_0&quot;,&quot;type&quot;:&quot;static&quot;},{&quot;span&quot;:[170,179],&quot;name&quot;:&quot;2_1&quot;,&quot;type&quot;:&quot;static&quot;}]}]}</span>
+<span class="go">]</span>
+<span class="gp">#</span> paste the profiling json data to https://taskflow.github.io/tfprof/</pre></section><section id="QuickStartCreateASubflowGraph"><h2><a href="#QuickStartCreateASubflowGraph">Create a Subflow Graph</a></h2><p>Taskflow supports <em>dynamic tasking</em> for you to create a subflow graph from the execution of a task to perform dynamic parallelism. The following program spawns a task dependency graph parented at task <code>B</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>  
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">C</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span>  
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">D</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span>  
 
@@ -399,7 +421,101 @@
 </g>
 </g>
 </svg>
-</div></section><section id="SupportedCompilers"><h2><a href="#SupportedCompilers">Supported Compilers</a></h2><p>To use Taskflow, you only need a compiler that supports C++17:</p><ul><li>GNU C++ Compiler at least v7.0 with -std=c++17</li><li>Clang C++ Compiler at least v6.0 with -std=c++17</li><li>Microsoft Visual Studio at least v19.27 with /std:c++17</li><li>AppleClang Xode Version at least v12.0 with -std=c++17</li><li>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17</li></ul><p>Taskflow works on Linux, Windows, and Mac OS X.</p></section><section id="QuickStartGetInvolved"><h2><a href="#QuickStartGetInvolved">Get Involved</a></h2><p>Visit our <a href="https://taskflow.github.io/">project website</a> and <a href="https://taskflow.github.io/showcase/index.html">showcase presentation</a> to learn more about Taskflow. To get involved:</p><ul><li>See release notes at <a href="Releases.html" class="m-doc">Release Notes</a></li><li>Read the step-by-step tutorial at <a href="Cookbook.html" class="m-doc">Cookbook</a></li><li>Submit an issue at <a href="https://github.com/taskflow/taskflow/issues">issue tracker</a></li><li>Learn more about our technical details at <a href="References.html" class="m-doc">References</a></li><li>Watch our <a href="https://www.youtube.com/watch?v=MX15huP5DsM">2020 CppCon Taskflow Talk</a> and <a href="https://www.youtube.com/watch?v=u8Mc_WgGwVY">2020 MUC++ Taskflow Talk</a></li></ul><p>We are committed to support trustworthy developments for both academic and industrial research projects in parallel and heterogeneous computing.</p></section><section id="License"><h2><a href="#License">License</a></h2><p>Taskflow is open-source under permissive MIT license. The source code is available in <a href="https://github.com/taskflow/">project GitHub</a>.</p></section>
+</div></section><section id="QuickStartLaunchAsyncTasks"><h2><a href="#QuickStartLaunchAsyncTasks">Launch Asynchronous Tasks</a></h2><p>Taskflow supports <em>asynchronous</em> tasking. You can launch tasks asynchronously to incorporate independent, dynamic parallelism in your taskflows.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+
+<span class="c1">// create asynchronous tasks directly from an executor</span>
+<span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">future</span> <span class="o">=</span> <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span> 
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;async task returns 1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">});</span> 
+<span class="n">executor</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;async task does not return</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+
+<span class="c1">// launch an asynchronous task from a running task</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+  <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;async task created within a task</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="p">});</span>
+
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre></section><section id="QuickStartExecuteATaskflowInDifferentWays"><h2><a href="#QuickStartExecuteATaskflowInDifferentWays">Execute a Taskflow in Different Ways</a></h2><p>The executor provides several <em>thread-safe</em> methods to run a taskflow. You can run a taskflow once, multiple times, or until a stopping criteria is met. These methods are non-blocking with a <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a> return to let you query the execution status.</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span>       <span class="c1">// runs the taskflow once</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>  <span class="c1">// runs the taskflow four times</span>
+
+<span class="c1">// keeps running the taskflow until the predicate becomes true (5 times)</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run_until</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span> <span class="p">[</span><span class="n">counter</span><span class="o">=</span><span class="mi">5</span><span class="p">](){</span> <span class="k">return</span> <span class="o">--</span><span class="n">counter</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span> <span class="p">);</span>
+
+<span class="c1">// block the executor until all submitted taskflows complete</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span></pre></section><section id="QuickStartVisualizeATaskflow"><h2><a href="#QuickStartVisualizeATaskflow">Visualize Taskflow Graphs</a></h2><p>You can dump a taskflow graph to a DOT format and visualize it using a number of free GraphViz tools such as <a href="https://dreampuf.github.io/GraphvizOnline/">GraphViz Online</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">B</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">C</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">D</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">E</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;E&quot;</span><span class="p">);</span>
+<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">E</span><span class="p">);</span>
+<span class="n">C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">);</span>
+<span class="n">B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">E</span><span class="p">);</span>
+
+<span class="c1">// dump the graph to a DOT file through std::cout</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 10.938rem; height: 11.875rem;" viewBox="0.00 0.00 175.00 190.31">
+<g transform="scale(1 1) rotate(0) translate(4 186.31)">
+<title>G</title>
+<g class="m-node m-flat">
+<title>A</title>
+<ellipse cx="68" cy="-163.92" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="68" y="-160.12">A</text>
+</g>
+<g class="m-node m-flat">
+<title>B</title>
+<ellipse cx="68" cy="-91.15" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="68" y="-87.35">B</text>
+</g>
+<g class="m-edge">
+<title>A&#45;&gt;B</title>
+<path d="M68,-145.43C68,-137.75 68,-128.54 68,-119.95"/>
+<polygon points="71.5,-119.94 68,-109.94 64.5,-119.94 71.5,-119.94"/>
+</g>
+<g class="m-node m-flat">
+<title>C</title>
+<ellipse cx="140" cy="-91.15" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="140" y="-87.35">C</text>
+</g>
+<g class="m-edge">
+<title>A&#45;&gt;C</title>
+<path d="M82.92,-148.26C92.96,-138.39 106.38,-125.2 117.68,-114.09"/>
+<polygon points="120.42,-116.31 125.1,-106.8 115.52,-111.31 120.42,-116.31"/>
+</g>
+<g class="m-node m-flat">
+<title>E</title>
+<ellipse cx="27" cy="-18.38" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-14.58">E</text>
+</g>
+<g class="m-edge">
+<title>A&#45;&gt;E</title>
+<path d="M54.52,-147.78C46.41,-137.7 36.77,-123.74 32,-109.54 25.22,-89.39 24.22,-65.29 24.78,-47.07"/>
+<polygon points="28.29,-47 25.28,-36.85 21.3,-46.66 28.29,-47"/>
+</g>
+<g class="m-edge">
+<title>B&#45;&gt;E</title>
+<path d="M58.49,-73.74C53.47,-65.08 47.2,-54.26 41.58,-44.56"/>
+<polygon points="44.5,-42.61 36.46,-35.71 38.44,-46.12 44.5,-42.61"/>
+</g>
+<g class="m-node m-flat">
+<title>D</title>
+<ellipse cx="126" cy="-18.38" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="126" y="-14.58">D</text>
+</g>
+<g class="m-edge">
+<title>B&#45;&gt;D</title>
+<path d="M80.59,-74.8C88.26,-65.43 98.23,-53.27 106.86,-42.73"/>
+<polygon points="109.81,-44.66 113.44,-34.71 104.39,-40.23 109.81,-44.66"/>
+</g>
+<g class="m-edge">
+<title>C&#45;&gt;D</title>
+<path d="M136.54,-72.66C134.98,-64.78 133.1,-55.28 131.37,-46.51"/>
+<polygon points="134.8,-45.81 129.42,-36.68 127.93,-47.17 134.8,-45.81"/>
+</g>
+</g>
+</svg>
+</div></section><section id="SupportedCompilers"><h2><a href="#SupportedCompilers">Supported Compilers</a></h2><p>To use Taskflow, you only need a compiler that supports C++17:</p><ul><li>GNU C++ Compiler at least v7.0 with -std=c++17</li><li>Clang C++ Compiler at least v6.0 with -std=c++17</li><li>Microsoft Visual Studio at least v19.27 with /std:c++17</li><li>AppleClang Xode Version at least v12.0 with -std=c++17</li><li>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17</li><li>Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17</li></ul><p>Taskflow works on Linux, Windows, and Mac OS X.</p></section><section id="QuickStartGetInvolved"><h2><a href="#QuickStartGetInvolved">Get Involved</a></h2><p>Visit our <a href="https://taskflow.github.io/">project website</a> and <a href="https://taskflow.github.io/showcase/index.html">showcase presentation</a> to learn more about Taskflow. To get involved:</p><ul><li>See release notes at <a href="Releases.html" class="m-doc">Release Notes</a></li><li>Read the step-by-step tutorial at <a href="Cookbook.html" class="m-doc">Cookbook</a></li><li>Submit an issue at <a href="https://github.com/taskflow/taskflow/issues">issue tracker</a></li><li>Learn more about our technical details at <a href="References.html" class="m-doc">References</a></li><li>Watch our <a href="https://www.youtube.com/watch?v=MX15huP5DsM">2020 CppCon Taskflow Talk</a> and <a href="https://www.youtube.com/watch?v=u8Mc_WgGwVY">2020 MUC++ Taskflow Talk</a></li></ul><p>We are committed to support trustworthy developments for both academic and industrial research projects in parallel and heterogeneous computing. At the same time, we appreciate all Taskflow <a href="contributors.html" class="m-doc">Contributors</a>!</p></section><section id="License"><h2><a href="#License">License</a></h2><p>Taskflow is open-source under permissive MIT license. The source code is available in <a href="https://github.com/taskflow/">project GitHub</a>.</p></section>
       </div>
     </div>
   </div>

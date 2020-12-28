@@ -3,10 +3,56 @@
   <compounddef id="indexpage" kind="page">
     <compoundname>index</compoundname>
     <title>Modern C++ Parallel Task Programming</title>
+    <tableofcontents>
+      <tocsect>
+        <name>Start Your First Taskflow Program</name>
+        <reference>indexpage_1ASimpleFirstProgram</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create a Subflow Graph</name>
+        <reference>indexpage_1QuickStartCreateASubflowGraph</reference>
+    </tocsect>
+      <tocsect>
+        <name>Integrate Control Flow into a Task Graph</name>
+        <reference>indexpage_1QuickStartIntegrateControlFlowIntoATaskGraph</reference>
+    </tocsect>
+      <tocsect>
+        <name>Offload Tasks to GPU</name>
+        <reference>indexpage_1QuickStartOffloadTasksToGPU</reference>
+    </tocsect>
+      <tocsect>
+        <name>Compose Task Graphs</name>
+        <reference>indexpage_1QuickStartComposeTaskGraphs</reference>
+    </tocsect>
+      <tocsect>
+        <name>Launch Asynchronous Tasks</name>
+        <reference>indexpage_1QuickStartLaunchAsyncTasks</reference>
+    </tocsect>
+      <tocsect>
+        <name>Execute a Taskflow in Different Ways</name>
+        <reference>indexpage_1QuickStartExecuteATaskflowInDifferentWays</reference>
+    </tocsect>
+      <tocsect>
+        <name>Visualize Taskflow Graphs</name>
+        <reference>indexpage_1QuickStartVisualizeATaskflow</reference>
+    </tocsect>
+      <tocsect>
+        <name>Supported Compilers</name>
+        <reference>indexpage_1SupportedCompilers</reference>
+    </tocsect>
+      <tocsect>
+        <name>Get Involved</name>
+        <reference>indexpage_1QuickStartGetInvolved</reference>
+    </tocsect>
+      <tocsect>
+        <name>License</name>
+        <reference>indexpage_1License</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow helps you quickly write parallel and heterogeneous task programs with <emphasis>high performance</emphasis> and simultaneous <emphasis>high productivity</emphasis>. It is faster, more expressive, fewer lines of code, and easier for drop-in integration than many of existing task programming frameworks.</para>
+<para>Taskflow helps you quickly write parallel and heterogeneous task programs with <emphasis>high performance</emphasis> and simultaneous <emphasis>high productivity</emphasis>. It is faster, more expressive, fewer lines of code, and easier for drop-in integration than many of existing task programming libraries.</para>
 <sect1 id="index_1ASimpleFirstProgram">
 <title>Start Your First Taskflow Program</title>
 <para>The following program (<computeroutput>simple.cpp</computeroutput>) creates four tasks <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput>, where <computeroutput>A</computeroutput> runs before <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> runs after <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput>. When <computeroutput>A</computeroutput> finishes, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> can run in parallel.</para>
@@ -29,7 +75,7 @@
 <codeline><highlight class="normal"><sp/><sp/>A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C);<sp/><sp/></highlight><highlight class="comment">//<sp/>A<sp/>runs<sp/>before<sp/>B<sp/>and<sp/>C</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>D.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(B,<sp/>C);<sp/><sp/></highlight><highlight class="comment">//<sp/>D<sp/>runs<sp/>after<sp/><sp/>B<sp/>and<sp/>C</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -43,9 +89,17 @@
 <codeline><highlight class="normal">TaskB<sp/></highlight></codeline>
 <codeline><highlight class="normal">TaskD</highlight></codeline>
 </programlisting></para>
-<para>Taskflow provides visualization and tooling, <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink>, for profiling your Taskflow programs.</para>
+<para>Taskflow comes with a built-in profiler, <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink>, for you to profile and visualize taskflow programs in an easy-to-use web-based interface.</para>
 <para><image type="html" name="tfprof.png"></image>
 </para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>run<sp/>the<sp/>program<sp/>with<sp/>the<sp/>environment<sp/>variable<sp/>TF_ENABLE_PROFILER<sp/>enabled</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>TF_ENABLE_PROFILER=simple.json<sp/>./simple</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>cat<sp/>simple.json</highlight></codeline>
+<codeline><highlight class="normal">[</highlight></codeline>
+<codeline><highlight class="normal">{&quot;executor&quot;:&quot;0&quot;,&quot;data&quot;:[{&quot;worker&quot;:0,&quot;level&quot;:0,&quot;data&quot;:[{&quot;span&quot;:[172,186],&quot;name&quot;:&quot;0_0&quot;,&quot;type&quot;:&quot;static&quot;},{&quot;span&quot;:[187,189],&quot;name&quot;:&quot;0_1&quot;,&quot;type&quot;:&quot;static&quot;}]},{&quot;worker&quot;:2,&quot;level&quot;:0,&quot;data&quot;:[{&quot;span&quot;:[93,164],&quot;name&quot;:&quot;2_0&quot;,&quot;type&quot;:&quot;static&quot;},{&quot;span&quot;:[170,179],&quot;name&quot;:&quot;2_1&quot;,&quot;type&quot;:&quot;static&quot;}]}]}</highlight></codeline>
+<codeline><highlight class="normal">]</highlight></codeline>
+<codeline><highlight class="normal">#<sp/>paste<sp/>the<sp/>profiling<sp/>json<sp/>data<sp/>to<sp/>https://taskflow.github.io/tfprof/</highlight></codeline>
+</programlisting></para>
 </sect1>
 <sect1 id="index_1QuickStartCreateASubflowGraph">
 <title>Create a Subflow Graph</title>
@@ -121,6 +175,60 @@
 <para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/composition.dot"></dotfile>
 </para>
 </sect1>
+<sect1 id="index_1QuickStartLaunchAsyncTasks">
+<title>Launch Asynchronous Tasks</title>
+<para>Taskflow supports <emphasis>asynchronous</emphasis> tasking. You can launch tasks asynchronously to incorporate independent, dynamic parallelism in your taskflows.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>asynchronous<sp/>tasks<sp/>directly<sp/>from<sp/>an<sp/>executor</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>future<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">async</ref>([](){<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;async<sp/>task<sp/>returns<sp/>1\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
+<codeline><highlight class="normal">});<sp/></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1abf71e7ec0026ddfce79c912264369bc9" kindref="member">silent_async</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;async<sp/>task<sp/>does<sp/>not<sp/>return\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>launch<sp/>an<sp/>asynchronous<sp/>task<sp/>from<sp/>a<sp/>running<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">async</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;async<sp/>task<sp/>created<sp/>within<sp/>a<sp/>task\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="index_1QuickStartExecuteATaskflowInDifferentWays">
+<title>Execute a Taskflow in Different Ways</title>
+<para>The executor provides several <emphasis>thread-safe</emphasis> methods to run a taskflow. You can run a taskflow once, multiple times, or until a stopping criteria is met. These methods are non-blocking with a <ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref> return to let you query the execution status.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow);<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>runs<sp/>the<sp/>taskflow<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a6d0617eebc9421f1ba1f82ce6dd02c00" kindref="member">run_n</ref>(taskflow,<sp/>4);<sp/><sp/></highlight><highlight class="comment">//<sp/>runs<sp/>the<sp/>taskflow<sp/>four<sp/>times</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>keeps<sp/>running<sp/>the<sp/>taskflow<sp/>until<sp/>the<sp/>predicate<sp/>becomes<sp/>true<sp/>(5<sp/>times)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a0f52e9dd64b65aba32ca0e13c1ed300a" kindref="member">run_until</ref>(taskflow,<sp/>[counter=5](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>--counter<sp/>==<sp/>0;<sp/>}<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>block<sp/>the<sp/>executor<sp/>until<sp/>all<sp/>submitted<sp/>taskflows<sp/>complete</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="index_1QuickStartVisualizeATaskflow">
+<title>Visualize Taskflow Graphs</title>
+<para>You can dump a taskflow graph to a DOT format and visualize it using a number of free GraphViz tools such as <ulink url="https://dreampuf.github.io/GraphvizOnline/">GraphViz Online</ulink>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{}).name(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{}).name(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{}).name(</highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{}).name(</highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>E<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{}).name(</highlight><highlight class="stringliteral">&quot;E&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C,<sp/>E);</highlight></codeline>
+<codeline><highlight class="normal">C.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(D);</highlight></codeline>
+<codeline><highlight class="normal">B.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(D,<sp/>E);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>graph<sp/>to<sp/>a<sp/>DOT<sp/>file<sp/>through<sp/>std::cout</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);<sp/></highlight></codeline>
+</programlisting></para>
+<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/graphviz.dot"></dotfile>
+</para>
+</sect1>
 <sect1 id="index_1SupportedCompilers">
 <title>Supported Compilers</title>
 <para>To use Taskflow, you only need a compiler that supports C++17:</para>
@@ -133,7 +241,9 @@
 </listitem>
 <listitem><para>AppleClang Xode Version at least v12.0 with -std=c++17 </para>
 </listitem>
-<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17</para>
+<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para>
+</listitem>
+<listitem><para>Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17</para>
 </listitem>
 </itemizedlist>
 Taskflow works on Linux, Windows, and Mac OS X.</para>
@@ -149,7 +259,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>Watch our <ulink url="https://www.youtube.com/watch?v=MX15huP5DsM">2020 CppCon Taskflow Talk</ulink> and <ulink url="https://www.youtube.com/watch?v=u8Mc_WgGwVY">2020 MUC++ Taskflow Talk</ulink></para>
 </listitem></itemizedlist>
 </para>
-<para>We are committed to support trustworthy developments for both academic and industrial research projects in parallel and heterogeneous computing.</para>
+<para>We are committed to support trustworthy developments for both academic and industrial research projects in parallel and heterogeneous computing. At the same time, we appreciate all Taskflow <ref refid="contributors" kindref="compound">Contributors</ref>!</para>
 </sect1>
 <sect1 id="index_1License">
 <title>License</title>

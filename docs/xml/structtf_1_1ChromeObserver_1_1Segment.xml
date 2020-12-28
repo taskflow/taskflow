@@ -14,11 +14,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="137" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="137" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="238" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="238" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structtf_1_1ChromeObserver_1_1Segment_1a419febef3c04d04c8cd16f765c5502bd" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
-        <definition>std::chrono::time_point&lt;std::chrono::steady_clock&gt; tf::ChromeObserver::Segment::beg</definition>
+      <memberdef kind="variable" id="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref></type>
+        <definition>observer_stamp_t tf::ChromeObserver::Segment::beg</definition>
         <argsstring></argsstring>
         <name>beg</name>
         <briefdescription>
@@ -27,11 +27,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="139" column="29" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="139" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="240" column="22" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="240" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structtf_1_1ChromeObserver_1_1Segment_1ad356de0724147aacfcf147843dc64d56" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
-        <definition>std::chrono::time_point&lt;std::chrono::steady_clock&gt; tf::ChromeObserver::Segment::end</definition>
+      <memberdef kind="variable" id="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref></type>
+        <definition>observer_stamp_t tf::ChromeObserver::Segment::end</definition>
         <argsstring></argsstring>
         <name>end</name>
         <briefdescription>
@@ -40,46 +40,25 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="140" column="29" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="140" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="241" column="22" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="241" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="structtf_1_1ChromeObserver_1_1Segment_1a78d891a139eb18380d59f3e1e80df8bf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::ChromeObserver::Segment::Segment</definition>
-        <argsstring>(const std::string &amp;n, std::chrono::time_point&lt; std::chrono::steady_clock &gt; b)</argsstring>
+        <argsstring>(const std::string &amp;n, observer_stamp_t b, observer_stamp_t e)</argsstring>
         <name>Segment</name>
         <param>
           <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
           <declname>n</declname>
         </param>
         <param>
-          <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
-          <declname>b</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="142" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="194" bodyend="199"/>
-      </memberdef>
-      <memberdef kind="function" id="structtf_1_1ChromeObserver_1_1Segment_1adc676da6e64aba54f82cda1b0b2276a5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>tf::ChromeObserver::Segment::Segment</definition>
-        <argsstring>(const std::string &amp;n, std::chrono::time_point&lt; std::chrono::steady_clock &gt; b, std::chrono::time_point&lt; std::chrono::steady_clock &gt; e)</argsstring>
-        <name>Segment</name>
-        <param>
-          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
-          <declname>n</declname>
-        </param>
-        <param>
-          <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
+          <type><ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref></type>
           <declname>b</declname>
         </param>
         <param>
-          <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
+          <type><ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref></type>
           <declname>e</declname>
         </param>
         <briefdescription>
@@ -88,7 +67,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="147" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="202" bodyend="208"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="243" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="290" bodyend="294"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -113,13 +92,12 @@
         <label>std::string</label>
       </node>
     </collaborationgraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="135" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="135" bodyend="152"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="236" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="236" bodyend="248"/>
     <listofallmembers>
-      <member refid="structtf_1_1ChromeObserver_1_1Segment_1a419febef3c04d04c8cd16f765c5502bd" prot="public" virt="non-virtual"><scope>tf::ChromeObserver::Segment</scope><name>beg</name></member>
-      <member refid="structtf_1_1ChromeObserver_1_1Segment_1ad356de0724147aacfcf147843dc64d56" prot="public" virt="non-virtual"><scope>tf::ChromeObserver::Segment</scope><name>end</name></member>
+      <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" prot="public" virt="non-virtual"><scope>tf::ChromeObserver::Segment</scope><name>beg</name></member>
+      <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" prot="public" virt="non-virtual"><scope>tf::ChromeObserver::Segment</scope><name>end</name></member>
       <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" prot="public" virt="non-virtual"><scope>tf::ChromeObserver::Segment</scope><name>name</name></member>
-      <member refid="structtf_1_1ChromeObserver_1_1Segment_1a78d891a139eb18380d59f3e1e80df8bf" prot="public" virt="non-virtual"><scope>tf::ChromeObserver::Segment</scope><name>Segment</name></member>
-      <member refid="structtf_1_1ChromeObserver_1_1Segment_1adc676da6e64aba54f82cda1b0b2276a5" prot="public" virt="non-virtual"><scope>tf::ChromeObserver::Segment</scope><name>Segment</name></member>
+      <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" prot="public" virt="non-virtual"><scope>tf::ChromeObserver::Segment</scope><name>Segment</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

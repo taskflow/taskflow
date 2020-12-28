@@ -3,19 +3,26 @@
 namespace tf {
 
 // taskflow
+class AsyncTopology;
 class Node;
 class Graph;
 class FlowBuilder;
+class Semaphore;
 class Subflow;
 class Task;
 class TaskView;
 class Taskflow;
 class Topology;
+class TopologyBase;
 class Executor;
 class WorkerView;
 class ObserverInterface;
 class ChromeTracingObserver;
 class TFProfObserver;
+class TFProfManager;
+
+template <typename T>
+class Future;
 
 // cudaFlow
 class cudaNode;

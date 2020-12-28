@@ -71,12 +71,12 @@ void matrix_multiplication(int** A, int** B, int** C, int M, int K, int N) {
 @endcode
 
 Instead of creating tasks one-by-one over a loop,
-you can leverage Taskflow::parallel_for to create a <em>parallel-for</em> task.
+you can leverage Taskflow::for_each_index to create a <em>parallel-for</em> task.
 A parallel-for task spawns a subflow to perform parallel iterations over the given range.
 
 @code{.cpp}
 // perform parallel iterations on the range [0, M) with the step size of 1
-tf::Task task = taskflow.parallel_for(0, M, 1, [&] (int m) {
+tf::Task task = taskflow.for_each_index(0, M, 1, [&] (int m) {
   for(int n=0; n<N; n++) {
     for(int k=0; k<K; k++) {
       C[m][n] += A[m][k] * B[k][n];

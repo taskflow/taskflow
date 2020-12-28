@@ -48,7 +48,7 @@
         <h1>
           tf <span class="m-thin">namespace</span>
         </h1>
-        <p>The taskflow namespace.</p>
+        <p>taskflow namespace</p>
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -57,6 +57,7 @@
               <ul>
                 <li><a href="#nested-classes">Classes</a></li>
                 <li><a href="#enum-members">Enums</a></li>
+                <li><a href="#typedef-members">Typedefs</a></li>
                 <li><a href="#func-members">Functions</a></li>
                 <li><a href="#var-members">Variables</a></li>
               </ul>
@@ -69,7 +70,11 @@
             <dt>
               class <a href="classtf_1_1ChromeObserver.html" class="m-doc">ChromeObserver</a>
             </dt>
-            <dd>observer interface based on <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</a> format</dd>
+            <dd>observer interface based on Chrome tracing format</dd>
+            <dt>
+              class <a href="classtf_1_1CriticalSection.html" class="m-doc">CriticalSection</a>
+            </dt>
+            <dd>class to create a critical region of limited workers to run tasks</dd>
             <dt>
               class <a href="classtf_1_1cublasFlowCapturer.html" class="m-doc">cublasFlowCapturer</a>
             </dt>
@@ -103,9 +108,18 @@
             </dt>
             <dd>building methods of a task dependency graph</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              class <a href="classtf_1_1Future.html" class="m-doc">Future</a>
+            </dt>
+            <dd>class to access the result of task execution</dd>
+            <dt>
               class <a href="classtf_1_1ObserverInterface.html" class="m-doc">ObserverInterface</a>
             </dt>
             <dd>The interface class for creating an executor observer.</dd>
+            <dt>
+              class <a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>
+            </dt>
+            <dd>class to create a semophore object for building a concurrency constraint</dd>
             <dt>
               class <a href="classtf_1_1Subflow.html" class="m-doc">Subflow</a>
             </dt>
@@ -125,7 +139,7 @@
             <dt>
               class <a href="classtf_1_1TFProfObserver.html" class="m-doc">TFProfObserver</a>
             </dt>
-            <dd>observer interface based on <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a> format</dd>
+            <dd>observer interface based on the built-in taskflow profiler format</dd>
             <dt>
               class <a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a>
             </dt>
@@ -160,6 +174,15 @@
               <a href="#ac747e6c7cf88c7b1ff7126e62babebb8a14e9fb7dc6b0d37a40046f685c6aa79a" class="m-doc">CUDA_CAPTURE_TASK</a> = cudaNode::CUDA_CAPTURE_TASK }</span>
             </dt>
             <dd>enumeration of all cudaTask types</dd>
+          </dl>
+        </section>
+        <section id="typedef-members">
+          <h2><a href="#typedef-members">Typedefs</a></h2>
+          <dl class="m-doc">
+            <dt id="a8cff4bbd797dde4dfab096c3cc657833">
+              using <a href="#a8cff4bbd797dde4dfab096c3cc657833" class="m-doc-self">observer_stamp_t</a> = <a href="http://en.cppreference.com/w/cpp/chrono/time_point.html" class="m-doc-external">std::<wbr />chrono::<wbr />time_point</a>&lt;<a href="http://en.cppreference.com/w/cpp/chrono/steady_clock.html" class="m-doc-external">std::<wbr />chrono::<wbr />steady_clock</a>&gt;
+            </dt>
+            <dd>default time point type of observers</dd>
           </dl>
         </section>
         <section id="func-members">
@@ -318,10 +341,14 @@
               const <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>&amp; ct) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
             </dt>
             <dd>overload of ostream inserter operator for <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></dd>
+            <dt id="ae680bf7822f2b6b66a6199f0b77f7241">
+              <span class="m-doc-wrap-bumper">auto <a href="#ae680bf7822f2b6b66a6199f0b77f7241" class="m-doc-self">cuda_default_max_threads_per_block</a>(</span><span class="m-doc-wrap">) -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span></span>
+            </dt>
+            <dd>queries the maximum threads allowed per block</dd>
             <dt id="a50a8f777333cc26d5f5d8c4d37bcdc73">
               <span class="m-doc-wrap-bumper">auto <a href="#a50a8f777333cc26d5f5d8c4d37bcdc73" class="m-doc-self">cuda_default_threads_per_block</a>(</span><span class="m-doc-wrap">size_t N) -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
-            <dd>the default number of threads per block in an 1D vector of N elements</dd>
+            <dd>queries the default number of threads per block in an 1D vector of N elements</dd>
             <dt id="a30fa078dcf625e9eada5a95af1467588">
               <span class="m-doc-wrap-bumper">auto <a href="#a30fa078dcf625e9eada5a95af1467588" class="m-doc-self">version</a>(</span><span class="m-doc-wrap">) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
@@ -331,6 +358,10 @@
         <section id="var-members">
           <h2><a href="#var-members">Variables</a></h2>
           <dl class="m-doc">
+            <dt id="a3d823d8776745f3348dc87bba2fcc91b">
+              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a0681fa0518bdd3e3d198e1b1b744c06f" class="m-doc">TaskType</a>, 7&gt; <a href="#a3d823d8776745f3348dc87bba2fcc91b" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>array of all task types (used for iterating task types)</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
               bool <a href="#a11fc9c98eb3a0d3a9aa55598b1f4d614" class="m-doc">is_static_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>

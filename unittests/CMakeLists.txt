@@ -3,7 +3,7 @@ enable_testing()
 include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
 
 list(APPEND TF_UNITTESTS 
-  utility tsq basics algorithm traverse sort
+  utility tsq serializer basics cancellation algorithm traverse sorting
 )
 
 foreach(unittest IN LISTS TF_UNITTESTS)

@@ -1,0 +1,107 @@
+namespace tf {
+
+/** @page Profiler Profile Taskflow Programs
+
+%Taskflow comes with a built-in profiler, @em TFProf, 
+for you to profile and visualize taskflow programs.
+
+@tableofcontents
+
+@image html images/tfprof.png width=100%
+
+@section ProfilerEnableTFProf Enable Taskflow Profiler
+
+All taskflow programs come with a lightweight profiling module 
+to observer worker activities in every executor.
+To enable the profiler,
+set the environment variable @c TF_ENABLE_PROFILER to a file name
+in which the profiling result will be stored.
+
+@code{.shell-session}
+~$ TF_ENABLE_PROFILER=result.json ./my_taskflow
+~$ cat result.json
+[
+{"executor":"0","data":[{"worker":12,"level":0,"data":[{"span":[72,117],"name":"12_0","type":"static"},{"span":[121,123],"name":"12_1","type":"static"},{"span":[123,125],"name":"12_2","type":"static"},{"span":[125,127],"name":"12_3","type":"static"}]}]}
+]
+@endcode
+
+When the program finishes, it generates and saves the profiling data to @c result.json
+in JavaScript Object Notation (JSON) format.
+You can then paste the JSON data to our web-based interface, @TFProf,
+to visualize the execution timelines of tasks and workers.
+The web interface supports the following features:
+  + zoom into a selected window
+  + double click to zoom back to the previously selected window
+  + filter workers
+  + mouse over to show the tooltip of the task
+  + rank tasks in decreasing order of criticality (i.e., execution time)
+
+TFProf implements a clustering-based algorithm to efficiently 
+visualize tasks and their execution timelines in a browser.
+Without losing much visual accuracy,
+each @em clustered task indicates a group of adjacent tasks clustered by 
+the algorithm, and you can zoom in to see these tasks.
+
+@section ProfilerEnableTFProfServer Enable Taskflow Profiler on a HTTP Server
+
+When you profile large taskflow programs,
+the method in the previous section may not work due to the slow interaction
+between clients and large JSON files.
+For example, a taskflow program of a million tasks can
+produce several GBs of profiling data, and
+the profile may respond to your requests very slowly.
+To solve this problem, 
+we have implemented a C++-based http server optimized for our profiling data.
+To compile the server, enable the cmake option
+@c TF_BUILD_PROFILER.
+You may visit @ref install to understand %Taskflow's build environment.
+
+@code{.shell-session}
+# under the build directory
+~$ cmake ../ -DTF_BUILD_PROFILER=ON
+~$ make
+@endcode
+
+After successfully compiling the server,
+you can find the executable at @c tfprof/server/tfprof.
+Now, generate profiling data from running a taskflow program 
+but specify the output file with extension @c .tfp.
+
+@code{.shell-session}
+~$ TF_ENABLE_PROFILER=my_taskflow.tfp ./my_taskflow
+~$ ls
+my_taskflow.tfp    # my_taskflow.tfp is of binary format
+@endcode
+
+Launch the server program @c tfprof/server/tfprof and pass 
+(1) the directory of @c index.html (default at @c tfprof/) 
+via the option @c --mount and 
+(2) the @c my_taskflow.tfp via the option @c --input.
+
+@code{.shell-session}
+# under the build/ directory
+~$ ./tfprof/server/tfprof --mount ../tfprof/ --input my_taskflow.tfp
+@endcode
+
+Now, open your favorite browser at @c localhost:8080
+to visualize and profile your @c my_taskflow program.
+
+@image html images/tfprof-local.png
+
+The compiled profiler is a more powerful version than the pure 
+JavaScript-based interface and it is able to more efficiently 
+handle large profiling data under different queries.
+We currently support the following two view types:
+  + Cluster: visualize the profiling data using a clustering algorithm with a limit
+  + Criticality: visualize the top-limit tasks in decreasing order of their execution times
+
+*/
+
+}
+
+
+
+
+
+
+

@@ -6,30 +6,9 @@ namespace tf {
 task programs with <i>high performance</i>
 and simultaneous <i>high productivity</i>.
 It is faster, more expressive, fewer lines of code, and easier for drop-in integration
-than many of existing task programming frameworks.
+than many of existing task programming libraries.
 
-<!-- @image html images/performance.png width=100%
-
-%Taskflow is committed to support both academic and industry research projects,
-making it reliable and cost-efficient to develop large-scale parallel applications.
-Our users say:
-
-@li \"<em>%Taskflow has the cleanest task API I've ever seen.</em>\" <a href="http://coreliuminc.com">Damien Hocking \@Corelium Inc</a>
-@li \"<em>%Taskflow has a very simple and elegant tasking interface. The performance also scales very well.</em>\" <a href="https://github.com/totalgee">Glen Fraser</a>
-@li \"<em>%Taskflow lets me handle parallel processing in a smart way.</em>\" <a href="https://cpp-learning.com/cpp-taskflow/">Hayabusa \@Learning</a>
-@li \"<em>%Taskflow helps improve the throughput of our graph processing engine in just a few hours of coding.</em>\" <a href="https://ossia.io/">Jean-Michaël \@KDAB</a>
-@li \"<em>Best poster award for the open-source parallel programming library.</em>\" <a href="https://github.com/CppCon/CppCon2018">2018 Cpp Conference</a>
-@li \"<em>Second Place in Open Source Software Competition.</em>\" 2019 ACM Multimedia Conference</a>
-
-See a quick <a href="https://taskflow.github.io/">presentation</a> and visit our <a href="https://github.com/taskflow/taskflow">GitHub</a> to learn more about %Taskflow.
-
-
-%Taskflow provides visualization and tooling (<a href="https://github.com/taskflow/tfprof">tfprof</a>) for profiling %Taskflow programs.
-
-@image html images/tfprof.png width=100%
--->
-
-
+@tableofcontents
 
 @section ASimpleFirstProgram Start Your First Taskflow Program
 
@@ -80,10 +59,21 @@ TaskB
 TaskD
 @endcode
 
-%Taskflow provides visualization and tooling, @TFProf,
-for profiling your %Taskflow programs.
+%Taskflow comes with a built-in profiler, @TFProf, 
+for you to profile and visualize taskflow programs
+in an easy-to-use web-based interface.
 
 @image html images/tfprof.png 
+
+@code{.shell-session}
+# run the program with the environment variable TF_ENABLE_PROFILER enabled
+~$ TF_ENABLE_PROFILER=simple.json ./simple
+~$ cat simple.json
+[
+{"executor":"0","data":[{"worker":0,"level":0,"data":[{"span":[172,186],"name":"0_0","type":"static"},{"span":[187,189],"name":"0_1","type":"static"}]},{"worker":2,"level":0,"data":[{"span":[93,164],"name":"2_0","type":"static"},{"span":[170,179],"name":"2_1","type":"static"}]}]}
+]
+# paste the profiling json data to https://taskflow.github.io/tfprof/
+@endcode
 
 @section QuickStartCreateASubflowGraph Create a Subflow Graph
 
@@ -172,6 +162,76 @@ f1_module_task.succeed(f2A, f2B)
 
 @dotfile images/composition.dot
 
+@section QuickStartLaunchAsyncTasks Launch Asynchronous Tasks
+
+%Taskflow supports @em asynchronous tasking.
+You can launch tasks asynchronously to incorporate independent, dynamic 
+parallelism in your taskflows.
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+// create asynchronous tasks directly from an executor
+std::future<int> future = executor.async([](){ 
+  std::cout << "async task returns 1\n";
+  return 1;
+}); 
+executor.silent_async([](){ std::cout << "async task does not return\n"; });
+
+// launch an asynchronous task from a running task
+taskflow.emplace([&](){
+  executor.async([](){ std::cout << "async task created within a task\n"; });
+});
+
+executor.run(taskflow).wait();
+@endcode
+
+
+
+@section QuickStartExecuteATaskflowInDifferentWays Execute a Taskflow in Different Ways
+
+The executor provides several @em thread-safe methods to run a taskflow. 
+You can run a taskflow once, multiple times, or until a stopping criteria is met. 
+These methods are non-blocking with a std::future return 
+to let you query the execution status. 
+
+@code{.cpp}
+executor.run(taskflow);       // runs the taskflow once
+executor.run_n(taskflow, 4);  // runs the taskflow four times
+
+// keeps running the taskflow until the predicate becomes true (5 times)
+executor.run_until(taskflow, [counter=5](){ return --counter == 0; } );
+
+// block the executor until all submitted taskflows complete
+executor.wait_for_all();
+@endcode
+
+
+@section QuickStartVisualizeATaskflow Visualize Taskflow Graphs
+
+You can dump a taskflow graph to a DOT format and visualize it
+using a number of free GraphViz tools such as @GraphVizOnline.
+
+
+@code{.cpp}
+tf::Taskflow taskflow;
+
+tf::Task A = taskflow.emplace([] () {}).name("A");
+tf::Task B = taskflow.emplace([] () {}).name("B");
+tf::Task C = taskflow.emplace([] () {}).name("C");
+tf::Task D = taskflow.emplace([] () {}).name("D");
+tf::Task E = taskflow.emplace([] () {}).name("E");
+A.precede(B, C, E);
+C.precede(D);
+B.precede(D, E);
+
+// dump the graph to a DOT file through std::cout
+taskflow.dump(std::cout); 
+@endcode
+
+@dotfile images/graphviz.dot
+
 @section SupportedCompilers Supported Compilers
 
 To use %Taskflow, you only need a compiler that supports C++17:
@@ -181,6 +241,7 @@ To use %Taskflow, you only need a compiler that supports C++17:
 @li Microsoft Visual Studio at least v19.27 with /std:c++17
 @li AppleClang Xode Version at least v12.0 with -std=c++17
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
+@li Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17
 
 %Taskflow works on Linux, Windows, and Mac OS X.
 
@@ -198,6 +259,7 @@ to learn more about %Taskflow. To get involved:
 We are committed to support trustworthy developments for 
 both academic and industrial research projects in parallel 
 and heterogeneous computing. 
+At the same time, we appreciate all %Taskflow @ref contributors!
 
 
 @section License License

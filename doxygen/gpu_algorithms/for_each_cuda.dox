@@ -9,7 +9,7 @@ parallel iterations over a range of items.
 
 @section ForEachCUDAIndexBasedParallelFor Index-based Parallel Iterations
 
-Index-based parallel-for performs parallel iterations over a range <tt>[beg, end)</tt> with the given @c step size.
+Index-based parallel-for performs parallel iterations over a range <tt>[first, last)</tt> with the given @c step size.
 The task created by tf::cudaFlow::for_each_index(I first, I last, I step, C&& callable) 
 represents a kernel of parallel execution
 for the following loop:

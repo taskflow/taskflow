@@ -1,9 +1,6 @@
 #pragma once
 
-#include <stack>
-
 #include "flow_builder.hpp"
-#include "topology.hpp"
 
 /** 
 @file core/taskflow.hpp
@@ -33,7 +30,6 @@ dependency between two tasks. A task is one of the following five types:
   5. %cudaFlow task: the callable constructible from 
                      @c std::function<void(tf::cudaFlow)> or
                      @c std::function<void(tf::cudaFlowCapturer)>
-  
 
 The following example creates a simple taskflow graph of four static tasks, 
 @c A, @c B, @c C, and @c D, where
@@ -83,11 +79,6 @@ class Taskflow : public FlowBuilder {
     */
     Taskflow();
 
-    /**
-    @brief destroy the taskflow (virtual call)
-    */
-    virtual ~Taskflow();
-    
     /**
     @brief dumps the taskflow to a DOT format through an output stream
            using the stream insertion operator @c <<
@@ -148,12 +139,10 @@ class Taskflow : public FlowBuilder {
 
     std::mutex _mtx;
 
-    std::list<Topology> _topologies;
+    std::queue<std::shared_ptr<Topology>> _topologies;
     
     void _dump(std::ostream&, const Taskflow*) const;
-    
     void _dump(std::ostream&, const Node*, Dumper&) const;
-    
     void _dump(std::ostream&, const Graph&, Dumper&) const;
 };
 
@@ -165,11 +154,6 @@ inline Taskflow::Taskflow(const std::string& name) :
 
 // Constructor
 inline Taskflow::Taskflow() : FlowBuilder{_graph} {
-}
-
-// Destructor
-inline Taskflow::~Taskflow() {
-  assert(_topologies.empty());
 }
 
 // Procedure:
@@ -254,11 +238,11 @@ inline void Taskflow::_dump(
   // shape for node
   switch(node->_handle.index()) {
 
-    case Node::CONDITION_TASK:
+    case Node::CONDITION:
       os << "shape=diamond color=black fillcolor=aquamarine style=filled";
     break;
 
-    case Node::CUDAFLOW_TASK:
+    case Node::CUDAFLOW:
       os << " style=\"filled\""
          << " color=\"black\" fillcolor=\"purple\""
          << " fontcolor=\"white\""
@@ -272,7 +256,7 @@ inline void Taskflow::_dump(
   os << "];\n";
   
   for(size_t s=0; s<node->_successors.size(); ++s) {
-    if(node->_handle.index() == Node::CONDITION_TASK) {
+    if(node->_handle.index() == Node::CONDITION) {
       // case edge is dashed
       os << 'p' << node << " -> p" << node->_successors[s] 
          << " [style=dashed label=\"" << s << "\"];\n";
@@ -289,8 +273,8 @@ inline void Taskflow::_dump(
 
   switch(node->_handle.index()) {
 
-    case Node::DYNAMIC_TASK: {
-      auto& sbg = std::get<Node::DynamicTask>(node->_handle).subgraph;
+    case Node::DYNAMIC: {
+      auto& sbg = std::get<Node::Dynamic>(node->_handle).subgraph;
       if(!sbg.empty()) {
         os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
         if(node->_name.empty()) os << 'p' << node;
@@ -303,8 +287,8 @@ inline void Taskflow::_dump(
     }
     break;
     
-    case Node::CUDAFLOW_TASK: {
-      std::get<Node::cudaFlowTask>(node->_handle).graph->dump(
+    case Node::CUDAFLOW: {
+      std::get<Node::cudaFlow>(node->_handle).graph->dump(
         os, node, node->_name
       );
     }
@@ -323,13 +307,13 @@ inline void Taskflow::_dump(
   for(const auto& n : graph._nodes) {
 
     // regular task
-    if(n->_handle.index() != Node::MODULE_TASK) {
+    if(n->_handle.index() != Node::MODULE) {
       _dump(os, n, dumper);
     }
     // module task
     else {
 
-      auto module = std::get<Node::ModuleTask>(n->_handle).module;
+      auto module = std::get<Node::Module>(n->_handle).module;
 
       os << 'p' << n << "[shape=box3d, color=blue, label=\"";
       if(n->_name.empty()) os << n;
@@ -351,5 +335,131 @@ inline void Taskflow::_dump(
   }
 }
 
+// ----------------------------------------------------------------------------
+// class definition: Future
+// ----------------------------------------------------------------------------
+
+/**
+@class Future
+
+@brief class to access the result of task execution
+
+tf::Future is a derived class from std::future that will eventually hold the
+execution result of a submitted taskflow (e.g., tf::Executor::run)
+or an asynchronous task (e.g., tf::Executor::async).
+In addition to base methods of std::future,
+you can call tf::Future::cancel to cancel the execution of the running taskflow
+associated with this future object.
+The following example cancels a submission of a taskflow that contains
+1000 tasks each running one second.
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+for(int i=0; i<1000; i++) {
+  taskflow.emplace([](){ 
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  });
+}
+
+// submit the taskflow
+tf::Future fu = executor.run(taskflow);
+
+// request to cancel the submitted execution above
+fu.cancel();
+
+// wait until the cancellation finishes
+fu.get();
+@endcode
+*/
+template <typename T>
+class Future : public std::future<T>  {
+
+  friend class Executor;
+  friend class Subflow;
+  
+  using handle_t = std::variant<
+    std::monostate, std::weak_ptr<Topology>, std::weak_ptr<AsyncTopology>
+  >;
+
+  // variant index
+  constexpr static auto ASYNC = get_index_v<std::weak_ptr<AsyncTopology>, handle_t>;
+  constexpr static auto TASKFLOW = get_index_v<std::weak_ptr<Topology>, handle_t>; 
+
+  public:
+    
+    /**
+    @brief default constructor
+    */
+    Future() = default;
+
+    /**
+    @brief disabled copy constructor
+    */
+    Future(const Future&) = delete;
+    
+    /**
+    @brief default move constructor
+    */
+    Future(Future&&) = default;
+    
+    /**
+    @brief disabled copy assignment
+    */
+    Future& operator = (const Future&) = delete;
+
+    /**
+    @brief default move assignment
+    */
+    Future& operator = (Future&&) = default;
+
+    /**
+    @brief cancels the execution of the running taskflow associated with 
+           this future object
+
+    @return @c true if the execution can be cancelled or
+            @c false if the execution has already completed
+    */
+    bool cancel();
+
+  private:
+    
+    handle_t _handle;
+
+    template <typename P>
+    Future(std::future<T>&&, P&&);
+};
+
+template <typename T>
+template <typename P>
+Future<T>::Future(std::future<T>&& fu, P&& p) :
+  std::future<T> {std::move(fu)},
+  _handle        {std::forward<P>(p)} {
+}
+
+// Function: cancel
+template <typename T>
+bool Future<T>::cancel() {
+  return std::visit([](auto&& arg){
+    using P = std::decay_t<decltype(arg)>;
+    if constexpr(std::is_same_v<P, std::monostate>) {
+      return false;
+    }
+    else {
+      auto ptr = arg.lock();
+      if(ptr) {
+        ptr->_is_cancelled = true;
+        return true;
+      }
+      return false;
+    }
+  }, _handle);
+}
+
+
 }  // end of namespace tf. ---------------------------------------------------
+
+
+
 

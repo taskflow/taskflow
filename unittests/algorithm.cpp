@@ -960,6 +960,8 @@ TEST_CASE("ptrs.12threads" * doctest::timeout(300)) {
 template <typename T>
 void ps_pod(size_t W, size_t N) {
 
+  std::srand(static_cast<unsigned int>(time(NULL)));
+
   std::vector<T> data(N);
 
   for(auto& d : data) {
@@ -968,10 +970,8 @@ void ps_pod(size_t W, size_t N) {
 
   tf::Taskflow taskflow;
   tf::Executor executor(W);
-
-  taskflow.sort(data.begin(), data.end(), [](const T& l, const T& r){
-    return l < r;
-  });
+  
+  taskflow.sort(data.begin(), data.end());
 
   executor.run(taskflow).wait();
 
@@ -1024,6 +1024,8 @@ struct Object {
 };
 
 void ps_object(size_t W, size_t N) {
+  
+  std::srand(static_cast<unsigned int>(time(NULL)));
 
   std::vector<Object> data(N);
   

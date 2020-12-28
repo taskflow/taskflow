@@ -4,7 +4,7 @@
 #include <sstream>
 #include <exception>
 
-#include "../utility/stringify.hpp"
+#include "../utility/stream.hpp"
 
 namespace tf {
 

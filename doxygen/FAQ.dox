@@ -139,7 +139,7 @@ No, the taskflow object is not thread-safe. Multiple threads cannot create tasks
 @subsection ProgrammingQuestions4 Q4: Is executor thread-safe?
 
 Yes, the executor object is thread-safe. 
-You can have multiple threads run their taskflows on one executor.
+You can have multiple threads submit different taskflows to the same executor.
 
 @subsection ProgrammingQuestions5 Q5: My program hangs and never returns after dispatching a taskflow graph. What's wrong?
 
@@ -180,6 +180,12 @@ We ask users to describe a GPU workload in a task graph and execute it
 in a second moment. 
 This organization minimizes kernels launch overhead and 
 allows the GPU runtime (e.g., CUDA) to optimize the whole workflow.
+
+@subsection ProgrammingQuestions11 Q11: Can I limit the concurrency in certain sections of tasks?
+
+Yes, %Taskflow provides a lightweight mechanism, tf::Semaphore, for you to
+limit the maximum concurrency (i.e., the number of workers) in a section of tasks.
+Please refer to @ref LimitTheMaximumConcurrency.
 
 */
 

@@ -75,7 +75,8 @@ Task FlowBuilder::reduce_guided(
         break;
       }
 
-      sf.emplace([&mutex, &next, &r, beg, N, W, &o, C] () mutable {
+      //sf.emplace([&mutex, &next, &r, beg, N, W, &o, C] () mutable {
+      sf.silent_async([&mutex, &next, &r, beg, N, W, &o, C] () mutable {
         
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
@@ -142,8 +143,8 @@ Task FlowBuilder::reduce_guided(
 
         std::lock_guard<std::mutex> lock(mutex);
         r = o(r, sum);
-
-      }).name("prg_"s + std::to_string(w));
+      //}).name("prg_"s + std::to_string(w));
+      });
     }
     
     sf.join();
@@ -203,7 +204,8 @@ Task FlowBuilder::reduce_dynamic(
         break;
       }
 
-      sf.emplace([&mutex, &next, &r, beg, N, &o, C] () mutable {
+      //sf.emplace([&mutex, &next, &r, beg, N, &o, C] () mutable {
+      sf.silent_async([&mutex, &next, &r, beg, N, &o, C] () mutable {
         
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
@@ -241,8 +243,8 @@ Task FlowBuilder::reduce_dynamic(
 
         std::lock_guard<std::mutex> lock(mutex);
         r = o(r, sum);
-
-      }).name("prd_"s + std::to_string(w));
+      //}).name("prd_"s + std::to_string(w));
+      });
     }
     
     sf.join();
@@ -306,7 +308,8 @@ Task FlowBuilder::reduce_static(
           break;
         }
         
-        sf.emplace([&mutex, &next, &r, beg, items, &o] () mutable {
+        //sf.emplace([&mutex, &next, &r, beg, items, &o] () mutable {
+        sf.silent_async([&mutex, &next, &r, beg, items, &o] () mutable {
 
           size_t s0 = next.fetch_add(items, std::memory_order_relaxed);
           std::advance(beg, s0);
@@ -329,7 +332,8 @@ Task FlowBuilder::reduce_static(
           std::lock_guard<std::mutex> lock(mutex);
           r = o(r, sum);
 
-        }).name("prs_"s + std::to_string(i));
+        //}).name("prs_"s + std::to_string(i));
+        });
       }
     }
     // chunk-by-chunk partition
@@ -341,7 +345,8 @@ Task FlowBuilder::reduce_static(
           break;
         }
         
-        sf.emplace([&mutex, &next, &r, beg, end, C, N, W, &o] () mutable {
+        //sf.emplace([&mutex, &next, &r, beg, end, C, N, W, &o] () mutable {
+        sf.silent_async([&mutex, &next, &r, beg, end, C, N, W, &o] () mutable {
 
           size_t trip = W*C;
           size_t s0 = next.fetch_add(C, std::memory_order_relaxed);
@@ -412,7 +417,8 @@ Task FlowBuilder::reduce_static(
           std::lock_guard<std::mutex> lock(mutex);
           r = o(r, sum);
 
-        }).name("prs_"s + std::to_string(w));
+        //}).name("prs_"s + std::to_string(w));
+        });
       }
     }
     
@@ -496,7 +502,8 @@ Task FlowBuilder::transform_reduce_guided(
         break;
       }
 
-      sf.emplace([&mutex, &next, &r, beg, N, W, &bop, &uop, C] () mutable {
+      //sf.emplace([&mutex, &next, &r, beg, N, W, &bop, &uop, C] () mutable {
+      sf.silent_async([&mutex, &next, &r, beg, N, W, &bop, &uop, C] () mutable {
         
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
@@ -564,7 +571,8 @@ Task FlowBuilder::transform_reduce_guided(
         std::lock_guard<std::mutex> lock(mutex);
         r = bop(r, sum);
 
-      }).name("prg_"s + std::to_string(w));
+      //}).name("prg_"s + std::to_string(w));
+      });
     }
     
     sf.join();
@@ -625,7 +633,8 @@ Task FlowBuilder::transform_reduce_dynamic(
         break;
       }
 
-      sf.emplace([&mutex, &next, &r, beg, N, &bop, &uop, C] () mutable {
+      //sf.emplace([&mutex, &next, &r, beg, N, &bop, &uop, C] () mutable {
+      sf.silent_async([&mutex, &next, &r, beg, N, &bop, &uop, C] () mutable {
         
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
@@ -664,7 +673,8 @@ Task FlowBuilder::transform_reduce_dynamic(
         std::lock_guard<std::mutex> lock(mutex);
         r = bop(r, sum);
 
-      }).name("prd_"s + std::to_string(w));
+      //}).name("prd_"s + std::to_string(w));
+      });
     }
     
     sf.join();
@@ -729,7 +739,8 @@ Task FlowBuilder::transform_reduce_static(
           break;
         }
         
-        sf.emplace([&mutex, &next, &r, beg, items, &bop, &uop] () mutable {
+        //sf.emplace([&mutex, &next, &r, beg, items, &bop, &uop] () mutable {
+        sf.silent_async([&mutex, &next, &r, beg, items, &bop, &uop] () mutable {
 
           size_t s0 = next.fetch_add(items, std::memory_order_relaxed);
           std::advance(beg, s0);
@@ -752,7 +763,8 @@ Task FlowBuilder::transform_reduce_static(
           std::lock_guard<std::mutex> lock(mutex);
           r = bop(r, sum);
 
-        }).name("prs_"s + std::to_string(i));
+        //}).name("prs_"s + std::to_string(i));
+        });
       }
     }
     // chunk-by-chunk partition
@@ -764,7 +776,8 @@ Task FlowBuilder::transform_reduce_static(
           break;
         }
         
-        sf.emplace([&mutex, &next, &r, beg, end, C, N, W, &bop, &uop] () mutable {
+        //sf.emplace([&mutex, &next, &r, beg, end, C, N, W, &bop, &uop] () mutable {
+        sf.silent_async([&mutex, &next, &r, beg, end, C, N, W, &bop, &uop] () mutable {
 
           size_t trip = W*C;
           size_t s0 = next.fetch_add(C, std::memory_order_relaxed);
@@ -835,7 +848,8 @@ Task FlowBuilder::transform_reduce_static(
           std::lock_guard<std::mutex> lock(mutex);
           r = bop(r, sum);
 
-        }).name("prs_"s + std::to_string(w));
+        //}).name("prs_"s + std::to_string(w));
+        });
       }
     }
     

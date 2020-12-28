@@ -17,7 +17,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="70" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="70" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="171" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="171" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -33,7 +33,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="77" column="11"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="178" column="11"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1ObserverInterface_1a41e6e62f12bf9d9dc4fa74632f6825d9" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
@@ -63,7 +63,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="83" column="16"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="184" column="16"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1ObserverInterface_1a3e3a9f7f1d43691794e487b8787b01a0" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
@@ -105,7 +105,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="90" column="16"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="191" column="16"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1ObserverInterface_1aa59a59a59eadd4eb6ba20ecdfcae882b" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
@@ -147,7 +147,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="97" column="16"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="198" column="16"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -190,7 +190,7 @@
 <codeline><highlight class="normal"><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr&lt;MyObserver&gt;</ref><sp/>observer<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1aff77def96ae740d648dd84e571237c83" kindref="member">make_observer</ref>&lt;MyObserver&gt;(</highlight><highlight class="stringliteral">&quot;MyObserver&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting> </para>
     </detaileddescription>
     <inheritancegraph>
@@ -211,7 +211,7 @@
         </childnode>
       </node>
     </inheritancegraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="68" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="68" bodyend="98"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="169" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="169" bodyend="199"/>
     <listofallmembers>
       <member refid="classtf_1_1ObserverInterface_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::ObserverInterface</scope><name>Executor</name></member>
       <member refid="classtf_1_1ObserverInterface_1a3e3a9f7f1d43691794e487b8787b01a0" prot="public" virt="pure-virtual"><scope>tf::ObserverInterface</scope><name>on_entry</name></member>

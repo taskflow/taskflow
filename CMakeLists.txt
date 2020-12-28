@@ -1,16 +1,17 @@
 # CMake version
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.12)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
 # Project name
 project(Taskflow VERSION 3.0.0 LANGUAGES CXX)
 
 # build options
-option(TF_BUILD_BENCHMARKS "Enables build of benchmarks" OFF)
-option(TF_BUILD_CUDA "Enables build of cuda code" OFF)
-option(TF_BUILD_SYCL "Enables build of sycl code" OFF)
-option(TF_BUILD_TESTS "Enables build of tests" ON)
-option(TF_BUILD_EXAMPLES "Enables build of examples" ON)
+option(TF_BUILD_BENCHMARKS "Enables builds of benchmarks" OFF)
+option(TF_BUILD_CUDA "Enables builds of cuda code" OFF)
+option(TF_BUILD_SYCL "Enables builds of sycl code" OFF)
+option(TF_BUILD_TESTS "Enables builds of tests" ON)
+option(TF_BUILD_EXAMPLES "Enables builds of examples" ON)
+option(TF_BUILD_PROFILER "Enables builds of profiler" OFF)
 
 # project-specific variables
 set(TF_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
@@ -53,6 +54,11 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
     message(FATAL_ERROR "\nTaskflow requires MSVC++ at least v14.14") 
   endif()
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0.1")
+    message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
+    message(FATAL_ERROR "\nTaskflow requires icpc at least v19.0.1")
+  endif()
 else()
   message(FATAL_ERROR "\n\
 Taskflow currently supports the following compilers:\n\
@@ -60,6 +66,7 @@ Taskflow currently supports the following compilers:\n\
   - clang++ v6.0 or above\n\
   - MSVC++ v19.14 or above\n\
   - AppleClang v8 or above\n\
+  - Intel v19.0.1 or above\n\
 ")
 endif()
 
@@ -244,6 +251,7 @@ message(STATUS "TF_BUILD_CUDA: " ${TF_BUILD_CUDA})
 message(STATUS "TF_BUILD_SYCL: " ${TF_BUILD_SYCL})
 message(STATUS "TF_BUILD_TESTS: " ${TF_BUILD_TESTS})
 message(STATUS "TF_BUILD_EXAMPLES: " ${TF_BUILD_EXAMPLES})
+message(STATUS "TF_BUILD_PROFILER: " ${TF_BUILD_PROFILER})
 message(STATUS "TF_INC_INSTALL_DIR: " ${TF_INC_INSTALL_DIR})
 message(STATUS "TF_LIB_INSTALL_DIR: " ${TF_LIB_INSTALL_DIR})
 message(STATUS "TF_UTEST_DIR: " ${TF_UTEST_DIR})
@@ -291,6 +299,13 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 #  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 #  $<INSTALL_INTERFACE:include/> 
 #)
+
+# -----------------------------------------------------------------------------
+# profiler program 
+# -----------------------------------------------------------------------------
+if(TF_BUILD_PROFILER)
+  add_subdirectory(tfprof/server)
+endif(TF_BUILD_PROFILER)
 
 # -----------------------------------------------------------------------------
 # Example program 

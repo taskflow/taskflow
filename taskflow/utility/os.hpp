@@ -21,6 +21,11 @@
 #define TF_OS_WINDOWS 1
 #endif
 
+#ifdef __CYGWIN__
+#undef TF_OS_WINDOWS
+#define TF_OS_WINDOWS 1
+#endif
+
 #if (defined __APPLE__ && defined __MACH__)
 #undef TF_OS_DARWIN
 #define TF_OS_DARWIN 1
@@ -94,7 +99,7 @@ inline std::string get_env(const std::string& str) {
   
   if(_dupenv_s(&ptr, &len, str.c_str()) == 0 && ptr != nullptr) {
     std::string res(ptr, len);
-    free(ptr);
+    std::free(ptr);
     return res;
   }
   return "";
@@ -105,5 +110,37 @@ inline std::string get_env(const std::string& str) {
 #endif
 }
 
+// Function: has_env
+inline bool has_env(const std::string& str) {
+#ifdef _MSC_VER
+  char *ptr = nullptr;
+  size_t len = 0;
+  
+  if(_dupenv_s(&ptr, &len, str.c_str()) == 0 && ptr != nullptr) {
+    std::string res(ptr, len);
+    std::free(ptr);
+    return true;
+  }
+  return false;
+
+#else
+  auto ptr = std::getenv(str.c_str());
+  return ptr ? true : false;
+#endif
+}
+
+// ----------------------------------------------------------------------------
+
+
+
 
 }  // end of namespace tf -----------------------------------------------------
+
+
+
+
+
+
+
+
+

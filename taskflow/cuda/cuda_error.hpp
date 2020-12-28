@@ -5,7 +5,7 @@
 #include <sstream>
 #include <exception>
 
-#include "../utility/stringify.hpp"
+#include "../utility/stream.hpp"
 
 #define TF_CUDA_REMOVE_FIRST_HELPER(N, ...) __VA_ARGS__
 #define TF_CUDA_REMOVE_FIRST(...) TF_CUDA_REMOVE_FIRST_HELPER(__VA_ARGS__)

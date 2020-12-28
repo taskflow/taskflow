@@ -4873,7 +4873,7 @@ Notice that in this method, <computeroutput>B</computeroutput> and <computeroutp
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>find_max.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(d2h);<sp/><sp/></highlight><highlight class="comment">//<sp/>amax<sp/>runs<sp/>after<sp/><sp/>device-to-host<sp/>copy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a81f35d5b0a20ac0646447eb80d97c0aa" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(h_res<sp/>==<sp/>512);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -4947,6 +4947,7 @@ Notice that in this method, <computeroutput>B</computeroutput> and <computeroutp
       <member refid="classtf_1_1cublasFlowCapturer_1a2701b05226ef193e45482c1bb56f93de" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>native_handle</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1a8000fc6dbbb6f6f5a033f1b365e80d38" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>nrm2</name></member>
       <member refid="classtf_1_1cudaFlowCapturerBase_1afa4e61e31e202f222e0f508ce3d159fc" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>on</name></member>
+      <member refid="classtf_1_1cudaFlowCapturerBase_1aab12ff998a789efe0ad302bf86254f0d" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>reduce</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1adb8f5d3137f5ccb3469a5bdde454a8bf" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>scal</name></member>
       <member refid="classtf_1_1cudaFlowCapturerBase_1ac25236625772a0a2c66831517b9ec288" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>single_task</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1a32451b05fd7eb937ce8e807b5d5abe1f" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>swap</name></member>
@@ -4962,6 +4963,7 @@ Notice that in this method, <computeroutput>B</computeroutput> and <computeroutp
       <member refid="classtf_1_1cublasFlowCapturer_1af0ff6efaa01bffbd20d2760b6f82bcb1" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>trmv</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1aa8cc2fcfeb3ffbc1146dda358b2b8188" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>trsm</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1a5f10c25901bff8c626235dfdd6d10b57" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>trsv</name></member>
+      <member refid="classtf_1_1cudaFlowCapturerBase_1a407504f1295f5f658abfbee081a0b057" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>uninitialized_reduce</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1af315b411bcaa2bd2bc1436f7f2ca5e21" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>vcopy</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1af8f5052cbe1203d6ee3d3d40dffbb8eb" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>vget</name></member>
       <member refid="classtf_1_1cublasFlowCapturer_1a5e5d2a2502fcfe0094d5ac354995cb71" prot="public" virt="non-virtual"><scope>tf::cublasFlowCapturer</scope><name>vset</name></member>
