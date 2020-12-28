@@ -477,14 +477,14 @@ class cudaFlowCapturer : public cudaFlowCapturerBase {
   friend class cudaFlow;
   friend class Executor;
 
-  struct Externel {
+  struct External {
     cudaGraph graph;
   };
 
-  struct Internel {
+  struct Internal {
   };
 
-  using handle_t = std::variant<Externel, Internel>;
+  using handle_t = std::variant<External, Internal>;
 
   using Optimizer = std::variant<
     SequentialOptimizer,
@@ -603,18 +603,16 @@ class cudaFlowCapturer : public cudaFlowCapturerBase {
 
 };
 
-// constructor
+// constructs a cudaFlow capturer from a taskflow
 inline cudaFlowCapturer::cudaFlowCapturer(cudaGraph& g) :
-  _handle{std::in_place_type_t<Internel>{}},
-  cudaFlowCapturerBase{g}
-{
+  cudaFlowCapturerBase{g},
+  _handle{std::in_place_type_t<Internal>{}} {
 }
 
-// constructor
+// constructs a standalone cudaFlow capturer
 inline cudaFlowCapturer::cudaFlowCapturer() : 
-  _handle{std::in_place_type_t<Externel>{}},
-  cudaFlowCapturerBase{std::get<Externel>(_handle).graph}
-{
+  _handle{std::in_place_type_t<External>{}} {
+  this->_graph = &(std::get<External>(_handle).graph);
 }
 
 inline cudaFlowCapturer::~cudaFlowCapturer() {

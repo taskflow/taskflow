@@ -86,17 +86,17 @@ void dependencies(OPT_Args ...args) {
       tasks[l].resize((g.get_graph())[l].size());
       for(size_t i = 0; i < (g.get_graph())[l].size(); ++i) {
         
-        //if(l % 2 == 1) {
-          //tasks[l][i] = cf.single_task([inputs, i] __device__ () {
-            //inputs[i]++;
-          //});
-        //}
-        //else {
+        if(l % 2 == 1) {
+          tasks[l][i] = cf.single_task([inputs, i] __device__ () {
+            inputs[i]++;
+          });
+        }
+        else {
           tasks[l][i] = cf.for_each(
             inputs, inputs + num_partitions, 
             [] __device__(int& v) { v *= 2; }
           );
-        //}
+        }
       }
     }
 
@@ -115,18 +115,18 @@ void dependencies(OPT_Args ...args) {
       result = result * 2 + 2;
     }
 
-  //for(int i = 0; i < num_partitions; ++i) {
-      //REQUIRE(inputs[i] == result);
-    //}
+    for(int i = 0; i < num_partitions; ++i) {
+      REQUIRE(inputs[i] == result);
+    }
 
     REQUIRE(cudaFree(inputs) == cudaSuccess);
   }
 }
 
-//TEST_CASE("cudaCapturer.dependencies.diamond.Sequential") {
-  //dependencies<tf::SequentialOptimizer>();
-//}
+TEST_CASE("cudaCapturer.dependencies.diamond.Sequential") {
+  dependencies<tf::SequentialOptimizer>();
+}
 
-//TEST_CASE("cudaCapturer.dependencies.diamond.RoundRobin") {
-  //dependencies<tf::RoundRobinOptimizer>(4);
-//}
+TEST_CASE("cudaCapturer.dependencies.diamond.RoundRobin") {
+  dependencies<tf::RoundRobinOptimizer>(4);
+}
