@@ -3,6 +3,7 @@
 #include "cuda_task.hpp"
 #include "cuda_algorithm/cuda_for_each.hpp"
 #include "cuda_algorithm/cuda_transform.hpp"
+#include "cuda_optimizer.hpp"
 
 /** 
 @file cuda_capturer.hpp
@@ -97,15 +98,15 @@ class cudaFlowCapturerBase {
     /**
     @brief initializes or sets GPU memory to the given value byte by byte
     
-    @param devPtr pointer to GPU mempry
-    @param value value to set for each byte of the specified memory
-    @param count size in bytes to set
+    @param ptr pointer to GPU mempry
+    @param v value to set for each byte of the specified memory
+    @param n size in bytes to set
     
     The method captures a @c cudaMemsetAsync operation through an
     internal stream to fill the first @c count bytes of the memory area 
     pointed to by @c devPtr with the constant byte value @c value.
     */ 
-    cudaTask memset(void* devPtr, int value, size_t count);
+    cudaTask memset(void* ptr, int v, size_t n);
 
     /**
     @brief captures a kernel
@@ -123,7 +124,7 @@ class cudaFlowCapturerBase {
     */ 
     template <typename F, typename... ArgsT>
     cudaTask kernel(dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
-    
+
     // ------------------------------------------------------------------------
     // generic algorithms
     // ------------------------------------------------------------------------
@@ -281,12 +282,13 @@ inline cudaTask cudaFlowCapturerBase::memset(void* ptr, int v, size_t n) {
 // Function: kernel
 template <typename F, typename... ArgsT>
 cudaTask cudaFlowCapturerBase::kernel(
-  dim3 g, dim3 b, size_t shm, F&& f, ArgsT&&... args
+  dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
 ) {
-  return on([g, b, shm, f, args...] (cudaStream_t stream) mutable {
-    f<<<g, b, shm, stream>>>(args...);
+  return on([g, b, s, f, args...] (cudaStream_t stream) mutable {
+    f<<<g, b, s, stream>>>(args...);
   });
 }
+
 
 // Function: single_task
 template <typename C>
@@ -376,7 +378,26 @@ class cudaFlowCapturer : public cudaFlowCapturerBase {
   friend class cudaFlow;
   friend class Executor;
 
+  struct Externel {
+    cudaGraph graph;
+  };
+
+  struct Internel {
+  };
+
+  using handle_t = std::variant<Externel, Internel>;
+
+  using Optimizer = std::variant<
+    SequentialOptimizer,
+    RoundRobinOptimizer
+    //GreedyOptimizer
+  >;
+
   public:
+
+    cudaFlowCapturer();
+
+    virtual ~cudaFlowCapturer();
     
     /**
     @brief queries the emptiness of the graph
@@ -398,25 +419,75 @@ class cudaFlowCapturer : public cudaFlowCapturerBase {
     template <typename T, typename... ArgsT>
     T* make_capturer(ArgsT&&... args);
 
+    template <typename OPT, typename... ArgsT>
+    OPT& make_optimizer(ArgsT&&... args);
+
+    // ------------------------------------------------------------------------
+    // rebind
+    // ------------------------------------------------------------------------
+    //
+    template <typename C, std::enable_if_t<
+      std::is_invocable_r_v<void, C, cudaStream_t>, void>* = nullptr
+    >
+    cudaTask rebind_on(cudaTask task, C&& callable);
+    
+    cudaTask rebind_memcpy(cudaTask task, void* dst, const void* src, size_t count);
+
+    template <typename T, 
+      std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
+    >
+    cudaTask rebind_copy(cudaTask task, T* tgt, const T* src, size_t num);
+
+    cudaTask rebind_memset(cudaTask task, void* ptr, int value, size_t n);
+
+    template <typename F, typename... ArgsT>
+    cudaTask rebind_kernel(cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
+    
+
+    template <typename P>
+    void offload_until(P&& predicate);
+
+    void offload_n(size_t n);
+
+    void offload();
+
   private:
     
     std::vector<std::unique_ptr<cudaFlowCapturerBase>> _capturers;
 
+    handle_t _handle;
+
     cudaFlowCapturer(cudaGraph&);
-    
+
     cudaGraph_t _capture();
+
+    void _destroy_executable();
     
     cudaGraphExec_t _executable {nullptr};
+
+    Optimizer _optimizer = SequentialOptimizer{};
+
 };
 
 // constructor
 inline cudaFlowCapturer::cudaFlowCapturer(cudaGraph& g) :
-  cudaFlowCapturerBase{g} {
+  _handle{std::in_place_type_t<Internel>{}},
+  cudaFlowCapturerBase{g}
+{
 }
 
-// Function: empty
-inline bool cudaFlowCapturer::empty() const {
-  return _graph->empty();
+// constructor
+inline cudaFlowCapturer::cudaFlowCapturer() : 
+  _handle{std::in_place_type_t<Externel>{}},
+  cudaFlowCapturerBase{std::get<Externel>(_handle).graph}
+{
+}
+
+inline cudaFlowCapturer::~cudaFlowCapturer() {
+  if(_executable != nullptr) {
+    cudaGraphExecDestroy(_executable);
+    _executable = nullptr;
+  }
 }
 
 //// Procedure: _create_executable
@@ -430,14 +501,103 @@ inline bool cudaFlowCapturer::empty() const {
 //  );
 //}
 //
-//// Procedure: _destroy_executable
-//inline void cudaFlowCapturer::_destroy_executable() {
-//  assert(_executable != nullptr);
-//  TF_CHECK_CUDA(
-//    cudaGraphExecDestroy(_executable), "failed to destroy executable graph"
-//  );
-//  _executable = nullptr;
-//}
+// Procedure: _destroy_executable
+inline void cudaFlowCapturer::_destroy_executable() {
+  if(_executable != nullptr) {
+    TF_CHECK_CUDA(
+      cudaGraphExecDestroy(_executable), "failed to destroy executable graph"
+    );
+    _executable = nullptr;
+  }
+}
+
+template <typename P>
+void cudaFlowCapturer::offload_until(P&& predicate) {
+  if(_executable == nullptr) {
+    auto captured = _capture();
+    
+    TF_CHECK_CUDA(
+      cudaGraphInstantiate(
+        &_executable, captured, nullptr, nullptr, 0
+      ),
+      "failed to create an executable graph"
+    );
+    TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
+  }
+  
+  cudaScopedPerThreadStream s;
+
+  while(!predicate()) {
+    TF_CHECK_CUDA(cudaGraphLaunch(_executable, s), "failed to exec");
+
+    TF_CHECK_CUDA(cudaStreamSynchronize(s), "failed to synchronize stream");
+  }
+}
+
+inline void cudaFlowCapturer::offload_n(size_t n) {
+  offload_until([repeat=n] () mutable { return repeat-- == 0; });
+}
+
+inline void cudaFlowCapturer::offload() {
+  offload_until([repeat=1] () mutable { return repeat-- == 0; });
+}
+
+// Function: empty
+inline bool cudaFlowCapturer::empty() const {
+  return _graph->empty();
+}
+
+template <typename C, std::enable_if_t<
+  std::is_invocable_r_v<void, C, cudaStream_t>, void>* 
+>
+cudaTask cudaFlowCapturer::rebind_on(cudaTask task, C&& callable) {
+  
+  if(task.type() != cudaNode::CUDA_CAPTURE_TASK) {
+    throw std::runtime_error("invalid node type");
+  }
+  
+  _destroy_executable();
+
+  std::get<cudaNode::Capture>((task._node)->_handle).work = std::forward<C>(callable);
+
+  return task;
+}
+
+cudaTask cudaFlowCapturer::rebind_memcpy(cudaTask task, void* dst, const void* src, size_t count) {
+  return rebind_on(task, [dst, src, count](cudaStream_t stream) mutable {
+    TF_CHECK_CUDA(
+      cudaMemcpyAsync(dst, src, count, cudaMemcpyDefault, stream),
+      "failed to capture memcpy"
+    );
+  });
+}
+
+template <typename T, 
+  std::enable_if_t<!std::is_same_v<T, void>, void>* 
+>
+cudaTask cudaFlowCapturer::rebind_copy(cudaTask task, T* tgt, const T* src, size_t num) {
+  return rebind_on(task, [tgt, src, num] (cudaStream_t stream) mutable {
+    TF_CHECK_CUDA(
+      cudaMemcpyAsync(tgt, src, sizeof(T)*num, cudaMemcpyDefault, stream),
+      "failed to capture copy"
+    );
+  });
+}
+
+cudaTask cudaFlowCapturer::rebind_memset(cudaTask task, void* ptr, int v, size_t n) {
+  return rebind_on(task, [ptr, v, n] (cudaStream_t stream) mutable {
+    TF_CHECK_CUDA(
+      cudaMemsetAsync(ptr, v, n, stream), "failed to capture memset"
+    );
+  });
+}
+
+template <typename F, typename... ArgsT>
+cudaTask cudaFlowCapturer::rebind_kernel(cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args) {
+  return rebind_on(task, [g, b, s, f, args...] (cudaStream_t stream) mutable {
+    f<<<g, b, s, stream>>>(args...);
+  });
+}
 
 // Function: make_capturer
 template <typename T, typename... ArgsT>
@@ -454,31 +614,17 @@ T* cudaFlowCapturer::make_capturer(ArgsT&&... args) {
 
 // Function: _capture
 inline cudaGraph_t cudaFlowCapturer::_capture() {
-
-  // acquire per-thread stream and turn it into capture mode
-  // we must use ThreadLocal mode to avoid clashing with CUDA global states
-  cudaScopedPerThreadStream stream;
   
-  TF_CHECK_CUDA(
-    cudaStreamBeginCapture(stream, cudaStreamCaptureModeThreadLocal), 
-    "failed to turn stream into per-thread capture mode"
-  );
-
-  // TODO: need an efficient algorithm
-  auto ordered = _graph->_toposort();
-  for(auto& node : ordered) {
-    std::get<cudaNode::Capture>(node->_handle).work(stream);  
-  }
-
-  cudaGraph_t g;
-
-  TF_CHECK_CUDA(
-    cudaStreamEndCapture(stream, &g), "failed to end capture"
-  );
+  cudaGraph_t g = std::visit([this](auto&& opt){ return opt._optimize(_graph); }, _optimizer);
 
   //cuda_dump_graph(std::cout, g);
   
   return g;
+}
+
+template <typename OPT, typename ...ArgsT>
+OPT& cudaFlowCapturer::make_optimizer(ArgsT&&... args) {
+  return _optimizer.emplace<OPT>(std::forward<ArgsT>(args)...);
 }
 
 }  // end of namespace tf -----------------------------------------------------

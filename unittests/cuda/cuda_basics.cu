@@ -72,10 +72,10 @@ TEST_CASE("EmptyCapture" * doctest::timeout(300)) {
 // --------------------------------------------------------
 // Standalone
 // --------------------------------------------------------
+template <typename T>
+void standalone() {
 
-TEST_CASE("Standalone") {
-
-  tf::cudaFlow cf;
+  T cf;
   REQUIRE(cf.empty());
 
   unsigned N = 1024;
@@ -107,6 +107,13 @@ TEST_CASE("Standalone") {
   
   std::free(cpu);
   tf::cuda_free(gpu);
+}
+
+TEST_CASE("Standalone.cudaFlow") {
+  standalone<tf::cudaFlow>();
+}
+TEST_CASE("Standalone.cudaCapturer") {
+  standalone<tf::cudaFlowCapturer>();
 }
 
 // --------------------------------------------------------

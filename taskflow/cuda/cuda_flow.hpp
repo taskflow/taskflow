@@ -1144,25 +1144,11 @@ void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
   cudaFlowCapturer fc(*g);
 
   c(fc);
-  
-  auto captured = fc._capture();
-  
-  TF_CHECK_CUDA(
-    cudaGraphInstantiate(
-      &fc._executable, captured, nullptr, nullptr, 0
-    ),
-    "failed to create an executable graph"
-  );
-  
-  cudaScopedPerThreadStream s;
 
-  TF_CHECK_CUDA(cudaGraphLaunch(fc._executable, s), "failed to exec");
-  TF_CHECK_CUDA(cudaStreamSynchronize(s), "failed to synchronize stream");
-  TF_CHECK_CUDA(cudaGraphExecDestroy(fc._executable), "failed to destroy exec");
-
-  fc._executable = nullptr;
+  if(fc._executable == nullptr) {
+    fc.offload();
+  }
   
-  TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
 
   // TODO: how do we support the update?
 }
