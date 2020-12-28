@@ -18,45 +18,46 @@ namespace tf {
 
 @brief enumeration of all task types
 */
-enum TaskType {
-  PLACEHOLDER_TASK = Node::PLACEHOLDER,
-  CUDAFLOW_TASK    = Node::CUDAFLOW,
-  STATIC_TASK      = Node::STATIC,
-  DYNAMIC_TASK     = Node::DYNAMIC,
-  CONDITION_TASK   = Node::CONDITION,
-  MODULE_TASK      = Node::MODULE,
-  ASYNC_TASK       = Node::ASYNC
+enum class TaskType : int {
+  PLACEHOLDER = 0,
+  CUDAFLOW,
+  STATIC,
+  DYNAMIC,
+  CONDITION,
+  MODULE,
+  ASYNC,
+  UNDEFINED 
 };
 
 /**
 @brief array of all task types (used for iterating task types)
 */
 inline constexpr std::array<TaskType, 7> TASK_TYPES = {
-  PLACEHOLDER_TASK,
-  CUDAFLOW_TASK,
-  STATIC_TASK,
-  DYNAMIC_TASK,
-  CONDITION_TASK,
-  MODULE_TASK,
-  ASYNC_TASK
+  TaskType::PLACEHOLDER,
+  TaskType::CUDAFLOW,
+  TaskType::STATIC,
+  TaskType::DYNAMIC,
+  TaskType::CONDITION,
+  TaskType::MODULE,
+  TaskType::ASYNC
 };
 
 /**
 @brief convert a task type to a human-readable string
 */
-inline const char* task_type_to_string(TaskType type) {
+inline const char* to_string(TaskType type) {
 
   const char* val;
 
   switch(type) {
-    case PLACEHOLDER_TASK: val = "placeholder"; break;
-    case CUDAFLOW_TASK:    val = "cudaflow";    break;
-    case STATIC_TASK:      val = "static";      break;
-    case DYNAMIC_TASK:     val = "subflow";     break;
-    case CONDITION_TASK:   val = "condition";   break;
-    case MODULE_TASK:      val = "module";      break;
-    case ASYNC_TASK:       val = "async";       break;
-    default:               val = "undefined";   break;
+    case TaskType::PLACEHOLDER: val = "placeholder"; break;
+    case TaskType::CUDAFLOW:    val = "cudaflow";    break;
+    case TaskType::STATIC:      val = "static";      break;
+    case TaskType::DYNAMIC:     val = "subflow";     break;
+    case TaskType::CONDITION:   val = "condition";   break;
+    case TaskType::MODULE:      val = "module";      break;
+    case TaskType::ASYNC:       val = "async";       break;
+    default:                    val = "undefined";   break;
   }
 
   return val;
@@ -100,8 +101,6 @@ std::function<void(tf::cudaFlow&)> or std::function<void(tf::cudaFlowCapturer&)>
 template <typename C>
 constexpr bool is_cudaflow_task_v = std::is_invocable_r_v<void, C, cudaFlow&> ||
                                     std::is_invocable_r_v<void, C, cudaFlowCapturer&>;
-
-
 
 // ----------------------------------------------------------------------------
 // Task
@@ -421,7 +420,17 @@ inline bool Task::has_work() const {
 
 // Function: task_type
 inline TaskType Task::type() const {
-  return static_cast<TaskType>(_node->_handle.index());
+  switch(_node->_handle.index()) {
+    case Node::PLACEHOLDER:  return TaskType::PLACEHOLDER;
+    case Node::STATIC:       return TaskType::STATIC;
+    case Node::DYNAMIC:      return TaskType::DYNAMIC;
+    case Node::CONDITION:    return TaskType::CONDITION;
+    case Node::MODULE:       return TaskType::MODULE;
+    case Node::ASYNC:        return TaskType::ASYNC;
+    case Node::SILENT_ASYNC: return TaskType::ASYNC;
+    case Node::CUDAFLOW:     return TaskType::CUDAFLOW;
+    default:                 return TaskType::UNDEFINED;
+  }
 }
 
 // Function: for_each_successor
@@ -450,7 +459,7 @@ inline void Task::dump(std::ostream& os) const {
   os << "task ";
   if(name().empty()) os << _node;
   else os << name();
-  os << " [type=" << task_type_to_string(type()) << ']';
+  os << " [type=" << to_string(type()) << ']';
 }
 
 // Function: work
@@ -580,7 +589,17 @@ inline size_t TaskView::num_successors() const {
 
 // Function: type
 inline TaskType TaskView::type() const {
-  return static_cast<TaskType>(_node._handle.index());
+  switch(_node._handle.index()) {
+    case Node::PLACEHOLDER:  return TaskType::PLACEHOLDER;
+    case Node::STATIC:       return TaskType::STATIC;
+    case Node::DYNAMIC:      return TaskType::DYNAMIC;
+    case Node::CONDITION:    return TaskType::CONDITION;
+    case Node::MODULE:       return TaskType::MODULE;
+    case Node::ASYNC:        return TaskType::ASYNC;
+    case Node::SILENT_ASYNC: return TaskType::ASYNC;
+    case Node::CUDAFLOW:     return TaskType::CUDAFLOW;
+    default:                 return TaskType::UNDEFINED;
+  }
 }
 
 // Function: for_each_successor

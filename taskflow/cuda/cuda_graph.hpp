@@ -445,13 +445,13 @@ class cudaNode {
   public:
   
   // variant index
-  constexpr static auto CUDA_EMPTY_TASK   = get_index_v<Empty, handle_t>;
-  constexpr static auto CUDA_HOST_TASK    = get_index_v<Host, handle_t>;
-  constexpr static auto CUDA_MEMSET_TASK  = get_index_v<Memset, handle_t>;
-  constexpr static auto CUDA_MEMCPY_TASK  = get_index_v<Memcpy, handle_t>; 
-  constexpr static auto CUDA_KERNEL_TASK  = get_index_v<Kernel, handle_t>;
-  constexpr static auto CUDA_SUBFLOW_TASK = get_index_v<Subflow, handle_t>;
-  constexpr static auto CUDA_CAPTURE_TASK = get_index_v<Capture, handle_t>;
+  constexpr static auto EMPTY   = get_index_v<Empty, handle_t>;
+  constexpr static auto HOST    = get_index_v<Host, handle_t>;
+  constexpr static auto MEMSET  = get_index_v<Memset, handle_t>;
+  constexpr static auto MEMCPY  = get_index_v<Memcpy, handle_t>; 
+  constexpr static auto KERNEL  = get_index_v<Kernel, handle_t>;
+  constexpr static auto SUBFLOW = get_index_v<Subflow, handle_t>;
+  constexpr static auto CAPTURE = get_index_v<Capture, handle_t>;
 
     cudaNode() = delete;
     
@@ -518,7 +518,7 @@ inline void cudaNode::_precede(cudaNode* v) {
   _successors.push_back(v);
 
   // capture node doesn't have the native graph yet
-  if(_handle.index() != CUDA_CAPTURE_TASK) {
+  if(_handle.index() != cudaNode::CAPTURE) {
     TF_CHECK_CUDA(
       ::cudaGraphAddDependencies(
         _graph._native_handle, &_native_handle, &v->_native_handle, 1
@@ -701,14 +701,14 @@ inline void cudaGraph::dump(
       }
           
       switch(v->_handle.index()) {
-        case cudaNode::CUDA_KERNEL_TASK:
+        case cudaNode::KERNEL:
           os << " style=\"filled\""
              << " color=\"white\" fillcolor=\"black\""
              << " fontcolor=\"white\""
              << " shape=\"box3d\"";
         break;
 
-        case cudaNode::CUDA_SUBFLOW_TASK:
+        case cudaNode::SUBFLOW:
           stack.push(std::make_tuple(
             &std::get<cudaNode::Subflow>(v->_handle).graph, v, l+1)
           );

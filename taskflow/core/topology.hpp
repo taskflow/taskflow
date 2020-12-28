@@ -2,6 +2,9 @@
 
 namespace tf {
 
+// ----------------------------------------------------------------------------
+
+// class: TopologyBase
 class TopologyBase {
   
   friend class Executor;

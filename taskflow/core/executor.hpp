@@ -234,8 +234,10 @@ class Executor {
     void _invoke_condition_task(Worker&, Node*, int&);
     void _invoke_module_task(Worker&, Node*);
     void _invoke_async_task(Worker&, Node*);
+    void _invoke_silent_async_task(Worker&, Node*);
     void _set_up_topology(Topology*);
     void _tear_down_topology(Topology*); 
+    void _tear_down_async(Node*);
     void _tear_down_invoke(Node*, bool);
     void _increment_topology();
     void _decrement_topology();
@@ -353,11 +355,9 @@ void Executor::silent_async(F&& f, ArgsT&&... args) {
   _increment_topology();
 
   Node* node = node_pool.animate(
-    std::in_place_type_t<Node::Async>{},
-    [f=std::forward<F>(f), args...] (bool cancel) mutable { 
-      if(!cancel) {
-        f(args...); 
-      }
+    std::in_place_type_t<Node::SilentAsync>{},
+    [f=std::forward<F>(f), args...] () mutable { 
+      f(args...); 
     }
   );
 
@@ -692,6 +692,14 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       return ;
     }
     break;
+    
+    // silent async task
+    case Node::SILENT_ASYNC: {
+      _invoke_silent_async_task(worker, node);
+      _tear_down_invoke(node, false);
+      return ;
+    }
+    break;
 
     // cudaflow task
     case Node::CUDAFLOW: {
@@ -747,32 +755,36 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   _tear_down_invoke(node, false);
 }
 
+// Procedure: _tear_down_async
+inline void Executor::_tear_down_async(Node* node) {
+  if(node->_parent) {  
+    node->_parent->_join_counter.fetch_sub(1);
+  }
+  else {
+    _decrement_topology_and_notify();
+  }
+  node_pool.recycle(node);
+}
+
 // Procedure: _tear_down_invoke
 inline void Executor::_tear_down_invoke(Node* node, bool cancel) {
 
   switch(node->_handle.index()) {
-    // async task is a special case
-    case Node::ASYNC: {
-      
-      // still need to carry out the promise
+    // async task needs to carry out the promise
+    case Node::ASYNC:
       if(cancel) {
         std::get<Node::Async>(node->_handle).work(true);
       }
-
-      if(node->_parent) {  
-        //assert(node->_topology);
-        node->_parent->_join_counter.fetch_sub(1);
-      }
-      else {
-        _decrement_topology_and_notify();
-      }
-      // recycle the node
-      node_pool.recycle(node);
-    } 
+      _tear_down_async(node);
     break;
 
+    // silent async doesn't need to carry out the promise
+    case Node::SILENT_ASYNC:
+      _tear_down_async(node);
+    break;
+
+    // tear down topology if the node is the last leaf
     default: {
-      // tear down topology if the node is the last leaf
       if(node->_parent == nullptr) {
         if(node->_topology->_join_counter.fetch_sub(1) == 1) {
           _tear_down_topology(node->_topology);
@@ -943,6 +955,13 @@ inline void Executor::_invoke_module_task(Worker& w, Node* node) {
 inline void Executor::_invoke_async_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
   std::get<Node::Async>(node->_handle).work(false);
+  _observer_epilogue(w, node);  
+}
+
+// Procedure: _invoke_silent_async_task
+inline void Executor::_invoke_silent_async_task(Worker& w, Node* node) {
+  _observer_prologue(w, node);
+  std::get<Node::SilentAsync>(node->_handle).work();
   _observer_epilogue(w, node);  
 }
 
@@ -1210,11 +1229,9 @@ void Subflow::silent_async(F&& f, ArgsT&&... args) {
   _parent->_join_counter.fetch_add(1);
 
   auto node = node_pool.animate(
-    std::in_place_type_t<Node::Async>{},
-    [f=std::forward<F>(f), args...] (bool cancel) mutable { 
-      if(!cancel) {
-        f(args...); 
-      }
+    std::in_place_type_t<Node::SilentAsync>{},
+    [f=std::forward<F>(f), args...] () mutable { 
+      f(args...); 
     }
   );
 

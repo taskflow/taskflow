@@ -832,7 +832,7 @@ inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
 template <typename C>
 void cudaFlow::update_host(cudaTask task, C&& c) {
   
-  if(task.type() != CUDA_HOST_TASK) {
+  if(task.type() != cudaTaskType::HOST) {
     TF_THROW(task, " is not a host task");
   }
 
@@ -847,7 +847,7 @@ void cudaFlow::update_kernel(
   cudaTask ct, dim3 g, dim3 b, size_t s, ArgsT&&... args
 ) {
 
-  if(ct.type() != CUDA_KERNEL_TASK) {
+  if(ct.type() != cudaTaskType::KERNEL) {
     TF_THROW(ct, " is not a kernel task");
   }
 
@@ -876,7 +876,7 @@ template <
 >
 void cudaFlow::update_copy(cudaTask ct, T* tgt, const T* src, size_t num) {
   
-  if(ct.type() != CUDA_MEMCPY_TASK) {
+  if(ct.type() != cudaTaskType::MEMCPY) {
     TF_THROW(ct, " is not a memcpy task");
   }
 
@@ -895,7 +895,7 @@ inline void cudaFlow::update_memcpy(
   cudaTask ct, void* tgt, const void* src, size_t bytes
 ) {
   
-  if(ct.type() != CUDA_MEMCPY_TASK) {
+  if(ct.type() != cudaTaskType::MEMCPY) {
     TF_THROW(ct, " is not a memcpy task");
   }
 
@@ -911,7 +911,7 @@ inline void cudaFlow::update_memcpy(
 inline
 void cudaFlow::update_memset(cudaTask ct, void* dst, int ch, size_t count) {
 
-  if(ct.type() != CUDA_MEMSET_TASK) {
+  if(ct.type() != cudaTaskType::MEMSET) {
     TF_THROW(ct, " is not a memset task");
   }
 
@@ -931,7 +931,7 @@ template <typename T, std::enable_if_t<
 >
 void cudaFlow::update_fill(cudaTask task, T* dst, T value, size_t count) {
 
-  if(task.type() != CUDA_MEMSET_TASK) {
+  if(task.type() != cudaTaskType::MEMSET) {
     TF_THROW(task, " is not a memset task");
   }
 
@@ -951,7 +951,7 @@ template <typename T, std::enable_if_t<
 >
 void cudaFlow::update_zero(cudaTask task, T* dst, size_t count) {
 
-  if(task.type() != CUDA_MEMSET_TASK) {
+  if(task.type() != cudaTaskType::MEMSET) {
     TF_THROW(task, " is not a memset task");
   }
   
@@ -1148,7 +1148,7 @@ template <typename C, typename D,
 >
 Task FlowBuilder::emplace_on(C&& callable, D&& device) {
   auto n = _graph.emplace_back(
-    std::in_place_type_t<Node::cudaFlowTask>{},
+    std::in_place_type_t<Node::cudaFlow>{},
     [c=std::forward<C>(callable), d=std::forward<D>(device)]
     (Executor& executor, Node* node) mutable {
       cudaScopedDevice ctx(d);
@@ -1175,7 +1175,7 @@ template <typename C,
 >
 void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
 
-  auto& h = std::get<Node::cudaFlowTask>(node->_handle);
+  auto& h = std::get<Node::cudaFlow>(node->_handle);
 
   cudaGraph* g = dynamic_cast<cudaGraph*>(h.graph.get());
   
@@ -1197,7 +1197,7 @@ template <typename C,
 >
 void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
 
-  auto& h = std::get<Node::cudaFlowTask>(node->_handle);
+  auto& h = std::get<Node::cudaFlow>(node->_handle);
 
   cudaGraph* g = dynamic_cast<cudaGraph*>(h.graph.get());
   

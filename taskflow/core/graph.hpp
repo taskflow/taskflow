@@ -125,14 +125,20 @@ class Node {
   struct Async {
 
     template <typename T>
-    Async(T&&);
-
-    template <typename T>
     Async(T&&, std::shared_ptr<AsyncTopology>);
 
     std::function<void(bool)> work;
 
     std::shared_ptr<AsyncTopology> topology;
+  };
+  
+  // Silent async work
+  struct SilentAsync {
+    
+    template <typename C>
+    SilentAsync(C&&);
+
+    std::function<void()> work;
   };
   
   // cudaFlow work handle
@@ -148,12 +154,13 @@ class Node {
     
   using handle_t = std::variant<
     std::monostate,  // placeholder
-    Static,      // static tasking
-    Dynamic,     // dynamic tasking
-    Condition,   // conditional tasking
-    Module,      // composable tasking
-    Async,       // async work
-    cudaFlow     // cudaFlow
+    Static,          // static tasking
+    Dynamic,         // dynamic tasking
+    Condition,       // conditional tasking
+    Module,          // composable tasking
+    Async,           // async tasking
+    SilentAsync,     // async tasking (no future)
+    cudaFlow         // cudaFlow
   >;
     
   struct Semaphores {  
@@ -164,13 +171,14 @@ class Node {
   public:
   
   // variant index
-  constexpr static auto PLACEHOLDER = get_index_v<std::monostate, handle_t>;
-  constexpr static auto STATIC      = get_index_v<Static, handle_t>;
-  constexpr static auto DYNAMIC     = get_index_v<Dynamic, handle_t>;
-  constexpr static auto CONDITION   = get_index_v<Condition, handle_t>; 
-  constexpr static auto MODULE      = get_index_v<Module, handle_t>; 
-  constexpr static auto ASYNC       = get_index_v<Async, handle_t>; 
-  constexpr static auto CUDAFLOW    = get_index_v<cudaFlow, handle_t>; 
+  constexpr static auto PLACEHOLDER  = get_index_v<std::monostate, handle_t>;
+  constexpr static auto STATIC       = get_index_v<Static, handle_t>;
+  constexpr static auto DYNAMIC      = get_index_v<Dynamic, handle_t>;
+  constexpr static auto CONDITION    = get_index_v<Condition, handle_t>; 
+  constexpr static auto MODULE       = get_index_v<Module, handle_t>; 
+  constexpr static auto ASYNC        = get_index_v<Async, handle_t>; 
+  constexpr static auto SILENT_ASYNC = get_index_v<SilentAsync, handle_t>; 
+  constexpr static auto CUDAFLOW     = get_index_v<cudaFlow, handle_t>; 
 
     template <typename... Args>
     Node(Args&&... args);
@@ -273,14 +281,19 @@ Node::Module::Module(T&& tf) : module {tf} {
     
 // Constructor
 template <typename C>
-Node::Async::Async(C&& c) : work {std::forward<C>(c)} {
+Node::Async::Async(C&& c, std::shared_ptr<AsyncTopology>tpg) : 
+  work     {std::forward<C>(c)},
+  topology {std::move(tpg)} {
 }
+
+// ----------------------------------------------------------------------------
+// Definition for Node::SilentAsync
+// ----------------------------------------------------------------------------
 
 // Constructor
 template <typename C>
-Node::Async::Async(C&& c, std::shared_ptr<AsyncTopology>tpg) : 
-  work {std::forward<C>(c)},
-  topology {std::move(tpg)} {
+Node::SilentAsync::SilentAsync(C&& c) :
+  work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------

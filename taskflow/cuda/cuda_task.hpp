@@ -18,30 +18,31 @@ namespace tf {
 
 @brief enumeration of all %cudaTask types
 */
-enum cudaTaskType {
-  CUDA_EMPTY_TASK   = cudaNode::CUDA_EMPTY_TASK,
-  CUDA_HOST_TASK    = cudaNode::CUDA_HOST_TASK,
-  CUDA_MEMSET_TASK  = cudaNode::CUDA_MEMSET_TASK,
-  CUDA_MEMCPY_TASK  = cudaNode::CUDA_MEMCPY_TASK,
-  CUDA_KERNEL_TASK  = cudaNode::CUDA_KERNEL_TASK,
-  CUDA_SUBFLOW_TASK = cudaNode::CUDA_SUBFLOW_TASK,
-  CUDA_CAPTURE_TASK = cudaNode::CUDA_CAPTURE_TASK
+enum class cudaTaskType : int {
+  EMPTY = 0, 
+  HOST,
+  MEMSET,
+  MEMCPY,
+  KERNEL,
+  SUBFLOW,
+  CAPTURE,
+  UNDEFINED
 };
 
 /**
 @brief convert a cuda_task type to a human-readable string
 */
-constexpr const char* cuda_task_type_to_string(cudaTaskType type) {
+constexpr const char* to_string(cudaTaskType type) {
   switch(type) {
-    case CUDA_EMPTY_TASK:   return "empty";
-    case CUDA_HOST_TASK:    return "host";
-    case CUDA_MEMSET_TASK:  return "memset";
-    case CUDA_MEMCPY_TASK:  return "memcpy";
-    case CUDA_KERNEL_TASK:  return "kernel";
-    case CUDA_SUBFLOW_TASK: return "subflow";
-    case CUDA_CAPTURE_TASK: return "capture";
+    case cudaTaskType::EMPTY:   return "empty";
+    case cudaTaskType::HOST:    return "host";
+    case cudaTaskType::MEMSET:  return "memset";
+    case cudaTaskType::MEMCPY:  return "memcpy";
+    case cudaTaskType::KERNEL:  return "kernel";
+    case cudaTaskType::SUBFLOW: return "subflow";
+    case cudaTaskType::CAPTURE: return "capture";
+    default:                    return "undefined";
   }
-  return "undefined";
 }
 
 // ----------------------------------------------------------------------------
@@ -188,7 +189,15 @@ inline size_t cudaTask::num_successors() const {
 
 // Function: type
 inline cudaTaskType cudaTask::type() const {
-  return static_cast<cudaTaskType>(_node->_handle.index());
+  switch(_node->_handle.index()) {
+    case cudaNode::EMPTY:   return cudaTaskType::HOST;
+    case cudaNode::MEMSET:  return cudaTaskType::MEMSET;
+    case cudaNode::MEMCPY:  return cudaTaskType::MEMCPY;
+    case cudaNode::KERNEL:  return cudaTaskType::KERNEL;
+    case cudaNode::SUBFLOW: return cudaTaskType::SUBFLOW;
+    case cudaNode::CAPTURE: return cudaTaskType::CAPTURE;
+    default:                return cudaTaskType::UNDEFINED;
+  }
 }
 
 // Procedure: dump
@@ -197,7 +206,7 @@ void cudaTask::dump(T& os) const {
   os << "cudaTask ";
   if(_node->_name.empty()) os << _node;
   else os << _node->_name;
-  os << " [type=" << cuda_task_type_to_string(type()) << ']';
+  os << " [type=" << to_string(type()) << ']';
 }
 
 // ----------------------------------------------------------------------------

@@ -1,7 +1,6 @@
 // This program demonstrates how to sort a vector of strings
 // in parallel using tf::Taskflow::sort and compares it against
 // the sequential sort std::sort.
-
 #include <taskflow/taskflow.hpp>
 
 // generate a random string
