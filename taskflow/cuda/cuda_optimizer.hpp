@@ -1,10 +1,12 @@
 #pragma once
 
+#include "cuda_graph.hpp"
 
 namespace tf {
 
-class cudaFlowCapturer;
-class cudaGraph;
+// ----------------------------------------------------------------------------
+// cudaGraphOpt
+// ----------------------------------------------------------------------------
 
 class cudaGraphOpt {
 
@@ -21,7 +23,7 @@ class cudaGraphOpt {
     std::vector<std::vector<cudaNode*>> _level_graph;
 };
 
-cudaGraphOpt::cudaGraphOpt(cudaGraph& graph): _graph{graph} {
+inline cudaGraphOpt::cudaGraphOpt(cudaGraph& graph): _graph{graph} {
 
   std::queue<cudaNode*> bfs;
   auto& nodes = _graph._nodes;
@@ -72,6 +74,10 @@ cudaGraphOpt::cudaGraphOpt(cudaGraph& graph): _graph{graph} {
 
 }
 
+// ----------------------------------------------------------------------------
+// class definition: SequentialOptimizer
+// ----------------------------------------------------------------------------
+
 class SequentialOptimizer {
 
   friend cudaFlowCapturer;
@@ -80,34 +86,6 @@ class SequentialOptimizer {
 
     cudaGraph_t _optimize(cudaGraph* graph);
 };
-
-class RoundRobinOptimizer {
-
-  friend cudaFlowCapturer;
-
-  public:
-
-    RoundRobinOptimizer(size_t num_streams): _num_streams{num_streams} {}
-
-  private:
-
-    size_t _num_streams;
-
-    cudaGraph_t _optimize(cudaGraph* graph);
-};
-
-//class GreedyOptimizer {
-
-  //friend cudaFlowCapturer;
-  
-  //private:
-
-    //size_t _num_streams;
-
-    //GreedyOptimizer(size_t num_streams): _num_streams{num_streams} {}
-
-    //cudaGraph_t _optimize(cudaGraph* graph);
-//};
 
 inline cudaGraph_t SequentialOptimizer::_optimize(cudaGraph* graph) {
   // acquire per-thread stream and turn it into capture mode
@@ -133,6 +111,39 @@ inline cudaGraph_t SequentialOptimizer::_optimize(cudaGraph* graph) {
   return native_g;
 }
 
+// ----------------------------------------------------------------------------
+// class definition: RoundRobinOptimizer
+// ----------------------------------------------------------------------------
+
+class RoundRobinOptimizer {
+
+  friend cudaFlowCapturer;
+
+  public:
+
+    RoundRobinOptimizer(size_t num_streams) : _num_streams{num_streams} {}
+
+  private:
+
+    size_t _num_streams;
+
+    cudaGraph_t _optimize(cudaGraph* graph);
+};
+
+//class GreedyOptimizer {
+
+  //friend cudaFlowCapturer;
+  
+  //private:
+
+    //size_t _num_streams;
+
+    //GreedyOptimizer(size_t num_streams): _num_streams{num_streams} {}
+
+    //cudaGraph_t _optimize(cudaGraph* graph);
+//};
+
+
 inline cudaGraph_t RoundRobinOptimizer::_optimize(cudaGraph* graph) {
 
   std::vector<cudaScopedPerThreadStream> streams(_num_streams);
@@ -140,8 +151,6 @@ inline cudaGraph_t RoundRobinOptimizer::_optimize(cudaGraph* graph) {
   cudaGraph_t native_g;
 
   cudaGraphOpt g(*graph);
-
-
 
   TF_CHECK_CUDA(
     cudaStreamBeginCapture(streams[0], cudaStreamCaptureModeThreadLocal), 

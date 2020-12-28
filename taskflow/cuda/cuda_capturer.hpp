@@ -3,8 +3,8 @@
 #include "cuda_task.hpp"
 #include "cuda_algorithm/cuda_for_each.hpp"
 #include "cuda_algorithm/cuda_transform.hpp"
-#include "cuda_optimizer.hpp"
 #include "cuda_algorithm/cuda_reduce.hpp"
+#include "cuda_optimizer.hpp"
 
 /** 
 @file cuda_capturer.hpp
@@ -489,13 +489,18 @@ class cudaFlowCapturer : public cudaFlowCapturerBase {
   using Optimizer = std::variant<
     SequentialOptimizer,
     RoundRobinOptimizer
-    //GreedyOptimizer
   >;
 
   public:
-
+    
+    /**
+    @brief constrcts a standalone cudaFlowCapturer
+    */
     cudaFlowCapturer();
-
+    
+    /**
+    @brief destructs the cudaFlowCapturer
+    */
     virtual ~cudaFlowCapturer();
     
     /**
@@ -522,26 +527,55 @@ class cudaFlowCapturer : public cudaFlowCapturerBase {
     OPT& make_optimizer(ArgsT&&... args);
 
     // ------------------------------------------------------------------------
-    // rebind
+    // rebind methods to update captured tasks
     // ------------------------------------------------------------------------
-    //
+
+    /**
+    @brief rebinds a capture task to another sequential CUDA operations
+
+    The method is similar to cudaFlowCapturerBase::on but with an additional 
+    argument on a previously created capture task.
+    */
     template <typename C, std::enable_if_t<
       std::is_invocable_r_v<void, C, cudaStream_t>, void>* = nullptr
     >
     cudaTask rebind_on(cudaTask task, C&& callable);
     
+    /**
+    @brief rebinds a capture task to a memcpy operation
+
+    The method is similar to cudaFlowCapturerBase::memcpy but with an additional 
+    argument on a previously created ceapture task.
+    */
     cudaTask rebind_memcpy(cudaTask task, void* dst, const void* src, size_t count);
 
+    /**
+    @brief rebinds a capture task to a copy operation
+
+    The method is similar to cudaFlowCapturerBase::copy but with an additional 
+    argument on a previously created ceapture task.
+    */
     template <typename T, 
       std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
     >
     cudaTask rebind_copy(cudaTask task, T* tgt, const T* src, size_t num);
 
+    /**
+    @brief rebinds a capture task to a memset operation
+
+    The method is similar to cudaFlowCapturerBase::memset but with an additional 
+    argument on a previously created ceapture task.
+    */
     cudaTask rebind_memset(cudaTask task, void* ptr, int value, size_t n);
 
+    /**
+    @brief rebinds a capture task to a kernel operation
+
+    The method is similar to cudaFlowCapturerBase::kernel but with an additional 
+    argument on a previously created ceapture task.
+    */
     template <typename F, typename... ArgsT>
     cudaTask rebind_kernel(cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
-    
 
     template <typename P>
     void offload_until(P&& predicate);
@@ -564,7 +598,8 @@ class cudaFlowCapturer : public cudaFlowCapturerBase {
     
     cudaGraphExec_t _executable {nullptr};
 
-    Optimizer _optimizer = SequentialOptimizer{};
+    Optimizer _optimizer;
+    // = SequentialOptimizer{};
 
 };
 
@@ -651,8 +686,8 @@ template <typename C, std::enable_if_t<
 >
 cudaTask cudaFlowCapturer::rebind_on(cudaTask task, C&& callable) {
   
-  if(task.type() != cudaNode::CUDA_CAPTURE_TASK) {
-    throw std::runtime_error("invalid node type");
+  if(task.type() != cudaTaskType::CAPTURE) {
+    throw std::runtime_error("invalid cudaTask type (must be CAPTURE)");
   }
   
   _destroy_executable();
@@ -662,7 +697,9 @@ cudaTask cudaFlowCapturer::rebind_on(cudaTask task, C&& callable) {
   return task;
 }
 
-cudaTask cudaFlowCapturer::rebind_memcpy(cudaTask task, void* dst, const void* src, size_t count) {
+inline cudaTask cudaFlowCapturer::rebind_memcpy(
+  cudaTask task, void* dst, const void* src, size_t count
+) {
   return rebind_on(task, [dst, src, count](cudaStream_t stream) mutable {
     TF_CHECK_CUDA(
       cudaMemcpyAsync(dst, src, count, cudaMemcpyDefault, stream),
@@ -674,7 +711,9 @@ cudaTask cudaFlowCapturer::rebind_memcpy(cudaTask task, void* dst, const void* s
 template <typename T, 
   std::enable_if_t<!std::is_same_v<T, void>, void>* 
 >
-cudaTask cudaFlowCapturer::rebind_copy(cudaTask task, T* tgt, const T* src, size_t num) {
+cudaTask cudaFlowCapturer::rebind_copy(
+  cudaTask task, T* tgt, const T* src, size_t num
+) {
   return rebind_on(task, [tgt, src, num] (cudaStream_t stream) mutable {
     TF_CHECK_CUDA(
       cudaMemcpyAsync(tgt, src, sizeof(T)*num, cudaMemcpyDefault, stream),
@@ -683,7 +722,9 @@ cudaTask cudaFlowCapturer::rebind_copy(cudaTask task, T* tgt, const T* src, size
   });
 }
 
-cudaTask cudaFlowCapturer::rebind_memset(cudaTask task, void* ptr, int v, size_t n) {
+inline cudaTask cudaFlowCapturer::rebind_memset(
+  cudaTask task, void* ptr, int v, size_t n
+) {
   return rebind_on(task, [ptr, v, n] (cudaStream_t stream) mutable {
     TF_CHECK_CUDA(
       cudaMemsetAsync(ptr, v, n, stream), "failed to capture memset"
@@ -692,7 +733,9 @@ cudaTask cudaFlowCapturer::rebind_memset(cudaTask task, void* ptr, int v, size_t
 }
 
 template <typename F, typename... ArgsT>
-cudaTask cudaFlowCapturer::rebind_kernel(cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args) {
+cudaTask cudaFlowCapturer::rebind_kernel(
+  cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
+) {
   return rebind_on(task, [g, b, s, f, args...] (cudaStream_t stream) mutable {
     f<<<g, b, s, stream>>>(args...);
   });

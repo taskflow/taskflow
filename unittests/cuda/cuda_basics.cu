@@ -112,9 +112,10 @@ void standalone() {
 TEST_CASE("Standalone.cudaFlow") {
   standalone<tf::cudaFlow>();
 }
-//TEST_CASE("Standalone.cudaCapturer") {
-  //standalone<tf::cudaFlowCapturer>();
-//}
+
+TEST_CASE("Standalone.cudaCapturer") {
+  standalone<tf::cudaFlowCapturer>();
+}
 
 // --------------------------------------------------------
 // Testcase: Set
