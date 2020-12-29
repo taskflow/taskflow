@@ -257,7 +257,7 @@ class cudaFlow {
     // ------------------------------------------------------------------------
     
     /**
-    @brief offloads the %cudaFlow onto a GPU and repeatedly running it until 
+    @brief offloads the %cudaFlow onto a GPU and repeatedly runs it until 
     the predicate becomes true
     
     @tparam P predicate type (a binary callable)
@@ -265,9 +265,9 @@ class cudaFlow {
     @param predicate a binary predicate (returns @c true for stop)
 
     Immediately offloads the present %cudaFlow onto a GPU and
-    repeatedly executes it until the predicate returns @c true.
+    repeatedly runs it until the predicate returns @c true.
 
-    A offloaded %cudaFlow force the underlying graph to be instantiated.
+    An offloaded %cudaFlow forces the underlying graph to be instantiated.
     After the instantiation, you should not modify the graph topology
     but update node parameters.
 
@@ -1169,7 +1169,7 @@ Task FlowBuilder::emplace(C&& c) {
 // Forward declaration: Executor
 // ############################################################################
 
-// Procedure: _invoke_cudaflow_task_entry
+// Procedure: _invoke_cudaflow_task_entry (cudaFlow)
 template <typename C,
   std::enable_if_t<std::is_invocable_r_v<void, C, cudaFlow&>, void>*
 >
@@ -1191,7 +1191,7 @@ void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
   }
 }
 
-// Procedure: _invoke_cudaflow_task_entry
+// Procedure: _invoke_cudaflow_task_entry (cudaFlowCapturer)
 template <typename C, 
   std::enable_if_t<std::is_invocable_r_v<void, C, cudaFlowCapturer&>, void>*
 >
@@ -1210,9 +1210,6 @@ void Executor::_invoke_cudaflow_task_entry(C&& c, Node* node) {
   if(fc._executable == nullptr) {
     fc.offload();
   }
-  
-
-  // TODO: how do we support the update?
 }
 
 

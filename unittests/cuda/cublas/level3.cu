@@ -1387,15 +1387,15 @@ void symm_test() {
 
   taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
     auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
-    auto alpha = blas->single_task([=] __device__ () { *dalpha = 1; });
-    auto beta  = blas->single_task([=] __device__ () { *dbeta = 0; });
-    auto h2dA  = blas->copy(dA, hA.data(), hA.size());
-    auto h2dB  = blas->copy(dB, hB.data(), hB.size());
+    auto alpha = capturer.single_task([=] __device__ () { *dalpha = 1; });
+    auto beta  = capturer.single_task([=] __device__ () { *dbeta = 0; });
+    auto h2dA  = capturer.copy(dA, hA.data(), hA.size());
+    auto h2dB  = capturer.copy(dB, hB.data(), hB.size());
     auto symm  = blas->c_symm(
       CUBLAS_SIDE_LEFT, CUBLAS_FILL_MODE_LOWER, 
       M, N, dalpha, dA + 7, LA, dB + 7, LB, dbeta, dC, LC
     );
-    auto d2hC = blas->copy(hC.data(), dC, hC.size());
+    auto d2hC = capturer.copy(hC.data(), dC, hC.size());
 
     symm.succeed(h2dA, h2dB, alpha, beta)
         .precede(d2hC);
@@ -1459,15 +1459,15 @@ void syrk_test() {
 
   taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
     auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
-    auto alpha = blas->single_task([=] __device__ () { *dalpha = 1; });
-    auto beta  = blas->single_task([=] __device__ () { *dbeta = 1; });
-    auto h2dA  = blas->copy(dA, hA.data(), hA.size());
-    auto h2dC  = blas->copy(dC, hC.data(), hC.size());
+    auto alpha = capturer.single_task([=] __device__ () { *dalpha = 1; });
+    auto beta  = capturer.single_task([=] __device__ () { *dbeta = 1; });
+    auto h2dA  = capturer.copy(dA, hA.data(), hA.size());
+    auto h2dC  = capturer.copy(dC, hC.data(), hC.size());
     auto syrk  = blas->c_syrk(
       CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N,
       N, K, dalpha, dA + 7, LA, dbeta, dC + 7, LC
     );
-    auto d2hC = blas->copy(hC.data(), dC, hC.size());
+    auto d2hC = capturer.copy(hC.data(), dC, hC.size());
 
     syrk.succeed(h2dA, h2dC, alpha, beta)
         .precede(d2hC);
@@ -1541,16 +1541,16 @@ void syr2k_test() {
 
   taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
     auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
-    auto alpha = blas->single_task([=] __device__ () { *dalpha = 1; });
-    auto beta  = blas->single_task([=] __device__ () { *dbeta = 1; });
-    auto h2dA  = blas->copy(dA, hA.data(), hA.size());
-    auto h2dB  = blas->copy(dB, hB.data(), hB.size());
-    auto h2dC  = blas->copy(dC, hC.data(), hC.size());
+    auto alpha = capturer.single_task([=] __device__ () { *dalpha = 1; });
+    auto beta  = capturer.single_task([=] __device__ () { *dbeta = 1; });
+    auto h2dA  = capturer.copy(dA, hA.data(), hA.size());
+    auto h2dB  = capturer.copy(dB, hB.data(), hB.size());
+    auto h2dC  = capturer.copy(dC, hC.data(), hC.size());
     auto syr2k  = blas->c_syr2k(
       CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N,
       N, K, dalpha, dA + 7, LA, dB + 7, LB, dbeta, dC + 7, LC
     );
-    auto d2hC = blas->copy(hC.data(), dC, hC.size());
+    auto d2hC = capturer.copy(hC.data(), dC, hC.size());
 
     syr2k.succeed(h2dA, h2dC, h2dB, alpha, beta)
          .precede(d2hC);
@@ -1623,17 +1623,17 @@ void trmm_test() {
 
   taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
     auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
-    auto alpha = blas->single_task([=] __device__ () { *dalpha = 1; });
-    auto h2dA  = blas->copy(dA, hA.data(), hA.size());
-    auto h2dB  = blas->copy(dB, hB.data(), hB.size());
-    auto setC  = blas->for_each(dC, dC + hC.size(), 
+    auto alpha = capturer.single_task([=] __device__ () { *dalpha = 1; });
+    auto h2dA  = capturer.copy(dA, hA.data(), hA.size());
+    auto h2dB  = capturer.copy(dB, hB.data(), hB.size());
+    auto setC  = capturer.for_each(dC, dC + hC.size(), 
       []__device__(T& v) { v = -1; });
     auto trmm  = blas->c_trmm(
       CUBLAS_SIDE_LEFT, CUBLAS_FILL_MODE_LOWER,
       CUBLAS_OP_N, CUBLAS_DIAG_NON_UNIT,
       M, N, dalpha, dA + 7, LA, dB + 7, LB, dC + 7, LC
     );
-    auto d2hC = blas->copy(hC.data(), dC, hC.size());
+    auto d2hC = capturer.copy(hC.data(), dC, hC.size());
 
     trmm.succeed(h2dA, h2dB, alpha, setC)
         .precede(d2hC);
@@ -1697,14 +1697,14 @@ void trsm_test() {
   taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
     auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
     auto alpha = capturer.single_task([=] __device__ () { *dAlpha = 1; });
-    auto h2dA = blas->copy(dA, hA.data(), hA.size());
-    auto h2dB = blas->copy(dB, hB.data(), hB.size());
+    auto h2dA = capturer.copy(dA, hA.data(), hA.size());
+    auto h2dB = capturer.copy(dB, hB.data(), hB.size());
     auto trsm = blas->c_trsm(
       CUBLAS_SIDE_LEFT, CUBLAS_FILL_MODE_LOWER, 
       CUBLAS_OP_N, CUBLAS_DIAG_NON_UNIT, 
       M, N, dAlpha, dA + 7, LA, dB, LB
     );
-    auto d2h = blas->copy(hB.data(), dB, hB.size());
+    auto d2h = capturer.copy(hB.data(), dB, hB.size());
 
     trsm.succeed(h2dA, h2dB, alpha)
         .precede(d2h);

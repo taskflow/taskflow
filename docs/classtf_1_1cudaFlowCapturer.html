@@ -5,7 +5,7 @@
   <title>tf::cudaFlowCapturer class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -55,13 +55,13 @@
             <li>
               Reference
               <ul>
-                <li><a href="#base-classes">Base classes</a></li>
+                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
                 <li><a href="#pub-methods">Public functions</a></li>
               </ul>
             </li>
           </ul>
         </div>
-<p>A cudaFlowCapturer inherits all the base methods from <a href="classtf_1_1cudaFlowCapturerBase.html" class="m-doc">tf::<wbr />cudaFlowCapturerBase</a> to construct a CUDA task graph through <em>stream capturer</em>. This class also defines a factory interface <a href="classtf_1_1cudaFlowCapturer.html#a49dd9727aeb5bccd7d826c6b11a6882d" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />make_capturer</a> for users to create custom capturers with their lifetimes managed by the factory.</p><p>The usage of <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a> is similar to <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>, except users can call the method <a href="classtf_1_1cudaFlowCapturerBase.html#afa4e61e31e202f222e0f508ce3d159fc" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />on</a> to capture a sequence of asynchronous CUDA operations through the given stream. The following example creates a CUDA graph that captures two kernel tasks, <code>task_1</code> and <code>task_2</code>, where <code>task_1</code> runs before <code>task_2</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="o">&amp;</span> <span class="n">capturer</span><span class="p">){</span>
+<p>A cudaFlowCapturer inherits all the base methods from <a href="classtf_1_1cudaFlowCapturerBase.html" class="m-doc">tf::<wbr />cudaFlowCapturerBase</a> to construct a CUDA task graph through <em>stream capturer</em>. This class also defines a factory interface <a href="classtf_1_1cudaFlowCapturer.html#a49dd9727aeb5bccd7d826c6b11a6882d" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />make_capturer</a> for users to create custom capturers with their lifetimes managed by the factory.</p><p>The usage of <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a> is similar to <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>, except users can call the method <a href="classtf_1_1cudaFlowCapturer.html#ad0d937ae0d77239f148b66a77e35db41" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />on</a> to capture a sequence of asynchronous CUDA operations through the given stream. The following example creates a CUDA graph that captures two kernel tasks, <code>task_1</code> and <code>task_2</code>, where <code>task_1</code> runs before <code>task_2</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="o">&amp;</span> <span class="n">capturer</span><span class="p">){</span>
 
   <span class="c1">// capture my_kernel_1 through the given stream managed by the capturer</span>
   <span class="k">auto</span> <span class="n">task_1</span> <span class="o">=</span> <span class="n">capturer</span><span class="p">.</span><span class="n">on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">cudaStream_t</span> <span class="n">stream</span><span class="p">){</span> 
@@ -75,13 +75,17 @@
 
   <span class="n">task_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task_2</span><span class="p">);</span>
 <span class="p">});</span></pre><p>Similar to <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>, a cudaFlowCapturer is a task (<a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a>) created from <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> and will be run by <em>one</em> worker thread in the executor. That is, the callable that describes a cudaFlowCapturer will be executed sequentially.</p>
-        <section id="base-classes">
-          <h2><a href="#base-classes">Base classes</a></h2>
+        <section id="typeless-methods">
+          <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
-            <dt>
-              class <a href="classtf_1_1cudaFlowCapturerBase.html" class="m-doc">cudaFlowCapturerBase</a>
+            <dt id="aab413b88bf73368f1e6dd98d19016bbc">
+              <span class="m-doc-wrap-bumper"><a href="#aab413b88bf73368f1e6dd98d19016bbc" class="m-doc-self">cudaFlowCapturer</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
-            <dd>base class to construct a CUDA task graph through stream capture</dd>
+            <dd>constrcts a standalone <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">cudaFlowCapturer</a></dd>
+            <dt id="ab2f3765cd2cd7368522011d37a294359">
+              <span class="m-doc-wrap-bumper"><a href="#ab2f3765cd2cd7368522011d37a294359" class="m-doc-self">~cudaFlowCapturer</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-warning">virtual</span></span>
+            </dt>
+            <dd>destructs the <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">cudaFlowCapturer</a></dd>
           </dl>
         </section>
         <section id="pub-methods">
@@ -91,11 +95,148 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a3413a20a7c8229365e1ee9fb5af4af1e" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
             </dt>
             <dd>queries the emptiness of the graph</dd>
+            <dt id="a90d1265bcc27647906bed6e6876c9aa7">
+              <span class="m-doc-wrap-bumper">void <a href="#a90d1265bcc27647906bed6e6876c9aa7" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os) const</span>
+            </dt>
+            <dd>dumps the capture graph into a DOT format through an output stream</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T, typename... ArgsT&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a49dd9727aeb5bccd7d826c6b11a6882d" class="m-doc">make_capturer</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; T*</span>
             </dt>
             <dd>creates a custom capturer derived from <a href="classtf_1_1cudaFlowCapturerBase.html" class="m-doc">tf::<wbr />cudaFlowCapturerBase</a></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename OPT, typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#aa1d016b56c06cb28eabfebfdd7dbb24d" class="m-doc">make_optimizer</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; OPT&amp;</span>
+            </dt>
+            <dd>enables different optimization algorithms</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;std::is_invocable_r_v&lt;void, C, cudaStream_t&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ad0d937ae0d77239f148b66a77e35db41" class="m-doc">on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures a sequential CUDA operations from the given callable</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#ae84d097cdae9e2e8ce108dea760483ed" class="m-doc">memcpy</a>(</span><span class="m-doc-wrap">void* dst,
+              const void* src,
+              size_t count) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>copies data between host and device asynchronously through a stream</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T, std::enable_if_t&lt;!std::is_same_v&lt;T, void&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ab70f12050e78b588f5c23d874aa4e538" class="m-doc">copy</a>(</span><span class="m-doc-wrap">T* tgt,
+              const T* src,
+              size_t num) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures a copy task of typed data</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a0d38965b380f940bf6cfc6667a281052" class="m-doc">memset</a>(</span><span class="m-doc-wrap">void* ptr,
+              int v,
+              size_t n) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>initializes or sets GPU memory to the given value byte by byte</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ad3c5c7847d668f2084cef0583f148eb9" class="m-doc">kernel</a>(</span><span class="m-doc-wrap">dim3 g,
+              dim3 b,
+              size_t s,
+              F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures a kernel</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a01e187cf410a88cdc8174bc0215813ce" class="m-doc">single_task</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>capturers a kernel to runs the given callable with only one thread</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a2982cf89d4dffcf01bf9cce4a5c79f51" class="m-doc">for_each</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              C&amp;&amp; callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures a kernel that applies a callable to each dereferenced element of the data array</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a802ddd94cb40b32daecec327d2ad6e52" class="m-doc">for_each_index</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              I step,
+              C&amp;&amp; callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures a kernel that applies a callable to each index in the range with the step size</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename C, typename... S&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a02e3ec6669c8571ad6888584e88c07fc" class="m-doc">transform</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              C&amp;&amp; callable,
+              S... srcs) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures a kernel that applies a callable to a source range and stores the result in a target range</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename T, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ad877003965b1e9e75ec10917190342e9" class="m-doc">reduce</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              T* result,
+              C&amp;&amp; op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures a kernel that performs parallel reduction over a range of items</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename T, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a9a6f54751165c1e5473652ad0ca222bb" class="m-doc">uninitialized_reduce</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              T* result,
+              C&amp;&amp; op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>similar to tf::cudaFlowCapturerBase::reduce but does not assum any initial value to reduce</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;std::is_invocable_r_v&lt;void, C, cudaStream_t&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a6d3d355752017aadcb733a8afdd200e3" class="m-doc">rebind_on</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              C&amp;&amp; callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>rebinds a capture task to another sequential CUDA operations</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a0675aec517ca99e6638b10d53e39a2ef" class="m-doc">rebind_memcpy</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              void* dst,
+              const void* src,
+              size_t count) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>rebinds a capture task to a memcpy operation</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T, std::enable_if_t&lt;!std::is_same_v&lt;T, void&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a53550f29e0cd6b2f75fa0dac80a4292f" class="m-doc">rebind_copy</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              T* tgt,
+              const T* src,
+              size_t num) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>rebinds a capture task to a copy operation</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a494942759d5edbaf68b2842da23a6d52" class="m-doc">rebind_memset</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              void* ptr,
+              int value,
+              size_t n) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>rebinds a capture task to a memset operation</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a74232699e7d170a737db6c724db4a35c" class="m-doc">rebind_kernel</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              dim3 g,
+              dim3 b,
+              size_t s,
+              F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>rebinds a capture task to a kernel operation</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename P&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a8678573f19e01f441a6b4108e62781f3" class="m-doc">offload_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span>
+            </dt>
+            <dd>offloads the captured cudaFlow onto a GPU and repeatedly runs it until the predicate becomes true</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a0bc6231cc6b1dbf5171b0bc421dc6577" class="m-doc">offload_n</a>(</span><span class="m-doc-wrap">size_t n)</span>
+            </dt>
+            <dd>offloads the captured cudaFlow and executes it by the given times</dd>
+            <dt id="a5959002af1cf1a1ada3d86a073682232">
+              <span class="m-doc-wrap-bumper">void <a href="#a5959002af1cf1a1ada3d86a073682232" class="m-doc-self">offload</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>offloads the captured cudaFlow and executes it once</dd>
           </dl>
         </section>
         <section>
@@ -131,8 +272,633 @@
                   <td>arguments to forward to construct the custom capturer</td>
                 </tr>
               </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a pointer to the custom capturer</td>
+                </tr>
+              </tfoot>
             </table>
-<p>This cudaFlowCapturer object keeps a list of custom capturers and manages their lifetimes. The lifetime of each custom capturer is the same as the capturer.</p>
+<p>Each cudaFlow capturer keeps a list of custom capturers and manages their lifetimes. The lifetime of each custom capturer is the same as the capturer.</p>
+          </div></section>
+          <section class="m-doc-details" id="aa1d016b56c06cb28eabfebfdd7dbb24d"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename OPT, typename... ArgsT&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">OPT&amp; tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa1d016b56c06cb28eabfebfdd7dbb24d" class="m-doc-self">make_optimizer</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args)</span></span>
+            </h3>
+            <p>enables different optimization algorithms</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">OPT</td>
+                  <td>optimizer type</td>
+                </tr>
+                <tr>
+                  <td>ArgsT</td>
+                  <td>arguments types</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>args</td>
+                  <td>arguments to forward to construct the optimizer</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a reference to the optimizer</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>We currently supports the following optimization algorithms to capture a user-described cudaFlow:</p><ul><li><a href="classtf_1_1SequentialOptimizer.html" class="m-doc">tf::<wbr />SequentialOptimizer</a></li><li><a href="classtf_1_1RoundRobinOptimizer.html" class="m-doc">tf::<wbr />RoundRobinOptimizer</a></li></ul>
+          </div></section>
+          <section class="m-doc-details" id="ad0d937ae0d77239f148b66a77e35db41"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C, std::enable_if_t&lt;std::is_invocable_r_v&lt;void, C, cudaStream_t&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad0d937ae0d77239f148b66a77e35db41" class="m-doc-self">on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>captures a sequential CUDA operations from the given callable</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">C</td>
+                  <td>callable type constructible with <code>std::function&lt;void(cudaStream_t)&gt;</code></td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>callable</td>
+                  <td>a callable to capture CUDA operations with the stream</td>
+                </tr>
+              </tbody>
+            </table>
+<p>This methods applies a stream created by the flow to capture a sequence of CUDA operations defined in the callable.</p>
+          </div></section>
+          <section class="m-doc-details" id="ae84d097cdae9e2e8ce108dea760483ed"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae84d097cdae9e2e8ce108dea760483ed" class="m-doc-self">memcpy</a>(</span><span class="m-doc-wrap">void* dst,
+              const void* src,
+              size_t count)</span></span>
+            </h3>
+            <p>copies data between host and device asynchronously through a stream</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">dst</td>
+                  <td>destination memory address</td>
+                </tr>
+                <tr>
+                  <td>src</td>
+                  <td>source memory address</td>
+                </tr>
+                <tr>
+                  <td>count</td>
+                  <td>size in bytes to copy</td>
+                </tr>
+              </tbody>
+            </table>
+<p>The method captures a <code>cudaMemcpyAsync</code> operation through an internal stream.</p>
+          </div></section>
+          <section class="m-doc-details" id="ab70f12050e78b588f5c23d874aa4e538"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T, std::enable_if_t&lt;!std::is_same_v&lt;T, void&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab70f12050e78b588f5c23d874aa4e538" class="m-doc-self">copy</a>(</span><span class="m-doc-wrap">T* tgt,
+              const T* src,
+              size_t num)</span></span>
+            </h3>
+            <p>captures a copy task of typed data</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>element type (non-void)</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>tgt</td>
+                  <td>pointer to the target memory block</td>
+                </tr>
+                <tr>
+                  <td>src</td>
+                  <td>pointer to the source memory block</td>
+                </tr>
+                <tr>
+                  <td>num</td>
+                  <td>number of elements to copy</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>A copy task transfers <code>num*sizeof(T)</code> bytes of data from a source location to a target location. Direction can be arbitrary among CPUs and GPUs.</p>
+          </div></section>
+          <section class="m-doc-details" id="a0d38965b380f940bf6cfc6667a281052"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0d38965b380f940bf6cfc6667a281052" class="m-doc-self">memset</a>(</span><span class="m-doc-wrap">void* ptr,
+              int v,
+              size_t n)</span></span>
+            </h3>
+            <p>initializes or sets GPU memory to the given value byte by byte</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">ptr</td>
+                  <td>pointer to GPU mempry</td>
+                </tr>
+                <tr>
+                  <td>v</td>
+                  <td>value to set for each byte of the specified memory</td>
+                </tr>
+                <tr>
+                  <td>n</td>
+                  <td>size in bytes to set</td>
+                </tr>
+              </tbody>
+            </table>
+<p>The method captures a <code>cudaMemsetAsync</code> operation through an internal stream to fill the first <code>count</code> bytes of the memory area pointed to by <code>devPtr</code> with the constant byte value <code>value</code>.</p>
+          </div></section>
+          <section class="m-doc-details" id="ad3c5c7847d668f2084cef0583f148eb9"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename F, typename... ArgsT&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad3c5c7847d668f2084cef0583f148eb9" class="m-doc-self">kernel</a>(</span><span class="m-doc-wrap">dim3 g,
+              dim3 b,
+              size_t s,
+              F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args)</span></span>
+            </h3>
+            <p>captures a kernel</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">F</td>
+                  <td>kernel function type</td>
+                </tr>
+                <tr>
+                  <td>ArgsT</td>
+                  <td>kernel function parameters type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>g</td>
+                  <td>configured grid</td>
+                </tr>
+                <tr>
+                  <td>b</td>
+                  <td>configured block</td>
+                </tr>
+                <tr>
+                  <td>s</td>
+                  <td>configured shared memory</td>
+                </tr>
+                <tr>
+                  <td>f</td>
+                  <td>kernel function</td>
+                </tr>
+                <tr>
+                  <td>args</td>
+                  <td>arguments to forward to the kernel function by copy</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="a01e187cf410a88cdc8174bc0215813ce"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a01e187cf410a88cdc8174bc0215813ce" class="m-doc-self">single_task</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>capturers a kernel to runs the given callable with only one thread</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">C</td>
+                  <td>callable type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>callable</td>
+                  <td>callable to run by a single kernel thread</td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="a2982cf89d4dffcf01bf9cce4a5c79f51"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2982cf89d4dffcf01bf9cce4a5c79f51" class="m-doc-self">for_each</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>captures a kernel that applies a callable to each dereferenced element of the data array</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>iterator type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>callable type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning (inclusive)</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end (exclusive)</td>
+                </tr>
+                <tr>
+                  <td>callable</td>
+                  <td>a callable object to apply to the dereferenced iterator</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span> <span class="n">itr</span> <span class="o">!=</span> <span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">);</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a802ddd94cb40b32daecec327d2ad6e52"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a802ddd94cb40b32daecec327d2ad6e52" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              I step,
+              C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>captures a kernel that applies a callable to each index in the range with the step size</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>index type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>callable type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>beginning index</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>last index</td>
+                </tr>
+                <tr>
+                  <td>step</td>
+                  <td>step size</td>
+                </tr>
+                <tr>
+                  <td>callable</td>
+                  <td>the callable to apply to each element in the data array</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="c1">// step is positive [first, last)</span>
+<span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// step is negative [first, last)</span>
+<span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">i</span><span class="o">&gt;</span><span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a02e3ec6669c8571ad6888584e88c07fc"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename C, typename... S&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a02e3ec6669c8571ad6888584e88c07fc" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              C&amp;&amp; callable,
+              S... srcs)</span></span>
+            </h3>
+            <p>captures a kernel that applies a callable to a source range and stores the result in a target range</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>iterator type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>callable type</td>
+                </tr>
+                <tr>
+                  <td>S</td>
+                  <td>source types</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning (inclusive)</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end (exclusive)</td>
+                </tr>
+                <tr>
+                  <td>callable</td>
+                  <td>the callable to apply to each element in the range</td>
+                </tr>
+                <tr>
+                  <td>srcs</td>
+                  <td>iterators to the source ranges</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">first</span><span class="o">++</span> <span class="o">=</span> <span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">src1</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src2</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src3</span><span class="o">++</span><span class="p">,</span> <span class="p">...);</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="ad877003965b1e9e75ec10917190342e9"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename T, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad877003965b1e9e75ec10917190342e9" class="m-doc-self">reduce</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              T* result,
+              C&amp;&amp; op)</span></span>
+            </h3>
+            <p>captures a kernel that performs parallel reduction over a range of items</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>input iterator type</td>
+                </tr>
+                <tr>
+                  <td>T</td>
+                  <td>value type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>callable type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning (inclusive)</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end (exclusive)</td>
+                </tr>
+                <tr>
+                  <td>result</td>
+                  <td>pointer to the result with an initialized value</td>
+                </tr>
+                <tr>
+                  <td>op</td>
+                  <td>binary reduction operator</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a9a6f54751165c1e5473652ad0ca222bb"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename T, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9a6f54751165c1e5473652ad0ca222bb" class="m-doc-self">uninitialized_reduce</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              T* result,
+              C&amp;&amp; op)</span></span>
+            </h3>
+            <p>similar to tf::cudaFlowCapturerBase::reduce but does not assum any initial value to reduce</p>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">;</span>  <span class="c1">// no initial values partitipcate in the loop</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a6d3d355752017aadcb733a8afdd200e3"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C, std::enable_if_t&lt;std::is_invocable_r_v&lt;void, C, cudaStream_t&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6d3d355752017aadcb733a8afdd200e3" class="m-doc-self">rebind_on</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>rebinds a capture task to another sequential CUDA operations</p>
+<p>The method is similar to cudaFlowCapturerBase::on but with an additional argument on a previously created capture task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a0675aec517ca99e6638b10d53e39a2ef"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0675aec517ca99e6638b10d53e39a2ef" class="m-doc-self">rebind_memcpy</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              void* dst,
+              const void* src,
+              size_t count)</span></span>
+            </h3>
+            <p>rebinds a capture task to a memcpy operation</p>
+<p>The method is similar to cudaFlowCapturerBase::memcpy but with an additional argument on a previously created ceapture task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a53550f29e0cd6b2f75fa0dac80a4292f"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T, std::enable_if_t&lt;!std::is_same_v&lt;T, void&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a53550f29e0cd6b2f75fa0dac80a4292f" class="m-doc-self">rebind_copy</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              T* tgt,
+              const T* src,
+              size_t num)</span></span>
+            </h3>
+            <p>rebinds a capture task to a copy operation</p>
+<p>The method is similar to cudaFlowCapturerBase::copy but with an additional argument on a previously created ceapture task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a494942759d5edbaf68b2842da23a6d52"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a494942759d5edbaf68b2842da23a6d52" class="m-doc-self">rebind_memset</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              void* ptr,
+              int value,
+              size_t n)</span></span>
+            </h3>
+            <p>rebinds a capture task to a memset operation</p>
+<p>The method is similar to cudaFlowCapturerBase::memset but with an additional argument on a previously created ceapture task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a74232699e7d170a737db6c724db4a35c"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename F, typename... ArgsT&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a74232699e7d170a737db6c724db4a35c" class="m-doc-self">rebind_kernel</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              dim3 g,
+              dim3 b,
+              size_t s,
+              F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args)</span></span>
+            </h3>
+            <p>rebinds a capture task to a kernel operation</p>
+<p>The method is similar to cudaFlowCapturerBase::kernel but with an additional argument on a previously created ceapture task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a8678573f19e01f441a6b4108e62781f3"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename P&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8678573f19e01f441a6b4108e62781f3" class="m-doc-self">offload_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span></span>
+            </h3>
+            <p>offloads the captured cudaFlow onto a GPU and repeatedly runs it until the predicate becomes true</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">P</td>
+                  <td>predicate type (a binary callable)</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>predicate</td>
+                  <td>a binary predicate (returns <code>true</code> for stop)</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Immediately offloads the cudaFlow captured so far onto a GPU and repeatedly runs it until the predicate returns <code>true</code>.</p><p>By default, if users do not offload the cudaFlow capturer, the executor will offload it once.</p>
+          </div></section>
+          <section class="m-doc-details" id="a0bc6231cc6b1dbf5171b0bc421dc6577"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0bc6231cc6b1dbf5171b0bc421dc6577" class="m-doc-self">offload_n</a>(</span><span class="m-doc-wrap">size_t n)</span></span>
+            </h3>
+            <p>offloads the captured cudaFlow and executes it by the given times</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">n</td>
+                  <td>number of executions</td>
+                </tr>
+              </tbody>
+            </table>
           </div></section>
         </section>
       </div>
@@ -179,7 +945,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

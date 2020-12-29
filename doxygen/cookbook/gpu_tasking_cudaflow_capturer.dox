@@ -72,13 +72,12 @@ and will destroy it until all internal operations finish.
 
 @section C7_CommonCaptureMethods Common Capture Methods
 
-A %cudaFlowCapturer inherits tf::cudaFlowCapturerBase that defines a set of 
-methods for capturing common GPU operations,
-including tf::cudaFlowCapturerBase::kernel, tf::cudaFlowCapturerBase::memcpy,
-and tf::cudaFlowCapturerBase::memset.
-For example, the following code snippet constructs a GPU task graph of
-one host-to-device copy, kernel, and one device-to-host copy,
-in this order of their dependencies.
+%cudaFlowCapturer defines a set of methods for capturing common GPU operations,
+such as tf::cudaFlowCapturer::kernel, tf::cudaFlowCapturer::memcpy,
+tf::cudaFlowCapturer::memset, and so on.
+For example, the following code snippet uses these pre-defined methods
+to construct a GPU task graph of one host-to-device copy, kernel, 
+and one device-to-host copy, in this order of their dependencies.
 
 @code{.cpp}
 tf::Task task = taskflow.emplace([](tf::cudaFlowCapturer& capturer){
@@ -161,7 +160,8 @@ tf::Task task = taskflow.emplace([&](tf::cudaFlow& cf){
 
 By inheriting tf::cudaFlowCapturerBase, you can create your own capturer.
 The tf::cudaFlowCapturer has a factory interface, tf::cudaFlowCapturer::make_capturer,
-for users to create custom capturers with lifetimes managed by the capturer.
+for users to create custom capturers with lifetimes managed by a parent capturer.
+The parent capturer is accessible through tf::cudaFlowCapturerBase::factory.
 This is convenient when you need certain objects alive during the capturing.
 The following example defines a custom capturer that takes the given
 stream from tf::cudaFlowCapturer::on to capture a custom kernel.
@@ -173,14 +173,14 @@ class MyCapturer : public tf::cudaFlowCapturerBase {
 
   // capture a custom kernel
   tf::cudaTask capture_custom_kernel(args...) {
-    return on([this, args...](cudaStream_t stream){
+    return factory()->on([this, args...](cudaStream_t stream){
       invoke_custom_kernel(stream, args...);
     });
   }
 };
 
 tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
-  // create a custom capturer, MyCapturer, from the factory in capturer
+  // create a custom capturer, MyCapturer, from the parent capturer (factory)
   MyCapturer* mc = capturer.make_capturer<MyCapturer>();
 
   tf::cudaTask task_1 = mc->capture_custom_kernel(args...).name("custom_kernel");

@@ -5,7 +5,7 @@
   <title>tf namespace | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -117,9 +117,17 @@
             </dt>
             <dd>The interface class for creating an executor observer.</dd>
             <dt>
+              class <a href="classtf_1_1RoundRobinOptimizer.html" class="m-doc">RoundRobinOptimizer</a>
+            </dt>
+            <dd>class to capture the described graph into a native cudaGraph using a greedy round-robin algorithm on a fixed number of streams</dd>
+            <dt>
               class <a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>
             </dt>
             <dd>class to create a semophore object for building a concurrency constraint</dd>
+            <dt>
+              class <a href="classtf_1_1SequentialOptimizer.html" class="m-doc">SequentialOptimizer</a>
+            </dt>
+            <dd>class to capture the described graph into a native cudaGraph using a single stream</dd>
             <dt>
               class <a href="classtf_1_1Subflow.html" class="m-doc">Subflow</a>
             </dt>
@@ -149,29 +157,32 @@
         <section id="enum-members">
           <h2><a href="#enum-members">Enums</a></h2>
           <dl class="m-doc">
-            <dt id="a0681fa0518bdd3e3d198e1b1b744c06f">
-              <span class="m-doc-wrap-bumper">enum <a href="#a0681fa0518bdd3e3d198e1b1b744c06f" class="m-doc-self">TaskType</a> { </span><span class="m-doc-wrap"><a href="#a0681fa0518bdd3e3d198e1b1b744c06faff7624cdd3bc3acecf4db831211120cb" class="m-doc">PLACEHOLDER_TASK</a> = Node::PLACEHOLDER_TASK,
-              <a href="#a0681fa0518bdd3e3d198e1b1b744c06faec4de0a757d10590110f320552c0811f" class="m-doc">CUDAFLOW_TASK</a> = Node::CUDAFLOW_TASK,
-              <a href="#a0681fa0518bdd3e3d198e1b1b744c06fa819a61c1ac7a08cb4dedda31992b146e" class="m-doc">STATIC_TASK</a> = Node::STATIC_TASK,
-              <a href="#a0681fa0518bdd3e3d198e1b1b744c06fa58271c98ba64c4324ee4ea6ae95c9054" class="m-doc">DYNAMIC_TASK</a> = Node::DYNAMIC_TASK,
-              <a href="#a0681fa0518bdd3e3d198e1b1b744c06fa5dc4f56336a81c251665b9cd46a2efd6" class="m-doc">CONDITION_TASK</a> = Node::CONDITION_TASK,
-              <a href="#a0681fa0518bdd3e3d198e1b1b744c06fa055307a1e8fabb808f64c39e4527aa2f" class="m-doc">MODULE_TASK</a> = Node::MODULE_TASK,
-              <a href="#a0681fa0518bdd3e3d198e1b1b744c06fa1e85afc1441ef240c50d4608d57236cf" class="m-doc">ASYNC_TASK</a> = Node::ASYNC_TASK }</span>
+            <dt id="a1355048578785a80414707ff308b395a">
+              <span class="m-doc-wrap-bumper">enum class <a href="#a1355048578785a80414707ff308b395a" class="m-doc-self">TaskType</a>: int { </span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" class="m-doc">PLACEHOLDER</a> = 0,
+              <a href="#a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225" class="m-doc">CUDAFLOW</a>,
+              <a href="#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc">STATIC</a>,
+              <a href="#a1355048578785a80414707ff308b395aa0fcc90da4811c877ba9f9c12f7d60bc9" class="m-doc">DYNAMIC</a>,
+              <a href="#a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" class="m-doc">CONDITION</a>,
+              <a href="#a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" class="m-doc">MODULE</a>,
+              <a href="#a1355048578785a80414707ff308b395aabe553330beb7b3d994656e0a4e66cd96" class="m-doc">ASYNC</a>,
+              <a href="#a1355048578785a80414707ff308b395aa0db45d2a4141101bdfe48e3314cfbca3" class="m-doc">UNDEFINED</a> }</span>
             </dt>
             <dd>enumeration of all task types</dd>
-            <dt id="a0b4825761897c52f8f7e8f0b6c219d1a">
-              <span class="m-doc-wrap-bumper">enum <a href="#a0b4825761897c52f8f7e8f0b6c219d1a" class="m-doc-self">ObserverType</a> { </span><span class="m-doc-wrap"><a href="#a0b4825761897c52f8f7e8f0b6c219d1aa5a9fee7b05b17964502cd5f7730cb62e" class="m-doc">TFPROF</a> = 1,
-              <a href="#a0b4825761897c52f8f7e8f0b6c219d1aaeb9e68a92dd2a6c466df87dbcbb9a167" class="m-doc">CHROME</a> = 2 }</span>
+            <dt id="a192f7cb0fab2eb6f1c84f6046706435d">
+              <span class="m-doc-wrap-bumper">enum class <a href="#a192f7cb0fab2eb6f1c84f6046706435d" class="m-doc-self">ObserverType</a>: int { </span><span class="m-doc-wrap"><a href="#a192f7cb0fab2eb6f1c84f6046706435dac19bf39d8838d00eddb556775fa8acce" class="m-doc">TFPROF</a> = 0,
+              <a href="#a192f7cb0fab2eb6f1c84f6046706435da37960509766262569d504f02a0ee986d" class="m-doc">CHROME</a>,
+              <a href="#a192f7cb0fab2eb6f1c84f6046706435da0db45d2a4141101bdfe48e3314cfbca3" class="m-doc">UNDEFINED</a> }</span>
             </dt>
             <dd>enumeration of all observer types</dd>
-            <dt id="ac747e6c7cf88c7b1ff7126e62babebb8">
-              <span class="m-doc-wrap-bumper">enum <a href="#ac747e6c7cf88c7b1ff7126e62babebb8" class="m-doc-self">cudaTaskType</a> { </span><span class="m-doc-wrap"><a href="#ac747e6c7cf88c7b1ff7126e62babebb8a19a6291214c2a3228e59a60cb7eab63a" class="m-doc">CUDA_EMPTY_TASK</a> = cudaNode::CUDA_EMPTY_TASK,
-              <a href="#ac747e6c7cf88c7b1ff7126e62babebb8aa0305bd26260bedea85880413f3390b4" class="m-doc">CUDA_HOST_TASK</a> = cudaNode::CUDA_HOST_TASK,
-              <a href="#ac747e6c7cf88c7b1ff7126e62babebb8a4934734274edc2e2eef735490964fbd5" class="m-doc">CUDA_MEMSET_TASK</a> = cudaNode::CUDA_MEMSET_TASK,
-              <a href="#ac747e6c7cf88c7b1ff7126e62babebb8a240fd9c2eda4988c75d8d5f0e64bed69" class="m-doc">CUDA_MEMCPY_TASK</a> = cudaNode::CUDA_MEMCPY_TASK,
-              <a href="#ac747e6c7cf88c7b1ff7126e62babebb8a3ac59c1b13df906316fd0ad2dc318e2b" class="m-doc">CUDA_KERNEL_TASK</a> = cudaNode::CUDA_KERNEL_TASK,
-              <a href="#ac747e6c7cf88c7b1ff7126e62babebb8a930dbba0e8f56b29ac3ea395017cec1f" class="m-doc">CUDA_SUBFLOW_TASK</a> = cudaNode::CUDA_SUBFLOW_TASK,
-              <a href="#ac747e6c7cf88c7b1ff7126e62babebb8a14e9fb7dc6b0d37a40046f685c6aa79a" class="m-doc">CUDA_CAPTURE_TASK</a> = cudaNode::CUDA_CAPTURE_TASK }</span>
+            <dt id="afebc56ae6d5765010d0dd13a5f04132e">
+              <span class="m-doc-wrap-bumper">enum class <a href="#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc-self">cudaTaskType</a>: int { </span><span class="m-doc-wrap"><a href="#afebc56ae6d5765010d0dd13a5f04132eaba2b45bdc11e2a4a6e86aab2ac693cbb" class="m-doc">EMPTY</a> = 0,
+              <a href="#afebc56ae6d5765010d0dd13a5f04132eab9361011891280a44d85b967739cc6a5" class="m-doc">HOST</a>,
+              <a href="#afebc56ae6d5765010d0dd13a5f04132ea41d4dbfd78ceea21abb0ecb03c3cc921" class="m-doc">MEMSET</a>,
+              <a href="#afebc56ae6d5765010d0dd13a5f04132eac5d10cc70cce96265c445f14e7f5aba4" class="m-doc">MEMCPY</a>,
+              <a href="#afebc56ae6d5765010d0dd13a5f04132ea35c10219c45ccfb5b07444fd7e17214c" class="m-doc">KERNEL</a>,
+              <a href="#afebc56ae6d5765010d0dd13a5f04132ea46be697979903d784a70aeec45eb14ad" class="m-doc">SUBFLOW</a>,
+              <a href="#afebc56ae6d5765010d0dd13a5f04132eab72f08e0732365cac9599b5c42157bf9" class="m-doc">CAPTURE</a>,
+              <a href="#afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3" class="m-doc">UNDEFINED</a> }</span>
             </dt>
             <dd>enumeration of all cudaTask types</dd>
           </dl>
@@ -188,8 +199,8 @@
         <section id="func-members">
           <h2><a href="#func-members">Functions</a></h2>
           <dl class="m-doc">
-            <dt id="ab1887c186d5570390859f16705d79bf6">
-              <span class="m-doc-wrap-bumper">auto <a href="#ab1887c186d5570390859f16705d79bf6" class="m-doc-self">task_type_to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a0681fa0518bdd3e3d198e1b1b744c06f" class="m-doc">TaskType</a> type) -&gt; const char*</span>
+            <dt id="a9ca58dc6c666698cc7373eb0262140ef">
+              <span class="m-doc-wrap-bumper">auto <a href="#a9ca58dc6c666698cc7373eb0262140ef" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type) -&gt; const char*</span>
             </dt>
             <dd>convert a task type to a human-readable string</dd>
             <dt id="ad216aea4d0f648e149e47374ad015b1f">
@@ -197,8 +208,8 @@
               const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; task) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
             </dt>
             <dd>overload of ostream inserter operator for <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></dd>
-            <dt id="a4eea58a9e7eab408c44378dbc2be4f43">
-              <span class="m-doc-wrap-bumper">auto <a href="#a4eea58a9e7eab408c44378dbc2be4f43" class="m-doc-self">observer_type_to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a0b4825761897c52f8f7e8f0b6c219d1a" class="m-doc">ObserverType</a> type) -&gt; const char*</span>
+            <dt id="aa3fc0699b2c2b8f2f76bb39f91be1acb">
+              <span class="m-doc-wrap-bumper">auto <a href="#aa3fc0699b2c2b8f2f76bb39f91be1acb" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a192f7cb0fab2eb6f1c84f6046706435d" class="m-doc">ObserverType</a> type) -&gt; const char*</span>
             </dt>
             <dd>convert an observer type to a human-readable string</dd>
             <dt id="abffa70155a5f160b7ceb86ee52ab2136">
@@ -332,8 +343,8 @@
               size_t count)</span>
             </dt>
             <dd>initializes or sets GPU memory to the given value byte by byte</dd>
-            <dt id="a0fa601969d45f5bb37fea586fa98fd2a">
-              <span class="m-doc-wrap-bumper">auto <a href="#a0fa601969d45f5bb37fea586fa98fd2a" class="m-doc-self">cuda_task_type_to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#ac747e6c7cf88c7b1ff7126e62babebb8" class="m-doc">cudaTaskType</a> type) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
+            <dt id="af21fe1eaf680dbddc0503ef5d1a9a664">
+              <span class="m-doc-wrap-bumper">auto <a href="#af21fe1eaf680dbddc0503ef5d1a9a664" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc">cudaTaskType</a> type) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
             <dd>convert a cuda_task type to a human-readable string</dd>
             <dt id="a9cca69f61d792afb3ad501b703d795c1">
@@ -359,7 +370,7 @@
           <h2><a href="#var-members">Variables</a></h2>
           <dl class="m-doc">
             <dt id="a3d823d8776745f3348dc87bba2fcc91b">
-              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a0681fa0518bdd3e3d198e1b1b744c06f" class="m-doc">TaskType</a>, 7&gt; <a href="#a3d823d8776745f3348dc87bba2fcc91b" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
+              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 7&gt; <a href="#a3d823d8776745f3348dc87bba2fcc91b" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>array of all task types (used for iterating task types)</dd>
             <dt>
@@ -636,7 +647,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2020.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

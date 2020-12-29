@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.20" xml:lang="en-US">
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.14">
   <compound refid="classtf_1_1ChromeObserver" kind="class"><name>tf::ChromeObserver</name>
     <member refid="classtf_1_1ChromeObserver_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1ChromeObserver_1aee57a7a03bb4af2aadd2fdefbebd9e7b" kind="variable"><name>_timeline</name></member>
@@ -104,33 +104,59 @@
     <member refid="classtf_1_1cudaFlow_1a46c82c98d0fc7724394de77f4e3ecbce" kind="function"><name>cudaFlow</name></member>
   </compound>
   <compound refid="classtf_1_1cudaFlowCapturer" kind="class"><name>tf::cudaFlowCapturer</name>
+    <member refid="classtf_1_1cudaFlowCapturer_1a5f92f6ccad52aed18441d80bc186049f" kind="typedef"><name>handle_t</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a52365fe861c2aca41b66e0de731fad5c" kind="typedef"><name>Optimizer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a9f64f729511a922781a59663ff1c6250" kind="friend"><name>cudaFlow</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
-    <member refid="classtf_1_1cudaFlowCapturer_1a18b216ba712f8ad0e3d99efdfa8ac54d" kind="variable"><name>_capturers</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1acaf4f328d032558eb6ed4010f416f62a" kind="variable"><name>_handle</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1ad39f4248c8b66340b88a018b70483161" kind="variable"><name>_graph</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1acdc0ba0a1d25ca9f3c0780a62b68508a" kind="variable"><name>_optimizer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1ae1bb9c3841bf9ce8784dae4bddcda437" kind="variable"><name>_executable</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a18b216ba712f8ad0e3d99efdfa8ac54d" kind="variable"><name>_capturers</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1aab413b88bf73368f1e6dd98d19016bbc" kind="function"><name>cudaFlowCapturer</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1ab2f3765cd2cd7368522011d37a294359" kind="function"><name>~cudaFlowCapturer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a3413a20a7c8229365e1ee9fb5af4af1e" kind="function"><name>empty</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a90d1265bcc27647906bed6e6876c9aa7" kind="function"><name>dump</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a49dd9727aeb5bccd7d826c6b11a6882d" kind="function"><name>make_capturer</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1aa1d016b56c06cb28eabfebfdd7dbb24d" kind="function"><name>make_optimizer</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kind="function"><name>on</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1ae84d097cdae9e2e8ce108dea760483ed" kind="function"><name>memcpy</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1ab70f12050e78b588f5c23d874aa4e538" kind="function"><name>copy</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a0d38965b380f940bf6cfc6667a281052" kind="function"><name>memset</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1ad3c5c7847d668f2084cef0583f148eb9" kind="function"><name>kernel</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a01e187cf410a88cdc8174bc0215813ce" kind="function"><name>single_task</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a2982cf89d4dffcf01bf9cce4a5c79f51" kind="function"><name>for_each</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a802ddd94cb40b32daecec327d2ad6e52" kind="function"><name>for_each_index</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a02e3ec6669c8571ad6888584e88c07fc" kind="function"><name>transform</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1ad877003965b1e9e75ec10917190342e9" kind="function"><name>reduce</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a9a6f54751165c1e5473652ad0ca222bb" kind="function"><name>uninitialized_reduce</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a6d3d355752017aadcb733a8afdd200e3" kind="function"><name>rebind_on</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a0675aec517ca99e6638b10d53e39a2ef" kind="function"><name>rebind_memcpy</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a53550f29e0cd6b2f75fa0dac80a4292f" kind="function"><name>rebind_copy</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a494942759d5edbaf68b2842da23a6d52" kind="function"><name>rebind_memset</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a74232699e7d170a737db6c724db4a35c" kind="function"><name>rebind_kernel</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a8678573f19e01f441a6b4108e62781f3" kind="function"><name>offload_until</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a0bc6231cc6b1dbf5171b0bc421dc6577" kind="function"><name>offload_n</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a5959002af1cf1a1ada3d86a073682232" kind="function"><name>offload</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a0ff3e4948c4861e62dd4ad52b88ba4ab" kind="function"><name>cudaFlowCapturer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a2fde4fe15f2e1471e0c6b1eb9bf22b12" kind="function"><name>_capture</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a18aba23ae23ce8dbe47ef3022162a7bc" kind="function"><name>_destroy_executable</name></member>
   </compound>
   <compound refid="classtf_1_1cudaFlowCapturerBase" kind="class"><name>tf::cudaFlowCapturerBase</name>
     <member refid="classtf_1_1cudaFlowCapturerBase_1a672b45d300c57d726c203c62f950efbd" kind="friend"><name>cudaFlowCapturer</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1a20df5703896c8b581b6aa06417d79c70" kind="variable"><name>_graph</name></member>
+    <member refid="classtf_1_1cudaFlowCapturerBase_1a1c82d5c906f4c23ffa3ad5cb9036ac29" kind="variable"><name>_factory</name></member>
     <member refid="classtf_1_1cudaFlowCapturerBase_1a43739b92f51358bd144270664c6fdf8e" kind="function"><name>cudaFlowCapturerBase</name></member>
     <member refid="classtf_1_1cudaFlowCapturerBase_1a09d58616acdfe01dfe09271f8b3587ff" kind="function"><name>~cudaFlowCapturerBase</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1ad785ad88cdcb896903e9fdc845d30bea" kind="function"><name>dump</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1afa4e61e31e202f222e0f508ce3d159fc" kind="function"><name>on</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1a38adf66dfcc0829708db653d153a83e2" kind="function"><name>memcpy</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1a9fd8983c782f841bba6b10de39becdf6" kind="function"><name>copy</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1a8e3071171c0875c93dcc077a2e0a435a" kind="function"><name>memset</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1ad836d32cc2e9532ce57fe3ad6cc67d5d" kind="function"><name>kernel</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1ac25236625772a0a2c66831517b9ec288" kind="function"><name>single_task</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1a583e4df1139cf6f20b6e79dfde977a51" kind="function"><name>for_each</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1a0320596ee37d68cfce5746027ebc97de" kind="function"><name>for_each_index</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1a44fb0c626c46de1bb95369e33194f5c7" kind="function"><name>transform</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1aab12ff998a789efe0ad302bf86254f0d" kind="function"><name>reduce</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1a407504f1295f5f658abfbee081a0b057" kind="function"><name>uninitialized_reduce</name></member>
-    <member refid="classtf_1_1cudaFlowCapturerBase_1a61bd20a2dda9636e32947e861a4ef692" kind="function"><name>cudaFlowCapturerBase</name></member>
+    <member refid="classtf_1_1cudaFlowCapturerBase_1acf8c5205ea0405b643bdaf0306a4a6a8" kind="function"><name>factory</name></member>
+  </compound>
+  <compound refid="classtf_1_1cudaGraphOpt" kind="class"><name>tf::cudaGraphOpt</name>
+    <member refid="classtf_1_1cudaGraphOpt_1a395156878b8d9d3e5a2452534718cedb" kind="friend"><name>SequentialOptimizer</name></member>
+    <member refid="classtf_1_1cudaGraphOpt_1a640095c28dc592214f517e53d5773b54" kind="friend"><name>RoundRobinOptimizer</name></member>
+    <member refid="classtf_1_1cudaGraphOpt_1a49e37f841cce3def17e5cf8d534f0440" kind="friend"><name>GreedyOptimizer</name></member>
+    <member refid="classtf_1_1cudaGraphOpt_1a88cb6de9fec3a8405d8fe80947f72583" kind="variable"><name>_graph</name></member>
+    <member refid="classtf_1_1cudaGraphOpt_1a6a3e21cb98ce16061293a029fd2f3db5" kind="variable"><name>_max_level</name></member>
+    <member refid="classtf_1_1cudaGraphOpt_1a926f46ca00caacfab506cd1434e9bc11" kind="variable"><name>_level_graph</name></member>
+    <member refid="classtf_1_1cudaGraphOpt_1a9a244e4da7c59395913be445de4e5395" kind="function"><name>cudaGraphOpt</name></member>
   </compound>
   <compound refid="classtf_1_1cudaScopedDevice" kind="class"><name>tf::cudaScopedDevice</name>
     <member refid="classtf_1_1cudaScopedDevice_1a350583393e3c5edb51543726ca659687" kind="variable"><name>_p</name></member>
@@ -245,7 +271,7 @@
     <member refid="classtf_1_1Executor_1a0b4f231e11016194980b14e76262c8a7" kind="function"><name>_exploit_task</name></member>
     <member refid="classtf_1_1Executor_1aab7cc2e53d75fcc87fcc919f29bf9ca9" kind="function"><name>_explore_task</name></member>
     <member refid="classtf_1_1Executor_1a685c08b62a494359e34c6de2a700fdab" kind="function"><name>_schedule</name></member>
-    <member refid="classtf_1_1Executor_1a8b28e234949b06adad56b2c4c4c01d1e" kind="function"><name>_schedule</name></member>
+    <member refid="classtf_1_1Executor_1a8170f7d531a3ebfcf2d701e4b6e8d2c0" kind="function"><name>_schedule</name></member>
     <member refid="classtf_1_1Executor_1ad16165142908aca9444ea88e65040219" kind="function"><name>_invoke</name></member>
     <member refid="classtf_1_1Executor_1ac243d2a08b5a4a75dd440dc063b886ce" kind="function"><name>_invoke_static_task</name></member>
     <member refid="classtf_1_1Executor_1a4a000baf70b108201e3787787309c272" kind="function"><name>_invoke_dynamic_task</name></member>
@@ -254,8 +280,10 @@
     <member refid="classtf_1_1Executor_1ad2b0401c6102db1f3f638132a6529427" kind="function"><name>_invoke_condition_task</name></member>
     <member refid="classtf_1_1Executor_1a4c5324657bf02bc2da0294192ab80233" kind="function"><name>_invoke_module_task</name></member>
     <member refid="classtf_1_1Executor_1a505ccafa7ab1855c200d5590499adf5a" kind="function"><name>_invoke_async_task</name></member>
+    <member refid="classtf_1_1Executor_1ae2bb8ef1456ec6414e46d7ed77628bd9" kind="function"><name>_invoke_silent_async_task</name></member>
     <member refid="classtf_1_1Executor_1a086b6cfc6a5c57dedcdb35e72c5c2386" kind="function"><name>_set_up_topology</name></member>
     <member refid="classtf_1_1Executor_1aac98be37af843c4ce0c2e56a0c8560e5" kind="function"><name>_tear_down_topology</name></member>
+    <member refid="classtf_1_1Executor_1a42e7db3fc43e1c5479e30e8d83da9e74" kind="function"><name>_tear_down_async</name></member>
     <member refid="classtf_1_1Executor_1ad6003f99446940bc44d08802ed0f58ac" kind="function"><name>_tear_down_invoke</name></member>
     <member refid="classtf_1_1Executor_1ab85dc42b3e9b18e4b975bd5e9a8c5e72" kind="function"><name>_increment_topology</name></member>
     <member refid="classtf_1_1Executor_1a8728f22f6d177fad84ce667e02a7a3b9" kind="function"><name>_decrement_topology</name></member>
@@ -266,6 +294,9 @@
   </compound>
   <compound refid="structtf_1_1cudaFlow_1_1External" kind="struct"><name>tf::cudaFlow::External</name>
     <member refid="structtf_1_1cudaFlow_1_1External_1add55ef590408418dee0c8b79db7a747b" kind="variable"><name>graph</name></member>
+  </compound>
+  <compound refid="structtf_1_1cudaFlowCapturer_1_1External" kind="struct"><name>tf::cudaFlowCapturer::External</name>
+    <member refid="structtf_1_1cudaFlowCapturer_1_1External_1acb0595d884b28d21f661595e718c3cc2" kind="variable"><name>graph</name></member>
   </compound>
   <compound refid="classtf_1_1FlowBuilder" kind="class"><name>tf::FlowBuilder</name>
     <member refid="classtf_1_1FlowBuilder_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -305,8 +336,8 @@
     <member refid="classtf_1_1Future_1a680305aa8ac807796dabfaa82040f47d" kind="typedef"><name>handle_t</name></member>
     <member refid="classtf_1_1Future_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1Future_1aa48945297ede77a161defc88033ce8a6" kind="friend"><name>Subflow</name></member>
-    <member refid="classtf_1_1Future_1a1c752286473736b4182de7ef7d2163eb" kind="variable"><name>ASYNC</name></member>
-    <member refid="classtf_1_1Future_1ac730915f7451075781f77fd692b4b723" kind="variable"><name>TASKFLOW</name></member>
+    <member refid="classtf_1_1Future_1ac1ce88887a135442eeac7b2eb29d8e23" kind="variable"><name>ASYNC</name></member>
+    <member refid="classtf_1_1Future_1abd23028958308b6895bbbefb0c93ea4a" kind="variable"><name>TASKFLOW</name></member>
     <member refid="classtf_1_1Future_1a55bc4d50e32e28e8c904a75f9e7c7e9f" kind="variable"><name>_handle</name></member>
     <member refid="classtf_1_1Future_1a520785365a129094d7ecf11e217509db" kind="function"><name>Future</name></member>
     <member refid="classtf_1_1Future_1ad22645f2bcbd2af449cfcd36eace9a1b" kind="function"><name>Future</name></member>
@@ -315,6 +346,8 @@
     <member refid="classtf_1_1Future_1af3f3c745d9359478e12560ceb2157fc6" kind="function"><name>operator=</name></member>
     <member refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kind="function"><name>cancel</name></member>
     <member refid="classtf_1_1Future_1a26402c8b71a99835902794f4257dbc35" kind="function"><name>Future</name></member>
+  </compound>
+  <compound refid="structtf_1_1cudaFlowCapturer_1_1Internal" kind="struct"><name>tf::cudaFlowCapturer::Internal</name>
   </compound>
   <compound refid="structtf_1_1cudaFlow_1_1Internal" kind="struct"><name>tf::cudaFlow::Internal</name>
     <member refid="structtf_1_1cudaFlow_1_1Internal_1a699f86e6abe3d2aa41432898feb5f281" kind="variable"><name>executor</name></member>
@@ -341,11 +374,14 @@
     <member refid="structtf_1_1ProfileData_1ac8bd5a12ea62aa7f5c1afbcceae1b075" kind="function"><name>save</name></member>
     <member refid="structtf_1_1ProfileData_1a8ba1ef7e916c4b827707a48c886381c4" kind="function"><name>load</name></member>
   </compound>
-  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
+  <compound refid="classtf_1_1RoundRobinOptimizer" kind="class"><name>tf::RoundRobinOptimizer</name>
+    <member refid="classtf_1_1RoundRobinOptimizer_1a74e6f8375419090357979050e198e597" kind="variable"><name>cudaFlowCapturer</name></member>
+    <member refid="classtf_1_1RoundRobinOptimizer_1a3a5dd7ced2b658938ba67173c9bbe85e" kind="variable"><name>_num_streams</name></member>
+    <member refid="classtf_1_1RoundRobinOptimizer_1a8ae321b38c46ee1b6ff3e6497a617120" kind="function"><name>RoundRobinOptimizer</name></member>
+    <member refid="classtf_1_1RoundRobinOptimizer_1ab92d45ab0c3f1e5783adcdc2359c264b" kind="function"><name>RoundRobinOptimizer</name></member>
+    <member refid="classtf_1_1RoundRobinOptimizer_1a8ae68cf86a2ba60e78b1e8b8fd9be8ef" kind="function"><name>num_streams</name></member>
+    <member refid="classtf_1_1RoundRobinOptimizer_1a9aee1525c7999ead9490e14ecf3b4c01" kind="function"><name>num_streams</name></member>
+    <member refid="classtf_1_1RoundRobinOptimizer_1ad6be5a18be483e4d2acc4f4f5f02a341" kind="function"><name>_optimize</name></member>
   </compound>
   <compound refid="structtf_1_1Segment" kind="struct"><name>tf::Segment</name>
     <member refid="structtf_1_1Segment_1a3e259f6da83dcf714ec785aa1a3d14bd" kind="variable"><name>name</name></member>
@@ -358,6 +394,12 @@
     <member refid="structtf_1_1Segment_1aab1d1ddd792d5b7b312ad14532034054" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1a336d5825032b4b9085f1e78a1fa26341" kind="function"><name>span</name></member>
   </compound>
+  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
+  </compound>
   <compound refid="classtf_1_1Semaphore" kind="class"><name>tf::Semaphore</name>
     <member refid="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" kind="friend"><name>Node</name></member>
     <member refid="classtf_1_1Semaphore_1a329424188b5287ca596f1af3f6db58f1" kind="variable"><name>_mtx</name></member>
@@ -367,6 +409,11 @@
     <member refid="classtf_1_1Semaphore_1ad6cad6f9cb643348adf27fc491c918ef" kind="function"><name>count</name></member>
     <member refid="classtf_1_1Semaphore_1aeb12ad1db7794e13829a0a62549d157b" kind="function"><name>_try_acquire_or_wait</name></member>
     <member refid="classtf_1_1Semaphore_1a47b8ed63d5deecb0878a0b9cc99da20e" kind="function"><name>_release</name></member>
+  </compound>
+  <compound refid="classtf_1_1SequentialOptimizer" kind="class"><name>tf::SequentialOptimizer</name>
+    <member refid="classtf_1_1SequentialOptimizer_1a72d0e9a0867a53f1a339e15e86cb2274" kind="variable"><name>cudaFlowCapturer</name></member>
+    <member refid="classtf_1_1SequentialOptimizer_1ac7783293a091f52ccf9ddf2fd38682e5" kind="function"><name>SequentialOptimizer</name></member>
+    <member refid="classtf_1_1SequentialOptimizer_1aded46fb6bfd1a0d6ba119e0defb55555" kind="function"><name>_optimize</name></member>
   </compound>
   <compound refid="classtf_1_1Subflow" kind="class"><name>tf::Subflow</name>
     <member refid="classtf_1_1Subflow_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -477,11 +524,6 @@
     <member refid="classtf_1_1TFProfObserver_1a5debfce27f7e012d22872c134b261c63" kind="function"><name>on_entry</name></member>
     <member refid="classtf_1_1TFProfObserver_1af3a1630b5b1db5341a239a5d4c12c891" kind="function"><name>on_exit</name></member>
   </compound>
-  <compound refid="structtf_1_1ChromeObserver_1_1Timeline" kind="struct"><name>tf::ChromeObserver::Timeline</name>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" kind="variable"><name>origin</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" kind="variable"><name>segments</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" kind="variable"><name>stacks</name></member>
-  </compound>
   <compound refid="structtf_1_1Timeline" kind="struct"><name>tf::Timeline</name>
     <member refid="structtf_1_1Timeline_1ad2de68d870637ec1fccd98c2c8973c9f" kind="variable"><name>uid</name></member>
     <member refid="structtf_1_1Timeline_1ad38c8a527bc603571c53cfce08ccbab7" kind="variable"><name>origin</name></member>
@@ -493,6 +535,11 @@
     <member refid="structtf_1_1Timeline_1a9f315578cf84dd0ddfa4bff43762eebb" kind="function"><name>operator=</name></member>
     <member refid="structtf_1_1Timeline_1a435fff911fa14d75c7000f1a908cee57" kind="function"><name>save</name></member>
     <member refid="structtf_1_1Timeline_1af08d956eca1550dcbe161eb53a11fe46" kind="function"><name>load</name></member>
+  </compound>
+  <compound refid="structtf_1_1ChromeObserver_1_1Timeline" kind="struct"><name>tf::ChromeObserver::Timeline</name>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" kind="variable"><name>origin</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" kind="variable"><name>segments</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" kind="variable"><name>stacks</name></member>
   </compound>
   <compound refid="structtf_1_1Worker" kind="struct"><name>tf::Worker</name>
     <member refid="structtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -1039,34 +1086,37 @@
     <member refid="cpp/algorithm/inner_product_1" kind="function"><name>inner_product</name></member>
   </compound>
   <compound refid="namespacetf" kind="namespace"><name>tf</name>
-    <member refid="namespacetf_1a0681fa0518bdd3e3d198e1b1b744c06f" kind="enum"><name>TaskType</name></member>
-    <member refid="namespacetf_1a0681fa0518bdd3e3d198e1b1b744c06faff7624cdd3bc3acecf4db831211120cb" kind="enumvalue"><name>PLACEHOLDER_TASK</name></member>
-    <member refid="namespacetf_1a0681fa0518bdd3e3d198e1b1b744c06faec4de0a757d10590110f320552c0811f" kind="enumvalue"><name>CUDAFLOW_TASK</name></member>
-    <member refid="namespacetf_1a0681fa0518bdd3e3d198e1b1b744c06fa819a61c1ac7a08cb4dedda31992b146e" kind="enumvalue"><name>STATIC_TASK</name></member>
-    <member refid="namespacetf_1a0681fa0518bdd3e3d198e1b1b744c06fa58271c98ba64c4324ee4ea6ae95c9054" kind="enumvalue"><name>DYNAMIC_TASK</name></member>
-    <member refid="namespacetf_1a0681fa0518bdd3e3d198e1b1b744c06fa5dc4f56336a81c251665b9cd46a2efd6" kind="enumvalue"><name>CONDITION_TASK</name></member>
-    <member refid="namespacetf_1a0681fa0518bdd3e3d198e1b1b744c06fa055307a1e8fabb808f64c39e4527aa2f" kind="enumvalue"><name>MODULE_TASK</name></member>
-    <member refid="namespacetf_1a0681fa0518bdd3e3d198e1b1b744c06fa1e85afc1441ef240c50d4608d57236cf" kind="enumvalue"><name>ASYNC_TASK</name></member>
-    <member refid="namespacetf_1a0b4825761897c52f8f7e8f0b6c219d1a" kind="enum"><name>ObserverType</name></member>
-    <member refid="namespacetf_1a0b4825761897c52f8f7e8f0b6c219d1aa5a9fee7b05b17964502cd5f7730cb62e" kind="enumvalue"><name>TFPROF</name></member>
-    <member refid="namespacetf_1a0b4825761897c52f8f7e8f0b6c219d1aaeb9e68a92dd2a6c466df87dbcbb9a167" kind="enumvalue"><name>CHROME</name></member>
-    <member refid="namespacetf_1ac747e6c7cf88c7b1ff7126e62babebb8" kind="enum"><name>cudaTaskType</name></member>
-    <member refid="namespacetf_1ac747e6c7cf88c7b1ff7126e62babebb8a19a6291214c2a3228e59a60cb7eab63a" kind="enumvalue"><name>CUDA_EMPTY_TASK</name></member>
-    <member refid="namespacetf_1ac747e6c7cf88c7b1ff7126e62babebb8aa0305bd26260bedea85880413f3390b4" kind="enumvalue"><name>CUDA_HOST_TASK</name></member>
-    <member refid="namespacetf_1ac747e6c7cf88c7b1ff7126e62babebb8a4934734274edc2e2eef735490964fbd5" kind="enumvalue"><name>CUDA_MEMSET_TASK</name></member>
-    <member refid="namespacetf_1ac747e6c7cf88c7b1ff7126e62babebb8a240fd9c2eda4988c75d8d5f0e64bed69" kind="enumvalue"><name>CUDA_MEMCPY_TASK</name></member>
-    <member refid="namespacetf_1ac747e6c7cf88c7b1ff7126e62babebb8a3ac59c1b13df906316fd0ad2dc318e2b" kind="enumvalue"><name>CUDA_KERNEL_TASK</name></member>
-    <member refid="namespacetf_1ac747e6c7cf88c7b1ff7126e62babebb8a930dbba0e8f56b29ac3ea395017cec1f" kind="enumvalue"><name>CUDA_SUBFLOW_TASK</name></member>
-    <member refid="namespacetf_1ac747e6c7cf88c7b1ff7126e62babebb8a14e9fb7dc6b0d37a40046f685c6aa79a" kind="enumvalue"><name>CUDA_CAPTURE_TASK</name></member>
+    <member refid="namespacetf_1a1355048578785a80414707ff308b395a" kind="enum"><name>TaskType</name></member>
+    <member refid="namespacetf_1a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" kind="enumvalue"><name>PLACEHOLDER</name></member>
+    <member refid="namespacetf_1a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225" kind="enumvalue"><name>CUDAFLOW</name></member>
+    <member refid="namespacetf_1a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" kind="enumvalue"><name>STATIC</name></member>
+    <member refid="namespacetf_1a1355048578785a80414707ff308b395aa0fcc90da4811c877ba9f9c12f7d60bc9" kind="enumvalue"><name>DYNAMIC</name></member>
+    <member refid="namespacetf_1a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" kind="enumvalue"><name>CONDITION</name></member>
+    <member refid="namespacetf_1a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" kind="enumvalue"><name>MODULE</name></member>
+    <member refid="namespacetf_1a1355048578785a80414707ff308b395aabe553330beb7b3d994656e0a4e66cd96" kind="enumvalue"><name>ASYNC</name></member>
+    <member refid="namespacetf_1a1355048578785a80414707ff308b395aa0db45d2a4141101bdfe48e3314cfbca3" kind="enumvalue"><name>UNDEFINED</name></member>
+    <member refid="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435d" kind="enum"><name>ObserverType</name></member>
+    <member refid="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435dac19bf39d8838d00eddb556775fa8acce" kind="enumvalue"><name>TFPROF</name></member>
+    <member refid="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435da37960509766262569d504f02a0ee986d" kind="enumvalue"><name>CHROME</name></member>
+    <member refid="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435da0db45d2a4141101bdfe48e3314cfbca3" kind="enumvalue"><name>UNDEFINED</name></member>
+    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132e" kind="enum"><name>cudaTaskType</name></member>
+    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eaba2b45bdc11e2a4a6e86aab2ac693cbb" kind="enumvalue"><name>EMPTY</name></member>
+    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eab9361011891280a44d85b967739cc6a5" kind="enumvalue"><name>HOST</name></member>
+    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea41d4dbfd78ceea21abb0ecb03c3cc921" kind="enumvalue"><name>MEMSET</name></member>
+    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eac5d10cc70cce96265c445f14e7f5aba4" kind="enumvalue"><name>MEMCPY</name></member>
+    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea35c10219c45ccfb5b07444fd7e17214c" kind="enumvalue"><name>KERNEL</name></member>
+    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea46be697979903d784a70aeec45eb14ad" kind="enumvalue"><name>SUBFLOW</name></member>
+    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eab72f08e0732365cac9599b5c42157bf9" kind="enumvalue"><name>CAPTURE</name></member>
+    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3" kind="enumvalue"><name>UNDEFINED</name></member>
     <member refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kind="typedef"><name>observer_stamp_t</name></member>
     <member refid="namespacetf_1a3d823d8776745f3348dc87bba2fcc91b" kind="variable"><name>TASK_TYPES</name></member>
     <member refid="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" kind="variable"><name>is_static_task_v</name></member>
     <member refid="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" kind="variable"><name>is_dynamic_task_v</name></member>
     <member refid="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" kind="variable"><name>is_condition_task_v</name></member>
     <member refid="namespacetf_1adb8433555d8cdc0b3c5d95e8d51a90f0" kind="variable"><name>is_cudaflow_task_v</name></member>
-    <member refid="namespacetf_1ab1887c186d5570390859f16705d79bf6" kind="function"><name>task_type_to_string</name></member>
+    <member refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kind="function"><name>to_string</name></member>
     <member refid="namespacetf_1ad216aea4d0f648e149e47374ad015b1f" kind="function"><name>operator&lt;&lt;</name></member>
-    <member refid="namespacetf_1a4eea58a9e7eab408c44378dbc2be4f43" kind="function"><name>observer_type_to_string</name></member>
+    <member refid="namespacetf_1aa3fc0699b2c2b8f2f76bb39f91be1acb" kind="function"><name>to_string</name></member>
     <member refid="namespacetf_1abffa70155a5f160b7ceb86ee52ab2136" kind="function"><name>cuda_get_num_devices</name></member>
     <member refid="namespacetf_1a235f5a9ce203d538eec1f4114221d473" kind="function"><name>cuda_get_device</name></member>
     <member refid="namespacetf_1ade2938289fa49aafc9b2b7b090deaa22" kind="function"><name>cuda_set_device</name></member>
@@ -1096,7 +1146,7 @@
     <member refid="namespacetf_1ae174a3a49b91ef21554dac16806f0d72" kind="function"><name>cuda_free</name></member>
     <member refid="namespacetf_1aa4266474b921f8ed7d9ec8071fded2a4" kind="function"><name>cuda_memcpy_async</name></member>
     <member refid="namespacetf_1a6615554d2954e895755411ee444d9760" kind="function"><name>cuda_memset_async</name></member>
-    <member refid="namespacetf_1a0fa601969d45f5bb37fea586fa98fd2a" kind="function"><name>cuda_task_type_to_string</name></member>
+    <member refid="namespacetf_1af21fe1eaf680dbddc0503ef5d1a9a664" kind="function"><name>to_string</name></member>
     <member refid="namespacetf_1a9cca69f61d792afb3ad501b703d795c1" kind="function"><name>operator&lt;&lt;</name></member>
     <member refid="namespacetf_1ae680bf7822f2b6b66a6199f0b77f7241" kind="function"><name>cuda_default_max_threads_per_block</name></member>
     <member refid="namespacetf_1a50a8f777333cc26d5f5d8c4d37bcdc73" kind="function"><name>cuda_default_threads_per_block</name></member>
@@ -1139,6 +1189,8 @@
   <compound refid="cuda__flow_8hpp" kind="file"><name>cuda_flow.hpp</name>
   </compound>
   <compound refid="cuda__memory_8hpp" kind="file"><name>cuda_memory.hpp</name>
+  </compound>
+  <compound refid="cuda__optimizer_8hpp" kind="file"><name>cuda_optimizer.hpp</name>
   </compound>
   <compound refid="cuda__reduce_8dox" kind="file"><name>cuda_reduce.dox</name>
   </compound>
@@ -1374,35 +1426,13 @@
   </compound>
   <compound refid="dir_6ca04c2d47d1a3b7e60c2f1c28fb8440" kind="dir"><name>algorithm</name>
   </compound>
-  <compound refid="dir_73635165b734e23094c358e517ec45fc" kind="dir"><name>algorithms</name>
-  </compound>
-  <compound refid="dir_ecfa7d70310a08b350e190615cc70712" kind="dir"><name>contributing</name>
-  </compound>
-  <compound refid="dir_61bd9e18b52c497a2e6d3af3a72c0d02" kind="dir"><name>cookbook</name>
-  </compound>
   <compound refid="dir_220cd4d9b8cb38c840b455d5d75c25bb" kind="dir"><name>core</name>
   </compound>
   <compound refid="dir_17d5535b0ea413f2e7c8668276eab781" kind="dir"><name>cublas</name>
   </compound>
-  <compound refid="dir_6826fcd91b6c20b635c7529d8da8ba89" kind="dir"><name>cublas</name>
-  </compound>
   <compound refid="dir_638d51f8e6f20ea8c720cc8c006296ba" kind="dir"><name>cuda</name>
   </compound>
-  <compound refid="dir_0c6655e7a474ec7aa2f43d8d56b9e1c1" kind="dir"><name>examples</name>
-  </compound>
-  <compound refid="dir_87abf3142b2bf0ff331672dc90c991b0" kind="dir"><name>governance</name>
-  </compound>
-  <compound refid="dir_66eab6e74be8ecc93fa9a6dc28be8ee1" kind="dir"><name>gpu_algorithms</name>
-  </compound>
-  <compound refid="dir_13901390c6d5ee592c18c2f167e01d4f" kind="dir"><name>install</name>
-  </compound>
-  <compound refid="dir_d7a9e4fcc659571fb4c113eec28c5eeb" kind="dir"><name>references</name>
-  </compound>
-  <compound refid="dir_7c512093e4879e21c0dd502d7d593a16" kind="dir"><name>releases</name>
-  </compound>
   <compound refid="dir_88dad41ea55ca2177e141d32a93e931c" kind="dir"><name>taskflow</name>
-  </compound>
-  <compound refid="dir_183ade9c70bd4384e3037d383160f942" kind="dir"><name>usecases</name>
   </compound>
   <compound refid="indexpage" kind="page"><name>index</name>
   </compound>

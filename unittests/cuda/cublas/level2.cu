@@ -224,13 +224,13 @@ void c_trsv_test() {
 
   taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
     auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
-    auto h2dA = blas->copy(dA, hA.data(), hA.size());
-    auto h2dB = blas->copy(dB, hB.data(), hB.size());
+    auto h2dA = capturer.copy(dA, hA.data(), hA.size());
+    auto h2dB = capturer.copy(dB, hB.data(), hB.size());
     auto trsv = blas->c_trsv(
       CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, CUBLAS_DIAG_NON_UNIT, 
       N, dA + 7, L, dB, 1
     );
-    auto d2h = blas->copy(res.data(), dB, res.size());
+    auto d2h = capturer.copy(res.data(), dB, res.size());
 
     trsv.succeed(h2dA, h2dB)
         .precede(d2h);
@@ -298,13 +298,13 @@ void c_trmv_test() {
 
   taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
     auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
-    auto h2dA = blas->copy(dA, hA.data(), hA.size());
-    auto h2dB = blas->copy(dB, hB.data(), hB.size());
+    auto h2dA = capturer.copy(dA, hA.data(), hA.size());
+    auto h2dB = capturer.copy(dB, hB.data(), hB.size());
     auto trmv = blas->c_trmv(
       CUBLAS_FILL_MODE_UPPER, CUBLAS_OP_N, CUBLAS_DIAG_NON_UNIT, 
       N, dA + 7, L, dB, 2
     );
-    auto d2h = blas->copy(res.data(), dB, res.size());
+    auto d2h = capturer.copy(res.data(), dB, res.size());
 
     trmv.succeed(h2dA, h2dB)
         .precede(d2h);
@@ -381,15 +381,15 @@ void c_symv_test() {
 
   taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
     auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
-    auto alpha = blas->single_task([=] __device__ () { *dalpha = 1; });
-    auto beta  = blas->single_task([=] __device__ () { *dbeta  = 1; });
-    auto h2dA  = blas->copy(dA, hA.data(), hA.size());
-    auto h2dx  = blas->copy(dx, hx.data(), hx.size());
-    auto h2dy  = blas->copy(dy, hy.data(), hy.size());
+    auto alpha = capturer.single_task([=] __device__ () { *dalpha = 1; });
+    auto beta  = capturer.single_task([=] __device__ () { *dbeta  = 1; });
+    auto h2dA  = capturer.copy(dA, hA.data(), hA.size());
+    auto h2dx  = capturer.copy(dx, hx.data(), hx.size());
+    auto h2dy  = capturer.copy(dy, hy.data(), hy.size());
     auto symv  = blas->c_symv(CUBLAS_FILL_MODE_UPPER, 
       N, dalpha, dA + 7, L, dx, 2, dbeta, dy, 2
     );
-    auto d2h = blas->copy(hy.data(), dy, hy.size());
+    auto d2h = capturer.copy(hy.data(), dy, hy.size());
 
     symv.succeed(h2dA, h2dx, h2dy, alpha, beta)
         .precede(d2h);
@@ -453,13 +453,13 @@ void c_syr_test() {
 
   taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
     auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
-    auto alpha = blas->single_task([=] __device__ () { *dalpha = 1; });
-    auto h2dA  = blas->copy(dA, hA.data(), hA.size());
-    auto h2dx  = blas->copy(dx, hx.data(), hx.size());
+    auto alpha = capturer.single_task([=] __device__ () { *dalpha = 1; });
+    auto h2dA  = capturer.copy(dA, hA.data(), hA.size());
+    auto h2dx  = capturer.copy(dx, hx.data(), hx.size());
     auto syr  = blas->c_syr(CUBLAS_FILL_MODE_UPPER, 
       N, dalpha, dx, 2, dA + 7, L
     );
-    auto d2h = blas->copy(hA.data(), dA, hA.size());
+    auto d2h = capturer.copy(hA.data(), dA, hA.size());
 
     syr.succeed(h2dA, h2dx, alpha) 
        .precede(d2h);
@@ -535,14 +535,14 @@ void c_syr2_test() {
 
   taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
     auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
-    auto alpha = blas->single_task([=] __device__ () { *dalpha = 1; });
-    auto h2dA  = blas->copy(dA, hA.data(), hA.size());
-    auto h2dx  = blas->copy(dx, hx.data(), hx.size());
-    auto h2dy  = blas->copy(dy, hy.data(), hy.size());
+    auto alpha = capturer.single_task([=] __device__ () { *dalpha = 1; });
+    auto h2dA  = capturer.copy(dA, hA.data(), hA.size());
+    auto h2dx  = capturer.copy(dx, hx.data(), hx.size());
+    auto h2dy  = capturer.copy(dy, hy.data(), hy.size());
     auto syr2  = blas->c_syr2(CUBLAS_FILL_MODE_LOWER, 
       N, dalpha, dx, 2, dy, 2, dA + 7, L
     );
-    auto d2h = blas->copy(res.data(), dA, res.size());
+    auto d2h = capturer.copy(res.data(), dA, res.size());
 
     syr2.succeed(h2dA, h2dx, h2dy, alpha)
         .precede(d2h);

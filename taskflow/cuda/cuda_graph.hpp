@@ -368,8 +368,8 @@ class cudaGraph : public CustomGraphBase {
     // TODO: nvcc complains deleter of unique_ptr
     //std::vector<std::unique_ptr<cudaNode>> _nodes;
     std::vector<cudaNode*> _nodes;
-    std::vector<cudaNode*> _toposort();
 
+    std::vector<cudaNode*> _toposort();
 };
 
 // ----------------------------------------------------------------------------
@@ -440,9 +440,9 @@ class cudaNode {
 
     std::function<void(cudaStream_t)> work;
 
-    cudaEvent_t event{nullptr};
-    int level{-1};
-    int idx{-1};
+    cudaEvent_t event {nullptr};
+    int level {-1};
+    int idx   {-1};
   };
 
   using handle_t = std::variant<
@@ -486,8 +486,7 @@ class cudaNode {
     cudaGraphNode_t _native_handle {nullptr};
 
     std::vector<cudaNode*> _successors;
-
-    std::vector<cudaNode*> _predecessors;
+    std::vector<cudaNode*> _dependents;
 
     void _precede(cudaNode*);
     void _set_state(int);
@@ -533,7 +532,7 @@ cudaNode::cudaNode(cudaGraph& graph, ArgsT&&... args) :
 inline void cudaNode::_precede(cudaNode* v) {
 
   _successors.push_back(v);
-  v->_predecessors.push_back(this);
+  v->_dependents.push_back(this);
 
   // capture node doesn't have the native graph yet
   if(_handle.index() != cudaNode::CAPTURE) {
