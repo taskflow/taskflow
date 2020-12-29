@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="classtf_1_1SequentialOptimizer" kind="class" language="C++" prot="public">
     <compoundname>tf::SequentialOptimizer</compoundname>
     <includes refid="cuda__optimizer_8hpp" local="no">cuda_optimizer.hpp</includes>
@@ -15,7 +15,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="102" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="102" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="102" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="102" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -25,12 +25,13 @@
         <argsstring>()=default</argsstring>
         <name>SequentialOptimizer</name>
         <briefdescription>
+<para>constructs a sequential optimizer </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="106" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="109" column="5"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -49,14 +50,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="110" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="113" bodyend="135"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="113" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="116" bodyend="138"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to capture the described graph into a native cudaGraph using a single stream </para>    </briefdescription>
+<para>class to capture the described graph into a native cudaGraph using a single stream </para>
+    </briefdescription>
     <detaileddescription>
-<para>A sequential optimizer finds a topological order of the described graph and captures dependent GPU tasks using a single stream. All GPU tasks run sequentially without breaking inter dependencies. </para>    </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="100" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="100" bodyend="111"/>
+<para>A sequential optimizer finds a topological order of the described graph and captures dependent GPU tasks using a single stream. All GPU tasks run sequentially without breaking inter dependencies. </para>
+    </detaileddescription>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="100" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="100" bodyend="114"/>
     <listofallmembers>
       <member refid="classtf_1_1SequentialOptimizer_1aded46fb6bfd1a0d6ba119e0defb55555" prot="private" virt="non-virtual"><scope>tf::SequentialOptimizer</scope><name>_optimize</name></member>
       <member refid="classtf_1_1SequentialOptimizer_1a72d0e9a0867a53f1a339e15e86cb2274" prot="private" virt="non-virtual"><scope>tf::SequentialOptimizer</scope><name>cudaFlowCapturer</name></member>

@@ -332,9 +332,9 @@ We encourage users to study and understand the parallel structure of their appli
 in order to come up with the best granularity of task decomposition.
 A refined task graph can have significant performance difference from the raw counterpart.
 
-@section C6_OffloadAndUpdateAcudaFlow Offload and Update a cudaFlow
+@section OffloadAndUpdateAcudaFlow Offload and Update a cudaFlow
 
-Many GPU applications require you to launch a %cudaFlow mutiple times
+Many GPU applications require you to launch a %cudaFlow multiple times
 and update node parameters (e.g., kernel parameters and memory addresses) 
 between iterations.
 tf::cudaFlow::offload allows you to execute the graph immediately
@@ -362,12 +362,12 @@ Line 6 executes the %cudaFlow again with updated kernel parameters.
 We currently supports the following offload methods:
   + tf::cudaFlow::offload offloads and runs the %cudaFlow once
   + tf::cudaFlow::offload_n offloads and runs the %cudaFlow @c n times
-  + tf::cudaFlow::offload_until offloads and keeps running the %cudaFlow
+  + tf::cudaFlow::offload_until offloads and repeatedly runs the %cudaFlow
     until the given predicate returns @c true
 
 @code{.cpp}
 taskflow.emplace(tf::cudaFlow& cf) {
-  // ... create CUDA tasks
+  // ... create GPU tasks
   cf.offload();      // offload the cudaFlow and run it once
   cf.offload_n(10);  // offload the cudaFlow and run it 10 times
   cf.offload_until([repeat=5] () mutable { return repeat-- == 0; })  // 5 times
@@ -375,25 +375,28 @@ taskflow.emplace(tf::cudaFlow& cf) {
 @endcode
 
 After you offload a %cudaFlow (possibly multiple times), 
-it is considered executed, and the executor will not run an offloaded %cudaFlow
-after the %cudaFlow task callable.
+it is considered executed, and the executor will @em not run an offloaded %cudaFlow
+after leaving the %cudaFlow task callable.
 On the other hand, if a %cudaFlow is not offloaded, 
 the executor runs it once.
 For example, the following two versions represent the same execution logic.
 
 @code{.cpp}
-// version 1: explicitly offload a cudaFlow
+// version 1: explicitly offload a cudaFlow once
 taskflow.emplace(tf::cudaFlow& cf) {
   cf.kernel(grid, block, shm, my_kernel, my_kernel_args).name("my_kernel");
   cf.offload();
 };
 
-// version 2 (same as version 1): executor offloads the cudaFlow
+// version 2 (same as version 1): executor offloads the cudaFlow once
 taskflow.emplace(tf::cudaFlow& cf) {
   cf.kernel(grid, block, shm, my_kernel, my_kernel_args).name("my_kernel");
 };
 @endcode
 
+Between successive offloads (i.e., executions of a %cudaFlow),
+you can update the task parameters, 
+such as changing the kernel execution parameters and memory operation parameters.
 We currently support the following methods to update task parameters
 from an offloaded %cudaFlow:
   + tf::cudaFlow::update_kernel updates the parameters of a kernel task
@@ -406,7 +409,8 @@ from an offloaded %cudaFlow:
 Please visit the reference page of tf::cudaFlow for more details.
 
 @attention
-There are quite a few limitations on update methods:
+You must not change the topology of an offloaded graph.
+In addition, update methods have the following limitations:
 + kernel task
   + The kernel function is not allowed to change
 + memset and memcpy tasks: 
@@ -414,6 +418,7 @@ There are quite a few limitations on update methods:
     cannot change
   + The source/destination memory must be allocated from the same 
     contexts as the original source/destination memory.
+
 
 @section C6_UsecudaFlowInAStandaloneEnvironment Use cudaFlow in a Standalone Environment
 
@@ -440,8 +445,15 @@ cf.offload();  // offload and run the standalone cudaFlow once
 
 @attention
 When using %cudaFlow in a standalone environment, it is your choice
-and responsibility to decide its GPU context and ensure that GPU memory 
-operations are correctly performed.
+to decide its GPU context.
+
+The following example creates a %cudaFlow and executes it on GPU 0.
+
+@code{.cpp}
+tf::cudaScopedDevice gpu(0);
+tf::cudaFlow cf;  // create a standalone cudaFlow on GPU 0
+cf.offload();     // run the capturer once on GPU 0
+@endcode
 
 */
 

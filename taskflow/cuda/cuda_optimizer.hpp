@@ -102,7 +102,10 @@ class SequentialOptimizer {
   friend cudaFlowCapturer;
 
   public:
-
+    
+    /**
+    @brief constructs a sequential optimizer
+    */
     SequentialOptimizer() = default;
   
   private:
