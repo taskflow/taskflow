@@ -466,8 +466,6 @@ class cudaNode {
 
   private:
     
-    int _state;
-
     cudaGraph& _graph;
 
     std::string _name;
@@ -480,10 +478,10 @@ class cudaNode {
     std::vector<cudaNode*> _dependents;
 
     void _precede(cudaNode*);
-    void _set_state(int);
-    void _unset_state(int);
-    void _clear_state();
-    bool _has_state(int) const;
+    //void _set_state(int);
+    //void _unset_state(int);
+    //void _clear_state();
+    //bool _has_state(int) const;
 };
 
 // ----------------------------------------------------------------------------
@@ -536,25 +534,25 @@ inline void cudaNode::_precede(cudaNode* v) {
   }
 }
     
-// Procedure: _set_state
-inline void cudaNode::_set_state(int flag) { 
-  _state |= flag; 
-}
-
-// Procedure: _unset_state
-inline void cudaNode::_unset_state(int flag) { 
-  _state &= ~flag; 
-}
-
-// Procedure: _clear_state
-inline void cudaNode::_clear_state() { 
-  _state = 0; 
-}
-
-// Function: _has_state
-inline bool cudaNode::_has_state(int flag) const {
-  return _state & flag;
-}
+//// Procedure: _set_state
+//inline void cudaNode::_set_state(int flag) { 
+//  _state |= flag; 
+//}
+//
+//// Procedure: _unset_state
+//inline void cudaNode::_unset_state(int flag) { 
+//  _state &= ~flag; 
+//}
+//
+//// Procedure: _clear_state
+//inline void cudaNode::_clear_state() { 
+//  _state = 0; 
+//}
+//
+//// Function: _has_state
+//inline bool cudaNode::_has_state(int flag) const {
+//  return _state & flag;
+//}
 
 // ----------------------------------------------------------------------------
 // cudaGraph definitions

@@ -28,7 +28,43 @@ class cudaCapturingBase {
 
 // Function: _toposort
 inline std::vector<cudaNode*> cudaCapturingBase::_toposort(cudaGraph& graph) {
+  
+  std::vector<cudaNode*> res;
+  std::queue<cudaNode*> bfs;
 
+  res.reserve(graph._nodes.size());
+
+  // insert the first level of nodes into the queue
+  for(auto u : graph._nodes) {
+
+    auto& hu = std::get<cudaNode::Capture>(u->_handle);
+    hu.level = u->_dependents.size();
+
+    if(hu.level == 0) {
+      bfs.push(u);
+    }
+  }
+  
+  // levelize the graph using bfs
+  while(!bfs.empty()) {
+
+    auto u = bfs.front();
+    bfs.pop();
+
+    res.push_back(u);
+    
+    auto& hu = std::get<cudaNode::Capture>(u->_handle);
+
+    for(auto v : u->_successors) {
+      auto& hv = std::get<cudaNode::Capture>(v->_handle);
+      if(--hv.level == 0) {
+        bfs.push(v);
+      }
+    }
+  }
+
+  /* stack version. We prefer the above levelization version since we 
+   * can use the level data member.
   std::stack<cudaNode*> dfs;
   std::vector<cudaNode*> res;
 
@@ -61,7 +97,7 @@ inline std::vector<cudaNode*> cudaCapturingBase::_toposort(cudaGraph& graph) {
     }
   }
 
-  std::reverse(res.begin(), res.end());
+  std::reverse(res.begin(), res.end());*/
   
   return res;
 }
@@ -75,12 +111,13 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
   size_t max_level = 0;
   
   // insert the first level of nodes into the queue
-  for(auto node : graph._nodes) {
-    node->_unset_state(cudaNode::STATE_VISITED);
-    if(node->_dependents.size() == 0) {
-      std::get<cudaNode::Capture>(node->_handle).level = 0;
-      bfs.push(node);
-      node->_set_state(cudaNode::STATE_VISITED);
+  for(auto u : graph._nodes) {
+
+    auto& hu = std::get<cudaNode::Capture>(u->_handle);
+    hu.level = u->_dependents.size();
+
+    if(hu.level == 0) {
+      bfs.push(u);
     }
   }
   
@@ -93,19 +130,18 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
     auto& hu = std::get<cudaNode::Capture>(u->_handle);
 
     for(auto v : u->_successors) {
-      if(!(v->_has_state(cudaNode::STATE_VISITED))) {
-        auto& hv = std::get<cudaNode::Capture>(v->_handle);
+      auto& hv = std::get<cudaNode::Capture>(v->_handle);
+      if(--hv.level == 0) {
         hv.level = hu.level + 1;
         if(hv.level > max_level) {
           max_level = hv.level;
         }
         bfs.push(v);
-        v->_set_state(cudaNode::STATE_VISITED);
       }
     }
   }
   
-  // YOUR BFS IS WRONG ... You need to start with the first level
+  // Your BFS is wrong. You need to start with the first level
   // that doesn't have any precedessors.
   // Consider a simple example that fails your implementation:
   // nodes = {B, A, C}, dependencies: A->B->C
@@ -141,12 +177,16 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
   //  _max_level = std::max(_max_level, cur_node_level);
   //} 
 
-  //set level_graph and each node's idx
+  // set level_graph and each node's idx
   std::vector<std::vector<cudaNode*>> level_graph(max_level+1);
   for(auto u : graph._nodes) {
     auto& hu = std::get<cudaNode::Capture>(u->_handle);
     hu.idx = level_graph[hu.level].size();
     level_graph[hu.level].emplace_back(u);
+    
+    //for(auto s : u->_successors) {
+    //  assert(hu.level < std::get<cudaNode::Capture>(s->_handle).level);
+    //}
   }
   
   return level_graph;

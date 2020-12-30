@@ -18,13 +18,13 @@ void traversal(OPT_Args&&... args) {
   for(int i = 0; i < 13; ++i) {
     Graph* g;
     if constexpr(std::is_same_v<GRAPH, Tree>) {
-      g = new Tree(::rand() % 3 + 1, ::rand() % 4 + 1);
+      g = new Tree(::rand() % 3 + 1, ::rand() % 5 + 1);
     }
     else if constexpr(std::is_same_v<GRAPH, RandomDAG>) {
-      g = new RandomDAG(::rand() % 7 + 1, ::rand() % 4 + 1, ::rand() % 3 + 1);
+      g = new RandomDAG(::rand() % 10 + 1, ::rand() % 10 + 1, ::rand() % 10 + 1);
     }
     else if constexpr(std::is_same_v<GRAPH, Diamond>) {
-      g = new Diamond(::rand() % 5 + 1, ::rand() % 4 + 1);
+      g = new Diamond(::rand() % 10 + 1, ::rand() % 10 + 1);
     }
     GraphExecutor<OPT> executor(*g, 0); 
     executor.traversal(std::forward<OPT_Args>(args)...);
