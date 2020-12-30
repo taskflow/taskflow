@@ -129,8 +129,8 @@ class cudaFlowCapturer {
   using handle_t = std::variant<External, Internal>;
 
   using Optimizer = std::variant<
-    SequentialOptimizer,
-    RoundRobinOptimizer
+    cudaSequentialCapturing,
+    cudaRoundRobinCapturing
   >;
 
   public:
@@ -185,8 +185,8 @@ class cudaFlowCapturer {
 
     We currently supports the following optimization algorithms to capture
     a user-described %cudaFlow:
-      + tf::SequentialOptimizer
-      + tf::RoundRobinOptimizer
+      + tf::cudaSequentialCapturing
+      + tf::cudaRoundRobinCapturing
 
     */
     template <typename OPT, typename... ArgsT>

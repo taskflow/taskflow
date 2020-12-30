@@ -332,9 +332,9 @@ class cudaGraph : public CustomGraphBase {
   friend class cudaFlowCapturerBase;
   friend class cudaFlowCapturer;
   friend class cudaFlow;
-  friend class OptimizerBase;
-  friend class SequentialOptimizer;
-  friend class RoundRobinOptimizer;
+  friend class cudaCapturingBase;
+  friend class cudaSequentialCapturing;
+  friend class cudaRoundRobinCapturing;
   friend class Taskflow;
   friend class Executor;
 
@@ -380,9 +380,9 @@ class cudaNode {
   friend class cudaFlow;
   friend class cudaFlowCapturer;
   friend class cudaFlowCapturerBase;
-  friend class OptimizerBase;
-  friend class SequentialOptimizer;
-  friend class RoundRobinOptimizer;
+  friend class cudaCapturingBase;
+  friend class cudaSequentialCapturing;
+  friend class cudaRoundRobinCapturing;
   friend class Taskflow;
   friend class Executor;
   

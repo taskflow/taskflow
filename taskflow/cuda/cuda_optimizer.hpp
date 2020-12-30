@@ -4,13 +4,13 @@
 
 /** 
 @file cuda_optimizer.hpp
-@brief %cudaFlow capturer optimization algorithms include file
+@brief %cudaFlow capturing algorithms include file
 */
 
 namespace tf {
 
 // ----------------------------------------------------------------------------
-// OptimizerBase
+// cudaCapturingBase
 // ----------------------------------------------------------------------------
 
 /**
@@ -18,7 +18,7 @@ namespace tf {
 
 @brief class to provide helper common methods for optimization algorithms
 */
-class OptimizerBase {
+class cudaCapturingBase {
 
   protected:
 
@@ -27,7 +27,7 @@ class OptimizerBase {
 };
 
 // Function: _toposort
-inline std::vector<cudaNode*> OptimizerBase::_toposort(cudaGraph& graph) {
+inline std::vector<cudaNode*> cudaCapturingBase::_toposort(cudaGraph& graph) {
 
   std::stack<cudaNode*> dfs;
   std::vector<cudaNode*> res;
@@ -68,7 +68,7 @@ inline std::vector<cudaNode*> OptimizerBase::_toposort(cudaGraph& graph) {
 
 // Function: _levelize
 inline std::vector<std::vector<cudaNode*>> 
-OptimizerBase::_levelize(cudaGraph& graph) {
+cudaCapturingBase::_levelize(cudaGraph& graph) {
 
   std::queue<cudaNode*> bfs;
 
@@ -151,11 +151,11 @@ OptimizerBase::_levelize(cudaGraph& graph) {
 }
 
 // ----------------------------------------------------------------------------
-// class definition: SequentialOptimizer
+// class definition: cudaSequentialCapturing
 // ----------------------------------------------------------------------------
 
 /**
-@class SequentialOptimizer
+@class cudaSequentialCapturing
 
 @brief class to capture the described graph into a native cudaGraph
        using a single stream
@@ -164,7 +164,7 @@ A sequential optimizer finds a topological order of the described graph and
 captures dependent GPU tasks using a single stream.
 All GPU tasks run sequentially without breaking inter dependencies.
 */
-class SequentialOptimizer : public OptimizerBase {
+class cudaSequentialCapturing : public cudaCapturingBase {
 
   friend class cudaFlowCapturer;
 
@@ -173,14 +173,14 @@ class SequentialOptimizer : public OptimizerBase {
     /**
     @brief constructs a sequential optimizer
     */
-    SequentialOptimizer() = default;
+    cudaSequentialCapturing() = default;
   
   private:
 
     cudaGraph_t _optimize(cudaGraph& graph);
 };
 
-inline cudaGraph_t SequentialOptimizer::_optimize(cudaGraph& graph) {
+inline cudaGraph_t cudaSequentialCapturing::_optimize(cudaGraph& graph) {
   // acquire per-thread stream and turn it into capture mode
   // we must use ThreadLocal mode to avoid clashing with CUDA global states
   cudaScopedPerThreadStream stream;
@@ -205,16 +205,16 @@ inline cudaGraph_t SequentialOptimizer::_optimize(cudaGraph& graph) {
 }
 
 // ----------------------------------------------------------------------------
-// class definition: RoundRobinOptimizer
+// class definition: cudaRoundRobinCapturing
 // ----------------------------------------------------------------------------
 
 /**
-@class RoundRobinOptimizer
+@class cudaRoundRobinCapturing
 
 @brief class to capture the described graph into a native cudaGraph
        using a greedy round-robin algorithm on a fixed number of streams
 */
-class RoundRobinOptimizer : public OptimizerBase {
+class cudaRoundRobinCapturing : public cudaCapturingBase {
 
   friend class cudaFlowCapturer;
 
@@ -223,12 +223,12 @@ class RoundRobinOptimizer : public OptimizerBase {
     /**
     @brief constructs a round-robin optimizer with 4 streams by default
      */
-    RoundRobinOptimizer();
+    cudaRoundRobinCapturing();
     
     /**
     @brief constructs a round-robin optimizer with the given number of streams
      */
-    RoundRobinOptimizer(size_t num_streams);
+    cudaRoundRobinCapturing(size_t num_streams);
     
     /**
     @brief queries the number of streams used by the optimizer
@@ -248,7 +248,7 @@ class RoundRobinOptimizer : public OptimizerBase {
 };
 
 // Constructor
-inline RoundRobinOptimizer::RoundRobinOptimizer(size_t num_streams) :
+inline cudaRoundRobinCapturing::cudaRoundRobinCapturing(size_t num_streams) :
   _num_streams {num_streams} {
 
   if(num_streams == 0) {
@@ -257,12 +257,12 @@ inline RoundRobinOptimizer::RoundRobinOptimizer(size_t num_streams) :
 }
 
 // Function: num_streams
-inline size_t RoundRobinOptimizer::num_streams() const {
+inline size_t cudaRoundRobinCapturing::num_streams() const {
   return _num_streams;
 }
 
 // Procedure: num_streams
-inline void RoundRobinOptimizer::num_streams(size_t n) {
+inline void cudaRoundRobinCapturing::num_streams(size_t n) {
   if(n == 0) {
     TF_THROW("number of streams must be at least one");
   }
@@ -270,7 +270,7 @@ inline void RoundRobinOptimizer::num_streams(size_t n) {
 }
 
 // Function: _optimize 
-inline cudaGraph_t RoundRobinOptimizer::_optimize(cudaGraph& graph) {
+inline cudaGraph_t cudaRoundRobinCapturing::_optimize(cudaGraph& graph) {
   
   // levelize the graph
   auto level_graph = _levelize(graph);
