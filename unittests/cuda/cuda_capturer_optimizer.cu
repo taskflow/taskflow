@@ -4,11 +4,11 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/cudaflow.hpp>
 
-#include "./simple_graph/graph_executor.hpp"
-#include "./simple_graph/tree.hpp"
-#include "./simple_graph/random_DAG.hpp"
-#include "./simple_graph/tree.hpp"
-#include "./simple_graph/diamond.hpp"
+#include "./details/graph_executor.hpp"
+#include "./details/tree.hpp"
+#include "./details/random_DAG.hpp"
+#include "./details/tree.hpp"
+#include "./details/diamond.hpp"
 
 // ----------------------------------------------------------------------------
 // Graph traversal
@@ -60,7 +60,7 @@ TEST_CASE("cudaCapturer.diamond.RoundRobin") {
 }
 
 //------------------------------------------------------
-//dependencies
+// dependencies
 //------------------------------------------------------
 
 template <typename OPT, typename... OPT_Args>

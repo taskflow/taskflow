@@ -4,32 +4,10 @@
 
 /**
 @file cuda_stream.hpp
+@brief CUDA stream utilities include file
 */
 
 namespace tf {
-
-// ----------------------------------------------------------------------------
-// c++ wrapper over cudaStream functions
-// ----------------------------------------------------------------------------
-
-/**
-@brief turns on capture for the given stream
-*/
-inline void start_stream_capture(cudaStream_t stream) {
-  TF_CHECK_CUDA(
-    cudaStreamBeginCapture(stream, cudaStreamCaptureModeThreadLocal), 
-    "failed to turn stream into capture mode"
-  );
-}
-
-/**
-@brief turns off capture for the given stream and returns the captured graph
-*/  
-inline cudaGraph_t cease_stream_capture(cudaStream_t stream) {
-  cudaGraph_t graph;
-  TF_CHECK_CUDA(cudaStreamEndCapture(stream, &graph), "failed to end capture");
-  return graph;
-}
 
 // ----------------------------------------------------------------------------
 // cudaStreamCreator and cudaStreamDeleter for per-thread stream pool
@@ -67,9 +45,12 @@ using cudaPerThreadStreamPool = cudaPerThreadDeviceObjectPool<
 >;
 
 /**
-@brief per thread cuda stream pool
+@brief acquires the per-thread cuda stream pool
 */
-inline thread_local cudaPerThreadStreamPool cuda_per_thread_stream_pool;
+inline cudaPerThreadStreamPool& cuda_per_thread_stream_pool() {
+  thread_local cudaPerThreadStreamPool pool;
+  return pool;
+}
 
 // ----------------------------------------------------------------------------
 // cudaScopedPerThreadStream definition
@@ -87,11 +68,11 @@ Sample usage:
   // use stream as a normal cuda stream (cudaStream_t)
   cudaStreamWaitEvent(stream, ...);
 
-}  // leaving the scope to release the stream back to the pool on device 1
+}  // leaving the scope releases the stream back to the pool on device 1
 @endcode
 
 The scoped per-thread stream is primarily used by tf::Executor to execute
-CUDA related operations.
+CUDA tasks (e.g., tf::cudaFlow, tf::cudaFlowCapturer).
 
 %cudaScopedPerThreadStream is neither copyable nor movable.
 */
@@ -107,7 +88,7 @@ class cudaScopedPerThreadStream {
   @param device device context of the requested stream
   */
   explicit cudaScopedPerThreadStream(int device) : 
-    _ptr {cuda_per_thread_stream_pool.acquire(device)} {
+    _ptr {cuda_per_thread_stream_pool().acquire(device)} {
   }
   
   /**
@@ -116,7 +97,7 @@ class cudaScopedPerThreadStream {
   The constructor acquires a stream from a per-thread stream pool.
   */
   cudaScopedPerThreadStream() : 
-    _ptr {cuda_per_thread_stream_pool.acquire(cuda_get_device())} {
+    _ptr {cuda_per_thread_stream_pool().acquire(cuda_get_device())} {
   }
 
   /**
@@ -125,14 +106,14 @@ class cudaScopedPerThreadStream {
   The destructor releases the stream to the per-thread stream pool.
   */
   ~cudaScopedPerThreadStream() {
-    cuda_per_thread_stream_pool.release(std::move(_ptr));
+    cuda_per_thread_stream_pool().release(std::move(_ptr));
   }
   
   /**
-  @brief implicit conversion to the native cuda stream (cudaStream_t)
+  @brief implicit conversion to the native CUDA stream (cudaStream_t)
    */
   operator cudaStream_t () const {
-    return _ptr->object;
+    return _ptr->value;
   }
 
   private:
@@ -140,9 +121,126 @@ class cudaScopedPerThreadStream {
   cudaScopedPerThreadStream(const cudaScopedPerThreadStream&) = delete;
   cudaScopedPerThreadStream(cudaScopedPerThreadStream&&) = delete;
 
-  std::shared_ptr<cudaPerThreadStreamPool::cudaDeviceObject> _ptr;
+  std::shared_ptr<cudaPerThreadStreamPool::Object> _ptr;
 
 };
+
+// ----------------------------------------------------------------------------
+// cudaStreamCreator and cudaStreamDeleter for per-thread event pool
+// ----------------------------------------------------------------------------
+
+/** @private */
+struct cudaEventCreator {
+
+  /**
+  @brief operator to create a CUDA event
+   */
+  cudaEvent_t operator () () const {
+    cudaEvent_t event;
+    TF_CHECK_CUDA(cudaEventCreate(&event), "failed to create a CUDA event");
+    return event;
+  }
+};
+
+/** @private */
+struct cudaEventDeleter {
+
+  /**
+  @brief operator to destroy a CUDA event
+  */
+  void operator () (cudaEvent_t event) const {
+    cudaEventDestroy(event);
+  }
+};
+
+/**
+@brief alias of per-thread event pool type
+ */
+using cudaPerThreadEventPool = cudaPerThreadDeviceObjectPool<
+  cudaEvent_t, cudaEventCreator, cudaEventDeleter
+>;
+
+/**
+@brief per-thread cuda event pool
+*/
+inline cudaPerThreadEventPool& cuda_per_thread_event_pool() {
+  thread_local cudaPerThreadEventPool pool;
+  return pool;
+}
+
+// ----------------------------------------------------------------------------
+// cudaScopedPerThreadEvent definition
+// ----------------------------------------------------------------------------
+
+/**
+@brief class that provides RAII-styled guard of event acquisition
+
+Sample usage:
+    
+@code{.cpp}
+{
+  tf::cudaScopedPerThreadEvent event(1);  // acquires a event on device 1
+
+  // use event as a normal cuda event (cudaEvent_t)
+  cudaStreamWaitEvent(stream, event);
+
+}  // leaving the scope releases the event back to the pool on device 1
+@endcode
+
+The scoped per-thread event is primarily used by tf::Executor to execute
+CUDA tasks (e.g., tf::cudaFlow, tf::cudaFlowCapturer).
+
+%cudaScopedPerThreadEvent is neither copyable nor movable.
+*/
+class cudaScopedPerThreadEvent {
+  
+  public:
+  
+  /**
+  @brief constructs a scoped event under the given device
+
+  The constructor acquires a event from a per-thread event pool.
+
+  @param device device context of the requested event
+  */
+  explicit cudaScopedPerThreadEvent(int device) : 
+    _ptr {cuda_per_thread_event_pool().acquire(device)} {
+  }
+  
+  /**
+  @brief constructs a scoped event under the current device.
+
+  The constructor acquires a event from a per-thread event pool.
+  */
+  cudaScopedPerThreadEvent() : 
+    _ptr {cuda_per_thread_event_pool().acquire(cuda_get_device())} {
+  }
+
+  /**
+  @brief destructs the scoped event guard
+
+  The destructor releases the event to the per-thread event pool.
+  */
+  ~cudaScopedPerThreadEvent() {
+    cuda_per_thread_event_pool().release(std::move(_ptr));
+  }
+  
+  /**
+  @brief implicit conversion to the native CUDA event (cudaEvent_t)
+   */
+  operator cudaEvent_t () const {
+    return _ptr->value;
+  }
+
+  private:
+
+  cudaScopedPerThreadEvent(const cudaScopedPerThreadEvent&) = delete;
+  cudaScopedPerThreadEvent(cudaScopedPerThreadEvent&&) = delete;
+
+  std::shared_ptr<cudaPerThreadEventPool::Object> _ptr;
+
+};
+
 
 }  // end of namespace tf -----------------------------------------------------
 

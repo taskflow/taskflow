@@ -95,7 +95,7 @@ using the given device context.
 template <typename T>
 void cuda_free(T* ptr, int d) {
   cudaScopedDevice ctx(d);
-  TF_CHECK_CUDA(cudaFree(ptr), "failed to free memory ", ptr);
+  TF_CHECK_CUDA(cudaFree(ptr), "failed to free memory ", ptr, " on GPU ", d);
 }
 
 /**

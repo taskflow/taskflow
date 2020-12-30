@@ -49,7 +49,7 @@ RandomDAG::RandomDAG(
   std::uniform_int_distribution<int> dist(1, _max_nodes_per_level);
 
   size_t cur_num_nodes = 1; // root
-  for(size_t l = 0; l < _level; ++l) {
+  for(int l = 0; l < _level; ++l) {
     std::vector<Node> cur_nodes;
     cur_nodes.reserve(cur_num_nodes); // number of nodes at current level
 

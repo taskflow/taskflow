@@ -183,6 +183,10 @@ class RoundRobinOptimizer {
 // Constructor
 inline RoundRobinOptimizer::RoundRobinOptimizer(size_t num_streams) :
   _num_streams {num_streams} {
+
+  if(num_streams == 0) {
+    TF_THROW("number of streams must be at least one");
+  }
 }
 
 // Function: num_streams
@@ -192,6 +196,9 @@ inline size_t RoundRobinOptimizer::num_streams() const {
 
 // Procedure: num_streams
 inline void RoundRobinOptimizer::num_streams(size_t n) {
+  if(n == 0) {
+    TF_THROW("number of streams must be at least one");
+  }
   _num_streams = n;
 }
 
@@ -208,8 +215,8 @@ inline cudaGraph_t RoundRobinOptimizer::_optimize(cudaGraph& graph) {
     cudaStreamBeginCapture(streams[0], cudaStreamCaptureModeThreadLocal), 
     "failed to turn stream into per-thread capture mode"
   );
-
-  //fork
+  
+  // fork
   cudaEvent_t fork_event;
   TF_CHECK_CUDA(cudaEventCreate(&fork_event), "failed to create event");
   TF_CHECK_CUDA(cudaEventRecord(fork_event, streams[0]), "faid to record event");
@@ -265,3 +272,4 @@ inline cudaGraph_t RoundRobinOptimizer::_optimize(cudaGraph& graph) {
 }
 
 }  // end of namespace tf -----------------------------------------------------
+

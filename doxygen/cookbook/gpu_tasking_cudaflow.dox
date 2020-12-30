@@ -9,7 +9,7 @@ with @NvidiaCUDA.
 
 @tableofcontents
 
-@section C6_Create_a_cudaFlow Create a cudaFlow
+@section Create_a_cudaFlow Create a cudaFlow
 
 %Taskflow enables concurrent CPU-GPU tasking by leveraging @cudaGraph.
 The tasking interface is referred to as @em %cudaFlow.
@@ -97,7 +97,7 @@ a native CUDA toolkit, while leaving difficult task parallelism to %Taskflow.
 @attention
 You need to include @c taskflow/cudaflow.hpp in order to use tf::cudaFlow.
 
-@section C6_Compile_a_cudaFlow_program Compile a cudaFlow Program
+@section Compile_a_cudaFlow_program Compile a cudaFlow Program
 
 Use @nvcc (at least v11.1) to compile a %cudaFlow program:
 
@@ -108,7 +108,7 @@ Use @nvcc (at least v11.1) to compile a %cudaFlow program:
 
 Please visit the page @ref CompileTaskflowWithCUDA for more details.
 
-@section C6_run_a_cudaflow_on_multiple_gpus Run a cudaFlow on Multiple GPUs
+@section run_a_cudaflow_on_multiple_gpus Run a cudaFlow on Multiple GPUs
 
 By default, a %cudaFlow runs on the current GPU associated with the caller, 
 which is typically @c 0.
@@ -232,7 +232,7 @@ tf::Task cudaFlow_on_gpu3 = taskflow.emplace_on([&](tf::cudaFlow& cf){
 }, 3);
 @endcode
 
-@section C6_GPUMemoryOperations Access GPU Memory
+@section GPUMemoryOperations Access GPU Memory
 
 tf::cudaFlow provides a set of methods for users to manipulate device memory data.
 There are two categories, raw data and typed data.
@@ -273,7 +273,7 @@ taskflow.emplace([&](tf::cudaFlow& cf){
 @endcode
 
 
-@section C6_Granularity Study the Granularity
+@section StudyThecudaFlowGranularity Study the Granularity
 
 Creating a %cudaFlow has certain overhead, which means fined-grained tasking 
 such as one GPU operation per %cudaFlow may not give you any performance gain.
@@ -420,7 +420,7 @@ In addition, update methods have the following limitations:
     contexts as the original source/destination memory.
 
 
-@section C6_UsecudaFlowInAStandaloneEnvironment Use cudaFlow in a Standalone Environment
+@section UsecudaFlowInAStandaloneEnvironment Use cudaFlow in a Standalone Environment
 
 You can use tf::cudaFlow in a standalone environment without going through
 tf::Taskflow and offloads it to GPU from the caller thread.

@@ -355,10 +355,9 @@ class cudaGraph : public CustomGraphBase {
     template <typename... ArgsT>
     cudaNode* emplace_back(ArgsT&&...);
 
-    void clear();
-
     bool empty() const;
 
+    void clear();
     void dump(std::ostream&, const void*, const std::string&) const override final;
 
   private:
@@ -368,7 +367,6 @@ class cudaGraph : public CustomGraphBase {
     // TODO: nvcc complains deleter of unique_ptr
     //std::vector<std::unique_ptr<cudaNode>> _nodes;
     std::vector<cudaNode*> _nodes;
-
     std::vector<cudaNode*> _toposort();
 };
 

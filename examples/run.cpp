@@ -24,16 +24,16 @@ int main(){
   A.precede(B, C);
   B.precede(D); 
   C.precede(D);
-
+  
+  // dumpping a taskflow before execution won't visualize subflow tasks
   std::cout << "Dump the taskflow before execution:\n";
   taskflow.dump(std::cout);
   
-  std::cout << "Run the taskflow once without callback\n";
-  std::cout << std::endl;
-
+  std::cout << "Run the taskflow once without callback\n" << std::endl;
   executor.run(taskflow).get();
   std::cout << std::endl;
-
+  
+  // after execution, we can visualize subflow tasks
   std::cout << "Dump the taskflow after execution:\n";
   taskflow.dump(std::cout);
   std::cout << std::endl;

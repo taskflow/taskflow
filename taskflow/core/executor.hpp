@@ -728,7 +728,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   }
   
   // acquire the parent flow counter
-  auto& c = (node->_parent) ? node->_parent->_join_counter : 
+  auto& j = (node->_parent) ? node->_parent->_join_counter : 
                               node->_topology->_join_counter;
   
   // At this point, the node storage might be destructed (to be verified)
@@ -736,7 +736,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   if(node->_handle.index() != Node::CONDITION) {
     for(size_t i=0; i<num_successors; ++i) {
       if(--(node->_successors[i]->_join_counter) == 0) {
-        c.fetch_add(1);
+        j.fetch_add(1);
         _schedule(node->_successors[i]);
       }
     }
@@ -746,7 +746,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     if(cond >= 0 && static_cast<size_t>(cond) < num_successors) {
       auto s = node->_successors[cond];
       s->_join_counter.store(0);  // seems redundant but just for invariant
-      c.fetch_add(1);
+      j.fetch_add(1);
       _schedule(s);
     }
   }
