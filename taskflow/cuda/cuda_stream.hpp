@@ -74,7 +74,7 @@ Sample usage:
 The scoped per-thread stream is primarily used by tf::Executor to execute
 CUDA tasks (e.g., tf::cudaFlow, tf::cudaFlowCapturer).
 
-%cudaScopedPerThreadStream is neither copyable nor movable.
+%cudaScopedPerThreadStream is non-copyable.
 */
 class cudaScopedPerThreadStream {
   
@@ -106,7 +106,9 @@ class cudaScopedPerThreadStream {
   The destructor releases the stream to the per-thread stream pool.
   */
   ~cudaScopedPerThreadStream() {
-    cuda_per_thread_stream_pool().release(std::move(_ptr));
+    if(_ptr) {
+      cuda_per_thread_stream_pool().release(std::move(_ptr));
+    }
   }
   
   /**
@@ -115,11 +117,28 @@ class cudaScopedPerThreadStream {
   operator cudaStream_t () const {
     return _ptr->value;
   }
+  
+  /**
+  @brief disabled copy constructor
+   */
+  cudaScopedPerThreadStream(const cudaScopedPerThreadStream&) = delete;
+  
+  /**
+  @brief default move constructor
+  */
+  cudaScopedPerThreadStream(cudaScopedPerThreadStream&&) = default;
+
+  /**
+  @brief disabled copy assignment
+  */
+  cudaScopedPerThreadStream& operator = (const cudaScopedPerThreadStream&) = delete;
+
+  /**
+  @brief default move assignment
+  */
+  cudaScopedPerThreadStream& operator = (cudaScopedPerThreadStream&&) = delete;
 
   private:
-
-  cudaScopedPerThreadStream(const cudaScopedPerThreadStream&) = delete;
-  cudaScopedPerThreadStream(cudaScopedPerThreadStream&&) = delete;
 
   std::shared_ptr<cudaPerThreadStreamPool::Object> _ptr;
 
@@ -190,7 +209,7 @@ Sample usage:
 The scoped per-thread event is primarily used by tf::Executor to execute
 CUDA tasks (e.g., tf::cudaFlow, tf::cudaFlowCapturer).
 
-%cudaScopedPerThreadEvent is neither copyable nor movable.
+%cudaScopedPerThreadEvent is non-copyable.
 */
 class cudaScopedPerThreadEvent {
   
@@ -222,7 +241,9 @@ class cudaScopedPerThreadEvent {
   The destructor releases the event to the per-thread event pool.
   */
   ~cudaScopedPerThreadEvent() {
-    cuda_per_thread_event_pool().release(std::move(_ptr));
+    if(_ptr) {
+      cuda_per_thread_event_pool().release(std::move(_ptr));
+    }
   }
   
   /**
@@ -231,11 +252,28 @@ class cudaScopedPerThreadEvent {
   operator cudaEvent_t () const {
     return _ptr->value;
   }
+  
+  /**
+  @brief disabled copy constructor
+   */
+  cudaScopedPerThreadEvent(const cudaScopedPerThreadEvent&) = delete;
+  
+  /**
+  @brief default move constructor
+  */
+  cudaScopedPerThreadEvent(cudaScopedPerThreadEvent&&) = default;
+
+  /**
+  @brief disabled copy assignment
+  */
+  cudaScopedPerThreadEvent& operator = (const cudaScopedPerThreadEvent&) = delete;
+
+  /**
+  @brief default move assignment
+  */
+  cudaScopedPerThreadEvent& operator = (cudaScopedPerThreadEvent&&) = delete;
 
   private:
-
-  cudaScopedPerThreadEvent(const cudaScopedPerThreadEvent&) = delete;
-  cudaScopedPerThreadEvent(cudaScopedPerThreadEvent&&) = delete;
 
   std::shared_ptr<cudaPerThreadEventPool::Object> _ptr;
 

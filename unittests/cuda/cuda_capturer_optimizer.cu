@@ -43,11 +43,35 @@ TEST_CASE("cudaCapturer.tree.RoundRobin") {
   traversal<Tree, tf::RoundRobinOptimizer>(4);
 }
 
+TEST_CASE("cudaCapturer.tree.RoundRobin.2") {
+  traversal<Tree, tf::RoundRobinOptimizer>(2);
+}
+
+TEST_CASE("cudaCapturer.tree.RoundRobin.3") {
+  traversal<Tree, tf::RoundRobinOptimizer>(3);
+}
+
+TEST_CASE("cudaCapturer.tree.RoundRobin.4") {
+  traversal<Tree, tf::RoundRobinOptimizer>(4);
+}
+
 TEST_CASE("cudaCapturer.randomDAG.Sequential") {
   traversal<RandomDAG,tf::SequentialOptimizer>();
 }
 
-TEST_CASE("cudaCapturer.randomDAG.RoundRobin") {
+TEST_CASE("cudaCapturer.randomDAG.RoundRobin.1") {
+  traversal<RandomDAG, tf::RoundRobinOptimizer>(1);
+}
+
+TEST_CASE("cudaCapturer.randomDAG.RoundRobin.2") {
+  traversal<RandomDAG, tf::RoundRobinOptimizer>(2);
+}
+
+TEST_CASE("cudaCapturer.randomDAG.RoundRobin.3") {
+  traversal<RandomDAG, tf::RoundRobinOptimizer>(3);
+}
+
+TEST_CASE("cudaCapturer.randomDAG.RoundRobin.4") {
   traversal<RandomDAG, tf::RoundRobinOptimizer>(4);
 }
 
@@ -55,7 +79,19 @@ TEST_CASE("cudaCapturer.diamond.Sequential") {
   traversal<Diamond,tf::SequentialOptimizer>();
 }
 
-TEST_CASE("cudaCapturer.diamond.RoundRobin") {
+TEST_CASE("cudaCapturer.diamond.RoundRobin.1") {
+  traversal<Diamond, tf::RoundRobinOptimizer>(1);
+}
+
+TEST_CASE("cudaCapturer.diamond.RoundRobin.2") {
+  traversal<Diamond, tf::RoundRobinOptimizer>(2);
+}
+
+TEST_CASE("cudaCapturer.diamond.RoundRobin.3") {
+  traversal<Diamond, tf::RoundRobinOptimizer>(3);
+}
+
+TEST_CASE("cudaCapturer.diamond.RoundRobin.4") {
   traversal<Diamond, tf::RoundRobinOptimizer>(4);
 }
 
@@ -127,6 +163,18 @@ TEST_CASE("cudaCapturer.dependencies.diamond.Sequential") {
   dependencies<tf::SequentialOptimizer>();
 }
 
-TEST_CASE("cudaCapturer.dependencies.diamond.RoundRobin") {
+TEST_CASE("cudaCapturer.dependencies.diamond.RoundRobin.1") {
+  dependencies<tf::RoundRobinOptimizer>(1);
+}
+
+TEST_CASE("cudaCapturer.dependencies.diamond.RoundRobin.2") {
+  dependencies<tf::RoundRobinOptimizer>(2);
+}
+
+TEST_CASE("cudaCapturer.dependencies.diamond.RoundRobin.3") {
+  dependencies<tf::RoundRobinOptimizer>(3);
+}
+
+TEST_CASE("cudaCapturer.dependencies.diamond.RoundRobin.4") {
   dependencies<tf::RoundRobinOptimizer>(4);
 }

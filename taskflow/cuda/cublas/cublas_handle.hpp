@@ -74,7 +74,7 @@ By default, the cublas handle has a pointer mode set to device
 that is required for capturing cublas kernels.
 The scoped per-thread cublas handle is primarily used by tf::cublasFlowCapturer.
 
-%cublasScopedPerThreadHandle is neither movable nor copyable.
+%cublasScopedPerThreadHandle is non-copyable.
  */
 class cublasScopedPerThreadHandle {
   
@@ -104,7 +104,9 @@ class cublasScopedPerThreadHandle {
   The destructor releases the handle to the per-thread handle pool.
   */
   ~cublasScopedPerThreadHandle() {
-    cublas_per_thread_handle_pool().release(std::move(_ptr));
+    if(_ptr) {
+      cublas_per_thread_handle_pool().release(std::move(_ptr));
+    }
   }
 
   /**
@@ -120,11 +122,28 @@ class cublasScopedPerThreadHandle {
   long use_count() const {
     return _ptr.use_count();
   }
+  
+  /**
+  @brief disabled copy constructor
+   */
+  cublasScopedPerThreadHandle(const cublasScopedPerThreadHandle&) = delete;
+  
+  /**
+  @brief default move constructor
+  */
+  cublasScopedPerThreadHandle(cublasScopedPerThreadHandle&&) = default;
+
+  /**
+  @brief disabled copy assignment
+  */
+  cublasScopedPerThreadHandle& operator = (const cublasScopedPerThreadHandle&) = delete;
+
+  /**
+  @brief default move assignment
+  */
+  cublasScopedPerThreadHandle& operator = (cublasScopedPerThreadHandle&&) = delete;
 
   private:
-
-  cublasScopedPerThreadHandle(const cublasScopedPerThreadHandle&) = delete;
-  cublasScopedPerThreadHandle(cublasScopedPerThreadHandle&&) = delete;
 
   std::shared_ptr<cublasPerThreadHandlePool::Object> _ptr;
 

@@ -10,77 +10,144 @@
 namespace tf {
 
 // ----------------------------------------------------------------------------
-// cudaGraphOpt
+// OptimizerBase
 // ----------------------------------------------------------------------------
 
 /**
 @private
+
+@brief class to provide helper common methods for optimization algorithms
 */
-class cudaGraphOpt {
+class OptimizerBase {
 
-  friend class SequentialOptimizer;
-  friend class RoundRobinOptimizer;
-  friend class GreedyOptimizer;
+  protected:
 
-  private:
-
-    cudaGraphOpt(cudaGraph& graph);
-
-    cudaGraph& _graph;
-    int _max_level{-1};
-    std::vector<std::vector<cudaNode*>> _level_graph;
+    std::vector<cudaNode*> _toposort(cudaGraph&);
+    std::vector<std::vector<cudaNode*>> _levelize(cudaGraph&);
 };
 
-// Constructor
-inline cudaGraphOpt::cudaGraphOpt(cudaGraph& graph): _graph{graph} {
+// Function: _toposort
+inline std::vector<cudaNode*> OptimizerBase::_toposort(cudaGraph& graph) {
 
-  std::queue<cudaNode*> bfs;
-  auto& nodes = _graph._nodes;
+  std::stack<cudaNode*> dfs;
+  std::vector<cudaNode*> res;
 
-  for(auto node: nodes) {
+  for(auto node : graph._nodes) {
     node->_unset_state(cudaNode::STATE_VISITED);
-    //TODO: delete cudaEvent
   }
 
-  //set level for each node
-  for(auto node: nodes) {
-    
-    auto& cur_node_level = std::get<cudaNode::Capture>(node->_handle).level;
-
-    if(!(node->_has_state(cudaNode::STATE_VISITED))) {
-      node->_set_state(cudaNode::STATE_VISITED);
-      bfs.push(node);
-      cur_node_level = 0;
+  for(auto node : graph._nodes) {
+    if(!node->_has_state(cudaNode::STATE_VISITED)) {
+      dfs.push(node);
     }
 
-    while(!bfs.empty()) {
-      auto u = bfs.front();
-      bfs.pop();
-      for(auto s: u->_successors) {
+    while(!dfs.empty()) {
+      auto u = dfs.top();
+      dfs.pop();
 
-        auto& suc_node_level = std::get<cudaNode::Capture>(s->_handle).level;
+      if(u->_has_state(cudaNode::STATE_VISITED)){
+        res.push_back(u);
+        continue;
+      }
 
-        suc_node_level = cur_node_level + 1;
+      u->_set_state(cudaNode::STATE_VISITED);
+      dfs.push(u);
 
+      for(auto s : u->_successors) {
         if(!(s->_has_state(cudaNode::STATE_VISITED))) {
-          s->_set_state(cudaNode::STATE_VISITED);
-          bfs.push(s);
+          dfs.push(s);
         }
       }
     }
-
-    _max_level = std::max(_max_level, cur_node_level);
-  } 
-
-  //set level_graph and each node's idx
-  _level_graph.resize(_max_level + 1);
-  for(auto node: nodes) {
-    auto& cur_node = std::get<cudaNode::Capture>(node->_handle);
-      
-    cur_node.idx = _level_graph[cur_node.level].size();
-    _level_graph[cur_node.level].emplace_back(node);
   }
 
+  std::reverse(res.begin(), res.end());
+  
+  return res;
+}
+
+// Function: _levelize
+inline std::vector<std::vector<cudaNode*>> 
+OptimizerBase::_levelize(cudaGraph& graph) {
+
+  std::queue<cudaNode*> bfs;
+
+  size_t max_level = 0;
+  
+  // insert the first level of nodes into the queue
+  for(auto node : graph._nodes) {
+    node->_unset_state(cudaNode::STATE_VISITED);
+    if(node->_dependents.size() == 0) {
+      bfs.push(node);
+      std::get<cudaNode::Capture>(node->_handle).level = 0;
+    }
+  }
+  
+  // levelize the graph using bfs
+  while(!bfs.empty()) {
+
+    auto u = bfs.front();
+    bfs.pop();
+    
+    auto& hu = std::get<cudaNode::Capture>(u->_handle);
+
+    for(auto v : u->_successors) {
+      if(!(v->_has_state(cudaNode::STATE_VISITED))) {
+        auto& hv = std::get<cudaNode::Capture>(v->_handle);
+        hv.level = hu.level + 1;
+        if(hv.level > max_level) {
+          max_level = hv.level;
+        }
+        bfs.push(v);
+      }
+    }
+  }
+  
+  // YOUR BFS IS WRONG ... You need to start with the first level
+  // that doesn't have any precedessors.
+  // Consider a simple example that fails your implementation:
+  // nodes = {B, A, C}, dependencies: A->B->C
+  // You start with B and set its level to 0 and C to 1. 
+  // Next, you start with A and set its level to 0. 
+  //
+  //for(auto node: nodes) {
+  //  
+  //  auto& cur_node_level = std::get<cudaNode::Capture>(node->_handle).level;
+
+  //  if(!(node->_has_state(cudaNode::STATE_VISITED))) {
+  //    node->_set_state(cudaNode::STATE_VISITED);
+  //    bfs.push(node);
+  //    cur_node_level = 0;
+  //  }
+
+  //  while(!bfs.empty()) {
+  //    auto u = bfs.front();
+  //    bfs.pop();
+  //    for(auto s: u->_successors) {
+
+  //      auto& suc_node_level = std::get<cudaNode::Capture>(s->_handle).level;
+
+  //      suc_node_level = cur_node_level + 1;
+
+  //      if(!(s->_has_state(cudaNode::STATE_VISITED))) {
+  //        s->_set_state(cudaNode::STATE_VISITED);
+  //        bfs.push(s);
+  //      }
+  //    }
+  //  }
+
+  //  _max_level = std::max(_max_level, cur_node_level);
+  //} 
+
+  //set level_graph and each node's idx
+  std::vector<std::vector<cudaNode*>> level_graph(max_level+1);
+  for(auto u : graph._nodes) {
+    auto& hu = std::get<cudaNode::Capture>(u->_handle);
+    hu.idx = level_graph[hu.level].size();
+    level_graph[hu.level].emplace_back(u);
+  }
+  
+  return level_graph;
 }
 
 // ----------------------------------------------------------------------------
@@ -97,9 +164,9 @@ A sequential optimizer finds a topological order of the described graph and
 captures dependent GPU tasks using a single stream.
 All GPU tasks run sequentially without breaking inter dependencies.
 */
-class SequentialOptimizer {
+class SequentialOptimizer : public OptimizerBase {
 
-  friend cudaFlowCapturer;
+  friend class cudaFlowCapturer;
 
   public:
     
@@ -125,7 +192,7 @@ inline cudaGraph_t SequentialOptimizer::_optimize(cudaGraph& graph) {
     "failed to turn stream into per-thread capture mode"
   );
 
-  auto ordered = graph._toposort();
+  auto ordered = _toposort(graph);
   for(auto& node : ordered) {
     std::get<cudaNode::Capture>(node->_handle).work(stream);  
   }
@@ -147,9 +214,9 @@ inline cudaGraph_t SequentialOptimizer::_optimize(cudaGraph& graph) {
 @brief class to capture the described graph into a native cudaGraph
        using a greedy round-robin algorithm on a fixed number of streams
 */
-class RoundRobinOptimizer {
+class RoundRobinOptimizer : public OptimizerBase {
 
-  friend cudaFlowCapturer;
+  friend class cudaFlowCapturer;
 
   public:
     
@@ -204,65 +271,104 @@ inline void RoundRobinOptimizer::num_streams(size_t n) {
 
 // Function: _optimize 
 inline cudaGraph_t RoundRobinOptimizer::_optimize(cudaGraph& graph) {
-
+  
+  // levelize the graph
+  auto level_graph = _levelize(graph);
+  
+  // begin to capture
   std::vector<cudaScopedPerThreadStream> streams(_num_streams);
-
-  cudaGraph_t native_g;
-
-  cudaGraphOpt g(graph);
 
   TF_CHECK_CUDA(
     cudaStreamBeginCapture(streams[0], cudaStreamCaptureModeThreadLocal), 
     "failed to turn stream into per-thread capture mode"
   );
   
+  // reserve space for scoped events
+  std::vector<cudaScopedPerThreadEvent> events;
+  events.reserve((_num_streams >> 1) + level_graph.size());
+  
   // fork
-  cudaEvent_t fork_event;
-  TF_CHECK_CUDA(cudaEventCreate(&fork_event), "failed to create event");
-  TF_CHECK_CUDA(cudaEventRecord(fork_event, streams[0]), "faid to record event");
+  cudaEvent_t fork_event = events.emplace_back();
+  TF_CHECK_CUDA(
+    cudaEventRecord(fork_event, streams[0]), "faid to record fork"
+  );
 
   for(size_t i = 1; i < streams.size(); ++i) {
-    TF_CHECK_CUDA(cudaStreamWaitEvent(streams[i], fork_event, 0), "failed to wait event");
+    TF_CHECK_CUDA(
+      cudaStreamWaitEvent(streams[i], fork_event, 0), "failed to wait on fork"
+    );
   }
 
-  //Round-Robin
-  for(auto& each_level_nodes: g._level_graph) {
+  // assign streams to levelized nodes in a round-robin manner
+  for(auto& each_level_nodes : level_graph) {
     for(size_t i = 0; i < each_level_nodes.size(); ++i) {
 
-      auto& node = each_level_nodes[i];
+      auto& node  = each_level_nodes[i];
       auto& succs = node->_successors;
       auto& preds = node->_dependents;
-
-      size_t stream_id = i % _num_streams;
+      auto& hn = std::get<cudaNode::Capture>(node->_handle);
+      
+      // stream id assigned to this node
+      size_t sid = i % _num_streams;
 
       //wait event in previous level
       for(size_t p = 0; p < preds.size(); ++p) {
-        if((std::get<cudaNode::Capture>(preds[p]->_handle).idx % _num_streams) != stream_id) {
-          TF_CHECK_CUDA(cudaStreamWaitEvent(streams[stream_id], std::get<cudaNode::Capture>(preds[p]->_handle).event, 0), "failed to wait event");
-        }
-      }
+        auto& hp = std::get<cudaNode::Capture>(preds[p]->_handle);
 
-      std::get<cudaNode::Capture>(node->_handle).work(streams[stream_id]);  
+        if(hp.idx % _num_streams != sid) {
+          TF_CHECK_CUDA(
+            cudaStreamWaitEvent(streams[sid], hp.event),
+            "failed to wait on predecessor"
+          )
+        }
+
+        //if((std::get<cudaNode::Capture>(preds[p]->_handle).idx % _num_streams) != sid) {
+        //  TF_CHECK_CUDA(cudaStreamWaitEvent(streams[sid], std::get<cudaNode::Capture>(preds[p]->_handle).event, 0), "failed to wait event");
+        //}
+      }
+      
+      // enqueu the work
+      hn.work(streams[sid]);
+      //std::get<cudaNode::Capture>(node->_handle).work(streams[sid]);  
 
       //create event if there is a node in the next level executed in different stream
       for(size_t k = 0; k < succs.size(); ++k) {
-        if((std::get<cudaNode::Capture>(succs[k]->_handle).idx % _num_streams) != stream_id) {
-          TF_CHECK_CUDA(cudaEventCreate(&(std::get<cudaNode::Capture>(node->_handle).event)), "failed to create event");
-          TF_CHECK_CUDA(cudaEventRecord(std::get<cudaNode::Capture>(node->_handle).event, streams[stream_id]), "failed to record event");
-          break;
+        auto& hs = std::get<cudaNode::Capture>(succs[k]->_handle);
+        if(hs.idx % _num_streams != sid) {
+          hn.event = events.emplace_back();
+          TF_CHECK_CUDA(
+            cudaEventRecord(hn.event, streams[sid]), "failed to record event"
+          );
         }
+        //if((std::get<cudaNode::Capture>(succs[k]->_handle).idx % _num_streams) != sid) {
+        //  TF_CHECK_CUDA(cudaEventCreate(&(std::get<cudaNode::Capture>(node->_handle).event)), "failed to create event");
+        //  TF_CHECK_CUDA(cudaEventRecord(std::get<cudaNode::Capture>(node->_handle).event, streams[sid]), "failed to record event");
+        //  break;
+        //}
       }
     }
       
   }
 
-  //join
-  std::vector<cudaEvent_t> join_events{_num_streams - 1};
-  for(size_t i = 0; i < join_events.size(); ++i) {
-    TF_CHECK_CUDA(cudaEventCreate(&join_events[i]), "failed to create event");
-    TF_CHECK_CUDA(cudaEventRecord(join_events[i], streams[i+1]), "failed to record event");
-    TF_CHECK_CUDA(cudaStreamWaitEvent(streams[0], join_events[i], 0), "failed to wait event");
+  // join
+  for(size_t i=1; i<_num_streams; ++i) {
+    cudaEvent_t join_event = events.emplace_back();
+    TF_CHECK_CUDA(
+      cudaEventRecord(join_event, streams[i]), "failed to record join"
+    );
+    TF_CHECK_CUDA(
+      cudaStreamWaitEvent(streams[0], join_event), "failed to wait on join"
+    );
   }
+
+  //std::vector<cudaEvent_t> join_events{_num_streams - 1};
+  //for(size_t i = 0; i < join_events.size(); ++i) {
+  //  TF_CHECK_CUDA(cudaEventCreate(&join_events[i]), "failed to create event");
+  //  TF_CHECK_CUDA(cudaEventRecord(join_events[i], streams[i+1]), "failed to record event");
+  //  TF_CHECK_CUDA(cudaStreamWaitEvent(streams[0], join_events[i], 0), "failed to wait event");
+  //}
+
+  cudaGraph_t native_g;
 
   TF_CHECK_CUDA(
     cudaStreamEndCapture(streams[0], &native_g), "failed to end capture"

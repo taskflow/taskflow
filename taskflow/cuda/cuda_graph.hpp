@@ -332,14 +332,11 @@ class cudaGraph : public CustomGraphBase {
   friend class cudaFlowCapturerBase;
   friend class cudaFlowCapturer;
   friend class cudaFlow;
-  
-  friend class Taskflow;
-  friend class Executor;
-
-  friend class cudaGraphOpt;
+  friend class OptimizerBase;
   friend class SequentialOptimizer;
   friend class RoundRobinOptimizer;
-  friend class GreedyOptimizer;
+  friend class Taskflow;
+  friend class Executor;
 
   public:
     
@@ -367,7 +364,6 @@ class cudaGraph : public CustomGraphBase {
     // TODO: nvcc complains deleter of unique_ptr
     //std::vector<std::unique_ptr<cudaNode>> _nodes;
     std::vector<cudaNode*> _nodes;
-    std::vector<cudaNode*> _toposort();
 };
 
 // ----------------------------------------------------------------------------
@@ -384,14 +380,11 @@ class cudaNode {
   friend class cudaFlow;
   friend class cudaFlowCapturer;
   friend class cudaFlowCapturerBase;
-
-  friend class Taskflow;
-  friend class Executor;
-
-  friend class cudaGraphOpt;
+  friend class OptimizerBase;
   friend class SequentialOptimizer;
   friend class RoundRobinOptimizer;
-  friend class GreedyOptimizer;
+  friend class Taskflow;
+  friend class Executor;
   
   // Empty handle
   struct Empty {
@@ -439,8 +432,8 @@ class cudaNode {
     std::function<void(cudaStream_t)> work;
 
     cudaEvent_t event {nullptr};
-    int level {-1};
-    int idx   {-1};
+    size_t level;
+    size_t idx;
   };
 
   using handle_t = std::variant<
@@ -624,47 +617,6 @@ cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
   auto node = new cudaNode(std::forward<ArgsT>(args)...);
   _nodes.push_back(node);
   return node;
-}
-
-// Procedure: _toposort
-// topological sort iteratively
-inline std::vector<cudaNode*> cudaGraph::_toposort() {
-
-  std::stack<cudaNode*> dfs;
-  std::vector<cudaNode*> res;
-
-  for(auto node : _nodes) {
-    node->_unset_state(cudaNode::STATE_VISITED);
-  }
-
-  for(auto node : _nodes) {
-    if(!node->_has_state(cudaNode::STATE_VISITED)) {
-      dfs.push(node);
-    }
-
-    while(!dfs.empty()) {
-      auto u = dfs.top();
-      dfs.pop();
-
-      if(u->_has_state(cudaNode::STATE_VISITED)){
-        res.push_back(u);
-        continue;
-      }
-
-      u->_set_state(cudaNode::STATE_VISITED);
-      dfs.push(u);
-
-      for(auto s : u->_successors) {
-        if(!(s->_has_state(cudaNode::STATE_VISITED))) {
-          dfs.push(s);
-        }
-      }
-    }
-  }
-
-  std::reverse(res.begin(), res.end());
-  
-  return res;
 }
 
 // Procedure: dump the graph to a DOT format
