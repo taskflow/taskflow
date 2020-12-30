@@ -78,8 +78,9 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
   for(auto node : graph._nodes) {
     node->_unset_state(cudaNode::STATE_VISITED);
     if(node->_dependents.size() == 0) {
-      bfs.push(node);
       std::get<cudaNode::Capture>(node->_handle).level = 0;
+      bfs.push(node);
+      node->_set_state(cudaNode::STATE_VISITED);
     }
   }
   
@@ -99,6 +100,7 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
           max_level = hv.level;
         }
         bfs.push(v);
+        v->_set_state(cudaNode::STATE_VISITED);
       }
     }
   }
