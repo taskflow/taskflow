@@ -5,7 +5,7 @@
   <title>tf namespace | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -92,9 +92,25 @@
             </dt>
             <dd>base class to construct a CUDA task graph through stream capture</dd>
             <dt>
+              class <a href="classtf_1_1cudaRoundRobinCapturing.html" class="m-doc">cudaRoundRobinCapturing</a>
+            </dt>
+            <dd>class to capture the described graph into a native cudaGraph using a greedy round-robin algorithm on a fixed number of streams</dd>
+            <dt>
               class <a href="classtf_1_1cudaScopedDevice.html" class="m-doc">cudaScopedDevice</a>
             </dt>
             <dd>RAII-styled device context switch.</dd>
+            <dt>
+              class <a href="classtf_1_1cudaScopedPerThreadEvent.html" class="m-doc">cudaScopedPerThreadEvent</a>
+            </dt>
+            <dd>class that provides RAII-styled guard of event acquisition</dd>
+            <dt>
+              class <a href="classtf_1_1cudaScopedPerThreadStream.html" class="m-doc">cudaScopedPerThreadStream</a>
+            </dt>
+            <dd>class that provides RAII-styled guard of stream acquisition</dd>
+            <dt>
+              class <a href="classtf_1_1cudaSequentialCapturing.html" class="m-doc">cudaSequentialCapturing</a>
+            </dt>
+            <dd>class to capture the described graph into a native cudaGraph using a single stream</dd>
             <dt>
               class <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>
             </dt>
@@ -117,17 +133,9 @@
             </dt>
             <dd>The interface class for creating an executor observer.</dd>
             <dt>
-              class <a href="classtf_1_1RoundRobinOptimizer.html" class="m-doc">RoundRobinOptimizer</a>
-            </dt>
-            <dd>class to capture the described graph into a native cudaGraph using a greedy round-robin algorithm on a fixed number of streams</dd>
-            <dt>
               class <a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>
             </dt>
             <dd>class to create a semophore object for building a concurrency constraint</dd>
-            <dt>
-              class <a href="classtf_1_1SequentialOptimizer.html" class="m-doc">SequentialOptimizer</a>
-            </dt>
-            <dd>class to capture the described graph into a native cudaGraph using a single stream</dd>
             <dt>
               class <a href="classtf_1_1Subflow.html" class="m-doc">Subflow</a>
             </dt>
@@ -194,6 +202,14 @@
               using <a href="#a8cff4bbd797dde4dfab096c3cc657833" class="m-doc-self">observer_stamp_t</a> = <a href="http://en.cppreference.com/w/cpp/chrono/time_point.html" class="m-doc-external">std::<wbr />chrono::<wbr />time_point</a>&lt;<a href="http://en.cppreference.com/w/cpp/chrono/steady_clock.html" class="m-doc-external">std::<wbr />chrono::<wbr />steady_clock</a>&gt;
             </dt>
             <dd>default time point type of observers</dd>
+            <dt id="a632bb71dc4ddedbf2c26f6f25a2d6a49">
+              using <a href="#a632bb71dc4ddedbf2c26f6f25a2d6a49" class="m-doc-self">cudaPerThreadStreamPool</a> = cudaPerThreadDeviceObjectPool&lt;cudaStream_t, cudaStreamCreator, cudaStreamDeleter&gt;
+            </dt>
+            <dd>alias of per-thread stream pool type</dd>
+            <dt id="a7356453a9963094ac069f6597bee50cd">
+              using <a href="#a7356453a9963094ac069f6597bee50cd" class="m-doc-self">cudaPerThreadEventPool</a> = cudaPerThreadDeviceObjectPool&lt;cudaEvent_t, cudaEventCreator, cudaEventDeleter&gt;
+            </dt>
+            <dd>alias of per-thread event pool type</dd>
           </dl>
         </section>
         <section id="func-members">
@@ -343,6 +359,14 @@
               size_t count)</span>
             </dt>
             <dd>initializes or sets GPU memory to the given value byte by byte</dd>
+            <dt id="a96ea342b1ceb44b100474304e68887b9">
+              <span class="m-doc-wrap-bumper">auto <a href="#a96ea342b1ceb44b100474304e68887b9" class="m-doc-self">cuda_per_thread_stream_pool</a>(</span><span class="m-doc-wrap">) -&gt; <a href="namespacetf.html#a632bb71dc4ddedbf2c26f6f25a2d6a49" class="m-doc">cudaPerThreadStreamPool</a>&amp;</span>
+            </dt>
+            <dd>acquires the per-thread cuda stream pool</dd>
+            <dt id="a3f758baaa29221219bcbd10937dd5fd2">
+              <span class="m-doc-wrap-bumper">auto <a href="#a3f758baaa29221219bcbd10937dd5fd2" class="m-doc-self">cuda_per_thread_event_pool</a>(</span><span class="m-doc-wrap">) -&gt; <a href="namespacetf.html#a7356453a9963094ac069f6597bee50cd" class="m-doc">cudaPerThreadEventPool</a>&amp;</span>
+            </dt>
+            <dd>per-thread cuda event pool</dd>
             <dt id="af21fe1eaf680dbddc0503ef5d1a9a664">
               <span class="m-doc-wrap-bumper">auto <a href="#af21fe1eaf680dbddc0503ef5d1a9a664" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc">cudaTaskType</a> type) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
@@ -647,7 +671,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

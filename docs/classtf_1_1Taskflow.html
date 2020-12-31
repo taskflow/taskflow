@@ -5,7 +5,7 @@
   <title>tf::Taskflow class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -62,7 +62,7 @@
             </li>
           </ul>
         </div>
-<p>A taskflow manages a task dependency graph where each task represents a callable object (e.g., <a href="https://en.cppreference.com/w/cpp/language/lambda">lambda</a>, <a href="https://en.cppreference.com/w/cpp/utility/functional/function">std::<wbr />function</a>) and an edge represents a dependency between two tasks. A task is one of the following five types:</p><ol><li>static task: the callable constructible from <code>std::function&lt;void()&gt;</code></li><li>dynamic task: the callable constructible from <code>std::function&lt;void(tf::Subflow&amp;)&gt;</code></li><li>condition task: the callable constructible from <code>std::function&lt;int()&gt;</code></li><li>module task: the task constructed from <a href="classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a></li><li>cudaFlow task: the callable constructible from <code>std::function&lt;void(tf::cudaFlow)&gt;</code> or <code>std::function&lt;void(tf::cudaFlowCapturer)&gt;</code></li></ol><p>The following example creates a simple taskflow graph of four static tasks, <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code>, where <code>A</code> runs before <code>B</code> and <code>C</code> and <code>D</code> runs after <code>B</code> and <code>C</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+<p>A taskflow manages a task dependency graph where each task represents a callable object (e.g., <a href="https://en.cppreference.com/w/cpp/language/lambda">lambda</a>, <a href="https://en.cppreference.com/w/cpp/utility/functional/function">std::<wbr />function</a>) and an edge represents a dependency between two tasks. A task is one of the following five types:</p><ol><li>static task: the callable constructible from <code>std::function&lt;void()&gt;</code></li><li>dynamic task: the callable constructible from <code>std::function&lt;void(tf::Subflow&amp;)&gt;</code></li><li>condition task: the callable constructible from <code>std::function&lt;int()&gt;</code></li><li>module task: the task constructed from <a href="classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a></li><li>cudaFlow task: the callable constructible from <code>std::function&lt;void(tf::cudaFlow&amp;)&gt;</code> or <code>std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;</code></li></ol><p>The following example creates a simple taskflow graph of four static tasks, <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code>, where <code>A</code> runs before <code>B</code> and <code>C</code> and <code>D</code> runs after <code>B</code> and <code>C</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;simple&quot;</span><span class="p">);</span>
 
 <span class="k">auto</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
@@ -112,7 +112,7 @@
             <dt id="af4f03bca084deb5c2228ac8936d33649">
               <span class="m-doc-wrap-bumper">auto <a href="#af4f03bca084deb5c2228ac8936d33649" class="m-doc-self">num_tasks</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
-            <dd>queries the number of tasks in the taskflow</dd>
+            <dd>queries the number of tasks</dd>
             <dt id="a224301842d94c44fd7fe99d8ac2ba241">
               <span class="m-doc-wrap-bumper">auto <a href="#a224301842d94c44fd7fe99d8ac2ba241" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
             </dt>
@@ -195,7 +195,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

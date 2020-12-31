@@ -6,6 +6,10 @@ list(APPEND TF_EXAMPLES
   subflow 
   fibonacci 
   condition
+  switch_case
+  do_while
+  while
+  if_else
   visualization 
   reduce 
   parallel_for 

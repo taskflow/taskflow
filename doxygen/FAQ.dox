@@ -124,13 +124,13 @@ The master thread owns the thread pool and can spawn workers to run tasks
 or shutdown the pool. 
 Giving taskflow @c N threads means using @c N threads to do the works, 
 and there is a total of @c N+1 threads (including the master thread) in the program.
-Please refer to @ref C2_CreateAnExecutor for more details.
+Please refer to @ref CreateAnExecutor for more details.
 
 @subsection ProgrammingQuestions2 Q2: What is the Lifetime of a Task and a Graph?
 
 The lifetime of a task sticks with its parent graph. 
 A task is not destroyed until its parent graph is destroyed.
-Please refer to @ref C1_UnderstandTheLifetimeOfATask for more details.
+Please refer to @ref UnderstandTheLifetimeOfATask for more details.
 
 @subsection ProgrammingQuestions3 Q3: Is taskflow thread-safe?
 
@@ -144,7 +144,7 @@ You can have multiple threads submit different taskflows to the same executor.
 @subsection ProgrammingQuestions5 Q5: My program hangs and never returns after dispatching a taskflow graph. What's wrong?
 
 When the program hangs forever it is very likely your taskflow graph has a cycle or 
-not properly conditioned (see @ref chapter4).
+not properly conditioned (see @ref ConditionalTasking).
 Try the tf::Taskflow::dump method to debug the graph before dispatching your taskflow graph.
 
 

@@ -28,8 +28,8 @@ dependency between two tasks. A task is one of the following five types:
                      @c std::function<int()>
   4. module task: the task constructed from tf::Taskflow::composed_of
   5. %cudaFlow task: the callable constructible from 
-                     @c std::function<void(tf::cudaFlow)> or
-                     @c std::function<void(tf::cudaFlowCapturer)>
+                     @c std::function<void(tf::cudaFlow&)> or
+                     @c std::function<void(tf::cudaFlowCapturer&)>
 
 The following example creates a simple taskflow graph of four static tasks, 
 @c A, @c B, @c C, and @c D, where
@@ -91,7 +91,7 @@ class Taskflow : public FlowBuilder {
     std::string dump() const;
     
     /**
-    @brief queries the number of tasks in the taskflow
+    @brief queries the number of tasks
     */
     size_t num_tasks() const;
     

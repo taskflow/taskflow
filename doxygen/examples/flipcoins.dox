@@ -78,7 +78,7 @@ The taskflow diagram is depicted below.
 
 Although the execution of this taskflow is non-deterministic,
 its control flow can expand to a tree of tasks based on our scheduling rule for conditional tasking
-(see @ref chapter4).
+(see @ref ConditionalTasking).
 Each path from the root to a leaf represents a result of five heads,
 and none of them can overlap at the same time (no task race).
 You must follow the same rule when creating a probabilistic framework using conditional tasking.

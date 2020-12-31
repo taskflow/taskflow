@@ -202,8 +202,8 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
 @brief class to capture the described graph into a native cudaGraph
        using a single stream
 
-A sequential optimizer finds a topological order of the described graph and
-captures dependent GPU tasks using a single stream.
+A sequential capturing algorithm finds a topological order of 
+the described graph and captures dependent GPU tasks using a single stream.
 All GPU tasks run sequentially without breaking inter dependencies.
 */
 class cudaSequentialCapturing : public cudaCapturingBase {
@@ -255,6 +255,9 @@ inline cudaGraph_t cudaSequentialCapturing::_optimize(cudaGraph& graph) {
 
 @brief class to capture the described graph into a native cudaGraph
        using a greedy round-robin algorithm on a fixed number of streams
+
+A round-robin capturing algorithm levelizes the user-described graph
+and assign streams to nodes in a round-robin order level by level.
 */
 class cudaRoundRobinCapturing : public cudaCapturingBase {
 

@@ -1,6 +1,6 @@
 namespace tf {
 
-/** @page chapter4 Conditional Tasking
+/** @page ConditionalTasking Conditional Tasking
 
 Parallel workloads often require making control-flow decisions across dependent tasks.
 %Taskflow supports an very efficient interface of conditional tasking
@@ -9,10 +9,44 @@ that are otherwise difficult to do with existing frameworks.
 
 @tableofcontents
 
-@section C4_CreateAConditionTask Create a Condition Task
+@section CreateAConditionTask Create a Condition Task
 
 A condition task evalutes a set of instructions and returns an integer index of the next immediate successor to execute. 
 The index is defined with respect to the order of its successor construction.
+The following example creates an if-else block using a single condition task.
+
+@code{.cpp}
+ 1: tf::Taskflow taskflow;
+ 2:
+ 3: auto [init, cond, yes, no] = taskflow.emplace(
+ 4:  [] () { },
+ 5:  [] () { return 0; },
+ 6:  [] () { std::cout << "yes\n"; },
+ 7:  [] () { std::cout << "no\n"; }
+ 8: );
+ 9:
+10: cond.succeed(init)
+11:     .precede(yes, no);  // executes yes if cond returns 0
+12:                         // executes no  if cond returns 1
+@endcode
+
+@dotfile images/conditional-tasking-if-else.dot
+
+Line 5 creates a condition task @c cond and line 11 creates two dependencies 
+from @c cond to two other tasks, @c yes and @c no.
+With this order, when @c cond returns 0, the execution moves on to @c yes.
+
+@attention
+It is your responsibility to ensure the return of a condition task goes to
+a correct successor task. If the return falls beyond the range of the successors,
+the executor will not schedule any tasks.
+
+Condition task can go cyclic to describe iterative control flow.
+The example below implements a simple yet commonly used feedback loop through
+a condition task (line 7-10) that returns
+a random binary value.
+If the return value from @c cond is @c 0, it loops back to itself, 
+or otherwise to @c stop. 
 
 @code{.cpp}
  1: tf::Taskflow taskflow;
@@ -22,8 +56,8 @@ The index is defined with respect to the order of its successor construction.
  5:
  6: // creates a condition task that returns 0 or 1
  7: tf::Task cond = taskflow.emplace([](){
- 8: std::cout << "flipping a coin\n";
- 9:  return std::rand() % 2;
+ 8:   std::cout << "flipping a coin\n";
+ 9:   return std::rand() % 2;
 10: }).name("cond");
 11:
 12: // creates a feedback loop {0: cond, 1: stop}
@@ -36,13 +70,10 @@ The index is defined with respect to the order of its successor construction.
 <!-- @image html images/conditional-tasking-1.svg width=45% -->
 @dotfile images/conditional-tasking-1.dot
 
-The example above implements a simple yet commonly used feedback loop through
-a condition task (line 7-10) that returns
-a random binary value.
-If the return value from @c cond is @c 0, it loops back to itself, 
-or otherwise to @c stop. 
-Our conditional tasking interface is very neat and expressive.
-A complex flow control often just takes a few lines of code to implement.
+
+
+A taskflow of complex control flow often just takes a few lines of code to implement,
+and different control flow blocks may run in parallel.
 The code below creates another taskflow with three condition tasks.
 
 @code{.cpp}
@@ -94,7 +125,13 @@ or proceeds to @c L on returning @c 1
 
 You can use condition tasks to create cycles as long as the graph does not introduce task race during execution. However, cycles are not allowed in non-condition tasks.
 
-@section C4_TaskSchedulingPolicy Understand our Task-level Scheduling
+@note
+Conditional tasking lets you make in-task control-flow decisions to
+enable end-to-end parallelism, 
+instead of resorting to client-side partition or synchronizing your task graph
+at the decision points of control flow.
+
+@section TaskSchedulingPolicy Understand our Task-level Scheduling
 
 In order to understand how an executor schedules condition tasks,
 we define two dependency types,
@@ -177,7 +214,7 @@ If @c cond returns @c 0, the scheduler enqueues @c cond and runs it again.
 If @c cond returns @c 1, the scheduler enqueues @c stop and then moves on.
 
 
-@section C4_AvoidCommonPitfalls Avoid Common Pitfalls
+@section AvoidCommonPitfalls Avoid Common Pitfalls
 
 Condition tasks are handy in creasing dynamic and cyclic control flows,
 but they are also easy to make mistakes.
@@ -203,8 +240,194 @@ returns @c 0 and P returns @c 1.
 @attention
 It is your responsibility to ensure a written taskflow graph is properly
 conditioned.
-We suggest that you @ref C4_TaskSchedulingPolicy and infer if task race
+We suggest that you @ref TaskSchedulingPolicy and infer if task race
 exists in the execution of your graph.
+
+@section ImplementSwitchControlFlow Implement Switch Control Flow
+
+You can use conditional tasking to implement @em switch control flow.
+The following example creates a switch control flow diagram that 
+executes one of the three cases at random using four condition tasks.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+
+auto [source, swcond, case1, case2, case3, target] = taskflow.emplace(
+  [](){ std::cout << "source\n"; },
+  [](){ std::cout << "switch\n"; return rand()%3; },
+  [](){ std::cout << "case 1\n"; return 0; },
+  [](){ std::cout << "case 2\n"; return 0; },
+  [](){ std::cout << "case 3\n"; return 0; },
+  [](){ std::cout << "target\n"; }
+);
+
+source.precede(swcond);
+swcond.precede(case1, case2, case3);
+target.succeed(case1, case2, case3);
+@endcode
+
+@dotfile images/conditional-tasking-switch.dot
+
+Assuming @c swcond returns 1, the program outputs:
+
+@code{.shell-session}
+source
+switch
+case 2
+target
+@endcode
+
+Keep in mind, both switch and case tasks must be described as condition tasks.
+The following implementation is a common mistake in which case tasks
+are not described as condition tasks.
+
+@code{.cpp}
+// wrong implementation of switch control flow using only one condition task
+tf::Taskflow taskflow;
+
+auto [source, swcond, case1, case2, case3, target] = taskflow.emplace(
+  [](){ std::cout << "source\n"; },
+  [](){ std::cout << "switch\n"; return rand()%3; },
+  [](){ std::cout << "case 1\n"; },
+  [](){ std::cout << "case 2\n"; },
+  [](){ std::cout << "case 3\n"; },
+  [](){ std::cout << "target\n"; }  // target has three strong dependencies
+);
+
+source.precede(swcond);
+swcond.precede(case1, case2, case3);
+target.succeed(case1, case2, case3);
+@endcode
+
+@dotfile images/conditional-tasking-switch-wrong.dot
+
+In this faulty implementation, task @c target has three strong dependencies
+but only one of them will be met.
+This is because @c swcond is a condition task,
+and only one case task will be executed depending on the return of @c swcond.
+
+
+@section ImplementDoWhileLoopControlFlow Implement Do-While-Loop Control Flow
+
+You can use conditional tasking to implement @em do-while-loop control flow.
+The following example creates a do-while-loop control flow diagram that 
+repeatedly increments variable @c i five times using one condition task.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+
+int i;
+
+auto [init, body, cond, done] = taskflow.emplace(
+  [&](){ std::cout << "i=0\n"; i=0; },
+  [&](){ std::cout << "i++ => i="; i++; },
+  [&](){ std::cout << i << '\n'; return i<5 ? 0 : 1; },
+  [&](){ std::cout << "done\n"; }
+);  
+
+init.precede(body);
+body.precede(cond);
+cond.precede(body, done);
+@endcode
+
+@dotfile images/conditional-tasking-do-while.dot
+
+The program outputs:
+
+@code{.shell-session}
+i=0
+i++ => i=1
+i++ => i=2
+i++ => i=3
+i++ => i=4
+i++ => i=5
+done
+@endcode
+
+@section ImplementWhileLoopControlFlow Implement While-Loop Control Flow
+
+You can use conditional tasking to implement @em while-loop control flow.
+The following example creates a while-loop control flow diagram that 
+repeatedly increments variable @c i five times using two condition task.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+
+int i;
+
+auto [init, cond, body, back, done] = taskflow.emplace(
+  [&](){ std::cout << "i=0\n"; i=0; },
+  [&](){ std::cout << "while i<5\n"; return i < 5 ? 0 : 1; },
+  [&](){ std::cout << "i++=" << i++ << '\n'; },
+  [&](){ std::cout << "back\n"; return 0; },
+  [&](){ std::cout << "done\n"; }
+);
+
+init.precede(cond);
+cond.precede(body, done);
+body.precede(back);
+back.precede(cond);
+@endcode
+
+@dotfile images/conditional-tasking-while.dot
+
+The program outputs:
+
+@code{.shell-session}
+i=0
+while i<5
+i++=0
+back
+while i<5
+i++=1
+back
+while i<5
+i++=2
+back
+while i<5
+i++=3
+back
+while i<5
+i++=4
+back
+while i<5
+done
+@endcode
+
+Notice that, when you implement a while-loop block, you cannot direct 
+a dependency from the body task to the loop condition task.
+Doing so will introduce a strong dependency between the body task
+and the loop condition task, and the loop condition task will never be executed.
+The following code shows a common faulty implementation of 
+while-loop control flow.
+
+@code{.cpp}
+// wrong implementation of while-loop using only one condition task
+tf::Taskflow taskflow;
+
+int i;
+
+auto [init, cond, body, done] = taskflow.emplace(
+  [&](){ std::cout << "i=0\n"; i=0; },
+  [&](){ std::cout << "while i<5\n"; return i < 5 ? 0 : 1; },
+  [&](){ std::cout << "i++=" << i++ << '\n'; },
+  [&](){ std::cout << "done\n"; }
+);
+
+init.precede(cond);
+cond.precede(body, done);
+body.precede(cond);
+@endcode
+
+@dotfile images/conditional-tasking-while-wrong.dot
+
+In the taskflow diagram above,
+the scheduler starts with @c init and then decrements the strong dependency of
+the loop condition task, <tt>while i<5</tt>. 
+After this, there remains one strong dependency, i.e., introduced by
+the loop body task, @c i++.
+However, task @c i++ will not be executed until loop condition task returns @c 0,
+causing a deadlock.
 
 */
 

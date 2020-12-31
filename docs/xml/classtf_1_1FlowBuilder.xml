@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="classtf_1_1FlowBuilder" kind="class" language="C++" prot="public">
     <compoundname>tf::FlowBuilder</compoundname>
     <derivedcompoundref refid="classtf_1_1Subflow" prot="public" virt="non-virtual">tf::Subflow</derivedcompoundref>
@@ -17,7 +17,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="20" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="20" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="20" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="20" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="protected-attrib">
@@ -27,12 +27,13 @@
         <argsstring></argsstring>
         <name>_graph</name>
         <briefdescription>
-<para>associated graph object </para>        </briefdescription>
+<para>associated graph object </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="650" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="650" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="650" column="11" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="650" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -55,14 +56,16 @@
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>creates a static task </para>        </briefdescription>
+<para>creates a static task </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from std::function&lt;void()&gt;</para></parameterdescription>
+<para>callable type constructible from std::function&lt;void()&gt;</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -70,14 +73,17 @@
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable to construct a static task</para></parameterdescription>
+<para>callable to construct a static task</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="36" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="665" bodyend="669"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="36" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="665" bodyend="669"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -98,14 +104,16 @@
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>creates a dynamic task </para>        </briefdescription>
+<para>creates a dynamic task </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from std::function&lt;void(tf::Subflow)&gt;</para></parameterdescription>
+<para>callable type constructible from std::function&lt;void(tf::Subflow)&gt;</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -113,14 +121,17 @@
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable to construct a dynamic task</para></parameterdescription>
+<para>callable to construct a dynamic task</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="50" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="50" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -141,14 +152,16 @@
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>creates a condition task </para>        </briefdescription>
+<para>creates a condition task </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from std::function&lt;int()&gt;</para></parameterdescription>
+<para>callable type constructible from std::function&lt;int()&gt;</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -156,14 +169,17 @@
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable to construct a condition task</para></parameterdescription>
+<para>callable to construct a condition task</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="64" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="64" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a1f6118326ad434f6c839007a1a79fe1b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -173,9 +189,8 @@
             <defname>C</defname>
           </param>
           <param>
-            <type>std::enable_if_t&lt;(sizeof...(C)&gt;</type>
-            <declname>1</declname>
-            <defname>1</defname>
+            <type>std::enable_if_t&lt;(sizeof...(C)&gt;1), void &gt; *</type>
+            <defval>nullptr</defval>
           </param>
         </templateparamlist>
         <type>auto</type>
@@ -187,14 +202,16 @@
           <declname>callables</declname>
         </param>
         <briefdescription>
-<para>creates multiple tasks from a list of callable objects </para>        </briefdescription>
+<para>creates multiple tasks from a list of callable objects </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable types</para></parameterdescription>
+<para>callable types</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -202,14 +219,17 @@
 <parametername>callables</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>one or multiple callable objects constructible from each task category</para></parameterdescription>
+<para>one or multiple callable objects constructible from each task category</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="76" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="689" bodyend="691"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="76" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="689" bodyend="691"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a0a01192f4f92c15380a4f259e2fec2d9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
@@ -221,21 +241,25 @@
           <declname>taskflow</declname>
         </param>
         <briefdescription>
-<para>creates a module task from a taskflow </para>        </briefdescription>
+<para>creates a module task from a taskflow </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>taskflow</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a taskflow object for the module</para></parameterdescription>
+<para>a taskflow object for the module</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="85" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="694" bodyend="699"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="85" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="694" bodyend="699"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
@@ -243,13 +267,16 @@
         <argsstring>()</argsstring>
         <name>placeholder</name>
         <briefdescription>
-<para>creates an empty task </para>        </briefdescription>
+<para>creates an empty task </para>
+        </briefdescription>
         <detaileddescription>
-<para><simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<para><simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="92" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="702" bodyend="705"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="92" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="702" bodyend="705"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -270,21 +297,25 @@
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>creates a cudaflow task on the default device 0 </para>        </briefdescription>
+<para>creates a cudaflow task on the default device 0 </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from <computeroutput>std::function&lt;void(tf::cudaFlow&amp;)&gt;</computeroutput> </para></parameterdescription>
+<para>callable type constructible from <computeroutput>std::function&lt;void(tf::cudaFlow&amp;)&gt;</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-This method is equivalent to calling tf::Taskflow::emplace_on(callable, d) where <computeroutput>d</computeroutput> is the caller&apos;s device context. </para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+This method is equivalent to calling tf::Taskflow::emplace_on(callable, d) where <computeroutput>d</computeroutput> is the caller&apos;s device context. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="107" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="107" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -312,28 +343,33 @@ This method is equivalent to calling tf::Taskflow::emplace_on(callable, d) where
           <declname>device</declname>
         </param>
         <briefdescription>
-<para>creates a cudaflow task on the given device </para>        </briefdescription>
+<para>creates a cudaflow task on the given device </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from std::function&lt;void(tf::cudaFlow&amp;)&gt; </para></parameterdescription>
+<para>callable type constructible from std::function&lt;void(tf::cudaFlow&amp;)&gt; </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>D</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>device type, either <computeroutput>int</computeroutput> or <computeroutput>std::ref&lt;int&gt;</computeroutput> (stateful)</para></parameterdescription>
+<para>device type, either <computeroutput>int</computeroutput> or <computeroutput>std::ref&lt;int&gt;</computeroutput> (stateful)</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="120" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1149" bodyend="1160"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="120" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1150" bodyend="1161"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a90f3d9b9d6fcf4df8e7d7878dfdd130d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -341,24 +377,27 @@ This method is equivalent to calling tf::Taskflow::emplace_on(callable, d) where
         <argsstring>(std::vector&lt; Task &gt; &amp;tasks)</argsstring>
         <name>linearize</name>
         <param>
-          <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt; &amp;</type>
+          <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt; &amp;</type>
           <declname>tasks</declname>
         </param>
         <briefdescription>
-<para>adds adjacent dependency links to a linear list of tasks </para>        </briefdescription>
+<para>adds adjacent dependency links to a linear list of tasks </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>tasks</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a vector of tasks </para></parameterdescription>
+<para>a vector of tasks </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="127" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="726" bodyend="728"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="127" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="726" bodyend="728"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a4ec89b554d15ad5fb96f4fdb10dbbb16" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -366,24 +405,27 @@ This method is equivalent to calling tf::Taskflow::emplace_on(callable, d) where
         <argsstring>(std::initializer_list&lt; Task &gt; tasks)</argsstring>
         <name>linearize</name>
         <param>
-          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt;</type>
+          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt;</type>
           <declname>tasks</declname>
         </param>
         <briefdescription>
-<para>adds adjacent dependency links to a linear list of tasks </para>        </briefdescription>
+<para>adds adjacent dependency links to a linear list of tasks </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>tasks</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>an initializer list of tasks </para></parameterdescription>
+<para>an initializer list of tasks </para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="134" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="731" bodyend="733"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="134" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="731" bodyend="733"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a564252001be679600b20ca9ed9920f6a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -414,28 +456,32 @@ This method is equivalent to calling tf::Taskflow::emplace_on(callable, d) where
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel-for task </para>        </briefdescription>
+<para>constructs a STL-styled parallel-for task </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para></parameterdescription>
+<para>beginning iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para></parameterdescription>
+<para>ending iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type</para></parameterdescription>
+<para>callable type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -443,31 +489,40 @@ This method is equivalent to calling tf::Taskflow::emplace_on(callable, d) where
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para></parameterdescription>
+<para>iterator to the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable object to apply to the dereferenced iterator</para></parameterdescription>
+<para>a callable object to apply to the dereferenced iterator</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[first, last)</computeroutput>. By default, we employ the guided partition algorithm with chunk size equal to one.</para><para>This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[first, last)</computeroutput>. By default, we employ the guided partition algorithm with chunk size equal to one.</para>
+<para>This method is equivalent to the parallel execution of the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Arguments templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>The callable needs to take a single argument of the dereferenced type. </para>        </detaileddescription>
+</programlisting></para>
+<para>Arguments templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>The callable needs to take a single argument of the dereferenced type. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="168" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="168" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a1a294c4fa23d74b82e581b8cfd33acdf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -507,35 +562,40 @@ The task spawns a subflow that applies the callable object to each object obtain
           <defval>1</defval>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel-for task using the guided partition algorithm </para>        </briefdescription>
+<para>constructs a STL-styled parallel-for task using the guided partition algorithm </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para></parameterdescription>
+<para>beginning iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para></parameterdescription>
+<para>ending iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type </para></parameterdescription>
+<para>callable type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>H</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size type</para></parameterdescription>
+<para>chunk size type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -543,35 +603,43 @@ The task spawns a subflow that applies the callable object to each object obtain
 <parametername>beg</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>end</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para></parameterdescription>
+<para>iterator to the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable object to apply to the dereferenced iterator </para></parameterdescription>
+<para>a callable object to apply to the dereferenced iterator </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>chunk_size</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size</para></parameterdescription>
+<para>chunk size</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[beg, end)</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>The callable needs to take a single argument of the dereferenced type. </para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[beg, end)</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>The callable needs to take a single argument of the dereferenced type. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="192" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="192" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a5c044a80450742bf6927d0c343c23853" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -611,35 +679,40 @@ The task spawns a subflow that applies the callable object to each object obtain
           <defval>1</defval>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel-for task using the dynamic partition algorithm </para>        </briefdescription>
+<para>constructs a STL-styled parallel-for task using the dynamic partition algorithm </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para></parameterdescription>
+<para>beginning iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para></parameterdescription>
+<para>ending iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type </para></parameterdescription>
+<para>callable type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>H</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size type</para></parameterdescription>
+<para>chunk size type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -647,35 +720,43 @@ The task spawns a subflow that applies the callable object to each object obtain
 <parametername>beg</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>end</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para></parameterdescription>
+<para>iterator to the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable object to apply to the dereferenced iterator </para></parameterdescription>
+<para>a callable object to apply to the dereferenced iterator </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>chunk_size</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size</para></parameterdescription>
+<para>chunk size</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[beg, end)</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>The callable needs to take a single argument of the dereferenced type. </para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[beg, end)</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>The callable needs to take a single argument of the dereferenced type. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="216" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="216" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a0af7e250c4ad1ae98bf6e0249b98589f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -715,35 +796,40 @@ The task spawns a subflow that applies the callable object to each object obtain
           <defval>0</defval>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel-for task using the dynamic partition algorithm </para>        </briefdescription>
+<para>constructs a STL-styled parallel-for task using the dynamic partition algorithm </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para></parameterdescription>
+<para>beginning iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para></parameterdescription>
+<para>ending iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type </para></parameterdescription>
+<para>callable type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>H</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size type</para></parameterdescription>
+<para>chunk size type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -751,35 +837,43 @@ The task spawns a subflow that applies the callable object to each object obtain
 <parametername>beg</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>end</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para></parameterdescription>
+<para>iterator to the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable object to apply to the dereferenced iterator </para></parameterdescription>
+<para>a callable object to apply to the dereferenced iterator </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>chunk_size</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size</para></parameterdescription>
+<para>chunk size</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[beg, end)</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>The callable needs to take a single argument of the dereferenced type. </para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[beg, end)</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>The callable needs to take a single argument of the dereferenced type. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="240" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="240" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1ab8417b211b18bb1e0f45a049331f084d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -817,35 +911,40 @@ The task spawns a subflow that applies the callable object to each object obtain
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>constructs an index-based parallel-for task </para>        </briefdescription>
+<para>constructs an index-based parallel-for task </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning index type (must be integral) </para></parameterdescription>
+<para>beginning index type (must be integral) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending index type (must be integral) </para></parameterdescription>
+<para>ending index type (must be integral) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>S</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>step type (must be integral) </para></parameterdescription>
+<para>step type (must be integral) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type</para></parameterdescription>
+<para>callable type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -853,32 +952,39 @@ The task spawns a subflow that applies the callable object to each object obtain
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>index of the beginning (inclusive) </para></parameterdescription>
+<para>index of the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>index of the end (exclusive) </para></parameterdescription>
+<para>index of the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>step</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>step size </para></parameterdescription>
+<para>step size </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable object to apply to each valid index</para></parameterdescription>
+<para>a callable object to apply to each valid index</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[first, last)</computeroutput> with the step size. By default, we employ the guided partition algorithm with chunk size equal to one.</para><para>This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>case<sp/>1:<sp/>step<sp/>size<sp/>is<sp/>positive</highlight><highlight class="normal"></highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[first, last)</computeroutput> with the step size. By default, we employ the guided partition algorithm with chunk size equal to one.</para>
+<para>This method is equivalent to the parallel execution of the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>case<sp/>1:<sp/>step<sp/>size<sp/>is<sp/>positive</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -887,10 +993,13 @@ The task spawns a subflow that applies the callable object to each index in the 
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first,<sp/>i&gt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>The callable needs to take a single argument of the index type. </para>        </detaileddescription>
+</programlisting></para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>The callable needs to take a single argument of the index type. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="281" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="281" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a942449afd25e656b9e14cb526cbd8ad2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -937,42 +1046,48 @@ The task spawns a subflow that applies the callable object to each index in the 
           <defval>1</defval>
         </param>
         <briefdescription>
-<para>constructs an index-based parallel-for task using the guided partition algorithm. </para>        </briefdescription>
+<para>constructs an index-based parallel-for task using the guided partition algorithm. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning index type (must be integral) </para></parameterdescription>
+<para>beginning index type (must be integral) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending index type (must be integral) </para></parameterdescription>
+<para>ending index type (must be integral) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>S</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>step type (must be integral) </para></parameterdescription>
+<para>step type (must be integral) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type </para></parameterdescription>
+<para>callable type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>H</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size type</para></parameterdescription>
+<para>chunk size type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -980,42 +1095,51 @@ The task spawns a subflow that applies the callable object to each index in the 
 <parametername>beg</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>index of the beginning (inclusive) </para></parameterdescription>
+<para>index of the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>end</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>index of the end (exclusive) </para></parameterdescription>
+<para>index of the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>step</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>step size </para></parameterdescription>
+<para>step size </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable object to apply to each valid index </para></parameterdescription>
+<para>a callable object to apply to each valid index </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>chunk_size</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size (default 1)</para></parameterdescription>
+<para>chunk size (default 1)</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[beg, end)</computeroutput> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>The callable needs to take a single argument of the index type. </para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[beg, end)</computeroutput> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>The callable needs to take a single argument of the index type. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="307" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="307" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a930d0343226874d1d40b9e230cccdd52" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1062,42 +1186,48 @@ The task spawns a subflow that applies the callable object to each index in the 
           <defval>1</defval>
         </param>
         <briefdescription>
-<para>constructs an index-based parallel-for task using the dynamic partition algorithm. </para>        </briefdescription>
+<para>constructs an index-based parallel-for task using the dynamic partition algorithm. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning index type (must be integral) </para></parameterdescription>
+<para>beginning index type (must be integral) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending index type (must be integral) </para></parameterdescription>
+<para>ending index type (must be integral) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>S</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>step type (must be integral) </para></parameterdescription>
+<para>step type (must be integral) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type </para></parameterdescription>
+<para>callable type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>H</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size type</para></parameterdescription>
+<para>chunk size type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1105,42 +1235,51 @@ The task spawns a subflow that applies the callable object to each index in the 
 <parametername>beg</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>index of the beginning (inclusive) </para></parameterdescription>
+<para>index of the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>end</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>index of the end (exclusive) </para></parameterdescription>
+<para>index of the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>step</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>step size </para></parameterdescription>
+<para>step size </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable object to apply to each valid index </para></parameterdescription>
+<para>a callable object to apply to each valid index </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>chunk_size</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size (default 1)</para></parameterdescription>
+<para>chunk size (default 1)</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[beg, end)</computeroutput> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>The callable needs to take a single argument of the index type. </para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[beg, end)</computeroutput> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>The callable needs to take a single argument of the index type. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="335" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="335" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a71f204c670ca5857e5527d6000ba73c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1187,42 +1326,48 @@ The task spawns a subflow that applies the callable object to each index in the 
           <defval>0</defval>
         </param>
         <briefdescription>
-<para>constructs an index-based parallel-for task using the static partition algorithm. </para>        </briefdescription>
+<para>constructs an index-based parallel-for task using the static partition algorithm. </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning index type (must be integral) </para></parameterdescription>
+<para>beginning index type (must be integral) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending index type (must be integral) </para></parameterdescription>
+<para>ending index type (must be integral) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>S</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>step type (must be integral) </para></parameterdescription>
+<para>step type (must be integral) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type </para></parameterdescription>
+<para>callable type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>H</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size type</para></parameterdescription>
+<para>chunk size type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1230,42 +1375,51 @@ The task spawns a subflow that applies the callable object to each index in the 
 <parametername>beg</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>index of the beginning (inclusive) </para></parameterdescription>
+<para>index of the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>end</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>index of the end (exclusive) </para></parameterdescription>
+<para>index of the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>step</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>step size </para></parameterdescription>
+<para>step size </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable object to apply to each valid index </para></parameterdescription>
+<para>a callable object to apply to each valid index </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>chunk_size</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size (default 0)</para></parameterdescription>
+<para>chunk size (default 0)</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[beg, end)</computeroutput> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>The callable needs to take a single argument of the index type. </para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[beg, end)</computeroutput> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>The callable needs to take a single argument of the index type. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="363" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="363" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1ad999cd75045db225a42d5881d6db1223" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1303,35 +1457,40 @@ The task spawns a subflow that applies the callable object to each index in the 
           <declname>bop</declname>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel-reduce task </para>        </briefdescription>
+<para>constructs a STL-styled parallel-reduce task </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para></parameterdescription>
+<para>beginning iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para></parameterdescription>
+<para>ending iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>result type </para></parameterdescription>
+<para>result type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>O</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary reducer type</para></parameterdescription>
+<para>binary reducer type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1339,38 +1498,47 @@ The task spawns a subflow that applies the callable object to each index in the 
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para></parameterdescription>
+<para>iterator to the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>init</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>initial value of the reduction and the storage for the reduced result </para></parameterdescription>
+<para>initial value of the reduction and the storage for the reduced result </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>bop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary operator that will be applied</para></parameterdescription>
+<para>binary operator that will be applied</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.</para><para>This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.</para>
+<para>This method is equivalent to the parallel execution of the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop(init,<sp/>*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>        </detaileddescription>
+</programlisting></para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="399" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="399" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a10f13b39b02038c6850aca787923d668" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1417,42 +1585,48 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
           <defval>1</defval>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel-reduce task using the guided partition algorithm </para>        </briefdescription>
+<para>constructs a STL-styled parallel-reduce task using the guided partition algorithm </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para></parameterdescription>
+<para>beginning iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para></parameterdescription>
+<para>ending iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>result type </para></parameterdescription>
+<para>result type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>O</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary reducer type </para></parameterdescription>
+<para>binary reducer type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>H</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size type</para></parameterdescription>
+<para>chunk size type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1460,42 +1634,51 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para></parameterdescription>
+<para>iterator to the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>init</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>initial value of the reduction and the storage for the reduced result </para></parameterdescription>
+<para>initial value of the reduction and the storage for the reduced result </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>bop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary operator that will be applied </para></parameterdescription>
+<para>binary operator that will be applied </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>chunk_size</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size</para></parameterdescription>
+<para>chunk size</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para><simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para><simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="423" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="423" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a83ec799606b7526787761acf27885b00" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1542,42 +1725,48 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
           <defval>1</defval>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel-reduce task using the dynamic partition algorithm </para>        </briefdescription>
+<para>constructs a STL-styled parallel-reduce task using the dynamic partition algorithm </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para></parameterdescription>
+<para>beginning iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para></parameterdescription>
+<para>ending iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>result type </para></parameterdescription>
+<para>result type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>O</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary reducer type </para></parameterdescription>
+<para>binary reducer type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>H</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size type</para></parameterdescription>
+<para>chunk size type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1585,42 +1774,51 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para></parameterdescription>
+<para>iterator to the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>init</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>initial value of the reduction and the storage for the reduced result </para></parameterdescription>
+<para>initial value of the reduction and the storage for the reduced result </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>bop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary operator that will be applied </para></parameterdescription>
+<para>binary operator that will be applied </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>chunk_size</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size</para></parameterdescription>
+<para>chunk size</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para><simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para><simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="449" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="449" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a54e36c916ae7dd88bd079d3fd49119f9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1667,42 +1865,48 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
           <defval>0</defval>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel-reduce task using the static partition algorithm </para>        </briefdescription>
+<para>constructs a STL-styled parallel-reduce task using the static partition algorithm </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para></parameterdescription>
+<para>beginning iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para></parameterdescription>
+<para>ending iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>result type </para></parameterdescription>
+<para>result type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>O</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary reducer type </para></parameterdescription>
+<para>binary reducer type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>H</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size type</para></parameterdescription>
+<para>chunk size type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1710,42 +1914,51 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para></parameterdescription>
+<para>iterator to the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>init</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>initial value of the reduction and the storage for the reduced result </para></parameterdescription>
+<para>initial value of the reduction and the storage for the reduced result </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>bop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary operator that will be applied </para></parameterdescription>
+<para>binary operator that will be applied </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>chunk_size</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size</para></parameterdescription>
+<para>chunk size</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para><simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para></simplesect>
-</para>        </detaileddescription>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para><simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="475" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="475" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1ad8d03524f15292610ebee63d53b89579" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1790,42 +2003,48 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
           <declname>uop</declname>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel transform-reduce task </para>        </briefdescription>
+<para>constructs a STL-styled parallel transform-reduce task </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para></parameterdescription>
+<para>beginning iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para></parameterdescription>
+<para>ending iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>result type </para></parameterdescription>
+<para>result type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>BOP</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary reducer type </para></parameterdescription>
+<para>binary reducer type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>UOP</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>unary transformion type</para></parameterdescription>
+<para>unary transformion type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1833,45 +2052,55 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para></parameterdescription>
+<para>iterator to the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>init</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>initial value of the reduction and the storage for the reduced result </para></parameterdescription>
+<para>initial value of the reduction and the storage for the reduced result </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>bop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary operator that will be applied in unspecified order to the results of <computeroutput>uop</computeroutput> </para></parameterdescription>
+<para>binary operator that will be applied in unspecified order to the results of <computeroutput>uop</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>uop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>unary operator that will be applied to transform each element in the range to the result type</para></parameterdescription>
+<para>unary operator that will be applied to transform each element in the range to the result type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.</para><para>This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.</para>
+<para>This method is equivalent to the parallel execution of the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop(init,<sp/>uop(*itr));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>        </detaileddescription>
+</programlisting></para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="513" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="513" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1aa102a40672a331643944cb17c2377118" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1925,49 +2154,56 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
           <defval>1</defval>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel transform-reduce task using the guided partition algorithm </para>        </briefdescription>
+<para>constructs a STL-styled parallel transform-reduce task using the guided partition algorithm </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para></parameterdescription>
+<para>beginning iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para></parameterdescription>
+<para>ending iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>result type </para></parameterdescription>
+<para>result type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>BOP</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary reducer type </para></parameterdescription>
+<para>binary reducer type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>UOP</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>unary transformion type </para></parameterdescription>
+<para>unary transformion type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>H</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size type</para></parameterdescription>
+<para>chunk size type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1975,49 +2211,58 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para></parameterdescription>
+<para>iterator to the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>init</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>initial value of the reduction and the storage for the reduced result </para></parameterdescription>
+<para>initial value of the reduction and the storage for the reduced result </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>bop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary operator that will be applied in unspecified order to the results of <computeroutput>uop</computeroutput> </para></parameterdescription>
+<para>binary operator that will be applied in unspecified order to the results of <computeroutput>uop</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>uop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>unary operator that will be applied to transform each element in the range to the result type </para></parameterdescription>
+<para>unary operator that will be applied to transform each element in the range to the result type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>chunk_size</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size</para></parameterdescription>
+<para>chunk size</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="539" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="539" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a562e253028680b61de95e305c0224d91" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2071,49 +2316,56 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
           <defval>0</defval>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel transform-reduce task using the static partition algorithm </para>        </briefdescription>
+<para>constructs a STL-styled parallel transform-reduce task using the static partition algorithm </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para></parameterdescription>
+<para>beginning iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para></parameterdescription>
+<para>ending iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>result type </para></parameterdescription>
+<para>result type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>BOP</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary reducer type </para></parameterdescription>
+<para>binary reducer type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>UOP</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>unary transformion type </para></parameterdescription>
+<para>unary transformion type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>H</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size type</para></parameterdescription>
+<para>chunk size type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -2121,49 +2373,58 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para></parameterdescription>
+<para>iterator to the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>init</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>initial value of the reduction and the storage for the reduced result </para></parameterdescription>
+<para>initial value of the reduction and the storage for the reduced result </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>bop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary operator that will be applied in unspecified order to the results of <computeroutput>uop</computeroutput> </para></parameterdescription>
+<para>binary operator that will be applied in unspecified order to the results of <computeroutput>uop</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>uop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>unary operator that will be applied to transform each element in the range to the result type </para></parameterdescription>
+<para>unary operator that will be applied to transform each element in the range to the result type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>chunk_size</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size</para></parameterdescription>
+<para>chunk size</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="567" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="567" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a6fb87774919f4a570ac505cdcda48249" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2217,49 +2478,56 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
           <defval>1</defval>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel transform-reduce task using the dynamic partition algorithm </para>        </briefdescription>
+<para>constructs a STL-styled parallel transform-reduce task using the dynamic partition algorithm </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para></parameterdescription>
+<para>beginning iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para></parameterdescription>
+<para>ending iterator type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>result type </para></parameterdescription>
+<para>result type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>BOP</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary reducer type </para></parameterdescription>
+<para>binary reducer type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>UOP</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>unary transformion type </para></parameterdescription>
+<para>unary transformion type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>H</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size type</para></parameterdescription>
+<para>chunk size type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -2267,49 +2535,58 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para></parameterdescription>
+<para>iterator to the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>init</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>initial value of the reduction and the storage for the reduced result </para></parameterdescription>
+<para>initial value of the reduction and the storage for the reduced result </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>bop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary operator that will be applied in unspecified order to the results of <computeroutput>uop</computeroutput> </para></parameterdescription>
+<para>binary operator that will be applied in unspecified order to the results of <computeroutput>uop</computeroutput> </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>uop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>unary operator that will be applied to transform each element in the range to the result type </para></parameterdescription>
+<para>unary operator that will be applied to transform each element in the range to the result type </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>chunk_size</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>chunk size</para></parameterdescription>
+<para>chunk size</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="595" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="595" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1af4848ab51fa3bf5525af58e2440b01c1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2340,28 +2617,32 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
           <declname>cmp</declname>
         </param>
         <briefdescription>
-<para>constructs a dynamic task to perform STL-styled parallel sort </para>        </briefdescription>
+<para>constructs a dynamic task to perform STL-styled parallel sort </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type (random-accessible) </para></parameterdescription>
+<para>beginning iterator type (random-accessible) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type (random-accessible) </para></parameterdescription>
+<para>ending iterator type (random-accessible) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>comparator type</para></parameterdescription>
+<para>comparator type</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -2369,27 +2650,32 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para></parameterdescription>
+<para>iterator to the end (exclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>cmp</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>comparison function object</para></parameterdescription>
+<para>comparison function object</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput>.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>        </detaileddescription>
+The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput>.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="620" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="620" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a559afa5066782bc6c38738260e3d4c2e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2413,21 +2699,24 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
           <declname>last</declname>
         </param>
         <briefdescription>
-<para>constructs a dynamic task to perform STL-styled parallel sort using the <computeroutput>std::less&lt;T&gt;</computeroutput> comparator, where <computeroutput>T</computeroutput> is the element type </para>        </briefdescription>
+<para>constructs a dynamic task to perform STL-styled parallel sort using the <computeroutput>std::less&lt;T&gt;</computeroutput> comparator, where <computeroutput>T</computeroutput> is the element type </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type (random-accessible) </para></parameterdescription>
+<para>beginning iterator type (random-accessible) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type (random-accessible)</para></parameterdescription>
+<para>ending iterator type (random-accessible)</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -2435,20 +2724,24 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para></parameterdescription>
+<para>iterator to the beginning (inclusive) </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive)</para></parameterdescription>
+<para>iterator to the end (exclusive)</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput>.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>        </detaileddescription>
+The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput>.</para>
+<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="638" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="638" column="10"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="protected-func">
@@ -2462,12 +2755,13 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
           <declname>graph</declname>
         </param>
         <briefdescription>
-<para>constructs a flow builder with a graph </para>        </briefdescription>
+<para>constructs a flow builder with a graph </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="645" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="659" bodyend="661"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="645" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="659" bodyend="661"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -2491,32 +2785,33 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="655" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="709" bodyend="723"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="655" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="709" bodyend="723"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>building methods of a task dependency graph </para>    </briefdescription>
+<para>building methods of a task dependency graph </para>
+    </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="59">
+      <node id="1">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
       </node>
-      <node id="60">
+      <node id="2">
         <label>tf::Subflow</label>
         <link refid="classtf_1_1Subflow"/>
-        <childnode refid="59" relation="public-inheritance">
+        <childnode refid="1" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="61">
+      <node id="3">
         <label>tf::Taskflow</label>
         <link refid="classtf_1_1Taskflow"/>
-        <childnode refid="59" relation="public-inheritance">
+        <childnode refid="1" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="18" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="18" bodyend="656"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="18" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="18" bodyend="656"/>
     <listofallmembers>
       <member refid="classtf_1_1FlowBuilder_1a9404a57d9d37a4d49d20b686e4e5f68f" prot="protected" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>_graph</name></member>
       <member refid="classtf_1_1FlowBuilder_1a04115519f61efc42d018ea697054135d" prot="private" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>_linearize</name></member>

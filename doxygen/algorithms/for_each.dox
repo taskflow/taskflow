@@ -40,7 +40,7 @@ An example of the %Taskflow graph for the positive case under 12 workers is depi
 @dotfile images/parallel_for_1.dot
 
 The index types, @c B, @c E, and @c S, are templates to preserve the variable types and their underlying types must be of the same @em integral type (e.g., @c int, @c size_t, @c unsigned).
-By default, tf::Taskflow::for_each_index creates a task that spawns a subflow (see @ref chapter3) to run iterations in parallel. The subflow closure captures all input arguments through perfect forwarding to form a stateful closure such that any changes on the arguments will be visible to the execution context of the subflow. For example:
+By default, tf::Taskflow::for_each_index creates a task that spawns a subflow (see @ref DynamicTasking) to run iterations in parallel. The subflow closure captures all input arguments through perfect forwarding to form a stateful closure such that any changes on the arguments will be visible to the execution context of the subflow. For example:
 
 @code{.cpp}
 int* vec;
@@ -82,7 +82,7 @@ for(auto i=first; i<last; i++) {
 }
 @endcode
 
-By default, tf::Taskflow::for_each(B&& first, E&& last, C&& callable) creates a task that spawns a subflow (see @ref chapter3) that applies the callable to the object obtained by dereferencing every iterator in the range <tt>[first, last)</tt>.
+By default, tf::Taskflow::for_each(B&& first, E&& last, C&& callable) creates a task that spawns a subflow (see @ref DynamicTasking) that applies the callable to the object obtained by dereferencing every iterator in the range <tt>[first, last)</tt>.
 It is user's responsibility for ensuring the range is valid within the execution of the parallel-for task. Iterators must have the post-increment operator @++ defined. This version of parallel-for applies to all iterable STL containers.
 
 @code{.cpp}

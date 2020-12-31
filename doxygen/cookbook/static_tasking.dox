@@ -1,13 +1,13 @@
 namespace tf {
 
-/** @page chapter1 Static Tasking
+/** @page StaticTasking Static Tasking
 
 This chapter demonstrates how to create a static task dependency graph. Static tasking captures the static parallel structure of a decomposition and is defined only by the program itself.
 It has a flat task hierarchy and cannot spawn new tasks from a running dependency graph.
 
 @tableofcontents
 
-@section C1_CreateATaskDependencyGraph Create a Task Dependency Graph
+@section CreateATaskDependencyGraph Create a Task Dependency Graph
 
 A task in %Taskflow is a @em callable object for which the operation @std_invoke is applicable.
 It can be either 
@@ -70,7 +70,7 @@ to store and invoke a callable in a task.
 You need to follow its contract to create a task.
 
 
-@section C1_VisualizeATaskDependencyGraph Visualize a Task Dependency Graph
+@section VisualizeATaskDependencyGraph Visualize a Task Dependency Graph
 
 You can dump a taskflow to a DOT format and visualize the graph using free online tools such as <a href="https://dreampuf.github.io/GraphvizOnline/">GraphvizOnline</a> and <a href="http://www.webgraphviz.com/">WebGraphviz</a>.
 
@@ -107,7 +107,7 @@ Debrief:
 @dotfile images/simple.dot
 
 
-@section C1_ModifyTaskAttributes Modify Task Attributes
+@section ModifyTaskAttributes Modify Task Attributes
 
 This example demonstrates how to modify a task's attributes using methods defined in
 the task handler.
@@ -167,7 +167,7 @@ Debrief:
 You can change the name and work of a task at anytime before running the graph.
 The later assignment overwrites the previous values.
 
-@section C1_TraverseAdjacentTasks Traverse Adjacent Tasks
+@section TraverseAdjacentTasks Traverse Adjacent Tasks
 
 You can iterate the successor list and the dependent list of a task by using tf::Task::for_each_successor
 and tf::Task::for_each_dependent, respectively.
@@ -186,7 +186,7 @@ my_task.for_each_dependent([d=0] (tf::Task dependent) mutable {
 @endcode
 
 
-@section C1_UnderstandTheLifetimeOfATask Understand the Lifetime of a Task
+@section UnderstandTheLifetimeOfATask Understand the Lifetime of a Task
 
 A task lives with its graph and belongs to only a graph at a time, 
 and is not destroyed until the graph gets cleaned up.

@@ -1,13 +1,13 @@
 namespace tf {
 
-/** @page chapter2 %Executor
+/** @page ExecuteTaskflow %Executor
 
 After you create a task dependency graph, you need to submit it to threads for execution.
 In this chapter, we will show you how to execute a task dependency graph.
 
 @tableofcontents
 
-@section C2_CreateAnExecutor Create an Executor
+@section CreateAnExecutor Create an Executor
 
 To execute a taskflow, you need to create an @em executor of type tf::Executor.
 An executor is a @em thread-safe object that 
@@ -28,7 +28,7 @@ An executor can be reused to execute multiple taskflows.
 In most workloads, you may need only one executor to run multiple taskflows
 where each taskflow represents a part of a parallel decomposition.
 
-@section C2_ExecuteATaskflow Execute a Taskflow
+@section ExecuteATaskflow Execute a Taskflow
 
 tf::Executor provides a set of @c run\_* methods,
 tf::Executor::run, 
@@ -125,7 +125,7 @@ You must always keep a taskflow alive and must not modify it while
 it is being run by an executor.
 
 
-@section C2_ThreadSafety Touch an Executor from Multiple Threads
+@section ThreadSafety Touch an Executor from Multiple Threads
 
 All @c run\_* methods are @em thread-safe.
 You can have multiple threads call these methods from an executor to run different taskflows.
@@ -137,15 +137,15 @@ runtime.
  2:
  3: for(int i=0; i<10; ++i) {
  4:   std::thread([i, &](){
- 5:     // ... modify my taskflow
- 6:     executor.run(taskflows[i]);  // run my taskflow
+ 5:     // ... modify my taskflow at i
+ 6:     executor.run(taskflows[i]);  // run my taskflow at i
  7:   }).detach();
  8: }
+ 9:
+10: executor.wait_for_all();
 @endcode
 
-
-
-@section C2_Observer Observe Thread Activities
+@section ObserveThreadActivities Observe Thread Activities
 
 You can observe thread activities in an executor when a worker thread participates in executing
 a task and leaves the execution using tf::ObserverInterface --

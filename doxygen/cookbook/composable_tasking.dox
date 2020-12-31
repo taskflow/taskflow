@@ -1,13 +1,13 @@
 namespace tf {
 
-/** @page chapter5 Composable Tasking
+/** @page ComposableTasking Composable Tasking
 
 Composition is a key to improve the programmability of a complex workflow.
 This chapter describes how to create a large parallel graph through composition of modular and reusable blocks that are easier to optimize.
 
 @tableofcontents
 
-@section C5_ComposeATaskflow Compose a Taskflow
+@section ComposeATaskflow Compose a Taskflow
 
 A powerful feature of tf::Taskflow is its @em composable interface.
 You can break down a large parallel workload into smaller pieces
@@ -65,7 +65,7 @@ Debrief:
 @li Line 34 enforces the module task to run before task f2D
 
 
-@section C5_CreateAModuleTask Create a Module Task
+@section CreateAModuleTask Create a Module Task
 
 The task created from Taskflow::composed_of is a @em module task
 that runs on a pre-defined taskflow.

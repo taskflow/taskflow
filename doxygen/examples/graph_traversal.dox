@@ -74,7 +74,7 @@ restrict the number of nodes in the graph and the maximum number of outgoing edg
 
 @section GraphTraversalStaticTraversal Static Traversal
 
-We create a taskflow to traverse the graph using static tasks (see @ref chapter1).
+We create a taskflow to traverse the graph using static tasks (see @ref StaticTasking).
 Each task does nothing but marks @c visited to @c true 
 and subtracts @c dependents from one, both of which are used for validation after the graph is traversed.
 In practice, this computation may be replaced with a heavy function.
@@ -130,7 +130,7 @@ You do not need to worry about details of scheduling.
 
 @section GraphTraversalDynamicTraversal Dynamic Traversal 
 
-We can traverse the graph dynamically using tf::Subflow (see @ref chapter3).
+We can traverse the graph dynamically using tf::Subflow (see @ref DynamicTasking).
 We start from the source nodes of zero incoming edges and recursively spawn subflows 
 whenever the dependency of a node is meet.
 Since we are creating tasks from the execution context of another task,

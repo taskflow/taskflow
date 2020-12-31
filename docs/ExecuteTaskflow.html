@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cookbook &raquo; Executor | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
+          Executor
+        </h1>
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#CreateAnExecutor">Create an Executor</a></li>
+            <li><a href="#ExecuteATaskflow">Execute a Taskflow</a></li>
+            <li><a href="#ThreadSafety">Touch an Executor from Multiple Threads</a></li>
+            <li><a href="#ObserveThreadActivities">Observe Thread Activities</a></li>
+          </ul>
+        </div>
+<p>After you create a task dependency graph, you need to submit it to threads for execution. In this chapter, we will show you how to execute a task dependency graph.</p><section id="CreateAnExecutor"><h2><a href="#CreateAnExecutor">Create an Executor</a></h2><p>To execute a taskflow, you need to create an <em>executor</em> of type <a href="classtf_1_1Executor.html" class="m-doc">tf::<wbr />Executor</a>. An executor is a <em>thread-safe</em> object that manages a set of worker threads and executes tasks through an efficient <em>work-stealing</em> algorithm. Issuing a call to run a taskflow creates a <em>topology</em>, a data structure to keep track of the execution status of a running graph. <a href="classtf_1_1Executor.html" class="m-doc">tf::<wbr />Executor</a> takes an unsigned integer to construct with <code>N</code> worker threads. The default value is <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor1</span><span class="p">;</span>     <span class="c1">// create an executor with the number of workers</span>
+                            <span class="c1">// equal to std::thread::hardware_concurrency</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor2</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>  <span class="c1">// create an executor of 4 worker threads</span></pre><p>An executor can be reused to execute multiple taskflows. In most workloads, you may need only one executor to run multiple taskflows where each taskflow represents a part of a parallel decomposition.</p></section><section id="ExecuteATaskflow"><h2><a href="#ExecuteATaskflow">Execute a Taskflow</a></h2><p><a href="classtf_1_1Executor.html" class="m-doc">tf::<wbr />Executor</a> provides a set of <code>run_*</code> methods, <a href="classtf_1_1Executor.html#a519777f5783981d534e9e53b99712069" class="m-doc">tf::<wbr />Executor::<wbr />run</a>, <a href="classtf_1_1Executor.html#a6d0617eebc9421f1ba1f82ce6dd02c00" class="m-doc">tf::<wbr />Executor::<wbr />run_n</a>, and <a href="classtf_1_1Executor.html#a0f52e9dd64b65aba32ca0e13c1ed300a" class="m-doc">tf::<wbr />Executor::<wbr />run_until</a> to run a taskflow for one time, multiple times, or until a given predicate evaluates to true. All methods accept an optional callback to invoke after the execution completes, and return a <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> for users to access the execution status. The code below shows several ways to run a taskflow.</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="c1">// Declare an executor and a taskflow</span>
+ <span class="mi">2</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+ <span class="mi">3</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+ <span class="mi">4</span><span class="o">:</span>
+ <span class="mi">5</span><span class="o">:</span> <span class="c1">// Add three tasks into the taskflow</span>
+ <span class="mi">6</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;This is TaskA</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+ <span class="mi">7</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">B</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;This is TaskB</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+ <span class="mi">8</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">C</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;This is TaskC</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+ <span class="mi">9</span><span class="o">:</span> 
+<span class="mi">10</span><span class="o">:</span> <span class="c1">// Build precedence between tasks</span>
+<span class="mi">11</span><span class="o">:</span> <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">);</span> 
+<span class="mi">12</span><span class="o">:</span> 
+<span class="mi">13</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span> <span class="n">fu</span> <span class="o">=</span> <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span>
+<span class="mi">14</span><span class="o">:</span> <span class="n">fu</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span>                <span class="c1">// block until the execution completes</span>
+<span class="mi">15</span><span class="o">:</span>
+<span class="mi">16</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span> <span class="p">[](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;end of 1 run&quot;</span><span class="p">;</span> <span class="p">}).</span><span class="n">wait</span><span class="p">();</span>
+<span class="mi">17</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="mi">18</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span>  <span class="c1">// block until all associated executions finish</span>
+<span class="mi">19</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="p">[](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;end of 4 runs&quot;</span><span class="p">;</span> <span class="p">}).</span><span class="n">wait</span><span class="p">();</span>
+<span class="mi">20</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">run_until</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span> <span class="p">[</span><span class="n">cnt</span><span class="o">=</span><span class="mi">0</span><span class="p">]</span> <span class="p">()</span> <span class="k">mutable</span> <span class="p">{</span> <span class="k">return</span> <span class="o">++</span><span class="n">cnt</span> <span class="o">==</span> <span class="mi">10</span><span class="p">;</span> <span class="p">});</span></pre><p>Debrief:</p><ul><li>Lines 6-8 create a taskflow of three tasks A, B, and C</li><li>Lines 13-14 run the taskflow once and wait for completion</li><li>Line 16 runs the taskflow once with a callback to invoke when the execution finishes</li><li>Lines 17-18 run the taskflow four times and use <a href="classtf_1_1Executor.html#ab9aa252f70e9a40020a1e5a89d485b85" class="m-doc">tf::<wbr />Executor::<wbr />wait_for_all</a> to wait for completion</li><li>Line 19 runs the taskflow four times and invokes a callback at the end of the forth execution</li><li>Line 20 keeps running the taskflow until the predicate returns true</li></ul><p>Issuing multiple runs on the same taskflow will automatically <em>synchronize</em> to a sequential chain of executions in the order of run calls.</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span>         <span class="c1">// execution 1</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>   <span class="c1">// execution 2</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span>         <span class="c1">// execution 3</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span>        <span class="c1">// execution 1 -&gt; execution 2 -&gt; execution 3</span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>A running taskflow must remain alive during its execution. It is your responsibility to ensure a taskflow not being destructed when it is running. For example, the code below can result undefined behavior.</p></aside><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>  <span class="c1">// create an executor</span>
+
+<span class="c1">// create a taskflow whose lifetime is restricted by the scope</span>
+<span class="p">{</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+  
+  <span class="c1">// add tasks to the taskflow</span>
+  <span class="c1">// ... </span>
+
+  <span class="c1">// run the taskflow</span>
+  <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
+
+<span class="p">}</span> <span class="c1">// leaving the scope will destroy taskflow while it is running, </span>
+  <span class="c1">// resulting in undefined behavior</span></pre><p>Similarly, you should avoid touching a taskflow while it is running.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+
+<span class="c1">// Add tasks into the taskflow</span>
+<span class="c1">// ...</span>
+
+<span class="c1">// Declare an executor</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span> <span class="n">future</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>  <span class="c1">// non-blocking return</span>
+
+<span class="c1">// alter the taskflow while running leads to undefined behavior </span>
+<span class="n">f</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Add a new task</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span></pre><p>You must always keep a taskflow alive and must not modify it while it is being run by an executor.</p></section><section id="ThreadSafety"><h2><a href="#ThreadSafety">Touch an Executor from Multiple Threads</a></h2><p>All <code>run_*</code> methods are <em>thread-safe</em>. You can have multiple threads call these methods from an executor to run different taskflows. However, the order which taskflow runs first is non-deterministic and is up to the runtime.</p><pre class="m-code"><span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+<span class="mi">2</span><span class="o">:</span>
+<span class="mi">3</span><span class="o">:</span> <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+<span class="mi">4</span><span class="o">:</span>   <span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="o">&amp;</span><span class="p">](){</span>
+<span class="mi">5</span><span class="o">:</span>     <span class="c1">// ... modify my taskflow</span>
+<span class="mi">6</span><span class="o">:</span>     <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflows</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>  <span class="c1">// run my taskflow</span>
+<span class="mi">7</span><span class="o">:</span>   <span class="p">}).</span><span class="n">detach</span><span class="p">();</span>
+<span class="mi">8</span><span class="o">:</span> <span class="p">}</span></pre></section><section id="ObserveThreadActivities"><h2><a href="#ObserveThreadActivities">Observe Thread Activities</a></h2><p>You can observe thread activities in an executor when a worker thread participates in executing a task and leaves the execution using <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> &ndash; an <em>interface</em> class that provides a set of methods for you to define what to do when a thread enters and leaves the execution context of a task.</p><pre class="m-code"><span class="k">class</span> <span class="nc">ObserverInterface</span> <span class="p">{</span>
+  <span class="k">virtual</span> <span class="o">~</span><span class="n">ObserverInterface</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">set_up</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">num_workers</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">on_entry</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">worker_id</span><span class="p">,</span> <span class="n">tf</span><span class="o">::</span><span class="n">TaskView</span> <span class="n">task_view</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">on_exit</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">worker_id</span><span class="p">,</span> <span class="n">tf</span><span class="o">::</span><span class="n">TaskView</span> <span class="n">task_view</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span></pre><p>There are three methods you must define in your derived class, <a href="classtf_1_1ObserverInterface.html#a41e6e62f12bf9d9dc4fa74632f6825d9" class="m-doc">tf::<wbr />ObserverInterface::<wbr />set_up</a>, <a href="classtf_1_1ObserverInterface.html#a3e3a9f7f1d43691794e487b8787b01a0" class="m-doc">tf::<wbr />ObserverInterface::<wbr />on_entry</a>, and <a href="classtf_1_1ObserverInterface.html#aa59a59a59eadd4eb6ba20ecdfcae882b" class="m-doc">tf::<wbr />ObserverInterface::<wbr />on_exit</a>. The method, <a href="classtf_1_1ObserverInterface.html#a41e6e62f12bf9d9dc4fa74632f6825d9" class="m-doc">tf::<wbr />ObserverInterface::<wbr />set_up</a>, is a constructor-like method that will be called by the executor when the observer is constructed. It passes an argument of the number of workers to observer in the executor. You may use it to preallocate or initialize data storage, e.g., an independent vector for each worker. The methods, <a href="classtf_1_1ObserverInterface.html#a3e3a9f7f1d43691794e487b8787b01a0" class="m-doc">tf::<wbr />ObserverInterface::<wbr />on_entry</a> and <a href="classtf_1_1ObserverInterface.html#aa59a59a59eadd4eb6ba20ecdfcae882b" class="m-doc">tf::<wbr />ObserverInterface::<wbr />on_exit</a>, are called by a worker thread before and after the execution context of a task, respectively. You may use them to record timepoints and calculate the elapsed time of a task.</p><p>You can associate an executor with one or multiple observers (though one is common) using <a href="classtf_1_1Executor.html#aff77def96ae740d648dd84e571237c83" class="m-doc">tf::<wbr />Executor::<wbr />make_observer</a>. We use <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a> to manage the ownership of an observer. The executor loops through each observer and invoke the corresponding methods accordingly.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span> <span class="nc">MyObserver</span> <span class="o">:</span> <span class="k">public</span> <span class="n">tf</span><span class="o">::</span><span class="n">ObserverInterface</span> <span class="p">{</span>
+
+  <span class="n">MyObserver</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;constructing observer &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">name</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">set_up</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">num_workers</span><span class="p">)</span> <span class="k">override</span> <span class="k">final</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;setting up observer with &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">num_workers</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; workers</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">on_entry</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">w</span><span class="p">,</span> <span class="n">tf</span><span class="o">::</span><span class="n">TaskView</span> <span class="n">tv</span><span class="p">)</span> <span class="k">override</span> <span class="k">final</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">ostringstream</span> <span class="n">oss</span><span class="p">;</span>
+    <span class="n">oss</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;worker &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">w</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; ready to run &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">tv</span><span class="p">.</span><span class="n">name</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">oss</span><span class="p">.</span><span class="n">str</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">on_exit</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">w</span><span class="p">,</span> <span class="n">tf</span><span class="o">::</span><span class="n">TaskView</span> <span class="n">tv</span><span class="p">)</span> <span class="k">override</span> <span class="k">final</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">ostringstream</span> <span class="n">oss</span><span class="p">;</span>
+    <span class="n">oss</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;worker &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">w</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; finished running &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">tv</span><span class="p">.</span><span class="n">name</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">oss</span><span class="p">.</span><span class="n">str</span><span class="p">();</span>
+  <span class="p">}</span>
+
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+
+  <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+
+  <span class="c1">// Create a taskflow of eight tasks</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+
+  <span class="k">auto</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="n">B</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="n">C</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;3</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="n">D</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;4</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="n">E</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;5</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;E&quot;</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="n">F</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;6</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;F&quot;</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="n">G</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;7</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;G&quot;</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="n">H</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;8</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;H&quot;</span><span class="p">);</span>
+
+  <span class="c1">// create an observer</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyObserver</span><span class="o">&gt;</span> <span class="n">observer</span> <span class="o">=</span> <span class="n">executor</span><span class="p">.</span><span class="n">make_observer</span><span class="o">&lt;</span><span class="n">MyObserver</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="s">&quot;MyObserver&quot;</span>
+  <span class="p">);</span>
+
+  <span class="c1">// run the taskflow</span>
+  <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">get</span><span class="p">();</span>
+
+  <span class="c1">// remove the observer (optional)</span>
+  <span class="n">executor</span><span class="p">.</span><span class="n">remove_observer</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">observer</span><span class="p">));</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></pre><p>The above code produces the following output:</p><pre class="m-code">constructing observer MyObserver
+setting up observer with <span class="m">4</span> workers
+worker <span class="m">2</span> ready to run A
+<span class="m">1</span>
+worker <span class="m">2</span> finished running A
+worker <span class="m">2</span> ready to run B
+<span class="m">2</span>
+worker <span class="m">1</span> ready to run C
+worker <span class="m">2</span> finished running B
+<span class="m">3</span>
+worker <span class="m">2</span> ready to run D
+worker <span class="m">3</span> ready to run E
+worker <span class="m">1</span> finished running C
+<span class="m">4</span>
+<span class="m">5</span>
+worker <span class="m">1</span> ready to run F
+worker <span class="m">2</span> finished running D
+worker <span class="m">3</span> finished running E
+<span class="m">6</span>
+worker <span class="m">2</span> ready to run G
+worker <span class="m">3</span> ready to run H
+worker <span class="m">1</span> finished running F
+<span class="m">7</span>
+<span class="m">8</span>
+worker <span class="m">2</span> finished running G
+worker <span class="m">3</span> finished running H</pre><p>It is expected each line of <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />cout</a> interleaves with each other as there are four workers participating in task scheduling. However, the <em>ready</em> message always appears before the corresponding task message (e.g., numbers) and then the <em>finished</em> message.</p></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>
