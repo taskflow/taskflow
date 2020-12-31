@@ -243,6 +243,37 @@ conditioned.
 We suggest that you @ref TaskSchedulingPolicy and infer if task race
 exists in the execution of your graph.
 
+@section ImplementIfElseControlFlow Implement If-Else Control Flow
+
+You can use conditional tasking to implement if-else control flow.
+The following example creates a nested if-else control flow diagram that 
+executes check the range of @c i using 
+three condition tasks.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+
+int i;
+
+// create three condition tasks for nested control flow
+auto initi = taskflow.emplace([&](){ i=3; }); 
+auto cond1 = taskflow.emplace([&](){ return i>1 ? 1 : 0; }); 
+auto cond2 = taskflow.emplace([&](){ return i>2 ? 1 : 0; }); 
+auto cond3 = taskflow.emplace([&](){ return i>3 ? 1 : 0; }); 
+auto equl1 = taskflow.emplace([&](){ std::cout << "i=1\n"; }); 
+auto equl2 = taskflow.emplace([&](){ std::cout << "i=2\n"; }); 
+auto equl3 = taskflow.emplace([&](){ std::cout << "i=3\n"; }); 
+auto grtr3 = taskflow.emplace([&](){ std::cout << "i>3\n"; }); 
+
+initi.precede(cond1);
+cond1.precede(equl1, cond2);  // goes to cond2 if i>1
+cond2.precede(equl2, cond3);  // goes to cond3 if i>2
+cond3.precede(equl3, grtr3);  // goes to grtr3 if i>3
+@endcode
+
+@dotfile images/conditional-tasking-nested-if-else.dot
+
+
 @section ImplementSwitchControlFlow Implement Switch Control Flow
 
 You can use conditional tasking to implement @em switch control flow.

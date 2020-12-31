@@ -23,6 +23,10 @@
         <reference>ConditionalTasking_1AvoidCommonPitfalls</reference>
     </tocsect>
       <tocsect>
+        <name>Implement If-Else Control Flow</name>
+        <reference>ConditionalTasking_1ImplementIfElseControlFlow</reference>
+    </tocsect>
+      <tocsect>
         <name>Implement Switch Control Flow</name>
         <reference>ConditionalTasking_1ImplementSwitchControlFlow</reference>
     </tocsect>
@@ -255,6 +259,31 @@ Condition task can go cyclic to describe iterative control flow. The example bel
 <para>In the <computeroutput>error1</computeroutput> scenario, there is no source task for the scheduler to start with, and the simplest fix is to add a task <computeroutput>S</computeroutput> that has no dependents. In the <computeroutput>error2</computeroutput> scenario, <computeroutput>D</computeroutput> might be scheduled twice by <computeroutput>E</computeroutput> through the strong dependency and <computeroutput>C</computeroutput> through the weak dependency (on returning <computeroutput>1</computeroutput>). To fix this problem, you can add an auxiliary task <computeroutput>D-aux</computeroutput> to break the mixed use of strong dependency and weak dependency. In the risky scenario, task <computeroutput>X</computeroutput> may be raced by <computeroutput>M</computeroutput> and <computeroutput>P</computeroutput> if <computeroutput>M</computeroutput> returns <computeroutput>0</computeroutput> and P returns <computeroutput>1</computeroutput>.</para>
 <para><simplesect kind="attention"><para>It is your responsibility to ensure a written taskflow graph is properly conditioned. We suggest that you <ref refid="ConditionalTasking_1TaskSchedulingPolicy" kindref="member">Understand our Task-level Scheduling</ref> and infer if task race exists in the execution of your graph.</para>
 </simplesect>
+</para>
+</sect1>
+<sect1 id="ConditionalTasking_1ImplementIfElseControlFlow">
+<title>Implement If-Else Control Flow</title>
+<para>You can use conditional tasking to implement if-else control flow. The following example creates a nested if-else control flow diagram that executes check the range of <computeroutput>i</computeroutput> using three condition tasks.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>three<sp/>condition<sp/>tasks<sp/>for<sp/>nested<sp/>control<sp/>flow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>initi<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/>i=3;<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>cond1<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>i&gt;1<sp/>?<sp/>1<sp/>:<sp/>0;<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>cond2<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>i&gt;2<sp/>?<sp/>1<sp/>:<sp/>0;<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>cond3<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>i&gt;3<sp/>?<sp/>1<sp/>:<sp/>0;<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>equl1<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;i=1\n&quot;</highlight><highlight class="normal">;<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>equl2<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;i=2\n&quot;</highlight><highlight class="normal">;<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>equl3<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;i=3\n&quot;</highlight><highlight class="normal">;<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>grtr3<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;i&gt;3\n&quot;</highlight><highlight class="normal">;<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">initi.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(cond1);</highlight></codeline>
+<codeline><highlight class="normal">cond1.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(equl1,<sp/>cond2);<sp/><sp/></highlight><highlight class="comment">//<sp/>goes<sp/>to<sp/>cond2<sp/>if<sp/>i&gt;1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cond2.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(equl2,<sp/>cond3);<sp/><sp/></highlight><highlight class="comment">//<sp/>goes<sp/>to<sp/>cond3<sp/>if<sp/>i&gt;2</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cond3.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(equl3,<sp/>grtr3);<sp/><sp/></highlight><highlight class="comment">//<sp/>goes<sp/>to<sp/>grtr3<sp/>if<sp/>i&gt;3</highlight></codeline>
+</programlisting></para>
+<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/conditional-tasking-nested-if-else.dot"></dotfile>
 </para>
 </sect1>
 <sect1 id="ConditionalTasking_1ImplementSwitchControlFlow">

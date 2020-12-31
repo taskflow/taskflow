@@ -10,6 +10,7 @@ list(APPEND TF_EXAMPLES
   do_while
   while
   if_else
+  nested_if_else
   visualization 
   reduce 
   parallel_for 

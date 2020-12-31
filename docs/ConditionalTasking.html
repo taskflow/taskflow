@@ -60,6 +60,7 @@
               </ul>
             </li>
             <li><a href="#AvoidCommonPitfalls">Avoid Common Pitfalls</a></li>
+            <li><a href="#ImplementIfElseControlFlow">Implement If-Else Control Flow</a></li>
             <li><a href="#ImplementSwitchControlFlow">Implement Switch Control Flow</a></li>
             <li><a href="#ImplementDoWhileLoopControlFlow">Implement Do-While-Loop Control Flow</a></li>
             <li><a href="#ImplementWhileLoopControlFlow">Implement While-Loop Control Flow</a></li>
@@ -724,7 +725,110 @@
 </g>
 </g>
 </svg>
-</div><p>In the <code>error1</code> scenario, there is no source task for the scheduler to start with, and the simplest fix is to add a task <code>S</code> that has no dependents. In the <code>error2</code> scenario, <code>D</code> might be scheduled twice by <code>E</code> through the strong dependency and <code>C</code> through the weak dependency (on returning <code>1</code>). To fix this problem, you can add an auxiliary task <code>D-aux</code> to break the mixed use of strong dependency and weak dependency. In the risky scenario, task <code>X</code> may be raced by <code>M</code> and <code>P</code> if <code>M</code> returns <code>0</code> and P returns <code>1</code>.</p><aside class="m-note m-warning"><h4>Attention</h4><p>It is your responsibility to ensure a written taskflow graph is properly conditioned. We suggest that you <a href="ConditionalTasking.html#TaskSchedulingPolicy" class="m-doc">Understand our Task-level Scheduling</a> and infer if task race exists in the execution of your graph.</p></aside></section><section id="ImplementSwitchControlFlow"><h2><a href="#ImplementSwitchControlFlow">Implement Switch Control Flow</a></h2><p>You can use conditional tasking to implement <em>switch</em> control flow. The following example creates a switch control flow diagram that executes one of the three cases at random using four condition tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+</div><p>In the <code>error1</code> scenario, there is no source task for the scheduler to start with, and the simplest fix is to add a task <code>S</code> that has no dependents. In the <code>error2</code> scenario, <code>D</code> might be scheduled twice by <code>E</code> through the strong dependency and <code>C</code> through the weak dependency (on returning <code>1</code>). To fix this problem, you can add an auxiliary task <code>D-aux</code> to break the mixed use of strong dependency and weak dependency. In the risky scenario, task <code>X</code> may be raced by <code>M</code> and <code>P</code> if <code>M</code> returns <code>0</code> and P returns <code>1</code>.</p><aside class="m-note m-warning"><h4>Attention</h4><p>It is your responsibility to ensure a written taskflow graph is properly conditioned. We suggest that you <a href="ConditionalTasking.html#TaskSchedulingPolicy" class="m-doc">Understand our Task-level Scheduling</a> and infer if task race exists in the execution of your graph.</p></aside></section><section id="ImplementIfElseControlFlow"><h2><a href="#ImplementIfElseControlFlow">Implement If-Else Control Flow</a></h2><p>You can use conditional tasking to implement if-else control flow. The following example creates a nested if-else control flow diagram that executes check the range of <code>i</code> using three condition tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+
+<span class="c1">// create three condition tasks for nested control flow</span>
+<span class="k">auto</span> <span class="n">initi</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">i</span><span class="o">=</span><span class="mi">3</span><span class="p">;</span> <span class="p">});</span> 
+<span class="k">auto</span> <span class="n">cond1</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="k">return</span> <span class="n">i</span><span class="o">&gt;</span><span class="mi">1</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span> <span class="p">});</span> 
+<span class="k">auto</span> <span class="n">cond2</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="k">return</span> <span class="n">i</span><span class="o">&gt;</span><span class="mi">2</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span> <span class="p">});</span> 
+<span class="k">auto</span> <span class="n">cond3</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="k">return</span> <span class="n">i</span><span class="o">&gt;</span><span class="mi">3</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span> <span class="p">});</span> 
+<span class="k">auto</span> <span class="n">equl1</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;i=1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span> 
+<span class="k">auto</span> <span class="n">equl2</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;i=2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span> 
+<span class="k">auto</span> <span class="n">equl3</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;i=3</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span> 
+<span class="k">auto</span> <span class="n">grtr3</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;i&gt;3</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span> 
+
+<span class="n">initi</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cond1</span><span class="p">);</span>
+<span class="n">cond1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">equl1</span><span class="p">,</span> <span class="n">cond2</span><span class="p">);</span>  <span class="c1">// goes to cond2 if i&gt;1</span>
+<span class="n">cond2</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">equl2</span><span class="p">,</span> <span class="n">cond3</span><span class="p">);</span>  <span class="c1">// goes to cond3 if i&gt;2</span>
+<span class="n">cond3</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">equl3</span><span class="p">,</span> <span class="n">grtr3</span><span class="p">);</span>  <span class="c1">// goes to grtr3 if i&gt;3</span></pre><div class="m-graph"><svg style="width: 74.875rem; height: 10.312rem;" viewBox="0.00 0.00 1198.20 164.77">
+<g transform="scale(1 1) rotate(0) translate(4 160.77)">
+<title>Taskflow</title>
+<g class="m-node m-flat">
+<title>p0x7fc231700030</title>
+<ellipse cx="27" cy="-107.38" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-103.58">init</text>
+</g>
+<g class="m-node">
+<title>p0x7fc231700140</title>
+<polygon points="238,-133.38 91,-107.38 238,-81.38 385,-107.38 238,-133.38"/>
+<text text-anchor="middle" x="238" y="-103.58">cond1 (i&gt;1 ? 1 : 0)</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc231700030&#45;&gt;p0x7fc231700140</title>
+<path d="M54.05,-107.38C61.76,-107.38 70.82,-107.38 80.71,-107.38"/>
+<polygon points="80.85,-110.88 90.85,-107.38 80.85,-103.88 80.85,-110.88"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fc231700470</title>
+<ellipse cx="578" cy="-138.38" rx="39.7" ry="18.27"/>
+<text text-anchor="middle" x="578" y="-134.58">equl1</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc231700140&#45;&gt;p0x7fc231700470</title>
+<path stroke-dasharray="5,2" d="M335.4,-116.23C398.62,-122.02 478.56,-129.36 528.75,-133.96"/>
+<polygon points="528.72,-137.47 538.99,-134.9 529.36,-130.5 528.72,-137.47"/>
+<text text-anchor="middle" x="408" y="-127.58">0</text>
+</g>
+<g class="m-node">
+<title>p0x7fc231700250</title>
+<polygon points="578,-102.38 431,-76.38 578,-50.38 725,-76.38 578,-102.38"/>
+<text text-anchor="middle" x="578" y="-72.58">cond2 (i&gt;2 ? 1 : 0)</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc231700140&#45;&gt;p0x7fc231700250</title>
+<path stroke-dasharray="5,2" d="M335.4,-98.54C377.67,-94.67 427.42,-90.1 470.76,-86.13"/>
+<polygon points="471.12,-89.61 480.76,-85.21 470.48,-82.64 471.12,-89.61"/>
+<text text-anchor="middle" x="408" y="-96.58">1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fc231700580</title>
+<ellipse cx="918" cy="-107.38" rx="39.7" ry="18.27"/>
+<text text-anchor="middle" x="918" y="-103.58">equl2</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc231700250&#45;&gt;p0x7fc231700580</title>
+<path stroke-dasharray="5,2" d="M675.4,-85.23C738.62,-91.02 818.56,-98.36 868.75,-102.96"/>
+<polygon points="868.72,-106.47 878.99,-103.9 869.36,-99.5 868.72,-106.47"/>
+<text text-anchor="middle" x="748" y="-96.58">0</text>
+</g>
+<g class="m-node">
+<title>p0x7fc231700360</title>
+<polygon points="918,-71.38 771,-45.38 918,-19.38 1065,-45.38 918,-71.38"/>
+<text text-anchor="middle" x="918" y="-41.58">cond3 (i&gt;3 ? 1 : 0)</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc231700250&#45;&gt;p0x7fc231700360</title>
+<path stroke-dasharray="5,2" d="M675.4,-67.54C717.67,-63.67 767.42,-59.1 810.76,-55.13"/>
+<polygon points="811.12,-58.61 820.76,-54.21 810.48,-51.64 811.12,-58.61"/>
+<text text-anchor="middle" x="748" y="-65.58">1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fc231700690</title>
+<ellipse cx="1150.6" cy="-73.38" rx="39.7" ry="18.27"/>
+<text text-anchor="middle" x="1150.6" y="-69.58">equl3</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc231700360&#45;&gt;p0x7fc231700690</title>
+<path stroke-dasharray="5,2" d="M1005.85,-55.93C1038.34,-59.88 1074.05,-64.21 1101.74,-67.57"/>
+<polygon points="1101.6,-71.08 1111.94,-68.81 1102.44,-64.13 1101.6,-71.08"/>
+<text text-anchor="middle" x="1088" y="-70.58">0</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7fc2317007a0</title>
+<ellipse cx="1150.6" cy="-18.38" rx="35.21" ry="18.27"/>
+<text text-anchor="middle" x="1150.6" y="-14.58">grtr3</text>
+</g>
+<g class="m-edge">
+<title>p0x7fc231700360&#45;&gt;p0x7fc2317007a0</title>
+<path stroke-dasharray="5,2" d="M1007.17,-35.06C1040.88,-31.11 1077.87,-26.78 1105.7,-23.52"/>
+<polygon points="1106.37,-26.97 1115.89,-22.33 1105.56,-20.02 1106.37,-26.97"/>
+<text text-anchor="middle" x="1088" y="-31.58">1</text>
+</g>
+</g>
+</svg>
+</div></section><section id="ImplementSwitchControlFlow"><h2><a href="#ImplementSwitchControlFlow">Implement Switch Control Flow</a></h2><p>You can use conditional tasking to implement <em>switch</em> control flow. The following example creates a switch control flow diagram that executes one of the three cases at random using four condition tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 
 <span class="k">auto</span> <span class="p">[</span><span class="n">source</span><span class="p">,</span> <span class="n">swcond</span><span class="p">,</span> <span class="n">case1</span><span class="p">,</span> <span class="n">case2</span><span class="p">,</span> <span class="n">case3</span><span class="p">,</span> <span class="n">target</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
   <span class="p">[](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;source</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>

@@ -115,14 +115,16 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <sect1 id="ExecuteTaskflow_1ThreadSafety">
 <title>Touch an Executor from Multiple Threads</title>
 <para>All <computeroutput>run_*</computeroutput> methods are <emphasis>thread-safe</emphasis>. You can have multiple threads call these methods from an executor to run different taskflows. However, the order which taskflow runs first is non-deterministic and is up to the runtime.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">1:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
-<codeline><highlight class="normal">2:</highlight></codeline>
-<codeline><highlight class="normal">3:<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;10;<sp/>++i)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">4:<sp/><sp/><sp/><ref refid="cpp/thread/thread" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread</ref>([i,<sp/>&amp;](){</highlight></codeline>
-<codeline><highlight class="normal">5:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...<sp/>modify<sp/>my<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">6:<sp/><sp/><sp/><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflows[i]);<sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>my<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">7:<sp/><sp/><sp/>}).detach();</highlight></codeline>
-<codeline><highlight class="normal">8:<sp/>}</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/>2:</highlight></codeline>
+<codeline><highlight class="normal"><sp/>3:<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;10;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/>4:<sp/><sp/><sp/><ref refid="cpp/thread/thread" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread</ref>([i,<sp/>&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/>5:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...<sp/>modify<sp/>my<sp/>taskflow<sp/>at<sp/>i</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/>6:<sp/><sp/><sp/><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflows[i]);<sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>my<sp/>taskflow<sp/>at<sp/>i</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/>7:<sp/><sp/><sp/>}).detach();</highlight></codeline>
+<codeline><highlight class="normal"><sp/>8:<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/>9:</highlight></codeline>
+<codeline><highlight class="normal">10:<sp/>executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="ExecuteTaskflow_1ObserveThreadActivities">
