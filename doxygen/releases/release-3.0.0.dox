@@ -1,14 +1,12 @@
 namespace tf {
 
-/** @page release-3-0-0 Release 3.0.0 (Master)
+/** @page release-3-0-0 Release 3.0.0 (2021/01/01)
 
-%Taskflow 3.0.0 is the newest developing line to new features and improvements 
-we continue to support.
-It is also where this documentation is generated.
-Many things are considered @em experimental and may change or break from time to time.
-While it may be difficult to be keep all things consistent when introducing new features, 
-we continue to try our best to ensure backward compatibility.
+%Taskflow 3.0.0 is the 1st release in the 3.x line! 
+This release includes several new changes such as CPU-GPU tasking, algorithm collection,
+enhanced web-based profiler, documentation, and unit tests.
 
+@note
 Starting from v3, we have migrated the codebase to the @CPP17 standard
 to largely improve the expressivity and efficiency of the codebase.
 
@@ -16,7 +14,7 @@ to largely improve the expressivity and efficiency of the codebase.
 
 @section release-3-0-0_download Download
 
-To download the newest version of %Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
+%Taskflow 3.0.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v3.0.0">here</a>.
 
 @section release-3-0-0_system_requirements System Requirements
 
@@ -34,7 +32,7 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @section release-3-0-0_working_items Working Items
 
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
-@li adding methods for updating tf::cudaFlow (with unittests)
+@li adding methods for updating tf::cudaFlow (with unit tests)
 @li adding support for @cuBLAS
 @li adding support for @cuDNN
 @li adding support for SYCL (ComputeCpp and DPC++)

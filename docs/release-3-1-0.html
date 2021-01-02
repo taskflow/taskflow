@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Release Notes &raquo; Release Roadmap | Taskflow QuickStart</title>
+  <title>Release Notes &raquo; Release 3.1.0 (Master) | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
@@ -47,15 +47,38 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>
           <span class="m-breadcrumb"><a href="Releases.html">Release Notes</a> &raquo;</span>
-          Release Roadmap
+          Release 3.1.0 (Master)
         </h1>
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
-            <li><a href="#MilestoneSummary">Milestone Summary</a></li>
+            <li><a href="#release-3-1-0_download">Download</a></li>
+            <li><a href="#release-3-1-0_system_requirements">System Requirements</a></li>
+            <li><a href="#release-3-1-0_working_items">Working Items</a></li>
+            <li>
+              <a href="#release-3-1-0_new_features">New Features</a>
+              <ul>
+                <li><a href="#release-3-1-0_taskflow_core">Taskflow Core</a></li>
+                <li><a href="#release-3-1-0_cudaflow">cudaFlow</a></li>
+                <li><a href="#release-3-1-0_utilities">Utilities</a></li>
+                <li><a href="#release-3-1-0_profiler">Taskflow Profiler (TFProf)</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="#release-3-1-0_new_algorithms">New Algorithms</a>
+              <ul>
+                <li><a href="#release-3-1-0_cpu_algorithms">CPU Algorithms</a></li>
+                <li><a href="#release-3-1-0_gpu_algorithms">GPU Algorithms</a></li>
+              </ul>
+            </li>
+            <li><a href="#release-3-1-0_bug_fixes">Bug Fixes</a></li>
+            <li><a href="#release-3-1-0_breaking_changes">Breaking Changes</a></li>
+            <li><a href="#release-3-1-0_deprecated_items">Deprecated and Removed Items</a></li>
+            <li><a href="#release-3-1-0_documentation">Documentation</a></li>
+            <li><a href="#release-3-1-0_miscellaneous_items">Miscellaneous Items</a></li>
           </ul>
         </div>
-<p>This page describes the upcoming milestones of the Taskflow project.</p><img class="m-image" src="roadmap.png" alt="Image" /><section id="MilestoneSummary"><h2><a href="#MilestoneSummary">Milestone Summary</a></h2><p>The table below summarizes the milestones of Taskflow we plan to achieve by the end of 2021. Each milestone releases technical items that significantly enhances the capability of Taskflow.</p><table class="m-table"><thead><tr><th>Milestone</th><th>Release</th><th>Time of Arrival</th></tr></thead><tbody><tr><td>Design a distributed tasking interface with scheduling</td><td>v3.x</td><td>2021/12/01</td></tr><tr><td>Integrate OpenCL and SYCL to tf::syclFlow</td><td>v3.x</td><td>(under discussion with Codeplay)</td></tr><tr><td>Integrate <a href="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</a> into <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a></td><td>v3.0</td><td><s>2020/01/01</s> (done)</td></tr><tr><td>Support building cudaFlow through stream capture</td><td>v3.0</td><td><s>2021/01/01</s> (done)</td></tr><tr><td>Support profiling large data in tfprof</td><td>v3.0</td><td><s>2021/01/01</s> (done)</td></tr><tr><td>Support cancelling Taskflow</td><td>v3.0</td><td><s>2021/01/01</s> (done)</td></tr><tr><td>Support limiting maximum concurrency</td><td>v3.0</td><td><s>2021/01/01</s> (done)</td></tr><tr><td>Migrate the codebase to C++17</td><td>v3.0</td><td><s>2021/01/01</s> (done)</td></tr></tbody></table><p>Along with the project development, we expect to have multiple releases for feature requests, bug fixes, and technical improvement.</p></section>
+<p>Taskflow 3.1.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <em>experimental</em> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</p><section id="release-3-1-0_download"><h2><a href="#release-3-1-0_download">Download</a></h2><p>To download the newest version of Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">Taskflow&#x27;s GitHub</a>.</p></section><section id="release-3-1-0_system_requirements"><h2><a href="#release-3-1-0_system_requirements">System Requirements</a></h2><p>To use Taskflow v3.0.0, you need a compiler that supports C++17:</p><ul><li>GNU C++ Compiler at least v7.0 with -std=c++17</li><li>Clang C++ Compiler at least v6.0 with -std=c++17</li><li>Microsoft Visual Studio at least v19.27 with /std:c++17</li><li>AppleClang Xode Version at least v12.0 with -std=c++17</li><li>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17</li><li>Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17</li></ul><p>Taskflow works on Linux, Windows, and Mac OS X.</p></section><section id="release-3-1-0_working_items"><h2><a href="#release-3-1-0_working_items">Working Items</a></h2><ul><li>enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)</li><li>enhancing cudaFlow and scheduling algorithms for capturer</li><li>adding support for SYCL (ComputeCpp and DPC++)</li></ul></section><section id="release-3-1-0_new_features"><h2><a href="#release-3-1-0_new_features">New Features</a></h2><section id="release-3-1-0_taskflow_core"><h3><a href="#release-3-1-0_taskflow_core">Taskflow Core</a></h3></section><section id="release-3-1-0_cudaflow"><h3><a href="#release-3-1-0_cudaflow">cudaFlow</a></h3></section><section id="release-3-1-0_utilities"><h3><a href="#release-3-1-0_utilities">Utilities</a></h3></section><section id="release-3-1-0_profiler"><h3><a href="#release-3-1-0_profiler">Taskflow Profiler (TFProf)</a></h3></section></section><section id="release-3-1-0_new_algorithms"><h2><a href="#release-3-1-0_new_algorithms">New Algorithms</a></h2><section id="release-3-1-0_cpu_algorithms"><h3><a href="#release-3-1-0_cpu_algorithms">CPU Algorithms</a></h3></section><section id="release-3-1-0_gpu_algorithms"><h3><a href="#release-3-1-0_gpu_algorithms">GPU Algorithms</a></h3></section></section><section id="release-3-1-0_bug_fixes"><h2><a href="#release-3-1-0_bug_fixes">Bug Fixes</a></h2></section><section id="release-3-1-0_breaking_changes"><h2><a href="#release-3-1-0_breaking_changes">Breaking Changes</a></h2></section><section id="release-3-1-0_deprecated_items"><h2><a href="#release-3-1-0_deprecated_items">Deprecated and Removed Items</a></h2></section><section id="release-3-1-0_documentation"><h2><a href="#release-3-1-0_documentation">Documentation</a></h2></section><section id="release-3-1-0_miscellaneous_items"><h2><a href="#release-3-1-0_miscellaneous_items">Miscellaneous Items</a></h2></section>
       </div>
     </div>
   </div>

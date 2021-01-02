@@ -11,7 +11,8 @@ that are otherwise difficult to do with existing frameworks.
 
 @section CreateAConditionTask Create a Condition Task
 
-A condition task evalutes a set of instructions and returns an integer index of the next immediate successor to execute. 
+A condition task evalutes a set of instructions and returns an integer index 
+of the next successor task to execute. 
 The index is defined with respect to the order of its successor construction.
 The following example creates an if-else block using a single condition task.
 
@@ -34,14 +35,15 @@ The following example creates an if-else block using a single condition task.
 
 Line 5 creates a condition task @c cond and line 11 creates two dependencies 
 from @c cond to two other tasks, @c yes and @c no.
-With this order, when @c cond returns 0, the execution moves on to @c yes.
+With this order, when @c cond returns 0, the execution moves on to task @c yes.
+When @c cond returns 1, the execution moves on to task @c no.
 
 @attention
 It is your responsibility to ensure the return of a condition task goes to
 a correct successor task. If the return falls beyond the range of the successors,
 the executor will not schedule any tasks.
 
-Condition task can go cyclic to describe iterative control flow.
+Condition task can go cyclic to describe @em iterative control flow.
 The example below implements a simple yet commonly used feedback loop through
 a condition task (line 7-10) that returns
 a random binary value.
@@ -70,10 +72,8 @@ or otherwise to @c stop.
 <!-- @image html images/conditional-tasking-1.svg width=45% -->
 @dotfile images/conditional-tasking-1.dot
 
-
-
-A taskflow of complex control flow often just takes a few lines of code to implement,
-and different control flow blocks may run in parallel.
+A taskflow of complex control flow often just takes a few lines of code 
+to implement, and different control flow blocks may run in parallel.
 The code below creates another taskflow with three condition tasks.
 
 @code{.cpp}
@@ -127,7 +127,7 @@ You can use condition tasks to create cycles as long as the graph does not intro
 
 @note
 Conditional tasking lets you make in-task control-flow decisions to
-enable end-to-end parallelism, 
+enable @em end-to-end parallelism, 
 instead of resorting to client-side partition or synchronizing your task graph
 at the decision points of control flow.
 

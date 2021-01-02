@@ -2,7 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="release-3-0-0" kind="page">
     <compoundname>release-3-0-0</compoundname>
-    <title>Release 3.0.0 (Master)</title>
+    <title>Release 3.0.0 (2021/01/01)</title>
     <tableofcontents>
       <tocsect>
         <name>Download</name>
@@ -76,11 +76,13 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 3.0.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</para>
-<para>Starting from v3, we have migrated the codebase to the <ulink url="https://en.wikipedia.org/wiki/C%2B%2B17">C++17</ulink> standard to largely improve the expressivity and efficiency of the codebase.</para>
+<para>Taskflow 3.0.0 is the 1st release in the 3.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para>
+<para><simplesect kind="note"><para>Starting from v3, we have migrated the codebase to the <ulink url="https://en.wikipedia.org/wiki/C%2B%2B17">C++17</ulink> standard to largely improve the expressivity and efficiency of the codebase.</para>
+</simplesect>
+</para>
 <sect1 id="release-3-0-0_1release-3-0-0_download">
 <title>Download</title>
-<para>To download the newest version of Taskflow, please clone from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
+<para>Taskflow 3.0.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.0.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-3-0-0_1release-3-0-0_system_requirements">
 <title>System Requirements</title>
@@ -106,7 +108,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para><itemizedlist>
 <listitem><para>enhancing the taskflow profiler (<ulink url="https://github.com/taskflow/tfprof">TFProf</ulink>) </para>
 </listitem>
-<listitem><para>adding methods for updating <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> (with unittests) </para>
+<listitem><para>adding methods for updating <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> (with unit tests) </para>
 </listitem>
 <listitem><para>adding support for <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> </para>
 </listitem>

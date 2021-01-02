@@ -45,7 +45,7 @@
 <para>Parallel workloads often require making control-flow decisions across dependent tasks. Taskflow supports an very efficient interface of conditional tasking for users to implement general control flow such as dynamic flow, cycles, and conditionals that are otherwise difficult to do with existing frameworks.</para>
 <sect1 id="ConditionalTasking_1CreateAConditionTask">
 <title>Create a Condition Task</title>
-<para>A condition task evalutes a set of instructions and returns an integer index of the next immediate successor to execute. The index is defined with respect to the order of its successor construction. The following example creates an if-else block using a single condition task.</para>
+<para>A condition task evalutes a set of instructions and returns an integer index of the next successor task to execute. The index is defined with respect to the order of its successor construction. The following example creates an if-else block using a single condition task.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[init,<sp/>cond,<sp/>yes,<sp/>no]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
@@ -61,10 +61,10 @@
 </programlisting></para>
 <para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/conditional-tasking-if-else.dot"></dotfile>
 </para>
-<para>Line 5 creates a condition task <computeroutput>cond</computeroutput> and line 11 creates two dependencies from <computeroutput>cond</computeroutput> to two other tasks, <computeroutput>yes</computeroutput> and <computeroutput>no</computeroutput>. With this order, when <computeroutput>cond</computeroutput> returns 0, the execution moves on to <computeroutput>yes</computeroutput>.</para>
+<para>Line 5 creates a condition task <computeroutput>cond</computeroutput> and line 11 creates two dependencies from <computeroutput>cond</computeroutput> to two other tasks, <computeroutput>yes</computeroutput> and <computeroutput>no</computeroutput>. With this order, when <computeroutput>cond</computeroutput> returns 0, the execution moves on to task <computeroutput>yes</computeroutput>. When <computeroutput>cond</computeroutput> returns 1, the execution moves on to task <computeroutput>no</computeroutput>.</para>
 <para><simplesect kind="attention"><para>It is your responsibility to ensure the return of a condition task goes to a correct successor task. If the return falls beyond the range of the successors, the executor will not schedule any tasks.</para>
 </simplesect>
-Condition task can go cyclic to describe iterative control flow. The example below implements a simple yet commonly used feedback loop through a condition task (line 7-10) that returns a random binary value. If the return value from <computeroutput>cond</computeroutput> is <computeroutput>0</computeroutput>, it loops back to itself, or otherwise to <computeroutput>stop</computeroutput>.</para>
+Condition task can go cyclic to describe <emphasis>iterative</emphasis> control flow. The example below implements a simple yet commonly used feedback loop through a condition task (line 7-10) that returns a random binary value. If the return value from <computeroutput>cond</computeroutput> is <computeroutput>0</computeroutput>, it loops back to itself, or otherwise to <computeroutput>stop</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){}).name(</highlight><highlight class="stringliteral">&quot;init&quot;</highlight><highlight class="normal">);</highlight></codeline>
@@ -123,7 +123,7 @@ Condition task can go cyclic to describe iterative control flow. The example bel
 <para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/conditional-tasking-2.dot"></dotfile>
 </para>
 <para>You can use condition tasks to create cycles as long as the graph does not introduce task race during execution. However, cycles are not allowed in non-condition tasks.</para>
-<para><simplesect kind="note"><para>Conditional tasking lets you make in-task control-flow decisions to enable end-to-end parallelism, instead of resorting to client-side partition or synchronizing your task graph at the decision points of control flow.</para>
+<para><simplesect kind="note"><para>Conditional tasking lets you make in-task control-flow decisions to enable <emphasis>end-to-end</emphasis> parallelism, instead of resorting to client-side partition or synchronizing your task graph at the decision points of control flow.</para>
 </simplesect>
 </para>
 </sect1>
