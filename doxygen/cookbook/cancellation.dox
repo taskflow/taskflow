@@ -166,7 +166,7 @@ else {
 Canceling the execution of a running taskflow has the following limitations:
   + Cancellation is non-preemptive. A running task will not be cancelled until it finishes.
   + Cancelling a taskflow with tasks
-    acquiring and/or releasing tf::Semaphore results in undefined behavior.
+    acquiring and/or releasing tf::Semaphore results is currently not supported.
 
 We may overcome these limitations in the future releases.
 

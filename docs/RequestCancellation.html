@@ -138,7 +138,7 @@
 <span class="p">}</span>
 <span class="k">else</span> <span class="p">{</span>
   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;asynchronous task 1 returns &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">ret</span><span class="p">.</span><span class="n">value</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
-<span class="p">}</span></pre></section><section id="LimitationsOfCancellation"><h2><a href="#LimitationsOfCancellation">Limitations of Cancellation</a></h2><p>Canceling the execution of a running taskflow has the following limitations:</p><ul><li>Cancellation is non-preemptive. A running task will not be cancelled until it finishes.</li><li>Cancelling a taskflow with tasks acquiring and/or releasing <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a> results in undefined behavior.</li></ul><p>We may overcome these limitations in the future releases.</p></section>
+<span class="p">}</span></pre></section><section id="LimitationsOfCancellation"><h2><a href="#LimitationsOfCancellation">Limitations of Cancellation</a></h2><p>Canceling the execution of a running taskflow has the following limitations:</p><ul><li>Cancellation is non-preemptive. A running task will not be cancelled until it finishes.</li><li>Cancelling a taskflow with tasks acquiring and/or releasing <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a> results is currently not supported.</li></ul><p>We may overcome these limitations in the future releases.</p></section>
       </div>
     </div>
   </div>

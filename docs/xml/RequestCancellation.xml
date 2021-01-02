@@ -134,7 +134,7 @@ For instance, the following code results in undefined behavior:</para>
 <title>Limitations of Cancellation</title>
 <para>Canceling the execution of a running taskflow has the following limitations:<itemizedlist>
 <listitem><para>Cancellation is non-preemptive. A running task will not be cancelled until it finishes.</para>
-</listitem><listitem><para>Cancelling a taskflow with tasks acquiring and/or releasing <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> results in undefined behavior.</para>
+</listitem><listitem><para>Cancelling a taskflow with tasks acquiring and/or releasing <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> results is currently not supported.</para>
 </listitem></itemizedlist>
 </para>
 <para>We may overcome these limitations in the future releases. </para>
