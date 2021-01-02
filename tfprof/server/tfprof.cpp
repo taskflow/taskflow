@@ -267,7 +267,7 @@ class Database {
         os << "{";
         const auto& task = *crits[cursor].key;
         os << "\"name\":\"" << task.name << "\","
-           << "\"type\":\"" << task_type_to_string(task.type) << "\","
+           << "\"type\":\"" << to_string(task.type) << "\","
            << "\"span\": [" << std::chrono::duration_cast<D>(task.beg-_minX).count() 
                             << "," 
                             << std::chrono::duration_cast<D>(task.end-_minX).count() 
@@ -277,7 +277,7 @@ class Database {
         // calculate load
         size_t t = std::chrono::duration_cast<D>(task.span()).count();
         T += t;
-        loads[task.type] += t;
+        loads[static_cast<int>(task.type)] += t;
       }
       os << "],\"tasks\":\"" << n << "\",";
 
@@ -285,9 +285,9 @@ class Database {
       os << "\"load\":[";
       size_t x = 0;
       for(size_t k=0; k<TASK_TYPES.size(); k++) {
-        auto type = TASK_TYPES[k];
+        auto type = static_cast<int>(TASK_TYPES[k]);
         if(k) os << ",";
-        os << "{\"type\":\"" << task_type_to_string(type) << "\","
+        os << "{\"type\":\"" << to_string(TASK_TYPES[k]) << "\","
            << "\"span\":[" << x << "," << x+loads[type] << "],"
            << "\"ratio\":" << (T>0 ? loads[type]*100.0f/T : 0) << "}";
         x+=loads[type];
@@ -405,7 +405,7 @@ class Database {
         if(cluster.f == cluster.t) {
           const auto& task = _wd[w[i]].tasks[cluster.f];
           os << "\"name\":\"" << task.name << "\","
-             << "\"type\":\"" << task_type_to_string(task.type) << "\","
+             << "\"type\":\"" << to_string(task.type) << "\","
              << "\"span\": [" << std::chrono::duration_cast<D>(task.beg-_minX).count()
                               << "," 
                               << std::chrono::duration_cast<D>(task.end-_minX).count() 
@@ -428,7 +428,7 @@ class Database {
         for(size_t j=cluster.f; j<=cluster.t; j++) {
           size_t t = std::chrono::duration_cast<D>(_wd[w[i]].tasks[j].span()).count();
           T += t;
-          loads[_wd[w[i]].tasks[j].type] += t;
+          loads[static_cast<int>(_wd[w[i]].tasks[j].type)] += t;
         }
       }
       os << "],";  // end segs
@@ -437,9 +437,9 @@ class Database {
       os << "\"load\":[";
       size_t x = 0;
       for(size_t k=0; k<TASK_TYPES.size(); k++) {
-        auto type = TASK_TYPES[k];
+        auto type = static_cast<int>(TASK_TYPES[k]);
         if(k) os << ",";
-        os << "{\"type\":\"" << task_type_to_string(type) << "\","
+        os << "{\"type\":\"" << to_string(TASK_TYPES[k]) << "\","
            << "\"span\":[" << x << "," << x+loads[type] << "],"
            << "\"ratio\":" << (T>0 ? loads[type]*100.0f/T : 0) << "}";
         x+=loads[type];

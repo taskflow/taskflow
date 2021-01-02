@@ -8,9 +8,9 @@ int main() {
   tf::Executor executor;
   tf::Taskflow taskflow("cancel");
   
-  // create a taskflow graph of 1000 tasks each of 1 second
-  // ideally, the taskflow completes in 1000/P seconds, where P
-  // is the number of workers
+  // We create a taskflow graph of 1000 tasks each of 1 second.
+  // Ideally, the taskflow completes in 1000/P seconds, where P
+  // is the number of workers.
   for(int i=0; i<1000; i++) {
     taskflow.emplace([](){ 
       std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -21,7 +21,7 @@ int main() {
   auto beg = std::chrono::steady_clock::now();
   tf::Future fu = executor.run(taskflow);
 
-  // submit a cancel request
+  // submit a cancel request to cancel all 1000 tasks.
   fu.cancel();
 
   // wait until the cancellation finishes

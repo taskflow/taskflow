@@ -13,7 +13,7 @@ template <typename T>
 cudaTask cublasFlowCapturer::amax(
   int n, const T* x, int incx, int* result
 ) {
-  return on([this, n, x, incx, result] (cudaStream_t stream) mutable {
+  return factory()->on([this, n, x, incx, result] (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
     if constexpr(std::is_same_v<T, float>) {
@@ -35,7 +35,7 @@ template <typename T>
 cudaTask cublasFlowCapturer::amin(
   int n, const T* x, int incx, int* result
 ) {
-  return on([this, n, x, incx, result] (cudaStream_t stream) mutable {
+  return factory()->on([this, n, x, incx, result] (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
     if constexpr(std::is_same_v<T, float>) {
@@ -56,7 +56,7 @@ template <typename T>
 cudaTask cublasFlowCapturer::asum(
   int n, const T* x, int incx, T* result
 ) {
-  return on([this, n, x, incx, result] (cudaStream_t stream) mutable {
+  return factory()->on([this, n, x, incx, result] (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
     if constexpr(std::is_same_v<T, float>) {
@@ -78,7 +78,7 @@ template <typename T>
 cudaTask cublasFlowCapturer::axpy(
   int n, const T *alpha, const T *x, int incx, T *y, int incy
 ) {
-  return on([this, n, alpha, x, incx, y, incy] (cudaStream_t stream) mutable {
+  return factory()->on([this, n, alpha, x, incx, y, incy] (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
     if constexpr(std::is_same_v<T, float>) {
@@ -99,7 +99,7 @@ template <typename T>
 cudaTask cublasFlowCapturer::vcopy(
   int n, const T* x, int incx, T* y, int incy
 ) {
-  return on([this, n, x, incx, y, incy] (cudaStream_t stream) mutable {
+  return factory()->on([this, n, x, incx, y, incy] (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
     if constexpr(std::is_same_v<T, float>) {
@@ -121,7 +121,7 @@ template <typename T>
 cudaTask cublasFlowCapturer::dot(
   int n, const T* x, int incx, const T* y, int incy, T* result
 ) {
-  return on([this, n, x, incx, y, incy, result] (cudaStream_t stream) mutable {
+  return factory()->on([this, n, x, incx, y, incy, result] (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
     if constexpr(std::is_same_v<T, float>) {
@@ -139,7 +139,7 @@ cudaTask cublasFlowCapturer::dot(
 
 template <typename T>
 cudaTask cublasFlowCapturer::nrm2(int n, const T* x, int incx, T* result) {
-  return on([this, n, x, incx, result] (cudaStream_t stream) mutable {
+  return factory()->on([this, n, x, incx, result] (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
     if constexpr(std::is_same_v<T, float>) {
@@ -159,7 +159,7 @@ cudaTask cublasFlowCapturer::nrm2(int n, const T* x, int incx, T* result) {
 // Function: scal
 template <typename T>
 cudaTask cublasFlowCapturer::scal(int n, const T* scalar, T* x, int incx) {
-  return on([this, n, scalar, x, incx] (cudaStream_t stream) mutable {
+  return factory()->on([this, n, scalar, x, incx] (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
     if constexpr(std::is_same_v<T, float>) {
@@ -177,7 +177,7 @@ cudaTask cublasFlowCapturer::scal(int n, const T* scalar, T* x, int incx) {
 
 template <typename T>
 cudaTask cublasFlowCapturer::swap(int n, T* x, int incx, T* y, int incy) {
-  return on([this, n, x, incx, y, incy] (cudaStream_t stream) mutable {
+  return factory()->on([this, n, x, incx, y, incy] (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
     if constexpr(std::is_same_v<T, float>) {

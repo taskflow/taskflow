@@ -6,6 +6,7 @@ list(APPEND TF_CUDA_UNITTESTS
   cuda_kmeans 
   cuda_algorithm
   cuda_update
+  cuda_capturer_optimizer
 )
 
 foreach(cudatest IN LISTS TF_CUDA_UNITTESTS)

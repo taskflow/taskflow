@@ -332,7 +332,9 @@ class cudaGraph : public CustomGraphBase {
   friend class cudaFlowCapturerBase;
   friend class cudaFlowCapturer;
   friend class cudaFlow;
-  
+  friend class cudaCapturingBase;
+  friend class cudaSequentialCapturing;
+  friend class cudaRoundRobinCapturing;
   friend class Taskflow;
   friend class Executor;
 
@@ -350,20 +352,18 @@ class cudaGraph : public CustomGraphBase {
     template <typename... ArgsT>
     cudaNode* emplace_back(ArgsT&&...);
 
-    void clear();
-
     bool empty() const;
 
+    void clear();
     void dump(std::ostream&, const void*, const std::string&) const override final;
 
   private:
 
     cudaGraph_t _native_handle {nullptr};
-    
+
     // TODO: nvcc complains deleter of unique_ptr
     //std::vector<std::unique_ptr<cudaNode>> _nodes;
     std::vector<cudaNode*> _nodes;
-    std::vector<cudaNode*> _toposort();
 };
 
 // ----------------------------------------------------------------------------
@@ -380,7 +380,9 @@ class cudaNode {
   friend class cudaFlow;
   friend class cudaFlowCapturer;
   friend class cudaFlowCapturerBase;
-
+  friend class cudaCapturingBase;
+  friend class cudaSequentialCapturing;
+  friend class cudaRoundRobinCapturing;
   friend class Taskflow;
   friend class Executor;
   
@@ -426,8 +428,12 @@ class cudaNode {
     
     template <typename C>
     Capture(C&&);
-    
+
     std::function<void(cudaStream_t)> work;
+
+    cudaEvent_t event {nullptr};
+    size_t level;
+    size_t idx;
   };
 
   using handle_t = std::variant<
@@ -445,13 +451,13 @@ class cudaNode {
   public:
   
   // variant index
-  constexpr static auto CUDA_EMPTY_TASK   = get_index_v<Empty, handle_t>;
-  constexpr static auto CUDA_HOST_TASK    = get_index_v<Host, handle_t>;
-  constexpr static auto CUDA_MEMSET_TASK  = get_index_v<Memset, handle_t>;
-  constexpr static auto CUDA_MEMCPY_TASK  = get_index_v<Memcpy, handle_t>; 
-  constexpr static auto CUDA_KERNEL_TASK  = get_index_v<Kernel, handle_t>;
-  constexpr static auto CUDA_SUBFLOW_TASK = get_index_v<Subflow, handle_t>;
-  constexpr static auto CUDA_CAPTURE_TASK = get_index_v<Capture, handle_t>;
+  constexpr static auto EMPTY   = get_index_v<Empty, handle_t>;
+  constexpr static auto HOST    = get_index_v<Host, handle_t>;
+  constexpr static auto MEMSET  = get_index_v<Memset, handle_t>;
+  constexpr static auto MEMCPY  = get_index_v<Memcpy, handle_t>; 
+  constexpr static auto KERNEL  = get_index_v<Kernel, handle_t>;
+  constexpr static auto SUBFLOW = get_index_v<Subflow, handle_t>;
+  constexpr static auto CAPTURE = get_index_v<Capture, handle_t>;
 
     cudaNode() = delete;
     
@@ -460,8 +466,6 @@ class cudaNode {
 
   private:
     
-    int _state;
-
     cudaGraph& _graph;
 
     std::string _name;
@@ -471,12 +475,13 @@ class cudaNode {
     cudaGraphNode_t _native_handle {nullptr};
 
     std::vector<cudaNode*> _successors;
+    std::vector<cudaNode*> _dependents;
 
     void _precede(cudaNode*);
-    void _set_state(int);
-    void _unset_state(int);
-    void _clear_state();
-    bool _has_state(int) const;
+    //void _set_state(int);
+    //void _unset_state(int);
+    //void _clear_state();
+    //bool _has_state(int) const;
 };
 
 // ----------------------------------------------------------------------------
@@ -516,9 +521,10 @@ cudaNode::cudaNode(cudaGraph& graph, ArgsT&&... args) :
 inline void cudaNode::_precede(cudaNode* v) {
 
   _successors.push_back(v);
+  v->_dependents.push_back(this);
 
   // capture node doesn't have the native graph yet
-  if(_handle.index() != CUDA_CAPTURE_TASK) {
+  if(_handle.index() != cudaNode::CAPTURE) {
     TF_CHECK_CUDA(
       ::cudaGraphAddDependencies(
         _graph._native_handle, &_native_handle, &v->_native_handle, 1
@@ -528,25 +534,25 @@ inline void cudaNode::_precede(cudaNode* v) {
   }
 }
     
-// Procedure: _set_state
-inline void cudaNode::_set_state(int flag) { 
-  _state |= flag; 
-}
-
-// Procedure: _unset_state
-inline void cudaNode::_unset_state(int flag) { 
-  _state &= ~flag; 
-}
-
-// Procedure: _clear_state
-inline void cudaNode::_clear_state() { 
-  _state = 0; 
-}
-
-// Function: _has_state
-inline bool cudaNode::_has_state(int flag) const {
-  return _state & flag;
-}
+//// Procedure: _set_state
+//inline void cudaNode::_set_state(int flag) { 
+//  _state |= flag; 
+//}
+//
+//// Procedure: _unset_state
+//inline void cudaNode::_unset_state(int flag) { 
+//  _state &= ~flag; 
+//}
+//
+//// Procedure: _clear_state
+//inline void cudaNode::_clear_state() { 
+//  _state = 0; 
+//}
+//
+//// Function: _has_state
+//inline bool cudaNode::_has_state(int flag) const {
+//  return _state & flag;
+//}
 
 // ----------------------------------------------------------------------------
 // cudaGraph definitions
@@ -611,47 +617,6 @@ cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
   return node;
 }
 
-// Procedure: _toposort
-// topological sort iteratively
-inline std::vector<cudaNode*> cudaGraph::_toposort() {
-
-  std::stack<cudaNode*> dfs;
-  std::vector<cudaNode*> res;
-
-  for(auto node : _nodes) {
-    node->_unset_state(cudaNode::STATE_VISITED);
-  }
-
-  for(auto node : _nodes) {
-    if(!node->_has_state(cudaNode::STATE_VISITED)) {
-      dfs.push(node);
-    }
-
-    while(!dfs.empty()) {
-      auto u = dfs.top();
-      dfs.pop();
-
-      if(u->_has_state(cudaNode::STATE_VISITED)){
-        res.push_back(u);
-        continue;
-      }
-
-      u->_set_state(cudaNode::STATE_VISITED);
-      dfs.push(u);
-
-      for(auto s : u->_successors) {
-        if(!(s->_has_state(cudaNode::STATE_VISITED))) {
-          dfs.push(s);
-        }
-      }
-    }
-  }
-
-  std::reverse(res.begin(), res.end());
-  
-  return res;
-}
-
 // Procedure: dump the graph to a DOT format
 inline void cudaGraph::dump(
   std::ostream& os, const void* root, const std::string& root_name
@@ -701,14 +666,14 @@ inline void cudaGraph::dump(
       }
           
       switch(v->_handle.index()) {
-        case cudaNode::CUDA_KERNEL_TASK:
+        case cudaNode::KERNEL:
           os << " style=\"filled\""
              << " color=\"white\" fillcolor=\"black\""
              << " fontcolor=\"white\""
              << " shape=\"box3d\"";
         break;
 
-        case cudaNode::CUDA_SUBFLOW_TASK:
+        case cudaNode::SUBFLOW:
           stack.push(std::make_tuple(
             &std::get<cudaNode::Subflow>(v->_handle).graph, v, l+1)
           );

@@ -389,8 +389,10 @@ We do not include all the cuBLAS functions but users can easily
 make extension.
 tf::cublasFlowCapturer is derived from tf::cudaFlowCapturerBase
 and is created from a factory interface tf::cudaFlowCapturer::make_capturer.
-You can use all the base methods tf::cudaFlowCapturerBase::on to capture
-other cuBLAS functions that are currently not available in tf::cudaFlowCapturer.
+Each tf::cudaFlowCapturerBase object has a pointer accessible by
+tf::cudaFlowCapturerBase::factory in which you can
+use tf::cudaFlowCapturer::on together with tf::cublasFlowCapturer::native_handle 
+to capture other cuBLAS functions that are currently not available in tf::cudaFlowCapturer.
 The following example captures the Hermitian rank-k update using
 @c cublasCherkx.
 
@@ -400,7 +402,7 @@ taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
   auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
 
   // use the base method tf::cudaFlowCapturer::on to capture other functions
-  blas->on([&](cudaStream_t stream){
+  blas->factory()->on([&](cudaStream_t stream){
     cublasSetStream(blas->native_handle(), stream);
     cublasCherkx(blas->native_handle(), your_args...);
   }).name("Hermitian rank-k update");

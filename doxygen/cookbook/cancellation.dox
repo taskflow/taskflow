@@ -30,10 +30,10 @@ for(int i=0; i<1000; i++) {
 // submit the taskflow
 tf::Future fu = executor.run(taskflow);
 
-// request to cancel the submitted execution above
+// request to cancel the above submitted execution
 fu.cancel();
 
-// wait until the cancellation finishes
+// wait until the cancellation completes
 fu.get();
 @endcode
 
@@ -160,6 +160,15 @@ else {
   std::cout << "asynchronous task 1 returns " << ret.value() << '\n';
 }
 @endcode
+
+@section LimitationsOfCancellation Limitations of Cancellation
+
+Canceling the execution of a running taskflow has the following limitations:
+  + Cancellation is non-preemptive. A running task will not be cancelled until it finishes.
+  + Cancelling a taskflow with tasks
+    acquiring and/or releasing tf::Semaphore results in undefined behavior.
+
+We may overcome these limitations in the future releases.
 
 */
 

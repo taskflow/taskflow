@@ -12,7 +12,8 @@ int main() {
   taskflow.emplace([&](tf::Subflow& sf){
     for(int i=0; i<10; i++) {
       // Here, we use "silent_async" instead of "async" because we do
-      // not are the return value.
+      // not care the return value. The method "silent_async" gives us
+      // less overhead compared to "async".
       // The 10 asynchronous tasks run concurrently.
       sf.silent_async([&](){
         std::cout << "async task from the subflow\n";

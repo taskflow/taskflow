@@ -18,7 +18,7 @@ cudaTask cublasFlowCapturer::gemv(
   const T *beta,
   T *y, int incy
 ) {
-  return on([this, trans, m, n, alpha, A, lda, x, incx, beta, y, incy] 
+  return factory()->on([this, trans, m, n, alpha, A, lda, x, incx, beta, y, incy] 
   (cudaStream_t stream) mutable {
     _stream(stream);
 
@@ -66,7 +66,7 @@ cudaTask cublasFlowCapturer::trmv(
   int n, const T* A, int lda,
   T *x, int incx
 ) {
-  return on([this, uplo, tran, diag, n, A, lda, x, incx] 
+  return factory()->on([this, uplo, tran, diag, n, A, lda, x, incx] 
   (cudaStream_t stream) mutable {
 
     _stream(stream);
@@ -108,7 +108,7 @@ cudaTask cublasFlowCapturer::trsv(
   int n, const T* A, int lda,
   T *x, int incx
 ) {
-  return on([this, uplo, tran, diag, n, A, lda, x, incx] 
+  return factory()->on([this, uplo, tran, diag, n, A, lda, x, incx] 
   (cudaStream_t stream) mutable {
 
     _stream(stream);
@@ -153,7 +153,7 @@ cudaTask cublasFlowCapturer::symv(
   const T *beta,
   T *y, int incy
 ) {
-  return on([this, uplo, n, alpha, A, lda, x, incx, beta, y, incy] 
+  return factory()->on([this, uplo, n, alpha, A, lda, x, incx, beta, y, incy] 
   (cudaStream_t stream) mutable {
 
     _stream(stream);
@@ -200,7 +200,7 @@ cudaTask cublasFlowCapturer::syr(
   T *A, int lda
 ) {
 
-  return on([this, uplo, n, alpha, x, incx, A, lda] 
+  return factory()->on([this, uplo, n, alpha, x, incx, A, lda] 
   (cudaStream_t stream) mutable {
 
     _stream(stream);
@@ -246,7 +246,7 @@ cudaTask cublasFlowCapturer::syr2(
   T *A, int lda
 ) {
 
-  return on([this, uplo, n, alpha, x, incx, y, incy, A, lda] 
+  return factory()->on([this, uplo, n, alpha, x, incx, y, incy, A, lda] 
   (cudaStream_t stream) mutable {
 
     _stream(stream);

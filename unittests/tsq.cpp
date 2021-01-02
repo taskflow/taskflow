@@ -64,7 +64,7 @@ void tsq_test_owner() {
     std::vector<void*> gold(N);
 
     REQUIRE(queue.empty());
-    
+
     // push and pop
     for(size_t i=0; i<N; ++i) {
       gold[i] = &i;

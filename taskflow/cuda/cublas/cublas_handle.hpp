@@ -43,9 +43,12 @@ using cublasPerThreadHandlePool = cudaPerThreadDeviceObjectPool<
 >;
 
 /**
-@private per-thread cublas stream pool
+@private acquires the per-thread cublas stream pool
 */
-inline thread_local cublasPerThreadHandlePool cublas_per_thread_handle_pool;
+inline cublasPerThreadHandlePool& cublas_per_thread_handle_pool() {
+  thread_local cublasPerThreadHandlePool pool;
+  return pool;
+}
 
 // ----------------------------------------------------------------------------
 // cublasScopedPerThreadHandle definition
@@ -71,7 +74,7 @@ By default, the cublas handle has a pointer mode set to device
 that is required for capturing cublas kernels.
 The scoped per-thread cublas handle is primarily used by tf::cublasFlowCapturer.
 
-%cublasScopedPerThreadHandle is neither movable nor copyable.
+%cublasScopedPerThreadHandle is non-copyable.
  */
 class cublasScopedPerThreadHandle {
   
@@ -83,7 +86,7 @@ class cublasScopedPerThreadHandle {
   The constructor acquires a handle from a per-thread handle pool.
   */
   explicit cublasScopedPerThreadHandle(int d) : 
-    _ptr {cublas_per_thread_handle_pool.acquire(d)} {
+    _ptr {cublas_per_thread_handle_pool().acquire(d)} {
   }
   
   /**
@@ -92,7 +95,7 @@ class cublasScopedPerThreadHandle {
   The constructor acquires a handle from a per-thread handle pool.
   */
   cublasScopedPerThreadHandle() : 
-    _ptr {cublas_per_thread_handle_pool.acquire(cuda_get_device())} {
+    _ptr {cublas_per_thread_handle_pool().acquire(cuda_get_device())} {
   }
 
   /**
@@ -101,14 +104,16 @@ class cublasScopedPerThreadHandle {
   The destructor releases the handle to the per-thread handle pool.
   */
   ~cublasScopedPerThreadHandle() {
-    cublas_per_thread_handle_pool.release(std::move(_ptr));
+    if(_ptr) {
+      cublas_per_thread_handle_pool().release(std::move(_ptr));
+    }
   }
 
   /**
   @brief implicit conversion to the native cublas handle (cublasHandle_t)
    */
   operator cublasHandle_t () const {
-    return _ptr->object;
+    return _ptr->value;
   }
 
   /**
@@ -117,13 +122,30 @@ class cublasScopedPerThreadHandle {
   long use_count() const {
     return _ptr.use_count();
   }
+  
+  /**
+  @brief disabled copy constructor
+   */
+  cublasScopedPerThreadHandle(const cublasScopedPerThreadHandle&) = delete;
+  
+  /**
+  @brief default move constructor
+  */
+  cublasScopedPerThreadHandle(cublasScopedPerThreadHandle&&) = default;
+
+  /**
+  @brief disabled copy assignment
+  */
+  cublasScopedPerThreadHandle& operator = (const cublasScopedPerThreadHandle&) = delete;
+
+  /**
+  @brief default move assignment
+  */
+  cublasScopedPerThreadHandle& operator = (cublasScopedPerThreadHandle&&) = delete;
 
   private:
 
-  cublasScopedPerThreadHandle(const cublasScopedPerThreadHandle&) = delete;
-  cublasScopedPerThreadHandle(cublasScopedPerThreadHandle&&) = delete;
-
-  std::shared_ptr<cublasPerThreadHandlePool::cudaDeviceObject> _ptr;
+  std::shared_ptr<cublasPerThreadHandlePool::Object> _ptr;
 
 };
 

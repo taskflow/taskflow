@@ -12,7 +12,7 @@ list(APPEND TF_EXAMPLES
   parallel_sort
   run 
   composition
-  semaphore
+  limited_concurrency
   cancel
   cancel_async
 )

@@ -205,7 +205,7 @@ class ObserverInterface {
 /**
 @class: ChromeObserver
 
-@brief observer interface based on @ChromeTracing format
+@brief observer interface based on Chrome tracing format
 
 A tf::ChromeObserver inherits tf::ObserverInterface and defines methods to dump
 the observed thread activities into a format that can be visualized through
@@ -589,7 +589,7 @@ inline void TFProfObserver::dump(std::ostream& os) const {
         os << "\",";
     
         // category "type": "Condition Task",
-        os << "\"type\":\"" << task_type_to_string(s.type) << "\"";
+        os << "\"type\":\"" << to_string(s.type) << "\"";
 
         os << "}";
       }
@@ -712,22 +712,21 @@ inline TFProfManager& TFProfManager::get() {
 @brief enumeration of all observer types
 
 */
-enum ObserverType {
-  TFPROF = 1,
-  CHROME = 2
+enum class ObserverType : int {
+  TFPROF = 0,
+  CHROME,
+  UNDEFINED
 };
 
 /**
 @brief convert an observer type to a human-readable string
 */
-inline const char* observer_type_to_string(ObserverType type) {
-  const char* val;
+inline const char* to_string(ObserverType type) {
   switch(type) {
-    case TFPROF: val = "tfprof";    break;
-    case CHROME: val = "chrome";    break;
-    default:     val = "undefined"; break;
+    case ObserverType::TFPROF: return "tfprof";
+    case ObserverType::CHROME: return "chrome";
+    default:                   return "undefined";
   }
-  return val;
 }
 
 

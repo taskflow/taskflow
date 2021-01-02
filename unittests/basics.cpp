@@ -7,6 +7,24 @@
 #include <limits.h>
 
 // --------------------------------------------------------
+// Testcase: Type
+// --------------------------------------------------------
+TEST_CASE("Type" * doctest::timeout(300)) {
+
+  tf::Taskflow taskflow, taskflow2;
+
+  auto t1 = taskflow.emplace([](){});
+  auto t2 = taskflow.emplace([](){ return 1; });
+  auto t3 = taskflow.emplace([](tf::Subflow&){ });
+  auto t4 = taskflow.composed_of(taskflow2);
+
+  REQUIRE(t1.type() == tf::TaskType::STATIC);
+  REQUIRE(t2.type() == tf::TaskType::CONDITION);
+  REQUIRE(t3.type() == tf::TaskType::DYNAMIC);
+  REQUIRE(t4.type() == tf::TaskType::MODULE);
+}
+
+// --------------------------------------------------------
 // Testcase: Builder
 // --------------------------------------------------------
 TEST_CASE("Builder" * doctest::timeout(300)) {
@@ -259,7 +277,7 @@ TEST_CASE("STDFunction" * doctest::timeout(300)) {
   int counter = 0;
 
   std::function<void()> func1  = [&] () { ++counter; };
-  std::function<int()> func2 = [&] () { ++counter; return 0; };
+  std::function<int()>  func2  = [&] () { ++counter; return 0; };
   std::function<void()> func3  = [&] () { };
   std::function<void()> func4  = [&] () { ++counter;};
   
@@ -272,6 +290,8 @@ TEST_CASE("STDFunction" * doctest::timeout(300)) {
   B.precede(C, D);
   executor.run(taskflow).wait();
   REQUIRE(counter == 2);
+
+  return;
   
   // scenario 2
   counter = 0;

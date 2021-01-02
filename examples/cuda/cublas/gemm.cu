@@ -60,21 +60,21 @@ int main() {
   auto cublasFlow = taskflow.emplace([&](tf::cudaFlowCapturer& capturer) {
     auto blas  = capturer.make_capturer<tf::cublasFlowCapturer>();
 
-    auto alpha = blas->single_task([=] __device__ () { *dAlpha = 1; })
-                      .name("alpha=1");
-    auto beta  = blas->single_task([=] __device__ () { *dBeta  = 0; })
-                      .name("beta=0");
-    auto copyA = blas->copy(dA, hA.data(), hA.size()).name("copyA"); 
-    auto copyB = blas->copy(dB, hB.data(), hB.size()).name("copyB");
+    auto alpha = capturer.single_task([=] __device__ () { *dAlpha = 1; })
+                         .name("alpha=1");
+    auto beta  = capturer.single_task([=] __device__ () { *dBeta  = 0; })
+                         .name("beta=0");
+    auto copyA = capturer.copy(dA, hA.data(), hA.size()).name("copyA"); 
+    auto copyB = capturer.copy(dB, hB.data(), hB.size()).name("copyB");
     auto gemm  = blas->c_gemm(CUBLAS_OP_N, CUBLAS_OP_N,
       M, N, K, dAlpha, dA, K, dB, N, dBeta, dC, N
     ).name("C = alpha * A * B + beta * C");
-    auto copyC = blas->copy(hC.data(), dC, hC.size()).name("copyC");
+    auto copyC = capturer.copy(hC.data(), dC, hC.size()).name("copyC");
 
     gemm.succeed(alpha, beta, copyA, copyB)
         .precede(copyC);
 
-    blas->dump(std::cout);  // dump the graph constructed so far.
+    capturer.dump(std::cout);  // dump the graph constructed so far.
   }).name("cublasFlow");
 
   cublasFlow.succeed(

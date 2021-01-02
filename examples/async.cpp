@@ -21,7 +21,6 @@ int main() {
 
   // create asynchronous tasks from the subflow
   // all asynchronous tasks are guaranteed to finish when the subflow joins
-  
   tf::Taskflow taskflow;
 
   std::atomic<int> counter {0};
@@ -31,6 +30,8 @@ int main() {
       sf.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
     }
     sf.join();
+
+    // when subflow joins, all spawned tasks from the subflow will finish
     if(counter == 100) {
       std::cout << "async tasks spawned from the subflow all finish\n";
     }
