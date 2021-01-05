@@ -60,7 +60,7 @@ Taskflow provides visualization and tooling needed for profiling Taskflow progra
 | ![](image/tfprof.png) |
 
 We are committed to support trustworthy developments for both academic and industrial research projects
-in parallel computing. Check out [Who is Using Taskflow](#who-is-using-taskflow) and what our users say:
+in parallel computing. Check out [Who is Using Taskflow](https://taskflow.github.io/#tag_users) and what our users say:
 
 + *"Taskflow is the cleanest Task API I've ever seen." [Damien Hocking @Corelium Inc](http://coreliuminc.com)*
 + *"Taskflow has a very simple and elegant tasking interface. The performance also scales very well." [Glen Fraser][totalgee]*
