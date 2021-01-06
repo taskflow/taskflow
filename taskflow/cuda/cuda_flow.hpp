@@ -28,8 +28,8 @@ using the task dependency graph model.
 The class provides a set of methods for creating and launch different tasks
 on one or multiple CUDA devices,
 for instance, kernel tasks, data transfer tasks, and memory operation tasks.
-The following example creates a %cudaFlow of two kernel tasks, @c task_1 and 
-@c task_2, where @c task_1 runs before @c task_2.
+The following example creates a %cudaFlow of two kernel tasks, @c task1 and 
+@c task2, where @c task1 runs before @c task2.
 
 @code{.cpp}
 tf::Taskflow taskflow;
@@ -41,7 +41,7 @@ taskflow.emplace([&](tf::cudaFlow& cf){
   tf::cudaTask task2 = cf.kernel(grid2, block2, shm_size2, kernel2, args2);
   
   // kernel1 runs before kernel2
-  task_1.precede(task2);
+  task1.precede(task2);
 });
 
 executor.run(taskflow).wait();
@@ -51,6 +51,10 @@ A %cudaFlow is a task (tf::Task) created from tf::Taskflow
 and will be run by @em one worker thread in the executor.
 That is, the callable that describes a %cudaFlow 
 will be executed sequentially.
+Inside a %cudaFlow task, different GPU tasks (tf::cudaTask) may run
+in parallel scheduled by the CUDA runtime.
+
+Please refer to @ref GPUTaskingcudaFlow for details.
 */
 class cudaFlow {
 
@@ -71,6 +75,10 @@ class cudaFlow {
 
     /**
     @brief constructs a standalone %cudaFlow
+
+    A standalone %cudaFlow does not go through any taskflow and
+    can be run by the caller thread using explicit offload methods 
+    (e.g., tf::cudaFlow::offload).
     */
     cudaFlow();
     
@@ -142,7 +150,7 @@ class cudaFlow {
 
     @param g configured grid
     @param b configured block
-    @param s configured shared memory
+    @param s configured shared memory size in bytes
     @param f kernel function
     @param args arguments to forward to the kernel function by copy
 
@@ -160,7 +168,7 @@ class cudaFlow {
     @param d device identifier to launch the kernel
     @param g configured grid
     @param b configured block
-    @param s configured shared memory
+    @param s configured shared memory size in bytes
     @param f kernel function
     @param args arguments to forward to the kernel function by copy
 

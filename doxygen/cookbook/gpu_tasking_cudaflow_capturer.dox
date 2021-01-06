@@ -8,7 +8,7 @@ managed by a @em %cudaFlowCapturer.
 
 @tableofcontents
 
-@section C7_Capture_a_cudaFlow Capture a cudaFlow
+@section Capture_a_cudaFlow Capture a cudaFlow
 
 When your program has no access to direct kernel calls but invoke
 it through a stream-based interface (e.g., @cuBLAS and @cuDNN library functions),
@@ -70,7 +70,7 @@ and will destroy it until all internal operations finish.
 
 
 
-@section C7_CommonCaptureMethods Common Capture Methods
+@section CommonCaptureMethods Common Capture Methods
 
 %cudaFlowCapturer defines a set of methods for capturing common GPU operations,
 such as tf::cudaFlowCapturer::kernel, tf::cudaFlowCapturer::memcpy,
@@ -99,7 +99,7 @@ tf::Task task = taskflow.emplace([](tf::cudaFlowCapturer& capturer){
 
 @dotfile images/cudaflow_capturer_2.dot
 
-@section C7_CreateACapturerOnASpecificGPU Create a Capturer on a Specific GPU
+@section CreateACapturerOnASpecificGPU Create a Capturer on a Specific GPU
 
 You can capture a %cudaFlow on a specific GPU by calling tf::Taskflow::emplace_on.
 By default, a %cudaFlow runs on the current GPU associated with the caller, 
@@ -122,7 +122,7 @@ and all the functions within the callable are called under this context.
 It is your responsibility to allocate the GPU memory in the same
 GPU context as the capturer.
 
-@section C7_CreateACapturerWithinAcudaFlow Create a Capturer within a cudaFlow
+@section CreateACapturerWithinAcudaFlow Create a Capturer within a cudaFlow
 
 Within a parent %cudaFlow, you can capture a %cudaFlow to form a subflow that 
 eventually becomes a @em child node in the underlying CUDA task graph.
@@ -159,7 +159,7 @@ tf::Task task = taskflow.emplace([&](tf::cudaFlow& cf){
 @dotfile images/cudaflow_capturer_3.dot
 
 
-@section C7_CreateCustomCapturer Create a Custom Capturer
+@section CreateCustomCapturer Create a Custom Capturer
 
 By inheriting tf::cudaFlowCapturerBase, you can create your own capturer.
 The tf::cudaFlowCapturer has a factory interface, tf::cudaFlowCapturer::make_capturer,

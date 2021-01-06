@@ -29,6 +29,14 @@ class FlowBuilder {
     @param callable callable to construct a static task
 
     @return a tf::Task handle
+
+    The following example creates a static task.
+
+    @code{.cpp}
+    tf::Task static_task = taskflow.emplace([](){});
+    @endcode
+    
+    Please refer to @ref StaticTasking for details.
     */
     template <typename C, 
       std::enable_if_t<is_static_task_v<C>, void>* = nullptr
@@ -38,11 +46,23 @@ class FlowBuilder {
     /**
     @brief creates a dynamic task
     
-    @tparam C callable type constructible from std::function<void(tf::Subflow)>
+    @tparam C callable type constructible from std::function<void(tf::Subflow&)>
 
     @param callable callable to construct a dynamic task
 
     @return a tf::Task handle
+    
+    The following example creates a dynamic task (tf::Subflow) 
+    that spawns two static tasks.
+
+    @code{.cpp}
+    tf::Task dynamic_task = taskflow.emplace([](tf::Subflow& sf){
+      tf::Task static_task1 = sf.emplace([](){});
+      tf::Task static_task2 = sf.emplace([](){});
+    });
+    @endcode
+    
+    Please refer to @ref DynamicTasking for details.
     */
     template <typename C, 
       std::enable_if_t<is_dynamic_task_v<C>, void>* = nullptr
@@ -57,6 +77,26 @@ class FlowBuilder {
     @param callable callable to construct a condition task
 
     @return a tf::Task handle
+    
+    The following example creates an if-else block using one condition task
+    and three static tasks.
+    
+    @code{.cpp}
+    tf::Taskflow taskflow;
+    
+    auto [init, cond, yes, no] = taskflow.emplace(
+     [] () { },
+     [] () { return 0; },
+     [] () { std::cout << "yes\n"; },
+     [] () { std::cout << "no\n"; }
+    );
+    
+    // executes yes if cond returns 0, or no if cond returns 1
+    cond.precede(yes, no);
+    cond.succeed(init);
+    @endcode
+
+    Please refer to @ref ConditionalTasking for details.
     */
     template <typename C, 
       std::enable_if_t<is_condition_task_v<C>, void>* = nullptr
@@ -71,6 +111,21 @@ class FlowBuilder {
     @param callables one or multiple callable objects constructible from each task category
 
     @return a tf::Task handle
+
+    The method returns a tuple of tasks each corresponding to the given 
+    callable target. You can use structured binding to get the return tasks
+    one by one.
+    The following example creates four static tasks and assign them to
+    @c A, @c B, @c C, and @c D using structured binding.
+
+    @code{.cpp}
+    auto [A, B, C, D] = taskflow.emplace(
+      [] () { std::cout << "A"; },
+      [] () { std::cout << "B"; },
+      [] () { std::cout << "C"; },
+      [] () { std::cout << "D"; }
+    );
+    @endcode
     */
     template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
     auto emplace(C&&... callables);
@@ -81,25 +136,62 @@ class FlowBuilder {
     @param taskflow a taskflow object for the module
 
     @return a tf::Task handle
+
+    Please refer to @ref ComposableTasking for details.
     */
     Task composed_of(Taskflow& taskflow);
 
     /**
-    @brief creates an empty task
+    @brief creates a placeholder task
 
     @return a tf::Task handle
+
+    A placeholder task maps to a node in the taskflow graph, but 
+    it does not have any callable work assigned yet. 
+    A placeholder task is different from an empty task handle that
+    does not point to any node in a graph.
+
+    @code{.cpp}
+    // create a placeholder task with no callable target assigned
+    tf::Task placeholder = taskflow.placeholder(); 
+    assert(placeholder.empty() == false && placeholder.has_work() == false);
+    
+    // create an empty task handle
+    tf::Task task;
+    assert(task.empty() == true);
+    
+    // assign the task handle to the placeholder task
+    task = placeholder;
+    assert(task.empty() == false && task.has_work() == false);
+    @endcode
     */
     Task placeholder();
 
     /**
-    @brief creates a cudaflow task on the default device 0
+    @brief creates a %cudaFlow task on the caller's GPU device context
 
     @tparam C callable type constructible from @c std::function<void(tf::cudaFlow&)>
 
     @return a tf::Task handle
 
-    This method is equivalent to calling tf::Taskflow::emplace_on(callable, d)
+    This method is equivalent to calling tf::FlowBuilder::emplace_on(callable, d)
     where @c d is the caller's device context.
+    The following example creates a %cudaFlow of two kernel tasks, @c task1 and 
+    @c task2, where @c task1 runs before @c task2.
+    
+    @code{.cpp}
+    taskflow.emplace([&](tf::cudaFlow& cf){
+      // create two kernel tasks
+      tf::cudaTask task1 = cf.kernel(grid1, block1, shm1, kernel1, args1);
+      tf::cudaTask task2 = cf.kernel(grid2, block2, shm2, kernel2, args2);
+
+      // kernel1 runs before kernel2
+      task1.precede(task2);
+    });
+    @endcode
+
+    Please refer to @ref GPUTaskingcudaFlow and @ref GPUTaskingcudaFlowCapturer 
+    for details.
     */
     template <typename C, 
       std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr
@@ -107,12 +199,26 @@ class FlowBuilder {
     Task emplace(C&& callable);
     
     /**
-    @brief creates a cudaflow task on the given device
+    @brief creates a %cudaFlow task on the given device
 
     @tparam C callable type constructible from std::function<void(tf::cudaFlow&)>
     @tparam D device type, either @c int or @c std::ref<int> (stateful)
 
     @return a tf::Task handle
+    
+    The following example creates a %cudaFlow of two kernel tasks, @c task1 and 
+    @c task2 on GPU @c 2, where @c task1 runs before @c task2
+    
+    @code{.cpp}
+    taskflow.emplace_on([&](tf::cudaFlow& cf){
+      // create two kernel tasks
+      tf::cudaTask task1 = cf.kernel(grid1, block1, shm1, kernel1, args1);
+      tf::cudaTask task2 = cf.kernel(grid2, block2, shm2, kernel2, args2);
+
+      // kernel1 runs before kernel2
+      task1.precede(task2);
+    }, 2);
+    @endcode
     */
     template <typename C, typename D, 
       std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr
@@ -151,7 +257,6 @@ class FlowBuilder {
     @return a tf::Task handle
 
     The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[first, last)</tt>. By default, we employ the guided partition algorithm with chunk size equal to one.
-    
     This method is equivalent to the parallel execution of the following loop:
     
     @code{.cpp}
@@ -161,8 +266,10 @@ class FlowBuilder {
     @endcode
     
     Arguments templated to enable stateful passing using std::reference_wrapper. 
-    
-    The callable needs to take a single argument of the dereferenced type.
+    The callable needs to take a single argument of 
+    the dereferenced iterator type.
+
+    Please refer to @ref ParallelIterations for details.
     */
     template <typename B, typename E, typename C>
     Task for_each(B&& first, E&& last, C&& callable);
@@ -185,8 +292,9 @@ class FlowBuilder {
     The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    The callable needs to take a single argument of the dereferenced iterator type.
     
-    The callable needs to take a single argument of the dereferenced type.
+    Please refer to @ref ParallelIterations for details.
     */
     template <typename B, typename E, typename C, typename H = size_t>
     Task for_each_guided(B&& beg, E&& end, C&& callable, H&& chunk_size = 1);
@@ -209,8 +317,9 @@ class FlowBuilder {
     The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    The callable needs to take a single argument of the dereferenced iterator type.
     
-    The callable needs to take a single argument of the dereferenced type.
+    Please refer to @ref ParallelIterations for details.
     */
     template <typename B, typename E, typename C, typename H = size_t>
     Task for_each_dynamic(B&& beg, E&& end, C&& callable, H&& chunk_size = 1);
@@ -233,8 +342,9 @@ class FlowBuilder {
     The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[beg, end)</tt>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    The callable needs to take a single argument of the dereferenced iterator type.
     
-    The callable needs to take a single argument of the dereferenced type.
+    Please refer to @ref ParallelIterations for details.
     */
     template <typename B, typename E, typename C, typename H = size_t>
     Task for_each_static(
@@ -273,9 +383,9 @@ class FlowBuilder {
     @endcode
 
     Arguments are templated to enable stateful passing using std::reference_wrapper.
-
-    The callable needs to take a single argument of the index type.
+    The callable needs to take a single argument of the integral index type.
     
+    Please refer to @ref ParallelIterations for details.
     */
     template <typename B, typename E, typename S, typename C>
     Task for_each_index(B&& first, E&& last, S&& step, C&& callable);
@@ -300,8 +410,9 @@ class FlowBuilder {
     The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.
 
     Arguments are templated to enable stateful passing using std::reference_wrapper.
-
-    The callable needs to take a single argument of the index type.
+    The callable needs to take a single argument of the integral index type.
+    
+    Please refer to @ref ParallelIterations for details.
     */
     template <typename B, typename E, typename S, typename C, typename H = size_t>
     Task for_each_index_guided(
@@ -328,8 +439,9 @@ class FlowBuilder {
     The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.
 
     Arguments are templated to enable stateful passing using std::reference_wrapper.
-
-    The callable needs to take a single argument of the index type.
+    The callable needs to take a single argument of the integral index type.
+    
+    Please refer to @ref ParallelIterations for details.
     */
     template <typename B, typename E, typename S, typename C, typename H = size_t>
     Task for_each_index_dynamic(
@@ -356,8 +468,9 @@ class FlowBuilder {
     The task spawns a subflow that applies the callable object to each index in the range <tt>[beg, end)</tt> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.
 
     Arguments are templated to enable stateful passing using std::reference_wrapper.
-
-    The callable needs to take a single argument of the index type.
+    The callable needs to take a single argument of the integral index type.
+    
+    Please refer to @ref ParallelIterations for details.
     */
     template <typename B, typename E, typename S, typename C, typename H = size_t>
     Task for_each_index_static(
@@ -394,6 +507,8 @@ class FlowBuilder {
     @endcode
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
+
+    Please refer to @ref ParallelReduction for details.
     */
     template <typename B, typename E, typename T, typename O>
     Task reduce(B&& first, E&& last, T& init, O&& bop);
@@ -412,12 +527,14 @@ class FlowBuilder {
     @param init initial value of the reduction and the storage for the reduced result
     @param bop binary operator that will be applied 
     @param chunk_size chunk size
+    
+    @return a tf::Task handle
 
     The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
 
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
 
-    @return a tf::Task handle
+    Please refer to @ref ParallelReduction for details.
     */
     template <typename B, typename E, typename T, typename O, typename H = size_t>
     Task reduce_guided(
@@ -439,11 +556,13 @@ class FlowBuilder {
     @param bop binary operator that will be applied 
     @param chunk_size chunk size
 
+    @return a tf::Task handle
+
     The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
 
-    @return a tf::Task handle
+    Please refer to @ref ParallelReduction for details.
     */
     template <typename B, typename E, typename T, typename O, typename H = size_t>
     Task reduce_dynamic(
@@ -465,11 +584,13 @@ class FlowBuilder {
     @param bop binary operator that will be applied 
     @param chunk_size chunk size
 
+    @return a tf::Task handle
+
     The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
 
-    @return a tf::Task handle
+    Please refer to @ref ParallelReduction for details.
     */
     template <typename B, typename E, typename T, typename O, typename H = size_t>
     Task reduce_static(
@@ -508,6 +629,8 @@ class FlowBuilder {
     @endcode
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
+   
+    Please refer to @ref ParallelReduction for details. 
     */
     template <typename B, typename E, typename T, typename BOP, typename UOP>
     Task transform_reduce(B&& first, E&& last, T& init, BOP&& bop, UOP&& uop);
@@ -534,6 +657,8 @@ class FlowBuilder {
     The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    
+    Please refer to @ref ParallelReduction for details. 
     */
     template <typename B, typename E, typename T, typename BOP, typename UOP, typename H = size_t>
     Task transform_reduce_guided(
@@ -562,6 +687,8 @@ class FlowBuilder {
     The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    
+    Please refer to @ref ParallelReduction for details. 
     */
     template <typename B, typename E, typename T, typename BOP, typename UOP, typename H = size_t>
     Task transform_reduce_static(
@@ -590,6 +717,8 @@ class FlowBuilder {
     The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of size @c chunk_size, where each chunk is processed by a worker. 
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    
+    Please refer to @ref ParallelReduction for details. 
     */
     template <typename B, typename E, typename T, typename BOP, typename UOP, typename H = size_t>
     Task transform_reduce_dynamic(
@@ -615,6 +744,8 @@ class FlowBuilder {
     <tt>[first, last)</tt>. 
     
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
+
+    Please refer to @ref ParallelSort for details.
     */
     template <typename B, typename E, typename C>
     Task sort(B&& first, E&& last, C&& cmp);
@@ -630,9 +761,12 @@ class FlowBuilder {
     @param last iterator to the end (exclusive)
     
     The task spawns a subflow to parallelly sort elements in the range 
-    <tt>[first, last)</tt>. 
+    <tt>[first, last)</tt> using the @c std::less<T> comparator, 
+    where @c T is the dereferenced iterator type.
 
     Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    
+    Please refer to @ref ParallelSort for details.
      */
     template <typename B, typename E>
     Task sort(B&& first, E&& last);

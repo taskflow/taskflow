@@ -62,20 +62,18 @@
             </li>
           </ul>
         </div>
-<p>A taskflow manages a task dependency graph where each task represents a callable object (e.g., <a href="https://en.cppreference.com/w/cpp/language/lambda">lambda</a>, <a href="https://en.cppreference.com/w/cpp/utility/functional/function">std::<wbr />function</a>) and an edge represents a dependency between two tasks. A task is one of the following five types:</p><ol><li>static task: the callable constructible from <code>std::function&lt;void()&gt;</code></li><li>dynamic task: the callable constructible from <code>std::function&lt;void(tf::Subflow&amp;)&gt;</code></li><li>condition task: the callable constructible from <code>std::function&lt;int()&gt;</code></li><li>module task: the task constructed from <a href="classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a></li><li>cudaFlow task: the callable constructible from <code>std::function&lt;void(tf::cudaFlow&amp;)&gt;</code> or <code>std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;</code></li></ol><p>The following example creates a simple taskflow graph of four static tasks, <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code>, where <code>A</code> runs before <code>B</code> and <code>C</code> and <code>D</code> runs after <code>B</code> and <code>C</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+<p>A taskflow manages a task dependency graph where each task represents a callable object (e.g., <a href="https://en.cppreference.com/w/cpp/language/lambda">lambda</a>, <a href="https://en.cppreference.com/w/cpp/utility/functional/function">std::<wbr />function</a>) and an edge represents a dependency between two tasks. A task is one of the following types:</p><ol><li>static task: the callable constructible from <code>std::function&lt;void()&gt;</code></li><li>dynamic task: the callable constructible from <code>std::function&lt;void(tf::Subflow&amp;)&gt;</code></li><li>condition task: the callable constructible from <code>std::function&lt;int()&gt;</code></li><li>module task: the task constructed from <a href="classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a></li><li>cudaFlow task: the callable constructible from <code>std::function&lt;void(tf::cudaFlow&amp;)&gt;</code> or <code>std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;</code></li></ol><p>Each task is a basic computation unit and is run by one worker thread from an executor. The following example creates a simple taskflow graph of four static tasks, <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code>, where <code>A</code> runs before <code>B</code> and <code>C</code> and <code>D</code> runs after <code>B</code> and <code>C</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;simple&quot;</span><span class="p">);</span>
 
-<span class="k">auto</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
-  <span class="p">[]()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskA</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
-  <span class="p">[]()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskB</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
-  <span class="p">[]()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskC</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
-  <span class="p">[]()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskD</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
-<span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskA</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span> 
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">B</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskB</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">C</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskC</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">D</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskD</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
 
 <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">);</span>  <span class="c1">// A runs before B and C</span>
 <span class="n">D</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">);</span>  <span class="c1">// D runs after  B and C</span>
                                    
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Please refer to <a href="Cookbook.html" class="m-doc">Cookbook</a> to learn more about each task type.</p>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Please refer to <a href="Cookbook.html" class="m-doc">Cookbook</a> to learn more about each task type and how to submit a taskflow to an executor.</p>
         <section id="base-classes">
           <h2><a href="#base-classes">Base classes</a></h2>
           <dl class="m-doc">
@@ -96,6 +94,10 @@
               <span class="m-doc-wrap-bumper"><a href="#ade7fc641d136a3f8c96682c08040626a" class="m-doc-self">Taskflow</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>constructs a taskflow</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper"><a href="#aa966a69493ecc8ecb9131ef3c5354b8e" class="m-doc">~Taskflow</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
+            </dt>
+            <dd>default destructor</dd>
           </dl>
         </section>
         <section id="pub-methods">
@@ -104,7 +106,7 @@
             <dt id="ac433018262e44b12c4cc9f0c4748d758">
               <span class="m-doc-wrap-bumper">void <a href="#ac433018262e44b12c4cc9f0c4748d758" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; ostream) const</span>
             </dt>
-            <dd>dumps the taskflow to a DOT format through an output stream using the stream insertion operator <code>&lt;&lt;</code></dd>
+            <dd>dumps the taskflow to a DOT format through a <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a> target</dd>
             <dt id="a9c4900da1831dce708664a06b3e3a3fb">
               <span class="m-doc-wrap-bumper">auto <a href="#a9c4900da1831dce708664a06b3e3a3fb" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a></span>
             </dt>
@@ -120,24 +122,38 @@
             <dt id="ad5706e5819aa01a63c4aa2e3485546b9">
               <span class="m-doc-wrap-bumper">void <a href="#ad5706e5819aa01a63c4aa2e3485546b9" class="m-doc-self">name</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp;)</span>
             </dt>
-            <dd>sets the name of the taskflow</dd>
+            <dd>assigns a name to the taskflow</dd>
             <dt id="a911edd95acc1322433bddfcfeaf2ccb0">
               <span class="m-doc-wrap-bumper">auto <a href="#a911edd95acc1322433bddfcfeaf2ccb0" class="m-doc-self">name</a>(</span><span class="m-doc-wrap">) const -&gt; const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp;</span>
             </dt>
             <dd>queries the name of the taskflow</dd>
-            <dt id="a1f00bbe72a1553c9656ecae4d98bb9af">
-              <span class="m-doc-wrap-bumper">void <a href="#a1f00bbe72a1553c9656ecae4d98bb9af" class="m-doc-self">clear</a>(</span><span class="m-doc-wrap">)</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a1f00bbe72a1553c9656ecae4d98bb9af" class="m-doc">clear</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>clears the associated task dependency graph</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename V&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a6350d0d6653ae9ae7b94c35e42fffe07" class="m-doc">for_each_task</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
             </dt>
-            <dd>applies an visitor callable to each task in the taskflow</dd>
+            <dd>applies a visitor to each task in the taskflow</dd>
           </dl>
         </section>
         <section>
           <h2>Function documentation</h2>
+          <section class="m-doc-details" id="aa966a69493ecc8ecb9131ef3c5354b8e"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />Taskflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa966a69493ecc8ecb9131ef3c5354b8e" class="m-doc-self">~Taskflow</a>(</span><span class="m-doc-wrap">) <span class="m-label m-info">defaulted</span></span></span>
+            </h3>
+            <p>default destructor</p>
+<p>When the destructor is called, all tasks and their associated data (e.g., captured data) will be destroyed. It is your responsibility to ensure all submitted execution of this taskflow have completed before destroying it.</p>
+          </div></section>
+          <section class="m-doc-details" id="a1f00bbe72a1553c9656ecae4d98bb9af"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Taskflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1f00bbe72a1553c9656ecae4d98bb9af" class="m-doc-self">clear</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>clears the associated task dependency graph</p>
+<p>When you clear a taskflow, all tasks and their associated data (e.g., captured data) will be destroyed. You should never clean a taskflow while it is being run by an executor.</p>
+          </div></section>
           <section class="m-doc-details" id="a6350d0d6653ae9ae7b94c35e42fffe07"><div>
             <h3>
               <div class="m-doc-template">
@@ -145,8 +161,8 @@
               </div>
               <span class="m-doc-wrap-bumper">void tf::<wbr />Taskflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6350d0d6653ae9ae7b94c35e42fffe07" class="m-doc-self">for_each_task</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span></span>
             </h3>
-            <p>applies an visitor callable to each task in the taskflow</p>
-<p>The visitor is a callable that takes an argument of type <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> and returns nothing. The following example iterates each task in a taskflow and prints its name:</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_task</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">task</span><span class="p">){</span>
+            <p>applies a visitor to each task in the taskflow</p>
+<p>A visitor is a callable that takes an argument of type <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> and returns nothing. The following example iterates each task in a taskflow and prints its name:</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_task</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">task</span><span class="p">){</span>
   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">task</span><span class="p">.</span><span class="n">name</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
 <span class="p">});</span></pre>
           </div></section>
