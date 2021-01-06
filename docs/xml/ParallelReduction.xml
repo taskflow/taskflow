@@ -1,24 +1,24 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
-  <compounddef id="A2Reduce" kind="page">
-    <compoundname>A2Reduce</compoundname>
+  <compounddef id="ParallelReduction" kind="page">
+    <compoundname>ParallelReduction</compoundname>
     <title>Parallel Reduction</title>
     <tableofcontents>
       <tocsect>
-        <name>Parallel Reduction</name>
-        <reference>A2Reduce_1A2ParallelReduction</reference>
+        <name>Create a Parallel-Reduction Task</name>
+        <reference>ParallelReduction_1A2ParallelReduction</reference>
     </tocsect>
       <tocsect>
-        <name>Parallel Transformation-Reduction</name>
-        <reference>A2Reduce_1A2ParallelTransformationReduction</reference>
+        <name>Create a Parallel Transformation-Reduction Task</name>
+        <reference>ParallelReduction_1A2ParallelTransformationReduction</reference>
     </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow provides template function that constructs a task to perform parallel reduction over a range of items.</para>
-<sect1 id="A2Reduce_1A2ParallelReduction">
-<title>Parallel Reduction</title>
+<sect1 id="ParallelReduction_1A2ParallelReduction">
+<title>Create a Parallel-Reduction Task</title>
 <para>The reduction task created by <ref refid="classtf_1_1FlowBuilder_1ad999cd75045db225a42d5881d6db1223" kindref="member">tf::Taskflow::reduce(B&amp;&amp; first, E&amp;&amp; last, T&amp; result, O&amp;&amp; bop)</ref> performs parallel reduction over a range of elements specified by <computeroutput>[first, last)</computeroutput> using the binary operator <computeroutput>bop</computeroutput> and stores the reduced result in <computeroutput>result</computeroutput>. It represents the parallel execution of the following reduction loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr&lt;last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>result<sp/>=<sp/>bop(result,<sp/>*itr);</highlight></codeline>
@@ -64,8 +64,8 @@
 </programlisting></para>
 <para>In the above example, when <computeroutput>init</computeroutput> finishes, <computeroutput>vec</computeroutput> has been initialized to 10 elements with <computeroutput>first</computeroutput> pointing to the first element and <computeroutput>last</computeroutput> pointing to the next of the last element (i.e., end of the range). These changes are visible to the execution context of the reduction task.</para>
 </sect1>
-<sect1 id="A2Reduce_1A2ParallelTransformationReduction">
-<title>Parallel Transformation-Reduction</title>
+<sect1 id="ParallelReduction_1A2ParallelTransformationReduction">
+<title>Create a Parallel Transformation-Reduction Task</title>
 <para>It is common to transform each element into a new data type and then perform reduction on the transformed elements. Taskflow provides a method, <ref refid="classtf_1_1FlowBuilder_1ad8d03524f15292610ebee63d53b89579" kindref="member">tf::Taskflow::transform_reduce(B&amp;&amp; first, E&amp;&amp; last, T&amp; result, BOP&amp;&amp; bop, UOP&amp;&amp; uop)</ref>, that applies <computeroutput>uop</computeroutput> to transform each element in the specified range and then perform parallel reduction over <computeroutput>result</computeroutput> and transformed elements. It represents the parallel execution of the following reduction loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr&lt;last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>result<sp/>=<sp/>bop(result,<sp/>uop(*itr));</highlight></codeline>
