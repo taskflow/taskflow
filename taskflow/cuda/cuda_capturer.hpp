@@ -113,6 +113,10 @@ created from tf::Taskflow
 and will be run by @em one worker thread in the executor.
 That is, the callable that describes a %cudaFlowCapturer 
 will be executed sequentially.
+Inside a %cudaFlow capturer task, different GPU tasks (tf::cudaTask) may run
+in parallel scheduled by both our capturing algorithm and the CUDA runtime.
+
+Please refer to @ref GPUTaskingcudaFlowCapturer for details.
 */
 class cudaFlowCapturer {
 
@@ -137,6 +141,10 @@ class cudaFlowCapturer {
     
     /**
     @brief constrcts a standalone cudaFlowCapturer
+    
+    A standalone %cudaFlow capturer does not go through any taskflow and
+    can be run by the caller thread using explicit offload methods 
+    (e.g., tf::cudaFlow::offload).
     */
     cudaFlowCapturer();
     
@@ -262,7 +270,7 @@ class cudaFlowCapturer {
 
     @param g configured grid
     @param b configured block
-    @param s configured shared memory
+    @param s configured shared memory size in bytes
     @param f kernel function
     @param args arguments to forward to the kernel function by copy
 

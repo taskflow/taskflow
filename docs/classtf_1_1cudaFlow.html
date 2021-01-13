@@ -61,7 +61,7 @@
             </li>
           </ul>
         </div>
-<p>A cudaFlow is a high-level interface over CUDA Graph to perform GPU operations using the task dependency graph model. The class provides a set of methods for creating and launch different tasks on one or multiple CUDA devices, for instance, kernel tasks, data transfer tasks, and memory operation tasks. The following example creates a cudaFlow of two kernel tasks, <code>task_1</code> and <code>task_2</code>, where <code>task_1</code> runs before <code>task_2</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+<p>A cudaFlow is a high-level interface over CUDA Graph to perform GPU operations using the task dependency graph model. The class provides a set of methods for creating and launch different tasks on one or multiple CUDA devices, for instance, kernel tasks, data transfer tasks, and memory operation tasks. The following example creates a cudaFlow of two kernel tasks, <code>task1</code> and <code>task2</code>, where <code>task1</code> runs before <code>task2</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
 
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">){</span>
@@ -70,15 +70,15 @@
   <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">task2</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid2</span><span class="p">,</span> <span class="n">block2</span><span class="p">,</span> <span class="n">shm_size2</span><span class="p">,</span> <span class="n">kernel2</span><span class="p">,</span> <span class="n">args2</span><span class="p">);</span>
   
   <span class="c1">// kernel1 runs before kernel2</span>
-  <span class="n">task_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span>
+  <span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span>
 <span class="p">});</span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>A cudaFlow is a task (<a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a>) created from <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> and will be run by <em>one</em> worker thread in the executor. That is, the callable that describes a cudaFlow will be executed sequentially.</p>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>A cudaFlow is a task (<a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a>) created from <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> and will be run by <em>one</em> worker thread in the executor. That is, the callable that describes a cudaFlow will be executed sequentially. Inside a cudaFlow task, different GPU tasks (<a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a>) may run in parallel scheduled by the CUDA runtime.</p><p>Please refer to <a href="GPUTaskingcudaFlow.html" class="m-doc">GPU Tasking (cudaFlow)</a> for details.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
-            <dt id="ad4c3e001db151486c8479151a2108d37">
-              <span class="m-doc-wrap-bumper"><a href="#ad4c3e001db151486c8479151a2108d37" class="m-doc-self">cudaFlow</a>(</span><span class="m-doc-wrap">)</span>
+            <dt>
+              <span class="m-doc-wrap-bumper"><a href="#ad4c3e001db151486c8479151a2108d37" class="m-doc">cudaFlow</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>constructs a standalone cudaFlow</dd>
             <dt id="a19eda378f8c0ef4495e08996f63f5144">
@@ -280,6 +280,13 @@
         </section>
         <section>
           <h2>Function documentation</h2>
+          <section class="m-doc-details" id="ad4c3e001db151486c8479151a2108d37"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad4c3e001db151486c8479151a2108d37" class="m-doc-self">cudaFlow</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>constructs a standalone cudaFlow</p>
+<p>A standalone cudaFlow does not go through any taskflow objects and can be run by the caller thread using the <a href="classtf_1_1cudaFlow.html#a85789ed8a1f47704cf1f1a2b98969444" class="m-doc">tf::<wbr />cudaFlow::<wbr />offload</a> method.</p>
+          </div></section>
           <section class="m-doc-details" id="a43507f21eb9cb77667ffe0ac7e6ae635"><div>
             <h3>
               <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a43507f21eb9cb77667ffe0ac7e6ae635" class="m-doc-self">dump_native_graph</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os) const</span></span>

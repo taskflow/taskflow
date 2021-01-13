@@ -1,12 +1,12 @@
 namespace tf {
 
-/** @page A2Reduce Parallel Reduction
+/** @page ParallelReduction Parallel Reduction
 
 %Taskflow provides template function that constructs a task to perform parallel reduction over a range of items.
 
 @tableofcontents
 
-@section A2ParallelReduction Parallel Reduction
+@section A2ParallelReduction Create a Parallel-Reduction Task
 
 The reduction task created by tf::Taskflow::reduce(B&& first, E&& last, T& result, O&& bop) performs
 parallel reduction over a range of elements specified by <tt>[first, last)</tt> using the binary operator @c bop and stores the reduced result in @c result.
@@ -38,7 +38,7 @@ The order in which the binary operator is applied to pairs of elements is @em un
 In other words, the elements of the range may be grouped and rearranged in arbitrary order.
 The result and the argument types of the binary operator must be consistent with the input data type .
 
-Similar to @ref A1ForEach, 
+Similar to @ref ParallelIterations, 
 you can use std::reference_wrapper to enable stateful parameter passing 
 between the reduction task and others.
 
@@ -74,7 +74,7 @@ In the above example, when @c init finishes, @c vec has been initialized to 10 e
 (i.e., end of the range).
 These changes are visible to the execution context of the reduction task.
 
-@section A2ParallelTransformationReduction Parallel Transformation-Reduction
+@section A2ParallelTransformationReduction Create a Parallel Transformation-Reduction Task
 
 It is common to transform each element into a new data type and
 then perform reduction on the transformed elements.

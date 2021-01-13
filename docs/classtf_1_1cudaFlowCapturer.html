@@ -74,7 +74,7 @@
   <span class="p">});</span>
 
   <span class="n">task_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task_2</span><span class="p">);</span>
-<span class="p">});</span></pre><p>Similar to <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>, a cudaFlowCapturer is a task (<a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a>) created from <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> and will be run by <em>one</em> worker thread in the executor. That is, the callable that describes a cudaFlowCapturer will be executed sequentially.</p>
+<span class="p">});</span></pre><p>Similar to <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>, a cudaFlowCapturer is a task (<a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a>) created from <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> and will be run by <em>one</em> worker thread in the executor. That is, the callable that describes a cudaFlowCapturer will be executed sequentially. Inside a cudaFlow capturer task, different GPU tasks (<a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a>) may run in parallel scheduled by both our capturing algorithm and the CUDA runtime.</p><p>Please refer to <a href="GPUTaskingcudaFlowCapturer.html" class="m-doc">GPU Tasking (cudaFlowCapturer)</a> for details.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
