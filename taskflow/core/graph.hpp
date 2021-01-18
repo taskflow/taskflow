@@ -173,6 +173,7 @@ class Node {
   // variant index
   constexpr static auto PLACEHOLDER  = get_index_v<std::monostate, handle_t>;
   constexpr static auto STATIC       = get_index_v<Static, handle_t>;
+  constexpr static auto CANPAUSE     = get_index_v<CanPause, handle_t>;
   constexpr static auto DYNAMIC      = get_index_v<Dynamic, handle_t>;
   constexpr static auto CONDITION    = get_index_v<Condition, handle_t>; 
   constexpr static auto MODULE       = get_index_v<Module, handle_t>; 
