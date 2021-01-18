@@ -33,7 +33,7 @@ enum class TaskType : int {
 /**
 @brief array of all task types (used for iterating task types)
 */
-inline constexpr std::array<TaskType, 7> TASK_TYPES = {
+inline constexpr std::array<TaskType, 8> TASK_TYPES = {
   TaskType::PLACEHOLDER,
   TaskType::CUDAFLOW,
   TaskType::STATIC,
@@ -77,7 +77,16 @@ A static task is a callable object constructible from std::function<void()>.
 */
 template <typename C>
 constexpr bool is_static_task_v = std::is_invocable_r_v<void, C> &&
-                                 !std::is_invocable_r_v<int, C>;
+!std::is_invocable_r_v<int, C> &&
+!std::is_invocable_r_v<std::optional<bool>,C>;
+
+/**
+@brief determines if a callable is a can pause task
+
+A can pause task is a callable object constructible from std::function<void()>.
+*/
+template <typename C>
+constexpr bool is_can_pause_task_v = std::is_invocable_r_v<std::optional<bool>, C>;
 
 /**
 @brief determines if a callable is a dynamic task
@@ -471,6 +480,10 @@ template <typename C>
 Task& Task::work(C&& c) {
   if constexpr(is_static_task_v<C>) {
     _node->_handle.emplace<Node::Static>(std::forward<C>(c));
+  }
+  else if constexpr (is_can_pause_task_v<C>)
+  {
+      _node->_handle.emplace<Node::CanPause>(std::forward<C>(c));
   }
   else if constexpr(is_dynamic_task_v<C>) {
     _node->_handle.emplace<Node::Dynamic>(std::forward<C>(c));

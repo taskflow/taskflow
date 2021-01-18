@@ -694,9 +694,12 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // access caused by topology clear.
   const auto num_successors = node->num_successors();
   
+  std::optional<bool> canpause{ true };
   // condition task
   int cond = -1;
   
+  node->_topology->_pauseNode = nullptr;
+  node->_topology->_puasestate = std::nullopt;
   // switch is faster than nested if-else due to jump table
   switch(node->_handle.index()) {
     // static task
@@ -709,7 +712,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     case Node::CANPAUSE: {
         _invoke_can_pause_task(worker, node, canpause);
     }
-
+    break;
+    
     // dynamic task
     case Node::DYNAMIC: {
       _invoke_dynamic_task(worker, node);

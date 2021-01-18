@@ -153,6 +153,8 @@ class Taskflow : public FlowBuilder {
     std::mutex _mtx;
 
     std::queue<std::shared_ptr<Topology>> _topologies;
+    std::vector<Node*> _pauseTopologies;
+    std::vector<std::optional<bool>> _pauseTopologiesStatus;
     
     void _dump(std::ostream&, const Taskflow*) const;
     void _dump(std::ostream&, const Node*, Dumper&) const;

@@ -63,6 +63,20 @@ class FlowBuilder {
     @endcode
     
     Please refer to @ref DynamicTasking for details.
+   */
+    template <typename C,
+        std::enable_if_t<is_can_pause_task_v<C>, void>* = nullptr
+    >
+    Task emplace(C&& callable);
+    
+    /**
+    @brief creates a dynamic task
+    
+    @tparam C callable type constructible from std::function<void(tf::Subflow)>
+
+    @param callable callable to construct a dynamic task
+
+    @return a tf::Task handle
     */
     template <typename C, 
       std::enable_if_t<is_dynamic_task_v<C>, void>* = nullptr
@@ -816,6 +830,14 @@ Task FlowBuilder::emplace(C&& c) {
   return Task(_graph.emplace_back(
     std::in_place_type_t<Node::Condition>{}, std::forward<C>(c)
   ));
+}
+
+// Function: emplace
+template <typename C, std::enable_if_t<is_can_pause_task_v<C>, void>*>
+Task FlowBuilder::emplace(C&& c) {
+    return Task(_graph.emplace_back(
+        std::in_place_type_t<Node::CanPause>{}, std::forward<C>(c)
+    ));
 }
 
 // Function: emplace

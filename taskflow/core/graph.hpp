@@ -93,6 +93,15 @@ class Node {
     std::function<void()> work;
   };
 
+  // static work handle
+  struct CanPause {
+
+      template <typename C>
+      CanPause(C&&);
+
+      std::function<std::optional<bool>()> work;
+  };
+
   // dynamic work handle
   struct Dynamic {
 
@@ -155,6 +164,7 @@ class Node {
   using handle_t = std::variant<
     std::monostate,  // placeholder
     Static,          // static tasking
+      CanPause,      // can pause tasking
     Dynamic,         // dynamic tasking
     Condition,       // conditional tasking
     Module,          // composable tasking
@@ -255,6 +265,11 @@ Node::Dynamic::Dynamic(C&& c) : work {std::forward<C>(c)} {
 // Constructor
 template <typename C> 
 Node::Condition::Condition(C&& c) : work {std::forward<C>(c)} {
+}
+
+// Constructor
+template <typename C>
+Node::CanPause::CanPause(C&& c) : work{ std::forward<C>(c) } {
 }
 
 // ----------------------------------------------------------------------------
