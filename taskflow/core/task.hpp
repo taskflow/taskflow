@@ -605,12 +605,11 @@ inline TaskType TaskView::type() const {
     case Node::CUDAFLOW:     return TaskType::CUDAFLOW;
     default:                 return TaskType::UNDEFINED;
   }
+}
   
 // Function: hash_value
 inline size_t TaskView::hash_value() const {
   return _node.hash_value();
-}
-  
 }
 
 // Function: for_each_successor
