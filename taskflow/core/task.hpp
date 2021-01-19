@@ -609,7 +609,7 @@ inline TaskType TaskView::type() const {
   
 // Function: hash_value
 inline size_t TaskView::hash_value() const {
-  return std::hash<Node*>{}(&_node);
+  return std::hash<const Node*>{}(&_node);
 }
 
 // Function: for_each_successor
