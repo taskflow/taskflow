@@ -312,6 +312,7 @@ bool Executor::resumeTask(Taskflow* task)
     bool bret = false;
     assert(task);
     assert(task->_pauseTopologies.size() == task->_pauseTopologiesStatus.size());
+    std::lock_guard<std::mutex> lock(task->_mtx);
     for(auto i = 0; i<task->_pauseTopologies.size();++i)
     {
         auto node = task->_pauseTopologies[i];
@@ -789,6 +790,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   }
   else if(node->_handle.index()==Node::CANPAUSE) //
   {
+    std::lock_guard<std::mutex> lock(node->_topology->_taskflow._mtx);
       node->_topology->_taskflow._pauseTopologies.push_back(node);
       node->_topology->_taskflow._pauseTopologiesStatus.push_back(canpause);
       return;
