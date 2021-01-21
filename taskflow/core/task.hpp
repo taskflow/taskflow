@@ -358,7 +358,8 @@ inline Task& Task::name(const std::string& name) {
 // Function: acquire
 inline Task& Task::acquire(Semaphore& s) {
   if(!_node->_semaphores) {
-    _node->_semaphores.emplace();
+    //_node->_semaphores.emplace();
+    _node->_semaphores = std::make_unique<Node::Semaphores>();
   }
   _node->_semaphores->to_acquire.push_back(&s);
   return *this;
@@ -367,7 +368,8 @@ inline Task& Task::acquire(Semaphore& s) {
 // Function: release
 inline Task& Task::release(Semaphore& s) {
   if(!_node->_semaphores) {
-    _node->_semaphores.emplace();
+    //_node->_semaphores.emplace();
+    _node->_semaphores = std::make_unique<Node::Semaphores>();
   }
   _node->_semaphores->to_release.push_back(&s);
   return *this;
@@ -641,6 +643,18 @@ template <>
 struct hash<tf::Task> {
   auto operator() (const tf::Task& task) const noexcept {
     return task.hash_value();
+  }
+};
+
+/**
+@struct hash
+
+@brief hash specialization for std::hash<tf::TaskView>
+*/
+template <>
+struct hash<tf::TaskView> {
+  auto operator() (const tf::TaskView& task_view) const noexcept {
+    return task_view.hash_value();
   }
 };
 
