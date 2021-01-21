@@ -93,7 +93,10 @@ class Node {
     std::function<void()> work;
   };
 
-  // static work handle
+  // can pause work handle
+  // nullopt , resume will call current node again    ==> pause
+  // false, resume will skip current node             ==> pause
+  // true, continue run                               ==> no pause
   struct CanPause {
 
       template <typename C>

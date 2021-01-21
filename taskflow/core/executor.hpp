@@ -698,8 +698,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // condition task
   int cond = -1;
   
-  node->_topology->_pauseNode = nullptr;
-  node->_topology->_puasestate = std::nullopt;
   // switch is faster than nested if-else due to jump table
   switch(node->_handle.index()) {
     // static task

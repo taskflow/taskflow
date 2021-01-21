@@ -49,8 +49,6 @@ class Topology : public TopologyBase {
 
     std::atomic<size_t> _join_counter {0};
 
-    Node* _pauseNode = nullptr;
-    std::optional<bool> _puasestate = std::nullopt;
 };
 
 // Constructor
