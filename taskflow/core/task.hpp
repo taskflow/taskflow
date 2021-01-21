@@ -549,6 +549,11 @@ class TaskView {
     @brief queries the task type
     */
     TaskType type() const;
+  
+    /**
+    @brief obtains a hash value of the underlying node
+    */
+    size_t hash_value() const;
     
   private:
     
@@ -600,6 +605,11 @@ inline TaskType TaskView::type() const {
     case Node::CUDAFLOW:     return TaskType::CUDAFLOW;
     default:                 return TaskType::UNDEFINED;
   }
+}
+  
+// Function: hash_value
+inline size_t TaskView::hash_value() const {
+  return std::hash<const Node*>{}(&_node);
 }
 
 // Function: for_each_successor
