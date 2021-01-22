@@ -2,6 +2,8 @@
 
 #include "flow_builder.hpp"
 
+#include <optional>
+
 /** 
 @file core/taskflow.hpp
 @brief taskflow include file
