@@ -10,7 +10,7 @@ namespace tf {
 
 // Class: PassiveVector
 // A vector storing only passive data structure (PDS) or POD data type.
-template <typename T, size_t S = 4, typename A = std::allocator<T>>
+template <typename T, typename A = std::allocator<T>>
 class PassiveVector {
 
   static_assert(
@@ -31,180 +31,160 @@ class PassiveVector {
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef ptrdiff_t                             difference_type;
     typedef size_t                                size_type;
+
+    // DONE
+    PassiveVector() = default;
     
-    PassiveVector() noexcept :  
-      _data {reinterpret_cast<pointer>(_stack)},
-      _num  {0},
-      _cap  {S} {
+    PassiveVector(PassiveVector&& rhs) noexcept : 
+      _b {rhs._b}, _e {rhs._e}, _c {rhs._c} {
+      rhs._b = nullptr;
+      rhs._e = nullptr;
+      rhs._c = nullptr;
     }
 
-    explicit PassiveVector(size_type n) : _num {n} {
-      
-      // need to place on heap
-      if(n > S) {
-        _cap  = n << 2;
-        _data = _allocator.allocate(_cap);
-      }
-      // stack
-      else {
-        _cap = S;
-        _data = reinterpret_cast<pointer>(_stack);
-      }
-
+    PassiveVector(const PassiveVector& rhs) {
+      _enlarge(rhs.capacity());
+      std::memcpy(_b, rhs._b, sizeof(T) * rhs.size()); 
+      _e = _b + rhs.size();
     }
-
-    PassiveVector(const PassiveVector& rhs) : _num {rhs._num} {
-
-      // heap
-      if(rhs._num > S) {
-        _cap = rhs._cap;
-        _data = _allocator.allocate(rhs._cap);
-      }
-      else {
-        _cap = S;
-        _data = reinterpret_cast<pointer>(_stack);
-      }
-
-      std::memcpy(_data, rhs._data, _num * sizeof(T));
+    
+    PassiveVector(size_type n) {
+      _enlarge(_next_capacity(n));
+      _e = _b + n;
     }
-
-    PassiveVector(PassiveVector&& rhs) : _num {rhs._num} {
-
-      // rhs is in the stack
-      if(rhs.in_stack()) {
-        _cap  = S;
-        _data = reinterpret_cast<pointer>(_stack);
-        std::memcpy(_stack, rhs._stack, rhs._num*sizeof(T));
-      }
-      // rhs is in the heap
-      else {
-        _cap = rhs._cap;
-        _data = rhs._data;
-        rhs._data = reinterpret_cast<pointer>(rhs._stack);
-        rhs._cap  = S;
-      }
-
-      rhs._num = 0;
-    }
-
+    
     ~PassiveVector() {
-      if(!in_stack()) {
-        _allocator.deallocate(_data, _cap);
+      if(_b) {
+        _allocator.deallocate(_b, capacity());
       }
     }
+    
+    void resize(size_type N) {
+      if(N > capacity()) {
+        _enlarge(_next_capacity(N));
+      }
+      _e = _b + N;
+    }
+    
+    void reserve(size_type C) {
+      if(C > capacity()) {
+        _enlarge(_next_capacity(C)); 
+      }
+    }
+    
+    void push_back(const T& item) {
+      if(size() == capacity()) {
+        _enlarge(_next_capacity());
+      }
+      *_e++ = item; 
+    }
 
-    iterator begin() noexcept                         { return _data;        }
-    const_iterator begin() const noexcept             { return _data;        }
-    const_iterator cbegin() const noexcept            { return _data;        }
-    iterator end() noexcept                           { return _data + _num; }
-    const_iterator end() const noexcept               { return _data + _num; }
-    const_iterator cend() const noexcept              { return _data + _num; }
+    void push_back(T&& item) {
+      if(size() == capacity()) {
+        _enlarge(_next_capacity());
+      }
+      *_e++ = std::move(item);
+    }
 
-    reverse_iterator rbegin() noexcept                { return _data + _num; }
-    const_reverse_iterator crbegin() const noexcept   { return _data + _num; }
-    reverse_iterator rend() noexcept                  { return _data;        }
-    const_reverse_iterator crend() const noexcept     { return _data;        }
+    void pop_back() {
+      --_e;
+    }
 
-    reference operator [] (size_type idx)             { return _data[idx];   }
-    const_reference operator [] (size_type idx) const { return _data[idx];   }
+    void clear() {
+      _e = _b;
+    }
+    
+    bool operator == (const PassiveVector& rhs) const {
+      if(size() != rhs.size()) {
+        return false;
+      }
+      return std::memcmp(_b, rhs._b, size() * sizeof(T)) == 0;
+    }
+
+    bool empty() const noexcept { return _b == _e; }
+
+    size_type size() const noexcept { return size_type(_e - _b); }
+    size_type capacity() const noexcept { return size_type(_c - _b); }
+    size_type max_size() const { return (std::numeric_limits<size_type>::max)(); }
+    
+    iterator begin() noexcept                         { return _b; }
+    const_iterator begin() const noexcept             { return _b; }
+    const_iterator cbegin() const noexcept            { return _b; }
+    iterator end() noexcept                           { return _e; }
+    const_iterator end() const noexcept               { return _e; }
+    const_iterator cend() const noexcept              { return _e; }
+
+    reverse_iterator rbegin() noexcept                { return _e; }
+    const_reverse_iterator crbegin() const noexcept   { return _e; }
+    reverse_iterator rend() noexcept                  { return _b; }
+    const_reverse_iterator crend() const noexcept     { return _b; }
+
+    reference operator [] (size_type idx)             { return _b[idx]; }
+    const_reference operator [] (size_type idx) const { return _b[idx]; }
 
     reference at(size_type pos) {
-      if(pos >= _num) {
+      if(pos >= size()) {  // TODO: unlikely optimization
         throw std::out_of_range("accessed position is out of range");
       }
       return this->operator[](pos);
     }
 
     const_reference at(size_type pos) const {
-      if(pos >= _num) {
+      if(pos >= size()) {  // TODO: unlikely optimization
         throw std::out_of_range("accessed position is out of range");
       }
       return this->operator[](pos);
     }
-
-
-    reference front()             { return _data[0];      }
-    const_reference front() const { return _data[0];      }
-    reference back()              { return _data[_num-1]; }
-    const_reference back() const  { return _data[_num-1]; }
+    
+    reference front()             { return *_b;      }
+    const_reference front() const { return *_b;      }
+    reference back()              { return _e[-1]; }
+    const_reference back() const  { return _e[-1]; }
   
-    pointer data() noexcept             { return _data; }
-    const_pointer data() const noexcept { return _data; }
-
-    void push_back(const T& item) {
-      if(_num == _cap) {
-        _enlarge(_cap << 1);
-      }
-      _data[_num++] = item; 
-    }
-
-    void push_back(T&& item) {
-      if(_num == _cap) {
-        _enlarge(_cap << 1);
-      }
-      _data[_num++] = item;
-    }
-
-    void pop_back() {
-      if(_num > 0) {
-        --_num;
-      }
-    }
-
-    void clear() {
-      _num = 0;
-    }
-
-    void resize(size_type N) {
-      if(N > _cap) {
-        _enlarge(N<<1);
-      }
-      _num = N;
-    }
-
-    void reserve(size_type C) {
-      if(C > _cap) {
-        _enlarge(C);     
-      }
-    }
-   
-    bool empty() const    { return _num == 0; }
-    bool in_stack() const { return _data == reinterpret_cast<const_pointer>(_stack); }
-
-    size_type size() const     { return _num; }
-    size_type capacity() const { return _cap; }
-    size_type max_size() const { return (std::numeric_limits<size_type>::max)(); }
-
-    bool operator == (const PassiveVector& rhs) const {
-      if(_num != rhs._num) {
-        return false;
-      }
-      return std::memcmp(_data, rhs._data, _num * sizeof(T)) == 0;
-    }
+    pointer data() noexcept             { return _b; }
+    const_pointer data() const noexcept { return _b; }
     
   private:
     
-    char _stack[S*sizeof(T)];
-    
-    T* _data;
-    
-    size_type _num;
-    size_type _cap;
+    T* _b {nullptr};
+    T* _e {nullptr};
+    T* _c {nullptr};
 
     A _allocator;
+
+    size_type _next_capacity() const {
+      if(capacity() == 0) {
+        return std::max(64 / sizeof(T), size_type(1));
+      }
+      if(capacity() > 4096 * 32 / sizeof(T)) {
+        return capacity() * 2;
+      }
+      return(capacity() * 3 + 1) / 2;
+    }
+
+    size_type _next_capacity(size_type n) const {
+      if(n == 0) {
+        return std::max(64 / sizeof(T), size_type(1));
+      }
+      if(n > 4096 * 32 / sizeof(T)) {
+        return n * 2;
+      }
+      return(n * 3 + 1) / 2;
+    }
     
-    void _enlarge(size_type new_cap) {
+    void _enlarge(size_type new_c) {
 
-      auto new_data = _allocator.allocate(new_cap);
-
-      std::memcpy(new_data, _data, sizeof(T) * _num);
-
-      if(!in_stack()) {
-        _allocator.deallocate(_data, _cap);
+      auto new_b = _allocator.allocate(new_c);
+      auto old_n = size();
+      
+      if(_b) {
+        std::memcpy(new_b, _b, sizeof(T) * old_n);
+        _allocator.deallocate(_b, capacity());
       }
       
-      _cap  = new_cap;
-      _data = new_data;
+      _b = new_b;
+      _e = _b + old_n;
+      _c = _b + new_c;
     }
 };
 
