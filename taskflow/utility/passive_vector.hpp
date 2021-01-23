@@ -101,6 +101,25 @@ class PassiveVector {
       return std::memcmp(_b, rhs._b, size() * sizeof(T)) == 0;
     }
 
+    PassiveVector& operator = (PassiveVector&& rhs) noexcept {
+      
+      if(this == &rhs) {  // unlikely optimization
+        return *this;
+      }
+
+      if(_b) {
+        _allocator.deallocate(_b, capacity());
+      }
+      _b = rhs._b;
+      _e = rhs._e;
+      _c = rhs._c;
+      rhs._b = nullptr;
+      rhs._e = nullptr;
+      rhs._c = nullptr;
+
+      return *this;
+    }
+
     bool empty() const noexcept { return _b == _e; }
 
     size_type size() const noexcept { return size_type(_e - _b); }
@@ -169,7 +188,7 @@ class PassiveVector {
       if(n > 4096 * 32 / sizeof(T)) {
         return n * 2;
       }
-      return(n * 3 + 1) / 2;
+      return (n * 3 + 1) / 2;
     }
     
     void _enlarge(size_type new_c) {
