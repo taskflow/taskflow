@@ -27,7 +27,7 @@ int main(){
   
   // dumpping a taskflow before execution won't visualize subflow tasks
   std::cout << "Dump the taskflow before execution:\n";
-  taskflow.dump(std::cout);
+  taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
   
   std::cout << "Run the taskflow once without callback\n" << std::endl;
   executor.run(taskflow).get();
@@ -35,7 +35,7 @@ int main(){
   
   // after execution, we can visualize subflow tasks
   std::cout << "Dump the taskflow after execution:\n";
-  taskflow.dump(std::cout);
+  taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
   std::cout << std::endl;
 
   std::cout << "Use wait_for_all to wait for the execution to finish\n";
@@ -46,7 +46,7 @@ int main(){
   std::cout << "Execute the taskflow two times without a callback\n";
   executor.run_n(taskflow, 2).get();
   std::cout << "Dump after two executions:\n";
-  taskflow.dump(std::cout);
+  taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
   std::cout << std::endl;
 
   std::cout << "Execute the taskflow four times with a callback\n";
@@ -60,7 +60,7 @@ int main(){
     return counter -- == 0; 
   }).get();
 
-  taskflow.dump(std::cout);
+  taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
 
   return 0;
 }

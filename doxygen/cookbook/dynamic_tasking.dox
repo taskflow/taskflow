@@ -42,7 +42,7 @@ All methods you find in tf::Taskflow are applicable for tf::Subflow.
 19: C.precede(D);  // D runs after C
 20:
 21: executor.run(taskflow).get();  // execute the graph to spawn the subflow
-22: taskflow.dump(std::cout);      // dump the taskflow to a DOT format
+22: taskflow.dump(std::cout, tf::DumpFormat::Graphviz); // dump the taskflow to a DOT format
 @endcode
 
 <!--@image html images/subflow_join.svg width=35%-->
@@ -135,7 +135,7 @@ you can detach a subflow from its parent task, allowing its execution to flow in
 20:
 21: tf::Executor executor;
 22: executor.run(taskflow).wait();       // execute the graph to spawn the subflow
-22: taskflow.dump(std::cout);            // dump the taskflow to DOT format
+22: taskflow.dump(std::cout, tf::DumpFormat::Graphviz); // dump the taskflow to DOT format
 @endcode
 
 The figure below demonstrates a detached subflow based on the previous example.
@@ -152,7 +152,7 @@ For example, running the above taskflow 5 times results in a total of 19 tasks.
 @code{.cpp}
 executor.run_n(taskflow, 5).wait();
 assert(taskflow.num_tasks() == 19);
-taskflow.dump(std::cout);
+taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
 @endcode
 
 The dumped graph is shown as follows:
@@ -189,7 +189,7 @@ You can create another subflow from the execution of a subflow and so on.
 21:
 22: // execute the graph to spawn the subflow
 23: tf::Executor().run(taskflow).get();
-24: taskflow.dump(std::cout);
+24: taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
 @endcode
 
 <!-- @image html images/nested_subflow.svg  -->

@@ -20,20 +20,24 @@ int main(){
   C.precede(D);
   B.precede(D, E); 
   
-  std::cout << "[dump without name assignment]\n";
-  taskflow.dump(std::cout);
+  std::cout << "[GraphViz dump without name assignment]\n";
+  taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
+  std::cout << "[Mermaid dump without name assignment]\n";
+  taskflow.dump(std::cout, tf::DumpFormat::Mermaid);
   
-  std::cout << "[dump with name assignment]\n";
   A.name("A");
   B.name("B");
   C.name("C");
   D.name("D");
   E.name("E");
 
-  // if the graph contains solely static tasks, you can simpley dump them
+  std::cout << "[GraphViz dump with name assignment]\n";
+  // if the graph contains solely static tasks, you can simply dump them
   // without running the graph
-  taskflow.dump(std::cout);
-  
+  taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
+  std::cout << "[Mermaid dump with name assignment]\n";
+  taskflow.dump(std::cout, tf::DumpFormat::Mermaid);
+
   // ------------------------------------------------------
   // Dynamic Tasking
   // ------------------------------------------------------
@@ -46,10 +50,13 @@ int main(){
   // in order to visualize subflow tasks, you need to run the taskflow
   // to spawn the dynamic tasks first
   tf::Executor executor;
+  std::cout << "[Run flow]\n";
   executor.run(taskflow).wait();
 
-  taskflow.dump(std::cout);
-  
+  std::cout << "[GraphViz dump with name assignment and subflow]\n";
+  taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
+  std::cout << "[Mermaid dump with name assignment and subflow]\n";
+  taskflow.dump(std::cout, tf::DumpFormat::Mermaid);
 
   return 0;
 }

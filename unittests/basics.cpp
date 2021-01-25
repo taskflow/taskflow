@@ -2192,7 +2192,7 @@ void flip_coin_cond(unsigned w) {
   E.precede(F, B).name("flip-coin-4");
   F.precede(G, B).name("flip-coin-5");
 
-  //taskflow.dump(std::cout);
+  //taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
 
   tf::Executor executor(w);
 
@@ -2202,7 +2202,7 @@ void flip_coin_cond(unsigned w) {
   
   REQUIRE(std::fabs(average_steps-32.0)<1.0);
 
-  //taskflow.dump(std::cout);
+  //taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
 }
 
 TEST_CASE("FlipCoinCond.1thread" * doctest::timeout(300)) {

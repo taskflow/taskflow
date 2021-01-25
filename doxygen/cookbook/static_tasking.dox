@@ -73,6 +73,7 @@ You need to follow its contract to create a task.
 @section VisualizeATaskDependencyGraph Visualize a Task Dependency Graph
 
 You can dump a taskflow to a DOT format and visualize the graph using free online tools such as <a href="https://dreampuf.github.io/GraphvizOnline/">GraphvizOnline</a> and <a href="http://www.webgraphviz.com/">WebGraphviz</a>.
+Alternative you can dump it to a Mermaid format and visualize it with the free online tool such as <a href="https://mermaid-js.github.io/mermaid-live-editor">Mermaid Live Editor</a>.
 
 @code{.cpp}
  1: #include <taskflow/taskflow.hpp>
@@ -93,7 +94,7 @@ You can dump a taskflow to a DOT format and visualize the graph using free onlin
 16:   B.precede(D);
 17:   C.precede(D);
 18:
-19:   taskflow.dump(std::cout);
+19:   taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
 20: }
 @endcode
 
@@ -134,7 +135,7 @@ the task handler.
 19:               << "num_successors=" << task.num_successors() << '\n';
 20:   }
 21:
-22:   taskflow.dump(std::cout);         // dump the taskflow graph
+22:   taskflow.dump(std::cout, tf::DumpFormat::Graphviz); // dump the taskflow graph
 23:
 24:   tasks[0].work([](){ std::cout << "got a new work!\n"; });
 25:   tasks[1].work([](){ std::cout << "got a new work!\n"; });

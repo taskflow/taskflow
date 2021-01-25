@@ -25,7 +25,7 @@ int main() {
   body.precede(cond);
   cond.precede(body, done);
   
-  //taskflow.dump(std::cout);
+  //taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
 
   executor.run(taskflow).wait();
 

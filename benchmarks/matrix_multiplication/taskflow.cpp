@@ -76,7 +76,7 @@ void matrix_multiplication_taskflow(unsigned num_threads) {
   executor.run(taskflow).get(); 
   
   //std::cout << reduce_sum() << std::endl;
-  //taskflow.dump(std::cout);
+  //taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
 }
 
 std::chrono::microseconds measure_time_taskflow(unsigned num_threads) {

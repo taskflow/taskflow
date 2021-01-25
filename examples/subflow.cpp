@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
   executor.run(taskflow).get();  // block until finished
 
   // examine the graph
-  taskflow.dump(std::cout);
+  taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
 
   return 0;
 }

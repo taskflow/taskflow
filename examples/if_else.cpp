@@ -28,7 +28,7 @@ int main() {
   cond.precede(yes, no);
   
   // dump the conditioned flow
-  taskflow.dump(std::cout);
+  taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
 
   executor.run(taskflow).wait();
 

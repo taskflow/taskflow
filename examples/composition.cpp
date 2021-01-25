@@ -39,7 +39,7 @@ void composition_example_1() {
   f2C.precede(f1_module_task);
   f1_module_task.precede(f2D);
 
-  f2.dump(std::cout);
+  f2.dump(std::cout, tf::DumpFormat::Graphviz);
 
   executor.run_n(f2, 3).get();
 }
@@ -86,7 +86,7 @@ void composition_example_2() {
   auto f2_module_task = f4.composed_of(f2);
   f3_module_task.precede(f2_module_task);
 
-  f4.dump(std::cout);
+  f4.dump(std::cout, tf::DumpFormat::Graphviz);
 
   executor.run_until(
     f4, 

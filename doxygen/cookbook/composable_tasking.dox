@@ -50,7 +50,7 @@ This largely facilitates the @em modularity of writing a parallel task program.
 33: f2C.precede(f1_module_task);
 34: f1_module_task.precede(f2D);
 35:
-36: f2.dump(std::cout);
+36: f2.dump(std::cout, tf::DumpFormat::Graphviz);
 @endcode
 
 <!-- @image html images/composition_static_1.svg width=40% -->

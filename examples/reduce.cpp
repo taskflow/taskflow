@@ -63,7 +63,7 @@ void reduce() {
     std::cout << "result is incorrect: " << smin << " != " << tmin << std::endl;
   }
 
-  taskflow.dump(std::cout);
+  taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
 }
 
 // Procedure: transform_reduce

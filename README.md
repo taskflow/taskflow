@@ -139,12 +139,14 @@ in an easy-to-use web-based interface.
 # paste the profiling json data to https://taskflow.github.io/tfprof/
 ```
 
-In addition to execution diagram, you can dump the graph to a DOT format 
-and visualize it using a number of free [GraphViz][GraphViz] tools.
+In addition to execution diagram, you can dump the graph to a DOT or Mermaid format
+and visualize it using a number of free [GraphViz][GraphViz] or [Mermaid][Mermaid] tools.
 
 ```
 // dump the taskflow graph to a DOT format through std::cout
-taskflow.dump(std::cout); 
+taskflow.dump(std::cout, tf::DumpFormat::GraphViz);
+// or Mermaid
+taskflow.dump(std::cout, tf::DumpFormat::Mermaid);
 ```
 
 <p align="center"><img src="doxygen/images/simple.svg"></p>
@@ -198,6 +200,7 @@ You are completely free to re-distribute your work derived from Taskflow.
 [GitHub insights]:       https://github.com/taskflow/taskflow/pulse
 [GitHub pull requests]:  https://github.com/taskflow/taskflow/pulls
 [GraphViz]:              https://www.graphviz.org/
+[Mermaid]:               http://mermaid-js.github.io/mermaid/
 [Project Website]:       https://taskflow.github.io/
 [cppcon20 talk]:         https://www.youtube.com/watch?v=MX15huP5DsM
 [contributors]:          https://taskflow.github.io/taskflow/contributors.html

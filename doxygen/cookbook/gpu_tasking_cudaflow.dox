@@ -71,7 +71,7 @@ The following example implements the canonical saxpy (A·X Plus Y) task graph.
 50:  
 51:   executor.run(taskflow).wait();
 52:
-53:   taskflow.dump(std::cout);                  // dump the taskflow
+53:   taskflow.dump(std::cout, tf::DumpFormat::Graphviz); // dump the taskflow
 54: }
 @endcode
 

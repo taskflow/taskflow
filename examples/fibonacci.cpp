@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
 
   executor.run(taskflow).wait();
 
-  //taskflow.dump(std::cout);
+  //taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
 
   std::cout << "Fib[" << N << "]: " << res << std::endl;
 

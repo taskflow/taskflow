@@ -56,7 +56,7 @@ int main() {
   C.precede(D);
   
   // visualizes the taskflow
-  taskflow.dump(std::cout);
+  taskflow.dump(std::cout, tf::DumpFormat::Graphviz);
   
   // executes the taskflow
   executor.run(taskflow).wait();

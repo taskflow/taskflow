@@ -11,6 +11,19 @@ namespace tf {
 
 // ----------------------------------------------------------------------------
 
+
+/**
+@enum DumpFormat
+
+@brief enumeration of all dump formats
+*/
+enum class DumpFormat {
+    Graphviz,
+    Mermaid
+};
+
+// ----------------------------------------------------------------------------
+
 /**
 @class Taskflow 
 
@@ -90,14 +103,14 @@ class Taskflow : public FlowBuilder {
     ~Taskflow() = default;
 
     /**
-    @brief dumps the taskflow to a DOT format through a std::ostream target
+    @brief dumps the taskflow to a dump format through a std::ostream target
     */
-    void dump(std::ostream& ostream) const;
+    void dump(std::ostream& ostream, DumpFormat format) const;
     
     /**
     @brief dumps the taskflow to a std::string of DOT format
     */
-    std::string dump() const;
+    std::string dump(DumpFormat format) const;
     
     /**
     @brief queries the number of tasks
@@ -153,10 +166,15 @@ class Taskflow : public FlowBuilder {
     std::mutex _mtx;
 
     std::queue<std::shared_ptr<Topology>> _topologies;
-    
-    void _dump(std::ostream&, const Taskflow*) const;
-    void _dump(std::ostream&, const Node*, Dumper&) const;
-    void _dump(std::ostream&, const Graph&, Dumper&) const;
+
+    inline void _dump_graphviz(std::ostream&, const Taskflow*) const;
+    inline void _dump_mermaid(std::ostream&, const Taskflow*) const;
+
+    inline void _dump_graphviz(std::ostream&, const Node*, Dumper&) const;
+    inline void _dump_mermaid(std::ostream&, const Node*, Dumper&) const;
+
+    inline void _dump_graphviz(std::ostream&, const Graph&, Dumper&) const;
+    inline void _dump_mermaid(std::ostream&, const Graph&, Dumper&) const;
 };
 
 // Constructor
@@ -203,22 +221,37 @@ void Taskflow::for_each_task(V&& visitor) const {
 }
 
 // Procedure: dump
-inline std::string Taskflow::dump() const {
+inline std::string Taskflow::dump(DumpFormat format) const {
   std::ostringstream oss;
-  dump(oss);
+  dump(oss, format);
   return oss.str();
 }
 
 // Function: dump
-inline void Taskflow::dump(std::ostream& os) const {
-  os << "digraph Taskflow {\n";
-  _dump(os, this);
-  os << "}\n";
+inline void Taskflow::dump(std::ostream& os, DumpFormat format) const {
+    switch (format) {
+        case DumpFormat::Graphviz:
+            os << "digraph Taskflow {\n";
+            _dump_graphviz(os, this);
+            os << "}\n";
+            break;
+        case DumpFormat::Mermaid:
+            os << "graph TD\n";
+            os << "linkStyle default interpolate basis\n";
+            os << "classDef condition fill:#7fffd4;\n";
+            os << "classDef cudaflow fill:#a020f0,color:#ffffff,stroke:#000000;\n";
+            os << "classDef module stroke:#0000ff;\n";
+            os << "classDef subflow stroke:#0000ff;\n";
+            _dump_mermaid(os, this);
+            os << "\n";
+            break;
+        default:
+            TF_THROW("invalid dump format");
+    }
 }
 
 // Procedure: _dump
-inline void Taskflow::_dump(std::ostream& os, const Taskflow* top) const {
-  
+inline void Taskflow::_dump_graphviz(std::ostream& os, const Taskflow* top) const {
   Dumper dumper;
   
   dumper.stack.push(top);
@@ -233,13 +266,34 @@ inline void Taskflow::_dump(std::ostream& os, const Taskflow* top) const {
     if(f->_name.empty()) os << 'p' << f;
     else os << f->_name;
     os << "\";\n";
-    _dump(os, f->_graph, dumper);
+    _dump_graphviz(os, f->_graph, dumper);
     os << "}\n";
   }
 }
 
+inline void Taskflow::_dump_mermaid(std::ostream& os, const Taskflow* top) const {
+
+  Dumper dumper;
+
+  dumper.stack.push(top);
+  dumper.visited.insert(top);
+
+  while(!dumper.stack.empty()) {
+
+    auto f = dumper.stack.top();
+    dumper.stack.pop();
+
+    os << "subgraph cluster_p" << f << " [Taskflow: ";
+    if(f->_name.empty()) os << 'p' << f;
+    else os << f->_name;
+    os << "]\n";
+    _dump_mermaid(os, f->_graph, dumper);
+    os << "end\n";
+  }
+}
+
 // Procedure: _dump
-inline void Taskflow::_dump(
+inline void Taskflow::_dump_graphviz(
   std::ostream& os, const Node* node, Dumper& dumper
 ) const {
 
@@ -294,7 +348,7 @@ inline void Taskflow::_dump(
         else os << node->_name;
 
         os << "\";\n" << "color=blue\n";
-        _dump(os, sbg, dumper);
+        _dump_graphviz(os, sbg, dumper);
         os << "}\n";
       }
     }
@@ -313,7 +367,83 @@ inline void Taskflow::_dump(
 }
 
 // Procedure: _dump
-inline void Taskflow::_dump(
+inline void Taskflow::_dump_mermaid(
+        std::ostream& os, const Node* node, Dumper& dumper
+) const {
+
+  // shape for node
+  std::string opening = "([";
+  std::string closing = "])";
+
+  std::string style_class;
+  switch(node->_handle.index()) {
+    case Node::CONDITION:
+      opening = "{{";
+      closing = "}}";
+      style_class = "condition";
+      break;
+    case Node::CUDAFLOW:
+      opening = "[/";
+      closing = "\\]";
+      style_class = "cudaflow";
+      break;
+    default:
+      break;
+  }
+
+  os << 'p' << node << opening;
+  (node->_name.empty()) ? os << 'p' << node : os << node->_name;
+  os << closing << "\n";
+  if (!style_class.empty()) {
+    os << "class " << 'p' << node << ' ' << style_class << ";\n";
+  }
+
+  for(size_t s=0; s<node->_successors.size(); ++s) {
+    if(node->_handle.index() == Node::CONDITION) {
+      // case edge is dashed
+      os << 'p' << node << " -. " << s << " .-> p" << node->_successors[s] << "\n";
+    }
+    else {
+      os << 'p' << node << " --> p" << node->_successors[s] << "\n";
+    }
+  }
+
+  // subflow join node
+  if(node->_parent && node->_successors.size() == 0) {
+    os << 'p' << node << " --> p" << node->_parent << "\n";
+  }
+
+  switch(node->_handle.index()) {
+    case Node::DYNAMIC: {
+      auto& sbg = std::get<Node::Dynamic>(node->_handle).subgraph;
+      if(!sbg.empty()) {
+        // Subgraphs could be directly linked if https://github.com/mermaid-js/mermaid/issues/644
+        os << "subgraph cluster_p" << node << " [Subflow: ";
+        if(node->_name.empty()) os << 'p' << node;
+        else os << node->_name;
+
+        os << "]\n";
+        _dump_mermaid(os, sbg, dumper);
+        os << "end\n";
+        os << "class " << 'p' << node << " subflow;\n";
+      }
+      break;
+    }
+
+    case Node::CUDAFLOW: {
+      std::get<Node::cudaFlow>(node->_handle).graph->dump(
+              os, node, node->_name
+      );
+      break;
+    }
+
+    default:
+      break;
+  }
+}
+
+// Procedure: _dump
+inline void Taskflow::_dump_graphviz(
   std::ostream& os, const Graph& graph, Dumper& dumper
 ) const {
     
@@ -321,7 +451,7 @@ inline void Taskflow::_dump(
 
     // regular task
     if(n->_handle.index() != Node::MODULE) {
-      _dump(os, n, dumper);
+      _dump_graphviz(os, n, dumper);
     }
     // module task
     else {
@@ -343,6 +473,38 @@ inline void Taskflow::_dump(
 
       for(const auto s : n->_successors) {
         os << 'p' << n << "->" << 'p' << s << ";\n";
+      }
+    }
+  }
+}
+
+inline void Taskflow::_dump_mermaid(
+        std::ostream& os, const Graph& graph, Dumper& dumper
+) const {
+
+  for(const auto& n : graph._nodes) {
+
+    // regular task
+    if(n->_handle.index() != Node::MODULE) {
+      _dump_mermaid(os, n, dumper);
+    }
+      // module task
+    else {
+
+      auto module = std::get<Node::Module>(n->_handle).module;
+
+      os << 'p' << n << "[[\"module [Taskflow: ";
+      (n->_name.empty()) ? os << 'p' << n : os << n->_name;
+      os << "]\"]]\n";
+      os << "class " << 'p' << n << " module;\n";
+
+      if(dumper.visited.find(module) == dumper.visited.end()) {
+        dumper.visited.insert(module);
+        dumper.stack.push(module);
+      }
+
+      for(const auto s : n->_successors) {
+        os << 'p' << n << "-->" << 'p' << s << ";\n";
       }
     }
   }
