@@ -55,6 +55,22 @@ TEST_CASE("cudaFlowCapturer.tree.RoundRobin.4") {
   traversal<Tree, tf::cudaRoundRobinCapturing>(4);
 }
 
+TEST_CASE("cudaFlowCapturer.tree.Greedy.1") {
+  traversal<Tree, tf::cudaGreedyCapturing>(1);
+}
+
+TEST_CASE("cudaFlowCapturer.tree.Greedy.2") {
+  traversal<Tree, tf::cudaGreedyCapturing>(2);
+}
+
+TEST_CASE("cudaFlowCapturer.tree.Greedy.3") {
+  traversal<Tree, tf::cudaGreedyCapturing>(3);
+}
+
+TEST_CASE("cudaFlowCapturer.tree.Greedy.4") {
+  traversal<RandomDAG, tf::cudaGreedyCapturing>(4);
+}
+
 TEST_CASE("cudaFlowCapturer.randomDAG.Sequential") {
   traversal<RandomDAG,tf::cudaSequentialCapturing>();
 }
@@ -75,6 +91,22 @@ TEST_CASE("cudaFlowCapturer.randomDAG.RoundRobin.4") {
   traversal<RandomDAG, tf::cudaRoundRobinCapturing>(4);
 }
 
+TEST_CASE("cudaFlowCapturer.randomDAG.Greedy.1") {
+  traversal<RandomDAG, tf::cudaGreedyCapturing>(1);
+}
+
+TEST_CASE("cudaFlowCapturer.randomDAG.Greedy.2") {
+  traversal<RandomDAG, tf::cudaGreedyCapturing>(2);
+}
+
+TEST_CASE("cudaFlowCapturer.randomDAG.Greedy.3") {
+  traversal<RandomDAG, tf::cudaGreedyCapturing>(3);
+}
+
+TEST_CASE("cudaFlowCapturer.randomDAG.Greedy.4") {
+  traversal<RandomDAG, tf::cudaGreedyCapturing>(4);
+}
+
 TEST_CASE("cudaFlowCapturer.diamond.Sequential") {
   traversal<Diamond, tf::cudaSequentialCapturing>();
 }
@@ -93,6 +125,22 @@ TEST_CASE("cudaFlowCapturer.diamond.RoundRobin.3") {
 
 TEST_CASE("cudaFlowCapturer.diamond.RoundRobin.4") {
   traversal<Diamond, tf::cudaRoundRobinCapturing>(4);
+}
+
+TEST_CASE("cudaFlowCapturer.diamond.Greedy.1") {
+  traversal<Diamond, tf::cudaGreedyCapturing>(1);
+}
+
+TEST_CASE("cudaFlowCapturer.diamond.Greedy.2") {
+  traversal<Diamond, tf::cudaGreedyCapturing>(2);
+}
+
+TEST_CASE("cudaFlowCapturer.diamond.Greedy.3") {
+  traversal<Diamond, tf::cudaGreedyCapturing>(3);
+}
+
+TEST_CASE("cudaFlowCapturer.diamond.Greedy.4") {
+  traversal<Diamond, tf::cudaGreedyCapturing>(4);
 }
 
 //------------------------------------------------------
@@ -177,4 +225,20 @@ TEST_CASE("cudaFlowCapturer.dependencies.diamond.RoundRobin.3") {
 
 TEST_CASE("cudaFlowCapturer.dependencies.diamond.RoundRobin.4") {
   dependencies<tf::cudaRoundRobinCapturing>(4);
+}
+
+TEST_CASE("cudaFlowCapturer.dependencies.diamond.Greedy.1") {
+  dependencies<tf::cudaGreedyCapturing>(1);
+}
+
+TEST_CASE("cudaFlowCapturer.dependencies.diamond.Greedy.2") {
+  dependencies<tf::cudaGreedyCapturing>(2);
+}
+
+TEST_CASE("cudaFlowCapturer.dependencies.diamond.Greedy.3") {
+  dependencies<tf::cudaGreedyCapturing>(3);
+}
+
+TEST_CASE("cudaFlowCapturer.dependencies.diamond.Greedy.4") {
+  dependencies<tf::cudaGreedyCapturing>(4);
 }

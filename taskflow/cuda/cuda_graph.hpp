@@ -383,6 +383,7 @@ class cudaNode {
   friend class cudaCapturingBase;
   friend class cudaSequentialCapturing;
   friend class cudaRoundRobinCapturing;
+  friend class cudaGreedyCapturing;
   friend class Taskflow;
   friend class Executor;
   
@@ -432,6 +433,7 @@ class cudaNode {
     std::function<void(cudaStream_t)> work;
 
     cudaEvent_t event {nullptr};
+    int sid{-1};
     size_t level;
     size_t idx;
   };
