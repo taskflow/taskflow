@@ -24,12 +24,6 @@ class cudaCapturingBase {
 
     std::vector<cudaNode*> _toposort(cudaGraph&);
     std::vector<std::vector<cudaNode*>> _levelize(cudaGraph&);
-
-    void _cuda_create_event(
-      std::vector<cudaScopedPerThreadEvent>& events,
-      cudaNode* node,
-      cudaScopedPerThreadStream& node_stream
-    );
 };
 
 // Function: _toposort
@@ -69,42 +63,6 @@ inline std::vector<cudaNode*> cudaCapturingBase::_toposort(cudaGraph& graph) {
     }
   }
 
-  /* stack version. We prefer the above levelization version since we 
-   * can use the level data member.
-  std::stack<cudaNode*> dfs;
-  std::vector<cudaNode*> res;
-
-  for(auto node : graph._nodes) {
-    node->_unset_state(cudaNode::STATE_VISITED);
-  }
-
-  for(auto node : graph._nodes) {
-    if(!node->_has_state(cudaNode::STATE_VISITED)) {
-      dfs.push(node);
-    }
-
-    while(!dfs.empty()) {
-      auto u = dfs.top();
-      dfs.pop();
-
-      if(u->_has_state(cudaNode::STATE_VISITED)){
-        res.push_back(u);
-        continue;
-      }
-
-      u->_set_state(cudaNode::STATE_VISITED);
-      dfs.push(u);
-
-      for(auto s : u->_successors) {
-        if(!(s->_has_state(cudaNode::STATE_VISITED))) {
-          dfs.push(s);
-        }
-      }
-    }
-  }
-
-  std::reverse(res.begin(), res.end());*/
-  
   return res;
 }
 
@@ -146,42 +104,6 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
       }
     }
   }
-  
-  // Your BFS is wrong. You need to start with the first level
-  // that doesn't have any precedessors.
-  // Consider a simple example that fails your implementation:
-  // nodes = {B, A, C}, dependencies: A->B->C
-  // You start with B and set its level to 0 and C to 1. 
-  // Next, you start with A and set its level to 0. 
-  //
-  //for(auto node: nodes) {
-  //  
-  //  auto& cur_node_level = std::get<cudaNode::Capture>(node->_handle).level;
-
-  //  if(!(node->_has_state(cudaNode::STATE_VISITED))) {
-  //    node->_set_state(cudaNode::STATE_VISITED);
-  //    bfs.push(node);
-  //    cur_node_level = 0;
-  //  }
-
-  //  while(!bfs.empty()) {
-  //    auto u = bfs.front();
-  //    bfs.pop();
-  //    for(auto s: u->_successors) {
-
-  //      auto& suc_node_level = std::get<cudaNode::Capture>(s->_handle).level;
-
-  //      suc_node_level = cur_node_level + 1;
-
-  //      if(!(s->_has_state(cudaNode::STATE_VISITED))) {
-  //        s->_set_state(cudaNode::STATE_VISITED);
-  //        bfs.push(s);
-  //      }
-  //    }
-  //  }
-
-  //  _max_level = std::max(_max_level, cur_node_level);
-  //} 
 
   // set level_graph and each node's idx
   std::vector<std::vector<cudaNode*>> level_graph(max_level+1);
@@ -196,21 +118,6 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
   }
   
   return level_graph;
-}
-
-void cudaCapturingBase::_cuda_create_event(
-  std::vector<cudaScopedPerThreadEvent>& events,
-  cudaNode* node,
-  cudaScopedPerThreadStream& stream
-) {
-  auto& hn = std::get<cudaNode::Capture>(node->_handle);
-
-  if(hn.event == nullptr) {
-    hn.event = events.emplace_back();
-    TF_CHECK_CUDA(
-      cudaEventRecord(hn.event, stream), "failed to record stream"
-    );
-  }
 }
 
 // ----------------------------------------------------------------------------
@@ -354,7 +261,8 @@ inline cudaGraph_t cudaRoundRobinCapturing::_optimize(cudaGraph& graph) {
   
   // levelize the graph
   auto ordered = _toposort(graph);
-
+  
+  // initialize the data structure
   _reset(ordered);
 
   // begin to capture
@@ -367,7 +275,7 @@ inline cudaGraph_t cudaRoundRobinCapturing::_optimize(cudaGraph& graph) {
   
   // reserve space for scoped events
   std::vector<cudaScopedPerThreadEvent> events;
-  events.reserve((_num_streams >> 1) + ordered.size() / 100);
+  events.reserve((_num_streams >> 1) + ordered.size() / 128);
   
   // fork
   cudaEvent_t fork_event = events.emplace_back();
@@ -411,6 +319,7 @@ inline cudaGraph_t cudaRoundRobinCapturing::_optimize(cudaGraph& graph) {
     }
 
     if(wait_node != nullptr) {
+      assert(std::get<cudaNode::Capture>(wait_node->_handle).event); 
       TF_CHECK_CUDA(
         cudaStreamWaitEvent(
           streams[hn.level % _num_streams], 
@@ -456,14 +365,14 @@ inline cudaGraph_t cudaRoundRobinCapturing::_optimize(cudaGraph& graph) {
     cudaStreamEndCapture(streams[0], &native_g), "failed to end capture"
   );
 
-  tf::cuda_dump_graph(std::cout, native_g);
-  std::cout << '\n';
+  //tf::cuda_dump_graph(std::cout, native_g);
+  //std::cout << '\n';
 
   return native_g;
 }
 
 
-class cudaGreedyCapturing: public cudaCapturingBase {
+/*class cudaGreedyCapturing: public cudaCapturingBase {
   
   friend class cudaFlowCapturer;
 
@@ -717,10 +626,10 @@ inline cudaGraph_t cudaGreedyCapturing::_optimize(cudaGraph& graph) {
     cudaStreamEndCapture(streams[0], &native_g), "failed to end capture"
   );
 
-  tf::cuda_dump_graph(std::cout, native_g);
+  //tf::cuda_dump_graph(std::cout, native_g);
 
   return native_g;
-}
+} */
 
 }  // end of namespace tf -----------------------------------------------------
 

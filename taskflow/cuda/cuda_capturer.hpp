@@ -134,8 +134,8 @@ class cudaFlowCapturer {
 
   using Optimizer = std::variant<
     cudaSequentialCapturing,
-    cudaRoundRobinCapturing,
-    cudaGreedyCapturing
+    cudaRoundRobinCapturing
+    //cudaGreedyCapturing
   >;
 
   public:
