@@ -201,7 +201,8 @@ class Node {
     std::vector<Node*> _successors;
     std::vector<Node*> _dependents;
 
-    std::optional<Semaphores> _semaphores;
+    //std::optional<Semaphores> _semaphores;
+    std::unique_ptr<Semaphores> _semaphores;
 
     Topology* _topology {nullptr};
     

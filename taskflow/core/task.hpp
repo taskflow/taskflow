@@ -358,7 +358,8 @@ inline Task& Task::name(const std::string& name) {
 // Function: acquire
 inline Task& Task::acquire(Semaphore& s) {
   if(!_node->_semaphores) {
-    _node->_semaphores.emplace();
+    //_node->_semaphores.emplace();
+    _node->_semaphores = std::make_unique<Node::Semaphores>();
   }
   _node->_semaphores->to_acquire.push_back(&s);
   return *this;
@@ -367,7 +368,8 @@ inline Task& Task::acquire(Semaphore& s) {
 // Function: release
 inline Task& Task::release(Semaphore& s) {
   if(!_node->_semaphores) {
-    _node->_semaphores.emplace();
+    //_node->_semaphores.emplace();
+    _node->_semaphores = std::make_unique<Node::Semaphores>();
   }
   _node->_semaphores->to_release.push_back(&s);
   return *this;
@@ -549,6 +551,11 @@ class TaskView {
     @brief queries the task type
     */
     TaskType type() const;
+  
+    /**
+    @brief obtains a hash value of the underlying node
+    */
+    size_t hash_value() const;
     
   private:
     
@@ -601,6 +608,11 @@ inline TaskType TaskView::type() const {
     default:                 return TaskType::UNDEFINED;
   }
 }
+  
+// Function: hash_value
+inline size_t TaskView::hash_value() const {
+  return std::hash<const Node*>{}(&_node);
+}
 
 // Function: for_each_successor
 template <typename V>
@@ -631,6 +643,18 @@ template <>
 struct hash<tf::Task> {
   auto operator() (const tf::Task& task) const noexcept {
     return task.hash_value();
+  }
+};
+
+/**
+@struct hash
+
+@brief hash specialization for std::hash<tf::TaskView>
+*/
+template <>
+struct hash<tf::TaskView> {
+  auto operator() (const tf::TaskView& task_view) const noexcept {
+    return task_view.hash_value();
   }
 };
 
