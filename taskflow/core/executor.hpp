@@ -780,7 +780,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // At this point, the node storage might be destructed (to be verified)
   // case 1: non-condition task
   if((node->_handle.index() != Node::CONDITION && node->_handle.index()!=Node::CANPAUSE) ||
-      ((node->_handle.index()==Node::CANPAUSE) && canpause==true)) {
+      ((node->_handle.index()==Node::CANPAUSE) && canpause==std::nullopt)) {
     for(size_t i=0; i<num_successors; ++i) {
       if(--(node->_successors[i]->_join_counter) == 0) {
         j.fetch_add(1);
