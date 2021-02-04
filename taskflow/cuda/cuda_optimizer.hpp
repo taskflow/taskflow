@@ -213,7 +213,6 @@ class cudaRoundRobinCapturing : public cudaCapturingBase {
      */
     void num_streams(size_t n);
 
-
   private:
 
     size_t _num_streams {4};
