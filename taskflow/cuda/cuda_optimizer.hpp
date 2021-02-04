@@ -109,7 +109,7 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
   std::vector<std::vector<cudaNode*>> level_graph(max_level+1);
   for(auto u : graph._nodes) {
     auto& hu = std::get<cudaNode::Capture>(u->_handle);
-    hu.idx = level_graph[hu.level].size();
+    hu.lid = level_graph[hu.level].size();
     level_graph[hu.level].emplace_back(u);
     
     //for(auto s : u->_successors) {
@@ -219,7 +219,7 @@ class cudaRoundRobinCapturing : public cudaCapturingBase {
 
     cudaGraph_t _optimize(cudaGraph& graph);
 
-    void _reset(std::vector<cudaNode*>& graph);
+    void _reset(std::vector<std::vector<cudaNode*>>& graph);
 
 };
 
@@ -245,13 +245,17 @@ inline void cudaRoundRobinCapturing::num_streams(size_t n) {
   _num_streams = n;
 }
 
-inline void cudaRoundRobinCapturing::_reset(std::vector<cudaNode*>& graph) {
+inline void cudaRoundRobinCapturing::_reset(std::vector<std::vector<cudaNode*>>& graph) {
+  //level == global id 
+  //idx == stream id we want to skip
   size_t id{0};
-  for(auto& node: graph) {
-    auto& hn = std::get<cudaNode::Capture>(node->_handle);
-    hn.level= id++;
-    hn.idx = _num_streams;
-    hn.event = nullptr;
+  for(auto& each_level: graph) {
+    for(auto& node: each_level) {
+      auto& hn = std::get<cudaNode::Capture>(node->_handle);
+      hn.level = id++;
+      hn.idx = _num_streams;
+      hn.event = nullptr;
+    }
   }
 }
 
@@ -259,10 +263,10 @@ inline void cudaRoundRobinCapturing::_reset(std::vector<cudaNode*>& graph) {
 inline cudaGraph_t cudaRoundRobinCapturing::_optimize(cudaGraph& graph) {
   
   // levelize the graph
-  auto ordered = _toposort(graph);
+  auto levelized = _levelize(graph);
   
   // initialize the data structure
-  _reset(ordered);
+  _reset(levelized);
 
   // begin to capture
   std::vector<cudaScopedPerThreadStream> streams(_num_streams);
@@ -274,7 +278,7 @@ inline cudaGraph_t cudaRoundRobinCapturing::_optimize(cudaGraph& graph) {
   
   // reserve space for scoped events
   std::vector<cudaScopedPerThreadEvent> events;
-  events.reserve((_num_streams >> 1) + ordered.size() / 128);
+  events.reserve((_num_streams >> 1) + levelized.size());
   
   // fork
   cudaEvent_t fork_event = events.emplace_back();
@@ -289,63 +293,66 @@ inline cudaGraph_t cudaRoundRobinCapturing::_optimize(cudaGraph& graph) {
   }
 
   // assign streams to levelized nodes in a round-robin manner
-  for(auto& node: ordered) {
-    auto& hn = std::get<cudaNode::Capture>(node->_handle);
+  for(auto& each_level: levelized) {
+    for(auto& node: each_level) {
+      auto& hn = std::get<cudaNode::Capture>(node->_handle);
+      size_t sid = hn.lid % _num_streams;
 
-    //wait events
-    cudaNode* wait_node{nullptr};
-    for(auto& pn: node->_dependents) {
-      auto& phn = std::get<cudaNode::Capture>(pn->_handle);
+      //wait events
+      cudaNode* wait_node{nullptr};
+      for(auto& pn: node->_dependents) {
+        auto& phn = std::get<cudaNode::Capture>(pn->_handle);
+        size_t psid = phn.lid % _num_streams;
 
-      if(phn.level % _num_streams == hn.idx) {
-        if(wait_node == nullptr) {
-          wait_node = pn;
+        //level == global id 
+        //idx == stream id we want to skip
+        if(psid == hn.idx) {
+          if(wait_node == nullptr || std::get<cudaNode::Capture>(wait_node->_handle).level < phn.level) {
+            wait_node = pn;
+          }
         }
-        //replace the original wait node
-        else if(std::get<cudaNode::Capture>(wait_node->_handle).level < phn.level) {
-          wait_node = pn;
+        else if(psid != sid) {
+          TF_CHECK_CUDA(
+            cudaStreamWaitEvent(
+              streams[sid],
+              phn.event,
+              0
+            ), "failed to wait on node's stream"
+          );
         }
       }
-      else if(phn.level % _num_streams != hn.level % _num_streams) {
+
+      if(wait_node != nullptr) {
+        assert(std::get<cudaNode::Capture>(wait_node->_handle).event); 
         TF_CHECK_CUDA(
           cudaStreamWaitEvent(
-            streams[hn.level % _num_streams],
-            phn.event,
+            streams[sid], 
+            std::get<cudaNode::Capture>(wait_node->_handle).event, 
             0
           ), "failed to wait on node's stream"
         );
       }
-    }
 
-    if(wait_node != nullptr) {
-      assert(std::get<cudaNode::Capture>(wait_node->_handle).event); 
-      TF_CHECK_CUDA(
-        cudaStreamWaitEvent(
-          streams[hn.level % _num_streams], 
-          std::get<cudaNode::Capture>(wait_node->_handle).event, 
-          0
-        ), "failed to wait on node's stream"
-      );
-    }
+      //capture
+      hn.work(streams[sid]);
 
-    //capture
-    hn.work(streams[hn.level % _num_streams]);
-
-    //create/record stream
-    for(auto& sn: node->_successors) {
-      auto& shn = std::get<cudaNode::Capture>(sn->_handle);
-      if(shn.level % _num_streams != hn.level % _num_streams) {
-        if(!hn.event) {
-          hn.event = events.emplace_back();
-          TF_CHECK_CUDA(
-            cudaEventRecord(hn.event, streams[hn.level % _num_streams]), "faid to record node's stream"
-          );
+      //create/record stream
+      for(auto& sn: node->_successors) {
+        auto& shn = std::get<cudaNode::Capture>(sn->_handle);
+        size_t ssid = shn.lid % _num_streams;
+        if(ssid != sid) {
+          if(!hn.event) {
+            hn.event = events.emplace_back();
+            TF_CHECK_CUDA(
+              cudaEventRecord(hn.event, streams[sid]), "failed to record node's stream"
+            );
+          }
+          //idx == stream id we want to skip
+          shn.idx = sid;
         }
-        shn.idx = hn.level % _num_streams;
       }
     }
   }
-
 
   // join
   for(size_t i=1; i<_num_streams; ++i) {
