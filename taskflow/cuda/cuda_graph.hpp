@@ -432,7 +432,7 @@ class cudaNode {
 
     std::function<void(cudaStream_t)> work;
 
-    cudaEvent_t event {nullptr};
+    cudaEvent_t event;
     size_t level;
     size_t lid;
     size_t idx;
