@@ -86,7 +86,8 @@ constexpr bool is_static_task_v = std::is_invocable_r_v<void, C> &&
 A can pause task is a callable object constructible from std::function<void()>.
 */
 template <typename C>
-constexpr bool is_can_pause_task_v = std::is_invocable_r_v<std::optional<bool>, C>;
+constexpr bool is_can_pause_task_v = std::is_invocable_r_v<std::optional<bool>, C> &&
+!std::is_invocable_r_v<int, C>;
 
 /**
 @brief determines if a callable is a dynamic task
