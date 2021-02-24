@@ -1,25 +1,6 @@
 #pragma once
 
-#include <tuple>
-#include <utility>
-#include <string>
-#include <vector>
-#include <list>
-#include <forward_list>
-#include <queue>
-#include <stack>
-#include <type_traits>
-#include <memory>
-#include <map>
-#include <set>
-#include <variant>
-#include <chrono>
-#include <any>
-#include <unordered_map>
-#include <unordered_set>
-#include <system_error>
-#include <optional>
-#include <array>
+#include "traits.hpp"
 
 namespace tf {
 
@@ -447,11 +428,14 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
     );
   }
   // Fall back to user-defined serialization method.
-  else {
+  else if constexpr(std::is_same_v<void, std::void_t<decltype(std::declval<T>().save(*this))>>){
     return t.save(*this);
   }
+  else {
+    static_assert(dependent_false_v<U>, "custom 'save' method not found");
+  }
 
-  return -1;  // for nvcc warning
+  return -1;
 }
 
 // ----------------------------------------------------------------------------
@@ -683,11 +667,15 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
       std::forward<T>(t)
     );
   }
-  else {
+  // Fall back to user-defined de-serialization method.
+  else if constexpr(std::is_same_v<void, std::void_t<decltype(std::declval<T>().load(*this))>>){
     return t.load(*this);
   }
+  else {
+    static_assert(dependent_false_v<U>, "custom 'load' method not found");
+  }
 
-  return -1;  // for nvcc warning
+  return -1;
 }
   
 // Function: _variant_helper
