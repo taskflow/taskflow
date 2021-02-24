@@ -57,6 +57,7 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 
 @section release-3-1-0_bug_fixes Bug Fixes 
  + Fixed the macro expansion issue with MSVC on @c TF_CUDA_CHECK
+ + Fixed the serializer compile error ([288](https://github.com/taskflow/taskflow/issues/288))
 
 @section release-3-1-0_breaking_changes Breaking Changes
 
@@ -70,6 +71,8 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 + revised in-code documentation of tf::cudaFlowCapturer
 
 @section release-3-1-0_miscellaneous_items Miscellaneous Items
+
++ removed Circle-CI from the continuous integration
 
 */
 
