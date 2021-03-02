@@ -362,20 +362,24 @@ inline size_t Node::num_dependents() const {
 
 // Function: num_weak_dependents
 inline size_t Node::num_weak_dependents() const {
-  return std::count_if(
-    _dependents.begin(), 
-    _dependents.end(), 
-    [](Node* node){ return node->_handle.index() == Node::CONDITION; } 
-  );
+  size_t n = 0;
+  for(size_t i=0; i<_dependents.size(); i++) {
+    if(_dependents[i]->_handle.index() == Node::CONDITION) {
+      n++;
+    }
+  }
+  return n;
 }
 
 // Function: num_strong_dependents
 inline size_t Node::num_strong_dependents() const {
-  return std::count_if(
-    _dependents.begin(), 
-    _dependents.end(), 
-    [](Node* node){ return node->_handle.index() != Node::CONDITION; } 
-  );
+  size_t n = 0;
+  for(size_t i=0; i<_dependents.size(); i++) {
+    if(_dependents[i]->_handle.index() != Node::CONDITION) {
+      n++;
+    }
+  }
+  return n;
 }
 
 // Function: name
@@ -418,7 +422,7 @@ inline bool Node::_is_cancelled() const {
 // Procedure: _set_up_join_counter
 inline void Node::_set_up_join_counter() {
 
-  int c = 0;
+  size_t c = 0;
 
   for(auto p : _dependents) {
     if(p->_handle.index() == Node::CONDITION) {
