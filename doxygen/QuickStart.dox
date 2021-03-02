@@ -173,7 +173,7 @@ tf::Executor executor;
 tf::Taskflow taskflow;
 
 // create asynchronous tasks directly from an executor
-std::future<int> future = executor.async([](){ 
+tf::future<std::optional<int>> future = executor.async([](){ 
   std::cout << "async task returns 1\n";
   return 1;
 }); 
@@ -193,17 +193,23 @@ executor.run(taskflow).wait();
 
 The executor provides several @em thread-safe methods to run a taskflow. 
 You can run a taskflow once, multiple times, or until a stopping criteria is met. 
-These methods are non-blocking with a std::future return 
+These methods are non-blocking with a @c tf::Future<void> return 
 to let you query the execution status. 
 
 @code{.cpp}
-executor.run(taskflow);       // runs the taskflow once
-executor.run_n(taskflow, 4);  // runs the taskflow four times
+// runs the taskflow once
+tf::Future<void> run_once = executor.run(taskflow); 
 
-// keeps running the taskflow until the predicate becomes true (5 times)
-executor.run_until(taskflow, [counter=5](){ return --counter == 0; } );
+// wait on this run to finish
+run_once.get();
 
-// block the executor until all submitted taskflows complete
+// run the taskflow four times
+executor.run_n(taskflow, 4);
+
+// runs the taskflow five times
+executor.run_until(taskflow, [counter=5](){ return --counter == 0; });
+
+// blocks the executor until all submitted taskflows complete
 executor.wait_for_all();
 @endcode
 

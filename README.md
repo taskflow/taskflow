@@ -148,6 +148,179 @@ taskflow.dump(std::cout);
 
 <p align="center"><img src="doxygen/images/simple.svg"></p>
 
+# Express Task Graph Parallelism
+
+Taskflow empowers users with both static and dynamic task graph constructions
+to express end-to-end parallelism in a task graph that
+embeds in-graph control flow.
+
+1. [Create a Subflow Graph](#create-a-subflow-graph)
+2. [Integrate Control Flow to a Task Graph](#integrate-control-flow-to-a-task-graph)
+3. [Offload a Task to a GPU](#offload-a-task-to-a-gpu)
+4. [Compose Task Graphs](#compose-task-graphs)
+5. [Launch Asynchronous Tasks](#launch-asynchronous-tasks)
+6. [Execute a Taskflow](#execute-a-taskflow)
+
+## Create a Subflow Graph
+
+Taskflow supports *dynamic tasking* for you to create a subflow
+graph from the execution of a task to perform dynamic parallelism.
+The following program spawns a task dependency graph parented at task `B`.
+
+```cpp
+tf::Task A = taskflow.emplace([](){}).name("A");  
+tf::Task C = taskflow.emplace([](){}).name("C");  
+tf::Task D = taskflow.emplace([](){}).name("D");  
+
+tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) { 
+  tf::Task B1 = subflow.emplace([](){}).name("B1");  
+  tf::Task B2 = subflow.emplace([](){}).name("B2");  
+  tf::Task B3 = subflow.emplace([](){}).name("B3");  
+  B3.succeed(B1, B2);  // B3 runs after B1 and B2
+}).name("B");
+
+A.precede(B, C);  // A runs before B and C
+D.succeed(B, C);  // D runs after  B and C
+```
+
+<p align="center"><img src="doxygen/images/subflow_join.svg"></p>
+
+## Integrate Control Flow to a Task Graph 
+
+Taskflow supports *conditional tasking* for you to make rapid 
+control-flow decisions across dependent tasks to implement cycles 
+and conditions in an *end-to-end* task graph.
+
+```cpp
+tf::Task init = taskflow.emplace([](){}).name("init");
+tf::Task stop = taskflow.emplace([](){}).name("stop");
+
+// creates a condition task that returns a random binary
+tf::Task cond = taskflow.emplace(
+  [](){ return std::rand() % 2; }
+).name("cond");
+
+init.precede(cond);
+
+// creates a feedback loop {0: cond, 1: stop}
+cond.precede(cond, stop);
+```
+
+<p align="center"><img src="doxygen/images/conditional-tasking-1.svg"></p>
+
+
+## Offload a Task to a GPU
+
+Taskflow supports heterogeneous tasking for you 
+to accelerate many data-driven scientific computing applications 
+by harnessing the power of CPU-GPU collaborative computing.
+
+```cpp
+// saxpy kernel
+__global__ void saxpy(size_t N, float alpha, float* dx, float* dy);
+
+tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
+
+  // data copy tasks
+  tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
+  tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
+  tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
+  tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
+  
+  // kernel task with parameters to launch the saxpy kernel
+  tf::cudaTask saxpy = cf.kernel(
+    (N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy
+  ).name("saxpy");
+
+  saxpy.succeed(h2d_x, h2d_y)
+       .precede(d2h_x, d2h_y);
+}).name("cudaFlow");
+```
+
+<p align="center"><img src="doxygen/images/saxpy_1_cudaflow.svg"></p>
+
+## Compose Task Graphs
+
+Taskflow is composable. 
+You can create large parallel graphs through composition of modular 
+and reusable blocks that are easier to optimize at an individual scope.
+
+```cpp
+tf::Taskflow f1, f2;
+
+// create taskflow f1 of two tasks
+tf::Task f1A = f1.emplace([]() { std::cout << "Task f1A\n"; })
+                 .name("f1A");
+tf::Task f1B = f1.emplace([]() { std::cout << "Task f1B\n"; })
+                 .name("f1B");
+
+// create taskflow f2 with one module task composed of f1
+tf::Task f2A = f2.emplace([]() { std::cout << "Task f2A\n"; })
+                 .name("f2A");
+tf::Task f2B = f2.emplace([]() { std::cout << "Task f2B\n"; })
+                 .name("f2B");
+tf::Task f2C = f2.emplace([]() { std::cout << "Task f2C\n"; })
+                 .name("f2C");
+
+tf::Task f1_module_task = f2.composed_of(f1)
+                            .name("module");
+
+f1_module_task.succeed(f2A, f2B)
+              .precede(f2C);
+```
+
+<p align="center"><img src="doxygen/images/composition.svg"></p>
+
+## Launch Asynchronous Tasks
+
+Taskflow supports *asynchronous* tasking.
+You can launch tasks asynchronously to incorporate independent, dynamic 
+parallelism in your taskflows.
+
+```cpp
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+// create asynchronous tasks directly from an executor
+tf::future<std::optional<int>> future = executor.async([](){ 
+  std::cout << "async task returns 1\n";
+  return 1;
+}); 
+executor.silent_async([](){ std::cout << "async task of no return\n"; });
+
+// launch an asynchronous task from a running task
+taskflow.emplace([&](){
+  executor.async([](){ std::cout << "async task within a task\n"; });
+});
+
+executor.run(taskflow).wait();
+```
+
+## Execute a Taskflow
+
+The executor provides several *thread-safe* methods to run a taskflow. 
+You can run a taskflow once, multiple times, or until a stopping criteria is met. 
+These methods are non-blocking with a `tf::future<void>` return 
+to let you query the execution status. 
+
+```cpp
+// runs the taskflow once
+tf::Future<void> run_once = executor.run(taskflow); 
+
+// wait on this run to finish
+run_once.get();
+
+// run the taskflow four times
+executor.run_n(taskflow, 4);
+
+// runs the taskflow five times
+executor.run_until(taskflow, [counter=5](){ return --counter == 0; });
+
+// block the executor until all submitted taskflows complete
+executor.wait_for_all();
+```
+
+
 # Supported Compilers
 
 To use Taskflow, you only need a compiler that supports C++17:

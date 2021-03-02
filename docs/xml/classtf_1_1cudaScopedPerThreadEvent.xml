@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1cudaScopedPerThreadEvent" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaScopedPerThreadEvent</compoundname>
     <includes refid="cuda__stream_8hpp" local="no">cuda_stream.hpp</includes>
       <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1cudaScopedPerThreadEvent_1a8a201dfe3177d005be63150f49d60cb9" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; cudaPerThreadEventPool::Object &gt;</type>
+        <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; cudaPerThreadEventPool::Object &gt;</type>
         <definition>std::shared_ptr&lt;cudaPerThreadEventPool::Object&gt; tf::cudaScopedPerThreadEvent::_ptr</definition>
         <argsstring></argsstring>
         <name>_ptr</name>
@@ -15,7 +15,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="278" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="278" bodyend="-1"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="278" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="278" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -29,24 +29,20 @@
           <declname>device</declname>
         </param>
         <briefdescription>
-<para>constructs a scoped event under the given device </para>
-        </briefdescription>
+<para>constructs a scoped event under the given device </para>        </briefdescription>
         <detaileddescription>
-<para>The constructor acquires a event from a per-thread event pool.</para>
-<para><parameterlist kind="param"><parameteritem>
+<para>The constructor acquires a event from a per-thread event pool.</para><para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>device</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>device context of the requested event </para>
-</parameterdescription>
+<para>device context of the requested event </para></parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>
-        </detaileddescription>
+</para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="225" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="225" bodyend="227"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="225" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="225" bodyend="227"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaScopedPerThreadEvent_1a21c0ff7886b17fd01b2b605ff99286ea" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -54,14 +50,12 @@
         <argsstring>()</argsstring>
         <name>cudaScopedPerThreadEvent</name>
         <briefdescription>
-<para>constructs a scoped event under the current device. </para>
-        </briefdescription>
+<para>constructs a scoped event under the current device. </para>        </briefdescription>
         <detaileddescription>
-<para>The constructor acquires a event from a per-thread event pool. </para>
-        </detaileddescription>
+<para>The constructor acquires a event from a per-thread event pool. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="234" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="234" bodyend="236"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="234" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="234" bodyend="236"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaScopedPerThreadEvent_1a559bb90cf2a33b36c2219dd463107682" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -69,14 +63,12 @@
         <argsstring>()</argsstring>
         <name>~cudaScopedPerThreadEvent</name>
         <briefdescription>
-<para>destructs the scoped event guard </para>
-        </briefdescription>
+<para>destructs the scoped event guard </para>        </briefdescription>
         <detaileddescription>
-<para>The destructor releases the event to the per-thread event pool. </para>
-        </detaileddescription>
+<para>The destructor releases the event to the per-thread event pool. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="243" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="243" bodyend="247"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="243" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="243" bodyend="247"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaScopedPerThreadEvent_1a49d04707bdceda1de1dc712a60efa04f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -84,13 +76,12 @@
         <argsstring>() const</argsstring>
         <name>operator cudaEvent_t</name>
         <briefdescription>
-<para>implicit conversion to the native CUDA event (cudaEvent_t) </para>
-        </briefdescription>
+<para>implicit conversion to the native CUDA event (cudaEvent_t) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="252" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="252" bodyend="254"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="252" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="252" bodyend="254"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaScopedPerThreadEvent_1aced4385fb285b031f6dd7d46379b6e2a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -101,13 +92,12 @@
           <type>const <ref refid="classtf_1_1cudaScopedPerThreadEvent" kindref="compound">cudaScopedPerThreadEvent</ref> &amp;</type>
         </param>
         <briefdescription>
-<para>disabled copy constructor </para>
-        </briefdescription>
+<para>disabled copy constructor </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="259" column="3"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="259" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaScopedPerThreadEvent_1af842177f4747cf12985a590b03122608" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -118,13 +108,12 @@
           <type><ref refid="classtf_1_1cudaScopedPerThreadEvent" kindref="compound">cudaScopedPerThreadEvent</ref> &amp;&amp;</type>
         </param>
         <briefdescription>
-<para>default move constructor </para>
-        </briefdescription>
+<para>default move constructor </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="264" column="3"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="264" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaScopedPerThreadEvent_1a64195752aac39e727b4189051e693f5f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaScopedPerThreadEvent" kindref="compound">cudaScopedPerThreadEvent</ref> &amp;</type>
@@ -135,13 +124,12 @@
           <type>const <ref refid="classtf_1_1cudaScopedPerThreadEvent" kindref="compound">cudaScopedPerThreadEvent</ref> &amp;</type>
         </param>
         <briefdescription>
-<para>disabled copy assignment </para>
-        </briefdescription>
+<para>disabled copy assignment </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="269" column="28"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="269" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaScopedPerThreadEvent_1a48cbab0596eb22fd03092a6b9b447523" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaScopedPerThreadEvent" kindref="compound">cudaScopedPerThreadEvent</ref> &amp;</type>
@@ -152,32 +140,26 @@
           <type><ref refid="classtf_1_1cudaScopedPerThreadEvent" kindref="compound">cudaScopedPerThreadEvent</ref> &amp;&amp;</type>
         </param>
         <briefdescription>
-<para>default move assignment </para>
-        </briefdescription>
+<para>default move assignment </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="274" column="28"/>
+        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="274" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class that provides RAII-styled guard of event acquisition </para>
-    </briefdescription>
+<para>class that provides RAII-styled guard of event acquisition </para>    </briefdescription>
     <detaileddescription>
-<para>Sample usage:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">{</highlight></codeline>
+<para>Sample usage:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaScopedPerThreadEvent" kindref="compound">tf::cudaScopedPerThreadEvent</ref><sp/>event(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>acquires<sp/>a<sp/>event<sp/>on<sp/>device<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>use<sp/>event<sp/>as<sp/>a<sp/>normal<sp/>cuda<sp/>event<sp/>(cudaEvent_t)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cudaStreamWaitEvent(stream,<sp/>event);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}<sp/><sp/></highlight><highlight class="comment">//<sp/>leaving<sp/>the<sp/>scope<sp/>releases<sp/>the<sp/>event<sp/>back<sp/>to<sp/>the<sp/>pool<sp/>on<sp/>device<sp/>1</highlight></codeline>
-</programlisting></para>
-<para>The scoped per-thread event is primarily used by <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> to execute CUDA tasks (e.g., <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>, <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>).</para>
-<para>cudaScopedPerThreadEvent is non-copyable. </para>
-    </detaileddescription>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="214" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="214" bodyend="280"/>
+</programlisting></para><para>The scoped per-thread event is primarily used by <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> to execute CUDA tasks (e.g., <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>, <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>).</para><para>cudaScopedPerThreadEvent is non-copyable. </para>    </detaileddescription>
+    <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="214" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="214" bodyend="280"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaScopedPerThreadEvent_1a8a201dfe3177d005be63150f49d60cb9" prot="private" virt="non-virtual"><scope>tf::cudaScopedPerThreadEvent</scope><name>_ptr</name></member>
       <member refid="classtf_1_1cudaScopedPerThreadEvent_1a728cf6c4a75361c01d874d92f5e98902" prot="public" virt="non-virtual"><scope>tf::cudaScopedPerThreadEvent</scope><name>cudaScopedPerThreadEvent</name></member>

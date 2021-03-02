@@ -755,7 +755,7 @@ async function main() {
   
   // clean-up the loader 
   $('#tfp_loader').css("display", "none");
-  $('#tfp_toolbar').css("display", "block")
+  //$('#tfp_toolbar').css("display", "block")
   $('#tfp').css("display", "block");
   
   // initialize static field
