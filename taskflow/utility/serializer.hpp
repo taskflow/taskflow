@@ -435,7 +435,7 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
     static_assert(dependent_false_v<U>, "custom 'save' method not found");
   }
 
-  return -1;
+  return 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -675,7 +675,7 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
     static_assert(dependent_false_v<U>, "custom 'load' method not found");
   }
 
-  return -1;
+  return 0;
 }
   
 // Function: _variant_helper
