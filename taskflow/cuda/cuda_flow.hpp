@@ -667,10 +667,6 @@ cudaTask cudaFlow::kernel(
   dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
 ) {
   
-  using traits = function_traits<F>;
-
-  static_assert(traits::arity == sizeof...(ArgsT), "arity mismatches");
-
   auto node = _graph.emplace_back(
     _graph, std::in_place_type_t<cudaNode::Kernel>{}, (void*)f
   );
@@ -699,10 +695,6 @@ template <typename F, typename... ArgsT>
 cudaTask cudaFlow::kernel_on(
   int d, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
 ) {
-  
-  using traits = function_traits<F>;
-
-  static_assert(traits::arity == sizeof...(ArgsT), "arity mismatches");
   
   auto node = _graph.emplace_back(
     _graph, std::in_place_type_t<cudaNode::Kernel>{}, (void*)f

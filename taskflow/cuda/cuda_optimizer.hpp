@@ -313,11 +313,8 @@ inline cudaGraph_t cudaRoundRobinCapturing::_optimize(cudaGraph& graph) {
         }
         else if(psid != sid) {
           TF_CHECK_CUDA(
-            cudaStreamWaitEvent(
-              streams[sid],
-              phn.event,
-              0
-            ), "failed to wait on node's stream"
+            cudaStreamWaitEvent(streams[sid], phn.event, 0), 
+            "failed to wait on node's stream"
           );
         }
       }
