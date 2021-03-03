@@ -14,8 +14,8 @@ option(TF_BUILD_EXAMPLES "Enables builds of examples" ON)
 option(TF_BUILD_PROFILER "Enables builds of profiler" OFF)
 
 # project-specific variables
-set(TF_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
-set(TF_LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib")
+set(TF_INC_INSTALL_DIR "include")
+set(TF_LIB_INSTALL_DIR "lib")
 set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittests)
 set(TF_EXAMPLE_DIR ${PROJECT_SOURCE_DIR}/examples)
 set(TF_BENCHMARK_DIR ${PROJECT_SOURCE_DIR}/benchmarks)
