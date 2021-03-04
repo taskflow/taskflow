@@ -33,11 +33,11 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/cudaflow_capturer_1.dot"></dotfile>
+</programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/cudaflow_capturer_1.dot"></dotfile>
 </para><para>The stream object passed to each <ref refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kindref="member">tf::cudaFlowCapturer::on</ref> call may differ, and it depends on how the internal optimization algorithm maximizes the GPU parallelism.</para><para><simplesect kind="warning"><para>Inside <ref refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kindref="member">tf::cudaFlowCapturer::on</ref>, you should <emphasis>NOT</emphasis> modify the properties of the stream argument but use it to capture <emphasis>asynchronous</emphasis> GPU operations (e.g., <computeroutput>kernel</computeroutput>, <computeroutput>cudaMemcpyAsync</computeroutput>).</para></simplesect>
 A cudaFlowCapturer lives with the callable. When the executor invoke the capturer callable, it creates the cudaFlowCapturer and will destroy it until all internal operations finish.</para></sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1CommonCaptureMethods">
@@ -57,7 +57,7 @@ A cudaFlowCapturer lives with the callable. When the executor invoke the capture
 <codeline><highlight class="normal"><sp/><sp/>h2d.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(kernel);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>kernel.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(d2h);</highlight></codeline>
 <codeline><highlight class="normal">}).name(</highlight><highlight class="stringliteral">&quot;capturer&quot;</highlight><highlight class="normal">);</highlight></codeline>
-</programlisting></para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/cudaflow_capturer_2.dot"></dotfile>
+</programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/cudaflow_capturer_2.dot"></dotfile>
 </para></sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1CreateACapturerOnASpecificGPU">
 <title>Create a Capturer on a Specific GPU</title>
@@ -93,7 +93,7 @@ A cudaFlowCapturer lives with the callable. When the executor invoke the capture
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task1.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(task2);</highlight></codeline>
 <codeline><highlight class="normal">}).name(</highlight><highlight class="stringliteral">&quot;cudaFlow&quot;</highlight><highlight class="normal">);</highlight></codeline>
-</programlisting></para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/cudaflow_capturer_3.dot"></dotfile>
+</programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/cudaflow_capturer_3.dot"></dotfile>
 </para></sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1CreateCustomCapturer">
 <title>Create a Custom Capturer</title>
@@ -120,7 +120,7 @@ A cudaFlowCapturer lives with the callable. When the executor invoke the capture
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task_1.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(task_2);</highlight></codeline>
 <codeline><highlight class="normal">}).name(</highlight><highlight class="stringliteral">&quot;capturer&quot;</highlight><highlight class="normal">);</highlight></codeline>
-</programlisting></para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/cudaflow_capturer_1.dot"></dotfile>
+</programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/cudaflow_capturer_1.dot"></dotfile>
 </para><para>Taskflow provides several class interfaces, such as <ref refid="classtf_1_1cublasFlowCapturer" kindref="compound">tf::cublasFlowCapturer</ref>, on top of <ref refid="classtf_1_1cudaFlowCapturerBase" kindref="compound">tf::cudaFlowCapturerBase</ref> for users to use external high-performance CUDA libraries together with Taskflow.</para></sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1OffloadAndUpdateAcudaFlowCapturer">
 <title>Offload and Update a cudaFlow Capturer</title>

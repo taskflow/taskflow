@@ -18,14 +18,14 @@ To download the newest version of %Taskflow, please clone from <a href="https://
 
 @section release-3-1-0_system_requirements System Requirements
 
-To use %Taskflow v3.0.0, you need a compiler that supports C++17:
+To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 
 @li GNU C++ Compiler at least v7.0 with -std=c++17
 @li Clang C++ Compiler at least v6.0 with -std=c++17
 @li Microsoft Visual Studio at least v19.27 with /std:c++17
 @li AppleClang Xode Version at least v12.0 with -std=c++17
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
-@li Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17
+@li Intel C++ Compiler at least v19.0.1 with -std=c++17
 
 %Taskflow works on Linux, Windows, and Mac OS X.
 
@@ -33,13 +33,13 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
 @li enhancing %cudaFlow and scheduling algorithms for capturer
-@li adding support for SYCL (ComputeCpp and DPC++)
+@li adding support for SYCL through DPC++
 
 @section release-3-1-0_new_features New Features
 
 @subsection release-3-1-0_taskflow_core Taskflow Core
 
-@li optimized tf::Node storage by using std::unique_ptr for semaphores
+@li optimized task node storage by using std::unique_ptr for semaphores
 
 @subsection release-3-1-0_cudaflow cudaFlow
 
@@ -59,7 +59,7 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 
 @section release-3-1-0_bug_fixes Bug Fixes 
  + Fixed the macro expansion issue with MSVC on @c TF_CUDA_CHECK
- + Fixed the serializer compile error ([288](https://github.com/taskflow/taskflow/issues/288))
+ + Fixed the serializer compile error ([#288](https://github.com/taskflow/taskflow/issues/288))
 
 @section release-3-1-0_breaking_changes Breaking Changes
 

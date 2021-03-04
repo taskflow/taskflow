@@ -12,13 +12,13 @@
 <para>To download the newest version of Taskflow, please clone from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_system_requirements">
 <title>System Requirements</title>
-<para>To use Taskflow v3.0.0, you need a compiler that supports C++17:</para><para><itemizedlist>
+<para>To use Taskflow v3.1.0, you need a compiler that supports C++17:</para><para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v7.0 with -std=c++17 </para></listitem>
 <listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para></listitem>
 <listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para></listitem>
 <listitem><para>AppleClang Xode Version at least v12.0 with -std=c++17 </para></listitem>
 <listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17</para></listitem>
+<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17</para></listitem>
 </itemizedlist>
 Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_working_items">
@@ -26,7 +26,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <para><itemizedlist>
 <listitem><para>enhancing the taskflow profiler (<ulink url="https://github.com/taskflow/tfprof">TFProf</ulink>) </para></listitem>
 <listitem><para>enhancing cudaFlow and scheduling algorithms for capturer </para></listitem>
-<listitem><para>adding support for SYCL (ComputeCpp and DPC++)</para></listitem>
+<listitem><para>adding support for SYCL through DPC++</para></listitem>
 </itemizedlist>
 </para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_new_features">
@@ -34,7 +34,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-1-0_1release-3-1-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>optimized tf::Node storage by using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> for semaphores</para></listitem>
+<listitem><para>optimized task node storage by using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> for semaphores</para></listitem>
 </itemizedlist>
 </para></sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_cudaflow">
@@ -45,7 +45,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 </para></sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_utilities">
 <title>Utilities</title>
-</sect2>
+<para><itemizedlist>
+<listitem><para>resolved the compiler warning in serializer caused by <computeroutput>constexpr if</computeroutput></para></listitem>
+</itemizedlist>
+</para></sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_profiler">
 <title>Taskflow Profiler (TFProf)</title>
 </sect2>
@@ -62,7 +65,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>Fixed the macro expansion issue with MSVC on <computeroutput>TF_CUDA_CHECK</computeroutput> </para></listitem><listitem><para>Fixed the serializer compile error (<ulink url="https://github.com/taskflow/taskflow/issues/288">288</ulink>)</para></listitem></itemizedlist>
+<listitem><para>Fixed the macro expansion issue with MSVC on <computeroutput>TF_CUDA_CHECK</computeroutput> </para></listitem><listitem><para>Fixed the serializer compile error (<ulink url="https://github.com/taskflow/taskflow/issues/288">#288</ulink>)</para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_breaking_changes">
 <title>Breaking Changes</title>
@@ -78,7 +81,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
 <para><itemizedlist>
-<listitem><para>removed Circle-CI from the continuous integration </para></listitem></itemizedlist>
+<listitem><para>removed Circle-CI from the continuous integration</para></listitem><listitem><para>updated <ulink url="https://github.com/GrokImageCompression/grok">grok</ulink> to the user list </para></listitem></itemizedlist>
 </para></sect1>
     </detaileddescription>
   </compounddef>

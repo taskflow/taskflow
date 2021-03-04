@@ -9,7 +9,7 @@
 [![TFProf](image/tfprof.svg)](https://taskflow.github.io/tfprof/)
 [![Cite](image/cite-ipdps.svg)][IPDPS19]
 
-Taskflow helps you quickly write parallel and heterogeneous tasks programs in modern C++
+Taskflow helps you quickly write parallel and heterogeneous task programs in modern C++
 
 # Why Taskflow?
 

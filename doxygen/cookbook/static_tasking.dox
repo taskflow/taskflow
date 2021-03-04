@@ -68,6 +68,14 @@ Debrief:
 %Taskflow uses general-purpose polymorphic function wrapper, std::function,
 to store and invoke a callable in a task.
 You need to follow its contract to create a task.
+For example, the callable to construct a task must be copyable,
+and thus the code below won't compile:
+
+@code{.cpp}
+taskflow.emplace([ptr=std::make_unique<int>(1)](){
+  std::cout << "captured unique pointer is not copyable";
+});
+@endcode
 
 
 @section VisualizeATaskDependencyGraph Visualize a Task Dependency Graph

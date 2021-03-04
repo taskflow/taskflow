@@ -17,7 +17,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="20" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="20" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="20" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="20" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="protected-attrib">
@@ -32,7 +32,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="784" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="784" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="784" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="784" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -78,7 +78,7 @@ The following example creates a static task.</para><para><programlisting filenam
 </programlisting></para><para>Please refer to <ref refid="StaticTasking" kindref="compound">Static Tasking</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="44" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="799" bodyend="803"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="44" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="799" bodyend="803"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -125,7 +125,7 @@ The following example creates a dynamic task (<ref refid="classtf_1_1Subflow" ki
 </programlisting></para><para>Please refer to <ref refid="DynamicTasking" kindref="compound">Dynamic Tasking</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="70" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="70" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -170,8 +170,8 @@ The following example creates an if-else block using one condition task and thre
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[init,<sp/>cond,<sp/>yes,<sp/>no]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;yes\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;no\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;yes\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;no\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>executes<sp/>yes<sp/>if<sp/>cond<sp/>returns<sp/>0,<sp/>or<sp/>no<sp/>if<sp/>cond<sp/>returns<sp/>1</highlight><highlight class="normal"></highlight></codeline>
@@ -180,7 +180,7 @@ The following example creates an if-else block using one condition task and thre
 </programlisting></para><para>Please refer to <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="104" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="104" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a1f6118326ad434f6c839007a1a79fe1b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -224,15 +224,15 @@ The following example creates an if-else block using one condition task and thre
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
 The method returns a tuple of tasks each corresponding to the given callable target. You can use structured binding to get the return tasks one by one. The following example creates four static tasks and assign them to <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> using structured binding.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[A,<sp/>B,<sp/>C,<sp/>D]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="131" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="823" bodyend="825"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="131" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="823" bodyend="825"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a0a01192f4f92c15380a4f259e2fec2d9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
@@ -258,7 +258,7 @@ The method returns a tuple of tasks each corresponding to the given callable tar
 Please refer to <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="142" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="828" bodyend="833"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="142" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="828" bodyend="833"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
@@ -283,7 +283,7 @@ A placeholder task maps to a node in the taskflow graph, but it does not have an
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="168" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="836" bodyend="839"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="168" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="836" bodyend="839"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -326,7 +326,7 @@ This method is equivalent to calling tf::FlowBuilder::emplace_on(callable, d) wh
 </programlisting></para><para>Please refer to <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref> and <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="199" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="199" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -383,7 +383,7 @@ The following example creates a cudaFlow of two kernel tasks, <computeroutput>ta
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="226" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1150" bodyend="1161"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="226" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1150" bodyend="1161"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a90f3d9b9d6fcf4df8e7d7878dfdd130d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -391,7 +391,7 @@ The following example creates a cudaFlow of two kernel tasks, <computeroutput>ta
         <argsstring>(std::vector&lt; Task &gt; &amp;tasks)</argsstring>
         <name>linearize</name>
         <param>
-          <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt; &amp;</type>
+          <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt; &amp;</type>
           <declname>tasks</declname>
         </param>
         <briefdescription>
@@ -408,7 +408,7 @@ The following example creates a cudaFlow of two kernel tasks, <computeroutput>ta
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="233" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="860" bodyend="862"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="233" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="860" bodyend="862"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a4ec89b554d15ad5fb96f4fdb10dbbb16" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -416,7 +416,7 @@ The following example creates a cudaFlow of two kernel tasks, <computeroutput>ta
         <argsstring>(std::initializer_list&lt; Task &gt; tasks)</argsstring>
         <name>linearize</name>
         <param>
-          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt;</type>
+          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt;</type>
           <declname>tasks</declname>
         </param>
         <briefdescription>
@@ -433,7 +433,7 @@ The following example creates a cudaFlow of two kernel tasks, <computeroutput>ta
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="240" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="865" bodyend="867"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="240" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="865" bodyend="867"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a564252001be679600b20ca9ed9920f6a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -514,10 +514,10 @@ The following example creates a cudaFlow of two kernel tasks, <computeroutput>ta
 The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[first, last)</computeroutput>. By default, we employ the guided partition algorithm with chunk size equal to one. This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Arguments templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
+</programlisting></para><para>Arguments templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="275" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="275" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a1a294c4fa23d74b82e581b8cfd33acdf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -618,10 +618,10 @@ The task spawns a subflow that applies the callable object to each object obtain
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[beg, end)</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[beg, end)</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="300" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="300" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a5c044a80450742bf6927d0c343c23853" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -722,10 +722,10 @@ The task spawns a subflow that applies the callable object to each object obtain
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[beg, end)</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[beg, end)</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="325" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="325" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a0af7e250c4ad1ae98bf6e0249b98589f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -826,10 +826,10 @@ The task spawns a subflow that applies the callable object to each object obtain
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[beg, end)</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[beg, end)</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="350" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="350" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1ab8417b211b18bb1e0f45a049331f084d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -937,10 +937,10 @@ The task spawns a subflow that applies the callable object to each index in the 
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first,<sp/>i&gt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
+</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="391" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="391" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a942449afd25e656b9e14cb526cbd8ad2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1062,10 +1062,10 @@ The task spawns a subflow that applies the callable object to each index in the 
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[beg, end)</computeroutput> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[beg, end)</computeroutput> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="418" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="418" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a930d0343226874d1d40b9e230cccdd52" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1187,10 +1187,10 @@ The task spawns a subflow that applies the callable object to each index in the 
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[beg, end)</computeroutput> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[beg, end)</computeroutput> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="447" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="447" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a71f204c670ca5857e5527d6000ba73c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1312,10 +1312,10 @@ The task spawns a subflow that applies the callable object to each index in the 
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[beg, end)</computeroutput> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[beg, end)</computeroutput> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="476" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="476" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1ad999cd75045db225a42d5881d6db1223" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1417,10 +1417,10 @@ The task spawns a subflow that applies the callable object to each index in the 
 The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.</para><para>This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop(init,<sp/>*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
+</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="514" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="514" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a10f13b39b02038c6850aca787923d668" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1542,10 +1542,10 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="540" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="540" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a83ec799606b7526787761acf27885b00" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1667,10 +1667,10 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="568" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="568" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a54e36c916ae7dd88bd079d3fd49119f9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1792,10 +1792,10 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="596" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="596" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1ad8d03524f15292610ebee63d53b89579" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1918,10 +1918,10 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.</para><para>This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop(init,<sp/>uop(*itr));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
+</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="636" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="636" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1aa102a40672a331643944cb17c2377118" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2064,10 +2064,10 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="664" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="664" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a562e253028680b61de95e305c0224d91" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2210,10 +2210,10 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="694" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="694" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a6fb87774919f4a570ac505cdcda48249" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2356,10 +2356,10 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>. The runtime partitions the range into chunks of size <computeroutput>chunk_size</computeroutput>, where each chunk is processed by a worker.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="724" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="724" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1af4848ab51fa3bf5525af58e2440b01c1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2436,10 +2436,10 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 <para>comparison function object</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput>.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput>.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="751" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="751" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a559afa5066782bc6c38738260e3d4c2e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2495,10 +2495,10 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
 <para>iterator to the end (exclusive)</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput> using the <computeroutput>std::less&lt;T&gt;</computeroutput> comparator, where <computeroutput>T</computeroutput> is the dereferenced iterator type.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput> using the <computeroutput>std::less&lt;T&gt;</computeroutput> comparator, where <computeroutput>T</computeroutput> is the dereferenced iterator type.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="772" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="772" column="1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="protected-func">
@@ -2517,7 +2517,7 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="779" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="793" bodyend="795"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="779" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="793" bodyend="795"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -2541,7 +2541,7 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="789" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="843" bodyend="857"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="789" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="843" bodyend="857"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -2566,7 +2566,7 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
         </childnode>
       </node>
     </inheritancegraph>
-    <location file="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" line="18" column="1" bodyfile="/Users/twhuang/PhD/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="18" bodyend="790"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="18" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="18" bodyend="790"/>
     <listofallmembers>
       <member refid="classtf_1_1FlowBuilder_1a9404a57d9d37a4d49d20b686e4e5f68f" prot="protected" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>_graph</name></member>
       <member refid="classtf_1_1FlowBuilder_1a04115519f61efc42d018ea697054135d" prot="private" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>_linearize</name></member>
