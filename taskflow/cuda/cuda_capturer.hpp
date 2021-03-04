@@ -753,7 +753,7 @@ template <typename C, std::enable_if_t<
 cudaTask cudaFlowCapturer::rebind_on(cudaTask task, C&& callable) {
   
   if(task.type() != cudaTaskType::CAPTURE) {
-    throw std::runtime_error("invalid cudaTask type (must be CAPTURE)");
+    TF_THROW("invalid cudaTask type (must be CAPTURE)");
   }
   
   _destroy_executable();

@@ -1355,6 +1355,7 @@ inline cublasHandle_t cublasFlowCapturer::native_handle() {
   return _handle;
 }
 
+
 }  // end of namespace tf -----------------------------------------------------
 
 

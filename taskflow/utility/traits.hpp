@@ -51,7 +51,7 @@ constexpr auto dependent_false_v = dependent_false<T...>::value;
 // Move-On-Copy
 //-----------------------------------------------------------------------------
 
-// Struct: MoC
+// Struct: MoveOnCopyWrapper
 template <typename T>
 struct MoC {
 
