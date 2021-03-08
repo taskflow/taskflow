@@ -657,7 +657,7 @@ constexpr auto is_default_deserializable_v =
   is_std_array_v<T>;
 
 // Class: Deserializer
-template <typename Device = std::ostream, typename SizeType = std::streamsize>
+template <typename Device = std::istream, typename SizeType = std::streamsize>
 class Deserializer {
 
   public:
