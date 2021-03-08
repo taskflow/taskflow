@@ -589,7 +589,7 @@ template <typename T,
 >
 SizeType Serializer<Device, SizeType>::_save(T&& t) {
   return std::apply(
-    [this] (auto&&... args) {
+    [&] (auto&&... args) {
       return (_save(std::forward<decltype(args)>(args)) + ... + 0); 
     },
     std::forward<T>(t)
@@ -1056,7 +1056,7 @@ template <typename T,
 >
 SizeType Deserializer<Device, SizeType>::_load(T&& t) {
   return std::apply(
-    [this] (auto&&... args) {
+    [&] (auto&&... args) {
       return (_load(std::forward<decltype(args)>(args)) + ... + 0); 
     },
     std::forward<T>(t)
