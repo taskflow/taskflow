@@ -3,9 +3,7 @@
 #include "cuda_memory.hpp"
 #include "cuda_stream.hpp"
 
-#include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
-#include "../utility/passive_vector.hpp"
 
 namespace tf {
 
@@ -448,8 +446,6 @@ class cudaNode {
     Capture
   >;
 
-  constexpr static auto STATE_VISITED = 0x1;
-
   public:
   
   // variant index
@@ -480,10 +476,6 @@ class cudaNode {
     std::vector<cudaNode*> _dependents;
 
     void _precede(cudaNode*);
-    //void _set_state(int);
-    //void _unset_state(int);
-    //void _clear_state();
-    //bool _has_state(int) const;
 };
 
 // ----------------------------------------------------------------------------

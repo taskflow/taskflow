@@ -1100,10 +1100,6 @@ cudaTask cudaFlow::capture(C&& c) {
 template <typename P>
 void cudaFlow::offload_until(P&& predicate) {
 
-  //_executor->_invoke_cudaflow_task_internal(
-  //  *this, std::forward<P>(predicate), false
-  //);
-  
   // transforms cudaFlow to a native cudaGraph under the specified device
   // and launches the graph through a given or an internal device stream
   if(_executable == nullptr) {

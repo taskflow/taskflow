@@ -342,6 +342,9 @@
   <compound refid="structtf_1_1cudaFlowCapturer_1_1External" kind="struct"><name>tf::cudaFlowCapturer::External</name>
     <member refid="structtf_1_1cudaFlowCapturer_1_1External_1acb0595d884b28d21f661595e718c3cc2" kind="variable"><name>graph</name></member>
   </compound>
+  <compound refid="structtf_1_1syclFlow_1_1External" kind="struct"><name>tf::syclFlow::External</name>
+    <member refid="structtf_1_1syclFlow_1_1External_1ace2afbeee949bd808c7e374bdceb0467" kind="variable"><name>graph</name></member>
+  </compound>
   <compound refid="classtf_1_1FlowBuilder" kind="class"><name>tf::FlowBuilder</name>
     <member refid="classtf_1_1FlowBuilder_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1FlowBuilder_1a9404a57d9d37a4d49d20b686e4e5f68f" kind="variable"><name>_graph</name></member>
@@ -395,6 +398,10 @@
     <member refid="structtf_1_1cudaFlow_1_1Internal_1a699f86e6abe3d2aa41432898feb5f281" kind="variable"><name>executor</name></member>
     <member refid="structtf_1_1cudaFlow_1_1Internal_1a885341edb70e164ef4010de5346ec8f0" kind="function"><name>Internal</name></member>
   </compound>
+  <compound refid="structtf_1_1syclFlow_1_1Internal" kind="struct"><name>tf::syclFlow::Internal</name>
+    <member refid="structtf_1_1syclFlow_1_1Internal_1a9bbc7eb920ae573d5360cae1cd7fb03d" kind="variable"><name>executor</name></member>
+    <member refid="structtf_1_1syclFlow_1_1Internal_1a25015cffaeb326799d37ecb8ca5baceb" kind="function"><name>Internal</name></member>
+  </compound>
   <compound refid="structtf_1_1cudaFlowCapturer_1_1Internal" kind="struct"><name>tf::cudaFlowCapturer::Internal</name>
   </compound>
   <compound refid="classtf_1_1ObserverInterface" kind="class"><name>tf::ObserverInterface</name>
@@ -418,6 +425,12 @@
     <member refid="structtf_1_1ProfileData_1ac8bd5a12ea62aa7f5c1afbcceae1b075" kind="function"><name>save</name></member>
     <member refid="structtf_1_1ProfileData_1a8ba1ef7e916c4b827707a48c886381c4" kind="function"><name>load</name></member>
   </compound>
+  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
+  </compound>
   <compound refid="structtf_1_1Segment" kind="struct"><name>tf::Segment</name>
     <member refid="structtf_1_1Segment_1a3e259f6da83dcf714ec785aa1a3d14bd" kind="variable"><name>name</name></member>
     <member refid="structtf_1_1Segment_1a8f567dbac067898e2e5c4d4947b04fb4" kind="variable"><name>type</name></member>
@@ -428,12 +441,6 @@
     <member refid="structtf_1_1Segment_1ad6393c5cf90f07b0eda6bf0c0321322d" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1aab1d1ddd792d5b7b312ad14532034054" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1a336d5825032b4b9085f1e78a1fa26341" kind="function"><name>span</name></member>
-  </compound>
-  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
   </compound>
   <compound refid="classtf_1_1Semaphore" kind="class"><name>tf::Semaphore</name>
     <member refid="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" kind="friend"><name>Node</name></member>
@@ -457,6 +464,38 @@
     <member refid="classtf_1_1Subflow_1a70681068507b224a96df69cc1f3168f1" kind="function"><name>async</name></member>
     <member refid="classtf_1_1Subflow_1af9671aa8548882b3425e5a1f10f7a868" kind="function"><name>silent_async</name></member>
     <member refid="classtf_1_1Subflow_1ad1cffe2b2c8139bb37dee5a7afd88347" kind="function"><name>Subflow</name></member>
+  </compound>
+  <compound refid="classtf_1_1syclFlow" kind="class"><name>tf::syclFlow</name>
+    <member refid="classtf_1_1syclFlow_1a946b048dd1f13121d8998d8d943e216e" kind="typedef"><name>handle_t</name></member>
+    <member refid="classtf_1_1syclFlow_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
+    <member refid="classtf_1_1syclFlow_1ae1d0a6dc43a4a28080db9577599fa3fa" kind="variable"><name>_handle</name></member>
+    <member refid="classtf_1_1syclFlow_1ad686b504d6ea0edbef8e2be9d57e63c8" kind="variable"><name>_graph</name></member>
+    <member refid="classtf_1_1syclFlow_1a5728aaf61105ae3ee37eaddb24c1008d" kind="variable"><name>_queue</name></member>
+    <member refid="classtf_1_1syclFlow_1aca4297c5bcf7f6e3c59e43415afb0ebd" kind="function"><name>syclFlow</name></member>
+    <member refid="classtf_1_1syclFlow_1a2dec29bec12f5270893f5d44b2fd79bd" kind="function"><name>~syclFlow</name></member>
+    <member refid="classtf_1_1syclFlow_1a0e33d2d4f26e52a55690d17f77d467b0" kind="function"><name>empty</name></member>
+    <member refid="classtf_1_1syclFlow_1a1a9db0ea36057286d09d86074fdb685f" kind="function"><name>queue</name></member>
+    <member refid="classtf_1_1syclFlow_1ac1e1eb858d9271ed61ff4fe00f135e92" kind="function"><name>memcpy</name></member>
+    <member refid="classtf_1_1syclFlow_1a54b7497c0f4763bb4f8604f6c5654a5f" kind="function"><name>memset</name></member>
+  </compound>
+  <compound refid="classtf_1_1syclTask" kind="class"><name>tf::syclTask</name>
+    <member refid="classtf_1_1syclTask_1a455510eca2667dc9fbd73f542cca61a2" kind="friend"><name>syclFlow</name></member>
+    <member refid="classtf_1_1syclTask_1af1dd3977d348e5385976de43fe54452e" kind="friend"><name>syclFlowCapturer</name></member>
+    <member refid="classtf_1_1syclTask_1af3764d2714e518b354fa871345e5c62b" kind="friend"><name>syclFlowCapturerBase</name></member>
+    <member refid="classtf_1_1syclTask_1adea2160a46a454fec7ed58978aadba6a" kind="friend"><name>operator&lt;&lt;</name></member>
+    <member refid="classtf_1_1syclTask_1afed4d6988d2de4e021768ef7d8752920" kind="variable"><name>_node</name></member>
+    <member refid="classtf_1_1syclTask_1aed88e7a2d203ebe7fc53725e3e79d5d0" kind="function"><name>syclTask</name></member>
+    <member refid="classtf_1_1syclTask_1a4f3bdbf7b409b25827cdab009273a3d9" kind="function"><name>syclTask</name></member>
+    <member refid="classtf_1_1syclTask_1a2a850da5b3e34050e12aa554b5d9b8d5" kind="function"><name>operator=</name></member>
+    <member refid="classtf_1_1syclTask_1a92d0dd0929b9ac4e46baf4d546497389" kind="function"><name>precede</name></member>
+    <member refid="classtf_1_1syclTask_1a05f42a7fa26997193068ce6502eabe16" kind="function"><name>succeed</name></member>
+    <member refid="classtf_1_1syclTask_1a738dfa209da08d8783127a5c5654558e" kind="function"><name>name</name></member>
+    <member refid="classtf_1_1syclTask_1ae44a15b3b71bd3be7f7a2f1b858494c9" kind="function"><name>name</name></member>
+    <member refid="classtf_1_1syclTask_1a00c8c7e319ca9c31e9215495081e2c57" kind="function"><name>num_successors</name></member>
+    <member refid="classtf_1_1syclTask_1ab19b1cf3d70dd6ae46c314edb2926ed7" kind="function"><name>empty</name></member>
+    <member refid="classtf_1_1syclTask_1aad4ef4a76c1cc492fd04bde88f3503c8" kind="function"><name>type</name></member>
+    <member refid="classtf_1_1syclTask_1a7a84186fba14d57e19085b651589ea55" kind="function"><name>dump</name></member>
+    <member refid="classtf_1_1syclTask_1aff90c8acb345489c609bda0e223979e9" kind="function"><name>syclTask</name></member>
   </compound>
   <compound refid="classtf_1_1Task" kind="class"><name>tf::Task</name>
     <member refid="classtf_1_1Task_1a61184f9bd9c801d0a5eccecfdbddc641" kind="friend"><name>FlowBuilder</name></member>
@@ -1140,6 +1179,13 @@
     <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea46be697979903d784a70aeec45eb14ad" kind="enumvalue"><name>SUBFLOW</name></member>
     <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eab72f08e0732365cac9599b5c42157bf9" kind="enumvalue"><name>CAPTURE</name></member>
     <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3" kind="enumvalue"><name>UNDEFINED</name></member>
+    <member refid="namespacetf_1a618435e7d17ae4ba6058bb30378c7708" kind="enum"><name>syclTaskType</name></member>
+    <member refid="namespacetf_1a618435e7d17ae4ba6058bb30378c7708aba2b45bdc11e2a4a6e86aab2ac693cbb" kind="enumvalue"><name>EMPTY</name></member>
+    <member refid="namespacetf_1a618435e7d17ae4ba6058bb30378c7708ab9361011891280a44d85b967739cc6a5" kind="enumvalue"><name>HOST</name></member>
+    <member refid="namespacetf_1a618435e7d17ae4ba6058bb30378c7708a41d4dbfd78ceea21abb0ecb03c3cc921" kind="enumvalue"><name>MEMSET</name></member>
+    <member refid="namespacetf_1a618435e7d17ae4ba6058bb30378c7708ac5d10cc70cce96265c445f14e7f5aba4" kind="enumvalue"><name>MEMCPY</name></member>
+    <member refid="namespacetf_1a618435e7d17ae4ba6058bb30378c7708a35c10219c45ccfb5b07444fd7e17214c" kind="enumvalue"><name>KERNEL</name></member>
+    <member refid="namespacetf_1a618435e7d17ae4ba6058bb30378c7708a0db45d2a4141101bdfe48e3314cfbca3" kind="enumvalue"><name>UNDEFINED</name></member>
     <member refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kind="typedef"><name>observer_stamp_t</name></member>
     <member refid="namespacetf_1a632bb71dc4ddedbf2c26f6f25a2d6a49" kind="typedef"><name>cudaPerThreadStreamPool</name></member>
     <member refid="namespacetf_1a7356453a9963094ac069f6597bee50cd" kind="typedef"><name>cudaPerThreadEventPool</name></member>
@@ -1148,6 +1194,7 @@
     <member refid="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" kind="variable"><name>is_dynamic_task_v</name></member>
     <member refid="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" kind="variable"><name>is_condition_task_v</name></member>
     <member refid="namespacetf_1adb8433555d8cdc0b3c5d95e8d51a90f0" kind="variable"><name>is_cudaflow_task_v</name></member>
+    <member refid="namespacetf_1a574038aaa99e0220eedca4e8ea9389cf" kind="variable"><name>is_syclflow_task_v</name></member>
     <member refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kind="function"><name>to_string</name></member>
     <member refid="namespacetf_1ad216aea4d0f648e149e47374ad015b1f" kind="function"><name>operator&lt;&lt;</name></member>
     <member refid="namespacetf_1aa3fc0699b2c2b8f2f76bb39f91be1acb" kind="function"><name>to_string</name></member>
@@ -1186,6 +1233,8 @@
     <member refid="namespacetf_1a9cca69f61d792afb3ad501b703d795c1" kind="function"><name>operator&lt;&lt;</name></member>
     <member refid="namespacetf_1ae680bf7822f2b6b66a6199f0b77f7241" kind="function"><name>cuda_default_max_threads_per_block</name></member>
     <member refid="namespacetf_1a50a8f777333cc26d5f5d8c4d37bcdc73" kind="function"><name>cuda_default_threads_per_block</name></member>
+    <member refid="namespacetf_1ab078f908a959af74111d5452c580242b" kind="function"><name>to_string</name></member>
+    <member refid="namespacetf_1a160861c1c085842ecb0c56537199deaa" kind="function"><name>operator&lt;&lt;</name></member>
     <member refid="namespacetf_1a30fa078dcf625e9eada5a95af1467588" kind="function"><name>version</name></member>
   </compound>
   <compound refid="algorithms_8dox" kind="file"><name>algorithms.dox</name>
@@ -1332,6 +1381,10 @@
   </compound>
   <compound refid="static__tasking_8dox" kind="file"><name>static_tasking.dox</name>
   </compound>
+  <compound refid="sycl__flow_8hpp" kind="file"><name>sycl_flow.hpp</name>
+  </compound>
+  <compound refid="sycl__task_8hpp" kind="file"><name>sycl_task.hpp</name>
+  </compound>
   <compound refid="task_8hpp" kind="file"><name>task.hpp</name>
   </compound>
   <compound refid="core_2taskflow_8hpp" kind="file"><name>core/taskflow.hpp</name>
@@ -1473,6 +1526,8 @@
   <compound refid="dir_17d5535b0ea413f2e7c8668276eab781" kind="dir"><name>cublas</name>
   </compound>
   <compound refid="dir_638d51f8e6f20ea8c720cc8c006296ba" kind="dir"><name>cuda</name>
+  </compound>
+  <compound refid="dir_59407bc40a15c2167fedcd9ce80ec8b9" kind="dir"><name>sycl</name>
   </compound>
   <compound refid="dir_88dad41ea55ca2177e141d32a93e931c" kind="dir"><name>taskflow</name>
   </compound>

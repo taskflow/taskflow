@@ -190,7 +190,8 @@ inline size_t cudaTask::num_successors() const {
 // Function: type
 inline cudaTaskType cudaTask::type() const {
   switch(_node->_handle.index()) {
-    case cudaNode::EMPTY:   return cudaTaskType::HOST;
+    case cudaNode::EMPTY:   return cudaTaskType::EMPTY;
+    case cudaNode::HOST:    return cudaTaskType::HOST;
     case cudaNode::MEMSET:  return cudaTaskType::MEMSET;
     case cudaNode::MEMCPY:  return cudaTaskType::MEMCPY;
     case cudaNode::KERNEL:  return cudaTaskType::KERNEL;

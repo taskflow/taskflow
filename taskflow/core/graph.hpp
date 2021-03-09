@@ -151,6 +151,17 @@ class Node {
 
     std::unique_ptr<CustomGraphBase> graph;
   };
+  
+  // syclFlow work handle
+  struct syclFlow {
+    
+    template <typename C, typename G> 
+    syclFlow(C&& c, G&& g);
+
+    std::function<void(Executor&, Node*)> work;
+
+    std::unique_ptr<CustomGraphBase> graph;
+  };
     
   using handle_t = std::variant<
     std::monostate,  // placeholder
@@ -160,7 +171,8 @@ class Node {
     Module,          // composable tasking
     Async,           // async tasking
     SilentAsync,     // async tasking (no future)
-    cudaFlow         // cudaFlow
+    cudaFlow,        // cudaFlow
+    syclFlow         // syclFlow
   >;
     
   struct Semaphores {  
@@ -179,6 +191,7 @@ class Node {
   constexpr static auto ASYNC        = get_index_v<Async, handle_t>; 
   constexpr static auto SILENT_ASYNC = get_index_v<SilentAsync, handle_t>; 
   constexpr static auto CUDAFLOW     = get_index_v<cudaFlow, handle_t>; 
+  constexpr static auto SYCLFLOW     = get_index_v<syclFlow, handle_t>; 
 
     template <typename... Args>
     Node(Args&&... args);

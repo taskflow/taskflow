@@ -60,6 +60,7 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 @section release-3-1-0_bug_fixes Bug Fixes 
  + Fixed the macro expansion issue with MSVC on @c TF_CUDA_CHECK
  + Fixed the serializer compile error ([#288](https://github.com/taskflow/taskflow/issues/288))
+ + Fixed the tf::cudaTask::type bug in mixing host and empty task types
 
 @section release-3-1-0_breaking_changes Breaking Changes
 

@@ -141,6 +141,14 @@
             </dt>
             <dd>class to construct a subflow graph from the execution of a dynamic task</dd>
             <dt>
+              class <a href="classtf_1_1syclFlow.html" class="m-doc">syclFlow</a>
+            </dt>
+            <dd>class for building a SYCL task dependency graph</dd>
+            <dt>
+              class <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a>
+            </dt>
+            <dd>handle to a node of the internal CUDA graph</dd>
+            <dt>
               class <a href="classtf_1_1Task.html" class="m-doc">Task</a>
             </dt>
             <dd>handle to a node in a task dependency graph</dd>
@@ -193,6 +201,15 @@
               <a href="#afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3" class="m-doc">UNDEFINED</a> }</span>
             </dt>
             <dd>enumeration of all cudaTask types</dd>
+            <dt id="a618435e7d17ae4ba6058bb30378c7708">
+              <span class="m-doc-wrap-bumper">enum class <a href="#a618435e7d17ae4ba6058bb30378c7708" class="m-doc-self">syclTaskType</a>: int { </span><span class="m-doc-wrap"><a href="#a618435e7d17ae4ba6058bb30378c7708aba2b45bdc11e2a4a6e86aab2ac693cbb" class="m-doc">EMPTY</a> = 0,
+              <a href="#a618435e7d17ae4ba6058bb30378c7708ab9361011891280a44d85b967739cc6a5" class="m-doc">HOST</a>,
+              <a href="#a618435e7d17ae4ba6058bb30378c7708a41d4dbfd78ceea21abb0ecb03c3cc921" class="m-doc">MEMSET</a>,
+              <a href="#a618435e7d17ae4ba6058bb30378c7708ac5d10cc70cce96265c445f14e7f5aba4" class="m-doc">MEMCPY</a>,
+              <a href="#a618435e7d17ae4ba6058bb30378c7708a35c10219c45ccfb5b07444fd7e17214c" class="m-doc">KERNEL</a>,
+              <a href="#a618435e7d17ae4ba6058bb30378c7708a0db45d2a4141101bdfe48e3314cfbca3" class="m-doc">UNDEFINED</a> }</span>
+            </dt>
+            <dd>enumeration of all syclTask types</dd>
           </dl>
         </section>
         <section id="typedef-members">
@@ -384,6 +401,15 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a50a8f777333cc26d5f5d8c4d37bcdc73" class="m-doc-self">cuda_default_threads_per_block</a>(</span><span class="m-doc-wrap">size_t N) -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
             <dd>queries the default number of threads per block in an 1D vector of N elements</dd>
+            <dt id="ab078f908a959af74111d5452c580242b">
+              <span class="m-doc-wrap-bumper">auto <a href="#ab078f908a959af74111d5452c580242b" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a618435e7d17ae4ba6058bb30378c7708" class="m-doc">syclTaskType</a> type) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
+            </dt>
+            <dd>convert a sycl_task type to a human-readable string</dd>
+            <dt id="a160861c1c085842ecb0c56537199deaa">
+              <span class="m-doc-wrap-bumper">auto <a href="#a160861c1c085842ecb0c56537199deaa" class="m-doc-self">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
+              const <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a>&amp; ct) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
+            </dt>
+            <dd>overload of ostream inserter operator for <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a></dd>
             <dt id="a30fa078dcf625e9eada5a95af1467588">
               <span class="m-doc-wrap-bumper">auto <a href="#a30fa078dcf625e9eada5a95af1467588" class="m-doc-self">version</a>(</span><span class="m-doc-wrap">) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
@@ -416,7 +442,12 @@
               <div class="m-doc-template">template&lt;typename C&gt;</div>
               bool <a href="#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc">is_cudaflow_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
-            <dd>determines if a callable is a cudaflow task</dd>
+            <dd>determines if a callable is a cudaFlow task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C&gt;</div>
+              bool <a href="#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_syclflow_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>determines if a callable is a syclFlow task</dd>
           </dl>
         </section>
         <section>
@@ -623,8 +654,18 @@
               </div>
               bool tf::<wbr /><a href="#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc-self">is_cudaflow_task_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>
-            <p>determines if a callable is a cudaflow task</p>
+            <p>determines if a callable is a cudaFlow task</p>
 <p>A <a href="classtf_1_1cudaFlow.html" class="m-doc">cudaFlow</a> task is a callable object constructible from std::function&lt;void(tf::cudaFlow&amp;)&gt; or std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;.</p>
+          </div></section>
+          <section class="m-doc-details" id="a574038aaa99e0220eedca4e8ea9389cf"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+              </div>
+              bool tf::<wbr /><a href="#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc-self">is_syclflow_task_v</a> <span class="m-label m-primary">constexpr</span>
+            </h3>
+            <p>determines if a callable is a syclFlow task</p>
+<p>A <a href="classtf_1_1syclFlow.html" class="m-doc">syclFlow</a> task is a callable object constructible from std::function&lt;void(tf::syclFlow&amp;)&gt;.</p>
           </div></section>
         </section>
       </div>
