@@ -102,7 +102,7 @@ class Node {
       template <typename C>
       CanPause(C&&);
 
-      std::function<std::optional<bool>()> work;
+      std::function<TaskFlowPauseType()> work;
   };
 
   // dynamic work handle

@@ -36,6 +36,8 @@ class cudaSequentialCapturing;
 class cudaRoundRobinCapturing;
 class cublasFlowCapturer;
 
+enum class TaskFlowPauseType;
+
 
 }  // end of namespace tf -----------------------------------------------------
 

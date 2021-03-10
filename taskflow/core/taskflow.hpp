@@ -156,7 +156,7 @@ class Taskflow : public FlowBuilder {
 
     std::queue<std::shared_ptr<Topology>> _topologies;
     std::vector<Node*> _pauseTopologies;
-    std::vector<std::optional<bool>> _pauseTopologiesStatus;
+    std::vector<TaskFlowPauseType> _pauseTopologiesStatus;
     
     void _dump(std::ostream&, const Taskflow*) const;
     void _dump(std::ostream&, const Node*, Dumper&) const;

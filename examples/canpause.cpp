@@ -36,13 +36,13 @@ int main()
             ++g_begin;
             if(g_begin==g_end)
             {
-                return std::optional<bool>{false};
+                return tf::TaskFlowPauseType::NoPause;
             }
             else if (g_begin < g_end)
             {
-                return std::optional<bool>{std::nullopt};
+                return tf::TaskFlowPauseType::PauseContinueCurrentTask;
             }
-            return std::optional<bool>{true};
+            return tf::TaskFlowPauseType::PauseSkipCurrentTask;
         },
         []() { std::cout << "TaskC\n"; },
             []() { std::cout << "TaskD\n"; }

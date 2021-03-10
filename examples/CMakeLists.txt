@@ -4,7 +4,8 @@ list(APPEND TF_EXAMPLES
   subflow_async
   observer 
   subflow 
-  fibonacci 
+  fibonacci
+  canpause 
   condition
   switch_case
   do_while

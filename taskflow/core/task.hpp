@@ -9,6 +9,13 @@
 
 namespace tf {
 
+  enum class TaskFlowPauseType
+  {
+    NoPause,                  //taskflow current task no pause
+    PauseContinueCurrentTask, //taskflow current task execute again when  taskflow resume 
+    PauseSkipCurrentTask,     //taskflow current task skip execute when task resume 
+  };
+
 // ----------------------------------------------------------------------------
 // Task Types
 // ----------------------------------------------------------------------------
@@ -78,7 +85,7 @@ A static task is a callable object constructible from std::function<void()>.
 template <typename C>
 constexpr bool is_static_task_v = std::is_invocable_r_v<void, C> &&
 !std::is_invocable_r_v<int, C> &&
-!std::is_invocable_r_v<std::optional<bool>,C>;
+!std::is_invocable_r_v<TaskFlowPauseType,C>;
 
 /**
 @brief determines if a callable is a can pause task
@@ -86,7 +93,7 @@ constexpr bool is_static_task_v = std::is_invocable_r_v<void, C> &&
 A can pause task is a callable object constructible from std::function<void()>.
 */
 template <typename C>
-constexpr bool is_can_pause_task_v = std::is_invocable_r_v<std::optional<bool>, C> &&
+constexpr bool is_can_pause_task_v = std::is_invocable_r_v<TaskFlowPauseType, C> &&
 !std::is_invocable_r_v<int, C>;
 
 /**

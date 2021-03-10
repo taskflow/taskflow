@@ -237,7 +237,7 @@ class Executor {
     void _invoke_dynamic_task_internal(Worker&, Node*, Graph&, bool);
     void _invoke_dynamic_task_external(Node*, Graph&, bool);
     void _invoke_condition_task(Worker&, Node*, int&);
-    void _invoke_can_pause_task(Worker&, Node*, std::optional<bool>&);
+    void _invoke_can_pause_task(Worker&, Node*, TaskFlowPauseType&);
     void _invoke_module_task(Worker&, Node*);
     void _invoke_async_task(Worker&, Node*);
     void _invoke_silent_async_task(Worker&, Node*);
@@ -316,7 +316,7 @@ bool Executor::resumeTask(Taskflow* task)
     for(auto i = 0; i<task->_pauseTopologies.size();++i)
     {
         auto node = task->_pauseTopologies[i];
-        if(task->_pauseTopologiesStatus[i] == false) // skip  node schedule
+        if(task->_pauseTopologiesStatus[i] == TaskFlowPauseType::PauseSkipCurrentTask) // skip  node schedule
         { 
             const auto num_successors = node->num_successors();
             auto& j = (node->_parent) ? node->_parent->_join_counter :
@@ -695,7 +695,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // access caused by topology clear.
   const auto num_successors = node->num_successors();
   
-  std::optional<bool> canpause{ true };
+ TaskFlowPauseType canpause{ TaskFlowPauseType::NoPause };
   // condition task
   int cond = -1;
   
@@ -780,7 +780,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // At this point, the node storage might be destructed (to be verified)
   // case 1: non-condition task
   if((node->_handle.index() != Node::CONDITION && node->_handle.index()!=Node::CANPAUSE) ||
-      ((node->_handle.index()==Node::CANPAUSE) && canpause==std::nullopt)) {
+      ((node->_handle.index()==Node::CANPAUSE) && canpause==TaskFlowPauseType::NoPause)) {
     for(size_t i=0; i<num_successors; ++i) {
       if(--(node->_successors[i]->_join_counter) == 0) {
         j.fetch_add(1);
@@ -991,7 +991,7 @@ inline void Executor::_invoke_condition_task(
 
 // Procedure: _invoke_can_pause_task
 inline void Executor::_invoke_can_pause_task(
-    Worker& worker, Node* node, std::optional<bool>& cond
+    Worker& worker, Node* node, TaskFlowPauseType& cond
 ) {
     _observer_prologue(worker, node);
     cond = std::get<Node::CANPAUSE>(node->_handle).work();
