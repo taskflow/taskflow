@@ -35,13 +35,13 @@ inline std::vector<cudaNode*> cudaCapturingBase::_toposort(cudaGraph& graph) {
   res.reserve(graph._nodes.size());
 
   // insert the first level of nodes into the queue
-  for(auto u : graph._nodes) {
+  for(auto& u : graph._nodes) {
 
     auto& hu = std::get<cudaNode::Capture>(u->_handle);
     hu.level = u->_dependents.size();
 
     if(hu.level == 0) {
-      bfs.push(u);
+      bfs.push(u.get());
     }
   }
   
@@ -75,13 +75,13 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
   size_t max_level = 0;
   
   // insert the first level of nodes into the queue
-  for(auto u : graph._nodes) {
+  for(auto& u : graph._nodes) {
 
     auto& hu = std::get<cudaNode::Capture>(u->_handle);
     hu.level = u->_dependents.size();
 
     if(hu.level == 0) {
-      bfs.push(u);
+      bfs.push(u.get());
     }
   }
   
@@ -107,10 +107,10 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
 
   // set level_graph and each node's idx
   std::vector<std::vector<cudaNode*>> level_graph(max_level+1);
-  for(auto u : graph._nodes) {
+  for(auto& u : graph._nodes) {
     auto& hu = std::get<cudaNode::Capture>(u->_handle);
     hu.lid = level_graph[hu.level].size();
-    level_graph[hu.level].emplace_back(u);
+    level_graph[hu.level].emplace_back(u.get());
     
     //for(auto s : u->_successors) {
     //  assert(hu.level < std::get<cudaNode::Capture>(s->_handle).level);

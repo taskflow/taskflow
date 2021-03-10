@@ -226,6 +226,13 @@ class Executor {
     void _explore_task(Worker&, Node*&);
     void _schedule(Node*);
     void _schedule(const std::vector<Node*>&);
+    void _set_up_topology(Topology*);
+    void _tear_down_topology(Topology*); 
+    void _tear_down_async(Node*);
+    void _tear_down_invoke(Node*, bool);
+    void _increment_topology();
+    void _decrement_topology();
+    void _decrement_topology_and_notify();
     void _invoke(Worker&, Node*);
     void _invoke_static_task(Worker&, Node*);
     void _invoke_dynamic_task(Worker&, Node*);
@@ -235,30 +242,18 @@ class Executor {
     void _invoke_module_task(Worker&, Node*);
     void _invoke_async_task(Worker&, Node*);
     void _invoke_silent_async_task(Worker&, Node*);
-    void _set_up_topology(Topology*);
-    void _tear_down_topology(Topology*); 
-    void _tear_down_async(Node*);
-    void _tear_down_invoke(Node*, bool);
-    void _increment_topology();
-    void _decrement_topology();
-    void _decrement_topology_and_notify();
     void _invoke_cudaflow_task(Worker&, Node*);
-    
-    template <typename C, std::enable_if_t<
-      std::is_invocable_r_v<void, C, cudaFlow&>, void>* = nullptr
+    void _invoke_syclflow_task(Worker&, Node*);
+
+    template <typename C, 
+      std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr
     >
-    void _invoke_cudaflow_task_entry(C&&, Node*);
+    void _invoke_cudaflow_task_entry(Node*, C&&);
     
-    template <typename C, std::enable_if_t<
-      std::is_invocable_r_v<void, C, cudaFlowCapturer&>, void>* = nullptr
+    template <typename C, typename Q, 
+      std::enable_if_t<is_syclflow_task_v<C>, void>* = nullptr
     >
-    void _invoke_cudaflow_task_entry(C&&, Node*);
-    
-    //template <typename P>
-    //void _invoke_cudaflow_task_internal(cudaFlow&, P&&, bool);
-    
-    //template <typename P>
-    //void _invoke_cudaflow_task_external(cudaFlow&, P&&, bool);
+    void _invoke_syclflow_task_entry(Node*, C&&, Q&);
 };
 
 // Constructor
@@ -706,6 +701,12 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       _invoke_cudaflow_task(worker, node);
     }
     break; 
+    
+    // syclflow task
+    case Node::SYCLFLOW: {
+      _invoke_syclflow_task(worker, node);
+    }
+    break; 
 
     // monostate
     default:
@@ -942,6 +943,12 @@ inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node) {
   _observer_epilogue(worker, node);
 }
 
+// Procedure: _invoke_syclflow_task
+inline void Executor::_invoke_syclflow_task(Worker& worker, Node* node) {
+  _observer_prologue(worker, node);  
+  std::get<Node::syclFlow>(node->_handle).work(*this, node);
+  _observer_epilogue(worker, node);
+}
 
 // Procedure: _invoke_module_task
 inline void Executor::_invoke_module_task(Worker& w, Node* node) {

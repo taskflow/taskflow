@@ -22,7 +22,7 @@ class syclGraph : public CustomGraphBase {
   public:
     
     syclGraph() = default;
-    ~syclGraph();
+    ~syclGraph() = default;
 
     syclGraph(const syclGraph&) = delete;
     syclGraph(syclGraph&&);
@@ -99,11 +99,6 @@ inline void syclNode::_precede(syclNode* v) {
 // syclGraph definitions
 // ----------------------------------------------------------------------------
 
-// Destructor
-inline syclGraph::~syclGraph() {
-  //clear();
-}
-
 // Move constructor
 inline syclGraph::syclGraph(syclGraph&& g) :
   _nodes {std::move(g._nodes)} {
@@ -114,8 +109,6 @@ inline syclGraph::syclGraph(syclGraph&& g) :
 // Move assignment
 inline syclGraph& syclGraph::operator = (syclGraph&& rhs) {
 
-  //clear();
-  
   // lhs
   _nodes = std::move(rhs._nodes);
 
@@ -131,9 +124,6 @@ inline bool syclGraph::empty() const {
 
 // Procedure: clear
 inline void syclGraph::clear() {
-  //for(auto n : _nodes) {
-  //  delete n;
-  //}
   _nodes.clear();
 }
 
@@ -155,7 +145,73 @@ inline void syclGraph::dump(
   std::ostream& os, const void* root, const std::string& root_name
 ) const {
   
-  // TODO
+  // recursive dump with stack
+  std::stack<std::tuple<const syclGraph*, const syclNode*, int>> stack;
+  stack.push(std::make_tuple(this, nullptr, 1));
+
+  int pl = 0;
+
+  while(!stack.empty()) {
+
+    auto [graph, parent, l] = stack.top();
+    stack.pop();
+
+    for(int i=0; i<pl-l+1; i++) {
+      os << "}\n";
+    }
+  
+    if(parent == nullptr) {
+      if(root) {
+        os << "subgraph cluster_p" << root << " {\nlabel=\"syclFlow: ";
+        if(root_name.empty()) os << 'p' << root;
+        else os << root_name;
+        os << "\";\n" << "color=\"red\"\n";
+      }
+      else {
+        os << "digraph syclFlow {\n";
+      }
+    }
+    else {
+      os << "subgraph cluster_p" << parent << " {\nlabel=\"syclSubflow: ";
+      if(parent->_name.empty()) os << 'p' << parent;
+      else os << parent->_name;
+      os << "\";\n" << "color=\"purple\"\n";
+    }
+
+    for(auto& v : graph->_nodes) {
+      
+      os << 'p' << v.get() << "[label=\"";
+      if(v->_name.empty()) {
+        os << 'p' << v.get() << "\"";
+      }
+      else {
+        os << v->_name << "\"";
+      }
+      os << "];\n";
+
+      for(const auto s : v->_successors) {
+        os << 'p' << v.get() << " -> " << 'p' << s << ";\n";
+      }
+      
+      if(v->_successors.size() == 0) {
+        if(parent == nullptr) {
+          if(root) {
+            os << 'p' << v.get() << " -> p" << root << ";\n";
+          }
+        }
+        else {
+          os << 'p' << v.get() << " -> p" << parent << ";\n";
+        }
+      }
+    }
+    
+    // set the previous level
+    pl = l;
+  }
+
+  for(int i=0; i<pl; i++) {
+    os << "}\n";
+  }
 
 }
 

@@ -34,6 +34,8 @@ class syclFlow {
 
   using handle_t = std::variant<External, Internal>;
 
+  constexpr static int OFFLOADED = 0x01;
+
   public:
 
     /**
@@ -54,6 +56,11 @@ class syclFlow {
     @brief queries the emptiness of the graph
     */
     bool empty() const;
+
+    /**
+    @brief queries the number of tasks
+    */
+    size_t num_tasks() const;
     
     /**
     @brief dumps the %syclFlow graph into a DOT format through an
@@ -65,6 +72,11 @@ class syclFlow {
     @brief acquires the underlying queue
     */
     sycl::queue& queue();
+    
+    /**
+    @brief clear the associated graph
+    */
+    void clear();
 
     /**
     @brief creates a task that launches the given command group function object
@@ -186,6 +198,10 @@ class syclFlow {
     void offload();
 
   private:
+
+    syclFlow(Executor&, syclGraph&, sycl::queue&);
+
+    int _state {0};
     
     handle_t _handle;
     
@@ -201,9 +217,21 @@ inline syclFlow::syclFlow(sycl::queue& queue) :
   _queue  {queue} {
 }
 
+// Construct the syclFlow from executor (internal graph)
+inline syclFlow::syclFlow(Executor& e, syclGraph& g, sycl::queue& q) :
+  _handle {std::in_place_type_t<Internal>{}, e},
+  _graph  {g},
+  _queue  {q} {
+}
+
 // Function: empty
 inline bool syclFlow::empty() const {
   return _graph._nodes.empty();
+}
+
+// Function: num_tasks
+inline size_t syclFlow::num_tasks() const {
+  return _graph._nodes.size();
 }
 
 // Procedure: dump
@@ -214,6 +242,11 @@ inline void syclFlow::dump(std::ostream& os) const {
 // Function: queue
 inline sycl::queue& syclFlow::queue() {
   return _queue;
+}
+
+// Procedure: clear
+inline void syclFlow::clear() {
+  _graph.clear();
 }
 
 // Function: memcpy
@@ -330,6 +363,8 @@ void syclFlow::offload_until(P&& predicate) {
     // synchronize the execution
     _queue.wait();
   }
+
+  _state |= OFFLOADED;
 }
 
 // Procedure: offload_n
@@ -340,6 +375,50 @@ inline void syclFlow::offload_n(size_t n) {
 // Procedure: offload
 inline void syclFlow::offload() {
   offload_until([repeat=1] () mutable { return repeat-- == 0; });
+}
+
+// ############################################################################
+// Forward declaration: FlowBuilder
+// ############################################################################
+    
+// FlowBuilder::emplace_on
+template <typename C, typename Q, 
+  std::enable_if_t<is_syclflow_task_v<C>, void>*
+>
+Task FlowBuilder::emplace_on(C&& callable, Q& queue) {
+  auto n = _graph.emplace_back(
+    std::in_place_type_t<Node::syclFlow>{},
+    [c=std::forward<C>(callable), &queue] (Executor& e, Node* p) mutable {
+      e._invoke_syclflow_task_entry(p, c, queue);
+    },
+    std::make_unique<syclGraph>()
+  );
+  return Task(n);
+}
+
+// ############################################################################
+// Forward declaration: Executor
+// ############################################################################
+
+// Procedure: _invoke_syclflow_task_entry (syclFlow)
+template <typename C, typename Q,
+  std::enable_if_t<is_syclflow_task_v<C>, void>*
+>
+void Executor::_invoke_syclflow_task_entry(Node* node, C&& c, Q& queue) {
+
+  auto& h = std::get<Node::syclFlow>(node->_handle);
+
+  syclGraph* g = dynamic_cast<syclGraph*>(h.graph.get());
+  
+  g->clear();
+
+  syclFlow sf(*this, *g, queue);
+
+  c(sf); 
+
+  if(!(sf._state & syclFlow::OFFLOADED)) {
+    sf.offload();
+  }
 }
 
 }  // end of namespace tf -----------------------------------------------------

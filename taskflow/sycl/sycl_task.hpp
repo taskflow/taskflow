@@ -10,10 +10,6 @@
 namespace tf {
 
 // ----------------------------------------------------------------------------
-// syclTask Types
-// ----------------------------------------------------------------------------
-
-// ----------------------------------------------------------------------------
 // syclTask 
 // ----------------------------------------------------------------------------
 
@@ -89,6 +85,11 @@ class syclTask {
     @brief queries the number of successors
     */
     size_t num_successors() const;
+    
+    /**
+    @brief queries the number of dependents
+    */
+    size_t num_dependents() const;
 
     /**
     @brief queries if the task is associated with a syclNode
@@ -148,6 +149,11 @@ inline const std::string& syclTask::name() const {
 // Function: num_successors
 inline size_t syclTask::num_successors() const {
   return _node->_successors.size();
+}
+
+// Function: num_dependents
+inline size_t syclTask::num_dependents() const {
+  return _node->_dependents.size();
 }
 
 // Procedure: dump

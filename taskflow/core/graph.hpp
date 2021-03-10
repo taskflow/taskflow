@@ -279,6 +279,16 @@ Node::cudaFlow::cudaFlow(C&& c, G&& g) :
   work  {std::forward<C>(c)},
   graph {std::forward<G>(g)} {
 }
+
+// ----------------------------------------------------------------------------
+// Definition for Node::syclFlow
+// ----------------------------------------------------------------------------
+
+template <typename C, typename G>
+Node::syclFlow::syclFlow(C&& c, G&& g) :
+  work  {std::forward<C>(c)},
+  graph {std::forward<G>(g)} {
+}
     
 // ----------------------------------------------------------------------------
 // Definition for Node::Module

@@ -158,6 +158,16 @@ class cudaFlowCapturer {
     @brief queries the emptiness of the graph
     */
     bool empty() const;
+
+    /**
+    @brief queries the number of tasks
+    */
+    size_t num_tasks() const;
+
+    /**
+    @brief clear this %cudaFlow capturer
+    */
+    void clear();
    
     /**
     @brief dumps the capture graph into a DOT format through an
@@ -538,16 +548,21 @@ inline cudaFlowCapturer::~cudaFlowCapturer() {
   }
 }
 
-//// Procedure: _create_executable
-//inline void cudaFlowCapturer::_create_executable() {
-//  assert(_executable == nullptr);
-//  TF_CHECK_CUDA(
-//    cudaGraphInstantiate(
-//      &_executable, _graph._native_handle, nullptr, nullptr, 0
-//    ),
-//    "failed to create an executable for captured graph"
-//  );
-//}
+// Function: empty
+inline bool cudaFlowCapturer::empty() const {
+  return _graph.empty();
+}
+
+// Function: num_tasks
+inline size_t cudaFlowCapturer::num_tasks() const {
+  return _graph._nodes.size();
+}
+
+// Procedure: clear
+inline void cudaFlowCapturer::clear() {
+  _destroy_executable();
+  _graph._nodes.clear();
+}
 
 // Procedure: dump
 inline void cudaFlowCapturer::dump(std::ostream& os) const {
@@ -702,6 +717,13 @@ cudaTask cudaFlowCapturer::uninitialized_reduce(
   });
 }
 
+// Function: _capture
+inline cudaGraph_t cudaFlowCapturer::_capture() {
+  return std::visit(
+    [this](auto&& opt){ return opt._optimize(_graph); }, _optimizer
+  );
+}
+
 // Procedure: offload_until
 template <typename P>
 void cudaFlowCapturer::offload_until(P&& predicate) {
@@ -739,11 +761,6 @@ inline void cudaFlowCapturer::offload_n(size_t n) {
 // Procedure: offload
 inline void cudaFlowCapturer::offload() {
   offload_until([repeat=1] () mutable { return repeat-- == 0; });
-}
-
-// Function: empty
-inline bool cudaFlowCapturer::empty() const {
-  return _graph.empty();
 }
 
 // Function: rebind_on
@@ -822,16 +839,6 @@ T* cudaFlowCapturer::make_capturer(ArgsT&&... args) {
   auto raw = ptr.get();
   _capturers.push_back(std::move(ptr));
   return raw;
-}
-
-// Function: _capture
-inline cudaGraph_t cudaFlowCapturer::_capture() {
-  return std::visit(
-    [this](auto&& opt){ 
-      return opt._optimize(_graph); 
-    }, 
-    _optimizer
-  );
 }
 
 // Function: make_optimizer

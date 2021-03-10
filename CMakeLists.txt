@@ -93,7 +93,6 @@ if(TF_BUILD_CUDA)
   message(STATUS "CUBLAS_FOUND: ${CUBLAS_FOUND}")
   message(STATUS "CUBLAS_INCLUDE_DIRS: ${CUBLAS_INCLUDE_DIRS}")
   message(STATUS "CUBLAS_LIBRARIES: ${CUBLAS_LIBRARIES}")
-  #include_directories(${CUBLAS_INCLUDE_DIRS})
 endif()
 
 # -----------------------------------------------------------------------------

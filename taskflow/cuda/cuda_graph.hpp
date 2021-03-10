@@ -359,9 +359,8 @@ class cudaGraph : public CustomGraphBase {
 
     cudaGraph_t _native_handle {nullptr};
 
-    // TODO: nvcc complains deleter of unique_ptr
-    //std::vector<std::unique_ptr<cudaNode>> _nodes;
-    std::vector<cudaNode*> _nodes;
+    std::vector<std::unique_ptr<cudaNode>> _nodes;
+    //std::vector<cudaNode*> _nodes;
 };
 
 // ----------------------------------------------------------------------------
@@ -554,7 +553,7 @@ inline void cudaNode::_precede(cudaNode* v) {
 
 // Destructor
 inline cudaGraph::~cudaGraph() {
-  clear();
+  //clear();
   assert(_native_handle == nullptr);
 }
 
@@ -571,7 +570,7 @@ inline cudaGraph::cudaGraph(cudaGraph&& g) :
 // Move assignment
 inline cudaGraph& cudaGraph::operator = (cudaGraph&& rhs) {
 
-  clear();
+  //clear();
   
   // lhs
   _native_handle = rhs._native_handle;
@@ -592,23 +591,23 @@ inline bool cudaGraph::empty() const {
 
 // Procedure: clear
 inline void cudaGraph::clear() {
-  for(auto n : _nodes) {
-    delete n;
-  }
+  //for(auto n : _nodes) {
+  //  delete n;
+  //}
   _nodes.clear();
 }
 
 // Function: emplace_back
 template <typename... ArgsT>
 cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
-  //auto node = std::make_unique<cudaNode>(std::forward<ArgsT>(args)...);
-  //_nodes.emplace_back(std::move(node));
-  //return _nodes.back().get();
+  auto node = std::make_unique<cudaNode>(std::forward<ArgsT>(args)...);
+  _nodes.emplace_back(std::move(node));
+  return _nodes.back().get();
   // TODO: object pool
 
-  auto node = new cudaNode(std::forward<ArgsT>(args)...);
-  _nodes.push_back(node);
-  return node;
+  //auto node = new cudaNode(std::forward<ArgsT>(args)...);
+  //_nodes.push_back(node);
+  //return node;
 }
 
 // Procedure: dump the graph to a DOT format
@@ -649,7 +648,9 @@ inline void cudaGraph::dump(
       os << "\";\n" << "color=\"purple\"\n";
     }
 
-    for(auto& v : graph->_nodes) {
+    for(auto& node : graph->_nodes) {
+
+      auto v = node.get();
       
       os << 'p' << v << "[label=\"";
       if(v->_name.empty()) {
