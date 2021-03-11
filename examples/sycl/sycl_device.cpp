@@ -28,16 +28,20 @@ int main() {
     // looping over devices
     for (const auto& device : devices) {
 
-      std::cout << "  Device         : "
+      std::cout << "  Device             : "
 		            << device.get_info<sycl::info::device::name>() << '\n'
-                << "  vendor         : "
+                << "  vendor             : "
                 << device.get_info<sycl::info::device::vendor>() << '\n'
-                << "  version        : "
+                << "  version            : "
                 << device.get_info<sycl::info::device::version>() << '\n'
-                << "  is_host        : " << device.is_host() << '\n'
-                << "  is_cpu         : " << device.is_cpu() << '\n'
-                << "  is_gpu         : " << device.is_gpu() << '\n'
-                << "  is_accelerator : " << device.is_accelerator() << '\n';
+                << "  is_host            : " << device.is_host() << '\n'
+                << "  is_cpu             : " << device.is_cpu() << '\n'
+                << "  is_gpu             : " << device.is_gpu() << '\n'
+                << "  is_accelerator     : " << device.is_accelerator() << '\n'
+                << "  max_work_group_size: " 
+                << device.get_info<sycl::info::device::max_work_group_size>() << '\n'
+                << "  local_mem_size     : " 
+                << device.get_info<sycl::info::device::local_mem_size>() << '\n';
       
       // submitting a kernel to the sycl device
       auto queue = sycl::queue(device);

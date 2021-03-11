@@ -8,6 +8,7 @@ list(APPEND TF_CUDA_EXAMPLES
   cuda_matmul 
   cuda_knn
   cuda_capturer
+  cuda_reduce
 )
 
 foreach(cuda_example IN LISTS TF_CUDA_EXAMPLES)

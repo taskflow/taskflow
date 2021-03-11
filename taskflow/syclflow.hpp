@@ -7,6 +7,7 @@
 
 #include "taskflow.hpp"
 #include "sycl/sycl_flow.hpp"
+#include "sycl/sycl_algorithm/sycl_reduce.hpp"
 
 /**
 @file syclflow.hpp

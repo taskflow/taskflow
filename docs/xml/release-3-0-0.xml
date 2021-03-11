@@ -58,7 +58,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> and update methods to run and update a cudaFlow explicitly </para></listitem>
 <listitem><para>supported standalone cudaFlow (see <ref refid="GPUTaskingcudaFlow_1UsecudaFlowInAStandaloneEnvironment" kindref="member">Use cudaFlow in a Standalone Environment</ref>) </para></listitem>
 <listitem><para>supported standalone cudaFlowCapturer (see <ref refid="GPUTaskingcudaFlowCapturer_1UsecudaFlowCapturerInAStandaloneEnvironment" kindref="member">Use cudaFlow Capturer in a Standalone Environment</ref>) </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cublasFlowCapturer" kindref="compound">tf::cublasFlowCapturer</ref> to support <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> (see <ref refid="LinearAlgebracublasFlowCapturer" kindref="compound">Linear Algebra (cublasFlowCapturer)</ref>)</para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cublasFlowCapturer" kindref="compound">tf::cublasFlowCapturer</ref> to support <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> (see <ref refid="LinearAlgebracublasFlowCapturer" kindref="compound">Linear Algebra with cuBLAS</ref>)</para></listitem>
 </itemizedlist>
 </para></sect2>
 <sect2 id="release-3-0-0_1release-3-0-0_utilities">
@@ -90,10 +90,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-0-0_1release-3-0-0_gpu_algorithms">
 <title>GPU Algorithms</title>
 <para><itemizedlist>
-<listitem><para>added single task (see <ref refid="SingleTaskCUDA" kindref="compound">Single Task (cudaFlow)</ref>) </para></listitem>
-<listitem><para>added parallel iterations (see <ref refid="ForEachCUDA" kindref="compound">Parallel Iterations (cudaFlow)</ref>) </para></listitem>
-<listitem><para>added parallel transforms (see <ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms (cudaFlow)</ref>) </para></listitem>
-<listitem><para>added parallel reduction (see <ref refid="CUDAReduce" kindref="compound">Parallel Reduction (cudaFlow)</ref>)</para></listitem>
+<listitem><para>added single task (see <ref refid="SingleTaskCUDA" kindref="compound">Single Task</ref>) </para></listitem>
+<listitem><para>added parallel iterations (see <ref refid="ForEachCUDA" kindref="compound">Parallel Iterations</ref>) </para></listitem>
+<listitem><para>added parallel transforms (see <ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms</ref>) </para></listitem>
+<listitem><para>added parallel reduction (see <ref refid="CUDAReduce" kindref="compound">Parallel Reduction</ref>)</para></listitem>
 </itemizedlist>
 </para></sect2>
 </sect1>
@@ -129,8 +129,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <listitem><para>added <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref> </para></listitem>
 <listitem><para>added <ref refid="RequestCancellation" kindref="compound">Request Cancellation</ref> </para></listitem>
 <listitem><para>added <ref refid="Profiler" kindref="compound">Profile Taskflow Programs</ref> </para></listitem>
-<listitem><para>added <ref refid="GPUAlgorithms" kindref="compound">GPU Algorithms</ref><itemizedlist>
-<listitem><para><ref refid="SingleTaskCUDA" kindref="compound">Single Task (cudaFlow)</ref> to run a kernel function in just a single thread</para></listitem><listitem><para><ref refid="ForEachCUDA" kindref="compound">Parallel Iterations (cudaFlow)</ref> to perform parallel iterations over a range of items</para></listitem><listitem><para><ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms (cudaFlow)</ref> to perform parallel transforms over a range of items</para></listitem><listitem><para><ref refid="CUDAReduce" kindref="compound">Parallel Reduction (cudaFlow)</ref> to perform parallel reduction over a range of items</para></listitem><listitem><para><ref refid="LinearAlgebracublasFlowCapturer" kindref="compound">Linear Algebra (cublasFlowCapturer)</ref> to build GPU-accelerated linear algebra applications </para></listitem></itemizedlist>
+<listitem><para>added <ref refid="cudaFlowAlgorithms" kindref="compound">cudaFlow Algorithms</ref><itemizedlist>
+<listitem><para><ref refid="SingleTaskCUDA" kindref="compound">Single Task</ref> to run a kernel function in just a single thread</para></listitem><listitem><para><ref refid="ForEachCUDA" kindref="compound">Parallel Iterations</ref> to perform parallel iterations over a range of items</para></listitem><listitem><para><ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms</ref> to perform parallel transforms over a range of items</para></listitem><listitem><para><ref refid="CUDAReduce" kindref="compound">Parallel Reduction</ref> to perform parallel reduction over a range of items</para></listitem><listitem><para><ref refid="LinearAlgebracublasFlowCapturer" kindref="compound">Linear Algebra with cuBLAS</ref> to build GPU-accelerated linear algebra applications </para></listitem></itemizedlist>
 </para></listitem>
 <listitem><para>added <ref refid="Governance" kindref="compound">Governance</ref><itemizedlist>
 <listitem><para><ref refid="rules" kindref="compound">Rules</ref></para></listitem><listitem><para><ref refid="team" kindref="compound">Team</ref></para></listitem><listitem><para><ref refid="codeofconduct" kindref="compound">Code of Conduct</ref> </para></listitem></itemizedlist>

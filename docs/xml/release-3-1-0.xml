@@ -13,12 +13,13 @@
 <sect1 id="release-3-1-0_1release-3-1-0_system_requirements">
 <title>System Requirements</title>
 <para>To use Taskflow v3.1.0, you need a compiler that supports C++17:</para><para><itemizedlist>
-<listitem><para>GNU C++ Compiler at least v7.0 with -std=c++17 </para></listitem>
+<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para></listitem>
 <listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para></listitem>
 <listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para></listitem>
 <listitem><para>AppleClang Xode Version at least v12.0 with -std=c++17 </para></listitem>
 <listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17</para></listitem>
+<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para></listitem>
+<listitem><para>Intel oneAPI Clang C++ Compiler at least v13.0.0</para></listitem>
 </itemizedlist>
 Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_working_items">
@@ -26,7 +27,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <para><itemizedlist>
 <listitem><para>enhancing the taskflow profiler (<ulink url="https://github.com/taskflow/tfprof">TFProf</ulink>) </para></listitem>
 <listitem><para>enhancing cudaFlow and scheduling algorithms for capturer </para></listitem>
-<listitem><para>adding support for SYCL through DPC++</para></listitem>
+<listitem><para>enhancing support for SYCL with Intel DPC++ </para></listitem>
+<listitem><para>enhancing profiler support for syclFlow</para></listitem>
 </itemizedlist>
 </para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_new_features">
@@ -34,15 +36,37 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-1-0_1release-3-1-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>optimized task node storage by using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> for semaphores</para></listitem>
+<listitem><para>optimized task node storage by using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> for semaphores </para></listitem>
+<listitem><para>introduced <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> based on Intel DPC++ and SYCL 2020 spec </para></listitem>
+<listitem><para>merged the execution flow of cudaFlow and cudaFlow capturer</para></listitem>
 </itemizedlist>
 </para></sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_cudaflow">
 <title>cudaFlow</title>
 <para><itemizedlist>
-<listitem><para>optimized <ref refid="classtf_1_1cudaRoundRobinCapturing" kindref="compound">tf::cudaRoundRobinCapturing</ref> through an event-pruning heuristic</para></listitem>
+<listitem><para>optimized <ref refid="classtf_1_1cudaRoundRobinCapturing" kindref="compound">tf::cudaRoundRobinCapturing</ref> through an event-pruning heuristic </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1aad726dfe21e9719d96c65530a56d9951" kindref="member">tf::cudaFlow::clear()</ref> to clean up a cudaFlow </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1ae6560c27d249af7e4b8b921388f5e1e2" kindref="member">tf::cudaFlow::num_tasks()</ref> to query the task count in a cudaFlow </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaTask_1afe21933815619b8f51f0efa2706aa16e" kindref="member">tf::cudaTask::num_dependents()</ref> to query the dependent count in a cudaTask </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a06f1176b6a5590832f0e09a049f8a622" kindref="member">tf::cudaFlowCapturer::clear()</ref> to clean up a cudaFlow capturer </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1aeb826786f1580bae1335d94ffbeb7e02" kindref="member">tf::cudaFlowCapturer::num_tasks()</ref> to query the task count in a cudaFlow capturer </para></listitem>
+<listitem><para>added cudaFlow examples<itemizedlist>
+<listitem><para>parallel reduction (examples/cuda/cuda_reduce.cu)</para></listitem></itemizedlist>
+</para></listitem>
 </itemizedlist>
 </para></sect2>
+<sect2 id="release-3-1-0_1release-3-1-0_syclflow">
+<title>syclFlow</title>
+<para><itemizedlist>
+<listitem><para>added a task graph-based interface, <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>, for SYCL programming </para></listitem>
+<listitem><para>added syclFlow examples:<itemizedlist>
+<listitem><para>device query (examples/sycl/sycl_device.cpp)</para></listitem><listitem><para>range query (examples/sycl/sycl_ndrange.cpp)</para></listitem><listitem><para>saxpy kernel (examples/sycl/sycl_saxpy.cpp)</para></listitem><listitem><para>atomic operation using oneAPI atomic_ref (examples/sycl/sycl_atomic.cpp)</para></listitem><listitem><para>vector addition (examples/sycl/sycl_vector_add.cpp)</para></listitem><listitem><para>parallel reduction (examples/sycl/sycl_reduce.cpp)</para></listitem><listitem><para>matrix multiplication (examples/sycl/sycl_matmul.cpp) </para></listitem></itemizedlist>
+</para></listitem>
+<listitem><para>added syclFlow algorithms<itemizedlist>
+<listitem><para><ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">tf::syclFlow::single_task</ref> for single-threaded kernel</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" kindref="member">tf::syclFlow::reduce</ref> for parallel reduction</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" kindref="member">tf::syclFlow::uninitialized_reduce</ref> for uninitialized parallel reduction</para></listitem></itemizedlist>
+</para></listitem>
+</itemizedlist>
+Please visit the pages, TBD, to know more details about compiling and running syclFlow programs.</para></sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_utilities">
 <title>Utilities</title>
 <para><itemizedlist>
@@ -53,15 +77,6 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <title>Taskflow Profiler (TFProf)</title>
 </sect2>
 </sect1>
-<sect1 id="release-3-1-0_1release-3-1-0_new_algorithms">
-<title>New Algorithms</title>
-<sect2 id="release-3-1-0_1release-3-1-0_cpu_algorithms">
-<title>CPU Algorithms</title>
-</sect2>
-<sect2 id="release-3-1-0_1release-3-1-0_gpu_algorithms">
-<title>GPU Algorithms</title>
-</sect2>
-</sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
@@ -69,10 +84,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 </para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_breaking_changes">
 <title>Breaking Changes</title>
-</sect1>
+<para>There are no breaking changes in this release.</para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_deprecated_items">
 <title>Deprecated and Removed Items</title>
-</sect1>
+<para>There are no deprecated or removed items in this release.</para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>

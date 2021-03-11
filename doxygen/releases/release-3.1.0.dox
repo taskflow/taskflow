@@ -49,19 +49,29 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 @li optimized tf::cudaRoundRobinCapturing through an event-pruning heuristic
 @li added tf::cudaFlow::clear() to clean up a %cudaFlow
 @li added tf::cudaFlow::num_tasks() to query the task count in a %cudaFlow
-@li added tf::cudaFlow::num_dependents() to query the dependent count in a %cudaTask
+@li added tf::cudaTask::num_dependents() to query the dependent count in a %cudaTask
 @li added tf::cudaFlowCapturer::clear() to clean up a %cudaFlow capturer
 @li added tf::cudaFlowCapturer::num_tasks() to query the task count in a %cudaFlow capturer
-@li added tf::cudaFlowCapturer::num_dependents() to query the dependent count in a %cudaTask
+@li added %cudaFlow examples
+  + parallel reduction (examples/cuda/cuda_reduce.cu)
 
 @subsection release-3-1-0_syclflow syclFlow
 
-@li added a task graph-based interface (tf::syclFlow) for SYCL programming
-@li added tf::syclTask to represent a task in a %syclFlow
-@li added %syclFlow examples
-@li added %syclFlow unittests
+@li added a task graph-based interface, tf::syclFlow, for SYCL programming
+@li added %syclFlow examples:
+  + device query (examples/sycl/sycl_device.cpp)
+  + range query (examples/sycl/sycl_ndrange.cpp)
+  + saxpy kernel (examples/sycl/sycl_saxpy.cpp)
+  + atomic operation using oneAPI atomic_ref (examples/sycl/sycl_atomic.cpp)
+  + vector addition (examples/sycl/sycl_vector_add.cpp)
+  + parallel reduction (examples/sycl/sycl_reduce.cpp)
+  + matrix multiplication (examples/sycl/sycl_matmul.cpp)
+@li added %syclFlow algorithms
+  + tf::syclFlow::single_task for single-threaded kernel
+  + tf::syclFlow::reduce for parallel reduction
+  + tf::syclFlow::uninitialized_reduce for uninitialized parallel reduction
 
-Please visit the pages, TBD, to know more details about compiling and running
+Please visit these pages, TBD, to know more details about compiling and running
 %syclFlow programs.
 
 @subsection release-3-1-0_utilities Utilities
@@ -69,16 +79,6 @@ Please visit the pages, TBD, to know more details about compiling and running
 @li resolved the compiler warning in serializer caused by <tt>constexpr if</tt>
 
 @subsection release-3-1-0_profiler Taskflow Profiler (TFProf)
-
-@section release-3-1-0_new_algorithms New Algorithms
-
-@subsection release-3-1-0_cpu_algorithms CPU Algorithms
-
-There are no new CPU algorithms in this release.
-
-@subsection release-3-1-0_gpu_algorithms GPU Algorithms
-
-There are no new GPU algorithms in this release.
 
 @section release-3-1-0_bug_fixes Bug Fixes 
  + Fixed the macro expansion issue with MSVC on @c TF_CUDA_CHECK

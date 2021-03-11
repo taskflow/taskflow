@@ -40,18 +40,39 @@ auto gpu(int M, int N, int K) {
     auto copy_db = sf.copy(db, hb.data(), N*K).name("H2D_b");
     auto copy_hc = sf.copy(hc.data(), dc, M*K).name("D2H_c"); 
 
+    auto _M = (M % 16 == 0) ? M : (M + 16 - M % 16);
+    auto _K = (K % 16 == 0) ? K : (K + 16 - K % 16);
+
     auto kmatmul = sf.parallel_for(
-      sycl::range<2>(M, K), 
-      [=](sycl::id<2> id) {
-        auto row = id[0];
-        auto col = id[1];
-        int sum = 0;
-        for(int n = 0; n < N; n++) {
-          sum += da[row * N + n] * db[n * K + col];
+      sycl::nd_range<2>{sycl::range<2>(_M, _K ), sycl::range<2>(16, 16)},
+      [=](sycl::nd_item<2> item) {
+        int row = item.get_global_id(0);
+        int col = item.get_global_id(1);
+        if(row < M && col < K) {
+          int sum = 0;
+          for(int n = 0; n < N; n++) {
+            sum += da[row * N + n] * db[n * K + col];
+          }
+          dc[row * K + col] = sum;
         }
-        dc[row * K + col] = sum;
       }
     ).name("matmul");
+
+    // It is also possible to just use range and let the runtime decide the
+    // partition of groups, but the result is less efficient.
+    //
+    //auto kmatmul = sf.parallel_for(
+    //  sycl::range<2>(M, K), 
+    //  [=](sycl::id<2> id) {
+    //    int row = id[0];
+    //    int col = id[1];
+    //    int sum = 0;
+    //    for(int n = 0; n < N; n++) {
+    //      sum += da[row * N + n] * db[n * K + col];
+    //    }
+    //    dc[row * K + col] = sum;
+    //  }
+    //).name("matmul");
 
     kmatmul.succeed(copy_da, copy_db)
            .precede(copy_hc);

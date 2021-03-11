@@ -104,6 +104,10 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a581673ad83a48a2d3b4f06f125043c32" class="m-doc-self">num_successors</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of successors</dd>
+            <dt id="afe21933815619b8f51f0efa2706aa16e">
+              <span class="m-doc-wrap-bumper">auto <a href="#afe21933815619b8f51f0efa2706aa16e" class="m-doc-self">num_dependents</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>queries the number of dependents</dd>
             <dt id="a1b0da9e643b80008063406fe1bf207b9">
               <span class="m-doc-wrap-bumper">auto <a href="#a1b0da9e643b80008063406fe1bf207b9" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
             </dt>
@@ -117,6 +121,16 @@
               <span class="m-doc-wrap-bumper">void <a href="#af2ce580b0bfb771e463e66af64c2c571" class="m-doc">dump</a>(</span><span class="m-doc-wrap">T&amp; ostream) const</span>
             </dt>
             <dd>dumps the task through an output stream</dd>
+            <dt id="aebdbc276e0b3b72b5c9e574e801e76dc">
+              <div class="m-doc-template">template&lt;typename V&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#aebdbc276e0b3b72b5c9e574e801e76dc" class="m-doc-self">for_each_successor</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
+            </dt>
+            <dd>applies an visitor callable to each successor of the task</dd>
+            <dt id="afd23fdf190317e790e7fc35049b53fcf">
+              <div class="m-doc-template">template&lt;typename V&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#afd23fdf190317e790e7fc35049b53fcf" class="m-doc-self">for_each_dependent</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
+            </dt>
+            <dd>applies an visitor callable to each dependents of the task</dd>
           </dl>
         </section>
         <section id="friends">

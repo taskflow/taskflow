@@ -113,7 +113,7 @@ class syclFlow {
 
     @param ptr pointer to the destination device memory area
     @param value value to set for each byte of specified memory
-    @param count size in bytes to set
+    @param bytes number of bytes to set
     
     @return a tf::syclTask handle
 
@@ -179,6 +179,52 @@ class syclFlow {
     */
     template <typename...ArgsT>
     syclTask parallel_for(ArgsT&&... args);
+    
+    // ------------------------------------------------------------------------
+    // algorithms
+    // ------------------------------------------------------------------------
+    
+    /**
+    @brief performs parallel reduction over a range of items
+    
+    @tparam I input iterator type
+    @tparam T value type
+    @tparam C callable type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param result pointer to the result with an initialized value
+    @param op binary reduction operator
+    
+    @return a tf::syclTask handle
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    while (first != last) {
+      *result = op(*result, *first++);
+    }
+    @endcode
+    */
+    template <typename I, typename T, typename C>
+    syclTask reduce(I first, I last, T* result, C&& op);
+    
+    /**
+    @brief similar to tf::syclFlow::reduce but does not assume any initial
+           value to reduce
+    
+    This method is equivalent to the parallel execution of the following loop 
+    on a GPU:
+    
+    @code{.cpp}
+    *result = *first++;  // no initial values partitipcate in the loop
+    while (first != last) {
+      *result = op(*result, *first++);
+    }
+    @endcode
+    */
+    template <typename I, typename T, typename C>
+    syclTask uninitialized_reduce(I first, I last, T* result, C&& op);
     
     // ------------------------------------------------------------------------
     // offload methods
@@ -324,7 +370,7 @@ syclTask syclFlow::single_task(F&& func) {
 template <typename...ArgsT>
 syclTask syclFlow::parallel_for(ArgsT&&... args) {
   auto node = _graph.emplace_back([args...] (sycl::handler& h) mutable {
-    h.parallel_for(std::forward<ArgsT>(args)...);
+    h.parallel_for(args...);
   });
   return syclTask(node);
 }

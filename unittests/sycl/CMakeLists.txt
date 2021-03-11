@@ -1,5 +1,6 @@
 list(APPEND TF_SYCL_TESTS 
   sycl_basics
+  sycl_algorithms
 )
 
 foreach(sycl_test IN LISTS TF_SYCL_TESTS)

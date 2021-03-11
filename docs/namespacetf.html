@@ -176,6 +176,7 @@
             <dt id="a1355048578785a80414707ff308b395a">
               <span class="m-doc-wrap-bumper">enum class <a href="#a1355048578785a80414707ff308b395a" class="m-doc-self">TaskType</a>: int { </span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" class="m-doc">PLACEHOLDER</a> = 0,
               <a href="#a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225" class="m-doc">CUDAFLOW</a>,
+              <a href="#a1355048578785a80414707ff308b395aaacf7c94171844e1799b1cccf0144938c" class="m-doc">SYCLFLOW</a>,
               <a href="#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc">STATIC</a>,
               <a href="#a1355048578785a80414707ff308b395aa0fcc90da4811c877ba9f9c12f7d60bc9" class="m-doc">DYNAMIC</a>,
               <a href="#a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" class="m-doc">CONDITION</a>,
@@ -201,15 +202,6 @@
               <a href="#afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3" class="m-doc">UNDEFINED</a> }</span>
             </dt>
             <dd>enumeration of all cudaTask types</dd>
-            <dt id="a618435e7d17ae4ba6058bb30378c7708">
-              <span class="m-doc-wrap-bumper">enum class <a href="#a618435e7d17ae4ba6058bb30378c7708" class="m-doc-self">syclTaskType</a>: int { </span><span class="m-doc-wrap"><a href="#a618435e7d17ae4ba6058bb30378c7708aba2b45bdc11e2a4a6e86aab2ac693cbb" class="m-doc">EMPTY</a> = 0,
-              <a href="#a618435e7d17ae4ba6058bb30378c7708ab9361011891280a44d85b967739cc6a5" class="m-doc">HOST</a>,
-              <a href="#a618435e7d17ae4ba6058bb30378c7708a41d4dbfd78ceea21abb0ecb03c3cc921" class="m-doc">MEMSET</a>,
-              <a href="#a618435e7d17ae4ba6058bb30378c7708ac5d10cc70cce96265c445f14e7f5aba4" class="m-doc">MEMCPY</a>,
-              <a href="#a618435e7d17ae4ba6058bb30378c7708a35c10219c45ccfb5b07444fd7e17214c" class="m-doc">KERNEL</a>,
-              <a href="#a618435e7d17ae4ba6058bb30378c7708a0db45d2a4141101bdfe48e3314cfbca3" class="m-doc">UNDEFINED</a> }</span>
-            </dt>
-            <dd>enumeration of all syclTask types</dd>
           </dl>
         </section>
         <section id="typedef-members">
@@ -401,10 +393,6 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a50a8f777333cc26d5f5d8c4d37bcdc73" class="m-doc-self">cuda_default_threads_per_block</a>(</span><span class="m-doc-wrap">size_t N) -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
             <dd>queries the default number of threads per block in an 1D vector of N elements</dd>
-            <dt id="ab078f908a959af74111d5452c580242b">
-              <span class="m-doc-wrap-bumper">auto <a href="#ab078f908a959af74111d5452c580242b" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a618435e7d17ae4ba6058bb30378c7708" class="m-doc">syclTaskType</a> type) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
-            </dt>
-            <dd>convert a sycl_task type to a human-readable string</dd>
             <dt id="a160861c1c085842ecb0c56537199deaa">
               <span class="m-doc-wrap-bumper">auto <a href="#a160861c1c085842ecb0c56537199deaa" class="m-doc-self">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
               const <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a>&amp; ct) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
@@ -419,8 +407,8 @@
         <section id="var-members">
           <h2><a href="#var-members">Variables</a></h2>
           <dl class="m-doc">
-            <dt id="a3d823d8776745f3348dc87bba2fcc91b">
-              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 7&gt; <a href="#a3d823d8776745f3348dc87bba2fcc91b" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
+            <dt id="a8d01ffdf02fde31dcda586ca81b7f058">
+              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 8&gt; <a href="#a8d01ffdf02fde31dcda586ca81b7f058" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>array of all task types (used for iterating task types)</dd>
             <dt>

@@ -68,6 +68,13 @@
           <detaileddescription>
           </detaileddescription>
         </enumvalue>
+        <enumvalue id="namespacetf_1a1355048578785a80414707ff308b395aaacf7c94171844e1799b1cccf0144938c" prot="public">
+          <name>SYCLFLOW</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
         <enumvalue id="namespacetf_1a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" prot="public">
           <name>STATIC</name>
           <briefdescription>
@@ -116,7 +123,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="21" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="21" bodyend="30"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="21" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="21" bodyend="31"/>
       </memberdef>
       <memberdef kind="enum" id="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435d" prot="public" static="no" strong="yes">
         <type>int</type>
@@ -219,60 +226,6 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="21" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="21" bodyend="30"/>
       </memberdef>
-      <memberdef kind="enum" id="namespacetf_1a618435e7d17ae4ba6058bb30378c7708" prot="public" static="no" strong="yes">
-        <type>int</type>
-        <name>syclTaskType</name>
-        <enumvalue id="namespacetf_1a618435e7d17ae4ba6058bb30378c7708aba2b45bdc11e2a4a6e86aab2ac693cbb" prot="public">
-          <name>EMPTY</name>
-          <initializer>= 0</initializer>
-          <briefdescription>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="namespacetf_1a618435e7d17ae4ba6058bb30378c7708ab9361011891280a44d85b967739cc6a5" prot="public">
-          <name>HOST</name>
-          <briefdescription>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="namespacetf_1a618435e7d17ae4ba6058bb30378c7708a41d4dbfd78ceea21abb0ecb03c3cc921" prot="public">
-          <name>MEMSET</name>
-          <briefdescription>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="namespacetf_1a618435e7d17ae4ba6058bb30378c7708ac5d10cc70cce96265c445f14e7f5aba4" prot="public">
-          <name>MEMCPY</name>
-          <briefdescription>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="namespacetf_1a618435e7d17ae4ba6058bb30378c7708a35c10219c45ccfb5b07444fd7e17214c" prot="public">
-          <name>KERNEL</name>
-          <briefdescription>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="namespacetf_1a618435e7d17ae4ba6058bb30378c7708a0db45d2a4141101bdfe48e3314cfbca3" prot="public">
-          <name>UNDEFINED</name>
-          <briefdescription>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <briefdescription>
-<para>enumeration of all syclTask types </para>        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_task.hpp" line="21" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_task.hpp" bodystart="21" bodyend="28"/>
-      </memberdef>
       </sectiondef>
       <sectiondef kind="typedef">
       <memberdef kind="typedef" id="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" prot="public" static="no">
@@ -316,14 +269,15 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="var">
-      <memberdef kind="variable" id="namespacetf_1a3d823d8776745f3348dc87bba2fcc91b" prot="public" static="no" mutable="no">
-        <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 7 &gt;</type>
-        <definition>constexpr std::array&lt;TaskType, 7&gt; tf::TASK_TYPES</definition>
+      <memberdef kind="variable" id="namespacetf_1a8d01ffdf02fde31dcda586ca81b7f058" prot="public" static="no" mutable="no">
+        <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 8 &gt;</type>
+        <definition>constexpr std::array&lt;TaskType, 8&gt; tf::TASK_TYPES</definition>
         <argsstring></argsstring>
         <name>TASK_TYPES</name>
         <initializer>= {
   TaskType::PLACEHOLDER,
   TaskType::CUDAFLOW,
+  TaskType::SYCLFLOW,
   TaskType::STATIC,
   TaskType::DYNAMIC,
   TaskType::CONDITION,
@@ -336,7 +290,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="35" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="35" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="36" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="36" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -356,7 +310,7 @@
 <para>A static task is a callable object constructible from std::function&lt;void()&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="76" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="76" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="79" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="79" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -375,7 +329,7 @@
 <para>A dynamic task is a callable object constructible from std::function&lt;void(Subflow&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="85" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="85" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="88" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="88" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -394,7 +348,7 @@
 <para>A condition task is a callable object constructible from std::function&lt;int()&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="93" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="93" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="96" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="96" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1adb8433555d8cdc0b3c5d95e8d51a90f0" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -414,7 +368,7 @@
 <para>A <ref refid="classtf_1_1cudaFlow" kindref="compound">cudaFlow</ref> task is a callable object constructible from std::function&lt;void(tf::cudaFlow&amp;)&gt; or std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="102" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="102" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="105" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="105" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a574038aaa99e0220eedca4e8ea9389cf" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -433,7 +387,7 @@
 <para>A <ref refid="classtf_1_1syclFlow" kindref="compound">syclFlow</ref> task is a callable object constructible from std::function&lt;void(tf::syclFlow&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="112" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="112" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="115" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="115" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
@@ -452,7 +406,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="48" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="48" bodyend="64"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="50" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="50" bodyend="67"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ad216aea4d0f648e149e47374ad015b1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
@@ -473,7 +427,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="504" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="504" bodyend="507"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="508" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="508" bodyend="511"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa3fc0699b2c2b8f2f76bb39f91be1acb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -1193,7 +1147,7 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="220" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="220" bodyend="223"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="258" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="258" bodyend="261"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ae680bf7822f2b6b66a6199f0b77f7241" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr size_t</type>
@@ -1225,23 +1179,6 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="26" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="26" bodyend="32"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1ab078f908a959af74111d5452c580242b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>constexpr const char *</type>
-        <definition>constexpr const char* tf::to_string</definition>
-        <argsstring>(syclTaskType type)</argsstring>
-        <name>to_string</name>
-        <param>
-          <type><ref refid="namespacetf_1a618435e7d17ae4ba6058bb30378c7708" kindref="member">syclTaskType</ref></type>
-          <declname>type</declname>
-        </param>
-        <briefdescription>
-<para>convert a sycl_task type to a human-readable string </para>        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_task.hpp" line="33" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_task.hpp" bodystart="33" bodyend="42"/>
-      </memberdef>
       <memberdef kind="function" id="namespacetf_1a160861c1c085842ecb0c56537199deaa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
         <definition>std::ostream&amp; tf::operator&lt;&lt;</definition>
@@ -1261,7 +1198,7 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_task.hpp" line="214" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_task.hpp" bodystart="214" bodyend="217"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_task.hpp" line="200" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_task.hpp" bodystart="200" bodyend="203"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a30fa078dcf625e9eada5a95af1467588" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr const char *</type>
