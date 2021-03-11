@@ -21,8 +21,6 @@ namespace tf {
 class syclTask {
 
   friend class syclFlow;
-  friend class syclFlowCapturer;
-  friend class syclFlowCapturerBase;
 
   friend std::ostream& operator << (std::ostream&, const syclTask&);
 
@@ -104,6 +102,18 @@ class syclTask {
     */
     template <typename T>
     void dump(T& ostream) const;
+    
+    /**
+    @brief applies an visitor callable to each successor of the task
+    */
+    template <typename V>
+    void for_each_successor(V&& visitor) const;
+    
+    /**
+    @brief applies an visitor callable to each dependents of the task
+    */
+    template <typename V>
+    void for_each_dependent(V&& visitor) const;
 
   private:
     
@@ -162,6 +172,22 @@ void syclTask::dump(T& os) const {
   os << "syclTask ";
   if(_node->_name.empty()) os << _node;
   else os << _node->_name;
+}
+
+// Function: for_each_successor
+template <typename V>
+void syclTask::for_each_successor(V&& visitor) const {
+  for(size_t i=0; i<_node->_successors.size(); ++i) {
+    visitor(syclTask(_node->_successors[i]));
+  }
+}
+
+// Function: for_each_dependent
+template <typename V>
+void syclTask::for_each_dependent(V&& visitor) const {
+  for(size_t i=0; i<_node->_dependents.size(); ++i) {
+    visitor(syclTask(_node->_dependents[i]));
+  }
 }
 
 // ----------------------------------------------------------------------------

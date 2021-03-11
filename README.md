@@ -325,12 +325,13 @@ executor.wait_for_all();
 
 To use Taskflow, you only need a compiler that supports C++17:
 
-+ GNU C++ Compiler at least v7.0 with -std=c++17
++ GNU C++ Compiler at least v8.4 with -std=c++17
 + Clang C++ Compiler at least v6.0 with -std=c++17
 + Microsoft Visual Studio at least v19.27 with /std:c++17
 + AppleClang Xode Version at least v12.0 with -std=c++17
 + Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
-+ Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17
++ Intel C++ Compiler at least v19.0.1 with -std=c++17
++ Intel oneAPI Clang C++ Compiler at least v13.0.0
 
 Taskflow works on Linux, Windows, and Mac OS X.
 

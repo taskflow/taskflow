@@ -126,17 +126,33 @@ class syclFlow {
     /**
     @brief creates a fill task that fills typed data with the given value
 
+    @tparam T trivially copyable value type
+
     @param ptr pointer to the memory to fill
     @param pattern pattern value to fill into the memory
     @param count number of items to fill the value
 
-    @tparam T trivially copyable value type
-    
     Creates a task that fills the specified memory with the 
     specified value.
     */
     template <typename T>
     syclTask fill(void* ptr, const T& pattern, size_t count);
+    
+    /**
+    @brief creates a copy task that copies typed data from a source to a target
+           memory block
+
+    @tparam T trivially copyable value type
+    
+    @param target pointer to the memory to fill
+    @param source pointer to the pattern value to fill into the memory
+    @param count number of items to fill the value
+    
+    Creates a task that copies @c count items of type @c T from a source memory
+    location to a target memory location.
+    */
+    template <typename T>
+    syclTask copy(T* target, const T* source, size_t count);
     
     /**
     @brief invokes a SYCL kernel function using only one thread
@@ -278,6 +294,12 @@ syclTask syclFlow::fill(void* ptr, const T& pattern, size_t count) {
   });
   
   return syclTask(node);
+}
+
+// Function: copy
+template <typename T>
+syclTask syclFlow::copy(T* target, const T* source, size_t count) {
+  return this->memcpy(target, source, count*sizeof(T));
 }
 
 // Function: on

@@ -279,7 +279,7 @@ std::pair<std::vector<float>, std::vector<float>> gpu(
     auto zero_sy = cf.zero(d_sy, K).name("zero_sy");
     
     auto cluster = cf.kernel(
-      (N+1024-1) / 1024, 1024, 0, 
+      (N+512-1) / 512, 512, 0, 
       assign_clusters, d_px, d_py, N, d_mx, d_my, d_sx, d_sy, K, d_c
     ).name("cluster"); 
     
@@ -394,7 +394,7 @@ std::pair<std::vector<float>, std::vector<float>> gpu_predicate(
     auto zero_sy = cf.zero(d_sy, K).name("zero_sy");
     
     auto cluster = cf.kernel(
-      (N+1024-1) / 1024, 1024, 0, 
+      (N+512-1) / 512, 512, 0, 
       assign_clusters, d_px, d_py, N, d_mx, d_my, d_sx, d_sy, K, d_c
     ).name("cluster"); 
     

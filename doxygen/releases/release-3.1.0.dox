@@ -15,17 +15,17 @@ we continue to try our best to ensure backward compatibility.
 
 To download the newest version of %Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
 
-
 @section release-3-1-0_system_requirements System Requirements
 
 To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 
-@li GNU C++ Compiler at least v7.0 with -std=c++17
+@li GNU C++ Compiler at least v8.4 with -std=c++17
 @li Clang C++ Compiler at least v6.0 with -std=c++17
 @li Microsoft Visual Studio at least v19.27 with /std:c++17
 @li AppleClang Xode Version at least v12.0 with -std=c++17
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
 @li Intel C++ Compiler at least v19.0.1 with -std=c++17
+@li Intel oneAPI Clang C++ Compiler at least v13.0.0
 
 %Taskflow works on Linux, Windows, and Mac OS X.
 
@@ -33,17 +33,36 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 
 @li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
 @li enhancing %cudaFlow and scheduling algorithms for capturer
-@li adding support for SYCL through DPC++
+@li enhancing support for SYCL with Intel DPC++
+@li enhancing profiler support for %syclFlow
 
 @section release-3-1-0_new_features New Features
 
 @subsection release-3-1-0_taskflow_core Taskflow Core
 
 @li optimized task node storage by using std::unique_ptr for semaphores
+@li introduced tf::syclFlow based on Intel DPC++ and SYCL 2020 spec
+@li merged the execution flow of %cudaFlow and %cudaFlow capturer 
 
 @subsection release-3-1-0_cudaflow cudaFlow
 
 @li optimized tf::cudaRoundRobinCapturing through an event-pruning heuristic
+@li added tf::cudaFlow::clear() to clean up a %cudaFlow
+@li added tf::cudaFlow::num_tasks() to query the task count in a %cudaFlow
+@li added tf::cudaFlow::num_dependents() to query the dependent count in a %cudaTask
+@li added tf::cudaFlowCapturer::clear() to clean up a %cudaFlow capturer
+@li added tf::cudaFlowCapturer::num_tasks() to query the task count in a %cudaFlow capturer
+@li added tf::cudaFlowCapturer::num_dependents() to query the dependent count in a %cudaTask
+
+@subsection release-3-1-0_syclflow syclFlow
+
+@li added a task graph-based interface (tf::syclFlow) for SYCL programming
+@li added tf::syclTask to represent a task in a %syclFlow
+@li added %syclFlow examples
+@li added %syclFlow unittests
+
+Please visit the pages, TBD, to know more details about compiling and running
+%syclFlow programs.
 
 @subsection release-3-1-0_utilities Utilities
 
@@ -55,7 +74,11 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 
 @subsection release-3-1-0_cpu_algorithms CPU Algorithms
 
+There are no new CPU algorithms in this release.
+
 @subsection release-3-1-0_gpu_algorithms GPU Algorithms
+
+There are no new GPU algorithms in this release.
 
 @section release-3-1-0_bug_fixes Bug Fixes 
  + Fixed the macro expansion issue with MSVC on @c TF_CUDA_CHECK
@@ -64,7 +87,11 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 
 @section release-3-1-0_breaking_changes Breaking Changes
 
+There are no breaking changes in this release.
+
 @section release-3-1-0_deprecated_items Deprecated and Removed Items 
+
+There are no deprecated or removed items in this release.
 
 @section release-3-1-0_documentation Documentation
 

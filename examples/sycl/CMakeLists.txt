@@ -1,5 +1,10 @@
 list(APPEND TF_SYCL_EXAMPLES 
+  sycl_device
+  sycl_ndrange
+  sycl_saxpy
   sycl_vector_add
+  sycl_atomic_sum
+  sycl_matmul
 )
 
 foreach(sycl_example IN LISTS TF_SYCL_EXAMPLES)

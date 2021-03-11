@@ -1,21 +1,7 @@
-// The example shows how to use cudaFlow to create a matrix multiplication
-// of two 2D matrices.
+// The example shows how to use syclFlow to multiply two 2D matrices.
 
 #include <taskflow/taskflow.hpp>
-#include <taskflow/cudaflow.hpp>
-
-// Kernel: matmul
-__global__ void matmul(int *a, int *b, int *c, int m, int n, int k) {
-  int row = blockIdx.y * blockDim.y + threadIdx.y;
-  int col = blockIdx.x * blockDim.x + threadIdx.x;
-  int sum = 0;
-  if(col < k && row < m) {
-    for(int i = 0; i < n; i++) {
-      sum += a[row * n + i] * b[i * k + col];
-    }
-    c[row * k + col] = sum;
-  }
-}
+#include <taskflow/syclflow.hpp>
 
 // Matrix multiplication using GPU
 auto gpu(int M, int N, int K) {
@@ -23,53 +9,62 @@ auto gpu(int M, int N, int K) {
   std::vector<int> ha, hb, hc;
   int *da, *db, *dc;
 
-  tf::Taskflow taskflow("MatrixMultiplication");
   tf::Executor executor;
+  tf::Taskflow taskflow("MatrixMultiplication");
+  
+  sycl::queue queue;
 
   // allocate the host and device storage for a
   auto allocate_a = taskflow.emplace([&](){
     ha.resize(M*N, M+N);
-    TF_CHECK_CUDA(cudaMalloc(&da, M*N*sizeof(int)), "failed to allocate a");
+    da = sycl::malloc_device<int>(M*N, queue);
   }).name("allocate_a");
   
   // allocate the host and device storage for b
   auto allocate_b = taskflow.emplace([&](){
     hb.resize(N*K, N+K);
-    TF_CHECK_CUDA(cudaMalloc(&db, N*K*sizeof(int)), "failed to allocate b");
+    db = sycl::malloc_device<int>(N*K, queue);
   }).name("allocate_b");
   
   // allocate the host and device storage for c
   auto allocate_c = taskflow.emplace([&](){
     hc.resize(M*K);
-    TF_CHECK_CUDA(cudaMalloc(&dc, M*K*sizeof(int)), "failed to allocate c");
+    dc = sycl::malloc_device<int>(M*K, queue);
   }).name("allocate_c");
   
-  // create a cudaFlow to run the matrix multiplication
-  auto cudaFlow = taskflow.emplace([&](tf::cudaFlow& cf){
+  // create a syclFlow to run the matrix multiplication
+  auto syclFlow = taskflow.emplace_on([&](tf::syclFlow& sf){
 
     // copy data to da, db, and dc
-    auto copy_da = cf.copy(da, ha.data(), M*N).name("H2D_a");
-    auto copy_db = cf.copy(db, hb.data(), N*K).name("H2D_b");
-    auto copy_hc = cf.copy(hc.data(), dc, M*K).name("D2H_c"); 
-    
-    dim3 grid  ((K+16-1)/16, (M+16-1)/16);
-    dim3 block (16, 16);
+    auto copy_da = sf.copy(da, ha.data(), M*N).name("H2D_a");
+    auto copy_db = sf.copy(db, hb.data(), N*K).name("H2D_b");
+    auto copy_hc = sf.copy(hc.data(), dc, M*K).name("D2H_c"); 
 
-    auto kmatmul = cf.kernel(grid, block, 0, matmul, da, db, dc, M, N, K)
-                     .name("matmul");
+    auto kmatmul = sf.parallel_for(
+      sycl::range<2>(M, K), 
+      [=](sycl::id<2> id) {
+        auto row = id[0];
+        auto col = id[1];
+        int sum = 0;
+        for(int n = 0; n < N; n++) {
+          sum += da[row * N + n] * db[n * K + col];
+        }
+        dc[row * K + col] = sum;
+      }
+    ).name("matmul");
 
     kmatmul.succeed(copy_da, copy_db)
            .precede(copy_hc);
 
-  }).name("cudaFlow");
+  }, queue).name("syclFlow");
 
   auto free = taskflow.emplace([&](){
-    TF_CHECK_CUDA(cudaFree(da), "failed to free da");  
-    TF_CHECK_CUDA(cudaFree(db), "failed to free db");  
-    TF_CHECK_CUDA(cudaFree(dc), "failed to free dc");  
+    sycl::free(da, queue);
+    sycl::free(db, queue);
+    sycl::free(dc, queue);
   }).name("free");
 
-  cudaFlow.succeed(allocate_a, allocate_b, allocate_c)
+  syclFlow.succeed(allocate_a, allocate_b, allocate_c)
           .precede(free);
 
   executor.run(taskflow).wait();

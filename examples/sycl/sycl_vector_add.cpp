@@ -25,8 +25,7 @@ int main() {
     tf::syclTask fill = sf.fill(data, 100, N);
 
     tf::syclTask plus = sf.parallel_for(
-      sycl::range<1>(N),
-      [=](sycl::id<1> id) { data[id] += 2; }
+      sycl::range<1>(N), [=](sycl::id<1> id) { data[id] += 2; }
     );
 
     fill.precede(plus);

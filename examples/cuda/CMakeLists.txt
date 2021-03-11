@@ -3,7 +3,11 @@
 # -----------------------------------------------------------------------------
 
 list(APPEND TF_CUDA_EXAMPLES 
-  device_property saxpy matmul kmeans capturer
+  cuda_device_property 
+  cuda_saxpy 
+  cuda_matmul 
+  cuda_knn
+  cuda_capturer
 )
 
 foreach(cuda_example IN LISTS TF_CUDA_EXAMPLES)
