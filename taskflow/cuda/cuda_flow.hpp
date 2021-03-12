@@ -1017,7 +1017,7 @@ template <typename I, typename C>
 cudaTask cudaFlow::for_each(I first, I last, C&& c) {
   
   size_t N = std::distance(first, last);
-  size_t B = cuda_default_threads_per_block(N);
+  size_t B = cuda_default_block_size(N);
   
   // TODO: special case when N is 0?
 
@@ -1037,7 +1037,7 @@ cudaTask cudaFlow::for_each_index(I beg, I end, I inc, C&& c) {
   // TODO: special case when N is 0?
 
   size_t N = distance(beg, end, inc);
-  size_t B = cuda_default_threads_per_block(N);
+  size_t B = cuda_default_block_size(N);
 
   return kernel(
     (N+B-1) / B, B, 0, cuda_for_each_index<I, C>, beg, inc, N, std::forward<C>(c)
@@ -1051,7 +1051,7 @@ cudaTask cudaFlow::transform(I first, I last, C&& c, S... srcs) {
   // TODO: special case when N is 0?
   
   size_t N = std::distance(first, last);
-  size_t B = cuda_default_threads_per_block(N);
+  size_t B = cuda_default_block_size(N);
 
   return kernel(
     (N+B-1) / B, B, 0, cuda_transform<I, C, S...>, 
@@ -1067,7 +1067,7 @@ cudaTask cudaFlow::reduce(I first, I last, T* result, C&& op) {
 
   // TODO: special case N == 0?
   size_t N = std::distance(first, last);
-  size_t B = cuda_default_threads_per_block(N);
+  size_t B = cuda_default_block_size(N);
   
   return kernel(
     1, B, B*sizeof(T), cuda_reduce<I, T, C, false>, 
@@ -1083,7 +1083,7 @@ cudaTask cudaFlow::uninitialized_reduce(I first, I last, T* result, C&& op) {
 
   // TODO: special case N == 0?
   size_t N = std::distance(first, last);
-  size_t B = cuda_default_threads_per_block(N);
+  size_t B = cuda_default_block_size(N);
   
   return kernel(
     1, B, B*sizeof(T), cuda_reduce<I, T, C, true>, 

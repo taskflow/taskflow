@@ -185,6 +185,85 @@ class syclFlow {
     // ------------------------------------------------------------------------
     
     /**
+    @brief applies a callable to each dereferenced element of the data array
+
+    @tparam I iterator type
+    @tparam C callable type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param callable a callable object to apply to the dereferenced iterator 
+    
+    @return a tf::syclTask handle
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    for(auto itr = first; itr != last; itr++) {
+      callable(*itr);
+    }
+    @endcode
+    */
+    template <typename I, typename C>
+    syclTask for_each(I first, I last, C&& callable);
+    
+    /**
+    @brief applies a callable to each index in the range with the step size
+    
+    @tparam I index type
+    @tparam C callable type
+    
+    @param first beginning index
+    @param last last index
+    @param step step size
+    @param callable the callable to apply to each element in the data array
+    
+    @return a tf::syclTask handle
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    // step is positive [first, last)
+    for(auto i=first; i<last; i+=step) {
+      callable(i);
+    }
+
+    // step is negative [first, last)
+    for(auto i=first; i>last; i+=step) {
+      callable(i);
+    }
+    @endcode
+    */
+    template <typename I, typename C>
+    syclTask for_each_index(I first, I last, I step, C&& callable);
+    
+    /**
+    @brief applies a callable to a source range and stores the result in a target range
+    
+    @tparam I iterator type
+    @tparam C callable type
+    @tparam S source types
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param callable the callable to apply to each element in the range
+    @param srcs iterators to the source ranges
+    
+    @return a tf::syclTask handle
+    
+    This method is equivalent to the parallel execution of the following 
+    loop on a SYCL device:
+    
+    @code{.cpp}
+    while (first != last) {
+      *first++ = callable(*src1++, *src2++, *src3++, ...);
+    }
+    @endcode
+    */
+    template <typename I, typename C, typename... S>
+    syclTask transform(I first, I last, C&& callable, S... srcs);
+    
+    /**
     @brief performs parallel reduction over a range of items
     
     @tparam I input iterator type
@@ -198,7 +277,8 @@ class syclFlow {
     
     @return a tf::syclTask handle
     
-    This method is equivalent to the parallel execution of the following loop on a GPU:
+    This method is equivalent to the parallel execution of the following loop 
+    on a SYCL device:
     
     @code{.cpp}
     while (first != last) {
@@ -214,7 +294,7 @@ class syclFlow {
            value to reduce
     
     This method is equivalent to the parallel execution of the following loop 
-    on a GPU:
+    on a SYCL device:
     
     @code{.cpp}
     *result = *first++;  // no initial values partitipcate in the loop
@@ -262,6 +342,8 @@ class syclFlow {
   private:
 
     syclFlow(Executor&, syclGraph&, sycl::queue&);
+    
+    const size_t _MAX_WORK_GROUP_SIZE;
 
     int _state {0};
     
@@ -270,20 +352,38 @@ class syclFlow {
     syclGraph& _graph;
 
     sycl::queue& _queue;
+
+    size_t _default_group_size(size_t N) const;
 };
 
 // constructor
 inline syclFlow::syclFlow(sycl::queue& queue) :
+  _MAX_WORK_GROUP_SIZE {
+    queue.get_device().get_info<sycl::info::device::max_work_group_size>()
+  },
   _handle {std::in_place_type_t<External>{}},
   _graph  {std::get<External>(_handle).graph},
   _queue  {queue} {
 }
 
 // Construct the syclFlow from executor (internal graph)
-inline syclFlow::syclFlow(Executor& e, syclGraph& g, sycl::queue& q) :
+inline syclFlow::syclFlow(Executor& e, syclGraph& g, sycl::queue& queue) :
+  _MAX_WORK_GROUP_SIZE {
+    queue.get_device().get_info<sycl::info::device::max_work_group_size>()
+  } ,
   _handle {std::in_place_type_t<Internal>{}, e},
   _graph  {g},
-  _queue  {q} {
+  _queue  {queue} {
+}
+
+// Function: _default_group_size
+inline size_t syclFlow::_default_group_size(size_t N) const {
+  if(N <= 32) {
+    return 32;
+  }
+  else {
+    return std::min(_MAX_WORK_GROUP_SIZE, next_pow2(N));
+  }
 }
 
 // Function: empty

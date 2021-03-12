@@ -66,8 +66,11 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
   + vector addition (examples/sycl/sycl_vector_add.cpp)
   + parallel reduction (examples/sycl/sycl_reduce.cpp)
   + matrix multiplication (examples/sycl/sycl_matmul.cpp)
+  + parallel transform (examples/sycl/sycl/transform.cpp)
 @li added %syclFlow algorithms
   + tf::syclFlow::single_task for single-threaded kernel
+  + tf::syclFlow::for_each for parallel iterations
+  + tf::syclFlow::for_each_index for index-based parallel iterations
   + tf::syclFlow::reduce for parallel reduction
   + tf::syclFlow::uninitialized_reduce for uninitialized parallel reduction
 

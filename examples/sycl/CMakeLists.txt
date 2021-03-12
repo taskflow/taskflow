@@ -6,6 +6,7 @@ list(APPEND TF_SYCL_EXAMPLES
   sycl_atomic
   sycl_matmul
   sycl_reduce
+  sycl_transform
 )
 
 foreach(sycl_example IN LISTS TF_SYCL_EXAMPLES)

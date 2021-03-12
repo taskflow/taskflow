@@ -21,10 +21,9 @@ constexpr size_t cuda_default_max_threads_per_block() {
 }
 
 /**
-@brief queries the default number of threads per block in an 1D vector of N elements
+@brief queries the default number of threads per block to run N elements
 */
-constexpr size_t cuda_default_threads_per_block(size_t N) {
-  // TODO: special case when N == 0?
+constexpr size_t cuda_default_block_size(size_t N) {
   if(N <= 32) return 32;
   else {
     return std::min(cuda_default_max_threads_per_block(), next_pow2(N));
@@ -646,7 +645,7 @@ cudaTask cudaFlowCapturer::for_each(I first, I last, C&& c) {
   return on([first, last, c=std::forward<C>(c)](cudaStream_t stream) mutable {
     // TODO: special case for N == 0?
     size_t N = std::distance(first, last);
-    size_t B = cuda_default_threads_per_block(N);
+    size_t B = cuda_default_block_size(N);
     cuda_for_each<I, C><<<(N+B-1)/B, B, 0, stream>>>(first, N, c);
   });
 }
@@ -662,7 +661,7 @@ cudaTask cudaFlowCapturer::for_each_index(I beg, I end, I inc, C&& c) {
   return on([beg, end, inc, c=std::forward<C>(c)] (cudaStream_t stream) mutable {
     // TODO: special case when N is 0?
     size_t N = distance(beg, end, inc);
-    size_t B = cuda_default_threads_per_block(N);
+    size_t B = cuda_default_block_size(N);
     cuda_for_each_index<I, C><<<(N+B-1)/B, B, 0, stream>>>(beg, inc, N, c);
   });
 }
@@ -674,7 +673,7 @@ cudaTask cudaFlowCapturer::transform(I first, I last, C&& c, S... srcs) {
   (cudaStream_t stream) mutable {
     // TODO: special case when N is 0?
     size_t N = std::distance(first, last);
-    size_t B = cuda_default_threads_per_block(N);
+    size_t B = cuda_default_block_size(N);
     cuda_transform<I, C, S...><<<(N+B-1)/B, B, 0, stream>>>(first, N, c, srcs...);
   });
 }
@@ -689,7 +688,7 @@ cudaTask cudaFlowCapturer::reduce(I first, I last, T* result, C&& c) {
     
     // TODO: special case N == 0?
     size_t N = std::distance(first, last);
-    size_t B = cuda_default_threads_per_block(N);
+    size_t B = cuda_default_block_size(N);
 
     cuda_reduce<I, T, C, false><<<1, B, B*sizeof(T), stream>>>(
       first, N, result, c
@@ -709,7 +708,7 @@ cudaTask cudaFlowCapturer::uninitialized_reduce(
     
     // TODO: special case N == 0?
     size_t N = std::distance(first, last);
-    size_t B = cuda_default_threads_per_block(N);
+    size_t B = cuda_default_block_size(N);
 
     cuda_reduce<I, T, C, true><<<1, B, B*sizeof(T), stream>>>(
       first, N, result, c

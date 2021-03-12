@@ -15,8 +15,8 @@ int main(int argc, char* argv[]) {
   sycl::queue queue;
 
   auto data = sycl::malloc_shared<int>(N, queue);
-  auto res1 = sycl::malloc_shared<int>(N, queue);
-  auto res2 = sycl::malloc_shared<int>(N, queue);
+  auto res1 = sycl::malloc_shared<int>(1, queue);
+  auto res2 = sycl::malloc_shared<int>(1, queue);
   auto hres = 0;
   
   // initialize the data

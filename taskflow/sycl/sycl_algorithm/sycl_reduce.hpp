@@ -8,13 +8,13 @@ namespace tf {
 template <typename I, typename T, typename C>
 syclTask syclFlow::reduce(I first, I last, T* res, C&& op) {
 
-  constexpr auto max_work_group_size = sycl::info::device::max_work_group_size;
-
   // TODO: special case N == 0?
   size_t N = std::distance(first, last);
-  size_t B = _queue.get_device().get_info<max_work_group_size>();
+  size_t B = _default_group_size(N);
 
-  return on([=, op=std::forward<C>(op)](sycl::handler& handler){
+  auto node = _graph.emplace_back(
+  
+  [=, op=std::forward<C>(op)](sycl::handler& handler) mutable {
       
     // create a shared memory
     sycl::accessor<
@@ -26,7 +26,7 @@ syclTask syclFlow::reduce(I first, I last, T* res, C&& op) {
       sycl::nd_range<1>{sycl::range<1>(B), sycl::range<1>(B)},
       [=] (sycl::nd_item<1> item) { 
   
-      size_t tid = item.get_local_id(0);
+      size_t tid = item.get_global_id(0);
 
       if(tid >= N) {
         return;
@@ -52,19 +52,21 @@ syclTask syclFlow::reduce(I first, I last, T* res, C&& op) {
       }
     });
   });
+
+  return syclTask(node);
 }
 
 // Function: uninitialized_reduce
 template <typename I, typename T, typename C>
 syclTask syclFlow::uninitialized_reduce(I first, I last, T* res, C&& op) {
 
-  constexpr auto max_work_group_size = sycl::info::device::max_work_group_size;
-
   // TODO: special case N == 0?
   size_t N = std::distance(first, last);
-  size_t B = _queue.get_device().get_info<max_work_group_size>();
+  size_t B = _default_group_size(N);
 
-  return on([=, op=std::forward<C>(op)](sycl::handler& handler){
+  auto node = _graph.emplace_back(
+  
+  [=, op=std::forward<C>(op)](sycl::handler& handler) mutable {
       
     // create a shared memory
     sycl::accessor<
@@ -102,6 +104,8 @@ syclTask syclFlow::uninitialized_reduce(I first, I last, T* res, C&& op) {
       }
     });
   });
+
+  return syclTask(node);
 }
 
 
