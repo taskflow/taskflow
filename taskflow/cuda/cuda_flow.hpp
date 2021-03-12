@@ -567,6 +567,8 @@ class cudaFlow {
 
   private:
 
+    const size_t _MAX_BLOCK_SIZE;
+
     handle_t _handle;
     
     cudaGraph& _graph;
@@ -574,10 +576,15 @@ class cudaFlow {
     cudaGraphExec_t _executable {nullptr};
     
     cudaFlow(cudaGraph&);
+
+    size_t _default_block_size(size_t N) const;
 };
 
 // Construct a standalone cudaFlow
 inline cudaFlow::cudaFlow() :
+  _MAX_BLOCK_SIZE {
+    cuda_get_device_max_threads_per_block(cuda_get_device())
+  },
   _handle {std::in_place_type_t<External>{}},
   _graph  {std::get<External>(_handle).graph} {
   
@@ -589,6 +596,9 @@ inline cudaFlow::cudaFlow() :
 
 // Construct the cudaFlow from executor (internal graph)
 inline cudaFlow::cudaFlow(cudaGraph& g) :
+  _MAX_BLOCK_SIZE {
+    cuda_get_device_max_threads_per_block(cuda_get_device())
+  },
   _handle {std::in_place_type_t<Internal>{}},
   _graph  {g} {
 
@@ -607,6 +617,11 @@ inline cudaFlow::~cudaFlow() {
   }
   cudaGraphDestroy(_graph._native_handle);
   _graph._native_handle = nullptr;
+}
+
+// Function: _default_block_size
+inline size_t cudaFlow::_default_block_size(size_t N) const {
+  return N <= 32u ? 32u : std::min(_MAX_BLOCK_SIZE, next_pow2(N));
 }
 
 // Procedure: clear
@@ -1017,7 +1032,7 @@ template <typename I, typename C>
 cudaTask cudaFlow::for_each(I first, I last, C&& c) {
   
   size_t N = std::distance(first, last);
-  size_t B = cuda_default_block_size(N);
+  size_t B = _default_block_size(N);
   
   // TODO: special case when N is 0?
 
@@ -1037,7 +1052,7 @@ cudaTask cudaFlow::for_each_index(I beg, I end, I inc, C&& c) {
   // TODO: special case when N is 0?
 
   size_t N = distance(beg, end, inc);
-  size_t B = cuda_default_block_size(N);
+  size_t B = _default_block_size(N);
 
   return kernel(
     (N+B-1) / B, B, 0, cuda_for_each_index<I, C>, beg, inc, N, std::forward<C>(c)
@@ -1051,7 +1066,7 @@ cudaTask cudaFlow::transform(I first, I last, C&& c, S... srcs) {
   // TODO: special case when N is 0?
   
   size_t N = std::distance(first, last);
-  size_t B = cuda_default_block_size(N);
+  size_t B = _default_block_size(N);
 
   return kernel(
     (N+B-1) / B, B, 0, cuda_transform<I, C, S...>, 
@@ -1067,7 +1082,7 @@ cudaTask cudaFlow::reduce(I first, I last, T* result, C&& op) {
 
   // TODO: special case N == 0?
   size_t N = std::distance(first, last);
-  size_t B = cuda_default_block_size(N);
+  size_t B = _default_block_size(N);
   
   return kernel(
     1, B, B*sizeof(T), cuda_reduce<I, T, C, false>, 
@@ -1083,7 +1098,7 @@ cudaTask cudaFlow::uninitialized_reduce(I first, I last, T* result, C&& op) {
 
   // TODO: special case N == 0?
   size_t N = std::distance(first, last);
-  size_t B = cuda_default_block_size(N);
+  size_t B = _default_block_size(N);
   
   return kernel(
     1, B, B*sizeof(T), cuda_reduce<I, T, C, true>, 

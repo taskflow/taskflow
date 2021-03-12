@@ -465,15 +465,6 @@ TEST_CASE("capture_for_each_index.double" * doctest::timeout(300)) {
 // transform
 // ----------------------------------------------------------------------------
 
-struct TransformFunc {
-  __device__ int operator () (int& v1, float& v2, double& v3) {
-    v1 = 1;
-    v2 = 3.0f;
-    v3 = 5.0;
-    return 17;
-  }
-};
-
 template <typename F>
 void transform() {
 

@@ -378,12 +378,7 @@ inline syclFlow::syclFlow(Executor& e, syclGraph& g, sycl::queue& queue) :
 
 // Function: _default_group_size
 inline size_t syclFlow::_default_group_size(size_t N) const {
-  if(N <= 32) {
-    return 32;
-  }
-  else {
-    return std::min(_MAX_WORK_GROUP_SIZE, next_pow2(N));
-  }
+  return N <= 32u ? 32u : std::min(_MAX_WORK_GROUP_SIZE, next_pow2(N));
 }
 
 // Function: empty

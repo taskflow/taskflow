@@ -47,6 +47,7 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 @subsection release-3-1-0_cudaflow cudaFlow
 
 @li optimized tf::cudaRoundRobinCapturing through an event-pruning heuristic
+@li optimized the default block size used in %cudaFlow algorithms
 @li added tf::cudaFlow::clear() to clean up a %cudaFlow
 @li added tf::cudaFlow::num_tasks() to query the task count in a %cudaFlow
 @li added tf::cudaTask::num_dependents() to query the dependent count in a %cudaTask
@@ -54,6 +55,7 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 @li added tf::cudaFlowCapturer::num_tasks() to query the task count in a %cudaFlow capturer
 @li added %cudaFlow examples
   + parallel reduction (examples/cuda/cuda_reduce.cu)
+  + parallel transform (examples/cuda/cuda_transform.cu)
 
 @subsection release-3-1-0_syclflow syclFlow
 

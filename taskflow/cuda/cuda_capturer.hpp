@@ -13,23 +13,6 @@
 
 namespace tf {
 
-/**
-@brief queries the maximum threads allowed per block
-*/
-constexpr size_t cuda_default_max_threads_per_block() {
-  return 512;
-}
-
-/**
-@brief queries the default number of threads per block to run N elements
-*/
-constexpr size_t cuda_default_block_size(size_t N) {
-  if(N <= 32) return 32;
-  else {
-    return std::min(cuda_default_max_threads_per_block(), next_pow2(N));
-  }
-}
-
 // ----------------------------------------------------------------------------
 // class definition: cudaFlowCapturerBase
 // ----------------------------------------------------------------------------
@@ -511,6 +494,8 @@ class cudaFlowCapturer {
     void offload();
 
   private:
+
+    const size_t _MAX_BLOCK_SIZE;
     
     handle_t _handle;
 
@@ -527,24 +512,37 @@ class cudaFlowCapturer {
     cudaGraph_t _capture();
 
     void _destroy_executable();
+
+    size_t _default_block_size(size_t) const;
 };
 
 // constructs a cudaFlow capturer from a taskflow
 inline cudaFlowCapturer::cudaFlowCapturer(cudaGraph& g) :
-  _handle{std::in_place_type_t<Internal>{}},
-  _graph {g} {
+  _MAX_BLOCK_SIZE {
+    cuda_get_device_max_threads_per_block(cuda_get_device())
+  },
+  _handle {std::in_place_type_t<Internal>{}},
+  _graph  {g} {
 }
 
 // constructs a standalone cudaFlow capturer
 inline cudaFlowCapturer::cudaFlowCapturer() : 
-  _handle{std::in_place_type_t<External>{}},
-  _graph {std::get<External>(_handle).graph} {
+  _MAX_BLOCK_SIZE {
+    cuda_get_device_max_threads_per_block(cuda_get_device())
+  },
+  _handle {std::in_place_type_t<External>{}},
+  _graph  {std::get<External>(_handle).graph} {
 }
 
 inline cudaFlowCapturer::~cudaFlowCapturer() {
   if(_executable != nullptr) {
     cudaGraphExecDestroy(_executable);
   }
+}
+
+// Function: _default_block_size
+inline size_t cudaFlowCapturer::_default_block_size(size_t N) const {
+  return N <= 32u ? 32u : std::min(_MAX_BLOCK_SIZE, next_pow2(N));
 }
 
 // Function: empty
@@ -642,10 +640,10 @@ cudaTask cudaFlowCapturer::single_task(C&& callable) {
 // Function: for_each
 template <typename I, typename C>
 cudaTask cudaFlowCapturer::for_each(I first, I last, C&& c) {
-  return on([first, last, c=std::forward<C>(c)](cudaStream_t stream) mutable {
+  return on([&, first, last, c=std::forward<C>(c)](cudaStream_t stream) mutable {
     // TODO: special case for N == 0?
     size_t N = std::distance(first, last);
-    size_t B = cuda_default_block_size(N);
+    size_t B = _default_block_size(N);
     cuda_for_each<I, C><<<(N+B-1)/B, B, 0, stream>>>(first, N, c);
   });
 }
@@ -658,10 +656,10 @@ cudaTask cudaFlowCapturer::for_each_index(I beg, I end, I inc, C&& c) {
     TF_THROW("invalid range [", beg, ", ", end, ") with inc size ", inc);
   }
   
-  return on([beg, end, inc, c=std::forward<C>(c)] (cudaStream_t stream) mutable {
+  return on([&, beg, end, inc, c=std::forward<C>(c)] (cudaStream_t stream) mutable {
     // TODO: special case when N is 0?
     size_t N = distance(beg, end, inc);
-    size_t B = cuda_default_block_size(N);
+    size_t B = _default_block_size(N);
     cuda_for_each_index<I, C><<<(N+B-1)/B, B, 0, stream>>>(beg, inc, N, c);
   });
 }
@@ -669,11 +667,11 @@ cudaTask cudaFlowCapturer::for_each_index(I beg, I end, I inc, C&& c) {
 // Function: transform
 template <typename I, typename C, typename... S>
 cudaTask cudaFlowCapturer::transform(I first, I last, C&& c, S... srcs) {
-  return on([first, last, c=std::forward<C>(c), srcs...] 
+  return on([&, first, last, c=std::forward<C>(c), srcs...] 
   (cudaStream_t stream) mutable {
     // TODO: special case when N is 0?
     size_t N = std::distance(first, last);
-    size_t B = cuda_default_block_size(N);
+    size_t B = _default_block_size(N);
     cuda_transform<I, C, S...><<<(N+B-1)/B, B, 0, stream>>>(first, N, c, srcs...);
   });
 }
@@ -682,13 +680,13 @@ cudaTask cudaFlowCapturer::transform(I first, I last, C&& c, S... srcs) {
 template <typename I, typename T, typename C>
 cudaTask cudaFlowCapturer::reduce(I first, I last, T* result, C&& c) {
   
-  return on([first, last, result, c=std::forward<C>(c)] 
+  return on([&, first, last, result, c=std::forward<C>(c)] 
   (cudaStream_t stream) mutable {
     //using value_t = std::decay_t<decltype(*std::declval<I>())>;
     
     // TODO: special case N == 0?
     size_t N = std::distance(first, last);
-    size_t B = cuda_default_block_size(N);
+    size_t B = _default_block_size(N);
 
     cuda_reduce<I, T, C, false><<<1, B, B*sizeof(T), stream>>>(
       first, N, result, c
@@ -702,13 +700,13 @@ cudaTask cudaFlowCapturer::uninitialized_reduce(
   I first, I last, T* result, C&& c
 ) {
   
-  return on([first, last, result, c=std::forward<C>(c)] 
+  return on([&, first, last, result, c=std::forward<C>(c)] 
   (cudaStream_t stream) mutable {
     //using value_t = std::decay_t<decltype(*std::declval<I>())>;
     
     // TODO: special case N == 0?
     size_t N = std::distance(first, last);
-    size_t B = cuda_default_block_size(N);
+    size_t B = _default_block_size(N);
 
     cuda_reduce<I, T, C, true><<<1, B, B*sizeof(T), stream>>>(
       first, N, result, c
