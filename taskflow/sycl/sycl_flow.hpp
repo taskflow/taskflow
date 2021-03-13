@@ -78,6 +78,10 @@ class syclFlow {
     */
     void clear();
 
+    // ------------------------------------------------------------------------
+    // Generic device operations
+    // ------------------------------------------------------------------------
+
     /**
     @brief creates a task that launches the given command group function object
 
@@ -92,7 +96,7 @@ class syclFlow {
     */
     template <typename F>
     syclTask on(F&& func);
-
+    
     /**
     @brief creates a memcpy task that copies untyped data in bytes
     
@@ -151,20 +155,10 @@ class syclFlow {
     Creates a task that copies @c count items of type @c T from a source memory
     location to a target memory location.
     */
-    template <typename T>
+    template <typename T,
+      std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
+    >
     syclTask copy(T* target, const T* source, size_t count);
-    
-    /**
-    @brief invokes a SYCL kernel function using only one thread
-
-    @tparam F kernel function type
-    @param func kernel function
-
-    Creates a task that launches the given function object using only one
-    kernel thread. 
-    */
-    template <typename F>
-    syclTask single_task(F&& func);
     
     /**
     @brief creates a kernel task
@@ -183,6 +177,18 @@ class syclFlow {
     // ------------------------------------------------------------------------
     // algorithms
     // ------------------------------------------------------------------------
+    
+    /**
+    @brief invokes a SYCL kernel function using only one thread
+
+    @tparam F kernel function type
+    @param func kernel function
+
+    Creates a task that launches the given function object using only one
+    kernel thread. 
+    */
+    template <typename F>
+    syclTask single_task(F&& func);
     
     /**
     @brief applies a callable to each dereferenced element of the data array
@@ -338,6 +344,114 @@ class syclFlow {
     @brief offloads the %syclFlow and executes it once
     */
     void offload();
+    
+    // ------------------------------------------------------------------------
+    // rebind methods
+    // ------------------------------------------------------------------------
+    
+    /**
+    @brief rebinds the task to the given command group function object
+
+    Similar to tf::syclFlow::on but operates on an existing task.
+    */
+    template <typename F>
+    void rebind_on(syclTask task, F&& func);
+
+    /**
+    @brief rebinds the task to a memcpy task
+    
+    Similar to tf::syclFlow::memcpy but operates on an existing task.
+    */
+    void rebind_memcpy(syclTask task, void* tgt, const void* src, size_t bytes);
+    
+    /**
+    @brief rebinds the task to a memset task
+    
+    Similar to tf::syclFlow::memset but operates on an existing task.
+    */
+    void rebind_memset(syclTask task, void* ptr, int value, size_t bytes);
+    
+    /**
+    @brief rebinds the task to a fill task
+
+    Similar to tf::syclFlow::fill but operates on an existing task.
+    */
+    template <typename T>
+    void rebind_fill(syclTask task, void* ptr, const T& pattern, size_t count);
+    
+    /**
+    @brief rebinds the task to a copy task
+
+    Similar to tf::syclFlow::copy but operates on an existing task.
+    */
+    template <typename T,
+      std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
+    >
+    void rebind_copy(syclTask task, T* target, const T* source, size_t count);
+    
+    /**
+    @brief rebinds the task to a parallel-for kernel task
+    
+    Similar to tf::syclFlow::parallel_for but operates on an existing task.
+    */
+    template <typename...ArgsT>
+    void rebind_parallel_for(syclTask task, ArgsT&&... args);
+
+    /**
+    @brief rebinds the task to a single-threaded kernel task
+
+    Similar to tf::syclFlow::single_task but operates on an existing task.
+    */
+    template <typename F>
+    void rebind_single_task(syclTask task, F&& func);
+    
+    /**
+    @breif rebinds the task to a for-each task
+
+    Similar to tf::syclFlow::for_each but operates on an existing task.
+    */
+    template <typename I, typename C>
+    void rebind_for_each(syclTask task, I first, I last, C&& callable);
+    
+    /**
+    @brief rebinds the task to a for-each-index task
+
+    Similar to tf::syclFlow::for_each_index but operates on an existing task.
+     */
+    template <typename I, typename C>
+    void rebind_for_each_index(
+      syclTask task, I first, I last, I step, C&& callable
+    );
+    
+    /**
+    @brief rebinds the task to a transform task
+    
+    Similar to tf::syclFlow::transform but operates on an existing task.
+     */
+    template <typename I, typename C, typename... S>
+    void rebind_transform(
+      syclTask task, I first, I last, C&& callable, S... srcs
+    );
+    
+    /**
+    @brief rebinds the task to a reduce task
+
+    Similar to tf::syclFlow::reduce but operates on an existing task.
+    */
+    template <typename I, typename T, typename C>
+    void rebind_reduce(
+      syclTask task, I first, I last, T* result, C&& op
+    );
+    
+    /**
+    @brief rebinds the task to an unitialized reduce task
+
+    Similar to tf::syclFlow::uninitialized_reduce but operates on an existing task.
+    */
+    template <typename I, typename T, typename C>
+    void rebind_uninitialized_reduce(
+      syclTask task, I first, I last, T* result, C&& op
+    );
 
   private:
 
@@ -438,9 +552,14 @@ syclTask syclFlow::fill(void* ptr, const T& pattern, size_t count) {
 }
 
 // Function: copy
-template <typename T>
+template <typename T,
+  std::enable_if_t<!std::is_same_v<T, void>, void>*
+>
 syclTask syclFlow::copy(T* target, const T* source, size_t count) {
-  return this->memcpy(target, source, count*sizeof(T));
+  auto node = _graph.emplace_back([=](sycl::handler& h){
+    h.memcpy(target, source, count*sizeof(T));
+  });
+  return syclTask(node);
 }
 
 // Function: on
@@ -460,7 +579,7 @@ syclTask syclFlow::single_task(F&& func) {
   );
   return syclTask(node);
 }
-    
+
 // Function: parallel_for
 template <typename...ArgsT>
 syclTask syclFlow::parallel_for(ArgsT&&... args) {
@@ -538,6 +657,62 @@ inline void syclFlow::offload_n(size_t n) {
 // Procedure: offload
 inline void syclFlow::offload() {
   offload_until([repeat=1] () mutable { return repeat-- == 0; });
+}
+
+// Function: rebind_on
+template <typename F>
+void syclFlow::rebind_on(syclTask task, F&& func) {
+  task._node->_func = std::forward<F>(func);
+}
+    
+// Function: rebind_memcpy
+inline void syclFlow::rebind_memcpy(
+  syclTask task, void* tgt, const void* src, size_t bytes
+) {
+  task._node->_func = [=](sycl::handler& h){ h.memcpy(tgt, src, bytes); };
+}
+
+// Function: rebind_memset
+inline void syclFlow::rebind_memset(
+  syclTask task, void* ptr, int value, size_t bytes
+) {
+  task._node->_func = [=](sycl::handler& h){ h.memset(ptr, value, bytes); };
+}
+
+// Function: rebind_fill
+template <typename T>
+void syclFlow::rebind_fill(
+  syclTask task, void* ptr, const T& pattern, size_t count
+) {
+  task._node->_func = [=](sycl::handler& h){ h.fill(ptr, pattern, count); };
+}
+
+// Function: rebind_copy
+template <typename T,
+  std::enable_if_t<!std::is_same_v<T, void>, void>*
+>
+void syclFlow::rebind_copy(
+  syclTask task, T* target, const T* source, size_t count
+) {
+  task._node->_func = [=](sycl::handler& h) { 
+    h.memcpy(target, source, count*sizeof(T)); 
+  };
+}
+
+// Function: parallel_for
+template <typename...ArgsT>
+void syclFlow::rebind_parallel_for(syclTask task, ArgsT&&... args) {
+  task._node->_func = [args...] (sycl::handler& h) mutable {
+    h.parallel_for(args...);
+  };
+}
+    
+// Function: single_task
+template <typename F>
+void syclFlow::rebind_single_task(syclTask task, F&& func) {
+  task._node->_func = [f=std::forward<F>(func)](sycl::handler& h) {
+    h.single_task(f);
+  };
 }
 
 // ############################################################################

@@ -17,7 +17,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="133" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="133" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="115" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="115" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1cudaFlowCapturer_1a2d360f36382310a3caeb750e1c546c17" prot="private" static="no">
         <type>std::variant&lt; <ref refid="classtf_1_1cudaSequentialCapturing" kindref="compound">cudaSequentialCapturing</ref>, <ref refid="classtf_1_1cudaRoundRobinCapturing" kindref="compound">cudaRoundRobinCapturing</ref> &gt;</type>
@@ -30,7 +30,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="135" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="139" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="117" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="121" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="friend">
@@ -45,7 +45,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="123" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="123" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="105" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="105" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1cudaFlowCapturer_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>friend class</type>
@@ -58,10 +58,23 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="124" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="124" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="106" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="106" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classtf_1_1cudaFlowCapturer_1a86234fa25a7b2bbe6caaa9ecb2471c78" prot="private" static="no" mutable="no">
+        <type>const size_t</type>
+        <definition>const size_t tf::cudaFlowCapturer::_MAX_BLOCK_SIZE</definition>
+        <argsstring></argsstring>
+        <name>_MAX_BLOCK_SIZE</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="498" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="498" bodyend="-1"/>
+      </memberdef>
       <memberdef kind="variable" id="classtf_1_1cudaFlowCapturer_1acaf4f328d032558eb6ed4010f416f62a" prot="private" static="no" mutable="no">
         <type>handle_t</type>
         <definition>handle_t tf::cudaFlowCapturer::_handle</definition>
@@ -73,7 +86,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="516" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="516" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="500" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="500" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1cudaFlowCapturer_1ad39f4248c8b66340b88a018b70483161" prot="private" static="no" mutable="no">
         <type>cudaGraph &amp;</type>
@@ -86,7 +99,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="518" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="518" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="502" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="502" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1cudaFlowCapturer_1acdc0ba0a1d25ca9f3c0780a62b68508a" prot="private" static="no" mutable="no">
         <type>Optimizer</type>
@@ -99,7 +112,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="520" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="520" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="504" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="504" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1cudaFlowCapturer_1ae1bb9c3841bf9ce8784dae4bddcda437" prot="private" static="no" mutable="no">
         <type>cudaGraphExec_t</type>
@@ -113,7 +126,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="522" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="522" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="506" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="506" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1cudaFlowCapturer_1a18b216ba712f8ad0e3d99efdfa8ac54d" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref>&lt; <ref refid="classtf_1_1cudaFlowCapturerBase" kindref="compound">cudaFlowCapturerBase</ref> &gt; &gt;</type>
@@ -126,7 +139,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="524" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="524" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="508" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="508" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -141,7 +154,7 @@
 <para>A standalone cudaFlow capturer does not go through any taskflow and can be run by the caller thread using explicit offload methods (e.g., <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref>). </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="150" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="540" bodyend="543"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="132" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="529" bodyend="535"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1ab2f3765cd2cd7368522011d37a294359" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
         <type></type>
@@ -154,7 +167,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="155" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="545" bodyend="549"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="137" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="537" bodyend="541"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a3413a20a7c8229365e1ee9fb5af4af1e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -167,7 +180,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="160" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="552" bodyend="554"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="142" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="549" bodyend="551"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1aeb826786f1580bae1335d94ffbeb7e02" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -180,7 +193,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="165" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="557" bodyend="559"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="147" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="554" bodyend="556"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a06f1176b6a5590832f0e09a049f8a622" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -193,7 +206,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="170" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="562" bodyend="565"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="152" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="559" bodyend="562"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a90d1265bcc27647906bed6e6876c9aa7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -210,7 +223,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="176" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="568" bodyend="570"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="158" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="565" bodyend="567"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a49dd9727aeb5bccd7d826c6b11a6882d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -261,7 +274,7 @@
 Each cudaFlow capturer keeps a list of custom capturers and manages their lifetimes. The lifetime of each custom capturer is the same as the capturer. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="193" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="833" bodyend="842"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="175" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="830" bodyend="839"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1aa1d016b56c06cb28eabfebfdd7dbb24d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -314,7 +327,7 @@ We currently supports the following optimization algorithms to capture a user-de
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="212" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="846" bodyend="848"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="194" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="843" bodyend="845"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -356,7 +369,7 @@ We currently supports the following optimization algorithms to capture a user-de
 This methods applies a stream created by the flow to capture a sequence of CUDA operations defined in the callable. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="230" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="586" bodyend="591"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="212" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="583" bodyend="588"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1ae84d097cdae9e2e8ce108dea760483ed" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -403,7 +416,7 @@ This methods applies a stream created by the flow to capture a sequence of CUDA 
 The method captures a <computeroutput>cudaMemcpyAsync</computeroutput> operation through an internal stream. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="242" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="594" bodyend="603"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="224" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="591" bodyend="600"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1ab70f12050e78b588f5c23d874aa4e538" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -468,7 +481,7 @@ The method captures a <computeroutput>cudaMemcpyAsync</computeroutput> operation
 A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of data from a source location to a target location. Direction can be arbitrary among CPUs and GPUs. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="261" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="606" bodyend="613"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="243" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="603" bodyend="610"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a0d38965b380f940bf6cfc6667a281052" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -515,7 +528,7 @@ A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of da
 The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation through an internal stream to fill the first <computeroutput>count</computeroutput> bytes of the memory area pointed to by <computeroutput>devPtr</computeroutput> with the constant byte value <computeroutput>value</computeroutput>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="274" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="616" bodyend="622"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="256" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="613" bodyend="619"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1ad3c5c7847d668f2084cef0583f148eb9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -610,7 +623,7 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="291" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="626" bodyend="632"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="273" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="623" bodyend="629"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a01e187cf410a88cdc8174bc0215813ce" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -648,7 +661,7 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="305" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="637" bodyend="641"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="287" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="634" bodyend="638"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a2982cf89d4dffcf01bf9cce4a5c79f51" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -722,7 +735,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="329" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="645" bodyend="652"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="311" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="642" bodyend="649"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a802ddd94cb40b32daecec327d2ad6e52" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -813,7 +826,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="360" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="656" bodyend="668"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="342" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="653" bodyend="665"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a02e3ec6669c8571ad6888584e88c07fc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -910,7 +923,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="386" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="672" bodyend="680"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="368" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="669" bodyend="677"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1ad877003965b1e9e75ec10917190342e9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1005,7 +1018,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="411" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="684" bodyend="698"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="393" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="681" bodyend="695"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a9a6f54751165c1e5473652ad0ca222bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1049,7 +1062,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="428" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="702" bodyend="718"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="410" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="699" bodyend="715"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a6d3d355752017aadcb733a8afdd200e3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1079,7 +1092,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 <para>The method is similar to cudaFlowCapturerBase::on but with an additional argument on a previously created capture task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="443" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="770" bodyend="781"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="425" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="767" bodyend="778"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a0675aec517ca99e6638b10d53e39a2ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -1108,7 +1121,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 <para>The method is similar to cudaFlowCapturerBase::memcpy but with an additional argument on a previously created ceapture task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="451" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="784" bodyend="793"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="433" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="781" bodyend="790"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a53550f29e0cd6b2f75fa0dac80a4292f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1146,7 +1159,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 <para>The method is similar to cudaFlowCapturerBase::copy but with an additional argument on a previously created ceapture task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="462" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="799" bodyend="808"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="444" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="796" bodyend="805"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a494942759d5edbaf68b2842da23a6d52" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -1175,7 +1188,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 <para>The method is similar to cudaFlowCapturerBase::memset but with an additional argument on a previously created ceapture task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="470" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="811" bodyend="819"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="452" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="808" bodyend="816"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a74232699e7d170a737db6c724db4a35c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1222,7 +1235,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 <para>The method is similar to cudaFlowCapturerBase::kernel but with an additional argument on a previously created ceapture task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="479" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="823" bodyend="829"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="461" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="820" bodyend="826"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a8678573f19e01f441a6b4108e62781f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1260,7 +1273,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 Immediately offloads the cudaFlow captured so far onto a GPU and repeatedly runs it until the predicate returns <computeroutput>true</computeroutput>.</para><para>By default, if users do not offload the cudaFlow capturer, the executor will offload it once. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="500" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="729" bodyend="754"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="482" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="726" bodyend="751"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a0bc6231cc6b1dbf5171b0bc421dc6577" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1285,7 +1298,7 @@ Immediately offloads the cudaFlow captured so far onto a GPU and repeatedly runs
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="507" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="757" bodyend="759"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="489" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="754" bodyend="756"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a5959002af1cf1a1ada3d86a073682232" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1298,7 +1311,7 @@ Immediately offloads the cudaFlow captured so far onto a GPU and repeatedly runs
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="512" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="762" bodyend="764"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="494" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="759" bodyend="761"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -1317,7 +1330,7 @@ Immediately offloads the cudaFlow captured so far onto a GPU and repeatedly runs
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="526" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="534" bodyend="537"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="510" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="520" bodyend="526"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a2fde4fe15f2e1471e0c6b1eb9bf22b12" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>cudaGraph_t</type>
@@ -1330,7 +1343,7 @@ Immediately offloads the cudaFlow captured so far onto a GPU and repeatedly runs
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="528" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="721" bodyend="725"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="512" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="718" bodyend="722"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a18aba23ae23ce8dbe47ef3022162a7bc" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1343,7 +1356,24 @@ Immediately offloads the cudaFlow captured so far onto a GPU and repeatedly runs
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="530" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="573" bodyend="580"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="514" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="570" bodyend="577"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a1bab2ef6daf934629dfd13c8e77a7110" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::cudaFlowCapturer::_default_block_size</definition>
+        <argsstring>(size_t) const</argsstring>
+        <name>_default_block_size</name>
+        <param>
+          <type>size_t</type>
+          <defname>N</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="516" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="544" bodyend="546"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -1364,14 +1394,16 @@ Immediately offloads the cudaFlow captured so far onto a GPU and repeatedly runs
 <codeline><highlight class="normal"><sp/><sp/>task_1.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(task_2);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para><para>Similar to <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>, a cudaFlowCapturer is a task (<ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref>) created from <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and will be run by <emphasis>one</emphasis> worker thread in the executor. That is, the callable that describes a cudaFlowCapturer will be executed sequentially. Inside a cudaFlow capturer task, different GPU tasks (<ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref>) may run in parallel scheduled by both our capturing algorithm and the CUDA runtime.</para><para>Please refer to <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref> for details. </para>    </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="121" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="121" bodyend="531"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="103" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="103" bodyend="517"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaFlowCapturer_1a2fde4fe15f2e1471e0c6b1eb9bf22b12" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>_capture</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1a18b216ba712f8ad0e3d99efdfa8ac54d" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>_capturers</name></member>
+      <member refid="classtf_1_1cudaFlowCapturer_1a1bab2ef6daf934629dfd13c8e77a7110" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>_default_block_size</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1a18aba23ae23ce8dbe47ef3022162a7bc" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>_destroy_executable</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1ae1bb9c3841bf9ce8784dae4bddcda437" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>_executable</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1ad39f4248c8b66340b88a018b70483161" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>_graph</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1acaf4f328d032558eb6ed4010f416f62a" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>_handle</name></member>
+      <member refid="classtf_1_1cudaFlowCapturer_1a86234fa25a7b2bbe6caaa9ecb2471c78" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>_MAX_BLOCK_SIZE</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1acdc0ba0a1d25ca9f3c0780a62b68508a" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>_optimizer</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1a06f1176b6a5590832f0e09a049f8a622" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>clear</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1ab70f12050e78b588f5c23d874aa4e538" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>copy</name></member>

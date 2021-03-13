@@ -1226,3 +1226,105 @@ TEST_CASE("rebind.memset.float" * doctest::timeout(300)) {
 TEST_CASE("rebind.memset.double" * doctest::timeout(300)) {
   rebind_memset<double>();
 }
+
+// ----------------------------------------------------------------------------
+// rebind algorithms
+// ----------------------------------------------------------------------------
+
+TEST_CASE("cudaFlowCapturer.rebind.algorithms") {
+
+  tf::cudaFlowCapturer capturer;
+
+  auto data = tf::cuda_malloc_shared<int>(10000);
+  auto res = tf::cuda_malloc_shared<int>(1);
+
+  auto task = capturer.for_each(
+    data, data+10000, []__device__(int& i) {
+      i = 10;
+    }
+  );
+
+  capturer.offload();
+
+  for(int i=0; i<10000; i++) {
+    REQUIRE(data[i] == 10);
+  }
+  REQUIRE(capturer.num_tasks() == 1);
+  
+  // rebind to single task
+  capturer.rebind_single_task(task, [=] __device__ () {*data = 2;});
+
+  capturer.offload();
+  
+  REQUIRE(*data == 2);
+  for(int i=1; i<10000; i++) {
+    REQUIRE(data[i] == 10);
+  }
+  REQUIRE(capturer.num_tasks() == 1);
+  
+  // rebind to for each index
+  capturer.rebind_for_each_index(task, 0, 10000, 1,
+    [=] __device__ (int i) {
+      data[i] = -23;
+    }
+  );
+
+  capturer.offload();
+  
+  for(int i=0; i<10000; i++) {
+    REQUIRE(data[i] == -23);
+  }
+  REQUIRE(capturer.num_tasks() == 1);
+
+  // rebind to reduce
+  *res = 10;
+  capturer.rebind_reduce(task, data, data + 10000, res, 
+    []__device__(int a, int b){ return a + b; }
+  );
+
+  capturer.offload();
+
+  REQUIRE(*res == -229990);
+  REQUIRE(capturer.num_tasks() == 1);
+  
+  // rebind to uninitialized reduce
+  capturer.rebind_uninitialized_reduce(task, data, data + 10000, res, 
+    []__device__(int a, int b){ return a + b; }
+  );
+
+  capturer.offload();
+
+  REQUIRE(*res == -230000);
+  REQUIRE(capturer.num_tasks() == 1);
+  
+  // rebind to single task
+  capturer.rebind_single_task(task, [res]__device__(){ *res = 999; });
+  REQUIRE(*res == -230000);
+
+  capturer.offload();
+  REQUIRE(*res == 999);
+  REQUIRE(capturer.num_tasks() == 1);
+
+  // clear the capturer
+  capturer.clear();
+  REQUIRE(capturer.num_tasks() == 0);
+
+  capturer.offload();
+  REQUIRE(*res == 999);
+  for(int i=0; i<10000; i++) {
+    REQUIRE(data[i] == -23);
+  }
+
+  // clear the memory
+  tf::cuda_free(data);
+  tf::cuda_free(res);
+}
+
+
+
+
+
+
+
+
+

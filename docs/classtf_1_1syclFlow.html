@@ -139,6 +139,29 @@
             </dt>
             <dd>creates a kernel task</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename I, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a30c3f7a279d1f88b6052f7ded1ee381a" class="m-doc">for_each</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              C&amp;&amp; callable) -&gt; <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a></span>
+            </dt>
+            <dd>applies a callable to each dereferenced element of the data array</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a25e8aa7d7efbd05ef11353317174574a" class="m-doc">for_each_index</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              I step,
+              C&amp;&amp; callable) -&gt; <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a></span>
+            </dt>
+            <dd>applies a callable to each index in the range with the step size</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename C, typename... S&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ae278939334a90b6d58d8771e87b2e793" class="m-doc">transform</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              C&amp;&amp; callable,
+              S... srcs) -&gt; <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a></span>
+            </dt>
+            <dd>applies a callable to a source range and stores the result in a target range</dd>
+            <dt>
               <div class="m-doc-template">template&lt;typename I, typename T, typename C&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#acddd05832e53597ae9d30dc913d422ca" class="m-doc">reduce</a>(</span><span class="m-doc-wrap">I first,
               I last,
@@ -416,6 +439,182 @@
             </table>
 <p>Creates a kernel task from a parallel_for method through the handler object associated with a command group.</p>
           </div></section>
+          <section class="m-doc-details" id="a30c3f7a279d1f88b6052f7ded1ee381a"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a30c3f7a279d1f88b6052f7ded1ee381a" class="m-doc-self">for_each</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>applies a callable to each dereferenced element of the data array</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>iterator type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>callable type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning (inclusive)</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end (exclusive)</td>
+                </tr>
+                <tr>
+                  <td>callable</td>
+                  <td>a callable object to apply to the dereferenced iterator</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1syclTask.html" class="m-doc">tf::<wbr />syclTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span> <span class="n">itr</span> <span class="o">!=</span> <span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">);</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a25e8aa7d7efbd05ef11353317174574a"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a25e8aa7d7efbd05ef11353317174574a" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              I step,
+              C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>applies a callable to each index in the range with the step size</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>index type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>callable type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>beginning index</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>last index</td>
+                </tr>
+                <tr>
+                  <td>step</td>
+                  <td>step size</td>
+                </tr>
+                <tr>
+                  <td>callable</td>
+                  <td>the callable to apply to each element in the data array</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1syclTask.html" class="m-doc">tf::<wbr />syclTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="c1">// step is positive [first, last)</span>
+<span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// step is negative [first, last)</span>
+<span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">i</span><span class="o">&gt;</span><span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="ae278939334a90b6d58d8771e87b2e793"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename C, typename... S&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae278939334a90b6d58d8771e87b2e793" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              C&amp;&amp; callable,
+              S... srcs)</span></span>
+            </h3>
+            <p>applies a callable to a source range and stores the result in a target range</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>iterator type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>callable type</td>
+                </tr>
+                <tr>
+                  <td>S</td>
+                  <td>source types</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning (inclusive)</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end (exclusive)</td>
+                </tr>
+                <tr>
+                  <td>callable</td>
+                  <td>the callable to apply to each element in the range</td>
+                </tr>
+                <tr>
+                  <td>srcs</td>
+                  <td>iterators to the source ranges</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1syclTask.html" class="m-doc">tf::<wbr />syclTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This method is equivalent to the parallel execution of the following loop on a SYCL device:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">first</span><span class="o">++</span> <span class="o">=</span> <span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">src1</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src2</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src3</span><span class="o">++</span><span class="p">,</span> <span class="p">...);</span>
+<span class="p">}</span></pre>
+          </div></section>
           <section class="m-doc-details" id="acddd05832e53597ae9d30dc913d422ca"><div>
             <h3>
               <div class="m-doc-template">
@@ -473,7 +672,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+<p>This method is equivalent to the parallel execution of the following loop on a SYCL device:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
   <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
 <span class="p">}</span></pre>
           </div></section>
@@ -488,7 +687,7 @@
               C&amp;&amp; op)</span></span>
             </h3>
             <p>similar to <a href="classtf_1_1syclFlow.html#acddd05832e53597ae9d30dc913d422ca" class="m-doc">tf::<wbr />syclFlow::<wbr />reduce</a> but does not assume any initial value to reduce</p>
-<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">;</span>  <span class="c1">// no initial values partitipcate in the loop</span>
+<p>This method is equivalent to the parallel execution of the following loop on a SYCL device:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">;</span>  <span class="c1">// no initial values partitipcate in the loop</span>
 <span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
   <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
 <span class="p">}</span></pre>

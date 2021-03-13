@@ -114,7 +114,7 @@ class syclTask {
     */
     template <typename V>
     void for_each_dependent(V&& visitor) const;
-
+    
   private:
     
     syclTask(syclNode*);
@@ -189,6 +189,7 @@ void syclTask::for_each_dependent(V&& visitor) const {
     visitor(syclTask(_node->_dependents[i]));
   }
 }
+
 
 // ----------------------------------------------------------------------------
 // global ostream

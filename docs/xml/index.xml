@@ -77,6 +77,7 @@
   <compound refid="classtf_1_1cudaFlow" kind="class"><name>tf::cudaFlow</name>
     <member refid="classtf_1_1cudaFlow_1a424926b9d6ce538c8e6aa576cdb1583c" kind="typedef"><name>handle_t</name></member>
     <member refid="classtf_1_1cudaFlow_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
+    <member refid="classtf_1_1cudaFlow_1aa725dfe3f870cce929d944605dd6c3e2" kind="variable"><name>_MAX_BLOCK_SIZE</name></member>
     <member refid="classtf_1_1cudaFlow_1a3301611d9ecd3795ec58b045ea7327f6" kind="variable"><name>_handle</name></member>
     <member refid="classtf_1_1cudaFlow_1aa8b4d0cddb73fec80fd7ac2fd58cfefc" kind="variable"><name>_graph</name></member>
     <member refid="classtf_1_1cudaFlow_1aa9f806b778db070e544686487bc88faf" kind="variable"><name>_executable</name></member>
@@ -114,12 +115,14 @@
     <member refid="classtf_1_1cudaFlow_1a01b86cb5bc492bdb2ecb423692dc342e" kind="function"><name>uninitialized_reduce</name></member>
     <member refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" kind="function"><name>capture</name></member>
     <member refid="classtf_1_1cudaFlow_1a40554a27542772c13c51e0815d883d8b" kind="function"><name>cudaFlow</name></member>
+    <member refid="classtf_1_1cudaFlow_1a09692e4d2ab7f571d0ac7320b001d139" kind="function"><name>_default_block_size</name></member>
   </compound>
   <compound refid="classtf_1_1cudaFlowCapturer" kind="class"><name>tf::cudaFlowCapturer</name>
     <member refid="classtf_1_1cudaFlowCapturer_1a5f92f6ccad52aed18441d80bc186049f" kind="typedef"><name>handle_t</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a2d360f36382310a3caeb750e1c546c17" kind="typedef"><name>Optimizer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a9f64f729511a922781a59663ff1c6250" kind="friend"><name>cudaFlow</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a86234fa25a7b2bbe6caaa9ecb2471c78" kind="variable"><name>_MAX_BLOCK_SIZE</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1acaf4f328d032558eb6ed4010f416f62a" kind="variable"><name>_handle</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1ad39f4248c8b66340b88a018b70483161" kind="variable"><name>_graph</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1acdc0ba0a1d25ca9f3c0780a62b68508a" kind="variable"><name>_optimizer</name></member>
@@ -155,6 +158,7 @@
     <member refid="classtf_1_1cudaFlowCapturer_1a0ff3e4948c4861e62dd4ad52b88ba4ab" kind="function"><name>cudaFlowCapturer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a2fde4fe15f2e1471e0c6b1eb9bf22b12" kind="function"><name>_capture</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a18aba23ae23ce8dbe47ef3022162a7bc" kind="function"><name>_destroy_executable</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a1bab2ef6daf934629dfd13c8e77a7110" kind="function"><name>_default_block_size</name></member>
   </compound>
   <compound refid="classtf_1_1cudaFlowCapturerBase" kind="class"><name>tf::cudaFlowCapturerBase</name>
     <member refid="classtf_1_1cudaFlowCapturerBase_1a672b45d300c57d726c203c62f950efbd" kind="friend"><name>cudaFlowCapturer</name></member>
@@ -476,6 +480,7 @@
     <member refid="classtf_1_1syclFlow_1a946b048dd1f13121d8998d8d943e216e" kind="typedef"><name>handle_t</name></member>
     <member refid="classtf_1_1syclFlow_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1syclFlow_1aa99380c6d2cffb477d07bf90daa78953" kind="variable"><name>OFFLOADED</name></member>
+    <member refid="classtf_1_1syclFlow_1a0b6c3b76ec2ff2ba31ef51a17239f5aa" kind="variable"><name>_MAX_WORK_GROUP_SIZE</name></member>
     <member refid="classtf_1_1syclFlow_1a857ad08e6adc804a37c9c0c893f473e0" kind="variable"><name>_state</name></member>
     <member refid="classtf_1_1syclFlow_1ae1d0a6dc43a4a28080db9577599fa3fa" kind="variable"><name>_handle</name></member>
     <member refid="classtf_1_1syclFlow_1ad686b504d6ea0edbef8e2be9d57e63c8" kind="variable"><name>_graph</name></member>
@@ -494,12 +499,16 @@
     <member refid="classtf_1_1syclFlow_1a4d6a5978fac9f2267a34a7723ea660fa" kind="function"><name>copy</name></member>
     <member refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kind="function"><name>single_task</name></member>
     <member refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kind="function"><name>parallel_for</name></member>
+    <member refid="classtf_1_1syclFlow_1a30c3f7a279d1f88b6052f7ded1ee381a" kind="function"><name>for_each</name></member>
+    <member refid="classtf_1_1syclFlow_1a25e8aa7d7efbd05ef11353317174574a" kind="function"><name>for_each_index</name></member>
+    <member refid="classtf_1_1syclFlow_1ae278939334a90b6d58d8771e87b2e793" kind="function"><name>transform</name></member>
     <member refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" kind="function"><name>reduce</name></member>
     <member refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" kind="function"><name>uninitialized_reduce</name></member>
     <member refid="classtf_1_1syclFlow_1a1b033143bcfd857b45a2c2bad213b769" kind="function"><name>offload_until</name></member>
     <member refid="classtf_1_1syclFlow_1a23fc8f965e05fb8788dcc9fa02473529" kind="function"><name>offload_n</name></member>
     <member refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kind="function"><name>offload</name></member>
     <member refid="classtf_1_1syclFlow_1a90ff935d7a98daadf3e4f9f4aa663b95" kind="function"><name>syclFlow</name></member>
+    <member refid="classtf_1_1syclFlow_1adfd6553aca0604f6d4fab4bab9758c25" kind="function"><name>_default_group_size</name></member>
   </compound>
   <compound refid="classtf_1_1syclTask" kind="class"><name>tf::syclTask</name>
     <member refid="classtf_1_1syclTask_1a455510eca2667dc9fbd73f542cca61a2" kind="friend"><name>syclFlow</name></member>
@@ -1248,8 +1257,6 @@
     <member refid="namespacetf_1a3f758baaa29221219bcbd10937dd5fd2" kind="function"><name>cuda_per_thread_event_pool</name></member>
     <member refid="namespacetf_1af21fe1eaf680dbddc0503ef5d1a9a664" kind="function"><name>to_string</name></member>
     <member refid="namespacetf_1a9cca69f61d792afb3ad501b703d795c1" kind="function"><name>operator&lt;&lt;</name></member>
-    <member refid="namespacetf_1ae680bf7822f2b6b66a6199f0b77f7241" kind="function"><name>cuda_default_max_threads_per_block</name></member>
-    <member refid="namespacetf_1a50a8f777333cc26d5f5d8c4d37bcdc73" kind="function"><name>cuda_default_threads_per_block</name></member>
     <member refid="namespacetf_1a160861c1c085842ecb0c56537199deaa" kind="function"><name>operator&lt;&lt;</name></member>
     <member refid="namespacetf_1a30fa078dcf625e9eada5a95af1467588" kind="function"><name>version</name></member>
   </compound>

@@ -53,7 +53,14 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 @li added tf::cudaTask::num_dependents() to query the dependent count in a %cudaTask
 @li added tf::cudaFlowCapturer::clear() to clean up a %cudaFlow capturer
 @li added tf::cudaFlowCapturer::num_tasks() to query the task count in a %cudaFlow capturer
-@li added %cudaFlow examples
+@li added tf::cudaFlowCapturer rebind methods:
+  + tf::cudaFlowCapturer::rebind_single_task
+  + tf::cudaFlowCapturer::rebind_for_each
+  + tf::cudaFlowCapturer::rebind_for_each_index
+  + tf::cudaFlowCapturer::rebind_transform
+  + tf::cudaFlowCapturer::rebind_reduce
+  + tf::cudaFlowCapturer::rebind_uninitialized_reduce
+@li added %cudaFlow examples:
   + parallel reduction (examples/cuda/cuda_reduce.cu)
   + parallel transform (examples/cuda/cuda_transform.cu)
 

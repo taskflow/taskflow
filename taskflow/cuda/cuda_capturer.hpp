@@ -416,49 +416,111 @@ class cudaFlowCapturer {
     /**
     @brief rebinds a capture task to another sequential CUDA operations
 
-    The method is similar to cudaFlowCapturerBase::on but with an additional 
-    argument on a previously created capture task.
+    The method is similar to cudaFlowCapturer::on but operates 
+    on an existing task.
     */
     template <typename C, std::enable_if_t<
       std::is_invocable_r_v<void, C, cudaStream_t>, void>* = nullptr
     >
-    cudaTask rebind_on(cudaTask task, C&& callable);
+    void rebind_on(cudaTask task, C&& callable);
     
     /**
     @brief rebinds a capture task to a memcpy operation
 
-    The method is similar to cudaFlowCapturerBase::memcpy but with an additional 
-    argument on a previously created ceapture task.
+    The method is similar to cudaFlowCapturer::memcpy but operates on an
+    existing task.
     */
-    cudaTask rebind_memcpy(cudaTask task, void* dst, const void* src, size_t count);
+    void rebind_memcpy(cudaTask task, void* dst, const void* src, size_t count);
 
     /**
     @brief rebinds a capture task to a copy operation
 
-    The method is similar to cudaFlowCapturerBase::copy but with an additional 
-    argument on a previously created ceapture task.
+    The method is similar to cudaFlowCapturer::copy but operates on 
+    an existing task.
     */
     template <typename T, 
       std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
     >
-    cudaTask rebind_copy(cudaTask task, T* tgt, const T* src, size_t num);
+    void rebind_copy(cudaTask task, T* tgt, const T* src, size_t num);
 
     /**
     @brief rebinds a capture task to a memset operation
 
-    The method is similar to cudaFlowCapturerBase::memset but with an additional 
-    argument on a previously created ceapture task.
+    The method is similar to cudaFlowCapturer::memset but operates on
+    an existing task.
     */
-    cudaTask rebind_memset(cudaTask task, void* ptr, int value, size_t n);
+    void rebind_memset(cudaTask task, void* ptr, int value, size_t n);
 
     /**
     @brief rebinds a capture task to a kernel operation
 
-    The method is similar to cudaFlowCapturerBase::kernel but with an additional 
-    argument on a previously created ceapture task.
+    The method is similar to cudaFlowCapturer::kernel but operates on
+    an existing task.
     */
     template <typename F, typename... ArgsT>
-    cudaTask rebind_kernel(cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
+    void rebind_kernel(
+      cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
+    );
+    
+    /**
+    @brief rebinds a capture task to a single-threaded kernel
+    
+    This method is similar to cudaFlowCapturer::single_task but operates
+    on an existing task.
+    */
+    template <typename C>
+    void rebind_single_task(cudaTask task, C&& callable);
+    
+    /**
+    @brief rebinds a capture task to a for-each kernel task
+    
+    This method is similar to cudaFlowCapturer::for_each but operates
+    on an existing task.
+    */
+    template <typename I, typename C>
+    void rebind_for_each(cudaTask task, I first, I last, C&& callable);
+
+    /**
+    @brief rebinds a capture task to a for-each-index kernel task
+
+    This method is similar to cudaFlowCapturer::for_each_index but operates
+    on an existing task.
+    */
+    template <typename I, typename C>
+    void rebind_for_each_index(
+      cudaTask task, I first, I last, I step, C&& callable
+    );
+  
+    /**
+    @brief rebinds a capture task to a transform kernel task
+
+    This method is similar to cudaFlowCapturer::transform but operates
+    on an existing task.
+    */
+    template <typename I, typename C, typename... S>
+    void rebind_transform(
+      cudaTask task, I first, I last, C&& callable, S... srcs
+    );
+      
+    /**
+    @brief rebinds a capture task to a reduction task
+
+    This method is similar to cudaFlowCapturer::reduce but operates
+    on an existing task.
+    */
+    template <typename I, typename T, typename C>
+    void rebind_reduce(cudaTask task, I first, I last, T* result, C&& op);
+    
+    /**
+    @brief rebinds a capture task to an uninitialized-reduction task
+
+    This method is similar to cudaFlowCapturer::uninitialized_reduce
+    but operates on an existing task.
+    */
+    template <typename I, typename T, typename C>
+    void rebind_uninitialized_reduce(
+      cudaTask task, I first, I last, T* result, C&& op
+    );
     
     // ------------------------------------------------------------------------
     // offload methods
@@ -628,7 +690,6 @@ cudaTask cudaFlowCapturer::kernel(
   });
 }
 
-
 // Function: single_task
 template <typename C>
 cudaTask cudaFlowCapturer::single_task(C&& callable) {
@@ -640,10 +701,12 @@ cudaTask cudaFlowCapturer::single_task(C&& callable) {
 // Function: for_each
 template <typename I, typename C>
 cudaTask cudaFlowCapturer::for_each(I first, I last, C&& c) {
-  return on([&, first, last, c=std::forward<C>(c)](cudaStream_t stream) mutable {
-    // TODO: special case for N == 0?
-    size_t N = std::distance(first, last);
-    size_t B = _default_block_size(N);
+  
+  // TODO: special case for N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+
+  return on([=, c=std::forward<C>(c)](cudaStream_t stream) mutable {
     cuda_for_each<I, C><<<(N+B-1)/B, B, 0, stream>>>(first, N, c);
   });
 }
@@ -655,11 +718,12 @@ cudaTask cudaFlowCapturer::for_each_index(I beg, I end, I inc, C&& c) {
   if(is_range_invalid(beg, end, inc)) {
     TF_THROW("invalid range [", beg, ", ", end, ") with inc size ", inc);
   }
+    
+  // TODO: special case when N is 0?
+  size_t N = distance(beg, end, inc);
+  size_t B = _default_block_size(N);
   
-  return on([&, beg, end, inc, c=std::forward<C>(c)] (cudaStream_t stream) mutable {
-    // TODO: special case when N is 0?
-    size_t N = distance(beg, end, inc);
-    size_t B = _default_block_size(N);
+  return on([=, c=std::forward<C>(c)] (cudaStream_t stream) mutable {
     cuda_for_each_index<I, C><<<(N+B-1)/B, B, 0, stream>>>(beg, inc, N, c);
   });
 }
@@ -667,11 +731,13 @@ cudaTask cudaFlowCapturer::for_each_index(I beg, I end, I inc, C&& c) {
 // Function: transform
 template <typename I, typename C, typename... S>
 cudaTask cudaFlowCapturer::transform(I first, I last, C&& c, S... srcs) {
-  return on([&, first, last, c=std::forward<C>(c), srcs...] 
+  
+  // TODO: special case when N is 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+
+  return on([=, c=std::forward<C>(c)] 
   (cudaStream_t stream) mutable {
-    // TODO: special case when N is 0?
-    size_t N = std::distance(first, last);
-    size_t B = _default_block_size(N);
     cuda_transform<I, C, S...><<<(N+B-1)/B, B, 0, stream>>>(first, N, c, srcs...);
   });
 }
@@ -679,15 +745,13 @@ cudaTask cudaFlowCapturer::transform(I first, I last, C&& c, S... srcs) {
 // Function: reduce
 template <typename I, typename T, typename C>
 cudaTask cudaFlowCapturer::reduce(I first, I last, T* result, C&& c) {
-  
-  return on([&, first, last, result, c=std::forward<C>(c)] 
-  (cudaStream_t stream) mutable {
-    //using value_t = std::decay_t<decltype(*std::declval<I>())>;
     
-    // TODO: special case N == 0?
-    size_t N = std::distance(first, last);
-    size_t B = _default_block_size(N);
-
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+  
+  return on([=, c=std::forward<C>(c)] 
+  (cudaStream_t stream) mutable {
     cuda_reduce<I, T, C, false><<<1, B, B*sizeof(T), stream>>>(
       first, N, result, c
     );
@@ -699,15 +763,13 @@ template <typename I, typename T, typename C>
 cudaTask cudaFlowCapturer::uninitialized_reduce(
   I first, I last, T* result, C&& c
 ) {
-  
-  return on([&, first, last, result, c=std::forward<C>(c)] 
-  (cudaStream_t stream) mutable {
-    //using value_t = std::decay_t<decltype(*std::declval<I>())>;
     
-    // TODO: special case N == 0?
-    size_t N = std::distance(first, last);
-    size_t B = _default_block_size(N);
-
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+  
+  return on([=, c=std::forward<C>(c)] 
+  (cudaStream_t stream) mutable {
     cuda_reduce<I, T, C, true><<<1, B, B*sizeof(T), stream>>>(
       first, N, result, c
     );
@@ -764,7 +826,7 @@ inline void cudaFlowCapturer::offload() {
 template <typename C, std::enable_if_t<
   std::is_invocable_r_v<void, C, cudaStream_t>, void>* 
 >
-cudaTask cudaFlowCapturer::rebind_on(cudaTask task, C&& callable) {
+void cudaFlowCapturer::rebind_on(cudaTask task, C&& callable) {
   
   if(task.type() != cudaTaskType::CAPTURE) {
     TF_THROW("invalid cudaTask type (must be CAPTURE)");
@@ -773,15 +835,13 @@ cudaTask cudaFlowCapturer::rebind_on(cudaTask task, C&& callable) {
   _destroy_executable();
 
   std::get<cudaNode::Capture>((task._node)->_handle).work = std::forward<C>(callable);
-
-  return task;
 }
 
 // Function: rebind_memcpy
-inline cudaTask cudaFlowCapturer::rebind_memcpy(
+inline void cudaFlowCapturer::rebind_memcpy(
   cudaTask task, void* dst, const void* src, size_t count
 ) {
-  return rebind_on(task, [dst, src, count](cudaStream_t stream) mutable {
+  rebind_on(task, [dst, src, count](cudaStream_t stream) mutable {
     TF_CHECK_CUDA(
       cudaMemcpyAsync(dst, src, count, cudaMemcpyDefault, stream),
       "failed to capture memcpy"
@@ -793,10 +853,10 @@ inline cudaTask cudaFlowCapturer::rebind_memcpy(
 template <typename T, 
   std::enable_if_t<!std::is_same_v<T, void>, void>* 
 >
-cudaTask cudaFlowCapturer::rebind_copy(
+void cudaFlowCapturer::rebind_copy(
   cudaTask task, T* tgt, const T* src, size_t num
 ) {
-  return rebind_on(task, [tgt, src, num] (cudaStream_t stream) mutable {
+  rebind_on(task, [tgt, src, num] (cudaStream_t stream) mutable {
     TF_CHECK_CUDA(
       cudaMemcpyAsync(tgt, src, sizeof(T)*num, cudaMemcpyDefault, stream),
       "failed to capture copy"
@@ -805,10 +865,10 @@ cudaTask cudaFlowCapturer::rebind_copy(
 }
 
 // Function: rebind_memset
-inline cudaTask cudaFlowCapturer::rebind_memset(
+inline void cudaFlowCapturer::rebind_memset(
   cudaTask task, void* ptr, int v, size_t n
 ) {
-  return rebind_on(task, [ptr, v, n] (cudaStream_t stream) mutable {
+  rebind_on(task, [ptr, v, n] (cudaStream_t stream) mutable {
     TF_CHECK_CUDA(
       cudaMemsetAsync(ptr, v, n, stream), "failed to capture memset"
     );
@@ -817,11 +877,103 @@ inline cudaTask cudaFlowCapturer::rebind_memset(
 
 // Function: rebind_kernel
 template <typename F, typename... ArgsT>
-cudaTask cudaFlowCapturer::rebind_kernel(
+void cudaFlowCapturer::rebind_kernel(
   cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
 ) {
-  return rebind_on(task, [g, b, s, f, args...] (cudaStream_t stream) mutable {
+  rebind_on(task, [g, b, s, f, args...] (cudaStream_t stream) mutable {
     f<<<g, b, s, stream>>>(args...);
+  });
+}
+
+// Function: rebind_single_task
+template <typename C>
+void cudaFlowCapturer::rebind_single_task(cudaTask task, C&& callable) {
+  rebind_on(task, [c=std::forward<C>(callable)] (cudaStream_t stream) mutable {
+    cuda_single_task<C><<<1, 1, 0, stream>>>(c);
+  });
+}
+
+// Function: rebind_for_each
+template <typename I, typename C>
+void cudaFlowCapturer::rebind_for_each(cudaTask task, I first, I last, C&& c) {
+  
+  // TODO: special case for N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+
+  rebind_on(task, [=, c=std::forward<C>(c)](cudaStream_t stream) mutable {
+    cuda_for_each<I, C><<<(N+B-1)/B, B, 0, stream>>>(first, N, c);
+  });
+}
+
+// Function: rebind_for_each_index
+template <typename I, typename C>
+void cudaFlowCapturer::rebind_for_each_index(
+  cudaTask task, I beg, I end, I inc, C&& c
+) {
+      
+  if(is_range_invalid(beg, end, inc)) {
+    TF_THROW("invalid range [", beg, ", ", end, ") with inc size ", inc);
+  }
+    
+  // TODO: special case when N is 0?
+  size_t N = distance(beg, end, inc);
+  size_t B = _default_block_size(N);
+  
+  rebind_on(task, [=, c=std::forward<C>(c)] (cudaStream_t stream) mutable {
+    cuda_for_each_index<I, C><<<(N+B-1)/B, B, 0, stream>>>(beg, inc, N, c);
+  });
+}
+
+// Function: rebind_transform
+template <typename I, typename C, typename... S>
+void cudaFlowCapturer::rebind_transform(
+  cudaTask task, I first, I last, C&& c, S... srcs
+) {
+  
+  // TODO: special case when N is 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+
+  rebind_on(task, [=, c=std::forward<C>(c)] 
+  (cudaStream_t stream) mutable {
+    cuda_transform<I, C, S...><<<(N+B-1)/B, B, 0, stream>>>(first, N, c, srcs...);
+  });
+}
+
+// Function: rebind_reduce
+template <typename I, typename T, typename C>
+void cudaFlowCapturer::rebind_reduce(
+  cudaTask task, I first, I last, T* result, C&& c
+) {
+    
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+  
+  rebind_on(task, [=, c=std::forward<C>(c)] 
+  (cudaStream_t stream) mutable {
+    cuda_reduce<I, T, C, false><<<1, B, B*sizeof(T), stream>>>(
+      first, N, result, c
+    );
+  });
+}
+
+// Function: rebind_uninitialized_reduce
+template <typename I, typename T, typename C>
+void cudaFlowCapturer::rebind_uninitialized_reduce(
+  cudaTask task, I first, I last, T* result, C&& c
+) {
+    
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+  
+  rebind_on(task, [=, c=std::forward<C>(c)] 
+  (cudaStream_t stream) mutable {
+    cuda_reduce<I, T, C, true><<<1, B, B*sizeof(T), stream>>>(
+      first, N, result, c
+    );
   });
 }
 

@@ -45,13 +45,14 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <title>cudaFlow</title>
 <para><itemizedlist>
 <listitem><para>optimized <ref refid="classtf_1_1cudaRoundRobinCapturing" kindref="compound">tf::cudaRoundRobinCapturing</ref> through an event-pruning heuristic </para></listitem>
+<listitem><para>optimized the default block size used in cudaFlow algorithms </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1aad726dfe21e9719d96c65530a56d9951" kindref="member">tf::cudaFlow::clear()</ref> to clean up a cudaFlow </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1ae6560c27d249af7e4b8b921388f5e1e2" kindref="member">tf::cudaFlow::num_tasks()</ref> to query the task count in a cudaFlow </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaTask_1afe21933815619b8f51f0efa2706aa16e" kindref="member">tf::cudaTask::num_dependents()</ref> to query the dependent count in a cudaTask </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a06f1176b6a5590832f0e09a049f8a622" kindref="member">tf::cudaFlowCapturer::clear()</ref> to clean up a cudaFlow capturer </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1aeb826786f1580bae1335d94ffbeb7e02" kindref="member">tf::cudaFlowCapturer::num_tasks()</ref> to query the task count in a cudaFlow capturer </para></listitem>
 <listitem><para>added cudaFlow examples<itemizedlist>
-<listitem><para>parallel reduction (examples/cuda/cuda_reduce.cu)</para></listitem></itemizedlist>
+<listitem><para>parallel reduction (examples/cuda/cuda_reduce.cu)</para></listitem><listitem><para>parallel transform (examples/cuda/cuda_transform.cu)</para></listitem></itemizedlist>
 </para></listitem>
 </itemizedlist>
 </para></sect2>
@@ -60,13 +61,13 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <para><itemizedlist>
 <listitem><para>added a task graph-based interface, <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>, for SYCL programming </para></listitem>
 <listitem><para>added syclFlow examples:<itemizedlist>
-<listitem><para>device query (examples/sycl/sycl_device.cpp)</para></listitem><listitem><para>range query (examples/sycl/sycl_ndrange.cpp)</para></listitem><listitem><para>saxpy kernel (examples/sycl/sycl_saxpy.cpp)</para></listitem><listitem><para>atomic operation using oneAPI atomic_ref (examples/sycl/sycl_atomic.cpp)</para></listitem><listitem><para>vector addition (examples/sycl/sycl_vector_add.cpp)</para></listitem><listitem><para>parallel reduction (examples/sycl/sycl_reduce.cpp)</para></listitem><listitem><para>matrix multiplication (examples/sycl/sycl_matmul.cpp) </para></listitem></itemizedlist>
+<listitem><para>device query (examples/sycl/sycl_device.cpp)</para></listitem><listitem><para>range query (examples/sycl/sycl_ndrange.cpp)</para></listitem><listitem><para>saxpy kernel (examples/sycl/sycl_saxpy.cpp)</para></listitem><listitem><para>atomic operation using oneAPI atomic_ref (examples/sycl/sycl_atomic.cpp)</para></listitem><listitem><para>vector addition (examples/sycl/sycl_vector_add.cpp)</para></listitem><listitem><para>parallel reduction (examples/sycl/sycl_reduce.cpp)</para></listitem><listitem><para>matrix multiplication (examples/sycl/sycl_matmul.cpp)</para></listitem><listitem><para>parallel transform (examples/sycl/sycl/transform.cpp) </para></listitem></itemizedlist>
 </para></listitem>
 <listitem><para>added syclFlow algorithms<itemizedlist>
-<listitem><para><ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">tf::syclFlow::single_task</ref> for single-threaded kernel</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" kindref="member">tf::syclFlow::reduce</ref> for parallel reduction</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" kindref="member">tf::syclFlow::uninitialized_reduce</ref> for uninitialized parallel reduction</para></listitem></itemizedlist>
+<listitem><para><ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">tf::syclFlow::single_task</ref> for single-threaded kernel</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a30c3f7a279d1f88b6052f7ded1ee381a" kindref="member">tf::syclFlow::for_each</ref> for parallel iterations</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a25e8aa7d7efbd05ef11353317174574a" kindref="member">tf::syclFlow::for_each_index</ref> for index-based parallel iterations</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" kindref="member">tf::syclFlow::reduce</ref> for parallel reduction</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" kindref="member">tf::syclFlow::uninitialized_reduce</ref> for uninitialized parallel reduction</para></listitem></itemizedlist>
 </para></listitem>
 </itemizedlist>
-Please visit the pages, TBD, to know more details about compiling and running syclFlow programs.</para></sect2>
+Please visit these pages, TBD, to know more details about compiling and running syclFlow programs.</para></sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_utilities">
 <title>Utilities</title>
 <para><itemizedlist>
