@@ -307,7 +307,7 @@ inline Executor::~Executor() {
   //_flush_tfprof();
 }
 
-bool Executor::resumeTask(Taskflow* task)
+inline bool Executor::resumeTask(Taskflow* task)
 {
     bool bret = false;
     assert(task);
