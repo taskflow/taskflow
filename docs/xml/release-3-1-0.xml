@@ -19,16 +19,15 @@
 <listitem><para>AppleClang Xode Version at least v12.0 with -std=c++17 </para></listitem>
 <listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para></listitem>
 <listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel oneAPI Clang C++ Compiler at least v13.0.0</para></listitem>
+<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para></listitem>
 </itemizedlist>
 Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_working_items">
 <title>Working Items</title>
 <para><itemizedlist>
-<listitem><para>enhancing the taskflow profiler (<ulink url="https://github.com/taskflow/tfprof">TFProf</ulink>) </para></listitem>
-<listitem><para>enhancing cudaFlow and scheduling algorithms for capturer </para></listitem>
 <listitem><para>enhancing support for SYCL with Intel DPC++ </para></listitem>
-<listitem><para>enhancing profiler support for syclFlow</para></listitem>
+<listitem><para>enhancing profiler support for syclFlow </para></listitem>
+<listitem><para>designing pipeline interface and scheduling algorithms</para></listitem>
 </itemizedlist>
 </para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_new_features">
@@ -36,7 +35,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-1-0_1release-3-1-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>optimized task node storage by using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> for semaphores </para></listitem>
+<listitem><para>optimized task node storage by using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> for semaphores </para></listitem>
 <listitem><para>introduced <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> based on Intel DPC++ and SYCL 2020 spec </para></listitem>
 <listitem><para>merged the execution flow of cudaFlow and cudaFlow capturer</para></listitem>
 </itemizedlist>
@@ -51,8 +50,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <listitem><para>added <ref refid="classtf_1_1cudaTask_1afe21933815619b8f51f0efa2706aa16e" kindref="member">tf::cudaTask::num_dependents()</ref> to query the dependent count in a cudaTask </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a06f1176b6a5590832f0e09a049f8a622" kindref="member">tf::cudaFlowCapturer::clear()</ref> to clean up a cudaFlow capturer </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1aeb826786f1580bae1335d94ffbeb7e02" kindref="member">tf::cudaFlowCapturer::num_tasks()</ref> to query the task count in a cudaFlow capturer </para></listitem>
-<listitem><para>added cudaFlow examples<itemizedlist>
-<listitem><para>parallel reduction (examples/cuda/cuda_reduce.cu)</para></listitem><listitem><para>parallel transform (examples/cuda/cuda_transform.cu)</para></listitem></itemizedlist>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> rebind methods:<itemizedlist>
+<listitem><para><ref refid="classtf_1_1cudaFlowCapturer_1a92e8a16bd7be216ac7424e09a56abc1c" kindref="member">tf::cudaFlowCapturer::rebind_single_task</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaFlowCapturer_1ada3122f267017f2642acee80cb5b8ec8" kindref="member">tf::cudaFlowCapturer::rebind_for_each</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaFlowCapturer_1a45f8ddf368fd1944cc9419926dfb2e13" kindref="member">tf::cudaFlowCapturer::rebind_for_each_index</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaFlowCapturer_1a3484c514a90e4cc17cd3f4d18545f2c5" kindref="member">tf::cudaFlowCapturer::rebind_transform</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaFlowCapturer_1abc29bd65d3971e560453edb5b5e605a6" kindref="member">tf::cudaFlowCapturer::rebind_reduce</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaFlowCapturer_1ace5dfe413b1a066e555f29746b57bcc3" kindref="member">tf::cudaFlowCapturer::rebind_uninitialized_reduce</ref> </para></listitem></itemizedlist>
+</para></listitem>
+<listitem><para>added cudaFlow examples:<itemizedlist>
+<listitem><para>parallel reduction (examples/cuda/cuda_reduce.cu)</para></listitem><listitem><para>parallel transform (examples/cuda/cuda_transform.cu)</para></listitem><listitem><para>rebind (examples/cuda/cuda_rebind.cu)</para></listitem></itemizedlist>
 </para></listitem>
 </itemizedlist>
 </para></sect2>
@@ -61,7 +63,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <para><itemizedlist>
 <listitem><para>added a task graph-based interface, <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>, for SYCL programming </para></listitem>
 <listitem><para>added syclFlow examples:<itemizedlist>
-<listitem><para>device query (examples/sycl/sycl_device.cpp)</para></listitem><listitem><para>range query (examples/sycl/sycl_ndrange.cpp)</para></listitem><listitem><para>saxpy kernel (examples/sycl/sycl_saxpy.cpp)</para></listitem><listitem><para>atomic operation using oneAPI atomic_ref (examples/sycl/sycl_atomic.cpp)</para></listitem><listitem><para>vector addition (examples/sycl/sycl_vector_add.cpp)</para></listitem><listitem><para>parallel reduction (examples/sycl/sycl_reduce.cpp)</para></listitem><listitem><para>matrix multiplication (examples/sycl/sycl_matmul.cpp)</para></listitem><listitem><para>parallel transform (examples/sycl/sycl/transform.cpp) </para></listitem></itemizedlist>
+<listitem><para>device query (examples/sycl/sycl_device.cpp)</para></listitem><listitem><para>range query (examples/sycl/sycl_ndrange.cpp)</para></listitem><listitem><para>saxpy kernel (examples/sycl/sycl_saxpy.cpp)</para></listitem><listitem><para>atomic operation using oneAPI atomic_ref (examples/sycl/sycl_atomic.cpp)</para></listitem><listitem><para>vector addition (examples/sycl/sycl_vector_add.cpp)</para></listitem><listitem><para>parallel reduction (examples/sycl/sycl_reduce.cpp)</para></listitem><listitem><para>matrix multiplication (examples/sycl/sycl_matmul.cpp)</para></listitem><listitem><para>parallel transform (examples/sycl/transform.cpp)</para></listitem><listitem><para>rebind (examples/sycl/sycl_rebind.cpp) </para></listitem></itemizedlist>
 </para></listitem>
 <listitem><para>added syclFlow algorithms<itemizedlist>
 <listitem><para><ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">tf::syclFlow::single_task</ref> for single-threaded kernel</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a30c3f7a279d1f88b6052f7ded1ee381a" kindref="member">tf::syclFlow::for_each</ref> for parallel iterations</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a25e8aa7d7efbd05ef11353317174574a" kindref="member">tf::syclFlow::for_each_index</ref> for index-based parallel iterations</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" kindref="member">tf::syclFlow::reduce</ref> for parallel reduction</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" kindref="member">tf::syclFlow::uninitialized_reduce</ref> for uninitialized parallel reduction</para></listitem></itemizedlist>
@@ -92,12 +94,12 @@ Please visit these pages, TBD, to know more details about compiling and running 
 <sect1 id="release-3-1-0_1release-3-1-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
-<listitem><para>revised in-code documentation of <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref></para></listitem><listitem><para>revised in-code documentation of <ref refid="classtf_1_1FlowBuilder" kindref="compound">tf::FlowBuilder</ref></para></listitem><listitem><para>revised in-code documentation of <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref></para></listitem><listitem><para>revised in-code documentation of <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref></para></listitem></itemizedlist>
+<listitem><para>added <ref refid="CompileTaskflowWithSYCL" kindref="compound">Compile Taskflow with SYCL</ref></para></listitem><listitem><para>added SYCL example and tests in <ref refid="install" kindref="compound">Building and Installing</ref></para></listitem><listitem><para>revised update methods in <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref></para></listitem><listitem><para>revised rebind methods in <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref></para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
 <para><itemizedlist>
-<listitem><para>removed Circle-CI from the continuous integration</para></listitem><listitem><para>updated <ulink url="https://github.com/GrokImageCompression/grok">grok</ulink> to the user list</para></listitem><listitem><para>updated <ulink url="https://github.com/Ravbug/RavEngine">RavEngine</ulink> to the user list</para></listitem><listitem><para>updated <ulink url="https://github.com/erri120/rpgmpacker">RPGMPacker</ulink> to the user list </para></listitem></itemizedlist>
+<listitem><para>removed Circle-CI from the continuous integration</para></listitem><listitem><para>updated <ulink url="https://github.com/GrokImageCompression/grok">grok</ulink> to the user list</para></listitem><listitem><para>updated <ulink url="https://github.com/Ravbug/RavEngine">RavEngine</ulink> to the user list</para></listitem><listitem><para>updated <ulink url="https://github.com/erri120/rpgmpacker">RPGMPacker</ulink> to the user list</para></listitem><listitem><para>updated <ulink url="https://github.com/JayXon/Leanify">Leanify</ulink> to the user list </para></listitem></itemizedlist>
 </para></sect1>
     </detaileddescription>
   </compounddef>

@@ -4,6 +4,7 @@
     <compoundname>install</compoundname>
     <title>Building and Installing</title>
     <innerpage refid="CompileTaskflowWithCUDA">Compile Taskflow with CUDA</innerpage>
+    <innerpage refid="CompileTaskflowWithSYCL">Compile Taskflow with SYCL</innerpage>
     <innerpage refid="BenchmarkTaskflow">Benchmark Taskflow</innerpage>
     <tableofcontents/>
     <briefdescription>
@@ -18,7 +19,7 @@
 <listitem><para>AppleClang Xode Version at least v12.0 with -std=c++17 </para></listitem>
 <listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para></listitem>
 <listitem><para>Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel oneAPI Clang C++ Compiler at least v13.0.0</para></listitem>
+<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para></listitem>
 </itemizedlist>
 Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="install_1BAIIntegrateTaskflowToYourProject">
@@ -81,7 +82,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 </programlisting></para><para>The above command turns off building Taskflow examples.</para></sect1>
 <sect1 id="install_1BAIBuildCUDACode">
 <title>Build CUDA Examples and Unit Tests</title>
-<para>To build CUDA code, including unit tests and examples, enable the CMake option <computeroutput>TF_BUILD_CUDA</computeroutput> to <computeroutput>ON</computeroutput> as follows:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_CUDA=ON</highlight></codeline>
+<para>To build CUDA code, including unit tests and examples, enable the CMake option <computeroutput>TF_BUILD_CUDA</computeroutput> to <computeroutput>ON</computeroutput>. Cmake will automatically detect the existence of <computeroutput>nvcc</computeroutput> and use it to compile and link <computeroutput></computeroutput>.cu code.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_CUDA=ON</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
 </programlisting></para><sect2 id="install_1BAICompileTaskflowWithCUDA">
 <title>Compile Taskflow with CUDA</title>
@@ -89,7 +90,18 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 </sect1>
 <sect1 id="install_1BAIBuildSYCLCode">
 <title>Build SYCL Code Examples and Unit Tests</title>
-<para>TBD</para></sect1>
+<para>To build SYCL code, including unit tests and examples, enable the CMake option <computeroutput>TF_BUILD_SYCL</computeroutput> to <computeroutput>ON</computeroutput> and direct the CMake compiler <computeroutput>CMAKE_CXX_COMPILER</computeroutput> to the location of DPC++ clang compiler. You can acquire the DPC++ clang compiler at the official page of <ulink url="https://intel.github.io/llvm-docs/GetStartedGuide.html">Getting Started with oneAPI DPC++</ulink>.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>after<sp/>succesfully<sp/>build<sp/>Intel<sp/>DPCPP<sp/>clang:<sp/>https://intel.github.io/llvm-docs/</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>export<sp/>DPCPP_HOME=/path/to/your/dpcpp/workspace</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>export<sp/>PATH=$DPCPP_HOME/llvm/build/bin:$PATH</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>export<sp/>LD_LIBRARY_PATH=$DPCPP_HOME/llvm/build/lib:$LD_LIBRARY_PATH</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">#<sp/>build<sp/>Taskflow<sp/>SYCL<sp/>code<sp/>using<sp/>Intel<sp/>oneAPI<sp/>dpc++<sp/>clang<sp/>compiler</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_SYCL=ON<sp/>-DCMAKE_CXX_COMPILER=clang++</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
+</programlisting></para><sect2 id="install_1BAICompileTaskflowWithSYCL">
+<title>Compile Taskflow with SYCL</title>
+<para>Please visit the page <ref refid="CompileTaskflowWithSYCL" kindref="compound">Compile Taskflow with SYCL</ref> for details.</para></sect2>
+</sect1>
 <sect1 id="install_1BAIBuildBenchmarks">
 <title>Build Benchmarks</title>
 <para>The Taskflow project contains a set of benchmarks to evaluate and compare the performance of <ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref> with existing parallel programming libraries. To build the benchmark code, enable the CMake option <computeroutput>TF_BUILD_BENCHMARKS</computeroutput> to <computeroutput>ON</computeroutput> as follows:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_BENCHMARKS=ON</highlight></codeline>

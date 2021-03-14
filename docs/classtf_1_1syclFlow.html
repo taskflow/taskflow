@@ -5,7 +5,7 @@
   <title>tf::syclFlow class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -122,22 +122,22 @@
             </dt>
             <dd>creates a fill task that fills typed data with the given value</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a4d6a5978fac9f2267a34a7723ea660fa" class="m-doc">copy</a>(</span><span class="m-doc-wrap">T* target,
+              <div class="m-doc-template">template&lt;typename T, std::enable_if_t&lt;!std::is_same_v&lt;T, void&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ac433456f3960028fb12a53018b263aee" class="m-doc">copy</a>(</span><span class="m-doc-wrap">T* target,
               const T* source,
               size_t count) -&gt; <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a></span>
             </dt>
             <dd>creates a copy task that copies typed data from a source to a target memory block</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename F&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a05ff6f331b6cf48e21ae7f0d6aea9094" class="m-doc">single_task</a>(</span><span class="m-doc-wrap">F&amp;&amp; func) -&gt; <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a></span>
-            </dt>
-            <dd>invokes a SYCL kernel function using only one thread</dd>
-            <dt>
               <div class="m-doc-template">template&lt;typename... ArgsT&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#ae42b1da441d5696dc589ee9ee89b9deb" class="m-doc">parallel_for</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a></span>
             </dt>
             <dd>creates a kernel task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename F&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a05ff6f331b6cf48e21ae7f0d6aea9094" class="m-doc">single_task</a>(</span><span class="m-doc-wrap">F&amp;&amp; func) -&gt; <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a></span>
+            </dt>
+            <dd>invokes a SYCL kernel function using only one thread</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename I, typename C&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a30c3f7a279d1f88b6052f7ded1ee381a" class="m-doc">for_each</a>(</span><span class="m-doc-wrap">I first,
@@ -190,6 +190,98 @@
               <span class="m-doc-wrap-bumper">void <a href="#a2928c2edc466dd625741080c147de4ef" class="m-doc-self">offload</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>offloads the syclFlow and executes it once</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename F&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a80528e6face7519e0dc52603a28f2778" class="m-doc">rebind_on</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              F&amp;&amp; func)</span>
+            </dt>
+            <dd>rebinds the task to the given command group function object</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a4ce24e39dff0eea817aa1952bdce549a" class="m-doc">rebind_memcpy</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              void* tgt,
+              const void* src,
+              size_t bytes)</span>
+            </dt>
+            <dd>rebinds the task to a memcpy task</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#ab7cdcffcb21c6433cc3c801e14ad48e0" class="m-doc">rebind_memset</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              void* ptr,
+              int value,
+              size_t bytes)</span>
+            </dt>
+            <dd>rebinds the task to a memset task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#ab918c1987f47395199f2a5ddeb168d03" class="m-doc">rebind_fill</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              void* ptr,
+              const T&amp; pattern,
+              size_t count)</span>
+            </dt>
+            <dd>rebinds the task to a fill task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T, std::enable_if_t&lt;!std::is_same_v&lt;T, void&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a641a4514eecf6c9645e65ec7a92628a6" class="m-doc">rebind_copy</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              T* target,
+              const T* source,
+              size_t count)</span>
+            </dt>
+            <dd>rebinds the task to a copy task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a98029cdbad52f533cb6d9b3c892a4601" class="m-doc">rebind_parallel_for</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              ArgsT &amp;&amp; ... args)</span>
+            </dt>
+            <dd>rebinds the task to a parallel-for kernel task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename F&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a88a96c7a3bcb6decb45d52d16f978d50" class="m-doc">rebind_single_task</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              F&amp;&amp; func)</span>
+            </dt>
+            <dd>rebinds the task to a single-threaded kernel task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a3dbf4404933be67027e5a4109deb0b4a" class="m-doc">rebind_for_each</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              I first,
+              I last,
+              C&amp;&amp; callable)</span>
+            </dt>
+            <dd>rebinds the task to a for-each task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#aa59b7d2eef380bcc96a33d2c133884bc" class="m-doc">rebind_for_each_index</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              I first,
+              I last,
+              I step,
+              C&amp;&amp; callable)</span>
+            </dt>
+            <dd>rebinds the task to a for-each-index task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename C, typename... S&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a08b4d72be30337eb70ad503ee23a74ac" class="m-doc">rebind_transform</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              I first,
+              I last,
+              C&amp;&amp; callable,
+              S... srcs)</span>
+            </dt>
+            <dd>rebinds the task to a transform task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename T, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#ac896785ac795255b518f6c4d03dc3d24" class="m-doc">rebind_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              I first,
+              I last,
+              T* result,
+              C&amp;&amp; op)</span>
+            </dt>
+            <dd>rebinds the task to a reduce task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename T, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a3296ed2696e3be6d89e79f6bc7235297" class="m-doc">rebind_uninitialized_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              I first,
+              I last,
+              T* result,
+              C&amp;&amp; op)</span>
+            </dt>
+            <dd>rebinds the task to an unitialized reduce task</dd>
           </dl>
         </section>
         <section>
@@ -339,12 +431,12 @@
             </table>
 <p>Creates a task that fills the specified memory with the specified value.</p>
           </div></section>
-          <section class="m-doc-details" id="a4d6a5978fac9f2267a34a7723ea660fa"><div>
+          <section class="m-doc-details" id="ac433456f3960028fb12a53018b263aee"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename T&gt;
+                template&lt;typename T, std::enable_if_t&lt;!std::is_same_v&lt;T, void&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4d6a5978fac9f2267a34a7723ea660fa" class="m-doc-self">copy</a>(</span><span class="m-doc-wrap">T* target,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac433456f3960028fb12a53018b263aee" class="m-doc-self">copy</a>(</span><span class="m-doc-wrap">T* target,
               const T* source,
               size_t count)</span></span>
             </h3>
@@ -379,36 +471,6 @@
             </table>
 <p>Creates a task that copies <code>count</code> items of type <code>T</code> from a source memory location to a target memory location.</p>
           </div></section>
-          <section class="m-doc-details" id="a05ff6f331b6cf48e21ae7f0d6aea9094"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename F&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a05ff6f331b6cf48e21ae7f0d6aea9094" class="m-doc-self">single_task</a>(</span><span class="m-doc-wrap">F&amp;&amp; func)</span></span>
-            </h3>
-            <p>invokes a SYCL kernel function using only one thread</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">F</td>
-                  <td>kernel function type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>func</td>
-                  <td>kernel function</td>
-                </tr>
-              </tbody>
-            </table>
-<p>Creates a task that launches the given function object using only one kernel thread.</p>
-          </div></section>
           <section class="m-doc-details" id="ae42b1da441d5696dc589ee9ee89b9deb"><div>
             <h3>
               <div class="m-doc-template">
@@ -438,6 +500,36 @@
               </tbody>
             </table>
 <p>Creates a kernel task from a parallel_for method through the handler object associated with a command group.</p>
+          </div></section>
+          <section class="m-doc-details" id="a05ff6f331b6cf48e21ae7f0d6aea9094"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename F&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a05ff6f331b6cf48e21ae7f0d6aea9094" class="m-doc-self">single_task</a>(</span><span class="m-doc-wrap">F&amp;&amp; func)</span></span>
+            </h3>
+            <p>invokes a SYCL kernel function using only one thread</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">F</td>
+                  <td>kernel function type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>func</td>
+                  <td>kernel function</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Creates a task that launches the given function object using only one kernel thread.</p>
           </div></section>
           <section class="m-doc-details" id="a30c3f7a279d1f88b6052f7ded1ee381a"><div>
             <h3>
@@ -738,6 +830,154 @@
                 </tr>
               </tbody>
             </table>
+          </div></section>
+          <section class="m-doc-details" id="a80528e6face7519e0dc52603a28f2778"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename F&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a80528e6face7519e0dc52603a28f2778" class="m-doc-self">rebind_on</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              F&amp;&amp; func)</span></span>
+            </h3>
+            <p>rebinds the task to the given command group function object</p>
+<p>Similar to <a href="classtf_1_1syclFlow.html#a904b80cc2de79c9bd9ee46f4de2cc9a0" class="m-doc">tf::<wbr />syclFlow::<wbr />on</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a4ce24e39dff0eea817aa1952bdce549a"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4ce24e39dff0eea817aa1952bdce549a" class="m-doc-self">rebind_memcpy</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              void* tgt,
+              const void* src,
+              size_t bytes)</span></span>
+            </h3>
+            <p>rebinds the task to a memcpy task</p>
+<p>Similar to <a href="classtf_1_1syclFlow.html#ac1e1eb858d9271ed61ff4fe00f135e92" class="m-doc">tf::<wbr />syclFlow::<wbr />memcpy</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="ab7cdcffcb21c6433cc3c801e14ad48e0"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab7cdcffcb21c6433cc3c801e14ad48e0" class="m-doc-self">rebind_memset</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              void* ptr,
+              int value,
+              size_t bytes)</span></span>
+            </h3>
+            <p>rebinds the task to a memset task</p>
+<p>Similar to <a href="classtf_1_1syclFlow.html#a54b7497c0f4763bb4f8604f6c5654a5f" class="m-doc">tf::<wbr />syclFlow::<wbr />memset</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="ab918c1987f47395199f2a5ddeb168d03"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab918c1987f47395199f2a5ddeb168d03" class="m-doc-self">rebind_fill</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              void* ptr,
+              const T&amp; pattern,
+              size_t count)</span></span>
+            </h3>
+            <p>rebinds the task to a fill task</p>
+<p>Similar to <a href="classtf_1_1syclFlow.html#a628843c986d60bea61eca8c48028159e" class="m-doc">tf::<wbr />syclFlow::<wbr />fill</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a641a4514eecf6c9645e65ec7a92628a6"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T, std::enable_if_t&lt;!std::is_same_v&lt;T, void&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a641a4514eecf6c9645e65ec7a92628a6" class="m-doc-self">rebind_copy</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              T* target,
+              const T* source,
+              size_t count)</span></span>
+            </h3>
+            <p>rebinds the task to a copy task</p>
+<p>Similar to <a href="classtf_1_1syclFlow.html#ac433456f3960028fb12a53018b263aee" class="m-doc">tf::<wbr />syclFlow::<wbr />copy</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a98029cdbad52f533cb6d9b3c892a4601"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename... ArgsT&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a98029cdbad52f533cb6d9b3c892a4601" class="m-doc-self">rebind_parallel_for</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              ArgsT &amp;&amp; ... args)</span></span>
+            </h3>
+            <p>rebinds the task to a parallel-for kernel task</p>
+<p>Similar to <a href="classtf_1_1syclFlow.html#ae42b1da441d5696dc589ee9ee89b9deb" class="m-doc">tf::<wbr />syclFlow::<wbr />parallel_for</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a88a96c7a3bcb6decb45d52d16f978d50"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename F&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a88a96c7a3bcb6decb45d52d16f978d50" class="m-doc-self">rebind_single_task</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              F&amp;&amp; func)</span></span>
+            </h3>
+            <p>rebinds the task to a single-threaded kernel task</p>
+<p>Similar to <a href="classtf_1_1syclFlow.html#a05ff6f331b6cf48e21ae7f0d6aea9094" class="m-doc">tf::<wbr />syclFlow::<wbr />single_task</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a3dbf4404933be67027e5a4109deb0b4a"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3dbf4404933be67027e5a4109deb0b4a" class="m-doc-self">rebind_for_each</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              I first,
+              I last,
+              C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>rebinds the task to a for-each task</p>
+<p>Similar to <a href="classtf_1_1syclFlow.html#a30c3f7a279d1f88b6052f7ded1ee381a" class="m-doc">tf::<wbr />syclFlow::<wbr />for_each</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="aa59b7d2eef380bcc96a33d2c133884bc"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa59b7d2eef380bcc96a33d2c133884bc" class="m-doc-self">rebind_for_each_index</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              I first,
+              I last,
+              I step,
+              C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>rebinds the task to a for-each-index task</p>
+<p>Similar to <a href="classtf_1_1syclFlow.html#a25e8aa7d7efbd05ef11353317174574a" class="m-doc">tf::<wbr />syclFlow::<wbr />for_each_index</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a08b4d72be30337eb70ad503ee23a74ac"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename C, typename... S&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a08b4d72be30337eb70ad503ee23a74ac" class="m-doc-self">rebind_transform</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              I first,
+              I last,
+              C&amp;&amp; callable,
+              S... srcs)</span></span>
+            </h3>
+            <p>rebinds the task to a transform task</p>
+<p>Similar to <a href="classtf_1_1syclFlow.html#ae278939334a90b6d58d8771e87b2e793" class="m-doc">tf::<wbr />syclFlow::<wbr />transform</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="ac896785ac795255b518f6c4d03dc3d24"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename T, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac896785ac795255b518f6c4d03dc3d24" class="m-doc-self">rebind_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              I first,
+              I last,
+              T* result,
+              C&amp;&amp; op)</span></span>
+            </h3>
+            <p>rebinds the task to a reduce task</p>
+<p>Similar to <a href="classtf_1_1syclFlow.html#acddd05832e53597ae9d30dc913d422ca" class="m-doc">tf::<wbr />syclFlow::<wbr />reduce</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a3296ed2696e3be6d89e79f6bc7235297"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename T, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3296ed2696e3be6d89e79f6bc7235297" class="m-doc-self">rebind_uninitialized_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              I first,
+              I last,
+              T* result,
+              C&amp;&amp; op)</span></span>
+            </h3>
+            <p>rebinds the task to an unitialized reduce task</p>
+<p>Similar to <a href="classtf_1_1syclFlow.html#a7a3af92f105114b1095a2cec2ccdffbf" class="m-doc">tf::<wbr />syclFlow::<wbr />uninitialized_reduce</a> but operates on an existing task.</p>
           </div></section>
         </section>
       </div>

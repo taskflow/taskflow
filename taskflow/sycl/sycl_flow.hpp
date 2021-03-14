@@ -406,7 +406,7 @@ class syclFlow {
     void rebind_single_task(syclTask task, F&& func);
     
     /**
-    @breif rebinds the task to a for-each task
+    @brief rebinds the task to a for-each task
 
     Similar to tf::syclFlow::for_each but operates on an existing task.
     */

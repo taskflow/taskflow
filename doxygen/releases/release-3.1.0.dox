@@ -25,16 +25,15 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 @li AppleClang Xode Version at least v12.0 with -std=c++17
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
 @li Intel C++ Compiler at least v19.0.1 with -std=c++17
-@li Intel oneAPI Clang C++ Compiler at least v13.0.0
+@li Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
 
 %Taskflow works on Linux, Windows, and Mac OS X.
 
 @section release-3-1-0_working_items Working Items
 
-@li enhancing the taskflow profiler (<a href="https://github.com/taskflow/tfprof">TFProf</a>)
-@li enhancing %cudaFlow and scheduling algorithms for capturer
 @li enhancing support for SYCL with Intel DPC++
 @li enhancing profiler support for %syclFlow
+@li designing pipeline interface and scheduling algorithms
 
 @section release-3-1-0_new_features New Features
 
@@ -63,6 +62,7 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 @li added %cudaFlow examples:
   + parallel reduction (examples/cuda/cuda_reduce.cu)
   + parallel transform (examples/cuda/cuda_transform.cu)
+  + rebind (examples/cuda/cuda_rebind.cu)
 
 @subsection release-3-1-0_syclflow syclFlow
 
@@ -75,7 +75,8 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
   + vector addition (examples/sycl/sycl_vector_add.cpp)
   + parallel reduction (examples/sycl/sycl_reduce.cpp)
   + matrix multiplication (examples/sycl/sycl_matmul.cpp)
-  + parallel transform (examples/sycl/sycl/transform.cpp)
+  + parallel transform (examples/sycl/transform.cpp)
+  + rebind (examples/sycl/sycl_rebind.cpp)
 @li added %syclFlow algorithms
   + tf::syclFlow::single_task for single-threaded kernel
   + tf::syclFlow::for_each for parallel iterations
@@ -107,10 +108,10 @@ There are no deprecated or removed items in this release.
 
 @section release-3-1-0_documentation Documentation
 
-+ revised in-code documentation of tf::Taskflow
-+ revised in-code documentation of tf::FlowBuilder
-+ revised in-code documentation of tf::cudaFlow
-+ revised in-code documentation of tf::cudaFlowCapturer
++ added @ref CompileTaskflowWithSYCL
++ added SYCL example and tests in @ref install
++ revised update methods in @ref GPUTaskingcudaFlow 
++ revised rebind methods in @ref GPUTaskingcudaFlowCapturer
 
 @section release-3-1-0_miscellaneous_items Miscellaneous Items
 
@@ -118,6 +119,7 @@ There are no deprecated or removed items in this release.
 + updated <a href="https://github.com/GrokImageCompression/grok">grok</a> to the user list
 + updated <a href="https://github.com/Ravbug/RavEngine">RavEngine</a> to the user list
 + updated <a href="https://github.com/erri120/rpgmpacker">RPGMPacker</a> to the user list
++ updated <a href="https://github.com/JayXon/Leanify">Leanify</a> to the user list
 
 */
 

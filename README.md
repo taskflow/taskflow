@@ -211,9 +211,7 @@ cond.precede(cond, stop);
 
 ## Offload a Task to a GPU
 
-Taskflow supports heterogeneous tasking for you 
-to accelerate many data-driven scientific computing applications 
-by harnessing the power of CPU-GPU collaborative computing.
+Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using CUDA.
 
 ```cpp
 // saxpy kernel
@@ -238,6 +236,26 @@ tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
 ```
 
 <p align="center"><img src="doxygen/images/saxpy_1_cudaflow.svg"></p>
+
+%Taskflow also supports SYCL, a general-purpose heterogeneous programming model,
+to program GPU tasks in a single-source C++ environment using the task graph-based 
+approach.
+
+```cpp
+tf::Task syclflow = taskflow.emplace_on([&](tf::syclFlow& sf){
+  tf::syclTask h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
+  tf::syclTask h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
+  tf::syclTask d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
+  tf::syclTask d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
+  tf::syclTask saxpy = sf.parallel_for(sycl::range<1>(N), 
+    [=] (sycl::id<1> id) {
+      dx[id] = 2.0f * dx[id] + dy[id];
+    }
+  ).name("saxpy");
+  saxpy.succeed(h2d_x, h2d_y)
+       .precede(d2h_x, d2h_y);
+}, sycl_queue).name("syclFlow");
+```
 
 ## Compose Task Graphs
 
@@ -331,7 +349,7 @@ To use Taskflow, you only need a compiler that supports C++17:
 + AppleClang Xode Version at least v12.0 with -std=c++17
 + Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
 + Intel C++ Compiler at least v19.0.1 with -std=c++17
-+ Intel oneAPI Clang C++ Compiler at least v13.0.0
++ Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
 
 Taskflow works on Linux, Windows, and Mac OS X.
 
