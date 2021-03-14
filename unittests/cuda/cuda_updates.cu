@@ -376,15 +376,15 @@ void update_kernel() {
 
 }
 
-TEST_CASE("update.kernel.int" * doctest::timeout(300)) {
+TEST_CASE("cudaFlow.update.kernel.int" * doctest::timeout(300)) {
   update_kernel<int>();
 }
 
-TEST_CASE("update.kernel.float" * doctest::timeout(300)) {
+TEST_CASE("cudaFlow.update.kernel.float" * doctest::timeout(300)) {
   update_kernel<float>();
 }
 
-TEST_CASE("update.kernel.double" * doctest::timeout(300)) {
+TEST_CASE("cudaFlow.update.kernel.double" * doctest::timeout(300)) {
   update_kernel<double>();
 }
 
@@ -486,15 +486,15 @@ void update_copy() {
   }
 }
 
-TEST_CASE("update.copy.int" * doctest::timeout(300)) {
+TEST_CASE("cudaFlow.update.copy.int" * doctest::timeout(300)) {
   update_copy<int>();
 }
 
-TEST_CASE("update.copy.float" * doctest::timeout(300)) {
+TEST_CASE("cudaFlow.update.copy.float" * doctest::timeout(300)) {
   update_copy<float>();
 }
 
-TEST_CASE("update.copy.double" * doctest::timeout(300)) {
+TEST_CASE("cudaFlow.update.copy.double" * doctest::timeout(300)) {
   update_copy<double>();
 }
 
@@ -597,15 +597,15 @@ void update_memcpy() {
   }
 }
 
-TEST_CASE("update.memcpy.int" * doctest::timeout(300)) {
+TEST_CASE("cudaFlow.update.memcpy.int" * doctest::timeout(300)) {
   update_memcpy<int>();
 }
 
-TEST_CASE("update.memcpy.float" * doctest::timeout(300)) {
+TEST_CASE("cudaFlow.update.memcpy.float" * doctest::timeout(300)) {
   update_memcpy<float>();
 }
 
-TEST_CASE("update.memcpy.double" * doctest::timeout(300)) {
+TEST_CASE("cudaFlow.update.memcpy.double" * doctest::timeout(300)) {
   update_memcpy<double>();
 }
 
@@ -699,632 +699,169 @@ void update_memset() {
   }
 }
 
-TEST_CASE("update.memset.int" * doctest::timeout(300)) {
+TEST_CASE("cudaFlow.update.memset.int" * doctest::timeout(300)) {
   update_memset<int>();
 }
 
-TEST_CASE("update.memset.float" * doctest::timeout(300)) {
+TEST_CASE("cudaFlow.update.memset.float" * doctest::timeout(300)) {
   update_memset<float>();
 }
 
-TEST_CASE("update.memset.double" * doctest::timeout(300)) {
+TEST_CASE("cudaFlow.update.memset.double" * doctest::timeout(300)) {
   update_memset<double>();
 }
 
-//----------------------------------------------------------------------
-//rebind kernel
-//----------------------------------------------------------------------
+// update for_each
+TEST_CASE("cudaFlow.update.for_each" * doctest::timeout(300)) {
 
-template <typename T>
-void rebind_kernel() {
-  tf::Executor executor;
-
-  for(size_t N = 1; N < 65529; N = N * 2 + 1) {
-    tf::Taskflow taskflow;
-
-    std::vector<T*> operand(3, nullptr);
-    std::vector<T*> ans_operand(3, nullptr);
-
-    std::vector<int> ind(3);
-    std::generate_n(ind.data(), 3, [&](){ return ::rand() % 3; });
-
-
-    bool* check {nullptr};
-
-    //allocate
-    auto allocate_t = taskflow.emplace([&]() {
-      for(int i = 0; i < 3; ++i) {
-        REQUIRE(cudaMallocManaged(&operand[i], N * sizeof(T)) == cudaSuccess);
-        REQUIRE(cudaMallocManaged(&ans_operand[i], N * sizeof(T)) == cudaSuccess);
-      }
-
-      REQUIRE(cudaMallocManaged(&check, sizeof(bool)) == cudaSuccess);
-    }).name("allocate");
-
-    //initialize
-    auto initialize_t = taskflow.emplace([&](){
-      for(int i = 0; i < 3; ++i) {
-        std::generate_n(operand[i], N, [&](){ return ::rand() % N - N / 2 + i; });
-        std::memcpy(ans_operand[i], operand[i], N * sizeof(T));
-      }
-      
-      *check = true;
-    }).name("initialize"); 
-
-    
-    //rebind_kernel
-    auto add_t = taskflow.emplace([&](tf::cudaFlowCapturer& cf) {
-      auto multi_t = cf.kernel(
-        32, 512, 0,
-        multiply<T>,
-        operand[ind[0]], operand[ind[1]], operand[ind[2]], N
-      );
-
-      auto add_t = cf.kernel(
-        32, 512, 0,
-        add<T>,
-        operand[ind[1]], operand[ind[2]], operand[ind[0]], N
-      );
-
-      multi_t.precede(add_t);
-
-      cf.offload();
-
-      cf.rebind_kernel(
-        multi_t,
-        64, 128, 0,
-        multiply<T>,
-        operand[ind[2]], operand[ind[0]], operand[ind[1]], N
-      );
-
-      cf.rebind_kernel(
-        add_t,
-        16, 256, 0,
-        add<T>,
-        operand[ind[1]], operand[ind[0]], operand[ind[2]], N
-      );
-
-      cf.offload();
-
-      cf.rebind_kernel(
-        multi_t,
-        8, 1024, 0,
-        multiply<T>,
-        operand[ind[0]], operand[ind[2]], operand[ind[1]], N
-      );
-
-      cf.rebind_kernel(
-        add_t,
-        64, 64, 0,
-        add<T>,
-        operand[ind[2]], operand[ind[1]], operand[ind[0]], N
-      );
-
-      cf.offload();
-    }).name("add");
-
-    //verify
-    auto verify_t = taskflow.emplace([&](tf::cudaFlowCapturer& cf) {
-      auto multi1_t = cf.transform(
-        ans_operand[ind[2]],  ans_operand[ind[2]]+ N,
-        [] __device__ (T& v1, T& v2) { return v1 * v2; },
-        ans_operand[ind[0]], ans_operand[ind[1]]
-      );
-
-      auto add1_t = cf.transform(
-        ans_operand[ind[0]],  ans_operand[ind[0]]+ N,
-        [] __device__ (T& v1, T& v2) { return v1 + v2; },
-        ans_operand[ind[1]], ans_operand[ind[2]]
-      );
-
-      auto multi2_t = cf.transform(
-        ans_operand[ind[1]],  ans_operand[ind[1]]+ N,
-        [] __device__ (T& v1, T& v2) { return v1 * v2; },
-        ans_operand[ind[2]], ans_operand[ind[0]]
-      );
-
-      auto add2_t = cf.transform(
-        ans_operand[ind[2]],  ans_operand[ind[2]]+ N,
-        [] __device__ (T& v1, T& v2) { return v1 + v2; },
-        ans_operand[ind[1]], ans_operand[ind[0]]
-      );
-
-      auto multi3_t = cf.transform(
-        ans_operand[ind[1]],  ans_operand[ind[1]]+ N,
-        [] __device__ (T& v1, T& v2) { return v1 * v2; },
-        ans_operand[ind[0]], ans_operand[ind[2]]
-      );
-
-      auto add3_t = cf.transform(
-        ans_operand[ind[0]],  ans_operand[ind[0]]+ N,
-        [] __device__ (T& v1, T& v2) { return v1 + v2; },
-        ans_operand[ind[2]], ans_operand[ind[1]]
-      );
+  int N = 100000;
   
-      auto verify1_t = cf.kernel(
-        32, 512, 0,
-        verify<T>,
-        operand[ind[0]], ans_operand[ind[0]], check, N
-      );
+  tf::cudaFlow cf;
 
-      auto verify2_t = cf.kernel(
-        32, 512, 0,
-        verify<T>,
-        operand[ind[1]], ans_operand[ind[1]], check, N
-      );
+  auto data = tf::cuda_malloc_shared<int>(N);
+  
+  // for each task
+  auto task = cf.for_each(data, data+N, [] __device__ (int& a){ a = 100; });
+  cf.offload();
 
-      auto verify3_t = cf.kernel(
-        32, 512, 0,
-        verify<T>,
-        operand[ind[2]], ans_operand[ind[2]], check, N
-      );
-
-      multi1_t.precede(add1_t);
-      add1_t.precede(multi2_t);
-      multi2_t.precede(add2_t);
-      add2_t.precede(multi3_t);
-      multi3_t.precede(add3_t);
-      add3_t.precede(verify1_t).precede(verify2_t).precede(verify3_t);
-
-      cf.offload();
-      REQUIRE(*check);
-
-    }).name("verify");
-
-     //free memory
-    auto deallocate_t = taskflow.emplace([&]() {
-      for(int i = 0; i < 3; ++i) {
-      REQUIRE(cudaFree(operand[i]) == cudaSuccess);
-      REQUIRE(cudaFree(ans_operand[i]) == cudaSuccess);
-      }
-
-      REQUIRE(cudaFree(check) == cudaSuccess);
-    }).name("deallocate");
-
-    allocate_t.precede(initialize_t);
-    initialize_t.precede(add_t);
-    add_t.precede(verify_t);
-    verify_t.precede(deallocate_t);
-
-    executor.run(taskflow).wait();
-
+  REQUIRE(cf.num_tasks() == 1);
+  for(int i=0; i<N; i++) {
+    REQUIRE(data[i] == 100);
+  }
+  
+  // update for each index - this is illegal!
+  //cf.update_for_each_index(
+  //  task, 0, N, 1, [data] __device__ (size_t i){ data[i] = -100; }
+  //);
+  
+  for(int i=0; i<N; i++) {
+    data[i] = -100;
   }
 
-}
-
-TEST_CASE("rebind.kernel.int" * doctest::timeout(300)) {
-  rebind_kernel<int>();
-}
-
-TEST_CASE("rebind.kernel.float" * doctest::timeout(300)) {
-  rebind_kernel<float>();
-}
-
-TEST_CASE("rebind.kernel.double" * doctest::timeout(300)) {
-  rebind_kernel<double>();
-}
-
-//----------------------------------------------------------------------
-//rebind copy
-//----------------------------------------------------------------------
-template <typename T>
-void rebind_copy() {
-  tf::Executor executor;
-
-  for(int N = 1; N < 65459; N = N * 2 + 1) {
-    tf::Taskflow taskflow;
-
-    std::vector<T> ha(N, N + 5);
-    std::vector<T> hb(N, N - 31);
-    std::vector<T> hc(N, N - 47);
-    std::vector<T> hz(N);
-
-    T* da {nullptr};
-    T* db {nullptr};
-    T* dc {nullptr};
-    T* dz {nullptr};
-
-
-    //allocate
-    auto allocate_t = taskflow.emplace([&]() {
-      REQUIRE(cudaMalloc(&da, N * sizeof(T)) == cudaSuccess);
-      REQUIRE(cudaMalloc(&db, N * sizeof(T)) == cudaSuccess);
-      REQUIRE(cudaMalloc(&dc, N * sizeof(T)) == cudaSuccess);
-      REQUIRE(cudaMalloc(&dz, N * sizeof(T)) == cudaSuccess);
-    }).name("allocate");
-
-
-    //rebind_copy
-    auto h2d_t = taskflow.emplace([&](tf::cudaFlowCapturer& cf) {
-      auto h2d_t = cf.copy(da, ha.data(), N).name("h2d");
-      cf.offload();
-
-      cf.rebind_copy(h2d_t, db, hb.data(), N);
-      cf.offload();
-
-      cf.rebind_copy(h2d_t, dc, hc.data(), N);
-      cf.offload();
-
-    });
-
-    auto kernel_t = taskflow.emplace([&](tf::cudaFlowCapturer& cf) {
-      auto add1_t = cf.transform(
-        dz,  dz + N,
-        [] __device__ (T& v1, T& v2) { return v1 + v2; },
-        da, db
-      );
-
-      auto add2_t = cf.transform(
-        dc,  dc + N,
-        [] __device__ (T& v1, T& v2) { return v1 - v2; },
-        dc, dz
-      );
-
-      add1_t.precede(add2_t);
-    });
-
-    auto d2h_t = taskflow.emplace([&](tf::cudaFlowCapturer& cf) {
-      auto d2h_t = cf.copy(hc.data(), dc, N).name("d2h");
-      cf.offload();
-
-      cf.rebind_copy(d2h_t, hz.data(), dz, N);
-      cf.offload();
-
-    });
-
-    //verify
-    auto verify_t = taskflow.emplace([&]() {
-      for(auto& c: hc) {
-        REQUIRE(c == -21 - N);
-      }
-
-      for(auto& z: hz) {
-        REQUIRE(z == 2 * N - 26);
-      }
-    });
-
-     //free memory
-    auto deallocate_t = taskflow.emplace([&]() {
-      REQUIRE(cudaFree(da) == cudaSuccess);
-      REQUIRE(cudaFree(db) == cudaSuccess);
-      REQUIRE(cudaFree(dc) == cudaSuccess);
-      REQUIRE(cudaFree(dz) == cudaSuccess);
-    }).name("deallocate");
-
-    allocate_t.precede(h2d_t);
-    h2d_t.precede(kernel_t);
-    kernel_t.precede(d2h_t);
-    d2h_t.precede(verify_t);
-    verify_t.precede(deallocate_t);
-
-    executor.run(taskflow).wait();
-
-  }
-}
-
-TEST_CASE("rebind.copy.int" * doctest::timeout(300)) {
-  rebind_copy<int>();
-}
-
-TEST_CASE("rebind.copy.float" * doctest::timeout(300)) {
-  rebind_copy<float>();
-}
-
-TEST_CASE("rebind.copy.double" * doctest::timeout(300)) {
-  rebind_copy<double>();
-}
-
-
-//----------------------------------------------------------------------
-//rebind memcpy
-//----------------------------------------------------------------------
-template <typename T>
-void rebind_memcpy() {
-  tf::Executor executor;
-
-  for(int N = 1; N < 65459; N = N * 2 + 1) {
-    tf::Taskflow taskflow;
-
-    std::vector<T> ha(N, N + 5);
-    std::vector<T> hb(N, N - 31);
-    std::vector<T> hc(N, N - 47);
-    std::vector<T> hz(N);
-
-    T* da {nullptr};
-    T* db {nullptr};
-    T* dc {nullptr};
-    T* dz {nullptr};
-
-
-    //allocate
-    auto allocate_t = taskflow.emplace([&]() {
-      REQUIRE(cudaMalloc(&da, N * sizeof(T)) == cudaSuccess);
-      REQUIRE(cudaMalloc(&db, N * sizeof(T)) == cudaSuccess);
-      REQUIRE(cudaMalloc(&dc, N * sizeof(T)) == cudaSuccess);
-      REQUIRE(cudaMalloc(&dz, N * sizeof(T)) == cudaSuccess);
-    }).name("allocate");
-
-
-    //rebind_memcpy
-    auto h2d_t = taskflow.emplace([&](tf::cudaFlowCapturer& cf) {
-      auto h2d_t = cf.memcpy(da, ha.data(), sizeof(T) * N).name("h2d");
-      cf.offload();
-
-      cf.rebind_memcpy(h2d_t, db, hb.data(), sizeof(T) * N);
-      cf.offload();
-
-      cf.rebind_memcpy(h2d_t, dc, hc.data(), sizeof(T) * N);
-      cf.offload();
-
-    });
-
-    auto kernel_t = taskflow.emplace([&](tf::cudaFlowCapturer& cf) {
-      auto add1_t = cf.transform(
-        dz,  dz + N,
-        [] __device__ (T& v1, T& v2) { return v1 + v2; },
-        da, db
-      );
-
-      auto add2_t = cf.transform(
-        dc,  dc + N,
-        [] __device__ (T& v1, T& v2) { return v1 - v2; },
-        dc, dz
-      );
-
-      add1_t.precede(add2_t);
-    });
-
-    auto d2h_t = taskflow.emplace([&](tf::cudaFlowCapturer& cf) {
-      auto d2h_t = cf.memcpy(hc.data(), dc, sizeof(T) * N).name("d2h");
-      cf.offload();
-
-      cf.rebind_memcpy(d2h_t, hz.data(), dz, sizeof(T) * N);
-      cf.offload();
-
-    });
-
-    //verify
-    auto verify_t = taskflow.emplace([&]() {
-      for(auto& c: hc) {
-        REQUIRE(c == -21 - N);
-      }
-
-      for(auto& z: hz) {
-        REQUIRE(z == 2 * N - 26);
-      }
-    });
-
-     //free memory
-    auto deallocate_t = taskflow.emplace([&]() {
-      REQUIRE(cudaFree(da) == cudaSuccess);
-      REQUIRE(cudaFree(db) == cudaSuccess);
-      REQUIRE(cudaFree(dc) == cudaSuccess);
-      REQUIRE(cudaFree(dz) == cudaSuccess);
-    }).name("deallocate");
-
-    allocate_t.precede(h2d_t);
-    h2d_t.precede(kernel_t);
-    kernel_t.precede(d2h_t);
-    d2h_t.precede(verify_t);
-    verify_t.precede(deallocate_t);
-
-    executor.run(taskflow).wait();
-
-  }
-}
-
-TEST_CASE("rebind.memcpy.int" * doctest::timeout(300)) {
-  rebind_memcpy<int>();
-}
-
-TEST_CASE("rebind.memcpy.float" * doctest::timeout(300)) {
-  rebind_memcpy<float>();
-}
-
-TEST_CASE("rebind.memcpy.double" * doctest::timeout(300)) {
-  rebind_memcpy<double>();
-}
-
-
-
-//----------------------------------------------------------------------
-//rebind memset
-//----------------------------------------------------------------------
-template <typename T>
-void rebind_memset() {
-  tf::Executor executor;
-
-  for(size_t N = 1; N < 65199; N = N * 2 + 1) {
-    tf::Taskflow taskflow;
-
-    T* a {nullptr};
-    T* b {nullptr};
-
-    T* ans_a {nullptr};
-    T* ans_b {nullptr};
-    
-    bool* check {nullptr};
-
-    //allocate
-    auto allocate_t = taskflow.emplace([&]() {
-      REQUIRE(cudaMallocManaged(&a, N * sizeof(T)) == cudaSuccess);
-      REQUIRE(cudaMallocManaged(&b, (N + 37) * sizeof(T)) == cudaSuccess);
-
-      REQUIRE(cudaMallocManaged(&ans_a, N * sizeof(T)) == cudaSuccess);
-      REQUIRE(cudaMallocManaged(&ans_b, (N + 37) * sizeof(T)) == cudaSuccess);
-
-      REQUIRE(cudaMallocManaged(&check, sizeof(bool)) == cudaSuccess);
-    }).name("allocate");
-
-    //initialize
-    auto initialize_t = taskflow.emplace([&]() {
-      std::generate_n(a, N, [&](){ return ::rand() % N - N / 2; });
-      std::generate_n(b, N + 37, [&](){ return ::rand() % N + N / 2; });
-      
-      REQUIRE(cudaMemset(ans_a, 0, N * sizeof(T)) == cudaSuccess);
-      REQUIRE(cudaMemset(ans_b, 1, (N + 37) * sizeof(T)) == cudaSuccess);
-
-      *check = true;
-    }).name("initialize"); 
-
-    //rebind_memset
-    auto memset_t = taskflow.emplace([&](tf::cudaFlowCapturer& cf) {
-      auto memset_t = cf.memset(ans_a, 0, N * sizeof(T));
-      cf.offload();
-
-      cf.rebind_memset(memset_t, a, 0, N * sizeof(T));
-      cf.offload();
-
-      cf.rebind_memset(memset_t, b, 1, (N + 37) * sizeof(T));
-      cf.offload();
-    }).name("memset");
-
-    //verify
-    auto verify_t = taskflow.emplace([&](tf::cudaFlowCapturer& cf) {
-      cf.kernel(
-        32, 512, 0,
-        verify<T>,
-        a, ans_a, check, N
-      );
-
-      cf.kernel(
-        32, 512, 0,
-        verify<T>,
-        b, ans_b, check, N + 37
-      );
-
-      cf.offload();
-      REQUIRE(*check);
-    }).name("verify");
-
-    //free memory
-    auto deallocate_t = taskflow.emplace([&]() {
-      REQUIRE(cudaFree(a) == cudaSuccess);
-      REQUIRE(cudaFree(b) == cudaSuccess);
-      REQUIRE(cudaFree(ans_a) == cudaSuccess);
-      REQUIRE(cudaFree(ans_b) == cudaSuccess);
-      REQUIRE(cudaFree(check) == cudaSuccess);
-    }).name("deallocate");
-
-    allocate_t.precede(initialize_t);
-    initialize_t.precede(memset_t);
-    memset_t.precede(verify_t);
-    verify_t.precede(deallocate_t);
-
-    executor.run(taskflow).wait();
-  }
-}
-
-TEST_CASE("rebind.memset.int" * doctest::timeout(300)) {
-  rebind_memset<int>();
-}
-
-TEST_CASE("rebind.memset.float" * doctest::timeout(300)) {
-  rebind_memset<float>();
-}
-
-TEST_CASE("rebind.memset.double" * doctest::timeout(300)) {
-  rebind_memset<double>();
-}
-
-// ----------------------------------------------------------------------------
-// rebind algorithms
-// ----------------------------------------------------------------------------
-
-TEST_CASE("cudaFlowCapturer.rebind.algorithms") {
-
-  tf::cudaFlowCapturer capturer;
-
-  auto data = tf::cuda_malloc_shared<int>(10000);
-  auto res = tf::cuda_malloc_shared<int>(1);
-
-  auto task = capturer.for_each(
-    data, data+10000, []__device__(int& i) {
-      i = 10;
-    }
+  // update for each parameters
+  cf.update_for_each(
+    task, data, data+N/2, [] __device__ (int& a){ a = 100; }
   );
+  cf.offload();
 
-  capturer.offload();
-
-  for(int i=0; i<10000; i++) {
-    REQUIRE(data[i] == 10);
-  }
-  REQUIRE(capturer.num_tasks() == 1);
-  
-  // rebind to single task
-  capturer.rebind_single_task(task, [=] __device__ () {*data = 2;});
-
-  capturer.offload();
-  
-  REQUIRE(*data == 2);
-  for(int i=1; i<10000; i++) {
-    REQUIRE(data[i] == 10);
-  }
-  REQUIRE(capturer.num_tasks() == 1);
-  
-  // rebind to for each index
-  capturer.rebind_for_each_index(task, 0, 10000, 1,
-    [=] __device__ (int i) {
-      data[i] = -23;
-    }
-  );
-
-  capturer.offload();
-  
-  for(int i=0; i<10000; i++) {
-    REQUIRE(data[i] == -23);
-  }
-  REQUIRE(capturer.num_tasks() == 1);
-
-  // rebind to reduce
-  *res = 10;
-  capturer.rebind_reduce(task, data, data + 10000, res, 
-    []__device__(int a, int b){ return a + b; }
-  );
-
-  capturer.offload();
-
-  REQUIRE(*res == -229990);
-  REQUIRE(capturer.num_tasks() == 1);
-  
-  // rebind to uninitialized reduce
-  capturer.rebind_uninitialized_reduce(task, data, data + 10000, res, 
-    []__device__(int a, int b){ return a + b; }
-  );
-
-  capturer.offload();
-
-  REQUIRE(*res == -230000);
-  REQUIRE(capturer.num_tasks() == 1);
-  
-  // rebind to single task
-  capturer.rebind_single_task(task, [res]__device__(){ *res = 999; });
-  REQUIRE(*res == -230000);
-
-  capturer.offload();
-  REQUIRE(*res == 999);
-  REQUIRE(capturer.num_tasks() == 1);
-
-  // clear the capturer
-  capturer.clear();
-  REQUIRE(capturer.num_tasks() == 0);
-
-  capturer.offload();
-  REQUIRE(*res == 999);
-  for(int i=0; i<10000; i++) {
-    REQUIRE(data[i] == -23);
+  REQUIRE(cf.num_tasks() == 1);
+  for(int i=0; i<N/2; i++) {
+    REQUIRE(data[i] == 100);
   }
 
-  // clear the memory
+  for(int i=N/2; i<N; i++) {
+    REQUIRE(data[i] == -100);
+  }
+
   tf::cuda_free(data);
-  tf::cuda_free(res);
 }
 
+// update for_each_index
+TEST_CASE("cudaFlow.update.for_each_index" * doctest::timeout(300)) {
 
+  int N = 100000;
+  
+  tf::cudaFlow cf;
 
+  auto data = tf::cuda_malloc_shared<int>(N);
+  
+  // for each index
+  auto task = cf.for_each_index(0, N, 1, [data] __device__ (int i){ data[i] = 100; });
+  cf.offload();
 
+  REQUIRE(cf.num_tasks() == 1);
+  for(int i=0; i<N; i++) {
+    REQUIRE(data[i] == 100);
+  }
+  
+  for(int i=0; i<N; i++) {
+    data[i] = -100;
+  }
 
+  // update for each
+  cf.update_for_each_index(
+    task, 0, N/2, 1, [data] __device__ (int i){ data[i] = 100; }
+  );
+  cf.offload();
 
+  REQUIRE(cf.num_tasks() == 1);
+  for(int i=0; i<N/2; i++) {
+    REQUIRE(data[i] == 100);
+  }
 
+  for(int i=N/2; i<N; i++) {
+    REQUIRE(data[i] == -100);
+  }
 
+  tf::cuda_free(data);
+}
 
+// update reduce
+TEST_CASE("cudaFlow.update.reduce" * doctest::timeout(300)) {
+
+  int N = 100000;
+  
+  tf::cudaFlow cf;
+
+  auto data = tf::cuda_malloc_shared<int>(N);
+  auto soln = tf::cuda_malloc_shared<int>(1);
+
+  for(int i=0; i<N; i++) data[i] = -1;
+  
+  // reduce
+  auto task = cf.reduce(
+    data, data + N, soln,
+    [] __device__ (int a, int b){ return a + b; }
+  );
+  cf.offload();
+
+  REQUIRE(cf.num_tasks() == 1);
+  REQUIRE(*soln == -N);
+  
+  // update reduce range
+  cf.update_reduce(
+    task, data, data + N/2, soln, 
+    [] __device__ (int a, int b){ return a + b; }
+  );
+  cf.offload();
+  REQUIRE(cf.num_tasks() == 1);
+  REQUIRE(*soln == -3*N/2);
+
+  tf::cuda_free(data);
+  tf::cuda_free(soln);
+}
+
+// update uninitialized reduce
+TEST_CASE("cudaFlow.update.uninitialized_reduce" * doctest::timeout(300)) {
+
+  int N = 100000;
+  
+  tf::cudaFlow cf;
+
+  auto data = tf::cuda_malloc_shared<int>(N);
+  auto soln = tf::cuda_malloc_shared<int>(1);
+
+  for(int i=0; i<N; i++) data[i] = -1;
+  
+  // uninitialized_reduce
+  auto task = cf.uninitialized_reduce(
+    data, data + N, soln,
+    [] __device__ (int a, int b){ return a + b; }
+  );
+  cf.offload();
+
+  REQUIRE(cf.num_tasks() == 1);
+  REQUIRE(*soln == -N);
+  
+  // update reduce range
+  cf.update_uninitialized_reduce(
+    task, data, data + N/2, soln, 
+    [] __device__ (int a, int b){ return a + b; }
+  );
+  cf.offload();
+  REQUIRE(cf.num_tasks() == 1);
+  REQUIRE(*soln == -N/2);
+
+  tf::cuda_free(data);
+  tf::cuda_free(soln);
+}

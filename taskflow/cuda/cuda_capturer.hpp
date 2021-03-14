@@ -1,9 +1,6 @@
 #pragma once
 
 #include "cuda_task.hpp"
-#include "cuda_algorithm/cuda_for_each.hpp"
-#include "cuda_algorithm/cuda_transform.hpp"
-#include "cuda_algorithm/cuda_reduce.hpp"
 #include "cuda_optimizer.hpp"
 
 /** 
@@ -690,92 +687,6 @@ cudaTask cudaFlowCapturer::kernel(
   });
 }
 
-// Function: single_task
-template <typename C>
-cudaTask cudaFlowCapturer::single_task(C&& callable) {
-  return on([c=std::forward<C>(callable)] (cudaStream_t stream) mutable {
-    cuda_single_task<C><<<1, 1, 0, stream>>>(c);
-  });
-}
-
-// Function: for_each
-template <typename I, typename C>
-cudaTask cudaFlowCapturer::for_each(I first, I last, C&& c) {
-  
-  // TODO: special case for N == 0?
-  size_t N = std::distance(first, last);
-  size_t B = _default_block_size(N);
-
-  return on([=, c=std::forward<C>(c)](cudaStream_t stream) mutable {
-    cuda_for_each<I, C><<<(N+B-1)/B, B, 0, stream>>>(first, N, c);
-  });
-}
-
-// Function: for_each_index
-template <typename I, typename C>
-cudaTask cudaFlowCapturer::for_each_index(I beg, I end, I inc, C&& c) {
-      
-  if(is_range_invalid(beg, end, inc)) {
-    TF_THROW("invalid range [", beg, ", ", end, ") with inc size ", inc);
-  }
-    
-  // TODO: special case when N is 0?
-  size_t N = distance(beg, end, inc);
-  size_t B = _default_block_size(N);
-  
-  return on([=, c=std::forward<C>(c)] (cudaStream_t stream) mutable {
-    cuda_for_each_index<I, C><<<(N+B-1)/B, B, 0, stream>>>(beg, inc, N, c);
-  });
-}
-
-// Function: transform
-template <typename I, typename C, typename... S>
-cudaTask cudaFlowCapturer::transform(I first, I last, C&& c, S... srcs) {
-  
-  // TODO: special case when N is 0?
-  size_t N = std::distance(first, last);
-  size_t B = _default_block_size(N);
-
-  return on([=, c=std::forward<C>(c)] 
-  (cudaStream_t stream) mutable {
-    cuda_transform<I, C, S...><<<(N+B-1)/B, B, 0, stream>>>(first, N, c, srcs...);
-  });
-}
-
-// Function: reduce
-template <typename I, typename T, typename C>
-cudaTask cudaFlowCapturer::reduce(I first, I last, T* result, C&& c) {
-    
-  // TODO: special case N == 0?
-  size_t N = std::distance(first, last);
-  size_t B = _default_block_size(N);
-  
-  return on([=, c=std::forward<C>(c)] 
-  (cudaStream_t stream) mutable {
-    cuda_reduce<I, T, C, false><<<1, B, B*sizeof(T), stream>>>(
-      first, N, result, c
-    );
-  });
-}
-
-// Function: uninitialized_reduce
-template <typename I, typename T, typename C>
-cudaTask cudaFlowCapturer::uninitialized_reduce(
-  I first, I last, T* result, C&& c
-) {
-    
-  // TODO: special case N == 0?
-  size_t N = std::distance(first, last);
-  size_t B = _default_block_size(N);
-  
-  return on([=, c=std::forward<C>(c)] 
-  (cudaStream_t stream) mutable {
-    cuda_reduce<I, T, C, true><<<1, B, B*sizeof(T), stream>>>(
-      first, N, result, c
-    );
-  });
-}
-
 // Function: _capture
 inline cudaGraph_t cudaFlowCapturer::_capture() {
   return std::visit(
@@ -882,98 +793,6 @@ void cudaFlowCapturer::rebind_kernel(
 ) {
   rebind_on(task, [g, b, s, f, args...] (cudaStream_t stream) mutable {
     f<<<g, b, s, stream>>>(args...);
-  });
-}
-
-// Function: rebind_single_task
-template <typename C>
-void cudaFlowCapturer::rebind_single_task(cudaTask task, C&& callable) {
-  rebind_on(task, [c=std::forward<C>(callable)] (cudaStream_t stream) mutable {
-    cuda_single_task<C><<<1, 1, 0, stream>>>(c);
-  });
-}
-
-// Function: rebind_for_each
-template <typename I, typename C>
-void cudaFlowCapturer::rebind_for_each(cudaTask task, I first, I last, C&& c) {
-  
-  // TODO: special case for N == 0?
-  size_t N = std::distance(first, last);
-  size_t B = _default_block_size(N);
-
-  rebind_on(task, [=, c=std::forward<C>(c)](cudaStream_t stream) mutable {
-    cuda_for_each<I, C><<<(N+B-1)/B, B, 0, stream>>>(first, N, c);
-  });
-}
-
-// Function: rebind_for_each_index
-template <typename I, typename C>
-void cudaFlowCapturer::rebind_for_each_index(
-  cudaTask task, I beg, I end, I inc, C&& c
-) {
-      
-  if(is_range_invalid(beg, end, inc)) {
-    TF_THROW("invalid range [", beg, ", ", end, ") with inc size ", inc);
-  }
-    
-  // TODO: special case when N is 0?
-  size_t N = distance(beg, end, inc);
-  size_t B = _default_block_size(N);
-  
-  rebind_on(task, [=, c=std::forward<C>(c)] (cudaStream_t stream) mutable {
-    cuda_for_each_index<I, C><<<(N+B-1)/B, B, 0, stream>>>(beg, inc, N, c);
-  });
-}
-
-// Function: rebind_transform
-template <typename I, typename C, typename... S>
-void cudaFlowCapturer::rebind_transform(
-  cudaTask task, I first, I last, C&& c, S... srcs
-) {
-  
-  // TODO: special case when N is 0?
-  size_t N = std::distance(first, last);
-  size_t B = _default_block_size(N);
-
-  rebind_on(task, [=, c=std::forward<C>(c)] 
-  (cudaStream_t stream) mutable {
-    cuda_transform<I, C, S...><<<(N+B-1)/B, B, 0, stream>>>(first, N, c, srcs...);
-  });
-}
-
-// Function: rebind_reduce
-template <typename I, typename T, typename C>
-void cudaFlowCapturer::rebind_reduce(
-  cudaTask task, I first, I last, T* result, C&& c
-) {
-    
-  // TODO: special case N == 0?
-  size_t N = std::distance(first, last);
-  size_t B = _default_block_size(N);
-  
-  rebind_on(task, [=, c=std::forward<C>(c)] 
-  (cudaStream_t stream) mutable {
-    cuda_reduce<I, T, C, false><<<1, B, B*sizeof(T), stream>>>(
-      first, N, result, c
-    );
-  });
-}
-
-// Function: rebind_uninitialized_reduce
-template <typename I, typename T, typename C>
-void cudaFlowCapturer::rebind_uninitialized_reduce(
-  cudaTask task, I first, I last, T* result, C&& c
-) {
-    
-  // TODO: special case N == 0?
-  size_t N = std::distance(first, last);
-  size_t B = _default_block_size(N);
-  
-  rebind_on(task, [=, c=std::forward<C>(c)] 
-  (cudaStream_t stream) mutable {
-    cuda_reduce<I, T, C, true><<<1, B, B*sizeof(T), stream>>>(
-      first, N, result, c
-    );
   });
 }
 

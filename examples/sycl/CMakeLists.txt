@@ -7,6 +7,7 @@ list(APPEND TF_SYCL_EXAMPLES
   sycl_matmul
   sycl_reduce
   sycl_transform
+  sycl_rebind
 )
 
 foreach(sycl_example IN LISTS TF_SYCL_EXAMPLES)

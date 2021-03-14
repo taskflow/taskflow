@@ -49,7 +49,7 @@ __global__ void cuda_matmul(
   }
 
   if(x < N && y < M) {
-      C[y * N + x] = res;
+    C[y * N + x] = res;
   }
 
 }

@@ -7,6 +7,9 @@
 
 #include "taskflow.hpp"
 #include "cuda/cuda_flow.hpp"
+#include "cuda/cuda_algorithm/cuda_for_each.hpp"
+#include "cuda/cuda_algorithm/cuda_transform.hpp"
+#include "cuda/cuda_algorithm/cuda_reduce.hpp"
 
 /**
 @file cudaflow.hpp

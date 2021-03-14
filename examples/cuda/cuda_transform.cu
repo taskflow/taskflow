@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
   
   // data[i] = src1[i] + src2[i] + src3[i]
   cudaflow.transform(
-    data, data+N, 
+    data, data, 
     [] __device__ (int a, int b, int c) { return a+b+c; }, 
     src1, src2, src3
   );

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../cuda_error.hpp"
+#include "../cuda_flow.hpp"
+#include "../cuda_capturer.hpp"
 
 namespace tf {
 
@@ -109,6 +110,140 @@ __global__ void cuda_reduce(I first, size_t N, T* res, C op) {
 //    dout[blockIdx.x] = shm[0];
 //  }
 //}
+
+// ----------------------------------------------------------------------------
+// cudaFlow 
+// ----------------------------------------------------------------------------
+
+// Function: reduce
+template <typename I, typename T, typename C>
+cudaTask cudaFlow::reduce(I first, I last, T* result, C&& op) {
+  
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+  
+  return kernel(
+    1, B, B*sizeof(T), cuda_reduce<I, T, C, false>, 
+    first, N, result, std::forward<C>(op)
+  );
+}
+
+// Function: uninitialized_reduce
+template <typename I, typename T, typename C>
+cudaTask cudaFlow::uninitialized_reduce(I first, I last, T* result, C&& op) {
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+  
+  return kernel(
+    1, B, B*sizeof(T), cuda_reduce<I, T, C, true>, 
+    first, N, result, std::forward<C>(op)
+  );
+}
+
+// Procedure: update_reduce
+template <typename I, typename T, typename C>
+void cudaFlow::update_reduce(
+  cudaTask task, I first, I last, T* result, C&& op
+) {
+
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+  
+  update_kernel(
+    task, 1, B, B*sizeof(T), first, N, result, std::forward<C>(op)
+  );
+}
+
+// Procedure: update_uninitialized_reduce
+template <typename I, typename T, typename C>
+void cudaFlow::update_uninitialized_reduce(
+  cudaTask task, I first, I last, T* result, C&& op
+) {
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+  
+  update_kernel(
+    task, 1, B, B*sizeof(T), first, N, result, std::forward<C>(op)
+  );
+}
+
+// ----------------------------------------------------------------------------
+// cudaFlowCapturer
+// ----------------------------------------------------------------------------
+
+// Function: reduce
+template <typename I, typename T, typename C>
+cudaTask cudaFlowCapturer::reduce(I first, I last, T* result, C&& c) {
+    
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+  
+  return on([=, c=std::forward<C>(c)] 
+  (cudaStream_t stream) mutable {
+    cuda_reduce<I, T, C, false><<<1, B, B*sizeof(T), stream>>>(
+      first, N, result, c
+    );
+  });
+}
+
+// Function: uninitialized_reduce
+template <typename I, typename T, typename C>
+cudaTask cudaFlowCapturer::uninitialized_reduce(
+  I first, I last, T* result, C&& c
+) {
+    
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+  
+  return on([=, c=std::forward<C>(c)] 
+  (cudaStream_t stream) mutable {
+    cuda_reduce<I, T, C, true><<<1, B, B*sizeof(T), stream>>>(
+      first, N, result, c
+    );
+  });
+}
+
+// Function: rebind_reduce
+template <typename I, typename T, typename C>
+void cudaFlowCapturer::rebind_reduce(
+  cudaTask task, I first, I last, T* result, C&& c
+) {
+    
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+  
+  rebind_on(task, [=, c=std::forward<C>(c)] 
+  (cudaStream_t stream) mutable {
+    cuda_reduce<I, T, C, false><<<1, B, B*sizeof(T), stream>>>(
+      first, N, result, c
+    );
+  });
+}
+
+// Function: rebind_uninitialized_reduce
+template <typename I, typename T, typename C>
+void cudaFlowCapturer::rebind_uninitialized_reduce(
+  cudaTask task, I first, I last, T* result, C&& c
+) {
+    
+  // TODO: special case N == 0?
+  size_t N = std::distance(first, last);
+  size_t B = _default_block_size(N);
+  
+  rebind_on(task, [=, c=std::forward<C>(c)] 
+  (cudaStream_t stream) mutable {
+    cuda_reduce<I, T, C, true><<<1, B, B*sizeof(T), stream>>>(
+      first, N, result, c
+    );
+  });
+}
 
 }  // end of namespace tf -----------------------------------------------------
 
