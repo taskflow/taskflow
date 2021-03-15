@@ -11,13 +11,13 @@ with @NvidiaCUDA.
 
 @section Create_a_cudaFlow Create a cudaFlow
 
-%Taskflow enables concurrent CPU-GPU tasking by leveraging @cudaGraph.
-The tasking interface is referred to as @em %cudaFlow.
-A %cudaFlow is a graph object of type tf::cudaFlow created at runtime similar to dynamic tasking. 
-It manages a task node in a taskflow and associates it with a CUDA Graph. 
-To create a %cudaFlow, emplace a callable with an argument of type tf::cudaFlow.
-The following example implements the canonical saxpy (A·X Plus Y) task graph.
-
+%Taskflow leverage @cudaGraph to enable concurrent CPU-GPU tasking 
+using a task graph-based tasking model, tf::cudaFlow.
+A %cudaFlow is a task in a taskflow and is associated
+with a CUDA graph to execute multiple dependent GPU operations in a single CPU call.
+To create a %cudaFlow task, emplace a callable with an argument of type tf::cudaFlow.
+The following example implements the canonical saxpy (A·X Plus Y) task graph
+using tf::cudaFlow.
 
 @code{.cpp}
  1: #include <taskflow/cudaflow.hpp>
@@ -84,15 +84,18 @@ Debrief:
 @li Lines 19-20 declare two host vectors, @c hx and @c hy
 @li Lines 22-23 declare two device vector pointers, @c dx and @c dy
 @li Lines 25-31 declare two tasks to allocate memory for @c dx and @c dy on device, each of <tt>N*sizeof(float)</tt> bytes
-@li Lines 33-48 create a %cudaFlow to define a GPU task graph (two host-to-device data transfer tasks, one saxpy kernel task, and two device-to-host data transfer tasks)
+@li Lines 33-48 create a %cudaFlow to define a GPU task graph that contains:
+  + two host-to-device data transfer tasks
+  + one saxpy kernel task
+  + two device-to-host data transfer tasks
 @li Lines 49-53 define the task dependency between host tasks and the %cudaFlow tasks and execute the taskflow
 
-%Taskflow does not expend unnecessary efforts on kernel programming but focus on 
-tasking CUDA operations with CPU work.
-We give users full privileges to craft a CUDA kernel 
-that is commensurate with their domain knowledge. 
-Users focus on developing high-performance kernels using 
-a native CUDA toolkit, while leaving difficult task parallelism to %Taskflow.
+tf::cudaFlow is a lightweight task graph-based programming layer atop CUDA Graph.
+We do not expend yet another effort on simplifying kernel programming 
+but focus on tasking CUDA operations and their dependencies.
+This organization lets users fully take advantage of CUDA featuress
+that are commensurate with their domain knowledge, 
+while leaving difficult task parallelism details to %Taskflow.
 
 @attention
 You need to include @c taskflow/cudaflow.hpp in order to use tf::cudaFlow.
@@ -328,7 +331,7 @@ In addition, update methods have the following limitations:
 @section UsecudaFlowInAStandaloneEnvironment Use cudaFlow in a Standalone Environment
 
 You can use tf::cudaFlow in a standalone environment without going through
-tf::Taskflow and offloads it to GPU from the caller thread.
+tf::Taskflow and offloads it to a GPU from the caller thread.
 All the features we have discussed so far are applicable 
 for the standalone use.
 

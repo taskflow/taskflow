@@ -237,7 +237,7 @@ tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
 
 <p align="center"><img src="doxygen/images/saxpy_1_cudaflow.svg"></p>
 
-%Taskflow also supports SYCL, a general-purpose heterogeneous programming model,
+Taskflow also supports SYCL, a general-purpose heterogeneous programming model,
 to program GPU tasks in a single-source C++ environment using the task graph-based 
 approach.
 
