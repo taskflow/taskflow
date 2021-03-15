@@ -5,7 +5,7 @@
   <title>Cookbook &raquo; GPU Tasking (syclFlow) | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -57,6 +57,8 @@
             <li><a href="#CreateMemoryOperationTasks">Create Memory Operation Tasks</a></li>
             <li><a href="#CreateKernelTasks">Create Kernel Tasks</a></li>
             <li><a href="#CreateCommandGroupFunctionObjectTasks">Create Command Group Function Object Tasks</a></li>
+            <li><a href="#OffloadAsyclFlow">Offload a syclFlow</a></li>
+            <li><a href="#UpdateAsyclFlow">Update a syclFlow</a></li>
             <li><a href="#UsesyclFlowInAStandaloneEnvironment">Use syclFlow in a Standalone Environment</a></li>
           </ul>
         </div>
@@ -69,7 +71,7 @@
  <span class="mi">7</span><span class="o">:</span>   <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
  <span class="mi">8</span><span class="o">:</span>   <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;saxpy example&quot;</span><span class="p">);</span>
  <span class="mi">9</span><span class="o">:</span>  
-<span class="mi">10</span><span class="o">:</span>   <span class="n">sycl</span><span class="o">::</span><span class="n">queue</span> <span class="n">queue</span><span class="p">;</span>
+<span class="mi">10</span><span class="o">:</span>   <span class="n">sycl</span><span class="o">::</span><span class="n">queue</span> <span class="n">queue</span><span class="p">{</span><span class="n">sycl</span><span class="o">::</span><span class="n">gpu_selector</span><span class="p">{}};</span>
 <span class="mi">11</span><span class="o">:</span>  
 <span class="mi">12</span><span class="o">:</span>   <span class="c1">// allocate shared memory that is accessible on both host and device</span>
 <span class="mi">13</span><span class="o">:</span>   <span class="kt">float</span><span class="o">*</span> <span class="n">X</span> <span class="o">=</span> <span class="n">sycl</span><span class="o">::</span><span class="n">malloc_shared</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">queue</span><span class="p">);</span>
@@ -93,59 +95,85 @@
 <span class="mi">31</span><span class="o">:</span>   <span class="c1">// free the shared memory to avoid memory leak</span>
 <span class="mi">32</span><span class="o">:</span>   <span class="n">sycl</span><span class="o">::</span><span class="n">free</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">queue</span><span class="p">);</span> 
 <span class="mi">33</span><span class="o">:</span>   <span class="n">sycl</span><span class="o">::</span><span class="n">free</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">queue</span><span class="p">);</span>           
-<span class="mi">34</span><span class="o">:</span> <span class="p">}</span></pre><div class="m-graph"><svg style="width: 20.188rem; height: 9.625rem;" viewBox="0.00 0.00 322.93 154.00">
-<g transform="scale(1 1) rotate(0) translate(4 150)">
+<span class="mi">34</span><span class="o">:</span> <span class="p">}</span></pre><div class="m-graph"><svg style="width: 21.750rem; height: 9.812rem;" viewBox="0.00 0.00 347.74 157.00">
+<g transform="scale(1 1) rotate(0) translate(4 153)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x2915170</title>
-<polygon points="8,-8 8,-138 306.934,-138 306.934,-8 8,-8"/>
-<text text-anchor="middle" x="157.467" y="-121.2">syclFlow</text>
+<polygon points="8,-8 8,-141 331.7351,-141 331.7351,-8 8,-8"/>
+<text text-anchor="middle" x="169.8675" y="-124.2">syclFlow</text>
 </g>
 <g class="m-node">
 <title>p0x2915170</title>
-<polygon points="299.1027,-79 296.1027,-83 275.1027,-83 272.1027,-79 221.4294,-79 221.4294,-43 299.1027,-43 299.1027,-79"/>
-<text text-anchor="middle" x="260.266" y="-56.2">syclFlow</text>
+<polygon points="323.7351,-79 320.7351,-83 299.7351,-83 296.7351,-79 240.7351,-79 240.7351,-43 323.7351,-43 323.7351,-79"/>
+<text text-anchor="middle" x="282.2351" y="-57.2">syclFlow</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f6378000bd0</title>
-<ellipse cx="44.0277" cy="-88" rx="28.0555" ry="18"/>
-<text text-anchor="middle" x="44.0277" y="-83.2">fillX</text>
+<ellipse cx="48.5269" cy="-89" rx="32.5538" ry="18.2703"/>
+<text text-anchor="middle" x="48.5269" y="-85.2">fillX</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f6378000e10</title>
-<ellipse cx="146.8268" cy="-61" rx="38.544" ry="18"/>
-<text text-anchor="middle" x="146.8268" y="-56.2">saxpy</text>
+<ellipse cx="160.8944" cy="-61" rx="43.6818" ry="18.2703"/>
+<text text-anchor="middle" x="160.8944" y="-57.2">saxpy</text>
 </g>
 <g class="m-edge">
 <title>p0x7f6378000bd0&#45;&gt;p0x7f6378000e10</title>
-<path d="M70.2342,-81.1169C80.2641,-78.4826 91.9944,-75.4016 103.2173,-72.4539"/>
-<polygon points="104.111,-75.838 112.8939,-69.9124 102.3328,-69.0676 104.111,-75.838"/>
+<path d="M78.3443,-81.57C89.0114,-78.912 101.3184,-75.8453 113.1191,-72.9048"/>
+<polygon points="114.0084,-76.2903 122.8654,-70.4762 112.3158,-69.498 114.0084,-76.2903"/>
 </g>
 <g class="m-edge">
 <title>p0x7f6378000e10&#45;&gt;p0x2915170</title>
-<path d="M185.8661,-61C194.0676,-61 202.8171,-61 211.3283,-61"/>
-<polygon points="211.539,-64.5001 221.539,-61 211.539,-57.5001 211.539,-64.5001"/>
+<path d="M205.0444,-61C213.2341,-61 221.8586,-61 230.2562,-61"/>
+<polygon points="230.3425,-64.5001 240.3424,-61 230.3424,-57.5001 230.3425,-64.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f6378000cf0</title>
-<ellipse cx="44.0277" cy="-34" rx="28.0555" ry="18"/>
-<text text-anchor="middle" x="44.0277" y="-29.2">fillY</text>
+<ellipse cx="48.5269" cy="-34" rx="31.6406" ry="18.2703"/>
+<text text-anchor="middle" x="48.5269" y="-30.2">fillY</text>
 </g>
 <g class="m-edge">
 <title>p0x7f6378000cf0&#45;&gt;p0x7f6378000e10</title>
-<path d="M70.2342,-40.8831C80.2641,-43.5174 91.9944,-46.5984 103.2173,-49.5461"/>
-<polygon points="102.3328,-52.9324 112.8939,-52.0876 104.111,-46.162 102.3328,-52.9324"/>
+<path d="M78.0502,-41.0939C88.7182,-43.6573 101.0558,-46.6218 112.8975,-49.4672"/>
+<polygon points="112.1394,-52.8846 122.6804,-51.8178 113.7749,-46.0783 112.1394,-52.8846"/>
 </g>
 </g>
 </svg>
-</div><p>Debrief:</p><ul><li>Lines 7-8 create a taskflow and an executor</li><li>Lines 10 creates a SYCL queue on a default-selected GPU device</li><li>Lines 13-14 allocate shared memory that is accessible on both host and device</li><li>Lines 17-26 creates a syclFlow to define the saxpy task graph that contains:<ul><li>one fill task to fill the memory area <code>X</code> with <code>1.0f</code></li><li>one fill task to fill the memory area <code>Y</code> with <code>2.0f</code></li><li>one kernel task to perform the saxpy operation on GPU</li></ul></li><li>Lines 28-29 executes the taskflow and dumps its graph to a DOT format</li><li>Lines 32-33 deallocates the shared memory to avoid memory leak</li></ul>
+</div><p>Debrief:</p><ul><li>Lines 7-8 create a taskflow and an executor</li><li>Lines 10 creates a SYCL queue on a default-selected GPU device</li><li>Lines 13-14 allocate shared memory that is accessible on both host and device</li><li>Lines 17-26 creates a syclFlow to define the saxpy task graph that contains:<ul><li>one fill task to fill the memory area <code>X</code> with <code>1.0f</code></li><li>one fill task to fill the memory area <code>Y</code> with <code>2.0f</code></li><li>one kernel task to perform the saxpy operation on the GPU</li></ul></li><li>Lines 28-29 executes the taskflow and dumps its graph to a DOT format</li><li>Lines 32-33 deallocates the shared memory to avoid memory leak</li></ul>
 <p><a href="classtf_1_1syclFlow.html" class="m-doc">tf::<wbr />syclFlow</a> is a lightweight task graph-based programming layer atop SYCL. We do not expend yet another effort on simplifying kernel programming but focus on tasking SYCL operations and their dependencies. This organization lets users fully take advantage of SYCL features that are commensurate with their domain knowledge, while leaving difficult task parallelism details to Taskflow.</p><aside class="m-note m-warning"><h4>Attention</h4><p>You need to include <code><a href="syclflow_8hpp.html" class="m-doc">taskflow/<wbr />syclflow.hpp</a></code> in order to use <a href="classtf_1_1syclFlow.html" class="m-doc">tf::<wbr />syclFlow</a>.</p></aside></section><section id="Compile_a_syclFlow_program"><h2><a href="#Compile_a_syclFlow_program">Compile a syclFlow Program</a></h2><p>Use DPC++ clang to compile a syclFlow program:</p><pre class="m-console"><span class="go">~$ clang++ -fsycl -fsycl-unnamed-lambda \</span>
 <span class="go">           -fsycl-targets=nvptx64-nvidia-cuda-sycldevice \  # for CUDA target</span>
 <span class="go">           -I path/to/taskflow -pthread -std=c++17 saxpy.cpp -o saxpy</span>
-<span class="go">~$ ./saxpy</span></pre><p>Please visit the page <a href="CompileTaskflowWithSYCL.html" class="m-doc">Compile Taskflow with SYCL</a> for more details.</p></section><section id="CreateMemoryOperationTasks"><h2><a href="#CreateMemoryOperationTasks">Create Memory Operation Tasks</a></h2></section><section id="CreateKernelTasks"><h2><a href="#CreateKernelTasks">Create Kernel Tasks</a></h2><p>SYCL allows a simple execution model in which a kernel is invoked over an N-dimensional index space defined by <code>sycl::range&lt;N&gt;</code>, where <code>N</code> is one, two or three. Each work item in such a kernel executes independently across a set of partitioned work groups. <a href="classtf_1_1syclFlow.html#ae42b1da441d5696dc589ee9ee89b9deb" class="m-doc">tf::<wbr />syclFlow::<wbr />parallel_for</a> defines several variants to create a kernel task. The following variant pairs up a <code>sycl::range</code> and a <code>sycl::id</code> to set each element in <code>data</code> to <code>1.0f</code> when it is not necessary to query the global range of the index space being executed across.</p><pre class="m-code"><span class="n">syclflow</span><span class="p">.</span><span class="n">parallel_for</span><span class="p">(</span>
+<span class="go">~$ ./saxpy</span></pre><p>Please visit the page <a href="CompileTaskflowWithSYCL.html" class="m-doc">Compile Taskflow with SYCL</a> for more details.</p></section><section id="CreateMemoryOperationTasks"><h2><a href="#CreateMemoryOperationTasks">Create Memory Operation Tasks</a></h2><p><a href="classtf_1_1syclFlow.html" class="m-doc">tf::<wbr />syclFlow</a> provides a set of methods for creating tasks to perform common memory operations, such as copy, set, and fill, on memory area pointed to by <em>unified shared memory</em> (USM) pointers. The following example creates a syclFlow task of two copy operations and one fill operation that set the first <code>N/2</code> elements in the vector to <code>-1</code>.</p><pre class="m-code"><span class="n">sycl</span><span class="o">::</span><span class="n">queue</span> <span class="n">queue</span><span class="p">;</span>
+
+<span class="kt">size_t</span> <span class="n">N</span>  <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>
+<span class="kt">int</span><span class="o">*</span> <span class="n">hvec</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
+<span class="kt">int</span><span class="o">*</span> <span class="n">dvec</span> <span class="o">=</span> <span class="n">sycl</span><span class="o">::</span><span class="n">malloc_device</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">queue</span><span class="p">);</span>
+
+<span class="c1">// create a syclflow task to set the first N/2 elements to -1</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span> <span class="n">syclflow</span><span class="p">){</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">ch2d</span> <span class="o">=</span> <span class="n">syclflow</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dvec</span><span class="p">,</span> <span class="n">hvec</span><span class="p">,</span> <span class="n">N</span><span class="p">);</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">fill</span> <span class="o">=</span> <span class="n">syclflow</span><span class="p">.</span><span class="n">fill</span><span class="p">(</span><span class="n">dvec</span><span class="p">,</span> <span class="mi">-1</span><span class="p">,</span> <span class="n">N</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">cd2h</span> <span class="o">=</span> <span class="n">syclflow</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">hvec</span><span class="p">,</span> <span class="n">dvec</span><span class="p">,</span> <span class="n">N</span><span class="p">);</span> 
+  <span class="n">fill</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cd2h</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">ch2d</span><span class="p">);</span>
+<span class="p">},</span> <span class="n">queue</span><span class="p">);</span>
+
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+
+<span class="c1">// inspect the result</span>
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">?</span> <span class="n">assert</span><span class="p">(</span><span class="n">hvec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">-1</span><span class="p">)</span> <span class="o">:</span> <span class="n">assert</span><span class="p">(</span><span class="n">hvec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">100</span><span class="p">);</span>
+<span class="p">}</span></pre><p>Both <a href="classtf_1_1syclFlow.html#ac433456f3960028fb12a53018b263aee" class="m-doc">tf::<wbr />syclFlow::<wbr />copy</a> and <a href="classtf_1_1syclFlow.html#a628843c986d60bea61eca8c48028159e" class="m-doc">tf::<wbr />syclFlow::<wbr />fill</a> operate on <code>typed</code> data. You can use <a href="classtf_1_1syclFlow.html#ac1e1eb858d9271ed61ff4fe00f135e92" class="m-doc">tf::<wbr />syclFlow::<wbr />memcpy</a> and <a href="classtf_1_1syclFlow.html#a54b7497c0f4763bb4f8604f6c5654a5f" class="m-doc">tf::<wbr />syclFlow::<wbr />memset</a> to operate on <code>untyped</code> data (i.e., array of bytes).</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span> <span class="n">syclflow</span><span class="p">){</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">ch2d</span> <span class="o">=</span> <span class="n">syclflow</span><span class="p">.</span><span class="n">memcpy</span><span class="p">(</span><span class="n">dvec</span><span class="p">,</span> <span class="n">hvec</span><span class="p">,</span> <span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">mset</span> <span class="o">=</span> <span class="n">syclflow</span><span class="p">.</span><span class="n">memset</span><span class="p">(</span><span class="n">dvec</span><span class="p">,</span> <span class="mi">-1</span><span class="p">,</span> <span class="n">N</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">cd2h</span> <span class="o">=</span> <span class="n">syclflow</span><span class="p">.</span><span class="n">memcpy</span><span class="p">(</span><span class="n">hvec</span><span class="p">,</span> <span class="n">dvec</span><span class="p">,</span> <span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span> 
+  <span class="n">fill</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cd2h</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">ch2d</span><span class="p">);</span>
+<span class="p">},</span> <span class="n">queue</span><span class="p">);</span></pre></section><section id="CreateKernelTasks"><h2><a href="#CreateKernelTasks">Create Kernel Tasks</a></h2><p>SYCL allows a simple execution model in which a kernel is invoked over an N-dimensional index space defined by <code>sycl::range&lt;N&gt;</code>, where <code>N</code> is one, two or three. Each work item in such a kernel executes independently across a set of partitioned work groups. <a href="classtf_1_1syclFlow.html#ae42b1da441d5696dc589ee9ee89b9deb" class="m-doc">tf::<wbr />syclFlow::<wbr />parallel_for</a> defines several variants to create a kernel task. The following variant pairs up a <code>sycl::range</code> and a <code>sycl::id</code> to set each element in <code>data</code> to <code>1.0f</code> when it is not necessary to query the global range of the index space being executed across.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">task</span> <span class="o">=</span> <span class="n">syclflow</span><span class="p">.</span><span class="n">parallel_for</span><span class="p">(</span>
   <span class="n">sycl</span><span class="o">::</span><span class="n">range</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="p">[</span><span class="n">data</span><span class="p">](</span><span class="n">sycl</span><span class="o">::</span><span class="n">id</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span> <span class="n">id</span><span class="p">){</span> <span class="n">data</span><span class="p">[</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0f</span><span class="p">;</span> <span class="p">}</span>
 <span class="p">);</span></pre><p>As the same example, the following variant enables low-level functionality of work items and work groups using <code>sycl::nd_range</code> and <code>sycl::nd_item</code>. This becomes valuable when an execution requires groups of work items that communicate and synchronize.</p><pre class="m-code"><span class="c1">// partition the N-element range to N/M work groups each of M work items</span>
-<span class="n">syclflow</span><span class="p">.</span><span class="n">parallel_for</span><span class="p">(</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">task</span> <span class="o">=</span> <span class="n">syclflow</span><span class="p">.</span><span class="n">parallel_for</span><span class="p">(</span>
   <span class="n">sycl</span><span class="o">::</span><span class="n">nd_range</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">{</span><span class="n">sycl</span><span class="o">::</span><span class="n">range</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">sycl</span><span class="o">::</span><span class="n">range</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">M</span><span class="p">)},</span>
   <span class="p">[</span><span class="n">data</span><span class="p">](</span><span class="n">sycl</span><span class="o">::</span><span class="n">nd_item</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span> <span class="n">item</span><span class="p">){</span>
     <span class="k">auto</span> <span class="n">id</span> <span class="o">=</span> <span class="n">item</span><span class="p">.</span><span class="n">get_global_linear_id</span><span class="p">();</span>
@@ -156,7 +184,49 @@
     <span class="c1">// item.get_local_linear_id();</span>
     <span class="c1">// ...</span>
   <span class="p">}</span>
-<span class="p">);</span></pre><p>All the kernel methods defined in the SYCL queue are applicable for <a href="classtf_1_1syclFlow.html#ae42b1da441d5696dc589ee9ee89b9deb" class="m-doc">tf::<wbr />syclFlow::<wbr />parallel_for</a>.</p></section><section id="CreateCommandGroupFunctionObjectTasks"><h2><a href="#CreateCommandGroupFunctionObjectTasks">Create Command Group Function Object Tasks</a></h2></section><section id="UsesyclFlowInAStandaloneEnvironment"><h2><a href="#UsesyclFlowInAStandaloneEnvironment">Use syclFlow in a Standalone Environment</a></h2><p>You can use <a href="classtf_1_1syclFlow.html" class="m-doc">tf::<wbr />syclFlow</a> in a standalone environment without going through <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> and offloads it to a GPU from the caller thread. All the tasking methods we have discussed so far are applicable for the standalone use.</p><pre class="m-code"><span class="n">sycl</span><span class="o">::</span><span class="n">queue</span> <span class="n">queue</span><span class="p">;</span>       
+<span class="p">);</span></pre><p>All the kernel methods defined in the SYCL queue are applicable for <a href="classtf_1_1syclFlow.html#ae42b1da441d5696dc589ee9ee89b9deb" class="m-doc">tf::<wbr />syclFlow::<wbr />parallel_for</a>.</p></section><section id="CreateCommandGroupFunctionObjectTasks"><h2><a href="#CreateCommandGroupFunctionObjectTasks">Create Command Group Function Object Tasks</a></h2><p>SYCL provides a way to encapsulate a device-side operation and all its data and event dependencies in a single <em>command group function object</em>. The function object accepts an argument of command group <em>handler</em> constructed by the SYCL runtime. Command group handler is the heart of SYCL programming as it defines pretty much all kernel-related methods, including submission, execution, and synchronization. You can directly create a SYCL task from a command group function object using <a href="classtf_1_1syclFlow.html#a904b80cc2de79c9bd9ee46f4de2cc9a0" class="m-doc">tf::<wbr />syclFlow::<wbr />on</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">task</span> <span class="o">=</span> <span class="n">syclflow</span><span class="p">.</span><span class="n">on</span><span class="p">(</span>
+  <span class="p">[</span><span class="o">=</span><span class="p">]</span> <span class="p">(</span><span class="n">sycl</span><span class="o">::</span><span class="n">handler</span><span class="o">&amp;</span> <span class="n">handler</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">handler</span><span class="p">.</span><span class="n">require</span><span class="p">(</span><span class="n">accessor</span><span class="p">);</span>
+    <span class="n">handler</span><span class="p">.</span><span class="n">single_task</span><span class="p">([</span><span class="o">=</span><span class="p">](){</span>  <span class="c1">// place a single-threaded kernel function</span>
+      <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">);</span></pre></section><section id="OffloadAsyclFlow"><h2><a href="#OffloadAsyclFlow">Offload a syclFlow</a></h2><p>By default, the executor offloads and executes the syclFlow once. When a syclFlow is being executed, its task graph will be materialized by the Taskflow runtime and submitted to its associated SYCL queue in a topological order of task dependencies defined in that graph. You can explicitly execute a syclFlow using different offload methods:</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span> <span class="n">sf</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// ... create SYCL tasks</span>
+  <span class="n">sf</span><span class="p">.</span><span class="n">offload</span><span class="p">();</span>      <span class="c1">// offload the syclFlow and run it once</span>
+  <span class="n">sf</span><span class="p">.</span><span class="n">offload_n</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>  <span class="c1">// offload the syclFlow and run it 10 times</span>
+  <span class="n">sf</span><span class="p">.</span><span class="n">offload_until</span><span class="p">([</span><span class="n">repeat</span><span class="o">=</span><span class="mi">5</span><span class="p">]</span> <span class="p">()</span> <span class="k">mutable</span> <span class="p">{</span> <span class="k">return</span> <span class="n">repeat</span><span class="o">--</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">})</span>  <span class="c1">// five times</span>
+<span class="p">},</span> <span class="n">queue</span><span class="p">);</span></pre><p>After you offload a syclFlow, it is considered executed, and the executor will <em>not</em> run an offloaded syclFlow after leaving the syclFlow task callable. On the other hand, if a syclFlow is not offloaded, the executor runs it once. For example, the following two versions represent the same execution logic.</p><pre class="m-code"><span class="c1">// version 1: explicitly offload a syclFlow once</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span> <span class="n">sf</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">sf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([](){});</span>
+  <span class="n">sf</span><span class="p">.</span><span class="n">offload</span><span class="p">();</span>
+<span class="p">},</span> <span class="n">queue</span><span class="p">);</span>
+
+<span class="c1">// version 2 (same as version 1): executor offloads the syclFlow once</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span> <span class="n">sf</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">sf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([](){});</span>
+<span class="p">},</span> <span class="n">queue</span><span class="p">);</span></pre></section><section id="UpdateAsyclFlow"><h2><a href="#UpdateAsyclFlow">Update a syclFlow</a></h2><p>You can update a SYCL task from an offloaded syclFlow and <em>rebind</em> it to another task type. For example, you can rebind a memory operation task to a parallel-for kernel task from an offloaded syclFlow and vice versa.</p><pre class="m-code"><span class="kt">size_t</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">;</span>
+<span class="n">sycl</span><span class="o">::</span><span class="n">queue</span> <span class="n">queue</span><span class="p">;</span>
+<span class="kt">int</span><span class="o">*</span> <span class="n">data</span> <span class="o">=</span> <span class="n">sycl</span><span class="o">::</span><span class="n">malloc_shared</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">queue</span><span class="p">);</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">syclflow</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span> <span class="n">sf</span><span class="p">){</span>
+  
+  <span class="c1">// create a task to set each element to -1 </span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">task</span> <span class="o">=</span> <span class="n">syclflow</span><span class="p">.</span><span class="n">fill</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">-1</span><span class="p">,</span> <span class="n">N</span><span class="p">);</span>
+  <span class="n">syclflow</span><span class="p">.</span><span class="n">offload</span><span class="p">();</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">for_each</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data</span><span class="o">+</span><span class="n">N</span><span class="p">,</span> <span class="p">[](</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span> <span class="n">assert</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">-1</span><span class="p">);</span> <span class="p">});</span>
+
+  <span class="c1">// rebind the task to a parallel-for kernel task setting each element to 100</span>
+  <span class="n">syclflow</span><span class="p">.</span><span class="n">rebind_parallel_for</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">sycl</span><span class="o">::</span><span class="n">range</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="p">[](</span><span class="n">sycl</span><span class="o">::</span><span class="n">id</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span> <span class="n">id</span><span class="p">){</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+  <span class="p">});</span>
+  <span class="n">syclflow</span><span class="p">.</span><span class="n">offload</span><span class="p">();</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">for_each</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data</span><span class="o">+</span><span class="n">N</span><span class="p">,</span> <span class="p">[](</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span> <span class="n">assert</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">100</span><span class="p">);</span> <span class="p">});</span>
+<span class="p">},</span> <span class="n">queue</span><span class="p">);</span>
+
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Each method of task creation in <a href="classtf_1_1syclFlow.html" class="m-doc">tf::<wbr />syclFlow</a> has a corresponding method of rebinding a task to that task type (e.g., <a href="classtf_1_1syclFlow.html#a904b80cc2de79c9bd9ee46f4de2cc9a0" class="m-doc">tf::<wbr />syclFlow::<wbr />on</a> and <a href="classtf_1_1syclFlow.html#a80528e6face7519e0dc52603a28f2778" class="m-doc">tf::<wbr />syclFlow::<wbr />rebind_on</a>, <a href="classtf_1_1syclFlow.html#ae42b1da441d5696dc589ee9ee89b9deb" class="m-doc">tf::<wbr />syclFlow::<wbr />parallel_for</a> and <a href="classtf_1_1syclFlow.html#ae42b1da441d5696dc589ee9ee89b9deb" class="m-doc">tf::<wbr />syclFlow::<wbr />parallel_for</a>).</p></section><section id="UsesyclFlowInAStandaloneEnvironment"><h2><a href="#UsesyclFlowInAStandaloneEnvironment">Use syclFlow in a Standalone Environment</a></h2><p>You can use <a href="classtf_1_1syclFlow.html" class="m-doc">tf::<wbr />syclFlow</a> in a standalone environment without going through <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> and offloads it to a SYCL device from the caller thread. All the tasking methods we have discussed so far apply to the standalone use.</p><pre class="m-code"><span class="n">sycl</span><span class="o">::</span><span class="n">queue</span> <span class="n">queue</span><span class="p">;</span>       
 <span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span> <span class="n">sf</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>  <span class="c1">// create a standalone syclFlow</span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">h2d_x</span> <span class="o">=</span> <span class="n">sf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">hx</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">N</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;h2d_x&quot;</span><span class="p">);</span>
@@ -172,7 +242,7 @@
 <span class="n">saxpy</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">h2d_x</span><span class="p">,</span> <span class="n">h2d_y</span><span class="p">)</span>   <span class="c1">// kernel runs after  host-to-device copy</span>
      <span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">d2h_x</span><span class="p">,</span> <span class="n">d2h_y</span><span class="p">);</span>  <span class="c1">// kernel runs before device-to-host copy</span>
 
-<span class="n">cf</span><span class="p">.</span><span class="n">offload</span><span class="p">();</span>  <span class="c1">// offload and run the standalone syclFlow once</span></pre></section>
+<span class="n">sf</span><span class="p">.</span><span class="n">offload</span><span class="p">();</span>  <span class="c1">// offload and run the standalone syclFlow once</span></pre><aside class="m-note m-info"><h4>Note</h4><p>In the standalone mode, a written syclFlow will not be executed unless you explicitly call an offload method, as there is neither a taskflow nor an executor.</p></aside></section>
       </div>
     </div>
   </div>

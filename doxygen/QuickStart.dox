@@ -29,7 +29,7 @@ int main(){
   tf::Executor executor;
   tf::Taskflow taskflow;
 
-  auto [A, B, C, D] = taskflow.emplace(  // create 4 tasks
+  auto [A, B, C, D] = taskflow.emplace(  // create four tasks
     [] () { std::cout << "TaskA\n"; },
     [] () { std::cout << "TaskB\n"; },
     [] () { std::cout << "TaskC\n"; },

@@ -139,7 +139,7 @@ and let the CUDA runtime  perform automatic memory migration between processors
 
 @section GPUMemoryOperations Create Memory Operation Tasks
 
-tf::cudaFlow provides a set of methods for users to manipulate device memory data.
+tf::cudaFlow provides a set of methods for users to manipulate device memory.
 There are two categories, raw data and typed data.
 Raw data operations are methods with prefix @c mem, such as @c memcpy and @c memset,
 that take action on GPU memory area in @em bytes.
@@ -237,7 +237,44 @@ We encourage users to study and understand the parallel structure of their appli
 in order to come up with the best granularity of task decomposition.
 A refined task graph can have significant performance difference from the raw counterpart.
 
-@section OffloadAndUpdateAcudaFlow Offload and Update a cudaFlow
+@section OffloadAcudaFlow Offload a cudaFlow
+
+By default, the executor offloads and executes the %cudaFlow once.
+When a %cudaFlow is being executed, its task graph will be materialized
+by the %Taskflow runtime and mapped to a native CUDA graph for efficient execution 
+via the CUDA runtime.
+You can explicitly execute a %cudaFlow using different offload methods:
+
+@code{.cpp}
+taskflow.emplace([](tf::cudaFlow& cf) {
+  // ... create CUDA tasks
+  cf.offload();      // offload the cudaFlow and run it once
+  cf.offload_n(10);  // offload the cudaFlow and run it 10 times
+  cf.offload_until([repeat=5] () mutable { return repeat-- == 0; })  // five times
+});
+@endcode
+
+After you offload a %cudaFlow, 
+it is considered executed, and the executor will @em not run an offloaded %cudaFlow
+after leaving the %cudaFlow task callable.
+On the other hand, if a %cudaFlow is not offloaded, 
+the executor runs it once.
+For example, the following two versions represent the same execution logic.
+
+@code{.cpp}
+// version 1: explicitly offload a cudaFlow once
+taskflow.emplace([](tf::cudaFlow& cf) {
+  cf.single_task([] __device__ (){});
+  cf.offload();
+});
+
+// version 2 (same as version 1): executor offloads the cudaFlow once
+taskflow.emplace([](tf::cudaFlow& sf) {
+  cf.single_task([] __device__ (){});
+});
+@endcode
+
+@section UpdateAcudaFlow Update a cudaFlow
 
 Many GPU applications require you to launch a %cudaFlow multiple times
 and update node parameters (e.g., kernel parameters and memory addresses) 
@@ -259,65 +296,26 @@ between successive executions.
 8: });
 @endcode
 
-Line 2 creates a kernel task to run @c my_kernel with the given parameters.
-Line 3 offloads the %cudaFlow and performs an immediate execution;
-afterwards, we must not modify the graph topology.
-Line 5 updates the parameters of @c my_kernel associated with @c task.
-Line 6 executes the %cudaFlow again with updated kernel parameters.
-We currently supports the following offload methods:
-  + tf::cudaFlow::offload offloads and runs the %cudaFlow once
-  + tf::cudaFlow::offload_n offloads and runs the %cudaFlow @c n times
-  + tf::cudaFlow::offload_until offloads and repeatedly runs the %cudaFlow
-    until the given predicate returns @c true
+Debrief:
+@li Line 2 creates a kernel task to run @c my_kernel with the given parameters.
+@li Line 3 offloads the %cudaFlow and performs an immediate execution.
+@li Line 5 updates the parameters of @c my_kernel associated with @c task.
+@li Line 6 executes the %cudaFlow again with updated kernel parameters.
 
-@code{.cpp}
-taskflow.emplace(tf::cudaFlow& cf) {
-  // ... create GPU tasks
-  cf.offload();      // offload the cudaFlow and run it once
-  cf.offload_n(10);  // offload the cudaFlow and run it 10 times
-  cf.offload_until([repeat=5] () mutable { return repeat-- == 0; })  // 5 times
-};
-@endcode
-
-After you offload a %cudaFlow (possibly multiple times), 
-it is considered executed, and the executor will @em not run an offloaded %cudaFlow
-after leaving the %cudaFlow task callable.
-On the other hand, if a %cudaFlow is not offloaded, 
-the executor runs it once.
-For example, the following two versions represent the same execution logic.
-
-@code{.cpp}
-// version 1: explicitly offload a cudaFlow once
-taskflow.emplace(tf::cudaFlow& cf) {
-  cf.kernel(grid, block, shm, my_kernel, my_kernel_args).name("my_kernel");
-  cf.offload();
-};
-
-// version 2 (same as version 1): executor offloads the cudaFlow once
-taskflow.emplace(tf::cudaFlow& cf) {
-  cf.kernel(grid, block, shm, my_kernel, my_kernel_args).name("my_kernel");
-};
-@endcode
 
 Between successive offloads (i.e., executions of a %cudaFlow),
 you can update the task parameters, 
 such as changing the kernel execution parameters and memory operation parameters.
-We currently support the following methods to update task parameters
-from an offloaded %cudaFlow:
-  + tf::cudaFlow::update_kernel updates the parameters of a kernel task
-  + tf::cudaFlow::update_copy updates the parameters of a memcpy task to form a copy task
-  + tf::cudaFlow::update_memcpy updates the parameters of a memcpy task
-  + tf::cudaFlow::update_memset updates the parameters of a memset task
-  + tf::cudaFlow::update_fill updates the parameters of a memset task to form a fill task
-  + tf::cudaFlow::update_zero updates the parameters of a memset task to form a zero task
-  + tf::cudaFlow::update_for_each updates the parameters of a tf::cudaFlow::for_each task
-  + tf::cudaFlow::update_for_each_index updates the parameters of a tf::cudaFlow::for_each_index task
-  + tf::cudaFlow::update_transform updates the parameters of a tf::cudaFlow::transform task
-  + tf::cudaFlow::update_reduce updates the parameters of a tf::cudaFlow::reduce task
-  + tf::cudaFlow::update_uninitialized_reduce updates parameters of a tf::cudaFlow::uninitialized_reduce task
+However, you must @em NOT change the topology of an offloaded %cudaFlow.
+Each method of task creation in tf::cudaFlow has a corresponding method of updating
+the parameters of the task created from the same creation method
+(e.g., tf::cudaFlow::kernel and tf::cudaFlow::update_kernel, 
+tf::cudaFlow::copy and tf::cudaFlow::update_copy).
+
 
 @attention
-You must not change the topology of an offloaded graph.
+There are a few restrictions on updating task parameters in a %cudaFlow. 
+Notably, you must @em NOT change the topology of an offloaded graph.
 In addition, update methods have the following limitations:
 + kernel task
   + The kernel function is not allowed to change. This restriction applies to all algorithm tasks that are created using lambda.
@@ -332,8 +330,7 @@ In addition, update methods have the following limitations:
 
 You can use tf::cudaFlow in a standalone environment without going through
 tf::Taskflow and offloads it to a GPU from the caller thread.
-All the features we have discussed so far are applicable 
-for the standalone use.
+All the features we have discussed so far apply to the standalone use.
 
 @code{.cpp}
 tf::cudaFlow cf;  // create a standalone cudaFlow
@@ -351,10 +348,8 @@ saxpy.succeed(h2d_x, h2d_y)   // kernel runs after  host-to-device copy
 cf.offload();  // offload and run the standalone cudaFlow once
 @endcode
 
-@attention
 When using %cudaFlow in a standalone environment, it is your choice
 to decide its GPU context.
-
 The following example creates a %cudaFlow and executes it on GPU 0.
 
 @code{.cpp}
@@ -362,6 +357,10 @@ tf::cudaScopedDevice gpu(0);
 tf::cudaFlow cf;  // create a standalone cudaFlow on GPU 0
 cf.offload();     // run the capturer once on GPU 0
 @endcode
+
+@note
+In the standalone mode, a written %cudaFlow will not be executed unless 
+you explicitly call an offload method, as there is neither a taskflow nor an executor.
 
 */
 
