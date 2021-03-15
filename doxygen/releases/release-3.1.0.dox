@@ -59,6 +59,12 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
   + tf::cudaFlowCapturer::rebind_transform
   + tf::cudaFlowCapturer::rebind_reduce
   + tf::cudaFlowCapturer::rebind_uninitialized_reduce
+@li added tf::cudaFlow update methods:
+  + tf::cudaFlow::update_for_each
+  + tf::cudaFlow::update_for_each_index
+  + tf::cudaFlow::update_transform
+  + tf::cudaFlow::update_reduce
+  + tf::cudaFlow::update_uninitialized_reduce
 @li added %cudaFlow examples:
   + parallel reduction (examples/cuda/cuda_reduce.cu)
   + parallel transform (examples/cuda/cuda_transform.cu)
@@ -66,7 +72,7 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 
 @subsection release-3-1-0_syclflow syclFlow
 
-@li added a task graph-based interface, tf::syclFlow, for SYCL programming
+@li added a task graph-based programming model (see @ref GPUTaskingsyclFlow)
 @li added %syclFlow examples:
   + device query (examples/sycl/sycl_device.cpp)
   + range query (examples/sycl/sycl_ndrange.cpp)
@@ -84,7 +90,9 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
   + tf::syclFlow::reduce for parallel reduction
   + tf::syclFlow::uninitialized_reduce for uninitialized parallel reduction
 
-Please visit these pages, TBD, to know more details about compiling and running
+Please visit these pages, @ref GPUTaskingsyclFlow, @ref CompileTaskflowWithSYCL,
+and TBD
+to know more details about compiling and running
 %syclFlow programs.
 
 @subsection release-3-1-0_utilities Utilities
@@ -109,7 +117,13 @@ There are no deprecated or removed items in this release.
 @section release-3-1-0_documentation Documentation
 
 + added @ref CompileTaskflowWithSYCL
-+ added SYCL example and tests in @ref install
++ added SYCL example and tests to the page @ref install
++ added @ref QueryTheWorkerID to the cookbook page @ref ExecuteTaskflow
++ added @ref syclFlowAlgorithms
+  + @ref SingleTaskSYCL
+  + @ref ForEachSYCL
+  + @ref SYCLReduce
+  + @ref ParallelTransformsSYCL
 + revised update methods in @ref GPUTaskingcudaFlow 
 + revised rebind methods in @ref GPUTaskingcudaFlowCapturer
 

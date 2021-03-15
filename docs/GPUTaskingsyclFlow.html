@@ -242,7 +242,7 @@
 <span class="n">saxpy</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">h2d_x</span><span class="p">,</span> <span class="n">h2d_y</span><span class="p">)</span>   <span class="c1">// kernel runs after  host-to-device copy</span>
      <span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">d2h_x</span><span class="p">,</span> <span class="n">d2h_y</span><span class="p">);</span>  <span class="c1">// kernel runs before device-to-host copy</span>
 
-<span class="n">sf</span><span class="p">.</span><span class="n">offload</span><span class="p">();</span>  <span class="c1">// offload and run the standalone syclFlow once</span></pre><aside class="m-note m-info"><h4>Note</h4><p>In the standalone mode, a written syclFlow will not be executed unless you explicitly call an offload method, as there is neither a taskflow nor an executor.</p></aside></section>
+<span class="n">sf</span><span class="p">.</span><span class="n">offload</span><span class="p">();</span>  <span class="c1">// offload and run the standalone syclFlow once</span></pre><aside class="m-note m-info"><h4>Note</h4><p>In the standalone mode, a written syclFlow will not be executed untile you explicitly call an offload method, as there is neither a taskflow nor an executor.</p></aside></section>
       </div>
     </div>
   </div>

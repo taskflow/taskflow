@@ -187,7 +187,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1syclTask_1a92d0dd0929b9ac4e46baf4d546497389" kindref="member">precede</ref>(d2h_x,<sp/>d2h_y);<sp/><sp/></highlight><highlight class="comment">//<sp/>kernel<sp/>runs<sp/>before<sp/>device-to-host<sp/>copy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">sf.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>offload<sp/>and<sp/>run<sp/>the<sp/>standalone<sp/>syclFlow<sp/>once</highlight></codeline>
-</programlisting></para><para><simplesect kind="note"><para>In the standalone mode, a written syclFlow will not be executed unless you explicitly call an offload method, as there is neither a taskflow nor an executor. </para></simplesect>
+</programlisting></para><para><simplesect kind="note"><para>In the standalone mode, a written syclFlow will not be executed untile you explicitly call an offload method, as there is neither a taskflow nor an executor. </para></simplesect>
 </para></sect1>
     </detaileddescription>
   </compounddef>

@@ -88,6 +88,21 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal"><sp/>9:</highlight></codeline>
 <codeline><highlight class="normal">10:<sp/>executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
 </programlisting></para></sect1>
+<sect1 id="ExecuteTaskflow_1QueryTheWorkerID">
+<title>Query the Worker Identieir</title>
+<para>Each worker in an executor has an unique integer identifier in the range <computeroutput>[0, N)</computeroutput> that can be queried by the caller thread using <ref refid="classtf_1_1Executor_1a6487d589cb1f6b078b69fd3bb1082345" kindref="member">tf::Executor::this_worker_id</ref>. If the caller thread is not a worker in the executor, <computeroutput>-1</computeroutput> is returned. This method is convenient for users to maintain a one-to-one mapping between a worker and its application data structure.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>worker_vectors[8];<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>one<sp/>vector<sp/>per<sp/>worker</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(8);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>an<sp/>executor<sp/>of<sp/>eight<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">assert(executor.<ref refid="classtf_1_1Executor_1a6487d589cb1f6b078b69fd3bb1082345" kindref="member">this_worker_id</ref>()<sp/>==<sp/>-1);<sp/><sp/></highlight><highlight class="comment">//<sp/>master<sp/>thread<sp/>is<sp/>not<sp/>a<sp/>worker</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal"><sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a6487d589cb1f6b078b69fd3bb1082345" kindref="member">this_worker_id</ref>();<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>in<sp/>the<sp/>range<sp/>[0,<sp/>8)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>vec<sp/>=<sp/>worker_vectors[worker_id];</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting></para></sect1>
 <sect1 id="ExecuteTaskflow_1ObserveThreadActivities">
 <title>Observe Thread Activities</title>
 <para>You can observe thread activities in an executor when a worker thread participates in executing a task and leaves the execution using <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref> <ndash/> an <emphasis>interface</emphasis> class that provides a set of methods for you to define what to do when a thread enters and leaves the execution context of a task.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">ObserverInterface<sp/>{</highlight></codeline>

@@ -1,0 +1,46 @@
+namespace tf {
+
+/** @page SingleTaskSYCL Single %Task 
+
+tf::syclFlow provides a template method, tf::syclFlow::single_task,
+for creating a task to run the
+given callable using a single kernel thread.
+
+@tableofcontents
+
+@section SingleTaskSYCLSingleTask Run a Task with a Single Thread
+
+You can create a task to run a kernel function just once, i.e.,
+using one GPU thread.
+This is handy when you want to set up a single or a few global variables 
+that do not need multiple threads and will be used by multiple 
+kernels afterwards.
+The following example creates a single-task kernel that sets
+@c gpu_variable to 1.
+
+@code{.cpp}
+sycl::queue queue;
+int* gpu_variable = sycl::malloc_shared<int>(1, queue);
+
+tf::Task = taskflow.emplace_on([&] (tf::syclFlow& sf) {
+  // create a single task to set the gpu_variable to 1
+  tf::syclTask set_var = sf.single_task(
+    [gpu_variable] () { *gpu_variable = 1; }
+  );
+  // create one kernel task that needs access to gpu_variable
+  tf::syclTask kernel1 = sf.parallel_for(
+    sycl::range<1>(N), [=] (sycl::id<1> id) { data1[id] *= gpu_variable; }
+  );
+  set_par.precede(kernel1);
+}, queue);
+@endcode
+
+
+*/
+}
+
+
+
+
+
+

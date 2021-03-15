@@ -203,7 +203,7 @@ Between successive offloads (i.e., executions of a cudaFlow), you can update the
 </programlisting></para><para>When using cudaFlow in a standalone environment, it is your choice to decide its GPU context. The following example creates a cudaFlow and executes it on GPU 0.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaScopedDevice" kindref="compound">tf::cudaScopedDevice</ref><sp/>gpu(0);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;<sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>standalone<sp/>cudaFlow<sp/>on<sp/>GPU<sp/>0</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">offload</ref>();<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>capturer<sp/>once<sp/>on<sp/>GPU<sp/>0</highlight></codeline>
-</programlisting></para><para><simplesect kind="note"><para>In the standalone mode, a written cudaFlow will not be executed unless you explicitly call an offload method, as there is neither a taskflow nor an executor. </para></simplesect>
+</programlisting></para><para><simplesect kind="note"><para>In the standalone mode, a written cudaFlow will not be executed untile you explicitly call an offload method, as there is neither a taskflow nor an executor. </para></simplesect>
 </para></sect1>
     </detaileddescription>
   </compounddef>

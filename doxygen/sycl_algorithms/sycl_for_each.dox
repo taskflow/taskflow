@@ -1,17 +1,18 @@
 namespace tf {
 
-/** @page ForEachCUDA Parallel Iterations 
+/** @page ForEachSYCL Parallel Iterations 
 
-tf::cudaFlow provides two template methods, tf::cudaFlow::for_each
-and tf::cudaFlow::for_each_index, for creating tasks to perform
-parallel iterations over a range of items.
+tf::syclFlow provides two template methods,
+tf::syclFlow::for_each and tf::syclFlow::for_each_index,
+for creating tasks to perform parallel iterations over a range of items.
 
 @tableofcontents
 
-@section ForEachCUDAIndexBasedParallelFor Index-based Parallel Iterations
+@section ForEachSYCLIndexBasedParallelFor Index-based Parallel Iterations
 
 Index-based parallel-for performs parallel iterations over a range <tt>[first, last)</tt> with the given @c step size.
-The task created by tf::cudaFlow::for_each_index(I first, I last, I step, C&& callable) 
+These indices must be @em integral type.
+The task created by tf::syclFlow::for_each_index(I first, I last, I step, C&& callable) 
 represents a kernel of parallel execution
 for the following loop:
 
@@ -28,25 +29,24 @@ for(auto i=first; i>last; i+=step) {
 
 Each iteration @c i is independent of each other and is assigned one kernel thread 
 to run the callable.
-Since the callable runs on GPU, it must be declared with a <tt>%__device__</tt> specifier.
-The following example creates a kernel that assigns each entry of @c gpu_data 
+The following example creates a kernel that assigns each element of @c gpu_data 
 to 1 over the range @c [0, 100) with step size 1.
 
 @code{.cpp}
-taskflow.emplace([&](tf::cudaFlow& cf){
+taskflow.emplace_on([&](tf::syclFlow& sf){
   // ... create other gpu tasks
   // assigns each element in gpu_data to 1 over the range [0, 100) with step size 1
-  cf.for_each_index(0, 100, 1, [gpu_data] __device__ (int idx) {
+  sf.for_each_index(0, 100, 1, [gpu_data] (int idx) {
     gpu_data[idx] = 1;
   });
-});
+}, sycl_queue);
 @endcode
 
-@section ForEachCUDAIteratorBasedParallelIterations Iterator-based Parallel Iterations
+@section ForEachSYCLIteratorBasedParallelIterations Iterator-based Parallel Iterations
 
 Iterator-based parallel-for performs parallel iterations over a range specified 
 by two STL-styled iterators, @c first and @c last.
-The task created by tf::cudaFlow::for_each(I first, I last, C&& callable) represents 
+The task created by tf::syclFlow::for_each(I first, I last, C&& callable) represents 
 a parallel execution of the following loop:
 
 @code{.cpp}
@@ -61,23 +61,17 @@ The following example creates a @c for_each kernel that assigns each element in
 @c gpu_data to 1 over the range <tt>[gpu_data, gpu_data + 1000)</tt>.
 
 @code{.cpp}
-taskflow.emplace([&](tf::cudaFlow& cf){
+taskflow.emplace_on([&](tf::syclFlow& cf){
   // ... create gpu tasks
   // assigns each element to 1 over the range [gpu_data, gpu_data + 1000)
-  cf.for_each(gpu_data, gpu_data + 1000, [] __device__ (int& item) {
+  cf.for_each(gpu_data, gpu_data + 1000, [] (int& item) {
     item = 1;
   }); 
-});
+}, sycl_queue);
 @endcode
 
 Each iteration is independent of each other and is assigned one kernel thread 
 to run the callable.
-Since the callable runs on GPU, it must be declared with a <tt>%__device__</tt> specifier.
-
-@section ForEachCUDAMiscellaneousItems Miscellaneous Items
-
-The parallel-iteration algorithms are also available in 
-tf::cudaFlowCapturer::for_each and tf::cudaFlowCapturer::for_each_index.
 
 */
 }

@@ -174,7 +174,7 @@ A cudaFlowCapturer lives with the callable. When the executor invoke the capture
 </programlisting></para><para>When using cudaFlow Capturer in a standalone environment, it is your choice to decide its GPU context. The following example creates a cudaFlow capturer and executes it on GPU 2.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaScopedDevice" kindref="compound">tf::cudaScopedDevice</ref><sp/>gpu(2);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref><sp/>cf;<sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>standalone<sp/>cudaFlow<sp/>capturer<sp/>on<sp/>GPU<sp/>2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlowCapturer_1a5959002af1cf1a1ada3d86a073682232" kindref="member">offload</ref>();<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>capturer<sp/>once<sp/>on<sp/>GPU<sp/>2</highlight></codeline>
-</programlisting></para><para><simplesect kind="note"><para>In the standalone mode, a written cudaFlow capturer will not be executed unless you explicitly call an offload method, as there is neither a taskflow nor an executor. </para></simplesect>
+</programlisting></para><para><simplesect kind="note"><para>In the standalone mode, a written cudaFlow capturer will not be executed until you explicitly call an offload method, as there is neither a taskflow nor an executor. </para></simplesect>
 </para></sect1>
     </detaileddescription>
   </compounddef>

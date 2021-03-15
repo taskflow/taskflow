@@ -2,8 +2,9 @@ namespace tf {
 
 /** @page CUDAReduce Parallel Reduction 
 
-%cudaFlow provides a template function that constructs a task to perform 
-parallel reduction over a range of items.
+tf::cudaFlow provides two template methods,
+tf::cudaFlow::for_each and tf::cudaFlow::for_each_index,
+for creating tasks to perform parallel reductions over a range of items.
 
 @tableofcontents
 

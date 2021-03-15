@@ -468,7 +468,7 @@
 
 <span class="n">cf</span><span class="p">.</span><span class="n">offload</span><span class="p">();</span>  <span class="c1">// offload and run the standalone cudaFlow once</span></pre><p>When using cudaFlow in a standalone environment, it is your choice to decide its GPU context. The following example creates a cudaFlow and executes it on GPU 0.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">cudaScopedDevice</span> <span class="n">gpu</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span> <span class="n">cf</span><span class="p">;</span>  <span class="c1">// create a standalone cudaFlow on GPU 0</span>
-<span class="n">cf</span><span class="p">.</span><span class="n">offload</span><span class="p">();</span>     <span class="c1">// run the capturer once on GPU 0</span></pre><aside class="m-note m-info"><h4>Note</h4><p>In the standalone mode, a written cudaFlow will not be executed unless you explicitly call an offload method, as there is neither a taskflow nor an executor.</p></aside></section>
+<span class="n">cf</span><span class="p">.</span><span class="n">offload</span><span class="p">();</span>     <span class="c1">// run the capturer once on GPU 0</span></pre><aside class="m-note m-info"><h4>Note</h4><p>In the standalone mode, a written cudaFlow will not be executed untile you explicitly call an offload method, as there is neither a taskflow nor an executor.</p></aside></section>
       </div>
     </div>
   </div>
