@@ -40,7 +40,7 @@ enum class TaskType : int {
 /**
 @brief array of all task types (used for iterating task types)
 */
-inline constexpr std::array<TaskType, 8> TASK_TYPES = {
+inline constexpr std::array<TaskType, 9> TASK_TYPES = {
   TaskType::PLACEHOLDER,
   TaskType::CUDAFLOW,
   TaskType::STATIC,
