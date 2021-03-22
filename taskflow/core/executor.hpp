@@ -708,7 +708,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     break;
     
     // can pause task
-    case Node::CANPAUSE: {
+    case Node::PAUSABLE: {
         _invoke_can_pause_task(worker, node, canpause);
     }
     break;
@@ -779,8 +779,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   
   // At this point, the node storage might be destructed (to be verified)
   // case 1: non-condition task
-  if((node->_handle.index() != Node::CONDITION && node->_handle.index()!=Node::CANPAUSE) ||
-      ((node->_handle.index()==Node::CANPAUSE) && canpause==TaskFlowPauseType::NoPause)) {
+  if((node->_handle.index() != Node::CONDITION && node->_handle.index()!=Node::PAUSABLE) ||
+      ((node->_handle.index()==Node::PAUSABLE) && canpause==TaskFlowPauseType::NoPause)) {
     for(size_t i=0; i<num_successors; ++i) {
       if(--(node->_successors[i]->_join_counter) == 0) {
         j.fetch_add(1);
@@ -788,7 +788,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       }
     }
   }
-  else if(node->_handle.index()==Node::CANPAUSE) //
+  else if(node->_handle.index()==Node::PAUSABLE) //
   {
     std::lock_guard<std::mutex> lock(node->_topology->_taskflow._pausemtx);
       node->_topology->_taskflow._pauseTopologies.push_back(node);
@@ -994,7 +994,7 @@ inline void Executor::_invoke_can_pause_task(
     Worker& worker, Node* node, TaskFlowPauseType& cond
 ) {
     _observer_prologue(worker, node);
-    cond = std::get<Node::CANPAUSE>(node->_handle).work();
+    cond = std::get<Node::PAUSABLE>(node->_handle).work();
     _observer_epilogue(worker, node);
 }
 

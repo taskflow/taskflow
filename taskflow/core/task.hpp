@@ -29,7 +29,7 @@ enum class TaskType : int {
   PLACEHOLDER = 0,
   CUDAFLOW,
   STATIC,
-  CANPAUSE,
+  PAUSABLE,
   DYNAMIC,
   CONDITION,
   MODULE,
@@ -44,7 +44,7 @@ inline constexpr std::array<TaskType, 8> TASK_TYPES = {
   TaskType::PLACEHOLDER,
   TaskType::CUDAFLOW,
   TaskType::STATIC,
-  TaskType::CANPAUSE,
+  TaskType::PAUSABLE,
   TaskType::DYNAMIC,
   TaskType::CONDITION,
   TaskType::MODULE,
@@ -62,7 +62,7 @@ inline const char* to_string(TaskType type) {
     case TaskType::PLACEHOLDER: val = "placeholder"; break;
     case TaskType::CUDAFLOW:    val = "cudaflow";    break;
     case TaskType::STATIC:      val = "static";      break;
-    case TaskType::CANPAUSE:    val = "canpause";    break;
+    case TaskType::PAUSABLE:    val = "pausable";    break;
     case TaskType::DYNAMIC:     val = "subflow";     break;
     case TaskType::CONDITION:   val = "condition";   break;
     case TaskType::MODULE:      val = "module";      break;
@@ -443,7 +443,7 @@ inline TaskType Task::type() const {
   switch(_node->_handle.index()) {
     case Node::PLACEHOLDER:  return TaskType::PLACEHOLDER;
     case Node::STATIC:       return TaskType::STATIC;
-    case Node::CANPAUSE:     return TaskType::CANPAUSE;
+    case Node::PAUSABLE:     return TaskType::PAUSABLE;
     case Node::DYNAMIC:      return TaskType::DYNAMIC;
     case Node::CONDITION:    return TaskType::CONDITION;
     case Node::MODULE:       return TaskType::MODULE;
@@ -617,7 +617,7 @@ inline TaskType TaskView::type() const {
   switch(_node._handle.index()) {
     case Node::PLACEHOLDER:  return TaskType::PLACEHOLDER;
     case Node::STATIC:       return TaskType::STATIC;
-    case Node::CANPAUSE:     return TaskType::CANPAUSE;
+    case Node::PAUSABLE:     return TaskType::PAUSABLE;
     case Node::DYNAMIC:      return TaskType::DYNAMIC;
     case Node::CONDITION:    return TaskType::CONDITION;
     case Node::MODULE:       return TaskType::MODULE;
