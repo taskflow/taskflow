@@ -491,7 +491,7 @@ Task& Task::work(C&& c) {
   }
   else if constexpr (is_can_pause_task_v<C>)
   {
-      _node->_handle.emplace<Node::CanPause>(std::forward<C>(c));
+      _node->_handle.emplace<Node::Pausable>(std::forward<C>(c));
   }
   else if constexpr(is_dynamic_task_v<C>) {
     _node->_handle.emplace<Node::Dynamic>(std::forward<C>(c));

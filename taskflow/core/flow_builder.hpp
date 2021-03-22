@@ -836,7 +836,7 @@ Task FlowBuilder::emplace(C&& c) {
 template <typename C, std::enable_if_t<is_can_pause_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
     return Task(_graph.emplace_back(
-        std::in_place_type_t<Node::CanPause>{}, std::forward<C>(c)
+        std::in_place_type_t<Node::Pausable>{}, std::forward<C>(c)
     ));
 }
 

@@ -154,6 +154,8 @@ class Taskflow : public FlowBuilder {
 
     std::mutex _mtx;
 
+    std::mutex _pausemtx;
+
     std::queue<std::shared_ptr<Topology>> _topologies;
     std::vector<Node*> _pauseTopologies;
     std::vector<TaskFlowPauseType> _pauseTopologiesStatus;

@@ -93,14 +93,14 @@ class Node {
     std::function<void()> work;
   };
 
-  // can pause work handle
+  // pausable work handle
   // nullopt , resume will call current node again    ==> pause
   // false, resume will skip current node             ==> pause
   // true, continue run                               ==> no pause
-  struct CanPause {
+  struct Pausable {
 
       template <typename C>
-      CanPause(C&&);
+      Pausable(C&&);
 
       std::function<TaskFlowPauseType()> work;
   };
@@ -167,7 +167,7 @@ class Node {
   using handle_t = std::variant<
     std::monostate,  // placeholder
     Static,          // static tasking
-      CanPause,      // can pause tasking
+    Pausable,      // can pause tasking
     Dynamic,         // dynamic tasking
     Condition,       // conditional tasking
     Module,          // composable tasking
@@ -186,7 +186,7 @@ class Node {
   // variant index
   constexpr static auto PLACEHOLDER  = get_index_v<std::monostate, handle_t>;
   constexpr static auto STATIC       = get_index_v<Static, handle_t>;
-  constexpr static auto CANPAUSE     = get_index_v<CanPause, handle_t>;
+  constexpr static auto CANPAUSE     = get_index_v<Pausable, handle_t>;
   constexpr static auto DYNAMIC      = get_index_v<Dynamic, handle_t>;
   constexpr static auto CONDITION    = get_index_v<Condition, handle_t>; 
   constexpr static auto MODULE       = get_index_v<Module, handle_t>; 
@@ -272,7 +272,7 @@ Node::Condition::Condition(C&& c) : work {std::forward<C>(c)} {
 
 // Constructor
 template <typename C>
-Node::CanPause::CanPause(C&& c) : work{ std::forward<C>(c) } {
+Node::Pausable::Pausable(C&& c) : work{ std::forward<C>(c) } {
 }
 
 // ----------------------------------------------------------------------------

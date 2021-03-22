@@ -12,6 +12,7 @@ list(APPEND TF_UNITTESTS
   algorithm 
   traverse 
   sorting
+  canpause
 )
 
 foreach(unittest IN LISTS TF_UNITTESTS)
