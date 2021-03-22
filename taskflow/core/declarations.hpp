@@ -24,6 +24,8 @@ class TFProfManager;
 template <typename T>
 class Future;
 
+enum class TaskFlowPauseType;
+
 // cudaFlow
 class cudaNode;
 class cudaGraph;
@@ -36,7 +38,7 @@ class cudaSequentialCapturing;
 class cudaRoundRobinCapturing;
 class cublasFlowCapturer;
 
-enum class TaskFlowPauseType;
+
 
 
 
