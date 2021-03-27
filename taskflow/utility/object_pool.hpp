@@ -87,14 +87,12 @@ class ObjectPool {
     Blocklist* next;
   };
 
-  class GlobalHeap {
-    friend class ObjectPool;
+  struct GlobalHeap {
     std::mutex mutex;
     Blocklist list;
   };
 
-  class LocalHeap {
-    friend class ObjectPool;
+  struct LocalHeap {
     std::mutex mutex;
     Blocklist lists[B];
     size_t u {0};

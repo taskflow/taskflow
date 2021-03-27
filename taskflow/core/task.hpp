@@ -28,6 +28,7 @@ namespace tf {
 enum class TaskType : int {
   PLACEHOLDER = 0,
   CUDAFLOW,
+  SYCLFLOW,
   STATIC,
   PAUSABLE,
   DYNAMIC,
@@ -43,6 +44,7 @@ enum class TaskType : int {
 inline constexpr std::array<TaskType, 9> TASK_TYPES = {
   TaskType::PLACEHOLDER,
   TaskType::CUDAFLOW,
+  TaskType::SYCLFLOW,
   TaskType::STATIC,
   TaskType::PAUSABLE,
   TaskType::DYNAMIC,
@@ -61,6 +63,7 @@ inline const char* to_string(TaskType type) {
   switch(type) {
     case TaskType::PLACEHOLDER: val = "placeholder"; break;
     case TaskType::CUDAFLOW:    val = "cudaflow";    break;
+    case TaskType::SYCLFLOW:    val = "syclflow";    break;
     case TaskType::STATIC:      val = "static";      break;
     case TaskType::PAUSABLE:    val = "pausable";    break;
     case TaskType::DYNAMIC:     val = "subflow";     break;
@@ -113,7 +116,7 @@ template <typename C>
 constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C>;
 
 /**
-@brief determines if a callable is a cudaflow task
+@brief determines if a callable is a %cudaFlow task
 
 A cudaFlow task is a callable object constructible from 
 std::function<void(tf::cudaFlow&)> or std::function<void(tf::cudaFlowCapturer&)>.
@@ -121,6 +124,15 @@ std::function<void(tf::cudaFlow&)> or std::function<void(tf::cudaFlowCapturer&)>
 template <typename C>
 constexpr bool is_cudaflow_task_v = std::is_invocable_r_v<void, C, cudaFlow&> ||
                                     std::is_invocable_r_v<void, C, cudaFlowCapturer&>;
+
+/**
+@brief determines if a callable is a %syclFlow task
+
+A syclFlow task is a callable object constructible from 
+std::function<void(tf::syclFlow&)>.
+*/
+template <typename C>
+constexpr bool is_syclflow_task_v = std::is_invocable_r_v<void, C, syclFlow&>;
 
 // ----------------------------------------------------------------------------
 // Task
@@ -378,7 +390,8 @@ inline Task& Task::name(const std::string& name) {
 // Function: acquire
 inline Task& Task::acquire(Semaphore& s) {
   if(!_node->_semaphores) {
-    _node->_semaphores.emplace();
+    //_node->_semaphores.emplace();
+    _node->_semaphores = std::make_unique<Node::Semaphores>();
   }
   _node->_semaphores->to_acquire.push_back(&s);
   return *this;
@@ -387,7 +400,8 @@ inline Task& Task::acquire(Semaphore& s) {
 // Function: release
 inline Task& Task::release(Semaphore& s) {
   if(!_node->_semaphores) {
-    _node->_semaphores.emplace();
+    //_node->_semaphores.emplace();
+    _node->_semaphores = std::make_unique<Node::Semaphores>();
   }
   _node->_semaphores->to_release.push_back(&s);
   return *this;
@@ -450,6 +464,7 @@ inline TaskType Task::type() const {
     case Node::ASYNC:        return TaskType::ASYNC;
     case Node::SILENT_ASYNC: return TaskType::ASYNC;
     case Node::CUDAFLOW:     return TaskType::CUDAFLOW;
+    case Node::SYCLFLOW:     return TaskType::SYCLFLOW;
     default:                 return TaskType::UNDEFINED;
   }
 }
@@ -574,6 +589,11 @@ class TaskView {
     @brief queries the task type
     */
     TaskType type() const;
+  
+    /**
+    @brief obtains a hash value of the underlying node
+    */
+    size_t hash_value() const;
     
   private:
     
@@ -624,8 +644,14 @@ inline TaskType TaskView::type() const {
     case Node::ASYNC:        return TaskType::ASYNC;
     case Node::SILENT_ASYNC: return TaskType::ASYNC;
     case Node::CUDAFLOW:     return TaskType::CUDAFLOW;
+    case Node::SYCLFLOW:     return TaskType::SYCLFLOW;
     default:                 return TaskType::UNDEFINED;
   }
+}
+  
+// Function: hash_value
+inline size_t TaskView::hash_value() const {
+  return std::hash<const Node*>{}(&_node);
 }
 
 // Function: for_each_successor
@@ -657,6 +683,18 @@ template <>
 struct hash<tf::Task> {
   auto operator() (const tf::Task& task) const noexcept {
     return task.hash_value();
+  }
+};
+
+/**
+@struct hash
+
+@brief hash specialization for std::hash<tf::TaskView>
+*/
+template <>
+struct hash<tf::TaskView> {
+  auto operator() (const tf::TaskView& task_view) const noexcept {
+    return task_view.hash_value();
   }
 };
 

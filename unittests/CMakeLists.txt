@@ -22,6 +22,15 @@ foreach(unittest IN LISTS TF_UNITTESTS)
   doctest_discover_tests(${unittest})
 endforeach()
 
+# include CUDA tests
 if(TF_BUILD_CUDA)
   add_subdirectory(${TF_UTEST_DIR}/cuda)
 endif()
+
+# include SYCL tests
+if(TF_BUILD_SYCL)
+  add_subdirectory(${TF_UTEST_DIR}/sycl)
+endif()
+
+
+

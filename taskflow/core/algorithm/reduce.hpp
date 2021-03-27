@@ -99,7 +99,7 @@ Task FlowBuilder::reduce_guided(
               
         size_t z = s0 + 2;
         size_t p1 = 2 * W * (C + 1);
-        double p2 = 0.5 / W;
+        double p2 = 0.5 / static_cast<double>(W);
         s0 = next.load(std::memory_order_relaxed);
 
         while(s0 < N) {
@@ -526,7 +526,7 @@ Task FlowBuilder::transform_reduce_guided(
               
         size_t z = s0 + 2;
         size_t p1 = 2 * W * (C + 1);
-        double p2 = 0.5 / W;
+        double p2 = 0.5 / static_cast<double>(W);
         s0 = next.load(std::memory_order_relaxed);
 
         while(s0 < N) {

@@ -2,8 +2,6 @@
 
 #include "flow_builder.hpp"
 
-#include <optional>
-
 /** 
 @file core/taskflow.hpp
 @brief taskflow include file
@@ -268,6 +266,13 @@ inline void Taskflow::_dump(
          << " shape=\"folder\"";
     break;
 
+    case Node::SYCLFLOW:
+      os << " style=\"filled\""
+         << " color=\"black\" fillcolor=\"red\""
+         << " fontcolor=\"white\""
+         << " shape=\"folder\"";
+    break; 
+
     default:
     break;
   }
@@ -308,6 +313,13 @@ inline void Taskflow::_dump(
     
     case Node::CUDAFLOW: {
       std::get<Node::cudaFlow>(node->_handle).graph->dump(
+        os, node, node->_name
+      );
+    }
+    break;
+    
+    case Node::SYCLFLOW: {
+      std::get<Node::syclFlow>(node->_handle).graph->dump(
         os, node, node->_name
       );
     }

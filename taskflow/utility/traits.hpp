@@ -14,6 +14,8 @@
 #include <thread>
 #include <future>
 #include <functional>
+#include <map>
+#include <set>
 #include <unordered_map>
 #include <unordered_set>
 #include <sstream>
@@ -36,21 +38,6 @@ namespace tf {
 // Traits
 //-----------------------------------------------------------------------------
 
-// Macro to check whether a class has a member function
-#define TF_DEFINE_HAS_MEMBER(member_name)                                  \
-template <typename T>                                                      \
-class has_member_##member_name                                             \
-{                                                                          \
-  typedef char yes_type;                                                   \
-  typedef long no_type;                                                    \
-  template <typename U> static yes_type test(decltype(&U::member_name));   \
-  template <typename U> static no_type  test(...);                         \
-  public:                                                                  \
-    static constexpr bool value = sizeof(test<T>(0)) == sizeof(yes_type);  \
-}
-
-#define TF_HAS_MEMBER(class_, member_name) has_member_##member_name<class_>::value
-
 // Struct: dependent_false
 template <typename... T>
 struct dependent_false { 
@@ -64,7 +51,7 @@ constexpr auto dependent_false_v = dependent_false<T...>::value;
 // Move-On-Copy
 //-----------------------------------------------------------------------------
 
-// Struct: MoC
+// Struct: MoveOnCopyWrapper
 template <typename T>
 struct MoC {
 

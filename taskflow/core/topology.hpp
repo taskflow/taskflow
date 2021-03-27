@@ -2,8 +2,6 @@
 
 namespace tf {
 
-  
-
 // ----------------------------------------------------------------------------
 
 // class: TopologyBase
@@ -50,7 +48,6 @@ class Topology : public TopologyBase {
     std::function<void()> _call;
 
     std::atomic<size_t> _join_counter {0};
-
 };
 
 // Constructor

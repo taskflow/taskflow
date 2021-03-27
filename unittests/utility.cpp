@@ -19,10 +19,11 @@ TEST_CASE("PassiveVector" * doctest::timeout(300)) {
     REQUIRE(vec1.size() == 0);
     REQUIRE(vec1.empty() == true);
 
-    tf::PassiveVector<int, 8> vec2;
+    tf::PassiveVector<int> vec2;
+    REQUIRE(vec2.data() == nullptr);
     REQUIRE(vec2.size() == 0);
     REQUIRE(vec2.empty() == true);
-    REQUIRE(vec2.capacity() == 8);
+    REQUIRE(vec2.capacity() == 0);
   }
 
   SUBCASE("constructor_n") {
