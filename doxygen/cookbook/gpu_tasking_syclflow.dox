@@ -107,7 +107,7 @@ and one fill operation that set the first @c N/2 elements in the vector to @c -1
 sycl::queue queue;
 
 size_t N  = 1000;
-int* hvec = std::vector<int>(N, 100);
+int* hvec = new int[N] (100);
 int* dvec = sycl::malloc_device<int>(N, queue);
 
 // create a syclflow task to set the first N/2 elements to -1

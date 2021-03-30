@@ -51,7 +51,7 @@
 </para></sect1>
 <sect1 id="CompileTaskflowWithSYCL_1CompileTaskflowWithSYCLSeparately">
 <title>Compile Source Code Separately</title>
-<para>Large GPU applications often compile a program into separate objects and link them together to form an executable or a library. You can compile you SYCL code into separate object files and link them to form the final executable. Consider the following example that defines two tasks on two different pieces (<computeroutput>main.cpp</computeroutput> and <computeroutput>syclflow.cpp</computeroutput>) of source code:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>main.cpp</highlight><highlight class="normal"></highlight></codeline>
+<para>Large GPU applications often compile a program into separate objects and link them together to form an executable or a library. You can compile your SYCL code into separate object files and link them to form the final executable. Consider the following example that defines two tasks on two different pieces (<computeroutput>main.cpp</computeroutput> and <computeroutput>syclflow.cpp</computeroutput>) of source code:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>main.cpp</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>make_syclflow(<ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>&amp;<sp/>taskflow);<sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>syclFlow<sp/>task</highlight><highlight class="normal"></highlight></codeline>
@@ -78,7 +78,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>sycl::queue<sp/>queue;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>make_syclflow(<ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>&amp;<sp/>taskflow)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;syclflow.cpp!\n&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">single_task</ref>([](){}).name(</highlight><highlight class="stringliteral">&quot;kernel&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},<sp/>queue).name(</highlight><highlight class="stringliteral">&quot;gpu<sp/>task&quot;</highlight><highlight class="normal">);</highlight></codeline>
@@ -93,7 +93,7 @@
 <codeline><highlight class="normal">main.o<sp/>syclflow.o<sp/></highlight></codeline>
 </programlisting></para><para>Next, link the two object files to the final executable:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>clang++<sp/>-fsycl<sp/>-fsycl-unnamed-lambda<sp/>\</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-fsycl-targets=nvptx64-nvidia-cuda-sycldevice<sp/>\<sp/><sp/>#<sp/>for<sp/>CUDA<sp/>target</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>main.o<sp/>syclflow.o<sp/>-o<sp/>main</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>main.o<sp/>syclflow.o<sp/>-pthread<sp/>-std=c++17<sp/>-o<sp/>main</highlight></codeline>
 <codeline></codeline>
 <codeline><highlight class="normal">#<sp/>run<sp/>the<sp/>main<sp/>program<sp/></highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./main</highlight></codeline>

@@ -55,6 +55,8 @@ TEST_CASE("syclFlow.USM.shared" * doctest::timeout(300)) {
 
     flow.clear();
 
+    REQUIRE(flow.empty());
+
     int* ptr = sycl::malloc_shared<int>(N, queue);
     
     auto plus = flow.parallel_for(sycl::range<1>(sycl::range<1>(N)),
@@ -86,6 +88,8 @@ TEST_CASE("syclFlow.USM.device" * doctest::timeout(300)) {
   for(size_t N=1; N<=1000000; N = (N + ::rand() % 17) << 1) {
 
     flow.clear();
+
+    REQUIRE(flow.empty());
 
     int* dptr = sycl::malloc_device<int>(N, queue);
     std::vector<int> data(N, -100);
@@ -120,6 +124,8 @@ TEST_CASE("syclFlow.parallel_fills" * doctest::timeout(300)) {
   for(size_t N=1; N<=1000000; N = (N + ::rand() % 17) << 1) {
     
     syclflow.clear();
+
+    REQUIRE(syclflow.empty());
 
     int* dptr = sycl::malloc_shared<int>(N, queue);
 
@@ -167,6 +173,8 @@ TEST_CASE("syclFlow.parallel_memsets" * doctest::timeout(300)) {
     
     syclflow.clear();
 
+    REQUIRE(syclflow.empty());
+
     int* dptr = sycl::malloc_shared<int>(N, queue);
 
     for(size_t i=0; i<N; i++) {
@@ -213,6 +221,8 @@ TEST_CASE("syclFlow.parallel_copies" * doctest::timeout(300)) {
     
     syclflow.clear();
 
+    REQUIRE(syclflow.empty());
+
     int* dptr = sycl::malloc_device<int>(N, queue);
     std::vector<int> host(N, -1);
 
@@ -251,5 +261,82 @@ TEST_CASE("syclFlow.parallel_copies" * doctest::timeout(300)) {
 
 }
 
+// syclFlow.condition
+TEST_CASE("syclFlow.condition" * doctest::timeout(300)) {
 
+  size_t N = 10000;
 
+  sycl::queue queue;
+
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+    
+  int* dptr = sycl::malloc_shared<int>(N, queue);
+
+  auto init = taskflow.emplace([&](){
+    for(size_t i=0; i<N; i++) {
+      dptr[i] = -2;
+    }
+  });
+
+  auto sycl = taskflow.emplace_on([&](tf::syclFlow& sf) {
+    sf.parallel_for(sycl::range<1>(N),
+      [dptr] (sycl::id<1> id) {
+        dptr[id] += 2;
+      }
+    );
+  }, queue);
+
+  auto cond = taskflow.emplace([r=5]() mutable { 
+    return (r-- > 0) ? 0 : 1;
+  });
+
+  init.precede(sycl);
+  sycl.precede(cond);
+  cond.precede(sycl);
+
+  executor.run(taskflow).wait();
+
+  for(size_t i=0; i<N; i++) {
+    REQUIRE(dptr[i] == 10);
+  }
+
+  sycl::free(dptr, queue);
+}
+
+// syclFlow.run_n
+TEST_CASE("syclFlow.run_n" * doctest::timeout(300)) {
+
+  size_t N = 10000;
+
+  sycl::queue queue;
+
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+    
+  int* dptr = sycl::malloc_shared<int>(N, queue);
+
+  for(size_t i=0; i<N; i++) {
+    dptr[i] = 0;
+  }
+
+  auto init = taskflow.emplace([](){});
+
+  auto sycl = taskflow.emplace_on([&](tf::syclFlow& sf) {
+    sf.parallel_for(sycl::range<1>(N),
+      [dptr] (sycl::id<1> id) {
+        dptr[id] += 2;
+      }
+    );
+  }, queue);
+
+  init.precede(sycl);
+
+  executor.run_n(taskflow, 10).wait();
+
+  for(size_t i=0; i<N; i++) {
+    REQUIRE(dptr[i] == 20);
+  }
+
+  sycl::free(dptr, queue);
+}

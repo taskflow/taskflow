@@ -68,7 +68,7 @@ You need to include @c taskflow/syclflow.hpp in order to use tf::syclFlow.
 
 Large GPU applications often compile a program into separate objects
 and link them together to form an executable or a library.
-You can compile you SYCL code into separate object files and link them
+You can compile your SYCL code into separate object files and link them
 to form the final executable.
 Consider the following example that defines two tasks
 on two different pieces (@c main.cpp and @c syclflow.cpp) of source code:
@@ -104,7 +104,7 @@ int main() {
 inline sycl::queue queue;
 
 tf::Task make_syclflow(tf::Taskflow& taskflow) {
-  return taskflow.emplace([](tf::syclFlow& cf){
+  return taskflow.emplace_on([](tf::syclFlow& cf){
     printf("syclflow.cpp!\n");
     cf.single_task([](){}).name("kernel");
   }, queue).name("gpu task");
@@ -129,7 +129,7 @@ Next, link the two object files to the final executable:
 @code{.shell-session}
 ~$ clang++ -fsycl -fsycl-unnamed-lambda \
            -fsycl-targets=nvptx64-nvidia-cuda-sycldevice \  # for CUDA target
-           main.o syclflow.o -o main
+           main.o syclflow.o -pthread -std=c++17 -o main
 
 # run the main program 
 ~$ ./main
