@@ -149,21 +149,21 @@
 <codeline><highlight class="normal">sycl::queue<sp/>queue;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>data<sp/>=<sp/>sycl::malloc_shared&lt;int&gt;(N,<sp/>queue);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>syclflow<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>sf){</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>syclflow){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>task<sp/>to<sp/>set<sp/>each<sp/>element<sp/>to<sp/>-1<sp/></highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task<sp/>=<sp/>syclflow.fill(data,<sp/>-1,<sp/>N);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>syclflow.offload();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">fill</ref>(data,<sp/>-1,<sp/>N);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/for_each" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>assert(data[i]<sp/>==<sp/>-1);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>rebind<sp/>the<sp/>task<sp/>to<sp/>a<sp/>parallel-for<sp/>kernel<sp/>task<sp/>setting<sp/>each<sp/>element<sp/>to<sp/>100</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>syclflow.rebind_parallel_for(task,<sp/>sycl::range&lt;1&gt;(N),<sp/>[](sycl::id&lt;1&gt;<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a98029cdbad52f533cb6d9b3c892a4601" kindref="member">rebind_parallel_for</ref>(task,<sp/>sycl::range&lt;1&gt;(N),<sp/>[](sycl::id&lt;1&gt;<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>data[id]<sp/>=<sp/>100;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>syclflow.offload();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/for_each" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>assert(data[i]<sp/>==<sp/>100);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/for_each" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[data](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>assert(data[i]<sp/>==<sp/>100);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">},<sp/>queue);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
@@ -178,8 +178,8 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>d2h_x<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(hx.data(),<sp/>dx,<sp/>N).name(</highlight><highlight class="stringliteral">&quot;d2h_x&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>d2h_y<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(hy.data(),<sp/>dy,<sp/>N).name(</highlight><highlight class="stringliteral">&quot;d2h_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>saxpy<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">parallel_for</ref>(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>sycl::range&lt;1&gt;<sp/>range(N),<sp/>[=]<sp/>(sycl::id&lt;1&gt;<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>dx[id]<sp/>=<sp/>2.0f<sp/>*<sp/>dx[i]<sp/>+<sp/>dy[i];</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>sycl::range&lt;1&gt;(N),<sp/>[=]<sp/>(sycl::id&lt;1&gt;<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>dx[id]<sp/>=<sp/>2.0f<sp/>*<sp/>dx[id]<sp/>+<sp/>dy[id];</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">).name(</highlight><highlight class="stringliteral">&quot;saxpy&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

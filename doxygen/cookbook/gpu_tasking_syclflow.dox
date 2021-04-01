@@ -260,7 +260,7 @@ size_t N = 10000;
 sycl::queue queue;
 int* data = sycl::malloc_shared<int>(N, queue);
 
-tf::Task syclflow = taskflow.emplace_on([&](tf::syclFlow& sf){
+taskflow.emplace_on([&](tf::syclFlow& syclflow){
   
   // create a task to set each element to -1 
   tf::syclTask task = syclflow.fill(data, -1, N);
@@ -274,7 +274,7 @@ tf::Task syclflow = taskflow.emplace_on([&](tf::syclFlow& sf){
   });
   syclflow.offload();
 
-  std::for_each(data, data+N, [](int i){ assert(data[i] == 100); });
+  std::for_each(data, data+N, [data](int i){ assert(data[i] == 100); });
 }, queue);
 
 executor.run(taskflow).wait();
@@ -300,8 +300,8 @@ tf::syclTask h2d_y = sf.copy(dy, hy.data(), N).name("h2d_y");
 tf::syclTask d2h_x = sf.copy(hx.data(), dx, N).name("d2h_x");
 tf::syclTask d2h_y = sf.copy(hy.data(), dy, N).name("d2h_y");
 tf::syclTask saxpy = sf.parallel_for(
-  sycl::range<1> range(N), [=] (sycl::id<1> id) {
-    dx[id] = 2.0f * dx[i] + dy[i];
+  sycl::range<1>(N), [=] (sycl::id<1> id) {
+    dx[id] = 2.0f * dx[id] + dy[id];
   }
 ).name("saxpy");
 

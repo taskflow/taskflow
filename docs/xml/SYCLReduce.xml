@@ -23,8 +23,8 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>syclflow<sp/>to<sp/>perform<sp/>parallel<sp/>reduction<sp/>on<sp/>a<sp/>SYCL<sp/>device</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">sycl::queue<sp/>queue;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref><sp/>syclflow(queue);</highlight></codeline>
-<codeline><highlight class="normal">syclflow.reduce(data,<sp/>data+N,<sp/>soln,<sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal">syclflow.offload();</highlight></codeline>
+<codeline><highlight class="normal">syclflow.<ref refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" kindref="member">reduce</ref>(data,<sp/>data+N,<sp/>soln,<sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal">syclflow.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(sol<sp/>==<sp/>N<sp/>+<sp/>1000);</highlight></codeline>
 </programlisting></para></sect1>
@@ -45,10 +45,10 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>syclflow<sp/>to<sp/>perform<sp/>parallel<sp/>reduction<sp/>on<sp/>a<sp/>SYCL<sp/>device</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">sycl::queue<sp/>queue;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref><sp/>syclflow(queue);</highlight></codeline>
-<codeline><highlight class="normal">syclflow.uninitialized_reduce(</highlight></codeline>
+<codeline><highlight class="normal">syclflow.<ref refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" kindref="member">uninitialized_reduce</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>data,<sp/>data+N,<sp/>soln,<sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">syclflow.offload();</highlight></codeline>
+<codeline><highlight class="normal">syclflow.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(sol<sp/>==<sp/>N);</highlight></codeline>
 </programlisting> </para></sect1>
