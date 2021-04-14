@@ -2,14 +2,14 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="release-3-1-0" kind="page">
     <compoundname>release-3-1-0</compoundname>
-    <title>Release 3.1.0 (Master)</title>
+    <title>Release 3.1.0 (2021/04/14)</title>
     <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 3.1.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</para><sect1 id="release-3-1-0_1release-3-1-0_download">
+<para>Taskflow 3.1.0 is the 2nd release in the 3.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para><sect1 id="release-3-1-0_1release-3-1-0_download">
 <title>Download</title>
-<para>To download the newest version of Taskflow, please clone from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para></sect1>
+<para>Taskflow 3.1.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.1.0">here</ulink>.</para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_system_requirements">
 <title>System Requirements</title>
 <para>To use Taskflow v3.1.0, you need a compiler that supports C++17:</para><para><itemizedlist>
@@ -22,14 +22,6 @@
 <listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para></listitem>
 </itemizedlist>
 Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
-<sect1 id="release-3-1-0_1release-3-1-0_working_items">
-<title>Working Items</title>
-<para><itemizedlist>
-<listitem><para>enhancing support for SYCL with Intel DPC++ </para></listitem>
-<listitem><para>enhancing profiler support for syclFlow </para></listitem>
-<listitem><para>designing pipeline interface and scheduling algorithms</para></listitem>
-</itemizedlist>
-</para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_new_features">
 <title>New Features</title>
 <sect2 id="release-3-1-0_1release-3-1-0_taskflow_core">
@@ -72,21 +64,24 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <listitem><para><ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">tf::syclFlow::single_task</ref> for single-threaded kernel</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a30c3f7a279d1f88b6052f7ded1ee381a" kindref="member">tf::syclFlow::for_each</ref> for parallel iterations</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a25e8aa7d7efbd05ef11353317174574a" kindref="member">tf::syclFlow::for_each_index</ref> for index-based parallel iterations</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" kindref="member">tf::syclFlow::reduce</ref> for parallel reduction</para></listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" kindref="member">tf::syclFlow::uninitialized_reduce</ref> for uninitialized parallel reduction</para></listitem></itemizedlist>
 </para></listitem>
 </itemizedlist>
-Please visit these pages, <ref refid="GPUTaskingsyclFlow" kindref="compound">GPU Tasking (syclFlow)</ref>, <ref refid="CompileTaskflowWithSYCL" kindref="compound">Compile Taskflow with SYCL</ref>, and TBD to know more details about compiling and running syclFlow programs.</para></sect2>
+Please visit these pages, <ref refid="GPUTaskingsyclFlow" kindref="compound">GPU Tasking (syclFlow)</ref> and <ref refid="CompileTaskflowWithSYCL" kindref="compound">Compile Taskflow with SYCL</ref>, to know more details about compiling and running syclFlow programs.</para></sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_utilities">
 <title>Utilities</title>
 <para><itemizedlist>
-<listitem><para>resolved the compiler warning in serializer caused by <computeroutput>constexpr if</computeroutput></para></listitem>
+<listitem><para>resolved the compiler warning in serializer caused by <computeroutput>constexpr if</computeroutput> </para></listitem>
+<listitem><para>resolved the compiler error of nvcc when parsin variadic namespace</para></listitem>
 </itemizedlist>
 </para></sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_profiler">
 <title>Taskflow Profiler (TFProf)</title>
-</sect2>
+<para><itemizedlist>
+<listitem><para>added support for syclflow task</para></listitem></itemizedlist>
+</para></sect2>
 </sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>Fixed the macro expansion issue with MSVC on <computeroutput>TF_CUDA_CHECK</computeroutput> </para></listitem><listitem><para>Fixed the serializer compile error (<ulink url="https://github.com/taskflow/taskflow/issues/288">#288</ulink>)</para></listitem><listitem><para>Fixed the <ref refid="classtf_1_1cudaTask_1a7eab02ec6633a5cf17cc15898db2d648" kindref="member">tf::cudaTask::type</ref> bug in mixing host and empty task types</para></listitem></itemizedlist>
+<listitem><para>fixed the macro expansion issue with MSVC on <computeroutput>TF_CUDA_CHECK</computeroutput> </para></listitem><listitem><para>fixed the serializer compile error (<ulink url="https://github.com/taskflow/taskflow/issues/288">#288</ulink>)</para></listitem><listitem><para>fixed the <ref refid="classtf_1_1cudaTask_1a7eab02ec6633a5cf17cc15898db2d648" kindref="member">tf::cudaTask::type</ref> bug in mixing host and empty task types</para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_breaking_changes">
 <title>Breaking Changes</title>
