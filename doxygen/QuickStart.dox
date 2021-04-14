@@ -124,6 +124,12 @@ cond.precede(cond, stop);  // moves on to 'cond' on returning 0, or 'stop' on 1
 %Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using CUDA.
 
 @code{.cpp}
+__global__ void saxpy(int n, float a, float *x, float *y) {
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
+  if (i < n) {
+    y[i] = a*x[i] + y[i];
+  }
+}
 tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
   tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
   tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");

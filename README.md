@@ -214,9 +214,12 @@ cond.precede(cond, stop);
 Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using CUDA.
 
 ```cpp
-// saxpy kernel
-__global__ void saxpy(size_t N, float alpha, float* dx, float* dy);
-
+__global__ void saxpy(size_t N, float alpha, float* dx, float* dy) {
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
+  if (i < n) {
+    y[i] = a*x[i] + y[i];
+  }
+}
 tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
 
   // data copy tasks
