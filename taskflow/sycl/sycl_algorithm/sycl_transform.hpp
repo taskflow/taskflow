@@ -12,7 +12,7 @@ syclTask syclFlow::transform(I first, I last, C&& op, S... srcs) {
   size_t N = std::distance(first, last);
   size_t B = _default_group_size(N);
 
-  auto node = _graph.emplace_back(
+  auto node = _graph.emplace_back(_graph,
   [=, op=std::forward<C>(op)] (sycl::handler& handler) mutable {
 
     size_t _N = (N % B == 0) ? N : (N + B - N % B);

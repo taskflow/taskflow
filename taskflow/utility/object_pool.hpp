@@ -577,7 +577,7 @@ template <typename... ArgsT>
 T* ObjectPool<T, S>::animate(ArgsT&&... args) {
 
   //std::cout << "construct a new item\n";
-    
+  
   // my logically mapped heap
   LocalHeap& h = _this_heap(); 
   

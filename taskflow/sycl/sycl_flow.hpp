@@ -34,7 +34,7 @@ class syclFlow {
 
   using handle_t = std::variant<External, Internal>;
 
-  constexpr static int OFFLOADED = 0x01;
+
 
   public:
 
@@ -459,13 +459,14 @@ class syclFlow {
     
     const size_t _MAX_WORK_GROUP_SIZE;
 
-    int _state {0};
-    
     handle_t _handle;
     
     syclGraph& _graph;
 
     sycl::queue& _queue;
+  
+    std::vector<syclNode*> _tpg;
+    std::queue<syclNode*> _bfs;
 
     size_t _default_group_size(size_t N) const;
 };
@@ -523,7 +524,7 @@ inline void syclFlow::clear() {
 // Function: memcpy
 inline syclTask syclFlow::memcpy(void* tgt, const void* src, size_t bytes) {
 
-  auto node = _graph.emplace_back([=](sycl::handler& h){
+  auto node = _graph.emplace_back(_graph, [=](sycl::handler& h){
     h.memcpy(tgt, src, bytes);
   });
   
@@ -533,7 +534,7 @@ inline syclTask syclFlow::memcpy(void* tgt, const void* src, size_t bytes) {
 // Function: memset
 inline syclTask syclFlow::memset(void* ptr, int value, size_t bytes) {
 
-  auto node = _graph.emplace_back([=](sycl::handler& h){
+  auto node = _graph.emplace_back(_graph, [=](sycl::handler& h){
     h.memset(ptr, value, bytes);
   });
   
@@ -544,7 +545,7 @@ inline syclTask syclFlow::memset(void* ptr, int value, size_t bytes) {
 template <typename T>
 syclTask syclFlow::fill(void* ptr, const T& pattern, size_t count) {
 
-  auto node = _graph.emplace_back([=](sycl::handler& h){
+  auto node = _graph.emplace_back(_graph, [=](sycl::handler& h){
     h.fill(ptr, pattern, count);
   });
   
@@ -556,7 +557,7 @@ template <typename T,
   std::enable_if_t<!std::is_same_v<T, void>, void>*
 >
 syclTask syclFlow::copy(T* target, const T* source, size_t count) {
-  auto node = _graph.emplace_back([=](sycl::handler& h){
+  auto node = _graph.emplace_back(_graph, [=](sycl::handler& h){
     h.memcpy(target, source, count*sizeof(T));
   });
   return syclTask(node);
@@ -565,14 +566,14 @@ syclTask syclFlow::copy(T* target, const T* source, size_t count) {
 // Function: on
 template <typename F>
 syclTask syclFlow::on(F&& func) {
-  auto node = _graph.emplace_back(std::forward<F>(func));
+  auto node = _graph.emplace_back(_graph, std::forward<F>(func));
   return syclTask(node);
 }
 
 // Function: single_task
 template <typename F>
 syclTask syclFlow::single_task(F&& func) {
-  auto node = _graph.emplace_back(
+  auto node = _graph.emplace_back(_graph,
     [f=std::forward<F>(func)] (sycl::handler& h) mutable {
       h.single_task(f);
     }
@@ -583,9 +584,11 @@ syclTask syclFlow::single_task(F&& func) {
 // Function: parallel_for
 template <typename...ArgsT>
 syclTask syclFlow::parallel_for(ArgsT&&... args) {
-  auto node = _graph.emplace_back([args...] (sycl::handler& h) mutable {
-    h.parallel_for(args...);
-  });
+  auto node = _graph.emplace_back(_graph,
+    [args...] (sycl::handler& h) mutable {
+      h.parallel_for(args...);
+    }
+  );
   return syclTask(node);
 }
 
@@ -593,36 +596,34 @@ syclTask syclFlow::parallel_for(ArgsT&&... args) {
 template <typename P>
 void syclFlow::offload_until(P&& predicate) {
   
-  // levelize the graph
-  std::vector<syclNode*> tpg;
-  std::queue<syclNode*> bfs;
+  if(!(_graph._state & syclGraph::TOPOLOGY_CHANGED)) {
+    goto offload;
+  }
 
-  tpg.reserve(_graph._nodes.size());
+  // levelize the graph
+  _tpg.clear();
 
   // insert the first level of nodes into the queue
   for(auto& u : _graph._nodes) {
-
     u->_level = u->_dependents.size();
-
     if(u->_level == 0) {
-      bfs.push(u.get());
+      _bfs.push(u.get());
     }
   }
   
-  while(!bfs.empty()) {
-
-    auto u = bfs.front();
-    bfs.pop();
-
-    tpg.push_back(u);
-    
+  while(!_bfs.empty()) {
+    auto u = _bfs.front();
+    _bfs.pop();
+    _tpg.push_back(u);
     for(auto v : u->_successors) {
       if(--(v->_level) == 0) {
         v->_level = u->_level + 1;
-        bfs.push(v);
+        _bfs.push(v);
       }
     }
   }
+
+  offload:
   
   // offload the syclFlow graph
   bool in_order = _queue.is_in_order();
@@ -630,7 +631,7 @@ void syclFlow::offload_until(P&& predicate) {
   while(!predicate()) {
 
     // traverse node in a topological order
-    for(auto u : tpg) {
+    for(auto u : _tpg) {
       u->_event = _queue.submit([u, in_order](sycl::handler& handler){
         // wait on all predecessors
         if(!in_order) {
@@ -646,7 +647,8 @@ void syclFlow::offload_until(P&& predicate) {
     _queue.wait();
   }
 
-  _state |= OFFLOADED;
+  _graph._state |= syclGraph::OFFLOADED;
+  _graph._state &= ~syclGraph::TOPOLOGY_CHANGED;
 }
 
 // Procedure: offload_n
@@ -754,7 +756,7 @@ void Executor::_invoke_syclflow_task_entry(Node* node, C&& c, Q& queue) {
 
   c(sf); 
 
-  if(!(sf._state & syclFlow::OFFLOADED)) {
+  if(!(g->_state & syclGraph::OFFLOADED)) {
     sf.offload();
   }
 }

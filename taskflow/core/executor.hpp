@@ -31,7 +31,7 @@ class Executor {
 
   struct PerThread {
     Worker* worker;
-    PerThread() : worker {nullptr} { }
+    inline PerThread() : worker {nullptr} { }
   };
 
   public:

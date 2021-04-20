@@ -18,6 +18,9 @@ class syclGraph : public CustomGraphBase {
   friend class syclFlow;
   friend class Taskflow;
   friend class Executor;
+  
+  constexpr static int OFFLOADED = 0x01;
+  constexpr static int TOPOLOGY_CHANGED = 0x02;
 
   public:
     
@@ -40,8 +43,9 @@ class syclGraph : public CustomGraphBase {
 
   private:
 
-    std::vector<std::unique_ptr<syclNode>> _nodes;
+    int _state {0};
 
+    std::vector<std::unique_ptr<syclNode>> _nodes;
 };
 
 // ----------------------------------------------------------------------------
@@ -62,9 +66,11 @@ class syclNode {
     syclNode() = delete;
     
     template <typename F>
-    syclNode(F&&);
+    syclNode(syclGraph&, F&&);
 
   private:
+
+    syclGraph& _graph;
     
     std::string _name;
     
@@ -86,11 +92,14 @@ class syclNode {
 
 // Constructor
 template <typename F>
-syclNode::syclNode(F&& func) : _func{std::forward<F>(func)} {
+syclNode::syclNode(syclGraph& g, F&& func) : 
+  _graph {g},
+  _func  {std::forward<F>(func)} {
 }
 
 // Procedure: _precede
 inline void syclNode::_precede(syclNode* v) {
+  _graph._state |= syclGraph::TOPOLOGY_CHANGED;
   _successors.push_back(v);
   v->_dependents.push_back(this);
 }
@@ -124,15 +133,20 @@ inline bool syclGraph::empty() const {
 
 // Procedure: clear
 inline void syclGraph::clear() {
+  _state = 0;
   _nodes.clear();
 }
 
 // Function: emplace_back
 template <typename... ArgsT>
 syclNode* syclGraph::emplace_back(ArgsT&&... args) {
+
+  _state |= syclGraph::TOPOLOGY_CHANGED;
+
   auto node = std::make_unique<syclNode>(std::forward<ArgsT>(args)...);
   _nodes.emplace_back(std::move(node));
   return _nodes.back().get();
+
   // TODO: object pool
 
   //auto node = new syclNode(std::forward<ArgsT>(args)...);

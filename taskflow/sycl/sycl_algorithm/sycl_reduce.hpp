@@ -12,7 +12,7 @@ syclTask syclFlow::reduce(I first, I last, T* res, C&& op) {
   size_t N = std::distance(first, last);
   size_t B = _default_group_size(N);
 
-  auto node = _graph.emplace_back(
+  auto node = _graph.emplace_back(_graph,
   
   [=, op=std::forward<C>(op)](sycl::handler& handler) mutable {
       
@@ -64,7 +64,7 @@ syclTask syclFlow::uninitialized_reduce(I first, I last, T* res, C&& op) {
   size_t N = std::distance(first, last);
   size_t B = _default_group_size(N);
 
-  auto node = _graph.emplace_back(
+  auto node = _graph.emplace_back(_graph,
   
   [=, op=std::forward<C>(op)](sycl::handler& handler) mutable {
       
