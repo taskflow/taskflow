@@ -7,6 +7,7 @@
 #include "../utility/os.hpp"
 #include "../utility/math.hpp"
 #include "../utility/serializer.hpp"
+#include "../utility/small_vector.hpp"
 #include "error.hpp"
 #include "declarations.hpp"
 #include "semaphore.hpp"
@@ -211,8 +212,11 @@ class Node {
 
     handle_t _handle;
 
-    std::vector<Node*> _successors;
-    std::vector<Node*> _dependents;
+    //std::vector<Node*> _successors;
+    //std::vector<Node*> _dependents;
+    
+    SmallVector<Node*> _successors;
+    SmallVector<Node*> _dependents;
 
     std::unique_ptr<Semaphores> _semaphores;
 

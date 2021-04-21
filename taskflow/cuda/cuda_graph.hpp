@@ -471,8 +471,11 @@ class cudaNode {
 
     cudaGraphNode_t _native_handle {nullptr};
 
-    std::vector<cudaNode*> _successors;
-    std::vector<cudaNode*> _dependents;
+    //std::vector<cudaNode*> _successors;
+    //std::vector<cudaNode*> _dependents;
+    
+    SmallVector<cudaNode*> _successors;
+    SmallVector<cudaNode*> _dependents;
 
     void _precede(cudaNode*);
 };
