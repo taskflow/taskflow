@@ -1,3 +1,5 @@
+// small vector modified from llvm
+
 #pragma once
 
 #include <algorithm>
@@ -18,21 +20,22 @@
 #endif
 
 
-namespace tf {
-  namespace detail {
-      /// NextPowerOf2 - Returns the next power of two (in 64-bits)
-      /// that is strictly greater than A.  Returns zero on overflow.
-      inline uint64_t NextPowerOf2(uint64_t A) {
-          A |= (A >> 1);
-          A |= (A >> 2);
-          A |= (A >> 4);
-          A |= (A >> 8);
-          A |= (A >> 16);
-          A |= (A >> 32);
-          return A + 1;
-      }
-  }
+namespace tf { namespace detail {
+
+// NextCapacity - Returns the next power of two (in 64-bits)
+// that is strictly greater than A.  Returns zero on overflow.
+// this function assumes A to be positive
+inline uint64_t NextCapacity(uint64_t A) {
+  A |= (A >> 1);
+  A |= (A >> 2);
+  A |= (A >> 4);
+  A |= (A >> 8);
+  A |= (A >> 16);
+  A |= (A >> 32);
+  return A + 1;
 }
+
+}}  // end of namespace tf::detail --------------------------------------------
 
 
 namespace tf {
@@ -42,7 +45,10 @@ template <typename T>
 struct IsPod : std::integral_constant<bool, std::is_standard_layout<T>::value &&
                                             std::is_trivial<T>::value> {};
 
-/// This is all the non-templated stuff common to all SmallVectors.
+/** 
+@private 
+@brief This is all the non-templated stuff common to all SmallVectors.
+*/
 class SmallVectorBase {
 protected:
   void *BeginX, *EndX, *CapacityX;
@@ -76,7 +82,8 @@ template <typename T, unsigned N> struct SmallVectorStorage;
 /// to avoid unnecessarily requiring T to be complete.
 template <typename T, typename = void>
 class SmallVectorTemplateCommon : public SmallVectorBase {
-private:
+
+  private:
   template <typename, unsigned> friend struct SmallVectorStorage;
 
   // Allocate raw space for N elements of type T.  If T has a ctor or dtor, we
@@ -87,7 +94,7 @@ private:
   U FirstEl;
   // Space after 'FirstEl' is clobbered, do not add any instance vars after it.
 
-protected:
+  protected:
   SmallVectorTemplateCommon(size_t Size) : SmallVectorBase(&FirstEl, Size) {}
 
   void grow_pod(size_t MinSizeInBytes, size_t TSize) {
@@ -106,7 +113,8 @@ protected:
   }
 
   void setEnd(T *P) { this->EndX = P; }
-public:
+  
+  public:
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
   typedef T value_type;
@@ -126,10 +134,12 @@ public:
   inline const_iterator begin() const { return (const_iterator)this->BeginX; }
   inline iterator end() { return (iterator)this->EndX; }
   inline const_iterator end() const { return (const_iterator)this->EndX; }
-protected:
+
+  protected:
   iterator capacity_ptr() { return (iterator)this->CapacityX; }
   const_iterator capacity_ptr() const { return (const_iterator)this->CapacityX;}
-public:
+  
+  public:
 
   // reverse iterator creation methods.
   reverse_iterator rbegin()            { return reverse_iterator(end()); }
@@ -237,7 +247,7 @@ void SmallVectorTemplateBase<T, isPodLike>::grow(size_t MinSize) {
   size_t CurCapacity = this->capacity();
   size_t CurSize = this->size();
   // Always grow, even from zero.
-  size_t NewCapacity = size_t(tf::detail::NextPowerOf2(CurCapacity+2));
+  size_t NewCapacity = size_t(tf::detail::NextCapacity(CurCapacity+2));
   if (NewCapacity < MinSize)
     NewCapacity = MinSize;
   T *NewElts = static_cast<T*>(malloc(NewCapacity*sizeof(T)));
@@ -915,7 +925,7 @@ static inline size_t capacity_in_bytes(const SmallVector<T, N> &X) {
   return X.capacity_in_bytes();
 }
 
-} // End tf namespace
+} // end tf namespace ---------------------------------------------------------
 
 namespace std {
   /// Implement std::swap in terms of SmallVector swap.
@@ -931,7 +941,7 @@ namespace std {
   swap(tf::SmallVector<T, N> &LHS, tf::SmallVector<T, N> &RHS) {
     LHS.swap(RHS);
   }
-}
+}  // end of namespace std ----------------------------------------------------
 
 namespace tf {
 /// grow_pod - This is an implementation of the grow() method which only works
@@ -960,5 +970,6 @@ void SmallVectorBase::grow_pod(void *FirstEl, size_t MinSizeInBytes,
   this->BeginX = NewElts;
   this->CapacityX = (char*)this->BeginX + NewCapacityInBytes;
 }
-}
+
+}  // end of namespace tf -----------------------------------------------------
 

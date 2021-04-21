@@ -80,9 +80,6 @@ class syclNode {
     
     std::function<void(sycl::handler&)> _func;
 
-    //std::vector<syclNode*> _successors;
-    //std::vector<syclNode*> _dependents;
-    
     SmallVector<syclNode*> _successors;
     SmallVector<syclNode*> _dependents;
 

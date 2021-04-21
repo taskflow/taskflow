@@ -212,9 +212,6 @@ class Node {
 
     handle_t _handle;
 
-    //std::vector<Node*> _successors;
-    //std::vector<Node*> _dependents;
-    
     SmallVector<Node*> _successors;
     SmallVector<Node*> _dependents;
 
@@ -341,6 +338,7 @@ inline Node::~Node() {
     auto& subgraph = std::get<Dynamic>(_handle).subgraph;
 
     std::vector<Node*> nodes;
+    nodes.reserve(subgraph.size());
 
     std::move(
       subgraph._nodes.begin(), subgraph._nodes.end(), std::back_inserter(nodes)

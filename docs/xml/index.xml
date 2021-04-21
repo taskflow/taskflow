@@ -418,11 +418,11 @@
     <member refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kind="function"><name>cancel</name></member>
     <member refid="classtf_1_1Future_1a26402c8b71a99835902794f4257dbc35" kind="function"><name>Future</name></member>
   </compound>
-  <compound refid="structtf_1_1cudaFlow_1_1Internal" kind="struct"><name>tf::cudaFlow::Internal</name>
-  </compound>
   <compound refid="structtf_1_1syclFlow_1_1Internal" kind="struct"><name>tf::syclFlow::Internal</name>
     <member refid="structtf_1_1syclFlow_1_1Internal_1a9bbc7eb920ae573d5360cae1cd7fb03d" kind="variable"><name>executor</name></member>
     <member refid="structtf_1_1syclFlow_1_1Internal_1a25015cffaeb326799d37ecb8ca5baceb" kind="function"><name>Internal</name></member>
+  </compound>
+  <compound refid="structtf_1_1cudaFlow_1_1Internal" kind="struct"><name>tf::cudaFlow::Internal</name>
   </compound>
   <compound refid="structtf_1_1cudaFlowCapturer_1_1Internal" kind="struct"><name>tf::cudaFlowCapturer::Internal</name>
   </compound>
@@ -490,12 +490,12 @@
   <compound refid="classtf_1_1syclFlow" kind="class"><name>tf::syclFlow</name>
     <member refid="classtf_1_1syclFlow_1a946b048dd1f13121d8998d8d943e216e" kind="typedef"><name>handle_t</name></member>
     <member refid="classtf_1_1syclFlow_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
-    <member refid="classtf_1_1syclFlow_1aa99380c6d2cffb477d07bf90daa78953" kind="variable"><name>OFFLOADED</name></member>
     <member refid="classtf_1_1syclFlow_1a0b6c3b76ec2ff2ba31ef51a17239f5aa" kind="variable"><name>_MAX_WORK_GROUP_SIZE</name></member>
-    <member refid="classtf_1_1syclFlow_1a857ad08e6adc804a37c9c0c893f473e0" kind="variable"><name>_state</name></member>
     <member refid="classtf_1_1syclFlow_1ae1d0a6dc43a4a28080db9577599fa3fa" kind="variable"><name>_handle</name></member>
     <member refid="classtf_1_1syclFlow_1ad686b504d6ea0edbef8e2be9d57e63c8" kind="variable"><name>_graph</name></member>
     <member refid="classtf_1_1syclFlow_1a5728aaf61105ae3ee37eaddb24c1008d" kind="variable"><name>_queue</name></member>
+    <member refid="classtf_1_1syclFlow_1ab16047aa143c6ed5bbfbff91488251ab" kind="variable"><name>_tpg</name></member>
+    <member refid="classtf_1_1syclFlow_1ab67081d930e69106d1c2b69994a9ebd8" kind="variable"><name>_bfs</name></member>
     <member refid="classtf_1_1syclFlow_1aca4297c5bcf7f6e3c59e43415afb0ebd" kind="function"><name>syclFlow</name></member>
     <member refid="classtf_1_1syclFlow_1a2dec29bec12f5270893f5d44b2fd79bd" kind="function"><name>~syclFlow</name></member>
     <member refid="classtf_1_1syclFlow_1a0e33d2d4f26e52a55690d17f77d467b0" kind="function"><name>empty</name></member>
