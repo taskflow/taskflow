@@ -1195,7 +1195,6 @@ auto Subflow::async(F&& f, ArgsT&&... args) {
 
   _parent->_join_counter.fetch_add(1);
 
-  //using T = typename function_traits<F>::return_type;
   using T = std::invoke_result_t<F, ArgsT...>;
   using R = std::conditional_t<std::is_same_v<T, void>, void, std::optional<T>>;
 

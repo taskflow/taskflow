@@ -14,8 +14,6 @@
 
 int main(){
 
-  std::cout << sizeof(tf::Node) << '\n';
-
   tf::Executor executor;
   tf::Taskflow taskflow("simple");
 

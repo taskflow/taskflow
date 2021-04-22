@@ -59,7 +59,29 @@ protected:
 
   /// This is an implementation of the grow() method which only works
   /// on POD-like data types and is out of line to reduce code duplication.
-  void grow_pod(void *FirstEl, size_t MinSizeInBytes, size_t TSize);
+  void grow_pod(void *FirstEl, size_t MinSizeInBytes, size_t TSize){
+    size_t CurSizeBytes = size_in_bytes();
+    size_t NewCapacityInBytes = 2 * capacity_in_bytes() + TSize; // Always grow.
+    if (NewCapacityInBytes < MinSizeInBytes) {
+      NewCapacityInBytes = MinSizeInBytes;
+    }
+
+    void *NewElts;
+    if (BeginX == FirstEl) {
+      NewElts = std::malloc(NewCapacityInBytes);
+
+      // Copy the elements over.  No need to run dtors on PODs.
+      memcpy(NewElts, this->BeginX, CurSizeBytes);
+    } else {
+      // If this wasn't grown from the inline copy, grow the allocated space.
+      NewElts = realloc(this->BeginX, NewCapacityInBytes);
+    }
+    assert(NewElts && "Out of memory");
+
+    this->EndX = (char*)NewElts+CurSizeBytes;
+    this->BeginX = NewElts;
+    this->CapacityX = (char*)this->BeginX + NewCapacityInBytes;
+  }
 
 public:
   /// This returns size()*sizeof(T).
@@ -250,7 +272,7 @@ void SmallVectorTemplateBase<T, isPodLike>::grow(size_t MinSize) {
   size_t NewCapacity = size_t(tf::detail::NextCapacity(CurCapacity+2));
   if (NewCapacity < MinSize)
     NewCapacity = MinSize;
-  T *NewElts = static_cast<T*>(malloc(NewCapacity*sizeof(T)));
+  T *NewElts = static_cast<T*>(std::malloc(NewCapacity*sizeof(T)));
 
   // Move the elements over.
   this->uninitialized_move(this->begin(), this->end(), NewElts);
@@ -260,7 +282,7 @@ void SmallVectorTemplateBase<T, isPodLike>::grow(size_t MinSize) {
 
   // If this wasn't grown from the inline copy, deallocate the old space.
   if (!this->isSmall())
-    free(this->begin());
+    std::free(this->begin());
 
   this->setEnd(NewElts+CurSize);
   this->BeginX = NewElts;
@@ -354,7 +376,7 @@ public:
 
     // If this wasn't grown from the inline copy, deallocate the old space.
     if (!this->isSmall())
-      free(this->begin());
+      std::free(this->begin());
   }
 
 
@@ -781,7 +803,7 @@ SmallVectorImpl<T> &SmallVectorImpl<T>::operator=(SmallVectorImpl<T> &&RHS) {
   // If the RHS isn't small, clear this vector and then steal its buffer.
   if (!RHS.isSmall()) {
     this->destroy_range(this->begin(), this->end());
-    if (!this->isSmall()) free(this->begin());
+    if (!this->isSmall()) std::free(this->begin());
     this->BeginX = RHS.BeginX;
     this->EndX = RHS.EndX;
     this->CapacityX = RHS.CapacityX;
@@ -943,33 +965,4 @@ namespace std {
   }
 }  // end of namespace std ----------------------------------------------------
 
-namespace tf {
-/// grow_pod - This is an implementation of the grow() method which only works
-/// on POD-like datatypes and is out of line to reduce code duplication.
-inline
-void SmallVectorBase::grow_pod(void *FirstEl, size_t MinSizeInBytes,
-                               size_t TSize) {
-  size_t CurSizeBytes = size_in_bytes();
-  size_t NewCapacityInBytes = 2 * capacity_in_bytes() + TSize; // Always grow.
-  if (NewCapacityInBytes < MinSizeInBytes)
-    NewCapacityInBytes = MinSizeInBytes;
-
-  void *NewElts;
-  if (BeginX == FirstEl) {
-    NewElts = malloc(NewCapacityInBytes);
-
-    // Copy the elements over.  No need to run dtors on PODs.
-    memcpy(NewElts, this->BeginX, CurSizeBytes);
-  } else {
-    // If this wasn't grown from the inline copy, grow the allocated space.
-    NewElts = realloc(this->BeginX, NewCapacityInBytes);
-  }
-  assert(NewElts && "Out of memory");
-
-  this->EndX = (char*)NewElts+CurSizeBytes;
-  this->BeginX = NewElts;
-  this->CapacityX = (char*)this->BeginX + NewCapacityInBytes;
-}
-
-}  // end of namespace tf -----------------------------------------------------
 
