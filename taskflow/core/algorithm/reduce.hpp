@@ -15,23 +15,23 @@ Task FlowBuilder::reduce(
   T& init, 
   O&& bop
 ) {
-  return reduce_guided(
-    std::forward<B>(beg),
-    std::forward<E>(end),
-    init,
-    std::forward<O>(bop),
-    1
-  );
-}
+  //return reduce_guided(
+  //  std::forward<B>(beg),
+  //  std::forward<E>(end),
+  //  init,
+  //  std::forward<O>(bop),
+  //  1
+  //);
+//}
 
 // ----------------------------------------------------------------------------
 // guided partition
 // ----------------------------------------------------------------------------
 
-template <typename B, typename E, typename T, typename O, typename H>
-Task FlowBuilder::reduce_guided(
-  B&& beg, E&& end, T& init, O&& bop, H&& chunk_size
-) {
+//template <typename B, typename E, typename T, typename O, typename H>
+//Task FlowBuilder::reduce_guided(
+//  B&& beg, E&& end, T& init, O&& bop, H&& chunk_size
+//) {
   
   using I = stateful_iterator_t<B, E>;
   using namespace std::string_literals;
@@ -40,8 +40,8 @@ Task FlowBuilder::reduce_guided(
   [b=std::forward<B>(beg),
    e=std::forward<E>(end), 
    &r=init,
-   o=std::forward<O>(bop),
-   c=std::forward<H>(chunk_size)
+   o=std::forward<O>(bop)
+   //c=std::forward<H>(chunk_size)
    ] (Subflow& sf) mutable {
     
     // fetch the iterator values
@@ -52,7 +52,8 @@ Task FlowBuilder::reduce_guided(
       return;
     }
 
-    size_t C = (c == 0) ? 1 : c;
+    //size_t C = (c == 0) ? 1 : c;
+    size_t C = 1;
     size_t W = sf._executor.num_workers();
     size_t N = std::distance(beg, end);
     
@@ -157,7 +158,7 @@ Task FlowBuilder::reduce_guided(
 // reduce_dynamic
 // ----------------------------------------------------------------------------
 
-template <typename B, typename E, typename T, typename O, typename H>
+/*template <typename B, typename E, typename T, typename O, typename H>
 Task FlowBuilder::reduce_dynamic(
   B&& beg, E&& end, T& init, O&& bop, H&& chunk_size
 ) {
@@ -427,6 +428,7 @@ Task FlowBuilder::reduce_static(
 
   return task;
 }
+*/
 
 // ----------------------------------------------------------------------------
 // default transform and reduction
@@ -440,24 +442,24 @@ Task FlowBuilder::transform_reduce(
   BOP&& bop,
   UOP&& uop
 ) {
-  return transform_reduce_guided(
-    std::forward<B>(beg),
-    std::forward<E>(end),
-    init,
-    std::forward<BOP>(bop),
-    std::forward<UOP>(uop),
-    1
-  );
-}
+//  return transform_reduce_guided(
+//    std::forward<B>(beg),
+//    std::forward<E>(end),
+//    init,
+//    std::forward<BOP>(bop),
+//    std::forward<UOP>(uop),
+//    1
+//  );
+//}
 
 // ----------------------------------------------------------------------------
 // guided partition
 // ----------------------------------------------------------------------------
 
-template <typename B, typename E, typename T, typename BOP, typename UOP, typename H>
-Task FlowBuilder::transform_reduce_guided(
-  B&& beg, E&& end, T& init, BOP&& bop, UOP&& uop, H&& chunk_size
-) {
+//template <typename B, typename E, typename T, typename BOP, typename UOP, typename H>
+//Task FlowBuilder::transform_reduce_guided(
+//  B&& beg, E&& end, T& init, BOP&& bop, UOP&& uop, H&& chunk_size
+//) {
   
   using I = stateful_iterator_t<B, E>;
   using namespace std::string_literals;
@@ -467,8 +469,8 @@ Task FlowBuilder::transform_reduce_guided(
    e=std::forward<E>(end), 
    &r=init,
    bop=std::forward<BOP>(bop),
-   uop=std::forward<UOP>(uop),
-   c=std::forward<H>(chunk_size)
+   uop=std::forward<UOP>(uop)
+   //c=std::forward<H>(chunk_size)
    ] (Subflow& sf) mutable {
     
     // fetch the iterator values
@@ -479,7 +481,8 @@ Task FlowBuilder::transform_reduce_guided(
       return;
     }
 
-    size_t C = (c == 0) ? 1 : c;
+    //size_t C = (c == 0) ? 1 : c;
+    size_t C = 1;
     size_t W = sf._executor.num_workers();
     size_t N = std::distance(beg, end);
     
@@ -585,7 +588,7 @@ Task FlowBuilder::transform_reduce_guided(
 // transform_reduce_dynamic
 // ----------------------------------------------------------------------------
 
-template <typename B, typename E, typename T, typename BOP, typename UOP, typename H>
+/*template <typename B, typename E, typename T, typename BOP, typename UOP, typename H>
 Task FlowBuilder::transform_reduce_dynamic(
   B&& beg, E&& end, T& init, BOP&& bop, UOP&& uop, H&& chunk_size
 ) {
@@ -857,7 +860,7 @@ Task FlowBuilder::transform_reduce_static(
   });  
 
   return task;
-}
+}*/
 
 }  // end of namespace tf -----------------------------------------------------
 
