@@ -721,7 +721,7 @@ void ObjectPool<T, S>::recycle(T* mem) {
         }
 
         // transfer a mostly-empty superblock to global heap
-        if((h->u + K*M < h->a) || (h->u < ((F-1) * h->a / F))) {
+        if((h->u + K*M < h->a) && (h->u < ((F-1) * h->a / F))) {
           for(size_t i=0; i<F; i++) {
             if(!_blocklist_is_empty(&h->lists[i])) {
               Block* x = _block_of(h->lists[i].next);
