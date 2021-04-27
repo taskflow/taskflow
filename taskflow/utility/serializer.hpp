@@ -458,7 +458,8 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
     
   auto sz = _save(make_size_tag(t.size()));
 
-  if constexpr (std::is_arithmetic_v<typename U::value_type>) {
+  //if constexpr (std::is_arithmetic_v<typename U::value_type>) {
+  if (std::is_arithmetic_v<typename U::value_type>) {
     _device.write(
       reinterpret_cast<const char*>(t.data()), 
       t.size() * sizeof(typename U::value_type)
@@ -609,7 +610,8 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
 
   SizeType sz;
 
-  if constexpr(std::is_arithmetic_v<typename U::value_type>) {
+  //if constexpr(std::is_arithmetic_v<typename U::value_type>) {
+  if (std::is_arithmetic_v<typename U::value_type>) {
     _device.write(reinterpret_cast<const char*>(t.data()), sizeof(t));
     sz = sizeof(t);
   } 
@@ -845,7 +847,8 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
     
   auto sz = _load(make_size_tag(num_data));
 
-  if constexpr(std::is_arithmetic_v<typename U::value_type>) {
+  //if constexpr(std::is_arithmetic_v<typename U::value_type>) {
+  if(std::is_arithmetic_v<typename U::value_type>) {
     t.resize(num_data);
     _device.read(reinterpret_cast<char*>(t.data()), num_data * sizeof(typename U::value_type));
     sz += num_data * sizeof(typename U::value_type);
@@ -1076,7 +1079,8 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 
   SizeType sz;
     
-  if constexpr(std::is_arithmetic_v<typename U::value_type>) {
+  //if constexpr(std::is_arithmetic_v<typename U::value_type>) {
+  if(std::is_arithmetic_v<typename U::value_type>) {
     _device.read(reinterpret_cast<char*>(t.data()), sizeof(t));
     sz = sizeof(t);
   } 
