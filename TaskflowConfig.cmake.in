@@ -1,6 +1,6 @@
 @PACKAGE_INIT@
 
-set_and_check(@PROJECT_NAME@_INCLUDE_DIR "@PACKAGE_TF_INC_INSTALL_DIR@")
+set_and_check(@PROJECT_NAME@_INCLUDE_DIR "@CMAKE_INSTALL_FULL_INCLUDEDIR@")
 
 include(CMakeFindDependencyMacro)
 find_dependency(Threads)
