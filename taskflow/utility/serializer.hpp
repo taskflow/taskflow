@@ -442,9 +442,9 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
   auto sz = _save(make_size_tag(t.size()));
   _device.write(
     reinterpret_cast<const char*>(t.data()), 
-    t.size()*sizeof(typename U::value_type)
+	static_cast<SizeType>(t.size()*sizeof(typename U::value_type))
   );
-  return sz + t.size()*sizeof(typename U::value_type);
+  return sz + static_cast<SizeType>(t.size()*sizeof(typename U::value_type));
 }
 
 // std::vector

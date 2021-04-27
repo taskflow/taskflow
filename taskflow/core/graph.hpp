@@ -543,7 +543,7 @@ inline void Graph::clear_detached() {
   for(auto itr = mid; itr != _nodes.end(); ++itr) {
     node_pool.recycle(*itr);
   }
-  _nodes.resize(std::distance(_nodes.begin(), mid));
+  _nodes.resize(static_cast<size_t>(std::distance(_nodes.begin(), mid)));
 }
 
 // Procedure: merge

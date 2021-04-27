@@ -169,7 +169,7 @@ class SmallVectorTemplateCommon : public SmallVectorBase {
   reverse_iterator rend()              { return reverse_iterator(begin()); }
   const_reverse_iterator rend() const { return const_reverse_iterator(begin());}
 
-  inline size_type size() const { return end()-begin(); }
+  inline size_type size() const { return static_cast<size_t>(end()-begin()); }
   inline size_type max_size() const { return size_type(-1) / sizeof(T); }
 
   /// Return the total number of elements in the currently allocated buffer.

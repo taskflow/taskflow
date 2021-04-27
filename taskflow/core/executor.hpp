@@ -751,7 +751,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // case 2: condition task
   else {
     if(cond >= 0 && static_cast<size_t>(cond) < num_successors) {
-      auto s = node->_successors[cond];
+      auto s = node->_successors[static_cast<size_t>(cond)];
       s->_join_counter.store(0);  // seems redundant but just for invariant
       j.fetch_add(1);
       _schedule(s);
