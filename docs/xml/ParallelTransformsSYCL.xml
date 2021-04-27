@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="ParallelTransformsSYCL" kind="page">
+    <compoundname>ParallelTransformsSYCL</compoundname>
+    <title>Parallel Transforms</title>
+    <tableofcontents/>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> provides a template method, <ref refid="classtf_1_1syclFlow_1ae278939334a90b6d58d8771e87b2e793" kindref="member">tf::syclFlow::transform</ref>, for creating a task to perform parallel transforms by applying the given function to a range of item and stores the transformed result in another range.</para><sect1 id="ParallelTransformsSYCL_1IteratorBasedParallelTransformSYCL">
+<title>Iterator-based Parallel Transforms</title>
+<para>Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The two iterators are typically two raw pointers to the first element and the next to the last element in the range in GPU memory space. The task created by <ref refid="classtf_1_1syclFlow_1ae278939334a90b6d58d8771e87b2e793" kindref="member">tf::syclFlow::transform</ref>(I first, I last, C&amp;&amp; callable, S... srcs) represents a kernel of parallel execution for the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>*first++<sp/>=<sp/>callable(*src1++,<sp/>*src2++,<sp/>*src3++,<sp/>...);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>The two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>, are typically two raw pointers to the first element and the next to the last element in the range. The following example creates a <computeroutput>transform</computeroutput> kernel that assigns each element, starting from <computeroutput>gpu_data</computeroutput> to <computeroutput>gpu_data + 1000</computeroutput>, to the sum of the corresponding elements at <computeroutput>gpu_data_x</computeroutput>, <computeroutput>gpu_data_y</computeroutput>, and <computeroutput>gpu_data_z</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>sf){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>gpu_data[i]<sp/>=<sp/>gpu_data_x[i]<sp/>+<sp/>gpu_data_y[i]<sp/>+<sp/>gpu_data_z[i]</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ae278939334a90b6d58d8771e87b2e793" kindref="member">transform</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>gpu_data,<sp/>gpu_data<sp/>+<sp/>1000,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>xi,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>yi,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>zi)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>xi<sp/>+<sp/>yi<sp/>+<sp/>zi;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>gpu_data_x,<sp/>gpu_data_y,<sp/>gpu_data_z</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>);<sp/></highlight></codeline>
+<codeline><highlight class="normal">},<sp/>sycl_queue);</highlight></codeline>
+</programlisting></para><para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,83 @@
+namespace tf {
+
+/** @page ForEachSYCL Parallel Iterations 
+
+tf::syclFlow provides two template methods,
+tf::syclFlow::for_each and tf::syclFlow::for_each_index,
+for creating tasks to perform parallel iterations over a range of items.
+
+@tableofcontents
+
+@section ForEachSYCLIndexBasedParallelFor Index-based Parallel Iterations
+
+Index-based parallel-for performs parallel iterations over a range <tt>[first, last)</tt> with the given @c step size.
+These indices must be @em integral type.
+The task created by tf::syclFlow::for_each_index(I first, I last, I step, C&& callable) 
+represents a kernel of parallel execution
+for the following loop:
+
+@code{.cpp}
+// positive step: first, first+step, first+2*step, ...
+for(auto i=first; i<last; i+=step) {
+  callable(i);
+}
+// negative step: first, first-step, first-2*step, ...
+for(auto i=first; i>last; i+=step) {
+  callable(i);
+}
+@endcode
+
+Each iteration @c i is independent of each other and is assigned one kernel thread 
+to run the callable.
+The following example creates a kernel that assigns each element of @c gpu_data 
+to 1 over the range @c [0, 100) with step size 1.
+
+@code{.cpp}
+taskflow.emplace_on([&](tf::syclFlow& sf){
+  // ... create other gpu tasks
+  // assigns each element in gpu_data to 1 over the range [0, 100) with step size 1
+  sf.for_each_index(0, 100, 1, [gpu_data] (int idx) {
+    gpu_data[idx] = 1;
+  });
+}, sycl_queue);
+@endcode
+
+@section ForEachSYCLIteratorBasedParallelIterations Iterator-based Parallel Iterations
+
+Iterator-based parallel-for performs parallel iterations over a range specified 
+by two STL-styled iterators, @c first and @c last.
+The task created by tf::syclFlow::for_each(I first, I last, C&& callable) represents 
+a parallel execution of the following loop:
+
+@code{.cpp}
+for(auto i=first; i<last; i++) {
+  callable(*i);
+}
+@endcode
+
+The two iterators, @c first and @c last, are typically two raw pointers to the 
+first element and the next to the last element in the range in GPU memory space.
+The following example creates a @c for_each kernel that assigns each element in
+@c gpu_data to 1 over the range <tt>[gpu_data, gpu_data + 1000)</tt>.
+
+@code{.cpp}
+taskflow.emplace_on([&](tf::syclFlow& cf){
+  // ... create gpu tasks
+  // assigns each element to 1 over the range [gpu_data, gpu_data + 1000)
+  cf.for_each(gpu_data, gpu_data + 1000, [] (int& item) {
+    item = 1;
+  }); 
+}, sycl_queue);
+@endcode
+
+Each iteration is independent of each other and is assigned one kernel thread 
+to run the callable.
+
+*/
+}
+
+
+
+
+
+

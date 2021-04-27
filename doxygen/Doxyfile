@@ -269,6 +269,7 @@ ALIASES                = \
   "cuBLAS=<a href=\"https://docs.nvidia.com/cuda/cublas/index.html\">cuBLAS</a>"\
   "cuDNN=<a href=\"https://developer.nvidia.com/cudnn\">cuDNN</a>"\
   "nvidia_smi=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvidia-smi</a>"\
+  "sycl20_spec=<a href=\"https://www.khronos.org/registry/SYCL/specs/sycl-2020/html/sycl-2020.html\">SYCL 2020 Specification</a>"\
   "SLOCCount=<a href=\"https://dwheeler.com/sloccount/\">SLOCCount</a>"\
   "TBB=<a href=\"https://github.com/oneapi-src/oneTBB\">Intel TBB</a>"\
   "OpenMP=<a href=\"https://www.openmp.org/\">OpenMP</a>"\
@@ -850,12 +851,16 @@ INPUT                  = ../taskflow/core/flow_builder.hpp \
                          ../taskflow/cuda/cuda_optimizer.hpp \
                          ../taskflow/cuda/cuda_capturer.hpp \
                          ../taskflow/cuda/cublas/cublas_flow.hpp \
+                         ../taskflow/sycl/sycl_task.hpp \
+                         ../taskflow/sycl/sycl_flow.hpp \
                          ../taskflow/taskflow.hpp \
                          ../taskflow/cudaflow.hpp \
                          ../taskflow/cublasflow.hpp \
+                         ../taskflow/syclflow.hpp \
                          QuickStart.dox \
                          releases/releases.dox \
                          releases/release-roadmap.dox \
+                         releases/release-3.2.0.dox \
                          releases/release-3.1.0.dox \
                          releases/release-3.0.0.dox \
                          releases/release-2.7.0.dox \
@@ -870,6 +875,7 @@ INPUT                  = ../taskflow/core/flow_builder.hpp \
                          releases/release-1.x.x.dox \
                          install/install.dox \
                          install/cuda_compile.dox \
+                         install/sycl_compile.dox \
                          install/benchmark_taskflow.dox \
                          cookbook/Cookbook.dox \
                          cookbook/motivation.dox \
@@ -882,18 +888,24 @@ INPUT                  = ../taskflow/core/flow_builder.hpp \
                          cookbook/async_tasking.dox \
                          cookbook/gpu_tasking_cudaflow.dox \
                          cookbook/gpu_tasking_cudaflow_capturer.dox \
+                         cookbook/gpu_tasking_syclflow.dox \
                          cookbook/cancellation.dox \
                          cookbook/profiler.dox \
                          algorithms/algorithms.dox \
                          algorithms/for_each.dox \
                          algorithms/reduce.dox \
                          algorithms/sort.dox \
-                         gpu_algorithms/gpu_algorithms.dox \
-                         gpu_algorithms/single_task_cuda.dox \
-                         gpu_algorithms/for_each_cuda.dox \
-                         gpu_algorithms/transform_cuda.dox \
-                         gpu_algorithms/cuda_reduce.dox \
-                         gpu_algorithms/cublas/cublas_flow_capturer.dox \
+                         cuda_algorithms/cuda_algorithms.dox \
+                         cuda_algorithms/cuda_single_task.dox \
+                         cuda_algorithms/cuda_for_each.dox \
+                         cuda_algorithms/cuda_transform.dox \
+                         cuda_algorithms/cuda_reduce.dox \
+                         cuda_algorithms/cublas/cublas_flow_capturer.dox \
+                         sycl_algorithms/sycl_algorithms.dox \
+                         sycl_algorithms/sycl_single_task.dox \
+                         sycl_algorithms/sycl_for_each.dox \
+                         sycl_algorithms/sycl_transform.dox \
+                         sycl_algorithms/sycl_reduce.dox \
                          examples/examples.dox \
                          examples/wavefront.dox \
                          examples/matrix_multiplication.dox \

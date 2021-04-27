@@ -5,7 +5,7 @@
   <title>Cookbook &raquo; Executor | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -55,6 +55,7 @@
             <li><a href="#CreateAnExecutor">Create an Executor</a></li>
             <li><a href="#ExecuteATaskflow">Execute a Taskflow</a></li>
             <li><a href="#ThreadSafety">Touch an Executor from Multiple Threads</a></li>
+            <li><a href="#QueryTheWorkerID">Query the Worker Identieir</a></li>
             <li><a href="#ObserveThreadActivities">Observe Thread Activities</a></li>
           </ul>
         </div>
@@ -115,7 +116,18 @@
  <span class="mi">7</span><span class="o">:</span>   <span class="p">}).</span><span class="n">detach</span><span class="p">();</span>
  <span class="mi">8</span><span class="o">:</span> <span class="p">}</span>
  <span class="mi">9</span><span class="o">:</span>
-<span class="mi">10</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span></pre></section><section id="ObserveThreadActivities"><h2><a href="#ObserveThreadActivities">Observe Thread Activities</a></h2><p>You can observe thread activities in an executor when a worker thread participates in executing a task and leaves the execution using <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> &ndash; an <em>interface</em> class that provides a set of methods for you to define what to do when a thread enters and leaves the execution context of a task.</p><pre class="m-code"><span class="k">class</span> <span class="nc">ObserverInterface</span> <span class="p">{</span>
+<span class="mi">10</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span></pre></section><section id="QueryTheWorkerID"><h2><a href="#QueryTheWorkerID">Query the Worker Identieir</a></h2><p>Each worker in an executor has an unique integer identifier in the range <code>[0, N)</code> that can be queried by the caller thread using <a href="classtf_1_1Executor.html#a6487d589cb1f6b078b69fd3bb1082345" class="m-doc">tf::<wbr />Executor::<wbr />this_worker_id</a>. If the caller thread is not a worker in the executor, <code>-1</code> is returned. This method is convenient for users to maintain a one-to-one mapping between a worker and its application data structure.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">worker_vectors</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>       <span class="c1">// one vector per worker</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>                 <span class="c1">// an executor of eight workers</span>
+
+<span class="n">assert</span><span class="p">(</span><span class="n">executor</span><span class="p">.</span><span class="n">this_worker_id</span><span class="p">()</span> <span class="o">==</span> <span class="mi">-1</span><span class="p">);</span>  <span class="c1">// master thread is not a worker</span>
+
+<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+  <span class="kt">int</span> <span class="n">id</span> <span class="o">=</span> <span class="n">executor</span><span class="p">.</span><span class="n">this_worker_id</span><span class="p">();</span>     <span class="c1">// in the range [0, 8)</span>
+  <span class="k">auto</span><span class="o">&amp;</span> <span class="n">vec</span> <span class="o">=</span> <span class="n">worker_vectors</span><span class="p">[</span><span class="n">worker_id</span><span class="p">];</span>
+  <span class="c1">// ...</span>
+<span class="p">});</span></pre></section><section id="ObserveThreadActivities"><h2><a href="#ObserveThreadActivities">Observe Thread Activities</a></h2><p>You can observe thread activities in an executor when a worker thread participates in executing a task and leaves the execution using <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> &ndash; an <em>interface</em> class that provides a set of methods for you to define what to do when a thread enters and leaves the execution context of a task.</p><pre class="m-code"><span class="k">class</span> <span class="nc">ObserverInterface</span> <span class="p">{</span>
   <span class="k">virtual</span> <span class="o">~</span><span class="n">ObserverInterface</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
   <span class="k">virtual</span> <span class="kt">void</span> <span class="n">set_up</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">num_workers</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
   <span class="k">virtual</span> <span class="kt">void</span> <span class="n">on_entry</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">worker_id</span><span class="p">,</span> <span class="n">tf</span><span class="o">::</span><span class="n">TaskView</span> <span class="n">task_view</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
@@ -244,7 +256,7 @@ worker <span class="m">3</span> finished running H</pre><p>It is expected each l
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

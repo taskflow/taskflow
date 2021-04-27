@@ -5,7 +5,7 @@
   <title>tf namespace | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -141,6 +141,14 @@
             </dt>
             <dd>class to construct a subflow graph from the execution of a dynamic task</dd>
             <dt>
+              class <a href="classtf_1_1syclFlow.html" class="m-doc">syclFlow</a>
+            </dt>
+            <dd>class for building a SYCL task dependency graph</dd>
+            <dt>
+              class <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a>
+            </dt>
+            <dd>handle to a node of the internal CUDA graph</dd>
+            <dt>
               class <a href="classtf_1_1Task.html" class="m-doc">Task</a>
             </dt>
             <dd>handle to a node in a task dependency graph</dd>
@@ -168,6 +176,7 @@
             <dt id="a1355048578785a80414707ff308b395a">
               <span class="m-doc-wrap-bumper">enum class <a href="#a1355048578785a80414707ff308b395a" class="m-doc-self">TaskType</a>: int { </span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" class="m-doc">PLACEHOLDER</a> = 0,
               <a href="#a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225" class="m-doc">CUDAFLOW</a>,
+              <a href="#a1355048578785a80414707ff308b395aaacf7c94171844e1799b1cccf0144938c" class="m-doc">SYCLFLOW</a>,
               <a href="#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc">STATIC</a>,
               <a href="#a1355048578785a80414707ff308b395aa0fcc90da4811c877ba9f9c12f7d60bc9" class="m-doc">DYNAMIC</a>,
               <a href="#a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" class="m-doc">CONDITION</a>,
@@ -376,14 +385,11 @@
               const <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>&amp; ct) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
             </dt>
             <dd>overload of ostream inserter operator for <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></dd>
-            <dt id="ae680bf7822f2b6b66a6199f0b77f7241">
-              <span class="m-doc-wrap-bumper">auto <a href="#ae680bf7822f2b6b66a6199f0b77f7241" class="m-doc-self">cuda_default_max_threads_per_block</a>(</span><span class="m-doc-wrap">) -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span></span>
+            <dt id="a160861c1c085842ecb0c56537199deaa">
+              <span class="m-doc-wrap-bumper">auto <a href="#a160861c1c085842ecb0c56537199deaa" class="m-doc-self">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
+              const <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a>&amp; ct) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
             </dt>
-            <dd>queries the maximum threads allowed per block</dd>
-            <dt id="a50a8f777333cc26d5f5d8c4d37bcdc73">
-              <span class="m-doc-wrap-bumper">auto <a href="#a50a8f777333cc26d5f5d8c4d37bcdc73" class="m-doc-self">cuda_default_threads_per_block</a>(</span><span class="m-doc-wrap">size_t N) -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span></span>
-            </dt>
-            <dd>queries the default number of threads per block in an 1D vector of N elements</dd>
+            <dd>overload of ostream inserter operator for <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a></dd>
             <dt id="a30fa078dcf625e9eada5a95af1467588">
               <span class="m-doc-wrap-bumper">auto <a href="#a30fa078dcf625e9eada5a95af1467588" class="m-doc-self">version</a>(</span><span class="m-doc-wrap">) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
@@ -393,8 +399,8 @@
         <section id="var-members">
           <h2><a href="#var-members">Variables</a></h2>
           <dl class="m-doc">
-            <dt id="a3d823d8776745f3348dc87bba2fcc91b">
-              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 7&gt; <a href="#a3d823d8776745f3348dc87bba2fcc91b" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
+            <dt id="a8d01ffdf02fde31dcda586ca81b7f058">
+              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 8&gt; <a href="#a8d01ffdf02fde31dcda586ca81b7f058" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>array of all task types (used for iterating task types)</dd>
             <dt>
@@ -416,7 +422,12 @@
               <div class="m-doc-template">template&lt;typename C&gt;</div>
               bool <a href="#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc">is_cudaflow_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
-            <dd>determines if a callable is a cudaflow task</dd>
+            <dd>determines if a callable is a cudaFlow task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C&gt;</div>
+              bool <a href="#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_syclflow_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>determines if a callable is a syclFlow task</dd>
           </dl>
         </section>
         <section>
@@ -623,8 +634,18 @@
               </div>
               bool tf::<wbr /><a href="#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc-self">is_cudaflow_task_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>
-            <p>determines if a callable is a cudaflow task</p>
+            <p>determines if a callable is a cudaFlow task</p>
 <p>A <a href="classtf_1_1cudaFlow.html" class="m-doc">cudaFlow</a> task is a callable object constructible from std::function&lt;void(tf::cudaFlow&amp;)&gt; or std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;.</p>
+          </div></section>
+          <section class="m-doc-details" id="a574038aaa99e0220eedca4e8ea9389cf"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+              </div>
+              bool tf::<wbr /><a href="#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc-self">is_syclflow_task_v</a> <span class="m-label m-primary">constexpr</span>
+            </h3>
+            <p>determines if a callable is a syclFlow task</p>
+<p>A <a href="classtf_1_1syclFlow.html" class="m-doc">syclFlow</a> task is a callable object constructible from std::function&lt;void(tf::syclFlow&amp;)&gt;.</p>
           </div></section>
         </section>
       </div>
@@ -671,7 +692,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

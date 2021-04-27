@@ -11,12 +11,13 @@ We will also go through the building process of unit tests and examples.
 
 To use %Taskflow, you only need a compiler that supports C++17:
 
-@li GNU C++ Compiler at least v7.0 with -std=c++17
+@li GNU C++ Compiler at least v8.4 with -std=c++17
 @li Clang C++ Compiler at least v6.0 with -std=c++17
 @li Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)
 @li AppleClang Xode Version at least v12.0 with -std=c++17
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
 @li Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17
+@li Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
 
 %Taskflow works on Linux, Windows, and Mac OS X.
 
@@ -117,7 +118,9 @@ The above command turns off building %Taskflow examples.
 @section BAIBuildCUDACode Build CUDA Examples and Unit Tests
 
 To build CUDA code, including unit tests and examples, 
-enable the CMake option @c TF_BUILD_CUDA to @c ON as follows:
+enable the CMake option @c TF_BUILD_CUDA to @c ON. 
+Cmake will automatically detect the existence of @c nvcc 
+and use it to compile and link @c .cu code.
 
 @code{.shell-session}
 ~$ cmake ../ -DTF_BUILD_CUDA=ON
@@ -131,7 +134,27 @@ Please visit the page @subpage CompileTaskflowWithCUDA for details.
 
 @section BAIBuildSYCLCode Build SYCL Code Examples and Unit Tests
 
-TBD
+To build SYCL code, including unit tests and examples, 
+enable the CMake option @c TF_BUILD_SYCL to @c ON and
+direct the CMake compiler @c CMAKE_CXX_COMPILER to the location of 
+DPC++ clang compiler.
+You can acquire the DPC++ clang compiler at the official page of 
+<a href="https://intel.github.io/llvm-docs/GetStartedGuide.html">Getting Started with oneAPI DPC++</a>.
+
+@code{.shell-session}
+# after succesfully build Intel DPCPP clang: https://intel.github.io/llvm-docs/
+~$ export DPCPP_HOME=/path/to/your/dpcpp/workspace
+~$ export PATH=$DPCPP_HOME/llvm/build/bin:$PATH
+~$ export LD_LIBRARY_PATH=$DPCPP_HOME/llvm/build/lib:$LD_LIBRARY_PATH
+
+# build Taskflow SYCL code using Intel oneAPI dpc++ clang compiler
+~$ cmake ../ -DTF_BUILD_SYCL=ON -DCMAKE_CXX_COMPILER=clang++
+~$ make
+@endcode
+
+@subsection BAICompileTaskflowWithSYCL Compile Taskflow with SYCL
+
+Please visit the page @subpage CompileTaskflowWithSYCL for details.
 
 @section BAIBuildBenchmarks Build Benchmarks
 

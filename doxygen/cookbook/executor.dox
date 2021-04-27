@@ -145,6 +145,29 @@ runtime.
 10: executor.wait_for_all();
 @endcode
 
+@section QueryTheWorkerID Query the Worker Identieir
+
+Each worker in an executor has an unique integer identifier in the range 
+<tt>[0, N)</tt> that can be queried by the caller thread using tf::Executor::this_worker_id.
+If the caller thread is not a worker in the executor, @c -1 is returned.
+This method is convenient for users to maintain a one-to-one mapping between
+a worker and its application data structure.
+
+@code{.cpp}
+std::vector<int> worker_vectors[8];       // one vector per worker
+
+tf::Taskflow taskflow;
+tf::Executor executor(8);                 // an executor of eight workers
+
+assert(executor.this_worker_id() == -1);  // master thread is not a worker
+
+taskflow.emplace([&](){
+  int id = executor.this_worker_id();     // in the range [0, 8)
+  auto& vec = worker_vectors[worker_id];
+  // ...
+});
+@endcode
+
 @section ObserveThreadActivities Observe Thread Activities
 
 You can observe thread activities in an executor when a worker thread participates in executing

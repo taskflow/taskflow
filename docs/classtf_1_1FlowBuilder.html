@@ -5,7 +5,7 @@
   <title>tf::FlowBuilder class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -104,7 +104,7 @@
             </dt>
             <dd>creates a condition task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt;1), void&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a1f6118326ad434f6c839007a1a79fe1b" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C &amp;&amp; ... callables) -&gt; auto</span>
             </dt>
             <dd>creates multiple tasks from a list of callable objects</dd>
@@ -128,6 +128,12 @@
             </dt>
             <dd>creates a cudaFlow task on the given device</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename C, typename Q, std::enable_if_t&lt;<a href="namespacetf.html#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_<wbr />syclflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a8706e06336e69c826e93fd772b1b178c" class="m-doc">emplace_on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
+              Q&amp; queue) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>creates a syclFlow task on the given queue</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">void <a href="#a90f3d9b9d6fcf4df8e7d7878dfdd130d" class="m-doc">linearize</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/container/vector.html" class="m-doc-external">std::<wbr />vector</a>&lt;<a href="classtf_1_1Task.html" class="m-doc">Task</a>&gt;&amp; tasks)</span>
             </dt>
             <dd>adds adjacent dependency links to a linear list of tasks</dd>
@@ -143,30 +149,6 @@
             </dt>
             <dd>constructs a STL-styled parallel-for task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename C, typename H = size_t&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a1a294c4fa23d74b82e581b8cfd33acdf" class="m-doc">for_each_guided</a>(</span><span class="m-doc-wrap">B&amp;&amp; beg,
-              E&amp;&amp; end,
-              C&amp;&amp; callable,
-              H&amp;&amp; chunk_size = 1) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>constructs a STL-styled parallel-for task using the guided partition algorithm</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename C, typename H = size_t&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a5c044a80450742bf6927d0c343c23853" class="m-doc">for_each_dynamic</a>(</span><span class="m-doc-wrap">B&amp;&amp; beg,
-              E&amp;&amp; end,
-              C&amp;&amp; callable,
-              H&amp;&amp; chunk_size = 1) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>constructs a STL-styled parallel-for task using the dynamic partition algorithm</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename C, typename H = size_t&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a0af7e250c4ad1ae98bf6e0249b98589f" class="m-doc">for_each_static</a>(</span><span class="m-doc-wrap">B&amp;&amp; beg,
-              E&amp;&amp; end,
-              C&amp;&amp; callable,
-              H&amp;&amp; chunk_size = 0) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>constructs a STL-styled parallel-for task using the dynamic partition algorithm</dd>
-            <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename S, typename C&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#ab8417b211b18bb1e0f45a049331f084d" class="m-doc">for_each_index</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
               E&amp;&amp; last,
@@ -174,33 +156,6 @@
               C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs an index-based parallel-for task</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename S, typename C, typename H = size_t&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a942449afd25e656b9e14cb526cbd8ad2" class="m-doc">for_each_index_guided</a>(</span><span class="m-doc-wrap">B&amp;&amp; beg,
-              E&amp;&amp; end,
-              S&amp;&amp; step,
-              C&amp;&amp; callable,
-              H&amp;&amp; chunk_size = 1) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>constructs an index-based parallel-for task using the guided partition algorithm.</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename S, typename C, typename H = size_t&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a930d0343226874d1d40b9e230cccdd52" class="m-doc">for_each_index_dynamic</a>(</span><span class="m-doc-wrap">B&amp;&amp; beg,
-              E&amp;&amp; end,
-              S&amp;&amp; step,
-              C&amp;&amp; callable,
-              H&amp;&amp; chunk_size = 1) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>constructs an index-based parallel-for task using the dynamic partition algorithm.</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename S, typename C, typename H = size_t&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a71f204c670ca5857e5527d6000ba73c4" class="m-doc">for_each_index_static</a>(</span><span class="m-doc-wrap">B&amp;&amp; beg,
-              E&amp;&amp; end,
-              S&amp;&amp; step,
-              C&amp;&amp; callable,
-              H&amp;&amp; chunk_size = 0) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>constructs an index-based parallel-for task using the static partition algorithm.</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename O&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#ad999cd75045db225a42d5881d6db1223" class="m-doc">reduce</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
@@ -210,33 +165,6 @@
             </dt>
             <dd>constructs a STL-styled parallel-reduce task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename O, typename H = size_t&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a10f13b39b02038c6850aca787923d668" class="m-doc">reduce_guided</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
-              E&amp;&amp; last,
-              T&amp; init,
-              O&amp;&amp; bop,
-              H&amp;&amp; chunk_size = 1) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>constructs a STL-styled parallel-reduce task using the guided partition algorithm</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename O, typename H = size_t&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a83ec799606b7526787761acf27885b00" class="m-doc">reduce_dynamic</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
-              E&amp;&amp; last,
-              T&amp; init,
-              O&amp;&amp; bop,
-              H&amp;&amp; chunk_size = 1) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>constructs a STL-styled parallel-reduce task using the dynamic partition algorithm</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename O, typename H = size_t&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a54e36c916ae7dd88bd079d3fd49119f9" class="m-doc">reduce_static</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
-              E&amp;&amp; last,
-              T&amp; init,
-              O&amp;&amp; bop,
-              H&amp;&amp; chunk_size = 0) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>constructs a STL-styled parallel-reduce task using the static partition algorithm</dd>
-            <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename BOP, typename UOP&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#ad8d03524f15292610ebee63d53b89579" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
               E&amp;&amp; last,
@@ -245,36 +173,6 @@
               UOP&amp;&amp; uop) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a STL-styled parallel transform-reduce task</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename H = size_t&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#aa102a40672a331643944cb17c2377118" class="m-doc">transform_reduce_guided</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
-              E&amp;&amp; last,
-              T&amp; init,
-              BOP&amp;&amp; bop,
-              UOP&amp;&amp; uop,
-              H&amp;&amp; chunk_size = 1) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>constructs a STL-styled parallel transform-reduce task using the guided partition algorithm</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename H = size_t&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a562e253028680b61de95e305c0224d91" class="m-doc">transform_reduce_static</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
-              E&amp;&amp; last,
-              T&amp; init,
-              BOP&amp;&amp; bop,
-              UOP&amp;&amp; uop,
-              H&amp;&amp; chunk_size = 0) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>constructs a STL-styled parallel transform-reduce task using the static partition algorithm</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename H = size_t&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a6fb87774919f4a570ac505cdcda48249" class="m-doc">transform_reduce_dynamic</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
-              E&amp;&amp; last,
-              T&amp; init,
-              BOP&amp;&amp; bop,
-              UOP&amp;&amp; uop,
-              H&amp;&amp; chunk_size = 1) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>constructs a STL-styled parallel transform-reduce task using the dynamic partition algorithm</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename C&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#af4848ab51fa3bf5525af58e2440b01c1" class="m-doc">sort</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
@@ -426,7 +324,7 @@
           <section class="m-doc-details" id="a1f6118326ad434f6c839007a1a79fe1b"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt;1), void&gt;* = nullptr&gt;
+                template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt;
               </div>
               <span class="m-doc-wrap-bumper">auto tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1f6118326ad434f6c839007a1a79fe1b" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C &amp;&amp; ... callables)</span></span>
             </h3>
@@ -439,6 +337,10 @@
                 <tr>
                   <td style="width: 1%">C</td>
                   <td>callable types</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td></td>
                 </tr>
               </tbody>
               <thead>
@@ -586,6 +488,45 @@
   <span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span>
 <span class="p">},</span> <span class="mi">2</span><span class="p">);</span></pre>
           </div></section>
+          <section class="m-doc-details" id="a8706e06336e69c826e93fd772b1b178c"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C, typename Q, std::enable_if_t&lt;<a href="namespacetf.html#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_<wbr />syclflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8706e06336e69c826e93fd772b1b178c" class="m-doc-self">emplace_on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
+              Q&amp; queue)</span></span>
+            </h3>
+            <p>creates a syclFlow task on the given queue</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">C</td>
+                  <td>callable type constructible from std::function&lt;void(tf::syclFlow&amp;)&gt;</td>
+                </tr>
+                <tr>
+                  <td>Q</td>
+                  <td>queue type</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The following example creates a syclFlow of two kernel tasks, <code>task1</code> and <code>task2</code> on GPU <code>2</code>, where <code>task1</code> runs before <code>task2</code></p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">){</span>
+  <span class="c1">// create two single-thread kernel tasks</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">task1</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([](){});</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">task2</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([](){});</span>
+
+  <span class="c1">// kernel1 runs before kernel2</span>
+  <span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span>
+<span class="p">},</span> <span class="n">queue</span><span class="p">);</span></pre>
+          </div></section>
           <section class="m-doc-details" id="a90f3d9b9d6fcf4df8e7d7878dfdd130d"><div>
             <h3>
               <span class="m-doc-wrap-bumper">void tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a90f3d9b9d6fcf4df8e7d7878dfdd130d" class="m-doc-self">linearize</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/container/vector.html" class="m-doc-external">std::<wbr />vector</a>&lt;<a href="classtf_1_1Task.html" class="m-doc">Task</a>&gt;&amp; tasks)</span></span>
@@ -676,195 +617,6 @@
   <span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">);</span>
 <span class="p">}</span></pre><p>Arguments templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the dereferenced iterator type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a1a294c4fa23d74b82e581b8cfd33acdf"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename B, typename E, typename C, typename H = size_t&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1a294c4fa23d74b82e581b8cfd33acdf" class="m-doc-self">for_each_guided</a>(</span><span class="m-doc-wrap">B&amp;&amp; beg,
-              E&amp;&amp; end,
-              C&amp;&amp; callable,
-              H&amp;&amp; chunk_size = 1)</span></span>
-            </h3>
-            <p>constructs a STL-styled parallel-for task using the guided partition algorithm</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">B</td>
-                  <td>beginning iterator type</td>
-                </tr>
-                <tr>
-                  <td>E</td>
-                  <td>ending iterator type</td>
-                </tr>
-                <tr>
-                  <td>C</td>
-                  <td>callable type</td>
-                </tr>
-                <tr>
-                  <td>H</td>
-                  <td>chunk size type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>beg</td>
-                  <td>iterator to the beginning (inclusive)</td>
-                </tr>
-                <tr>
-                  <td>end</td>
-                  <td>iterator to the end (exclusive)</td>
-                </tr>
-                <tr>
-                  <td>callable</td>
-                  <td>a callable object to apply to the dereferenced iterator</td>
-                </tr>
-                <tr>
-                  <td>chunk_size</td>
-                  <td>chunk size</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[beg, end)</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the dereferenced iterator type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
-          </div></section>
-          <section class="m-doc-details" id="a5c044a80450742bf6927d0c343c23853"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename B, typename E, typename C, typename H = size_t&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5c044a80450742bf6927d0c343c23853" class="m-doc-self">for_each_dynamic</a>(</span><span class="m-doc-wrap">B&amp;&amp; beg,
-              E&amp;&amp; end,
-              C&amp;&amp; callable,
-              H&amp;&amp; chunk_size = 1)</span></span>
-            </h3>
-            <p>constructs a STL-styled parallel-for task using the dynamic partition algorithm</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">B</td>
-                  <td>beginning iterator type</td>
-                </tr>
-                <tr>
-                  <td>E</td>
-                  <td>ending iterator type</td>
-                </tr>
-                <tr>
-                  <td>C</td>
-                  <td>callable type</td>
-                </tr>
-                <tr>
-                  <td>H</td>
-                  <td>chunk size type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>beg</td>
-                  <td>iterator to the beginning (inclusive)</td>
-                </tr>
-                <tr>
-                  <td>end</td>
-                  <td>iterator to the end (exclusive)</td>
-                </tr>
-                <tr>
-                  <td>callable</td>
-                  <td>a callable object to apply to the dereferenced iterator</td>
-                </tr>
-                <tr>
-                  <td>chunk_size</td>
-                  <td>chunk size</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[beg, end)</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the dereferenced iterator type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
-          </div></section>
-          <section class="m-doc-details" id="a0af7e250c4ad1ae98bf6e0249b98589f"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename B, typename E, typename C, typename H = size_t&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0af7e250c4ad1ae98bf6e0249b98589f" class="m-doc-self">for_each_static</a>(</span><span class="m-doc-wrap">B&amp;&amp; beg,
-              E&amp;&amp; end,
-              C&amp;&amp; callable,
-              H&amp;&amp; chunk_size = 0)</span></span>
-            </h3>
-            <p>constructs a STL-styled parallel-for task using the dynamic partition algorithm</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">B</td>
-                  <td>beginning iterator type</td>
-                </tr>
-                <tr>
-                  <td>E</td>
-                  <td>ending iterator type</td>
-                </tr>
-                <tr>
-                  <td>C</td>
-                  <td>callable type</td>
-                </tr>
-                <tr>
-                  <td>H</td>
-                  <td>chunk size type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>beg</td>
-                  <td>iterator to the beginning (inclusive)</td>
-                </tr>
-                <tr>
-                  <td>end</td>
-                  <td>iterator to the end (exclusive)</td>
-                </tr>
-                <tr>
-                  <td>callable</td>
-                  <td>a callable object to apply to the dereferenced iterator</td>
-                </tr>
-                <tr>
-                  <td>chunk_size</td>
-                  <td>chunk size</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[beg, end)</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the dereferenced iterator type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
-          </div></section>
           <section class="m-doc-details" id="ab8417b211b18bb1e0f45a049331f084d"><div>
             <h3>
               <div class="m-doc-template">
@@ -936,222 +688,6 @@
   <span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
 <span class="p">}</span></pre><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the integral index type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a942449afd25e656b9e14cb526cbd8ad2"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename B, typename E, typename S, typename C, typename H = size_t&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a942449afd25e656b9e14cb526cbd8ad2" class="m-doc-self">for_each_index_guided</a>(</span><span class="m-doc-wrap">B&amp;&amp; beg,
-              E&amp;&amp; end,
-              S&amp;&amp; step,
-              C&amp;&amp; callable,
-              H&amp;&amp; chunk_size = 1)</span></span>
-            </h3>
-            <p>constructs an index-based parallel-for task using the guided partition algorithm.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">B</td>
-                  <td>beginning index type (must be integral)</td>
-                </tr>
-                <tr>
-                  <td>E</td>
-                  <td>ending index type (must be integral)</td>
-                </tr>
-                <tr>
-                  <td>S</td>
-                  <td>step type (must be integral)</td>
-                </tr>
-                <tr>
-                  <td>C</td>
-                  <td>callable type</td>
-                </tr>
-                <tr>
-                  <td>H</td>
-                  <td>chunk size type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>beg</td>
-                  <td>index of the beginning (inclusive)</td>
-                </tr>
-                <tr>
-                  <td>end</td>
-                  <td>index of the end (exclusive)</td>
-                </tr>
-                <tr>
-                  <td>step</td>
-                  <td>step size</td>
-                </tr>
-                <tr>
-                  <td>callable</td>
-                  <td>a callable object to apply to each valid index</td>
-                </tr>
-                <tr>
-                  <td>chunk_size</td>
-                  <td>chunk size (default 1)</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The task spawns a subflow that applies the callable object to each index in the range <code>[beg, end)</code> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the integral index type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
-          </div></section>
-          <section class="m-doc-details" id="a930d0343226874d1d40b9e230cccdd52"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename B, typename E, typename S, typename C, typename H = size_t&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a930d0343226874d1d40b9e230cccdd52" class="m-doc-self">for_each_index_dynamic</a>(</span><span class="m-doc-wrap">B&amp;&amp; beg,
-              E&amp;&amp; end,
-              S&amp;&amp; step,
-              C&amp;&amp; callable,
-              H&amp;&amp; chunk_size = 1)</span></span>
-            </h3>
-            <p>constructs an index-based parallel-for task using the dynamic partition algorithm.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">B</td>
-                  <td>beginning index type (must be integral)</td>
-                </tr>
-                <tr>
-                  <td>E</td>
-                  <td>ending index type (must be integral)</td>
-                </tr>
-                <tr>
-                  <td>S</td>
-                  <td>step type (must be integral)</td>
-                </tr>
-                <tr>
-                  <td>C</td>
-                  <td>callable type</td>
-                </tr>
-                <tr>
-                  <td>H</td>
-                  <td>chunk size type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>beg</td>
-                  <td>index of the beginning (inclusive)</td>
-                </tr>
-                <tr>
-                  <td>end</td>
-                  <td>index of the end (exclusive)</td>
-                </tr>
-                <tr>
-                  <td>step</td>
-                  <td>step size</td>
-                </tr>
-                <tr>
-                  <td>callable</td>
-                  <td>a callable object to apply to each valid index</td>
-                </tr>
-                <tr>
-                  <td>chunk_size</td>
-                  <td>chunk size (default 1)</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The task spawns a subflow that applies the callable object to each index in the range <code>[beg, end)</code> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the integral index type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
-          </div></section>
-          <section class="m-doc-details" id="a71f204c670ca5857e5527d6000ba73c4"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename B, typename E, typename S, typename C, typename H = size_t&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a71f204c670ca5857e5527d6000ba73c4" class="m-doc-self">for_each_index_static</a>(</span><span class="m-doc-wrap">B&amp;&amp; beg,
-              E&amp;&amp; end,
-              S&amp;&amp; step,
-              C&amp;&amp; callable,
-              H&amp;&amp; chunk_size = 0)</span></span>
-            </h3>
-            <p>constructs an index-based parallel-for task using the static partition algorithm.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">B</td>
-                  <td>beginning index type (must be integral)</td>
-                </tr>
-                <tr>
-                  <td>E</td>
-                  <td>ending index type (must be integral)</td>
-                </tr>
-                <tr>
-                  <td>S</td>
-                  <td>step type (must be integral)</td>
-                </tr>
-                <tr>
-                  <td>C</td>
-                  <td>callable type</td>
-                </tr>
-                <tr>
-                  <td>H</td>
-                  <td>chunk size type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>beg</td>
-                  <td>index of the beginning (inclusive)</td>
-                </tr>
-                <tr>
-                  <td>end</td>
-                  <td>index of the end (exclusive)</td>
-                </tr>
-                <tr>
-                  <td>step</td>
-                  <td>step size</td>
-                </tr>
-                <tr>
-                  <td>callable</td>
-                  <td>a callable object to apply to each valid index</td>
-                </tr>
-                <tr>
-                  <td>chunk_size</td>
-                  <td>chunk size (default 0)</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The task spawns a subflow that applies the callable object to each index in the range <code>[beg, end)</code> with the step size. The runtime partitions the range into chunks of the given size, where each chunk is processed by a worker. When the given chunk size is zero, the runtime distributes the work evenly across workers.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the integral index type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
-          </div></section>
           <section class="m-doc-details" id="ad999cd75045db225a42d5881d6db1223"><div>
             <h3>
               <div class="m-doc-template">
@@ -1216,222 +752,6 @@
 <p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.</p><p>This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">itr</span><span class="o">!=</span><span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">init</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="o">*</span><span class="n">itr</span><span class="p">);</span>
 <span class="p">}</span></pre><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
-          </div></section>
-          <section class="m-doc-details" id="a10f13b39b02038c6850aca787923d668"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename B, typename E, typename T, typename O, typename H = size_t&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a10f13b39b02038c6850aca787923d668" class="m-doc-self">reduce_guided</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
-              E&amp;&amp; last,
-              T&amp; init,
-              O&amp;&amp; bop,
-              H&amp;&amp; chunk_size = 1)</span></span>
-            </h3>
-            <p>constructs a STL-styled parallel-reduce task using the guided partition algorithm</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">B</td>
-                  <td>beginning iterator type</td>
-                </tr>
-                <tr>
-                  <td>E</td>
-                  <td>ending iterator type</td>
-                </tr>
-                <tr>
-                  <td>T</td>
-                  <td>result type</td>
-                </tr>
-                <tr>
-                  <td>O</td>
-                  <td>binary reducer type</td>
-                </tr>
-                <tr>
-                  <td>H</td>
-                  <td>chunk size type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>first</td>
-                  <td>iterator to the beginning (inclusive)</td>
-                </tr>
-                <tr>
-                  <td>last</td>
-                  <td>iterator to the end (exclusive)</td>
-                </tr>
-                <tr>
-                  <td>init</td>
-                  <td>initial value of the reduction and the storage for the reduced result</td>
-                </tr>
-                <tr>
-                  <td>bop</td>
-                  <td>binary operator that will be applied</td>
-                </tr>
-                <tr>
-                  <td>chunk_size</td>
-                  <td>chunk size</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
-          </div></section>
-          <section class="m-doc-details" id="a83ec799606b7526787761acf27885b00"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename B, typename E, typename T, typename O, typename H = size_t&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a83ec799606b7526787761acf27885b00" class="m-doc-self">reduce_dynamic</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
-              E&amp;&amp; last,
-              T&amp; init,
-              O&amp;&amp; bop,
-              H&amp;&amp; chunk_size = 1)</span></span>
-            </h3>
-            <p>constructs a STL-styled parallel-reduce task using the dynamic partition algorithm</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">B</td>
-                  <td>beginning iterator type</td>
-                </tr>
-                <tr>
-                  <td>E</td>
-                  <td>ending iterator type</td>
-                </tr>
-                <tr>
-                  <td>T</td>
-                  <td>result type</td>
-                </tr>
-                <tr>
-                  <td>O</td>
-                  <td>binary reducer type</td>
-                </tr>
-                <tr>
-                  <td>H</td>
-                  <td>chunk size type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>first</td>
-                  <td>iterator to the beginning (inclusive)</td>
-                </tr>
-                <tr>
-                  <td>last</td>
-                  <td>iterator to the end (exclusive)</td>
-                </tr>
-                <tr>
-                  <td>init</td>
-                  <td>initial value of the reduction and the storage for the reduced result</td>
-                </tr>
-                <tr>
-                  <td>bop</td>
-                  <td>binary operator that will be applied</td>
-                </tr>
-                <tr>
-                  <td>chunk_size</td>
-                  <td>chunk size</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
-          </div></section>
-          <section class="m-doc-details" id="a54e36c916ae7dd88bd079d3fd49119f9"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename B, typename E, typename T, typename O, typename H = size_t&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a54e36c916ae7dd88bd079d3fd49119f9" class="m-doc-self">reduce_static</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
-              E&amp;&amp; last,
-              T&amp; init,
-              O&amp;&amp; bop,
-              H&amp;&amp; chunk_size = 0)</span></span>
-            </h3>
-            <p>constructs a STL-styled parallel-reduce task using the static partition algorithm</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">B</td>
-                  <td>beginning iterator type</td>
-                </tr>
-                <tr>
-                  <td>E</td>
-                  <td>ending iterator type</td>
-                </tr>
-                <tr>
-                  <td>T</td>
-                  <td>result type</td>
-                </tr>
-                <tr>
-                  <td>O</td>
-                  <td>binary reducer type</td>
-                </tr>
-                <tr>
-                  <td>H</td>
-                  <td>chunk size type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>first</td>
-                  <td>iterator to the beginning (inclusive)</td>
-                </tr>
-                <tr>
-                  <td>last</td>
-                  <td>iterator to the end (exclusive)</td>
-                </tr>
-                <tr>
-                  <td>init</td>
-                  <td>initial value of the reduction and the storage for the reduced result</td>
-                </tr>
-                <tr>
-                  <td>bop</td>
-                  <td>binary operator that will be applied</td>
-                </tr>
-                <tr>
-                  <td>chunk_size</td>
-                  <td>chunk size</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="ad8d03524f15292610ebee63d53b89579"><div>
             <h3>
@@ -1506,249 +826,6 @@
 <p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.</p><p>This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">itr</span><span class="o">!=</span><span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">init</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">));</span>
 <span class="p">}</span></pre><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
-          </div></section>
-          <section class="m-doc-details" id="aa102a40672a331643944cb17c2377118"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename H = size_t&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa102a40672a331643944cb17c2377118" class="m-doc-self">transform_reduce_guided</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
-              E&amp;&amp; last,
-              T&amp; init,
-              BOP&amp;&amp; bop,
-              UOP&amp;&amp; uop,
-              H&amp;&amp; chunk_size = 1)</span></span>
-            </h3>
-            <p>constructs a STL-styled parallel transform-reduce task using the guided partition algorithm</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">B</td>
-                  <td>beginning iterator type</td>
-                </tr>
-                <tr>
-                  <td>E</td>
-                  <td>ending iterator type</td>
-                </tr>
-                <tr>
-                  <td>T</td>
-                  <td>result type</td>
-                </tr>
-                <tr>
-                  <td>BOP</td>
-                  <td>binary reducer type</td>
-                </tr>
-                <tr>
-                  <td>UOP</td>
-                  <td>unary transformion type</td>
-                </tr>
-                <tr>
-                  <td>H</td>
-                  <td>chunk size type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>first</td>
-                  <td>iterator to the beginning (inclusive)</td>
-                </tr>
-                <tr>
-                  <td>last</td>
-                  <td>iterator to the end (exclusive)</td>
-                </tr>
-                <tr>
-                  <td>init</td>
-                  <td>initial value of the reduction and the storage for the reduced result</td>
-                </tr>
-                <tr>
-                  <td>bop</td>
-                  <td>binary operator that will be applied in unspecified order to the results of <code>uop</code></td>
-                </tr>
-                <tr>
-                  <td>uop</td>
-                  <td>unary operator that will be applied to transform each element in the range to the result type</td>
-                </tr>
-                <tr>
-                  <td>chunk_size</td>
-                  <td>chunk size</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
-          </div></section>
-          <section class="m-doc-details" id="a562e253028680b61de95e305c0224d91"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename H = size_t&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a562e253028680b61de95e305c0224d91" class="m-doc-self">transform_reduce_static</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
-              E&amp;&amp; last,
-              T&amp; init,
-              BOP&amp;&amp; bop,
-              UOP&amp;&amp; uop,
-              H&amp;&amp; chunk_size = 0)</span></span>
-            </h3>
-            <p>constructs a STL-styled parallel transform-reduce task using the static partition algorithm</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">B</td>
-                  <td>beginning iterator type</td>
-                </tr>
-                <tr>
-                  <td>E</td>
-                  <td>ending iterator type</td>
-                </tr>
-                <tr>
-                  <td>T</td>
-                  <td>result type</td>
-                </tr>
-                <tr>
-                  <td>BOP</td>
-                  <td>binary reducer type</td>
-                </tr>
-                <tr>
-                  <td>UOP</td>
-                  <td>unary transformion type</td>
-                </tr>
-                <tr>
-                  <td>H</td>
-                  <td>chunk size type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>first</td>
-                  <td>iterator to the beginning (inclusive)</td>
-                </tr>
-                <tr>
-                  <td>last</td>
-                  <td>iterator to the end (exclusive)</td>
-                </tr>
-                <tr>
-                  <td>init</td>
-                  <td>initial value of the reduction and the storage for the reduced result</td>
-                </tr>
-                <tr>
-                  <td>bop</td>
-                  <td>binary operator that will be applied in unspecified order to the results of <code>uop</code></td>
-                </tr>
-                <tr>
-                  <td>uop</td>
-                  <td>unary operator that will be applied to transform each element in the range to the result type</td>
-                </tr>
-                <tr>
-                  <td>chunk_size</td>
-                  <td>chunk size</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
-          </div></section>
-          <section class="m-doc-details" id="a6fb87774919f4a570ac505cdcda48249"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename H = size_t&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6fb87774919f4a570ac505cdcda48249" class="m-doc-self">transform_reduce_dynamic</a>(</span><span class="m-doc-wrap">B&amp;&amp; first,
-              E&amp;&amp; last,
-              T&amp; init,
-              BOP&amp;&amp; bop,
-              UOP&amp;&amp; uop,
-              H&amp;&amp; chunk_size = 1)</span></span>
-            </h3>
-            <p>constructs a STL-styled parallel transform-reduce task using the dynamic partition algorithm</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">B</td>
-                  <td>beginning iterator type</td>
-                </tr>
-                <tr>
-                  <td>E</td>
-                  <td>ending iterator type</td>
-                </tr>
-                <tr>
-                  <td>T</td>
-                  <td>result type</td>
-                </tr>
-                <tr>
-                  <td>BOP</td>
-                  <td>binary reducer type</td>
-                </tr>
-                <tr>
-                  <td>UOP</td>
-                  <td>unary transformion type</td>
-                </tr>
-                <tr>
-                  <td>H</td>
-                  <td>chunk size type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>first</td>
-                  <td>iterator to the beginning (inclusive)</td>
-                </tr>
-                <tr>
-                  <td>last</td>
-                  <td>iterator to the end (exclusive)</td>
-                </tr>
-                <tr>
-                  <td>init</td>
-                  <td>initial value of the reduction and the storage for the reduced result</td>
-                </tr>
-                <tr>
-                  <td>bop</td>
-                  <td>binary operator that will be applied in unspecified order to the results of <code>uop</code></td>
-                </tr>
-                <tr>
-                  <td>uop</td>
-                  <td>unary operator that will be applied to transform each element in the range to the result type</td>
-                </tr>
-                <tr>
-                  <td>chunk_size</td>
-                  <td>chunk size</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. The runtime partitions the range into chunks of size <code>chunk_size</code>, where each chunk is processed by a worker.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="af4848ab51fa3bf5525af58e2440b01c1"><div>
             <h3>
@@ -1882,7 +959,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

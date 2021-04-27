@@ -1,47 +1,29 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="ParallelTransformsCUDA" kind="page">
     <compoundname>ParallelTransformsCUDA</compoundname>
-    <title>Parallel Transforms (cudaFlow)</title>
-    <tableofcontents>
-      <tocsect>
-        <name>Iterator-based Parallel Transforms</name>
-        <reference>ParallelTransformsCUDA_1IteratorBasedParallelTransformCUDA</reference>
-    </tocsect>
-      <tocsect>
-        <name>Miscellaneous Items</name>
-        <reference>ParallelTransformsCUDA_1ParallelTransformCUDAMiscellaneousItems</reference>
-    </tocsect>
-    </tableofcontents>
+    <title>Parallel Transforms</title>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>cudaFlow provides a template function that applies the given function to a range and sotres the result in another range</para>
-<sect1 id="ParallelTransformsCUDA_1IteratorBasedParallelTransformCUDA">
+<para><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> provides a template method, <ref refid="classtf_1_1cudaFlow_1a552f2da29009113beee4ee90bc95ae65" kindref="member">tf::cudaFlow::transform</ref>, for creating a task to parallelly apply the given function to a range and stores the result in another range.</para><sect1 id="ParallelTransformsCUDA_1IteratorBasedParallelTransformCUDA">
 <title>Iterator-based Parallel Transforms</title>
-<para>Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The two iterators are typically two raw pointers to the first element and the next to the last element in the range in GPU memory space. The task created by <ref refid="classtf_1_1cudaFlow_1a552f2da29009113beee4ee90bc95ae65" kindref="member">tf::cudaFlow::transform(I first, I last, C&amp;&amp; callable, S... srcs)</ref> represents a kernel of parallel execution for the following loop:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
+<para>Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The two iterators are typically two raw pointers to the first element and the next to the last element in the range in GPU memory space. The task created by <ref refid="classtf_1_1cudaFlow_1a552f2da29009113beee4ee90bc95ae65" kindref="member">tf::cudaFlow::transform</ref>(I first, I last, C&amp;&amp; callable, S... srcs) represents a kernel of parallel execution for the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*first++<sp/>=<sp/>callable(*src1++,<sp/>*src2++,<sp/>*src3++,<sp/>...);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para>The two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>, are typically two raw pointers to the first element and the next to the last element in the range. The following example creates a <computeroutput>transform</computeroutput> kernel that assigns each element, starting from <computeroutput>gpu_data</computeroutput> to <computeroutput>gpu_data + 1000</computeroutput>, to the sum of the corresponding elements at <computeroutput>gpu_data_x</computeroutput>, <computeroutput>gpu_data_y</computeroutput>, and <computeroutput>gpu_data_z</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...<sp/>create<sp/>gpu<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>kernel<sp/>for<sp/>performing<sp/>the<sp/>following<sp/>parallel<sp/>transforms:</highlight><highlight class="normal"></highlight></codeline>
+</programlisting></para><para>The two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>, are typically two raw pointers to the first element and the next to the last element in the range. The following example creates a <computeroutput>transform</computeroutput> kernel that assigns each element, starting from <computeroutput>gpu_data</computeroutput> to <computeroutput>gpu_data + 1000</computeroutput>, to the sum of the corresponding elements at <computeroutput>gpu_data_x</computeroutput>, <computeroutput>gpu_data_y</computeroutput>, and <computeroutput>gpu_data_z</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>gpu_data[i]<sp/>=<sp/>gpu_data_x[i]<sp/>+<sp/>gpu_data_y[i]<sp/>+<sp/>gpu_data_z[i]</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a552f2da29009113beee4ee90bc95ae65" kindref="member">transform</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>gpu_data,<sp/>gpu_data<sp/>+<sp/>1000,<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>xi,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>yi,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>&amp;zi)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>xi<sp/>+<sp/>yi<sp/>+<sp/>zi;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>xi,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>yi,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>zi)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>xi<sp/>+<sp/>yi<sp/>+<sp/>zi;<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>gpu_data_x,<sp/>gpu_data_y,<sp/>gpu_data_z</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);<sp/></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para>
-<para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier.</para>
-</sect1>
+</programlisting></para><para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier.</para></sect1>
 <sect1 id="ParallelTransformsCUDA_1ParallelTransformCUDAMiscellaneousItems">
 <title>Miscellaneous Items</title>
-<para>The parallel-transform algorithm is also available in tf::cudaFlowCapturerBase::transform. </para>
-</sect1>
+<para>The parallel-transform algorithm is also available in <ref refid="classtf_1_1cudaFlowCapturer_1a02e3ec6669c8571ad6888584e88c07fc" kindref="member">tf::cudaFlowCapturer::transform</ref>. </para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

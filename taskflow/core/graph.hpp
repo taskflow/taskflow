@@ -7,6 +7,7 @@
 #include "../utility/os.hpp"
 #include "../utility/math.hpp"
 #include "../utility/serializer.hpp"
+#include "../utility/small_vector.hpp"
 #include "error.hpp"
 #include "declarations.hpp"
 #include "semaphore.hpp"
@@ -151,6 +152,17 @@ class Node {
 
     std::unique_ptr<CustomGraphBase> graph;
   };
+  
+  // syclFlow work handle
+  struct syclFlow {
+    
+    template <typename C, typename G> 
+    syclFlow(C&& c, G&& g);
+
+    std::function<void(Executor&, Node*)> work;
+
+    std::unique_ptr<CustomGraphBase> graph;
+  };
     
   using handle_t = std::variant<
     std::monostate,  // placeholder
@@ -160,7 +172,8 @@ class Node {
     Module,          // composable tasking
     Async,           // async tasking
     SilentAsync,     // async tasking (no future)
-    cudaFlow         // cudaFlow
+    cudaFlow,        // cudaFlow
+    syclFlow         // syclFlow
   >;
     
   struct Semaphores {  
@@ -179,6 +192,7 @@ class Node {
   constexpr static auto ASYNC        = get_index_v<Async, handle_t>; 
   constexpr static auto SILENT_ASYNC = get_index_v<SilentAsync, handle_t>; 
   constexpr static auto CUDAFLOW     = get_index_v<cudaFlow, handle_t>; 
+  constexpr static auto SYCLFLOW     = get_index_v<syclFlow, handle_t>; 
 
     template <typename... Args>
     Node(Args&&... args);
@@ -198,10 +212,9 @@ class Node {
 
     handle_t _handle;
 
-    std::vector<Node*> _successors;
-    std::vector<Node*> _dependents;
+    SmallVector<Node*> _successors;
+    SmallVector<Node*> _dependents;
 
-    //std::optional<Semaphores> _semaphores;
     std::unique_ptr<Semaphores> _semaphores;
 
     Topology* _topology {nullptr};
@@ -266,6 +279,16 @@ Node::cudaFlow::cudaFlow(C&& c, G&& g) :
   work  {std::forward<C>(c)},
   graph {std::forward<G>(g)} {
 }
+
+// ----------------------------------------------------------------------------
+// Definition for Node::syclFlow
+// ----------------------------------------------------------------------------
+
+template <typename C, typename G>
+Node::syclFlow::syclFlow(C&& c, G&& g) :
+  work  {std::forward<C>(c)},
+  graph {std::forward<G>(g)} {
+}
     
 // ----------------------------------------------------------------------------
 // Definition for Node::Module
@@ -315,6 +338,7 @@ inline Node::~Node() {
     auto& subgraph = std::get<Dynamic>(_handle).subgraph;
 
     std::vector<Node*> nodes;
+    nodes.reserve(subgraph.size());
 
     std::move(
       subgraph._nodes.begin(), subgraph._nodes.end(), std::back_inserter(nodes)
@@ -362,20 +386,24 @@ inline size_t Node::num_dependents() const {
 
 // Function: num_weak_dependents
 inline size_t Node::num_weak_dependents() const {
-  return std::count_if(
-    _dependents.begin(), 
-    _dependents.end(), 
-    [](Node* node){ return node->_handle.index() == Node::CONDITION; } 
-  );
+  size_t n = 0;
+  for(size_t i=0; i<_dependents.size(); i++) {
+    if(_dependents[i]->_handle.index() == Node::CONDITION) {
+      n++;
+    }
+  }
+  return n;
 }
 
 // Function: num_strong_dependents
 inline size_t Node::num_strong_dependents() const {
-  return std::count_if(
-    _dependents.begin(), 
-    _dependents.end(), 
-    [](Node* node){ return node->_handle.index() != Node::CONDITION; } 
-  );
+  size_t n = 0;
+  for(size_t i=0; i<_dependents.size(); i++) {
+    if(_dependents[i]->_handle.index() != Node::CONDITION) {
+      n++;
+    }
+  }
+  return n;
 }
 
 // Function: name
@@ -418,7 +446,7 @@ inline bool Node::_is_cancelled() const {
 // Procedure: _set_up_join_counter
 inline void Node::_set_up_join_counter() {
 
-  int c = 0;
+  size_t c = 0;
 
   for(auto p : _dependents) {
     if(p->_handle.index() == Node::CONDITION) {

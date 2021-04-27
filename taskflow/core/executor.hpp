@@ -29,10 +29,10 @@ class Executor {
   friend class Subflow;
   friend class cudaFlow;
 
-  struct PerThread {
-    Worker* worker;
-    PerThread() : worker {nullptr} { }
-  };
+  //struct PerThread {
+  //  Worker* worker;
+  //  inline PerThread() : worker {nullptr} { }
+  //};
 
   public:
 
@@ -190,7 +190,8 @@ class Executor {
 
   private:
 
-    inline static thread_local PerThread _per_thread;
+    //inline static thread_local PerThread _per_thread;
+    inline static thread_local Worker* _this_worker {nullptr};
 
     const size_t _VICTIM_BEG;
     const size_t _VICTIM_END;
@@ -226,6 +227,13 @@ class Executor {
     void _explore_task(Worker&, Node*&);
     void _schedule(Node*);
     void _schedule(const std::vector<Node*>&);
+    void _set_up_topology(Topology*);
+    void _tear_down_topology(Topology*); 
+    void _tear_down_async(Node*);
+    void _tear_down_invoke(Node*, bool);
+    void _increment_topology();
+    void _decrement_topology();
+    void _decrement_topology_and_notify();
     void _invoke(Worker&, Node*);
     void _invoke_static_task(Worker&, Node*);
     void _invoke_dynamic_task(Worker&, Node*);
@@ -235,30 +243,18 @@ class Executor {
     void _invoke_module_task(Worker&, Node*);
     void _invoke_async_task(Worker&, Node*);
     void _invoke_silent_async_task(Worker&, Node*);
-    void _set_up_topology(Topology*);
-    void _tear_down_topology(Topology*); 
-    void _tear_down_async(Node*);
-    void _tear_down_invoke(Node*, bool);
-    void _increment_topology();
-    void _decrement_topology();
-    void _decrement_topology_and_notify();
     void _invoke_cudaflow_task(Worker&, Node*);
-    
-    template <typename C, std::enable_if_t<
-      std::is_invocable_r_v<void, C, cudaFlow&>, void>* = nullptr
+    void _invoke_syclflow_task(Worker&, Node*);
+
+    template <typename C, 
+      std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr
     >
-    void _invoke_cudaflow_task_entry(C&&, Node*);
+    void _invoke_cudaflow_task_entry(Node*, C&&);
     
-    template <typename C, std::enable_if_t<
-      std::is_invocable_r_v<void, C, cudaFlowCapturer&>, void>* = nullptr
+    template <typename C, typename Q, 
+      std::enable_if_t<is_syclflow_task_v<C>, void>* = nullptr
     >
-    void _invoke_cudaflow_task_entry(C&&, Node*);
-    
-    //template <typename P>
-    //void _invoke_cudaflow_task_internal(cudaFlow&, P&&, bool);
-    
-    //template <typename P>
-    //void _invoke_cudaflow_task_external(cudaFlow&, P&&, bool);
+    void _invoke_syclflow_task_entry(Node*, C&&, Q&);
 };
 
 // Constructor
@@ -317,7 +313,7 @@ auto Executor::async(F&& f, ArgsT&&... args) {
 
   _increment_topology();
 
-  using T = typename function_traits<F>::return_type;
+  using T = std::invoke_result_t<F, ArgsT...>;
   using R = std::conditional_t<std::is_same_v<T, void>, void, std::optional<T>>;
 
   std::promise<R> p;
@@ -366,7 +362,8 @@ void Executor::silent_async(F&& f, ArgsT&&... args) {
 
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
-  auto worker = _per_thread.worker;
+  //auto worker = _per_thread.worker;
+  Worker* worker = _this_worker;
   return worker ? static_cast<int>(worker->_id) : -1;
 }
 
@@ -381,7 +378,8 @@ inline void Executor::_spawn(size_t N) {
     
     _threads.emplace_back([this] (Worker& w) -> void {
 
-      _per_thread.worker = &w;
+      //_per_thread.worker = &w;
+      _this_worker = &w;
 
       Node* t = nullptr;
 
@@ -580,7 +578,8 @@ inline void Executor::_schedule(Node* node) {
   //assert(_workers.size() != 0);
 
   // caller is a worker to this pool
-  auto worker = _per_thread.worker;
+  //auto worker = _per_thread.worker;
+  auto worker = _this_worker;
 
   if(worker != nullptr && worker->_executor == this) {
     worker->_wsq.push(node);
@@ -612,7 +611,9 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
   }
 
   // worker thread
-  auto worker = _per_thread.worker;
+  //auto worker = _per_thread.worker;
+  auto worker = _this_worker;
+
 
   if(worker != nullptr && worker->_executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
@@ -704,6 +705,12 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // cudaflow task
     case Node::CUDAFLOW: {
       _invoke_cudaflow_task(worker, node);
+    }
+    break; 
+    
+    // syclflow task
+    case Node::SYCLFLOW: {
+      _invoke_syclflow_task(worker, node);
     }
     break; 
 
@@ -842,7 +849,8 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
 // Procedure: _invoke_dynamic_task_external
 inline void Executor::_invoke_dynamic_task_external(Node*p, Graph& g, bool detach) {
 
-  auto worker = _per_thread.worker;
+  //auto worker = _per_thread.worker;
+  auto worker = _this_worker;
 
   assert(worker && worker->_executor == this);
   
@@ -942,6 +950,12 @@ inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node) {
   _observer_epilogue(worker, node);
 }
 
+// Procedure: _invoke_syclflow_task
+inline void Executor::_invoke_syclflow_task(Worker& worker, Node* node) {
+  _observer_prologue(worker, node);  
+  std::get<Node::syclFlow>(node->_handle).work(*this, node);
+  _observer_epilogue(worker, node);
+}
 
 // Procedure: _invoke_module_task
 inline void Executor::_invoke_module_task(Worker& w, Node* node) {
@@ -1188,7 +1202,7 @@ auto Subflow::async(F&& f, ArgsT&&... args) {
 
   _parent->_join_counter.fetch_add(1);
 
-  using T = typename function_traits<F>::return_type;
+  using T = std::invoke_result_t<F, ArgsT...>;
   using R = std::conditional_t<std::is_same_v<T, void>, void, std::optional<T>>;
 
   std::promise<R> p;

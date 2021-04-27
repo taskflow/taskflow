@@ -63,10 +63,11 @@ const tfp = {
   // legend
   zColorMap: new Map([
     ['static', '#4682b4'],
-    ['subflow', '#ff7f0e'],
-    ['cudaflow', '#6A0DAD'],
-    ['condition', '#32CD99'],
+    ['subflow', '#F1A42B'],
+    ['condition', '#42B649'],
     ['module', '#0000FF'],
+    ['syclflow', '#F35A1C'],
+    ['cudaflow', '#6A0DAD'],
     ['async', '#292b2c'],
     ['clustered', '#999DA0']
   ]),
@@ -755,7 +756,7 @@ async function main() {
   
   // clean-up the loader 
   $('#tfp_loader').css("display", "none");
-  $('#tfp_toolbar').css("display", "block")
+  //$('#tfp_toolbar').css("display", "block")
   $('#tfp').css("display", "block");
   
   // initialize static field

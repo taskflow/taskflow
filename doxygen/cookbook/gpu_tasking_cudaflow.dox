@@ -11,13 +11,13 @@ with @NvidiaCUDA.
 
 @section Create_a_cudaFlow Create a cudaFlow
 
-%Taskflow enables concurrent CPU-GPU tasking by leveraging @cudaGraph.
-The tasking interface is referred to as @em %cudaFlow.
-A %cudaFlow is a graph object of type tf::cudaFlow created at runtime similar to dynamic tasking. 
-It manages a task node in a taskflow and associates it with a CUDA Graph. 
-To create a %cudaFlow, emplace a callable with an argument of type tf::cudaFlow.
-The following example implements the canonical saxpy (A·X Plus Y) task graph.
-
+%Taskflow leverage @cudaGraph to enable concurrent CPU-GPU tasking 
+using a task graph-based tasking model, tf::cudaFlow.
+A %cudaFlow is a task in a taskflow and is associated
+with a CUDA graph to execute multiple dependent GPU operations in a single CPU call.
+To create a %cudaFlow task, emplace a callable with an argument of type tf::cudaFlow.
+The following example implements the canonical saxpy (A·X Plus Y) task graph
+using tf::cudaFlow.
 
 @code{.cpp}
  1: #include <taskflow/cudaflow.hpp>
@@ -84,15 +84,18 @@ Debrief:
 @li Lines 19-20 declare two host vectors, @c hx and @c hy
 @li Lines 22-23 declare two device vector pointers, @c dx and @c dy
 @li Lines 25-31 declare two tasks to allocate memory for @c dx and @c dy on device, each of <tt>N*sizeof(float)</tt> bytes
-@li Lines 33-48 create a %cudaFlow to define a GPU task graph (two host-to-device data transfer tasks, one saxpy kernel task, and two device-to-host data transfer tasks)
+@li Lines 33-48 create a %cudaFlow to define a GPU task graph that contains:
+  + two host-to-device data transfer tasks
+  + one saxpy kernel task
+  + two device-to-host data transfer tasks
 @li Lines 49-53 define the task dependency between host tasks and the %cudaFlow tasks and execute the taskflow
 
-%Taskflow does not expend unnecessary efforts on kernel programming but focus on 
-tasking CUDA operations with CPU work.
-We give users full privileges to craft a CUDA kernel 
-that is commensurate with their domain knowledge. 
-Users focus on developing high-performance kernels using 
-a native CUDA toolkit, while leaving difficult task parallelism to %Taskflow.
+tf::cudaFlow is a lightweight task graph-based programming layer atop CUDA Graph.
+We do not expend yet another effort on simplifying kernel programming 
+but focus on tasking CUDA operations and their dependencies.
+This organization lets users fully take advantage of CUDA featuress
+that are commensurate with their domain knowledge, 
+while leaving difficult task parallelism details to %Taskflow.
 
 @attention
 You need to include @c taskflow/cudaflow.hpp in order to use tf::cudaFlow.
@@ -108,104 +111,20 @@ Use @nvcc (at least v11.1) to compile a %cudaFlow program:
 
 Please visit the page @ref CompileTaskflowWithCUDA for more details.
 
-@section run_a_cudaflow_on_multiple_gpus Run a cudaFlow on Multiple GPUs
+@section run_a_cudaflow_on_a_specific_gpu Run a cudaFlow on Specific GPU
 
-By default, a %cudaFlow runs on the current GPU associated with the caller, 
-which is typically @c 0.
-You can run a %cudaFlow on multiple GPUs by explicitly associating a %cudaFlow or a kernel task
-with a CUDA device.
-A CUDA device is an integer number in the range of <tt>[0, N)</tt> 
-representing the identifier of a GPU, where @c N is the number of GPUs in a system.
-The code below creates a %cudaFlow that runs on GPU @c 0.
-
-@code{.cpp}
-taskflow.emplace_on([] (tf::cudaFlow& cf) {}, 0);  // place the cudaFlow on GPU 0
-@endcode
-
-You can place a kernel on a GPU explicitly through the method tf::cudaFlow::kernel_on
-that takes the GPU device identifier in the first argument.
+By default, a %cudaFlow runs on the current CUDA GPU associated with the caller, 
+which is typically GPU @c 0. 
+Each CUDA GPU has an integer identifier in the range of <tt>[0, N)</tt>, 
+where @c N is the number of CUDA GPUs in a system. 
+You can run a cudaFlow on a specific GPU using tf::Taskflow::emplace_on. 
+The code below creates a cudaFlow that runs on GPU @c 0.
 
 @code{.cpp}
- 1: #include <taskflow/cudaflow.hpp>
- 2: 
- 3: // saxpy (single-precision A·X Plus Y) kernel
- 4: __global__ void saxpy(int n, float a, float *x, float *y, float *z) {
- 5:  int i = blockIdx.x*blockDim.x + threadIdx.x;
- 6:  if (i < n) {
- 7:    z[i] = a*x[i] + y[i];
- 8:   }
- 9: }
-10:
-11: int main() {
-12:
-13:   const unsigned N = 1<<20;
-14:   
-15:   float* dx {nullptr};
-16:   float* dy {nullptr};
-17:   float* z1 {nullptr};
-18:   float* z2 {nullptr};
-19:  
-20:   cudaMallocManaged(&dx, N*sizeof(float));  // create unified memory for x
-21:   cudaMallocManaged(&dy, N*sizeof(float));  // create unified memory for y
-22:   cudaMallocManaged(&z1, N*sizeof(float));  // result of saxpy task 1
-23:   cudaMallocManaged(&z2, N*sizeof(float));  // result of saxpy task 2
-24:  
-25:   for(unsigned i=0; i<N; ++i) {
-26:     dx[i] = 1;
-27:     dy[i] = 2;
-28:   }
-29:
-30:   tf::Taskflow taskflow;
-31:   tf::Executor executor;
-32:  
-33:   taskflow.emplace_on([&](tf::cudaFlow& cf){
-34:     // We create a cudaFlow on GPU 0. The scheduler will switch to 
-35:     // GPU context 0 when running this callable.
-36:
-37:     // launch the first saxpy kernel on GPU 1
-38:     cf.kernel_on(1, (N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z1).name("1");
-39:
-40:     // launch the second saxpy kernel on GPU 3
-41:     cf.kernel_on(3, (N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z2).name("3");
-42:   }, 0).name("cudaFlow on GPU 0");
-43:
-44:   executor.run(taskflow).wait();
-45:
-46:   cudaFree(dx);
-47:   cudaFree(dy);
-48:  
-49:   // verify the solution; max_error should be zero
-50:   float max_error = 0;
-51:   for (size_t i = 0; i < N; i++) {
-52:     max_error = std::max(max_error, abs(z1[i]-4));
-53:     max_error = std::max(max_error, abs(z2[i]-4));
-54:   }
-55:   std::cout << "saxpy finished with max error: " << max_error << '\n';
-56: }
-@endcode
-
-Debrief:
-
-@li Lines 3-9 define a CUDA saxpy kernel that stores the result to @c z
-@li Lines 15-23 declare four unified memory blocks accessible from any processor
-@li Lines 25-28 initialize @c dx and @c dy blocks by CPU
-@li Lines 33-42 create a %cudaFlow task on GPU @c 0 using tf::Taskflow::emplace_on
-@li Lines 37-38 create a kernel task to launch the first saxpy on GPU @c 1 and store the result in @c z1
-@li Lines 40-41 create a kernel task to launch the second saxpy on GPU @c 3 and store the result in @c z2
-@li Lines 44-55 run the taskflow and verify the result (@c max_error should be zero)
-
-Running the program gives the following 
-@nvidia_smi snapshot in a system of 4 GPUs:
-
-@code{.shell-session}
-+-----------------------------------------------------------------------------+
-| Processes:                                                       GPU Memory |
-|  GPU       PID   Type   Process name                             Usage      |
-|=============================================================================|
-|    0     53869      C   ./a.out                                      153MiB |
-|    1     53869      C   ./a.out                                      155MiB |
-|    3     53869      C   ./a.out                                      155MiB |
-+-----------------------------------------------------------------------------+
+taskflow.emplace_on([] (tf::cudaFlow& cudaflow) {
+  // here, cudaflow is under GPU 0
+  // ...
+}, 0);  // place the cudaFlow on GPU 0
 @endcode
 
 @attention
@@ -218,23 +137,9 @@ An easy practice is to allocate <i>unified shared memory</i> using @c cudaMalloc
 and let the CUDA runtime  perform automatic memory migration between processors
 (as demonstrated in the code example above).
 
-As the same example, you may create two %cudaFlows for the two kernels on two GPUs, respectively.
-The overhead of creating a kernel on the same device as a %cudaFlow is
-much less than the different one. 
+@section GPUMemoryOperations Create Memory Operation Tasks
 
-@code{.cpp}
-tf::Task cudaFlow_on_gpu1 = taskflow.emplace_on([&](tf::cudaFlow& cf){
-  cf.kernel((N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z1);
-}, 1);
-
-tf::Task cudaFlow_on_gpu3 = taskflow.emplace_on([&](tf::cudaFlow& cf){
-  cf.kernel((N+255)/256, 256, 0, saxpy, N, 2, dx, dy, z2);
-}, 3);
-@endcode
-
-@section GPUMemoryOperations Access GPU Memory
-
-tf::cudaFlow provides a set of methods for users to manipulate device memory data.
+tf::cudaFlow provides a set of methods for users to manipulate device memory.
 There are two categories, raw data and typed data.
 Raw data operations are methods with prefix @c mem, such as @c memcpy and @c memset,
 that take action on GPU memory area in @em bytes.
@@ -332,7 +237,44 @@ We encourage users to study and understand the parallel structure of their appli
 in order to come up with the best granularity of task decomposition.
 A refined task graph can have significant performance difference from the raw counterpart.
 
-@section OffloadAndUpdateAcudaFlow Offload and Update a cudaFlow
+@section OffloadAcudaFlow Offload a cudaFlow
+
+By default, the executor offloads and executes the %cudaFlow once.
+When a %cudaFlow is being executed, its task graph will be materialized
+by the %Taskflow runtime and mapped to a native CUDA graph for efficient execution 
+via the CUDA runtime.
+You can explicitly execute a %cudaFlow using different offload methods:
+
+@code{.cpp}
+taskflow.emplace([](tf::cudaFlow& cf) {
+  // ... create CUDA tasks
+  cf.offload();      // offload the cudaFlow and run it once
+  cf.offload_n(10);  // offload the cudaFlow and run it 10 times
+  cf.offload_until([repeat=5] () mutable { return repeat-- == 0; })  // five times
+});
+@endcode
+
+After you offload a %cudaFlow, 
+it is considered executed, and the executor will @em not run an offloaded %cudaFlow
+after leaving the %cudaFlow task callable.
+On the other hand, if a %cudaFlow is not offloaded, 
+the executor runs it once.
+For example, the following two versions represent the same execution logic.
+
+@code{.cpp}
+// version 1: explicitly offload a cudaFlow once
+taskflow.emplace([](tf::cudaFlow& cf) {
+  cf.single_task([] __device__ (){});
+  cf.offload();
+});
+
+// version 2 (same as version 1): executor offloads the cudaFlow once
+taskflow.emplace([](tf::cudaFlow& sf) {
+  cf.single_task([] __device__ (){});
+});
+@endcode
+
+@section UpdateAcudaFlow Update a cudaFlow
 
 Many GPU applications require you to launch a %cudaFlow multiple times
 and update node parameters (e.g., kernel parameters and memory addresses) 
@@ -354,65 +296,29 @@ between successive executions.
 8: });
 @endcode
 
-Line 2 creates a kernel task to run @c my_kernel with the given parameters.
-Line 3 offloads the %cudaFlow and performs an immediate execution;
-afterwards, we must not modify the graph topology.
-Line 5 updates the parameters of @c my_kernel associated with @c task.
-Line 6 executes the %cudaFlow again with updated kernel parameters.
-We currently supports the following offload methods:
-  + tf::cudaFlow::offload offloads and runs the %cudaFlow once
-  + tf::cudaFlow::offload_n offloads and runs the %cudaFlow @c n times
-  + tf::cudaFlow::offload_until offloads and repeatedly runs the %cudaFlow
-    until the given predicate returns @c true
+Debrief:
+@li Line 2 creates a kernel task to run @c my_kernel with the given parameters.
+@li Line 3 offloads the %cudaFlow and performs an immediate execution.
+@li Line 5 updates the parameters of @c my_kernel associated with @c task.
+@li Line 6 executes the %cudaFlow again with updated kernel parameters.
 
-@code{.cpp}
-taskflow.emplace(tf::cudaFlow& cf) {
-  // ... create GPU tasks
-  cf.offload();      // offload the cudaFlow and run it once
-  cf.offload_n(10);  // offload the cudaFlow and run it 10 times
-  cf.offload_until([repeat=5] () mutable { return repeat-- == 0; })  // 5 times
-};
-@endcode
-
-After you offload a %cudaFlow (possibly multiple times), 
-it is considered executed, and the executor will @em not run an offloaded %cudaFlow
-after leaving the %cudaFlow task callable.
-On the other hand, if a %cudaFlow is not offloaded, 
-the executor runs it once.
-For example, the following two versions represent the same execution logic.
-
-@code{.cpp}
-// version 1: explicitly offload a cudaFlow once
-taskflow.emplace(tf::cudaFlow& cf) {
-  cf.kernel(grid, block, shm, my_kernel, my_kernel_args).name("my_kernel");
-  cf.offload();
-};
-
-// version 2 (same as version 1): executor offloads the cudaFlow once
-taskflow.emplace(tf::cudaFlow& cf) {
-  cf.kernel(grid, block, shm, my_kernel, my_kernel_args).name("my_kernel");
-};
-@endcode
 
 Between successive offloads (i.e., executions of a %cudaFlow),
 you can update the task parameters, 
 such as changing the kernel execution parameters and memory operation parameters.
-We currently support the following methods to update task parameters
-from an offloaded %cudaFlow:
-  + tf::cudaFlow::update_kernel updates the parameters of a kernel task
-  + tf::cudaFlow::update_copy updates the parameters of a memcpy task to form a copy task
-  + tf::cudaFlow::update_memcpy updates the parameters of a memcpy task
-  + tf::cudaFlow::update_memset updates the parameters of a memset task
-  + tf::cudaFlow::update_fill updates the parameters of a memset task to form a fill task
-  + tf::cudaFlow::update_zero updates the parameters of a memset task to form a zero task
+However, you must @em NOT change the topology of an offloaded %cudaFlow.
+Each method of task creation in tf::cudaFlow has a corresponding method of updating
+the parameters of the task created from the same creation method
+(e.g., tf::cudaFlow::kernel and tf::cudaFlow::update_kernel, 
+tf::cudaFlow::copy and tf::cudaFlow::update_copy).
 
-Please visit the reference page of tf::cudaFlow for more details.
 
 @attention
-You must not change the topology of an offloaded graph.
+There are a few restrictions on updating task parameters in a %cudaFlow. 
+Notably, you must @em NOT change the topology of an offloaded graph.
 In addition, update methods have the following limitations:
 + kernel task
-  + The kernel function is not allowed to change
+  + The kernel function is not allowed to change. This restriction applies to all algorithm tasks that are created using lambda.
 + memset and memcpy tasks: 
   + The CUDA device(s) to which the operand(s) was allocated/mapped 
     cannot change
@@ -423,9 +329,8 @@ In addition, update methods have the following limitations:
 @section UsecudaFlowInAStandaloneEnvironment Use cudaFlow in a Standalone Environment
 
 You can use tf::cudaFlow in a standalone environment without going through
-tf::Taskflow and offloads it to GPU from the caller thread.
-All the features we have discussed so far are applicable 
-for the standalone use.
+tf::Taskflow and offloads it to a GPU from the caller thread.
+All the features we have discussed so far apply to the standalone use.
 
 @code{.cpp}
 tf::cudaFlow cf;  // create a standalone cudaFlow
@@ -443,10 +348,8 @@ saxpy.succeed(h2d_x, h2d_y)   // kernel runs after  host-to-device copy
 cf.offload();  // offload and run the standalone cudaFlow once
 @endcode
 
-@attention
 When using %cudaFlow in a standalone environment, it is your choice
 to decide its GPU context.
-
 The following example creates a %cudaFlow and executes it on GPU 0.
 
 @code{.cpp}
@@ -454,6 +357,10 @@ tf::cudaScopedDevice gpu(0);
 tf::cudaFlow cf;  // create a standalone cudaFlow on GPU 0
 cf.offload();     // run the capturer once on GPU 0
 @endcode
+
+@note
+In the standalone mode, a written %cudaFlow will not be executed untile
+you explicitly call an offload method, as there is neither a taskflow nor an executor.
 
 */
 

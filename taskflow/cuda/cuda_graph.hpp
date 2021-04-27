@@ -3,9 +3,7 @@
 #include "cuda_memory.hpp"
 #include "cuda_stream.hpp"
 
-#include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
-#include "../utility/passive_vector.hpp"
 
 namespace tf {
 
@@ -361,9 +359,8 @@ class cudaGraph : public CustomGraphBase {
 
     cudaGraph_t _native_handle {nullptr};
 
-    // TODO: nvcc complains deleter of unique_ptr
-    //std::vector<std::unique_ptr<cudaNode>> _nodes;
-    std::vector<cudaNode*> _nodes;
+    std::vector<std::unique_ptr<cudaNode>> _nodes;
+    //std::vector<cudaNode*> _nodes;
 };
 
 // ----------------------------------------------------------------------------
@@ -383,6 +380,7 @@ class cudaNode {
   friend class cudaCapturingBase;
   friend class cudaSequentialCapturing;
   friend class cudaRoundRobinCapturing;
+  friend class cudaGreedyCapturing;
   friend class Taskflow;
   friend class Executor;
   
@@ -431,8 +429,9 @@ class cudaNode {
 
     std::function<void(cudaStream_t)> work;
 
-    cudaEvent_t event {nullptr};
+    cudaEvent_t event;
     size_t level;
+    size_t lid;
     size_t idx;
   };
 
@@ -445,8 +444,6 @@ class cudaNode {
     Subflow,
     Capture
   >;
-
-  constexpr static auto STATE_VISITED = 0x1;
 
   public:
   
@@ -474,14 +471,10 @@ class cudaNode {
 
     cudaGraphNode_t _native_handle {nullptr};
 
-    std::vector<cudaNode*> _successors;
-    std::vector<cudaNode*> _dependents;
+    SmallVector<cudaNode*> _successors;
+    SmallVector<cudaNode*> _dependents;
 
     void _precede(cudaNode*);
-    //void _set_state(int);
-    //void _unset_state(int);
-    //void _clear_state();
-    //bool _has_state(int) const;
 };
 
 // ----------------------------------------------------------------------------
@@ -560,7 +553,7 @@ inline void cudaNode::_precede(cudaNode* v) {
 
 // Destructor
 inline cudaGraph::~cudaGraph() {
-  clear();
+  //clear();
   assert(_native_handle == nullptr);
 }
 
@@ -577,7 +570,7 @@ inline cudaGraph::cudaGraph(cudaGraph&& g) :
 // Move assignment
 inline cudaGraph& cudaGraph::operator = (cudaGraph&& rhs) {
 
-  clear();
+  //clear();
   
   // lhs
   _native_handle = rhs._native_handle;
@@ -598,23 +591,23 @@ inline bool cudaGraph::empty() const {
 
 // Procedure: clear
 inline void cudaGraph::clear() {
-  for(auto n : _nodes) {
-    delete n;
-  }
+  //for(auto n : _nodes) {
+  //  delete n;
+  //}
   _nodes.clear();
 }
 
 // Function: emplace_back
 template <typename... ArgsT>
 cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
-  //auto node = std::make_unique<cudaNode>(std::forward<ArgsT>(args)...);
-  //_nodes.emplace_back(std::move(node));
-  //return _nodes.back().get();
+  auto node = std::make_unique<cudaNode>(std::forward<ArgsT>(args)...);
+  _nodes.emplace_back(std::move(node));
+  return _nodes.back().get();
   // TODO: object pool
 
-  auto node = new cudaNode(std::forward<ArgsT>(args)...);
-  _nodes.push_back(node);
-  return node;
+  //auto node = new cudaNode(std::forward<ArgsT>(args)...);
+  //_nodes.push_back(node);
+  //return node;
 }
 
 // Procedure: dump the graph to a DOT format
@@ -655,7 +648,9 @@ inline void cudaGraph::dump(
       os << "\";\n" << "color=\"purple\"\n";
     }
 
-    for(auto& v : graph->_nodes) {
+    for(auto& node : graph->_nodes) {
+
+      auto v = node.get();
       
       os << 'p' << v << "[label=\"";
       if(v->_name.empty()) {

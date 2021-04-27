@@ -21,6 +21,7 @@ namespace tf {
 enum class TaskType : int {
   PLACEHOLDER = 0,
   CUDAFLOW,
+  SYCLFLOW,
   STATIC,
   DYNAMIC,
   CONDITION,
@@ -32,9 +33,10 @@ enum class TaskType : int {
 /**
 @brief array of all task types (used for iterating task types)
 */
-inline constexpr std::array<TaskType, 7> TASK_TYPES = {
+inline constexpr std::array<TaskType, 8> TASK_TYPES = {
   TaskType::PLACEHOLDER,
   TaskType::CUDAFLOW,
+  TaskType::SYCLFLOW,
   TaskType::STATIC,
   TaskType::DYNAMIC,
   TaskType::CONDITION,
@@ -52,6 +54,7 @@ inline const char* to_string(TaskType type) {
   switch(type) {
     case TaskType::PLACEHOLDER: val = "placeholder"; break;
     case TaskType::CUDAFLOW:    val = "cudaflow";    break;
+    case TaskType::SYCLFLOW:    val = "syclflow";    break;
     case TaskType::STATIC:      val = "static";      break;
     case TaskType::DYNAMIC:     val = "subflow";     break;
     case TaskType::CONDITION:   val = "condition";   break;
@@ -93,7 +96,7 @@ template <typename C>
 constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C>;
 
 /**
-@brief determines if a callable is a cudaflow task
+@brief determines if a callable is a %cudaFlow task
 
 A cudaFlow task is a callable object constructible from 
 std::function<void(tf::cudaFlow&)> or std::function<void(tf::cudaFlowCapturer&)>.
@@ -101,6 +104,15 @@ std::function<void(tf::cudaFlow&)> or std::function<void(tf::cudaFlowCapturer&)>
 template <typename C>
 constexpr bool is_cudaflow_task_v = std::is_invocable_r_v<void, C, cudaFlow&> ||
                                     std::is_invocable_r_v<void, C, cudaFlowCapturer&>;
+
+/**
+@brief determines if a callable is a %syclFlow task
+
+A syclFlow task is a callable object constructible from 
+std::function<void(tf::syclFlow&)>.
+*/
+template <typename C>
+constexpr bool is_syclflow_task_v = std::is_invocable_r_v<void, C, syclFlow&>;
 
 // ----------------------------------------------------------------------------
 // Task
@@ -431,6 +443,7 @@ inline TaskType Task::type() const {
     case Node::ASYNC:        return TaskType::ASYNC;
     case Node::SILENT_ASYNC: return TaskType::ASYNC;
     case Node::CUDAFLOW:     return TaskType::CUDAFLOW;
+    case Node::SYCLFLOW:     return TaskType::SYCLFLOW;
     default:                 return TaskType::UNDEFINED;
   }
 }
@@ -605,6 +618,7 @@ inline TaskType TaskView::type() const {
     case Node::ASYNC:        return TaskType::ASYNC;
     case Node::SILENT_ASYNC: return TaskType::ASYNC;
     case Node::CUDAFLOW:     return TaskType::CUDAFLOW;
+    case Node::SYCLFLOW:     return TaskType::SYCLFLOW;
     default:                 return TaskType::UNDEFINED;
   }
 }

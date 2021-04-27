@@ -5,7 +5,7 @@
 #include <chrono>
 #include <limits.h>
 
-#define MAX_DATA_SIZE 400000000
+#define MAX_DATA_SIZE 40000000
 
 struct Data {
   int a {::rand()};
@@ -35,8 +35,8 @@ void reduce() {
   }
   auto send = std::chrono::steady_clock::now();
   std::cout << "[sequential] reduce: " 
-            << std::chrono::duration_cast<std::chrono::milliseconds>(send - sbeg).count()
-            << " ms\n";
+            << std::chrono::duration_cast<std::chrono::microseconds>(send - sbeg).count()
+            << " us\n";
 
   // taskflow
   auto tbeg = std::chrono::steady_clock::now();
@@ -52,8 +52,8 @@ void reduce() {
   executor.run(taskflow).get();
   auto tend = std::chrono::steady_clock::now();
   std::cout << "[taskflow] reduce: " 
-            << std::chrono::duration_cast<std::chrono::milliseconds>(tend - tbeg).count()
-            << " ms\n";
+            << std::chrono::duration_cast<std::chrono::microseconds>(tend - tbeg).count()
+            << " us\n";
   
   // assertion
   if(tmin == smin) {
@@ -81,8 +81,8 @@ void transform_reduce() {
   }
   auto send = std::chrono::steady_clock::now();
   std::cout << "[sequential] transform_reduce " 
-            << std::chrono::duration_cast<std::chrono::milliseconds>(send - sbeg).count()
-            << " ms\n";
+            << std::chrono::duration_cast<std::chrono::microseconds>(send - sbeg).count()
+            << " us\n";
   
   // taskflow
   auto tbeg = std::chrono::steady_clock::now();
@@ -95,8 +95,8 @@ void transform_reduce() {
   tf::Executor().run(tf).get();
   auto tend = std::chrono::steady_clock::now();
   std::cout << "[taskflow] transform_reduce " 
-            << std::chrono::duration_cast<std::chrono::milliseconds>(tend - tbeg).count()
-            << " ms\n";
+            << std::chrono::duration_cast<std::chrono::microseconds>(tend - tbeg).count()
+            << " us\n";
 
   // assertion
   assert(tmin == smin);

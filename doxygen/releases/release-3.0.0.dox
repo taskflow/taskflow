@@ -25,7 +25,7 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 @li Microsoft Visual Studio at least v19.27 with /std:c++17
 @li AppleClang Xode Version at least v12.0 with -std=c++17
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
-@li Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17
+@li Intel C++ Compiler at least v19.0.1 with -std=c++17
 
 %Taskflow works on Linux, Windows, and Mac OS X.
 
@@ -117,7 +117,7 @@ to support cancellation (see @ref AsyncTasking and @ref RequestCancellation)
 @li added @ref GPUTaskingcudaFlowCapturer
 @li added @ref RequestCancellation
 @li added @ref Profiler
-@li added @ref GPUAlgorithms
+@li added @ref cudaFlowAlgorithms
   + @ref SingleTaskCUDA to run a kernel function in just a single thread
   + @ref ForEachCUDA to perform parallel iterations over a range of items
   + @ref ParallelTransformsCUDA to perform parallel transforms over a range of items

@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>GPU Algorithms &raquo; Parallel Reduction (cudaFlow) | Taskflow QuickStart</title>
+  <title>cudaFlow Algorithms &raquo; Parallel Reduction | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -46,8 +46,8 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          <span class="m-breadcrumb"><a href="GPUAlgorithms.html">GPU Algorithms</a> &raquo;</span>
-          Parallel Reduction (cudaFlow)
+          <span class="m-breadcrumb"><a href="cudaFlowAlgorithms.html">cudaFlow Algorithms</a> &raquo;</span>
+          Parallel Reduction
         </h1>
         <div class="m-block m-default">
           <h3>Contents</h3>
@@ -57,7 +57,7 @@
             <li><a href="#CUDAReduceMiscellaneousItems">Miscellaneous Items</a></li>
           </ul>
         </div>
-<p>cudaFlow provides a template function that constructs a task to perform parallel reduction over a range of items.</p><section id="CUDAReduceItemsWithAnInitialValue"><h2><a href="#CUDAReduceItemsWithAnInitialValue">Reduce Items with an Initial Value</a></h2><p>The reduction task created by <a href="classtf_1_1cudaFlow.html#a5fcd6d7d183707c60f9ff888db2df964" class="m-doc">tf::<wbr />cudaFlow::<wbr />reduce(I first, I last, T* result, C&amp;&amp; bop)</a> performs parallel reduction over a range of elements specified by <code>[first, last)</code> using the binary operator <code>bop</code> and stores the reduced result in <code>result</code>. It represents the parallel execution of the following reduction loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+<p><a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a> provides two template methods, <a href="classtf_1_1cudaFlow.html#a97c248490dbde983378f757239eaed4a" class="m-doc">tf::<wbr />cudaFlow::<wbr />for_each</a> and <a href="classtf_1_1cudaFlow.html#ab5a7c12e383be4972844a9f29033e487" class="m-doc">tf::<wbr />cudaFlow::<wbr />for_each_index</a>, for creating tasks to perform parallel reductions over a range of items.</p><section id="CUDAReduceItemsWithAnInitialValue"><h2><a href="#CUDAReduceItemsWithAnInitialValue">Reduce Items with an Initial Value</a></h2><p>The reduction task created by <a href="classtf_1_1cudaFlow.html#a5fcd6d7d183707c60f9ff888db2df964" class="m-doc">tf::<wbr />cudaFlow::<wbr />reduce(I first, I last, T* result, C&amp;&amp; bop)</a> performs parallel reduction over a range of elements specified by <code>[first, last)</code> using the binary operator <code>bop</code> and stores the reduced result in <code>result</code>. It represents the parallel execution of the following reduction loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
   <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
 <span class="p">}</span></pre><p>The variable <code>result</code> participates in the reduction loop and must be initialized with an initial value. The following code performs a parallel reduction to sum all the numbers in the given range with an initial value <code>1000</code>:</p><pre class="m-code"><span class="k">const</span> <span class="kt">size_t</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">;</span>
 
@@ -111,7 +111,7 @@
 
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
-<span class="n">assert</span><span class="p">(</span><span class="n">sol</span> <span class="o">==</span> <span class="n">N</span><span class="p">);</span></pre></section><section id="CUDAReduceMiscellaneousItems"><h2><a href="#CUDAReduceMiscellaneousItems">Miscellaneous Items</a></h2><p>Parallel-reduction algorithms are also available in tf::cudaFlowCapturerBase::reduce and tf::cudaFlowCapturerBase::uninitialized_reduce.</p></section>
+<span class="n">assert</span><span class="p">(</span><span class="n">sol</span> <span class="o">==</span> <span class="n">N</span><span class="p">);</span></pre></section><section id="CUDAReduceMiscellaneousItems"><h2><a href="#CUDAReduceMiscellaneousItems">Miscellaneous Items</a></h2><p>Parallel-reduction algorithms are also available in <a href="classtf_1_1cudaFlowCapturer.html#ad877003965b1e9e75ec10917190342e9" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />reduce</a> and <a href="classtf_1_1cudaFlowCapturer.html#a9a6f54751165c1e5473652ad0ca222bb" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />uninitialized_reduce</a>.</p></section>
       </div>
     </div>
   </div>
@@ -156,7 +156,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

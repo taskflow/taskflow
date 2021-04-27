@@ -87,14 +87,12 @@ class ObjectPool {
     Blocklist* next;
   };
 
-  class GlobalHeap {
-    friend class ObjectPool;
+  struct GlobalHeap {
     std::mutex mutex;
     Blocklist list;
   };
 
-  class LocalHeap {
-    friend class ObjectPool;
+  struct LocalHeap {
     std::mutex mutex;
     Blocklist lists[B];
     size_t u {0};
@@ -579,7 +577,7 @@ template <typename... ArgsT>
 T* ObjectPool<T, S>::animate(ArgsT&&... args) {
 
   //std::cout << "construct a new item\n";
-    
+  
   // my logically mapped heap
   LocalHeap& h = _this_heap(); 
   
