@@ -14,7 +14,7 @@ namespace tf {
 /**
 @private
 */
-struct Worker {
+class Worker {
 
   friend class Executor;
   friend class WorkerView;

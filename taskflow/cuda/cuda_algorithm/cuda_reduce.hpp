@@ -22,14 +22,14 @@ __device__ void cuda_warp_reduce(
 template <typename I, typename T, typename C, bool uninitialized>
 __global__ void cuda_reduce(I first, size_t N, T* res, C op) {
 
-  cudaSharedMemory<T> shared_memory;
-  T* shm = shared_memory.get();
-
   size_t tid = threadIdx.x;
 
   if(tid >= N) {
     return;
   }
+  
+  cudaSharedMemory<T> shared_memory;
+  T* shm = shared_memory.get();
 
   shm[tid] = *(first+tid);
   

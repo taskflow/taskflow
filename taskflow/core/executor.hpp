@@ -29,10 +29,10 @@ class Executor {
   friend class Subflow;
   friend class cudaFlow;
 
-  struct PerThread {
-    Worker* worker;
-    inline PerThread() : worker {nullptr} { }
-  };
+  //struct PerThread {
+  //  Worker* worker;
+  //  inline PerThread() : worker {nullptr} { }
+  //};
 
   public:
 
@@ -190,7 +190,8 @@ class Executor {
 
   private:
 
-    inline static thread_local PerThread _per_thread;
+    //inline static thread_local PerThread _per_thread;
+    inline static thread_local Worker* _this_worker {nullptr};
 
     const size_t _VICTIM_BEG;
     const size_t _VICTIM_END;
@@ -361,7 +362,8 @@ void Executor::silent_async(F&& f, ArgsT&&... args) {
 
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
-  auto worker = _per_thread.worker;
+  //auto worker = _per_thread.worker;
+  Worker* worker = _this_worker;
   return worker ? static_cast<int>(worker->_id) : -1;
 }
 
@@ -376,7 +378,8 @@ inline void Executor::_spawn(size_t N) {
     
     _threads.emplace_back([this] (Worker& w) -> void {
 
-      _per_thread.worker = &w;
+      //_per_thread.worker = &w;
+      _this_worker = &w;
 
       Node* t = nullptr;
 
@@ -575,7 +578,8 @@ inline void Executor::_schedule(Node* node) {
   //assert(_workers.size() != 0);
 
   // caller is a worker to this pool
-  auto worker = _per_thread.worker;
+  //auto worker = _per_thread.worker;
+  auto worker = _this_worker;
 
   if(worker != nullptr && worker->_executor == this) {
     worker->_wsq.push(node);
@@ -607,7 +611,9 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
   }
 
   // worker thread
-  auto worker = _per_thread.worker;
+  //auto worker = _per_thread.worker;
+  auto worker = _this_worker;
+
 
   if(worker != nullptr && worker->_executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
@@ -843,7 +849,8 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
 // Procedure: _invoke_dynamic_task_external
 inline void Executor::_invoke_dynamic_task_external(Node*p, Graph& g, bool detach) {
 
-  auto worker = _per_thread.worker;
+  //auto worker = _per_thread.worker;
+  auto worker = _this_worker;
 
   assert(worker && worker->_executor == this);
   
