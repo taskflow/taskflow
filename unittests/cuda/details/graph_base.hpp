@@ -56,7 +56,7 @@ class Graph {
 
     Graph(int level): _level{level} { _graph.reserve(_level); }
 
-    virtual ~Graph() = 0;
+    virtual ~Graph() = default;
 
     bool traversed();
 
@@ -83,9 +83,6 @@ class Graph {
     size_t _num_nodes{0};
 };
 
-Graph::~Graph() {
-}
-
 bool Graph::traversed() {
   for(auto&& nodes: _graph) {
     for(auto&& node: nodes) {
@@ -108,6 +105,7 @@ void Graph::print_graph(std::ostream& os) {
 }
 
 void Graph::allocate_nodes() {
+
   cudaMallocManaged(&_visited_start, sizeof(bool) * _num_nodes);
   std::memset(_visited_start, 0, sizeof(bool) * _num_nodes);
 
