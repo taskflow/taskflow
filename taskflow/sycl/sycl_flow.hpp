@@ -469,6 +469,12 @@ class syclFlow {
     std::queue<syclNode*> _bfs;
 
     size_t _default_group_size(size_t N) const;
+
+    template <typename I, typename T, typename C, bool>
+    auto _reduce_cgh(I, I, T*, C&&);
+
+    template <typename I, typename C, typename... S>
+    auto _transform_cgh(I, I, C&&, S...);
 };
 
 // constructor

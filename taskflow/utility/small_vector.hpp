@@ -158,6 +158,7 @@ class SmallVectorTemplateCommon : public SmallVectorBase {
   inline const_iterator end() const { return (const_iterator)this->EndX; }
 
   protected:
+
   iterator capacity_ptr() { return (iterator)this->CapacityX; }
   const_iterator capacity_ptr() const { return (const_iterator)this->CapacityX;}
   
@@ -184,6 +185,7 @@ class SmallVectorTemplateCommon : public SmallVectorBase {
     assert(idx < size());
     return begin()[idx];
   }
+
   inline const_reference operator[](size_type idx) const {
     assert(idx < size());
     return begin()[idx];
@@ -193,6 +195,7 @@ class SmallVectorTemplateCommon : public SmallVectorBase {
     assert(!empty());
     return begin()[0];
   }
+
   const_reference front() const {
     assert(!empty());
     return begin()[0];
@@ -202,6 +205,7 @@ class SmallVectorTemplateCommon : public SmallVectorBase {
     assert(!empty());
     return end()[-1];
   }
+
   const_reference back() const {
     assert(!empty());
     return end()[-1];

@@ -4,46 +4,15 @@
 
 namespace tf {
 
-// Function: transform
+// Function: _transform_cgh
 template <typename I, typename C, typename... S>
-syclTask syclFlow::transform(I first, I last, C&& op, S... srcs) {
-
-  // TODO: special case N == 0?
-  size_t N = std::distance(first, last);
-  size_t B = _default_group_size(N);
-
-  auto node = _graph.emplace_back(_graph,
-  [=, op=std::forward<C>(op)] (sycl::handler& handler) mutable {
-
-    size_t _N = (N % B == 0) ? N : (N + B - N % B);
-      
-    handler.parallel_for(
-      sycl::nd_range<1>{sycl::range<1>(_N), sycl::range<1>(B)},
-      [=] (sycl::nd_item<1> item) { 
-        size_t i = item.get_global_id(0);
-        if(i < N) {
-          *(first + i) = op(*(srcs + i)...); 
-        }
-      }
-    );
-
-  });
+auto syclFlow::_transform_cgh(I first, I last, C&& op, S... srcs) {
   
-  return syclTask(node);
-}
-
-// Procedure: rebind_transform
-template <typename I, typename C, typename... S>
-void syclFlow::rebind_transform(
-  syclTask task, I first, I last, C&& op, S... srcs
-) {
-
   // TODO: special case N == 0?
   size_t N = std::distance(first, last);
   size_t B = _default_group_size(N);
 
-  task._node->_func = 
-  [=, op=std::forward<C>(op)] (sycl::handler& handler) mutable {
+  return [=, op=std::forward<C>(op)] (sycl::handler& handler) mutable {
 
     size_t _N = (N % B == 0) ? N : (N + B - N % B);
       
@@ -57,6 +26,23 @@ void syclFlow::rebind_transform(
       }
     );
   };
+}
+
+// Function: transform
+template <typename I, typename C, typename... S>
+syclTask syclFlow::transform(I first, I last, C&& op, S... srcs) {
+  auto node = _graph.emplace_back(
+    _graph, _transform_cgh(first, last, std::forward<C>(op), srcs...)
+  );
+  return syclTask(node);
+}
+
+// Procedure: rebind_transform
+template <typename I, typename C, typename... S>
+void syclFlow::rebind_transform(
+  syclTask task, I first, I last, C&& op, S... srcs
+) {
+  task._node->_func = _transform_cgh(first, last, std::forward<C>(op), srcs...);
 }
       
 
