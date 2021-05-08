@@ -27,7 +27,6 @@ class Executor {
 
   friend class FlowBuilder;
   friend class Subflow;
-  friend class cudaFlow;
 
   //struct PerThread {
   //  Worker* worker;

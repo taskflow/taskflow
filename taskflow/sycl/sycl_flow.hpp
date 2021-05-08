@@ -470,6 +470,12 @@ class syclFlow {
 
     size_t _default_group_size(size_t N) const;
 
+    template <typename I, typename C>
+    auto _for_each_cgh(I, I, C&&);
+
+    template <typename I, typename C>
+    auto _for_each_index_cgh(I, I, I, C&&);
+
     template <typename I, typename T, typename C, bool>
     auto _reduce_cgh(I, I, T*, C&&);
 
