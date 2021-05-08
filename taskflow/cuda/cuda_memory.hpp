@@ -424,6 +424,10 @@ class cudaDeviceMemory {
     size_t _N {0};
 };
 
+struct cudaMemoryDeleter {
+  void operator ()(void* ptr) { cudaFree(ptr); }
+};
+
 }  // end of namespace tf -----------------------------------------------------
 
 

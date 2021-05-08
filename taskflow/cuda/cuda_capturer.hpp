@@ -185,13 +185,12 @@ class cudaFlowCapturer {
     a user-described %cudaFlow:
       + tf::cudaSequentialCapturing
       + tf::cudaRoundRobinCapturing
-
     */
     template <typename OPT, typename... ArgsT>
     OPT& make_optimizer(ArgsT&&... args);
 
     // ------------------------------------------------------------------------
-    //
+    // basic methods
     // ------------------------------------------------------------------------
     
     /**
@@ -365,11 +364,11 @@ class cudaFlowCapturer {
     cudaTask transform(I first, I last, C&& callable, S... srcs);
       
     /**
-    @brief captures a kernel that performs parallel reduction over a range of items
+    @brief captures kernels that perform parallel reduction over a range of items
 
     @tparam I input iterator type
     @tparam T value type
-    @tparam C callable type
+    @tparam C binary operator type
 
     @param first iterator to the beginning (inclusive)
     @param last iterator to the end (exclusive)
@@ -387,24 +386,69 @@ class cudaFlowCapturer {
     @endcode
     */
     template <typename I, typename T, typename C>
-    cudaTask reduce(I first, I last, T* result, C&& op);
+    cudaTask reduce(I first, I last, T* result, C op);
     
     /**
-    @brief similar to tf::cudaFlowCapturerBase::reduce but does not assum 
+    @brief similar to tf::cudaFlowCapturer::reduce but does not assume
            any initial value to reduce
     
     This method is equivalent to the parallel execution of the following loop 
     on a GPU:
     
     @code{.cpp}
-    *result = *first++;  // no initial values partitipcate in the loop
+    *result = *first++;  // initial value does not involve in the loop
     while (first != last) {
       *result = op(*result, *first++);
     }
     @endcode
     */
     template <typename I, typename T, typename C>
-    cudaTask uninitialized_reduce(I first, I last, T* result, C&& op);
+    cudaTask uninitialized_reduce(I first, I last, T* result, C op);
+    
+    /**
+    @brief captures kernels that perform parallel reduction over a range of 
+           transformed items
+
+    @tparam I input iterator type
+    @tparam T value type
+    @tparam C binary operator type
+    @tparam U unary operator type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param result pointer to the result with an initialized value
+    @param bop binary reduce operator
+    @param uop unary transform operator
+    
+    @return a tf::cudaTask handle
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    while (first != last) {
+      *result = bop(*result, uop(*first++));
+    }
+    @endcode
+    */
+    template <typename I, typename T, typename C, typename U>
+    cudaTask transform_reduce(I first, I last, T* result, C bop, U uop);
+    
+    /**
+    @brief similar to tf::cudaFlowCapturer::transform_reduce but does not assume
+           any initial value to reduce
+    
+    This method is equivalent to the parallel execution of the following loop 
+    on a GPU:
+    
+    @code{.cpp}
+    *result = uop(*first++);  // initial value does not involve in the loop
+    while (first != last) {
+      *result = bop(*result, u(*first++));
+    }
+    @endcode
+    */
+    template <typename I, typename T, typename C, typename U>
+    cudaTask transform_uninitialized_reduce(I first, I last, T* result, C bop, U uop);
 
     // ------------------------------------------------------------------------
     // rebind methods to update captured tasks
@@ -506,7 +550,7 @@ class cudaFlowCapturer {
     on an existing task.
     */
     template <typename I, typename T, typename C>
-    void rebind_reduce(cudaTask task, I first, I last, T* result, C&& op);
+    void rebind_reduce(cudaTask task, I first, I last, T* result, C op);
     
     /**
     @brief rebinds a capture task to an uninitialized-reduction task
@@ -516,7 +560,29 @@ class cudaFlowCapturer {
     */
     template <typename I, typename T, typename C>
     void rebind_uninitialized_reduce(
-      cudaTask task, I first, I last, T* result, C&& op
+      cudaTask task, I first, I last, T* result, C op
+    );
+    
+    /**
+    @brief rebinds a capture task to a transform-reduce task
+
+    This method is similar to cudaFlowCapturer::transform_reduce but 
+    operates on an existing task.
+    */
+    template <typename I, typename T, typename C, typename U>
+    void rebind_transform_reduce(
+      cudaTask task, I first, I last, T* result, C bop, U uop
+    );
+    
+    /**
+    @brief rebinds a capture task to a transform-reduce task of no initialized value
+
+    This method is similar to cudaFlowCapturer::transform_uninitialized_reduce 
+    but operates on an existing task.
+    */
+    template <typename I, typename T, typename C, typename U>
+    void rebind_transform_uninitialized_reduce(
+      cudaTask task, I first, I last, T* result, C bop, U uop
     );
     
     // ------------------------------------------------------------------------
@@ -573,6 +639,7 @@ class cudaFlowCapturer {
     void _destroy_executable();
 
     size_t _default_block_size(size_t) const;
+
 };
 
 // constructs a cudaFlow capturer from a taskflow
@@ -594,6 +661,7 @@ inline cudaFlowCapturer::cudaFlowCapturer() :
 }
 
 inline cudaFlowCapturer::~cudaFlowCapturer() {
+
   if(_executable != nullptr) {
     cudaGraphExecDestroy(_executable);
   }

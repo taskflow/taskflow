@@ -582,7 +582,7 @@ void reduce() {
         *res = 1000;
       });
       auto kernel = cf.reduce(
-        gpu, gpu+n, res, [] __device__ (T a, T b) { 
+        gpu, gpu+n, res, [] __device__ (T a, T b) mutable { 
           return a + b;
         }
       );
@@ -705,6 +705,148 @@ TEST_CASE("capture_uninitialized_reduce.float" * doctest::timeout(300)) {
 
 TEST_CASE("capture_uninitialized_reduce.double" * doctest::timeout(300)) {
   uninitialized_reduce<double, tf::cudaFlow>();
+}
+
+// ----------------------------------------------------------------------------
+// transform_reduce
+// ----------------------------------------------------------------------------
+
+template <typename T, typename F>
+void transform_reduce() {
+    
+  tf::Executor executor;
+
+  for(int n=1; n<=123456; n = n*2 + 1) {
+
+    tf::Taskflow taskflow;
+
+    T sum = 0;
+
+    std::vector<T> cpu(n);
+    for(auto& i : cpu) {
+      i = ::rand()%100-50;
+      sum += i;
+    }
+
+    T sol;
+    
+    T* gpu = nullptr;
+    T* res = nullptr;
+
+    auto cputask = taskflow.emplace([&](){
+      REQUIRE(cudaMalloc(&gpu, n*sizeof(T)) == cudaSuccess);
+      REQUIRE(cudaMalloc(&res, 1*sizeof(T)) == cudaSuccess);
+    });
+
+    tf::Task gputask;
+    
+    gputask = taskflow.emplace([&](F& cf) {
+      auto d2h = cf.copy(&sol, res, 1);
+      auto h2d = cf.copy(gpu, cpu.data(), n);
+      auto set = cf.single_task([res] __device__ () mutable {
+        *res = 1000;
+      });
+      auto kernel = cf.transform_reduce(
+        gpu, gpu+n, res, 
+        [] __device__ (T a, T b) { return a + b; },
+        [] __device__ (T a) { return a + 1; }
+      );
+      kernel.succeed(h2d, set);
+      d2h.succeed(kernel);
+    });
+
+    cputask.precede(gputask);
+    
+    executor.run(taskflow).wait();
+
+    REQUIRE(std::fabs(sum+n+1000-sol) < 0.0001);
+
+    REQUIRE(cudaFree(gpu) == cudaSuccess);
+    REQUIRE(cudaFree(res) == cudaSuccess);
+  }
+}
+
+TEST_CASE("capture_transform_reduce.int" * doctest::timeout(300)) {
+  transform_reduce<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_transform_reduce.float" * doctest::timeout(300)) {
+  transform_reduce<float, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_transform_reduce.double" * doctest::timeout(300)) {
+  transform_reduce<double, tf::cudaFlowCapturer>();
+}
+
+// ----------------------------------------------------------------------------
+// transform_uninitialized_reduce
+// ----------------------------------------------------------------------------
+
+template <typename T, typename F>
+void transform_uninitialized_reduce() {
+    
+  tf::Executor executor;
+
+  for(int n=1; n<=123456; n = n*2 + 1) {
+
+    tf::Taskflow taskflow;
+
+    T sum = 0;
+
+    std::vector<T> cpu(n);
+    for(auto& i : cpu) {
+      i = ::rand()%100-50;
+      sum += i;
+    }
+
+    T sol;
+    
+    T* gpu = nullptr;
+    T* res = nullptr;
+
+    auto cputask = taskflow.emplace([&](){
+      REQUIRE(cudaMalloc(&gpu, n*sizeof(T)) == cudaSuccess);
+      REQUIRE(cudaMalloc(&res, 1*sizeof(T)) == cudaSuccess);
+    });
+
+    tf::Task gputask;
+    
+    gputask = taskflow.emplace([&](F& cf) {
+      auto d2h = cf.copy(&sol, res, 1);
+      auto h2d = cf.copy(gpu, cpu.data(), n);
+      auto set = cf.single_task([res] __device__ () mutable {
+        *res = 1000;
+      });
+      auto kernel = cf.transform_uninitialized_reduce(
+        gpu, gpu+n, res, 
+        [] __device__ (T a, T b) { return a + b; },
+        [] __device__ (T a) { return a + 1; }
+      );
+      kernel.succeed(h2d, set);
+      d2h.succeed(kernel);
+    });
+
+    cputask.precede(gputask);
+    
+    executor.run(taskflow).wait();
+
+    REQUIRE(std::fabs(sum+n-sol) < 0.0001);
+
+    REQUIRE(cudaFree(gpu) == cudaSuccess);
+    REQUIRE(cudaFree(res) == cudaSuccess);
+  }
+}
+
+TEST_CASE("capture_transform_uninitialized_reduce.int" * doctest::timeout(300)) {
+  transform_uninitialized_reduce<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_transform_uninitialized_reduce.float" * doctest::timeout(300)) {
+  transform_uninitialized_reduce<float, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_transform_uninitialized_reduce.double" * doctest::timeout(300)) {
+  transform_uninitialized_reduce<double, tf::cudaFlowCapturer>();
 }
 
 /*// ----------------------------------------------------------------------------

@@ -133,7 +133,6 @@ struct cudaArray<T, 0> {
 
 
 template<unsigned nt, unsigned vt, unsigned vt0 = vt, typename I>
-//__device__ cudaArray<typename std::iterator_traits<I>::value_type, vt> 
 __device__ auto cuda_mem_to_reg_strided(I mem, unsigned tid, unsigned count) {
   using T = typename std::iterator_traits<I>::value_type;
   cudaArray<T, vt> x;
@@ -176,6 +175,36 @@ struct cudaExecutionPolicy {
 };
 
 using cudaDefaultExecutionPolicy = cudaExecutionPolicy<512, 7>;
+
+// ----------------------------------------------------------------------------
+// operators
+// ----------------------------------------------------------------------------
+
+template<typename T>
+struct cuda_plus : public std::binary_function<T, T, T> {
+  __device__ T operator()(T a, T b) const { return a + b; }
+};
+
+template<typename T>
+struct cuda_minus : public std::binary_function<T, T, T> {
+  __device__ T operator()(T a, T b) const { return a - b; }
+};
+
+template<typename T>
+struct cuda_multiplies : public std::binary_function<T, T, T> {
+  __device__ T operator()(T a, T b) const { return a * b; }
+};
+
+template<typename T>
+struct cuda_maximum  : public std::binary_function<T, T, T> {
+  __device__ T operator()(T a, T b) const { return a > b ? a : b; }
+};
+
+template<typename T>
+struct cuda_minimum  : public std::binary_function<T, T, T> {
+  __device__ T operator()(T a, T b) const { return a < b ? a : b; }
+};
+
 
 
 }  // end of namespace tf -----------------------------------------------------
