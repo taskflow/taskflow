@@ -11,6 +11,7 @@
 
 namespace tf {
 
+// default warp size
 inline constexpr unsigned CUDA_WARP_SIZE = 32;
 
 // empty type
@@ -218,7 +219,7 @@ __device__ void cuda_reg_to_shared_strided(
 
 template<unsigned nt, unsigned vt, typename T, unsigned shared_size>
 __device__ auto cuda_shared_to_reg_strided(
-  const T (&shared)[shared_size], int tid, bool sync = true
+  const T (&shared)[shared_size], unsigned tid, bool sync = true
 ) {
 
   static_assert(shared_size >= nt * vt,
@@ -246,7 +247,8 @@ __device__ auto cuda_reg_to_mem_thread(
 
 template<
   unsigned nt, unsigned vt, unsigned vt0 = vt, typename T, typename it_t, 
-  unsigned shared_size>
+  unsigned shared_size
+>
 __device__ auto cuda_mem_to_reg_thread(
   it_t mem, unsigned tid, unsigned count, T (&shared)[shared_size]
 ) {
