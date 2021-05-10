@@ -321,7 +321,7 @@ TEST_CASE("capture_multiply2.double" * doctest::timeout(300)) {
 template <typename T, typename F>
 void for_each() {
 
-  for(int n=1; n<=123456; n = n*2 + 1) {
+  for(int n=1; n<=1234567; n = n*2 + 1) {
 
     tf::Taskflow taskflow;
     tf::Executor executor;
@@ -390,7 +390,7 @@ TEST_CASE("capture_for_each.double" * doctest::timeout(300)) {
 template <typename T, typename F>
 void for_each_index() {
 
-  for(int n=10; n<=123456; n = n*2 + 1) {
+  for(int n=10; n<=1234567; n = n*2 + 1) {
 
     tf::Taskflow taskflow;
     tf::Executor executor;
@@ -468,7 +468,7 @@ TEST_CASE("capture_for_each_index.double" * doctest::timeout(300)) {
 template <typename F>
 void transform() {
 
-  for(unsigned n=1; n<=123456; n = n*2 + 1) {
+  for(unsigned n=1; n<=1234567; n = n*2 + 1) {
 
     tf::Taskflow taskflow;
     tf::Executor executor;
@@ -550,7 +550,7 @@ TEST_CASE("capture_transform" * doctest::timeout(300) ) {
 template <typename T, typename F>
 void reduce() {
 
-  for(int n=1; n<=123456; n = n*2 + 1) {
+  for(int n=1; n<=1234567; n = n*2 + 1) {
 
     tf::Taskflow taskflow;
     tf::Executor executor;
@@ -632,7 +632,7 @@ TEST_CASE("capture_reduce.double" * doctest::timeout(300)) {
 template <typename T, typename F>
 void uninitialized_reduce() {
 
-  for(int n=1; n<=123456; n = n*2 + 1) {
+  for(int n=1; n<=1234567; n = n*2 + 1) {
 
     tf::Taskflow taskflow;
     tf::Executor executor;
@@ -716,7 +716,7 @@ void transform_reduce() {
     
   tf::Executor executor;
 
-  for(int n=1; n<=123456; n = n*2 + 1) {
+  for(int n=1; n<=1234567; n = n*2 + 1) {
 
     tf::Taskflow taskflow;
 
@@ -787,7 +787,7 @@ void transform_uninitialized_reduce() {
     
   tf::Executor executor;
 
-  for(int n=1; n<=123456; n = n*2 + 1) {
+  for(int n=1; n<=1234567; n = n*2 + 1) {
 
     tf::Taskflow taskflow;
 
@@ -849,7 +849,72 @@ TEST_CASE("capture_transform_uninitialized_reduce.double" * doctest::timeout(300
   transform_uninitialized_reduce<double, tf::cudaFlowCapturer>();
 }
 
-/*// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// scan
+// ----------------------------------------------------------------------------
+
+template <typename T, typename F>
+void scan() {
+    
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  for(int N=1; N<=1234567; N = N*2 + 1) {
+
+    taskflow.clear();
+  
+    auto data1 = tf::cuda_malloc_shared<int>(N);
+    auto data2 = tf::cuda_malloc_shared<int>(N);
+    auto scan1 = tf::cuda_malloc_shared<int>(N);
+    auto scan2 = tf::cuda_malloc_shared<int>(N);
+
+    // initialize the data
+    for(int i=0; i<N; i++) {
+      data1[i] = i;
+      data2[i] = i;
+    }
+    
+    // perform reduction
+    taskflow.emplace([&](F& cudaflow){
+      // inclusive scan
+      cudaflow.inclusive_scan(
+        data1, data1+N, scan1, [] __device__ (int a, int b){ return a+b; }
+      );
+      // exclusive scan
+      cudaflow.exclusive_scan(
+        data2, data2+N, scan2, [] __device__ (int a, int b){ return a+b; }
+      );
+    });
+
+    executor.run(taskflow).wait();
+    
+    // inspect 
+    for(int i=1; i<N; i++) {
+      if(scan1[i] != scan1[i-1] + data1[i]) {
+        throw std::runtime_error("incorrect inclusive scan result");
+      }
+      if(scan2[i] != scan2[i-1] + data2[i-1]) {
+        throw std::runtime_error("incorrect exclusive scan result");
+      }
+    }
+
+    REQUIRE(cudaFree(data1) == cudaSuccess);
+    REQUIRE(cudaFree(data2) == cudaSuccess);
+    REQUIRE(cudaFree(scan1) == cudaSuccess);
+    REQUIRE(cudaFree(scan2) == cudaSuccess);
+  }
+}
+
+TEST_CASE("capture_scan.int" * doctest::timeout(300)) {
+  scan<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_scan.float" * doctest::timeout(300)) {
+  scan<float, tf::cudaFlowCapturer>();
+}
+
+
+/*// --------------------------------------------------------------------------
 // row-major transpose
 // ----------------------------------------------------------------------------
 

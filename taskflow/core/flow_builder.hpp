@@ -283,7 +283,7 @@ class FlowBuilder {
 
     @return a tf::Task handle
 
-    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[first, last)</tt>. By default, we employ the guided partition algorithm with chunk size equal to one.
+    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[first, last)</tt>.
     This method is equivalent to the parallel execution of the following loop:
     
     @code{.cpp}
@@ -316,7 +316,7 @@ class FlowBuilder {
 
     @return a tf::Task handle
     
-    The task spawns a subflow that applies the callable object to each index in the range <tt>[first, last)</tt> with the step size. By default, we employ the guided partition algorithm with chunk size equal to one.
+    The task spawns a subflow that applies the callable object to each index in the range <tt>[first, last)</tt> with the step size.
     
     This method is equivalent to the parallel execution of the following loop:
     
@@ -359,7 +359,7 @@ class FlowBuilder {
 
     @return a tf::Task handle
     
-    The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.
+    The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init.
     
     This method is equivalent to the parallel execution of the following loop:
     
@@ -397,7 +397,8 @@ class FlowBuilder {
 
     @return a tf::Task handle
     
-    The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init. The runtime partitions the range into chunks of the given chunk size, where each chunk is processed by a worker. By default, we employ the guided partition algorithm.
+    The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. 
+    The reduced result is store in @c init.
     
     This method is equivalent to the parallel execution of the following loop:
     

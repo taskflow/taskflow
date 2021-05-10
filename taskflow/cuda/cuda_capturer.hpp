@@ -449,6 +449,39 @@ class cudaFlowCapturer {
     */
     template <typename I, typename T, typename C, typename U>
     cudaTask transform_uninitialized_reduce(I first, I last, T* result, C bop, U uop);
+    
+    /**
+    @brief captures kernels that perform parallel inclusive scan 
+           over a range of items
+
+    @tparam I input iterator type
+    @tparam O output iterator type
+    @tparam C binary operator type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param output iterator to the beginning of the output
+    @param op binary operator
+    
+    @return a tf::cudaTask handle
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    for(size_t i=0; i<std::distance(first, last); i++) {
+      *(output + i) = i ? op(*(first+i), *(output+i-1)) : *(first+i);
+    }
+    @endcode
+    */
+    template <typename I, typename O, typename C>
+    cudaTask inclusive_scan(I first, I last, O output, C op);
+    
+    /**
+    @brief similar to cudaFlowCapturer::inclusive_scan but excludes the first
+           value in the output
+    */
+    template <typename I, typename O, typename C>
+    cudaTask exclusive_scan(I first, I last, O output, C op);
 
     // ------------------------------------------------------------------------
     // rebind methods to update captured tasks
