@@ -392,14 +392,32 @@ struct cuda_minimum  : public std::binary_function<T, T, T> {
 
 template<unsigned NT, unsigned VT>
 struct cudaExecutionPolicy {
+
+  public:
+
   const static unsigned nt = NT;     
   const static unsigned vt = VT;
   const static unsigned nv = NT*VT;
+
+  cudaExecutionPolicy() = default;
+  cudaExecutionPolicy(cudaStream_t s) : _stream{s} {}
+
+  cudaStream_t stream() noexcept { return _stream; };
+
+  void stream(cudaStream_t s) noexcept { _stream = s; }
+
+  void synchronize() const {
+    TF_CHECK_CUDA(
+      cudaStreamSynchronize(_stream), "failed to sync stream ", _stream
+    );
+  }
+
+  private:
+
+  cudaStream_t _stream {0};
 };
 
-inline constexpr cudaExecutionPolicy<512, 7> cudaDefaultExecutionPolicy{};
-
-
+using cudaDefaultExecutionPolicy = cudaExecutionPolicy<512, 7>;
 
 }  // end of namespace tf -----------------------------------------------------
 

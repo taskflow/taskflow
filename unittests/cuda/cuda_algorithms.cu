@@ -863,6 +863,62 @@ void scan() {
 
     taskflow.clear();
   
+    auto data1 = tf::cuda_malloc_shared<T>(N);
+    auto data2 = tf::cuda_malloc_shared<T>(N);
+    auto scan1 = tf::cuda_malloc_shared<T>(N);
+    auto scan2 = tf::cuda_malloc_shared<T>(N);
+
+    // initialize the data
+    for(int i=0; i<N; i++) {
+      data1[i] = T(i);
+      data2[i] = T(i);
+    }
+    
+    // perform reduction
+    taskflow.emplace([&](F& cudaflow){
+      // inclusive scan
+      cudaflow.inclusive_scan(
+        data1, data1+N, scan1, [] __device__ (T a, T b){ return a+b; }
+      );
+      // exclusive scan
+      cudaflow.exclusive_scan(
+        data2, data2+N, scan2, [] __device__ (T a, T b){ return a+b; }
+      );
+    });
+
+    executor.run(taskflow).wait();
+    
+    // inspect 
+    for(int i=1; i<N; i++) {
+      REQUIRE(scan1[i] == (scan1[i-1]+data1[i]));
+      REQUIRE(scan2[i] == (scan2[i-1]+data2[i-1]));
+    }
+
+    REQUIRE(cudaFree(data1) == cudaSuccess);
+    REQUIRE(cudaFree(data2) == cudaSuccess);
+    REQUIRE(cudaFree(scan1) == cudaSuccess);
+    REQUIRE(cudaFree(scan2) == cudaSuccess);
+  }
+}
+
+TEST_CASE("capture_scan.int" * doctest::timeout(300)) {
+  scan<int, tf::cudaFlowCapturer>();
+}
+
+// ----------------------------------------------------------------------------
+// transofrm scan
+// ----------------------------------------------------------------------------
+
+template <typename T, typename F>
+void transform_scan() {
+    
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  for(int N=1; N<=1234567; N = N*2 + 1) {
+
+    taskflow.clear();
+  
     auto data1 = tf::cuda_malloc_shared<int>(N);
     auto data2 = tf::cuda_malloc_shared<int>(N);
     auto scan1 = tf::cuda_malloc_shared<int>(N);
@@ -877,12 +933,16 @@ void scan() {
     // perform reduction
     taskflow.emplace([&](F& cudaflow){
       // inclusive scan
-      cudaflow.inclusive_scan(
-        data1, data1+N, scan1, [] __device__ (int a, int b){ return a+b; }
+      cudaflow.transform_inclusive_scan(
+        data1, data1+N, scan1, 
+        [] __device__ (int a, int b){ return a+b; },
+        [] __device__ (int a) { return a*10; }
       );
       // exclusive scan
-      cudaflow.exclusive_scan(
-        data2, data2+N, scan2, [] __device__ (int a, int b){ return a+b; }
+      cudaflow.transform_exclusive_scan(
+        data2, data2+N, scan2, 
+        [] __device__ (int a, int b){ return a+b; },
+        [] __device__ (int a) { return a*10; }
       );
     });
 
@@ -890,12 +950,8 @@ void scan() {
     
     // inspect 
     for(int i=1; i<N; i++) {
-      if(scan1[i] != scan1[i-1] + data1[i]) {
-        throw std::runtime_error("incorrect inclusive scan result");
-      }
-      if(scan2[i] != scan2[i-1] + data2[i-1]) {
-        throw std::runtime_error("incorrect exclusive scan result");
-      }
+      REQUIRE(scan1[i] == (scan1[i-1]+data1[i]*10));
+      REQUIRE(scan2[i] == (scan2[i-1]+data2[i-1]*10));
     }
 
     REQUIRE(cudaFree(data1) == cudaSuccess);
@@ -905,14 +961,9 @@ void scan() {
   }
 }
 
-TEST_CASE("capture_scan.int" * doctest::timeout(300)) {
-  scan<int, tf::cudaFlowCapturer>();
+TEST_CASE("capture_transform_scan.int" * doctest::timeout(300)) {
+  transform_scan<int, tf::cudaFlowCapturer>();
 }
-
-TEST_CASE("capture_scan.float" * doctest::timeout(300)) {
-  scan<float, tf::cudaFlowCapturer>();
-}
-
 
 /*// --------------------------------------------------------------------------
 // row-major transpose

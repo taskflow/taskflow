@@ -414,7 +414,7 @@ class cudaDeviceMemory {
 
     T* data() { return _data; }
     const T* data() const { return _data; }
-
+    
     cudaDeviceMemory(const cudaDeviceMemory&) = delete;
     cudaDeviceMemory& operator = (const cudaDeviceMemory&) = delete;
 

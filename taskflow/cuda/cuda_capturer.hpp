@@ -112,8 +112,8 @@ class cudaFlowCapturer {
   using handle_t = std::variant<External, Internal>;
 
   using Optimizer = std::variant<
-    cudaSequentialCapturing,
-    cudaRoundRobinCapturing
+    cudaRoundRobinCapturing,
+    cudaSequentialCapturing
     //cudaGreedyCapturing
   >;
 
@@ -477,11 +477,47 @@ class cudaFlowCapturer {
     cudaTask inclusive_scan(I first, I last, O output, C op);
     
     /**
-    @brief similar to cudaFlowCapturer::inclusive_scan but excludes the first
-           value in the output
+    @brief similar to cudaFlowCapturer::inclusive_scan 
+           but excludes the first value
     */
     template <typename I, typename O, typename C>
     cudaTask exclusive_scan(I first, I last, O output, C op);
+    
+    /**
+    @brief captures kernels that perform parallel inclusive scan 
+           over a range of transformed items
+    
+    @tparam I input iterator type
+    @tparam O output iterator type
+    @tparam B binary operator type
+    @tparam U unary operator type
+
+    @param first iterator to the beginning (inclusive)
+    @param last iterator to the end (exclusive)
+    @param output iterator to the beginning of the output
+    @param bop binary operator
+    @param uop unary operator
+    
+    @return a tf::cudaTask handle
+    
+    This method is equivalent to the parallel execution of the following loop
+    on a GPU:
+    
+    @code{.cpp}
+    for(size_t i=0; i<std::distance(first, last); i++) {
+      *(output + i) = i ? op(uop(*(first+i)), *(output+i-1)) : uop(*(first+i));
+    }
+    @endcode
+     */
+    template <typename I, typename O, typename B, typename U>
+    cudaTask transform_inclusive_scan(I first, I last, O output, B bop, U uop);
+    
+    /**
+    @brief similar to cudaFlowCapturer::transform_inclusive_scan but 
+           excludes the first value
+    */
+    template <typename I, typename O, typename B, typename U>
+    cudaTask transform_exclusive_scan(I first, I last, O output, B bop, U uop);
 
     // ------------------------------------------------------------------------
     // rebind methods to update captured tasks
@@ -805,11 +841,11 @@ void cudaFlowCapturer::offload_until(P&& predicate) {
     auto captured = _capture();
     
     TF_CHECK_CUDA(
-      cudaGraphInstantiate(
-        &_executable, captured, nullptr, nullptr, 0
-      ),
+      cudaGraphInstantiate(&_executable, captured, nullptr, nullptr, 0),
       "failed to create an executable graph"
     );
+
+    // TODO: store the native graph?
     TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
   }
   

@@ -196,7 +196,7 @@ class cudaRoundRobinCapturing : public cudaCapturingBase {
     /**
     @brief constructs a round-robin optimizer with 4 streams by default
      */
-    cudaRoundRobinCapturing();
+    cudaRoundRobinCapturing() = default;
     
     /**
     @brief constructs a round-robin optimizer with the given number of streams
