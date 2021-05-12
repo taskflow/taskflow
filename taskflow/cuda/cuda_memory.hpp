@@ -382,9 +382,11 @@ class cudaDeviceMemory {
     cudaDeviceMemory() = default;
 
     cudaDeviceMemory(size_t N) : _N {N} {
-      TF_CHECK_CUDA(
-        cudaMalloc(&_data, N*sizeof(T)), "failed to allocate cuda memory"
-      );
+      if(N) {
+        TF_CHECK_CUDA(
+          cudaMalloc(&_data, N*sizeof(T)), "failed to allocate cuda memory"
+        );
+      }
     }
     
     cudaDeviceMemory(cudaDeviceMemory&& rhs) : 
@@ -424,9 +426,6 @@ class cudaDeviceMemory {
     size_t _N {0};
 };
 
-struct cudaMemoryDeleter {
-  void operator ()(void* ptr) { cudaFree(ptr); }
-};
 
 }  // end of namespace tf -----------------------------------------------------
 

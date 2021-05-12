@@ -289,8 +289,8 @@ class cudaFlowCapturer {
     @tparam I iterator type
     @tparam C callable type
 
-    @param first iterator to the beginning (inclusive)
-    @param last iterator to the end (exclusive)
+    @param first iterator to the beginning 
+    @param last iterator to the end 
     @param callable a callable object to apply to the dereferenced iterator 
     
     @return cudaTask handle
@@ -345,8 +345,8 @@ class cudaFlowCapturer {
     @tparam C callable type
     @tparam S source types
 
-    @param first iterator to the beginning (inclusive)
-    @param last iterator to the end (exclusive)
+    @param first iterator to the beginning 
+    @param last iterator to the end 
     @param callable the callable to apply to each element in the range
     @param srcs iterators to the source ranges
     
@@ -370,8 +370,8 @@ class cudaFlowCapturer {
     @tparam T value type
     @tparam C binary operator type
 
-    @param first iterator to the beginning (inclusive)
-    @param last iterator to the end (exclusive)
+    @param first iterator to the beginning 
+    @param last iterator to the end 
     @param result pointer to the result with an initialized value
     @param op binary reduction operator
     
@@ -414,8 +414,8 @@ class cudaFlowCapturer {
     @tparam C binary operator type
     @tparam U unary operator type
 
-    @param first iterator to the beginning (inclusive)
-    @param last iterator to the end (exclusive)
+    @param first iterator to the beginning 
+    @param last iterator to the end 
     @param result pointer to the result with an initialized value
     @param bop binary reduce operator
     @param uop unary transform operator
@@ -458,8 +458,8 @@ class cudaFlowCapturer {
     @tparam O output iterator type
     @tparam C binary operator type
 
-    @param first iterator to the beginning (inclusive)
-    @param last iterator to the end (exclusive)
+    @param first iterator to the beginning 
+    @param last iterator to the end 
     @param output iterator to the beginning of the output
     @param op binary operator
     
@@ -492,8 +492,8 @@ class cudaFlowCapturer {
     @tparam B binary operator type
     @tparam U unary operator type
 
-    @param first iterator to the beginning (inclusive)
-    @param last iterator to the end (exclusive)
+    @param first iterator to the beginning 
+    @param last iterator to the end 
     @param output iterator to the beginning of the output
     @param bop binary operator
     @param uop unary operator
@@ -518,6 +518,35 @@ class cudaFlowCapturer {
     */
     template <typename I, typename O, typename B, typename U>
     cudaTask transform_exclusive_scan(I first, I last, O output, B bop, U uop);
+    
+    /**
+    @brief captures kernels that perform parallel merge on two sorted arrays
+    
+    @tparam A iterator type of the first input array
+    @tparam B iterator type of the second input array
+    @tparam C iterator type of the output array
+    @tparam Comp comparator type
+
+    @param a_first iterator to the beginning of the first input array
+    @param a_last iterator to the end of the first input array
+    @param b_first iterator to the beginning of the second input array
+    @param b_last iterator to the end of the second input array
+    @param c_first iterator to the beginning of the output array
+    @param comp binary comparator
+    
+    @return a tf::cudaTask handle
+
+    Merges two sorted ranges <tt>[a_first, a_last)</tt> and 
+    <tt>[b_first, b_last)</tt> into one sorted range beginning at @c c_first.
+
+    A sequence is said to be sorted with respect to a comparator @c comp 
+    if for any iterator it pointing to the sequence and 
+    any non-negative integer @c n such that <tt>it + n</tt> is a valid iterator 
+    pointing to an element of the sequence, <tt>comp(*(it + n), *it)</tt> 
+    evaluates to false.
+     */
+    template <typename A, typename B, typename C, typename Comp>
+    cudaTask merge(A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp);
 
     // ------------------------------------------------------------------------
     // rebind methods to update captured tasks
@@ -652,6 +681,17 @@ class cudaFlowCapturer {
     template <typename I, typename T, typename C, typename U>
     void rebind_transform_uninitialized_reduce(
       cudaTask task, I first, I last, T* result, C bop, U uop
+    );
+    
+    /**
+    @brief rebinds a capture task to a merge task
+
+    This method is similar to cudaFlowCapturer::merge but operates
+    on an existing task.
+     */ 
+    template <typename A, typename B, typename C, typename Comp>
+    void rebind_merge(
+      cudaTask task, A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp
     );
     
     // ------------------------------------------------------------------------

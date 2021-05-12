@@ -6,7 +6,7 @@
 int main(int argc, char* argv[]) {
 
   if(argc != 2) {
-    std::cerr << "usage: ./cuda_scan num_items\n";
+    std::cerr << "usage: ./cuda_scan N\n";
     std::exit(EXIT_FAILURE);
   }
 
@@ -59,15 +59,13 @@ int main(int argc, char* argv[]) {
   
   // transform inclusive scan
   cudaflow.transform_inclusive_scan(
-    data1, data1+N, scan1, 
-    [] __device__ (int a, int b) { return a+b; },
+    data1, data1+N, scan1, tf::cuda_plus<int>{},
     [] __device__ (int a) { return a*10; }
   );
-  
+
   // transform exclusive scan
   cudaflow.transform_exclusive_scan(
-    data2, data2+N, scan2,
-    [] __device__ (int a, int b){ return a+b; },
+    data2, data2+N, scan2, tf::cuda_plus<int>{},
     [] __device__ (int a) { return a*11; }
   );
 

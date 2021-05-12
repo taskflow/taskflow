@@ -162,6 +162,60 @@ __device__ cudaScanResult<T, vt> cudaBlockScan<nt, T>::operator()(
   return cudaScanResult<T, vt> { y, result.reduction };
 }
 
+/**
+@private
+
+@brief single-pass scan for small input
+ */
+template <typename P, typename I, typename O, typename C, typename T>
+void cuda_single_pass_scan(
+  P&& p,
+  cudaScanType scan_type,
+  I input, 
+  unsigned count, 
+  O output, 
+  C op,
+  T*
+  //reduction_it reduction, 
+) {
+
+  using E = std::decay_t<P>;
+
+  // Small input specialization. This is the non-recursive branch.
+  cuda_kernel<<<1, E::nt, 0, p.stream()>>>([=] __device__ (auto tid, auto bid) {
+   
+    using scan_t = cudaBlockScan<E::nt, T>;
+
+    __shared__ union {
+      typename scan_t::storage_t scan;
+      T values[E::nv];
+    } shared;
+
+    auto carry_in = T();
+    for(unsigned cur = 0; cur < count; cur += E::nv) {
+      // Cooperatively load values into register.
+      auto count2 = min(count - cur, E::nv);
+      
+      auto x = cuda_mem_to_reg_thread<E::nt, E::vt>(input + cur, 
+        tid, count2, shared.values);
+      
+      auto result = scan_t()(tid, x, shared.scan,
+        carry_in, cur > 0, count2, op, T(), scan_type);
+      
+      // Store the scanned values back to global memory.
+      cuda_reg_to_mem_thread<E::nt, E::vt>(result.scan, tid, count2, 
+        output + cur, shared.values);
+      
+      // Roll the reduction into carry_in.
+      carry_in = result.reduction;
+    }
+
+    // Store the carry-out to the reduction pointer. This may be a
+    // discard_iterator_t if no reduction is wanted.
+    //if(!tid) *reduction = carry_in;
+  });
+}
+
 /** 
 @private 
 
@@ -251,42 +305,10 @@ void cuda_scan_loop(
         y, tid, tile.count(), output + tile.begin, shared.values
       );
     });
-  
-  } else {
-
-    // Small input specialization. This is the non-recursive branch.
-    cuda_kernel<<<1, E::nt, 0, p.stream()>>>([=] __device__ (auto tid, auto bid) {
-     
-      using scan_t = cudaBlockScan<E::nt, T>;
-
-      __shared__ union {
-        typename scan_t::storage_t scan;
-        T values[E::nv];
-      } shared;
-
-      auto carry_in = T();
-      for(unsigned cur = 0; cur < count; cur += E::nv) {
-        // Cooperatively load values into register.
-        auto count2 = min(count - cur, E::nv);
-        
-        auto x = cuda_mem_to_reg_thread<E::nt, E::vt>(input + cur, 
-          tid, count2, shared.values);
-        
-        auto result = scan_t()(tid, x, shared.scan,
-          carry_in, cur > 0, count2, op, T(), scan_type);
-        
-        // Store the scanned values back to global memory.
-        cuda_reg_to_mem_thread<E::nt, E::vt>(result.scan, tid, count2, 
-          output + cur, shared.values);
-        
-        // Roll the reduction into carry_in.
-        carry_in = result.reduction;
-      }
-
-      // Store the carry-out to the reduction pointer. This may be a
-      // discard_iterator_t if no reduction is wanted.
-      //if(!tid) *reduction = carry_in;
-    });
+  } 
+  // Small input specialization. This is the non-recursive branch.
+  else {
+    cuda_single_pass_scan(p, scan_type, input, count, output, op, buffer);
   }
 }
 
@@ -348,14 +370,6 @@ void cuda_inclusive_scan(P&& p, I first, I last, O output, C op) {
 /**
 @function cuda_inclusive_scan
 */
-template <typename I, typename O, typename C>
-void cuda_inclusive_scan(I first, I last, O output, C op) {
-  cuda_inclusive_scan(cudaDefaultExecutionPolicy{}, first, last, output, op);
-}
-
-/**
-@function cuda_inclusive_scan
-*/
 template<typename P, typename I, typename O, typename C, typename T>
 void cuda_inclusive_scan_async(
   P&& p, I first, I last, O output, C op, T* buf
@@ -370,18 +384,6 @@ void cuda_inclusive_scan_async(
   // launch the scan loop
   detail::cuda_scan_loop(
     p, detail::cudaScanType::INCLUSIVE, first, count, output, op, buf
-  );
-}
-
-/**
-@function cuda_inclusive_scan
-*/
-template<typename I, typename O, typename C, typename T>
-void cuda_inclusive_scan_async(
-  I first, I last, O output, C op, T* buf
-) {
-  cuda_inclusive_scan_async(
-    cudaDefaultExecutionPolicy{}, first, last, output, op, buf
   );
 }
 
@@ -421,18 +423,6 @@ void cuda_transform_inclusive_scan(
 }
 
 /**
-@brief performs transform-inclusive scan with default execution policy
- */
-template<typename I, typename O, typename C, typename U>
-void cuda_transform_inclusive_scan(
-  I first, I last, O output, C bop, U uop
-) {
-  cuda_transform_inclusive_scan(
-    cudaDefaultExecutionPolicy{}, first, last, output, bop, uop
-  );
-}
-
-/**
 @brief performs asynchronous transform-inclusive scan with given execution policy
 */
 template<typename P, typename I, typename O, typename C, typename U, typename T>
@@ -451,18 +441,6 @@ void cuda_transform_inclusive_scan_async(
     p, detail::cudaScanType::INCLUSIVE, 
     cuda_make_load_iterator<T>([=]__device__(auto i){ return uop(*(first+i)); }), 
     count, output, bop, buf
-  );
-}
-
-/**
-@brief performs asynchronous transform-inclusive scan with default execution policy
-*/
-template<typename I, typename O, typename C, typename U, typename T>
-void cuda_transform_inclusive_scan_async(
-  I first, I last, O output, C bop, U uop, T* buf
-) {
-  cuda_transform_inclusive_scan_async(
-    cudaDefaultExecutionPolicy{}, first, last, output, bop, uop, buf
   );
 }
 
@@ -498,14 +476,6 @@ void cuda_exclusive_scan(P&& p, I first, I last, O output, C op) {
 }
 
 /**
-@brief performs exclusive scan with default execution policy
-*/
-template <typename I, typename O, typename C>
-void cuda_exclusive_scan(I first, I last, O output, C op) {
-  cuda_exclusive_scan(cudaDefaultExecutionPolicy{}, first, last, output, op);
-}
-
-/**
 @brief performs asynchronous exclusive scan with given execution policy
 */
 template<typename P, typename I, typename O, typename C, typename T>
@@ -522,18 +492,6 @@ void cuda_exclusive_scan_async(
   // launch the scan loop
   detail::cuda_scan_loop(
     p, detail::cudaScanType::EXCLUSIVE, first, count, output, op, buf
-  );
-}
-
-/**
-@brief performs asynchronous exclusive scan with default execution policy
-*/
-template<typename I, typename O, typename C, typename T>
-void cuda_exclusive_scan_async(
-  I first, I last, O output, C op, T* buf
-) {
-  cuda_exclusive_scan_async(
-    cudaDefaultExecutionPolicy{}, first, last, output, op, buf
   );
 }
 
@@ -573,16 +531,6 @@ void cuda_transform_exclusive_scan(
 }
 
 /**
-@brief performs transform-exclusive scan with default execution policy
-*/
-template <typename I, typename O, typename C, typename U>
-void cuda_transform_exclusive_scan(I first, I last, O output, C bop, U uop) {
-  cuda_transform_exclusive_scan(
-    cudaDefaultExecutionPolicy{}, first, last, output, bop, uop
-  );
-}
-
-/**
 @brief performs asynchronous transform-exclusive scan with given execution policy
 */
 template<typename P, typename I, typename O, typename C, typename U, typename T>
@@ -601,18 +549,6 @@ void cuda_transform_exclusive_scan_async(
     p, detail::cudaScanType::EXCLUSIVE, 
     cuda_make_load_iterator<T>([=]__device__(auto i){ return uop(*(first+i)); }), 
     count, output, bop, buf
-  );
-}
-
-/**
-@brief performs asynchronous transform-exclusive scan with default execution policy
-*/
-template<typename I, typename O, typename C, typename U, typename T>
-void cuda_transform_exclusive_scan_async(
-  I first, I last, O output, C bop, U uop, T* buf
-) {
-  cuda_transform_exclusive_scan_async(
-    cudaDefaultExecutionPolicy{}, first, last, output, bop, uop, buf
   );
 }
 

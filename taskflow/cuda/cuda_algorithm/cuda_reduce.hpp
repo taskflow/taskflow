@@ -90,80 +90,30 @@ void cuda_reduce_loop(
   
   auto B = (count + E::nv - 1) / E::nv;
   
-  //do {
-    cuda_kernel<<<B, E::nt, 0, p.stream()>>>([=] __device__ (auto tid, auto bid) {
-      __shared__ typename cudaBlockReduce<E::nt, T>::Storage shm;
-      auto tile = cuda_get_tile(bid, E::nv, count);
-      auto x = cuda_mem_to_reg_strided<E::nt, E::vt>(
-        input + tile.begin, tid, tile.count()
-      );
-      // Reduce the multiple values per thread into a scalar.
-      T s;
-      cuda_strided_iterate<E::nt, E::vt>(
-        [&] (auto i, auto) { s = i ? op(s, x[i]) : x[0]; }, tid, tile.count()
-      );
-      // reduce to a scalar per block.
-      s = cudaBlockReduce<E::nt, T>()(
-        tid, s, shm, (tile.count() < E::nt ? tile.count() : E::nt), op, false
-      );
-      if(!tid) {
-        (1 == B) ? *res = (incl ? op(*res, s) : s) : buf[bid] = s;
-      }
-    });
-
-    if(B > 1) {
-      cuda_reduce_loop(p, buf, B, res, op, incl, buf+B);
-    }
-
-    //if(B == 1) {
-    //  break;
-    //}
-    
-    // move on to the next block
-    //input = buf;
-    //buf += B;
-    //count = B;
-    //B = (B + E::nv - 1) / E::nv;
-
-  //} while(true);
-
-}
-
-/** @private 
-template <typename P, typename I, typename T, typename O, typename U>
-void cuda_transform_reduce_loop(
-  P&& p, I input, unsigned count, T* res, O bop, U uop, bool incl, cudaStream_t S, T* buf
-) {
-
-  using E = std::decay_t<P>;
-  
-  auto B = (count + E::nv - 1) / E::nv;
-
-  // first round will take care of transform
-  cuda_kernel<<<B, E::nt, 0, S>>>([=] __device__ (auto tid, auto bid) {
+  cuda_kernel<<<B, E::nt, 0, p.stream()>>>([=] __device__ (auto tid, auto bid) {
     __shared__ typename cudaBlockReduce<E::nt, T>::Storage shm;
     auto tile = cuda_get_tile(bid, E::nv, count);
-    auto x = cuda_transform_mem_to_reg_strided<E::nt, E::vt>(
-      input + tile.begin, tid, tile.count(), uop
+    auto x = cuda_mem_to_reg_strided<E::nt, E::vt>(
+      input + tile.begin, tid, tile.count()
     );
     // Reduce the multiple values per thread into a scalar.
     T s;
     cuda_strided_iterate<E::nt, E::vt>(
-      [&] (auto i, auto) { s = i ? bop(s, x[i]) : x[0]; }, tid, tile.count()
+      [&] (auto i, auto) { s = i ? op(s, x[i]) : x[0]; }, tid, tile.count()
     );
     // reduce to a scalar per block.
     s = cudaBlockReduce<E::nt, T>()(
-      tid, s, shm, (tile.count() < E::nt ? tile.count() : E::nt), bop, false
+      tid, s, shm, (tile.count() < E::nt ? tile.count() : E::nt), op, false
     );
     if(!tid) {
-      (1 == B) ? *res = (incl ? bop(*res, s) : s) : buf[bid] = s;
+      (1 == B) ? *res = (incl ? op(*res, s) : s) : buf[bid] = s;
     }
   });
 
-  if(B == 1) return;
-    
-  cuda_reduce_loop(p, buf, B, res, bop, incl, S, buf+B);
-}*/
+  if(B > 1) {
+    cuda_reduce_loop(p, buf, B, res, op, incl, buf+B);
+  }
+}
 
 }  // namespace tf::detail ----------------------------------------------------
 
@@ -208,12 +158,6 @@ void cuda_reduce(P&& p, I first, I last, T* res, O op) {
   p.synchronize();
 }
 
-// cuda_reduce
-template <typename I, typename T, typename O>
-void cuda_reduce(I first, I last, T* res, O op) {
-  cuda_reduce(cudaDefaultExecutionPolicy{}, first, last, res, op);
-}
-
 // cuda_reduce_async
 template <typename P, typename I, typename T, typename O>
 void cuda_reduce_async(
@@ -224,16 +168,6 @@ void cuda_reduce_async(
     return;
   }
   detail::cuda_reduce_loop(p, first, count, res, op, true, buf);
-}
-
-// cuda_reduce_async
-template <typename I, typename T, typename O>
-void cuda_reduce_async(
-  I first, I last, T* res, O op, T* buf
-) {
-  cuda_reduce_async(
-    cudaDefaultExecutionPolicy{}, first, last, res, op, buf
-  );
 }
 
 // ----------------------------------------------------------------------------
@@ -261,12 +195,6 @@ void cuda_uninitialized_reduce(P&& p, I first, I last, T* res, O op) {
   p.synchronize();
 }
 
-// cuda_uninitialized_reduce
-template <typename I, typename T, typename O>
-void cuda_uninitialized_reduce(I first, I last, T* res, O op) {
-  cuda_uninitialized_reduce(cudaDefaultExecutionPolicy{}, first, last, res, op);
-}
-
 // cuda_uninitialized_reduce_async
 template <typename P, typename I, typename T, typename O>
 void cuda_uninitialized_reduce_async(
@@ -277,16 +205,6 @@ void cuda_uninitialized_reduce_async(
     return;
   }
   detail::cuda_reduce_loop(p, first, count, res, op, false, buf);
-}
-
-// cuda_uninitialized_reduce_async
-template <typename I, typename T, typename O>
-void cuda_uninitialized_reduce_async(
-  I first, I last, T* res, O op, T* buf
-) {
-  cuda_uninitialized_reduce_async(
-    cudaDefaultExecutionPolicy{}, first, last, res, op, buf
-  );
 }
 
 // ----------------------------------------------------------------------------
@@ -318,14 +236,6 @@ void cuda_transform_reduce(P&& p, I first, I last, T* res, O bop, U uop) {
   p.synchronize();
 }
 
-// cuda_transform_reduce
-template <typename I, typename T, typename O, typename U>
-void cuda_transform_reduce(I first, I last, T* res, O bop, U uop) {
-  cuda_transform_reduce(
-    cudaDefaultExecutionPolicy{}, first, last, res, bop, uop
-  );
-}
-
 // cuda_transform_reduce_async
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_reduce_async(
@@ -343,16 +253,6 @@ void cuda_transform_reduce_async(
   detail::cuda_reduce_loop(p, 
     cuda_make_load_iterator<T>([=]__device__(auto i){ return uop(*(first+i)); }), 
     count, res, bop, true, buf
-  );
-}
-
-// cuda_transform_reduce_async
-template <typename I, typename T, typename O, typename U>
-void cuda_transform_reduce_async(
-  I first, I last, T* res, O bop, U uop, T* buf
-) {
-  cuda_transform_reduce_async(
-    cudaDefaultExecutionPolicy{}, first, last, res, bop, uop, buf
   );
 }
 
@@ -387,14 +287,6 @@ void cuda_transform_uninitialized_reduce(
   p.synchronize();
 }
 
-// cuda_transform_uninitialized_reduce
-template <typename I, typename T, typename O, typename U>
-void cuda_transform_uninitialized_reduce(I first, I last, T* res, O bop, U uop) {
-  cuda_transform_uninitialized_reduce(
-    cudaDefaultExecutionPolicy{}, first, last, res, bop, uop
-  );
-}
-
 // cuda_transform_uninitialized_reduce_async
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_uninitialized_reduce_async(
@@ -414,16 +306,6 @@ void cuda_transform_uninitialized_reduce_async(
   detail::cuda_reduce_loop(p, 
     cuda_make_load_iterator<T>([=]__device__(auto i){ return uop(*(first+i)); }), 
     count, res, bop, false, buf
-  );
-}
-
-// cuda_transform_uninitialized_reduce_async
-template <typename I, typename T, typename O, typename U>
-void cuda_transform_uninitialized_reduce_async(
-  I first, I last, T* res, O bop, U uop, T* buf
-) {
-  cuda_transform_uninitialized_reduce_async(
-    cudaDefaultExecutionPolicy{}, first, last, res, bop, uop, buf
   );
 }
 

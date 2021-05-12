@@ -906,8 +906,12 @@ void scan() {
       scan2[i] = 0;
     }
       
-    tf::cuda_inclusive_scan(data1, data1+N, scan1, tf::cuda_plus<T>{});
-    tf::cuda_exclusive_scan(data2, data2+N, scan2, tf::cuda_plus<T>{});
+    tf::cuda_inclusive_scan(tf::cudaDefaultExecutionPolicy{}, 
+      data1, data1+N, scan1, tf::cuda_plus<T>{}
+    );
+    tf::cuda_exclusive_scan(tf::cudaDefaultExecutionPolicy{}, 
+      data2, data2+N, scan2, tf::cuda_plus<T>{}
+    );
     
     // inspect 
     for(int i=1; i<N; i++) {
@@ -985,13 +989,13 @@ void transform_scan() {
       scan2[i] = 0;
     }
       
-    tf::cuda_transform_inclusive_scan(
+    tf::cuda_transform_inclusive_scan(tf::cudaDefaultExecutionPolicy{},
       data1, data1+N, scan1, 
       [] __device__ (T a, T b){ return a+b; },
       [] __device__ (T a) { return a*10; }
     );
       
-    tf::cuda_transform_exclusive_scan(
+    tf::cuda_transform_exclusive_scan(tf::cudaDefaultExecutionPolicy{},
       data2, data2+N, scan2, 
       [] __device__ (T a, T b){ return a+b; },
       [] __device__ (T a) { return a*10; }
@@ -1016,6 +1020,77 @@ TEST_CASE("capture_transform_scan.int" * doctest::timeout(300)) {
 
 TEST_CASE("capture_transform_scan.size_t" * doctest::timeout(300)) {
   transform_scan<size_t, tf::cudaFlowCapturer>();
+}
+
+// ----------------------------------------------------------------------------
+// merge
+// ----------------------------------------------------------------------------
+
+template <typename T, typename F>
+void merge_keys() {
+    
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  for(int N=0; N<=1234567; N = N*2 + 1) {
+
+    taskflow.clear();
+
+    auto a = tf::cuda_malloc_shared<T>(N);
+    auto b = tf::cuda_malloc_shared<T>(N);
+    auto c = tf::cuda_malloc_shared<T>(2*N);
+    std::vector<T> s;
+
+    // ----------------- standalone algorithms
+
+    // initialize the data
+    for(int i=0; i<N; i++) {
+      a[i] = T(rand()%100);
+      b[i] = T(rand()%100);
+      s.push_back(a[i]);
+      s.push_back(b[i]);
+    }
+
+    std::sort(a, a+N);
+    std::sort(b, b+N);
+    std::sort(s.begin(), s.end());
+
+    tf::cuda_merge(tf::cudaDefaultExecutionPolicy{},
+      a, a+N, b, b+N, c, tf::cuda_less<T>{}
+    );
+
+    for(size_t i=0; i<s.size(); i++) {
+      REQUIRE(c[i] == s[i]);
+    }
+
+    // cudaflow capturer
+    for(int i=0; i<N*2; i++) {
+      c[i] = rand();      
+    }
+    
+    taskflow.emplace([&](F& cudaflow){
+      // inclusive scan
+      cudaflow.merge(a, a+N, b, b+N, c, tf::cuda_less<T>{});
+    });
+
+    executor.run(taskflow).wait();
+    
+    for(size_t i=0; i<s.size(); i++) {
+      REQUIRE(c[i] == s[i]);
+    }
+    
+    REQUIRE(cudaFree(a) == cudaSuccess);
+    REQUIRE(cudaFree(b) == cudaSuccess);
+    REQUIRE(cudaFree(c) == cudaSuccess);
+  }
+}
+
+TEST_CASE("capture_merge_keys.int" * doctest::timeout(300)) {
+  merge_keys<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_merge_keys.float" * doctest::timeout(300)) {
+  merge_keys<float, tf::cudaFlowCapturer>();
 }
 
 /*// --------------------------------------------------------------------------

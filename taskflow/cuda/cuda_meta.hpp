@@ -25,7 +25,7 @@ struct cudaEmpty { };
 template<unsigned i, unsigned count, bool valid = (i < count)>
 struct cudaIterate {
   template<typename F>
-  __host__ __device__ static void eval(F f) {
+  __device__ static void eval(F f) {
     f(i);
     cudaIterate<i + 1, count>::eval(f);
   }
@@ -34,28 +34,28 @@ struct cudaIterate {
 template<unsigned i, unsigned count>
 struct cudaIterate<i, count, false> {
   template<typename F>
-  __host__ __device__ static void eval(F f) { }
+  __device__ static void eval(F f) { }
 };
 
 template<unsigned begin, unsigned end, typename F>
-__host__ __device__ void cuda_iterate(F f) {
+__device__ void cuda_iterate(F f) {
   cudaIterate<begin, end>::eval(f);
 }
 
 template<unsigned count, typename F>
-__host__ __device__ void cuda_iterate(F f) {
+__device__ void cuda_iterate(F f) {
   cuda_iterate<0, count>(f);
 }
 
 template<unsigned count, typename T>
-__host__ __device__ T reduce(const T(&x)[count]) {
+__device__ T reduce(const T(&x)[count]) {
   T y;
   cuda_iterate<count>([&](auto i) { y = i ? x[i] + y : x[i]; });
   return y;
 }
 
 template<unsigned count, typename T>
-__host__ __device__ void fill(T(&x)[count], T val) {
+__device__ void fill(T(&x)[count], T val) {
   cuda_iterate<count>([&](auto i) { x[i] = val; });
 }
 
@@ -93,17 +93,18 @@ __device__ void cuda_thread_iterate(F f, unsigned tid) {
 // cudaRange 
 // ----------------------------------------------------------------------------
 
-// range
+// cudaRange
 struct cudaRange {
   unsigned begin, end;
-  __host__ __device__ unsigned size() const { return end - begin; }
-  __host__ __device__ unsigned count() const { return size(); }
-  __host__ __device__ bool valid() const { return end > begin; }
+  __device__ unsigned size() const { return end - begin; }
+  __device__ unsigned count() const { return size(); }
+  __device__ bool valid() const { return end > begin; }
 };
 
-__host__ __device__ cudaRange cuda_get_tile(unsigned b, unsigned nv, unsigned count) {
+__device__ cudaRange cuda_get_tile(unsigned b, unsigned nv, unsigned count) {
   return cudaRange { nv * b, min(count, nv * (b + 1)) };
 }
+
 
 // ----------------------------------------------------------------------------
 // cudaArray
@@ -113,23 +114,23 @@ template<typename T, unsigned size>
 struct cudaArray {
   T data[size];
 
-  __host__ __device__ T operator[](unsigned i) const { return data[i]; }
-  __host__ __device__ T& operator[](unsigned i) { return data[i]; }
+  __device__ T operator[](unsigned i) const { return data[i]; }
+  __device__ T& operator[](unsigned i) { return data[i]; }
 
   cudaArray() = default;
   cudaArray(const cudaArray&) = default;
   cudaArray& operator=(const cudaArray&) = default;
 
   // Fill the array with x.
-  __host__ __device__ cudaArray(T x) { 
+  __device__ cudaArray(T x) { 
     cuda_iterate<size>([&](unsigned i) { data[i] = x; });  
   }
 };
 
 template<typename T>
 struct cudaArray<T, 0> { 
-  __host__ __device__ T operator[](unsigned i) const { return T(); }
-  __host__ __device__ T& operator[](unsigned i) { return *(T*)nullptr; }
+  __device__ T operator[](unsigned i) const { return T(); }
+  __device__ T& operator[](unsigned i) { return *(T*)nullptr; }
 };
 
 // ----------------------------------------------------------------------------
@@ -260,6 +261,26 @@ __device__ auto cuda_mem_to_reg_thread(
 }
 
 // ----------------------------------------------------------------------------
+// reg<->reg
+// ----------------------------------------------------------------------------
+
+template<unsigned nt, unsigned vt, typename T, unsigned S>
+__device__ auto cuda_reg_thread_to_strided(
+  cudaArray<T, vt> x, unsigned tid, T (&shared)[S]
+) {
+  cuda_reg_to_shared_thread<nt>(x, tid, shared);
+  return cuda_shared_to_reg_strided<nt, vt>(shared, tid);
+}
+
+template<unsigned nt, unsigned vt, typename T, unsigned S>
+__device__ auto cuda_reg_strided_to_thread(
+  cudaArray<T, vt> x, unsigned tid, T (&shared)[S]
+) {
+  cuda_reg_to_shared_strided<nt>(x, tid, shared);
+  return cuda_shared_to_reg_thread<nt, vt>(shared, tid);
+}
+
+// ----------------------------------------------------------------------------
 // cudaLoadStoreIterator
 // ----------------------------------------------------------------------------
 
@@ -298,24 +319,24 @@ struct cudaLoadStoreIterator : std::iterator_traits<const T*> {
     return assign_t { load, store, base };
   }
 
-  __host__ __device__ cudaLoadStoreIterator operator+(I offset) const {
+  __device__ cudaLoadStoreIterator operator+(I offset) const {
     cudaLoadStoreIterator cp = *this;
     cp += offset;
     return cp;
   }
 
-  __host__ __device__ cudaLoadStoreIterator& operator+=(I offset) {
+  __device__ cudaLoadStoreIterator& operator+=(I offset) {
     base += offset;
     return *this;
   }
 
-  __host__ __device__ cudaLoadStoreIterator operator-(I offset) const {
+  __device__ cudaLoadStoreIterator operator-(I offset) const {
     cudaLoadStoreIterator cp = *this;
     cp -= offset;
     return cp;
   }
 
-  __host__ __device__ cudaLoadStoreIterator& operator-=(I offset) {
+  __device__ cudaLoadStoreIterator& operator-=(I offset) {
     base -= offset;
     return *this;
   }
@@ -324,7 +345,7 @@ struct cudaLoadStoreIterator : std::iterator_traits<const T*> {
 //template<typename T>
 //struct trivial_load_functor {
 //  template<typename I>
-//  __host__ __device__ T operator()(I index) const {
+//  __device__ T operator()(I index) const {
 //    return T();
 //  }
 //};
@@ -332,7 +353,7 @@ struct cudaLoadStoreIterator : std::iterator_traits<const T*> {
 //template<typename T>
 //struct trivial_store_functor {
 //  template<typename I>
-//  __host__ __device__ void operator()(T v, I index) const { }
+//  __device__ void operator()(T v, I index) const { }
 //};
 
 template <typename T, typename I = int, typename L, typename S>
@@ -359,33 +380,45 @@ __global__ void cuda_kernel(F f, args_t... args) {
   f(threadIdx.x, blockIdx.x, args...);
 }
 
+
+
 // ----------------------------------------------------------------------------
 // operators
 // ----------------------------------------------------------------------------
 
-template<typename T>
+template <typename T>
 struct cuda_plus : public std::binary_function<T, T, T> {
   __device__ T operator()(T a, T b) const { return a + b; }
 };
 
-template<typename T>
+template <typename T>
 struct cuda_minus : public std::binary_function<T, T, T> {
   __device__ T operator()(T a, T b) const { return a - b; }
 };
 
-template<typename T>
+template <typename T>
 struct cuda_multiplies : public std::binary_function<T, T, T> {
   __device__ T operator()(T a, T b) const { return a * b; }
 };
 
-template<typename T>
+template <typename T>
 struct cuda_maximum  : public std::binary_function<T, T, T> {
   __device__ T operator()(T a, T b) const { return a > b ? a : b; }
 };
 
-template<typename T>
+template <typename T>
 struct cuda_minimum  : public std::binary_function<T, T, T> {
   __device__ T operator()(T a, T b) const { return a < b ? a : b; }
+};
+
+template <typename T>
+struct cuda_less : public std::binary_function<T, T, T> {
+  __device__ T operator()(T a, T b) const { return a < b; }
+};
+
+template <typename T>
+struct cuda_greater : public std::binary_function<T, T, T> {
+  __device__ T operator()(T a, T b) const { return a > b; }
 };
 
 // ----------------------------------------------------------------------------
@@ -394,6 +427,8 @@ struct cuda_minimum  : public std::binary_function<T, T, T> {
 
 template<unsigned NT, unsigned VT>
 struct cudaExecutionPolicy {
+
+  static_assert(is_pow2(NT), "max # threads per block must be a power of two");
 
   public:
 
@@ -419,7 +454,7 @@ struct cudaExecutionPolicy {
   cudaStream_t _stream {0};
 };
 
-using cudaDefaultExecutionPolicy = cudaExecutionPolicy<512, 7>;
+using cudaDefaultExecutionPolicy = cudaExecutionPolicy<512, 9>;
 
 }  // end of namespace tf -----------------------------------------------------
 

@@ -11,6 +11,7 @@
 #include "cuda/cuda_algorithm/cuda_transform.hpp"
 #include "cuda/cuda_algorithm/cuda_reduce.hpp"
 #include "cuda/cuda_algorithm/cuda_scan.hpp"
+#include "cuda/cuda_algorithm/cuda_merge.hpp"
 
 /**
 @file cudaflow.hpp
