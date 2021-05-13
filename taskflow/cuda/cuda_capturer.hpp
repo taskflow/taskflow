@@ -547,6 +547,24 @@ class cudaFlowCapturer {
      */
     template <typename A, typename B, typename C, typename Comp>
     cudaTask merge(A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp);
+    
+    /**
+    @brief captures kernels that sort the given array
+    
+    @tparam I iterator type of the first input array
+    @tparam Comp comparator type
+
+    @param first iterator to the beginning of the input array
+    @param last iterator to the end of the input array
+    @param comp binary comparator
+    
+    @return a tf::cudaTask handle
+
+    Sorts elements in the range <tt>[first, last)</tt> 
+    with the given comparator.
+     */
+    template <typename I, typename Comp>
+    cudaTask sort(I first, I last, Comp comp);
 
     // ------------------------------------------------------------------------
     // rebind methods to update captured tasks
@@ -693,6 +711,15 @@ class cudaFlowCapturer {
     void rebind_merge(
       cudaTask task, A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp
     );
+    
+    /**
+    @brief rebinds a capture task to a sort task
+
+    This method is similar to cudaFlowCapturer::sort but operates on 
+    an existing task.
+     */
+    template <typename I, typename Comp>
+    void rebind_sort(cudaTask task, I first, I last, Comp comp);
     
     // ------------------------------------------------------------------------
     // offload methods

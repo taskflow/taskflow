@@ -384,7 +384,8 @@ class cudaDeviceMemory {
     cudaDeviceMemory(size_t N) : _N {N} {
       if(N) {
         TF_CHECK_CUDA(
-          cudaMalloc(&_data, N*sizeof(T)), "failed to allocate cuda memory"
+          cudaMalloc(&_data, N*sizeof(T)), 
+          "failed to allocate device memory (", N*sizeof(T), " bytes)"
         );
       }
     }

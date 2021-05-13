@@ -4,13 +4,11 @@
 #include "../cuda_capturer.hpp"
 #include "../cuda_meta.hpp"
 
-namespace tf {
+namespace tf::detail {
 
 // ----------------------------------------------------------------------------
 // reduction helper functions
 // ----------------------------------------------------------------------------
-
-namespace detail {
 
 /** @private */
 template<unsigned nt, typename T>
@@ -83,11 +81,12 @@ __device__ T cudaBlockReduce<nt, T>::operator ()(
 /** @private */
 template <typename P, typename I, typename T, typename O>
 void cuda_reduce_loop(
-  P&& p, I input, unsigned count, T* res, O op, bool incl, T* buf
+  P&& p, I input, unsigned count, T* res, O op, bool incl, void* ptr
 ) {
 
   using E = std::decay_t<P>;
-  
+
+  auto buf = static_cast<T*>(ptr);
   auto B = (count + E::nv - 1) / E::nv;
   
   cuda_kernel<<<B, E::nt, 0, p.stream()>>>([=] __device__ (auto tid, auto bid) {
@@ -117,20 +116,22 @@ void cuda_reduce_loop(
 
 }  // namespace tf::detail ----------------------------------------------------
 
+namespace tf {
+
 // cuda_reduce_buffer_size
-template <typename P>
+template <typename P, typename T>
 unsigned cuda_reduce_buffer_size(unsigned count) {
   using E = std::decay_t<P>;
   unsigned B = (count + E::nv - 1) / E::nv;
   unsigned n = 0;
   for(auto b=B; b>1; n += (b=(b+E::nv-1)/E::nv));
-  return n;
+  return n*sizeof(T);
 }
 
 // cuda_reduce_buffer_size
-template <typename P, typename I>
+template <typename P, typename T, typename I>
 unsigned cuda_reduce_buffer_size(I first, I last) {
-  return cuda_reduce_buffer_size<P>(std::distance(first, last));
+  return cuda_reduce_buffer_size<P, T>(std::distance(first, last));
 }
 
 // ----------------------------------------------------------------------------
@@ -148,11 +149,10 @@ void cuda_reduce(P&& p, I first, I last, T* res, O op) {
   }
   
   // allocate temporary buffer
-  cudaDeviceMemory<T> temp(cuda_reduce_buffer_size<P>(count));
-  auto buf = temp.data();
+  cudaDeviceMemory<std::byte> temp(cuda_reduce_buffer_size<P, T>(count));
   
   // reduction loop
-  detail::cuda_reduce_loop(p, first, count, res, op, true, buf);
+  detail::cuda_reduce_loop(p, first, count, res, op, true, temp.data());
   
   // synchronize the execution
   p.synchronize();
@@ -161,7 +161,7 @@ void cuda_reduce(P&& p, I first, I last, T* res, O op) {
 // cuda_reduce_async
 template <typename P, typename I, typename T, typename O>
 void cuda_reduce_async(
-  P&& p, I first, I last, T* res, O op, T* buf
+  P&& p, I first, I last, T* res, O op, void* buf
 ) {
   unsigned count = std::distance(first, last);
   if(count == 0) {
@@ -185,7 +185,7 @@ void cuda_uninitialized_reduce(P&& p, I first, I last, T* res, O op) {
   }
   
   // allocate temporary buffer
-  cudaDeviceMemory<T> temp(cuda_reduce_buffer_size<P>(count));
+  cudaDeviceMemory<std::byte> temp(cuda_reduce_buffer_size<P, T>(count));
   auto buf = temp.data();
   
   // reduction loop
@@ -198,7 +198,7 @@ void cuda_uninitialized_reduce(P&& p, I first, I last, T* res, O op) {
 // cuda_uninitialized_reduce_async
 template <typename P, typename I, typename T, typename O>
 void cuda_uninitialized_reduce_async(
-  P&& p, I first, I last, T* res, O op, T* buf
+  P&& p, I first, I last, T* res, O op, void* buf
 ) {
   unsigned count = std::distance(first, last);
   if(count == 0) {
@@ -222,7 +222,7 @@ void cuda_transform_reduce(P&& p, I first, I last, T* res, O bop, U uop) {
   }
   
   // allocate temporary buffer
-  cudaDeviceMemory<T> temp(cuda_reduce_buffer_size<P>(count));
+  cudaDeviceMemory<std::byte> temp(cuda_reduce_buffer_size<P, T>(count));
   auto buf = temp.data();
   
   // reduction loop
@@ -239,7 +239,7 @@ void cuda_transform_reduce(P&& p, I first, I last, T* res, O bop, U uop) {
 // cuda_transform_reduce_async
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_reduce_async(
-  P&& p, I first, I last, T* res, O bop, U uop, T* buf
+  P&& p, I first, I last, T* res, O bop, U uop, void* buf
 ) {
 
   unsigned count = std::distance(first, last);
@@ -273,7 +273,7 @@ void cuda_transform_uninitialized_reduce(
   }
   
   // allocate temporary buffer
-  cudaDeviceMemory<T> temp(cuda_reduce_buffer_size<P>(count));
+  cudaDeviceMemory<std::byte> temp(cuda_reduce_buffer_size<P, T>(count));
   auto buf = temp.data();
   
   // reduction loop
@@ -290,7 +290,7 @@ void cuda_transform_uninitialized_reduce(
 // cuda_transform_uninitialized_reduce_async
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_uninitialized_reduce_async(
-  P&& p, I first, I last, T* res, O bop, U uop, T* buf
+  P&& p, I first, I last, T* res, O bop, U uop, void* buf
 ) {
 
   unsigned count = std::distance(first, last);
@@ -435,9 +435,11 @@ template <typename I, typename T, typename C>
 cudaTask cudaFlowCapturer::reduce(I first, I last, T* result, C c) {
   
   // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy>(first, last);
+  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
+    first, last
+  );
 
-  return on([=, buf=MoC{cudaDeviceMemory<T>(bufsz)}] 
+  return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_reduce_async(p, first, last, result, c, buf.get().data());
@@ -449,9 +451,11 @@ template <typename I, typename T, typename C>
 cudaTask cudaFlowCapturer::uninitialized_reduce(I first, I last, T* result, C c) {
   
   // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy>(first, last);
+  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
+    first, last
+  );
 
-  return on([=, buf=MoC{cudaDeviceMemory<T>(bufsz)}] 
+  return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_uninitialized_reduce_async(p, first, last, result, c, buf.get().data());
@@ -465,9 +469,11 @@ cudaTask cudaFlowCapturer::transform_reduce(
 ) {
   
   // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy>(first, last);
+  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
+    first, last
+  );
 
-  return on([=, buf=MoC{cudaDeviceMemory<T>(bufsz)}] 
+  return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_reduce_async(
@@ -482,9 +488,11 @@ cudaTask cudaFlowCapturer::transform_uninitialized_reduce(
   I first, I last, T* result, C bop, U uop) {
   
   // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy>(first, last);
+  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
+    first, last
+  );
 
-  return on([=, buf=MoC{cudaDeviceMemory<T>(bufsz)}] 
+  return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_uninitialized_reduce_async(
@@ -500,9 +508,11 @@ void cudaFlowCapturer::rebind_reduce(
 ) {
   
   // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy>(first, last);
+  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
+    first, last
+  );
 
-  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<T>(bufsz)}] 
+  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_reduce_async(p, first, last, result, c, buf.get().data());
@@ -515,9 +525,11 @@ void cudaFlowCapturer::rebind_uninitialized_reduce(
   cudaTask task, I first, I last, T* result, C c
 ) {
   // TODO  
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy>(first, last);
+  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
+    first, last
+  );
 
-  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<T>(bufsz)}] 
+  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_uninitialized_reduce_async(p, first, last, result, c, buf.get().data());
@@ -531,9 +543,11 @@ void cudaFlowCapturer::rebind_transform_reduce(
 ) {
   
   // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy>(first, last);
+  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
+    first, last
+  );
 
-  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<T>(bufsz)}] 
+  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_reduce_async(
@@ -549,9 +563,11 @@ void cudaFlowCapturer::rebind_transform_uninitialized_reduce(
 ) {
 
   // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy>(first, last);
+  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
+    first, last
+  );
 
-  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<T>(bufsz)}] 
+  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_uninitialized_reduce_async(

@@ -10,6 +10,8 @@ list(APPEND TF_CUDA_EXAMPLES
   cuda_capturer
   cuda_reduce
   cuda_scan
+  cuda_merge
+  cuda_sort
   cuda_transform
   cuda_rebind
 )

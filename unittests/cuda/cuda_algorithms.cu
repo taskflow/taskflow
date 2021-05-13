@@ -1069,7 +1069,6 @@ void merge_keys() {
     }
     
     taskflow.emplace([&](F& cudaflow){
-      // inclusive scan
       cudaflow.merge(a, a+N, b, b+N, c, tf::cuda_less<T>{});
     });
 
@@ -1091,6 +1090,72 @@ TEST_CASE("capture_merge_keys.int" * doctest::timeout(300)) {
 
 TEST_CASE("capture_merge_keys.float" * doctest::timeout(300)) {
   merge_keys<float, tf::cudaFlowCapturer>();
+}
+
+// ----------------------------------------------------------------------------
+// sort
+// ----------------------------------------------------------------------------
+
+template <typename T, typename F>
+void sort_keys() {
+    
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  for(int N=0; N<=1234567; N = N*2 + 1) {
+
+    taskflow.clear();
+
+    auto a = tf::cuda_malloc_shared<T>(N);
+    auto p = tf::cudaDefaultExecutionPolicy{};
+
+    // ----------------- standalone algorithms
+
+    // initialize the data
+    for(int i=0; i<N; i++) {
+      a[i] = T(rand()%1000);
+    }
+
+    tf::cuda_sort(p, a, a+N, tf::cuda_less<T>{});
+
+    REQUIRE(std::is_sorted(a, a+N));
+    
+    // ----------------- standalone asynchronous algorithms
+
+    // initialize the data
+    for(int i=0; i<N; i++) {
+      a[i] = T(rand()%1000);
+    }
+
+    auto bufsz = tf::cuda_sort_buffer_size<decltype(p), T>(a, a+N);
+    tf::cudaDeviceMemory<std::byte> buf(bufsz);
+    tf::cuda_sort_async(p, a, a+N, tf::cuda_less<T>{}, buf.data());
+    p.synchronize();
+    REQUIRE(std::is_sorted(a, a+N));
+
+    // ----------------- cudaflow capturer
+    for(int i=0; i<N; i++) {
+      a[i] = T(rand()%1000);
+    }
+    
+    taskflow.emplace([&](F& cudaflow){
+      cudaflow.sort(a, a+N, tf::cuda_less<T>{});
+    });
+
+    executor.run(taskflow).wait();
+
+    REQUIRE(std::is_sorted(a, a+N));
+    
+    REQUIRE(cudaFree(a) == cudaSuccess);
+  }
+}
+
+TEST_CASE("capture_sort_keys.int" * doctest::timeout(300)) {
+  sort_keys<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture_sort_keys.float" * doctest::timeout(300)) {
+  sort_keys<float, tf::cudaFlowCapturer>();
 }
 
 /*// --------------------------------------------------------------------------

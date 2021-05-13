@@ -4,13 +4,7 @@
 #include "../cuda_capturer.hpp"
 #include "../cuda_meta.hpp"
 
-namespace tf {
-
-// ----------------------------------------------------------------------------
-// details
-// ----------------------------------------------------------------------------
-
-namespace detail {
+namespace tf::detail {
 
 enum class cudaMergeBoundType {
   LOWER,
@@ -70,8 +64,11 @@ template<
   cudaMergeBoundType bounds = cudaMergeBoundType::LOWER, 
   typename a_keys_it, typename b_keys_it, typename comp_t
 >
-__device__ auto cuda_merge_path(a_keys_it a_keys, unsigned a_count,
-  b_keys_it b_keys, unsigned b_count, unsigned diag, comp_t comp) {
+__device__ auto cuda_merge_path(
+  a_keys_it a_keys, unsigned a_count,
+  b_keys_it b_keys, unsigned b_count, 
+  unsigned diag, comp_t comp
+) {
 
   unsigned beg = (diag > b_count) ? diag - b_count : 0;
   unsigned end = diag < a_count ? diag : a_count;
@@ -91,8 +88,9 @@ __device__ auto cuda_merge_path(a_keys_it a_keys, unsigned a_count,
 }
 
 template<cudaMergeBoundType bounds, typename keys_it, typename comp_t>
-__device__ auto cuda_merge_path(keys_it keys, cudaMergeRange range,
-  unsigned diag, comp_t comp) {
+__device__ auto cuda_merge_path(
+  keys_it keys, cudaMergeRange range, unsigned diag, comp_t comp
+) {
 
   return cuda_merge_path<bounds>(
     keys + range.a_begin, range.a_count(),
@@ -101,8 +99,9 @@ __device__ auto cuda_merge_path(keys_it keys, cudaMergeRange range,
 }
 
 template<cudaMergeBoundType bounds, bool range_check, typename T, typename comp_t>
-__device__ bool cuda_merge_predicate(T a_key, T b_key, 
-  cudaMergeRange range, comp_t comp) {
+__device__ bool cuda_merge_predicate(
+  T a_key, T b_key, cudaMergeRange range, comp_t comp
+) {
 
   bool p;
   if(range_check && !range.a_valid()) {
@@ -250,14 +249,16 @@ __device__ auto cuda_serial_merge(
 }
 
 // Load arrays a and b from global memory and merge unsignedo register.
-template<cudaMergeBoundType bounds, unsigned nt, unsigned vt, typename a_it, typename b_it, 
-  typename T, typename comp_t, unsigned S>
-__device__ auto cta_merge_from_mem(
+template<cudaMergeBoundType bounds, 
+  unsigned nt, unsigned vt, 
+  typename a_it, typename b_it, typename T, typename comp_t, unsigned S
+>
+__device__ auto block_merge_from_mem(
   a_it a, b_it b, cudaMergeRange range_mem, unsigned tid, comp_t comp, T (&keys_shared)[S]
 ) {
 
   static_assert(S >= nt * vt + 1, 
-    "cta_merge_from_mem requires temporary storage of at "
+    "block_merge_from_mem requires temporary storage of at "
     "least nt * vt + 1 items");
 
   // Load the data into shared memory.
@@ -294,17 +295,6 @@ void cuda_merge_path_partitions(
   //int num_partitions = (int)div_up(a_count + b_count, spacing) + 1;
 
   unsigned num_partitions = (a_count + b_count + spacing - 1) / spacing + 1;
-
-  //transform([=] __device__(auto index) {
-  //  auto diag = min(spacing * index, a_count + b_count);
-  //  p[index] = merge_path<bounds>(a, a_count, b, b_count, diag, comp);
-  //}, P);
-
-
-  //cta_transform<launch_t>(detail::transform_f<launch_t>(), P, 
-  //  context, f, count, args...);
-
-  //printf("merge path partitions = %u\n", num_partitions);
 
   const unsigned nt = 128;
   const unsigned vt = 1;
@@ -360,13 +350,14 @@ void cuda_merge_loop(
   b_keys_it b_keys, b_vals_it b_vals, unsigned b_count,
   c_keys_it c_keys, c_vals_it c_vals, 
   comp_t comp,
-  unsigned* buf
+  void* ptr 
 ) {
 
   using E = std::decay_t<P>;
-
   using T = typename std::iterator_traits<a_keys_it>::value_type;
   using V = typename std::iterator_traits<a_vals_it>::value_type;
+
+  auto buf = static_cast<unsigned*>(ptr);
 
   auto has_values = !std::is_same<V, cudaEmpty>::value;
   
@@ -389,7 +380,7 @@ void cuda_merge_loop(
     auto mp1 = buf[bid + 1];
     auto range = cuda_compute_merge_range(a_count, b_count, bid, E::nv, mp0, mp1);
 
-    auto merge = cta_merge_from_mem<cudaMergeBoundType::LOWER, E::nt, E::vt>(
+    auto merge = block_merge_from_mem<cudaMergeBoundType::LOWER, E::nt, E::vt>(
       a_keys, b_keys, range, tid, comp, shared.keys
     );
 
@@ -416,8 +407,10 @@ void cuda_merge_loop(
 
 }  // end of namespace tf::detail ---------------------------------------------
 
+namespace tf {
+
 // ----------------------------------------------------------------------------
-// merge algorithm
+// standalone merge algorithms
 // ----------------------------------------------------------------------------
 
 /** 
@@ -427,7 +420,7 @@ template <typename P>
 unsigned cuda_merge_buffer_size(unsigned a_count, unsigned b_count) {
   using E = std::decay_t<P>;
   unsigned sz = (a_count + b_count + E::nv - 1) / E::nv + 1;
-  return sz;
+  return sz*sizeof(unsigned);
 }
 
 /**
@@ -468,15 +461,14 @@ void cuda_merge(
   }
   
   // allocate temporary buffer
-  cudaDeviceMemory<unsigned> temp(cuda_merge_buffer_size<P>(a_count, b_count));
-  auto buf = temp.data();
+  cudaDeviceMemory<std::byte> temp(cuda_merge_buffer_size<P>(a_count, b_count));
 
   detail::cuda_merge_loop(
     p, 
     a_keys_first, a_vals_first, a_count, 
     b_keys_first, b_vals_first, b_count, 
     c_keys_first, c_vals_first, comp, 
-    buf
+    temp.data()
   );
   
   // synchronize the execution
@@ -495,7 +487,7 @@ void cuda_merge_async(
   a_keys_it a_keys_first, a_vals_it a_vals_first, a_keys_it a_keys_last, 
   b_keys_it b_keys_first, b_vals_it b_vals_first, b_keys_it b_keys_last,
   c_keys_it c_keys_first, c_vals_it c_vals_first, comp_t comp,
-  unsigned* buf
+  void* buf
 ) {
 
   unsigned a_count = std::distance(a_keys_first, a_keys_last);
@@ -544,7 +536,7 @@ void cuda_merge_async(
   b_keys_it b_keys_first, b_keys_it b_keys_last,
   c_keys_it c_keys_first, 
   comp_t comp,
-  unsigned* buf
+  void* buf
 ) {
   cuda_merge_async(
     p, 
@@ -556,7 +548,7 @@ void cuda_merge_async(
 }
 
 // ----------------------------------------------------------------------------
-// cudaFlowCapturer
+// cudaFlowCapturer merge algorithms
 // ----------------------------------------------------------------------------
 
 // Function: merge
@@ -569,7 +561,7 @@ cudaTask cudaFlowCapturer::merge(
     a_first, a_last, b_first, b_last
   );
 
-  return on([=, buf=MoC{cudaDeviceMemory<unsigned>(bufsz)}] 
+  return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cuda_merge_async(cudaDefaultExecutionPolicy{stream}, 
       a_first, a_last, b_first, b_last, c_first, comp, buf.get().data()
@@ -587,7 +579,7 @@ void cudaFlowCapturer::rebind_merge(
     a_first, a_last, b_first, b_last
   );
 
-  return rebind_on(task, [=, buf=MoC{cudaDeviceMemory<unsigned>(bufsz)}] 
+  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cuda_merge_async(cudaDefaultExecutionPolicy{stream}, 
       a_first, a_last, b_first, b_last, c_first, comp, buf.get().data()

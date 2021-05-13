@@ -133,6 +133,12 @@ struct cudaArray<T, 0> {
   __device__ T& operator[](unsigned i) { return *(T*)nullptr; }
 };
 
+template<typename T, typename V, unsigned size>
+struct cudaKVArray {
+  cudaArray<T, size> keys;
+  cudaArray<V, size> vals;
+};
+
 // ----------------------------------------------------------------------------
 // thread reg <-> global mem 
 // ----------------------------------------------------------------------------
@@ -260,6 +266,24 @@ __device__ auto cuda_mem_to_reg_thread(
   return y;
 }
 
+template<unsigned nt, unsigned vt, typename T, unsigned S>
+__device__ auto cuda_shared_gather(
+  const T(&data)[S], cudaArray<unsigned, vt> indices, bool sync = true
+) {
+
+  static_assert(S >= nt * vt,
+    "shared_gather must have at least nt * vt storage");
+
+  cudaArray<T, vt> x;
+  cuda_iterate<vt>([&](auto i) { x[i] = data[indices[i]]; });
+
+  if(sync) __syncthreads();
+
+  return x;
+}
+
+
+
 // ----------------------------------------------------------------------------
 // reg<->reg
 // ----------------------------------------------------------------------------
@@ -369,6 +393,17 @@ auto cuda_make_load_iterator(L load, I base = 0) {
 template <typename T, typename I = int, typename S>
 auto cuda_make_store_iterator(S store, I base = 0) {
   return cuda_make_load_store_iterator<T>(cudaEmpty(), store, base);
+}
+
+// ----------------------------------------------------------------------------
+// swap
+// ----------------------------------------------------------------------------
+
+template<typename T>
+__device__ void cuda_swap(T& a, T& b) {
+  auto c = a; 
+  a = b; 
+  b = c;
 }
 
 // ----------------------------------------------------------------------------
