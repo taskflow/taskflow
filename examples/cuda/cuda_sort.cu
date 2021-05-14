@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
   }
 
   unsigned N = std::atoi(argv[1]);
-  
+
   // gpu data
   auto d_keys = tf::cuda_malloc_shared<int>(N);
 

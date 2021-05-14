@@ -180,20 +180,89 @@
             <dd>captures a kernel that applies a callable to a source range and stores the result in a target range</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename I, typename T, typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#ad877003965b1e9e75ec10917190342e9" class="m-doc">reduce</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper">auto <a href="#a326516e69ca7a1b15aad237428990791" class="m-doc">reduce</a>(</span><span class="m-doc-wrap">I first,
               I last,
               T* result,
-              C&amp;&amp; op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+              C op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
-            <dd>captures a kernel that performs parallel reduction over a range of items</dd>
+            <dd>captures kernels that perform parallel reduction over a range of items</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename I, typename T, typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a9a6f54751165c1e5473652ad0ca222bb" class="m-doc">uninitialized_reduce</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper">auto <a href="#a99044cf477b1bd23c120eb8beea28eea" class="m-doc">uninitialized_reduce</a>(</span><span class="m-doc-wrap">I first,
               I last,
               T* result,
-              C&amp;&amp; op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+              C op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
-            <dd>similar to tf::cudaFlowCapturerBase::reduce but does not assum any initial value to reduce</dd>
+            <dd>similar to <a href="classtf_1_1cudaFlowCapturer.html#a326516e69ca7a1b15aad237428990791" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />reduce</a> but does not assume any initial value to reduce</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename T, typename C, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a02045cacdcff36864243aa9ca0c1d2ef" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              T* result,
+              C bop,
+              U uop) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures kernels that perform parallel reduction over a range of transformed items</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename T, typename C, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a4247db18b90679eccb5a1f64743f8577" class="m-doc">transform_uninitialized_reduce</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              T* result,
+              C bop,
+              U uop) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>similar to <a href="classtf_1_1cudaFlowCapturer.html#a02045cacdcff36864243aa9ca0c1d2ef" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />transform_reduce</a> but does not assume any initial value to reduce</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename O, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a67c25aef3adbbc8eca69f8857161509c" class="m-doc">inclusive_scan</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              O output,
+              C op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures kernels that perform parallel inclusive scan over a range of items</dd>
+            <dt id="a2c9e4fc3b08a74dce4adb0f10c75eaf3">
+              <div class="m-doc-template">template&lt;typename I, typename O, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a2c9e4fc3b08a74dce4adb0f10c75eaf3" class="m-doc-self">exclusive_scan</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              O output,
+              C op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>similar to <a href="classtf_1_1cudaFlowCapturer.html#a67c25aef3adbbc8eca69f8857161509c" class="m-doc">cudaFlowCapturer::<wbr />inclusive_scan</a> but excludes the first value</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename O, typename B, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a5a36ae28d5844cf281b1d351c359b1af" class="m-doc">transform_inclusive_scan</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              O output,
+              B bop,
+              U uop) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures kernels that perform parallel inclusive scan over a range of transformed items</dd>
+            <dt id="a91bc91e5f13fda5f119d9b9f5f679782">
+              <div class="m-doc-template">template&lt;typename I, typename O, typename B, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a91bc91e5f13fda5f119d9b9f5f679782" class="m-doc-self">transform_exclusive_scan</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              O output,
+              B bop,
+              U uop) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>similar to <a href="classtf_1_1cudaFlowCapturer.html#a5a36ae28d5844cf281b1d351c359b1af" class="m-doc">cudaFlowCapturer::<wbr />transform_inclusive_scan</a> but excludes the first value</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename A, typename B, typename C, typename Comp&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ac2eec500f313481926197ff0b3aed343" class="m-doc">merge</a>(</span><span class="m-doc-wrap">A a_first,
+              A a_last,
+              B b_first,
+              B b_last,
+              C c_first,
+              Comp comp) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures kernels that perform parallel merge on two sorted arrays</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename Comp&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a27148ee0e8369e50d693dd770787ef8b" class="m-doc">sort</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              Comp comp) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures kernels that sort the given array</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;std::is_invocable_r_v&lt;void, C, cudaStream_t&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#adebb0bc4a894ff224f412f2ce46d3e51" class="m-doc">rebind_on</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
@@ -266,22 +335,61 @@
             <dd>rebinds a capture task to a transform kernel task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename I, typename T, typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#abc29bd65d3971e560453edb5b5e605a6" class="m-doc">rebind_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              <span class="m-doc-wrap-bumper">void <a href="#a2703fc99e51b96fedfe48b73507ec7bc" class="m-doc">rebind_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
               I first,
               I last,
               T* result,
-              C&amp;&amp; op)</span>
+              C op)</span>
             </dt>
             <dd>rebinds a capture task to a reduction task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename I, typename T, typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#ace5dfe413b1a066e555f29746b57bcc3" class="m-doc">rebind_uninitialized_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              <span class="m-doc-wrap-bumper">void <a href="#ae9db23e84943259914f2972c56d1ea6f" class="m-doc">rebind_uninitialized_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
               I first,
               I last,
               T* result,
-              C&amp;&amp; op)</span>
+              C op)</span>
             </dt>
             <dd>rebinds a capture task to an uninitialized-reduction task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename T, typename C, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a5ae59c40f0dbb216eb218c42fcea0afa" class="m-doc">rebind_transform_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              T* result,
+              C bop,
+              U uop)</span>
+            </dt>
+            <dd>rebinds a capture task to a transform-reduce task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename T, typename C, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#aef8cee606fcb1ba6b9593edb1f81e55d" class="m-doc">rebind_transform_uninitialized_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              T* result,
+              C bop,
+              U uop)</span>
+            </dt>
+            <dd>rebinds a capture task to a transform-reduce task of no initialized value</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename A, typename B, typename C, typename Comp&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#aaba27927060cd0a05b0704f440f69350" class="m-doc">rebind_merge</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              A a_first,
+              A a_last,
+              B b_first,
+              B b_last,
+              C c_first,
+              Comp comp)</span>
+            </dt>
+            <dd>rebinds a capture task to a merge task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename Comp&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#ae26db6d266f9cf05b508935172552d2c" class="m-doc">rebind_sort</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              Comp comp)</span>
+            </dt>
+            <dd>rebinds a capture task to a sort task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a8678573f19e01f441a6b4108e62781f3" class="m-doc">offload_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span>
@@ -636,11 +744,11 @@
               <tbody>
                 <tr>
                   <td>first</td>
-                  <td>iterator to the beginning (inclusive)</td>
+                  <td>iterator to the beginning</td>
                 </tr>
                 <tr>
                   <td>last</td>
-                  <td>iterator to the end (exclusive)</td>
+                  <td>iterator to the end</td>
                 </tr>
                 <tr>
                   <td>callable</td>
@@ -756,11 +864,11 @@
               <tbody>
                 <tr>
                   <td>first</td>
-                  <td>iterator to the beginning (inclusive)</td>
+                  <td>iterator to the beginning</td>
                 </tr>
                 <tr>
                   <td>last</td>
-                  <td>iterator to the end (exclusive)</td>
+                  <td>iterator to the end</td>
                 </tr>
                 <tr>
                   <td>callable</td>
@@ -782,17 +890,17 @@
   <span class="o">*</span><span class="n">first</span><span class="o">++</span> <span class="o">=</span> <span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">src1</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src2</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src3</span><span class="o">++</span><span class="p">,</span> <span class="p">...);</span>
 <span class="p">}</span></pre>
           </div></section>
-          <section class="m-doc-details" id="ad877003965b1e9e75ec10917190342e9"><div>
+          <section class="m-doc-details" id="a326516e69ca7a1b15aad237428990791"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename I, typename T, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad877003965b1e9e75ec10917190342e9" class="m-doc-self">reduce</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a326516e69ca7a1b15aad237428990791" class="m-doc-self">reduce</a>(</span><span class="m-doc-wrap">I first,
               I last,
               T* result,
-              C&amp;&amp; op)</span></span>
+              C op)</span></span>
             </h3>
-            <p>captures a kernel that performs parallel reduction over a range of items</p>
+            <p>captures kernels that perform parallel reduction over a range of items</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -808,7 +916,7 @@
                 </tr>
                 <tr>
                   <td>C</td>
-                  <td>callable type</td>
+                  <td>binary operator type</td>
                 </tr>
               </tbody>
               <thead>
@@ -817,11 +925,11 @@
               <tbody>
                 <tr>
                   <td>first</td>
-                  <td>iterator to the beginning (inclusive)</td>
+                  <td>iterator to the beginning</td>
                 </tr>
                 <tr>
                   <td>last</td>
-                  <td>iterator to the end (exclusive)</td>
+                  <td>iterator to the end</td>
                 </tr>
                 <tr>
                   <td>result</td>
@@ -843,21 +951,362 @@
   <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
 <span class="p">}</span></pre>
           </div></section>
-          <section class="m-doc-details" id="a9a6f54751165c1e5473652ad0ca222bb"><div>
+          <section class="m-doc-details" id="a99044cf477b1bd23c120eb8beea28eea"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename I, typename T, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9a6f54751165c1e5473652ad0ca222bb" class="m-doc-self">uninitialized_reduce</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a99044cf477b1bd23c120eb8beea28eea" class="m-doc-self">uninitialized_reduce</a>(</span><span class="m-doc-wrap">I first,
               I last,
               T* result,
-              C&amp;&amp; op)</span></span>
+              C op)</span></span>
             </h3>
-            <p>similar to tf::cudaFlowCapturerBase::reduce but does not assum any initial value to reduce</p>
-<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">;</span>  <span class="c1">// no initial values partitipcate in the loop</span>
+            <p>similar to <a href="classtf_1_1cudaFlowCapturer.html#a326516e69ca7a1b15aad237428990791" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />reduce</a> but does not assume any initial value to reduce</p>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">;</span>  <span class="c1">// initial value does not involve in the loop</span>
 <span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
   <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
 <span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a02045cacdcff36864243aa9ca0c1d2ef"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename T, typename C, typename U&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a02045cacdcff36864243aa9ca0c1d2ef" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              T* result,
+              C bop,
+              U uop)</span></span>
+            </h3>
+            <p>captures kernels that perform parallel reduction over a range of transformed items</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>input iterator type</td>
+                </tr>
+                <tr>
+                  <td>T</td>
+                  <td>value type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>binary operator type</td>
+                </tr>
+                <tr>
+                  <td>U</td>
+                  <td>unary operator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end</td>
+                </tr>
+                <tr>
+                  <td>result</td>
+                  <td>pointer to the result with an initialized value</td>
+                </tr>
+                <tr>
+                  <td>bop</td>
+                  <td>binary reduce operator</td>
+                </tr>
+                <tr>
+                  <td>uop</td>
+                  <td>unary transform operator</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">));</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a4247db18b90679eccb5a1f64743f8577"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename T, typename C, typename U&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4247db18b90679eccb5a1f64743f8577" class="m-doc-self">transform_uninitialized_reduce</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              T* result,
+              C bop,
+              U uop)</span></span>
+            </h3>
+            <p>similar to <a href="classtf_1_1cudaFlowCapturer.html#a02045cacdcff36864243aa9ca0c1d2ef" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />transform_reduce</a> but does not assume any initial value to reduce</p>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>  <span class="c1">// initial value does not involve in the loop</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="n">u</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">));</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a67c25aef3adbbc8eca69f8857161509c"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename O, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a67c25aef3adbbc8eca69f8857161509c" class="m-doc-self">inclusive_scan</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              O output,
+              C op)</span></span>
+            </h3>
+            <p>captures kernels that perform parallel inclusive scan over a range of items</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>input iterator type</td>
+                </tr>
+                <tr>
+                  <td>O</td>
+                  <td>output iterator type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>binary operator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end</td>
+                </tr>
+                <tr>
+                  <td>output</td>
+                  <td>iterator to the beginning of the output</td>
+                </tr>
+                <tr>
+                  <td>op</td>
+                  <td>binary operator</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="p">(</span><span class="n">output</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">i</span> <span class="o">?</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">first</span><span class="o">+</span><span class="n">i</span><span class="p">),</span> <span class="o">*</span><span class="p">(</span><span class="n">output</span><span class="o">+</span><span class="n">i</span><span class="mi">-1</span><span class="p">))</span> <span class="o">:</span> <span class="o">*</span><span class="p">(</span><span class="n">first</span><span class="o">+</span><span class="n">i</span><span class="p">);</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a5a36ae28d5844cf281b1d351c359b1af"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename O, typename B, typename U&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5a36ae28d5844cf281b1d351c359b1af" class="m-doc-self">transform_inclusive_scan</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              O output,
+              B bop,
+              U uop)</span></span>
+            </h3>
+            <p>captures kernels that perform parallel inclusive scan over a range of transformed items</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>input iterator type</td>
+                </tr>
+                <tr>
+                  <td>O</td>
+                  <td>output iterator type</td>
+                </tr>
+                <tr>
+                  <td>B</td>
+                  <td>binary operator type</td>
+                </tr>
+                <tr>
+                  <td>U</td>
+                  <td>unary operator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end</td>
+                </tr>
+                <tr>
+                  <td>output</td>
+                  <td>iterator to the beginning of the output</td>
+                </tr>
+                <tr>
+                  <td>bop</td>
+                  <td>binary operator</td>
+                </tr>
+                <tr>
+                  <td>uop</td>
+                  <td>unary operator</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="p">(</span><span class="n">output</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">i</span> <span class="o">?</span> <span class="n">op</span><span class="p">(</span><span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">first</span><span class="o">+</span><span class="n">i</span><span class="p">)),</span> <span class="o">*</span><span class="p">(</span><span class="n">output</span><span class="o">+</span><span class="n">i</span><span class="mi">-1</span><span class="p">))</span> <span class="o">:</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">first</span><span class="o">+</span><span class="n">i</span><span class="p">));</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="ac2eec500f313481926197ff0b3aed343"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename A, typename B, typename C, typename Comp&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac2eec500f313481926197ff0b3aed343" class="m-doc-self">merge</a>(</span><span class="m-doc-wrap">A a_first,
+              A a_last,
+              B b_first,
+              B b_last,
+              C c_first,
+              Comp comp)</span></span>
+            </h3>
+            <p>captures kernels that perform parallel merge on two sorted arrays</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">A</td>
+                  <td>iterator type of the first input array</td>
+                </tr>
+                <tr>
+                  <td>B</td>
+                  <td>iterator type of the second input array</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>iterator type of the output array</td>
+                </tr>
+                <tr>
+                  <td>Comp</td>
+                  <td>comparator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>a_first</td>
+                  <td>iterator to the beginning of the first input array</td>
+                </tr>
+                <tr>
+                  <td>a_last</td>
+                  <td>iterator to the end of the first input array</td>
+                </tr>
+                <tr>
+                  <td>b_first</td>
+                  <td>iterator to the beginning of the second input array</td>
+                </tr>
+                <tr>
+                  <td>b_last</td>
+                  <td>iterator to the end of the second input array</td>
+                </tr>
+                <tr>
+                  <td>c_first</td>
+                  <td>iterator to the beginning of the output array</td>
+                </tr>
+                <tr>
+                  <td>comp</td>
+                  <td>binary comparator</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>Merges two sorted ranges <code>[a_first, a_last)</code> and <code>[b_first, b_last)</code> into one sorted range beginning at <code>c_first</code>.</p><p>A sequence is said to be sorted with respect to a comparator <code>comp</code> if for any iterator it pointing to the sequence and any non-negative integer <code>n</code> such that <code>it + n</code> is a valid iterator pointing to an element of the sequence, <code>comp(*(it + n), *it)</code> evaluates to false.</p>
+          </div></section>
+          <section class="m-doc-details" id="a27148ee0e8369e50d693dd770787ef8b"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename Comp&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a27148ee0e8369e50d693dd770787ef8b" class="m-doc-self">sort</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              Comp comp)</span></span>
+            </h3>
+            <p>captures kernels that sort the given array</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>iterator type of the first input array</td>
+                </tr>
+                <tr>
+                  <td>Comp</td>
+                  <td>comparator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning of the input array</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end of the input array</td>
+                </tr>
+                <tr>
+                  <td>comp</td>
+                  <td>binary comparator</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>Sorts elements in the range <code>[first, last)</code> with the given comparator.</p>
           </div></section>
           <section class="m-doc-details" id="adebb0bc4a894ff224f412f2ce46d3e51"><div>
             <h3>
@@ -970,33 +1419,92 @@
             <p>rebinds a capture task to a transform kernel task</p>
 <p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a02e3ec6669c8571ad6888584e88c07fc" class="m-doc">cudaFlowCapturer::<wbr />transform</a> but operates on an existing task.</p>
           </div></section>
-          <section class="m-doc-details" id="abc29bd65d3971e560453edb5b5e605a6"><div>
+          <section class="m-doc-details" id="a2703fc99e51b96fedfe48b73507ec7bc"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename I, typename T, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#abc29bd65d3971e560453edb5b5e605a6" class="m-doc-self">rebind_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2703fc99e51b96fedfe48b73507ec7bc" class="m-doc-self">rebind_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
               I first,
               I last,
               T* result,
-              C&amp;&amp; op)</span></span>
+              C op)</span></span>
             </h3>
             <p>rebinds a capture task to a reduction task</p>
-<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#ad877003965b1e9e75ec10917190342e9" class="m-doc">cudaFlowCapturer::<wbr />reduce</a> but operates on an existing task.</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a326516e69ca7a1b15aad237428990791" class="m-doc">cudaFlowCapturer::<wbr />reduce</a> but operates on an existing task.</p>
           </div></section>
-          <section class="m-doc-details" id="ace5dfe413b1a066e555f29746b57bcc3"><div>
+          <section class="m-doc-details" id="ae9db23e84943259914f2972c56d1ea6f"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename I, typename T, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ace5dfe413b1a066e555f29746b57bcc3" class="m-doc-self">rebind_uninitialized_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae9db23e84943259914f2972c56d1ea6f" class="m-doc-self">rebind_uninitialized_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
               I first,
               I last,
               T* result,
-              C&amp;&amp; op)</span></span>
+              C op)</span></span>
             </h3>
             <p>rebinds a capture task to an uninitialized-reduction task</p>
-<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a9a6f54751165c1e5473652ad0ca222bb" class="m-doc">cudaFlowCapturer::<wbr />uninitialized_reduce</a> but operates on an existing task.</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a99044cf477b1bd23c120eb8beea28eea" class="m-doc">cudaFlowCapturer::<wbr />uninitialized_reduce</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a5ae59c40f0dbb216eb218c42fcea0afa"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename T, typename C, typename U&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5ae59c40f0dbb216eb218c42fcea0afa" class="m-doc-self">rebind_transform_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              T* result,
+              C bop,
+              U uop)</span></span>
+            </h3>
+            <p>rebinds a capture task to a transform-reduce task</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a02045cacdcff36864243aa9ca0c1d2ef" class="m-doc">cudaFlowCapturer::<wbr />transform_reduce</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="aef8cee606fcb1ba6b9593edb1f81e55d"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename T, typename C, typename U&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aef8cee606fcb1ba6b9593edb1f81e55d" class="m-doc-self">rebind_transform_uninitialized_reduce</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              T* result,
+              C bop,
+              U uop)</span></span>
+            </h3>
+            <p>rebinds a capture task to a transform-reduce task of no initialized value</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a4247db18b90679eccb5a1f64743f8577" class="m-doc">cudaFlowCapturer::<wbr />transform_uninitialized_reduce</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="aaba27927060cd0a05b0704f440f69350"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename A, typename B, typename C, typename Comp&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aaba27927060cd0a05b0704f440f69350" class="m-doc-self">rebind_merge</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              A a_first,
+              A a_last,
+              B b_first,
+              B b_last,
+              C c_first,
+              Comp comp)</span></span>
+            </h3>
+            <p>rebinds a capture task to a merge task</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#ac2eec500f313481926197ff0b3aed343" class="m-doc">cudaFlowCapturer::<wbr />merge</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="ae26db6d266f9cf05b508935172552d2c"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename Comp&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae26db6d266f9cf05b508935172552d2c" class="m-doc-self">rebind_sort</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              Comp comp)</span></span>
+            </h3>
+            <p>rebinds a capture task to a sort task</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a27148ee0e8369e50d693dd770787ef8b" class="m-doc">cudaFlowCapturer::<wbr />sort</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="a8678573f19e01f441a6b4108e62781f3"><div>
             <h3>

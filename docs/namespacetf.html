@@ -385,6 +385,254 @@
               const <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>&amp; ct) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
             </dt>
             <dd>overload of ostream inserter operator for <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></dd>
+            <dt id="a1ca0bd68df882048e4b9b4d92efc3168">
+              <div class="m-doc-template">template&lt;typename P, typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a1ca0bd68df882048e4b9b4d92efc3168" class="m-doc-self">cuda_reduce_buffer_size</a>(</span><span class="m-doc-wrap">unsigned count) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed to perform asynchronous reduce</dd>
+            <dt id="a04cedda345d9fa4d39213d6caea383a1">
+              <div class="m-doc-template">template&lt;typename P, typename T, typename I&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a04cedda345d9fa4d39213d6caea383a1" class="m-doc-self">cuda_reduce_buffer_size</a>(</span><span class="m-doc-wrap">I first,
+              I last) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed to call reduce</dd>
+            <dt id="a40904a487ebd144d786d17ac37a74924">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename T, typename O&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a40904a487ebd144d786d17ac37a74924" class="m-doc-self">cuda_reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              T* res,
+              O op)</span>
+            </dt>
+            <dd>performs parallel reduction over a range of items</dd>
+            <dt id="af8d8d018c3430e40bd3231adba0bd91d">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename T, typename O&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#af8d8d018c3430e40bd3231adba0bd91d" class="m-doc-self">cuda_reduce_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              T* res,
+              O op,
+              void* buf)</span>
+            </dt>
+            <dd>performs asynchronous parallel reduction over a range of items</dd>
+            <dt id="a1b404e9dc801fb4c391aa22c94c211e2">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename T, typename O&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a1b404e9dc801fb4c391aa22c94c211e2" class="m-doc-self">cuda_uninitialized_reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              T* res,
+              O op)</span>
+            </dt>
+            <dd>performs parallel reduction over a range of items without an initial value</dd>
+            <dt id="a51f1e1d02f600defb33b950e631d4f66">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename T, typename O&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a51f1e1d02f600defb33b950e631d4f66" class="m-doc-self">cuda_uninitialized_reduce_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              T* res,
+              O op,
+              void* buf)</span>
+            </dt>
+            <dd>performs asynchronous parallel reduction over a range of items without an initial value</dd>
+            <dt id="ad86024ee94a21ea6e8970d887f83808e">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename T, typename O, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#ad86024ee94a21ea6e8970d887f83808e" class="m-doc-self">cuda_transform_reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              T* res,
+              O bop,
+              U uop)</span>
+            </dt>
+            <dd>performs parallel reduction over a range of transformed items without an initial value</dd>
+            <dt id="ab229138d66d95f0b4656e56f496800ae">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename T, typename O, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#ab229138d66d95f0b4656e56f496800ae" class="m-doc-self">cuda_transform_reduce_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              T* res,
+              O bop,
+              U uop,
+              void* buf)</span>
+            </dt>
+            <dd>performs asynchronous parallel reduction over a range of transformed items without an initial value</dd>
+            <dt id="a1367afb7d02d5cfe0caabbc90762620d">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename T, typename O, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a1367afb7d02d5cfe0caabbc90762620d" class="m-doc-self">cuda_transform_uninitialized_reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              T* res,
+              O bop,
+              U uop)</span>
+            </dt>
+            <dd>performs parallel reduction over a range of transformed items with an initial value</dd>
+            <dt id="a41066971f38829ce32c134ee9afb9614">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename T, typename O, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a41066971f38829ce32c134ee9afb9614" class="m-doc-self">cuda_transform_uninitialized_reduce_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              T* res,
+              O bop,
+              U uop,
+              void* buf)</span>
+            </dt>
+            <dd>performs asynchronous parallel reduction over a range of transformed items with an initial value</dd>
+            <dt id="afd7e7a0886352201cced5c55205f3229">
+              <div class="m-doc-template">template&lt;typename P, typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#afd7e7a0886352201cced5c55205f3229" class="m-doc-self">cuda_scan_buffer_size</a>(</span><span class="m-doc-wrap">unsigned count) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed to perform asynchronous scan</dd>
+            <dt id="a121a9ee501de443cb32f45b6b75a8c7e">
+              <div class="m-doc-template">template&lt;typename P, typename T, typename I&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a121a9ee501de443cb32f45b6b75a8c7e" class="m-doc-self">cuda_scan_buffer_size</a>(</span><span class="m-doc-wrap">I first,
+              I last) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed to perform asynchronous scan</dd>
+            <dt id="affd3cc9cc8550ffead1f63616f22b64f">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename O, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#affd3cc9cc8550ffead1f63616f22b64f" class="m-doc-self">cuda_inclusive_scan</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              O output,
+              C op)</span>
+            </dt>
+            <dd>performs inclusive scan over a range of items</dd>
+            <dt id="aca76fb5d4564ac64a5a110ace990b520">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename O, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#aca76fb5d4564ac64a5a110ace990b520" class="m-doc-self">cuda_inclusive_scan_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              O output,
+              C op,
+              void* buf)</span>
+            </dt>
+            <dd>performs asynchronous inclusive scan over a range of items</dd>
+            <dt id="a98feffc08d80abcabb7e2193fef2b380">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename O, typename C, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a98feffc08d80abcabb7e2193fef2b380" class="m-doc-self">cuda_transform_inclusive_scan</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              O output,
+              C bop,
+              U uop)</span>
+            </dt>
+            <dd>performs inclusive scan over a range of transformed items</dd>
+            <dt id="a8c82e13a6fd60f72e6259b8e5438332f">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename O, typename C, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a8c82e13a6fd60f72e6259b8e5438332f" class="m-doc-self">cuda_transform_inclusive_scan_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              O output,
+              C bop,
+              U uop,
+              void* buf)</span>
+            </dt>
+            <dd>performs asynchronous inclusive scan over a range of transformed items</dd>
+            <dt id="a79efb12473e146c1fddc448e8bb42bd4">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename O, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a79efb12473e146c1fddc448e8bb42bd4" class="m-doc-self">cuda_exclusive_scan</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              O output,
+              C op)</span>
+            </dt>
+            <dd>performs exclusive scan over a range of items</dd>
+            <dt id="a3df7ba7bf9f8ad62cbb89631e37c44b0">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename O, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a3df7ba7bf9f8ad62cbb89631e37c44b0" class="m-doc-self">cuda_exclusive_scan_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              O output,
+              C op,
+              void* buf)</span>
+            </dt>
+            <dd>performs asynchronous exclusive scan over a range of items</dd>
+            <dt id="a4c6f39904ef71525825aeabc0665d806">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename O, typename C, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a4c6f39904ef71525825aeabc0665d806" class="m-doc-self">cuda_transform_exclusive_scan</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              O output,
+              C bop,
+              U uop)</span>
+            </dt>
+            <dd>performs exclusive scan over a range of items</dd>
+            <dt id="a63b490bc88085063913a7c5f0746ce9f">
+              <div class="m-doc-template">template&lt;typename P, typename I, typename O, typename C, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a63b490bc88085063913a7c5f0746ce9f" class="m-doc-self">cuda_transform_exclusive_scan_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              I first,
+              I last,
+              O output,
+              C bop,
+              U uop,
+              void* buf)</span>
+            </dt>
+            <dd>performs asynchronous exclusive scan over a range of items</dd>
+            <dt id="a3db5b8f718e7f6a6fa2da3a689bd8828">
+              <div class="m-doc-template">template&lt;typename P&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a3db5b8f718e7f6a6fa2da3a689bd8828" class="m-doc-self">cuda_merge_buffer_size</a>(</span><span class="m-doc-wrap">unsigned a_count,
+              unsigned b_count) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed to call asynchronous merge</dd>
+            <dt id="a025093cea88de1001cc5f16bdf89d099">
+              <div class="m-doc-template">template&lt;typename P, typename a_itr, typename b_itr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a025093cea88de1001cc5f16bdf89d099" class="m-doc-self">cuda_merge_buffer_size</a>(</span><span class="m-doc-wrap">a_itr a_first,
+              a_itr a_last,
+              b_itr b_first,
+              b_itr b_last) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed to call asynchronous merge</dd>
+            <dt id="a1294350f1ff922068b3df525a82cb145">
+              <div class="m-doc-template">template&lt;typename P, typename a_keys_it, typename a_vals_it, typename b_keys_it, typename b_vals_it, typename c_keys_it, typename c_vals_it, typename comp_t&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a1294350f1ff922068b3df525a82cb145" class="m-doc-self">cuda_merge</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              a_keys_it a_keys_first,
+              a_vals_it a_vals_first,
+              a_keys_it a_keys_last,
+              b_keys_it b_keys_first,
+              b_vals_it b_vals_first,
+              b_keys_it b_keys_last,
+              c_keys_it c_keys_first,
+              c_vals_it c_vals_first,
+              comp_t comp)</span>
+            </dt>
+            <dd>performs key-value merge over a range of keys and values</dd>
+            <dt id="a34773891693013ee93d329d42939d444">
+              <div class="m-doc-template">template&lt;typename P, typename a_keys_it, typename a_vals_it, typename b_keys_it, typename b_vals_it, typename c_keys_it, typename c_vals_it, typename comp_t&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a34773891693013ee93d329d42939d444" class="m-doc-self">cuda_merge_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              a_keys_it a_keys_first,
+              a_vals_it a_vals_first,
+              a_keys_it a_keys_last,
+              b_keys_it b_keys_first,
+              b_vals_it b_vals_first,
+              b_keys_it b_keys_last,
+              c_keys_it c_keys_first,
+              c_vals_it c_vals_first,
+              comp_t comp,
+              void* buf)</span>
+            </dt>
+            <dd>performs asynchronous key-value merge over a range of keys and values</dd>
+            <dt id="a447aee5c70fb591c546d4ed470252955">
+              <div class="m-doc-template">template&lt;typename P, typename a_keys_it, typename b_keys_it, typename c_keys_it, typename comp_t&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a447aee5c70fb591c546d4ed470252955" class="m-doc-self">cuda_merge</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              a_keys_it a_keys_first,
+              a_keys_it a_keys_last,
+              b_keys_it b_keys_first,
+              b_keys_it b_keys_last,
+              c_keys_it c_keys_first,
+              comp_t comp)</span>
+            </dt>
+            <dd>performs key-only merge over a range of keys</dd>
+            <dt id="a4226530b906f9feabfca71dfa744f116">
+              <div class="m-doc-template">template&lt;typename P, typename a_keys_it, typename b_keys_it, typename c_keys_it, typename comp_t&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a4226530b906f9feabfca71dfa744f116" class="m-doc-self">cuda_merge_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              a_keys_it a_keys_first,
+              a_keys_it a_keys_last,
+              b_keys_it b_keys_first,
+              b_keys_it b_keys_last,
+              c_keys_it c_keys_first,
+              comp_t comp,
+              void* buf)</span>
+            </dt>
+            <dd>performs asynchronous key-only merge over a range of keys</dd>
             <dt id="a160861c1c085842ecb0c56537199deaa">
               <span class="m-doc-wrap-bumper">auto <a href="#a160861c1c085842ecb0c56537199deaa" class="m-doc-self">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
               const <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a>&amp; ct) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
@@ -451,7 +699,7 @@
               <span class="m-doc-wrap-bumper">T* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab9b68b8f4336f13b190d573969cb1cf7" class="m-doc-self">cuda_malloc_device</a>(</span><span class="m-doc-wrap">size_t N)</span></span>
             </h3>
             <p>allocates memory on the current device associated with the caller</p>
-<p>The function calls cuda_malloc_device from the current device associated with the caller.</p>
+<p>The function calls malloc_device from the current device associated with the caller.</p>
           </div></section>
           <section class="m-doc-details" id="a8eed05685b030fc44703213a4ef86f11"><div>
             <h3>

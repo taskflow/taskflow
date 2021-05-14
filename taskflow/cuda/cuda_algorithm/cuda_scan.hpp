@@ -4,25 +4,34 @@
 #include "../cuda_capturer.hpp"
 #include "../cuda_meta.hpp"
 
+/**
+@file cuda_scan.hpp
+@brief CUDA scan algorithm include file
+*/
+
 namespace tf::detail {
 
 // ----------------------------------------------------------------------------
 // scan
 // ----------------------------------------------------------------------------
 
+/** @private */
 inline constexpr unsigned cudaScanRecursionThreshold = 8; 
 
-enum class cudaScanType {
-  EXCLUSIVE,
+/** @private */
+enum class cudaScanType : int {
+  EXCLUSIVE = 1,
   INCLUSIVE
 };
 
+/** @private */
 template<typename T, unsigned vt = 0, bool is_array = (vt > 0)>
 struct cudaScanResult {
   T scan;
   T reduction;
 };
 
+/** @private */
 template<typename T, unsigned vt>
 struct cudaScanResult<T, vt, true> {
   cudaArray<T, vt> scan;
@@ -38,7 +47,8 @@ struct cudaBlockScan {
   const static unsigned num_warps  = nt / CUDA_WARP_SIZE;
   const static unsigned num_passes = log2(nt);
   const static unsigned capacity   = nt + num_warps; 
-
+  
+  /** @private */
   union storage_t {
     T data[2 * nt];
     struct { T threads[nt], warps[num_warps]; };
@@ -162,7 +172,6 @@ __device__ cudaScanResult<T, vt> cudaBlockScan<nt, T>::operator()(
 
 /**
 @private
-
 @brief single-pass scan for small input
  */
 template <typename P, typename I, typename O, typename C>
@@ -318,7 +327,7 @@ void cuda_scan_loop(
 namespace tf {
 
 /** 
-@function cuda_scan_buffer_size
+@brief queries the buffer size in bytes needed to perform asynchronous scan
 */
 template <typename P, typename T>
 unsigned cuda_scan_buffer_size(unsigned count) {
@@ -331,8 +340,8 @@ unsigned cuda_scan_buffer_size(unsigned count) {
   return n*sizeof(T);
 }
 
-/**
-@function cuda_scan_buffer_size
+/** 
+@brief queries the buffer size in bytes needed to perform asynchronous scan
 */
 template <typename P, typename T, typename I>
 unsigned cuda_scan_buffer_size(I first, I last) {
@@ -344,7 +353,7 @@ unsigned cuda_scan_buffer_size(I first, I last) {
 // ----------------------------------------------------------------------------
 
 /**
-@function cuda_inclusive_scan
+@brief performs inclusive scan over a range of items
 */
 template<typename P, typename I, typename O, typename C>
 void cuda_inclusive_scan(P&& p, I first, I last, O output, C op) {
@@ -370,7 +379,7 @@ void cuda_inclusive_scan(P&& p, I first, I last, O output, C op) {
 }
 
 /**
-@function cuda_inclusive_scan
+@brief performs asynchronous inclusive scan over a range of items
 */
 template<typename P, typename I, typename O, typename C>
 void cuda_inclusive_scan_async(
@@ -394,8 +403,8 @@ void cuda_inclusive_scan_async(
 // ----------------------------------------------------------------------------
 
 /**
-@brief performs transform-inclusive scan with given execution policy
- */
+@brief performs inclusive scan over a range of transformed items
+*/
 template<typename P, typename I, typename O, typename C, typename U>
 void cuda_transform_inclusive_scan(
   P&& p, I first, I last, O output, C bop, U uop
@@ -425,7 +434,7 @@ void cuda_transform_inclusive_scan(
 }
 
 /**
-@brief performs asynchronous transform-inclusive scan with given execution policy
+@brief performs asynchronous inclusive scan over a range of transformed items
 */
 template<typename P, typename I, typename O, typename C, typename U>
 void cuda_transform_inclusive_scan_async(
@@ -453,7 +462,7 @@ void cuda_transform_inclusive_scan_async(
 // ----------------------------------------------------------------------------
 
 /**
-@brief performs exclusive scan with given execution policy
+@brief performs exclusive scan over a range of items
 */
 template<typename P, typename I, typename O, typename C>
 void cuda_exclusive_scan(P&& p, I first, I last, O output, C op) {
@@ -480,7 +489,7 @@ void cuda_exclusive_scan(P&& p, I first, I last, O output, C op) {
 }
 
 /**
-@brief performs asynchronous exclusive scan with given execution policy
+@brief performs asynchronous exclusive scan over a range of items
 */
 template<typename P, typename I, typename O, typename C>
 void cuda_exclusive_scan_async(
@@ -504,7 +513,7 @@ void cuda_exclusive_scan_async(
 // ----------------------------------------------------------------------------
 
 /**
-@brief performs transform-exclusive scan with given execution policy
+@brief performs exclusive scan over a range of items
 */
 template<typename P, typename I, typename O, typename C, typename U>
 void cuda_transform_exclusive_scan(
@@ -535,7 +544,7 @@ void cuda_transform_exclusive_scan(
 }
 
 /**
-@brief performs asynchronous transform-exclusive scan with given execution policy
+@brief performs asynchronous exclusive scan over a range of items
 */
 template<typename P, typename I, typename O, typename C, typename U>
 void cuda_transform_exclusive_scan_async(

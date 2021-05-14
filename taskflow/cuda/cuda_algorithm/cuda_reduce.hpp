@@ -4,6 +4,11 @@
 #include "../cuda_capturer.hpp"
 #include "../cuda_meta.hpp"
 
+/** 
+@file cuda_reduce.hpp
+@brief cuda reduce algorithm include file
+*/
+
 namespace tf::detail {
 
 // ----------------------------------------------------------------------------
@@ -22,7 +27,8 @@ struct cudaBlockReduce {
     nt && (0 == nt % CUDA_WARP_SIZE), 
     "cudaBlockReduce requires num threads to be a multiple of warp_size (32)"
   );
-
+  
+  /** @private */  
   struct Storage {
     T data[std::max(nt, 2 * group_size)];
   };
@@ -118,7 +124,9 @@ void cuda_reduce_loop(
 
 namespace tf {
 
-// cuda_reduce_buffer_size
+/**
+@brief queries the buffer size in bytes needed to perform asynchronous reduce
+*/
 template <typename P, typename T>
 unsigned cuda_reduce_buffer_size(unsigned count) {
   using E = std::decay_t<P>;
@@ -128,7 +136,9 @@ unsigned cuda_reduce_buffer_size(unsigned count) {
   return n*sizeof(T);
 }
 
-// cuda_reduce_buffer_size
+/**
+@brief queries the buffer size in bytes needed to call reduce
+ */
 template <typename P, typename T, typename I>
 unsigned cuda_reduce_buffer_size(I first, I last) {
   return cuda_reduce_buffer_size<P, T>(std::distance(first, last));
@@ -138,7 +148,9 @@ unsigned cuda_reduce_buffer_size(I first, I last) {
 // cuda_reduce
 // ----------------------------------------------------------------------------
 
-// cuda_reduce
+/**
+@brief performs parallel reduction over a range of items
+ */
 template<typename P, typename I, typename T, typename O>
 void cuda_reduce(P&& p, I first, I last, T* res, O op) {
 
@@ -158,7 +170,9 @@ void cuda_reduce(P&& p, I first, I last, T* res, O op) {
   p.synchronize();
 }
 
-// cuda_reduce_async
+/**
+@brief performs asynchronous parallel reduction over a range of items
+ */
 template <typename P, typename I, typename T, typename O>
 void cuda_reduce_async(
   P&& p, I first, I last, T* res, O op, void* buf
@@ -174,7 +188,9 @@ void cuda_reduce_async(
 // cuda_uninitialized_reduce
 // ----------------------------------------------------------------------------
 
-// cuda_uninitialized_reduce
+/**
+@brief performs parallel reduction over a range of items without an initial value
+*/
 template<typename P, typename I, typename T, typename O>
 void cuda_uninitialized_reduce(P&& p, I first, I last, T* res, O op) {
 
@@ -195,7 +211,10 @@ void cuda_uninitialized_reduce(P&& p, I first, I last, T* res, O op) {
   p.synchronize();
 }
 
-// cuda_uninitialized_reduce_async
+/**
+@brief performs asynchronous parallel reduction over a range of items without
+       an initial value
+*/
 template <typename P, typename I, typename T, typename O>
 void cuda_uninitialized_reduce_async(
   P&& p, I first, I last, T* res, O op, void* buf
@@ -211,7 +230,10 @@ void cuda_uninitialized_reduce_async(
 // transform_reduce
 // ----------------------------------------------------------------------------
 
-// cuda_transform_reduce
+/**
+@brief performs parallel reduction over a range of transformed items without
+       an initial value
+*/
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_reduce(P&& p, I first, I last, T* res, O bop, U uop) {
 
@@ -236,7 +258,10 @@ void cuda_transform_reduce(P&& p, I first, I last, T* res, O bop, U uop) {
   p.synchronize();
 }
 
-// cuda_transform_reduce_async
+/**
+@brief performs asynchronous parallel reduction over a range of transformed items 
+       without an initial value
+*/
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_reduce_async(
   P&& p, I first, I last, T* res, O bop, U uop, void* buf
@@ -260,7 +285,10 @@ void cuda_transform_reduce_async(
 // transform_uninitialized_reduce
 // ----------------------------------------------------------------------------
 
-// cuda_transform_uninitialized_reduce
+/**
+@brief performs parallel reduction over a range of transformed items 
+       with an initial value
+*/
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_uninitialized_reduce(
   P&& p, I first, I last, T* res, O bop, U uop
@@ -287,7 +315,10 @@ void cuda_transform_uninitialized_reduce(
   p.synchronize();
 }
 
-// cuda_transform_uninitialized_reduce_async
+/**
+@brief performs asynchronous parallel reduction over a range of transformed items 
+       with an initial value
+*/
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_uninitialized_reduce_async(
   P&& p, I first, I last, T* res, O bop, U uop, void* buf
@@ -311,6 +342,9 @@ void cuda_transform_uninitialized_reduce_async(
 
 // ----------------------------------------------------------------------------
 
+/**
+@private
+ */
 template <typename T, typename C>
 __device__ void cuda_warp_reduce(
   volatile T* shm, size_t N, size_t tid, C op
@@ -323,8 +357,9 @@ __device__ void cuda_warp_reduce(
   if(tid +  1 < N) shm[tid] = op(shm[tid], shm[tid+1]);
 }
 
-// Kernel: cuda_reduce
-// This reduction kernel assums only one block to avoid extra output memory.
+/**
+@private
+ */
 template <typename I, typename T, typename C, bool uninitialized>
 __global__ void cuda_reduce(I first, size_t N, T* res, C op) {
 

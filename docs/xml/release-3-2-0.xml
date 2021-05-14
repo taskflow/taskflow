@@ -31,7 +31,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 </para></sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_new_features">
 <title>New Features</title>
-<sect2 id="release-3-2-0_1release-3-2-0_taskflow_core">
+<para>This release enhances CUDA GPU algorithms in both standalone use and cudaFlow capturer.</para><sect2 id="release-3-2-0_1release-3-2-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
 <listitem><para>added tf::SmallVector optimization (based on LLVM small vector) for graphs</para></listitem>
@@ -39,26 +39,50 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 </para></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_cudaflow">
 <title>cudaFlow</title>
-</sect2>
+<para><itemizedlist>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a326516e69ca7a1b15aad237428990791" kindref="member">tf::cudaFlowCapturer::reduce</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a02045cacdcff36864243aa9ca0c1d2ef" kindref="member">tf::cudaFlowCapturer::transform_reduce</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a99044cf477b1bd23c120eb8beea28eea" kindref="member">tf::cudaFlowCapturer::uninitialized_reduce</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a4247db18b90679eccb5a1f64743f8577" kindref="member">tf::cudaFlowCapturer::transform_uninitialized_reduce</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a67c25aef3adbbc8eca69f8857161509c" kindref="member">tf::cudaFlowCapturer::inclusive_scan</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a2c9e4fc3b08a74dce4adb0f10c75eaf3" kindref="member">tf::cudaFlowCapturer::exclusive_scan</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a5a36ae28d5844cf281b1d351c359b1af" kindref="member">tf::cudaFlowCapturer::transform_inclusive_scan</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a91bc91e5f13fda5f119d9b9f5f679782" kindref="member">tf::cudaFlowCapturer::transform_exclusive_scan</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1ac2eec500f313481926197ff0b3aed343" kindref="member">tf::cudaFlowCapturer::merge</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a27148ee0e8369e50d693dd770787ef8b" kindref="member">tf::cudaFlowCapturer::sort</ref></para></listitem>
+</itemizedlist>
+</para></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_syclflow">
 <title>syclFlow</title>
 </sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_utilities">
 <title>Utilities</title>
-</sect2>
+<para><itemizedlist>
+<listitem><para>added cuda meta programming </para></listitem>
+<listitem><para>added standalone CUDA algorithms</para></listitem>
+</itemizedlist>
+</para></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_profiler">
 <title>Taskflow Profiler (TFProf)</title>
 </sect2>
 </sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_bug_fixes">
 <title>Bug Fixes</title>
-</sect1>
+<para><itemizedlist>
+<listitem><para>fixed a bug in creating a round-robin optimizer in <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> </para></listitem>
+<listitem><para>fixed a compilation error of TLS worker pointer in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref></para></listitem>
+</itemizedlist>
+</para></sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_breaking_changes">
 <title>Breaking Changes</title>
 <para>There are no breaking changes in this release.</para></sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_deprecated_items">
 <title>Deprecated and Removed Items</title>
-<para>There are no deprecated or removed items in this release.</para></sect1>
+<para><itemizedlist>
+<listitem><para>removed tf::cudaFlow::kernel_on method </para></listitem>
+<listitem><para>removed explicit partitions in parallel iterations and reductions</para></listitem>
+</itemizedlist>
+</para></sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_documentation">
 <title>Documentation</title>
 </sect1>

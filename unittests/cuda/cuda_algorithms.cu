@@ -1039,7 +1039,8 @@ void merge_keys() {
     auto a = tf::cuda_malloc_shared<T>(N);
     auto b = tf::cuda_malloc_shared<T>(N);
     auto c = tf::cuda_malloc_shared<T>(2*N);
-    std::vector<T> s;
+
+    auto p = tf::cudaDefaultExecutionPolicy{};
 
     // ----------------- standalone algorithms
 
@@ -1047,23 +1048,30 @@ void merge_keys() {
     for(int i=0; i<N; i++) {
       a[i] = T(rand()%100);
       b[i] = T(rand()%100);
-      s.push_back(a[i]);
-      s.push_back(b[i]);
     }
 
     std::sort(a, a+N);
     std::sort(b, b+N);
-    std::sort(s.begin(), s.end());
 
-    tf::cuda_merge(tf::cudaDefaultExecutionPolicy{},
-      a, a+N, b, b+N, c, tf::cuda_less<T>{}
-    );
+    tf::cuda_merge(p, a, a+N, b, b+N, c, tf::cuda_less<T>{});
 
-    for(size_t i=0; i<s.size(); i++) {
-      REQUIRE(c[i] == s[i]);
+    REQUIRE(std::is_sorted(c, c+2*N));
+    
+    // ----------------- standalone asynchronous algorithms
+    
+    // initialize the data
+    for(int i=0; i<N*2; i++) {
+      c[i] = rand();      
     }
 
-    // cudaflow capturer
+    auto bufsz = tf::cuda_merge_buffer_size<decltype(p)>(a, a+N, b, b+N);
+    tf::cudaDeviceMemory<std::byte> buf(bufsz);
+    tf::cuda_merge_async(p, a, a+N, b, b+N, c, tf::cuda_less<T>{}, buf.data());
+    p.synchronize();
+
+    REQUIRE(std::is_sorted(c, c+2*N));
+
+    // ----------------- cudaFlow capturer
     for(int i=0; i<N*2; i++) {
       c[i] = rand();      
     }
@@ -1074,9 +1082,7 @@ void merge_keys() {
 
     executor.run(taskflow).wait();
     
-    for(size_t i=0; i<s.size(); i++) {
-      REQUIRE(c[i] == s[i]);
-    }
+    REQUIRE(std::is_sorted(c, c+2*N));
     
     REQUIRE(cudaFree(a) == cudaSuccess);
     REQUIRE(cudaFree(b) == cudaSuccess);

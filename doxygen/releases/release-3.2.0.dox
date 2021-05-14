@@ -36,21 +36,38 @@ To use %Taskflow v3.2.0, you need a compiler that supports C++17:
 
 @section release-3-2-0_new_features New Features
 
+This release enhances CUDA GPU algorithms in both standalone use and 
+%cudaFlow capturer.
+
 @subsection release-3-2-0_taskflow_core Taskflow Core
 
 @li added tf::SmallVector optimization (based on LLVM small vector) for graphs
 
 @subsection release-3-2-0_cudaflow cudaFlow
 
+@li added tf::cudaFlowCapturer::reduce
+@li added tf::cudaFlowCapturer::transform_reduce
+@li added tf::cudaFlowCapturer::uninitialized_reduce
+@li added tf::cudaFlowCapturer::transform_uninitialized_reduce
+@li added tf::cudaFlowCapturer::inclusive_scan
+@li added tf::cudaFlowCapturer::exclusive_scan
+@li added tf::cudaFlowCapturer::transform_inclusive_scan
+@li added tf::cudaFlowCapturer::transform_exclusive_scan
+@li added tf::cudaFlowCapturer::merge 
+@li added tf::cudaFlowCapturer::sort
+
 @subsection release-3-2-0_syclflow syclFlow
 
 @subsection release-3-2-0_utilities Utilities
+
+@li added cuda meta programming
+@li added standalone CUDA algorithms
 
 @subsection release-3-2-0_profiler Taskflow Profiler (TFProf)
 
 @section release-3-2-0_bug_fixes Bug Fixes 
 
-@li fixed a bug in creating a round-robin optimizer in tf::cudaFlowCapturing
+@li fixed a bug in creating a round-robin optimizer in tf::cudaFlowCapturer
 @li fixed a compilation error of TLS worker pointer in tf::Executor
 
 @section release-3-2-0_breaking_changes Breaking Changes
@@ -59,6 +76,7 @@ There are no breaking changes in this release.
 
 @section release-3-2-0_deprecated_items Deprecated and Removed Items 
 
+@li removed tf::cudaFlow::kernel_on method
 @li removed explicit partitions in parallel iterations and reductions
 
 

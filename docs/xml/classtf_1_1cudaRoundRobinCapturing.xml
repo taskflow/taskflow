@@ -36,10 +36,10 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="classtf_1_1cudaRoundRobinCapturing_1ac7b0b07a414ba9880ea29ebfb0f4e678" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaRoundRobinCapturing_1acd70e9ffbc52b95a0cc79af740ce7827" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::cudaRoundRobinCapturing::cudaRoundRobinCapturing</definition>
-        <argsstring>()</argsstring>
+        <argsstring>()=default</argsstring>
         <name>cudaRoundRobinCapturing</name>
         <briefdescription>
 <para>constructs a round-robin optimizer with 4 streams by default </para>        </briefdescription>
@@ -138,24 +138,24 @@
     <detaileddescription>
 <para>A round-robin capturing algorithm levelizes the user-described graph and assign streams to nodes in a round-robin order level by level. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="27">
+      <node id="37">
         <label>tf::cudaRoundRobinCapturing</label>
         <link refid="classtf_1_1cudaRoundRobinCapturing"/>
-        <childnode refid="28" relation="public-inheritance">
+        <childnode refid="38" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="28">
+      <node id="38">
         <label>tf::cudaCapturingBase</label>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="29">
+      <node id="39">
         <label>tf::cudaRoundRobinCapturing</label>
         <link refid="classtf_1_1cudaRoundRobinCapturing"/>
-        <childnode refid="30" relation="public-inheritance">
+        <childnode refid="40" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="30">
+      <node id="40">
         <label>tf::cudaCapturingBase</label>
       </node>
     </collaborationgraph>
@@ -167,7 +167,7 @@
       <member refid="classtf_1_1cudaRoundRobinCapturing_1aadc3f6faabee4a59b5cab818123e7165" prot="private" virt="non-virtual"><scope>tf::cudaRoundRobinCapturing</scope><name>_reset</name></member>
       <member refid="classtf_1_1cudaCapturingBase_1ab970a4a344cca5be7e479e09f2599194" prot="protected" virt="non-virtual"><scope>tf::cudaRoundRobinCapturing</scope><name>_toposort</name></member>
       <member refid="classtf_1_1cudaRoundRobinCapturing_1a672b45d300c57d726c203c62f950efbd" prot="private" virt="non-virtual"><scope>tf::cudaRoundRobinCapturing</scope><name>cudaFlowCapturer</name></member>
-      <member refid="classtf_1_1cudaRoundRobinCapturing_1ac7b0b07a414ba9880ea29ebfb0f4e678" prot="public" virt="non-virtual"><scope>tf::cudaRoundRobinCapturing</scope><name>cudaRoundRobinCapturing</name></member>
+      <member refid="classtf_1_1cudaRoundRobinCapturing_1acd70e9ffbc52b95a0cc79af740ce7827" prot="public" virt="non-virtual"><scope>tf::cudaRoundRobinCapturing</scope><name>cudaRoundRobinCapturing</name></member>
       <member refid="classtf_1_1cudaRoundRobinCapturing_1acbfa700f7cc23203baf6a52a5a63957e" prot="public" virt="non-virtual"><scope>tf::cudaRoundRobinCapturing</scope><name>cudaRoundRobinCapturing</name></member>
       <member refid="classtf_1_1cudaRoundRobinCapturing_1a246cb7f161747a4234018658ee88d40d" prot="public" virt="non-virtual"><scope>tf::cudaRoundRobinCapturing</scope><name>num_streams</name></member>
       <member refid="classtf_1_1cudaRoundRobinCapturing_1a884e12f48caa39722448accaaa0b167a" prot="public" virt="non-virtual"><scope>tf::cudaRoundRobinCapturing</scope><name>num_streams</name></member>

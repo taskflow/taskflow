@@ -44,6 +44,12 @@
 */
 namespace tf {
 
+
+/** @private */
+namespace detail {
+
+}
+
 /**
 @brief queries the version information in a string format @c major.minor.patch
 */

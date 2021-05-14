@@ -129,16 +129,6 @@
             </dt>
             <dd>creates a kernel task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a4a839dbaa01237a440edfebe8faf4e5b" class="m-doc">kernel_on</a>(</span><span class="m-doc-wrap">int d,
-              dim3 g,
-              dim3 b,
-              size_t s,
-              F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
-            </dt>
-            <dd>creates a kernel task on a specific GPU</dd>
-            <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a079ca65da35301e5aafd45878a19e9d2" class="m-doc">memset</a>(</span><span class="m-doc-wrap">void* dst,
               int v,
               size_t count) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
@@ -427,70 +417,6 @@
                 <tr><th colspan="2">Parameters</th></tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>g</td>
-                  <td>configured grid</td>
-                </tr>
-                <tr>
-                  <td>b</td>
-                  <td>configured block</td>
-                </tr>
-                <tr>
-                  <td>s</td>
-                  <td>configured shared memory size in bytes</td>
-                </tr>
-                <tr>
-                  <td>f</td>
-                  <td>kernel function</td>
-                </tr>
-                <tr>
-                  <td>args</td>
-                  <td>arguments to forward to the kernel function by copy</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-          </div></section>
-          <section class="m-doc-details" id="a4a839dbaa01237a440edfebe8faf4e5b"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename F, typename... ArgsT&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4a839dbaa01237a440edfebe8faf4e5b" class="m-doc-self">kernel_on</a>(</span><span class="m-doc-wrap">int d,
-              dim3 g,
-              dim3 b,
-              size_t s,
-              F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args)</span></span>
-            </h3>
-            <p>creates a kernel task on a specific GPU</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">F</td>
-                  <td>kernel function type</td>
-                </tr>
-                <tr>
-                  <td>ArgsT</td>
-                  <td>kernel function parameters type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>d</td>
-                  <td>device identifier to launch the kernel</td>
-                </tr>
                 <tr>
                   <td>g</td>
                   <td>configured grid</td>

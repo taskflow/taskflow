@@ -4,20 +4,27 @@
 #include "../cuda_capturer.hpp"
 #include "../cuda_meta.hpp"
 
+/**
+@file cuda_merge.hpp
+@brief CUDA merge algorithm include file
+*/
+
 namespace tf::detail {
 
+/** @private */
 enum class cudaMergeBoundType {
   LOWER,
   UPPER
 };
 
+/** @private */
 template<typename T, unsigned N>
 struct cudaMergePair {
   cudaArray<T, N> keys;
   cudaArray<unsigned, N> indices;
 };
 
-// cudaMergeRange
+/** @private */
 struct cudaMergeRange {
   unsigned a_begin, a_end, b_begin, b_end;
 
@@ -60,6 +67,7 @@ struct cudaMergeRange {
   }
 };
 
+/** @private */
 template<
   cudaMergeBoundType bounds = cudaMergeBoundType::LOWER, 
   typename a_keys_it, typename b_keys_it, typename comp_t
@@ -87,6 +95,7 @@ __device__ auto cuda_merge_path(
   return beg;
 }
 
+/** @private */
 template<cudaMergeBoundType bounds, typename keys_it, typename comp_t>
 __device__ auto cuda_merge_path(
   keys_it keys, cudaMergeRange range, unsigned diag, comp_t comp
@@ -98,6 +107,7 @@ __device__ auto cuda_merge_path(
     diag, comp);
 }
 
+/** @private */
 template<cudaMergeBoundType bounds, bool range_check, typename T, typename comp_t>
 __device__ bool cuda_merge_predicate(
   T a_key, T b_key, cudaMergeRange range, comp_t comp
@@ -117,6 +127,7 @@ __device__ bool cuda_merge_predicate(
   return p;
 }
 
+/** @private */
 inline __device__ auto cuda_compute_merge_range(
   unsigned a_count, unsigned b_count, 
   unsigned partition, unsigned spacing, 
@@ -129,9 +140,13 @@ inline __device__ auto cuda_compute_merge_range(
   return cudaMergeRange { mp0, mp1, diag0 - mp0, diag1 - mp1 };
 }
 
-// Specialization that emits just one LD instruction. Can only reliably used
-// with raw pointer types. Fixed not to use pointer arithmetic so that 
-// we don't get undefined behaviors with unaligned types.
+/** 
+@private 
+ 
+Specialization that emits just one LD instruction. Can only reliably used
+with raw pointer types. Fixed not to use pointer arithmetic so that 
+we don't get undefined behaviors with unaligned types.
+*/
 template<unsigned nt, unsigned vt, typename T>
 __device__ auto cuda_load_two_streams_reg(
   const T* a, unsigned a_count, const T* b, unsigned b_count, unsigned tid
@@ -147,6 +162,7 @@ __device__ auto cuda_load_two_streams_reg(
   return x;  
 }
 
+/** @private */
 template<unsigned nt, unsigned vt, typename T, typename a_it, typename b_it>
 __device__ 
 std::enable_if_t<
@@ -161,6 +177,7 @@ std::enable_if_t<
   return x;
 }
 
+/** @private */
 template<unsigned nt, unsigned vt, typename A, typename B, typename T, unsigned S>
 __device__ void cuda_load_two_streams_shared(A a, unsigned a_count,
   B b, unsigned b_count, unsigned tid, T (&shared)[S], bool sync = true
@@ -170,6 +187,7 @@ __device__ void cuda_load_two_streams_shared(A a, unsigned a_count,
   cuda_reg_to_shared_strided<nt>(x, tid, shared, sync);
 }
 
+/** @private */
 template<unsigned nt, unsigned vt, typename T>
 __device__ auto cuda_gather_two_streams_strided(const T* a,
   unsigned a_count, const T* b, unsigned b_count, cudaArray<unsigned, vt> indices,
@@ -188,6 +206,7 @@ __device__ auto cuda_gather_two_streams_strided(const T* a,
   return x;
 }
 
+/** @private */
 template<unsigned nt, unsigned vt, typename T, typename a_it, typename b_it>
 __device__ 
 std::enable_if_t<
@@ -205,6 +224,7 @@ std::enable_if_t<
   return x;
 }
 
+/** @private */
 template<unsigned nt, unsigned vt, typename a_it, typename b_it, typename c_it>
 __device__ void cuda_transfer_two_streams_strided(
   a_it a, unsigned a_count, b_it b, unsigned b_count, 
@@ -220,9 +240,13 @@ __device__ void cuda_transfer_two_streams_strided(
 }
 
 
-// This function must be able to dereference keys[a_begin] and keys[b_begin],
-// no matter the indices for each. The caller should allocate at least 
-// nt * vt + 1 elements for 
+/** 
+@private 
+
+This function must be able to dereference keys[a_begin] and keys[b_begin],
+no matter the indices for each. The caller should allocate at least 
+nt * vt + 1 elements for 
+*/
 template<cudaMergeBoundType bounds, unsigned vt, typename T, typename comp_t>
 __device__ auto cuda_serial_merge(
   const T* keys_shared, cudaMergeRange range, comp_t comp, bool sync = true
@@ -248,7 +272,11 @@ __device__ auto cuda_serial_merge(
   return merge_pair;
 }
 
-// Load arrays a and b from global memory and merge unsignedo register.
+/** 
+@private 
+
+Load arrays a and b from global memory and merge unsignedo register.
+*/
 template<cudaMergeBoundType bounds, 
   unsigned nt, unsigned vt, 
   typename a_it, typename b_it, typename T, typename comp_t, unsigned S
@@ -280,6 +308,9 @@ __device__ auto block_merge_from_mem(
   return merged;
 };
 
+/**
+@private 
+*/
 template<cudaMergeBoundType bounds,
   typename P, typename a_keys_it, typename b_keys_it, typename comp_t
 >
@@ -336,7 +367,9 @@ void cuda_merge_path_partitions(
 //  return mem;
 //}
 
-// Key-value merge.
+/**
+@private 
+*/
 template<
   typename P,
   typename a_keys_it, typename a_vals_it, 
@@ -414,7 +447,7 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 /** 
-@function cuda_merge_buffer_size
+@brief queries the buffer size in bytes needed to call asynchronous merge
 */
 template <typename P>
 unsigned cuda_merge_buffer_size(unsigned a_count, unsigned b_count) {
@@ -423,8 +456,8 @@ unsigned cuda_merge_buffer_size(unsigned a_count, unsigned b_count) {
   return sz*sizeof(unsigned);
 }
 
-/**
-@function cuda_merge_buffer_size
+/** 
+@brief queries the buffer size in bytes needed to call asynchronous merge
 */
 template <typename P, typename a_itr, typename b_itr>
 unsigned cuda_merge_buffer_size(
@@ -439,6 +472,9 @@ unsigned cuda_merge_buffer_size(
 // key-value merge
 // ----------------------------------------------------------------------------
 
+/** 
+@brief performs key-value merge over a range of keys and values
+*/
 template<
   typename P,
   typename a_keys_it, typename a_vals_it, 
@@ -475,6 +511,9 @@ void cuda_merge(
   p.synchronize();
 }
 
+/** 
+@brief performs asynchronous key-value merge over a range of keys and values
+*/
 template<
   typename P,
   typename a_keys_it, typename a_vals_it, 
@@ -509,6 +548,9 @@ void cuda_merge_async(
 // key-only merge
 // ----------------------------------------------------------------------------
 
+/** 
+@brief performs key-only merge over a range of keys
+*/
 template<typename P,
   typename a_keys_it, typename b_keys_it, typename c_keys_it, typename comp_t
 >
@@ -527,6 +569,9 @@ void cuda_merge(
   );
 }
 
+/** 
+@brief performs asynchronous key-only merge over a range of keys
+*/
 template<typename P,
   typename a_keys_it, typename b_keys_it, typename c_keys_it, typename comp_t
 >

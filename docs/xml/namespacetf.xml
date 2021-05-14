@@ -6,6 +6,7 @@
     <innerclass refid="classtf_1_1CriticalSection" prot="public">tf::CriticalSection</innerclass>
     <innerclass refid="classtf_1_1cublasFlowCapturer" prot="public">tf::cublasFlowCapturer</innerclass>
     <innerclass refid="classtf_1_1cudaCapturingBase" prot="private">tf::cudaCapturingBase</innerclass>
+    <innerclass refid="classtf_1_1cudaDeviceMemory" prot="private">tf::cudaDeviceMemory</innerclass>
     <innerclass refid="structtf_1_1cudaEventCreator" prot="private">tf::cudaEventCreator</innerclass>
     <innerclass refid="structtf_1_1cudaEventDeleter" prot="private">tf::cudaEventDeleter</innerclass>
     <innerclass refid="classtf_1_1cudaFlow" prot="public">tf::cudaFlow</innerclass>
@@ -47,8 +48,9 @@
     <innerclass refid="classtf_1_1TFProfManager" prot="private">tf::TFProfManager</innerclass>
     <innerclass refid="classtf_1_1TFProfObserver" prot="public">tf::TFProfObserver</innerclass>
     <innerclass refid="structtf_1_1Timeline" prot="private">tf::Timeline</innerclass>
-    <innerclass refid="structtf_1_1Worker" prot="private">tf::Worker</innerclass>
+    <innerclass refid="classtf_1_1Worker" prot="private">tf::Worker</innerclass>
     <innerclass refid="classtf_1_1WorkerView" prot="public">tf::WorkerView</innerclass>
+    <innernamespace refid="namespacetf_1_1detail">tf::detail</innernamespace>
       <sectiondef kind="enum">
       <memberdef kind="enum" id="namespacetf_1a1355048578785a80414707ff308b395a" prot="public" static="no" strong="yes">
         <type>int</type>
@@ -855,7 +857,7 @@
         <briefdescription>
 <para>allocates memory on the current device associated with the caller </para>        </briefdescription>
         <detaileddescription>
-<para>The function calls cuda_malloc_device from the current device associated with the caller. </para>        </detaileddescription>
+<para>The function calls malloc_device from the current device associated with the caller. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="65" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="65" bodyend="67"/>
@@ -1149,6 +1151,1390 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="258" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="258" bodyend="261"/>
       </memberdef>
+      <memberdef kind="function" id="namespacetf_1a1ca0bd68df882048e4b9b4d92efc3168" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned</type>
+        <definition>unsigned tf::cuda_reduce_buffer_size</definition>
+        <argsstring>(unsigned count)</argsstring>
+        <name>cuda_reduce_buffer_size</name>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>queries the buffer size in bytes needed to perform asynchronous reduce </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="131" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="131" bodyend="137"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a04cedda345d9fa4d39213d6caea383a1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned</type>
+        <definition>unsigned tf::cuda_reduce_buffer_size</definition>
+        <argsstring>(I first, I last)</argsstring>
+        <name>cuda_reduce_buffer_size</name>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <briefdescription>
+<para>queries the buffer size in bytes needed to call reduce </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="143" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="143" bodyend="145"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a40904a487ebd144d786d17ac37a74924" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_reduce</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, T *res, O op)</argsstring>
+        <name>cuda_reduce</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>op</declname>
+        </param>
+        <briefdescription>
+<para>performs parallel reduction over a range of items </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="155" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="155" bodyend="171"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1af8d8d018c3430e40bd3231adba0bd91d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_reduce_async</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, T *res, O op, void *buf)</argsstring>
+        <name>cuda_reduce_async</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>buf</declname>
+        </param>
+        <briefdescription>
+<para>performs asynchronous parallel reduction over a range of items </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="177" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="177" bodyend="185"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a1b404e9dc801fb4c391aa22c94c211e2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_uninitialized_reduce</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, T *res, O op)</argsstring>
+        <name>cuda_uninitialized_reduce</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>op</declname>
+        </param>
+        <briefdescription>
+<para>performs parallel reduction over a range of items without an initial value </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="195" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="195" bodyend="212"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a51f1e1d02f600defb33b950e631d4f66" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_uninitialized_reduce_async</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, T *res, O op, void *buf)</argsstring>
+        <name>cuda_uninitialized_reduce_async</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>buf</declname>
+        </param>
+        <briefdescription>
+<para>performs asynchronous parallel reduction over a range of items without an initial value </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="219" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="219" bodyend="227"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1ad86024ee94a21ea6e8970d887f83808e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_transform_reduce</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, T *res, O bop, U uop)</argsstring>
+        <name>cuda_transform_reduce</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>bop</declname>
+        </param>
+        <param>
+          <type>U</type>
+          <declname>uop</declname>
+        </param>
+        <briefdescription>
+<para>performs parallel reduction over a range of transformed items without an initial value </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="238" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="238" bodyend="259"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1ab229138d66d95f0b4656e56f496800ae" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_transform_reduce_async</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, T *res, O bop, U uop, void *buf)</argsstring>
+        <name>cuda_transform_reduce_async</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>bop</declname>
+        </param>
+        <param>
+          <type>U</type>
+          <declname>uop</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>buf</declname>
+        </param>
+        <briefdescription>
+<para>performs asynchronous parallel reduction over a range of transformed items without an initial value </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="266" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="266" bodyend="282"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a1367afb7d02d5cfe0caabbc90762620d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_transform_uninitialized_reduce</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, T *res, O bop, U uop)</argsstring>
+        <name>cuda_transform_uninitialized_reduce</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>bop</declname>
+        </param>
+        <param>
+          <type>U</type>
+          <declname>uop</declname>
+        </param>
+        <briefdescription>
+<para>performs parallel reduction over a range of transformed items with an initial value </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="293" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="293" bodyend="316"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a41066971f38829ce32c134ee9afb9614" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_transform_uninitialized_reduce_async</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, T *res, O bop, U uop, void *buf)</argsstring>
+        <name>cuda_transform_uninitialized_reduce_async</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>bop</declname>
+        </param>
+        <param>
+          <type>U</type>
+          <declname>uop</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>buf</declname>
+        </param>
+        <briefdescription>
+<para>performs asynchronous parallel reduction over a range of transformed items with an initial value </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="323" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="323" bodyend="341"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1ac4359d58dabef2ff12d7e66e72026c99" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>__device__ void</type>
+        <definition>__device__ void tf::cuda_warp_reduce</definition>
+        <argsstring>(volatile T *shm, size_t N, size_t tid, C op)</argsstring>
+        <name>cuda_warp_reduce</name>
+        <param>
+          <type>volatile T *</type>
+          <declname>shm</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>N</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>tid</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>op</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="349" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="349" bodyend="358"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1aba73f24af497b714399e07b8a87d1a59" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+          <param>
+            <type>bool</type>
+            <declname>uninitialized</declname>
+            <defname>uninitialized</defname>
+          </param>
+        </templateparamlist>
+        <type>__global__ void</type>
+        <definition>__global__ void tf::cuda_reduce</definition>
+        <argsstring>(I first, size_t N, T *res, C op)</argsstring>
+        <name>cuda_reduce</name>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>N</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>op</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="364" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="364" bodyend="402"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1afd7e7a0886352201cced5c55205f3229" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned</type>
+        <definition>unsigned tf::cuda_scan_buffer_size</definition>
+        <argsstring>(unsigned count)</argsstring>
+        <name>cuda_scan_buffer_size</name>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>queries the buffer size in bytes needed to perform asynchronous scan </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" line="333" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="333" bodyend="341"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a121a9ee501de443cb32f45b6b75a8c7e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned</type>
+        <definition>unsigned tf::cuda_scan_buffer_size</definition>
+        <argsstring>(I first, I last)</argsstring>
+        <name>cuda_scan_buffer_size</name>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <briefdescription>
+<para>queries the buffer size in bytes needed to perform asynchronous scan </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" line="347" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="347" bodyend="349"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1affd3cc9cc8550ffead1f63616f22b64f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_inclusive_scan</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, O output, C op)</argsstring>
+        <name>cuda_inclusive_scan</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>output</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>op</declname>
+        </param>
+        <briefdescription>
+<para>performs inclusive scan over a range of items </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" line="359" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="359" bodyend="379"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1aca76fb5d4564ac64a5a110ace990b520" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_inclusive_scan_async</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, O output, C op, void *buf)</argsstring>
+        <name>cuda_inclusive_scan_async</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>output</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>buf</declname>
+        </param>
+        <briefdescription>
+<para>performs asynchronous inclusive scan over a range of items </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" line="385" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="385" bodyend="399"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a98feffc08d80abcabb7e2193fef2b380" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_transform_inclusive_scan</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, O output, C bop, U uop)</argsstring>
+        <name>cuda_transform_inclusive_scan</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>output</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>bop</declname>
+        </param>
+        <param>
+          <type>U</type>
+          <declname>uop</declname>
+        </param>
+        <briefdescription>
+<para>performs inclusive scan over a range of transformed items </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" line="409" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="409" bodyend="434"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a8c82e13a6fd60f72e6259b8e5438332f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_transform_inclusive_scan_async</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, O output, C bop, U uop, void *buf)</argsstring>
+        <name>cuda_transform_inclusive_scan_async</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>output</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>bop</declname>
+        </param>
+        <param>
+          <type>U</type>
+          <declname>uop</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>buf</declname>
+        </param>
+        <briefdescription>
+<para>performs asynchronous inclusive scan over a range of transformed items </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" line="440" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="440" bodyend="458"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a79efb12473e146c1fddc448e8bb42bd4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_exclusive_scan</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, O output, C op)</argsstring>
+        <name>cuda_exclusive_scan</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>output</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>op</declname>
+        </param>
+        <briefdescription>
+<para>performs exclusive scan over a range of items </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" line="468" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="468" bodyend="489"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a3df7ba7bf9f8ad62cbb89631e37c44b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_exclusive_scan_async</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, O output, C op, void *buf)</argsstring>
+        <name>cuda_exclusive_scan_async</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>output</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>buf</declname>
+        </param>
+        <briefdescription>
+<para>performs asynchronous exclusive scan over a range of items </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" line="495" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="495" bodyend="509"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a4c6f39904ef71525825aeabc0665d806" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_transform_exclusive_scan</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, O output, C bop, U uop)</argsstring>
+        <name>cuda_transform_exclusive_scan</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>output</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>bop</declname>
+        </param>
+        <param>
+          <type>U</type>
+          <declname>uop</declname>
+        </param>
+        <briefdescription>
+<para>performs exclusive scan over a range of items </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" line="519" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="519" bodyend="544"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a63b490bc88085063913a7c5f0746ce9f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_transform_exclusive_scan_async</definition>
+        <argsstring>(P &amp;&amp;p, I first, I last, O output, C bop, U uop, void *buf)</argsstring>
+        <name>cuda_transform_exclusive_scan_async</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>output</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>bop</declname>
+        </param>
+        <param>
+          <type>U</type>
+          <declname>uop</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>buf</declname>
+        </param>
+        <briefdescription>
+<para>performs asynchronous exclusive scan over a range of items </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" line="550" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="550" bodyend="568"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a3db5b8f718e7f6a6fa2da3a689bd8828" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned</type>
+        <definition>unsigned tf::cuda_merge_buffer_size</definition>
+        <argsstring>(unsigned a_count, unsigned b_count)</argsstring>
+        <name>cuda_merge_buffer_size</name>
+        <param>
+          <type>unsigned</type>
+          <declname>a_count</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>b_count</declname>
+        </param>
+        <briefdescription>
+<para>queries the buffer size in bytes needed to call asynchronous merge </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" line="453" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="453" bodyend="457"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a025093cea88de1001cc5f16bdf89d099" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename a_itr</type>
+          </param>
+          <param>
+            <type>typename b_itr</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned</type>
+        <definition>unsigned tf::cuda_merge_buffer_size</definition>
+        <argsstring>(a_itr a_first, a_itr a_last, b_itr b_first, b_itr b_last)</argsstring>
+        <name>cuda_merge_buffer_size</name>
+        <param>
+          <type>a_itr</type>
+          <declname>a_first</declname>
+        </param>
+        <param>
+          <type>a_itr</type>
+          <declname>a_last</declname>
+        </param>
+        <param>
+          <type>b_itr</type>
+          <declname>b_first</declname>
+        </param>
+        <param>
+          <type>b_itr</type>
+          <declname>b_last</declname>
+        </param>
+        <briefdescription>
+<para>queries the buffer size in bytes needed to call asynchronous merge </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" line="463" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="463" bodyend="469"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a1294350f1ff922068b3df525a82cb145" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename a_keys_it</type>
+          </param>
+          <param>
+            <type>typename a_vals_it</type>
+          </param>
+          <param>
+            <type>typename b_keys_it</type>
+          </param>
+          <param>
+            <type>typename b_vals_it</type>
+          </param>
+          <param>
+            <type>typename c_keys_it</type>
+          </param>
+          <param>
+            <type>typename c_vals_it</type>
+          </param>
+          <param>
+            <type>typename comp_t</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_merge</definition>
+        <argsstring>(P &amp;&amp;p, a_keys_it a_keys_first, a_vals_it a_vals_first, a_keys_it a_keys_last, b_keys_it b_keys_first, b_vals_it b_vals_first, b_keys_it b_keys_last, c_keys_it c_keys_first, c_vals_it c_vals_first, comp_t comp)</argsstring>
+        <name>cuda_merge</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>a_keys_it</type>
+          <declname>a_keys_first</declname>
+        </param>
+        <param>
+          <type>a_vals_it</type>
+          <declname>a_vals_first</declname>
+        </param>
+        <param>
+          <type>a_keys_it</type>
+          <declname>a_keys_last</declname>
+        </param>
+        <param>
+          <type>b_keys_it</type>
+          <declname>b_keys_first</declname>
+        </param>
+        <param>
+          <type>b_vals_it</type>
+          <declname>b_vals_first</declname>
+        </param>
+        <param>
+          <type>b_keys_it</type>
+          <declname>b_keys_last</declname>
+        </param>
+        <param>
+          <type>c_keys_it</type>
+          <declname>c_keys_first</declname>
+        </param>
+        <param>
+          <type>c_vals_it</type>
+          <declname>c_vals_first</declname>
+        </param>
+        <param>
+          <type>comp_t</type>
+          <declname>comp</declname>
+        </param>
+        <briefdescription>
+<para>performs key-value merge over a range of keys and values </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" line="485" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="485" bodyend="512"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a34773891693013ee93d329d42939d444" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename a_keys_it</type>
+          </param>
+          <param>
+            <type>typename a_vals_it</type>
+          </param>
+          <param>
+            <type>typename b_keys_it</type>
+          </param>
+          <param>
+            <type>typename b_vals_it</type>
+          </param>
+          <param>
+            <type>typename c_keys_it</type>
+          </param>
+          <param>
+            <type>typename c_vals_it</type>
+          </param>
+          <param>
+            <type>typename comp_t</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_merge_async</definition>
+        <argsstring>(P &amp;&amp;p, a_keys_it a_keys_first, a_vals_it a_vals_first, a_keys_it a_keys_last, b_keys_it b_keys_first, b_vals_it b_vals_first, b_keys_it b_keys_last, c_keys_it c_keys_first, c_vals_it c_vals_first, comp_t comp, void *buf)</argsstring>
+        <name>cuda_merge_async</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>a_keys_it</type>
+          <declname>a_keys_first</declname>
+        </param>
+        <param>
+          <type>a_vals_it</type>
+          <declname>a_vals_first</declname>
+        </param>
+        <param>
+          <type>a_keys_it</type>
+          <declname>a_keys_last</declname>
+        </param>
+        <param>
+          <type>b_keys_it</type>
+          <declname>b_keys_first</declname>
+        </param>
+        <param>
+          <type>b_vals_it</type>
+          <declname>b_vals_first</declname>
+        </param>
+        <param>
+          <type>b_keys_it</type>
+          <declname>b_keys_last</declname>
+        </param>
+        <param>
+          <type>c_keys_it</type>
+          <declname>c_keys_first</declname>
+        </param>
+        <param>
+          <type>c_vals_it</type>
+          <declname>c_vals_first</declname>
+        </param>
+        <param>
+          <type>comp_t</type>
+          <declname>comp</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>buf</declname>
+        </param>
+        <briefdescription>
+<para>performs asynchronous key-value merge over a range of keys and values </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" line="524" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="524" bodyend="545"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a447aee5c70fb591c546d4ed470252955" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename a_keys_it</type>
+          </param>
+          <param>
+            <type>typename b_keys_it</type>
+          </param>
+          <param>
+            <type>typename c_keys_it</type>
+          </param>
+          <param>
+            <type>typename comp_t</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_merge</definition>
+        <argsstring>(P &amp;&amp;p, a_keys_it a_keys_first, a_keys_it a_keys_last, b_keys_it b_keys_first, b_keys_it b_keys_last, c_keys_it c_keys_first, comp_t comp)</argsstring>
+        <name>cuda_merge</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>a_keys_it</type>
+          <declname>a_keys_first</declname>
+        </param>
+        <param>
+          <type>a_keys_it</type>
+          <declname>a_keys_last</declname>
+        </param>
+        <param>
+          <type>b_keys_it</type>
+          <declname>b_keys_first</declname>
+        </param>
+        <param>
+          <type>b_keys_it</type>
+          <declname>b_keys_last</declname>
+        </param>
+        <param>
+          <type>c_keys_it</type>
+          <declname>c_keys_first</declname>
+        </param>
+        <param>
+          <type>comp_t</type>
+          <declname>comp</declname>
+        </param>
+        <briefdescription>
+<para>performs key-only merge over a range of keys </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" line="557" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="557" bodyend="570"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a4226530b906f9feabfca71dfa744f116" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename a_keys_it</type>
+          </param>
+          <param>
+            <type>typename b_keys_it</type>
+          </param>
+          <param>
+            <type>typename c_keys_it</type>
+          </param>
+          <param>
+            <type>typename comp_t</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cuda_merge_async</definition>
+        <argsstring>(P &amp;&amp;p, a_keys_it a_keys_first, a_keys_it a_keys_last, b_keys_it b_keys_first, b_keys_it b_keys_last, c_keys_it c_keys_first, comp_t comp, void *buf)</argsstring>
+        <name>cuda_merge_async</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>a_keys_it</type>
+          <declname>a_keys_first</declname>
+        </param>
+        <param>
+          <type>a_keys_it</type>
+          <declname>a_keys_last</declname>
+        </param>
+        <param>
+          <type>b_keys_it</type>
+          <declname>b_keys_first</declname>
+        </param>
+        <param>
+          <type>b_keys_it</type>
+          <declname>b_keys_last</declname>
+        </param>
+        <param>
+          <type>c_keys_it</type>
+          <declname>c_keys_first</declname>
+        </param>
+        <param>
+          <type>comp_t</type>
+          <declname>comp</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>buf</declname>
+        </param>
+        <briefdescription>
+<para>performs asynchronous key-only merge over a range of keys </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" line="578" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="578" bodyend="593"/>
+      </memberdef>
       <memberdef kind="function" id="namespacetf_1a160861c1c085842ecb0c56537199deaa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
         <definition>std::ostream&amp; tf::operator&lt;&lt;</definition>
@@ -1181,7 +2567,7 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/taskflow.hpp" line="50" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/taskflow.hpp" bodystart="50" bodyend="52"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/taskflow.hpp" line="56" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/taskflow.hpp" bodystart="56" bodyend="58"/>
       </memberdef>
       </sectiondef>
     <briefdescription>

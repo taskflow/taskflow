@@ -164,24 +164,6 @@ class cudaFlow {
     cudaTask kernel(dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
     
     /**
-    @brief creates a kernel task on a specific GPU
-    
-    @tparam F kernel function type
-    @tparam ArgsT kernel function parameters type
-    
-    @param d device identifier to launch the kernel
-    @param g configured grid
-    @param b configured block
-    @param s configured shared memory size in bytes
-    @param f kernel function
-    @param args arguments to forward to the kernel function by copy
-
-    @return a tf::cudaTask handle
-    */
-    template <typename F, typename... ArgsT>
-    cudaTask kernel_on(int d, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
-
-    /**
     @brief creates a memset task that fills untyped data with a byte value
 
     @param dst pointer to the destination device memory area
@@ -791,36 +773,6 @@ cudaTask cudaFlow::kernel(
       &node->_native_handle, _graph._native_handle, nullptr, 0, &p
     ),
     "failed to create a kernel task"
-  );
-
-  return cudaTask(node);
-}
-
-// Function: kernel
-template <typename F, typename... ArgsT>
-cudaTask cudaFlow::kernel_on(
-  int d, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
-) {
-  
-  auto node = _graph.emplace_back(
-    _graph, std::in_place_type_t<cudaNode::Kernel>{}, (void*)f
-  );
-  
-  cudaKernelNodeParams p;
-  void* arguments[sizeof...(ArgsT)] = { (void*)(&args)... };
-  p.func = (void*)f;
-  p.gridDim = g;
-  p.blockDim = b;
-  p.sharedMemBytes = s;
-  p.kernelParams = arguments;
-  p.extra = nullptr;
-
-  cudaScopedDevice ctx(d);
-  TF_CHECK_CUDA(
-    cudaGraphAddKernelNode(
-      &node->_native_handle, _graph._native_handle, nullptr, 0, &p
-    ),
-    "failed to create a kernel task on device ", d
   );
 
   return cudaTask(node);
