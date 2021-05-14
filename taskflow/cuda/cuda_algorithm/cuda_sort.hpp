@@ -4,13 +4,21 @@
 #include "../cuda_capturer.hpp"
 #include "../cuda_meta.hpp"
 
+/**
+@file cuda_sort.hpp
+@brief CUDA sort algorithm include file
+*/
+
 namespace tf::detail {
 
 // ----------------------------------------------------------------------------
 // odd-even sort in register
 // ----------------------------------------------------------------------------
 
-// Count leading zeros - start from most significant bit.
+/**
+@private
+@brief counts the number of leading zeros starting from the most significant bit
+*/
 constexpr int cuda_clz(int x) {
   for(int i = 31; i >= 0; --i) {
     if((1<< i) & x) {
@@ -20,7 +28,10 @@ constexpr int cuda_clz(int x) {
   return 32;
 }
 
-// Find log2(x) and optionally round up to the next integer logarithm.
+/**
+@private
+@brief finds log2(x) and optionally round up to the next integer logarithm.
+*/
 constexpr int cuda_find_log2(int x, bool round_up = false) {
   int a = 31 - cuda_clz(x);
   if(round_up) {
@@ -29,7 +40,7 @@ constexpr int cuda_find_log2(int x, bool round_up = false) {
   return a;
 }
 
-
+/** @private */
 template<typename T, unsigned vt, typename C>
 __device__ auto cuda_odd_even_sort(
   cudaArray<T, vt> x, C comp, int flags = 0
@@ -44,6 +55,7 @@ __device__ auto cuda_odd_even_sort(
   return x;
 }
 
+/** @private */
 template<typename K, typename V, unsigned vt, typename C>
 __device__ auto cuda_odd_even_sort(
   cudaKVArray<K, V, vt> x, C comp, int flags = 0
@@ -64,6 +76,7 @@ __device__ auto cuda_odd_even_sort(
 // range check
 // ----------------------------------------------------------------------------
 
+/** @private */
 __device__ inline int cuda_out_of_range_flags(int first, int vt, int count) {
   int out_of_range = min(vt, first + vt - count);
   int head_flags = 0;
@@ -74,6 +87,7 @@ __device__ inline int cuda_out_of_range_flags(int first, int vt, int count) {
   return head_flags;
 }
 
+/** @private */
 __device__ inline auto cuda_compute_merge_sort_frame(
   unsigned partition, unsigned coop, unsigned spacing
 ) {
@@ -91,6 +105,7 @@ __device__ inline auto cuda_compute_merge_sort_frame(
   };
 }
 
+/** @private */
 __device__ inline auto cuda_compute_merge_sort_range(
   unsigned count, unsigned partition, unsigned coop, unsigned spacing
 ) {
@@ -105,6 +120,7 @@ __device__ inline auto cuda_compute_merge_sort_range(
   };
 }
 
+/** @private */
 __device__ inline auto cuda_compute_merge_sort_range(
   unsigned count, unsigned partition, unsigned coop, unsigned spacing, 
   unsigned mp0, unsigned mp1
@@ -131,12 +147,14 @@ __device__ inline auto cuda_compute_merge_sort_range(
   return range;
 }
 
+/** @private */
 template<unsigned nt, unsigned vt, typename K, typename V>
 struct cudaBlockSort {
 
   static constexpr bool has_values = !std::is_same<V, cudaEmpty>::value;
   static constexpr unsigned num_passes = log2(nt);
 
+  /** @private */
   union Storage {
     K keys[nt * vt + 1];
     V vals[nt * vt];
@@ -203,8 +221,7 @@ struct cudaBlockSort {
   }
 };
 
-
-
+/** @private */
 template<typename P, typename K, typename C>
 void cuda_merge_sort_partitions(
   P&& p, K keys, unsigned count, 
@@ -235,7 +252,7 @@ void cuda_merge_sort_partitions(
   });
 }
 
-// Key-value merge_sort.
+/** @private */
 template<typename P, typename K_it, typename V_it, typename C>
 void merge_sort_loop(
   P&& p, K_it keys_input, V_it vals_input, unsigned count, C comp, void* buf
@@ -390,7 +407,9 @@ void merge_sort_loop(
 
 namespace tf {
 
-// query the buffer size in bytes for merge sort
+/** 
+@brief queries the buffer size in bytes needed to call sort kernels
+*/
 template <typename P, typename K, typename V = cudaEmpty>
 unsigned cuda_sort_buffer_size(unsigned count) {
 
@@ -405,13 +424,17 @@ unsigned cuda_sort_buffer_size(unsigned count) {
              (B+1)*sizeof(unsigned)) : 0;
 }
 
-// query the buffer size
+/** 
+@brief queries the buffer size in bytes needed to call sort kernels
+*/
 template<typename P, typename K, typename V, typename K_it>
 unsigned cuda_sort_buffer_size(K_it k_first, K_it k_last) {
   return cuda_sort_buffer_size<P, K, V>(std::distance(k_first, k_last));
 }
 
-// query the buffer size
+/** 
+@brief queries the buffer size in bytes needed to call sort kernels
+*/
 template<typename P, typename K, typename K_it>
 unsigned cuda_sort_buffer_size(K_it k_first, K_it k_last) {
   return cuda_sort_buffer_size<P, K, cudaEmpty>(k_first, k_last);
@@ -421,7 +444,9 @@ unsigned cuda_sort_buffer_size(K_it k_first, K_it k_last) {
 // key-value sort
 // ----------------------------------------------------------------------------
 
-// Key-value sort.
+/**
+@brief performs key-value sort on a range of items
+*/
 template<typename P, typename K_it, typename V_it, typename C>
 void cuda_sort(P&& p, K_it k_first, K_it k_last, V_it v_first, C comp) {
   
@@ -442,7 +467,9 @@ void cuda_sort(P&& p, K_it k_first, K_it k_last, V_it v_first, C comp) {
   p.synchronize();
 }
 
-// asynchronous key-value sort.
+/**
+@brief performs asynchronous key-value sort on a range of items
+*/
 template<typename P, typename K_it, typename V_it, typename C>
 void cuda_sort_async(
   P&& p, K_it k_first, K_it k_last, V_it v_first, C comp, void* buf
@@ -461,13 +488,17 @@ void cuda_sort_async(
 // key sort
 // ----------------------------------------------------------------------------
 
-// Key sort.
+/**
+@brief performs key-only sort on a range of items
+*/
 template<typename P, typename K_it, typename C>
 void cuda_sort(P&& p, K_it k_first, K_it k_last, C comp) {
   cuda_sort(p, k_first, k_last, (cudaEmpty*)nullptr, comp);
 }
 
-// asynchronous key sort.
+/**
+@brief performs asynchronous key-only sort on a range of items
+*/
 template<typename P, typename K_it, typename C>
 void cuda_sort_async(P&& p, K_it k_first, K_it k_last, C comp, void* buf) {
   cuda_sort_async(p, k_first, k_last, (cudaEmpty*)nullptr, comp, buf);

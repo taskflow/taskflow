@@ -26,12 +26,12 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <title>Working Items</title>
 <para><itemizedlist>
 <listitem><para>enhancing support for SYCL with Intel DPC++ </para></listitem>
-<listitem><para>designing pipeline interface and scheduling algorithms</para></listitem>
+<listitem><para>designing pipeline interface and its scheduling algorithms</para></listitem>
 </itemizedlist>
 </para></sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_new_features">
 <title>New Features</title>
-<para>This release enhances CUDA GPU algorithms in both standalone use and cudaFlow capturer.</para><sect2 id="release-3-2-0_1release-3-2-0_taskflow_core">
+<sect2 id="release-3-2-0_1release-3-2-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
 <listitem><para>added tf::SmallVector optimization (based on LLVM small vector) for graphs</para></listitem>
@@ -49,7 +49,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a5a36ae28d5844cf281b1d351c359b1af" kindref="member">tf::cudaFlowCapturer::transform_inclusive_scan</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a91bc91e5f13fda5f119d9b9f5f679782" kindref="member">tf::cudaFlowCapturer::transform_exclusive_scan</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1ac2eec500f313481926197ff0b3aed343" kindref="member">tf::cudaFlowCapturer::merge</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a27148ee0e8369e50d693dd770787ef8b" kindref="member">tf::cudaFlowCapturer::sort</ref></para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a3bcb91eb1579451ece602206f20845f4" kindref="member">tf::cudaFlowCapturer::sort</ref></para></listitem>
 </itemizedlist>
 </para></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_syclflow">
@@ -58,8 +58,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-2-0_1release-3-2-0_utilities">
 <title>Utilities</title>
 <para><itemizedlist>
-<listitem><para>added cuda meta programming </para></listitem>
-<listitem><para>added standalone CUDA algorithms</para></listitem>
+<listitem><para>added cuda meta programming</para></listitem>
 </itemizedlist>
 </para></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_profiler">
@@ -85,10 +84,15 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 </para></sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_documentation">
 <title>Documentation</title>
-</sect1>
+<para><itemizedlist>
+<listitem><para>revised <ref refid="CUDAReduce" kindref="compound">Parallel Reduction</ref></para></listitem>
+</itemizedlist>
+</para></sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
-</sect1>
+<para>We have published <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> in the following conference:<itemizedlist>
+<listitem><para>Dian-Lun Lin and Tsung-Wei Huang, "Efficient GPU Computation using <ref refid="classtf_1_1Task" kindref="compound">Task</ref> Graph Parallelism," <emphasis>IEEE/ACM European Conference on Parallel and Distributed Computing (EuroPar)</emphasis>, 2021 </para></listitem></itemizedlist>
+</para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

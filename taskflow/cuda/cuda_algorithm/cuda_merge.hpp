@@ -308,9 +308,7 @@ __device__ auto block_merge_from_mem(
   return merged;
 };
 
-/**
-@private 
-*/
+/** @private */
 template<cudaMergeBoundType bounds,
   typename P, typename a_keys_it, typename b_keys_it, typename comp_t
 >
@@ -367,9 +365,7 @@ void cuda_merge_path_partitions(
 //  return mem;
 //}
 
-/**
-@private 
-*/
+/** @private */
 template<
   typename P,
   typename a_keys_it, typename a_vals_it, 
@@ -447,7 +443,7 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 /** 
-@brief queries the buffer size in bytes needed to call asynchronous merge
+@brief queries the buffer size in bytes needed to call merge kernels
 */
 template <typename P>
 unsigned cuda_merge_buffer_size(unsigned a_count, unsigned b_count) {
@@ -457,7 +453,7 @@ unsigned cuda_merge_buffer_size(unsigned a_count, unsigned b_count) {
 }
 
 /** 
-@brief queries the buffer size in bytes needed to call asynchronous merge
+@brief queries the buffer size in bytes needed to call merge kernels
 */
 template <typename P, typename a_itr, typename b_itr>
 unsigned cuda_merge_buffer_size(

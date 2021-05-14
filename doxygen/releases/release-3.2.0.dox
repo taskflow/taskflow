@@ -32,12 +32,9 @@ To use %Taskflow v3.2.0, you need a compiler that supports C++17:
 @section release-3-2-0_working_items Working Items
 
 @li enhancing support for SYCL with Intel DPC++
-@li designing pipeline interface and scheduling algorithms
+@li designing pipeline interface and its scheduling algorithms
 
 @section release-3-2-0_new_features New Features
-
-This release enhances CUDA GPU algorithms in both standalone use and 
-%cudaFlow capturer.
 
 @subsection release-3-2-0_taskflow_core Taskflow Core
 
@@ -61,7 +58,6 @@ This release enhances CUDA GPU algorithms in both standalone use and
 @subsection release-3-2-0_utilities Utilities
 
 @li added cuda meta programming
-@li added standalone CUDA algorithms
 
 @subsection release-3-2-0_profiler Taskflow Profiler (TFProf)
 
@@ -82,7 +78,13 @@ There are no breaking changes in this release.
 
 @section release-3-2-0_documentation Documentation
 
+@li revised @ref CUDAReduce
+
+
 @section release-3-2-0_miscellaneous_items Miscellaneous Items
+
+We have published tf::cudaFlow in the following conference:
+  + Dian-Lun Lin and Tsung-Wei Huang, &quot;Efficient GPU Computation using Task Graph Parallelism,&quot; <i>IEEE/ACM European Conference on Parallel and Distributed Computing (EuroPar)</i>, 2021
 
 */
 

@@ -563,8 +563,8 @@ class cudaFlowCapturer {
     Sorts elements in the range <tt>[first, last)</tt> 
     with the given comparator.
      */
-    template <typename I, typename Comp>
-    cudaTask sort(I first, I last, Comp comp);
+    template <typename I, typename C>
+    cudaTask sort(I first, I last, C comp);
 
     // ------------------------------------------------------------------------
     // rebind methods to update captured tasks
@@ -718,8 +718,8 @@ class cudaFlowCapturer {
     This method is similar to cudaFlowCapturer::sort but operates on 
     an existing task.
      */
-    template <typename I, typename Comp>
-    void rebind_sort(cudaTask task, I first, I last, Comp comp);
+    template <typename I, typename C>
+    void rebind_sort(cudaTask task, I first, I last, C comp);
     
     // ------------------------------------------------------------------------
     // offload methods

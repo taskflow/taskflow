@@ -125,7 +125,7 @@ void cuda_reduce_loop(
 namespace tf {
 
 /**
-@brief queries the buffer size in bytes needed to perform asynchronous reduce
+@brief queries the buffer size in bytes needed to call reduce kernels
 */
 template <typename P, typename T>
 unsigned cuda_reduce_buffer_size(unsigned count) {
@@ -137,7 +137,7 @@ unsigned cuda_reduce_buffer_size(unsigned count) {
 }
 
 /**
-@brief queries the buffer size in bytes needed to call reduce
+@brief queries the buffer size in bytes needed to call reduce kernels
  */
 template <typename P, typename T, typename I>
 unsigned cuda_reduce_buffer_size(I first, I last) {

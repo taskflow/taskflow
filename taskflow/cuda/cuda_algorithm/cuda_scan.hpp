@@ -327,7 +327,7 @@ void cuda_scan_loop(
 namespace tf {
 
 /** 
-@brief queries the buffer size in bytes needed to perform asynchronous scan
+@brief queries the buffer size in bytes needed to call scan kernels
 */
 template <typename P, typename T>
 unsigned cuda_scan_buffer_size(unsigned count) {
@@ -341,7 +341,7 @@ unsigned cuda_scan_buffer_size(unsigned count) {
 }
 
 /** 
-@brief queries the buffer size in bytes needed to perform asynchronous scan
+@brief queries the buffer size in bytes needed to call scan kernels
 */
 template <typename P, typename T, typename I>
 unsigned cuda_scan_buffer_size(I first, I last) {

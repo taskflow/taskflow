@@ -2,9 +2,8 @@ namespace tf {
 
 /** @page CUDAReduce Parallel Reduction 
 
-tf::cudaFlow provides two template methods,
-tf::cudaFlow::for_each and tf::cudaFlow::for_each_index,
-for creating tasks to perform parallel reductions over a range of items.
+%Taskflow provides template methods in tf::cudaFlow and tf::cudaFlowCapturer
+as well as standalone functions to perform parallel reduction on a CUDA GPU.
 
 @tableofcontents
 
@@ -29,30 +28,25 @@ the given range with an initial value @c 1000:
 
 @code{.cpp}
 const size_t N = 1000000;
-
-tf::Taskflow taskflow;
-tf::Executor executor;
-
 std::vector<int> cpu(N, -1);
 
 int  sol;                            // solution on CPU
 int* res = tf::cuda_malloc<int>(1);  // solution on GPU
 int* gpu = tf::cuda_malloc<int>(N);  // data on GPU
 
-taskflow.emplace([&](tf::cudaFlow& cf) {
-  tf::cudaTask d2h = cf.copy(&sol, res, 1);
-  tf::cudaTask h2d = cf.copy(gpu, cpu.data(), N);
-  tf::cudaTask set = cf.single_task([res] __device__ () mutable {
-    *res = 1000;  // assign an initial value to res
-  });
-  tf::cudaTask kernel = cf.reduce(
-    gpu, gpu+N, res, [] __device__ (int a, int b) { return a + b; }
-  );
-  kernel.succeed(h2d, set)
-        .precede(d2h);
-});
+tf::cudaFlow cf;
 
-executor.run(taskflow).wait();
+tf::cudaTask d2h = cf.copy(&sol, res, 1);
+tf::cudaTask h2d = cf.copy(gpu, cpu.data(), N);
+tf::cudaTask set = cf.single_task([res] __device__ () mutable { *res = 1000; });
+tf::cudaTask kernel = cf.reduce(
+  gpu, gpu+N, res, [] __device__ (int a, int b) { return a + b; }
+);
+
+kernel.succeed(h2d, set)
+      .precede(d2h);
+
+cf.offload();
 
 assert(sol == N + 1000);
 @endcode
@@ -60,27 +54,24 @@ assert(sol == N + 1000);
 @section CUDAReduceItemsWithoutAnInitialValue Reduce Items without an Initial Value
 
 You can use tf::cudaFlow::uninitialized_reduce to perform parallel reduction
-without any initial value.
+without an initial value.
 This method represents a parallel execution of the following reduction loop
-on a GPU, thus in no need of tf::cudaFlow::single_task:
+on a GPU, thus in no need of tf::cudaFlow::single_task to initialize the variable:
     
 @code{.cpp}
-*result = *first++;  // no initial values participate in the reduction loop
+*result = *first++;  // no initial values to participate in the reduction loop
 while (first != last) {
   *result = op(*result, *first++);
 }
 @endcode
 
-The variable @c result is overwritten with the reduced value
-and no initial values participate in the reduction loop.
+The variable @c result is directly assigned the reduced value without any initial value
+to participate in the reduction loop.
 The following code performs a parallel reduction to sum all the numbers in 
 the given range without any initial value:
 
 @code{.cpp}
 const size_t N = 1000000;
-
-tf::Taskflow taskflow;
-tf::Executor executor;
 
 std::vector<int> cpu(N, -1);
 
@@ -88,17 +79,16 @@ int  sol;                            // solution on CPU
 int* res = tf::cuda_malloc<int>(1);  // solution on GPU
 int* gpu = tf::cuda_malloc<int>(N);  // data on GPU
 
-taskflow.emplace([&](tf::cudaFlow& cf) {
-  tf::cudaTask d2h = cf.copy(&sol, res, 1);
-  tf::cudaTask h2d = cf.copy(gpu, cpu.data(), N);
-  tf::cudaTask kernel = cf.uninitialized_reduce(
-    gpu, gpu+N, res, [] __device__ (int a, int b) { return a + b; }
-  );
-  kernel.succeed(h2d)
-        .precede(d2h);
-});
+tf::cudaFlow cf;
+tf::cudaTask d2h = cf.copy(&sol, res, 1);
+tf::cudaTask h2d = cf.copy(gpu, cpu.data(), N);
+tf::cudaTask kernel = cf.uninitialized_reduce(
+  gpu, gpu+N, res, [] __device__ (int a, int b) { return a + b; }
+);
+kernel.succeed(h2d)
+      .precede(d2h);
 
-executor.run(taskflow).wait();
+cf.offload();
 
 assert(sol == N);
 @endcode

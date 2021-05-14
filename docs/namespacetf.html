@@ -5,7 +5,7 @@
   <title>tf namespace | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -55,6 +55,7 @@
             <li>
               Reference
               <ul>
+                <li><a href="#namespaces">Namespaces</a></li>
                 <li><a href="#nested-classes">Classes</a></li>
                 <li><a href="#enum-members">Enums</a></li>
                 <li><a href="#typedef-members">Typedefs</a></li>
@@ -64,6 +65,13 @@
             </li>
           </ul>
         </div>
+        <section id="namespaces">
+          <h2><a href="#namespaces">Namespaces</a></h2>
+          <dl class="m-doc">
+            <dt>namespace <a href="namespacetf_1_1detail.html" class="m-doc">detail</a></dt>
+            <dd>detail namespace</dd>
+          </dl>
+        </section>
         <section id="nested-classes">
           <h2><a href="#nested-classes">Classes</a></h2>
           <dl class="m-doc">
@@ -389,13 +397,13 @@
               <div class="m-doc-template">template&lt;typename P, typename T&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a1ca0bd68df882048e4b9b4d92efc3168" class="m-doc-self">cuda_reduce_buffer_size</a>(</span><span class="m-doc-wrap">unsigned count) -&gt; unsigned</span>
             </dt>
-            <dd>queries the buffer size in bytes needed to perform asynchronous reduce</dd>
+            <dd>queries the buffer size in bytes needed to call reduce kernels</dd>
             <dt id="a04cedda345d9fa4d39213d6caea383a1">
               <div class="m-doc-template">template&lt;typename P, typename T, typename I&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a04cedda345d9fa4d39213d6caea383a1" class="m-doc-self">cuda_reduce_buffer_size</a>(</span><span class="m-doc-wrap">I first,
               I last) -&gt; unsigned</span>
             </dt>
-            <dd>queries the buffer size in bytes needed to call reduce</dd>
+            <dd>queries the buffer size in bytes needed to call reduce kernels</dd>
             <dt id="a40904a487ebd144d786d17ac37a74924">
               <div class="m-doc-template">template&lt;typename P, typename I, typename T, typename O&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a40904a487ebd144d786d17ac37a74924" class="m-doc-self">cuda_reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
@@ -480,13 +488,13 @@
               <div class="m-doc-template">template&lt;typename P, typename T&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#afd7e7a0886352201cced5c55205f3229" class="m-doc-self">cuda_scan_buffer_size</a>(</span><span class="m-doc-wrap">unsigned count) -&gt; unsigned</span>
             </dt>
-            <dd>queries the buffer size in bytes needed to perform asynchronous scan</dd>
+            <dd>queries the buffer size in bytes needed to call scan kernels</dd>
             <dt id="a121a9ee501de443cb32f45b6b75a8c7e">
               <div class="m-doc-template">template&lt;typename P, typename T, typename I&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a121a9ee501de443cb32f45b6b75a8c7e" class="m-doc-self">cuda_scan_buffer_size</a>(</span><span class="m-doc-wrap">I first,
               I last) -&gt; unsigned</span>
             </dt>
-            <dd>queries the buffer size in bytes needed to perform asynchronous scan</dd>
+            <dd>queries the buffer size in bytes needed to call scan kernels</dd>
             <dt id="affd3cc9cc8550ffead1f63616f22b64f">
               <div class="m-doc-template">template&lt;typename P, typename I, typename O, typename C&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#affd3cc9cc8550ffead1f63616f22b64f" class="m-doc-self">cuda_inclusive_scan</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
@@ -572,7 +580,7 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a3db5b8f718e7f6a6fa2da3a689bd8828" class="m-doc-self">cuda_merge_buffer_size</a>(</span><span class="m-doc-wrap">unsigned a_count,
               unsigned b_count) -&gt; unsigned</span>
             </dt>
-            <dd>queries the buffer size in bytes needed to call asynchronous merge</dd>
+            <dd>queries the buffer size in bytes needed to call merge kernels</dd>
             <dt id="a025093cea88de1001cc5f16bdf89d099">
               <div class="m-doc-template">template&lt;typename P, typename a_itr, typename b_itr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a025093cea88de1001cc5f16bdf89d099" class="m-doc-self">cuda_merge_buffer_size</a>(</span><span class="m-doc-wrap">a_itr a_first,
@@ -580,7 +588,7 @@
               b_itr b_first,
               b_itr b_last) -&gt; unsigned</span>
             </dt>
-            <dd>queries the buffer size in bytes needed to call asynchronous merge</dd>
+            <dd>queries the buffer size in bytes needed to call merge kernels</dd>
             <dt id="a1294350f1ff922068b3df525a82cb145">
               <div class="m-doc-template">template&lt;typename P, typename a_keys_it, typename a_vals_it, typename b_keys_it, typename b_vals_it, typename c_keys_it, typename c_vals_it, typename comp_t&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a1294350f1ff922068b3df525a82cb145" class="m-doc-self">cuda_merge</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
@@ -633,6 +641,59 @@
               void* buf)</span>
             </dt>
             <dd>performs asynchronous key-only merge over a range of keys</dd>
+            <dt id="a9c69906a4dfd1e2d0cd7ed496d29dafd">
+              <div class="m-doc-template">template&lt;typename P, typename K, typename V = cudaEmpty&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a9c69906a4dfd1e2d0cd7ed496d29dafd" class="m-doc-self">cuda_sort_buffer_size</a>(</span><span class="m-doc-wrap">unsigned count) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed to call sort kernels</dd>
+            <dt id="a8d2b10136dd4529aa0b209465b16655a">
+              <div class="m-doc-template">template&lt;typename P, typename K, typename V, typename K_it&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a8d2b10136dd4529aa0b209465b16655a" class="m-doc-self">cuda_sort_buffer_size</a>(</span><span class="m-doc-wrap">K_it k_first,
+              K_it k_last) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed to call sort kernels</dd>
+            <dt id="ac9886c78b27ebcf0719d91b6c43266d4">
+              <div class="m-doc-template">template&lt;typename P, typename K, typename K_it&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ac9886c78b27ebcf0719d91b6c43266d4" class="m-doc-self">cuda_sort_buffer_size</a>(</span><span class="m-doc-wrap">K_it k_first,
+              K_it k_last) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed to call sort kernels</dd>
+            <dt id="ac1efa544085b46079735d7691713d90b">
+              <div class="m-doc-template">template&lt;typename P, typename K_it, typename V_it, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#ac1efa544085b46079735d7691713d90b" class="m-doc-self">cuda_sort</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              K_it k_first,
+              K_it k_last,
+              V_it v_first,
+              C comp)</span>
+            </dt>
+            <dd>performs key-value sort on a range of items</dd>
+            <dt id="a6e5412a4a7923f50a8874e90abea988c">
+              <div class="m-doc-template">template&lt;typename P, typename K_it, typename V_it, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a6e5412a4a7923f50a8874e90abea988c" class="m-doc-self">cuda_sort_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              K_it k_first,
+              K_it k_last,
+              V_it v_first,
+              C comp,
+              void* buf)</span>
+            </dt>
+            <dd>performs asynchronous key-value sort on a range of items</dd>
+            <dt id="a3df0ffb90b516182e92979bbc8228343">
+              <div class="m-doc-template">template&lt;typename P, typename K_it, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a3df0ffb90b516182e92979bbc8228343" class="m-doc-self">cuda_sort</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              K_it k_first,
+              K_it k_last,
+              C comp)</span>
+            </dt>
+            <dd>performs key-only sort on a range of items</dd>
+            <dt id="a601dbd402ef0032f29a5394c27ed13ab">
+              <div class="m-doc-template">template&lt;typename P, typename K_it, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a601dbd402ef0032f29a5394c27ed13ab" class="m-doc-self">cuda_sort_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              K_it k_first,
+              K_it k_last,
+              C comp,
+              void* buf)</span>
+            </dt>
+            <dd>performs asynchronous key-only sort on a range of items</dd>
             <dt id="a160861c1c085842ecb0c56537199deaa">
               <span class="m-doc-wrap-bumper">auto <a href="#a160861c1c085842ecb0c56537199deaa" class="m-doc-self">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
               const <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a>&amp; ct) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
