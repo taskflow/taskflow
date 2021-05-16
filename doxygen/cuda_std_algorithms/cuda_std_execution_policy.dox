@@ -1,0 +1,56 @@
+namespace tf {
+
+/** @page CUDASTDExecutionPolicy Execution Policy
+
+%Taskflow provides standalone template methods for expressing common parallel
+algorithms on a GPU. 
+Each of these methods is governed by an <i>execution policy object</i> to configure the kernel
+execution parameters.
+
+@tableofcontents
+
+@section CUDASTDParameterizePerformance Parameterize Performance
+
+@section CUDASTDDefineAnExecutionPolicy Define an Execution Policy
+
+The following example defines an execution policy object, @c policy,
+which configures (1) each block to invoke 512 threads and 
+(2) each of these @c 512 threads to perform @c 11 units of work.
+It is always a good idea to specify an odd number in the second parameter
+to avoid bank conflicts.
+
+@code{.cpp}
+tf::cudaExecutionPolicy<512, 11> policy;
+@endcode
+
+By default, the execution policy object is associated with the CUDA 
+<i>default stream</i> (i.e., 0).
+Default stream can incur significant overhead due to the global synchronization.
+You can associate an execution policy with another stream as shown below.
+
+@code{.cpp}
+// assign a stream to a policy at construction time
+tf::cudaExecutionPolicy<512, 11> policy(my_stream);
+// reassign another stream to a policy
+policy.stream(another_stream);
+@endcode
+
+The best-performing configurations for each algorithm, each GPU architecture,
+and each data type can vary significantly.
+You should experiment different configurations and find
+the optimal tuning parameters for your applications.
+A default policy is given in tf::cudaDefaultExecutionPolicy.
+
+@code{.cpp}
+tf::cudaDefaultExecutionPolicy default_policy;
+@endcode
+
+
+*/
+}
+
+
+
+
+
+

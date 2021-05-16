@@ -1,0 +1,54 @@
+namespace tf {
+
+/** @page CUDASTDSort Parallel Sort
+
+%Taskflow provides standalone template methods for sorting ranges
+over ranges of items on a CUDA GPU.
+
+@tableofcontents
+
+@section CUDASTDSortItems Sort a Range of Items
+
+tf::cuda_sort performs an in-place parallel sort over a range of elements specified 
+by <tt>[first, last)</tt>.
+The following code sorts one million random integers in an increasing order on a GPU.
+
+@code{.cpp}
+const size_t N = 1000000;
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+for(size_t i=0; i<N; i++) 
+  vec[i] = rand();
+} 
+
+tf::cuda_sort(tf::cudaDefaultExecutionPolicy{}, vec, vec+N);
+@endcode
+
+You can specify a comparator to tf::cuda_sort to alter the sorting order.
+For example, the following code sorts one million random integers
+in an decreasing order on a GPU.
+
+@code{.cpp}
+const size_t N = 1000000;
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+for(size_t i=0; i<N; i++) 
+  vec[i] = rand();
+} 
+
+tf::cuda_sort(tf::cudaDefaultExecutionPolicy{}, 
+  vec, vec+N, [] __device__ (int a, int b) { return a > b; }
+);
+@endcode
+
+
+*/
+}
+
+
+
+
+
+

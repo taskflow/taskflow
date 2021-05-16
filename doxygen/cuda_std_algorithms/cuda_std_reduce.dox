@@ -1,0 +1,165 @@
+namespace tf {
+
+/** @page CUDASTDReduce Parallel Reduction 
+
+%Taskflow provides standalone template methods for performing parallel reductions
+over ranges of items on a CUDA GPU.
+
+@tableofcontents
+
+@section CUDASTDReduceItemsWithAnInitialValue Reduce a Range of Items with an Initial Value
+
+tf::cuda_reduce performs
+a parallel reduction over a range of elements specified by <tt>[first, last)</tt> 
+using the binary operator @c bop and stores the reduced result in @c result.
+It represents the parallel execution of the following reduction loop on a GPU:
+    
+@code{.cpp}
+while (first != last) {
+  *result = bop(*result, *first++);
+}
+@endcode
+
+The variable @c result participates in the reduction loop and must be initialized
+with an initial value.
+The following code performs a parallel reduction to sum all the numbers in 
+the given range with an initial value @c 1000:
+
+@code{.cpp}
+const size_t N = 1000000;
+int* res = tf::cuda_malloc_shared<int>(1);  // result
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+*res = 1000;
+for(size_t i=0; i<N; i++) 
+  vec[i] = i;
+} 
+
+// *res = 1000 + (0 + 1 + 2 + 3 + 4 + ... + N-1)
+tf::cuda_reduce(tf::cudaDefaultExecutionPolicy{},
+  vec, vec + N, res, [] __device__ (int a, int b) { return a + b; }
+);
+@endcode
+
+@section CUDASTDReduceItemsWithoutAnInitialValue Reduce a Range of Items without an Initial Value
+
+tf::cuda_uninitialized_reduce performs a parallel reduction 
+over a range of items without an initial value.
+This method represents a parallel execution of the following reduction loop
+on a GPU:
+    
+@code{.cpp}
+*result = *first++;  // no initial values to participate in the reduction loop
+while (first != last) {
+  *result = bop(*result, *first++);
+}
+@endcode
+
+The variable @c result is directly assigned the reduced value without any initial value
+participating in the reduction loop.
+The following code performs a parallel reduction to sum all the numbers in 
+the given range without any initial value:
+
+@code{.cpp}
+const size_t N = 1000000;
+int* res = tf::cuda_malloc_shared<int>(1);  // result
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+for(size_t i=0; i<N; i++) 
+  vec[i] = i;
+} 
+
+// *res = 0 + 1 + 2 + 3 + 4 + ... + N-1
+tf::cuda_uninitialized_reduce(tf::cudaDefaultExecutionPolicy{},
+  vec, vec + N, res, [] __device__ (int a, int b) { return a + b; }
+);
+@endcode
+
+
+@section CUDASTDReduceTransformedItemsWithAnInitialValue Reduce a Range of Transformed Items with an Initial Value
+
+tf::cuda_transform_reduce performs
+a parallel reduction over a range of @em transformed elements 
+specified by <tt>[first, last)</tt>
+using a binary reduce operator @c bop and a unary transform operator @c uop.
+It represents the parallel execution of the following reduction loop on a GPU:
+    
+@code{.cpp}
+while (first != last) {
+  *result = bop(*result, uop(*first++));
+}
+@endcode
+
+The variable @c result participates in the reduction loop and must be initialized
+with an initial value.
+The following code performs a parallel reduction to sum all the transformed numbers 
+multiplied by @c 10 in the given range with an initial value @c 1000:
+
+@code{.cpp}
+const size_t N = 1000000;
+int* res = tf::cuda_malloc_shared<int>(1);  // result
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+*res = 1000;
+for(size_t i=0; i<N; i++) 
+  vec[i] = i;
+} 
+
+// *res = 1000 + (0*10 + 1*10 + 2*10 + 3*10 + 4*10 + ... + (N-1)*10)
+tf::cuda_reduce(tf::cudaDefaultExecutionPolicy{},
+  vec, vec + N, res, 
+  [] __device__ (int a, int b) { return a + b; },
+  [] __device__ (int a) { return a*10; }
+);
+@endcode
+
+
+@section CUDASTDReduceTransformedItemsWithoutAnInitialValue Reduce a Range of Transformed Items without an Initial Value
+
+tf::cuda_uninitialized_transform_reduce performs a parallel reduction 
+over a range of transformed items without an initial value.
+This method represents a parallel execution of the following reduction loop
+on a GPU:
+    
+@code{.cpp}
+*result = *first++;  // no initial values to participate in the reduction loop
+while (first != last) {
+  *result = bop(*result, uop(*first++));
+}
+@endcode
+
+The variable @c result is directly assigned the reduced value without any initial value
+participating in the reduction loop.
+The following code performs a parallel reduction to sum all the transformed numbers 
+multiplied by @c 10 in the given range without any initial value:
+
+@code{.cpp}
+const size_t N = 1000000;
+int* res = tf::cuda_malloc_shared<int>(1);  // result
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+for(size_t i=0; i<N; i++) 
+  vec[i] = i;
+} 
+
+// *res = 0*10 + 1*10 + 2*10 + 3*10 + 4*10 + ... + (N-1)*10
+tf::cuda_uninitialized_reduce(tf::cudaDefaultExecutionPolicy{},
+  vec, vec + N, res, 
+  [] __device__ (int a, int b) { return a + b; },
+  [] __device__ (int a) { return a*10; }
+);
+@endcode
+
+
+*/
+}
+
+
+
+
+
+
