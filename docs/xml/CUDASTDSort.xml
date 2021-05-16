@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="CUDASTDSort" kind="page">
+    <compoundname>CUDASTDSort</compoundname>
+    <title>Parallel Sort</title>
+    <tableofcontents/>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Taskflow provides standalone template methods for sorting ranges of items on a CUDA GPU.</para><sect1 id="CUDASTDSort_1CUDASTDSortItems">
+<title>Sort a Range of Items</title>
+<para><ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref> performs an in-place parallel sort over a range of elements specified by <computeroutput>[first, last)</computeroutput>. The following code sorts one million random integers in an increasing order on a GPU.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
+<codeline><highlight class="normal">}<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref>(tf::cudaDefaultExecutionPolicy{},<sp/>vec,<sp/>vec+N);</highlight></codeline>
+</programlisting></para><para>You can specify a comparator to <ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref> to alter the sorting order. For example, the following code sorts one million random integers in an decreasing order on a GPU.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
+<codeline><highlight class="normal">}<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref>(tf::cudaDefaultExecutionPolicy{},<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>vec,<sp/>vec+N,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&gt;<sp/>b;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting> </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

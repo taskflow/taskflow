@@ -11,11 +11,18 @@ execution parameters.
 
 @section CUDASTDParameterizePerformance Parameterize Performance
 
+%Taskflow parameterizes most CUDA algorithms in terms of <i>number of threads per block</i>
+and <i>units of work per thread</i>, which can be specified in
+the execution policy template type, tf::cudaExecutionPolicy.
+The design is inspired by [Modern GPU Programming](https://moderngpu.github.io/)
+authored by Sean Baxter to achieve high-performance GPU computing.
+
 @section CUDASTDDefineAnExecutionPolicy Define an Execution Policy
 
 The following example defines an execution policy object, @c policy,
 which configures (1) each block to invoke 512 threads and 
 (2) each of these @c 512 threads to perform @c 11 units of work.
+Block size must be a power of two.
 It is always a good idea to specify an odd number in the second parameter
 to avoid bank conflicts.
 

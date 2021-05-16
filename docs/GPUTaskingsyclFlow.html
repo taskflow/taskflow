@@ -5,7 +5,7 @@
   <title>Cookbook &raquo; GPU Tasking (syclFlow) | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -95,48 +95,48 @@
 <span class="mi">31</span><span class="o">:</span>   <span class="c1">// free the shared memory to avoid memory leak</span>
 <span class="mi">32</span><span class="o">:</span>   <span class="n">sycl</span><span class="o">::</span><span class="n">free</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">queue</span><span class="p">);</span> 
 <span class="mi">33</span><span class="o">:</span>   <span class="n">sycl</span><span class="o">::</span><span class="n">free</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">queue</span><span class="p">);</span>           
-<span class="mi">34</span><span class="o">:</span> <span class="p">}</span></pre><div class="m-graph"><svg style="width: 21.750rem; height: 9.812rem;" viewBox="0.00 0.00 347.74 157.00">
-<g transform="scale(1 1) rotate(0) translate(4 153)">
+<span class="mi">34</span><span class="o">:</span> <span class="p">}</span></pre><div class="m-graph"><svg style="width: 20.188rem; height: 9.625rem;" viewBox="0.00 0.00 322.93 154.00">
+<g transform="scale(1 1) rotate(0) translate(4 150)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x2915170</title>
-<polygon points="8,-8 8,-141 331.7351,-141 331.7351,-8 8,-8"/>
-<text text-anchor="middle" x="169.8675" y="-124.2">syclFlow</text>
+<polygon points="8,-8 8,-138 306.934,-138 306.934,-8 8,-8"/>
+<text text-anchor="middle" x="157.467" y="-121.2">syclFlow</text>
 </g>
 <g class="m-node">
 <title>p0x2915170</title>
-<polygon points="323.7351,-79 320.7351,-83 299.7351,-83 296.7351,-79 240.7351,-79 240.7351,-43 323.7351,-43 323.7351,-79"/>
-<text text-anchor="middle" x="282.2351" y="-57.2">syclFlow</text>
+<polygon points="299.1027,-79 296.1027,-83 275.1027,-83 272.1027,-79 221.4294,-79 221.4294,-43 299.1027,-43 299.1027,-79"/>
+<text text-anchor="middle" x="260.266" y="-56.2">syclFlow</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f6378000bd0</title>
-<ellipse cx="48.5269" cy="-89" rx="32.5538" ry="18.2703"/>
-<text text-anchor="middle" x="48.5269" y="-85.2">fillX</text>
+<ellipse cx="44.0277" cy="-88" rx="28.0555" ry="18"/>
+<text text-anchor="middle" x="44.0277" y="-83.2">fillX</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f6378000e10</title>
-<ellipse cx="160.8944" cy="-61" rx="43.6818" ry="18.2703"/>
-<text text-anchor="middle" x="160.8944" y="-57.2">saxpy</text>
+<ellipse cx="146.8268" cy="-61" rx="38.544" ry="18"/>
+<text text-anchor="middle" x="146.8268" y="-56.2">saxpy</text>
 </g>
 <g class="m-edge">
 <title>p0x7f6378000bd0&#45;&gt;p0x7f6378000e10</title>
-<path d="M78.3443,-81.57C89.0114,-78.912 101.3184,-75.8453 113.1191,-72.9048"/>
-<polygon points="114.0084,-76.2903 122.8654,-70.4762 112.3158,-69.498 114.0084,-76.2903"/>
+<path d="M70.2342,-81.1169C80.2641,-78.4826 91.9944,-75.4016 103.2173,-72.4539"/>
+<polygon points="104.111,-75.838 112.8939,-69.9124 102.3328,-69.0676 104.111,-75.838"/>
 </g>
 <g class="m-edge">
 <title>p0x7f6378000e10&#45;&gt;p0x2915170</title>
-<path d="M205.0444,-61C213.2341,-61 221.8586,-61 230.2562,-61"/>
-<polygon points="230.3425,-64.5001 240.3424,-61 230.3424,-57.5001 230.3425,-64.5001"/>
+<path d="M185.8661,-61C194.0676,-61 202.8171,-61 211.3283,-61"/>
+<polygon points="211.539,-64.5001 221.539,-61 211.539,-57.5001 211.539,-64.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f6378000cf0</title>
-<ellipse cx="48.5269" cy="-34" rx="31.6406" ry="18.2703"/>
-<text text-anchor="middle" x="48.5269" y="-30.2">fillY</text>
+<ellipse cx="44.0277" cy="-34" rx="28.0555" ry="18"/>
+<text text-anchor="middle" x="44.0277" y="-29.2">fillY</text>
 </g>
 <g class="m-edge">
 <title>p0x7f6378000cf0&#45;&gt;p0x7f6378000e10</title>
-<path d="M78.0502,-41.0939C88.7182,-43.6573 101.0558,-46.6218 112.8975,-49.4672"/>
-<polygon points="112.1394,-52.8846 122.6804,-51.8178 113.7749,-46.0783 112.1394,-52.8846"/>
+<path d="M70.2342,-40.8831C80.2641,-43.5174 91.9944,-46.5984 103.2173,-49.5461"/>
+<polygon points="102.3328,-52.9324 112.8939,-52.0876 104.111,-46.162 102.3328,-52.9324"/>
 </g>
 </g>
 </svg>

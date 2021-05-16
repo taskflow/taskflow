@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="CUDASTDExecutionPolicy" kind="page">
+    <compoundname>CUDASTDExecutionPolicy</compoundname>
+    <title>Execution Policy</title>
+    <tableofcontents/>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Taskflow provides standalone template methods for expressing common parallel algorithms on a GPU. Each of these methods is governed by an <emphasis>execution policy object</emphasis> to configure the kernel execution parameters.</para><sect1 id="CUDASTDExecutionPolicy_1CUDASTDParameterizePerformance">
+<title>Parameterize Performance</title>
+<para>Taskflow parameterizes most CUDA algorithms in terms of <emphasis>number of threads per block</emphasis> and <emphasis>units of work per thread</emphasis>, which can be specified in the execution policy template type, tf::cudaExecutionPolicy. The design is inspired by <ulink url="https://moderngpu.github.io/">Modern GPU Programming</ulink> authored by Sean Baxter to achieve high-performance GPU computing.</para></sect1>
+<sect1 id="CUDASTDExecutionPolicy_1CUDASTDDefineAnExecutionPolicy">
+<title>Define an Execution Policy</title>
+<para>The following example defines an execution policy object, <computeroutput>policy</computeroutput>, which configures (1) each block to invoke 512 threads and (2) each of these <computeroutput>512</computeroutput> threads to perform <computeroutput>11</computeroutput> units of work. Block size must be a power of two. It is always a good idea to specify an odd number in the second parameter to avoid bank conflicts.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::cudaExecutionPolicy&lt;512,<sp/>11&gt;<sp/>policy;</highlight></codeline>
+</programlisting></para><para>By default, the execution policy object is associated with the CUDA <emphasis>default stream</emphasis> (i.e., 0). Default stream can incur significant overhead due to the global synchronization. You can associate an execution policy with another stream as shown below.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>assign<sp/>a<sp/>stream<sp/>to<sp/>a<sp/>policy<sp/>at<sp/>construction<sp/>time</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">tf::cudaExecutionPolicy&lt;512,<sp/>11&gt;<sp/>policy(my_stream);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>reassign<sp/>another<sp/>stream<sp/>to<sp/>a<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">policy.stream(another_stream);</highlight></codeline>
+</programlisting></para><para>The best-performing configurations for each algorithm, each GPU architecture, and each data type can vary significantly. You should experiment different configurations and find the optimal tuning parameters for your applications. A default policy is given in tf::cudaDefaultExecutionPolicy.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::cudaDefaultExecutionPolicy<sp/>default_policy;</highlight></codeline>
+</programlisting> </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>
