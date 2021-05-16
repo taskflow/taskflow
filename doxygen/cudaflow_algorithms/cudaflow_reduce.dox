@@ -2,8 +2,8 @@ namespace tf {
 
 /** @page CUDAReduce Parallel Reduction 
 
-%Taskflow provides template methods in tf::cudaFlow and tf::cudaFlowCapturer
-as well as standalone functions to perform parallel reduction on a CUDA GPU.
+%cudaFlow provides template methods to create parallel reduction tasks 
+on a CUDA GPU.
 
 @tableofcontents
 
@@ -17,7 +17,7 @@ It represents the parallel execution of the following reduction loop on a GPU:
     
 @code{.cpp}
 while (first != last) {
-  *result = op(*result, *first++);
+  *result = bop(*result, *first++);
 }
 @endcode
 
@@ -30,9 +30,9 @@ the given range with an initial value @c 1000:
 const size_t N = 1000000;
 std::vector<int> cpu(N, -1);
 
-int  sol;                            // solution on CPU
-int* res = tf::cuda_malloc<int>(1);  // solution on GPU
-int* gpu = tf::cuda_malloc<int>(N);  // data on GPU
+int  sol;                                   // solution on CPU
+int* res = tf::cuda_malloc_device<int>(1);  // solution on GPU
+int* gpu = tf::cuda_malloc_device<int>(N);  // data on GPU
 
 tf::cudaFlow cf;
 
@@ -61,7 +61,7 @@ on a GPU, thus in no need of tf::cudaFlow::single_task to initialize the variabl
 @code{.cpp}
 *result = *first++;  // no initial values to participate in the reduction loop
 while (first != last) {
-  *result = op(*result, *first++);
+  *result = bop(*result, *first++);
 }
 @endcode
 
@@ -75,9 +75,9 @@ const size_t N = 1000000;
 
 std::vector<int> cpu(N, -1);
 
-int  sol;                            // solution on CPU
-int* res = tf::cuda_malloc<int>(1);  // solution on GPU
-int* gpu = tf::cuda_malloc<int>(N);  // data on GPU
+int  sol;                                   // solution on CPU
+int* res = tf::cuda_malloc_device<int>(1);  // solution on GPU
+int* gpu = tf::cuda_malloc_device<int>(N);  // data on GPU
 
 tf::cudaFlow cf;
 tf::cudaTask d2h = cf.copy(&sol, res, 1);

@@ -552,7 +552,7 @@ class cudaFlowCapturer {
     @brief captures kernels that sort the given array
     
     @tparam I iterator type of the first input array
-    @tparam Comp comparator type
+    @tparam C comparator type
 
     @param first iterator to the beginning of the input array
     @param last iterator to the end of the input array
