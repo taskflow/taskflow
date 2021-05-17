@@ -711,157 +711,162 @@ TEST_CASE("cudaFlow.update.memset.double" * doctest::timeout(300)) {
   update_memset<double>();
 }
 
-// update for_each
-TEST_CASE("cudaFlow.update.for_each" * doctest::timeout(300)) {
+// ----------------------------------------------------------------------------
+// update algorithms
+// ----------------------------------------------------------------------------
 
-  int N = 100000;
-  
-  tf::cudaFlow cf;
-
-  auto data = tf::cuda_malloc_shared<int>(N);
-  
-  // for each task
-  auto task = cf.for_each(data, data+N, [] __device__ (int& a){ a = 100; });
-  cf.offload();
-
-  REQUIRE(cf.num_tasks() == 1);
-  for(int i=0; i<N; i++) {
-    REQUIRE(data[i] == 100);
-  }
-  
-  // update for each index - this is illegal!
-  //cf.update_for_each_index(
-  //  task, 0, N, 1, [data] __device__ (size_t i){ data[i] = -100; }
-  //);
-  
-  for(int i=0; i<N; i++) {
-    data[i] = -100;
-  }
-
-  // update for each parameters
-  cf.update_for_each(
-    task, data, data+N/2, [] __device__ (int& a){ a = 100; }
-  );
-  cf.offload();
-
-  REQUIRE(cf.num_tasks() == 1);
-  for(int i=0; i<N/2; i++) {
-    REQUIRE(data[i] == 100);
-  }
-
-  for(int i=N/2; i<N; i++) {
-    REQUIRE(data[i] == -100);
-  }
-
-  tf::cuda_free(data);
-}
-
-// update for_each_index
-TEST_CASE("cudaFlow.update.for_each_index" * doctest::timeout(300)) {
-
-  int N = 100000;
-  
-  tf::cudaFlow cf;
-
-  auto data = tf::cuda_malloc_shared<int>(N);
-  
-  // for each index
-  auto task = cf.for_each_index(0, N, 1, [data] __device__ (int i){ data[i] = 100; });
-  cf.offload();
-
-  REQUIRE(cf.num_tasks() == 1);
-  for(int i=0; i<N; i++) {
-    REQUIRE(data[i] == 100);
-  }
-  
-  for(int i=0; i<N; i++) {
-    data[i] = -100;
-  }
-
-  // update for each
-  cf.update_for_each_index(
-    task, 0, N/2, 1, [data] __device__ (int i){ data[i] = 100; }
-  );
-  cf.offload();
-
-  REQUIRE(cf.num_tasks() == 1);
-  for(int i=0; i<N/2; i++) {
-    REQUIRE(data[i] == 100);
-  }
-
-  for(int i=N/2; i<N; i++) {
-    REQUIRE(data[i] == -100);
-  }
-
-  tf::cuda_free(data);
-}
-
-// update reduce
-TEST_CASE("cudaFlow.update.reduce" * doctest::timeout(300)) {
-
-  int N = 100000;
-  
-  tf::cudaFlow cf;
-
-  auto data = tf::cuda_malloc_shared<int>(N);
-  auto soln = tf::cuda_malloc_shared<int>(1);
-
-  for(int i=0; i<N; i++) data[i] = -1;
-  
-  // reduce
-  auto task = cf.reduce(
-    data, data + N, soln,
-    [] __device__ (int a, int b){ return a + b; }
-  );
-  cf.offload();
-
-  REQUIRE(cf.num_tasks() == 1);
-  REQUIRE(*soln == -N);
-  
-  // update reduce range
-  cf.update_reduce(
-    task, data, data + N/2, soln, 
-    [] __device__ (int a, int b){ return a + b; }
-  );
-  cf.offload();
-  REQUIRE(cf.num_tasks() == 1);
-  REQUIRE(*soln == -3*N/2);
-
-  tf::cuda_free(data);
-  tf::cuda_free(soln);
-}
-
-// update uninitialized reduce
-TEST_CASE("cudaFlow.update.uninitialized_reduce" * doctest::timeout(300)) {
-
-  int N = 100000;
-  
-  tf::cudaFlow cf;
-
-  auto data = tf::cuda_malloc_shared<int>(N);
-  auto soln = tf::cuda_malloc_shared<int>(1);
-
-  for(int i=0; i<N; i++) data[i] = -1;
-  
-  // uninitialized_reduce
-  auto task = cf.uninitialized_reduce(
-    data, data + N, soln,
-    [] __device__ (int a, int b){ return a + b; }
-  );
-  cf.offload();
-
-  REQUIRE(cf.num_tasks() == 1);
-  REQUIRE(*soln == -N);
-  
-  // update reduce range
-  cf.update_uninitialized_reduce(
-    task, data, data + N/2, soln, 
-    [] __device__ (int a, int b){ return a + b; }
-  );
-  cf.offload();
-  REQUIRE(cf.num_tasks() == 1);
-  REQUIRE(*soln == -N/2);
-
-  tf::cuda_free(data);
-  tf::cuda_free(soln);
-}
+//// update for_each
+//TEST_CASE("cudaFlow.update.for_each" * doctest::timeout(300)) {
+//
+//  int N = 100000;
+//  
+//  tf::cudaFlow cf;
+//
+//  auto data = tf::cuda_malloc_shared<int>(N);
+//  
+//  // for each task
+//  auto task = cf.for_each(data, data+N, [] __device__ (int& a){ a = 100; });
+//  cf.offload();
+//
+//  REQUIRE(cf.num_tasks() == 1);
+//  for(int i=0; i<N; i++) {
+//    REQUIRE(data[i] == 100);
+//  }
+//  
+//  // update for each index - this is illegal!
+//  //cf.update_for_each_index(
+//  //  task, 0, N, 1, [data] __device__ (size_t i){ data[i] = -100; }
+//  //);
+//  
+//  for(int i=0; i<N; i++) {
+//    data[i] = -100;
+//  }
+//
+//  // update for each parameters
+//  cf.update_for_each(
+//    task, data, data+N/2, [] __device__ (int& a){ a = 100; }
+//  );
+//  cf.offload();
+//
+//  REQUIRE(cf.num_tasks() == 1);
+//  for(int i=0; i<N/2; i++) {
+//    REQUIRE(data[i] == 100);
+//  }
+//
+//  for(int i=N/2; i<N; i++) {
+//    REQUIRE(data[i] == -100);
+//  }
+//
+//  tf::cuda_free(data);
+//}
+//
+//// update for_each_index
+//TEST_CASE("cudaFlow.update.for_each_index" * doctest::timeout(300)) {
+//
+//  int N = 100000;
+//  
+//  tf::cudaFlow cf;
+//
+//  auto data = tf::cuda_malloc_shared<int>(N);
+//  
+//  // for each index
+//  auto task = cf.for_each_index(0, N, 1, [data] __device__ (int i){ data[i] = 100; });
+//  cf.offload();
+//
+//  REQUIRE(cf.num_tasks() == 1);
+//  for(int i=0; i<N; i++) {
+//    REQUIRE(data[i] == 100);
+//  }
+//  
+//  for(int i=0; i<N; i++) {
+//    data[i] = -100;
+//  }
+//
+//  // update for each
+//  cf.update_for_each_index(
+//    task, 0, N/2, 1, [data] __device__ (int i){ data[i] = 100; }
+//  );
+//  cf.offload();
+//
+//  REQUIRE(cf.num_tasks() == 1);
+//  for(int i=0; i<N/2; i++) {
+//    REQUIRE(data[i] == 100);
+//  }
+//
+//  for(int i=N/2; i<N; i++) {
+//    REQUIRE(data[i] == -100);
+//  }
+//
+//  tf::cuda_free(data);
+//}
+//
+// TODO
+//// update reduce
+//TEST_CASE("cudaFlow.update.reduce" * doctest::timeout(300)) {
+//
+//  int N = 100000;
+//  
+//  tf::cudaFlow cf;
+//
+//  auto data = tf::cuda_malloc_shared<int>(N);
+//  auto soln = tf::cuda_malloc_shared<int>(1);
+//
+//  for(int i=0; i<N; i++) data[i] = -1;
+//  
+//  // reduce
+//  auto task = cf.reduce(
+//    data, data + N, soln,
+//    [] __device__ (int a, int b){ return a + b; }
+//  );
+//  cf.offload();
+//
+//  REQUIRE(cf.num_tasks() == 1);
+//  REQUIRE(*soln == -N);
+//  
+//  // update reduce range
+//  cf.update_reduce(
+//    task, data, data + N/2, soln, 
+//    [] __device__ (int a, int b){ return a + b; }
+//  );
+//  cf.offload();
+//  REQUIRE(cf.num_tasks() == 1);
+//  REQUIRE(*soln == -3*N/2);
+//
+//  tf::cuda_free(data);
+//  tf::cuda_free(soln);
+//}
+//
+//// update uninitialized reduce
+//TEST_CASE("cudaFlow.update.uninitialized_reduce" * doctest::timeout(300)) {
+//
+//  int N = 100000;
+//  
+//  tf::cudaFlow cf;
+//
+//  auto data = tf::cuda_malloc_shared<int>(N);
+//  auto soln = tf::cuda_malloc_shared<int>(1);
+//
+//  for(int i=0; i<N; i++) data[i] = -1;
+//  
+//  // uninitialized_reduce
+//  auto task = cf.uninitialized_reduce(
+//    data, data + N, soln,
+//    [] __device__ (int a, int b){ return a + b; }
+//  );
+//  cf.offload();
+//
+//  REQUIRE(cf.num_tasks() == 1);
+//  REQUIRE(*soln == -N);
+//  
+//  // update reduce range
+//  cf.update_uninitialized_reduce(
+//    task, data, data + N/2, soln, 
+//    [] __device__ (int a, int b){ return a + b; }
+//  );
+//  cf.offload();
+//  REQUIRE(cf.num_tasks() == 1);
+//  REQUIRE(*soln == -N/2);
+//
+//  tf::cuda_free(data);
+//  tf::cuda_free(soln);
+//}

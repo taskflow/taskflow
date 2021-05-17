@@ -281,7 +281,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="79" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="79" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="81" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="81" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="var">
@@ -2236,88 +2236,6 @@ Asynchronous version of <ref refid="namespacetf_1a1367afb7d02d5cfe0caabbc9076262
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="446" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="446" bodyend="464"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1ac4359d58dabef2ff12d7e66e72026c99" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>__device__ void</type>
-        <definition>__device__ void tf::cuda_warp_reduce</definition>
-        <argsstring>(volatile T *shm, size_t N, size_t tid, C op)</argsstring>
-        <name>cuda_warp_reduce</name>
-        <param>
-          <type>volatile T *</type>
-          <declname>shm</declname>
-        </param>
-        <param>
-          <type>size_t</type>
-          <declname>N</declname>
-        </param>
-        <param>
-          <type>size_t</type>
-          <declname>tid</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="472" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="472" bodyend="481"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1aba73f24af497b714399e07b8a87d1a59" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-          <param>
-            <type>bool</type>
-            <declname>uninitialized</declname>
-            <defname>uninitialized</defname>
-          </param>
-        </templateparamlist>
-        <type>__global__ void</type>
-        <definition>__global__ void tf::cuda_reduce</definition>
-        <argsstring>(I first, size_t N, T *res, C op)</argsstring>
-        <name>cuda_reduce</name>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>size_t</type>
-          <declname>N</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>res</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="487" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="487" bodyend="525"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1afd7e7a0886352201cced5c55205f3229" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>

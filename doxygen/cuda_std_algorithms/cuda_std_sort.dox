@@ -10,7 +10,7 @@ on a CUDA GPU.
 @section CUDASTDSortItems Sort a Range of Items
 
 tf::cuda_sort performs an in-place parallel sort over a range of elements specified 
-by <tt>[first, last)</tt>.
+by <tt>[first, last)</tt> using the given comparator.
 The following code sorts one million random integers in an increasing order on a GPU.
 
 @code{.cpp}

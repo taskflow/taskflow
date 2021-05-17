@@ -19,9 +19,9 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="112" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="112" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="classtf_1_1cudaFlowCapturer_1ab3950eababffc638a97a6a44c20824c2" prot="private" static="no">
-        <type>std::variant&lt; <ref refid="classtf_1_1cudaRoundRobinCapturing" kindref="compound">cudaRoundRobinCapturing</ref>, <ref refid="classtf_1_1cudaSequentialCapturing" kindref="compound">cudaSequentialCapturing</ref> &gt;</type>
-        <definition>using tf::cudaFlowCapturer::Optimizer =  std::variant&lt; cudaRoundRobinCapturing, cudaSequentialCapturing &gt;</definition>
+      <memberdef kind="typedef" id="classtf_1_1cudaFlowCapturer_1a2d360f36382310a3caeb750e1c546c17" prot="private" static="no">
+        <type>std::variant&lt; <ref refid="classtf_1_1cudaSequentialCapturing" kindref="compound">cudaSequentialCapturing</ref>, <ref refid="classtf_1_1cudaRoundRobinCapturing" kindref="compound">cudaRoundRobinCapturing</ref> &gt;</type>
+        <definition>using tf::cudaFlowCapturer::Optimizer =  std::variant&lt; cudaSequentialCapturing, cudaRoundRobinCapturing &gt;</definition>
         <argsstring></argsstring>
         <name>Optimizer</name>
         <briefdescription>
@@ -1018,7 +1018,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="389" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="593" bodyend="605"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="389" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="565" bodyend="577"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a99044cf477b1bd23c120eb8beea28eea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1062,7 +1062,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="406" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="609" bodyend="621"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="406" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="581" bodyend="593"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a02045cacdcff36864243aa9ca0c1d2ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1178,7 +1178,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="434" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="625" bodyend="641"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="434" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="597" bodyend="613"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a4247db18b90679eccb5a1f64743f8577" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1224,12 +1224,12 @@ This method is equivalent to the parallel execution of the following loop on a G
         <detaileddescription>
 <para>This method is equivalent to the parallel execution of the following loop on a GPU:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>uop(*first++);<sp/><sp/></highlight><highlight class="comment">//<sp/>initial<sp/>value<sp/>does<sp/>not<sp/>involve<sp/>in<sp/>the<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>u(*first++));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>uop(*first++));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="451" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="645" bodyend="660"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="451" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="617" bodyend="632"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a67c25aef3adbbc8eca69f8857161509c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1324,7 +1324,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="477" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="692" bodyend="705"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="477" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="732" bodyend="745"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a2c9e4fc3b08a74dce4adb0f10c75eaf3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1364,7 +1364,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="484" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="709" bodyend="722"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="484" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="749" bodyend="762"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a5a36ae28d5844cf281b1d351c359b1af" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1480,7 +1480,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="513" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="726" bodyend="743"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="513" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="766" bodyend="783"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a91bc91e5f13fda5f119d9b9f5f679782" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1527,7 +1527,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="520" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="747" bodyend="764"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="520" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_scan.hpp" bodystart="787" bodyend="804"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1ac2eec500f313481926197ff0b3aed343" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1651,7 +1651,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 Merges two sorted ranges <computeroutput>[a_first, a_last)</computeroutput> and <computeroutput>[b_first, b_last)</computeroutput> into one sorted range beginning at <computeroutput>c_first</computeroutput>.</para><para>A sequence is said to be sorted with respect to a comparator <computeroutput>comp</computeroutput> if for any iterator it pointing to the sequence and any non-negative integer <computeroutput>n</computeroutput> such that <computeroutput>it + n</computeroutput> is a valid iterator pointing to an element of the sequence, <computeroutput>comp(*(it + n), *it)</computeroutput> evaluates to false. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="549" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="673" bodyend="687"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="549" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="687" bodyend="701"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a3bcb91eb1579451ece602206f20845f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1722,7 +1722,7 @@ Merges two sorted ranges <computeroutput>[a_first, a_last)</computeroutput> and 
 Sorts elements in the range <computeroutput>[first, last)</computeroutput> with the given comparator. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="567" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" bodystart="558" bodyend="572"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="567" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" bodystart="570" bodyend="584"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1adebb0bc4a894ff224f412f2ce46d3e51" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2089,7 +2089,7 @@ Sorts elements in the range <computeroutput>[first, last)</computeroutput> with 
 <para>This method is similar to <ref refid="classtf_1_1cudaFlowCapturer_1a326516e69ca7a1b15aad237428990791" kindref="member">cudaFlowCapturer::reduce</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="669" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="664" bodyend="678"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="669" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="636" bodyend="650"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1ae9db23e84943259914f2972c56d1ea6f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2133,7 +2133,7 @@ Sorts elements in the range <computeroutput>[first, last)</computeroutput> with 
 <para>This method is similar to <ref refid="classtf_1_1cudaFlowCapturer_1a99044cf477b1bd23c120eb8beea28eea" kindref="member">cudaFlowCapturer::uninitialized_reduce</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="678" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="682" bodyend="695"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="678" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="654" bodyend="667"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a5ae59c40f0dbb216eb218c42fcea0afa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2184,7 +2184,7 @@ Sorts elements in the range <computeroutput>[first, last)</computeroutput> with 
 <para>This method is similar to <ref refid="classtf_1_1cudaFlowCapturer_1a02045cacdcff36864243aa9ca0c1d2ef" kindref="member">cudaFlowCapturer::transform_reduce</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="689" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="699" bodyend="715"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="689" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="671" bodyend="687"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1aef8cee606fcb1ba6b9593edb1f81e55d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2235,7 +2235,7 @@ Sorts elements in the range <computeroutput>[first, last)</computeroutput> with 
 <para>This method is similar to <ref refid="classtf_1_1cudaFlowCapturer_1a4247db18b90679eccb5a1f64743f8577" kindref="member">cudaFlowCapturer::transform_uninitialized_reduce</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="700" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="719" bodyend="735"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="700" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="691" bodyend="707"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1aaba27927060cd0a05b0704f440f69350" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2290,7 +2290,7 @@ Sorts elements in the range <computeroutput>[first, last)</computeroutput> with 
 <para>This method is similar to <ref refid="classtf_1_1cudaFlowCapturer_1ac2eec500f313481926197ff0b3aed343" kindref="member">cudaFlowCapturer::merge</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="711" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="691" bodyend="705"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="711" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="705" bodyend="719"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a8a96e02ab1e4b7c9b05c633771d15ed6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2327,7 +2327,7 @@ Sorts elements in the range <computeroutput>[first, last)</computeroutput> with 
 <para>This method is similar to <ref refid="classtf_1_1cudaFlowCapturer_1a3bcb91eb1579451ece602206f20845f4" kindref="member">cudaFlowCapturer::sort</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="722" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" bodystart="576" bodyend="590"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="722" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" bodystart="588" bodyend="602"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a8678573f19e01f441a6b4108e62781f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2521,7 +2521,7 @@ Immediately offloads the cudaFlow captured so far onto a GPU and repeatedly runs
       <member refid="classtf_1_1cudaFlowCapturer_1a0bc6231cc6b1dbf5171b0bc421dc6577" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>offload_n</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1a8678573f19e01f441a6b4108e62781f3" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>offload_until</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>on</name></member>
-      <member refid="classtf_1_1cudaFlowCapturer_1ab3950eababffc638a97a6a44c20824c2" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>Optimizer</name></member>
+      <member refid="classtf_1_1cudaFlowCapturer_1a2d360f36382310a3caeb750e1c546c17" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>Optimizer</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1ae5310625fe71ccb8cae2eb8f09c6ae67" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>rebind_copy</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1ada3122f267017f2642acee80cb5b8ec8" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>rebind_for_each</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1a45f8ddf368fd1944cc9419926dfb2e13" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>rebind_for_each_index</name></member>

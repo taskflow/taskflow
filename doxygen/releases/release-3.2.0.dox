@@ -42,6 +42,16 @@ To use %Taskflow v3.2.0, you need a compiler that supports C++17:
 
 @subsection release-3-2-0_cudaflow cudaFlow
 
+@li added tf::cudaFlow::reduce
+@li added tf::cudaFlow::transform_reduce
+@li added tf::cudaFlow::uninitialized_reduce
+@li added tf::cudaFlow::transform_uninitialized_reduce
+@li added tf::cudaFlow::inclusive_scan
+@li added tf::cudaFlow::exclusive_scan
+@li added tf::cudaFlow::transform_inclusive_scan
+@li added tf::cudaFlow::transform_exclusive_scan
+@li added tf::cudaFlow::merge 
+@li added tf::cudaFlow::sort
 @li added tf::cudaFlowCapturer::reduce
 @li added tf::cudaFlowCapturer::transform_reduce
 @li added tf::cudaFlowCapturer::uninitialized_reduce
@@ -100,10 +110,14 @@ There are no breaking changes in this release.
 @li removed tf::cudaFlow::kernel_on method
 @li removed explicit partitions in parallel iterations and reductions
 
-
 @section release-3-2-0_documentation Documentation
 
-@li revised @ref CUDAReduce
+@li revised @ref cudaFlowReduce
+@li added @ref cudaFlowAlgorithms
+  + @ref cudaFlowReduce
+  + @ref cudaFlowScan
+  + @ref cudaFlowMerge
+  + @ref cudaFlowSort
 @li added @ref cudaStandardAlgorithms
   + @ref CUDASTDExecutionPolicy
   + @ref CUDASTDReduce 

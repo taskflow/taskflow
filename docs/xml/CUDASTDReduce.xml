@@ -71,7 +71,7 @@
 </programlisting></para></sect1>
 <sect1 id="CUDASTDReduce_1CUDASTDReduceTransformedItemsWithoutAnInitialValue">
 <title>Reduce a Range of Transformed Items without an Initial Value</title>
-<para>tf::cuda_uninitialized_transform_reduce performs a parallel reduction over a range of transformed items without an initial value. This method represents a parallel execution of the following reduction loop on a GPU:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>*first++;<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>to<sp/>participate<sp/>in<sp/>the<sp/>reduction<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
+<para><ref refid="namespacetf_1a1367afb7d02d5cfe0caabbc90762620d" kindref="member">tf::cuda_transform_uninitialized_reduce</ref> performs a parallel reduction over a range of transformed items without an initial value. This method represents a parallel execution of the following reduction loop on a GPU:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>*first++;<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>to<sp/>participate<sp/>in<sp/>the<sp/>reduction<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>uop(*first++));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>

@@ -1,0 +1,53 @@
+namespace tf {
+
+/** @page cudaFlowMerge Parallel Merge
+
+%cudaFlow provides template methods to create parallel merge tasks 
+on a CUDA GPU.
+
+@tableofcontents
+
+@section cudaFlowMergeTwoRangesOfItems Merge two Sorted Ranges of Items
+
+tf::cudaFlow::merge performs a parallel merge over two ranges of elements
+into a sorted range of items.
+
+The following code merges two sorted arrays @c input_1 and @c input_2, 
+each of 1000 items, into a sorted array @c output of 2000 items.
+
+@code{.cpp}
+const size_t N = 1000;
+int* input_1 = tf::cuda_malloc_shared<int>(N);    // input vector 1
+int* input_2 = tf::cuda_malloc_shared<int>(N);    // input vector 2
+int* output  = tf::cuda_malloc_shared<int>(2*N);  // output vector
+
+// initializes the data
+for(size_t i=0; i<N; i++) {
+  input_1[i] = rand()%100;
+  input_2[i] = rand()%100;
+}
+std::sort(input_1, input1 + N);
+std::sort(input_2, input2 + N);
+
+// merge input_1 and input_2 to output
+tf::cudaFlow cf;
+tf::cudaTask task = cf.merge(
+  input_1, input_1 + N, input_2, input_2 + N, output, 
+  []__device__ (int a, int b) { return a < b; }  // comparator
+);
+cf.offload();
+@endcode
+
+@section cudaFlowMergeMiscellaneousItems Miscellaneous Items
+
+Parallel merge algorithms are also available in tf::cudaFlowCapturer
+with the same API.
+
+*/
+}
+
+
+
+
+
+

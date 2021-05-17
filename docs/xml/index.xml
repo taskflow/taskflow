@@ -147,9 +147,18 @@
     <member refid="classtf_1_1cudaFlow_1a97c248490dbde983378f757239eaed4a" kind="function"><name>for_each</name></member>
     <member refid="classtf_1_1cudaFlow_1ab5a7c12e383be4972844a9f29033e487" kind="function"><name>for_each_index</name></member>
     <member refid="classtf_1_1cudaFlow_1a552f2da29009113beee4ee90bc95ae65" kind="function"><name>transform</name></member>
-    <member refid="classtf_1_1cudaFlow_1a5fcd6d7d183707c60f9ff888db2df964" kind="function"><name>reduce</name></member>
-    <member refid="classtf_1_1cudaFlow_1a01b86cb5bc492bdb2ecb423692dc342e" kind="function"><name>uninitialized_reduce</name></member>
+    <member refid="classtf_1_1cudaFlow_1a931a0f99034bccf377aea35e221f50bc" kind="function"><name>reduce</name></member>
+    <member refid="classtf_1_1cudaFlow_1a3a5189b9c9494d2a63a983c32cf234f6" kind="function"><name>uninitialized_reduce</name></member>
+    <member refid="classtf_1_1cudaFlow_1a1af5d4e8a3820f9b9d8abbe4f4f6c4a4" kind="function"><name>transform_reduce</name></member>
+    <member refid="classtf_1_1cudaFlow_1a9716ae4016ac058b32becef119faaddd" kind="function"><name>transform_uninitialized_reduce</name></member>
+    <member refid="classtf_1_1cudaFlow_1a062cc98a0b2d2199b50c3cbad16f5fb8" kind="function"><name>inclusive_scan</name></member>
+    <member refid="classtf_1_1cudaFlow_1a8d59da7369a8634fea307219c7eb17c4" kind="function"><name>exclusive_scan</name></member>
+    <member refid="classtf_1_1cudaFlow_1a5028579479a2393ce57ad37a7a809588" kind="function"><name>transform_inclusive_scan</name></member>
+    <member refid="classtf_1_1cudaFlow_1ae80df494109b0dc6db77111917207e6b" kind="function"><name>transform_exclusive_scan</name></member>
+    <member refid="classtf_1_1cudaFlow_1af8fa5d69a57d010d7a3ee2756d85859c" kind="function"><name>merge</name></member>
+    <member refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kind="function"><name>sort</name></member>
     <member refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" kind="function"><name>capture</name></member>
+    <member refid="classtf_1_1cudaFlow_1a921a73033ed78070f4e5c40fe5d211a7" kind="function"><name>update_capture</name></member>
     <member refid="classtf_1_1cudaFlow_1ac54401e49da65ce06669646546600755" kind="function"><name>update_host</name></member>
     <member refid="classtf_1_1cudaFlow_1abab3a11129e6286c1de3deecedae8090" kind="function"><name>update_kernel</name></member>
     <member refid="classtf_1_1cudaFlow_1a7972c77ba5f533b69e4b1dc55e87374d" kind="function"><name>update_copy</name></member>
@@ -157,17 +166,12 @@
     <member refid="classtf_1_1cudaFlow_1a603072d44265de60647a7bcc5aaebace" kind="function"><name>update_memset</name></member>
     <member refid="classtf_1_1cudaFlow_1a4a319c3e47fc538f6c31a7317c6a17e0" kind="function"><name>update_fill</name></member>
     <member refid="classtf_1_1cudaFlow_1a62a042795e4a089ab633d809af6108a6" kind="function"><name>update_zero</name></member>
-    <member refid="classtf_1_1cudaFlow_1a8da47a799fbe559ee22dfac976049c17" kind="function"><name>update_for_each</name></member>
-    <member refid="classtf_1_1cudaFlow_1a5916fdcf1b54e50aef69fa50a32127e8" kind="function"><name>update_for_each_index</name></member>
-    <member refid="classtf_1_1cudaFlow_1a57f47fc1a6fd2b17cfe2c7455dea1e55" kind="function"><name>update_transform</name></member>
-    <member refid="classtf_1_1cudaFlow_1a8d1a2a2aa9f6f44e0b53553317917f61" kind="function"><name>update_reduce</name></member>
-    <member refid="classtf_1_1cudaFlow_1a3b81b2f14c4bdfc0a2f4a8b7dd323da6" kind="function"><name>update_uninitialized_reduce</name></member>
     <member refid="classtf_1_1cudaFlow_1a40554a27542772c13c51e0815d883d8b" kind="function"><name>cudaFlow</name></member>
     <member refid="classtf_1_1cudaFlow_1a09692e4d2ab7f571d0ac7320b001d139" kind="function"><name>_default_block_size</name></member>
   </compound>
   <compound refid="classtf_1_1cudaFlowCapturer" kind="class"><name>tf::cudaFlowCapturer</name>
     <member refid="classtf_1_1cudaFlowCapturer_1a5f92f6ccad52aed18441d80bc186049f" kind="typedef"><name>handle_t</name></member>
-    <member refid="classtf_1_1cudaFlowCapturer_1ab3950eababffc638a97a6a44c20824c2" kind="typedef"><name>Optimizer</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a2d360f36382310a3caeb750e1c546c17" kind="typedef"><name>Optimizer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a9f64f729511a922781a59663ff1c6250" kind="friend"><name>cudaFlow</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a86234fa25a7b2bbe6caaa9ecb2471c78" kind="variable"><name>_MAX_BLOCK_SIZE</name></member>
@@ -1373,8 +1377,6 @@
     <member refid="namespacetf_1ab229138d66d95f0b4656e56f496800ae" kind="function"><name>cuda_transform_reduce_async</name></member>
     <member refid="namespacetf_1a1367afb7d02d5cfe0caabbc90762620d" kind="function"><name>cuda_transform_uninitialized_reduce</name></member>
     <member refid="namespacetf_1a41066971f38829ce32c134ee9afb9614" kind="function"><name>cuda_transform_uninitialized_reduce_async</name></member>
-    <member refid="namespacetf_1ac4359d58dabef2ff12d7e66e72026c99" kind="function"><name>cuda_warp_reduce</name></member>
-    <member refid="namespacetf_1aba73f24af497b714399e07b8a87d1a59" kind="function"><name>cuda_reduce</name></member>
     <member refid="namespacetf_1afd7e7a0886352201cced5c55205f3229" kind="function"><name>cuda_scan_buffer_size</name></member>
     <member refid="namespacetf_1affd3cc9cc8550ffead1f63616f22b64f" kind="function"><name>cuda_inclusive_scan</name></member>
     <member refid="namespacetf_1aca76fb5d4564ac64a5a110ace990b520" kind="function"><name>cuda_inclusive_scan_async</name></member>
@@ -1505,9 +1507,15 @@
   </compound>
   <compound refid="cudaflow__for__each_8dox" kind="file"><name>cudaflow_for_each.dox</name>
   </compound>
+  <compound refid="cudaflow__merge_8dox" kind="file"><name>cudaflow_merge.dox</name>
+  </compound>
   <compound refid="cudaflow__reduce_8dox" kind="file"><name>cudaflow_reduce.dox</name>
   </compound>
+  <compound refid="cudaflow__scan_8dox" kind="file"><name>cudaflow_scan.dox</name>
+  </compound>
   <compound refid="cudaflow__single__task_8dox" kind="file"><name>cudaflow_single_task.dox</name>
+  </compound>
+  <compound refid="cudaflow__sort_8dox" kind="file"><name>cudaflow_sort.dox</name>
   </compound>
   <compound refid="cudaflow__transform_8dox" kind="file"><name>cudaflow_transform.dox</name>
   </compound>
@@ -1719,7 +1727,13 @@
   </compound>
   <compound refid="ParallelTransformsCUDA" kind="page"><name>ParallelTransformsCUDA</name>
   </compound>
-  <compound refid="CUDAReduce" kind="page"><name>CUDAReduce</name>
+  <compound refid="cudaFlowReduce" kind="page"><name>cudaFlowReduce</name>
+  </compound>
+  <compound refid="cudaFlowScan" kind="page"><name>cudaFlowScan</name>
+  </compound>
+  <compound refid="cudaFlowMerge" kind="page"><name>cudaFlowMerge</name>
+  </compound>
+  <compound refid="cudaFlowSort" kind="page"><name>cudaFlowSort</name>
   </compound>
   <compound refid="LinearAlgebracublasFlowCapturer" kind="page"><name>LinearAlgebracublasFlowCapturer</name>
   </compound>

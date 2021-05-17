@@ -53,38 +53,38 @@ cudaTask cudaFlow::single_task(C&& c) {
   );
 }
 
-// Procedure: update_for_each
-template <typename I, typename C>
-void cudaFlow::update_for_each(
-  cudaTask task, I first, I last, C&& callable
-) {
-  // TODO: special case when N is 0?
-  size_t N = std::distance(first, last);
-  size_t B = _default_block_size(N);
-
-  update_kernel(
-    task, (N+B-1) / B, B, 0, first, N, std::forward<C>(callable)
-  );
-}
-
-// Procedure: update_for_each_index
-template <typename I, typename C>
-void cudaFlow::update_for_each_index(
-  cudaTask task, I beg, I end, I inc, C&& c
-) {
-
-  if(is_range_invalid(beg, end, inc)) {
-    TF_THROW("invalid range [", beg, ", ", end, ") with inc size ", inc);
-  }
-  
-  // TODO: special case when N is 0?
-  size_t N = distance(beg, end, inc);
-  size_t B = _default_block_size(N);
-
-  update_kernel(
-    task, (N+B-1) / B, B, 0, beg, inc, N, std::forward<C>(c)
-  );
-}
+//// Procedure: update_for_each
+//template <typename I, typename C>
+//void cudaFlow::update_for_each(
+//  cudaTask task, I first, I last, C&& callable
+//) {
+//  // TODO: special case when N is 0?
+//  size_t N = std::distance(first, last);
+//  size_t B = _default_block_size(N);
+//
+//  update_kernel(
+//    task, (N+B-1) / B, B, 0, first, N, std::forward<C>(callable)
+//  );
+//}
+//
+//// Procedure: update_for_each_index
+//template <typename I, typename C>
+//void cudaFlow::update_for_each_index(
+//  cudaTask task, I beg, I end, I inc, C&& c
+//) {
+//
+//  if(is_range_invalid(beg, end, inc)) {
+//    TF_THROW("invalid range [", beg, ", ", end, ") with inc size ", inc);
+//  }
+//  
+//  // TODO: special case when N is 0?
+//  size_t N = distance(beg, end, inc);
+//  size_t B = _default_block_size(N);
+//
+//  update_kernel(
+//    task, (N+B-1) / B, B, 0, beg, inc, N, std::forward<C>(c)
+//  );
+//}
 
 // Function: for_each
 template <typename I, typename C>

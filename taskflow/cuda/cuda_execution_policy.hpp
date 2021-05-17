@@ -12,6 +12,8 @@ namespace tf {
 /**
 @class cudaExecutionPolicy
 
+@brief class to define execution policy for CUDA standard algorithms
+
 @tparam NT number of threads per block
 @tparam VT number of work units per thread
 

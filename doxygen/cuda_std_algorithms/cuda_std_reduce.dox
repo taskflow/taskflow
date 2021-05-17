@@ -118,7 +118,7 @@ tf::cuda_reduce(tf::cudaDefaultExecutionPolicy{},
 
 @section CUDASTDReduceTransformedItemsWithoutAnInitialValue Reduce a Range of Transformed Items without an Initial Value
 
-tf::cuda_uninitialized_transform_reduce performs a parallel reduction 
+tf::cuda_transform_uninitialized_reduce performs a parallel reduction 
 over a range of transformed items without an initial value.
 This method represents a parallel execution of the following reduction loop
 on a GPU:

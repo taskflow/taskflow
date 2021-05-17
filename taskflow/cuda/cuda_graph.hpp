@@ -367,9 +367,10 @@ class cudaGraph : public CustomGraphBase {
 // cudaNode class
 // ----------------------------------------------------------------------------
 
-// class: cudaNode
-// each create_native_node is wrapped in a function to call at runtime 
-// in order to work with gpu context
+/** 
+@private
+@class: cudaNode
+*/
 class cudaNode {
   
   friend class cudaGraph;

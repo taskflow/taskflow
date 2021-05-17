@@ -38,20 +38,20 @@ cudaTask cudaFlow::transform(I first, I last, C&& c, S... srcs) {
   );
 }
 
-// Procedure: update_transform
-template <typename I, typename C, typename... S>
-void cudaFlow::update_transform(
-  cudaTask task, I first, I last, C&& c, S... srcs
-) {
-  
-  // TODO: special case when N is 0?
-  size_t N = std::distance(first, last);
-  size_t B = _default_block_size(N);
-
-  update_kernel(
-    task, (N+B-1) / B, B, 0, first, N, std::forward<C>(c), srcs...
-  );
-}
+//// Procedure: update_transform
+//template <typename I, typename C, typename... S>
+//void cudaFlow::update_transform(
+//  cudaTask task, I first, I last, C&& c, S... srcs
+//) {
+//  
+//  // TODO: special case when N is 0?
+//  size_t N = std::distance(first, last);
+//  size_t B = _default_block_size(N);
+//
+//  update_kernel(
+//    task, (N+B-1) / B, B, 0, first, N, std::forward<C>(c), srcs...
+//  );
+//}
 
 // ----------------------------------------------------------------------------
 // cudaFlowCapturer

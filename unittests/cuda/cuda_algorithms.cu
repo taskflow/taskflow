@@ -359,27 +359,27 @@ void for_each() {
   }
 }
 
-TEST_CASE("for_each.int" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.for_each.int" * doctest::timeout(300)) {
   for_each<int, tf::cudaFlow>();
 }
 
-TEST_CASE("for_each.float" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.for_each.float" * doctest::timeout(300)) {
   for_each<float, tf::cudaFlow>();
 }
 
-TEST_CASE("for_each.double" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.for_each.double" * doctest::timeout(300)) {
   for_each<double, tf::cudaFlow>();
 }
 
-TEST_CASE("capture_for_each.int" * doctest::timeout(300)) {
+TEST_CASE("capture.for_each.int" * doctest::timeout(300)) {
   for_each<int, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_for_each.float" * doctest::timeout(300)) {
+TEST_CASE("capture.for_each.float" * doctest::timeout(300)) {
   for_each<float, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_for_each.double" * doctest::timeout(300)) {
+TEST_CASE("capture.for_each.double" * doctest::timeout(300)) {
   for_each<double, tf::cudaFlowCapturer>();
 }
 
@@ -437,27 +437,27 @@ void for_each_index() {
   }
 }
 
-TEST_CASE("for_each_index.int" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.for_each_index.int" * doctest::timeout(300)) {
   for_each_index<int, tf::cudaFlow>();
 }
 
-TEST_CASE("for_each_index.float" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.for_each_index.float" * doctest::timeout(300)) {
   for_each_index<float, tf::cudaFlow>();
 }
 
-TEST_CASE("for_each_index.double" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.for_each_index.double" * doctest::timeout(300)) {
   for_each_index<double, tf::cudaFlow>();
 }
 
-TEST_CASE("capture_for_each_index.int" * doctest::timeout(300)) {
+TEST_CASE("capture.for_each_index.int" * doctest::timeout(300)) {
   for_each_index<int, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_for_each_index.float" * doctest::timeout(300)) {
+TEST_CASE("capture.for_each_index.float" * doctest::timeout(300)) {
   for_each_index<float, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_for_each_index.double" * doctest::timeout(300)) {
+TEST_CASE("capture.for_each_index.double" * doctest::timeout(300)) {
   for_each_index<double, tf::cudaFlowCapturer>();
 }
 
@@ -535,11 +535,11 @@ void transform() {
   }
 }
 
-TEST_CASE("transform" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.transform" * doctest::timeout(300)) {
   transform<tf::cudaFlow>();
 }
 
-TEST_CASE("capture_transform" * doctest::timeout(300) ) {
+TEST_CASE("capture.transform" * doctest::timeout(300) ) {
   transform<tf::cudaFlowCapturer>();
 }
 
@@ -601,27 +601,27 @@ void reduce() {
   }
 }
 
-TEST_CASE("reduce.int" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.reduce.int" * doctest::timeout(300)) {
   reduce<int, tf::cudaFlow>();
 }
 
-TEST_CASE("reduce.float" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.reduce.float" * doctest::timeout(300)) {
   reduce<float, tf::cudaFlow>();
 }
 
-TEST_CASE("reduce.double" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.reduce.double" * doctest::timeout(300)) {
   reduce<double, tf::cudaFlow>();
 }
 
-TEST_CASE("capture_reduce.int" * doctest::timeout(300)) {
+TEST_CASE("capture.reduce.int" * doctest::timeout(300)) {
   reduce<int, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_reduce.float" * doctest::timeout(300)) {
+TEST_CASE("capture.reduce.float" * doctest::timeout(300)) {
   reduce<float, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_reduce.double" * doctest::timeout(300)) {
+TEST_CASE("capture.reduce.double" * doctest::timeout(300)) {
   reduce<double, tf::cudaFlow>();
 }
 
@@ -683,27 +683,27 @@ void uninitialized_reduce() {
   }
 }
 
-TEST_CASE("uninitialized_reduce.int" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.uninitialized_reduce.int" * doctest::timeout(300)) {
   uninitialized_reduce<int, tf::cudaFlow>();
 }
 
-TEST_CASE("uninitialized_reduce.float" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.uninitialized_reduce.float" * doctest::timeout(300)) {
   uninitialized_reduce<float, tf::cudaFlow>();
 }
 
-TEST_CASE("uninitialized_reduce.double" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.uninitialized_reduce.double" * doctest::timeout(300)) {
   uninitialized_reduce<double, tf::cudaFlow>();
 }
 
-TEST_CASE("capture_uninitialized_reduce.int" * doctest::timeout(300)) {
+TEST_CASE("capture.uninitialized_reduce.int" * doctest::timeout(300)) {
   uninitialized_reduce<int, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_uninitialized_reduce.float" * doctest::timeout(300)) {
+TEST_CASE("capture.uninitialized_reduce.float" * doctest::timeout(300)) {
   uninitialized_reduce<float, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_uninitialized_reduce.double" * doctest::timeout(300)) {
+TEST_CASE("capture.uninitialized_reduce.double" * doctest::timeout(300)) {
   uninitialized_reduce<double, tf::cudaFlow>();
 }
 
@@ -766,15 +766,27 @@ void transform_reduce() {
   }
 }
 
-TEST_CASE("capture_transform_reduce.int" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.transform_reduce.int" * doctest::timeout(300)) {
+  transform_reduce<int, tf::cudaFlow>();
+}
+
+TEST_CASE("cudaflow.transform_reduce.float" * doctest::timeout(300)) {
+  transform_reduce<float, tf::cudaFlow>();
+}
+
+TEST_CASE("cudaflow.transform_reduce.double" * doctest::timeout(300)) {
+  transform_reduce<double, tf::cudaFlow>();
+}
+
+TEST_CASE("capture.transform_reduce.int" * doctest::timeout(300)) {
   transform_reduce<int, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_transform_reduce.float" * doctest::timeout(300)) {
+TEST_CASE("capture.transform_reduce.float" * doctest::timeout(300)) {
   transform_reduce<float, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_transform_reduce.double" * doctest::timeout(300)) {
+TEST_CASE("capture.transform_reduce.double" * doctest::timeout(300)) {
   transform_reduce<double, tf::cudaFlowCapturer>();
 }
 
@@ -837,15 +849,27 @@ void transform_uninitialized_reduce() {
   }
 }
 
-TEST_CASE("capture_transform_uninitialized_reduce.int" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.transform_uninitialized_reduce.int" * doctest::timeout(300)) {
+  transform_uninitialized_reduce<int, tf::cudaFlow>();
+}
+
+TEST_CASE("cudaflow.transform_uninitialized_reduce.float" * doctest::timeout(300)) {
+  transform_uninitialized_reduce<float, tf::cudaFlow>();
+}
+
+TEST_CASE("cudaflow.transform_uninitialized_reduce.double" * doctest::timeout(300)) {
+  transform_uninitialized_reduce<double, tf::cudaFlow>();
+}
+
+TEST_CASE("capture.transform_uninitialized_reduce.int" * doctest::timeout(300)) {
   transform_uninitialized_reduce<int, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_transform_uninitialized_reduce.float" * doctest::timeout(300)) {
+TEST_CASE("capture.transform_uninitialized_reduce.float" * doctest::timeout(300)) {
   transform_uninitialized_reduce<float, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_transform_uninitialized_reduce.double" * doctest::timeout(300)) {
+TEST_CASE("capture.transform_uninitialized_reduce.double" * doctest::timeout(300)) {
   transform_uninitialized_reduce<double, tf::cudaFlowCapturer>();
 }
 
@@ -926,11 +950,19 @@ void scan() {
   }
 }
 
-TEST_CASE("capture_scan.int" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.scan.int" * doctest::timeout(300)) {
+  scan<int, tf::cudaFlow>();
+}
+
+TEST_CASE("cudaflow.scan.size_t" * doctest::timeout(300)) {
+  scan<size_t, tf::cudaFlow>();
+}
+
+TEST_CASE("capture.scan.int" * doctest::timeout(300)) {
   scan<int, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_scan.size_t" * doctest::timeout(300)) {
+TEST_CASE("capture.scan.size_t" * doctest::timeout(300)) {
   scan<size_t, tf::cudaFlowCapturer>();
 }
 
@@ -1014,11 +1046,19 @@ void transform_scan() {
   }
 }
 
-TEST_CASE("capture_transform_scan.int" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.scan.int" * doctest::timeout(300)) {
+  transform_scan<int, tf::cudaFlow>();
+}
+
+TEST_CASE("cudaflow.scan.size_t" * doctest::timeout(300)) {
+  transform_scan<size_t, tf::cudaFlow>();
+}
+
+TEST_CASE("capture.transform_scan.int" * doctest::timeout(300)) {
   transform_scan<int, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_transform_scan.size_t" * doctest::timeout(300)) {
+TEST_CASE("capture.transform_scan.size_t" * doctest::timeout(300)) {
   transform_scan<size_t, tf::cudaFlowCapturer>();
 }
 
@@ -1090,11 +1130,19 @@ void merge_keys() {
   }
 }
 
-TEST_CASE("capture_merge_keys.int" * doctest::timeout(300)) {
-  merge_keys<int, tf::cudaFlowCapturer>();
+TEST_CASE("cudaflow.merge_keys.int" * doctest::timeout(300)) {
+  merge_keys<int, tf::cudaFlow>();
 }
 
-TEST_CASE("capture_merge_keys.float" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.merge_keys.float" * doctest::timeout(300)) {
+  merge_keys<float, tf::cudaFlow>();
+}
+
+TEST_CASE("cudaflow.merge_keys.int" * doctest::timeout(300)) {
+  merge_keys<int, tf::cudaFlow>();
+}
+
+TEST_CASE("capture.merge_keys.float" * doctest::timeout(300)) {
   merge_keys<float, tf::cudaFlowCapturer>();
 }
 
@@ -1156,11 +1204,19 @@ void sort_keys() {
   }
 }
 
-TEST_CASE("capture_sort_keys.int" * doctest::timeout(300)) {
+TEST_CASE("cudaflow.sort_keys.int" * doctest::timeout(300)) {
+  sort_keys<int, tf::cudaFlow>();
+}
+
+TEST_CASE("cudaflow.sort_keys.float" * doctest::timeout(300)) {
+  sort_keys<float, tf::cudaFlow>();
+}
+
+TEST_CASE("capture.sort_keys.int" * doctest::timeout(300)) {
   sort_keys<int, tf::cudaFlowCapturer>();
 }
 
-TEST_CASE("capture_sort_keys.float" * doctest::timeout(300)) {
+TEST_CASE("capture.sort_keys.float" * doctest::timeout(300)) {
   sort_keys<float, tf::cudaFlowCapturer>();
 }
 

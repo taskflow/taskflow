@@ -1,0 +1,68 @@
+namespace tf {
+
+/** @page cudaFlowSort Parallel Sort
+
+%cudaFlow provides template methods to create parallel sort tasks 
+on a CUDA GPU.
+
+@tableofcontents
+
+@section cudaFlowSortARangeofItems Sort a Range of Items
+
+tf::cudaFlow::sort performs an in-place parallel sort over a range of elements specified 
+by <tt>[first, last)</tt> using the given comparator.
+The following code sorts one million random integers in an increasing order on a GPU.
+
+@code{.cpp}
+const size_t N = 1000000;
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+for(size_t i=0; i<N; i++) 
+  vec[i] = rand();
+} 
+
+// create a cudaFlow of one task to perform parallel sort
+tf::cudaFlow cf;
+tf::cudaTask task = cf.sort(vec, vec + N);
+cf.offload();
+
+assert(std::is_sorted(vec, vec+N));
+@endcode
+
+You can specify a comparator to tf::cudaFlow::sort to alter the sorting order.
+For example, the following code sorts one million random integers
+in an decreasing order on a GPU.
+
+@code{.cpp}
+const size_t N = 1000000;
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+for(size_t i=0; i<N; i++) 
+  vec[i] = rand();
+} 
+
+// create a cudaFlow of one task to perform parallel sort
+tf::cudaFlow cf;
+tf::cudaTask task = cf.sort(
+  vec, vec + N, [] __device__ (int a, int b) { return a > b; }
+);
+cf.offload();
+
+assert(std::is_sorted(vec, vec+N, [](int a, int b){ return a > b; }));
+@endcode
+
+@section cudaFlowSortMiscellaneousItems Miscellaneous Items
+
+Parallel sort algorithms are also available in tf::cudaFlowCapturer
+with the same API.
+
+*/
+}
+
+
+
+
+
+

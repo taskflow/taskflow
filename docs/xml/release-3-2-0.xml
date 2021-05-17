@@ -40,6 +40,16 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-2-0_1release-3-2-0_cudaflow">
 <title>cudaFlow</title>
 <para><itemizedlist>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a931a0f99034bccf377aea35e221f50bc" kindref="member">tf::cudaFlow::reduce</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a1af5d4e8a3820f9b9d8abbe4f4f6c4a4" kindref="member">tf::cudaFlow::transform_reduce</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a3a5189b9c9494d2a63a983c32cf234f6" kindref="member">tf::cudaFlow::uninitialized_reduce</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a9716ae4016ac058b32becef119faaddd" kindref="member">tf::cudaFlow::transform_uninitialized_reduce</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a062cc98a0b2d2199b50c3cbad16f5fb8" kindref="member">tf::cudaFlow::inclusive_scan</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a8d59da7369a8634fea307219c7eb17c4" kindref="member">tf::cudaFlow::exclusive_scan</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a5028579479a2393ce57ad37a7a809588" kindref="member">tf::cudaFlow::transform_inclusive_scan</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1ae80df494109b0dc6db77111917207e6b" kindref="member">tf::cudaFlow::transform_exclusive_scan</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1af8fa5d69a57d010d7a3ee2756d85859c" kindref="member">tf::cudaFlow::merge</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">tf::cudaFlow::sort</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a326516e69ca7a1b15aad237428990791" kindref="member">tf::cudaFlowCapturer::reduce</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a02045cacdcff36864243aa9ca0c1d2ef" kindref="member">tf::cudaFlowCapturer::transform_reduce</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a99044cf477b1bd23c120eb8beea28eea" kindref="member">tf::cudaFlowCapturer::uninitialized_reduce</ref> </para></listitem>
@@ -111,7 +121,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
-<listitem><para>revised <ref refid="CUDAReduce" kindref="compound">Parallel Reduction</ref> </para></listitem>
+<listitem><para>revised <ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref> </para></listitem>
+<listitem><para>added <ref refid="cudaFlowAlgorithms" kindref="compound">cudaFlow Algorithms</ref><itemizedlist>
+<listitem><para><ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="cudaFlowScan" kindref="compound">Parallel Scan</ref></para></listitem><listitem><para><ref refid="cudaFlowMerge" kindref="compound">Parallel Merge</ref></para></listitem><listitem><para><ref refid="cudaFlowSort" kindref="compound">Parallel Sort</ref> </para></listitem></itemizedlist>
+</para></listitem>
 <listitem><para>added <ref refid="cudaStandardAlgorithms" kindref="compound">CUDA Standard Algorithms</ref><itemizedlist>
 <listitem><para><ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref></para></listitem><listitem><para><ref refid="CUDASTDReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="CUDASTDScan" kindref="compound">Parallel Scan</ref></para></listitem><listitem><para><ref refid="CUDASTDMerge" kindref="compound">Parallel Merge</ref></para></listitem><listitem><para><ref refid="CUDASTDSort" kindref="compound">Parallel Sort</ref></para></listitem></itemizedlist>
 </para></listitem>

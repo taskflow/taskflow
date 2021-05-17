@@ -36,7 +36,7 @@ for(size_t i=1; i<N; i++) {
 @endcode
 
 On the other hand, tf::cuda_exclusive_scan computes an exclusive prefix sum operation.
-The term &quot;inclusive&quot; means that the i-th input element is @em NOT included 
+The term &quot;exclusive&quot; means that the i-th input element is @em NOT included 
 in the i-th sum.
 
 @code{.cpp}
@@ -78,18 +78,28 @@ for(size_t i=1; i<N; i++) {
 }
 @endcode
 
-Similar, tf::cuda_transform_exclusive_scan performs an exclusive prefix sum
+Similarly, tf::cuda_transform_exclusive_scan performs an exclusive prefix sum
 over a range of transformed items.
 The following code computes the exclusive prefix sum over 1000000 transformed items
 each multipled by 10.
 
 @code{.cpp}
+const size_t N = 1000000;
+int* input  = tf::cuda_malloc_shared<int>(N);  // input  vector
+int* output = tf::cuda_malloc_shared<int>(N);  // output vector
+
+// initializes the data
+for(size_t i=0; i<N; i++) 
+  input[i] = rand();
+} 
+
 // computes exclusive scan over transformed input and stores the result in output
 tf::cuda_transform_exclusive_scan(tf::cudaDefaultExecutionPolicy{}, 
   input, input + N, output, 
   [] __device__ (int a, int b) { return a + b; },  // binary scan operator
   [] __device__ (int a) { return a*10; }           // unary transform operator
 );
+
 // verifies the result
 for(size_t i=1; i<N; i++) {
   assert(output[i] == output[i-1] + input[i-1] * 10);

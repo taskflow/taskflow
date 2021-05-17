@@ -1051,7 +1051,7 @@
             <p>similar to <a href="classtf_1_1cudaFlowCapturer.html#a02045cacdcff36864243aa9ca0c1d2ef" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />transform_reduce</a> but does not assume any initial value to reduce</p>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>  <span class="c1">// initial value does not involve in the loop</span>
 <span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
-  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="n">u</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">));</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">));</span>
 <span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a67c25aef3adbbc8eca69f8857161509c"><div>

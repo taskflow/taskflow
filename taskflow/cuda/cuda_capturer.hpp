@@ -112,8 +112,8 @@ class cudaFlowCapturer {
   using handle_t = std::variant<External, Internal>;
 
   using Optimizer = std::variant<
-    cudaRoundRobinCapturing,
-    cudaSequentialCapturing
+    cudaSequentialCapturing,
+    cudaRoundRobinCapturing
     //cudaGreedyCapturing
   >;
 
@@ -443,7 +443,7 @@ class cudaFlowCapturer {
     @code{.cpp}
     *result = uop(*first++);  // initial value does not involve in the loop
     while (first != last) {
-      *result = bop(*result, u(*first++));
+      *result = bop(*result, uop(*first++));
     }
     @endcode
     */
