@@ -23,7 +23,7 @@
 <codeline><highlight class="normal">}<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>*res<sp/>=<sp/>1000<sp/>+<sp/>(0<sp/>+<sp/>1<sp/>+<sp/>2<sp/>+<sp/>3<sp/>+<sp/>4<sp/>+<sp/>...<sp/>+<sp/>N-1)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a40904a487ebd144d786d17ac37a74924" kindref="member">tf::cuda_reduce</ref>(tf::cudaDefaultExecutionPolicy{},</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1a40904a487ebd144d786d17ac37a74924" kindref="member">tf::cuda_reduce</ref>(<ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref>{},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>vec,<sp/>vec<sp/>+<sp/>N,<sp/>res,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting></para></sect1>
@@ -43,7 +43,7 @@
 <codeline><highlight class="normal">}<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>*res<sp/>=<sp/>0<sp/>+<sp/>1<sp/>+<sp/>2<sp/>+<sp/>3<sp/>+<sp/>4<sp/>+<sp/>...<sp/>+<sp/>N-1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a1b404e9dc801fb4c391aa22c94c211e2" kindref="member">tf::cuda_uninitialized_reduce</ref>(tf::cudaDefaultExecutionPolicy{},</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1a1b404e9dc801fb4c391aa22c94c211e2" kindref="member">tf::cuda_uninitialized_reduce</ref>(<ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref>{},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>vec,<sp/>vec<sp/>+<sp/>N,<sp/>res,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting></para></sect1>
@@ -63,7 +63,7 @@
 <codeline><highlight class="normal">}<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>*res<sp/>=<sp/>1000<sp/>+<sp/>(0*10<sp/>+<sp/>1*10<sp/>+<sp/>2*10<sp/>+<sp/>3*10<sp/>+<sp/>4*10<sp/>+<sp/>...<sp/>+<sp/>(N-1)*10)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a40904a487ebd144d786d17ac37a74924" kindref="member">tf::cuda_reduce</ref>(tf::cudaDefaultExecutionPolicy{},</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1a40904a487ebd144d786d17ac37a74924" kindref="member">tf::cuda_reduce</ref>(<ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref>{},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>vec,<sp/>vec<sp/>+<sp/>N,<sp/>res,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a*10;<sp/>}</highlight></codeline>
@@ -85,7 +85,7 @@
 <codeline><highlight class="normal">}<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>*res<sp/>=<sp/>0*10<sp/>+<sp/>1*10<sp/>+<sp/>2*10<sp/>+<sp/>3*10<sp/>+<sp/>4*10<sp/>+<sp/>...<sp/>+<sp/>(N-1)*10</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a1b404e9dc801fb4c391aa22c94c211e2" kindref="member">tf::cuda_uninitialized_reduce</ref>(tf::cudaDefaultExecutionPolicy{},</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1a1b404e9dc801fb4c391aa22c94c211e2" kindref="member">tf::cuda_uninitialized_reduce</ref>(<ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref>{},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>vec,<sp/>vec<sp/>+<sp/>N,<sp/>res,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a*10;<sp/>}</highlight></codeline>
@@ -108,7 +108,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal">*<sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>invoke<sp/>the<sp/>reduce<sp/>kernels<sp/>asynchronously<sp/>(same<sp/>for<sp/>other<sp/>reduction<sp/>variants)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1af8d8d018c3430e40bd3231adba0bd91d" kindref="member">tf::cuda_reduce_async</ref>(tf::cudaDefaultExecutionPolicy{my_stream},</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1af8d8d018c3430e40bd3231adba0bd91d" kindref="member">tf::cuda_reduce_async</ref>(<ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref>{my_stream},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>vec,<sp/>vec+N,<sp/>res,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>},<sp/>buffer</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>here,<sp/>res<sp/>may<sp/>not<sp/>be<sp/>ready<sp/>yet,<sp/>as<sp/>kernels<sp/>are<sp/>still<sp/>running<sp/>...</highlight><highlight class="normal"></highlight></codeline>

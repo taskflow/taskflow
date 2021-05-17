@@ -328,6 +328,14 @@ namespace tf {
 
 /** 
 @brief queries the buffer size in bytes needed to call scan kernels
+
+@tparam P execution policy type
+@tparam T value type
+
+@param count number of elements to scan
+
+The function is used to allocate a buffer for calling asynchronous scan.
+Please refer to @ref CUDASTDScan for details.
 */
 template <typename P, typename T>
 unsigned cuda_scan_buffer_size(unsigned count) {
@@ -340,20 +348,25 @@ unsigned cuda_scan_buffer_size(unsigned count) {
   return n*sizeof(T);
 }
 
-/** 
-@brief queries the buffer size in bytes needed to call scan kernels
-*/
-template <typename P, typename T, typename I>
-unsigned cuda_scan_buffer_size(I first, I last) {
-  return cuda_scan_buffer_size<P, T>(std::distance(first, last));
-}
-
 // ----------------------------------------------------------------------------
 // inclusive scan
 // ----------------------------------------------------------------------------
 
 /**
 @brief performs inclusive scan over a range of items
+
+@tparam P execution policy type
+@tparam I input iterator
+@tparam O output iterator
+@tparam C binary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the input range
+@param last iterator to the end of the input range
+@param output iterator to the beginning of the output
+@param op binary operator to apply to scan
+
+Please refer to @ref CUDASTDScan for details.
 */
 template<typename P, typename I, typename O, typename C>
 void cuda_inclusive_scan(P&& p, I first, I last, O output, C op) {
@@ -380,6 +393,20 @@ void cuda_inclusive_scan(P&& p, I first, I last, O output, C op) {
 
 /**
 @brief performs asynchronous inclusive scan over a range of items
+
+@tparam P execution policy type
+@tparam I input iterator
+@tparam O output iterator
+@tparam C binary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the input range
+@param last iterator to the end of the input range
+@param output iterator to the beginning of the output range
+@param op binary operator to apply to scan
+@param buf pointer to the temporary buffer
+
+Please refer to @ref CUDASTDScan for details.
 */
 template<typename P, typename I, typename O, typename C>
 void cuda_inclusive_scan_async(
@@ -404,6 +431,21 @@ void cuda_inclusive_scan_async(
 
 /**
 @brief performs inclusive scan over a range of transformed items
+
+@tparam P execution policy type
+@tparam I input iterator
+@tparam O output iterator
+@tparam C binary operator type
+@tparam U unary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the input range
+@param last iterator to the end of the input range
+@param output iterator to the beginning of the output range
+@param bop binary operator to apply to scan
+@param uop unary operator to apply to transform each item before scan
+
+Please refer to @ref CUDASTDScan for details.
 */
 template<typename P, typename I, typename O, typename C, typename U>
 void cuda_transform_inclusive_scan(
@@ -435,6 +477,22 @@ void cuda_transform_inclusive_scan(
 
 /**
 @brief performs asynchronous inclusive scan over a range of transformed items
+
+@tparam P execution policy type
+@tparam I input iterator
+@tparam O output iterator
+@tparam C binary operator type
+@tparam U unary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the input range
+@param last iterator to the end of the input range
+@param output iterator to the beginning of the output range
+@param bop binary operator to apply to scan
+@param uop unary operator to apply to transform each item before scan
+@param buf pointer to the temporary buffer
+
+Please refer to @ref CUDASTDScan for details.
 */
 template<typename P, typename I, typename O, typename C, typename U>
 void cuda_transform_inclusive_scan_async(
@@ -463,6 +521,19 @@ void cuda_transform_inclusive_scan_async(
 
 /**
 @brief performs exclusive scan over a range of items
+
+@tparam P execution policy type
+@tparam I input iterator
+@tparam O output iterator
+@tparam C binary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the input range
+@param last iterator to the end of the input range
+@param output iterator to the beginning of the output range
+@param op binary operator to apply to scan
+
+Please refer to @ref CUDASTDScan for details.
 */
 template<typename P, typename I, typename O, typename C>
 void cuda_exclusive_scan(P&& p, I first, I last, O output, C op) {
@@ -490,6 +561,20 @@ void cuda_exclusive_scan(P&& p, I first, I last, O output, C op) {
 
 /**
 @brief performs asynchronous exclusive scan over a range of items
+
+@tparam P execution policy type
+@tparam I input iterator
+@tparam O output iterator
+@tparam C binary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the input range
+@param last iterator to the end of the input range
+@param output iterator to the beginning of the output range
+@param op binary operator to apply to scan
+@param buf pointer to the temporary buffer
+
+Please refer to @ref CUDASTDScan for details.
 */
 template<typename P, typename I, typename O, typename C>
 void cuda_exclusive_scan_async(
@@ -514,6 +599,21 @@ void cuda_exclusive_scan_async(
 
 /**
 @brief performs exclusive scan over a range of items
+
+@tparam P execution policy type
+@tparam I input iterator
+@tparam O output iterator
+@tparam C binary operator type
+@tparam U unary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the input range
+@param last iterator to the end of the input range
+@param output iterator to the beginning of the output range
+@param bop binary operator to apply to scan
+@param uop unary operator to apply to transform each item before scan
+
+Please refer to @ref CUDASTDScan for details.
 */
 template<typename P, typename I, typename O, typename C, typename U>
 void cuda_transform_exclusive_scan(
@@ -545,6 +645,22 @@ void cuda_transform_exclusive_scan(
 
 /**
 @brief performs asynchronous exclusive scan over a range of items
+
+@tparam P execution policy type
+@tparam I input iterator
+@tparam O output iterator
+@tparam C binary operator type
+@tparam U unary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the input range
+@param last iterator to the end of the input range
+@param output iterator to the beginning of the output range
+@param bop binary operator to apply to scan
+@param uop unary operator to apply to transform each item before scan
+@param buf pointer to the temporary buffer
+
+Please refer to @ref CUDASTDScan for details.
 */
 template<typename P, typename I, typename O, typename C, typename U>
 void cuda_transform_exclusive_scan_async(
@@ -578,7 +694,7 @@ cudaTask cudaFlowCapturer::inclusive_scan(I first, I last, O output, C op) {
   using T = typename std::iterator_traits<O>::value_type;
   
   auto bufsz = cuda_scan_buffer_size<cudaDefaultExecutionPolicy, T>(
-    first, last
+    std::distance(first, last)
   );
 
   return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
@@ -595,7 +711,7 @@ cudaTask cudaFlowCapturer::exclusive_scan(I first, I last, O output, C op) {
   using T = typename std::iterator_traits<O>::value_type;
   
   auto bufsz = cuda_scan_buffer_size<cudaDefaultExecutionPolicy, T>(
-    first, last
+    std::distance(first, last)
   );
 
   return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
@@ -614,7 +730,7 @@ cudaTask cudaFlowCapturer::transform_inclusive_scan(
   using T = typename std::iterator_traits<O>::value_type;
   
   auto bufsz = cuda_scan_buffer_size<cudaDefaultExecutionPolicy, T>(
-    first, last
+    std::distance(first, last)
   );
 
   return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
@@ -635,7 +751,7 @@ cudaTask cudaFlowCapturer::transform_exclusive_scan(
   using T = typename std::iterator_traits<O>::value_type;
   
   auto bufsz = cuda_scan_buffer_size<cudaDefaultExecutionPolicy, T>(
-    first, last
+    std::distance(first, last)
   );
 
   return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 

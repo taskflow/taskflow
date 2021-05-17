@@ -126,6 +126,14 @@ namespace tf {
 
 /**
 @brief queries the buffer size in bytes needed to call reduce kernels
+
+@tparam P execution policy type
+@tparam T value type
+
+@param count number of elements to reduce
+
+The function is used to allocate a buffer for calling asynchronous reduce.
+Please refer to @ref CUDASTDReduce for details.
 */
 template <typename P, typename T>
 unsigned cuda_reduce_buffer_size(unsigned count) {
@@ -136,20 +144,25 @@ unsigned cuda_reduce_buffer_size(unsigned count) {
   return n*sizeof(T);
 }
 
-/**
-@brief queries the buffer size in bytes needed to call reduce kernels
- */
-template <typename P, typename T, typename I>
-unsigned cuda_reduce_buffer_size(I first, I last) {
-  return cuda_reduce_buffer_size<P, T>(std::distance(first, last));
-}
-
 // ----------------------------------------------------------------------------
 // cuda_reduce
 // ----------------------------------------------------------------------------
 
 /**
 @brief performs parallel reduction over a range of items
+
+@tparam P execution policy type
+@tparam I input iterator type
+@tparam T value type
+@tparam O binary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the range
+@param last iterator to the end of the range
+@param res pointer to the result
+@param op binary operator to apply to reduce elements
+
+Please refer to @ref CUDASTDReduce for details.
  */
 template<typename P, typename I, typename T, typename O>
 void cuda_reduce(P&& p, I first, I last, T* res, O op) {
@@ -172,6 +185,20 @@ void cuda_reduce(P&& p, I first, I last, T* res, O op) {
 
 /**
 @brief performs asynchronous parallel reduction over a range of items
+
+@tparam P execution policy type
+@tparam I input iterator type
+@tparam T value type
+@tparam O binary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the range
+@param last iterator to the end of the range
+@param res pointer to the result
+@param op binary operator to apply to reduce elements
+@param buf pointer to the temporary buffer
+
+Please refer to @ref CUDASTDReduce for details.
  */
 template <typename P, typename I, typename T, typename O>
 void cuda_reduce_async(
@@ -190,6 +217,20 @@ void cuda_reduce_async(
 
 /**
 @brief performs parallel reduction over a range of items without an initial value
+
+@tparam P execution policy type
+@tparam I input iterator type
+@tparam T value type
+@tparam O binary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the range
+@param last iterator to the end of the range
+@param res pointer to the result
+@param op binary operator to apply to reduce elements
+
+Similar to tf::cuda_reduce but does not assume any initial value in @c res 
+to reduce. Please refer to @ref CUDASTDReduce for more details.
 */
 template<typename P, typename I, typename T, typename O>
 void cuda_uninitialized_reduce(P&& p, I first, I last, T* res, O op) {
@@ -214,6 +255,21 @@ void cuda_uninitialized_reduce(P&& p, I first, I last, T* res, O op) {
 /**
 @brief performs asynchronous parallel reduction over a range of items without
        an initial value
+
+@tparam P execution policy type
+@tparam I input iterator type
+@tparam T value type
+@tparam O binary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the range
+@param last iterator to the end of the range
+@param res pointer to the result
+@param op binary operator to apply to reduce elements
+@param buf pointer to the temporary buffer
+
+Asynchronous version of tf::cuda_uninitialized_reduce. 
+Please refer to @ref CUDASTDReduce for more details.
 */
 template <typename P, typename I, typename T, typename O>
 void cuda_uninitialized_reduce_async(
@@ -233,6 +289,23 @@ void cuda_uninitialized_reduce_async(
 /**
 @brief performs parallel reduction over a range of transformed items without
        an initial value
+
+@tparam P execution policy type
+@tparam I input iterator type
+@tparam T value type
+@tparam O binary operator type
+@tparam U unary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the range
+@param last iterator to the end of the range
+@param res pointer to the result
+@param bop binary operator to apply to reduce elements
+@param uop unary operator to apply to transform elements
+
+Transforms each element in the range using the unary operator @c uop 
+and then reduce these transformed elements to @c res using the binary
+operator @c bop. Please refer to @ref CUDASTDReduce for more details.
 */
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_reduce(P&& p, I first, I last, T* res, O bop, U uop) {
@@ -261,6 +334,23 @@ void cuda_transform_reduce(P&& p, I first, I last, T* res, O bop, U uop) {
 /**
 @brief performs asynchronous parallel reduction over a range of transformed items 
        without an initial value
+
+@tparam P execution policy type
+@tparam I input iterator type
+@tparam T value type
+@tparam O binary operator type
+@tparam U unary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the range
+@param last iterator to the end of the range
+@param res pointer to the result
+@param bop binary operator to apply to reduce elements
+@param uop unary operator to apply to transform elements
+@param buf pointer to the temporary buffer
+
+Asynchronous version of tf::cuda_transform_reduce.
+Please refer to @ref CUDASTDReduce for more details.
 */
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_reduce_async(
@@ -288,6 +378,22 @@ void cuda_transform_reduce_async(
 /**
 @brief performs parallel reduction over a range of transformed items 
        with an initial value
+
+@tparam P execution policy type
+@tparam I input iterator type
+@tparam T value type
+@tparam O binary operator type
+@tparam U unary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the range
+@param last iterator to the end of the range
+@param res pointer to the result
+@param bop binary operator to apply to reduce elements
+@param uop unary operator to apply to transform elements
+
+Similar to tf::cuda_transform_reduce but does not assum any initial value
+to reduce. Please refer to @ref CUDASTDReduce for more details.
 */
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_uninitialized_reduce(
@@ -318,6 +424,23 @@ void cuda_transform_uninitialized_reduce(
 /**
 @brief performs asynchronous parallel reduction over a range of transformed items 
        with an initial value
+
+@tparam P execution policy type
+@tparam I input iterator type
+@tparam T value type
+@tparam O binary operator type
+@tparam U unary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the range
+@param last iterator to the end of the range
+@param res pointer to the result
+@param bop binary operator to apply to reduce elements
+@param uop unary operator to apply to transform elements
+@param buf pointer to the temporary buffer
+
+Asynchronous version of tf::cuda_transform_uninitialized_reduce.
+Please refer to @ref CUDASTDReduce for more details.
 */
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_uninitialized_reduce_async(
@@ -471,7 +594,7 @@ cudaTask cudaFlowCapturer::reduce(I first, I last, T* result, C c) {
   
   // TODO
   auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    first, last
+    std::distance(first, last)
   );
 
   return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
@@ -487,7 +610,7 @@ cudaTask cudaFlowCapturer::uninitialized_reduce(I first, I last, T* result, C c)
   
   // TODO
   auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    first, last
+    std::distance(first, last)
   );
 
   return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
@@ -505,7 +628,7 @@ cudaTask cudaFlowCapturer::transform_reduce(
   
   // TODO
   auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    first, last
+    std::distance(first, last)
   );
 
   return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
@@ -524,7 +647,7 @@ cudaTask cudaFlowCapturer::transform_uninitialized_reduce(
   
   // TODO
   auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    first, last
+    std::distance(first, last)
   );
 
   return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
@@ -544,7 +667,7 @@ void cudaFlowCapturer::rebind_reduce(
   
   // TODO
   auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    first, last
+    std::distance(first, last)
   );
 
   rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
@@ -561,7 +684,7 @@ void cudaFlowCapturer::rebind_uninitialized_reduce(
 ) {
   // TODO  
   auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    first, last
+    std::distance(first, last)
   );
 
   rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
@@ -579,7 +702,7 @@ void cudaFlowCapturer::rebind_transform_reduce(
   
   // TODO
   auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    first, last
+    std::distance(first, last)
   );
 
   rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
@@ -599,7 +722,7 @@ void cudaFlowCapturer::rebind_transform_uninitialized_reduce(
 
   // TODO
   auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    first, last
+    std::distance(first, last)
   );
 
   rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 

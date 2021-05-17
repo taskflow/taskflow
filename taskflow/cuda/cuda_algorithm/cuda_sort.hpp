@@ -408,7 +408,18 @@ void merge_sort_loop(
 namespace tf {
 
 /** 
-@brief queries the buffer size in bytes needed to call sort kernels
+@brief queries the buffer size in bytes needed to call sort kernels 
+       for the given number of elements
+
+@tparam P execution policy type
+@tparam K key type
+@tparam V value type (default tf::cudaEmpty)
+
+@param count number of keys/values to sort
+
+The function is used to allocate a buffer for calling asynchronous sort.
+Please refer to @ref CUDASTDSort for details.
+
 */
 template <typename P, typename K, typename V = cudaEmpty>
 unsigned cuda_sort_buffer_size(unsigned count) {
@@ -424,28 +435,25 @@ unsigned cuda_sort_buffer_size(unsigned count) {
              (B+1)*sizeof(unsigned)) : 0;
 }
 
-/** 
-@brief queries the buffer size in bytes needed to call sort kernels
-*/
-template<typename P, typename K, typename V, typename K_it>
-unsigned cuda_sort_buffer_size(K_it k_first, K_it k_last) {
-  return cuda_sort_buffer_size<P, K, V>(std::distance(k_first, k_last));
-}
-
-/** 
-@brief queries the buffer size in bytes needed to call sort kernels
-*/
-template<typename P, typename K, typename K_it>
-unsigned cuda_sort_buffer_size(K_it k_first, K_it k_last) {
-  return cuda_sort_buffer_size<P, K, cudaEmpty>(k_first, k_last);
-}
-
 // ----------------------------------------------------------------------------
 // key-value sort
 // ----------------------------------------------------------------------------
 
 /**
 @brief performs key-value sort on a range of items
+
+@tparam P execution policy type
+@tparam K_it key iterator type
+@tparam V_it value iterator type
+@tparam C comparator type
+
+@param p execution policy 
+@param k_first iterator to the beginning of the key range
+@param k_last iterator to the end of the key range
+@param v_first iterator to the beginning of the value range
+@param comp binary comparator
+
+Please refer to @ref CUDASTDSort for details.
 */
 template<typename P, typename K_it, typename V_it, typename C>
 void cuda_sort(P&& p, K_it k_first, K_it k_last, V_it v_first, C comp) {
@@ -469,6 +477,20 @@ void cuda_sort(P&& p, K_it k_first, K_it k_last, V_it v_first, C comp) {
 
 /**
 @brief performs asynchronous key-value sort on a range of items
+
+@tparam P execution policy type
+@tparam K_it key iterator type
+@tparam V_it value iterator type
+@tparam C comparator type
+
+@param p execution policy 
+@param k_first iterator to the beginning of the key range
+@param k_last iterator to the end of the key range
+@param v_first iterator to the beginning of the value range
+@param comp binary comparator
+@param buf pointer to the temporary buffer
+
+Please refer to @ref CUDASTDSort for details.
 */
 template<typename P, typename K_it, typename V_it, typename C>
 void cuda_sort_async(
@@ -490,6 +512,17 @@ void cuda_sort_async(
 
 /**
 @brief performs key-only sort on a range of items
+
+@tparam P execution policy type
+@tparam K_it key iterator type
+@tparam C comparator type
+
+@param p execution policy 
+@param k_first iterator to the beginning of the key range
+@param k_last iterator to the end of the key range
+@param comp binary comparator
+
+Please refer to @ref CUDASTDSort for details.
 */
 template<typename P, typename K_it, typename C>
 void cuda_sort(P&& p, K_it k_first, K_it k_last, C comp) {
@@ -498,6 +531,18 @@ void cuda_sort(P&& p, K_it k_first, K_it k_last, C comp) {
 
 /**
 @brief performs asynchronous key-only sort on a range of items
+
+@tparam P execution policy type
+@tparam K_it key iterator type
+@tparam C comparator type
+
+@param p execution policy 
+@param k_first iterator to the beginning of the key range
+@param k_last iterator to the end of the key range
+@param comp binary comparator
+@param buf pointer to the temporary buffer
+
+Please refer to @ref CUDASTDSort for details.
 */
 template<typename P, typename K_it, typename C>
 void cuda_sort_async(P&& p, K_it k_first, K_it k_last, C comp, void* buf) {
@@ -514,7 +559,9 @@ cudaTask cudaFlowCapturer::sort(I first, I last, C comp) {
 
   using K = typename std::iterator_traits<I>::value_type;
 
-  auto bufsz = cuda_sort_buffer_size<cudaDefaultExecutionPolicy, K>(first, last);
+  auto bufsz = cuda_sort_buffer_size<cudaDefaultExecutionPolicy, K>(
+    std::distance(first, last)
+  );
 
   return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
@@ -530,7 +577,9 @@ void cudaFlowCapturer::rebind_sort(cudaTask task, I first, I last, C comp) {
   
   using K = typename std::iterator_traits<I>::value_type;
 
-  auto bufsz = cuda_sort_buffer_size<cudaDefaultExecutionPolicy, K>(first, last);
+  auto bufsz = cuda_sort_buffer_size<cudaDefaultExecutionPolicy, K>(
+    std::distance(first, last)
+  );
 
   rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {

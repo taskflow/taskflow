@@ -1,13 +1,6 @@
 #pragma once
 
-#include "cuda_error.hpp"
-
-#include <typeinfo>
-#include <type_traits>
-#include <iterator>
-#include <cassert>
-#include <cfloat>
-#include <cstdint>
+#include "cuda_execution_policy.hpp"
 
 namespace tf {
 
@@ -455,41 +448,6 @@ template <typename T>
 struct cuda_greater : public std::binary_function<T, T, T> {
   __device__ T operator()(T a, T b) const { return a > b; }
 };
-
-// ----------------------------------------------------------------------------
-// Launch parameters
-// ----------------------------------------------------------------------------
-
-template<unsigned NT, unsigned VT>
-struct cudaExecutionPolicy {
-
-  static_assert(is_pow2(NT), "max # threads per block must be a power of two");
-
-  public:
-
-  const static unsigned nt = NT;     
-  const static unsigned vt = VT;
-  const static unsigned nv = NT*VT;
-
-  cudaExecutionPolicy() = default;
-  cudaExecutionPolicy(cudaStream_t s) : _stream{s} {}
-
-  cudaStream_t stream() noexcept { return _stream; };
-
-  void stream(cudaStream_t s) noexcept { _stream = s; }
-
-  void synchronize() const {
-    TF_CHECK_CUDA(
-      cudaStreamSynchronize(_stream), "failed to sync stream ", _stream
-    );
-  }
-
-  private:
-
-  cudaStream_t _stream {0};
-};
-
-using cudaDefaultExecutionPolicy = cudaExecutionPolicy<512, 9>;
 
 }  // end of namespace tf -----------------------------------------------------
 

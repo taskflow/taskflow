@@ -62,7 +62,8 @@ int* vec = tf::cuda_malloc_shared<int>(N);  // vector
 for(size_t i=0; i<N; i++) 
   vec[i] = rand();
 } 
-// queries the required buffer size to sort N elements using the given policy
+
+// queries the required buffer size to sort N elements using the default policy
 auto bytes = tf::cuda_sort_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
 void* buffer = tf::cuda_malloc_device<std::byte>(bytes);
 

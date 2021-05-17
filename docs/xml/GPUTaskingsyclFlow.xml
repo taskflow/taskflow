@@ -37,13 +37,13 @@
 <codeline><highlight class="normal">26:<sp/><sp/><sp/>},<sp/>queue).name(</highlight><highlight class="stringliteral">&quot;syclFlow&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">27:<sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">28:<sp/><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();<sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">29:<sp/><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">29:<sp/><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">30:<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">31:<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>free<sp/>the<sp/>shared<sp/>memory<sp/>to<sp/>avoid<sp/>memory<sp/>leak</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">32:<sp/><sp/><sp/>sycl::free(X,<sp/>queue);<sp/></highlight></codeline>
 <codeline><highlight class="normal">33:<sp/><sp/><sp/>sycl::free(Y,<sp/>queue);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">34:<sp/>}</highlight></codeline>
-</programlisting></para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/syclflow_saxpy.dot"></dotfile>
+</programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/syclflow_saxpy.dot"></dotfile>
 </para><para>Debrief:</para><para><itemizedlist>
 <listitem><para>Lines 7-8 create a taskflow and an executor </para></listitem>
 <listitem><para>Lines 10 creates a SYCL queue on a default-selected GPU device </para></listitem>
@@ -74,9 +74,9 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>syclflow<sp/>task<sp/>to<sp/>set<sp/>the<sp/>first<sp/>N/2<sp/>elements<sp/>to<sp/>-1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>syclflow){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>ch2d<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(dvec,<sp/>hvec,<sp/>N);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/><ref refid="cpp/algorithm/fill" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">fill</ref><sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">fill</ref>(dvec,<sp/>-1,<sp/>N/2);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/><ref refid="cpp/algorithm/fill" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">fill</ref><sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">fill</ref>(dvec,<sp/>-1,<sp/>N/2);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>cd2h<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(hvec,<sp/>dvec,<sp/>N);<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/fill" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">fill</ref>.precede(cd2h)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/fill" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">fill</ref>.precede(cd2h)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>.succeed(ch2d);</highlight></codeline>
 <codeline><highlight class="normal">},<sp/>queue);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -90,7 +90,7 @@
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>ch2d<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1ac1e1eb858d9271ed61ff4fe00f135e92" kindref="member">memcpy</ref>(dvec,<sp/>hvec,<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>mset<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a54b7497c0f4763bb4f8604f6c5654a5f" kindref="member">memset</ref>(dvec,<sp/>-1,<sp/>N/2*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>cd2h<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1ac1e1eb858d9271ed61ff4fe00f135e92" kindref="member">memcpy</ref>(hvec,<sp/>dvec,<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/fill" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">fill</ref>.precede(cd2h)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/fill" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">fill</ref>.precede(cd2h)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>.succeed(ch2d);</highlight></codeline>
 <codeline><highlight class="normal">},<sp/>queue);</highlight></codeline>
 </programlisting></para></sect1>
@@ -155,7 +155,7 @@
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">fill</ref>(data,<sp/>-1,<sp/>N);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/for_each" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>assert(data[i]<sp/>==<sp/>-1);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/for_each" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>assert(data[i]<sp/>==<sp/>-1);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>rebind<sp/>the<sp/>task<sp/>to<sp/>a<sp/>parallel-for<sp/>kernel<sp/>task<sp/>setting<sp/>each<sp/>element<sp/>to<sp/>100</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a98029cdbad52f533cb6d9b3c892a4601" kindref="member">rebind_parallel_for</ref>(task,<sp/>sycl::range&lt;1&gt;(N),<sp/>[](sycl::id&lt;1&gt;<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">){</highlight></codeline>
@@ -163,7 +163,7 @@
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/for_each" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[data](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>assert(data[i]<sp/>==<sp/>100);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/for_each" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[data](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>assert(data[i]<sp/>==<sp/>100);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">},<sp/>queue);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>

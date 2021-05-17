@@ -46,7 +46,6 @@ namespace tf {
 
 /**
 @private
-@brief detail namespace
 */
 namespace detail { }
 

@@ -1064,7 +1064,7 @@ void merge_keys() {
       c[i] = rand();      
     }
 
-    auto bufsz = tf::cuda_merge_buffer_size<decltype(p)>(a, a+N, b, b+N);
+    auto bufsz = tf::cuda_merge_buffer_size<decltype(p)>(N, N);
     tf::cudaDeviceMemory<std::byte> buf(bufsz);
     tf::cuda_merge_async(p, a, a+N, b, b+N, c, tf::cuda_less<T>{}, buf.data());
     p.synchronize();
@@ -1133,7 +1133,7 @@ void sort_keys() {
       a[i] = T(rand()%1000);
     }
 
-    auto bufsz = tf::cuda_sort_buffer_size<decltype(p), T>(a, a+N);
+    auto bufsz = tf::cuda_sort_buffer_size<decltype(p), T>(N);
     tf::cudaDeviceMemory<std::byte> buf(bufsz);
     tf::cuda_sort_async(p, a, a+N, tf::cuda_less<T>{}, buf.data());
     p.synchronize();

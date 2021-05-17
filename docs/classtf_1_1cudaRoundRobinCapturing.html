@@ -5,7 +5,7 @@
   <title>tf::cudaRoundRobinCapturing class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -48,7 +48,7 @@
         <h1>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>cudaRoundRobinCapturing <span class="m-thin">class</span>
         </h1>
-        <p>class to capture the described graph into a native cudaGraph using a greedy round-robin algorithm on a fixed number of streams</p>
+        <p>class to capture a CUDA graph using a round-robin algorithm</p>
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -61,7 +61,7 @@
             </li>
           </ul>
         </div>
-<p>A round-robin capturing algorithm levelizes the user-described graph and assign streams to nodes in a round-robin order level by level.</p>
+<p>A round-robin capturing algorithm levelizes the user-described graph and assign streams to nodes in a round-robin order level by level. The algorithm is based on the following paper published in Euro-Par 2021:</p><ul><li>Dian-Lun Lin and Tsung-Wei Huang, &quot;Efficient GPU Computation using Task Graph Parallelism,&quot; <em>European Conference on Parallel and Distributed Computing (Euro-Par)</em>, 2021</li></ul><p>The round-robin optimization algorithm is best suited for large cudaFlow graphs that compose hundreds of or thousands of GPU operations (e.g., kernels and memory copies) with many of them being able to run in parallel. You can configure the number of streams to the optimizer to adjust the maximum kernel currency in the captured CUDA graph.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">

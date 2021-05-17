@@ -127,8 +127,7 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
 /**
 @class cudaSequentialCapturing
 
-@brief class to capture the described graph into a native cudaGraph
-       using a single stream
+@brief class to capture a CUDA graph using a sequential stream
 
 A sequential capturing algorithm finds a topological order of 
 the described graph and captures dependent GPU tasks using a single stream.
@@ -181,11 +180,18 @@ inline cudaGraph_t cudaSequentialCapturing::_optimize(cudaGraph& graph) {
 /**
 @class cudaRoundRobinCapturing
 
-@brief class to capture the described graph into a native cudaGraph
-       using a greedy round-robin algorithm on a fixed number of streams
+@brief class to capture a CUDA graph using a round-robin algorithm
 
 A round-robin capturing algorithm levelizes the user-described graph
 and assign streams to nodes in a round-robin order level by level.
+The algorithm is based on the following paper published in Euro-Par 2021:
+  + Dian-Lun Lin and Tsung-Wei Huang, &quot;Efficient GPU Computation using %Task Graph Parallelism,&quot; <i>European Conference on Parallel and Distributed Computing (Euro-Par)</i>, 2021
+
+The round-robin optimization algorithm is best suited for large %cudaFlow graphs
+that compose hundreds of or thousands of GPU operations 
+(e.g., kernels and memory copies) with many of them being able to run in parallel.
+You can configure the number of streams to the optimizer to adjust the 
+maximum kernel currency in the captured CUDA graph.
 */
 class cudaRoundRobinCapturing : public cudaCapturingBase {
 

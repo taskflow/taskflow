@@ -14,9 +14,9 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
 <codeline><highlight class="normal">}<sp/></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref>(tf::cudaDefaultExecutionPolicy{},<sp/>vec,<sp/>vec+N);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref>(<ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref>{},<sp/>vec,<sp/>vec+N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(std::is_sorted(vec,<sp/>vec+N));</highlight></codeline>
 </programlisting></para><para>You can specify a comparator to <ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref> to alter the sorting order. For example, the following code sorts one million random integers in an decreasing order on a GPU.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
@@ -24,9 +24,9 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
 <codeline><highlight class="normal">}<sp/></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref>(tf::cudaDefaultExecutionPolicy{},<sp/></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref>(<ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref>{},<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>vec,<sp/>vec+N,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&gt;<sp/>b;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -39,14 +39,15 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
 <codeline><highlight class="normal">}<sp/></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>sort<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>sort<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>default<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/>=<sp/>tf::cuda_sort_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal">*<sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>invoke<sp/>the<sp/>sort<sp/>kernels<sp/>asynchronously</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a6e5412a4a7923f50a8874e90abea988c" kindref="member">tf::cuda_sort_async</ref>(tf::cudaDefaultExecutionPolicy{my_stream},</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1a6e5412a4a7923f50a8874e90abea988c" kindref="member">tf::cuda_sort_async</ref>(<ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref>{my_stream},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>vec,<sp/>vec+N,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&lt;<sp/>b;<sp/>},<sp/>buffer</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>here,<sp/>vec<sp/>may<sp/>not<sp/>be<sp/>sorted<sp/>yet,<sp/>as<sp/>kernels<sp/>are<sp/>still<sp/>running<sp/>...</highlight><highlight class="normal"></highlight></codeline>
