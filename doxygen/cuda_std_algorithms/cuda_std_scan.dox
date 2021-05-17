@@ -96,6 +96,45 @@ for(size_t i=1; i<N; i++) {
 }
 @endcode
 
+@section CUDASTDInvokeScanAsynchronously Invoke Scan Kernels Asynchronously
+
+By default, scan functions block until all kernels finish.
+You can invoke these kernels asynchronously
+and explicitly synchronize them at another place of your program.
+Since our scan kernels rely on additional device memory,
+you need to provide a buffer of size <i>in bytes</i> equal to (or larger than) 
+the value returned by tf::cuda_scan_buffer_size.
+
+@code{.cpp}
+const size_t N = 1000000;
+int* input  = tf::cuda_malloc_shared<int>(N);  // input  vector
+int* output = tf::cuda_malloc_shared<int>(N);  // output vector
+
+// initializes the data
+for(size_t i=0; i<N; i++) 
+  input[i] = rand();
+} 
+
+// queries the required buffer size to scan N elements using the given policy
+auto bytes = tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+void* buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
+// invoke the inclusive scan kernels asynchronously (same for other scan variants)
+tf::cuda_inclusive_scan_async(tf::cudaDefaultExecutionPolicy{my_stream},
+  input, input+N, output, [] __device__ (int a, int b) { return a + b; }, buffer
+);
+// here, output may not be ready yet, as kernels are still running ...
+
+// synchronize the stream to make output ready
+cudaStreamSynchronize(my_stream);
+@endcode
+
+The allocated buffer must remain alive until the asynchronous call completes.
+
+@note
+The stream given to an asynchronous scan function can be enabled to the capture mode
+to capture internal kernels into a CUDA graph.
+
 */
 }
 

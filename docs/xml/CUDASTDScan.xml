@@ -64,7 +64,32 @@
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(output[i]<sp/>==<sp/>output[i-1]<sp/>+<sp/>input[i-1]<sp/>*<sp/>10);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para></sect1>
+</programlisting></para></sect1>
+<sect1 id="CUDASTDScan_1CUDASTDInvokeScanAsynchronously">
+<title>Invoke Scan Kernels Asynchronously</title>
+<para>By default, scan functions block until all kernels finish. You can invoke these kernels asynchronously and explicitly synchronize them at another place of your program. Since our scan kernels rely on additional device memory, you need to provide a buffer of size <emphasis>in bytes</emphasis> equal to (or larger than) the value returned by <ref refid="namespacetf_1afd7e7a0886352201cced5c55205f3229" kindref="member">tf::cuda_scan_buffer_size</ref>.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input<sp/><sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/><sp/>vector</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>output<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>output<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
+<codeline><highlight class="normal">}<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>scan<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/>=<sp/>tf::cuda_scan_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal">*<sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>invoke<sp/>the<sp/>inclusive<sp/>scan<sp/>kernels<sp/>asynchronously<sp/>(same<sp/>for<sp/>other<sp/>scan<sp/>variants)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1aca76fb5d4564ac64a5a110ace990b520" kindref="member">tf::cuda_inclusive_scan_async</ref>(tf::cudaDefaultExecutionPolicy{my_stream},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input,<sp/>input+N,<sp/>output,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>},<sp/>buffer</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>here,<sp/>output<sp/>may<sp/>not<sp/>be<sp/>ready<sp/>yet,<sp/>as<sp/>kernels<sp/>are<sp/>still<sp/>running<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronize<sp/>the<sp/>stream<sp/>to<sp/>make<sp/>output<sp/>ready</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cudaStreamSynchronize(my_stream);</highlight></codeline>
+</programlisting></para><para>The allocated buffer must remain alive until the asynchronous call completes.</para><para><simplesect kind="note"><para>The stream given to an asynchronous scan function can be enabled to the capture mode to capture internal kernels into a CUDA graph. </para></simplesect>
+</para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

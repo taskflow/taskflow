@@ -38,7 +38,7 @@ To use %Taskflow v3.2.0, you need a compiler that supports C++17:
 
 @subsection release-3-2-0_taskflow_core Taskflow Core
 
-@li added tf::SmallVector optimization (based on LLVM small vector) for graphs
+@li added tf::SmallVector optimization for optimizing the dependency storage in a graph
 
 @subsection release-3-2-0_cudaflow cudaFlow
 
@@ -55,9 +55,34 @@ To use %Taskflow v3.2.0, you need a compiler that supports C++17:
 
 @subsection release-3-2-0_syclflow syclFlow
 
+@subsection release-3-2-0_cuda_std_algorithms CUDA Standard Parallel Algorithms
+
+@li added tf::cuda_reduce
+@li added tf::cuda_uninitialized_reduce
+@li added tf::cuda_transform_reduce
+@li added tf::cuda_transform_uninitialized_reduce
+@li added tf::cuda_inclusive_scan
+@li added tf::cuda_exclusive_scan
+@li added tf::cuda_transform_inclusive_scan
+@li added tf::cuda_transform_exclusive_scan
+@li added tf::cuda_merge
+@li added tf::cuda_sort
+@li added tf::cuda_reduce_async
+@li added tf::cuda_uninitialized_reduce_async
+@li added tf::cuda_transform_reduce_async
+@li added tf::cuda_transform_uninitialized_reduce_async
+@li added tf::cuda_inclusive_scan_async
+@li added tf::cuda_exclusive_scan_async
+@li added tf::cuda_transform_inclusive_scan_async
+@li added tf::cuda_transform_exclusive_scan_async
+@li added tf::cuda_merge_async
+@li added tf::cuda_sort_async
+
+
 @subsection release-3-2-0_utilities Utilities
 
-@li added cuda meta programming
+@li added CUDA meta programming
+@li added CUDA standard algorithms
 
 @subsection release-3-2-0_profiler Taskflow Profiler (TFProf)
 
@@ -79,12 +104,19 @@ There are no breaking changes in this release.
 @section release-3-2-0_documentation Documentation
 
 @li revised @ref CUDAReduce
+@li added @ref cudaStandardAlgorithms
+  + @ref CUDASTDExecutionPolicy
+  + @ref CUDASTDReduce 
+  + @ref CUDASTDScan
+  + @ref CUDASTDMerge
+  + @ref CUDASTDSort
+
 
 
 @section release-3-2-0_miscellaneous_items Miscellaneous Items
 
 We have published tf::cudaFlow in the following conference:
-  + Dian-Lun Lin and Tsung-Wei Huang, &quot;Efficient GPU Computation using Task Graph Parallelism,&quot; <i>IEEE/ACM European Conference on Parallel and Distributed Computing (EuroPar)</i>, 2021
+  + Dian-Lun Lin and Tsung-Wei Huang, &quot;Efficient GPU Computation using %Task Graph Parallelism,&quot; <i>IEEE/ACM European Conference on Parallel and Distributed Computing (EuroPar)</i>, 2021
 
 */
 

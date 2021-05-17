@@ -154,6 +154,50 @@ tf::cuda_uninitialized_reduce(tf::cudaDefaultExecutionPolicy{},
 @endcode
 
 
+@section CUDASTDInvokeReduceAsynchronously Invoke Reduction Kernels Asynchronously
+
+By default, tf::cuda_reduce and other variants blocks until all kernels finish.
+You can use tf::cuda_reduce_async to invoke these kernels asynchronously
+and explicitly synchronize them at another place of your program.
+Since our reduction kernels rely on additional device memory,
+you need to provide a buffer of size <i>in bytes</i> equal to (or larger than) 
+the value returned by tf::cuda_reduce_buffer_size.
+
+@code{.cpp}
+const size_t N = 1000000;
+int* res = tf::cuda_malloc_shared<int>(1);  // result
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+for(size_t i=0; i<N; i++) 
+  vec[i] = i;
+} 
+*res = 0;
+
+// queries the required buffer size to reduce N elements using the given policy
+auto bytes = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+void* buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
+// invoke the reduce kernels asynchronously (same for other reduction variants)
+tf::cuda_reduce_async(tf::cudaDefaultExecutionPolicy{my_stream},
+  vec, vec+N, res, [] __device__ (int a, int b) { return a + b; }, buffer
+);
+// here, res may not be ready yet, as kernels are still running ...
+
+// synchronize the stream
+cudaStreamSynchronize(my_stream);
+
+assert(*res == (N-1)*N/2);
+@endcode
+
+The allocated buffer must remain alive until the asynchronous call completes.
+
+@note
+The stream given to an asynchronous reduce function can be enabled to the capture mode
+to capture internal kernels into a CUDA graph.
+
+
+
 */
 }
 

@@ -34,7 +34,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-2-0_1release-3-2-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>added tf::SmallVector optimization (based on LLVM small vector) for graphs</para></listitem>
+<listitem><para>added tf::SmallVector optimization for optimizing the dependency storage in a graph</para></listitem>
 </itemizedlist>
 </para></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_cudaflow">
@@ -55,10 +55,36 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-2-0_1release-3-2-0_syclflow">
 <title>syclFlow</title>
 </sect2>
+<sect2 id="release-3-2-0_1release-3-2-0_cuda_std_algorithms">
+<title>CUDA Standard Parallel Algorithms</title>
+<para><itemizedlist>
+<listitem><para>added <ref refid="namespacetf_1a40904a487ebd144d786d17ac37a74924" kindref="member">tf::cuda_reduce</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a1b404e9dc801fb4c391aa22c94c211e2" kindref="member">tf::cuda_uninitialized_reduce</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1ad86024ee94a21ea6e8970d887f83808e" kindref="member">tf::cuda_transform_reduce</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a1367afb7d02d5cfe0caabbc90762620d" kindref="member">tf::cuda_transform_uninitialized_reduce</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1affd3cc9cc8550ffead1f63616f22b64f" kindref="member">tf::cuda_inclusive_scan</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a79efb12473e146c1fddc448e8bb42bd4" kindref="member">tf::cuda_exclusive_scan</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a98feffc08d80abcabb7e2193fef2b380" kindref="member">tf::cuda_transform_inclusive_scan</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a4c6f39904ef71525825aeabc0665d806" kindref="member">tf::cuda_transform_exclusive_scan</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a1294350f1ff922068b3df525a82cb145" kindref="member">tf::cuda_merge</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1af8d8d018c3430e40bd3231adba0bd91d" kindref="member">tf::cuda_reduce_async</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a51f1e1d02f600defb33b950e631d4f66" kindref="member">tf::cuda_uninitialized_reduce_async</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1ab229138d66d95f0b4656e56f496800ae" kindref="member">tf::cuda_transform_reduce_async</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a41066971f38829ce32c134ee9afb9614" kindref="member">tf::cuda_transform_uninitialized_reduce_async</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1aca76fb5d4564ac64a5a110ace990b520" kindref="member">tf::cuda_inclusive_scan_async</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a3df7ba7bf9f8ad62cbb89631e37c44b0" kindref="member">tf::cuda_exclusive_scan_async</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a8c82e13a6fd60f72e6259b8e5438332f" kindref="member">tf::cuda_transform_inclusive_scan_async</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a63b490bc88085063913a7c5f0746ce9f" kindref="member">tf::cuda_transform_exclusive_scan_async</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a34773891693013ee93d329d42939d444" kindref="member">tf::cuda_merge_async</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a6e5412a4a7923f50a8874e90abea988c" kindref="member">tf::cuda_sort_async</ref></para></listitem>
+</itemizedlist>
+</para></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_utilities">
 <title>Utilities</title>
 <para><itemizedlist>
-<listitem><para>added cuda meta programming</para></listitem>
+<listitem><para>added CUDA meta programming </para></listitem>
+<listitem><para>added CUDA standard algorithms</para></listitem>
 </itemizedlist>
 </para></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_profiler">
@@ -85,13 +111,16 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
-<listitem><para>revised <ref refid="CUDAReduce" kindref="compound">Parallel Reduction</ref></para></listitem>
+<listitem><para>revised <ref refid="CUDAReduce" kindref="compound">Parallel Reduction</ref> </para></listitem>
+<listitem><para>added <ref refid="cudaStandardAlgorithms" kindref="compound">CUDA Standard Algorithms</ref><itemizedlist>
+<listitem><para><ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref></para></listitem><listitem><para><ref refid="CUDASTDReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="CUDASTDScan" kindref="compound">Parallel Scan</ref></para></listitem><listitem><para><ref refid="CUDASTDMerge" kindref="compound">Parallel Merge</ref></para></listitem><listitem><para><ref refid="CUDASTDSort" kindref="compound">Parallel Sort</ref></para></listitem></itemizedlist>
+</para></listitem>
 </itemizedlist>
 </para></sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
 <para>We have published <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> in the following conference:<itemizedlist>
-<listitem><para>Dian-Lun Lin and Tsung-Wei Huang, "Efficient GPU Computation using <ref refid="classtf_1_1Task" kindref="compound">Task</ref> Graph Parallelism," <emphasis>IEEE/ACM European Conference on Parallel and Distributed Computing (EuroPar)</emphasis>, 2021 </para></listitem></itemizedlist>
+<listitem><para>Dian-Lun Lin and Tsung-Wei Huang, "Efficient GPU Computation using Task Graph Parallelism," <emphasis>IEEE/ACM European Conference on Parallel and Distributed Computing (EuroPar)</emphasis>, 2021 </para></listitem></itemizedlist>
 </para></sect1>
     </detaileddescription>
   </compounddef>
