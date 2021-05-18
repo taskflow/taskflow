@@ -11,46 +11,6 @@
 namespace tf {
 
 // ----------------------------------------------------------------------------
-// class definition: cudaFlowCapturerBase
-// ----------------------------------------------------------------------------
-
-/**
-@class cudaFlowCapturerBase
-
-@brief base class to construct a CUDA task graph through stream capture
-*/
-class cudaFlowCapturerBase {
-
-  friend class cudaFlowCapturer;
-
-  public:
-
-    /**
-    @brief default constructor
-     */
-    cudaFlowCapturerBase() = default;
-
-    /**
-    @brief default virtual destructor
-     */
-    virtual ~cudaFlowCapturerBase() = default;
-    
-    /**
-    @brief accesses the parent capturer
-     */
-    cudaFlowCapturer* factory() const;
-
-  private:
-    
-    cudaFlowCapturer* _factory {nullptr};
-};
-
-// Function: accesses the parent capturer
-inline cudaFlowCapturer* cudaFlowCapturerBase::factory() const {
-  return _factory;
-}
-
-// ----------------------------------------------------------------------------
 // class definition: cudaFlowCapturer
 // ----------------------------------------------------------------------------
 
@@ -58,11 +18,6 @@ inline cudaFlowCapturer* cudaFlowCapturerBase::factory() const {
 @class cudaFlowCapturer
 
 @brief class for building a CUDA task dependency graph through stream capture
-
-A %cudaFlowCapturer inherits all the base methods from tf::cudaFlowCapturerBase 
-to construct a CUDA task graph through <i>stream capturer</i>. 
-This class also defines a factory interface tf::cudaFlowCapturer::make_capturer 
-for users to create custom capturers with their lifetimes managed by the factory.
 
 The usage of tf::cudaFlowCapturer is similar to tf::cudaFlow, except users can
 call the method tf::cudaFlowCapturer::on to capture a sequence of asynchronous 
@@ -93,7 +48,9 @@ and will be run by @em one worker thread in the executor.
 That is, the callable that describes a %cudaFlowCapturer 
 will be executed sequentially.
 Inside a %cudaFlow capturer task, different GPU tasks (tf::cudaTask) may run
-in parallel scheduled by both our capturing algorithm and the CUDA runtime.
+in parallel depending on the selected optimization algorithm.
+By default, we use tf::cudaSequentialCapturing to generate a sequential
+CUDA graph.
 
 Please refer to @ref GPUTaskingcudaFlowCapturer for details.
 */
@@ -154,25 +111,9 @@ class cudaFlowCapturer {
     */
     void dump(std::ostream& os) const;
     
-    /**
-    @brief creates a custom capturer derived from tf::cudaFlowCapturerBase
-
-    @tparam T custom capturer type
-    @tparam ArgsT arguments types
-
-    @param args arguments to forward to construct the custom capturer
-
-    @return a pointer to the custom capturer
-
-    Each %cudaFlow capturer keeps a list of custom capturers
-    and manages their lifetimes. The lifetime of each custom capturer is
-    the same as the capturer.
-     */
-    template <typename T, typename... ArgsT>
-    T* make_capturer(ArgsT&&... args);
     
     /**
-    @brief enables different optimization algorithms
+    @brief selects a different optimization algorithm
 
     @tparam OPT optimizer type
     @tparam ArgsT arguments types
@@ -766,8 +707,6 @@ class cudaFlowCapturer {
 
     cudaGraphExec_t _executable {nullptr};
     
-    std::vector<std::unique_ptr<cudaFlowCapturerBase>> _capturers;
-
     cudaFlowCapturer(cudaGraph&);
 
     cudaGraph_t _capture();
@@ -998,19 +937,6 @@ void cudaFlowCapturer::rebind_kernel(
   rebind_on(task, [g, b, s, f, args...] (cudaStream_t stream) mutable {
     f<<<g, b, s, stream>>>(args...);
   });
-}
-
-// Function: make_capturer
-template <typename T, typename... ArgsT>
-T* cudaFlowCapturer::make_capturer(ArgsT&&... args) {
-
-  static_assert(std::is_base_of_v<cudaFlowCapturerBase, T>);
-
-  auto ptr = std::make_unique<T>(std::forward<ArgsT>(args)...);
-  ptr->_factory = this;
-  auto raw = ptr.get();
-  _capturers.push_back(std::move(ptr));
-  return raw;
 }
 
 // Function: make_optimizer

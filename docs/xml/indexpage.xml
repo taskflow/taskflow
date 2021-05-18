@@ -148,7 +148,7 @@
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para></sect1>
 <sect1 id="index_1QuickStartExecuteATaskflowInDifferentWays">
-<title>Execute a Taskflow in Different Ways</title>
+<title>Run a Taskflow through an Executor</title>
 <para>The executor provides several <emphasis>thread-safe</emphasis> methods to run a taskflow. You can run a taskflow once, multiple times, or until a stopping criteria is met. These methods are non-blocking with a <computeroutput>tf::Future&lt;void&gt;</computeroutput> return to let you query the execution status.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>runs<sp/>the<sp/>taskflow<sp/>once</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;void&gt;</ref><sp/>run_once<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow);<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

@@ -101,7 +101,7 @@ int main() {
 #include <taskflow/taskflow.hpp>
 #include <taskflow/syclflow.hpp>
 
-inline sycl::queue queue;
+inline sycl::queue queue;    // create a global sycl queue
 
 tf::Task make_syclflow(tf::Taskflow& taskflow) {
   return taskflow.emplace_on([](tf::syclFlow& cf){

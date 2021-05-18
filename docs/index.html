@@ -57,7 +57,7 @@
             <li><a href="#QuickStartOffloadTasksToGPU">Offload Tasks to a GPU</a></li>
             <li><a href="#QuickStartComposeTaskGraphs">Compose Task Graphs</a></li>
             <li><a href="#QuickStartLaunchAsyncTasks">Launch Asynchronous Tasks</a></li>
-            <li><a href="#QuickStartExecuteATaskflowInDifferentWays">Execute a Taskflow in Different Ways</a></li>
+            <li><a href="#QuickStartExecuteATaskflowInDifferentWays">Run a Taskflow through an Executor</a></li>
             <li><a href="#QuickStartVisualizeATaskflow">Visualize Taskflow Graphs</a></li>
             <li><a href="#SupportedCompilers">Supported Compilers</a></li>
             <li><a href="#QuickStartGetInvolved">Get Involved</a></li>
@@ -454,7 +454,7 @@
   <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;async task created within a task</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
 <span class="p">});</span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre></section><section id="QuickStartExecuteATaskflowInDifferentWays"><h2><a href="#QuickStartExecuteATaskflowInDifferentWays">Execute a Taskflow in Different Ways</a></h2><p>The executor provides several <em>thread-safe</em> methods to run a taskflow. You can run a taskflow once, multiple times, or until a stopping criteria is met. These methods are non-blocking with a <code>tf::Future&lt;void&gt;</code> return to let you query the execution status.</p><pre class="m-code"><span class="c1">// runs the taskflow once</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre></section><section id="QuickStartExecuteATaskflowInDifferentWays"><h2><a href="#QuickStartExecuteATaskflowInDifferentWays">Run a Taskflow through an Executor</a></h2><p>The executor provides several <em>thread-safe</em> methods to run a taskflow. You can run a taskflow once, multiple times, or until a stopping criteria is met. These methods are non-blocking with a <code>tf::Future&lt;void&gt;</code> return to let you query the execution status.</p><pre class="m-code"><span class="c1">// runs the taskflow once</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span> <span class="n">run_once</span> <span class="o">=</span> <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span> 
 
 <span class="c1">// wait on this run to finish</span>

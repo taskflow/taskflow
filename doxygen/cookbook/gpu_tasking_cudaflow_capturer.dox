@@ -158,49 +158,6 @@ tf::Task task = taskflow.emplace([&](tf::cudaFlow& cf){
 @dotfile images/cudaflow_capturer_3.dot
 
 
-@section CreateCustomCapturer Create a Custom Capturer
-
-By inheriting tf::cudaFlowCapturerBase, you can create your own capturer.
-The tf::cudaFlowCapturer has a factory interface, tf::cudaFlowCapturer::make_capturer,
-for users to create custom capturers with lifetimes managed by a parent capturer.
-The parent capturer is accessible through tf::cudaFlowCapturerBase::factory.
-This is convenient when you need certain objects alive during the capturing.
-The following example defines a custom capturer that takes the given
-stream from tf::cudaFlowCapturer::on to capture a custom kernel.
-
-@code{.cpp}
-class MyCapturer : public tf::cudaFlowCapturerBase {
-
-  public:
-
-  // capture a custom kernel
-  tf::cudaTask capture_custom_kernel(args...) {
-    return factory()->on([this, args...](cudaStream_t stream){
-      invoke_custom_kernel(stream, args...);
-    });
-  }
-};
-
-tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
-  // create a custom capturer, MyCapturer, from the parent capturer (factory)
-  MyCapturer* mc = capturer.make_capturer<MyCapturer>();
-
-  tf::cudaTask task_1 = mc->capture_custom_kernel(args...).name("custom_kernel");
-  tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){
-    other_kernel<<<grid, block, shm_size, stream>>>(other_args...);
-  }).name("other_kernel");
-
-  task_1.precede(task_2);
-}).name("capturer");
-@endcode
-
-@dotfile images/cudaflow_capturer_1.dot
-
-%Taskflow provides several class interfaces, such as tf::cublasFlowCapturer,
-on top of tf::cudaFlowCapturerBase for users to use
-external high-performance CUDA libraries together with %Taskflow.
-
-
 @section OffloadAcudaFlowCapturer Offload a cudaFlow Capturer
 
 By default, the executor offloads and executes the %cudaFlow capturer once.

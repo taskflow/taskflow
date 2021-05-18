@@ -1,5 +1,5 @@
 // This program demonstrate how to perform a parallel scan
-// using cudaFlowCapturer.
+// using cudaFlow.
 
 #include <taskflow/cudaflow.hpp>
 
@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
   std::iota(data1, data1 + N, 0);
   std::iota(data2, data2 + N, 0);
   
-  tf::cudaFlowCapturer cudaflow;
+  tf::cudaFlow cudaflow;
   
   // create inclusive and exclusive scan tasks
   cudaflow.inclusive_scan(data1, data1+N, scan1, tf::cuda_plus<int>{});

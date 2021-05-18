@@ -24,12 +24,5 @@ foreach(cudatest IN LISTS TF_CUDA_UNITTESTS)
   doctest_discover_tests(${cudatest})
 endforeach()
 
-###############################################################################
-# cublas unittests
-###############################################################################
-
-if(CUBLAS_FOUND)
-add_subdirectory(cublas)
-endif()
 
 

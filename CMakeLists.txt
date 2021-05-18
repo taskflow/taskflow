@@ -87,13 +87,13 @@ if(TF_BUILD_CUDA)
     message(FATAL_ERROR "\nTaskflow requires CUDA at least v11")
   endif()
   
-  # configure cuBLAS
-  message(STATUS "Configuring CUDA BLAS ...")
-  list(APPEND CMAKE_MODULE_PATH ${TF_CMAKE_DIR}/cuda/modules/)
-  find_package(cuBLAS)
-  message(STATUS "CUBLAS_FOUND: ${CUBLAS_FOUND}")
-  message(STATUS "CUBLAS_INCLUDE_DIRS: ${CUBLAS_INCLUDE_DIRS}")
-  message(STATUS "CUBLAS_LIBRARIES: ${CUBLAS_LIBRARIES}")
+  ## configure cuBLAS
+  #message(STATUS "Configuring CUDA BLAS ...")
+  #list(APPEND CMAKE_MODULE_PATH ${TF_CMAKE_DIR}/cuda/modules/)
+  #find_package(cuBLAS)
+  #message(STATUS "CUBLAS_FOUND: ${CUBLAS_FOUND}")
+  #message(STATUS "CUBLAS_INCLUDE_DIRS: ${CUBLAS_INCLUDE_DIRS}")
+  #message(STATUS "CUBLAS_LIBRARIES: ${CUBLAS_LIBRARIES}")
 endif()
 
 # -----------------------------------------------------------------------------

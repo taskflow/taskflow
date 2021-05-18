@@ -19,10 +19,6 @@
 @brief taskflow CUDA include dir
 */
 
-/** @dir taskflow/cuda/cublas
-@brief taskflow cuBLAS include dir
-*/
-
 /**
 @file taskflow/taskflow.hpp
 @brief main taskflow include file

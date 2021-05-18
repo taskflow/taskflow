@@ -293,8 +293,11 @@ __device__ auto block_merge_from_mem(
     "least nt * vt + 1 items");
 
   // Load the data into shared memory.
-  cuda_load_two_streams_shared<nt, vt>(a + range_mem.a_begin, range_mem.a_count(),
-    b + range_mem.b_begin, range_mem.b_count(), tid, keys_shared, true);
+  cuda_load_two_streams_shared<nt, vt>(
+    a + range_mem.a_begin, range_mem.a_count(),
+    b + range_mem.b_begin, range_mem.b_count(), 
+    tid, keys_shared, true
+  );
 
   // Run a merge path to find the start of the serial merge for each thread.
   auto range_local = range_mem.to_local();

@@ -29,11 +29,3 @@ foreach(cuda_example IN LISTS TF_CUDA_EXAMPLES)
   endif()
 endforeach()
 
-# -----------------------------------------------------------------------------
-# CUDA BLAS examples
-# -----------------------------------------------------------------------------
-
-if(CUBLAS_FOUND)
-add_subdirectory(cublas)
-endif()
-
