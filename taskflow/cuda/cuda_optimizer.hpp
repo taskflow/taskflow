@@ -174,6 +174,71 @@ inline cudaGraph_t cudaSequentialCapturing::_optimize(cudaGraph& graph) {
 }
 
 // ----------------------------------------------------------------------------
+// class definition: cudaLinearCapturing
+// ----------------------------------------------------------------------------
+
+/**
+@class cudaLinearCapturing
+
+@brief class to capture a linear CUDA graph using a sequential stream
+
+A linear capturing algorithm is a special case of tf::cudaSequentialCapturing
+and assumes the input task graph to be a single linear chain of tasks
+(i.e., a straight line).
+This assumption allows faster optimization during the capturing process.
+If the input task graph is not a linear chain, the behavior is undefined.
+*/
+class cudaLinearCapturing : public cudaCapturingBase {
+
+  friend class cudaFlowCapturer;
+
+  public:
+    
+    /**
+    @brief constructs a linear optimizer
+    */
+    cudaLinearCapturing() = default;
+  
+  private:
+
+    cudaGraph_t _optimize(cudaGraph& graph);
+};
+
+inline cudaGraph_t cudaLinearCapturing::_optimize(cudaGraph& graph) {
+
+  // acquire per-thread stream and turn it into capture mode
+  // we must use ThreadLocal mode to avoid clashing with CUDA global states
+  cudaScopedPerThreadStream stream;
+
+  cudaGraph_t native_g;
+
+  TF_CHECK_CUDA(
+    cudaStreamBeginCapture(stream, cudaStreamCaptureModeThreadLocal), 
+    "failed to turn stream into per-thread capture mode"
+  );
+
+  // find the source node
+  cudaNode* src {nullptr};
+  for(auto& u : graph._nodes) {
+    if(u->_dependents.size() == 0) {
+      src = u.get();
+      while(src) {
+        std::get<cudaNode::Capture>(src->_handle).work(stream);  
+        src = src->_successors.empty() ? nullptr : src->_successors[0]; 
+      }
+      break;
+    }
+    // ideally, there should be only one source
+  }
+
+  TF_CHECK_CUDA(
+    cudaStreamEndCapture(stream, &native_g), "failed to end capture"
+  );
+
+  return native_g;
+}
+
+// ----------------------------------------------------------------------------
 // class definition: cudaRoundRobinCapturing
 // ----------------------------------------------------------------------------
 

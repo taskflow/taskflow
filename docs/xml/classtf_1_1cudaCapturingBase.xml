@@ -2,6 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1cudaCapturingBase" kind="class" language="C++" prot="private">
     <compoundname>tf::cudaCapturingBase</compoundname>
+    <derivedcompoundref refid="classtf_1_1cudaLinearCapturing" prot="public" virt="non-virtual">tf::cudaLinearCapturing</derivedcompoundref>
     <derivedcompoundref refid="classtf_1_1cudaRoundRobinCapturing" prot="public" virt="non-virtual">tf::cudaRoundRobinCapturing</derivedcompoundref>
     <derivedcompoundref refid="classtf_1_1cudaSequentialCapturing" prot="public" virt="non-virtual">tf::cudaSequentialCapturing</derivedcompoundref>
       <sectiondef kind="protected-func">
@@ -46,6 +47,12 @@
     </detaileddescription>
     <inheritancegraph>
       <node id="15">
+        <label>tf::cudaLinearCapturing</label>
+        <link refid="classtf_1_1cudaLinearCapturing"/>
+        <childnode refid="14" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="16">
         <label>tf::cudaRoundRobinCapturing</label>
         <link refid="classtf_1_1cudaRoundRobinCapturing"/>
         <childnode refid="14" relation="public-inheritance">
@@ -54,7 +61,7 @@
       <node id="14">
         <label>tf::cudaCapturingBase</label>
       </node>
-      <node id="16">
+      <node id="17">
         <label>tf::cudaSequentialCapturing</label>
         <link refid="classtf_1_1cudaSequentialCapturing"/>
         <childnode refid="14" relation="public-inheritance">

@@ -677,6 +677,7 @@ cudaTask cudaFlow::merge(
   A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp
 ) {
   return capture([=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
     cap.merge(a_first, a_last, b_first, b_last, c_first, comp);
   });
 }

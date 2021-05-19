@@ -526,6 +526,7 @@ void cuda_transform_uninitialized_reduce_async(
 template <typename I, typename T, typename B>
 cudaTask cudaFlow::reduce(I first, I last, T* result, B bop) {
   return capture([=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
     cap.reduce(first, last, result, bop);
   });
 }
@@ -534,6 +535,7 @@ cudaTask cudaFlow::reduce(I first, I last, T* result, B bop) {
 template <typename I, typename T, typename B>
 cudaTask cudaFlow::uninitialized_reduce(I first, I last, T* result, B bop) {
   return capture([=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
     cap.uninitialized_reduce(first, last, result, bop);
   });
 }
@@ -542,6 +544,7 @@ cudaTask cudaFlow::uninitialized_reduce(I first, I last, T* result, B bop) {
 template <typename I, typename T, typename B, typename U>
 cudaTask cudaFlow::transform_reduce(I first, I last, T* result, B bop, U uop) {
   return capture([=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
     cap.transform_reduce(first, last, result, bop, uop);
   });
 }
@@ -552,6 +555,7 @@ cudaTask cudaFlow::transform_uninitialized_reduce(
   I first, I last, T* result, B bop, U uop
 ) {
   return capture([=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
     cap.transform_uninitialized_reduce(first, last, result, bop, uop);
   });
 }

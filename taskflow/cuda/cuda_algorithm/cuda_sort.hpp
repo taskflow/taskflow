@@ -557,6 +557,7 @@ void cuda_sort_async(P&& p, K_it k_first, K_it k_last, C comp, void* buf) {
 template <typename I, typename C>
 cudaTask cudaFlow::sort(I first, I last, C comp) {
   return capture([=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
     cap.sort(first, last, comp);
   });
 }

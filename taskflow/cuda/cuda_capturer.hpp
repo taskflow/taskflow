@@ -69,9 +69,9 @@ class cudaFlowCapturer {
   using handle_t = std::variant<External, Internal>;
 
   using Optimizer = std::variant<
+    cudaRoundRobinCapturing,
     cudaSequentialCapturing,
-    cudaRoundRobinCapturing
-    //cudaGreedyCapturing
+    cudaLinearCapturing
   >;
 
   public:

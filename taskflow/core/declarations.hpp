@@ -32,6 +32,7 @@ class cudaFlow;
 class cudaFlowCapturer;
 class cudaFlowCapturerBase;
 class cudaCapturingBase;
+class cudaLinearCapturing;
 class cudaSequentialCapturing;
 class cudaRoundRobinCapturing;
 class cublasFlowCapturer;

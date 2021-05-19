@@ -691,6 +691,7 @@ void cuda_transform_exclusive_scan_async(
 template <typename I, typename O, typename C>
 cudaTask cudaFlow::inclusive_scan(I first, I last, O output, C op) {
   return capture([=](cudaFlowCapturer& cap) {
+    cap.make_optimizer<cudaLinearCapturing>();
     cap.inclusive_scan(first, last, output, op);
   });
 }
@@ -699,6 +700,7 @@ cudaTask cudaFlow::inclusive_scan(I first, I last, O output, C op) {
 template <typename I, typename O, typename C>
 cudaTask cudaFlow::exclusive_scan(I first, I last, O output, C op) {
   return capture([=](cudaFlowCapturer& cap) {
+    cap.make_optimizer<cudaLinearCapturing>();
     cap.exclusive_scan(first, last, output, op);
   });
 }
@@ -709,6 +711,7 @@ cudaTask cudaFlow::transform_inclusive_scan(
   I first, I last, O output, B bop, U uop
 ) {
   return capture([=](cudaFlowCapturer& cap) {
+    cap.make_optimizer<cudaLinearCapturing>();
     cap.transform_inclusive_scan(first, last, output, bop, uop);
   });
 }
@@ -719,6 +722,7 @@ cudaTask cudaFlow::transform_exclusive_scan(
   I first, I last, O output, B bop, U uop
 ) {
   return capture([=](cudaFlowCapturer& cap) {
+    cap.make_optimizer<cudaLinearCapturing>();
     cap.transform_exclusive_scan(first, last, output, bop, uop);
   });
 }
