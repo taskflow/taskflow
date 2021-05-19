@@ -221,7 +221,7 @@ class cudaFlowCapturer {
     @param callable callable to run by a single kernel thread
     */
     template <typename C>
-    cudaTask single_task(C&& callable);
+    cudaTask single_task(C callable);
     
     /**
     @brief captures a kernel that applies a callable to each dereferenced element 
@@ -245,7 +245,7 @@ class cudaFlowCapturer {
     @endcode
     */
     template <typename I, typename C>
-    cudaTask for_each(I first, I last, C&& callable);
+    cudaTask for_each(I first, I last, C callable);
 
     /**
     @brief captures a kernel that applies a callable to each index in the range 
@@ -276,20 +276,19 @@ class cudaFlowCapturer {
     @endcode
     */
     template <typename I, typename C>
-    cudaTask for_each_index(I first, I last, I step, C&& callable);
+    cudaTask for_each_index(I first, I last, I step, C callable);
   
     /**
-    @brief captures a kernel that applies a callable to a source range and 
-           stores the result in a target range
+    @brief captures a kernel that transforms an input range to an output range 
     
-    @tparam I iterator type
-    @tparam C callable type
-    @tparam S source types
+    @tparam I input iterator type
+    @tparam O output iterator type
+    @tparam C unary operator type
 
-    @param first iterator to the beginning 
-    @param last iterator to the end 
-    @param callable the callable to apply to each element in the range
-    @param srcs iterators to the source ranges
+    @param first iterator to the beginning of the input range
+    @param last iterator to the end of the input range
+    @param output iterator to the beginning of the output range
+    @param op unary operator to apply to transform each item in the range
     
     @return cudaTask handle
     
@@ -297,12 +296,40 @@ class cudaFlowCapturer {
     
     @code{.cpp}
     while (first != last) {
-      *first++ = callable(*src1++, *src2++, *src3++, ...);
+      *output++ = op(*first++);
     }
     @endcode
     */
-    template <typename I, typename C, typename... S>
-    cudaTask transform(I first, I last, C&& callable, S... srcs);
+    template <typename I, typename O, typename C>
+    cudaTask transform(I first, I last, O output, C op);
+    
+    /**
+    @brief captures a kernel that transforms two input ranges to an output range 
+    
+    @tparam I1 first input iterator type
+    @tparam I2 second input iterator type
+    @tparam O output iterator type
+    @tparam C unary operator type
+
+    @param first1 iterator to the beginning of the input range
+    @param last1 iterator to the end of the input range
+    @param first2 iterato
+    @param output iterator to the beginning of the output range
+    @param op binary operator to apply to transform each pair of items in the 
+              two input ranges
+    
+    @return cudaTask handle
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    while (first1 != last1) {
+      *output++ = op(*first1++, *first2++);
+    }
+    @endcode
+    */
+    template <typename I1, typename I2, typename O, typename C>
+    cudaTask transform(I1 first1, I1 last1, I2 first2, O output, C op);
       
     /**
     @brief captures kernels that perform parallel reduction over a range of items
@@ -567,7 +594,7 @@ class cudaFlowCapturer {
     on an existing task.
     */
     template <typename C>
-    void rebind_single_task(cudaTask task, C&& callable);
+    void rebind_single_task(cudaTask task, C callable);
     
     /**
     @brief rebinds a capture task to a for-each kernel task
@@ -576,7 +603,7 @@ class cudaFlowCapturer {
     on an existing task.
     */
     template <typename I, typename C>
-    void rebind_for_each(cudaTask task, I first, I last, C&& callable);
+    void rebind_for_each(cudaTask task, I first, I last, C callable);
 
     /**
     @brief rebinds a capture task to a for-each-index kernel task
@@ -586,7 +613,7 @@ class cudaFlowCapturer {
     */
     template <typename I, typename C>
     void rebind_for_each_index(
-      cudaTask task, I first, I last, I step, C&& callable
+      cudaTask task, I first, I last, I step, C callable
     );
   
     /**
@@ -595,9 +622,18 @@ class cudaFlowCapturer {
     This method is similar to cudaFlowCapturer::transform but operates
     on an existing task.
     */
-    template <typename I, typename C, typename... S>
+    template <typename I, typename O, typename C>
+    void rebind_transform(cudaTask task, I first, I last, O output, C op);
+    
+    /**
+    @brief rebinds a capture task to a transform kernel task
+
+    This method is similar to cudaFlowCapturer::transform but operates
+    on an existing task.
+    */
+    template <typename I1, typename I2, typename O, typename C>
     void rebind_transform(
-      cudaTask task, I first, I last, C&& callable, S... srcs
+      cudaTask task, I1 first1, I1 last1, I2 first2, O output, C op
     );
       
     /**

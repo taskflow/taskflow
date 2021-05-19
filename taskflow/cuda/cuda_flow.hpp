@@ -321,7 +321,7 @@ class cudaFlow {
     @endcode
     */
     template <typename I, typename C>
-    cudaTask for_each(I first, I last, C&& callable);
+    cudaTask for_each(I first, I last, C callable);
 
     /**
     @brief applies a callable to each index in the range with the step size
@@ -351,19 +351,19 @@ class cudaFlow {
     @endcode
     */
     template <typename I, typename C>
-    cudaTask for_each_index(I first, I last, I step, C&& callable);
+    cudaTask for_each_index(I first, I last, I step, C callable);
   
     /**
     @brief applies a callable to a source range and stores the result in a target range
     
-    @tparam I iterator type
-    @tparam C callable type
-    @tparam S source types
+    @tparam I input iterator type
+    @tparam O output iterator type
+    @tparam C unary operator type
 
-    @param first iterator to the beginning (inclusive)
-    @param last iterator to the end (exclusive)
-    @param callable the callable to apply to each element in the range
-    @param srcs iterators to the source ranges
+    @param first iterator to the beginning of the input range
+    @param last iterator to the end of the input range
+    @param output iterator to the beginning of the output range
+    @param op the operator to apply to transform each element in the range
     
     @return a tf::cudaTask handle
     
@@ -371,12 +371,40 @@ class cudaFlow {
     
     @code{.cpp}
     while (first != last) {
-      *first++ = callable(*src1++, *src2++, *src3++, ...);
+      *output++ = callable(*first++);
     }
     @endcode
     */
-    template <typename I, typename C, typename... S>
-    cudaTask transform(I first, I last, C&& callable, S... srcs);
+    template <typename I, typename O, typename C>
+    cudaTask transform(I first, I last, O output, C op);
+    
+    /**
+    @brief creates a task to perform parallel transforms over two ranges of items
+    
+    @tparam I1 first input iterator type
+    @tparam I2 second input iterator type
+    @tparam O output iterator type
+    @tparam C unary operator type
+
+    @param first1 iterator to the beginning of the input range
+    @param last1 iterator to the end of the input range
+    @param first2 iterato
+    @param output iterator to the beginning of the output range
+    @param op binary operator to apply to transform each pair of items in the 
+              two input ranges
+    
+    @return cudaTask handle
+    
+    This method is equivalent to the parallel execution of the following loop on a GPU:
+    
+    @code{.cpp}
+    while (first1 != last1) {
+      *output++ = op(*first1++, *first2++);
+    }
+    @endcode
+    */
+    template <typename I1, typename I2, typename O, typename C>
+    cudaTask transform(I1 first1, I1 last1, I2 first2, O output, C op);
     
     /**
     @brief performs parallel reduction over a range of items
@@ -629,9 +657,11 @@ class cudaFlow {
 
     The method is similar to tf::cudaFlow::capture but operates on a task 
     of type tf::cudaTaskType::SUBFLOW.
+    The new captured graph must be topologically identical to the original 
+    captured graph.
     */
     template <typename C>
-    void update_capture(cudaTask task, C&& callable);
+    void update_capture(cudaTask task, C callable);
   
     /**
     @brief updates parameters of a host task
@@ -718,61 +748,73 @@ class cudaFlow {
     >
     void update_zero(cudaTask task, T* dst, size_t count);
     
-    ///**
-    //@brief updates parameters of a kernel task created from
-    //       tf::cudaFlow::for_each
+    /**
+    @brief updates parameters of a kernel task created from
+           tf::cudaFlow::for_each
 
-    //The type of the iterators and the callable must be the same as 
-    //the task created from tf::cudaFlow::for_each.
-    //*/
-    //template <typename I, typename C>
-    //void update_for_each(cudaTask task, I first, I last, C&& callable);
+    The type of the iterators and the callable must be the same as 
+    the task created from tf::cudaFlow::for_each.
+    */
+    template <typename I, typename C>
+    void update_for_each(cudaTask task, I first, I last, C callable);
 
-    ///**
-    //@brief updates parameters of a kernel task created from 
-    //       tf::cudaFlow::for_each_index
-    //
-    //The type of the iterators and the callable must be the same as 
-    //the task created from tf::cudaFlow::for_each_index.
-    //*/
-    //template <typename I, typename C>
-    //void update_for_each_index(
-    //  cudaTask task, I first, I last, I step, C&& callable
-    //);
+    /**
+    @brief updates parameters of a kernel task created from 
+           tf::cudaFlow::for_each_index
+    
+    The type of the iterators and the callable must be the same as 
+    the task created from tf::cudaFlow::for_each_index.
+    */
+    template <typename I, typename C>
+    void update_for_each_index(
+      cudaTask task, I first, I last, I step, C callable
+    );
+    
+    /**
+    @brief updates parameters of a kernel task created from
+           tf::cudaFlow::transform
+    
+    The type of the iterators and the callable must be the same as 
+    the task created from tf::cudaFlow::for_each.
+    */
+    template <typename I, typename O, typename C>
+    void update_transform(
+      cudaTask task, I first, I last, O output, C c
+    );
   
-    ///**
-    //@brief updates parameters of a kernel task created from
-    //       tf::cudaFlow::transform of the same argument count
-    //
-    //The type of the iterators, callable, and source memory must 
-    //be the same as the task created from tf::cudaFlow::transform.
-    //*/
-    //template <typename I, typename C, typename... S>
-    //void update_transform(
-    //  cudaTask task, I first, I last, C&& callable, S... srcs
-    //);
-    //
-    ///**
-    //@brief updates parameters of a kernel task created from 
-    //       tf::cudaFlow::reduce
-    //
-    //The type of the iterators, result, and callable must be the same as 
-    //the task created from tf::cudaFlow::reduce.
-    //*/
-    //template <typename I, typename T, typename C>
-    //void update_reduce(cudaTask task, I first, I last, T* result, C&& op);
-    //
-    ///**
-    //@brief updates parameters of a kernel task created from
-    //       tf::cudaFlow::uninitialized_reduce
-    //
-    //The type of the iterators, result, and callable must be the same as 
-    //the task created from tf::cudaFlow::uninitialized_reduce.
-    //*/
-    //template <typename I, typename T, typename C>
-    //void update_uninitialized_reduce(
-    //  cudaTask task, I first, I last, T* result, C&& op
-    //);
+    /**
+    @brief updates parameters of a kernel task created from
+           tf::cudaFlow::transform
+    
+    The type of the iterators and the callable must be the same as 
+    the task created from tf::cudaFlow::for_each.
+    */
+    template <typename I1, typename I2, typename O, typename C>
+    void update_transform(
+      cudaTask task, I1 first1, I1 last1, I2 first2, O output, C c
+    );
+
+    /**
+    @brief updates parameters of a kernel task created from 
+           tf::cudaFlow::reduce
+    
+    The type of the iterators, result, and callable must be the same as 
+    the task created from tf::cudaFlow::reduce.
+    */
+    template <typename I, typename T, typename C>
+    void update_reduce(cudaTask task, I first, I last, T* result, C op);
+    
+    /**
+    @brief updates parameters of a kernel task created from
+           tf::cudaFlow::uninitialized_reduce
+    
+    The type of the iterators, result, and callable must be the same as 
+    the task created from tf::cudaFlow::uninitialized_reduce.
+    */
+    template <typename I, typename T, typename C>
+    void update_uninitialized_reduce(
+      cudaTask task, I first, I last, T* result, C op
+    );
 
   private:
 
@@ -1194,39 +1236,36 @@ void cudaFlow::update_zero(cudaTask task, T* dst, size_t count) {
   );
 }
 
-// TODO: requires CUDA higher version
-//// Function: update_capture
-//template <typename C>
-//void cudaFlow::update_capture(cudaTask task, C&& c) {
-//  
-//  if(task.type() != cudaTaskType::SUBFLOW) {
-//    TF_THROW(task, " is not a subflow task");
-//  }
-//
-//  // insert a subflow node
-//  // construct a captured flow from the callable
-//  auto& node_handle = std::get<cudaNode::Subflow>(task._node->_handle);
-//  node_handle.graph.clear();
-//
-//  cudaFlowCapturer capturer(node_handle.graph);
-//
-//  c(capturer);
-//  
-//  // obtain the optimized captured graph
-//  auto captured = capturer._capture();
-//  //cuda_dump_graph(std::cout, captured);
-//
-//  TF_CHECK_CUDA(
-//    cudaGraphExecChildGraphNodeSetParams(
-//      &node->_native_handle, task._node->_native_handle, captured
-//    ), 
-//    "failed to update a captured child graph"
-//  );
-//  
-//  TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
-//
-//  return cudaTask(node);
-//}
+// Function: update_capture
+template <typename C>
+void cudaFlow::update_capture(cudaTask task, C c) {
+  
+  if(task.type() != cudaTaskType::SUBFLOW) {
+    TF_THROW(task, " is not a subflow task");
+  }
+
+  // insert a subflow node
+  // construct a captured flow from the callable
+  auto& node_handle = std::get<cudaNode::Subflow>(task._node->_handle);
+  node_handle.graph.clear();
+
+  cudaFlowCapturer capturer(node_handle.graph);
+
+  c(capturer);
+  
+  // obtain the optimized captured graph
+  auto captured = capturer._capture();
+  //cuda_dump_graph(std::cout, captured);
+
+  TF_CHECK_CUDA(
+    cudaGraphExecChildGraphNodeSetParams(
+      _executable, task._node->_native_handle, captured
+    ), 
+    "failed to update a captured child graph"
+  );
+  
+  TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
+}
 
 // ----------------------------------------------------------------------------
 // captured flow 
@@ -1243,6 +1282,7 @@ cudaTask cudaFlow::capture(C&& c) {
   
   // construct a captured flow from the callable
   auto& node_handle = std::get<cudaNode::Subflow>(node->_handle);
+  node_handle.graph.clear();
   cudaFlowCapturer capturer(node_handle.graph);
 
   c(capturer);

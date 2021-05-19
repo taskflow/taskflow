@@ -147,32 +147,41 @@
             <dd>captures a kernel</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a01e187cf410a88cdc8174bc0215813ce" class="m-doc">single_task</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a7d0737ec995f5611c6d706ad105a8a0b" class="m-doc">single_task</a>(</span><span class="m-doc-wrap">C callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
             <dd>capturers a kernel to runs the given callable with only one thread</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename I, typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a2982cf89d4dffcf01bf9cce4a5c79f51" class="m-doc">for_each</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper">auto <a href="#a0b2f1bcd59f0b42e0f823818348b4ae7" class="m-doc">for_each</a>(</span><span class="m-doc-wrap">I first,
               I last,
-              C&amp;&amp; callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+              C callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
             <dd>captures a kernel that applies a callable to each dereferenced element of the data array</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename I, typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a802ddd94cb40b32daecec327d2ad6e52" class="m-doc">for_each_index</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper">auto <a href="#aeb877f42ee3a627c40f1c9c84e31ba3c" class="m-doc">for_each_index</a>(</span><span class="m-doc-wrap">I first,
               I last,
               I step,
-              C&amp;&amp; callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+              C callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
             <dd>captures a kernel that applies a callable to each index in the range with the step size</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename I, typename C, typename... S&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a02e3ec6669c8571ad6888584e88c07fc" class="m-doc">transform</a>(</span><span class="m-doc-wrap">I first,
+              <div class="m-doc-template">template&lt;typename I, typename O, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a99d9a86a7240ebf0767441e4ec2e14c4" class="m-doc">transform</a>(</span><span class="m-doc-wrap">I first,
               I last,
-              C&amp;&amp; callable,
-              S... srcs) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+              O output,
+              C op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
-            <dd>captures a kernel that applies a callable to a source range and stores the result in a target range</dd>
+            <dd>captures a kernel that transforms an input range to an output range</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I1, typename I2, typename O, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ac2f527e57e8fe447b9f13ba51e9b9c48" class="m-doc">transform</a>(</span><span class="m-doc-wrap">I1 first1,
+              I1 last1,
+              I2 first2,
+              O output,
+              C op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures a kernel that transforms two input ranges to an output range</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename I, typename T, typename C&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a326516e69ca7a1b15aad237428990791" class="m-doc">reduce</a>(</span><span class="m-doc-wrap">I first,
@@ -298,34 +307,44 @@
             <dd>rebinds a capture task to a kernel operation</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a92e8a16bd7be216ac7424e09a56abc1c" class="m-doc">rebind_single_task</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
-              C&amp;&amp; callable)</span>
+              <span class="m-doc-wrap-bumper">void <a href="#aad2dd30b0ce5fd37810d4a55c7fc8147" class="m-doc">rebind_single_task</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              C callable)</span>
             </dt>
             <dd>rebinds a capture task to a single-threaded kernel</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename I, typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#ada3122f267017f2642acee80cb5b8ec8" class="m-doc">rebind_for_each</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              <span class="m-doc-wrap-bumper">void <a href="#ab6a83d148219a2ab1cbe6101e9d34155" class="m-doc">rebind_for_each</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
               I first,
               I last,
-              C&amp;&amp; callable)</span>
+              C callable)</span>
             </dt>
             <dd>rebinds a capture task to a for-each kernel task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename I, typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a45f8ddf368fd1944cc9419926dfb2e13" class="m-doc">rebind_for_each_index</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              <span class="m-doc-wrap-bumper">void <a href="#a739b1507648979b7e216fa4108ee77ca" class="m-doc">rebind_for_each_index</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
               I first,
               I last,
               I step,
-              C&amp;&amp; callable)</span>
+              C callable)</span>
             </dt>
             <dd>rebinds a capture task to a for-each-index kernel task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename I, typename C, typename... S&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a3484c514a90e4cc17cd3f4d18545f2c5" class="m-doc">rebind_transform</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              <div class="m-doc-template">template&lt;typename I, typename O, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#addddbbd7a7217551e49ab7d1a428abf6" class="m-doc">rebind_transform</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
               I first,
               I last,
-              C&amp;&amp; callable,
-              S... srcs)</span>
+              O output,
+              C op)</span>
+            </dt>
+            <dd>rebinds a capture task to a transform kernel task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I1, typename I2, typename O, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#ad3b9344ebab060fc221c14d8e4b641b9" class="m-doc">rebind_transform</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I1 first1,
+              I1 last1,
+              I2 first2,
+              O output,
+              C op)</span>
             </dt>
             <dd>rebinds a capture task to a transform kernel task</dd>
             <dt>
@@ -640,12 +659,12 @@
               </tfoot>
             </table>
           </div></section>
-          <section class="m-doc-details" id="a01e187cf410a88cdc8174bc0215813ce"><div>
+          <section class="m-doc-details" id="a7d0737ec995f5611c6d706ad105a8a0b"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a01e187cf410a88cdc8174bc0215813ce" class="m-doc-self">single_task</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7d0737ec995f5611c6d706ad105a8a0b" class="m-doc-self">single_task</a>(</span><span class="m-doc-wrap">C callable)</span></span>
             </h3>
             <p>capturers a kernel to runs the given callable with only one thread</p>
             <table class="m-table m-fullwidth m-flat">
@@ -669,14 +688,14 @@
               </tbody>
             </table>
           </div></section>
-          <section class="m-doc-details" id="a2982cf89d4dffcf01bf9cce4a5c79f51"><div>
+          <section class="m-doc-details" id="a0b2f1bcd59f0b42e0f823818348b4ae7"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename I, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2982cf89d4dffcf01bf9cce4a5c79f51" class="m-doc-self">for_each</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0b2f1bcd59f0b42e0f823818348b4ae7" class="m-doc-self">for_each</a>(</span><span class="m-doc-wrap">I first,
               I last,
-              C&amp;&amp; callable)</span></span>
+              C callable)</span></span>
             </h3>
             <p>captures a kernel that applies a callable to each dereferenced element of the data array</p>
             <table class="m-table m-fullwidth m-flat">
@@ -721,15 +740,15 @@
   <span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">);</span>
 <span class="p">}</span></pre>
           </div></section>
-          <section class="m-doc-details" id="a802ddd94cb40b32daecec327d2ad6e52"><div>
+          <section class="m-doc-details" id="aeb877f42ee3a627c40f1c9c84e31ba3c"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename I, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a802ddd94cb40b32daecec327d2ad6e52" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aeb877f42ee3a627c40f1c9c84e31ba3c" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap">I first,
               I last,
               I step,
-              C&amp;&amp; callable)</span></span>
+              C callable)</span></span>
             </h3>
             <p>captures a kernel that applies a callable to each index in the range with the step size</p>
             <table class="m-table m-fullwidth m-flat">
@@ -784,17 +803,17 @@
   <span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
 <span class="p">}</span></pre>
           </div></section>
-          <section class="m-doc-details" id="a02e3ec6669c8571ad6888584e88c07fc"><div>
+          <section class="m-doc-details" id="a99d9a86a7240ebf0767441e4ec2e14c4"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename I, typename C, typename... S&gt;
+                template&lt;typename I, typename O, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a02e3ec6669c8571ad6888584e88c07fc" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a99d9a86a7240ebf0767441e4ec2e14c4" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">I first,
               I last,
-              C&amp;&amp; callable,
-              S... srcs)</span></span>
+              O output,
+              C op)</span></span>
             </h3>
-            <p>captures a kernel that applies a callable to a source range and stores the result in a target range</p>
+            <p>captures a kernel that transforms an input range to an output range</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -802,15 +821,15 @@
               <tbody>
                 <tr>
                   <td style="width: 1%">I</td>
-                  <td>iterator type</td>
+                  <td>input iterator type</td>
+                </tr>
+                <tr>
+                  <td>O</td>
+                  <td>output iterator type</td>
                 </tr>
                 <tr>
                   <td>C</td>
-                  <td>callable type</td>
-                </tr>
-                <tr>
-                  <td>S</td>
-                  <td>source types</td>
+                  <td>unary operator type</td>
                 </tr>
               </tbody>
               <thead>
@@ -819,19 +838,19 @@
               <tbody>
                 <tr>
                   <td>first</td>
-                  <td>iterator to the beginning</td>
+                  <td>iterator to the beginning of the input range</td>
                 </tr>
                 <tr>
                   <td>last</td>
-                  <td>iterator to the end</td>
+                  <td>iterator to the end of the input range</td>
                 </tr>
                 <tr>
-                  <td>callable</td>
-                  <td>the callable to apply to each element in the range</td>
+                  <td>output</td>
+                  <td>iterator to the beginning of the output range</td>
                 </tr>
                 <tr>
-                  <td>srcs</td>
-                  <td>iterators to the source ranges</td>
+                  <td>op</td>
+                  <td>unary operator to apply to transform each item in the range</td>
                 </tr>
               </tbody>
               <tfoot>
@@ -842,7 +861,77 @@
               </tfoot>
             </table>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
-  <span class="o">*</span><span class="n">first</span><span class="o">++</span> <span class="o">=</span> <span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">src1</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src2</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src3</span><span class="o">++</span><span class="p">,</span> <span class="p">...);</span>
+  <span class="o">*</span><span class="n">output</span><span class="o">++</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="ac2f527e57e8fe447b9f13ba51e9b9c48"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I1, typename I2, typename O, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac2f527e57e8fe447b9f13ba51e9b9c48" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">I1 first1,
+              I1 last1,
+              I2 first2,
+              O output,
+              C op)</span></span>
+            </h3>
+            <p>captures a kernel that transforms two input ranges to an output range</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I1</td>
+                  <td>first input iterator type</td>
+                </tr>
+                <tr>
+                  <td>I2</td>
+                  <td>second input iterator type</td>
+                </tr>
+                <tr>
+                  <td>O</td>
+                  <td>output iterator type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>unary operator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first1</td>
+                  <td>iterator to the beginning of the input range</td>
+                </tr>
+                <tr>
+                  <td>last1</td>
+                  <td>iterator to the end of the input range</td>
+                </tr>
+                <tr>
+                  <td>first2</td>
+                  <td>iterato</td>
+                </tr>
+                <tr>
+                  <td>output</td>
+                  <td>iterator to the beginning of the output range</td>
+                </tr>
+                <tr>
+                  <td>op</td>
+                  <td>binary operator to apply to transform each pair of items in the two input ranges</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first1</span> <span class="o">!=</span> <span class="n">last1</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">output</span><span class="o">++</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">first2</span><span class="o">++</span><span class="p">);</span>
 <span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a326516e69ca7a1b15aad237428990791"><div>
@@ -1322,57 +1411,72 @@
             <p>rebinds a capture task to a kernel operation</p>
 <p>The method is similar to <a href="classtf_1_1cudaFlowCapturer.html#ad3c5c7847d668f2084cef0583f148eb9" class="m-doc">cudaFlowCapturer::<wbr />kernel</a> but operates on an existing task.</p>
           </div></section>
-          <section class="m-doc-details" id="a92e8a16bd7be216ac7424e09a56abc1c"><div>
+          <section class="m-doc-details" id="aad2dd30b0ce5fd37810d4a55c7fc8147"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a92e8a16bd7be216ac7424e09a56abc1c" class="m-doc-self">rebind_single_task</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
-              C&amp;&amp; callable)</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aad2dd30b0ce5fd37810d4a55c7fc8147" class="m-doc-self">rebind_single_task</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              C callable)</span></span>
             </h3>
             <p>rebinds a capture task to a single-threaded kernel</p>
-<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a01e187cf410a88cdc8174bc0215813ce" class="m-doc">cudaFlowCapturer::<wbr />single_task</a> but operates on an existing task.</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a7d0737ec995f5611c6d706ad105a8a0b" class="m-doc">cudaFlowCapturer::<wbr />single_task</a> but operates on an existing task.</p>
           </div></section>
-          <section class="m-doc-details" id="ada3122f267017f2642acee80cb5b8ec8"><div>
+          <section class="m-doc-details" id="ab6a83d148219a2ab1cbe6101e9d34155"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename I, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ada3122f267017f2642acee80cb5b8ec8" class="m-doc-self">rebind_for_each</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab6a83d148219a2ab1cbe6101e9d34155" class="m-doc-self">rebind_for_each</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
               I first,
               I last,
-              C&amp;&amp; callable)</span></span>
+              C callable)</span></span>
             </h3>
             <p>rebinds a capture task to a for-each kernel task</p>
-<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a2982cf89d4dffcf01bf9cce4a5c79f51" class="m-doc">cudaFlowCapturer::<wbr />for_each</a> but operates on an existing task.</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a0b2f1bcd59f0b42e0f823818348b4ae7" class="m-doc">cudaFlowCapturer::<wbr />for_each</a> but operates on an existing task.</p>
           </div></section>
-          <section class="m-doc-details" id="a45f8ddf368fd1944cc9419926dfb2e13"><div>
+          <section class="m-doc-details" id="a739b1507648979b7e216fa4108ee77ca"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename I, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a45f8ddf368fd1944cc9419926dfb2e13" class="m-doc-self">rebind_for_each_index</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a739b1507648979b7e216fa4108ee77ca" class="m-doc-self">rebind_for_each_index</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
               I first,
               I last,
               I step,
-              C&amp;&amp; callable)</span></span>
+              C callable)</span></span>
             </h3>
             <p>rebinds a capture task to a for-each-index kernel task</p>
-<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a802ddd94cb40b32daecec327d2ad6e52" class="m-doc">cudaFlowCapturer::<wbr />for_each_index</a> but operates on an existing task.</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#aeb877f42ee3a627c40f1c9c84e31ba3c" class="m-doc">cudaFlowCapturer::<wbr />for_each_index</a> but operates on an existing task.</p>
           </div></section>
-          <section class="m-doc-details" id="a3484c514a90e4cc17cd3f4d18545f2c5"><div>
+          <section class="m-doc-details" id="addddbbd7a7217551e49ab7d1a428abf6"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename I, typename C, typename... S&gt;
+                template&lt;typename I, typename O, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3484c514a90e4cc17cd3f4d18545f2c5" class="m-doc-self">rebind_transform</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#addddbbd7a7217551e49ab7d1a428abf6" class="m-doc-self">rebind_transform</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
               I first,
               I last,
-              C&amp;&amp; callable,
-              S... srcs)</span></span>
+              O output,
+              C op)</span></span>
             </h3>
             <p>rebinds a capture task to a transform kernel task</p>
-<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a02e3ec6669c8571ad6888584e88c07fc" class="m-doc">cudaFlowCapturer::<wbr />transform</a> but operates on an existing task.</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a99d9a86a7240ebf0767441e4ec2e14c4" class="m-doc">cudaFlowCapturer::<wbr />transform</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="ad3b9344ebab060fc221c14d8e4b641b9"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I1, typename I2, typename O, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad3b9344ebab060fc221c14d8e4b641b9" class="m-doc-self">rebind_transform</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I1 first1,
+              I1 last1,
+              I2 first2,
+              O output,
+              C op)</span></span>
+            </h3>
+            <p>rebinds a capture task to a transform kernel task</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a99d9a86a7240ebf0767441e4ec2e14c4" class="m-doc">cudaFlowCapturer::<wbr />transform</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="a2703fc99e51b96fedfe48b73507ec7bc"><div>
             <h3>

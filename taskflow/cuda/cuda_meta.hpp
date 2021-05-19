@@ -70,7 +70,8 @@ __device__ void cuda_strided_iterate(F f, unsigned tid, unsigned count) {
       if(j < count) f(i, j);
     });
   }
-
+  
+  // TODO: seems dummy when vt0 == vt
   cuda_iterate<vt0, vt>([=](auto i) {
     auto j = nt * i + tid;
     if(j < count) f(i, j);
@@ -407,8 +408,6 @@ template<typename F, typename... args_t>
 __global__ void cuda_kernel(F f, args_t... args) {
   f(threadIdx.x, blockIdx.x, args...);
 }
-
-
 
 // ----------------------------------------------------------------------------
 // operators

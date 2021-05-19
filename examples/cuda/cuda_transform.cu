@@ -12,34 +12,28 @@ int main(int argc, char* argv[]) {
 
   size_t N = std::atoi(argv[1]);
 
-  auto data = tf::cuda_malloc_shared<int>(N);
-  auto src1 = tf::cuda_malloc_shared<int>(N);
-  auto src2 = tf::cuda_malloc_shared<int>(N);
-  auto src3 = tf::cuda_malloc_shared<int>(N);
+  auto input  = tf::cuda_malloc_shared<int>(N);
+  auto output = tf::cuda_malloc_shared<int>(N);
   
   // initialize the data
   for(size_t i=0; i<N; i++) {
-    data[i] = 0;
-    src1[i] = 1;
-    src2[i] = 2;
-    src3[i] = 3;
+    input [i] = -1;
+    output[i] = 1;
   }
   
   // perform parallel transform
   tf::cudaFlow cudaflow;
   
-  // data[i] = src1[i] + src2[i] + src3[i]
+  // output[i] = input[i] + 11
   cudaflow.transform(
-    data, data + N, 
-    [] __device__ (int a, int b, int c) { return a+b+c; }, 
-    src1, src2, src3
+    input, input + N, output, [] __device__ (int a) { return a + 11; }
   );
 
   cudaflow.offload();
 
   // inspect the result
   for(size_t i=0; i<N; i++) {
-    if(data[i] != (src1[i] + src2[i] + src3[i])) {
+    if(output[i] != 10) {
       throw std::runtime_error("incorrect result");
     }
   }

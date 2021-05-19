@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>cudaFlow Algorithms &raquo; Single Task | Taskflow QuickStart</title>
+  <title>taskflow/cuda/cuda_algorithm/cuda_for_each.hpp file | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
@@ -46,30 +46,27 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          <span class="m-breadcrumb"><a href="cudaFlowAlgorithms.html">cudaFlow Algorithms</a> &raquo;</span>
-          Single Task
+          <span class="m-breadcrumb"><a href="dir_88dad41ea55ca2177e141d32a93e931c.html">taskflow</a>/</span><span class="m-breadcrumb"><a href="dir_638d51f8e6f20ea8c720cc8c006296ba.html">cuda</a>/</span><span class="m-breadcrumb"><a href="dir_357205a1399888ea32d80f0e7aabff0b.html">cuda_algorithm</a>/</span>cuda_for_each.hpp <span class="m-thin">file</span>
         </h1>
+        <p>cuda parallel-iteration algorithms include file</p>
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
-            <li><a href="#SingleTaskCUDASingleTask">Run a Task with a Single Thread</a></li>
-            <li><a href="#SingleTaskCUDAMiscellaneousItems">Miscellaneous Items</a></li>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#namespaces">Namespaces</a></li>
+              </ul>
+            </li>
           </ul>
         </div>
-<p><a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a> provides a template method, <a href="classtf_1_1cudaFlow.html#a53927cca2d935fa7ab2b33e3d6b13dab" class="m-doc">tf::<wbr />cudaFlow::<wbr />single_task</a>, for creating a task to run the given callable using a single kernel thread.</p><section id="SingleTaskCUDASingleTask"><h2><a href="#SingleTaskCUDASingleTask">Run a Task with a Single Thread</a></h2><p>You can create a task to run a kernel function just once, i.e., using one GPU thread. This is handy when you want to set up a single or a few global variables that do not need multiple threads and will be used by multiple kernels afterwards. The following example creates a single-task kernel that sets <code>gpu_variable</code> to 1.</p><pre class="m-code"><span class="kt">int</span><span class="o">*</span> <span class="n">gpu_variable</span><span class="p">;</span>
-<span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">gpu_variable</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span> <span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">)</span> <span class="p">{</span>
-  <span class="c1">// create a single task to set the gpu_variable to 1</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">set_par</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([</span><span class="n">gpu_variable</span><span class="p">]</span> <span class="n">__device__</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="o">*</span><span class="n">gpu_variable</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="p">})</span>
-  
-  <span class="c1">// create two kernel tasks that need access to gpu_variable</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">kernel1</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid1</span><span class="p">,</span> <span class="n">block1</span><span class="p">,</span> <span class="n">shm1</span><span class="p">,</span> <span class="n">my_kernel_1</span><span class="p">,</span> <span class="p">...);</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">kernel2</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid2</span><span class="p">,</span> <span class="n">block2</span><span class="p">,</span> <span class="n">shm2</span><span class="p">,</span> <span class="n">my_kernel_2</span><span class="p">,</span> <span class="p">...);</span>
-
-  <span class="n">set_par</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">kernel1</span><span class="p">,</span> <span class="n">kernel2</span><span class="p">);</span>
-<span class="p">});</span></pre><p>Since the callable runs on GPU, it must be declared with a <code>__device__</code> specifier.</p></section><section id="SingleTaskCUDAMiscellaneousItems"><h2><a href="#SingleTaskCUDAMiscellaneousItems">Miscellaneous Items</a></h2><p>The single-task algorithm is also available in <a href="classtf_1_1cudaFlowCapturer.html#a7d0737ec995f5611c6d706ad105a8a0b" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />single_task</a>.</p></section>
+        <section id="namespaces">
+          <h2><a href="#namespaces">Namespaces</a></h2>
+          <dl class="m-doc">
+            <dt>namespace <a href="namespacetf.html" class="m-doc">tf</a></dt>
+            <dd>taskflow namespace</dd>
+          </dl>
+        </section>
       </div>
     </div>
   </div>

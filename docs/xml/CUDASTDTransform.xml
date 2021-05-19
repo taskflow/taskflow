@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="CUDASTDTransform" kind="page">
+    <compoundname>CUDASTDTransform</compoundname>
+    <title>Parallel Transforms</title>
+    <tableofcontents/>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Taskflow provides template methods for transforming ranges of items to different outputs.</para><sect1 id="CUDASTDTransform_1CUDASTDTransformARangeOfItems">
+<title>Transform a Range of Items</title>
+<para>Parallel-transform algorithm applies the given transform function to a range of items and store the result in another range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform(P&amp;&amp; p, I first, I last, O output, C op)</ref> represents a parallel execution for the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>*output++<sp/>=<sp/>op(*first++);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>The following example creates a transform kernel that transforms an input range of <computeroutput>N</computeroutput> items to an output range by multiplying each item by 10.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input,<sp/>input<sp/>+<sp/>N,<sp/>output,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>x*10;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para><para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier.</para></sect1>
+<sect1 id="CUDASTDTransform_1CUDASTDTransformTwoRangesOfItems">
+<title>Transform Two Ranges of Items</title>
+<para>You can transform two ranges of items to an output range through a binary operator. The task created by <ref refid="namespacetf_1abdcb5b755f7ace2aa452541d5bf93b5f" kindref="member">tf::cuda_transform(P&amp;&amp; p, I1 first1, I1 last1, I2 first2, O output, C op)</ref> represents a parallel execution for the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>*output++<sp/>=<sp/>op(*first1++,<sp/>*first2++);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>The following example creates a transform kernel that transforms two input ranges of <computeroutput>N</computeroutput> items to an output range by summing each pair of items in the input ranges.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>output[i]<sp/>=<sp/>input1[i]<sp/>+<sp/>inpu2[i]</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input1,<sp/>input1+N,<sp/>input2,<sp/>output,<sp/>[]__device__(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a+b;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);<sp/></highlight></codeline>
+</programlisting></para></sect1>
+<sect1 id="CUDASTDTransform_1CUDASTDInvokeTransformAsynchronously">
+<title>Invoke Parallel-Transform Kernels Asynchronously</title>
+<para>By default, <ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform</ref> blocks until all kernels finish. You can use <ref refid="namespacetf_1a0505c26296a6d028bc177b8fb8b4451e" kindref="member">tf::cuda_transform_async</ref> to invoke parallel-transform kernels asynchronously and explicitly synchronize them at another place of your program.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>p<sp/>=<sp/><ref refid="namespacetf_1aa18f102977c3257b75e21fde05efdb68" kindref="member">tf::cudaDefaultExecutionPolicy</ref>(my_stream);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>input<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(1000);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>output<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(1000);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;1000;<sp/>i++)<sp/>input[i]<sp/>=<sp/>i;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Launch<sp/>transform<sp/>kernel<sp/>asynchronously</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1a0505c26296a6d028bc177b8fb8b4451e" kindref="member">tf::cuda_transform_async</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>p,<sp/>input,<sp/>input+1000,<sp/>output<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>item)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>10*item;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">p.synchronize();<sp/><sp/></highlight><highlight class="comment">//<sp/>now<sp/>output[i]<sp/>=<sp/>input[i]<sp/>*<sp/>10</highlight></codeline>
+</programlisting> </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

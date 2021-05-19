@@ -6,7 +6,7 @@
 
 /** 
 @file cuda_reduce.hpp
-@brief cuda reduce algorithm include file
+@brief cuda reduce algorithms include file
 */
 
 namespace tf::detail {
@@ -557,6 +557,26 @@ cudaTask cudaFlow::transform_uninitialized_reduce(
   return capture([=](cudaFlowCapturer& cap){
     cap.make_optimizer<cudaLinearCapturing>();
     cap.transform_uninitialized_reduce(first, last, result, bop, uop);
+  });
+}
+
+// Function: update_reduce
+template <typename I, typename T, typename B>
+void cudaFlow::update_reduce(cudaTask task, I first, I last, T* result, B bop) {
+  update_capture(task, [=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.reduce(first, last, result, bop);
+  });
+}
+
+// Function: update_uninitialized_reduce
+template <typename I, typename T, typename B>
+void cudaFlow::update_uninitialized_reduce(
+  cudaTask task, I first, I last, T* result, B bop
+) {
+  update_capture(task, [=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.uninitialized_reduce(first, last, result, bop);
   });
 }
 

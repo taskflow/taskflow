@@ -11,7 +11,7 @@ parallel iterations over a range of items.
 @section ForEachCUDAIndexBasedParallelFor Index-based Parallel Iterations
 
 Index-based parallel-for performs parallel iterations over a range <tt>[first, last)</tt> with the given @c step size.
-The task created by tf::cudaFlow::for_each_index(I first, I last, I step, C&& callable) 
+The task created by tf::cudaFlow::for_each_index(I first, I last, I step, C callable) 
 represents a kernel of parallel execution
 for the following loop:
 
@@ -46,7 +46,7 @@ taskflow.emplace([&](tf::cudaFlow& cf){
 
 Iterator-based parallel-for performs parallel iterations over a range specified 
 by two STL-styled iterators, @c first and @c last.
-The task created by tf::cudaFlow::for_each(I first, I last, C&& callable) represents 
+The task created by tf::cudaFlow::for_each(I first, I last, C callable) represents 
 a parallel execution of the following loop:
 
 @code{.cpp}

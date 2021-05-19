@@ -3,20 +3,201 @@
 #include "../cuda_flow.hpp"
 #include "../cuda_capturer.hpp"
 
+/** 
+@file cuda_transform.hpp
+@brief cuda parallel-transform algorithms include file
+*/
+
 namespace tf {
 
 // ----------------------------------------------------------------------------
 // transform
 // ----------------------------------------------------------------------------
 
-// Kernel: for_each
-template <typename I, typename F, typename... S>
-__global__ void cuda_transform(I first, size_t N, F op, S... srcs) {
-  size_t i = blockIdx.x*blockDim.x + threadIdx.x;
-  if (i < N) {
-    //data[i] = op(src[i]...);
-    *(first + i) = op((*(srcs+i))...);
+namespace detail {
+
+/** @private */
+template <typename P, typename I, typename O, typename C>
+void cuda_transform_loop(P&& p, I first, unsigned count, O output, C op) {
+  
+  using E = std::decay_t<P>;
+
+  unsigned B = (count + E::nv - 1) / E::nv;
+
+  cuda_kernel<<<B, E::nt, 0, p.stream()>>>([=]__device__(auto tid, auto bid) {
+    auto tile = cuda_get_tile(bid, E::nv, count);
+    cuda_strided_iterate<E::nt, E::vt>([=]__device__(auto, auto j) {
+      auto offset = j + tile.begin;
+      *(output + offset) = op(*(first+offset));
+    }, tid, tile.count());
+  });
+}
+
+/** @private */
+template <typename P, typename I1, typename I2, typename O, typename C>
+void cuda_transform_loop(
+  P&& p, I1 first1, I2 first2, unsigned count, O output, C op
+) {
+  
+  using E = std::decay_t<P>;
+
+  unsigned B = (count + E::nv - 1) / E::nv;
+
+  cuda_kernel<<<B, E::nt, 0, p.stream()>>>([=]__device__(auto tid, auto bid) {
+    auto tile = cuda_get_tile(bid, E::nv, count);
+    cuda_strided_iterate<E::nt, E::vt>([=]__device__(auto, auto j) {
+      auto offset = j + tile.begin;
+      *(output + offset) = op(*(first1+offset), *(first2+offset));
+    }, tid, tile.count());
+  });
+}
+
+}  // end of namespace detail -------------------------------------------------
+
+// ----------------------------------------------------------------------------
+// CUDA standard algorithms: transform
+// ----------------------------------------------------------------------------
+
+/**
+@brief performs asynchronous parallel transforms over a range of items
+
+@tparam P execution policy type
+@tparam I input iterator type
+@tparam O output iterator type
+@tparam C unary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the range
+@param last iterator to the end of the range
+@param output iterator to the beginning of the output range
+@param op unary operator to apply to transform each item
+    
+This method is equivalent to the parallel execution of the following loop on a GPU:
+
+@code{.cpp}
+while (first != last) {
+  *output++ = op(*first++);
+}
+@endcode
+
+Please refer to @ref CUDASTDTransform for details.
+
+*/
+template <typename P, typename I, typename O, typename C>
+void cuda_transform_async(P&& p, I first, I last, O output, C op) {
+  
+  unsigned count = std::distance(first, last);
+  
+  if(count == 0) {
+    return;
   }
+
+  detail::cuda_transform_loop(p, first, count, output, op);
+}
+
+/**
+@brief performs parallel transforms over a range of items
+
+@tparam P execution policy type
+@tparam I input iterator type
+@tparam O output iterator type
+@tparam C unary operator type
+
+@param p execution policy
+@param first iterator to the beginning of the range
+@param last iterator to the end of the range
+@param output iterator to the beginning of the output range
+@param op unary operator to apply to transform each item
+
+This method is equivalent to the parallel execution of the following loop on a GPU:
+
+@code{.cpp}
+while (first != last) {
+  *output++ = op(*first++);
+}
+@endcode
+
+Please refer to @ref CUDASTDTransform for details.
+*/
+template <typename P, typename I, typename O, typename C>
+void cuda_transform(P&& p, I first, I last, O output, C op) {
+  cuda_transform_async(p, first, last, output, op);
+  p.synchronize();
+}
+
+/**
+@brief performs asynchronous parallel transforms over two ranges of items
+
+@tparam P execution policy type
+@tparam I1 first input iterator type
+@tparam I2 second input iterator type
+@tparam O output iterator type
+@tparam C binary operator type
+
+@param p execution policy
+@param first1 iterator to the beginning of the first range
+@param last1 iterator to the end of the first range
+@param first2 iterator to the beginning of the second range
+@param output iterator to the beginning of the output range
+@param op binary operator to apply to transform each pair of items
+
+This method is equivalent to the parallel execution of the following loop on a GPU:
+
+@code{.cpp}
+while (first1 != last1) {
+  *output++ = op(*first1++, *first2++);
+}
+@endcode
+
+Please refer to @ref CUDASTDTransform for details.
+
+*/
+template <typename P, typename I1, typename I2, typename O, typename C>
+void cuda_transform_async(
+  P&& p, I1 first1, I1 last1, I2 first2, O output, C op
+) {
+  
+  unsigned count = std::distance(first1, last1);
+  
+  if(count == 0) {
+    return;
+  }
+
+  detail::cuda_transform_loop(p, first1, first2, count, output, op);
+}
+
+/**
+@brief performs parallel transforms over two ranges of items
+
+@tparam P execution policy type
+@tparam I1 first input iterator type
+@tparam I2 second input iterator type
+@tparam O output iterator type
+@tparam C binary operator type
+
+@param p execution policy
+@param first1 iterator to the beginning of the first range
+@param last1 iterator to the end of the first range
+@param first2 iterator to the beginning of the second range
+@param output iterator to the beginning of the output range
+@param op binary operator to apply to transform each pair of items
+
+This method is equivalent to the parallel execution of the following loop on a GPU:
+
+@code{.cpp}
+while (first1 != last1) {
+  *output++ = op(*first1++, *first2++);
+}
+@endcode
+
+Please refer to @ref CUDASTDTransform for details.
+*/
+template <typename P, typename I1, typename I2, typename O, typename C>
+void cuda_transform(
+  P&& p, I1 first1, I1 last1, I2 first2, O output, C op
+) {
+  cuda_transform_async(p, first1, last1, first2, output, op);
+  p.synchronize();
 }
 
 // ----------------------------------------------------------------------------
@@ -24,18 +205,41 @@ __global__ void cuda_transform(I first, size_t N, F op, S... srcs) {
 // ----------------------------------------------------------------------------
 
 // Function: transform
-template <typename I, typename C, typename... S>
-cudaTask cudaFlow::transform(I first, I last, C&& c, S... srcs) {
-  
-  // TODO: special case when N is 0?
-  
-  size_t N = std::distance(first, last);
-  size_t B = _default_block_size(N);
+template <typename I, typename O, typename C>
+cudaTask cudaFlow::transform(I first, I last, O output, C c) {
+  return capture([=](cudaFlowCapturer& cap) mutable {
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.transform(first, last, output, c);
+  });
+}
 
-  return kernel(
-    (N+B-1) / B, B, 0, cuda_transform<I, C, S...>, 
-    first, N, std::forward<C>(c), srcs...
-  );
+// Function: transform
+template <typename I1, typename I2, typename O, typename C>
+cudaTask cudaFlow::transform(I1 first1, I1 last1, I2 first2, O output, C c) {
+  return capture([=](cudaFlowCapturer& cap) mutable {
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.transform(first1, last1, first2, output, c);
+  });
+}
+
+// Function: update_transform
+template <typename I, typename O, typename C>
+void cudaFlow::update_transform(cudaTask task, I first, I last, O output, C c) {
+  update_capture(task, [=](cudaFlowCapturer& cap) mutable {
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.transform(first, last, output, c);
+  });
+}
+
+// Function: update_transform
+template <typename I1, typename I2, typename O, typename C>
+void cudaFlow::update_transform(
+  cudaTask task, I1 first1, I1 last1, I2 first2, O output, C c
+) {
+  update_capture(task, [=](cudaFlowCapturer& cap) mutable {
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.transform(first1, last1, first2, output, c);
+  });
 }
 
 //// Procedure: update_transform
@@ -58,32 +262,44 @@ cudaTask cudaFlow::transform(I first, I last, C&& c, S... srcs) {
 // ----------------------------------------------------------------------------
 
 // Function: transform
-template <typename I, typename C, typename... S>
-cudaTask cudaFlowCapturer::transform(I first, I last, C&& c, S... srcs) {
-  
-  // TODO: special case when N is 0?
-  size_t N = std::distance(first, last);
-  size_t B = _default_block_size(N);
+template <typename I, typename O, typename C>
+cudaTask cudaFlowCapturer::transform(I first, I last, O output, C op) {
+  return on([=](cudaStream_t stream) mutable {
+    cudaDefaultExecutionPolicy p(stream);
+    cuda_transform_async(p, first, last, output, op);
+  });
+}
 
-  return on([=, c=std::forward<C>(c)] 
-  (cudaStream_t stream) mutable {
-    cuda_transform<I, C, S...><<<(N+B-1)/B, B, 0, stream>>>(first, N, c, srcs...);
+// Function: transform
+template <typename I1, typename I2, typename O, typename C>
+cudaTask cudaFlowCapturer::transform(
+  I1 first1, I1 last1, I2 first2, O output, C op
+) {
+  return on([=](cudaStream_t stream) mutable {
+    cudaDefaultExecutionPolicy p(stream);
+    cuda_transform_async(p, first1, last1, first2, output, op);
   });
 }
 
 // Function: rebind_transform
-template <typename I, typename C, typename... S>
+template <typename I, typename O, typename C>
 void cudaFlowCapturer::rebind_transform(
-  cudaTask task, I first, I last, C&& c, S... srcs
+  cudaTask task, I first, I last, O output, C op
 ) {
-  
-  // TODO: special case when N is 0?
-  size_t N = std::distance(first, last);
-  size_t B = _default_block_size(N);
+  rebind_on(task, [=] (cudaStream_t stream) mutable {
+    cudaDefaultExecutionPolicy p(stream);
+    cuda_transform_async(p, first, last, output, op);
+  });
+}
 
-  rebind_on(task, [=, c=std::forward<C>(c)] 
-  (cudaStream_t stream) mutable {
-    cuda_transform<I, C, S...><<<(N+B-1)/B, B, 0, stream>>>(first, N, c, srcs...);
+// Function: rebind_transform
+template <typename I1, typename I2, typename O, typename C>
+void cudaFlowCapturer::rebind_transform(
+  cudaTask task, I1 first1, I1 last1, I2 first2, O output, C op
+) {
+  rebind_on(task, [=] (cudaStream_t stream) mutable {
+    cudaDefaultExecutionPolicy p(stream);
+    cuda_transform_async(p, first1, last1, first2, output, op);
   });
 }
 

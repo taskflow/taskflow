@@ -79,6 +79,191 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
+      <memberdef kind="function" id="cuda__for__each_8hpp_1a4a1aed04a826c2991e3fa36358dfcaca" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::detail::cuda_for_each_loop</definition>
+        <argsstring>(P &amp;&amp;p, I first, unsigned count, C c)</argsstring>
+        <name>cuda_for_each_loop</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_for_each.hpp" line="18" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_for_each.hpp" bodystart="18" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="function" id="cuda__for__each_8hpp_1adb0301752c89d8b515d00c4c771f74d7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::detail::cuda_for_each_index_loop</definition>
+        <argsstring>(P &amp;&amp;p, I first, I inc, unsigned count, C c)</argsstring>
+        <name>cuda_for_each_index_loop</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>inc</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_for_each.hpp" line="35" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_for_each.hpp" bodystart="35" bodyend="50"/>
+      </memberdef>
+      <memberdef kind="function" id="cuda__transform_8hpp_1aefd61e0b4f1e0e9518bed187dd840ba6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::detail::cuda_transform_loop</definition>
+        <argsstring>(P &amp;&amp;p, I first, unsigned count, O output, C op)</argsstring>
+        <name>cuda_transform_loop</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>output</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>op</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_transform.hpp" line="21" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_transform.hpp" bodystart="21" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="cuda__transform_8hpp_1a0d4171d8abe557841d9aa06a72cdcbcb" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I1</type>
+          </param>
+          <param>
+            <type>typename I2</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::detail::cuda_transform_loop</definition>
+        <argsstring>(P &amp;&amp;p, I1 first1, I2 first2, unsigned count, O output, C op)</argsstring>
+        <name>cuda_transform_loop</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I1</type>
+          <declname>first1</declname>
+        </param>
+        <param>
+          <type>I2</type>
+          <declname>first2</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>output</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>op</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_transform.hpp" line="38" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_transform.hpp" bodystart="38" bodyend="53"/>
+      </memberdef>
       <memberdef kind="function" id="cuda__reduce_8hpp_1afddddc0216ce67d63a474374ebab7858" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -1374,6 +1559,6 @@
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="12" column="1"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_for_each.hpp" line="14" column="1"/>
   </compounddef>
 </doxygen>

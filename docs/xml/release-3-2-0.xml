@@ -39,7 +39,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 </para></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_cudaflow">
 <title>cudaFlow</title>
-<para><itemizedlist>
+<para>This releases added new algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>:</para><para><itemizedlist>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1a931a0f99034bccf377aea35e221f50bc" kindref="member">tf::cudaFlow::reduce</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1a1af5d4e8a3820f9b9d8abbe4f4f6c4a4" kindref="member">tf::cudaFlow::transform_reduce</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1a3a5189b9c9494d2a63a983c32cf234f6" kindref="member">tf::cudaFlow::uninitialized_reduce</ref> </para></listitem>
@@ -69,6 +69,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-2-0_1release-3-2-0_cuda_std_algorithms">
 <title>CUDA Standard Parallel Algorithms</title>
 <para><itemizedlist>
+<listitem><para>added <ref refid="namespacetf_1a7c449cec0b93503b8280d05add35e9f4" kindref="member">tf::cuda_for_each</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a01ad7ce62fa6f42f2f2fbff3659b7884" kindref="member">tf::cuda_for_each_index</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform</ref> </para></listitem>
 <listitem><para>added <ref refid="namespacetf_1a40904a487ebd144d786d17ac37a74924" kindref="member">tf::cuda_reduce</ref> </para></listitem>
 <listitem><para>added <ref refid="namespacetf_1a1b404e9dc801fb4c391aa22c94c211e2" kindref="member">tf::cuda_uninitialized_reduce</ref> </para></listitem>
 <listitem><para>added <ref refid="namespacetf_1ad86024ee94a21ea6e8970d887f83808e" kindref="member">tf::cuda_transform_reduce</ref> </para></listitem>
@@ -79,6 +82,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <listitem><para>added <ref refid="namespacetf_1a4c6f39904ef71525825aeabc0665d806" kindref="member">tf::cuda_transform_exclusive_scan</ref> </para></listitem>
 <listitem><para>added <ref refid="namespacetf_1ac41a1b9a852ca1267390d3d356e8d504" kindref="member">tf::cuda_merge</ref> </para></listitem>
 <listitem><para>added <ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1aad02b9b66d19a7429fb7954e362b9891" kindref="member">tf::cuda_for_each_async</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1ab3aaa89293f1089c02ec5f2e427dabf0" kindref="member">tf::cuda_for_each_index_async</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a0505c26296a6d028bc177b8fb8b4451e" kindref="member">tf::cuda_transform_async</ref> </para></listitem>
 <listitem><para>added <ref refid="namespacetf_1af8d8d018c3430e40bd3231adba0bd91d" kindref="member">tf::cuda_reduce_async</ref> </para></listitem>
 <listitem><para>added <ref refid="namespacetf_1a51f1e1d02f600defb33b950e631d4f66" kindref="member">tf::cuda_uninitialized_reduce_async</ref> </para></listitem>
 <listitem><para>added <ref refid="namespacetf_1ab229138d66d95f0b4656e56f496800ae" kindref="member">tf::cuda_transform_reduce_async</ref> </para></listitem>

@@ -105,13 +105,13 @@ A cudaFlowCapturer lives with the callable. When the executor invoke the capture
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para><para>After you offload a cudaFlow capturer, it is considered executed, and the executor will <emphasis>not</emphasis> run an offloaded cudaFlow after leaving the cudaFlow capturer task callable. On the other hand, if a cudaFlow capturer is not offloaded, the executor runs it once. For example, the following two versions represent the same execution logic.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>version<sp/>1:<sp/>explicitly<sp/>offload<sp/>a<sp/>cudaFlow<sp/>capturer<sp/>once</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>cf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a01e187cf410a88cdc8174bc0215813ce" kindref="member">single_task</ref>([]<sp/>__device__<sp/>(){});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a7d0737ec995f5611c6d706ad105a8a0b" kindref="member">single_task</ref>([]<sp/>__device__<sp/>(){});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a5959002af1cf1a1ada3d86a073682232" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>version<sp/>2<sp/>(same<sp/>as<sp/>version<sp/>1):<sp/>executor<sp/>offloads<sp/>the<sp/>cudaFlow<sp/>capturer<sp/>once</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>sf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a01e187cf410a88cdc8174bc0215813ce" kindref="member">single_task</ref>([]<sp/>__device__<sp/>(){});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a7d0737ec995f5611c6d706ad105a8a0b" kindref="member">single_task</ref>([]<sp/>__device__<sp/>(){});</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para></sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1UpdateAcudaFlowCapturer">

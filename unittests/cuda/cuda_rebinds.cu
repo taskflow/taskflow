@@ -132,40 +132,76 @@ void rebind_kernel() {
 
     //verify
     auto verify_t = taskflow.emplace([&](tf::cudaFlowCapturer& cf) {
+      //auto multi1_t = cf.transform(
+      //  ans_operand[ind[2]],  ans_operand[ind[2]]+ N,
+      //  [] __device__ (T& v1, T& v2) { return v1 * v2; },
+      //  ans_operand[ind[0]], ans_operand[ind[1]]
+      //);
+
       auto multi1_t = cf.transform(
-        ans_operand[ind[2]],  ans_operand[ind[2]]+ N,
-        [] __device__ (T& v1, T& v2) { return v1 * v2; },
-        ans_operand[ind[0]], ans_operand[ind[1]]
+        ans_operand[ind[0]], ans_operand[ind[0]] + N, ans_operand[ind[1]],
+        ans_operand[ind[2]],
+        [] __device__ (T& v1, T& v2) { return v1*v2; }
       );
+
+      //auto add1_t = cf.transform(
+      //  ans_operand[ind[0]],  ans_operand[ind[0]]+ N,
+      //  [] __device__ (T& v1, T& v2) { return v1 + v2; },
+      //  ans_operand[ind[1]], ans_operand[ind[2]]
+      //);
 
       auto add1_t = cf.transform(
-        ans_operand[ind[0]],  ans_operand[ind[0]]+ N,
-        [] __device__ (T& v1, T& v2) { return v1 + v2; },
-        ans_operand[ind[1]], ans_operand[ind[2]]
+        ans_operand[ind[1]], ans_operand[ind[1]]+N, ans_operand[ind[2]],
+        ans_operand[ind[0]],
+        [] __device__ (T& v1, T& v2) { return v1 + v2; }
       );
 
+      //auto multi2_t = cf.transform(
+      //  ans_operand[ind[1]],  ans_operand[ind[1]]+ N,
+      //  [] __device__ (T& v1, T& v2) { return v1 * v2; },
+      //  ans_operand[ind[2]], ans_operand[ind[0]]
+      //);
+      
       auto multi2_t = cf.transform(
-        ans_operand[ind[1]],  ans_operand[ind[1]]+ N,
-        [] __device__ (T& v1, T& v2) { return v1 * v2; },
-        ans_operand[ind[2]], ans_operand[ind[0]]
+        ans_operand[ind[2]], ans_operand[ind[2]] + N, ans_operand[ind[0]],
+        ans_operand[ind[1]],
+        [] __device__ (T& v1, T& v2) { return v1 * v2; }
       );
 
+      //auto add2_t = cf.transform(
+      //  ans_operand[ind[2]],  ans_operand[ind[2]]+ N,
+      //  [] __device__ (T& v1, T& v2) { return v1 + v2; },
+      //  ans_operand[ind[1]], ans_operand[ind[0]]
+      //);
+      
       auto add2_t = cf.transform(
-        ans_operand[ind[2]],  ans_operand[ind[2]]+ N,
-        [] __device__ (T& v1, T& v2) { return v1 + v2; },
-        ans_operand[ind[1]], ans_operand[ind[0]]
+        ans_operand[ind[1]], ans_operand[ind[1]] + N, ans_operand[ind[0]],
+        ans_operand[ind[2]],
+        [] __device__ (T& v1, T& v2) { return v1 + v2; }
       );
 
+      //auto multi3_t = cf.transform(
+      //  ans_operand[ind[1]],  ans_operand[ind[1]]+ N,
+      //  [] __device__ (T& v1, T& v2) { return v1 * v2; },
+      //  ans_operand[ind[0]], ans_operand[ind[2]]
+      //);
+      
       auto multi3_t = cf.transform(
-        ans_operand[ind[1]],  ans_operand[ind[1]]+ N,
-        [] __device__ (T& v1, T& v2) { return v1 * v2; },
-        ans_operand[ind[0]], ans_operand[ind[2]]
+        ans_operand[ind[0]], ans_operand[ind[0]] + N,  ans_operand[ind[2]],
+        ans_operand[ind[1]],
+        [] __device__ (T& v1, T& v2) { return v1 * v2; }
       );
 
+      //auto add3_t = cf.transform(
+      //  ans_operand[ind[0]],  ans_operand[ind[0]]+ N,
+      //  [] __device__ (T& v1, T& v2) { return v1 + v2; },
+      //  ans_operand[ind[2]], ans_operand[ind[1]]
+      //);
+      
       auto add3_t = cf.transform(
-        ans_operand[ind[0]],  ans_operand[ind[0]]+ N,
-        [] __device__ (T& v1, T& v2) { return v1 + v2; },
-        ans_operand[ind[2]], ans_operand[ind[1]]
+        ans_operand[ind[2]], ans_operand[ind[2]] + N, ans_operand[ind[1]],
+        ans_operand[ind[0]],
+        [] __device__ (T& v1, T& v2) { return v1 + v2; }
       );
   
       auto verify1_t = cf.kernel(
@@ -275,16 +311,28 @@ void rebind_copy() {
     });
 
     auto kernel_t = taskflow.emplace([&](tf::cudaFlowCapturer& cf) {
+      //auto add1_t = cf.transform(
+      //  dz,  dz + N,
+      //  [] __device__ (T& v1, T& v2) { return v1 + v2; },
+      //  da, db
+      //);
+      
       auto add1_t = cf.transform(
-        dz,  dz + N,
-        [] __device__ (T& v1, T& v2) { return v1 + v2; },
-        da, db
+        da, da+N, db,
+        dz,
+        [] __device__ (T& v1, T& v2) { return v1 + v2; }
       );
 
+      //auto add2_t = cf.transform(
+      //  dc,  dc + N,
+      //  [] __device__ (T& v1, T& v2) { return v1 - v2; },
+      //  dc, dz
+      //);
+      
       auto add2_t = cf.transform(
-        dc,  dc + N,
-        [] __device__ (T& v1, T& v2) { return v1 - v2; },
-        dc, dz
+        dc, dc + N, dz,
+        dc,
+        [] __device__ (T& v1, T& v2) { return v1 - v2; }
       );
 
       add1_t.precede(add2_t);
@@ -386,16 +434,28 @@ void rebind_memcpy() {
     });
 
     auto kernel_t = taskflow.emplace([&](tf::cudaFlowCapturer& cf) {
+      //auto add1_t = cf.transform(
+      //  dz,  dz + N,
+      //  [] __device__ (T& v1, T& v2) { return v1 + v2; },
+      //  da, db
+      //);
+      
       auto add1_t = cf.transform(
-        dz,  dz + N,
-        [] __device__ (T& v1, T& v2) { return v1 + v2; },
-        da, db
+        da, da + N, db,
+        dz,
+        [] __device__ (T& v1, T& v2) { return v1 + v2; }
       );
 
+      //auto add2_t = cf.transform(
+      //  dc,  dc + N,
+      //  [] __device__ (T& v1, T& v2) { return v1 - v2; },
+      //  dc, dz
+      //);
+      
       auto add2_t = cf.transform(
-        dc,  dc + N,
-        [] __device__ (T& v1, T& v2) { return v1 - v2; },
-        dc, dz
+        dc, dc + N, dz,
+        dc,
+        [] __device__ (T& v1, T& v2) { return v1 - v2; }
       );
 
       add1_t.precede(add2_t);

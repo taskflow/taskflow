@@ -13,15 +13,16 @@ template <typename T, typename F>
 void add2() {
 
   //const unsigned N = 1<<20;
+    
+  tf::Taskflow taskflow;
+  tf::Executor executor;
 
   for(size_t N=1; N<=(1<<20); N <<= 1) {
 
-    tf::Taskflow taskflow;
-    tf::Executor executor;
+    taskflow.clear();
 
     T v1 = ::rand() % 100;
     T v2 = ::rand() % 100;
-    T v3 = v1 + v2;
 
     std::vector<T> hx, hy;
 
@@ -47,9 +48,8 @@ void add2() {
       auto d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
       auto d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
       //auto kernel = cf.add(dx, N, dx, dy);
-      auto kernel = cf.transform(
-        dx, dx+N, [] __device__ (T& v1, T& v2) { return v1 + v2; }, 
-        dx, dy
+      auto kernel = cf.transform(dx, dx+N, dy, 
+        [] __device__ (T x) { return x + 2;  }
       );
       kernel.succeed(h2d_x, h2d_y)
             .precede(d2h_x, d2h_y);
@@ -60,7 +60,8 @@ void add2() {
     // Add a verification task
     auto verifier = taskflow.emplace([&](){
       for (size_t i = 0; i < N; i++) {
-        REQUIRE(std::fabs(hx[i] - v3) < eps);
+        REQUIRE(std::fabs(hx[i] - v1) < eps);
+        REQUIRE(std::fabs(hy[i] - (hx[i] + 2)) < eps);
       }
     }).succeed(cudaflow).name("verify");
 
@@ -76,6 +77,23 @@ void add2() {
     verifier.precede(deallocate_x, deallocate_y);
 
     executor.run(taskflow).wait();
+
+    // standalone tramsform
+    tf::cudaDefaultExecutionPolicy p;
+
+    auto input  = tf::cuda_malloc_shared<T>(N);
+    auto output = tf::cuda_malloc_shared<T>(N);
+    for(size_t n=0; n<N; n++) {
+      input[n] = 1;
+    }
+
+    tf::cuda_transform(p, input, input + N, output, 
+      [] __device__ (T i) { return i+2; }
+    );
+
+    for(size_t n=0; n<N; n++) {
+      REQUIRE(output[n] == 3);
+    }
   }
 }
 
@@ -103,228 +121,19 @@ TEST_CASE("capture_add2.double" * doctest::timeout(300)) {
   add2<double, tf::cudaFlowCapturer>();
 }
 
-// --------------------------------------------------------
-// Testcase: add3
-// --------------------------------------------------------
-
-template <typename T, typename F>
-void add3() {
-
-  //const unsigned N = 1<<20;
-
-  for(size_t N=1; N<=(1<<20); N <<= 1) {
-
-    tf::Taskflow taskflow;
-    tf::Executor executor;
-
-    T v1 = ::rand() % 100;
-    T v2 = ::rand() % 100;
-    T v3 = ::rand() % 100;
-    T v4 = v1 + v2 + v3;
-
-    std::vector<T> hx, hy, hz;
-
-    T* dx {nullptr};
-    T* dy {nullptr};
-    T* dz {nullptr};
-    
-    // allocate x
-    auto allocate_x = taskflow.emplace([&]() {
-      hx.resize(N, v1);
-      REQUIRE(cudaMalloc(&dx, N*sizeof(T)) == cudaSuccess);
-    }).name("allocate_x");
-
-    // allocate y
-    auto allocate_y = taskflow.emplace([&]() {
-      hy.resize(N, v2);
-      REQUIRE(cudaMalloc(&dy, N*sizeof(T)) == cudaSuccess);
-    }).name("allocate_y");
-    
-    // allocate z
-    auto allocate_z = taskflow.emplace([&]() {
-      hz.resize(N, v3);
-      REQUIRE(cudaMalloc(&dz, N*sizeof(T)) == cudaSuccess);
-    }).name("allocate_y");
-    
-    // saxpy
-    auto cudaflow = taskflow.emplace([&](F& cf) {
-      auto h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
-      auto h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
-      auto h2d_z = cf.copy(dz, hz.data(), N).name("h2d_z");
-      auto d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
-      auto d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
-      auto d2h_z = cf.copy(hz.data(), dz, N).name("d2h_z");
-
-      //auto kernel = cf.add(dx, N, dx, dy, dz);
-      auto kernel = cf.transform(
-        dx, dx+N, [] __device__ (T& v1, T& v2, T& v3) { return v1 + v2 + v3; }, 
-        dx, dy, dz
-      );
-      kernel.succeed(h2d_x, h2d_y, h2d_z)
-            .precede(d2h_x, d2h_y, d2h_z);
-    }).name("saxpy");
-
-    cudaflow.succeed(allocate_x, allocate_y, allocate_z);
-
-    // Add a verification task
-    auto verifier = taskflow.emplace([&](){
-      for (size_t i = 0; i < N; i++) {
-        REQUIRE(std::fabs(hx[i] - v4) < eps);
-      }
-    }).succeed(cudaflow).name("verify");
-
-    // free memory
-    auto deallocate_x = taskflow.emplace([&](){
-      REQUIRE(cudaFree(dx) == cudaSuccess);
-    }).name("deallocate_x");
-    
-    auto deallocate_y = taskflow.emplace([&](){
-      REQUIRE(cudaFree(dy) == cudaSuccess);
-    }).name("deallocate_y");
-    
-    auto deallocate_z = taskflow.emplace([&](){
-      REQUIRE(cudaFree(dz) == cudaSuccess);
-    }).name("deallocate_z");
-
-    verifier.precede(deallocate_x, deallocate_y, deallocate_z);
-
-    executor.run(taskflow).wait();
-  }
-}
-
-TEST_CASE("add3.int" * doctest::timeout(300)) {
-  add3<int, tf::cudaFlow>();
-}
-
-TEST_CASE("add3.float" * doctest::timeout(300)) {
-  add3<float, tf::cudaFlow>();
-}
-
-TEST_CASE("add3.double" * doctest::timeout(300)) {
-  add3<double, tf::cudaFlow>();
-}
-
-TEST_CASE("capture_add3.int" * doctest::timeout(300)) {
-  add3<int, tf::cudaFlowCapturer>();
-}
-
-TEST_CASE("capture_add3.float" * doctest::timeout(300)) {
-  add3<float, tf::cudaFlowCapturer>();
-}
-
-TEST_CASE("capture_add3.double" * doctest::timeout(300)) {
-  add3<double, tf::cudaFlowCapturer>();
-}
-
-// --------------------------------------------------------
-// Testcase: multiply2
-// --------------------------------------------------------
-template <typename T, typename F>
-void multiply2() {
-
-  //const unsigned N = 1<<20;
-
-  for(size_t N=1; N<=(1<<20); N <<= 1) {
-
-    tf::Taskflow taskflow;
-    tf::Executor executor;
-
-    T v1 = ::rand() % 100;
-    T v2 = ::rand() % 100;
-    T v3 = v1 * v2;
-
-    std::vector<T> hx, hy;
-
-    T* dx {nullptr};
-    T* dy {nullptr};
-    
-    // allocate x
-    auto allocate_x = taskflow.emplace([&]() {
-      hx.resize(N, v1);
-      REQUIRE(cudaMalloc(&dx, N*sizeof(T)) == cudaSuccess);
-    }).name("allocate_x");
-
-    // allocate y
-    auto allocate_y = taskflow.emplace([&]() {
-      hy.resize(N, v2);
-      REQUIRE(cudaMalloc(&dy, N*sizeof(T)) == cudaSuccess);
-    }).name("allocate_y");
-    
-    // saxpy
-    auto cudaflow = taskflow.emplace([&](F& cf) {
-      auto h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
-      auto h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
-      auto d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
-      auto d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
-
-      //auto kernel = cf.multiply(dx, N, dx, dy);
-      auto kernel = cf.transform(
-        dx, dx+N, [] __device__ (T& v1, T& v2) { return v1 * v2; }, 
-        dx, dy
-      );
-      kernel.succeed(h2d_x, h2d_y)
-            .precede(d2h_x, d2h_y);
-    }).name("saxpy");
-
-    cudaflow.succeed(allocate_x, allocate_y);
-
-    // Add a verification task
-    auto verifier = taskflow.emplace([&](){
-      for (size_t i = 0; i < N; i++) {
-        REQUIRE(std::fabs(hx[i] - v3) < eps);
-      }
-    }).succeed(cudaflow).name("verify");
-
-    // free memory
-    auto deallocate_x = taskflow.emplace([&](){
-      REQUIRE(cudaFree(dx) == cudaSuccess);
-    }).name("deallocate_x");
-    
-    auto deallocate_y = taskflow.emplace([&](){
-      REQUIRE(cudaFree(dy) == cudaSuccess);
-    }).name("deallocate_y");
-
-    verifier.precede(deallocate_x, deallocate_y);
-
-    executor.run(taskflow).wait();
-  }
-}
-
-TEST_CASE("multiply2.int" * doctest::timeout(300)) {
-  multiply2<int, tf::cudaFlow>();
-}
-
-TEST_CASE("multiply2.float" * doctest::timeout(300)) {
-  multiply2<float, tf::cudaFlow>();
-}
-
-TEST_CASE("multiply2.double" * doctest::timeout(300)) {
-  multiply2<double, tf::cudaFlow>();
-}
-
-TEST_CASE("capture_multiply2.int" * doctest::timeout(300)) {
-  multiply2<int, tf::cudaFlowCapturer>();
-}
-
-TEST_CASE("capture_multiply2.float" * doctest::timeout(300)) {
-  multiply2<float, tf::cudaFlowCapturer>();
-}
-
-TEST_CASE("capture_multiply2.double" * doctest::timeout(300)) {
-  multiply2<double, tf::cudaFlowCapturer>();
-}
-
 // ----------------------------------------------------------------------------
 // for_each
 // ----------------------------------------------------------------------------
 
 template <typename T, typename F>
 void for_each() {
+    
+  tf::Taskflow taskflow;
+  tf::Executor executor;
 
   for(int n=1; n<=1234567; n = n*2 + 1) {
 
-    tf::Taskflow taskflow;
-    tf::Executor executor;
+    taskflow.clear();
     
     T* cpu = nullptr;
     T* gpu = nullptr;
@@ -356,6 +165,23 @@ void for_each() {
 
     std::free(cpu);
     REQUIRE(cudaFree(gpu) == cudaSuccess);
+
+    // standard algorithm: for_each
+    auto g_data = tf::cuda_malloc_shared<T>(n);
+
+    for(int i=0; i<n; i++) {
+      g_data[i] = 0;
+    }
+
+    tf::cuda_for_each(tf::cudaDefaultExecutionPolicy{},
+      g_data, g_data + n, [] __device__ (T& val) { val = 12222; }
+    );
+    
+    for(int i=0; i<n; i++) {
+      REQUIRE(std::fabs(g_data[i] - (T)12222) < eps);
+    }
+
+    tf::cuda_free(g_data);
   }
 }
 
@@ -467,71 +293,32 @@ TEST_CASE("capture.for_each_index.double" * doctest::timeout(300)) {
 
 template <typename F>
 void transform() {
-
+  
+  F cudaflow;
+    
   for(unsigned n=1; n<=1234567; n = n*2 + 1) {
 
-    tf::Taskflow taskflow;
-    tf::Executor executor;
-    
-    int* htgt = nullptr;
-    int* tgt = nullptr;
-    int* hsrc1 = nullptr;
-    int* src1 = nullptr;
-    float* hsrc2 = nullptr;
-    float* src2 = nullptr;
-    double* hsrc3 = nullptr;
-    double* src3 = nullptr;
+    cudaflow.clear();
 
-    auto htgttask = taskflow.emplace([&](){
-      htgt = static_cast<int*>(std::calloc(n, sizeof(int)));
-      hsrc1 = static_cast<int*>(std::calloc(n, sizeof(int)));
-      hsrc2 = static_cast<float*>(std::calloc(n, sizeof(float)));
-      hsrc3 = static_cast<double*>(std::calloc(n, sizeof(double)));
-      REQUIRE(cudaMalloc(&tgt, n*sizeof(int)) == cudaSuccess);
-      REQUIRE(cudaMalloc(&src1, n*sizeof(int)) == cudaSuccess);
-      REQUIRE(cudaMalloc(&src2, n*sizeof(float)) == cudaSuccess);
-      REQUIRE(cudaMalloc(&src3, n*sizeof(double)) == cudaSuccess);
-    });
+    auto src1 = tf::cuda_malloc_shared<int>(n);
+    auto src2 = tf::cuda_malloc_shared<int>(n);
+    auto dest = tf::cuda_malloc_shared<int>(n);
 
-    auto gputask = taskflow.emplace([&](F& cf) {
-      auto d2h = cf.copy(htgt, tgt, n);
-      auto d2h3 = cf.copy(hsrc3, src3, n);
-      auto d2h2 = cf.copy(hsrc2, src2, n);
-      auto d2h1 = cf.copy(hsrc1, src1, n);
-      auto kernel = cf.transform(
-        tgt, tgt+n, 
-        [] __device__ (int& v1, float& v2, double& v3) -> int {
-          v1 = 1;
-          v2 = 3.0f;
-          v3 = 5.0;
-          return 17;
-        }, 
-        src1, src2, src3
-      );
-      auto h2d = cf.copy(tgt, htgt, n);
-      h2d.precede(kernel);
-      kernel.precede(d2h, d2h1, d2h2, d2h3);
-    });
-
-    htgttask.precede(gputask);
-    
-    executor.run(taskflow).wait();
-
-    for(unsigned i=0; i<n; ++i) {
-      REQUIRE(htgt[i] == 17);
-      REQUIRE(hsrc1[i] == 1);
-      REQUIRE(std::fabs(hsrc2[i] - 3.0f) < eps);
-      REQUIRE(std::fabs(hsrc3[i] - 5.0) < eps);
+    for(unsigned i=0; i<n; i++) {
+      src1[i] = 10;
+      src2[i] = 90;
+      dest[i] = 0;
     }
 
-    std::free(htgt);
-    std::free(hsrc1);
-    std::free(hsrc2);
-    std::free(hsrc3);
-    REQUIRE(cudaFree(tgt) == cudaSuccess);
-    REQUIRE(cudaFree(src1) == cudaSuccess);
-    REQUIRE(cudaFree(src2) == cudaSuccess);
-    REQUIRE(cudaFree(src3) == cudaSuccess);
+    cudaflow.transform(src1, src1+n, src2, dest,
+      []__device__(int s1, int s2) { return s1 + s2; } 
+    );
+
+    cudaflow.offload();
+
+    for(unsigned i=0; i<n; i++){
+      REQUIRE(dest[i] == src1[i] + src2[i]);
+    }
   }
 }
 
